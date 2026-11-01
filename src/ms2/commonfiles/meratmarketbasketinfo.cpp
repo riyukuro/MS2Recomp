@@ -1596,7 +1596,7 @@ int CMeratMarketPremium::LoadXml(const CStringA& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == NULL)
         return 0;
     for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
@@ -1636,7 +1636,7 @@ int CMeratMarketPremium::LoadUgcXml(const CStringA& strPath)
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == NULL)
         return 0;
     for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pElem; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("item")))
@@ -2261,7 +2261,7 @@ MS2_REPLACE(0x1406A4AE0, FUN_1406a4ae0, 99, 0x1C0A91EE);
 // @0x1406a4b50
 int FUN_1406a4b50(TiXmlDocument* pDoc, CAtlList<int>* pList)
 {
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(pDoc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((pDoc)))->FirstChild("ms2"));
     if (pRoot == NULL)
         return 0;
     for (Unk_140165cf0* pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("item")); pItem != NULL; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
@@ -2472,7 +2472,7 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
         const CString& strServer = TSingleton<CFeatureManager>::GetInstance()->GetLocaleName();
         __int64 nServerMin = 0;
         __int64 nServerMax = 0;
-        ((class Unk_MeratPriceTable*)FUN_1401c0db0())->FUN_140674d70(strServer, &nServerMin, &nServerMax);
+        ((class CLua*)(((class Unk_MeratPriceTable*)FUN_1401c0db0())))->CalcMarketSellPriceMinMaxMusicScore(strServer, &nServerMin, &nServerMax);
         if (nServerMin > 0)
             nMin = nServerMin;
         if (nServerMax > 0)
@@ -2610,7 +2610,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
             return false;
         if (pUgc->m_blueprint.m_n18 == 0)
             return false;
-        if (pUgc->FUN_1406321a0() || pUgc->FUN_1406321d0())
+        if (((class CItemUgc*)(pUgc))->FUN_1406321a0() || ((class CItemUgc*)(pUgc))->FUN_1406321d0())
             return false;
         if (!FUN_140633d50(spItem))
             return false;
@@ -2623,7 +2623,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
         Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->GetUgcInfo());
         if (pUgc == NULL)
             return false;
-        if (pUgc->FUN_1406321a0() || pUgc->FUN_1406321d0())
+        if (((class CItemUgc*)(pUgc))->FUN_1406321a0() || ((class CItemUgc*)(pUgc))->FUN_1406321d0())
             return false;
         if (!spItem->FUN_140526060(const_cast<Unk_MeratItemOwner*>(pOwner)))
             return false;

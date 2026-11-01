@@ -10,6 +10,8 @@
 #include "kfmmodel_actor.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/equipment.h"  // C3: was a local member view
+#include <NiAVObject.h>
+#include <NiMesh.h>   // C3: ms_RTTI
 #include <efd/Matrix3.h>
 #include <string.h>
 #include <errno.h>
@@ -49,7 +51,6 @@ float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
    void FUN_141167840(void* o, const CString& s, float f);
 char FUN_140534e50(void* p);   bool FUN_14053d2b0(void* p);void* FUN_1416561a0(void* p);   int FUN_1411e99a0(void* a, unsigned b, const CString& c, unsigned d, int e);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
-void FUN_140a0b300(void* o, bool b);   void FUN_14098cb80(void* it, void* o);   void* FUN_14098e0d0(void* it, int n);   void FUN_14098cf00(void* it);
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void* FUN_141201c90(void* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
 void FUN_1402bd040(float* p);
@@ -58,7 +59,7 @@ void* FUN_1409a1200(void* p);void FUN_141421f30(class NiMesh*, struct Unk_UgcRoo
 void* FUN_1409f31d0(void* tbl, unsigned id, void* self);
 void FUN_1409f2d20(void* tbl, void (*cb)(void*, void*));   void FUN_1409f2e10(void* a, const char* name, unsigned id, void* b, void* tbl);
 void FUN_141208010(void* a, void* b);
-extern char DAT_143ae2440, DAT_143ae2b38, DAT_143afbbb0;
+extern char DAT_143ae2440, DAT_143ae2b38;
 // The raw 8-byte buffers and m_unk_f0 are the exe's NiAVObjectPtr, m_spNode its NiNodePtr (efd::SmartPointer); calls
 // through these views reach the real operators.
 #define MS2_AVPTR(p) (*reinterpret_cast<NiAVObjectPtr*>(p))
@@ -74,16 +75,16 @@ struct Unk_NifNodeSet
     NodeIt FUN_141209360();   // end
 };
 // The depth-first scene walker (0x30 bytes; the exe's shared helper, named after its first unit).
-class Unk_CubeSceneIterator
+class Unk_NodeQueue
 {
 public:
-    Unk_CubeSceneIterator(NiAVObject* pRoot);           // 0x14098cb80
-    ~Unk_CubeSceneIterator();                           // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool descend);            // next object
+    Unk_NodeQueue(NiAVObject* pRoot);           // 0x14098cb80
+    ~Unk_NodeQueue();                           // 0x14098cf00
+    NiAVObject* Next(bool descend);            // next object
 private:
     ATL::CAtlList<NiAVObject*> pending;
 };
-MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 #define NODESET(self) (*reinterpret_cast<Unk_NifNodeSet*>(&(self)->m_unk_f8))
 #define F8(self) ((void*)((char*)(self) + 0xf8))
 #define PAIR_BEGIN(self, it, end) FUN_141209360(F8(self), end); FUN_141209190(F8(self), it)
@@ -336,26 +337,26 @@ void CNifModel::vfunc_17()
 {
     CEquipModel::vfunc_17();
     if (m_p120 != 0)
-        FUN_140a0b300(m_p120, false);
+        reinterpret_cast<NiAVObject*>(m_p120)->SetAppCulled(false);
     bool bActive = m_nState != 0 && vfunc_20() != 0 ? true : false;
     bool bHide = !bActive;
     Unk_NifNodeSet& nodes = NODESET(this);
     for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
         NiAVObjectPtr sp = *it;
-        Unk_CubeSceneIterator walk(sp);
+        Unk_NodeQueue walk(sp);
         NiAVObject* o;
-        while ((o = walk.FUN_14098e0d0(true)) != 0) {
-            void* c = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbbb0), (class NiObject const*)(o)));
+        while ((o = walk.Next(true)) != 0) {
+            void* c = ((void*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(o)));
             if (c != 0 && m_p120 != c)
-                FUN_140a0b300(c, bHide);
+                reinterpret_cast<NiAVObject*>(c)->SetAppCulled(bHide);
         }
     }
-    Unk_CubeSceneIterator walk((NiAVObject*)vfunc_14());
+    Unk_NodeQueue walk((NiAVObject*)vfunc_14());
     NiAVObject* o;
-    while ((o = walk.FUN_14098e0d0(true)) != 0) {
-        void* c = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbbb0), (class NiObject const*)(o)));
+    while ((o = walk.Next(true)) != 0) {
+        void* c = ((void*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(o)));
         if (c != 0 && m_p120 != c)
-            FUN_140a0b300(c, bHide);
+            reinterpret_cast<NiAVObject*>(c)->SetAppCulled(bHide);
     }
 }
 
@@ -416,10 +417,10 @@ void FUN_141566b60(void* self)
     Unk_NifNodeSet& nodes = NODESET((CNifModel*)self);
     for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
         NiAVObjectPtr sp = *it;
-        Unk_CubeSceneIterator walk(sp);
+        Unk_NodeQueue walk(sp);
         NiAVObject* o;
-        while ((o = walk.FUN_14098e0d0(true)) != 0) {
-            void* c = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbbb0), (class NiObject const*)(o)));
+        while ((o = walk.Next(true)) != 0) {
+            void* c = ((void*)NiObject::DynamicCast(&NiMesh::ms_RTTI, (class NiObject const*)(o)));
             if (c != 0)
                 FUN_141421f30((class NiMesh*)(c), (struct Unk_UgcRoot*)(tgt));
         }

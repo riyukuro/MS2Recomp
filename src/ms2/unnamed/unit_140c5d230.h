@@ -24,6 +24,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/tptr.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/uiheadupdisplay.h"
@@ -43,7 +44,6 @@ class LapenshardSystemTabContents;
 class UILapenshardEquipTab;
 class UILapenshardUpgradeTab;
 class UILapenshardSystemDialog;
-class Unk_LsTabBar;
 
 typedef MS2Ptr<LapenshardSystemTabPanelBase> LapenshardPanelPtr;
 typedef ATL::CAtlList<LapenshardPanelPtr> LapenshardPanelList;
@@ -208,11 +208,11 @@ public:
     virtual void vfunc_4();                                         //  4 0x140c650d0
     virtual void vfunc_5(int nEvent);                               //  5 0x140c651a0
 
-    MS2Ptr<class Unk_LsRecord> FUN_140c65d60();                     // the table record of the source item
+    MS2Ptr<class CItemLapenshardData> FUN_140c65d60();                     // the table record of the source item
     void FUN_140c652d0(ItemInfoSlot& slot, ASSlot& asSlot);        // slot callback: mark an empty slot
     void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
     void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
-    void FUN_140c65540(CString& strBag, MS2Ptr<class Unk_LsRecord> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, LapenshardKindArray& kinds, ASObj& out);
+    void FUN_140c65540(CString& strBag, MS2Ptr<class CItemLapenshardData> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, LapenshardKindArray& kinds, ASObj& out);
     void FUN_140c664e0();
     void FUN_140c65e00();
     void FUN_140c65ef0();
@@ -321,7 +321,6 @@ public:
     void OnLeaveTab();                                           // the shown page: close
     void FUN_140c627a0(unsigned nTab, const Scaleform::GFx::Value& root);   // show the page of tab nTab
 
-    MS2Ptr<Unk_LsTabBar> FUN_140c02870(const CString& strName);     // bind the tab strip
 
     LapenshardTabPtr m_spPage;                                      // +0x188 the shown page
     ATL::CAtlArray<TabInfoPtr> m_tabs;                              // +0x198
@@ -360,17 +359,6 @@ public:
 };
 Unk_LsBuffInfo* FUN_14096d810(Unk_LsBuff* pBuff);                   // the buff's info (the object at +0x68)
 
-// The poll timer (ctor 0x140517b00; FUN_140268870: true once nMs have passed since the last true).
-class Unk_LsTick
-{
-public:
-    Unk_LsTick();                                                   // 0x140517b00
-    void FUN_140268840();                                           // restart
-    int FUN_140268870(unsigned nMs);
-private:
-    unsigned __int64 m_nTick;
-};
-
 class Unk_LsEntityEvents;
 
 // 0xa8 bytes, (UIHeadUpDisplay + UIEntityEventListener at +0x70, UI id 0x4f73): shows the shield buff.
@@ -399,7 +387,7 @@ public:
     MS2Ptr<Unk_LsBuff> m_spBuff;                                    // +0x78
     int m_nPending;                                                 // +0x88 the buff changed, "open" is due
     CString m_strBind;                                              // +0x90 the skill slot's bind id
-    Unk_LsTick m_tick;                                              // +0x98
+    Unk_IntervalTimer m_tick;                                              // +0x98
     int m_bImpending;                                               // +0xa0
     int m_bEnded;                                                   // +0xa4
 };

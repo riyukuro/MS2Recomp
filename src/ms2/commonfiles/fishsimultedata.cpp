@@ -45,7 +45,7 @@ CStringTable* GetStringTable();                              // the string table
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 CStringW GetStringCommon(int nStringId);                      // string table text by id
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);        // string attribute
+int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 int FUN_14015f480(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringW>& rOut);   // list of strings
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);    // split into numbers
 void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);   // split a list of ids
@@ -107,7 +107,7 @@ int CFishData::Load(Unk_140165cf0* pNode)
     m_nHabitat = CFishingTable::GetInstance()->FUN_1403b1f70(strHabitat);
     ATL::CAtlArray<int> arr;
     CString strSmall;
-    FUN_140873ad0(pNode, "smallSize", strSmall);
+    XmlQuery((class TiXmlElement *)(pNode), "smallSize", strSmall);
     FUN_140177e10(strSmall, arr, L"-");
     if (arr.GetCount() != 2)
         return 0;
@@ -118,7 +118,7 @@ int CFishData::Load(Unk_140165cf0* pNode)
     m_aSize[0].FUN_140303060(arr[0], arr[1] - 1);
     arr.RemoveAll();
     CString strBig;
-    FUN_140873ad0(pNode, "bigSize", strBig);
+    XmlQuery((class TiXmlElement *)(pNode), "bigSize", strBig);
     FUN_140177e10(strBig, arr, L"-");
     if (arr.GetCount() != 2)
         return 0;
@@ -211,9 +211,9 @@ int CFishingRodData::Load(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "fishMasteryLimit", m_nMasteryLimit);
     XmlGetAttr((class TiXmlElement*)(pNode), "addFishMastery", m_nAddMastery);
     XmlGetAttr((class TiXmlElement*)(pNode), "reduceFishingTime", m_nReduceTime);
-    FUN_140873ad0(pNode, "chair", m_strChair);
-    FUN_140873ad0(pNode, "fishLureEffect", m_strLureEffect);
-    FUN_140873ad0(pNode, "fishingChairEffect", m_strChairEffect);
+    XmlQuery((class TiXmlElement *)(pNode), "chair", m_strChair);
+    XmlQuery((class TiXmlElement *)(pNode), "fishLureEffect", m_strLureEffect);
+    XmlQuery((class TiXmlElement *)(pNode), "fishingChairEffect", m_strChairEffect);
     if (m_nRodCode == 0)
         return 0;
     return 1;
@@ -336,7 +336,7 @@ int CFishingTable::LoadSpots()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -362,7 +362,7 @@ int CFishingTable::LoadFish()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -388,7 +388,7 @@ int CFishingTable::LoadRods()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -414,7 +414,7 @@ int CFishingTable::LoadHabitats()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

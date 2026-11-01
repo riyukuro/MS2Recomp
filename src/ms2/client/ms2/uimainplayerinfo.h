@@ -23,6 +23,7 @@
 #include "ms2/placeholder/uiitemeventlistener.h"
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/client/ms2/aseffect.h"
+#include <efd/SmartPointer.h>
 
 class CItem;
 class NotifyObject;
@@ -54,17 +55,7 @@ MS2_CHECK_SIZE(Unk_MpRideePtr, 0x10);
 
 // The render-target camera of the ridee avatar (8-byte handle; the same COMDATs as Unk_PetBoxCameraPtr).
 class Unk_MpCamera;
-class Unk_MpCameraPtr
-{
-public:
-    explicit Unk_MpCameraPtr(int nNull);                    // 0x14108aea0
-    ~Unk_MpCameraPtr();                                     // 0x140cb1460
-    Unk_MpCameraPtr& operator=(int nNull);                  // 0x14108b5b0
-    Unk_MpCameraPtr& operator=(const Unk_MpCameraPtr& o);   // 0x1413149a0
-    Unk_MpCamera* operator->() const;                       // 0x1409f7910
-    Unk_MpCamera* m_p;
-};
-MS2_CHECK_SIZE(Unk_MpCameraPtr, 8);
+class UIRenderView;
 
 class UIMainPlayerInfo : public UIBuiltInDialog,
                          public UIStatusEventListener,
@@ -178,7 +169,7 @@ private:
     int m_nSlotMode;                                    // +0x220 1 = riding / hide and seek slot mode
     unsigned int m_nHideMask;                           // +0x224 reasons to hide the panel (0 = shown)
     Unk_MpRideePtr m_ridee;                             // +0x228
-    Unk_MpCameraPtr m_camera;                           // +0x238
+    efd::SmartPointer<UIRenderView> m_camera;                           // +0x238
 };
 MS2_CHECK_SIZE(UIMainPlayerInfo, 0x240);
 MS2_CHECK_OFFSET(UIMainPlayerInfo, m_playerInfo, 0x188);

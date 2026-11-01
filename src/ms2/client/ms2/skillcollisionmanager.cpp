@@ -133,7 +133,7 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
 {
     if (pSrc == 0)
         return CollisionPtr(0);
-    Unk_ColInfo* pInfo = pSrc->FUN_1408040d0(nLevel, nIndex);
+    Unk_ColInfo* pInfo = ((class Unk_ColInfo *)((class SkillLevelData*)(pSrc))->FUN_1408040d0(nLevel, nIndex));
     if (pInfo == 0)
         return CollisionPtr(0);
     CollisionPtr spShape(0);
@@ -217,7 +217,7 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
     {
         spShape->m_ptSize = pInfo->m_ptOffset;
         spShape->vfunc_4();
-        Unk_ColCfg* pCfg = pSrc->FUN_140803f60(nLevel, nIndex);
+        Unk_ColCfg* pCfg = ((class Unk_ColCfg *)((class SkillLevelData*)(pSrc))->FUN_140803f60(nLevel, nIndex));
         spShape->m_n18 = pCfg->m_n1a0;
     }
     return spShape;
@@ -251,7 +251,7 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
 {
     if (pSrc == 0)
         return CollisionPtr(0);
-    Unk_ColInfo* pInfo = pSrc->FUN_1408040d0(nLevel, nIndex);
+    Unk_ColInfo* pInfo = ((class Unk_ColInfo *)((class SkillLevelData*)(pSrc))->FUN_1408040d0(nLevel, nIndex));
     if (pInfo == 0)
         return CollisionPtr(0);
     CollisionPtr spShape(0);
@@ -290,7 +290,7 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
     {
         spShape->m_ptSize = pInfo->m_ptOffset;
         spShape->vfunc_4();
-        Unk_ColCfg* pCfg = pSrc->FUN_140803f60(nLevel, nIndex);
+        Unk_ColCfg* pCfg = ((class Unk_ColCfg *)((class SkillLevelData*)(pSrc))->FUN_140803f60(nLevel, nIndex));
         spShape->m_n18 = pCfg->m_n1a0;
     }
     return spShape;

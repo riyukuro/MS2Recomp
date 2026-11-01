@@ -117,8 +117,8 @@ struct Unk_RankVec3 { float x, y, z; };
 class PCBase   // C3: member view (real class not in this TU)
 {
 public:
-    void FUN_14166cce0(unsigned int);
-    void FUN_14166cd70(unsigned int);
+    void AddStateFlags(unsigned int);
+    void RemoveStateFlags(unsigned int);
     int FUN_14166ce30();
 };
 class Unk_RankActor
@@ -349,12 +349,12 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             return;
         if (bFlag)
         {
-            ((PCBase*)(Unk_RankActor*)(pActor))->FUN_14166cd70(1);
+            ((PCBase*)(Unk_RankActor*)(pActor))->RemoveStateFlags(1);
         }
         else
         {
             pActor->SetPosition(DAT_143b01a60);
-            ((PCBase*)(Unk_RankActor*)(pActor))->FUN_14166cce0(1);
+            ((PCBase*)(Unk_RankActor*)(pActor))->AddStateFlags(1);
         }
     }
     else if (nMessage == 0x1b)

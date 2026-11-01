@@ -22,7 +22,7 @@ public:
     void FUN_141637a80(int, int);
     void FUN_141637ad0(int);
     void SetRole(int);
-    void FUN_141637b30(int);
+    void SetReadyState(int);
     void SetCounters(const Unk_PartyCounters*);
     __int64 FUN_141637bb0();
     bool FUN_141637c20();

@@ -87,7 +87,7 @@ class Unk_CtlObj;
 // A game object that is an npc: the name of its data row.
 class Unk_CtlNpc : public CNpc { };
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
-CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
+CStringW FUN_1401aa6a0(int nNpc);                  // the name text of an npc id
 
 // Formatters instantiated by other units.
 CStringW FUN_1409e8180(const wchar_t* szFormat, const CStringW& a, const int& b, const int& c);
@@ -97,26 +97,16 @@ bool FUN_1401647e0(const CString& a, const CString& b);     // differs
 
 // The key of a command group: str == psz.
 
+class UIDailyMissionDialog { public: MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName); };
+
 // The main window.
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
-// std::vector<int> as the exe's helper units instantiate it.
-class Unk_CtlIntVec
-{
-public:
-    Unk_CtlIntVec();                                    // 0x140182ea0
-    ~Unk_CtlIntVec();                                   // 0x140183b60
-    unsigned __int64 FUN_1401910d0() const;             // count
-    int& FUN_1404f0a10(unsigned __int64 i);             // operator[]
-private:
-    void* m_0; void* m_8; void* m_10;
-};
-MS2_CHECK_SIZE(Unk_CtlIntVec, 0x18);
-void FUN_141632630(const CStringW& str, Unk_CtlIntVec& out, const wchar_t* szDelim);   // split into numbers
+void FUN_141632630(const CStringW& str, std::vector<int>& out, const wchar_t* szDelim);   // split into numbers
 
 CStringTable* GetStringTable();
 
-void FUN_140988d60(CStringW& str, Unk_NpcFileList& out, const wchar_t* szDelim);    // split a text
+void FUN_140988d60(CStringW& str, std::vector<CStringW>& out, const wchar_t* szDelim);    // split a text
 __int64 FUN_140718320(const CStringW& str);
 int FUN_140718200(const CStringW& str);
 unsigned FUN_140718140(const CStringW& str);
@@ -142,9 +132,9 @@ static __inline errno_t ms2_nc_memcpy_s(void* const d, size_t const dsz, void co
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnNcMemcpyS)(void*, size_t, const void*, size_t) = &ms2_nc_memcpy_s;
 
 // @0x141a65420
-static bool FUN_141a65420(const Unk_CtlIntVec& v, int i)
+static bool FUN_141a65420(const std::vector<int>& v, int i)
 {
-    int n = (int)v.FUN_1401910d0();
+    int n = (int)v.size();
     if (i < 0 || i > n - 1)
         return false;
     return true;
@@ -379,11 +369,11 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
     int nLoop = FUN_141a638e0();
     if (nLoop <= 0)
         return;
-    Unk_CtlIntVec args;
+    std::vector<int> args;
     std::vector<Unk_CtlSkill> skills;
     do {
         FUN_141632630(strArgs, args, L",/[] ");
-        int nArgs = (int)args.FUN_1401910d0();
+        int nArgs = (int)args.size();
         if (nArgs <= 0) {
             int nKey = nCmd;
             Unk_CtlSkill skill = m_skills[nKey];
@@ -395,8 +385,8 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
                 break;
             if (!FUN_141a65420(args, i + 1))
                 break;
-            int nId = args.FUN_1404f0a10(i);
-            unsigned short nLevel = *(unsigned short*)&args.FUN_1404f0a10(i + 1);
+            int nId = args[i];
+            unsigned short nLevel = *(unsigned short*)&args[i + 1];
             Unk_CtlSkill skill;
             skill.nId = nId;
             skill.nLevel = nLevel;
@@ -422,7 +412,7 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
 // @0x141a63ce0
 void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
 {
-    MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items");
     if (spList.IsNull())
         return;
     spList->FUN_1422dd1d0();
@@ -553,7 +543,7 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
     } else if (nCommand == 0xc) {
         if (m_nNpcId == 0)
             return;
-        Unk_NpcFileList parts;
+        std::vector<CStringW> parts;
         FUN_140988d60(const_cast<CStringW&>(strArg), parts, L",");
         int nAdditional;
         unsigned short nLevel;
@@ -561,12 +551,12 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
         nAdditional = 0;
         nLevel = 1;
         nExtra = 0;
-        if (parts.FUN_14041af10() >= 1)
-            nAdditional = FUN_140718200(parts.FUN_1405e99b0(0));
-        if (parts.FUN_14041af10() >= 2)
-            nLevel = FUN_140718140(parts.FUN_1405e99b0(1));
-        if (parts.FUN_14041af10() >= 3)
-            nExtra = FUN_1407182c0(parts.FUN_1405e99b0(2));
+        if (parts.size() >= 1)
+            nAdditional = FUN_140718200(parts[0]);
+        if (parts.size() >= 2)
+            nLevel = FUN_140718140(parts[1]);
+        if (parts.size() >= 3)
+            nExtra = FUN_1407182c0(parts[2]);
         if (nAdditional == 0)
             return;
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);

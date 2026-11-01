@@ -110,7 +110,7 @@ int CSoapClient::FUN_14176feb0()
 
     try
     {
-        spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+        spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
         if (spCtrl == 0)
             throw Exception(CString("pUgcUploadCtrl"), 0xd);
         if (spCtrl->GetImage().get())

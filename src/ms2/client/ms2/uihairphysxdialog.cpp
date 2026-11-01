@@ -116,7 +116,7 @@ class CPhysXHelper
 {
 public:
     void FUN_14168a540(int n);                                  // lock the scene
-    class Unk_PhysXSceneHandle* FUN_1416892a0(int nScene);      // the scene
+    class Unk_PhysXSceneHandle* GetScene(int nScene);      // the scene
     void FUN_14168a570();                                       // unlock
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
@@ -371,7 +371,7 @@ void UIHairPhysxDialog::FUN_1419821d0(int nDebug)
         strScene = FUN_1414d7990(strScene);
         pService->SetDebugRender(strScene, bActive);
         ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(1);
-        void* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_1416892a0(1);
+        void* pScene = ((class CPhysXHelper*)FUN_1409f7ca0())->GetScene(1);
         if (pScene != 0)
         {
             NxPhysicsSDK* pSDK = efdPhysX::PhysXSDKManager::GetManager()->m_pPhysXSDK;

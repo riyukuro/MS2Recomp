@@ -27,6 +27,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/client/ms2/clubcli.h"
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItemData>::operator->
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
@@ -98,22 +99,21 @@ MS2_CHECK_SIZE(Unk_ThWedding, 0x28);
 // A time value (the date text helper).
 
 // The item record handle (the item of a megaphone): the function name at +0x290 and its parameter list at +0x2b0.
-class Unk_ThName { public: bool FUN_14034eee0(const wchar_t* psz) const; private: char m_pad[0x20]; };
-MS2_CHECK_SIZE(Unk_ThName, 0x20);
-class Unk_ThParams
+class Unk_CommandArgs
 {
 public:
-    unsigned FUN_1408d2380() const;                             // the count
-    CStringW FUN_1408d21c0(int nIdx, CStringW strDefault) const;    // a string parameter
-    unsigned FUN_1408d1f60(int nIdx, int nDefault) const;       // an integer parameter
+    unsigned FUN_1408d2380();                                   // the count
+    CStringW FUN_1408d21c0(int nIdx, CStringW strDefault);      // a string parameter
+    int FUN_1408d1f60(unsigned nIdx, int nDefault);             // an integer parameter
 private:
     char m_pad[0x28];
 };
 struct Unk_ThItemRec
 {
     char m_pad[0x290];
-    Unk_ThName m_290;
-    Unk_ThParams m_2b0;
+    CStringW m_290;
+    char m_pad298[0x18];
+    Unk_CommandArgs m_2b0;
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -201,24 +201,20 @@ public:
     virtual CStringW vfunc_77();
 };
 class Unk_ThWorld { public: Unk_ThPc* FUN_141bd0cc0(); };
-bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) noexcept;   // equal names (no EH state in the exe callers)
 
-class Unk_ThColorTbl { public: unsigned FUN_1405569f0(int nIdx) const; };
-class Unk_ThOptions { public: bool FUN_14036d570(int nOption) const; };
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_ThFlags { char m_pad[0x30]; bool m_30; };
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned FUN_1412780f0(void* pColor);
+template <class T> struct Unk_McValue;
+unsigned FUN_1412780f0(Unk_McValue<unsigned>* pColor);
 
 // The wedding hall / room records.
-class Unk_ThRoomRec { public: unsigned FUN_140906e40(unsigned char b) const; };
 class Unk_ThRoomRef
 {
 public:
     void* FUN_141847320() const { return m_8; }                 // 0x141847320
-    Unk_ThRoomRec* FUN_1409020e0() const;
-    ~Unk_ThRoomRef();                                           // 0x140901e30 (release)
 private:
     void* m_0;
     void* m_8;
@@ -228,30 +224,23 @@ class Unk_ThHallRef
 {
 public:
     void* FUN_141847330() const { return m_8; }                 // 0x141847330
-    class Unk_ThHallBook* FUN_1409020f0() const;
-    ~Unk_ThHallRef();                                           // 0x140901e60 (release)
 private:
     void* m_0;
     void* m_8;
 };
 MS2_CHECK_SIZE(Unk_ThHallRef, 0x10);
-class Unk_ThHallBook { public: Unk_ThRoomRef FUN_140907110(int nRoom) const; };
-class Unk_ThHallMgr { public: Unk_ThHallRef FUN_140908b80(unsigned nHall) const; };
-unsigned char FUN_140900f30(unsigned __int64 nTime);
-class Unk_ThStrTbl { public: CStringW FUN_141811980(int nType, unsigned nId) const; };
+bool FUN_140900f30(__int64 nTime);
 // 0x1406c47a0 is CMsTime(__time64_t) (ms2/placeholder/mstime.h)
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strDateSep, CStringW strTimeSep);   // date and time text
-class Unk_ThUgc { public: CStringW FUN_140b15150(unsigned __int64 nId) const; };
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
 
 // Unrecovered string formatters whose instances live in other units.
-CStringW FUN_140292a70(const wchar_t* pszFormat, const unsigned& a);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
 CStringW FUN_14086d060(int nId, const __int64& n);              // FormatStringId<__int64>
 CStringW TranslateEnumDungeonGroup(unsigned nId);               // the dungeon name
 unsigned FUN_141275c00(unsigned nRank);
-unsigned FUN_141275bd0(unsigned __int64 nId);
+unsigned FUN_141275bd0(void* pId);
 unsigned FUN_141275b40();
 
 // The string-table block formatter ("{0}..." of a string id) and its variadic wrappers.
@@ -298,31 +287,31 @@ void FUN_14183e690()
     char* pBase = ((char*)FUN_1401d3200());
     if (pBase != 0)
     {
-        s_color0 = FUN_1412780f0(pBase + 0xb528);
-        s_color1 = FUN_1412780f0(pBase + 0xb580);
-        s_color2 = FUN_1412780f0(pBase + 0xb5d8);
-        s_color3 = FUN_1412780f0(pBase + 0xb630);
-        s_color4 = FUN_1412780f0(pBase + 0xb688);
-        s_color5 = FUN_1412780f0(pBase + 0xb6e0);
-        s_color6 = FUN_1412780f0(pBase + 0xb738);
-        s_color7 = FUN_1412780f0(pBase + 0xb790);
-        s_color8 = FUN_1412780f0(pBase + 0xb7e8);
-        s_color9 = FUN_1412780f0(pBase + 0xb840);
-        s_color10 = FUN_1412780f0(pBase + 0xb898);
-        s_color11 = FUN_1412780f0(pBase + 0xb8f0);
-        s_color12 = FUN_1412780f0(pBase + 0xb948);
-        s_color13 = FUN_1412780f0(pBase + 0xb9a0);
-        s_color14 = FUN_1412780f0(pBase + 0xb9f8);
-        s_color15 = FUN_1412780f0(pBase + 0xba50);
-        s_color16 = FUN_1412780f0(pBase + 0xbaa8);
-        s_color17 = FUN_1412780f0(pBase + 0xbb00);
-        s_color18 = FUN_1412780f0(pBase + 0xbb58);
-        s_color19 = FUN_1412780f0(pBase + 0xbbb0);
-        s_color20 = FUN_1412780f0(pBase + 0xbc08);
-        s_color21 = FUN_1412780f0(pBase + 0xbc60);
-        s_color22 = FUN_1412780f0(pBase + 0xbcb8);
-        s_color23 = FUN_1412780f0(pBase + 0xbd10);
-        s_color24 = FUN_1412780f0(pBase + 0xbd68);
+        s_color0 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb528));
+        s_color1 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb580));
+        s_color2 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb5d8));
+        s_color3 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb630));
+        s_color4 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb688));
+        s_color5 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb6e0));
+        s_color6 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb738));
+        s_color7 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb790));
+        s_color8 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb7e8));
+        s_color9 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb840));
+        s_color10 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb898));
+        s_color11 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb8f0));
+        s_color12 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb948));
+        s_color13 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb9a0));
+        s_color14 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xb9f8));
+        s_color15 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xba50));
+        s_color16 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbaa8));
+        s_color17 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbb00));
+        s_color18 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbb58));
+        s_color19 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbbb0));
+        s_color20 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbc08));
+        s_color21 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbc60));
+        s_color22 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbcb8));
+        s_color23 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbd10));
+        s_color24 = FUN_1412780f0((Unk_McValue<unsigned>*)(pBase + 0xbd68));
     }
 }
 
@@ -337,7 +326,7 @@ CStringW FUN_14183e930(const CStringW& strText, unsigned nColor)
 // @0x14183e9c0
 CStringW FUN_14183e9c0(CStringW strText, int nIdx)
 {
-    unsigned nColor = reinterpret_cast<Unk_ThColorTbl*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nIdx);
+    unsigned nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nIdx);
     return FUN_14183e930(strText, nColor);
 }
 
@@ -348,7 +337,7 @@ void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
     MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
     if (ref == 0)
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290 != L"SuperWorldChat")
         return;
     if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 0)
     {
@@ -366,7 +355,7 @@ void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
     MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
     if (ref == 0)
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290 != L"SuperWorldChat")
         return;
     if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 1)
     {
@@ -391,7 +380,7 @@ void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
     MS2Ptr<CItemData> ref = FUN_14053f870(nItemId);
     if (ref == 0)
         return;
-    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290.FUN_14034eee0(L"WeddingChat"))
+    if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_290 != L"WeddingChat")
         return;
     if (reinterpret_cast<Unk_ThItemRec*>(ref.operator->())->m_2b0.FUN_1408d2380() > 1)
     {
@@ -455,7 +444,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
         CStringW strIcon(DAT_143aef3b8);
         FUN_14183eba0(nItemId, strIcon, nIconSize, nColorA, nColorB);
         strResult = FUN_14028dee0(0x67c, nIconSize);
-        if (((class Unk_ThOptions*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, strImg,
                                       strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
         else
@@ -467,7 +456,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color7);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color19);
-        if (((class Unk_ThOptions*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x66f, s_strIconMegaphone3, strUser, nColorA, nSize, strName, strImg, strHome,
                                       s_strIconMoveToHouse, nColorB, nSize, strText2);
         else
@@ -494,7 +483,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color4);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color16);
-        if (((class Unk_ThOptions*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x672, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         else
             strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
@@ -512,7 +501,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
-        if (((class Unk_ThOptions*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x673, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         else
             strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
@@ -570,7 +559,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
-        if (((class Unk_ThOptions*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x67e, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         else
             strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
@@ -579,7 +568,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color9);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color24);
-        CStringW strUgcName = ((class Unk_ThUgc*)FUN_140e0d900())->FUN_140b15150(nExtra);
+        CStringW strUgcName = ((CClubClientManager*)FUN_140e0d900())->GetClubName(nExtra);
         strResult = FUN_14028dee0(0x67a, strUser, nColorA, nSize, strUgcName, strName, strImg, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
@@ -626,13 +615,13 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
                             s_strIconMoveToHouse, nColorB, nSize, strText2);
     strBody = FUN_141842560(strBody, nColorB, 0xfffffe);
     CStringW strDate;
-    Unk_ThHallRef hall = reinterpret_cast<Unk_ThHallMgr*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(wed.m_8);
-    if (hall.FUN_141847330() != 0)
+    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(wed.m_8);
+    if (reinterpret_cast<Unk_ThHallRef*>(&hall)->FUN_141847330() != 0)
     {
-        Unk_ThRoomRef room = hall.FUN_1409020f0()->FUN_140907110(wed.m_c);
-        if (room.FUN_141847320() != 0)
+        MS2Ptr<WeddingHallData> room = hall->FUN_140907110(wed.m_c);
+        if (reinterpret_cast<Unk_ThRoomRef*>(&room)->FUN_141847320() != 0)
         {
-            strDate = reinterpret_cast<Unk_ThStrTbl*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(3, room.FUN_1409020e0()->FUN_140906e40(FUN_140900f30(wed.m_10)));
+            strDate = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, room->FUN_140906e40(FUN_140900f30(wed.m_10)));
         }
     }
     CStringW strBody2 = FUN_14028dee0(0x680, nIconSize);
@@ -670,9 +659,9 @@ CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, 
     CStringW strHelper = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_html_chat_user_dungeon_helper"), strUser, strName);
     CStringW strJoinLink = StringFormat(L"'event:joinPartyDungeonHelper,{0},{1},{2}'", nSize, strName, nRoomId);
     CStringW strJoin = FUN_14028dfa0<CStringW>(CStringW(L"s_html_chat_join_party"), strJoinLink);
-    CStringW strRoomLink = FUN_140292a70(L"'event:dungeonRoom,{0}'", nRoomId);
+    CStringW strRoomLink = StringFormat<unsigned>(L"'event:dungeonRoom,{0}'", nRoomId);
     CStringW strDungeon = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_html_chat_dungeon_name"), strRoomLink, TranslateEnumDungeonGroup(nDungeonId),
-                                        reinterpret_cast<Unk_ThStrTbl*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x14, nRoomId));
+                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId));
     CStringW strLine = FUN_14028dfa0(CStringW(L"s_html_chat_find_dungeon_helper"), strHelper, strDungeon, nP8, nP9, strJoin);
     return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color25, nSize2, strLine);
 }
@@ -691,7 +680,7 @@ CStringW FUN_141842130(__int64 nId)
 {
     CStringW strBody;
     strBody = FUN_14086d060(0x625, nId);
-    return FUN_14183e930(strBody, FUN_141275bd0(nId));
+    return FUN_14183e930(strBody, FUN_141275bd0((void*)nId));
 }
 
 // @0x1418421e0
@@ -771,7 +760,7 @@ ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor)
 int FUN_1418426b0(const CStringW& strName)
 {
     Unk_ThPc* pPc = ((Unk_ThPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    bool bMe = pPc != 0 && FUN_14025cd60(pPc->vfunc_77(), strName);
+    bool bMe = pPc != 0 && pPc->vfunc_77() == strName;
     if (bMe)
         return 1;
     return 0;

@@ -439,7 +439,7 @@ void CQuestNavigator::FUN_140c9ac80()
     m_70.m_40.clear();
     int nMapId = WorldService::GetInstance()->FUN_141bd3060();
     ATL::CAtlArray<Unk_PayloadPtr<CQuest> > aQuests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cb8b0(aQuests, 1, 0xb, -1);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(aQuests, 1, 0xb, -1);
     for (size_t i = 0; i < aQuests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = aQuests[i];

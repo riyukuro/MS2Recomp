@@ -88,13 +88,13 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 // The names of the inventory tabs.
 
 // The account state (a flag at +0xa9c).
-struct Unk_SsAccount
+struct Unk_InventoryAccount
 {
     unsigned char prefix[0xa9c];
     bool flag;
     bool FUN_140a6a0d0();
 };
-MS2_CHECK_SIZE(Unk_SsAccount, 0xa9d);
+MS2_CHECK_SIZE(Unk_InventoryAccount, 0xa9d);
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The character map iterator (the constructor makes it come back through a hidden pointer).
@@ -129,15 +129,13 @@ MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (d
 void FUN_140710590(COutPacket& packet);                   // send the packet
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
-void FUN_1414049c0(void* pArr, int nType);
-void FUN_141404ce0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
-void FUN_1414050c0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
+void FUN_1414049c0(ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>* pArr, int nType);
+bool FUN_141404ce0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
+bool FUN_1414050c0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
 void FUN_1414043e0(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: buy
 void FUN_1414045d0(__int64 nUid, int nCount, int nItemId, int bTake, int nSlot);   // request: sell
 CStringW FUN_1413fa9b0(const CStringW& kIn);
-bool FUN_14025cd60(const CStringW&, const CStringW&);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-StoreSlot* FUN_14140e6d0(DragSlot* p);                    // the store slot behind a drag source (null: not one)
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 
 // Registry of named bags/slots (GFx bind data).
@@ -164,7 +162,6 @@ static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 
-StoreSlot* FUN_14140e6d0(DragSlot* p);
 StoreSlotBag* FUN_14180b940(NotifyContext::BindData* p);
 unsigned __int64 FUN_14180b810(int nIndex);
 
@@ -213,7 +210,7 @@ void StoreSlot::vfunc_6(void* p)
     int nType = spItem->FUN_1405276c0();
     if (spItem->FUN_140527840()->GetType() == 2 || spItem->FUN_140527840()->GetType() == 0x18)
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(p))->Add(FUN_140719210(nType));
-    FUN_1414049c0(p, FUN_141808910());
+    FUN_1414049c0((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>*)p, FUN_141808910());
 }
 
 // @0x141808b10
@@ -231,7 +228,7 @@ int StoreSlot::FUN_141808b10(CStringW strSearch)
         {
             strSearch.MakeLower();
             strLower.MakeLower();
-            bFound = FUN_14025cd60(strLower, strSearch);
+            bFound = strLower == strSearch;
         }
         AScript script(m_value18, 2);
         script.Invoke(s_strUpdateIconSearchOn, bFound);
@@ -368,7 +365,7 @@ int StoreSlot::vfunc_18(void* p)
     }
     else
     {
-        StoreSlot* pFrom = FUN_14140e6d0(static_cast<DragSlot*>(p));
+        StoreSlot* pFrom = efd::DynamicCast<StoreSlot>(static_cast<DragSlot*>(p));
         if (pFrom != 0)
         {
             if (pFrom->GetIndex() == m_nIndex)
@@ -452,7 +449,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (!FUN_1406344b0(spItem, &nCharacter, &param))
     {
         CStringW strName(param.name);
-        bool bAllow = ((struct Unk_SsAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
+        bool bAllow = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
         bool bGem = spItem->FUN_1405279c0()->HasAnyGem();
         if (bAllow && bGem)
         {
@@ -554,7 +551,7 @@ CStringW StoreSlot::vfunc_22()
 // @0x14180acb0
 void StoreSlot::vfunc_23(void* p)
 {
-    FUN_141404ce0(FUN_141808910(), p, &m_value18);
+    FUN_141404ce0(FUN_141808910(), (unsigned __int64)p, &m_value18);
 }
 
 // @0x14180ad00
@@ -563,7 +560,7 @@ void StoreSlot::vfunc_24(void* p)
     int nType = FUN_141808910();
     if (!nType)
         return;
-    FUN_1414050c0(nType, p, &m_value18);
+    FUN_1414050c0(nType, (unsigned __int64)p, &m_value18);
 }
 
 // @0x14180ad50
@@ -590,7 +587,7 @@ void StoreSlot::FUN_14180ade0()
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
     if (spItem.IsNull())
         return;
-    if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(spItem) != 0)
         vfunc_10();
 }
 
@@ -613,7 +610,7 @@ bool StoreSlot::FUN_14180aea0()
                 CStringW strLower = FUN_1413fa9b0(strName);
                 strQuery.MakeLower();
                 strLower.MakeLower();
-                bResult = FUN_14025cd60(strLower, strQuery);
+                bResult = strLower == strQuery;
             }
         }
     }
@@ -661,7 +658,7 @@ int StoreSlotBag::FUN_14180b3e0(CStringW strSearch)
     int nResult = -1;
     for (std::pair<const int, CString> entry : m_slots)
     {
-        StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd0f0(entry.second));
+        StoreSlot* pSlot = efd::DynamicCast<StoreSlot>(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
         {
             int nIndex = pSlot->FUN_141808b10(strSearch);
@@ -680,7 +677,7 @@ int StoreSlotBag::FUN_14180b3e0(CStringW strSearch)
 void StoreSlotBag::vfunc_9(void* p)
 {
     int nIndex = static_cast<CItem*>(p)->FUN_140526b50();
-    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(nIndex));
+    StoreSlot* pSlot = efd::DynamicCast<StoreSlot>(FUN_1422cd070(nIndex));
     if (pSlot != 0)
     {
         pSlot->SetStoreItemId(static_cast<CItem*>(p)->GetItemUid());
@@ -701,7 +698,7 @@ void StoreSlotBag::vfunc_10(void* p)
 void StoreSlotBag::vfunc_il11(void* p)
 {
     int nIndex = static_cast<CItem*>(p)->FUN_140526b50();
-    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(nIndex));
+    StoreSlot* pSlot = efd::DynamicCast<StoreSlot>(FUN_1422cd070(nIndex));
     if (pSlot != 0)
     {
         pSlot->SetStoreItemId(static_cast<CItem*>(p)->GetItemUid());

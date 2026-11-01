@@ -323,7 +323,7 @@ void StateCashCall::OnCastEnd(double fTime)
     {
         SetPhase(0x6d, 100);
     }
-    m_pOwner->FUN_14166dda0(0);
+    m_pOwner->PlayAnimationById(0);
 }
 MS2_REPLACE_METHOD(0x1410233D0, StateCashCall, OnCastEnd, 243, 0x173C3302);
 

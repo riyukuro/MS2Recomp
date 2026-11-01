@@ -74,11 +74,9 @@ public:
     int FUN_1411a49c0(Unk_CeRequest* pRequest);         // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                    // release
 };
-void FUN_140a52ef0(Unk_CeRequest* p);                   // construct
-void FUN_1405a89e0(Unk_CeRequest* p);                   // destroy
+class NoticeMessage { public: NoticeMessage(); ~NoticeMessage(); };   // the request's ctor and dtor
 void* FUN_140a332d0(Unk_CoupleXform* p);                // NiTransform default ctor
 void FUN_14097fad0(float* pDst, const Unk_CoupleVec* pSrc);   // NiPoint3 assignment (translate)
-void FUN_140a33240(Unk_CoupleRot* pDst, const Unk_EfdMatrix3* pSrc);             // NiMatrix3 from efd::Matrix3
 extern Unk_EfdMatrix3 DAT_143a09600;                    // identity rotation
 
 // Game-wide constants table; the two entries used are 0x58-byte slots with a "set" flag at +8 and the value at +0x50.
@@ -260,17 +258,17 @@ void CoupleEffectSystem::FUN_140b0ed30()
     xf.m_fScale = 1.0f;
     FUN_14097fad0(xf.m_afTranslate, &m_posEffect);
     Unk_CoupleRot rot;
-    FUN_140a33240(&rot, &DAT_143a09600);
+    reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
     xf.m_rotate = rot;
     alignas(8) char requestBuf[sizeof(Unk_CeRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
     Unk_CeRequest& request = *reinterpret_cast<Unk_CeRequest*>(requestBuf);
-    FUN_140a52ef0(&request);
+    reinterpret_cast<NoticeMessage*>(&request)->NoticeMessage::NoticeMessage();
     request.m_strName = FUN_140b0efb0();
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
     m_nEffectId = reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
     m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_checkInterval));
-    FUN_1405a89e0(&request);
+    reinterpret_cast<NoticeMessage*>(&request)->~NoticeMessage();
 }
 
 // @0x140b0eed0

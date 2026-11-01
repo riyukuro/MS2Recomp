@@ -206,7 +206,7 @@ class Unk_VtmAnimSvc { public: efd::utf8string FUN_141206030(const egf::EntityID
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 Unk_VtmMovie* FUN_1422bb8b0(int nLayer);
-CString FUN_141277f60(unsigned nLayer);                                      // name of UI layer nLayer
+CString FUN_141277f60(int nLayer);                                      // name of UI layer nLayer
 class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
 __int64 FUN_141245aa0(GPUManager*);
 CNetworkService* FUN_140714f90();
@@ -367,8 +367,8 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         m_spEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85a0(), bForce, 0);
         m_spInfiniteEffectCount->FUN_14118b9b0(TSingleton<CEffectService>::GetInstance()->FUN_1411a85c0(), bForce, 0);
         m_spNpcCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bc1640(), bForce, 0);
-        m_spVertices->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bd86a0(), bForce, 0);
-        m_spTriangles->FUN_14118b9b0(reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bd86c0(), bForce, 0);
+        m_spVertices->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bd86a0(), bForce, 0);
+        m_spTriangles->FUN_14118b9b0(WorldService::GetInstance()->FUN_141bd86c0(), bForce, 0);
         m_spBlockEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411d0ab0(), bForce, 0);
         m_spGameObjectEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411d0af0(), bForce, 0);
         m_spEntityCount->FUN_14118b9b0(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411d0b30(), bForce, 0);
@@ -465,7 +465,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
     {
         if (reinterpret_cast<Unk_VtmSession*>(WorldService::GetInstance())->FUN_141bcfbd0() != 0)
         {
-            Unk_PhysXSceneHandle* pHandle = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_1416892a0(0);
+            Unk_PhysXSceneHandle* pHandle = ((class CPhysXHelper*)FUN_1409f7ca0())->GetScene(0);
             if (pHandle != 0)
             {
                 ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
@@ -499,7 +499,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
                 }
                 ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
             }
-            pHandle = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_1416892a0(1);
+            pHandle = ((class CPhysXHelper*)FUN_1409f7ca0())->GetScene(1);
             if (pHandle != 0)
             {
                 ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);

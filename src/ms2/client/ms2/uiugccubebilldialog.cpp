@@ -114,11 +114,11 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         CStringW strAmount = FUN_1418fec00(nPayType, nAmount, bAlt);
         if (nPayType == 1)
         {
-            obj.FUN_1407cbb20("meso", CStringW(strAmount));
+            ((class AScript&)(obj)).FUN_1407cbb20("meso", CStringW(strAmount));
         }
         else if (nPayType == 3)
         {
-            obj.FUN_1407cbb20("bluemerat", CStringW(strAmount));
+            ((class AScript&)(obj)).FUN_1407cbb20("bluemerat", CStringW(strAmount));
             bool bList = false;
             if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61) || !bAlt)
             {
@@ -140,8 +140,8 @@ void UIUGCCubeBillDialog::OnLoadComplete()
                         int nType = kRow.first;
                         __int64 nMoney = kRow.second;
                         ASObj objRow(2);
-                        objRow.FUN_1407cbb20("name", FUN_1418fe5d0(nType));
-                        objRow.FUN_1407cbb20("money", FUN_1418fec00(3, nMoney, bAlt));
+                        ((class AScript&)(objRow)).FUN_1407cbb20("name", FUN_1418fe5d0(nType));
+                        ((class AScript&)(objRow)).FUN_1407cbb20("money", FUN_1418fec00(3, nMoney, bAlt));
                         arrMerats.FUN_1422bc050(objRow.FUN_1422bb870());
                     }
                     obj.FUN_140c16160("merats", ASArray(arrMerats));
@@ -150,7 +150,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         }
         else if (nPayType == 9)
         {
-            obj.FUN_1407cbb20("redmerat", CStringW(strAmount));
+            ((class AScript&)(obj)).FUN_1407cbb20("redmerat", CStringW(strAmount));
         }
     }
     m_30->FUN_140acd1f0("setData", AScript(obj));

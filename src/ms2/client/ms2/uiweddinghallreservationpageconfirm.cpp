@@ -95,7 +95,7 @@ bool UIWeddingHallReservationPageConfirm::vfunc_1()
         Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
         __int64 nOld = ((class WeddingTable*)(void*)(FUN_1409023c0()))->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
         __int64 nNew = ((class WeddingTable*)(void*)(FUN_1409023c0()))->FUN_140909220(FUN_140fe2d20(m_pDialog), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall());
-        kData.FUN_1407cbb20("price", FUN_14052bd00(0x987, FUN_1409404f0(nNew - nOld)));
+        ((class AScript&)(kData)).FUN_1407cbb20("price", FUN_14052bd00(0x987, FUN_1409404f0(nNew - nOld)));
     }
     m_pScript->Invoke("setData", kData);
     return true;

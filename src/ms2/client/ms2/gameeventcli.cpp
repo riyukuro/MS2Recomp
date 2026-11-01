@@ -114,10 +114,10 @@ CStringTable* GetStringTable();                                  // the string t
 __int64 GetServerTime();                                        // the server time
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 // The event-key table at 0x143ab2fc0: (kind, id) -> value, read through the typed lookups below.
+class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
 class Unk_CliEvtKeys {
 public:
     int Get(int nKey, unsigned* pOut);                          // 0x140ce8590 (COMDAT wrapper below)
-    int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault);
     bool FUN_140482280(int nKind, const bool& bDefault);
     unsigned char FUN_14041f940(int nKind);
     int FUN_140c6d8d0(int nKind, int nId, const int& nDefault);
@@ -127,7 +127,7 @@ public:
 extern unsigned __int64 DAT_143ab2828;
 extern Unk_CliEvtKeys DAT_143ab2fc0;
 // @0x140ce8590
-int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return FUN_1409617d0(nKey, 0, *(const int*)pOut); }
+int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return reinterpret_cast<Unk_AttendTable*>(this)->FUN_1409617d0(nKey, 0, *(const int*)pOut); }
 class Unk_CliClock { public: int FUN_141473560(); };            // seconds until the day ended
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
@@ -489,14 +489,14 @@ unsigned GameEventAttendGiftCli::FUN_140ce3660() { return (unsigned)m_gifts.GetC
 unsigned GameEventAttendGiftCli::GetAttendedDays()
 {
     int nDefault = 0;
-    return DAT_143ab2fc0.FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce36d0
 int GameEventAttendGiftCli::GetUsablePoints()
 {
     int nDefault = 0;
-    return DAT_143ab2fc0.FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce3710
@@ -647,14 +647,14 @@ unsigned GameEventCashAttendCli::GetGroupCount()
 unsigned GameEventCashAttendCli::GetAttendedDays()
 {
     int nDefault = 0;
-    return DAT_143ab2fc0.FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x66, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce3ed0
 int GameEventCashAttendCli::GetUsablePoints()
 {
     int nDefault = 0;
-    return DAT_143ab2fc0.FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
+    return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69, FUN_1402e1d00(), nDefault);
 }
 
 // @0x140ce3f10

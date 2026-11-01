@@ -43,7 +43,6 @@ Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                       // the 
 Unk_140165cf0* FUN_140345b40(Unk_140165cf0* pNode);                      // first child element
 CString FUN_140188f50(const char* psz, int nCodePage);                   // CString from a C string
 CString Name_14021a6b0(int n);                                           // int to string
-CString FUN_140540050(const char* pszFormat, const CString& strArg);     // StringFormat with one string
 
 // The animation service (singleton behind FUN_141b6f910): the actor manager of an entity.
 class Unk_CrAnimSvc { public: };
@@ -252,7 +251,7 @@ void CommonResource::LoadMembers()
     m_strMusicScorePremiumShopSample = GetValue("MUSIC_SCORE_PREMIUM_SHOP_SAMPLE");
     m_strEffectAdventureLevelUp = GetValue("EFFECT_ADVENTURE_LEVEL_UP");
     for (size_t i = 1; i < 10; i++)
-        m_strAllianceSidePopupIllust[i] = GetValue(FUN_140540050("allinace_sidepopup_illust_{0}", Name_14021a6b0((int)i)));
+        m_strAllianceSidePopupIllust[i] = GetValue(StringFormat<CString>("allinace_sidepopup_illust_{0}", Name_14021a6b0((int)i)));
 }
 
 // @0x140cc9c00

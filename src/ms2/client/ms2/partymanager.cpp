@@ -221,7 +221,12 @@
 #include "pcbase.h"
 #include "worldservice.h"
 #include "ms2/placeholder/cproxygameobject.h"
-#include "ms2/placeholder/partyuidialogs.h"
+#include "ms2/client/ms2/uichaosdpsdialog.h"
+#include "ms2/client/ms2/uipartydialog.h"
+#include "ms2/client/ms2/uipartysearchregisterdialog.h"
+#include "ms2/client/ms2/uipartysearchdialog.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 // These instantiations are owned by earlier objects. Avoid spurious look-alike local copies.
@@ -242,13 +247,16 @@ CStringW DAT_143ae2c58(L"partyinvite");
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/placeholder/blindmanager.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/placeholder/coptimizer.h"
+#include "ms2/commonfiles/os.h"
 CString DAT_143ae2ca8("PC_InviteSuccess");
 static CString s_nextSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 // This tail appears to come from an adjacent original object. The callback builds ClassInfo entries.
-void FUN_1409f8020(efd::ClassInfo*, size_t);
 #ifndef MS2_HOOK_DLL
 #ifndef MS2_HOOK_DLL   // s_nextClassInfo: the exe's object at 0x143ae2e20, which other units reach as DAT_143ae2e20 (the hook DLL binds it)
-efd::ClassInfo DAT_143ae2e20(FUN_1409f8020);
+efd::ClassInfo DAT_143ae2e20(PC::SetupClassInfo);
 #else
 extern efd::ClassInfo DAT_143ae2e20;
 #endif
@@ -256,7 +264,6 @@ extern efd::ClassInfo DAT_143ae2e20;
 static CString s_capName("Cap");
 
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-void FUN_14161cd60(void*, __int64);
 class CBattleRecordManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -270,46 +277,33 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140d9f880(unsigned long);
+    unsigned int GetDungeonEnterState(unsigned long);
 public:
     void SetExpireAndUpdateTimer(__int64);   // C3: was free SetExpireAndUpdateTimer
 };
 void* FUN_140a8a680(int);
-void FUN_141a74d50(void*, CPartyMember*, int);
-void FUN_141a75a00(void*, int);
 void* FUN_1403ed2b0();
 class UIPartySearchDialog* FUN_1413226d0(int);   // C3: was FUN_1413226d0
-class UIPartySearchDialog   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_140f8dde0();
-    void FUN_140f8edb0();
-};
-void FUN_140f8ee50(void*, CMatchPartyRecruit&);
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 __time64_t GetServerTime();
 extern __int64 DAT_143ab2828;
 MS2Ptr<PartyVoteCli> FUN_140a89240(int);
 CStringW GetStringCommon(int);
-CStringW FUN_14052bd00(int, const CStringW&);
+template <class T1> CStringW FormatStringId(int, const T1&);
 CStringW FUN_140298ea0(CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW BlockFormat(int);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141275260(int, int, int);
-void FUN_1412760f0(const CStringW&, const CString&);
+int FUN_1412760f0(const CStringW&, const CString&);
 void FUN_140d73ff0(CStringW);
-void FUN_141a74ea0(void*);
-void FUN_141a74f50(void*, CPartyMember*, CPartyMember*);
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 class CInstrumentManager   // C3: member view for the former free stand-ins
 {
 public:
     void CheckPlayState();
 };
-void FUN_141a752a0(void*, CPartyMember*);
-void FUN_141a753d0(void*, CPartyMember*);
 void* FUN_1409a8b10();
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
 {
@@ -317,12 +311,8 @@ public:
     struct Unk_ChaosOpt* FUN_140e09150();
 };
 bool FUN_14125bbe0(struct Unk_InterfaceState const*);   // C3: was FUN_14125bbe0
-void FUN_140f8ee00(void*, const CMatchPartyRecruit&);
-void FUN_140268210(Unk_PartyCounters*, CInputStream&);
-void FUN_14031bf10(CInputStream&, Unk_PartyBits&);
-CInputStream& FUN_14070f300(CInputStream&, bool&);
-CInputStream& FUN_14070f480(CInputStream&, int&);
-void FUN_140f8ed40(void*, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>&, int);
+class Unk_LockedIntMap { public: void Read(CInputStream*); };   // the counters read from the packet
+CInputStream& operator>>(CInputStream&, Unk_PartyBits&);
 void FUN_141631f30(const CMatchPartyRecruit&, const CMatchPartyRecruit&);
 class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 class UIMessengerBrowser   // C3: member view for the former free stand-ins
@@ -332,7 +322,6 @@ public:
 };
 void AddMinutes(CMsTime&, int);
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
-bool FUN_140a25840(void*, __int64, CStringW);
 class CBuddyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -350,16 +339,13 @@ public:
 };
 MS2_CHECK_SIZE(NotifySurvivalState, 0x18);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-void FUN_140da4fe0(void*, MS2Ptr<NotifyObject>);
-class Unk_PartyMessage : public CPtred {};
 // The returned object is created by the original message-box factory; only the intrusive pointer is local.
-MS2Ptr<Unk_PartyMessage> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
-MS2Ptr<Unk_PartyMessage> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
+MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
+MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140f8ff40(int, int, int);
 UIPartySearchRegisterDialog* FUN_141632840(int);
-void FUN_141321d30(void*);
 void FUN_141275460(int, int, int, const fmt::ArgList&);
 enum Unk_PartyRecruitError : int { Unk_PartyRecruitSuccess = 0 };
 
@@ -399,24 +385,15 @@ void FUN_1401fc0b0(unsigned char*, class COutputStream&);   // C3: was FUN_1401f
 void FUN_1401fbd30(unsigned char*, class COutputStream&);   // C3: was FUN_1401fbd30
 void FUN_1401fbf70(unsigned char*, class COutputStream&);   // C3: was FUN_1401fbf70
 
-MS2Ptr<CFieldDataCli> FUN_140a55460(int);
 void FUN_140694280(struct Unk_140694210&, class COutputStream&);   // C3: was FUN_140694280
 void FUN_140694630(const CMatchPartyRecruitSchCond*, COutputStream&);
 extern CString DAT_143ae2ca8;
-int FUN_141654700(PCBase*);
 
-// The UI manager's ui-by-id lookup, called through a view.
-class Unk_PartyUIView
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);    // the ui by id
-};
-void FUN_141a7bb70(UIPartyDPSDialog*);
 UIChaosDPSDialog* FUN_141632700(int);
 UIPartyDPSDialog* FUN_1416327a0(int);
 int Unk_ClubBuffCategory(int);
-CStringW FUN_140cbf840(int);
-int FUN_1401d9a00(const CStringW&);
+CStringW TranslateEnumDungeonGroup(unsigned int nGroup);
+int FUN_1401d9a00(CStringW&);
 void FUN_141632630(const CStringW&, std::vector<int>&, const wchar_t*);
 
 struct Unk_PartyOptionPrefix { bool flags[3]; bool refuseParty; };
@@ -425,33 +402,13 @@ class Unk_BuddyOptions   // C3: member view for the former free stand-ins
 public:
     struct Unk_BuddySettings& GetSettings();
 };
-class Unk_PartyInviteState;
-class Unk_PartyInviteStatePtr {
-public:
-    ~Unk_PartyInviteStatePtr(); // 140964aa0
-    Unk_PartyInviteState* operator->() const; // 140965970
-private:
-    void* unused;
-    Unk_PartyInviteState* value;
-};
-MS2_CHECK_SIZE(Unk_PartyInviteStatePtr, 0x10);
-class Unk_PartyPlayer { public: Unk_PartyInviteStatePtr FUN_140967420(); };
 class CPvPInfo   // C3: member view for the former free stand-ins
 {
 public:
     bool HasPoint();
 };
-MS2Ptr<Unk_PartyMessage> FUN_140d73d20(int, CStringW, int, CStringW);
-class CMsgBoxData   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141a01ca0(int, int, CStringW const&);
-    void FUN_141a02460(int);
-    void FUN_141a02480(int);
-    void FUN_141a024a0(int);
-};
-CStringW FUN_1402758a0(const wchar_t*, const CStringW&, const int&);   // StringFormat<CStringW, int> (second copy)
-void FUN_140d73c60(MS2Ptr<Unk_PartyMessage>);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 // WorldService's proxy-by-id lookup, called through a view (worldservice.h is shared).
 class Unk_PartyWorldView
 {
@@ -466,7 +423,7 @@ CPartyManager::CPartyManager()
       recruits(17, 0.75f, 0.25f, 2.25f, 10), searchPending(0), recruitPending(0)
 {
     ClearParty();
-    FUN_14162c630();
+    ClearPartyNameAndKind();
 }
 
 // @0x14162a240
@@ -484,7 +441,7 @@ MS2_REPLACE_METHOD(0x14162A340, CPartyManager, FUN_14162a340, 31, 0xEFA360B1);
 void CPartyManager::ClearParty()
 {
     for (size_t i = 0; i < members.GetCount(); ++i)
-        FUN_14161cd60(((void*)FUN_1409f7c90()), members[i]->FUN_141637bb0());
+        reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(members[i]->FUN_141637bb0());
     members.RemoveAll();
     if (((void*)TSingleton<CBattleRecordManager>::GetInstance()) != NULL) ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a05610();
     partyId = 0;
@@ -497,7 +454,7 @@ void CPartyManager::ClearParty()
 MS2_REPLACE_METHOD(0x14162A370, CPartyManager, ClearParty, 254, 0xCFB93217);
 
 // @0x14162a480
-void CPartyManager::FUN_14162a480() { ClearParty(); FUN_141630fd0(); }
+void CPartyManager::FUN_14162a480() { ClearParty(); ClearRecruitmentAndResetSearchUI(); }
 MS2_REPLACE_METHOD(0x14162A480, CPartyManager, FUN_14162a480, 34, 0xDCF04E52);
 
 // Not hooked: dispatches handlers that construct local RTTI objects.
@@ -508,36 +465,36 @@ void CPartyManager::OnParty(CInPacket& packet)
     int nType = packet.ReadUInt8();
     switch (nType) {
     case 0xb: OnPartyInvite(packet); break;
-    case 2: FUN_14162cc40(packet); break;
-    case 3: FUN_14162cea0(packet); break;
-    case 4: FUN_14162d070(packet); break;
-    case 5: FUN_14162db10(packet); break;
-    case 6: FUN_14162de40(packet); break;
+    case 2: OnPartyMemberJoin(packet); break;
+    case 3: OnPartyMemberLeave(packet); break;
+    case 4: OnPartyMemberKick(packet); break;
+    case 5: OnPartyMemberOnline(packet); break;
+    case 6: OnPartyMemberOffline(packet); break;
     case 7: FUN_14162d220(packet); break;
-    case 8: FUN_14162d2b0(packet); break;
+    case 8: OnPartyLeaderChange(packet); break;
     case 9: OnPartyInfo(packet); break;
     case 0x13: FUN_14162dfc0(packet); break;
     case 0xd: FUN_14162e100(packet); break;
     case 0xc: FUN_14162e100(packet); break;
-    case 0xe: FUN_14162e240(packet); break;
+    case 0xe: OnPartyMemberCounters(packet); break;
     case 0xf: FUN_14162e310(packet); break;
     case 0x12: FUN_14162e3d0(packet); break;
-    case 0x14: FUN_14162e5d0(packet); break;
+    case 0x14: OnPartyNotice(packet); break;
     case 0x15: FUN_14162e730(packet); break;
-    case 0x19: FUN_14162e820(packet); break;
-    case 0x1a: FUN_14162e9d0(packet); break;
-    case 0x1e: FUN_14162ea90(packet); break;
-    case 0x1f: FUN_14162ed60(packet); break;
+    case 0x19: OnPartyMatchDungeonChange(packet); break;
+    case 0x1a: OnPartyRecruitUpdate(packet); break;
+    case 0x1e: OnPartyDungeonMatchRegister(packet); break;
+    case 0x1f: OnPartyDungeonMatchConfirm(packet); break;
     case 0x23: FUN_14162ee10(packet); break;
-    case 0x37: FUN_141630790(packet); break;
+    case 0x37: OnPartySurvivalSquadRegister(packet); break;
     case 0x25: FUN_14162ee70(packet); break;
-    case 0: FUN_14162f030(packet); break;
-    case 0x28: FUN_1416302f0(packet); break;
-    case 0x2c: FUN_1416303b0(packet); break;
-    case 0x2f: FUN_141630550(packet); break;
-    case 0x30: FUN_141630670(packet); break;
-    case 0x31: FUN_141630720(packet); break;
-    case 0x38: FUN_141630a60(packet); break;
+    case 0: OnPartyResultMessage(packet); break;
+    case 0x28: OnPartyFindDungeonCooldown(packet); break;
+    case 0x2c: OnPartyInviteSent(packet); break;
+    case 0x2f: OnPartyVoteStart(packet); break;
+    case 0x30: OnPartyVoteReply(packet); break;
+    case 0x31: OnPartyVoteEnd(packet); break;
+    case 0x38: OnPartyDungeonRoomCreate(packet); break;
     }
 }
 
@@ -545,11 +502,11 @@ void CPartyManager::OnParty(CInPacket& packet)
 // @0x14162a840
 void CPartyManager::UpdateMemberJob(TPtr<PCBase> actor)
 {
-    MS2Ptr<CPartyMember> member = FUN_14162afc0(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
+    MS2Ptr<CPartyMember> member = FindMemberByCharId(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     if (member.get() != NULL) {
-        member->FUN_141637ad0(FUN_141654700(actor.operator->()));
+        member->FUN_141637ad0(reinterpret_cast<PC*>(actor.operator->())->FUN_141654700());
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, member.get(), 4);
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(member.get(), 4);
     }
 }
 
@@ -557,11 +514,11 @@ void CPartyManager::UpdateMemberJob(TPtr<PCBase> actor)
 // @0x14162a910
 void CPartyManager::UpdateMemberHp(TPtr<PCBase> actor)
 {
-    MS2Ptr<CPartyMember> member = FUN_14162afc0(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
+    MS2Ptr<CPartyMember> member = FindMemberByCharId(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     if (member.get() != NULL) {
         member->FUN_141637a80(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141670a00(4), ((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141670a30(4));
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, member.get(), 2);
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(member.get(), 2);
     }
 }
 
@@ -569,11 +526,11 @@ void CPartyManager::UpdateMemberHp(TPtr<PCBase> actor)
 // @0x14162aa10
 void CPartyManager::UpdateMemberLevel(TPtr<PCBase> actor)
 {
-    MS2Ptr<CPartyMember> member = FUN_14162afc0(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
+    MS2Ptr<CPartyMember> member = FindMemberByCharId(((class PCBase*)(class PCBase*)(actor.operator->()))->FUN_141656a80());
     if (member.get() != NULL) {
         member->FUN_141637a60((short)actor->vfunc_78());
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, member.get(), 8);
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(member.get(), 8);
     }
 }
 
@@ -592,7 +549,7 @@ bool CPartyManager::IsLocalPlayerLeader()
     {
         return false;
     }
-    return FUN_141630c30(DAT_143ab2828);
+    return IsLeaderId(DAT_143ab2828);
 }
 MS2_REPLACE_METHOD(0x14162AB60, CPartyManager, IsLocalPlayerLeader, 52, 0x4F5E0B6C);
 
@@ -620,7 +577,7 @@ MS2_REPLACE_METHOD(0x14162AC40, CPartyManager, IsAnySearching, 31, 0x7B803D45);
 bool CPartyManager::CanEnterDungeonRoom(int key)
 {
     if (!FUN_14162ab20()) {
-        if ((int)((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->FUN_140d9f880(key) >= 10) return false;
+        if ((int)((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetDungeonEnterState(key) >= 10) return false;
         return true;
     }
     for (unsigned i = 0; i < members.GetCount(); ++i)
@@ -634,31 +591,31 @@ bool CPartyManager::FUN_14162ad30() { return flag29; }
 MS2_REPLACE_METHOD(0x14162AD30, CPartyManager, FUN_14162ad30, 15, 0x52CC66EC);
 
 // @0x14162ad50
-int CPartyManager::FUN_14162ad50(CStringW name)
+int CPartyManager::IsMemberByName(CStringW name)
 {
     CPartyMember* p = FindMemberByName(name).get();
     if (p != NULL) return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x14162AD50, CPartyManager, FUN_14162ad50, 187, 0xEF192C97);
+MS2_REPLACE_METHOD(0x14162AD50, CPartyManager, IsMemberByName, 187, 0xEF192C97);
 
 // @0x14162ae20
-int CPartyManager::FUN_14162ae20(__int64 id) 
+int CPartyManager::IsMemberByCharId(__int64 id) 
 {
-    CPartyMember* p = FUN_14162afc0(id).get();
+    CPartyMember* p = FindMemberByCharId(id).get();
     if (p != NULL) return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x14162AE20, CPartyManager, FUN_14162ae20, 105, 0x72DB080E);
+MS2_REPLACE_METHOD(0x14162AE20, CPartyManager, IsMemberByCharId, 105, 0x72DB080E);
 
 // @0x14162ae90
-int CPartyManager::FUN_14162ae90(__int64 id) 
+int CPartyManager::IsMemberByAccountId(__int64 id) 
 {
-    CPartyMember* p = FUN_14162b260(id).get();
+    CPartyMember* p = FindMemberByAccountId(id).get();
     if (p != NULL) return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x14162AE90, CPartyManager, FUN_14162ae90, 105, 0xB07D31F7);
+MS2_REPLACE_METHOD(0x14162AE90, CPartyManager, IsMemberByAccountId, 105, 0xB07D31F7);
 
 // @0x14162af00
 int CPartyManager::FUN_14162af00() { return static_cast<int>(members.GetCount()); }
@@ -667,14 +624,14 @@ MS2_REPLACE_METHOD(0x14162AF00, CPartyManager, FUN_14162af00, 31, 0x65E40168);
 // @0x14162af30
 int CPartyManager::GetMemberIndex(__int64 id)
 {
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p == NULL) return -1;
     return p->index;
 }
 MS2_REPLACE_METHOD(0x14162AF30, CPartyManager, GetMemberIndex, 123, 0x7B909FCE);
 
 // @0x14162afc0
-MS2Ptr<CPartyMember> CPartyManager::FUN_14162afc0(__int64 id)
+MS2Ptr<CPartyMember> CPartyManager::FindMemberByCharId(__int64 id)
 {
     for (unsigned i = 0; i < members.GetCount(); ++i) {
         MS2Ptr<CPartyMember> p = members[i];
@@ -682,7 +639,7 @@ MS2Ptr<CPartyMember> CPartyManager::FUN_14162afc0(__int64 id)
     }
     return MS2Ptr<CPartyMember>(0);
 }
-MS2_REPLACE_METHOD(0x14162AFC0, CPartyManager, FUN_14162afc0, 235, 0x4D1D7331);
+MS2_REPLACE_METHOD(0x14162AFC0, CPartyManager, FindMemberByCharId, 235, 0x4D1D7331);
 
 // @0x14162b0c0
 MS2Ptr<CPartyMember> CPartyManager::FindMemberByName(CStringW name)
@@ -696,7 +653,7 @@ MS2Ptr<CPartyMember> CPartyManager::FindMemberByName(CStringW name)
 MS2_REPLACE_METHOD(0x14162B0C0, CPartyManager, FindMemberByName, 396, 0x2A995807);
 
 // @0x14162b260
-MS2Ptr<CPartyMember> CPartyManager::FUN_14162b260(__int64 id)
+MS2Ptr<CPartyMember> CPartyManager::FindMemberByAccountId(__int64 id)
 {
     for (unsigned i = 0; i < members.GetCount(); ++i) {
         MS2Ptr<CPartyMember> p = members[i];
@@ -704,7 +661,7 @@ MS2Ptr<CPartyMember> CPartyManager::FUN_14162b260(__int64 id)
     }
     return MS2Ptr<CPartyMember>(0);
 }
-MS2_REPLACE_METHOD(0x14162B260, CPartyManager, FUN_14162b260, 235, 0x00372A3F);
+MS2_REPLACE_METHOD(0x14162B260, CPartyManager, FindMemberByAccountId, 235, 0x00372A3F);
 
 // @0x14162b360
 MS2Ptr<CPartyMember> CPartyManager::GetMemberAt(int index)
@@ -718,7 +675,7 @@ MS2Ptr<CPartyMember> CPartyManager::GetMemberAt(int index)
 MS2_REPLACE_METHOD(0x14162B360, CPartyManager, GetMemberAt, 143, 0x687FF358);
 
 // @0x14162b400
-MS2Ptr<CPartyMember> CPartyManager::FUN_14162b400()
+MS2Ptr<CPartyMember> CPartyManager::FindLeader()
 {
     for (unsigned i = 0; i < members.GetCount(); ++i) {
         MS2Ptr<CPartyMember> p = members[i];
@@ -726,7 +683,7 @@ MS2Ptr<CPartyMember> CPartyManager::FUN_14162b400()
     }
     return MS2Ptr<CPartyMember>(0);
 }
-MS2_REPLACE_METHOD(0x14162B400, CPartyManager, FUN_14162b400, 225, 0xD11D833A);
+MS2_REPLACE_METHOD(0x14162B400, CPartyManager, FindLeader, 225, 0xD11D833A);
 
 // @0x14162b4f0
 CStringW CPartyManager::GetPartyName() { return partyName; }
@@ -737,7 +694,7 @@ int CPartyManager::GetPartyKind() { return partyKind; }
 MS2_REPLACE_METHOD(0x14162B540, CPartyManager, GetPartyKind, 14, 0x7245C177);
 
 // @0x14162b560
-void CPartyManager::FUN_14162b560(CStringW name)
+void CPartyManager::SetLeaderByName(CStringW name)
 {
     if (leaderName == name) return;
     {
@@ -745,7 +702,7 @@ void CPartyManager::FUN_14162b560(CStringW name)
         if (oldLeader.get() != NULL) {
             oldLeader->SetRole(1);
             void* ui = FUN_140a8a680(0x4e45);
-            if (ui != NULL) FUN_141a74d50(ui, oldLeader.get(), 0x100);
+            if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(oldLeader.get(), 0x100);
         }
     }
     {
@@ -753,16 +710,16 @@ void CPartyManager::FUN_14162b560(CStringW name)
         if (newLeader.get() != NULL) {
             newLeader->SetRole(2);
             void* ui = FUN_140a8a680(0x4e45);
-            if (ui != NULL) FUN_141a74d50(ui, newLeader.get(), 0x100);
+            if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(newLeader.get(), 0x100);
         }
     }
     leaderName = name;
 }
-MS2_REPLACE_METHOD(0x14162B560, CPartyManager, FUN_14162b560, 460, 0x62052551);
+MS2_REPLACE_METHOD(0x14162B560, CPartyManager, SetLeaderByName, 460, 0x62052551);
 
 // @0x14162b740
-void CPartyManager::FUN_14162b740() { FUN_14162b560(L""); }
-MS2_REPLACE_METHOD(0x14162B740, CPartyManager, FUN_14162b740, 62, 0x4A578BE4);
+void CPartyManager::ClearLeaderName() { SetLeaderByName(L""); }
+MS2_REPLACE_METHOD(0x14162B740, CPartyManager, ClearLeaderName, 62, 0x4A578BE4);
 
 // @0x14162b790
 void CPartyManager::CloseDialogs()
@@ -788,7 +745,7 @@ MS2_REPLACE_METHOD(0x14162B7D0, CPartyManager, SendPartyMode4, 216, 0x0F0F0E53);
 // @0x14162b8b0
 void CPartyManager::SendPartyMode45(__int64 id)
 {
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         COutPacket packet(static_cast<int>(SendOp::Party), 0);
         packet.Encode1(0x2d);
@@ -848,12 +805,12 @@ void CPartyManager::SendPartyMode23(const Unk_PartyRecruitInvite& request)
 MS2_REPLACE_METHOD(0x14162BB50, CPartyManager, SendPartyMode23, 361, 0x171D882A);
 
 // @0x14162bcc0
-void CPartyManager::FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit> recruit)
+void CPartyManager::SendPartyInviteFromRecruit(MS2Ptr<CMatchPartyRecruit> recruit)
 {
     Unk_PartyRecruitInvite request(recruit);
     SendPartyMode23(request);
 }
-MS2_REPLACE_METHOD(0x14162BCC0, CPartyManager, FUN_14162bcc0, 111, 0xDEFC1332);
+MS2_REPLACE_METHOD(0x14162BCC0, CPartyManager, SendPartyInviteFromRecruit, 111, 0xDEFC1332);
 
 // @0x14162bd40
 void CPartyManager::SendRoomDungeon(int value)
@@ -884,7 +841,7 @@ void CPartyManager::SendPartyMode3()
 MS2_REPLACE_METHOD(0x14162BE10, CPartyManager, SendPartyMode3, 75, 0x87205910);
 
 // @0x14162be70
-int CPartyManager::FUN_14162be70()
+int CPartyManager::GetOnlineMemberCount()
 {
     int count = 0;
     for (unsigned i = 0; i < members.GetCount(); ++i) {
@@ -893,31 +850,31 @@ int CPartyManager::FUN_14162be70()
     }
     return count;
 }
-MS2_REPLACE_METHOD(0x14162BE70, CPartyManager, FUN_14162be70, 169, 0x448BA9E2);
+MS2_REPLACE_METHOD(0x14162BE70, CPartyManager, GetOnlineMemberCount, 169, 0x448BA9E2);
 
 // @0x14162bf20
-int CPartyManager::FUN_14162bf20()
+int CPartyManager::CountOnlineMembersOutsideTutorial()
 {
     int count = 0;
     for (unsigned i = 0; i < members.GetCount(); ++i) {
         MS2Ptr<CPartyMember> member(members[i]);
         if (member == NULL) continue;
         if (member->FUN_141637c20() == true) continue;
-        MS2Ptr<CFieldDataCli> field = FUN_140a55460(member->user.m_28);
+        MS2Ptr<CFieldDataCli> field = CFieldDataCli::Find(member->user.m_28);
         if (field == NULL) continue;
         if (((class CFieldData*)(class CFieldData*)(field.operator->()))->HasTutorialType()) continue;
         ++count;
     }
     return count;
 }
-MS2_REPLACE_METHOD(0x14162BF20, CPartyManager, FUN_14162bf20, 354, 0x666BCBA8);
+MS2_REPLACE_METHOD(0x14162BF20, CPartyManager, CountOnlineMembersOutsideTutorial, 354, 0x666BCBA8);
 
 // @0x14162c090
 int CPartyManager::GetDungeonId() { return dungeonId; }
 MS2_REPLACE_METHOD(0x14162C090, CPartyManager, GetDungeonId, 14, 0xBA6447E3);
 
 // @0x14162c0b0
-unsigned short CPartyManager::FUN_14162c0b0()
+unsigned short CPartyManager::GetMinMemberLevel()
 {
     unsigned short level = 0;
     for (unsigned i = 0; i < members.GetCount(); ++i) {
@@ -929,7 +886,7 @@ unsigned short CPartyManager::FUN_14162c0b0()
     }
     return level;
 }
-MS2_REPLACE_METHOD(0x14162C0B0, CPartyManager, FUN_14162c0b0, 290, 0x73322521);
+MS2_REPLACE_METHOD(0x14162C0B0, CPartyManager, GetMinMemberLevel, 290, 0x73322521);
 
 // @0x14162c1e0
 unsigned CPartyManager::FUN_14162c1e0()
@@ -961,42 +918,42 @@ void CPartyManager::FUN_14162c3a0()
     if (ui == NULL) return;
     for (unsigned i = 0; i < members.GetCount(); ++i) {
         if (members[i]->FUN_141637c90() != 1) continue;
-        members[i]->FUN_141637b30(3);
-        FUN_141a74d50(ui, members[i].get(), 1);
+        members[i]->SetReadyState(3);
+        reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(members[i].get(), 1);
     }
 }
 MS2_REPLACE_METHOD(0x14162C3A0, CPartyManager, FUN_14162c3a0, 235, 0x62228494);
 
 // @0x14162c4a0
-void CPartyManager::FUN_14162c4a0(int state)
+void CPartyManager::SetAllMembersState(int state)
 {
     void* ui = FUN_140a8a680(0x4e45);
     if (ui == NULL)
         return;
-    FUN_141a75a00(ui, 0);
+    reinterpret_cast<UIPartyDialog*>(ui)->SetDeadline(0);
     for (unsigned i = 0; i < members.GetCount(); ++i) {
-        members[i]->FUN_141637b30(state);
-        FUN_141a74d50(ui, members[i].get(), 1);
+        members[i]->SetReadyState(state);
+        reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(members[i].get(), 1);
     }
 }
-MS2_REPLACE_METHOD(0x14162C4A0, CPartyManager, FUN_14162c4a0, 203, 0x1919D602);
+MS2_REPLACE_METHOD(0x14162C4A0, CPartyManager, SetAllMembersState, 203, 0x1919D602);
 
 // @0x14162c580
-void CPartyManager::FUN_14162c580(__int64 id, int state)
+void CPartyManager::SetMemberReadyState(__int64 id, int state)
 {
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p == NULL)
         return;
-    p->FUN_141637b30(state);
+    p->SetReadyState(state);
     void* ui = FUN_140a8a680(0x4e45);
     if (ui != NULL)
-        FUN_141a74d50(ui, p.get(), 1);
+        reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), 1);
 }
-MS2_REPLACE_METHOD(0x14162C580, CPartyManager, FUN_14162c580, 170, 0x2201AA8A);
+MS2_REPLACE_METHOD(0x14162C580, CPartyManager, SetMemberReadyState, 170, 0x2201AA8A);
 
 // @0x14162c630
-void CPartyManager::FUN_14162c630() { partyName = L""; partyKind = 0; }
-MS2_REPLACE_METHOD(0x14162C630, CPartyManager, FUN_14162c630, 51, 0x6D8B10EA);
+void CPartyManager::ClearPartyNameAndKind() { partyName = L""; partyKind = 0; }
+MS2_REPLACE_METHOD(0x14162C630, CPartyManager, ClearPartyNameAndKind, 51, 0x6D8B10EA);
 
 // @0x14162c670
 void CPartyManager::RemoveMemberAt(int index)
@@ -1006,15 +963,15 @@ void CPartyManager::RemoveMemberAt(int index)
     if (member == NULL) return;
     members.RemoveAt(index, 1);
     ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a056c0(member->FUN_141637bb0());
-    FUN_14161cd60(((void*)FUN_1409f7c90()), member->FUN_141637bb0());
+    reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->FUN_141637bb0());
     void* ui = FUN_140a8a680(0x4e45);
-    if (ui != NULL) FUN_141a753d0(ui, member.get());
+    if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->FUN_141a753d0(member.get());
     ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a056c0(member->user.m_8);
     for (int i = index; i < static_cast<int>(members.GetCount()); ++i)
         members[i]->FUN_141637cd0(i);
     if ((((CUIService*)(FUN_1403ed2b0()))->FUN_141adc890((eUIClassID)(0x4e8c)))) {
         UIPartyDPSDialog* dps = FUN_1416327a0(0x4e8c);
-        if (dps != NULL) FUN_141a7bb70(dps);
+        if (dps != NULL) dps->FUN_141a7bb70();
     }
     if ((((CUIService*)(FUN_1403ed2b0()))->FUN_141adc890((eUIClassID)(0x4f23)))) {
         UIChaosDPSDialog* dps = FUN_141632700(0x4f23);
@@ -1028,23 +985,23 @@ void CPartyManager::OnPartyInvite(CInPacket& packet)
 {
     partyName = static_cast<CInputStream&>(packet).ReadUnicodeString();
     partyKind = static_cast<CInputStream&>(packet).ReadInt32();
-    Unk_PartyPlayer* player = static_cast<Unk_PartyPlayer*>(
+    PC* player = static_cast<PC*>(
         static_cast<WorldService*>(((void*)WorldService::GetInstance()))->FUN_141bd0cc0());
     if (((struct Unk_PartyOptionPrefix*)&((class Unk_BuddyOptions*)(void*)(FUN_1409a8b10()))->GetSettings())->refuseParty) {
         SendPartyMode2(0x14);
         return;
     }
-    if (player != NULL && ((class CPvPInfo*)(class Unk_PartyInviteState*)(player->FUN_140967420().operator->()))->HasPoint()) {
+    if (player != NULL && ((class CPvPInfo*)(player->FUN_140967420().operator->()))->HasPoint()) {
         SendPartyMode2(0x15);
     } else {
-        CStringW key = FUN_1402758a0(L"{0}_{1}", DAT_143ae2c58, partyKind);
-        MS2Ptr<Unk_PartyMessage> message = FUN_140d73d20(1,
-            FUN_14052bd00(0x2b7, partyName), 0, CStringW(key));
+        CStringW key = StringFormat<CStringW, unsigned int>(L"{0}_{1}", DAT_143ae2c58, reinterpret_cast<const unsigned int&>(partyKind));
+        MS2Ptr<CMsgBoxData> message = FUN_140d73d20(1,
+            FormatStringId(0x2b7, partyName), 0, CStringW(key));
         if (message.get() != NULL) {
-            ((class CMsgBoxData*)(class Unk_PartyMessage*)(message.operator->()))->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
-            ((class CMsgBoxData*)(class Unk_PartyMessage*)(message.operator->()))->FUN_141a02460(1);
-            ((class CMsgBoxData*)(class Unk_PartyMessage*)(message.operator->()))->FUN_141a02480(1);
-            ((class CMsgBoxData*)(class Unk_PartyMessage*)(message.operator->()))->FUN_141a024a0(0);
+            message->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+            message->FUN_141a02460(1);
+            message->FUN_141a02480(1);
+            message->FUN_141a024a0(0);
             FUN_140d73c60(message);
         }
     }
@@ -1052,61 +1009,61 @@ void CPartyManager::OnPartyInvite(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14162C8B0, CPartyManager, OnPartyInvite, 892, 0x34000DFD);
 
 // @0x14162cc40
-void CPartyManager::FUN_14162cc40(CInPacket& packet)
+void CPartyManager::OnPartyMemberJoin(CInPacket& packet)
 {
     int count = FUN_14162af00();
     if (count == 10) return;
     int index = count;
     MS2Ptr<CPartyMember> member(new CPartyMember(index));
     member->user.FUN_1408eeb60(&packet);
-    FUN_140268210(&member->counters, packet);
+    reinterpret_cast<Unk_LockedIntMap*>(&member->counters)->Read(&static_cast<CInputStream&>(packet));
     members.Add(member);
-    FUN_14161cd60(((void*)FUN_1409f7c90()), member->FUN_141637bb0());
+    reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->FUN_141637bb0());
     UIDialog* ui = static_cast<UIDialog*>(FUN_140a8a680(0x4e45));
     if (ui != NULL) {
-        if (ui->FUN_141924630() != 0) FUN_141a752a0(ui, member.get());
+        if (ui->FUN_141924630() != 0) reinterpret_cast<UIPartyDialog*>(ui)->AddMember(member.get());
         else ui->FUN_141924680();
     }
     if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((void*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150()))))
         (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f23)));
     ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a05670(member->FUN_141637bb0());
-    CStringW text = FUN_14052bd00(0x31c, member->user.FUN_1408f19e0());
+    CStringW text = FormatStringId(0x31c, member->user.FUN_1408f19e0());
     FUN_1412751b0(text, 0xe);
 }
-MS2_REPLACE_METHOD(0x14162CC40, CPartyManager, FUN_14162cc40, 593, 0x3F7FDB2A);
+MS2_REPLACE_METHOD(0x14162CC40, CPartyManager, OnPartyMemberJoin, 593, 0x3F7FDB2A);
 
 // @0x14162cea0
-void CPartyManager::FUN_14162cea0(CInPacket& packet)
+void CPartyManager::OnPartyMemberLeave(CInPacket& packet)
 {
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
     bool disband = static_cast<CInputStream&>(packet).ReadBool();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         if (disband) {
             ClearParty();
-            FUN_141630fd0();
+            ClearRecruitmentAndResetSearchUI();
             reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
             FUN_1412751b0(GetStringCommon(0x31d), 0xe);
         } else {
             int index = GetMemberIndex(id);
             if (index == -1) return;
             RemoveMemberAt(index);
-            CStringW text = FUN_14052bd00(0x31e, p->FUN_141637bd0());
+            CStringW text = FormatStringId(0x31e, p->FUN_141637bd0());
             FUN_1412751b0(text, 0xe);
         }
     }
 }
-MS2_REPLACE_METHOD(0x14162CEA0, CPartyManager, FUN_14162cea0, 458, 0xBE002F26);
+MS2_REPLACE_METHOD(0x14162CEA0, CPartyManager, OnPartyMemberLeave, 458, 0xBE002F26);
 
 // @0x14162d070
-void CPartyManager::FUN_14162d070(CInPacket& packet)
+void CPartyManager::OnPartyMemberKick(CInPacket& packet)
 {
     __int64 id = packet.ReadInt64();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         if (DAT_143ab2828 == p->FUN_141637bb0()) {
             ClearParty();
-            FUN_141630fd0();
+            ClearRecruitmentAndResetSearchUI();
             reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
             FUN_1412751b0(GetStringCommon(799), 0xe);
         } else {
@@ -1114,57 +1071,57 @@ void CPartyManager::FUN_14162d070(CInPacket& packet)
             if (index == -1)
                 return;
             RemoveMemberAt(index);
-            CStringW text = FUN_14052bd00(800, p->FUN_141637bd0());
+            CStringW text = FormatStringId(800, p->FUN_141637bd0());
             FUN_1412751b0(text, 0xe);
         }
     }
 }
-MS2_REPLACE_METHOD(0x14162D070, CPartyManager, FUN_14162d070, 424, 0x58AEE3EB);
+MS2_REPLACE_METHOD(0x14162D070, CPartyManager, OnPartyMemberKick, 424, 0x58AEE3EB);
 
 // @0x14162d220
 void CPartyManager::FUN_14162d220(CInPacket&)
 {
     ClearParty();
-    FUN_141630fd0();
+    ClearRecruitmentAndResetSearchUI();
     reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
     FUN_1412751b0(GetStringCommon(0x321), 0xe);
 }
 MS2_REPLACE_METHOD(0x14162D220, CPartyManager, FUN_14162d220, 123, 0x0016246B);
 
 // @0x14162d2b0
-void CPartyManager::FUN_14162d2b0(CInPacket& packet)
+void CPartyManager::OnPartyLeaderChange(CInPacket& packet)
 {
     __int64 id = packet.ReadInt64();
     CStringW name;
     if (id != 0 && id != leaderId) {
         __int64 oldId = leaderId;
-        MS2Ptr<CPartyMember> oldLeader = FUN_14162afc0(oldId);
+        MS2Ptr<CPartyMember> oldLeader = FindMemberByCharId(oldId);
         if (oldLeader.get() != NULL) oldLeader->SetLeader(0);
-        MS2Ptr<CPartyMember> newLeader = FUN_14162afc0(id);
+        MS2Ptr<CPartyMember> newLeader = FindMemberByCharId(id);
         if (newLeader.get() != NULL) {
             newLeader->SetLeader(1);
             name = newLeader->FUN_141637bd0();
         }
         leaderId = id;
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74f50(ui, oldLeader.get(), newLeader.get());
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->FUN_141a74f50(oldLeader.get(), newLeader.get());
         if (DAT_143ab2828 == oldId || DAT_143ab2828 == id) ((class CInstrumentManager*)(void*)(((void*)FUN_140c8dac0())))->CheckPlayState();
     }
     if (FUN_14162af00() > 1) {
         CStringW text;
         if (DAT_143ab2828 == leaderId) text = GetStringCommon(0x324);
-        else text = FUN_14052bd00(0x325, name);
+        else text = FormatStringId(0x325, name);
         FUN_1412751b0(text, 0xe);
     }
 }
-MS2_REPLACE_METHOD(0x14162D2B0, CPartyManager, FUN_14162d2b0, 747, 0x05A83C2F);
+MS2_REPLACE_METHOD(0x14162D2B0, CPartyManager, OnPartyLeaderChange, 747, 0x05A83C2F);
 
 // @0x14162d5b0
 void CPartyManager::OnPartyInfo(CInPacket& packet)
 {
     if (static_cast<unsigned>(partyId) > 0) {
         ClearParty();
-        FUN_141630fd0();
+        ClearRecruitmentAndResetSearchUI();
         reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
     }
     bool announce = static_cast<CInputStream&>(packet).ReadBool();
@@ -1177,16 +1134,16 @@ void CPartyManager::OnPartyInfo(CInPacket& packet)
         MS2Ptr<CPartyMember> p(new CPartyMember(i));
         p->offline = static_cast<CInputStream&>(packet).ReadBool();
         p->user.FUN_1408eeb60(&packet);
-        FUN_140268210(&p->counters, static_cast<CInputStream&>(packet));
-        if (FUN_141630c30(p->user.m_8)) p->SetLeader(1);
+        reinterpret_cast<Unk_LockedIntMap*>(&p->counters)->Read(&static_cast<CInputStream&>(packet));
+        if (IsLeaderId(p->user.m_8)) p->SetLeader(1);
         members.Add(p);
-        FUN_14161cd60(((void*)FUN_1409f7c90()), p->FUN_141637bb0());
+        reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(p->FUN_141637bb0());
         ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a05670(p->FUN_141637bb0());
     }
-    FUN_14070f300(static_cast<CInputStream&>(packet), matchmaking);
-    FUN_14070f480(static_cast<CInputStream&>(packet), dungeonId);
-    FUN_14031bf10(static_cast<CInputStream&>(packet), permissions);
-    FUN_14070f300(static_cast<CInputStream&>(packet), flag29);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read0(matchmaking);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read6(reinterpret_cast<unsigned&>(dungeonId));
+    static_cast<CInputStream&>(packet) >> permissions;
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read0(flag29);
     __int64 previousRecruit = recruitment.recruitId;
     unsigned hasRecruit = static_cast<CInputStream&>(packet).ReadUInt8();
     int changed = 0;
@@ -1200,23 +1157,23 @@ void CPartyManager::OnPartyInfo(CInPacket& packet)
     if (changed) {
         if ((((CUIService*)(FUN_1403ed2b0()))->FUN_141adc890((eUIClassID)(0x4eda)))) {
             void* ui = ((void*)FUN_1413226d0(0x4eda));
-            if (ui != NULL) FUN_140f8ee00(ui, recruitment);
+            if (ui != NULL) reinterpret_cast<UIPartySearchDialog*>(ui)->FUN_140f8ee00(&recruitment);
         }
     }
 }
 MS2_REPLACE_METHOD(0x14162D5B0, CPartyManager, OnPartyInfo, 1356, 0x74FF5328);
 
 // @0x14162db10
-void CPartyManager::FUN_14162db10(CInPacket& packet)
+void CPartyManager::OnPartyMemberOnline(CInPacket& packet)
 {
     Unk_UserProxy user;
     user.FUN_1408eeb60(&packet);
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(user.m_8);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(user.m_8);
     if (p.get() != NULL) {
         p->SetOffline(false);
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, p.get(), 0x1ff);
-        CStringW text = FUN_14052bd00(0x322, user.FUN_1408f19e0());
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), 0x1ff);
+        CStringW text = FormatStringId(0x322, user.FUN_1408f19e0());
         FUN_1412751b0(text, 0xe);
     } else {
         int count = FUN_14162af00();
@@ -1225,46 +1182,46 @@ void CPartyManager::FUN_14162db10(CInPacket& packet)
         p.AssignRaw(new CPartyMember(index));
         p->user.FUN_1408efa70(user);
         members.Add(p);
-        FUN_14161cd60(((void*)FUN_1409f7c90()), p->FUN_141637bb0());
+        reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(p->FUN_141637bb0());
         ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a05670(p->FUN_141637bb0());
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a752a0(ui, p.get());
-        CStringW text = FUN_14052bd00(0x31c, user.FUN_1408f19e0());
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->AddMember(p.get());
+        CStringW text = FormatStringId(0x31c, user.FUN_1408f19e0());
         FUN_1412751b0(text, 0xe);
     }
 }
-MS2_REPLACE_METHOD(0x14162DB10, CPartyManager, FUN_14162db10, 808, 0x4F26012C);
+MS2_REPLACE_METHOD(0x14162DB10, CPartyManager, OnPartyMemberOnline, 808, 0x4F26012C);
 
 // @0x14162de40
-void CPartyManager::FUN_14162de40(CInPacket& packet)
+void CPartyManager::OnPartyMemberOffline(CInPacket& packet)
 {
     __int64 id = packet.ReadInt64();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         p->SetOffline(true);
         if (vote.get() != NULL) vote->vfunc_6(id);
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, p.get(), 1);
-        CStringW text = FUN_14052bd00(0x323, p->FUN_141637bd0());
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), 1);
+        CStringW text = FormatStringId(0x323, p->FUN_141637bd0());
         FUN_1412751b0(text, 0xe);
     }
 }
-MS2_REPLACE_METHOD(0x14162DE40, CPartyManager, FUN_14162de40, 377, 0xDA2CA186);
+MS2_REPLACE_METHOD(0x14162DE40, CPartyManager, OnPartyMemberOffline, 377, 0xDA2CA186);
 
 // @0x14162dfc0
 void CPartyManager::FUN_14162dfc0(CInPacket& packet)
 {
     __int64 id = packet.ReadInt64();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         CString oldName = p->user.FUN_1408f1a60();
         p->user.FUN_1408ec410(packet);
         int flags = 399;
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, p.get(), flags);
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), flags);
         if (DAT_143ab2828 == p->user.m_8) {
             void* uiParty = FUN_140a8a680(0x4e45);
-            if (uiParty != NULL) FUN_141a74ea0(uiParty);
+            if (uiParty != NULL) reinterpret_cast<UIPartyDialog*>(uiParty)->FUN_141a74ea0();
         }
     }
 }
@@ -1274,38 +1231,38 @@ MS2_REPLACE_METHOD(0x14162DFC0, CPartyManager, FUN_14162dfc0, 312, 0xF779CB13);
 void CPartyManager::FUN_14162e100(CInPacket& packet)
 {
     __int64 id = packet.ReadInt64();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         CString oldName = p->user.FUN_1408f1a60();
         p->user.FUN_1408eeb60(&packet);
         int flags = 399;
         void* ui = FUN_140a8a680(0x4e45);
-        if (ui != NULL) FUN_141a74d50(ui, p.get(), flags);
+        if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), flags);
         if (DAT_143ab2828 == p->user.m_8) {
             void* uiParty = FUN_140a8a680(0x4e45);
-            if (uiParty != NULL) FUN_141a74ea0(uiParty);
+            if (uiParty != NULL) reinterpret_cast<UIPartyDialog*>(uiParty)->FUN_141a74ea0();
         }
     }
 }
 MS2_REPLACE_METHOD(0x14162E100, CPartyManager, FUN_14162e100, 312, 0x52858474);
 
 // @0x14162e240
-void CPartyManager::FUN_14162e240(CInPacket& packet)
+void CPartyManager::OnPartyMemberCounters(CInPacket& packet)
 {
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
     Unk_PartyCounters counters;
-    FUN_140268210(&counters, static_cast<CInputStream&>(packet));
-    MS2Ptr<CPartyMember> member = FUN_14162afc0(id);
+    reinterpret_cast<Unk_LockedIntMap*>(&counters)->Read(&static_cast<CInputStream&>(packet));
+    MS2Ptr<CPartyMember> member = FindMemberByCharId(id);
     if (member.get() != NULL) member->SetCounters(&counters);
 }
-MS2_REPLACE_METHOD(0x14162E240, CPartyManager, FUN_14162e240, 199, 0xF491A26D);
+MS2_REPLACE_METHOD(0x14162E240, CPartyManager, OnPartyMemberCounters, 199, 0xF491A26D);
 
 // @0x14162e310
 void CPartyManager::FUN_14162e310(CInPacket& packet)
 {
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
     int value = static_cast<CInputStream&>(packet).ReadInt32();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) p->user.m_d0 = value;
 }
 MS2_REPLACE_METHOD(0x14162E310, CPartyManager, FUN_14162e310, 171, 0x3FCCCFBD);
@@ -1315,17 +1272,17 @@ void CPartyManager::FUN_14162e3d0(CInPacket& packet)
 {
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
     int result = static_cast<CInputStream&>(packet).ReadUInt8();
-    MS2Ptr<CPartyMember> p = FUN_14162afc0(id);
+    MS2Ptr<CPartyMember> p = FindMemberByCharId(id);
     if (p.get() != NULL) {
         if (DAT_143ab2828 == p->FUN_141637bb0()) return;
-        if (result != 0) FUN_1412751b0(FUN_14052bd00(0x327, p->FUN_141637bd0()), 0xe);
-        else FUN_1412751b0(FUN_14052bd00(0x326, p->FUN_141637bd0()), 0xe);
+        if (result != 0) FUN_1412751b0(FormatStringId(0x327, p->FUN_141637bd0()), 0xe);
+        else FUN_1412751b0(FormatStringId(0x326, p->FUN_141637bd0()), 0xe);
     }
 }
 MS2_REPLACE_METHOD(0x14162E3D0, CPartyManager, FUN_14162e3d0, 497, 0x49BC7140);
 
 // @0x14162e5d0
-void CPartyManager::FUN_14162e5d0(CInPacket& packet)
+void CPartyManager::OnPartyNotice(CInPacket& packet)
 {
     CStringW key = static_cast<CInputStream&>(packet).ReadUnicodeString();
     CStringW sound = static_cast<CInputStream&>(packet).ReadUnicodeString();
@@ -1334,7 +1291,7 @@ void CPartyManager::FUN_14162e5d0(CInPacket& packet)
     FUN_1412751b0(text, 2);
     FUN_1412760f0(sound, "");
 }
-MS2_REPLACE_METHOD(0x14162E5D0, CPartyManager, FUN_14162e5d0, 333, 0xD8F6A23F);
+MS2_REPLACE_METHOD(0x14162E5D0, CPartyManager, OnPartyNotice, 333, 0xD8F6A23F);
 
 // @0x14162e730
 void CPartyManager::FUN_14162e730(CInPacket& packet)
@@ -1349,7 +1306,7 @@ MS2_REPLACE_METHOD(0x14162E730, CPartyManager, FUN_14162e730, 224, 0xD696069F);
 
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162e820
-void CPartyManager::FUN_14162e820(CInPacket& packet)
+void CPartyManager::OnPartyMatchDungeonChange(CInPacket& packet)
 {
     int previousDungeon = dungeonId;
     matchmaking = static_cast<CInputStream&>(packet).ReadBool();
@@ -1360,10 +1317,10 @@ void CPartyManager::FUN_14162e820(CInPacket& packet)
         }
     }
 }
-MS2_REPLACE_METHOD(0x14162E820, CPartyManager, FUN_14162e820, 411, 0x58877D82);
+MS2_REPLACE_METHOD(0x14162E820, CPartyManager, OnPartyMatchDungeonChange, 411, 0x58877D82);
 
 // @0x14162e9d0
-void CPartyManager::FUN_14162e9d0(CInPacket& packet)
+void CPartyManager::OnPartyRecruitUpdate(CInPacket& packet)
 {
     CMatchPartyRecruit updated;
     int hasRecruit = packet.ReadUInt8();
@@ -1371,17 +1328,17 @@ void CPartyManager::FUN_14162e9d0(CInPacket& packet)
     FUN_141631f30(recruitment, updated);
     recruitment.CopyFrom(updated);
 }
-MS2_REPLACE_METHOD(0x14162E9D0, CPartyManager, FUN_14162e9d0, 178, 0x25C43414);
+MS2_REPLACE_METHOD(0x14162E9D0, CPartyManager, OnPartyRecruitUpdate, 178, 0x25C43414);
 
 // @0x14162ea90
-void CPartyManager::FUN_14162ea90(CInPacket& packet)
+void CPartyManager::OnPartyDungeonMatchRegister(CInPacket& packet)
 {
     int kind = static_cast<CInputStream&>(packet).ReadUInt8();
     bool registered = static_cast<CInputStream&>(packet).ReadBool();
     bool announce = static_cast<CInputStream&>(packet).ReadBool();
-    FUN_14031bf10(static_cast<CInputStream&>(packet), permissions);
+    static_cast<CInputStream&>(packet) >> permissions;
     if (announce) {
-        CStringW name = FUN_140cbf840(Unk_ClubBuffCategory(kind));
+        CStringW name = TranslateEnumDungeonGroup(Unk_ClubBuffCategory(kind));
         if (registered) {
             if (FUN_14162ab20())
                 FUN_1412751b0(FUN_14028dfa0<CStringW>(L"s_party_match_dungeon_register", name), 2);
@@ -1393,14 +1350,14 @@ void CPartyManager::FUN_14162ea90(CInPacket& packet)
         }
     }
 }
-MS2_REPLACE_METHOD(0x14162EA90, CPartyManager, FUN_14162ea90, 703, 0x57B044C4);
+MS2_REPLACE_METHOD(0x14162EA90, CPartyManager, OnPartyDungeonMatchRegister, 703, 0x57B044C4);
 
 // Not hooked: the callback object carries DLL-local Delegate RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x14162ed60
-void CPartyManager::FUN_14162ed60(CInPacket&)
+void CPartyManager::OnPartyDungeonMatchConfirm(CInPacket&)
 {
-    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::FUN_141630c70), L"s_party_match_dungeon");
+    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::OnDungeonRoomMsgBoxAnswer), L"s_party_match_dungeon");
 }
 #endif
 
@@ -1418,7 +1375,7 @@ void CPartyManager::FUN_14162ee70(CInPacket& packet)
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
     CStringW name = static_cast<CInputStream&>(packet).ReadUnicodeString();
     CStringW text = StringIdInterface(packet).FUN_141024e60();
-    if (FUN_140a25840(((void*)FUN_1409c1730()), 0, name)) return;
+    if (reinterpret_cast<BlindManager*>(FUN_1409c1730())->IsBlocked(0, name)) return;
     if (((class CBuddyManager*)(void*)(((void*)TSingleton<CBuddyManager>::GetInstance())))->FUN_140ae5240(name) != 0) return;
     if (id != 0 && ((class CBuddyManager*)(void*)(((void*)TSingleton<CBuddyManager>::GetInstance())))->FUN_140ae51b0(id) != 0) return;
     FUN_1412751b0(text, 2);
@@ -1427,35 +1384,35 @@ MS2_REPLACE_METHOD(0x14162EE70, CPartyManager, FUN_14162ee70, 428, 0x5978F40A);
 
 // MS2-FUNCTIONAL: retain each result case and message API; compact temporaries.
 // @0x14162f030
-void CPartyManager::FUN_14162f030(CInPacket& packet)
+void CPartyManager::OnPartyResultMessage(CInPacket& packet)
 {
     CInputStream& stream = packet;
     unsigned result = stream.ReadUInt8();
     CStringW name = stream.ReadUnicodeString();
     switch (result - 2) {
-    case 0: FUN_1412751b0(FUN_14052bd00(0x32d, name), 0x14); break;
-    default: FUN_1412751b0(FUN_14052bd00(0x979, name), 0x14); break;
+    case 0: FUN_1412751b0(FormatStringId(0x32d, name), 0x14); break;
+    default: FUN_1412751b0(FormatStringId(0x979, name), 0x14); break;
     case 2: FUN_1412751b0(GetStringCommon(0x32c), 0x14); break;
-    case 3: FUN_1412751b0(FUN_14052bd00(0x32a, name), 0x14); break;
-    case 5: case 6: case 0xb: FUN_1412751b0(FUN_14052bd00(0x329, name), 0x14); break;
-    case 7: FUN_1412751b0(FUN_14052bd00(0x330, name), 0x14); break;
+    case 3: FUN_1412751b0(FormatStringId(0x32a, name), 0x14); break;
+    case 5: case 6: case 0xb: FUN_1412751b0(FormatStringId(0x329, name), 0x14); break;
+    case 7: FUN_1412751b0(FormatStringId(0x330, name), 0x14); break;
     case 8: FUN_1412751f0(BlockFormat(0x32a), 1, 1); break;
-    case 9: FUN_1412751b0(FUN_14052bd00(0x32e, name), 0x14); break;
-    case 10: FUN_1412751b0(FUN_14052bd00(0x333, name), 0x14); break;
+    case 9: FUN_1412751b0(FormatStringId(0x32e, name), 0x14); break;
+    case 10: FUN_1412751b0(FormatStringId(0x333, name), 0x14); break;
     case 0xc: FUN_1412751b0(GetStringCommon(0x32f), 0x14); break;
-    case 0xd: FUN_1412751f0(FUN_14052bd00(0x32b, name), 1, 1); break;
-    case 0xe: FUN_1412751b0(FUN_14052bd00(0x336, name), 0x14); break;
-    case 0xf: FUN_1412751b0(FUN_14052bd00(0x337, name), 0x14); break;
-    case 0x10: FUN_1412751b0(FUN_14052bd00(0x338, name), 0x14); break;
+    case 0xd: FUN_1412751f0(FormatStringId(0x32b, name), 1, 1); break;
+    case 0xe: FUN_1412751b0(FormatStringId(0x336, name), 0x14); break;
+    case 0xf: FUN_1412751b0(FormatStringId(0x337, name), 0x14); break;
+    case 0x10: FUN_1412751b0(FormatStringId(0x338, name), 0x14); break;
     case 0x11: FUN_141275260(0x339, 1, 1); break;
-    case 0x12: FUN_1412751b0(FUN_14052bd00(0x331, name), 0x14); break;
-    case 0x13: FUN_1412751b0(FUN_14052bd00(0x332, name), 0x14); break;
+    case 0x12: FUN_1412751b0(FormatStringId(0x331, name), 0x14); break;
+    case 0x13: FUN_1412751b0(FormatStringId(0x332, name), 0x14); break;
     case 0x14: FUN_141275260(0x33b, 1, 1); break;
-    case 0x15: FUN_1412751b0(FUN_14052bd00(0x33c, name), 0x14); break;
+    case 0x15: FUN_1412751b0(FormatStringId(0x33c, name), 0x14); break;
     case 0x16: FUN_141275260(0x33a, 1, 1); break;
     case 0x17: FUN_141275260(0x33d, 1, 1); break;
-    case 0x18: FUN_1412751b0(FUN_14052bd00(0x33e, name), 0x14); break;
-    case 0x19: FUN_1412751b0(FUN_14052bd00(0x35, name), 0x14); break;
+    case 0x18: FUN_1412751b0(FormatStringId(0x33e, name), 0x14); break;
+    case 0x19: FUN_1412751b0(FormatStringId(0x35, name), 0x14); break;
     case 0x1a: FUN_1412751f0(FUN_140298ea0(L"s_party_err_inviteMe"), 1, 1); break;
     case 0x1b: FUN_140d73ff0(L"s_room_party_err_is_in_user"); break;
     case 0x1c: FUN_1412751f0(FUN_140298ea0(L"s_party_invite_boss_room"), 1, 1); break;
@@ -1464,7 +1421,7 @@ void CPartyManager::FUN_14162f030(CInPacket& packet)
     case 0x1f: FUN_1412751f0(FUN_140298ea0(L"s_party_err_already_vote"), 1, 1); break;
     case 0x20: FUN_1412751f0(FUN_140298ea0(L"s_party_err_vote_need_more_people"), 1, 1); break;
     case 0x21: FUN_1412751f0(FUN_140298ea0(L"s_party_err_vote_cooldown"), 1, 1); break;
-    case 0x22: FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_party_err_vote_cannot_kick_vote", FUN_141630db0(name)), 1, 1); break;
+    case 0x22: FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_party_err_vote_cannot_kick_vote", FormatDungeonGroupList(name)), 1, 1); break;
     case 0x23: FUN_1412751f0(FUN_140298ea0(L"s_party_err_vote_cannot_kick_vote_only_dungeon"), 1, 1); break;
     case 0x24: FUN_1412751f0(GetStringCommon(0x341), 1, 1); break;
     case 0x25: { CStringW key(L"s_party_expel_maple_survival_squad"); FUN_1412751f0(GetStringCommonByKey(key), 1, 1); } break;
@@ -1480,19 +1437,19 @@ void CPartyManager::FUN_14162f030(CInPacket& packet)
     case 0x2f: FUN_1412751f0(FUN_140298ea0(L"s_maple_survival_error_squad_register_over_count"), 1, 1); break;
     }
 }
-MS2_REPLACE_METHOD(0x14162F030, CPartyManager, FUN_14162f030, 4585, 0x989DDB69);
+MS2_REPLACE_METHOD(0x14162F030, CPartyManager, OnPartyResultMessage, 4585, 0x989DDB69);
 
 // @0x1416302f0
-void CPartyManager::FUN_1416302f0(CInPacket& packet)
+void CPartyManager::OnPartyFindDungeonCooldown(CInPacket& packet)
 {
     unsigned milliseconds = packet.ReadInt32();
     unsigned seconds = milliseconds / 1000 + 1;
     FUN_1412751b0(FUN_14028dfa0<unsigned int>(L"s_party_find_dungeon_helper_cooldown", seconds), 0x14);
 }
-MS2_REPLACE_METHOD(0x1416302F0, CPartyManager, FUN_1416302f0, 186, 0x6CE86D98);
+MS2_REPLACE_METHOD(0x1416302F0, CPartyManager, OnPartyFindDungeonCooldown, 186, 0x6CE86D98);
 
 // @0x1416303b0
-void CPartyManager::FUN_1416303b0(CInPacket& packet)
+void CPartyManager::OnPartyInviteSent(CInPacket& packet)
 {
     CStringW name = packet.ReadUnicodeString();
     PurgeExpiredInvitations();
@@ -1505,10 +1462,10 @@ void CPartyManager::FUN_1416303b0(CInPacket& packet)
         invitations.insert(std::make_pair(name, expiry));
     }
 }
-MS2_REPLACE_METHOD(0x1416303B0, CPartyManager, FUN_1416303b0, 398, 0xE942D0CD);
+MS2_REPLACE_METHOD(0x1416303B0, CPartyManager, OnPartyInviteSent, 398, 0xE942D0CD);
 
 // @0x141630550
-void CPartyManager::FUN_141630550(CInPacket& packet)
+void CPartyManager::OnPartyVoteStart(CInPacket& packet)
 {
     int type = packet.ReadUInt8();
     vote = FUN_140a89240(type);
@@ -1516,30 +1473,30 @@ void CPartyManager::FUN_141630550(CInPacket& packet)
     vote->vfunc_1(packet);
     vote->vfunc_2();
 }
-MS2_REPLACE_METHOD(0x141630550, CPartyManager, FUN_141630550, 269, 0x645860E9);
+MS2_REPLACE_METHOD(0x141630550, CPartyManager, OnPartyVoteStart, 269, 0x645860E9);
 
 // @0x141630670
-void CPartyManager::FUN_141630670(CInPacket& packet)
+void CPartyManager::OnPartyVoteReply(CInPacket& packet)
 {
     __int64 id = static_cast<CInputStream&>(packet).ReadInt64();
     bool yes = static_cast<CInputStream&>(packet).ReadBool();
     if (vote == NULL) return;
     vote->AddVote(id, yes);
 }
-MS2_REPLACE_METHOD(0x141630670, CPartyManager, FUN_141630670, 163, 0x94778140);
+MS2_REPLACE_METHOD(0x141630670, CPartyManager, OnPartyVoteReply, 163, 0x94778140);
 
 // @0x141630720
-void CPartyManager::FUN_141630720(CInPacket&)
+void CPartyManager::OnPartyVoteEnd(CInPacket&)
 {
     if (vote.get() != NULL) vote->vfunc_3();
     ClearVote();
 }
-MS2_REPLACE_METHOD(0x141630720, CPartyManager, FUN_141630720, 93, 0xB83564F9);
+MS2_REPLACE_METHOD(0x141630720, CPartyManager, OnPartyVoteEnd, 93, 0xB83564F9);
 
 // Not hooked: constructing NotifySurvivalState here installs DLL-local RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x141630790
-void CPartyManager::FUN_141630790(CInPacket& packet)
+void CPartyManager::OnPartySurvivalSquadRegister(CInPacket& packet)
 {
     flag29 = static_cast<CInputStream&>(packet).ReadBool();
     bool notify = static_cast<CInputStream&>(packet).ReadBool();
@@ -1553,7 +1510,7 @@ void CPartyManager::FUN_141630790(CInPacket& packet)
             FUN_1412751b0(GetStringCommonByKey(L"s_maple_survival_squad_unregister_squad"), channel);
             FUN_141276180("Dungeon_Room_searchPartyCancel", "");
         }
-        FUN_140da4fe0(((void*)FUN_140939a10()), MS2Ptr<NotifyObject>(new NotifySurvivalState));
+        reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifySurvivalState));
     }
 }
 #endif
@@ -1561,11 +1518,11 @@ void CPartyManager::FUN_141630790(CInPacket& packet)
 // Not hooked: the callback object carries DLL-local Delegate RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x141630a60
-void CPartyManager::FUN_141630a60(CInPacket& packet)
+void CPartyManager::OnPartyDungeonRoomCreate(CInPacket& packet)
 {
     int dungeon = packet.ReadInt32();
     if (!IsLocalPlayerLeader()) {
-        FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::FUN_141630c70),
+        FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::OnDungeonRoomMsgBoxAnswer),
             FUN_14028dfa0<CStringW>(L"s_party_create_dungeon", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, dungeon)));
         FUN_141276180("Dungeon_Room_Open", "");
     }
@@ -1573,17 +1530,17 @@ void CPartyManager::FUN_141630a60(CInPacket& packet)
 #endif
 
 // @0x141630c30
-bool CPartyManager::FUN_141630c30(__int64 id) { return leaderId == id; }
-MS2_REPLACE_METHOD(0x141630C30, CPartyManager, FUN_141630c30, 55, 0xE1350063);
+bool CPartyManager::IsLeaderId(__int64 id) { return leaderId == id; }
+MS2_REPLACE_METHOD(0x141630C30, CPartyManager, IsLeaderId, 55, 0xE1350063);
 
 // @0x141630c70
-bool CPartyManager::FUN_141630c70(int result, const CMsgBoxData&)
+bool CPartyManager::OnDungeonRoomMsgBoxAnswer(int result, const CMsgBoxData&)
 {
     if (result != 0) return true;
     SendRoomDungeon(0);
     return true;
 }
-MS2_REPLACE_METHOD(0x141630C70, CPartyManager, FUN_141630c70, 48, 0xE4C414EC);
+MS2_REPLACE_METHOD(0x141630C70, CPartyManager, OnDungeonRoomMsgBoxAnswer, 48, 0xE4C414EC);
 
 // @0x141630cb0
 void CPartyManager::PurgeExpiredInvitations()
@@ -1599,52 +1556,52 @@ void CPartyManager::PurgeExpiredInvitations()
 MS2_REPLACE_METHOD(0x141630CB0, CPartyManager, PurgeExpiredInvitations, 242, 0x27F93552);
 
 // @0x141630db0
-CStringW CPartyManager::FUN_141630db0(CStringW input)
+CStringW CPartyManager::FormatDungeonGroupList(CStringW input)
 {
     CStringW result;
     std::vector<int> values;
     FUN_141632630(input, values, L",");
     for (unsigned i = 0; i < values.size(); ++i) {
-        if (i == 0) result += StringFormat(L"{0}", FUN_140cbf840(values[i]));
-        else result += StringFormat(L", {0}", FUN_140cbf840(values[i]));
+        if (i == 0) result += StringFormat(L"{0}", TranslateEnumDungeonGroup(values[i]));
+        else result += StringFormat(L", {0}", TranslateEnumDungeonGroup(values[i]));
     }
     return result;
 }
-MS2_REPLACE_METHOD(0x141630DB0, CPartyManager, FUN_141630db0, 523, 0x1088CBCE);
+MS2_REPLACE_METHOD(0x141630DB0, CPartyManager, FormatDungeonGroupList, 523, 0x1088CBCE);
 
 // @0x141630fd0
-void CPartyManager::FUN_141630fd0()
+void CPartyManager::ClearRecruitmentAndResetSearchUI()
 {
     recruitment.Clear();
     recruitPending = 0;
     void* ui = ((void*)FUN_1413226d0(0x4eda));
     if (ui != NULL) ((class UIPartySearchDialog*)(void*)(ui))->FUN_140f8edb0();
 }
-MS2_REPLACE_METHOD(0x141630FD0, CPartyManager, FUN_141630fd0, 79, 0x3E76544C);
+MS2_REPLACE_METHOD(0x141630FD0, CPartyManager, ClearRecruitmentAndResetSearchUI, 79, 0x3E76544C);
 
 // @0x141631030
 void CPartyManager::ClearVote() { vote = 0; }
 MS2_REPLACE_METHOD(0x141631030, CPartyManager, ClearVote, 35, 0x0C867F49);
 
 // @0x141631060
-void CPartyManager::FUN_141631060()
+void CPartyManager::ResetRecruitmentAndRefreshSearch()
 {
     recruitment.Clear();
     recruitPending = 0;
     void* ui = ((void*)FUN_1413226d0(0x4eda));
-    if (ui != NULL) FUN_140f8ee50(ui, recruitment);
+    if (ui != NULL) reinterpret_cast<UIPartySearchDialog*>(ui)->FUN_140f8ee50(&recruitment);
 }
-MS2_REPLACE_METHOD(0x141631060, CPartyManager, FUN_141631060, 91, 0x2A2536B7);
+MS2_REPLACE_METHOD(0x141631060, CPartyManager, ResetRecruitmentAndRefreshSearch, 91, 0x2A2536B7);
 
 // @0x1416310d0
 void CPartyManager::OnMatchParty(CInPacket& packet)
 {
     int type = packet.ReadUInt8();
     switch (type) {
-    case 0: FUN_141631370(packet); break;
-    case 1: FUN_141631410(packet); break;
-    case 2: FUN_1416314c0(packet); break;
-    case 4: FUN_141631700(packet); break;
+    case 0: OnMatchPartyRecruitRegistered(packet); break;
+    case 1: OnMatchPartyRecruitRemoved(packet); break;
+    case 2: OnMatchPartySearchResults(packet); break;
+    case 4: OnMatchPartyError(packet); break;
     }
 }
 MS2_REPLACE_METHOD(0x1416310D0, CPartyManager, OnMatchParty, 164, 0x4143B2A2);
@@ -1683,23 +1640,23 @@ void CPartyManager::SendMatchPartyMode2(const CMatchPartyRecruitSchCond& conditi
 MS2_REPLACE_METHOD(0x141631270, CPartyManager, SendMatchPartyMode2, 120, 0x92FC6B3D);
 
 // @0x1416312f0
-void CPartyManager::FUN_1416312f0(int id)
+void CPartyManager::SetPartyDeadline(int id)
 {
     if (partyId != id) return;
     deadline = FUN_141472bc0() + 10000;
 }
-MS2_REPLACE_METHOD(0x1416312F0, CPartyManager, FUN_1416312f0, 55, 0x412FA0CA);
+MS2_REPLACE_METHOD(0x1416312F0, CPartyManager, SetPartyDeadline, 55, 0x412FA0CA);
 
 // @0x141631330
-int CPartyManager::FUN_141631330()
+int CPartyManager::GetPartyDeadlineRemaining()
 {
     if (deadline < FUN_141472bc0()) return 0;
     return deadline - FUN_141472bc0();
 }
-MS2_REPLACE_METHOD(0x141631330, CPartyManager, FUN_141631330, 56, 0x0F45776B);
+MS2_REPLACE_METHOD(0x141631330, CPartyManager, GetPartyDeadlineRemaining, 56, 0x0F45776B);
 
 // @0x141631370
-void CPartyManager::FUN_141631370(CInPacket& packet)
+void CPartyManager::OnMatchPartyRecruitRegistered(CInPacket& packet)
 {
     recruitPending = 0;
     CMatchPartyRecruit updated;
@@ -1707,10 +1664,10 @@ void CPartyManager::FUN_141631370(CInPacket& packet)
     FUN_141631f30(recruitment, updated);
     recruitment.CopyFrom(updated);
 }
-MS2_REPLACE_METHOD(0x141631370, CPartyManager, FUN_141631370, 142, 0x718E9365);
+MS2_REPLACE_METHOD(0x141631370, CPartyManager, OnMatchPartyRecruitRegistered, 142, 0x718E9365);
 
 // @0x141631410
-void CPartyManager::FUN_141631410(CInPacket& packet)
+void CPartyManager::OnMatchPartyRecruitRemoved(CInPacket& packet)
 {
     __int64 id = packet.ReadInt64();
     if (recruitment.recruitId == id) {
@@ -1719,10 +1676,10 @@ void CPartyManager::FUN_141631410(CInPacket& packet)
         recruitment.Clear();
     }
 }
-MS2_REPLACE_METHOD(0x141631410, CPartyManager, FUN_141631410, 168, 0xF4FB48FA);
+MS2_REPLACE_METHOD(0x141631410, CPartyManager, OnMatchPartyRecruitRemoved, 168, 0xF4FB48FA);
 
 // @0x1416314c0
-void CPartyManager::FUN_1416314c0(CInPacket& packet)
+void CPartyManager::OnMatchPartySearchResults(CInPacket& packet)
 {
     unsigned count = static_cast<CInputStream&>(packet).ReadInt32();
     if (searchPending != 0) {
@@ -1741,13 +1698,13 @@ void CPartyManager::FUN_1416314c0(CInPacket& packet)
         }
     }
     void* ui = ((void*)FUN_1413226d0(0x4eda));
-    if (ui != NULL) FUN_140f8ed40(ui, results, last);
+    if (ui != NULL) reinterpret_cast<UIPartySearchDialog*>(ui)->FUN_140f8ed40(results, last);
 }
-MS2_REPLACE_METHOD(0x1416314C0, CPartyManager, FUN_1416314c0, 561, 0x09B1B047);
+MS2_REPLACE_METHOD(0x1416314C0, CPartyManager, OnMatchPartySearchResults, 561, 0x09B1B047);
 
 // MS2-FUNCTIONAL: equivalent error cases with reduced temporary storage.
 // @0x141631700
-void CPartyManager::FUN_141631700(CInPacket& packet)
+void CPartyManager::OnMatchPartyError(CInPacket& packet)
 {
     int type = static_cast<CInputStream&>(packet).ReadUInt8();
     Unk_PartyRecruitError result = static_cast<Unk_PartyRecruitError>(static_cast<CInputStream&>(packet).ReadInt32());
@@ -1764,7 +1721,7 @@ void CPartyManager::FUN_141631700(CInPacket& packet)
         else if (result == 0x68) { FUN_140d73bc0(0xb4c, 0, 0, L""); return; }
         else if (result == 0x6c) {
             void* ui = FUN_141632840(0x4edb);
-            if (ui != NULL) FUN_141321d30(ui);
+            if (ui != NULL) reinterpret_cast<UIPartySearchRegisterDialog*>(ui)->FUN_141321d30();
             FUN_140d73bc0(0xb4e, 0, 0, L"");
             return;
         }
@@ -1773,7 +1730,7 @@ void CPartyManager::FUN_141631700(CInPacket& packet)
         if (result == 0x67) { FUN_140d73bc0(0xb4d, 0, 0, L""); return; }
         else if (result == 0x6a) {
             FUN_140d73aa0(GetStringCommonByKey(L"s_partysearch_err_server_not_find_recruit"), 0, 0, L"");
-            FUN_141631060();
+            ResetRecruitmentAndRefreshSearch();
             return;
         }
     } else if (type == 2 && result == 0x6c) {
@@ -1784,11 +1741,11 @@ void CPartyManager::FUN_141631700(CInPacket& packet)
     }
     PartyRecruitMessage(0xb52, 1, 1, type, result);
 }
-MS2_REPLACE_METHOD(0x141631700, CPartyManager, FUN_141631700, 1410, 0xCF636205);
+MS2_REPLACE_METHOD(0x141631700, CPartyManager, OnMatchPartyError, 1410, 0xCF636205);
 
 // @0x141631cc0
-int CPartyManager::FUN_141631cc0() { return recruitPending; }
-MS2_REPLACE_METHOD(0x141631CC0, CPartyManager, FUN_141631cc0, 17, 0x8EDBEBA2);
+int CPartyManager::IsRecruitPending() { return recruitPending; }
+MS2_REPLACE_METHOD(0x141631CC0, CPartyManager, IsRecruitPending, 17, 0x8EDBEBA2);
 
 // @0x141631ce0
 CMatchPartyRecruit& CPartyManager::FUN_141631ce0() { return recruitment; }
@@ -1838,7 +1795,7 @@ void FUN_141631f30(const CMatchPartyRecruit& oldRecruit, const CMatchPartyRecrui
         if (oldRecruit.recruitId != 0) FUN_141275260(0xb30, 1, 1);
         if (newRecruit.recruitId != 0) FUN_141275260(0xb2e, 1, 1);
         void* ui = ((void*)FUN_1413226d0(0x4eda));
-        if (ui != NULL) FUN_140f8ee00(ui, newRecruit);
+        if (ui != NULL) reinterpret_cast<UIPartySearchDialog*>(ui)->FUN_140f8ee00(const_cast<CMatchPartyRecruit*>(&newRecruit));
     }
 }
 MS2_REPLACE(0x141631F30, FUN_141631f30, 176, 0x46058A0A);
@@ -1858,7 +1815,7 @@ void FUN_141632630(const CStringW& input, std::vector<int>& values, const wchar_
 UIChaosDPSDialog* FUN_141632700(int id)
 {
     if (FUN_1403ed2b0() != NULL) {
-        MS2Ptr<UIObject> object = static_cast<Unk_PartyUIView*>(FUN_1403ed2b0())->FUN_141adcea0(id);
+        MS2Ptr<UIObject> object = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)id);
         if (object.get() != NULL) return dynamic_cast<UIChaosDPSDialog*>(object.operator->());
     }
     return NULL;
@@ -1868,7 +1825,7 @@ UIChaosDPSDialog* FUN_141632700(int id)
 UIPartyDPSDialog* FUN_1416327a0(int id)
 {
     if (FUN_1403ed2b0() != NULL) {
-        MS2Ptr<UIObject> object = static_cast<Unk_PartyUIView*>(FUN_1403ed2b0())->FUN_141adcea0(id);
+        MS2Ptr<UIObject> object = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)id);
         if (object.get() != NULL) return dynamic_cast<UIPartyDPSDialog*>(object.operator->());
     }
     return NULL;
@@ -1878,7 +1835,7 @@ UIPartyDPSDialog* FUN_1416327a0(int id)
 UIPartySearchRegisterDialog* FUN_141632840(int id)
 {
     if (FUN_1403ed2b0() != NULL) {
-        MS2Ptr<UIObject> object = static_cast<Unk_PartyUIView*>(FUN_1403ed2b0())->FUN_141adcea0(id);
+        MS2Ptr<UIObject> object = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)id);
         if (object.get() != NULL) return dynamic_cast<UIPartySearchRegisterDialog*>(object.operator->());
     }
     return NULL;

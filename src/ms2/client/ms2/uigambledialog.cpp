@@ -59,7 +59,7 @@ UITalkCinematic* FUN_140a7b2b0(int nId);
 
 void FUN_141415600(const CString& strBindID);                    // release the item bound to the name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
-CStringW FUN_1402758a0(const wchar_t* szFormat, const CStringW& a, const unsigned& b);
+#include "ms2/ms2format.h"
 CStringW FUN_1418fec00(int, __int64, bool);          // money text by pay type
 int FUN_1403bafd0(int id);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -175,7 +175,7 @@ int UIGambleDialog::FUN_141935710()
             CString strBind;
             strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
             unsigned nCount = spItem->GetCount();
-            CStringW strName = FUN_1402758a0(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
+            CStringW strName = StringFormat<CStringW, unsigned int>(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
             FUN_141415450(strBind, spItem, i, 0x415, 0);
             int nFlag = 1;
             int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());

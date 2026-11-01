@@ -30,11 +30,15 @@ class Unk_ShieldEntity : public ASGameEntity
 {
 public:
     Scaleform::GFx::Value FUN_140cb6990(const char* szMethod, __int64 a1, __int64 a2);          // "open"
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
     Scaleform::GFx::Value& FUN_1422bb870();
     void FUN_1422c00f0(float x, float y);
     void FUN_1422c0290(float cx, float cy);
+};
+class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
+{
+public:
+    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 struct Unk_ShieldCfgFloat { char m_pad[0x58]; };
 struct Unk_ShieldCfgInt { int* FUN_1402056b0(); void* m_unknown; };
@@ -368,7 +372,7 @@ UIShieldBar::Entity* UIShieldBar::FUN_140e86610(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_ShieldEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -395,7 +399,7 @@ UIShieldBar::Entity* UIShieldBar::FUN_140e86610(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_ShieldEntity*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_ShieldEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_ShieldEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);

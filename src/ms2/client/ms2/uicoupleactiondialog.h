@@ -15,7 +15,7 @@
 class ASData;
 class NotifyObject;
 class Unk_CoupleInput;
-class Unk_CoupleList;
+class ASTileList;
 
 
 // CSkillSystem::stEmotion (RTTI): one learned emotion of the player, 0x40 bytes (std::pair<const int, stEmotion> is
@@ -59,7 +59,6 @@ public:
     void FUN_140bed2a0(unsigned __int64 nSelection);        // m_178 = nSelection
     void FUN_140bed2d0();                                   // "buildActions" in id order
     void FUN_140bed8a0();                                   // "buildActions" in reverse id order
-    MS2Ptr<Unk_CoupleList> FUN_140ba4b70(const CString& strName);   // list child lookup (UIDialog member, shared COMDAT)
     void SetSearchText(CStringW strSearch);                 // set the search text; refresh when it changed
     CStringW GetEmotionKeywords(unsigned int nEmotion);          // the search keywords of an emotion, space separated
     void PadEntriesToGrid(ASArray& arr);                       // pad the page list with empty slots

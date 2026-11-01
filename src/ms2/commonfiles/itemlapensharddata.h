@@ -31,7 +31,7 @@ public:
     unsigned short m_nLevel;                // +0x1c "LapenLevel"
     int m_nNext;                            // +0x20 "NextItemID": the item this one upgrades to (0 = none)
     unsigned m_nMask;                       // +0x24 "EquipPart" bit mask (default 7)
-    int m_nMinCount;                        // +0x28 "GroupLapenshardMinCount"
+    unsigned m_nMinCount;                   // +0x28 "GroupLapenshardMinCount"
     __int64 m_nMeso;                        // +0x30 "meso"
     MS2SvrPtr<CIngredientContainer> m_spIngredients;    // +0x38 "IngredientItemID1..4" / "IngredientCount1..4"
 };

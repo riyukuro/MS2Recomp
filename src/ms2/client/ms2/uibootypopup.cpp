@@ -233,7 +233,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                     }
                 }
             }
-            reinterpret_cast<Unk_BootyMovie*>(m_30.operator->())->FUN_140e78470("setText", strName, strDesc);
+            reinterpret_cast<Unk_BootyMovie*>((class ASDialog*)((m_30.operator->())))->FUN_140e78470("setText", strName, strDesc);
         }
         m_30.operator->()->Invoke("setShow", bShow);
     }

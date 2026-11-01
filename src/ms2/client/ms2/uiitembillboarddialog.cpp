@@ -185,7 +185,7 @@ public:
     int m_nKind;                                                // +0xc4
 };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);                    // cell of a point
-int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
+int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy

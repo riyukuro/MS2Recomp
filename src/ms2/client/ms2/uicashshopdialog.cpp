@@ -127,6 +127,7 @@
 
 #define MS2_PTR_MOVE_CONVERT
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uicashshopdialog.h"
 
@@ -202,7 +203,6 @@ public:
     void FUN_1422dd230(const AScript& row);                         // append a row
 };
 
-class Unk_CashBag : public ASObj {};                                // "m_inven": the bag of the inventory movie
 class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
 
 class Unk_CashAdMgr { public: int FUN_14096b540(int nType, ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rOut); };
@@ -472,7 +472,7 @@ void UICashShopDialog::vfunc_15()
         FUN_141036ca0();
     }
     if (FUN_1418ffe80(m_nDirty, 2)) {
-        if (MS2Ptr<Unk_CashBag> spBag = FUN_140ba4b70("m_inven")) {
+        if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_inven")) {
             FUN_1418ffef0((unsigned int*)(&m_nDirty), 2);
             FUN_140b05680(GetTypeName());
             FUN_140b055c0(GetTypeName(), m_nCategory);

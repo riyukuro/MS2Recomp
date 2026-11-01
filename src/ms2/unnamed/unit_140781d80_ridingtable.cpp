@@ -941,7 +941,7 @@ CRideeDataPtr FUN_1407844b0(unsigned nId)
 bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
 {
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>((class CFileSystem*)((GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -970,7 +970,7 @@ CRideeDataPtr LoadRiding(unsigned nId)
     CString strPath;
     strPath.Format("./Data/Xml/Riding/%08d.xml", nId);
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>((class CFileSystem*)((GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return CRideeDataPtr(0);
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1012,7 +1012,7 @@ void LoadRidingEffectDummy(CRideeDataPtr spData)
     CString strPath;
     strPath.Format("./Data/Xml/Riding/EffectDummy/%08d.xml", spData->m_basic.m_nId);
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>((class CFileSystem*)((GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

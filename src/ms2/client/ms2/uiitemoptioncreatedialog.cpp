@@ -92,7 +92,6 @@ public:
     int FUN_1422dfb90();                                    // row count
     void FUN_1422dfc70(const ASObj& row);                   // append a row
     void FUN_1422df5f0(unsigned nRows);                     // visible rows
-    void FUN_1422df690(int nRow);                           // select a row
 };
 class Unk_CoupleInput : public AScript
 {
@@ -289,7 +288,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
         else
             nRows = 1;
         combo->FUN_1422df5f0(nRows);
-        combo->FUN_1422df690(nSelected);
+        reinterpret_cast<ASDropdownMenu*>(combo.operator->())->SetSelectedIndex(nSelected);
         combo->vfunc_24(true);
     }
 }

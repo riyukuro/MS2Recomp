@@ -63,7 +63,6 @@ public:
 class Unk_LsCharSelect : public UICharacterListDialog
 {
 };
-class Unk_LsSceneId;
 using Unk_LsServerDlg = UIServerListDialog;   // C3 type identity: Unk_LsServerDlg stood in for UIServerListDialog
 class Unk_LsDevice
 {
@@ -429,7 +428,7 @@ void UISceneLobbySelect::OnLoadInit()
     if (m_a8 == 0) {
         MS2_ASSERT_AT(71, 0);
     } else {
-        if (((class GFxSceneService*)(class Unk_LsSceneId*)(((Unk_LsSceneId*)CUserMail::FUN_1408e57f0())))->GetPrevSubSceneId() == 0x620001a && m_a8->FUN_1418f1c20() == 0 && m_a8->FUN_1418ed650() == 0) {
+        if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetPrevSubSceneId() == 0x620001a && m_a8->FUN_1418f1c20() == 0 && m_a8->FUN_1418ed650() == 0) {
             (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4ef1)));
             (FUN_1403ed2b0()->OpenDialog((eUIClassID)(0x4eea)));
         } else {

@@ -19,10 +19,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 // Stream primitives (packet.cpp).
-CInputStream& FUN_14070f480(CInputStream& in, unsigned& n);
-CInputStream& FUN_14070f580(CInputStream& in, CString& str);
-CInputStream& FUN_14070f300(CInputStream& in, bool& b);
-CInputStream& FUN_14070f540(CInputStream& in, float& f);
+
+
+class Unk_OSInput { public: class Unk_OSInput & Read0(bool &); class Unk_OSInput & Read10(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &); class Unk_OSInput & Read6(unsigned int &); class Unk_OSInput & Read9(float &); };
+
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned n);
 COutputStream& FUN_14070faa0(COutputStream& out, const CString& str);
 COutputStream& FUN_14070f820(COutputStream& out, bool b);
@@ -67,11 +67,11 @@ MS2_REPLACE_METHOD(0x1404747f0, GameObjectEffectNifCtx, Write, 118, 0x43FEDBFD);
 // @0x140474870
 void GameObjectEffectNifCtx::Read(CInputStream& in)
 {
-    FUN_14070f480(in, m_nGameOID);
-    FUN_14070f580(in, m_strNifPath);
-    FUN_14070f300(in, m_bOutline);
-    FUN_14070f540(in, m_fScale);
-    FUN_14070f540(in, m_fRotateZ);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(m_nGameOID);
+    reinterpret_cast<Unk_OSInput&>(in).Read10(m_strNifPath);
+    reinterpret_cast<Unk_OSInput&>(in).Read0(m_bOutline);
+    reinterpret_cast<Unk_OSInput&>(in).Read9(m_fScale);
+    reinterpret_cast<Unk_OSInput&>(in).Read9(m_fRotateZ);
 }
 MS2_REPLACE_METHOD(0x140474870, GameObjectEffectNifCtx, Read, 129, 0x2AF331AA);
 

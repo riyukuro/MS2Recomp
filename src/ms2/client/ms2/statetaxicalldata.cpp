@@ -261,7 +261,7 @@ void StateTaxiCall::vfunc_3(double fTime)
         {
             FUN_1417fdbc0(0x66, FUN_14028d260(1.9f));
             FUN_1417fdc00(m_strCall);
-            m_pOwner->FUN_14166dda0(0);
+            m_pOwner->PlayAnimationById(0);
             if (m_bSurprise)
             {
                 CString strAnim("suprise_A");

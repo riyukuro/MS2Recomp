@@ -307,7 +307,7 @@ void CGameSocket::FUN_141265ae0()
                         int result=((class Unk_140d86260*)FUN_140d86260())->vfunc_35(*packet);
                         if(result==3 || result==2) {
                             int op=packet->FUN_14070fe80();
-                            if(op==1) { Unk_SPDC response; response.FUN_1407a4420(&*packet); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SetConnectionState(response.key); }
+                            if(op==1) { Unk_SPDC response; ((class Unk_SPDC&)(response)).FUN_1407a4420((class CInputStream *)(&*packet)); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->FUN_14153a1d0(response.version, response.locale); ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SetConnectionState(response.key); }
                             else if(op==7) m_sequence=packet->ReadInt32();
                             else if(op==8) { int sequence=packet->ReadInt32(); framing.sequence=packet->ReadInt32(); m_sequence=sequence; }
                             ready.AddTail(packet);

@@ -115,9 +115,9 @@ void FUN_140dffb50(void*);   // C3: was FUN_140dffb50
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+#include "ms2/placeholder/formatstringid.h"
 CStringW FUN_140cd7d20();                                               // the dungeon name
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // @0x141b15530 / @0x141b14ea0 / @0x141b15520: the answer of the leave box in a normal field (captureless lambda).
@@ -390,7 +390,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     }
     else if (pPc->FUN_14152e950())
     {
-        CStringW strText = FUN_14052bd00(0x876, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pPc->FUN_14152e950()));
+        CStringW strText = FormatStringId<CStringW>(0x876, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pPc->FUN_14152e950()));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
@@ -486,7 +486,7 @@ CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
         return GetStringCommon(0xab0);
     case 8:
     case 0xe:
-        return FUN_14052bd00(0xab1, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab1, FUN_140cd7d20());
     case 9:
         return GetStringCommon(0xab2);
     case 0xd:
@@ -506,7 +506,7 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
     switch (nMapType)
     {
     case 3:
-        return FUN_14052bd00(0xab3, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab3, FUN_140cd7d20());
     case 5:
     {
         int nRoom = DAT_143ab2884;
@@ -519,12 +519,12 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
         return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_dungeon"), FUN_140cd7d20());
     }
     case 7:
-        return FUN_14052bd00(0xab7, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab7, FUN_140cd7d20());
     case 8:
     case 0xe:
-        return FUN_14052bd00(0xab8, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab8, FUN_140cd7d20());
     case 9:
-        return FUN_14052bd00(0xab9, FUN_140cd7d20());
+        return FormatStringId<CStringW>(0xab9, FUN_140cd7d20());
     case 0xd:
         return FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_arcade"), FUN_140cd7d20());
     default:

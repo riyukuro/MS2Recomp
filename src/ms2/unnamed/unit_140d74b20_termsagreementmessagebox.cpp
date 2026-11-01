@@ -89,7 +89,7 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
     box->SetTitle(strA);
     box->SetCheckbox0(GetStringCommon(0x9d0), 1);
     CStringW coupon = FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_edit_terms_coupon_agree"), strB);
-    FUN_1403b4750()->FUN_1416fb300(coupon);
+    FUN_1403b4750()->ReplaceObjectAndValueWords(coupon);
     box->SetCheckbox1(CStringW(coupon), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
     box->FUN_141a027c0(cb);

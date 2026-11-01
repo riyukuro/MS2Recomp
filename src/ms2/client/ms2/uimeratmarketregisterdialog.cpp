@@ -121,7 +121,6 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-void FUN_1411e1ce0(Unk_PCEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& list, int n);
 
 CFeatureManager* FUN_140166410();
 
@@ -194,7 +193,8 @@ MS2_CHECK_SIZE(Unk_MrdBlockRef, 0x10);
 class Unk_MrdBlockMgr { public: Unk_MrdBlockRef FUN_140a2f620(int nKind); };
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void* FUN_1401cb3d0(Unk_MrdBlockRef* pRef);
-void FUN_140a2ff20(Unk_MrdBlockRef* pRef, int nKind, __int64 n);
+template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
+void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 
 // The text filter (bad words).
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
@@ -676,7 +676,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
     ATL::CAtlList<MS2Ptr<CEquipItem> > listEquip(10);
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        FUN_1411e1ce0(((class PC*)(class PCBase*)(pPlayer))->FUN_1416561a0(), listEquip, 1);
+        reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(pPlayer))->FUN_1416561a0())->CollectShownItemsInLayer(listEquip, 1);
     if (!listEquip.IsEmpty())
     {
         for (POSITION pos = listEquip.GetHeadPosition(); pos != 0; listEquip.GetNext(pos))
@@ -914,7 +914,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
         Unk_MrdBlockRef block = ((class Unk_MrdBlockMgr*)FUN_140a6a830())->FUN_140a2f620(nKind);
         if (FUN_1401cb3d0(&block) != 0)
         {
-            FUN_140a2ff20(&block, nKind, 0);
+            FUN_140a2ff20(*(const Unk_BlockPtr<Unk_BlockRecord>*)&block, nKind, 0);
             return false;
         }
     }

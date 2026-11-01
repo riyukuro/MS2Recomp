@@ -531,7 +531,6 @@ public:
 class Unk_AkoTaxiList
 {
 public:
-    void FUN_1401855a0(int n);                              // push_back
     int FUN_140408410(const int* pValue);                   // index of a value (-1: absent)
 };
 extern Unk_AkoTaxiList DAT_143ab3078;
@@ -848,7 +847,7 @@ int TaxiStationAction::vfunc_1()
                 return 0;
             else
             {
-                DAT_143ab3098.FUN_1401855a0(DAT_143ab2870);
+                reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&DAT_143ab3098)->Add((unsigned int)DAT_143ab2870);
                 COutPacket packet(static_cast<int>(SendOp::RequestTaxi));
                 packet.Encode1(0);
                 FUN_140710590(packet);

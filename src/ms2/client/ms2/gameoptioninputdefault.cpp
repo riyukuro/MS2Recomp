@@ -169,22 +169,22 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             ASObj row(2);
             if (spKey->m_nAction == 0x49409)
             {
-                row.FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0(0x49409));
+                ((class AScript&)(row)).FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0(0x49409));
                 row.FUN_141253870("keyGUID", 0x49409);
-                row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(1));
+                ((class AScript&)(row)).FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(1));
             }
             else
             {
-                row.FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0((int)spKey->m_nAction));
+                ((class AScript&)(row)).FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0((int)spKey->m_nAction));
                 row.FUN_1407cba60("keyGUID", FUN_141252540(spKey->m_nAction));
-                row.FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(nSecondary));
+                ((class AScript&)(row)).FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(nSecondary));
             }
-            row.FUN_1407cbb20("primaryKey", FUN_1409331f0()->GetKeyName(nPrimary));
-            row.FUN_1407cbb20("thirdlyKey", bGamePad ? FUN_1409331f0()->GetKeyName(nThirdly) : CStringW(L""));
+            ((class AScript&)(row)).FUN_1407cbb20("primaryKey", FUN_1409331f0()->GetKeyName(nPrimary));
+            ((class AScript&)(row)).FUN_1407cbb20("thirdlyKey", bGamePad ? FUN_1409331f0()->GetKeyName(nThirdly) : CStringW(L""));
             row.FUN_1407cbbe0("primaryEnable", 0 != 1 && spKey->m_nPrimaryLocked == 0);
             row.FUN_1407cbbe0("secondaryEnable", 0 != 1 && spKey->m_nSecondaryLocked == 0);
             row.FUN_1407cbbe0("thirdlyEnable", 0 != 1 && spKey->m_nThirdlyLocked == 0);
-            row.FUN_1407cb9c0("isGamePad", bGamePad);
+            ((class AScript&)(row)).FUN_1407cb9c0("isGamePad", bGamePad);
             spList.operator ASScrollingList*()->AddItem(row);
         }
     }

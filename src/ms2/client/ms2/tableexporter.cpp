@@ -344,7 +344,6 @@ public:
 void FUN_14052c420(Unk_Ref* pRef);
 void FUN_140a55460(Unk_Ref* pOut, unsigned int nFieldId);
 void* FUN_140885340(Unk_Ref* pRef);
-void FUN_1408850f0(Unk_Ref* pRef);
 void FUN_1406cd330(Unk_Ref* pOut, unsigned int nFieldId);
 char FUN_1406a9050(Unk_Ref* pRef, int n);
 
@@ -1076,11 +1075,11 @@ bool FUN_1418226b0(bool bLog)
                 XmlSetAttr((class TiXmlElement*)(&elemPortal), "portalIndoor", bIndoor);
             }
             ((class TiXmlNode*)(void*)(&elemPortals))->InsertEndChild(*(class TiXmlNode const*)(&elemPortal));
-            FUN_1408850f0(&target);
+            reinterpret_cast<MS2Ptr<CFieldDataCli>*>(&target)->~MS2Ptr();
             reinterpret_cast<TiXmlElement*>(&elemPortal)->TiXmlElement::~TiXmlElement();
         }
         ((class TiXmlNode*)(void*)(&elemRoot))->InsertEndChild(*(class TiXmlNode const*)(&elemPortals));
-        FUN_1408850f0(&field);
+        reinterpret_cast<MS2Ptr<CFieldDataCli>*>(&field)->~MS2Ptr();
         reinterpret_cast<TiXmlElement*>(&elemPortals)->TiXmlElement::~TiXmlElement();
     }
 

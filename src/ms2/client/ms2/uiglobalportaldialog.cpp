@@ -100,13 +100,13 @@ void UIGlobalPortalDialog::OnLoadComplete()
     FUN_141925ec0("m_closeButton");
     Unk_GpButton* pButton1 = FUN_140bc6d10("m_enterButton1", m_enterButton1).get();
     if (pButton1)
-        m_enterButton1->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 0);
+        ((class ASButton*)(m_enterButton1))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(0));
     Unk_GpButton* pButton2 = FUN_140bc6d10("m_enterButton2", m_enterButton2).get();
     if (pButton2)
-        m_enterButton2->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 1);
+        ((class ASButton*)(m_enterButton2))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(1));
     Unk_GpButton* pButton3 = FUN_140bc6d10("m_enterButton3", m_enterButton3).get();
     if (pButton3)
-        m_enterButton3->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 2);
+        ((class ASButton*)(m_enterButton3))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(2));
     FUN_1412c2980();
 }
 

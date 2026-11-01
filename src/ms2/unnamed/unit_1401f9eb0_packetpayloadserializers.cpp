@@ -84,6 +84,8 @@
 #include "ms2/placeholder/ccitemcoloringpacket.h"
 #include "ms2/placeholder/cmeratmarketpacket.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/commonfiles/constraints.h"   // C3: Unk_1402c41d0..Unk_1402c43f0
+#include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Object::Error
 // Invented constraint names; the representation follows commonfiles/constraints.h calls.
 #define PAYLOAD_CONSTRAINT_ASSERT(line,expr) (void)((!!(expr)) || (_wassert(_CRT_WIDE(#expr),L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\constraints.h",line),0))
 template<class T>struct Unk_140203550 {
@@ -97,11 +99,6 @@ template<class T>struct Unk_140203550 {
         return checkResult;
     }
 };
-struct Unk_1402c43a0 {bool Check(unsigned int)const;};
-struct Unk_1402c4270 {bool Check(unsigned int)const;};
-struct Unk_1402c41d0 {bool Check(unsigned int)const;};
-struct Unk_1402c4220 {bool Check(unsigned int)const;};
-struct Unk_1402c43f0 {bool Check(unsigned char)const;};
 template<class Constraint>unsigned int Unk_Read32(void* packet,Constraint constraint) {
     unsigned int value=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
     if(!constraint.Check(value))throw Exception(13);
@@ -162,10 +159,9 @@ public:
     bool FUN_14036d570(int);
 };
 Unk_SingletonObj1* FUN_1401d3200();
-void FUN_1402b7560(void*,const char*);
 template<class T>struct Unk_PayloadConstant {
     T& Get(){
-        if(!*reinterpret_cast<bool*>(reinterpret_cast<unsigned char*>(this)+8))FUN_1402b7560(this,"constants is not set");
+        if(!*reinterpret_cast<bool*>(reinterpret_cast<unsigned char*>(this)+8))reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
         return *reinterpret_cast<T*>(reinterpret_cast<unsigned char*>(this)+0x50);
     }
 };

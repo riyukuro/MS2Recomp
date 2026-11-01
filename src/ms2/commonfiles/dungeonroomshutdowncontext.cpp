@@ -53,7 +53,7 @@ void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dungeonRoom"); pNode != 0;
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRoom")); pNode != 0;
          pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRoom")))
     {
         unsigned nId = 0;
@@ -72,7 +72,7 @@ void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dungeonGroup"); pNode != 0;
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonGroup")); pNode != 0;
          pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonGroup")))
     {
         Unk_DungeonGroupType eType = Unk_DungeonGroupType_None;

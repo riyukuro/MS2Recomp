@@ -158,6 +158,7 @@
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/client/ms2/equipitem.h"
+#include "ms2/client/ms2/equipment.h"
 #include "ms2/client/ms2/kfmmodel.h"
 #include "ms2/client/ms2/clonepc.h"
 #include "ms2/client/ms2/ridee.h"
@@ -249,11 +250,6 @@
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- exe functions and singletons used by the PC TU (other units) ----
-class CEquipment   // C3: member view for the former free stand-ins
-{
-public:
-    void ClearAll();
-};
 void FUN_141993180(int nObjectId);                                  // drop the actor's +0xfd8 record
 void FUN_141b6f220(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f220
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -855,7 +851,7 @@ int PC::vfunc_10()
     PCBase::vfunc_10();
     m_unk_150->FUN_14123fbf0(2);
     m_unk_150->FUN_14123fd30(0x399);
-    FUN_141660d50();
+    SetDefaultBoundingBox();
     bool bHurt = FUN_141670a00(4) != FUN_141670a30(4);
     if (bHurt)
         FUN_141670180(false);
@@ -986,7 +982,7 @@ void PC::vfunc_33(void* a, void* b)
                 spData->m_f1c = pRecord->GetAttackData()->m_damage.m_fHitPauseTime;
                 spData->m_f24 = pRecord->GetAttackData()->m_damage.m_fPushDuration;
                 SkillAttackData* pPush = pRecord->GetAttackData();
-                spData->m_f20 = FUN_1416561a0()->FUN_1411e0f90(pPush->m_damage.m_fPushDistance);
+                spData->m_f20 = reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e0f90(pPush->m_damage.m_fPushDistance);
                 spData->m_f28 = pRecord->GetAttackData()->m_damage.m_fPushUpDistance;
                 spData->m_n2c = pRecord->GetAttackData()->m_damage.m_nPushDown;
                 spData->m_n30 = pRecord->GetAttackData()->m_damage.m_nPushPriority;
@@ -1003,7 +999,7 @@ void PC::vfunc_33(void* a, void* b)
         }
         pState->vfunc_6();
         float fX = DAT_1439f8210, fY = DAT_1439f8214, fZ = DAT_1439f8218;
-        FUN_141673f70(fX, fY, fZ);
+        AddColorBoost(fX, fY, fZ);
         Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
         efd::Point3 kPos = vfunc_18();
@@ -1039,7 +1035,7 @@ void PC::vfunc_34(void* p)
     float fR = DAT_1439f8210;
     float fG = DAT_1439f8214;
     float fB = DAT_1439f8218;
-    FUN_141673f70(fR, fG, fB);
+    AddColorBoost(fR, fG, fB);
     ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_14096fb20(0);
     do
     {
@@ -1109,7 +1105,7 @@ void PC::vfunc_35(void* p)
                 spData->m_f18 = pRecord->GetAttackData()->m_damage.m_fHitSpeedRate;
                 spData->m_f1c = pRecord->GetAttackData()->m_damage.m_fHitPauseTime;
                 SkillAttackData* pPush = pRecord->GetAttackData();
-                spData->m_f20 = FUN_1416561a0()->FUN_1411e0f90(pPush->m_damage.m_fPushDistance);
+                spData->m_f20 = reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e0f90(pPush->m_damage.m_fPushDistance);
                 spData->m_f24 = pRecord->GetAttackData()->m_damage.m_fPushDuration;
                 spData->m_f28 = pRecord->GetAttackData()->m_damage.m_fPushUpDistance;
                 spData->m_n2c = pRecord->GetAttackData()->m_damage.m_nPushDown;
@@ -1127,7 +1123,7 @@ void PC::vfunc_35(void* p)
         }
         pState->vfunc_6();
         float fX = DAT_1439f8210, fY = DAT_1439f8214, fZ = DAT_1439f8218;
-        FUN_141673f70(fX, fY, fZ);
+        AddColorBoost(fX, fY, fZ);
         Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &FUN_1401d3200()->VolumeNpcToPc : &FUN_1401d3200()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
         ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
@@ -1301,7 +1297,7 @@ void PC::vfunc_66(int n)
         if (m_str9e0 == "defaultBattle")
             FUN_14166ef10(m_str9d8, 0, 0, false);
     }
-    m_kEquipDE0.FUN_1411e89d0(n);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e89d0(n);
     FUN_141659000(0);
     FUN_141670180(false);
     if (n == 1)
@@ -1339,7 +1335,7 @@ int PC::FUN_141654760()
 // @0x141654790
 void PC::FUN_141654790()
 {
-    FUN_141679760();
+    InitActionData();
     ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyChangeJob(this)));
 }
 
@@ -1386,43 +1382,43 @@ MS2Ptr<CItem> PC::FUN_141655b80(__int64 nItemUid)
 // @0x141655c30
 MS2Ptr<CEquipItem> PC::FUN_141655c30(__int64 nItemUid)
 {
-    return m_kEquipDE0.FUN_1411e1580(nItemUid);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1580(nItemUid);
 }
 
 // @0x141655c90
 MS2Ptr<CEquipItem> PC::FUN_141655c90(int nSlot)
 {
-    return m_kEquipDE0.FUN_1411e1780(nSlot, 0);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, 0);
 }
 
 // @0x141655cf0
 MS2Ptr<CEquipItem> PC::FUN_141655cf0(int nSlot)
 {
-    return m_kEquipDE0.FUN_1411e1780(nSlot, 1);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, 1);
 }
 
 // @0x141655d50
 MS2Ptr<CEquipItem> PC::FUN_141655d50(int nSlot)
 {
-    return m_kEquipDE0.FUN_1411e1780(nSlot, 5);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, 5);
 }
 
 // @0x141655db0
 MS2Ptr<CEquipItem> PC::FUN_141655db0(int nSlot)
 {
-    return m_kEquipDE0.FUN_1411e1780(nSlot, 4);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, 4);
 }
 
 // @0x141655e10
 MS2Ptr<CEquipItem> PC::FUN_141655e10(int nSlot)
 {
-    return m_kEquipDE0.FUN_1411e1860(nSlot, 6, 0);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1860(nSlot, 6, 0);
 }
 
 // @0x141655e80
-MS2Ptr<CEquipItem> PC::FUN_141655e80(int nSlot, int nKind)
+MS2Ptr<CEquipItem> PC::GetEquipBySlotKind(int nSlot, int nKind)
 {
-    return m_kEquipDE0.FUN_1411e1780(nSlot, nKind);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, nKind);
 }
 
 // @0x1416561a0
@@ -1457,9 +1453,9 @@ void PC::vfunc_127(CItem* pItem, int n)
     if (pItem->FUN_140527840()->GetItemPreset() != 0)
     {
         if (n == 0 && ((Unk_AvModeSvc*)(Unk_PCEquipConfig*)(((class Unk_PCEquipConfig*)FUN_1409f7c90())))->FUN_1409f7ea0())
-            m_kEquipDE0.FUN_1411e38e0(MS2Ptr<CItem>(pItem));
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->RequestItemLoad(MS2Ptr<CItem>(pItem));
         else
-            m_kEquipDE0.FUN_1411e3600(MS2Ptr<CItem>(pItem));
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3600(MS2Ptr<CItem>(pItem));
         FUN_141656710();
     }
 }
@@ -1472,9 +1468,9 @@ void PC::vfunc_128(CItem* pItem, int n)
     if (pItem->FUN_140527840()->GetItemPreset() != 0)
     {
         if (n == 0 && ((Unk_AvModeSvc*)(Unk_PCEquipConfig*)(((class Unk_PCEquipConfig*)FUN_1409f7c90())))->FUN_1409f7ea0())
-            m_kEquipDE0.FUN_1411e3b10(MS2Ptr<CItem>(pItem), 0);
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3b10(MS2Ptr<CItem>(pItem), 0);
         else
-            m_kEquipDE0.FUN_1411e3960(MS2Ptr<CItem>(pItem), 0);
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3960(MS2Ptr<CItem>(pItem), 0);
         FUN_141656710();
     }
 }
@@ -1482,19 +1478,19 @@ void PC::vfunc_128(CItem* pItem, int n)
 // @0x141656580
 void PC::FUN_141656580(MS2Ptr<CItem> spItem, __int64 n)
 {
-    m_kEquipDE0.FUN_1411e37f0(spItem, n);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e37f0(spItem, n);
 }
 
 // @0x1416565f0
 void PC::FUN_1416565f0(MS2Ptr<CItem> spItem, int n)
 {
-    m_kEquipDE0.FUN_1411e3960(spItem, n);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3960(spItem, n);
 }
 
 // @0x141656660
 void PC::FUN_141656660(MS2Ptr<CEquipItem> spItem, int n)
 {
-    m_kEquipDE0.FUN_1411e3bd0(spItem, n);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3bd0(spItem, n);
 }
 
 // @0x1416566d0
@@ -1514,7 +1510,7 @@ void PC::FUN_141656710()
 // @0x141656750
 int PC::FUN_141656750()
 {
-    return m_kEquipDE0.FUN_1411e09a0();
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->AreAllItemsLoaded();
 }
 
 // @0x1416569b0
@@ -1793,9 +1789,9 @@ CString PC::vfunc_60()
         return m_spWeaponActionD70->m_strPrefix;
     else
     {
-        bool bHasSet = !FUN_1416561a0()->FUN_1411eabd0().IsEmpty();
+        bool bHasSet = !reinterpret_cast<CEquipment*>(FUN_1416561a0())->GetSetName().IsEmpty();
         if (bHasSet)
-            return FUN_1416561a0()->FUN_1411eabd0();
+            return reinterpret_cast<CEquipment*>(FUN_1416561a0())->GetSetName();
         else
             return CString("");
     }
@@ -1808,7 +1804,7 @@ int PC::vfunc_61()
         return 1;
     else
     {
-        bool bHasSet = !FUN_1416561a0()->FUN_1411eabd0().IsEmpty();
+        bool bHasSet = !reinterpret_cast<CEquipment*>(FUN_1416561a0())->GetSetName().IsEmpty();
         if (bHasSet)
             return 2;
     }
@@ -1818,9 +1814,9 @@ int PC::vfunc_61()
 // @0x141658c40
 bool PC::vfunc_62()
 {
-    bool bHasSet = !FUN_1416561a0()->FUN_1411eabd0().IsEmpty();
+    bool bHasSet = !reinterpret_cast<CEquipment*>(FUN_1416561a0())->GetSetName().IsEmpty();
     if (bHasSet)
-        return FUN_1416561a0()->FUN_1411eac20();
+        return reinterpret_cast<CEquipment*>(FUN_1416561a0())->IsHasSetName();
     return false;
 }
 
@@ -1866,7 +1862,7 @@ __int64 PC::FUN_141658eb0() { return m_nFE8; }
 void PC::FUN_141658ed0(unsigned char n)
 {
     m_nFF8 = n;
-    m_kEquipDE0.FUN_1411e7610();
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e7610();
 }
 
 // @0x141658f10
@@ -1892,16 +1888,16 @@ void PC::FUN_1416591e0(int nSlot, const NiColor& kColor) { m_colorD98[nSlot] = k
 const NiColor& PC::FUN_141659220(int nSlot) { return m_colorD98[nSlot]; }
 
 // @0x1416595b0
-int PC::FUN_1416595b0() { return m_nCubeModeFFC; }
+int PC::GetCubeMode() { return m_nCubeModeFFC; }
 
 // @0x1416595d0
 int PC::FUN_1416595d0() { return m_nCubeModeFFC != 0; }
 
 // @0x141659610
-int PC::FUN_141659610() { return m_nCubeModeFFC == 1; }
+int PC::IsCubeMode1() { return m_nCubeModeFFC == 1; }
 
 // @0x141659650
-int PC::FUN_141659650() { return m_nCubeModeFFC == 2; }
+int PC::IsCubeMode2() { return m_nCubeModeFFC == 2; }
 
 // @0x141659690
 int PC::FUN_141659690()
@@ -2223,17 +2219,17 @@ int PC::FUN_141662870() { return m_n1188; }
 void PC::FUN_141662890(__int64 nValue) { m_n1188 = nValue; }
 
 // @0x1416628b0
-float PC::FUN_1416628b0(int nOption, unsigned nKey) { return m_kEquipDE0.FUN_1411e1250(nOption, nKey); }
+float PC::FUN_1416628b0(int nOption, unsigned nKey) { return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1250(nOption, nKey); }
 
 // @0x1416628f0
-float PC::FUN_1416628f0(int nOption, unsigned nKey) { return m_kEquipDE0.FUN_1411e13e0(nOption, nKey); }
+float PC::FUN_1416628f0(int nOption, unsigned nKey) { return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e13e0(nOption, nKey); }
 
 // @0x141662930
 float PC::FUN_141662930(int nSpecial)
 {
     if (!FUN_14081dcd0(nSpecial))
         return 0;
-    return m_kEquipDE0.FUN_1411e1110(nSpecial);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->GetAbilityRate((SAType)nSpecial);
 }
 
 // @0x141662980
@@ -2241,21 +2237,21 @@ int PC::FUN_141662980(int nSpecial)
 {
     if (!FUN_14081dc50(nSpecial))
         return 0;
-    return m_kEquipDE0.FUN_1411e1160(nSpecial);
+    return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->GetAbilityTotal((SAType)nSpecial);
 }
 
 // @0x141662d60
 void PC::FUN_141662d60(__int64 nValue)
 {
     m_n1190 = nValue;
-    FUN_1416561a0()->FUN_1411e7680();
+    reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e7680();
 }
 
 // @0x141662da0
 void PC::FUN_141662da0(int n)
 {
     m_n1198 = n;
-    FUN_1416561a0()->FUN_1411e7680();
+    reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e7680();
 }
 
 // @0x141662de0
@@ -2350,7 +2346,7 @@ void PC::ClearCouple()
 }
 
 // @0x1416638b0
-CStringW PC::FUN_1416638b0()
+CStringW PC::GetCoupleName()
 {
     if (m_spCouple11d8.get())
         return m_spCouple11d8->GetName();
@@ -2511,7 +2507,7 @@ void PC::FUN_141664160(AdditionalCli* pCli)
 }
 
 // @0x141664200
-MS2Ptr<Unk_HsInfo> PC::FUN_141664200() { return reinterpret_cast<const MS2Ptr<Unk_HsInfo>&>(m_spHideAndSeek1250); }
+MS2Ptr<Unk_HsInfo> PC::GetHideAndSeekInfo() { return reinterpret_cast<const MS2Ptr<Unk_HsInfo>&>(m_spHideAndSeek1250); }
 
 // @0x141664250
 MS2Ptr<Unk_PCWaterGunInfo> PC::GetWaterGunInfo() { return reinterpret_cast<const MS2Ptr<Unk_PCWaterGunInfo>&>(m_spWaterGun1260); }
@@ -2613,7 +2609,7 @@ int PC::FUN_14165c1b0(int* pnId, CString* pstrName, float fRange)
 // @0x14165c240
 void PC::vfunc_136(const CString& strModel, const efd::utf8string& kAnim, float fBlend)
 {
-    m_kEquipDE0.FUN_1411e8b60(FUN_141658d20(), strModel, kAnim, fBlend);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e8b60(FUN_141658d20(), strModel, kAnim, fBlend);
 }
 
 // @0x14165c2d0
@@ -2623,7 +2619,7 @@ MS2Ptr<Unk_PCD88> PC::FUN_14165c2d0() { return m_spD88; }
 void PC::vfunc_114(void* p) { m_spStateMgr->FUN_1417db2e0(static_cast<Unk_StateArg22*>(p)); }   // a state sync record
 
 // @0x14165c520
-MS2Ptr<CWeaponAction> PC::FUN_14165c520() { return m_spWeaponActionD70; }
+MS2Ptr<CWeaponAction> PC::GetWeaponAction() { return m_spWeaponActionD70; }
 
 // @0x14165ca20
 Unk_PCActionTimer* PC::FUN_14165ca20() { return m_spFC8.get(); }
@@ -2643,7 +2639,7 @@ float PC::vfunc_95()
 {
     float f = PCBase::vfunc_95();
     if (FUN_141675ed0())
-        f = m_kEquipDE0.FUN_1411e0f00(f);
+        f = reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e0f00(f);
     return f;
 }
 
@@ -2777,7 +2773,7 @@ void PC::vfunc_24(int nFlags)
         }
         if (bVisible)
         {
-            if (bShow && (nFlags & 2) && CPartyManager::GetInstance()->FUN_14162ae20(m_nCharIdDB8))
+            if (bShow && (nFlags & 2) && CPartyManager::GetInstance()->IsMemberByCharId(m_nCharIdDB8))
                 bShow = 0;
             if (bShow && (nFlags & 4))
             {
@@ -2792,7 +2788,7 @@ void PC::vfunc_24(int nFlags)
             {
                 bool bValue = false;
                 FUN_14098c6e0((class Unk_CachedEntity*)(m_unk_80), 0xa0b6b179, bValue);
-                m_kEquipDE0.FUN_1411e8eb0(DAT_143ae2de8);
+                reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e8eb0(DAT_143ae2de8);
             }
             else
             {
@@ -2801,7 +2797,7 @@ void PC::vfunc_24(int nFlags)
                     bool bValue = true;
                     FUN_14098c6e0((class Unk_CachedEntity*)(m_unk_80), 0xa0b6b179, bValue);
                 }
-                m_kEquipDE0.FUN_1411e9020(DAT_143ae2de8);
+                reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e9020(DAT_143ae2de8);
             }
         }
     }
@@ -2826,7 +2822,7 @@ MS2Ptr<Unk_PCBaseComp_a58> PC::vfunc_80()
 }
 
 // @0x141660d50
-void PC::FUN_141660d50()
+void PC::SetDefaultBoundingBox()
 {
     efd::Point3 kSize(70.0f, 35.0f, 150.0f);
     efd::Point3 kOffset(0.0f, 35.0f, 0.0f);
@@ -2997,9 +2993,9 @@ MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
     ClonePC* pClone = FUN_1405a7e30(this);
     bool bClone = !(pClone == 0 || pClone->FUN_141088590());
     if (bKind0Only && !bClone)
-        return m_kEquipDE0.FUN_1411e1780(nSlot, 0);
+        return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, 0);
     if (bClone)
-        return m_kEquipDE0.FUN_1411e1a50(nSlot, 0);
+        return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->GetTopLayerItem(nSlot, 0);
     std::vector<Unk_PCEquipKind> kKinds;
     kKinds.reserve(3);
     kKinds.push_back(Unk_PCEquipKind(0));
@@ -3009,7 +3005,7 @@ MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
     for (size_t i = 0; i < kKinds.size(); i++)
     {
         int nKind = kKinds.at(i);
-        spItem = m_kEquipDE0.FUN_1411e1780(nSlot, nKind);
+        spItem = reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1780(nSlot, nKind);
         if (spItem.get())
             break;
     }
@@ -3335,7 +3331,7 @@ struct Unk_PCEnchantOrder
 BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
-    FUN_1416561a0()->FUN_1411e1ce0(kList, 0);
+    reinterpret_cast<CEquipment*>(FUN_1416561a0())->CollectShownItemsInLayer(kList, 0);
     std::vector<std::pair<int, int> > aEnchants;
     for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
     {
@@ -3430,7 +3426,7 @@ void PC::FUN_141663150(CInPacket& packet)
     spItem->SetObjectId(FUN_14123c580());
     FUN_141663400(spItem);
     FUN_1416769a0(nItemUid);
-    FUN_1416561a0()->FUN_1411e7660();
+    reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e7660();
 }
 
 // @0x141661370
@@ -3604,9 +3600,9 @@ void PC::FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick)
         if (spItem == 0)
             continue;
         if (bQuick)
-            m_kEquipDE0.FUN_1411e38e0(spItem);
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->RequestItemLoad(spItem);
         else
-            m_kEquipDE0.FUN_1411e3600(spItem);
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3600(spItem);
     }
 }
 
@@ -3649,7 +3645,7 @@ void PC::FUN_141660ee0()
 {
     if (!m_bD40)
         return;
-    if (!m_kEquipDE0.FUN_1411e09a0())
+    if (!reinterpret_cast<CEquipment*>(&m_kEquipDE0)->AreAllItemsLoaded())
         return;
     m_bD40 = false;
     if (m_unk_b0 == 0)
@@ -3927,7 +3923,7 @@ int PC::FUN_14165b500(int nKind)
                         if (!FUN_14165c090(kTarget))
                             continue;
                         vfunc_19(kTarget);
-                        FUN_14166d430(-kInfo.m_hitNormal, 1, 1);
+                        SetLookDirection(-kInfo.m_hitNormal, 1, 1);
                         return 1;
                     }
                 }
@@ -3999,7 +3995,7 @@ int PC::FUN_14165b500(int nKind)
                             if (!FUN_14165c090(kTarget))
                                 return 0;
                             vfunc_19(kTarget);
-                            FUN_14166d430(-kInfo.m_hitNormal, 1, 1);
+                            SetLookDirection(-kInfo.m_hitNormal, 1, 1);
                             return 1;
                         }
                     }
@@ -4017,7 +4013,7 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
 {
     int nRightType = 0;
     int nLeftType = 0;
-    MS2Ptr<CEquipItem> spRight = m_kEquipDE0.FUN_1411e1860(5, 6, 1);
+    MS2Ptr<CEquipItem> spRight = reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1860(5, 6, 1);
     if (spRight.get())
     {
         MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(5, false);
@@ -4040,7 +4036,7 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
     }
     if (spRight.IsNull())
         bPrimary = 0;
-    MS2Ptr<CEquipItem> spLeft = m_kEquipDE0.FUN_1411e1860(4, 6, 1);
+    MS2Ptr<CEquipItem> spLeft = reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1860(4, 6, 1);
     if (spLeft.get())
     {
         MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(4, false);
@@ -4193,7 +4189,7 @@ void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
         SAType eType = (SAType)i;
         if (!FUN_14081dd50(eType))
             continue;
-        spInfo->m_3b0[eType] = m_kEquipDE0.FUN_1411e1160(eType);
+        spInfo->m_3b0[eType] = reinterpret_cast<CEquipment*>(&m_kEquipDE0)->GetAbilityTotal((SAType)eType);
     }
     spInfo->m_3c0 = 0;
     spInfo->m_3c4 = FUN_141658e60();
@@ -4251,7 +4247,7 @@ void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
     int nRings = 0;
     bool bWorn = nLayer == 0;
     ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
-    m_kEquipDE0.FUN_1411e1ce0(kList, nLayer);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->CollectShownItemsInLayer(kList, nLayer);
     pMap->RemoveAll();
     POSITION pos = kList.GetHeadPosition();
     while (pos)
@@ -4378,7 +4374,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     }
     kDir.Unitize();
     PC_RECORD_PT(m_ptDir) = kDir;
-    fSpeed = FUN_1416561a0()->FUN_1411e0f90(fSpeed);
+    fSpeed = reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e0f90(fSpeed);
     fSpeed *= fScale;
     if (nKind == 2) {
         PCBase* pAttacker = ((PCBase*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1200(spRecord->m_nOwnerId));
@@ -4494,9 +4490,9 @@ void PC::vfunc_53(float f)
 {
     FUN_141678360();
     FUN_141660df0();
-    m_kEquipDE0.FUN_1411e76c0(f);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e76c0(f);
     PCBase::vfunc_53(f);
-    if (DAT_143ab2828 == m_nCharIdDB8 || CPartyManager::GetInstance()->FUN_14162ae20(m_nCharIdDB8))
+    if (DAT_143ab2828 == m_nCharIdDB8 || CPartyManager::GetInstance()->IsMemberByCharId(m_nCharIdDB8))
         m_nFF0 = CPartyManager::GetInstance()->GetPartyId();
     else
         m_nFF0 = 0;
@@ -4553,11 +4549,11 @@ int PC::vfunc_116()
 {
     if (FUN_14165ef30())
         return reinterpret_cast<CPvPInfo*>(FUN_140967420().operator->())->m_nPoint;
-    if (((HideAndSeek::Info*)(FUN_141664200()).operator->())->FUN_14050a490())
+    if (((HideAndSeek::Info*)(GetHideAndSeekInfo()).operator->())->FUN_14050a490())
     {
-        if (((HideAndSeek::Info*)(FUN_141664200()).operator->())->FUN_14050a6a0() == 1)
+        if (((HideAndSeek::Info*)(GetHideAndSeekInfo()).operator->())->FUN_14050a6a0() == 1)
             return 0xc9;
-        if (((HideAndSeek::Info*)(FUN_141664200()).operator->())->FUN_14050a6a0() == 2)
+        if (((HideAndSeek::Info*)(GetHideAndSeekInfo()).operator->())->FUN_14050a6a0() == 2)
             return 0xca;
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10e) == true)
@@ -4586,9 +4582,9 @@ void PC::vfunc_143()
         if (spItem->FUN_140527840()->FUN_14053d550())
         {
             if (bQuick)
-                m_kEquipDE0.FUN_1411e38e0(spItem);
+                reinterpret_cast<CEquipment*>(&m_kEquipDE0)->RequestItemLoad(spItem);
             else
-                m_kEquipDE0.FUN_1411e3600(spItem);
+                reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3600(spItem);
         }
         else if (spItem->FUN_14052a150() == 2)
             aKind2.Add(spItem);
@@ -4609,7 +4605,7 @@ void PC::vfunc_42(float f, bool b)
 {
     GameObject::vfunc_42(f, b);
     ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
-    m_kEquipDE0.FUN_1411e1b80(kList);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->CollectShownItems(kList);
     for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
     {
         ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
@@ -4637,7 +4633,7 @@ void PC::vfunc_40(float a, float b, float c, float d)
 {
     GameObject::vfunc_40(a, b, c, d);
     ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
-    m_kEquipDE0.FUN_1411e1b80(kList);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->CollectShownItems(kList);
     for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
     {
         ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
@@ -4696,9 +4692,9 @@ void PC::vfunc_23(int n)
 {
     PCBase::vfunc_23(n);
     if (n)
-        m_kEquipDE0.FUN_1411e8eb0(s_strDefault);
+        reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e8eb0(s_strDefault);
     else
-        m_kEquipDE0.FUN_1411e9020(s_strDefault);
+        reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e9020(s_strDefault);
     if (m_spTailEffect1270.get())
     {
         if (n)
@@ -4730,7 +4726,7 @@ void PC::vfunc_44(void* p)
     static_cast<NodeList*>(p)->clear();
     static_cast<NodeList*>(p)->push_back(FUN_141b6efc0(FUN_14123c410()));
     ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
-    m_kEquipDE0.FUN_1411e1b80(kList);
+    reinterpret_cast<CEquipment*>(&m_kEquipDE0)->CollectShownItems(kList);
     for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
     {
         ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
@@ -4763,7 +4759,7 @@ int PC::FUN_141662eb0(CItem* pItem)
         if (!FUN_1406343b0(MS2Ptr<CItem>(pItem), &nCharId))
             return 0;
     }
-    if (pItem->FUN_14052a170() == 2 && !m_kEquipDE0.FUN_1411ea770())
+    if (pItem->FUN_14052a170() == 2 && !reinterpret_cast<CEquipment*>(&m_kEquipDE0)->IsLayerActive())
         return 0;
     return 1;
 }
@@ -4796,7 +4792,7 @@ void PC::FUN_141656780()
                 for (int i = 0; i < 4; i++)
                     pData->SetValue(i, m_afA20[i]);
             }
-            FUN_1416561a0()->FUN_1411e6b50();
+            reinterpret_cast<CEquipment*>(FUN_1416561a0())->FUN_1411e6b50();
         }
     }
 }

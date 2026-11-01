@@ -109,7 +109,7 @@ public:
 };
 float* FUN_140552770(std::vector<float>*, size_t);          // const operator[]
 void* FUN_1409a8b10();
-int* FUN_1409a8ac0(void*);
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 unsigned char FUN_1401d1320(CCacheData*);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -183,7 +183,7 @@ int EffectSkipMgr::ShouldSkipByView(CEffectDataPtr spData, int nCaster, Unk_Skip
 // @0x1411b89e0
 bool EffectSkipMgr::LoadOption()
 {
-    int nOption = *FUN_1409a8ac0(FUN_1409a8b10());
+    int nOption = *(int*)((Unk_AeGameOption*)FUN_1409a8b10())->FUN_1409a8ac0();
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)

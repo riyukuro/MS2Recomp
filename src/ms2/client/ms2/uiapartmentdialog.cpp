@@ -118,11 +118,11 @@ void UIApartmentDialog::OnLoadComplete()
         m_door2 = GetChild<Unk_140acd6e0>("m_door5");
     }
     m_contract = GetChild<Unk_140acd6e0>("m_contractButton");
-    m_broker->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6bf0), 0);
-    m_door0->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6cd0), 0);
-    m_door1->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d10), 0);
-    m_door2->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d40), 0);
-    m_contract->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d60), 0);
+    ((class ASButton*)(m_broker))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6bf0), 0);
+    ((class ASButton*)(m_door0))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6cd0), 0);
+    ((class ASButton*)(m_door1))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d10), 0);
+    ((class ASButton*)(m_door2))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d40), 0);
+    ((class ASButton*)(m_contract))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d60), 0);
     vfunc_47(0);
     FUN_1418b6580();
     FUN_140bc09f0()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
@@ -289,7 +289,7 @@ void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Par
         return;
     Unk_AptContractDialog* pDialog = FUN_140961690(0x4e76);
     if (pDialog != 0)
-        pDialog->FUN_141ab4000(m_nGroup, WorldService::GetInstance()->FUN_141bd3060());
+        ((class UIRealEstateDialog*)(pDialog))->FUN_141ab4000(m_nGroup, (int)(WorldService::GetInstance()->FUN_141bd3060()));
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e76)));
 }
 

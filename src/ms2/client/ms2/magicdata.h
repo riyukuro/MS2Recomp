@@ -133,16 +133,6 @@ struct Unk_MagicSlot {
 };
 MS2_CHECK_SIZE(Unk_MagicSlot, 0x28);
 
-// An id -> id hash map whose members live out of line in the exe (additionalactionadditional.cpp); 0x48 bytes.
-class Unk_MagicUIntMap {
-public:
-    Unk_MagicUIntMap(unsigned nBins, float fOptimalLoad, float fLowThreshold, float fHighThreshold, unsigned nBlockSize);  // 0x140181eb0
-    ~Unk_MagicUIntMap();                                            // 0x1401835e0
-private:
-    void* m_raw[9];
-};
-MS2_CHECK_SIZE(Unk_MagicUIntMap, 0x48);
-
 class CMagic : public CPtred
 {
 public:
@@ -219,8 +209,8 @@ public:
     int m_n1C8;
     int m_n1CC;
     int m_n1D0;
-    Unk_MagicUIntMap m_map1D8;                                      // +0x1d8
-    Unk_MagicUIntMap m_map220;                                      // +0x220
+    ATL::CAtlMap<unsigned int, float> m_map1D8;                     // +0x1d8 id -> id hash map
+    ATL::CAtlMap<unsigned int, float> m_map220;                     // +0x220
     int m_n268;
     int m_n26C;
     Unk_MagicValPtr m_spVal;                                        // +0x270

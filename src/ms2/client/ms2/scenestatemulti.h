@@ -75,28 +75,28 @@ public:
     void vfunc_4(int) override;                             // 0x14174e980 (IWorldServiceCallback slot 4)
     int OnMessage(UISwfEntity* pSender, UIMsg* pMsg) override;  // 0x14174ea50 (IMessageListener slot 0)
 
-    int FUN_14174eaf0();                                   // a lobby actor exists
+    int HasMyPC();                                   // a lobby actor exists
     void FUN_14174eb30();                                   // leave the lobby to the server list
-    void FUN_14174eb80(int nJobCode);                       // enter the create scene for a job
+    void SelectCreateJob(int nJobCode);                       // enter the create scene for a job
     void FUN_14174ebc0();                                   // enter the select scene
     void FUN_14174ec40(int nGender, bool bFlag);           // spawn the preview pc for a new character
     void FUN_14174ee00(BackUpCharacterInfo* pInfo);         // respawn the preview pc from a backup
     Unk_LobbyChar* FUN_14174f0f0();                         // 0x14174f0f0 the lobby actor matching the scan row
     void FUN_14174f390(void* pActor, int);                  // 0x14174f390
-    unsigned int FUN_14174f3e0();                                 // 0x14174f3e0 select map of the current job
+    unsigned int GetSelectMapForSelectedJob();                                 // 0x14174f3e0 select map of the current job
     unsigned int FUN_14174f440();                                 // 0x14174f440 create map of the current job
     void FUN_14174f470();                                   // 0x14174f470
     void FUN_14174f4a0();                                   // 0x14174f4a0
     void FUN_14174f4c0(CInPacket& packet);                  // 0x14174f4c0 opcode 0x71
     void OnWaitingTicketUpdate(CInPacket& packet);                  // 0x14174f8d0 opcode 0xb4
-    void FUN_14174fcc0(CInPacket& packet);                  // 0x14174fcc0 opcode 0x10f
-    void FUN_14174fd00();                                   // 0x14174fd00 drop the preview pc
+    void OnServerTimePacket(CInPacket& packet);                  // 0x14174fcc0 opcode 0x10f
+    void ReleasePreviewPC();                                   // 0x14174fd00 drop the preview pc
     int FUN_14174fd70();                                   // 0x14174fd70
-    bool FUN_14174fdb0();                                   // 0x14174fdb0 same month as the server time
-    void FUN_14174fe40();                                   // 0x14174fe40
-    void FUN_14174fea0();                                   // 0x14174fea0
-    void FUN_14174ff00();                                   // 0x14174ff00
-    unsigned int FUN_14174ff70();                           // 0x14174ff70
+    bool IsServerTimeSameMonth();                                   // 0x14174fdb0 same month as the server time
+    void ExitMapMode();                                   // 0x14174fe40
+    void EnterSelectMode();                                   // 0x14174fea0
+    void EnterCreateMode();                                   // 0x14174ff00
+    unsigned int GetLobbyMap();                           // 0x14174ff70
     void OnGameEventChanged(NotifyObject* pNotify);              // 0x14174ffb0 NotifyGameEventChanged handler
     void OnEventReward(CInPacket& packet);                  // 0x141750050 opcode 0xf7
 

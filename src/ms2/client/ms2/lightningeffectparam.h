@@ -58,10 +58,10 @@ public:
     void BuildPath(Vector3 kStart, Vector3 kEnd);   // 0x14144d670 jagged path + the two edge lines
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_NodePtr m_spRoot;           // +0x30 "Effect Root" EffectNode
-    Unk_NodePtr m_sp38;             // +0x38 unused
+    efd::SmartPointer<NiNode> m_spRoot;           // +0x30 "Effect Root" EffectNode
+    efd::SmartPointer<NiNode> m_sp38;             // +0x38 unused
     NiPointer<CMesh> m_spMesh;      // +0x40 "LightningEffect"
-    Unk_NodePtr m_spTarget;         // +0x48 node the effect follows (resolved from the target handle)
+    efd::SmartPointer<NiNode> m_spTarget;         // +0x48 node the effect follows (resolved from the target handle)
     float m_fSpread;                // +0x50
     float m_fJointLen;              // +0x54
     float m_fWidth;                 // +0x58

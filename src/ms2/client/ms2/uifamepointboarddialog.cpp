@@ -176,7 +176,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
         if (((class CFameTable*)FUN_140764010())->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
             continue;
         CStringW strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x43, nLogId);
-        FUN_1403b4750()->FUN_1416fb300(strMsg);
+        FUN_1403b4750()->ReplaceObjectAndValueWords(strMsg);
         CStringW strDate;
         CMsTime timeLog(nLogTime);
         ATL::CTimeSpan span = timeNow - timeLog;

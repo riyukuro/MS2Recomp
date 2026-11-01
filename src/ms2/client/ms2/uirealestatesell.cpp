@@ -216,17 +216,17 @@ void UIRealEstateSell::FUN_141ab6230()
     if (FUN_1408a0d30(target.FUN_14050dee0()->m_24, *(struct Unk_UGCGroup*)(&salable), target.FUN_14050dee0()->m_20) == 0)
         return;
     CStringW strName = pPC->vfunc_77();
-    obj.FUN_1407cbb20("houseName", strName);
+    ((class AScript&)(obj)).FUN_1407cbb20("houseName", strName);
     CStringW strAddress = FUN_140979570(target.FUN_14050dee0()->m_20);
-    obj.FUN_1407cbb20("address", strAddress);
+    ((class AScript&)(obj)).FUN_1407cbb20("address", strAddress);
     ATL::CTimeSpan span = CMsTime(pPC->FUN_141523c50()->m_n30) - CMsTime(GetServerTime());
     if (span.GetDays() >= 0)
     {
         CStringW strExpire;
         strExpire = FUN_14086d060(0x7ce, span.GetDays());
-        obj.FUN_1407cbb20("expire", strExpire);
+        ((class AScript&)(obj)).FUN_1407cbb20("expire", strExpire);
     }
-    obj.FUN_1407cb9c0("priceType", 0);
+    ((class AScript&)(obj)).FUN_1407cb9c0("priceType", 0);
     unsigned nItem = 0;
     __int64 nPrice = 0;
     FUN_1408a09d0(&nItem, &nPrice, target.FUN_14050dee0()->m_20, target.FUN_14050dee0()->m_24);
@@ -235,31 +235,31 @@ void UIRealEstateSell::FUN_141ab6230()
     FUN_1408a0b80(&nItem2, &nPrice2, target.FUN_14050dee0()->m_20, target.FUN_14050dee0()->m_24);
     if (FUN_14053f8c0(nItem))
     {
-        obj.FUN_1407cbb20("price", FUN_14052bd00(0x7e2, FUN_1409404f0(nPrice)));
+        ((class AScript&)(obj)).FUN_1407cbb20("price", FUN_14052bd00(0x7e2, FUN_1409404f0(nPrice)));
     }
     else if (FUN_14053f940(nItem))
     {
-        obj.FUN_1407cbb20("price", FUN_14052bd00(0x7e3, FUN_1409404f0(nPrice)));
+        ((class AScript&)(obj)).FUN_1407cbb20("price", FUN_14052bd00(0x7e3, FUN_1409404f0(nPrice)));
     }
     else
     {
         CStringW strPrice;
         strPrice.Format(L"%s x%d", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem), nPrice);
-        obj.FUN_1407cbb20("price", strPrice);
+        ((class AScript&)(obj)).FUN_1407cbb20("price", strPrice);
     }
     if (FUN_14053f8c0(nItem2))
     {
-        obj.FUN_1407cbb20("extend", FUN_14052bd00(0x7e2, FUN_1409404f0(nPrice2)));
+        ((class AScript&)(obj)).FUN_1407cbb20("extend", FUN_14052bd00(0x7e2, FUN_1409404f0(nPrice2)));
     }
     else if (FUN_14053f940(nItem2))
     {
-        obj.FUN_1407cbb20("extend", FUN_14052bd00(0x7e3, FUN_1409404f0(nPrice2)));
+        ((class AScript&)(obj)).FUN_1407cbb20("extend", FUN_14052bd00(0x7e3, FUN_1409404f0(nPrice2)));
     }
     else
     {
         CStringW strExtend;
         strExtend.Format(L"%s x%d", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem2), nPrice2);
-        obj.FUN_1407cbb20("extend", strExtend);
+        ((class AScript&)(obj)).FUN_1407cbb20("extend", strExtend);
     }
     m_30->Invoke("initData", obj);
 }

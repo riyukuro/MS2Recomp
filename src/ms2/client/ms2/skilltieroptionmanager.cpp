@@ -29,13 +29,13 @@
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
+class CFileSystem * GetFileSystem(void);
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
+int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>* pOut, const char* pszDelim);   // split into uints
 unsigned char FUN_1401d1320(CCacheData*);                                // the file changed since it was loaded
 int FUN_14081d9e0(unsigned nTier);                                       // the tier id is used
@@ -156,7 +156,7 @@ int LoadItemOptionSkillTier()
 {
     CString strPath = FUN_14071a5b0("Table", "itemOptionSkillTier.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
@@ -173,20 +173,20 @@ int LoadItemOptionSkillTier()
             }
         }
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("skillTier"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("skillTier")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("skillTier")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("skillTier")))
     {
         if (!FUN_14028f710(pNode))
             continue;
         unsigned nId = 0;
         CString strSkills;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
-        FUN_140873ad0(pNode, "skillIDs", strSkills);
+        XmlQuery((class TiXmlElement *)(pNode), "skillIDs", strSkills);
         ATL::CAtlArray<unsigned int> aSkills;
         FUN_140177e10(strSkills, &aSkills, ",");
         if (aSkills.IsEmpty())

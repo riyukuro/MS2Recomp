@@ -40,6 +40,7 @@
 #include "ms2/placeholder/uitalkmanager.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/effectquery.h"
+#include "ms2/client/ms2/uihudentity.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -108,7 +109,6 @@ public:
 
 // The owner's play-actor component (pcbase.cpp owns the full one) and its flag.
 class Unk_PCBaseComp_aa8 : public CPtred { };
-int FUN_140f48d40(void* pComp);                            // 0x140f48d40 the component's flag
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
@@ -208,7 +208,7 @@ void StateTalk::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     if (FUN_1417b8560() && FUN_1417fca20())
     {
-        if ((m_pOwner->vfunc_85().get() ? true : false) && FUN_140f48d40(m_pOwner->vfunc_85().operator->()) != 0)
+        if ((m_pOwner->vfunc_85().get() ? true : false) && reinterpret_cast<UIHudEntity::Entity*>(m_pOwner->vfunc_85().operator->())->FUN_140f48d40() != 0)
         {
             Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
             m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);

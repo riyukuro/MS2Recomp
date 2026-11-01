@@ -89,10 +89,9 @@ public:
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The animation service of an entity: plays an animation on an entity id.
-class Unk_PiAnimSvc { public: };
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-void FUN_1409a1fc0(Unk_PiAnimSvc* pSvc, const egf::EntityID* pEntityId, const efd::utf8string* pAnim, float fSpeed, bool bFlag);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 // The model loader (singleton): loads a nif by path.
@@ -124,7 +123,7 @@ int FUN_140768010(int nRange, int nBase);                    // random number in
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_14212c720(egf::Entity* pEntity);                    // the entity has finished loading
 void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Vector3* pValue);   // SetProperty(point)
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned nProp, bool* pValue);                    // SetProperty(bool)
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140ae1240(egf::Entity* pEntity, unsigned nProp, const efd::utf8string* pValue);   // SetProperty(string)
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);             // the scene root of an entity
 CString FUN_1409a2360(const char* psz, int n);               // text conversion
@@ -282,17 +281,17 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                 if (FUN_140de0900(m_pOwner) != 0)
                 {
                     bool bHide = false;
-                    FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bHide);
+                    FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)m_spEntity), 0xa0b6b179, bHide);
                 }
                 else
                 {
                     m_bB4 = true;
                     bool bShow = true;
-                    FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bShow);
+                    FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)m_spEntity), 0xa0b6b179, bShow);
                     if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     {
                         bool bHide = false;
-                        FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bHide);
+                        FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)m_spEntity), 0xa0b6b179, bHide);
                     }
                 }
             }
@@ -418,7 +417,7 @@ void StatePlayInstrument::vfunc_3(double fTime)
             if (((egf::Entity*)m_spEntity ? true : false) && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
             {
                 bool bShow = m_nB0 != 0 ? false : true;
-                FUN_14098c6e0(m_spEntity.operator->(), 0xa0b6b179, &bShow);
+                FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bShow);
             }
         }
     }
@@ -433,7 +432,7 @@ void StatePlayInstrument::vfunc_3(double fTime)
                 FUN_140a38a50(m_spEntity.operator->(), 0xfd95ca52, &DAT_143b01a60);
                 FUN_140a38a50(m_spEntity.operator->(), 0x68c7c29d, &DAT_143b01a60);
                 bool bShow = true;
-                FUN_14098c6e0(m_spEntity.operator->(), 0xa0b6b179, &bShow);
+                FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bShow);
                 NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pRoot));
                 pAvatar->FUN_1409f5560(pNode);
                 m_bB4 = true;
@@ -689,7 +688,7 @@ void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
     m_pOwner->FUN_14166dd20(kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false, false);
     m_strLastAnim = strAnim;
     if (m_spEntity)
-        FUN_1409a1fc0(reinterpret_cast<Unk_PiAnimSvc*>(FUN_141b6f910()), FUN_1408b76f0(reinterpret_cast<const egf::EntityPtr*>(&m_spEntity)->operator->()), &kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(*FUN_1408b76f0(reinterpret_cast<const egf::EntityPtr*>(&m_spEntity)->operator->()), kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
 }
 
 // @0x140de0c00

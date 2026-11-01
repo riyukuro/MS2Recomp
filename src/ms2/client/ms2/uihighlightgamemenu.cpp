@@ -6,6 +6,7 @@
 // MS2-PIN: ?vfunc_48@UIHighlightGameMenu@@UEAAHXZ 0x140c25180 ; unique
 // MS2-PIN: ?vfunc_3@UIItemEventListener@@UEAAXPEAX_N@Z 0x140c255d0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIHighlightGameMenu@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x140c24b10
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uihighlightgamemenu.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -41,6 +42,11 @@
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::ToggleDialog
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
+#include "ms2/client/ms2/equipment.h"  // C3: CEquipment::CollectShownItemsInLayer
+#include "ms2/client/ms2/equipitem.h"  // C3: CEquipItem::GetItem
+#include "ms2/commonfiles/enchantscrolldata.h"  // C3: CEnchantScrollTable::FindScroll
+#include "ms2/commonfiles/itemgemstonedata.h"  // C3: CItemGemStoneUpgradeTable::FindData
+#include "ms2/commonfiles/timeutil.h"  // C3: GetServerTime
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // The key-input controller singleton of this unit.
@@ -60,14 +66,13 @@ static CString s_strSortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Cre
 
 typedef void* P;
 
-// A 16-byte handle (item / record reference; ctor, dtor and accessors live outside this unit).
-struct Unk_HlH
-{
-    void* m_unk_00;
-    void* m_p;
-};
-
 class ASDialog : public ASDisplayObject {};
+
+class MyPC   // C3: member view (the real header pulls in the PC tree)
+{
+public:
+    MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
+};
 
 class CItem;
 CItem* FUN_14052cd70(MS2Ptr<CItem>* p);
@@ -77,7 +82,7 @@ int UseItem(MS2Ptr<CItem> spItem, int n);                  // 0x140d1bd60
 class Unk_HlDb
 {
 public:
-    Unk_HlH FUN_140a5e2e0(int nId);                         // item by id
+    MS2Ptr<CItem> FUN_140a5e2e0(int nId);                       // item by id
     MS2Ptr<CItem> FUN_140a5d680(__int64 nId);               // item by instance id
     void FUN_140a60880(int nBag, ATL::CAtlArray<MS2Ptr<CItem> >& out);   // the items of a bag
     int FUN_140a65770(P pId);
@@ -232,24 +237,12 @@ class UIInventoryDialog   // C3: member view for the former free stand-ins
 public:
     void FUN_141999d40(int);
 };
-void FUN_140d1bd60(Unk_HlH item, int n);
-char FUN_140534e80(Unk_HlH* p);
 P FUN_140c24650();
 int FUN_140c25190();
 
 P FUN_140ba7c60(MS2Ptr<AScript>* p);
 
 // item handles / records
-void FUN_140203510(Unk_HlH* p, int n);
-P FUN_1402034d0(Unk_HlH* dst, P src);
-void FUN_1401bfde0(Unk_HlH* p);
-char FUN_1401c0050(Unk_HlH* p, int n);
-P FUN_1401c0180(Unk_HlH* p);
-P FUN_14052cd70(Unk_HlH* p);
-void FUN_140692c90(Unk_HlH* dst, Unk_HlH* src);
-void FUN_1401bf970(void* pRec, P pItemInfo);
-void FUN_1401b50d0(void* pRec);
-char FUN_1402ffd90(void* pRec);
 
 // the player
 int FUN_141654730(P);                                      // job code
@@ -265,28 +258,10 @@ P FUN_1409a8b10();
 unsigned FUN_140caa1a0(P);
 
 // lists, arrays, item records
-void FUN_1408850d0(void*);
-void FUN_1405a85f0(void*);
 P FUN_1416561a0(P);
-void FUN_1411e1ce0(P, void*, int);
-void FUN_1411dc7a0(P, Unk_HlH*);
-P FUN_140a69ee0(void*, unsigned __int64);
-unsigned __int64 FUN_140720ca0(void*);
-P FUN_1405a8ed0(void*);
-void FUN_14034ed30(void*);
 P FUN_1408e5180(void*);
 void FUN_1408e4ea0(void*);
-void FUN_140885680(void*, P*);
-P FUN_140885670(void*);
-P FUN_140885600(void*, P);
-void FUN_140884f30(void*, P);
-void FUN_140884ed0(void*, int);
-void FUN_1405b2540(void*);
-char FUN_140534e50(Unk_HlH*);
-P FUN_14034ef20(void*);
 int FUN_141654700(P);
-void FUN_14152e2f0(P, Unk_HlH*, P);                     // spItem by value: rcx-built copy (0x1402034d0), the callee releases it
-char FUN_1409edd90(void*, int);
 unsigned __int64 FUN_1408e57c0(P);
 void FUN_1408e4be0(void*, P);
 // A 16-byte list entry copied out of the array (ctor 0x1408e4be0, dtor 0x1408e4ea0).
@@ -305,23 +280,9 @@ public:
     int FUN_1408d1f60(unsigned int, int);
 };
 void AddMinutes(class CMsTime&, int);   // C3: was FUN_14086a880
-P FUN_140869440();
-void FUN_140720b80(void*, Unk_HlH*);
-void FUN_1406c47a0(void*, P);
 int FUN_140691130(P);
 int FUN_140690370(P);
-class CItemGemStoneUpgradeTable* FUN_14062c280();   // C3: was FUN_14062c280
-P FUN_1405b2650(void*);
-char FUN_1405b2610(void*, void*);                         // MS2Ptr == (null ptr argument)
-void FUN_1405b1a60(P, void*, int);
-char FUN_140545da0(void*, int);
 int FUN_140408410(void*, int*);
-P FUN_14034f780();
-char FUN_14034eee0(void*, const wchar_t*);
-char FUN_14034eeb0(void*);
-void FUN_14034e360(P, void*, int);
-unsigned __int64 FUN_140186270(void*);
-int* FUN_140184510(void*, unsigned __int64);
 
 P FUN_14015b020(P p);
 void FUN_140159b70(unsigned nHr);
@@ -744,60 +705,28 @@ int UIHighlightGameMenu::FUN_140c231b0()
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > bag;
     DAT_143ab2a90.FUN_140a60880(0, bag);
-    char limit[16];
-    FUN_1406c47a0(limit, FUN_140869440());
-    AddMinutes(*(class CMsTime*)(limit), 0xfffffff6);
-    for (unsigned __int64 i = 0; i < FUN_140720ca0(&bag); ++i)
+    CMsTime limit(GetServerTime());
+    AddMinutes(limit, 0xfffffff6);
+    for (unsigned __int64 i = 0; i < bag.GetCount(); ++i)
     {
-        Unk_HlH item;
-        FUN_1402034d0(&item, FUN_140a69ee0(&bag, i));
-        if (((class CItem*)(void*)(FUN_1401c0180(&item)))->GetCreationTime() < ((class CMsTime*)(void*)(limit))->Get())
-        {
-            FUN_1401bfde0(&item);
+        MS2Ptr<CItem> item = bag[i];
+        if (item->GetCreationTime() < limit.Get())
             continue;
-        }
-        if (DAT_143ab2a90.FUN_140a65770(FUN_14052cd70(&item)) != 0)
-        {
-            FUN_1401bfde0(&item);
+        if (DAT_143ab2a90.FUN_140a65770(item.get()) != 0)
             continue;
-        }
-        char rec[16];
-        FUN_1401bf970(rec, ((void*)((class CItem*)(void*)(FUN_1401c0180(&item)))->FUN_140527840()));
-        if (FUN_1402ffd90(rec) != 0)
-        {
-            FUN_1401b50d0(rec);
-            FUN_1401bfde0(&item);
+        MS2Ptr<CItemData> rec((CItemData*)item->FUN_140527840());
+        if (!rec)
             continue;
-        }
         int nEquip = FUN_141654700(pPc);
-        if (FUN_140545da0((char*)static_cast<P>(reinterpret_cast<const MS2Ptr<CItemData>*>(rec)->operator->()) + 0x138, nEquip) == 0)
-        {
-            FUN_1401b50d0(rec);
-            FUN_1401bfde0(&item);
+        if (rec->limit.IsJobRecommended(nEquip) == 0)
             continue;
-        }
-        Unk_HlH worn;
-        Unk_HlH arg;                                       // the by-value argument copy; the callee destroys it
-        FUN_14152e2f0(pPc, &worn, FUN_1402034d0(&arg, &item));
-        if (FUN_140534e50(&worn) != 0)
-        {
-            FUN_1401bfde0(&worn);
-            FUN_1401b50d0(rec);
-            FUN_1401bfde0(&item);
+        MS2Ptr<CItem> worn = ((MyPC*)pPc)->FUN_14152e2f0(item);
+        if (!worn)
             return true;
-        }
-        int nNew = ((class CItem*)(void*)(FUN_1401c0180(&item)))->FUN_140529070();
-        int nOld = ((class CItem*)(void*)(FUN_1401c0180(&worn)))->FUN_140529070();
+        int nNew = item->FUN_140529070();
+        int nOld = worn->FUN_140529070();
         if (nOld < nNew)
-        {
-            FUN_1401bfde0(&worn);
-            FUN_1401b50d0(rec);
-            FUN_1401bfde0(&item);
             return true;
-        }
-        FUN_1401bfde0(&worn);
-        FUN_1401b50d0(rec);
-        FUN_1401bfde0(&item);
     }
     return false;
 }
@@ -856,8 +785,6 @@ int UIHighlightGameMenu::FUN_140c236f0()
     return false;
 }
 
-#define HL_END_IT() do { FUN_1401b50d0(h148); FUN_1401bfde0(&it); } while (0)
-
 // @0x140c237a0
 int UIHighlightGameMenu::FUN_140c237a0()
 {
@@ -867,107 +794,59 @@ int UIHighlightGameMenu::FUN_140c237a0()
     m_nScrollItem = 0;
     m_nTargetItem = 0;
     ATL::CAtlArray<unsigned int> ids;
-    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->Add(0x1d90b9a);
-    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->Add(0x1d90b9b);
-    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->Add(0x1d90b9c);
-    Unk_HlH scroll;
-    FUN_140203510(&scroll, 0);
-    for (unsigned __int64 i = 0; i < FUN_140186270(&ids); ++i)
+    ids.Add(0x1d90b9a);
+    ids.Add(0x1d90b9b);
+    ids.Add(0x1d90b9c);
+    MS2Ptr<CItem> scroll(0);
+    for (unsigned __int64 i = 0; i < ids.GetCount(); ++i)
     {
-        Unk_HlH found = DAT_143ab2a90.FUN_140a5e2e0(*FUN_140184510(&ids, i));
-        if (FUN_14052cd70(&found) != 0)
+        MS2Ptr<CItem> found = DAT_143ab2a90.FUN_140a5e2e0(ids[i]);
+        if (found.get() != 0)
         {
-            FUN_140692c90(&scroll, &found);
-            FUN_1401bfde0(&found);
+            scroll = found;
             break;
         }
-        FUN_1401bfde0(&found);
     }
-    if (FUN_1401c0050(&scroll, 0) != 0)
-    {
-        FUN_1401bfde0(&scroll);
+    if (scroll == 0)
         return false;
-    }
-    char rec[16];
-    FUN_1401bf970(rec, ((void*)((class CItem*)(void*)(FUN_1401c0180(&scroll)))->FUN_140527840()));
-    if (FUN_1402ffd90(rec) != 0 || FUN_14034eee0((char*)static_cast<P>(reinterpret_cast<const MS2Ptr<CItemData>*>(rec)->operator->()) + 0x290, L"EnchantScroll") != 0)
-    {
-        FUN_1401b50d0(rec);
-        FUN_1401bfde0(&scroll);
+    MS2Ptr<CItemData> rec((CItemData*)scroll->FUN_140527840());
+    if (!rec || rec->function.name != L"EnchantScroll")
         return false;
-    }
-    int nKind = ((class Unk_CommandArgs*)(void*)((char*)static_cast<P>(reinterpret_cast<const MS2Ptr<CItemData>*>(rec)->operator->()) + 0x2b0))->FUN_1408d1f60(0, 0);
-    char ench[16];
-    FUN_14034e360(FUN_14034f780(), ench, nKind);
-    if (FUN_14034eeb0(ench) != 0)
-    {
-        FUN_14034ed30(ench);
-        FUN_1401b50d0(rec);
-        FUN_1401bfde0(&scroll);
+    int nKind = rec->function.parameter.FUN_1408d1f60(0, 0);
+    MS2Ptr<CEnchantScrollData> ench = TSingleton<CEnchantScrollTable>::GetInstance()->FindScroll(nKind);
+    if (ench.IsNull())
         return false;
-    }
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     DAT_143ab2a90.FUN_140a60880(0, items);
-    char list[0x40];
-    FUN_140884ed0(list, 10);
-    FUN_1411e1ce0(FUN_1416561a0(pPc), list, 0);
-    for (P pos = FUN_140885670(list); pos != 0; FUN_140885680(list, &pos))
+    ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
+    ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 0);
+    for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
-        char h78[16];
-        FUN_140884f30(h78, FUN_140885600(list, pos));
-        Unk_HlH v;
-        FUN_1411dc7a0(FUN_1405a8ed0(h78), &v);
-        if (FUN_140534e50(&v) == 0)
-            FUN_140720b80(&items, &v);
-        FUN_1401bfde0(&v);
-        FUN_1405a85f0(h78);
+        MS2Ptr<CEquipItem> spEquip = list.GetAt(pos);
+        MS2Ptr<CItem> v = spEquip->GetItem();
+        if (!v.IsNull())
+            items.Add(v);
     }
-    for (unsigned __int64 j = 0; j < FUN_140720ca0(&items); ++j)
+    for (unsigned __int64 j = 0; j < items.GetCount(); ++j)
     {
-        Unk_HlH it;
-        char h148[16];
-        FUN_1402034d0(&it, FUN_140a69ee0(&items, j));
-        FUN_1401bf970(h148, ((void*)((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140527840()));
-        if (FUN_1402ffd90(h148) != 0)
-        {
-            HL_END_IT();
+        MS2Ptr<CItem> it = items[j];
+        MS2Ptr<CItemData> data((CItemData*)it->FUN_140527840());
+        if (!data)
             continue;
-        }
-        if (((class CItem*)(void*)(FUN_1401c0180(&it)))->GetRequiredLevel() < 0x32 || ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140526bd0() != 3)
-        {
-            HL_END_IT();
+        if (it->GetRequiredLevel() < 0x32 || it->FUN_140526bd0() != 3)
             continue;
-        }
-        int nId = ((class CItemData*)(void*)(static_cast<P>(reinterpret_cast<const MS2Ptr<CItemData>*>(h148)->operator->())))->FUN_14053c620();
-        if (FUN_140408410((char*)FUN_14034ef20(ench) + 0x38, &nId) == -1)
-        {
-            HL_END_IT();
+        int nId = data->FUN_14053c620();
+        if (FUN_140408410(&ench->m_slots, &nId) == -1)
             continue;
-        }
-        P pId = FUN_14052cd70(&it);
-        if (((class CItemEnchantLimitTable*)(void*)(((void*)TSingleton<CItemEnchantLimitTable>::GetInstance())))->FUN_14058df90((class CItem*)(pId)) == 0)
-        {
-            HL_END_IT();
+        if (TSingleton<CItemEnchantLimitTable>::GetInstance()->FUN_14058df90(it.get()) == 0)
             continue;
-        }
-        if (((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140526fc0() < *(int*)((char*)FUN_14034ef20(ench) + 0x1c)
-            && ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_140527030() == 0)
+        if (it->FUN_140526fc0() < ench->m_nGrade && it->FUN_140527030() == 0)
         {
-            m_nScrollItem = ((class CItem*)(void*)(FUN_1401c0180(&scroll)))->GetItemUid();
-            m_nTargetItem = ((class CItem*)(void*)(FUN_1401c0180(&it)))->GetItemUid();
-            HL_END_IT();
-            FUN_1408850d0(list);
-            FUN_14034ed30(ench);
-            FUN_1401b50d0(rec);
-            FUN_1401bfde0(&scroll);
+            m_nScrollItem = scroll->GetItemUid();
+            m_nTargetItem = it->GetItemUid();
             return true;
         }
-        HL_END_IT();
     }
-    FUN_1408850d0(list);
-    FUN_14034ed30(ench);
-    FUN_1401b50d0(rec);
-    FUN_1401bfde0(&scroll);
     return false;
 }
 
@@ -980,76 +859,55 @@ int UIHighlightGameMenu::FUN_140c23f10()
     if (pPc == 0)
         return false;
     m_bitsGem.FUN_140c260a0(0, false);
-    char list[0x40];
-    FUN_140884ed0(list, 10);
-    FUN_1411e1ce0(FUN_1416561a0(pPc), list, 0);
-    FUN_1411e1ce0(FUN_1416561a0(pPc), list, 1);
-    if (FUN_140c25330(list) == 0)
+    ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
+    ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 0);
+    ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 1);
+    if (FUN_140c25330(&list) == 0)
     {
         unsigned nMask = 0;
-        for (P pos = FUN_140885670(list); pos != 0; FUN_140885680(list, &pos))
+        for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
         {
-            char h[16];
-            FUN_140884f30(h, FUN_140885600(list, pos));
+            MS2Ptr<CEquipItem> h = list.GetAt(pos);
             bool bSkip;
-            if (FUN_1409edd90(h, 0) == 0)
-            {
-                Unk_HlH tmp;
-                FUN_1411dc7a0(FUN_1405a8ed0(h), &tmp);
-                bSkip = FUN_1401c0050(&tmp, 0) != 0;
-                FUN_1401bfde0(&tmp);
-            }
-            else
+            if (h == 0)
                 bSkip = true;
-            if (bSkip)
+            else
             {
-                FUN_1405a85f0(h);
-                continue;
+                MS2Ptr<CItem> tmp = h->GetItem();
+                bSkip = tmp == 0;
             }
-            Unk_HlH it;
-            FUN_1411dc7a0(FUN_1405a8ed0(h), &it);
-            if (((void*)((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_1405279c0()) != 0 && ((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_1405279c0())))->HasEmptyOpenSlot() != 0)
+            if (bSkip)
+                continue;
+            MS2Ptr<CItem> it = h->GetItem();
+            if (it->FUN_1405279c0() != 0 && it->FUN_1405279c0()->HasEmptyOpenSlot() != 0)
             {
-                nMask |= ((class CItem*)(void*)(FUN_1401c0180(&it)))->FUN_1405258b0() == 0 ? 7 : 8;
-                FUN_1401bfde0(&it);
-                FUN_1405a85f0(h);
+                nMask |= it->FUN_1405258b0() == 0 ? 7 : 8;
                 if (nMask < 0xf)
                     continue;
                 break;
             }
-            FUN_1401bfde0(&it);
-            FUN_1405a85f0(h);
         }
         if (nMask != 0)
         {
             ATL::CAtlArray<MS2Ptr<CItem> > gems;
             DAT_143ab2a90.FUN_140a60880(6, gems);
-            for (unsigned __int64 k = 0; k < FUN_140720ca0(&gems); ++k)
+            for (unsigned __int64 k = 0; k < gems.GetCount(); ++k)
             {
-                Unk_HlH g;
-                FUN_1402034d0(&g, FUN_140a69ee0(&gems, k));
-                if (FUN_1401c0050(&g, 0) == 0 && ((void*)((class CItem*)(void*)(FUN_1401c0180(&g)))->FUN_140527840()) != 0
-                    && ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(FUN_1401c0180(&g)))->FUN_140527840())))->FUN_14053d840() != 0)
+                MS2Ptr<CItem> g = gems[k];
+                if (!(g == 0) && g->FUN_140527840() != 0 && ((CItemData*)g->FUN_140527840())->FUN_14053d840() != 0)
                 {
-                    int nId = ((class CItem*)(void*)(FUN_1401c0180(&g)))->FUN_1405276c0();
-                    char rec[16];
-                    FUN_1405b1a60(((void*)FUN_14062c280()), rec, nId);
-                    if (FUN_1405b2610(rec, 0) == 0 && (*(unsigned*)((char*)FUN_1405b2650(rec) + 0x28) & nMask) != 0)
+                    int nId = g->FUN_1405276c0();
+                    MS2Ptr<CItemGemStoneData> rec = TSingleton<CItemGemStoneUpgradeTable>::GetInstance()->FindData(nId);
+                    if (!(rec == 0) && (rec->m_nMask & nMask) != 0)
                     {
                         m_bitsSocket.FUN_140c260a0(0, true);
-                        FUN_1405b2540(rec);
-                        FUN_1401bfde0(&g);
-                        FUN_1408850d0(list);
                         return true;
                     }
-                    FUN_1405b2540(rec);
                 }
-                FUN_1401bfde0(&g);
             }
         }
     }
     m_bitsSocket.FUN_140c260a0(0, false);
-    FUN_1408850d0(list);
     return false;
 }
 

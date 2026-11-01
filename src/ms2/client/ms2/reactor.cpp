@@ -178,7 +178,7 @@ class Unk_RxPhys;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_14168a450(Unk_RxPhys* p, Vector3* pPos, float* pOut, float fRange);
 Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
-int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
+int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 class CInteractObject   // C3: member view (real class not in this TU)

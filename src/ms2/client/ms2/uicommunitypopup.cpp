@@ -73,7 +73,7 @@ void UICommunityPopup::OnLoadComplete() {
     if (m_movie->FUN_140beaf20<ASTextField>("textField",m_field) == NULL)
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(46),__FUNCTION__));
     m_y = (int)m_field->FUN_1422c1110();
-    m_movie->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICommunityPopup::FUN_140bea960),0);
+    m_movie->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICommunityPopup::FUN_140bea960),(void*)0);
     FUN_140bea730();
     if (m_text.IsEmpty()) vfunc_3();
 }

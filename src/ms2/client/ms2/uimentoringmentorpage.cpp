@@ -39,6 +39,7 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/questdata.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
@@ -56,6 +57,7 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: TSingleton<> needs the class
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/placeholder/asbuttonbar.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -403,25 +405,13 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_MentorQuest, m_nDay, 0x358);
 MS2_CHECK_OFFSET(Unk_MentorQuest, m_strIcon, 0x360);
-// The 16-byte smart pointer to a quest record.
-class Unk_MentorQuestPtr
-{
-public:
-    ~Unk_MentorQuestPtr();                  // 0x14064d3e0
-    bool IsNull() const;                    // 0x14064d4e0
-    Unk_MentorQuest* operator->() const;    // 0x14064d520
-    Unk_MentorQuest* get() const;           // 0x1407476a0
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_MentorQuestPtr, 0x10);
-Unk_MentorQuestPtr FUN_14074bc40(int nQuest);
+MS2Ptr<class CQuestData> FUN_14074bc40(int nQuest);
 int FUN_14074b030(class CQuestData*);   // C3: was FUN_14074b030
 // The quest progress sub-object of an instance (slot table at +0x18 of the instance).
 class Unk_MentorProgress
 {
 public:
-    virtual Unk_MentorQuestPtr vfunc_0();   // the quest record
+    virtual MS2Ptr<class CQuestData> vfunc_0();   // the quest record
     virtual int vfunc_1();                  // satisfied
     virtual void vfunc_2();
     virtual int vfunc_3();                  // completed
@@ -472,12 +462,11 @@ public:
     ~Unk_MentorIdArray();                   // 0x140183460
     size_t FUN_140186270() const;           // the count
     int* FUN_140184510(size_t n);           // element
-    void FUN_1401855a0(int n);              // add
 private:
     void* m_pad[4];
 };
 // The tab control of the mission swf.
-class Unk_MentorTab : public AScript { public: int FUN_1422e3210(); };      // the selected tab index
+class Unk_MentorTab : public AScript { };      // the "m_tab" ASButtonBar
 // The page script (a movie clip root) with the children it hands out.
 class Unk_MentorMissionScript : public AScript
 {
@@ -570,7 +559,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
     if (operator==(strName, "guide"))
     {
         int nQuest = pArgs->FUN_1422b8b10();
-        Unk_MentorQuestPtr spQuest = FUN_14074bc40(nQuest);
+        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuest);
         if (spQuest.get() != 0)
         {
             Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -586,7 +575,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
     else if (operator==(strName, "menteeCoin"))
     {
         int nQuest = pArgs->FUN_1422b8b10();
-        Unk_MentorQuestPtr spQuest = FUN_14074bc40(nQuest);
+        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuest);
         if (spQuest.get() != 0)
         {
             Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -639,9 +628,9 @@ CStringW UIMentoringMissionPage::vfunc_7() { return GetStringCommonByKey(L"s_men
 void UIMentoringMissionPage::vfunc_o178_11(void* p)
 {
     if (p == 0) return;
-    Unk_MentorQuestPtr spQuest = (&static_cast<Unk_MentorInstance*>(p)->m_progress)->vfunc_0();
-    if (spQuest.IsNull()) return;
-    int nDay = spQuest->m_nDay;
+    MS2Ptr<CQuestData> spQuest = (&static_cast<Unk_MentorInstance*>(p)->m_progress)->vfunc_0();
+    if (!spQuest) return;
+    int nDay = reinterpret_cast<Unk_MentorQuest*>(spQuest.operator->())->m_nDay;
     if (nDay != FUN_140c74660()) return;
     FUN_140c74450(nDay);
     ((class UIMentoringDialog*)(class UIMentoringDialog*)(m_owner))->UpdateCounts();
@@ -678,11 +667,11 @@ int UIMentoringMissionPage::vfunc_10(int nDay)
 void UIMentoringMissionPage::FUN_140c74170(ASObj& obj, Unk_MentorInstance* pInst)
 {
     if (pInst == 0) return;
-    Unk_MentorQuestPtr spQuest = (&pInst->m_progress)->vfunc_0();
-    if (spQuest.IsNull()) return;
+    MS2Ptr<CQuestData> spQuest = (&pInst->m_progress)->vfunc_0();
+    if (!spQuest) return;
     Unk_MentorActorV* pUser = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pUser == 0) return;
-    CString strIcon = (&pInst->m_progress)->vfunc_0()->m_strIcon;
+    CString strIcon = reinterpret_cast<Unk_MentorQuest*>((&pInst->m_progress)->vfunc_0().operator->())->m_strIcon;
     CStringW strDesc = FUN_1416e5350(((class CQuest*)(class Unk_MentorInstance*)(pInst))->FUN_140bfc580(), 0);
     strDesc.Replace(L"#5c2b00", L"#000000");
     obj.FUN_1409c0d20("id", ((class CQuest*)(class Unk_MentorInstance*)(pInst))->FUN_140bfc580());
@@ -717,7 +706,7 @@ void UIMentoringMissionPage::FUN_140c74450(int nDay)
 int UIMentoringMissionPage::FUN_140c74660()
 {
     if (MS2Ptr<Unk_MentorTab> spTab = reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_140be23c0("m_tab"))
-        return spTab->FUN_1422e3210() + 1;
+        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex() + 1;
     return 0;
 }
 
@@ -741,10 +730,10 @@ void UIMentoringMissionPage::FUN_140c74850(Unk_MentorIdArray& ids, int nDay)
     reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->FUN_140424ed0(all);
     for (size_t i = 0; i < all.FUN_140186270(); i++)
     {
-        Unk_MentorQuestPtr spQuest = FUN_14074bc40(*all.FUN_140184510(i));
-        if (spQuest.IsNull()) continue;
-        if (nDay != -1 && spQuest->m_nDay != nDay) continue;
-        ids.FUN_1401855a0(FUN_14074b030((class CQuestData*)(spQuest.operator->())));
+        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(*all.FUN_140184510(i));
+        if (!spQuest) continue;
+        if (nDay != -1 && reinterpret_cast<Unk_MentorQuest*>(spQuest.operator->())->m_nDay != nDay) continue;
+        reinterpret_cast<ATL::CAtlArray<unsigned int>*>(&ids)->Add((unsigned int)FUN_14074b030((class CQuestData*)(spQuest.operator->())));
     }
 }
 

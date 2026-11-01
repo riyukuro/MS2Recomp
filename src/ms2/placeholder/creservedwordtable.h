@@ -25,18 +25,18 @@ public:
     CReservedWordTable();                                   // 0x1416fa4b0
     virtual ~CReservedWordTable();
 
-    void FUN_1416fb300(CStringW& str);                      // expands the object words, then the value words
+    void ReplaceObjectAndValueWords(CStringW& str);                      // expands the object words, then the value words
     void FUN_1416fb340(CStringW& str);                      // the value words only
     void FUN_1416fb380(CStringW& str);                      // the object words only
     int ReplaceColorWords(CStringW& str);                       // the colour tags "[y" ...
     void FUN_1416fb400(CStringW& str, void* pMaid);         // $OwnerName$ / $Maid..$ of a maid (housing) entry
-    void FUN_1416fbc20(CStringW& str, class PC* pPc);       // $male..$/$female..$ markers by the gender of pPc (null: local player)
+    void ReplaceTokensForPc(CStringW& str, class PC* pPc);       // $male..$/$female..$ markers by the gender of pPc (null: local player)
     void FUN_1416fbda0(CStringW& str, int nGender);         // the same by a gender id
     void FUN_1416fbf20(CStringW& str);                      // the bold object words
-    void FUN_1416fbf60(CStringW& str, unsigned short nLevel);   // $level$
+    void ReplaceLevelToken(CStringW& str, unsigned short nLevel);   // $level$
     CStringW FUN_1416fbfe0(unsigned int nMapId, CStringW strColor);   // a world map link of a map id
-    CStringW FUN_1416fc180(CStringW str);                   // the part before ':' of a marker
-    CStringW FUN_1416fc250(CStringW str);                   // the part after ':' of a marker
+    CStringW GetTokenName(CStringW str);                   // the part before ':' of a marker
+    CStringW GetTokenArgument(CStringW str);                   // the part after ':' of a marker
     void FUN_1416fc320(CStringW& str, WordMap& map);        // expands the "$word:arg$" markers of str by map
     void FUN_1416fc540(CStringW& str, TextMap& map);        // expands the "[tag ... ]" colour tags of str by map
     void FUN_1416fc6f0(CStringW& str);

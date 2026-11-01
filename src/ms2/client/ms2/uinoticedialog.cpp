@@ -51,25 +51,18 @@ public:
 class Unk_140acd6e0 : public ASButton                                // the button wrapper
 {
 public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, int nFlags);   // set the click handler
 };
 class ASDialog : public ASMovieClip                                         // the movie root
 {
 public:
-    CString FUN_1422c2420();                                                // 0x1422c2420 the current frame label
 };
-class Unk_NdConfigString { public: CString* FUN_140298f80(); };             // Value<CString>::Get
+class Unk_StringOptionEntry { public: CString& FUN_140298f80(); };             // Value<CString>::Get
 class Unk_NdBrowserMgr : public CWebBrowserService                                                      // the browser manager
 {
 public:
-    void FUN_141b78aa0(int nId, int n);
-    void FUN_141b794e0(CString* pPage, const char* pszUrl);                 // remember the url in the dialog's page
 };
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-bool FUN_140e04c20(const MS2Ptr<ASDialog>* p, int n);                       // p == NULL
-bool FUN_140acd940(const MS2Ptr<ASUIComponent>* p, int n);                  // p == NULL
-bool FUN_1409b9be0(const MS2Ptr<ASMovieClip>* p, int n);                    // p == NULL
 
 // the notified object: a flag sub-object at +8
 class Unk_NdFlag
@@ -134,17 +127,17 @@ void UINoticeDialog::OnLoadComplete()
     if (m_90->FUN_140bc71c0("m_mainWindow", m_mainWindow).get())
     {
         if (m_mainWindow->FUN_140bbe640<ASButton>("m_showButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_showButton)).get())
-            m_showButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009770), 0);
+            reinterpret_cast<ASButton*>(m_showButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009770), 0);
         if (m_mainWindow->FUN_140bbe640<ASButton>("m_maviewButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_maviewButton)).get())
-            m_maviewButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_1410097a0), 0);
+            reinterpret_cast<ASButton*>(m_maviewButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_1410097a0), 0);
         m_mainWindow->FUN_141009c70("m_renderTarget", m_renderTarget);
         m_mainWindow->FUN_141009c70("m_hitArea", m_hitArea);
     }
     if (m_hitArea.get())
     {
         m_hitArea->SetFocusable(1);
-        m_hitArea->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009710), 0, 0);
-        m_hitArea->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009740), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009710), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009740), 0, 0);
         m_hitArea->FUN_1422c7630(0);
         vfunc_84(m_hitArea->FUN_1422c76c0() != 0);
     }
@@ -186,13 +179,13 @@ void UINoticeDialog::vfunc_72()
 // @0x141008fa0
 void UINoticeDialog::vfunc_85()
 {
-    if (FUN_140acd940(&m_renderTarget, 0))
+    if (m_renderTarget == NULL)
         return;
     vfunc_86();
     m_spImage.AssignRaw(new Unk_AasImage(2));
     FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
     m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
-    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78aa0(m_nBrowserId, 0);
+    reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->SetBrowserKeyboard(m_nBrowserId, 0);
 }
 
 // @0x1410092a0
@@ -216,7 +209,7 @@ void UINoticeDialog::vfunc_77()
 // @0x1410093f0
 void UINoticeDialog::vfunc_87(SIZE* pSize)
 {
-    if (FUN_140acd940(&m_renderTarget, 0))
+    if (m_renderTarget == NULL)
         return;
     pSize->cx = m_renderTarget->FUN_1422c1340();
     pSize->cy = m_renderTarget->GetHeightCeil();
@@ -230,11 +223,11 @@ bool UINoticeDialog::vfunc_90(POINT* pPos)
         return false;
     pPos->x -= pDialog->FUN_1422c10a0();
     pPos->y -= pDialog->FUN_1422c1110();
-    if (FUN_1409b9be0(&m_mainWindow, 0))
+    if (m_mainWindow == NULL)
         return false;
     pPos->x -= m_mainWindow->FUN_1422c10a0();
     pPos->y -= m_mainWindow->FUN_1422c1110();
-    if (FUN_140acd940(&m_renderTarget, 0))
+    if (m_renderTarget == NULL)
         return false;
     pPos->x -= m_renderTarget->FUN_1422c10a0();
     pPos->y -= m_renderTarget->FUN_1422c1110();
@@ -286,9 +279,9 @@ void UINoticeDialog::FUN_1410097a0(const Scaleform::GFx::FunctionHandler::Params
 // @0x1410097d0
 void UINoticeDialog::FUN_1410097d0()
 {
-    if (FUN_140e04c20(&m_90, 0))
+    if (m_90 == NULL)
         return;
-    if (m_90->FUN_1422c2420() == "show")
+    if (reinterpret_cast<ASMovieClip*>(m_90.operator->())->FUN_1422c2420() == "show")
         FUN_141009a60();
     else
         FUN_141009980();
@@ -297,13 +290,13 @@ void UINoticeDialog::FUN_1410097d0()
 // @0x141009870
 void UINoticeDialog::FUN_141009870()
 {
-    CString strUrl(*reinterpret_cast<Unk_NdConfigString*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80());
+    CString strUrl(reinterpret_cast<Unk_StringOptionEntry*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80());
     if (strUrl.IsEmpty())
         return;
-    if (FUN_140166410()->FUN_14036d570(0x5c))
+    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c))
     {
     }
-    reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(&m_strUrl, strUrl);
+    reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->FUN_141b794e0(reinterpret_cast<CStringA&>(m_strUrl), strUrl);
     reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SendNewsNotification(1, m_nBrowserId);
 }
 

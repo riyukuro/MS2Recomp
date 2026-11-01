@@ -21,7 +21,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/client/ms2/additionalclilist.h"
-
+class PCBase { public: class Unk_PCBaseBuffs * FUN_1416749a0(void); };
 using namespace TencentUserReport;
 
 // ---- header statics (the order of the unit's dynamic initializers) ----
@@ -146,7 +146,7 @@ int CClientPlatformTencent::vfunc_36()
 {
     Unk_TcObject* pPlayer = ((Unk_TcObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer) {
-        return pPlayer->FUN_1416749a0()->HasEnabledWithId(0x2fac971);
+        return ((class Unk_TcValueApi *)((class PCBase*)(pPlayer))->FUN_1416749a0())->HasEnabledWithId(0x2fac971);
     } else {
         return 0;
     }

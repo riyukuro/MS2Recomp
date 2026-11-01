@@ -38,6 +38,7 @@ static CString s_winSound = "BattleField_Win";
 // ---- local stand-ins for classes whose units are not recovered yet ----
 enum Unk_ClosingJob { Unk_ClosingJob_None };
 class Unk_ClosingThing : public PCGemEquip { };
+class PC { public: class Unk_MyPCEquip* FUN_14165f460(); };   // C3: unit-local view (def in pc); the gem equipment
 struct Unk_ClosingVector
 {
     Unk_ClosingVector();
@@ -77,7 +78,6 @@ public:
     virtual void vfunc_17();
     virtual Unk_ClosingVector vfunc_18();
     void FUN_1410885b0(bool);
-    Unk_ClosingThing* FUN_14165f460();
     Unk_ClosingJob FUN_141654730();
     void FUN_140e11d00();
     // 76 and 77 are the name setter (by value: the callee destroys it) and getter
@@ -417,7 +417,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             actor->vfunc_76(player->vfunc_77());
             av->FUN_1418bd1d0()->FUN_140e11d00();
             av->FUN_1418bd1d0()->FUN_1410885b0(true);
-            av->FUN_1418bd1d0()->FUN_14165f460()->FUN_141270610();
+            reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->FUN_1418bd1d0())->FUN_14165f460())->FUN_141270610();
             av->vfunc_1(this);
             Unk_ClosingEntry entry;
             entry.m_uid = uid;

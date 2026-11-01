@@ -36,11 +36,11 @@ struct Unk_AcKey { unsigned __int64 m_id; };
 #define AC_KEY(k) reinterpret_cast<Unk_GoModelKey&>(k)
 
 // The animation service (singleton behind FUN_141b6f910); same object as kfmmodel.cpp's view.
-class Unk_AcAnimSvc
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
+class Unk_AcAnimSvc : public Unk_AnimSvc
 {
 public:
     int FUN_140999490(const Unk_GoModelKey& id, const efd::utf8string& kName);                  // sequence id, -2 when absent
-    void FUN_1409a1fc0(const Unk_GoModelKey& id, const efd::utf8string& kName, float fBlend, bool b);   // play
 };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
@@ -102,7 +102,7 @@ void AvatarCube::vfunc_12()
         if (reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_140999490(FUN_14123c460(AC_KEY(kId1)), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
             Unk_AcKey kId2;
-            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId2)), kIdle, 1.0f, true);
+            reinterpret_cast<Unk_AcAnimSvc*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0((class egf::EntityID const &)(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId2)))), kIdle, 1.0f, true);
         }
     }
 }
@@ -128,7 +128,7 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
             else
             {
                 CUgcItemCube kCube(spItem.get(), FUN_14123c460());
-                if (((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141886cc0(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
+                if (((class Unk_UgcCubeMgr*)FUN_14052d220())->ApplyImageToCube(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
                 {
                     ((class Unk_UgcCubeMgr*)FUN_14052d220())->FUN_141883df0(spItem, FUN_14123c460());
                 }

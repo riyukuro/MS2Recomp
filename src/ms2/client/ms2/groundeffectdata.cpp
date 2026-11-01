@@ -28,6 +28,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <egf/EntityID.h>
+#include <NiNode.h>   // C3: ms_RTTI
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 class Unk_140165cf0;
@@ -93,7 +94,6 @@ public:
 };
 void* FUN_1408b6b20(Unk_ModelKeyCopy* pDst, const Unk_ModelKey* pSrc);
 void* FUN_141b6ef70(void* pKey);
-extern char DAT_143afa4d8;                      // shadow-node table
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
@@ -301,7 +301,7 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     ATL::CAtlArray<CString> files;
     GetEffectFiles(CString(strGround), CString(strAction), &files);
     Unk_ModelKeyCopy kCopy;
-    void* pNode = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(FUN_1408b6b20(&kCopy, &kModel)))));
+    void* pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(FUN_1408b6b20(&kCopy, &kModel)))));
     if (pNode != 0)
     {
         Unk_EffectQuery query;

@@ -27,7 +27,6 @@ struct Unk_WFTarget
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual __int64 vfunc_17();                 // slot 17 (+0x88): non-zero when the target is usable
 };
-Unk_WFTarget* FUN_1416a3ec0(unsigned __int64 p);
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -198,7 +197,7 @@ bool FUN_1416bafb0(void* a, void* step)
     s_fade = 1.0f - ((float)GetTickCount() - (float)s_fadeStartTick) / (float)DAT_1439f823c;
     if (s_fade <= 0.0f) {
         if (reinterpret_cast<NiRenderStep*>(s)->GetActive() == 1) {
-            reinterpret_cast<PostProcessingService*>(((PostProcessEffect*)s)->m_70)->FUN_1416a0fb0(0xf);
+            reinterpret_cast<PostProcessingService*>(((PostProcessEffect*)s)->m_70)->QueueStepEvent(0xf);
             s_fade = 0.0f;
             reinterpret_cast<Unk_WFApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473020(0);
         }
@@ -213,7 +212,7 @@ bool FUN_1416bafb0(void* a, void* step)
 void WorldFadeOutRenderStep::vfunc_19()
 {
     if (reinterpret_cast<NiRenderStep*>(this)->GetActive() == 1) {
-        Unk_WFTarget* a = FUN_1416a3ec0(m_70);
+        Unk_WFTarget* a = reinterpret_cast<Unk_WFTarget *>(reinterpret_cast<PostProcessingService*>(m_70)->GetFirstActiveStep());
         if (a->vfunc_17() != 0) {
             void* h = FUN_1411d15b0(FUN_140af8310(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8));
             NiRenderer* p = GetNiRenderer();

@@ -123,14 +123,9 @@ void FUN_140d73aa0(CStringW str, int a, void* pListener, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
 
 // The string formatters (key by value: the callee destroys it).
-CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned& a);
-CStringW FUN_1406e7810(const wchar_t* szFormat, const unsigned& a, const unsigned& b);
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);    // a + b (the exe's operator+; clang would import MFC CopyChars)
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
-CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strGrade);
+#include "ms2/placeholder/wcformat.h"
 CStringW FUN_1406cd420(int nKind);                          // the function name of an npc kind
-CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
 // The AS object with its value member visible (the helpers below read it inline).
@@ -161,7 +156,7 @@ void FUN_140f47320(AScript* pScript, const char* szName, int n)
 // @0x140f48210
 CStringW FUN_140f48210(int nHour, int nMinute)
 {
-    CStringW strTime = FUN_14083dc40(L"{0:02d}:{1:02d}", nHour, nMinute);
+    CStringW strTime = StringFormat<int, int>(L"{0:02d}:{1:02d}", nHour, nMinute);
     return strTime;
 }
 
@@ -516,10 +511,10 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         CFieldMetaTable::GetInstance()->FUN_1406fb700(entry.m_id, &nField);
                         CFieldMetaTable::GetInstance()->FUN_1406fc110(nField, &nOutdoor);
                         if (nOutdoor != 0)
-                            strMaps = FUN_1406e7810(L"$map:{0}$ > $map:{1}$", nField, nOutdoor);
+                            strMaps = StringFormat<unsigned int, unsigned int>(L"$map:{0}$ > $map:{1}$", nField, nOutdoor);
                         else
-                            strMaps = FUN_140292a70(L"$map:{0}$", nField);
-                        CStringW strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
+                            strMaps = StringFormat<unsigned int>(L"$map:{0}$", nField);
+                        CStringW strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
                         FUN_1403b4750()->FUN_1416fbf20(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.FUN_1407cbb20("content", CStringW(strContent));
@@ -538,16 +533,16 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         unsigned short nLevel = pNpc->GetLevel();
                         CStringW strMini;
                         if (entry.m_invisibleLevel != 0)
-                            strMini = FUN_1405c2690(CStringW(L"s_gamedictionary_monster_mini_info_invisible_level"), GetStringCommon(aGradeNames[nGrade]));
+                            strMini = FUN_14028dfa0<CStringW>(CStringW(L"s_gamedictionary_monster_mini_info_invisible_level"), GetStringCommon(aGradeNames[nGrade]));
                         else
-                            strMini = FUN_14052b9d0(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
+                            strMini = FUN_14028dfa0<unsigned short, CStringW>(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
                         detail.FUN_1407cbb20("npcInfo", CStringW(strMini));
                         CStringW strRace = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetRace());
                         CStringW strMaps;
                         ATL::CAtlList<unsigned> fields(10);
                         CFieldMetaTable::GetInstance()->FUN_1406fb3a0(entry.m_id, fields);
                         if (entry.m_fieldId != 0)
-                            strMaps = FUN_140292a70(L"$map:{0}$", entry.m_fieldId);
+                            strMaps = StringFormat<unsigned int>(L"$map:{0}$", entry.m_fieldId);
                         else
                         {
                             for (POSITION pos = fields.GetHeadPosition(); pos != 0; fields.GetNext(pos))
@@ -556,9 +551,9 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                                 if (nFieldId != (unsigned)entry.m_id)
                                 {
                                     if (strMaps.IsEmpty())
-                                        strMaps = FUN_140292a70(L"$map:{0}$", nFieldId);
+                                        strMaps = StringFormat<unsigned int>(L"$map:{0}$", nFieldId);
                                     else
-                                        strMaps = FUN_1401d0080(strMaps, FUN_140292a70(L", $map:{0}$", nFieldId));
+                                        strMaps = FUN_1401d0080(strMaps, StringFormat<unsigned int>(L", $map:{0}$", nFieldId));
                                 }
                             }
                         }
@@ -576,9 +571,9 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         }
                         CStringW strContent;
                         if (strMaps.IsEmpty())
-                            strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_monster_content"), strRace, GetStringCommon(0x573));
+                            strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, GetStringCommon(0x573));
                         else
-                            strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_monster_content"), strRace, strMaps);
+                            strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, strMaps);
                         FUN_1403b4750()->FUN_1416fbf20(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.FUN_1407cbb20("content", CStringW(strContent));

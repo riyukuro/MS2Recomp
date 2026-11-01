@@ -202,7 +202,7 @@ class Unk_DcSession { public: MS2Ptr<Unk_DcRecord> FUN_140d9f2c0(); };
 Unk_DcSession* FUN_140931510();
 __int64 GetServerTime();
 void* FUN_140166410();
-bool FUN_14036d570(void* pFeatures, int nFeature);
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
 // The reward list of a reward id (meso, exp and the items).
 struct Unk_DcRewardHead { void* m_00; void* m_08; void* m_10; };
@@ -563,7 +563,7 @@ void UIDungeonControlCenter::FUN_140c0bab0()
             obj.FUN_1407cba60("binding", m_binder.FUN_140d43510(static_cast<Unk_DcRewardSlot*>(&rewards.m_items[0])));
         __int64 nMeso = rewards.m_nMeso;
         __int64 nExp = rewards.m_nExp;
-        if (FUN_14036d570(FUN_140166410(), 0xb9)) {
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb9)) {
             if (FUN_140931510()->FUN_140d9f2c0()->FUN_140b22530()) {
                 nMeso *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640();
                 nExp *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620();
@@ -861,7 +861,7 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
     unsigned short nLevel = 0;
     int nJob = 0;
     if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ab20()) {
-        nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c0b0();
+        nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberLevel();
         nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
     } else {
         nLevel = pPlayer->vfunc_78();
@@ -900,7 +900,7 @@ void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
     unsigned short nLevel = 0;
     int nJob = 0;
     if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ab20()) {
-        nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c0b0();
+        nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberLevel();
         nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
     } else {
         nLevel = pPlayer->vfunc_78();

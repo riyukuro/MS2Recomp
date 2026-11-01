@@ -296,8 +296,8 @@ int LapenshardSlot::FUN_140a6f880()
 {
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        return ((class Unk_LsItemTable*)FUN_1409c4b30())->FUN_1405b5890(spItem->FUN_1405276c0());
-    return ((class Unk_LsItemTable*)FUN_1409c4b30())->FUN_1405b5810(GetSlot());
+        return ((int)((class CItemLapenshardTable*)(((class Unk_LsItemTable*)FUN_1409c4b30())))->GetEquipMask(spItem->FUN_1405276c0()));
+    return ((int)((class CItemLapenshardTable*)(((class Unk_LsItemTable*)FUN_1409c4b30())))->GetEquipPart((enum CItemLapenshardTable::Slot)(GetSlot())));
 }
 
 // @0x140a6f940

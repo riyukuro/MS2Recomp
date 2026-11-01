@@ -81,9 +81,9 @@ public:
 public:
     void RemoveHideReason(unsigned int);   // C3: was free RemoveHideReason
 public:
-    void FUN_14166cce0(unsigned int);   // C3: was free FUN_14166cce0
+    void AddStateFlags(unsigned int);   // C3: was free AddStateFlags
 public:
-    void FUN_14166cd70(unsigned int);   // C3: was free FUN_14166cd70
+    void RemoveStateFlags(unsigned int);   // C3: was free RemoveStateFlags
 };
 class CEffectService   // C3: member view for the former free stand-ins
 {
@@ -178,7 +178,7 @@ void FieldPropertyLockMyPCCli::vfunc_4()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    ((class PCBase*)(void*)(p))->FUN_14166cce0(0x400);
+    ((class PCBase*)(void*)(p))->AddStateFlags(0x400);
 }
 // @0x140b27860
 void FieldPropertyLockMyPCCli::vfunc_5()
@@ -186,7 +186,7 @@ void FieldPropertyLockMyPCCli::vfunc_5()
     void* p = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!p)
         return;
-    ((class PCBase*)(void*)(p))->FUN_14166cd70(0x400);
+    ((class PCBase*)(void*)(p))->RemoveStateFlags(0x400);
 }
 
 // @0x140b278a0

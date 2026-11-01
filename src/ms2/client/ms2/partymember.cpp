@@ -76,11 +76,11 @@ void CPartyMember::SetRole(int nValue)
 MS2_REPLACE_METHOD(0x141637B10, CPartyMember, SetRole, 22, 0x6E748507);
 
 // @0x141637b30
-void CPartyMember::FUN_141637b30(int nValue)
+void CPartyMember::SetReadyState(int nValue)
 {
     readyState = nValue;
 }
-MS2_REPLACE_METHOD(0x141637B30, CPartyMember, FUN_141637b30, 25, 0x0BE2A528);
+MS2_REPLACE_METHOD(0x141637B30, CPartyMember, SetReadyState, 25, 0x0BE2A528);
 
 // @0x141637b50
 void CPartyMember::SetCounters(const Unk_PartyCounters* pCounters)

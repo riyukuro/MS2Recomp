@@ -80,11 +80,8 @@ CStringW FUN_141275860(__int64 nMeso);                         // the meso numbe
 CStringW FUN_1409404f0(__int64 nValue);                        // number with separators
 CStringW FUN_14083cf10(const CStringW& str);                   // the digits of a number text
 __int64 FUN_140718320(const CStringW& str);                    // parse a number text
-CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);      // string table format
-CStringW FUN_140c160b0(CStringW strKey, const __int64& nArg);  // string table format
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // string table format
+#include "ms2/placeholder/wcformat.h"
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);   // string table format
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 int FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
 CString FUN_14038f6d0(const CString& str, const char* sz);     // str + sz
@@ -439,7 +436,7 @@ void UITradeDialogEx::FUN_141b284b0()
         m_spTargetFee->FUN_1422c05a0(fTargetY);
     }
     int nFeePercent = Client::Constants::GetInstance()->TradeFeePercent.Read();
-    CStringW strNotice = FUN_14062b4f0(CStringW(L"s_trade_notice_fee"), nFeePercent);
+    CStringW strNotice = FUN_14028dfa0<int>(CStringW(L"s_trade_notice_fee"), nFeePercent);
     if (MS2Ptr<ASTextField> spNotice = m_30->FUN_1409b4620("m_feeNotice"))
         spNotice->FUN_1422c4f00(strNotice);
 }
@@ -464,7 +461,7 @@ void UITradeDialogEx::FUN_141b28d10(bool bMine, __int64 nMeso)
 // @0x141b28e30
 void UITradeDialogEx::FUN_141b28e30(bool bMine, __int64 nFee)
 {
-    CStringW strFee = FUN_140c160b0(CStringW(L"s_trade_fee"), nFee);
+    CStringW strFee = FUN_14028dfa0<__int64>(CStringW(L"s_trade_fee"), nFee);
     MS2Ptr<ASTextField> spText = bMine ? m_spMyFee : m_spTargetFee;
     if (spText == 0)
         return;
@@ -489,7 +486,7 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
             bVip = 1;
     }
     __int64 nFee = FUN_14087d150(nMeso, fReduce);
-    CStringW strFee = FUN_1405c2690(L"s_trade_fee", FUN_1409404f0(nFee));
+    CStringW strFee = FUN_14028dfa0<CStringW>(L"s_trade_fee", FUN_1409404f0(nFee));
     if (bVip)
         strFee += GetStringCommonByKey(L"s_vip_reduce_fee");
     spText->FUN_1422c4f00(strFee);
@@ -550,7 +547,7 @@ bool UITradeDialogEx::FUN_141b295a0(__int64 nMeso)
         nMeso = 0;
         CStringW strMin = FUN_1409404f0(FUN_14087d0c0());
         CStringW strMax = FUN_1409404f0(FUN_14087d0f0());
-        FUN_140d73aa0(FUN_1408f71a0(L"s_trade_error_invalid_meso_range", strMin, strMax), 0, 0, L"");
+        FUN_140d73aa0(FUN_14028dfa0<CStringW, CStringW>(L"s_trade_error_invalid_meso_range", strMin, strMax), 0, 0, L"");
         bValid = false;
     }
     if (m_nMyMeso < nMeso)

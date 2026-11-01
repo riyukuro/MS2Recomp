@@ -39,7 +39,6 @@ public:
     CStringW& FUN_1405e99b0(unsigned __int64 i);        // operator[]
     void FUN_14041ada0(const CStringW& str);            // push_back
 private:
-    friend class UINpcCreateDialog;                     // ReadNpcFromFile clears m_v directly (0x141a6dd40 = vector::clear)
     std::vector<CStringW> m_v;
 };
 MS2_CHECK_SIZE(Unk_NpcFileList, 0x18);
@@ -67,7 +66,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_NpcFileList m_files;                            // +0x180 the npc ids
+    std::vector<CStringW> m_files;                      // +0x180 the npc ids
     int m_nPendingNpc;                                  // +0x198 npc to walk to (0 = none)
     bool m_bFilesRead;                                  // +0x19c
     bool m_bEntriesBuilt;                               // +0x19d

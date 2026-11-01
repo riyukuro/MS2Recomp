@@ -92,16 +92,16 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
-class Unk_SceneWalker
+class Unk_NodeQueue
 {
 public:
-    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
-    ~Unk_SceneWalker();                             // 0x14098cf00
+    Unk_NodeQueue(NiAVObject* pkRoot);            // 0x14098cb80
+    ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
 class Unk_FdMaterialTable;
 struct Unk_FdMaterialEntry;
@@ -276,7 +276,7 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
     FUN_141658ed0(1);
     ::FUN_141662da0(this, 1);   // the free extern: PC::FUN_141662da0(int) (fittingdollpc.h) hides it inside the class
     vfunc_59(1, 0, 0, 0);
-    FUN_14166cce0(4);
+    AddStateFlags(4);
     MS2SvrPtr<Unk_FdItemRec> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
@@ -393,7 +393,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
         else
             pszKey = FUN_142087e50(&DAT_143ae50d8);
     }
-    Unk_SceneWalker kWalker(pRoot);
+    Unk_NodeQueue kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true))
     {
         NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pNode);

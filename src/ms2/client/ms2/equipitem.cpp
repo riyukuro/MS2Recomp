@@ -23,6 +23,7 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/placeholder/cgameoption.h"
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 #include "ms2/client/ms2/gameoptiongraphicdefault.h"
 #include "ms2/commonfiles/ugcdef.h"
 #include "ms2/commonfiles/itemdata.h"
@@ -507,7 +508,7 @@ void CEquipItem::FUN_1411dd280()
     }
     if (static_cast<CItemData*>(m_spItem->FUN_140527840())->FUN_14053d2f0())
     {
-        if (TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0()->m_bEnchantEffect)
+        if (reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bEnchantEffect)
         {
             for (POSITION posEffect = m_models.GetHeadPosition(); posEffect != NULL; m_models.GetNext(posEffect))
             {
@@ -639,7 +640,7 @@ void CEquipItem::FUN_1411dd9a0()
         return;
     if (m_spItem->HasCubeTextureMesh() && m_spItem->FUN_140525f60())
     {
-        if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName) == 0)
+        if (TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName) == 0)
             TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->FUN_14123c580());
         SetUgcPending(1);
     }
@@ -654,10 +655,10 @@ void CEquipItem::FUN_1411ddae0()
     if (!m_spItem->FUN_140525f60())
         return;
     CString strFile = GetUgcFile();
-    if (TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName) == 0)
         return;
     CUgcItemPC kItem(m_spItem.get(), m_pPC->FUN_14123c580());
-    if (TSingleton<CUgcManager>::GetInstance()->FUN_141886980(&kItem, strFile) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->ApplyImageToPlayerItem(&kItem, strFile) == 0)
         TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->FUN_14123c580());
 }
 MS2_REPLACE_METHOD(0x1411DDAE0, CEquipItem, FUN_1411ddae0, 457, 0xDC1D7EF2);
@@ -669,7 +670,7 @@ int CEquipItem::FUN_1411ddcb0()
         return 1;
     if (!m_spItem->FUN_140525f60())
         return 1;
-    return TSingleton<CUgcManager>::GetInstance()->FUN_14188aa20(m_spItem->GetUgcInfo()->m_strName);
+    return TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName);
 }
 MS2_REPLACE_METHOD(0x1411DDCB0, CEquipItem, FUN_1411ddcb0, 141, 0x1EE2CF38);
 

@@ -32,6 +32,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/commonfiles/pvpinfo.h"
 
 // ---- unit-local views of exe types ----
 
@@ -50,37 +52,15 @@ public:
     bool m_20;                                                  // offline
 };
 
-// The team of the local player (id 0xc9 / 0xca).
-class Unk_PtTeam : public CPtred { public: int FUN_140743710(); };
-extern template class MS2Ptr<Unk_PtTeam>;
-
-class Unk_PtPlayer
-{
-public:
-    MS2Ptr<Unk_PtTeam> FUN_140967420();                         // the own team
-};
-class Unk_PtWorld { public: Unk_PtPlayer* FUN_141bd0cc0(); };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
     static class WorldService* GetInstance();
 };
-__int64 FUN_141656a80(Unk_PtPlayer* pPlayer);                   // the character id
 
 // The PvP service: the team lists (+0x68).
-class Unk_PtVec
-{
-public:
-    size_t FUN_1410201c0();                                     // size
-    Unk_PtMember** FUN_14101f900();                             // begin
-};
-class Unk_PtTeams
-{
-public:
-    Unk_PtVec* FUN_14101c160(int nTeam);
-    void FUN_14101c1a0(int* pScoreA, int* pScoreB);
-};
+typedef std::vector<Unk_PvpEntryItem*> Unk_PtVec;
 class Unk_PtMgr
 {
 public:
@@ -88,14 +68,13 @@ public:
     void FUN_141346600(int* pScoreA, int* pScoreB);             // the team scores
 private:
     char m_pad_00[0x68];
-    Unk_PtTeams m_68;
+    Unk_PvpEntryBlock m_68;
 };
 
 // The AS root with the PvP-result Invoke helpers (the strings by value: the callee destroys them).
 class Unk_PtScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);
     Scaleform::GFx::Value FUN_140c4bd20(const char* szMethod, bool a1, Scaleform::GFx::Value a2);
     Scaleform::GFx::Value FUN_141346320(const char* szMethod, bool a1, const char* a2, const char* a3, const char* a4, int a5);
     Scaleform::GFx::Value FUN_141346430(const char* szMethod, bool a1, CStringW a2, const wchar_t* a3, CStringW a4, int a5);
@@ -177,16 +156,16 @@ void UIPvPTeamResultDialog::FUN_1413452c0()
 // @0x141345310
 void UIPvPTeamResultDialog::FUN_141345310()
 {
-    Unk_PtPlayer* pPlayer = ((Unk_PtPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     bool bNoTeam = pPlayer->FUN_140967420() == NULL;
     if (bNoTeam)
         return;
     int nMyTeam = 0;
-    if (pPlayer->FUN_140967420()->FUN_140743710() == 0xc9)
+    if (reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint() == 0xc9)
         nMyTeam = 1;
-    else if (pPlayer->FUN_140967420()->FUN_140743710() == 0xca)
+    else if (reinterpret_cast<CPvPInfo*>(pPlayer->FUN_140967420().operator->())->GetPoint() == 0xca)
         nMyTeam = 2;
     m_nMyTeam = nMyTeam;
     FUN_141345e40();
@@ -203,7 +182,7 @@ void UIPvPTeamResultDialog::FUN_1413454b0()
         Unk_PtVec* pList = reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413465d0(teams[i]);
         if (pList != 0)
         {
-            for (size_t j = 0; j < pList->FUN_1410201c0(); j++)
+            for (size_t j = 0; j < pList->size(); j++)
             {
                 Unk_PtMember* pMember = *FUN_141346670(pList, j);
                 if (pMember == 0)
@@ -282,7 +261,7 @@ bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* 
 {
     if (pMember == 0)
         return false;
-    Unk_PtPlayer* pPlayer = ((Unk_PtPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
+    PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
     obj.FUN_1407cb9c0("index", nIndex);
@@ -291,7 +270,7 @@ bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* 
     obj.FUN_1407cb9c0("death", pMember->m_18);
     obj.FUN_1407cb9c0("steal", pMember->m_10);
     obj.FUN_1407cbbe0("isOffline", pMember->m_20 == 0);
-    obj.FUN_1407cbbe0("isMe", FUN_141656a80(pPlayer) == pMember->m_0);
+    obj.FUN_1407cbbe0("isMe", pPlayer->FUN_141656a80() == pMember->m_0);
     obj.FUN_1407cb9c0("job", pMember->m_1c);
     return true;
 }
@@ -411,9 +390,9 @@ void FUN_141346650()
 // @0x141346670
 Unk_PtMember** FUN_141346670(Unk_PtVec* pVec, size_t nIndex)
 {
-    if (pVec->FUN_1410201c0() <= nIndex)
+    if (pVec->size() <= nIndex)
         FUN_141346650();
-    return *(Unk_PtMember***)pVec->FUN_14101f900() + nIndex;
+    return (Unk_PtMember**)(static_cast<const Unk_PtVec*>(pVec)->_Myfirst() + nIndex);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb0570-0x142cb0660 .text$yd

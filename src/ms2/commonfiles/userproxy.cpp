@@ -57,9 +57,17 @@ unsigned char FUN_14028da10();
 #define PROXY_BITS_ASSERT(line)                                                                              \
   (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\bitset.inl", line), 0))
 #include "ms2/placeholder/citem.h"
-class Unk_UserProxyItemData {
+class CItemExtraData {
 public:
-  int FUN_140599fd0(int);
+  int GetCurrentRgbComponent(unsigned nIndex);
+};
+class Unk_1401b4ec0 {
+public:
+  Unk_1401b4ec0(CLockCriticalSection &, int);
+  ~Unk_1401b4ec0();
+
+private:
+  void *m_p;
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
@@ -1863,13 +1871,13 @@ CStringW Unk_UserProxy::FUN_1408f1b60() {
 
 // @0x1408f1be0
 CStringW Unk_UserProxy::FUN_1408f1be0() const {
-  Unk_UserProxyConstLock lock(m_290, 1);
+  Unk_1401b4ec0 lock(const_cast<CLockCriticalSection &>(m_290), 1);
   return m_328;
 }
 
 // @0x1408f1c60
 CString Unk_UserProxy::FUN_1408f1c60() const {
-  Unk_UserProxyConstLock lock(m_290, 1);
+  Unk_1401b4ec0 lock(const_cast<CLockCriticalSection &>(m_290), 1);
   return m_1a0;
 }
 
@@ -1908,7 +1916,7 @@ int Unk_UserProxy::FUN_1408f1db0() {
 
 // @0x1408f1de0
 CString Unk_UserProxy::FUN_1408f1de0() const {
-  Unk_UserProxyConstLock lock(m_290, 1);
+  Unk_1401b4ec0 lock(const_cast<CLockCriticalSection &>(m_290), 1);
   return m_218;
 }
 
@@ -1922,7 +1930,7 @@ void Unk_UserProxy::FUN_1408f1e60() {
     Unk_UserProxyItemData *data = item->FUN_140527870();
     if (data) {
       for (int i = 0; i < 2; ++i)
-        m_58[i] = data->FUN_140599fd0(i);
+        m_58[i] = reinterpret_cast<CItemExtraData *>(data)->GetCurrentRgbComponent(i);
     }
   }
   m_220.RemoveAll();

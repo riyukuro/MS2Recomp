@@ -167,7 +167,6 @@ Unk_XmlElement* FUN_140168650(Unk_XmlElement* pElem, const char* pszName);      
 void FUN_140873420(Unk_XmlElement* pElem, const char* pszName, CStringW& strOut);
 
 struct Unk_XmlElementList;
-Unk_XmlElementList* FUN_14036e160(void* pFeatures, Unk_XmlElementList* pList, Unk_XmlElement* pElem);
 int FUN_1406516b0();
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 CStringW FUN_140298ea0(CStringW strKey);
@@ -1074,7 +1073,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
             continue;
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             continue;
-        pResult = FUN_14036e160(FUN_140166410(), pResult, pElem);
+        pResult = reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(pResult), reinterpret_cast<Unk_140165cf0 *>(pElem)));
     }
     return pResult;
 }
@@ -1095,8 +1094,7 @@ void FUN_14028c0b0()
     PostQuitMessage(0);
 }
 
-CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"
 
 // Appends a timestamped line to .\\log\\<name>_<date>.txt (the per-name file name is cached in a local map).
 // @0x14028ea70
@@ -1254,6 +1252,7 @@ void FUN_14028f580(CStringW& strText)
 
 #include <string>
 #include "ms2/placeholder/clockcriticalsection.h"
+#include "ms2/placeholder/clientconstants.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // Item tab name table: per inventory tab the names it is known by (English keys, then localized names).
@@ -1401,7 +1400,6 @@ bool FUN_140292820(const std::string& strLeft, const char* pszRight);   // strin
 __int64 NextWeekdayStart(int nKind, __int64 nTime);
 const std::string& FUN_14018ef70(const std::string& str);
 class Unk_SingletonObj1* FUN_1401d3200();                                // game config singleton (C3 canonical return type; was void*)
-void FUN_1402b7560(void* pEntry, const char* pszMessage);
 
 // Config option entries: set flag at +8, value after the header.
 struct Unk_IntOptionEntry
@@ -1767,7 +1765,7 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -1805,7 +1803,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         XmlGetAttr((class TiXmlElement*)(pSub), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -1828,7 +1826,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
 int& Unk_IntOptionEntry::FUN_140298f40()
 {
     if (!m_bSet)
-        FUN_1402b7560(this, "constants is not set");
+        reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
     return m_nValue;
 }
 
@@ -1836,7 +1834,7 @@ int& Unk_IntOptionEntry::FUN_140298f40()
 CString& Unk_StringOptionEntry::FUN_140298f80()
 {
     if (!m_bSet)
-        FUN_1402b7560(this, "constants is not set");
+        reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
     return m_strValue;
 }
 
@@ -2159,7 +2157,7 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
 #endif
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(FUN_14036e160(FUN_140166410(), reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second), pElem));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);

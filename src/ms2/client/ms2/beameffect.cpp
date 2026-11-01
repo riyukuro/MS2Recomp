@@ -250,16 +250,16 @@ void FUN_140a0b2a0(NiAVObject* pObj)
 const NiRTTI CBeamEffect::ms_RTTI("CBeamEffect", &CEffect::ms_RTTI);        // @0x1400c2c90
 
 // Two header copies of the shared string/condition statics (0x1400c2cc0-0x1400c2f90).
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
 
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static CString s_sortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 #else
@@ -286,8 +286,8 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         return false;
     m_spParam.AssignRaw(const_cast<CBeamEffectParam*>(static_cast<const CBeamEffectParam*>(pParam)));
     m_pPoints = reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_pPoints;
-    FUN_1409f76f0(&m_spTarget, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))))));
-    if (m_spTarget.FUN_1409f77a0(0) || m_pPoints == 0)
+    m_spTarget = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))))));
+    if (m_spTarget == (NiNode*)0 || m_pPoints == 0)
         return false;
 
     m_fHalfWidth = 0.5f * m_spParam->m_fWidth;
@@ -295,7 +295,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 
     NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
     spRoot->SetName("Effect Root");
-    FUN_1409f76f0(&m_spRoot, spRoot);
+    m_spRoot = spRoot;
 
     const unsigned char ucPrimitive = 0x15;
     m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, 0x1f42, 8000, ucPrimitive);
@@ -352,7 +352,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 
     m_spMesh->UpdateBound();
     FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
-    static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
+    m_spRoot->AttachChild(m_spMesh->GetMesh(), false);
     if (FUN_14028d470(m_spParam->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
@@ -363,7 +363,7 @@ bool CBeamEffect::vfunc_9()
 {
     if (!CEffect::vfunc_9())
         return false;
-    if ((FUN_1409475d0(&m_spRoot) ? true : false) && ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->GetAppCulled())
+    if (((NiNode*)m_spRoot ? true : false) && m_spRoot->GetAppCulled())
         return true;
     UpdateMesh();
     return true;
@@ -373,16 +373,16 @@ MS2_REPLACE_METHOD(0x140A07EF0, CBeamEffect, vfunc_9, 126, 0x2EB01466);
 // @0x140a07f80
 void CBeamEffect::vfunc_4()
 {
-    if (FUN_1409475d0(&m_spRoot) == 0)
+    if ((NiNode*)m_spRoot == 0)
     {
         MS2_ASSERT_AT(0x9a, 0);
     }
     else
     {
-        static_cast<NiNode*>(TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        static_cast<NiNode*>(TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spRoot), true);
+        m_spRoot->UpdateEffects();
+        m_spRoot->UpdateProperties();
+        m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
         m_b2e = true;
     }
 }
@@ -390,20 +390,20 @@ void CBeamEffect::vfunc_4()
 // @0x140a08090
 void CBeamEffect::vfunc_7()
 {
-    FUN_140a0b2a0(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)));
+    FUN_140a0b2a0(static_cast<NiAVObject*>((NiNode*)m_spRoot));
 }
 MS2_REPLACE_METHOD(0x140A08090, CBeamEffect, vfunc_7, 39, 0xA0FEF435);
 
 // @0x140a080c0
 void CBeamEffect::vfunc_10(bool bVisible)
 {
-    if (FUN_1409475d0(&m_spRoot) == 0)
+    if ((NiNode*)m_spRoot == 0)
     {
         MS2_ASSERT_AT(0x82, 0);
     }
     else
     {
-        static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->SetAppCulled(!bVisible);
+        m_spRoot->SetAppCulled(!bVisible);
     }
 }
 MS2_REPLACE_METHOD(0x140A080C0, CBeamEffect, vfunc_10, 127, 0xC2D5B10E);
@@ -411,12 +411,12 @@ MS2_REPLACE_METHOD(0x140A080C0, CBeamEffect, vfunc_10, 127, 0xC2D5B10E);
 // @0x140a08150
 int CBeamEffect::vfunc_8(void* p)
 {
-    if (FUN_1409475d0(&m_spRoot) == 0)
+    if ((NiNode*)m_spRoot == 0)
     {
         MS2_ASSERT_AT(0xaf, 0);
         return 0;
     }
-    *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->GetWorldTranslate());
+    *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(m_spRoot->GetWorldTranslate());
     return 1;
 }
 MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
@@ -522,7 +522,7 @@ void CBeamEffect::UpdateMesh()
 // pointCurve, direction / length rates relative to the node's rotation for a directionCurve).
 bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
 {
-    if (FUN_1409475d0(&m_spTarget) == 0)
+    if ((NiNode*)m_spTarget == 0)
         return false;
     if (m_spParam.IsNull())
         return false;
@@ -571,7 +571,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         float fLength = kDelta.FUN_140968990();
         Vector3 kEuler;
-        FUN_140a0b1f0(FUN_1409478e0(FUN_1409475f0(&m_spTarget)), &kEuler);
+        FUN_140a0b1f0(FUN_1409478e0(m_spTarget.operator->()), &kEuler);
         Vector3 kAxisA;
         Vector3 kAxisB;
         FUN_140a01250(kEuler, &kAxisA, &kAxisB);

@@ -100,7 +100,8 @@ MS2_CHECK_SIZE(Unk_MbBlockRef, 0x10);
 class Unk_MbStateMgr { public: Unk_MbBlockRef FUN_140a2f620(int nKind); };
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void* FUN_1401cb3d0(Unk_MbBlockRef* pRef);
-void FUN_140a2ff20(Unk_MbBlockRef* pRef, int nKind, __int64 n);
+template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
+void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 
 class Unk_MbUiMgr { public: };
 class Unk_MbKeys : public CInputKeyHandler {};
@@ -383,7 +384,7 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 Unk_MbBlockRef block = ((class Unk_MbStateMgr*)FUN_140a6a830())->FUN_140a2f620(0x26);
                 if (FUN_1401cb3d0(&block))
                 {
-                    FUN_140a2ff20(&block, 0x26, 0);
+                    FUN_140a2ff20(*(const Unk_BlockPtr<Unk_BlockRecord>*)&block, 0x26, 0);
                     return 1;
                 }
             }

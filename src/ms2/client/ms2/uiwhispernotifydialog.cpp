@@ -34,6 +34,7 @@
 #include "ms2/placeholder/cugcmanager.h"
 #include "ms2/commonfiles/ugcdef.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> wrappers
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/ms2recover.h"
@@ -50,15 +51,12 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // The SWF dialog object handed around by the UI library (the exe's dynamic_cast targets).
 class ASDialog : public ASDisplayObject
 {
-public:
-    Scaleform::GFx::Value FUN_1413127f0(const char* szMethod, CString a1, CString a2);
 };
 
 // The dialog's AS object: the Invoke instantiations this unit owns.
 class Unk_WhisperScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_1413127f0(const char* szMethod, CString a1, CString a2);
     // @0x141b52b40
     Scaleform::GFx::Value FUN_141b52b40(const char* szMethod, CString a1, CString a2, CStringW a3);
     // @0x141b52c80
@@ -66,7 +64,7 @@ public:
 };
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT lives in another unit).
-class Unk_WhisperConstValue { public: int FUN_140536a30(); int FUN_140ad5c50(); };
+class Unk_WhisperConstValue { public: int FUN_140ad5c50(); };
 
 // The UGC info behind CItem::FUN_1405278d0 holds its look at +0x18.
 struct Unk_WhisperItemUgc : public CPtred
@@ -100,8 +98,6 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CStr
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CItemData> FUN_14053f870(int itemId);
 CStringW FUN_1401aa6a0(int nId);                                // the character's name
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with one argument
-CStringW FUN_140292b10(int nStringId, const int& nHour, const int& nMinute, const CStringW& strName);   // string table text with three arguments
 CStringW FUN_140719a80(unsigned __int64 nUid);                  // the item guid text
 CStringW FUN_1416e5900(int nItemId, bool bBold);                // the item name text
 void FUN_1412751b0(const CStringW& strText, int nKind);         // shows the text as a notice
@@ -196,8 +192,8 @@ void UIWhisperNotifyDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        int nA = reinterpret_cast<Unk_WhisperConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->WisperDurationTime)->FUN_140536a30();
-        int nB = reinterpret_cast<Unk_WhisperConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->WisperMaxCount)->FUN_140536a30();
+        int nA = static_cast<Client::Constants*>(FUN_1401d3200())->WisperDurationTime.Read();
+        int nB = static_cast<Client::Constants*>(FUN_1401d3200())->WisperMaxCount.Read();
         pDialog->Invoke("init", nB, nA);
     }
 }
@@ -314,7 +310,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         return;
     if (FUN_141b52a60(pInfo->m_nId) != 0)
         return;
-    CStringW strText = FUN_14052bd00(0x5eb, FUN_1401aa6a0(pInfo->m_nId));
+    CStringW strText = FormatStringId<CStringW>(0x5eb, FUN_1401aa6a0(pInfo->m_nId));
     TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
     MS2Ptr<CNpcData> sender = FUN_1406cd330(pInfo->m_nId);
     if (!sender)
@@ -326,7 +322,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         if (spData.get() != 0)
         {
             CStringW strName = FUN_1416e5900(nItemId, true);
-            strExtra += FUN_14052bd00(0x5ed, strName);
+            strExtra += FormatStringId<CStringW>(0x5ed, strName);
         }
     }
     if (nMode == 1)
@@ -339,7 +335,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     CMsTime time((__time64_t)pInfo->m_nTime);
     int nMinute = time.GetMinute();
     int nHour = time.GetHour();
-    CStringW strLog = FUN_140292b10(0x5ec, nHour, nMinute, FUN_1401aa6a0(pInfo->m_nId));
+    CStringW strLog = FormatStringId<int, int, CStringW>(0x5ec, nHour, nMinute, FUN_1401aa6a0(pInfo->m_nId));
     if (nMode == 1)
         strLog += strExtra;
     TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLog);

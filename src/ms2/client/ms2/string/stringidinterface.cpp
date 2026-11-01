@@ -120,9 +120,9 @@ CStringW StringIdInterface::FUN_141024e60()
         }
         Unk_StringArgFormatter formatter(strFormat);
         for (size_t i = 0; i < FUN_14015a000(arguments); i++)
-            formatter.FUN_140840530(FUN_14025e580(arguments, i));
+            ((class Unk_TextFormat&)(formatter)).FUN_140840530(FUN_14025e580(arguments, i));
         CStringW strResult = formatter;
-        FUN_1403b4750()->FUN_1416fb300(strResult);
+        FUN_1403b4750()->ReplaceObjectAndValueWords(strResult);
         return strResult;
     }
     else
@@ -166,7 +166,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
             break;
         if (((class Unk_XmlFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             break;
-        pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     } while (0);
     if (pRoot == 0)
     {
@@ -175,7 +175,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     }
     pMap = new ValueMap(10);
     std::auto_ptr<KeyMap> names = m_factory30();
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("key"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pElem, m_keyAttribute20, CStringW(L""));
         CStringW strText = FUN_1401bf530(pElem, m_valueAttribute28, CStringW(L""));

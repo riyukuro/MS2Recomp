@@ -87,7 +87,7 @@ int ItemExchangeSlot::vfunc_18(void* p)
     Unk_InvenSlot* pInven = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pInven != 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pInven->GetItemUid());
+        MS2Ptr<CItem> spItem = ((class Unk_Inventory&)(g_143ab2a90)).FUN_140a5d680(pInven->GetItemUid());
         if (spItem.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::ItemExchangeScroll), 0);

@@ -15,7 +15,7 @@
 class ASData;
 class NotifyObject;
 class Unk_DaInput;
-class Unk_DaList;
+class ASTileList;
 
 // A pending key bind (12 bytes, reset by 0x14192e620): m_0 = the swap box is open, m_4 = the action, m_8 = the key.
 class Unk_DaSlot
@@ -63,7 +63,6 @@ public:
     void FUN_14192da70(int nKey);                           // keys: move the selection in "m_list"
     int FUN_14192deb0(int nKey);                            // the key has no action bound
     int FUN_14192df00(int nKey, unsigned __int64 nAction);  // bind an action to a key
-    MS2Ptr<Unk_DaList> FUN_140ba4b70(const CString& strName);   // list child lookup (UIDialog member, shared COMDAT)
 
 private:
     MS2_LAYOUT_FRIEND;

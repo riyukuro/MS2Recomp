@@ -120,7 +120,7 @@ void UIBanner::Entity::vfunc_5()
     ASObj info(m_18);
     ((Unk_BannerASObj&)info).FUN_140ba9670("type", m_60);
     info.FUN_1409c0d20("gameOID", pActor->FUN_14123c580());
-    m_38->Invoke("open", info.FUN_1422bb870());
+    m_38->Invoke("open", ((class AScript&)(info)).FUN_1422bb870());
 }
 
 // @0x140ba8540
@@ -347,7 +347,7 @@ UIBanner::Entity* UIBanner::FUN_140ba8f90(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_BannerClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((class AScript*)(((Unk_BannerClip*)pOldClip.operator->())))->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);

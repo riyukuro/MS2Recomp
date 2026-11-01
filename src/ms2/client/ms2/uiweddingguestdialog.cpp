@@ -74,12 +74,6 @@ public:
     virtual void vfunc_24(bool bRefresh);
 };
 
-// The page movie clip (looks up its list).
-class Unk_GsPageScript : public AScript
-{
-public:
-    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);   // 0x140bc7280 list child lookup
-};
 
 
 // A found stranger as the search result hands it over: a sub-object at +8 describes the character.
@@ -108,18 +102,14 @@ CStringW FUN_141b71910(__int64 nValue);                         // the number as
 CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_141028be0(__int64 nCharSN, const CString& strProfile, int nA, CString strB);   // the profile picture url
 unsigned int FUN_140900f00();                                            // max invitations
-CStringW FUN_1409e94c0(CStringW strKey, const int& nLevel, const CStringW& strJob);
 // The buddy's level getter as this unit sees it: an int result (the body returns the 16-bit field; the call site
 // takes eax as is).
-CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strJob);
+#include "ms2/placeholder/wcformat.h"
 Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
-unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
 struct Unk_WgBuddyLevel { int FUN_1401cc210(); };
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
-CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
-FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 typedef ATL::CAtlArray<CBuddyManager::Ptr> BuddyArray;
 typedef ATL::CAtlArray<MS2Ptr<CGuildMember> > GuildArray;
@@ -424,7 +414,7 @@ bool UIWeddingGuestPage::vfunc_1()
     if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
         return false;
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->GetMember("m_currentPage");
-    if (FUN_1409b0350(&kPage) != 0)
+    if (kPage.IsNull() != 0)
         return false;
     m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
     return true;
@@ -480,7 +470,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
     CBuddyManager::GetInstance()->GetAllBuddies(buddies);
     if (buddies.GetCount() == 0)
         return true;
-    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<AScript*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < buddies.GetCount(); i++)
@@ -493,7 +483,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
             row.FUN_1407cbb20("accSN", FUN_141b71910(spBuddy->FUN_1401cc250()));
             row.FUN_1407cbb20("charSN", FUN_141b71910(spBuddy->FUN_1401cc230()));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spBuddy->FUN_1401cc1c0()));
-            row.FUN_1407cbb20("extra", FUN_1409e94c0(CStringW(L"s_wedding_guest_user"),
+            row.FUN_1407cbb20("extra", FUN_14028dfa0<int, CStringW>(CStringW(L"s_wedding_guest_user"),
                                                       reinterpret_cast<Unk_WgBuddyLevel*>(spBuddy.operator->())->FUN_1401cc210(),
                                                       GetStringTable()->FUN_141811980(6, spBuddy->FUN_1401cc2b0())));
             row.FUN_1407cba60("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
@@ -567,7 +557,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
     CGuildManager::GetInstance()->FUN_1404d0420(&members);
     if (members.GetCount() == 0)
         return true;
-    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<AScript*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < members.GetCount(); i++)
@@ -578,7 +568,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
             row.FUN_1407cbb20("accSN", FUN_141b71910(spMember->data.f00));
             row.FUN_1407cbb20("charSN", FUN_141b71910(spMember->data.f08));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spMember->data.FUN_1404ca890()));
-            row.FUN_1407cbb20("extra", FUN_14052b9d0(CStringW(L"s_wedding_guest_user"), spMember->data.f1c,
+            row.FUN_1407cbb20("extra", FUN_14028dfa0<unsigned short, CStringW>(CStringW(L"s_wedding_guest_user"), spMember->data.f1c,
                                                       GetStringTable()->FUN_141811980(6, spMember->data.f18)));
             row.FUN_1407cba60("profile", FUN_141028be0(spMember->data.f08,
                                                        FUN_14016a5c0(spMember->data.FUN_1404ca980(), 0), 1, CString("")));
@@ -660,7 +650,7 @@ bool UIWeddingGuestPageStranger::vfunc_1()
 {
     if (!UIWeddingGuestPage::vfunc_1())
         return false;
-    if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = static_cast<AScript*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (std::map<CStringW, GuestPtr>::iterator it = m_strangers.begin(); it != m_strangers.end(); ++it)

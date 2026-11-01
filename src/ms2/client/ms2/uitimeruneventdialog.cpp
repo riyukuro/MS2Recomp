@@ -30,6 +30,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/asbuttonbar.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -52,7 +53,6 @@ public:
 class Unk_TrTab : public AScript
 {
 public:
-    int FUN_1422e3210();                                // selected tab
 };
 
 // The root script object of the dialog, as the Invoke back end sees it. Only the overloads this unit calls.
@@ -60,7 +60,6 @@ class Unk_TrScript
 {
 public:
     Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int a1);                          // 1 int
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);                  // 2 ints
     Scaleform::GFx::Value FUN_140acd070(const char* szMethod, unsigned int a1, unsigned int a2);   // 2 unsigned
     Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);  // array, unsigned
     Scaleform::GFx::Value FUN_140ee5060(const char* szMethod, CString a1, bool a2);             // string, bool
@@ -69,7 +68,8 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* szText);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 
 // The counter tables (0x143ab3010): lookup by (kind, id) with a default.
-class Unk_TrCounters { public: int FUN_1409617d0(int nKind, unsigned nId, int* pnDefault); };
+class Unk_TrCounters;
+class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
 extern Unk_TrCounters g_trCounters;
 
 WorldService* FUN_1403ed2d0();
@@ -211,7 +211,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
         if (spContext.get() != 0) {
             int nDefault = 0;
-            int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault);
+            int nReceived = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
             if (nReceived == 0) {
                 COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                 packet.Encode1(3);
@@ -226,7 +226,7 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
             if (spContext.get() != 0) {
                 int nDefault = 0;
-                int nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
+                int nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
                 if (nKey == spContext->GetNextRewardKey(nTaken)) {
                     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                     packet.Encode1(4);
@@ -285,10 +285,10 @@ int UITimeRunEventDialog::FUN_140ee3290()
         if (quest->GetState() == 3) return 0;
     }
     int nDefault = 0;
-    int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault);
+    int nReceived = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
     if (nReceived == 0) return 1;
     int nDefault2 = 0;
-    unsigned nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault2);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         if (nTaken < nKey) return 1;
@@ -305,9 +305,9 @@ void UITimeRunEventDialog::FUN_140ee3580()
         return;
     unsigned nDistance = FUN_140ee4280(spContext);
     int nDefault = 0;
-    unsigned nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
     int nDefault2 = 0;
-    int nReceived = g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault2);
+    int nReceived = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault2);
     unsigned nNext = spContext->GetNextRewardKey(nTaken);
     TimeRunEventContext* pContext = spContext.operator->();
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140acd070("setMapData", pContext->m_1c, nDistance);
@@ -442,10 +442,10 @@ int UITimeRunEventDialog::FUN_140ee45c0()
     }
     if (bAll) {
         int nDefault = 0;
-        if (g_trCounters.FUN_1409617d0(0x5dc, spContext->m_eventId, &nDefault) == 0) nCount = nCount + 1;
+        if (reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault) == 0) nCount = nCount + 1;
     }
     int nDefault2 = 0;
-    unsigned nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault2);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         if (nTotal < nKey)
@@ -474,7 +474,7 @@ __int64 UITimeRunEventDialog::FUN_140ee4990(MS2Ptr<TimeRunEventContext> spContex
 int UITimeRunEventDialog::FUN_140ee4b00()
 {
     if (MS2Ptr<Unk_TrTab> spTab = FUN_140c02870("m_tab"))
-        return spTab->FUN_1422e3210() + 1;
+        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex() + 1;
     return -1;
 }
 
@@ -513,7 +513,7 @@ void UITimeRunEventDialog::FUN_140ee4ca0()
     }
     for (std::map<int, int>::iterator it = counts.begin(); it != counts.end(); ++it) {
         std::pair<const int, int>* pEntry = it.operator->();
-        reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba0d0("setTabCount", it->first - 1, pEntry->second);
+        reinterpret_cast<AScript*>(m_30.operator->())->FUN_1409ba0d0("setTabCount", it->first - 1, pEntry->second);
     }
 }
 

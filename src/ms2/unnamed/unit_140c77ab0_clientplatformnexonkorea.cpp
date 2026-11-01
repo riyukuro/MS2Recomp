@@ -29,6 +29,7 @@
 #include "ms2/placeholder/bitset.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/blockformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -70,13 +71,11 @@ extern __int64 g_nShutdownTime;                 // 0x143ab2908 server time of th
 extern ATL::CAtlArray<int> g_aShutdownNoticed;  // 0x143ab30b8 one flag per countdown notice (30/15/5 minutes)
 extern int g_socketClosing;                     // 0x143ab2910
 extern CStringW DAT_143ab2d78;                  // the maintenance message
-extern CStringW g_strMaintenanceExit;           // 0x143abf510 L"maintenanceExit" (the message box tag)
+extern CStringW DAT_143abf510;                  // 0x143abf510 L"maintenanceExit" (the message box tag)
 extern int DAT_143ab2858;                       // a login value received from the server
 void FUN_1414b1980();                           // parses the launch arguments
 DWORD GetTickCountMs2();
 __int64 GetServerTime();                        // the server time
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // a system notice
 int FUN_141b6fcf0(const CStringW& text, const CStringW& caption, UINT nType);   // MessageBox over the game window (C3: returns int)
@@ -86,36 +85,38 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // StringFormat<CString> (the fmt "{0}" wrapper, itemdata.cpp's COMDAT). Called by address name: progress/symbols.tsv binds
 // the StringFormat<CString> name to the look-alike 0x140536a50 (Unk_SocketFormat<CString>, which calls 0x1402bf9a0).
 CString FUN_140540050(const char* pszFormat, const CString& strArg);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // show it
 // CNXMan::FUN_14160dac0 / FUN_14160e5f0 as this TU's callers see them: int results (nxman.h declares bool), and dac0
 // gets the argument the slot passes on (the callee ignores it).
 int FUN_14160dac0(CNXMan* pNx, void* pParam);
 
 // The 16-byte machine id (zero-initialised by 0x14067c020, copied by 0x14067c080; unit_14067c020). Invented name.
-struct Unk_NxMachineId
+class Unk_MachineId   // unit_14067c020's name
 {
-    Unk_NxMachineId();                                          // 0x14067c020
-    Unk_NxMachineId* FUN_14067c080(const Unk_MachineID* pOther);
+public:
+    Unk_MachineId();                                            // 0x14067c020
+    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther);
     unsigned char m_data[16];
 };
-MS2_CHECK_SIZE(Unk_NxMachineId, 0x10);
+MS2_CHECK_SIZE(Unk_MachineId, 0x10);
 
 // The Nexon login request body (packet 3; encoded by 0x1401f9370 of commonfiles\classobject.cpp). Invented names.
 struct Unk_NxLoginRequest
 {
     Unk_NxLoginRequest() : m_nType(0), m_n18(0), m_n1c(0), m_n30(0), m_n34(0) {}   // @0x140c796c0
-    void FUN_1401f9370(COutputStream* pOut);
     int m_nType;                                                // +0x00
     CString m_strPassport;                                      // +0x08
     CString m_strSession;                                       // +0x10
     int m_n18;                                                  // +0x18
     int m_n1c;                                                  // +0x1c
-    Unk_NxMachineId m_id;                                       // +0x20
+    Unk_MachineId m_id;                                         // +0x20
     int m_n30;                                                  // +0x30
     int m_n34;                                                  // +0x34
 };
 MS2_CHECK_SIZE(Unk_NxLoginRequest, 0x38);
+
+void FUN_1401f9370(struct Unk_LoginB* p, COutputStream* pOut);   // classobject.cpp: encodes the request
 
 // ---- CClientPlatformNexonKorea ----
 // @0x140c77ab0
@@ -254,7 +255,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             packet.Encode1(2);
             packet.Encode1(2);
             FUN_140710590(packet);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, g_strMaintenanceExit);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, DAT_143abf510);
             if (spBox) {
                 spBox->SetTitle(GetStringCommon(0x219));
                 FUN_140d73c60(spBox);
@@ -270,7 +271,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             packet.Encode1(2);
             packet.Encode1(2);
             FUN_140710590(packet);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, g_strMaintenanceExit);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, DAT_143abf510);
             if (spBox) {
                 spBox->SetTitle(GetStringCommon(0x8c6));
                 FUN_140d73c60(spBox);
@@ -342,11 +343,11 @@ void CClientPlatformNexonKorea::vfunc_20(int a1, int a2)
     CString strPassport = CNXMan::GetInstance()->FUN_14160e500();
     TSingleton<CNPSMan>::GetInstance()->FUN_140db9070(strPassport);
 #endif
-    request.m_id.FUN_14067c080(TSingleton<CMachineIDManager>::GetInstance()->GetID());
+    request.m_id.FUN_14067c080((const Unk_MachineId*)TSingleton<CMachineIDManager>::GetInstance()->GetID());
     request.m_n30 = TSingleton<CMachineIDManager>::GetInstance()->GetValue();
     request.m_n34 = DAT_143ab2858;
     COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
-    request.FUN_1401f9370(&packet);
+    FUN_1401f9370((struct Unk_LoginB*)&request, &packet);
     FUN_140710590(packet);
 }
 

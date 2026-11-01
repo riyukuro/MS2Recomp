@@ -30,6 +30,18 @@
 NiDX9Renderer* FUN_1422cf0a0();
 LPDIRECT3DDEVICE9 FUN_1422cf0d0();
 
+// Scaleform::Render::Renderer2D (render_renderer2d.h) as the frame calls see it; the placeholder keeps its own class
+// because the exe's HAL layout differs from the SDK's, so the members are reached through a cast.
+namespace Scaleform { namespace Render {
+class Renderer2D
+{
+public:
+    GlyphCacheConfig* GetGlyphCacheConfig() const;
+    bool BeginFrame();
+    void EndFrame();
+};
+} }
+
 ecr::RenderService* Unk_GetRenderService(char* pCell);              // gfxmoviebackground.cpp; the render service of the framework
 void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep);     // NiRenderFrame::AppendRenderStep (uiservice.cpp copy)
 
@@ -82,7 +94,7 @@ int GFxRenderSingleThread::vfunc_3()
 
     Scaleform::Render::GlyphCacheParams kGlyphParams;
     kGlyphParams.NumTextures = 32;
-    m_spRenderer2D->FUN_142582280()->SetParams(kGlyphParams);
+    reinterpret_cast<Scaleform::Render::Renderer2D*>(m_spRenderer2D.GetPtr())->GetGlyphCacheConfig()->SetParams(kGlyphParams);
 
     if (FAILED(FUN_1422cf0d0()->CreateStateBlock(D3DSBT_ALL, &m_spStateBlock.GetRawRef())))
         return 0;
@@ -102,7 +114,7 @@ int GFxRenderSingleThread::vfunc_4()
     if (!m_spStateBlock)
         return 0;
     m_spStateBlock->Capture();
-    return m_spRenderer2D->FUN_142582210();
+    return reinterpret_cast<Scaleform::Render::Renderer2D*>(m_spRenderer2D.GetPtr())->BeginFrame();
 }
 MS2_REPLACE_METHOD(0x1422F4740, GFxRenderSingleThread, vfunc_4, 132, 0xECA44D9F);
 
@@ -113,7 +125,7 @@ void GFxRenderSingleThread::vfunc_5()
         return;
     if (!m_spStateBlock)
         return;
-    m_spRenderer2D->FUN_142582250();
+    reinterpret_cast<Scaleform::Render::Renderer2D*>(m_spRenderer2D.GetPtr())->EndFrame();
     m_spStateBlock->Apply();
 }
 MS2_REPLACE_METHOD(0x1422F47D0, GFxRenderSingleThread, vfunc_5, 125, 0x54B3E73C);

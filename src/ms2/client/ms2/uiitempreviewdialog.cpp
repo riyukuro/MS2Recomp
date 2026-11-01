@@ -44,7 +44,8 @@ public:
     virtual Unk_IpActor* vfunc_24();
 };
 class AvatarPC;
-AvatarPC* FUN_140a535c0(Unk_IpActor* pObj);
+class GameObject;
+template <> AvatarPC* efd::DynamicCast<AvatarPC, GameObject>(GameObject* Source);   // C3: was FUN_140a535c0
 
 // The preview service (singleton 0x1409bb9e0): the item shown on the preview avatar.
 class Unk_IpPreview : public ItemPreviewMgr
@@ -182,7 +183,7 @@ int UIItemPreviewDialog::vfunc_o178_1(void* pAvatar)
     if (pAvatar == 0) return 0;
     FUN_1412d6270();
     ASObj data(2);
-    AvatarPC* pPc = FUN_140a535c0(static_cast<Unk_IpAvatar*>(pAvatar)->vfunc_24());
+    AvatarPC* pPc = efd::DynamicCast<AvatarPC, GameObject>(reinterpret_cast<GameObject*>(static_cast<Unk_IpAvatar*>(pAvatar)->vfunc_24()));
     if (pPc != 0) {
         if (pPc->GetType() == 1) FUN_1418bee30(&data, 10000);
         bool bShowActions = true;

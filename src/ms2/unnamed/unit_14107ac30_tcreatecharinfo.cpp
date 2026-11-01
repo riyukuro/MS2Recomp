@@ -32,6 +32,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/jobtable.h"
+#include "ms2/commonfiles/itemdefaultdata.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/equipment.h"
+#include <NiNode.h>
+#include <NiPSParticleSystem.h>
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -57,9 +62,6 @@ MS2_CHECK_OFFSET(Unk_PCArg125, m_strName, 0x3e8);
 
 // The equipment of a pc (PC::FUN_14165f460): the gem equipment.
 class Unk_MyPCEquip : public PCGemEquip {};
-struct Unk_JobTable;
-int FUN_140644bb0(Unk_JobTable* p, int nClass);
-bool FUN_1401c0050(MS2Ptr<CItem>& ref, int n);
 int FUN_14107c2d0(int nId, unsigned nType, unsigned nSex, PC* pPC);
 
 // The rim light settings (declared the same way by uirimlightdialog.cpp; the data is defined here).
@@ -99,21 +101,18 @@ class CameraMgr   // C3: member view for the former free stand-ins
 public:
     int FUN_140a18070();
 };
-class Unk_PCLook;
-void FUN_140638200(Unk_PCLook* pLook, int nJob, int nJob2, short n);
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140599fd0(unsigned int);
+    int GetCurrentRgbComponent(unsigned int);
 };
 
 // Helpers of the exe used by this unit (declared by the units that recover them).
 extern const efd::Color g_143a09660;                        // the default appearance colour
 Unk_CharEquip FUN_141b6dea0(unsigned nColor);     // Unk_CharEquip from a colour value
 bool FUN_1402226b0(int nJob);
-void FUN_140584ff0(TCreateCharInfo* pInfo, ATL::CAtlArray<int>* pItems);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 Unk_NiPoint3 FUN_14027dcf0(const Vector3& pt);
 Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& kSrc);
@@ -134,32 +133,19 @@ private:
 
 // scene graph walker (0x30 bytes, unrecovered class; softparticlesmanager.cpp and ms2outlinepreprocessor.cpp declare
 // the same view): the CAtlList of nodes still to visit, whose head (m_p0) sits at +0
-class Unk_C930Walker
+class Unk_NodeQueue
 {
 public:
-    Unk_C930Walker(NiObject* pRoot);                // 0x14098cb80
-    ~Unk_C930Walker();                              // 0x14098cf00
-    void FUN_14098d6d0(NiObject* pNode);            // queue the children of a node
+    Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
+    ~Unk_NodeQueue();                               // 0x14098cf00
+    void AddChildren(NiNode* pkNode);               // queue the children of a node
     void* m_p0;
     void* m_pad[5];
 };
-MS2_CHECK_SIZE(Unk_C930Walker, 0x30);
-NiObject** FUN_14107cbe0(Unk_C930Walker& rWalker);
-NiObject* FUN_14107cc90(Unk_C930Walker& rWalker, bool bDescend);
-extern const NiRTTI DAT_143ad1588;
-extern const NiRTTI DAT_143afbfb8;
-extern const NiRTTI DAT_143afa4d8;
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
+NiObject** FUN_14107cbe0(Unk_NodeQueue& rWalker);
+NiObject* FUN_14107cc90(Unk_NodeQueue& rWalker, bool bDescend);
 
-// An interned node name (8 bytes), compared with FUN_1409a7ff0.
-class Unk_FixedName
-{
-public:
-    Unk_FixedName(const char* psz);                 // 0x140984450
-    ~Unk_FixedName();                               // 0x1409845a0
-private:
-    void* m_p;
-};
-bool FUN_1409a7ff0(const void* pName, const Unk_FixedName& kName);
 
 // ---- dynamic initializers (.text$di) ----
 
@@ -264,7 +250,7 @@ void TCreateCharInfo::FUN_14107ae00()
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    m_equip[i] = FUN_141b6dea0(((class CItemExtraData*)(void*)(pData))->FUN_140599fd0(i));
+                    m_equip[i] = FUN_141b6dea0(((class CItemExtraData*)(void*)(pData))->GetCurrentRgbComponent(i));
                 }
             }
         }
@@ -365,13 +351,13 @@ int TCreateCharInfo::FUN_14107b440(PC* pPC)
         nJob = m_nJobCode;
         nJob2 = m_n30;
     }
-    FUN_140638200(((class Unk_PCLook*)((class PC*)(class PC*)(pPC))->FUN_1416546d0()), nJob, nJob2, (short)m_n34);
-    pPC->FUN_14166cce0(4);
+    reinterpret_cast<JobSystem*>(pPC->FUN_1416546d0())->SetJob(nJob, nJob2, (unsigned short)m_n34);
+    pPC->AddStateFlags(4);
     pPC->vfunc_59(1, 0, 0, 0);
     for (int i = 0; i < 2; i++)
         pPC->FUN_1416591e0(i, reinterpret_cast<const NiColor&>(m_equip[i]));
     Vector3 kHit;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) != 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kPos, kHit, 0, 0.0f, 0, 0) != 0)
     {
         kHit.z += 1.0f;
         pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
@@ -398,8 +384,8 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
     pPC->vfunc_131(pState->m_34);
     pPC->vfunc_76(const_cast<Unk_UserProxy*>(pState)->FUN_1408f19e0());
     pPC->FUN_141658e40(pState->m_14);
-    FUN_140638200(((class Unk_PCLook*)((class PC*)(class PC*)(pPC))->FUN_1416546d0()), pState->m_3c, pState->m_40, pState->m_34);
-    pPC->FUN_14166cce0(4);
+    reinterpret_cast<JobSystem*>(pPC->FUN_1416546d0())->SetJob(pState->m_3c, pState->m_40, pState->m_34);
+    pPC->AddStateFlags(4);
     pPC->vfunc_59(1, 0, 0, 0);
     Unk_CharEquip aEquip[2];
     aEquip[0] = FUN_141b6dea0(pState->m_58[0]);
@@ -407,7 +393,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
     pPC->FUN_1416591e0(0, reinterpret_cast<const NiColor&>(aEquip[0]));
     pPC->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(aEquip[1]));
     Vector3 kHit;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) != 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(kPos, kHit, 0, 0.0f, 0, 0) != 0)
     {
         kHit.z += 1.0f;
         pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
@@ -425,7 +411,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
         }
         CMsTime kEnd(pState->m_288);
         CMsTime kStart(pState->m_280);
-        pPC->FUN_1416561a0()->FUN_1411ea620(kStart, kEnd);
+        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->SetLayerPeriod(kStart, kEnd);
         if (!pState->m_260.IsEmpty())
         {
             size_t nCount = pState->m_260.GetCount();
@@ -447,7 +433,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
             for (size_t i = 0; i < nCount; i++)
             {
                 MS2Ptr<CItem> spItem = pState->m_220[i];
-                if (FUN_1401c0050(spItem, 0) != 0)
+                if (spItem == 0)
                     continue;
                 spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPC))->FUN_14123c580());
                 pPC->FUN_141653d10(spItem);
@@ -480,7 +466,7 @@ bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, PC* pPC)
                 if (pData != 0)
                 {
                     for (int i = 0; i < 2; i++)
-                        kInfo.m_equip[i] = FUN_141b6dea0(((class CItemExtraData*)(void*)(pData))->FUN_140599fd0(i));
+                        kInfo.m_equip[i] = FUN_141b6dea0(((class CItemExtraData*)(void*)(pData))->GetCurrentRgbComponent(i));
                 }
             }
         }
@@ -504,7 +490,7 @@ int FUN_14107c2d0(int nId, unsigned nType, unsigned nSex, PC* pPC)
     kInfo.m_nType = nId;
     kInfo.m_nGender = nType;
     kInfo.m_nJobCode = nSex;
-    kInfo.m_n30 = FUN_140644bb0(reinterpret_cast<Unk_JobTable*>(TSingleton<JobTable>::GetInstance()), nSex);
+    kInfo.m_n30 = TSingleton<JobTable>::GetInstance()->GetSubJob1(nSex);
     return kInfo.FUN_14107c3a0(pPC);
 }
 MS2_REPLACE(0x14107c2d0, FUN_14107c2d0, 190, 0xB277E6A4);
@@ -515,7 +501,7 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
     if (FUN_14107b440(pPC) != 0)
     {
         ATL::CAtlArray<int> aItems;
-        FUN_140584ff0(this, &aItems);
+        CItemDefaultData::GetCreateItems(this, reinterpret_cast<ATL::CAtlArray<unsigned>&>(aItems));
         size_t nCount = aItems.GetCount();
         for (size_t i = 0; i < nCount; i++)
         {
@@ -560,10 +546,10 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
         pDst->vfunc_76(CStringW(L""));
         pDst->FUN_141658e40(((class PC*)(class PC*)(pSrc))->FUN_141658e60());
         pDst->vfunc_59(1, 0, 0, 0);
-        pDst->FUN_14166cce0(4);
+        pDst->AddStateFlags(4);
         pDst->FUN_1416591e0(0, *((class NiColor const*)&((class PC*)(class PC*)(pSrc))->FUN_141659220(0)));
         pDst->FUN_1416591e0(1, *((class NiColor const*)&((class PC*)(class PC*)(pSrc))->FUN_141659220(1)));
-        FUN_140638200(((class Unk_PCLook*)((class PC*)(class PC*)(pDst))->FUN_1416546d0()), ((class PC*)(class PC*)(pSrc))->FUN_141654700(), ((class PC*)(class PC*)(pSrc))->FUN_141654730(), (short)pSrc->vfunc_78());
+        reinterpret_cast<JobSystem*>(pDst->FUN_1416546d0())->SetJob(((class PC*)(class PC*)(pSrc))->FUN_141654700(), ((class PC*)(class PC*)(pSrc))->FUN_141654730(), (unsigned short)pSrc->vfunc_78());
         if (WorldService::GetInstance()->FUN_141bbb1e0(pDst, 0, 1) != 0)
         {
             pDst->vfunc_139();
@@ -581,24 +567,24 @@ NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName)
     if (_stricmp((const char*)*pName, "Scene Root") == 0)
         return pRoot;
     NiObject* pFound = 0;
-    Unk_C930Walker kWalker(pRoot);
+    Unk_NodeQueue kWalker((NiAVObject*)pRoot);
     bool bDescend = true;
-    Unk_FixedName kRoot("Scene Root");
-    Unk_FixedName kName((const char*)*pName);
+    NiFixedString kRoot("Scene Root");
+    NiFixedString kName((const char*)*pName);
     NiObject* pNode;
     while ((pNode = FUN_14107cc90(kWalker, bDescend)) != 0)
     {
-        if (NiObject::DynamicCast(&DAT_143ad1588, (class NiObject const*)(pNode)) != 0 || NiObject::DynamicCast(&DAT_143afbfb8, (class NiObject const*)(pNode)) != 0)
+        if (NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(pNode)) != 0 || NiObject::DynamicCast(&NiPSParticleSystem::ms_RTTI, (class NiObject const*)(pNode)) != 0)
         {
             bDescend = false;
             continue;
         }
-        if (pNode != pRoot && FUN_1409a7ff0(((void const*)&((class NiObjectNET*)(class NiObject*)(pNode))->GetName()), kRoot) != 0)
+        if (pNode != pRoot && ((class NiObjectNET*)(class NiObject*)(pNode))->GetName() == kRoot)
         {
             bDescend = false;
             continue;
         }
-        if (FUN_1409a7ff0(((void const*)&((class NiObjectNET*)(class NiObject*)(pNode))->GetName()), kName) != 0)
+        if (((class NiObjectNET*)(class NiObject*)(pNode))->GetName() == kName)
         {
             pFound = pNode;
             break;
@@ -630,7 +616,7 @@ bool FUN_14107cb00(NiFixedString* pName, void* pData, int n)
 MS2_REPLACE(0x14107cb00, FUN_14107cb00, 155, 0x76E1782A);
 
 // @0x14107cbe0
-NiObject** FUN_14107cbe0(Unk_C930Walker& rWalker)
+NiObject** FUN_14107cbe0(Unk_NodeQueue& rWalker)
 {
     do
     {
@@ -649,21 +635,21 @@ void Unk_EfdMatrix3::FUN_14107cc40(float fAngle, const Vector3& kAxis)
 }
 
 // @0x14107cc90 the queue helpers are handed the walker through its +0 list head
-NiObject* FUN_14107cc90(Unk_C930Walker& rWalker, bool bDescend)
+NiObject* FUN_14107cc90(Unk_NodeQueue& rWalker, bool bDescend)
 {
-    if (((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_C930Walker&>(*(Unk_C930Walker*)&rWalker.m_p0))->IsEmpty())
+    if (((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_NodeQueue&>(*(Unk_NodeQueue*)&rWalker.m_p0))->IsEmpty())
         return 0;
-    NiObject* pObj = ((class NiObject*)((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_C930Walker&>(*(Unk_C930Walker*)&rWalker.m_p0))->RemoveTail());
+    NiObject* pObj = ((class NiObject*)((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_NodeQueue&>(*(Unk_NodeQueue*)&rWalker.m_p0))->RemoveTail());
     if (bDescend)
     {
-        NiObject* pNode = NiObject::DynamicCast(&DAT_143afa4d8, (class NiObject const*)(pObj));
+        NiObject* pNode = NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pObj));
         if (pNode != 0)
-            rWalker.FUN_14098d6d0(pNode);
+            rWalker.AddChildren((NiNode*)pNode);
     }
-    if (((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_C930Walker&>(*(Unk_C930Walker*)&rWalker.m_p0))->IsEmpty())
+    if (((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_NodeQueue&>(*(Unk_NodeQueue*)&rWalker.m_p0))->IsEmpty())
         return 0;
     else
-        return *FUN_14107cbe0(*(Unk_C930Walker*)&rWalker.m_p0);
+        return *FUN_14107cbe0(*(Unk_NodeQueue*)&rWalker.m_p0);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caba10-0x142cabb20 .text$yd

@@ -276,7 +276,7 @@ UIMaidDialog* CUserMaidManager::GetMaidDialog(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = ((Unk_MaidUIService*)TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = ((class CUIService*)(((Unk_MaidUIService*)TSingleton<CUIService>::GetInstance())))->FindObject((enum eUIClassID)(nUiId));
         if (spUI.get() != 0)
             return dynamic_cast<UIMaidDialog*>((UIObject*)spUI);
     }

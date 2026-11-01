@@ -17390,3 +17390,8 @@ CRICRS_Leave	140068430	func
 ?get@?$MS2Ptr@VUnk_WsB_Marker@@@@QEBAPEAVUnk_WsB_Marker@@XZ	140d290a0	func
 ??0?$MS2Ptr@VDTReward@EventStruct@@@@QEAA@AEBV0@@Z	1408d6030	func
 ??C?$MS2Ptr@VDTReward@EventStruct@@@@QEBAPEAVDTReward@EventStruct@@XZ	1408d62e0	func
+??0TiXmlComment@@QEAA@PEBD@Z	140a27ec0	func
+??0Unk_AttendKey@@QEAA@HH@Z	14041eee0	func
+??0Unk_AttendIter@@QEAA@XZ	140420170	func
+??1Unk_AttendIter@@QEAA@XZ	140420290	func
+??$GetChild@VASDropdownMenu@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VASDropdownMenu@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140c28560	func

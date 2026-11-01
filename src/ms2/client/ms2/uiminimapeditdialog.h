@@ -17,9 +17,6 @@
 
 class ASMovieClip;
 class ASUIComponent;
-class Unk_MeSlider;
-class Unk_MeLabel;
-class Unk_MeInput;
 namespace egf { class Entity; }
 
 class UIMinimapEditDialog : public UIDialog
@@ -35,9 +32,6 @@ public:
     virtual int vfunc_65();                                         // 65 0x141a52070 open: switch to the editor camera
     virtual void vfunc_67();                                        // 67 0x141a52190 close: restore the camera and the hidden entities
 
-    MS2Ptr<Unk_MeSlider> FUN_140faff90(const CString& strName);     // 0x140faff90 slider child lookup (a UIDialog member)
-    MS2Ptr<Unk_MeLabel> FUN_140e6d820(const CString& strName);      // 0x140e6d820 label child lookup
-    MS2Ptr<Unk_MeInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input child lookup
 
     void FUN_141a53100();                                           // 0x141a53100 load the <minimap> node of the map xml into m_spMinimap and the camera
     void FUN_141a53750();                                           // 0x141a53750 store the camera/image area into m_spMinimap and save the xml

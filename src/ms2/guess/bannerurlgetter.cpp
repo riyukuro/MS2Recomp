@@ -122,7 +122,7 @@ void CBannerUrlGetter::RequestFile()
     if (((class CUgcManager*)FUN_14052d220()) != 0)
     {
         ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyUgcDownloadComplete", Delegate<void(NotifyObject*)>(this, &CBannerUrlGetter::OnNotify));
-        ((class CUgcManager*)FUN_14052d220())->FUN_141885670(0xcd, m_strUrl);
+        ((class CUgcManager*)FUN_14052d220())->DownloadBannerByKind(0xcd, m_strUrl);
     }
 }
 

@@ -260,7 +260,7 @@ public:
 
     // non-virtual helpers called by derived units
     bool FUN_14166dd20(const efd::utf8string& strAnim, float fSpeed, bool bA, bool bB);   // 0x14166dd20 play animation
-    void FUN_14166fff0(CStringW str);                       // 0x14166fff0 chat balloon text (by value)
+    void ShowChatBalloon(CStringW str);                       // 0x14166fff0 chat balloon text (by value)
     bool FUN_141674ef0(const CEffectDummy& kDummy);         // 0x141674ef0 attach an effect node per the dummy
     MS2Ptr<CStateManager> GetStateMgr();                  // 0x141678750 copy of m_spStateMgr (w17)
     void FUN_141676310(int n);                              // 0x141676310 empty
@@ -271,7 +271,7 @@ public:
     int FUN_141675ed0();                                    // 0x141675ed0 standing on a kind-8 (water) entity
     void FUN_141676140();                                   // 0x141676140 send the fall damage since +0xc10
     void FUN_141678ad0(CString strName, bool bOutline, float fScale, float fAngle);   // 0x141678ad0 attach a model under "Eff_UI" (+0xc40)
-    void FUN_141678f50();
+    void DetachEffectUiNode();
     GameObject* FUN_141679800(CAtlArray<efd::SmartPointer<GameObject> >& arrTargets, float fAngle, efd::Point3 kDir, int nMode);   // 0x141679800 best target in a cone by angle (alive first)
     GameObject* FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arrTargets, float fAngle, efd::Point3 kDir, int nMode);   // 0x141679ad0 best target in a cone by distance (alive first)                                   // 0x141678f50 detach +0xc40 from "Eff_UI"
     // clonepc.cpp (w69)
@@ -306,7 +306,7 @@ public:
     // @0x1409788b0
     void FUN_1409788b0(int n) { m_unk_118 = n; }
     float GetTargetYaw();                                  // 0x14166da40
-    void FUN_14166d820();                                   // 0x14166d820
+    void UpdateTargetYawFromLook();                                   // 0x14166d820
     void FUN_14166e0a0();                                   // 0x14166e0a0
     void FUN_141670d50(efd::Point2 kSize);                  // 0x141670d50 (25, 105 for a Ridee)
     void FUN_141670fd0(efd::Point3 kSize, efd::Point3 kOffset);   // 0x141670fd0 collision box
@@ -336,7 +336,7 @@ public:
     void FUN_1416705c0(int nStat, __int64 nValue);          // 0x1416705c0
     void FUN_1416708a0(int nStat, __int64 nValue);          // 0x1416708a0
     void FUN_141670920(int nStat, __int64 nValue);          // 0x141670920
-    int FUN_1416787a0();                                    // 0x1416787a0 field +0x4c of the local player record
+    int GetMapType();                                    // 0x1416787a0 field +0x4c of the local player record
     efd::utf8string& FUN_14166e0d0();                       // 0x14166e0d0 current animation name
     void FUN_14166ed30(bool b);
     void FUN_14166ed50(bool b);
@@ -379,18 +379,18 @@ public:
     int GetPrevState();                                    // 0x14166c980 previous state id
     void AddHideReason(unsigned int nReason);               // 0x14166ca20 hide for a reason
     void RemoveHideReason(unsigned int nReason);               // 0x14166ca80 clear a hide reason
-    bool FUN_14166cad0();                                   // 0x14166cad0 hidden for any reason
+    bool IsHidden();                                   // 0x14166cad0 hidden for any reason
     bool FUN_14166cb00(unsigned int nReason);               // 0x14166cb00
     void ApplyHideReasons();                                   // 0x14166cb30 apply the hide reasons
     void FUN_14166cc40(int nValue);                         // 0x14166cc40
-    void FUN_14166cce0(unsigned int nFlags);                // 0x14166cce0 m_unk_158 |= (rider and mount)
-    void FUN_14166cd70(unsigned int nFlags);                // 0x14166cd70 m_unk_158 &= ~
+    void AddStateFlags(unsigned int nFlags);                // 0x14166cce0 m_unk_158 |= (rider and mount)
+    void RemoveStateFlags(unsigned int nFlags);                // 0x14166cd70 m_unk_158 &= ~
     Unk_PCBaseBody* FUN_14166d220();                        // 0x14166d220 the physics body
     void* FUN_14166d240();                                  // 0x14166d240 &m_unk_6d8
     void FUN_14166d260();                                   // 0x14166d260 move the body to the actor
-    void FUN_14166d2d0(efd::Point3 kTarget, int bTurn);          // 0x14166d2d0 face a point (by value: the callers copy)
-    void FUN_14166d430(efd::Point3 kDir, int bTurn, int bResetTilt);   // 0x14166d430 face a direction
-    void FUN_14166d630(float fTime);                        // 0x14166d630 turn toward m_f934
+    void LookAtPoint(efd::Point3 kTarget, int bTurn);          // 0x14166d2d0 face a point (by value: the callers copy)
+    void SetLookDirection(efd::Point3 kDir, int bTurn, int bResetTilt);   // 0x14166d430 face a direction
+    void TurnTowardTargetYaw(float fTime);                        // 0x14166d630 turn toward m_f934
     void SetTargetYaw(float fAngle);                       // 0x14166d8b0 target yaw
     void FUN_14166d8e0(efd::Point3 kTilt);                  // 0x14166d8e0
     void FUN_14166d970(const efd::Point3& kRot);            // 0x14166d970
@@ -399,14 +399,14 @@ public:
     float FUN_14166da60();                                  // 0x14166da60
     float GetTurnSpeed();                                  // 0x14166dab0 turn speed
     float FUN_14166dad0(const efd::Point3& kLook, const efd::Point3& kDir);   // 0x14166dad0 yaw (degrees)
-    efd::Point3 FUN_141674a10(efd::Point3 kDir, float* pYaw);   // 0x141674a10 local dir -> world dir (+ its yaw)
+    efd::Point3 CalcMoveDirection(efd::Point3 kDir, float* pYaw);   // 0x141674a10 local dir -> world dir (+ its yaw)
     int FUN_141673b40(MS2Ptr<Unk_PCBaseComp_b18> spItem);   // 0x141673b40 (by value)
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141673bf0(__int64 nTagId, int nKind);   // 0x141673bf0 find in +0x8e8
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141673ce0(MS2Ptr<Unk_PCBaseComp_b18> spItem);   // 0x141673ce0 replace +0x8e8 with it
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141673e10(__int64 nTagId);   // 0x141673e10 find in +0x8e8
     int FUN_141673ef0();                                     // 0x141673ef0 skill id of the running skill state (avatarpc.cpp)
-    void FUN_141673f70(float a, float b, float c);           // 0x141673f70 color boost (also the ridee)
-    efd::Point3 FUN_141674b60(efd::Point3 kDir);             // 0x141674b60 local dir -> world dir
+    void AddColorBoost(float a, float b, float c);           // 0x141673f70 color boost (also the ridee)
+    efd::Point3 CalcMoveDirectionNoYaw(efd::Point3 kDir);             // 0x141674b60 local dir -> world dir
     int FUN_141674bc0();                                     // 0x141674bc0 (buffs)
     NiAVObject* FUN_141675150(const CString& strNode);       // 0x141675150 the named node (the ridee's when riding)
     unsigned int FUN_141675240();                            // 0x141675240 movement flags of the buffs
@@ -427,7 +427,7 @@ public:
     int FUN_141676760();                                     // 0x141676760 +0xb28 count
     int FUN_141676790(unsigned int nKey);                    // 0x141676790 +0xb28 lookup (0 if missing)
     NiPoint3 FUN_1416767d0();                                // 0x1416767d0 vfunc_18 of the ridee when riding
-    NiPoint3 FUN_141676880();                                // 0x141676880 vfunc_20 of the ridee when riding
+    NiPoint3 GetRideeAwareRotation();                                // 0x141676880 vfunc_20 of the ridee when riding
     void* FUN_141676a10();                                   // 0x141676a10 (the world object of +0xb70)
     void FUN_141676a50(__int64 nUid, int n);                 // 0x141676a50 +0xca8 SetAt
     void FUN_141676ab0(__int64 nUid);                        // 0x141676ab0 +0xca8 RemoveKey
@@ -439,7 +439,7 @@ public:
     efd::utf8string FUN_141679170(int a, int b);             // 0x141679170 (+0xd00 slot 6)
     NiPoint3 FUN_14166dbb0();                               // 0x14166dbb0
     CString FUN_14166dc50();                                // 0x14166dc50 model name
-    bool FUN_14166dda0(int nId);                            // 0x14166dda0 play the animation of slot 123
+    bool PlayAnimationById(int nId);                            // 0x14166dda0 play the animation of slot 123
     void FUN_14166de50(float fOffset);                      // 0x14166de50 offset of the current sequence
     CString FUN_14166dbf0(const efd::utf8string& kName);    // 0x14166dbf0 model-specific animation name
     float FUN_1416713c0();                                  // 0x1416713c0 animation speed
@@ -448,8 +448,8 @@ public:
     bool FUN_14166de90(int nKey, unsigned int nSeq);            // 0x14166de90 nAnimId is one of +0xd00's names for nKey
     unsigned int FUN_141679270(const char* szName);                   // 0x141679270 animation id of vfunc_60() + szName (-2: none)
     void FUN_1416795e0();                                    // 0x1416795e0 replay the queued state request (+0xc48)
-    void FUN_141679760();                                    // 0x141679760 reload +0xd00 for vfunc_57()
-    void FUN_141679e00();                                    // 0x141679e00 stop the +0xa30 effects
+    void InitActionData();                                    // 0x141679760 reload +0xd00 for vfunc_57()
+    void ClearEffects();                                    // 0x141679e00 stop the +0xa30 effects
     void FUN_141679f30();                                    // 0x141679f30
     void FUN_141679fa0();                                    // 0x141679fa0
     // mypc.cpp (w99)

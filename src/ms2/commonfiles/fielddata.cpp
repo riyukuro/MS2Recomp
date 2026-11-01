@@ -315,7 +315,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 
-int FUN_140873420(Unk_140165cf0*,const char*,CStringW&);
+int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_140178670(Unk_140165cf0*,const char*,ATL::CAtlArray<int>&);
 int FUN_140178770(Unk_140165cf0*,const char*,std::vector<unsigned>&);

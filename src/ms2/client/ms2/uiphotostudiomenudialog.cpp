@@ -13,7 +13,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
-
+class Unk_RewardClip { public: class Scaleform::GFx::Value FUN_140e262c0(char const *, char const *); };
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- header statics (the market sort-key names) ----
@@ -71,7 +71,7 @@ void UIPhotoStudioMenuDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog)
-        pDialog->FUN_140e262c0("setState", "other");
+        ((class Unk_RewardClip*)(pDialog))->FUN_140e262c0("setState", "other");
     FUN_140e761b0();
 }
 

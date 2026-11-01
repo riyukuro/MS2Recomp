@@ -36,6 +36,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/placeholder/asbutton.h"   // C3: ASButton / ASMovieClip / ASDisplayObject members
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -55,12 +56,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // A button of the movie (the label and the enabled flag).
-class Unk_TfButton : public AScript
-{
-public:
-    void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
-    void FUN_1422c1fe0(int bEnable);                    // enable / disable
-};
+class Unk_TfButton : public AScript { };   // ASButton::FUN_1422cdfb0 sets the label, ASMovieClip::FUN_1422c1fe0 enables
 
 
 // The movie's board (the root child of the dialog).
@@ -96,12 +92,8 @@ public:
 };
 
 // The player's item inventory (global object).
-class Unk_TfInventory : public Unk_Inventory
-{
-public:
-    MS2Ptr<CItem> FUN_140a5d680(unsigned __int64 uid);
-};
-extern int DAT_143ab2a90;
+class Unk_TfInventory : public Unk_Inventory { };
+extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
 
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
@@ -111,7 +103,6 @@ class ASDialog : public AScript
 public:
     virtual void vfunc_1();
     virtual void vfunc_2(int a, int b, int c);
-    int FUN_1422c13b0();
 };
 
 class Unk_14025e7b0 { public: int FUN_1402c4c90(int nFlag); };
@@ -174,7 +165,7 @@ void UIItemEnchantTransformDialog::vfunc_43()
             int x = inv->GetLowerCutGlobalY();
             int y = inv->GetIllustGlobalX() - 0x50;
             if (x != -1 && y != -1) {
-                dialog->vfunc_2(5, y, x - dialog->FUN_1422c13b0());
+                dialog->vfunc_2(5, y, x - reinterpret_cast<ASDisplayObject*>(dialog)->GetHeightCeil());
                 return;
             }
         }
@@ -250,8 +241,8 @@ void UIItemEnchantTransformDialog::FUN_140c3d420()
     if (board == 0)
         return;
     if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit")) {
-        submit->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_submit"));
-        submit->FUN_1422c1fe0(false);
+        reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_submit"));
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
     }
 }
 
@@ -261,9 +252,9 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
 {
     m_targets.RemoveAll();
     ATL::CAtlArray<unsigned __int64> uids;
-    ((Unk_TfInventory*)&DAT_143ab2a90)->FUN_140a609a0(0, uids);
+    ((Unk_TfInventory*)&g_143ab2a90)->FUN_140a609a0(0, uids);
     for (unsigned i = 0; i < uids.GetCount(); ++i) {
-        MS2Ptr<CItem> item = ((Unk_TfInventory*)&DAT_143ab2a90)->FUN_140a5d680(uids[i]);
+        MS2Ptr<CItem> item = ((Unk_TfInventory*)&g_143ab2a90)->FUN_140a5d680(uids[i]);
         if (item == 0)
             continue;
         if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
@@ -370,7 +361,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     }
     ((class ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
     if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
-        submit->FUN_1422c1fe0(true);
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
     ((Unk_TfBoard*)board)->Invoke("selectItem", obj.FUN_1422bb870());
 }
 
@@ -397,7 +388,7 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
     if (board == 0)
         return;
     if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
-        submit->FUN_1422c1fe0(false);
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
 }
 
 // @0x140c3ead0
@@ -409,8 +400,8 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
     if (board == 0)
         return;
     if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit")) {
-        submit->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_retry"));
-        submit->FUN_1422c1fe0(true);
+        reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_retry"));
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
     }
     FUN_140c3d5a0();
     ((Unk_TfBoard*)board)->Invoke("onTransformResult");

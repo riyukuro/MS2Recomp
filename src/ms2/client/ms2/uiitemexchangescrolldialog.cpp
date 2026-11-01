@@ -672,7 +672,7 @@ void UIItemExchangeScrollDialog::FUN_140f54120(ASObj& obj, CExchangeItemInfo* pI
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 6, nCount, MS2Ptr<CItem>(0));
     CStringW strNotify = FUN_14028dfa0<CStringW>(CStringW(L"s_itemslot_exchange_upgrade_notify"),
                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pInfo->m_requireEquip.m_nId));
-    ((class CReservedWordTable*)(void*)(((void*)TSingleton<CReservedWordTable>::GetInstance())))->FUN_1416fb300(strNotify);
+    ((class CReservedWordTable*)(void*)(((void*)TSingleton<CReservedWordTable>::GetInstance())))->ReplaceObjectAndValueWords(strNotify);
     obj.FUN_1407cbb20("warning", FUN_14062b4f0(CStringW(L"s_itemslot_exchange_upgrade_warning"), &pInfo->m_nMaxGrade));
     obj.FUN_1407cbb20("notify", CStringW(strNotify));
 }

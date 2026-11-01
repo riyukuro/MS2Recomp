@@ -1005,8 +1005,8 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
             CStringW strResult = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20ed0();
             CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strResult);
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strTitle);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
             Unk_RLRewardUI* pUI = ((class Unk_RLRewardUI*)FUN_140a7b2b0(0x4e40));
             if (pUI != 0) {
                 if (items.GetCount() > 0)

@@ -31,7 +31,7 @@ static CStringW s_strBannerClose(L"bannerClose");
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/worldservice.h"
-
+class GameObject { public: int FUN_14123c580(void); };
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
 class State;
@@ -179,7 +179,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x1e, 0);
         return;
     }
-    int bSelfTarget = (pPlayer->FUN_14123c580() == pTarget->FUN_14123c580()) ? 1 : 0;
+    int bSelfTarget = (((class GameObject*)(pPlayer))->FUN_14123c580() == ((class GameObject*)(pTarget))->FUN_14123c580()) ? 1 : 0;
     if (bSelfTarget)
     {
         // We cannot challenge ourselves.
@@ -273,7 +273,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         MS2_ASSERT_AT(0x8f, 0);
         return;
     }
-    if (pPlayer->FUN_14123c580() == pTarget->FUN_14123c580())
+    if (((class GameObject*)(pPlayer))->FUN_14123c580() == ((class GameObject*)(pTarget))->FUN_14123c580())
     {
         // We cannot dance with ourselves.
         MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);

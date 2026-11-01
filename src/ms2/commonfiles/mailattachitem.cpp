@@ -663,7 +663,7 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         }
         else
         {
-            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb300(m_str50);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceObjectAndValueWords(m_str50);
         }
     }
     if (!FUN_1406926e0(m_nKind))
@@ -682,5 +682,5 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         m_str50 = repl2.FUN_14065d9d0();
     }
     if (FUN_140692720(m_nKind))
-        TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb300(m_str50);
+        TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceObjectAndValueWords(m_str50);
 }

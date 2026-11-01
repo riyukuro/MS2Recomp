@@ -61,19 +61,18 @@ struct Unk_CmdBitset
 MS2_CHECK_SIZE(Unk_CmdBitset, 1);
 
 // ---- out-of-unit callees ----
-size_t FUN_1401662c0(ATL::CAtlArray<CString>* p);                               // element count
 CString* FUN_140164930(ATL::CAtlArray<CString>* p, size_t nIndex);              // element
-void FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep, int nMax);   // split, at most nMax parts
+int FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep, int nMax);   // split, at most nMax parts
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_14015f0b0(const CString& str, ATL::CAtlArray<CString>& rOut, const char* szSep);   // split
-class Unk_CmdEnvSvc { public: void FUN_1406aef60(const CString& strKey, const CString& strValue); };
+void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* szSep);   // split
+class Unk_LaunchOptions { public: void FUN_1406aef60(const CString& strKey, const CString& strValue); };
 Unk_LaunchOptions* FUN_1406aeee0();
 int FUN_1406c34c0();                                                            // the Nexon platform is on
-void FUN_14036e640(CString strEnv);                                             // "-env" / the default "Dev"
+class CFeatureManager { public: static void SetServerTypeName(CString strEnv); };   // C3: member view;                                             // "-env" / the default "Dev"
 void FUN_140651190(CString strLocale);                                          // "-locale"
 int FUN_140718170(CString& strValue);                                           // a number or an enum name
-unsigned char FUN_140718390(CString& strValue);                                 // a bool
-void FUN_141210ca0(unsigned char bValue);                                       // "-preloadAll"
+bool FUN_140718390(const CString& strValue);                                 // a bool
+class CFilePreload { public: static void FUN_141210ca0(bool bValue); };   // C3: member view;                                       // "-preloadAll"
 void FUN_140650e70(CString strLanguage);                                        // "-language"
 void FUN_140650b50(CString strLanguage);                                        // "-language" / "-voice"
 
@@ -120,7 +119,7 @@ int g_nPort;
 int g_bPortSet;
 int g_nIgnorePack;
 char g_bLanguageSet;
-extern CString g_strFlavor;                                                     // set by "-id"
+extern CString DAT_143af37a0;                                                     // set by "-id"
 extern int g_nLogLevel;                                                         // set by "-logLevel"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,9 +168,9 @@ void FUN_1414b13f0(int nIndex, CString strArg)
     {
         ATL::CAtlArray<CString> tokens;
         FUN_14028c3e0(strArg, tokens, ":", 2);
-        if (FUN_1401662c0(&tokens) >= 2)
+        if (tokens.GetCount() >= 2)
         {
-            reinterpret_cast<Unk_CmdEnvSvc*>(FUN_1406aeee0())->FUN_1406aef60(*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
+            reinterpret_cast<Unk_LaunchOptions*>(FUN_1406aeee0())->FUN_1406aef60(*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
             g_args.FUN_14016a190((const char*)*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
         }
     }
@@ -226,7 +225,7 @@ int FUN_1414b1770(CString strArg)
     CString strRest = strArg.Mid(5);
     ATL::CAtlArray<CString> tokens;
     Unk_SplitA(const_cast<CStringA&>(strRest), (ATL::CAtlArray<CStringA>*)&(tokens), ",");
-    int nCount = (int)FUN_1401662c0(&tokens);
+    int nCount = (int)tokens.GetCount();
     if (nCount == 2)
     {
         g_strServerAddr = *FUN_140164930(&tokens, 0);
@@ -257,8 +256,8 @@ void FUN_1414b1980()
         if (strArg[0] == '/')
         {
             ATL::CAtlArray<CString> tokens;
-            FUN_14015f0b0(strArg, tokens, ":");
-            if (FUN_1401662c0(&tokens) >= 2)
+            Unk_SplitImplA(strArg, &tokens, ":");
+            if (tokens.GetCount() >= 2)
             {
                 if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/passport") == 0)
                     FUN_1414b15f0(CString(strArg));
@@ -327,7 +326,7 @@ void FUN_1414b1f10()
 {
     CString strValue;
     if (g_args.FUN_140939f50("-env", strValue))
-        FUN_14036e640(CString(strValue));
+        CFeatureManager::SetServerTypeName(CString(strValue));
     if (g_args.FUN_140939f50("-locale", strValue))
         FUN_140651190(CString(strValue));
     if (g_args.FUN_140939f50("-ip", strValue))
@@ -335,11 +334,11 @@ void FUN_1414b1f10()
     if (g_args.FUN_140939f50("-port", strValue))
         g_nPort = atoi(strValue);
     if (g_args.FUN_140939f50("-id", strValue))
-        g_strFlavor = strValue;
+        DAT_143af37a0 = strValue;
     if (g_args.FUN_140939f50("-ignorePack", strValue))
         g_nIgnorePack = FUN_140718170(strValue);
     if (g_args.FUN_140939f50("-preloadAll", strValue))
-        FUN_141210ca0(FUN_140718390(strValue));
+        CFilePreload::FUN_141210ca0(FUN_140718390(strValue));
     if (g_args.FUN_140939f50("-logLevel", strValue))
         g_nLogLevel = FUN_140718170(strValue);
     if (g_args.FUN_140939f50("-language", strValue))
@@ -359,7 +358,7 @@ void FUN_1414b21d0()
     g_strSid = "";
     g_strServerAddr = "127.0.0.1";
     g_nPort = 0x4e21;
-    FUN_14036e640(CString("Dev"));
+    CFeatureManager::SetServerTypeName(CString("Dev"));
 }
 
 // @0x1414b2250

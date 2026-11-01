@@ -3231,7 +3231,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                     }
                 }
             }
-            MS2Ptr<Unk_HsInfo> spHs = pPC->FUN_141664200();
+            MS2Ptr<Unk_HsInfo> spHs = pPC->GetHideAndSeekInfo();
             if (static_cast<bool>(spHs.get()) && spHs->FUN_14050a6a0() != 0)
                 bVisible = pPC != 0 ? pPC->FUN_1415278d0(reinterpret_cast<void*>(spProxy->FUN_1416c22f0())) == 1 : false;
         }
@@ -3262,7 +3262,7 @@ void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
         spEntity->m_state = s_strQuestTarget;
         spEntity->m_layer = s_strLayerQuestTarget;
     } else {
-        MS2Ptr<CPartyMember> spMember = CPartyManager::GetInstance()->FUN_14162afc0(nId);
+        MS2Ptr<CPartyMember> spMember = CPartyManager::GetInstance()->FindMemberByCharId(nId);
         if (static_cast<CPartyMember*>(spMember) != 0) {
             spEntity->m_state = spMember->leader != 0 ? s_strPartyChief : s_strParty;
             spEntity->m_layer = s_strLayerParty;

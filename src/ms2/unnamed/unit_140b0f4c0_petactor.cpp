@@ -96,8 +96,7 @@ class Unk_OwnerPC : public PC { };
 class Unk_SkillObj : public SkillLevelData { };
 class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<SkillActionAdditional> > m_vElems; };
 SkillActionAdditional* FUN_140b122e0(MS2Ptr<SkillActionAdditional>* p);   // .get() (in-unit copy, defined below)
-class Unk_PetSkillTable { public: MS2Ptr<Unk_PetSkillLevel> FUN_1407ee2f0(int nSkillId, unsigned short nLevel); };
-class Unk_ItemEquipData : public CItemData { public: int FUN_140526810(unsigned short nLevel); };
+class Unk_ItemEquipData : public CItemData { };
 struct Unk_PetFoodRule { int m_nKey; float m_fRate; int m_nItemId; };       // key +0, rate +4, item +8
 // The pet food book: its rule map sits at +0 (stateidle.cpp's Unk_SiPetBook).
 struct Unk_PetFoodBook { CAtlMap<int, Unk_PetFoodRule> m_map; };
@@ -408,7 +407,7 @@ int CPet::FUN_140b10150()
         return 1;
     else if (TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayShowOnlyMyPet != 0 && pOwner->GetClassID() != 0x6200004)
         return 1;
-    if (FUN_14166cad0())
+    if (IsHidden())
         return 1;
     return 0;
 }
@@ -745,7 +744,7 @@ void CPet::FUN_140b114e0(int nAnimId)
     CStringW strText(spLine->m_strText);
     if (strText.GetLength() > 0)
     {
-        FUN_14166fff0(CStringW(strText));
+        ShowChatBalloon(CStringW(strText));
         m_nTargetId = nAnimId;
         m_nIdleMs = 0;
     }
@@ -772,7 +771,7 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
         return 0;
     if (nSkillType == 0x12)
     {
-        MS2Ptr<Unk_PetSkillLevel> spLevel = reinterpret_cast<Unk_PetSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(nSkillId, nLevel);
+        MS2Ptr<SkillLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(nSkillId, nLevel);
         if (spLevel.get() != 0 ? true : false)
         {
             if (reinterpret_cast<Unk_SkillObj*>(spLevel.operator->())->FUN_140804450() != 0)
@@ -799,10 +798,10 @@ unsigned FUN_140b119c0(int nItemId, PCBase* pPC)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return 0;
-    MS2Ptr<Unk_PetSkillLevel> spLevel = reinterpret_cast<Unk_PetSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(spData->FUN_14053dc20(), spData->FUN_14053dc40());
+    MS2Ptr<SkillLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(spData->FUN_14053dc20(), spData->FUN_14053dc40());
     if (spLevel == 0)
         return 0;
-    std::vector<MS2Ptr<SkillActionAdditional> >& vElems = spLevel->m_vElems;
+    std::vector<MS2Ptr<SkillActionAdditional> >& vElems = spLevel->m_vAdditional;
     for (MS2Ptr<SkillActionAdditional>* it = vElems._Unchecked_begin(), *itEnd = vElems._Unchecked_end(); it != itEnd; ++it)
     {
         MS2Ptr<SkillActionAdditional>& e = *it;
@@ -839,7 +838,7 @@ int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC)
         MS2Ptr<Unk_ItemEquipData> spData = ((class Unk_PetSkillSvcInner*)((class CPetManager*)(class Unk_PetSkillSvc*)(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320()))))->FUN_140c8b430())->FUN_140c892c0(kRule.m_nItemId);
         if (spData == 0)
             continue;
-        if (spData->FUN_140526810(pPC->vfunc_78()) == 0)
+        if (reinterpret_cast<CItem*>(spData.operator->())->CanUseAtLevel(pPC->vfunc_78()) == 0)
             continue;
         if (FUN_140b118f0(kRule.m_nItemId, pPC) != 0)
             continue;
@@ -877,7 +876,7 @@ int FUN_140b11e90(Unk_PetFoodBook* pBook, PCBase* pPC)
         MS2Ptr<Unk_ItemEquipData> spData = ((class Unk_PetSkillSvcInner*)((class CPetManager*)(class Unk_PetSkillSvc*)(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320()))))->FUN_140c8b430())->FUN_140c892c0(kRule.m_nItemId);
         if (spData.get() != 0 ? true : false)
         {
-            if (spData->FUN_140526810(pPC->vfunc_78()) == 0)
+            if (reinterpret_cast<CItem*>(spData.operator->())->CanUseAtLevel(pPC->vfunc_78()) == 0)
                 continue;
         }
         if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)

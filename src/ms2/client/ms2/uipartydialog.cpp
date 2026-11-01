@@ -592,7 +592,7 @@ void UIPartyDialog::vfunc_15()
     if (TSingleton<CPartyManager>::GetInstance()->HasVote())
         m_vote->FUN_141a74760();
     if (m_deadline != 0 && GetTickCountMs2() > m_deadline)
-        TSingleton<CPartyManager>::GetInstance()->FUN_14162c4a0(0);
+        TSingleton<CPartyManager>::GetInstance()->SetAllMembersState(0);
 }
 
 // MS2-FUNCTIONAL: written from the decompile (the three method branches share the result slot)
@@ -671,7 +671,7 @@ void UIPartyDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
         unsigned __int64 nCharId = FUN_140718350(pArgs->FUN_1422b8d30());
         if (nCharId <= 0)
             return;
-        CPartyMember* pMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nCharId).get();
+        CPartyMember* pMember = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nCharId).get();
         if (pMember == 0)
             return;
         int nStringId = pMember->FUN_141637c20() ? 0x57b : 0x57a;
@@ -773,7 +773,7 @@ void UIPartyDialog::FUN_141a77760(float x, float y, __int64 nCharId)
         }
         else
         {
-            MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nCharId);
+            MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nCharId);
             UIPopUpMenu* pMenu;
             if (spMember.get() != 0 && (pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39))) != 0)
             {
@@ -873,7 +873,7 @@ bool UIPartyDialog::FUN_141a77eb0()
         FUN_140d73bc0(0xb5b, 0, 0, CStringW(L""));
         return false;
     }
-    int nCount = TSingleton<CPartyManager>::GetInstance()->FUN_14162bf20();
+    int nCount = TSingleton<CPartyManager>::GetInstance()->CountOnlineMembersOutsideTutorial();
     nCount--;
     if (nCount <= 0)
     {
@@ -995,7 +995,7 @@ int UIPartyDialog::FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int
             strChName = GetStringCommonByKey(CStringW(L"s_party_ch_dungeon"));
         else
             strChName = FUN_14028dfa0(CStringW(L"s_party_ch"), pMember->user.m_38);
-        MS2Ptr<CPartyMember> spMine = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(DAT_143ab2828);
+        MS2Ptr<CPartyMember> spMine = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(DAT_143ab2828);
         if (spMine.get() != 0)
         {
             CPartyMember* pMine = spMine.operator->();
@@ -1023,7 +1023,7 @@ int UIPartyDialog::FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int
     {
         int nObserve = 0;
         MyPC* pMe = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-        MS2Ptr<CPartyMember> spMine = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(DAT_143ab2828);
+        MS2Ptr<CPartyMember> spMine = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(DAT_143ab2828);
         MS2Ptr<CFieldDataCli> spField = static_cast<Unk_PdWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
         if (pMe != 0 && spMine.get() != 0)
         {
@@ -1690,7 +1690,7 @@ static CString s_strStun5 = "stun";
 
 // The callees of the popup menu.
 CLogString* GetLogString();                                            // TSingleton<CLogString>::GetInstance
-int FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szText);   // log a line
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szText);   // log a line
 class Unk_PmInput;
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();                                    // UISwfEntityManager
@@ -1766,7 +1766,7 @@ public:
 class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was FUN_140a38a00
 float FUN_1412762d0(const Unk_PopupPos& pt);
 const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);
-void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, int n);        // notice of a blocked action
+void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);        // notice of a blocked action
 
 // The log call with one argument (0x141a876e0; FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class T> void Unk_PmLog(CLogString* log, int level, int category, const wchar_t* format, const T& value)
@@ -1989,7 +1989,7 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
     FUN_141a832e0(pTarget, strName);
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
         return;
     }
     m_110 = nType;
@@ -2041,7 +2041,7 @@ void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
     FUN_141a832e0(pTarget, strName);
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
         return;
     }
     m_110 = nType;
@@ -2128,7 +2128,7 @@ void UIPopUpMenu::PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CParty
     CStringW strName = pMember->user.FUN_1408f19e0();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromPartyMember Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromPartyMember Empty Menu");
         return;
     }
     m_110 = 2;
@@ -2160,7 +2160,7 @@ void UIPopUpMenu::PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, CGuild
     CStringW strName = pMember->data.FUN_1404ca890();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromGuildMember Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromGuildMember Empty Menu");
         return;
     }
     m_110 = 3;
@@ -2204,7 +2204,7 @@ void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
     CStringW strName = pBuddy->FUN_1401cc1c0();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
+        Unk_AdditionalLog(GetLogString(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
         return;
     }
     m_110 = 7;
@@ -2235,7 +2235,7 @@ void UIPopUpMenu::FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId)
     CStringW strName = FUN_14016a730(spHome->m_30, 0);
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
+        Unk_AdditionalLog(GetLogString(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
         return;
     }
     m_110 = 7;
@@ -2288,7 +2288,7 @@ void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMe
     CStringW strName = pMember->m_info.GetName();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromClubMember Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromClubMember Empty Menu");
         return;
     }
     m_110 = 0xe;
@@ -2472,7 +2472,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
     FUN_141a83810(nFlags, nType, target);
     if (m_118.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::Open Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::Open Empty Menu");
         return 0;
     }
     float fDirX = 1.0f;
@@ -2554,7 +2554,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
     FUN_141a834e0(info.m_b, nMode, strName, nDir);
     if (m_118.IsEmpty())
     {
-        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::OpenFromCharName Empty Menu");
+        Unk_AdditionalLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::OpenFromCharName Empty Menu");
         return 0;
     }
     if (m_80 == 2)
@@ -2937,7 +2937,7 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
     {
         if (FUN_14162ab60(TSingleton<CPartyManager>::GetInstance()))
         {
-            if (((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->FUN_14162ad50(strName) != 0)
+            if (((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->IsMemberByName(strName) != 0)
             {
                 AddPopupMenu((Unk_PmMenuId)0xca);
                 if (bOnline != 0)
@@ -2953,7 +2953,7 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
         }
         else
         {
-            if (((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->FUN_14162ad50(strName) != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe0))
+            if (((class CPartyManager*)(class CPartyManager*)(TSingleton<CPartyManager>::GetInstance()))->IsMemberByName(strName) != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe0))
                 AddPopupMenu((Unk_PmMenuId)0xcc);
         }
     }
@@ -3834,7 +3834,7 @@ void FUN_141a8b020(int nBannerId, float x, float y)
     UIPopUpMenu* pMenu = (UIPopUpMenu*)((class UIDialog*)FUN_140c30140(0x4e39));
     if (pMenu != 0)
     {
-        MS2Ptr<CUgcRegistBanner> spBanner = ((class CUgcManager*)FUN_14052d220())->FUN_141887ce0(nBannerId);
+        MS2Ptr<CUgcRegistBanner> spBanner = ((class CUgcManager*)FUN_14052d220())->GetRegistBanner(nBannerId);
         if (spBanner == 0)
             return;
         Unk_PopupMenuInfo info(x, y, 2, 0x40, 0, CString(""), 0);

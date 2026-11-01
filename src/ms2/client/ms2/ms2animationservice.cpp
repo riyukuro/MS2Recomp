@@ -32,6 +32,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2animationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <atlcoll.h>
+#include <efd/SmartPointer.h>
 #include <map>
 #include <NiActorManager.h>
 #include <NiFilename.h>
@@ -60,23 +61,21 @@ public:
 };
 
 extern int DAT_1439ed00c;                       // option: remember the KF preload files (0 = read the XML each time)
-extern void* DAT_143b09498;                     // callback slot set by OnInit (the asset filter)
+namespace ecr { class SceneGraphCacheResponse; }
+extern bool (*g_pfnMS2SceneGraphCacheFilter)(const ecr::SceneGraphCacheResponse*);   // C3: was DAT_143b09498, the asset filter set by OnInit
 typedef std::map<NiString, TiXmlDocument> XmlDocMap;
 
 // Elements of the XML preload files (TinyXML nodes of the game's copy; unrecovered class).
 class Unk_XmlNode
 {
 public:
-    Unk_XmlNode* FUN_140165cf0(const char* pcName);     // FirstChild(name)
-    Unk_XmlNode* NextSibling(const char* pcName);       // NextSibling(name)
-    void FUN_140873ca0(const char* pcName, int nValue); // SetAttribute(name, int)
+    Unk_XmlNode* FirstChild(const char* pcName);
+    Unk_XmlNode* NextSibling(const char* pcName);
 };
-Unk_XmlNode* FUN_140165cf0(TiXmlDocument* pDoc, const char* pcName);    // FirstChild(name) of the document
+void XmlSetAttr(TiXmlElement* pElem, const char* pcName, int nValue);
 // The file system: loads XML documents and holds the pending gender-reload request (1 male, 2 female, 3 both, -1 none).
 class Unk_FileSys : public CFileSystem
 {
-public:
-    int FUN_14039a720();
 };
 CString FUN_140188f50(const char* pcText, int nCodePage);               // converts attribute text to a CString
 
@@ -133,16 +132,15 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();
+    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     static class WorldService* GetInstance();
 };
-void FUN_141bd2db0(void* pMgr, Unk_ShList& kList, int (*pfnFilter)(void*));    // collects the objects accepted by the filter
 void FUN_1401d3700(CString& kStr);                                      // lower-cases in place
-bool FUN_141c43800(NiActorManager* pMgr, Unk_KFStream* pStream);       // NiActorManager::ReloadKFFile for a stream
 int FUN_1403b0860(char* pcBuffer, const char* pcFormat, ...);           // sprintf
-bool FUN_1414f1760(ecr::SceneGraphService* pSvc, efd::utf8string kID); // MS2SceneGraphService::RemoveUnusedCacheAssetData
+class MS2SceneGraphService { public: bool RemoveUnusedCacheAssetData(efd::utf8string physicalID); };   // C3: member view
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
-int FUN_1401859c0(void* pLog, int nA, int nB, const wchar_t* pwcMsg);   // assertion report
 class CLogString* GetLogString();   // C3: was FUN_140166440
+void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);   // C3: was FUN_1401859c0
 
 // Cached preload table entry of a KF file: 16 bytes (time at +0, text key name at +8).
 // Event handed to the asset filter: load state at +0x40, the asset's refcount base at +0x48.
@@ -212,7 +210,7 @@ MS2AnimationService::~MS2AnimationService()
 // @0x1414ad580
 static void FUN_1414ad580(bool (*pFilter)(Unk_AssetEvent*))
 {
-    DAT_143b09498 = (void*)pFilter;
+    g_pfnMS2SceneGraphCacheFilter = (bool (*)(const ecr::SceneGraphCacheResponse*))pFilter;
 }
 
 // @0x1414a8850
@@ -225,7 +223,7 @@ efd::AsyncResult MS2AnimationService::OnInit()
 // @0x1414a8880
 efd::AsyncResult MS2AnimationService::OnTick()
 {
-    int nReload = ((class Unk_FileSys*)GetFileSystem())->FUN_14039a720();
+    int nReload = GetFileSystem()->FUN_14039a720();
     if (nReload != -1)
     {
         switch (nReload)
@@ -266,7 +264,7 @@ void MS2AnimationService::ReloadFemaleKF()
 {
     s_nReloading = 1;
     Unk_ShList kList(10);
-    FUN_141bd2db0(((void*)WorldService::GetInstance()), kList, FUN_1414a9c80);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&kList), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 1)
     {
@@ -293,7 +291,7 @@ void MS2AnimationService::ReloadFemaleKF()
                     Unk_KFStream kStream;
                     FUN_1403b0860(kStream.m_acLabel, "female");
                     if (kStream.FUN_141d476d0(kFile))
-                        FUN_141c43800(pActor, &kStream);
+                        pActor->ReloadKFFile(*reinterpret_cast<NiStream*>(&kStream));
                 }
                 if (pIDs != 0)
                     EE_FREE(pIDs);
@@ -309,7 +307,7 @@ void MS2AnimationService::ReloadMaleKF()
 {
     s_nReloading = 1;
     Unk_ShList kList(10);
-    FUN_141bd2db0(((void*)WorldService::GetInstance()), kList, FUN_1414a9c80);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&kList), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_1414a9c80));
     GameObject* pPlayer = (GameObject*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer != 0 && reinterpret_cast<PC*>(pPlayer)->FUN_141658e60() == 0)
     {
@@ -336,7 +334,7 @@ void MS2AnimationService::ReloadMaleKF()
                     Unk_KFStream kStream;
                     FUN_1403b0860(kStream.m_acLabel, "male");
                     if (kStream.FUN_141d476d0(kFile))
-                        FUN_141c43800(pActor, &kStream);
+                        pActor->ReloadKFFile(*reinterpret_cast<NiStream*>(&kStream));
                 }
                 if (pIDs != 0)
                     EE_FREE(pIDs);
@@ -411,27 +409,27 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
             if (s_nReloading != 0)
                 s_mapXml.erase(it);
             else
-                pRoot = FUN_140165cf0(&it->second, "ms2");
+                pRoot = reinterpret_cast<Unk_XmlNode*>(&it->second)->FirstChild("ms2");
         }
         if (pRoot == 0)
         {
             if (((class Unk_FileSys*)GetFileSystem())->FUN_1403974b0(&kDoc, (const char*)kPath, 0, true, false) != 0)
             {
-                pRoot = FUN_140165cf0(&kDoc, "ms2");
+                pRoot = reinterpret_cast<Unk_XmlNode*>(&kDoc)->FirstChild("ms2");
                 s_mapXml.insert(std::make_pair(kPath, kDoc));
             }
         }
         if (pRoot != 0)
         {
-            Unk_XmlNode* pAnim = pRoot->FUN_140165cf0((const char*)kAnim);
+            Unk_XmlNode* pAnim = pRoot->FirstChild((const char*)kAnim);
             if (pAnim != 0)
             {
-                for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->NextSibling("key"))
+                for (Unk_XmlNode* pKey = pAnim->FirstChild("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                     ++nCount;
                 if (nCount > 0)
                     *ppEntries = EE_NEW Unk_PreloadEntry[nCount];
                 int nIndex = 0;
-                for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->NextSibling("key"))
+                for (Unk_XmlNode* pKey = pAnim->FirstChild("key"); pKey != 0; pKey = pKey->NextSibling("key"))
                 {
                     CString kText = FUN_140188f50(((class TiXmlElement*)(pKey))->Attribute("text"), 0);
                     (*ppEntries)[nIndex].SetName(((class TiXmlElement*)(pKey))->Attribute("text"));
@@ -439,7 +437,7 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
                     const char* szPreload = ((class TiXmlElement*)(pKey))->Attribute("preload");
                     if (szPreload == 0)
                     {
-                        pKey->FUN_140873ca0("preload", 1);
+                        XmlSetAttr(reinterpret_cast<TiXmlElement*>(pKey), "preload", 1);
                         if (kText.Find("effect_", 0) == 0)
                             TSingleton<CFilePreload>::GetInstance()->FUN_1412107f0(kText.Right(kText.GetLength() - 7), 5);
                     }
@@ -557,9 +555,9 @@ bool MS2AnimationService::RemoveUnusedAsset(efd::utf8string kPhysicalID)
         RemoveUnusedAssetData(AssetDataPtr(pAsset));
         if (pAsset->m_state == 2)
         {
-            if (!FUN_1414f1760(pSceneGraph, efd::utf8string(kID)))
+            if (!reinterpret_cast<MS2SceneGraphService*>(pSceneGraph)->RemoveUnusedCacheAssetData(efd::utf8string(kID)))
             {
-                FUN_1401859c0(((void*)GetLogString()), 0xc, 0x13,
+                Unk_AdditionalLog(GetLogString(), 0xc, 0x13,
                               L"!((MS2SceneGraphService*)pSceneGraph)->RemoveUnusedCacheAssetData(id)");
                 return false;
             }

@@ -267,7 +267,7 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -413,7 +413,7 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -580,7 +580,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
@@ -603,7 +603,7 @@ void CUgcViewerBanner::vfunc_4()
     efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    MS2Ptr<CUgcRegistBanner> spRegist = ((class CUgcManager*)FUN_14052d220())->FUN_141887ce0(nBannerId);
+    MS2Ptr<CUgcRegistBanner> spRegist = ((class CUgcManager*)FUN_14052d220())->GetRegistBanner(nBannerId);
     if (spRegist == 0)
         spTexture = m_spImage;
     else
@@ -726,7 +726,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -805,7 +805,7 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -887,7 +887,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -975,7 +975,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1080,7 +1080,7 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -1204,7 +1204,7 @@ int CUgcViewerBlueprintImage::vfunc_3(MS2Ptr<CUploadFile> spFile)
 {
     if (spFile == 0)
         return 0;
-    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
     CStringW strPath = spFile->GetPath();

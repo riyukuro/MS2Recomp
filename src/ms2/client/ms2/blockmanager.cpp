@@ -24,20 +24,19 @@ typedef unsigned long long u64;
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 
-CStringW BlockFormat(int, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"
 
 // ---- out-of-unit callees ----
 __int64 GetServerTime();                                      // current server time
 CStringW GetStringCommon(int id);                               // string table lookup
 void FUN_1412751b0(const CStringW& msg, int seconds);         // on-screen notice
-CStringW FUN_1409e8970(CStringW key, const int& a, const int& b);
+#include "ms2/placeholder/wcformat.h"
 void AddDays(CMsTime& time, long days);   // 0x14086a7e0 (commonfiles/timeutil.cpp)
-void FUN_140d73aa0(CStringW msg, int a, u64 cb, CStringW b);  // message box
+void FUN_140d73aa0(CStringW msg, int a, void* cb, CStringW b);  // message box
 // The message box data (CMsgBoxData of unit_140d74b20.cpp; only handled through its MS2Ptr here).
 class Unk_BmMsgBox : public CPtred {};
-MS2Ptr<Unk_BmMsgBox> FUN_140d73d20(int flags, CStringW msg, u64 cb, CStringW b);   // message box (copy 0x140534b80, dtor 0x140534d60)
-MS2Ptr<Unk_BmMsgBox> FUN_140d73e40(int a, int id, int b, CStringW s);
+MS2Ptr<Unk_BmMsgBox> FUN_140d73d20(int flags, CStringW msg, void* cb, CStringW b);   // message box (copy 0x140534b80, dtor 0x140534d60)
+MS2Ptr<Unk_BmMsgBox> FUN_140d73e40(int a, int id, void* b, CStringW s);
 void FUN_140d73c60(MS2Ptr<Unk_BmMsgBox> box);                                       // show (by value)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -112,7 +111,7 @@ void CBlockManager::OnBlockPacket(void* packet)
                 AddDays(t, 1);
                 int day = t.GetDay();
                 int month = t.GetMonth();
-                FUN_1412751b0(FUN_1409e8970(L"s_admin_block_cash_out", month, day), 0x14);
+                FUN_1412751b0(FUN_14028dfa0<int, int>(L"s_admin_block_cash_out", month, day), 0x14);
                 break;
             }
             }
@@ -165,7 +164,7 @@ CStringW FUN_140a2fcd0(__int64 from, __int64 to)
 void FUN_140a30ad0(const BlockPtr& rec, int action, u64 cb)
 {
     CStringW msg = FUN_1401ca400(rec, action);
-    FUN_140d73aa0(CStringW(msg), 0, cb, CStringW(L""));
+    FUN_140d73aa0(CStringW(msg), 0, (void*)cb, CStringW(L""));
 }
 
 // @0x140a30b80
@@ -192,7 +191,7 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
             body = BlockFormat(0x43c, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
         }
-        MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));
+        MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), (void*)cb, CStringW(L""));
         if (h) {
             reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(title);
             FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
@@ -214,7 +213,7 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
             title = GetStringCommon(0x43d);
             body = BlockFormat(0x43e, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
-            MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));
+            MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), (void*)cb, CStringW(L""));
             if (h) {
                 reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(title);
                 FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));

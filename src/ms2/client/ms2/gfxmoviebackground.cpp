@@ -63,7 +63,7 @@ const NiRTTI GFxMovieBackground::ms_RTTI("GFxMovieBackground", &GFxMovieEventHan
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 extern char DAT_143b059e8;                                                  // efd::SmartPointer<efd::ServiceManager> cell
-extern char DAT_143ae52e0;                                                  // material name of the screen quad
+extern NiFixedString DAT_143ae52e0;                                         // material name of the screen quad
 extern char DAT_143a08cd8;                                                  // the reference axis of the camera angle
 ecr::RenderService* FUN_1411d15b0(efd::ServiceManager* pManager);
 efd::ServiceManager* FUN_1401cd190(void* pCell);                            // SmartPointer<ServiceManager>::operator->
@@ -296,9 +296,6 @@ class NiMaterialLibrary   // C3: member view for the former free stand-ins
 public:
     static class NiMaterial* CreateMaterial(class NiFixedString const&);
 };
-void FUN_1409807b0(void* p, int v);
-void FUN_1409805c0(void* p, int v);
-void FUN_1409806e0(void* p, int v);
 CString FUN_140188f50(const char* sz, int n);
 CString FUN_140cc2ad0(const CString& strPrefix, const CString& strName);
 CString FUN_14016a5c0(const char* psz, int nCodePage);
@@ -785,7 +782,7 @@ int GFxMovieBackground::CreateRenderView()
         TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("GFxMovieBackground::CreateRenderView Failed");
         return 0;
     }
-    NiMaterial* pMaterial = NiMaterialLibrary::CreateMaterial(*(class NiFixedString const*)(&DAT_143ae52e0));
+    NiMaterial* pMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae52e0);
     pQuad->ApplyAndSetActiveMaterial(pMaterial, 0xffffffff);
     NiAlphaProperty* pAlpha = NiNew NiAlphaProperty;
     if (pAlpha != 0)
@@ -831,9 +828,9 @@ int GFxMovieBackground::CreateRenderView()
         NiTexturingPropertyPtr spTexturing = NiNew NiTexturingProperty;
         if (spTexturing)
         {
-            FUN_1409807b0(spTexturing.operator->(), 0);
-            FUN_1409805c0(spTexturing.operator->(), 0);
-            FUN_1409806e0(spTexturing.operator->(), 0);
+            reinterpret_cast<NiTexturingProperty*>(spTexturing.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
+            reinterpret_cast<NiTexturingProperty*>(spTexturing.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)0);
+            reinterpret_cast<NiTexturingProperty*>(spTexturing.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
             spTexturing->SetBaseTexture(0);
             pQuad->AttachProperty(spTexturing);
         }

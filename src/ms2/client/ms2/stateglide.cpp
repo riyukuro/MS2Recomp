@@ -352,7 +352,7 @@ float StateGlide::FUN_1417c9b70()
 // @0x1417c9ba0
 efd::Point3 StateGlide::FUN_1417c9ba0()
 {
-    return m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+    return m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
 }
 
 // @0x1417c9c00

@@ -26,7 +26,7 @@ struct Unk_QuestItemLink
     int m_kind = 2;            // 0 start item, 1 progress item
 };
 MS2_CHECK_SIZE(Unk_QuestItemLink, 0xc);
-// Quest progress state as filtered by FUN_1416cb4d0 (values of CQuest FUN_1407476d0; 4/5 select every quest). It is
+// Quest progress state as filtered by GetQuestIdsByStates (values of CQuest FUN_1407476d0; 4/5 select every quest). It is
 // an enum, not int: the exe's vector of it (0x1416d91c0.. 0x1416e3510) is a separate copy from vector<int>/<unsigned>.
 // Names invented.
 enum Unk_QmQuestState { QmQuestState0 = 0, QmQuestState1 = 1, QmQuestState2 = 2, QmQuestState3 = 3, QmQuestState4 = 4,
@@ -94,40 +94,40 @@ public:
     unsigned vfunc_o10_23(const Unk_QuestCondition&) override;
 
     void MarkItemsDirty();
-    void FUN_1416ca730(NotifyObject*);
+    void MarkLevelAndAvailableDirty(NotifyObject*);
     void FUN_1416ca760(NotifyObject*);
     void FUN_1416ca780(NotifyObject*);
     void FUN_1416ca7a0(NotifyObject*);
-    void FUN_1416ca7c0(NotifyObject*);
-    void FUN_1416ca830(CInPacket&);
-    void FUN_1416ca440();
+    void OnNotifyGameEventChanged(NotifyObject*);
+    void ResetRefreshCount(CInPacket&);
+    void UpdateQuests();
     void FUN_1416ca670();
-    CQuest* FUN_1416ca9d0(int questId);
-    void FUN_1416cb0d0(int questId, int force);
+    CQuest* CreateQuestByType(int questId);
+    void RemoveQuest(int questId, int force);
     int IsPortalSummonRequestActive();
-    int FUN_1416d0e20();
+    int GetRemainingMissionAttackCount();
     void SendQuestMode14();
     void FUN_1416d0920(ATL::CAtlArray<unsigned>& out);
     int FUN_1416d09d0(int mapId, int warn);
     void FUN_1416d1d00(PCBase* pc);
     void FUN_1416d3010();
     void FUN_1416d3250();
-    void FUN_1416ca850(NotifyObject*);
+    void OnNotifyPlayerChanged(NotifyObject*);
     int GetQuestState(int);
-    void FUN_1416caec0(Unk_PayloadPtr<CQuest>);
-    void FUN_1416cb260(ATL::CAtlArray<unsigned>&, int, int, int);
-    void FUN_1416cb4d0(std::vector<unsigned>&, std::vector<Unk_QmQuestState>, int, int);
-    void FUN_1416cb8b0(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&, int, int, int);
-    void FUN_1416cbb20(std::vector<Unk_PayloadPtr<CQuest>>&, int, int, int);
-    void FUN_1416cde50(int);
+    void AddQuest(Unk_PayloadPtr<CQuest>);
+    void GetQuestIdsFiltered(ATL::CAtlArray<unsigned>&, int, int, int);
+    void GetQuestIdsByStates(std::vector<unsigned>&, std::vector<Unk_QmQuestState>, int, int);
+    void GetQuestsFiltered(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&, int, int, int);
+    void GetQuestsFilteredVec(std::vector<Unk_PayloadPtr<CQuest>>&, int, int, int);
+    void ShowQuestErrorMessage(int);
     void FUN_1416ce140(int, int);
-    int FUN_1416ce170(MS2Ptr<CItem>);
+    int IsItemUsedByQuest(MS2Ptr<CItem>);
     int FUN_1416ce260(int);
-    int FUN_1416ce3d0(int);
-    int FUN_1416ce5a0();
+    int AreGroupQuestsComplete(int);
+    int CountTrackedActiveQuests();
     int FUN_1416ce6a0(MS2Ptr<CItem>);
-    void FUN_1416ce860(MS2Ptr<CItem>, ATL::CAtlArray<Unk_QuestItemLink>&);
-    int FUN_1416ce340(int);
+    void GetQuestItemLinks(MS2Ptr<CItem>, ATL::CAtlArray<Unk_QuestItemLink>&);
+    int HasQuestInGroup(int);
     int HasTalkScriptForNpc(int);
     int FUN_1416cede0(int, unsigned*);
     void FUN_1416cef90(int);
@@ -136,13 +136,13 @@ public:
     void SendQuestMode19(int);
     void FUN_1416cf870(int);
     void FUN_1416cf980(int, int);
-    int FUN_1416cfc10(int);
+    int IsQuestPinned(int);
     void FUN_1416cfc60(int);
     void FUN_1416cfc70(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&, int, int);
     int FUN_1416cfe20();
     int FUN_1416cff70();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
-    int FUN_1416d0530();
+    int CountAvailableLearningQuests();
     struct Vector3 GetTargetObjectPosition();
     void SendQuestMode15(int);
     int FUN_1416d0f60(int);
@@ -152,7 +152,7 @@ public:
     void FUN_1416d1800(int group, Unk_QmNpcQuestState* best);
     void FUN_1416d1a30(unsigned questId);
     std::pair<unsigned, __int64> FUN_1416d1e90();   // nearest live user of a tracked quest (quest id, user id)
-    const std::set<unsigned __int64>& FUN_1416d2510(unsigned questId);   // users found for the quest (empty set if none)
+    const std::set<unsigned __int64>& GetQuestTargets(unsigned questId);   // users found for the quest (empty set if none)
     unsigned GetNextQuestId(int questId, int checkAccept);   // first available follow-up quest
     int FUN_1416d26c0(int questId, std::list<unsigned>& out, int checkAccept);
     int FUN_1416d2910(unsigned toQuestId, std::list<std::list<unsigned>>& paths, int verbose);
@@ -164,13 +164,13 @@ public:
         std::list<std::list<unsigned>>& reached, std::list<std::list<unsigned>>* notReached);
     int FUN_1416d3ed0(MS2Ptr<class CQuestData> data, int checkAccept, int job);   // job 200 = the player's
     int FUN_1416d00c0();
-    int FUN_1416d0100();
-    int FUN_1416d0150();
-    int FUN_1416d0210();
-    void FUN_1416d0740();
+    int IsRoundTargetReached();
+    int CountCompletedQuests80();
+    int IsLastRound();
+    void MarkField180();
     int FUN_1416d0760();
-    int FUN_1416d0780(int);
-    int FUN_1416d07c0(int);
+    int GetDailyCompletedFlag(int);
+    int GetWeeklyCompletedFlag(int);
     int FUN_1416d0800(int);
     int FUN_1416d0e60(int);
     bool SendQuestMode20(int, const class CMsgBoxData&);

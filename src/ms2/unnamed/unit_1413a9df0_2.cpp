@@ -20,13 +20,12 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/statpointmanager.h"
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // ---- unit-local views and unrecovered callees ------------------------------------------------------------------------------
 
 // StringFormat instances of this unit's neighbours, bound by address.
-CStringW FUN_140275590(const wchar_t* pszFormat, const CStringW& a, const int& b);
-CStringW FUN_140e06940(const wchar_t* pszFormat, const unsigned& a, const CStringW& b, const CStringW& c);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 
 extern __int64 DAT_143ab28b0;
@@ -45,22 +44,21 @@ class MyPC   // C3: member view for the former free stand-ins
 public:
     class Unk_MyPCComp1618* FUN_141523c50();
     static class PCBase* FUN_141530930();
+    MS2Ptr<CStatPointManager> FUN_140c25130();          // the stat point manager
 };
-void FUN_140178570(Unk_140165cf0* pElem, const char* pszName, CAtlArray<int>& arr);
 class PC { public: int FUN_141654700(); int FUN_141654730(); };   // C3: member views
 class UIGameMenuDialog { public: int FUN_141938a00(CStringA strMenu); };
 class UIItemEnchantDialog { public: unsigned __int64 GetSelectedUid(); };
-class CStatPointManager { public: int GetRemaining(); };
 __int64 GetServerTime();
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
-void* FUN_140faf160(unsigned nUIId);                    // the mastery dialog
+template<class T> T* GetUIDialog(int nId);                    // the mastery dialog
 class UIMasteryDialog   // C3: member view for the former free stand-ins
 {
 public:
     int GetMainTabIndex();
     int GetSubTabIndex();
 };
-void* FUN_140d0c040(unsigned nUIId);                    // the play instrument dialog
+template<class T> T* Unk_ImGetDialog(int nId);                    // the play instrument dialog
 class UIPlayInstrumentDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -80,11 +78,7 @@ class CubeHolderManager   // C3: member view for the former free stand-ins
 public:
     int GetSelectedItemId();
 };
-// the stat window's value handle, returned by value (dtor 0x140c24a50, accessor 0x140c24af0)
-class Unk_StatRef { public: ~Unk_StatRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
-class Unk_StatWnd { public: Unk_StatRef FUN_140c25130(); };
-void* FUN_140b72e80(unsigned nUIId);                    // the mentoring pane
-bool FUN_1401647e0(const CStringA& strA, const CStringA& strB) throw();   // operator!= (true when the names differ)
+template<class T> T* Unk_MMDialog(int nId);                    // the mentoring pane
 class CMeratMarketMan   // C3: member view for the former free stand-ins
 {
 public:
@@ -97,7 +91,7 @@ public:
 };
 
 // The tab of the mentoring pane (only the name getter) and the dialog of a name (only the busy flag).
-class Unk_G9Named
+class UIMentoringPage
 {
 public:
     virtual void Unk_Slot0();
@@ -170,16 +164,22 @@ public:
     Unk_G9Val FUN_1422dba50();                          // the root value of the dialog's tree
 };
 // The page smart pointer of the mentoring pane (dtor 0x140e60460 releases it).
-struct Unk_G9Iter { ~Unk_G9Iter(); void* m_p0; void* m_p1; };
-class Unk_G9Pane
+template<class T> class Unk_MentorPtr
 {
 public:
-    Unk_G9Iter FUN_140e5e890();                         // the current page
+    ~Unk_MentorPtr();
+    bool IsNull() const;
+    T* operator->() const;
+    void* m_p0;
+    T* m_p;
 };
-bool FUN_140e605c0(Unk_G9Iter* pIt);                    // IsNull
-Unk_G9Named* FUN_140e60630(Unk_G9Iter* pIt);            // operator->
+class UIMentoringDialog
+{
+public:
+    Unk_MentorPtr<UIMentoringPage> GetPage();           // the current page
+};
 
-void* FUN_141386950(const CStringA& strDialog);         // the dialog of a name
+template<class T> T* Unk_GaGetUIByName(const CStringA& strName);         // the dialog of a name
 class ASDisplayObject   // C3: member view for the former free stand-ins
 {
 public:
@@ -282,7 +282,7 @@ CStringW CGuideConditionHasMoney::vfunc_7()
         break;
     }
     CStringW str = FUN_1413a5820();
-    str.Append(FUN_140275590(L"moneyType({0}), value({1})", strType, m_n20));
+    str.Append(StringFormat(L"moneyType({0}), value({1})", strType, m_n20));
     return str;
 }
 
@@ -413,7 +413,7 @@ CStringW CGuideConditionSubJobCode::GetTypeName()
 void CGuideConditionSubJobCode::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    FUN_140178570(pElem, "subJobCodes", m_subJobCodes);
+    XmlTokenList(pElem, "subJobCodes", m_subJobCodes);
 }
 
 // @0x1413ada50
@@ -578,7 +578,7 @@ CStringW CGuideConditionMasteryMainTabIndex::GetTypeName()
 // @0x1413ae280
 int CGuideConditionMasteryMainTabIndex::vfunc_3()
 {
-    void* pDlg = FUN_140faf160(0x4f1e);
+    void* pDlg = GetUIDialog<UIMasteryDialog>(0x4f1e);
     if (pDlg)
         return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->GetMainTabIndex() == m_n20);
     return 0;
@@ -599,7 +599,7 @@ CStringW CGuideConditionMasterySubTabIndex::GetTypeName()
 // @0x1413ae390
 int CGuideConditionMasterySubTabIndex::vfunc_3()
 {
-    void* pDlg = FUN_140faf160(0x4f1e);
+    void* pDlg = GetUIDialog<UIMasteryDialog>(0x4f1e);
     if (pDlg)
         return FUN_1413a5600(((class UIMasteryDialog*)(void*)(pDlg))->GetSubTabIndex() == m_n20);
     return 0;
@@ -620,7 +620,7 @@ CStringW CGuideConditionPlayInstrumentTabIndex::GetTypeName()
 // @0x1413ae4a0
 int CGuideConditionPlayInstrumentTabIndex::vfunc_3()
 {
-    void* pDlg = FUN_140d0c040(0x4eec);
+    void* pDlg = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
     if (pDlg)
         return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->GetSelectedTabIndex() == m_n20);
     return 0;
@@ -641,7 +641,7 @@ CStringW CGuideConditionPlayInstrumentHasSelectItem::GetTypeName()
 // @0x1413ae5b0
 int CGuideConditionPlayInstrumentHasSelectItem::vfunc_3()
 {
-    void* pDlg = FUN_140d0c040(0x4eec);
+    void* pDlg = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
     if (pDlg)
         return FUN_1413a5600(((class UIPlayInstrumentDialog*)(void*)(pDlg))->HasAnyScore());
     return 0;
@@ -708,7 +708,7 @@ int CGuideConditionHasStatPoint::vfunc_3()
     void* pStat = MyPC::FUN_141530930();
     if (!pStat)
         return 0;
-    return FUN_1413a5600(static_cast<unsigned>(reinterpret_cast<CStatPointManager*>(static_cast<Unk_StatWnd*>(pStat)->FUN_140c25130().FUN_140c24af0())->GetRemaining()) > 0);
+    return FUN_1413a5600(static_cast<unsigned>(static_cast<MyPC*>(pStat)->FUN_140c25130()->GetRemaining()) > 0);
 }
 
 // @0x1413ae990
@@ -732,16 +732,16 @@ void CGuideConditionMentoringPage::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413aea80
 int CGuideConditionMentoringPage::vfunc_3()
 {
-    void* pPane = FUN_140b72e80(0x4f4b);
+    void* pPane = Unk_MMDialog<UIMentoringDialog>(0x4f4b);
     if (pPane)
     {
         if (((class UIDialog*)(void*)(pPane))->FUN_141924630() == 0)
             return 0;
-        Unk_G9Iter it = static_cast<Unk_G9Pane*>(pPane)->FUN_140e5e890();
-        if (FUN_140e605c0(&it))
+        Unk_MentorPtr<UIMentoringPage> it = static_cast<UIMentoringDialog*>(pPane)->GetPage();
+        if (it.IsNull())
             return 0;
-        Unk_G9Named* pNamed = FUN_140e60630(&it);
-        bool bDiffer = FUN_1401647e0(pNamed->vfunc_6(), m_strPageName);
+        UIMentoringPage* pNamed = it.operator->();
+        bool bDiffer = pNamed->vfunc_6() != m_strPageName;
         if (bDiffer)
             return 0;
         return 1;
@@ -780,7 +780,7 @@ int CGuideConditionButtonSelected::vfunc_3()
 {
     Unk_G9Dlg* pDlg = 0;
     if (!pDlg)
-        pDlg = (Unk_G9Dlg*)FUN_141386950(m_strDialog);
+        pDlg = (Unk_G9Dlg*)Unk_GaGetUIByName<UIDialog>(m_strDialog);
     if (!pDlg)
         return 0;
     if (pDlg->vfunc_55() != 0)
@@ -862,7 +862,7 @@ int CGuideConditionContract::vfunc_3()
     if (m_nDialogId != 0)
         pDlg = ((void*)FUN_140c300a0(m_nDialogId));
     if (!pDlg)
-        pDlg = FUN_141386950(m_strDialog);
+        pDlg = Unk_GaGetUIByName<UIDialog>(m_strDialog);
     if (!pDlg)
         return 0;
     Unk_G9Val val = static_cast<Unk_G9TreeDlg*>(pDlg)->FUN_1413b1a90(m_strChild);
@@ -890,7 +890,7 @@ void CGuideConditionContract::vfunc_2(Unk_140165cf0* pElem)
 CStringW CGuideConditionContract::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(FUN_140e06940(L"dialogName({0}), dialogName({1}), dialogName({2})", m_nDialogId, FUN_14016a730(m_strChild, 0), FUN_14016a730(m_strDialog, 0)));
+    str.Append(StringFormat(L"dialogName({0}), dialogName({1}), dialogName({2})", m_nDialogId, FUN_14016a730(m_strChild, 0), FUN_14016a730(m_strDialog, 0)));
     return str;
 }
 
@@ -1010,5 +1010,5 @@ int CGuideConditionChatEmoticon::vfunc_8()
 }
 // MS2-PIN: ??0CMsTime@@QEAA@_J@Z 0x1406c47a0
 // MS2-PIN: ??GCMsTime@@QEBA?AVCTimeSpan@ATL@@AEBV0@@Z 0x1406c4a20
-// MS2-PIN: ??1Unk_G9Iter@@QEAA@XZ 0x140e60460
-// MS2-PIN: ?FUN_140e5e890@Unk_G9Pane@@QEAA?AUUnk_G9Iter@@XZ 0x140e5e890
+// MS2-PIN: ??1?$Unk_MentorPtr@VUIMentoringPage@@@@QEAA@XZ 0x140e60460
+// MS2-PIN: ?GetPage@UIMentoringDialog@@QEAA?AV?$Unk_MentorPtr@VUIMentoringPage@@@@XZ 0x140e5e890

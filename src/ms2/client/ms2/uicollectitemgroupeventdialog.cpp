@@ -101,7 +101,7 @@ void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisi
 void* FUN_140bb9630(int n);                                                // int -> delegate user data
 int FUN_140bb9640(void* p);                                                // delegate user data -> int
 CStringW FUN_140b8e910(const CMsTime& time);                               // the date text of a time
-CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, const CStringW& a3);   // formatted string table text
+#include "ms2/placeholder/wcformat.h"
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);                // send (rate limited)
 __int64 FUN_140718320(const CStringW& value);                              // _wtoi64
 extern Unk_Inventory g_143ab2a90;
@@ -200,7 +200,7 @@ void UICollectItemGroupEventDialog::RefreshEvents()
             CStringW strEnd = FUN_140b8e910(endTime);
             CStringW strName = CServerString::GetInstance()->GetGameEvent()->GetString(spContext->m_name);
             m_eventButtons[i]->vfunc_4(true);
-            m_eventButtons[i]->FUN_1422cdfb0(FUN_1409eaa20(L"s_attendGift_title_name", strBegin, strEnd, strName));
+            m_eventButtons[i]->FUN_1422cdfb0(FUN_14028dfa0<CStringW, CStringW, CStringW>(L"s_attendGift_title_name", strBegin, strEnd, strName));
         }
         else
         {

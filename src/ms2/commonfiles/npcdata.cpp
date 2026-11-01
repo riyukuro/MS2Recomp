@@ -1404,7 +1404,6 @@ bool FUN_1403d8350(Unk_140165cf0* pElem, const char* pszName, int& nOut);       
 unsigned FUN_14021c7c0(const CString& str);                                             // the id of a string key
 int Parse_14021bc30(const CStringA& strName);                                           // event tag by name
 const CString& FUN_14082efb0(int nStat);                                                // xml name of the nStat-th stat
-bool FUN_14036d570(void* pOptions, int nFeature);                                       // feature id check
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
@@ -1486,7 +1485,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "extraCameraDistance", reinterpret_cast<float&>(m_fExtraCameraDistance));
     XmlGetAttr((class TiXmlElement*)(pElem), "bossSoundDistance", reinterpret_cast<float&>(m_fBossSoundDistance));
     XmlGetAttr((class TiXmlElement*)(pElem), "bossSoundEndDistance", reinterpret_cast<float&>(m_fBossSoundEndDistance));
-    if (FUN_14036d570(FUN_140166410(), 0x2f))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2f))
     {
         if (FUN_140541580() != 0)
         {
@@ -1556,14 +1555,14 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             if (!strName.IsEmpty())
                 XmlGetAttr((class TiXmlElement*)(pChild), strName, reinterpret_cast<__int64&>(m_stat.m_aBase[i]));
         }
-        if (FUN_14036d570(FUN_140166410(), 0xb2))
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb2))
         {
             XmlGetAttr((class TiXmlElement*)(pChild), "scaleStatRate_2", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
             XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseTap_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
             XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseDef_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseDef));
             XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseSpaRate_2", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
         }
-        else if (FUN_14036d570(FUN_140166410(), 0xb1))
+        else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb1))
         {
             XmlGetAttr((class TiXmlElement*)(pChild), "scaleStatRate_1", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
             XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseTap_1", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));

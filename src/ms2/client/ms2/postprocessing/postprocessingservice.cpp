@@ -718,7 +718,7 @@ bool FadeInOutRenderStep::FUN_1416a0cd0(NiRenderClick* pkClick, void* pvData)
     else if (ms_fAlpha >= 1.0f)
     {
         FadeInOutRenderStep* pkStep = static_cast<FadeInOutRenderStep*>(pvData);
-        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->FUN_1416a0fb0(13);
+        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->QueueStepEvent(13);
         ms_fAlpha = 1.0f;
         ms_iFadeInTime = DAT_1439f8240;
         ms_iState = 0;
@@ -735,7 +735,7 @@ void FUN_1416a0e70()
 }
 
 // @0x1416a0fb0
-void PostProcessingService::FUN_1416a0fb0(int nEvent)
+void PostProcessingService::QueueStepEvent(int nEvent)
 {
     m_kEvents.AddTail(nEvent);
 }
@@ -791,7 +791,7 @@ bool FadeInRenderStep::FUN_1416a1260(NiRenderClick* pkClick, void* pvData)
     if (ms_fAlpha >= 1.0f)
     {
         FadeInRenderStep* pkStep = static_cast<FadeInRenderStep*>(pvData);
-        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->FUN_1416a0fb0(14);
+        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->QueueStepEvent(14);
         ms_fAlpha = 1.0f;
     }
     ms_fAlpha = ms_fAlpha * ms_fAlpha;
@@ -1267,9 +1267,12 @@ public:
     Unk_PPSecondView* FUN_1409a5160();
     void FUN_1409a3b60(bool bBeforeReset);      // device reset notification
 };
-class WorldService;
+class WorldService   // C3: unit-local view of the callback set
+{
+public:
+    void FUN_141bbae40(void* p);
+};
 WorldService* FUN_1403ed2d0();
-void FUN_141bbae40(WorldService* pWorld, IWorldServiceCallback* pCallback);
 // The game clock (FUN_14086d260()).
 CMainSystem* FUN_14086d260();
 // The keyboard state (FUN_14025e7c0()).
@@ -1485,7 +1488,7 @@ PostProcessEffect* PostProcessingService::GetStep(int nStep)
 MS2_REPLACE_METHOD(0x1416a3a90, PostProcessingService, GetStep, 117, 0xACC1F5BE);
 
 // @0x1416a3b10
-egf::IBuiltinModel* PostProcessingService::FUN_1416a3b10()
+egf::IBuiltinModel* PostProcessingService::CreatePostProcessSetting()
 {
     DAT_143ae4660->m_spSetting = EE_NEW PostProcessSetting();
     return DAT_143ae4660->m_spSetting;
@@ -1578,7 +1581,7 @@ MS2_REPLACE_METHOD(0x1416a3fb0, PostProcessingService, FUN_1416a3fb0, 67, 0x78A7
 
 // Re-point the shimmer click's mirrored view at the main view's camera.
 // @0x1416a4000
-bool PostProcessingService::FUN_1416a4000(NiRenderStep* pkStep, void* pvData)
+bool PostProcessingService::RepointMirroredViewCamera(NiRenderStep* pkStep, void* pvData)
 {
     if (DAT_143ae4660 == 0 || (NiViewRenderClick*)DAT_143ae4660->m_aspClicks[7] == 0)
         return false;
@@ -1674,7 +1677,7 @@ void PostProcessingService::FUN_1416a44d0(const egf::EntityChangeMessage* pMessa
 // @0x1416a4570
 void PostProcessingService::FUN_1416a4570(bool bEnable)
 {
-    if (FUN_1416a4620() == bEnable)
+    if (IsDensityProcessorActive() == bEnable)
         return;
     efd::SmartPointer<NiRenderListProcessor> spOld = FUN_1413f99a0()->GetProcessor();
     FUN_1413f99a0()->SetProcessor(m_spProcessor);
@@ -1683,11 +1686,11 @@ void PostProcessingService::FUN_1416a4570(bool bEnable)
 MS2_REPLACE_METHOD(0x1416a4570, PostProcessingService, FUN_1416a4570, 161, 0xDB793BAB);
 
 // @0x1416a4620
-bool PostProcessingService::FUN_1416a4620()
+bool PostProcessingService::IsDensityProcessorActive()
 {
     return m_spProcessor != m_spDensity;
 }
-MS2_REPLACE_METHOD(0x1416a4620, PostProcessingService, FUN_1416a4620, 53, 0x7A4B7694);
+MS2_REPLACE_METHOD(0x1416a4620, PostProcessingService, IsDensityProcessorActive, 53, 0x7A4B7694);
 
 // @0x1416a4660
 void PostProcessingService::SetDensityMode(int nMode)
@@ -1705,7 +1708,7 @@ MS2_REPLACE_METHOD(0x1416a46a0, PostProcessingService, GetDensityMode, 41, 0x16B
 
 // Toggle the outline click (and its step 16).
 // @0x1416a46d0
-void PostProcessingService::FUN_1416a46d0()
+void PostProcessingService::ToggleOverdraw()
 {
     if ((NiViewRenderClick*)m_aspClicks[9] != 0)
     {
@@ -1714,10 +1717,10 @@ void PostProcessingService::FUN_1416a46d0()
         FUN_1416aa450(9, !bActive);
     }
 }
-MS2_REPLACE_METHOD(0x1416a46d0, PostProcessingService, FUN_1416a46d0, 175, 0x455F7CBE);
+MS2_REPLACE_METHOD(0x1416a46d0, PostProcessingService, ToggleOverdraw, 175, 0x455F7CBE);
 
 // @0x1416a4790
-bool PostProcessingService::FUN_1416a4790()
+bool PostProcessingService::IsOverdrawActive()
 {
     if ((NiViewRenderClick*)m_aspClicks[9] != 0)
     {
@@ -1726,7 +1729,7 @@ bool PostProcessingService::FUN_1416a4790()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1416a4790, PostProcessingService, FUN_1416a4790, 100, 0x7B8A5E63);
+MS2_REPLACE_METHOD(0x1416a4790, PostProcessingService, IsOverdrawActive, 100, 0x7B8A5E63);
 
 // @0x1416a4800
 efd::SyncResult PostProcessingService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
@@ -1743,11 +1746,11 @@ MS2_REPLACE_METHOD_VIA(0x1416a4800, PostProcessingService, efd::ISystemService, 
 efd::AsyncResult PostProcessingService::OnInit()
 {
     egf::FlatModelManager* pFlatModelManager = m_pServiceManager->GetSystemServiceAs<egf::FlatModelManager>();
-    pFlatModelManager->RegisterBuiltinModelFactory("PostProcessSetting", 0xc1e6b8c7, FUN_1416a3b10, 0);
-    pFlatModelManager->RegisterBuiltinModelFactory("PlaneReflectionSetting", 0xddb91342, FUN_1416aa1a0, 0);
+    pFlatModelManager->RegisterBuiltinModelFactory("PostProcessSetting", 0xc1e6b8c7, CreatePostProcessSetting, 0);
+    pFlatModelManager->RegisterBuiltinModelFactory("PlaneReflectionSetting", 0xddb91342, CreatePlaneReflectionSetting, 0);
     efd::MessageService* pkMessageService = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
     pkMessageService->Subscribe(this, DAT_143ae4c20, 0, false);
-    FUN_141bbae40(FUN_1403ed2d0(), this);
+    FUN_1403ed2d0()->FUN_141bbae40((IWorldServiceCallback*)this);
 
     if (FUN_1416a69a0())
         FUN_1416a36f0(true);
@@ -1822,7 +1825,7 @@ efd::AsyncResult PostProcessingService::OnTick()
     if (m_spSetting)
         m_spSetting->ApplyShaderConstants(FUN_14086d260()->GetLastGameTimeDelta());
     FUN_1416a6fc0();
-    FUN_1416aae50();
+    ProcessQueuedStepEvents();
     if (m_spTextureEffect)
     {
         m_spTextureEffect->SetModelProjectionMatrix(DAT_143a09600);
@@ -2018,7 +2021,7 @@ void PostProcessingService::FUN_1416a6fc0()
         if (pkInputSystem != 0)
         {
             if (FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0) && FUN_14025e7c0()->FUN_14116d9c0(0x1f, true, 0))
-                FUN_1416a46d0();
+                ToggleOverdraw();
         }
     }
 }
@@ -2040,7 +2043,7 @@ void PostProcessingService::FUN_1416aade0(NiRenderTargetGroup* pkTarget)
 MS2_REPLACE_METHOD(0x1416aade0, PostProcessingService, FUN_1416aade0, 96, 0x6CEB88E6);
 
 // @0x1416aae50
-void PostProcessingService::FUN_1416aae50()
+void PostProcessingService::ProcessQueuedStepEvents()
 {
     NiTListIterator kPos = m_kEvents.GetHeadPos();
     while (kPos != 0)
@@ -2051,7 +2054,7 @@ void PostProcessingService::FUN_1416aae50()
     }
     m_kEvents.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x1416aae50, PostProcessingService, FUN_1416aae50, 143, 0x005BD9F4);
+MS2_REPLACE_METHOD(0x1416aae50, PostProcessingService, ProcessQueuedStepEvents, 143, 0x005BD9F4);
 
 // @0x1416ac3b0
 void PostProcessingService::FUN_1416ac3b0(NiRenderTargetGroup* pkTarget)
@@ -2073,7 +2076,7 @@ void PostProcessingService::FUN_1416ac3b0(NiRenderTargetGroup* pkTarget)
 }
 
 // @0x1416aa1a0
-egf::IBuiltinModel* PostProcessingService::FUN_1416aa1a0()
+egf::IBuiltinModel* PostProcessingService::CreatePlaneReflectionSetting()
 {
     DAT_143ae4660->m_spReflection = EE_NEW CPlaneReflectionSetting();
     return DAT_143ae4660->m_spReflection;
@@ -2112,12 +2115,12 @@ bool PostProcessingService::IsClickActive(int nClick)
 MS2_REPLACE_METHOD(0x1416aa850, PostProcessingService, IsClickActive, 87, 0xA8DFE426);
 
 // @0x1416aa8b0
-bool PostProcessingService::FUN_1416aa8b0(NiRenderStep* pkStep)
+bool PostProcessingService::IsFadeStep(NiRenderStep* pkStep)
 {
     return pkStep != 0 && (pkStep->GetName() == "FadeInRenderStep" || pkStep->GetName() == "FadeInOutRenderStep" ||
         pkStep->GetName() == "FadeOutRenderStep");
 }
-MS2_REPLACE_METHOD(0x1416aa8b0, PostProcessingService, FUN_1416aa8b0, 146, 0x690747AC);
+MS2_REPLACE_METHOD(0x1416aa8b0, PostProcessingService, IsFadeStep, 146, 0x690747AC);
 
 // @0x1416aac60
 void PostProcessingService::FUN_1416aac60(NiAVObject* pkScene)
@@ -2335,7 +2338,7 @@ void PostProcessingService::LinkEffects()
         kStep.second->SetPreProcessingCallbackFunc(0, 0);
         if (kStep.second->GetActive())
         {
-            if (FUN_1416aa8b0(kStep.second))
+            if (IsFadeStep(kStep.second))
                 continue;
             if (spFirst == 0)
                 spFirst = kStep.second;
@@ -2361,7 +2364,7 @@ void PostProcessingService::LinkEffects()
             continue;
         if (kStep.second->GetActive())
         {
-            if (!FUN_1416aa8b0(kStep.second))
+            if (!IsFadeStep(kStep.second))
                 continue;
             if (spFirst == 0)
                 spFirst = kStep.second;
@@ -2500,7 +2503,7 @@ void PostProcessingService::FUN_1416a7050()
     NiRenderTargetGroup* pkRTG = pkRenderer->GetDefaultRenderTargetGroup();
     unsigned int uiWidth = pkRTG->GetWidth(0);
     unsigned int uiHeight = pkRTG->GetHeight(0);
-    FUN_1416ac440(uiWidth, uiHeight);
+    SetTexelSizeAndBlurOffsets(uiWidth, uiHeight);
 
     NiTexture::FormatPrefs kPrefs;
     for (int i = 0; i < 11; i++)
@@ -2541,7 +2544,7 @@ void PostProcessingService::FUN_1416a7050()
 MS2_REPLACE_METHOD(0x1416a7050, PostProcessingService, FUN_1416a7050, 1299, 0x5577C7E9);
 
 // @0x1416ac440
-void PostProcessingService::FUN_1416ac440(unsigned int uiWidth, unsigned int uiHeight)
+void PostProcessingService::SetTexelSizeAndBlurOffsets(unsigned int uiWidth, unsigned int uiHeight)
 {
     float afTexel[2] = { 1.0f / (float)uiWidth, 1.0f / (float)uiHeight };
     FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5328), afTexel, 2);
@@ -2558,7 +2561,7 @@ void PostProcessingService::FUN_1416ac440(unsigned int uiWidth, unsigned int uiH
     FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5330), afOffsetsX, iTaps);
     FUN_1409a5770(*(class NiFixedString*)&static_cast<class NiFixedString const&>(DAT_143ae5338), afOffsetsY, iTaps);
 }
-MS2_REPLACE(0x1416ac440, PostProcessingService::FUN_1416ac440, 306, 0x04D746FF);
+MS2_REPLACE(0x1416ac440, PostProcessingService::SetTexelSizeAndBlurOffsets, 306, 0x04D746FF);
 
 // @0x1416a7570
 void PostProcessingService::FUN_1416a7570()
@@ -2640,7 +2643,7 @@ void PostProcessingService::FUN_1416a7570()
                     m_aspClicks[7]->SetActive(abActive[7]);
                     m_spMirroredStep->AppendRenderClick(m_aspClicks[7]);
                 }
-                m_spMirroredStep->SetPreProcessingCallbackFunc(FUN_1416a4000, 0);
+                m_spMirroredStep->SetPreProcessingCallbackFunc(RepointMirroredViewCamera, 0);
                 m_spMirroredStep->SetPostProcessingCallbackFunc(FUN_1416a40c0, 0);
                 m_spMirroredStep->SetActive(true);
             }
@@ -3119,7 +3122,7 @@ MS2_REPLACE_METHOD(0x1416a0a20, DepthOfFieldRenderStep, vfunc_13, 8, 0x41132FCD)
 MS2_REPLACE_METHOD(0x1416a0b20, FadeInOutRenderStep, vfunc_15, 419, 0x3BA4755A);
 MS2_REPLACE(0x1416a0cd0, FadeInOutRenderStep::FUN_1416a0cd0, 394, 0xB126006A);
 MS2_REPLACE(0x1416a0e70, FUN_1416a0e70, 3, 0x9B77E60D);
-MS2_REPLACE_METHOD(0x1416a0fb0, PostProcessingService, FUN_1416a0fb0, 42, 0xC4C54FCD);
+MS2_REPLACE_METHOD(0x1416a0fb0, PostProcessingService, QueueStepEvent, 42, 0xC4C54FCD);
 MS2_REPLACE_METHOD(0x1416a0fe0, FadeInOutRenderStep, GetRTTI, 13, 0x0E54005A);
 MS2_REPLACE_METHOD(0x1416a0ff0, FadeInOutRenderStep, vfunc_14, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x1416a1000, FadeInOutRenderStep, vfunc_13, 8, 0x41132FCD);
@@ -3150,7 +3153,7 @@ MS2_REPLACE_METHOD(0x1416a23f0, PostProcessingService, GetRenderedTexture, 44, 0
 MS2_REPLACE_METHOD(0x1416a23e0, MotionBlurRenderStep, GetRTTI, 13, 0x065B90E9);
 MS2_REPLACE_METHOD(0x1416a2420, MotionBlurRenderStep, vfunc_14, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x1416a2430, MotionBlurRenderStep, vfunc_13, 8, 0x41132FCD);
-MS2_REPLACE(0x1416a4000, PostProcessingService::FUN_1416a4000, 186, 0xAE107199);
+MS2_REPLACE(0x1416a4000, PostProcessingService::RepointMirroredViewCamera, 186, 0xAE107199);
 MS2_REPLACE(0x1416a40c0, PostProcessingService::FUN_1416a40c0, 69, 0x7797E812);
 MS2_REPLACE_METHOD_VIA(0x1416a5f20, PostProcessingService, efd::IBase, OnTick, 461, 0xA6872DF1);
 MS2_REPLACE_METHOD_VIA(0x1416a6100, PostProcessingService, efd::IBase, OnShutdown, 1480, 0x1DB3CE6E);

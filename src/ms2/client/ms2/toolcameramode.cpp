@@ -53,7 +53,7 @@ public:
 // The game clock (TSingleton<CMainSystem>::GetInstance).
 
 namespace egf { class Entity; }
-egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* p);      // m_80 of the game object
+class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
 void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
@@ -121,7 +121,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         fDist = 600.0f;
     ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist));
     vfunc_3(ptPos);
-    NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(p));
+    NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(p)->FUN_14123c410());
     if (!pNode)
         return;
     pNode->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);

@@ -62,7 +62,7 @@ public:
 // The client feature flags.
 class Unk_SettingsHolder;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-unsigned char FUN_14036d570(Unk_SettingsHolder* pHolder, int nFlag);
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
 CString FUN_141026d10(CString strPath);
 CString FUN_141026f00(CString strPath);
@@ -302,7 +302,7 @@ CString FUN_141027d30(int nKind)
         strDir = ".\\Custom\\Download\\MeratMarket\\Banner";
         break;
     case 0xcf:
-        if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0x108) != 0)
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x108) != 0)
             strDir = ".\\Custom\\Download\\MeratMarket\\Special";
         else
             strDir = ".\\Custom\\Download\\MeratMarket\\Limited";
@@ -495,7 +495,7 @@ CString FUN_141029590(unsigned __int64 nGuildId, const CString& strName, const C
         CString strFile = FUN_1410280d0(6, strName);
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
-            ((class CUgcManager*)FUN_14052d220())->FUN_141885090(nGuildId, strName, strUrl);
+            ((class CUgcManager*)FUN_14052d220())->DownloadGuildMark(nGuildId, strName, strUrl);
             if (strDefault.GetLength() > 0)
                 strFile = strDefault;
             else
@@ -531,7 +531,7 @@ CString FUN_1410299f0(unsigned __int64 nGuildId, const CString& strName, int nIn
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
             if (bDownload)
-                ((class CUgcManager*)FUN_14052d220())->FUN_1418851e0(nGuildId, strName, nIndex, strUrl);
+                ((class CUgcManager*)FUN_14052d220())->DownloadGuildPoster(nGuildId, strName, nIndex, strUrl);
             strFile = FUN_1401d31f0()->m_strNoGuild;
         }
         else
@@ -555,7 +555,7 @@ CString FUN_141029ca0(const CString& strUrl)
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
         if (((class CUgcManager*)FUN_14052d220()) != 0)
-            ((class CUgcManager*)FUN_14052d220())->FUN_141885340(strUrl);
+            ((class CUgcManager*)FUN_14052d220())->DownloadEmptyBanner(strUrl);
     }
     else
     {
@@ -594,7 +594,7 @@ CString FUN_14102a0b0(int nKind, const CString& strKey, const CString& strUrl, C
             MS2Ptr<CUgcShopBannerProxy> spProxy(new CUgcShopBannerProxy);
             spProxy->m_strKey = strKey;
             spProxy->m_strEntity = strEntity;
-            ((class CUgcManager*)FUN_14052d220())->FUN_141885570(spProxy, nKind, strUrl);
+            ((class CUgcManager*)FUN_14052d220())->DownloadShopBannerWithProxy(spProxy, nKind, strUrl);
         }
     }
     else

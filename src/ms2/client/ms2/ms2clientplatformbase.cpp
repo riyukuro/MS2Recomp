@@ -81,7 +81,7 @@ class CGameOption   // C3: member view for the former free stand-ins
 public:
     void SaveGameSettings();
 };
-__int64 FUN_140718350(const CStringA& str);
+unsigned __int64 FUN_140718350(const CStringA& str);
 extern int DAT_1439f4840;
 
 class CAntiHackManager : public TSingleton<CAntiHackManager>

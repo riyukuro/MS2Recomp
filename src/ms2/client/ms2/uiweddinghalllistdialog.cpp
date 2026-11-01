@@ -145,9 +145,9 @@ void UIWeddingHallListDialog::FUN_140fd9110()
             continue;
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
         ASObj row(2);
-        row.FUN_1407cbb20("name", strName);
-        row.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3, pHall->FUN_140906e40(FUN_140900f30(ticket.m_nTime))));
-        row.FUN_1407cbb20("weddingSN", FUN_141b71910(it->first));
+        ((class AScript&)(row)).FUN_1407cbb20("name", strName);
+        ((class AScript&)(row)).FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->FUN_140906e40(FUN_140900f30(ticket.m_nTime)))));
+        ((class AScript&)(row)).FUN_1407cbb20("weddingSN", FUN_141b71910(it->first));
         if (ticket.m_nTime > nNow)
             pOpenList->AddItem(row);
         else

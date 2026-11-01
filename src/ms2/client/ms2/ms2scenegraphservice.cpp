@@ -85,7 +85,7 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 // The world objects (WorldService::m_118, an ATL::CRBMap<unsigned, Unk_WsV118> in worldservice.h) and the rider seat
 // update run between the buckets.
 class Unk_SgRidee : public Ridee { };                   // Ridee: seat the rider
-class Unk_SgRider { public: Unk_SgRidee* FUN_1416764a0(); };           // PCBase: the ridee this actor rides
+class Unk_SgRider : public PCBase { };                    // PCBase: the actor that rides
 struct Unk_SgWorldObjectRef;                                            // map value: intrusive pointer to the object
 Unk_SgRider* FUN_140aac420(Unk_SgWorldObjectRef* pRef);
 class Unk_SgWorldObjects;
@@ -323,7 +323,7 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
                 Unk_SgRider* pRider = FUN_140aac420(((struct Unk_SgWorldObjectRef*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos)));
                 if (pRider != NULL)
                 {
-                    Unk_SgRidee* pRidee = pRider->FUN_1416764a0();
+                    Unk_SgRidee* pRidee = static_cast<Unk_SgRidee*>(pRider->FUN_1416764a0());
                     if (pRidee != NULL)
                         pRidee->FUN_1417074c0();
                 }

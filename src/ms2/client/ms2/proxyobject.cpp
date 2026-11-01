@@ -49,7 +49,7 @@ void FUN_141bbb7f0(WorldService* pWorld, GameObject* pObject, int bImmediate);  
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141567760(NiAVObject* pRoot);
 void FUN_141567330(NiAVObject* pRoot, bool bShadow);
-void FUN_14098c6e0(egf::Entity* pEntity, unsigned nProperty, bool* pbValue);   // write a bool property
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 const char* FUN_14099ad40(efd::AssetID* pAsset);
 extern int DAT_1439f825c;                                           // the running id of the proxies (counts down)
 
@@ -134,7 +134,7 @@ int CProxyObject::vfunc_11()
         FUN_141567330(pRoot, false);
     }
     bool bVisible = false;
-    FUN_14098c6e0(static_cast<egf::Entity*>(m_unk_80), 0x90d6d437, &bVisible);
+    FUN_14098c6e0((class Unk_CachedEntity*)(static_cast<egf::Entity*>(m_unk_80)), 0x90d6d437, bVisible);
     return 1;
 }
 

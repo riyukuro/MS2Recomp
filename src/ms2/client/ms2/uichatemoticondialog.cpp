@@ -53,6 +53,8 @@
 #include "ms2/placeholder/cmycharacter.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cguidemanager.h"
+#include "ms2/placeholder/blockformat.h"
 
 // ---- statics (.text$di): the icons of the favourites and shop tabs, and the statics of the headers the unit includes ----
 static CStringW s_strCategoryPath = L"./Data/Resource/Image/Emoticon/Category/tab_bookmark.png";   // 0x143abd858 (??__E 0x1400ca6a0)
@@ -75,40 +77,27 @@ static Unk_1402a9d70 s_unkTab2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of exe types ----
 
-// The UI manager: the lookup of a dialog by its ui id.
-class Unk_EdUIManager
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
-};
-
 // The Merat market dialog (ui id 0x4ec1): opened on the emoticon page by the shop button.
 class UIMeratMarketDialog : public UIDialog
 {
 public:
-    void FUN_14130fb10(const int* pnA, const int* pnB);
-    void FUN_1419235d0();
+    void SearchByCategory(const int& nA, const int& nB);
     unsigned char unrecovered[0x10];
 };
 
 // The world (the own character) and the chat window.
-WorldService* FUN_1403ed2d0();
 class Unk_EdChat { public: CStringW FUN_1414829e0(); };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 // The notify manager.
 NotifySystem* FUN_140939a10();
 
-// The restrictions object (0x143ab3330 holder): FUN_14138d7e0 posts a restriction event.
-class Unk_EdRestrictions { public: void FUN_14138d7e0(int a1, int a2); };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The per-user client state: the chat emoticon pack state is an MS2Ptr<CChatEmoticonCli> at +0x80.
 CMyCharacter* FUN_140931510();
 
 __int64 GetServerTime();                                            // server time
-CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
-                       const int& nMinute);                         // the string table text with five numbers
 int FUN_140bd5bd0();                                                // the ui id of the Merat market dialog
 
 // The movie root of every dialog is an ASDialog.
@@ -139,10 +128,10 @@ MS2_REPLACE_METHOD(0x140BD2CB0, AScript, FUN_140bd2cb0, 148, 0x01016A6F);
 // @0x140bd2c00
 UIMeratMarketDialog* FUN_140bd2c00()
 {
-    Unk_EdUIManager* pManager = reinterpret_cast<Unk_EdUIManager*>(TSingleton<CUIService>::GetInstance());
+    CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> spDialog = pManager->FUN_141adcea0(FUN_140bd5bd0());
+    MS2Ptr<UIObject> spDialog = pManager->FindObject((eUIClassID)FUN_140bd5bd0());
     if (spDialog.IsNull())
         return 0;
     return dynamic_cast<UIMeratMarketDialog*>(spDialog.get());
@@ -157,8 +146,8 @@ void UIChatEmoticonDialog::OnClickShopButton()
     {
         int nPage = 0x9dd0;
         int nTab = 1;
-        pMerat->FUN_14130fb10(&nTab, &nPage);
-        pMerat->FUN_1419235d0();
+        pMerat->SearchByCategory(nTab, nPage);
+        static_cast<UIDialog*>(pMerat)->FUN_1419235d0();
     }
 }
 MS2_REPLACE_METHOD(0x140BD2990, UIChatEmoticonDialog, OnClickShopButton, 78, 0x28A8C0DF);
@@ -268,8 +257,8 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     int nDay = expire.GetDay();
     int nMonth = expire.GetMonth();
     int nYear = expire.GetYear();
-    CStringW strText = FUN_1409e90c0(nStringId, nYear, nMonth, nDay, nHour, nMinute);
-    ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 1, 2);
+    CStringW strText = BlockFormat(nStringId, nYear, nMonth, nDay, nHour, nMinute);
+    ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 1, 2);
     tooltip.SetTooltipAlign(4);
     if (tooltip.ApplyTextTooltip(strText) == 0)
         return;
@@ -474,7 +463,7 @@ void UIChatEmoticonDialog::AddNewGroup(unsigned nGroupId)
     m_setNewGroups.insert(nGroupId);
     if (((class Unk_EdRestrictions*)FUN_1409331e0()) == 0)
         return;
-    ((class Unk_EdRestrictions*)FUN_1409331e0())->FUN_14138d7e0(9, 0);
+    ((class CGuideManager*)FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)9, 0);
 }
 MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, AddNewGroup, 80, 0x9F8D5E99);
 
@@ -549,7 +538,6 @@ void FUN_140bd76e0(Unk_EdAlc* pAlc, Unk_EdNode* pNode, size_t nCount);
 void FUN_140bd4cc0(Unk_EdListVal* pList);
 Unk_EdIter* FUN_140bd4e50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdIter* FUN_140bd4e10(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
-const int* FUN_1401db5a0(const int* p);
 Unk_EdNode** FUN_140bd4b50(Unk_EdNode** p);
 void FUN_140bd4d50(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdMapPair* FUN_140bd57f0(Unk_EdIter* pIt);
@@ -568,10 +556,6 @@ void FUN_140bd5c10(CPtred* p);
 Unk_EdIter* FUN_140bd4bc0(void* pTree, Unk_EdIter* pOut, const int* pKey);
 Unk_EdMapPair* FUN_140bd5770(Unk_EdIter* pIt);
 Unk_EdTreeNode* FUN_140bd6d90(Unk_EdTreeNode* pNode);
-void* FUN_14035cfa0(void* p);                                          // std::addressof
-void* FUN_14015f9d0(size_t n);
-size_t FUN_14017ba40(size_t n);
-void FUN_14015fc80(void* p, size_t nBytes);
 Unk_EdNode** FUN_140bd6e20(Unk_EdListVal* pList);
 void FUN_140a3cfa0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void FUN_140a3cfe0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
@@ -765,7 +749,7 @@ void FUN_140bd66f0(Unk_EdListVal* pList, Unk_EdNode* pNode)
 void FUN_140bd67b0(Unk_EdListVal* pList, Unk_EdNode* pNode)
 {
     Unk_EdAlc* pAlc = FUN_140bd6a00(pList);
-    FUN_140bd4a30(pAlc, FUN_14035cfa0(pNode + 1));
+    FUN_140bd4a30(pAlc, std::addressof(*reinterpret_cast<int*>(pNode + 1)));
     FUN_140bd2f60(pAlc, pNode);
 }
 
@@ -826,13 +810,13 @@ Unk_EdIter* FUN_140bd71c0(Unk_EdListVal* pList, Unk_EdIter* pOut)
 // @0x140bd7230
 void* FUN_140bd7230(Unk_EdAlc* pAlc, size_t nCount)
 {
-    return FUN_14015f9d0(FUN_14017ba40(nCount));
+    return std::_Allocate<16>(std::_Get_size_of_n<32>(nCount));
 }
 
 // @0x140bd77a0
 void FUN_140bd77a0(Unk_EdAlc* pAlc, void* p, size_t nCount)
 {
-    FUN_14015fc80(p, nCount * 0x20);
+    std::_Deallocate<16>(p, nCount * 0x20);
 }
 
 // @0x140bd4790
@@ -982,7 +966,7 @@ size_t FUN_140bd7cd0(const Unk_EdAlc* pAlc)
 // @0x140bd4800
 void FUN_140bd4800(Unk_EdAlc* pAlc, void* pWhere, const int* pValue)
 {
-    ::new (pWhere) int(*FUN_1401db5a0(pValue));
+    ::new (pWhere) int(std::forward<int>(*const_cast<int*>(pValue)));
 }
 
 // @0x140bd4840

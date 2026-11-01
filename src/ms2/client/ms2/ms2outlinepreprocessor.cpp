@@ -31,7 +31,8 @@ public:
     static class WorldService* GetInstance();
 };
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
-   void* FUN_14123c410(void* a);   NiAVObject* FUN_141b6efc0(egf::Entity* a);
+class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
+   NiAVObject* FUN_141b6efc0(egf::Entity* a);
 class NiMaterialLibrary   // C3: member view for the former free stand-ins
 {
 public:
@@ -235,7 +236,7 @@ void FUN_1414d39a0(OutlineMap& map)
 {
     void* sc = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (sc == 0) return;
-    Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(sc))));
+    Unk_AeSceneIter wl((NiAVObject*)FUN_141b6efc0(reinterpret_cast<GameObject*>(sc)->FUN_14123c410()));
     while ((size_t)FUN_1414d3ff0(&wl) > 0) {
         NiAVObject* node = (NiAVObject*)FUN_1414d4a50((Unk_OlpList*)&wl);
         if (node != 0) {

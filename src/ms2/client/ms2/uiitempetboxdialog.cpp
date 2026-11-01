@@ -41,10 +41,12 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uirenderview.h"
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
 #include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
+class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
@@ -170,15 +172,11 @@ public:
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
     virtual void vfunc_13(const Unk_PetBoxCameraData&);
 };
-class Unk_PetBoxCameraPtr
+class UIAvatarBase
 {
 public:
-    ~Unk_PetBoxCameraPtr();
-    Unk_PetBoxCamera* operator->() const;
-private:
-    Unk_PetBoxCamera* m_p;
+    efd::SmartPointer<UIRenderView> GetView();
 };
-MS2_CHECK_SIZE(Unk_PetBoxCameraPtr, 8);
 class Unk_PetBoxAvatar : public CPtred
 {
 public:
@@ -191,7 +189,6 @@ public:
     virtual Unk_PetBoxActor* vfunc_24();
     virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27();
     virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
-    Unk_PetBoxCameraPtr FUN_1418b9bc0();
 };
 class UIAvatarPet : public Unk_PetBoxAvatar
 {
@@ -272,16 +269,16 @@ void UIItemPetBoxDialog::OnLoadComplete()
         m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), 0);
     if (FUN_140bc6d10("m_multiOpenButton", m_multiOpen).get())
         m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), 1);
-    if (FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
+    if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
         if (m_previewSingle->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeSingle).get())
             m_closeSingle->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
     }
-    if (FUN_140c57ce0("m_petPreviewMulti", m_previewMulti).get()) {
+    if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewMulti", m_previewMulti).get()) {
         if (m_previewMulti->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeMulti).get())
             m_closeMulti->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
     }
-    FUN_140c57ce0("m_itemBox", m_itemBox);
-    FUN_140c57ce0("m_resultItem", m_resultItem);
+    reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_itemBox", m_itemBox);
+    reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_resultItem", m_resultItem);
     FUN_140e52700("m_isSkipEffect", m_skipEffect);
     FUN_140e4fd60();
 }
@@ -366,7 +363,7 @@ void UIItemPetBoxDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp, void* b,
     data.f1c = 300.0f;
     data.target += actor->vfunc_18();
     data.eye += data.target;
-    m_cards[idx].m_avatar->FUN_1418b9bc0()->vfunc_13(data);
+    reinterpret_cast<Unk_PetBoxCamera*>(reinterpret_cast<UIAvatarBase*>(m_cards[idx].m_avatar.operator->())->GetView().operator->())->vfunc_13(data);
 }
 
 // @0x140e4f5a0

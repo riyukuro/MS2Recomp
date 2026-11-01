@@ -108,9 +108,9 @@ MS2_REPLACE_METHOD(0x140C6E860, ASMentoringMenteePage, OnInit, 515, 0x4AC55F75);
 void ASMentoringMenteePage::Refresh()
 {
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
-    int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
+    int nMentee = reinterpret_cast<CMentoringManager*>((class CMentoringManager*)((FUN_140c70240())))->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
-    m_coin->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
+    ((class ASTextField*)(m_coin))->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
 }
 MS2_REPLACE_METHOD(0x140C6EA90, ASMentoringMenteePage, Refresh, 187, 0x8A4892D4);
 
@@ -150,7 +150,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             return 1;
         }
         UIInviteMentoringDialog* pDlg = FUN_140b6f4c0(0x4f4c);
-        if (pDlg) pDlg->FUN_140c2f040();
+        if (pDlg) ((class UIInviteMentoringDialog*)(pDlg))->FUN_140c2f040();
         return 1;
     }
     else if (_stricmp(szMethod, "onPartyRequest") == 0)
@@ -172,7 +172,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             if (pMenu)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 10, 0, "", NULL);
-                pMenu->FUN_141a7f090(info, strName, nSerial, NULL, 0, 1);
+                ((class UIPopUpMenu*)(pMenu))->FUN_141a7f090(info, strName, nSerial, NULL, 0, 1);
             }
         }
         return 1;
@@ -241,9 +241,9 @@ void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEn
         {
             obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
             obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
-            obj.FUN_1407cbb20("name", pEntry->m_38);
-            obj.FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
-            obj.FUN_1407cbb20("charName", pEntry->m_38);
+            ((class AScript&)(obj)).FUN_1407cbb20("name", pEntry->m_38);
+            ((class AScript&)(obj)).FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->m_54)));
+            ((class AScript&)(obj)).FUN_1407cbb20("charName", pEntry->m_38);
             obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
         }
         else

@@ -141,6 +141,9 @@ public: static void AS3valueOf(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scale
 };
 class String
 {
+public: static void AS3indexOf(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+public: static void AS3charCodeAt(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
+public: static void AS3localeCompare(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void lengthGet(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void AS3charAt(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void AS3concat(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
@@ -161,6 +164,7 @@ public: static void AS3valueOf(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scale
 };
 class Object
 {
+public: static void AS3isPrototypeOf(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void AS3hasOwnProperty(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void AS3propertyIsEnumerable(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 };
@@ -249,6 +253,7 @@ public: static void AS3hasOwnProperty(::Scaleform::GFx::AS3::ThunkInfo const &, 
 namespace Instances {
 class FunctionBase
 {
+public: static void apply(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 public: static void call(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *);
 };
 }
@@ -309,9 +314,9 @@ extern "C" void FUN_140028100();
 extern "C" void FUN_14002815c();
 extern "C" void FUN_1400281b8();
 long FUN_14003c190(long, long, long);
-void * FUN_14003c390(void *, unsigned long const *);
+void * criVmpv_Create(void *, unsigned long const *);
 void criVmpv_SetProcessorMask(void *, unsigned long);
-void FUN_14003ca00(void *, long, long const *, long const *);
+void criVmpv_SetInitDlgPara(void *, long, long const *, long const *);
 void criVmpv_Destroy(void *);
 long criVmpv_GetStatus(void const *);
 void FUN_14003cca0(void *);
@@ -321,64 +326,64 @@ void criVmpv_RequestStop(void *);
 void * FUN_14003d940(void *);
 void FUN_14003d970(void *);
 unsigned long criVdecCmn_GetNumPictureData(void const *);
-unsigned long FUN_14003d9d0(void *);
+unsigned long criVmpv_GetNumDecPool(void *);
 void * criVmpv_GetNextFrameInfo(void *, void *);
 void * criVmpv_GetFramePointer(void *, void *);
 long FUN_14003e110(void *, void *, void **);
-void FUN_14003e180(void *, void const *);
+void criVmpv_ReleaseFramePointer(void *, void const *);
 void * criVmpv_GetNextAlphaFrameInfo(void *, void *);
 long FUN_14003e370(void *, void *, void *);
 void * criVmpv_GetAlphaFramePointer(void *, void *);
-void FUN_14003e6a0(void *, unsigned __int64 const *);
+void criVmpv_ReleaseAlphaFramePointer(void *, unsigned __int64 const *);
 void FUN_14003e710(void *, void *);
 void FUN_14003e750(void *, long, unsigned __int64 *, unsigned __int64 *);
 void FUN_14003e820(void *, unsigned long);
 void FUN_14003ebe0(void *);
 long FUN_14003ec30(void *);
-void FUN_140040e40(void *, unsigned long *, unsigned long *, long *, unsigned long *, unsigned long *);
+void criVmpv_GetFramePoolInfo(void *, unsigned long *, unsigned long *, long *, unsigned long *, unsigned long *);
 void FUN_140041030(void *, unsigned long, unsigned long);
 void FUN_140041080(void *, void *, void *);
 void * FUN_140041d00(::cri03_host08 *, long, void *, long);
 void FUN_140045998(void *);
 void criSjUni_Reset(void *);
-long FUN_140045c08(void *, long);
-void FUN_140045c60(void *, long, unsigned long, unsigned __int64 *);
-void FUN_140045d34(void *, long, unsigned __int64 const *);
-void FUN_140045e04(void *, long, unsigned __int64 const *);
+long criSjUni_GetTotalSize(void *, long);
+void criSjUni_GetChunk(void *, long, unsigned long, unsigned __int64 *);
+void criSjUni_PutChunk(void *, long, unsigned __int64 const *);
+void criSjUni_UngetChunk(void *, long, unsigned __int64 const *);
 void FUN_140045fdc(void *);
 long FUN_140046000(::cri03_kinds *, long);
 void criSjRbf_Reset(void *);
 void criSjRbf_GetChunk(void *, long, unsigned long, void *);
-void FUN_140046170(void *, long, unsigned __int64 *);
-void FUN_14004624c(void *, long, void *);
+void criSjRbf_PutChunk(void *, long, unsigned __int64 *);
+void criSjRbf_UngetChunk(void *, long, void *);
 void FUN_1400463c8(void *);
 void FUN_140046598(void *);
-void FUN_14004ec20(unsigned __int64);
-unsigned __int64 FUN_14004ec40(unsigned __int64);
-void FUN_14004ec70(unsigned __int64, unsigned __int64, unsigned __int64);
-void FUN_14004ecb0(unsigned __int64);
-unsigned int FUN_14004ecd0(unsigned __int64, unsigned int);
-void FUN_14004ed10(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
-void FUN_14004ed60(unsigned __int64, unsigned int, unsigned __int64);
-void FUN_14004eda0(unsigned __int64, unsigned int, unsigned __int64);
-unsigned int FUN_14004ede0(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
-void FUN_14004fa80(unsigned __int64);
-unsigned __int64 FUN_14004faa0(unsigned __int64);
-void FUN_14004fad0(unsigned __int64, unsigned __int64, unsigned __int64);
-void FUN_14004fb60(unsigned __int64);
-unsigned int FUN_14004fb80(unsigned __int64, unsigned int);
-void FUN_14004fbc0(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
-void FUN_14004fc10(unsigned __int64, unsigned int, unsigned __int64);
-void FUN_14004fc50(unsigned __int64, unsigned int, unsigned __int64);
-unsigned int FUN_14004fc90(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
-void * FUN_1400653b0(::cri_any, ::cri_any);
+void SJMEM_Destroy(unsigned __int64);
+unsigned __int64 SJMEM_GetUuid(unsigned __int64);
+void SJMEM_EntryErrFunc(unsigned __int64, unsigned __int64, unsigned __int64);
+void SJMEM_Reset(unsigned __int64);
+unsigned int SJMEM_GetNumData(unsigned __int64, unsigned int);
+void SJMEM_GetChunk(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
+void SJMEM_PutChunk(unsigned __int64, unsigned int, unsigned __int64);
+void SJMEM_UngetChunk(unsigned __int64, unsigned int, unsigned __int64);
+unsigned int SJMEM_IsGetChunk(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
+void SJRBF_Destroy(unsigned __int64);
+unsigned __int64 SJRBF_GetUuid(unsigned __int64);
+void SJRBF_EntryErrFunc(unsigned __int64, unsigned __int64, unsigned __int64);
+void SJRBF_Reset(unsigned __int64);
+unsigned int SJRBF_GetNumData(unsigned __int64, unsigned int);
+void SJRBF_GetChunk(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
+void SJRBF_PutChunk(unsigned __int64, unsigned int, unsigned __int64);
+void SJRBF_UngetChunk(unsigned __int64, unsigned int, unsigned __int64);
+unsigned int SJRBF_IsGetChunk(unsigned __int64, unsigned int, unsigned int, unsigned __int64);
+void * mpvsl_DuplicateObj(::cri_any, ::cri_any);
 void FUN_1400653f0(::cri_any);
 void FUN_140065410(::cri_any, ::cri_any, ::cri_any);
-void FUN_140065660(::cri_any, ::cri_any, ::cri_any);
+void mpvsl_DecTaskOne(::cri_any, ::cri_any, ::cri_any);
 void * m2vsl_DuplicateObj(void *, int);
 void FUN_140089fa0(::cri07_decfields *);
 void FUN_140089fc0(::cri07_decfields *, int, int);
-void FUN_14008a180(__int64, unsigned __int64, int *);
+void m2vsl_DecTaskOne(__int64, unsigned __int64, int *);
 unsigned __int64 FUN_1400b09d0(unsigned __int64, char const *);
 namespace Scaleform { namespace GFx { namespace AS3 { namespace InstanceTraits { namespace fl { void FUN_142402060(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *); } } } } }
 namespace Scaleform { namespace GFx { namespace AS3 { void FUN_1424292c0(::Scaleform::GFx::AS3::ThunkInfo const &, ::Scaleform::GFx::AS3::VM &, ::Scaleform::GFx::AS3::Value const &, ::Scaleform::GFx::AS3::Value &, unsigned int, ::Scaleform::GFx::AS3::Value const *); } } }
@@ -429,14 +434,6 @@ extern unsigned char DAT_1431bf070[];
 extern void* DAT_143b018a0;
 void criVmpv_Initialize();
 void criVmpv_Finalize();
-void FUN_1423e1b10();
-void FUN_1423e1e40();
-void FUN_1423e3c00();
-void FUN_1423e4060();
-void FUN_1423e4e40();
-void FUN_1423e7490();
-void FUN_1423f7440();
-void FUN_1423fb960();
 void FUN_1425c5850();
 void FUN_1425c6940();
 void FUN_14274c310();
@@ -13726,7 +13723,7 @@ alignas(16) Sd_143a2a850 DAT_143a2a850 = {
     "Oct",
     "Nov",
     "Dec",
-    (const void*)&FUN_1423e4060,
+    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3isPrototypeOf,
     &::Scaleform::GFx::AS3::fl::BooleanCI,
     "isPrototypeOf",
     {
@@ -13748,7 +13745,7 @@ alignas(16) Sd_143a2a850 DAT_143a2a850 = {
 };
 // 0x143a2a930
 alignas(16) Sd_143a2a930 DAT_143a2a930 = {
-    (const void*)&FUN_1423e4e40,
+    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
     {0},
     "apply",
     {
@@ -13770,7 +13767,7 @@ alignas(16) Sd_143a2a930 DAT_143a2a930 = {
 };
 // 0x143a2a9b0
 alignas(16) Sd_143a2a9b0 DAT_143a2a9b0 = {
-    (const void*)&FUN_1423e4e40,
+    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
     {0},
     "apply",
     {
@@ -13792,7 +13789,7 @@ alignas(16) Sd_143a2a9b0 DAT_143a2a9b0 = {
 };
 // 0x143a2aa30
 alignas(16) Sd_143a2aa30 DAT_143a2aa30 = {
-    (const void*)&FUN_1423e4e40,
+    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
     {0},
     "apply",
     {
@@ -13814,7 +13811,7 @@ alignas(16) Sd_143a2aa30 DAT_143a2aa30 = {
 };
 // 0x143a2aab0
 alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
-    (const void*)&FUN_1423e4e40,
+    (const void*)&::Scaleform::GFx::AS3::Instances::FunctionBase::apply,
     {0},
     "apply",
     {
@@ -13859,7 +13856,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1423e1b10,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc0<::Scaleform::GFx::AS3::Instances::fl::QName, 1, ::Scaleform::GFx::AS3::Value>::Func,
     {0},
     "uri",
     {
@@ -13977,7 +13974,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1423e7490,
+    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::AS3indexOf,
     &::Scaleform::GFx::AS3::fl::int_CI,
     "indexOf",
     {
@@ -13995,7 +13992,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1423f7440,
+    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::AS3charCodeAt,
     &::Scaleform::GFx::AS3::fl::NumberCI,
     "charCodeAt",
     {
@@ -14007,7 +14004,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1423fb960,
+    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::String::AS3localeCompare,
     &::Scaleform::GFx::AS3::fl::int_CI,
     "localeCompare",
     {
@@ -14079,7 +14076,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     &::Scaleform::GFx::AS3::fl::StringCI,
     "valueOf",
     {0},
-    (const void*)&FUN_1423e1e40,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Classes::fl::String, 0, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
     &::Scaleform::GFx::AS3::fl::StringCI,
     "fromCharCode",
     {
@@ -14103,7 +14100,7 @@ alignas(16) Sd_143a2aab0 DAT_143a2aab0 = {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
-    (const void*)&FUN_1423e3c00,
+    (const void*)&::Scaleform::GFx::AS3::ThunkFunc2<::Scaleform::GFx::AS3::Instances::fl::Array, 2, ::Scaleform::GFx::AS3::Value, unsigned int, ::Scaleform::GFx::AS3::Value const *>::Func,
     &::Scaleform::GFx::AS3::fl::StringCI,
     "join",
     {
@@ -15283,7 +15280,7 @@ alignas(16) Sd_143a2d3d0 DAT_143a2d3d0 = {
 };
 // 0x143a2d5c0
 alignas(16) Sd_143a2d5c0 DAT_143a2d5c0 = {
-    (const void*)&FUN_1423e4060,
+    (const void*)&::Scaleform::GFx::AS3::InstanceTraits::fl::Object::AS3isPrototypeOf,
     &::Scaleform::GFx::AS3::fl::BooleanCI,
     "isPrototypeOf",
     {
@@ -23983,7 +23980,7 @@ alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
     (const void*)&criVmpv_Initialize,
     (const void*)&criVmpv_Finalize,
     (const void*)&FUN_14003c190,
-    (const void*)&FUN_14003c390,
+    (const void*)&criVmpv_Create,
     (const void*)&criVmpv_Destroy,
     (const void*)&FUN_14003d940,
     (const void*)&criVmpv_GetStatus,
@@ -23994,20 +23991,20 @@ alignas(16) Sd_143a47bc0 DAT_143a47bc0 = {
     (const void*)&criVmpv_RequestStop,
     (const void*)&FUN_14003d970,
     (const void*)&criVdecCmn_GetNumPictureData,
-    (const void*)&FUN_14003d9d0,
+    (const void*)&criVmpv_GetNumDecPool,
     (const void*)&criVmpv_GetNextFrameInfo,
     {0},
     (const void*)&FUN_14003e110,
     (const void*)&criVmpv_GetFramePointer,
-    (const void*)&FUN_14003e180,
+    (const void*)&criVmpv_ReleaseFramePointer,
     (const void*)&FUN_14003e710,
     (const void*)&FUN_14003e750,
-    (const void*)&FUN_140040e40,
+    (const void*)&criVmpv_GetFramePoolInfo,
     (const void*)&FUN_14003e820,
     (const void*)&FUN_140041030,
     (const void*)&FUN_14003d4b0,
     (const void*)&criVmpv_SetProcessorMask,
-    (const void*)&FUN_14003ca00,
+    (const void*)&criVmpv_SetInitDlgPara,
     (const void*)&FUN_140041080,
     {0},
 };
@@ -24016,7 +24013,7 @@ alignas(16) Sd_143a47cb0 DAT_143a47cb0 = {
     (const void*)&criVmpv_Initialize,
     (const void*)&criVmpv_Finalize,
     (const void*)&FUN_14003c190,
-    (const void*)&FUN_14003c390,
+    (const void*)&criVmpv_Create,
     (const void*)&criVmpv_Destroy,
     (const void*)&FUN_14003d940,
     (const void*)&criVmpv_GetStatus,
@@ -24027,17 +24024,17 @@ alignas(16) Sd_143a47cb0 DAT_143a47cb0 = {
     (const void*)&criVmpv_RequestStop,
     (const void*)&FUN_14003d970,
     (const void*)&criVdecCmn_GetNumPictureData,
-    (const void*)&FUN_14003d9d0,
+    (const void*)&criVmpv_GetNumDecPool,
     (const void*)&criVmpv_GetNextAlphaFrameInfo,
     (const void*)&FUN_14003e370,
     {0},
     (const void*)&criVmpv_GetAlphaFramePointer,
-    (const void*)&FUN_14003e6a0,
+    (const void*)&criVmpv_ReleaseAlphaFramePointer,
     (const void*)&FUN_14003e820,
     (const void*)&FUN_140041030,
     (const void*)&FUN_14003d4b0,
     (const void*)&criVmpv_SetProcessorMask,
-    (const void*)&FUN_14003ca00,
+    (const void*)&criVmpv_SetInitDlgPara,
     (const void*)&FUN_140041080,
     {0},
 };
@@ -24056,36 +24053,36 @@ alignas(16) Sd_143a48350 DAT_143a48350 = {
 alignas(8) Sd_143a485d8 DAT_143a485d8 = {
     (const void*)&FUN_140045998,
     (const void*)&criSjUni_Reset,
-    (const void*)&FUN_140045c60,
-    (const void*)&FUN_140045e04,
-    (const void*)&FUN_140045d34,
-    (const void*)&FUN_140045c08,
+    (const void*)&criSjUni_GetChunk,
+    (const void*)&criSjUni_UngetChunk,
+    (const void*)&criSjUni_PutChunk,
+    (const void*)&criSjUni_GetTotalSize,
 };
 // 0x143a48608
 alignas(8) Sd_143a48608 DAT_143a48608 = {
     (const void*)&FUN_140045fdc,
     (const void*)&criSjRbf_Reset,
     (const void*)&criSjRbf_GetChunk,
-    (const void*)&FUN_14004624c,
-    (const void*)&FUN_140046170,
+    (const void*)&criSjRbf_UngetChunk,
+    (const void*)&criSjRbf_PutChunk,
     (const void*)&FUN_140046000,
 };
 // 0x143a48638
 alignas(8) Sd_143a48638 DAT_143a48638 = {
     (const void*)&FUN_1400463c8,
     (const void*)&criSjUni_Reset,
-    (const void*)&FUN_140045c60,
-    (const void*)&FUN_140045e04,
-    (const void*)&FUN_140045d34,
-    (const void*)&FUN_140045c08,
+    (const void*)&criSjUni_GetChunk,
+    (const void*)&criSjUni_UngetChunk,
+    (const void*)&criSjUni_PutChunk,
+    (const void*)&criSjUni_GetTotalSize,
 };
 // 0x143a48668
 alignas(8) Sd_143a48668 DAT_143a48668 = {
     (const void*)&FUN_140046598,
     (const void*)&criSjRbf_Reset,
     (const void*)&criSjRbf_GetChunk,
-    (const void*)&FUN_14004624c,
-    (const void*)&FUN_140046170,
+    (const void*)&criSjRbf_UngetChunk,
+    (const void*)&criSjRbf_PutChunk,
     (const void*)&FUN_140046000,
     {0},
     "CriUint8",
@@ -24128,28 +24125,28 @@ alignas(16) unsigned char DAT_143a48790[0x50] = {
 // 0x143a487e0
 alignas(16) Sd_143a487e0 DAT_143a487e0 = {
     {0},
-    (const void*)&FUN_14004ec20,
-    (const void*)&FUN_14004ec40,
-    (const void*)&FUN_14004ecb0,
-    (const void*)&FUN_14004ed10,
-    (const void*)&FUN_14004eda0,
-    (const void*)&FUN_14004ed60,
-    (const void*)&FUN_14004ecd0,
-    (const void*)&FUN_14004ede0,
-    (const void*)&FUN_14004ec70,
+    (const void*)&SJMEM_Destroy,
+    (const void*)&SJMEM_GetUuid,
+    (const void*)&SJMEM_Reset,
+    (const void*)&SJMEM_GetChunk,
+    (const void*)&SJMEM_UngetChunk,
+    (const void*)&SJMEM_PutChunk,
+    (const void*)&SJMEM_GetNumData,
+    (const void*)&SJMEM_IsGetChunk,
+    (const void*)&SJMEM_EntryErrFunc,
 };
 // 0x143a48840
 alignas(16) Sd_143a48840 DAT_143a48840 = {
     {0},
-    (const void*)&FUN_14004fa80,
-    (const void*)&FUN_14004faa0,
-    (const void*)&FUN_14004fb60,
-    (const void*)&FUN_14004fbc0,
-    (const void*)&FUN_14004fc50,
-    (const void*)&FUN_14004fc10,
-    (const void*)&FUN_14004fb80,
-    (const void*)&FUN_14004fc90,
-    (const void*)&FUN_14004fad0,
+    (const void*)&SJRBF_Destroy,
+    (const void*)&SJRBF_GetUuid,
+    (const void*)&SJRBF_Reset,
+    (const void*)&SJRBF_GetChunk,
+    (const void*)&SJRBF_UngetChunk,
+    (const void*)&SJRBF_PutChunk,
+    (const void*)&SJRBF_GetNumData,
+    (const void*)&SJRBF_IsGetChunk,
+    (const void*)&SJRBF_EntryErrFunc,
 };
 // 0x143a488c0
 alignas(16) unsigned char DAT_143a488c0[0x1800] = {
@@ -24556,8 +24553,8 @@ alignas(16) unsigned char DAT_143a4a0d0[0x8] = {
 };
 // 0x143a4a0d8
 alignas(8) Sd_143a4a0d8 DAT_143a4a0d8 = {
-    (const void*)&FUN_140065660,
-    (const void*)&FUN_1400653b0,
+    (const void*)&mpvsl_DecTaskOne,
+    (const void*)&mpvsl_DuplicateObj,
     (const void*)&FUN_1400653f0,
     (const void*)&FUN_140065410,
 };
@@ -24702,7 +24699,7 @@ alignas(16) unsigned char DAT_143a4a590[0x10] = {
 };
 // 0x143a4a5a0
 alignas(16) Sd_143a4a5a0 DAT_143a4a5a0 = {
-    (const void*)&FUN_14008a180,
+    (const void*)&m2vsl_DecTaskOne,
     (const void*)&m2vsl_DuplicateObj,
     (const void*)&FUN_140089fa0,
     (const void*)&FUN_140089fc0,

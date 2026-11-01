@@ -97,11 +97,11 @@ struct Unk_PtVec3 : public Vector3
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-void FUN_1411e1b80(Unk_PCEquipSet* pEquipSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);   // the worn items
 class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1411e3de0(int);
+    void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;   // 0x1411e1b80 the worn items
 };
 void FUN_1411e3600(Unk_PCEquipSet* pEquipSet, MS2Ptr<CEquipItem> spEquip);   // adds a worn item (callee-destroyed arg)
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);          // 0x140ccac60 a copy of the item
@@ -140,7 +140,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
     pPortrait->vfunc_76(CStringW(L""));
     pPortrait->FUN_141658e40(((class PC*)(class PC*)(pSource))->FUN_141658e60());
     pPortrait->vfunc_59(1, 0, 0, 0);
-    pPortrait->FUN_14166cce0(4);
+    pPortrait->AddStateFlags(4);
     pPortrait->FUN_1416591e0(0, pSource->FUN_141659220(0));
     pPortrait->FUN_1416591e0(1, pSource->FUN_141659220(1));
     pPortrait->FUN_141658ed0(((class PC*)(class PC*)(pSource))->FUN_141658f10());
@@ -157,7 +157,7 @@ void PortraitPC::vfunc_149()
     if (m_pSourcePC != 0)
     {
         ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
-        FUN_1411e1b80(m_pSourcePC->FUN_1416561a0(), kEquips);
+        reinterpret_cast<CEquipment*>(m_pSourcePC->FUN_1416561a0())->CollectShownItems(kEquips);
         for (POSITION pos = kEquips.GetHeadPosition(); pos != 0; kEquips.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip = kEquips.GetAt(pos);
@@ -187,7 +187,7 @@ void PortraitPC::vfunc_147(UIModelView* pView)
 {
     ClonePC::vfunc_147(pView);
     if (pView != 0)
-        FUN_14169a5e0();
+        RefreshModelEquipment();
 }
 
 // @0x14169a000
@@ -255,13 +255,13 @@ void PortraitPC::vfunc_53(float f)
     if (m_b12f9 && (static_cast<UIModelView*>(m_spModelView) ? true : false))
     {
         if (m_spModelView->FUN_141ab7660() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(500) != 0)
-            FUN_14169a5e0();
+            RefreshModelEquipment();
     }
     FUN_141087790();
 }
 
 // @0x14169a5e0
-void PortraitPC::FUN_14169a5e0()
+void PortraitPC::RefreshModelEquipment()
 {
     if (static_cast<UIModelView*>(m_spModelView) == 0)
         return;

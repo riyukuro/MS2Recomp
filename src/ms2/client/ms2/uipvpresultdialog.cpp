@@ -70,7 +70,8 @@ class Unk_PrItemData : public CItemData { };         // the icon name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The AS root with the two-argument Invoke ("showLastResult").
-class Unk_PrScript : public AScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };
+class Unk_PrScript : public AScript { };
+class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 const int* FUN_1402fbd20(const int* a, const int* b);               // std::min<int>
@@ -168,7 +169,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
         if ((CItemData*)spItem != 0)
             m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PrItemData*>(spItem.operator->())->GetIconPath());
     }
-    static_cast<Unk_PrScript*>(m_30.operator->())->FUN_14129cce0("showLastResult", m_180, strText);
+    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("showLastResult", m_180, strText);
 }
 
 // @0x1413440a0

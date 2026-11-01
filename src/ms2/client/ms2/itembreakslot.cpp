@@ -51,12 +51,17 @@ class InvenSlot   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-DragSlot* FUN_14140e5e0(NotifyContext::BindData* p);
+class DragSlot;
+template <> ItemBreakSlot* efd::DynamicCast<ItemBreakSlot, DragSlot>(DragSlot* Source);   // C3: was FUN_14140e5e0
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+class Unk_NotifyContext   // C3: static member view for the former free stand-ins
+{
+public:
+    static class NotifyContext::BindData* FUN_1422c8e90(CString const&);
+    static void FUN_1422c8f10(CString const&, class NotifyContext::BindData*);
+    static void FUN_1422c8f70(CString const&);
+};
 
 ItemBreakSlotBag* FUN_1414109f0(NotifyContext::BindData* p);
 
@@ -171,18 +176,18 @@ void FUN_1414106d0(const CString& strName)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(100);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x141410780
 void FUN_141410780(const CString& strName)
 {
-    ItemBreakSlotBag* pBag = FUN_1414109f0(FUN_1422c8e90(strName));
+    ItemBreakSlotBag* pBag = FUN_1414109f0(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 
@@ -212,7 +217,7 @@ DragSlot* ItemBreakSlotBag::vfunc_16(int nIndex)
 // @0x1414109a0
 void FUN_1414109a0(DragSlotBag* pBag, int nIndex)
 {
-    DragSlot* pSlot = FUN_14140e5e0(reinterpret_cast<DragSlotBag*>(pBag)->FUN_1422cd070(nIndex));
+    DragSlot* pSlot = reinterpret_cast<DragSlot*>(efd::DynamicCast<ItemBreakSlot, DragSlot>(reinterpret_cast<DragSlot*>(reinterpret_cast<DragSlotBag*>(pBag)->FUN_1422cd070(nIndex))));
     if (pSlot)
         pSlot->vfunc_10();
 }

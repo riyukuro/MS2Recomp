@@ -272,7 +272,7 @@ void PartyVoteKickUserCli::vfunc_1(CInPacket& packet)
 void PartyVoteKickUserCli::vfunc_2()
 {
     CStringW strName;
-    MS2Ptr<CPartyMember> member = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(owner);
+    MS2Ptr<CPartyMember> member = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(owner);
     if (member.get() != 0)
         strName = member->FUN_141637bd0();
     FUN_1412751b0(FUN_1405c2690(CStringW(L"s_party_vote_kick_user_notify"), strName), 2);
@@ -306,11 +306,11 @@ void PartyVoteReadyCli::vfunc_2()
     {
         unsigned __int64 member = *it;
         if (yes.find(member) != yes.end())
-            TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 2);
+            TSingleton<CPartyManager>::GetInstance()->SetMemberReadyState(member, 2);
         else if (no.find(member) != no.end())
-            TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 3);
+            TSingleton<CPartyManager>::GetInstance()->SetMemberReadyState(member, 3);
         else
-            TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 1);
+            TSingleton<CPartyManager>::GetInstance()->SetMemberReadyState(member, 1);
     }
 
     void* pDialog = FUN_140a8a720();
@@ -366,9 +366,9 @@ bool PartyVoteReadyCli::OnMessageBoxResult(int result, const CMsgBoxData& box)
 void PartyVoteReadyCli::vfunc_7(__int64 member, bool accepted)
 {
     if (accepted)
-        TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 2);
+        TSingleton<CPartyManager>::GetInstance()->SetMemberReadyState(member, 2);
     else
-        TSingleton<CPartyManager>::GetInstance()->FUN_14162c580(member, 3);
+        TSingleton<CPartyManager>::GetInstance()->SetMemberReadyState(member, 3);
 }
 
 // ---- helpers ----

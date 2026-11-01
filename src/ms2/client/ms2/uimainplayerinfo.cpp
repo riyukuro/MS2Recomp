@@ -44,6 +44,7 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
+#include "ms2/client/ms2/uirenderview.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
@@ -61,13 +62,13 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);             
 class Unk_MpScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2);
     Scaleform::GFx::Value FUN_140ea5e70(const char* szMethod, unsigned short a1);
     Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3);
     
     MS2Ptr<ASEffectManager> FUN_1419f3a40(const CString& strName);
 };
 #define MP_AS(p) reinterpret_cast<Unk_MpScript*>((p).operator->())
+class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
 // The portrait clip: slot 24 shows it.
 class Unk_MpInfoClip : public ASUIComponent
@@ -81,7 +82,6 @@ public:
 class ASDialog : public ASDisplayObject
 {
 public:
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);
 };
 
 // The shortkey slots of the slot manager.
@@ -251,6 +251,11 @@ public:
     virtual void s12();
     virtual void vfunc_13(const Unk_MpCamData& data);
 };
+class UIAvatarBase
+{
+public:
+    efd::SmartPointer<UIRenderView> GetView();
+};
 class UIAvatarRidee
 {
 public:
@@ -263,7 +268,6 @@ public:
     virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24(); virtual void s25();
     virtual void s26(); virtual void s27();
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);
-    Unk_MpCameraPtr FUN_1418b9bc0();
     Unk_AdvMountPtr FUN_1418be810();
     char m_pad_08[0xd0];
 };
@@ -734,7 +738,7 @@ int UIMainPlayerInfo::vfunc_13()
         return 0;
     if (pPc->FUN_141659690() != 0)
         return 0;
-    if (pPc->FUN_141659610() != 0)
+    if (pPc->IsCubeMode1() != 0)
         return 0;
     if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
     {
@@ -755,12 +759,12 @@ void UIMainPlayerInfo::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
     if (m_ridee.get() != 0)
     {
         m_ridee->vfunc_28(p1, p2, p3, p4);
-        m_camera = m_ridee->FUN_1418b9bc0();
+        m_camera = reinterpret_cast<UIAvatarBase*>(m_ridee.operator->())->GetView();
         Unk_AdvMountPtr spMount = m_ridee->FUN_1418be810();
         Unk_MpCamData data;
         data.m_target = MP_ROW(spMount)->m_250;
         data.m_eye = MP_ROW(spMount)->m_25c;
-        m_camera->vfunc_13(data);
+        reinterpret_cast<Unk_MpCamera*>(m_camera.operator->())->vfunc_13(data);
     }
 }
 
@@ -786,7 +790,7 @@ bool UIMainPlayerInfo::vfunc_17()
 void UIMainPlayerInfo::vfunc_oa0_7(int nJob, CStringW s)
 {
     if (m_playerInfo.get() != 0)
-        MP_AS(m_playerInfo)->FUN_14129cce0("setJob", nJob, s);
+        reinterpret_cast<Unk_RsScript*>(m_playerInfo.operator->())->FUN_14129cce0("setJob", nJob, s);
 }
 
 // @0x1419efe00

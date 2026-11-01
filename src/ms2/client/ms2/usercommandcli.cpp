@@ -125,9 +125,11 @@ static Unk_CommandStatics s_tableb(17,.75f,.25f,2.25f,10);
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 // External, non-RTTI command and XML helper types; scalar layout follows callers.
 void FUN_141276f80(const Unk_CommandChat&);
+CString FUN_14071a5b0(const CString&,const CString&);
+// ATL::operator+ (the exe copies; clang lacks the MFC CopyChars import)
 CStringW FUN_14061ad70(const CStringW&,const wchar_t*);
 CStringW FUN_1401d0080(const CStringW&,const CStringW&);
-CString FUN_14071a5b0(const CString&,const CString&);
+CString FUN_14038f6d0(const CString&,const wchar_t*);
 CString FUN_1402bad60(const char*,const int*);   // StringFormat<int> (a second copy)
 struct Unk_CommandFiles { int FUN_1403974b0(TiXmlDocument&,const char*,int,bool,bool); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
@@ -157,9 +159,12 @@ extern Vector3 DAT_143b01a60;
 void FUN_1401d9a30(const CStringW&,ATL::CAtlArray<int>&,const wchar_t*);
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
 void FUN_141863340(void*,const ATL::CAtlArray<int>&,unsigned);
+#include <atlcoll.h>
+#include <efd/SmartPointer.h>
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     void* FUN_141bd0cc0();
     class Unk_WsC_GameObj* FUN_141bd1320(int);
     int FUN_141bd1a10(class Unk_WsC_GameObj*);
@@ -170,12 +175,13 @@ public:
     void FUN_141bdaae0();
     static class WorldService* GetInstance();
 };
- void* FUN_1409478c0();
 class GameObject   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_14123c580();
 };
+class CameraMgr; template <class T> class TSingleton;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };   // 0x1409478c0, as in camera.h
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -203,13 +209,14 @@ public:
  void FUN_14138cce0(void*,int,int);
 CString FUN_14016a600(const wchar_t*,int); CString FUN_1401d4330(const wchar_t*,int);
 void FUN_14138d090(void*,CString);__int64 GetServerTime();
- void FUN_1411a4f40(void*,CString,const Vector3&);
-void* FUN_140d13c40();class CSoundEventMgr   // C3: member view for the former free stand-ins
+class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_14177c100(unsigned int, float, unsigned int, int);
+    CStringW FUN_14177e020();
 };
- struct Unk_UcSoundView { CStringW FUN_14177e020(); };
+class CSoundEventMgr; template <class T> class TSingleton;
+template <> class TSingleton<CSoundEventMgr> { public: static CSoundEventMgr* GetInstance(); };   // 0x140d13c40, as in soundeventmgr.h
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class CommonString   // C3: member view for the former free stand-ins
 {
@@ -217,7 +224,7 @@ public:
     void Reload();
 };
  void FUN_1409c51f0(); void* FUN_141371b20(); void FUN_141815db0(void*);
-void* FUN_14136f3e0(int); void* FUN_14136f5c0(int);void* FUN_1403ed2b0(); void FUN_141adc530(void*,int);
+void* FUN_14136f3e0(int); void* FUN_14136f5c0(int);void FUN_141adc530(void*,int);
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 class CNifLoadingService   // C3: member view for the former free stand-ins
 {
@@ -230,6 +237,7 @@ class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
     unsigned int FUN_1411a4a00(class Unk_EffectTarget&);
+    unsigned FUN_1411a4f40(CString strName, const class NiPoint3& kPos);
     void FUN_1411a7e80(int);
     void FUN_1411a8dc0();
 };
@@ -294,7 +302,7 @@ public:
 private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-void* FUN_1409a8b10();struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
+class CGameOption;struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was FUN_14125f670
 class CLogString   // C3: member view for the former free stand-ins
 {
@@ -402,7 +410,6 @@ public:
     class TiXmlNode* InsertEndChild(class TiXmlNode const&);
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
-bool FUN_1408710c0(void*,const char*);            // SaveFile
 void FUN_141430710(void*,Unk_g1_Iter16*,int);
 __int64 FUN_141254080(void*);
 void* FUN_1412540a0(void*);
@@ -433,7 +440,6 @@ __int64 FUN_140704520(void*);
 __int64 FUN_140704540(void*);
 __int64 FUN_140300710(__int64);
 void FUN_140841420(CStringW&);
-bool FUN_14025cd60(const CStringW&,const CStringW&);
 int FUN_14083fec0(CStringW,CStringW);
 void FUN_1406ff2b0(void*);
 // @0x141371ac0
@@ -449,14 +455,11 @@ private:
     void* m_raw[6];
 };
 int FUN_141274b10(Unk_ExpActor *);  // C3: the definition's signature
-void FUN_141bd2db0(void*,void*,void*);
 __int64 FUN_140967000(void*);
 void* FUN_140a01110(void*,__int64);
-void* FUN_140965780(void*);
+class Unk_WsC_GameObj; template <> efd::SmartPointer<Unk_WsC_GameObj>::operator Unk_WsC_GameObj*() const;
 void FUN_1409671f0(void*,__int64*);
-void* FUN_140a52ef0(void*);
 void FUN_140a53190(void*,int);
-void FUN_1405a89e0(void*);
 class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
 class CReconnectionManagerCli   // C3: member view for the former free stand-ins
 {
@@ -477,13 +480,16 @@ extern int DAT_143ae0fc0;
 extern int DAT_1439f7064;
 // MS2: the network-callbacks singleton (slot 64 = the 'hide' command) is Unk_NetworkCallbacks from networkservice.h.
 extern int DAT_143ae2b50,DAT_143ae2b54,DAT_143ae2b58;
-void* FUN_140c7a250();class CNPSMan   // C3: member view for the former free stand-ins
+class CNPSMan   // C3: member view for the former free stand-ins
 {
 public:
     void SetMode(int);
     void SetPlayer(__int64);
+    void FUN_140db9040(CStringW&);
+    void FUN_140db90e0(CStringW&);
 };
-void FUN_140db9040(void*,const CStringW&); void FUN_140db90e0(void*,const CStringW&);
+class CNPSMan; template <class T> class TSingleton;
+template <> class TSingleton<CNPSMan> { public: static CNPSMan* s_instance; static CNPSMan* GetInstance() { return s_instance; } };   // as in cnpsman.h
 Unk_PmFixedItem * FUN_140c8dac0(void);  // C3: the definition's signature
 inline void FUN_1413747d0(unsigned char* p) { *p=0; }
 // @0x141374920
@@ -522,21 +528,14 @@ void FUN_140186480(void*,void**);
 void FUN_14074bc40(Unk_g2_Pair16*,int);
 void* FUN_14064d520(Unk_g2_Pair16*);
 void FUN_14064d3e0(Unk_g2_Pair16*);
-void FUN_1402c31c0(void*,int,int);
-void FUN_1401b6710(void*,int,int);
-void* FUN_140164930(void*,unsigned __int64);
-int* FUN_1401844d0(void*,unsigned __int64);
-unsigned __int64 FUN_1401662c0(void*);
 CString FUN_14136f6f0(int);
 CString FUN_14136f730(int);
 CString Name_14021a6b0(int); CString FUN_14021aa20(int);
-CString FUN_14038f6d0(const CString&,const wchar_t*);
 int FUN_14074b030(CQuestData *);  // C3: the definition's signature
 CStringW FUN_1416e4df0(int);
 void FUN_14083d890(CStringW);
 void FUN_140761f00(const CStringW&,int);
 void FUN_140761f60(Unk_g2_Vec24*,int);
-bool FUN_14025cd60(const CStringW&,const CStringW&);
 int FUN_1416d2f30(void*,int,Unk_g2_Path*,int);
 int FUN_1416d2910(void*,int,Unk_g2_Path*,int);
 class CQuestManager   // C3: member view for the former free stand-ins
@@ -544,10 +543,6 @@ class CQuestManager   // C3: member view for the former free stand-ins
 public:
     unsigned int FUN_1416d2600(int, int);
 };
-void* FUN_1407476c0();
-void FUN_14074cfd0(void*,int,void*);
-unsigned __int64 FUN_140186270(void*);
-void* FUN_140184510(void*,unsigned __int64);
 unsigned __int64* FUN_1407294f0(unsigned __int64*,unsigned __int64*);
 void FUN_14136b910(void*,Unk_g2_Vec24*,int);
 struct Unk_g3_Ref16 { void* m_00; void* m_08; // @0x141371260
@@ -585,8 +580,7 @@ class UIMessengerBrowser   // C3: member view for the former free stand-ins
 public:
     void FUN_141a26680();
 };
-void* FUN_140f2d250();
-void* FUN_140f2d240();
+class CCharacterAbilityTable; class CCharacterAbilityManager;
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
@@ -596,8 +590,7 @@ public:
 UIWebBrowser * FUN_140c43790(int);  // C3: the definition's signature
 CString FUN_140391100(const wchar_t*);
 void FUN_14135ec00(void*,const CString&,bool);
-void* FUN_1403ed290();
-void FUN_1413b71c0(void*,CStringW);
+class CGuildManager { public: bool FUN_1413b71c0(CStringW); };   // C3: member view
 void* FUN_14136f480(int);
 CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
@@ -614,17 +607,17 @@ public:
 CStringW FUN_140298ea0(CStringW);
 bool FUN_14092f660();
 int FUN_14092f640();
-void* FUN_140aa6d30();
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1417e2610();
 };
+template <> class TSingleton<CStateService> { public: static CStateService* s_instance; static CStateService* GetInstance() { return s_instance; } };   // as in statemanager.h
 void* FUN_14136f520(int);
 int FUN_141ad0f80(void*);
 void* FUN_14136f1f0(int);
 void FUN_140cca840(int);
-void* FUN_140a44830();
+class CrashManagerCli;
    // member of the logger (this=rcx, hidden return=rdx)
 CStringW FUN_14016a730(const char*,int);
 void FUN_14083d890(CStringW);
@@ -647,6 +640,7 @@ extern bool DAT_143ae9750;
 #include "ms2/placeholder/fishingmanager.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/questdatatable.h"  // C3: GetQuestIdsByChapter
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 class UICutSceneCinematic : public UIObject {public:
     void SetCinematicKeyMode(bool);   // C3: was free SetCinematicKeyMode
@@ -951,12 +945,12 @@ int CUserCommandCli::SetLocalCamera(Unk_CommandArgs& args) {
     if(!player) return 0;
     void* actor=((class WorldService*)(void*)(player))->FUN_141bd0cc0();
     if(!actor) return 0;
-    if(FUN_1409478c0()) ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aecbb0(id, ((class GameObject*)(void*)(actor))->FUN_14123c580(), enabled);
+    if(TSingleton<CameraMgr>::GetInstance()) ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aecbb0(id, ((class GameObject*)(void*)(actor))->FUN_14123c580(), enabled);
     return 1;
 }
 // @0x141365420
 int CUserCommandCli::SetTargetCamera(Unk_CommandArgs& args) {
-    if(!FUN_1409478c0()) return 0;
+    if(!TSingleton<CameraMgr>::GetInstance()) return 0;
     int nKind=args.FUN_1408d1f60(0,0);
     bool enabled=args.FUN_1408d20b0(1,0) ? true : false;
     int kind=nKind;
@@ -966,10 +960,10 @@ int CUserCommandCli::SetTargetCamera(Unk_CommandArgs& args) {
     default:
         return 0;
     }
-    void* state=((void*)FUN_140947880((class CCameraMode*)(((void*)((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140af2520()))));
-    ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(0), 0, 0);
-    ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(state));
-    ((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140aed750(kind, enabled);
+    void* state=((void*)FUN_140947880((class CCameraMode*)(((void*)((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140af2520()))));
+    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(0), 0, 0);
+    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed720(*(struct Unk_CameraSetting const*)(state));
+    ((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed750(kind, enabled);
     return 1;
 }
 // @0x141365560
@@ -1020,19 +1014,19 @@ int CUserCommandCli::ShowServerTime(Unk_CommandArgs&) {
 // @0x141365b00
 int CUserCommandCli::PlayVoiceSound(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
-     FUN_1411a4f40(((void*)TSingleton<CEffectService>::GetInstance()),FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),DAT_143b01a60);
+     TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(FUN_1401d4330(args.FUN_1408d21c0(0,L""),0),reinterpret_cast<const NiPoint3&>(DAT_143b01a60));
     return 1;
 }
 // @0x141365bf0
 int CUserCommandCli::PlayBgm(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
-    if(FUN_140d13c40()) ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177c100(args.FUN_1408d1f60(0,0), 0, 128, 0);
+    if(TSingleton<CSoundEventMgr>::GetInstance()) TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(args.FUN_1408d1f60(0,0), 0, 128, 0);
     return 1;
 }
 // @0x141365c60
 int CUserCommandCli::ShowBgmState(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
-    if(FUN_140d13c40()) { CStringW text=static_cast<Unk_UcSoundView*>(FUN_140d13c40())->FUN_14177e020(); FUN_1412751b0(text,20); }
+    if(TSingleton<CSoundEventMgr>::GetInstance()) { CStringW text=TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177e020(); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x141365cd0
@@ -1051,8 +1045,8 @@ int CUserCommandCli::ShowSmartRecommend(Unk_CommandArgs& args) {
     if(DAT_143ab2914<50) return 0;
     void* dialog=FUN_14136f5c0(0x4e9e);
     if(dialog) ((class UISmartRecommendNotifyDialog*)(void*)(dialog))->FUN_14134dc50(args.FUN_1408d1f60(0,0));
-    if(!reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e9e)) reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e9e);
-    ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4e9e)); return 1;
+    if(!TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e)) TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e9e);
+    TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e9e)); return 1;
 }
 // @0x141365e70
 int CUserCommandCli::SendAttendance(Unk_CommandArgs&) {
@@ -1147,7 +1141,7 @@ int CUserCommandCli::ExportUgcMap(Unk_CommandArgs& args) {
 // @0x1413669a0
 int CUserCommandCli::GoIntoDesignHome(Unk_CommandArgs&) { void* actor=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(); if(actor) ((class MyPC*)(void*)(actor))->SendRequestMoveFieldMode4(); return 1; }
 // @0x1413669f0
-int CUserCommandCli::OpenVip(Unk_CommandArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4a)) return 1; ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4f1b)); return 1; }
+int CUserCommandCli::OpenVip(Unk_CommandArgs&) { if(!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4a)) return 1; TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4f1b)); return 1; }
 // @0x141366a40
 int CUserCommandCli::FUN_141366a40(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
@@ -1247,7 +1241,7 @@ int CUserCommandCli::ControlCutScene(Unk_CommandArgs& args) {
 int CUserCommandCli::HideUi(Unk_CommandArgs& args) {
     CString name=FUN_14016a600(args.FUN_1408d21c0(0,L""),0);
     {
-        MS2Ptr<UIObject> object=((CUIService*)FUN_1403ed2b0())->FindObjectByName(name);
+        MS2Ptr<UIObject> object=TSingleton<CUIService>::GetInstance()->FindObjectByName(name);
         if(object.get()) { reinterpret_cast<Unk_CommandUIRef&>(object).FUN_141371280()->vfunc_3(); reinterpret_cast<Unk_CommandUIRef&>(object).FUN_141371280()->vfunc_8(0); }
     }
     return 1;
@@ -1269,7 +1263,7 @@ int CUserCommandCli::ToggleDpsLog(Unk_CommandArgs&) {
 // @0x141367970
 int CUserCommandCli::UseGamePad(Unk_CommandArgs& args) {
     int enabled=args.FUN_1408d20b0(0,0)!=0;
-    FUN_14125f670((struct Unk_GpState*)(((void*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10())))), enabled!=0, false);
+    FUN_14125f670((struct Unk_GpState*)(((void*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))), enabled!=0, false);
     FUN_1412751b0(StringFormat(L"UseGamePad {0}",enabled),20); return 1;
 }
 // @0x141367a40
@@ -1291,12 +1285,12 @@ int CUserCommandCli::ExportDefaultKeyXml(Unk_CommandArgs& args) {
     TiXmlElement* keyConfig=new TiXmlElement("KeyConfig");
     ((void*)((class TiXmlNode*)(void*)(root))->LinkEndChild((class TiXmlNode*)(keyConfig)));
     for(int set=9;set<=13;set++) {
-        CKeyTable::SettingList table=FUN_1409331f0()->GetSettingList(set);
+        CKeyTable::SettingList table=TSingleton<CKeyTable>::GetInstance()->GetSettingList(set);
         if(table.get()) {
             for(POSITION pos=table->GetHeadPosition();pos!=0;table->GetNext(pos)) {
                 MS2Ptr<CKeySettingParam> item=table->GetAt(pos);
                 if(item.get()) {
-                    int keyCode=FUN_1409331f0()->FUN_14142c940(item->m_nAction,priority);
+                    int keyCode=TSingleton<CKeyTable>::GetInstance()->FUN_14142c940(item->m_nAction,priority);
                     if(keyCode!=0) {
                         TiXmlElement key("key");
                         ((class TiXmlElement*)(void*)(&key))->SetAttribute("priority", priority);
@@ -1310,14 +1304,14 @@ int CUserCommandCli::ExportDefaultKeyXml(Unk_CommandArgs& args) {
         }
     }
     CString fileName=FUN_1402bad60("DefaultKey_{0}.xml",&priority);
-    FUN_1408710c0(&doc,FUN_14071a5b0("Table/Default",fileName));
+    doc.SaveFile(FUN_14071a5b0("Table/Default",fileName));
     return 1;
 }
 // @0x141367f20
 int CUserCommandCli::CombineKey(Unk_CommandArgs& args) {
     Unk_CommandKeyCode first=(Unk_CommandKeyCode)args.FUN_1408d1f60(0,0);
     Unk_CommandKeyCode second=(Unk_CommandKeyCode)args.FUN_1408d1f60(1,0);
-    void* keys=FUN_1409331f0();
+    void* keys=TSingleton<CKeyTable>::GetInstance();
     if(keys!=0) {
         unsigned combined;
         ((class CKeyTable*)(void*)(keys))->MakeCombineKey(&combined, first, second, 0xf0);
@@ -1365,7 +1359,7 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
         CStringW idText=StringFormat(L"{0}",mapId);
         CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
         FUN_140841420(name);
-        if(FUN_14025cd60(name,query)||FUN_14025cd60(idText,query)) {
+        if(name == query||idText == query) {
             Unk_CommandChat record;
             record.kind=0;
             record.message=StringFormat(L"/MoveField {0} 1",mapId);
@@ -1393,9 +1387,9 @@ int CUserCommandCli::ShowFishRecordReport(Unk_CommandArgs&) {
 // @0x1413687d0
 int CUserCommandCli::ShowEffectAfterimage(Unk_CommandArgs&) {
     Unk_ShList list(10);
-    FUN_141bd2db0(((void*)WorldService::GetInstance()),&list,(void*)FUN_141274b10);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list),reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b10));
     for(__int64 pos=list.FUN_140967000(); pos!=0; list.FUN_1409671f0(&pos)) {
-        void* entry=FUN_140965780(list.FUN_140a01110(pos));
+        void* entry=reinterpret_cast<efd::SmartPointer<Unk_WsC_GameObj>*>(list.FUN_140a01110(pos))->operator Unk_WsC_GameObj*();
         NoticeMessage request;
         request.m_strName="Eff_AfterImage.xml";
         request.m_nObject=((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(entry));
@@ -1486,10 +1480,10 @@ int CUserCommandCli::SetNps(Unk_CommandArgs& args) {
     __int64 second=args.FUN_1408d1f60(1,0);
     CStringW third=args.FUN_1408d21c0(2,L"");
     CStringW fourth=args.FUN_1408d21c0(3,L"");
-    ((class CNPSMan*)(void*)(FUN_140c7a250()))->SetMode(first);
-    ((class CNPSMan*)(void*)(FUN_140c7a250()))->SetPlayer(second);
-    FUN_140db9040(FUN_140c7a250(),third);
-    FUN_140db90e0(FUN_140c7a250(),fourth);
+    TSingleton<CNPSMan>::GetInstance()->SetMode(first);
+    TSingleton<CNPSMan>::GetInstance()->SetPlayer(second);
+    TSingleton<CNPSMan>::GetInstance()->FUN_140db9040(third);
+    TSingleton<CNPSMan>::GetInstance()->FUN_140db90e0(fourth);
     CStringW message=StringFormat(L"/setnps {0}",args.FUN_1408d2330());
     FUN_1412751b0(message,20);
     return 1;
@@ -1602,10 +1596,10 @@ int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
         ATL::CAtlArray<int> counts;
         ATL::CAtlArray<int> alliances;
         ATL::CAtlArray<CString> quests;
-        FUN_1402c31c0(&quests,10,-1);
-        FUN_1401b6710(&counts,10,-1);
-        FUN_1402c31c0(&names,5,-1);
-        FUN_1401b6710(&alliances,5,-1);
+        quests.SetCount(10,-1);
+        counts.SetCount(10,-1);
+        names.SetCount(5,-1);
+        alliances.SetCount(5,-1);
         void* pos = ((void*)((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(list))->GetStartPosition());
         while (pos != 0) {
             int* key = (int*)((void*)&((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(list))->GetKeyAt((struct __POSITION*)(pos)));
@@ -1613,22 +1607,22 @@ int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
             FUN_14074bc40(&q,*key);
             if (!((MS2Ptr<CQuestData>*)(struct Unk_g2_Pair16*)(&q))->IsNull()) {
                 Unk_g2_Row* d = (Unk_g2_Row*)FUN_14064d520(&q);
-                *(CString*)FUN_140164930(&names,d->m_50) += FUN_14038f6d0(FUN_14136f6f0(d->m_4c),L" ");
+                names[d->m_50] += FUN_14038f6d0(FUN_14136f6f0(d->m_4c),L" ");
                 d = (Unk_g2_Row*)FUN_14064d520(&q);
-                int* c1 = FUN_1401844d0(&counts,d->m_4c);
+                int* c1 = &counts[d->m_4c];
                 *c1 = *c1 + 1;
                 d = (Unk_g2_Row*)FUN_14064d520(&q);
-                int* c2 = FUN_1401844d0(&alliances,d->m_50);
+                int* c2 = &alliances[d->m_50];
                 *c2 = *c2 + 1;
                 d = (Unk_g2_Row*)FUN_14064d520(&q);
-                CString* line = (CString*)FUN_140164930(&quests,d->m_4c);
+                CString* line = &quests[d->m_4c];
                 if (line->GetLength() != 0) {
                     d = (Unk_g2_Row*)FUN_14064d520(&q);
-                    *(CString*)FUN_140164930(&quests,d->m_4c) += L", ";
+                    quests[d->m_4c] += L", ";
                 }
                 int v = FUN_14074b030((CQuestData *)(FUN_14064d520(&q)));
                 CStringW w = FUN_1416e4df0(v);
-                *(CString*)FUN_140164930(&quests,((Unk_g2_Row*)FUN_14064d520(&q))->m_4c) += (const wchar_t*)w;
+                quests[((Unk_g2_Row*)FUN_14064d520(&q))->m_4c] += (const wchar_t*)w;
                 FUN_14064d3e0(&q);
             } else {
                 FUN_14064d3e0(&q);
@@ -1639,21 +1633,21 @@ int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
         if (pass == 0) kind = L"Daily"; else kind = L"Weekly";
         FUN_1412751b0(StringFormat(L"---------------------------- {0} -------------------------------------",kind),20);
         for (unsigned __int64 i = 0; i < 5; i++) {
-            CString* n = (CString*)FUN_140164930(&names,i);
-            int* c = FUN_1401844d0(&alliances,i);
+            CString* n = &names[i];
+            int* c = &alliances[i];
             FUN_1412751b0(StringFormat(L"{0} Rank : {1} \n [{2}]",FUN_14136f730((int)i),*c,*n),20);
         }
         FUN_1412751b0(CStringW(L"------------------------------------------------------------------"),20);
         for (unsigned __int64 i = 1; i < 10; i++) {
-            int* c = FUN_1401844d0(&counts,i);
+            int* c = &counts[i];
             FUN_1412751b0(StringFormat(L"{0} Alliance Count : {1}",FUN_14136f6f0((int)i),*c),20);
         }
         FUN_1412751b0(CStringW(L"------------------------------------------------------------------"),20);
         if (pass == 0) kind = L"Daily"; else kind = L"Weekly";
         text += StringFormat(L"---------------------------- {0} -------------------------------------",kind);
-        for (unsigned __int64 i = 0; i < FUN_1401662c0(&quests); i++) {
+        for (unsigned __int64 i = 0; i < quests.GetCount(); i++) {
             text += StringFormat(L"{0} : ",FUN_14136f6f0((int)i));
-            text += (const char*)*(CString*)FUN_140164930(&quests,i);
+            text += (const char*)quests[i];
             text += L"\n";
         }
     }
@@ -1696,7 +1690,7 @@ int CUserCommandCli::CompleteEpicChapter(Unk_CommandArgs& args) {
         CStringW s0 = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s0);
         CStringW s1 = args.FUN_1408d21c0(1,L"");
-        if (FUN_14025cd60(s1,s_trace)) { trace = 1; valid = 1; }
+        if (s1 == s_trace) { trace = 1; valid = 1; }
     }
     if (valid == 0 || id == 0) {
         FUN_1412751b0(CStringW(L"/CompleteEpicChapter [ChapterID] {-trace}"),20);
@@ -1745,7 +1739,7 @@ int CUserCommandCli::CompleteEpicQuest(Unk_CommandArgs& args) {
         CStringW s0 = args.FUN_1408d21c0(0,L"");
         id = _wtoi(s0);
         CStringW s1 = args.FUN_1408d21c0(1,L"");
-        if (FUN_14025cd60(s1,s_trace)) { trace = 1; valid = 1; }
+        if (s1 == s_trace) { trace = 1; valid = 1; }
     }
     if (valid == 0 || id == 0) {
         FUN_1412751b0(CStringW(L"/CompleteEpicQuest [ChapterID] {-trace}"),20);
@@ -1799,17 +1793,17 @@ int CUserCommandCli::SetEpicChapterStatus(Unk_CommandArgs& args) {
         }
         return 0;
     }
-    ATL::CAtlArray<void*> ids;
-    FUN_14074cfd0(FUN_1407476c0(),chapter,&ids);
-    if (((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&ids))->IsEmpty()) {
+    ATL::CAtlArray<unsigned int> ids;
+    TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(chapter,ids);
+    if (ids.IsEmpty()) {
         CStringW msg = StringFormat(L"SetEpicChapterStatus, There is no chapterQuest to set.");
         FUN_1412751b0(msg,20);
         return 0;
     }
     Unk_g2_Vec24 quests;
-    quests.reserve(FUN_140186270(&ids));
-    for (unsigned __int64 i = 0; i < FUN_140186270(&ids); i++) {
-        quests.insert(quests.end(), *(DWORD*)FUN_140184510(&ids,i));
+    quests.reserve(ids.GetCount());
+    for (unsigned __int64 i = 0; i < ids.GetCount(); i++) {
+        quests.insert(quests.end(), *(DWORD*)&ids[i]);
     }
     CStringW path(L"[S]");
     for (unsigned q : quests) {
@@ -2007,8 +2001,8 @@ int CUserCommandCli::ResetOpenedUgcTerms(Unk_CommandArgs&) {
 }
 // @0x14136c5e0
 int CUserCommandCli::LearnAllAbilities(Unk_CommandArgs&) {
-    if(FUN_140f2d250()==0) return 0;
-    if(FUN_140f2d240()==0) return 0;
+    if(TSingleton<CCharacterAbilityTable>::GetInstance()==0) return 0;
+    if(TSingleton<CCharacterAbilityManager>::GetInstance()==0) return 0;
     COutPacket packet(static_cast<int>(SendOp::CharacterAbility),0);
     packet.WriteUInt8(3);
     FUN_140710590(packet);
@@ -2031,7 +2025,7 @@ int CUserCommandCli::SearchMaview(Unk_CommandArgs& args) {
 }
 // @0x14136c7f0
 int CUserCommandCli::InviteGuild(Unk_CommandArgs& args) {
-    FUN_1413b71c0(FUN_1403ed290(),args.FUN_1408d21c0(0,L""));
+    TSingleton<CGuildManager>::GetInstance()->FUN_1413b71c0(args.FUN_1408d21c0(0,L""));
     return 1;
 }
 // the guild dialog found by FUN_14136f480 is handed on as its base subobject at +0x18
@@ -2126,7 +2120,7 @@ int CUserCommandCli::MovePrevChannel(Unk_CommandArgs&) {
     if(FUN_14092f660()) return 1;
     int channel=FUN_14092f640()-1;
     if(channel<=0) {
-        if(((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610()!=0x620000c) return 0;
+        if(TSingleton<CStateService>::GetInstance()->FUN_1417e2610()!=0x620000c) return 0;
         void* info=FUN_14136f520(0x4ef0);
         if(info==0) return 0;
         channel=FUN_141ad0f80(info);
@@ -2139,7 +2133,7 @@ int CUserCommandCli::MoveNextChannel(Unk_CommandArgs&) {
     if(FUN_14092f660()) return 1;
     int channel=FUN_14092f640()+1;
     if(channel<=0) return 0;
-    if(((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610()!=0x620000c) return 0;
+    if(TSingleton<CStateService>::GetInstance()->FUN_1417e2610()!=0x620000c) return 0;
     void* info=FUN_14136f520(0x4ef0);
     if(info==0) return 0;
     if(channel>FUN_141ad0f80(info)) channel=1;
@@ -2171,7 +2165,7 @@ int CUserCommandCli::FUN_14136d4e0(Unk_CommandArgs& args) {
 }
 // @0x14136d520
 int CUserCommandCli::FUN_14136d520(Unk_CommandArgs&) {
-    CString path=static_cast<CCrashManager*>(FUN_140a44830())->FUN_1401ce8d0();
+    CString path=((CCrashManager*)TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce8d0();
     FUN_1412751b0(FUN_14016a730(path,0),20);
     FUN_14083d890(FUN_14016a730(path,0));
     {
@@ -2197,7 +2191,7 @@ int CUserCommandCli::FUN_14136d6a0(Unk_CommandArgs& args) {
             FUN_1412751b0(StringFormat(L"Cannot Found SalableGroup in Field {0} {1}",field,group),20);
             return 1;
         }
-        ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4e76));
+        TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e76));
         void* dialog=FUN_140961690(0x4e76);
         if(dialog) ((class UIRealEstateDialog*)(void*)(dialog))->FUN_141ab4000(group, field);
         FUN_1412751b0(StringFormat(L"OpenContract {0} {1}",field,group),20);
@@ -2247,23 +2241,23 @@ int CUserCommandCli::FUN_14136dab0(Unk_CommandArgs& args) {
 }
 // @0x14136f1f0
 void* FUN_14136f1f0(int id) {
-    if(FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if(TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> ref=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(ref.get()) return dynamic_cast<UICommunityPopup*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f290
 void* FUN_14136f290(int id) {
-    if(FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if(TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> ref=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(ref.get()) return dynamic_cast<UICutSceneCinematic*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f330
 void* FUN_14136f330() {
-    void* mgr=FUN_1403ed2b0();
+    void* mgr=TSingleton<CUIService>::GetInstance();
     if(!mgr) return 0;
     MS2Ptr<UIObject> ref=((CUIService*)mgr)->FindObject((eUIClassID)FUN_141371d80());
     if(ref.IsNull()) return 0;
@@ -2271,32 +2265,32 @@ void* FUN_14136f330() {
 }
 // @0x14136f3e0
 void* FUN_14136f3e0(int id) {
-    if(FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if(TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> ref=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(ref.get()) return dynamic_cast<UIGuideEvent*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f480
 void* FUN_14136f480(int id) {
-    if(FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if(TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> ref=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(ref.get()) return dynamic_cast<UIGuildDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f520
 void* FUN_14136f520(int id) {
-    if(FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if(TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> ref=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(ref.get()) return dynamic_cast<UIServerListDialog*>(ref.operator UIObject*());
     }
     return 0;
 }
 // @0x14136f5c0
 void* FUN_14136f5c0(int id) {
-    if(FUN_1403ed2b0()) {
-        MS2Ptr<UIObject> ref=((CUIService*)FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if(TSingleton<CUIService>::GetInstance()) {
+        MS2Ptr<UIObject> ref=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if(ref.get()) return dynamic_cast<UISmartRecommendNotifyDialog*>(ref.operator UIObject*());
     }
     return 0;

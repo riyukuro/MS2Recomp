@@ -47,7 +47,6 @@ public:
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 // The skill record of a ride / sit target (CPtred, a point at +0x50 where the player is put).
 class Unk_PCBaseComp_b18 : public CPtred
@@ -254,10 +253,10 @@ void StateUseFurniture::vfunc_3(double fTime)
     if (nType != 0)
     {
         Unk_EntRef kEnt = m_spCube->GetEnt();
-        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.FUN_1408a9090()))));
+        NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.FUN_1408a9090()))));
         if (pNode)
         {
-            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
+            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
             if (pChild)
             {
                 NiTransform kXf = static_cast<NiAVObject*>(pChild)->GetLocalTransform();

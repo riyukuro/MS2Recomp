@@ -109,10 +109,11 @@ struct Unk_LightTarget
 MS2_CHECK_OFFSET(Unk_LightTarget, m_pPreData, 0x18);
 
 // The entity: property setters by hash.
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+
 class Unk_Entity
 {
 public:
-    void FUN_14098c6e0(unsigned nProp, const bool* pValue);
     void FUN_1409457c0(unsigned nProp, const float* pValue);
     void FUN_140b27f00(unsigned nProp, const Unk_LightColor& rValue);
     void FUN_140a38a50(unsigned nProp, const Vector3& rValue);
@@ -141,8 +142,8 @@ MS2_CHECK_SIZE(Unk_SeparateNode, 0x138);
 const NiRTTI CLightEffect::ms_RTTI("CLightEffect", &TransitionEffect::ms_RTTI);     // @0x1400f7290
 static CString s_str143adc8f8("skill");                                              // @0x1400f72c0
 static CString s_str143adc8f0("stun");                                               // @0x1400f72f0
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_dat_143adc8e8(0);                                       // @0x1400f7320
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+static Unk_BuddyHandle s_dat_143adc8e8(0);                                       // @0x1400f7320
 #else
 const NiRTTI CLightEffect::ms_RTTI("CLightEffect", &TransitionEffect::ms_RTTI);
 #endif
@@ -321,10 +322,10 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     m_fDimmer = pLightParam->m_fDimmer;
 
     Unk_EffectNode* spNode = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(1, 0);
-    Unk_NodePtr kNodeRef(spNode);
+    efd::SmartPointer<NiNode> kNodeRef(spNode);
     spNode->SetName("Light Effect Root");
-    FUN_1409f76f0(&m_spOuter, spNode);
-    FUN_1409f76f0(&m_spLightNode, spNode);
+    m_spOuter = reinterpret_cast<NiNode*>(spNode);
+    m_spLightNode = reinterpret_cast<NiNode*>(spNode);
 
     if (!pLightParam->m_bUsePreDataTransform || pTgt->m_pPreData == 0)
     {
@@ -341,25 +342,25 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
 
     if (pShadow == 0)
     {
-        FUN_1409f76f0(&m_spParent, reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot());
+        m_spParent = reinterpret_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot());
     }
     else
     {
         NiAVObject* pFound = pShadow->GetObjectByName(NiFixedString(pLightParam->m_strParentNode));
-        FUN_1409f76f0(&m_spParent, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pFound))));
-        if (m_spParent.FUN_1409f77a0(0))
-            FUN_1409f76f0(&m_spParent, pShadow);
+        m_spParent = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pFound))));
+        if (m_spParent == (NiNode*)0)
+            m_spParent = reinterpret_cast<NiNode*>(pShadow);
         if (!((class Unk_CamMoveBits*)(struct Unk_LightUpdateBits const*)(&pLightParam->m_update))->FUN_140afc5a0() && !FUN_14144b630(&pLightParam->m_update))
         {
             Unk_SeparateNode* spSep = new (efd::MemHint(efd::MemHint::NONE)) Unk_SeparateNode(pLightParam->m_update.m_bits);
-            Unk_NodePtr kSepRef(spSep);
-            spSep->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spOuter)), false);
-            FUN_1409f76f0(&m_spOuter, spSep);
+            efd::SmartPointer<NiNode> kSepRef(spSep);
+            spSep->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spOuter), false);
+            m_spOuter = reinterpret_cast<NiNode*>(spSep);
         }
     }
 
-    NiAVObject* pParent = static_cast<NiAVObject*>(FUN_1409475f0(&m_spParent));
-    NiAVObject* pLight = static_cast<NiAVObject*>(FUN_1409475f0(&m_spLightNode));
+    NiAVObject* pParent = static_cast<NiAVObject*>(m_spParent.operator->());
+    NiAVObject* pLight = static_cast<NiAVObject*>(m_spLightNode.operator->());
     NiTransform kWorld = pParent->GetWorldTransform() * pLight->GetLocalTransform();
 
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
@@ -372,10 +373,10 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     Unk_Entity* pEntity = m_entity.FUN_1408a9280();
     bool bFalse = false, bTrue = true;
     float fFifty = 50.0f;
-    pEntity->FUN_14098c6e0(0x2a7fd9f4, &bFalse);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x2a7fd9f4, bFalse);
     pEntity->FUN_1409457c0(0x9109875b, &fFifty);
-    pEntity->FUN_14098c6e0(0xef627d53, &bTrue);
-    pEntity->FUN_14098c6e0(0x78e546ab, &bFalse);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0xef627d53, bTrue);
+    FUN_14098c6e0((class Unk_CachedEntity*)(pEntity), 0x78e546ab, bFalse);
     pEntity->FUN_140b27f00(0x2d8cf386, pLightParam->m_clrDiffuse);
     pEntity->FUN_140b27f00(0xc3f0329e, pLightParam->m_clrSpecular);
     pEntity->FUN_1409457c0(0x18f5d90e, &pLightParam->m_fDimmer);
@@ -406,11 +407,11 @@ MS2_REPLACE_METHOD(0x14144ACC0, CLightEffect, vfunc_9, 47, 0xF589CDE5);
 // @0x14144ad00
 void CLightEffect::vfunc_4()
 {
-    if ((bool)FUN_1409475d0(&m_spParent) && !m_b2e)
+    if ((bool)(NiNode*)m_spParent && !m_b2e)
     {
-        NiNode* pParent = static_cast<NiNode*>(FUN_1409475f0(&m_spParent));
-        pParent->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spOuter)), true);
-        ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spOuter)))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        NiNode* pParent = static_cast<NiNode*>(m_spParent.operator->());
+        pParent->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spOuter), true);
+        m_spOuter->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     }
     m_b2e = true;
 }
@@ -419,7 +420,7 @@ MS2_REPLACE_METHOD(0x14144AD00, CLightEffect, vfunc_4, 221, 0xFE4D83F7);
 // @0x14144adf0
 void CLightEffect::vfunc_7()
 {
-    FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&m_spOuter)));
+    FUN_140a0b2a0((class NiAVObject*)((NiNode*)m_spOuter));
     if (m_entity.FUN_1408a9090() != 0)
     {
         CMainSystem::DestroyEntity(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()));
@@ -431,9 +432,9 @@ MS2_REPLACE_METHOD(0x14144ADF0, CLightEffect, vfunc_7, 105, 0xFE245DC8);
 // @0x14144b0d0
 void CLightEffect::FUN_14144b0d0()
 {
-    if ((bool)m_entity.FUN_1408a9090() && (bool)FUN_1409475d0(&m_spLightNode))
+    if ((bool)m_entity.FUN_1408a9090() && (bool)(NiNode*)m_spLightNode)
     {
-        Vector3 pt = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spLightNode))->GetWorldTranslate());
+        Vector3 pt = reinterpret_cast<const Vector3&>(m_spLightNode->GetWorldTranslate());
         m_entity.FUN_1408a9280()->FUN_140a38a50(0xfd95ca52, pt);
     }
 }

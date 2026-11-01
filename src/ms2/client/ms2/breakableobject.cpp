@@ -295,7 +295,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aRegenAnims.GetCount();
             efd::utf8string strAnim(m_aRegenAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
     }
     else if (m_nState == 2)
@@ -307,7 +307,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         }
         MakeNxBoxController();
         if (m_bHasAnim != 0)
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
         FUN_140ae07d0(1);
     }
     if (m_nState == 6)
@@ -319,7 +319,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aDamageAnims.GetCount();
             efd::utf8string strAnim(m_aDamageAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
         FUN_140ae07d0(1);
     }
@@ -332,7 +332,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aReviveAnims.GetCount();
             efd::utf8string strAnim(m_aReviveAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
+            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
         }
         FUN_140ae07d0(1);
     }

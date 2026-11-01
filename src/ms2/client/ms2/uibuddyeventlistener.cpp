@@ -10,12 +10,26 @@
 // MS2-PIN: ??_EUICommunityDialog@@WBII@EAAPEAXI@Z 0x1418d8eb8 ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x1418d8ed0 ; unique
 // MS2-PIN: ??_GUICommunityDialog@@UEAAPEAXI@Z 0x1418d8f10 ; unique
-// MS2-PIN: ??A?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@// MS2-PIN: ?vfunc_48@UICommunityDialog@@UEAAHXZ 0x1418d8fb0 ; unique
-// MS2-PIN: ?_Tidy@?$vector@V?$Unk_PayloadPtr@VCBuddy@@@@V?$allocator@V?$Unk_PayloadPtr@VCBuddy@@@@@std@@@std// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d9110 ; unique
+// MS2-PIN: ??A?$CAtlArray@V?$Unk_BuddyPtr@VCBuddy@@@@V?$CElementTraits@V?$Unk_BuddyPtr@VCBuddy@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_BuddyPtr@VCBuddy@@@@_K@Z 0x1418d8f50 ; unique
+// MS2-PIN: ?vfunc_48@UICommunityDialog@@UEAAHXZ 0x1418d8fb0 ; unique
+// MS2-PIN: ?_Tidy@?$vector@V?$Unk_PayloadPtr@VCBuddy@@@@V?$allocator@V?$Unk_PayloadPtr@VCBuddy@@@@@std@@@std@@AEAAXXZ 0x1418d9000 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d9110 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1418d9170 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICommunityDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1418d91f0 ; unique
 // MS2-PIN: memmove_s 0x1418d9250 ; unique
-// MS2-PIN: ?CallConstructors@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?CallDestructors@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?GetCount@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?GrowBuffer@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@PEAVUIBuddyEventListener@// MS2-PIN: ?RemoveAll@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?RemoveAt@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?SetCount@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ??0?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ??1?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ??A?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?Add@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@// MS2-PIN: ?vfunc_buddy_4@UIBuddyEventListener@@UEAAX_JH@Z 0x1418da220
+// MS2-PIN: ?CallConstructors@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@CAXPEAPEAVUIBuddyEventListener@@_K@Z 0x1418d9f80 ; unique
+// MS2-PIN: ?CallDestructors@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@CAXPEAPEAVUIBuddyEventListener@@_K@Z 0x1418d9ff0 ; unique
+// MS2-PIN: ?GetCount@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEBA_KXZ 0x1418da070 ; unique
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@AEAA_N_K@Z 0x1418da080 ; unique
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@PEAVUIBuddyEventListener@@@ATL@@SAXPEAPEAVUIBuddyEventListener@@0_K@Z 0x1418da230 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAAXXZ 0x1418da270 ; unique
+// MS2-PIN: ?RemoveAt@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAAX_K0@Z 0x1418da290 ; unique
+// MS2-PIN: ?SetCount@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAA_N_KH@Z 0x1418da380 ; unique
+// MS2-PIN: ??0?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAA@XZ 0x1418d9d40
+// MS2-PIN: ??1?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAA@XZ 0x1418d9db0
+// MS2-PIN: ??A?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAAAEAPEAVUIBuddyEventListener@@_K@Z 0x1418da030
+// MS2-PIN: ?Add@?$CAtlArray@PEAVUIBuddyEventListener@@V?$CElementTraits@PEAVUIBuddyEventListener@@@ATL@@@ATL@@QEAA_KAEBQEAVUIBuddyEventListener@@@Z 0x1418d9ed0
+// MS2-PIN: ?vfunc_buddy_4@UIBuddyEventListener@@UEAAX_JH@Z 0x1418da220
 // MS2-PIN: ?vfunc_buddy_10@UIBuddyEventListener@@UEAAX_JH@Z 0x140d13d50
 // MS2-PINS-END tplpin
 //
@@ -1296,7 +1310,7 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
         {
             strState = GetStringCommon(0x60d);
         }
-        int bParty = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nId).get() != 0;
+        int bParty = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nId).get() != 0;
         pRow->FUN_1407cb9c0("isParty", bParty);
         pRow->FUN_1407cbb20("state", CStringW(strState));
         int nLevel = reinterpret_cast<Unk_BdBuddyLevel*>(spBuddy.operator->())->FUN_1401cc210();
@@ -1336,7 +1350,7 @@ int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew)
         CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(nId);
         int bBuddy = (!spBuddy.operator!() && spBuddy->FUN_1401cc5f0() != 0) ? 1 : 0;
         pRow->FUN_1407cb9c0("isBuddy", bBuddy);
-        int bParty = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nId).get() != 0;
+        int bParty = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nId).get() != 0;
         pRow->FUN_1407cb9c0("isParty", bParty);
         pRow->FUN_1407cba60("imgpath", FUN_141028be0(nId, ref->FUN_1416c2520(), 1, CString("")));
         short nLevel = (short)ref->FUN_1416c2330();

@@ -72,7 +72,6 @@ public:
     MS2Ptr<Unk_PetBoxCheck> FindCheckBox(const CString&);
     MS2Ptr<Unk_PetBoxCheck> FUN_140e52700(const CString&, MS2Ptr<Unk_PetBoxCheck>&);
     MS2Ptr<Unk_PetBoxButton> FUN_140bc6d10(const CString&, MS2Ptr<Unk_PetBoxButton>&);
-    MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString&, MS2Ptr<ASMovieClip>&);
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x180 item id of the box that is being opened

@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/cnpc.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -27,31 +28,8 @@ void* FUN_1413470e0(void* pMap, void* pos);
 // Debug flags (the check boxes' state).
 extern bool DAT_143ae95e0;              // skill range, pc
 extern bool DAT_143ae95e1;              // skill range, npc
-extern bool DAT_143ae95e2;              // collision, pc
-extern bool DAT_143ae95e3;              // collision, npc
-
-// An npc's data record handle (2 pointers); record fields at +0x2d8 / +0x2dc. The npc hands out a Tmp that is copied into
-// the Data handle.
-struct Unk_RpDataTmp
-{
-    ~Unk_RpDataTmp();                                   // 0x1406d5390
-    void* m_a;
-    void* m_b;
-};
-struct Unk_RpData
-{
-    Unk_RpData(const Unk_RpDataTmp& o);                 // 0x1406cf850
-    ~Unk_RpData();                                      // 0x14035e5b0
-    bool FUN_1406a9050(int n);
-    char* FUN_14035eb90();                              // the record
-    void* m_a;
-    void* m_b;
-};
-class Unk_RpNpc : public PCBase
-{
-public:
-    Unk_RpDataTmp FUN_141093270();                      // the npc's data record handle
-};
+extern char DAT_143ae95e2;              // collision, pc
+extern char DAT_143ae95e3;              // collision, npc
 
 // The npc map iterator and the npc size setters.
 struct Unk_RpExtent { float cx, cy; };
@@ -62,7 +40,6 @@ public:
 };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void FUN_140a7cbe0(void* p);
-void* FUN_140a7b840(void* pMap);
 void* FUN_140a7b9f0(void* pMap, void* pos);
 PCBase* FUN_140a7b650(void* pEntry);
 Unk_RpExtent* FUN_140a0a600(Unk_RpExtent* pOut, float cx, float cy);
@@ -73,7 +50,6 @@ class GameObjectController   // C3: member view for the former free stand-ins
 public:
     void FUN_141240520(float, float);
 };
-void FUN_140159b70(long hr);                            // AtlThrow
 
 // @0x141346a40
 UIRangePreviewDialog::UIRangePreviewDialog()
@@ -98,8 +74,8 @@ void UIRangePreviewDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ASObj obj(2);
-    obj.FUN_1407cbbe0("collisionPC", DAT_143ae95e2);
-    obj.FUN_1407cbbe0("collisionNPC", DAT_143ae95e3);
+    obj.FUN_1407cbbe0("collisionPC", reinterpret_cast<bool&>(DAT_143ae95e2));
+    obj.FUN_1407cbbe0("collisionNPC", reinterpret_cast<bool&>(DAT_143ae95e3));
     obj.FUN_1407cbbe0("skillPC", DAT_143ae95e0);
     obj.FUN_1407cbbe0("skillNPC", DAT_143ae95e1);
     m_30->Invoke("initData", obj.FUN_1422bb870());
@@ -134,8 +110,8 @@ MS2_REPLACE_METHOD(0x141346C40, UIRangePreviewDialog, vfunc_28, 370, 0x2E61E272)
 // @0x141346dc0
 void FUN_141346dc0(UIRangePreviewDialog* pDialog, ASData* pArgs)
 {
-    DAT_143ae95e2 = pArgs->FUN_1422b8a90();
-    DAT_143ae95e3 = pArgs->FUN_1422b8a90();
+    reinterpret_cast<bool&>(DAT_143ae95e2) = pArgs->FUN_1422b8a90();
+    reinterpret_cast<bool&>(DAT_143ae95e3) = pArgs->FUN_1422b8a90();
 }
 
 // @0x141346e00
@@ -150,20 +126,20 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
     FUN_140a7cbe0(((void*)FUN_1406d6e90()));
     void* pMap = reinterpret_cast<Unk_RpWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
-    for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_141347090(pMap, &pos))
+    for (void* pos = reinterpret_cast<ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetHeadPosition(); pos != 0; FUN_141347090(pMap, &pos))
     {
         PCBase* pNpc = FUN_140a7b650(FUN_1413470e0(pMap, pos));
         if (pNpc != 0)
         {
-            Unk_RpData kData(static_cast<Unk_RpNpc*>(pNpc)->FUN_141093270());
-            if (kData.FUN_1406a9050(0) != 0)
+            MS2Ptr<CNpcData> kData(reinterpret_cast<CNpc*>(pNpc)->GetNpcData());
+            if (kData == 0)
                 continue;
             Unk_RpExtent kSize;
-            FUN_141670d50(pNpc, *FUN_140a0a600(&kSize, *(float*)(kData.FUN_14035eb90() + 0x2d8),
-                                               *(float*)(kData.FUN_14035eb90() + 0x2dc)));
-            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(*(float*)(kData.FUN_14035eb90() + 0x2d8), *(float*)(kData.FUN_14035eb90() + 0x2dc));
+            FUN_141670d50(pNpc, *FUN_140a0a600(&kSize, *(float*)((char*)kData.operator->() + 0x2d8),
+                                               *(float*)((char*)kData.operator->() + 0x2dc)));
+            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(*(float*)((char*)kData.operator->() + 0x2d8), *(float*)((char*)kData.operator->() + 0x2dc));
             NiPoint3 kPos = pNpc->vfunc_18();
-            kPos.z += *(float*)(kData.FUN_14035eb90() + 0x2dc);
+            kPos.z += *(float*)((char*)kData.operator->() + 0x2dc);
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
         }
     }
@@ -191,7 +167,7 @@ void* FUN_1413470e0(void* pMap, void* pos)
         do {
         } while (0);
         if (bOk == 0)
-            FUN_140159b70(0x80004005);
+            ATL::AtlThrowImpl(0x80004005);
     } while (0);                                        // ATLENSURE(pos != NULL)
     return (char*)pos + 8;
 }

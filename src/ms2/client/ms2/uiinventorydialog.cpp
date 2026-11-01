@@ -2288,17 +2288,11 @@ public:
     INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
     virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) validateNow (bool: the exe passes dl)
 };
-// exe 0x140c28560: the dropdown getter AScript::FUN_140bbe700, viewed as a template for the stand-in.
-class Unk_InvScript : public AScript
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe700(const CString& strName);
-};
-template <> MS2Ptr<Unk_IbDropdown> UISwfEntity::GetChild<Unk_IbDropdown>(const CString& strName)
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName)
 {
     if (m_30 == 0)
-        return MS2Ptr<Unk_IbDropdown>(0);
-    return static_cast<Unk_InvScript*>(m_30.operator->())->FUN_140bbe700<Unk_IbDropdown>(strName);
+        return MS2Ptr<ASDropdownMenu>(0);
+    return m_30.operator->()->GetDropdownMenu(strName);
 }
 
 // @0x1419a1280
@@ -2583,7 +2577,7 @@ void UIItemBreakDialog::OnLoadComplete()
 {
     UIItemBreakBase::OnLoadComplete();
     m_200.clear();
-    if (MS2Ptr<Unk_IbDropdown> spType = GetChild<Unk_IbDropdown>("m_bundleTypeDropdown"))
+    if (MS2Ptr<ASDropdownMenu> spType = GetChild<ASDropdownMenu>("m_bundleTypeDropdown"))
     {
         int nIndex = 0;
         ASObj equip(2);
@@ -2623,9 +2617,9 @@ void UIItemBreakDialog::OnLoadComplete()
         if (it != m_200.end())
             nSelect = it->second;
         spType->SetSelectedIndex(nSelect);
-        spType->vfunc_24(1);
+        reinterpret_cast<Unk_IbDropdown*>(spType.operator->())->vfunc_24(1);
     }
-    if (MS2Ptr<Unk_IbDropdown> spRank = GetChild<Unk_IbDropdown>("m_bundleRankDropdown"))
+    if (MS2Ptr<ASDropdownMenu> spRank = GetChild<ASDropdownMenu>("m_bundleRankDropdown"))
     {
         CStringW strOrBelow = FUN_140298ea0(CStringW(L"s_itembreak_rank_or_below"));
         for (int nRank = 1; nRank < 7; nRank++)
@@ -2639,7 +2633,7 @@ void UIItemBreakDialog::OnLoadComplete()
         unsigned nRows = spRank->FUN_1422dfb90();
         spRank->FUN_1422df5f0(nRows > 1 ? nRows : 1);
         spRank->SetSelectedIndex(m_1fc - 1);
-        spRank->vfunc_24(1);
+        reinterpret_cast<Unk_IbDropdown*>(spRank.operator->())->vfunc_24(1);
     }
 }
 MS2_REPLACE_METHOD(0x1419A2400, UIItemBreakDialog, OnLoadComplete, 2266, 0);

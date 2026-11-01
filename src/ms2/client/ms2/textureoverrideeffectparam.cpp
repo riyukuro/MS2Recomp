@@ -17,7 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
-
+class NoticeMessage { public: class GameObject * GetOwner(void); };
 // Resource manager (singleton 0x140a0afd0): texture load by path.
 class Unk_ResourceMgr
 {
@@ -100,7 +100,7 @@ bool TextureOverrideEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget
 {
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
-    GameObject* pObject = pTarget->FUN_140a533b0();
+    GameObject* pObject = ((class NoticeMessage*)(pTarget))->GetOwner();
     if (!pObject)
         return false;
     efd::list<NiAVObject*> listNodes;

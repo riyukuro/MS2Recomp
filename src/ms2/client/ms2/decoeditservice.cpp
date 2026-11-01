@@ -78,10 +78,11 @@ public:
 class Unk_DecoAnimObj { public: bool FUN_1409a20a0(int nSeq, float fSpeed, bool bLoop); };
 struct Unk_DecoAnimHandle { Unk_DecoAnimObj* FUN_140998e90(); char m_pad[0x40]; };
 struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
-class Unk_DecoAnimSvc
+// The animation service (animationmanager.cpp); play by name is its member.
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
+class Unk_DecoAnimSvc : public Unk_AnimSvc
 {
 public:
-    bool FUN_1409a1fc0(const egf::EntityID& kId, const efd::utf8string& strName, float fSpeed, bool bLoop);
     bool FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fSpeed, bool bLoop);      // 0x1411766b0
     bool FUN_1409991a0(const egf::EntityID& kId, Unk_DecoAnimRec** ppRec);
 };

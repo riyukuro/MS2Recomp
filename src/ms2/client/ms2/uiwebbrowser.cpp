@@ -261,9 +261,9 @@ void UIWebBrowser::vfunc_84(bool bVisible)
     if (pActor != 0)
     {
         if (bVisible)
-            pActor->FUN_14166cce0(8);
+            pActor->AddStateFlags(8);
         else
-            pActor->FUN_14166cd70(8);
+            pActor->RemoveStateFlags(8);
     }
 }
 

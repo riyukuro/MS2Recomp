@@ -33,6 +33,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/nipoint3.h"
 #include <NiSequenceData.h>
 #include <NiTextKeyExtraData.h>
 #include <egmAnimation/AnimationService.h>
@@ -75,10 +76,10 @@ extern efd::AssetID DAT_143a0acf8;   // the invalid asset id
 
 // ---- unit-local views of exe objects ----
 // The animation service (singleton behind FUN_141b6f910).
-class Unk_KfmAnimSvc : public egmAnimation::AnimationService
+class Unk_AnimSvc : public egmAnimation::AnimationService { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };   // play (animationmanager.cpp)
+class Unk_KfmAnimSvc : public Unk_AnimSvc
 {
 public:
-    void FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& kName, float fBlend, bool b);   // play
     void FUN_1411766b0(const egf::EntityID& id, unsigned int nSeq, float fBlend, bool b);     // play by sequence id
 };
 egmAnimation::AnimationService* FUN_141b6f910();
@@ -182,7 +183,7 @@ efd::SmartPointer<Unk_KfmPhysics> FUN_141209640(CEquipModel* p);
 void FUN_140a332d0(NiTransform* p);
 const NiTransform& FUN_140a33f90(void* obj);   void FUN_140aacb60(void* obj, const void* xf);
 void FUN_140981070(void* obj, const void* p);   void FUN_140ddcca0(void* obj, const void* m);   void FUN_1410b2450(void* obj, float s);
-void FUN_14097faa0(void* dst, const void* src);   void FUN_140a33240(void* dst, const void* src);
+void FUN_14097faa0(void* dst, const void* src);
 void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
 void FUN_1409f72e0(void* m);
 bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
@@ -272,7 +273,9 @@ void* FUN_1409998f0(void* a);   bool FUN_140998dc0(void* a, const char* s);
 void FUN_141203e60(CEquipModel* p);
 void* FUN_141d17b40(void* node, void* name);
 float FUN_141d57ca0(void* ed, int i);
-efd::ServiceManager* FUN_140af8310(char* pManager);   void* FUN_14086d260();
+namespace efd { class ServiceManager; }
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
+void* FUN_14086d260();
 void* FUN_1412018c0(class CEquipModel*);   // C3: was FUN_1412018c0
 
 #define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
@@ -766,7 +769,6 @@ struct Unk_KfmPoint3 { float x, y, z; };
 struct Unk_KfmMatrix3 { float m00, m01, m02, m10, m11, m12, m20, m21, m22; };
 void FUN_14027dcf0(Unk_KfmPoint3* p, const void* pPoint);
 void FUN_14097faa0(NiPoint3* p, const Unk_KfmPoint3* pSrc);
-void FUN_140a33240(Unk_KfmMatrix3* p, const void* pMatrix);
 
 // @0x14143fd30
 void CKfmModel::vfunc_30(void* pPos, void* pRot, float fScale)
@@ -776,7 +778,7 @@ void CKfmModel::vfunc_30(void* pPos, void* pRot, float fScale)
     FUN_14027dcf0(&kPos, pPos);
     FUN_14097faa0(&kXf.m_Translate, &kPos);
     Unk_KfmMatrix3 kRot;
-    FUN_140a33240(&kRot, pRot);
+    reinterpret_cast<Unk_NiMatrix3*>(&kRot)->Unk_NiMatrix3::Unk_NiMatrix3(*(const Unk_EfdMatrix3*)pRot);
     kXf.m_Rotate = *(NiMatrix3*)&kRot;
     kXf.m_fScale = fScale;
     ((NiAVObject*)vfunc_14())->SetLocalTransform(kXf);
@@ -1014,7 +1016,7 @@ public:
 void CKfmModel::FUN_14143f3d0()
 {
     if (CFG->m_bPhysics != 0 || CFG->m_bHead != 0 || FUN_14028d470(CFG->m_fScale, 1.0f) == 0) {
-        efd::ServiceManager* pServiceManager = FUN_140af8310((char*)TSingleton<CMainSystem>::GetInstance() + 8);
+        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>((char*)TSingleton<CMainSystem>::GetInstance() + 8)->FUN_140af8310();
         ecrPhysX::PropService* pService = pServiceManager->GetSystemServiceAs<ecrPhysX::PropService>();
         unsigned nProps = pService->GetNumProps(FUN_14143ff70());
         NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0((class CEquipModel*)(this));

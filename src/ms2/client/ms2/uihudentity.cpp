@@ -30,7 +30,6 @@
 class Unk_HudActor : public PCBase
 {
 public:
-    Unk_HudActor* FUN_1416764a0();                      // ridden character
     float FUN_140f4a450();          // distance used by Entity::vfunc_8
 };
 // 12-byte screen point with the out-of-line default ctor 0x1405522f0.
@@ -203,7 +202,7 @@ int UIHudEntity::Entity::vfunc_8(int n)
     }
     if (pActor->FUN_14123c660() && n == 0)
     {
-        Unk_HudActor* pRidden = pActor->FUN_1416764a0();
+        Unk_HudActor* pRidden = reinterpret_cast<Unk_HudActor*>(pActor->FUN_1416764a0());
         if (pRidden)
         {
             if (pRidden->FUN_14123c660())
@@ -232,7 +231,7 @@ NiPoint3 UIHudEntity::Entity::vfunc_10()
         int bChanged = 0;
         if (pActor->FUN_14123c660() != 0)
         {
-            Unk_HudActor* pRidden = pActor->FUN_1416764a0();
+            Unk_HudActor* pRidden = reinterpret_cast<Unk_HudActor*>(pActor->FUN_1416764a0());
             if (pRidden != 0)
             {
                 pActor = pRidden;

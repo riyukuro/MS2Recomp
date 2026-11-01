@@ -28,21 +28,7 @@ class ASDialog : public ASDisplayObject
 {
 };
 
-// Handles returned by the dialog's child lookups: a smart reference whose destructor is the exe function REL.
-template <void (*REL)(void*)>
-struct Unk_QoRef
-{
-    void* m_0;
-    void* m_p;
-    Unk_QoRef() : m_0(0), m_p(0) {}
-    ~Unk_QoRef() { REL(this); }
-};
-void FUN_140bbfda0(void*);
-void FUN_140bbfdd0(void*);
-typedef Unk_QoRef<FUN_140bbfda0> Unk_QoComboRef;
-typedef Unk_QoRef<FUN_140bbfdd0> Unk_QoTextRef;
-
-// The drop down control (list of AS items) and the text field control.
+// The drop down control's virtual slot 24.
 class Unk_QoCombo
 {
 public:
@@ -54,18 +40,7 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
 };
-class Unk_QoText : public ASTextInput
-{
-};
-
-struct Unk_QoDlgView                                            // the dialog's child lookups, returning the handle by value
-{
-    Unk_QoComboRef FUN_140c28560(const CString& strName);
-    Unk_QoTextRef FUN_140e35bd0(const CString& strName);        // text field
-};
-bool FUN_140bc03e0(Unk_QoComboRef* p, int n);                   // handle is empty
-Unk_QoCombo* FUN_140bc0530(Unk_QoComboRef* p);                  // the control
-Unk_QoText* FUN_140bc0550(Unk_QoTextRef* p);                    // the control
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // C3: 0x140c28560
 CStringW FUN_140763e10(int n);                                  // integer to text
 void FUN_140dfee10(__int64 n1, int n2, int n3);                 // send the create request (packet 0x90)
 
@@ -104,11 +79,11 @@ MS2_REPLACE_METHOD(0x140E7E460, UIQuizOXCreateDialog, GetTypeName, 61, 0xD38B1E7
 void UIQuizOXCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_QoComboRef spCombo = reinterpret_cast<Unk_QoDlgView*>(this)->FUN_140c28560("m_dropdownEntryFee");
-    if (FUN_140bc03e0(&spCombo, 0) != 0)
+    MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_dropdownEntryFee");
+    if (spCombo == 0)
         return;
     {
-        reinterpret_cast<ASDropdownMenu*>(FUN_140bc0530(&spCombo))->FUN_1422dfc10();
+        spCombo->FUN_1422dfc10();
         std::vector<int>& range = m_fees;
         std::vector<int>::const_iterator itEnd = range.end();
         for (std::vector<int>::const_iterator it = range.begin(); it != itEnd; ++it) {
@@ -116,13 +91,13 @@ void UIQuizOXCreateDialog::OnLoadComplete()
             ASObj obj(2);
             obj.FUN_1407cbb20("label", FUN_140763e10(nFee));
             obj.FUN_1407cb9c0("data", nFee);
-            reinterpret_cast<ASDropdownMenu*>(FUN_140bc0530(&spCombo))->FUN_1422dfc70(obj);
+            spCombo->FUN_1422dfc70(obj);
         }
-        reinterpret_cast<ASDropdownMenu*>(FUN_140bc0530(&spCombo))->SetSelectedIndex(0);
-        FUN_140bc0530(&spCombo)->vfunc_24(true);
-        Unk_QoTextRef spText = reinterpret_cast<Unk_QoDlgView*>(this)->FUN_140e35bd0("m_textHostFee");
-        if (((void*)((MS2Ptr<ASTextInput>*)(void*)(&spText))->get()) != 0) {
-            FUN_140bc0550(&spText)->FUN_1422e0ab0(FUN_140763e10(m_fees[0]));
+        spCombo->SetSelectedIndex(0);
+        reinterpret_cast<Unk_QoCombo*>(spCombo.operator->())->vfunc_24(true);
+        MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textHostFee");
+        if (((void*)spText.get()) != 0) {
+            spText->FUN_1422e0ab0(FUN_140763e10(m_fees[0]));
         }
     }
 }

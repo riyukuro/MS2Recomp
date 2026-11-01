@@ -92,9 +92,9 @@ public:
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // The client settings: the entry that holds the chosen region id.
-class Unk_RlSettings;
-CStringW* FUN_140cfd260(Unk_RlSettings* pSettings);
-void FUN_1412609c0(CStringW* pEntry, const CStringW& strValue);
+class Unk_LgSettings { public: CStringW* FUN_140cfd260(); };   // C3: member view (the game option's region entry)
+struct Unk_GsConnect;
+void FUN_1412609c0(Unk_GsConnect* pEntry, const CStringW& strValue);
 
 int FUN_1406c34c0();                                            // the Nexon platform is active
 extern CString g_strServerAddr;                                 // the login ip
@@ -105,7 +105,7 @@ CString FUN_140188f50(const char* sz, int n);
 CString FUN_140e819e0(CString strHost);
 
 // The scene manager of the application.
-class Unk_RlNetwork { public: void FUN_1415382c0(); };
+class CNetworkService { public: int ConnectToConfiguredServer(); };   // C3: member view
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 void FUN_141acfad0(UISceneLogin* pScene, const int& nUiId);     // UISceneLogin: hide the title and the dialogs
 
@@ -199,7 +199,7 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 // @0x140e80620
 void UIRegionListDialog::FUN_140e80620()
 {
-    CStringW strRegion = *FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance()));
+    CStringW strRegion = *reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260();
     if (!FUN_140e80f10(strRegion)) {
         if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() == 0x6200009) {
             UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene());
@@ -211,7 +211,7 @@ void UIRegionListDialog::FUN_140e80620()
         FUN_141924680();
         return;
     }
-    ((class Unk_RlNetwork*)FUN_140714f90())->FUN_1415382c0();
+    ((class CNetworkService*)FUN_140714f90())->ConnectToConfiguredServer();
     vfunc_67();
 }
 
@@ -222,13 +222,13 @@ void UIRegionListDialog::FUN_140e80740()
         return;
     g_strServerAddr = "";
     CStringW strEmpty(L"");
-    FUN_1412609c0(FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance())), strEmpty);
+    FUN_1412609c0((Unk_GsConnect*)reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260(), strEmpty);
 }
 
 // @0x140e807c0
 Unk_RlPtr UIRegionListDialog::FUN_140e807c0()
 {
-    CStringW strRegion = *FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance()));
+    CStringW strRegion = *reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260();
     if (strRegion.IsEmpty())
         return Unk_RlPtr(0);
     Unk_RlPtr region = FUN_140e810d0(strRegion);
@@ -266,7 +266,7 @@ Unk_RlPtr UIRegionListDialog::FUN_140e809b0(int nUnused)
 // @0x140e80a40
 void UIRegionListDialog::FUN_140e80a40()
 {
-    m_strSaved = *FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance()));
+    m_strSaved = *reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260();
     if (m_strSaved.IsEmpty())
         return;
     ATL::CAtlArray<Unk_RlPtr> arrNew;
@@ -315,12 +315,12 @@ bool UIRegionListDialog::FUN_140e80f10(CStringW strRegion)
     if (region.get() != 0) {
         if (FUN_1406c34c0() == 1)
             g_strServerAddr = FUN_140e819e0(region->m_host);
-        FUN_1412609c0(FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance())), region->m_id);
+        FUN_1412609c0((Unk_GsConnect*)reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260(), region->m_id);
         return true;
     } else {
         {
             CStringW strEmpty(L"");
-            FUN_1412609c0(FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance())), strEmpty);
+            FUN_1412609c0((Unk_GsConnect*)reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260(), strEmpty);
         }
         return false;
     }
@@ -354,7 +354,7 @@ void UIRegionListDialog::FUN_140e811d0()
 void UIRegionListDialog::OnEndPopdown()
 {
     if (FUN_1406c34c0() == 0) {
-        CStringW strRegion = *FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance()));
+        CStringW strRegion = *reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260();
         FUN_140e812e0(strRegion);
     }
     FUN_140e80620();
@@ -369,7 +369,7 @@ void UIRegionListDialog::FUN_140e812e0(const CStringW& strRegion)
     if (region == 0)
         return;
     if (FUN_1406c34c0() == 0)
-        FUN_1412609c0(FUN_140cfd260(reinterpret_cast<Unk_RlSettings*>(TSingleton<CGameOption>::GetInstance())), region->m_id);
+        FUN_1412609c0((Unk_GsConnect*)reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260(), region->m_id);
 }
 
 // The region host's first address as dotted text.

@@ -135,7 +135,7 @@ int CAddressTable::LoadTable()
 {
     CStringA strPath = FUN_14071ae20("addressName.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

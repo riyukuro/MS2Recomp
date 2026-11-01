@@ -36,7 +36,7 @@ public:
     virtual void vfunc_31(void*);                           // 0x14169a830
     virtual void vfunc_33(int nClass, int n);               // 0x14169a000 class 0x6200004 only
 
-    void FUN_14169a5e0();                                   // 0x14169a5e0 hands the equip models to the view
+    void RefreshModelEquipment();                                   // 0x14169a5e0 hands the equip models to the view
     void FUN_14169a710(NotifyObject* pNotify);              // 0x14169a710 "my codi" tab changed: rebuild
 };
 MS2_CHECK_SIZE(PortraitPC, 0x1348);

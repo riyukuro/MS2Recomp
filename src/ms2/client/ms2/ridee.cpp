@@ -26,6 +26,7 @@
 #include <NiTransformInterpolator.h>
 #include <NiTransformController.h>
 #include <egf/Entity.h>
+#include <efd/ParseHelper.h>   // C3: ParseHelper<ID128>::ToString
 #include <egf/FlatModel.h>
 #include <ecr/SceneGraphService.h>
 #include <efd/ISystemService.h>
@@ -302,7 +303,7 @@ class Unk_RideeStats;
 class CEquipment   // C3: member view (real class not in this TU)
 {
 public:
-    float FUN_1411e1110(SAType eType);
+    float GetAbilityRate(SAType eType);
 };
 float FUN_1411f0e30(float fBase, float fRate);
 bool FUN_14028d470(float a, float b);
@@ -319,11 +320,6 @@ public:
 };
 
 // An egf entity (property access).
-class Unk_RideeEntityModel
-{
-public:
-    void FUN_140ae1f60(efd::utf8string& strOut);                    // model name
-};
 class Unk_RideeEntity
 {
 public:
@@ -748,7 +744,7 @@ void Ridee::FUN_141705ac0(double fTime)
     ((class Unk_PCMove*)(void*)(&m_unk_6d8))->FUN_141683a90();
     FUN_141705b60(fTime);
     if (FUN_14166ccb0()->vfunc_18())
-        FUN_14166d820();
+        UpdateTargetYawFromLook();
     FUN_14166ccb0()->vfunc_8(fTime);
 }
 MS2_REPLACE_METHOD(0x141705ac0, Ridee, FUN_141705ac0, 140, 0xCEC6EC71);
@@ -994,7 +990,7 @@ void Ridee::FUN_141706650(bool bForce)
         if (Unk_RideeEntity* pEntity = ((Unk_RideeEntity*)((EntityWorldManager*)(Unk_RideeEntityMgr*)(reinterpret_cast<Unk_RideeEntityMgr*>(TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(m_unk_ae0)))
         {
             efd::utf8string strModel;
-            ((Unk_RideeEntityModel*)&((egf::Entity*)(Unk_RideeEntity*)(pEntity))->GetDataFileID())->FUN_140ae1f60(strModel);
+            efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(Unk_RideeEntity*)(pEntity))->GetDataFileID(), strModel);
             CString strName(strModel.c_str());
             FUN_1401d3700(strName);
             if (((class Unk_RideeWorld*)WorldService::GetInstance())->FUN_141bc4e70(strName).get())
@@ -1051,7 +1047,7 @@ int Ridee::vfunc_69()
 MS2_REPLACE_METHOD(0x141707070, Ridee, vfunc_69, 36, 0x619CC090);
 
 // @0x1417070a0
-float Ridee::FUN_1417070a0()
+float Ridee::GetRideSpeed()
 {
     float fSpeed = m_spData->m_f80;
     if (!m_pRider)
@@ -1060,10 +1056,10 @@ float Ridee::FUN_1417070a0()
     if (!pc)
         return fSpeed;
     if (FUN_14028d470(m_spData->m_f7c, m_spData->m_f80))
-        return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->FUN_1411e1110((SAType)0xae));
-    return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->FUN_1411e1110((SAType)0xa5));
+        return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->GetAbilityRate((SAType)0xae));
+    return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->GetAbilityRate((SAType)0xa5));
 }
-MS2_REPLACE_METHOD(0x1417070a0, Ridee, FUN_1417070a0, 291, 0x5C3B4FBE);
+MS2_REPLACE_METHOD(0x1417070a0, Ridee, GetRideSpeed, 291, 0x5C3B4FBE);
 
 // @0x1417071d0
 float Ridee::FUN_1417071d0()
@@ -1074,7 +1070,7 @@ float Ridee::FUN_1417071d0()
     Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(m_pRider));
     if (!pc)
         return fSpeed;
-    return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->FUN_1411e1110((SAType)0xae));
+    return FUN_1411f0e30(fSpeed, 1.0f + ((CEquipment*)((PC*)pc)->FUN_1416561a0())->GetAbilityRate((SAType)0xae));
 }
 MS2_REPLACE_METHOD(0x1417071d0, Ridee, FUN_1417071d0, 146, 0x045C94C9);
 

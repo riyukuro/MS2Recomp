@@ -48,8 +48,6 @@ class Unk_EqWorld
 {
 public:
     Unk_EqPlayer* FUN_141bd0cc0();
-    void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
-        int nOwner);                                    // play a sound event
 };
 
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
@@ -191,7 +189,7 @@ int EquipSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        reinterpret_cast<Unk_EqWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -202,7 +200,7 @@ int EquipSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        reinterpret_cast<Unk_EqWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }

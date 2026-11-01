@@ -60,6 +60,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uisidepopuptalk.h"
 #include "ms2/client/ms2/uiweddingdialog.h"
+#include "ms2/client/ms2/uiweddingguestdialog.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/featuremanager.h"
@@ -121,7 +122,6 @@ class Unk_XmlNode   // C3: member view for the former free stand-ins
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-class Unk_WmDialog94 { public: void FUN_140fcd5b0(CInPacket& packet); };
 class UIWeddingGuestDialog* FUN_140fe6700(int);   // C3: was FUN_140fe6700
 template <class T> T* Unk_UgcGetDialog(int nId);
 template <class T> T* Unk_GaGetUI(int nId);
@@ -158,24 +158,17 @@ public:
 };
 class Unk_WmField;
 class CubeMapInformationService { public: int FUN_1410d2f10(); bool FUN_1410c35c0(); };
-class Unk_WmFieldHolder { public: void* FUN_1401cd040(); };
+struct Unk_EntityAppFramework;   // C3: the real holder (ugcbuildvalidator.cpp)
+class Unk_Service6100017 : public efd::ISystemService {};   // the cube grid service (class id 0x06100017)
+Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
-#define DAT_143b059e8 (*(Unk_WmFieldHolder*)&egf::g_bapiContext)          // C3: was extern Unk_WmFieldHolder DAT_143b059e8
-class Unk_WmFieldRef
-{
-public:
-    Unk_WmFieldRef(void* p);                                    // 0x1401cd0b0
-    ~Unk_WmFieldRef();                                          // 0x1401cd150
-    Unk_WmField* FUN_140885310() const;                         // get
-    Unk_WmField* FUN_1401cd1a0() const;                         // operator->
-    void* m_00;
-};
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)     // C3: was extern Unk_WmFieldHolder DAT_143b059e8
 extern unsigned __int64 DAT_143ab2828;                          // the local character id
 extern Unk_Inventory g_143ab2a90;                                      // the player inventory
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 template <class T> CStringW FormatStringId(int nStringId, const T& arg);            // formatted string by id
 void FUN_1412751b0(const CStringW& text, int nKind);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -295,9 +288,9 @@ void WeddingManager::OnInvitationClear(CInPacket& packet)
 // @0x141b84b80
 void WeddingManager::OnHallList(CInPacket& packet)
 {
-    Unk_WmDialog94* dialog = ((class Unk_WmDialog94*)FUN_140fe6700(0x4f94));
+    UIWeddingGuestDialog* dialog = FUN_140fe6700(0x4f94);
     if (dialog)
-        dialog->FUN_140fcd5b0(packet);
+        dialog->FUN_140fcd5b0(reinterpret_cast<Unk_GsFound*>(&packet));
 }
 
 // @0x141b84bc0
@@ -698,7 +691,7 @@ void WeddingManager::ShowStepResult(int result)
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, 0, CStringW(L""));
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnActingAnswer));
-            box->FUN_140534050(result);
+            box->Append<unsigned>(result);
             FUN_140d73c60(box);
         }
     }
@@ -1216,8 +1209,8 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
         return false;
     }
     int allowed = 0;
-    Unk_WmFieldRef field(DAT_143b059e8.FUN_1401cd040());
-    if ((field.FUN_140885310() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.FUN_1401cd1a0())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.FUN_1401cd1a0())->FUN_1410c35c0()) {
+    efd::SmartPointer<Unk_Service6100017> field(FUN_1401cd040(&DAT_143b059e8));
+    if ((field.operator Unk_Service6100017*() ? true : false) && reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410d2f10() && !reinterpret_cast<CubeMapInformationService*>(field.operator->())->FUN_1410c35c0()) {
         allowed = 1;
     } else {
         allowed = reinterpret_cast<Unk_WsPtred298*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_5c;

@@ -105,7 +105,7 @@ void StateWalk::vfunc_4(StateData* pData)
     m_fSpeed2 = m_pOwner->vfunc_97();
     if (((class Unk_WkPlayback*)FUN_1406aeee0())->FUN_1406af100())
     {
-        m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+        m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     }
     if (m_pOwner->FUN_141675ed0() != 0)
     {
@@ -139,7 +139,7 @@ void StateWalk::vfunc_4(StateData* pData)
             {
                 efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
                 if (spRidee)
-                    m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
+                    m_pOwner->FUN_141671960(spRidee->GetRideSpeed());
             }
             else
             {
@@ -193,7 +193,7 @@ void StateWalk::vfunc_3(double fTime)
         {
             efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
-                m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
+                m_pOwner->FUN_141671960(spRidee->GetRideSpeed());
         }
         else
         {
@@ -204,7 +204,7 @@ void StateWalk::vfunc_3(double fTime)
     {
         m_pOwner->FUN_141671960(15.0f);
     }
-    efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+    efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
     reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);

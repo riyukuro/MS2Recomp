@@ -21,8 +21,14 @@
 #include "ms2/commonfiles/userproxy.h"
 #include "ms2/commonfiles/guilddef_1.h"
 #include "ms2/client/ms2/buddymanager.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cpartymember.h"
+#include "ms2/client/ms2/groupchatmanager.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
+class TiXmlElement* XmlChild(class TiXmlElement*, char const*, bool);
+void XmlSetAttr(class TiXmlElement*, char const*, int);
+void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);
 
 // ---- out-of-unit callees (names describe uses) ----
 
@@ -30,9 +36,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 class Unk_MdXml
 {
 public:
-    Unk_MdXml* FUN_140872ec0(const char* szName, bool bCreate);              // child element (created on request)
-    void FUN_140873ca0(const char* szName, int nValue);                     // write an int attribute
-    void FUN_1408740a0(const char* szName, CStringW* pValue);               // write a string attribute
 };
 
 // The client feature switches: 0x56 = club chat, 0x93 = dungeon help.
@@ -153,9 +156,6 @@ public:
     virtual void vfunc_76();
     virtual CStringW vfunc_77();
     virtual unsigned short vfunc_78();
-    CString FUN_1416612e0();                                                // the portrait image name
-    __int64 FUN_141656a80();                                                // the portrait owner key
-    int FUN_141654730();                                                    // the class (job) id
 };
 class Unk_MdPlayers { public: };
 
@@ -166,7 +166,6 @@ class Unk_MdSrcA : public CBuddy { public: const CString& FUN_1401cc530();
 class Unk_MdSrcB
 {
 public:
-    bool FUN_141637c20();
     unsigned char m_pad_00[0x28];
     Unk_MdName m_name;                                                      // +0x28
     __int64 m_nId;                                                          // +0x30
@@ -192,7 +191,6 @@ public:
 class Unk_MdSrcD
 {
 public:
-    int FUN_14137b160();
     unsigned char m_pad_00[0x18];
     Unk_MdName m_name;                                                      // +0x18
     __int64 m_nId;                                                          // +0x20
@@ -203,7 +201,6 @@ public:
 };
   // text by kind and id
 class Unk_MdClassTable { public: };
-int FUN_140644bb0(Unk_MdClassTable* p, int nClass);                         // class id -> text id
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // the local file of an image
 struct Unk_MdTime { unsigned short m_nTime; unsigned short m_pad; };
 CStringW FUN_140c348b0(int chSep, const void* pTime, const CStringW& strText);   // "<time> <text>"
@@ -232,24 +229,7 @@ MS2_CHECK_SIZE(Unk_MdEntry, 0x28);
 
 // The group chat registry: a room by kind, a member by name (counted handles 0x141381160 / 0x14137c280).
 class Unk_MdMember { public: unsigned char m_pad[0x18]; Unk_MdName m_name; __int64 m_nOwner; };
-class Unk_MdMemberPtr
-{
-public:
-    ~Unk_MdMemberPtr();                                                     // 0x14137c280
-    bool FUN_14137c360(int n);                                              // is null
-    Unk_MdMember* FUN_14137c3b0();                                          // operator->
-    void* m_p[2];                                                           // 16-byte counted handle (exe stack slot)
-};
-class Unk_MdRoom { public: Unk_MdMemberPtr FUN_14137ba10(CStringW strName); };
-class Unk_MdRoomPtr
-{
-public:
-    ~Unk_MdRoomPtr();                                                       // 0x141381160
-    bool FUN_141381230(int n);                                              // is null
-    Unk_MdRoom* FUN_141381280();                                            // operator->
-    void* m_p[2];                                                           // 16-byte counted handle (exe stack slot)
-};
-class Unk_MdRooms { public: Unk_MdRoomPtr FUN_14137e630(int nKind); };
+class Unk_MdRooms;
 extern Unk_MdRooms* g_pRooms;                                               // 0x143ad8ba8
 Unk_MdRooms* FUN_141484720();
 
@@ -263,7 +243,7 @@ MessengerData::NoticeSetting::NoticeSetting()
 // @0x141480d00
 int MessengerData::NoticeSetting::FUN_141480d00(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pNotice = pXml->FUN_140872ec0("Notice", true);
+    Unk_MdXml* pNotice = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Notice", true);
     if (pNotice != 0)
     {
     XmlGetAttr((class TiXmlElement*)(pNotice), "all", m_nAll);
@@ -290,19 +270,19 @@ int MessengerData::NoticeSetting::FUN_141480d00(Unk_MdXml* pXml)
 // @0x141480ef0
 int MessengerData::NoticeSetting::FUN_141480ef0(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pNotice = pXml->FUN_140872ec0("Notice", true);
+    Unk_MdXml* pNotice = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Notice", true);
     if (pNotice)
     {
-        pNotice->FUN_140873ca0("all", m_nAll);
-        pNotice->FUN_140873ca0("user", m_nUser);
-        pNotice->FUN_140873ca0("trade", m_nTrade);
-        pNotice->FUN_140873ca0("community", m_nCommunity);
-        pNotice->FUN_140873ca0("friend", m_nFriend);
-        pNotice->FUN_140873ca0("guild", m_nGuild);
-        pNotice->FUN_140873ca0("club", m_nClub);
-        pNotice->FUN_140873ca0("party", m_nParty);
-        pNotice->FUN_140873ca0("mentoring", m_nMentoring);
-        pNotice->FUN_140873ca0("etc", m_nEtc);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "all", m_nAll);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "user", m_nUser);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "trade", m_nTrade);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "community", m_nCommunity);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "friend", m_nFriend);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "guild", m_nGuild);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "club", m_nClub);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "party", m_nParty);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "mentoring", m_nMentoring);
+        XmlSetAttr((class TiXmlElement*)(pNotice), "etc", m_nEtc);
         return 1;
     }
     return 0;
@@ -346,7 +326,7 @@ MessengerData::SystemSetting::SystemSetting()
 // @0x141481250
 int MessengerData::SystemSetting::FUN_141481250(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pSystem = pXml->FUN_140872ec0("System", true);
+    Unk_MdXml* pSystem = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "System", true);
     if (pSystem != 0)
     {
     XmlGetAttr((class TiXmlElement*)(pSystem), "all", m_nAll);
@@ -366,12 +346,12 @@ int MessengerData::SystemSetting::FUN_141481250(Unk_MdXml* pXml)
 // @0x141481320
 int MessengerData::SystemSetting::FUN_141481320(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pSystem = pXml->FUN_140872ec0("System", true);
+    Unk_MdXml* pSystem = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "System", true);
     if (pSystem)
     {
-        pSystem->FUN_140873ca0("all", m_nAll);
-        pSystem->FUN_140873ca0("event", m_nEvent);
-        pSystem->FUN_140873ca0("notice", m_nNotice);
+        XmlSetAttr((class TiXmlElement*)(pSystem), "all", m_nAll);
+        XmlSetAttr((class TiXmlElement*)(pSystem), "event", m_nEvent);
+        XmlSetAttr((class TiXmlElement*)(pSystem), "notice", m_nNotice);
         return 1;
     }
     return 0;
@@ -401,7 +381,7 @@ MessengerData::ScreenSetting::ScreenSetting()
 // @0x141481480
 int MessengerData::ScreenSetting::FUN_141481480(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pScreen = pXml->FUN_140872ec0("Screen", true);
+    Unk_MdXml* pScreen = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Screen", true);
     if (pScreen)
     {
         int nFontSize = 0;
@@ -419,12 +399,12 @@ int MessengerData::ScreenSetting::FUN_141481480(Unk_MdXml* pXml)
 // @0x141481540
 int MessengerData::ScreenSetting::FUN_141481540(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pScreen = pXml->FUN_140872ec0("Screen", true);
+    Unk_MdXml* pScreen = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Screen", true);
     if (pScreen)
     {
-        pScreen->FUN_140873ca0("fontSize", m_nFontSize);
-        pScreen->FUN_140873ca0("backgroundAlpha", m_nBackgroundAlpha);
-        pScreen->FUN_140873ca0("showDamage", m_nShowDamage);
+        XmlSetAttr((class TiXmlElement*)(pScreen), "fontSize", m_nFontSize);
+        XmlSetAttr((class TiXmlElement*)(pScreen), "backgroundAlpha", m_nBackgroundAlpha);
+        XmlSetAttr((class TiXmlElement*)(pScreen), "showDamage", m_nShowDamage);
         return 1;
     }
     return 0;
@@ -439,7 +419,7 @@ MessengerData::RequireSetting::RequireSetting()
 // @0x141481640
 int MessengerData::RequireSetting::FUN_141481640(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pRequire = pXml->FUN_140872ec0("Require", true);
+    Unk_MdXml* pRequire = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Require", true);
     if (pRequire != 0)
     {
     XmlGetAttr((class TiXmlElement*)(pRequire), "all", m_nAll);
@@ -463,16 +443,16 @@ int MessengerData::RequireSetting::FUN_141481640(Unk_MdXml* pXml)
 // @0x1414817b0
 int MessengerData::RequireSetting::FUN_1414817b0(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pRequire = pXml->FUN_140872ec0("Require", true);
+    Unk_MdXml* pRequire = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Require", true);
     if (pRequire)
     {
-        pRequire->FUN_140873ca0("all", m_nAll);
-        pRequire->FUN_140873ca0("meso", m_nMeso);
-        pRequire->FUN_140873ca0("merat", m_nMerat);
-        pRequire->FUN_140873ca0("token", m_nToken);
-        pRequire->FUN_140873ca0("item", m_nItem);
-        pRequire->FUN_140873ca0("experience", m_nExperience);
-        pRequire->FUN_140873ca0("auth", m_nAuth);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "all", m_nAll);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "meso", m_nMeso);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "merat", m_nMerat);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "token", m_nToken);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "item", m_nItem);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "experience", m_nExperience);
+        XmlSetAttr((class TiXmlElement*)(pRequire), "auth", m_nAuth);
         return 1;
     }
     return 0;
@@ -511,7 +491,7 @@ MessengerData::SubjectSetting::SubjectSetting()
 // @0x141481ab0
 int MessengerData::SubjectSetting::FUN_141481ab0(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pSubject = pXml->FUN_140872ec0("Subject", true);
+    Unk_MdXml* pSubject = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Subject", true);
     if (pSubject != 0)
     {
     XmlGetAttr((class TiXmlElement*)(pSubject), "all", m_nAll);
@@ -541,22 +521,22 @@ int MessengerData::SubjectSetting::FUN_141481ab0(Unk_MdXml* pXml)
 // @0x141481cf0
 int MessengerData::SubjectSetting::FUN_141481cf0(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pSubject = pXml->FUN_140872ec0("Subject", true);
+    Unk_MdXml* pSubject = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "Subject", true);
     if (pSubject != 0)
     {
-    pSubject->FUN_140873ca0("all", m_nAll);
-    pSubject->FUN_140873ca0("super", m_nSuper);
-    pSubject->FUN_140873ca0("world", m_nWorld);
-    pSubject->FUN_140873ca0("channel", m_nChannel);
-    pSubject->FUN_140873ca0("social", m_nSocial);
-    pSubject->FUN_140873ca0("party", m_nParty);
-    pSubject->FUN_140873ca0("guild", m_nGuild);
-    pSubject->FUN_140873ca0("whisper", m_nWhisper);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "all", m_nAll);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "super", m_nSuper);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "world", m_nWorld);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "channel", m_nChannel);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "social", m_nSocial);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "party", m_nParty);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "guild", m_nGuild);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "whisper", m_nWhisper);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
-        pSubject->FUN_140873ca0("club", m_nClub);
-    pSubject->FUN_140873ca0("partyInvite", m_nPartyInvite);
+        XmlSetAttr((class TiXmlElement*)(pSubject), "club", m_nClub);
+    XmlSetAttr((class TiXmlElement*)(pSubject), "partyInvite", m_nPartyInvite);
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x93) == 1)
-        pSubject->FUN_140873ca0("dungeonHelp", m_nDungeonHelp);
+        XmlSetAttr((class TiXmlElement*)(pSubject), "dungeonHelp", m_nDungeonHelp);
         return 1;
     }
     return 0;
@@ -642,7 +622,7 @@ MessengerData::SubjectSetting* MessengerData::PanelSetting::FUN_141482200()
 // @0x141482220
 int MessengerData::PanelSetting::FUN_141482220(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pPanel = pXml->FUN_140872ec0("PanelSetting", true);
+    Unk_MdXml* pPanel = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "PanelSetting", true);
     if (pPanel != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pPanel), "global", s_nGlobal);
@@ -668,10 +648,10 @@ int MessengerData::PanelSetting::FUN_141482220(Unk_MdXml* pXml)
 // @0x141482340
 int MessengerData::PanelSetting::FUN_141482340(Unk_MdXml* pXml)
 {
-    Unk_MdXml* pPanel = pXml->FUN_140872ec0("PanelSetting", true);
+    Unk_MdXml* pPanel = (Unk_MdXml*)XmlChild((class TiXmlElement*)(pXml), "PanelSetting", true);
     if (pPanel != 0)
     {
-        pPanel->FUN_140873ca0("global", s_nGlobal);
+        XmlSetAttr((class TiXmlElement*)(pPanel), "global", s_nGlobal);
         if (m_notice.FUN_141480ef0(pPanel) == 0)
             return 0;
         if (m_system.FUN_141481320(pPanel) == 0)
@@ -751,10 +731,10 @@ int MessengerData::TalkTab::FUN_1414827c0(Unk_MdXml* pXml)
 // @0x141482880
 int MessengerData::TalkTab::FUN_141482880(Unk_MdXml* pXml)
 {
-    pXml->FUN_1408740a0("tabName", &m_strName);
-    pXml->FUN_140873ca0("close", m_nClose);
-    pXml->FUN_140873ca0("detach", m_nDetach);
-    pXml->FUN_140873ca0("additive", m_nAdditive);
+    XmlSetAttr((class TiXmlElement*)(pXml), "tabName", m_strName);
+    XmlSetAttr((class TiXmlElement*)(pXml), "close", m_nClose);
+    XmlSetAttr((class TiXmlElement*)(pXml), "detach", m_nDetach);
+    XmlSetAttr((class TiXmlElement*)(pXml), "additive", m_nAdditive);
     if (m_strName.IsEmpty())
         return 0;
     return m_panel.FUN_141482340(pXml);
@@ -907,10 +887,10 @@ Unk_MdEntry::Unk_MdEntry(__int64 nId)
         return;
     m_nKind = 1;
     m_nId = nId;
-    m_strImage = (const char*)FUN_141028be0(pPlayer->FUN_141656a80(), pPlayer->FUN_1416612e0(), 1, "");
+    m_strImage = (const char*)FUN_141028be0(reinterpret_cast<PC*>(pPlayer)->FUN_141656a80(), reinterpret_cast<PC*>(pPlayer)->FUN_1416612e0(), 1, "");
     m_strName = pPlayer->vfunc_77();
     unsigned short nLevel = pPlayer->vfunc_78();
-    m_strInfo = FUN_140c348b0(0x20, &nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pPlayer->FUN_141654730()));
+    m_strInfo = FUN_140c348b0(0x20, &nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->FUN_141654730()));
 }
 
 // @0x141483300
@@ -921,13 +901,13 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
     m_strImage = (const char*)FUN_141028be0(m_nId, src.FUN_1401cc530(), 1, "");
     m_strName = src.FUN_1401cc1c0();
     int nTime = src.FUN_1401cc210();
-    m_strInfo = FUN_140a228f0(0x20, &nTime, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_MdClassTable*>(TSingleton<JobTable>::GetInstance()), src.FUN_1401cc290())));
+    m_strInfo = FUN_140a228f0(0x20, &nTime, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.FUN_1401cc290())));
 }
 
 // @0x141483580
 Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
 {
-    m_nKind = (src.FUN_141637c20() == 0);
+    m_nKind = (reinterpret_cast<CPartyMember&>(src).FUN_141637c20() == 0);
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
@@ -941,13 +921,13 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca980(), 1, "");
     m_strName = reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca890();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, FUN_140644bb0(reinterpret_cast<Unk_MdClassTable*>(TSingleton<JobTable>::GetInstance()), src.m_nClass)));
+    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.m_nClass)));
 }
 
 // @0x141483af0
 Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
 {
-    m_nKind = src.FUN_14137b160();
+    m_nKind = reinterpret_cast<CGroupChatMember&>(src).FUN_14137b160();
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
@@ -1016,13 +996,13 @@ CString FUN_1414842b0(int nKind, CStringW strName);
 // @0x1414840d0
 __int64 FUN_1414840d0(GroupMessengerData::TalkLog* pLog)
 {
-    Unk_MdRoomPtr room = FUN_141484720()->FUN_14137e630(pLog->m_nKind);
-    if (room.FUN_141381230(0))
+    Unk_ChatPtrChat room = reinterpret_cast<CGroupChatManager*>(FUN_141484720())->FindChat(pLog->m_nKind);
+    if (room == 0)
         return 0;
-    Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(pLog->m_strMsg));
-    if (member.FUN_14137c360(0))
+    Unk_ChatMemberPtr member = room->FindMemberByName(CStringW(pLog->m_strMsg));
+    if (member == 0)
         return 0;
-    return member.FUN_14137c3b0()->m_nOwner;
+    return reinterpret_cast<Unk_MdMember*>(member.operator->())->m_nOwner;
 }
 
 // the exe's is a TalkLog member (this = the log, hidden return slot in rdx); a free function put the slot in rcx
@@ -1050,13 +1030,13 @@ int FUN_141484290(GroupMessengerData::TalkLog* pLog)
 // @0x1414842b0
 CString FUN_1414842b0(int nKind, CStringW strName)
 {
-    Unk_MdRoomPtr room = FUN_141484720()->FUN_14137e630(nKind);
-    if (room.FUN_141381230(0) != 0)
+    Unk_ChatPtrChat room = reinterpret_cast<CGroupChatManager*>(FUN_141484720())->FindChat(nKind);
+    if (room == 0 != 0)
         return CString("");
-    Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(strName));
-    if (member.FUN_14137c360(0) != 0)
+    Unk_ChatMemberPtr member = room->FindMemberByName(CStringW(strName));
+    if (member == 0 != 0)
         return CString("");
-    return FUN_141028be0(member.FUN_14137c3b0()->m_nOwner, reinterpret_cast<Unk_UserProxy&>(member.FUN_14137c3b0()->m_name).FUN_1408f1a60(), 1, "");
+    return FUN_141028be0(reinterpret_cast<Unk_MdMember*>(member.operator->())->m_nOwner, reinterpret_cast<Unk_UserProxy&>(reinterpret_cast<Unk_MdMember*>(member.operator->())->m_name).FUN_1408f1a60(), 1, "");
 }
 
 // @0x141484720

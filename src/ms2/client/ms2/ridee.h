@@ -183,7 +183,7 @@ public:
     NiNode* FUN_141706560();                                // 0x141706560
     void FUN_141706590();                                   // flush the state controller
     void FUN_141706650(bool bForce);                        // send the state record when it changed
-    float FUN_1417070a0();                                  // speed with the rider's bonus
+    float GetRideSpeed();                                  // speed with the rider's bonus
     float FUN_1417071d0();                                  // run speed with the rider's bonus
     void FUN_141707270();                                   // reset the state controller
     void FUN_1417072b0();                                   // load the rider's ugc ridee texture

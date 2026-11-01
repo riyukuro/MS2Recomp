@@ -179,7 +179,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eb20()
         TPtr<PCBase> spActor = *reinterpret_cast<TPtr<PCBase>*>(&pMap->GetValueAt(pos));
         if (spActor == 0)
             continue;
-        MS2Ptr<Unk_HsInfo> spInfo = static_cast<Unk_HsPC*>(static_cast<PC*>(spActor.operator->()))->FUN_141664200();
+        MS2Ptr<Unk_HsInfo> spInfo = static_cast<Unk_HsPC*>(static_cast<PC*>(spActor.operator->()))->GetHideAndSeekInfo();
         if (spInfo == 0)
             continue;
         if (spInfo->FUN_14050a6a0() == 0)
@@ -219,9 +219,9 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
     ASObj row(2);
     row.FUN_140c1f8b0("team", spInfo->FUN_14050a6a0());
     ((class ASObj*)(class ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->FUN_141654730());
-    row.FUN_1407cbb20("charName", pPC->vfunc_77());
+    ((class AScript&)(row)).FUN_1407cbb20("charName", pPC->vfunc_77());
     row.FUN_1409c0d20("kill", spInfo->FUN_14050a660());
-    row.FUN_1407cb9c0("death", spInfo->FUN_14050a4d0() != 0);
+    ((class AScript&)(row)).FUN_1407cb9c0("death", spInfo->FUN_14050a4d0() != 0);
     row.FUN_1409c1180("exp", spInfo->FUN_14050a600());
     row.FUN_1407cbbe0("isMe", bMine);
     rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));

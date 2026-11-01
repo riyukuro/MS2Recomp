@@ -26,7 +26,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/placeholder/cnpc.h"
+#include "ms2/commonfiles/npcdata.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
@@ -42,39 +44,13 @@ public:
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-void FUN_1408a8700(void* pStr);                          // 0x1408a8700 efd::utf8string()
-void FUN_1408a8900(void* pStr);                          // 0x1408a8900 ~efd::utf8string
-void FUN_1409989e0(void* pStr, const char* psz);         // 0x1409989e0 efd::utf8string(const char*)
-void FUN_140ae18f0(void* pStr, const char* psz);         // 0x140ae18f0 efd::utf8string::operator=(const char*)
-
-// The efd::utf8string the exe builds out of line (0x20 bytes).
-struct Unk_DeadString
-{
-    Unk_DeadString() { FUN_1408a8700(m_buf); }
-    Unk_DeadString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_DeadString() { FUN_1408a8900(m_buf); }
-    Unk_DeadString& operator=(const char* psz) { FUN_140ae18f0(m_buf, psz); return *this; }
-    char m_buf[0x20];
-};
-
 // The map data of the current field: +0x140375570 tells whether the field revives players on its own.
 class Unk_DeadField : public CFieldData { };
-class Unk_DeadFieldRef
-{
-public:
-    ~Unk_DeadFieldRef() { FUN_1408850f0(); }
-    void FUN_1408850f0();                                // release
-    bool FUN_140965240(int n) const;                     // == n
-    Unk_DeadField* FUN_140885340() const;                // operator->
-    void* m_p0;
-    void* m_p8;
-};
 
 // The player manager singleton.
 class Unk_DeadWorld
 {
 public:
-    Unk_DeadFieldRef FUN_141bd30a0();                    // the current field data
     MyPC* FUN_141bd0cc0();                               // the local player
 };
 
@@ -111,8 +87,8 @@ struct Unk_DeadTexts
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-// The npc table row: the corpse effect name at +0x448; FUN_1406ccf20 is CNpcData::GetCorpseHitAble.
-class Unk_DeadNpcData { public: char m_pad_00[0x448]; CString m_strCorpseEffect; int FUN_1406ccf20(); };
+// The npc table row: the corpse effect name at +0x448.
+class Unk_DeadNpcData { public: char m_pad_00[0x448]; CString m_strCorpseEffect; };
 // The owner seen as an npc.
 class Unk_DeadNpc : public CNpc
 {
@@ -147,8 +123,8 @@ void StateDead::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        Unk_DeadFieldRef kField = reinterpret_cast<Unk_DeadWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-        if (kField.FUN_140965240(0))
+        MS2Ptr<CFieldDataCli> kField = WorldService::GetInstance()->FUN_141bd30a0();
+        if (kField == 0)
             return;
         if (reinterpret_cast<PC*>(pPC)->FUN_14165ef30() != 0)
         {
@@ -157,7 +133,7 @@ void StateDead::vfunc_4(StateData* pData)
         }
         else
         {
-            if (kField.FUN_140885340()->FUN_140375570() != 0)
+            if (reinterpret_cast<Unk_DeadField*>(kField.operator->())->FUN_140375570() != 0)
             {
                 bRevive = true;
                 nAnimId = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_DeadConsts*)FUN_1401d3200())->m_reviveAnim)->Get();
@@ -174,8 +150,8 @@ void StateDead::vfunc_4(StateData* pData)
     {
         m_pOwner->vfunc_23(1);
         {
-            Unk_DeadString kAnim(m_pOwner->vfunc_123(0x34));
-            m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), 1.0f, false, false);
+            efd::utf8string kAnim(m_pOwner->vfunc_123(0x34));
+            m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
         }
         m_pOwner->vfunc_31(false);
         PCBase* pPCAgain = FUN_1417b8370();
@@ -304,10 +280,10 @@ void StateDeadNPC::vfunc_6()
     if (pNpc != 0)
     {
         {
-            int nHit = reinterpret_cast<Unk_DeadNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->FUN_1406ccf20();
+            int nHit = reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->GetCorpseHitAble();
             if (nHit != 0)
             {
-                Unk_DeadString kAnim;
+                efd::utf8string kAnim;
                 if ((m_strAnim == "Dead_A") || (m_strAnim == "Dead_Idle_A"))
                 {
                     kAnim = "Dead_Damg_A";
@@ -319,7 +295,7 @@ void StateDeadNPC::vfunc_6()
                     else
                         return;
                 }
-                m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), 1.0f, true, false);
+                m_pOwner->FUN_14166dd20(kAnim, 1.0f, true, false);
             }
         }
     }
@@ -363,8 +339,8 @@ StateRevival::~StateRevival()
 void StateRevival::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    Unk_DeadString kAnim(m_pOwner->vfunc_123(0x33));
-    m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), 1.0f, false, false);
+    efd::utf8string kAnim(m_pOwner->vfunc_123(0x33));
+    m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
 }
 
 // @0x1417c3350

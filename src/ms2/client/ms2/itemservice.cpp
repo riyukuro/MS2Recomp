@@ -87,7 +87,6 @@ typedef std::map<std::string, std::list<NiAVObjectPtr> > Unk_NifRootCache;
 ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p);             // BindData -> ItemSlotBag (TypeCast)
 ItemInfoSlot*FUN_140cfe6c0(NotifyContext::BindData*);                           // DragSlot -> ItemInfoSlot (TypeCast)
 class AvatarPC;
-CItemData* FUN_140527840(CItem* pItem);                             // the item's template data
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);             // unit_141420a70.cpp
 unsigned FUN_141420a30(unsigned nType, CItem* pItem, AvatarPC* pAvatar);
 
@@ -199,11 +198,11 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
     }
     bool bSecond = pItem->FUN_14052a170() == 2;
     int nWeapon = pPC->vfunc_133(pItem, bSecond);
-    bool bHair = FUN_140527840(pItem)->FUN_14053eba0()->FUN_14054b400() == 0xe ? true : false;
+    bool bHair = reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400() == 0xe ? true : false;
     int nGender = pPC->FUN_141658e60();
-    if (!FUN_140527840(pItem)->FUN_14053cae0(nGender, nWeapon))
+    if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
         return spEquip;
-    MS2Ptr<CItemData> spData(FUN_140527840(pItem));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
     for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
     {
         const ModelGroup* pGroup = spData->FUN_14053eba0()->GetGroup(i);
@@ -319,9 +318,9 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
     bool bLayer2 = pItem->FUN_14052a170() == 2 ? 1 : 0;
     int nWeapon = pPC->vfunc_133(pItem, bLayer2);
     int nGender = pPC->FUN_141658e60();
-    if (!FUN_140527840(pItem)->FUN_14053cae0(nGender, nWeapon))
+    if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
         return 0;
-    MS2Ptr<CItemData> spData(FUN_140527840(pItem));
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
     for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
     {
         const ModelGroup* pGroup = spData->FUN_14053eba0()->GetGroup(i);
@@ -344,9 +343,9 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
 void CItemService::FUN_14141b250(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList)
 {
     int nLayer = pItem->FUN_14052a170();
-    for (size_t i = 0; i < FUN_140527840(pItem)->FUN_14053eba0()->FUN_14054b3d0(); i++)
+    for (size_t i = 0; i < reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b3d0(); i++)
     {
-        int nSlot = FUN_141420a30(FUN_140527840(pItem)->FUN_14053eba0()->GetGroup(i)->FUN_1405451a0(), pItem,
+        int nSlot = FUN_141420a30(reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053eba0()->GetGroup(i)->FUN_1405451a0(), pItem,
             reinterpret_cast<AvatarPC*>(pPC));
         MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e1780(nSlot, nLayer);
         if (spItem.get() != 0)
@@ -577,7 +576,7 @@ MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex)
 // @0x141420990
 int FUN_141420990(int nType, CItem* pItem, AvatarPC* pAvatar)
 {
-    if (pItem == 0 || FUN_140527840(pItem) == 0 || pAvatar == 0)
+    if (pItem == 0 || reinterpret_cast<CItemData *>(pItem->FUN_140527840()) == 0 || pAvatar == 0)
         return 0;
     if (nType == 0)
         return 0;
@@ -586,7 +585,7 @@ int FUN_141420990(int nType, CItem* pItem, AvatarPC* pAvatar)
     {
         if (pItem->FUN_140526c30() == 0)
         {
-            int nSlot = FUN_141420b30(FUN_140527840(pItem), pAvatar);
+            int nSlot = FUN_141420b30(reinterpret_cast<CItemData *>(pItem->FUN_140527840()), pAvatar);
             return nSlot;
         }
         else

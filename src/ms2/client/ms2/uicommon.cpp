@@ -214,7 +214,7 @@ class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 // The wide-string formatter with a leading string id (0x14028dee0), instantiated here for <CStringW, CString>.
 
 // The cube / housing service (singleton behind 0x1409670e0; also the object behind the COM-style reference to 0x143b059e8).
-// Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_1401cd100).
+// Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_BuddyHandle).
 class CubeMapInformationService
 {
 public:
@@ -579,7 +579,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
     }
     else if (nType == 2)
     {
-        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FUN_14162afc0(nId);
+        MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nId);
         if (spMember.get() != 0)
         {
             pPC->SendRequestMoveFieldMode2(0, 0, 0, FUN_141637b90(spMember.operator->()), CStringW(L""));
@@ -1104,7 +1104,7 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
     case 2:
     {
         CStringW strText = FUN_1409e97f0(0x38, reinterpret_cast<const unsigned&>(nItemId));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
         FUN_1412751f0(strText, 1, 1);
         break;
     }
@@ -1673,18 +1673,18 @@ void UICommon::CMyPCKeyInputController::FUN_141901070(int nRelease, int nLayer)
     if (pPC != 0)
     {
         if (nBlock != 0)
-            ((class PCBase*)(class PCBase*)(pPC))->FUN_14166cd70(0x20);
+            ((class PCBase*)(class PCBase*)(pPC))->RemoveStateFlags(0x20);
         else
-            ((class PCBase*)(class PCBase*)(pPC))->FUN_14166cce0(0x20);
+            ((class PCBase*)(class PCBase*)(pPC))->AddStateFlags(0x20);
         if (FUN_1410af7a0((class PC*)(pPC)) != 0)
         {
             PCBase* pMount = (PCBase*)((PC*)pPC)->FUN_1416625b0();
             if (pMount != 0)
             {
                 if (nBlock != 0)
-                    ((class PCBase*)(class PCBase*)(pMount))->FUN_14166cd70(0x20);
+                    ((class PCBase*)(class PCBase*)(pMount))->RemoveStateFlags(0x20);
                 else
-                    ((class PCBase*)(class PCBase*)(pMount))->FUN_14166cce0(0x20);
+                    ((class PCBase*)(class PCBase*)(pMount))->AddStateFlags(0x20);
             }
         }
     }

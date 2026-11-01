@@ -34,7 +34,8 @@ void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice
 
 // the ids of the cash call items the player may use
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
-class Unk_CcConfig { public: unsigned char FUN_14036d570(int nId); unsigned char FUN_14036e5b0(); };
+class Unk_CcConfig { public: unsigned char FUN_14036e5b0(); };
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CGameRule* FUN_1401c0d90();
 // A 16-byte item handle.
@@ -48,7 +49,6 @@ struct Unk_CcHandle
 class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); int FUN_140a5f7b0(int nSlot, int n); };
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_CcInventory
-unsigned char FUN_1401c0050(Unk_CcHandle* p, int n);
 void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
 __int64 FUN_14052cd70(Unk_CcHandle* p);
 void* FUN_1401c0180(Unk_CcHandle* p);
@@ -94,7 +94,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     }
     __int64 nItemUid = 0;
     int nKind = 1;
-    if (((class PC*)(class MyPC*)(pPC))->FUN_141662de0() != 0 && ((class Unk_CcConfig*)FUN_140166410())->FUN_14036d570(0x57) != 0)
+    if (((class PC*)(class MyPC*)(pPC))->FUN_141662de0() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x57) != 0)
     {
         nKind = 2;
     }
@@ -103,7 +103,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         if (FUN_1401c0d90()->IsFreeAirTaxiActive() == 0)
         {
             Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(10);
-            if (FUN_1401c0050(&hItem, 0) != 0)
+            if (reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator==(0))
                 FUN_140692c90(&hItem, reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb));
             if (FUN_14052cd70(&hItem) != 0)
             {
@@ -125,14 +125,14 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         if (nHave >= nNeed)
         {
             Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb);
-            if (FUN_1401c0050(&hItem, 0) != 0)
+            if (reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator==(0))
                 return 0;
             nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->GetItemUid();
             nKind = 2;
         }
         else
         {
-            if (((class Unk_CcConfig*)FUN_140166410())->FUN_14036d570(0x83) != 0)
+            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x83) != 0)
             {
                 if (FUN_140930240() < *FUN_1402c05b0(((char*)FUN_1401d3200()) + 0x8aa8))
                     return 0;

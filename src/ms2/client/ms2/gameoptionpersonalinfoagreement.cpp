@@ -49,20 +49,20 @@ public:
 // The game-option settings object (CGameOption; +0x1b4 is the agreement setting).
 class Unk_PiSettings;
 unsigned char* FUN_140a46860(Unk_PiSettings* p);
-class CPersonalInfoAgreement   // C3: member view for the former free stand-ins
+class CPersonalInfoAgreement   // gameoptionstruct.cpp's class (the agreement state and the option's +0x1b4 setting)
 {
 public:
+    void FUN_141261d20();
+    int FUN_141261d40();
+    void FUN_141261da0(const CPersonalInfoAgreement* pSrc);
+    void SendAgreement(int nGroup);
+    void FUN_141261e40(int nGroup, unsigned nFlags);
+    bool HasGroupAgreement(int nGroup);
+    void OpenLink(CString strUrl);
     void FUN_141262090();
 };
-void FUN_1412627c0(Unk_PiAgreeState* p, CString s);
 void FUN_141261cf0(Unk_PiAgreeState* p);
-void FUN_141261d20(Unk_PiAgreeState* p);
-void FUN_141261d40(Unk_PiAgreeState* p);
-void FUN_141261da0(void* pDst, const void* pSrc);
-void FUN_141261dd0(void* p, int n);
-bool FUN_141261f00(void* p, int n);
-void FUN_141261e40(Unk_PiAgreeState* p, int a, int b);
-CString* FUN_140298f80(void* p);
+struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Constants::Common::Value<CString>::Get
 
 // View of the option dialog: an id at +0x28, the AS root at +0x30.
 struct Unk_PiDialog
@@ -121,7 +121,7 @@ CGameOptionPersonalInfoAgreement::~CGameOptionPersonalInfoAgreement()   // @0x14
 void CGameOptionPersonalInfoAgreement::vfunc_3(int n)   // @0x140a45dd0
 {
     if (n == 0)
-        FUN_141261da0(&m_state, FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())));
+        ((CPersonalInfoAgreement*)&m_state)->FUN_141261da0((const CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())));
     CBaseOption::vfunc_3(n);
 }
 
@@ -133,7 +133,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_4(int n)   // @0x140a45e20
 int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, int nArg)   // @0x140a45e50
 {
     if (_stricmp(pszName, "OnDetail") == 0)
-        FUN_1412627c0(&m_state, CString(*FUN_140298f80((char*)FUN_1401d3200() + 0xe918)));
+        ((CPersonalInfoAgreement*)&m_state)->OpenLink(CString(((Unk_StringOptionEntry*)((char*)FUN_1401d3200() + 0xe918))->FUN_140298f80()));
     return 0;
 }
 
@@ -168,7 +168,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
         }
     }
     int nMode = m_state.m_bAgree ? 2 : 4;
-    FUN_141261e40(&m_state, 0, nMode);
+    ((CPersonalInfoAgreement*)&m_state)->FUN_141261e40(0, nMode);
     ((class CPersonalInfoAgreement*)(unsigned char*)(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
 }
 
@@ -178,13 +178,13 @@ void CGameOptionPersonalInfoAgreement::vfunc_10()   // @0x140a461f0
     bool bChanged = false;
     if (m_state.m_bAgree != *FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))
         bChanged = true;
-    if (!FUN_141261f00(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())), 0))
+    if (!((CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->HasGroupAgreement(0))
         bChanged = true;
     if (bChanged)
     {
         int nMode = m_state.m_bAgree ? 2 : 4;
-        FUN_141261da0(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())), &m_state);
-        FUN_141261dd0(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())), nMode);
+        ((CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->FUN_141261da0((const CPersonalInfoAgreement*)&m_state);
+        ((CPersonalInfoAgreement*)FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance())))->SendAgreement(nMode);
         ((class CPersonalInfoAgreement*)(unsigned char*)(FUN_140a46860(reinterpret_cast<Unk_PiSettings*>(CGameOption::GetInstance()))))->FUN_141262090();
     }
 }
@@ -192,8 +192,8 @@ void CGameOptionPersonalInfoAgreement::vfunc_10()   // @0x140a461f0
 void CGameOptionPersonalInfoAgreement::vfunc_12()   // @0x140a462f0
 {
     CBaseOption::vfunc_12();
-    FUN_141261d20(&m_state);
-    FUN_141261d40(&m_state);
+    ((CPersonalInfoAgreement*)&m_state)->FUN_141261d20();
+    ((CPersonalInfoAgreement*)&m_state)->FUN_141261d40();
     vfunc_6();
 }
 

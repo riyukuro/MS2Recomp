@@ -219,8 +219,8 @@ extern int FUN_140873420(void*,const char*,CStringW*);
 extern int FUN_1401785f0(void*,const char*,std::vector<int>*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 extern int FUN_1408733e0(void*,const char*,CString*);
-extern Unk_GuildNpcKind FUN_140219f50(const CString&);
-extern Unk_GuildContribution FUN_14021a0a0(const CString&);
+int Parse_140219f50(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
+int Parse_14021a0a0(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 int FUN_1404da980(void*,const char*,Unk_GuildContribution*);
 int FUN_1404daa40(void*,const char*,Unk_GuildNpcKind*);
 extern CString FUN_14071a5b0(const CString&,const CString&);
@@ -982,7 +982,7 @@ int FUN_1404da980(void* node,const char* key,Unk_GuildContribution* result) {
     int error=XmlGetAttr((class TiXmlElement*)(node), key, text);
     if (error != 0)
         return error;
-    *result=FUN_14021a0a0(text);
+    *result=((enum Unk_GuildContribution)Parse_14021a0a0(text));
     return error;
 }
 // @0x1404daa40
@@ -997,7 +997,7 @@ int FUN_1404daa40(void* node,const char* key,Unk_GuildNpcKind* result) {
     int error=XmlGetAttr((class TiXmlElement*)(node), key, text);
     if (error != 0)
         return error;
-    *result=FUN_140219f50(text);
+    *result=((enum Unk_GuildNpcKind)Parse_140219f50(text));
     return error;
 }
 

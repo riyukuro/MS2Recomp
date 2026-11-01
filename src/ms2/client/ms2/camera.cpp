@@ -1254,7 +1254,7 @@ void CameraMgr::FUN_140aece50()
         return;
     if (!FUN_140aed4b0())
         return;
-    Unk_CameraTargetEntity* pTarget = FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = reinterpret_cast<Unk_CameraManager*>(this)->FUN_140a38d60();
     if (!pTarget)
         return;
     {
@@ -2125,9 +2125,9 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
             m_flyBy.m_to.m_24 = spNext->FUN_140af8140();
             if (spNext->vfunc_28())
             {
-                if (FUN_140a38d60())
+                if (reinterpret_cast<Unk_CameraManager*>(this)->FUN_140a38d60())
                 {
-                    Vector3 ptTarget = FUN_140a38d60()->vfunc_17();
+                    Vector3 ptTarget = reinterpret_cast<Unk_CameraManager*>(this)->FUN_140a38d60()->vfunc_17();
                     ptTarget.z += m_spTargetMode->vfunc_27();
                     if (FUN_140af7e30() == 2)
                         m_flyBy.m_to.m_c = ptTarget.FUN_14097fd50(((CTargetCameraMode*)m_spTargetMode.get())->FUN_14183c370());
@@ -2253,9 +2253,9 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     int bAttach = pParam->m_bAttachToNode;
     NiNodePtr spCam = 0;
     NiNodePtr spParent = 0;
-    if (bAttach && !FUN_140a38d60())
+    if (bAttach && !reinterpret_cast<Unk_CameraManager*>(this)->FUN_140a38d60())
         return;
-    NiNode* pTargetRoot = reinterpret_cast<NiNode*>(FUN_141b6efc0(((class GameObject*)(class Unk_CameraTargetEntity*)(FUN_140a38d60()))->FUN_14123c410()));
+    NiNode* pTargetRoot = reinterpret_cast<NiNode*>(FUN_141b6efc0(((class GameObject*)(class Unk_CameraTargetEntity*)(reinterpret_cast<Unk_CameraManager*>(this)->FUN_140a38d60()))->FUN_14123c410()));
     m_effect.m_spScene = ((class Unk_CamNifCache*)FUN_140a0afd0())->FUN_141551ea0(FUN_140298360("./Data/Resource/Model/Camera/", pParam->m_strFilePath), 0, 5, 0, 0);
     if (m_effect.m_spScene != 0)
     {

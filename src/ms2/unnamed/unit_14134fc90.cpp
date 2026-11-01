@@ -19,7 +19,7 @@
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
-
+class MyPC { public: class Unk_PCCubeCraft * GetActiveCubeCraft(void); };
 // return types of the getters this unit calls
 class Unk_SoundSink;
 
@@ -121,7 +121,7 @@ int UIHouseDemolishDialog::vfunc_84()
         return 0;
     if (pPC->FUN_141659690() != 0)
         return 0;
-    Unk_DemolishCube* pCube = pPC->FUN_141530290();
+    Unk_DemolishCube* pCube = ((class Unk_DemolishCube *)((class MyPC*)(pPC))->GetActiveCubeCraft());
     if (pCube == 0)
         return 0;
     if (((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180() != 0)
@@ -236,7 +236,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
                 {
                     int nCount = 0;
                     int nLimit = 0;
-                    ((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit);
+                    ((bool)((class CubeMapInformationService*)(((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit));
                     MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textField");
                     if (spText.get() != 0)
                     {
@@ -252,7 +252,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textKey");
         if (spText.get() != 0)
         {
-            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0);
+            CStringW strText = reinterpret_cast<Unk_DemolishTable*>((class CKeyTable*)((FUN_1409331f0())))->FUN_14142d760(0x493ed, 0);
             spText->FUN_1422c4f00(strText);
         }
     }

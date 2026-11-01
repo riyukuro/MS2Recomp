@@ -27,27 +27,34 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
-class Unk_DTEvents {public:void FUN_140da5430(int,Delegate<void(GameEventVariable*)>);void FUN_140da5490(int,Delegate<void(GameEventVariable*)>);};class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
+#include "ms2/placeholder/asitemslot.h"
+#include "ms2/placeholder/gameeventuservaluemanager.h"
+#include "ms2/client/ms2/gameeventcli.h"
+#include "ms2/commonfiles/itemgift.h"
+class Unk_DTEntry:public GameEventAttendGiftCli {};
+template<> inline bool MS2Ptr<ItemGift>::operator==(ItemGift* p)const{return m_p==p;}
+class Unk_BonusBar* FUN_140933220();
+
 class Unk_DTPackets {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 class Unk_DTInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1();};
 struct Unk_DTInputPrefix {void* p0;Unk_DTInput stream;};
 struct Unk_DTNoticePrefix {void* p0;void* p8;void* p10;int kind;};
 class Unk_DTUIManager {public: };
 template<class T> T* FindDTDialog(int id){if(reinterpret_cast<Unk_DTUIManager*>(TSingleton<CUIService>::GetInstance())){MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);if(p.get())return dynamic_cast<T*>((UIObject*)p);}return 0;}
-template<> inline bool MS2Ptr<Unk_DTReward>::operator==(Unk_DTReward* p)const{return m_p==p;}
+
 // @0x140c032b0
 UIDTAttendPopup::UIDTAttendPopup(){
  m_2c=0x19;m_80=1;FUN_141925e70(0,1);
- ((class Unk_DTEvents*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
+ ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
  ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
- FUN_140939a10()->RegisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
+ reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c035d0
 UIDTAttendPopup::~UIDTAttendPopup(){
- ((class Unk_DTEvents*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
+ ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
  ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
- FUN_140939a10()->UnregisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
+ reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c03850
 CString UIDTAttendPopup::GetTypeName(){return "DTAttendPopup";}
@@ -61,7 +68,7 @@ void UIDTAttendPopup::OnLoadComplete(){
  do{m_30->FUN_140bc71c0("m_item",m_item);if(m_item==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(49),__FUNCTION__));}while(0);
  do{m_item->FUN_140beaf20("m_time",m_time);if(m_time==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(50),__FUNCTION__));}while(0);
  do{m_item->FUN_140bc7100("m_icon",m_icon);if(m_icon==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(51),__FUNCTION__));}while(0);
- m_item->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDTAttendPopup::OnClick),0);
+ m_item->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDTAttendPopup::OnClick),(void*)0);
  Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e.get()){UpdateIcon();SetTime(e->FUN_140ce3a20());}
 }
 MS2_REPLACE_METHOD(0x140C038D0, UIDTAttendPopup, OnLoadComplete, 1593, 0x97BC5526);
@@ -69,10 +76,10 @@ MS2_REPLACE_METHOD(0x140C038D0, UIDTAttendPopup, OnLoadComplete, 1593, 0x97BC552
 void UIDTAttendPopup::vfunc_26(){UIDialog::vfunc_26();m_item=0;m_time=0;m_icon=0;}
 MS2_REPLACE_METHOD(0x140C03F70, UIDTAttendPopup, vfunc_26, 87, 0x322058B9);
 // @0x140c03fd0
-void UIDTAttendPopup::vfunc_72(){if(!FUN_141924630())return;if(!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000))return;{Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0||e->FUN_140ce35c0()){vfunc_67();return;}unsigned remain=e->FUN_140ce3a20();if(remain==0)Request();else SetTime(remain);}}
+void UIDTAttendPopup::vfunc_72(){if(!FUN_141924630())return;if(!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000))return;{Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0||e->IsCheckedInToday()){vfunc_67();return;}unsigned remain=e->FUN_140ce3a20();if(remain==0)Request();else SetTime(remain);}}
 MS2_REPLACE_METHOD(0x140C03FD0, UIDTAttendPopup, vfunc_72, 233, 0xFA61125E);
 // @0x140c040c0
-void UIDTAttendPopup::AddEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.insert(std::make_pair(e->FUN_1402e1d00(),e));RefreshVisibility();}
+void UIDTAttendPopup::AddEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.insert(std::make_pair((unsigned long)e->FUN_1402e1d00(),e));RefreshVisibility();}
 MS2_REPLACE_METHOD(0x140C040C0, UIDTAttendPopup, AddEntry, 207, 0x963AF570);
 // @0x140c041a0
 void UIDTAttendPopup::RemoveEntry(Unk_DTPtr<Unk_DTEntry> e){if(!e->FUN_140ce3510())return;m_entries.erase(e->FUN_1402e1d00());RefreshVisibility();}
@@ -81,16 +88,16 @@ MS2_REPLACE_METHOD(0x140C041A0, UIDTAttendPopup, RemoveEntry, 132, 0x8442B6F4);
 void UIDTAttendPopup::RefreshVisibility(){if(CanShow()){if(!FUN_141924630())FUN_141924680();}else if(FUN_141924630())vfunc_67();}
 MS2_REPLACE_METHOD(0x140C04230, UIDTAttendPopup, RefreshVisibility, 90, 0xC83AE185);
 // @0x140c04290
-void UIDTAttendPopup::UpdateIcon(){if(m_item==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return;MS2Ptr<Unk_DTReward> reward=e->FUN_140ce3710(e->FUN_140ce3690());if(reward==0)return;m_icon->FUN_1409ba630(*reinterpret_cast<Unk_DTItemData*>(reinterpret_cast<char*>(reward.operator->())+0x18));}
+void UIDTAttendPopup::UpdateIcon(){if(m_item==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return;MS2Ptr<ItemGift> reward=e->GetGiftByDay(e->GetAttendedDays());if(reward==0)return;m_icon->FUN_1409ba630(*reinterpret_cast<Unk_ItemSlotSource*>(reinterpret_cast<char*>(reward.operator->())+0x18));}
 MS2_REPLACE_METHOD(0x140C04290, UIDTAttendPopup, UpdateIcon, 275, 0xA850FFEE);
 // @0x140c043b0
 void UIDTAttendPopup::SetTime(unsigned sec){if(m_time==0)return;m_time->FUN_1422c4cd0(StringFormat(L"{0:02}:{1:02}",sec/60,sec%60));}
 MS2_REPLACE_METHOD(0x140C043B0, UIDTAttendPopup, SetTime, 179, 0xFC1A1CC5);
 // @0x140c04470
-void UIDTAttendPopup::Request(){if(!reinterpret_cast<Unk_IntervalTimer&>(m_requestTick).Check(5000))return;if(m_entries.size()==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e->FUN_140ce35c0())return;COutPacket packet(static_cast<int>(SendOp::Attendance),0);packet.Encode1(0);FUN_140710590(packet);}
+void UIDTAttendPopup::Request(){if(!reinterpret_cast<Unk_IntervalTimer&>(m_requestTick).Check(5000))return;if(m_entries.size()==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e->IsCheckedInToday())return;COutPacket packet(static_cast<int>(SendOp::Attendance),0);packet.Encode1(0);FUN_140710590(packet);}
 MS2_REPLACE_METHOD(0x140C04470, UIDTAttendPopup, Request, 207, 0xFE00C17A);
 // @0x140c04550
-bool UIDTAttendPopup::CanShow(){Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return false;if(e->FUN_140ce3690()>=e->FUN_140ce3660())return false;return !e->FUN_140ce35c0();}
+bool UIDTAttendPopup::CanShow(){Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return false;if(e->GetAttendedDays()>=e->FUN_140ce3660())return false;return !e->IsCheckedInToday();}
 MS2_REPLACE_METHOD(0x140C04550, UIDTAttendPopup, CanShow, 220, 0x2442908C);
 // @0x140c04640
 void UIDTAttendPopup::OnPacket(CInPacket& p){int code=(&reinterpret_cast<Unk_DTInputPrefix*>(&p)->stream)->vfunc_1();if(code==3)RefreshVisibility();}

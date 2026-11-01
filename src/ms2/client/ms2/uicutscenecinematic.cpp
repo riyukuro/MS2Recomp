@@ -54,6 +54,7 @@
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
+class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
 // ---- unit-local views of exe objects (Unk_ names and member names are invented) ----
 
@@ -83,8 +84,6 @@ class Unk_CscEffects : public CEffectService
 {
 public:
 };
-class Unk_CscVoiceProp : public CPtred { public: void FUN_141791400(int nGender, int nJob, CString& strEvent); };
-class Unk_CscSoundProps { public: MS2Ptr<Unk_CscVoiceProp> FUN_141793110(const CString& strName); };
    // the length of a sound, -1 if absent
 CSoundService* FUN_140c9cb10();
 
@@ -97,10 +96,10 @@ public:
     static class Unk_AkoCutscene* GetInstance();
 };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-class Unk_CscKeyTable { public: CStringW FUN_14142d760(int nKey, int nKind); };   // the key name of a binding
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_CscKeyTable (calls cast back)
-class Unk_CscUiScale { public: float FUN_1422afec0(int nUiId); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_CscUiScale (calls cast back)
+class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // ckeytable.h's key table: the key name of a binding
+class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
+class GFxManager { public: float FUN_1422afec0(int nUiId); };   // the GFx manager (UI scale)
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);   // new ASGameEntity(root, nUiId)
 
 class Unk_CscTextKeys : public CServerStringGroup { };
@@ -186,7 +185,7 @@ void UICutSceneCinematic::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     do{m_30->FUN_140bc71c0("m_skip",m_spSkip);if(m_spSkip==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(90),__FUNCTION__));}while(0);
-    m_spSkip->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICutSceneCinematic::FUN_141909460), 0);
+    m_spSkip->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICutSceneCinematic::FUN_141909460), (void*)0);
     switch (m_nMode)
     {
     case 1:
@@ -201,7 +200,7 @@ void UICutSceneCinematic::OnLoadComplete()
     }
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
-        strKey = reinterpret_cast<Unk_CscKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
+        strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
     FUN_141907d60(m_nSkipState, CStringW(strKey), CStringW(m_strSkipLabel));
 }
 
@@ -221,7 +220,7 @@ void UICutSceneCinematic::vfunc_43()
     if (spEntity.get())
     {
         spEntity->vfunc_2(5, 1, 1);
-        float fScale = reinterpret_cast<Unk_CscUiScale*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
+        float fScale = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
         spEntity->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
     }
 }
@@ -518,7 +517,7 @@ void UICutSceneCinematic::FUN_1419092a0(CStringW& strText)
 {
     strText = reinterpret_cast<Unk_CscTexts*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strText);
     strText.Replace(L"\\n", L"\n");
-    FUN_1403b4750()->FUN_1416fb300(strText);
+    FUN_1403b4750()->ReplaceObjectAndValueWords(strText);
 }
 MS2_REPLACE_METHOD(0x1419092A0, UICutSceneCinematic, FUN_1419092a0, 145, 0x2D9D36A2);
 
@@ -560,7 +559,7 @@ void UICutSceneCinematic::FUN_141909490()
 {
     if (m_30 == 0)
         return;
-    m_30->FUN_14129cce0("setCinematic", m_nCinematicId, CStringW(m_strText));
+    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("setCinematic", m_nCinematicId, CStringW(m_strText));
 }
 MS2_REPLACE_METHOD(0x141909490, UICutSceneCinematic, FUN_141909490, 184, 0x56FF538B);
 
@@ -629,14 +628,14 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
     if (strText.IsEmpty())
         return;
     unsigned nSound = 0;
-    MS2Ptr<Unk_CscVoiceProp> spVoice = reinterpret_cast<Unk_CscSoundProps*>(TSingleton<SoundPropertyMgr>::GetInstance())->FUN_141793110(strSound);
+    MS2Ptr<TriggerVoiceProperty> spVoice = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793110(strSound);
     if (spVoice.get())
     {
         MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC)
         {
             CString strEvent;
-            spVoice->FUN_141791400(reinterpret_cast<PC*>(pPC)->FUN_141658e60(), reinterpret_cast<PC*>(pPC)->FUN_141654700(), strEvent);
+            spVoice->GetVoice(reinterpret_cast<PC*>(pPC)->FUN_141658e60(), reinterpret_cast<PC*>(pPC)->FUN_141654700(), strEvent);
             if (!strEvent.IsEmpty())
             {
                 size_t nBank = 0;
@@ -728,7 +727,7 @@ void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
     m_strSkipMsg = packet.ReadString();
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
-        strKey = reinterpret_cast<Unk_CscKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
+        strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
     FUN_141907d60(nType, CStringW(strKey), CStringW(strLabel));
 }
 MS2_REPLACE_METHOD(0x14190A4C0, UICutSceneCinematic, FUN_14190a4c0, 523, 0xECC7A13D);

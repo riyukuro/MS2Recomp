@@ -13,6 +13,7 @@
 // MS2-PIN: ??$Call@VUILevelUpGuideDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUILevelUpGuideDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUILevelUpGuideDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140f8c1f0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uilevelupguidedialog.cpp"
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uilevelupguidedialog.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -52,18 +53,6 @@
 
 // ---- unit-local views of exe types ----
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_LgList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
 class Unk_LgCheck : public ASButton
 {
 public:
@@ -491,7 +480,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
             strTitle = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_title_equal"), m_1c8.m_nLow);
         spLevel->FUN_1422c4cd0(strTitle);
     }
-    if (MS2Ptr<Unk_LgList> spList = FUN_140ba4b70("m_contentsList")) {
+    if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_contentsList")) {
         spList->Invoke("resetRenderer");
         reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();
         reinterpret_cast<ASTileList*>(spList.operator->())->FUN_1422cf4f0(0);

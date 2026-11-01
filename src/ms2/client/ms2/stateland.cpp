@@ -60,7 +60,8 @@ public:
     egf::EntityID FUN_140cfaf70();                          // id of the entity stood on
     void FUN_140cfb020(egf::Entity* pEntity);               // set the entity stood on
 };
-class Unk_LandBody { public: Unk_LandHitReport* FUN_141240f20(); };
+class GameObjectControllerHitReport;
+class GameObjectController { public: GameObjectControllerHitReport* FUN_141240f20(); };   // C3: unit-local view
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 // The actor's buff set.
@@ -115,8 +116,8 @@ void StateLand::vfunc_4(StateData* pData)
     int nHit = ((class Unk_LandPhysX*)FUN_1409f7ca0())->FUN_14168a310(kFrom, &kHit, &kRay, 50.0f, &kNormal, 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
-        if (*FUN_1408b76f0(kRay.m_hitEntity) != ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfaf70())
-            ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfb020(kRay.m_hitEntity);
+        if (*FUN_1408b76f0(kRay.m_hitEntity) != ((Unk_LandHitReport*)((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20())->FUN_140cfaf70())
+            ((Unk_LandHitReport*)((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20())->FUN_140cfb020(kRay.m_hitEntity);
     }
     m_pOwner->vfunc_93(true);
     reinterpret_cast<CGroundEffectDataManager*>(TSingleton<CGroundEffectDataManager>::GetInstance())->PlayEffects(m_pOwner, CString("land"));

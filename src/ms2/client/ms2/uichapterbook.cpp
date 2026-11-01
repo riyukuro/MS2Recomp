@@ -99,9 +99,9 @@ void UIChapterBook::OnLoadComplete()
             CStringW strEpilogue = GetStringTable()->FUN_141811980(0x3a, m_nEpilogue);
             FUN_1403b4750()->FUN_1416fb340(strEpilogue);
             ASObj obj(2);
-            obj.FUN_1407cb9c0("id", spBook->m_nId);
-            obj.FUN_1407cbb20("chapter", GetStringTable()->FUN_141811980(0x39, m_nEpilogue));
-            obj.FUN_1407cbb20("epilogue", CStringW(strEpilogue));
+            ((class AScript&)(obj)).FUN_1407cb9c0("id", spBook->m_nId);
+            ((class AScript&)(obj)).FUN_1407cbb20("chapter", GetStringTable()->FUN_141811980(0x39, m_nEpilogue));
+            ((class AScript&)(obj)).FUN_1407cbb20("epilogue", CStringW(strEpilogue));
             for (unsigned __int64 i = 0; i < spBook->m_rewards.GetCount(); i++)
             {
                 Unk_ChapterReward& reward = spBook->m_rewards[i];
@@ -112,7 +112,7 @@ void UIChapterBook::OnLoadComplete()
                         continue;
                     ASObj objReward(2);
                     objReward.FUN_1407cba60("icon", spItem->GetIconPath());
-                    objReward.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(1, reward.m_item.m_itemId));
+                    ((class AScript&)(objReward)).FUN_1407cbb20("name", GetStringTable()->FUN_141811980(1, reward.m_item.m_itemId));
                     objReward.FUN_1409c0d20("count", reward.m_item.m_count);
                     obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
                 }
@@ -123,14 +123,14 @@ void UIChapterBook::OnLoadComplete()
                     CStringW strKey(L"s_chapterbook_skill_point");
                     if (reward.m_nKind == 2)
                         strKey = L"s_achieve_reward_skill_point_sub_1";
-                    objReward.FUN_1407cbb20("name", FUN_14062b4f0(strKey, &reward.m_nValue));
+                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14062b4f0(strKey, &reward.m_nValue));
                     obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
                 }
                 else if (reward.m_nType == 2)
                 {
                     ASObj objReward(2);
                     objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->m_strStatIcon);
-                    objReward.FUN_1407cbb20("name", FUN_14062b4f0(CStringW(L"s_chapterbook_stat_point"), &reward.m_nValue));
+                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14062b4f0(CStringW(L"s_chapterbook_stat_point"), &reward.m_nValue));
                     obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
                 }
             }

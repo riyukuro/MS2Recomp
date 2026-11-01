@@ -42,7 +42,7 @@ public:
 // ---- unrecovered helpers (the tinyxml wrappers and the singletons the other table units share) ----
 
 class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
+class CFileSystem * GetFileSystem(void);
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
@@ -178,7 +178,7 @@ RewardPreviewInfo::RewardPreviewInfo()
 void RewardPreviewInfo::Load(Unk_140165cf0* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_id));
-    for (Unk_140165cf0* pNode = pElem->FUN_140165cf0("item"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pElem))->FirstChild("item")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("item")))
     {
         if (!FUN_14028f710(pNode))
             continue;
@@ -387,15 +387,15 @@ bool CRewardPreviewTable::LoadBoss()
 {
     CString strPath = FUN_14071a5b0("Table", "RewardPreview_boss.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("preview"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
     {
         unsigned nId = 0;
         if (XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId)) != 0)
@@ -413,15 +413,15 @@ bool CRewardPreviewTable::LoadDungeon()
 {
     CString strPath = FUN_14071a5b0("Table", "RewardPreview_dungeon.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("preview"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
     {
         int nId;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));

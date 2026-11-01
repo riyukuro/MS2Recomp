@@ -14,20 +14,11 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class CMsgBoxData;
-class Unk_RevCheck;
-class Unk_RevFieldRef;
+class CFieldDataCli;
 
-// A throttle with a 64-bit millisecond tick (ctor 0x140517b00).
-class Unk_RevTick
-{
-public:
-    Unk_RevTick();                                                  // 0x140517b00
-private:
-    unsigned __int64 m_tick;
-};
-MS2_CHECK_SIZE(Unk_RevTick, 8);
 
 class UIRevivalDialog : public UIDialog
 {
@@ -65,8 +56,7 @@ public:
     void FUN_141abd290();                                           // refresh the meso button
     void FUN_141abd640();                                           // the coupon check box state
     CStringW FUN_141abd790();                                       // the first button label
-    int FUN_141abdab0(Unk_RevFieldRef spField);                     // the revival is allowed in this field
-    MS2Ptr<Unk_RevCheck> FUN_140e52670(const CString& strName);     // check box child lookup (UIDialog member)
+    int FUN_141abdab0(MS2Ptr<CFieldDataCli> spField);                     // the revival is allowed in this field
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -76,7 +66,7 @@ private:
     __int64 m_198;                                                  // +0x198 the cost shown on the meso button
     int m_1a0;                                                      // +0x1a0
     int m_1a4;                                                      // +0x1a4
-    Unk_RevTick m_1a8;                                              // +0x1a8 the refresh throttle
+    Unk_IntervalTimer m_1a8;                                              // +0x1a8 the refresh throttle
     int m_1b0;                                                      // +0x1b0 1: the first button leaves the field
     int m_1b4;                                                      // +0x1b4 payment kind: 0 none, 1 merat, 2 meso
 };

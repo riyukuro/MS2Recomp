@@ -50,7 +50,8 @@ egmAnimation::AnimationService* FUN_141b6f910();
 
 // The efd::Point3 *.
 class Unk_JpConsts { public: char m_pad[0x48e8]; };
-class Unk_JpScale { public: float* FUN_140298f40(); };
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+class Unk_JpScale { public: };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The actor's physics body.
@@ -131,7 +132,7 @@ void StateJump::vfunc_4(StateData* pData)
     m_pSeat = 0;
     m_f60 = -FLT_MAX;
     m_v64 = efd::Point3::ZERO;
-    m_vDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+    m_vDir = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     m_n54 = 1;
     m_fSpeed = m_pOwner->FUN_141671940();
     m_nOnGround = m_pOwner->FUN_1416749c0();
@@ -146,7 +147,7 @@ void StateJump::vfunc_4(StateData* pData)
     {
         pPC->FUN_141676060(m_pOwner->vfunc_18());
         pPC->SendStateChange(0, 6);
-        MS2Ptr<Unk_HsInfo> spInfo = pPC->FUN_141664200();
+        MS2Ptr<Unk_HsInfo> spInfo = pPC->GetHideAndSeekInfo();
         if (spInfo.get() ? true : false)
         {
             if (spInfo->FUN_14050a6a0() == 1)
@@ -192,7 +193,7 @@ void StateJump::vfunc_3(double fTime)
     Unk_JpBody* pBody = JpBody(m_pOwner);
     if (pBody->IsJumping() != 0)
     {
-        efd::Point3 kWorld = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+        efd::Point3 kWorld = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
         if (m_pOwner->FUN_14166dbb0() != efd::Point3::ZERO)
         {
             m_vDir = m_pOwner->FUN_14166dbb0();
@@ -216,7 +217,7 @@ void StateJump::vfunc_3(double fTime)
                 m_vDir = kWorld;
             }
         }
-        float fScale = *reinterpret_cast<Unk_JpScale*>(reinterpret_cast<char*>(((class Unk_JpConsts*)FUN_1401d3200())) + 0x48e8)->FUN_140298f40();
+        float fScale = reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(reinterpret_cast<char*>(((class Unk_JpConsts*)FUN_1401d3200())) + 0x48e8)->FUN_140298f40());
         JpBody(m_pOwner)->SetKVelocity((m_vDir * m_pOwner->vfunc_95()) * fScale);
         efd::Point3 kMove = efd::Point3::ZERO;
         m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
@@ -298,7 +299,7 @@ void StateJump::vfunc_9(double fTime)
     }
     if (nLimit <= JpBody(m_pOwner)->FUN_141240ef0())
     {
-        m_pOwner->FUN_14166dda0(5);
+        m_pOwner->PlayAnimationById(5);
         return;
     }
     if (m_n10 == 0x27 || m_n10 == 0x21 || m_n10 == 0x22 || m_n10 == 0x23 || m_n10 == 0x24)

@@ -19,6 +19,8 @@ extern "C" long long __cdecl llabs(long long);
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/skillrecord.h"
+#include "ms2/placeholder/fittingdollpc.h"
 #include <Shlwapi.h>
 #include <cstdlib>
 
@@ -30,17 +32,10 @@ CStringW FUN_140719a00(__int64);
 CStringW FUN_1407197a0(float);
 float FUN_140718480(const CStringW&);
 CStringW FUN_14083cb20(const CStringW&);
-CStringW FUN_14052bd00(int,const CStringW&);
+template <class A> CStringW FormatStringId(int nStringId, const A& a);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_141b70810(unsigned,CStringW&);
 CString FUN_1401d4330(const wchar_t*,int);
-class Unk_BattleBytes {
-public: Unk_BattleBytes(const CString&) noexcept; // ctor 0x1402923c0
-     ~Unk_BattleBytes(); // dtor 0x140297740
-     int FUN_140298f20() noexcept; const void* FUN_140297d10() noexcept;
-private: void* data;
-};
-MS2_CHECK_SIZE(Unk_BattleBytes,8);
 class Unk_BattleActor {
 public:
     virtual void vfunc_0();
@@ -121,11 +116,6 @@ public:
     virtual void vfunc_75();
     virtual void vfunc_76();
     virtual CStringW vfunc_77();
-    unsigned FUN_141654700();
-};
-class Unk_BattleNpc : public CNpc { public: unsigned FUN_141094f40();};
-class Unk_BattleWorld {
-public: __int64 FUN_141bd1980(unsigned); Unk_BattleNpc* FUN_141bd13a0(unsigned);
 };
 struct Unk_BattleDamage {
     unsigned __int64 pad_0;
@@ -148,8 +138,7 @@ struct Unk_BattleDamage {
     unsigned __int64 pad_88;
     ATL::CAtlArray<int> hitTypes;
     // The damage values array is queried only for its length; preserve the original accessor ABI.
-    struct Values { size_t FUN_1401b8910() const; void* p; size_t count; size_t capacity; int grow; } values;
-    __int64 FUN_14175ac30();
+    ATL::CAtlArray<__int64> values;
 };
 MS2_CHECK_OFFSET(Unk_BattleDamage,target,0x28);
 MS2_CHECK_OFFSET(Unk_BattleDamage,source,0x2c);
@@ -173,7 +162,7 @@ MS2_REPLACE_METHOD(0x140a03160, CBattleRecord, AddAmount, 50, 0xA1A69779);
 void CBattleRecord::Reset() { memset(counts,0,sizeof(counts)); }
 MS2_REPLACE_METHOD(0x140a031a0, CBattleRecord, Reset, 29, 0x5DA57EF7);
 // @0x140a031d0
-CBattleRecordGroup::CBattleRecordGroup(int value) : active(0),start(0),type(value) { file.handle=INVALID_HANDLE_VALUE; }
+CBattleRecordGroup::CBattleRecordGroup(int value) : active(0),start(0),type(value) { file.m_h=INVALID_HANDLE_VALUE; }
 // @0x140a03290
 CBattleRecordGroup::~CBattleRecordGroup() { Clear(); }
 // @0x140a03300
@@ -230,8 +219,8 @@ void CBattleRecordGroup::FUN_140a03920() {
         if(!GetFullPathNameA(dir,MAX_PATH,full,0)) { MS2_ASSERT_AT(227,0); return; }
         if(!PathIsDirectoryA(full)) CreateDirectoryA(full,0);
         PathCombineA(path,full,filename);
-        file.FUN_1402989b0(path,GENERIC_WRITE,3,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0,0);
-        file.FUN_140299c20(0,FILE_END);
+        file.Create(path,GENERIC_WRITE,3,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0,0);
+        file.Seek(0,FILE_END);
     }
 }
 MS2_REPLACE_METHOD(0x140a03920, CBattleRecordGroup, FUN_140a03920, 517, 0xD0AF2240);
@@ -239,17 +228,17 @@ MS2_REPLACE_METHOD(0x140a03920, CBattleRecordGroup, FUN_140a03920, 517, 0xD0AF22
 void CBattleRecordGroup::WriteLogLine(const CString& text) {
     if(!DAT_143ab5b00) return; {
         SYSTEMTIME time; GetLocalTime(&time); CString line; line.Format("%02d:%02d:%02d\t",time.wHour,time.wMinute,time.wSecond); line.Append(text);
-        Unk_BattleBytes bytes(line); file.FUN_140299dc0(bytes.FUN_140297d10(),bytes.FUN_140298f20(),0);
+        CAtlStringA bytes(line); file.Write(bytes.GetString(),bytes.GetLength(),(DWORD*)0);
     }
 }
 MS2_REPLACE_METHOD(0x140a03b30, CBattleRecordGroup, WriteLogLine, 246, 0x2A052D05);
 // @0x140a03c30
-void CBattleRecordGroup::CloseLogFile() { if(file.handle!=INVALID_HANDLE_VALUE) { file.FUN_140717be0(); file.FUN_1402988c0(); file.handle=INVALID_HANDLE_VALUE; } }
+void CBattleRecordGroup::CloseLogFile() { if(file.m_h!=INVALID_HANDLE_VALUE) { file.Flush(); file.Close(); file.m_h=INVALID_HANDLE_VALUE; } }
 MS2_REPLACE_METHOD(0x140a03c30, CBattleRecordGroup, CloseLogFile, 73, 0xC1B25F1F);
 // @0x140a03c80
 void CBattleRecordGroup::LogAmount(__int64 id,int type,__int64 amount) {
     Unk_BattleActor* actor=reinterpret_cast<Unk_BattleActor*>(WorldService::GetInstance()->FUN_141bd1530(id));
-    if(!actor) return; { CString text; text.Format("%s\t%d\t%d\t%u\r\n",(const char*)FUN_1401d4330(actor->vfunc_77(),0),actor->FUN_141654700(),type,amount); WriteLogLine(text); }
+    if(!actor) return; { CString text; text.Format("%s\t%d\t%d\t%u\r\n",(const char*)FUN_1401d4330(actor->vfunc_77(),0),reinterpret_cast<PC*>(actor)->FUN_141654700(),type,amount); WriteLogLine(text); }
 }
 MS2_REPLACE_METHOD(0x140a03c80, CBattleRecordGroup, LogAmount, 321, 0xCE2B9BD6);
 // @0x140a03dd0
@@ -308,7 +297,7 @@ CStringW CBattleRecordManager::FUN_140a04830(int group,__int64 id,int type) {
     CBattleRecordGroup::Ptr record=groups[group]->GetRecord(id); if(record==0) return CStringW();
     switch(type) {
     case 0: case 1: case 2: case 3: case 6: case 7: case 8: return StringFormat<CStringW>(L"{0}",FUN_14083cb20(FUN_140a04260(group,id,type)));
-    case 4: case 5: return FUN_14052bd00(0x98e,StringFormat(L"{0:0.2f}",FUN_140718480(FUN_140a04260(group,id,type))));
+    case 4: case 5: return FormatStringId(0x98e,StringFormat(L"{0:0.2f}",FUN_140718480(FUN_140a04260(group,id,type))));
     }
     return CStringW();
 }
@@ -335,18 +324,18 @@ MS2_REPLACE(0x140a04bc0, CBattleRecordManager::FUN_140a04bc0, 762, 0x64D39263);
 // @0x140a04ef0
 void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
     if(!damage) return;
-    __int64 source=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(damage->source);
-    if(!source) { Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd13a0(damage->source); if(npc && npc->FUN_141094f40()) source=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(npc->FUN_141094f40()); }
-    __int64 target=reinterpret_cast<Unk_BattleWorld*>(WorldService::GetInstance())->FUN_141bd1980(damage->target);
+    __int64 source=WorldService::GetInstance()->FUN_141bd1980(damage->source);
+    if(!source) { CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd13a0(damage->source)); if(npc && npc->GetOwnerId()) source=WorldService::GetInstance()->FUN_141bd1980(npc->GetOwnerId()); }
+    __int64 target=WorldService::GetInstance()->FUN_141bd1980(damage->target);
     for(unsigned i=0;i<3;++i) {
         Ptr group=groups[i]; if(!group->IsActive()) continue;
         CBattleRecordGroup::Ptr record=group->GetRecord(source);
         if(record.get()) {
-            unsigned count=(unsigned)damage->values.FUN_1401b8910();
+            unsigned count=(unsigned)damage->values.GetCount();
             group->RecordAmount(record,2,count);
-            group->RecordAmount(record,0,std::abs(damage->FUN_14175ac30()));
-            Unk_BattleNpc* npc=reinterpret_cast<Unk_BattleNpc*>(WorldService::GetInstance()->FUN_141bd1320(damage->target));
-            if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(damage->FUN_14175ac30()));
+            group->RecordAmount(record,0,std::abs(reinterpret_cast<CDamageRecord*>(damage)->FUN_14175ac30()));
+            CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(damage->target));
+            if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(reinterpret_cast<CDamageRecord*>(damage)->FUN_14175ac30()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {
                 case 0: group->RecordAmount(record,3,1); break;
@@ -355,7 +344,7 @@ void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
             }
         }
         CBattleRecordGroup::Ptr victim=group->GetRecord(target);
-        if(victim.get()) group->RecordAmount(victim,1,std::abs(damage->FUN_14175ac30()));
+        if(victim.get()) group->RecordAmount(victim,1,std::abs(reinterpret_cast<CDamageRecord*>(damage)->FUN_14175ac30()));
     }
 }
 MS2_REPLACE_METHOD(0x140a04ef0, CBattleRecordManager, FUN_140a04ef0, 1432, 0x2FA35BAE);

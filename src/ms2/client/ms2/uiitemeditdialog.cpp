@@ -160,7 +160,6 @@ class Unk_IEWorld
 {
 public:
     Unk_IEPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
-    Unk_IEField* FUN_141bd3620();
 };
 
 // Misc singletons.
@@ -479,7 +478,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
         return false;
     if (m_198->FUN_140cd2a00() != 0)
         m_198->RestoreSlot(6);
-    Unk_IEField* pField = reinterpret_cast<Unk_IEWorld*>(WorldService::GetInstance())->FUN_141bd3620();
+    Unk_IEField* pField = reinterpret_cast<Unk_IEField*>(WorldService::GetInstance()->FUN_141bd3620());
     if (pField)
         pField->vfunc_149();
     ((class GFxSceneService*)(class Unk_IESound*)(((Unk_IESound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);

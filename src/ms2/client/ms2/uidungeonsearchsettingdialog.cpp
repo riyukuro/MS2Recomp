@@ -124,7 +124,7 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     m_group->FUN_1422df5f0(3);
     m_group->SetSelectedIndex(0);
     m_roomOfRow.resize(m_rows.size(), 0);
-    m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c113c0), 0);
+    m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c113c0), (void*)0);
     m_group->FUN_1422df9a0(ParamsDelegate(this, &UIDungeonSearchSettingDialog::OnGroupChanged), 0);
     m_checks.resize(m_rows.size(), MS2Ptr<ASCheckBox>(0));
     for (unsigned i = 0; i < m_rows.size(); ++i) {

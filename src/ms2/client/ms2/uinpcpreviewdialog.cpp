@@ -46,6 +46,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/placeholder/asbuttonbar.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -78,7 +79,6 @@ static Unk_1402a9d70 s_condition3(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_NpTab : public AScript
 {
 public:
-    int FUN_1422e3210();                                // the selected tab
 };
 
 // The world: the actors of an object id, the preview npc spawn / removal and the npc tree.
@@ -527,7 +527,7 @@ int UINpcPreviewDialog::FUN_141a70b90(int nRow)
             efd::SmartPointer<GameObject> spObj = npcs.GetNext(pos);
             CNpc* pNpc = FUN_141a71850(spObj);
             if (pNpc != 0 && pNpc->FUN_141092fa0() == m_nNpcId)
-                pNpc->FUN_14166fff0(CStringW(spTalk->m_contents[0]->m_text));
+                pNpc->ShowChatBalloon(CStringW(spTalk->m_contents[0]->m_text));
         }
     }
     return 1;
@@ -552,7 +552,7 @@ void UINpcPreviewDialog::FUN_141a71050(int nRow)
 int UINpcPreviewDialog::FUN_141a711b0()
 {
     if (MS2Ptr<Unk_NpTab> spTab = FUN_140c02870("m_buttonBar"))
-        return spTab->FUN_1422e3210() == 0;
+        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex() == 0;
     return 0;
 }
 

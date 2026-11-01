@@ -30,7 +30,7 @@ public:
     virtual void vfunc_24(bool bRefresh);                   // 24 0x1422c80c0
 #endif
     virtual void vfunc_25();                                // 25 0x1422de610 invoke AS "alignment" (UpdateAlignment)
-    int FUN_1422c1500();                                    // width
+    // width: ASDisplayObject::FUN_1422c1500 (inherited)
     int FUN_1422c1530();                                    // height
     void FUN_1422c0f60(float* pX, float* pY);               // get the position
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, int n);   // "createEntity" (UIHudEntity family)

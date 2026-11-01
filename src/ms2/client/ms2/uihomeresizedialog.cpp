@@ -278,9 +278,9 @@ void UIHomeResizeDialog::vfunc_84()
         bShrink = false;
     ASObj obj(2);
     int nArea;
-    obj.FUN_1407cbb20("extensionArea", FUN_14062b4f0(CStringW(L"s_home_info_area"), &(nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
+    ((class AScript&)(obj)).FUN_1407cbb20("extensionArea", FUN_14062b4f0(CStringW(L"s_home_info_area"), &(nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
     int nHeight;
-    obj.FUN_1407cbb20("extensionHeight", FUN_14062b4f0(CStringW(L"s_home_info_height"), &(nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
+    ((class AScript&)(obj)).FUN_1407cbb20("extensionHeight", FUN_14062b4f0(CStringW(L"s_home_info_height"), &(nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
     obj.FUN_1407cbbe0("shrinkEnable", bShrink);
     obj.FUN_1407cbbe0("extensionEnable", bExtend);
     dialog->FUN_140acd1f0("buildInteriorExtension", obj);

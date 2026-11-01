@@ -27,7 +27,7 @@
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
-
+class GameObjectController { public: class GameObjectControllerHitReport * FUN_141240f20(void); void FUN_141240730(void); void FUN_141241070(void); };
 // MS2Ptr members instantiated by other objs.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
 template <> bool MS2Ptr<Unk_RideeData>::operator==(Unk_RideeData* p) const;             // 0x1407893c0
@@ -179,7 +179,7 @@ StateHold::~StateHold()
 void StateHold::vfunc_4(StateData* pData)
 {
     StateMoveSkill::vfunc_4(pData);
-    ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240730();
     m_spHold.AssignRaw(dynamic_cast<StateHoldData*>(pData));
     if (m_spHold == 0)
     {
@@ -197,8 +197,8 @@ void StateHold::vfunc_4(StateData* pData)
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->FUN_140cfaf30();
-        ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141241070();
+        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240f20()->FUN_140cfaf30();
+        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141241070();
     }
 }
 
@@ -206,7 +206,7 @@ void StateHold::vfunc_4(StateData* pData)
 void StateHold::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240730();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
     MyPC* pPC = FUN_1417b84b0();
@@ -388,7 +388,7 @@ void StateHold::vfunc_9(double fTime)
         }
         return;
     }
-    m_pOwner->FUN_14166dda0(0x3e);
+    m_pOwner->PlayAnimationById(0x3e);
     }
 }
 

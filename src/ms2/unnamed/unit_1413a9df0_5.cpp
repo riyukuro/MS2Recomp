@@ -78,10 +78,10 @@ void Unk_GcAnchorPtrArray(ATL::CAtlArray<void*>& arr)
     arr.RemoveAll();
 }
 
-bool FUN_140311670(void* p);
+#include <set>
 
 // @0x1413b57d0
 bool Unk_GcNoPoint(char* p)
 {
-    return FUN_140311670(p + 0x178) == 0;
+    return reinterpret_cast<std::set<unsigned>*>(p + 0x178)->empty() == 0;
 }

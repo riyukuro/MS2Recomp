@@ -112,7 +112,7 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 // The scene graph node of a target entity (FUN_14123c410 -> FUN_141b6efc0 -> FUN_141024c90 = its world rotation).
 namespace egf { class Entity; }
 class NiAVObject;
-egf::Entity* FUN_14123c410(Unk_CameraTargetEntity* p);      // m_80 of the game object
+class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
 class NiAVObject   // C3: member view for the former free stand-ins
 {
@@ -199,7 +199,7 @@ void CConsoleCameraMode::vfunc_8(double fTime)
         Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
         if (!pTarget)
             break;
-        NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(pTarget));
+        NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->FUN_14123c410());
         if (pNode)
         {
             Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
@@ -351,7 +351,7 @@ void CConsoleCameraMode::vfunc_6(int n)
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
     {
-        NiAVObject* pNode = FUN_141b6efc0(FUN_14123c410(pTarget));
+        NiAVObject* pNode = FUN_141b6efc0(reinterpret_cast<GameObject*>(pTarget)->FUN_14123c410());
         Unk_EfdMatrix3 kRot = *((struct Unk_EfdMatrix3 const*)&((class NiAVObject*)(pNode))->GetWorldRotate());
         m_78 = pTarget->vfunc_18().FUN_14097fd50(FUN_1420834e0(m_118, kRot));
         if (n == 0)

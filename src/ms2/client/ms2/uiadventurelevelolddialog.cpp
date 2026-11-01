@@ -7,7 +7,9 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiadventurelevelolddialog.cpp"    // assumed
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiadventurelevelolddialog.h"
 
@@ -189,22 +191,8 @@ CStringW FUN_14183e9c0(CStringW str, int n);
 class Unk_1401a9d70 { public: CStringW FUN_141811980(int a1, int a2); };
 Unk_1401a9d70* FUN_1401a9d70();
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_ALList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                           // clear
-    void FUN_1422dd230(const ASObj& row);                           // append a row
-};
 
-template <> bool MS2Ptr<Unk_ALList>::operator==(Unk_ALList* p) const;      // COMDAT 0x140ba4ee0 of this unit
+template <> bool MS2Ptr<ASTileList>::operator==(ASTileList* p) const;      // COMDAT 0x140ba4ee0 of this unit
 
 // The reward-claim packets (op, id): written into packet 0xac.
 class Unk_ALClaimLevel
@@ -315,7 +303,7 @@ void UIAdventureLevelOldDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData*
     Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(nId);
     if (pAbility->m_0 == 0)
         return;
-    unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
+    unsigned short nStep = ((class CAdventureLevelAbility*)(pAbility))->GetCount(pPlayer->vfunc_141());
     MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
     if (spAttr == NULL) {
         spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, 1);
@@ -394,16 +382,16 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    MS2Ptr<Unk_ALList> spList = FUN_140ba4b70("m_abilityList");
+    MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_abilityList");
     if (spList == NULL)
         return;
     spList->Invoke("resetRenderer");
-    spList->FUN_1422dd1d0();
+    ((class ASCoreList*)(spList))->FUN_1422dd1d0();
     Unk_ALIdSet<unsigned int>& abilities = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195f50();
     for (Unk_ALIter<unsigned int> it = abilities.FUN_140194c80(); it.FUN_140195770(abilities.FUN_1401950d0()); it.FUN_1401957c0()) {
         unsigned int* pId = it.FUN_1401957b0();
         Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(*pId);
-        unsigned short nStep = pAbility->FUN_140195910(pPlayer->vfunc_141());
+        unsigned short nStep = ((class CAdventureLevelAbility*)(pAbility))->GetCount(pPlayer->vfunc_141());
         MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
         if (spAttr == NULL) {
             spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, 1);
@@ -419,12 +407,12 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         obj.FUN_1409c0d20("id", pAbility->m_0);
         obj.FUN_1407cbbe0("isLock", bLock);
         obj.FUN_1407cba60("imgPath", spAttr->GetIcon());
-        obj.FUN_1409c4a30("abilityStatus", pAbility->FUN_140195a20(pPlayer->vfunc_141()));
+        obj.FUN_1409c4a30("abilityStatus", ((class CAdventureLevelAbility*)(pAbility))->GetPercent(pPlayer->vfunc_141()));
         if (bLock)
             obj.FUN_1409c0d20("level", pAbility->m_8);
         else if ((int)nStep < pAbility->m_10)
-            obj.FUN_1409c0d20("level", pAbility->FUN_1401959d0(pPlayer->vfunc_141()));
-        spList->FUN_1422dd230(obj);
+            obj.FUN_1409c0d20("level", ((unsigned int)((class CAdventureLevelAbility*)(pAbility))->GetLevelOfCount(pPlayer->vfunc_141())));
+        ((class ASCoreList*)(spList))->AddItem(obj);
     }
     spList->vfunc_24(true);
 }
@@ -446,7 +434,7 @@ int UIAdventureLevelOldDialog::FUN_140ba61b0(ASObj& obj, unsigned int nLevel)
     obj.FUN_1407cba60("state", strState);
     unsigned int nOne = 1;
     obj.FUN_1409c0d20("level", (std::max)(nLevel, nOne));
-    obj.FUN_1407cbb20("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
+    ((class AScript&)(obj)).FUN_1407cbb20("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
     return 1;
 }
 

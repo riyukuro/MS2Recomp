@@ -256,7 +256,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             int nResult = BM_PKT->ReadUInt8();
             if (nResult == 1) {
                 CStringW strText = FUN_140938ae0(CStringW(L"s_bluemarble_result_consume_fail"), m_nConsumeItemId);
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
                 FUN_1412751f0(strText, 1, 1);
             } else if (nResult == 4) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_complete"), 1, 1);

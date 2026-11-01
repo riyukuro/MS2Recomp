@@ -16,21 +16,10 @@
 struct Unk_RrQuat { float v[4]; };
 struct Unk_RrTransform { unsigned char m_rotate[0x24]; Unk_RrPoint3 m_translate; float m_fScale; };     // the NiTransform the target hands out
 Unk_RrPoint3* FUN_14027dda0(Unk_RrPoint3* p, float x, float y, float z);
-Unk_RrMatrix3* FUN_1409f7320(Unk_RrMatrix3* p);            // identity
-extern const unsigned char DAT_143afa458[];                // NiRTTI of the target class
-Unk_RrQuat* FUN_14209b8e0(Unk_RrQuat* p, float fAngle, Unk_RrPoint3* pAxis);   // efd::Quaternion(float, const Point3&) (was mislabelled 0x14098d000, an iterator ==)
-Unk_RrMatrix3* FUN_140a34450(Unk_RrQuat* pQ, Unk_RrMatrix3* pOut);
-Unk_RrMatrix3& FUN_140a33480(Unk_RrMatrix3& a, Unk_RrMatrix3* pOut, const Unk_RrMatrix3* b);   // a * b
-void FUN_140a33240(Unk_RrMatrix3* pOut, const Unk_RrMatrix3& pSrc);
-Unk_RrQuat* FUN_140a33310(Unk_RrQuat* p);
-void FUN_140a33280(void* pOut, const Unk_RrQuat* pQ);
-void FUN_140a333e0(NiQuatTransform* pDst, const NiQuatTransform* pSrc);
+efd::Matrix3* FUN_1409f7320(efd::Matrix3* p);            // identity
 bool FUN_140552700(Unk_RrPoint3* a, Unk_RrPoint3* b);
 void FUN_140194470(Unk_RrPoint3* pDst, const Unk_RrPoint3* pSrc);
 void FUN_140a333b0(void* pThis);
-void MakeXRotation(Unk_RrMatrix3* p, float fRad);
-void MakeYRotation(Unk_RrMatrix3* p, float fRad);
-void MakeZRotation(Unk_RrMatrix3* p, float fRad);
 
 // @0x140dc9b30
 RootRotateInterpolator::RootRotateInterpolator()
@@ -38,7 +27,7 @@ RootRotateInterpolator::RootRotateInterpolator()
 {
     FUN_14027dda0(&m_axis, 0, 0, 0);
     FUN_14027dda0(&m_rotation, 0, 0, 0);
-    FUN_1409f7320(&m_matrix);
+    FUN_1409f7320((efd::Matrix3*)&m_matrix);
     m_bAlwaysUpdate = false;
     ((efd::Matrix3*)(struct Unk_RrMatrix3*)(&m_matrix))->MakeIdentity();
 }
@@ -49,7 +38,7 @@ RootRotateInterpolator::RootRotateInterpolator(const void* pUnused)
 {
     FUN_14027dda0(&m_axis, 0, 0, 0);
     FUN_14027dda0(&m_rotation, 0, 0, 0);
-    FUN_1409f7320(&m_matrix);
+    FUN_1409f7320((efd::Matrix3*)&m_matrix);
     m_bAlwaysUpdate = true;
     ((efd::Matrix3*)(struct Unk_RrMatrix3*)(&m_matrix))->MakeIdentity();
 }
@@ -57,27 +46,23 @@ RootRotateInterpolator::RootRotateInterpolator(const void* pUnused)
 // @0x140dc9c80
 bool RootRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue)
 {
-    void* pTarget = ((void*)NiObject::DynamicCast((class NiRTTI const*)(DAT_143afa458), (class NiObject const*)(pkInterpTarget)));
+    void* pTarget = ((void*)NiObject::DynamicCast(&NiAVObject::ms_RTTI, (class NiObject const*)(pkInterpTarget)));
     if (pTarget != 0)
     {
         Unk_RrTransform kLocal = *((struct Unk_RrTransform*)&((class NiAVObject*)(void*)(pTarget))->GetLocalTransform());
         ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetTranslate(*(class NiPoint3 const*)(&kLocal.m_translate));
         ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetRotate(*(class NiMatrix3 const*)(&m_matrix));
         ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetScale(kLocal.m_fScale);
-        Unk_RrQuat kAxisRot;
-        FUN_14209b8e0(&kAxisRot, 1.0471976f, &m_axis);
+        efd::Quaternion kAxisRot(1.0471976f, *(const efd::Point3*)&m_axis);
         Unk_RrMatrix3 kRot;
-        FUN_1409f7320(&kRot);
-        FUN_140a34450(&kAxisRot, &kRot);
-        Unk_RrMatrix3 kTemp, kMul;
-        FUN_140a33240(&kMul, FUN_140a33480(kRot, &kTemp, &m_matrix));
-        Unk_RrQuat kQuat;
-        FUN_140a33310(&kQuat);
-        ((efd::Quaternion*)(struct Unk_RrQuat*)(&kQuat))->FromRotation(*(class efd::Matrix3 const*)(&kMul));
-        Unk_RrQuat kOut;      // NiQuaternion
-        FUN_140a33280(&kOut, &kQuat);
+        FUN_1409f7320((efd::Matrix3*)&kRot);
+        kAxisRot.ToRotation(*(efd::Matrix3*)&kRot);
+        NiMatrix3 kMul(*(efd::Matrix3*)&kRot * *(efd::Matrix3*)&m_matrix);
+        efd::Quaternion kQuat;
+        kQuat.FromRotation(*(class efd::Matrix3 const*)(&kMul));
+        NiQuaternion kOut(kQuat);
         ((class NiQuatTransform*)(class NiQuatTransform*)(&m_kTransformValue))->SetRotate(*(class NiQuaternion const*)(&kOut));
-        FUN_140a333e0(&kValue, &m_kTransformValue);
+        kValue = m_kTransformValue;
         return true;
     }
     return false;
@@ -90,15 +75,14 @@ void RootRotateInterpolator::FUN_140dc9e40(Unk_RrPoint3* pRotation)
     {
         FUN_140194470(&m_rotation, pRotation);
         Unk_RrMatrix3 kX, kY, kZ;
-        FUN_1409f7320(&kX);
-        FUN_1409f7320(&kY);
-        FUN_1409f7320(&kZ);
-        MakeXRotation(&kX, pRotation->x * -0.017453292f);
-        MakeYRotation(&kY, pRotation->y * -0.017453292f);
-        MakeZRotation(&kZ, pRotation->z * -0.017453292f);
-        Unk_RrMatrix3 kT1, kT2, kResult;
-        FUN_140a33240(&kResult, FUN_140a33480(FUN_140a33480(kX, &kT1, &kY), &kT2, &kZ));
-        m_matrix = kResult;
+        FUN_1409f7320((efd::Matrix3*)&kX);
+        FUN_1409f7320((efd::Matrix3*)&kY);
+        FUN_1409f7320((efd::Matrix3*)&kZ);
+        ((efd::Matrix3*)&kX)->MakeXRotation(pRotation->x * -0.017453292f);
+        ((efd::Matrix3*)&kY)->MakeYRotation(pRotation->y * -0.017453292f);
+        ((efd::Matrix3*)&kZ)->MakeZRotation(pRotation->z * -0.017453292f);
+        NiMatrix3 kResult(*(efd::Matrix3*)&kX * *(efd::Matrix3*)&kY * *(efd::Matrix3*)&kZ);
+        m_matrix = *(Unk_RrMatrix3*)&kResult;
     }
 }
 

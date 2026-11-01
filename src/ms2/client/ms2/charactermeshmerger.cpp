@@ -654,16 +654,16 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static int s_iAtlasFileCount;                                            // number of atlases dumped so far
 
 // Scene walker of the cube code (ctor 0x14098cb80); children are queued by AddChildren and Next returns the next object.
-class Unk_CubeSceneIterator {
+class Unk_NodeQueue {
 public:
-    Unk_CubeSceneIterator(NiAVObject* pRoot);
-    ~Unk_CubeSceneIterator();
-    NiAVObject* FUN_14098e0d0(bool descend);
-    void FUN_14098d6d0(NiNode* pNode);                  // queue the children
+    Unk_NodeQueue(NiAVObject* pRoot);
+    ~Unk_NodeQueue();
+    NiAVObject* Next(bool descend);
+    void AddChildren(NiNode* pNode);                  // queue the children
 private:
     ATL::CAtlList<NiAVObject*> pending;
 };
-MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
 bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB);   // property states are equal
 
@@ -973,8 +973,8 @@ bool FUN_141049c60(NiMesh* pMesh)
 void FUN_141049d50(NiAVObject* pRoot, MeshGroups& kGroups)
 {
     MeshList kMeshes;
-    Unk_CubeSceneIterator kIter(pRoot);
-    while (NiAVObject* pObject = kIter.FUN_14098e0d0(false))
+    Unk_NodeQueue kIter(pRoot);
+    while (NiAVObject* pObject = kIter.Next(false))
     {
         if (((class NiAVObject*)(pObject))->GetAppCulled())
             continue;
@@ -983,7 +983,7 @@ void FUN_141049d50(NiAVObject* pRoot, MeshGroups& kGroups)
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
         if (pNode != 0)
         {
-            kIter.FUN_14098d6d0(pNode);
+            kIter.AddChildren(pNode);
             continue;
         }
         NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
@@ -1839,8 +1839,8 @@ void FUN_1410528f0(const MeshList& kMeshes, MeshGroups& kGroups)
 void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
 {
     efd::map<NiTransform, MeshList, Unk_TransformLess> kByTransform;
-    Unk_CubeSceneIterator kIter(pRoot);
-    while (NiAVObject* pObject = kIter.FUN_14098e0d0(false))
+    Unk_NodeQueue kIter(pRoot);
+    while (NiAVObject* pObject = kIter.Next(false))
     {
         if (((class NiAVObject*)(pObject))->GetAppCulled())
             continue;
@@ -1848,7 +1848,7 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
             continue;
         if (NiNode* pNode = NiDynamicCast(NiNode, pObject))
         {
-            kIter.FUN_14098d6d0(pNode);
+            kIter.AddChildren(pNode);
             continue;
         }
         if (FUN_14098dfc0(pObject))

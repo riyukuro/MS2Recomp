@@ -163,6 +163,9 @@
 #include <algorithm>
 #include <vector>
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/clientconstants.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/uitalkcinematic.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -186,7 +189,7 @@ public:
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The item event listener registry (FUN_140a6a840) and the UI manager (FUN_1403ed2b0).
-class Unk_MergeItemEvents
+class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);     // register
@@ -194,12 +197,6 @@ public:
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 CUIService* FUN_1403ed2b0();
-class Unk_MergeNpcDialog : public UIDialog
-{
-public:
-    int FUN_141b1d3d0();                                    // top
-    int FUN_141b1d460();                                    // left
-};
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 bool FUN_14028d470(float f, float fEps);                    // nearly zero
 
@@ -215,8 +212,7 @@ public:
 
 // The npc talk state (FUN_140967100) and the local player's record (FUN_1401d3200).
 UITalkManager* FUN_140967100();
-class Unk_MergeTalkId { public: const int& FUN_1402056b0(); };
-class Unk_MergePlayerCfg { public: char m_pad_00[0x69f8]; Unk_MergeTalkId m_talk; };
+class Unk_MergePlayerCfg { public: char m_pad_00[0x69f8]; Common::Constants::Value<int> m_talk; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The inventory (g_143ab2a90) with the variant return type of the tag count.
@@ -231,19 +227,6 @@ int FUN_14053feb0(int nItemId);
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);         // an inventory or equipped item by uid
 
 // The equipment of the local player (FUN_1416561a0 / FUN_1411e1ce0) and its slot list.
-class Unk_MergeEquipItem : public CEquipItem { };
-class Unk_MergeEquipList
-{
-public:
-    Unk_MergeEquipList(int nGrow);                          // 0x140884ed0
-    ~Unk_MergeEquipList();                                  // 0x1408850d0
-    POSITION FUN_140885670();                               // head position
-    MS2Ptr<Unk_MergeEquipItem>& FUN_140885600(POSITION pos);   // 0x140885600 returns &node->data (pos+0x10) in rax, no hidden slot
-    void FUN_140885680(POSITION& pos);                      // next
-private:
-    void* m_pad[6];                                         // CAtlList: 0x30
-};
-class Unk_MergeEquipment { public: void FUN_1411e1ce0(Unk_MergeEquipList& list, int n); };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
@@ -251,16 +234,16 @@ public:
 };
 
 // The bag registry of the item slot bags (FUN_14123a080 / FUN_14123a190).
-void FUN_14123a080(const CString& strName, const ATL::CAtlArray<void*>& items);
+void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items);
 void FUN_14123a190(const CString& strName);
-int FUN_140534480(const ATL::CAtlArray<void*>* pItems, const unsigned __int64* pUid);   // the index of an uid in a bag
+template <class T> int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value);   // the index of an uid in a bag
 CString FUN_14038f6d0(const CString& str, const char* sz);  // str + sz
 
 // Texts, notices, message boxes and number formats.
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_1409e9890(CStringW strKey, const unsigned& nHave, const int& nNeed);
+template <class T1> CStringW FUN_14028dfa0(CStringW strKey, const T1& a1);
+template <class T1, class T2> CStringW FUN_14028dfa0(CStringW strKey, const T1& a1, const T2& a2);
 CStringW FUN_1409404f0(__int64 nMeso);                      // a meso amount as text
 CStringW FUN_141811980(int nTable, int nId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -269,9 +252,9 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);                     // send
-unsigned __int64 FUN_141b71960(const char* sz);             // the uid in a text
+__int64 FUN_141b71960(const char* sz);             // the uid in a text
 CStringW FUN_141b71910(__int64 nUid);                       // the uid as text
-CString FUN_140719530(__int64 nUid);                        // the uid as narrow text
+CString FUN_140719530(unsigned __int64 nUid);                        // the uid as narrow text
 int _stricmp(const char*, const char*);
 
 // The option text builders and the stat tables (stat id -> name / value text).
@@ -280,7 +263,7 @@ bool FUN_14081dc50(int nSpecial);                           // the special abili
 bool IsStatKindTwo(int nStat);                              // the stat value is a rate
 bool FUN_14081dcd0(int nSpecial);                           // the special ability value is a rate
 int FUN_14081d9e0(int nSpecial);                            // the special ability is a skill level up tier
-CStringW FUN_14082f000(int nStat);                          // the stat name
+CStringW GetStatCommonText(unsigned nStat);                          // the stat name
 CStringW FUN_140630e10(int nSpecial);                       // the special ability name
 CStringW FUN_1409e0900(int n);                              // an integer as text
 CStringW FUN_1409e0a90(float f);                            // a rate as text
@@ -288,9 +271,9 @@ CStringW FUN_1409e0970(int nStat, int nValue);              // a stat value as a
 CStringW FUN_1409e0bf0(int nStat, int nValue);              // a stat value as a rate text
 CStringW FUN_140631600(int nStat, BaseOption* pOption);     // the option line of a stat
 CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // the option line of a special ability
-struct Unk_SaTable { };                                     // the special ability table (0x20 byte rows, DAT_143ab1a40)
-extern Unk_SaTable DAT_143ab1a40;
-struct Unk_SaRow
+struct SpecialAbilityInfo;
+extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;  //                                     // the special ability table (0x20 byte rows, DAT_143ab1a40)
+struct Unk_SATypeInfo
 {
     void* m_00;
     int m_nValueType;                                       // +0x08
@@ -298,7 +281,6 @@ struct Unk_SaRow
     CStringW m_strFormat;                                   // +0x10
     CStringW m_strName;                                     // +0x18
 };
-Unk_SaRow* FUN_140184750(Unk_SaTable* pTable, __int64 nIndex);
 
 // The MS2Ptr<CItem> / MS2Ptr<CItemData> helper calls of the exe (copy, test, get) are the inline members of MS2Ptr.
 
@@ -422,7 +404,7 @@ void UIItemMergeOptionDialog::vfunc_4(void* pSlot, int n)
 void UIItemMergeOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_MergeItemEvents*)FUN_140a6a840())->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
     SetPhase(0);
     ResetMergeItems();
     ShowMergePrice(MS2Ptr<CItem>(0));
@@ -442,7 +424,7 @@ void UIItemMergeOptionDialog::vfunc_67()
     m_nMaterialUid = 0;
     m_bSpecial = false;
     SetPhase(0);
-    ((class Unk_MergeItemEvents*)FUN_140a6a840())->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
 }
 
 // @0x1419ce8f0
@@ -494,10 +476,10 @@ void UIItemMergeOptionDialog::vfunc_43()
 {
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
     {
-        if (Unk_MergeNpcDialog* pNpc = ((class Unk_MergeNpcDialog*)FUN_140a7b2b0(0x4e40)))
+        if (UITalkCinematic* pNpc = FUN_140a7b2b0(0x4e40))
         {
-            int nY = pNpc->FUN_141b1d3d0() + 12;
-            int nX = pNpc->FUN_141b1d460() - 80;
+            int nY = pNpc->GetLowerCutGlobalY() + 12;
+            int nX = pNpc->GetIllustGlobalX() - 80;
             if (nY != -1 && nX != -1)
             {
                 pDialog->vfunc_2(5, nX, nY - pDialog->GetHeightCeil());
@@ -627,11 +609,11 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     Unk_MergeSelf* pSelf = ((Unk_MergeSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pSelf != 0)
     {
-        Unk_MergeEquipList equipment(10);
-        ((class Unk_MergeEquipment*)((class PC*)(class Unk_MergeSelf*)(pSelf))->FUN_1416561a0())->FUN_1411e1ce0(equipment, 0);
-        for (POSITION pos = equipment.FUN_140885670(); pos != 0; equipment.FUN_140885680(pos))
+        ATL::CAtlList<MS2Ptr<CEquipItem> > equipment(10);
+        ((class CEquipment*)((class PC*)(class Unk_MergeSelf*)(pSelf))->FUN_1416561a0())->CollectShownItemsInLayer(equipment, 0);
+        for (POSITION pos = equipment.GetHeadPosition(); pos != 0; equipment.GetNext(pos))
         {
-            MS2Ptr<Unk_MergeEquipItem> spEquip(equipment.FUN_140885600(pos));
+            MS2Ptr<CEquipItem> spEquip(equipment.GetAt(pos));
             if (!spEquip)
                 continue;
             MS2Ptr<CItem> spItem = spEquip->GetItem();
@@ -646,7 +628,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
     qsort(guids.GetData(), guids.GetCount(), 8, FUN_1419d2fa0);
     CString strBag = FUN_14038f6d0(GetTypeName(), "_MergeSlotBag");
     FUN_14123a190(strBag);
-    FUN_14123a080(strBag, guids);
+    FUN_14123a080(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(guids));
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_itemBag"))
     {
         if (MS2Ptr<ASTileList> spBag = spClip->FUN_140accef0<ASTileList>("bag"))
@@ -671,7 +653,7 @@ void UIItemMergeOptionDialog::RefreshSelectedIngredient()
         ASObj obj(2);
         obj.FUN_1407cba60("iconPath", spMaterialData->GetIconPath());
         obj.FUN_1409adc90("itemGrade", spMaterial->FUN_140526bd0());
-        obj.FUN_1407cb9c0("index", FUN_140534480(&m_items190, &m_nMaterialUid));
+        obj.FUN_1407cb9c0("index", Unk_BreakFind(reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(m_items190), m_nMaterialUid));
         obj.FUN_1407cbb20("itemGUID", FUN_141b71910(spMaterial->GetItemUid()));
         m_30->Invoke("setIngredient", obj);
     }
@@ -702,7 +684,7 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
         ASObj entry(2);
         entry.FUN_1407cba60("iconPath", spData->GetIconPath());
         entry.FUN_1409adc90("itemGrade", FUN_14053feb0(ref->FUN_14026b500()));
-        entry.FUN_1407cbb20("itemCount", FUN_1409e9890(strKey, nHave, ref->m_c));
+        entry.FUN_1407cbb20("itemCount", FUN_14028dfa0(strKey, nHave, reinterpret_cast<const unsigned&>(ref->m_c)));
         entry.FUN_1409c0d20("itemID", ref->FUN_14026b500());
         list.FUN_1409eb270(StringFormat("ingredient{0}", i + 1), entry);
     }
@@ -715,15 +697,15 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
 void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
 {
     std::vector<std::pair<Unk_StatType, Unk_SocketSpecialStat> > options;
-    for (POSITION pos = m_spProxy->m_normal.FUN_1405c5e80(); pos != 0; m_spProxy->m_normal.FUN_1405c5be0(pos))
+    for (POSITION pos = m_spProxy->m_normal.GetStartPosition(); pos != 0; m_spProxy->m_normal.GetNext(pos))
     {
         Unk_SocketSpecialStat nZero = (Unk_SocketSpecialStat)0;
-        options.push_back(std::make_pair(reinterpret_cast<const Unk_StatType&>(m_spProxy->m_normal.FUN_1405c5ad0(pos)), nZero));
+        options.push_back(std::make_pair(reinterpret_cast<const Unk_StatType&>(m_spProxy->m_normal.GetKeyAt(pos)), nZero));
     }
-    for (POSITION pos = m_spProxy->m_special.FUN_1405c5e10(); pos != 0; m_spProxy->m_special.FUN_1405c5b90(pos))
+    for (POSITION pos = m_spProxy->m_special.GetStartPosition(); pos != 0; m_spProxy->m_special.GetNext(pos))
     {
         Unk_StatType nNone = (Unk_StatType)-1;
-        options.push_back(std::make_pair(nNone, reinterpret_cast<const Unk_SocketSpecialStat&>(m_spProxy->m_special.FUN_1405c5a60(pos))));
+        options.push_back(std::make_pair(nNone, reinterpret_cast<const Unk_SocketSpecialStat&>(m_spProxy->m_special.GetKeyAt(pos))));
     }
     std::sort(options.begin(), options.end(), OptionLess(&m_optionOrder));
     CStringW strResult;
@@ -742,19 +724,19 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
                 {
                     CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
                     CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
-                    strText = StringFormat(L"{0} {1}~{2}", FUN_14082f000(nNormal), strMin, strMax);
+                    strText = StringFormat(L"{0} {1}~{2}", GetStatCommonText(nNormal), strMin, strMax);
                 }
                 else
                 {
                     CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
                     CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
-                    strText = StringFormat(L"{0} {1}~{2}", FUN_14082f000(nNormal), strMin, strMax);
+                    strText = StringFormat(L"{0} {1}~{2}", GetStatCommonText(nNormal), strMin, strMax);
                 }
                 if (strText.GetLength() != 0)
                 {
                     if (strResult.GetLength() != 0)
                         strResult += L"\n";
-                    strResult += FUN_1405c2690(CStringW(L"s_item_merge_option_current"), strText);
+                    strResult += FUN_14028dfa0(CStringW(L"s_item_merge_option_current"), strText);
                 }
             }
         }
@@ -782,7 +764,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
                     {
                         if (strResult.GetLength() != 0)
                             strResult += L"\n";
-                        strResult += FUN_1405c2690(CStringW(L"s_item_merge_option_current"), strText);
+                        strResult += FUN_14028dfa0(CStringW(L"s_item_merge_option_current"), strText);
                     }
                 }
             }
@@ -799,7 +781,7 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
 {
     CString strBag = FUN_14038f6d0(GetTypeName(), "_MaterialSlotBag");
     FUN_14123a190(strBag);
-    FUN_14123a080(strBag, m_items190);
+    FUN_14123a080(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(m_items190));
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_ingredientBag"))
     {
         if (MS2Ptr<ASTileList> spBag = spClip->FUN_140accef0<ASTileList>("bag"))
@@ -811,7 +793,7 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
 void UIItemMergeOptionDialog::ShowMergePrice(MS2Ptr<CItem> spItem)
 {
     if (MS2Ptr<Unk_MergeButton> spButton = FUN_140bb4b10("m_merge"))
-        spButton->FUN_1422cdfb0(FUN_1405c2690(CStringW(L"s_item_merge_option_consume_meso"), FUN_1409404f0(m_spProxy->m_nMeso)));
+        spButton->FUN_1422cdfb0(FUN_14028dfa0(CStringW(L"s_item_merge_option_consume_meso"), FUN_1409404f0(m_spProxy->m_nMeso)));
 }
 
 // @0x1419d0ef0
@@ -907,18 +889,18 @@ void UIItemMergeOptionDialog::FUN_1419d1490(int nNormal, int nSpecial, int nValu
         else if (FUN_14081dcd0(nSpecial))
         {
             float fValue = nValue / 10.0f;
-            strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, fValue);
+            strNew = StringFormat(reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nSpecial].m_strFormat, fValue);
         }
         else
         {
-            strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, nValue);
+            strNew = StringFormat(reinterpret_cast<std::vector<Unk_SATypeInfo>&>(DAT_143ab1a40)[nSpecial].m_strFormat, nValue);
         }
     }
     if (m_30.get() != 0)
     {
         ASObj obj(2);
-        obj.FUN_1407cbb20("oldOption", FUN_1405c2690(CStringW(L"s_item_merge_option_old_option"), strOld));
-        obj.FUN_1407cbb20("newOption", FUN_1405c2690(CStringW(L"s_item_merge_option_new_option"), strNew));
+        obj.FUN_1407cbb20("oldOption", FUN_14028dfa0(CStringW(L"s_item_merge_option_old_option"), strOld));
+        obj.FUN_1407cbb20("newOption", FUN_14028dfa0(CStringW(L"s_item_merge_option_new_option"), strNew));
         obj.FUN_1407cba60("iconPath", reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetIconPath());
         obj.FUN_1409adc90("itemGrade", spItem->FUN_140526bd0());
         obj.FUN_1407cbb20("itemName", spItem->FUN_140528160());
@@ -1052,7 +1034,7 @@ void UIItemMergeOptionDialog::RequestResultTalk()
         int nTalkId = FUN_140967100()->FUN_141b212f0();
         packet.WriteUInt8(6);
         packet.WriteInt32(nTalkId);
-        packet.WriteInt32(((class Unk_MergePlayerCfg*)FUN_1401d3200())->m_talk.FUN_1402056b0());
+        packet.WriteInt32(*((class Unk_MergePlayerCfg*)FUN_1401d3200())->m_talk.Get());
         packet.WriteInt16(0xca);
         packet.WriteInt16((short)m_nTalkId);
     }
@@ -1145,7 +1127,7 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
 void UIItemMergeOptionDialog::ShowMissingItem(int nItemId)
 {
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-    CStringW strText = FUN_1405c2690(CStringW(L"s_item_merge_option_error_prev_option_item_not_exist"), strName);
+    CStringW strText = FUN_14028dfa0(CStringW(L"s_item_merge_option_error_prev_option_item_not_exist"), strName);
     FUN_140d73aa0(CStringW(strText), 0, 0, CStringW(L""));
     FUN_1412751b0(strText, 0x14);
 }
@@ -1249,7 +1231,7 @@ static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy
 CStringW UIItemMergeOptionDialog::OptionLess::GetName(const std::pair<Unk_StatType, Unk_SocketSpecialStat>& option)
 {
     if (option.first != -1)
-        return FUN_14082f000(option.first);
+        return GetStatCommonText(option.first);
     if (option.second != 0)
         return FUN_140630e10(option.second);
     return CStringW(L"");
@@ -1351,3 +1333,4 @@ static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused)
 // MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@HU?$less@U?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@W4Unk_StatType@@W4Unk_SocketSpecialStat@@@std@@H@std@@@2@$0A@@std@@@std@@QEBA_KXZ 0x1419d93f0 ; sfk: enum pair retype of ?size@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@HU?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@H@std@@@2@$0A@@std@@@std@@QEBA_KXZ
 // MS2-PIN: ??$swap@W4Unk_StatType@@X@std@@YAXAEAW4Unk_StatType@@0@Z 0x1419d68b0 ; sfk: the stat-type half of the option pair swap
 // MS2-PIN: ??$_Swap_adl@W4Unk_StatType@@@std@@YAXAEAW4Unk_StatType@@0@Z 0x1419d5f70 ; sfk: the stat-type half of the option pair swap
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIItemMergeOptionDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x1419d74b0 ; the CAtlList CNode of the equipment list is a byte-identical look-alike

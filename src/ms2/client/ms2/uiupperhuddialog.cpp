@@ -76,6 +76,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/cwebbrowserservice.h"
 #include "ms2/commonfiles/gamerule.h"
+#include "ms2/commonfiles/gameevent.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/applyeffect.h"
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
@@ -180,20 +181,9 @@ class Unk_HudNotifyMoney : public NotifyObject { public: char m_pad_18[0x10]; __
 class Unk_HudEnvPtr;
 class Unk_HudPlayerMgr { public: PCBase* FUN_141bd0cc0(); Unk_HudEnvPtr FUN_141bd30a0(); };
 int FUN_141658f30(PCBase* pPc);                                                 // pc level
-class Unk_HudEventMgr : public CGameRule
-{
-public:
-    void FUN_140477590(ATL::CAtlList<MS2Ptr<class Unk_HudHot> >& list);        // the active hot time events
-};
+class Unk_HudEventMgr : public CGameRule {};
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
-class Unk_HudHot : public CPtred
-{
-public:
-    char m_pad_18[0x10];
-    CStringW m_28;                                                              // +0x28 description
-    int m_30;                                                                   // +0x30 level gate
-};
 
 // The maids.
 class Unk_HudMaidRec : public CPtred
@@ -204,15 +194,6 @@ public:
     char m_pad_28[0x24];
     int m_4c;                                                                   // +0x4c state
 };
-class Unk_HudMaidItem : public CPtred
-{
-public:
-    int FUN_1409eedf0();
-    __int64 FUN_140694170();                                                    // the time the maid is ready
-};
-class Unk_HudMaidInfo : public CPtred {};
-class Unk_HudMaidItems { public: int FUN_140d51370(__int64 nKey, MS2Ptr<Unk_HudMaidItem>& out); };
-class Unk_HudMaidInfos { public: MS2Ptr<Unk_HudMaidInfo> FUN_1406855c0(int nId); };
 class Unk_HudMaidList
 {
 public:
@@ -236,7 +217,8 @@ class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
                          // game time in seconds
 class Unk_HudRenderOpt;
 class Unk_HudSound;
-class Unk_HudConfig { public: unsigned char* FUN_140a58500(); Unk_HudRenderOpt* FUN_1409a8ac0(); Unk_HudSound* FUN_140d13c70(); };
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
+class Unk_HudConfig { public: unsigned char* FUN_140a58500(); Unk_HudSound* FUN_140d13c70(); };
 void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was FUN_14125f670
                            // controller on
 __int64 GetServerTime();                                                        // the server time
@@ -246,21 +228,13 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CStringW GetStringCommon(int nId);                                                // string table text by id
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 CStringW FUN_140f48210(int nHour, int nMinute);                                 // the clock text
-CStringW FUN_1402761d0(const wchar_t* szFormat, const CStringW& a1, const __int64& a2);
 CStringW FUN_1409404f0(__int64 n);                                              // the number as text
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                         // has the AS object been released
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);                         // narrows a string
 CString FUN_14016a5c0(const char* psz, int nCodePage);
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);
 
-class Unk_HudMerat
-{
-public:
-    bool FUN_140358390();
-    size_t FUN_140358770();                                                     // the merat kind count (a vector size)
-    __int64* FUN_140356840(size_t nIndex);
-};
-Unk_HudMerat* FUN_140930580();
+std::vector<__int64>* FUN_140930580();                                          // the merat amounts by kind
 bool FUN_140930200(unsigned int nIndex);
 CStringW FUN_1418fe590();
 CStringW FUN_1418fe5d0(unsigned int nIndex);
@@ -322,7 +296,7 @@ void UIUpperHudDialog::OnLoadComplete()
     do { m_30->FUN_140bc71c0("m_eventText", m_eventText); if (m_eventText == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(86), __FUNCTION__)); } while (0);
     do { if (m_eventText->FUN_140beaf20("textField", m_noticeText) == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(89), __FUNCTION__)); } while (0);
     m_nNoticeY = (int)m_noticeText->FUN_1422c1110();
-    m_eventText->FUN_1422c2a70(HudClickDelegate(this, &UIUpperHudDialog::OpenEventBrowser), 0);
+    m_eventText->FUN_1422c2a70(HudClickDelegate(this, &UIUpperHudDialog::OpenEventBrowser), (void*)0);
     if (FUN_140bc6d10("m_tokenPocketButton", m_tokenPocket))
         m_tokenPocket->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356cd0), 0);
     if (FUN_140bc6d10("m_maidStatusButton", m_maidStatus))
@@ -373,7 +347,7 @@ void UIUpperHudDialog::OnLoadComplete()
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc9) == true)
     {
-        MS2Ptr<Unk_HudText> spVersion = FUN_140bb4cf0("m_version");
+        MS2Ptr<ASTextField> spVersion = GetChild<ASTextField>("m_version");
         if (spVersion)
         {
             spVersion->vfunc_4(true);
@@ -381,7 +355,7 @@ void UIUpperHudDialog::OnLoadComplete()
         }
     }
     {
-        MS2Ptr<Unk_HudText> spVersion = FUN_140bb4cf0("m_version");
+        MS2Ptr<ASTextField> spVersion = GetChild<ASTextField>("m_version");
         if (spVersion)
         {
             spVersion->vfunc_4(true);
@@ -716,7 +690,7 @@ void UIUpperHudDialog::SetInputMode(int nMode)
 // @0x141357640
 void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
 {
-    MS2Ptr<Unk_HudText> spVersion = FUN_140bb4cf0("m_version");
+    MS2Ptr<ASTextField> spVersion = GetChild<ASTextField>("m_version");
     if (spVersion == 0)
         return;
     if (!spVersion->FUN_1422bfca0())
@@ -728,14 +702,14 @@ void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
     }
     else
     {
-        spVersion->FUN_1422c4f00(FUN_1402761d0(L"{0}\t{1:+#}", FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
+        spVersion->FUN_1422c4f00(StringFormat(L"{0}\t{1:+#}", FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
     }
 }
 
 // @0x1413579d0
 bool UIUpperHudDialog::ToggleVersionText()
 {
-    MS2Ptr<Unk_HudText> spVersion = FUN_140bb4cf0("m_version");
+    MS2Ptr<ASTextField> spVersion = GetChild<ASTextField>("m_version");
     if (spVersion == 0)
         return false;
     spVersion->vfunc_4(!spVersion->FUN_1422bfca0());
@@ -767,7 +741,7 @@ void UIUpperHudDialog::FUN_141357b30()
         m_nHour = nHour;
         m_nMinute = nMinute;
         CStringW strTime = FUN_140f48210(nHour, nMinute);
-        if (MS2Ptr<ASMovieClip> spTime = FUN_140ba7930("m_time"))
+        if (MS2Ptr<ASMovieClip> spTime = GetChild<ASMovieClip>("m_time"))
             FUN_140cfee80(spTime->FUN_1422bb890(), "timeText", strTime);
         FUN_140cffca0(FUN_1422dbc00(), "m_clockIcon", "clock");
     }
@@ -787,10 +761,10 @@ void UIUpperHudDialog::FUN_141357d90(int nQuiet)
             continue;
         if (spMaid->m_4c <= 0)
             continue;
-        MS2Ptr<Unk_HudMaidItem> spItem(0);
-        if (reinterpret_cast<Unk_HudMaidItems*>(TSingleton<CManufactureManager>::GetInstance())->FUN_140d51370(spMaid->m_20, spItem))
+        MS2Ptr<CManufacture> spItem(0);
+        if (TSingleton<CManufactureManager>::GetInstance()->Lookup(spMaid->m_20, spItem))
         {
-            MS2Ptr<Unk_HudMaidInfo> spInfo = reinterpret_cast<Unk_HudMaidInfos*>(TSingleton<CMaidRecipeTable>::GetInstance())->FUN_1406855c0(spItem->FUN_1409eedf0());
+            MS2Ptr<CMaidRecipe> spInfo = TSingleton<CMaidRecipeTable>::GetInstance()->Find(spItem->FUN_1409eedf0());
             if (spInfo)
             {
                 if (spItem->FUN_140694170() <= GetServerTime())
@@ -943,8 +917,8 @@ void UIUpperHudDialog::FUN_1413586c0(Scaleform::GFx::Value* pRetVal)
 // @0x141358b20
 void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
 {
-    ATL::CAtlList<MS2Ptr<Unk_HudHot> > list(10);
-    ((class Unk_HudEventMgr*)FUN_1401c0d90())->FUN_140477590(list);
+    ATL::CAtlList<MS2Ptr<SAHotTimeEventContext> > list(10);
+    ((class Unk_HudEventMgr*)FUN_1401c0d90())->GetHotTimeEvents(list);
     if (list.IsEmpty())
         return;
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -953,7 +927,7 @@ void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
     CStringW strText;
     for (POSITION pos = list.GetHeadPosition(); pos; list.GetNext(pos))
     {
-        MS2Ptr<Unk_HudHot> spHot = list.GetAt(pos);
+        MS2Ptr<SAHotTimeEventContext> spHot = list.GetAt(pos);
         if (spHot == 0)
             continue;
         if (spHot->m_30 != 0 && FUN_141658f30(pPc) == 0)
@@ -979,8 +953,8 @@ void UIUpperHudDialog::FUN_141358b20(Scaleform::GFx::Value* pRetVal)
 // @0x141358df0
 void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
 {
-    Unk_HudMerat* pMerat = FUN_140930580();
-    if (pMerat->FUN_140358390() == 1)
+    const std::vector<__int64>* pMerat = FUN_140930580();
+    if (pMerat->empty() == 1)
         return;
     ASTooltip tip(1, 2);
     tip.SetTooltipClass("export_common_tooltip_tooltipText");
@@ -992,7 +966,7 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     CStringW strLine = GetStringCommon(0x9ca);
     CStringW strFormat = GetStringCommon(0x987);
     CStringW strList;
-    size_t nCount = pMerat->FUN_140358770();
+    size_t nCount = pMerat->size();
     __int64 nMerat = FUN_140930250();
     CStringW strName = FUN_1418fe590();
     CStringW strValue = StringFormat<CStringW>(strFormat, FUN_1409404f0(nMerat));
@@ -1001,7 +975,7 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     {
         if (FUN_140930200((unsigned int)i) == true)
             continue;
-        __int64 nAmount = *pMerat->FUN_140356840(i);
+        __int64 nAmount = (*pMerat)[i];
         if (nAmount == 0)
             continue;
         CStringW strItemName = FUN_1418fe5d0((unsigned int)i);
@@ -1421,7 +1395,6 @@ public:
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_1409a5850(class NiFixedString&, bool const*, unsigned int);   // C3: was FUN_1409a5850
 void FUN_1411781e0(const NiFixedString& kName, const NiPoint2* pk, int n);
-const char* FUN_142087e50(const NiFixedString& kName);
 extern NiFixedString DAT_143ae5348;
 extern NiFixedString DAT_143ae5350;
 extern NiFixedString DAT_143ae5358;
@@ -1572,21 +1545,21 @@ void UIVisualEffectDialog::OnLoadComplete()
         if (FUN_14135dd70(&spBlur) != 0)
             bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
         obj.FUN_1407cbbe0("motionBlurAll", bAll);
-        obj.FUN_1409c4a30("motionBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5450)));
+        obj.FUN_1409c4a30("motionBlurValue", FUN_14135dad0((const char*)DAT_143ae5450));
         bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(9);
         obj.FUN_1407cbbe0("radiarBlurEnable", bEnable);
-        obj.FUN_1409c4a30("radiarBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5458)));
+        obj.FUN_1409c4a30("radiarBlurValue", FUN_14135dad0((const char*)DAT_143ae5458));
         bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(8);
         obj.FUN_1407cbbe0("screenMaskEnable", bEnable);
-        obj.FUN_1409c4a30("hdrBPThreshold", FUN_14135dad0(FUN_142087e50(DAT_143ae5358)));
-        obj.FUN_1409c4a30("hdrBPOffset", FUN_14135dad0(FUN_142087e50(DAT_143ae5360)));
-        obj.FUN_1409c4a30("hdrBloomScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5370)));
-        obj.FUN_1409c4a30("hdrGlowScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5378)));
+        obj.FUN_1409c4a30("hdrBPThreshold", FUN_14135dad0((const char*)DAT_143ae5358));
+        obj.FUN_1409c4a30("hdrBPOffset", FUN_14135dad0((const char*)DAT_143ae5360));
+        obj.FUN_1409c4a30("hdrBloomScale", FUN_14135dad0((const char*)DAT_143ae5370));
+        obj.FUN_1409c4a30("hdrGlowScale", FUN_14135dad0((const char*)DAT_143ae5378));
         bEnable = ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->IsStepActive(0xc);
         obj.FUN_1407cbbe0("shimmerEnable", bEnable);
-        obj.FUN_1409c4a30("shimmerMultiplier", FUN_14135dad0(FUN_142087e50(DAT_143ae5430)));
-        obj.FUN_1409c4a30("shimmerBrightness", FUN_14135dad0(FUN_142087e50(DAT_143ae5440)));
-        bEnable = reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bOutGlow;
+        obj.FUN_1409c4a30("shimmerMultiplier", FUN_14135dad0((const char*)DAT_143ae5430));
+        obj.FUN_1409c4a30("shimmerBrightness", FUN_14135dad0((const char*)DAT_143ae5440));
+        bEnable = reinterpret_cast<Unk_HudRenderOpt*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bOutGlow;
         obj.FUN_1407cbbe0("outGlowEnable", bEnable);
         unsigned int nSize = 0xc;
         float fRed = 0;
@@ -1931,7 +1904,7 @@ void UIVisualEffectDialog::SetGlowEnabled(bool bOn)
     Unk_HudEnvPtr spEnv = reinterpret_cast<Unk_HudPlayerMgr*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (reinterpret_cast<Unk_HudEnvData*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spEnv).get()) != 0)
         spEnv.FUN_140885340()->m_bGlow = bOn;
-    reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bOutGlow = bOn;
+    reinterpret_cast<Unk_HudRenderOpt*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_bOutGlow = bOn;
     reinterpret_cast<Unk_PostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->ApplyOuterGlowOption();
 }
 
@@ -2053,7 +2026,7 @@ Unk_HudMotionBlurPtr::Unk_HudMotionBlurPtr(Unk_HudMotionBlur* p)
 {
     m_p = p;
     if (m_p != 0)
-        FUN_140980460(m_p);
+        m_p->IncRefCount();
 }
 
 // @0x14135dc80
@@ -2072,7 +2045,7 @@ Unk_ShaderVec4::Unk_ShaderVec4(float a, float b, float c, float d)
 Unk_HudMotionBlurPtr::~Unk_HudMotionBlurPtr()
 {
     if (m_p != 0)
-        FUN_1405a93d0(m_p);
+        m_p->DecRefCount();
 }
 
 // @0x14135dd50
@@ -2290,7 +2263,7 @@ void UIWeaponDummyDialog::vfunc_67()
 // @0x14135e570
 CString UIWeaponDummyDialog::FUN_14135e570()
 {
-    if (MS2Ptr<Unk_HudText> spInput = FUN_140bb4cf0("m_inputTargetNode"))
+    if (MS2Ptr<ASTextField> spInput = GetChild<ASTextField>("m_inputTargetNode"))
         return spInput->FUN_1422c4d20();
     return FUN_14016a5c0("", 0);
 }

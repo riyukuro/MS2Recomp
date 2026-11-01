@@ -1153,7 +1153,7 @@ void CSmartPushAutoInteraction::vfunc_3()
     int nRecipe = vfunc_14();
     unsigned nItemId = m_data->m_requireItem.FUN_14026b500();
     CStringW strDesc = FUN_14028dfa0(strBuff, nItemId, nRecipe);
-    CReservedWordTable::GetInstance()->FUN_1416fb300(strDesc);
+    CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strDesc);
     int nId = vfunc_14();
     MS2Ptr<Unk_SpRecipe> spRecipe = ((class Unk_SpMastery*)FUN_1409670c0())->FUN_14066aa00(nId);
     if (!spRecipe)
@@ -1290,7 +1290,7 @@ int CSmartPushAutoFunctionCubeObject::vfunc_6()
     MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
-    if (reinterpret_cast<PC*>(pMy)->FUN_1416595b0() != 0)
+    if (reinterpret_cast<PC*>(pMy)->GetCubeMode() != 0)
         return 0;
     if (!((class Unk_SpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410d5640())
         return 0;
@@ -1421,7 +1421,7 @@ void CSmartPushAutoInteractObjectBuffItem::vfunc_3()
     }
     CStringW strText = FUN_1405c2690(CStringW(L"s_mastery_autointeraction_buff_use"),
         CStringTable::GetInstance()->FUN_141811980(1, nItemId));
-    CReservedWordTable::GetInstance()->FUN_1416fb300(strText);
+    CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strText);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
     if (spBox.get())
     {
@@ -1463,7 +1463,7 @@ void CSmartPushAutoFunctionCubeObjectBuffItem::vfunc_3()
     }
     CStringW strText = FUN_1405c2690(CStringW(L"s_mastery_autointeraction_buff_use"),
         CStringTable::GetInstance()->FUN_141811980(1, nItemId));
-    CReservedWordTable::GetInstance()->FUN_1416fb300(strText);
+    CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strText);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
     if (spBox.get())
     {

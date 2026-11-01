@@ -50,9 +50,9 @@ class CRegionSkillObject : public CPtred
 public:
     CRegionSkillObject();                                   // 0x1416f57c0
     virtual ~CRegionSkillObject();                          // 0x1416f5930
-    int FUN_1416f5a20(int nId, int nSkillId, const ATL::CAtlArray<Vector3>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
-    void FUN_1416f67e0();                                   // stop every spawned effect
-    void FUN_1416f6860();                                   // fade out every spawned effect
+    int Init(int nId, int nSkillId, const ATL::CAtlArray<Vector3>& kPoints, int nOwnerId, short nLevel, float fB, float fA, int nTick);
+    void StopEffects();                                   // stop every spawned effect
+    void FadeOutEffects();                                   // fade out every spawned effect
     void FUN_1416f6900();                                   // a tick hit
     void FUN_1416f6b90();                                   // reset
     int GetId();                                    // the id

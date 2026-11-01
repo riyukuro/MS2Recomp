@@ -46,38 +46,23 @@
 #include <string.h>
 #include <vector>
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/placeholder/unk_blocklist.h"
+#include "ms2/placeholder/cmycharacter.h"
+#include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/client/ms2/dungeonrecordcli.h"
 
 // ---- unit-local views of exe types ----
 
-class Unk_AcText : public ASDisplayObject
-{
-public:
-    void FUN_1422e0ab0(const CStringW& str);                    // set the text
-};
-class Unk_AcDrop : public ASDisplayObject
-{
-public:
-    void FUN_1422df690(int nIndex);                             // select
-    int FUN_1422df6c0();                                        // selected index
-};
 // the "m_heroTrophy" / "m_summaryTrophy" component
 class Unk_AcHero : public ASUIComponent
 {
 public:
-    MS2Ptr<ASScrollingList> FUN_140bc7280(const CString& strName);
-    MS2Ptr<Unk_AcText> FUN_140bbe880(const CString& strName);
-    MS2Ptr<Unk_AcDrop> FUN_140bbe700(const CString& strName);
     Scaleform::GFx::Value FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row);
 };
-// the movie root: gotoAndPlay(label), the trophy index and the reward count calls
-class Unk_AcRoot : public AScript
-{
-public:
-    Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);
-    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int n);
-    Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int n, CStringW str);
-};
-#define AC_ROOT(p) static_cast<Unk_AcRoot*>((p).operator->())
+// the movie root: gotoAndPlay(label) and the reward count call
+class Unk_RewardClip { public: Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg); };
+class UIDailyMissionDialog { public: MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName); };
+class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int n, CStringW str); };
 
 // the root pointer of the movie (m_30)
 
@@ -94,20 +79,19 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool FUN_14116d840();
     bool IsDebugMode();
+    bool FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel);
 };
-bool FUN_14116d9c0(void* p, int a1, int a2, int a3);
-int FUN_14166ce30(void* pPlayer);
-CFeatureManager* FUN_140166410();
+class PCBase { public: int FUN_14166ce30(); };
+class Unk_140166410* FUN_140166410();
 
 // strings
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);
-CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);
+template <class T1> CStringW FUN_14028dfa0(CStringW strKey, const T1& a1);
+template <class T1, class T2> CStringW FUN_14028dfa0(CStringW strKey, const T1& a1, const T2& a2);
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1408116a0(int nStringId, const int& n);
+template <class T1> CStringW BlockFormat(int nStringId, const T1& a1);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_1416e4df0(int nId);
-CStringW FUN_140cbf840(int nDungeonKind);
-CString FUN_1402bad60(const char* szFormat, const int* pn);
+CStringW TranslateEnumDungeonGroup(unsigned int nGroup);
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 void FUN_14083d2b0(CStringW& str);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);
@@ -144,79 +128,15 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-// the request (search box) objects
-class Unk_AcRequest
-{
-public:
-    Unk_AcRequest(int nId);                                     // 0x1401baa00
-    Unk_AcRequest(const void* pSource);                         // 0x1401baaa0
-    ~Unk_AcRequest();                                           // 0x1401baaf0
-    void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    bool FUN_1401bab90(CString strName, void* pOut);
-private:
-    void* m_pad[5];                                             // 0x28 bytes (Unk_BlockList, unk_blocklist.h); not a char array, so no /GS cookie
-};
-struct Unk_AcRequestValue
-{
-    Unk_AcRequestValue();                                       // 0x1401ba840
-    ~Unk_AcRequestValue();                                      // 0x1401ba940
-    void* m_pad_00[3];                                          // three CStrings (Unk_BlockEntry, unk_blocklist.h)
-    int m_code;                                                 // +0x18
-    int m_pad_1c;                                               // 0x20 bytes; no char arrays, so no /GS cookie
-};
-
-// the coloring table: a row set of (achievement id, grade) -> colour (shared view with achievemanager.cpp)
-struct Unk_AmColorEntry
-{
-    char m_pad_00[0x1c];
-    int m_nSN;                                                  // +0x1c
-    unsigned char m_bHasSecond;                                 // +0x20
-    char m_pad_21[3];
-    int m_nAchieveId;                                           // +0x24
-    int m_nGrade;                                               // +0x28
-    unsigned m_nColorId;                                        // +0x2c
-    char m_pad_30[8];
-    unsigned m_visible;                                         // +0x38
-    unsigned m_colors[3];                                       // +0x3c real, +0x40, +0x44 ch2
-};
-class Unk_AmColorElem
-{
-public:
-    Unk_AmColorElem(Unk_AmColorEntry* pEntry);                  // 0x14056a550
-    ~Unk_AmColorElem();                                         // 0x14056c2d0
-    Unk_AmColorEntry* FUN_14056d570() const;                    // operator->
-    Unk_AmColorEntry* FUN_14059cf00() const;                    // get()
-    void* m_pad_00;
-    Unk_AmColorEntry* m_p;
-};
-class Unk_AmColorList { public: size_t FUN_140570e10(); Unk_AmColorEntry* FUN_140570dd0(size_t n); };
-class Unk_AmColorSet
-{
-public:
-    ~Unk_AmColorSet();                                          // 0x14056c240
-    void* FUN_14056d460() const;
-    Unk_AmColorList* FUN_14056d540() const;
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_AdTally { public: unsigned FUN_140267d70(int n); };   // TripletIntOperations::Get
-class Unk_AmIngTable
-{
-public:
-    Unk_AmColorSet FUN_140558ad0(int nId);
-    Unk_AmColorElem FUN_140558960(int nPaletteId, int nSN);
-};
+class Unk_IntTriple { public: unsigned __int64 Get(int nIndex); };   // TripletIntOperations::Get
 
 // collected ids: dungeons, fish, pets, quests, items
-class Unk_AcDungeonMgr : public CPtred { public: int FUN_140b22890(int nId); };
-class Unk_AcMyChar { public: MS2Ptr<Unk_AcDungeonMgr> FUN_140d9f2c0(); };
-Unk_AcMyChar* FUN_140931510();
-class Unk_AcFishMgr { public: unsigned __int64 FUN_140cdc380(unsigned nId); };
-CPetManager* FUN_140535320();
-class Unk_AcQuestState { public: int FUN_140745590(int nQuest); };
-struct Unk_AcQuestMgr { char m_pad_00[0x10]; Unk_AcQuestState m_10; };
-void* FUN_140764020();   // C3: was FUN_140764020
-extern ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0;        // achievement id -> grade
+CMyCharacter* FUN_140931510();
+class Unk_BreakSelected* FUN_140535320();
+struct Unk_AcQuestMgr { char m_pad_00[0x10]; char m_10[0x10]; };
+void* FUN_140764020();
+struct Unk_Be790Map : public ATL::CAtlMap<unsigned int, unsigned int> {};
+extern Unk_Be790Map DAT_143ab30e0;        // achievement id -> grade
 
 extern int DAT_143ab2914;                                       // the GM level
 
@@ -330,7 +250,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 0;
-            if (FUN_14166ce30(pPlayer) != 0) {
+            if (((class PCBase*)pPlayer)->FUN_14166ce30() != 0) {
                 FUN_141275260(0x80d, 1, 1);
                 return 0;
             }
@@ -420,7 +340,7 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onSearch") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1418aa890();
+            RequestSearch();
     }
     else if (_stricmp(szMethod, "onBookmark") == 0) {
         ASData data;
@@ -516,18 +436,18 @@ int UIAchieveDialog::vfunc_13()
         vfunc_69();
         return 1;
     }
-    if (FUN_14116d9c0(FUN_14025e7c0(), 0x1c, 0, 0))
-        FUN_1418aa890();
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d9c0(0x1c, false, 0))
+        RequestSearch();
     return 0;
 }
 
 // @0x1418a8530
 void UIAchieveDialog::vfunc_80(void* pRequest)
 {
-    Unk_AcRequest request(pRequest);
-    Unk_AcRequestValue value;
-    if (request.FUN_1401bab90("m_searchInput", &value) == 1) {
-        if (value.m_code == 0) {
+    Unk_BlockList request(*reinterpret_cast<CInPacket*>(pRequest));
+    Unk_BlockEntry value;
+    if (request.Find("m_searchInput", value) == 1) {
+        if (value.m_nFlags == 0) {
             FUN_1418a8ff0();
         }
         else {
@@ -597,14 +517,14 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         ASObj data(pArgs->FUN_1422b9260(), 2);
         unsigned nPalette = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("paletteID")))->GetUInt();
         unsigned nSN = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("colorSN")))->GetUInt();
-        Unk_AmColorElem elem = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558960(nPalette, nSN);
-        if (elem.FUN_14059cf00() != 0) {
+        MS2Ptr<ItemColorEx> elem = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorBySN(nPalette, nSN);
+        if (elem.get() != 0) {
             CStringW strDesc;
-            if (elem.FUN_14056d570()->m_nColorId > 0) {
-                int nKey = elem.FUN_14056d570()->m_nColorId;
+            if ((unsigned)elem->m_n2c > 0) {
+                int nKey = (unsigned)elem->m_n2c;
                 CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, nKey);
                 if (!strName.IsEmpty()) {
-                    strDesc = FUN_1408f71a0(CStringW(L"s_beauty_tooltip_color_desc"), strName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x49, nKey));
+                    strDesc = FUN_14028dfa0(CStringW(L"s_beauty_tooltip_color_desc"), strName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x49, nKey));
                     strDesc.Append(L"\n");
                 }
                 ASTooltip tip(1, 2);
@@ -632,7 +552,7 @@ void UIAchieveDialog::FUN_1418a8f80()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    FUN_1418ac710(m_178);
+    ApplyTabIndex(m_178);
     FUN_1418a8ff0();
     FUN_1418a9800();
     m_1e0.RemoveAll();
@@ -661,17 +581,17 @@ void UIAchieveDialog::FUN_1418a8ff0()
     FilterOptions options;
     switch (spCategory->m_nTab) {
     case 1:
-        AC_ROOT(m_30)->FUN_140e262c0("gotoAndPlay", "summary");
+        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "summary");
         FUN_1418a9c20();
         return;
     case 2:
-        AC_ROOT(m_30)->FUN_140e262c0("gotoAndPlay", "hero");
+        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "hero");
         options.m_survival = 1;
         options.m_filter = GetFilterIndex();
         FUN_1418aa190(&options);
         break;
     case 0:
-        AC_ROOT(m_30)->FUN_140e262c0("gotoAndPlay", "hero");
+        reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay", "hero");
         options.m_survival = 0;
         options.m_categoryTag = spCategory->m_strCategoryTag;
         options.m_contentsTag = spCategory->m_strContentsTag;
@@ -746,10 +666,10 @@ void UIAchieveDialog::FUN_1418a9800()
     for (size_t i = 0; i < counts.size(); i++) {
         CStringW strTitle = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4a, counts[i].first);
         if (counts[i].second > 0) {
-            CStringW strCount = FUN_1408116a0(0x784, counts[i].second);
+            CStringW strCount = BlockFormat(0x784, counts[i].second);
             strTitle.Append(strCount);
         }
-        AC_ROOT(m_30)->FUN_14129cce0("setRewardCount", counts[i].first, CStringW(strTitle));
+        reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("setRewardCount", counts[i].first, CStringW(strTitle));
     }
 }
 
@@ -782,9 +702,9 @@ void UIAchieveDialog::FUN_1418a9c20()
                 break;
         }
         Unk_AchieveTab* pTally = ((class CAchieveManager*)FUN_1406c7600())->GetTally();
-        int nA = reinterpret_cast<Unk_AdTally*>(pTally)->FUN_140267d70(0);
-        int nB = reinterpret_cast<Unk_AdTally*>(pTally)->FUN_140267d70(1);
-        int nC = reinterpret_cast<Unk_AdTally*>(pTally)->FUN_140267d70(2);
+        int nA = reinterpret_cast<Unk_IntTriple*>(pTally)->Get(0);
+        int nB = reinterpret_cast<Unk_IntTriple*>(pTally)->Get(1);
+        int nC = reinterpret_cast<Unk_IntTriple*>(pTally)->Get(2);
         spSummary->Invoke("setScore", nA, nB, nC);
     }
 }
@@ -795,7 +715,7 @@ void UIAchieveDialog::FUN_1418aa190(const FilterOptions* pOptions)
     MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
     if (spHero.IsNull())
         return;
-    MS2Ptr<ASScrollingList> spList = spHero->FUN_140bc7280("m_list");
+    MS2Ptr<ASScrollingList> spList = spHero->FUN_140bc7280<ASScrollingList>("m_list");
     if (spList.IsNull())
         return;
     spList->FUN_1422dd1d0();
@@ -868,13 +788,13 @@ void UIAchieveDialog::FUN_1418aa660(int nId)
 }
 
 // @0x1418aa890
-void UIAchieveDialog::FUN_1418aa890()
+void UIAchieveDialog::RequestSearch()
 {
     CStringW strSearch = GetSearchText();
     if (strSearch.IsEmpty() == true)
         return;
-    Unk_AcRequest request(0x4e73);
-    request.FUN_1401bac80("m_searchInput", CStringW(strSearch), 0);
+    Unk_BlockList request(0x4e73);
+    request.Add("m_searchInput", CStringW(strSearch), false);
     if (((class Unk_AcPlatform*)FUN_140d86260())->vfunc_37(&request) == 1)
         FUN_1418a8ff0();
 }
@@ -894,13 +814,13 @@ void UIAchieveDialog::FUN_1418aa9b0(int nId)
     else {
         SetFilterIndex(0);
         SetSearchText(m_188);
-        FUN_1418ac710(m_178);
+        ApplyTabIndex(m_178);
         FUN_1418a8ff0();
     }
 }
 
 // @0x1418aaaf0
-CStringW UIAchieveDialog::FUN_1418aaaf0(CAchieve* pAchieve)
+CStringW UIAchieveDialog::GetAchieveStateName(CAchieve* pAchieve)
 {
     if (pAchieve == 0)
         return CStringW(L"");
@@ -936,7 +856,7 @@ CStringW UIAchieveDialog::FUN_1418aac30(CAchieve* pAchieve, int nGrade)
 CStringW UIAchieveDialog::GetSearchText()
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
-        if (MS2Ptr<Unk_AcText> spInput = spHero->FUN_140bbe880("m_searchInput"))
+        if (MS2Ptr<ASTextInput> spInput = spHero->FUN_140bbe880<ASTextInput>("m_searchInput"))
             return reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText();
     }
     return CStringW(L"");
@@ -946,7 +866,7 @@ CStringW UIAchieveDialog::GetSearchText()
 void UIAchieveDialog::SetSearchText(const CStringW& strText)
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
-        if (MS2Ptr<Unk_AcText> spInput = spHero->FUN_140bbe880("m_searchInput"))
+        if (MS2Ptr<ASTextInput> spInput = spHero->FUN_140bbe880<ASTextInput>("m_searchInput"))
             spInput->FUN_1422e0ab0(strText);
     }
 }
@@ -956,32 +876,32 @@ void UIAchieveDialog::FUN_1418ab000(ASObj& rRow, CAchieve* pAchieve)
 {
     CStringW strReward = FUN_14093cdb0(pAchieve->GetDataRef()->m_nId);
     if (strReward.GetLength() > 0) {
-        CStringW strText = FUN_1405c2690(CStringW(L"s_achieve_reward"), strReward);
-        if (FUN_140166410()->FUN_14036d570(0xbb)) {
+        CStringW strText = FUN_14028dfa0(CStringW(L"s_achieve_reward"), strReward);
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xbb)) {
             Unk_AchieveReward* pReward = pAchieve->GetReward();
             if (pReward != 0 && pReward->m_nType == 8) {
-                strText = FUN_1405c2690(CStringW(L"s_achieve_reward_item_coloring"), strReward);
+                strText = FUN_14028dfa0(CStringW(L"s_achieve_reward_item_coloring"), strReward);
                 int nPalette = pReward->m_nCode;
-                Unk_AmColorSet set = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(nPalette);
-                if (set.FUN_14056d460() != 0) {
+                Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> set = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(nPalette);
+                if (set.get() != 0) {
                     int nIndex = 0;
-                    for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++) {
-                        Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
-                        if (elem.FUN_14056d570()->m_nAchieveId != (int)pAchieve->GetId())
+                    for (size_t i = 0; i < set->GetCount(); i++) {
+                        MS2Ptr<ItemColorEx> elem(set->GetAt(i));
+                        if (elem->m_n24 != (int)pAchieve->GetId())
                             continue;
-                        if (elem.FUN_14056d570()->m_nGrade != pAchieve->GetStartGrade())
+                        if (elem->m_n28 != pAchieve->GetStartGrade())
                             continue;
                         ASObj palette(2);
                         palette.FUN_1409c0d20("paletteID", nPalette);
-                        palette.FUN_1409c4990("realColor", elem.FUN_14056d570()->m_colors[0]);
-                        palette.FUN_1409c4990("visibleColor", elem.FUN_14056d570()->m_visible);
-                        palette.FUN_1409c4990("ch2Color", elem.FUN_14056d570()->m_colors[2]);
-                        palette.FUN_1407cb9c0("colorSN", elem.FUN_14056d570()->m_nSN);
-                        if (elem.FUN_14056d570()->m_bHasSecond != 0) {
-                            palette.FUN_1409c4990("realColor2", elem.FUN_14056d570()->m_colors[2]);
-                            palette.FUN_1409c4990("visibleColor2", elem.FUN_14056d570()->m_colors[2]);
+                        palette.FUN_1409c4990("realColor", (unsigned)elem->m_aValues[0]);
+                        palette.FUN_1409c4990("visibleColor", (unsigned)elem->m_n38);
+                        palette.FUN_1409c4990("ch2Color", (unsigned)elem->m_aValues[2]);
+                        palette.FUN_1407cb9c0("colorSN", elem->m_nColor);
+                        if (elem->m_bFlag != 0) {
+                            palette.FUN_1409c4990("realColor2", (unsigned)elem->m_aValues[2]);
+                            palette.FUN_1409c4990("visibleColor2", (unsigned)elem->m_aValues[2]);
                         }
-                        rRow.FUN_1418adf60(FUN_1402bad60("palette{0}", &static_cast<const int&>(nIndex++)), AScript(palette));
+                        rRow.FUN_1418adf60(Unk_SocketFormat("palette{0}", nIndex++), AScript(palette));
                     }
                 }
             }
@@ -1036,7 +956,7 @@ void UIAchieveDialog::FUN_1418ab7e0(ASObj& rRow, CAchieve* pAchieve)
     FUN_1418ab520(rRow, pAchieve);
     FUN_1418ab000(rRow, pAchieve);
     rRow.FUN_1407cbb20("date", FUN_14093e330(pAchieve, pAchieve->GetCurGrade()));
-    rRow.FUN_1407cbb20("state", FUN_1418aaaf0(pAchieve));
+    rRow.FUN_1407cbb20("state", GetAchieveStateName(pAchieve));
     rRow.FUN_1407cb9c0("count", GetRewardCount(pAchieve));
     rRow.FUN_1407cba60("icon", pAchieve->GetName(0));
     rRow.FUN_1407cb9c0("bookmark", pAchieve->GetBookmark());
@@ -1161,8 +1081,8 @@ int UIAchieveDialog::FUN_1418ac320(int nId)
 int UIAchieveDialog::GetFilterIndex()
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
-        if (MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter")) {
-            return spFilter->FUN_1422bfca0() ? spFilter->FUN_1422df6c0() : 4;
+        if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter")) {
+            return spFilter->FUN_1422bfca0() ? spFilter->GetSelectedIndex() : 4;
         }
     }
     return 4;
@@ -1172,21 +1092,21 @@ int UIAchieveDialog::GetFilterIndex()
 void UIAchieveDialog::SetFilterIndex(int nIndex)
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
-        if (MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter"))
-            spFilter->FUN_1422df690(nIndex);
+        if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter"))
+            spFilter->SetSelectedIndex(nIndex);
     }
 }
 
 // @0x1418ac710
-void UIAchieveDialog::FUN_1418ac710(int nTab)
+void UIAchieveDialog::ApplyTabIndex(int nTab)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    AC_ROOT(m_30)->FUN_1409ba030("setTabIndex", m_178);
+    m_30.operator->()->Invoke("setTabIndex", m_178);
 }
 
 // @0x1418ac780
-int UIAchieveDialog::FUN_1418ac780(CAchieve* pAchieve)
+int UIAchieveDialog::IsAchieveLocked(CAchieve* pAchieve)
 {
     if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsDebugMode())
         return 0;
@@ -1205,7 +1125,7 @@ int UIAchieveDialog::FUN_1418ac780(CAchieve* pAchieve)
 // @0x1418ac870
 int UIAchieveDialog::FUN_1418ac870(CAchieve* pAchieve)
 {
-    if (FUN_1418ac780(pAchieve) == 0)
+    if (IsAchieveLocked(pAchieve) == 0)
         return 0;
     if (pAchieve->GetState() == 3)
         return 1;
@@ -1234,7 +1154,7 @@ int UIAchieveDialog::FUN_1418ac8f0(CAchieve* pAchieve)
 // @0x1418ac9e0
 int UIAchieveDialog::FUN_1418ac9e0()
 {
-    if (MS2Ptr<ASScrollingList> spTabs = FUN_140c02900("m_tabList"))
+    if (MS2Ptr<ASScrollingList> spTabs = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_tabList"))
         return spTabs->GetSelectedIndex();
     return 0;
 }
@@ -1255,10 +1175,10 @@ int UIAchieveDialog::FUN_1418aca90(CAchieve* pAchieve)
 int UIAchieveDialog::FUN_1418acaf0()
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
-        if (MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter")) {
+        if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter")) {
             if (!spFilter->FUN_1422bfca0())
                 return 0;
-            if (spFilter->FUN_1422df6c0() != 0)
+            if (spFilter->GetSelectedIndex() != 0)
                 return 0;
             return 1;
         }
@@ -1372,7 +1292,7 @@ int UIAchieveDialog::FUN_1418ace00(CAchieve* pAchieve, const CStringW& strSearch
             && FUN_14083fec0(strExtra, strSearch) == -1)
             return 0;
     }
-    if (FUN_1418ac780(pAchieve) != 0 && FUN_1418ac870(pAchieve) == 0)
+    if (IsAchieveLocked(pAchieve) != 0 && FUN_1418ac870(pAchieve) == 0)
         return 0;
     return 1;
 }
@@ -1404,13 +1324,13 @@ CStringW UIAchieveDialog::FUN_1418ad5d0(int nCondType, __int64 nId)
     case 0x31:
         return FUN_1416e4df0(nId);
     case 0xd1:
-        return FUN_1405c2690(CStringW(L"s_achieve_collectiong_fish_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nId));
+        return FUN_14028dfa0(CStringW(L"s_achieve_collectiong_fish_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nId));
     case 0x10a:
-        return FUN_1405c2690(CStringW(L"s_achieve_collectiong_pet_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, nId));
+        return FUN_14028dfa0(CStringW(L"s_achieve_collectiong_pet_collect"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, nId));
     case 0xc5: {
         DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nId);
         if (spRoom.get() != 0)
-            return FUN_1408f71a0(CStringW(L"s_achieve_collectiong_dungeon_clear"), FUN_140cbf840(spRoom->m_groupType),
+            return FUN_14028dfa0(CStringW(L"s_achieve_collectiong_dungeon_clear"), TranslateEnumDungeonGroup(spRoom->m_groupType),
                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nId));
     }
         break;
@@ -1427,13 +1347,13 @@ int UIAchieveDialog::FUN_1418ad960(int nCondType, __int64 nId)
         return DAT_143ab30e0.Lookup(nId) != 0;
     case 0x3b:
     case 0x31:
-        return ((struct Unk_AcQuestMgr*)FUN_140764020())->m_10.FUN_140745590(nId);
+        return reinterpret_cast<CQuestManagerCommon*>(((struct Unk_AcQuestMgr*)FUN_140764020())->m_10)->FUN_140745590(nId);
     case 0xd1:
-        return (int)reinterpret_cast<Unk_AcFishMgr*>(TSingleton<CFishingManager>::GetInstance())->FUN_140cdc380(nId);
+        return TSingleton<CFishingManager>::GetInstance()->FUN_140cdc380(nId);
     case 0x10a:
-        return FUN_140535320()->GetCountByKey(nId) != 0;
+        return reinterpret_cast<CPetManager*>(FUN_140535320())->GetCountByKey(nId) != 0;
     case 0xc5: {
-        return FUN_140931510()->FUN_140d9f2c0()->FUN_140b22890(nId) != 0;
+        return FUN_140931510()->GetRecord()->GetRoomValue5c(nId) != 0;
     }
     }
     return 0;

@@ -28,7 +28,7 @@ static CString s_tabIndex = "tabIndex";
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-
+class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); unsigned int FUN_1408d2380(void); };
 using UIMeratMarketCommon::WeaponType;
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
@@ -230,10 +230,10 @@ MS2Ptr<CItem> ItemPreview::CreatePreviewItem(MS2Ptr<CItem> spItem)
     ItemFunction* pFunction = &spData->function;
     if (pFunction->name == L"ItemChangeBeauty")
     {
-        int nCount = pFunction->parameter.FUN_1408d2380();
+        int nCount = ((class Unk_CommandArgs&)(((class Unk_CommandArgs&)(pFunction->parameter)))).FUN_1408d2380();
         if (nCount == 0)
             return 0;
-        int nPackageId = pFunction->parameter.FUN_1408d1fd0(0, 0);
+        int nPackageId = ((class Unk_CommandArgs&)(((class Unk_CommandArgs&)(pFunction->parameter)))).FUN_1408d1fd0((unsigned int)((unsigned int)(0)), 0);
         if (nPackageId == 0)
             return 0;
         MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
@@ -483,10 +483,10 @@ bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
     ItemFunction* pFunction = &spData->function;
     if (pFunction->name == L"ItemChangeBeauty")
     {
-        int nCount = pFunction->parameter.FUN_1408d2380();
+        int nCount = ((class Unk_CommandArgs&)(((class Unk_CommandArgs&)(pFunction->parameter)))).FUN_1408d2380();
         if (nCount == 0)
             return false;
-        int nPackageId = pFunction->parameter.FUN_1408d1fd0(0, 0);
+        int nPackageId = ((class Unk_CommandArgs&)(((class Unk_CommandArgs&)(pFunction->parameter)))).FUN_1408d1fd0((unsigned int)((unsigned int)(0)), 0);
         if (nPackageId == 0)
             return false;
         MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);

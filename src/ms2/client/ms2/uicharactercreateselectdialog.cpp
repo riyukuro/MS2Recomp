@@ -429,7 +429,7 @@ void UICharacterCreateSelectDialog::OnEndPopdown()
     {
         CSceneStateMulti* pScene = FUN_140f30370();
         if (pScene != 0 && m_nPopupMsg == 0x620001c)
-            pScene->FUN_14174eb80(m_nPopupJob);
+            pScene->SelectCreateJob(m_nPopupJob);
     }
     m_nPopupMsg = 0;
     vfunc_67();

@@ -52,7 +52,7 @@ public:
 
 class Unk_SettingsHolder;                               // option flags
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-unsigned char FUN_14036d570(Unk_SettingsHolder* p, int nId);
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
 class Unk_KeyBindings                                   // key binding table
 {
@@ -163,7 +163,7 @@ efd::AsyncResult MS2InputService::OnInit()
     {
         m_spKeyboard = pInput->OpenKeyboard();
         m_spMouse = pInput->OpenMouse();
-        if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xb5) == 1)
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
             reinterpret_cast<MS2NiInputSystemAccess*>(pInput)->FUN_140d8f490(true);
     }
     ChromaSDK::GetChromaManager()->Initialize();
@@ -483,7 +483,7 @@ MS2_REPLACE_METHOD(0x140D8B370, MS2InputService, HasKeyHeldOrGamePad, 106, 0xB57
 // @0x140d8b3e0
 void MS2InputService::StartRumbleFor(double dSeconds)
 {
-    if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xc3) != 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3) != 1)
         return;
     m_nRumbleActive = 1;
     m_dRumbleStart = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
@@ -692,7 +692,7 @@ MS2_REPLACE_METHOD(0x140D8BE10, MS2InputService, FUN_140d8be10, 32, 0xCBEBD717);
 // @0x140d8be40
 void MS2InputService::DetectGamePad()
 {
-    if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
     {
         NiInputSystem* pInput = GetInputSystem();
         if (pInput != NULL)
@@ -857,7 +857,7 @@ bool MS2InputService::FUN_140d8c550()
     if (m_spGamePad == 0)
         return false;
     bool bChanged = true;
-    if (FUN_14036d570(((class Unk_SettingsHolder*)FUN_140166410()), 0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
     {
         float fX = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_H);
         float fY = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_V);

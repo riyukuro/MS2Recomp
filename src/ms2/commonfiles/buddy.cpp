@@ -11,7 +11,7 @@
 #include <efd/ServiceManager.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-
+class Unk_IntTriple { public: void ReadFrom(class CInputStream &); };
 // The packet object CBuddyManager hands to the reader: a virtual at slot 0 and the CInputStream sub-object at +8.
 // (buddymanager.cpp keeps its own shape of this class; neither constructs it.)
 class Unk_BuddyInputBase { public: virtual unsigned vfunc_0(); };
@@ -210,7 +210,7 @@ void CBuddy::FUN_1401cc7c0(Unk_BuddyInput& input) {
     m_c0 = (&input.stream)->ReadInt32();
     m_c8 = (&input.stream)->ReadUnicodeString();
     m_90 = (&input.stream)->ReadInt64();
-    m_ac.FUN_140267e70(input.stream);
+    ((class Unk_IntTriple&)(m_ac)).ReadFrom(input.stream);
     flags |= 0x80;
 }
 MS2_REPLACE_METHOD(0x1401CC7C0, CBuddy, FUN_1401cc7c0, 2087, 0x6A3E5EB7);

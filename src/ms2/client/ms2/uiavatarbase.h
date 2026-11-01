@@ -120,9 +120,9 @@ public:
     int GetMode();                                    // 0x1418ba140 m_nMode
     int SetModeFromButton(int nButton);                         // 0x1418ba160 m_nMode = GetModeForButton(nButton)
     int GetModeForButton(int nButton);                         // 0x1418ba1a0 button -> drag mode
-    void FUN_1418ba200(Vector3* pDst, float x, float y, float z);       // 0x1418ba200
+    void SetVector3(Vector3* pDst, float x, float y, float z);       // 0x1418ba200
     void FUN_1418ba250(Vector3* pDst, const Vector3* pSrc);     // 0x1418ba250
-    void FUN_1418ba280(int bUpdate);                        // 0x1418ba280 back to the stored position
+    void ApplyPosition(int bUpdate);                        // 0x1418ba280 back to the stored position
     void FUN_1418ba340(int bUpdate);                        // 0x1418ba340 back to the stored angle
     void SetLocked(int n);                              // 0x1418ba3f0 m_nLocked = n
     void FUN_1418ba410(Vector3* pOut);              // 0x1418ba410
@@ -205,8 +205,8 @@ public:
     void FUN_1418bc8c0(int nSkin, int nUnused);             // 0x1418bc8c0 (the second arg is unused)
     void FUN_1418bca10(Unk_CharEquip kColor0, Unk_CharEquip kColor1);   // 0x1418bca10
     void FUN_1418bca60(int nState, int nParam);             // 0x1418bca60
-    bool FUN_1418bcd20(int nPose);                          // 0x1418bcd20
-    bool FUN_1418bcd80(int nPose);                          // 0x1418bcd80
+    bool SetPoseIndex(int nPose);                          // 0x1418bcd20
+    bool ApplyPose(int nPose);                          // 0x1418bcd80
     void FUN_1418bce80(int nValue);                         // 0x1418bce80
     void FUN_1418bced0(MS2Ptr<CItemData> spData);           // 0x1418bced0
     void FUN_1418bcf60(int nSkillId, short nLevel);         // 0x1418bcf60

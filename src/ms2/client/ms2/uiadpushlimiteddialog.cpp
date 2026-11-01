@@ -54,7 +54,6 @@ class ASDialog : public ASDisplayObjectContainer
 {
 public:
     void FUN_1422c0f60(float* pX, float* pY);               // read the position
-    int FUN_1422c1500();                                    // width
     int FUN_1422c1530();                                    // height
     float FUN_1422c10a0();                                  // x
     float FUN_1422c1110();                                  // y

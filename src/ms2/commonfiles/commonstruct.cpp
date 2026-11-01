@@ -181,7 +181,7 @@ MS2_REPLACE_METHOD(0x14026DE30, PacketLogQueue, PrintPacketLogs, 312, 0xD695911F
 // @0x14026df70
 Unk_CommonCachedPacket::Unk_CommonCachedPacket() : sequence(0),packet(0) {}
 // @0x14026dfb0
-Unk_CommonCachedPacket::Unk_CommonCachedPacket(const Unk_CommonPacket& source,unsigned sequence) : sequence(sequence),packet(Unk_CommonNew(0)) {
+Unk_CommonCachedPacket::Unk_CommonCachedPacket(const Unk_CommonPacket& source,unsigned sequence) : sequence(sequence),packet(Unk_PktNewTag(0)) {
     packet->FUN_140710740(source.FUN_14020ba20(),source.FUN_14020bc40(),1);
     packet->FUN_14020aa30(source,2);
 }

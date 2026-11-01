@@ -13,8 +13,8 @@
 // MS2-PIN: ?FUN_140c1c770@UIGamePadMenuDialog@@QEAAHXZ 0x140c1c770 ; unique
 // MS2-PIN: ??0?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@IMMMI@Z 0x140c1ca10 ; unique
 // MS2-PIN: ??1?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@XZ 0x140c1cca0 ; unique
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_GpMenu@@@@QEBAPEAVUnk_GpMenu@@XZ 0x140c1cd90 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VUnk_GpMenu@@@@QEBAPEAVUnk_GpMenu@@XZ 0x140c1cda0 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCGameMenuDef@@@@QEBAPEAVCGameMenuDef@@XZ 0x140c1cd90 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VCGameMenuDef@@@@QEBAPEAVCGameMenuDef@@XZ 0x140c1cda0 ; unique
 // MS2-PIN: ?FUN_140c1cdc0@Unk_GpCondRef@@QEAAHXZ 0x140c1cdc0 ; unique
 // MS2-PIN: ?CompareElements@?$CDefaultCompareTraits@W4EMenuKey@@@ATL@@SA_NAEBW4EMenuKey@@0@Z 0x140c1d040 ; unique
 // MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXXZ 0x140c1d110 ; unique
@@ -64,6 +64,7 @@ static CString s_strSortTypeNamesPre[] = {"None", "Buy", "Like", "PriceLow", "Pr
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
+#include "ms2/placeholder/cgamemenutable.h"
 
 // The key-input controller singleton of this unit.
 static UICommon::CMyPCKeyInputController s_keyInputController;
@@ -87,35 +88,6 @@ private:
 };
 MS2_CHECK_SIZE(Unk_GpCondRef, 0x8);
 
-// The action half of a menu record (key bind / dialog).
-class Unk_GpTail
-{
-public:
-    bool FUN_14098d930();
-    void FUN_14098d150();
-private:
-    void* m_p;
-};
-
-// One entry of the menu table (found by name or id).
-class Unk_GpMenu : public CPtred
-{
-public:
-    char m_pad_18[8];
-    CString m_strLayer;                                 // +0x20 movie layer name
-    char m_pad_28[8];
-    Unk_GpTail m_tail;                                  // +0x30
-    Unk_GpCondRef m_cond38;                             // +0x38 event menu
-    Unk_GpCondRef m_cond40;                             // +0x40 shown
-    char m_pad_48[0x10];
-    int m_nKeyBind;                                     // +0x58
-    int m_pad_5c;
-    CString m_strText;                                  // +0x60 string table key of the tooltip
-    int m_nUiId;                                        // +0x68
-    int m_pad_6c;
-};
-MS2_CHECK_SIZE(Unk_GpMenu, 0x70);
-
 // One node of the menu tree (cursor row / column, id and sub menus).
 class Unk_GpNode : public CPtred
 {
@@ -129,24 +101,11 @@ public:
 };
 MS2_CHECK_SIZE(Unk_GpNode, 0x50);
 
-class Unk_GpDb
+class Unk_GpDb : public CGameMenuTable
 {
-public:
-    MS2Ptr<Unk_GpMenu> FUN_140cf7470(CString strName);
-    MS2Ptr<Unk_GpMenu> FUN_140cf7590(int nId);
-    MS2Ptr<Unk_GpMenu> FUN_140cf7690(int nId);
-    int FUN_140cf72f0(int nId, int nKind);
-    int FUN_140cf71f0(int nId, int nKind);
-    void FUN_140cf7710(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& out, int nKind);
 };
 extern Unk_GpDb* DAT_143abe318;                         // the menu table
 Unk_GpDb* FUN_140c1d2f0() { return DAT_143abe318; }     // 0x140c1d2f0
-class CGameMenuItem   // C3: member view for the former free stand-ins
-{
-public:
-    bool IsVisible();
-};
-
 class ASDialog : public ASDisplayObject {};
 
 class Unk_GpButton : public AScript
@@ -167,13 +126,13 @@ public:
 };
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 
-class Unk_GpKeys { public: CStringW FUN_14142d760(int nBind, int n); };
+class CKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GpKeys (calls cast back)
 class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();
 class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
@@ -194,14 +153,14 @@ UIGamePadMenuDialog::UIGamePadMenuDialog()
     m_nMoveMs = 0x32;
     m_80 = 0;
     m_5c = 1;
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyCompleteMyPC"),
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCompleteMyPC"),
         Delegate<void(NotifyObject*)>(this, &UIGamePadMenuDialog::FUN_140c1bfe0));
 }
 
 // @0x140c1ad10
 UIGamePadMenuDialog::~UIGamePadMenuDialog()
 {
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"),
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"),
         Delegate<void(NotifyObject*)>(this, &UIGamePadMenuDialog::FUN_140c1bfe0));
 }
 
@@ -256,11 +215,11 @@ int UIGamePadMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         int nEvent = strName.Find("_event", 0);
         if (nEvent != -1)
             strName = strName.Mid(0, nEvent);
-        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7470(CString(strName));
+        MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->FindByName(CString(strName));
         if (spMenu.get() != 0)
         {
-            if (spMenu->m_tail.FUN_14098d930() == false)
-                spMenu->m_tail.FUN_14098d150();
+            if (spMenu->m_onClick.IsNull() == false)
+                spMenu->m_onClick();
             else if (spMenu->m_nUiId != 0)
                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(spMenu->m_nUiId)));
             vfunc_67();
@@ -381,7 +340,7 @@ void UIGamePadMenuDialog::FUN_140c1b620()
 // @0x140c1ba90
 void UIGamePadMenuDialog::FUN_140c1ba90(int nMenu, int nEnable)
 {
-    int nId = FUN_140c1d2f0()->FUN_140cf72f0(nMenu, FUN_140c1c770());
+    int nId = FUN_140c1d2f0()->FindTopId(nMenu, (EGameMenuSet)FUN_140c1c770());
     if (MS2Ptr<Unk_GpButton> spButton = FUN_140c1be20(FUN_140c1bcd0(nId)))
         spButton->Invoke("setMenuEnable", FUN_140c1bcd0(nMenu), nEnable);
     else
@@ -392,9 +351,9 @@ void UIGamePadMenuDialog::FUN_140c1ba90(int nMenu, int nEnable)
 CString UIGamePadMenuDialog::FUN_140c1bc10(int nMenu)
 {
     {
-        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7590(nMenu);
+        MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->FindByUiId(nMenu);
         if (spMenu.get() != 0)
-            return CString(spMenu->m_strLayer);
+            return CString(spMenu->m_strName);
     }
     return CString("");
 }
@@ -403,9 +362,9 @@ CString UIGamePadMenuDialog::FUN_140c1bc10(int nMenu)
 CString UIGamePadMenuDialog::FUN_140c1bcd0(int nMenu)
 {
     {
-        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nMenu);
+        MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->Find(nMenu);
         if (spMenu.get() != 0)
-            return CString(spMenu->m_strLayer);
+            return CString(spMenu->m_strName);
     }
     return CString("");
 }
@@ -448,13 +407,13 @@ void UIGamePadMenuDialog::FUN_140c1bfe0(NotifyObject* pObj)
 void UIGamePadMenuDialog::FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst)
 {
     ATL::CAtlArray<MS2Ptr<Unk_GpNode> > nodes;
-    FUN_140c1d2f0()->FUN_140cf7710(nodes, FUN_140c1c770());
+    FUN_140c1d2f0()->GetTopItems(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CGameMenuItem> >&>(nodes), (EGameMenuSet)FUN_140c1c770());
     for (size_t i = 0; i < nodes.GetCount(); i++)
     {
-        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nodes[i]->m_nId);
+        MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->Find(nodes[i]->m_nId);
         if (spMenu.get() != 0)
         {
-            if (spMenu->m_cond40.FUN_140c1d130() == false && spMenu->m_cond40.FUN_140c1cdc0() == 0)
+            if (reinterpret_cast<Unk_GpCondRef&>(spMenu->m_isEnabled).FUN_140c1d130() == false && reinterpret_cast<Unk_GpCondRef&>(spMenu->m_isEnabled).FUN_140c1cdc0() == 0)
                 continue;
             dst.Add(nodes[i]);
         }
@@ -464,28 +423,28 @@ void UIGamePadMenuDialog::FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst
 // @0x140c1c160
 int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
 {
-    if (MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nMenu))
+    if (MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->Find(nMenu))
     {
-        if (spMenu->m_cond40.FUN_140c1d130() == false && spMenu->m_cond40.FUN_140c1cdc0() == 0)
+        if (reinterpret_cast<Unk_GpCondRef&>(spMenu->m_isEnabled).FUN_140c1d130() == false && reinterpret_cast<Unk_GpCondRef&>(spMenu->m_isEnabled).FUN_140c1cdc0() == 0)
             return 0;
-        CStringW strTip = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(spMenu->m_strText);
-        if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
+        CStringW strTip = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(spMenu->m_strLabel);
+        if (FUN_140c1d2f0()->IsChild(nMenu, (EGameMenuSet)FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
         {
-            CStringW strKey = reinterpret_cast<Unk_GpKeys*>(FUN_1409331f0())->FUN_14142d760(spMenu->m_nKeyBind, 0);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(spMenu->m_nKeyBind, 0);
             if (strKey.GetLength() > 0)
                 strTip += StringFormat<CStringW>(L" [{0}]", strKey);
         }
-        CString strName(spMenu->m_strLayer);
-        if (spMenu->m_cond38.FUN_140c1d130() == false)
+        CString strName(spMenu->m_strName);
+        if (reinterpret_cast<Unk_GpCondRef&>(spMenu->m_hasNew).FUN_140c1d130() == false)
         {
-            if (spMenu->m_cond38.FUN_140c1cdc0() != 0)
+            if (reinterpret_cast<Unk_GpCondRef&>(spMenu->m_hasNew).FUN_140c1cdc0() != 0)
                 strName += "_event";
         }
         pObj->FUN_1407cba60("name", CString(strName));
         pObj->FUN_1407cba60("layerName", CString(strName));
-        if (FUN_140166410()->FUN_14036d570(0xc4) == false)
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xc4) == false)
         {
-            if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, FUN_140c1c770()) == 0)
+            if (FUN_140c1d2f0()->IsChild(nMenu, (EGameMenuSet)FUN_140c1c770()) == 0)
                 pObj->FUN_1409c0e60("tooltipName", L"");
             else
                 pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));

@@ -42,12 +42,12 @@ struct Unk_AasSourcePtr                                                     // t
     void* m_p;
 };
 class Unk_CashConstInt { public: int m_n; char m_pad_04[0x54]; };                                // one value of the client constants
-class Unk_CashConstStr { public: CString& FUN_140298f80(); char m_pad_00[0x60]; };
+class Unk_StringOptionEntry { public: CString& FUN_140298f80(); char m_pad_00[0x60]; };
 class Unk_CashConsts
 {
 public:
     char m_pad_0000[0xdb60];
-    Unk_CashConstStr m_strUrl;                                              // +0xdb60
+    Unk_StringOptionEntry m_strUrl;                                              // +0xdb60
     Unk_CashConstInt m_nWidth;                                              // +0xdbc0
     Unk_CashConstInt m_nHeight;                                             // +0xdc18
 };
@@ -58,7 +58,6 @@ CWebBrowserService* FUN_140cc18a0();
 class ASDialog : public ASDisplayObject
 {
 public:
-    void FUN_1407cbbe0(const char* szName, bool b);                         // set a bool member
 };
 
 void FUN_141901470(int n, int nTypeId);
@@ -67,7 +66,7 @@ void* FUN_140e999d0(Unk_CashImagePtr* p, int nNull);                        // p
 Unk_CashImage* FUN_140e99a80(Unk_CashImagePtr* p);                          // operator->
 Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
 void FUN_1422e5530(Unk_CashImage* pImage, Unk_AasSourcePtr spSource);
-CStringW FUN_140e99600(const wchar_t* szFormat, const CString& strKey, const int& nWidth, const int& nHeight);   // StringFormat
+#include "ms2/ms2format.h"
 
 class UITencentCashChargeDialog : public UIWebBrowserBase
 {
@@ -187,7 +186,7 @@ void UITencentCashChargeDialog::vfunc_26()
 void UITencentCashChargeDialog::vfunc_85()
 {
     ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw((class ASLoader*)(new Unk_CashImage(2))));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(FUN_140e99600(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(FUN_140e99a80(&m_spImage)->FUN_1422bb890());

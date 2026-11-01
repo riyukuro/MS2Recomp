@@ -88,13 +88,13 @@ public:
 bool FUN_140164830(const CStringW& strA, const CStringW& strB);    // the strings differ
 void FUN_14151f200();                                               // close the message box on top / show the next
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the message box on top
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* nUnk, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the box
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+#include "ms2/placeholder/formatstringid.h"
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412752d0(const CStringW& strKey, int nType);
@@ -235,7 +235,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             kPacket.Encode8(nTargetId);
             FUN_140710590(kPacket);
             const CStringW& strName = pTarget->vfunc_77();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0xd0e, strName), 0, s_strRpsRequest);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0xd0e, strName), 0, s_strRpsRequest);
             if (spBox == 0)
             {
                 MS2_ASSERT_AT(0xba, 0);
@@ -312,7 +312,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             if (pState->FUN_140b872c0() != pTarget->FUN_14123c580())
                 break;
             pMyPC->vfunc_59(1, 0, 0, 0);
-            CStringW strText = FUN_14052bd00(0xd0f, pTarget->vfunc_77());
+            CStringW strText = FormatStringId<CStringW>(0xd0f, pTarget->vfunc_77());
             FUN_1412751f0(strText, 1, 1);
         }
         break;

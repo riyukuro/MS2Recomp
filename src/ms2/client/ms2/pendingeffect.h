@@ -11,6 +11,7 @@
 #include "ms2/placeholder/ascript.h"      // MS2Ptr<T>
 #include "ms2/placeholder/nipoint3.h"     // Vector3 (NiPoint3 with out-of-line special members)
 #include "ms2/client/ms2/effectparam.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 typedef MS2Ptr<CEffectParam> Unk_PeParamPtr;
 
@@ -77,7 +78,7 @@ public:
     int m_nId;                                                          // +0x18
     MS2Ptr<Unk_PeEffectSet> m_spSet;                                    // +0x20
     Unk_PeTarget m_target;                                              // +0x30
-    Unk_PeTick m_tick;                                                  // +0xa0
+    Unk_IntervalTimer m_tick;                                           // +0xa0 (C3: the real 50 ms timer)
     Unk_PeXform m_xformA;                                               // +0xa8
     Unk_PeXform m_xformB;                                               // +0xdc
     Unk_PePointArray m_points;                                          // +0x110

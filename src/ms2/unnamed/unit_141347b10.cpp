@@ -59,7 +59,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uishopdialog.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-
+#include "ms2/client/ms2/equipment.h"
+class TShopPaymentAttr { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const & GetIconTag(void) const; enum ePaymentType FUN_1406dc510(void) const; unsigned int GetItemId(void) const; };
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
 class Unk_140acd6e0 : public ASDisplayObject                    // the button wrapper
@@ -364,13 +365,13 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
         ASObj obj(2);
         spTab->Write(reinterpret_cast<Unk_AsOut*>(&obj));
         int nDepth = spInfo->m_nDepth;
-        obj.FUN_1407cb9c0("depth", nDepth);
+        ((class AScript&)(obj)).FUN_1407cb9c0("depth", nDepth);
         *pMaxDepth = (*pMaxDepth > nDepth) ? *pMaxDepth : nDepth;
         obj.FUN_140e846b0("tabindex", i);
         int nId = spTab->GetId();
         if ((unsigned)nSale > 0 && TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce690(nId, nSale))
             obj.FUN_1407cbbe0("saleTag", true);
-        obj.FUN_1407cb9c0("space", 1);
+        ((class AScript&)(obj)).FUN_1407cb9c0("space", 1);
         if (pfnEach != 0 && !pfnEach->IsNull())
             (*pfnEach)(obj);
         out.FUN_1422bc050(obj.FUN_1422bb870());
@@ -407,13 +408,13 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d510())
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40())
-            spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(4, bAlt);
+            spEquip = reinterpret_cast<CEquipment*>((class CEquipment*)((static_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411e1780(4, bAlt);
         else
-            spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(5, bAlt);
+            spEquip = reinterpret_cast<CEquipment*>((class CEquipment*)((static_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411e1780(5, bAlt);
     }
     else
     {
-        spEquip = static_cast<PC*>(pPlayer)->FUN_1416561a0()->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
+        spEquip = reinterpret_cast<CEquipment*>((class CEquipment*)((static_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
     }
     if (spEquip.get())
         spEquipped = spEquip->GetItem();
@@ -612,14 +613,14 @@ MS2_REPLACE(0x14134a170, FUN_14134a170, 22, 0xFF2C17B2);
 // @0x14134a190
 __int64 FUN_14134a190(Unk_BSFee* pFee)
 {
-    return FUN_141349ef0(pFee->FUN_1406dc510(), pFee->FUN_1406dc4d0(), 0);
+    return FUN_141349ef0((((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
 MS2_REPLACE(0x14134a190, FUN_14134a190, 54, 0xA554498C);
 
 // @0x14134a1d0
 bool FUN_14134a1d0(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
-    return FUN_14134a030(pFee->FUN_1406dc510(), pFee->FUN_1406dc4d0(), *pPrice);
+    return FUN_14134a030((((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
 }
 MS2_REPLACE(0x14134a1d0, FUN_14134a1d0, 64, 0xD9B549FA);
 
@@ -627,7 +628,7 @@ MS2_REPLACE(0x14134a1d0, FUN_14134a1d0, 64, 0xD9B549FA);
 CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
     CStringW strText;
-    FUN_141349f30(strText, pFee->FUN_1406dc510(), pFee->FUN_1406dc4d0(), *pPrice, pFee->FUN_1406dc4b0());
+    FUN_141349f30(strText, (((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice, ((class TShopPaymentAttr*)(pFee))->GetIconTag());
     return strText;
 }
 MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
@@ -635,7 +636,7 @@ MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
 // @0x14134a2e0
 void FUN_14134a2e0(Unk_BSFee* pFee)
 {
-    FUN_14134a120(pFee->FUN_1406dc510(), pFee->FUN_1406dc4d0(), 0);
+    FUN_14134a120((((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
 MS2_REPLACE(0x14134a2e0, FUN_14134a2e0, 54, 0x2D3D1D1C);
 
@@ -651,7 +652,7 @@ void FUN_14134a320(ASObj& obj, const int& nTag, const __int64& nSalePrice, const
         if (nPercent > 0)
         {
             CStringW strText = FUN_14028dfa0<int>(CStringW(L"s_common_saletag_sale"), nPercent);
-            obj.FUN_1407cbb20("saleTagText", strText);
+            ((class AScript&)(obj)).FUN_1407cbb20("saleTagText", strText);
         }
     }
 }

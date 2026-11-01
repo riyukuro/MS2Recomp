@@ -51,12 +51,13 @@ struct Unk_CmEaseOut { float FUN_140cd8c20(float t); };
 struct Unk_CmEaseIn { float FUN_1410af700(float t); };
 
 // Property access on the entity (hash id, value).
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
+
 class Unk_CmEntity
 {
 public:
     void FUN_140a38a50(unsigned nProp, const Vector3* pValue);  // set a point property
     void FUN_1409457c0(unsigned nProp, const float* pValue);            // set a float property
-    void FUN_14098c6e0(unsigned nProp, const bool* pValue);             // set a bool property
 };
 
 // Transparency material attached to a mesh (0x38 bytes); slots 2 and 4 are used here.
@@ -158,7 +159,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
     egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
     if (spEntity != 0)
     {
-        ((Unk_CmEntity*)spEntity.operator->())->FUN_14098c6e0(0xd89e9b12, &bHide);
+        FUN_14098c6e0((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xd89e9b12, bHide);
         NiAVObject* pNode = FUN_141b6efc0(spEntity);
         if (pNode != 0)
         {
@@ -196,7 +197,7 @@ void Unk_CmFade::FUN_141161600()
     if (spEntity != 0)
     {
         bool bVisible = true;
-        ((Unk_CmEntity*)spEntity.operator->())->FUN_14098c6e0(0xd89e9b12, &bVisible);
+        FUN_14098c6e0((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xd89e9b12, bVisible);
         MS2_FOR_EACH(TransparencyStandardMaterial* pMaterial, m_materials)
         {
             pMaterial->vfunc_3();
@@ -449,7 +450,7 @@ void CCubeMotionManager::Update()
                 pMaterial->vfunc_4(fade.m_fTo);
             }
             fade.m_timer.FUN_1408687f0();
-            ((Unk_CmEntity*)spEntity.operator->())->FUN_14098c6e0(0xa0b6b179, (const bool*)&fade.m_bHide);
+            FUN_14098c6e0((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xa0b6b179, fade.m_bHide);
             fade.FUN_141161600();
             finished.AddTail(id);
         }

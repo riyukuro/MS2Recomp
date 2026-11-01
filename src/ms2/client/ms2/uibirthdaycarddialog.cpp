@@ -34,7 +34,6 @@ __int64 FUN_140bb9ba0(Unk_BirthdayActor* pActor);
 class Unk_BirthdaySound
 {
 public:
-    void FUN_1411a5110(CString strPath, CString strName, CString strBone, int a, void* pXform, float fScale, int b);   // play a sound
 };
 
 CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
@@ -110,12 +109,12 @@ void UIBirthdayCardDialog::FUN_140bb9960()
         Unk_BirthdayActor* pActor = ((Unk_BirthdayActor*)((WorldService*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
         {
-            if (pActor->FUN_141660030() != 0)
+            if (((unsigned int)((class PC*)(pActor))->FUN_141660030()) != 0)
             {
                 CMsTime time(FUN_140bb9ba0(pActor));
                 int nMonth;
                 m_30->Invoke("setBirthDay", FUN_1402bad60("{0:02d}", &(nMonth = time.GetMonth())));
-                reinterpret_cast<Unk_BirthdaySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143abd4f8), CString(""), 1, 0, 1.0f, 0);
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143abd4f8), CString(""), 1, 0, 1.0f, 0);
             }
         }
     }

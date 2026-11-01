@@ -65,7 +65,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
-int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& value);
+int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
 int FUN_1406e8ac0(Unk_140165cf0* pElem, const char* pszName, int& value);   // "saleTag"
    // the feature/locale singleton

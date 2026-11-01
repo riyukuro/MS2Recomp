@@ -184,8 +184,8 @@ void UIItemEventOpenBoxDialog::FUN_140e48050()
     m_188 = reinterpret_cast<Unk_EobTextMgr*>(TSingleton<CServerString>::GetInstance())->FUN_140be95b0()->GetString(spCtx->m_desc);
     m_190 = (const wchar_t*)spCtx->m_bannerPath;
     m_178 = spCtx->m_boxItemID;
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(m_180);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(m_188);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(m_180);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(m_188);
     CString strBound = FUN_140e48770(m_178);
     FUN_141924680();
 }

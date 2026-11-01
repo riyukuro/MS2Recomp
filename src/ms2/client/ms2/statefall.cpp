@@ -32,6 +32,7 @@
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/client/ms2/equipment.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -113,9 +114,9 @@ void StateFall::vfunc_4(StateData* pData)
         if (pPC != 0)
         {
             CString strRec;
-            bool bHasRec = !reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0().IsEmpty();
+            bool bHasRec = !reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName().IsEmpty();
             if (bHasRec)
-                strRec = reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0();
+                strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName();
             if (!strRec.IsEmpty())
             {
                 efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
@@ -147,7 +148,7 @@ void StateFall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     NiPoint3 kPos = m_pOwner->FUN_14123c360();
-    efd::Point3 kDir = m_pOwner->FUN_141674b60(reinterpret_cast<const efd::Point3&>(kPos));
+    efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(reinterpret_cast<const efd::Point3&>(kPos));
     if (kDir != efd::Point3::ZERO)
     {
         float fSpeed = m_pOwner->vfunc_95();

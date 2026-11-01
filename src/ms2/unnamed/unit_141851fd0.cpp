@@ -33,7 +33,18 @@ unsigned int FUN_14098daf0(void* pObj);             // child count
 class NiNode   // C3: member view for the former free stand-ins
 {
 public:
+    static const class NiRTTI ms_RTTI;
     class NiAVObject* GetAt(unsigned int) const;
+};
+class NiAVObject
+{
+public:
+    static const class NiRTTI ms_RTTI;
+};
+class NiAlphaController
+{
+public:
+    static const class NiRTTI ms_RTTI;
 };
 void* FUN_1413fc1d0(void* pObj);                    // child array
 void* FUN_1413fc1f0(void* pArr);                    // array begin position
@@ -42,9 +53,6 @@ bool FUN_141546c80(void* pArr);
 void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
 void FUN_14098e870(void* pCtrl, int nValue);
 void FUN_1416f18b0(void* pCtrl, unsigned int uValue);
-extern char DAT_143af8940;                          // NiRTTI: controller kind
-extern char DAT_143afa458;                          // NiRTTI: NiAVObject
-extern char DAT_143afa4d8;                          // NiRTTI: NiNode
 
 // Controller interface with the two virtual slots used here (the slots in between are unrecovered).
 struct Unk_CtrlIface
@@ -129,11 +137,11 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
     void* pCtrl = ((void*)((class NiObjectNET*)(void*)(pRoot))->GetControllers());
     while (pCtrl != 0)
     {
-        if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143af8940), (class NiObject const*)(pCtrl)))
+        if (NiObject::IsKindOf(&NiAlphaController::ms_RTTI, (class NiObject const*)(pCtrl)))
             FUN_141852970(pArg, pCtrl);
         pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -145,7 +153,7 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
                 FUN_141852690(pProp, pArg);
         }
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
@@ -175,7 +183,7 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
         FUN_1418528f0(pArg, pCtrl);
         pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -187,7 +195,7 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
                 FUN_141852290(pProp, pArg);
         }
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
@@ -217,7 +225,7 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
         FUN_141852930(pArg, pCtrl);
         pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -229,7 +237,7 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
                 FUN_141852490(pProp, pArg);
         }
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
@@ -259,7 +267,7 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
         FUN_141852970(pArg, pCtrl);
         pCtrl = ((void*)((class NiTimeController*)(void*)(pCtrl))->GetNext());
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
         void* pList = FUN_14127cc40(pObj);
@@ -271,7 +279,7 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
                 FUN_141852690(pProp, pArg);
         }
     }
-    if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pRoot)))
+    if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
         for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)

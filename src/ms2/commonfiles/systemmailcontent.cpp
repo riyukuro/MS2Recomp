@@ -86,7 +86,7 @@ void LoadSystemMailContent()
         if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_SmLog(CLogString::GetInstance(), 1, 0x13, MS2_SM_XML_ERR, "systemMailContent.xml");

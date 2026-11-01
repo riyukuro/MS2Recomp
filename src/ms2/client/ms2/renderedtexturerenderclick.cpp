@@ -2,28 +2,28 @@
 // MS2-UNIT: ?\renderedtexturerenderclick.cpp
 // MS2-RANGE: 0x1416f8f50-0x1416fa4b0 .text$mn
 // MS2-PIN: ??_GRenderedTextureRenderClick@@UEAAPEAXI@Z 0x1416fa1a0
-// MS2-PIN: ??0Unk_RtFormatPrefs@@QEAA@XZ 0x140984420
-// MS2-PIN: ??0Unk_RtObjPtr@@QEAA@PEAX@Z 0x14097eb60
-// MS2-PIN: ??1Unk_RtObjPtr@@QEAA@XZ 0x1405a85c0
-// MS2-PIN: ??0Unk_RtDepthPtr@@QEAA@PEAX@Z 0x1416ae2e0
-// MS2-PIN: ??1Unk_RtDepthPtr@@QEAA@XZ 0x1416aed20
-// MS2-PIN: ??0Unk_RtColor@@QEAA@MMMM@Z 0x14097f1d0
-// MS2-PIN: ??0Unk_RtFixedStr@@QEAA@PEBD@Z 0x140984450
-// MS2-PIN: ??1Unk_RtFixedStr@@QEAA@XZ 0x1409845a0
-// MS2-PIN: ??0Unk_RtViewPtr@@QEAA@PEAX@Z 0x1409a73e0
-// MS2-PIN: ??0Unk_RtTexturePtr@@QEAA@PEAX@Z 0x14127c2a0
-// MS2-PIN: ??1Unk_RtTexturePtr@@QEAA@XZ 0x14127c650
-// MS2-PIN: ??0Unk_RtTargetPtr@@QEAA@PEAX@Z 0x1414748a0
-// MS2-PIN: ??1Unk_RtTargetPtr@@QEAA@XZ 0x141474d60
-// MS2-PIN: ??2Unk_RtNiNew@@SAPEAX_KI@Z 0x14208a860
-// MS2-PIN: ??3Unk_RtNiNew@@SAXPEAXI@Z 0x14097f700
-// MS2-PIN: ??0Unk_Rt3DRenderView@@QEAA@PEAX0_N@Z 0x140d9de30
-// MS2-PIN: ??0Unk_RtMeshCullingProcess@@QEAA@PEAX0@Z 0x141e2eaf0
-// MS2-PIN: ??0Unk_RtClickPtr@@QEAA@PEAX@Z 0x1414747a0
-// MS2-PIN: ??1Unk_RtClickPtr@@QEAA@XZ 0x141474ca0
-// MS2-PIN: ??0Unk_RtViewPtr@@QEAA@AEBU0@@Z 0x1416fa0e0
-// MS2-PIN: ??1Unk_RtViewPtr@@QEAA@XZ 0x1409a7ad0
-// MS2-PIN: ?GetValue_1416f9ae0@RenderedTextureRenderClick@@QEAA?AUUnk_RtViewPtr@@XZ 0x1416f9ae0
+// MS2-PIN: ??0FormatPrefs@NiTexture@@QEAA@XZ 0x140984420
+// MS2-PIN: ??0?$SmartPointer@VNiAVObject@@@efd@@QEAA@AEBV01@@Z 0x14097eb60
+// MS2-PIN: ??1?$SmartPointer@VNiAVObject@@@efd@@QEAA@XZ 0x1405a85c0
+// MS2-PIN: ??0?$SmartPointer@VNiDepthStencilBuffer@@@efd@@QEAA@PEAVNiDepthStencilBuffer@@@Z 0x1416ae2e0
+// MS2-PIN: ??1?$SmartPointer@VNiDepthStencilBuffer@@@efd@@QEAA@XZ 0x1416aed20
+// MS2-PIN: ??0NiColorA@@QEAA@MMMM@Z 0x14097f1d0
+// MS2-PIN: ??0NiFixedString@@QEAA@PEBD@Z 0x140984450
+// MS2-PIN: ??1NiFixedString@@QEAA@XZ 0x1409845a0
+// MS2-PIN: ??0?$SmartPointer@VNi3DRenderView@@@efd@@QEAA@PEAVNi3DRenderView@@@Z 0x1409a73e0
+// MS2-PIN: ??0?$SmartPointer@VNiRenderedTexture@@@efd@@QEAA@PEAVNiRenderedTexture@@@Z 0x14127c2a0
+// MS2-PIN: ??1?$SmartPointer@VNiRenderedTexture@@@efd@@QEAA@XZ 0x14127c650
+// MS2-PIN: ??0?$SmartPointer@VNiRenderTargetGroup@@@efd@@QEAA@PEAVNiRenderTargetGroup@@@Z 0x1414748a0
+// MS2-PIN: ??1?$SmartPointer@VNiRenderTargetGroup@@@efd@@QEAA@XZ 0x141474d60
+// MS2-PIN: ??2MemObject@efd@@SAPEAX_KVMemHint@1@@Z 0x14208a860
+// MS2-PIN: ??3MemObject@efd@@SAXPEAXVMemHint@1@@Z 0x14097f700
+// MS2-PIN: ??0Ni3DRenderView@@QEAA@PEAVNiCamera@@PEAVNiCullingProcess@@_N@Z 0x140d9de30
+// MS2-PIN: ??0NiMeshCullingProcess@@QEAA@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@Z 0x141e2eaf0
+// MS2-PIN: ??0?$SmartPointer@VNiRenderClick@@@efd@@QEAA@PEAVNiRenderClick@@@Z 0x1414747a0
+// MS2-PIN: ??1?$SmartPointer@VNiRenderClick@@@efd@@QEAA@XZ 0x141474ca0
+// MS2-PIN: ??0?$SmartPointer@VNi3DRenderView@@@efd@@QEAA@AEBV01@@Z 0x1416fa0e0
+// MS2-PIN: ??1?$SmartPointer@VNi3DRenderView@@@efd@@QEAA@XZ 0x1409a7ad0
+// MS2-PIN: ?GetValue_1416f9ae0@RenderedTextureRenderClick@@QEAA?AV?$SmartPointer@VNi3DRenderView@@@efd@@XZ 0x1416f9ae0
 #include "ms2/placeholder/ms2stdafx.h"
 #include "renderedtexturerenderclick.h"
 #include <Ni3DRenderView.h>
@@ -31,66 +31,24 @@
 #include <NiRenderTargetGroup.h>
 #include <NiRenderedTexture.h>
 #include <NiRenderObject.h>
+#include <NiNode.h>
+#include <NiDefaultClickRenderStep.h>
+#include <NiDX9Renderer.h>
+#include <NiDX92DBufferData.h>
+#include <ecr/RenderSurface.h>
 #include <new>
 
 typedef RenderedTextureRenderClick RTRC;
-struct Unk_FixedStr { void* p; };   // NiFixedString
-struct Unk_Color { float r, g, b, a; };
 
 // ---- out-of-unit callees (bound to the exe by name) ----
-  void FUN_141476070(void* click, int b);
-struct Unk_RtColor { float r, g, b, a; Unk_RtColor(float r, float g, float b, float a); };   // NiColorA, ctor 0x14097f1d0
-struct Unk_RtFixedStr {                          // NiFixedString
-    void* m_p;
-    Unk_RtFixedStr(const char* s);              // 0x140984450
-    ~Unk_RtFixedStr();                          // 0x1409845a0
-};
-void FUN_141546340(void* sp, void* p);   void FUN_14127c7f0(void* sp, void* p);   void FUN_1414803f0(void* sp, void* p);
-void* FUN_140876480(void* out, int cat);
-struct Unk_RtNiNew {                            // NiNew: the engine's tracked allocator and its matching free
-    static void* operator new(unsigned __int64 size, unsigned cat);   // 0x14208a860
-    static void operator delete(void* p, unsigned cat);               // 0x14097f700
-};
-struct Unk_Rt3DRenderView : Unk_RtNiNew { char m_pad[0x70]; Unk_Rt3DRenderView(void* a, void* b, bool c); };   // ctor 0x140d9de30
-struct Unk_RtMeshCullingProcess : Unk_RtNiNew { char m_pad[200]; Unk_RtMeshCullingProcess(void* a, void* b); }; // ctor 0x141e2eaf0   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
-void* FUN_1414dbb10(void* sp);   void* FUN_1414dbb20(void* sp);
-void* FUN_1413f98d0();   void* FUN_141ff5ca0(void* a);
-class NiRenderStep   // C3: static member view for the former free stand-ins
-{
-public:
-    static class NiRenderStep* DynamicCast(class NiRTTI const*, class NiRenderStep const*);
-};
-class NiDefaultClickRenderStep   // C3: member view for the former free stand-ins
-{
-public:
-    void AppendRenderClick(class NiRenderClick*);
-    void RemoveRenderClick(class NiRenderClick*);
-};
-class NiDX9Renderer   // C3: member view for the former free stand-ins
-{
-public:
-    bool RemoveResetNotificationFunc(unsigned int);
-};
-   int FUN_1411d7c70(void* o, void* cb, void* user);
-void FUN_1409850b0(void* click, int a, int b);   void FUN_140985080(void* click, int a, int b);   void FUN_140985050(void* click, int a, int b);
-   void* FUN_140d9e420(void* list, void* pos);
-void FUN_14097eb60(void* out, void* p);   void* FUN_1409849b0(void* sp);   void FUN_1405a85c0(void* sp);
-void FUN_141d1a4f0(void* obj);
-void* FUN_14097fbe0(void* sp);   NiRenderTargetGroup* FUN_141480470(void* sp);   void FUN_1427e7520(void* p);
-NiRenderedTexture* FUN_14127c9b0(void* sp);   void* FUN_1416af8d0(void* sp);
-struct Unk_RtFormatPrefs { int a; int b; int c; Unk_RtFormatPrefs(); };   // NiTexture::FormatPrefs, ctor 0x140984420
-   void* FUN_142087e50(void* p);
-void* FUN_1409a8150(void* sp);   void* FUN_14127cc00(void* list, void* pos);   void* FUN_140c8f670(void* node);
+ecr::RenderSurface* FUN_1413f98d0();
 class Unk_PtrArray   // C3: member view for the former free stand-ins
 {
 public:
     void RemoveAll();
 };
 void* FUN_140c8f680(void*);   // C3: was FUN_140c8f680
-   void FUN_141474f50(void* o, void* p);   void FUN_1414747a0(void* out, void* p);   void FUN_141474ca0(void* sp);
-void FUN_1414978d0(void* p, void* q);   void FUN_1416fa360(void* view, void* cp);
-void FUN_14015b310(void* p, unsigned __int64 n);
-extern char DAT_143afa7a8, DAT_143afa4d8, DAT_143d6eb58, DAT_143afa7c8;
+void FUN_1416fa360(void* view, void* cp);
 void FUN_1416f9340(RTRC* p, unsigned w, unsigned h);
 void FUN_1416f9b80(RTRC* p, unsigned w, unsigned h);   void FUN_1416f9bf0(RTRC* p, unsigned w = 0, unsigned h = 0);
 unsigned FUN_1416fa2d0(void* arr);   int FUN_1416fa2e0(void* list);   float FUN_1416fa2f0();
@@ -107,44 +65,26 @@ struct Unk_RtClickList {                        // NiTPointerList<NiRenderClickP
     virtual void vfunc_0(); virtual Unk_RtClickNode* vfunc_1();
     Unk_RtClickNode* head; Unk_RtClickNode* tail; int count;
 };
-struct Unk_RtObjPtr {                           // NiPointer<NiAVObject> temp
-    void* m_p;
-    Unk_RtObjPtr(void* p);                      // 0x14097eb60
-    ~Unk_RtObjPtr();                            // 0x1405a85c0
-};
-struct Unk_RtDepthPtr {                         // NiPointer<NiDepthStencilBuffer> temp
-    void* m_p;
-    Unk_RtDepthPtr(void* p);                    // 0x1416ae2e0
-    ~Unk_RtDepthPtr();                          // 0x1416aed20
-};
-struct Unk_RtClickPtr {                         // NiPointer<NiRenderClick> temp
-    void* m_p;
-    Unk_RtClickPtr(void* p);                    // 0x1414747a0
-    ~Unk_RtClickPtr();                          // 0x141474ca0
-};
 
 #define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
 
-// MS2-FUNCTIONAL: m_spView/m_spTexture/m_spTarget are opaque void* here; the exe constructs them as NiPointer members
-//   (ctors 0x1409a73e0/0x14127c2a0/0x1414748a0 with EH states 1..3), passes bool (dl) to 0x141476010 and keeps the
-//   NiColorA / NiFixedString locals as real objects (no GS buffer) -> needs the member types recovered across the unit
 // @0x1416f8f50
 RenderedTextureRenderClick::RenderedTextureRenderClick()
     : m_uiWidth(0x80), m_uiHeight(0xa8), m_spView(0), m_spTexture(0), m_spTarget(0), m_iEventId(-1)
 {
     ((class NiRenderClick*)(void*)(this))->SetClearAllBuffers(true);
-    FUN_141476070(this, 0);
-    ((class NiRenderClick*)(void*)(this))->SetBackgroundColor(reinterpret_cast<class NiColorA const&>(static_cast<const Unk_RtColor&>(Unk_RtColor(0.0f, 0.0f, 0.0f, 0.0f))));
-    Unk_RtFixedStr name("RenderedTextureRenderClick");
-    ((class NiRenderClick*)(void*)(this))->SetName(*(class NiFixedString const*)&(name));
+    SetUseRendererBackgroundColor(false);
+    ((class NiRenderClick*)(void*)(this))->SetBackgroundColor(NiColorA(0.0f, 0.0f, 0.0f, 0.0f));
+    NiFixedString name("RenderedTextureRenderClick");
+    ((class NiRenderClick*)(void*)(this))->SetName(name);
 }
 
 // @0x1416f9070
 RenderedTextureRenderClick::~RenderedTextureRenderClick()
 {
-    FUN_141546340(&m_spView, 0);
-    FUN_14127c7f0(&m_spTexture, 0);
-    FUN_1414803f0(&m_spTarget, 0);
+    m_spView = 0;
+    m_spTexture = 0;
+    m_spTarget = 0;
 }
 
 // @0x1416f9130
@@ -154,18 +94,14 @@ void RenderedTextureRenderClick::vfunc_8(unsigned w, unsigned h)
     m_uiHeight = h;
     FUN_1416f9b80(this, m_uiWidth, m_uiHeight);
     FUN_1416f9bf0(this, m_uiWidth, m_uiHeight);
-    unsigned t0;
-    unsigned* cat = (unsigned*)FUN_140876480(&t0, 0);
-    FUN_141546340(&m_spView, new (*cat) Unk_Rt3DRenderView(0, 0, true));
+    m_spView = new (efd::MemHint(efd::MemHint::NONE)) Ni3DRenderView(0, 0, true);
     {
-        Unk_RtFixedStr name("RenderTextureRenderView");
-        ((class NiRenderView*)(void*)(FUN_1414dbb20(&m_spView)))->SetName(*(class NiFixedString const*)&(name));
+        NiFixedString name("RenderTextureRenderView");
+        m_spView->SetName(name);
     }
-    unsigned t1;
-    unsigned* cat1 = (unsigned*)FUN_140876480(&t1, 0);
-    Unk_RtMeshCullingProcess* pCull = new (*cat1) Unk_RtMeshCullingProcess(0, 0);
-    FUN_1416fa360(FUN_1414dbb20(&m_spView), pCull);
-    ((class NiViewRenderClick*)(void*)(this))->AppendRenderView((class NiRenderView*)(FUN_1414dbb10(&m_spView)));
+    NiMeshCullingProcess* pCull = new (efd::MemHint(efd::MemHint::NONE)) NiMeshCullingProcess(0, 0);
+    FUN_1416fa360(m_spView.operator->(), pCull);
+    ((class NiViewRenderClick*)(void*)(this))->AppendRenderView(m_spView);
 }
 
 // @0x1416f9340
@@ -175,39 +111,39 @@ void FUN_1416f9340(RTRC* p, unsigned w, unsigned h)
     p->m_uiHeight = h;
     FUN_1416f9b80(p, p->m_uiWidth, p->m_uiHeight);
     FUN_1416f9bf0(p, p->m_uiWidth, p->m_uiHeight);
-    extern void* FUN_1413f9a70();
-    FUN_141546340(&p->m_spView, FUN_1413f9a70());
-    ((class NiViewRenderClick*)(void*)(p))->AppendRenderView((class NiRenderView*)(FUN_1414dbb10(&p->m_spView)));
+    extern Ni3DRenderView* FUN_1413f9a70();
+    p->m_spView = FUN_1413f9a70();
+    ((class NiViewRenderClick*)(void*)(p))->AppendRenderView(p->m_spView);
 }
 
 // @0x1416f9400
 void RenderedTextureRenderClick::vfunc_9()
 {
-    void* o = ((void*)NiRenderStep::DynamicCast((class NiRTTI const*)(&DAT_143afa7a8), (class NiRenderStep const*)(FUN_141ff5ca0(FUN_1413f98d0()))));
+    NiDefaultClickRenderStep* o = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
     if (o) {
-        ((class NiDefaultClickRenderStep*)(void*)(o))->RemoveRenderClick((class NiRenderClick*)(this));
+        o->RemoveRenderClick((class NiRenderClick*)(this));
         extern void FUN_1416fa310(void*, void*);
         FUN_1416fa310(o, this);
     }
-    void* r = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    NiDX9Renderer* r = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     if (r) {
-        if (m_iEventId != -1) ((class NiDX9Renderer*)(void*)(r))->RemoveResetNotificationFunc(m_iEventId);
-        m_iEventId = FUN_1411d7c70(r, (void*)FUN_1416f9b30, this);
+        if (m_iEventId != -1) r->RemoveResetNotificationFunc(m_iEventId);
+        m_iEventId = r->AddResetNotificationFunc((NiDX9Renderer::RESETNOTIFYFUNC)FUN_1416f9b30, this);
     }
 }
 
 // @0x1416f94c0
 void RenderedTextureRenderClick::vfunc_10()
 {
-    void* o = ((void*)NiRenderStep::DynamicCast((class NiRTTI const*)(&DAT_143afa7a8), (class NiRenderStep const*)(FUN_141ff5ca0(FUN_1413f98d0()))));
+    NiDefaultClickRenderStep* o = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
     if (o) {
-        ((class NiDefaultClickRenderStep*)(void*)(o))->RemoveRenderClick((class NiRenderClick*)(this));
-        ((class NiDefaultClickRenderStep*)(void*)(o))->AppendRenderClick((class NiRenderClick*)(this));
+        o->RemoveRenderClick((class NiRenderClick*)(this));
+        o->AppendRenderClick((class NiRenderClick*)(this));
     }
-    void* r = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    NiDX9Renderer* r = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     if (r) {
-        if (m_iEventId != -1) ((class NiDX9Renderer*)(void*)(r))->RemoveResetNotificationFunc(m_iEventId);
-        m_iEventId = FUN_1411d7c70(r, (void*)FUN_1416f9b30, this);
+        if (m_iEventId != -1) r->RemoveResetNotificationFunc(m_iEventId);
+        m_iEventId = r->AddResetNotificationFunc((NiDX9Renderer::RESETNOTIFYFUNC)FUN_1416f9b30, this);
     }
 }
 
@@ -215,49 +151,49 @@ void RenderedTextureRenderClick::vfunc_10()
 void RenderedTextureRenderClick::vfunc_11()
 {
     vfunc_14();
-    void* o = ((void*)NiRenderStep::DynamicCast((class NiRTTI const*)(&DAT_143afa7a8), (class NiRenderStep const*)(FUN_141ff5ca0(FUN_1413f98d0()))));
-    if (o) ((class NiDefaultClickRenderStep*)(void*)(o))->RemoveRenderClick((class NiRenderClick*)(this));
-    void* r = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
-    if (r && m_iEventId != -1) ((class NiDX9Renderer*)(void*)(r))->RemoveResetNotificationFunc(m_iEventId);
-    ((class Ni3DRenderView*)(void*)(FUN_1414dbb20(&m_spView)))->SetCamera((class NiCamera*)(0));
-    FUN_1416fa360(FUN_1414dbb20(&m_spView), 0);
-    ((class NiViewRenderClick*)(void*)(this))->RemoveRenderView((class NiRenderView*)(FUN_1414dbb10(&m_spView)));
+    NiDefaultClickRenderStep* o = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
+    if (o) o->RemoveRenderClick((class NiRenderClick*)(this));
+    NiDX9Renderer* r = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
+    if (r && m_iEventId != -1) r->RemoveResetNotificationFunc(m_iEventId);
+    m_spView->SetCamera((class NiCamera*)(0));
+    FUN_1416fa360(m_spView.operator->(), 0);
+    ((class NiViewRenderClick*)(void*)(this))->RemoveRenderView(m_spView);
     ((class NiRenderClick*)(void*)(this))->SetRenderTargetGroup((class NiRenderTargetGroup*)(0));
-    FUN_1409850b0(this, 0, 0);
-    FUN_140985080(this, 0, 0);
-    FUN_140985050(this, 0, 0);
-    FUN_14127c7f0(&m_spTexture, 0);
+    SetProcessor(0, 0);
+    SetPreProcessingCallbackFunc(0, 0);
+    SetPostProcessingCallbackFunc(0, 0);
+    m_spTexture = 0;
 }
 
 // @0x1416f96d0
 void RenderedTextureRenderClick::vfunc_12(void* a)
 {
-    if (FUN_1414dbb10(&m_spView)) ((class Ni3DRenderView*)(void*)(FUN_1414dbb20(&m_spView)))->AppendScene((class NiAVObject*)(a));
+    if (m_spView) m_spView->AppendScene((NiAVObject*)a);
 }
 
 // @0x1416f9730
 void RenderedTextureRenderClick::vfunc_13(void* a)
 {
-    if (FUN_1414dbb10(&m_spView)) ((class Ni3DRenderView*)(void*)(FUN_1414dbb20(&m_spView)))->RemoveScene((class NiAVObject*)(a));
+    if (m_spView) m_spView->RemoveScene((NiAVObject*)a);
 }
 
 // @0x1416f9790
 void RenderedTextureRenderClick::vfunc_14()
 {
-    if (FUN_1414dbb10(&m_spView)) {
-        void* list = ((void*)&((class Ni3DRenderView*)(void*)(FUN_1414dbb20(&m_spView)))->GetScenes());
-        void* pos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiAVObject>>*)(void*)(list))->GetHeadPos();
+    if (m_spView) {
+        NiTPointerList<NiAVObjectPtr>* list = &m_spView->GetScenes();
+        NiTListIterator pos = list->GetHeadPos();
         while (pos) {
-            Unk_RtObjPtr sp(FUN_140d9e420(list, &pos));
-            if (FUN_1409849b0(&sp)) {
-                void* obj = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_1409849b0(&sp))));
+            NiAVObjectPtr sp(list->GetNext(pos));
+            if (sp) {
+                NiNode* obj = NiDynamicCast(NiNode, sp);
                 if (obj) {
-                    FUN_141d1a4f0(obj);
-                    ((class NiAVObject*)(void*)(obj))->UpdateEffects();
+                    obj->DetachAllEffects();
+                    obj->UpdateEffects();
                 }
             }
         }
-        ((class Ni3DRenderView*)(void*)(FUN_1414dbb20(&m_spView)))->RemoveAllScenes();
+        m_spView->RemoveAllScenes();
     }
 }
 
@@ -265,15 +201,15 @@ void RenderedTextureRenderClick::vfunc_14()
 void RenderedTextureRenderClick::vfunc_15(bool bFree)
 {
     if (bFree) {
-        if (FUN_14097fbe0(&m_spTarget)) {
-            void* b = FUN_141480470(&m_spTarget)->GetBuffer(0);
+        if (m_spTarget) {
+            Ni2DBuffer* b = m_spTarget->GetBuffer(0);
             if (b) {
-                void* d = ((void*)((class Ni2DBuffer*)(void*)(b))->GetRendererData());
-                if (d) FUN_1427e7520(d);
+                NiDX9Direct3DBufferData* d = (NiDX9Direct3DBufferData*)b->GetRendererData();
+                if (d) d->PurgeBufferData();
             }
         }
-        FUN_14127c7f0(&m_spTexture, 0);
-        FUN_1414803f0(&m_spTarget, 0);
+        m_spTexture = 0;
+        m_spTarget = 0;
         ((class NiRenderClick*)(void*)(this))->SetRenderTargetGroup((class NiRenderTargetGroup*)(0));
     } else {
         FUN_1416f9b80(this, m_uiWidth, m_uiHeight);
@@ -287,14 +223,13 @@ void RenderedTextureRenderClick::vfunc_16(float, float) {}
 // @0x1416f99d0
 void FUN_1416f99d0(RTRC* p, void* a)
 {
-    if (FUN_1414dbb10(&p->m_spView)) ((class Ni3DRenderView*)(void*)(FUN_1414dbb20(&p->m_spView)))->SetCamera((class NiCamera*)(a));
+    if (p->m_spView) p->m_spView->SetCamera((class NiCamera*)(a));
 }
 
 // @0x1416f9a30
 void* FUN_1416f9a30(RTRC* p)
 {
-    extern void* FUN_1409a8a60(void*);
-    if (FUN_1414dbb10(&p->m_spView)) return FUN_1409a8a60(FUN_1414dbb20(&p->m_spView));
+    if (p->m_spView) return p->m_spView->GetCamera();
     return 0;
 }
 
@@ -305,7 +240,7 @@ float FUN_1416f9a80(RTRC* p) { return (float)p->m_uiWidth / (float)p->m_uiHeight
 void FUN_1416f9ab0(RTRC* p) { FUN_140c8f680(&p->m_spTexture); }
 
 // @0x1416f9ae0
-Unk_RtViewPtr RenderedTextureRenderClick::GetValue_1416f9ae0()
+Ni3DRenderViewPtr RenderedTextureRenderClick::GetValue_1416f9ae0()
 {
     return m_spView;
 }
@@ -321,41 +256,40 @@ bool FUN_1416f9b30(char c, void* obj)
 // @0x1416f9b80
 void FUN_1416f9b80(RTRC* p, unsigned w, unsigned h)
 {
-    Unk_RtFormatPrefs fmt;
-    fmt.b = 2;
-    FUN_14127c7f0(&p->m_spTexture, ((void*)NiRenderedTexture::Create(w, h, (class NiRenderer*)(((void*)NiRenderer::GetRenderer())), *(class NiTexture::FormatPrefs*)(&fmt), 0x100)));
+    NiTexture::FormatPrefs fmt;
+    fmt.m_eAlphaFmt = NiTexture::FormatPrefs::SMOOTH;
+    p->m_spTexture = NiRenderedTexture::Create(w, h, NiRenderer::GetRenderer(), fmt, (Ni2DBuffer::MultiSamplePreference)0x100);
 }
 
 // @0x1416f9bf0
 void FUN_1416f9bf0(RTRC* p, unsigned, unsigned)
 {
     if (FUN_1416fa160(&p->m_spTexture, 0)) return;
-    Ni2DBuffer* buf = FUN_14127c9b0(&p->m_spTexture)->GetBuffer();
+    Ni2DBuffer* buf = p->m_spTexture->GetBuffer();
     if (!buf) return;
-    Unk_RtDepthPtr sp(((void*)NiDepthStencilBuffer::CreateCompatible((class Ni2DBuffer*)(buf), (class NiRenderer*)(((void*)NiRenderer::GetRenderer())))));
+    NiDepthStencilBufferPtr sp(NiDepthStencilBuffer::CreateCompatible(buf, NiRenderer::GetRenderer()));
     if (FUN_1416fa120(&sp, 0)) return;
-    FUN_1414803f0(&p->m_spTarget, ((void*)NiRenderTargetGroup::Create((class Ni2DBuffer*)(buf), (class NiRenderer*)(((void*)NiRenderer::GetRenderer())), (class NiDepthStencilBuffer*)(FUN_1416af8d0(&sp)))));
-    if (FUN_14097fbe0(&p->m_spTarget)) ((class NiRenderClick*)(void*)(p))->SetRenderTargetGroup((class NiRenderTargetGroup*)(FUN_14097fbe0(&p->m_spTarget)));
+    p->m_spTarget = NiRenderTargetGroup::Create(buf, NiRenderer::GetRenderer(), sp);
+    if (p->m_spTarget) p->SetRenderTargetGroup(p->m_spTarget);
 }
 
 // @0x1416f9d40
 void RenderedTextureRenderClick::PerformRendering(unsigned int uiFrameID)
 {
-    extern void FUN_141d27bf0(void*, const char*, ...);
     for (;;) {
-        if (((void*)NiRenderer::GetRenderer())) FUN_141d27bf0(((void*)NiRenderer::GetRenderer()), "ViewRC(%s)", FUN_142087e50(((void*)&((class NiRenderClick*)(void*)(this))->GetName())));
+        if (NiRenderer::GetRenderer()) NiRenderer::GetRenderer()->PushProfileMarkerVA("ViewRC(%s)", (const char*)GetName());
         break;
     }
     if (!FUN_1416fa2e0(&m_kRenderViews)) return;
     NiRenderer* renderer = (NiRenderer*)((void*)NiRenderer::GetRenderer());
-    NiRenderListProcessor* proc = (NiRenderListProcessor*)FUN_1409a8150(&m_spProcessor);
-    if (proc == 0) proc = (NiRenderListProcessor*)FUN_1409a8150(&DAT_143afa7c8);
+    NiRenderListProcessor* proc = m_spProcessor;
+    if (proc == 0) proc = ms_spDefaultProcessor;
     m_uiNumObjectsDrawn = 0;
     m_fRenderTime = 0.0f;
     m_fCullTime = 0.0f;
-    void* pos = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiRenderView>>*)(void*)(&m_kRenderViews))->GetHeadPos();
+    NiTListIterator pos = m_kRenderViews.GetHeadPos();
     while (pos) {
-        NiRenderView* view = (NiRenderView*)FUN_140c8f670(FUN_14127cc00(&m_kRenderViews, &pos));
+        NiRenderView* view = m_kRenderViews.GetNext(pos);
         view->SetCameraData(m_kViewport);
         float t0 = FUN_1416fa2f0();
         NiVisibleArray* pv = (NiVisibleArray*)((void*)&((class NiRenderView*)(void*)(view))->GetPVGeometry(uiFrameID));
@@ -380,13 +314,6 @@ void RenderedTextureRenderClick::PerformRendering(unsigned int uiFrameID)
     }
 }
 
-// @0x1416fa0e0
-Unk_RtViewPtr::Unk_RtViewPtr(const Unk_RtViewPtr& o)
-{
-    m_p = o.m_p;
-    if (m_p) ((class NiRefObject*)(void*)(m_p))->IncRefCount();
-}
-
 // @0x1416fa120
 bool FUN_1416fa120(void* sp, void* p) { return *(void**)sp == p; }
 
@@ -397,7 +324,7 @@ bool FUN_1416fa160(void* sp, void* p) { return *(void**)sp == p; }
 void FUN_1416fa200(Unk_RtClickList* l, void* p)
 {
     Unk_RtClickNode* node = l->vfunc_1();
-    FUN_141474f50((char*)node + 0x10, p);
+    *(NiRenderClickPtr*)((char*)node + 0x10) = *(const NiRenderClickPtr*)p;
     FUN_1416fa250(l, node);
 }
 
@@ -423,12 +350,12 @@ float FUN_1416fa2f0() { return (float)efd::GetCurrentTimeInSec(); }
 // @0x1416fa310
 void FUN_1416fa310(void* o, void* click)
 {
-    Unk_RtClickPtr tmp(click);
+    NiRenderClickPtr tmp((NiRenderClick*)click);
     FUN_1416fa200((Unk_RtClickList*)((char*)o + 0x50), &tmp);
 }
 
 // @0x1416fa360
-void FUN_1416fa360(void* view, void* cp) { FUN_1414978d0((char*)view + 0x40, cp); }
+void FUN_1416fa360(void* view, void* cp) { *(NiCullingProcessPtr*)((char*)view + 0x40) = (NiCullingProcess*)cp; }
 
 // the UCRT header-inline memmove_s, emitted here as an ordinary function
 #include <errno.h>
@@ -474,9 +401,9 @@ MS2_REPLACE(0x1416f9b80, FUN_1416f9b80, 94, 0xA3074616);
 MS2_REPLACE(0x1416f9bf0, FUN_1416f9bf0, 320, 0x1B964556);
 #ifndef MS2_STANDALONE
 MS2_REPLACE_IMPL(0x1416fa0e0,
-    static_cast<Unk_RtViewPtr* (*)(Unk_RtViewPtr*, const Unk_RtViewPtr*)>(
-        [](Unk_RtViewPtr* self, const Unk_RtViewPtr* o) -> Unk_RtViewPtr* { return ::new (static_cast<void*>(self)) Unk_RtViewPtr(*o); }),
-    "Unk_RtViewPtr::Unk_RtViewPtr", 64, 0xEABE6B59);
+    static_cast<Ni3DRenderViewPtr* (*)(Ni3DRenderViewPtr*, const Ni3DRenderViewPtr*)>(
+        [](Ni3DRenderViewPtr* self, const Ni3DRenderViewPtr* o) -> Ni3DRenderViewPtr* { return ::new (static_cast<void*>(self)) Ni3DRenderViewPtr(*o); }),
+    "efd::SmartPointer<Ni3DRenderView>::SmartPointer", 64, 0xEABE6B59);
 #endif
 MS2_REPLACE(0x1416fa120, FUN_1416fa120, 54, 0xCED6F715);
 MS2_REPLACE(0x1416fa160, FUN_1416fa160, 54, 0xCED6F715);

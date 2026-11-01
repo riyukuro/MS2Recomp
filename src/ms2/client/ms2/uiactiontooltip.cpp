@@ -44,14 +44,15 @@ public:
 
 
 // The key hint table (FUN_1409331f0) and the options flag behind FUN_1409a8b10.
-class Unk_AtHintTable { public: CStringW FUN_14142d760(int nId, int nFlag); };
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_AtHintTable (calls cast back)
+class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // ckeytable.h's key table (its FUN_1409331f0 decl is aliased)
+class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
 void* FUN_1409a8b10();
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 int FUN_141277f40();   // C3: was FUN_141277f40
 
 // The client constants singleton: two values at +0xc768 / +0xc7c0 give the screen origin.
-class Unk_AtConst { public: int FUN_14025a620(); void* m_unknown; };
+class Unk_AtConst { public: void* m_unknown; };
+int FUN_14025a620(class Unk_ConstVal*);   // C3: was Unk_AtConst::FUN_14025a620
 class Unk_AtConstants
 {
 public:
@@ -64,13 +65,13 @@ MS2_CHECK_OFFSET(Unk_AtConstants, m_c7c0, 0xc7c0);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The target point accessors (a "valid" flag then the point, see Unk_AkoTarget).
-bool FUN_1413b58d0(Unk_AkoTarget* p);                                  // has a point
+bool Unk_GcVec3HasValue(struct Unk_GcOptVec3 const*);   // C3: was FUN_1413b58d0
 bool Unk_GcVec3IsNull(struct Unk_GcOptVec3 const*);   // C3: was FUN_1413b5870
-Vector3* FUN_1413b4140(Unk_AkoTarget* p);
 struct Unk_GcOptVec3   // C3: member view for the former free stand-ins
 {
 public:
     struct Vector3& GetValue();
+    const struct Vector3& GetValue() const;
 };
 void FUN_140d00fb0(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
 float FUN_1408f2120(const float& v, float fLo, float fHi);             // clamp
@@ -184,7 +185,7 @@ CStringW UIActionTooltip::FUN_1418b1990()
 {
     int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10()))) ? 2 : 0;
     int nId = FUN_1418b1950();
-    return reinterpret_cast<Unk_AtHintTable*>(FUN_1409331f0())->FUN_14142d760(nId, nFlag);
+    return reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(nId, nFlag);
 }
 
 // @0x1418b1a20
@@ -209,8 +210,8 @@ void UIActionTooltip::FUN_1418b1ab0()
             m_strText = pAction->vfunc_6();
             m_kTarget = m_pAction->vfunc_12();
             const float fLift = 75.0f;
-            if (FUN_1413b58d0(&m_kTarget))
-                FUN_1413b4140(&m_kTarget)->z += fLift;
+            if (Unk_GcVec3HasValue((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget)))
+                const_cast<Vector3&>(((const struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()).z += fLift;
             FUN_1418b1ef0();
             m_30->FUN_1412e80d0("show", FUN_1418b1990(), pAction->vfunc_6(), pAction->vfunc_8());
             ChromaSDK::GetChromaManager()->OnKeySkill(FUN_1418b1950(), 0);
@@ -239,19 +240,19 @@ void UIActionTooltip::FUN_1418b1ef0()
     {
         if (Unk_GcVec3IsNull((struct Unk_GcOptVec3 const*)(&m_kTarget)))
         {
-            int nX = ((class Unk_AtConstants*)FUN_1401d3200())->m_c768.FUN_14025a620();
-            int nY = ((class Unk_AtConstants*)FUN_1401d3200())->m_c7c0.FUN_14025a620();
-            int nCenterX = (int)((float)spEntity->FUN_1422c1500() * 0.5f + (float)nX);
-            int nCenterY = (int)((float)spEntity->FUN_1422c1530() * 0.5f + (float)nY);
+            int nX = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)FUN_1401d3200())->m_c768);
+            int nY = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)FUN_1401d3200())->m_c7c0);
+            int nCenterX = (int)((float)spEntity->ASDisplayObject::FUN_1422c1500() * 0.5f + (float)nX);
+            int nCenterY = (int)((float)spEntity->ASDisplayObject::FUN_1422c1530() * 0.5f + (float)nY);
             spEntity->FUN_1422bffe0(nCenterX, nCenterY);
         }
         else
         {
             efd::Point2 kScreen;
             FUN_140d00fb0(*((struct Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
-            int nWidth = spEntity->FUN_1422c1500();
+            int nWidth = spEntity->ASDisplayObject::FUN_1422c1500();
             float fX = FUN_1408f2120(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
-            int nHeight = spEntity->FUN_1422c1530();
+            int nHeight = spEntity->ASDisplayObject::FUN_1422c1530();
             float fY = FUN_1408f2120(kScreen.y, 0, (float)(nHeight - spEntity->GetHeightCeil()));
             spEntity->FUN_1422c00f0(fX, fY);
         }

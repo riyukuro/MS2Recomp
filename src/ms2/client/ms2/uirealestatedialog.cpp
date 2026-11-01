@@ -665,7 +665,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
         strDesc = FUN_14028dee0(0x7df, FUN_1409404f0(nExtPrice), reinterpret_cast<const int&>(nExtItem));
     else
         strDesc = FUN_14028dee0(0x7e0, FUN_1409404f0(nExtPrice), reinterpret_cast<const int&>(nExtItem));
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strDesc);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strDesc);
     obj.FUN_1407cbb20("description", FUN_14028dee0(0x7e1, group.contractDate, strDesc));
     static_cast<Unk_ReObj&>(obj).FUN_141ab5b30("buildingIcon", group.buildingType);
     obj.FUN_1407cbb20("buildingType", GetStringCommon(group.buildingType + 0x7d3));

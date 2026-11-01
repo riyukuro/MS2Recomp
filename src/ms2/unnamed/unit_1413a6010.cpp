@@ -28,7 +28,7 @@ class Unk_Restrictions;
 
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 UIDialog* FUN_141386950(const CStringA* pName);             // the dialog of a name
-void FUN_141386b50(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& arr);   // the "control" name list
+int ReadValueList(class Unk_140165cf0 *, char const *, class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>> &);
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments
 
 class CGuideManager { public: int InternOccurrence(const CStringA& strName); };   // the dialog state service
@@ -110,5 +110,5 @@ void CGuideConditionDialog::vfunc_2(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "dialogID", m_nDialogID);
     XmlGetAttr((class TiXmlElement*)(pElem), "isOpen", reinterpret_cast<int&>(m_nIsOpen));
     XmlGetAttr((class TiXmlElement*)(pElem), "subIndex", reinterpret_cast<int&>(m_nSubIndex));
-    FUN_141386b50(pElem, "control", m_arrControl);
+    ReadValueList(pElem, "control", m_arrControl);
 }

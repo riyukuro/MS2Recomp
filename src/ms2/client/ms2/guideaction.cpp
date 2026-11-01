@@ -48,6 +48,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/timeutil.h"
+#include "ms2/client/ms2/uiinventorydialog.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -65,6 +67,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The minimap dialog (ui class 0x4e29); only what the MinimapMaximize action calls.
+class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // C3: member view (the key name of a binding)
+class Unk_SoundSink* FUN_1409331f0();   // C3: the CKeyTable (calls cast back)
 class UIMinimapDialog : public UIDialog
 {
 public:
@@ -111,26 +115,21 @@ public:
 };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
-class Unk_GaKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };   // CKeyTable: the key name of a binding
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GaKeyTable (calls cast back)
 
-CTriggerService* FUN_140ad4b90();
-UIGuideEvent* FUN_14136f3e0(int nId);                       // the guide event window
-UICutSceneCinematic* FUN_14136f290(int nId);
-UISmartRecommendNotifyDialog* FUN_14136f5c0(int nId);
+class Unk_McEntityRules* FUN_140ad4b90();   // the trigger service (calls cast back)
+void* FUN_14136f3e0(int nId);                       // the guide event window
+void* FUN_14136f290(int nId);
+void* FUN_14136f5c0(int nId);
 UIGameMenuDialog* FUN_140938b90(int nId);
 CStringW GetStringCommon(int nId);                            // a system string
-void FUN_141999d20(int bUse);                               // the tutorial weapon of the main player info
 void FUN_141a5d0a0(int bUse);                               // the tutorial weapon of the quick slots
-unsigned FUN_140869420();                                   // millisecond clock
 
-const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
+class TiXmlElement { public: const char* Attribute(const char* pszName) const; };   // C3: member view
+class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszName) const; const TiXmlElement* NextSiblingElement(const char* pszName) const; };   // C3: member view
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 int FUN_140e8ecb0(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // the side popup ui type
 unsigned FUN_141389420(const CStringA& strName, unsigned nDefault);      // the limit kind of a name
 CGuideControllerType FUN_14021ade0(const CStringA& strName);
-void FUN_140165270(ATL::CAtlArray<CStringA>& arr, const CStringA& str);   // append
-CStringA FUN_140540050(const char* szFormat, const CStringA& strArg);    // StringFormat with one string
 MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem);              // the condition of a <condition> element
 int FUN_1413a5570(CGuideCondition* pCond);                               // the condition passes
 
@@ -178,7 +177,7 @@ template <class T> T* Unk_GaGetUIByName(const CStringA& strName)
 inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<int>& rOut)
 {
     int nCount = 0;
-    for (Unk_140165cf0* pChild = pElem->FUN_14086e8d0(pszName); pChild != 0; pChild = pChild->FUN_14086e7e0(pszName))
+    for (Unk_140165cf0* pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pElem)->FirstChildElement(pszName); pChild != 0; pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pChild)->NextSiblingElement(pszName))
     {
         int nValue;
         XmlGetAttr((class TiXmlElement*)(pChild), "v", reinterpret_cast<int&>(nValue));
@@ -191,11 +190,11 @@ inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArr
 inline int ReadValueList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringA>& rOut)
 {
     int nCount = 0;
-    for (Unk_140165cf0* pChild = pElem->FUN_14086e8d0(pszName); pChild != 0; pChild = pChild->FUN_14086e7e0(pszName))
+    for (Unk_140165cf0* pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pElem)->FirstChildElement(pszName); pChild != 0; pChild = (Unk_140165cf0*)reinterpret_cast<TiXmlNode*>(pChild)->NextSiblingElement(pszName))
     {
         CStringA strValue;
         XmlGetAttr((class TiXmlElement*)(pChild), "v", strValue);
-        FUN_140165270(rOut, strValue);
+        rOut.Add(strValue);
         nCount++;
     }
     return nCount > 0 ? 0 : 1;
@@ -243,13 +242,13 @@ static CString s_strStun = "stun";
 // @0x141382b90
 MS2Ptr<CGuideAction> FUN_141382b90(Unk_140165cf0* pElem)
 {
-    CStringA strType(FUN_14086f4b0(pElem, "type"));
+    CStringA strType(reinterpret_cast<TiXmlElement*>(pElem)->Attribute("type"));
     CStringW strName = StringFormat(L"CGuideAction{0}", strType);
     MS2Ptr<CGuideAction> spAction(static_cast<CGuideAction*>(FUN_1401f7f50(CStringW(strName))));
     if (spAction.get())
         spAction->vfunc_2(pElem);
     else
-        throw std::exception(FUN_140540050("Unknown Guide action Tag({0})", strType));
+        throw std::exception(StringFormat("Unknown Guide action Tag({0})", strType));
     return spAction;
 }
 MS2_REPLACE(0x141382B90, FUN_141382b90, 369, 0x6CC2AD9F);
@@ -466,9 +465,9 @@ void CGuideActionLimit::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideAction::vfunc_2(pElem);
     m_limit = 0;
-    if (FUN_14086f4b0(pElem, "limit"))
+    if (reinterpret_cast<TiXmlElement*>(pElem)->Attribute("limit"))
     {
-        CStringA strLimit(FUN_14086f4b0(pElem, "limit"));
+        CStringA strLimit(reinterpret_cast<TiXmlElement*>(pElem)->Attribute("limit"));
         m_limit = FUN_141389420(strLimit, 0);
     }
     if (m_limit == 0)
@@ -618,7 +617,7 @@ void CGuideActionUITutorial::vfunc_3()
     m_index = 0;
     if (m_steps.IsEmpty())
         return;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_14195a520(m_entityId, m_steps[m_index].m_textId, 1);
     FUN_1413837a0(0x15);
     FUN_1413837a0(0x13);
@@ -629,14 +628,14 @@ void CGuideActionUITutorial::vfunc_4()
 {
     FUN_1413837e0(0x15);
     FUN_1413837e0(0x13);
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->HideTutorial(m_entityId);
 }
 
 // @0x141383ea0
 int CGuideActionUITutorial::vfunc_5()
 {
-    UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53);
     if (pEvent != 0 && pEvent->IsTutorialShowing() != 0)
         return 0;
     if (m_index < m_steps.GetCount())
@@ -649,14 +648,14 @@ MS2_REPLACE_METHOD(0x141383EA0, CGuideActionUITutorial, vfunc_5, 161, 0x17D9A10A
 void CGuideActionUITutorial::FUN_141383f50()
 {
     if (m_tick == 0)
-        m_tick = FUN_140869420();
-    if (FUN_140869420() - m_tick >= m_steps[m_index].m_waitTick
+        m_tick = GetTickCountMs2();
+    if (GetTickCountMs2() - m_tick >= m_steps[m_index].m_waitTick
         || (CUIService::GetInstance()->FUN_141adbb00() == 0 && TSingleton<CInputKeyHandler>::GetInstance()->FUN_14116dcb0(0x493e2, false, 0)))
     {
         m_index++;
         m_tick = 0;
         UIGuideEvent* pEvent;
-        if (m_index < m_steps.GetCount() && (pEvent = FUN_14136f3e0(0x4e53)) != 0)
+        if (m_index < m_steps.GetCount() && (pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53)) != 0)
             pEvent->FUN_14195a520(m_entityId, m_steps[m_index].m_textId, 0);
     }
 }
@@ -737,7 +736,7 @@ void CGuideActionUISummary::vfunc_3()
 {
     if (!FUN_141384200())
         return;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_14195ab40(m_entityId, m_textId, 0);
 }
 MS2_REPLACE_METHOD(0x141384390, CGuideActionUISummary, vfunc_3, 86, 0x962E91AC);
@@ -749,7 +748,7 @@ void CGuideActionUISummary::vfunc_4()
         return;
     if (m_isNotClose != 0)
         return;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->HideSummary(m_entityId);
 }
 MS2_REPLACE_METHOD(0x1413843F0, CGuideActionUISummary, vfunc_4, 87, 0x99CAFAB3);
@@ -757,7 +756,7 @@ MS2_REPLACE_METHOD(0x1413843F0, CGuideActionUISummary, vfunc_4, 87, 0x99CAFAB3);
 // @0x141384450
 int CGuideActionUISummary::vfunc_5()
 {
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         return pEvent->IsSummaryShowing() == 0;
     return true;
 }
@@ -804,7 +803,7 @@ void CGuideActionUIArrow::vfunc_3()
     spArrow->m_direction = m_direction;
     spArrow->m_align = m_align;
     spArrow->m_textId = m_textId;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_141959a60(spArrow);
 }
 MS2_REPLACE_METHOD(0x141384680, CGuideActionUIArrow, vfunc_3, 351, 0x530B5AE4);
@@ -816,7 +815,7 @@ void CGuideActionUIArrow::vfunc_4()
         return;
     if (m_isNotClose != 0)
         return;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_14195a0c0(m_entityId);
 }
 MS2_REPLACE_METHOD(0x1413847F0, CGuideActionUIArrow, vfunc_4, 87, 0x06DC8ADB);
@@ -841,7 +840,7 @@ void CGuideActionUITextTip::vfunc_3()
 {
     if (!FUN_141384200())
         return;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_14195b330(m_entityId, m_textId);
 }
 MS2_REPLACE_METHOD(0x141384900, CGuideActionUITextTip, vfunc_3, 83, 0x64D30544);
@@ -853,7 +852,7 @@ void CGuideActionUITextTip::vfunc_4()
         return;
     if (m_isNotClose != 0)
         return;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_14195b600(m_entityId);
 }
 MS2_REPLACE_METHOD(0x141384960, CGuideActionUITextTip, vfunc_4, 87, 0x053CEE13);
@@ -910,7 +909,7 @@ void CGuideActionUIArrowDialog::vfunc_3()
     pArrow->m_scenes.Copy(m_focusDialogName);
     pArrow->SetKindFromName(m_customPosType);
     pArrow->m_param = m_customPosValue;
-    if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
         pEvent->FUN_141959a60(MS2Ptr<UIGuideEventArrow>(pArrow));
 }
 MS2_REPLACE_METHOD(0x141384BD0, CGuideActionUIArrowDialog, vfunc_3, 505, 0x9E3B41CF);
@@ -946,7 +945,7 @@ void CGuideActionUIArrowClose::vfunc_3()
 {
     if (m_isAtOpen != 0)
     {
-        if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+        if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
             pEvent->FUN_14195a0c0(m_entityId);
     }
 }
@@ -957,7 +956,7 @@ void CGuideActionUIArrowClose::vfunc_4()
 {
     if (m_isAtOpen == 0)
     {
-        if (UIGuideEvent* pEvent = FUN_14136f3e0(0x4e53))
+        if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
             pEvent->FUN_14195a0c0(m_entityId);
     }
 }
@@ -1060,7 +1059,7 @@ MS2_REPLACE_METHOD(0x141385400, CGuideActionEquipWeaponTutorial, vfunc_2, 75, 0x
 // @0x141385460
 void CGuideActionEquipWeaponTutorial::vfunc_3()
 {
-    FUN_141999d20(m_isUse);
+    UIInventoryDialog::FUN_141999d20(m_isUse);
     FUN_141a5d0a0(m_isUse);
 }
 MS2_REPLACE_METHOD(0x141385460, CGuideActionEquipWeaponTutorial, vfunc_3, 40, 0x95E90B84);
@@ -1068,7 +1067,7 @@ MS2_REPLACE_METHOD(0x141385460, CGuideActionEquipWeaponTutorial, vfunc_3, 40, 0x
 // @0x141385490
 void CGuideActionEquipWeaponTutorial::vfunc_4()
 {
-    FUN_141999d20(0);
+    UIInventoryDialog::FUN_141999d20(0);
     FUN_141a5d0a0(0);
 }
 MS2_REPLACE_METHOD(0x141385490, CGuideActionEquipWeaponTutorial, vfunc_4, 28, 0x8673086D);
@@ -1138,17 +1137,17 @@ void CGuideActionSequenceCamera::vfunc_3()
 {
     m_skipped = 0;
     if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
-        FUN_140ad4b90()->FUN_141863460(0);
-    FUN_140ad4b90()->FUN_141863340(m_triggerCameraId, 1);
+        ((CTriggerService*)FUN_140ad4b90())->FUN_141863460(0);
+    ((CTriggerService*)FUN_140ad4b90())->FUN_141863340(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
     {
         ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
         CStringW strEmpty;
-        if (UICutSceneCinematic* pCinematic = FUN_14136f290(0x4e52))
+        if (UICutSceneCinematic* pCinematic = (UICutSceneCinematic*)FUN_14136f290(0x4e52))
         {
             CStringW strKey = GetStringCommon(0x666);
             if (*reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
-                strKey = reinterpret_cast<Unk_GaKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
+                strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
             pCinematic->FUN_141907f80(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
@@ -1163,7 +1162,7 @@ void CGuideActionSequenceCamera::vfunc_3()
 void CGuideActionSequenceCamera::vfunc_4()
 {
     if (CameraMgr::GetInstance()->FUN_140af7e30() != 2)
-        FUN_140ad4b90()->FUN_141863460(m_endInterpolationTime);
+        ((CTriggerService*)FUN_140ad4b90())->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
         ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
@@ -1219,7 +1218,7 @@ MS2_REPLACE_METHOD(0x141385C70, CGuideActionSmartRecommend, vfunc_2, 75, 0xAB168
 // @0x141385cd0
 void CGuideActionSmartRecommend::vfunc_3()
 {
-    if (UISmartRecommendNotifyDialog* pDialog = FUN_14136f5c0(0x4e9e))
+    if (UISmartRecommendNotifyDialog* pDialog = (UISmartRecommendNotifyDialog*)FUN_14136f5c0(0x4e9e))
         pDialog->FUN_14134dc50(m_recommendCode);
     if (CUIService::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e) == 0)
         CUIService::GetInstance()->CloseDialog((eUIClassID)0x4e9e);

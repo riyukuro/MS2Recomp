@@ -367,7 +367,7 @@ void CDropItem::vfunc_32(bool bForce)
             {
                 if (m_spShadow->FUN_141192830())
                 {
-                    nHit = ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
+                    nHit = ((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
                 }
             }
             m_spShadow->FUN_14160feb0(nHit, reinterpret_cast<efd::Point3&>(kHit), reinterpret_cast<efd::Point3&>(kNormal), kInfo.m_hitDist, bForce);

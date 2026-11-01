@@ -140,7 +140,7 @@ void StateGrabTarget::vfunc_3(double fTime)
         }
         efd::Point3 kPos = spNode->GetWorldTranslate();
         m_pOwner->vfunc_19(kPos);
-        m_pOwner->FUN_14166dda0(0x28);
+        m_pOwner->PlayAnimationById(0x28);
     }
 }
 

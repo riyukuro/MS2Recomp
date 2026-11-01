@@ -81,8 +81,8 @@ CPriortyCutting::~CPriortyCutting()
 void CPriortyCutting::vfunc_2()
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > equipped(10);
-    m_pTarget->FUN_1411e2e40(equipped);
-    unsigned nGender = ((class PC*)(class MyPC*)(m_pTarget->FUN_1411e0ee0()))->FUN_141658e60();
+    ((class CEquipment*)(m_pTarget))->FUN_1411e2e40(equipped);
+    unsigned nGender = ((class PC*)(class MyPC*)(((class MyPC *)((class CEquipment*)(m_pTarget))->FUN_1411e0ee0())))->FUN_141658e60();
     POSITION pos = equipped.GetHeadPosition();
     while (pos != 0) {
         MS2Ptr<CEquipItem> equip(equipped.GetNext(pos));
@@ -95,7 +95,7 @@ void CPriortyCutting::vfunc_2()
         std::vector<CString>::iterator itEnd = names.end();
         for (std::vector<CString>::iterator it = names.begin(); it != itEnd; ++it) {
             CString strName(*it);
-            m_pTarget->FUN_1411e8d20(strName);
+            ((class CEquipment*)(m_pTarget))->FUN_1411e8d20(strName);
         }
     }
 }

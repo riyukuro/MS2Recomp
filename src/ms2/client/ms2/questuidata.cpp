@@ -341,7 +341,7 @@ void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out)
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
         return;
-    spUI->FUN_1416e6610(out);
+    spUI->GetConditionTexts(out);
 }
 
 // The quest title "[type] name" (bLevel: the name with the quest level).
@@ -484,7 +484,7 @@ CStringW CQuestUIData::GetConditionText(int nIndex)
     if (nIndex >= (int)spData->m_conditions.GetCount())
         return L"";
     MS2Ptr<CConditionCommonData> spCond = spData->m_conditions[nIndex];
-    CStringW strManual = FUN_1416e6860(nIndex);
+    CStringW strManual = GetManualText(nIndex);
     if (strManual.GetLength() != 0)
     {
         TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strManual);
@@ -499,7 +499,7 @@ CStringW CQuestUIData::GetConditionText(int nIndex)
 }
 
 // @0x1416e6610
-void CQuestUIData::FUN_1416e6610(ATL::CAtlArray<CStringW>& out)
+void CQuestUIData::GetConditionTexts(ATL::CAtlArray<CStringW>& out)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(m_nQuestId);
     if (!spData)
@@ -523,13 +523,13 @@ CStringW CQuestUIData::GetCompleteText()
 MS2_REPLACE_METHOD(0x1416E66F0, CQuestUIData, GetCompleteText, 356, 0x7159BD0D);
 
 // @0x1416e6860
-CStringW CQuestUIData::FUN_1416e6860(int nIndex)
+CStringW CQuestUIData::GetManualText(int nIndex)
 {
     if (nIndex >= (int)m_manual.GetCount())
         return L"";
     return m_manual[nIndex];
 }
-MS2_REPLACE_METHOD(0x1416E6860, CQuestUIData, FUN_1416e6860, 143, 0x8292B47D);
+MS2_REPLACE_METHOD(0x1416E6860, CQuestUIData, GetManualText, 143, 0x8292B47D);
 
 // @0x1416e6900
 CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
@@ -538,7 +538,7 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     int nCount = 0;
     if (nIndex < (int)m_counts.GetCount())
         nCount = m_counts[nIndex];
-    CStringW strManual = FUN_1416e6860(nIndex);
+    CStringW strManual = GetManualText(nIndex);
     if (strManual.GetLength() != 0 && nCount == 0)
         return str;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(m_nQuestId);

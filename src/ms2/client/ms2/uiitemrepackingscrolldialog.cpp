@@ -531,7 +531,7 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         int nNeed = static_cast<CItem*>(spItem)->GetRepackConsumeCount();
         unsigned nScrollId = static_cast<CItem*>(spScroll)->FUN_1405276c0();
         CStringW strDesc = FUN_140f63810(0x966, nScrollId, nNeed);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strDesc);
         ASObj obj(2);
         obj.FUN_1407cbb20("itemName", CStringW(strName));
         obj.FUN_1407cbb20("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->GetItemUid()));

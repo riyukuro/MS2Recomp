@@ -76,7 +76,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/effectservice.h"
-
+class NoticeMessage { public: class GameObject * GetOwner(void); };
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 CMainSystem* FUN_14086d260();
 
@@ -364,7 +364,7 @@ bool ChaosLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTa
     if (!TransitionEffect::vfunc_3(pParam, pTarget))
         return false;
     const ChaosLightEffectParam* pUse = static_cast<const ChaosLightEffectParam*>(pParam);
-    GameObject* pObject = pTarget->FUN_140a533b0();
+    GameObject* pObject = ((class NoticeMessage*)(pTarget))->GetOwner();
     if (!pObject)
         return false;
     efd::list<NiAVObject*> listNodes;

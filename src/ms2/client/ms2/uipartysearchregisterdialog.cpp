@@ -8,6 +8,7 @@
 #include "partymanager.h"
 #include "uimessagebox.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -33,7 +34,6 @@ public:
     void FUN_1422dfc10();                           // remove all rows
     void FUN_1422df5f0(unsigned int nRows);         // visible rows
     void FUN_1422dfce0(const CStringW& strRow);     // add a row
-    void FUN_1422df690(int nRow);                   // select a row
     int FUN_1422df6c0();                            // selected row
 };
 class Unk_PsInput : public Unk_PsDisplay            // m_inputTitle
@@ -227,7 +227,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         {
             reinterpret_cast<ASTextInput*>(m_1c0.operator->())->FUN_1422e0ab0(m_190.m_text);
             reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090((unsigned int)m_190.m_flag);
-            m_1b0->FUN_1422df690((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0() - 1));
+            reinterpret_cast<ASDropdownMenu*>(m_1b0.operator->())->SetSelectedIndex((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0() - 1));
             m_1e0->vfunc_4(1);
             m_1f0->vfunc_4(0);
         }
@@ -238,7 +238,7 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
             m_1b0->FUN_1422c1fe0(0);
             reinterpret_cast<ASTextInput*>(m_1c0.operator->())->FUN_1422e0ab0(pRecruit->title);
             reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090(pRecruit->minimumLevel);
-            m_1b0->FUN_1422df690(FindMaxUserCountIndex(pRecruit->members));
+            reinterpret_cast<ASDropdownMenu*>(m_1b0.operator->())->SetSelectedIndex(FindMaxUserCountIndex(pRecruit->members));
             m_1e0->vfunc_4(0);
             m_1f0->vfunc_4(1);
         }

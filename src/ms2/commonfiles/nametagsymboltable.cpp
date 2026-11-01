@@ -70,6 +70,18 @@ class GameObject   // C3: member view for the former free stand-ins
 public:
     int FUN_14123c580();
 };
+class PC   // C3: member view for the Unk_NametagActor condition getters
+{
+public:
+    int FUN_141661e40(int* pA, int* pB);
+    unsigned int FUN_141662de0();
+    int FUN_141663080();
+    int FUN_1416630c0();
+    int FUN_14165ffe0();
+    int FUN_141660030();
+    short FUN_141663b50();
+};
+class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view
 
 class Unk_NametagTitles { public: int FUN_140408410(const unsigned int* pCode); };   // the owned titles
 extern Unk_NametagTitles DAT_143ab3268;
@@ -120,7 +132,7 @@ int CNametagSymbolTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = (Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -240,28 +252,28 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         {
             int nA;
             int nB;
-            return pActor->FUN_141661e40(&nA, &nB);
+            return reinterpret_cast<PC*>(pActor)->FUN_141661e40(&nA, &nB);
         }
         case NAMETAG_CONDITION_VIP:
-            return pActor->FUN_141662de0();
+            return reinterpret_cast<PC*>(pActor)->FUN_141662de0();
         case NAMETAG_CONDITION_TENCENTVIP:
-            return pActor->FUN_141663080() != 0;
+            return reinterpret_cast<PC*>(pActor)->FUN_141663080() != 0;
         case NAMETAG_CONDITION_TGP:
-            return pActor->FUN_1416630c0();
+            return reinterpret_cast<PC*>(pActor)->FUN_1416630c0();
         case NAMETAG_CONDITION_GM:
             return pActor->GetGmGrade() >= 50;
         case NAMETAG_CONDITION_RETURN_USER:
             if (!FUN_1406c7610()->m_bEnabled)
                 return 0;
-            return pActor->FUN_14165ffe0() == 2;
+            return reinterpret_cast<PC*>(pActor)->FUN_14165ffe0() == 2;
         case NAMETAG_CONDITION_BIRTHDAY:
-            return pActor->FUN_141660030();
+            return reinterpret_cast<PC*>(pActor)->FUN_141660030();
         case NAMETAG_CONDITION_ADVENTURE_LEVEL:
             return pActor->vfunc_141() >= 100;
         case NAMETAG_CONDITION_BURNING:
             return pActor->FUN_1415275b0(nId);
         case NAMETAG_CONDITION_SURVIVAL_LEVEL:
-            return pActor->FUN_141663b50() >= 5;
+            return (unsigned short)reinterpret_cast<PC*>(pActor)->FUN_141663b50() >= 5;
         }
     }
     return 0;
@@ -280,7 +292,7 @@ CStringW CNametagSymbolTable::GetIconRanked(unsigned short nId, Unk_NametagActor
     case NAMETAG_CONDITION_ADVENTURE_LEVEL:
         return FUN_1406c6990(strIcon, (unsigned short)pActor->vfunc_141());
     case NAMETAG_CONDITION_SURVIVAL_LEVEL:
-        return FUN_1406c6ab0(strIcon, pActor->FUN_141663b50());
+        return FUN_1406c6ab0(strIcon, reinterpret_cast<PC*>(pActor)->FUN_141663b50());
     default:
         return strIcon;
     }
@@ -322,7 +334,7 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
     }
     case NAMETAG_CONDITION_TENCENTVIP:
     {
-        int nGrade = pActor->FUN_141663080();
+        int nGrade = reinterpret_cast<PC*>(pActor)->FUN_141663080();
         return StringFormat(L"{0}{1}", spData->m_strIcon, nGrade);
     }
     default:

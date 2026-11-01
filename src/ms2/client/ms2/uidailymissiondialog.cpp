@@ -426,8 +426,8 @@ void UIDailyMissionDialog::FUN_140c009b0()
             if (nGroup == 2 && Unk_DmActorLevel(pPlayer) < 0x32)
                 strKey = "newbee";
             ASObj row(2);
-            row.FUN_1407cbb20("label", GetStringCommonByKey(StringFormat(L"s_daily_mission_{0}", strKey)));
-            row.FUN_1407cb9c0("enabled", FUN_140c02320(nGroup));
+            ((class AScript&)(row)).FUN_1407cbb20("label", GetStringCommonByKey(StringFormat(L"s_daily_mission_{0}", strKey)));
+            ((class AScript&)(row)).FUN_1407cb9c0("enabled", FUN_140c02320(nGroup));
             spTab.operator->()->AddItem(row);
         }
         spTab.operator->()->SetSelectedIndex(0);
@@ -494,9 +494,9 @@ void UIDailyMissionDialog::FUN_140c01040(ASObj& rRow, CQuest* pQuest)
     strDesc.Replace(L"#5c2b00", L"#000000");
     rRow.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
     rRow.FUN_1407cba60("icon", strIcon);
-    rRow.FUN_1407cbb20("desc", strDesc);
-    rRow.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
-    rRow.FUN_1407cb9c0("completed", pQuest->IsRewarded());
+    ((class AScript&)(rRow)).FUN_1407cbb20("desc", strDesc);
+    ((class AScript&)(rRow)).FUN_1407cb9c0("satisfied", pQuest->IsComplete());
+    ((class AScript&)(rRow)).FUN_1407cb9c0("completed", pQuest->IsRewarded());
     rRow.FUN_1409c1180("exp", FUN_140761ba0(pQuest->FUN_140bfc580(), 1));
     FUN_140c01790(rRow, pQuest->FUN_140bfc580(), 1);
 }
@@ -532,8 +532,8 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
     strLevel = FUN_14062b4f0(CStringW(L"s_daily_mission_mission_point"), nLevel);
     rRow.FUN_1409c0d20("id", FUN_14074b030(spData.operator->()));
     rRow.FUN_1407cba60("state", strState);
-    rRow.FUN_1407cb9c0("level", nLevel);
-    rRow.FUN_1407cbb20("levelStr", strLevel);
+    ((class AScript&)(rRow)).FUN_1407cb9c0("level", nLevel);
+    ((class AScript&)(rRow)).FUN_1407cbb20("levelStr", strLevel);
     FUN_140c01790(rRow, FUN_14074b030(spData.operator->()), 0);
     return 1;
 }
@@ -571,7 +571,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     FUN_141415450(strBind, spItem, 0, nFlags, 0x800);
     rRow.FUN_1407cba60("binding", strBind);
     if (bName != 0)
-        rRow.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pReward->m_itemId));
+        ((class AScript&)(rRow)).FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pReward->m_itemId));
     m_188.Add(strBind);
 }
 

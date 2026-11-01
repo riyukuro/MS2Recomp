@@ -198,7 +198,8 @@ extern __int64 DAT_143ab2898;                                               // t
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);             // the field can be entered (else the reason)
 __int64 FUN_140632990(__int64 nValue, float fRate);                        // a meso value scaled by a rate
-float FUN_1411e1110(Unk_PCEquipSet* pEquips, int nStat);                    // a stat rate of the equips (0xaa: taxi discount)
+enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
+class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> kHandler, CStringW strText);   // a yes/no box
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                              // show a message box
@@ -392,7 +393,7 @@ void UIWorldMapDialog::OnLoadComplete()
     if (m_170.CompareNoCase("missionAttack") == 0)
         m_214 = 1;
     if (m_214 != 0)
-        m_30->FUN_1409ba0d0("setMissionAttackMode", 1, ((class CQuestManager*)FUN_140764020())->FUN_1416d0e20());
+        m_30->FUN_1409ba0d0("setMissionAttackMode", 1, ((class CQuestManager*)FUN_140764020())->GetRemainingMissionAttackCount());
 }
 
 // @0x141b54d50
@@ -1288,7 +1289,7 @@ void UIWorldMapDialog::FUN_141b59a80()
             continue;
         if (spBuddy->FUN_1401cc680() == 0)
             continue;
-        if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(spBuddy->FUN_1401cc230()))
+        if (TSingleton<CPartyManager>::GetInstance()->IsMemberByCharId(spBuddy->FUN_1401cc230()))
             continue;
         if (spBuddy->FUN_1401cc310() == 0)
             continue;
@@ -1305,7 +1306,7 @@ MS2_REPLACE_METHOD(0x141B59A80, UIWorldMapDialog, FUN_141b59a80, 686, 0xDA37BB0B
 void UIWorldMapDialog::FUN_141b59d40()
 {
     ATL::CAtlArray<Unk_PayloadPtr<CQuest> > quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cb8b0(quests, 1, 0xb, -1);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(quests, 1, 0xb, -1);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];
@@ -1676,9 +1677,9 @@ void UIWorldMapDialog::FUN_141b5be10()
     if (nTotal == 0)
         return;
     int nRound = ((class CQuestManager*)FUN_140764020())->FUN_1416d00c0();
-    int nEnable = ((class CQuestManager*)FUN_140764020())->FUN_1416d0100();
-    int nDone = ((class CQuestManager*)FUN_140764020())->FUN_1416d0150();
-    if (((class CQuestManager*)FUN_140764020())->FUN_1416d0210() != 0)
+    int nEnable = ((class CQuestManager*)FUN_140764020())->IsRoundTargetReached();
+    int nDone = ((class CQuestManager*)FUN_140764020())->CountCompletedQuests80();
+    if (((class CQuestManager*)FUN_140764020())->IsLastRound() != 0)
     {
         nRound = ((class CFieldMissionTable*)FUN_140d738f0())->GetMaxRound();
         nEnable = 0;
@@ -1791,7 +1792,7 @@ void UIWorldMapDialog::FUN_141b5cea0(ATL::CAtlMap<int, MS2Ptr<CQuestData> >& sta
 // @0x141b5cbc0
 void UIWorldMapDialog::SendQuest()
 {
-    if (((class CQuestManager*)FUN_140764020())->FUN_1416d0100() != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsRoundTargetReached() != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Quest));
         packet.Encode1(0x1a);
@@ -1807,7 +1808,7 @@ void UIWorldMapDialog::FUN_141b5cc40(int nRound)
     int nCur = ((class CQuestManager*)FUN_140764020())->FUN_1416d00c0();
     int nEnable = 0;
     if (nCur == nRound)
-        nEnable = ((class CQuestManager*)FUN_140764020())->FUN_1416d0100();
+        nEnable = ((class CQuestManager*)FUN_140764020())->IsRoundTargetReached();
     ASObj obj(2);
     obj.FUN_1407cb9c0("rewardCount", nRound);
     obj.FUN_1407cb9c0("enable", nEnable);
@@ -2476,7 +2477,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
         {
             __int64 nFare = TSingleton<CTaxiManager>::GetInstance()->FUN_14085fc80((short)pPlayer->vfunc_78());
             if (nFare != 0)
-                nFare = FUN_140632990(nFare, 1.0f - FUN_1411e1110(pPlayer->FUN_1416561a0(), 0xaa));
+                nFare = FUN_140632990(nFare, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0xaa));
             CStringW strText = FUN_14028dfa0<CStringW, __int64>(CStringW(L"s_cash_taxi_transfer_meso"), GetStringTable()->FUN_141811980(3, m_190), nFare);
             FUN_141b62e40(CStringW(strText), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::FUN_141b5ad60), nFare);
         }
@@ -2501,7 +2502,7 @@ void UIWorldMapDialog::FUN_141b614c0(MyPC* pPlayer)
     ((class IClientPlatform*)FUN_140d86260())->vfunc_43(2, 0, 1000);
     __int64 nPrice = *TSingleton<Client::Constants>::GetInstance()->MeratAirTaxiPrice.Get();
     if (nPrice != 0)
-        nPrice = FUN_140632990(nPrice, 1.0f - FUN_1411e1110(pPlayer->FUN_1416561a0(), 0xaa));
+        nPrice = FUN_140632990(nPrice, 1.0f - reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->GetAbilityRate((SAType)0xaa));
     FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::FUN_141b5ae00),
         FUN_14028dfa0<__int64>(CStringW(L"s_err_cash_taxi_need_advanced_ticket_merat"), nPrice));
 }

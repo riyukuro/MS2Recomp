@@ -76,9 +76,11 @@ static CString s_strTabIndex = "tabIndex";
 #include "ms2/client/ms2/dropitem.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/ridee.h"
+#define MS2_GAMEEVENTVALUE_TYPES
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/client/ms2/equipitem.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- callees ------------------------------------------------------------------------------------------------------
@@ -96,16 +98,6 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);     // multi-byte to wid
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // The game rules: content kinds a rule set disables (rule 0xb: UGC).
-class Unk_UgcContentRule
-{
-public:
-    bool FUN_1407d1210(int nType);
-};
-class Unk_UgcGameRules
-{
-public:
-    Unk_UgcContentRule* FUN_14046d0d0(int nRule);
-};
 
 // The client options; mode 1 bypasses the URL cache.
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
@@ -131,38 +123,25 @@ private:
 };
 
 // Players and objects of the field.
-class Unk_UgcEquipItem : public CPtred
+class Unk_UgcEquipItem : public CEquipItem
 {
-public:
-    void FUN_1411dc900(int bReload);                        // reload the UGC texture
 };
-class Unk_UgcItemIconOwner : public CDropItem
+class Unk_SSGDropItem : public CDropItem
 {
-public:
 };
 class Unk_UgcPlayer : public PC
 {
 public:
     MS2Ptr<Unk_UgcEquipItem> FUN_141655c30(__int64 nItemUid);   // a worn item by uid
-    Unk_UgcItemIconOwner* FUN_1417411e0();
 };
-class Unk_UgcNameTag : public CPtred
+class Unk_WsB_Prop : public CInteractObject
+{
+};
+class Unk_WsB_Notice : public CPtred
 {
 public:
     char m_pad[0x50 - sizeof(CPtred)];
     CString m_strProfileImage;                              // +0x50
-};
-class Unk_UgcRidee : public Ridee
-{
-public:
-};
-Unk_UgcRidee* FUN_1409ffd80(void* pEntity);
-class Unk_UgcWorld
-{
-public:
-    Unk_UgcPlayer* FUN_141bd0cc0();                         // the local player
-    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);
-    MS2Ptr<Unk_UgcNameTag> FUN_141bc9be0(int nObjectId);
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -172,6 +151,9 @@ public:
     static class WorldService* GetInstance();
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
+    void* FUN_141bd0cc0();                                  // the local player
+    MS2Ptr<Unk_WsB_Prop> FUN_141bc66b0(const CString& strName);
+    MS2Ptr<Unk_WsB_Notice> FUN_141bc9be0(unsigned nObjectId);
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -180,9 +162,6 @@ public:
 };
 
 // The cube placement service (efd service 0x06100017).
-class Unk_UgcCube
-{
-};
 class Cube   // C3: member view for the former free stand-ins
 {
 public:
@@ -192,7 +171,7 @@ class Unk_UgcCubeService : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    Unk_UgcCube* FUN_1410b8c90(egf::EntityID id);
+    Cube* FUN_1410b8c90(egf::EntityID id);
 };
 struct Unk_UgcFramework
 {
@@ -226,27 +205,19 @@ public:
     void FUN_140fc7f30();                                   // refresh the profile images
 };
 UIUGCCubePaletteDialog* FUN_140ef4a50(int nId);
-class Unk_UgcGuildDialog : public UIDialog
-{
-public:
-    void FUN_1419764f0(__int64 guildId, const CString& strPath);
-};
 void* FUN_14136f480(int);   // C3: was FUN_14136f480
-class Unk_UgcGuildPvpDialog : public UIPvPGuildTeamDialog
+class UIGuildDialog : public UIDialog
 {
 public:
+    void FUN_1419764f0(unsigned __int64 nGuildId, const CString& strCode);
 };
-Unk_UgcGuildPvpDialog* FUN_141531be0(int nId);
-class Unk_UgcGuildRankDialog : public UIPvPGuildTeamResultDialog
+class UIMeratMarketDialog
 {
 public:
+    void OnBannerImageLoaded(CString strKey, CString strPath, bool bOk);
 };
-Unk_UgcGuildRankDialog* FUN_1413c87c0(int nId);
-class Unk_UgcShopDialog
-{
-public:
-    void FUN_14130bf20(CString strKey, CString strPath, bool bOk);
-};
+template <class T> T* MyPCDialog(int nId);
+template <class T> T* Unk_GuildFindDialog(int nId);
 class UIMeratMarketDialog* FUN_140bfed50(int);   // C3: was FUN_140bfed50
 // The client platform (the scene-state game service); slot 47 shows a downloaded shop banner.
 class Unk_UgcPlatform
@@ -521,7 +492,7 @@ void CUgcDownloadEquip::ProcessResult()
             MS2Ptr<Unk_UgcEquipItem> spEquip = pPlayer->FUN_141655c30(sp->m_itemUid);
             if (spEquip == 0)
                 continue;
-            spEquip->FUN_1411dc900(1);
+            spEquip->SetUgcPending(1);
         }
     }
     Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadEquip::ProcessResult] proxy count = {0}", m_list.GetCount());
@@ -583,11 +554,11 @@ void CUgcDownloadCube::ProcessResult()
             MS2Ptr<CUgcItemCube> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Unk_UgcCube* pCube = spService->FUN_1410b8c90(sp->m_entityId);
+            Cube* pCube = spService->FUN_1410b8c90(sp->m_entityId);
             if (pCube)
-                ((class Cube*)(class Unk_UgcCube*)(pCube))->FUN_1408b51d0();
+                pCube->FUN_1408b51d0();
             else
-                ((class CUgcManager*)FUN_14052d220())->FUN_141886cc0(sp.get(), m_strPath, m_param.m_upload.m_uid);
+                ((class CUgcManager*)FUN_14052d220())->ApplyImageToCube(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
         UIUGCCubePaletteDialog* pDialog = FUN_140ef4a50(0x4f16);
         if (pDialog)
@@ -646,7 +617,7 @@ void CUgcDownloadItemIcon::ProcessResult()
 {
     if (m_nResult == 0)
     {
-        Unk_UgcPlayer* pMyPC = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == NULL)
             return;
         CString strUrl = FUN_1410272e0(m_strUrl);
@@ -659,8 +630,8 @@ void CUgcDownloadItemIcon::ProcessResult()
             if (sp->m_nKind == 1)
             {
                 Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1180(sp->m_nObjectId));
-                Unk_UgcItemIconOwner* pOwner;
-                if (pPlayer && (pOwner = pPlayer->FUN_1417411e0()) != NULL)
+                Unk_SSGDropItem* pOwner;
+                if (pPlayer && (pOwner = efd::DynamicCast<Unk_SSGDropItem>(reinterpret_cast<GameObject*>(pPlayer))) != NULL)
                     pOwner->FUN_1411911f0();
             }
             else if (sp->m_nKind == 2)
@@ -790,7 +761,7 @@ void CUgcDownloadProfile::ProcessResult()
                 continue;
             if (sp->m_strObjectName.GetLength() > 0)
             {
-                CInteractObject* pObject = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bc66b0(sp->m_strObjectName).get();
+                CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc66b0(sp->m_strObjectName).get();
                 CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
                 if (pImage)
                 {
@@ -800,7 +771,7 @@ void CUgcDownloadProfile::ProcessResult()
             }
             else
             {
-                Unk_UgcPlayer* pMyPC = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+                Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
                 if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() != 0x620000d)
                 {
                     if (pMyPC == NULL)
@@ -822,7 +793,7 @@ void CUgcDownloadProfile::ProcessResult()
                     }
                     if (nObjectId > 0)
                     {
-                        MS2Ptr<Unk_UgcNameTag> spTag = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bc9be0(nObjectId);
+                        MS2Ptr<Unk_WsB_Notice> spTag = WorldService::GetInstance()->FUN_141bc9be0(nObjectId);
                         if (spTag.get())
                             spTag->m_strProfileImage = strUrl;
                     }
@@ -937,16 +908,16 @@ void CUgcDownloadGuildMark::ProcessResult()
             MS2Ptr<CUgcGuildMarkProxy> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Unk_UgcGuildDialog* pGuild = ((class Unk_UgcGuildDialog*)FUN_14136f480(0x4e4f));
+            UIGuildDialog* pGuild = reinterpret_cast<UIGuildDialog*>(FUN_14136f480(0x4e4f));
             if (pGuild && pGuild->vfunc_55() == 0)
                 pGuild->FUN_1419764f0(sp->m_nGuildId, strUrl);
-            Unk_UgcGuildPvpDialog* pPvp = FUN_141531be0(0x4ec4);
+            UIPvPGuildTeamDialog* pPvp = MyPCDialog<UIPvPGuildTeamDialog>(0x4ec4);
             if (pPvp && pPvp->vfunc_55() == 0)
                 pPvp->FUN_14133b0f0(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
-            Unk_UgcGuildRankDialog* pRank = FUN_1413c87c0(0x4ec7);
+            UIPvPGuildTeamResultDialog* pRank = Unk_GuildFindDialog<UIPvPGuildTeamResultDialog>(0x4ec7);
             if (pRank && pRank->vfunc_55() == 0)
                 pRank->FUN_1413415e0(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
-            CInteractObject* pObject = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bc66b0(sp->m_strName).get();
+            CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc66b0(sp->m_strName).get();
             CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
             if (pImage)
                 pImage->FUN_1414017b0(m_strPath);
@@ -1046,11 +1017,11 @@ void CUgcDownloadRidee::ProcessResult()
             MS2Ptr<CUgcItemRidee> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            Unk_UgcRidee* pRidee = FUN_1409ffd80(WorldService::GetInstance()->FindObjectByEntityId(sp->m_entityId));
+            Ridee* pRidee = efd::DynamicCast<Ridee>(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(sp->m_entityId)));
             if (pRidee)
                 pRidee->FUN_1417072b0();
             else
-                ((class CUgcManager*)FUN_14052d220())->FUN_141887040(sp.get(), m_strPath, m_param.m_upload.m_uid);
+                ((class CUgcManager*)FUN_14052d220())->ApplyImageToRidee(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
     }
     Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadRidee::ProcessResult] proxy count = {0}", m_list.GetCount());
@@ -1151,7 +1122,7 @@ void CUgcDownloadShopBanner::ProcessResult()
     }
     if (m_param.m_nType == 0xcc || m_param.m_nType == 0xcf || m_param.m_nType == 0xd2)
     {
-        Unk_UgcShopDialog* pDialog = ((class Unk_UgcShopDialog*)FUN_140bfed50(0x4ec1));
+        UIMeratMarketDialog* pDialog = FUN_140bfed50(0x4ec1);
         bool bOk = m_nResult == 0 ? TRUE : FALSE;
         for (POSITION pos = m_list.GetHeadPosition(); pos; m_list.GetNext(pos))
         {
@@ -1171,7 +1142,7 @@ void CUgcDownloadShopBanner::ProcessResult()
             }
             else
             {
-                pDialog->FUN_14130bf20(sp->m_strKey, m_strPath, bOk);
+                pDialog->OnBannerImageLoaded(sp->m_strKey, m_strPath, bOk);
             }
         }
         Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadShopBanner::ProcessResult] proxy count = {0}",
@@ -1260,7 +1231,7 @@ void CUgcDownloadBannerRollingImage::ProcessResult()
         for (int i = 0; i < nCount; i++)
         {
             int nBannerId = m_spProxy->m_images[i];
-            ((class CUgcManager*)FUN_14052d220())->FUN_141888420(nBannerId, m_strPath);
+            ((class CUgcManager*)FUN_14052d220())->ApplyBannerTexture(nBannerId, m_strPath);
         }
     }
 }
@@ -1374,7 +1345,7 @@ void CUgcDownloadBlueprintIcon::ProcessResult()
 {
     if (m_nResult == 0)
     {
-        Unk_UgcPlayer* pMyPC = ((class Unk_UgcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == NULL)
             return;
         CString strUrl = FUN_1410272e0(m_strUrl);
@@ -1468,7 +1439,7 @@ unsigned int CUgcDownloadDown::vfunc_1(void* pParam, Unk_140659080& start)
                 }
                 else
                 {
-                    if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) && reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14046d0d0(0xb)->FUN_1407d1210(sp->m_param.m_nType))
+                    if (TSingleton<CGameEventValueManager>::GetInstance() && TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->FUN_1407d1210(sp->m_param.m_nType))
                         continue;
                     sp->MakePath();
                     TSingleton<CUgcDownloadLoad>::GetInstance()->Push(sp->m_param.m_strUrl, sp->GetPath(), sp->m_param.m_nType,
@@ -1519,7 +1490,7 @@ int CUgcDownloadDown::Push(CUgcDownloadParam* pParam, IUgcProxy* pProxy)
     int bNew = 0;
     if (strUrl.GetLength() == 0)
         return 0;
-    if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) && reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14046d0d0(0xb)->FUN_1407d1210(nType))
+    if (TSingleton<CGameEventValueManager>::GetInstance() && TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->FUN_1407d1210(nType))
         return 0;
     if (nType == 1 || nType == 2 || nType == 0xc9 || nType == 3 || nType == 5 || nType == 6 || nType == 8 ||
         nType == 7 || nType == 0xce || nType == 9 || nType == 0xd1 || nType == 10)
@@ -1622,7 +1593,7 @@ void CUgcDownloadDown::Finish(CString strName, int nResult)
     }
     if (bSignal)
         ReleaseSemaphore(m_hSemaphore, 1, NULL);
-    ((class CUgcManager*)FUN_14052d220())->FUN_141886190(strName, sp, nResult);
+    ((class CUgcManager*)FUN_14052d220())->OnDownloadFinished(strName, sp, nResult);
 }
 MS2_REPLACE_METHOD(0x1418760a0, CUgcDownloadDown, Finish, 488, 0x13F3FE12);
 

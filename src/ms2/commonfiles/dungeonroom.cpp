@@ -155,8 +155,8 @@ template<class T> T* Common::Constants::Value<T>::Get()
 
 int FUN_140768010(int nRange, int nBase);              // random number in [nBase, nBase + nRange)
 int Unk_ClubBuffTypeOf(int nValue);
-int FUN_140873160(Unk_140165cf0* pElem, const char* pszName, short& nOut);
-int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, CMsTime& tOut);
+int XmlGetAttr(class TiXmlElement *, char const *, short &);
+int XmlGetAttr(class TiXmlElement *, char const *, class CMsTime &);
 int Parse_14021ab60(const CString& str);               // timer type name -> value
 void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // split into a CAtlArray<unsigned>
 
@@ -194,7 +194,7 @@ inline void SetBitsFromString(Unk_PartyBits& bits, CStringW str)
     ATL::CAtlArray<unsigned> arr;
     FUN_140274fc0(str, &arr, L",");
     for (unsigned i = 0; i < arr.GetCount(); i++)
-        bits.FUN_1402e69d0(arr[i], true);
+        ((class Unk_Bitset8&)(bits)).Set(arr[i], true);
 }
 inline void SetBits(Unk_PartyBits& bits, CStringW str)
 {
@@ -412,7 +412,7 @@ void DungeonRoom::Load(Unk_140165cf0* pElem)
     ReadBossRankingType(pElem, "BossRankingType", m_bossRankingType);
     XmlGetAttr((class TiXmlElement*)(pElem), "BossRanking", reinterpret_cast<unsigned int&>(m_bossRanking));
     XmlGetAttr((class TiXmlElement*)(pElem), "openPeriodTag", m_openPeriodTag);
-    FUN_140873600(pElem, "openPeriodDate", m_openPeriodDate);
+    XmlGetAttr((class TiXmlElement *)(pElem), "openPeriodDate", m_openPeriodDate);
     XmlGetAttr((class TiXmlElement*)(pElem), "isRandomField", reinterpret_cast<bool&>(m_isRandomField));
     XmlGetAttr((class TiXmlElement*)(pElem), "isPartyOnly", reinterpret_cast<bool&>(m_isPartyOnly));
     XmlGetAttr((class TiXmlElement*)(pElem), "isChangeMaxUser", reinterpret_cast<bool&>(m_isChangeMaxUser));
@@ -827,7 +827,7 @@ DungeonRankRequire::DungeonRankRequire()
 // @0x14031ea30
 void DungeonRankRequire::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873160(pElem, "maxScore", m_maxScore);
+    XmlGetAttr((class TiXmlElement *)(pElem), "maxScore", m_maxScore);
     int nPrev = -1;
     for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("rank")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("rank")))
     {
@@ -897,7 +897,7 @@ DungeonSeason::~DungeonSeason()
 // @0x14031ed90
 bool DungeonSeason::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873160(pElem, "seasonID", m_seasonID);
+    XmlGetAttr((class TiXmlElement *)(pElem), "seasonID", m_seasonID);
     XmlGetAttr((class TiXmlElement*)(pElem), "maxSeasonScore", reinterpret_cast<unsigned int&>(m_maxSeasonScore));
     XmlGetAttr((class TiXmlElement*)(pElem), "systemMailID", reinterpret_cast<int&>(m_systemMailID));
     XmlGetAttr((class TiXmlElement*)(pElem), "dayOfWeeks", reinterpret_cast<int&>(m_dayOfWeeks));
@@ -1051,7 +1051,7 @@ void DungeonRoomTable::LoadRooms()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
@@ -1075,7 +1075,7 @@ void DungeonRoomTable::LoadSeasons()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
@@ -1100,7 +1100,7 @@ void DungeonRoomTable::LoadConfig()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("DungeonConfig"));
@@ -1123,7 +1123,7 @@ void DungeonRoomTable::LoadRankRewards()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
@@ -1149,7 +1149,7 @@ void DungeonRoomTable::LoadRoundGroups()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
@@ -1549,7 +1549,7 @@ void DungeonRoomTable::LoadCoupons()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonRewardCoupon")); pNode; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonRewardCoupon")))
@@ -1610,7 +1610,7 @@ bool DungeonRoomTable::LoadReverseRaidConfig(Unk_140165cf0* pElem)
 {
     if (FUN_1406aeee0()->FUN_1406af020())
         return true;
-    FUN_140873600(pElem, "startDate", m_startDate);
+    XmlGetAttr((class TiXmlElement *)(pElem), "startDate", m_startDate);
     XmlGetAttr((class TiXmlElement*)(pElem), "periodDays", reinterpret_cast<int&>(m_periodDays));
     for (Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("v")); pChild; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("v")))
     {

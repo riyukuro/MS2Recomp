@@ -54,7 +54,7 @@
 #include "ms2/client/ms2/individualarenadata.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 #include "ms2/client/ms2/additionalclilist.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former Unk_XmlNode stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -98,7 +98,7 @@ public:
 
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
-CString FUN_1402bb1c0(const char* szFormat, const int* pn);     // format one int
+#include "ms2/ms2format.h"
 CStringW GetStringCommon(int nStringId);                          // string table text
 CStringW FUN_1408116a0(int nStringId, const int& nArg);         // the same, one int argument
 void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);   // notice
@@ -123,7 +123,7 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);
-CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);
+CStringW FUN_1401bf530(Unk_XmlNode* pElem, const char* pszAttr, CStringW strDefault);
 
 // @0x1412c9e70
 UIIndividualPvPDialog::UIIndividualPvPDialog() : m_nLastPage(1), m_nSelected(0)
@@ -159,12 +159,12 @@ void UIIndividualPvPDialog::OnLoadComplete()
     m_spName = GetChild<ASTextField>("m_arenaName");
     m_spDetail = GetChild<ASTextField>("m_arenaDetail");
     m_spRegister->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
-    reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_spUnregister)->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), 0);
+    reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_spUnregister)->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), (void*)0);
     m_spJoin->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4b0), 0);
     m_arenas.clear();
     for (int i = 1; i < 4; i++)
     {
-        CString strName = FUN_1402bb1c0("m_arena{0}", &i);
+        CString strName = StringFormat<int>("m_arena{0}", i);
         MS2Ptr<Unk_140acd6e0> spArena = GetChild<Unk_140acd6e0>(strName);
         if (spArena.get())
         {
@@ -465,7 +465,7 @@ template <class T> CStringW StringManager::GetText(StringXmlCategory category, T
 
 template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadData()
 {
-    Unk_140165cf0* pRoot = 0;
+    Unk_XmlNode* pRoot = 0;
     ValueMap* pMap;
     TiXmlDocument doc;
     do
@@ -477,7 +477,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
             break;
         if (((class Unk_XmlFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             break;
-        pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     } while (0);
     if (pRoot == 0)
     {
@@ -486,7 +486,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     }
     pMap = new ValueMap(10);
     std::auto_ptr<KeyMap> names = m_factory30();
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("key"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("key")))
+    for (Unk_XmlNode* pElem = pRoot->FirstChild("key"); pElem != 0; pElem = ((class Unk_XmlNode*)((pElem))->NextSibling("key")))
     {
         CStringW strName = FUN_1401bf530(pElem, m_keyAttribute20, CStringW(L""));
         CStringW strText = FUN_1401bf530(pElem, m_valueAttribute28, CStringW(L""));

@@ -170,7 +170,7 @@ void StateBanner::FUN_140b7f320(int n)
         nState = 1;
     if (!m_pOwner->FUN_14166de90(nState, n))
     {
-        m_pOwner->FUN_14166dda0(nState);
+        m_pOwner->PlayAnimationById(nState);
         m_pOwner->FUN_14166f8f0(0, 1);
     }
 }

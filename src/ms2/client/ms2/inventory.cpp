@@ -267,7 +267,8 @@ MS2_CHECK_SIZE(Unk_InventoryBlockRef, 0x10);
 void* FUN_1401cb3d0(Unk_InventoryBlockRef*);
 void FUN_140a2f620(Unk_InventoryStateManager*, Unk_InventoryBlockRef*, int);
 Unk_InventoryStateManager* FUN_140a6a830();
-void FUN_140a2ff20(Unk_InventoryBlockRef*, int, __int64);
+template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
+void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 extern CString DAT_143ab78e8;
 int FUN_14052a7e0(Unk_Inventory::ItemPtr, Unk_Inventory::ItemPtr);
 bool FUN_1406a5a50(Unk_Inventory::ItemPtr, const __int64*);
@@ -1447,8 +1448,8 @@ static void Unk_InventoryCodiSlotError() {
 }
 // Both slots are worn by different items although the item data requires one combined item.
 static bool Unk_InventoryPairMismatch(Unk_InventoryPlayer* player, int slotA, int slotB, int mode) {
-    MS2Ptr<CEquipItem> a = player->FUN_141655e80(slotA, mode);
-    MS2Ptr<CEquipItem> b = player->FUN_141655e80(slotB, mode);
+    MS2Ptr<CEquipItem> a = player->GetEquipBySlotKind(slotA, mode);
+    MS2Ptr<CEquipItem> b = player->GetEquipBySlotKind(slotB, mode);
     if (a.get() != nullptr && b.get() != nullptr && a.get() != b.get()) {
         FUN_141275260(0x43, 1, 1);
         FUN_141276180(DAT_143ab78e8, CString(""));
@@ -1489,31 +1490,31 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
                     return 0;
                 }
                 if (codi) {
-                    MS2Ptr<CEquipItem> codiHead = player->FUN_141655e80(5, 2);
+                    MS2Ptr<CEquipItem> codiHead = player->GetEquipBySlotKind(5, 2);
                     if (codiHead.get() != nullptr && codiHead->FUN_1411dc7f0() != nullptr && codiHead->FUN_1411dc7f0()->FUN_14053d460()) {
                         Unk_InventoryCodiSlotError();
                         return 0;
                     }
                 }
                 if (!Unk_InventorySlotAllows(player->FUN_141655cf0(slot), mask, type)) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
-                if (codi && !Unk_InventorySlotAllows(player->FUN_141655e80(slot, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
+                if (codi && !Unk_InventorySlotAllows(player->GetEquipBySlotKind(slot, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
             }
             MS2Ptr<CEquipItem> cur = player->FUN_141655c90(slot);
             if (cur.get() != nullptr && cur->FUN_1411dc7f0()->FUN_14053d460()) {
                 if (slot == 5) {
                     if (player->FUN_141655cf0(4).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
-                    if (codi && player->FUN_141655e80(4, 2).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                    if (codi && player->GetEquipBySlotKind(4, 2).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
                 } else if (slot == 4) {
                     if (player->FUN_141655cf0(5).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
-                    if (codi && player->FUN_141655e80(5, 2).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
+                    if (codi && player->GetEquipBySlotKind(5, 2).get() != nullptr) { FUN_140d73bc0(0xd6, 0, nullptr, L""); return 0; }
                 }
             }
         } else {
             if (!Unk_InventorySlotAllows(player->FUN_141655cf0(5), mask, type)) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
             if (!Unk_InventorySlotAllows(player->FUN_141655cf0(4), mask, type)) { FUN_140d73bc0(0xd4, 0, nullptr, L""); return 0; }
             if (codi) {
-                if (!Unk_InventorySlotAllows(player->FUN_141655e80(5, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
-                if (!Unk_InventorySlotAllows(player->FUN_141655e80(4, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
+                if (!Unk_InventorySlotAllows(player->GetEquipBySlotKind(5, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
+                if (!Unk_InventorySlotAllows(player->GetEquipBySlotKind(4, 2), mask, type)) { Unk_InventoryCodiSlotError(); return 0; }
             }
         }
     }
@@ -1530,7 +1531,7 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
     if (item->HasCubeTextureMesh() != 0) {
         Unk_InventoryBlockRef block;
         FUN_140a2f620(FUN_140a6a830(), &block, 4);
-        if (FUN_1401cb3d0(&block) != nullptr) { FUN_140a2ff20(&block, 4, 0); return 0; }
+        if (FUN_1401cb3d0(&block) != nullptr) { FUN_140a2ff20(*(const Unk_BlockPtr<Unk_BlockRecord>*)&block, 4, 0); return 0; }
     }
     return 1;
 }
@@ -1771,7 +1772,7 @@ void Unk_Inventory::FUN_140a66ca0(ATL::CAtlMap<Unk_InventoryEquipSlot, ItemPtr>&
             Unk_InventoryEquipSlot slot = (Unk_InventoryEquipSlot)((int)item->FUN_140527a20());
             int mode = item->FUN_14052a170();
             if (mode == 0) {
-                if (player->FUN_141655e80(slot, mode) == nullptr) {
+                if (player->GetEquipBySlotKind(slot, mode) == nullptr) {
                     if (level == 0 || (unsigned)level == item->FUN_1405282d0()) {
                         ItemPtr old;
                         result.Lookup(slot, old);
@@ -1819,7 +1820,7 @@ int Unk_Inventory::FUN_140a67020(ItemPtr item) {
     int slot = ((int)item->FUN_140527a20());
     int mode = item->FUN_14052a170();
     if (mode == 0) {
-        if (player->FUN_141655e80(slot, mode) == nullptr) {
+        if (player->GetEquipBySlotKind(slot, mode) == nullptr) {
             if (FUN_140a65770(item.get()) == 0) return 1;
         }
     }

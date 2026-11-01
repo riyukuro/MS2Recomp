@@ -184,7 +184,7 @@ void TradeSlot::FUN_14185e370(MS2Ptr<CItem> spItem)
     {
         if (FUN_140527840(spItem.operator->()))
         {
-            reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
+            reinterpret_cast<CEffectService*>((int)((class CEffectService*)((FUN_1403ed280())))->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->GetMaterialSoundName(), CString(""), 0, (class NiTransform *)(0), 1.0f, 0));
         }
     }
 }

@@ -76,10 +76,10 @@ void UIRimLightDialog::OnLoadComplete()
     ASObj obj(2);
     obj.FUN_1409c4a30("lightYaw", Unk_RimLight::FUN_141709930() + 90.0f);
     obj.FUN_1409c4a30("lightPitch", Unk_RimLight::FUN_141709920());
-    obj.FUN_1407cb9c0("shadowMaxHeight", 400);
+    ((class AScript&)(obj)).FUN_1407cb9c0("shadowMaxHeight", 400);
     obj.FUN_140e06d60("shadowMinScale", 0.5);
-    obj.FUN_1407cb9c0("shadowDefaultSize", 100);
-    obj.FUN_1407cb9c0("shadowDefaultBias", 3);
+    ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultSize", 100);
+    ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultBias", 3);
     const Unk_Color3* pColor = Unk_RimLight::FUN_141709940();
     obj.FUN_1409c4a30("sssRed", pColor->r);
     obj.FUN_1409c4a30("sssGreen", pColor->g);

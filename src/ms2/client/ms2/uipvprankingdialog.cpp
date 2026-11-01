@@ -140,13 +140,13 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
         return false;
     {
         PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(pEntry->m_nCharId));
-        pObj->FUN_1407cb9c0("rank", nRank);
+        ((class AScript*)(pObj))->FUN_1407cb9c0("rank", nRank);
         CStringW strRank(L"-");
         if (pEntry->FUN_141343860())
             strRank = StringFormat<int>(L"{0}", nRank);
-        pObj->FUN_1407cbb20("rankText", strRank);
-        pObj->FUN_1407cbb20("charName", pEntry->m_strName);
-        pObj->FUN_1407cb9c0("score", pEntry->m_nScore);
+        ((class AScript*)(pObj))->FUN_1407cbb20("rankText", strRank);
+        ((class AScript*)(pObj))->FUN_1407cbb20("charName", pEntry->m_strName);
+        ((class AScript*)(pObj))->FUN_1407cb9c0("score", pEntry->m_nScore);
         if (pPC != 0)
             pObj->FUN_140bd0d90("job", FUN_141654730(pPC));
     }

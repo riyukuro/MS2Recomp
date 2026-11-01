@@ -49,6 +49,8 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/client/ms2/equipment.h"
 #include <map>
 
 // The header statics of the original TU (the same set as the other pages of the family).
@@ -66,7 +68,6 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-void FUN_1411e1ce0(Unk_GsInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
 // The player's inventory (global 0x143ab2a90).
 class Unk_GsBag {
 public:
@@ -87,7 +88,6 @@ int FUN_140222ce0(MS2Ptr<CItemData>);
 unsigned short FUN_140626f20(unsigned gemId);
 void FUN_1406284f0(unsigned short gemInfo, int recipe, int* tag, int* amount);
 struct Unk_GsIngTable;
-unsigned FUN_1405575b0(Unk_GsIngTable*, int tag);
 int FUN_14053feb0(int itemId);
 CStringW FUN_140bfa7f0(CStringW key, const CStringW& name, const int& count);
 CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
@@ -138,7 +138,6 @@ class Unk_GsClip : public AScript {
 public:
     MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString& strName);                        // "m_itemBag" child
     Scaleform::GFx::Value FUN_140c4bd20(const char* szMethod, bool a1, Scaleform::GFx::Value a2);
-    Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& obj);            // Invoke(method, object)
 };
 
 // The slot callback delegate's out-of-line members (delegate.h declares them only).
@@ -333,7 +332,7 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_6()
             obj.FUN_1409eb1d0("gemstones", gems);
             data.FUN_1409eb270("dest", obj);
         }
-        reinterpret_cast<Unk_GsClip*>(m_root.operator->())->FUN_140ba4cc0("update", data);
+        reinterpret_cast<AScript*>(reinterpret_cast<Unk_GsClip*>(m_root.operator->()))->Invoke("update", data);
     }
 }
 
@@ -610,8 +609,8 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& o
         return;
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
     Unk_GsInventory* inventory = ((class Unk_GsInventory*)((class PC*)(class Unk_GsPlayer*)(player))->FUN_1416561a0());
-    FUN_1411e1ce0(inventory, equipped, 0);
-    FUN_1411e1ce0(inventory, equipped, 1);
+    reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 0);
+    reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
         MS2Ptr<CItem> item = equip->GetItem();
@@ -648,7 +647,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     CStringW list;
     __int64 fee = 0;
     for (; it != last; ++it) {
-        int itemId = FUN_1405575b0(reinterpret_cast<Unk_GsIngTable*>(TSingleton<CItemDataTable>::GetInstance()), it->first);
+        int itemId = reinterpret_cast<CItemDataTable*>(reinterpret_cast<Unk_GsIngTable*>(TSingleton<CItemDataTable>::GetInstance()))->GetTagItemId((ItemTagKey)it->first);
         int grade = FUN_14053feb0(itemId);
         int have = reinterpret_cast<Unk_GsBag&>(g_143ab2a90).FUN_140a5f780(it->first, grade);
         if (have < it->second) {

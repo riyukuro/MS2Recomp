@@ -110,7 +110,7 @@ void BlackMarketPageMesoSearch::OnInit()
             __int64 nUnit = FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(i);
             CStringW strLabel = FUN_14028dfa0(CStringW(L"s_mesoMarket_sellMesoText"), FUN_1412757d0(nUnit));
             ASObj row(2);
-            row.FUN_1407cbb20("label", strLabel);
+            ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c1180("meso", nUnit);
             list.FUN_1422bc050(row.FUN_1422bb890());
         }
@@ -451,7 +451,7 @@ void BlackMarketPageMesoRegister::OnInit()
             __int64 nUnit = FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(i);
             CStringW strLabel = FUN_14028dfa0(CStringW(L"s_mesoMarket_sellMeso_dropdownItem"), FUN_1412757d0(nUnit));
             ASObj row(2);
-            row.FUN_1407cbb20("label", strLabel);
+            ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c1180("meso", nUnit);
             list.FUN_1422bc050(row.FUN_1422bb890());
         }

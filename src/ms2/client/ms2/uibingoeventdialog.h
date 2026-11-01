@@ -17,14 +17,11 @@ class Unk_140acd6e0;
 class Unk_BingoClip;
 class Unk_BingoScript;
 
-void FUN_14015b020(CPtred*);
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
 CPtred* FUN_1401ba820(CPtred*);
 
 // Smart pointer to the value of a TPtredDummy<CAtlArray<MS2Ptr<ASItemSlot>>> (same shape as Unk_PktPtr of
 // commonfiles\clientreconnectionstructs.h): the item slots shown in one reward list.
-struct Unk_BingoNewTag { explicit Unk_BingoNewTag(int); };
+#include "ms2/commonfiles/gameeventcontext.h"
 class Unk_BingoSlots
 {
 public:
@@ -50,13 +47,13 @@ private:
     static TPtredDummy<Array>* Allocate(void*) { return new TPtredDummy<Array>(); }
     static Array* Value(TPtredDummy<Array>* p) { return p == NULL ? NULL : &p->value; }
     static TPtredDummy<Array>* Owner(Array* p) { return p == NULL ? NULL : reinterpret_cast<TPtredDummy<Array>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<Array>, value)); }
-    static void Ref(CPtred* p) { FUN_14015b020(p); }
+    static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
     static Array* Create(void*) { return Value(static_cast<TPtredDummy<Array>*>(FUN_1401ba820(Allocate(0)))); }
     void AddRefImpl(void*) const { Ref(Owner(m_p)); }
     void ReleaseImpl(void*)
     {
         CPtred* owner = Owner(m_p);
-        if (FUN_140159bc0(owner) == 0) { Ref(owner); FUN_140159ba0(owner); }
+        if (CPtred::ReleasePtred(owner) == 0) { Ref(owner); CPtred::DeletePtred(owner); }
     }
     void* m_00;
     Array* m_p;                                 // +0x08

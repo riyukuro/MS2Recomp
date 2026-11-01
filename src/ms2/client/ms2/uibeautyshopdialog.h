@@ -57,8 +57,8 @@ public:
 
     bool FUN_1418c6580(ASArray& out, int* pnItemId, int* pnIndex);      // the current item row
     bool FUN_1418c6870(ASObj& row, MS2Ptr<Unk_BSPriceRow> spRow, class Unk_BSPlayer* pPc, bool bFirst);
-    int FUN_1418c6af0();
-    void FUN_1418c6bc0(int nValue);
+    int IsSaveButtonEnabled();
+    void SetSaveButtonEnabled(int nValue);
     void FUN_1418c6c80(int nValue);
     void UpdateFee(Unk_BSFee* pFee, unsigned* pPrice);             // show the fee
     void FUN_1418c7180(int nItemId);                    // show the item

@@ -1089,7 +1089,7 @@ void CTriggerService::FUN_1418643c0(CInPacket* pEvent)
         return;
     Vector3 pt = pEvent->ReadVector3Short();
     bool bFlag = pEvent->ReadBool();
-    ((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(pt), bFlag);
+    ((class PCBase*)(class PCBase*)(pPlayer))->LookAtPoint(reinterpret_cast<const efd::Point3&>(pt), bFlag);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc120-0x142cbc260 .text$yd

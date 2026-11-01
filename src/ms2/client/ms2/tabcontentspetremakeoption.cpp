@@ -1375,7 +1375,7 @@ void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
     if (nMax == 0)
     {
         CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strNotice);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strNotice);
         FUN_140d73aa0(strNotice, 0, 0, CStringW(L""));
     }
     else if (nMax <= nLocked)

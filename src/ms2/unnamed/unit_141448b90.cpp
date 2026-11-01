@@ -26,23 +26,24 @@ struct Unk_Colc { float x, y, z; Unk_Colc(float x, float y, float z); };    // c
 class NiFogProperty* GetNiFogProperty();   // C3: was FUN_1409a8a80
 
 // The renderer's state block (MS2Renderer +0xba8).
-struct Unk_RenderState { void FUN_1409a9bf0(float fMaxFog); };
-struct Unk_FogRenderer { Unk_RenderState* FUN_1409a8d60(); };               // 0x1409a8d60 returns the +0xba8 block
+struct Unk_AeFogState { void FUN_1409a9bf0(float fMaxFog); };
+class NiDX9RenderState;
 
 // The main 3D view -> camera -> view frustum (near/far at +0x10/+0x14).
-struct Unk_ViewFrustum { char m_pad_00[0x10]; float m_fNear; float m_fFar; };
-struct Unk_FogCamera { Unk_ViewFrustum* FUN_1409a8de0(); };                // 0x1409a8de0 returns this + 0x128
-struct Unk_FogView { Unk_FogCamera* FUN_1409a8a60(); };                    // 0x1409a8a60 returns the camera at +0x38
+class NiFrustum { public: float m_fLeft, m_fRight, m_fTop, m_fBottom, m_fNear, m_fFar; bool m_bOrtho; };
+class NiCamera { public: const NiFrustum& GetViewFrustum() const; };       // C3: member view (0x1409a8de0)
+class Ni3DRenderView { public: NiCamera* GetCamera() const; };             // C3: member view (0x1409a8a60)
 class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
 class NiRenderer   // C3: member view for the former free stand-ins
 {
 public:
     static class NiRenderer* GetRenderer();
 };
-class NiDX9Renderer { public: static const NiRTTI ms_RTTI; };      // C3: was extern char DAT_143d6eb58
+class NiDX9Renderer { public: static const NiRTTI ms_RTTI; NiDX9RenderState* GetRenderState() const; };      // C3: was extern char DAT_143d6eb58
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-ecr::SceneGraphService* FUN_1409a5700(void* pFramework);                    // the scene graph service
+class MS2SceneGraphService; struct Unk_AeServiceCell;
+MS2SceneGraphService* FUN_1409a5700(Unk_AeServiceCell* pFramework);         // the scene graph service
 
 // The engine's light-service functor that re-evaluates which lights affect each scene graph (Gamebryo LightService.cpp, ctor
 // 0x1409a79c0, dtor 0x1409a7d30; the engine copy is not linked into the hook DLL).
@@ -161,7 +162,7 @@ void UILightDialog::FUN_141448ec0(ASData* pData)
     float fB = pData->FUN_1422b8c10();
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetFogColor(NiColor(fR / 255.0f, fG / 255.0f, fB / 255.0f));
-    ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
+    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
     if (pService != 0) {
         UpdateAffectsFunctor functor;
         pService->ForEachEntitySceneGraph(functor);
@@ -177,18 +178,18 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
     float fDensity = 1.0f;
     float fNear = 0.0f;
     float fFar = 0.0f;
-    Unk_FogView* pView = ((struct Unk_FogView*)FUN_1413f9a70());
-    Unk_ViewFrustum* pFrustum = pView->FUN_1409a8a60()->FUN_1409a8de0();
+    Ni3DRenderView* pView = FUN_1413f9a70();
+    const NiFrustum* pFrustum = &pView->GetCamera()->GetViewFrustum();
     fNear = pFrustum->m_fNear;
     fFar = pFrustum->m_fFar;
     fFogValue = (fFar - fSlider1) / (fFar - fNear);
     float fRange = (fFar - fNear) * fFogValue;
     fDensity = fRange / (fRange + (fSlider2 - fFar));
-    Unk_FogRenderer* pRenderer = (Unk_FogRenderer*)((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
-    pRenderer->FUN_1409a8d60()->FUN_1409a9bf0(fDensity);
+    NiDX9Renderer* pRenderer = (NiDX9Renderer*)((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    reinterpret_cast<Unk_AeFogState*>(pRenderer->GetRenderState())->FUN_1409a9bf0(fDensity);
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetDepth(fFogValue);
-    ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
+    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
     if (pService != 0) {
         UpdateAffectsFunctor functor;
         pService->ForEachEntitySceneGraph(functor);
@@ -200,7 +201,7 @@ void UILightDialog::FUN_141449190(bool bEnable)
 {
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetFog(bEnable);
-    ecr::SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
+    ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
     if (pService != 0) {
         UpdateAffectsFunctor functor;
         pService->ForEachEntitySceneGraph(functor);

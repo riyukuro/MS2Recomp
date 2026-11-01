@@ -101,6 +101,7 @@ public:
     CMsgBoxData(int nType);
     void SetMsg(const CStringW& strText);
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void FUN_141a024a0(int n);
     bool FUN_140b19130(unsigned nIndex, __int64& nValue) const;    // the nIndex-th stored value (this unit)
 
     char m_pad_18[0x228 - 0x18];
@@ -112,7 +113,6 @@ extern template class MS2Ptr<CMsgBoxData>;
 typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 
 void FUN_141a01ca0(CMsgBoxData* pBox, int a, int b, const CStringW& str);
-void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 void FUN_1405340b0(CMsgBoxData* pBox, __int64 n);
 void FUN_14151f150(Unk_MsgBoxPtr box);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
@@ -173,12 +173,10 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // String helpers (string table lookups with arguments) and the chat/notice output.
 CStringW GetStringCommon(int nId);
-CStringW FUN_14052bd00(int nId, const CStringW& a);
-CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
+#include "ms2/placeholder/formatstringid.h"
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW BlockFormat(int nId);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
@@ -269,7 +267,7 @@ void CClubCli::FUN_140b12ad0(CInPacket& packet)
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FUN_14052bd00(0x344, FUN_14020f1a0()), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW>(0x344, FUN_14020f1a0()), 0xf);
 }
 
 // @0x140b12d70
@@ -309,7 +307,7 @@ void CClubCli::FUN_140b13060(CInPacket& packet)
         UIClubDialog* pDialog = FUN_140b19090(0x4f25);
         if (pDialog != 0)
             pDialog->RefreshData();
-        FUN_1412751b0(FUN_140632a60(0x351, strName, FUN_14020f1a0()), 0xf);
+        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x351, strName, FUN_14020f1a0()), 0xf);
     }
 }
 
@@ -330,7 +328,7 @@ void CClubCli::FUN_140b13200(CInPacket& packet)
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FUN_140632a60(0x353, FUN_14020f1a0(), strName), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x353, FUN_14020f1a0(), strName), 0xf);
 }
 
 // @0x140b133c0
@@ -352,7 +350,7 @@ void CClubCli::FUN_140b133c0(CInPacket& packet)
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FUN_140632a60(0x354, FUN_14020f1a0(), strName), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x354, FUN_14020f1a0(), strName), 0xf);
 }
 
 // @0x140b135d0
@@ -376,11 +374,11 @@ void CClubCli::FUN_140b135d0(CInPacket& packet)
         if (pDialog != 0)
             pDialog->RefreshData();
         if (nFlag == 0)
-            FUN_1412751b0(FUN_14052bd00(0x356, FUN_14020f1a0()), 0xf);
+            FUN_1412751b0(FormatStringId<CStringW>(0x356, FUN_14020f1a0()), 0xf);
     }
     else
     {
-        FUN_1412751b0(FUN_140632a60(0x355, FUN_14020f1a0(), strSecond), 0xf);
+        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x355, FUN_14020f1a0(), strSecond), 0xf);
     }
 }
 
@@ -393,7 +391,7 @@ void CClubCli::OnPacketClubBuff(CInPacket& packet)
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FUN_14052bd00(0x357, FUN_14020f1a0()), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW>(0x357, FUN_14020f1a0()), 0xf);
 }
 
 // @0x140b13b50
@@ -435,7 +433,7 @@ void CClubCli::FUN_140b13dc0(CInPacket& packet)
         UIClubDialog* pDialog = FUN_140b19090(0x4f25);
         if (pDialog != 0)
             pDialog->RefreshData();
-        FUN_1412751b0(FUN_14052bd00(0x351, strName), 0xf);
+        FUN_1412751b0(FormatStringId<CStringW>(0x351, strName), 0xf);
     }
 }
 
@@ -450,7 +448,7 @@ void CClubCli::OnPacketClubRename(CInPacket& packet)
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FUN_140632a60(0x358, strOldName, strNewName), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x358, strOldName, strNewName), 0xf);
 }
 
 // @0x140b14050
@@ -1097,10 +1095,10 @@ void CClubClientManager::FUN_140b166d0(CInPacket& packet)
     else
     {
         Unk_MsgBoxPtr box = FUN_140b191a0(
-            FUN_140632a60(0x345, spClub->GetLeaderName(), spClub->FUN_14020f1a0()), 1,
+            FormatStringId<CStringW, CStringW>(0x345, spClub->GetLeaderName(), spClub->FUN_14020f1a0()), 1,
             Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18390), spClub->FUN_14020f0c0());
         FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
-        FUN_141a024a0(box.operator->(), false);
+        box.operator->()->FUN_141a024a0(false);
         FUN_140d73c60(box);
     }
 }
@@ -1140,7 +1138,7 @@ void CClubClientManager::FUN_140b16bc0(CInPacket& packet)
     MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
-    FUN_1412751b0(FUN_140632a60(0x347, strName, spClub->FUN_14020f1a0()), 0x14);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x347, strName, spClub->FUN_14020f1a0()), 0x14);
 }
 
 // @0x140b16d20
@@ -1159,12 +1157,12 @@ void CClubClientManager::FUN_140b16d20(CInPacket& packet)
         return;
     }
     AddInvite(MS2Ptr<Club::PacketInvite>(spInvite));
-    CStringW strText = FUN_140632a60(0x348, spInvite->m_28, spInvite->m_20);
+    CStringW strText = FormatStringId<CStringW, CStringW>(0x348, spInvite->m_28, spInvite->m_20);
     Unk_MsgBoxPtr box = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
     if (box.get() != 0)
     {
         FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
-        FUN_141a024a0(box.operator->(), false);
+        box.operator->()->FUN_141a024a0(false);
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
         FUN_1405340b0(box.operator->(), spInvite->m_inviteId);
         FUN_140d73c60(box);
@@ -1222,7 +1220,7 @@ void CClubClientManager::FUN_140b173f0(CInPacket& packet)
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FUN_14052bd00(0x350, spClub->FUN_14020f1a0()), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW>(0x350, spClub->FUN_14020f1a0()), 0xf);
 }
 
 // @0x140b17530
@@ -1268,9 +1266,9 @@ void CClubClientManager::FUN_140b17780(CInPacket& packet)
     if (nCode == 0xcf)
     {
         if (FUN_141b70f50(strName, FUN_140b18ef0()) == 1)
-            FUN_1412751b0(FUN_14052bd00(0x346, spClub->FUN_14020f1a0()), 0xf);
+            FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->FUN_14020f1a0()), 0xf);
         else
-            FUN_1412751b0(FUN_14052bd00(0x346, spClub->FUN_14020f1a0()), 0xf);
+            FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->FUN_14020f1a0()), 0xf);
     }
     RemoveClub(nClubId);
     UIClubDialog* pDialog = FUN_140b19090(0x4f25);
@@ -1448,10 +1446,10 @@ void FUN_140b18470(CStringW strClub, CStringW strName, int nResult)
     switch (nResult)
     {
     case 0x4c:
-        strMessage = FUN_140632a60(0x36a, strName, strClub);
+        strMessage = FormatStringId<CStringW, CStringW>(0x36a, strName, strClub);
         break;
     default:
-        strMessage = FUN_14052bd00(0x369, strClub);
+        strMessage = FormatStringId<CStringW>(0x369, strClub);
         break;
     }
     FUN_1412751b0(strMessage, 0xf);
@@ -1464,13 +1462,13 @@ void FUN_140b18580(CStringW strClub, CStringW strName, int nCode)
     switch (nCode)
     {
     case 2:
-        strMessage = FUN_140632a60(0x34f, strName, strClub);
+        strMessage = FormatStringId<CStringW, CStringW>(0x34f, strName, strClub);
         break;
     case 3:
-        strMessage = FUN_140632a60(0x34e, strName, strClub);
+        strMessage = FormatStringId<CStringW, CStringW>(0x34e, strName, strClub);
         break;
     default:
-        strMessage = FUN_140632a60(0x34d, strName, strClub);
+        strMessage = FormatStringId<CStringW, CStringW>(0x34d, strName, strClub);
         break;
     }
     FUN_1412751b0(strMessage, 0xf);

@@ -1147,8 +1147,6 @@ struct Unk_EsConfig
 // The camera (FUN_1409478c0) and its target.
 class Unk_EsCamera : public CameraMgr
 {
-public:
-    GameObject* FUN_140a38d60();
 };
 CString FUN_1401d4330(const wchar_t* psz, int n);              // wide to multi-byte
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class, same as util.cpp).
@@ -2187,7 +2185,7 @@ void CEffectService::FUN_1411a8cb0(const CString& strName)
         return;
     if (((class Unk_EsCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
         return;
-    GameObject* pTarget = ((class Unk_EsCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60();
+    GameObject* pTarget = reinterpret_cast<GameObject*>(((class Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60());
     if (pTarget == NULL)
         return;
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget

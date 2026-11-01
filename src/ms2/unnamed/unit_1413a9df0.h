@@ -187,10 +187,10 @@ public:
 void* FUN_1413b1b20(unsigned nUIId);                    // the chat emoticon dialog
 void* FUN_1413b1bc0(unsigned nUIId);                    // the enchant dialog
 int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut);
-void* FUN_14136f3e0(unsigned nUIId);                    // the dialog of a ui id
-CStringA FUN_141388650(const char* psz);
+void* FUN_14136f3e0(int nUIId);                    // the dialog of a ui id
+CStringA StringFormat(const char* format);
 
-class Unk_G9U32Arr { public: size_t FUN_140186270(); };
+class Unk_G9U32Arr;
 extern Unk_G9U32Arr DAT_143ab3268;                      // the owned titles
 extern __int64 DAT_143ab2898;                           // the money
 

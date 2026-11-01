@@ -116,6 +116,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/equipment.h"
 
 // ---- statics of the unit's headers (init order: the two sort name lists, skill, stun, a condition object, then three
 // attribute names) ----
@@ -1013,7 +1014,7 @@ void UIClosetDialog::OnSave(const Scaleform::GFx::FunctionHandler::Params& param
     if (pPlayer != 0)
     {
         int nKind = FUN_140222f60(nLayer);
-        int nWorn = pPlayer->FUN_1416561a0()->FUN_1411e2440(nKind);
+        int nWorn = reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->FUN_1411e2440(nKind);
         if (nWorn == 0)
         {
             FUN_140d73aa0(FUN_1405c2690(L"s_closet_msg_empty_items_when_click_save", FUN_14132ba90(nKind)), 0, 0, CStringW(L""));
@@ -1581,7 +1582,7 @@ MS2Ptr<CItem> UIClosetDialog::FindItem(const __int64& nUid)
         MyPC* pPlayer = Unk_ClPlayer();
         if (pPlayer == 0)
             return MS2Ptr<CItem>(0);
-        MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_1416561a0()->FUN_1411e1580(nUid);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->FUN_1411e1580(nUid);
         if (spEquip.get() != 0)
             return spEquip->GetItem();
     }

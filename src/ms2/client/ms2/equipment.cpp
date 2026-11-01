@@ -272,7 +272,8 @@ extern int DAT_143ae2b50;                               // the mesh optimizer is
 extern const NiPoint3 DAT_143a08cf8;                    // the cap pick axis
 extern const NiPoint3 DAT_143b01a60;                    // NiPoint3::ZERO                 // the app time
 bool FUN_141b701f0(struct Unk_UtilNodeList*, unsigned int);   // C3: was FUN_141b701f0
-void* FUN_140af8310(Unk_EqSvcHolder* pSmart);           // operator->
+namespace efd { class ServiceManager; }
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
 Unk_EqAssetSvc* FUN_140998330(void* pMgr);              // the system service (NULL when absent)
 egmAnimation::AnimationService* FUN_141b6f910();
 // The scene graph walker (0x30 bytes) of 0x1411eac40 / 0x1411ed270.
@@ -2411,7 +2412,7 @@ int CEquipment::FUN_1411eb550(CString strName)
                 return 1;
         }
     } else {
-        Unk_EqAssetSvc* pAssets = FUN_140998330(FUN_140af8310(&reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager));
+        Unk_EqAssetSvc* pAssets = FUN_140998330((void*)reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_EqApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager)->FUN_140af8310());
         if (pAssets == NULL)
             return 1;
         if (!pAssets->vfunc_21((const char*)strPath)) {

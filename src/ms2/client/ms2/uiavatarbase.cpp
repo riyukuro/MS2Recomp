@@ -277,7 +277,7 @@ void UIAvatarBase::vfunc_11(int dx, int dy, int dz, int bUpdate)
     FUN_1418bf270(&fWrapX);
     FUN_1418bf270(&fWrapY);
     FUN_1418bf270(&fWrapZ);
-    FUN_1418ba200(&m_kAngleBase, fWrapX, fWrapY, fWrapZ);
+    SetVector3(&m_kAngleBase, fWrapX, fWrapY, fWrapZ);
     if (m_spView)
         m_spView->vfunc_7(fX, fY, fZ, bUpdate, &m_kPivot, &m_kPivotBase);
 }
@@ -330,7 +330,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
         FUN_1418bf270(&rx);
         FUN_1418bf270(&ry);
         FUN_1418bf270(&rz);
-        FUN_1418ba200(&m_kAngleBase, rx, ry, rz);
+        SetVector3(&m_kAngleBase, rx, ry, rz);
         if (((void*)GetLogString()))
             FUN_140e68a40(((void*)GetLogString()), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", &m_kAngleBase.x, &m_kAngleBase.y, &m_kAngleBase.z);
         Unk_NiMatrix3 kRot;
@@ -726,7 +726,7 @@ void UIAvatarBase::ResetView(bool bAngle, bool bPosition)
     if (bAngle)
         FUN_1418ba340(0);
     if (bPosition)
-        FUN_1418ba280(0);
+        ApplyPosition(0);
 }
 MS2_REPLACE_METHOD(0x1418B9DF0, UIAvatarBase, ResetView, 65, 0xB30BF4F3);
 
@@ -798,13 +798,13 @@ int UIAvatarBase::GetModeForButton(int nButton)
 }
 
 // @0x1418ba200
-void UIAvatarBase::FUN_1418ba200(Vector3* pDst, float x, float y, float z)
+void UIAvatarBase::SetVector3(Vector3* pDst, float x, float y, float z)
 {
     pDst->x = x;
     pDst->y = y;
     pDst->z = z;
 }
-MS2_REPLACE_METHOD(0x1418BA200, UIAvatarBase, FUN_1418ba200, 70, 0x3C835994);
+MS2_REPLACE_METHOD(0x1418BA200, UIAvatarBase, SetVector3, 70, 0x3C835994);
 
 // @0x1418ba250
 void UIAvatarBase::FUN_1418ba250(Vector3* pDst, const Vector3* pSrc)
@@ -814,7 +814,7 @@ void UIAvatarBase::FUN_1418ba250(Vector3* pDst, const Vector3* pSrc)
 MS2_REPLACE_METHOD(0x1418BA250, UIAvatarBase, FUN_1418ba250, 39, 0xE8027097);
 
 // @0x1418ba280
-void UIAvatarBase::FUN_1418ba280(int bUpdate)
+void UIAvatarBase::ApplyPosition(int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
@@ -1459,7 +1459,7 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
 }
 
 // @0x1418bcd20
-bool UIAvatarPC::FUN_1418bcd20(int nPose)
+bool UIAvatarPC::SetPoseIndex(int nPose)
 {
     if (nPose < 0)
         return false;
@@ -1467,13 +1467,13 @@ bool UIAvatarPC::FUN_1418bcd20(int nPose)
     if (pAvatar)
     {
         int nIndex = nPose;
-        return FUN_1418bcd80(nIndex);
+        return ApplyPose(nIndex);
     }
     return false;
 }
 
 // @0x1418bcd80
-bool UIAvatarPC::FUN_1418bcd80(int nPose)
+bool UIAvatarPC::ApplyPose(int nPose)
 {
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar)
@@ -1689,7 +1689,7 @@ MS2_REPLACE_METHOD(0x1418BD830, UIAvatarPC, FUN_1418bd830, 35, 0xCAA1BF50);
 void UIAvatarPC::FUN_1418bd860(int nPose)
 {
     FUN_1418ba340(0);
-    FUN_1418bcd20(nPose);
+    SetPoseIndex(nPose);
     m_nPose = nPose;
     if (m_pListener)
         m_pListener->vfunc_o178_3(this);

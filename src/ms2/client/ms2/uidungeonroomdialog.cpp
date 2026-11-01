@@ -91,6 +91,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/asdisplayobject.h"
+class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/ascorelist.h"
@@ -1846,7 +1847,7 @@ void UIDungeonRoomDialog::OnLoadComplete()
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
     MS2Ptr<ASMovieClip> spInfoPanel;
-    FUN_140c57ce0("m_dungeonInfo", spInfoPanel);
+    reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_dungeonInfo", spInfoPanel);
     if (spInfoPanel == 0)
         return;
     m_spInfo.AssignRaw(new UIDungeonRoomInfo(this, spInfoPanel));
@@ -2444,7 +2445,7 @@ void UIDungeonRoomDialog::GetPartyLevel(unsigned short& nLevel, unsigned& nGearS
         return;
     if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
     {
-        nLevel = TSingleton<CPartyManager>::GetInstance()->FUN_14162c0b0();
+        nLevel = TSingleton<CPartyManager>::GetInstance()->GetMinMemberLevel();
         nGearScore = TSingleton<CPartyManager>::GetInstance()->FUN_14162c1e0();
     }
     else

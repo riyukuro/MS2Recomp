@@ -197,7 +197,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                         row.FUN_1409c4a30("xpos", kPoint.x);
                         row.FUN_1409c4a30("ypos", kPoint.y);
                         row.FUN_1409c4a30("zpos", kPoint.z);
-                        row.FUN_1407cbb20("label", StringFormat(L"{0}, {1}, {2}", (int)kPoint.x, (int)kPoint.y, (int)kPoint.z));
+                        ((class AScript&)(row)).FUN_1407cbb20("label", StringFormat(L"{0}, {1}, {2}", (int)kPoint.x, (int)kPoint.y, (int)kPoint.z));
                         list->AddItem(row);
                     }
                 }
@@ -241,7 +241,7 @@ void UIObjectCreateDialog::FUN_14131ff70()
                     continue;
             }
             ASObj row(2);
-            row.FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", data->m_nId, strName));
+            ((class AScript&)(row)).FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", data->m_nId, strName));
             row.FUN_1409c0d20("code", data->m_nId);
             list->AddItem(row);
         }

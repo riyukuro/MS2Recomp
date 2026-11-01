@@ -397,7 +397,7 @@ public:
 };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_1401859c0(void*,int,int,const wchar_t*);
+void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 class CBigDataLogSystem;
 template<> CBigDataLogSystem* TSingleton<CBigDataLogSystem>::GetInstance();
 void FUN_140a1f970(void*,const CString&,const CString&);
@@ -844,7 +844,7 @@ void CNetworkService::OnGvg(CInPacket& input) {
         }
             break;
         case 34: DAT_143ab2964=input.ReadInt16();DAT_143ab2970=input.ReadInt32();DAT_143ab2974=input.ReadInt32();break;
-        default: FUN_1401859c0(((void*)GetLogString()),1,0x53,L"Unknown GVGroupType");MS2_ASSERT_AT(0x30c,0);break;
+        default: Unk_AdditionalLog(GetLogString(),1,0x53,L"Unknown GVGroupType");MS2_ASSERT_AT(0x30c,0);break;
         }
     }
 }

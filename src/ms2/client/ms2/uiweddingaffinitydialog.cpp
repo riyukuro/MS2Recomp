@@ -20,8 +20,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe types ----
 
-CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
-FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 // The wedding data of the own character: the marriage time (+0x30) and the affinity experience log (+0x130, a map keyed
 // by the kind of event; the value is the event time and the experience).
@@ -54,7 +52,7 @@ public:
 __int64 GetServerTime();                                        // server time
 int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
 CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
-CStringW FUN_140c160b0(CStringW strKey, const __int64* pValue);
+#include "ms2/placeholder/wcformat.h"
 
 // @0x140fc2090
 UIWeddingAffinityDialog::UIWeddingAffinityDialog()
@@ -106,7 +104,7 @@ void UIWeddingAffinityDialog::OnLoadComplete()
         Unk_WdNode* pNode = it.FUN_140902120();
         CMsTime kTime(pNode->m_event.m_nTime);
         CStringW strDate = FUN_140b8e850(kTime);
-        CStringW strText = FUN_140c160b0(StringFormat(L"s_wedding_dialog_exp_{0}", pNode->m_kind), &pNode->m_event.m_nExp);
+        CStringW strText = FUN_14028dfa0<__int64>(StringFormat(L"s_wedding_dialog_exp_{0}", pNode->m_kind), pNode->m_event.m_nExp);
         strHistory += L"\n";
         strHistory += StringFormat<CStringW, CStringW>(L"[{0}] {1}", strDate, strText);
     }

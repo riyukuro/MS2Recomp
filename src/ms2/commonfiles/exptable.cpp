@@ -61,7 +61,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // T
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+class TiXmlElement { public: char const * Attribute(char const *, int *) const; };
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
@@ -247,7 +247,7 @@ bool CExpTable::LoadNextExp()
         if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
         int nLevel = 0;
-        FUN_14086f500(pExp, "level", &nLevel);
+        reinterpret_cast<TiXmlElement*>(pExp)->Attribute("level", &nLevel);
         if (nLevel < 1 || nLevel > 99)
             continue;
         __int64 nValue = Unk_ExpGetInt64(pExp, "value", 0);
@@ -314,7 +314,7 @@ bool CExpTable::LoadPetExp()
         if (!FUN_14028f710((struct Unk_XmlElement*)(pExp)))
             continue;
         int nLevel = 0;
-        FUN_14086f500(pExp, "level", &nLevel);
+        reinterpret_cast<TiXmlElement*>(pExp)->Attribute("level", &nLevel);
         if (nLevel < 1 || nLevel > 99)
             continue;
         if (XmlGetAttr((class TiXmlElement*)(pExp), "normal", *(__int64*)(&m_petExp[1][nLevel])) != 0)

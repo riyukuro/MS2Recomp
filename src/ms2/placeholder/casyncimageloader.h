@@ -16,10 +16,7 @@
 #include "ms2/placeholder/cthread.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 
-class CPtred;
-void FUN_14015b020(CPtred* p);              // CPtred::AddRef
-int FUN_140159bc0(CPtred* p);               // CPtred::Release (the new count)
-void FUN_140159ba0(CPtred* p);              // CPtred::Delete
+#include "ms2/placeholder/cptred.h"
 
 class ImageLoaderParam;
 class GfxImageLoaderParam;
@@ -54,7 +51,7 @@ private:
             AddRefImpl(0);
     }
     // @0x140a5b070
-    static void Reference(T* p) { FUN_14015b020((CPtred*)p); }
+    static void Reference(T* p) { CPtred::AddRefPtred((CPtred*)p); }
     // @0x140a5b090
     void AddRefImpl(void*) const { Reference(m_p); }
     // @0x140a5b410
@@ -69,10 +66,10 @@ private:
     // @0x140a5b450
     void ReleaseImpl(void*)
     {
-        if (FUN_140159bc0((CPtred*)m_p) == 0)
+        if (CPtred::ReleasePtred((CPtred*)m_p) == 0)
         {
             Reference(m_p);
-            FUN_140159ba0((CPtred*)m_p);
+            CPtred::DeletePtred((CPtred*)m_p);
         }
     }
     void* m_00;

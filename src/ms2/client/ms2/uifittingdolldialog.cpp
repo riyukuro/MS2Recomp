@@ -12,6 +12,7 @@
 #include "uifittingdolldialog.h"
 
 #include <atlcoll.h>
+#include <efd/Point2.h>
 
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
@@ -117,16 +118,14 @@ class Unk_AkoFittingDoll   // C3: member view for the former free stand-ins
 public:
     int FUN_140967160();
 };
-void FUN_14121e670(const CString& strDialog, int nHomeId, __int64 nDollId, bool bEquip);
+void FUN_14121e670(const CString& strDialog, int nHomeId, unsigned __int64 nDollId, bool bEquip);
 void FUN_14121e760(const CString& strDialog);
 void FUN_14121b840(int nError);                             // show the message of an error code
-struct Unk_PickXY { float x, y; };                            // dialog offset
-extern Unk_PickXY DAT_143b02320;                              // zero offset
-void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
+struct Unk_AlignOffset { float x, y; };                       // dialog offset
+void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight);
 
 // The equipment lists of the doll and of the player.
 typedef ATL::CAtlList<MS2Ptr<CEquipItem> > Unk_FdEquipList;
-void FUN_1411e1b80(Unk_PCEquipSet* pSet, Unk_FdEquipList* pList);
 
 // The message box machinery.
 class CMsgBoxData : public CPtred
@@ -269,7 +268,7 @@ void UIFittingDollDialog::vfunc_66()
         }
         else
         {
-            FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
+            FUN_141275c30(this, pInv, reinterpret_cast<const Unk_AlignOffset&>(efd::Point2::ZERO), reinterpret_cast<const Unk_AlignOffset&>(efd::Point2::ZERO));
         }
     }
 }
@@ -431,7 +430,7 @@ int UIFittingDollDialog::FUN_141934430()
         return 2;
 
     Unk_FdEquipList list(10);
-    FUN_1411e1b80(pDoll->FUN_1416561a0(), &list);
+    reinterpret_cast<CEquipment*>(pDoll->FUN_1416561a0())->CollectShownItems(list);
     bool bBound = false;
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {

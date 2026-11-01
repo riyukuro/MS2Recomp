@@ -357,7 +357,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
             m_fLift = 0.0f;
             Vector3 kFront;
             Vector3 kCell;
-            if (((class PC*)(pPC))->FUN_141659610() != 0)
+            if (((class PC*)(pPC))->IsCubeMode1() != 0)
             {
                 Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
                 if (pLift != 0)
@@ -532,7 +532,7 @@ void Unk_PCCubeCraft::FUN_1410a9cc0()
     FUN_1410a9d60();
     FUN_1410ae380(m_ptCell);
     FUN_1410a92c0();
-    if (((class PC*)(m_pOwner))->FUN_141659650() != 0 && (m_nMode == 0 || m_nMode == 2))
+    if (((class PC*)(m_pOwner))->IsCubeMode2() != 0 && (m_nMode == 0 || m_nMode == 2))
         FUN_1410a9630();
 }
 MS2_REPLACE_METHOD(0x1410A9CC0, Unk_PCCubeCraft, FUN_1410a9cc0, 142, 0xECF33D2D);
@@ -844,7 +844,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     m_spEffectA->FUN_140526c10(6);
     m_spEffectA->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectA.get(), 0);
-    if (((class PC*)(m_pOwner))->FUN_141659610() == 0)
+    if (((class PC*)(m_pOwner))->IsCubeMode1() == 0)
         return;
     m_spEffectB.AssignRaw(new CItem);
     if (!m_spEffectB->FUN_140523c40(((struct Unk_C2Consts*)FUN_1401d3200())->m_effectB.FUN_140ec2b60(), 1, 0))
@@ -944,7 +944,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
     PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    if (((class PC*)(pPC))->FUN_141659610() != 0 && ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0()) == 0)
+    if (((class PC*)(pPC))->IsCubeMode1() != 0 && ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0()) == 0)
         return;
     if (GetMode() == 1)
     {
@@ -983,7 +983,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
         if (!spCell)
         {
             Vector3 kEuler;
-            if (((class PC*)(pPC))->FUN_141659610() != 0)
+            if (((class PC*)(pPC))->IsCubeMode1() != 0)
             {
                 Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
                 kEuler = pLift->vfunc_20();
@@ -1013,7 +1013,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
             if (((class Cube*)(spCell.operator->()))->FUN_1408b4f20() != FUN_1410ad610() || ((class CubeItemInfo*)(spCell->item.operator->()))->FUN_1408b38c0((class CubeItemInfo const*)(FUN_1410ad670())) == 0)
             {
                 Vector3 kEuler;
-                if (((class PC*)(pPC))->FUN_141659610() != 0)
+                if (((class PC*)(pPC))->IsCubeMode1() != 0)
                 {
                     Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
                     kEuler = pLift->vfunc_20();
@@ -1075,7 +1075,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(bool bNotice)
     {
         Vector3 kFront;
         Vector3 kOut;
-        if (((class PC*)(pPC))->FUN_141659610() != 0)
+        if (((class PC*)(pPC))->IsCubeMode1() != 0)
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             if (pLift != 0)
@@ -1127,7 +1127,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
     {
         Vector3 kFront;
         Vector3 kSpare;
-        if (((class PC*)(pPC))->FUN_141659610() != 0)
+        if (((class PC*)(pPC))->IsCubeMode1() != 0)
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             if (pLift != 0)
@@ -1256,7 +1256,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
     {
         Vector3 kFront;
         Vector3 kSpare;
-        if (((class PC*)(pPC))->FUN_141659610() != 0)
+        if (((class PC*)(pPC))->IsCubeMode1() != 0)
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             if (pLift != 0)
@@ -1498,7 +1498,7 @@ void Unk_PCCubeCraft::FUN_1410af1f0()
     if (pPC != m_pOwner)
         return;
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416cb8b0(quests, 1, 0xb, -1);
+    reinterpret_cast<CQuestManager*>(FUN_140764020())->GetQuestsFiltered(quests, 1, 0xb, -1);
     int nLiftId = 0;
     for (size_t i = 0; i < quests.GetCount(); ++i)
     {
@@ -1559,7 +1559,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
         }
         Vector3 kFront;
         Vector3 kDown;
-        if (((class PC*)(pPC))->FUN_141659610() != 0)
+        if (((class PC*)(pPC))->IsCubeMode1() != 0)
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             if (pLift != 0)

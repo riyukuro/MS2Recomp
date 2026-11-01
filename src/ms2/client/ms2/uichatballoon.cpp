@@ -61,12 +61,17 @@ struct Unk_CbCfg
     Unk_CbCfgInt m_8a0;
 };
 struct Unk_CbCfg2 { char m_pad[0x90]; CString m_90; };
-Unk_CbCfg2* FUN_1401d31f0();                                        // the default profile image name
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: the real return type (cachedata); the default profile image name
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // efd::Point3::operator*=
 class Unk_CbEntity : public ASGameEntity
 {
 public:
+};
+class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
+{
+public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 bool FUN_140930110(int nActorId);
 
@@ -298,7 +303,7 @@ CString UIChatBalloon::Entity::FUN_1418fb7e0()
             }
         }
     }
-    return FUN_1401d31f0()->m_90;
+    return ((Unk_CbCfg2*)FUN_1401d31f0())->m_90;
 }
 
 // @0x1418fbbf0
@@ -412,7 +417,7 @@ UIChatBalloon::Entity* UIChatBalloon::FUN_1418fc050(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_CbEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -439,7 +444,7 @@ UIChatBalloon::Entity* UIChatBalloon::FUN_1418fc050(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_CbEntity*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_CbEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_CbEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);

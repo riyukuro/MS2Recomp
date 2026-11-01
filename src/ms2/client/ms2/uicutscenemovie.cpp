@@ -32,6 +32,7 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/loadingimagetable.h"
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/placeholder/asdisplayobject.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown), 0x143af1e60
 
@@ -244,7 +245,7 @@ MS2_REPLACE_METHOD(0x14190F400, UICutSceneMovie, OnLoadInit, 253, 0x31B35ED8);
 // @0x14190f510
 int UICutSceneMovie::vfunc_13()
 {
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && m_pExit->FUN_1422bfca0() &&
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->FUN_1422bfca0() &&
         FUN_14151f6e0()) {
         FUN_140d73bc0(0x88c, 1, this, L"");
         return 1;
@@ -259,7 +260,7 @@ void UICutSceneMovie::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30.IsNull())
         return;
-    if (m_bIntroStory && (m_pExit.get() ? true : false) && !m_pExit->FUN_1422bfca0()) {
+    if (m_bIntroStory && (m_pExit.get() ? true : false) && !reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->FUN_1422bfca0()) {
         if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
             if (pPlayer->FUN_1422e9540() >= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_3c00)->FUN_140298f40()))
                 ShowSkipButton();

@@ -49,6 +49,7 @@
 #include <atlcoll.h>
 #include <atltime.h>
 #include <shellapi.h>
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/commonfiles/timeutil.h"  // C3: GetTickCountMs2
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
@@ -85,24 +86,24 @@ static CString s_strTabIndex = "tabIndex";
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 
-// The 16 byte table handles (a pad and the pointer): the destructors and copies are COMDATs of other units.
-template <class T> class Unk_MdPtr
-{
-public:
-    Unk_MdPtr();
-    Unk_MdPtr(const Unk_MdPtr& o);
-    ~Unk_MdPtr();
-    // @0x1412db890
-    bool operator!() const { return m_p == 0; }
-    // @0x1412db8c0
-    bool operator==(T* p) const { return m_p == p; }
-    T* operator->() const { return m_p; }
-    T& operator*() const { return *m_p; }
-    T* get() const { return m_p; }
-private:
-    void* m_pad;
-    T* m_p;
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // The AS list control "m_scrollList" (slot 24 refreshes it).
 class Unk_MdCtl : public AScript
@@ -119,21 +120,21 @@ public:
 class ASDialog : public ASDisplayObject {};
 
 // The tables of the maid recipes and the maid books.
-struct Unk_MdRecipeRef { int m_id; int m_level; };          // one entry of a maid's recipe book
-class Unk_MdRecipeArr                                       // a maid's recipe book: CAtlArray<TPtrValue<RecipeLevel>>
-{
-public:
-    size_t FUN_14068acc0() const;                           // count
-    Unk_MdPtr<Unk_MdRecipeRef>& FUN_140689a50(size_t n);
-};
-class Unk_MdBookTable { public: Unk_MdPtr<Unk_MdRecipeArr> FUN_140685da0(int nBookId); };
+
+
+
+
+
+
+
+class Unk_RpsASObj { public: template <class T> void Set(const char* szName, T n); }; class Unk_MdBookTable {};
 extern Unk_MdBookTable* g_pMaidBooks;                       // the recipe books
 // @0x1412db940
 Unk_MdBookTable* FUN_1412db940() { return g_pMaidBooks; }
-class Unk_MdLevelInfo { public: int* FUN_1402056b0(); };    // the player's manufacture level
+class Unk_MdLevelInfo {};    // the player's manufacture level
 struct Unk_MdLevels { char m_pad[0x5180]; Unk_MdLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
 MS2_CHECK_OFFSET(Unk_MdLevels, m_5180, 0x5180);
-Unk_MdLevelInfo* FUN_1401d3200();
+class Unk_SingletonObj1; Unk_SingletonObj1* FUN_1401d3200();
 
 template <typename T> CStringW FormatStringId(int nStringId, const T& arg);
 template <typename T> CStringW BlockFormat(int nStringId, const T& arg);
@@ -226,7 +227,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
         return;
     if (m_178 == 0)
         return;
-    Unk_MdPtr<Unk_MdRecipeArr> spBook = FUN_1412db940()->FUN_140685da0(m_178);
+    CMaidRecipeGroupTable::RecipeList spBook = reinterpret_cast<CMaidRecipeGroupTable*>(FUN_1412db940())->Find(m_178);
     if (spBook == 0)
         return;
     TPtrValue<MaidDesc> spInfo = TSingleton<CMaidDescTable>::GetInstance()->Find(m_178);
@@ -236,22 +237,22 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
     if (MS2Ptr<ASScrollingList> spList = FUN_140c02900<ASScrollingList>("m_scrollList"))
     {
         spList->FUN_1422dd1d0();
-        for (size_t i = 0; i < spBook->FUN_14068acc0(); i++)
+        for (size_t i = 0; i < spBook->GetCount(); i++)
         {
-            Unk_MdPtr<Unk_MdRecipeRef> spRef = (*spBook).FUN_140689a50(i);
+            TPtrValue<RecipeLevel> spRef = (*spBook)[i];
             if (!spRef)
                 continue;
-            MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(spRef->m_id);
+            MS2Ptr<CMaidRecipe> spRecipe = TSingleton<CMaidRecipeTable>::GetInstance()->Find(spRef->recipeId);
             if (spRecipe.get())
             {
                 ASObj row(2);
-                row.FUN_140e846b0("id", i + 1);
+                reinterpret_cast<Unk_RpsASObj&>(row).Set<unsigned __int64>("id", i + 1);
                 row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
-                row.FUN_1407cb9c0("recipeID", spRef->m_id);
-                if (spRef->m_level > *reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0())   // exe: add rax, 0x5180
-                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->m_level));
+                row.FUN_1407cb9c0("recipeID", spRef->recipeId);
+                if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180)->Get())   // exe: add rax, 0x5180
+                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->requireLevel));
                 else
-                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->m_level));
+                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->requireLevel));
                 spList->AddItem(row);
                 int nItemId = spRecipe->productItemId;
                 int nRarity = spRecipe->productRank;
@@ -346,7 +347,7 @@ private:
 void* FUN_14127f9a0(Unk_MdMaidList* pList, Unk_MdMaidList::Node* pNode);
 void* FUN_1412807f0(Unk_MdMaidList* pList, void* pos);
 class Unk_MdMaidOwner;
-Unk_MdMaidList* FUN_14127eff0(Unk_MdMaidOwner* pOwner);
+
 __int64 GetServerTime();                                    // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
@@ -483,7 +484,7 @@ void UIManufactureStatus::vfunc_72()
     m_198 = GetTickCountMs2();
     int bWorking = 0;
     int nIndex = 0;
-    Unk_MdMaidList* pList = FUN_14127eff0(reinterpret_cast<Unk_MdMaidOwner*>(TSingleton<CUserMaidManager>::GetInstance()));
+    Unk_MdMaidList* pList = reinterpret_cast<Unk_MdMaidList*>(TSingleton<CUserMaidManager>::GetInstance()->GetMaidMap());
     for (void* pos = pList->FUN_1412dd700(); pos != 0; pList->FUN_1412dd720(pos))
     {
         MS2Ptr<CMaid> spRec = pList->FUN_1412dd780(pos);
@@ -611,7 +612,7 @@ void UIManufactureStatus::FUN_1412dc480()
     pMovie->CreateArray(&aRemain);
     int nIndex = 0;
     int nCount = 0;
-    Unk_MdMaidList* pList = FUN_14127eff0(reinterpret_cast<Unk_MdMaidOwner*>(TSingleton<CUserMaidManager>::GetInstance()));
+    Unk_MdMaidList* pList = reinterpret_cast<Unk_MdMaidList*>(TSingleton<CUserMaidManager>::GetInstance()->GetMaidMap());
     for (void* pos = pList->FUN_1412dd700(); pos != 0; pList->FUN_1412dd720(pos))
     {
         MS2Ptr<CMaid> spRec = pList->FUN_1412dd780(pos);
@@ -819,24 +820,23 @@ void FUN_14151f200();
 bool FUN_14083d890(CStringW str);                     // show a notice
 
 // The AS controls the edit window binds.
-class Unk_MdText : public AScript { public: void FUN_1422c4cd0(const CStringW& str); };
+class Unk_MdText : public ASTextField { public: };
 class Unk_MdShopList : public ASScrollingList {};
 class Unk_MdShopPanel : public AScript {};
 MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, const Scaleform::GFx::Value& v);   // the AS object of a row/dialog by the value
 struct Unk_MdChildFinder { template <class T> MS2Ptr<T> FUN_1409b4620(const CString& strName); };   // text child of a panel (AScript member)
 MS2Ptr<Unk_MdShopList> FUN_140accef0_(AScript* p);
 
-struct Unk_MdColors;                                        // the palette of the designer colours
-Unk_MdColors* FUN_1412788b0(void* pArray);
-size_t FUN_14059d0e0(Unk_MdColors* p);
-unsigned* FUN_141278750(Unk_MdColors* p, size_t i);
+template <class T> struct Unk_McValue { T* FUN_1412788b0(); };   // the palette of the designer colours
+
+
 int FUN_1412e1080(int nMode, AScript* pData);               // export the merat tables
 UIMDEditDialog* FUN_1412df350(UIMDEditDialog* p);
 int FUN_1412dfc20();
 
 // The merat table (CMeratMarketPremium) and the products as the edit tool reads them.
 bool FUN_1406ab310(CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* pMap, int nId, MS2Ptr<CMeratMarketPremiumProduct>& spOut);
-int FUN_1409e1770(ASTooltip* pTip, unsigned nItemId, int nGrade);
+
 void FUN_1409c4990_(ASObj* p);
 
 
@@ -908,11 +908,11 @@ void UIMDEditDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
     ASArray colors(2);
-    Unk_MdColors* pColors = FUN_1412788b0(reinterpret_cast<char*>(FUN_1401d3200()) + 0xb378);
-    for (size_t i = 0; i < FUN_14059d0e0(pColors); i++)
+    ATL::CAtlArray<int>* pColors = reinterpret_cast<Unk_McValue<ATL::CAtlArray<int> >*>(reinterpret_cast<char*>(FUN_1401d3200()) + 0xb378)->FUN_1412788b0();
+    for (size_t i = 0; i < pColors->GetCount(); i++)
     {
         ASObj color(2);
-        unsigned nColor = *FUN_141278750(pColors, i);
+        unsigned nColor = (*pColors)[i];
         nColor |= 0xff000000;
         color.FUN_1409c4990("realColor", nColor);
         color.FUN_1409c4990("visibleColor", nColor);
@@ -1073,7 +1073,7 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
     pRow->FUN_1407cb9c0("ugctag", 0);
     {
         ASTooltip tip(4, 2);
-        if (FUN_1409e1770(&tip, nItemId, pProduct->m_nGrade) != 0)
+        if (tip.FUN_1409e1770(nItemId, pProduct->m_nGrade) != 0)
         {
             tip.FUN_1409c69b0(GetStringCommon(0x758));
             pRow->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
@@ -1251,11 +1251,11 @@ int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
 // ---- UIMDEditDialog: the shop list, the xml export ----------------------------------------------------------------------
 
 // The AS controls of the shop list.
-struct Unk_MdAsRows { ~Unk_MdAsRows(); ASArray* FUN_140be3d00(); void* m_pad[2]; };   // 0x10 in the exe (+8 = the array pointer)     // dtor 0x140be3520
-Unk_MdAsRows FUN_140ff6b60(int nMode, Scaleform::GFx::Value& v);
-class Unk_MdRowObj : public ASObj { };                                       // the element as an object
-// 0x1422df140 ASDataProvider::requestItemAt viewed through the array: this = the array (rcx), hidden return = rdx
-struct Unk_MdRowSource { Unk_MdRowObj FUN_1422df140(unsigned nIndex); };
+
+MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMode, Scaleform::GFx::Value& v);
+
+
+
  // a member as text
 CString FUN_1409a2360(const char* sz, int bUtf8);
 CString FUN_14016a5c0(const char* psz, int n);
@@ -1264,7 +1264,7 @@ CString FUN_14016a5c0(const char* psz, int n);
 class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& child); };
 class TiXmlElement { public: TiXmlElement(const char* szName); virtual ~TiXmlElement(); char m_pad[0x118]; };
 class TiXmlDeclaration { public: TiXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone); virtual ~TiXmlDeclaration(); char m_pad[0x88]; };
-struct Unk_TiXmlComment { Unk_TiXmlComment(const char* sz); ~Unk_TiXmlComment(); char m_pad[0x70]; };
+class TiXmlComment { public: TiXmlComment(const char* sz); virtual ~TiXmlComment(); char m_pad[0x68]; };   // C3: view with the real virtual dtor
 void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned long);
 void XmlSetAttr(class TiXmlElement*, char const*, bool);
@@ -1306,19 +1306,19 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
         return false;
     Scaleform::GFx::Value vItems;
     reinterpret_cast<const Scaleform::GFx::Value*>(pData)->GetMember("itemList", &vItems);
-    Unk_MdAsRows items = FUN_140ff6b60(nMode, vItems);
+    MS2Ptr<ASDataProvider> items = FUN_140ff6b60(nMode, vItems);
     Scaleform::GFx::Value vCategories;
     reinterpret_cast<const Scaleform::GFx::Value*>(pData)->GetMember("categoryList", &vCategories);
-    Unk_MdAsRows categories = FUN_140ff6b60(nMode, vCategories);
+    MS2Ptr<ASDataProvider> categories = FUN_140ff6b60(nMode, vCategories);
     TiXmlDeclaration decl("1.0", "utf-8", "");
     reinterpret_cast<TiXmlNode*>(pDoc)->InsertEndChild(reinterpret_cast<const TiXmlNode&>(decl));
-    Unk_TiXmlComment comment(FUN_1409a2360("\x20\xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad\x20\xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2\x20\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf\x20\xc1\xf7\xc1\xa2\x20\xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6\x20\xb8\xb6\xbc\xbc\xbf\xe4\x20", 0));
+    TiXmlComment comment(FUN_1409a2360("\x20\xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad\x20\xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2\x20\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf\x20\xc1\xf7\xc1\xa2\x20\xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6\x20\xb8\xb6\xbc\xbc\xbf\xe4\x20", 0));
     reinterpret_cast<TiXmlNode*>(pDoc)->InsertEndChild(reinterpret_cast<const TiXmlNode&>(comment));
     TiXmlElement root("ms2");
-    unsigned nItems = items.FUN_140be3d00()->GetLength();
+    unsigned nItems = items->GetLength();
     for (unsigned i = 0; i < nItems; i++)
     {
-        Unk_MdRowObj row = reinterpret_cast<Unk_MdRowSource*>(items.FUN_140be3d00())->FUN_1422df140(i);
+        AScript row = items->FUN_1422df140(i);
         TiXmlElement item("item");
         int nSn = FUN_1412df3b0(reinterpret_cast<AScript*>(&row)->FUN_1422bb2b0("sn"));
         XmlSetAttr(&item, "sn", reinterpret_cast<AScript*>(&row)->FUN_1422bb2b0("sn"));
@@ -1329,10 +1329,10 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
             pSns->AddTail(nSn);
         reinterpret_cast<TiXmlNode*>(&root)->InsertEndChild(reinterpret_cast<const TiXmlNode&>(item));
     }
-    unsigned nCategories = categories.FUN_140be3d00()->GetLength();
+    unsigned nCategories = categories->GetLength();
     for (unsigned i = 0; i < nCategories; i++)
     {
-        Unk_MdRowObj row = reinterpret_cast<Unk_MdRowSource*>(categories.FUN_140be3d00())->FUN_1422df140(i);
+        AScript row = categories->FUN_1422df140(i);
         TiXmlElement category("category");
         Scaleform::GFx::Value vId = row.GetMember("stringId");
         int nStringId = i;
@@ -1404,7 +1404,7 @@ void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
     if (!spList)
         return;
     if (MS2Ptr<Unk_MdText> spName = reinterpret_cast<Unk_MdChildFinder*>(spPanel.get())->FUN_1409b4620<Unk_MdText>("m_name"))
-        spName->FUN_1422c4cd0(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5");
+        reinterpret_cast<ASTextField*>(spName.operator->())->FUN_1422c4cd0(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5");
     ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >& rProducts = m_180 == 2 ? s_shop.m_products : *TSingleton<CMeratMarketPremium>::GetInstance()->GetProducts();
     spList->Invoke("resetRenderer");
     for (size_t i = 0; i < rProducts.GetCount(); i++)
@@ -1484,7 +1484,7 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
                         spObj->FUN_1407cb9c0("priceDay", spProduct->GetB4(0));
                     }
                     ASTooltip tip(4, 2);
-                    if (FUN_1409e1770(&tip, nItemId, 0) != 0)
+                    if (tip.FUN_1409e1770(nItemId, 0) != 0)
                         spObj->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
                 }
                 else

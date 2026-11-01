@@ -32,6 +32,7 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uitradedialogex.h"   // C3: UITradeDialogEx members
 
 // ---- out-of-unit callees ----
 
@@ -53,16 +54,11 @@ class Unk_TradeDialog : public UIDialog
 {
 public:
     CStringW GetPartner();                           // m_strPartner (this unit)
-    void FUN_141b27de0(int bMine, int nSlot, MS2Ptr<CItem> spItem);     // an item was put on the table
-    void FUN_141b27fa0(int bMine, int nSlot);           // an item was taken off
-    void FUN_141b28130(int nSide, __int64 value);       // a money amount changed
-    void FUN_141b28290(int bConfirmed, int bFinal);     // confirm state changed
-    void FUN_141b297e0(int nResult);                    // request result
     char m_pad_178[0x28];
     CStringW m_strPartner;                              // +0x1a0
 };
 MS2_CHECK_OFFSET(Unk_TradeDialog, m_strPartner, 0x1a0);
-Unk_TradeDialog* FUN_14140e820(int nUiId);              // the open UI with this id, 0 if none
+template <class T> T* Unk_InvGetDialogById(int nId);   // C3: was FUN_14140e820 (the open UI with this id, 0 if none; invenslot.cpp)
 
 // UI manager (FUN_1403ed2b0).
 class Unk_TradeUIManager
@@ -99,12 +95,16 @@ Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
-void FUN_1405340b0(void*, __int64);
-void FUN_141a01ca0(void*, int, int, const CStringW&);
-void FUN_141a02460(void*, int);
-void FUN_141a02480(void*, int);
-void FUN_141a024a0(void*, bool);
-int FUN_14025a620(void*);
+class CMsgBoxData   // C3: unit-local view
+{
+public:
+    template <class T> void Append(T value);
+    void FUN_141a01ca0(int a, int b, const CStringW& str);
+    void FUN_141a02460(int n);
+    void FUN_141a02480(int n);
+    void FUN_141a024a0(int n);
+};
+int FUN_14025a620(class Unk_ConstVal*);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was void* FUN_1401d3200()
 CStringW GetStringCommon(int id);
 CStringW FUN_14052bd00(int id, const CStringW& arg);
@@ -418,11 +418,11 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
         Unk_MessageBoxPtr box = FUN_140d73d20(1, FUN_14052bd00(0x823, strName), 0, s_requestTradeEx);
         if (FUN_140534fc0(box) != 0)
         {
-            FUN_1405340b0(FUN_140534fe0(box), uid);
-            FUN_141a01ca0(FUN_140534fe0(box), FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788), 1, GetStringCommon(0x2b8));
-            FUN_141a02460(FUN_140534fe0(box), true);
-            FUN_141a02480(FUN_140534fe0(box), true);
-            FUN_141a024a0(FUN_140534fe0(box), false);
+            ((CMsgBoxData*)FUN_140534fe0(box))->Append<__int64>(uid);
+            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a01ca0(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788)), 1, GetStringCommon(0x2b8));
+            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a02460(true);
+            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a02480(true);
+            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a024a0(false);
             FUN_140d73c60(box);
             SendTradeMode2(uid);
         }
@@ -518,9 +518,9 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         FUN_1412751b0(strMsg, 0x12);
         FUN_1412751f0(strMsg, 1, 0);
     }
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg != 0)
-        pDlg->FUN_141b297e0(code);
+        reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b297e0(code);
 }
 
 // @0x14185cc60
@@ -552,7 +552,7 @@ void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
 {
     int bAccepted = packet.ReadUInt8();
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg != 0)
     {
         CStringW strPartner = pDlg->GetPartner();
@@ -568,7 +568,7 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
 // @0x14185d020
 void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
 {
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
         return;
     int bMine = packet.ReadUInt8();
@@ -593,13 +593,13 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
         ((class Unk_TradeInventory*)FUN_140a6a840())->vfunc_17(spItem);
         DAT_143ab2e80.FUN_14185b2a0(spItem);
     }
-    pDlg->FUN_141b27de0(bMine, nSlot, spItem);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b27de0(bMine, nSlot, spItem);
 }
 
 // @0x14185d380
 void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
 {
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
         return;
     int bMine = packet.ReadUInt8();
@@ -613,36 +613,36 @@ void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
         ((class Unk_TradeInventory*)FUN_140a6a840())->vfunc_18(spItem);
         DAT_143ab2e80.FUN_14185b3d0(uid);
     }
-    pDlg->FUN_141b27fa0(bMine, nSlot);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b27fa0(bMine, nSlot);
 }
 
 // @0x14185d4f0
 void CTradeManagerEx::FUN_14185d4f0(CInPacket& packet)
 {
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
         return;
     int nSide = packet.ReadUInt8();
     __int64 nValue = packet.ReadInt64();
-    pDlg->FUN_141b28130(nSide, nValue);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b28130(nSide, nValue);
 }
 
 // @0x14185d590
 void CTradeManagerEx::FUN_14185d590(CInPacket& packet)
 {
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
         return;
     int bMine = packet.ReadUInt8();
     if (bMine)
         m_bConfirmed = true;
-    pDlg->FUN_141b28290(bMine, 1);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b28290(bMine, 1);
 }
 
 // @0x14185d610
 void CTradeManagerEx::FUN_14185d610(CInPacket& packet)
 {
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
         return;
     int bMine = packet.ReadUInt8();
@@ -655,13 +655,13 @@ void CTradeManagerEx::FUN_14185d610(CInPacket& packet)
     {
         FUN_1412751b0(GetStringCommon(0x845), 0x12);
     }
-    pDlg->FUN_141b28290(bMine, 0);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b28290(bMine, 0);
 }
 
 // @0x14185d720
 void CTradeManagerEx::FUN_14185d720(CInPacket& packet)
 {
-    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
 }
 
 // @0x14185d750

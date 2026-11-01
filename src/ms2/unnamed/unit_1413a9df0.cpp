@@ -658,7 +658,7 @@ void CGuideConditionLastClosedTextTip::vfunc_2(Unk_140165cf0* pElem)
     m_nEntityId = 0;
     XmlGetAttr(reinterpret_cast<TiXmlElement*>(pElem), "entityId", m_nEntityId);
     if (m_nEntityId == 0)
-        throw std::exception(FUN_141388650("lastClosedToolTip entityId == 0"));
+        throw std::exception(StringFormat("lastClosedToolTip entityId == 0"));
 }
 
 // @0x1413ac290
@@ -740,7 +740,7 @@ int CGuideConditionTitle::vfunc_3()
     Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a5600(DAT_143ab3268.FUN_140186270() > 0);
+    return FUN_1413a5600(reinterpret_cast<ATL::CAtlArray<unsigned>&>(DAT_143ab3268).GetCount() > 0);
 }
 
 // @0x1413ac700
@@ -749,7 +749,7 @@ void CGuideConditionTitle::vfunc_5()
     Unk_G9Player* pPC = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    size_t nCount = DAT_143ab3268.FUN_140186270();
+    size_t nCount = reinterpret_cast<ATL::CAtlArray<unsigned>&>(DAT_143ab3268).GetCount();
     FUN_1412751b0(GcFmtSize(L"CGuideConditionTitle> titleCount={0}", nCount), 0x14);
 }
 

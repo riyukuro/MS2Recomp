@@ -43,12 +43,10 @@ public:
 class Unk_DpButton : public ASButton { };                  // click FUN_1422ce240, toggle FUN_1422c2a70
 class Unk_DpInput : public Unk_DpControl { public: };         // the text
 class Unk_DpCheck : public Unk_DpControl { };
-class Unk_DpCombo : public ASDropdownMenu { };
 // The "m_param<n>" movie clip: the child lookups by name.
 class Unk_DpParam
 {
 public:
-    MS2Ptr<Unk_DpCombo> FUN_140bbe700(const CString& strName);
     MS2Ptr<Unk_DpInput> FUN_140bbe880(const CString& strName);
 };
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
@@ -100,7 +98,7 @@ void UIDebugPacketDialog::OnLoadInit()
         int nNumber = i + 1;
         CStringA strParam = StringFormat<int>("m_param{0}", nNumber);
         MS2Ptr<ASMovieClip> spParam = GetChild<ASMovieClip>(strParam);
-        m_type[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe700("m_type");
+        m_type[i] = spParam.operator->()->GetDropdownMenu("m_type");
         m_value[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe880("m_value");
         {
             ASObj row(2);

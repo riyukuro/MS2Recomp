@@ -97,7 +97,7 @@ int FUN_14123cec0(Unk_ExpActor* p);                                 // player se
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141673f70(float, float, float);
+    void AddColorBoost(float, float, float);
 };
 NiAVObject* FUN_141675150(Unk_ExpActor* p, const CString& strName); // find a named dummy node
 const Vector3& FUN_140947900(NiAVObject* pNode);            // node translate
@@ -396,7 +396,7 @@ void CExpEffectInfo::Finish()
     Unk_GVec3 ptHit;
     if (!FUN_14147aa60(ptCur, ptCur.FUN_140965c40(m_ptTarget), m_ptTarget, fRadius, &ptHit))
         ptHit = ptCur;
-    ((class PCBase*)(class Unk_ExpActor*)(pPlayer))->FUN_141673f70(DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
+    ((class PCBase*)(class Unk_ExpActor*)(pPlayer))->AddColorBoost(DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
     SetPosition(ptHit);
     StopEffect();
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget

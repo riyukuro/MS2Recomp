@@ -7,6 +7,7 @@
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemlockdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiitemlockdialog.h"
 
@@ -38,19 +39,6 @@ public:
 };
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
-// The item bag control of the movie: "bagId" names the bag shown.
-class Unk_LdItemBag : public ASMovieClip
-{
-public:
-    Unk_LdItemBag(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cf330
-#define LD_V(n) virtual void vfunc_##n();
-    LD_V(16) LD_V(17) LD_V(18) LD_V(19) LD_V(20) LD_V(21) LD_V(22) LD_V(23)
-#undef LD_V
-    virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_LdItemBag, 0x88);
 
 // A button of the movie ("m_lock" / "m_unLock").
 class Unk_LdButton : public ASDisplayObject
@@ -64,14 +52,20 @@ public:
 class Unk_LdLockMgr
 {
 public:
-    void FUN_1406126f0();
-    void FUN_140612780();
-    int FUN_140612da0();                                    // any slot locked
-    void FUN_140612e10();
-    void FUN_1406132f0();
-    int FUN_140614b50();                                    // the tab (0 lock, 1 unlock)
     char m_pad_0[0x48];
     int m_nTab;                                             // +0x48
+};
+// C3: the real members of CItemLockManager (unit_1406125d0.h redefines this unit's dialog classes, so a local view).
+enum Unk_LockMode : int;
+class CItemLockManager
+{
+public:
+    void SendRequestItemLockMode0();
+    void FUN_140612780();
+    int FUN_140612da0();                                    // any slot locked
+    int SendRequestItemLockMode3();
+    void FUN_1406132f0();
+    Unk_LockMode GetMode() const;                           // the tab (0 lock, 1 unlock)
 };
 extern Unk_LdLockMgr* DAT_143aaf308;
 inline Unk_LdLockMgr* FUN_140535310() { return DAT_143aaf308; }
@@ -133,7 +127,7 @@ void UIItemLockDialog::FUN_140f56c80()
 {
     FUN_140d42100(GetTypeName());
     FUN_140d42050(GetTypeName());
-    if (MS2Ptr<Unk_LdItemBag> spBag = GetChild<Unk_LdItemBag>("m_itemBag"))
+    if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
         spBag->FUN_1407cba60("bagId", GetTypeName());
     FUN_140f56e00();
 }
@@ -142,9 +136,9 @@ void UIItemLockDialog::FUN_140f56c80()
 void UIItemLockDialog::FUN_140f56e00()
 {
     if (MS2Ptr<Unk_LdButton> spLock = GetChild<Unk_LdButton>("m_lock"))
-        spLock->FUN_1422c1fe0(FUN_140535310()->FUN_140612da0());
+        spLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
     if (MS2Ptr<Unk_LdButton> spUnLock = GetChild<Unk_LdButton>("m_unLock"))
-        spUnLock->FUN_1422c1fe0(FUN_140535310()->FUN_140612da0());
+        spUnLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
 }
 
 // @0x140f56f50
@@ -173,7 +167,7 @@ void UIItemLockDialog::OnLoadComplete()
     FUN_140f56c80();
     ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_140f57f40(FUN_140535310(), 0);
-    FUN_140535310()->FUN_1406126f0();
+    reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode0();
     UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
@@ -201,7 +195,7 @@ void UIItemLockDialog::vfunc_67()
     UIDialog::vfunc_67();
     FUN_140f57e30();
     ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140535310()->FUN_140612780();
+    reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
     CString strArg("item_lock");
     CString strEvent("dialog_close");
     TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(strEvent, strArg);
@@ -219,13 +213,13 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp(szMethod, "OnItemLock") == 0)
     {
-        if (FUN_140535310()->FUN_140612da0() != 0)
+        if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
         {
-            if (FUN_140535310()->FUN_140614b50() == 0)
+            if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 0)
             {
                 FUN_140d73aa0(L"", 0x21, 0, s_strItemLockConfirm);
             }
-            else if (FUN_140535310()->FUN_140614b50() == 1)
+            else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
                 CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
@@ -238,13 +232,13 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp(szMethod, "OnItemUnLock") == 0)
     {
-        if (FUN_140535310()->FUN_140612da0() != 0)
+        if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
         {
-            if (FUN_140535310()->FUN_140614b50() == 0)
+            if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 0)
             {
                 FUN_140d73aa0(L"", 0x21, 0, s_strItemLockConfirm);
             }
-            else if (FUN_140535310()->FUN_140614b50() == 1)
+            else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
                 CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
@@ -261,9 +255,9 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nTab = data.FUN_1422b8a10();
-            if (FUN_140535310()->FUN_140612da0() != 0)
+            if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
             {
-                FUN_140535310()->FUN_140612780();
+                reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
                 FUN_140f56c80();
             }
             FUN_140f57f40(FUN_140535310(), nTab);
@@ -305,7 +299,7 @@ int UIItemLockDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             int nResult = pMsg->FUN_1422b8a10();
             if (nResult == 0)
-                FUN_140535310()->FUN_140612e10();
+                reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode3();
         }
         FUN_14151f200();
         return 1;
@@ -346,7 +340,7 @@ void UIItemLockDialog::vfunc_15()
     {
     }
     else
-        FUN_140535310()->FUN_1406132f0();
+        reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_1406132f0();
 }
 
 // @0x140f57c60

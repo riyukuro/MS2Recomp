@@ -30,7 +30,6 @@ public:
     virtual void vfunc_11();
     virtual void vfunc_12();
     virtual void vfunc_13(const CString& strLabel);     // slot 13: gotoAndPlay("show"/"hide")?
-    bool FUN_1422bfca0();                               // visible?
 };
 
 class UICutSceneMovie : public UIVideoContents

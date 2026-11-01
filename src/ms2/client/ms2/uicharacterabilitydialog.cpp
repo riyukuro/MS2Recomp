@@ -28,6 +28,7 @@
 #include "ms2/placeholder/uimessagebox.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/questdata.h"
 #include "ms2/client/ms2/uigamemenudialog.h"
 #include "ms2/ms2format.h"
 
@@ -42,6 +43,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
+#include "ms2/commonfiles/characterability.h"
+#include "ms2/placeholder/cquestmanagercommon.h"
 
 // ---- unit-local views of unrecovered callees -------------------------------------------------------------------------
 
@@ -69,27 +72,19 @@ extern void* DAT_143aac648;                             // the ability table
 class Unk_CaQuestState { public: int FUN_140745590(int nQuest); };
 class Unk_CaQuestHolder { public: char m_pad_0[0x10]; Unk_CaQuestState m_state; };
 void* FUN_140764020();   // C3: was FUN_140764020
-struct Unk_CaQuestRow { int FUN_14074b050() const; char m_pad_0[0x1c]; int m_nType; char m_pad_20[8]; int m_28; char m_pad_2c[0x2c]; unsigned short m_58; };
+struct Unk_CaQuestRow { char m_pad_0[0x1c]; int m_nType; char m_pad_20[8]; int m_28; char m_pad_2c[0x2c]; unsigned short m_58; };
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_nType, 0x1c);   // the exe reads it through 0x14074b050 ([rcx+0x1c])
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_28, 0x28);
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_58, 0x58);
-class Unk_CaQuestRef
-{
-public:
-    ~Unk_CaQuestRef();                                  // 0x14064d3e0
-    bool FUN_140747650(int n);                          // a quest exists / is done
-    Unk_CaQuestRow* FUN_14064d520() const;
-    void* m_pad_00;
-    void* m_p;
-};
-Unk_CaQuestRef FUN_14074bc40(int nQuest);
+MS2Ptr<CQuestData> FUN_14074bc40(int nQuest);
+int FUN_14074b050(CQuestData* pQuest);                  // the quest type
 CStringW FUN_1416e4df0(int nQuest);                     // the quest name
 CStringW FUN_1416e7fb0(int n);
 
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);
-CStringW FUN_1409e9bc0(int nStringId, const int& nA, const unsigned& nB);
+template <class A, class B> CStringW BlockFormat(int nStringId, const A& a, const B& b);
 CStringW FUN_14093fd30(int nStringId, const __int64* pDays, const __int64* pMeso);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -394,7 +389,7 @@ void UICharacterAbilityDialog::OnLoadComplete()
         return;
     if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) == 0)
         return;
-    if (((class Unk_CaQuestHolder*)FUN_140764020())->m_state.FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get())) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get())) == 0)
         return;
     UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
     if (pMenu)
@@ -526,7 +521,7 @@ void UICharacterAbilityDialog::FUN_140f2b000(NotifyObject* pNotify)
         return;
     if (FUN_1401e0800(p->m_nLevel) == 0)
         return;
-    if (((class Unk_CaQuestHolder*)FUN_140764020())->m_state.FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get())) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get())) == 0)
         return;
     FUN_140f2bee0(p->m_nLevel);
     if (m_30 == NULL)
@@ -556,20 +551,20 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
     if (m_30 == NULL)
         return;
     ATL::CAtlList<MS2Ptr<Unk_CaCategoryRow> > cats(10);
-    FUN_140f2d250()->FUN_1401e0350(&cats);
+    reinterpret_cast<CCharacterAbilityTable*>(FUN_140f2d250())->FUN_1401e0350(reinterpret_cast<ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >*>(&cats));
     if (cats.IsEmpty())
         return;
     for (POSITION pos = cats.GetHeadPosition(); pos != NULL; cats.GetNext(pos))
     {
         MS2Ptr<Unk_CaCategoryRow> cat = cats.GetAt(pos);
         FUN_1409ee290(&m_30)->FUN_140f2c690("buildCategory", cat->m_nId, CStringW(cat->m_strName));
-        Unk_CaAbilityList& abilities = cat->m_abilities;
-        if (abilities.FUN_1401e2540())
+        ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >& abilities = reinterpret_cast<ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >&>(cat->m_abilities);
+        if (abilities.IsEmpty())
             continue;
         ATL::CRBMap<unsigned short, MS2Ptr<Unk_CaAbilityRow> > byLevel(10);
-        for (POSITION p = abilities.FUN_1401e2140(); p != NULL; abilities.FUN_1401e1ec0(p))
+        for (POSITION p = abilities.GetStartPosition(); p != NULL; abilities.GetNext(p))
         {
-            MS2Ptr<Unk_CaAbilityRow> a = abilities.FUN_1401e2220(p);
+            MS2Ptr<Unk_CaAbilityRow> a = reinterpret_cast<const MS2Ptr<Unk_CaAbilityRow>&>(abilities.GetValueAt(p));
             byLevel.SetAt(a->m_nRequireLevel, a);
         }
         ASArray arr(2);
@@ -602,7 +597,7 @@ void UICharacterAbilityDialog::FUN_140f2b760()
         return;
     unsigned nTotal = FUN_140f2d240()->FUN_140f29e40();
     int nRemain = FUN_140f2d240()->FUN_140f29e00();
-    CStringW strText = FUN_1409e9bc0(0xc5a, nRemain, nTotal);
+    CStringW strText = BlockFormat<unsigned, unsigned>(0xc5a, reinterpret_cast<const unsigned&>(nRemain), nTotal);
     FUN_1409ee290(&m_30)->Invoke("SetPointInfoText", CStringW(strText));
 }
 
@@ -629,13 +624,13 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
     if (m_30 == NULL)
         return;
     int nQuest = *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_quest)->Get());
-    Unk_CaQuestRef quest = FUN_14074bc40(nQuest);
-    if (quest.FUN_140747650(0))
+    MS2Ptr<CQuestData> quest = FUN_14074bc40(nQuest);
+    if (quest == 0)
         return;
     CStringW strUnlock = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x50, nQuest);
     if (strUnlock.GetLength() == 0)
     {
-        switch (quest.FUN_14064d520()->FUN_14074b050())
+        switch (FUN_14074b050(quest.operator->()))
         {
         case 0:
             strUnlock = GetStringCommon(0x5dd);
@@ -657,7 +652,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
             break;
         }
     }
-    CStringW strText = FUN_140f2c170(0xc60, FUN_1416e4df0(nQuest), quest.FUN_14064d520()->m_58, strUnlock, FUN_1416e7fb0(quest.FUN_14064d520()->m_28));
+    CStringW strText = FUN_140f2c170(0xc60, FUN_1416e4df0(nQuest), reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_58, strUnlock, FUN_1416e7fb0(reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_28));
     FUN_1409ee290(&m_30)->Invoke("SetDisabledText", CStringW(strText));
 }
 
@@ -665,7 +660,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
 void UICharacterAbilityDialog::FUN_140f2bee0(unsigned short nLevel)
 {
     ATL::CAtlList<MS2Ptr<Unk_CaAbilityRow> > abilities(10);
-    FUN_140f2d250()->FUN_1401e0450(&abilities);
+    reinterpret_cast<CCharacterAbilityTable*>(FUN_140f2d250())->FUN_1401e0450(reinterpret_cast<ATL::CAtlList<MS2Ptr<CCharacterAbility> >*>(&abilities));
     int bNew = 0;
     for (POSITION pos = abilities.GetHeadPosition(); pos != NULL; abilities.GetNext(pos))
     {

@@ -159,7 +159,7 @@ void GemStoneSlot::FUN_140cfdcb0(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLock
         strText = FUN_14062ad80(spItem);
     else
         strText = bLocked ? L"$s_itemsocketsystem_gemstonemanage_msg_socket_lock" : L"$s_itemsocketsystem_gemstonemanage_msg_socket_empty";
-    pSlot->FUN_1407cbb20("text", strText);
+    ((class AScript*)(pSlot))->FUN_1407cbb20("text", strText);
 }
 
 // @0x140cfddf0

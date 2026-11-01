@@ -51,7 +51,6 @@ public:
 };
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1407196b0(long);                               // number -> text
-CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg); // "{0}" substitution of a float
 class Unk_AsBuffInfo : public AdditionalLevelData
 {
 };
@@ -283,7 +282,7 @@ CStringW ASEffect::FormatRemain(float fSeconds)
     {
         return StringFormat(L"{0}{1}", n, GetStringCommon(0x5cb));
     }
-    return FUN_1406329c0(L"{0:.1f}", &fSeconds);
+    return StringFormat<float>(L"{0:.1f}", fSeconds);
 }
 
 // @0x1409b40c0

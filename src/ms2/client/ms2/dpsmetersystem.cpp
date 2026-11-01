@@ -105,6 +105,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/additionalclilist.h"
 #include "ms2/client/ms2/dpsmetersystem.h"
+#include "ms2/client/ms2/equipment.h"
 
 extern "C" wchar_t* (__cdecl* __imp_wcscat)(wchar_t*, const wchar_t*);   // the exe calls wcscat through its import
 
@@ -119,15 +120,12 @@ CStringA FUN_14016a600(const wchar_t* psz, int n);          // wide -> multibyte
 
 float FUN_14028d380(float fValue);                          // percent (x100)
 bool FUN_14028d470(float a, float b);                       // nearly equal
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a string-table text with one argument
+#include "ms2/placeholder/formatstringid.h"
 CStringW GetStatValueText(unsigned nStat);                  // the format of a stat value (stat.cpp)
 bool IsStatKindTwo(int nStat);                              // stat.cpp
 
 // The worn items of the player (PC::FUN_1416561a0).
 class Unk_DpsEquipSet;
-void FUN_1411e1ce0(Unk_DpsEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut, int nLayer);   // the worn items of a layer
-float FUN_1411e1110(Unk_DpsEquipSet* pSet, int nStat);      // the summed rate bonus of a stat
-int FUN_1411e1160(Unk_DpsEquipSet* pSet, int nStat);        // the summed value bonus of a stat
 // The own player (a PC) as this unit uses it.
 class Unk_DpsPC : public PC
 {
@@ -1620,7 +1618,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
         {
             ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-            FUN_1411e1ce0(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), equips, 0);
+            reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->CollectShownItemsInLayer(equips, 0);
             for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos))
             {
                 MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
@@ -1635,7 +1633,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 스킨 레이어 장착 장비 목록 ---\r\n");
         ATL::CAtlList<MS2Ptr<CEquipItem> > skins(10);
-        FUN_1411e1ce0(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), skins, 1);
+        reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->CollectShownItemsInLayer(skins, 1);
         for (POSITION pos = skins.GetHeadPosition(); pos != NULL; skins.GetNext(pos))
         {
             MS2Ptr<CEquipItem> spEquip = skins.GetAt(pos);
@@ -1702,7 +1700,7 @@ CStringW CDPSMeterSystem::GetStatText(int nStat, int bPercent)
         fValue = fBonus;
     }
     if (bPercent != 0)
-        str = FUN_14052bd00(0x98e, StringFormat(L"{0:0.1f}", fValue));
+        str = FormatStringId<CStringW>(0x98e, StringFormat(L"{0:0.1f}", fValue));
     else
         str = StringFormat(L"{0}", (__int64)fValue);
     return str;
@@ -1718,11 +1716,11 @@ CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
     if (pMe == 0)
         return str;
     float fBase = 0.0f;
-    float fBonus = bPercent != 0 ? FUN_14028d380(FUN_1411e1110(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), nStat))
-                                 : (float)FUN_1411e1160(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()), nStat);
+    float fBonus = bPercent != 0 ? FUN_14028d380(reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->GetAbilityRate((SAType)(nStat)))
+                                 : (float)reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->FUN_1416561a0()))->GetAbilityTotal((SAType)(nStat));
     float fValue = fBase + fBonus;
     if (bPercent != 0)
-        str = FUN_14052bd00(0x98e, StringFormat(L"{0:0.1f}", fValue));
+        str = FormatStringId<CStringW>(0x98e, StringFormat(L"{0:0.1f}", fValue));
     else
         str = StringFormat(L"{0:0.1f}", fValue);
     return str;

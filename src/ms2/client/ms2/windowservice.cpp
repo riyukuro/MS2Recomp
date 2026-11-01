@@ -180,7 +180,8 @@ public:
     void Mute();
     void Unmute();
 };
-void* FUN_140af8310(Unk_Holder*);
+namespace efd { class ServiceManager; }
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
 class Unk_DcService* FUN_141296b50(class Unk_DcHost*);   // C3: was FUN_141296b50
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -745,7 +746,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         }
         if (wParam == 0x47 && (GetAsyncKeyState(0x11) & 0x8000) != 0 && reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance()) != 0)
         {
-            void* pHolder = FUN_140af8310(&reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance())->m_holder);
+            void* pHolder = (void*)reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_GameCore*>(TSingleton<CMainSystem>::GetInstance())->m_holder)->FUN_140af8310();
             ATL::CComPtr<Unk_ComObj> spObj(((class Unk_ComObj*)FUN_141296b50((class Unk_DcHost*)(pHolder))));
             if (static_cast<Unk_ComObj*>(spObj) != 0)
             {

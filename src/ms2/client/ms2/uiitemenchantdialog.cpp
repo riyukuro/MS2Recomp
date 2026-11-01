@@ -141,9 +141,8 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-void FUN_1411e1ce0(Unk_PCItems* items, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >* out, int a);
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+class CEquipment { public: float GetAbilityRate(SAType eType); void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer); };   // C3: the real members (0x1411e1110 a special ability rate, 0x1411e1ce0 the worn items in a layer)
 
 class Unk_EnPC : public MyPC
 {
@@ -936,7 +935,7 @@ void UIItemEnchantDialog::FUN_1419c1a40(ATL::CAtlArray<unsigned __int64>& out)
         }
     }
     ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > list(10);
-    FUN_1411e1ce0(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()), &list, 0);
+    reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->CollectShownItemsInLayer(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&list), 0);
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
         MS2Ptr<Unk_BackUpItem> equip = list.GetAt(pos);
         if (!equip)

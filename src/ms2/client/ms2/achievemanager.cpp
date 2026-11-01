@@ -70,6 +70,7 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/cguidemanager.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -77,6 +78,8 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
+// The 0xc-byte counter triple of the tally (unit_140267ba0_tripletintclear: Clear 0x140267bd0, Add 0x140267c70).
+class Unk_IntTriple { public: void Clear(); void Add(int nIndex, int nAdd); };
 
 // ---- out-of-unit callees (names are exe addresses) ----------------------------------------------------------------------------
 class Unk_SingletonObj;
@@ -112,7 +115,6 @@ public:
     bool PushAdProducts(unsigned int, int);
 };
 CStringW FUN_140d2d440(unsigned nId, int nGrade);               // the notice's title text
-class Unk_AmTrigCmdMgr { public: void FUN_14138bf00(int nCmd, int nArg1, int nArg2); };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 void FUN_1412751b0(const CStringW& strMsg, int nType);          // system message line
 int ConditionKindOfType(int nConditionType);                    // ConditionKindOfType
@@ -150,39 +152,9 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // The text filter of the exe (strips markup).
 
 // The coloring table: a row set of (achievement id, grade) -> colour.
-struct Unk_AmColorEntry { char m_pad_00[0x24]; int m_nAchieveId; int m_nGrade; int m_nColorId; };
-class Unk_AmColorElem
-{
-public:
-    Unk_AmColorElem(Unk_AmColorEntry* pEntry);                  // 0x14056a550
-    ~Unk_AmColorElem();                                         // 0x14056c2d0
-    Unk_AmColorEntry* FUN_14056d570() const;                    // operator->
-    void* m_pad_00;
-    Unk_AmColorEntry* m_p;
-};
-class Unk_AmColorList { public: size_t FUN_140570e10(); Unk_AmColorEntry* FUN_140570dd0(size_t n); };
-class Unk_AmColorSet
-{
-public:
-    ~Unk_AmColorSet();                                          // 0x14056c240
-    void* FUN_14056d460() const;
-    Unk_AmColorList* FUN_14056d540() const;
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_AmIngTable { public: Unk_AmColorSet FUN_140558ad0(int nId); };
 
 // The skill table (dynamic action rewards).
 struct Unk_AmSkillRow { char m_pad_00[0x48]; CStringA m_strIcon; };
-class Unk_AmSkillRef
-{
-public:
-    ~Unk_AmSkillRef();                                          // 0x14063e5c0
-    Unk_AmSkillRow* FUN_14063ed10() const;
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_AmSkillTable { public: Unk_AmSkillRef FUN_1407ee1d0(int nSkillId); };
 
 // The xml reader of the exe (see continentregiontable.cpp / learningquesttable.cpp).
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
@@ -198,15 +170,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& strValue);
 
-class Unk_ElemArray
-{
-public:
-    Unk_ElemArray();                                            // 0x140163e20
-    ~Unk_ElemArray();                                           // 0x1401644e0
-    unsigned __int64 FUN_14016d900();                           // size
-    Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);          // operator[]
-    void *m_a, *m_b, *m_c;
-};
+// The element list is a std::vector<Unk_XmlNode*> (ctor 0x140163e20, dtor 0x1401644e0, size 0x14016d900, [] 0x140164a30).
+typedef std::vector<Unk_XmlNode*> Unk_ElemArray;
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 
 // The localized-string formatters: FormatStringId (0x14028dee0) and the key based back end FUN_14028dfa0 with this unit's
@@ -260,7 +225,6 @@ CStringW FUN_1409404f0(__int64 nValue);
 int FUN_140940370(Unk_140165cf0* pNode, const char* pszName, int* pOut);
 int FUN_140940430(Unk_140165cf0* pNode, const char* pszName, int* pOut);
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-CMsTime FUN_1406c47a0(__int64 nTime);
 CString FUN_14016a5c0(const char* psz, int n);
 
 // ---- unit statics (.text$di) -----------------------------------------------------------------------------------------------------
@@ -349,7 +313,7 @@ CAchieveManager::~CAchieveManager()
 void CAchieveManager::Reload()
 {
     m_map.RemoveAll();
-    m_tally.FUN_140267bd0();
+    reinterpret_cast<Unk_IntTriple*>(&m_tally)->Clear();
     ATL::CAtlArray<MS2Ptr<CAchieveData> > aData;
     CAchieveData::GetAll(aData);
     for (size_t i = 0; i < aData.GetCount(); i++)
@@ -612,7 +576,7 @@ void CAchieveManager::NotifyClear(CAchieve* pAchieve)
         if (pData)
         {
             if (pData->GetGrade(nGrade)->m_reward.m_nType > 0)
-                ((class Unk_AmTrigCmdMgr*)FUN_1409331e0())->FUN_14138bf00(0x17, 0, 0);
+                ((CGuideManager*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x17, 0, 0);
         }
     }
     CStringW strTitle = FUN_140d2d440(pAchieve->GetId(), nGrade);
@@ -679,19 +643,19 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             int nType = pGrade->m_reward.m_nType;
             if (nType == 8)
             {
-                Unk_AmColorSet set = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(pGrade->m_reward.m_nCode);
-                if (set.FUN_14056d460() != 0)
+                Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> set = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(pGrade->m_reward.m_nCode);
+                if (set.get() != 0)
                 {
-                    for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
+                    for (size_t i = 0; i < set->GetCount(); i++)
                     {
-                        Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
-                        if (elem.FUN_14056d570()->m_nAchieveId == nId)
+                        MS2Ptr<ItemColorEx> elem(set->GetAt(i));
+                        if (elem->m_n24 == nId)
                         {
-                            if (elem.FUN_14056d570()->m_nGrade == nGrade)
+                            if (elem->m_n28 == nGrade)
                             {
                                 pNotify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/colorpalette_unlock.png"),
-                                                       FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_coloring"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId)), 0);
-                                FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_coloring_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId)), 0x1c);
+                                                       FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_coloring"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem->m_n2c)), 0);
+                                FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_coloring_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem->m_n2c)), 0x1c);
                             }
                         }
                     }
@@ -716,7 +680,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                 }
                 else if (nType == 12)
                 {
-                    Unk_AmSkillRow* pRow = reinterpret_cast<Unk_AmSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(pGrade->m_reward.m_nCode).FUN_14063ed10();
+                    Unk_AmSkillRow* pRow = reinterpret_cast<Unk_AmSkillRow*>(TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(pGrade->m_reward.m_nCode).get());
                     if (pRow != 0)
                     {
                         pNotify->FUN_141ac1580(FUN_14016a730(pRow->m_strIcon, 0),
@@ -746,7 +710,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
         pNotify->FUN_141ac1580(strIcon, strMsg, 0);
         FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_auth_notify_manual"), FUN_14093ce70(nId, nGrade)), 0x1c);
     }
-    ((class Unk_AmTrigCmdMgr*)FUN_1409331e0())->FUN_14138bf00(3, pGrade->m_reward.m_nType, 0);
+    ((CGuideManager*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)3, pGrade->m_reward.m_nType, 0);
 }
 
 // @0x1409388a0
@@ -767,13 +731,13 @@ void CAchieveManager::Tally(CAchieve* pAchieve)
             switch (pData->m_nCategory)
             {
             case 1:
-                m_tally.FUN_140267c70(0, 1);
+                reinterpret_cast<Unk_IntTriple*>(&m_tally)->Add(0, 1);
                 break;
             case 2:
-                m_tally.FUN_140267c70(1, 1);
+                reinterpret_cast<Unk_IntTriple*>(&m_tally)->Add(1, 1);
                 break;
             case 3:
-                m_tally.FUN_140267c70(2, 1);
+                reinterpret_cast<Unk_IntTriple*>(&m_tally)->Add(2, 1);
                 break;
             }
         }
@@ -783,7 +747,7 @@ void CAchieveManager::Tally(CAchieve* pAchieve)
 // @0x1409389f0
 void CAchieveManager::RebuildTally()
 {
-    m_tally.FUN_140267bd0();
+    reinterpret_cast<Unk_IntTriple*>(&m_tally)->Clear();
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         MS2Ptr<CAchieve> pAchieve = m_map.GetValueAt(pos);
@@ -852,9 +816,9 @@ void CAchieveUIData::LoadDesc()
     }
     Unk_ElemArray aElem;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "achieve", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&aElem));
-    for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
+    for (unsigned __int64 i = 0; i < aElem.size(); i++)
     {
-        Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
+        Unk_140165cf0* pElem = (Unk_140165cf0*)aElem[i];
         MS2Ptr<CAchieveUIData> pUI(new CAchieveUIData);
         int nId = FUN_140197350(pElem, "id", 0);
         pUI->m_nId = nId;
@@ -1133,19 +1097,19 @@ CStringW FUN_14093ce70(int nId, int nGrade)
             if (nType == 8)
             {
                 CStringW strAll;
-                Unk_AmColorSet set = reinterpret_cast<Unk_AmIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(nCode);
-                if (set.FUN_14056d460() != 0)
+                Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> set = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(nCode);
+                if (set.get() != 0)
                 {
-                    for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
+                    for (size_t i = 0; i < set->GetCount(); i++)
                     {
-                        Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
-                        if (elem.FUN_14056d570()->m_nAchieveId == nId)
+                        MS2Ptr<ItemColorEx> elem(set->GetAt(i));
+                        if (elem->m_n24 == nId)
                         {
-                            if (elem.FUN_14056d570()->m_nGrade == nGrade)
+                            if (elem->m_n28 == nGrade)
                             {
                                 if (strAll.GetLength() != 0)
                                     strAll += "\n";
-                                strAll += FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_coloring"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem.FUN_14056d570()->m_nColorId));
+                                strAll += FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_coloring"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x48, elem->m_n2c));
                             }
                         }
                     }
@@ -1330,9 +1294,9 @@ int CAchieveCategory::Load()
     }
     Unk_ElemArray aElem;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "category", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&aElem));
-    for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
+    for (unsigned __int64 i = 0; i < aElem.size(); i++)
     {
-        Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
+        Unk_140165cf0* pElem = (Unk_140165cf0*)aElem[i];
         MS2Ptr<CAchieveCategory> pCat(new CAchieveCategory);
         XmlGetAttr((class TiXmlElement*)(pElem), "id", pCat->m_nId);
         FUN_140940370(pElem, "tab", &pCat->m_nTab);
@@ -1550,7 +1514,7 @@ CStringW FUN_14093f670(int nValue)
 // @0x14093f800
 CStringW FUN_14093f800(__int64 nTime)
 {
-    CMsTime time = FUN_1406c47a0(nTime);
+    CMsTime time(nTime);
     CStringW str = FUN_14083bab0(time, CStringW(L"/"));
     return str;
 }

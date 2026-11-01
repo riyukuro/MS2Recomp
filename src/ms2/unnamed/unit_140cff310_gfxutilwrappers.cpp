@@ -31,23 +31,17 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/aslabel.h"   // C3: ASLabel::FUN_1422e4a50
+#include "ms2/gfxui/astextfieldex.h"   // C3: ASTextFieldEx
+#include "ms2/gfxui/asurlrequest.h"   // C3: ASURLRequest
 
 // ---- unit-local views of exe objects ----
 
-// A display object built on the stack (ctor 0x1422bf7c0, dtor 0x1422bf810).
-class Unk_Disp : public ASDisplayObject
-{
-public:
-    Unk_Disp(const Scaleform::GFx::Value& v, int nMovieId);
-    ~Unk_Disp();
-};
 
 // A button (the wrapper class of 0x140acd6e0).
 class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422c1fe0(unsigned int bEnabled);          // enable / disable
-    void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
 };
 
 // A check box (the wrapper class of 0x140a58300).
@@ -60,7 +54,6 @@ public:
 class Unk_WcTitle : public ASDisplayObject
 {
 public:
-    void FUN_1422e4a50(const CStringW& strText);        // set the text
 };
 
 // The clip whose children are searched by name; the name of the clip itself.
@@ -73,7 +66,6 @@ class Unk_AasImage : public AScript {};
 class Unk_AasSource : public CPtred
 {
 public:
-    Unk_AasSource(CStringW strUrl, int nMovieId);       // 0x1422e5a70 (by value: the exe callee destroys strUrl)
     char m_pad[0x40 - sizeof(CPtred)];
 };
 class Unk_AasSourcePtr
@@ -98,7 +90,6 @@ private:
 class Unk_TextFieldEx : public AScript
 {
 public:
-    Unk_TextFieldEx(Scaleform::GFx::Value v, int nMovieId);   // 0x1422e4fd0 (by value: the exe callee destroys v)
 };
 class Unk_TextFieldExPtr
 {
@@ -174,24 +165,22 @@ MS2Ptr<Unk_GpCheck> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<Unk_WcTitle> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v);
 
-void FUN_1422cdfb0(Unk_140acd6e0* p, const CStringW& str);
-void FUN_1422e4a50(Unk_WcTitle* p, const CStringW& str);
-void FUN_1422c1fe0(ASMovieClip* p, unsigned int n);
 void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
 void FUN_1422c63f0(Scaleform::GFx::Value& v, int n);
-int FUN_1422c1340(ASMovieClip* p);
 
 
 void FUN_1422e5530(Unk_AasImage* p, Unk_AasSourcePtr sp);   // by value: the exe callee destroys sp
 CStringW FUN_1422e5b80(CStringW str);
-void FUN_1422e5060(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, unsigned n);
-void FUN_1422e5110(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, const CString& strMode);
 
 GFxManager* FUN_14025e7a0();
 class Unk_AsEx : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2);
+};
+class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
+{
+public:
+    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 UIWebBrowser* FUN_140c43790(int nUiId);
 
@@ -220,7 +209,7 @@ void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW 
     MS2Ptr<Unk_140acd6e0> spChild = node.FUN_140d01c90(strName);
     if (spChild == 0)
         return;
-    FUN_1422cdfb0(spChild.operator->(), strText);
+    static_cast<ASButton*>(spChild.operator->())->FUN_1422cdfb0(strText);
 }
 
 // @0x140cff610
@@ -232,7 +221,7 @@ void FUN_140cff610(const Scaleform::GFx::Value& root, CString strName, CStringW 
     MS2Ptr<Unk_WcTitle> spChild = node.FUN_140d01dd0(strName);
     if (spChild == 0)
         return;
-    FUN_1422e4a50(spChild.operator->(), strText);
+    reinterpret_cast<ASLabel*>(spChild.operator->())->FUN_1422e4a50(strText);
 }
 
 // @0x140cff740
@@ -268,7 +257,7 @@ void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned 
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return;
-    FUN_1422c1fe0(spClip.operator->(), n);
+    spClip.operator->()->FUN_1422c1fe0(n);
 }
 
 // @0x140cffa50
@@ -441,8 +430,8 @@ void FUN_140d00a70(const Scaleform::GFx::Value& target, const Scaleform::GFx::Va
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(target))->IsObject() || !((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(anchor))->IsObject())
         return;
-    Unk_Disp a(target, 2);
-    Unk_Disp b(anchor, 2);
+    ASDisplayObject a(target, 2);
+    ASDisplayObject b(anchor, 2);
     float fLeft = b.FUN_1422c10a0();
     float fX = fLeft + (float)b.FUN_1422c1340() + (float)nGap;
     float fY = b.FUN_1422c1110();
@@ -482,7 +471,7 @@ int FUN_140d00d80(const Scaleform::GFx::Value& root, CString strName)
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return 0;
-    return FUN_1422c1340(spClip.operator->());
+    return spClip.operator->()->FUN_1422c1340();
 }
 
 // @0x140d00e90
@@ -565,7 +554,7 @@ void FUN_140d011c0(Unk_AasImagePtr spImage, CStringW strUrl, bool bFlag)
     if (spImage == 0)
         return;
     ((class ASLoader*)(class Unk_AasImage*)(spImage.operator->()))->UnloadAndStop(bFlag);
-    FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(new Unk_AasSource(FUN_1422e5b80(CStringW(strUrl)), 2)));
+    FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(FUN_1422e5b80(CStringW(strUrl)), 2))));
 }
 
 extern CString DAT_143b0d350;                                   // "shrink"
@@ -577,7 +566,7 @@ void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMo
 {
     Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
     if (sp.get() != 0)
-        FUN_1422e5060(sp.operator->(), target, nParam);
+        reinterpret_cast<ASTextFieldEx*>(sp.operator->())->SetVerticalAlign(target, nParam);
 }
 
 // @0x140d013b0
@@ -585,7 +574,7 @@ void FUN_140d013b0(const Scaleform::GFx::Value& target, int nMovieId)
 {
     Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
     if (sp.get() != 0)
-        FUN_1422e5110(sp.operator->(), target, DAT_143b0d350);
+        reinterpret_cast<ASTextFieldEx*>(sp.operator->())->SetTextAutoSize(target, DAT_143b0d350);
 }
 
 // @0x140d01420
@@ -605,7 +594,7 @@ Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
 {
     GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
     if (pMovie != 0)
-        return Unk_TextFieldExPtr(new Unk_TextFieldEx(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId));
+        return Unk_TextFieldExPtr(reinterpret_cast<Unk_TextFieldEx*>(new ASTextFieldEx(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId)));
     return Unk_TextFieldExPtr(0);
 }
 
@@ -632,7 +621,7 @@ void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable)
         MS2Ptr<AScript> sp(new AScript(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2));
         if (sp->FUN_1422ba9a0())
             return;
-        ((Unk_AsEx*)sp.operator->())->FUN_140ba9570("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);
+        ((Unk_BannerClip*)sp.operator->())->FUN_140ba9570("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);
     }
 }
 
@@ -660,7 +649,7 @@ MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName)
 // @0x140d01be0
 MS2Ptr<ASDisplayObject> FUN_140d01be0(int nMovieId, const Scaleform::GFx::Value& v)
 {
-    MS2Ptr<ASDisplayObject> sp(new Unk_Disp(v, nMovieId));
+    MS2Ptr<ASDisplayObject> sp(new ASDisplayObject(v, nMovieId));
     return sp;
 }
 

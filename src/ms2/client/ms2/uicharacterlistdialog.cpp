@@ -166,6 +166,7 @@ template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::get() const;              // 0x140acd9
 template <> MS2Ptr<Unk_UeBag>::operator Unk_UeBag*() const;         // 0x140acd9d0 (folded with get)
 template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::operator->() const;       // 0x140acd9f0
 class Unk_ClMovie : public AScript {};
+class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 CString FUN_1412756c0(__int64 nBase, unsigned __int64 nId);         // the cache file name of a character
 struct Unk_ClPaths { char m_pad[0x60]; CString m_s60; };
 CString FUN_14016a5c0(const char* psz, int n);                         // normalized path copy
@@ -650,7 +651,7 @@ void UICharacterListDialog::vfunc_79(void* p)
                     if (spCharacter == 0)
                         return;
                     spCharacter->FUN_1418e9d20(strText);
-                    static_cast<Unk_ClMovie*>(m_30.operator->())->FUN_14129cce0("updateCharacterName", nIndex, CStringW(strText));
+                    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("updateCharacterName", nIndex, CStringW(strText));
                 }
                     break;
                 case 2:
@@ -1688,7 +1689,7 @@ void UICharacterListDialog::OnEndPopdown()
                     break;
                 }
             case 0x620001c:
-                pScene->FUN_14174eb80(1);
+                pScene->SelectCreateJob(1);
                 break;
             case 0x620000c:
                 FUN_1418f1790();

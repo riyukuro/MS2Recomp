@@ -54,6 +54,7 @@
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x14011e670
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VTriggerStateCli@@@@V?$CElementTraits@V?$MS2Ptr@VTriggerStateCli@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VTriggerStateCli@@@@_K@Z 0x141b322b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitriggereditordialog.cpp"
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
@@ -138,20 +139,6 @@ public:
     Scaleform::GFx::Value FUN_141931d80(const char* szMethod, unsigned int a1, unsigned int a2, unsigned int a3);
     Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3);   // a1 by value
     Scaleform::GFx::Value FUN_141b2fee0(const char* szMethod, const AScript& a1, CStringW a2);   // inline COMDAT below
-};
-// A GFx list component (ASTileList) with the ASUIComponent slots 16-24 (astriggerstate.h has the same list).
-class Unk_TeList : public ASTileList
-{
-public:
-    virtual void vfunc_16();                                            // 16
-    virtual void vfunc_17();                                            // 17
-    virtual void vfunc_18();                                            // 18
-    virtual void vfunc_19();                                            // 19
-    virtual void vfunc_20();                                            // 20
-    virtual void vfunc_21();                                            // 21
-    virtual void vfunc_22();                                            // 22
-    virtual void vfunc_23();                                            // 23
-    virtual void vfunc_24(bool bRefresh);                               // 24 validateNow
 };
 
 extern int g_bAppActive;                                                // 0x143af7d40
@@ -754,7 +741,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
     spService->FUN_1410b9e90(reinterpret_cast<PC*>(pPlayer)->FUN_141656ad0(), reinterpret_cast<struct Unk_CMISCubePtrSet*>(&cubes));
     if (!cubes.empty())
         std::sort(cubes.begin(), cubes.end(), FUN_141b2fa20);
-    MS2Ptr<Unk_TeList> spList = GetChild<Unk_TeList>("m_installScrollingList");
+    MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_installScrollingList");
     if (spList == 0)
         return;
     spList->FUN_1422dd1d0();
@@ -910,7 +897,7 @@ void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
         return;
     if (m_30 == 0)
         return;
-    MS2Ptr<Unk_TeList> spList = GetChild<Unk_TeList>("m_defaultScrollingList");
+    MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_defaultScrollingList");
     if (spList == 0)
         return;
     spList->FUN_1422dd1d0();

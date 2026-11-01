@@ -795,7 +795,7 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
     switch (nMode) {
     case 2: case 3: case 7: case 8: case 9: case 0x1e: {
         ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-        ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 1, 0xb, -1);
+        ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0xb, -1);
         int nMapId = reinterpret_cast<Unk_QgWorld*>(WorldService::GetInstance())->FUN_141bd3060();
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             Unk_PayloadPtr<CQuest> spQuest(quests[i]);
@@ -818,7 +818,7 @@ void UIQuestGuideDialog::FUN_141aaba00()
     m_30->Invoke("clearAll");
     FUN_141aabcb0();
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 1, 0xb, -1);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0xb, -1);
     ASArray list(2);
     for (size_t i = 0; i < quests.GetCount(); ++i) {
         Unk_PayloadPtr<CQuest> spQuest(quests[i]);
@@ -1087,7 +1087,7 @@ int UIQuestGuideDialog::FUN_141aad360(int nChapter, int nQuestId)
 {
     int nIndex = 0;
     std::vector<Unk_PayloadPtr<CQuest>> quests;
-    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cbb20(quests, 4, 0xb, nChapter);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFilteredVec(quests, 4, 0xb, nChapter);
     std::sort(quests.begin(), quests.end(), FUN_141aaf410);
     for (std::vector<Unk_PayloadPtr<CQuest>>::iterator it = quests.begin(); it != quests.end(); ++it) {
         ++nIndex;
@@ -1281,10 +1281,10 @@ int UIQuestGuideDialog::FUN_141aae6d0()
     if (!pActor)
         return 0;
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
-    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 1, 0, -1);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0, -1);
     if (quests.GetCount())
         return 0;
-    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cb8b0(quests, 2, 0, -1);
+    ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 2, 0, -1);
     if (!quests.GetCount())
         return 0;
     int nBest = 0;

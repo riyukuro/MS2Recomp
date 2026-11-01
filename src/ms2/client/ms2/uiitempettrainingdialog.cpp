@@ -141,8 +141,8 @@ void UIItemPetTrainingDialog::OnLoadComplete()
     CStringW strDesc = FUN_1405c2690(CStringW(L"s_pet_training_dialog_exp_desc"), FUN_1409404f0(m_nOffsetExp));
     ASObj obj(2);
     obj.FUN_1407cba60("bindID", CString(m_strSlot));
-    obj.FUN_1407cbb20("trainingItemName", m_spBox->FUN_140527b10());
-    obj.FUN_1407cbb20("trainingExpDesc", CStringW(strDesc));
+    ((class AScript&)(obj)).FUN_1407cbb20("trainingItemName", m_spBox->FUN_140527b10());
+    ((class AScript&)(obj)).FUN_1407cbb20("trainingExpDesc", CStringW(strDesc));
     obj.FUN_1409c1180("offsetExp", m_nOffsetExp);
     m_30->Invoke("setData", obj);
 }
@@ -323,9 +323,9 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
             CStringW strName = spPet->FUN_140528160();
             CStringW strExp = FUN_14028dfa0(CStringW(L"s_pet_training_dialog_pet_exp"), nLevel, FUN_1409404f0(nCur), FUN_1409404f0(nNeed));
             ASObj obj(2);
-            obj.FUN_1407cbb20("petName", CStringW(strName));
-            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
-            obj.FUN_1407cbb20("petExp", CStringW(strExp));
+            ((class AScript&)(obj)).FUN_1407cbb20("petName", CStringW(strName));
+            ((class AScript&)(obj)).FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
+            ((class AScript&)(obj)).FUN_1407cbb20("petExp", CStringW(strExp));
             obj.FUN_1409c1180("petCurrentExp", nCur);
             obj.FUN_1409c1180("petMaxExp", nNeed);
             m_30->Invoke("selectPet", obj.FUN_1422bb870());

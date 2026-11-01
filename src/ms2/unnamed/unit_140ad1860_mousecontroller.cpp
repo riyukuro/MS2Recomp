@@ -534,7 +534,7 @@ void CMouseController::FUN_140ad23f0(int nX, int nY)
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (reinterpret_cast<PC*>(pPc)->FUN_1416595b0() == 1)
+    if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1)
         return;
     int nAction = reinterpret_cast<PCBase*>(pPc)->FUN_14166c930();
     Vector3 pt = DAT_143b01a60;
@@ -587,7 +587,7 @@ void CMouseController::FUN_140ad2660(int nX, int nY)
     Unk_McPc* pPc = ((Unk_McPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (reinterpret_cast<PC*>(pPc)->FUN_1416595b0() == 1)
+    if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1)
         return;
     m_nMode = 3;
     reinterpret_cast<Unk_IntervalTimer&>(m_tmHold).Init();
@@ -768,7 +768,7 @@ void CMouseController::FUN_140ad3040()
         return;
     if (m_nMode != 1)
     {
-        if (reinterpret_cast<PC*>(pPc)->FUN_1416595b0() == 1 && m_nMode == 2)
+        if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1 && m_nMode == 2)
         {
             FUN_140ad22d0();
             return;

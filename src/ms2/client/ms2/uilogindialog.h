@@ -13,7 +13,7 @@
 class ASMovieClip;
 class CInPacket;
 class CMsgBoxData;
-class Unk_LoginInput;
+class ASTextInput;
 struct Unk_LoginRequest;
 
 class UILoginDialog : public UIDialog
@@ -35,9 +35,9 @@ public:
     void FUN_1419e1570(CInPacket& iPacket);                     // 0x1419e1570 packet 0x134: the answer to "delete account"
     CString FUN_1419e2370();                                    // 0x1419e2370 the typed account id
     CString FUN_1419e2450();                                    // 0x1419e2450 the typed password
-    MS2Ptr<Unk_LoginInput> FUN_1419e2530();                     // 0x1419e2530 "m_inputID"
+    MS2Ptr<ASTextInput> FUN_1419e2530();                     // 0x1419e2530 "m_inputID"
     template <class T> MS2Ptr<T> FUN_140bc6d10(const CString& strName, MS2Ptr<T>& out);   // 0x140bc6d10 bind a child
-    MS2Ptr<Unk_LoginInput> FUN_1419e25e0();                     // 0x1419e25e0 "m_inputPW"
+    MS2Ptr<ASTextInput> FUN_1419e25e0();                     // 0x1419e25e0 "m_inputPW"
     bool FUN_1419e2690(int nResult, const CMsgBoxData& box);    // 0x1419e2690 message box answer: check "m_chkLocaledName"
     bool FUN_1419e2730(int nResult, const CMsgBoxData& box);    // 0x1419e2730 message box answer: check "m_chkLocaledName" on yes
     void FUN_1419e27d0();                                       // 0x1419e27d0 enter the failure state

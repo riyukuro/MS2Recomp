@@ -63,7 +63,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
+int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int FUN_1407181a0(const CStringW& str);
 
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def

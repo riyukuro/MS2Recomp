@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/client/ms2/equipment.h"
 
 // The actor's buff set: the fall-damage knock-back direction.
 class Unk_PCMove { public: Vector3 FUN_1416836d0(); };   // C3: view of the real class (unit_141682f80)
@@ -54,9 +55,9 @@ void StateFallDamage::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         CString strRec;
-        bool bHasRec = !reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0().IsEmpty();
+        bool bHasRec = !reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName().IsEmpty();
         if (bHasRec)
-            strRec = reinterpret_cast<Unk_FallRec*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411eabd0();
+            strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName();
         if (!strRec.IsEmpty())
         {
             efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));

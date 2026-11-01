@@ -125,7 +125,7 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted table string
+#include "ms2/placeholder/formatstringid.h"
 CStringW FUN_1418fec00(int, __int64, bool);   // a price as text
 bool FUN_1418ff110(int nPayType, __int64 nAmount, bool bFlag);    // the player can pay
 int FUN_141276180(const CString& strName, const CString& strArg);
@@ -264,7 +264,7 @@ void UIUGCBannerDialog::vfunc_72()
 void UIUGCBannerDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
     {
         vfunc_67();
@@ -333,7 +333,7 @@ int UIUGCBannerDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 FUN_141b358d0();
                 FUN_141b364a0(-1);
-                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
                 if (spUpload.get() ? true : false)
                 {
                     if (spUpload->m_spViewer.get() ? true : false)
@@ -488,7 +488,7 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             if (nHour < 0 || nHour >= 0x18)
                 return;
             CStringW strPrice = FUN_1418fec00(FUN_141b36a60(), banner->GetHourly(nHour), (bool)0);
-            CStringW strText = FUN_14052bd00(0x9b6, strPrice);
+            CStringW strText = FormatStringId<CStringW>(0x9b6, strPrice);
             ASTooltip tip(1, 2);
             if (tip.ApplyTextTooltip(strText) != 0)
                 *pRetVal = tip.FUN_1422bb870();
@@ -525,7 +525,7 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
         return 0x2a;
     if (spReserve->m_reserves.GetCount() != m_1f8.GetCount())
         return 0x2b;
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
         return 0xd;
     if (spUpload->m_nKind != 3)
@@ -547,7 +547,7 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
 // @0x141b357e0
 int UIUGCBannerDialog::FUN_141b357e0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
         return 0;
     if (spUpload->m_nKind != 3)
@@ -564,7 +564,7 @@ void UIUGCBannerDialog::FUN_141b358d0()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    ((class CUgcManager*)FUN_14052d220())->FUN_141889ce0(3);
+    ((class CUgcManager*)FUN_14052d220())->RefreshLocalFiles(3);
     ASArray arr(2);
     ((class CUgcManager*)FUN_14052d220())->FUN_141889e20(0x10, 0, &arr);
     int nCount = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
@@ -603,7 +603,7 @@ void UIUGCBannerDialog::FUN_141b35b80()
 // @0x141b35cd0
 void UIUGCBannerDialog::OnOpenFolder()
 {
-    ((class CUgcManager*)FUN_14052d220())->FUN_1418829b0(3);
+    ((class CUgcManager*)FUN_14052d220())->OpenUploadFolder(3);
 }
 
 // @0x141b35d00
@@ -614,7 +614,7 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return 0;
     }
-    if (((class CUgcManager*)FUN_14052d220())->FUN_141881a40(nIndex) == 0)
+    if (((class CUgcManager*)FUN_14052d220())->DoesFileExistByIndex(nIndex) == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
         return 0;
@@ -730,7 +730,7 @@ int UIUGCBannerDialog::FUN_141b362b0(int nOffset)
 // @0x141b363b0
 void UIUGCBannerDialog::FUN_141b363b0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_spFile == 0)
@@ -750,7 +750,7 @@ void UIUGCBannerDialog::FUN_141b364a0(int nIndex)
     }
     else
     {
-        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->FUN_14188a4b0(nIndex);
+        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->GetUploadFile(nIndex);
         if (spFile == 0)
             return;
         if (m_30.get() != 0)

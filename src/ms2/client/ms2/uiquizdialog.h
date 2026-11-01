@@ -41,7 +41,6 @@ public:
     void FUN_14129a930(CInPacket& packet);                      // the quiz packet
     void FUN_14129ad50();                                       // show the current page
     MS2Ptr<ASCountDownTimer> FUN_14129b5f0(const CString& strName, MS2Ptr<ASCountDownTimer>& out);   // bind a child
-    MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out);
 
     int m_nMode;                                                // +0x178 0 = question page, 1 = answer page
     CStringW m_strQuestion;                                     // +0x180

@@ -8,6 +8,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/client/ms2/effectservice.h"   // C3: CEffectData, the real effect set
 
 // Effect factory (effectservice): create the runtime effect of a param for a target.
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget);
@@ -43,7 +44,7 @@ bool PendingEffect::Init(MS2Ptr<Unk_PeEffectSet> spSet, const Unk_PeTarget& kTar
         m_points.Copy(*kTarget.m_pPoints);
         m_target.m_pPoints = &m_points;
     }
-    m_spSet->FUN_14119f710();
+    reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f710();
     return true;
 }
 MS2_REPLACE_METHOD(0x140A8F300, PendingEffect, Init, 302, 0x19DB2124);
@@ -51,7 +52,7 @@ MS2_REPLACE_METHOD(0x140A8F300, PendingEffect, Init, 302, 0x19DB2124);
 // @0x140a8f440
 bool PendingEffect::Poll()
 {
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(50) && m_spSet->FUN_14119f680())
+    if (m_tick.Check(50) && reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f680())
         return true;
     return false;
 }
@@ -60,9 +61,9 @@ MS2_REPLACE_METHOD(0x140A8F440, PendingEffect, Poll, 80, 0x381B39C2);
 // @0x140a8f4a0
 void PendingEffect::CreateEffects(std::vector<CEffectPtr>& vOut)
 {
-    for (POSITION pos = m_spSet->FUN_14119f540().GetHeadPosition(); pos != 0; m_spSet->FUN_14119f540().GetNext(pos))
+    for (POSITION pos = reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f540().GetHeadPosition(); pos != 0; reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f540().GetNext(pos))
     {
-        CEffectParam* pParam = m_spSet->FUN_14119f540().GetAt(pos).get();
+        CEffectParam* pParam = reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f540().GetAt(pos).get();
         CEffectPtr spEffect = FUN_14119eae0(pParam, reinterpret_cast<Unk_EffectTarget*>(&m_target));
         if (spEffect)
             vOut.push_back(spEffect);

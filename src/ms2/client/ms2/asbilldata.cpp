@@ -624,26 +624,26 @@ MS2_REPLACE_METHOD(0x1409AD420, ASBillData, FUN_1409ad420, 903, 0xADC38BEA);
 // @0x1409ad7b0
 static void FUN_1409ad7b0(ASObj& obj, const CStringW& strSale)
 {
-    obj.FUN_1407cbb20("saleText", strSale);
+    ((class AScript&)(obj)).FUN_1407cbb20("saleText", strSale);
 }
 
 // @0x1409ad800
 static void FUN_1409ad800(ASObj& obj, const CStringW& strLabel)
 {
-    obj.FUN_1407cbb20("label", strLabel);
+    ((class AScript&)(obj)).FUN_1407cbb20("label", strLabel);
 }
 
 // @0x1409ad850
 static void FUN_1409ad850(ASObj& obj, const CStringW& strPrice, __int64 nPrice)
 {
-    obj.FUN_1407cbb20("strSalePrice", strPrice);
+    ((class AScript&)(obj)).FUN_1407cbb20("strSalePrice", strPrice);
     obj.FUN_1407cba60("salePrice", FUN_1407194b0(nPrice));
 }
 
 // @0x1409ad8e0
 static void FUN_1409ad8e0(ASObj& obj, const CStringW& strPrice, __int64 nPrice)
 {
-    obj.FUN_1407cbb20("strPrice", strPrice);
+    ((class AScript&)(obj)).FUN_1407cbb20("strPrice", strPrice);
     obj.FUN_1407cba60("price", FUN_1407194b0(nPrice));
 }
 
@@ -656,7 +656,7 @@ static void FUN_1409ad970(ASObj& obj, const unsigned& nMarketSN)
 // @0x1409ad9c0
 void FUN_1409ad9c0(ASObj& obj, const CStringW& strPoint, __int64 nPoint)
 {
-    obj.FUN_1407cbb20("strStarPoint", strPoint);
+    ((class AScript&)(obj)).FUN_1407cbb20("strStarPoint", strPoint);
     obj.FUN_1407cba60("starPoint", FUN_1407194b0(nPoint));
 }
 MS2_REPLACE(0x1409AD9C0, FUN_1409ad9c0, 129, 0xE44F0A15);

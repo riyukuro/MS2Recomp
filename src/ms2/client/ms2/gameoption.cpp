@@ -56,6 +56,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameoption.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/cgameoption.h"
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -995,7 +996,7 @@ void CGameOptionGraphicDefault::vfunc_3(int n)
 {
     if (n == 0)
     {
-        FUN_14125dff0(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0());
+        FUN_14125dff0(&m_state, reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()));
         FUN_14125ef60(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_140c77560());
     }
     m_n74 = 0;
@@ -1297,16 +1298,16 @@ void CGameOptionGraphicDefault::vfunc_7()
 // @0x14124ce20
 void CGameOptionGraphicDefault::FUN_14124ce20()
 {
-    Unk_GraphicState* pGfx = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0();
+    Unk_GraphicState* pGfx = reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0());
     int bResChanged = 0;
     int bNotify = 0;
     if (m_state.m_nScreenMode != pGfx->m_nScreenMode || m_state.m_nResIdx != pGfx->m_nResIdx)
         bResChanged = 1;
     if (bResChanged)
     {
-        FUN_14125e910(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), m_state.m_nScreenMode, m_state.m_nResIdx);
-        m_state.m_nWidth = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0()->m_nWidth;
-        m_state.m_nHeight = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0()->m_nHeight;
+        FUN_14125e910(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), m_state.m_nScreenMode, m_state.m_nResIdx);
+        m_state.m_nWidth = reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_nWidth;
+        m_state.m_nHeight = reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->m_nHeight;
     }
     if (m_state.m_nQuality != pGfx->m_nQuality)
         FUN_14125e1f0(&m_state, m_state.m_nQuality, 0);
@@ -1355,7 +1356,7 @@ void CGameOptionGraphicDefault::FUN_14124d080()
                 {
                     Unk_GoRawMode* pRaw = pSource->FUN_14124fee0(i);
                     if (pRaw != 0
-                        && FUN_14125e7e0(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), pRaw->m_nFormat, pRaw->m_nWidth, pRaw->m_nHeight))
+                        && FUN_14125e7e0(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), pRaw->m_nFormat, pRaw->m_nWidth, pRaw->m_nHeight))
                         modes.push_back(Unk_GoResMode(i, pRaw->m_nWidth, pRaw->m_nHeight));
                 }
                 if (!modes.empty())
@@ -1422,11 +1423,11 @@ void CGameOptionGraphicDefault::vfunc_10()
 {
     CBaseOption::vfunc_10();
     bool bOldEnchant = true;
-    Unk_GraphicState* pGfx = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0();
+    Unk_GraphicState* pGfx = reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0());
     if (pGfx != 0)
         bOldEnchant = pGfx->m_bEnchantEffect;
     FUN_14124ce20();
-    FUN_14125dff0(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), &m_state);
+    FUN_14125dff0(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), &m_state);
     FUN_14125ef60(TSingleton<CGameOption>::GetInstance()->FUN_140c77560(), &m_state2);
     FUN_14125ef90(&m_state2);
     if (m_state.m_bEnchantEffect != bOldEnchant)
@@ -1458,7 +1459,7 @@ CString CGameOptionGraphicDefault::GetTypeName()
 // @0x14124d890
 int CGameOptionGraphicDefault::vfunc_14()
 {
-    unsigned int nDiff1 = memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), sizeof(Unk_GraphicState));
+    unsigned int nDiff1 = memcmp(&m_state, reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), sizeof(Unk_GraphicState));
     nDiff1 |= memcmp(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_140c77560(), sizeof(Unk_GraphicState2));
     return nDiff1;
 }
@@ -2066,7 +2067,7 @@ void CGameOption::SetBenchmarkLevel(int nLevel)
     if (m_nBenchmark != nLevel)
     {
         m_nBenchmark = nLevel;
-        FUN_14125e1f0(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), nLevel, 1);
+        FUN_14125e1f0(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), nLevel, 1);
     }
 }
 

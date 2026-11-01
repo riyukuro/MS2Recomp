@@ -30,6 +30,11 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/npcdata.h"
+#include "ms2/client/ms2/npcdatacli.h"
+#include "ms2/commonfiles/filesystem.h"
+#include "ms2/ms2format.h"
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/client/ms2/filepreload_1.h"
@@ -67,13 +72,11 @@ public:
     virtual Vector3 vfunc_18();
     virtual void Unk_Slot19();
     virtual Vector3 vfunc_20();
-    void FUN_1415293b0();                               // stop the auto move
 };
 
 // The thing an entity event points at (slot 6 returns its kind object).
 class Unk_NcActor { public: virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3();
-                            virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void* vfunc_6(); };
-bool FUN_14087ddc0(void* pKind, int nMask);
+                            virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual const efd::ClassInfo* vfunc_6(); };
 
 // The world: the local player, the entity of an event, the proxy of an object id, the current map.
 class Unk_NcWorld : public WorldService
@@ -86,62 +89,31 @@ public:
 void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGameObject>
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(const Unk_CommandChat&);
+void FUN_141276f80(const Unk_CommandChat&);   // FUN_141276f80 takes a pointer and returns int: kept
 CString FUN_1411c0aa0(const char* szText);                   // a text without arguments
-CString FUN_140513200(const char* szFormat, const int& n);   // narrow format of one int
 
-// The npc id -> npc data manager: handles to the data rows.
-class Unk_NcNpc
-{
-public:
-    int FUN_1406ccfc0();                                // friendly flag
-    unsigned short FUN_1406cd060();                     // level
-    int FUN_140a7c970();                                // hp
-    int FUN_1406cd0d0();                                // shop id
-    int m_pad_00[31];
-    int m_nKind;                                        // +0x7c
-};
-class Unk_NcHandle
-{
-public:
-    ~Unk_NcHandle();                                    // 0x1406d5390
-    bool FUN_14109a230();                               // no row
-    Unk_NcNpc* FUN_140965990();
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_NcHandle, 0x10);
-class Unk_NcMgr { public: Unk_NcHandle FUN_140a7cab0(unsigned nNpc); };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpc);   // the npc row; FUN_141a6b800 discards it
 
-class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
 CStringW GetStringCommon(int nId);                        // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);
 
-class Unk_NcEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
+class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 
 unsigned FUN_140718200(const CStringW& str);          // the npc id of an id text
-CStringW FUN_1401aa6a0(unsigned nNpc);
+CStringW FUN_1401aa6a0(int nNpc);
 void FUN_140841420(CStringW& str);                      // trim
 CStringTable* GetStringTable();
-CStringW FUN_140938ae0(CStringW strKey, const int& n);  // FUN_14028dfa0<int>
 
 // xml file helpers
-class Unk_NcFiles { public: int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class Unk_NcNode { public: Unk_NcNode* FUN_140165cf0(const char* szTag); Unk_NcNode* FUN_140168650(const char* szTag); };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
-void FUN_140399100(CString strPattern, CString strDir, void* pOutput, CString strExclude, bool bLocalOnly);
+void FUN_140399100(CString strPattern, CString strDir, CAtlArray<CString>& output, CString strExclude, bool bLocalOnly);
 CString FUN_14038f6d0(const CString&, const char*);
-CStringW FUN_1401bf530(Unk_NcNode* pNode, const char* szAttr, CStringW strDefault);
-void* FUN_140163230(void* arr);                         // CAtlArray<CString>::CAtlArray
-void FUN_1401641d0(void* arr);                          // CAtlArray<CString>::~CAtlArray
-unsigned __int64 FUN_1401662c0(void* arr);              // GetCount
-CString* FUN_140164930(void* arr, unsigned __int64 i);  // operator[]
-struct Unk_NcStrArray { void* m_0; void* m_8; void* m_10; void* m_18; };
+CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* szAttr, CStringW strDefault);
 
 // @0x141a6c140
 template CStringW FUN_14028dfa0<CStringW, unsigned short, CStringW, unsigned, CStringW, CStringW>(CStringW, const CStringW&, const unsigned short&, const CStringW&, const unsigned&, const CStringW&, const CStringW&);
@@ -157,13 +129,13 @@ UINpcCreateDialog::UINpcCreateDialog()
     m_bFilesRead = false;
     m_bEntriesBuilt = false;
     FUN_1422dc3b0(1);
-    ((class Unk_NcEvents*)FUN_140c607b0())->FUN_1419308c0(this);
+    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(this);
 }
 
 // @0x141a6a590
 UINpcCreateDialog::~UINpcCreateDialog()
 {
-    ((class Unk_NcEvents*)FUN_140c607b0())->FUN_141930950(this);
+    ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(this);
 }
 
 // @0x141a6a680
@@ -259,8 +231,8 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     } else if (_stricmp("OnMoveToNpc", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nNpc = data.FUN_1422b8a10();
-            int nField;
-            if (reinterpret_cast<Unk_NcWalk*>(TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fb700(nNpc, &nField) == 0) {
+            unsigned nField;
+            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(nNpc, &nField) == 0) {
                 FUN_1412751f0(GetStringCommon(0x578), 1, 1);
             } else if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {
                 MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(nNpc);
@@ -272,10 +244,10 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 }
             } else {
                 if (((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
-                    ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->FUN_1415293b0();
+                    reinterpret_cast<MyPC*>(((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->SendFunctionCube();
                 Unk_CommandChat chat;
                 chat.kind = 0;
-                CString strCmd = FUN_140513200("/MoveField {0}", nField);
+                CString strCmd = Unk_SocketFormat("/MoveField {0}", nField);
                 chat.message = (const char*)strCmd;
                 FUN_141276f80(chat);
                 m_nPendingNpc = nNpc;
@@ -293,7 +265,7 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
 {
     Unk_NcActor* pActor = reinterpret_cast<Unk_NcActor*>(WorldService::GetInstance()->FindObjectByEntityId(*(const egf::EntityID*)pEvt));
     if (pActor != 0) {
-        if (FUN_14087ddc0(pActor != 0 ? pActor->vfunc_6() : 0, 0x6200004)) {
+        if (efd::ClassInfo::IsKindOf(pActor != 0 ? pActor->vfunc_6() : 0, 0x6200004)) {
             if (m_nPendingNpc == 0)
                 return;
             MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(m_nPendingNpc);
@@ -336,27 +308,25 @@ void UINpcCreateDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 void UINpcCreateDialog::ReadNpcFromFile()
 {
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcFromFile");
-    m_files.m_v.clear();
-    Unk_NcStrArray files[8];
-    FUN_140163230(files);
+    m_files.clear();
+    CAtlArray<CString> files;
     FUN_140399100(CString(".xml"), CString("./Data/Xml/NpcData/"), files, CString(""), false);
-    for (unsigned __int64 i = 0; i < FUN_1401662c0(files); i++) {
-        CString strFile = *FUN_140164930(files, i);
+    for (unsigned __int64 i = 0; i < files.GetCount(); i++) {
+        CString strFile = files[i];
         TiXmlDocument doc;
-        if (((class Unk_NcFiles*)GetFileSystem())->FUN_1403974b0(doc, (const char*)strFile, 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strFile, 0, true, false) == 0)
             continue;
         Unk_NcNode* pRoot = ((class Unk_NcNode*)((class Unk_XmlNode*)(((Unk_NcNode*)&doc)))->FirstChild("ms2"));
         for (Unk_NcNode* pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")); pNpc != 0; pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc"))) {
             CStringW strId((const wchar_t*)0);
-            strId = FUN_1401bf530(pNpc, "id", CStringW(L""));
+            strId = FUN_1401bf530((Unk_140165cf0*)pNpc, "id", CStringW(L""));
             if (!strId.IsEmpty())
-                m_files.FUN_14041ada0(strId);
+                m_files.push_back(strId);
         }
     }
     m_bFilesRead = true;
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"End ReadNpcFromFile");
     FUN_141a6b800();
-    FUN_1401641d0(files);
 }
 
 // @0x141a6b6a0
@@ -382,8 +352,8 @@ CStringW UINpcCreateDialog::FUN_141a6b6a0(int nType, int bFriendly)
 void UINpcCreateDialog::FUN_141a6b800()
 {
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcAll");
-    for (unsigned __int64 i = 0; i < m_files.FUN_14041af10(); i++) {
-        CStringW strId = m_files.FUN_1405e99b0(i);
+    for (unsigned __int64 i = 0; i < m_files.size(); i++) {
+        CStringW strId = m_files[i];
         unsigned nNpc = FUN_140718200(strId);
         FUN_1406cd330(nNpc);
     }
@@ -394,28 +364,28 @@ void UINpcCreateDialog::FUN_141a6b800()
 void UINpcCreateDialog::FUN_141a6b8f0()
 {
     m_entries.clear();
-    m_entries.resize(m_files.FUN_14041af10());
-    for (unsigned __int64 i = 0; i < m_files.FUN_14041af10(); i++) {
-        CStringW strId = m_files.FUN_1405e99b0(i);
+    m_entries.resize(m_files.size());
+    for (unsigned __int64 i = 0; i < m_files.size(); i++) {
+        CStringW strId = m_files[i];
         unsigned nNpc = FUN_140718200(strId);
-        Unk_NcHandle row = ((class Unk_NcMgr*)FUN_1406d6e90())->FUN_140a7cab0(nNpc);
-        if (row.FUN_14109a230())
+        MS2Ptr<NpcDataCli> row = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpc);
+        if (row.IsNull())
             continue;
-        int bFriendly = row.FUN_140965990()->FUN_1406ccfc0();
-        CStringW strKind = FUN_141a6b6a0(row.FUN_140965990()->m_nKind, bFriendly);
+        int bFriendly = row->GetFriendly();
+        CStringW strKind = FUN_141a6b6a0(row->m_nClass, bFriendly);
         CStringW strName = GetStringTable()->FUN_141811980(10, nNpc);
         CStringW strNpc = FUN_1401aa6a0(nNpc);
         CStringW strEmpty(L"");
-        unsigned nHp = row.FUN_140965990()->FUN_140a7c970();
-        unsigned short nLevel = row.FUN_140965990()->FUN_1406cd060();
+        unsigned nHp = row->GetClassConstant();
+        unsigned short nLevel = row->GetLevel();
         CStringW strLine = FUN_14028dfa0(CStringW(L"s_npccreate_render_name_format"), strKind, nLevel, strEmpty, nHp, strName, strNpc);
-        unsigned short nLevel2 = row.FUN_140965990()->FUN_1406cd060();
+        unsigned short nLevel2 = row->GetLevel();
         CStringW strSearch = FUN_14028dfa0(CStringW(L"s_npccreate_name_format"), strKind, nLevel2, strEmpty, strName, strNpc);
-        if (row.FUN_140965990()->FUN_1406cd0d0() != 0) {
-            int nShop = row.FUN_140965990()->FUN_1406cd0d0();
-            strLine += FUN_140938ae0(CStringW(L"s_npccreate_add_shopid"), nShop);
-            int nShop2 = row.FUN_140965990()->FUN_1406cd0d0();
-            strSearch += FUN_140938ae0(CStringW(L"s_npccreate_add_shopid"), nShop2);
+        if (row->GetShopId() != 0) {
+            unsigned nShop = row->GetShopId();
+            strLine += FUN_14028dfa0(CStringW(L"s_npccreate_add_shopid"), nShop);
+            unsigned nShop2 = row->GetShopId();
+            strSearch += FUN_14028dfa0(CStringW(L"s_npccreate_add_shopid"), nShop2);
         }
         FUN_140841420(strSearch);
         strSearch.Remove(L' ');

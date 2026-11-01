@@ -34,7 +34,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // <dir>/<file> resource path
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-void FUN_140874280(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, CString& strOut);  // child attribute
+int XmlGetChildAttr(class TiXmlElement *, char const *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 void FUN_140399100(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly);
 unsigned int FUN_1407181d0(const CString& s);                           // decimal string -> id
 extern int DAT_1439ed00c;                                               // file caches checked (hot reload)
@@ -68,14 +68,14 @@ bool CEmotionData::Load(Unk_140165cf0* pNode)
     FUN_1408733e0(pNode, "faceName", m_strFaceName);
     XmlGetAttr((class TiXmlElement*)(pNode), "equiphide", m_bEquipHide);
     XmlGetAttr((class TiXmlElement*)(pNode), "isTool", m_bTool);
-    FUN_140874280(pNode, "anim", "name", m_anims[0]);
-    FUN_140874280(pNode, "idleAnim", "name", m_anims[1]);
+    XmlGetChildAttr((class TiXmlElement *)(pNode), "anim", "name", m_anims[0]);
+    XmlGetChildAttr((class TiXmlElement *)(pNode), "idleAnim", "name", m_anims[1]);
     if (m_strName.IsEmpty())
         return false;
     if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
         return false;
     CString strBore;
-    FUN_140874280(pNode, "boreAnim", "name", strBore);
+    XmlGetChildAttr((class TiXmlElement *)(pNode), "boreAnim", "name", strBore);
     if (!strBore.IsEmpty())
     {
         ATL::CAtlArray<CString> arr;
@@ -87,14 +87,14 @@ bool CEmotionData::Load(Unk_140165cf0* pNode)
         if (arr.GetCount() > 2)
             m_anims[4] = arr[2];
     }
-    Unk_140165cf0* pTexture = pNode->FUN_140165cf0("textureani");
+    Unk_140165cf0* pTexture = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pNode))->FirstChild("textureani"));
     if (pTexture != 0)
     {
         m_spTextureAni.AssignRaw(new CTextureAnimationData);
         if (!m_spTextureAni->FUN_141847e30(pTexture))
             m_spTextureAni = NULL;
     }
-    for (Unk_140165cf0* pEffect = pNode->FUN_140165cf0("effect"); pEffect != 0; pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
+    for (Unk_140165cf0* pEffect = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pNode))->FirstChild("effect")); pEffect != 0; pEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pEffect))->NextSibling("effect")))
     {
         m_effects.Add();
         CString& strFile = m_effects.GetAt(m_effects.GetCount() - 1);
@@ -293,9 +293,9 @@ void CEmotionTable::LoadCommon()
     for (unsigned int i = 0; i < files.GetCount(); i++)
     {
         TiXmlDocument doc;
-        if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
+        if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
             return;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
             Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", files[i]);
@@ -353,16 +353,16 @@ MS2Ptr<CEmotionGroup> CEmotionTable::ReadEmotionGroup(unsigned int nId)
     strPath = FUN_14071a5b0("Emotion", strPath);
     AddIdCache(nId, strPath);
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return NULL;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return NULL;
     }
     MS2Ptr<CEmotionGroup> spGroup;
-    Unk_140165cf0* pImport = pRoot->FUN_140165cf0("import");
+    Unk_140165cf0* pImport = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("import"));
     if (pImport != 0)
     {
         CString strName;

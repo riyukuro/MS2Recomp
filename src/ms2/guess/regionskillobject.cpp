@@ -2,7 +2,7 @@
 // spawned at every point of the area, the re-spawn of the culled ones, the collision shapes) and the std::list / ATL::CAtlList
 // glue over its Vector3 points. The unit name is a guess (queue row ?\regionskillobject.cpp).
 // MS2-UNIT: ?\regionskillobject.cpp
-// MS2-FUNCTIONAL: CRegionSkillObject::FUN_1416f5a20 (Init) is behaviour-equivalent; the frame temp layout of the collision-shape loops is not reproduced
+// MS2-FUNCTIONAL: CRegionSkillObject::Init (Init) is behaviour-equivalent; the frame temp layout of the collision-shape loops is not reproduced
 // MS2-RANGE: 0x1416f57c0-0x1416f8f46 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEAUUnk_StreamPoint@@AEAI$0A@@?$pair@UUnk_StreamPoint@@I@std@@QEAA@AEAUUnk_StreamPoint@@AEAI@Z 0x1416f7a10 ; unique
@@ -89,7 +89,7 @@ CRegionSkillObject::~CRegionSkillObject()
 }
 
 // @0x1416f5a20
-int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArray<Vector3>& kPoints, int nSkillId, short nLevel, float fRotX, float fRotY, int nTick)
+int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3>& kPoints, int nSkillId, short nLevel, float fRotX, float fRotY, int nTick)
 {
     m_nId = nId;
     m_nOwnerId = nOwnerId;
@@ -216,14 +216,14 @@ int CRegionSkillObject::FUN_1416f5a20(int nId, int nOwnerId, const ATL::CAtlArra
 }
 
 // @0x1416f67e0
-void CRegionSkillObject::FUN_1416f67e0()
+void CRegionSkillObject::StopEffects()
 {
     for (unsigned i = 0; i < m_effects.GetCount(); i++)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_effects[i]);
 }
 
 // @0x1416f6860
-void CRegionSkillObject::FUN_1416f6860()
+void CRegionSkillObject::FadeOutEffects()
 {
     for (unsigned i = 0; i < m_effects.GetCount(); i++)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a67f0(m_effects[i], ((class Unk_RsConfig*)FUN_1401d3200())->m_fFade.FUN_1402bac70());

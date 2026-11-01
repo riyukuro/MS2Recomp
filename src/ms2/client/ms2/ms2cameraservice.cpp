@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2cameraservice.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/client/ms2/camera.h"
 #include <egf/Entity.h>
 #include <egf/EntityManager.h>
@@ -20,7 +21,6 @@
 // ---- out-of-unit callees ----
 class Unk_GameInstance;
 egf::EntityManager* FUN_1409670f0();                                         // the world's entity manager
-egf::Entity* FUN_1411cf440(egf::EntityManager* mgr, const egf::EntityID* id);   // entity lookup by id
 
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
 #ifndef MS2_HOOK_DLL
@@ -64,7 +64,7 @@ efd::AsyncResult MS2CameraService::OnTick()
         ecr::CameraDataPtr spCamera = NULL;
         if (m_entityCameraMap.find(id, spCamera))
         {
-            egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), &id);
+            egf::Entity* pEntity = reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf440(id);
             if (pEntity)
                 UpdateCamera(spCamera, pEntity);
         }

@@ -69,8 +69,6 @@ class Unk_GmWorld
 {
 public:
     Unk_GmActor* FUN_141bd0cc0();                       // the local player's actor
-    void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
-        int nOwner);                                    // play a sound event
 };
 
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
@@ -95,7 +93,7 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlot);
 // Header-defined statics (same in every obj that includes the shared item header).
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
-
+class PC { public: class Unk_MyPCEquip * FUN_14165f460(void); };
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GemSlotBag);
 
 GemSlotBag* FUN_14126e9a0(NotifyContext::BindData* p);
@@ -133,7 +131,7 @@ int GemSlot::vfunc_18(void* p)
                     if (nType == m_nGemType)
                     {
                         int nSlot = -1;
-                        MS2Ptr<CItem> spWorn = pActor->FUN_14165f460()->GetItemByGemType(nType);
+                        MS2Ptr<CItem> spWorn = (((class PCGemEquip *)((class PC*)((class PCGemEquip *)((class PC*)(pActor))))->FUN_14165f460()))->GetItemByGemType(nType);
                         if (spWorn.get() != 0)
                             nSlot = spWorn->FUN_140526b50();
                         FUN_141271960(spItem, nSlot, 0);
@@ -166,7 +164,7 @@ int GemSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -177,7 +175,7 @@ int GemSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -288,7 +286,7 @@ int GemSlot::vfunc_8(void* p)
                 else
                     slot.FUN_1407cbbe0("config", false);
                 int nGemSystem = spItem->GetGem()->vfunc_1();
-                slot.FUN_1407cb9c0("gemSystem", nGemSystem);
+                ((class AScript&)(slot)).FUN_1407cb9c0("gemSystem", nGemSystem);
             }
         }
     }

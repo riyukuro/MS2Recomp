@@ -36,10 +36,13 @@ class Unk_HpClip : public ASGameEntity
 public:
     Scaleform::GFx::Value FUN_141994b30(const char* szMethod, unsigned int a1, unsigned int a2, int a3);               // "setArrow"
     Scaleform::GFx::Value FUN_141994c00(const char* szMethod, __int64 a1, __int64 a2, unsigned short a3, int a4);    // "open"
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);                                       // "setValue"
+    void FUN_1422c0290(float cx, float cy);
+};
+class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
+{
+public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
-    void FUN_1422c0290(float cx, float cy);
 };
 struct Unk_HpCfgFloat { char m_pad[0x58]; };
 struct Unk_HpCfg
@@ -95,7 +98,6 @@ class Unk_HpActor : public PC
 {
 public:
     class Unk_HpSeat* FUN_14165ca20();
-    Unk_HpMountHolder* FUN_1416764a0();
     int FUN_1415278d0(__int64 nId);
 };
 struct Unk_HpCfgData { char m_pad[0xa]; bool m_a; char m_b; bool m_c; char m_d; bool m_e; };
@@ -225,7 +227,7 @@ int UIHpBar::Entity::vfunc_8(int n)
         Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal != 0 && pLocal->vfunc_122(pPc) == 1 && pPc->FUN_141674bc0() != 0)
             return 1;
-        Unk_HpMountHolder* pHolder = pActor->FUN_1416764a0();
+        Unk_HpMountHolder* pHolder = reinterpret_cast<Unk_HpMountHolder*>(pActor->FUN_1416764a0());
         if (pHolder != 0)
         {
             Unk_HpMountPtr spMount = pHolder->FUN_141707750();
@@ -799,7 +801,7 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_HpClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -826,7 +828,7 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_HpClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -853,7 +855,7 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_HpClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -880,7 +882,7 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_HpClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -907,7 +909,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_HpClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -934,7 +936,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_HpClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);

@@ -262,7 +262,7 @@ void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
     default:
         return;
     }
-    MS2Ptr<Unk_HsInfo> spInfo = pPC->FUN_141664200();
+    MS2Ptr<Unk_HsInfo> spInfo = pPC->GetHideAndSeekInfo();
     if (spInfo == 0)
         return;
     if (spInfo->FUN_14050a4d0())

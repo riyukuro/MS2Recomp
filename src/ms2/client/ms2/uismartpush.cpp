@@ -117,7 +117,7 @@ int UISmartPush::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nId = data.FUN_1422b8a10();
-            reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd8620(nId);
+            reinterpret_cast<CSmartPushManager*>((class CSmartPushManager*)((FUN_140cea070())))->FUN_140dd8620(nId);
         }
     }
     return 0;
@@ -134,7 +134,7 @@ void UISmartPush::vfunc_2()
 void UISmartPush::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
-    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd8730();
+    reinterpret_cast<CSmartPushManager*>((class CSmartPushManager*)((FUN_140cea070())))->FUN_140dd8730();
 }
 MS2_REPLACE_METHOD(0x140FA3DF0, UISmartPush, vfunc_3, 37, 0xAEF58F5C);
 
@@ -148,14 +148,14 @@ int UISmartPush::FUN_140fa3e20(CSmartPush* pPush)
         return 0;
     }
     ASObj obj(2);
-    obj.FUN_1407cb9c0("id", pPush->m_nId);
-    obj.FUN_1407cbb20("text", pPush->vfunc_7());
-    obj.FUN_1407cbb20("icon", *(CStringW*)((char*)FUN_140812670(&pPush->m_pData) + 0x60));
+    ((class AScript&)(obj)).FUN_1407cb9c0("id", pPush->m_nId);
+    ((class AScript&)(obj)).FUN_1407cbb20("text", pPush->vfunc_7());
+    ((class AScript&)(obj)).FUN_1407cbb20("icon", *(CStringW*)((char*)FUN_140812670(&pPush->m_pData) + 0x60));
     obj.FUN_1407cbbe0("isToggle", pPush->vfunc_11());
     obj.FUN_1407cbbe0("active", pPush->m_nState == 2);
     obj.FUN_1407cbbe0("isSmallActiveIcon", pPush->vfunc_12());
-    obj.FUN_1407cbb20("activeMovie", pPush->vfunc_8());
-    obj.FUN_1407cbb20("eventPopup", pPush->vfunc_10());
+    ((class AScript&)(obj)).FUN_1407cbb20("activeMovie", pPush->vfunc_8());
+    ((class AScript&)(obj)).FUN_1407cbb20("eventPopup", pPush->vfunc_10());
     m_30->Invoke("addPush", obj);
     return 1;
 }

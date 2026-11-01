@@ -101,11 +101,11 @@ public:
 };
 Unk_SceneRoot* FUN_1413f9890();
 
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
-class Unk_Collision
+class CPhysXHelper
 {
 public:
-    static Unk_Collision* FUN_1409f7ca0();
     int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
 };
 
@@ -637,15 +637,15 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
                 float fLen = ptDir.FUN_140968990();
                 Vector3 ptBack = ptDir.FUN_1409f7960();
                 Vector3 ptHit = g_143b01a60;
-                if (Unk_Collision::FUN_1409f7ca0()->FUN_14168a230(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
+                if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
-                    if (Unk_Collision::FUN_1409f7ca0()->FUN_14168a230(m_88, ptHit, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(m_88, ptHit, ptBack, fLen, 0x209))
                         return 1;
                 }
                 else
                 {
                     Vector3 ptHit2 = g_143b01a60;
-                    if (Unk_Collision::FUN_1409f7ca0()->FUN_14168a230(ptHit, ptHit2, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(ptHit, ptHit2, ptBack, fLen, 0x209))
                         return 1;
                 }
             }

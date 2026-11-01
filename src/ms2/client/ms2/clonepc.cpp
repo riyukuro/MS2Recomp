@@ -129,7 +129,7 @@ public:
 
 extern char DAT_143acdb20;                                          // set while the avatar previews are disabled
 
-void FUN_14098c6e0(void* pObj, unsigned int nKey, char* pVal);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void* FUN_141659220(PC* pPC, int n);
 void FUN_1416591e0(PC* pPC, int n, void* pData);
 namespace egmAnimation { class AnimationService; }
@@ -144,12 +144,15 @@ public:
 };
 Unk_PCCliList* FUN_1416749a0(PC* pPC);
 void FUN_1408f3a80(void* pList);
-void FUN_1411e3de0(Unk_PCEquipSet* pSet, int n);
-void FUN_1411e3000(Unk_PCEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, int a, int b, bool c);
-void FUN_1411e22c0(Unk_PCEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, int n);
+class CEquipment   // C3: member view of the real CEquipment (equipment.h clashes with the local AdditionalCli)
+{
+public:
+    void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // CollectItemsUpTo
+    void FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nMaxLayer, int bCheck, bool bForce);   // the shown items
+    void FUN_1411e3de0(int bKeepLoaded);   // UnequipAll
+};
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 void FUN_141653d10(PC* pPC, MS2Ptr<CItem> spItem);
-void* FUN_14165f460(PC* pPC);
 void FUN_141270e00(void* pDst, void* pSrc);
 void FUN_141270610(void* pObj);
 void FUN_140a35900(Unk_PCD88* pObj);
@@ -213,7 +216,7 @@ void ClonePC::vfunc_9(void* p)
 {
     PC::vfunc_9(p);
     char c = 0;
-    FUN_14098c6e0(p, 0xa0b6b179, &c);
+    FUN_14098c6e0((class Unk_CachedEntity*)(p), 0xa0b6b179, *(bool const*)(&c));
 }
 MS2_REPLACE_METHOD(0x141086b70, ClonePC, vfunc_9, 59, 0x46BD94A4);
 
@@ -337,7 +340,7 @@ void ClonePC::vfunc_149()
         if (m_pSourcePC != 0)
         {
             FUN_1408f3a80(&m_kListD48);
-            FUN_1411e3de0(&m_kEquipDE0, 1);
+            reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e3de0(1);
             ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
             vfunc_152(&kEquips, reinterpret_cast<PC*>(m_pSourcePC)->FUN_1416561a0());
             for (POSITION pos = kEquips.GetHeadPosition(); pos; kEquips.GetNext(pos))
@@ -357,9 +360,9 @@ void ClonePC::vfunc_149()
                 }
             }
             vfunc_143();
-            void* pSrc = ::FUN_14165f460(m_pSourcePC);
-            FUN_141270e00(::FUN_14165f460(this), pSrc);
-            FUN_141270610(::FUN_14165f460(this));
+            void* pSrc = (void*)m_pSourcePC->FUN_14165f460();
+            FUN_141270e00((void*)PC::FUN_14165f460(), pSrc);
+            FUN_141270610((void*)PC::FUN_14165f460());
         }
         else
         {
@@ -665,7 +668,7 @@ void ClonePC::vfunc_152(ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, Unk_PCEquipSe
 {
     if (m_b1338)
     {
-        FUN_1411e22c0(pEquip, pList, 3);
+        reinterpret_cast<CEquipment*>(pEquip)->FUN_1411e22c0(*pList, 3);
     }
     else if (!m_kEquipFilter.IsNull())
     {
@@ -673,7 +676,7 @@ void ClonePC::vfunc_152(ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, Unk_PCEquipSe
     }
     else
     {
-        FUN_1411e3000(pEquip, pList, 4, 0, false);
+        reinterpret_cast<CEquipment*>(pEquip)->FUN_1411e3000(*pList, 4, 0, false);
     }
 }
 MS2_REPLACE_METHOD(0x1410884f0, ClonePC, vfunc_152, 149, 0x22F05686);

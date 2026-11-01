@@ -38,6 +38,7 @@ static CString s_strWillUpdatePos = "WillUpdatePos";
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/equipment.h"
 
 // CItem::FUN_140527840's record is the item's CItemData (citem.h names it Unk_ItemEquipData).
 class Unk_ItemEquipData : public CItemData {};
@@ -164,7 +165,7 @@ inline void FUN_140cd3e50(PC* pPc)
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    pPc->FUN_1416561a0()->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -183,7 +184,7 @@ inline void FUN_140cd3fe0(PC* pPc, int bRemove)
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    pPc->FUN_1416561a0()->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e22c0(lstEquips, FUN_140cd3e30());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -1393,8 +1394,8 @@ void Customize::Equipment::ShowSlot(Unk_InventoryEquipSlot eSlot)
     if (spEquip == 0)
         return;
     spEquip->FUN_1411dcf10(s_strCustomize);
-    pPc->FUN_1416561a0()->FUN_1411e75f0();
-    pPc->FUN_1416561a0()->FUN_1411e5c10();
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e75f0();
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e5c10();
 }
 
 // @0x140cd0980
@@ -1407,9 +1408,9 @@ void Customize::Equipment::HideSlot(Unk_InventoryEquipSlot eSlot)
     if (spEquip == 0)
         return;
     spEquip->FUN_1411dce60(s_strCustomize);
-    pPc->FUN_1416561a0()->FUN_1411e75f0();
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e75f0();
     if (eSlot == 6)
-        pPc->FUN_1416561a0()->FUN_1411e6ab0();
+        reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e6ab0();
 }
 
 // @0x140cd0a40
@@ -1563,7 +1564,7 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    MS2Ptr<CEquipItem> spCap = pPc->FUN_1416561a0()->FUN_1411e1860(6, 6, 0);
+    MS2Ptr<CEquipItem> spCap = reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e1860(6, 6, 0);
     if (spCap == 0)
         return;
     CItemData* pData = static_cast<CItemData*>(spCap->FUN_1411dc7f0());

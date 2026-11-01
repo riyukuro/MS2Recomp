@@ -44,6 +44,7 @@ static Unk_Handle1401cd100 s_dat_143acbc50(0);                                  
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/fittingdollpc.h"
+class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -144,7 +145,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     m_selectedSlots.clear();
     m_selectedSlots.resize(6);
     for (unsigned i = 0; i < 6; ++i)
-        FUN_140c57ce0(StringFormat("m_selectedSlot{0}", i), &m_selectedSlots[i]);
+        reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0(StringFormat("m_selectedSlot{0}", i), reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_selectedSlots[i]));
     FUN_140e48d80("m_selectedCount", &m_selectedCount);
     FUN_140e48d80("m_selectNotice", &m_selectNotice);
     int nDropBoxId = 0;

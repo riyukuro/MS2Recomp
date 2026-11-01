@@ -118,8 +118,8 @@ public:
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14166cce0(unsigned int);
-    void FUN_14166cd70(unsigned int);
+    void AddStateFlags(unsigned int);
+    void RemoveStateFlags(unsigned int);
 };
 int FUN_140408410(Unk_TaxiIdArray* arr, int* id);       // CAtlArray<int>::Find
 class CTaxiManager   // C3: member view for the former free stand-ins
@@ -133,13 +133,14 @@ public:
     bool FUN_14116d840();
 };
 void* FUN_14025e7c0();
-void FUN_140710590(COutPacket* p);                      // send
+void FUN_140710590(COutPacket& p);                      // send
 void FUN_140ca7230(Unk_TaxiTimer* t, unsigned delayMs, TFunctor<void, EmptyParam> f);
 
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140aed440(struct Unk_CameraSetting&);
+    int GetModeSetting(struct Unk_CameraSetting&);
+    CCameraMode* FUN_140af24f0();
     float FUN_140af0c70();
     float FUN_140af0d30();
 public:
@@ -217,7 +218,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
         FUN_140ca7230(FUN_1409f24b0(), 1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
         Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (player != 0)
-            ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cce0(0x100);
+            ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
     }
 }
 
@@ -242,7 +243,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                         {
                             ent.FUN_1408a7ed0(list->GetAt(pos));
                             Unk_CameraSetting setting;
-                            if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed440(*(struct Unk_CameraSetting*)(&setting)) != 0)
+                            if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
                             {
                                 Vector3 base;
                                 reinterpret_cast<egf::Entity*>(ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(base));
@@ -264,7 +265,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
-                                    ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cce0(0x100);
+                                    ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
                             }
                             else
                             {
@@ -275,13 +276,13 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                     }
                 }
                 else if (player != 0)
-                    ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
+                    ((class PCBase*)(class Unk_TaxiPlayer*)(player))->RemoveStateFlags(0x100);
             }
             else if (player != 0)
-                ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
+                ((class PCBase*)(class Unk_TaxiPlayer*)(player))->RemoveStateFlags(0x100);
         }
         else if (player != 0)
-            ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
+            ((class PCBase*)(class Unk_TaxiPlayer*)(player))->RemoveStateFlags(0x100);
     }
 }
 
@@ -293,7 +294,7 @@ void CAutoFindTaxiStation::SendRequestTaxiMode5()
     ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(struct Unk_TaxiIdArray*)(&DAT_143ab3098))->Add(DAT_143ab2870);
     COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
     packet.WriteUInt8(5);
-    FUN_140710590(&packet);
+    FUN_140710590(packet);
     int nDelay = 5000;
     FUN_140ca7230(FUN_1409f24b0(), nDelay, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
 }
@@ -327,7 +328,7 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
         return;
     Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (player != 0)
-        ((class PCBase*)(class Unk_TaxiPlayer*)(player))->FUN_14166cd70(0x100);
+        ((class PCBase*)(class Unk_TaxiPlayer*)(player))->RemoveStateFlags(0x100);
     m_nActive = 0;
     m_nDone = 0;
     m_nPaused = 0;
@@ -338,11 +339,11 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
 void CAutoFindTaxiStation::FUN_1409f1af0()
 {
     Unk_CameraSetting setting;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed440(*(struct Unk_CameraSetting*)(&setting)) != 0)
+    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
     {
-        Vector3 delta = setting.m_c.FUN_140965c40(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_1409f2540());
+        Vector3 delta = setting.m_c.FUN_140965c40(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()->FUN_1409f2540());
         float fLen = delta.FUN_140967ac0() * 0.5f;
-        setting.m_c = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_1409f2540();
+        setting.m_c = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()->FUN_1409f2540();
         Unk_TaxiCamMove mv;
         FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fLen / 1000.0f, &setting);
         mv.m_nKind = 2;
@@ -374,7 +375,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
                         ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(struct Unk_TaxiIdArray*)(&DAT_143ab3098))->Add(DAT_143ab2870);
                         COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
                         packet.WriteUInt8(5);
-                        FUN_140710590(&packet);
+                        FUN_140710590(packet);
                     }
                 }
                 FUN_1409f1a00();

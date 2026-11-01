@@ -38,6 +38,8 @@
 #include "ms2/client/ms2/uimessenger.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/client/ms2/uigroupmessenger.h"
+#include "ms2/placeholder/asuicomponent.h"
 
 // return types of the getters this unit calls
 struct Unk_MdState;
@@ -74,9 +76,6 @@ public:
     virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool bFocus);                     // 24 set the focus
-    int FUN_1422c76c0();                                    // has the focus
-    CStringW FUN_1422e0c20();                               // the html text
-    void FUN_1422e0bd0(const CStringW& strHtml);            // set the html text
 };
 
 class Unk_ChatLog;
@@ -96,13 +95,12 @@ MS2_CHECK_OFFSET(Unk_ChatWindow, m_pMessenger, 0x50);
 
 // shared helpers of other units
 Unk_MdState* FUN_141482e80();
-void FUN_141953660(Unk_ChatMessenger* pMessenger, CStringW strText);
 UIMessengerBrowser* FUN_140a3ab70(int nUiId);
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 CStringW FUN_14093e330(CAchieve* pAchieve, int nGrade);
 CStringW FUN_14093b9c0(int nAchieveId, int nGrade);
-CStringW FUN_141425950(int nItemId);                        // the item's name
+CStringW FUN_141425950(unsigned int);                        // the item's name
 CStringW FUN_140763e10(int nId);
 CStringW FUN_140631720(int nId, int nValue, bool bTwo);     // a stat's "name +value" text
 CStringW FUN_140631830(int nId, int nValue, int nMode);     // a special stat's text
@@ -433,11 +431,11 @@ bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW st
 // @0x140d2c2a0
 void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrLinks)
 {
-    if (spInput->FUN_1422c76c0() == 0)
+    if (reinterpret_cast<MS2Ptr<ASUIComponent>&>(spInput)->FUN_1422c76c0() == 0)
         return;
     if (arrLinks.IsEmpty())
         return;
-    CStringW strHtml = spInput->FUN_1422e0c20();
+    CStringW strHtml = reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->GetHtmlText();
     if (strHtml.IsEmpty())
         return;
 
@@ -456,13 +454,13 @@ void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrL
         }
         if (bChanged)
         {
-            spInput->FUN_1422e0bd0(strHtml);
+            reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0bd0(strHtml);
             spInput->vfunc_24(true);
             CStringW strText = reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText();
             if (strText.IsEmpty())
             {
                 CStringW strEmpty(L"<Font></Font>");
-                spInput->FUN_1422e0bd0(strEmpty);
+                reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0bd0(strEmpty);
                 spInput->vfunc_24(true);
             }
         }
@@ -554,7 +552,7 @@ void FUN_140d2cca0(unsigned nId, unsigned nRank)
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
         ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
-        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
+        reinterpret_cast<UIGroupMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger)->FUN_141953660(CStringW(strLink));
 }
 
 // Post a chat line of a cash product link.
@@ -600,7 +598,7 @@ void FUN_140d2d060(int nItemId, int nGrade, __int64 nUid)
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
         ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
-        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
+        reinterpret_cast<UIGroupMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger)->FUN_141953660(CStringW(strLink));
 }
 
 // @0x140d2d150
@@ -610,7 +608,7 @@ void FUN_140d2d150(int nItemId, int nGrade)
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
         ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
-        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
+        reinterpret_cast<UIGroupMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger)->FUN_141953660(CStringW(strLink));
 }
 
 // @0x140d2d230
@@ -620,7 +618,7 @@ void FUN_140d2d230(int nNameId, int nGrade, unsigned nCount, int nUid)
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
         ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
-        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
+        reinterpret_cast<UIGroupMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger)->FUN_141953660(CStringW(strLink));
 }
 
 // Post a chat line of a Merat Market premium product link.
@@ -631,7 +629,7 @@ void FUN_140d2d330(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog != NULL)
         ((class UIMessengerBrowser*)(class Unk_ChatLog*)(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pLog))->FUN_141a24fb0(CStringW(strLink));
     if (reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger != NULL)
-        FUN_141953660(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger, CStringW(strLink));
+        reinterpret_cast<UIGroupMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(FUN_141482e80())->m_pMessenger)->FUN_141953660(CStringW(strLink));
 }
 
 // The achievement link text: "<name> (user info)" for the earned grade.

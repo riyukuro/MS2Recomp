@@ -1110,37 +1110,37 @@ void StateClimb::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     switch (m_n10) {
     case 0x56:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x11);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x11);
         m_bAltSide = false;
         m_bAltUp = false;
         break;
     case 0x57:
     case 0x58:
     case 0x59:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(m_bAltUp ? 0x12 : 0x15);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(m_bAltUp ? 0x12 : 0x15);
         break;
     case 0x5a:
     case 0x5b:
     case 0x5c:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(m_bAltSide ? 0x14 : 0x17);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(m_bAltSide ? 0x14 : 0x17);
         break;
     case 0x5d:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x13);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x13);
         break;
     case 0x5e:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x16);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x16);
         break;
     case 0x5f:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x18);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x18);
         break;
     case 0x60:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x19);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x19);
         break;
     case 0x61:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x1b);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x1b);
         break;
     case 0x62:
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x1a);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x1a);
         break;
     }
 }
@@ -1261,7 +1261,7 @@ int StateClimb::FUN_1417bd310(efd::Point3 kPos)
     kInfo.m_maxDist = 50.0f;
     kInfo.m_groups = FUN_1417bc010();
     if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kInfo, 0)) {
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d430(-kInfo.m_hitNormal, 1, 0);
+        reinterpret_cast<PCBase*>(m_pOwner)->SetLookDirection(-kInfo.m_hitNormal, 1, 0);
         return 1;
     }
     return 0;
@@ -1666,7 +1666,7 @@ void StateCrawl::vfunc_3(double fTime)
         return;
     efd::Point3 kMove = efd::Point3::ZERO;
     if (m_n10 == 0x1c) {
-        efd::Point3 kDir = static_cast<Unk_StPC*>(m_pOwner)->FUN_141674b60(
+        efd::Point3 kDir = static_cast<Unk_StPC*>(m_pOwner)->CalcMoveDirectionNoYaw(
             MS2_ST_POINT(m_pOwner->FUN_14123c360()));
         float fSpeed = m_bCrawling ? m_pOwner->vfunc_95() : 0.0001f;
         kMove = kDir * fSpeed * (float)fTime;
@@ -1710,7 +1710,7 @@ void StateCrawl::vfunc_9(double fTime)
         case 0x1b: {
             unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
             if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x20, nSeq))
-                reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x20);
+                reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x20);
             break;
         }
         case 0x1c: {
@@ -1858,14 +1858,14 @@ void StateDash::vfunc_9(double fTime)
     switch (m_n10) {
     case 0x1f:
         if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(7, nSeq)) {
-            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(7);
+            reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(7);
             m_pOwner->vfunc_93(true);
             TSingleton<CGroundEffectDataManager>::GetInstance()->PlayEffects(reinterpret_cast<GameObject*>(m_pOwner), CString("land"));
         }
         break;
     case 0x1d:
         if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(6, nSeq))
-            reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(6);
+            reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(6);
         break;
     }
 }
@@ -1911,7 +1911,7 @@ void StateDash::vfunc_6()
     m_n10 = 0x20;
     unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
     if (!reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x35, nSeq))
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x35);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x35);
 }
 MS2_REPLACE_METHOD(0x1417c0470, StateDash, vfunc_6, 148, 0xB6201BF7);
 

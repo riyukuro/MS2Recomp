@@ -51,6 +51,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/asbutton.h"
 
 // return types of the getters this unit calls
 class Unk_InventoryListener;
@@ -76,9 +77,8 @@ public:
     int FUN_141658f30();
     unsigned int FUN_141662de0();
 };
-void FUN_1411e1ce0(Unk_TrInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
+class CEquipment { public: float GetAbilityRate(SAType eType); void CollectShownItemsInLayer(CAtlList<MS2Ptr<CEquipItem>>& items, int nLayer); };   // C3: the real members (0x1411e1110 a special ability rate, 0x1411e1ce0 the worn items in a layer)
 // The player's inventory (global 0x143ab2a90).
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
@@ -105,7 +105,6 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool IsDebugMode();
 };
-void FUN_1422ce240(Unk_SocketPageButton*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 void FUN_1422dce60(Unk_SocketPageBag*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 void FUN_1422de0e0(Unk_SocketPageBag*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
@@ -125,11 +124,10 @@ int FUN_140627b80(int count, unsigned rate);
 bool FUN_140627c10(MS2Ptr<CItem> item);
 void FUN_140628390(int level, unsigned short rate, int count, CIngredientContainer* cost);
 void FUN_140710590(COutPacket&);
-void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& out, char* pFlag);
+void FUN_1409e4950(MS2Ptr<CItem>, CStringW&, bool*);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* pListener, CStringW b);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-__int64 FUN_141a02ed0(const CMsgBoxData& box, int index, int def);
 DragSlotBag* FUN_140c54570(const CString& name);
 ItemSlotBag* FUN_140c54590(const CString& name);
 class Unk_ItemEventSystem {
@@ -167,7 +165,6 @@ class ASListItemRenderer : public AScript {
 public:
     ASListItemRenderer(const Scaleform::GFx::Value& row, int nMovie);       // 0x1422e1c50
     virtual ~ASListItemRenderer();                                          // 0x1422e1ca0
-    bool FUN_1422ce0e0();                                                   // is checked
     __int64 m_f0, m_f1, m_f2, m_f3, m_f4, m_f5, m_f6, m_f7, m_f8;           // up to 0x88 bytes (as ascorelist.h)
 };
 MS2_CHECK_SIZE(ASListItemRenderer, 0x88);
@@ -293,20 +290,20 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     }
     m_actionButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_btnAction");
     if (m_actionButton.get() != 0)
-        FUN_1422ce240(m_actionButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d00), 0);
+        reinterpret_cast<ASButton*>(m_actionButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d00), 0);
     bool isDebug = ((class CInputKeyHandler*)(class Unk_TrDebug*)(reinterpret_cast<Unk_TrDebug*>(FUN_14025e7c0())))->IsDebugMode();
     int debug = isDebug ? 1 : 0;
     m_debugButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnAction");
     if (m_debugButton.get() != 0) {
         m_debugButton->vfunc_3(debug);
         if (debug != 0)
-            FUN_1422ce240(m_debugButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14), 0);
+            reinterpret_cast<ASButton*>(m_debugButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14), 0);
     }
     m_debugFillButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
     if (m_debugFillButton.get() != 0) {
         m_debugFillButton->vfunc_3(debug);
         if (debug != 0)
-            FUN_1422ce240(m_debugFillButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16), 0);
+            reinterpret_cast<ASButton*>(m_debugFillButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16), 0);
     }
     FUN_140f6d450(m_slots0Name, m_sourceItems, 0x435, 0x20);
     FUN_140f6d450(m_slots1Name, m_ingredientEquips, 0x415, 0x20);
@@ -430,8 +427,8 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7e8d0()
     }
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
     Unk_TrInventory* inventory = ((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0());
-    FUN_1411e1ce0(inventory, equipped, 0);
-    FUN_1411e1ce0(inventory, equipped, 1);
+    reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 0);
+    reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
         if (equip == 0)
@@ -550,7 +547,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7f420(MS2Ptr<CItem> item)
     }
     CStringW highSa;
     char bHighSa = 0;
-    FUN_1409e4950(MS2Ptr<CItem>(item), highSa, &bHighSa);
+    FUN_1409e4950(MS2Ptr<CItem>(item), highSa, reinterpret_cast<bool *>(&bHighSa));
     if (item->FUN_140526bd0() >= 5 && static_cast<unsigned char>(bHighSa) == 1) {
         CStringW ask = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_msg_ask_high_sa_option_item");
         CStringW text;
@@ -1029,7 +1026,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82ba0(const Scaleform::GFx::Funct
     if (renderer.FUN_1422ba9a0())
         return;
     unsigned index = evt.FUN_1422e2820();
-    if (renderer.FUN_1422ce0e0()) {
+    if (reinterpret_cast<ASButton*>(&renderer)->FUN_1422ce0e0()) {
         MS2Ptr<CItem> item = GetItemAt(m_ingredientEquips, index);
         FUN_140f7f420(item);
     } else {
@@ -1149,7 +1146,7 @@ bool ItemSocketSystemPageSocketUnlock::FUN_140f83440(int result, const CMsgBoxDa
         std::vector<__int64> uids;
         unsigned __int64 count = box.FUN_141a02f10(1, 0);
         for (unsigned __int64 i = 0; i < count; ++i) {
-            __int64 value = FUN_141a02ed0(box, i + 2, 0);
+            __int64 value = const_cast<CMsgBoxData&>(box).FUN_141a02ed0(i + 2, 0);
             uids.push_back(value);
         }
         Unk_SockUidList request;

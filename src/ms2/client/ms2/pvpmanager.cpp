@@ -12,6 +12,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/individualarenadata.h"
+#include "ms2/client/ms2/pcbase.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 // The local player actor (COM-style: AddRef slot 1, Release slot 2).
@@ -42,20 +44,10 @@ public:
     int FUN_141bd3060();   // C3: was free FUN_141bd3060
 };
 CStringW GetStringCommon(int nId);
-void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);
+void FUN_140d73aa0(CStringW text, int nA, void* pB, CStringW tag);
 
-// The arena table (0x14051a980 returns the record of a selection, MS2Ptr-style).
-struct Unk_PvpRecord { char m_pad[0x30]; int m_nMapId; };
-class Unk_PvpRecordPtr
-{
-public:
-    ~Unk_PvpRecordPtr();                                            // 0x14051ae60
-    bool operator==(__int64 value) const { return (__int64)m_p == value; }  // 0x1412816a0
-    Unk_PvpRecord* operator->() const;                              // 0x14051afc0
-    void* m_pad0;
-    Unk_PvpRecord* m_p;
-};
-class Unk_PvpArenaTable { public: Unk_PvpRecordPtr FUN_14051a980(int nSelection); };
+// The arena table (CIndividualArenaDataTable, the TSingleton instance).
+class Unk_PvpArenaTable;
 extern Unk_PvpArenaTable* DAT_143aaf098;
 
 // @0x1412818c0
@@ -110,15 +102,15 @@ void CPVPManager::SendCancelRequest()
         Unk_PvpActorPtr spActor(((class Unk_PvpActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
         if (spActor == 0)
             return;
-        if (spActor->FUN_14166ce30() != 0)
+        if (reinterpret_cast<PCBase*>(spActor.operator->())->FUN_14166ce30() != 0)
         {
             FUN_140d73aa0(GetStringCommon(0x42e), 0, 0, CStringW(L""));
             return;
         }
-        Unk_PvpRecordPtr spRecord = FUN_1412818c0()->FUN_14051a980(Selection());
+        CIndividualArenaDataTable::DataPtr spRecord = reinterpret_cast<CIndividualArenaDataTable*>(FUN_1412818c0())->GetData(Selection());
         if (spRecord == 0)
             return;
-        if (spRecord->m_nMapId == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060())
+        if (spRecord->m_nFieldID == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060())
         {
             FUN_140d73aa0(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;

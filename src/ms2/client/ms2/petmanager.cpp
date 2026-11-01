@@ -42,6 +42,7 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/uiotherpetsystemdialog.h"
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -123,7 +124,6 @@ void FUN_1401ff930(unsigned char*, void*);   // C3: was FUN_1401ff930
 int FUN_14053dc60(CItemData*);
 bool FUN_140534e50(MS2Ptr<CItem>&);
 MS2Ptr<CItemData> FUN_14053f870(int);
-void FUN_140e6d4a0(int nObjectId, MS2Ptr<CItem> spItem);    // the pet item arrived
 extern Unk_Inventory g_143ab2a90;                           // the player's inventory
 
 // messages
@@ -131,9 +131,9 @@ CStringW GetStringCommonByKey(const CStringW&);
 void FUN_141275260(int, int, int);
 int FUN_141276180(const CString&, const CString&);
 void FUN_1412751b0(const CStringW&, int);
-void FUN_140d73aa0(CStringW, int, int, CStringW);
-void FUN_140d73bc0(int, int, int, CStringW);
-MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void FUN_140d73bc0(int, int, void*, CStringW);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 int FUN_1412773a0(int);   // C3: was FUN_1412773a0
 
@@ -1034,7 +1034,7 @@ void CPetManager::FUN_140c8ac50(CInPacket& in)
         spItem->SetObjectId(nObjectId);
         spItem->SetItemUid(nUid);
         spItem->FUN_140524eb0(in);
-        FUN_140e6d4a0(nObjectId, spItem);
+        UIOtherPetSystemDialog::FUN_140e6d4a0(nObjectId, spItem);
     }
 }
 // @0x140c8ae50

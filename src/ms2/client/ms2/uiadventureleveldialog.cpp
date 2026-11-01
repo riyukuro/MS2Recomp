@@ -54,6 +54,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/client/ms2/pcbase.h"
+
+template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString& strName);    // 0x140ba4b70 (defined below)
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -184,7 +187,6 @@ extern Unk_ALClaimed g_unkClaimed;                                          // 0
 
 // The ability manager of the player and the current ability state.
 class Unk_ALAbilityMgr { public: int FUN_140970020(int nSkillId, unsigned short nLevel, int a3, int a4); };
-Unk_ALAbilityMgr* FUN_1416749a0(Unk_ALPlayer* pPlayer);
 class Unk_ALCurrent { public: int* FUN_140195640(); };
 extern void* DAT_143aac280;
 
@@ -205,7 +207,6 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;
 
 // The localized-string helpers.
-CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW FUN_14183e9c0(CStringW str, int n);
 
@@ -432,7 +433,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    MS2Ptr<ASTileList> spList = FUN_140ba4b70("m_abilityList");
+    MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_abilityList");
     if (spList == NULL)
         return;
     spList->Invoke("resetRenderer");
@@ -449,7 +450,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
                 continue;
         }
         bool bLock = pPlayer->vfunc_141() < pAbility->m_8;
-        if (FUN_1416749a0(pPlayer)->FUN_140970020(pAbility->m_0, nStep, 0, 1) == 0) {
+        if (reinterpret_cast<Unk_ALAbilityMgr *>(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416749a0())->FUN_140970020(pAbility->m_0, nStep, 0, 1) == 0) {
             if (pAbility->m_0 != *FUN_140ba4fa0()->FUN_140195640())
                 bLock = true;
         }
@@ -475,7 +476,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    MS2Ptr<ASTileList> spList = FUN_140ba4b70("m_missionList");
+    MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_missionList");
     if (spList == NULL)
         return;
     spList->Invoke("resetRenderer");
@@ -558,7 +559,7 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
     param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;
-    param.m_strTip = FUN_14062b4f0(CStringW(L"s_adventure_level_stat_reward"), &pReward->m_c);
+    param.m_strTip = FUN_14028dfa0<int>(CStringW(L"s_adventure_level_stat_reward"), pReward->m_c);
     param.m_nFlags = 1;
     param.m_nTipArg = 4;
     param.m_strCount = FUN_1402bad60("{0}", &pReward->m_c);
@@ -645,7 +646,7 @@ float FUN_140ba4b50(Unk_ALConstU32* p)
 }
 
 // @0x140ba4b70
-MS2Ptr<ASTileList> UIAdventureLevelDialog::FUN_140ba4b70(const CString& strName)
+template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString& strName)
 {
     if (m_30 == NULL)
         return MS2Ptr<ASTileList>(0);
@@ -707,7 +708,6 @@ MS2_REPLACE_METHOD(0x140BA4250, UIAdventureLevelDialog, FUN_140ba4250, 873, 0xD7
 MS2_REPLACE_METHOD(0x140BA45C0, UIAdventureLevelDialog, FUN_140ba45c0, 909, 0x796168A3);
 MS2_REPLACE_METHOD(0x140BA4960, UIAdventureLevelDialog, FUN_140ba4960, 167, 0x63E6C143);
 MS2_REPLACE_METHOD(0x140BA4A10, UIAdventureLevelDialog, FUN_140ba4a10, 283, 0x7655C1F1);
-MS2_REPLACE_METHOD(0x140BA4B70, UIAdventureLevelDialog, FUN_140ba4b70, 139, 0x05A924CA);
 
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).

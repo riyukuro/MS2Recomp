@@ -171,15 +171,15 @@ extern Unk_SingletonObj* DAT_143aac4c8;
 extern void* DAT_143aac4d0;
 extern Unk_SingletonObj* DAT_143aac4d8;
 
-// An 8-byte handle (the exe ctor 0x1401cd100 stores its argument at +0, as for Unk_Handle1401cd100).
-class Unk_143aac520
+// An 8-byte handle (the exe ctor 0x1401cd100 stores its argument at +0, as for the other handles).
+class Unk_BuddyHandle
 {
 public:
-    Unk_143aac520(int);                                             // 0x1401cd100
+    Unk_BuddyHandle(void*);                                           // 0x1401cd100
 private:
     void* m_p;
 };
-MS2_CHECK_SIZE(Unk_143aac520, 8);
+MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
 
 typedef ATL::CRBMap<unsigned int, CStringW> Unk_BmNameMap;
 typedef Unk_BmBoxPtr<Unk_BmNameMap> Unk_BmNameMapPtr;
@@ -201,7 +201,7 @@ static Unk_BmNameTable s_mapItemNames(10);                          // 0x143aac4
 static CStringA s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;                // 0x143aac420
 static CStringA s_strSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-static Unk_143aac520 s_unk520(0);
+static Unk_BuddyHandle s_unk520(0);
 
 bool CBlackMarketUtil::s_bInit;
 bool CBlackMarketTable::s_bInit;

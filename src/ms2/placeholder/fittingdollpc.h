@@ -60,7 +60,6 @@ struct Unk_PCEquipSet
     bool FUN_1411eac20();                                   // the set name is a named one (CEquipment)
     float FUN_1411e0f00(float f);                           // scale by special ability 3 (CEquipment)
     void FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend);   // (CEquipment)
-    float FUN_1411e1110(int nSpecial);                      // the special ability rate (CEquipment)
     int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
     void FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // the equip items of a layer (CEquipment)
     void FUN_1411e76c0(double fTime);                       // Update (CEquipment)
@@ -247,7 +246,7 @@ public:
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);            // 0x141655e10 the worn item of a slot (customize.cpp)
     int FUN_1416569b0(CItem* pItem);                        // 0x1416569b0 the equip slot of an item (customize.cpp)
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // 0x141655c30 a worn item by uid
-    MS2Ptr<CEquipItem> FUN_141655e80(int nSlot, int nKind); // 0x141655e80 the worn item of a slot (scenestategame 0x7b)
+    MS2Ptr<CEquipItem> GetEquipBySlotKind(int nSlot, int nKind); // 0x141655e80 the worn item of a slot (scenestategame 0x7b)
     void FUN_1416642c0(bool b);                             // 0x1416642c0 +0x1224 (scenestategame 0x79 mode 6)
     void FUN_141661c70(int n);                              // 0x141661c70 +0x10f4, refreshes the name tag (scenestategame 0xa8 mode 1)
     Unk_PCEquipSet* FUN_1416561a0();                        // 0x1416561a0 &m_kEquipDE0
@@ -284,9 +283,9 @@ public:
     unsigned char FUN_141658f10();                          // the PC bang grade
     unsigned char FUN_141658fa0();                          // the PC bang bonus flags
     void FUN_141658fc0(const egf::EntityID& kId);           // +0xdb0
-    int FUN_1416595b0();                                    // the cube craft mode
-    int FUN_141659610();                                    // cube craft mode 1
-    int FUN_141659650();                                    // cube craft mode 2
+    int GetCubeMode();                                    // the cube craft mode
+    int IsCubeMode1();                                    // cube craft mode 1
+    int IsCubeMode2();                                    // cube craft mode 2
     int FUN_141659690();                                    // the cube craft controller moves a cube
     int FUN_1416596d0();                                    // cube craft mode 1
     void FUN_141659720();                                   // tick the cube craft controller's second guide
@@ -334,7 +333,7 @@ public:
     void FUN_1416636e0(MS2Ptr<CItem> spItem, int nGemId);   // create the couple effect of a couple item (itemgem.cpp)
     void FUN_141663680();                                   // stop the couple effect
     void ClearCouple();                                   // drop the couple effect
-    CStringW FUN_1416638b0();                               // the couple effect name
+    CStringW GetCoupleName();                               // the couple effect name
     int GetCoupleType();                                    // the couple type (0: none)
     __int64 FUN_141663990();                                // the couple partner id (0: none)
     int FUN_141663a20();                                    // +0x11f4, reset when +0x11f8 expired
@@ -350,10 +349,10 @@ public:
     void FUN_141659790(const CString& strAnim);             // play an animation on the weapons' attach models
     int FUN_14165c1b0(int* pnId, CString* pstrName, float fRange);   // the nearest holdable target (0: FindHoldTargetRange)
     MS2Ptr<Unk_PCD88> FUN_14165c2d0();                      // +0xd88
-    MS2Ptr<CWeaponAction> FUN_14165c520();                  // +0xd70
+    MS2Ptr<CWeaponAction> GetWeaponAction();                  // +0xd70
     Unk_PCActionTimer* FUN_14165ca20();                     // +0xfc8
     Unk_PCActionTimer* FUN_14165ca50();                     // +0xfc8 while active
-    void FUN_141660d50();                                   // the default collision box
+    void SetDefaultBoundingBox();                                   // the default collision box
     void FUN_141660df0();                                   // (empty)
     void FUN_1416615f0(float fDelta);                       // the +0x1054 timer tick
     void FUN_1416616a0(unsigned int nDelay);                // blink the model alpha (faster nDelay ms after +0x1064)
@@ -399,7 +398,7 @@ public:
     void FUN_1416624e0(int nIndex);                         // remove the cube guide nIndex
     void FUN_141662850(__int64 nValue);
     void FUN_141662890(__int64 nValue);
-    MS2Ptr<Unk_HsInfo> FUN_141664200();                     // the hide and seek record (scenestategame 0x12b)
+    MS2Ptr<Unk_HsInfo> GetHideAndSeekInfo();                     // the hide and seek record (scenestategame 0x12b)
     MS2Ptr<Unk_PCSkillTree> FUN_1409eee00();                // copy of the skill tree at +0x1110 (scenestategame 0x49)
     CString FUN_1416612e0();                                // the profile image key (wedding partner icons, unit_140fdab30)
     // additionalcli.cpp (the buff list)
@@ -446,7 +445,7 @@ public:
     int m_nFF4;                                             // +0xff4
     unsigned char m_nFF8;                                   // +0xff8 PC bang grade (FUN_141658ed0 / FUN_141658f10)
     unsigned char m_nFF9;                                   // +0xff9 PC bang bonus flags (FUN_141658f70)
-    int m_nCubeModeFFC;                                     // +0xffc the cube craft mode (FUN_1416595b0 / FUN_1416595d0)
+    int m_nCubeModeFFC;                                     // +0xffc the cube craft mode (GetCubeMode / FUN_1416595d0)
     int m_n1000;                                            // +0x1000
     MS2Ptr<CubeItemInfo> m_spCube1008;                      // +0x1008
     int m_n1018;                                            // +0x1018

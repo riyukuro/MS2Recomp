@@ -140,6 +140,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/client/ms2/equipitem.h"  // C3
+#include "ms2/placeholder/packethandlermanager.h"  // C3
 class NotifyChangeActiveMyCodiTab : public NotifyObject
 {
 public:
@@ -242,7 +243,7 @@ public:
     int FUN_14053c940(int nGender);             // wearable by the gender
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, int n);
+void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool b);
 
 // The achieve manager.
 class CAchieve : public CPtred {};
@@ -255,25 +256,45 @@ public:
 Unk_BSAchieves* FUN_1406c7600();
 CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
 
-// The player and its equipment.
-class Unk_InventoryEquipment : public CEquipItem
+// The shop's real classes (commonfiles/npcshopdata.h clashes with the CBeautyShopDataCli view).
+enum ePaymentType {};
+class TShopPaymentAttr
 {
 public:
-    void FUN_1411dcf10(const CString& strTag);
+    const CString& GetIconTag() const;
+    unsigned GetItemId() const;
+    __int64 GetAmount() const;
+    ePaymentType FUN_1406dc510() const;
 };
+class CBeautyShopDataCommon
+{
+public:
+    void FUN_1406e3d30();
+    TShopPaymentAttr& FUN_1406e3dc0();
+    TShopPaymentAttr& FUN_1406e3de0();
+};
+class CBeautyShopItem
+{
+public:
+    void FUN_1406e37f0(CInPacket& in);
+    __int64 FUN_1406e3bc0();
+};
+
+// The player and its equipment.
+class Unk_InventoryEquipment : public CEquipItem { };
 class Unk_BSPlayer : public PCBase
 {
 public:
     MS2Ptr<Unk_InventoryEquipment> FUN_141655c30(__int64 nItemUid);
-    MS2Ptr<Unk_InventoryEquipment> FUN_141655e10(int nSlot);
 };
 class Unk_BSPlayerCap : public PCGemEquip { };
-class Unk_BSEquipSet : public CEquipment { public: MS2Ptr<Unk_InventoryEquipment> FUN_1411e1a50(int nSlot, int n); MS2Ptr<Unk_InventoryEquipment> FUN_1411e1780(int nSlot, int n);};
+class Unk_BSEquipSet : public CEquipment { };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
     int FUN_141658f30();
+    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);
     class Unk_MyPCEquip* FUN_14165f460();
 };
 int FUN_141658e60(PCBase* pPc);                 // gender
@@ -300,18 +321,7 @@ public:
     virtual void vfunc_140(); virtual void vfunc_141(); virtual void vfunc_142(); virtual void vfunc_143(); virtual void vfunc_144(); virtual void vfunc_145(); virtual void vfunc_146(); virtual void vfunc_147(); virtual void vfunc_148();
     virtual void vfunc_149();                   // 149 restore the field camera
 };
-class Unk_BSWorld
-{
-public:
-    Unk_BSPlayer* FUN_141bd0cc0();              // the player (NULL outside the game)
-    Unk_BSField* FUN_141bd3620();
-};
 
-class Unk_BSUIMgr
-{
-public:
-    void FUN_141adc530(int nId);                // open
-};
 
 // The app platform (slot 43: post a window event).
 class Unk_BSPlatform
@@ -330,10 +340,10 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 class Unk_BSConstI64 { public: __int64 FUN_1402bac90(); char m_pad[0x58]; };
 class Unk_BSConstInt { public: int FUN_140ec2b60(); char m_pad[0x58]; };
 struct Unk_BSConstUInt { char m_pad[0x58]; };
-class Unk_BSConstStr
+class Unk_StringOptionEntry
 {
 public:
-    const CString& FUN_140298f80();             // the string value (by reference: this+0x50)
+    CString& FUN_140298f80();             // the string value (by reference: this+0x50)
     char m_data[0x58];
 };
 struct Unk_BSConstants
@@ -345,9 +355,9 @@ struct Unk_BSConstants
     Unk_BSConstInt m_baseSlots;                 // +0x6570 free slots
     Unk_BSConstUInt m_maxExtend;                // +0x65c8 extra slots that can be bought
     char m_pad_6620[0xccb0 - 0x6620];
-    Unk_BSConstStr m_hairGuide;                 // +0xccb0 the hair guide movie
+    Unk_StringOptionEntry m_hairGuide;                 // +0xccb0 the hair guide movie
     char m_pad_cd08[0xcd10 - 0xcd08];
-    Unk_BSConstStr m_makeUpGuide;               // +0xcd10 the makeup guide movie
+    Unk_StringOptionEntry m_makeUpGuide;               // +0xcd10 the makeup guide movie
 };
 MS2_CHECK_OFFSET(Unk_BSConstants, m_hairGuide, 0xccb0);
 MS2_CHECK_OFFSET(Unk_BSConstants, m_makeUpGuide, 0xcd10);
@@ -363,33 +373,26 @@ struct Unk_BSEffectRequest
     char m_pad_0c[0x78 - 0x0c];
 };
 MS2_CHECK_SIZE(Unk_BSEffectRequest, 0x78);
-void FUN_140a52ef0(Unk_BSEffectRequest* p);         // construct
 void FUN_140a53190(Unk_BSEffectRequest* p, int nObjectId);
-void FUN_1405a89e0(Unk_BSEffectRequest* p);         // destroy
 struct Unk_BSEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 Unk_BSEffectPaths* FUN_1401d31f0();
 
 // Misc singletons.
-CFeatureManager* FUN_140166410();
-CGameRule* FUN_1401c0d90();
-GFxManager* FUN_14025e7a0();
-CInputKeyHandler* FUN_14025e7c0();
-NotifySystem* FUN_140939a10();
-class Unk_140bccd50
-{
-public:
-    void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> cb);
-    void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> cb);
-};
+class Unk_140166410* FUN_140166410();
+void* FUN_1401c0d90();
+void* FUN_14025e7c0();
+class Unk_SingletonObj* FUN_140939a10();
+class Unk_140bccd50;
 Unk_140bccd50* FUN_140bccd50();
-class Unk_BSItemEvents
+class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-Unk_BSCamera* FUN_140cd47b0(int nId);
+class UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
+class UICameraEditDialog { public: void FUN_1418dda30(int n); };
 class Unk_BSSound;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -406,8 +409,6 @@ void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
-CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
-CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CStringW FUN_1409404f0(__int64 n);                  // a crossed-out price
 CStringW FUN_1409eb450(int n);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
@@ -416,8 +417,6 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);   // enable the root's input
 CMsTime FUN_1406c47a0(__int64 nTime);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
-bool FUN_140841300(const CStringW& str, const char* sz);
-bool FUN_140184310(const CString& str, const char* sz);
 int FUN_141b71a10(const char* sz);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bVisible);
 void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, int bEnable);
@@ -427,8 +426,8 @@ void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // The fee helpers (beautyshop fee rows).
-CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned __int64* pPrice);   // the price text
-bool FUN_14134a1d0(Unk_BSFee* pFee, const unsigned __int64* pPrice);       // the player can pay
+CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned* pPrice);   // the price text
+bool FUN_14134a1d0(Unk_BSFee* pFee, const unsigned* pPrice);       // the player can pay
 void FUN_14134a2e0(Unk_BSFee* pFee);                                       // "not enough" message
 void FUN_14134a120(int, int, unsigned int);   // C3: was FUN_14134a120
 
@@ -437,25 +436,20 @@ enum Unk_BSResult : unsigned int {};
 
 CStringW LocalizedMentorFormat(const CStringW&, const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW, LocalizedMentorFormat, CStringW)
-CStringW BlockFormat(int, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+template <typename A> CStringW BlockFormat(int nId, const A& a);
 
 MS2Ptr<CMsgBoxData> FUN_140f0a930(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, int nArg);
 bool FUN_140f096f0(ASObj& obj, MS2Ptr<CItemData> spData, int nIndex, unsigned nMerat, int nGender);
 bool FUN_140f09810(ASObj& obj, bool bEnabled);
 // ---- more stand-ins ----
-CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& a1, const int& a2);
-CStringW FUN_140292a70(const wchar_t* szFormat, const int& n0);
-CStringW FUN_1418fe870(int nKind, int* pnZero, int nItemId);                 // the item icon url
-void FUN_140961010(int nStringId, int nA, int nB, const CStringW& strArg);
+template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
+CStringW FUN_1418fe870(int nKind, int* pnZero, unsigned nItemId);                 // the item icon url
 extern Unk_Inventory g_143ab2a90;                                            // the player's inventory
 class Unk_140acd6e0 : public ASMovieClip
 {
 public:
-    int FUN_1422c2030();                                        // is enabled
 };
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<Unk_140acd6e0>* pOut);     // bind a child of the root
-MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
 bool FUN_14166c930();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_140f327a0(MS2Ptr<CItemData> spData, int nColor, ASObj& obj, int n);
@@ -547,13 +541,13 @@ UIBeautyShopDialog::UIBeautyShopDialog()
     m_88 = 1;
     m_58 = 0;
     FUN_141925e70(0, 1);
-    FUN_140bccd50()->FUN_140da5180(0x31, Delegate<void(CInPacket&)>(this, &UIBeautyShopDialog::FUN_1418c80b0));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x31, Delegate<void(CInPacket&)>(this, &UIBeautyShopDialog::FUN_1418c80b0));
 }
 
 // @0x1418c3950
 UIBeautyShopDialog::~UIBeautyShopDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0x31, Delegate<void(CInPacket&)>(this, &UIBeautyShopDialog::FUN_1418c80b0));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x31, Delegate<void(CInPacket&)>(this, &UIBeautyShopDialog::FUN_1418c80b0));
 }
 
 // @0x1418c3b00
@@ -572,7 +566,7 @@ void UIBeautyShopDialog::vfunc_67()
     m_298 = 0;
     m_294 = 0;
     m_2a0 = 0;
-    m_1d0.FUN_1406e3d30();
+    reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3d30();
     m_1b8 = 0;
     m_1c8 = 0;
     m_2a8 = 0;
@@ -588,10 +582,10 @@ void UIBeautyShopDialog::vfunc_67()
     m_2e0 = 0;
     m_2e4 = -1;
     FUN_140f01430();
-    ((class Unk_BSItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9780));
-    FUN_140939a10()->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    ((NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9b20));
 }
 
@@ -605,8 +599,8 @@ int UIBeautyShopDialog::vfunc_74(int a1, void* p2, void* p3)
 void UIBeautyShopDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    m_1c8 = FUN_140cd47b0(0x4ef2);
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
+    m_1c8 = (Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2);
+    ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9780));
 }
 
@@ -617,7 +611,7 @@ void UIBeautyShopDialog::OnLoadComplete()
     FUN_1418c8ee0();
     m_2a8 = 1;
     ((class Unk_BSPlatform*)FUN_140d86260())->vfunc_43(0xe, 0, 1000);
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDialog::FUN_1418c9b20));
 }
 
@@ -626,7 +620,7 @@ int UIBeautyShopDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d840())
+    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
         if ((unsigned char)m_2b5 == 0)
             FUN_1418c9d80();
@@ -645,8 +639,8 @@ void UIBeautyShopDialog::vfunc_15()
         return;
     m_1b8->FUN_140cd1bf0();
     if (m_1c8)
-        m_1c8->FUN_1418dda30(m_1b8->IsDragging() == 0);
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        reinterpret_cast<UICameraEditDialog*>(m_1c8)->FUN_1418dda30(m_1b8->IsDragging() == 0);
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc && pPc->FUN_14166c930() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
 }
@@ -685,7 +679,7 @@ int UIBeautyShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (dynamic_cast<UISceneGameBeautyShop*>(pSender))
         {
             CString strMsg = pMsg->FUN_1422b8d30();
-            if (FUN_140184310(strMsg, "OnExit"))
+            if (strMsg == "OnExit")
                 FUN_1418c9d80();
             return 1;
         }
@@ -824,7 +818,7 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     Unk_BSFee* pFee = FUN_1418c74e0(&nFee);
                     int nLevel = FUN_140f01140();
                     int nEvent = FUN_1418ccb40();
-                    if (FUN_1401c0d90()->FUN_140476c70(nEvent, nFee, nLevel) == 0)
+                    if (((CGameRule*)FUN_1401c0d90())->FUN_140476c70(nEvent, nFee, nLevel) == 0)
                         bCoupon = 0;
                     MS2Ptr<UIBillDialog::TData> spData(new UIBillDialog::TData);
                     if (spData.get())
@@ -838,12 +832,12 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             spData->m_50 = strTitle;
                             spData->m_58 = FUN_1418cbb40(nShopKind, m_290);
                         }
-                        spData->m_34 = pFee->FUN_1406dc510();
-                        spData->m_38 = pFee->FUN_1406dc4d0();
-                        spData->m_40 = pFee->FUN_1406dc4b0();
+                        spData->m_34 = reinterpret_cast<TShopPaymentAttr*>(pFee)->FUN_1406dc510();
+                        spData->m_38 = reinterpret_cast<TShopPaymentAttr*>(pFee)->GetItemId();
+                        spData->m_40 = reinterpret_cast<TShopPaymentAttr*>(pFee)->GetIconTag();
                         spData->m_48 = nPrice;
                         pBill->SetData(MS2Ptr<UIBillDialog::TData>(spData));
-                        reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc530(0x4e7b);
+                        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4e7b);
                     }
                 }
             }
@@ -902,7 +896,7 @@ void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString&
     }
     else if (_stricmp("getTooltip", strMethod) == 0)
     {
-        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (!pPc)
             return;
         int nIndex = pArgs->FUN_1422b8a10();
@@ -913,9 +907,9 @@ void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString&
             return;
         Unk_BSFee* pFee = &spRow->m_fee;
         if (m_290 == 2)
-            *pFee = *m_1d0.FUN_1406e3dc0();
-        unsigned __int64 nPrice = pFee->FUN_1406dc4f0();
-        CStringW strPrice = FUN_14134a220(pFee, &nPrice);
+            *pFee = *(Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3dc0();
+        unsigned __int64 nPrice = reinterpret_cast<TShopPaymentAttr*>(pFee)->GetAmount();
+        CStringW strPrice = FUN_14134a220(pFee, (const unsigned*)&nPrice);
         ASTooltip tip(1, 2);
         if (FUN_140f01eb0(tip, spRow, (short)pPc->vfunc_78(), strPrice))
             *pRetVal = tip.FUN_1422bb870();
@@ -1092,7 +1086,7 @@ void UIBeautyShopDialog::vfunc_85()
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_86()
 {
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     ASObj data(2);
@@ -1122,7 +1116,7 @@ void UIBeautyShopDialog::vfunc_86()
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_87()
 {
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     ASArray items(2);
@@ -1178,7 +1172,7 @@ bool UIBeautyShopDialog::FUN_1418c6580(ASArray& out, int* pnItemId, int* pnIndex
     }
     if (spRow == 0)
         spRow = CreatePriceRow(m_1b8->FUN_140cd17e0());
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (spRow.get() != 0)
     {
         ASObj row(2);
@@ -1201,9 +1195,9 @@ bool UIBeautyShopDialog::FUN_1418c6870(ASObj& row, MS2Ptr<Unk_BSPriceRow> spRow,
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return false;
-    FUN_140f324f0(row, MS2Ptr<CItemData>(spData), 0);
+    FUN_140f324f0(row, MS2Ptr<CItemData>(spData), false);
     row.FUN_1407cbbe0("my", bMy);
-    unsigned nMerat = spRow->FUN_1406e3bc0();
+    unsigned nMerat = reinterpret_cast<CBeautyShopItem*>(spRow.operator->())->FUN_1406e3bc0();
     row.FUN_1409c0d20("merat", nMerat < 0 ? 0 : nMerat);
     if (!bMy)
         row.FUN_1407cb9c0("saleTag", spRow->m_saleTag);
@@ -1216,7 +1210,7 @@ bool UIBeautyShopDialog::FUN_1418c6870(ASObj& row, MS2Ptr<Unk_BSPriceRow> spRow,
 }
 
 // @0x1418c6af0
-int UIBeautyShopDialog::FUN_1418c6af0()
+int UIBeautyShopDialog::IsSaveButtonEnabled()
 {
     if (m_30.get())
     {
@@ -1227,7 +1221,7 @@ int UIBeautyShopDialog::FUN_1418c6af0()
 }
 
 // @0x1418c6bc0
-void UIBeautyShopDialog::FUN_1418c6bc0(int nValue)
+void UIBeautyShopDialog::SetSaveButtonEnabled(int nValue)
 {
     if (m_30.get())
     {
@@ -1255,7 +1249,7 @@ void UIBeautyShopDialog::UpdateFee(Unk_BSFee* pFee, unsigned* pPrice)
     unsigned __int64 nBase;
     int nLevel = FUN_140f01140();
     int nEvent = FUN_1418ccb40();
-    int nRes = FUN_1401c0d90()->FUN_140476cf0(nEvent, nLevel);
+    int nRes = ((CGameRule*)FUN_1401c0d90())->FUN_140476cf0(nEvent, nLevel);
     bool bSale = nRes == 0;
     if (pFee == 0)
     {
@@ -1265,17 +1259,17 @@ void UIBeautyShopDialog::UpdateFee(Unk_BSFee* pFee, unsigned* pPrice)
     else
     {
         nBase = *pPrice;
-        unsigned nSale = FUN_1401c0d90()->FUN_140476c70(nEvent, (unsigned)nBase, nLevel);
+        unsigned nSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476c70(nEvent, (unsigned)nBase, nLevel);
         bool bDiscount = nBase != nSale;
         if (bDiscount)
         {
             unsigned __int64 nSalePrice = nSale;
-            CStringW strPrice = FUN_14134a220(pFee, &nSalePrice);
+            CStringW strPrice = FUN_14134a220(pFee, (const unsigned*)&nSalePrice);
             m_30->Invoke("setFee", FUN_1409404f0(nBase), strPrice, bSale, bDiscount);
         }
         else
         {
-            CStringW strPrice = FUN_14134a220(pFee, &nBase);
+            CStringW strPrice = FUN_14134a220(pFee, (const unsigned*)&nBase);
             m_30->Invoke("setFee", strPrice, FUN_1409eb450(nSale), bSale, bDiscount);
         }
     }
@@ -1323,7 +1317,7 @@ Unk_BSFee* UIBeautyShopDialog::FUN_1418c74e0(unsigned* pPrice)
     Unk_BSFee* pFee = 0;
     *pPrice = 0;
     if (m_1b8 == 0)
-        return m_1d0.FUN_1406e3dc0();
+        return (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3dc0();
     bool bNoFee = true;
     switch (m_290)
     {
@@ -1333,32 +1327,32 @@ Unk_BSFee* UIBeautyShopDialog::FUN_1418c74e0(unsigned* pPrice)
             if (m_278.get() != 0)
                 pFee = &m_278->m_fee;
             else
-                pFee = m_1d0.FUN_1406e3dc0();
+                pFee = (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3dc0();
             bNoFee = false;
         }
         else if (m_1b8->IsEditItemColorChanged() != 0)
         {
-            pFee = m_1d0.FUN_1406e3de0();
+            pFee = (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3de0();
             bNoFee = false;
         }
         break;
     case 3:
         if (m_1b8->IsEditItemColorChanged() != 0)
         {
-            pFee = m_1d0.FUN_1406e3de0();
+            pFee = (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3de0();
             bNoFee = false;
         }
         break;
     case 2:
-        pFee = m_1d0.FUN_1406e3dc0();
+        pFee = (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3dc0();
         bNoFee = false;
         break;
     }
     if (!bNoFee && pFee)
-        *pPrice = pFee->FUN_1406dc4f0();
+        *pPrice = reinterpret_cast<TShopPaymentAttr*>(pFee)->GetAmount();
     if (pFee)
         return pFee;
-    return m_1d0.FUN_1406e3dc0();
+    return (Unk_BSFee*)&reinterpret_cast<CBeautyShopDataCommon*>(&m_1d0)->FUN_1406e3dc0();
 }
 
 // @0x1418c76d0
@@ -1449,7 +1443,7 @@ void UIBeautyShopDialog::FUN_1418c7ab0()
     else if (m_278.get() != 0)
     {
         bool bLocked = false;
-        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc)
         {
             if (FUN_140f02b10(MS2Ptr<Unk_BSPriceRow>(m_278), (short)pPc->vfunc_78()))
@@ -1464,7 +1458,7 @@ void UIBeautyShopDialog::FUN_1418c7ab0()
             nReset = 1;
         }
     }
-    FUN_1418c6bc0(nSave);
+    SetSaveButtonEnabled(nSave);
     FUN_1418c6c80(nReset);
     unsigned nPrice = 0;
     Unk_BSFee* pFee = FUN_1418c74e0(&nPrice);
@@ -1566,7 +1560,7 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
                 MS2Ptr<Unk_BSPriceRow> spRow(new Unk_BSPriceRow);
                 if (spRow.get() != 0)
                 {
-                    spRow->FUN_1406e37f0(packet);
+                    reinterpret_cast<CBeautyShopItem*>(spRow.operator->())->FUN_1406e37f0(packet);
                     m_198.Add(spRow);
                 }
             }
@@ -1580,7 +1574,7 @@ void UIBeautyShopDialog::FUN_1418c80b0(CInPacket& packet)
         int nItemId = packet.ReadInt32();
         unsigned nCount = packet.ReadInt32();
         if (nItemId != 0 && nCount > 0)
-            FUN_140961010(0x996, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+            Unk_AkoMessage<CStringW>(0x996, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     }
     if (vfunc_55())
         return;
@@ -1663,7 +1657,7 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
 {
     if (FUN_1418ccb40() == 0 || m_30 == 0)
         return 0;
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     static_cast<UIDialog*>(this)->vfunc_8(1);
@@ -1672,7 +1666,7 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
     UpdateFee(0, &nNoPrice);
     int nLevel = FUN_140f01140();
     int nEvent = FUN_1418ccb40();
-    int bSale = FUN_1401c0d90()->FUN_140476cf0(nEvent, nLevel);
+    int bSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476cf0(nEvent, nLevel);
     int nShopKind = FUN_1418cbbe0();
     ASObj init(2);
     init.FUN_1407cb9c0("type", m_290);
@@ -1682,7 +1676,7 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
     bool bDetailColor = false;
     if (nShopKind != 4)
     {
-        bDetailColor = FUN_140166410()->FUN_14036d570(0xb6);
+        bDetailColor = ((CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb6);
         FUN_140f01540(init, bDetailColor);
     }
     init.FUN_1407cbbe0("useDetailColor", bDetailColor);
@@ -1699,16 +1693,16 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
     FUN_1418c7ab0();
     FUN_1418c7180(m_1b8->FUN_140cd17e0());
     vfunc_84();
-    ((class Unk_BSItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    if (FUN_14025e7c0()->IsDebugMode())
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
     {
-        MS2Ptr<ASTextField> spTitle = FUN_140bb4cf0(CString("m_title"));
+        MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>(CString("m_title"));
         if (spTitle.get())
         {
             CStringW strTitle = spTitle->GetTextW();
             if (strTitle.Find(L"$", 0) == 0)
                 strTitle = FUN_14025e7a0()->FUN_1422b0570(CString((const wchar_t*)strTitle));
-            CStringW strDebug = FUN_140292a70(L"<font color='#909090'>| [debug] shopId: {0}</font>", m_1d0.m_18);
+            CStringW strDebug = StringFormat<unsigned>(L"<font color='#909090'>| [debug] shopId: {0}</font>", (unsigned&)m_1d0.m_18);
             strTitle.Append(strDebug);
             spTitle->FUN_1422c4f00(strTitle);
         }
@@ -1725,10 +1719,10 @@ bool UIBeautyShopDialog::FUN_1418c9610()
     int nShopKind = FUN_1418cbbe0();
     if (nShopKind == 1)
     {
-        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc)
         {
-            MS2Ptr<Unk_InventoryEquipment> spEquip = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e1780(6, 2);
+            MS2Ptr<CEquipItem> spEquip = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e1780(6, 2);
             if (spEquip.get())
                 spEquip->FUN_1411dcf10(s_strCustomize);
         }
@@ -1746,14 +1740,14 @@ bool UIBeautyShopDialog::FUN_1418c9610()
 void UIBeautyShopDialog::FUN_1418c9780(NotifyObject* pNotify)
 {
     NotifyGameEventChanged* pEvent = dynamic_cast<NotifyGameEventChanged*>(pNotify);
-    if (pEvent && FUN_140841300(pEvent->m_eventName, "SaleBeautyShop"))
+    if (pEvent && pEvent->m_eventName == "SaleBeautyShop")
     {
         unsigned nFee = 0;
         Unk_BSFee* pFee = FUN_1418c74e0(&nFee);
         UpdateFee(pFee, &nFee);
-        if (MS2Ptr<ASMovieClip> spPcBang = FUN_140ba7930("m_pcBang"))
+        if (MS2Ptr<ASMovieClip> spPcBang = GetChild<ASMovieClip>("m_pcBang"))
         {
-            int nSale = FUN_1401c0d90()->FUN_140476cf0(FUN_1418ccb40(), FUN_140f01140());
+            int nSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476cf0(FUN_1418ccb40(), FUN_140f01140());
             spPcBang->vfunc_4(nSale == 0);
         }
         UIBillDialog* pBill;
@@ -1836,7 +1830,7 @@ int UIBeautyShopDialog::FUN_1418c9cd0()
         int nSlot = FUN_140f01070(FUN_1418cbbe0());
         m_1b8->RestoreSlot(nSlot);
     }
-    Unk_BSField* pField = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd3620();
+    Unk_BSField* pField = reinterpret_cast<Unk_BSField*>(WorldService::GetInstance()->FUN_141bd3620());
     if (pField)
         pField->vfunc_149();
     ((class GFxSceneService*)(class Unk_BSSound*)(((Unk_BSSound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
@@ -1870,9 +1864,9 @@ int UIBeautyShopDialog::FUN_1418c9f20()
     int nEvent = FUN_1418ccb40();
     unsigned nPrice = 0;
     Unk_BSFee* pFee = FUN_1418c74e0(&nPrice);
-    unsigned nSale = FUN_1401c0d90()->FUN_140476c70(nEvent, nPrice, FUN_140f01140());
+    unsigned nSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476c70(nEvent, nPrice, FUN_140f01140());
     unsigned __int64 nPay = nSale;
-    bool bCanPay = FUN_14134a1d0(pFee, &nPay);
+    bool bCanPay = FUN_14134a1d0(pFee, (const unsigned*)&nPay);
     bool bCoupon = FUN_1418cbc00(IItemCustomizeEventListener::m_10);
     if (!bCanPay && !bCoupon)
     {
@@ -1883,11 +1877,11 @@ int UIBeautyShopDialog::FUN_1418c9f20()
     if (m_290 == 2)
     {
         m_1b8->RestoreSlot(nSlot);
-        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPc)
         {
             int nEquipSlot = FUN_140f01070(FUN_1418cbbe0());
-            MS2Ptr<Unk_InventoryEquipment> spEquip = pPc->FUN_141655e10(nEquipSlot);
+            MS2Ptr<CEquipItem> spEquip = ((class PC*)(class PCBase*)(pPc))->FUN_141655e10(nEquipSlot);
             m_2b8 = spEquip->GetItem();
         }
         COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
@@ -1978,7 +1972,7 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
         CStringW strChange = FUN_14025e7a0()->FUN_1422b0570("$s_beauty_change_style");
         row.FUN_1407cbb20("detail", StringFormat<CStringW>(strRow, strChange));
         unsigned __int64 nPrice = *pPrice;
-        CStringW strPrice = FUN_14134a220(pFee, &nPrice);
+        CStringW strPrice = FUN_14134a220(pFee, (const unsigned*)&nPrice);
         row.FUN_1407cbb20("strPrice", CStringW(strPrice));
         rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
@@ -1990,14 +1984,14 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
         {
             CStringW strChange = FUN_14025e7a0()->FUN_1422b0570("$s_beauty_change_style");
             row.FUN_1407cbb20("detail", StringFormat<CStringW>(strRow, strChange));
-            row.FUN_1407cbb20("strPrice", FUN_14134a220(pFee, &static_cast<const unsigned __int64&>(*pPrice)));
+            row.FUN_1407cbb20("strPrice", FUN_14134a220(pFee, (const unsigned*)&static_cast<const unsigned __int64&>(*pPrice)));
             rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
         }
         else if (m_1b8->IsEditItemColorChanged() != 0)
         {
             CStringW strChange = FUN_14025e7a0()->FUN_1422b0570("$s_beauty_change_color");
             row.FUN_1407cbb20("detail", StringFormat<CStringW>(strRow, strChange));
-            row.FUN_1407cbb20("strPrice", FUN_14134a220(pFee, &static_cast<const unsigned __int64&>(*pPrice)));
+            row.FUN_1407cbb20("strPrice", FUN_14134a220(pFee, (const unsigned*)&static_cast<const unsigned __int64&>(*pPrice)));
             rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
         }
         else
@@ -2006,7 +2000,7 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
             int nCrop = m_1b8->HasSelectedChangeFlag2();
             CString strKey(nCrop != 0 ? "$s_beauty_crop" : "$s_beauty_none");
             CStringW strDetail = FUN_14025e7a0()->FUN_1422b0570(strKey);
-            CStringW strPrice = nCrop != 0 ? FUN_14134a220(pFee, &static_cast<const unsigned __int64&>(*pPrice))
+            CStringW strPrice = nCrop != 0 ? FUN_14134a220(pFee, (const unsigned*)&static_cast<const unsigned __int64&>(*pPrice))
                                            : GetStringCommonByKey(CStringW(L"s_beauty_fee_default"));
             row.FUN_1407cbb20("detail", CStringW(strDetail));
             row.FUN_1407cbb20("strPrice", CStringW(strPrice));
@@ -2037,7 +2031,7 @@ void UIBeautyShopDialog::FUN_1418caec0()
 // @0x1418caf20
 int UIBeautyShopDialog::FUN_1418caf20(int nItemId)
 {
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     int nCurrent = m_1b8->FUN_140cd17e0();
@@ -2061,7 +2055,7 @@ void UIBeautyShopDialog::FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew)
     {
         ASObj cur(2);
         {
-            FUN_140f324f0(cur, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spCur->FUN_140527840())), 0);
+            FUN_140f324f0(cur, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spCur->FUN_140527840())), false);
             CStringW strCur = FUN_14028dfa0<CStringW>(CStringW(L"s_beauty_fmt_style_select_cur_hair"),
                                             TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCur->FUN_1405276c0()));
             if ((unsigned)m_1d0.m_28 > 0)
@@ -2072,7 +2066,7 @@ void UIBeautyShopDialog::FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew)
                     int nCouponId = m_1d0.m_28;
                     int nZero = 0;
                     CStringW strIcon = FUN_1418fe870(2, &nZero, nCouponId);
-                    CStringW strImg = FUN_140275590(L"<img src='{0}' vspace='{1}'>", strIcon, nZero);
+                    CStringW strImg = StringFormat<CStringW, int>(L"<img src='{0}' vspace='{1}'>", strIcon, nZero);
                     int nOne = 1;
                     CStringW strCoupon = FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_beauty_fmt_return_coupon"), strImg,
                                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCouponId), nOne);
@@ -2087,7 +2081,7 @@ void UIBeautyShopDialog::FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew)
         }
         ASObj nw(2);
         {
-            FUN_140f324f0(nw, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spNew->FUN_140527840())), 0);
+            FUN_140f324f0(nw, MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(spNew->FUN_140527840())), false);
             CStringW strNew = FUN_14028dfa0<CStringW>(CStringW(L"s_beauty_fmt_style_select_new_hair"),
                                             TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spNew->FUN_1405276c0()));
             nw.FUN_1407cbb20("itemname", CStringW(strNew));
@@ -2205,14 +2199,14 @@ bool UIBeautyShopDialog::FUN_1418cbc00(int n)
 // @0x1418cbc70
 bool UIBeautyShopDialog::FUN_1418cbc70()
 {
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     bool bResult = false;
     if (FUN_1418cbbe0() == 1)
     {
         m_2b0 = ((class Unk_BSPlayerCap*)((class PC*)(class PCBase*)(pPc))->FUN_14165f460())->FUN_1412706f0(0);
-        MS2Ptr<Unk_InventoryEquipment> spCap = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->FUN_1411e1a50(6, 0);
+        MS2Ptr<CEquipItem> spCap = ((class Unk_BSEquipSet*)((class PC*)(class PCBase*)(pPc))->FUN_1416561a0())->GetTopLayerItem(6, 0);
         if (spCap.get())
             bResult = true;
     }
@@ -2267,16 +2261,16 @@ public:
     int m_1c0;
 };
 class Unk_BSMarketDialog;
-UIBeautyShopDialog* FUN_141742770(int nId);                                  // the beauty shop page when it is open
+template <class T> T* Unk_SSGGetDialog(int nId);                                  // the beauty shop page when it is open
 class UIWeddingHallReservationDialog* FUN_141296ab0(int);   // C3: was FUN_141296ab0
-unsigned FUN_140fdcb30(Unk_BSMarketDialog* p);                               // the price of the market purchase
-void FUN_140eabc00(CStringW& strLabel, CStringW& strSum, unsigned __int64 nPrice);        // the meret price strings
-void FUN_141349f30(CStringW& strOut, int nFeeType, int nCurrency, int nPrice, const CString& strCurrency);
+class UIWeddingHallReservationDialog { public: __int64 FUN_140fdcb30(); };                               // the price of the market purchase
+bool FUN_140eabc00(CStringW* pLabel, CStringW* pSum, __int64 nPrice);        // the meret price strings
+void FUN_141349f30(CStringW& strOut, int nFeeType, int nCurrency, unsigned nPrice, const CString& strCurrency);
 
 // @0x1418ce0c0
 static UIBeautyShopStyleDialog* FUN_1418ce0c0(int nId)
 {
-    if (reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
         MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
@@ -2288,7 +2282,7 @@ static UIBeautyShopStyleDialog* FUN_1418ce0c0(int nId)
 // @0x1418ce160
 static UIItemColoringDialog* FUN_1418ce160(int nId)
 {
-    if (reinterpret_cast<Unk_BSUIMgr*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
         MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
@@ -2324,13 +2318,14 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GF
 
 // ---- UIBillDialog ----
 
+class Unk_PiComp { public: Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* szArg); };
+
 // The scaleform dialog object of the bill.
 class ASDialog : public ASDisplayObjectContainer
 {
 public:
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
     virtual void vfunc_13(const CString& strMode);              // "normal" / "checkbox"
-    Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* szArg);
 };
 
 // The bill's check box ("m_checkbox").
@@ -2341,8 +2336,6 @@ public:
     virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
     virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(int n);
-    void FUN_1422cdfb0(const CStringW& strLabel);
-    void FUN_1422c1fe0(unsigned int bEnabled);
 };
 
 // The UI message the bill answers its owner with.
@@ -2388,7 +2381,7 @@ void UIBillDialog::OnLoadComplete()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30.get());
     if (pDlg)
     {
-        pDlg->FUN_140cbe3a0("initData", L"");
+        reinterpret_cast<Unk_PiComp*>(pDlg)->FUN_140cbe3a0("initData", L"");
         MS2Ptr<AScript> spRows(m_188->m_20);
         if (spRows.get())
         {
@@ -2401,12 +2394,12 @@ void UIBillDialog::OnLoadComplete()
                 MS2Ptr<Unk_BSCheckBox> spCheck = FUN_140e52670("m_checkbox");
                 if (spCheck.get())
                 {
-                    spCheck->FUN_1422cdfb0(strCheck);
-                    spCheck->FUN_1422c1fe0(bEnabled);
+                    reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422cdfb0(strCheck);
+                    reinterpret_cast<ASMovieClip*>(spCheck.operator->())->FUN_1422c1fe0(bEnabled);
                     reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce090(bEnabled);
                     spCheck->vfunc_24(1);
                 }
-                MS2Ptr<ASTextField> spWarning = FUN_140bb4cf0("m_warning");
+                MS2Ptr<ASTextField> spWarning = GetChild<ASTextField>("m_warning");
                 if (spWarning.get())
                     spWarning->FUN_1422c4cd0(m_188->m_58);
             }
@@ -2478,7 +2471,7 @@ void UIBillDialog::FUN_1418cda70(int nPrice)
         return;
     int nOriginal = nPrice;
     int nSale = 0;
-    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     int nLevel = ((class PC*)(class PCBase*)(pPc))->FUN_141658f30();
@@ -2487,31 +2480,31 @@ void UIBillDialog::FUN_1418cda70(int nPrice)
     {
         if (UIItemColoringDialog* pDlg = FUN_1418ce160(0x4e23))
         {
-            nPrice = FUN_1401c0d90()->FUN_140476c70(pDlg->FUN_1418ce5b0(), nPrice, nLevel);
-            nSale = FUN_1401c0d90()->FUN_140476cf0(pDlg->FUN_1418ce5b0(), nLevel);
+            nPrice = ((CGameRule*)FUN_1401c0d90())->FUN_140476c70(pDlg->FUN_1418ce5b0(), nPrice, nLevel);
+            nSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476cf0(pDlg->FUN_1418ce5b0(), nLevel);
         }
     }
     else if (nShop == 1)
     {
-        if (UIBeautyShopDialog* pDlg = FUN_141742770(0x4eee))
+        if (UIBeautyShopDialog* pDlg = Unk_SSGGetDialog<UIBeautyShopDialog>(0x4eee))
         {
-            nPrice = FUN_1401c0d90()->FUN_140476c70(pDlg->FUN_1418ccb40(), nPrice, nLevel);
-            nSale = FUN_1401c0d90()->FUN_140476cf0(pDlg->FUN_1418ccb40(), nLevel);
+            nPrice = ((CGameRule*)FUN_1401c0d90())->FUN_140476c70(pDlg->FUN_1418ccb40(), nPrice, nLevel);
+            nSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476cf0(pDlg->FUN_1418ccb40(), nLevel);
         }
     }
     else if (nShop == 2)
     {
         if (UIBeautyShopStyleDialog* pDlg = FUN_1418ce0c0(0x4f03))
         {
-            nPrice = FUN_1401c0d90()->FUN_140476c70(pDlg->FUN_140f07960(), nPrice, nLevel);
-            nSale = FUN_1401c0d90()->FUN_140476cf0(pDlg->FUN_140f07960(), nLevel);
+            nPrice = ((CGameRule*)FUN_1401c0d90())->FUN_140476c70(pDlg->FUN_140f07960(), nPrice, nLevel);
+            nSale = ((CGameRule*)FUN_1401c0d90())->FUN_140476cf0(pDlg->FUN_140f07960(), nLevel);
         }
     }
     else if (nShop == 3)
     {
         if (Unk_BSMarketDialog* pDlg = ((class Unk_BSMarketDialog*)FUN_141296ab0(0x4f8d)))
         {
-            nPrice = FUN_140fdcb30(pDlg);
+            nPrice = (unsigned)reinterpret_cast<UIWeddingHallReservationDialog*>(pDlg)->FUN_140fdcb30();
             nSale = 2;
         }
     }
@@ -2523,10 +2516,10 @@ void UIBillDialog::FUN_1418cda70(int nPrice)
     CStringW strSum;
     if (m_188->m_34 == 4)
     {
-        FUN_140eabc00(strLabel, strSum, (unsigned)nPrice);
+        FUN_140eabc00(&strLabel, &strSum, (unsigned)nPrice);
         CStringW strHead = FormatStringId<CStringW>(0x998, strLabel);
         CStringW strPrice = FormatStringId<CStringW>(0x98f, FUN_1409eb450(nPrice));
-        CStringW strTail = FUN_140632a60(0x999, strSum, strPrice);
+        CStringW strTail = FormatStringId<CStringW, CStringW>(0x999, strSum, strPrice);
         strSum = strTail;
         strLabel = strHead;
     }

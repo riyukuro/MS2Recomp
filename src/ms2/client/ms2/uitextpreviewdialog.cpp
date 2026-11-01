@@ -17,6 +17,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/astextinput.h"
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/commonfiles/itemdatatable.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -27,27 +29,19 @@ class Unk_TpInput : public ASTextInput
 {
 };
 
-// The button bar.
-class Unk_TpBar : public ASDisplayObject
-{
-public:
-    unsigned int FUN_1422e3380();                               // button count
-    void FUN_1422e31e0(unsigned int nIndex);                    // select a button
-};
-extern template class MS2Ptr<Unk_TpBar>;                        // instances owned by other objs
+extern template class MS2Ptr<ASButtonBar>;                      // instances owned by other objs
 
-// The reserved-word filters of the text singleton.
-class Unk_TpFilter : public CReservedWordTable
+// The button bar child lookup, shared with this dialog.
+class UIDailyMissionDialog
 {
 public:
-    void FUN_1416fb3c0(CStringW& str);
+    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);
 };
 
 void* FUN_140281980();                                          // the table singleton
-void FUN_1405594b0(void* pTable, std::vector<unsigned int>* pOut);   // collect the ids
 
 CStringTable* GetStringTable();
-void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);             // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -81,7 +75,7 @@ void UITextPreviewDialog::OnLoadComplete()
     }
     {
         CString strName("m_buttonBar");
-        m_198 = FUN_140c02870(strName);
+        m_198 = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870(strName);
     }
 }
 
@@ -101,9 +95,9 @@ void UITextPreviewDialog::FUN_141350fc0(unsigned int nIndex)
         return;
     if (m_198 == 0)
         return;
-    if (nIndex >= m_198.operator->()->FUN_1422e3380())
+    if (nIndex >= m_198.operator->()->GetItemCount())
         return;
-    m_198.operator->()->FUN_1422e31e0(nIndex);
+    m_198.operator->()->SetSelectedIndex((int)nIndex);
 }
 
 // @0x141351050
@@ -141,10 +135,10 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             CStringW strText = data.FUN_1422b8f40();
-            reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb3c0(strText);
-            reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb380(strText);
-            reinterpret_cast<Unk_TpFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(strText);
-            ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value((const wchar_t*)strText));
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceColorWords(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            FUN_1422bb8b0(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value((const wchar_t*)strText));
         }
     }
     else if (_stricmp("OnDescriptionCheck", szMethod) == 0) {
@@ -159,7 +153,7 @@ void UITextPreviewDialog::OnDescriptionCheck()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
         std::vector<unsigned int> ids;
-        FUN_1405594b0(FUN_140281980(), &ids);
+        reinterpret_cast<CItemDataTable*>(FUN_140281980())->LoadItemNameIds(ids);
         for (size_t i = 0; i < ids.size(); i++) {
             unsigned int nId = ids[i];
             CStringW strMain = GetStringTable()->GetItemDescription(nId, CString("mainDescription"));

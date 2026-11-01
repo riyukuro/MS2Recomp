@@ -79,7 +79,6 @@ public:
 int FUN_1410a8a90(Unk_CubeCraftCore*);
 int FUN_1410a8ab0(Unk_CubeCraftCore*);
 bool FUN_1415302e0(PCBase*, int nItemId);
-__int64 FUN_141656ad0(PCBase*);
 bool FUN_140930d20(__int64 nOwner);
 bool FUN_140930c90(__int64 nOwner);
 bool FUN_14092f660();
@@ -113,13 +112,13 @@ class Unk_IngItem : public CPtred { public: char unknown18[0x36]; unsigned char 
 class Unk_IngTable { public: MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId); };
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/client/ms2/equipment.h"
 class Unk_CubeStock { public: int FUN_140dfcb00(int nItemId); };
 extern Unk_CubeStock DAT_143ab2e50;
 
 // the backup item list of the local player
 class Unk_ItemSub : public CPtred {};
 class Unk_BackUpItem : public CPtred { public: MS2Ptr<Unk_ItemSub> FUN_1411dc7a0(); };
-void FUN_1411e1b80(Unk_PCItems*, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >*);
 
 // Template glue of the Cube map (std::map<int, MS2Ptr<Cube> > iterator/pointer helpers), spelled as plain functions.
 typedef std::pair<const int, MS2Ptr<Cube> > Unk_CubeEntry;
@@ -647,21 +646,21 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
     if (FUN_14053f9c0(m_pItem->itemId) != 0)
     {
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 0, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 0, &nA, &nB) == 0)
             return 0;
     }
     if (FUN_1408b5820(m_pItem->itemId) != 0)
     {
         *pErr = 0x4b;
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 2, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 2, &nA, &nB) == 0)
             return 0;
     }
     if (FUN_1408b5f70(m_pItem->itemId) != 0)
     {
         *pErr = 99;
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 4, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 4, &nA, &nB) == 0)
             return 0;
     }
     if (m_pCubeService->FUN_1410c3600(1))
@@ -702,7 +701,7 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
         else if (m_pItem->FUN_1408b3860() != 0 && m_pCubeService->FUN_1410c3600(3))
         {
             CUgcItemLook* pLook = m_pItem->look.get();
-            if (pLook != 0 && pLook->m_n34 != FUN_141656ad0(pPC))
+            if (pLook != 0 && pLook->m_n34 != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
             {
                 *pErr = 0x6f;
                 return 0;
@@ -729,7 +728,7 @@ int CUGCBuildValidatorCli::vfunc_10(unsigned* pErr)
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
     __int64 nOwner = m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54);
-    if (nOwner != FUN_141656ad0(pPC))
+    if (nOwner != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
     {
         if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
             return 1;
@@ -757,7 +756,7 @@ int CUGCBuildValidatorCli::vfunc_11(unsigned* pErr)
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
     __int64 nOwner = m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54);
-    if (nOwner != FUN_141656ad0(pPC))
+    if (nOwner != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
     {
         if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
             return 1;
@@ -781,7 +780,7 @@ int CUGCBuildValidatorCli::vfunc_12(unsigned* pErr)
         return 0;
     if (DAT_143ae0fb4 != 0)
         return 1;
-    if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != FUN_141656ad0(pPC))
+    if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
         return 0;
     return 1;
 }
@@ -1052,7 +1051,7 @@ int CUGCBuildValidatorCli::vfunc_23(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != FUN_141656ad0(pPC))
+    if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
     {
         *pErr = 8;
         return 0;
@@ -1074,7 +1073,7 @@ int CUGCBuildValidatorCli::vfunc_24(unsigned* pErr)
     if (pMyPC == 0)
         return 0;
     ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > items(10);
-    FUN_1411e1b80(reinterpret_cast<Unk_PCItems*>(reinterpret_cast<PC*>(pMyPC)->FUN_1416561a0()), &items);
+    reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pMyPC)->FUN_1416561a0())->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&items));
     for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
     {
         MS2Ptr<Unk_BackUpItem> spItem = items.GetAt(pos);
@@ -1109,7 +1108,7 @@ int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
     if (FUN_1408b5620(m_pItem->itemId) != 0)
     {
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 1, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 1, &nA, &nB) == 0)
             return 0;
         if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, m_point) == 0)
         {
@@ -1156,7 +1155,7 @@ int CUGCBuildValidatorCli::vfunc_26(unsigned* pErr)
     if (FUN_1408b5620(m_pItem->itemId) != 0)
     {
         int nA, nB;
-        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 1, &nA, &nB) == 0)
+        if (m_pCubeService->FUN_1410d27c0(reinterpret_cast<PC*>(pPC)->FUN_141656ad0(), 1, &nA, &nB) == 0)
             return 0;
     }
     if (m_pCubeService->FUN_1410d2da0(pCube->field50, m_point) == 0)

@@ -166,7 +166,7 @@ MS2_REPLACE_METHOD(0x140C9FC30, StateEffectMgr, IsPlayerObject, 85, 0xEDD991A6);
 bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
 {
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

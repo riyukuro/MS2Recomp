@@ -97,7 +97,12 @@ public:
     void FUN_141bbb7f0(class GameObject*, int);   // C3: was free FUN_141bbb7f0
 };
 void* FUN_1409670f0();
-bool FUN_1411cf0b0(void*, efd::utf8string, efd::AssetID*, bool*);
+class EntityWorldManager   // C3: member view (entityworldmanager.h pulls headers this unit cannot take)
+{
+public:
+    bool FUN_1411cf0b0(efd::utf8string, efd::AssetID&, bool&);
+    void FUN_1411cf570(egf::Entity*);
+};
 struct Vector3 { float x, y, z; };
 extern const Vector3 DAT_143b01a60;     // efd::Point3::ZERO
 class Unk_CubeEntityService {
@@ -109,7 +114,6 @@ NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_1409457c0(egf::Entity*, unsigned, const float&);
-void FUN_1411cf570(void*, egf::Entity*);
 
 // @0x1410af930
 CCubeGuideWrapper::CCubeGuideWrapper() {}
@@ -325,7 +329,7 @@ CKfmCubeGuide::~CKfmCubeGuide() { entity = NULL; parent = NULL; }
 int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     bool isActor = false;
     efd::AssetID id;
-    if (!FUN_1411cf0b0(FUN_1409670f0(), efd::utf8string((const char*)assetName), &id, &isActor)) return 0;
+    if (!reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf0b0(efd::utf8string((const char*)assetName), id, isActor)) return 0;
     efd::utf8string model("MS2MeshNoPhysX");
     if (isActor) model = "MS2Actor";
     entity = static_cast<Unk_CubeEntityService*>(FUN_1409670f0())->FUN_1411ce7c0(
@@ -430,7 +434,7 @@ void CKfmCubeGuide::vfunc_10(NiNode* node, int) {
 }
 MS2_REPLACE_METHOD(0x1410b1de0, CKfmCubeGuide, vfunc_10, 145, 0xBA55F349);
 // @0x1410b1e80
-void CKfmCubeGuide::vfunc_11() { FUN_1411cf570(FUN_1409670f0(), entity.data()); parent = NULL; }
+void CKfmCubeGuide::vfunc_11() { reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf570(entity.data()); parent = NULL; }
 MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 
 class Unk_CubeDisplayMap {

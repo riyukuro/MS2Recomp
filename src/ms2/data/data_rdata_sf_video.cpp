@@ -39,8 +39,22 @@ class Environment;
 class ASStringContext;
 class Value;
 template <unsigned __int64 P0> class RefCountCollector;
+class FnCall;
+class NetStreamProto
+{
+public:
+    static void Close(const FnCall&);
+    static void Pause(const FnCall&);
+    static void Play(const FnCall&);
+    static void Seek(const FnCall&);
+    static void SetBufferTime(const FnCall&);
+};
 }
-class InteractiveObject;
+class InteractiveObject
+{
+public: enum FocusEventType : int;
+};
+enum FocusMovedType : int;
 class ASString;
 namespace AS3 {
 namespace InstanceTraits {
@@ -69,6 +83,8 @@ bool AvmVideoCharacter_OnUnloading(::Scaleform::GFx::AS2::AvmCharacter *);
 bool FUN_14000e600(void *);
 unsigned __int64 FUN_14000e610(void *);
 bool FUN_14000e620(void *);
+void FUN_14000e650(::Scaleform::GFx::AS2::AvmCharacter *, ::Scaleform::GFx::InteractiveObject::FocusEventType, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
+void FUN_14000e6f0(void *, ::Scaleform::GFx::InteractiveObject::FocusEventType, ::Scaleform::GFx::InteractiveObject *, unsigned int, ::Scaleform::GFx::FocusMovedType);
 ::Scaleform::Render::Rect<float> * FUN_140010200(void *, ::Scaleform::Render::Rect<float> *, ::Scaleform::Render::Matrix2x4<float> const *);
 }
 namespace AS3 {
@@ -345,10 +361,6 @@ void FUN_1400182f0(void *, unsigned int const *);
 void FUN_140018930(void *, unsigned int const *);
 void FUN_140019890(void *, unsigned __int64 const *, unsigned __int64 const *);
 extern unsigned char DAT_140002b00[];
-extern unsigned char DAT_1400047a0[];
-extern unsigned char DAT_140004810[];
-extern unsigned char DAT_140004880[];
-extern unsigned char DAT_140005780[];
 extern unsigned char DAT_140007ba0[];
 extern unsigned char DAT_140007d90[];
 extern unsigned char DAT_140007da0[];
@@ -366,7 +378,6 @@ extern unsigned char DAT_140009f10[];
 extern unsigned char DAT_140009f30[];
 extern unsigned char DAT_14000a3a0[];
 extern unsigned char DAT_14000a770[];
-extern unsigned char DAT_14000c9f0[];
 extern unsigned char DAT_14000ce70[];
 extern unsigned char DAT_14000ce80[];
 extern unsigned char DAT_14000ce90[];
@@ -387,8 +398,6 @@ extern unsigned char DAT_14000e3e0[];
 extern unsigned char DAT_14000e3f0[];
 extern unsigned char DAT_14000e400[];
 extern unsigned char DAT_14000e4d0[];
-extern unsigned char DAT_14000e650[];
-extern unsigned char DAT_14000e6f0[];
 extern unsigned char DAT_142300840[];
 extern unsigned char DAT_1423dc0b0[];
 extern unsigned char DAT_1423dcd60[];
@@ -1671,15 +1680,15 @@ alignas(16) Sd_1431b4ce0 DAT_1431b4ce0 = {
 // 0x1431b4d80
 alignas(16) Sd_1431b4d80 DAT_1431b4d80 = {
     "close",
-    DAT_1400047a0,
+    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Close,
     "pause",
-    DAT_140004810,
+    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Pause,
     "play",
-    DAT_14000c9f0,
+    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Play,
     "setBufferTime",
-    DAT_140004880,
+    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::SetBufferTime,
     "seek",
-    DAT_140005780,
+    (const void*)&::Scaleform::GFx::AS2::NetStreamProto::Seek,
     {0},
 };
 // 0x1431b5300
@@ -1744,7 +1753,7 @@ alignas(16) Sd_1431b5b40 DAT_1431b5b40 = {
     (const void*)&Scaleform::GFx::AS2::FUN_14000e770,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e6d0,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e7e0,
-    DAT_14000e6f0,
+    (const void*)&::Scaleform::GFx::AS2::FUN_14000e6f0,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e830,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e7d0,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e780,
@@ -1796,7 +1805,7 @@ alignas(16) Sd_1431b5cb0 DAT_1431b5cb0 = {
     (const void*)&::Scaleform::GFx::AS2::FUN_14000e610,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e630,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e640,
-    DAT_14000e650,
+    (const void*)&::Scaleform::GFx::AS2::FUN_14000e650,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e670,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e680,
     (const void*)&Scaleform::GFx::AS2::FUN_14000e690,
@@ -2832,10 +2841,6 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_1431b7ea0@@3PEAXEA=?DAT_1431b7ea0@@3USd_1431b7ea0@@A")
 #pragma comment(linker, "/alternatename:?DAT_1431b7f60@@3PEAXEA=?DAT_1431b7f60@@3USd_1431b7f60@@A")
 #pragma comment(linker, "/alternatename:?DAT_140002b00@@3PAEA=?GetSoundChannel@VideoSoundStream@Video@GFx@Scaleform@@UEAAPEAVSoundChannel@Sound@4@XZ")
-#pragma comment(linker, "/alternatename:?DAT_1400047a0@@3PAEA=?FUN_1400047a0@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_140004810@@3PAEA=?FUN_140004810@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_140004880@@3PAEA=?FUN_140004880@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_140005780@@3PAEA=?FUN_140005780@@YAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_140007ba0@@3PAEA=?Set__proto__@Object@AS2@GFx@Scaleform@@UEAAXPEAVASStringContext@234@PEAV1234@@Z")
 #pragma comment(linker, "/alternatename:?DAT_140007d90@@3PAEA=?IsSuper@ObjectInterface@AS2@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_140007da0@@3PAEA=?IsBuiltinPrototype@ObjectInterface@AS2@GFx@Scaleform@@UEBA_NXZ")
@@ -2853,7 +2858,6 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_140009f30@@3PAEA=?IsBuiltinPrototype@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_14000a3a0@@3PAEA=?Finalize_GC@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEAAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14000a770@@3PAEA=?ExecuteForEachChild_GC@?$Prototype@VNetStream@AS2@GFx@Scaleform@@VEnvironment@234@@AS2@GFx@Scaleform@@MEBAXPEAV?$RefCountCollector@$0BED@@234@W4OperationGC@?$RefCountBaseGC@$0BED@@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000c9f0@@3PAEA=?FUN_14000c9f0@@YAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_14000ce70@@3PAEA=?GetObjectType@FunctionObject@AS2@GFx@Scaleform@@UEBA?AW4ObjectType@ObjectInterface@234@XZ")
 #pragma comment(linker, "/alternatename:?DAT_14000ce80@@3PAEA=?IsAsFunction@FunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ")
 #pragma comment(linker, "/alternatename:?DAT_14000ce90@@3PAEA=?IsNull@CFunctionObject@AS2@GFx@Scaleform@@UEBA_NXZ")
@@ -2874,8 +2878,6 @@ alignas(16) Sd_1431b7f60 DAT_1431b7f60 = {
 #pragma comment(linker, "/alternatename:?DAT_14000e3f0@@3PAEA=?ReplaceChildCharacterOnLoad@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVInteractiveObject@34@0@Z")
 #pragma comment(linker, "/alternatename:?DAT_14000e400@@3PAEA=?ReplaceChildCharacter@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVInteractiveObject@34@0@Z")
 #pragma comment(linker, "/alternatename:?DAT_14000e4d0@@3PAEA=?ExecuteBuffer@AvmCharacter@AS2@GFx@Scaleform@@UEAA_NPEAVActionBuffer@234@@Z")
-#pragma comment(linker, "/alternatename:?DAT_14000e650@@3PAEA=?FUN_14000e650@@YAXXZ")
-#pragma comment(linker, "/alternatename:?DAT_14000e6f0@@3PAEA=?FUN_14000e6f0@@YAXXZ")
 #pragma comment(linker, "/alternatename:?DAT_142300840@@3PAEA=?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dc0b0@@3PAEA=?Bind@AvmDisplayObj@AS3@GFx@Scaleform@@UEAAXPEAVDisplayObject@34@@Z")
 #pragma comment(linker, "/alternatename:?DAT_1423dcd60@@3PAEA=?IsStage@AvmInteractiveObj@AS3@GFx@Scaleform@@UEBA_NXZ")

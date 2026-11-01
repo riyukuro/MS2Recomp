@@ -133,14 +133,10 @@ WC_WRAP(3)
 CString FUN_140c38a90(const char*, const char*, const char*, const int&, const char*);
 void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);
 size_t FUN_140bd09c0(void*);
-class Unk_WcMsgBoxData {};
-class Unk_WcNullCallback {
-public: Unk_WcNullCallback(const Unk_WcNullCallback&); ~Unk_WcNullCallback();
-private: void* p0;
-};
-Unk_WcNullCallback FUN_140b240b0();
-MS2Ptr<Unk_WcMsgBoxData> FUN_140d74390(CStringW, int, Unk_WcNullCallback);
-MS2Ptr<Unk_WcMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
+class CMsgBoxData : public CPtred {};
+Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
+MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
+MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 
 void FUN_140bc7c10(const Scaleform::GFx::Value&, CString, int, std::vector<MS2Ptr<Unk_WcClip>>&, int);
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);

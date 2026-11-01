@@ -197,7 +197,7 @@ efd::utf8string StateHomeConvenient::GetAnimation()
 // @0x140ddd950
 void StateHomeConvenient::Finish(double fTime)
 {
-    m_pOwner->FUN_14166dda0(0);
+    m_pOwner->PlayAnimationById(0);
     switch (GetKind())
     {
     case 1:

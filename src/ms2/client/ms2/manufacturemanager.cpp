@@ -124,7 +124,6 @@ class Unk_MfMsgTable { public: Unk_MfValuePtr<Unk_MfMaidMsg> FUN_14067fd60(int n
 class Unk_MfInventory
 {
 public:
-    unsigned FUN_140a5f180(int nItemId, int nRarity);           // owned count of the item (group 0)
     unsigned FUN_140a5f780(int nGroup, int nRarity);            // owned count of the group
 };
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
@@ -136,7 +135,7 @@ struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-class Unk_Inventory;
+class Unk_Inventory { public: int FUN_140a5f180(int itemId, int rarity); };   // C3: unit-local view (def in inventory); owned count of the item
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MfInventory // the player's inventory
 extern __int64 DAT_143ab2820;                                   // own account id
 
@@ -155,8 +154,7 @@ __int64 GetServerTime();                                        // server time
 void FUN_140710590(COutPacket& packet);                         // send
 int FUN_141276180(const CString& strName, const CString& strArg);  // play a system sound
 CStringW GetStringCommon(int nStringId);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"
 void FUN_140694050(class CManufacture&, class CByteBuffer&);   // C3: was FUN_140694050
 void FUN_1412dc3c0(UIManufactureStatus* pDlg);
 
@@ -324,7 +322,7 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                 int nRarity = spItem->FUN_14053cbc0() ? spIng->m_nRarity : FUN_14053feb0(nItemId);
                 unsigned nOwned = 0;
                 if (reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId() == 0)
-                    nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f180(nItemId, nRarity);
+                    nOwned = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
                 else
                     nOwned = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(reinterpret_cast<MaidIngredient*>(spIng.operator->())->GetItemStringId(), nRarity);
                 unsigned nNeed = reinterpret_cast<CGameRule *>(FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIng->m_nCount);

@@ -72,6 +72,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
+class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
@@ -195,7 +196,7 @@ void UIItemLulluBoxDialog::OnLoadComplete()
         }
         m_30->Invoke("setBoxTheme", theme);
     }
-    FUN_140c57ce0("m_resultItem", m_resultItem);
+    reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_resultItem", m_resultItem);
     FUN_140e52700("m_isSkipEffect", m_skipEffect);
     FUN_140e52700("m_autoPayBox", m_autoPay);
     if (data->function.name == L"OpenItemBoxLulluSimple")
@@ -673,7 +674,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
                 int lack = need - have;
                 int total = price * lack;
                 CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_box"), FUN_140763e10(total), keyItem, boxItem);
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(msg);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(msg);
                 MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
                 if (box.get()) {
                     box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c2a0));
@@ -736,7 +737,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
     CStringW popup = LULLUBOX_ATTR(data)->FUN_14042cad0(L"meratMarketPopup", L"");
     if (popup == kind) {
         CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item_shop_link"), itemId);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(msg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(msg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c260));
@@ -744,7 +745,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
         }
     } else {
         CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), itemId);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(msg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(msg);
         FUN_1412751f0(msg, 1, 1);
     }
 }

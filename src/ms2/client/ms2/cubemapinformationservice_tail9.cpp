@@ -128,106 +128,106 @@ void Unk_CMISDriveTail9()
 // Full-exe entry points under the FUN_ spellings that unit_141127a90's iterator helpers call: each is a
 // _Compressed_pair / _Get_unwrapped accessor that forwards to the addressof / _Kfn identity instance ICF folded it
 // onto (callee VAs below).
-char* FUN_1411173c0(char* p);
-char* FUN_1411173d0(char* p);
-char* FUN_1411173e0(char* p);
-char* FUN_1411173f0(char* p);
-char* FUN_141117400(char* p);
-char* FUN_141117410(char* p);
-char* FUN_141117420(char* p);
-char* FUN_141117430(char* p);
-char* FUN_141117440(char* p);
-char* FUN_141117450(char* p);
-char* FUN_141117460(char* p);
-char* FUN_141117470(char* p);
-char* FUN_141117480(char* p);
-char* FUN_141117490(char* p);
-char* FUN_1411174a0(char* p);
-char* FUN_1411174b0(char* p);
-char* FUN_1411174c0(char* p);
-char* FUN_1411174d0(char* p);
-char* FUN_1411174e0(char* p);
-char* FUN_1411174f0(char* p);
-char* FUN_141117500(char* p);
-char* FUN_141117510(char* p);
-char* FUN_1408b6530(char* p);
-char* FUN_1408b6540(char* p);
-char* FUN_1411170b0(char* p);
+typedef struct std::pair<int const, struct Unk_CMISMarkRec> Unk_Ao1173c0; template<> Unk_Ao1173c0* std::addressof<Unk_Ao1173c0>(Unk_Ao1173c0&) noexcept;
+typedef struct std::pair<int const, struct Unk_Int3> Unk_Ao1173d0; template<> Unk_Ao1173d0* std::addressof<Unk_Ao1173d0>(Unk_Ao1173d0&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<int const, class MS2Ptr<class FittingDollData>>, void *> * Unk_Ao1173e0; template<> Unk_Ao1173e0* std::addressof<Unk_Ao1173e0>(Unk_Ao1173e0&) noexcept;
+typedef struct std::pair<int const, class efd::SmartPointer<class egf::Entity>> Unk_Ao1173f0; template<> Unk_Ao1173f0* std::addressof<Unk_Ao1173f0>(Unk_Ao1173f0&) noexcept;
+typedef struct std::pair<int const, class MS2Ptr<class FittingDollData>> Unk_Ao117400; template<> Unk_Ao117400* std::addressof<Unk_Ao117400>(Unk_Ao117400&) noexcept;
+typedef struct std::pair<int const, class MS2Ptr<class Cube>> Unk_Ao117410; template<> Unk_Ao117410* std::addressof<Unk_Ao117410>(Unk_Ao117410&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<int const, class efd::SmartPointer<class egf::Entity>>, void *> * Unk_Ao117420; template<> Unk_Ao117420* std::addressof<Unk_Ao117420>(Unk_Ao117420&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<int const, class Unk_PayloadPtr<class CubeOwner>>, void *> * Unk_Ao117430; template<> Unk_Ao117430* std::addressof<Unk_Ao117430>(Unk_Ao117430&) noexcept;
+typedef struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>> Unk_Ao117440; template<> Unk_Ao117440* std::addressof<Unk_Ao117440>(Unk_Ao117440&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<int const, class std::map<int, class Unk_PayloadPtr<class CubeOwner>, struct std::less<int>, class std::allocator<struct std::pair<int const, class Unk_PayloadPtr<class CubeOwner>>>>>, void *> * Unk_Ao117450; template<> Unk_Ao117450* std::addressof<Unk_Ao117450>(Unk_Ao117450&) noexcept;
+typedef struct std::pair<int const, class std::map<int, class MS2Ptr<class Cube>, struct std::less<int>, class std::allocator<struct std::pair<int const, class MS2Ptr<class Cube>>>>> Unk_Ao117460; template<> Unk_Ao117460* std::addressof<Unk_Ao117460>(Unk_Ao117460&) noexcept;
+typedef struct std::pair<int const, class efd::set<int, struct std::less<int>>> Unk_Ao117470; template<> Unk_Ao117470* std::addressof<Unk_Ao117470>(Unk_Ao117470&) noexcept;
+typedef struct std::pair<int const, class efd::vector<class efd::SmartPointer<class egf::Entity>>> Unk_Ao117480; template<> Unk_Ao117480* std::addressof<Unk_Ao117480>(Unk_Ao117480&) noexcept;
+typedef struct std::pair<int const, class egf::EntityID> Unk_Ao117490; template<> Unk_Ao117490* std::addressof<Unk_Ao117490>(Unk_Ao117490&) noexcept;
+typedef struct std::pair<int const, struct Unk_CMISCubeTimer> Unk_Ao1174a0; template<> Unk_Ao1174a0* std::addressof<Unk_Ao1174a0>(Unk_Ao1174a0&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<unsigned int const, int>, void *> * Unk_Ao1174b0; template<> Unk_Ao1174b0* std::addressof<Unk_Ao1174b0>(Unk_Ao1174b0&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<unsigned int const, class MS2SvrPtr<class CUGCMapSetItemInfo>>, void *> * Unk_Ao1174c0; template<> Unk_Ao1174c0* std::addressof<Unk_Ao1174c0>(Unk_Ao1174c0&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>>, void *> * Unk_Ao1174d0; template<> Unk_Ao1174d0* std::addressof<Unk_Ao1174d0>(Unk_Ao1174d0&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<unsigned long const, unsigned long>, void *> * Unk_Ao1174e0; template<> Unk_Ao1174e0* std::addressof<Unk_Ao1174e0>(Unk_Ao1174e0&) noexcept;
+typedef struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr> Unk_Ao1174f0; template<> Unk_Ao1174f0* std::addressof<Unk_Ao1174f0>(Unk_Ao1174f0&) noexcept;
+typedef struct std::pair<class egf::EntityID const, class MS2Ptr<class Cube>> Unk_Ao117500; template<> Unk_Ao117500* std::addressof<Unk_Ao117500>(Unk_Ao117500&) noexcept;
+typedef struct std::_Tree_node<struct std::pair<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const, int>, void *> * Unk_Ao117510; template<> Unk_Ao117510* std::addressof<Unk_Ao117510>(Unk_Ao117510&) noexcept;
+typedef struct std::pair<enum Unk_CMISKindB const, int> Unk_Ao8b6530; template<> Unk_Ao8b6530* std::addressof<Unk_Ao8b6530>(Unk_Ao8b6530&) noexcept;
+typedef struct std::pair<enum Unk_CMISKindB const, unsigned char> Unk_Ao8b6540; template<> Unk_Ao8b6540* std::addressof<Unk_Ao8b6540>(Unk_Ao8b6540&) noexcept;
+typedef std::pair<const egf::EntityID, MS2Ptr<Cube> > Unk_KfnPair; typedef std::_Tmap_traits<egf::EntityID, MS2Ptr<Cube>, std::less<egf::EntityID>, efd::CustomAllocator<Unk_KfnPair>, 0> Unk_KfnTraits;
 
 // @0x14115a580
-char* FUN_14115a580(char* p) { return FUN_1411173c0(p); }
+char* FUN_14115a580(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1173c0*>(p))); }
 
 // @0x14115a5a0
-char* FUN_14115a5a0(char* p) { return FUN_1411173d0(p); }
+char* FUN_14115a5a0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1173d0*>(p))); }
 
 // @0x14115a5c0
-char* FUN_14115a5c0(char* p) { return FUN_1411173e0(p); }
+char* FUN_14115a5c0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1173e0*>(p))); }
 
 // @0x14115a5e0
-char* FUN_14115a5e0(char* p) { return FUN_1411173f0(p); }
+char* FUN_14115a5e0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1173f0*>(p))); }
 
 // @0x14115a600
-char* FUN_14115a600(char* p) { return FUN_141117400(p); }
+char* FUN_14115a600(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117400*>(p))); }
 
 // @0x14115a620
-char* FUN_14115a620(char* p) { return FUN_141117410(p); }
+char* FUN_14115a620(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117410*>(p))); }
 
 // @0x14115a640
-char* FUN_14115a640(char* p) { return FUN_141117420(p); }
+char* FUN_14115a640(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117420*>(p))); }
 
 // @0x14115a660
-char* FUN_14115a660(char* p) { return FUN_141117430(p); }
+char* FUN_14115a660(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117430*>(p))); }
 
 // @0x14115a680
-char* FUN_14115a680(char* p) { return FUN_141117440(p); }
+char* FUN_14115a680(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117440*>(p))); }
 
 // @0x14115a6a0
-char* FUN_14115a6a0(char* p) { return FUN_141117450(p); }
+char* FUN_14115a6a0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117450*>(p))); }
 
 // @0x14115a6c0
-char* FUN_14115a6c0(char* p) { return FUN_141117460(p); }
+char* FUN_14115a6c0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117460*>(p))); }
 
 // @0x14115a6e0
-char* FUN_14115a6e0(char* p) { return FUN_141117470(p); }
+char* FUN_14115a6e0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117470*>(p))); }
 
 // @0x14115a700
-char* FUN_14115a700(char* p) { return FUN_141117480(p); }
+char* FUN_14115a700(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117480*>(p))); }
 
 // @0x14115a720
-char* FUN_14115a720(char* p) { return FUN_141117490(p); }
+char* FUN_14115a720(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117490*>(p))); }
 
 // @0x14115a740
-char* FUN_14115a740(char* p) { return FUN_1411174a0(p); }
+char* FUN_14115a740(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1174a0*>(p))); }
 
 // @0x14115a760
-char* FUN_14115a760(char* p) { return FUN_1411174b0(p); }
+char* FUN_14115a760(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1174b0*>(p))); }
 
 // @0x14115a780
-char* FUN_14115a780(char* p) { return FUN_1411174c0(p); }
+char* FUN_14115a780(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1174c0*>(p))); }
 
 // @0x14115a7a0
-char* FUN_14115a7a0(char* p) { return FUN_1411174d0(p); }
+char* FUN_14115a7a0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1174d0*>(p))); }
 
 // @0x14115a7c0
-char* FUN_14115a7c0(char* p) { return FUN_1411174e0(p); }
+char* FUN_14115a7c0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1174e0*>(p))); }
 
 // @0x14115a7e0
-char* FUN_14115a7e0(char* p) { return FUN_1411174f0(p); }
+char* FUN_14115a7e0(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao1174f0*>(p))); }
 
 // @0x14115a800
-char* FUN_14115a800(char* p) { return FUN_141117500(p); }
+char* FUN_14115a800(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117500*>(p))); }
 
 // @0x14115a820
-char* FUN_14115a820(char* p) { return FUN_141117510(p); }
+char* FUN_14115a820(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao117510*>(p))); }
 
 // @0x14115a840
-char* FUN_14115a840(char* p) { return FUN_1408b6530(p); }
+char* FUN_14115a840(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao8b6530*>(p))); }
 
 // @0x14115a860
-char* FUN_14115a860(char* p) { return FUN_1408b6540(p); }
+char* FUN_14115a860(char* p) { return reinterpret_cast<char*>(std::addressof(*reinterpret_cast<Unk_Ao8b6540*>(p))); }
 
 // @0x14115a880
-char* FUN_14115a880(char* p) { return FUN_1411170b0(p); }
+char* FUN_14115a880(char* p) { return reinterpret_cast<char*>(const_cast<egf::EntityID*>(&Unk_KfnTraits::_Kfn(*reinterpret_cast<Unk_KfnPair*>(p)))); }
 
 // The list append worldservice_1 calls: std::vector<EntityPtr>::emplace_back (folded with
 // vector<Cube*>::push_back). The exe calls the std::allocator instance 0x14111ada0, not the CustomAllocator 0x14111ad30.
@@ -278,12 +278,12 @@ void FUN_14115a9c0(Unk_CMISXformVec* pVec, const NiTransform* pXform)
 }
 
 // size() through _Get_data 0x141142ec0 (set<MS2Ptr<CFunctionCubeObject>>; _Mysize sits after _Myhead)
-struct Unk_CMISTreeVal { void* _Myhead; __int64 _Mysize; };
-Unk_CMISTreeVal* FUN_141142ec0(Unk_CMISTree<284>* pSet);
+class CFunctionCubeObject;
+typedef std::_Tree_comp_alloc<std::_Tset_traits<MS2Ptr<CFunctionCubeObject>, std::less<MS2Ptr<CFunctionCubeObject> >, std::allocator<MS2Ptr<CFunctionCubeObject> >, 0> > Unk_FcSetBase;
 // @0x14115adf0
 __int64 FUN_14115adf0(Unk_CMISTree<284>* pSet)
 {
-    return FUN_141142ec0(pSet)->_Mysize;
+    return reinterpret_cast<Unk_FcSetBase*>(pSet)->_Get_data()._Mysize;
 }
 // MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@@Z 0x141159e10 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEBA_KXZ 0x14115a270 ; la1: the efd::map<long,MS2Ptr<Cube>> (column map, operator[] 0x141128350) chain

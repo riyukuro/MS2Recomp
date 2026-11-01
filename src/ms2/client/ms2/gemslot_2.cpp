@@ -40,8 +40,6 @@ public:
 class Unk_GmWorld
 {
 public:
-    void FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
-        int nOwner);                                    // play a sound event
 };
 
 CItemTransfer* FUN_140527930(CItem* pItem);
@@ -62,7 +60,7 @@ public:
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 unsigned __int64 FUN_140222f50();                            // the count of the gem types
 void FUN_140d73bc0(int, int, void*, CStringW);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket&);
 void FUN_1401fd190(unsigned char* payload, COutputStream& stream);
@@ -479,7 +477,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
     {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         if (spData.get() != 0)
-            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return true;
 }
@@ -506,7 +504,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
     {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         if (spData.get() != 0)
-            reinterpret_cast<Unk_GmWorld*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", spData->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return true;
 }

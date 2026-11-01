@@ -275,7 +275,7 @@ MS2Ptr<CItem> FittingDollSlot::vfunc_25()
     int nKind = 0;
     if (pDoll->FUN_14121c710() != 0)
         nKind = 1;
-    MS2Ptr<CEquipItem> spEquip = pDoll->FUN_141655e80(m_nSlot, nKind);
+    MS2Ptr<CEquipItem> spEquip = pDoll->GetEquipBySlotKind(m_nSlot, nKind);
     if (spEquip == 0)
         return MS2Ptr<CItem>(0);
     return ((CEquipItem*)spEquip)->GetItem();

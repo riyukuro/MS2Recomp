@@ -56,7 +56,8 @@ public:
     bool FUN_140af0700(const efd::Point3& kWorld, efd::Point3& kScreen);    // world -> screen; false when off screen
     efd::Point3 FUN_140a17e10();                                            // the camera position
 };
-struct Unk_DtCfgValue { float FUN_1402bac70(); const float& FUN_140298f40(); int* FUN_1402056b0(); char m_pad[0x58]; };
+struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
+struct Unk_DtCfgValue { float FUN_1402bac70(); int* FUN_1402056b0(); char m_pad[0x58]; };
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 struct Unk_DtCfg
 {
@@ -70,7 +71,6 @@ struct Unk_DtCfg
     Unk_DtCfgValue m_ca28;                  // diffAlpha
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-class Unk_DtOption : public CGameOption { public: Unk_InterfaceState* FUN_140e09150(); };
 class Unk_DtUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -274,8 +274,8 @@ void UIDamageText::OnLoadComplete()
     m_onForceRemove = m_30->GetMember("onForceRemove");
     m_spDamageEnable.AssignRaw(new AScript(m_30->GetMember("damageEnable"), m_28));
     m_spDamageGarbage.AssignRaw(new AScript(m_30->GetMember("damageGarbage"), m_28));
-    m_pBattleOption = reinterpret_cast<Unk_DtOption*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630();
-    m_pInterfaceOption = reinterpret_cast<Unk_DtOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150();
+    m_pBattleOption = TSingleton<CGameOption>::GetInstance()->FUN_141248630();
+    m_pInterfaceOption = TSingleton<CGameOption>::GetInstance()->FUN_140e09150();
 }
 MS2_REPLACE_METHOD(0x141911550, UIDamageText, OnLoadComplete, 1294, 0x526C0A8E);
 
@@ -659,7 +659,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     {
         PC* pPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pTarget));
         if (pPC != 0)
-            nTargetMask = TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
+            nTargetMask = TSingleton<CPartyManager>::GetInstance()->IsMemberByCharId(pPC->FUN_141656a80()) ? 2 : 4;
     }
     if ((unsigned int)nCasterId > 0)
     {
@@ -672,7 +672,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
             PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
             PC* pPC = efd::DynamicCast<PC, PCBase>(reinterpret_cast<PCBase*>(pCaster));
             if (pPC != 0)
-                nCasterMask = TSingleton<CPartyManager>::GetInstance()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
+                nCasterMask = TSingleton<CPartyManager>::GetInstance()->IsMemberByCharId(pPC->FUN_141656a80()) ? 2 : 4;
             else
             {
                 Unk_DtNpc* pNpc = reinterpret_cast<Unk_DtNpc*>(efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pCaster)));
@@ -750,13 +750,13 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
     {
         if (m_bObserver)
             return 1;
-        return pActor->FUN_140f4a450() <= ((struct Unk_DtCfg*)FUN_1401d3200())->m_168.FUN_140298f40();
+        return pActor->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_DtCfg*)FUN_1401d3200())->m_168)->FUN_140298f40());
     }
     else if (pTarget != 0)
     {
         GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
-            return pTarget->FUN_140f4a450() <= ((struct Unk_DtCfg*)FUN_1401d3200())->m_168.FUN_140298f40();
+            return pTarget->FUN_140f4a450() <= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_DtCfg*)FUN_1401d3200())->m_168)->FUN_140298f40());
     }
     return 0;
 }
@@ -1236,7 +1236,7 @@ void UIDamageText::FUN_141915990()
             if ((m_pBattleOption->m_n10 & 1) != 0)
             {
                 float fLine = (float)m_nLineHeight;
-                nOtherLine = (int)(fLine * ((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0.FUN_140298f40());
+                nOtherLine = (int)(fLine * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0)->FUN_140298f40()));
                 nOtherLine2 = nOtherLine << 1;
             }
             float fUIScale = ((class GFxManager*)(class Unk_DtUIScale*)(((class Unk_DtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
@@ -1465,7 +1465,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
     if ((m_pBattleOption->m_n10 & 1) != 0)
     {
         float fLine = (float)m_nLineHeight;
-        nOtherLine = (int)(fLine * ((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0.FUN_140298f40());
+        nOtherLine = (int)(fLine * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_DtCfg*)FUN_1401d3200())->m_c9d0)->FUN_140298f40()));
         nOtherLine2 = nOtherLine << 1;
     }
     while (pos != 0)

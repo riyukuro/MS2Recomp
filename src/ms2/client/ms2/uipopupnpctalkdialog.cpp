@@ -304,7 +304,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     if (MS2Ptr<ASTextField> spScript = GetChild<ASTextField>("m_script"))
     {
         CStringW strText = m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_14078f3d0()->m_strText;
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
         spScript->FUN_1422c4f00(strText);
     }
     BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.FUN_14078fae0() - 1);

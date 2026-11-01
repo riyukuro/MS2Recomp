@@ -229,7 +229,6 @@ public:
     void SetRoom(MS2Ptr<DungeonRoom> spRoom);                       // 0x1412bac40
     int TypeOfGroup(int nGroup);                                    // 0x1412bacf0 combo group -> DungeonGroupType
     int GroupOfType(int nType);                                     // 0x1412bade0 DungeonGroupType -> combo group
-    MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out);   // 0x140c57ce0 bind a clip child
 
     int m_178;                                                      // +0x178
     int m_17c;                                                      // +0x17c

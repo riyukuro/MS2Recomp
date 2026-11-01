@@ -4,12 +4,14 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\objectshadow.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <atlcoll.h>
+#include <efd/SmartPointer.h>
 #include "ms2/ms2layout.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/equipmodel.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include "ms2/client/ms2/equipment.h"
 
 // return types of the getters this unit calls
 class Unk_ResourceMgr;
@@ -111,9 +113,10 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     static class WorldService* GetInstance();
 };
-   void FUN_141bd30f0(void* p, bool b);   void FUN_141bd2db0(void* p, void* list, int k);
+   void FUN_141bd30f0(void* p, bool b);
 void* FUN_1403ed280();class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
@@ -146,8 +149,7 @@ public:
     void SetEmittance(class NiColor const&);
 };
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
-void* FUN_14123c410(void* owner);   NiAVObject* FUN_141b6efc0(egf::Entity* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
-void FUN_1411e1b80(void* src, void* list);
+NiAVObject* FUN_141b6efc0(egf::Entity* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
    void FUN_140885680(void* list, void** pos);
 void* FUN_1405a8ed0(void* elem);class CEquipItem   // C3: member view for the former free stand-ins
 {
@@ -298,7 +300,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
     }
     if (force || self->m_bDirty != 0) {
-        void* h = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(self->m_pOwner)));
+        void* h = FUN_141b6efc0(reinterpret_cast<GameObject*>(self->m_pOwner)->FUN_14123c410());
         if (h != 0) {
             FUN_141567540((class NiAVObject*)(h), self->m_bShown);
             self->m_bDirty = false;
@@ -307,7 +309,7 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         if (o != 0) {
             void* pos2;
             Unk_ShList2 list(10);
-            FUN_1411e1b80(reinterpret_cast<void*>(reinterpret_cast<PC*>(o)->FUN_1416561a0()), &list);
+            reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(o)->FUN_1416561a0())->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&list));
             for (pos2 = ((void*)((ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*)(void*)(&list))->GetHeadPosition()); pos2 != 0; FUN_140885680(&list, &pos2)) {
                 void* elem = ((void*)&((ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*)(void*)(&list))->GetAt((struct __POSITION*)(pos2)));
                 if (((class CEquipItem*)(void*)(FUN_1405a8ed0(elem)))->FUN_1411dc0d0() != 0) {
@@ -358,7 +360,7 @@ void FUN_141610490()
     need = ((class CGraphicOptionTable*)(void*)(FUN_140ae1c00()))->GetShadowOption(5);
     FUN_141bd30f0(((void*)WorldService::GetInstance()), level >= need);
     Unk_ShList list(10);
-    FUN_141bd2db0(((void*)WorldService::GetInstance()), &list, 0);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), 0);
     for (pos = FUN_140967000(&list); pos != 0; FUN_1409671f0(&list, &pos)) {
         void* pEntry = FUN_140a01110(&list, pos);
         Unk_ShadowIter* it = (Unk_ShadowIter*)FUN_1409658c0(pEntry);

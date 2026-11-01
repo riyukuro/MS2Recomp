@@ -58,7 +58,7 @@
 #include <NiTMap.h>
 #include <efd/StdContainers.h>
 #include <efd/utf8string.h>
-
+class PC { public: void FUN_141659790(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &); };
 // ---- exe data ----
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)
 
@@ -297,7 +297,7 @@ bool CAnimationManager::FUN_14099e050(Unk_AnimRef& kName, float fScale, bool bFo
     if (pActor != 0)
     {
         CString strModel = pActor->vfunc_60();
-        pActor->FUN_141659790(strAnim);
+        ((class PC*)(pActor))->FUN_141659790(strAnim);
         pActor->vfunc_136(strModel, kName, fScale);
     }
     return bOk;

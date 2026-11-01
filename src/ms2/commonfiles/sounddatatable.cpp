@@ -30,9 +30,9 @@ CString FUN_1406522f0(int nLanguage);                                     // lan
 CString FUN_14038f6d0(const CString& str, const char* psz);               // str + psz
 CString FUN_1401d2b10(const CString& a, const CString& b);                // a + b
 CString FUN_14016a5c0(const char* psz, int nFlags);                       // path conversion
-void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);   // SetAttribute(name, string)
+void XmlSetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
-bool FUN_1408710c0(void* pDoc, const char* pszPath);                      // SaveFile
+
 
 // Unit-local views of the game's TinyXML (bare global names, not efd::).
 class Unk_TiXmlElement
@@ -170,7 +170,7 @@ int CSoundDataTable::Save()
         {
             const CSoundDataEntry* pEntry = &it.second;
             Unk_TiXmlElement sound("sound");
-            FUN_140874050(&sound, "id", pEntry->strName);
+            XmlSetAttr((class TiXmlElement *)(&sound), "id", pEntry->strName);
             XmlSetAttr((class TiXmlElement*)(&sound), "lengthms", pEntry->nLengthMs);
             ((void*)((class TiXmlNode*)(void*)(&eventSound))->InsertEndChild(*(class TiXmlNode const*)(&sound)));
         }
@@ -183,7 +183,7 @@ int CSoundDataTable::Save()
         {
             const CSoundDataEntry* pEntry = &it.second;
             Unk_TiXmlElement sound("sound");
-            FUN_140874050(&sound, "id", pEntry->strName);
+            XmlSetAttr((class TiXmlElement *)(&sound), "id", pEntry->strName);
             XmlSetAttr((class TiXmlElement*)(&sound), "lengthms", pEntry->nLengthMs);
             ((void*)((class TiXmlNode*)(void*)(&programmerSound))->InsertEndChild(*(class TiXmlNode const*)(&sound)));
         }
@@ -196,7 +196,7 @@ int CSoundDataTable::Save()
         {
             const CSoundDataEntry* pEntry = &it.second;
             Unk_TiXmlElement sound("sound");
-            FUN_140874050(&sound, "id", pEntry->strName);
+            XmlSetAttr((class TiXmlElement *)(&sound), "id", pEntry->strName);
             XmlSetAttr((class TiXmlElement*)(&sound), "lengthms", pEntry->nLengthMs);
             ((void*)((class TiXmlNode*)(void*)(&triggerVoiceSound))->InsertEndChild(*(class TiXmlNode const*)(&sound)));
         }
@@ -204,7 +204,7 @@ int CSoundDataTable::Save()
     }
 
     CString strPath = FUN_14016a5c0(GetPath(), 0);
-    if (!FUN_1408710c0(&doc, strPath))
+    if (!reinterpret_cast<TiXmlDocument*>(&doc)->SaveFile(strPath))
     {
         MS2_ASSERT_AT(0x9f, 0);
         return 0;

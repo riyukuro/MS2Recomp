@@ -135,7 +135,7 @@ static CString s_strStun4("stun");
 MS2RenderListProcessor::MS2RenderListProcessor()
     : m_spMaterial(0)
 {
-    ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa330();
+    ((class PostProcessingService*)(((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())))->FUN_1416aa330();
     m_spMaterial = 0;
     m_ppkSortedAlpha = 0;
     m_pkAlphaObjects = 0;

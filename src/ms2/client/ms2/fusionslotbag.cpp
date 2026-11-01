@@ -135,7 +135,7 @@ void FusionSlotBag::FUN_14123a650(ItemInfoSlot& slot, ASSlot& as)
 {
     MS2Ptr<CItem> spItem = slot.vfunc_25();
     if (spItem.get() != 0)
-        as.FUN_1407cbbe0("mergeStep", ((Unk_ItemEnchantData*)((CItem*)spItem)->FUN_1405278a0())->FUN_140630810());
+        as.FUN_1407cbbe0("mergeStep", ((class CItemStatus*)(((Unk_ItemEnchantData*)((CItem*)spItem)->FUN_1405278a0())))->FUN_140630810());
 }
 
 // @0x14123a960

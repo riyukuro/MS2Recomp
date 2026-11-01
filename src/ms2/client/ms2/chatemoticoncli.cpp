@@ -61,21 +61,21 @@ class UIChatEmoticonDialog : public UIDialog
 public:
     void FUN_140bd2620();                                           // refresh
     void ClearEmoticonData();                                           // rebuild
-    void FUN_140bd26c0(int nEmoticonId);                            // select
+    void FUN_140bd26c0(unsigned nEmoticonId);                            // select
     unsigned char unrecovered[0x50];
 };
-class Unk_MessengerChat { public: void FUN_141a10010(unsigned nFlag, int nId); };
+class UIMessenger { public: void FUN_141a10010(int nFlag, int nId); };   // C3: member view
 class UIMessengerBrowser : public UIDialog
 {
 public:
-    Unk_MessengerChat* FUN_141a259c0(const CStringW& strName);
+    UIMessenger* FUN_141a259c0(const CStringW& strName);
     unsigned char unrecovered[0x10];
 };
-class Unk_GroupChat { public: void FUN_14194afc0(int nId); };
+class UIGroupMessenger { public: void FUN_14194afc0(int nId); };   // C3: member view
 class UIGroupMessengerBrowser : public UIDialog
 {
 public:
-    Unk_GroupChat* FUN_141952fc0(const CStringW& strName);
+    UIGroupMessenger* FindWindowByName(const CStringW& strName);
     unsigned char unrecovered[0x10];
 };
 class UIChatDialog;
@@ -84,12 +84,6 @@ UIChatEmoticonDialog* FUN_140a3aa20();
 UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId);
 UIMessengerBrowser* FUN_140a3ab70(int nUiId);
 
-// UI manager: the lookup of a dialog by its ui id.
-class Unk_EmoUIManager
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
-};
 class UIRewardNotify* FUN_140938cd0(int);   // C3: was FUN_140938cd0
 void FUN_141ac1580(UIChatDialog* pChat, const CStringW& strName, const CStringW& strMsg, int nFlag);
 
@@ -129,10 +123,10 @@ inline int FUN_140a3dc60() { return 0x4f80; }
 // @0x140a3aa20
 UIChatEmoticonDialog* FUN_140a3aa20()
 {
-    Unk_EmoUIManager* pManager = reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance());
+    CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> spUI = pManager->FUN_141adcea0(FUN_140a3dc60());
+    MS2Ptr<UIObject> spUI = pManager->FindObject((eUIClassID)FUN_140a3dc60());
     if (spUI.IsNull())
         return 0;
     return dynamic_cast<UIChatEmoticonDialog*>((UIObject*)spUI);
@@ -141,9 +135,9 @@ UIChatEmoticonDialog* FUN_140a3aa20()
 // @0x140a3aad0
 UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId)
 {
-    if (reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIGroupMessengerBrowser*>((UIObject*)spUI);
     }
@@ -153,9 +147,9 @@ UIGroupMessengerBrowser* FUN_140a3aad0(int nUiId)
 // @0x140a3ab70
 UIMessengerBrowser* FUN_140a3ab70(int nUiId)
 {
-    if (reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_EmoUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIMessengerBrowser*>((UIObject*)spUI);
     }
@@ -291,7 +285,7 @@ void CChatEmoticonCli::OnEmoticonTypedInMessenger(CInPacket& packet)
     UIMessengerBrowser* pBrowser = FUN_140a3ab70(0x4e61);
     if (pBrowser == 0)
         return;
-    Unk_MessengerChat* pChat = pBrowser->FUN_141a259c0(strName);
+    UIMessenger* pChat = pBrowser->FUN_141a259c0(strName);
     if (pChat == 0)
         return;
     pChat->FUN_141a10010(nFlag, nId);
@@ -307,7 +301,7 @@ void CChatEmoticonCli::OnEmoticonSentInGroupMessenger(CInPacket& packet)
     UIGroupMessengerBrowser* pBrowser = FUN_140a3aad0(0x4e93);
     if (pBrowser == 0)
         return;
-    Unk_GroupChat* pChat = pBrowser->FUN_141952fc0(strName);
+    UIGroupMessenger* pChat = pBrowser->FindWindowByName(strName);
     if (pChat == 0)
         return;
     pChat->FUN_14194afc0(nId);

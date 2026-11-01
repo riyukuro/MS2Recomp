@@ -36,7 +36,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-
+class Unk_IntTriple { public: int Sum(void); void Read(class CInputStream &); void Write(class COutputStream &); };
 #define CLUB_JOIN_MAX 3
 
 // Unrecovered xml helpers (the same ones the other table units use).
@@ -392,7 +392,7 @@ void CClubMemberProxy::FUN_14020d9a0(COutputStream& out)
     out.WriteInt32(m_44);
     out.WriteInt32(m_48);
     out.WriteInt64(m_50);
-    m_trophy.FUN_140267f50(out);
+    ((class Unk_IntTriple&)(m_trophy)).Write(out);
 }
 
 // @0x14020db80
@@ -414,7 +414,7 @@ void CClubMemberProxy::FUN_14020db80(CInputStream* in)
     m_44 = in->ReadInt32();
     m_48 = in->ReadInt32();
     m_50 = in->ReadInt64();
-    m_trophy.FUN_140267fb0(*in);
+    ((class Unk_IntTriple&)(m_trophy)).Read(*in);
     SetName(strName);
     SetPicture(strPicture);
 }
@@ -650,7 +650,7 @@ Unk_GuildTriple* CClubMember::FUN_14020edf0()
 // @0x14020ee10
 void CClubMember::FUN_14020ee10()
 {
-    m_info.m_trophy.FUN_140267c10();
+    ((class Unk_IntTriple&)(m_info.m_trophy)).Sum();
 }
 
 // ---- CClub ----
@@ -1421,13 +1421,13 @@ int CClubDataTable::LoadClubBuff()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("clubBuff"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("clubBuff")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("clubBuff")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("clubBuff")))
     {
         BuffPtr sp(new ClubBuffData);
         sp->FUN_140211280(pNode);

@@ -59,7 +59,7 @@ Unk_PickRenderer* FUN_14098d8d0(char* pRtti, void* pObj);               // check
 NiRenderObject* FUN_14098d8d0(char* pRtti, NiAVObject* pObj);
 struct Unk_PickItemData { bool FUN_14053cfd0() const; };
 class CItem : public CPtred { public: Unk_PickItemData* FUN_140527840(); };                         // item -> item data
-void* FUN_14123c410(void* pObj);                                        // the game object's entity
+class GameObject { public: egf::Entity* FUN_14123c410(); };   // C3: unit-local view
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                     // entity -> scene root
 // Scene-graph walker (56 bytes): ctor 0x14098cb80, dtor 0x14098cf00.
@@ -241,7 +241,7 @@ void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
 {
     if (pObject == 0)
         return;
-    Unk_PickSceneIter it(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410(pObject))));
+    Unk_PickSceneIter it(FUN_141b6efc0(reinterpret_cast<GameObject*>(pObject)->FUN_14123c410()));
     NiAVObject* pNode;
     while ((pNode = it.FUN_14098e0d0(true)) != 0)
     {

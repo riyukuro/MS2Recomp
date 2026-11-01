@@ -285,8 +285,8 @@ void UIRankPvPDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
                 CString strScoreKey = FUN_1402bb1c0("score{0}", i);
                 CStringW strName = GetStringTable()->FUN_141811980(0x22, pGrade->m_nGrade);
                 CStringW strScore = BlockFormat<int>(0x3f7, pGrade->m_nGradeRating);
-                tooltip.FUN_1407cbb20(strNameKey, strName);
-                tooltip.FUN_1407cbb20(strScoreKey, strScore);
+                ((class AScript&)(tooltip)).FUN_1407cbb20(strNameKey, strName);
+                ((class AScript&)(tooltip)).FUN_1407cbb20(strScoreKey, strScore);
             }
             *pRetVal = tooltip.FUN_1422bb870();
         }

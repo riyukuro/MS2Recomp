@@ -362,6 +362,6 @@ NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius)
                   __imp_sinf((float)nAngle * 3.1415927f / 180.0f) * (float)nDist, 100.0f);
     Unk_RayCastInfo info;
     Vector3 ptHit(0.0f, 0.0f, 0.0f);
-    ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<Vector3&>(ptCenter).FUN_14097fd50(ptOff), ptHit, &info, 200.0f, 0, 0x201);
+    ((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<Vector3&>(ptCenter).FUN_14097fd50(ptOff), ptHit, &info, 200.0f, 0, 0x201);
     return reinterpret_cast<const efd::Point3&>(ptHit);
 }

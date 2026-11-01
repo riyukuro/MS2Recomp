@@ -83,7 +83,7 @@ void UISceneModeSelect::vfunc_48(int n)
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adbe00(1.0f, 0);
+    reinterpret_cast<CUIService*>((class CUIService*)((FUN_1403ed2b0())))->FUN_141adbe00(1.0f, 0);
     FUN_1422e7950();
 }
 

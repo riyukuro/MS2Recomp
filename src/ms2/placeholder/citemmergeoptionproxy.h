@@ -5,7 +5,7 @@
 //   CItemMergeOptionData      (0x80)  one <slot> of Table/itemMergeOptionBase.xml
 //   CItemMergeOptionProxy     (0x100) the packet record of the item merge option dialog -- the meso price, the needed
 //                                     ingredients and, per option kind, the value range the merge can roll
-// The dialog (?\uiitemmergeoptiondialog.cpp) reaches the two CAtlMaps through their exe COMDATs (FUN_ members), so the
+// The dialog (?\uiitemmergeoptiondialog.cpp) looks entries up through the two Lookup members (exe COMDATs), so the
 // map classes derive from the real CAtlMap and keep those declarations.
 #pragma once
 
@@ -75,9 +75,6 @@ class Unk_MergeNormalMap : public ATL::CAtlMap<MergeNormalOption, CItemMergeOpti
 {
 public:
     __forceinline Unk_MergeNormalMap() {}           // inlined into CItemMergeOptionProxy's ctor (no copy of its own in the exe)
-    POSITION FUN_1405c5e80();                       // GetStartPosition
-    void FUN_1405c5be0(POSITION& pos);              // GetNext
-    const int& FUN_1405c5ad0(POSITION pos);         // GetKeyAt
     void* Lookup(const int& key);                   // 0x1419d7660 (the node, or 0)
 };
 MS2_CHECK_SIZE(Unk_MergeNormalMap, 0x48);
@@ -87,9 +84,6 @@ class Unk_MergeSpecialMap : public ATL::CAtlMap<MergeSpecialOption, CItemMergeOp
 {
 public:
     __forceinline Unk_MergeSpecialMap() {}          // inlined into CItemMergeOptionProxy's ctor
-    POSITION FUN_1405c5e10();                       // GetStartPosition
-    void FUN_1405c5b90(POSITION& pos);              // GetNext
-    const int& FUN_1405c5a60(POSITION pos);         // GetKeyAt
     void* Lookup(const int& key);                   // 0x1419d7620 (the node, or 0)
 };
 MS2_CHECK_SIZE(Unk_MergeSpecialMap, 0x48);

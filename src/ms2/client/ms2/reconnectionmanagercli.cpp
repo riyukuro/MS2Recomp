@@ -14,7 +14,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/client/ms2/uiservice.h"
-#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<int> calls FUN_14028dee0
+#include <egf/Entity.h>
+#include "ms2/client/ms2/statemanager.h"
+#include "ms2/guess/machineidmanager.h"
+#include "ms2/commonfiles/timeutil.h"
+#include <efd/Win32/Win32PlatformService.h>
 
 // Header static string table (7 names) that this TU instantiates; no use here.
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -32,22 +37,15 @@ public:
     virtual void vfunc_52(int a, int b);
 };
 
-class Unk_RCApp { public: CStringW FUN_14067c400(); };
+class Unk_MachineId { public: CStringW FUN_14067c400(); };
 class Unk_RCUIManager { public: };
 // The exe's caller treats 0x1415384e0 as an int-returning function (no movzx after the call).
 class Unk_RCState;
 Unk_RCState* FUN_140aa6d30();
-int FUN_1417e2610(Unk_RCState*);
-void FUN_1417e25a0(Unk_RCState*, int);
 CNetworkService* FUN_140714f90();
-unsigned FUN_140869420();
-HWND FUN_14209c720(void*);
 void* FUN_140aadf70();
 void* FUN_140aadf80();
-Unk_RCApp* FUN_140d4fdf0(void*);
 UIReconnectTopLayerNotify* FUN_140aade00(int id);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_1412751f0(const CStringW&, int, int);
 
@@ -61,7 +59,7 @@ CReconnectionManagerCli::~CReconnectionManagerCli() {
 
 // @0x140aacf50
 bool CReconnectionManagerCli::ShouldReconnect(int error) {
-    if (!(FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) == 0x620000c)) return false;
+    if (!(FUN_140aa6d30() != 0 && reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e2610() == 0x620000c)) return false;
     if (FUN_140714f90() == 0) return false;
     if (FUN_140714f90()->GetSocket().GetDisconnect() != 0) return false;
     if (DAT_143af7d44 == 1) return false;
@@ -113,8 +111,8 @@ MS2_REPLACE_METHOD(0x140AAD120, CReconnectionManagerCli, SetPending, 18, 0xFC112
 void CReconnectionManagerCli::PostPendingReconnect() {
     if (m_cli.m_pending) {
         unsigned deadline = GetOption(8) * 1000 + m_cli.m_lastTick;
-        if (deadline < FUN_140869420()) {
-            PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x46b, m_cli.m_postParam, 0);
+        if (deadline < GetTickCountMs2()) {
+            PostMessageA(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef(), 0x46b, m_cli.m_postParam, 0);
             m_cli.m_pending = false;
         }
     }
@@ -132,7 +130,7 @@ bool CReconnectionManagerCli::IsReconnectTimedOut() {
     if (m_cli.m_disabled) return true;
     if (m_cli.m_attempt > m_cli.m_maxAttempts) return true;
     unsigned deadline = GetOption(2) * 1000 + m_cli.m_startTick;
-    return deadline < FUN_140869420();
+    return deadline < GetTickCountMs2();
 }
 MS2_REPLACE_METHOD(0x140AAD220, CReconnectionManagerCli, IsReconnectTimedOut, 132, 0x295953E6);
 
@@ -172,12 +170,12 @@ MS2_REPLACE_METHOD(0x140AAD2D0, CReconnectionManagerCli, IsFatalReconnectError, 
 // @0x140aad340
 void CReconnectionManagerCli::BeginReconnect(unsigned code) {
     if (FUN_140714f90() == 0) return;
-    m_cli.m_startTick = FUN_140869420();
+    m_cli.m_startTick = GetTickCountMs2();
     m_cli.m_attempt = 0;
     m_cli.m_maxAttempts = GetOption(7);
     m_cli.m_postParam = code;
     m_cli.m_session = FUN_140714f90()->GetSocketSequence();
-    PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x46b, (WPARAM)code, 0);
+    PostMessageA(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef(), 0x46b, (WPARAM)code, 0);
     ShowProgress(1, m_cli.m_maxAttempts);
     CStringW text(L"[DEBUG] * PreReconnect");
     FUN_1412751f0(text, 1, 1);
@@ -187,7 +185,7 @@ MS2_REPLACE_METHOD(0x140AAD340, CReconnectionManagerCli, BeginReconnect, 264, 0x
 // @0x140aad450
 bool CReconnectionManagerCli::AttemptReconnect() {
     if (FUN_140714f90() == 0) return false;
-    unsigned now = FUN_140869420();
+    unsigned now = GetTickCountMs2();
     m_cli.m_attempt = m_cli.m_attempt + 1;
     m_cli.m_lastTick = now;
     {
@@ -237,7 +235,7 @@ void CReconnectionManagerCli::OnReconnectFailed(int error) {
                 FUN_140714f90()->FUN_141538510();
             }
         }
-        PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x465, (WPARAM)m_cli.m_postParam, 0);
+        PostMessageA(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef(), 0x465, (WPARAM)m_cli.m_postParam, 0);
     } else {
         SetPending();
     }
@@ -246,7 +244,7 @@ MS2_REPLACE_METHOD(0x140AAD6E0, CReconnectionManagerCli, OnReconnectFailed, 251,
 
 // @0x140aad7f0
 void CReconnectionManagerCli::SendReconnectRequest() {
-    CStringW name = FUN_140d4fdf0(FUN_140aadf70())->FUN_14067c400();
+    CStringW name = reinterpret_cast<Unk_MachineId*>(reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetID())->FUN_14067c400();
     COutPacket packet(static_cast<int>(SendOp::Reconnect), 0);
     packet.WriteUInt8(1);
     packet.WriteInt64(DAT_143ab2820);
@@ -286,9 +284,9 @@ MS2_REPLACE_METHOD(0x140AAD970, CReconnectionManagerCli, HideProgress, 53, 0xA61
 
 // @0x140aad9b0
 void CReconnectionManagerCli::DisconnectAndDelayReconnect(int seconds) {
-    m_cli.m_deadline = FUN_140869420() + seconds * 1000;
+    m_cli.m_deadline = GetTickCountMs2() + seconds * 1000;
     FUN_140714f90()->FUN_141538510();
-    PostMessageA(FUN_14209c720(FUN_140aadf80()), 0x465, 0x2745, 0);
+    PostMessageA(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef(), 0x465, 0x2745, 0);
 }
 MS2_REPLACE_METHOD(0x140AAD9B0, CReconnectionManagerCli, DisconnectAndDelayReconnect, 93, 0x25593940);
 
@@ -311,7 +309,7 @@ void CReconnectionManagerCli::OnReconnectPacket(CInPacket* packet) {
         int result = packet->ReadInt32();
         switch (result) {
         case 1:
-            if (FUN_140aa6d30() != 0 && FUN_1417e2610(FUN_140aa6d30()) == 0x620000c) {
+            if (FUN_140aa6d30() != 0 && reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e2610() == 0x620000c) {
                 OnReconnectResult(1);
             } else {
                 OnReconnectFailed(0xcc);
@@ -326,10 +324,10 @@ void CReconnectionManagerCli::OnReconnectPacket(CInPacket* packet) {
     case 3:
         Reset();
         if (FUN_140aa6d30() != 0) {
-            if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000c) {
+            if (reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e2610() == 0x620000c) {
                 FUN_140714f90()->SendRequestQuitAndDisconnect();
-                FUN_1417e25a0(FUN_140aa6d30(), 0x6200009);
-                FUN_140d73aa0(BlockFormat<int>(0x20f, 0), 0, 0, CStringW(L""));
+                reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e25a0(0x6200009);
+                FUN_140d73aa0(FormatStringId<int>(0x20f, 0), 0, 0, CStringW(L""));
             }
         }
         break;
@@ -339,7 +337,7 @@ MS2_REPLACE_METHOD(0x140AADA20, CReconnectionManagerCli, OnReconnectPacket, 834,
 
 // @0x140aadd70
 void CReconnectionManagerCli::Tick() {
-    unsigned now = FUN_140869420();
+    unsigned now = GetTickCountMs2();
     if (m_08 != 0 && (unsigned)(m_08 + 1000) > now) return;
     m_08 = now;
     if (IsReconnecting() == true && IsReconnectTimedOut()) {

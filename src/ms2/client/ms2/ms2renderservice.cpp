@@ -68,6 +68,11 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/client/ms2/gameoptiongraphicdefault.h"
+#include "ms2/client/ms2/gpumanager.h"
+#include <NiShadowGenerator.h>
+#include <NiPSParticleSystem.h>
+#include <NiRenderObject.h>
 #include <NiStudioShaderContext.h>
 
 // ---- out-of-unit callees and data (bound to the exe by name) ----
@@ -77,23 +82,13 @@ CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);                  // 
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);               // wide -> ANSI
 CStringW GetStringCommon(int nStringId);                                       // UI string table (wide)
 CStringA FUN_14028dc80(int nStringId);                                       // UI string table (ANSI)
-CStringA FUN_140741200(const char* pszFormat, const CStringA& a0, const CStringA& a1);   // StringFormat<CStringA, CStringA> (folded copy)
 void FUN_1401d3700(CStringA& s);                                              // lower-cases in place
-struct Unk_RsAllocHint
-{
-    Unk_RsAllocHint(const Unk_RsAllocHint&);                // non-trivial: returned through a hidden pointer
-    efd::MemHint m_hint;
-};
-Unk_RsAllocHint FUN_140876480(int nCategory);                                // memory category helper
 // MS2PNGReader (0xe0 bytes), allocated through efd::MemObject's operator new.
-struct Unk_RsPngReader : public efd::MemObject
+struct MS2PNGReader : public efd::MemObject   // C3: unit-local view of ms2pngreader.cpp's reader
 {
-    Unk_RsPngReader();                                                       // 0x140d9aba0
+    MS2PNGReader();                                                       // 0x140d9aba0
     char m_pad[0xe0];
 };
-NiImageConverter* FUN_141d6f370();                                           // current image converter
-extern char DAT_143afa940;                                                   // RTTI descriptor of NiDevImageConverter
-extern void (*DAT_143afb020)(NiAVObject*);                                   // scene-object post-collect hook
 extern void (*DAT_143afbb98)();                                              // hook slots set by FUN_1414f07b0/07d0
 extern void (*DAT_143afbba0)();
 extern void (*DAT_143d6eb38)(void*);                                            // device-lost / reset hooks
@@ -104,17 +99,10 @@ extern void (*DAT_143d6eb50)(bool);
 extern int DAT_143afa750;                                                    // last renderer creation failure code
 extern int DAT_143af7d58;                                                    // "keep window hidden" switch
 NiRenderer* GetNiRenderer();                                                 // the current NiRenderer
-const char* FUN_1427cf790(const NiDX9Renderer* pRenderer);                   // NiDX9Renderer::GetDriverName: the adapter's driver dll ("%s" of D3DADAPTER_IDENTIFIER9::Driver)
 
 // Debug log (console) of the game.
 class Unk_RsDebugLog : public CCrashManager
 {
-public:
-    void FUN_1401ce2f0(const char* pszFormat, unsigned int a, unsigned int b);
-    void FUN_1401ce2f0(const char* pszFormat, unsigned int a);
-    void FUN_1401ce2f0(const char* pszFormat, ecr::RenderContext* a, unsigned int b);
-    void FUN_1401ce2f0(const char* pszFormat, unsigned int a, unsigned int b, const char* c);
-    void FUN_1401ce2f0(const char* pszFormat, const char* a);
 };
 
 // Last renderer creation failure code.
@@ -149,16 +137,12 @@ inline bool Unk_RsGetShaderSource(NiString& kNifPath, NiString& kNodeName)
 
 // ---- game singletons used while creating the renderer ----
 // Video options (the stored resolution and flags).
-class Unk_RsVideoOptions
+// C3: applyeffect.cpp's option views (the COMDAT copies of the header-inline accessors).
+class Unk_AeGraphicOption
 {
 public:
-    unsigned int FUN_1409a8ab0();               // width
-    unsigned int FUN_1409a8aa0();               // height
-    void FUN_14125e1f0(int nValue, int bFlag);
-    bool FUN_14125e820(int nWidth, int nHeight);
-    void FUN_14125eb00(int nWidth, int nHeight);
-    // @0x1414f0470
-    int GetMode() const { return m_nMode; }
+    unsigned int FUN_1409a8ab0() const;         // width
+    unsigned int FUN_1409a8aa0() const;         // height
 public:
     int m_n0;                    // +0x00
     int m_n4;                    // +0x04
@@ -168,20 +152,34 @@ public:
     char m_pad17[0x15];          // +0x17
     int m_nBufferFormat;         // +0x2c
 };
-MS2_CHECK_OFFSET(Unk_RsVideoOptions, m_nMode, 0x8);
-MS2_CHECK_OFFSET(Unk_RsVideoOptions, m_bVSync, 0x16);
-MS2_CHECK_OFFSET(Unk_RsVideoOptions, m_nBufferFormat, 0x2c);
-class Unk_RsOptions : public CGameOption
+MS2_CHECK_OFFSET(Unk_AeGraphicOption, m_nMode, 0x8);
+MS2_CHECK_OFFSET(Unk_AeGraphicOption, m_bVSync, 0x16);
+MS2_CHECK_OFFSET(Unk_AeGraphicOption, m_nBufferFormat, 0x2c);
+class Unk_AeGameOption
 {
 public:
-    Unk_RsVideoOptions* FUN_1409a8ac0();
-    int FUN_141243f50(int nWhich);
+    Unk_AeGraphicOption* FUN_1409a8ac0();
 };
-// Application window manager.
-class Unk_RsApp
+// Video options (the stored resolution and flags).
+class Unk_RsVideoOptions : public Unk_AeGraphicOption
 {
 public:
-    void FUN_1412642e0(bool bFullscreen);
+    // @0x1414f0470
+    int GetMode() const { return m_nMode; }
+};
+const char* FUN_1427cf790(const NiDX9Renderer* pRenderer);                   // NiDX9Renderer::GetDriverName: the adapter's driver dll ("%s" of D3DADAPTER_IDENTIFIER9::Driver)
+void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int bFollow);
+bool FUN_14125e820(Unk_GraphicState* p, int nWidth, int nHeight);
+void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
+// Application window manager.
+class Unk_GsApp   // C3: gameoptionstruct.cpp's application view
+{
+public:
+    void FUN_1412642e0(bool b);
+};
+class Unk_RsApp : public Unk_GsApp
+{
+public:
     void FUN_141b91290(bool bFullscreen, int nWidth, int nHeight);
     bool FUN_141b91010(bool bFullscreen, int nWidth, int nHeight);
     // @0x1414f0610
@@ -193,13 +191,12 @@ public:
 MS2_CHECK_OFFSET(Unk_RsApp, m_bHidden, 0xd0);
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 // GPU information.
-class Unk_RsGpuInfo
+class Unk_GoDeviceInfo   // C3: gameoption.cpp's device info view
 {
 public:
     CStringW FUN_141245ab0();                       // adapter description
-    void FUN_141375390(CStringW kName);
 };
-class Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
+Unk_GoDeviceInfo* FUN_141245b20();   // C3: was FUN_141245b20
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_141b91ab0();
 // UI front end: slot 23 shows a message dialog.
@@ -215,7 +212,7 @@ public:
     virtual void ShowCloseNotice(int nStringId, const char* pszArg);           // MS2: slot 23
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
-void FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, int nFlags);   // message box + quit prompt
+int FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, unsigned int nFlags);   // message box + quit prompt
 
 // ---- engine-adjacent pieces (MS2 additions) ----
 // NiRenderer's recursive lock, entered/left without the Do_LockRenderer virtuals.
@@ -280,15 +277,6 @@ public:
     virtual void vfunc_40();
     virtual void SetFadeValue(float fValue);       // MS2: slot 41
 };
-extern char DAT_143afbfb8;                                  // RTTI descriptor of Unk_RsFadeObject
-void FUN_141d2c900(NiAVObject* pObject, bool bFlag);
-class Unk_RsWorldService
-{
-public:
-    void FUN_141bd8660(unsigned int uiWidth);
-    void FUN_141bd8680(unsigned int uiHeight);
-};
-void FUN_141bbae40(Unk_RsWorldService* pWorld, IWorldServiceCallback* pCallback);
 void FUN_1414f0700(NiPick* pPick);
 
 // ---- unit statics ----
@@ -367,13 +355,13 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
 {
     efd::SyncResult result = ecr::RenderService::OnPreInit(pDependencyRegistrar);
     if (result == efd::SyncResult_Success) {
-        NiDevImageConverter* pConverter = ((class NiDevImageConverter*)NiImageConverter::DynamicCast((class NiRTTI const*)(&DAT_143afa940), (class NiImageConverter const*)(FUN_141d6f370())));
+        NiDevImageConverter* pConverter = ((class NiDevImageConverter*)NiImageConverter::DynamicCast(&NiDevImageConverter::ms_RTTI, NiImageConverter::GetImageConverter()));
         if (pConverter != 0) {
-            pConverter->AddReader(reinterpret_cast<NiImageReader*>(new (FUN_140876480(0).m_hint) Unk_RsPngReader()));
+            pConverter->AddReader(reinterpret_cast<NiImageReader*>(new (efd::MemHint(efd::MemHint::Bits(0))) MS2PNGReader()));
         }
     }
     NiShaderFactory::RegisterErrorCallback(Unk_RsShaderError);
-    DAT_143afb020 = Unk_RsCollectFade;
+    NiShadowGenerator::ms_pfnStudioForceMaterialNeedsUpdate = (void (*)(NiShadowGenerator*))Unk_RsCollectFade;
     Unk_RsSetHookA(Unk_RsLockHook);
     Unk_RsSetHookB(Unk_RsUnlockHook);
     ((class CCrashManager*)(class Unk_RsDebugLog*)(reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
@@ -572,7 +560,7 @@ static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, boo
     if (Unk_RsGetShaderSource(kNifPath, kNodeName)) {
         text = StringFormat("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\nNif path : \n{0}\n\nNode name : {1}\n\n{2}\n\n\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", (const char*)kNifPath, (const char*)kNodeName, pcMsg);
     } else {
-        text = FUN_140741200("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \300\314\306\345\306\256\n{0}\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \270\312 \300\314\306\345\306\256\n{1}\n\n.\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411aad50(), TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411aaeb0());
+        text = Unk_SocketFormat("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \300\314\306\345\306\256\n{0}\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \270\312 \300\314\306\345\306\256\n{1}\n\n.\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411aad50(), TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411aaeb0());
     }
     Unk_RsLog3(GetLogString(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
     if (MessageBoxA(0, text, "Shader error", 4) == 6) {
@@ -619,9 +607,9 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     NiRendererSettings settings;
     efd::IConfigManager* pConfig = m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>();
     settings.LoadFromConfigManager(pConfig);
-    settings.m_bVSync = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bVSync;
+    settings.m_bVSync = reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_bVSync;
     settings.m_eDX9FBFormat = (NiDX9Renderer::FramebufferMode)TSingleton<CGraphicOptionTable>::GetInstance()->GetMultisampleValue(
-        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nBufferFormat);
+        reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nBufferFormat);
     settings.m_bFullscreen = bFullscreen;
     settings.m_uiScreenWidth = width;
     settings.m_uiScreenHeight = height;
@@ -691,7 +679,7 @@ efd::AsyncResult MS2RenderService::OnInit()
         settings.m_bFullscreen = false;
         settings.m_uiScreenWidth = GetSystemMetrics(SM_CXSCREEN);
         settings.m_uiScreenHeight = GetSystemMetrics(SM_CYSCREEN);
-        m_pRendererDesc = new (FUN_140876480(0).m_hint) NiDX9RendererDesc(&settings);
+        m_pRendererDesc = new (efd::MemHint(efd::MemHint::Bits(0))) NiDX9RendererDesc(&settings);
         if (!m_pRendererDesc->Initialize()) {
             CStringW message;
             message.Format(L"%s", (LPCWSTR)GetStringCommon(0x8d7));
@@ -714,26 +702,26 @@ efd::AsyncResult MS2RenderService::OnInit()
             }
             adapterName = FUN_14016a730(name.c_str(), 0);
         }
-        ((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141375390(adapterName);
+        reinterpret_cast<GPUManager*>(FUN_141245b20())->FUN_141375390(adapterName);
     }
-    int fullscreenMode = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_141243f50(0);
-    bool bFullscreenFlag = fullscreenMode != 0 ? false : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->GetMode() == 0;
-    bool bBorderless = fullscreenMode != 0 ? true : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->GetMode() == 2;
-    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
-    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
+    int fullscreenMode = TSingleton<CGameOption>::GetInstance()->FUN_141243f50(0);
+    bool bFullscreenFlag = fullscreenMode != 0 ? false : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->GetMode() == 0;
+    bool bBorderless = fullscreenMode != 0 ? true : static_cast<Unk_RsVideoOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->GetMode() == 2;
+    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8ab0();
+    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1409a8aa0();
     ((class Unk_RsApp*)FUN_140aadf80())->FUN_1412642e0(bBorderless);
     if (bBorderless) {
         bFullscreenFlag = true;
     }
     if (fullscreenMode != 0) {
-        int mode = reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1412438f0();
-        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e1f0(mode, 1);
+        int mode = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
+        FUN_14125e1f0(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), mode, 1);
     }
-    bool bBasicDriver = ((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0() == L"Microsoft Basic Display Driver";
+    bool bBasicDriver = FUN_141245b20()->FUN_141245ab0() == L"Microsoft Basic Display Driver";
     if (bBasicDriver) {
         ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
         CStringW message;
-        message.Format(L"%s\n%s", (LPCWSTR)((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
+        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
         CStringA caption = FUN_14028dc80(0x8d4);
         CStringA text = FUN_14016a600(message, 0);
         NiMessageBox(text, caption, 0);
@@ -745,35 +733,35 @@ efd::AsyncResult MS2RenderService::OnInit()
         if (!CreateRendererSized(bFullscreenFlag, width, height)) {
             ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
     }
-    if (!reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e820(width, height)) {
+    if (!FUN_14125e820(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), width, height)) {
         width = 0x400;
         height = 0x300;
         if (!((class Unk_RsApp*)FUN_140aadf80())->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
             ((class Unk_RsUI*)FUN_140d86260())->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)((class Unk_RsGpuInfo*)FUN_141245b20())->FUN_141245ab0(),
+            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
         }
     }
     if (fullscreenMode != 0) {
-        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nMode = 2;
-        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125eb00(width, height);
-        reinterpret_cast<Unk_RsOptions*>(TSingleton<CGameOption>::GetInstance())->SaveGameSettings();
+        reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->m_nMode = 2;
+        FUN_14125eb00(reinterpret_cast<Unk_GraphicState*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()), width, height);
+        TSingleton<CGameOption>::GetInstance()->SaveGameSettings();
     }
     ((class Unk_RsApp*)FUN_140aadf80());
     if (DAT_143af7d58 == 0) {
         ShowWindow(m_parentHandle, SW_SHOWNORMAL);
     }
     if (m_pDefaultSurfaceCreator == 0 || !m_pDefaultSurfaceCreator->CreateDefaultSurface(this, m_defaultContextBackgroundColor)) {
-        ecr::RenderContext* pContext = new (FUN_140876480(0).m_hint) MS2RenderContext(this, 0);
+        ecr::RenderContext* pContext = new (efd::MemHint(efd::MemHint::Bits(0))) MS2RenderContext(this, 0);
         AddRenderContext(pContext);
         pContext->SetBackgroundColor(m_defaultContextBackgroundColor);
         ecr::RenderSurfacePtr spSurface = CreateRenderSurface(0);
@@ -834,7 +822,7 @@ static void Unk_RsNoopHook(void* pUnused)
 // @0x1414ee4d0
 static void Unk_RsResetHook(Unk_RsRendererSize* pRenderer)
 {
-    Unk_RsWorldService* pWorld = reinterpret_cast<Unk_RsWorldService*>(WorldService::GetInstance());
+    WorldService* pWorld = WorldService::GetInstance();
     if (pWorld != 0 && pRenderer != 0) {
         Unk_RsRendererSize* pSize = pRenderer;
         pWorld->FUN_141bd8660(pSize->GetWidth());
@@ -891,7 +879,7 @@ MS2_REPLACE_METHOD(0x1414EE750, MS2PickService, OnPreInit, 85, 0x1608DFF5);
 // @0x1414ee7b0
 efd::AsyncResult MS2PickService::OnInit()
 {
-    FUN_141bbae40(reinterpret_cast<Unk_RsWorldService*>(WorldService::GetInstance()), this);
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return ecr::PickService::OnInit();
 }
 MS2_REPLACE_METHOD(0x1414EE7B0, MS2PickService, OnInit, 77, 0x1B2425B2);
@@ -918,11 +906,11 @@ static void Unk_RsCollectFade(NiAVObject* pRoot)
     NiTListIterator pos = found.GetHeadPos();
     while (pos != 0) {
         NiAVObject* pObject = found.GetNext(pos);
-        Unk_RsFadeObject* pFade = ((class Unk_RsFadeObject*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbfb8), (class NiObject const*)(pObject)));
+        Unk_RsFadeObject* pFade = ((class Unk_RsFadeObject*)NiObject::DynamicCast(&NiPSParticleSystem::ms_RTTI, pObject));
         if (pFade != 0) {
             pFade->SetFadeValue(-FLT_MAX);
         }
-        FUN_141d2c900(pObject, 1);
+        NiRenderObject::RecursiveSetMaterialNeedsUpdate(pObject, 1);
     }
 }
 

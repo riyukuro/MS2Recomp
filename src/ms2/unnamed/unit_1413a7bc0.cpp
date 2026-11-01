@@ -254,6 +254,6 @@ int CGuideConditionConstructMode::vfunc_3()
     Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(pPC->FUN_141659610());
+    return FUN_1413a55a0(pPC->IsCubeMode1());
 }
 MS2_REPLACE_METHOD(0x1413A8320, CGuideConditionConstructMode, vfunc_3, 66, 0x5E415770);

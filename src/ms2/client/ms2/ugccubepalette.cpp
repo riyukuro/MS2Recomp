@@ -96,56 +96,19 @@ class Unk_IngTable
 {
 public:
     MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId);
-    void FUN_1405594b0(class Unk_CubeIdVec& out);
 };
 Unk_IngTable* FUN_140281980();
 
-// A vector<unsigned> that the table fills (ctor / dtor are the shared COMDATs).
-class Unk_CubeIdVec
-{
-public:
-    Unk_CubeIdVec();                                    // 0x140182ed0
-    ~Unk_CubeIdVec();                                   // 0x140183b90
-    size_t FUN_140191110() const;                       // size
-    unsigned& FUN_140297cb0(size_t n);                  // operator[]
-private:
-    void* m_first;
-    void* m_last;
-    void* m_end;
-};
-MS2_CHECK_SIZE(Unk_CubeIdVec, 0x18);
 
-// The registry of the boxes (the cube groups of the editor).
-class Unk_BoxRegistry
-{
-public:
-    bool FUN_140886a40(Unk_IngIdVec* pIds);
-    unsigned FUN_140886790(int nA, int nB);
-    unsigned FUN_1408867f0(CStringW strName, int nArg);
-    void FUN_140886920(unsigned nBox);
-};
 
 // Names of the npc / strings tables.
 
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
-struct Unk_NpcRef { __int64 m_n00; int m_nNpcId; };
-class Unk_NpcRefPtr
-{
-public:
-    ~Unk_NpcRefPtr() { FUN_140680b80(); }
-    Unk_NpcRef* get() const;                            // 0x140df5ae0
-    Unk_NpcRef* FUN_1406810e0();                        // operator->
-    void FUN_140680b80();                               // release
-    void* m_pad;
-    Unk_NpcRef* m_p;
-};
-class Unk_NpcSvc { public: Unk_NpcRefPtr FUN_14067f180(int nKey); };
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-class Unk_GEMgr { public: __int64 FUN_14047bc50(int nA, int nB, __int64 nC); };
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 CStringW FUN_1402918a0(int nType, int nId);
@@ -153,27 +116,18 @@ int FUN_141901d20(int, __int64, __int64);   // C3: was FUN_141901d20
 int FUN_141901f70(int, __int64, __int64);   // C3: was FUN_141901f70
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 
+#include "ms2/client/ms2/ugcmapitem.h"
+#include "ms2/client/ms2/achievemanager.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/commonfiles/itemdatatable.h"
 // The stock of the plot: the cubes the player has stored.
-class Unk_UgcStock : public CPtred
+class Unk_UgcStock : public CUGCMapItem
 {
-public:
-    int FUN_140dfc370();
-    __int64 FUN_140dfc390();
-    __int64 FUN_140dfc3b0();
-    MS2Ptr<CUgcItemLook> FUN_140dfc3d0();
-    __int64 FUN_140dfc420();
 };
 
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 #include "ms2/client/ms2/worldservice.h"
 
-class Unk_CubeStock
-{
-public:
-    void FUN_140dfc750(ATL::CAtlArray<MS2Ptr<Unk_UgcStock> >& out);
-    MS2Ptr<Unk_UgcStock> FUN_140dfc800(int nItemId);
-};
-extern Unk_CubeStock DAT_143ab2e50;
 
 class PCBase;
 class Unk_CubeWorld : public WorldService
@@ -181,7 +135,11 @@ class Unk_CubeWorld : public WorldService
 public:
     PCBase* FUN_141bd0cc0();
 };
-int FUN_141663080(PCBase* pPC);
+class PC   // C3: member view
+{
+public:
+    int FUN_141663080();
+};
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -190,14 +148,7 @@ public:
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The home / mastery service: the state of a box.
-class Unk_BoxSvc { public: int FUN_140936640(int nBoxId, int nArg); MS2Ptr<class Unk_BoxData> FUN_140935e60(int nBoxId); };
-class Unk_BoxData : public CPtred { public: void* m_pad; };
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-class CAchieve   // C3: member view for the former free stand-ins
-{
-public:
-    int GetData68();
-};
 
 // ---- the cubes already taken (the usage of the bag, the stock and the table while a list is built) ----
 
@@ -255,7 +206,7 @@ bool UGCCube::FUN_140def420()                                                   
         return true;
     if (0 < itemData->FUN_14053fdb0())
     {
-        if (FUN_141663080(pPC) < itemData->FUN_14053fdb0())
+        if (reinterpret_cast<PC*>(pPC)->FUN_141663080() < itemData->FUN_14053fdb0())
             return true;
     }
     return ((class MyPC*)(class PCBase*)(pPC))->FUN_1415302e0(itemData->GetItemId());
@@ -287,7 +238,7 @@ __int64 UGCCube::FUN_140def5f0()                                                
 __int64 UGCCube::FUN_140def620()                                                               // @0x140def620
 {
     if (ingredient.get() != 0)
-        return ((class Unk_GEMgr*)FUN_1401c0d90())->FUN_14047bc50(ingredient->m_nCategory, ingredient->m_nTier, ingredient->m_nValue);
+        return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047bc50((Unk_SaleHousingKey)ingredient->m_nCategory, ingredient->m_nTier, ingredient->m_nValue);
     return 0;
 }
 
@@ -323,10 +274,10 @@ CStringW UGCCube::FUN_140def880()                                               
     }
     if (itemData->HasMaidId() && FUN_140defe70() > 0)
     {
-        Unk_NpcRefPtr spNpc = reinterpret_cast<Unk_NpcSvc*>(TSingleton<CMaidInfoTable>::GetInstance())->FUN_14067f180(itemData->FUN_14053dd30());
+        TPtrValue<MaidInfo> spNpc = TSingleton<CMaidInfoTable>::GetInstance()->Find(itemData->FUN_14053dd30());
         if (spNpc.get() != 0)
         {
-            MS2Ptr<CNpcData> spData = FUN_1406cd330(spNpc.FUN_1406810e0()->m_nNpcId);
+            MS2Ptr<CNpcData> spData = FUN_1406cd330(spNpc.operator->()->npcId);
             if (spData.get())
                 return FUN_14016a730(spData->m_strPortrait, 0);
         }
@@ -403,11 +354,11 @@ bool UGCCube::FUN_140deff30()                                                   
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return false;
-    if (!(FUN_141663080(pPC) > 0))
+    if (!(reinterpret_cast<PC*>(pPC)->FUN_141663080() > 0))
         return false;
     if (!(itemData->FUN_14053fdb0() > 0))
         return false;
-    if (FUN_141663080(pPC) >= itemData->FUN_14053fdb0())
+    if (reinterpret_cast<PC*>(pPC)->FUN_141663080() >= itemData->FUN_14053fdb0())
         return true;
     return false;
 }
@@ -666,7 +617,7 @@ bool Unk_CubeUsage::FUN_140df15e0(MS2Ptr<CItem> spItem, Unk_CubePaletteFilter* p
 
 bool Unk_CubeUsage::FUN_140df1680(MS2Ptr<Unk_UgcStock> spStock, Unk_CubePaletteFilter* pFilter)  // @0x140df1680
 {
-    return FUN_140df1720(spStock->FUN_140dfc370(), spStock->FUN_140dfc390(), spStock->FUN_140dfc420(), pFilter);
+    return FUN_140df1720(spStock->GetItemId(), spStock->GetUid(), spStock->FUN_140dfc420(), pFilter);
 }
 
 bool Unk_CubeUsage::FUN_140df1720(int nItemId, unsigned __int64 nInstance, unsigned __int64 nUgc, Unk_CubePaletteFilter* pFilter)   // @0x140df1720
@@ -734,7 +685,7 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
             if (mapItems.Lookup(spCube->FUN_140def5a0(), spData))
             {
                 MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->GetItemId());
-                if (spIng && reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886a40(&spIng->m_ids))
+                if (spIng && TSingleton<UGCCubeCategoryTable>::GetInstance()->HasAnyField(*reinterpret_cast<const std::vector<unsigned>*>(&spIng->m_ids)))
                     continue;
             }
         }
@@ -811,7 +762,7 @@ unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB);
 #ifndef MS2_HOOK_DLL
 unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB)                                         // @0x140df20a0
 {
-    unsigned nBox = reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886790(nArgA, nArgB);
+    unsigned nBox = TSingleton<UGCCubeCategoryTable>::GetInstance()->AddMenuById(nArgA, nArgB);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
     return nBox;
 }
@@ -821,7 +772,7 @@ unsigned FUN_140df2130(CStringW strName, unsigned nArg);
 #ifndef MS2_HOOK_DLL
 unsigned FUN_140df2130(CStringW strName, unsigned nArg)                                        // @0x140df2130
 {
-    unsigned nBox = reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_1408867f0(strName, nArg);
+    unsigned nBox = TSingleton<UGCCubeCategoryTable>::GetInstance()->AddMenu(strName, nArg);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
     return nBox;
 }
@@ -831,7 +782,7 @@ void FUN_140df2210(unsigned nBox);
 #ifndef MS2_HOOK_DLL
 void FUN_140df2210(unsigned nBox)                                                              // @0x140df2210
 {
-    reinterpret_cast<Unk_BoxRegistry*>(TSingleton<UGCCubeCategoryTable>::GetInstance())->FUN_140886920(nBox);
+    TSingleton<UGCCubeCategoryTable>::GetInstance()->RemoveMenu(nBox);
     s_mapBoxes.RemoveKey(nBox);
 }
 #endif
@@ -841,11 +792,11 @@ void FUN_140df2210(unsigned nBox)                                               
 void UGCCubePalette::FUN_140df2250()                                                           // @0x140df2250
 {
     mapItems.RemoveAll();
-    Unk_CubeIdVec vecIds;
-    FUN_140281980()->FUN_1405594b0(vecIds);
-    for (size_t i = 0; i < vecIds.FUN_140191110(); ++i)
+    std::vector<unsigned> vecIds;
+    reinterpret_cast<CItemDataTable*>(FUN_140281980())->LoadItemNameIds(vecIds);
+    for (size_t i = 0; i < vecIds.size(); ++i)
     {
-        MS2Ptr<CItemData> spData = FUN_14053f870(vecIds.FUN_140297cb0(i));
+        MS2Ptr<CItemData> spData = FUN_14053f870(vecIds[i]);
         if (spData == 0)
             continue;
         if (!spData->FUN_14053cb80())
@@ -886,13 +837,13 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
     }
     {
         ATL::CAtlArray<MS2Ptr<Unk_UgcStock> > stocks;
-        DAT_143ab2e50.FUN_140dfc750(stocks);
+        DAT_143ab2e50.FUN_140dfc750(*reinterpret_cast<ATL::CAtlArray<MS2Ptr<CUGCMapItem> >*>(&stocks));
         for (size_t i = 0; i < stocks.GetCount(); ++i)
         {
             MS2Ptr<Unk_UgcStock> spStock = stocks[i];
             if (spStock == 0)
                 continue;
-            int nItemId = spStock->FUN_140dfc370();
+            int nItemId = spStock->GetItemId();
             MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
             if (spData == 0)
                 continue;
@@ -900,7 +851,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
                 continue;
             if (usage.FUN_140df1680(spStock, pFilter))
             {
-                out.Add(CubePtr(new UGCCube(nItemId, spStock->FUN_140dfc390(), spStock->FUN_140dfc3b0(), spStock->FUN_140dfc3d0().get())));
+                out.Add(CubePtr(new UGCCube(nItemId, spStock->GetUid(), spStock->GetCount(), spStock->GetLook().get())));
             }
         }
     }
@@ -947,10 +898,10 @@ void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilte
             out.Add(spNew);
             continue;
         }
-        MS2Ptr<Unk_UgcStock> spStock = DAT_143ab2e50.FUN_140dfc800(nItemId);
+        MS2Ptr<CUGCMapItem> spStock = DAT_143ab2e50.FUN_140dfc800(nItemId);
         if (spStock.get() != 0)
         {
-            out.Add(CubePtr(new UGCCube(nItemId, spStock->FUN_140dfc390(), spStock->FUN_140dfc3b0(), spStock->FUN_140dfc3d0().get())));
+            out.Add(CubePtr(new UGCCube(nItemId, spStock->GetUid(), spStock->GetCount(), spStock->GetLook().get())));
             continue;
         }
         if (!pFilter->flag1)
@@ -984,10 +935,10 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
     }
     int nBoxId = spIng->m_nBoxId;
     int nBoxArg = spIng->m_nBoxArg;
-    if (((class Unk_BoxSvc*)FUN_1406c7600())->FUN_140936640(nBoxId, nBoxArg) == 0)
+    if (reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsGradeCleared(nBoxId, nBoxArg) == 0)
     {
-        MS2Ptr<Unk_BoxData> spBox = ((class Unk_BoxSvc*)FUN_1406c7600())->FUN_140935e60(nBoxId);
-        if (spBox && ((class CAchieve*)(void*)(spBox.get()))->GetData68() != 0)
+        MS2Ptr<CAchieve> spBox = reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->Find(nBoxId);
+        if (spBox && spBox.get()->GetData68() != 0)
             return true;
     }
     return false;

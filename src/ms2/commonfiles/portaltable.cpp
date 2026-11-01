@@ -64,6 +64,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include <vector>
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -79,31 +80,8 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
 unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
 
-// A list of child elements (24 bytes; a std::vector<Unk_140165cf0*> of the original) and its iterator.
-class Unk_ElemConstIter
-{
-public:
-    Unk_ElemConstIter() {}
-    bool FUN_1401f0f20(const Unk_ElemConstIter&) const;             // operator!=
-    Unk_140165cf0* const& FUN_1401f1250();                          // operator*
-    Unk_ElemConstIter& FUN_1401f1710();                             // operator++
-    Unk_140165cf0** m_p;
-};
-class Unk_ElemIter : public Unk_ElemConstIter
-{
-public:
-    Unk_ElemIter() {}
-};
-class Unk_ElemList
-{
-public:
-    Unk_ElemList();                                                 // 0x140163e20
-    ~Unk_ElemList();                                                // 0x1401644e0
-    Unk_ElemIter FUN_1401f6590();                                   // begin
-    Unk_ElemIter FUN_1401f6f10();                                   // end
-    void *m_a, *m_b, *m_c;
-};
-void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszName, Unk_ElemList* pOut);   // collect the named children
+struct Unk_XmlElement;
+void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);   // collect the named children
 
 // @0x140730120
 CPortalTable::CPortalTable()
@@ -131,13 +109,13 @@ bool CPortalTable::LoadNames()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    Unk_ElemList list;
-    FUN_14028f5d0(pRoot, "v", &list);
-    Unk_ElemList& rList = list;
-    Unk_ElemConstIter itEnd = rList.FUN_1401f6f10();
-    for (Unk_ElemConstIter it = rList.FUN_1401f6590(); it.FUN_1401f0f20(itEnd); it.FUN_1401f1710())
+    std::vector<Unk_XmlElement*> list;
+    FUN_14028f5d0((Unk_XmlElement*)pRoot, "v", list);
+    std::vector<Unk_XmlElement*>& rList = list;
+    std::vector<Unk_XmlElement*>::const_iterator itEnd = rList.end();
+    for (std::vector<Unk_XmlElement*>::const_iterator it = rList.begin(); it != itEnd; ++it)
     {
-        Unk_140165cf0* pNode = it.FUN_1401f1250();
+        Unk_140165cf0* pNode = (Unk_140165cf0*)*it;
         int nFieldId = FUN_140197390(pNode, "fieldID", 0);
         int nPortalId = FUN_140197390(pNode, "portalID", 0);
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;
@@ -162,13 +140,13 @@ bool CPortalTable::LoadRandomTargets()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    Unk_ElemList list;
-    FUN_14028f5d0(pRoot, "v", &list);
-    Unk_ElemList& rList = list;
-    Unk_ElemConstIter itEnd = rList.FUN_1401f6f10();
-    for (Unk_ElemConstIter it = rList.FUN_1401f6590(); it.FUN_1401f0f20(itEnd); it.FUN_1401f1710())
+    std::vector<Unk_XmlElement*> list;
+    FUN_14028f5d0((Unk_XmlElement*)pRoot, "v", list);
+    std::vector<Unk_XmlElement*>& rList = list;
+    std::vector<Unk_XmlElement*>::const_iterator itEnd = rList.end();
+    for (std::vector<Unk_XmlElement*>::const_iterator it = rList.begin(); it != itEnd; ++it)
     {
-        Unk_140165cf0* pNode = it.FUN_1401f1250();
+        Unk_140165cf0* pNode = (Unk_140165cf0*)*it;
         int nFieldId = FUN_140197390(pNode, "fieldID", 0);
         int nPortalId = FUN_140197390(pNode, "portalID", 0);
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;

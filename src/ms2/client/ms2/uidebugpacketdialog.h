@@ -17,7 +17,7 @@ class ASMovieClip;
 class ASTextField;
 class Unk_DpButton;
 class Unk_DpInput;
-class Unk_DpCombo;
+class ASDropdownMenu;
 class Unk_DpCheck;
 
 // The random packet id range (min, max): Get() returns a random id in the range.
@@ -62,7 +62,7 @@ private:
     MS2Ptr<Unk_DpInput> m_loopCount;                            // +0x1a8 "m_loopCount"
     MS2Ptr<Unk_DpInput> m_loopDelay;                            // +0x1b8 "m_loopDelay"
     MS2Ptr<Unk_DpInput> m_value[5];                             // +0x1c8 "m_param<n>.m_value"
-    MS2Ptr<Unk_DpCombo> m_type[5];                              // +0x218 "m_param<n>.m_type"
+    MS2Ptr<ASDropdownMenu> m_type[5];                           // +0x218 "m_param<n>.m_type"
     MS2Ptr<ASMovieClip> m_movie;                                // +0x268 (double click)
     COutPacket m_packet;                                        // +0x278 the fixed packet
     int m_nRemain;                                              // +0x2b0 sends left

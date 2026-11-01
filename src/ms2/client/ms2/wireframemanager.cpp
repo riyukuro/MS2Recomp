@@ -21,22 +21,8 @@
 // ---- unit-local views of exe objects ----
 
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
-CQuestManager* FUN_140764020();                                         // the quest manager
+void* FUN_140764020();                                                  // the quest manager
 
-// The dungeon room's open period (DungeonRoom::m_limitDayOfWeeks, +0x106).
-struct Unk_WfSpan
-{
-    __int64 m_nStart;
-    __int64 m_nEnd;
-    Unk_WfSpan();                                                       // declared only (keeps the temporary out of /GS)
-    bool FUN_140837280();                                               // the time is inside the period
-};
-struct Unk_WfPeriodVal
-{
-    char m_data[16];
-    Unk_WfSpan FUN_1402e4e80(int nTime);                                // the period relative to the time
-};
-bool FUN_140b91330(void* pPeriod);                                      // the period is unlimited
 
 // An entry that can be gated by a dungeon room and a quest (the tail of this unit's range).
 struct Unk_WfGate
@@ -142,17 +128,17 @@ int Unk_WfGate::FUN_141b94b90()
         DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_nRoomId);
         if (room.get() ? true : false)
         {
-            if (!FUN_140b91330(&room->m_limitDayOfWeeks))
+            if (!room->m_limitDayOfWeeks.FUN_140b91330())
             {
                 int nNow = GetServerDayOfWeek();
-                if (!reinterpret_cast<Unk_WfPeriodVal&>(room->m_limitDayOfWeeks).FUN_1402e4e80(nNow).FUN_140837280())
+                if (!room->m_limitDayOfWeeks[nNow])
                     return 0;
             }
         }
     }
     if (m_nQuestId != 0)
     {
-        if (FUN_140764020()->FUN_140745590(m_nQuestId) == 0)
+        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_140745590(m_nQuestId) == 0)
             return 0;
     }
     return 1;

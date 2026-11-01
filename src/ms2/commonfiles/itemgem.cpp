@@ -72,6 +72,7 @@ static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                       
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/equipment.h"
 
 // The actor components behind PCBase slots 82 / 85 (see pcbase.h): the name tag and chat balloon entities.
 class Unk_PCBaseComp_a78 : public CPtred {};
@@ -352,7 +353,7 @@ int CGemTransparency::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
     for (POSITION pos = s_mapGemSlots.GetStartPosition(); pos != 0; s_mapGemSlots.GetNext(pos))
     {
         Unk_GemSlot nSlot = s_mapGemSlots.GetKeyAt(pos);
-        MS2Ptr<CEquipItem> spEquip = ((class PC*)(class PC*)(pPC))->FUN_1416561a0()->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(((class PC*)(class PC*)(pPC))->FUN_1416561a0())->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
         if (spEquip != 0)
             pPC->vfunc_128(spEquip->GetItem().get(), 0);
     }

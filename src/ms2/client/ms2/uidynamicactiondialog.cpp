@@ -24,6 +24,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidynamicactiondialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 #include "ms2/placeholder/mstime.h"
 #include "uidynamicactiondialog.h"
 #include "ms2/placeholder/asdata.h"
@@ -71,8 +72,6 @@ static CString s_strStun2 = "stun";
 class ASDialog : public ASDisplayObject {};
 // "m_inputSearch": the search text input.
 class Unk_DaInput : public ASTextInput { };   // C3: FUN_1422e0920 and the ASUIComponent focus pair are inherited
-// "m_list": the page grid.
-class Unk_DaList : public ASCoreList { };   // C3: GetSelectedIndex / GetDataProvider are inherited
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
@@ -174,7 +173,7 @@ int UIDynamicActionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             } else {
                 unsigned __int64 nAction = (unsigned)m_184.m_4;
                 FUN_14192df00(m_184.m_8, nAction);
-                if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list"))
+                if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list"))
                     reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(-1);
             }
             m_178.Clear();
@@ -669,23 +668,23 @@ MS2_REPLACE_METHOD(0x14192D960, UIDynamicActionDialog, FUN_14192d960, 254, 0);
 void UIDynamicActionDialog::FUN_14192da70(int nKey)
 {
     if (nKey == 0x79) {
-        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = spList->GetSelectedIndex();
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
-        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = spList->GetSelectedIndex();
             int nLast = spList->GetDataProvider()->GetLength() - 1;
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
-        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = spList->GetSelectedIndex();
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
-        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = spList->GetSelectedIndex();
             int nLast = spList->GetDataProvider()->GetLength() - 1;
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 1));

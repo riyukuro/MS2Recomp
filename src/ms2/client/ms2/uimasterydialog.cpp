@@ -97,8 +97,8 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // The notice hub (global via FUN_140939a10).
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
-// The item event hub (global via FUN_140a6a840).
-class Unk_MEvents
+// The item event hub (global via FUN_140a6a840); the view of the definition in uiitemenchantdialog.cpp.
+class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* listener);      // register (once)
@@ -233,7 +233,6 @@ class Unk_MToggle : public Unk_MCtl { };
 class Unk_MSubTab : public Unk_MCtl
 {
 public:
-    void FUN_1422e3400();                                   // clear
     void FUN_1422e34d0(const CStringW& strText);            // add a tab
 };
 // "m_guideBar" of the level control.
@@ -272,7 +271,7 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, c
 void FUN_141a02a30(CMsgBoxData* pBox, ATL::CAtlArray<ItemEntity>& rewards);
 void FUN_141275260(int nStringId, int nA, int nB);
 int FUN_1407181a0(const CStringW& str);
-class CubeMapInformationService { public: int FUN_1410d2f10(); bool FUN_1410d5640(); };   // C3: member view (the header clashes with Unk_1401cd100)
+class CubeMapInformationService { public: int FUN_1410d2f10(); bool FUN_1410d5640(); };   // C3: member view (the header clashes with Unk_BuddyHandle)
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
 public:
@@ -334,6 +333,7 @@ static inline Unk_MFurnTable* MFurnTable() { return reinterpret_cast<Unk_MFurnTa
 #include "ms2/commonfiles/enchantscrolldata.h"
 #include "ms2/commonfiles/jobtable.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/placeholder/asbuttonbar.h"  // C3: ASButtonBar::FUN_1422e3400
 
 
 class Unk_MScrollDef : public CPtred { public: int m_n18; int m_n1c; };
@@ -476,7 +476,7 @@ CString UIMasteryDialog::GetTypeName()
 // @0x140eae4c0
 int UIMasteryDialog::vfunc_65()
 {
-    ((class Unk_MEvents*)FUN_140a6a840())->FUN_1419cae20(this);
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(this);
     return UIDialog::vfunc_65();
 }
 
@@ -510,7 +510,7 @@ void UIMasteryDialog::vfunc_67()
             m_nMainTab = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spTab->GetMember("selectedIndex")))->GetInt();
         }
     }
-    ((class Unk_MEvents*)FUN_140a6a840())->FUN_1419caeb0(this);
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(this);
     UIDialog::vfunc_67();
 }
 
@@ -751,7 +751,7 @@ void UIMasteryDialog::FUN_140eafde0()
     if (!FUN_141924630())
         return;
     if (MS2Ptr<Unk_MSubTab> spSub = FUN_140c02870("m_subTab")) {
-        spSub->FUN_1422e3400();
+        reinterpret_cast<ASButtonBar*>(spSub.operator->())->FUN_1422e3400();
         switch (GetMainTabIndex()) {
         case 0:
             spSub->FUN_1422e34d0(GetMasteryTabName(3));

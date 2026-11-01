@@ -1173,7 +1173,7 @@ void WorldMapManager::SetDungeonScript(MS2Ptr<UIWorldMap::IconInfo> info, ASObj*
 {
     if (info->m_48.m_18 == 0)
         return;
-    script->FUN_1407cb9c0("portalID", info->m_48.m_18);
+    ((class AScript*)(script))->FUN_1407cb9c0("portalID", info->m_48.m_18);
     if (info->m_48.m_1c)
     {
         if (info->m_48.m_1d)
@@ -1208,11 +1208,11 @@ void WorldMapManager::SetEventScript(unsigned id, ASObj* script)
     if (m_c8.find(id) != m_c8.end())
     {
         MS2Ptr<EventIconInfo> spInfo = m_c8[id];
-        script->FUN_1407cb9c0("eventField", 1);
+        ((class AScript*)(script))->FUN_1407cb9c0("eventField", 1);
         script->FUN_1407cbb20("eventIcon", spInfo->m_strIconFrame);
         script->FUN_1407cbb20("eventStr", GetStringCommonByKey(spInfo->m_strEventStr));
-        script->FUN_1407cb9c0("eventTagOffsetX", spInfo->m_nOffsetX);
-        script->FUN_1407cb9c0("eventTagOffsetY", spInfo->m_nOffsetY);
+        ((class AScript*)(script))->FUN_1407cb9c0("eventTagOffsetX", spInfo->m_nOffsetX);
+        ((class AScript*)(script))->FUN_1407cb9c0("eventTagOffsetY", spInfo->m_nOffsetY);
         script->FUN_1409c4a30("eventTagScale", spInfo->m_fScale);
     }
 }

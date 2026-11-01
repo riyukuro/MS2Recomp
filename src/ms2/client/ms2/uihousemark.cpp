@@ -135,9 +135,9 @@ CBuddyManager* FUN_14097a780();
 int FUN_1406516b0();
 int FUN_141277f40();
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
-CString FUN_1402bb1c0(const char* szFormat, const int& n);          // StringFormat<int>
+#include "ms2/ms2format.h"
 CStringW FUN_1409404f0(__int64 n);                                  // a number with separators
-CStringW FUN_14052bd00(int nId, const CStringW& str);               // a string table entry with an argument
+#include "ms2/placeholder/formatstringid.h"
 int FUN_1408a0890(int nMapId, int nGroup, int* pnResult);
 int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& group, int nMapId);
@@ -365,7 +365,7 @@ void UIHouseMarkEntity::FUN_14198b7b0()
             m_debugText = m_clip->FUN_1409b4620("m_debugText");
             if (m_debugText.get() != NULL)
             {
-                CString strText = FUN_1402bb1c0("<font size='18' color='#3df0fb'>SalableGroup - {0}</font>", m_nId);
+                CString strText = StringFormat<int>("<font size='18' color='#3df0fb'>SalableGroup - {0}</font>", m_nId);
                 m_debugText->FUN_1422c4eb0(strText);
             }
         }
@@ -423,11 +423,11 @@ void UIHouseMarkEntity::FUN_14198b970()
     FUN_1408a09d0(&nItem, &nPrice, nMapId, nGroup);
     if (FUN_14053f8c0(nItem))
     {
-        strPrice = FUN_14052bd00(0x7ec, FUN_1409404f0(nPrice));
+        strPrice = FormatStringId<CStringW>(0x7ec, FUN_1409404f0(nPrice));
     }
     else if (FUN_14053f940(nItem))
     {
-        strPrice = FUN_14052bd00(0x7ed, FUN_1409404f0(nPrice));
+        strPrice = FormatStringId<CStringW>(0x7ed, FUN_1409404f0(nPrice));
     }
     else
     {

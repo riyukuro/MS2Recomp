@@ -91,10 +91,6 @@ Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 int FUN_140a0afb0(ATL::CAtlArray<Vector3>* pArr);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
-void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
-void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
-void FUN_140a0b6c0(NiWireframeProperty* pProp, int n);
-void FUN_140a0b450(NiStencilProperty* pProp, int n);
 void FUN_1415672e0(NiAVObject*, bool);
 
 // The effect node (400 bytes) carries the effect-space point.
@@ -122,8 +118,8 @@ MS2_CHECK_OFFSET(Unk_LightningTarget, m_pPoints, 0x28);
 const NiRTTI LightningEffect::ms_RTTI("LightningEffect", &CEffect::ms_RTTI);        // @0x1400f7340
 static CString s_str143adc918("skill");                                              // @0x1400f7370
 static CString s_str143adc910("stun");                                               // @0x1400f73a0
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_dat_143adc920(0);                                       // @0x1400f73d0
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+static Unk_BuddyHandle s_dat_143adc920(0);                                       // @0x1400f73d0
 #else
 const NiRTTI LightningEffect::ms_RTTI("LightningEffect", &CEffect::ms_RTTI);
 #endif
@@ -198,21 +194,21 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const LightningEffectParam* pLightning = static_cast<const LightningEffectParam*>(pParam);
-    FUN_1409f76f0(&m_spTarget, ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_hNode))))));
+    m_spTarget = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_hNode))))));
     m_pPoints = reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_pPoints;
     m_fSpread = pLightning->m_fSpread;
     m_fJointLen = pLightning->m_fJointLen;
     m_fWidth = pLightning->m_fWidth;
     m_bSequence = pLightning->m_bTextureSequence;
     m_nTick = pLightning->m_nTextureChangeTick;
-    if (m_spTarget.FUN_1409f77a0(0) || m_pPoints == 0)
+    if (m_spTarget == (NiNode*)0 || m_pPoints == 0)
         return false;
 
     m_spParam.AssignRaw(const_cast<LightningEffectParam*>(pLightning));
 
     NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
     spRoot->SetName("Effect Root");
-    FUN_1409f76f0(&m_spRoot, spRoot);
+    m_spRoot = spRoot;
 
     m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, 0x1f42, 8000, 0x15);
     m_spMesh->GetMesh()->SetName("LightningEffect");
@@ -233,16 +229,16 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     switch (pLightning->m_nAlphaMode)
     {
     case 0:
-        FUN_140980f60(pAlpha, 6);
-        FUN_140980af0(pAlpha, 0);
+        pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
+        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
         break;
     case 1:
-        FUN_140980f60(pAlpha, 6);
-        FUN_140980af0(pAlpha, 7);
+        pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
+        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)7);
         break;
     case 2:
-        FUN_140980f60(pAlpha, 0);
-        FUN_140980af0(pAlpha, 0);
+        pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)0);
+        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
         break;
     }
     m_spMesh->GetMesh()->AttachProperty(pAlpha);
@@ -252,11 +248,11 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     m_spMesh->GetMesh()->AttachProperty(pFog);
 
     NiWireframeProperty* pWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
-    FUN_140a0b6c0(pWireframe, 0);
+    pWireframe->SetWireframe((bool)0);
     m_spMesh->GetMesh()->AttachProperty(pWireframe);
 
     NiStencilProperty* pStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
-    FUN_140a0b450(pStencil, 3);
+    pStencil->SetDrawMode((NiStencilProperty::DrawMode)3);
     m_spMesh->GetMesh()->AttachProperty(pStencil);
 
     NiZBufferProperty* pZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
@@ -265,14 +261,14 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
 
     m_spMesh->UpdateBound();
     FUN_1415672e0(m_spMesh->GetMesh(), (bool)0);
-    static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
+    m_spRoot->AttachChild(m_spMesh->GetMesh(), false);
 
     NiPointer<NiSortAdjustNode> spSort = new (efd::MemHint(efd::MemHint::NONE)) NiSortAdjustNode;
     if (pLightning->m_nSortingMode == 1)
         spSort->SetSortingMode(NiSortAdjustNode::SORTING_INHERIT);
     else
         spSort->SetSortingMode(NiSortAdjustNode::SORTING_OFF);
-    static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(spSort, false);
+    m_spRoot->AttachChild(spSort, false);
     spSort->AttachChild(m_spMesh->GetMesh(), false);
 
     if (FUN_14028d470(pLightning->m_fStartDelay, 0.0f))
@@ -285,9 +281,9 @@ bool LightningEffect::vfunc_9()
 {
     if (CEffect::vfunc_9())
     {
-        if (FUN_1409475d0(&m_spRoot) ? true : false)
+        if ((NiNode*)m_spRoot ? true : false)
         {
-            if (((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->GetAppCulled())
+            if (m_spRoot->GetAppCulled())
                 return true;
         }
         Rebuild();
@@ -299,31 +295,31 @@ bool LightningEffect::vfunc_9()
 // @0x14144ca70
 void LightningEffect::vfunc_4()
 {
-    static_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-    reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)FUN_14086d260()->FUN_141473280(), true);
+    static_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spRoot), true);
+    m_spRoot->UpdateEffects();
+    m_spRoot->UpdateProperties();
+    m_spRoot->Update((float)FUN_14086d260()->FUN_141473280(), true);
     m_b2e = true;
 }
 
 // @0x14144cb50
 void LightningEffect::vfunc_7()
 {
-    FUN_140a0b2a0((class NiAVObject*)(FUN_1409475d0(&m_spRoot)));
+    FUN_140a0b2a0((class NiAVObject*)((NiNode*)m_spRoot));
 }
 
 // @0x14144cb80
 void LightningEffect::vfunc_10(bool bVisible)
 {
-    ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spRoot)))->SetAppCulled(!bVisible);
+    m_spRoot->SetAppCulled(!bVisible);
 }
 
 // @0x14144cbd0
 int LightningEffect::vfunc_8(void* p)
 {
-    if (FUN_1409475d0(&m_spTarget) != 0)
+    if ((NiNode*)m_spTarget != 0)
     {
-        *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spTarget))->GetWorldTranslate());
+        *static_cast<Vector3*>(p) = reinterpret_cast<const Vector3&>(m_spTarget->GetWorldTranslate());
         return 1;
     }
     return 0;

@@ -471,7 +471,7 @@ int UIPartySearchDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (FUN_140695080((class CMatchPartyRecruit const*)(recruit.operator->())) == 0)
                 {
-                    TSingleton<CPartyManager>::GetInstance()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
+                    TSingleton<CPartyManager>::GetInstance()->SendPartyInviteFromRecruit(MS2Ptr<CMatchPartyRecruit>(recruit));
                 }
             }
         }
@@ -639,7 +639,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         return 1;
                     }
                 }
-                TSingleton<CPartyManager>::GetInstance()->FUN_14162bcc0(MS2Ptr<CMatchPartyRecruit>(recruit));
+                TSingleton<CPartyManager>::GetInstance()->SendPartyInviteFromRecruit(MS2Ptr<CMatchPartyRecruit>(recruit));
             }
         }
         return 1;
@@ -862,7 +862,7 @@ void UIPartySearchDialog::OnClickRegisterMemeberSearch()
         FUN_140d73bc0(0xb3a, 0, 0, L"");
         return;
     }
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_141631cc0() != 0)
+    if (TSingleton<CPartyManager>::GetInstance()->IsRecruitPending() != 0)
         FUN_140d73bc0(0xb3d, 0, 0, L"");
     else if (TSingleton<CPartyManager>::GetInstance()->FUN_14162af00() >= 10)
         FUN_140d73aa0(BlockFormat<int>(0xb3b, 10), 0, 0, L"");

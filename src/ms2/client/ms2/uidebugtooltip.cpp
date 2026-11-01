@@ -166,7 +166,7 @@ void UIDebugTooltip::vfunc_52()
             vfunc_8(1);
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_1412cc450("setData", m_88, m_98);
-        reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e0a8c0("setAdditional", m_90, 0);
+        reinterpret_cast<Unk_TooltipMovie*>((class Unk_CbScript*)((pClip.operator->())))->FUN_140e0a8c0("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);
         pClip->Invoke("setFontColor", 0x3df0fb);
         m_7c = 0;

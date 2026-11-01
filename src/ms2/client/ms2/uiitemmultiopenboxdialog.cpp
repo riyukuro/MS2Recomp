@@ -11,7 +11,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
-
+class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5e2e0(int); };
 // ---- out-of-unit callees (names describe uses) ----
 class Unk_McAttendTable                                          // the player inventory (global 0x143ab2a90)
 {
@@ -103,7 +103,7 @@ void UIItemMultiOpenBoxDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
     FUN_140c3fca0();
-    MS2Ptr<CItem> item = g_attendItems.FUN_140a5e2e0(m_180);
+    MS2Ptr<CItem> item = ((class Unk_Inventory&)(g_attendItems)).FUN_140a5e2e0((int)(m_180));
     if (item.get() != 0)
     {
         FUN_141415600(GetTypeName());

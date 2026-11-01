@@ -29,7 +29,7 @@ public:
 
 typedef ATL::CAtlMap<Unk_ScreenKey, float, Unk_ScreenKeyTraits> Unk_ScaleMap;
 
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };     // ctor 0x1401cd100
 
 static Unk_ScaleMap s_scaleCache(17, 0.75f, 0.25f, 2.25f, 10);                           // @0x1400ebca0
-static Unk_Handle1401cd100 s_dat_143ad61a8(0);                                           // @0x1400ebcf0
+static Unk_BuddyHandle s_dat_143ad61a8(0);                                           // @0x1400ebcf0

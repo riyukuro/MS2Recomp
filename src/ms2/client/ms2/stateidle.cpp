@@ -76,18 +76,17 @@ class Unk_SiActor { public: int FUN_141679120(int n); };
 
 
 // The animation service: the sequence id / actor manager of a model key.
-class Unk_SiAnimSvc
-{
-public:
-    unsigned FUN_140b7f6a0(const egf::EntityID& kKey);
-};
+class Unk_SiAnimSvc;
+int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kKey);   // C3: the real free function (sequence id of a model key)
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
 // Config constants singleton (FUN_1401d3200).
-class Unk_SiDelay { public: unsigned FUN_14025a620(); char m_c; };
+class Unk_SiDelay { public: char m_c; };
+int FUN_14025a620(class Unk_ConstVal* p);   // C3: the real free function (a constant slot's value)
 class Unk_SiUInt { public: char m_c; };
-class Unk_SiName { public: CString* FUN_140298f80(); char m_c; };
+class Unk_StringOptionEntry { public: CString& FUN_140298f80(); char m_c; };   // C3: named like the real class (0x140298f80)
+typedef Unk_StringOptionEntry Unk_SiName;
 class Unk_SiConsts
 {
 public:
@@ -138,15 +137,17 @@ public:
 };
 class Unk_SiPetRow : public CPtred { };
 class Unk_SiPetTable { public: MS2Ptr<Unk_SiPetRow> FUN_140c892c0(int nId); };
-class Unk_SiPetBook { public: int FUN_140b11e90(PCBase* pPet); };
+class Unk_SiPetBook { public: char m_c; };
+int FUN_140b11e90(struct Unk_PetFoodBook* pBook, PCBase* pPet);   // C3: the real free function
 class Unk_SiPetData { public: char m_pad[0x68]; Unk_SiPetBook m_book; };
 class Unk_SiPetMgr;
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
-Unk_SiPetData* FUN_140c8b450(Unk_SiPetMgr* p);
+class CCPetInfoPacket { public: class Info; };
 class CPetManager   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_PetManagerEmpty* FUN_140c8b430();
+    CCPetInfoPacket::Info* GetInfo();
 };
 bool FUN_1401c0050(MS2Ptr<Unk_SiPetRow>* p, int n);      // MS2Ptr::operator==(T*)
 
@@ -298,7 +299,7 @@ void StateIdle::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     efd::UInt64 qwKey;
-    unsigned nSeq = reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+    unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
     const efd::ClassInfo* pDesc;
     if (m_pOwner != 0)
         pDesc = m_pOwner->GetClassDesc();
@@ -331,7 +332,7 @@ void StateIdle::vfunc_9(double fTime)
                 {
                     if (m_n10 == 7)
                         vfunc_2(1);
-                    if (AsPC(pPC)->FUN_141659610() != 0)
+                    if (AsPC(pPC)->IsCubeMode1() != 0)
                     {
                         vfunc_2(9);
                     }
@@ -390,7 +391,7 @@ void StateIdle::vfunc_9(double fTime)
     case 0xa:
         if (m_pOwner->vfunc_65() != 0)
             m_pOwner->FUN_14166ce70(0);
-        if (m_pOwner->FUN_14166dda0(0x3d))
+        if (m_pOwner->PlayAnimationById(0x3d))
             m_pOwner->FUN_14166f8f0(0, 1);
         break;
     case 0xb:
@@ -488,7 +489,7 @@ void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 // @0x1417ce5b0
 void StateIdle::vfunc_21(int n)
 {
-    m_timerLeave.FUN_140868750(((class Unk_SiConsts*)FUN_1401d3200())->m_delayLeave.FUN_14025a620());
+    m_timerLeave.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)FUN_1401d3200())->m_delayLeave));
     vfunc_2(6);
 }
 
@@ -505,7 +506,7 @@ int StateIdle::vfunc_14()
 int StateIdle::vfunc_16()
 {
     PCBase* pPC = FUN_1417b8370();
-    if (pPC != 0 && AsPC(pPC)->FUN_141659610() != 0)
+    if (pPC != 0 && AsPC(pPC)->IsCubeMode1() != 0)
         return 1;
     return 0;
 }
@@ -552,7 +553,7 @@ void StateIdle::FUN_1417ce970(unsigned nSeq)
 {
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
-        pPC->FUN_14166dda0(0x49);
+        pPC->PlayAnimationById(0x49);
 }
 
 // @0x1417ce9b0
@@ -560,7 +561,7 @@ void StateIdle::FUN_1417ce9b0(unsigned nSeq)
 {
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
-        pPC->FUN_14166dda0(0x49);
+        pPC->PlayAnimationById(0x49);
 }
 
 // @0x1417ce9f0
@@ -625,7 +626,7 @@ void StateIdle::FUN_1417ced70(unsigned nSeq)
 void StateIdle::FUN_1417cee40(unsigned nSeq)
 {
     if (!m_pOwner->FUN_14166de90(0x49, nSeq))
-        m_pOwner->FUN_14166dda0(0x49);
+        m_pOwner->PlayAnimationById(0x49);
 }
 
 // @0x1417cee90
@@ -665,7 +666,7 @@ void StateIdle::FUN_1417cef60()
             m_timerBore.FUN_1408687f0();
         }
         if (m_timerBore.FUN_140868ba0() == 0)
-            m_timerBore.FUN_140868750(((class Unk_SiConsts*)FUN_1401d3200())->m_delayBore.FUN_14025a620());
+            m_timerBore.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)FUN_1401d3200())->m_delayBore));
     }
     else
     {
@@ -709,11 +710,11 @@ void StateIdle::FUN_1417cf360()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         if (AsPC(pPC)->FUN_141654700() == 0x32)
         {
-            ((Unk_EffectTarget&)(kTarget)).m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50.FUN_140298f80();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob50.FUN_140298f80();
         }
         else if (AsPC(pPC)->FUN_141654700() == 0x6e)
         {
-            ((Unk_EffectTarget&)(kTarget)).m_strName = *((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110.FUN_140298f80();
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_SiConsts*)FUN_1401d3200())->m_strSoundJob110.FUN_140298f80();
         }
         else
         {
@@ -850,7 +851,7 @@ void StateIdlePet::vfunc_9(double fTime)
     else
     {
         efd::UInt64 qwKey;
-        unsigned nSeq = reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+        unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
         switch (m_n10)
         {
         case 1:
@@ -920,7 +921,7 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
             FUN_1417d0540(0x5a);
         if (reinterpret_cast<Unk_IntervalTimer&>(m_timerVoiceB).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB)->Get()) != 0)
         {
-            int nPetId = FUN_140c8b450(((class Unk_SiPetMgr*)FUN_140535320()))->m_book.FUN_140b11e90(pPet);
+            int nPetId = FUN_140b11e90((struct Unk_PetFoodBook*)&reinterpret_cast<Unk_SiPetData*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo())->m_book, pPet);
             if (nPetId != 0)
             {
                 MS2Ptr<Unk_SiPetRow> spRow = ((class Unk_SiPetTable*)((class CPetManager*)(class Unk_SiPetMgr*)(((class Unk_SiPetMgr*)FUN_140535320())))->FUN_140c8b430())->FUN_140c892c0(nPetId);

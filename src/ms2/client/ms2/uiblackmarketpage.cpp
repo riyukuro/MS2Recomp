@@ -99,24 +99,23 @@ extern __int64 DAT_143ab2820;                                       // the own a
 extern __int64 DAT_143ab2898;                                       // the own mesos
 extern Unk_Inventory g_143ab2a90;                                   // the player's inventory
 
-void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS value
 CStringW GetStringCommon(int nId);                                    // string table text
 CStringW GetStringCommonByKey(const CStringW& str);                        // text of a string key
 CStringW FUN_1409404f0(__int64 n);                                  // a money amount as text
-CStringW FUN_140719a80(__int64 n);                                  // a 64-bit number as text
+CStringW FUN_140719a80(unsigned __int64 n);                                  // a 64-bit number as text
 unsigned __int64 FUN_140718350(const CString& str);                 // a decimal string as a 64-bit number
 CStringW FUN_1413fa9b0(const CStringW& str);                        // the search form of a name
 void FUN_140222be0(ATL::CAtlArray<unsigned int>& out);              // the job codes of the search dropdown
 int FUN_1402227e0(int nJobCode, int bAll);                          // the job group of a code
-unsigned int FUN_140869420();                                       // tick count
+unsigned long GetTickCountMs2();                                    // tick count
 int FUN_14028d260(float fSeconds);                                  // seconds -> ticks
 int FUN_1406198a0(int nScale, float f);                             // round(f * nScale)
 void FUN_1412751f0(const CStringW& text, int nA, int nB);           // system notice text
 void FUN_141275260(int nStringId, int nA, int nB);                  // system notice of a string id
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bLock);              // lock the dialog input while a request runs
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTitle);   // message box
-MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTitle);   // message box data
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTitle);   // message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                      // show a message box
 bool FUN_140633a90(MS2Ptr<CItem> spItem);                           // the item has a trade count limit
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep, int nMax);   // split
@@ -127,7 +126,7 @@ int FUN_1401bceb0(unsigned int, unsigned int, int);             // option key of
 int FUN_1401bcd30();                                                // default currency
 class Unk_InventoryStateManager;
 Unk_InventoryStateManager*FUN_140a6a830();                                     // the block manager
-void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, int n);    // notice of a blocked action
+void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);    // notice of a blocked action
 CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
@@ -137,7 +136,7 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-int FUN_1418fccc0(int nMsg, void* p2, void* p3, const CStringW& strText);   // the key changes the text input
+int FUN_1418fccc0(int nMsg, unsigned __int64 p2, unsigned __int64 p3, const CStringW& strText);   // the key changes the text input
 
 // The inventory slot (invenslot.cpp, efd class id 0x6200023): only what this unit calls. The owning unit's header is not
 // in the tree yet.
@@ -145,7 +144,7 @@ class InvenSlot : public MS2DragSlot
 {
 public:
     __int64 GetItemUid();                                        // the item uid
-    int FUN_141409150(CItem& item);                                 // may the item be registered on the black market
+    int FUN_141409150(CItem* pItem);                                 // may the item be registered on the black market
 };
 
 CStringW FUN_141275860(__int64 n);                                  // the meso amount text of the total price
@@ -158,7 +157,7 @@ CStringW FUN_14083cf50(int nCurrency, bool bIcon);                  // the curre
 CStringW FUN_14083bab0(const CMsTime& t, CStringW strSep);          // a date as text
 CString FUN_1407194b0(__int64 t);                                   // a time as text
 __int64 FUN_140718320(const CStringW& str);                         // a decimal string as a 64-bit number
-__int64 FUN_140718370(const CStringW& str);
+unsigned __int64 FUN_140718370(const CStringW& str);
 __int64 FUN_141b71960(const char* sz);                              // a uid string as a number
 CStringW FUN_141b71910(__int64 n);                                  // a uid as text
 CStringW FUN_14183e930(const CStringW& str, unsigned int nColor);   // colored text
@@ -439,7 +438,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
                 bResult = true;
                 FillSearchResults(nFirst, nFirst + nCount, CBlackMarketMan::GetInstance()->m_listSearch.FindIndex(nFirst));
             }
-            FUN_1407cd930(&ret, "result", Scaleform::GFx::Value(bResult));
+            (&ret)->SetMember("result", Scaleform::GFx::Value(bResult));
         }
         return 1;
     }
@@ -458,7 +457,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
                 m_bSendPending = true;
                 bResult = true;
             }
-            FUN_1407cd930(&ret, "result", Scaleform::GFx::Value(bResult));
+            (&ret)->SetMember("result", Scaleform::GFx::Value(bResult));
         }
         return 1;
     }
@@ -469,7 +468,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         {
             int nResult = FUN_140f0f310(&data, 0);
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
-            FUN_1407cd930(&ret, "result", Scaleform::GFx::Value(nResult != 0));
+            (&ret)->SetMember("result", Scaleform::GFx::Value(nResult != 0));
         }
         return 1;
     }
@@ -490,7 +489,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
                 m_bSendPending = true;
                 bResult = true;
             }
-            FUN_1407cd930(&ret, "result", Scaleform::GFx::Value(bResult));
+            (&ret)->SetMember("result", Scaleform::GFx::Value(bResult));
         }
         return 1;
     }
@@ -533,7 +532,7 @@ void BlackMarketPageItemSearch::vfunc_5()
             return;
         UpdateNoticeSymbolFrom("loading");
         CBlackMarketMan::GetInstance()->SendBlackMarketMode4(m_spCond);
-        m_dwSearchTick = FUN_140869420();
+        m_dwSearchTick = GetTickCountMs2();
         m_bSendPending = false;
     }
 }
@@ -546,7 +545,7 @@ void BlackMarketPageItemSearch::FUN_140f0d630(int nMsg, void* p2, void* p3)
     if (m_spInputName == 0 || m_spInputName->FUN_1422c76c0() == 0)
         return;
     CStringW strText = m_spInputName->GetText();
-    if (FUN_1418fccc0(nMsg, p2, p3, strText) == 0)
+    if (FUN_1418fccc0(nMsg, (unsigned __int64)p2, (unsigned __int64)p3, strText) == 0)
         return;
     ASDataProvider candidates(2);
     if (strText.GetLength() < 1)
@@ -825,7 +824,7 @@ MS2_REPLACE_METHOD(0x140F0F250, BlackMarketPageItemSearch, OnSearchDelayError, 1
 // @0x140f0f2c0
 int BlackMarketPageItemSearch::CanSearchNow()
 {
-    unsigned int dwNow = FUN_140869420();
+    unsigned int dwNow = GetTickCountMs2();
     if (dwNow < (unsigned int)(FUN_14028d260(1.0f) + m_dwSearchTick))
         return 0;
     return 1;
@@ -1047,7 +1046,7 @@ void BlackMarketPageItemSearch::FUN_140f108e0(MS2Ptr<CBlackMarketProduct> spEntr
             spBox->SetItem(spData);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::FUN_140f113e0));
             spBox->FUN_141a024a0(0);
-            spBox->FUN_1405340b0(nProductId);
+            spBox->Append<__int64>(nProductId);
             FUN_140d73c60(spBox);
         }
     }
@@ -1091,8 +1090,8 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01700(0x477, 0x478, 0);
     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::OnBuyCountMsgBox));
-    spBox->FUN_1405340b0(nProductId);
-    spBox->FUN_140533ff0(nCount);
+    spBox->Append<__int64>(nProductId);
+    spBox->Append<int>(nCount);
     FUN_140d73c60(spBox);
 }
 
@@ -1286,7 +1285,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
                 MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spSlot->GetItemUid());
                 if (spItem.get())
                 {
-                    if (spSlot->FUN_141409150(*spItem))
+                    if (spSlot->FUN_141409150(&*spItem))
                     {
                         MS2Ptr<AScript> spResult = FUN_1409e7dc0(m_50, vResult);
                         if (spResult.get())
@@ -1842,7 +1841,7 @@ inline void ASObj::FUN_140f17290(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    (&m_value)->SetMember(szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca8e80-0x142ca8f40 .text$yd

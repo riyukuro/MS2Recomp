@@ -88,6 +88,8 @@
 #include "ms2/client/ms2/instrumentmanager.h"
 #include "ms2/placeholder/cguidemanager.h"
 #include "ms2/client/ms2/uimyinfodialog.h"
+#include "ms2/client/ms2/uiwritemusicdialog.h"
+#include "ms2/commonfiles/contentshutdown.h"
 #include <utility>
 #include <efd/IBase.h>
 #include <efd/MemHint.h>
@@ -178,8 +180,6 @@ class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 // The key state.
 class Unk_IsKeys : public CInputKeyHandler
 {
-public:
-    bool FUN_14116dcb0(int nAction, int a, int b);        // an action key is bound
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -286,22 +286,12 @@ public:
     __int64 FUN_140c8dab0();                              // the uid of the score being played
 };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
-class Unk_IsInstrumentDialog
-{
-public:
-    void FUN_140fef7b0(MS2Ptr<CItem> spItem);             // play the instrument
-    void FUN_140fef8f0(MS2Ptr<CItem> spItem);             // play the score
-};
+class Unk_IsInstrumentDialog;
 Unk_IsInstrumentDialog* FUN_140d0c0e0(int nId);
-class Unk_IsAccountFlagSet
-{
-public:
-    int FUN_1402c4c90(int nFlag);
-};
 struct Unk_IsAccountFlags
 {
     void* m_0;
-    Unk_IsAccountFlagSet m_flags;                         // +0x08
+    CContentShutdown m_flags;                             // +0x08
 };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
@@ -341,11 +331,6 @@ extern Vector3 DAT_143a08cf8;                     // NiPoint3::UNIT_Z
 static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem);
 
 // The tooltip paths (vfunc_0).
-class Unk_IsEquipView : public MyPC
-{
-public:
-    int FUN_141662de0();                                  // the VIP state
-};
 
 // The trade / sell paths.
 bool FUN_140633e40(MS2Ptr<CItem> spItem, int* pReason);   // may the item be traded
@@ -363,11 +348,6 @@ bool FUN_140633840(MS2Ptr<CItem> spItem);                 // may be sold
 bool FUN_140633b80(MS2Ptr<CItem> spItem);                 // may be registered on the black market
 
 // The put-on checks (FUN_14140dea0) and the shop (FUN_14140e3f0).
-class Unk_IsItemRequire : public CItem
-{
-public:
-    int FUN_140526810(unsigned short nLevel);                        // the level is enough
-};
 bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId);   // the binding allows the character
 class UIShopDialog : public UIDialog
 {
@@ -591,7 +571,7 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
         pPc->FUN_141523bc0()->FUN_141766230(nSkillId, &fRemain, &fTotal, &nByItem, 1);
         if (0.0f < fRemain)
         {
-            Unk_IsScript script(*pValue, 2);
+            AScript script(*pValue, 2);
             float fCool;
             if (nByItem == 0)
                 fCool = spLevel->FUN_140804660();
@@ -639,8 +619,8 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
         float fRemain = pPc->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
         if (fRemain <= 0.0f)
         {
-            Unk_IsScript script(*pValue, 2);
-            FUN_140614800(script.FUN_1422bb330(s_strOnCooldownEnd));
+            AScript script(*pValue, 2);
+            FUN_140614800(script.Invoke(s_strOnCooldownEnd));
             return true;
         }
     }
@@ -678,7 +658,7 @@ int FUN_1414056b0(MS2Ptr<CItem> spItem)
     {
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e))
         {
-            if (((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116dcb0(0x4940d, 0, 0))
+            if (((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116dcb0(0x4940d, false, 0))
                 nResult = 1;
             else
                 nResult = 2;
@@ -935,7 +915,7 @@ int InvenSlot::vfunc_13()
                 {
                     if (CFeatureManager::GetInstance()->FUN_14036d570(10) == false)
                         return 0;
-                    if (((struct Unk_IsAccountFlags*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(5) != 0)
+                    if (((struct Unk_IsAccountFlags*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)5) != 0)
                     {
                         FUN_141275260(0x2f7, 1, 1);
                         return 0;
@@ -962,14 +942,14 @@ int InvenSlot::vfunc_13()
                     {
                         Unk_IsInstrumentDialog* pDialog;
                         if (spItem->FUN_140525790() && (pDialog = FUN_140d0c0e0(0x4eed)) != 0)
-                            pDialog->FUN_140fef8f0(spItem);
+                            reinterpret_cast<UIWriteMusicDialog*>(pDialog)->FUN_140fef8f0(spItem);
                     }
                     else
                     {
                         TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4eed);
                         Unk_IsInstrumentDialog* pDialog = FUN_140d0c0e0(0x4eed);
                         if (pDialog != 0)
-                            pDialog->FUN_140fef7b0(spItem);
+                            reinterpret_cast<UIWriteMusicDialog*>(pDialog)->BeginWriteWithItem(spItem);
                     }
                 }
                 nResult = 1;
@@ -1529,7 +1509,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (FUN_140633700(spItem) == false)
     {
         CStringW strError;
-        if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem) == 0)
+        if (((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(spItem) == 0)
         {
             if (spItem->FUN_140527930()->FUN_140635120() == 0)
             {
@@ -1673,7 +1653,7 @@ int InvenSlot::vfunc_0(void* p)
         tip.FUN_1409c0e60("customizeColor", L"");
     if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
     {
-        MS2Ptr<CEquipItem> spEquip = static_cast<Unk_IsEquipView*>(pPC)->FUN_141655e10(4);
+        MS2Ptr<CEquipItem> spEquip = pPC->FUN_141655e10(4);
         bool bDagger = spEquip.get() != 0 && spEquip->GetItem() == spWorn.get();
         if (bDagger)
             FUN_141276180(s_strChangeDagger, CString(""));
@@ -1882,7 +1862,7 @@ MS2_REPLACE_METHOD(0x14140C030, InvenSlot, FUN_14140c030, 201, 0x6ED00564);
 // @0x14140c100
 void InvenSlot::FUN_14140c100()
 {
-    if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(vfunc_25()) != 2)
+    if (((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(vfunc_25()) != 2)
         vfunc_10();
 }
 MS2_REPLACE_METHOD(0x14140C100, InvenSlot, FUN_14140c100, 112, 0xA309D40E);
@@ -1918,7 +1898,7 @@ MS2_REPLACE_METHOD(0x14140C180, InvenSlot, FUN_14140c180, 297, 0x5F3CA500);
 static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem)
 {
     ATL::CAtlArray<Unk_QuestItemLink> arrQuests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416ce860(spItem, arrQuests);
+    ((class CQuestManager*)FUN_140764020())->GetQuestItemLinks(spItem, arrQuests);
     if (arrQuests.GetCount() != 0)
     {
         CStringW strNames;
@@ -1940,7 +1920,7 @@ MS2_REPLACE(0x14140C2B0, FUN_14140c2b0, 526, 0x185916FD);
 static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
-    int nQuest = ((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem);
+    int nQuest = ((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(spItem);
     if (nCount < 2 && nQuest == 0)
     {
         FUN_140714f90()->SendRequestItemInventoryMode4(nUid, nCount);
@@ -1982,7 +1962,7 @@ MS2_REPLACE(0x14140C4D0, FUN_14140c4d0, 1719, 0x28342F3F);
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName)
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
-    int nQuest = ((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem);
+    int nQuest = ((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(spItem);
     if (nMax < 2 && nQuest == 0)
     {
         FUN_1419f8920(g_143ab2a90.FUN_140a5d680(nUid), nCount);
@@ -2187,12 +2167,12 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
             FUN_140d73bc0(0xe1, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140525ca0() != 0 && static_cast<Unk_IsEquipView*>(pPC)->FUN_141658f30() == 0)
+    if (pItem->FUN_140525ca0() != 0 && pPC->FUN_141658f30() == 0)
     {
         FUN_140d73bc0(0xe2, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140525db0() != 0 && static_cast<Unk_IsEquipView*>(pPC)->FUN_141662de0() == 0)
+    if (pItem->FUN_140525db0() != 0 && pPC->FUN_141662de0() == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, 0, L"");
         return 0;
@@ -2202,12 +2182,12 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
         FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 0, 0, L"");
         return 0;
     }
-    if (static_cast<Unk_IsItemRequire*>(pItem)->FUN_140526810(pPC->vfunc_78()) == 0)
+    if (pItem->CanUseAtLevel(pPC->vfunc_78()) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, L"");
         return 0;
     }
-    if (static_cast<Unk_IsItemRequire*>(pItem)->IsJobAllowed(pPC->FUN_141654700()) == 0)
+    if (pItem->IsJobAllowed(pPC->FUN_141654700()) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_disable_job"), 0, 0, L"");
         return 0;
@@ -2218,7 +2198,7 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
         FUN_140d73bc0(0xfe, 0, 0, CStringW(L""));
         return 0;
     }
-    if (static_cast<Unk_IsItemRequire*>(pItem)->FUN_1405267d0(pPC->FUN_141658e60()) == 0)
+    if (pItem->FUN_1405267d0(pPC->FUN_141658e60()) == 0)
     {
         FUN_140d73bc0(0x2d, 0, 0, CStringW(L""));
         return 0;

@@ -19,15 +19,11 @@
 
 // ---- out-of-unit callees (bound to the exe by name) ----
 // The world manager (singleton FUN_1403ed2d0).
-class Unk_PortraitWorld
-{
-public:
-    GameObject* FUN_141bd3620();                                // 0x141bd3620 the local player (NULL outside a field)
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    void* FUN_141bd3620();                                      // 0x141bd3620 the local player (NULL outside a field)
 };
 
 class Unk_PortraitClock;
@@ -68,7 +64,7 @@ void UIPortrait::vfunc_2()
 {
     if (m_spCamera)
     {
-        GameObject* pPlayer = ((class Unk_PortraitWorld*)WorldService::GetInstance())->FUN_141bd3620();
+        GameObject* pPlayer = (GameObject*)WorldService::GetInstance()->FUN_141bd3620();
         if (pPlayer)
         {
             NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->FUN_14123c410())) + NiPoint3(0.0f, 0.0f, 25.0f);

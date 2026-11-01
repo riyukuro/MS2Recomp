@@ -15,6 +15,8 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
+#include "ms2/client/ms2/additionalclilist.h"  // C3: AdditionalCli, AdditionalCliList
+#include "ms2/client/ms2/equipment.h"  // C3: CEquipment::FUN_1411e1860
 
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
@@ -24,11 +26,6 @@ int FUN_141472bc0();   // C3: was FUN_141472bc0
 
 bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
 float FUN_14028d3a0(float fPercent);                        // commonutil: percent to rate
-class AdditionalCliList   // C3: member view for the former free stand-ins
-{
-public:
-    static int FUN_1409726e0(unsigned int, enum ApplyFieldType);
-};
 
 // A field object (FieldObject / Actor / PCBase; only the casts and the members below are used).
 class Unk_SrEntity;
@@ -45,12 +42,9 @@ class Unk_SrState : public StateSkill
 };
 
 // The own player (MyPC).
-class Unk_SrMyPC : public PCBase
-{
-public:
-    Unk_SrState* FUN_14166ccb0();                           // the current state
-};
-Unk_SrMyPC* FUN_14096e160(Unk_SrEntity* pEntity);           // as MyPC
+class Unk_SrMyPC : public PCBase { };   // C3: FUN_14166ccb0 is PCBase's
+class MyPC;
+template <> MyPC* efd::DynamicCast<MyPC, PCBase>(PCBase* Source);
 
 // The equipment of a player: the weapon's item gives the attack material of an attack without one.
 class Unk_ItemEquipData
@@ -59,11 +53,6 @@ public:
     unsigned char m_unk00[0x10c];
     int m_nAttackMaterial;                                  // +0x10c
 };
-class Unk_SrEquipSet
-{
-public:
-    MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int nFlags);    // the item of an equip slot
-};
 class Unk_SrPC;
 
 // The buffs of an actor (AdditionalCli is RTTI CPtred, ?\additionalcli.cpp; only its level data is read).
@@ -71,16 +60,6 @@ struct Unk_SrBuffLevel
 {
     unsigned char m_unk00[0x298];
     int m_nDotDamageType;                                   // +0x298
-};
-class AdditionalCli : public CPtred
-{
-public:
-    Unk_SrBuffLevel* FUN_14096d810();                       // the level data
-};
-class Unk_SrBuffs
-{
-public:
-    MS2Ptr<AdditionalCli> FUN_14096fc80(int nBuffId);       // one buff
 };
 
 // ---- SkillTargetRecord ----
@@ -166,11 +145,11 @@ void SkillTargetRecord::FUN_1417591b0()
     Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrEntity*>(WorldService::GetInstance()->FUN_141bd1200(m_nOwnerId));
     if (pOwner == 0)
         return;
-    Unk_SrMyPC* pMe = FUN_14096e160(pOwner);
+    Unk_SrMyPC* pMe = reinterpret_cast<Unk_SrMyPC*>(efd::DynamicCast<MyPC, PCBase>(reinterpret_cast<PCBase*>(pOwner)));
     if (pMe != 0) {
         int nState = pMe->FUN_14166c930();
         if (nState == 0x10) {
-            Unk_SrState* pState = pMe->FUN_14166ccb0();
+            Unk_SrState* pState = reinterpret_cast<Unk_SrState*>(pMe->FUN_14166ccb0());
             if (pState != 0)
                 pState->FUN_1417ecc10(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(this)));   // Unk_MagicTag is this class
         }
@@ -344,7 +323,7 @@ int CSkillRecord::FUN_141759e40()
 }
 
 // @0x141759eb0
-int CSkillRecord::FUN_141759eb0()
+int CSkillRecord::IsEndedOrLastMotion()
 {
     if (m_bEnd)
         return 1;
@@ -388,7 +367,7 @@ SkillAttackData* CSkillRecord::GetCurrentAttackData()
 }
 
 // @0x14175a050
-SkillAttackData* CSkillRecord::FUN_14175a050(int nAttack)
+SkillAttackData* CSkillRecord::GetAttackDataAt(int nAttack)
 {
     return m_spLevel->FUN_140803f60(m_nMotion, nAttack);
 }
@@ -409,7 +388,7 @@ int CSkillRecord::GetBrokenOffence()
 }
 
 // @0x14175a170
-float CSkillRecord::FUN_14175a170()
+float CSkillRecord::GetBrokenForce()
 {
     SkillAttackData* pAttack = GetCurrentAttackData();
     if (pAttack == 0)
@@ -418,7 +397,7 @@ float CSkillRecord::FUN_14175a170()
 }
 
 // @0x14175a1b0
-float CSkillRecord::FUN_14175a1b0()
+float CSkillRecord::GetRemainingDuration()
 {
     if (FUN_14028d470(m_fDuration, 0))
         return 0;
@@ -525,7 +504,7 @@ SkillAttackData* CDamageRecord::GetAttackData()
 }
 
 // @0x14175a920
-int CDamageRecord::FUN_14175a920()
+int CDamageRecord::GetNameIndex()
 {
     SkillAttackData* pAttack = GetAttackData();
     if (pAttack == 0)
@@ -534,7 +513,7 @@ int CDamageRecord::FUN_14175a920()
 }
 
 // @0x14175a960
-CString CDamageRecord::FUN_14175a960()
+CString CDamageRecord::GetEffectHit()
 {
     static CString s_strEmpty;
     SkillAttackData* pAttack = GetAttackData();
@@ -544,7 +523,7 @@ CString CDamageRecord::FUN_14175a960()
 }
 
 // @0x14175aa50
-CString CDamageRecord::FUN_14175aa50()
+CString CDamageRecord::GetEffectRemain()
 {
     static CString s_strEmpty;
     SkillAttackData* pAttack = GetAttackData();
@@ -614,7 +593,7 @@ int CDamageRecord::FUN_14175ad50()
         if (pPC != 0) {
             if (nMaterial != 0)
                 return nMaterial;
-            MS2Ptr<CEquipItem> spWeapon = reinterpret_cast<Unk_SrEquipSet*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411e1860(5, 6, 0);
+            MS2Ptr<CEquipItem> spWeapon = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->FUN_1411e1860(5, 6, 0);
             if (spWeapon.get() != 0)
                 nMaterial = spWeapon->GetItem()->FUN_140527840()->m_nAttackMaterial;
         }
@@ -673,10 +652,10 @@ int CDotDamageRecord::vfunc_1()
     Unk_SrEntity* pCaster = reinterpret_cast<Unk_SrEntity*>(WorldService::GetInstance()->FUN_141bd1200(m_nCasterId));
     if (pCaster == 0)
         return 0;
-    MS2Ptr<AdditionalCli> spBuff = ((Unk_SrBuffs*)(reinterpret_cast<PCBase*>(pCaster)->FUN_1416749a0()))->FUN_14096fc80(m_nEffectLevel);
+    MS2Ptr<AdditionalCli> spBuff = ((AdditionalCliList*)(reinterpret_cast<PCBase*>(pCaster)->FUN_1416749a0()))->FUN_14096fc80(m_nEffectLevel);
     if (spBuff == 0)
         return 0;
-    return spBuff->FUN_14096d810()->m_nDotDamageType;
+    return reinterpret_cast<Unk_SrBuffLevel*>(spBuff->FUN_14096d810())->m_nDotDamageType;
 }
 
 // @0x14175b130

@@ -182,7 +182,7 @@ void UIKillCount::FUN_1419df6a0()
     {
         PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer != 0)
-            pPlayer->FUN_14166fff0(GetStringCommonByKey(strKey));
+            pPlayer->ShowChatBalloon(GetStringCommonByKey(strKey));
     }
 }
 

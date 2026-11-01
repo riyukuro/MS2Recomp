@@ -33,6 +33,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/commonfiles/itemgift.h"
@@ -114,8 +115,7 @@ public:
 };
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
-class Unk_LtaItem : public CPtred { public: CString FUN_14053fdd0(); };
-MS2Ptr<Unk_LtaItem> FUN_14053f870(int);
+MS2Ptr<CItemData> FUN_14053f870(int);
 
 // The global table of strings / ints keyed by (kind, id): global at 0x143ab2fc0, map at +0x18, entry value at +0x20
 // (text), +0x28 (expiry).
@@ -210,9 +210,7 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-class Unk_LtaPlayer { public: bool FUN_141bcb0a0(); };
 class Unk_LtaPlayerMgr : public WorldService { };
-bool FUN_141bcb0a0(Unk_LtaPlayerMgr*);
 
 CFeatureManager* FUN_140166410();
 
@@ -222,8 +220,6 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, c
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73cd0();
 CStringW GetStringCommonByKey(const CStringW& key);
-CStringW FUN_140938ae0(CStringW strKey, const int& n);
-CStringW FUN_140938ae0(CStringW strKey, const unsigned int& n);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_14086bd40(CMsTime a, CMsTime b);
 const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
@@ -407,7 +403,7 @@ void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
 {
     if (!LoadEvent())
         return;
-    if (FUN_141bcb0a0(reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())))
+    if (WorldService::GetInstance()->FUN_141bcb0a0())
         return;
     if (vfunc_55())
         FUN_141924680();
@@ -482,8 +478,8 @@ void UILongTermAttendGiftDialog::FUN_140c6bdb0()
     int nAttendPoint = FUN_140c6d520();
     unsigned int nPossible = FUN_140c6d570();
     int nCatchUp = GetMissedDayCount();
-    CStringW strPoint = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nAttendPoint);
-    CStringW strDays = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nCatchUp);
+    CStringW strPoint = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nAttendPoint);
+    CStringW strDays = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nCatchUp);
     ASObj info(2);
     info.FUN_1407cbb20("title", FUN_14028dfa0<CStringW, CStringW>(m_178->m_title, FUN_14083bab0(m_178->m_start, L"."), FUN_14083bab0(m_178->m_end, L".")));
     info.FUN_1407cbb20("curAttendancePoint", strPoint);
@@ -554,8 +550,8 @@ void UILongTermAttendGiftDialog::FUN_140c6c920()
     int nAttendPoint = FUN_140c6d520();
     int nCur = FUN_140c6d570();
     int nCatchUp = GetMissedDayCount();
-    CStringW strPoint = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nAttendPoint);
-    CStringW strDays = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_point"), nCatchUp);
+    CStringW strPoint = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nAttendPoint);
+    CStringW strDays = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nCatchUp);
     ASObj info(2);
     info.FUN_1407cba60("frame", FUN_140c6d470());
     info.FUN_1407cba60("state", GetDayStateFrame(nCur, nCur, nCatchUp));
@@ -587,7 +583,7 @@ void UILongTermAttendGiftDialog::FUN_140c6cd00()
     unsigned int nCatchUp = GetMissedDayCount();
     if (nAttendPoint == 0) {
         if (nCatchUp > 0) {
-            CStringW strMsg = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
+            CStringW strMsg = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
             FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
             return;
         } else {
@@ -665,10 +661,10 @@ CString UILongTermAttendGiftDialog::GetItemIconPath(int nItemId)
 {
     if (!nItemId)
         return "";
-    MS2Ptr<Unk_LtaItem> item = FUN_14053f870(nItemId);
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item.IsNull())
         return "";
-    return item->FUN_14053fdd0();
+    return item->GetIconPath();
 }
 
 // @0x140c6d470

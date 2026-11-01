@@ -19,6 +19,7 @@
 #include <NiInputSystem.h>
 #include <NiInputMouse.h>
 #include <NiAVObject.h>
+#include <NiRenderObject.h>   // C3: ms_RTTI
 #include <NiFixedString.h>
 #include <NiTimeController.h>
 #include <NiInterpController.h>
@@ -58,9 +59,9 @@ struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; float FUN_141473230(); };   // the app framework
-efd::ServiceManager* FUN_140af8310(char* pManager);
+namespace efd { class ServiceManager; }
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
 
-extern const NiRTTI Unk_RenderObjectRTTI;                       // 0x143afa7d0
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
 
 // The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h).
@@ -262,7 +263,7 @@ float CItemMorphController::vfunc_40()
 // @0x1414175e0
 int CItemMorphController::vfunc_41()
 {
-    efd::ServiceManager* pServiceManager = FUN_140af8310(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager);
+    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
     ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
     NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
     int nWheel = 0;
@@ -300,7 +301,7 @@ int CItemMorphController::vfunc_38(int bActive, const efd::Point3& kPos)
 {
     if (m_n98 != 0)
     {
-        m_spPicker->m_spMesh.FUN_141418a00((NiAVObject*)NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)((NiAVObject*)FindMorphNode(m_nCurIndex))));
+        m_spPicker->m_spMesh.FUN_141418a00((NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)((NiAVObject*)FindMorphNode(m_nCurIndex))));
     }
     return CItemCustomizeController::vfunc_38(bActive, kPos);
 }
@@ -334,7 +335,7 @@ void CItemMorphController::ResetMeshHighlight()
                     NiObject* pCtrl = NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, (class NiObject const*)(pTime));
                     if (pCtrl != 0)
                     {
-                        NiObject* pRender = NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)(pFound));
+                        NiObject* pRender = NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pFound));
                         if (pRender != 0)
                             spPart.get()->FUN_1411679d0(0, 0, 0);
                         return;

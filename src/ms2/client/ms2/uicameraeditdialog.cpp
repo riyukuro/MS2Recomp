@@ -1135,6 +1135,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/ascript.h"
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+#include "ms2/client/ms2/equipment.h"
 
 // The local player as the lobby sees it (a MyPC): the gender / job / equip accessors of its PC base.
 class Unk_CcPlayer : public PC
@@ -1281,7 +1282,6 @@ CString FUN_140719210(long n);
 void* FUN_140d86260();
 void FUN_141424580(MS2Ptr<CEquipItem> spEquip, int* pnColor, int n);        // the colour of the worn item (spEquip by value)
 int FUN_1414248a0(CItemData* pData, int* pnIn, int* pnOut);
-void FUN_1411e1b80(void* pEquipSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& out);
 unsigned char FUN_140526c30(CItem* pItem);                                  // the item's rarity
 void FUN_140710590(COutPacket& packet);                                     // send
 void FUN_140f324f0(ASObj& row, MS2Ptr<CItemData> spData, bool b);            // fill a list row (spData by value)
@@ -1748,7 +1748,7 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     kCreate.m_nColor0 = FUN_141b6df90((struct Unk_UtilFloat3 const*)(pPc->FUN_141659220(0)));
     kCreate.m_nColor1 = FUN_141b6df90((struct Unk_UtilFloat3 const*)(pPc->FUN_141659220(1)));
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
-    FUN_1411e1b80(pPc->FUN_1416561a0(), aEquips);
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->CollectShownItems(aEquips);
     kCreate.m_items.WriteUInt8((unsigned char)aEquips.GetCount());
     POSITION pos = aEquips.GetHeadPosition();
     while (pos != 0)
@@ -1964,7 +1964,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
-    FUN_1411e1b80(pPc->FUN_1416561a0(), aEquips);
+    reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->CollectShownItems(aEquips);
     ASArray aItems(2);
     for (POSITION pos = aEquips.GetHeadPosition(); pos != 0; aEquips.GetNext(pos))
     {

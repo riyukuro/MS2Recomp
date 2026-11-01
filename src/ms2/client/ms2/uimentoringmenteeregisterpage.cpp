@@ -21,7 +21,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/worldservice.h"
-
+class Unk_MentorEmptyPacket { public: void FUN_14069a480(class Unk_MentorWriter &); };
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The player actor (RTTI unknown): slot 77 returns the character name.
 class Unk_MentorActorV
@@ -87,11 +87,9 @@ CReservedWordTable* FUN_1403b4750();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 // The register role byte (ctor 0x140c71120 always stores 4).
 class Unk_MenteeRole
 {
@@ -143,7 +141,7 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox)
             {
-                FUN_141a024a0(spBox.get(), false);
+                spBox.get()->FUN_141a024a0(false);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMenteeRegisterPage::SendMentor));
                 FUN_140d73c60(spBox);
             }
@@ -165,7 +163,7 @@ bool UIMentoringMenteeRegisterPage::SendMentor(int nResult, const CMsgBoxData& d
     if (nResult != 0) return true;
     COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
     Unk_MenteeRole role;
-    role.FUN_14069a480(pkt);
+    ((class Unk_MentorEmptyPacket&)(role)).FUN_14069a480((class Unk_MentorWriter &)(pkt));
     FUN_140710590(pkt);
     return true;
 }

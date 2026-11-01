@@ -15,6 +15,7 @@
 #include "ms2/fmt/format.h"
 #include "ms2/placeholder/cwinhttpclient.h"
 #include "ms2/client/ms2/rawstring.h"
+#include "ms2/placeholder/cwebbrowserservice.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -71,12 +72,9 @@ CStringA FUN_14016a5c0(const char* psz, int n = 0);
 CStringA FUN_140188f50(const char* psz, int n = 0);
 CString& FUN_140164930(CAtlArray<CString>& rArray, unsigned __int64 nIndex);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-CStringW FUN_140560c00(const wchar_t* pszFmt, const int& rArg);
-CStringW FUN_14136e2e0(const wchar_t* pszFmt, const wchar_t* const& rArg);
+#include "ms2/ms2format.h"
 CString  FUN_140540050(const char* pszFmt, const CString& rArg);
 CStringW StringFormat(const wchar_t* psz, const fmt::ArgList& args);
-void     FUN_141b77e50(const CString& rString);
-void     FUN_141b77e90(const CString& rString);
 void*    FUN_1402da110(void* p1, void* p2, void* p3);
 void     FUN_1416a0e70(void);
 
@@ -215,7 +213,7 @@ int CNXMan::FUN_14160dd50(CStringW& rResult)
         if (kRequest.FUN_140922f20() != 0)
         {
             int nError = kRequest.FUN_140922f20();
-            rResult = FUN_140560c00(L"winhttp err={0}", nError);
+            rResult = StringFormat<unsigned long>(L"winhttp err={0}", (unsigned long&)nError);
             return 0;
         }
         std::wstring strBody = kRequest.GetResponseContent();
@@ -230,7 +228,7 @@ int CNXMan::FUN_14160dd50(CStringW& rResult)
             int nParts = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(kParts))->GetCount();
             if (nParts != 2)
             {
-                rResult = FUN_14136e2e0(L"invalid http response. ({0})", strBody.c_str());
+                rResult = StringFormat<wchar_t const *>(L"invalid http response. ({0})", strBody.c_str());
                 return 0;
             }
             if (FUN_140164930(kParts, 0) == "ver")
@@ -242,13 +240,13 @@ int CNXMan::FUN_14160dd50(CStringW& rResult)
             else if (FUN_140164930(kParts, 0) == "mapi")
                 m_58 = FUN_140164930(kParts, 1);
         }
-        FUN_141b77e50(m_50);
-        FUN_141b77e90(m_58);
+        CWebBrowserService::SetMaviewUrl(m_50);
+        CWebBrowserService::SetWebApiUrl(m_58);
     }
     else
     {
         int nError = kRequest.FUN_140922f20();
-        rResult = FUN_140560c00(L"winhttp err={0}", nError);
+        rResult = StringFormat<unsigned long>(L"winhttp err={0}", (unsigned long&)nError);
         return 0;
     }
     return 1;

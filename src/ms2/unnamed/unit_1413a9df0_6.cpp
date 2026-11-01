@@ -168,7 +168,6 @@ void FUN_1413747d0(unsigned char*);   // C3: was FUN_1413747d0
 void Unk_GcClear0(char*);   // C3: was FUN_1413b5850
 void Unk_GcClear1(char*);   // C3: was FUN_1413b5860
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);
-int* FUN_1401844d0(ATL::CAtlArray<int>& arr, size_t i);
 class Unk_MergeRange   // C3: member view for the former free stand-ins
 {
 public:
@@ -198,7 +197,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
         FUN_140177de0(str, arr, "-");
         if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<int, class ATL::CElementTraits<int>>&>(arr))->GetCount() != 2)
             return 2;
-        ((class Unk_MergeRange*)(void*)(pOut))->Set(*FUN_1401844d0(arr, 0), *FUN_1401844d0(arr, 1));
+        ((class Unk_MergeRange*)(void*)(pOut))->Set(arr[0], arr[1]);
     }
     return nResult;
 }

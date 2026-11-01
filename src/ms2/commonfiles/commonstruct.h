@@ -4,6 +4,7 @@
 #include "ms2/placeholder/packetlogqueue.h"
 #include "ms2/placeholder/cclienthardwareinfo.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/commonfiles/coutpacketptr.h"
 class Unk_CommonOwner {
 public:
     bool Matches(int kind,__int64 id);
@@ -41,25 +42,11 @@ MS2_CHECK_SIZE(Unk_CommonFourInts,0x10);
 class Unk_CommonPacket : public COutPacket {
 };
 MS2_CHECK_SIZE(Unk_CommonPacket,0x38);
-class Unk_CommonNew {
-public: Unk_CommonNew(int);
-};
-class Unk_CommonPacketPtr {
-public:
-    Unk_CommonPacketPtr(int) : m_packet(0) {}
-    Unk_CommonPacketPtr(const Unk_CommonNew&);
-    Unk_CommonPacketPtr(const Unk_CommonPacketPtr&);
-    Unk_CommonPacketPtr(Unk_CommonPacketPtr&&);
-    ~Unk_CommonPacketPtr();
-    Unk_CommonPacket* operator->();
-private: void* m_unknown; Unk_CommonPacket* m_packet;
-};
-MS2_CHECK_SIZE(Unk_CommonPacketPtr,0x10);
 struct Unk_CommonCachedPacket {
     Unk_CommonCachedPacket();
     Unk_CommonCachedPacket(const Unk_CommonPacket&,unsigned);
     unsigned sequence;
-    Unk_CommonPacketPtr packet;
+    COutPacketPtr packet;
 };
 MS2_CHECK_SIZE(Unk_CommonCachedPacket,0x18);
 class Unk_CommonResendQueue {

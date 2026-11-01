@@ -22,6 +22,7 @@
 #include <efd/ServiceManager.h>
 #include "pcbase.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
@@ -100,7 +101,6 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
     void FUN_1422dfc70(ASObj& obj);                                 // add an item
-    void FUN_1422df690(int n);                                      // select
     void FUN_1422c1fe0(unsigned int nEnabled);
 };
 // The second panel type the visitors book button is looked up on.
@@ -272,7 +272,7 @@ void UIHomeInfoDialog::OnLoadComplete()
             obj.FUN_1407cbb20("label", strLabel);
             spChannel->FUN_1422dfc70(obj);
             spChannel->vfunc_24(true);
-            spChannel->FUN_1422df690(0);
+            reinterpret_cast<ASDropdownMenu*>(spChannel.operator->())->SetSelectedIndex(0);
             spChannel->FUN_1422c1fe0(0);
         }
     }

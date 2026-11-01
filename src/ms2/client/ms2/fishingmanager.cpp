@@ -988,7 +988,7 @@ void CFishingManager::FUN_140cdb450()
             {
                 CAtlArray<CString> texts;
                 TSingleton<Client::Constants>::GetInstance()->fishFightingBalloonText.Get(texts);
-                pPC->FUN_14166fff0(FUN_140cddc70(texts));
+                pPC->ShowChatBalloon(FUN_140cddc70(texts));
             }
             ChromaSDK::GetChromaManager()->OnKeySkill(0x493e2, 0);
         }
@@ -1386,7 +1386,7 @@ void CFishingManager::FUN_140cdd1f0()
     {
         CAtlArray<CString> texts;
         TSingleton<Client::Constants>::GetInstance()->fishingStartBalloonText.Get(texts);
-        pPC->FUN_14166fff0(FUN_140cddc70(texts));
+        pPC->ShowChatBalloon(FUN_140cddc70(texts));
         if (m_nReelSound != 0)
             ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/))->FUN_1411a6060(m_nReelSound);
         NoticeMessage kTarget;

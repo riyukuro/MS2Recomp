@@ -56,6 +56,10 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- statics (.text$di) ----
 
@@ -68,10 +72,6 @@ static CString s_aStrUgcTab[7] = { CString("None"), CString("Buy"), CString("Lik
 // The item data of an equip item (CItemData-like; only the kind tests this unit calls).
 struct Unk_UgcItemData : public CItemData
 {
-    unsigned char FUN_14053cf00();                                           // kind test: customize-colour item
-    unsigned FUN_14053dc60();                                       // linked item id
-    unsigned FUN_14053c510();                                       // name string id
-    unsigned FUN_14053e310(int nIndex);
 };
 
 // The equipped item of a model part (CPtred, held in MS2Ptr; ?\equipitem.cpp). Only the members this unit calls.
@@ -89,9 +89,6 @@ public:
 // The proxy data record of an item (CItem::FUN_140527870, a CPtred; ?\\userproxy.cpp). Customize floats are read here.
 struct Unk_UgcColorList
 {
-    bool FUN_141278a50() const;                                     // is empty
-    unsigned __int64 FUN_14059d0e0() const;                         // element count
-    unsigned* FUN_140ce98c0(unsigned __int64 nIndex) const;         // element
 };
 struct Unk_UgcExtra
 {
@@ -105,11 +102,6 @@ struct Unk_UgcPosePt
 
 struct Unk_UgcProxy : public CItemExtraData
 {
-    void FUN_140599d10(const Unk_UgcColorList& kColors, int nIndex);
-    void FUN_140599bc0(const Unk_UgcExtra& kExtra, bool bFlag, unsigned nValue, int nIndex);
-    void FUN_140599ea0(int nIndex, void* pColor, int nValue);
-    void FUN_140599ab0(Unk_UgcItemData* pData);
-    int FUN_140599fd0(int nIndex);
     union
     {
         float m_afValue[3];                                         // +0x58 customize values (index 0/1, +0x60 for kind 2)
@@ -137,7 +129,8 @@ struct Unk_UgcPartInfo
 };
 
 CString FUN_141421740(const CString& strName, int* pnFlag);
-CString FUN_1401d2b10(const CString& strLeft, const CString& strRight);    // a + b
+CString FUN_1401d2b10(const CString& strLeft, const CString& strRight);    // a + b (the exe ATL::operator+; clang lacks the MFC CopyChars import)
+CString FUN_14038f6d0(const CString& strLeft, const char* szRight); // a + literal
 
 // Model-root virtual 18 (look a scene node up by name).
 struct Unk_UgcRoot
@@ -174,78 +167,24 @@ void FUN_1412014f0(Unk_PickTarget* pPart, const Vector3& kOffset);   // equipmod
 void FUN_141201620(Unk_PickTarget* pPart, const Vector3& kEuler);    // equipmodel.cpp: stores the euler
 bool FUN_141427d60(NiAVObject* pObj);                               // the object is a mesh-type leaf
 int FUN_140f02bc0();
-NiTimeController* FUN_14098dc80(NiObjectNET* pObj);                 // first controller
-NiTimeController* FUN_14098de40(NiTimeController* pCtrl);           // next controller
-NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* p);          // NiObject::DynamicCast
 extern char DAT_142f10fe4[];                                        // name tails of the model files
 extern char DAT_142f10ff0[];
-CString FUN_14038f6d0(const CString& strLeft, const char* szRight); // a + literal
-void* FUN_1403ed280();                                              // the effect manager
-void FUN_1411a4800(const CString& strFile, int nType);              // preload an effect file
-bool FUN_140998dc0(void* pName, const char* szText);                // string compare with a literal
 unsigned FUN_141427ab0(void* pMesh);                                // material count of a mesh
 void* FUN_141427ae0(void* pMesh, unsigned nIndex);                  // material slot
-void* FUN_140a17de0(void* pSlot);
-void* FUN_14106bd50(void* pMaterial);                               // material name
 
 // Rows of the item-colour tables (a 16-byte handle; FUN_14056c2d0 releases it).
-struct Unk_UgcRow
-{
-    char m_pad[0x38];
-    int m_nValue;                                                   // +0x38
-};
-struct Unk_UgcRowPtr
-{
-    bool FUN_14056cf90(int) const;                                  // == 0
-    Unk_UgcRow* FUN_14056d570() const;                              // operator->
-    void FUN_14056c2d0();                                           // release
-    ~Unk_UgcRowPtr() { FUN_14056c2d0(); }
-    void* m_a[2];
-};
-struct Unk_UgcTable
-{
-    Unk_UgcRowPtr FUN_140558cc0(int nItemId, __int64 nKey);
-    Unk_UgcRowPtr FUN_140558e80(int nItemId, MS2Ptr<CItemData> spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)> kFn);
-    Unk_UgcRowPtr FUN_1405590e0(int nItemId, unsigned* pColor0, unsigned* pColor1);
-};
-void* FUN_14059cf00(Unk_UgcRowPtr* pRow);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 struct Unk_UgcPlayer;
 struct Unk_UgcDesc : public ItemModelData
 {
 };
-struct Unk_UgcNames
-{
-    CStringW FUN_141811980(int nType, unsigned nId);                // string table lookup
-};
-struct Unk_UgcRow2
-{
-    char m_pad[0x18];
-    int m_nType;                                                    // +0x18
-};
-struct Unk_UgcRow2Ptr
-{
-    void* FUN_14052cde0() const;                                    // the row (0 when absent)
-    Unk_UgcRow2* FUN_14052ceb0() const;                             // operator->
-    void FUN_14052c420();                                           // release
-    ~Unk_UgcRow2Ptr() { FUN_14052c420(); }
-    void* m_a[2];
-};
-struct Unk_UgcTable2
-{
-    Unk_UgcRow2Ptr FUN_1407290f0(unsigned nId);
-};
-Unk_UgcTable2* FUN_14052d210();
-CStringW FUN_14052bd00(int nStringId, CStringW& strArg);
-void FUN_1405592e0(Unk_UgcTable* pTable, std::vector<MS2Ptr<CItemData> >* pOut);
-void FUN_14054c030(void* pLogger, int nLevel, int nLine, const wchar_t* szFormat, const CString& str1, const CString& str2);
-void* FUN_140166440();                                              // the logger
-bool FUN_1411c9940(NiAVObject* pObj);                               // object is a node
-int FUN_141676b00(Unk_UgcPlayer* pPlayer, __int64 nUid);
+class CLogString* GetLogString();   // C3: was FUN_140166440
+template <class T, class U>
+void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030 (itemdatastruct.cpp)
 void FUN_140710590(COutPacket& kPacket);
 int FUN_141276180(const CString& strSound, const CString& strArg);
-void FUN_1412750f0(void* pCallback, int nCount, int nA, int nB);
+void FUN_1412750f0(const CStringW& strText, int nCount, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& str);
 
@@ -258,9 +197,11 @@ struct Unk_UgcColor
 };
 #pragma pack(pop)
 void FUN_141b6dea0(Unk_UgcColor* pOut, unsigned nArgb);
-unsigned FUN_141b6df90(Unk_UgcColor* pColor);
-void* FUN_141b6efc0(void* pEntity);
-void FUN_141b6f220(void* pObj, int nSlot, Unk_UgcColor* pColor);
+struct Unk_UtilFloat3;                                              // util.cpp
+struct Unk_Colc;                                                    // util.cpp
+unsigned FUN_141b6df90(const Unk_UtilFloat3* pColor);
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
+void FUN_141b6f220(NiAVObject* pObj, int nSlot, const Unk_Colc& kColor);
 // The avatar-change service; only vtable slot 0xd0 is called.
 struct Unk_UgcAvatarService
 {
@@ -271,7 +212,7 @@ struct Unk_UgcAvatarService
     virtual void v24(); virtual void v25();
     virtual void Refresh(unsigned nCharacterId);                    // +0xd0
 };
-Unk_UgcAvatarService* FUN_140a6a840();
+class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 // The local player's vtable up to slot 139 (+0x458), the one this unit calls; the earlier slots are placeholders.
 #define UGC_VSLOT(n) virtual void vslot_##n();
 #define UGC_VSLOT10(n) UGC_VSLOT(n##0) UGC_VSLOT(n##1) UGC_VSLOT(n##2) UGC_VSLOT(n##3) UGC_VSLOT(n##4) \
@@ -288,15 +229,6 @@ struct Unk_UgcPlayerVtbl
 #undef UGC_VSLOT
 struct Unk_UgcPlayer : Unk_UgcPlayerVtbl
 {
-    void FUN_1416591e0(int nSlot, Unk_UgcColor* pColor);
-    void* FUN_14123c410();
-    Unk_UgcColor* FUN_141659220(int nSlot);
-    unsigned FUN_141658e60();
-    MS2Ptr<CEquipItem> FUN_141655c30(__int64 nUid);
-};
-struct Unk_UgcWorld
-{
-    Unk_UgcPlayer* FUN_141bd0cc0();
 };
 
 // ---- item-name builders ----
@@ -473,9 +405,6 @@ void FUN_141422a00(Unk_PickTarget* pPart, Vector3 kPos, const NiMatrix3& kRot, f
     FUN_141422b30(pPart, pPart->FUN_141201c90(), kPos, kEuler, fScale);
 }
 
-void FUN_140981070(NiAVObject* pObj, const NiPoint3& kPoint);     // NiAVObject::SetTranslate
-void FUN_140ddcca0(NiAVObject* pObj, const NiMatrix3& kRot);       // NiAVObject::SetRotate
-void FUN_1410b2450(NiAVObject* pObj, float fScale);                // NiAVObject::SetScale
 
 // @0x141422b30 - applies a pose to every node of the part's node set
 void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
@@ -512,10 +441,10 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     {
         NiAVObjectPtr spNode = *it;
         NiPoint3 kTranslate(kShift);
-        FUN_140981070(spNode.operator->(), kTranslate);
+        spNode->SetTranslate(kTranslate);
         NiMatrix3 kRotate(kRot);
-        FUN_140ddcca0(spNode.operator->(), kRotate);
-        FUN_1410b2450(spNode.operator->(), fScale);
+        spNode->SetRotate(kRotate);
+        spNode->SetScale(fScale);
     }
 }
 
@@ -536,8 +465,8 @@ int FUN_141422f30(NiAVObject* pRoot)
             for (unsigned i = 0; i < nCount; i++)
             {
                 void* pSlot = FUN_141427ae0(pMesh, i);
-                void* pMaterial = FUN_140a17de0(pSlot);
-                if (FUN_140998dc0(FUN_14106bd50(pMaterial), "MS2CharacterSkinMaterial"))
+                NiMaterial* pMaterial = ((NiMaterialInstance*)pSlot)->GetMaterial();
+                if (pMaterial->GetName() == "MS2CharacterSkinMaterial")
                     bSkin = 1;
             }
         }
@@ -631,16 +560,16 @@ int FUN_141423650(unsigned* pArgb, int nSlot, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
     Unk_UgcColor kColor;
     FUN_141b6dea0(&kColor, *pArgb);
-    pPlayer->FUN_1416591e0(nSlot == 0 ? 0 : 1, &kColor);
-    FUN_141b6f220(FUN_141b6efc0(pPlayer->FUN_14123c410()), nSlot == 0 ? 0 : 2, &kColor);
-    Unk_UgcAvatarService* pService = FUN_140a6a840();
-    pService->Refresh(pPlayer->FUN_141658e60());
+    ((PC*)pPlayer)->FUN_1416591e0(nSlot == 0 ? 0 : 1, *(const NiColor*)&kColor);
+    FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), nSlot == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
+    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
+    pService->Refresh(((PC*)pPlayer)->FUN_141658e60());
     return 1;
 }
 
@@ -656,7 +585,7 @@ int FUN_141423760(Unk_UgcLook* pLook, Unk_UgcPlayer* pPlayer)
 {
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -665,35 +594,35 @@ int FUN_141423760(Unk_UgcLook* pLook, Unk_UgcPlayer* pPlayer)
     {
         Unk_UgcColor kColor;
         FUN_141b6dea0(&kColor, pLook->m_aColor[i]);
-        pPlayer->FUN_1416591e0((int)i, &kColor);
-        FUN_141b6f220(FUN_141b6efc0(pPlayer->FUN_14123c410()), i == 0 ? 0 : 2, &kColor);
+        ((PC*)pPlayer)->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
+        FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }
-    Unk_UgcAvatarService* pService = FUN_140a6a840();
-    pService->Refresh(pPlayer->FUN_141658e60());
+    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
+    pService->Refresh(((PC*)pPlayer)->FUN_141658e60());
     return 1;
 }
 
 // @0x141423880
 int FUN_141423880(const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer)
 {
-    if (kColors.FUN_141278a50())
+    if (reinterpret_cast<const CAtlArray<int>&>(kColors).IsEmpty())
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
-    unsigned __int64 nCount = kColors.FUN_14059d0e0() < 2 ? kColors.FUN_14059d0e0() : 2;
+    unsigned __int64 nCount = reinterpret_cast<const CAtlArray<int>&>(kColors).GetCount() < 2 ? reinterpret_cast<const CAtlArray<int>&>(kColors).GetCount() : 2;
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
         Unk_UgcColor kColor;
-        FUN_141b6dea0(&kColor, *kColors.FUN_140ce98c0(i));
-        pPlayer->FUN_1416591e0((int)i, &kColor);
-        FUN_141b6f220(FUN_141b6efc0(pPlayer->FUN_14123c410()), i == 0 ? 0 : 2, &kColor);
+        FUN_141b6dea0(&kColor, (*(CAtlArray<unsigned>*)&kColors)[i]);
+        ((PC*)pPlayer)->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
+        FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }
-    Unk_UgcAvatarService* pService = FUN_140a6a840();
-    pService->Refresh(pPlayer->FUN_141658e60());
+    Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
+    pService->Refresh(((PC*)pPlayer)->FUN_141658e60());
     return 1;
 }
 
@@ -704,7 +633,7 @@ int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -713,28 +642,28 @@ int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
         bSlot = 0;
     else
         bSlot = 1;
-    *pOut = FUN_141b6df90(pPlayer->FUN_141659220(nSlot));
+    *pOut = FUN_141b6df90((const Unk_UtilFloat3*)&((PC*)pPlayer)->FUN_141659220(nSlot));
     return 1;
 }
 
 // @0x141423a70
 int FUN_141423a70(__int64 nUid, const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer, int nIndex)
 {
-    if (nUid == 0 || kColors.FUN_141278a50())
+    if (nUid == 0 || reinterpret_cast<const CAtlArray<int>&>(kColors).IsEmpty())
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
     MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
     if (spProxy == 0)
         return 0;
-    spProxy->FUN_140599d10(kColors, nIndex);
+    spProxy->SetSlotRgbFromArray(*(CAtlArray<int>*)&kColors, nIndex);
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -748,11 +677,11 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
     Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
@@ -761,7 +690,7 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
     bool bFlag = false;
     if (kExtra.m_nType == FUN_140f02bc0())
         bFlag = spItem->FUN_1411dc7f0()->FUN_14053d020() == 1;
-    pProxy->FUN_140599bc0(kExtra, bFlag, spItem->FUN_1411dc7f0()->FUN_14053e310(nIndex), nIndex);
+    pProxy->SetSlotColor((const ItemColorEx*)&kExtra, bFlag, spItem->FUN_1411dc7f0()->FUN_14053e310(nIndex), nIndex);
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -775,17 +704,17 @@ int FUN_141423fb0(__int64 nUid, void* pColor, int nIndex, Unk_UgcPlayer* pPlayer
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
     MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
     if (spProxy == 0)
         return 0;
-    spProxy->FUN_140599ea0(nIndex, pColor, nValue);
+    spProxy->SetSlotRgbComponent(nIndex, *(const int*)pColor, nValue);
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -799,14 +728,14 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
     if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
-    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->FUN_140599ab0(spItem->FUN_1411dc7f0());
+    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(spItem->FUN_1411dc7f0());
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -820,11 +749,11 @@ int FUN_1414244b0(__int64 nUid, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlay
         return 0;
     if (pPlayer == 0)
     {
-        pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
     return FUN_141424580(spItem, pOut, nIndex);
 }
 
@@ -833,7 +762,7 @@ int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex)
 {
     if (spItem == 0 || spItem->GetItem() == 0 || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
-    *pOut = ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->FUN_140599fd0(nIndex);
+    *pOut = ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->GetCurrentRgbComponent(nIndex);
     return 1;
 }
 
@@ -842,11 +771,11 @@ int FUN_141424760(MS2Ptr<CItem> spItem, unsigned* pOut, int nIndex, Unk_UgcPlaye
 {
     if (spItem.IsNull() || spItem->FUN_140527840() == 0)
         return 0;
-    if (((Unk_UgcItemData*)spItem->FUN_140527840())->FUN_14053cf00())
+    if (((Unk_UgcItemData*)spItem->FUN_140527840())->IsAvatarColorItem())
     {
         if (pPlayer == 0)
         {
-            pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+            pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 0;
         }
@@ -854,7 +783,7 @@ int FUN_141424760(MS2Ptr<CItem> spItem, unsigned* pOut, int nIndex, Unk_UgcPlaye
     }
     else
     {
-        *pOut = ((Unk_UgcProxy*)spItem->FUN_140527870())->FUN_140599fd0(nIndex);
+        *pOut = ((Unk_UgcProxy*)spItem->FUN_140527870())->GetCurrentRgbComponent(nIndex);
         return 1;
     }
     return 0;
@@ -868,10 +797,10 @@ int FUN_1414248a0(Unk_UgcItemData* pData, __int64 nKey, int* pOut)
     int nItemId = pData->FUN_14053e260();
     if (nItemId == 0)
         return 0;
-    Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558cc0(nItemId, nKey);
-    if (kRow.FUN_14056cf90(0))
+    MS2Ptr<ItemColorEx> kRow = TSingleton<CItemDataTable>::GetInstance()->FindPaletteColor(nItemId, *(const int*)nKey);
+    if (kRow == 0)
         return 0;
-    *pOut = kRow.FUN_14056d570()->m_nValue;
+    *pOut = kRow->m_n38;
     return 1;
 }
 
@@ -883,7 +812,7 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return 0;
-    if (((Unk_UgcItemData*)spData.operator->())->FUN_14053cf00())
+    if (((Unk_UgcItemData*)spData.operator->())->IsAvatarColorItem())
     {
         unsigned aColor[4];                                         // 16-byte buffer in the exe (/GS cookie), two used
         FUN_1414239e0(&aColor[0], 0, pPlayer);
@@ -891,8 +820,8 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
         unsigned nItemId = ((Unk_UgcItemData*)spData.operator->())->FUN_14053e260();
         if (nItemId > 0)
         {
-            Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405590e0(nItemId, &aColor[0], &aColor[1]);
-            if (FUN_14059cf00(&kRow) != 0)
+            MS2Ptr<ItemColorEx> kRow = TSingleton<CItemDataTable>::GetInstance()->FindPaletteColor(nItemId, *(const int*)&aColor[0], *(const int*)&aColor[1]);
+            if (kRow.get() != 0)
                 return 1;
         }
     }
@@ -902,9 +831,9 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
         if (nItemId > 0)
         {
             CItemExtraData* pExtra = (Unk_UgcProxy*)spItem->FUN_140527870();
-            Unk_UgcRowPtr kRow = reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558e80(
+            MS2Ptr<ItemColorEx> kRow = TSingleton<CItemDataTable>::GetInstance()->FindPaletteColor(
                 nItemId, spData, Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>(pExtra, &CItemExtraData::IsSameColor));
-            if (FUN_14059cf00(&kRow) != 0)
+            if (kRow.get() != 0)
                 return 1;
         }
     }
@@ -974,13 +903,13 @@ int FUN_141425130(NiAVObject* pRoot)
         NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
         if (pMesh != 0)
         {
-            NiTimeController* pCtrl = FUN_14098dc80(pMesh);
+            NiTimeController* pCtrl = pMesh->GetControllers();
             while (pCtrl != 0)
             {
-                NiObject* pUgc = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pCtrl);
+                NiObject* pUgc = NiObject::DynamicCast(&NiMorphWeightsController::ms_RTTI, pCtrl);
                 if (pUgc != 0)
                     return 1;
-                pCtrl = FUN_14098de40(pCtrl);
+                pCtrl = pCtrl->GetNext();
             }
         }
     }
@@ -1034,7 +963,7 @@ CString FUN_141425540(int nGender, int nAction)
 // @0x141425610 - preloads the four swim tube effects
 void FUN_141425610()
 {
-    void* pScene = FUN_1403ed280();
+    void* pScene = TSingleton<CEffectService>::GetInstance();
     if (pScene != 0)
     {
         FUN_1411a4800(FUN_141425540(1, 0x30), 5);
@@ -1056,10 +985,10 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
     if (spItem.get() != 0)
         return spItem;
-    Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return MS2Ptr<CItem>(0);
-    MS2Ptr<CEquipItem> spEquip = pPlayer->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spEquip = ((PC*)pPlayer)->FUN_141655c30(nUid);
     if (spEquip.get() != 0)
     {
         if (pbEquipped != 0)
@@ -1081,20 +1010,20 @@ bool FUN_1414258e0(__int64 nUid)
 // @0x141425950 - display name of an item; a linked item (kind 0xb) is shown through its link-kind string
 CStringW FUN_141425950(unsigned nItemId)
 {
-    CStringW strName = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
-        return reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId);
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     if (((Unk_UgcItemData*)spData.operator->())->GetType() == 0xb)
     {
-        CStringW strLinked = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
-        Unk_UgcRow2Ptr kRow = FUN_14052d210()->FUN_1407290f0(((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
-        if (kRow.FUN_14052cde0())
+        CStringW strLinked = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->GetPetId());
+        MS2Ptr<CPetData> kRow = TSingleton<CPetDataTable>::GetInstance()->Find(((Unk_UgcItemData*)spData.operator->())->GetPetId());
+        if (kRow.get())
         {
-            if (kRow.FUN_14052ceb0()->m_nType == 1)
-                return FUN_14052bd00(0xcd6, strLinked);
+            if (kRow->m_nType == 1)
+                return FormatStringId(0xcd6, strLinked);
             else
-                return FUN_14052bd00(0xcd5, strLinked);
+                return FormatStringId(0xcd5, strLinked);
         }
         return strLinked;
     }
@@ -1106,13 +1035,13 @@ CStringW FUN_141425c00(int nCategory)
 {
     CStringW strName;
     std::vector<MS2Ptr<CItemData> > aItems;
-    FUN_1405592e0(reinterpret_cast<Unk_UgcTable*>(TSingleton<CItemDataTable>::GetInstance()), &aItems);
+    TSingleton<CItemDataTable>::GetInstance()->GetAllItemData(aItems);
     for (unsigned __int64 i = 0; i < aItems.size(); i++)
     {
         MS2Ptr<CItemData> spData = aItems[i];
         if (spData.get() != 0 && ((Unk_UgcItemData*)spData.operator->())->GetItemPreset() == nCategory)
         {
-            strName = reinterpret_cast<Unk_UgcNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053c510());
+            strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->GetItemId());
             if (!strName.IsEmpty())
                 return strName;
             else
@@ -1131,9 +1060,9 @@ void FUN_141425e40(NiAVObject* pObj, int nDepth)
     for (int i = 0; i < nDepth; i++)
         strIndent += "\t";
     CString strName((const char*)pObj->GetName());
-    if (FUN_140166440() != 0)
-        FUN_14054c030(FUN_140166440(), 0xb, 0x12d, L"{0}>({1})", strIndent, strName);
-    if (FUN_1411c9940(pObj))
+    if (GetLogString() != 0)
+        Unk_ItemDataLog(GetLogString(), 0xb, 0x12d, L"{0}>({1})", strIndent, strName);
+    if (pObj->IsNode())
     {
         NiNode* pNode = NiDynamicCast(NiNode, pObj);
         if (pNode != 0)
@@ -1153,10 +1082,10 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
 {
     if (nCount <= 0)
         return;
-    Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    if (FUN_141676b00(pPlayer, nUid) != 0)
+    if (((PCBase*)pPlayer)->FUN_141676b00(nUid) != 0)
     {
         CStringW strKey(L"s_err_cannot_sell_petitem_summon");
         FUN_1412751b0(GetStringCommonByKey(strKey), 0x14);
@@ -1172,7 +1101,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
         FUN_141276180(s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
     }
     if (pCallback != 0)
-        FUN_1412750f0(pCallback, nCount, 0x28b, 0x28a);
+        FUN_1412750f0(*(const CStringW*)pCallback, nCount, 0x28b, 0x28a);
 }
 
 // @0x141427580
@@ -1189,9 +1118,7 @@ template <> Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>::DelegateImplB
 
 extern char DAT_142f11044[];                                        // part-name separator
 extern char DAT_142f1106c[];                                        // part-name suffix tested for the ankle part
-void FUN_14015f050(const CString& strText, CAtlArray<CString>& aOut, const char* szSep);   // split
-bool FUN_140184310(const CString& strText, const char* szSuffix);   // ends with
-bool FUN_14053d6f0(Unk_UgcItemData* pData);                         // the item has attach parts
+void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // @0x141427500
 CItemUgcMesh::CItemUgcMesh()
@@ -1214,7 +1141,7 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
     Unk_UgcItemData* pData = spItem->FUN_1411dc7f0();
     if (pData == 0)
         return false;
-    if (!FUN_14053d6f0(pData))
+    if (!pData->HasCubeTextureMesh())
         return false;
     m_meshes.RemoveAll();
     CAtlArray<CString> aNames;
@@ -1273,8 +1200,8 @@ void CItemUgcMeshContainer::GetPartNames(CAtlArray<CString>& aNames, void* pItem
 {
     aNames.RemoveAll();
     CString strParts(*(CString*)((char*)pItemData + 0x208));
-    FUN_14015f050(strParts, aNames, DAT_142f11044);
-    if (FUN_140184310(strParts, DAT_142f1106c))
+    Unk_SplitA(strParts, &aNames, DAT_142f11044);
+    if (strParts == DAT_142f1106c)
         aNames.Add("SH_Ankle");
 }
 
@@ -1357,9 +1284,6 @@ NiTexturePtr CItemUgcMeshContainer::FUN_141426e30()
 }
 
 // ---- raw glue of the node-set / material-slot / pick-mask helpers (no source-level owner is recovered for these) ----
-unsigned FUN_140a17e90(void* pSlots);
-bool FUN_14098dba0(void* pObj, unsigned short nMask);
-unsigned FUN_141427b60(void* pArray);
 void FUN_1414280a0(void* pPtr, void* pOld);
 void FUN_141428560(void* pNode);
 void* FUN_141427210(void* pIter);
@@ -1448,7 +1372,7 @@ void* FUN_141427a70(void* pObj)                 // raw second pointer field
 // @0x141427ab0
 unsigned FUN_141427ab0(void* pMesh)             // MS2-FUNCTIONAL: raw material count
 {
-    return FUN_140a17e90((char*)pMesh + 0xf8);
+    return ((NiTObjectSet<NiMaterialInstance>*)((char*)pMesh + 0xf8))->GetSize();
 }
 
 // @0x141427ae0
@@ -1460,7 +1384,7 @@ void* FUN_141427ae0(void* pMesh, unsigned nIndex)          // MS2-FUNCTIONAL: ra
 // @0x141427d60
 bool FUN_141427d60(NiAVObject* pObj)            // MS2-FUNCTIONAL: raw flag test
 {
-    return !FUN_14098dba0(pObj, 0x100);
+    return !pObj->MS2HasAnyFlag(0x100);
 }
 
 // @0x141427fb0
@@ -1479,7 +1403,7 @@ void FUN_141427fd0(void* pPick, int nType)      // MS2-FUNCTIONAL: raw NiPick::S
 bool FUN_141427ff0(void* pFilter, unsigned short nId)      // MS2-FUNCTIONAL: raw id filter test
 {
     if (nId == 0x8000)
-        return FUN_141427b60((char*)pFilter + 0x10) > 0;
+        return ((NiTPrimitiveSet<unsigned short>*)((char*)pFilter + 0x10))->GetSize() > 0;
     return FUN_1414279b0((char*)pFilter + 0x10, &nId) != -1;
 }
 

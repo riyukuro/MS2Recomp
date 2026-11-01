@@ -175,7 +175,7 @@ void UITencentAas2Dialog::vfunc_8(int nVisible)
     {
         vfunc_47(nVisible == 0);
         pDialog->vfunc_3(nVisible);
-        pDialog->FUN_1407cbbe0("visible", nVisible == 1);
+        ((class AScript*)(pDialog))->FUN_1407cbbe0("visible", nVisible == 1);
     }
 }
 MS2_REPLACE_METHOD(0x140E98B70, UITencentAas2Dialog, vfunc_8, 190, 0x8228A48D);
@@ -267,12 +267,12 @@ bool UITencentAas2Dialog::vfunc_90(POINT* pPos)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return false;
-    pPos->x -= pDialog->FUN_1422c10a0();
-    pPos->y -= pDialog->FUN_1422c1110();
+    pPos->x -= ((class ASDisplayObject*)(pDialog))->FUN_1422c10a0();
+    pPos->y -= ((class ASDisplayObject*)(pDialog))->FUN_1422c1110();
     if (m_spTarget == 0)
         return false;
-    pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c10a0();
-    pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c1110();
+    pPos->x -= static_cast<ASDialog*>((class ASDisplayObject*)((static_cast<ASDisplayObject*>(m_spTarget.operator->()))))->FUN_1422c10a0();
+    pPos->y -= static_cast<ASDialog*>((class ASDisplayObject*)((static_cast<ASDisplayObject*>(m_spTarget.operator->()))))->FUN_1422c1110();
     if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get()) && pPos->y <= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()))
     {
         return false;

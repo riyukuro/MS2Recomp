@@ -154,8 +154,6 @@
 
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-void* FUN_140204740(Unk_FameLogFilter* pFilter, unsigned nId, int nFlag);
-unsigned* FUN_1401844d0(ATL::CAtlArray<unsigned>& arr, size_t nIndex);                // operator[]
 unsigned FUN_140767ff0();                                                             // random number
 
 #include <typeinfo>
@@ -178,10 +176,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-void FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>&);      // comma separated ints
-void FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>&);  // comma separated strings
-Unk_FameAlliance FUN_14021a330(const CStringA& str);     // alliance name -> id (0 when unknown)
-Unk_FameSeason FUN_14021a480(const CStringA& str);     // season name -> id
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: comma separated list (0x140178570 ints, 0x1401788f0 strings)
+int Parse_14021a330(const CStringA& value);     // alliance name -> id (0 when unknown)
+int Parse_14021a480(const CStringA& value);     // season name -> id
 void FUN_1401d3700(CStringA& str);          // normalises the symbol name
 CString FUN_14016a5c0(const char* psz, int n);
 
@@ -244,7 +241,7 @@ int FUN_14035bb60(Unk_140165cf0* pElem, const char* pszName, Unk_FameSeason* pOu
     nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
-    *pOut = FUN_14021a480(str);
+    *pOut = (Unk_FameSeason)Parse_14021a480(str);
     return nRet;
 }
 
@@ -261,7 +258,7 @@ int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* p
     nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
-    *pOut = FUN_14021a330(str);
+    *pOut = (Unk_FameAlliance)Parse_14021a330(str);
     return nRet;
 }
 
@@ -347,13 +344,13 @@ int CFameLimitData::Read(Unk_140165cf0* pElem)
         return 0;
     ATL::CAtlArray<CStringA> aAlliance;
     ATL::CAtlArray<int> aGrade;
-    FUN_1401788f0(pElem, "requireAlliance", aAlliance);
-    FUN_140178570(pElem, "requireGrade", aGrade);
+    XmlTokenList(pElem, "requireAlliance", aAlliance);
+    XmlTokenList(pElem, "requireGrade", aGrade);
     if (aAlliance.GetCount() != aGrade.GetCount())
         return 0;
     for (size_t i = 0; i < aAlliance.GetCount(); i++)
     {
-        Unk_FameAlliance nAlliance = FUN_14021a330(aAlliance[i]);
+        Unk_FameAlliance nAlliance = (Unk_FameAlliance)Parse_14021a330(aAlliance[i]);
         if (nAlliance == 0)
             continue;
         m_mapGrade.SetAt(nAlliance, aGrade[i]);
@@ -399,7 +396,7 @@ int CFamePickMethod::Read(Unk_140165cf0* pElem)
     if (!FUN_14028f710((struct Unk_XmlElement*)(pElem)))
         return 0;
     FUN_14035baa0(pElem, "type", &m_nType);
-    FUN_140178570(pElem, "pickCountByRank", m_aPickCountByRank);
+    XmlTokenList(pElem, "pickCountByRank", m_aPickCountByRank);
     FUN_14035ba10(pElem, "repeatType", &m_nRepeatType);
     XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnAccept", m_nReloadOnAccept);
     XmlGetAttr((class TiXmlElement*)(pElem), "reloadOnComplete", m_nReloadOnComplete);
@@ -727,7 +724,7 @@ unsigned CFameTable::PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_F
             continue;
         if (spLog->m_nGrade != nGrade)
             continue;
-        if (FUN_140204740(pOwned, spLog->m_nId, 0) != 0)
+        if (reinterpret_cast<ATL::CAtlList<unsigned>*>(pOwned)->Find(spLog->m_nId, 0) != 0)
             continue;
         ((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->Add(spLog->m_nId);
     }
@@ -736,7 +733,7 @@ unsigned CFameTable::PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_F
     int nIndex = (int)(FUN_140767ff0() % ((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->GetCount());
     if (nIndex >= (int)((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(aCandidates))->GetCount())
         return 0;
-    return *FUN_1401844d0(aCandidates, nIndex);
+    return reinterpret_cast<ATL::CAtlArray<int>&>(aCandidates)[nIndex];
 }
 
 // @0x14035ae50

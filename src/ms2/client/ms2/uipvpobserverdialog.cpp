@@ -51,7 +51,7 @@ struct Unk_PoConfig
     char m_pad_00[0x2f0];
     CString m_strCountdownEffect;                               // +0x2f0
 };
-Unk_PoConfig* FUN_1401d31f0();
+class Unk_SingletonObj* FUN_1401d31f0();   // C3: the real return type (cachedata)
 
 class Unk_PoCameraUI : public UIDamageText                                            // the spectator camera buttons (UI 0x4e32)
 {
@@ -149,7 +149,7 @@ void UIPvPObserverDialog::vfunc_72()
         }
         else if (m_1cc == 0 && (nHour == 0 && (int)nMin <= 10)) {
             NoticeMessage kRequest;
-            kRequest.m_strName = FUN_1401d31f0()->m_strCountdownEffect;
+            kRequest.m_strName = ((Unk_PoConfig*)FUN_1401d31f0())->m_strCountdownEffect;
             kRequest.m_nObject = 0;
             m_1d0 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kRequest));
             m_1cc = 1;

@@ -44,7 +44,7 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
-
+class UIMassiveEvent { public: void FUN_1419f6a70(int, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, int); };
 // ---- header statics (dynamic initializers 0x1400ef900..) ----
 #ifndef MS2_HOOK_DLL
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -258,12 +258,12 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
         if (nWinner == 0) {
             Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0)
-                pDlg->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
+                ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
         }
         else if (nWinner == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0()) {
             Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0) {
-                pDlg->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
+                ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
                 FUN_141276180(s_strWinGame, "");
                 FUN_141276180(s_strSemiWin, "");
             }
@@ -271,7 +271,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
         else {
             Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0) {
-                pDlg->FUN_1419f6a70(0, GetStringCommon(0x3fe), 4000);
+                ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(0, GetStringCommon(0x3fe), 4000);
                 FUN_141276180(s_strSemiLose, "");
             }
         }

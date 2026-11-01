@@ -29,7 +29,6 @@
 class Unk_SumButton : public ASDisplayObject
 {
 public:
-    void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // click callback
 };
 
 // The text input control.
@@ -85,7 +84,7 @@ void UIHomeSummonDialog::OnLoadComplete()
         return;
     FUN_141925ec0("m_closeButton");
     FUN_140bc6d10("m_confirmButton", m_180);
-    m_180->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), 0);
+    static_cast<ASMovieClip*>((ASDisplayObject*)m_180.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), (void*)0);
     FUN_14129a040("m_textInput", m_190);
     reinterpret_cast<ASTextInput*>(m_190.operator->())->SetEditable(1);
     reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422c7630(1);

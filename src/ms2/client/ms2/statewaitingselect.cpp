@@ -146,7 +146,7 @@ void StateWaitingSelect::vfunc_2(int n)
         m_n10 = n;
         pPC->FUN_14166ce70(1);
         reinterpret_cast<PC*>(pPC)->FUN_141653f00();
-        pPC->FUN_14166dda0(1);
+        pPC->PlayAnimationById(1);
         break;
     case 0x51:
         if (m_n10 != n)
@@ -185,7 +185,7 @@ void StateWaitingSelect::vfunc_2(int n)
 void StateWaitingSelect::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_pOwner->FUN_14166cce0(0x10);
+    m_pOwner->AddStateFlags(0x10);
     m_pOwner->vfunc_22(efd::Point3::ZERO);
     vfunc_2(0x4d);
 }
@@ -194,7 +194,7 @@ void StateWaitingSelect::vfunc_4(StateData* pData)
 void StateWaitingSelect::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    m_pOwner->FUN_14166cd70(0x10);
+    m_pOwner->RemoveStateFlags(0x10);
     m_pOwner->vfunc_22(efd::Point3::ZERO);
 }
 

@@ -34,7 +34,7 @@ public:
     static class WorldService* GetInstance();
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
-int FUN_1416595d0(PCBase*);
+class PC { public: int FUN_1416595d0(); };   // C3: unit-local view
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -207,7 +207,7 @@ MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FindItemByInstanceId, 170, 0x
 int CubeHolderManager::FUN_1410b5e70() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
-    return FUN_1416595d0(pc);
+    return ((PC*)pc)->FUN_1416595d0();
 }
 MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, FUN_1410b5e70, 54, 0x2F3817D5);
 // @0x1410b5eb0

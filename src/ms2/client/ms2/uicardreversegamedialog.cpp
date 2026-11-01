@@ -258,7 +258,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             case 0:
             {
                 CStringW strMsg = FUN_1409e97f0(0xc3f, m_1e8);
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
                 FUN_140d73aa0(CStringW(strMsg), 0, 0, CStringW(L""));
                 static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("setShuffleButton", 1);
             }

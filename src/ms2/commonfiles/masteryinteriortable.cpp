@@ -36,7 +36,7 @@ public:
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140165cf0 : public Unk_XmlNode {};
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
+
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -47,7 +47,7 @@ CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was F
 void FUN_140177e10(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);         // split into unsigneds
 void FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<unsigned>& rOut);                // list attribute
 void FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>& rOut);                     // list attribute
-bool FUN_14026b1c0(ItemEntity*, int);
+
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The sort-name tables of two ugc market lists (the same seven names, one copy per original translation unit).
@@ -145,7 +145,7 @@ bool CMasteryInteriorTable::LoadMastery()
         {
             MS2Ptr<ItemEntity> spItem(new ItemEntity);
             spItem->m_itemId = ids[i];
-            FUN_14026b1c0(spItem.get(), ranks[i]);
+            reinterpret_cast<ItemEntity*>(spItem.get())->SetRank(ranks[i]);
             spItem->m_count = counts[i];
             spInfo->m_items.Add(spItem);
         }

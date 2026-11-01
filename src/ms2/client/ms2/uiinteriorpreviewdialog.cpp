@@ -188,7 +188,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
                     ++nBound;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), nBound);
                     ASObj objItem(m_28);
-                    objItem.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
+                    ((class AScript&)(objItem)).FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
                     objItem.FUN_1407cba60((const char*)s_strBinding, strKey);
                     FUN_141415450(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
                     arrItems.FUN_1422bc050(objItem.FUN_1422bb870());

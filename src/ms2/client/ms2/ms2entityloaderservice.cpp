@@ -6,6 +6,8 @@
 // this between computing and passing &other.m_blockAsset to AssetID ==/<, ours passes it first (arg-move order only).
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2entityloaderservice.h"
+#include <set>
+#include <list>
 
 typedef unsigned long long u64;
 
@@ -17,8 +19,11 @@ public:
     static class WorldService* GetInstance();
 };
 void FUN_14015b310(void* p, u64 sz);
-void FUN_14114e860(void* list, void* it);   void* FUN_1411524b0(void* list, void* it);
-bool FUN_140a16b10(void* a, void* b);   void* FUN_140a16d80(void* it);   void FUN_140a17010(void* it);   void FUN_1411cb170(void* dst, void* v);
+void* FUN_140a16d80(void* it);
+
+// C3: the block's entity id set and the caller's id list (std::set / std::list members bound by symbols).
+typedef std::set<egf::EntityID, std::less<egf::EntityID>, efd::CustomAllocator<egf::EntityID> > Unk_ELSIdSet;
+struct Unk_ELSBlockInfo { char pad[0x18]; Unk_ELSIdSet ids; };
 
 // std::_Tree node: left/parent/right links, colour, nil flag; the key starts at +0x20.
 struct Unk_ELSNode {
@@ -89,10 +94,9 @@ bool ELSAccess::GetBlockEntities(egf::EntityLoaderService* svc, const egf::Block
     FUN_1414b4910((char*)svc + 0x80, &it, &req);
     Unk_ELSIt e;
     if (FUN_1414b43d0(&it, FUN_1414b48b0((char*)svc + 0x80, &e))) {
-        char* info = (char*)FUN_1414b4430((char*)FUN_1414b4410(&it) + 0x38);
-        Unk_ELSIt it2, e2;
-        for (FUN_14114e860(info + 0x18, &it2); FUN_140a16b10(&it2, FUN_1411524b0(info + 0x18, &e2)); FUN_140a17010(&it2))
-            FUN_1411cb170(outList, FUN_140a16d80(&it2));
+        Unk_ELSBlockInfo* info = (Unk_ELSBlockInfo*)FUN_1414b4430((char*)FUN_1414b4410(&it) + 0x38);
+        for (Unk_ELSIdSet::const_iterator it2 = info->ids.begin(); it2 != info->ids.end(); ++it2)
+            ((std::list<egf::EntityID>*)outList)->push_back(*(const egf::EntityID*)FUN_140a16d80(&it2));
         return true;
     }
     return false;

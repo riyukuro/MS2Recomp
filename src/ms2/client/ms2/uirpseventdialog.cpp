@@ -93,10 +93,10 @@ MS2_CHECK_OFFSET(Unk_RpsEvent, rewards, 0x28);
 MS2_CHECK_OFFSET(Unk_RpsEvent, eventId, 0x48);
 class Unk_1401c0d90 { public: MS2Ptr<Unk_RpsEvent> FUN_14047d140(); };
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
 class Unk_RpsStringTable {
 public:
     CStringW FUN_140c6d980(int, int, const CStringW&);
-    int FUN_1409617d0(int, int, const int&);
 };
 extern Unk_RpsStringTable g_rpsStrings;
 void FUN_1401d9a30(const CStringW&, Unk_RpsInts&, const wchar_t*);
@@ -364,7 +364,7 @@ MS2_REPLACE_METHOD(0x140e83200, UIRpsEventDialog, FUN_140e83200, 201, 0xDA46B974
 int UIRpsEventDialog::FUN_140e832d0() {
     MS2Ptr<Unk_RpsEvent> event = ((class Unk_1401c0d90*)FUN_1401c0d90())->FUN_14047d140();
     if (event == NULL) return 0;
-    return g_rpsStrings.FUN_1409617d0(0x708, event->eventId, 0);
+    return reinterpret_cast<Unk_AttendTable&>(g_rpsStrings).FUN_1409617d0(0x708, event->eventId, 0);
 }
 MS2_REPLACE_METHOD(0x140e832d0, UIRpsEventDialog, FUN_140e832d0, 147, 0x667F9F28);
 // @0x140e83370

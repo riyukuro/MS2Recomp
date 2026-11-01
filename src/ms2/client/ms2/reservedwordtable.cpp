@@ -252,12 +252,12 @@ CReservedWordTable::~CReservedWordTable()
 }
 
 // @0x1416fb300
-void CReservedWordTable::FUN_1416fb300(CStringW& str)
+void CReservedWordTable::ReplaceObjectAndValueWords(CStringW& str)
 {
     FUN_1416fb380(str);
     FUN_1416fb340(str);
 }
-MS2_REPLACE_METHOD(0x1416FB300, CReservedWordTable, FUN_1416fb300, 49, 0x892501A7);
+MS2_REPLACE_METHOD(0x1416FB300, CReservedWordTable, ReplaceObjectAndValueWords, 49, 0x892501A7);
 
 // @0x1416fb340
 void CReservedWordTable::FUN_1416fb340(CStringW& str)
@@ -331,7 +331,7 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
 }
 
 // @0x1416fbc20
-void CReservedWordTable::FUN_1416fbc20(CStringW& str, PC* pPc)
+void CReservedWordTable::ReplaceTokensForPc(CStringW& str, PC* pPc)
 {
     int nPos = 0;
     int nEnd;
@@ -341,7 +341,7 @@ void CReservedWordTable::FUN_1416fbc20(CStringW& str, PC* pPc)
         if (nEnd == -1)
             break;
         CStringW strToken = str.Mid(nPos, nEnd - nPos + 1);
-        CStringW strKey = FUN_1416fc180(CStringW(strToken));
+        CStringW strKey = GetTokenName(CStringW(strToken));
         if (strKey.Compare(L"$male") != 0 || strKey.Compare(L"$female") != 0)
         {
             Rw_GenderOf(strToken, pPc);
@@ -364,7 +364,7 @@ void CReservedWordTable::FUN_1416fbda0(CStringW& str, int nGender)
         if (nEnd == -1)
             break;
         CStringW strToken = str.Mid(nPos, nEnd - nPos + 1);
-        CStringW strKey = FUN_1416fc180(CStringW(strToken));
+        CStringW strKey = GetTokenName(CStringW(strToken));
         if (strKey.Compare(L"$male") != 0 || strKey.Compare(L"$female") != 0)
         {
             Rw_GenderId(strToken, nGender);
@@ -384,11 +384,11 @@ void CReservedWordTable::FUN_1416fbf20(CStringW& str)
 MS2_REPLACE_METHOD(0x1416FBF20, CReservedWordTable, FUN_1416fbf20, 48, 0x967B40A5);
 
 // @0x1416fbf60
-void CReservedWordTable::FUN_1416fbf60(CStringW& str, unsigned short nLevel)
+void CReservedWordTable::ReplaceLevelToken(CStringW& str, unsigned short nLevel)
 {
     str.Replace(L"$level$", StringFormat(L"{0}", nLevel));
 }
-MS2_REPLACE_METHOD(0x1416FBF60, CReservedWordTable, FUN_1416fbf60, 115, 0x395CBD8F);
+MS2_REPLACE_METHOD(0x1416FBF60, CReservedWordTable, ReplaceLevelToken, 115, 0x395CBD8F);
 
 // @0x1416fbfe0
 CStringW CReservedWordTable::FUN_1416fbfe0(unsigned int nMapId, CStringW strColor)
@@ -406,7 +406,7 @@ CStringW CReservedWordTable::FUN_1416fbfe0(unsigned int nMapId, CStringW strColo
 }
 
 // @0x1416fc180
-CStringW CReservedWordTable::FUN_1416fc180(CStringW str)
+CStringW CReservedWordTable::GetTokenName(CStringW str)
 {
     int nColon = 0;
     nColon = str.Find(L":", 0);
@@ -414,10 +414,10 @@ CStringW CReservedWordTable::FUN_1416fc180(CStringW str)
         return str.Mid(0, nColon);
     return str.Mid(0, str.GetLength() - 1);
 }
-MS2_REPLACE_METHOD(0x1416FC180, CReservedWordTable, FUN_1416fc180, 196, 0x5B883C35);
+MS2_REPLACE_METHOD(0x1416FC180, CReservedWordTable, GetTokenName, 196, 0x5B883C35);
 
 // @0x1416fc250
-CStringW CReservedWordTable::FUN_1416fc250(CStringW str)
+CStringW CReservedWordTable::GetTokenArgument(CStringW str)
 {
     int nColon = 0;
     nColon = str.Find(L":", 0);
@@ -425,7 +425,7 @@ CStringW CReservedWordTable::FUN_1416fc250(CStringW str)
         return str.Mid(nColon + 1, str.GetLength() - nColon - 2);
     return CStringW(L"");
 }
-MS2_REPLACE_METHOD(0x1416FC250, CReservedWordTable, FUN_1416fc250, 201, 0x1AF7243D);
+MS2_REPLACE_METHOD(0x1416FC250, CReservedWordTable, GetTokenArgument, 201, 0x1AF7243D);
 
 // @0x1416fc320
 void CReservedWordTable::FUN_1416fc320(CStringW& str, WordMap& map)
@@ -439,10 +439,10 @@ void CReservedWordTable::FUN_1416fc320(CStringW& str, WordMap& map)
             break;
         CStringW strToken = str.Mid(nPos, nEnd - nPos + 1);
         FnWord pfnWord = 0;
-        bool bFound = map.Lookup(FUN_1416fc180(CStringW(strToken)), pfnWord);
+        bool bFound = map.Lookup(GetTokenName(CStringW(strToken)), pfnWord);
         if (bFound)
         {
-            pfnWord(strToken, FUN_1416fc250(CStringW(strToken)), str);
+            pfnWord(strToken, GetTokenArgument(CStringW(strToken)), str);
             str.Delete(nPos, nEnd - nPos + 1);
             str.Insert(nPos, strToken);
         }
@@ -463,7 +463,7 @@ void CReservedWordTable::FUN_1416fc540(CStringW& str, TextMap& map)
             break;
         CStringW strRest = str.Mid(nStart, nEnd - nStart + 1);
         CStringW strValue;
-        CStringW strKey = FUN_1416fc180(CStringW(strRest));
+        CStringW strKey = GetTokenName(CStringW(strRest));
         if (map.Lookup(strKey, strValue))
         {
             str.Delete(nEnd, 1);

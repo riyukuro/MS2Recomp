@@ -128,7 +128,7 @@ void UICubeUGCHead::vfunc_52()
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         CStringW strId;
         strId.Format(L"ID:%d", m_88);
-        reinterpret_cast<ASDialog*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
+        reinterpret_cast<ASDialog*>((class ASDialog*)((pClip.operator->())))->FUN_140e78470("setData", m_78, strId);
         pClip->Invoke("setFontSize", 0x12);
         if (FUN_140707660(m_8c) != 0)
             pClip->Invoke("setFontColor", 0x45ff98);

@@ -27,8 +27,6 @@
 // The camera manager's current-mode holder (+0x118 of the manager singleton).
 struct Unk_CdModeRef
 {
-    long long FUN_1409f2180() const;                            // non-null test
-    CCameraMode* FUN_1409f21a0() const;                         // operator->
     void* m_pad_00;
     CCameraMode* m_p;
 };
@@ -65,10 +63,11 @@ class CameraMgr   // C3: member view for the former free stand-ins
 public:
     int FUN_140a18070();
     void FUN_140af9b40(float);
+    void FUN_140aec8a0(bool bKeep);   // C3: was FUN_140aec8a0
+    CCameraMode* FUN_140af24f0();     // C3: was Unk_CameraManager::FUN_140af24f0
 };
 float FUN_1409f2430(Unk_CameraManager* pCam);                   // distance
 void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue);      // field of view
-void FUN_140aec8a0(Unk_CameraManager* pCam, int n);
 void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
 float FUN_140bf4fd0(float f);                                   // ceilf
 void* FUN_1413f9950();   // C3: was FUN_1413f9950
@@ -170,7 +169,7 @@ void UICameraDialog::vfunc_72()
                 FUN_141032560(strName, FUN_141032e60(Unk_CameraManager::FUN_1409478c0()));
             }
             float fOffset;
-            FUN_141032d40(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0(), &fOffset, &fOffset);
+            FUN_141032d40(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0(), &fOffset, &fOffset);
             {
                 CString strName("m_heightOffset");
                 FUN_141032560(strName, fOffset);
@@ -192,12 +191,12 @@ void UICameraDialog::FUN_141032560(const CString& strName, float f)
 // @0x141032610
 void UICameraDialog::FUN_141032610(const CString& strName, float f)
 {
-    MS2Ptr<Unk_CdInput> spInput = FUN_140e35bd0(strName);
+    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>(strName);
     if (spInput) {
         CString str;
         str.Format("%.1f", (double)f);
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0a60(str);
-        Unk_CdInput* pInput = spInput.operator->();
+        spInput->FUN_1422e0a60(str);
+        Unk_CdInput* pInput = reinterpret_cast<Unk_CdInput*>(spInput.operator->());
         pInput->vfunc_24(true);
     }
 }
@@ -228,7 +227,7 @@ void UICameraDialog::FUN_141032780(ASData& data)
         return;
     if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() == 0)
         return;
-    FUN_140aec8a0(Unk_CameraManager::FUN_1409478c0(), 0);
+    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aec8a0(false);
     FUN_140b6bd30((void*)(Unk_CameraManager::FUN_1409478c0()));
     FUN_141032bb0(static_cast<ASObj*>(spRoot.get()));
     float fZoom = WorldService::GetInstance()->FUN_141bcfc50();
@@ -320,39 +319,39 @@ void FUN_141032d40(CCameraMode* pMode, float* pA, float* pB)
 // @0x141032d80
 float FUN_141032d80(void* pCam)
 {
-    if (((Unk_CdView*)pCam)->m_mode.FUN_1409f2180() != 0)
-        return ((Unk_CdView*)pCam)->m_mode.FUN_1409f21a0()->vfunc_23() * 180.0f / 3.1415927f;
+    if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
+        return reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_23() * 180.0f / 3.1415927f;
     return 0.0f;
 }
 
 // @0x141032df0
 float FUN_141032df0(void* pCam)
 {
-    if (((Unk_CdView*)pCam)->m_mode.FUN_1409f2180() != 0)
-        return ((Unk_CdView*)pCam)->m_mode.FUN_1409f21a0()->vfunc_15();
+    if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
+        return reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_15();
     return 0.0f;
 }
 
 // @0x141032e60
 float FUN_141032e60(void* pCam)
 {
-    if (((Unk_CdView*)pCam)->m_mode.FUN_1409f2180() != 0)
-        return ((Unk_CdView*)pCam)->m_mode.FUN_1409f21a0()->vfunc_22() * 180.0f / 3.1415927f;
+    if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
+        return reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_22() * 180.0f / 3.1415927f;
     return 0.0f;
 }
 
 // @0x141032ed0
 void FUN_141032ed0(void* pCam, float f)
 {
-    if (((Unk_CdView*)pCam)->m_mode.FUN_1409f2180() != 0)
-        ((Unk_CdView*)pCam)->m_mode.FUN_1409f21a0()->vfunc_20(f);
+    if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
+        reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_20(f);
 }
 
 // @0x141032f30
 void FUN_141032f30(void* pCam, float f)
 {
-    if (((Unk_CdView*)pCam)->m_mode.FUN_1409f2180() != 0)
-        ((Unk_CdView*)pCam)->m_mode.FUN_1409f21a0()->vfunc_14(f);
+    if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
+        reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_14(f);
 }
 
 // @0x141032e50

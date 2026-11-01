@@ -107,17 +107,17 @@ public:
     float FUN_141759b60(double dDelta);                     // the share of the cooldown of the elapsed duration
     float FUN_141759d20(double dDelta, float fRate);        // the share of fRate % of the elapsed duration
     int FUN_141759e40();                                    // the attacks are over
-    int FUN_141759eb0();                                    // the last motion is running
+    int IsEndedOrLastMotion();                                    // the last motion is running
     int IsLastMotion();                                    // the motion is the last one
     int FUN_141759f70();                                    // whether the attack exists
     void FUN_141759fc0();                                   // the attack has started
     void FUN_141759fe0();                                   // the cast is over
     SkillAttackData* GetCurrentAttackData();                       // the attack
-    SkillAttackData* FUN_14175a050(int nAttack);            // one attack of the motion
+    SkillAttackData* GetAttackDataAt(int nAttack);            // one attack of the motion
     SkillAttackData* GetAttackDataByName(CString strName);        // one attack of the motion by name
     int GetBrokenOffence();                                    // the attack's broken offence
-    float FUN_14175a170();                                  // the attack's broken force
-    float FUN_14175a1b0();                                  // the duration left
+    float GetBrokenForce();                                  // the attack's broken force
+    float GetRemainingDuration();                                  // the duration left
     int GetSuperArmor();                                    // the super armor of the skill (0 if not allowed)
     void AddTarget(unsigned nKey, unsigned nTarget);        // 0x14175a280
     int HasTarget(unsigned nKey, unsigned nTarget);         // 0x14175a360
@@ -180,9 +180,9 @@ public:
     SkillData* FUN_14175a820();                             // the skill
     SkillMotionData* GetMotionData();                       // the motion
     SkillAttackData* GetAttackData();                       // the attack
-    int FUN_14175a920();                                    // the attack's name index
-    CString FUN_14175a960();                                // the attack's hit effect
-    CString FUN_14175aa50();                                // the attack's remain effect
+    int GetNameIndex();                                    // the attack's name index
+    CString GetEffectHit();                                // the attack's hit effect
+    CString GetEffectRemain();                                // the attack's remain effect
     bool IsIgnoreOptimalHideHitEffect();                                   // the attack ignores the optimal hide of the hit effect
     bool IsIgnoreOptimalHideRemainEffect();                                   // ... of the remain effect
     void AddDamage(int nType, __int64 nDamage);         // adds one damage (type 8 is kept as 3)

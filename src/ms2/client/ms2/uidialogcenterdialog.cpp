@@ -19,6 +19,8 @@
 
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/asbutton.h"
+#include <efd/Win32/Win32PlatformService.h>
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -41,17 +43,7 @@ public:
 };
 
 // The movie child "UIDialogCenterDialog_btn": a clip with a label, a position and a click delegate.
-class Unk_140acd6e0 : public ASDisplayObject
-{
-public:
-    Unk_140acd6e0(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cdde0
-    void FUN_1409c0d20(const char* szName, unsigned nValue);            // set a member
-    void FUN_1422c0060(int x, int y);                                   // set the position
-    void FUN_1422cdfb0(const CStringW& strLabel);                       // set the label
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-private:
-    void* m_80;
-};
+class Unk_140acd6e0 : public ASButton {};   // C3: view of the real button class (built as an ASButton)
 MS2_CHECK_SIZE(Unk_140acd6e0, 0x88);
 
 class ASDialog : public ASDisplayObjectContainer {};
@@ -62,9 +54,8 @@ class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 // The main window of the application.
 class Unk_DcApp { public: void* m_pad; char m_svc; };
 class Unk_DcHost;
-Unk_DcHost* FUN_140af8310(void* pHolder);
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: member view of the real holder
 void* FUN_140aadf80();
-HWND FUN_14209c720(void* pApp);
 
 // A service object queried by class id (slot 5 = query interface, slot 14 of the host = get service by id).
 #define DC_V(n) virtual void vfunc_##n();
@@ -94,8 +85,7 @@ public:
 };
 
 // The movie of a ui layer and its object factory.
-void* FUN_1422bb8b0(int nMovieId);
-void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, __int64 a, int b);
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
 void FUN_1401d3700(CString& str);
 extern const char DAT_142ed3718[];                                      // the open file filter of the xml dialog
 
@@ -171,14 +161,14 @@ UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 // @0x1412968a0
 static MS2Ptr<Unk_140acd6e0> FUN_1412968a0(int nMovieId, CString strLinkage, __int64 a, int b)
 {
-    void* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
     if (pMovie == 0)
         return MS2Ptr<Unk_140acd6e0>(0);
     Scaleform::GFx::Value v;
-    FUN_14256e8e0(pMovie, &v, strLinkage, a, b);
+    pMovie->CreateObject(&v, strLinkage, reinterpret_cast<const Scaleform::GFx::Value*>(a), b);
     if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() != 0)
         return MS2Ptr<Unk_140acd6e0>(0);
-    MS2Ptr<Unk_140acd6e0> spBtn(new Unk_140acd6e0(v, nMovieId));
+    MS2Ptr<Unk_140acd6e0> spBtn(static_cast<Unk_140acd6e0*>(new ASButton(v, nMovieId)));
     return spBtn;
 }
 
@@ -317,7 +307,7 @@ void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::
 {
     ASObj evt(params.pArgs[0], 2);
     Scaleform::GFx::Value target = evt.GetMember("target");
-    Unk_140acd6e0 btn(target, m_28);
+    ASButton btn(target, m_28);
     unsigned nId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(btn.GetMember("dialogID")))->GetUInt();
     MS2Ptr<UIDialog> spDlg(FUN_140c300a0(nId));
     if (spDlg.get() != 0)
@@ -327,7 +317,7 @@ void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::
 // @0x141295a70
 void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    auto pHost = FUN_140af8310(&reinterpret_cast<Unk_DcApp*>(TSingleton<CMainSystem>::GetInstance())->m_svc);
+    auto pHost = reinterpret_cast<Unk_DcHost*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_DcApp*>(TSingleton<CMainSystem>::GetInstance())->m_svc)->FUN_140af8310());
     Unk_DcService* pSvc = FUN_141296b50(pHost);
     if (pSvc != 0)
         pSvc->vfunc_16();
@@ -416,7 +406,7 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
         return;
     spDlg.AssignRaw(new TriggerDebugDialog(0));
     spDlg.get()->SetFile(CString(strPath));
-    spDlg.get()->Create(0xa7, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
+    spDlg.get()->Create(0xa7, CWnd::FromHandle(reinterpret_cast<efd::Win32PlatformService*>(FUN_140aadf80())->GetWindowRef()));
     m_triggers.SetAt(strPath, spDlg);
     COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
     pkt.WriteUInt8(9);
@@ -467,7 +457,7 @@ void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, 
     MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
-        spBtn->FUN_1409c0d20("dialogID", nDialogId);
+        reinterpret_cast<ASObj*>(spBtn.operator->())->FUN_1409c0d20("dialogID", nDialogId);
         spBtn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialogCenterDialog::FUN_141295930), 0);
     }
 }

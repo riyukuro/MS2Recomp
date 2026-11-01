@@ -154,7 +154,7 @@ void UIItemTreasureMapDialog::OnLoadComplete()
     {
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
         if (m_submit.get() != 0)
-            m_submit->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), 0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_submit)->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), (void*)0);
         CStringW strDesc = GetStringCommonByKey(L"s_item_treasure_map_appraise_desc");
         if (m_bFree != 0)
             strDesc = GetStringCommonByKey(L"s_item_treasure_map_free_appraise_desc");

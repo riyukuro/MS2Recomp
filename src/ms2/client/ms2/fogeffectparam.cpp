@@ -54,11 +54,7 @@ class Unk_RenderTarget
 public:
     bool FUN_14125e020();
 };
-class Unk_RendererWrap
-{
-public:
-    Unk_RenderTarget* FUN_1409a8ac0();
-};
+class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 
 // @0x1412208a0
 CFogEffectParam::CFogEffectParam()
@@ -154,7 +150,7 @@ MS2_REPLACE_METHOD(0x141220e90, CFogEffect, vfunc_9, 73, 0xDF8F6F44);
 // @0x141220ee0
 void CFogEffect::vfunc_7()
 {
-    FUN_1409a8b00()->SetFogRange(reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e020(), m_fNear, m_fFar, m_dwColor);
+    FUN_1409a8b00()->SetFogRange(reinterpret_cast<Unk_RenderTarget*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_14125e020(), m_fNear, m_fFar, m_dwColor);
 }
 MS2_REPLACE_METHOD(0x141220ee0, CFogEffect, vfunc_7, 92, 0x1780D1FA);
 
@@ -174,7 +170,7 @@ void CFogEffect::FUN_141220f60(double dNow)
     unsigned char g = (unsigned char)((1.0 - t) * ((m_dwColorFrom >> 8) & 0xff) + t * ((m_dwColor >> 8) & 0xff));
     unsigned char b = (unsigned char)((1.0 - t) * (m_dwColorFrom & 0xff) + t * (m_dwColor & 0xff));
     unsigned int dwColor = MS2_D3DCOLOR_XRGB(r, g, b);
-    FUN_1409a8b00()->SetFogRange(reinterpret_cast<Unk_RendererWrap*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_14125e020(), fNear, fFar, dwColor);
+    FUN_1409a8b00()->SetFogRange(reinterpret_cast<Unk_RenderTarget*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_14125e020(), fNear, fFar, dwColor);
 }
 MS2_REPLACE_METHOD(0x141220f60, CFogEffect, FUN_141220f60, 579, 0xAA2C7DF0);
 

@@ -3076,7 +3076,7 @@ void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
         return;
     if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(nCharId))
         return;
-    TSingleton<CPartyManager>::GetInstance()->FUN_1416312f0(nPartyId);
+    TSingleton<CPartyManager>::GetInstance()->SetPartyDeadline(nPartyId);
     CStringW strHtml = FUN_141841c60(nPartyId, strLeader, nA, nCharId, nRoomId, spRoom->m_groupType, bFlag,
                                      spRoom->m_maxUserCount, FUN_141a27de0());
     FUN_141a26e00(strHtml, 0x1b);
@@ -3100,7 +3100,7 @@ void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
         return;
     if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(nCharId))
         return;
-    TSingleton<CPartyManager>::GetInstance()->FUN_1416312f0(nPartyId);
+    TSingleton<CPartyManager>::GetInstance()->SetPartyDeadline(nPartyId);
     CStringW strUserEvent = FUN_141842c40(L"'event:userSelect,{0},{1},{2}'", strLeader, nAccountId, nCharId);
     CStringW strUser = FUN_1408f71a0(CStringW(L"s_html_chat_user_dungeon_member"), strUserEvent, strLeader);
     CStringW strJoinEvent = FUN_1418428c0(L"'event:joinPartyDungeonMember,{0},{1},{2}'", nPartyId, strLeader, nRoomId);
@@ -3814,7 +3814,7 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     {
         int bNear = (pSpeaker == pMe || fDistance < *FUN_1401d3200()->ChatBalloonDistance.Get()) ? 1 : 0;
         if (bNear)
-            pSpeaker->FUN_14166fff0(strBalloon);
+            pSpeaker->ShowChatBalloon(strBalloon);
         return 1;
     }
     return 0;

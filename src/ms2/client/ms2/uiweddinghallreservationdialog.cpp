@@ -350,8 +350,8 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     CStringW strPrice = FUN_14052bd00(0x987, FUN_1409404f0(spHall->m_nMerat));
     ASArray rows(2);
     ASObj row(2);
-    row.FUN_1407cbb20("detail", strDetail);
-    row.FUN_1407cbb20("strPrice", strPrice);
+    ((class AScript&)(row)).FUN_1407cbb20("detail", strDetail);
+    ((class AScript&)(row)).FUN_1407cbb20("strPrice", strPrice);
     rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
     static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("list", Scaleform::GFx::Value(rows.FUN_1422bb870()));
     spBill->m_18 = static_cast<IMessageListener*>(this);
@@ -463,7 +463,7 @@ void UIWeddingHallReservationDialog::FUN_140fdccd0(const std::vector<CString>& n
             {
                 ASObj item(2);
                 item.FUN_1407cba60("page", spPage->vfunc_8());
-                item.FUN_1407cbb20("label", spPage->vfunc_9());
+                ((class AScript&)(item)).FUN_1407cbb20("label", spPage->vfunc_9());
                 spTab->AddItem(item);
                 m_tabs.push_back(spPage);
             }

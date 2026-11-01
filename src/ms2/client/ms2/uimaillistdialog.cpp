@@ -59,6 +59,7 @@
 #include "ms2/placeholder/weddingmanager.h"   // C3: TSingleton<> needs the class
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/asbuttonbar.h"
 
 // ---- statics of the unit's headers (two copies of the merat market sort names / key controller block) ----
 
@@ -79,7 +80,6 @@ class ASDialog : public ASDisplayObject
 public:
     virtual void vfunc_2(int, int, int);
     Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW a1);          // invoke with a string
-    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);       // invoke with two ints
     Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& a1);      // invoke with an object
 };
 
@@ -88,7 +88,7 @@ class Unk_MlButton : public ASMovieClip { public: };
 // "m_checkAll".
 class Unk_MlCheckBox : public ASButton { public: };
 // "m_tab".
-class Unk_MlTab : public ASDisplayObject { public: int FUN_1422e3210(); };
+class Unk_MlTab : public ASDisplayObject { };
 
 class Unk_PopupMenuInfo
 {
@@ -511,9 +511,9 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                 int nKind = spMail->FUN_140690370();
                 if (nKind >= 100 && nKind < 0x71)
                 {
-                    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strSender);
-                    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strTitle);
-                    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strContent);
+                    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strSender);
+                    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
+                    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strContent);
                 }
                 if (nKind == 0x70)
                 {
@@ -770,7 +770,7 @@ MS2_REPLACE_METHOD(0x1419E73F0, UIMailListDialog, FUN_1419e73f0, 225, 0x8A7532B9
 int UIMailListDialog::FUN_1419e7fd0()
 {
     if (MS2Ptr<Unk_MlTab> spTab = FUN_140c02870("m_tab"))
-        return spTab->FUN_1422e3210();
+        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex();
     return -1;
 }
 MS2_REPLACE_METHOD(0x1419E7FD0, UIMailListDialog, FUN_1419e7fd0, 166, 0x6BAF5A08); // FUN_1419e7fd0
@@ -1238,8 +1238,8 @@ void UIMailListDialog::FUN_1419e5190()
             int nKind = pMail->FUN_140690370();
             if (nKind >= 100 && nKind < 0x71)
             {
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strSender);
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strTitle);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strSender);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
             }
             ASObj row(2);
             row.FUN_1407cbb20("mailSN", FUN_141b71910(pMail->FUN_140690350()));

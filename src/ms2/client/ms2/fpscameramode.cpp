@@ -54,7 +54,6 @@ public:
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 namespace egf { class Entity; }
-egf::Entity* FUN_14123c410(Unk_RpgActor* p);                // m_80 of the game object
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
 
 float FUN_140a38cd0(float f);                       // fabs
@@ -120,7 +119,7 @@ void CFPSCameraMode::vfunc_9()
     {
         ptMove.x = (float)nY * 0.05f;
         ptMove.y = (float)nX * 0.05f;
-        RECT rc = ((class Unk_Cursor*)FUN_140aadf80())->FUN_140ad4c30();
+        RECT rc = ((class Unk_McApp*)(((class Unk_Cursor*)FUN_140aadf80())))->FUN_140ad4c30();
         int nCenterX = ((rc.right - rc.left) >> 1) + rc.left;
         int nCenterY = ((rc.bottom - rc.top) >> 1) + rc.top;
         SetCursorPos(nCenterX, nCenterY);
@@ -197,7 +196,7 @@ void CFPSCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     m_130 = pActor;
     if (m_130)
     {
-        NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(m_130));
+        NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<GameObject*>(m_130)->FUN_14123c410());
         if (pRoot)
         {
             NiFixedString kName("FPS_Dummy");

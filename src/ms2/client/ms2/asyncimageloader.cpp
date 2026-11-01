@@ -38,6 +38,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cthread_startup.h"
 #include "ms2/ms2recover.h"
+#include "ms2/scaleform/include/render/d3d9_texture.h"
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
@@ -61,9 +62,7 @@ class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 void* FUN_1422cf0f0();                                      // the UI renderer context
 void* FUN_14257a340(int n3, int n1, Unk_ImgSize* pSize, int nFormat, void* pHeap, void* pTexMan, void* pSync);   // Image::Create(format, mips, size, use, heap, texman, sync)
-NiPointer<NiSourceTexture> FUN_141d33530(NiPixelData* pPixels, const NiTexture::FormatPrefs& kPrefs, bool bStatic);   // NiSourceTexture::Create_ThreadSafe (smart pointer: hidden return in rcx)
 void FillPixelRect(const unsigned char* pucPixel, NiPixelData* pkDest, const NiRect<unsigned int>& kRect);   // fill a rectangle
-void FUN_14272b7f0(void* pTarget, IDirect3DBaseTexture9* pD3DTexture);       // bind the D3D texture to the image
 void* FUN_14208a860(unsigned __int64 nSize, int nHint);     // MemObject operator new
 void* FUN_140876480(void* pOut, int n);                     // efd::MemHint(NONE)
 
@@ -310,7 +309,7 @@ bool CAsyncImageLoader::FUN_140a59540(ParamPtr spParam)
             MS2_ASSERT_AT(0x78, 0);
             return false;
         }
-        FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pRendererData)->GetD3DTexture());
+        reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pTarget)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((NiDX9TextureData*)pRendererData)->GetD3DTexture()));
         break;
     }
     }
@@ -403,7 +402,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         NiTexture::RendererData* pRendererData = spTexture->GetRendererData();
         if (pRendererData == 0)
             break;
-        FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pRendererData)->GetD3DTexture());
+        reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pTarget)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((NiDX9TextureData*)pRendererData)->GetD3DTexture()));
         return pImage;
     } while (0);
     CAsyncImageLoader::GetInstance()->QueueImage(strFile, Unk_GfxRef(pImage));
@@ -415,12 +414,12 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
     unsigned int uiPixel = 0x3f000000;     // r, g, b 0 and alpha 0x3f
     NiRect<unsigned int> kRect(0, MS2_IMAGE_SIZE(pImage).m_w, 0, MS2_IMAGE_SIZE(pImage).m_h);
     FillPixelRect((const unsigned char*)&uiPixel, spFill, kRect);
-    NiPointer<NiSourceTexture> spPlaceholder = FUN_141d33530(spFill, DAT_1439fc800, true);
+    NiPointer<NiSourceTexture> spPlaceholder = NiSourceTexture::Create_ThreadSafe(spFill, reinterpret_cast<NiTexture::FormatPrefs &>(DAT_1439fc800), true);
     if ((NiSourceTexture*)spPlaceholder == 0)
         return pImage;
     NiTexture::RendererData* pData = spPlaceholder->GetRendererData();
     if (pData == 0)
         return pImage;
-    FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pData)->GetD3DTexture());
+    reinterpret_cast<Scaleform::Render::D3D9::Texture*>(pTarget)->Initialize(reinterpret_cast<IDirect3DTexture9 *>(((NiDX9TextureData*)pData)->GetD3DTexture()));
     return pImage;
 }

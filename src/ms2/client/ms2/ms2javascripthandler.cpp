@@ -58,7 +58,7 @@ CStringW& FUN_141656be0(PCBase* pPC);                   // PC member: the guild 
 int FUN_140408410(const ATL::CAtlArray<int>& array, const int& nValue);     // index of nValue, -1 if absent
 class CBigDataLogSystem;
 template<> CBigDataLogSystem* TSingleton<CBigDataLogSystem>::GetInstance();
-void FUN_140a1f970(void* pService, const CStringA& strKey, const CStringA& strValue);   // logs an event
+class CBigDataLogSystem { public: void SendLog(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &); };
 
 // ---- dynamic initializers (.text$di) ----
 
@@ -314,7 +314,7 @@ bool CMS2JavascriptHandler::LogGuestbookWrite(CefRefPtr<CefV8Value> object, cons
     if (TSingleton<CBigDataLogSystem>::GetInstance() != NULL) {
         CStringA strValue("");
         CStringA strKey("guestbook_write");
-        FUN_140a1f970(TSingleton<CBigDataLogSystem>::GetInstance(), strKey, strValue);
+        reinterpret_cast<CBigDataLogSystem*>(TSingleton<CBigDataLogSystem>::GetInstance())->SendLog(strKey, strValue);
     }
     return true;
 }

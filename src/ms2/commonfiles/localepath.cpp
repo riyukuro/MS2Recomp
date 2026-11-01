@@ -26,10 +26,9 @@ class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-int FUN_1408733e0(void*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140165270(ATL::CAtlArray<CString>&, CString&);              // Add
-unsigned __int64 FUN_1401662c0(ATL::CAtlArray<CString>&);            // GetCount
 void* FUN_140164930(ATL::CAtlArray<CString>&, unsigned __int64);     // GetAt
 void FUN_1402be480(CString&, const char*);
 CString FUN_140298360(const char*, const CString&);
@@ -37,7 +36,7 @@ CString FUN_140188f50(const char*, int);
 bool FUN_1401c0090(const CString&, const CString&) noexcept;
 class Unk_14025e7c0 { };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-unsigned char FUN_14116d720(Unk_14025e7c0*);
+class CInputKeyHandler { public: bool IsDebugMode(void); };
 
 extern int DAT_1439f4840;
 extern _locale_t DAT_143aad168;
@@ -91,7 +90,7 @@ int CLocaleLanguageData::HasLanguageId(int nLanguage)
 int CLocaleLanguageData::HasLanguageCode(CString strCode)
 {
     int result = 0;
-    int nCount = (int)FUN_1401662c0(m_languages);
+    int nCount = (int)m_languages.GetCount();
     for (int i = 0; i < nCount; ++i)
     {
         CString s = *(CString*)FUN_140164930(m_languages, i);
@@ -107,7 +106,7 @@ int CLocaleLanguageData::HasLanguageCode(CString strCode)
 // @0x14064ed50
 int CLocaleLanguageData::GetDefaultLanguage()
 {
-    if (FUN_1401662c0(m_languages) <= 0)
+    if (m_languages.GetCount() <= 0)
         return 0;
     CString s = *(CString*)FUN_140164930(m_languages, 0);
     return FUN_140651920(s);
@@ -117,7 +116,7 @@ int CLocaleLanguageData::GetDefaultLanguage()
 void CLocaleLanguageData::GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
 {
     out.RemoveAll();
-    for (unsigned __int64 i = 0; i < FUN_1401662c0(m_languages); ++i)
+    for (unsigned __int64 i = 0; i < m_languages.GetCount(); ++i)
     {
         CString s = *(CString*)FUN_140164930(m_languages, i);
         int e = FUN_140651920(s);
@@ -129,7 +128,7 @@ void CLocaleLanguageData::GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementT
 void CLocaleLanguageData::GetLanguageCodes(ATL::CAtlArray<CString>& out)
 {
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(out))->RemoveAll();
-    for (unsigned __int64 i = 0; i < FUN_1401662c0(m_languages); ++i)
+    for (unsigned __int64 i = 0; i < m_languages.GetCount(); ++i)
     {
         CString s = FUN_1406504c0(*(CString*)FUN_140164930(m_languages, i));
         FUN_140165270(out, s);
@@ -161,7 +160,7 @@ CLocaleLanguage::~CLocaleLanguage()
 LocaleLanguageDataPtr CLocaleLanguage::GetLocaleData(unsigned int nLocale)
 {
     unsigned int nSel = 0;
-    nSel = FUN_14116d720((Unk_14025e7c0 *)(((class Unk_14025e7c0*)FUN_14025e7c0())));
+    nSel = reinterpret_cast<CInputKeyHandler*>((Unk_14025e7c0 *)(((class Unk_14025e7c0*)FUN_14025e7c0())))->IsDebugMode();
     if (nLocale != 0)
         nSel = nLocale;
     int nIdx = -1;
@@ -220,23 +219,23 @@ int CLocaleLanguage::LoadGameOptionLocale()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("gameoptionlocale"); pNode != 0;
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("gameoptionlocale")); pNode != 0;
          pNode = reinterpret_cast<Unk_140165cf0*>(((class Unk_140168650*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140168650*>(pNode)))->NextSibling("gameoptionlocale"))))
     {
         LocaleLanguageDataPtr data(new CLocaleLanguageData);
         CString strLanguage;
         CString strRegion;
         CString strVoice;
-        FUN_1408733e0(pNode, "locale", data->m_strLocale);
-        FUN_1408733e0(pNode, "language", strLanguage);
-        FUN_1408733e0(pNode, "region", strRegion);
-        FUN_1408733e0(pNode, "voice", strVoice);
+        XmlGetAttr((class TiXmlElement *)(pNode), "locale", data->m_strLocale);
+        XmlGetAttr((class TiXmlElement *)(pNode), "language", strLanguage);
+        XmlGetAttr((class TiXmlElement *)(pNode), "region", strRegion);
+        XmlGetAttr((class TiXmlElement *)(pNode), "voice", strVoice);
         Unk_SplitA(strLanguage, (ATL::CAtlArray<CStringA>*)&(data->m_languages), ",");
         Unk_SplitA(strRegion, (ATL::CAtlArray<CStringA>*)&(data->m_regions), ",");
         Unk_SplitA(strVoice, (ATL::CAtlArray<CStringA>*)&(data->m_voices), ",");

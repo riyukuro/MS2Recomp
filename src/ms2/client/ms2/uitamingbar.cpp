@@ -22,19 +22,21 @@ class Unk_TamingClip : public ASMovieClip
 };
 class Unk_TamingEntity : public ASGameEntity
 {
+};
+class Unk_BannerClip   // C3: member view (the entity clip's create / update calls)
+{
 public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
-    void FUN_1422baea0(const char* szMember, float* pOut);                                       // read a member
 };
 struct Unk_TamingCfgFloat { char m_pad[0x58]; };
-struct Unk_TamingCfgInt64 { __int64 FUN_140ba77c0(); char m_pad[8]; };
+struct Unk_AdvCfgExp { __int64 FUN_140ba77c0(); char m_pad[8]; };
 struct Unk_TamingCfg
 {
     char m_pad_0000[0x2c8];
     Unk_TamingCfgFloat m_2c8;
     char m_pad_0320[0x8468 - 0x2c8 - sizeof(Unk_TamingCfgFloat)];
-    Unk_TamingCfgInt64 m_8468;
+    Unk_AdvCfgExp m_8468;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_TamingUIScale;
@@ -50,7 +52,7 @@ class Unk_TamingTamed : public CPet { };
 class Unk_TamingActor : public PCBase
 {
 };
-Unk_TamingTamed* FUN_1409ffc60(PCBase* pActor);
+template <> CPet* efd::DynamicCast<CPet, PCBase>(PCBase* Source);   // C3: was FUN_1409ffc60
 class Unk_TamingPlayer : public GameObject { };
 class Unk_TamingWorld;
 class WorldService   // C3: member view for the former free stand-ins
@@ -108,7 +110,7 @@ void UITamingBar::Entity::vfunc_5()
     if (m_38.get())
     {
         m_38->Invoke("open", m_a0, m_a8, m_b0);
-        ((Unk_TamingEntity*)m_38.operator->())->FUN_1422baea0("m_barWidth", &m_bc);
+        reinterpret_cast<AScript*>(((Unk_TamingEntity*)m_38.operator->()))->FUN_1422baea0("m_barWidth", &m_bc);
     }
 }
 
@@ -154,7 +156,7 @@ int UITamingBar::Entity::vfunc_8(int n)
     int nDead = pActor->FUN_14166ce30();
     if (nDead != 0)
         return 1;
-    Unk_TamingTamed* pTamed = FUN_1409ffc60(pActor);
+    Unk_TamingTamed* pTamed = static_cast<Unk_TamingTamed*>(efd::DynamicCast<CPet, PCBase>(pActor));
     if (pTamed != 0)
     {
         Unk_TamingPlayer* pPlayer = ((class Unk_TamingPlayer*)((class WorldService*)(class Unk_TamingWorld*)(((class Unk_TamingWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -214,7 +216,7 @@ void UITamingBar::Entity::FUN_140e97d70(__int64 nCur)
 // @0x140e97e00
 void UITamingBar::Entity::FUN_140e97e00()
 {
-    Unk_TamingTamed* pTamed = FUN_1409ffc60(FUN_140f49330());
+    Unk_TamingTamed* pTamed = static_cast<Unk_TamingTamed*>(efd::DynamicCast<CPet, PCBase>(FUN_140f49330()));
     if (pTamed != 0)
         m_b0 = pTamed->GetGradeFx();
 }
@@ -299,7 +301,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
             {
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
-                Scaleform::GFx::Value v = ((Unk_TamingEntity*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
@@ -326,7 +328,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())
-                                ((Unk_TamingEntity*)pClip.operator->())->FUN_140ba9570("updateEntity", reinterpret_cast<AScript*>(((Unk_TamingEntity*)pOldClip.operator->()))->FUN_1422bb870(), bNew);
+                                ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", reinterpret_cast<AScript*>(((Unk_TamingEntity*)pOldClip.operator->()))->FUN_1422bb870(), bNew);
                         }
                     }
                     pEntity->FUN_140f48ce0(nActorId);

@@ -44,7 +44,7 @@ CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undec
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
-int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);
+int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string by key
 
@@ -131,7 +131,7 @@ int CCharacterAbilityTable::LoadCharacterAbilityCategory()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -173,7 +173,7 @@ int CCharacterAbilityTable::LoadCharacterAbility()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -279,7 +279,7 @@ MS2Ptr<CCharacterAbility> CCharacterAbilityTable::FUN_1401e0670(int nId)
 // @0x1401e0790
 int FUN_1401e0790(unsigned short nLevel, int nPoints)
 {
-    unsigned short nPlayerLevel = ((class Unk_CaSwitches*)FUN_140166410())->FUN_14036de00();
+    unsigned short nPlayerLevel = ((unsigned short)((class CFeatureManager*)(((class Unk_CaSwitches*)FUN_140166410())))->FUN_14036de00());
     int nTotal = nLevel - nPlayerLevel;
     nTotal += *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaState*)FUN_1401d3200())->m_slot)->Get());
     nTotal += nPoints;
@@ -291,7 +291,7 @@ int FUN_1401e0800(unsigned short nLevel)
 {
     if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d570(0x2d))
         return 0;
-    if (((class Unk_CaSwitches*)FUN_140166410())->FUN_14036de00() > nLevel)
+    if (((unsigned short)((class CFeatureManager*)(((class Unk_CaSwitches*)FUN_140166410())))->FUN_14036de00()) > nLevel)
         return 0;
     return 1;
 }

@@ -112,8 +112,6 @@ public:
 
     MS2Ptr<Unk_HudButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_HudButton>& out);
     MS2Ptr<Unk_HudInput> FUN_14129a040(const CString& strName, MS2Ptr<Unk_HudInput>& out);
-    MS2Ptr<Unk_HudText> FUN_140bb4cf0(const CString& strName);
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -248,7 +246,6 @@ public:
     virtual int vfunc_48();                                                 // 48 0x14135eab0
 
     CString FUN_14135e570();
-    MS2Ptr<Unk_HudText> FUN_140bb4cf0(const CString& strName);
     void FUN_14135e660(ASData& data);
     void FUN_14135e7a0(ASData& data);
     void FUN_14135e880(const CString& strNode, const Unk_HudStreamPoint& kRot, const Unk_HudStreamPoint& kTrans);

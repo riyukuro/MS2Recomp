@@ -154,10 +154,10 @@ void UIItemPetStudyDialog::OnLoadComplete()
     FUN_1412761e0(m_30, 1);
     ASObj obj(2);
     obj.FUN_1407cba60("bindID", CString(m_strSlot));
-    obj.FUN_1407cbb20("itemName", m_spBox->FUN_140527b10());
+    ((class AScript&)(obj)).FUN_1407cbb20("itemName", m_spBox->FUN_140527b10());
     CStringW strOption;
     ATL::CAtlArray<CStringW> unused;
-    obj.FUN_1407cbb20("optionText", CStringW(strOption));
+    ((class AScript&)(obj)).FUN_1407cbb20("optionText", CStringW(strOption));
     m_30->Invoke("setData", obj);
 }
 
@@ -325,8 +325,8 @@ void UIItemPetStudyDialog::FUN_140e55f90(ItemScrollSlot& slot, DragSlot* pDrag)
             m_spPet = spPet;
             CStringW strName = spPet->FUN_140528160();
             ASObj obj(2);
-            obj.FUN_1407cbb20("petName", CStringW(strName));
-            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
+            ((class AScript&)(obj)).FUN_1407cbb20("petName", CStringW(strName));
+            ((class AScript&)(obj)).FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
             m_30->Invoke("selectPet", obj.FUN_1422bb870());
         }
     }

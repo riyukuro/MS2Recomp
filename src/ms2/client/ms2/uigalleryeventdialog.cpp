@@ -53,7 +53,6 @@ public:
     Scaleform::GFx::Value FUN_140acd130(const char*, CStringW);
     Scaleform::GFx::Value FUN_140ba4cc0(const char*, const Unk_GalleryAS&);
     Scaleform::GFx::Value FUN_1409ba030(const char*, int);
-    Scaleform::GFx::Value FUN_1409ba0d0(const char*, int, int);
 private:
     void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
 };
@@ -125,7 +124,8 @@ public:
 };
 class Unk_GalleryQuestGlobal { public: void* m_0; void* m_8; Unk_GalleryQuestState state; };
 Unk_GalleryQuestGlobal* FUN_140764020();
-class Unk_GalleryCounters { public: int FUN_1409617d0(int, int, int*); };
+class Unk_GalleryCounters;
+class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
 extern Unk_GalleryCounters g_galleryCounters;
 class Unk_GalleryItem { public: CString FUN_14053fdd0(); };
 Unk_GalleryPtr<Unk_GalleryItem> FUN_14053f870(int);
@@ -378,7 +378,7 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
         auto context = FUN_1401c0d90()->FUN_14047cf60();
         if ((Unk_GalleryContext*)context) {
             int dummy = 0;
-            int opened = g_galleryCounters.FUN_1409617d0(1600, context->id, &dummy);
+            int opened = reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1600, context->id, dummy);
             if (opened >= context->maxOpen) {
                 FUN_140d73aa0(BlockFormat(3323), 0, 0, CStringW(L""));
                 return 1;
@@ -486,7 +486,7 @@ void UIGalleryEventDialog::FUN_140c176f0(Unk_GalleryPtr<Unk_GalleryContext> cont
     if (m_30.IsNull()) return;
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_140acd130("loadIllust", context->illust);
     int dummy = 0;
-    int received = g_galleryCounters.FUN_1409617d0(1601, context->id, &dummy);
+    int received = reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1601, context->id, dummy);
     if (FUN_140c187e0() == 1 || received == 1) { m_30->Invoke("completed"); return; }
     for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
         auto card = context->cards.FUN_140410e70(i);
@@ -564,8 +564,8 @@ void UIGalleryEventDialog::UpdateOpenCount()
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return;
     int dummy = 0;
-    int opened = g_galleryCounters.FUN_1409617d0(1600, context->id, &dummy);
-    reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_1409ba0d0("setOpenCount", opened, context->maxOpen);
+    int opened = reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1600, context->id, dummy);
+    reinterpret_cast<AScript*>(m_30.operator->())->FUN_1409ba0d0("setOpenCount", opened, context->maxOpen);
 }
 MS2_REPLACE_METHOD(0x140C18330, UIGalleryEventDialog, UpdateOpenCount, 298, 0x6A2711D5);
 
@@ -623,7 +623,7 @@ int UIGalleryEventDialog::FUN_140c187e0()
     auto context = FUN_1401c0d90()->FUN_14047cf60();
     if (context == 0) return 0;
     int dummy = 0;
-    if (g_galleryCounters.FUN_1409617d0(1601, context->id, &dummy)) return 0;
+    if (reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1601, context->id, dummy)) return 0;
     for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
         auto card = context->cards.FUN_140410e70(i);
         if (!card) { MS2_ASSERT_AT(449, "pCard" && 0); return 0; }

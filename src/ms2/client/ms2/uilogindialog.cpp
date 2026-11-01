@@ -32,6 +32,7 @@
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
+#include "ms2/guess/machineidmanager.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 
 #ifndef MS2_HOOK_DLL   // s_pendingId: the exe's object at 0x143af37a0, which other units reach as DAT_143af37a0 (the hook DLL binds it)
@@ -44,25 +45,10 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of exe types ----
 
-// The text input children ("m_inputID" / "m_inputPW").
-class Unk_LoginInput : public ASDisplayObject
-{
-public:
-    void FUN_1422e1500(int n1, int n2);                         // set the selection
-};
-
-// The "m_chkLocaledName" check box.
-class Unk_LoginCheck : public ASButton
-{
-public:
-};
-
 // The movie root (m_30) with the child lookups and the 4-argument invoke the dialog uses.
 class Unk_LoginRoot : public AScript
 {
 public:
-    template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);
-    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);
     Scaleform::GFx::Value FUN_1419e2c30(const char* szMethod, CString strId, bool bSaveId, bool bFlag, CString strRegion);
 };
 
@@ -70,21 +56,23 @@ public:
 class Unk_LoginOptions
 {
 public:
-    void FUN_141260e00(bool bLocaledName);
     void* m_00; void* m_08; void* m_10;
     CString m_strSavedId;                                       // +0x18
     void* m_20; void* m_28;
     bool m_bSaveId;                                             // +0x30
     bool m_bLocaledName;                                        // +0x31
 };
-class Unk_LoginOptionsHolder { public: Unk_LoginOptions* FUN_140cfd260(); };
-Unk_LoginOptionsHolder* FUN_1409a8b10();
+class Unk_LgSettings { public: CStringW* FUN_140cfd260(); };
+Unk_LgSettings* FUN_1409a8b10();
+struct Unk_GsConnect;
+void FUN_141260e00(Unk_GsConnect* pConnect, bool bLocaledName);
 
-void* FUN_14067c020(void* pId);                                 // zero-inits the 16-byte id
 // The login request packet body (encoded by 0x1401f9020).
-struct Unk_LoginMachineId
+class Unk_MachineId
 {
-    Unk_LoginMachineId() { FUN_14067c020(this); }
+public:
+    Unk_MachineId();                                            // zero-inits the 16-byte id
+    Unk_MachineId* FUN_14067c080(const Unk_MachineId* pSrc);
     unsigned char m_data[16];
 };
 struct Unk_LoginRequest
@@ -95,21 +83,14 @@ struct Unk_LoginRequest
     CString m_strId;                                            // +0x08
     CString m_strPassword;                                      // +0x10
     unsigned m_nLoginType;                                      // +0x18
-    Unk_LoginMachineId m_machineId;                             // +0x1c
+    Unk_MachineId m_machineId;                                  // +0x1c
     int m_n2c;                                                  // +0x2c
     int m_n30;                                                  // +0x30
     CString m_strRegion;                                        // +0x38
 };
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
 void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
-class Unk_LoginMachine
-{
-public:
-    const Unk_LoginMachineId& FUN_140d4fdf0();
-    int FUN_140d4fe10();
-};
 void* FUN_140aadf70();   // C3: was FUN_140aadf70
-void FUN_14067c080(Unk_LoginMachineId* pDst, const Unk_LoginMachineId& src);
 
 // The packet handler table and the message boxes.
 class Unk_LoginPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
@@ -119,7 +100,7 @@ class CMsgBoxData : public CPtred
 public:
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
 };
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show it
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nUnk, Delegate<bool(int, const CMsgBoxData&)> cb);
 class Unk_LoginNotice { public: void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag); };
@@ -147,8 +128,7 @@ class CStateService   // C3: member view for the former free stand-ins
 public:
     int FUN_1417e2610();
 };
-void FUN_141acfad0(UISceneLogin* pScene, const int& nUiId);     // UISceneLogin: hide the title and the dialogs
-class Unk_LoginBrowser { public: void FUN_1415383a0(CString strUrl, int n, int a, int b, int c); };
+class CNetworkService { public: int ConnectTo(CString strUrl, int n, int a, int b, int c); };
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
 int FUN_1406c34c0();                                            // the platform kind
 void* FUN_140d86260();   // C3: was FUN_140d86260
@@ -210,7 +190,7 @@ void UILoginDialog::OnEndPopdown(bool bFromPopdown)
     }
     CString strUrl = g_strServerAddr;
     int nFlag = g_nPort;
-    ((class Unk_LoginBrowser*)FUN_140714f90())->FUN_1415383a0(strUrl, nFlag, 1, 1, 0);
+    FUN_140714f90()->ConnectTo(strUrl, nFlag, 1, 1, 0);
 }
 
 // @0x1419e1160
@@ -221,10 +201,10 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         return;
     if (m_30.get() != 0)
     {
-        MS2Ptr<Unk_LoginCheck> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<Unk_LoginCheck>("m_chkLocaledName");
+        MS2Ptr<ASCheckBox> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<ASCheckBox>("m_chkLocaledName");
         if (spLocale)
         {
-            FUN_1409a8b10()->FUN_140cfd260()->FUN_141260e00(spLocale->FUN_1422ce0e0() == 1 ? true : false);
+            FUN_141260e00(reinterpret_cast<Unk_GsConnect*>(FUN_1409a8b10()->FUN_140cfd260()), spLocale->FUN_1422ce0e0() == 1 ? true : false);
         }
     }
     int nLoginType = 0;
@@ -244,11 +224,11 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = nLoginType;
-        FUN_14067c080(&request.m_machineId, ((class Unk_LoginMachine*)FUN_140aadf70())->FUN_140d4fdf0());
-        request.m_n2c = ((class Unk_LoginMachine*)FUN_140aadf70())->FUN_140d4fe10();
+        request.m_machineId.FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(((class CMachineIDManager*)FUN_140aadf70())->GetID()));
+        request.m_n2c = ((class CMachineIDManager*)FUN_140aadf70())->GetValue();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
-        if (FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName == 1)
+        if (reinterpret_cast<Unk_LoginOptions*>(FUN_1409a8b10()->FUN_140cfd260())->m_bLocaledName == 1)
             request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
@@ -278,11 +258,11 @@ void UILoginDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     CString strId = DAT_143af37a0;
     if (strId.IsEmpty())
-        strId = FUN_1409a8b10()->FUN_140cfd260()->m_strSavedId;
+        strId = reinterpret_cast<Unk_LoginOptions*>(FUN_1409a8b10()->FUN_140cfd260())->m_strSavedId;
     bool bSaveId = !strId.IsEmpty();
-    bool bLocaledName = FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName;
+    bool bLocaledName = reinterpret_cast<Unk_LoginOptions*>(FUN_1409a8b10()->FUN_140cfd260())->m_bLocaledName;
     bLocaledName = true;
-    FUN_1409a8b10()->FUN_140cfd260()->m_bSaveId = bSaveId;
+    reinterpret_cast<Unk_LoginOptions*>(FUN_1409a8b10()->FUN_140cfd260())->m_bSaveId = bSaveId;
     static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, FUN_1406521f0(FUN_1406516b0()));
     if (!DAT_143af37a0.IsEmpty())
     {
@@ -309,7 +289,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
                 else
                 {
-                    MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
+                    MS2Ptr<ASTextInput> spInput = FUN_1419e2530();
                     if (spInput.get() != 0)
                         spInput->FUN_1422e1500(0, reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText().GetLength());
                 }
@@ -356,7 +336,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (arg.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             bool bSave = arg.FUN_1422b8a90();
-            FUN_1409a8b10()->FUN_140cfd260()->m_bSaveId = bSave;
+            reinterpret_cast<Unk_LoginOptions*>(FUN_1409a8b10()->FUN_140cfd260())->m_bSaveId = bSave;
             return 1;
         }
     }
@@ -451,7 +431,7 @@ bool UILoginDialog::FUN_1419e2310(int nResult)
 CString UILoginDialog::FUN_1419e2370()
 {
     {
-        MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
+        MS2Ptr<ASTextInput> spInput = FUN_1419e2530();
         if (spInput.get() != 0)
             return FUN_14016a600(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText(), 0);
     }
@@ -462,7 +442,7 @@ CString UILoginDialog::FUN_1419e2370()
 CString UILoginDialog::FUN_1419e2450()
 {
     {
-        MS2Ptr<Unk_LoginInput> spInput = FUN_1419e25e0();
+        MS2Ptr<ASTextInput> spInput = FUN_1419e25e0();
         if (spInput.get() != 0)
             return FUN_14016a600(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText(), 0);
     }
@@ -470,25 +450,25 @@ CString UILoginDialog::FUN_1419e2450()
 }
 
 // @0x1419e2530
-MS2Ptr<Unk_LoginInput> UILoginDialog::FUN_1419e2530()
+MS2Ptr<ASTextInput> UILoginDialog::FUN_1419e2530()
 {
     if (m_30.get() != 0)
-        return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<Unk_LoginInput>("m_inputID");
-    return MS2Ptr<Unk_LoginInput>(0);
+        return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<ASTextInput>("m_inputID");
+    return MS2Ptr<ASTextInput>(0);
 }
 
 // @0x1419e25e0
-MS2Ptr<Unk_LoginInput> UILoginDialog::FUN_1419e25e0()
+MS2Ptr<ASTextInput> UILoginDialog::FUN_1419e25e0()
 {
     if (m_30.get() != 0)
-        return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<Unk_LoginInput>("m_inputPW");
-    return MS2Ptr<Unk_LoginInput>(0);
+        return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<ASTextInput>("m_inputPW");
+    return MS2Ptr<ASTextInput>(0);
 }
 
 // @0x1419e2690
 bool UILoginDialog::FUN_1419e2690(int, const CMsgBoxData&)
 {
-    MS2Ptr<Unk_LoginCheck> spLocale;
+    MS2Ptr<ASCheckBox> spLocale;
     FUN_140bc6d10("m_chkLocaledName", spLocale);
     spLocale->FUN_1422ce090(1);
     return true;
@@ -502,7 +482,7 @@ bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
     }
     else
     {
-        MS2Ptr<Unk_LoginCheck> spLocale;
+        MS2Ptr<ASCheckBox> spLocale;
         FUN_140bc6d10("m_chkLocaledName", spLocale);
         spLocale->FUN_1422ce090(1);
     }
@@ -541,7 +521,7 @@ void UILoginDialog::OnConnect()
         if (pScene != 0)
         {
             int nUiId = vfunc_48();
-            FUN_141acfad0(pScene, nUiId);
+            pScene->FUN_141acfad0((__int64)&nUiId);
         }
     }
     else

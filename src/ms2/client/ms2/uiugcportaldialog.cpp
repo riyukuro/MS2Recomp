@@ -61,6 +61,7 @@
 #include "uiugcportaldialog.h"
 #include "buddymanager.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -106,7 +107,6 @@ public:
     virtual void vfunc_24(bool bEnable);                        // 24
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                      // add an item
-    void FUN_1422df690(unsigned int nSelected);                 // select
     int FUN_1422df6c0();                                        // the selection
     MS2Ptr<ASArray> FUN_1422df770();                            // the data provider
 };
@@ -332,7 +332,7 @@ void UIUGCPortalDialog::FUN_140fb0e30()
         item.FUN_1409c0e60("label", m_198[i].c_str());
         spCombo.operator->()->FUN_1422dfc70(item);
     }
-    spCombo.operator->()->FUN_1422df690(0);
+    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->SetSelectedIndex(0);
     Unk_UgcpCombo* pCombo = spCombo.operator->();
     pCombo->vfunc_24(true);
 }
@@ -389,7 +389,7 @@ void UIUGCPortalDialog::FUN_140fb1040()
         item.FUN_1407cbb20("label", CStringTable::GetInstance()->FUN_141811980(3, nId));
         spCombo.operator->()->FUN_1422dfc70(item);
     }
-    spCombo.operator->()->FUN_1422df690(0);
+    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->SetSelectedIndex(0);
     Unk_UgcpCombo* pCombo = spCombo.operator->();
     pCombo->vfunc_24(true);
 }
@@ -418,7 +418,7 @@ void UIUGCPortalDialog::FUN_140fb15a0()
         item.FUN_1407cbb20("label", buddies[i].get()->FUN_1401cc1c0());
         spCombo.operator->()->FUN_1422dfc70(item);
     }
-    spCombo.operator->()->FUN_1422df690(0);
+    reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->SetSelectedIndex(0);
     Unk_UgcpCombo* pCombo = spCombo.operator->();
     pCombo->vfunc_24(true);
 }

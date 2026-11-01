@@ -79,8 +79,8 @@ void UIGameModeSelectDialog::OnLoadComplete()
     if (m_178.get() != 0)
         m_178.operator->()->FUN_1422ce240(GmClickDelegate(this, &UIGameModeSelectDialog::FUN_140c1a510), 0);
     ASObj obj(2);
-    obj.FUN_1407cbb20("rpgMoviePath", ((Unk_GmGlobals*)FUN_1401d3200())->m_e548);
-    obj.FUN_1407cbb20("royaleMoviePath", ((Unk_GmGlobals*)FUN_1401d3200())->m_e550);
+    ((class AScript&)(obj)).FUN_1407cbb20("rpgMoviePath", ((Unk_GmGlobals*)FUN_1401d3200())->m_e548);
+    ((class AScript&)(obj)).FUN_1407cbb20("royaleMoviePath", ((Unk_GmGlobals*)FUN_1401d3200())->m_e550);
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
@@ -110,7 +110,7 @@ int UIGameModeSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("OnEndPopdown", szMethod) == 0)
     {
-        reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e25a0(0x6200009);
+        reinterpret_cast<CStateService*>((class CStateService*)((FUN_140aa6d30())))->FUN_1417e25a0((int)(0x6200009));
         return 1;
     }
     return 0;

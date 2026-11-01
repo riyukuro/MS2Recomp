@@ -68,7 +68,12 @@ const char* FUN_141a61590(int nState, const std::pair<const char*, Unk_RequireSt
 class Unk_NtClip : public ASGameEntity
 {
 public:
+};
+class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
+{
+public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 
 struct Unk_NtCfgFloat { char m_pad[0x58]; };
@@ -795,7 +800,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_NtClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -822,7 +827,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            pClip->FUN_140ba9570("updateEntity", pOldClip->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", pOldClip->FUN_1422bb870(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);

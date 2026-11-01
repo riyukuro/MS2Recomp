@@ -16,7 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-
+class UIInventoryDialog { public: int FUN_141999de0(void); };
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The local player: only the position getter (slot 18) is used here.
@@ -136,7 +136,7 @@ int CGuideConditionInventoryTab::vfunc_3()
 {
     Unk_TabInventory* pInv = reinterpret_cast<Unk_TabInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInv != 0 && pInv->vfunc_55() == 0)
-        return FUN_1413a5600(m_n20 == pInv->FUN_141999de0());
+        return FUN_1413a5600(m_n20 == ((class UIInventoryDialog*)(pInv))->FUN_141999de0());
     return 0;
 }
 MS2_REPLACE_METHOD(0x1413A7A50, CGuideConditionInventoryTab, vfunc_3, 111, 0xD63E69C8);

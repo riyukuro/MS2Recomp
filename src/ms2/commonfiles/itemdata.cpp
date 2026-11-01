@@ -37,7 +37,7 @@
 #include "ms2/commonfiles/filesystem.h"
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 { public: Unk_140165cf0* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -50,23 +50,23 @@ int FUN_140540210(Unk_140165cf0*, const char*, int&);
 int FUN_1405402a0(Unk_140165cf0*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CString&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-void FUN_140873ca0(void*, const char*, int);
-void FUN_140873ce0(void*, const char*, int);
-void* FUN_14086e000(void* pParent, const void* pChild);                   // InsertEndChild
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
+class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
 void FUN_1403d7960(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nA, const int& nB);
 
 // Unit-local view of the game's TiXmlElement (0x90 bytes).
-class Unk_TiXmlElement
+class TiXmlElement   // C3: unit-local view of the real class
 {
 public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
+    TiXmlElement(const char* pszName);          // 0x14086f2f0
+    virtual ~TiXmlElement();                    // 0x14086f450
 private:
-    void* m_data[0x12];
+    void* m_data[0x11];
 };
 
 // The row lookup of the PC bang table: a 24-byte handle and the node it resolves to.
@@ -103,6 +103,7 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 class ItemGachaBoxTable;
+class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); };   // C3: member view (was ItemFunctionArgs::FUN_1408d1fd0)
 
 // Item table singleton (commonstruct_wa.h declares the free functions): the members this unit calls.
 class Unk_IngTable : public CItemDataTable
@@ -143,18 +144,18 @@ int FUN_1403ba790(unsigned int);  // C3: the definition's signature
 
 // Option-table lookups started by CItemData::FUN_14053ed00.
 struct Unk_OptionData;
-class Unk_OptionKey
+class Unk_Random   // C3: unit-local view of the game random generator (randomeffectparam.h)
 {
 public:
-    Unk_OptionKey(int nId);                                 // 0x140768210
-    ~Unk_OptionKey();                                       // 0x1401cdc30
+    explicit Unk_Random(int nId);                               // 0x140768210
+    ~Unk_Random();                                       // 0x1401cdc30
 private:
     void* m_data[8];                                        // 0x40 bytes (pointer elements: a non-pointer array is a GS buffer, and the exe frame has no cookie)
 };
 class Unk_OptionMgr
 {
 public:
-    Unk_PayloadPtr<Unk_OptionData> FUN_1405f4ff0(MS2Ptr<CItemData> pItem, int nRank, Unk_OptionKey& key);
+    Unk_PayloadPtr<Unk_OptionData> FUN_1405f4ff0(MS2Ptr<CItemData> pItem, int nRank, Unk_Random& key);
 };
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 
@@ -201,13 +202,13 @@ bool CItemChangeBeautyTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((Unk_140165cf0*)((Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("beauty"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("beauty")))
+    for (Unk_140165cf0* pNode = ((Unk_140165cf0*)((Unk_XmlNode*)(pRoot))->FirstChild("beauty")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("beauty")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -220,7 +221,7 @@ bool CItemChangeBeautyTable::Load()
             continue;
         data->m_nId = nId;
         data->FUN_14053a7c0(pNode);
-        for (Unk_140165cf0* pItem = pNode->FUN_140165cf0("item"); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+        for (Unk_140165cf0* pItem = ((Unk_140165cf0*)((Unk_XmlNode*)(pNode))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                 continue;
@@ -335,14 +336,14 @@ CItemData::~CItemData()
 // MS2-FUNCTIONAL: stack frame is 0x10 larger than the exe (temp slot layout of the log-argument locals); behaviour matches
 bool CItemData::Load(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
+    Unk_140165cf0* pBasic = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("basic"));
     if (pBasic) {
         XmlGetAttr((class TiXmlElement*)(pBasic), "originID", *(unsigned int*)&static_cast<int&>(originID));
         CString strStringTag;
-        FUN_1408733e0(pBasic, "stringTag", strStringTag);
+        XmlGetAttr((class TiXmlElement*)(pBasic), "stringTag", strStringTag);
         stringTag = FUN_140557640(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), &strStringTag);
     }
-    Unk_140165cf0* pProperty = pElem->FUN_140165cf0("property");
+    Unk_140165cf0* pProperty = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("property"));
     if (pProperty) {
         FUN_1405402a0(pProperty, "type", type);
         XmlGetAttr((class TiXmlElement*)(pProperty), "subtype", subtype);
@@ -364,18 +365,18 @@ bool CItemData::Load(Unk_140165cf0* pElem)
     if (!fusion.LoadXml(pElem)) return false;
     if (!additionalEffect.FUN_140549c00(pElem)) return false;
     if (!function.Load(pElem)) return false;
-    Unk_140165cf0* pTool = pElem->FUN_140165cf0("tool");
+    Unk_140165cf0* pTool = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("tool"));
     if (pTool) {
         XmlGetAttr((class TiXmlElement*)(pTool), "itemPreset", *(unsigned int*)&static_cast<int&>(itemPreset));
     }
-    Unk_140165cf0* pOption = pElem->FUN_140165cf0("option");
+    Unk_140165cf0* pOption = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("option"));
     if (pOption) {
         XmlGetAttr((class TiXmlElement*)(pOption), "constantID", *(unsigned int*)&static_cast<int&>(constantID));
         XmlGetAttr((class TiXmlElement*)(pOption), "randomID", *(unsigned int*)&static_cast<int&>(randomID));
         XmlGetAttr((class TiXmlElement*)(pOption), "optionLevel", optionLevel);
         XmlGetAttr((class TiXmlElement*)(pOption), "optionLevelFactor", optionLevelFactor);
     }
-    Unk_140165cf0* pPCBang = pElem->FUN_140165cf0("PCBang");
+    Unk_140165cf0* pPCBang = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("PCBang"));
     if (pPCBang) {
         XmlGetAttr((class TiXmlElement*)(pPCBang), "PCBang", bPCBang);
     }
@@ -400,17 +401,17 @@ bool CItemData::Load(Unk_140165cf0* pElem)
 bool CItemData::Save(void* pParent)
 {
     {
-        Unk_TiXmlElement property("property");
-        if (rank != 0) FUN_140873ca0(&property, "rank", rank);
-        if (type != 0) FUN_140873ca0(&property, "type", type);
-        if (subtype != 0) FUN_140873ca0(&property, "subtype", subtype);
-        if (iconCode != 0) FUN_140873ca0(&property, "iconCode", iconCode);
-        if (itemGroup != 0) FUN_140873ca0(&property, "itemGroup", itemGroup);
-        if (skinType != 0) FUN_140873ca0(&property, "skinType", skinType);
-        if (param1 != 0) FUN_140873ca0(&property, "param1", param1);
-        if (param2 != 0) FUN_140873ca0(&property, "param2", param2);
+        TiXmlElement property("property");
+        if (rank != 0) XmlSetAttr(&property, "rank", rank);
+        if (type != 0) XmlSetAttr(&property, "type", type);
+        if (subtype != 0) XmlSetAttr(&property, "subtype", subtype);
+        if (iconCode != 0) XmlSetAttr(&property, "iconCode", iconCode);
+        if (itemGroup != 0) XmlSetAttr(&property, "itemGroup", itemGroup);
+        if (skinType != 0) XmlSetAttr(&property, "skinType", skinType);
+        if (param1 != 0) XmlSetAttr(&property, "param1", param1);
+        if (param2 != 0) XmlSetAttr(&property, "param2", param2);
         this->property.FUN_1405479a0(&property);
-        FUN_14086e000(pParent, &property);
+        reinterpret_cast<TiXmlNode*>(pParent)->InsertEndChild(reinterpret_cast<const TiXmlNode&>(property));
     }
     cubeTextureName.SaveXml(pParent);
     period.Save(pParent);
@@ -422,9 +423,9 @@ bool CItemData::Save(void* pParent)
     material.FUN_140547440(pParent);
     additionalEffect.FUN_140549d40(pParent);
     if (itemPreset != 0) {
-        Unk_TiXmlElement tool("tool");
-        FUN_140873ce0(&tool, "itemPreset", itemPreset);
-        FUN_14086e000(pParent, &tool);
+        TiXmlElement tool("tool");
+        XmlSetAttr(&tool, "itemPreset", (unsigned int)(itemPreset));
+        reinterpret_cast<TiXmlNode*>(pParent)->InsertEndChild(reinterpret_cast<const TiXmlNode&>(tool));
     }
     return true;
 }
@@ -1090,7 +1091,7 @@ bool CItemData::HasOpenGachaBoxFunction()
 {
     if (!IsFunctionName(L"OpenGachaBox"))
         return false;
-    int nValue = function.parameter.FUN_1408d1fd0(0, 0);
+    int nValue = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
     if (nValue == 0)
         return false;
     return true;
@@ -1101,7 +1102,7 @@ bool CItemData::HasQuestStartFunction()
 {
     if (!IsFunctionName(L"QuestStart"))
         return false;
-    int nValue = function.parameter.FUN_1408d1fd0(0, 0);
+    int nValue = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
     if (nValue == 0)
         return false;
     return true;
@@ -1233,7 +1234,7 @@ int CItemData::GetOpenGachaBoxParam0()
 {
     if (function.name != L"OpenGachaBox")
         return 0;
-    int nResult = function.parameter.FUN_1408d1fd0(0, 0);
+    int nResult = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
     return nResult;
 }
 
@@ -1242,7 +1243,7 @@ int CItemData::GetOpenGachaBoxParam1()
 {
     if (function.name != L"OpenGachaBox")
         return 0;
-    int nResult = function.parameter.FUN_1408d1fd0(1, 0);
+    int nResult = ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(1, 0);
     return nResult;
 }
 
@@ -1251,7 +1252,7 @@ int CItemData::GetQuestStartQuestId()
 {
     if (!HasQuestStartFunction())
         return 0;
-    return function.parameter.FUN_1408d1fd0(0, 0);
+    return ((class Unk_CommandArgs&)(function.parameter)).FUN_1408d1fd0(0, 0);
 }
 
 // @0x14053dfd0
@@ -1577,7 +1578,7 @@ void CItemData::FUN_14053ed00()
 {
     if (constantID != 0)
     {
-        Unk_OptionKey key(0x4d2);
+        Unk_Random key(0x4d2);
         if (rank == 0)
         {
             for (int nRank = 1; nRank < 7; ++nRank)

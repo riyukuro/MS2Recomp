@@ -224,7 +224,8 @@ class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b884e0(struct Vector3&);   // C3: was FUN_140b884e0
 
 // Message boxes (CMsgBoxData, 0x2a0 bytes).
-class Unk_CMsgBoxData { public: void FUN_141a01660(const CStringW& str); void FUN_141a024a0(int n); };
+class CMsgBoxData { public: void FUN_141a024a0(int n); };   // C3: unit-local view
+class Unk_CMsgBoxData : public CMsgBoxData { public: void FUN_141a01660(const CStringW& str); };
 MS2Ptr<Unk_CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<Unk_CMsgBoxData> box);
 void FUN_140d73aa0(CStringW strMessage, int nType, IMessageListener* pListener, CStringW strTag);

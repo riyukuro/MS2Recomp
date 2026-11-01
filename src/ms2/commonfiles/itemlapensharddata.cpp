@@ -40,7 +40,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdatatable.h"
-class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+class Unk_XmlNode   // C3: member view for the former Unk_XmlNode stand-ins
 {
 public:
     class Unk_XmlNode* FirstChild(char const*);
@@ -54,7 +54,6 @@ static const CString s_lapenSortNames[] = {"None", "Buy", "Like", "PriceLow", "P
 #endif
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -63,7 +62,7 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA& strOut);
+int FUN_1408733e0(Unk_XmlNode* pElem, const char* pszName, CStringA& strOut);
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
@@ -73,11 +72,11 @@ public:
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_140719210(long n);                                           // number text
 CString FUN_1401d2b10(const CString& a, const CString& b);               // a + b
-void FUN_140275080(CString&, Unk_StrVec*, const char*);                  // split at a separator
-void FUN_140177f30(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);   // split into numbers
+void FUN_140275080(CString&, void*, const char*);                        // split at a separator
+template <class T> void XmlSplitImpl(const CString& str, ATL::CAtlArray<T>& arr, const char* pszDelim);   // C3: was FUN_140177f30
 unsigned FUN_140482050(unsigned nAmount, unsigned nScale);               // scaled money amount
 // The three-argument log call (the instantiation of itemgemstonedata.cpp's Unk_GemLog, same exe function)
-void FUN_1405b1bd0(void* log, int level, int category, const wchar_t* format, const unsigned& a, const unsigned& b, const CStringA& c);
+template <class A, class B, class C> void Unk_GemLog(class CLogString*, int, int, const wchar_t*, const A&, const B&, const C&);   // C3: was FUN_1405b1bd0
 
 // The ingredient's tag setter (an inline member of CIngredientInfo in the exe).
 // The ingredient vector's iterator (the exe's std::vector<Unk_IngRef>::iterator): the const base steps by one element.
@@ -193,7 +192,7 @@ int CItemLapenshardTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 1;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_XmlNode* pRoot = (Unk_XmlNode*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -210,7 +209,7 @@ int CItemLapenshardTable::Load()
     const CString& strPart = "EquipPart";
     const CString& strMeso = "meso";
     const int nIngredients = 4;
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strKey)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strKey)))
+    for (Unk_XmlNode* pNode = ((class Unk_XmlNode*)((pRoot))->FirstChild(strKey)); pNode != 0; pNode = ((class Unk_XmlNode*)((pNode))->NextSibling(strKey)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
@@ -238,7 +237,7 @@ int CItemLapenshardTable::Load()
             if (next.get() != 0 && nTransfer != next->limit.transferType)
             {
                 unsigned nNextId = next->GetItemId();
-                FUN_1405b1bd0(GetLogString(), 2, 0x13,
+                Unk_GemLog<unsigned, unsigned, CStringA>(GetLogString(), 2, 0x13,
                               L"라펜샤드 거래타입(귀속,거래불가 등)이 같지않습니다(itemID: {0}, nextItemID: {1}). itemProperty transferType을 확인해 주세요. [{2}]",
                               nItemId, nNextId, strPath);
             }
@@ -259,7 +258,7 @@ int CItemLapenshardTable::Load()
                     int nTag = 0;
                     {
                         Unk_StrVec tokens;
-                        FUN_140275080(strValue, &tokens, ":");
+                        FUN_140275080(strValue, (void*)&tokens, ":");
                         if (tokens.FUN_14028b4c0() > 0)
                             nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
                         if (tokens.FUN_14028b4c0() > 1)
@@ -277,7 +276,7 @@ int CItemLapenshardTable::Load()
         if (!strParts.IsEmpty())
         {
             ATL::CAtlArray<unsigned> list;
-            FUN_140177f30(strParts, list, ",");
+            XmlSplitImpl<int>(strParts, reinterpret_cast<ATL::CAtlArray<int>&>(list), ",");
             if (!list.IsEmpty())
             {
                 size_t nCount = list.GetCount();

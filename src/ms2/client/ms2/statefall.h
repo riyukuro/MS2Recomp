@@ -11,8 +11,6 @@
 #include <afx.h>
 
 // Callees shared with StateFallDamage (unit-local views of unrecovered code).
-// The ridee's record string getter: the animation prefix of the fall (a CString built in place).
-class Unk_FallRec { public: CString FUN_1411eabd0(); };
 CString FUN_14038f6d0(const CString& str, const char* psz);                // 0x14038f6d0 concatenation
 
 // The animation service: resolves an animation name to a sequence id (-2 when the model has none).

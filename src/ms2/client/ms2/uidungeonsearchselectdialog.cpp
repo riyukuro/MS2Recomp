@@ -155,8 +155,8 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
                                                   MS2_THIS_FILE, MS2_LINE(0x2e), __FUNCTION__));
     unsigned nZero = 0;
     m_roomOfRow.resize(m_rows.size(), nZero);
-    m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e281f0), 0);
-    m_radio->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::OnSelectAllClick), 0);
+    m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e281f0), (void*)0);
+    m_radio->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::OnSelectAllClick), (void*)0);
     {
         MS2Ptr<Unk_SdCheck> spNone(0);
         m_checks.resize(m_rows.size(), spNone);

@@ -3,20 +3,20 @@
 // MS2-RANGE: 0x1400b9290-0x1400b9410 .text$di
 // MS2-RANGE: 0x142c9ab10-0x142c9ab70 .text$yd
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??1?$MS2Ptr@VUnk_IngItem@@@@QEAA@XZ 0x14052c480 ; unique
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_PetRow@@@@QEBAPEAVUnk_PetRow@@XZ 0x14052cde0 ; unique
-// MS2-PIN: ??B?$MS2Ptr@VUnk_IngItem@@@@QEBAPEAVUnk_IngItem@@XZ 0x14052cdf0 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VUnk_IngItem@@@@QEBAPEAVUnk_IngItem@@XZ 0x14052ced0 ; unique
+// MS2-PIN: ??1?$MS2Ptr@VItemMusicScore@@@@QEAA@XZ 0x14052c480 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCPetData@@@@QEBAPEAVCPetData@@XZ 0x14052cde0 ; unique
+// MS2-PIN: ??B?$MS2Ptr@VItemMusicScore@@@@QEBAPEAVItemMusicScore@@XZ 0x14052cdf0 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VItemMusicScore@@@@QEBAPEAVItemMusicScore@@XZ 0x14052ced0 ; unique
 // MS2-PIN: ?Reference@?$MS2Ptr@VCItemData@@@@CAXPEAVCItemData@@@Z 0x14052d520 ; prop
 // MS2-PIN: ??$StringFormat@I@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBI@Z 0x14052ea30 ; unique
 // MS2-PIN: ??8?$MS2SvrPtr@VCIngredientContainer@@@@QEBA_NPEAVCIngredientContainer@@@Z 0x14052f040 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2SvrPtr@VCIngredientContainer@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCIngredientContainer@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14052f400 ; unique
-// MS2-PIN: ??1?$MS2Ptr@VUnk_PetRow@@@@QEAA@XZ 0x14052c420 ; prop: symbols.tsv (hand)
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_PetRow@@@@AEAAXXZ 0x14052d920 ; prop (hand)
+// MS2-PIN: ??1?$MS2Ptr@VCPetData@@@@QEAA@XZ 0x14052c420 ; prop: symbols.tsv (hand)
+// MS2-PIN: ?Release@?$MS2Ptr@VCPetData@@@@AEAAXXZ 0x14052d920 ; prop (hand)
 // MS2-PINS-END tplpin
 // hand pins (w108)
-// MS2-PIN: ??8?$MS2Ptr@VUnk_IngItem@@@@QEBA_NPEAVUnk_IngItem@@@Z 0x14052ccc0
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_IngItem@@@@AEAAXXZ 0x14052d9a0
+// MS2-PIN: ??8?$MS2Ptr@VItemMusicScore@@@@QEBA_NPEAVItemMusicScore@@@Z 0x14052ccc0
+// MS2-PIN: ?Release@?$MS2Ptr@VItemMusicScore@@@@AEAAXXZ 0x14052d9a0
 // MS2-PIN: ?get@?$MS2SvrPtr@VCIngredientContainer@@@@QEBAPEAVCIngredientContainer@@XZ 0x14052f0b0
 // MS2-PIN: ??B?$MS2SvrPtr@VCIngredientContainer@@@@QEBAPEAVCIngredientContainer@@XZ 0x14052f0d0
 // MS2-PIN: ??4?$MS2Ptr@VCItemData@@@@QEAAAEAV0@AEBV0@@Z 0x14052c6f0
@@ -53,25 +53,27 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/citemenchantutil.h"
 #include "ms2/placeholder/unlimitedenchantinfo.h"
+#include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/placeholder/cinstrumentdatatable.h"
+#include "ms2/commonfiles/commonstruct.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/commonfiles/itemoptiondata.h"
+#include "ms2/commonfiles/citemoptiontable.h"
+#include "ms2/commonfiles/itemsocketsystemutil.h"
+#include "ms2/commonfiles/itemextractiontable.h"
 
 class Unk_ItemEquipData : public CItemData
 {
-public:
-    int FUN_14053c620();
 };
-extern CLua* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();
 class Unk_ItemEnchantData : public CItemStatus { };
 class Unk_ItemOwnerRef : public CItemTransfer {};
 extern __int64 GetServerTime();
-extern unsigned FUN_14054b400(ItemModelData*);
 
 // w101 additions: unit-local record types for the table lookups CItem makes (names are descriptive, not original).
-class Unk_IngItem : public CPtred { public: bool FUN_14054aca0(); int FUN_14054ace0(); CStringW FUN_14054ad20(); int FUN_14054ad00(); };
-class Unk_IngTable : public CItemDataTable { public: MS2Ptr<Unk_IngItem> FUN_1405565f0(int);};
-extern bool FUN_1403b3c40(const CStringW&, const wchar_t*);
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
-extern void* FUN_140166410();
-extern unsigned short FUN_14036dc40(void*);
+class Unk_140166410* FUN_140166410();
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); int FUN_14036dc40(); };   // C3: unit-local view
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 // @0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance (s_instance is the exe's DAT_143aaf1d0)
 ItemGachaBoxTable* FUN_14052d230();
@@ -85,16 +87,14 @@ public:
     void FUN_141883df0(MS2Ptr<CItem> spItem, Unk_UgcNullKey kKey);
     void FUN_141885880(MS2Ptr<CItem> spItem);
 };
-class Unk_MusicBookInfo : public CPtred { public: char m_pad18[0x10]; CString m_str28; CStringW FUN_14072c480(); };
-class Unk_MusicBookTable { public: MS2Ptr<Unk_MusicBookInfo> FUN_14072cc10(unsigned); };
+class Unk_MusicBookTable;
 extern Unk_MusicBookTable* DAT_143aaf1a8;
 class Unk_EnchantRates : public CItemEnchantUtil { };
 extern Unk_EnchantRates* DAT_143aaf1b0;
 // The pet row table behind DAT_143aaf1c8 (tabcontentspetevolution.cpp declares the same lookup).
-class Unk_PetRow : public CPtred { public: int m_n18; };
-class Unk_PetRowTable : public Unk_SingletonObj { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int); };
-CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);
-class Unk_ItemSetTable { public: int FUN_140597430(int); };   // behind DAT_143aaf1b8 (FUN_14052d1f0 returns it as void*)
+class Unk_PetRowTable : public Unk_SingletonObj { };
+class Unk_NamedSource;
+CStringW FUN_141277a90(Unk_NamedSource* pLook, const CStringW& strFallback);
 extern void* DAT_143aaf1b8;
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -1288,7 +1288,7 @@ unsigned CItem::FUN_140527a20()
 {
     if (m_68 != 0 && m_spData->FUN_14053d510())
         return m_68;
-    return FUN_14054b400(m_spData->FUN_14053eba0());
+    return m_spData->FUN_14053eba0()->FUN_14054b400();
 }
 MS2_REPLACE_METHOD(0x140527A20, CItem, FUN_140527a20, 104, 0x946235F9);
 
@@ -1367,8 +1367,6 @@ int CItem::FUN_140525f60()
 MS2_REPLACE_METHOD(0x140525F60, CItem, FUN_140525f60, 87, 0x14B28FAE);
 
 // ---- w98 batch 1: table-row / UGC delegations
-extern bool FUN_1403b3c40(const CStringW&, const wchar_t*);
-extern bool FUN_14026d4d0(void*, int, __int64);
 extern int g_ItemFunctionFlags[4];   // 0x142d568c0
 
 // @0x140525c00
@@ -1376,7 +1374,7 @@ int CItem::IsStoryBook()
 {
     if (m_spData.IsNull())
         return 0;
-    return FUN_1403b3c40(m_spData->function.name, L"StoryBook");
+    return m_spData->function.name == L"StoryBook";
 }
 MS2_REPLACE_METHOD(0x140525C00, CItem, IsStoryBook, 87, 0xBF027633);
 
@@ -1420,7 +1418,7 @@ int CItem::FUN_140526060(void* pArg)
         return 0;
     CUgcItemLook* pItemLook = GetUgcLook();
     MS2_ASSERT_MSG_AT(0x296, L"pItemLook != NULL", pItemLook != NULL);
-    if (FUN_14026d4d0(pArg, pItemLook->m_n34, pItemLook->m_n38))
+    if (reinterpret_cast<Unk_CommonOwner*>(pArg)->Matches(pItemLook->m_n34, pItemLook->m_n38))
         return 1;
     return 0;
 }
@@ -1570,7 +1568,7 @@ void CItem::FUN_1405290b0()
     if (0 < nPlus)
     {
         int nExtra = FUN_140527840()->GetUnlimitedEnchantMaxGrade();
-        int nBonus = FUN_1401c0db0()->CalcUnlimitedEnchantItemLevel(nPlus, nExtra, nB);
+        int nBonus = ((CLua*)FUN_1401c0db0())->CalcUnlimitedEnchantItemLevel(nPlus, nExtra, nB);
         m_b4 = m_b4 + nBonus;
     }
     m_b0 = m_b4 + nBase;
@@ -1754,7 +1752,7 @@ bool CItem::FUN_140525680()
 {
     if (!FUN_1405277b0()->FUN_14053cd10())
         return false;
-    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(FUN_1405276c0());
     if (spIng == 0)
         return false;
     return spIng->FUN_14054aca0();
@@ -1790,7 +1788,7 @@ int CItem::FUN_140525a80()
     if (m_spData->FUN_14053cd90())
     {
         CStringW* pName = &m_spData->function.name;
-        if (FUN_1403b3c40(*pName, L"RecallParty") || FUN_1403b3c40(*pName, L"TreasureMap"))
+        if (*pName == L"RecallParty" || *pName == L"TreasureMap")
             return 0;
         return 1;
     }
@@ -1867,7 +1865,7 @@ int CItem::FUN_1405264c0(int nSlot, unsigned* pResult)
         *pResult = 8;
         return false;
     }
-    if (m_spData->limit.levelLimit < FUN_14036dc40(FUN_140166410()))
+    if (m_spData->limit.levelLimit < (unsigned short)((CFeatureManager*)FUN_140166410())->FUN_14036dc40())
     {
         *pResult = 4;
         return false;
@@ -2070,13 +2068,8 @@ __int64 CItem::FUN_140528540()
 MS2_REPLACE_METHOD(0x140528540, CItem, FUN_140528540, 73, 0x78F83810);
 
 // ---- w101 batch 4: couple/gem/effect-name helpers
-class Unk_OptionData : public CPtred { public: int FUN_1405d5fe0(int); };
-class Unk_OptionMgr { public: MS2Ptr<Unk_OptionData> FUN_1405f6010(int); };
-extern Unk_OptionMgr* FUN_140166430();
-extern bool FUN_14036d570(void*, int);
+class Unk_140166430* FUN_140166430();
 extern int FUN_14088de00(MS2Ptr<CItemData>);
-extern int FUN_14062d6f0(void*, int, int, MS2Ptr<CItemData>);
-extern unsigned FUN_14062d4b0(void*, int, int, MS2Ptr<CItemData>);
 
 // @0x140528840
 int CItem::GetUgcTag()
@@ -2101,7 +2094,7 @@ MS2_REPLACE_METHOD(0x140529410, CItem, GetCoupleName, 132, 0x5F30A84A);
 // @0x140529560
 int CItem::FUN_140529560()
 {
-    if (!FUN_14036d570(FUN_140166410(), 0x2e))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e))
         return 0;
     if (FUN_140527840() == 0)
         return 0;
@@ -2136,14 +2129,14 @@ MS2_REPLACE_METHOD(0x140529EB0, CItem, FUN_140529eb0, 168, 0xB191BA0F);
 // @0x140529f60
 CString CItem::FUN_140529f60(int nA, int nB, int nC, unsigned nD)
 {
-    return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->GetEnchantNif(nA, nB, nC, nD);
+    return TSingleton<CItemDataTable>::GetInstance()->GetEnchantNif(nA, nB, nC, nD);
 }
 MS2_REPLACE_METHOD(0x140529F60, CItem, FUN_140529f60, 97, 0xF4F758D0);
 
 // @0x14052a060
 int CItem::FUN_14052a060()
 {
-    MS2Ptr<Unk_OptionData> spOption = FUN_140166430()->FUN_1405f6010(m_spData->FUN_14053eff0(FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spOption = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandom(m_spData->FUN_14053eff0(FUN_140526bd0()));
     if (spOption == NULL)
         return 0;
     return spOption->FUN_1405d5fe0(FUN_140526bd0());
@@ -2153,7 +2146,7 @@ MS2_REPLACE_METHOD(0x14052A060, CItem, FUN_14052a060, 197, 0x509A0B26);
 // @0x14052b370
 void CItem::FUN_14052b370()
 {
-    int nMax = FUN_14062d6f0(FUN_14052d200(), m_spData->property.socketDataId, FUN_140526bd0(),
+    int nMax = ((CItemSocketTable*)FUN_14052d200())->GetInitialSocketCount(m_spData->property.socketDataId, FUN_140526bd0(),
         MS2Ptr<CItemData>(FUN_140527840()));
     FUN_14052b420(nMax);
 }
@@ -2162,7 +2155,7 @@ MS2_REPLACE_METHOD(0x14052B370, CItem, FUN_14052b370, 162, 0x8FD3EAB9);
 // @0x14052b420
 int CItem::FUN_14052b420(unsigned nMax)
 {
-    if (!FUN_14036d570(FUN_140166410(), 0x2e))
+    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e))
         return 1;
     if (!FUN_140527840()->FUN_14053cbc0())
         return 1;
@@ -2170,7 +2163,7 @@ int CItem::FUN_14052b420(unsigned nMax)
         return 1;
     if (FUN_140525c60() != 0)
         return 1;
-    unsigned nCur = FUN_14062d4b0(FUN_14052d200(), m_spData->property.socketDataId, FUN_140526bd0(),
+    unsigned nCur = ((CItemSocketTable*)FUN_14052d200())->GetMaxSocketCount(m_spData->property.socketDataId, FUN_140526bd0(),
         MS2Ptr<CItemData>(FUN_140527840()));
     unsigned nUse = nCur < nMax ? nCur : nMax;
     MS2Ptr<CItemSocket> spSocket = m_spSocket;
@@ -2181,8 +2174,6 @@ int CItem::FUN_14052b420(unsigned nMax)
 MS2_REPLACE_METHOD(0x14052B420, CItem, FUN_14052b420, 429, 0x3FB6220B);
 
 // ---- w101 batch 5: binding/slot helpers, string table formatter
-CStringW FormatStringId(int nId, const fmt::ArgList& args);   // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 template CStringW FormatStringId<CStringW>(int, const CStringW&);   // 0x14052bd00
 
 // The key based back end FUN_14028dfa0 with this unit's own (ushort, CStringW) instance.
@@ -2285,7 +2276,7 @@ CStringW CItem::FUN_140527b10()
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
-        return FUN_141277a90(&m_spUgc->m_look, strName);
+        return FUN_141277a90((Unk_NamedSource*)&m_spUgc->m_look, strName);
     }
     else if (FUN_140527840()->FUN_14053cd10())
     {
@@ -2295,10 +2286,10 @@ CStringW CItem::FUN_140527b10()
     {
         if (m_strB8.GetLength() > 0)
             strName = m_strB8;
-        MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find((unsigned)FUN_140527840()->GetPetId());
         if (spRow.get() != 0)
         {
-            if (spRow->m_n18 == 1)
+            if (spRow->m_nType == 1)
                 return FormatStringId(0xcd6, strName);
             else
                 return FormatStringId(0xcd5, strName);
@@ -2452,7 +2443,7 @@ int CItem::FUN_1405299a0()
             return 0;
         return m_spMusic->m_n18;
     }
-    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(FUN_1405276c0());
     if (spIng == NULL)
         return 0;
     return spIng->FUN_14054ace0();
@@ -2466,9 +2457,9 @@ CString CItem::FUN_140529cb0()
     if (FUN_140525680() && (pScore = FUN_140527990()) != 0 && !pScore->FUN_140632780())
     {
         unsigned nBook = m_spMusic->m_n1c;
-        MS2Ptr<Unk_MusicBookInfo> spInfo = FUN_14052d1d0()->FUN_14072cc10(nBook);
-        if (static_cast<Unk_MusicBookInfo*>(spInfo) != 0)
-            return spInfo->m_str28;
+        MS2Ptr<CInstrumentCategoryData> spInfo = reinterpret_cast<CInstrumentDataTable*>(FUN_14052d1d0())->GetCategory(nBook);
+        if (static_cast<CInstrumentCategoryData*>(spInfo) != 0)
+            return spInfo->m_strIcon;
     }
     return m_spData->GetIconPath();
 }
@@ -2587,12 +2578,12 @@ CStringW CItem::FUN_140529aa0()
     {
         if (m_spMusic == NULL)
             return CStringW(L"");
-        MS2Ptr<Unk_MusicBookInfo> spInfo = FUN_14052d1d0()->FUN_14072cc10(m_spMusic->m_n1c);
+        MS2Ptr<CInstrumentCategoryData> spInfo = reinterpret_cast<CInstrumentDataTable*>(FUN_14052d1d0())->GetCategory(m_spMusic->m_n1c);
         if (spInfo == NULL)
             return CStringW(L"");
-        return spInfo->FUN_14072c480();
+        return spInfo->GetName();
     }
-    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(FUN_1405276c0());
     if (spIng == NULL)
         return CStringW(L"");
     return spIng->FUN_14054ad20();
@@ -2631,8 +2622,8 @@ int CItem::FUN_14052b130(int nItemId, int nRarity, int nAmount)
     m_spStatus->GenerateOptions(nItemId, FUN_140526bd0(), nAmount);
     if (FUN_140527840()->FUN_14053cd10())
     {
-        MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405565f0(nItemId);
-        if (static_cast<Unk_IngItem*>(spIng) != 0)
+        MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(nItemId);
+        if (static_cast<ItemMusicScore*>(spIng) != 0)
             FUN_140527320(spIng->FUN_14054ad00());
     }
     if (FUN_140525a30() != 0 && (static_cast<CItemGem*>(m_spGem) != 0 ? true : false))
@@ -2806,7 +2797,7 @@ bool CItem::FUN_140523c40(int nItemId, int nRarity, int nStatusArg)
     m_spSocket.AssignRaw(new CItemSocket);
     m_spCouple.AssignRaw(new CItemCoupleInfo);
     FUN_1405290b0();
-    m_d8 = static_cast<Unk_ItemSetTable*>(FUN_14052d1f0())->FUN_140597430(nItemId);
+    m_d8 = static_cast<CItemExtractionTable*>(FUN_14052d1f0())->HasRow(nItemId);
     m_spBinding.AssignRaw(new CItemTransfer::CItemBinding);
     vfunc_2();
     return true;
@@ -2892,12 +2883,12 @@ static const CString s_sortNamesCopy[] = { "None", "Buy", "Like", "PriceLow", "P
 
 // ---- w106: CItemBreakIngredientTable (itemBreakIngredient.xml and the gacha box coin costs)
 // Unrecovered helpers (the same xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* NextSibling(const char*); };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-void FUN_140873220(Unk_140165cf0*, const char*, int&);
-bool FUN_14028f710(Unk_140165cf0*);                                       // the element is usable
-void FUN_14059ec70(ItemGachaBoxTable*, std::vector<GachaBoxDataPtr>&);   // every box of the table
+int XmlGetAttr(class TiXmlElement*, const char*, unsigned&);
+struct Unk_XmlElement;
+bool FUN_14028f710(Unk_XmlElement*);                                       // the element is usable
 void FUN_140530c90(MS2Ptr<CItemData> spItem, int nGrade, int nEnchant, CIngredientContainer& output);
 // Scoped lock helper shared with banktable / logstring: locks on construction when asked, unlocks on exit.
 class Unk_1401b4ec0
@@ -2941,18 +2932,18 @@ int CItemBreakIngredientTable::LoadBreakItems()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("item"); pNode != 0; pNode = pNode->FUN_140168650("item"))
+    for (Unk_XmlNode* pNode = pRoot->FirstChild("item"); pNode != 0; pNode = pNode->NextSibling("item"))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((Unk_XmlElement*)pNode))
             continue;
         int nItemId = 0;
-        FUN_140873220(pNode, "ItemID", nItemId);
+        XmlGetAttr((TiXmlElement*)pNode, "ItemID", (unsigned&)nItemId);
         if (nItemId == 0)
             continue;
         IngredientPtr spIngredients(new CIngredientContainer);
@@ -2963,8 +2954,8 @@ int CItemBreakIngredientTable::LoadBreakItems()
             int nCount = 0;
             CString strId = StringFormat("IngredientItemID{0}", n);
             CString strCount = StringFormat("IngredientCount{0}", n);
-            FUN_140873220(pNode, strId, nIngredientId);
-            FUN_140873220(pNode, strCount, nCount);
+            XmlGetAttr((TiXmlElement*)pNode, strId, (unsigned&)nIngredientId);
+            XmlGetAttr((TiXmlElement*)pNode, strCount, (unsigned&)nCount);
             if (nIngredientId == 0 || nCount == 0)
                 break;
             spIngredients->FUN_14026bbf0(nIngredientId, nCount);
@@ -2982,7 +2973,7 @@ int CItemBreakIngredientTable::LoadGachaBoxes()
         return 0;
     m_mapGacha.RemoveAll();
     std::vector<GachaBoxDataPtr> boxes;
-    FUN_14059ec70(FUN_14052d230(), boxes);
+    FUN_14052d230()->GetAllBoxes(boxes);
     for (size_t i = 0; i < boxes.size(); i++)
     {
         if (boxes[i] == 0)
@@ -3050,8 +3041,8 @@ template class MS2Ptr<CItemGem>;
 template class MS2Ptr<CItemTransfer>;
 template class MS2Ptr<CItemUgc>;
 template class MS2Ptr<CItemStatus>;
-template class MS2Ptr<Unk_IngItem>;
-template class MS2Ptr<Unk_MusicBookInfo>;
+template class MS2Ptr<ItemMusicScore>;
+template class MS2Ptr<CInstrumentCategoryData>;
 template class MS2Ptr<CItemOption>;
 template class MS2Ptr<CItem>;
 template class MS2Ptr<CItemData>;

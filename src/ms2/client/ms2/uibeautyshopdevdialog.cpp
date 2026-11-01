@@ -60,6 +60,8 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/equipment.h"
+#include "ms2/client/ms2/uicameraeditdialog.h"
 #include <algorithm>
 #include <vector>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
@@ -79,13 +81,6 @@ class Unk_ItemEquipData : public CItemData {};
 struct Unk_EquipItemData : CItemData {};
 ItemModelHead* FUN_14053ec70(CItemData* pData);         // the <customize> block
 
-// The models of an equipped item: the cap attach point.
-class Unk_BSDevEquipModel : public CEquipModel
-{
-public:
-    efd::Point3 FUN_141200130();                        // the position
-    efd::Point3 FUN_1412000d0();                        // the rotation
-};
 
 // The current field (the page refreshes its camera through it).
 class Unk_BSDevField
@@ -108,30 +103,24 @@ public:
     virtual void vfunc_140(); virtual void vfunc_141(); virtual void vfunc_142(); virtual void vfunc_143(); virtual void vfunc_144(); virtual void vfunc_145(); virtual void vfunc_146(); virtual void vfunc_147(); virtual void vfunc_148();
     virtual void vfunc_149();                           // 149 restore the field camera
 };
-class Unk_BSDevWorld
-{
-public:
-    PC* FUN_141bd0cc0();                                // the player (NULL outside the game)
-    Unk_BSDevField* FUN_141bd3620();
-};
 
 // The emotion animations of a model (the "emotion" tab lists their names).
-class Unk_BSDevMotionSet : public CPtred
+class CEmotionGroup : public CPtred
 {
 public:
     virtual CString vfunc_1();
     virtual void vfunc_2(void* pKey);
     virtual void vfunc_3(std::vector<CString>& aNames);  // the animation names
 };
-class Unk_BSDevMotionLib
+class CEmotionTable
 {
 public:
-    MS2Ptr<Unk_BSDevMotionSet> FUN_1411bde10(int nModelId);
+    MS2Ptr<CEmotionGroup> GetGroup(unsigned nModelId);
 };
-class Unk_BSDevSpawnMgr
+class CEmotionManager
 {
 public:
-    Unk_BSDevMotionLib* FUN_1411bf1b0();
+    CEmotionTable* GetItemTable();
 };
 class Unk_CsoSpawnMgr* FUN_140a50010();   // C3: was FUN_140a50010
 
@@ -146,14 +135,15 @@ struct Unk_BSDevRowSource
     Unk_BSDevRow FUN_1422df140(unsigned nIndex);
 };
 
-class Unk_BSDevItemEvents
+class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);
     void FUN_1419caeb0(UIItemEventListener* pListener);
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-Unk_BSCamera* FUN_140cd47b0(int nId);
+enum eUIClassID : int;
+UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
 class Unk_BSDevSound;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -181,7 +171,7 @@ void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 
 // The beauty shop helpers (uibeautyshopstyledialog.cpp and the item row builders).
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-bool FUN_140f01670(ASTooltip& tip, void*, ASData* pArgs);
+bool FUN_140f01670(ASTooltip& tip, int, ASData* pArgs);
 void FUN_140f014b0(ATL::CAtlList<MS2Ptr<CEquipItem> >* pOut, Unk_PCEquipSet* pEquip);
 void FUN_140f024e0(ASData* pArgs, int* pnPalette, int* pnType);
 int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, unsigned nFlags, int nMode, bool bColor);
@@ -254,7 +244,7 @@ CString UIBeautyShopDevDialog::GetTypeName()
 void UIBeautyShopDevDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_BSDevItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_141920770();
     FUN_14191f9d0();
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -265,7 +255,7 @@ void UIBeautyShopDevDialog::vfunc_67()
     m_1a4 = 0;
     m_288 = 0;
     m_298 = 0;
-    ((class Unk_BSDevItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                       Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
 }
@@ -312,13 +302,13 @@ void UIBeautyShopDevDialog::OnLoadComplete()
         return;
     m_288.AssignRaw(new Customize(pPc->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_288->SelectSlot(2);
-    m_298 = FUN_140cd47b0(0x4ef2);
+    m_298 = reinterpret_cast<Unk_BSCamera*>(FUN_140cd47b0((eUIClassID)0x4ef2));
     IItemCustomizeEventListener::FUN_141922e80(1);
     m_198 = 0;
     m_30->Invoke("initData");
     m_30->FUN_140bbe7c0<ASDropdownMenu>("m_colorIndexMenu", m_2b8);
     FUN_1419200c0(1);
-    ((class Unk_BSDevItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                     Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
 }
@@ -398,7 +388,7 @@ void UIBeautyShopDevDialog::vfunc_15()
         }
     }
     if (m_298)
-        m_298->FUN_1418dda30(m_288->IsDragging() == 0);
+        reinterpret_cast<UICameraEditDialog*>(m_298)->FUN_1418dda30(m_288->IsDragging() == 0);
     if (m_19c == 0 && pPc->FUN_14166cc80() != 0x50)
     {
         m_19c = 1;
@@ -757,8 +747,8 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
         if (pPc)
         {
             m_2a0.clear();
-            Unk_BSDevMotionLib* pLib = ((class Unk_BSDevSpawnMgr*)FUN_140a50010())->FUN_1411bf1b0();
-            MS2Ptr<Unk_BSDevMotionSet> spSet = pLib->FUN_1411bde10(pPc->vfunc_69());
+            CEmotionTable* pLib = ((class CEmotionManager*)FUN_140a50010())->GetItemTable();
+            MS2Ptr<CEmotionGroup> spSet = pLib->GetGroup(pPc->vfunc_69());
             if (strSearch.IsEmpty())
             {
                 spSet->vfunc_3(m_2a0);
@@ -902,7 +892,7 @@ int UIBeautyShopDevDialog::FUN_14191fa30()
 {
     if (m_288.get())
         m_288->RestoreSlot(FUN_141921580(m_1a0));
-    Unk_BSDevField* pField = reinterpret_cast<Unk_BSDevWorld*>(WorldService::GetInstance())->FUN_141bd3620();
+    Unk_BSDevField* pField = reinterpret_cast<Unk_BSDevField*>(WorldService::GetInstance()->FUN_141bd3620());
     if (pField)
         pField->vfunc_149();
     ((class GFxSceneService*)(class Unk_BSDevSound*)(((Unk_BSDevSound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
@@ -1115,12 +1105,12 @@ void UIBeautyShopDevDialog::FUN_141920aa0(int nItemId)
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
         return;
-    if (!pPc->FUN_1416561a0()->FUN_1411e09a0())
+    if (!reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->AreAllItemsLoaded())
         return;
     int nCurrent = m_288->FUN_140cd17e0();
     if (nCurrent == 0 || nCurrent != nItemId)
     {
-        if (!pPc->FUN_1416561a0()->FUN_1411e0c30(nItemId))
+        if (!reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->FUN_1411e0c30(nItemId))
             m_288->EquipItemId(nItemId);
         m_288->SelectId(nItemId);
     }
@@ -1171,9 +1161,9 @@ void UIBeautyShopDevDialog::OnClickAdd()
             if (!FUN_14053ec70(spData.operator->())->FUN_140547360())
                 spModelData->FUN_14054b670()->handle.AssignRaw(new MsTransform);
             spModelData->FUN_14054b670()->handle->position =
-                static_cast<Unk_BSDevEquipModel*>(spModel.operator->())->FUN_141200130();
+                reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->FUN_141200130()));
             spModelData->FUN_14054b670()->handle->rotation =
-                static_cast<Unk_BSDevEquipModel*>(spModel.operator->())->FUN_1412000d0();
+                reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->GetPos6c()));
             TSingleton<CItemDataTable>::GetInstance()->FUN_140557910(ItemModelData::FUN_14054aec0(nModel));
         }
     }

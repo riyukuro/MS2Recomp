@@ -97,7 +97,6 @@ public:
 
     MS2Ptr<Unk_SibButton> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_SibButton>* pOut);   // bind children
     MS2Ptr<Unk_SibList> FUN_140e8d030(const CString& strName, MS2Ptr<Unk_SibList>* pOut);
-    MS2Ptr<Unk_SibSlot> FUN_140c57ce0(const CString& strName, MS2Ptr<Unk_SibSlot>* pOut);
     MS2Ptr<Unk_SibText> FUN_140e48d80(const CString& strName, MS2Ptr<Unk_SibText>* pOut);
 
 protected:

@@ -68,9 +68,9 @@ public:
     void FUN_1418a9c20();                                                               // the summary page
     void FUN_1418aa190(const FilterOptions* pOptions);                                  // the hero list
     void FUN_1418aa660(int nId);                                                        // update one trophy row
-    void FUN_1418aa890();                                                               // send the search
+    void RequestSearch();                                                               // send the search
     void FUN_1418aa9b0(int nId);                                                        // show the trophy of the id
-    CStringW FUN_1418aaaf0(CAchieve* pAchieve);                                         // "", "normal" or "complete"
+    CStringW GetAchieveStateName(CAchieve* pAchieve);                                         // "", "normal" or "complete"
     int GetRewardCount(CAchieve* pAchieve);                                              // the reward count
     CStringW FUN_1418aabd0(CAchieve* pAchieve);                                         // the description of the current grade
     CStringW FUN_1418aac30(CAchieve* pAchieve, int nGrade);                             // the description of a grade
@@ -85,8 +85,8 @@ public:
     int FUN_1418ac320(int nId);                                                         // the tab of the trophy
     int GetFilterIndex();                                                                // the selected filter
     void SetFilterIndex(int nIndex);                                                     // select a filter
-    void FUN_1418ac710(int nTab);                                                       // select the tab in the movie (the exe passes m_178, the body reads the member)
-    int FUN_1418ac780(CAchieve* pAchieve);                                              // locked for a player
+    void ApplyTabIndex(int nTab);                                                       // select the tab in the movie (the exe passes m_178, the body reads the member)
+    int IsAchieveLocked(CAchieve* pAchieve);                                              // locked for a player
     int FUN_1418ac870(CAchieve* pAchieve);                                              // locked and hidden
     int FUN_1418ac8f0(CAchieve* pAchieve);                                              // 0 reward, 1 open, 2 done
     int FUN_1418ac9e0();                                                                // the selected tab of the list
@@ -103,7 +103,6 @@ public:
 
     // movie children (ICF'd child lookups of the exe)
     MS2Ptr<Unk_AcHero> FUN_140ede180(const CString& strName);
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);
 
 private:
     MS2_LAYOUT_FRIEND;

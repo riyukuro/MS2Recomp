@@ -38,14 +38,14 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- statics of the unit's headers ----
 
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
 
 static CString s_strIconPath("iconPath");
 static CString s_strItemDesc("itemDesc");
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static Unk_Handle1401cd100 s_handle(0);
+static Unk_BuddyHandle s_handle(0);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -108,8 +108,7 @@ void FUN_140710590(COutPacket& pkt);
 CStringW FUN_14016a730(const char* szKey, int nFlags);         // the string of a key
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 
-CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"
 
 extern unsigned short DAT_143ab291c;                            // the housing grade of the player
 extern __int64 DAT_143ab2930;                                   // the housing exp of the player

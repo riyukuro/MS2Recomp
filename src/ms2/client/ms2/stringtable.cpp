@@ -66,6 +66,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/chapterbooktable.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/scriptptr.h"
+#include "ms2/client/ms2/uimassiveevent.h"
+#include "ms2/client/ms2/skillsystem.h"
 #include "ms2/client/ms2/uialliancequestdialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -117,30 +120,18 @@ UIFameContentsNotify* FUN_140e77d80(int);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
-class Unk_QmTalkScript;
-class Unk_QmTalkScriptPtr {
-public:
-    Unk_QmTalkScriptPtr(const Unk_QmTalkScriptPtr& o);  // 0x140859bc0
-    ~Unk_QmTalkScriptPtr();                             // 0x14078f140
-    bool IsNull() const;                                // 0x14085a420
-    Unk_QmTalkScript* FUN_14078f3a0() const;            // get
-private:
-    void* m_0;
-    Unk_QmTalkScript* m_p;
-};
-Unk_QmTalkScriptPtr FUN_1408564b0(int questId, int n);
-class Unk_StTalkManager { public: int FUN_141b213f0(Unk_QmTalkScriptPtr script, int npcId, int mode, int n); };
+class CTalkScript;
+Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int questId, int n);
+class Unk_StTalkManager { public: int FUN_141b213f0(Unk_ScriptPtr<CTalkScript> script, int npcId, int mode, int n); };
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
 public:
     static class Unk_AkoCutscene* GetInstance();
 };
 
-class Unk_StRewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int nType, CStringW strText, int nTime); };
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 
 // The UI manager and the dialog getter (GetDialog<T> instantiations of this unit).
-class Unk_StUiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
 
 class UIChapterBook : public UIDialog
 {
@@ -152,9 +143,9 @@ public:
 // @0x141810510
 UIAllianceQuestDialog* FUN_141810510(int nId)
 {
-    if (reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIAllianceQuestDialog*>((UIObject*)p);
     }
@@ -164,9 +155,9 @@ UIAllianceQuestDialog* FUN_141810510(int nId)
 // @0x1418105b0
 UIChapterBook* FUN_1418105b0(int nId)
 {
-    if (reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance()))
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<UIChapterBook*>((UIObject*)p);
     }
@@ -225,7 +216,7 @@ void CStoryQuest::Complete(CInPacket& packet)
 {
     if (m_data->m_2d0.m_id != -1)
     {
-        Unk_StRewardOtherDialog* pDlg = ((class Unk_StRewardOtherDialog*)FUN_140e01890(0x4e4c));
+        UIMassiveEvent* pDlg = FUN_140e01890(0x4e4c);
         if (pDlg)
         {
             CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_complete_ui_effect"), FUN_1416e7fb0(m_data->m_28));
@@ -274,7 +265,7 @@ void CStoryQuest::FUN_140d73960()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
+                    spBox->Append<unsigned>(FUN_14074b030(m_data.operator->()));
                     spBox->Append<int>(m_7c);
                     spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
@@ -300,7 +291,7 @@ int CStoryQuest::FUN_140d73970()
         return 0;
     if (FUN_140d738c0() == 0)
         return 0;
-    Unk_QmTalkScriptPtr script = FUN_1408564b0(FUN_140bfc580(), 300);
+    Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_140bfc580(), 300);
     if (script.IsNull())
         return 0;
     m_78 = 0;
@@ -488,13 +479,13 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_14071ae20(const CString& strFile);                      // path of a Table file
 CString FUN_14016a5c0(const char* psz, int n);
-CString FUN_140536a50(const char* szFormat, const CString& strArg);
 unsigned FUN_14021c7c0(const CString& str);                         // the id of a string key
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-void FUN_14028fd90(Unk_140165cf0*, const char*, const char*, const char*, std::vector<Unk_140165cf0*>&);   // commonutil.cpp
+class Unk_XmlElement;
+void FUN_14028fd90(Unk_XmlElement*, const char*, const char*, const char*, std::vector<Unk_XmlElement*>&);   // commonutil.cpp
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
 CStringW GetStringCommon(int nId);                                    // the text of a string id
@@ -645,7 +636,7 @@ BOOL CStringTable::Load()
             spCache->m_strParserValue = strParserValue;
             m_caches.SetAt(nId, spCache);
         }
-        CString strFile = FUN_140536a50("{0}.xml", strName);
+        CString strFile = Unk_SocketFormat("{0}.xml", strName);
         spCache->FUN_1418176e0(strFile);
         FUN_141813c80(CachePtr(spCache), CString(strParser), CString(strParserValue));
     }
@@ -682,15 +673,6 @@ BOOL CStringTable::FUN_141811960()
 }
 
 // ---- the skill / item / player services the lookups reach -----------------------------------------------------------
-class Unk_StSkillLevel : public CPtred { public: char m_pad_18[0x18]; CStringW m_strArgs; };   // +0x30 the format arguments
-MS2_CHECK_OFFSET(Unk_StSkillLevel, m_strArgs, 0x30);
-class Unk_StSkillRow : public CPtred { public: MS2Ptr<Unk_StSkillLevel> FUN_1407e90a0(unsigned short nLevel); };
-class Unk_StSkillTable
-{
-public:
-    MS2Ptr<Unk_StSkillRow> FUN_1407ee1d0(int nSkillId);
-};
-class Unk_StSkillSystem { public: CStringW FUN_141767e60(__int64 nId); };
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/client/ms2/mypc.h"
 class Unk_StPlayer : public PC { };
@@ -706,10 +688,10 @@ public:
 // @0x141815ed0
 UIClosetDialog* FUN_141815ed0()
 {
-    Unk_StUiManager* pManager = reinterpret_cast<Unk_StUiManager*>(TSingleton<CUIService>::GetInstance());
+    CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> p = pManager->FUN_141adcea0(UIClosetDialog::FUN_141818950());
+    MS2Ptr<UIObject> p = pManager->FindObject((eUIClassID)UIClosetDialog::FUN_141818950());
     if (p.IsNull())
         return 0;
     return dynamic_cast<UIClosetDialog*>((UIObject*)p);
@@ -781,14 +763,14 @@ CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, 
     if (m_skillDescs.Lookup(nSkillId, spDesc))
     {
         CStringW strText = spDesc->FUN_141813a30(strTag);
-        MS2Ptr<Unk_StSkillRow> spSkill = reinterpret_cast<Unk_StSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spSkill == 0)
             return CStringW(L"");
-        MS2Ptr<Unk_StSkillLevel> spLevel = spSkill->FUN_1407e90a0(nLevel);
+        MS2Ptr<SkillLevelData> spLevel = spSkill->FUN_1407e90a0(nLevel);
         if (spLevel == 0)
             return CStringW(L"");
-        if (!spLevel->m_strArgs.IsEmpty())
-            strText = FUN_141813790(CStringW(strText), CStringW(spLevel->m_strArgs));
+        if (!spLevel->m_strStringParam.IsEmpty())
+            strText = FUN_141813790(CStringW(strText), CStringW(spLevel->m_strStringParam));
         return strText;
     }
     return CStringW(L"");
@@ -813,7 +795,7 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
         }
     }
     if (strTag.CompareNoCase("name") == 0)
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf60(strText, nLevel);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceLevelToken(strText, nLevel);
     if (DAT_143ae0fc0 != 0 && strTag.CompareNoCase("name") == 0)
         strText.AppendFormat(L" [%d][%d]", nBuffId, nLevel);
     return strText;
@@ -831,7 +813,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
-            CStringW strName = reinterpret_cast<Unk_StSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141767e60(nId);
+            CStringW strName = reinterpret_cast<CSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141767e60((__int64)nId);
             if (!strName.IsEmpty())
                 return StringFormat<CStringW>(FUN_141811980(5, nId), strName);
         }
@@ -1001,11 +983,8 @@ CStringW CStringTable::FUN_141813610(int a, int b, int c)
 
 // The format arguments of a text: the type bits of the arguments and their values.
 struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; Unk_StFmtArg(); };
-struct Unk_StFmtPack { unsigned long long m_nTypes; const Unk_StFmtArg* m_pArgs; Unk_StFmtPack(); };
 unsigned long long FUN_1401cfc00(const CStringW& str);
 Unk_StFmtArg FUN_1401cfcf0(const CStringW& str);
-Unk_StFmtPack FUN_140163e50(unsigned long long nTypes, const Unk_StFmtArg* pArgs);
-CStringW FUN_1401d02a0(const wchar_t* pszFormat, const Unk_StFmtPack& rPack);
 
 // The argument pack helpers are unit-local stand-ins (an fmt-style ArgList).
 // @0x141813790
@@ -1027,7 +1006,7 @@ CStringW CStringTable::FUN_141813790(CStringW strFormat, CStringW strArgs)
         }
         aArgs.Add(FUN_1401cfcf0(strText));
     }
-    return FUN_1401d02a0(strFormat, FUN_140163e50(nTypes, &aArgs[0]));
+    return StringFormat((const wchar_t*)strFormat, fmt::ArgList(nTypes, reinterpret_cast<const fmt::internal::Value*>(&aArgs[0])));
 }
 
 // @0x141813970
@@ -1214,7 +1193,7 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
             continue;
         }
         std::vector<Unk_140165cf0*> aNodes;
-        FUN_14028fd90(pRoot, "key", "id", "level", aNodes);
+        FUN_14028fd90(reinterpret_cast<Unk_XmlElement*>(pRoot), "key", "id", "level", reinterpret_cast<std::vector<Unk_XmlElement*>&>(aNodes));
         for (size_t i = 0; i < aNodes.size(); i++)
         {
             Unk_140165cf0* pNode = aNodes[i];

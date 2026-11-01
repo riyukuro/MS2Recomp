@@ -408,7 +408,7 @@ void CSceneStateMulti::OnLeave(int nNextState)
     m_nMode = -1;
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
-    FUN_14174fd00();
+    ReleasePreviewPC();
     WorldService::GetInstance()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
         Unk_NotifyDelegate(this, &CSceneStateMulti::OnGameEventChanged));
@@ -495,7 +495,7 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
         FUN_140930fe0(packet);
         break;
     case static_cast<int>(RecvOp::SyncWorld):
-        FUN_14174fcc0(packet);
+        OnServerTimePacket(packet);
         break;
     case static_cast<int>(RecvOp::EventReward):
         OnEventReward(packet);
@@ -560,7 +560,7 @@ int CSceneStateMulti::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x14174eaf0
-int CSceneStateMulti::FUN_14174eaf0()
+int CSceneStateMulti::HasMyPC()
 {
     return WorldService::GetInstance()->FUN_141bd0cc0() != 0;
 }
@@ -568,17 +568,17 @@ int CSceneStateMulti::FUN_14174eaf0()
 // @0x14174eb30
 void CSceneStateMulti::FUN_14174eb30()
 {
-    FUN_14174fe40();
+    ExitMapMode();
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
     ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001a);
 }
 
 // @0x14174eb80
-void CSceneStateMulti::FUN_14174eb80(int nJobCode)
+void CSceneStateMulti::SelectCreateJob(int nJobCode)
 {
     m_nJobCode = nJobCode;
-    FUN_14174ff00();
+    EnterCreateMode();
     ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001c);
 }
 
@@ -593,7 +593,7 @@ void CSceneStateMulti::FUN_14174ebc0()
     }
     else if (m_nMode == 1)
     {
-        FUN_14174fea0();
+        EnterSelectMode();
     }
     m_nMode = 1;
     ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001b);
@@ -604,7 +604,7 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
 {
     if (m_nMode != 2)
         return;
-    FUN_14174fd00();
+    ReleasePreviewPC();
     efd::SmartPointer<MyPC> spPC(new (FUN_140876480(0).m_hint) MyPC());
     if (spPC.data())
     {
@@ -626,7 +626,7 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
 {
     if (m_nMode != 2)
         return;
-    FUN_14174fd00();
+    ReleasePreviewPC();
     efd::SmartPointer<MyPC> spPC(new (FUN_140876480(0).m_hint) MyPC());
     if (spPC.data())
     {
@@ -698,7 +698,7 @@ int CSceneStateMulti::vfunc_15()
 }
 
 // @0x14174f3e0
-unsigned int CSceneStateMulti::FUN_14174f3e0()
+unsigned int CSceneStateMulti::GetSelectMapForSelectedJob()
 {
     int nJobCode = 0;
     Unk_CharSelectDialog* pSelect = FUN_140b72de0(0x4ef1);
@@ -722,7 +722,7 @@ void CSceneStateMulti::FUN_14174f470()
 // @0x14174f4a0
 void CSceneStateMulti::FUN_14174f4a0()
 {
-    FUN_14174fe40();
+    ExitMapMode();
 }
 
 // @0x14174f4c0
@@ -803,13 +803,13 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
 }
 
 // @0x14174fcc0
-void CSceneStateMulti::FUN_14174fcc0(CInPacket& packet)
+void CSceneStateMulti::OnServerTimePacket(CInPacket& packet)
 {
     ((class Unk_OSInput*)&static_cast<class CInputStream&>(packet))->Read8(*(unsigned __int64*)(&m_nServerTime));
 }
 
 // @0x14174fd00
-void CSceneStateMulti::FUN_14174fd00()
+void CSceneStateMulti::ReleasePreviewPC()
 {
     if (m_hPreviewPC != 0)
         ((class Unk_FieldMgr*)WorldService::GetInstance())->FUN_141bbbc60(Unk_1401cd100(reinterpret_cast<void*>(m_hPreviewPC)), 0);
@@ -823,7 +823,7 @@ int CSceneStateMulti::FUN_14174fd70()
 }
 
 // @0x14174fdb0
-bool CSceneStateMulti::FUN_14174fdb0()
+bool CSceneStateMulti::IsServerTimeSameMonth()
 {
     if (m_nServerTime == 0)
         return false;
@@ -833,7 +833,7 @@ bool CSceneStateMulti::FUN_14174fdb0()
 }
 
 // @0x14174fe40
-void CSceneStateMulti::FUN_14174fe40()
+void CSceneStateMulti::ExitMapMode()
 {
     if (m_nMode != 0)
     {
@@ -844,19 +844,19 @@ void CSceneStateMulti::FUN_14174fe40()
 }
 
 // @0x14174fea0
-void CSceneStateMulti::FUN_14174fea0()
+void CSceneStateMulti::EnterSelectMode()
 {
-    unsigned nMap = FUN_14174ff70();
+    unsigned nMap = GetLobbyMap();
     if (nMap == 0)
-        nMap = FUN_14174f3e0();
+        nMap = GetSelectMapForSelectedJob();
     WorldService::GetInstance()->FUN_141bbbe40(nMap, 1, 0);
     m_nMode = 1;
 }
 
 // @0x14174ff00
-void CSceneStateMulti::FUN_14174ff00()
+void CSceneStateMulti::EnterCreateMode()
 {
-    unsigned nMap = FUN_14174ff70();
+    unsigned nMap = GetLobbyMap();
     if (nMap == 0)
         nMap = FUN_14174f440();
     m_nCreateMap = nMap;
@@ -865,9 +865,9 @@ void CSceneStateMulti::FUN_14174ff00()
 }
 
 // @0x14174ff70
-unsigned int CSceneStateMulti::FUN_14174ff70()
+unsigned int CSceneStateMulti::GetLobbyMap()
 {
-    if (FUN_14174fdb0())
+    if (IsServerTimeSameMonth())
         return ((struct Unk_Settings*)FUN_1401d3200())->m_nLobbyMap;
     return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047b9b0();
 }
@@ -881,9 +881,9 @@ void CSceneStateMulti::OnGameEventChanged(NotifyObject* pNotify)
     if (pEvent != 0 && operator==(pEvent->m_eventName, "LobbyMap"))
     {
         if (m_nMode == 1)
-            FUN_14174fea0();
+            EnterSelectMode();
         else if (m_nMode == 2)
-            FUN_14174ff00();
+            EnterCreateMode();
     }
 }
 

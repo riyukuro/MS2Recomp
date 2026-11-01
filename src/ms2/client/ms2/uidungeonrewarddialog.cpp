@@ -353,7 +353,7 @@ MS2_REPLACE_METHOD(0x140E21090, UIDungeonRewardDialog, OnLoadComplete, 2637, 0xE
 void UIDungeonRewardDialog::vfunc_67() {
  bool restore=m_restore; UIDialog::vfunc_67(); Unk_RewardOtherDialog* dialog=((class Unk_RewardOtherDialog*)FUN_140e01890(20044));
  if(dialog) { if(restore) { if(dialog->FUN_140e26860()) { dialog->vfunc_8(1);m_restore=false; } } dialog->FUN_1419f6eb0(); }
- FUN_140764020()->FUN_1416d0740();
+ FUN_140764020()->MarkField180();
 }
 MS2_REPLACE_METHOD(0x140E21B30, UIDungeonRewardDialog, vfunc_67, 145, 0x23BD740F);
 

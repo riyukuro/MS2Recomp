@@ -886,7 +886,7 @@ StatePush::~StatePush()
 void StatePush::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x29);
+    reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x29);
 }
 
 // @0x1417dfc60
@@ -1420,11 +1420,11 @@ void StateRope::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     switch (m_n10)
     {
-    case 0x33: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x24); break;
-    case 0x34: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x22); break;
-    case 0x35: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x23); break;
-    case 0x37: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x25); break;
-    case 0x38: reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dda0(0x26); break;
+    case 0x33: reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x24); break;
+    case 0x34: reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x22); break;
+    case 0x35: reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x23); break;
+    case 0x37: reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x25); break;
+    case 0x38: reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimationById(0x26); break;
     }
 }
 

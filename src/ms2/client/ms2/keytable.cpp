@@ -99,6 +99,11 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/gfxui/notifyhandler.h"
+#include "ms2/commonfiles/dynamicactiondata.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/client/ms2/uigamemenudialog.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -109,15 +114,13 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- callees in other units ----
-class Unk_140166420 : public CFileSystem { };
-Unk_140166420* FUN_140166420();
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_KtLog : public CLogString                                             // CLogString
 {
 public:
 };
-Unk_KtLog* FUN_140166440();
+CLogString* GetLogString();   // C3: was FUN_140166440
 CFeatureManager* FUN_140166410();
 MS2InputService* FUN_140a58540();
 CStringTable* GetStringTable();
@@ -132,24 +135,18 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the element is enabled
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);           // int attribute
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);  // unsigned attribute
-void FUN_1422c9380(const CString& str);                     // the action's binding changed (UI notice)
-class Unk_KtHeldData : public CItemData { };     // CItemData: the item's skill id
-class Unk_KtHeldItem { public: Unk_KtHeldData* FUN_140527840(); };   // CItem: its data
 class Unk_KtPlayer : public PC                                          // MyPC
 {
 public:
-    Unk_KtHeldItem* FUN_14165f100();                        // the held item
 };
 class Unk_KtWorld { public: Unk_KtPlayer* FUN_141bd0cc0(); };   // the local player
 CGuideManager* FUN_1409331e0();
 void FUN_141275260(int nStringId, int nA, int nB);          // system notice of a string table entry
-bool FUN_140347960(int nSkillId);
 class Unk_KtMainPlayerInfo : public UIMainPlayerInfo                                  // UIMainPlayerInfo
 {
 public:
-    SkillSlot* FUN_1419f2930(int nIndex);                   // a quick slot
 };
-Unk_KtMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FUN_140931900(int nUiId);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);   // string-table text with two arguments
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);          // string-table text, "{0}" arguments
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
@@ -158,8 +155,7 @@ struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real func
 CInputKeyHandler* FUN_14025e7c0();
 NotifySystem* FUN_140939a10();
 int SendKeyTableMode8(int nPage);                               // send the quick slot page
-class Unk_KtSkill : public CPtred { public: bool FUN_1407e9d30(); };   // SkillData
-class Unk_KtQuestList { public: int FUN_140745590(int nQuestId); };   // completed
+class Unk_KtQuestList { };   // CQuestManagerCommon
 class Unk_KtQuestMgr                                        // the quest client manager
 {
 public:
@@ -175,8 +171,7 @@ public:
     UISceneEntity* GetScene();                              // the current UI scene
     int FUN_1422b9fd0(int nSubSceneId);                     // toggle a sub scene
 };
-class Unk_KtPopup { public: void FUN_14193bbe0(); void FUN_14193bdf0(); };   // the 0x4e28 popup menu
-Unk_KtPopup* FUN_140938b90(int nUiId);
+UIGameMenuDialog* FUN_140938b90(int nUiId);   // the 0x4e28 popup menu
 class Unk_KtRuleFlags { public: int FUN_1402c4c90(int nRule); };
 class Unk_KtRules { public: unsigned char m_pad[8]; Unk_KtRuleFlags m_flags; };
 Unk_KtRules* FUN_14025e7b0();
@@ -188,7 +183,7 @@ int FUN_140dffeb0(ItemFunctionArgs* pArgs);                 // the ugc event ite
        // the camera manager: its mode
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90);  // the player's inventory
-void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
+int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
 class TiXmlElement
@@ -439,12 +434,12 @@ MS2_REPLACE_METHOD(0x141429600, CKeyTable, SendKeysToServer, 467, 0x64A12F3D);
 int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        Unk_AchieveLog<CString>((class CLogString*)FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("KeyConfig"));
@@ -510,12 +505,12 @@ MS2_REPLACE_METHOD(0x1414297E0, CKeyTable, FUN_1414297e0, 1645, 0x48DBACBE);
 int CKeyTable::FUN_141429e60(const CString& strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        Unk_AchieveLog<CString>((class CLogString*)FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     Unk_140165cf0* pConfig = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("KeyConfig"));
@@ -624,7 +619,7 @@ void CKeyTable::FUN_14142a8b0(__int64 nAction)
 {
     CString str;
     str.Format("%I64u", nAction);
-    FUN_1422c9380(str);
+    Unk_NotifyContext::FUN_1422c9380(str);
 }
 MS2_REPLACE_METHOD(0x14142A8B0, CKeyTable, FUN_14142a8b0, 85, 0x3BC4C506);
 
@@ -870,7 +865,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         break;
     case 400028:
     {
-        Unk_KtPopup* pPopup = FUN_140938b90(0x4e28);
+        UIGameMenuDialog* pPopup = FUN_140938b90(0x4e28);
         if (pPopup != 0)
             pPopup->FUN_14193bbe0();
         break;
@@ -883,7 +878,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f18);
         else
         {
-            Unk_KtPopup* pPopup = FUN_140938b90(0x4e28);
+            UIGameMenuDialog* pPopup = FUN_140938b90(0x4e28);
             if (pPopup != 0)
                 pPopup->FUN_14193bdf0();
         }
@@ -1450,7 +1445,7 @@ int CKeyTable::GetKeySkillId(stKeyData* pKey)
     }
     else if (pKey->m_nType == 2)
     {
-        if (FUN_140347960((int)pKey->m_nCode))
+        if (CDynamicActionData::IsListed(pKey->m_nCode))
             return (int)pKey->m_nCode;
         return 0;
     }
@@ -1476,8 +1471,8 @@ int CKeyTable::FUN_14142dad0(unsigned nKey)
     else if (IsKeyBoundToAction(nKey, 0x493e2))
     {
         Unk_KtPlayer* pMe = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
-        Unk_KtHeldItem* pHeld;
-        if (pMe != 0 && pMe->FUN_14165f150() && (pHeld = pMe->FUN_14165f100()) != 0)
+        CItem* pHeld;
+        if (pMe != 0 && pMe->FUN_14165f150() && (pHeld = reinterpret_cast<CItem*>(pMe->FUN_14165f100())) != 0)
             return pHeld->FUN_140527840()->FUN_14053dc90();
     }
     return GetKeySkillId(FindKeyData(nKey).get());
@@ -1558,7 +1553,7 @@ __int64 CKeyTable::GetQuickSlotItemUidByKey(unsigned nKey)
     int nIndex = 0;
     Unk_KtMainPlayerInfo* pInfo;
     SkillSlot* pSlot;
-    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = FUN_140931900(0x4e5f)) != 0 && (pSlot = pInfo->FUN_1419f2930(nIndex)) != 0)
+    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f)) != 0 && (pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nIndex)) != 0)
     {
         MS2Ptr<CItem> spItem = pSlot->vfunc_25();
         if (spItem.get())
@@ -1574,7 +1569,7 @@ int CKeyTable::GetQuickSlotItemIdByKey(unsigned nKey)
     int nIndex = 0;
     Unk_KtMainPlayerInfo* pInfo;
     SkillSlot* pSlot;
-    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = FUN_140931900(0x4e5f)) != 0 && (pSlot = pInfo->FUN_1419f2930(nIndex)) != 0)
+    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f)) != 0 && (pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nIndex)) != 0)
         return pSlot->GetItemId();
     return 0;
 }
@@ -1767,12 +1762,12 @@ int CKeyTable::HasSkillSlotMatch(int nSkillId, int nItemId, __int64 nItemUid, un
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     if (nCount > 25)
         nCount = 25;
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (!pInfo)
         return 0;
     for (unsigned i = 0; i < nCount; i++)
     {
-        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         if (nItemId != 0 && pSlot->GetItemId() == nItemId)
@@ -1798,14 +1793,14 @@ void CKeyTable::ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet)
     if (pPage == 0)
         return;
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
     size_t nSkill = 0;
     size_t nItem = 0;
     for (unsigned i = 0; i < 25; i++)
     {
-        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         pSlot->vfunc_11();
@@ -1854,12 +1849,12 @@ void CKeyTable::ApplyItemListToQuickSlots(const ATL::CAtlArray<unsigned>& aItemI
     if (pPage == 0)
         return;
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
     for (unsigned i = 0; i < 25; i++)
     {
-        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         pSlot->vfunc_11();
@@ -1883,14 +1878,14 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     if (m_nLocked != 1)
         return;
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (!pInfo)
         return;
     if (nCount > 25)
         nCount = 25;
     for (unsigned i = 0; i < nCount; i++)
     {
-        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         if (nItemId != 0 && pSlot->GetItemId() == nItemId)
@@ -1905,7 +1900,7 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
         return;
     for (unsigned j = 0; j < nCount; j++)
     {
-        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[j]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[j]);
         if (!pSlot)
             continue;
         if (pSlot->GetItemId() == 0 && pSlot->GetSkillId() == 0 && pSlot->GetItemUid() == 0)
@@ -1930,13 +1925,13 @@ MS2_REPLACE_METHOD(0x14142EF50, CKeyTable, FUN_14142ef50, 607, 0x560846BE);
 // @0x14142f1c0
 void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
 {
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
     int nSlot = FUN_141432650(nItemId);
     if (nSlot == -1)
         return;
-    SkillSlot* pSlot = pInfo->FUN_1419f2930(nSlot);
+    SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nSlot);
     if (pSlot == 0)
         return;
     if (pSlot->GetSkillId() != 0 || pSlot->GetItemUid() != 0 || pSlot->GetItemId() != 0)
@@ -1948,19 +1943,19 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
     {
         if (pPlayer->FUN_141654700() == 90)
         {
-            if (!FUN_140764020()->m_list.FUN_140745590(90000414))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&FUN_140764020()->m_list)->FUN_140745590(90000414))
                 return;
-            if (!FUN_140764020()->m_list.FUN_140745590(90000415))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&FUN_140764020()->m_list)->FUN_140745590(90000415))
                 return;
         }
         if (pPlayer->FUN_141654700() == 110)
         {
-            if (!FUN_140764020()->m_list.FUN_140745590(90000444))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&FUN_140764020()->m_list)->FUN_140745590(90000444))
                 return;
         }
         if (pPlayer->FUN_141654700() == 100)
         {
-            if (!FUN_140764020()->m_list.FUN_140745590(90000431))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&FUN_140764020()->m_list)->FUN_140745590(90000431))
                 return;
         }
     }
@@ -1985,7 +1980,7 @@ MS2_REPLACE_METHOD(0x14142F1C0, CKeyTable, FUN_14142f1c0, 668, 0xE69F370C);
 // @0x14142f470
 void CKeyTable::FUN_14142f470(int nPage, int nSlot)
 {
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
     QuickSlotPage* pPage = FUN_141431c20(nPage);
@@ -2012,7 +2007,7 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
         pPage->SetAt(nSlot, entry);
         if (nPage == m_nQuickSlotPage)
         {
-            SkillSlot* pSlot = pInfo->FUN_1419f2930(nJobSlot);
+            SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nJobSlot);
             if (pSlot == 0)
                 continue;
             pSlot->SetSkillId(nSkillId);
@@ -2032,7 +2027,7 @@ void CKeyTable::SendKeyTableMode7()
 {
     if (m_nLocked == 0)
         return;
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo)
         pInfo->FUN_1419f2a90();
     m_nLocked = 0;
@@ -2073,7 +2068,7 @@ template <class T> void Unk_KtLogFormat(Unk_KtLog* pLog, int nLevel, int nCatego
 // @0x14142f8b0
 void CKeyTable::SaveKeySetting(CString strName)
 {
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
     TiXmlDocument doc;
@@ -2082,7 +2077,7 @@ void CKeyTable::SaveKeySetting(CString strName)
     TiXmlElement* pRoot = new TiXmlElement("ms2");
     for (size_t i = 0; i < 25; i++)
     {
-        SkillSlot* pSlot = pInfo->FUN_1419f2930((int)i);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930((int)i);
         if (!pSlot)
             continue;
         int nItemId = pSlot->GetItemId();
@@ -2109,7 +2104,7 @@ MS2_REPLACE_METHOD(0x14142F8B0, CKeyTable, SaveKeySetting, 843, 0x96150CB6);
 // @0x14142fc10
 void CKeyTable::LoadKeySetting(CString strName)
 {
-    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
     if (pInfo == 0)
         return;
     CString strFile = FUN_140540050("keySetting_{0}.xml", strName);
@@ -2136,7 +2131,7 @@ void CKeyTable::LoadKeySetting(CString strName)
             if (spItem)
                 nSkillId = spItem->FUN_14053dc20();
         }
-        SkillSlot* pSlot = pInfo->FUN_1419f2930(nIndex);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nIndex);
         if (!pSlot)
             continue;
         pSlot->vfunc_11();
@@ -2158,12 +2153,12 @@ MS2_REPLACE_METHOD(0x14142FC10, CKeyTable, LoadKeySetting, 978, 0x3C20ED15);
 int CKeyTable::LoadKeySettingTable()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "keySetting.xml"), 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "keySetting.xml"), 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        Unk_KtLogFormat(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", "keySetting.xml");
+        Unk_KtLogFormat((Unk_KtLog*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", "keySetting.xml");
         return 0;
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key")))
@@ -2616,12 +2611,12 @@ void CKeyTable::FUN_141431f20(int nKey)
 {
     CString str;
     str.Format("%d", nKey);
-    FUN_1422c9380(str);
+    Unk_NotifyContext::FUN_1422c9380(str);
     int nPair;
     if (m_pairKeys.Lookup(nKey, nPair))
     {
         str.Format("%d", nPair);
-        FUN_1422c9380(str);
+        Unk_NotifyContext::FUN_1422c9380(str);
     }
 }
 MS2_REPLACE_METHOD(0x141431F20, CKeyTable, FUN_141431f20, 153, 0xDC75732D);
@@ -2688,7 +2683,7 @@ void CKeyTable::FUN_141432360(int nSkillId)
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spSkill.get())
     {
-        if (reinterpret_cast<Unk_KtSkill*>(spSkill.operator->())->FUN_1407e9d30())
+        if (reinterpret_cast<SkillData*>(spSkill.operator->())->FUN_1407e9d30())
             m_18.SetAt(nSkillId, nSkillId);
     }
 }

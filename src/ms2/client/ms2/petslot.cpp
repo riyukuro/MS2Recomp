@@ -397,7 +397,7 @@ void PetSlot::FUN_140dbc010()
     MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(m_nPetItemUid);
     if (spItem == 0)
         return;
-    if (((class CQuestManager*)FUN_140764020())->FUN_1416ce170(spItem) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(spItem) != 0)
         vfunc_10();
 }
 

@@ -22,6 +22,7 @@
 class ASButton;
 class ASData;
 class ASObj;
+class ASTileList;
 class ASTextField;
 class CInPacket;
 
@@ -44,22 +45,6 @@ struct Unk_PcBangTimer
     unsigned m_nLast;                                       // +0x04
 };
 MS2_CHECK_SIZE(Unk_PcBangTimer, 8);
-
-// The "m_giftList" tile list (ASTileList: ASCoreList -> ASUIComponent); slots 16-24 are ASUIComponent's.
-class Unk_PcBangGiftList : public ASUIComponent
-{
-public:
-    virtual void vfunc_16();                                // 16 0x1422c7ec0
-    virtual void vfunc_17();                                // 17 0x1422c7f00
-    virtual void vfunc_18();                                // 18 0x1422c7f40
-    virtual void vfunc_19();                                // 19 0x1422c7f80
-    virtual void vfunc_20();                                // 20 0x1422c7fc0
-    virtual void vfunc_21();                                // 21 0x1422c8000
-    virtual void vfunc_22();                                // 22 0x1422c8040
-    virtual void vfunc_23();                                // 23 0x1422dd090
-    virtual void vfunc_24(bool bRefresh);                   // 24 0x1422c80c0 validateNow
-    void FUN_1422dd230(const ASObj& row);                   // ASCoreList: append a row
-};
 
 class UIPcBangDialog : public UIDialog
 {
@@ -106,9 +91,6 @@ public:
     int CountReachedBonus();                                // 0x1413266e0 play-time tiers already reached
     int IsPcBang();                                         // 0x1413267b0 m_nGrade > 0
 
-    // Child lookups (UISwfEntity::GetChild<T> COMDATs, one per wrapper class).
-    MS2Ptr<Unk_PcBangGiftList> FUN_140ba4b70(const CString& strName);
-
     int m_nState;                                           // +0x178 1 once the info packet arrived
     unsigned char m_nGrade;                                 // +0x17c PC bang grade (0: not a PC bang)
     int m_bGiftOrderDirty;                                  // +0x180 m_giftOrder must be rebuilt
@@ -124,7 +106,7 @@ public:
     Unk_PcBangTimer m_playTimeTimer;                        // +0x20c 30 s
     Unk_PcBangTimer m_receivableTimer;                      // +0x214 10 s
     CBannerUrlGetter m_banner;                              // +0x220
-    MS2Ptr<Unk_PcBangGiftList> m_spGiftList;                // +0x258 "m_giftList"
+    MS2Ptr<ASTileList> m_spGiftList;                // +0x258 "m_giftList"
     MS2Ptr<ASMovieClip> m_spBanner;                         // +0x268 "m_banner"
     ATL::CAtlArray<MS2Ptr<ASMovieClip> > m_rows;            // +0x278 "m_timeBonus{0}"
     ATL::CAtlArray<MS2Ptr<ASButton> > m_getButtons;         // +0x298 "itemGetButton" of each row

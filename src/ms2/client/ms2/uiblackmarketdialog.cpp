@@ -78,7 +78,6 @@ unsigned __int64 FUN_140718350(const CString& str);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 class Unk_Hotbar { public: int FUN_140d40670(); };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
-void FUN_140d40120(Unk_Hotbar* p, MS2Ptr<CItem> spItem, int n);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);
 void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem);
 void FUN_1413490b0(MS2Ptr<CItem>, Scaleform::GFx::Value*, bool, int, int);
@@ -332,14 +331,14 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             {
                 __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
                 MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-                FUN_140d40120(((class Unk_Hotbar*)FUN_1409bb9e0()), spItem, 0);
+                reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->OpenPreview(spItem, 0);
             }
             else if ((strArg == "MarketSN"))
             {
                 unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
                 MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
                 if (spEntry.get())
-                    FUN_140d40120(((class Unk_Hotbar*)FUN_1409bb9e0()), spEntry->m_item, 0);
+                    reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->OpenPreview(spEntry->m_item, 0);
             }
         }
         else

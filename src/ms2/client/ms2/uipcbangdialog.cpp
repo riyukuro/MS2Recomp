@@ -31,7 +31,9 @@
 // File name assumed (the class name; the exe has no assert path for it). The TU ends with the CRT memmove_s copy at
 // 0x14132b970; 0x14132ba90 (the "$s_myInfo_*" text helper) belongs to client\ms2\uipcinfodialog.cpp.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipcbangdialog.cpp"    // assumed
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 #include "uipcbangdialog.h"
 #include "uimessageboxdata.h"
 #include "mypc.h"
@@ -168,7 +170,7 @@ void UIPcBangDialog::OnLoadInit()
         m_getButtons.Add(spButton);
         m_rows.Add(spRow);
     }
-    m_spGiftList = FUN_140ba4b70("m_giftList");
+    m_spGiftList = GetChild<ASTileList>("m_giftList");
     m_spBanner = GetChild<ASMovieClip>("m_banner");
     m_spBanner->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickBanner), 0);
     m_banner.LoadBanner();
@@ -560,18 +562,18 @@ void UIPcBangDialog::RefreshGiftList()
         {
             ASObj obj(2);
             obj.FUN_1409c0d20("id", spGift->m_giftId);
-            obj.FUN_1407cbb20("label", GetStringTable()->FUN_141811980(1, spGift->m_itemId));
+            ((class AScript&)(obj)).FUN_1407cbb20("label", GetStringTable()->FUN_141811980(1, spGift->m_itemId));
             obj.FUN_1409adc90("itemGrade", spGift->vfunc_o18_1());
             obj.FUN_1407cba60("iconPath", spData->GetIconPath());
-            obj.FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
+            ((class AScript&)(obj)).FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
             int nState = FUN_141275a10(spItem.get());
             if (nState == 2)
-                obj.FUN_1407cb9c0("disable", 1);
+                ((class AScript&)(obj)).FUN_1407cb9c0("disable", 1);
             else if (nState == 1)
-                obj.FUN_1407cb9c0("itemLock", 1);
+                ((class AScript&)(obj)).FUN_1407cb9c0("itemLock", 1);
             else if (nState == 3)
-                obj.FUN_1407cb9c0("itemConditionLock", 1);
-            m_spGiftList->FUN_1422dd230(obj);
+                ((class AScript&)(obj)).FUN_1407cb9c0("itemConditionLock", 1);
+            ((class ASCoreList*)(m_spGiftList))->AddItem(obj);
         }
     }
     m_spGiftList->vfunc_24(true);

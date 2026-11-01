@@ -196,6 +196,7 @@
 
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -491,7 +492,7 @@ bool Constants::Lookup(const CString& key, std::vector<int>* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        FUN_140178270(s, out, ",");
+        XmlSplit(s, *out, ",");
         return true;
     }
     return false;
@@ -513,7 +514,7 @@ bool Constants::Lookup(const CString& key, std::vector<unsigned>* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        FUN_1401782a0(s, out, ",");
+        XmlSplit(s, *out, ",");
         return true;
     }
     return false;
@@ -541,8 +542,10 @@ bool Constants::Lookup(const CString& key, float* out)
     return false;
 }
 // The by-value forms of the clientconstants.h string parsers (the exe assigns their returned temporaries).
+}
 CString FUN_1407185b0(const CString& s);
 CStringW FUN_140718650(const CString& s);
+namespace Common {
 efd::Point3 FUN_140db9570(const CString& s);
 
 // @0x1402bb760

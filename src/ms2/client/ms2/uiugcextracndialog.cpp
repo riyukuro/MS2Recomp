@@ -114,7 +114,7 @@ ecr::RenderService*FUN_1413f9890();
 CStringW TakeScreenshotJpg(int a, int b);                       // the screenshot path
 void FUN_141275260(int nId, int a, int b);                      // show a notice by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 
 // @0x140facb20

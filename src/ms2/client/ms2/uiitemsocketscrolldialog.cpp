@@ -75,7 +75,7 @@ static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "Pric
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW> (0x1401e8510)
-
+class Unk_CommandArgs { public: int FUN_1408d1f60(unsigned int, int); };
 // ---- unit-local views of exe objects ----
 
 // The exe's delegate types take the slot by reference (RTTI names them so); ItemScrollSlot's setters are bound by name.
@@ -236,8 +236,8 @@ void UIItemSocketScrollDialog::OnLoadComplete()
     }
     ASObj obj(2);
     obj.FUN_1407cba60("bindSlotId", CString(m_strSlot));
-    obj.FUN_1407cbb20("notice", CStringW(strNotice));
-    obj.FUN_1407cbb20("desc", CStringW(strDesc));
+    ((class AScript&)(obj)).FUN_1407cbb20("notice", CStringW(strNotice));
+    ((class AScript&)(obj)).FUN_1407cbb20("desc", CStringW(strDesc));
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
 
@@ -312,9 +312,9 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
             strResult = FUN_140e63450(CStringW(L"s_itemsocket_scroll_result"), nShown, nOpen, nMax);
         }
         ASObj obj(2);
-        obj.FUN_1407cbb20("itemName", CStringW(strName));
-        obj.FUN_1407cbb20("successProb", CStringW(strProb));
-        obj.FUN_1407cbb20("result", CStringW(strResult));
+        ((class AScript&)(obj)).FUN_1407cbb20("itemName", CStringW(strName));
+        ((class AScript&)(obj)).FUN_1407cbb20("successProb", CStringW(strProb));
+        ((class AScript&)(obj)).FUN_1407cbb20("result", CStringW(strResult));
         m_spItem = spTarget;
         m_30->Invoke("selectItem", obj.FUN_1422bb870());
         SetHasItem(1);
@@ -362,7 +362,7 @@ CItemSocketScrollDataPtr UIItemSocketScrollDialog::FUN_140f65b30(MS2Ptr<CItemDat
 {
     if (spData == 0)
         return CItemSocketScrollDataPtr(0);
-    int nId = spData->function.parameter.FUN_1408d1f60(0, 0);
+    int nId = ((unsigned int)((class Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60((unsigned int)(0), 0));
     CItemSocketScrollDataPtr spRow = CItemSocketScrollTable::GetInstance()->GetData(nId);
     return spRow;
 }

@@ -174,7 +174,7 @@ int CostumeSetTable::LoadXml()
     m_cache.AssignRaw(new CCacheData);
     m_cache.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>((class CFileSystem*)((GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

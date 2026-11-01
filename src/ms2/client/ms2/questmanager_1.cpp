@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/equipment.h"
 
 // This object's header statics omit the sort-name array in header_statics_a.h.
 class Unk_QuestHeaderMap
@@ -71,7 +72,6 @@ class CEquipItem   // C3: member view for the former free stand-ins
 public:
     int FUN_1411dc820();
 };
-void FUN_1411e1ce0(void*, ATL::CAtlList<MS2Ptr<Unk_QuestSkill>>&, int);
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
@@ -201,9 +201,9 @@ int CQuest::CheckUserFind(PCBase* actor)
     context.m_gender = ((class PC*)(class PCBase*)(actor))->FUN_141661c50();
     context.m_24 = ((class PCBase*)(class PCBase*)(actor))->FUN_141676410();
     ATL::CAtlList<MS2Ptr<Unk_QuestSkill>> skills(10);
-    FUN_1411e1ce0(((void*)((class PC*)(class PCBase*)(actor))->FUN_1416561a0()), skills, 0);
-    FUN_1411e1ce0(((void*)((class PC*)(class PCBase*)(actor))->FUN_1416561a0()), skills, 1);
-    FUN_1411e1ce0(((void*)((class PC*)(class PCBase*)(actor))->FUN_1416561a0()), skills, 2);
+    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(skills), 0);
+    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(skills), 1);
+    reinterpret_cast<CEquipment*>(((class PC*)(class PCBase*)(actor))->FUN_1416561a0())->CollectShownItemsInLayer(reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >&>(skills), 2);
     for (POSITION pos = skills.GetHeadPosition(); pos; skills.GetNext(pos)) {
         MS2Ptr<Unk_QuestSkill> skill(skills.GetAt(pos));
         if (FUN_140b02900(skill)) continue;

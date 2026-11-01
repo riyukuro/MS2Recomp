@@ -222,7 +222,7 @@ void CShopCategoryTable::Load()
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_1403974b0(&doc, *spCache->FUN_1401d1140(), 0, true, false) != 0)
         {
-            Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+            Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
             if (pRoot == 0)
                 continue;
             LoadCategories(pRoot);

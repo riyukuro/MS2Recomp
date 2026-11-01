@@ -91,7 +91,7 @@ public:
     Unk_AdvHolder* FUN_140975bc0() const;                           // operator->
     Unk_AdvHolder* m_p;
 };
-class Unk_AdvActor : public PC { public: Unk_AdvHolder* FUN_1416764a0(); };
+class Unk_AdvActor : public PC { };
 class Unk_AdvWorld { };
 
 // The bar clip: ASGameEntity declares only slots 0..5; slot 25 is "validateNow".
@@ -204,7 +204,7 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
     Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_AdvHolderRef spHolder(pPlayer->FUN_1416764a0());
+    Unk_AdvHolderRef spHolder(reinterpret_cast<Unk_AdvHolder*>(pPlayer->FUN_1416764a0()));
     if (spHolder != 0)
     {
         bool bMounted = spHolder.FUN_140975bc0()->FUN_141707750().FUN_1407895d0()->m_6c != 0 ? 1 : 0;

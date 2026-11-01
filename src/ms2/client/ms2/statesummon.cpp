@@ -103,7 +103,6 @@ class CPetManager   // C3: member view for the former free stand-ins
 public:
     class Unk_PetManagerEmpty* FUN_140c8b430();
 };
-bool FUN_1401c0050(MS2Ptr<Unk_ItemEquipData>& ref, int n);                 // 0x1401c0050 the reference is set
 
 // The pet actor and its manager.
 class CPet   // C3: member view for the former free stand-ins
@@ -730,21 +729,21 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
             if (nIndex != 0)
             {
                 MS2Ptr<Unk_ItemEquipData> refSkill = ((class Unk_SmPetSkills*)((class CPetManager*)(void*)(((void*)FUN_140535320())))->FUN_140c8b430())->FUN_140c892c0(nIndex);
-                if (FUN_1401c0050(refSkill, 0))
+                if (reinterpret_cast<MS2Ptr<CItem>*>(&refSkill)->operator==(0))
                     FUN_1417f94a0(pState, 0x5f);
             }
         }
     }
 
     if (pState->m_pOwner->FUN_14166de90(0, nActorId) == 0)
-        pState->m_pOwner->FUN_14166dda0(0);
+        pState->m_pOwner->PlayAnimationById(0);
 }
 
 // @0x1417f9260
 void FUN_1417f9260(StateSummonIdle* pState, int nActorId)
 {
     if (pState->m_pOwner->FUN_14166de90(0x27, nActorId) == 0)
-        pState->m_pOwner->FUN_14166dda0(0x27);
+        pState->m_pOwner->PlayAnimationById(0x27);
     FUN_1417f94a0(pState, 0x5c);
 }
 
@@ -752,7 +751,7 @@ void FUN_1417f9260(StateSummonIdle* pState, int nActorId)
 void FUN_1417f92c0(StateSummonIdle* pState, int nActorId)
 {
     if (pState->m_pOwner->FUN_14166de90(0x42, nActorId) == 0)
-        pState->m_pOwner->FUN_14166dda0(0x42);
+        pState->m_pOwner->PlayAnimationById(0x42);
     FUN_1417f94a0(pState, 0x5d);
 }
 
@@ -760,7 +759,7 @@ void FUN_1417f92c0(StateSummonIdle* pState, int nActorId)
 void FUN_1417f9320(StateSummonIdle* pState, int nActorId)
 {
     if (pState->m_pOwner->FUN_14166de90(0x43, nActorId) == 0)
-        pState->m_pOwner->FUN_14166dda0(0x43);
+        pState->m_pOwner->PlayAnimationById(0x43);
     FUN_1417f94a0(pState, 0x5e);
 }
 
@@ -777,7 +776,7 @@ void FUN_1417f9380(StateSummonIdle* pState, int nActorId)
 void FUN_1417f9440(StateSummonIdle* pState, int nActorId)
 {
     if (pState->m_pOwner->FUN_14166de90(0x45, nActorId) == 0)
-        pState->m_pOwner->FUN_14166dda0(0x45);
+        pState->m_pOwner->PlayAnimationById(0x45);
     FUN_1417f94a0(pState, 0x61);
 }
 
@@ -851,7 +850,7 @@ void StateSummonRevive::vfunc_9(double fTime)
 
     int nActorId = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     if (m_pOwner->FUN_14166de90(0, nActorId) == 0)
-        m_pOwner->FUN_14166dda0(0);
+        m_pOwner->PlayAnimationById(0);
 }
 
 // ---- StateSummonExpire --------------------------------------------------------------------------------------------------
@@ -934,7 +933,7 @@ StateSummonPortal::StateSummonPortal(PCBase* pOwner) : State(pOwner) {}
 void StateSummonPortal::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_pOwner->FUN_14166dda0(0);
+    m_pOwner->PlayAnimationById(0);
 }
 
 // ---- the constant state ids ---------------------------------------------------------------------------------------------

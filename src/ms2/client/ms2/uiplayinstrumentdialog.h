@@ -24,7 +24,7 @@ class CItem;
 class ASMovieClip;
 class ASTextField;
 class Unk_140acd6e0;
-class Unk_PiTabBar;
+class ASButtonBar;
 
 class UIPlayInstrumentDialog : public UIDialog
 {
@@ -94,7 +94,7 @@ private:
     MS2Ptr<Unk_140acd6e0> m_spLowerOctave;                                  // +0x210 "m_lowerOctave"
     MS2Ptr<Unk_140acd6e0> m_spUpperOctave;                                  // +0x220 "m_upperOctave"
     MS2Ptr<ASTextField> m_spFold;                                           // +0x230 "m_foldText"
-    MS2Ptr<Unk_PiTabBar> m_spTab;                                           // +0x240 "m_tab"
+    MS2Ptr<ASButtonBar>   m_spTab;                                           // +0x240 "m_tab"
     std::vector<std::pair<int, int> > m_octaveKeys;                         // +0x250 (key, octave code)
     KeyButtonMap m_keyButtons;                                              // +0x268
     PressedMap m_pressed;                                                   // +0x278

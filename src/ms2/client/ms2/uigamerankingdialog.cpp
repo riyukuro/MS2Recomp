@@ -176,7 +176,6 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_1408733e0(void*, const char*, CString&);
 int FUN_140873420(void*, const char*, CStringW&);
-size_t FUN_1401662c0(ATL::CAtlArray<CString>&);                         // GetCount
 CString& FUN_140164930(ATL::CAtlArray<CString>&, size_t nIndex);        // operator[]
 
 // Texts.

@@ -35,7 +35,7 @@ template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::get() const;        
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::operator->() const;  // 0x1405a8f40
 template <> MS2Ptr<Unk_PCBaseComp_aa8>::~MS2Ptr();                               // 0x1405a8980
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
-class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); void* m_unknown; };
+class Unk_EmoCfgFloat { public: void* m_unknown; };
 struct Unk_EmoCfg
 {
     char m_pad_0000[0x218];
@@ -48,12 +48,10 @@ struct Unk_EmoCfg
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_EmoPlayer : public CNpc                                                         // the player-side object of an actor (quest/status)
 {
-public:
-    unsigned int FUN_1410937b0();                                           // npc id
 };
-class Unk_EmoNpcTable { public: int FUN_14035b0a0(unsigned int nId); CString FUN_14035b2a0(unsigned int nId); };
-Unk_EmoNpcTable* FUN_140764010();
-CString FUN_141082090(unsigned int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
+class CFameTable { public: int IsOfficerNpc(int nKind); CString GetSymbolByOfficerNpc(int nKind); };   // famegradedata.h's fame table
+class Unk_EmoNpcTable* FUN_140764010();
+CString FUN_141082090(int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_EmoUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -74,10 +72,14 @@ bool FUN_140930110(int nActorId);
 class Unk_EmoClip : public ASGameEntity
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
     Scaleform::GFx::Value& FUN_1422bb870();
     void FUN_1422c00f0(float x, float y);
+};
+class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
+{
+public:
+    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 // ASUIComponent::vfunc_24(bool) (validateNow) is slot 24 of the clip's vftable; ASGameEntity declares only 6 slots.
 class Unk_EmoClipSlots
@@ -126,8 +128,8 @@ CString FUN_14192ebf0(unsigned int nNpcId)
     CString strName;
     if (s_npcMovieNames.Lookup(nNpcId, strName))
         return strName;
-    if (FUN_140764010()->FUN_14035b0a0(nNpcId) != 0)
-        return Unk_SocketFormat("emoticon_movie_npc_{0}", FUN_140764010()->FUN_14035b2a0(nNpcId));
+    if (((class CFameTable*)FUN_140764010())->IsOfficerNpc(nNpcId) != 0)
+        return Unk_SocketFormat("emoticon_movie_npc_{0}", ((class CFameTable*)FUN_140764010())->GetSymbolByOfficerNpc(nNpcId));
     return CString("");
 }
 #endif
@@ -161,7 +163,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
 {
     m_64 = 99999999;
     float fDefault = 400.0f;
-    m_c0 = *((struct Unk_EmoCfg*)FUN_1401d3200())->m_218.FUN_140967520(&fDefault);
+    m_c0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_218)->Get(fDefault);
     m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)FUN_1401d3200())->m_2600)->Read();
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
@@ -485,7 +487,7 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
             {
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
-                Scaleform::GFx::Value v = ((Unk_EmoClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
@@ -512,7 +514,7 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())
-                                ((Unk_EmoClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_EmoClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                                ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_EmoClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
                         }
                     }
                     pEntity->FUN_140f48ce0(nActorId);

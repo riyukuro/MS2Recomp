@@ -50,8 +50,8 @@ CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const
                        const int& nMinute);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140710590(COutPacket& packet);
-void FUN_140d73bc0(int nStringId, int a2, int a3, CStringW strText);
-void FUN_140d73aa0(CStringW strText, int a2, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73bc0(int nStringId, int a2, void* a3, CStringW strText);
+void FUN_140d73aa0(CStringW strText, int a2, void* pListener, CStringW strTag);
 void FUN_14151f200();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 unsigned nState = GetServerTime() < nExpire;
                 CMsTime time(nExpire);
                 if (nState != 0)
-                    FUN_140d73aa0(FUN_1409e90c0(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, this, L"onStop");
+                    FUN_140d73aa0(FUN_1409e90c0(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, static_cast<IMessageListener*>(this), L"onStop");
             }
         }
         return 1;

@@ -78,6 +78,10 @@
 #include "ms2/client/ms2/stateplayinstrumentdata.h"
 #include "ms2/client/ms2/portal.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/commonfiles/contentshutdown.h"
+#include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/dungeonrecordcli.h"
 #include "ms2/client/ms2/fielddatacli.h"
@@ -97,6 +101,14 @@ struct Unk_PmFixedItem;
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 class Unk_ItemEquipData : public CItemData {};              // CItem::FUN_140527840's record (as commonfiles\item.cpp)
+class Unk_CommandArgs                                       // the function parameter text
+{
+public:
+    int FUN_1408d1f60(unsigned nIndex, int nDefault);
+    int FUN_1408d1fd0(unsigned nIndex, int nDefault);
+    unsigned FUN_1408d2380();
+    CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);
+};
 class Unk_ItemOwnerRef : public CItemTransfer {};           // CItem::FUN_140527930's transfer state
 
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_IuBoxCallback;
@@ -104,15 +116,12 @@ typedef Delegate<bool(int, const CMsgBoxData&)> Unk_IuBoxCallback;
 // The handler of an item function: the item (by value, the handler destroys it) and the local player.
 typedef int (*Unk_ItemUseFunc)(MS2Ptr<CItem> spItem, PC* pPlayer);
 
-class Unk_RideeFieldObj;
+class Unk_WsB_Marker : public CPtred { };                   // WorldService::FUN_141bc4f10, the field object of an entity
 class Unk_IuWorld : public WorldService
 {
 public:
     MyPC* FUN_141bd0cc0();                                  // the local player
-    MS2Ptr<Unk_RideeFieldObj> FUN_141bc4f10(Unk_Entity* pEntity);   // the field object of an entity
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the current field's data
     void FUN_141bc2c90(NiPoint3 kPos, ATL::CAtlArray<MS2Ptr<CPortal> >& arrOut);   // the portals containing a position (AddRef'd)
-    void FUN_141bc2980(std::vector<int>& vOut);             // the portal ids of the field
     MS2Ptr<CPortal> FUN_141bc2800(int nId);                 // a portal by id
 };
 
@@ -131,8 +140,6 @@ void FUN_1412752d0(const CStringW& strText, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_140938ae0(CStringW strKey, const int& nArg);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 int FUN_14028cb70(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected);
 bool FUN_1407183f0(const CStringW& str);
 int FUN_1407181a0(const CStringW& str);
@@ -148,11 +155,10 @@ CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool 
 int FUN_14028e280(CMsTime& timeOut, const CStringA& strFormat, const CStringA& strText);
 
 // The "blocked contents" flags of the client config.
-class Unk_IuFlagSet { public: int FUN_1402c4c90(int nFlag); };
 struct Unk_IuConfig
 {
     void* m_p00;
-    Unk_IuFlagSet m_flags;                                  // +0x08
+    CContentShutdown m_flags;                                  // +0x08
 };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
@@ -169,9 +175,6 @@ public:
     virtual void vfunc_1();
     virtual void vfunc_2();
     virtual MS2Ptr<Unk_IuQuest> vfunc_3(int nQuestId);      // 3 the quest
-    int FUN_140745590(int nQuestId);                        // completed
-    int FUN_140745630(int nQuestId);                        // accepted
-    int FUN_140745820(int nQuestId, int n);                 // the quest may start
 };
 class Unk_IuQuestMgr
 {
@@ -187,21 +190,17 @@ CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
 
 // ItemChangeBeauty: the field object the player stands on (ridee.cpp's view of the same COMDATs).
 class Unk_IuBody;
-class Unk_IuHitReport                                       // GameObjectControllerHitReport (its header pulls PhysX)
+class GameObjectControllerHitReport                         // its header pulls PhysX
 {
 public:
-    Unk_Entity* FUN_140cfaff0() const;                      // GetEntity
+    Unk_Entity* GetEntity() const;
 };
-Unk_IuHitReport* FUN_141240f20(Unk_IuBody* pBody);
-class Unk_RideeFieldObj : public CPtred
-{
-public:
-    bool FUN_140ae0700();                                   // the object blocks the beauty change
-};
+class GameObjectController { public: GameObjectControllerHitReport* FUN_141240f20(); };   // C3: unit-local view
 
 // CreateReactor / FestivalEvent / BlueprintImport.
 bool FUN_140b7a330(class PCBase*, int);   // C3: was FUN_140b7a330
-void FUN_1404288d0(Unk_GameEventLockedValue<0x78>* pFestival, ATL::CAtlArray<MS2Ptr<FestivalContext> >& arrOut);   // CGameEventValueFestival::GetAll
+class CBreakableObject { public: bool FUN_140ae0700(); };   // C3: unit-local view (its header pulls PhysX)
+class Unk_QnState { public: struct Unk_QnTracking* FUN_140c9b8b0(); };   // C3: view of CGameOption
 class CItemUgc   // C3: member view for the former free stand-ins
 {
 public:
@@ -227,10 +226,8 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 bool FUN_141b899d0(WeddingManager* pWedding);              // ApplyPartner: the partner is online (returns AL; weddingmanager.cpp declares it void)
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked action notice
-CStringA FUN_14016a600(const wchar_t* psz, unsigned nCodePage);                // wide to multibyte
-int FUN_1405267d0(CItem* pItem, int nGender);                     // CItem member: the item may be worn by the gender (the exe tests the int result)
+CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);                // wide to multibyte
 void FUN_1418fe1c0(const CStringA& strUrl);                 // open the url in the external browser
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);   // equals
 CStringW BlockFormat(int nStringId);                        // a string table text (the item string table)
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 int FUN_1401e0800(unsigned short nLevel);                   // the ability reset is open at that level
@@ -253,17 +250,17 @@ public:
     int GetSubSceneId();
 };
 unsigned MsToSeconds(unsigned nMs);                         // ms to seconds
-CStringW FUN_141b708a0(unsigned nSeconds, int n);           // a duration text
+CStringW FUN_141b708a0(unsigned nSeconds, bool b);           // a duration text
 
 // OpenInstrument.
-__int64 FUN_141656a80(PC* pPlayer);                         // the character id
-class Unk_IuMusicPlayer { public: bool FUN_140d09d90(int n); };   // pre-listening a score
+class CInstrumentManager { public: bool HasOtherFlags(unsigned nFlags); };   // C3: unit-local view (its header pulls PhysX)
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
+class COutputStream;
+void FUN_1401fbc40(unsigned char* payload, COutputStream& stream);   // C3: the use-item packet writer
 struct Unk_InventoryUsePacket                               // inventory.cpp's use-item packet (0x19)
 {
     Unk_InventoryUsePacket();
     ~Unk_InventoryUsePacket();
-    void FUN_1401fbc40(COutPacket& packet);
     __int64 id;
     CStringW argument;
 };
@@ -315,9 +312,9 @@ static CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 static CString s_strSkill = "skill";
 // @0x1400d21d0
 static CString s_strStun = "stun";
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100
 // @0x1400d2200
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_BuddyHandle s_pointer(NULL);
 // @0x1400d2220
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x1400d2270
@@ -570,13 +567,13 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
         context.m_job = pPlayer->FUN_141654700();
     }
     Unk_ItemEquipData* pRecord = pItem->FUN_140527840();
-    if (pRecord->function.parameter.FUN_1408d2380() != 0)
+    if (((Unk_CommandArgs&)(pRecord->function.parameter)).FUN_1408d2380() != 0)
     {
         int nBoxId = 0;
         if (pRecord->function.name == L"OpenItemBox")
             nBoxId = pRecord->function.arg0;
         else if (pRecord->function.name == L"OpenItemBoxWithKey")
-            nBoxId = pRecord->function.parameter.FUN_1408d1fd0(5, 0);
+            nBoxId = ((Unk_CommandArgs&)(pRecord->function.parameter)).FUN_1408d1fd0(5, 0);
         TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nBoxId, context, drops, false);
     }
     for (std::vector<ItemDropResult>::const_iterator it = drops.begin(); it != drops.end(); ++it)
@@ -621,7 +618,7 @@ bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
     std::vector<int> quests = spItem->FUN_140527840()->function.xml.GetIntArray(L"questID", std::vector<int>());
     for (size_t i = 0; i < quests.size(); i++)
     {
-        if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list.FUN_140745630(quests[i]) != 0)
+        if (reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list)->IsQuestActive(quests[i]) != 0)
         {
             FUN_140d73bc0(0x5f3, 0, 0, L"");
             return true;
@@ -640,7 +637,7 @@ bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
 // @0x140d1cbd0
 void OpenItemBox(CItem* pItem, int nCount)
 {
-    if (IsOlderThanDays(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n10Time, 7) != 0)
+    if (IsOlderThanDays(((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n10Time, 7) != 0)
     {
         CStringW strMsg;
         if (nCount > 1)
@@ -677,9 +674,9 @@ void OpenItemBoxSingle(CItem* pItem)
     __int64 nOver = 0;
     CStringW strTab;
     if (UseItemCheckCapacity(pItem, strTab, &nOver) != 0
-        && IsOlderThanDays(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n18Time, 7) != 0)
+        && IsOlderThanDays(((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n18Time, 7) != 0)
     {
-        CStringW strMsg = FUN_14052bd00(0x2a7, strTab);
+        CStringW strMsg = FormatStringId<CStringW>(0x2a7, strTab);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, L"");
         if (spBox.get())
         {
@@ -699,12 +696,12 @@ void OpenItemBoxSingle(CItem* pItem)
 // @0x140d1d3f0
 void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
 {
-    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x6e) != 0)
+    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)0x6e) != 0)
     {
         g_143ab2a90.FUN_140a63880(pItem, strArgs);
         return;
     }
-    int nMultiOpen = pItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(4, 1);
+    int nMultiOpen = ((Unk_CommandArgs&)(pItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(4, 1);
     unsigned int bSingle = pItem->FUN_140529640();
     int nCount = g_143ab2a90.FUN_140a5f410(MS2Ptr<CItem>(pItem));
     if (nCount < 0)
@@ -747,7 +744,7 @@ bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
         return true;
     if (IsBoxNotAgainChecked(box))
     {
-        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n10Time = GetServerTime();
+        ((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n10Time = GetServerTime();
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
@@ -763,7 +760,7 @@ bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
         return true;
     if (IsBoxNotAgainChecked(box))
     {
-        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n18Time = GetServerTime();
+        ((Unk_GoEtc*)reinterpret_cast<class Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0())->m_n18Time = GetServerTime();
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
@@ -816,7 +813,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (spItem == 0 || spItem->FUN_140527840() == 0 || pPlayer == 0)
         return 0;
-    int nDays = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
+    int nDays = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     MS2Ptr<CEquipmentSlotLayerInfo> spTitle = pPlayer->FUN_1416561a0()->GetTitle();
     if (spTitle == 0)
         return 0;
@@ -847,10 +844,10 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
             int nMax = spTitle->FUN_1411df8e0();
             if (nSpan > nMax || (nSpan == nMax && span.GetSeconds() > 0))
             {
-                FUN_140d73aa0(FUN_140938ae0(L"s_msg_item_active_codi_tab_max", nMax), 0, 0, L"");
+                FUN_140d73aa0(FUN_14028dfa0<unsigned>(L"s_msg_item_active_codi_tab_max", (unsigned&)nMax), 0, 0, L"");
                 return 1;
             }
-            strMsg = FUN_140938ae0(L"s_msg_item_active_codi_tab_add_period", nDays);
+            strMsg = FUN_14028dfa0<unsigned>(L"s_msg_item_active_codi_tab_add_period", (unsigned&)nDays);
         }
     }
     else if (bLimitless)
@@ -859,7 +856,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     else
     {
-        strMsg = FUN_140938ae0(L"s_msg_item_active_codi_tab_period", nDays);
+        strMsg = FUN_14028dfa0<unsigned>(L"s_msg_item_active_codi_tab_period", (unsigned&)nDays);
     }
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
@@ -882,7 +879,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (spItem == 0 || spItem->FUN_140527840() == 0 || pPlayer == 0)
         return 0;
-    int nParam = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
+    int nParam = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     if (nParam == 0)
         return 0;
     if (pPlayer->FUN_14123c260() <= 0.9f || pPlayer->FUN_14123c260() >= 1.1f)
@@ -895,11 +892,11 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
         return 0;
     }
-    Unk_EntRef spEntity(FUN_141240f20(((class Unk_IuBody*)((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d220()))->FUN_140cfaff0());
+    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d220())->FUN_141240f20()->GetEntity());
     if (spEntity != 0)
     {
-        MS2Ptr<Unk_RideeFieldObj> spObj = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc4f10(spEntity.FUN_1408a9090());
-        if ((spObj.get() ? true : false) && spObj->FUN_140ae0700())
+        MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());
+        if ((spObj.get() ? true : false) && reinterpret_cast<CBreakableObject*>(spObj.operator->())->FUN_140ae0700())
         {
             FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
             return 0;
@@ -929,7 +926,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d1ef50
 int CreateReactor(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    int nReactorId = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
+    int nReactorId = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
     if (!FUN_140b7a330((class PCBase*)(pPlayer), nReactorId))
         return 0;
     static_cast<MyPC*>(pPlayer)->FUN_14152e0c0();
@@ -966,7 +963,7 @@ int FestivalEvent(MS2Ptr<CItem> spItem, PC* pPlayer)
     int nUseType = spItem->FUN_140527840()->function.xml.GetInt(L"itemUseType", nDefault);
     int bFound = 0;
     ATL::CAtlArray<MS2Ptr<FestivalContext> > arrFestivals;
-    FUN_1404288d0(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival(), arrFestivals);
+    reinterpret_cast<CGameEventValueFestival*>(TSingleton<CGameEventValueManager>::GetInstance()->GetFestival())->GetAll(arrFestivals);
     for (size_t i = 0; i < arrFestivals.GetCount(); ++i)
     {
         if (arrFestivals[i].get() != 0)
@@ -1146,7 +1143,7 @@ int QuestScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
     std::vector<int> quests = spItem->FUN_140527840()->function.xml.GetIntArray(L"questID", std::vector<int>());
     for (size_t i = 0; i < quests.size(); ++i)
     {
-        if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list.FUN_140745630(quests[i]) != 0)
+        if (reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list)->IsQuestActive(quests[i]) != 0)
         {
             FUN_140d73bc0(0x5f3, 0, 0, L"");
             return 0;
@@ -1224,9 +1221,9 @@ int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d21d70
 int OpenWebPage(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    CStringA strUrl = FUN_14016a600(spItem->FUN_140527840()->function.parameter.FUN_1408d21c0(0, L""), 0);
-    CStringW strKind = spItem->FUN_140527840()->function.parameter.FUN_1408d21c0(1, L"");
-    if (FUN_1403b3c40(strKind, L"maview"))
+    CStringA strUrl = FUN_14016a600(((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d21c0(0, L""), 0);
+    CStringW strKind = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d21c0(1, L"");
+    if (strKind == L"maview")
     {
         UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
         if (pBrowser == 0)
@@ -1353,7 +1350,7 @@ int EnchantScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d226b0
 int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x1a) != 0)
+    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)0x1a) != 0)
     {
         FUN_140d73bc0(0x2f7, 0, 0, L"");
         return 0;
@@ -1378,7 +1375,7 @@ int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d228e0
 int RecallWedding(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x1a) != 0)
+    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)0x1a) != 0)
     {
         FUN_140d73bc0(0x2f7, 0, 0, L"");
         return 0;
@@ -1404,7 +1401,7 @@ int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73bc0(0xc63, 0, 0, L"");
         return 0;
     }
-    if (reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list.FUN_140745590(*TSingleton<Client::Constants>::GetInstance()->CharacterAbilityOpenQuestID.Get()) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&reinterpret_cast<Unk_IuQuestMgr*>(((class Unk_IuQuestMgr*)FUN_140764020()))->m_list)->FUN_140745590(*TSingleton<Client::Constants>::GetInstance()->CharacterAbilityOpenQuestID.Get()) == 0)
     {
         FUN_140d73bc0(0xc63, 0, 0, L"");
         return 0;
@@ -1449,7 +1446,7 @@ int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(strMsg, 0, 0, L"");
         return 1;
     }
-    CStringW strText = FUN_14052bd00(0x2f2, pPlayer->vfunc_77());
+    CStringW strText = FormatStringId<CStringW>(0x2f2, pPlayer->vfunc_77());
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, s_strUseFunctionItem);
         if (spBox.get() != 0)
@@ -1519,8 +1516,8 @@ int ExpandInven(MS2Ptr<CItem> spItem, PC* pPlayer)
     CStringW strTab;
     if (g_143ab2a90.FUN_140a5ce30(strTab))
     {
-        if (strTab.GetLength() != 0 && spItem->FUN_140527840()->function.parameter.FUN_1408d2380() == 1)
-            strMsg = FUN_14052bd00(0x2a6, strTab);
+        if (strTab.GetLength() != 0 && ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d2380() == 1)
+            strMsg = FormatStringId<CStringW>(0x2a6, strTab);
     }
     else
     {
@@ -1574,7 +1571,7 @@ int CallAirTaxi(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d24900
 int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField == 0)
         return 0;
     if (spField->HasTutorialType())
@@ -1604,8 +1601,8 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
 int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     CStringW strMsg;
-    int nDungeon = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
-    int nIndex = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(1, 0);
+    int nDungeon = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nIndex = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(1, 0);
     DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nDungeon, nIndex);
     if (spRoom == 0)
         return 0;
@@ -1636,15 +1633,15 @@ int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d25430
 int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    int nKeyId = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
-    int nNeed = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(1, 0);
+    int nKeyId = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(0, 0);
+    int nNeed = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(1, 0);
     int nHave = g_143ab2a90.FUN_140a5f180(nKeyId, 0);
     if (nNeed > nHave)
     {
         FUN_140d73aa0(FUN_14028dfa0(L"s_msg_item_open_item_box_with_key_no_key_count", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId), nHave, nNeed), 0, 0, L"");
         return 1;
     }
-    if (::FUN_1405267d0(spItem.operator->(), pPlayer->FUN_141658e60()) != 0)
+    if (spItem->FUN_1405267d0(pPlayer->FUN_141658e60()) != 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_item_open_item_box_with_key", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nKeyId));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
@@ -1669,15 +1666,15 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
 // @0x140d259d0
 int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (::FUN_1405267d0(spItem.operator->(), pPlayer->FUN_141658e60()) == 0)
+    if (spItem->FUN_1405267d0(pPlayer->FUN_141658e60()) == 0)
     {
         FUN_141276180(s_warningGender, "");
         FUN_140d73bc0(0x2d, 0, 0, L"");
         return 1;
     }
     int nCount = 1;
-    if (spItem->FUN_140527840()->function.parameter.FUN_1408d2380() > 4)
-        nCount = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(4, 1);
+    if (((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d2380() > 4)
+        nCount = ((Unk_CommandArgs&)(spItem->FUN_140527840()->function.parameter)).FUN_1408d1fd0(4, 1);
     int nHave = g_143ab2a90.FUN_140a5f180(spItem->FUN_1405276c0(), 0);
     if (nCount > nHave)
     {
@@ -1734,8 +1731,8 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     if (!spData->FUN_14053cd90())
         return 0;
-    unsigned nQuestId = spData->function.parameter.FUN_1408d1f60(0, 0);
-    unsigned short nLevel = (unsigned short)spData->function.parameter.FUN_1408d1f60(1, 0);
+    unsigned nQuestId = ((Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60(0, 0);
+    unsigned short nLevel = (unsigned short)((Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60(1, 0);
     if (nLevel == 0)
         nLevel = 10;
     if ((unsigned short)pPlayer->vfunc_78() < nLevel)
@@ -1743,7 +1740,7 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_level"), 0, 0, L"");
         return 0;
     }
-    if (FUN_141523ba0(pPlayer)->m_list.FUN_140745820(nQuestId, 0) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&FUN_141523ba0(pPlayer)->m_list)->FUN_140745820(nQuestId, 0) == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_quest_start_err_invalid"), 0, 0, L"");
         return 0;
@@ -1790,7 +1787,7 @@ WeddingProxy* WeddingManager::FUN_140d295d0()
 // @0x140d20710
 int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x3b) != 0)
+    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)0x3b) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -1804,7 +1801,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     int nTipped = 0;
     std::vector<int> vIds;
-    reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc2980(vIds);
+    WorldService::GetInstance()->FUN_141bc2980(&vIds);
     for (size_t i = 0; i < vIds.size(); ++i)
     {
         MS2Ptr<CPortal> spPortal = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc2800(vIds[i]);
@@ -1818,14 +1815,14 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
         return 0;
     }
-    if (reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd30a0() == 0)
+    if (WorldService::GetInstance()->FUN_141bd30a0() == 0)
         return 0;
     if (FUN_140930b10())
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
-    if (reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->m_nMassiveEventField == 1)
+    if (WorldService::GetInstance()->FUN_141bd30a0()->m_nMassiveEventField == 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
@@ -1857,7 +1854,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     unsigned long nDuration = spItem->FUN_140527840()->function.xml.GetULong(L"portalDurationTick", nTickDefault);
     int nMaxDefault = 1;
     int nMaxCount = spItem->FUN_140527840()->function.xml.GetInt(L"maxCount", nMaxDefault);
-    CStringW strDuration = FUN_141b708a0(MsToSeconds(nDuration), 0);
+    CStringW strDuration = FUN_141b708a0(MsToSeconds(nDuration), false);
     CStringW strMsg = FUN_14028dfa0(CStringW(pszKey), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nFieldId), nMaxCount, strDuration);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, strMsg, 0, s_strOpenMassive);
     if (spBox.get() != 0)
@@ -1876,7 +1873,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(10))
         return 0;
-    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(5) != 0)
+    if (((struct Unk_IuConfig*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)5) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -1898,11 +1895,11 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
-    Unk_EntRef spEntity(FUN_141240f20(((class Unk_IuBody*)((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d220()))->FUN_140cfaff0());
+    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d220())->FUN_141240f20()->GetEntity());
     if (spEntity != 0)
     {
-        MS2Ptr<Unk_RideeFieldObj> spObj = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc4f10(spEntity.FUN_1408a9090());
-        if (spObj.get() != 0 && spObj->FUN_140ae0700())
+        MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());
+        if (spObj.get() != 0 && reinterpret_cast<CBreakableObject*>(spObj.operator->())->FUN_140ae0700())
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_position"), 1, 1);
             return 0;
@@ -1914,7 +1911,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140a30ad0(spBlock, 0xf, 0);
         return 0;
     }
-    MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField == 0)
         return 0;
     if ((spField->m_nLimitContent & 8) != 0)
@@ -1927,7 +1924,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_while_write_music"), 1, 1);
         return 0;
     }
-    if (reinterpret_cast<Unk_IuMusicPlayer*>(((class Unk_IuMusicPlayer*)FUN_140c8dac0()))->FUN_140d09d90(0))
+    if (((CInstrumentManager*)FUN_140c8dac0())->HasOtherFlags(0))
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_while_pre_listening"), 1, 1);
         return 0;
@@ -1943,7 +1940,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_141276180(s_warningNotThisPlace, "");
         return 0;
     }
-    if (!reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bcada0(FUN_141656a80(pPlayer)))
+    if (!reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bcada0(pPlayer->FUN_141656a80()))
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_cant_doesnt_register"), 1, 1);
         return 0;
@@ -1954,7 +1951,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     Unk_InventoryUsePacket use;
     use.id = nItemUid;
     COutPacket packet(static_cast<int>(SendOp::RequestItemUse), 0);
-    use.FUN_1401fbc40(packet);
+    FUN_1401fbc40((unsigned char*)&use, (COutputStream&)packet);
     FUN_140710590(packet);
     return 1;
 }

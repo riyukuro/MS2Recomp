@@ -313,7 +313,7 @@ void NpcDataTableCli::Load(int nFile)
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
         return;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

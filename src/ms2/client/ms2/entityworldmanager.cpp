@@ -161,7 +161,7 @@ CLogString* GetLogString();
 bool FUN_140a33ff0(const efd::Point3*);
 void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
 void FUN_1409457c0(egf::Entity*, egf::PropertyID, const float&);
-void FUN_14098c6e0(egf::Entity*, egf::PropertyID, const bool&);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140de8bd0(egf::Entity*, egf::PropertyID, const efd::AssetID&);
 void FUN_140998250(egf::Entity*, egf::PropertyID, efd::AssetID&);
 class WorldService;
@@ -169,8 +169,8 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    void FUN_141bbae40(void* p);
 };
-void FUN_141bbae40(WorldService*, IWorldServiceCallback*);
 void FUN_1401ce3d0(Unk_EntityDebugLog*, TFunctor<void, EmptyParam>);
 egmAnimation::AnimationService* FUN_141b6f910();
 bool FUN_1414a9a80(egmAnimation::AnimationService*, efd::utf8string);
@@ -262,9 +262,9 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
         FUN_140a38a50(entity, 0x68c7c29d, rotation);
         FUN_1409457c0(entity, 0x2d7cad2d, scale);
         bool enable = enabled == 0 ? true : false;
-        FUN_14098c6e0(entity, 0x2a7fd9f4, enable);
+        FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)entity), 0x2a7fd9f4, enable);
         bool show = visible != 0 ? true : false;
-        FUN_14098c6e0(entity, 0x7e5f4195, show);
+        FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)entity), 0x7e5f4195, show);
         if (assetName.length() != 0) {
             efd::AssetID asset;
             {
@@ -500,7 +500,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
     messages->Subscribe(this, entities->GetEntityLoadCategory(), 0, false);
     loader->SetMaxEntityLoadThrottle(0xffff);
     loader->SetMaxEntityUnloadThrottle(0xffff);
-    FUN_141bbae40(WorldService::GetInstance(), this);
+    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
     if (NiDX9Renderer* device = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer())) {
         device->AddResetNotificationFunc(FUN_1411cfc90, this);
         device->AddLostDeviceNotificationFunc(FUN_1411cfcc0, this);

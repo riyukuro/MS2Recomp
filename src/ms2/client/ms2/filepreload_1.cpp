@@ -317,6 +317,7 @@ static CString s_chartNames[]={"None","Buy","PriceLow","PriceHigh","Create","Cha
 #include "ms2/commonfiles/learningquesttable.h"
 #include "ms2/commonfiles/questdatatable.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
+#include "ms2/placeholder/cinteractobjectdata.h"
 extern bool DAT_1439f7068;
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class WorldService   // C3: member view for the former free stand-ins
@@ -506,7 +507,6 @@ MS2_REPLACE_METHOD(0x141210da0, CFilePreload, FUN_141210da0, 91, 0x9EA0C72E);
 // Named, typed external operations. Unknown service classes are forward-only.
 class CReactorDataTable; class CNifLoadingService; class SkillDataTableCli; class SkillData;
 class Unk_PreloadServiceA; class Unk_PreloadServiceB; class Unk_PreloadServiceC; class Unk_PreloadServiceD;
-void FUN_14051f2b0();
 extern CLearningQuestTable* DAT_143ab0200;
 extern CMeratMarketPremium* DAT_143ab0540;
 CLearningQuestTable* FUN_141215480();
@@ -551,7 +551,6 @@ void FUN_1410917a0(unsigned);
 bool FUN_1411a4800(CStringA const&, int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
 // The NIF service's texture load and the skill table lookup return by value (views over the exe types).
-void FUN_1415525d0(CNifLoadingService*,CString,int,int);
 struct Unk_PreloadSkillTable { Unk_PayloadPtr<SkillData> FUN_140aafd60(unsigned); };
 class EffectDataManager   // C3: member view for the former free stand-ins
 {
@@ -565,7 +564,7 @@ public:
 };
 void CFilePreload::FUN_141210e10(bool notify) {
     CStopWatch watch("PreloadDataStep1");
-    if(stopped==0) FUN_14051f2b0();
+    if(stopped==0) CInteractObjectData::LoadAll();
     watch.vfunc_1("CInteractObjectData::ReadAll");
     if(stopped==0) ((class CReactorDataTable*)(TSingleton<CReactorDataTable>::GetInstance()))->Reload();
     watch.vfunc_1("CReactorDataTable::GetInstance()->Init");
@@ -673,7 +672,7 @@ void CFilePreload::FUN_141211880(void*) {
     std::set<CString> pending;
     { if(Unk_LockGuard guard=pathLock) { __assume(0); } else { pending=paths; paths.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) FUN_1415525d0(((class CNifLoadingService*)FUN_140a0afd0()),CString(*it),0,5);
+        if(stopped==0 && ((class CNifLoadingService*)FUN_140a0afd0())!=0) ((class CNifLoadingService*)FUN_140a0afd0())->Preload(CString(*it), (bool)0, 5);
         else return;
     }
 }

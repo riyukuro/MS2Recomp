@@ -432,7 +432,7 @@ void StateInteraction::EndOfSequence(NiActorManager*, unsigned int, NiController
         if (FUN_1417d2880() != 0)
         {
             m_n10 = 0x8d;
-            m_pOwner->FUN_14166dda0(0);
+            m_pOwner->PlayAnimationById(0);
         }
         else
             m_pOwner->vfunc_59(1, 0, 0, 0);

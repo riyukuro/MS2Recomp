@@ -2,9 +2,9 @@
 #pragma once
 #include <afx.h>
 #include <atlcoll.h>
+#include <atlfile.h>
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/os.h"
-class Unk_BattleRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0(); };
 template<class T> class Unk_BattlePtr {
 public:
     Unk_BattlePtr() : p(0) {} Unk_BattlePtr(int) : p(0) {}
@@ -19,10 +19,10 @@ public:
     T* get() const { return p; } T* operator->() const { return p; }
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
-    static void Reference(T* v) { reinterpret_cast<Unk_BattleRef*>(v)->FUN_14015b020(); }
+    static void Reference(T* v) { CPtred::AddRefPtred(v); }
     void AddRefImpl(void*) const { Reference(p); }
     void Release() { if(p) { ReleaseImpl(0); p=0; } }
-    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_BattleRef*>(p)->FUN_140159bc0()==0) { Reference(p); reinterpret_cast<Unk_BattleRef*>(p)->FUN_140159ba0(); } }
+    void ReleaseImpl(void*) { if(CPtred::ReleasePtred(p)==0) { Reference(p); CPtred::DeletePtred(p); } }
     void* pad; T* p;
 };
 class CBattleRecord : public CPtred {
@@ -34,16 +34,7 @@ public:
 MS2_CHECK_SIZE(CBattleRecord,0x60);
 MS2_CHECK_OFFSET(CBattleRecord,id,0x18);
 MS2_CHECK_OFFSET(CBattleRecord,counts,0x20);
-class Unk_BattleFile {
-public:
-    Unk_BattleFile() noexcept; ~Unk_BattleFile() noexcept;
-    HRESULT FUN_1402989b0(const char*,DWORD,DWORD,DWORD,DWORD,LPSECURITY_ATTRIBUTES,HANDLE);
-    HRESULT FUN_140299c20(__int64,DWORD);
-    HRESULT FUN_140299dc0(const void*,DWORD,DWORD*) noexcept;
-    HRESULT FUN_140717be0(); void FUN_1402988c0();
-    HANDLE handle; void* transaction;
-};
-MS2_CHECK_SIZE(Unk_BattleFile,16);
+MS2_CHECK_SIZE(ATL::CAtlFile,16);
 class CBattleRecordGroup : public CPtred {
 public:
     typedef Unk_BattlePtr<CBattleRecord> Ptr;
@@ -54,7 +45,7 @@ public:
     void FUN_140a03920(); void WriteLogLine(const CString&); void CloseLogFile(); void LogAmount(__int64,int,__int64);
     int active; unsigned start;
     ATL::CAtlMap<__int64,Ptr> records;
-    int type; Unk_BattleFile file;
+    int type; ATL::CAtlFile file;
 };
 MS2_CHECK_SIZE(CBattleRecordGroup,0x80);
 MS2_CHECK_OFFSET(CBattleRecordGroup,records,0x20);

@@ -18,7 +18,7 @@
 
 class ASData;
 class ASObj;
-class Unk_ALList;
+class ASTileList;
 
 class UIAdventureLevelOldDialog : public UIDialog, public UIStatusEventListener
 {
@@ -46,7 +46,6 @@ public:
     int FUN_140ba63d0(ASObj& obj, unsigned int nLevel);                                             // level row: item reward
     int FUN_140ba66a0(ASObj& obj, unsigned int nLevel);                                             // level row: stat reward
     void SendPrestige(unsigned int nLevel);                                                        // claim a level reward
-    MS2Ptr<Unk_ALList> FUN_140ba4b70(const CString& strName);                                       // the list control of the movie (shared with UIAdventureLevelDialog)
 
 private:
     MS2_LAYOUT_FRIEND;

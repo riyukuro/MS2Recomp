@@ -22,7 +22,8 @@
 
 struct Unk_InteractMsg;         // the message handed to vfunc_2 (a stream sits at +8)
 class Unk_PhysPropObj;          // prop object behind a physics prop pointer
-class Unk_IoRankPtr;            // smart pointer to a ranking entry (declared in interactobject.cpp)
+template <class T> class TPtrValue;
+struct CGameRankingData;
 
 // What a mouse hover over the object shows: the cursor kind and the hint text (+0x28).
 struct Unk_InteractCursor
@@ -201,7 +202,7 @@ public:
     virtual int vfunc_5();                                      // 0x141403fb0
 
     void FUN_141400800(const CStringW& strGuild);               // cache the data of one guild / character
-    void ApplyRankEntry(Unk_IoRankPtr spRank);     // take the data from a ranking entry
+    void ApplyRankEntry(TPtrValue<CGameRankingData> spRank);     // take the data from a ranking entry
     void FUN_1414017b0(const CString& strFile);                 // load the image file into the entity
     CStringW GetDisplayName();                                   // caption of the image
     int FUN_1414021c0();                                        // rank number of the image

@@ -89,6 +89,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/formatstringid.h"
 #include "uimessageboxdata.h"
 #include "networkservice.h"
 #include "pcbase.h"
@@ -154,11 +155,11 @@ class UIMeratMarketDialog* FUN_140bd2c00();   // C3: was FUN_140bd2c00
 class UIMeratMarketDialog* FUN_140bfed50(int);   // C3: was FUN_140bfed50
 
 // A scoped lock of a critical section with a mode (0x1401b4ec0 / 0x1401b5120).
-class Unk_MmScopedLock
+class Unk_1401b4ec0
 {
 public:
-    Unk_MmScopedLock(CLockCriticalSection& cs, int nMode);
-    ~Unk_MmScopedLock();
+    Unk_1401b4ec0(CLockCriticalSection& cs, int nMode);
+    ~Unk_1401b4ec0();
 private:
     void* m_p;
 };
@@ -232,7 +233,7 @@ template <class T> T* Unk_MmGetDialogOf()
 }
 
 bool FUN_1406a5040(int nSort);                                  // a valid market sort kind
-void FUN_1418ffec0(int& nFlags, int nBit);                      // set a flag bit
+void FUN_1418ffec0(unsigned int* pFlags, unsigned int nBit);                      // set a flag bit
 __int64 GetServerTime();                                        // the server time
 extern int DAT_143ab0248;                                       // the service region
 
@@ -247,23 +248,17 @@ public:
     Unk_MmConstSlot m_pcBangLevel;                              // +0x6aa8 the PC bang level needed
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-__int64* FUN_1402c05b0(Unk_MmConstSlot* pSlot);
 
 
 // The notify centre (FUN_140939a10).
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // The world service (FUN_1403ed2d0).
-class Unk_MmWorld
-{
-public:
-    PCBase* FUN_141bd0cc0();                                    // the local player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field
     static class WorldService* GetInstance();
 };
 
@@ -274,11 +269,9 @@ bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bSho
 CStringW GetStringCommon(int nKey);                               // a common string by id
 CStringW GetStringCommonByKey(const CStringW& str);                    // a string by key
 CStringW BlockFormat(int nKey);                                 // a system string by id
-CStringW FormatStringId(int nId, const fmt::ArgList& args);     // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str);
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // system notice
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -448,7 +441,7 @@ void CMeratMarketMan::SendMeretMarketMode103(int nFlag)
     packet.WriteUInt8(0x67);
     FUN_140710590(packet);
     ClearAdProducts();
-    FUN_1418ffec0(m_nFlags, nFlag);
+    FUN_1418ffec0(reinterpret_cast<unsigned int*>(&m_nFlags), nFlag);
 }
 
 // @0x140d54440
@@ -714,7 +707,7 @@ void CMeratMarketMan::SendMeretMarketMode33(ATL::CAtlArray<unsigned __int64>& id
 void CMeratMarketMan::RefreshRandomSaleProducts()
 {
     CMsTime now(GetServerTime());
-    Unk_MmScopedLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Unk_MmDialog* pDialog = ((class Unk_MmDialog*)FUN_140bd2c00());
     if (pDialog == 0)
         return;
@@ -1619,7 +1612,7 @@ __int64 CMeratMarketMan::FUN_140d5a1b0()
 // @0x140d5a1d0
 __int64 CMeratMarketMan::FUN_140d5a1d0()
 {
-    return *FUN_1402c05b0(&((class Unk_MmConfig*)FUN_1401d3200())->m_sellerLimit);
+    return *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_sellerLimit)->Get();
 }
 
 // A dialog closed.
@@ -2992,7 +2985,7 @@ bool CMeratMarketMan::PushAdProducts(unsigned int nCategory, int nTab)
 {
     if (nCategory == 0 || nTab == 0)
         return false;
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     bool bMinimized = false;
     if ((spField.get() ? true : false) && spField->FUN_140375660(0x80) != 0)
         bMinimized = true;
@@ -3014,7 +3007,7 @@ bool CMeratMarketMan::PushAdProducts(unsigned int nCategory, int nTab)
 // @0x140d5ba70
 bool CMeratMarketMan::FUN_140d5ba70()
 {
-    MS2Ptr<CFieldDataCli> spField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     bool bMinimized = false;
     if ((spField.get() ? true : false) && spField->FUN_140375660(0x80) != 0)
         bMinimized = true;

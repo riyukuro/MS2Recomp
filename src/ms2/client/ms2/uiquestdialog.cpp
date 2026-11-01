@@ -102,6 +102,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/fieldmetatable.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/cquestnavigationmap.h"
+#include "ms2/placeholder/packethandlermanager.h"
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_strChapterClose("QuestChapter_Close");
 static CString s_strChapterOpen("QuestChapter_Open");
@@ -207,12 +210,6 @@ public:
     Unk_QdActor* FUN_141bd0cc0();                       // the local player
 };
 class Unk_QdUIMgr { public: void FUN_141adc530(int nUIType); };
-class Unk_QdPackets
-{
-public:
-    void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
-    void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
-};
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -275,8 +272,6 @@ public:
 class Unk_QdTabBar : public Unk_QdCtl
 {
 public:
-    int FUN_1422e3210();                                // the selected tab
-    void FUN_1422e31e0(int nTab);                       // select a tab
 };
 // "m_questInfo".
 class Unk_QdInfo : public Unk_QdCtl { };
@@ -284,7 +279,6 @@ class Unk_QdInfo : public Unk_QdCtl { };
 class Unk_QdCheck : public Unk_QdCtl
 {
 public:
-    bool FUN_1422bfca0();                               // visible
 };
 class ASDialog : public ASDisplayObject
 {
@@ -320,14 +314,14 @@ UIQuestDialog::UIQuestDialog()
     FUN_141924170(1);
     ResetFilters();
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    ((class Unk_QdPackets*)FUN_140bccd50())->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
+    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
 }
 
 // @0x141a99600
 UIQuestDialog::~UIQuestDialog()
 {
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    ((class Unk_QdPackets*)FUN_140bccd50())->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
+    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
 }
 
 // @0x141a997b0
@@ -932,7 +926,7 @@ void UIQuestDialog::CollectQuests(CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsi
 {
     int nState = IsSubTabOne() ? 4 : 2;
     CAtlArray<Unk_PayloadPtr<CQuest> > quests;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cb8b0(quests, nState, 0xb, nChapter);
+    ((class CQuestManager*)FUN_140764020())->GetQuestsFiltered(quests, nState, 0xb, nChapter);
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest(quests[i]);
@@ -948,7 +942,7 @@ void UIQuestDialog::CollectQuests(CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsi
 int UIQuestDialog::GetTab()
 {
     if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_tab"))
-        return spTab->FUN_1422e3210();
+        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex();
     return 4;
 }
 
@@ -956,7 +950,7 @@ int UIQuestDialog::GetTab()
 int UIQuestDialog::GetSubTab()
 {
     if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_subTab"))
-        return spTab->FUN_1422e3210();
+        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex();
     return 3;
 }
 
@@ -999,7 +993,7 @@ int UIQuestDialog::GetSelectedID()
 int UIQuestDialog::IndexOfQuest(int nQuestId)
 {
     CAtlArray<unsigned> ids;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416cb260(ids, 1, 0xb, -1);
+    ((class CQuestManager*)FUN_140764020())->GetQuestIdsFiltered(ids, 1, 0xb, -1);
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
         if ((int)ids[i] == nQuestId)
@@ -1093,8 +1087,6 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
 }
 
 // The field meta table: which maps a field is made of; the map picker.
-class Unk_QdFieldMeta { public: void FUN_1406fb2a0(int nField, CAtlArray<unsigned>& out); };
-class Unk_QdFieldPick { public: int FUN_140c915a0(CAtlArray<unsigned>& fields); };
 class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temporaries of the string building differ from the exe
@@ -1111,8 +1103,8 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
         if (nField == 0)
             return QuestTitle(nQuestId);
         CAtlArray<unsigned> maps;
-        reinterpret_cast<Unk_QdFieldMeta*>(TSingleton<CFieldMetaTable>::GetInstance())->FUN_1406fb2a0(nField, maps);
-        nMap = ((class Unk_QdFieldPick*)FUN_140c9b8e0())->FUN_140c915a0(maps);
+        TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(nField, maps);
+        nMap = FUN_140c9b8e0()->NearestMap(maps);
         if (nMap == 0)
             nMap = spData->m_320.m_4;
         CStringW strText;
@@ -1225,7 +1217,7 @@ void UIQuestDialog::SetTab(int nTab)
     if (nTab == 4)
         return;
     if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_tab"))
-        spTab->FUN_1422e31e0(nTab);
+        reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(nTab);
     if (m_30.get() != 0)
         m_30->Invoke("updateSubTab");
 }
@@ -1236,7 +1228,7 @@ void UIQuestDialog::SetSubTab(int nTab)
     if (nTab == 3)
         return;
     if (MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_subTab"))
-        spTab->FUN_1422e31e0(nTab);
+        reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(nTab);
     if (m_30.get() != 0)
         m_30->Invoke("updateSubTab");
 }
@@ -1302,7 +1294,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     unsigned bProgressOnly = 0;
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
-        if (spCheck->FUN_1422bfca0())
+        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->FUN_1422bfca0())
             bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     }
     int nAdded = 0;
@@ -1572,14 +1564,14 @@ void UIQuestDialog::GetChapterIDs(CAtlArray<int>& rOut)
         unsigned nChapter = chapters[i];
         if (bSubTabOne != 0)
         {
-            if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416ce340(nChapter) == 0)
+            if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->HasQuestInGroup(nChapter) == 0)
                 continue;
-            if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416ce3d0(nChapter) != 0)
+            if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->AreGroupQuestsComplete(nChapter) != 0)
                 continue;
         }
         else
         {
-            if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416ce3d0(nChapter) == 0)
+            if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->AreGroupQuestsComplete(nChapter) == 0)
                 continue;
         }
         rOut.Add(nChapter);
@@ -1624,7 +1616,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
     unsigned bProgressOnly = 0;
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
-        if (spCheck->FUN_1422bfca0())
+        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->FUN_1422bfca0())
             bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     }
     for (size_t i = 0; i < chapters.GetCount(); i++)
@@ -1953,7 +1945,7 @@ void UIQuestDialog::SelectChapter(int nChapter)
 // @0x141aa2520
 void UIQuestDialog::CloseChapter(int nChapter)
 {
-    if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416ce3d0(nChapter) != 0)
+    if (((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->AreGroupQuestsComplete(nChapter) != 0)
     {
         TPtrValue<QuestFlags> spFlags = GetFlags(nChapter);
         if (spFlags.get() != 0)

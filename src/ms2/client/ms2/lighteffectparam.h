@@ -100,9 +100,9 @@ public:
     void FUN_14144b0d0();                                       // 0x14144b0d0 follow the light node: position property
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_NodePtr m_spParent;         // +0x58 node the light hangs from (effect root or the named node)
-    Unk_NodePtr m_spOuter;          // +0x60 root or the SeparateNode wrapping it
-    Unk_NodePtr m_spLightNode;      // +0x68 "Light Effect Root" EffectNode
+    efd::SmartPointer<NiNode> m_spParent;         // +0x58 node the light hangs from (effect root or the named node)
+    efd::SmartPointer<NiNode> m_spOuter;          // +0x60 root or the SeparateNode wrapping it
+    efd::SmartPointer<NiNode> m_spLightNode;      // +0x68 "Light Effect Root" EffectNode
     Unk_EntRef m_entity;            // +0x70 the "EffectPointLight" entity
     float m_fDimmer;                // +0x78
     Vector3 m_ptTranslate;  // +0x7c

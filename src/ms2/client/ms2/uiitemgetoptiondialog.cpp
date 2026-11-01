@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiitemgetoptiondialog.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/commonfiles/packet.h"
@@ -22,7 +23,7 @@ class Unk_GoCheck : public ASButton
 public:
 };
 // The combo child.
-class Unk_GoCombo : public ASDisplayObject { public: int FUN_1422df6c0(); void FUN_1422df690(int nIndex); };
+class Unk_GoCombo : public ASDisplayObject { public: int FUN_1422df6c0(); };
 class Unk_GoEntity : public UIDialog
 {
 public:
@@ -155,7 +156,7 @@ void UIItemGetOptionDialog::OnLoadComplete()
         else if (nGrade == 6)
             nSel = 5;
         if (hRank.get()->FUN_1422df6c0() != nSel)
-            hRank.get()->FUN_1422df690(nSel);
+            reinterpret_cast<ASDropdownMenu*>(hRank.get())->SetSelectedIndex(nSel);
     }
 }
 

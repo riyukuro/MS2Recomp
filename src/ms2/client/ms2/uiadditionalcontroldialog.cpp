@@ -232,10 +232,10 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             else
                 strLabel.Append(FUN_14025e7a0()->FUN_1422b0570("$s_additionaleffect_control_dialog_name_debuff"));
             ASObj row(2);
-            row.FUN_1407cbb20("label", strLabel);
+            ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c0d20("effectCode", nId);
             row.FUN_1409c48f0("effectLevel", level->GetLevel());
-            row.FUN_1407cb9c0("isPassive", nPassive);
+            ((class AScript&)(row)).FUN_1407cb9c0("isPassive", nPassive);
             if (strSearch.IsEmpty()) {
                 if (strGroup == "BF") {
                     if (level->IsBuff())
@@ -273,8 +273,8 @@ void UIAdditionalControlDialog::FUN_1418b3620()
                 if (item.first.IsEmpty())
                     continue;
                 ASObj row(2);
-                row.FUN_1407cbb20("label", item.first);
-                row.FUN_1407cbb20("func", item.second);
+                ((class AScript&)(row)).FUN_1407cbb20("label", item.first);
+                ((class AScript&)(row)).FUN_1407cbb20("func", item.second);
                 m_pList->AddItem(row);
                 nAdded++;
             }

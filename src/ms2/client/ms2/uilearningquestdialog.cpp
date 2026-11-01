@@ -67,7 +67,7 @@ public:
     class TiXmlNode* InsertEndChild(class TiXmlNode const&);
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);               // SaveFile
+
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, int nValue);      // SetAttribute
 CString FUN_1412755f0();                                                    // the character save directory
@@ -440,7 +440,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         if ((spData.get() ? true : false) && spData->m_nQuestKind == 0)
             XmlSetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spData->m_nId), nSeen);
     }
-    FUN_1408710c0(&m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"));
+    reinterpret_cast<TiXmlDocument*>(&m_1e8)->SaveFile((const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"));
     TiXmlElement* pRoot2 = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
     if (pRoot2 == 0)
     {
@@ -463,7 +463,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         if ((spData.get() ? true : false) && spData->m_nQuestKind != 0)
             XmlSetAttr(pList2, (const char*)FUN_1402bb1c0("learning{0}", spData->m_nId), nSeen);
     }
-    FUN_1408710c0(&m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"));
+    reinterpret_cast<TiXmlDocument*>(&m_258)->SaveFile((const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"));
 }
 
 // @0x140ea2e50
@@ -498,9 +498,9 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
         TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, quests);
         if (quests.GetCount() == 0)
             continue;
-        if (((class CQuestManager*)FUN_140764020())->FUN_1416ce3d0(nChapter) != 0)
+        if (((class CQuestManager*)FUN_140764020())->AreGroupQuestsComplete(nChapter) != 0)
             continue;
-        if (((class CQuestManager*)FUN_140764020())->FUN_1416ce340(nChapter) == 0 && ((class CQuestManager*)FUN_140764020())->FUN_1416ce260(nChapter) == 0)
+        if (((class CQuestManager*)FUN_140764020())->HasQuestInGroup(nChapter) == 0 && ((class CQuestManager*)FUN_140764020())->FUN_1416ce260(nChapter) == 0)
             continue;
         ASObj node(2);
         ASArray children(2);

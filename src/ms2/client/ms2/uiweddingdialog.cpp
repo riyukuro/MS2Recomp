@@ -42,6 +42,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
+#include "ms2/placeholder/asbuttonbar.h"  // C3: ASButtonBar::FUN_1422e3400
 
 // ---- unit-local views of exe objects ----
 
@@ -54,7 +55,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bVisible);
-    void FUN_1422e3400();                                       // clear
     void FUN_1422e3460(const ASObj& row);                       // add a tab
     void FUN_1422e31e0(int nIndex);                             // select a tab
 };
@@ -359,7 +359,7 @@ void UIWeddingDialog::FUN_140fc8470()
 {
     if (MS2Ptr<Unk_WdTab> spTab = FUN_140c02870("m_tab"))
     {
-        spTab->FUN_1422e3400();
+        reinterpret_cast<ASButtonBar*>(spTab.operator->())->FUN_1422e3400();
         for (PageMap::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
         {
             ASObj row(2);
@@ -385,7 +385,7 @@ void UIWeddingDialog::FUN_140fc86c0(ASObj& data)
         nMax = nMin;
     __int64 nCurrent = nExp - nMin;
     __int64 nRange = nMax - nMin;
-    data.FUN_1407cb9c0("minExp", 0);
+    ((class AScript&)(data)).FUN_1407cb9c0("minExp", 0);
     data.FUN_1409c1180("maxExp", nRange);
     data.FUN_1409c1180("current", nCurrent);
     data.FUN_1407cbb20("exp", FUN_14028dfa0(CStringW(L"s_wedding_dialog_wedding_exp"), nCurrent, nRange));

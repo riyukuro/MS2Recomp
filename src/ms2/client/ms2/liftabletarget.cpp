@@ -115,7 +115,7 @@ void CLiftableTarget::FUN_1414483e0()
         return;
     }
     ATL::CAtlArray<int> ids;
-    reinterpret_cast<CQuestManager*>(((class Unk_LtQuestMgr*)FUN_140764020()))->FUN_1416cb260(reinterpret_cast<ATL::CAtlArray<unsigned>&>(ids), 1, 0xb, 0xffffffff);
+    reinterpret_cast<CQuestManager*>(((class Unk_LtQuestMgr*)FUN_140764020()))->GetQuestIdsFiltered(reinterpret_cast<ATL::CAtlArray<unsigned>&>(ids), 1, 0xb, 0xffffffff);
     for (unsigned __int64 i = 0; i < ids.GetCount(); i++)
     {
         MS2Ptr<Unk_LtQuest> spQuest = (&((class Unk_LtQuestMgr*)FUN_140764020())->m_if)->vfunc_3(ids[i]);

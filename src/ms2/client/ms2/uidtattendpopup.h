@@ -5,6 +5,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include <map>
 class CInPacket; class GameEventVariable; class NotifyObject;
 template<class T> class Unk_DTPtr {
@@ -18,14 +19,7 @@ private:
  void ReleaseImpl(void*){if(CPtred::ReleasePtred(p)==0){Reference(p);CPtred::DeletePtred(p);}}
  void* m_0;T* p;
 };
-class Unk_DTItemData;
-class Unk_DTReward:public CPtred {};
-class Unk_DTEntry:public CPtred {public:
- bool FUN_140ce3510();bool FUN_140ce35c0();unsigned FUN_140ce3690();unsigned FUN_140ce3660();unsigned FUN_140ce3a20();unsigned long FUN_1402e1d00();
- MS2Ptr<Unk_DTReward> FUN_140ce3710(unsigned);
-};
-class Unk_DTIcon:public ASDisplayObject {public:void FUN_1409ba630(const Unk_DTItemData&);};
-class Unk_DTTick {public:Unk_DTTick();int FUN_140268870(unsigned);private:unsigned __int64 m_tick;};
+class Unk_DTEntry;class ASItemSlot;
 class UIDTAttendPopup:public UIDialog {
 public:
  UIDTAttendPopup();virtual ~UIDTAttendPopup();virtual CString GetTypeName();virtual int vfunc_65();virtual void OnLoadComplete();virtual void vfunc_26();virtual void vfunc_72();
@@ -35,8 +29,8 @@ public:
  void OnPacket(CInPacket&);void OnClick(const Scaleform::GFx::FunctionHandler::Params&);void OnEvent(GameEventVariable*);void OnNotify(NotifyObject*);Unk_DTPtr<Unk_DTEntry> GetCurrent();
 private:
  MS2_LAYOUT_FRIEND;
- MS2Ptr<ASMovieClip> m_item;MS2Ptr<ASTextField> m_time;MS2Ptr<Unk_DTIcon> m_icon;
- std::map<unsigned long,Unk_DTPtr<Unk_DTEntry>> m_entries;Unk_DTTick m_tick,m_requestTick;
+ MS2Ptr<ASMovieClip> m_item;MS2Ptr<ASTextField> m_time;MS2Ptr<ASItemSlot> m_icon;
+ std::map<unsigned long,Unk_DTPtr<Unk_DTEntry>> m_entries;Unk_IntervalTimer m_tick,m_requestTick;
 };
 MS2_CHECK_SIZE(UIDTAttendPopup,0x1c8);
 MS2_CHECK_OFFSET(UIDTAttendPopup,m_item,0x178);

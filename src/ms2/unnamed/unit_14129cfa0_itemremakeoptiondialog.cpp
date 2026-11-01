@@ -99,7 +99,6 @@ public:
     MS2Ptr<Unk_BackUpItem> FUN_1411e1580(unsigned __int64 uid);
 };
 Unk_PCItems* FUN_1416561a0(MyPC* pc);
-void FUN_1411e1ce0(Unk_PCItems* items, ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >* out, int a);
 
 class Unk_CinWorld
 {
@@ -197,6 +196,7 @@ class CEquipment   // C3: member view for the former free stand-ins
 public:
     float GetAbilityRate(SAType eType);   // 0x1411e1110
     void FUN_1411e7660();
+    void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // 0x1411e1ce0 the worn items in a layer
 };
 void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
@@ -402,7 +402,7 @@ void UIItemRemakeOptionDialog::FUN_14129dd50()
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > equips(10);
-        FUN_1411e1ce0(FUN_1416561a0(pc), &equips, 0);
+        reinterpret_cast<CEquipment*>(FUN_1416561a0(pc))->CollectShownItemsInLayer(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&equips), 0);
         for (POSITION pos = equips.GetHeadPosition(); pos != 0; equips.GetNext(pos)) {
             MS2Ptr<Unk_BackUpItem> equip = equips.GetAt(pos);
             if (!equip)

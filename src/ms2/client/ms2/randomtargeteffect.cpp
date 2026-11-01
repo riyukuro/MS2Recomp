@@ -39,7 +39,7 @@
 
 // ---- exe callees (recovered elsewhere / not yet) ----
 extern char DAT_143afa4d8;                                  // NiNode::ms_RTTI
-unsigned FUN_140869420();                                   // GetTickCount-like millisecond clock
+unsigned long GetTickCountMs2(void);
 bool FUN_14028d470(float a, float b);                       // nearly equal
 // The owner game object: its entity id (by value) and the scene object of an entity id.
 void* FUN_141b6ef70(egf::EntityID kId);
@@ -260,7 +260,7 @@ void CRandomTargetEffectController::StartSequence(const CAtlArray<unsigned>& aId
             spEffect->Hide();
         }
     }
-    m_nTick = FUN_140869420();
+    m_nTick = ((unsigned int)GetTickCountMs2());
     m_bToggle = false;
     m_nMode = 1;
     m_nIndex = 0;
@@ -286,7 +286,7 @@ void CRandomTargetEffectController::StartFlicker(const CAtlArray<unsigned>& aIds
             spEffect->Hide();
         }
     }
-    m_nTick = FUN_140869420();
+    m_nTick = ((unsigned int)GetTickCountMs2());
     m_bToggle = false;
     m_nMode = 2;
     m_nIndex = 0;
@@ -305,7 +305,7 @@ void CRandomTargetEffectController::Stop()
         }
     }
     Reset();
-    m_nTick = FUN_140869420();
+    m_nTick = ((unsigned int)GetTickCountMs2());
     m_bToggle = false;
     m_nMode = 0;
     m_nIndex = 0;
@@ -317,7 +317,7 @@ void CRandomTargetEffectController::Update()
     if (m_nMode == 0)
         return;
 
-    unsigned nNow = FUN_140869420();
+    unsigned nNow = ((unsigned int)GetTickCountMs2());
     if (m_nMode == 1 && nNow - m_nTick > 300)
     {
         m_bToggle = !m_bToggle;

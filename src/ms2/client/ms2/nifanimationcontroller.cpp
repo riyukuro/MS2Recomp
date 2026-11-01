@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nifanimationcontroller.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 #include <NiAVObject.h>
 #include <NiTransformController.h>
@@ -22,9 +23,6 @@ void* FUN_14098de00(void* o, void** it);
 void* FUN_140993f00(void* o);
 unsigned int FUN_14098daf0(void* o);
 void* FUN_1413f98b0();
-class EntityWorldManager;
-template<> EntityWorldManager* TSingleton<EntityWorldManager>::GetInstance();
-void* FUN_1411cf440(void* a, void* id);
 void* FUN_141fff400(void* svc, void* ent);   // ecr::SceneGraphService::GetSceneGraphFromEntity
 void FUN_141d24a50(void* o);
 extern char DAT_143afa458;
@@ -167,7 +165,7 @@ void FUN_1415451d0(int value, void* entityId)
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = FUN_1411cf440(TSingleton<EntityWorldManager>::GetInstance(), entityId);
+    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*static_cast<const egf::EntityID*>(entityId));
     if (ent == 0)
         return;
     void* n = FUN_141fff400(sg, ent);
@@ -182,7 +180,7 @@ void FUN_141545250(void* entityId, int mode)
     void* sg = FUN_1413f98b0();
     if (sg == 0)
         return;
-    void* ent = FUN_1411cf440(TSingleton<EntityWorldManager>::GetInstance(), entityId);
+    void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*static_cast<const egf::EntityID*>(entityId));
     if (ent == 0)
         return;
     void* n = FUN_141fff400(sg, ent);

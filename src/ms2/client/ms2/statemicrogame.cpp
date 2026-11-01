@@ -493,7 +493,7 @@ void StateMicroGameRps::FUN_140b87a40(unsigned int nSeq)
         n = 1;
     if (!m_pOwner->FUN_14166de90(n, nSeq))
     {
-        m_pOwner->FUN_14166dda0(n);
+        m_pOwner->PlayAnimationById(n);
         m_pOwner->FUN_14166f8f0(0, 1);
     }
 }
@@ -975,7 +975,7 @@ void StateMicroGameCoupleDance::FUN_140b89e40(unsigned int nSeq)
         n = 1;
     if (!m_pOwner->FUN_14166de90(n, nSeq))
     {
-        m_pOwner->FUN_14166dda0(n);
+        m_pOwner->PlayAnimationById(n);
         m_pOwner->FUN_14166f8f0(0, 1);
     }
 }

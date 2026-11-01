@@ -313,7 +313,7 @@ void UISidePopupTalk::FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam)
     {
         strMsg = spParam->m_strText;
     }
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
 
     ASObj obj(2);
     obj.FUN_140e88a10("type", spParam->m_nKind);

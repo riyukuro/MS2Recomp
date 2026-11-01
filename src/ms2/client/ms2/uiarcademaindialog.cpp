@@ -139,7 +139,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CStringW FUN_140763e10(int nScore);                                         // the score as text
 CStringW FUN_14016a730(const char* sz, int n);                              // narrow to wide
 CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // wide to utf8
-CString FUN_1402bb1c0(const char* szFormat, const int* pn);                 // format one int
 CString FUN_1402bad60(const char* szFormat, const int* pn);                 // format one int
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, unsigned bOn);
@@ -270,7 +269,7 @@ void UIArcadeMainDialog::OnLoadComplete()
     for (int i = 0; i < 9; i++)
     {
         int nNo = i + 1;
-        CString strName = FUN_1402bb1c0("m_game{0}", &nNo);
+        CString strName = StringFormat<int>("m_game{0}", nNo);
         m_buttons[i] = GetChild<Unk_140acd6e0>(strName);
         if (m_buttons[i].get() != 0)
             m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), FUN_140bb9630(i));

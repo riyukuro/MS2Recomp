@@ -276,7 +276,7 @@ void StateHomemade::EndOfSequence(NiActorManager*, unsigned int, NiControllerSeq
         if (FUN_140ca4fd0(0) != 0)
         {
             m_n10 = 0x92;
-            m_pOwner->FUN_14166dda0(0);
+            m_pOwner->PlayAnimationById(0);
         }
         else
             m_pOwner->vfunc_59(1, 0, 0, 0);

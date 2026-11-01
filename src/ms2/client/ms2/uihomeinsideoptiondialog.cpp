@@ -21,6 +21,7 @@
 #include "ugchomebgdata.h"
 #include "uimessageboxdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -58,18 +59,12 @@ public:
     virtual void vfunc_24(bool bEnable);                        // 24
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                    // add an item
-    void FUN_1422df690(unsigned int nSelected);                 // select
     unsigned char FUN_1422df6c0();                              // the selection
 };
 class Unk_HioButton : public ASMovieClip
 {
 public:
     int FUN_1422c2030();                                        // is enabled
-};
-class Unk_HioScript : public AScript
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140bbe700(const CString& strName);   // bind a child of the movie
 };
 
 // The selected row of each table (3 bytes), as the exe copies it out of the home setting.
@@ -119,7 +114,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeBgData> >* pBgs = &UgcHomeOptionData::GetInstance()->m_mapBg;
     if (!pBgs->IsEmpty())
     {
-        if (MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_background"))
+        if (MS2Ptr<ASDropdownMenu> spCombo = FUN_140c28560<ASDropdownMenu>("m_background"))
         {
             spCombo.operator->()->FUN_1422dfc10();
             for (POSITION pos = pBgs->GetHeadPosition(); pos != 0; pBgs->GetNext(pos))
@@ -131,15 +126,15 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                 item.FUN_1407cbb20("label", spRow->m_strName);
                 spCombo.operator->()->FUN_1422dfc70(item);
             }
-            spCombo.operator->()->FUN_1422df690(static_cast<unsigned int>(setting.m_nBg));
-            Unk_HioCombo* pCombo = spCombo.operator->();
+            spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nBg));
+            Unk_HioCombo* pCombo = reinterpret_cast<Unk_HioCombo*>(spCombo.operator->());
             pCombo->vfunc_24(true);
         }
     }
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeLightData> >* pLights = &UgcHomeOptionData::GetInstance()->m_mapLight;
     if (!pLights->IsEmpty())
     {
-        if (MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_light"))
+        if (MS2Ptr<ASDropdownMenu> spCombo = FUN_140c28560<ASDropdownMenu>("m_light"))
         {
             spCombo.operator->()->FUN_1422dfc10();
             for (POSITION pos = pLights->GetHeadPosition(); pos != 0; pLights->GetNext(pos))
@@ -151,15 +146,15 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                 item.FUN_1407cbb20("label", spRow->m_strName);
                 spCombo.operator->()->FUN_1422dfc70(item);
             }
-            spCombo.operator->()->FUN_1422df690(static_cast<unsigned int>(setting.m_nLight));
-            Unk_HioCombo* pCombo = spCombo.operator->();
+            spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nLight));
+            Unk_HioCombo* pCombo = reinterpret_cast<Unk_HioCombo*>(spCombo.operator->());
             pCombo->vfunc_24(true);
         }
     }
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeCameraData> >* pCameras = &UgcHomeOptionData::GetInstance()->m_mapCamera;
     if (!pCameras->IsEmpty())
     {
-        if (MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_camera"))
+        if (MS2Ptr<ASDropdownMenu> spCombo = FUN_140c28560<ASDropdownMenu>("m_camera"))
         {
             spCombo.operator->()->FUN_1422dfc10();
             for (POSITION pos = pCameras->GetHeadPosition(); pos != 0; pCameras->GetNext(pos))
@@ -171,8 +166,8 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                 item.FUN_1407cbb20("label", spRow->m_strName);
                 spCombo.operator->()->FUN_1422dfc70(item);
             }
-            spCombo.operator->()->FUN_1422df690(static_cast<unsigned int>(setting.m_nCamera));
-            Unk_HioCombo* pCombo = spCombo.operator->();
+            spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nCamera));
+            Unk_HioCombo* pCombo = reinterpret_cast<Unk_HioCombo*>(spCombo.operator->());
             pCombo->vfunc_24(true);
         }
     }
@@ -239,25 +234,25 @@ bool UIHomeInsideOptionDialog::FUN_140c28000(int nResult, const CMsgBoxData& box
 // @0x140c280d0
 void UIHomeInsideOptionDialog::FUN_140c280d0()
 {
-    if (MS2Ptr<Unk_HioCombo> spBg = FUN_140c28560<Unk_HioCombo>("m_background"))
+    if (MS2Ptr<ASDropdownMenu> spBg = FUN_140c28560<ASDropdownMenu>("m_background"))
     {
-        unsigned char nSelected = spBg.operator->()->FUN_1422df6c0();
+        unsigned char nSelected = reinterpret_cast<Unk_HioCombo*>(spBg.operator->())->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x33);
         packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
-    if (MS2Ptr<Unk_HioCombo> spLight = FUN_140c28560<Unk_HioCombo>("m_light"))
+    if (MS2Ptr<ASDropdownMenu> spLight = FUN_140c28560<ASDropdownMenu>("m_light"))
     {
-        unsigned char nSelected = spLight.operator->()->FUN_1422df6c0();
+        unsigned char nSelected = reinterpret_cast<Unk_HioCombo*>(spLight.operator->())->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x34);
         packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
-    if (MS2Ptr<Unk_HioCombo> spCamera = FUN_140c28560<Unk_HioCombo>("m_camera"))
+    if (MS2Ptr<ASDropdownMenu> spCamera = FUN_140c28560<ASDropdownMenu>("m_camera"))
     {
-        unsigned char nSelected = spCamera.operator->()->FUN_1422df6c0();
+        unsigned char nSelected = reinterpret_cast<Unk_HioCombo*>(spCamera.operator->())->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x36);
         packet.WriteUInt8(nSelected);
@@ -274,5 +269,5 @@ template <class T> MS2Ptr<T> UIHomeInsideOptionDialog::FUN_140c28560(const CStri
     {
         return MS2Ptr<T>(0);
     }
-    return static_cast<Unk_HioScript*>(m_30.operator->())->FUN_140bbe700<T>(strName);
+    return m_30.operator->()->GetDropdownMenu(strName);
 }

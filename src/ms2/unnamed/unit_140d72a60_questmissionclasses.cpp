@@ -171,7 +171,7 @@ CFieldMission::~CFieldMission() {}
 void CFieldMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
-    int nGroup = ((class CQuestManager*)FUN_140764020())->FUN_1416d0150();
+    int nGroup = ((class CQuestManager*)FUN_140764020())->CountCompletedQuests80();
     Unk_QmGroupRewardPtr row = FUN_140d738f0()->FUN_14037c3d0(nGroup);
     UIRewardNotify* notify;
     if (row.get() != 0 && (notify = FUN_140938cd0(0x4e5d)) != 0 && row.get() != 0) {

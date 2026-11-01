@@ -19,8 +19,12 @@
 
 void FUN_140930150(int);
 void* FUN_1403ed2d0();
-void FUN_141bbae40(void*, IWorldServiceCallback*);
-void FUN_141bbae80(void*, IWorldServiceCallback*);
+class WorldService   // C3: unit-local view of the callback set
+{
+public:
+    void FUN_141bbae40(void* p);
+    void FUN_141bbae80(void* p);
+};
 void FUN_141bbbe40(void*, int, int, int);
 void* FUN_140aae430();
 void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
@@ -82,7 +86,7 @@ void CSceneStateLogin::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
-    FUN_141bbae40(FUN_1403ed2d0(), this);
+    ((WorldService*)FUN_1403ed2d0())->FUN_141bbae40((IWorldServiceCallback*)this);
     FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     DAT_1439f4a78 = -1;
     FUN_141bbbe40(FUN_1403ed2d0(), 1, 1, 0);
@@ -92,7 +96,7 @@ void CSceneStateLogin::OnEnter(int nPrevState)
 void CSceneStateLogin::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
-    FUN_141bbae80(FUN_1403ed2d0(), this);
+    ((WorldService*)FUN_1403ed2d0())->FUN_141bbae80((IWorldServiceCallback*)this);
 }
 
 // @0x14174c1d0

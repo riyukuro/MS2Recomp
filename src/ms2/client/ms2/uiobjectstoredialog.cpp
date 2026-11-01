@@ -6,6 +6,7 @@
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiobjectstoredialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiobjectstoredialog.h"
 
@@ -36,19 +37,6 @@ typedef UIMsg Unk_OsUIMsg;
 
 // The status-listener registry (singleton 0x140aa6d40).
 
-// The item bag control (RTTI name unknown) of the movie: "bagId" names the bag shown.
-class Unk_OsItemBag : public ASMovieClip
-{
-public:
-    Unk_OsItemBag(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422cf330
-#define OS_V(n) virtual void vfunc_##n();
-    OS_V(16) OS_V(17) OS_V(18) OS_V(19) OS_V(20) OS_V(21) OS_V(22) OS_V(23)
-#undef OS_V
-    virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
-private:
-    unsigned char m_pad_80[8];
-};
-MS2_CHECK_SIZE(Unk_OsItemBag, 0x88);
 
 // The bound slot bag of a bag id (StoreSlotBag) and the control state it keeps.
 class Unk_OsBind;
@@ -270,7 +258,7 @@ void UIObjectStoreDialog::FUN_141a72f80(int bBind)
     FUN_14180b230(&m_180);
     FUN_14180b170(&m_180, 0, nSlots);
     if (bBind != 0) {
-        if (MS2Ptr<Unk_OsItemBag> spBag = GetChild<Unk_OsItemBag>("m_itemBag"))
+        if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
             spBag->FUN_1407cba60("bagId", m_180);
     }
 }

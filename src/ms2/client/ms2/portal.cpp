@@ -24,6 +24,9 @@
 #include <efd/utf8string.h>
 #include <NiNode.h>
 #include <NiTexturingProperty.h>
+#include <NiMesh.h>
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
@@ -36,7 +39,6 @@ class EntityWorldManager   // C3: member view for the former free stand-ins
 public:
     class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
 };
-void FUN_140a38a50(egf::Entity* pEntity, unsigned uPropId, const Vector3& pt);   // write a Point3 property
 class NxBounds3   // C3: member view for the former free stand-ins
 {
 public:
@@ -53,16 +55,17 @@ bool NxBoxContainsPoint(class NxBox const&, class NxVec3 const&);   // C3: was F
 void FUN_140adbf00(Unk_CtbObb* pObb, const Unk_CtbVec3& pt);        // set the box centre
 
 // The quest-npc table (singleton): lookups by portal.
-class Unk_PortalQuestTable
+class Unk_PortalQuestTable;
+struct Unk_QmPortal;
+class CQuestMaskTable
 {
 public:
-    int FUN_140764d50(CPortal* pPortal);
-    int FUN_140764f30(CPortal* pPortal);
-    void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
+    int HasPortalMask(Unk_QmPortal* pPortal);
+    int CheckPortal(Unk_QmPortal* pPortal);
 };
 Unk_PortalQuestTable* FUN_14109a710();
-void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
-const char* FUN_14099ad40(efd::AssetID* pAsset);         // the AssetID's URN text
+int FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
+const char* Unk_AssetUrnText(const efd::AssetID* pAsset);         // the AssetID's URN text
 
 // The content switch table.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -85,24 +88,9 @@ class Unk_PortalTableHolder { public:  };   // CPortalTable::GetName
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // scene root by id
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
-extern char DAT_143afbbb0;                                          // NiMesh::ms_RTTI
-extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-void FUN_141552f90(void* pMgr, void* pOutTexture, CString strPath, int nFlags);   // load a texture
-void* FUN_14097fbf0(void* pTexture);                                // texture pointer
-void FUN_14097f4a0(void* pTexture);                                 // release
 
 // The map record behind a counted pointer (the portal's map image list).
-struct Unk_PortalMapRef
-{
-    void* m_unk_00;
-    void* m_p;
-};
-Unk_PortalMapRef* FUN_140a55460(Unk_PortalMapRef* pOut, int nMapId);
-void* FUN_140885340(Unk_PortalMapRef* pRef);                        // operator->
-void FUN_1408850f0(Unk_PortalMapRef* pRef);                         // release
-void* FUN_140a56f90(void* pList);                                   // first element, or null
-void* FUN_140a56fa0(void* pList);                                   // first element
 
 // UIObject slot 8 (0x40) of the tooltip: show / hide.
 class Unk_PortalTipSlots
@@ -189,7 +177,7 @@ int CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
     FUN_140764310(strA, strB, &m_questMask);
     efd::AssetID idImage;
     spEntity->GetPropertyValue(0x770e5fc6, idImage);
-    m_strImage = FUN_14099ad40(&idImage);
+    m_strImage = Unk_AssetUrnText(&idImage);
     return 1;
 }
 
@@ -225,33 +213,29 @@ bool CPortal::FUN_14169ba90()
     if (pRoot != 0)
     {
         NiAVObject* pPlane = pRoot->GetObjectByName(NiFixedString("Theme_Image_Plane"));
-        if (pPlane != 0 && NiObject::IsExactKindOf((const NiRTTI*)&DAT_143afbbb0, (class NiObject const*)(pPlane)))
+        if (pPlane != 0 && NiObject::IsExactKindOf(&NiMesh::ms_RTTI, (class NiObject const*)(pPlane)))
         {
             NiProperty* pProp = pPlane->GetProperty(NiProperty::TEXTURING);
-            NiTexturingProperty* pTexProp = (NiTexturingProperty*)NiObject::DynamicCast((const NiRTTI*)&DAT_143afa4f0, (class NiObject const*)(pProp));
+            NiTexturingProperty* pTexProp = (NiTexturingProperty*)NiObject::DynamicCast(&NiTexturingProperty::ms_RTTI, (class NiObject const*)(pProp));
             NiTexturingProperty::Map* pMap = 0;
             if (pTexProp != 0 && (pMap = ((class NiTexturingProperty*)(class NiTexturingProperty*)(pTexProp))->GetBaseMap()) != 0)
             {
-                Unk_PortalMapRef spMap;
-                FUN_140a55460(&spMap, nMapId);
-                if (reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>*>(&spMap)->get()) != 0)
+                MS2Ptr<CFieldDataCli> spMap = CFieldDataCli::Find(nMapId);
+                if (spMap.get() != 0)
                 {
-                    void* pList = (char*)FUN_140885340(&spMap) + 0x160;
-                    if (FUN_140a56f90(pList) != 0)
+                    MS2Ptr<CMinimap>* pList = &spMap->m_spMinimap;
+                    if (pList->get() != 0)
                     {
-                        CString strPath(*(CString*)((char*)FUN_140a56fa0(pList) + 0x18));
+                        CString strPath(*(CString*)((char*)pList->operator->() + 0x18));
                         if (!strPath.IsEmpty())
                         {
                             CString strLoad(strPath);
-                            void* spTex[2];
-                            FUN_141552f90(((void*)FUN_140a0afd0()), spTex, strLoad, 5);
-                            if (FUN_14097fbf0(spTex) != 0)
-                                ((NiTexturingProperty::Map*)(class NiTexturingProperty::Map*)(pMap))->SetTexture((class NiTexture*)(FUN_14097fbf0(spTex)));
-                            FUN_14097f4a0(spTex);
+                            NiTexturePtr spTex = ((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(strLoad, 5);
+                            if ((NiTexture*)spTex != 0)
+                                ((NiTexturingProperty::Map*)(class NiTexturingProperty::Map*)(pMap))->SetTexture((NiTexture*)spTex);
                         }
                     }
                 }
-                FUN_1408850f0(&spMap);
             }
         }
     }
@@ -421,7 +405,7 @@ CStringW CPortal::FUN_14169cae0()
 // @0x14169cc40
 int CPortal::FUN_14169cc40()
 {
-    return FUN_14109a710()->FUN_140764f30(this);
+    return reinterpret_cast<CQuestMaskTable*>(FUN_14109a710())->CheckPortal(reinterpret_cast<Unk_QmPortal*>(this));
 }
 
 // @0x14169cc70
@@ -430,8 +414,8 @@ void CPortal::FUN_14169cc70(const Vector3& pos, const Vector3& rot)
     efd::SmartPointer<egf::Entity> spEntity = ((class EntityWorldManager*)(class egf::EntityManager*)(FUN_1409670f0()))->FUN_1411cf440(m_idEntity);
     if (spEntity == 0)
         return;
-    FUN_140a38a50((egf::Entity*)spEntity, 0xfd95ca52, pos);
-    FUN_140a38a50((egf::Entity*)spEntity, 0x68c7c29d, rot);
+    ((egf::Entity*)spEntity)->SetPropertyValue(0xfd95ca52, reinterpret_cast<const efd::Point3&>(pos));
+    ((egf::Entity*)spEntity)->SetPropertyValue(0x68c7c29d, reinterpret_cast<const efd::Point3&>(rot));
     m_box.FUN_14169b080(spEntity.operator->());
 }
 
@@ -495,7 +479,7 @@ void CPortal::FUN_14169d050(int bGlow)
 // @0x14169d0e0
 void CPortal::FUN_14169d0e0()
 {
-    if (FUN_14109a710()->FUN_140764d50(this) != 0)
+    if (reinterpret_cast<CQuestMaskTable*>(FUN_14109a710())->HasPortalMask(reinterpret_cast<Unk_QmPortal*>(this)) != 0)
     {
         int nState = FUN_14169cc40();
         FUN_14169cd50(nState, nState);

@@ -564,7 +564,7 @@ void StateCoupleEmotion::vfunc_9(double fTime)
             nKey = 1;
         if (!m_pOwner->FUN_14166de90(nKey, nActorId))
         {
-            m_pOwner->FUN_14166dda0(nKey);
+            m_pOwner->PlayAnimationById(nKey);
             m_pOwner->FUN_14166f8f0(0, 1);
         }
         break;

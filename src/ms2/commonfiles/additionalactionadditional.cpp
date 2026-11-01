@@ -378,8 +378,8 @@ CLogString* GetLogString();                                                // th
 class Unk_AdditionalFlags : public StanceTable { };
 extern Unk_AdditionalFlags* DAT_143aac270;
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
-Unk_CompareOp FUN_140219400(const CString& str);
-Unk_DungeonGroupType FUN_140218c20(const CString& str);
+int Parse_140219400(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
+int Parse_140218c20(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 SAType FUN_14081dd80(const CString& str);
 Unk_SkillMasteryType FUN_14021c400(const CString& str);
 // Per SA type flags (0x20 bytes each); +8 = the type may be set by an additional effect.
@@ -465,7 +465,7 @@ template <> inline int XmlValueByName(Unk_140165cf0* pElem, const char* pszName,
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
-    eOut = FUN_140219400(str);
+    eOut = ((enum Unk_CompareOp)Parse_140219400(str));
     return nRet;
 }
 // 0x140179060
@@ -480,7 +480,7 @@ template <> inline int XmlValueByName(Unk_140165cf0* pElem, const char* pszName,
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
-    eOut = FUN_140218c20(str);
+    eOut = ((enum Unk_DungeonGroupType)Parse_140218c20(str));
     return nRet;
 }
 // 0x140179120

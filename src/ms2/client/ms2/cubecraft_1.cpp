@@ -167,9 +167,8 @@ public:
     int FUN_1410cdd80(NiPoint3 kPos, NiPoint3 kDir, float fRange, efd::Point3 kDown);
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-class Unk_AnimSvc { public: char m_pad[8]; };
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); char m_pad[8]; };
 void FUN_140a51340(CEffectDummy* pDummy, const NiPoint3& v);   // CEffectDummy::SetTranslate, seen taking the converted point
-void FUN_1409a1fc0(Unk_AnimSvc*, const egf::EntityID&, const efd::utf8string*, float, bool bForce);   // Unk_AnimSvc::FUN_1409a1fc0 (5th arg on the stack)
 Unk_AnimSvc* FUN_1410a68d0();
 struct Unk_CcSvcCell { void* m_spManager; };              // SmartPointer<ServiceManager> at +0
 Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell);
@@ -389,7 +388,6 @@ public:
     virtual void vfunc_21();
     virtual int vfunc_22(MS2Ptr<Unk_GuideRecord> spRecord);    // nonzero = the record differs from the state
 };
-Unk_CcStateMgr* FUN_14166ccb0(PCBase*);
 int FUN_14166cc80(PCBase*);
 float FUN_14166da40(PCBase*);
 void FUN_14166d820(PCBase*);
@@ -467,7 +465,7 @@ void CGuideObject::vfunc_125(double fTime)
 {
     ((class Unk_PCMove*)(void*)(&m_unk_6d8))->FUN_141683a90();
     ::FUN_14166d820(this);
-    ::FUN_14166ccb0(this)->vfunc_8(fTime);
+    reinterpret_cast<Unk_CcStateMgr*>(PCBase::FUN_14166ccb0())->vfunc_8(fTime);
 }
 
 // @0x1410a1240
@@ -502,7 +500,7 @@ void CGuideObject::vfunc_126()
     if (!spOld
         || spOld->m_pos3c != m_pos98
         || spOld->m_nType != FUN_14166c930()
-        || ::FUN_14166ccb0(this)->vfunc_22(spOld) != 0)
+        || reinterpret_cast<Unk_CcStateMgr*>(PCBase::FUN_14166ccb0())->vfunc_22(spOld) != 0)
     {
         if (spOld.get() != 0)
             m_ctrl.vfunc_0();
@@ -660,7 +658,7 @@ void CConstructionGuideObject::FUN_1410a2440()
     PCBase* pOwner = FUN_1410a1310();
     if (pOwner == 0)
         return;
-    if (((class PC*)(class PCBase*)(pOwner))->FUN_141659610() == 0)
+    if (((class PC*)(class PCBase*)(pOwner))->IsCubeMode1() == 0)
     {
         FUN_1410a29c0();
         return;
@@ -886,7 +884,7 @@ int CConstructionGuideObject::vfunc_11()
     if (pAnim != 0)
     {
         efd::utf8string kName("Idle_A");
-        FUN_1409a1fc0(pAnim, FUN_14123c460(), &kName, 1.0f, false);
+        pAnim->FUN_1409a1fc0(FUN_14123c460(), kName, 1.0f, false);
     }
     CEffectDummy kDummy;
     kDummy.SetName("Lift Node");

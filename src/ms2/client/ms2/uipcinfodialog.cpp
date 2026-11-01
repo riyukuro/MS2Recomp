@@ -56,6 +56,7 @@ static CString s_strSetData = "setData";
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asdropdownmenu.h"   // C3: ASDropdownMenu::SetSelectedIndex
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/astextfield.h"
@@ -71,6 +72,10 @@ static CString s_strSetData = "setData";
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/packethandlermanager.h"
+#include "ms2/gfxui/astooltipmanager.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -88,17 +93,18 @@ template <> MS2Ptr<Unk_PCArg125>::~MS2Ptr();
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);
 template <> MS2Ptr<ASLabel> UISwfEntity::GetChild<ASLabel>(const CString& strName);
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);
+namespace efd { template <> AvatarPC* DynamicCast<AvatarPC, GameObject>(GameObject* p); }
 
 // The component calls shared by the button / label / combo / clip wrappers of the children (ASUIComponent and ASMovieClip
 // in the exe; the placeholder headers do not carry them yet).
 class Unk_PciComp : public ASButton
 {
 };
-void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value& src);     // Value::operator=
 void FUN_140cfee80(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's text
 void FUN_140cff1b0(const Scaleform::GFx::Value& obj, CString strMember, CStringW strText);   // set a child's html text
 void FUN_140cff740(const Scaleform::GFx::Value& obj, CString strMember, unsigned int nColor); // set a child's colour
-CStringW FUN_140811740(int nId, const int& a, const int& b);    // FormatStringId<int, int>
 
 class ASDialog : public ASDisplayObjectContainer
 {
@@ -106,16 +112,6 @@ public:
     Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW a1, int a2);   // Invoke(method, string, int)
 };
 
-// The combo box wrapper (ASComboBox in the exe) of the dialog's children.
-class Unk_PciCombo : public ASUIComponent
-{
-public:
-    void FUN_1422dfc10();                                       // clear the items
-    void FUN_1422dfce0(const CStringW& strLabel);               // add a row
-    void FUN_1422dfc70(const ASObj& item);                      // add an item
-    void FUN_1422df690(unsigned int nSelected);                 // select
-    void FUN_1422df5f0(unsigned int nRows);                     // visible rows
-};
 // MS2: slot 24 of the combo box wrapper (the slot list past ASMovieClip's is not proven): enable the selection list.
 class Unk_PciComboSlots
 {
@@ -138,26 +134,6 @@ public:
 #undef PCI_V
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pArg2);
 };
-class Unk_PciStatHelper : public CPtred
-{
-public:
-    void FUN_1422c6160(const Scaleform::GFx::Value& value);
-};
-MS2Ptr<Unk_PciStatHelper> FUN_1422c6240(int n);
-
-class Unk_PciMovieEntity : public UIDialog
-{
-public:
-    MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);        // GetChild<ASButton>
-    MS2Ptr<Unk_PciCombo> FUN_140c28560(const CString& strName);    // GetChild<ASComboBox>
-};
-
-class Unk_PciPackets
-{
-public:
-    void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);    // add a packet handler
-    void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);    // remove
-};
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PciUIMgr { public: void FUN_141adc530(int nId); };
@@ -172,7 +148,6 @@ public:
 class Unk_PciWorld
 {
 public:
-    MS2Ptr<Unk_PciFieldInfo> FUN_141bd30a0();                   // the current field data
 };
 class AdditionalCliList   // C3: member view for the former free stand-ins
 {
@@ -181,7 +156,8 @@ public:
 };
 NiColor FUN_141b6dea0(unsigned int nColor);                     // a colour value as NiColor
 
-class Unk_PciCfgU16 { public: unsigned short FUN_140ba4b30(); };
+class Unk_PciCfgU16 { };
+unsigned short FUN_140ba4b30(class Unk_ALConstU16* pValue);
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 class Unk_PciCfgFloat { public: };
 struct Unk_PciConstants
@@ -194,7 +170,7 @@ struct Unk_PciConstants
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
-UIWebBrowserBase* FUN_140c43790(int nId);
+class UIWebBrowser* FUN_140c43790(int nId);
 
 class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 GFxManager* FUN_14025e7a0();
@@ -211,38 +187,33 @@ struct Unk_PciRange
 struct Unk_PciStatBlock { __int64 m_a[0x23]; };
 
 int FUN_14028cb70(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected);
-bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 void FUN_14151f200();
-void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
-void FUN_140d73bc0(int nStrId, int nType, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
+void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 CStringTable* GetStringTable();
-CStringW FUN_141b720b0(int nTitle, int n);
+CStringW FUN_141b720b0(int nTitle, __int64 n);
 CStringW FUN_141b72150(int nTitle, int nGender);
-CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
-CStringW FUN_14052bd00(int nStringId, const CStringW& str);
-CStringW FUN_14082f000(int nStat);
+CStringW GetStatCommonText(unsigned nStat);
 CStringW FUN_140630e10(int nStat);
-CString FUN_14052ea30(const char* pszFormat, const int& nArg);    // StringFormat<int> copy
 CStringW FUN_14016a730(const char* sz, int n);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);
-const CStringA& FUN_14082efb0(int nStat);
+const CStringA& GetStatName(unsigned nStat);
 int FUN_140bd09c0(void* pUserData);
 void* FUN_140bb9630(int n);
 __int64 GetServerTime();
 int GetDayNumberDifference(__int64 nThen, __int64 nNow);
 CStringW FUN_140b8e850(const CMsTime& kTime);
 void AddDays(CMsTime& kTime, long nDays);
-void FUN_1408377d0(ATL::CAtlArray<int>& ids);
+void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids);
 void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
 void FUN_14120d8e0(const CString& strName);
 void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC);
 void FUN_14126e3f0(const CString& strName);
-AvatarPC* FUN_140a535c0(GameObject* pObj);
 void FUN_1418bee30(ASObj* pObj, int n);
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 
@@ -269,13 +240,13 @@ UIPCInfoDialog::UIPCInfoDialog()
     FUN_141924170(1);
     FUN_1422dc3b0(1);
     // the handler is the UIDialog packet slot (79), whose real parameter is CInPacket& (the vcall thunk 0x141339078)
-    ((class Unk_PciPackets*)FUN_140bccd50())->FUN_140da5180(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
 }
 
 // @0x14132bea0
 UIPCInfoDialog::~UIPCInfoDialog()
 {
-    ((class Unk_PciPackets*)FUN_140bccd50())->FUN_140da51e0(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
 }
 
 // @0x14132c030
@@ -639,9 +610,9 @@ void UIPCInfoDialog::OnLoadComplete()
     vfunc_88(m_nTab);
     vfunc_98(GetProfileImagePath());
     TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
-    m_spMyNews = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_myNews");
+    m_spMyNews = GetChild<ASButton>("m_myNews");
     m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132ed50), 0);
-    if (MS2Ptr<ASButton> spScreenshot = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_screenshot"))
+    if (MS2Ptr<ASButton> spScreenshot = GetChild<ASButton>("m_screenshot"))
     {
         if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xf7))
         {
@@ -678,7 +649,7 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     CStringW strMessage;
                     if (pFilter->FUN_1402260c0(strMemo, strMessage) != 0)
                     {
-                        FUN_140d73aa0(strMessage, 0, this, L"");
+                        FUN_140d73aa0(strMessage, 0, (IMessageListener*)this, L"");
                         return 1;
                     }
                 }
@@ -759,7 +730,7 @@ void UIPCInfoDialog::FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params
 {
     if (m_spInfo == 0)
         return;
-    UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
     if (pBrowser == 0)
         return;
     CString strUrl;
@@ -788,13 +759,13 @@ void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params
     if (pPC == 0)
         return;
     int nStat = FUN_140bd09c0(params.pUserData);
-    CStringW strKey = StringFormat(L"s_char_info_stat_point_tooltip_{0}", FUN_14082efb0(nStat));
+    CStringW strKey = StringFormat(L"s_char_info_stat_point_tooltip_{0}", GetStatName(nStat));
     ASTooltip tooltip((void*)pPC, 1, 2);
     tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
     tooltip.SetTooltipAlign(4);
     tooltip.SetText(GetStringCommonByKey(strKey));
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
-    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+    *pRetVal = tooltip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x14132EED0, UIPCInfoDialog, FUN_14132eed0, 324, 0xD7BCCED3);
 
@@ -807,7 +778,7 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
     CStringW strText;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd))
     {
-        if ((unsigned short)pPC->vfunc_78() >= ((struct Unk_PciConstants*)FUN_1401d3200())->m_9298.FUN_140ba4b30())
+        if ((unsigned short)pPC->vfunc_78() >= FUN_140ba4b30((class Unk_ALConstU16*)&((struct Unk_PciConstants*)FUN_1401d3200())->m_9298))
         {
             strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
                                     (unsigned int)pPC->FUN_140c25130()->GetTotal(),
@@ -828,7 +799,7 @@ show:
     tooltip.SetTooltipAlign(4);
     tooltip.SetText(strText);
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
-    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+    *pRetVal = tooltip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x14132F020, UIPCInfoDialog, FUN_14132f020, 1446, 0x42E4BD98);
 
@@ -842,7 +813,7 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
         return;
     {
         CStringW strText;
-        CStringW strPartner(FUN_14025cd60(m_spInfo->m_3e8, m_spInfo->m_strGuildName) ? m_spInfo->m_strGuildEmblemPath : m_spInfo->m_strGuildName);
+        CStringW strPartner(m_spInfo->m_3e8 == m_spInfo->m_strGuildName ? m_spInfo->m_strGuildEmblemPath : m_spInfo->m_strGuildName);
         CMsTime kTime(m_spInfo->m_nGuildId);
         switch (m_spInfo->m_nGuildRank)
         {
@@ -866,7 +837,7 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
         tooltip.SetTooltipAlign(4);
         tooltip.SetText(strText);
         Scaleform::GFx::Value* pRetVal = params.pRetVal;
-        FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+        *pRetVal = tooltip.FUN_1422bb870();
     }
 }
 MS2_REPLACE_METHOD(0x14132F5D0, UIPCInfoDialog, FUN_14132f5d0, 1144, 0xBA2C420E);
@@ -1046,7 +1017,7 @@ void UIPCInfoDialog::vfunc_87()
     if (m_spInfo == 0)
         return;
     ATL::CAtlArray<int> aStats;
-    FUN_1408377d0(aStats);
+    FUN_1408377d0((ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >&)aStats);
     unsigned int nRemaining = 0;
     unsigned int nUsed = 0;
     if (m_spInfo->m_3c0 != 0)
@@ -1060,11 +1031,11 @@ void UIPCInfoDialog::vfunc_87()
     for (unsigned int i = 0; i < aStats.GetCount(); i++)
     {
         int nNumber = i + 1;
-        CString strName = FUN_14052ea30("m_statPoint{0}", nNumber);
+        CString strName = StringFormat<unsigned>("m_statPoint{0}", (unsigned&)nNumber);
         if (MS2Ptr<ASMovieClip> spRow = GetChild<ASMovieClip>(strName))
         {
             int nStat = aStats[i];
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_Label", FUN_14082f000(nStat));
+            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_Label", GetStatCommonText(nStat));
             __int64 nValue = 0;
             if (nStat == 4)
                 nValue = m_spInfo->m_aStats0[nStat];
@@ -1095,7 +1066,7 @@ void UIPCInfoDialog::vfunc_87()
             FUN_1422c6240(2)->FUN_1422c6160(spRow->FUN_1422bb870());
         }
     }
-    if (MS2Ptr<ASButton> spReset = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_resetStatPoint"))
+    if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_resetStatPoint"))
         ((Unk_PciComp*)spReset.operator->())->FUN_1422c1fe0(nUsed > 0);
     if (MS2Ptr<ASMovieClip> spRemain = GetChild<ASMovieClip>("m_remainPoint"))
     {
@@ -1191,7 +1162,7 @@ void UIPCInfoDialog::ClearProfile()
 {
     vfunc_97(L"");
     vfunc_104(0);
-    if (MS2Ptr<Unk_PciCombo> spTitle = ((Unk_PciMovieEntity*)this)->FUN_140c28560("m_title"))
+    if (MS2Ptr<ASDropdownMenu> spTitle = GetChild<ASDropdownMenu>("m_title"))
         ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
 }
 MS2_REPLACE_METHOD(0x141333090, UIPCInfoDialog, ClearProfile, 220, 0x5680505A);
@@ -1230,7 +1201,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
     ATL::CAtlArray<unsigned int> aSorted;
     aSorted.Copy(aTitles);
     qsort(aSorted.GetData(), aSorted.GetCount(), 4, FUN_141337900);
-    if (MS2Ptr<Unk_PciCombo> spTitle = ((Unk_PciMovieEntity*)this)->FUN_140c28560("m_title"))
+    if (MS2Ptr<ASDropdownMenu> spTitle = GetChild<ASDropdownMenu>("m_title"))
     {
         spTitle->FUN_1422dfc10();
         if (m_spInfo->FUN_140dba220() != 0)
@@ -1252,7 +1223,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                 if (aSorted[i] == (unsigned int)nTitle)
                     nSelected = (int)(i + 1);
             }
-            spTitle->FUN_1422df690(nSelected);
+            reinterpret_cast<ASDropdownMenu*>(spTitle.operator->())->SetSelectedIndex(nSelected);
             if (aSorted.IsEmpty())
                 ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
             size_t nRows;
@@ -1260,14 +1231,14 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                 nRows = 5;
             else
                 nRows = aSorted.GetCount() + 1;
-            spTitle->FUN_1422df5f0((unsigned int)nRows);
+            spTitle->SetMenuRowCount((unsigned int)nRows);
         }
         else
         {
             if ((unsigned int)nTitle > 0 && reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance()) != 0)
             {
                 spTitle->FUN_1422dfce0(FUN_141b72150(nTitle, m_spInfo->m_3c4));
-                spTitle->FUN_1422df690(0);
+                reinterpret_cast<ASDropdownMenu*>(spTitle.operator->())->SetSelectedIndex(0);
             }
             ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
         }
@@ -1295,7 +1266,7 @@ void UIPCInfoDialog::vfunc_98(const CStringW& strProfile)
     if (pDialog != 0)
     {
         pDialog->Invoke("setProfile", strProfile);
-        if (MS2Ptr<ASButton> spProfile = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_profile"))
+        if (MS2Ptr<ASButton> spProfile = GetChild<ASButton>("m_profile"))
         {
             if (m_spInfo->FUN_140dba240() != 0)
             {
@@ -1359,7 +1330,7 @@ void UIPCInfoDialog::vfunc_102(int nPoint, int nRank)
     if (MS2Ptr<ASLabel> spInterior = GetChild<ASLabel>("m_interior_point"))
     {
         ((Unk_PciComp*)spInterior.operator->())->FUN_1422c1fe0(1);
-        spInterior->FUN_1422e4a50(FUN_140811740(0x25, nRank, nPoint));
+        spInterior->FUN_1422e4a50(FormatStringId<int, int>(0x25, nRank, nPoint));
     }
 }
 MS2_REPLACE_METHOD(0x141334000, UIPCInfoDialog, vfunc_102, 276, 0xB5DDDC11);
@@ -1379,7 +1350,7 @@ void UIPCInfoDialog::vfunc_103(const CStringW& strGuild, const CStringW& strRank
         }
         else
         {
-            strText = FUN_140632a60(0x24, strGuild, strRank);
+            strText = FormatStringId<CStringW, CStringW>(0x24, strGuild, strRank);
         }
         ((Unk_PciComp*)spGuild.operator->())->FUN_1422c1fe0(!strGuild.IsEmpty());
         spGuild->FUN_1422e4a50(strText);
@@ -1498,9 +1469,9 @@ __int64 UIPCInfoDialog::FUN_141334890()
         return (int)((class CLua*)FUN_1401c0db0())->CalePcOffenseScore(&score);
     }
     int nFieldLevel = 0;
-    MS2Ptr<Unk_PciFieldInfo> spField = reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField.get() != 0)
-        nFieldLevel = spField->m_4c;
+        nFieldLevel = reinterpret_cast<Unk_PciFieldInfo*>(spField.operator->())->m_4c;
     __int64 nMeanAttack = GetAverageStat();
     __int64 nAttackMin = m_spInfo->m_aStats2[0x17];
     __int64 nAttackMax = m_spInfo->m_aStats2[0x18];
@@ -1701,7 +1672,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, i
     }
     row.FUN_1409c0d20("containerIndex", nContainer);
     row.FUN_1409c0d20("labelIndex", nLabel);
-    row.FUN_1407cbb20("name", FUN_14082f000(nStat));
+    row.FUN_1407cbb20("name", GetStatCommonText(nStat));
     row.FUN_1407cbb20("value", strValue);
     row.FUN_1407cbb20("detail", strDetail);
     return row.FUN_1422bb870();
@@ -1881,7 +1852,7 @@ int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
         return 0;
     LoadRenderTarget();
     ASObj data(2);
-    AvatarPC* pAvatarPC = FUN_140a535c0(((UIAvatarBase*)pAvatar)->vfunc_24());
+    AvatarPC* pAvatarPC = efd::DynamicCast<AvatarPC, GameObject>(((UIAvatarBase*)pAvatar)->vfunc_24());
     if (pAvatarPC != 0)
     {
         if (pAvatarPC->GetType() == 1)
@@ -1917,7 +1888,7 @@ Scaleform::GFx::Value FUN_141337620(CString strName, int nContainer, int nLabel,
 {
     CStringW strValue;
     if (bPercent != 0)
-        strValue = FUN_14052bd00(0x98e, StringFormat(L"{0}", 0));
+        strValue = FormatStringId<CStringW>(0x98e, StringFormat(L"{0}", 0));
     else
         strValue = StringFormat(L"{0}", 0);
     CStringW strDetail;

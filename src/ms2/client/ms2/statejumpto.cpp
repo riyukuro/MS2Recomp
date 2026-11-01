@@ -111,7 +111,7 @@ void StateJumpTo::vfunc_3(double fTime)
         if ((m_spJump.get() != 0 ? true : false) && m_spJump->m_n34 != 0)
         {
             m_pOwner->SetTargetYaw(m_spJump->m_f38);
-            m_pOwner->FUN_14166d630((float)fTime);
+            m_pOwner->TurnTowardTargetYaw((float)fTime);
         }
     }
 }
@@ -126,12 +126,12 @@ void StateJumpTo::vfunc_9(double fTime)
         if (m_spArc->IsRising() != 0 && m_n48 == 0)
         {
             if (m_pOwner->FUN_14166de90(m_nRiseAnim, nSeq) == 0)
-                m_pOwner->FUN_14166dda0(m_nRiseAnim);
+                m_pOwner->PlayAnimationById(m_nRiseAnim);
         }
         else if (m_spArc->FUN_1409ab370() == 0 && m_n48 != 0)
         {
             if (m_pOwner->FUN_14166de90(m_nFallAnim, nSeq) == 0)
-                m_pOwner->FUN_14166dda0(m_nFallAnim);
+                m_pOwner->PlayAnimationById(m_nFallAnim);
         }
         else if (m_spArc->FUN_1409ab370() != 0)
         {

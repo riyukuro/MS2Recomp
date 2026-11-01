@@ -526,7 +526,7 @@ int UIGameOptionDialog::FUN_141944250()
 {
     if (m_bSimple)
         return 1;
-    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cbb0(); ++i)
+    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>((class CKeyTable*)((FUN_1409331f0())))->FUN_14142cbb0(); ++i)
     {
         if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a137)
             continue;
@@ -534,7 +534,7 @@ int UIGameOptionDialog::FUN_141944250()
             continue;
         if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a139)
             continue;
-        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cb40((unsigned)i, 0) == 0)
+        if (reinterpret_cast<CKeyTable*>((class CKeyTable*)((FUN_1409331f0())))->FUN_14142cb40((unsigned)i, 0) == 0)
             return 0;
     }
     return 1;

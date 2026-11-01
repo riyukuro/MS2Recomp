@@ -18,11 +18,11 @@
 #include "hook/ms2hook.h"
 
 // The packet stream operators (commonfiles\packet.cpp).
-CInputStream& FUN_14070f340(CInputStream& in, unsigned char& value);
+
 CInputStream& FUN_14070f3c0(CInputStream& in, unsigned short& value);
 CInputStream& FUN_14070f3c0(CInputStream& in, short& value);
-CInputStream& FUN_14070f440(CInputStream& in, long& value);
-CInputStream& FUN_14070f480(CInputStream& in, unsigned& value);
+
+
 CInputStream& FUN_14070f500(CInputStream& in, __int64& value);
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value);
@@ -52,7 +52,7 @@ inline CInputStream& operator>>(CInputStream& in, Unk_PartyBits& bits)
 // @0x14031bf40
 inline CInputStream& operator>>(CInputStream& in, Unk_DungeonTimedValue<unsigned char>& v)
 {
-    FUN_14070f340(in, v.value);
+    reinterpret_cast<Unk_OSInput&>(in).Read1(v.value);
     FUN_14070f500(in, v.expire);
     return in;
 }
@@ -200,13 +200,13 @@ void DungeonRecord::ResolveRoom()
 // @0x14031bc00
 CInputStream& operator>>(CInputStream& in, DungeonRecord& record)
 {
-    FUN_14070f480(in, record.m_dungeonRoomID);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(record.m_dungeonRoomID);
     FUN_14070f500(in, record.m_expire);
-    FUN_14070f340(in, record.m_bonusRewardCount);
+    reinterpret_cast<Unk_OSInput&>(in).Read1(record.m_bonusRewardCount);
     in >> record.m_clearCount;
-    FUN_14070f340(in, record.m_bonusCount);
+    reinterpret_cast<Unk_OSInput&>(in).Read1(record.m_bonusCount);
     in >> record.m_extraCount;
-    FUN_14070f440(in, record.m_5c);
+    reinterpret_cast<Unk_OSInput&>(in).Read5(record.m_5c);
     FUN_14070f3c0(in, record.m_60);
     in >> record.m_68;
     in >> record.m_flags;
@@ -239,8 +239,8 @@ DungeonRankReward::DungeonRankReward() : m_18(0), m_1c(0), m_20(0)
 // @0x14031be60
 CInputStream& operator>>(CInputStream& in, DungeonRankReward& reward)
 {
-    FUN_14070f480(in, reward.m_18);
-    FUN_14070f440(in, reward.m_1c);
+    reinterpret_cast<Unk_OSInput&>(in).Read6(reward.m_18);
+    reinterpret_cast<Unk_OSInput&>(in).Read5(reward.m_1c);
     FUN_14070f500(in, reward.m_20);
     return in;
 }

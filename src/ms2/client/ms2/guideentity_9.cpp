@@ -18,6 +18,7 @@
 
 #include "ms2/placeholder/cguidecondition.h"
 #include "ms2/client/ms2/guideentity.h"
+#include "ms2/placeholder/cguidemanager.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/ms2format.h"
@@ -42,6 +43,7 @@ class TiXmlElement   // C3: member view for the former free stand-ins
 public:
     char const* Attribute(char const*) const;
 };
+class TiXmlNode { public: const TiXmlElement* NextSiblingElement() const; };   // 0x14086e770
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);
 int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 void FUN_1412751b0(const CStringW& text, int a);                        // the debug log
@@ -67,8 +69,6 @@ Unk_GeActRef FUN_141382b90(Unk_140165cf0* pElem);                       // build
 class Unk_GeMgr
 {
 public:
-    void FUN_14138d7e0(int nId, int nValue);
-    bool FUN_14138c0d0(int nTrigger, Unk_GcOptInt oValue, Unk_GcOptInt oSubValue);
     bool FUN_14138c210(int nTrigger, const Unk_GeRange& range);
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
@@ -456,7 +456,7 @@ int CGuideConditionTrigger::vfunc_3()
 {
     if (FUN_1405c7ba0(&m_range))
         return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c210(m_n28, m_range) != 0);
-    return FUN_1413a55a0(((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138c0d0(m_n28, m_a, m_b) != 0);
+    return FUN_1413a55a0(((class CGuideManager*)FUN_1409331e0())->CheckTrigger((CGuideManager::TriggerType)m_n28, m_a, m_b) != 0);
 }
 
 // @0x1413a5c80
@@ -659,7 +659,7 @@ bool CGuideEntity::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "isNoSave", m_nNoSave);
     if (!FUN_1413a4b50())
         XmlGetAttr((class TiXmlElement*)(pElem), "desc", m_strDesc);
-    for (Unk_140165cf0* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = pChild->NextSiblingElement())
+    for (Unk_140165cf0* pChild = FUN_140345b40((class TiXmlDocument*)(pElem)); pChild != 0; pChild = (Unk_140165cf0*)((const TiXmlNode*)pChild)->NextSiblingElement())
     {
         CStringA strName(pChild->Value());
         if (strName == "open")
@@ -692,7 +692,7 @@ void CGuideEntity::Clear(bool bNotify)
 void CGuideEntity::SetState(int nState)
 {
     m_nState = nState;
-    ((class Unk_GeMgr*)FUN_1409331e0())->FUN_14138d7e0(13, 0);
+    ((class CGuideManager*)FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)13, 0);
 }
 
 // @0x1413a36b0

@@ -65,7 +65,7 @@ void FUN_1412751b0(const CStringW& strText, int nColor);                    // a
 UIRewardNotify* FUN_140938cd0(int nId);
 bool FUN_1406a5720();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-unsigned char FUN_14036d570(void* pFeatures, int nId);
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
 // @0x14135fc40
 UIWorldShareInfoEventListener::UIWorldShareInfoEventListener()
@@ -303,7 +303,7 @@ void FUN_141361990(__int64 nAmount, int nUnused)
     {
         CStringW strNum = FUN_1409404f0(-nAmount);
         strText = FUN_14052bd00(0x2da, strNum);
-        if (FUN_14036d570(((void*)FUN_140166410()), 0xba) != 0)
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba) != 0)
             FUN_1412751b0(BlockFormat(0x2db), 6);
     }
     FUN_1412751b0(strText, 6);

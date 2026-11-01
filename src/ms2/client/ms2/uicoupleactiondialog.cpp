@@ -114,6 +114,7 @@
 // MS2-PIN: ??1UICoupleActionDialog@@UEAA@XZ 0x140bf1790
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicoupleactiondialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 #include "uicoupleactiondialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
@@ -150,12 +151,6 @@ class Unk_CoupleInput : public ASDisplayObject
 public:
     CStringW FUN_1422e0b00();                               // the text
     void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // text changed callback
-};
-// "m_list": the page grid.
-class Unk_CoupleList : public ASDisplayObject
-{
-public:
-    MS2Ptr<ASDataProvider> FUN_1422dcd80();                 // the data provider
 };
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
@@ -629,23 +624,23 @@ MS2_REPLACE_METHOD(0x140BEE040, UICoupleActionDialog, PadEntriesToGrid, 254, 0xB
 void UICoupleActionDialog::FUN_140bee150(int nKey)
 {
     if (nKey == 0x79) {
-        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
-        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
             int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
-        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
-        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
+        if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
             int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 1));

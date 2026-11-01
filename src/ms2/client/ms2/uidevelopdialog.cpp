@@ -60,7 +60,6 @@ class Unk_DevWorld
 public:
     PCBase* FUN_141bd0cc0();                                            // the local player
     void* FUN_141bd36d0();                                              // npc tree
-    void FUN_141bd2db0(Unk_DevList* pOut, int (*pfnFilter)(void*));     // collect the objects the filter accepts
 };
 static_assert(sizeof(Unk_DevList) == 0x38 && __alignof(Unk_DevList) == 8, "list");
 int FUN_141274b80(void* pObj);          // object filter (getexp.cpp)
@@ -457,7 +456,7 @@ void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
 void UIDevelopDialog::FUN_1412932a0(float fScale)
 {
     Unk_DevList list(10);
-    reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&list, FUN_141274b80);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
     for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
     {
         Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.FUN_140a01110(pos));
@@ -513,7 +512,7 @@ void UIDevelopDialog::FUN_141293680(float fHeight)
     float fValue = fHeight;
     m_fDropItemHeight = fValue;
     Unk_DevList list(10);
-    reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&list, FUN_141274b80);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
     for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
     {
     }
@@ -525,7 +524,7 @@ void UIDevelopDialog::FUN_141293730(float fPeriod)
     float fValue = fPeriod;
     m_fDropItemPeriod = fValue;
     Unk_DevList list(10);
-    reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd2db0(&list, FUN_141274b80);
+    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
     for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
     {
     }

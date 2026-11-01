@@ -64,7 +64,7 @@ class CPhysXHelper : public TSingleton<CPhysXHelper> {
 public:
     CPhysXHelper();                                                                         // 0x141689180
     virtual ~CPhysXHelper();                                                                // 0x141689240 (scalar deleting 0x14168b030)
-    Unk_PhysXSceneHandle* FUN_1416892a0(int nScene);
+    Unk_PhysXSceneHandle* GetScene(int nScene);
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);                  // closest ray cast
     NxActor* FUN_1416897d0(void* pObj);                                                      // the actor of a game object
     egf::Entity* GetEntityFromActor(NxActor* pActor);
@@ -75,7 +75,7 @@ public:
     NxScene* FUN_14168a1c0();
     float FUN_14168a210();
     int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
-    int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
+    int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
                       Vector3* pNormal, int nMask);
     int FUN_14168a450(Vector3 ptFrom, float* pDist, float fLen);
     void FUN_14168a540(int);

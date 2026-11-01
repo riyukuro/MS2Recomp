@@ -271,7 +271,7 @@ void StateLadder::vfunc_9(double fTime)
     switch (m_n10)
     {
     case 0x2a:
-        m_pOwner->FUN_14166dda0(0xc);
+        m_pOwner->PlayAnimationById(0xc);
         m_bDownFlip = false;
         m_bUpFlip = false;
         break;
@@ -282,7 +282,7 @@ void StateLadder::vfunc_9(double fTime)
             nAnim = 0xd;
         else
             nAnim = 0xe;
-        m_pOwner->FUN_14166dda0(nAnim);
+        m_pOwner->PlayAnimationById(nAnim);
         break;
     }
     case 0x2c:
@@ -292,20 +292,20 @@ void StateLadder::vfunc_9(double fTime)
             nAnim = 8;
         else
             nAnim = 9;
-        m_pOwner->FUN_14166dda0(nAnim);
+        m_pOwner->PlayAnimationById(nAnim);
         break;
     }
     case 0x2d:
-        m_pOwner->FUN_14166dda0(0xf);
+        m_pOwner->PlayAnimationById(0xf);
         break;
     case 0x2e:
-        m_pOwner->FUN_14166dda0(10);
+        m_pOwner->PlayAnimationById(10);
         break;
     case 0x30:
-        m_pOwner->FUN_14166dda0(0xb);
+        m_pOwner->PlayAnimationById(0xb);
         break;
     case 0x2f:
-        m_pOwner->FUN_14166dda0(0x10);
+        m_pOwner->PlayAnimationById(0x10);
     }
 }
 

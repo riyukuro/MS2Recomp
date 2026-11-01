@@ -318,7 +318,6 @@ struct Unk_MessageBoxPos
     float x, y, z;
 };
 void FUN_14097faa0(Unk_MessageBoxPt3* pDst, const Unk_MessageBoxPos& src);   // NiPoint3::operator=
-void FUN_140a33240(Unk_MessageBoxRot* pDst, const Unk_EfdMatrix3* pSrc);   // NiMatrix3 from efd::Matrix3
 extern Unk_EfdMatrix3 DAT_143a09600;                  // identity rotation
 CItemDataTable* FUN_140281980();
 
@@ -1405,7 +1404,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
             xf.m_fScale = 1.0f;
             FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
-            FUN_140a33240(&rot, &DAT_143a09600);
+            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
             xf.m_rotate = rot;
             CString strSound = FUN_140281980()->GetDefaultUiMaterialSound();
             if (!strSound.IsEmpty())
@@ -1439,7 +1438,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
             xf.m_fScale = 1.0f;
             FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
-            FUN_140a33240(&rot, &DAT_143a09600);
+            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
             xf.m_rotate = rot;
             CString strSound = FUN_140281980()->GetDefaultUiMaterialSound();
             if (!strSound.IsEmpty())
@@ -1474,7 +1473,7 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
             xf.m_fScale = 1.0f;
             FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
-            FUN_140a33240(&rot, &DAT_143a09600);
+            reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
             xf.m_rotate = rot;
             CString strSound = FUN_140281980()->GetDefaultUiMaterialSound();
             if (!strSound.IsEmpty())

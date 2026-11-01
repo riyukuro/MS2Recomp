@@ -46,6 +46,7 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/itemdata.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
+#include "ms2/client/ms2/equipment.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
@@ -119,8 +120,6 @@ public:
     Unk_CapEntityKey& FUN_14123c460(Unk_CapEntityKey& kOut);    // the entity key
     float FUN_14123c260();                                      // model scale
 };
-struct Unk_CapWorld { Unk_CapPlayer* FUN_141bd0cc0(); };        // the local player
-void FUN_1411e5c10(void* pState);                               // applies the customization
 
 struct Unk_CapEntityLoader
 {
@@ -147,9 +146,7 @@ void FUN_140a34450(const void* pQuat, Unk_EfdMatrix3* pMat);   // efd::Quaternio
 char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
                    float fRadius, Vector3* pHit);       // ray / sphere hit
 void FUN_141422950(const NiTransform& kXf, Vector3* pEuler);   // transform -> euler angles (degrees)
-void FUN_140aacaa0(NiAVObject* pNode, const NiTransform& kXf);  // sets the node's transform
 NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
-void FUN_140aacb60(NiAVObject* pNode, const NiTransform* pXf);  // sets the node's local transform
 void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assignment
 // efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
@@ -233,7 +230,7 @@ void CCapRotationController::vfunc_6()
 // @0x140b00830
 int CCapRotationController::vfunc_29()
 {
-    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     CAtlArray<CString> aParts;
@@ -280,7 +277,7 @@ void CCapRotationController::vfunc_30(const NiPoint3& kPos)
 {
     if (!m_spMesh)
         return;
-    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_EfdMatrix3 kRotZ;
@@ -299,7 +296,7 @@ void CCapRotationController::vfunc_31()
 {
     if (!m_spMesh)
         return;
-    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_PickXY kCursor = DAT_143b02320;
@@ -340,7 +337,7 @@ void CCapRotationController::vfunc_31()
 // @0x140b01310
 void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
-    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     if (m_spPart == (Unk_PickTarget*)0)
@@ -386,7 +383,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
             {
                 NiAVObjectPtr spNode(*it);
-                FUN_140aacaa0(spNode.operator->(), kXf);
+                spNode.operator->()->SetLocalFromWorldTransform(kXf);
                 spNode.operator->()->UpdateWorldData();
                 NiTransform kWorld = *((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform());
                 pData->m_fScale = kWorld.m_fScale;
@@ -403,9 +400,9 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
 void CCapRotationController::vfunc_33()
 {
     UpdateRotationMatrix();
-    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
-        FUN_1411e5c10(reinterpret_cast<void*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0()));
+        reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e5c10();
     if (m_pListener != 0)
         static_cast<Unk_CapListener*>(m_pListener)->vfunc_5(this, m_spPart.get());
 }
@@ -420,7 +417,7 @@ void CCapRotationController::vfunc_34(const NiPoint3& kPos)
 // @0x140b019a0
 void CCapRotationController::vfunc_35()
 {
-    Unk_CapPlayer* pPlayer = reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_CapPlayer* pPlayer = static_cast<Unk_CapPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     Unk_PickXY kCursor = DAT_143b02320;
@@ -550,7 +547,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     {
         NiAVObjectPtr spNode(*it);
         alignas(8) char kTmp[sizeof(NiTransform)];
-        FUN_140aacb60(spNode.operator->(), FUN_140a33de0(((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform()), kTmp, &kDelta));
+        spNode.operator->()->SetLocalTransform(*FUN_140a33de0(((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform()), kTmp, &kDelta));
     }
     m_spPart->FUN_141200100(kEuler);
     pData->m_aEuler[0] = kEuler;

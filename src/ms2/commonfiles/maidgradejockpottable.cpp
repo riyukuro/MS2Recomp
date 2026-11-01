@@ -71,7 +71,7 @@ void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* psz
 // The item string table (id <-> name).
 class Unk_MaidIngTable;
 unsigned FUN_1405575b0(Unk_MaidIngTable* pTable, int nStringId);
-int FUN_140557640(Unk_MaidIngTable* pTable, const CString& strName);
+
 unsigned FUN_1407181d0(const CString& strItem);                         // numeric item id of a text, or 0
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flags (symbols.tsv); local copies stay false
@@ -98,7 +98,7 @@ int CMaidGradeJockpotTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -173,7 +173,7 @@ void MaidIngredient::SetItem(const CStringA& value)
     if (nId > 0)
         itemId = nId;
     else if (!value.IsEmpty())
-        itemStringId = FUN_140557640(reinterpret_cast<Unk_MaidIngTable*>(TSingleton<CItemDataTable>::GetInstance()), value);
+        itemStringId = reinterpret_cast<CItemDataTable*>(reinterpret_cast<Unk_MaidIngTable*>(TSingleton<CItemDataTable>::GetInstance()))->GetTagByName(value);
 }
 MS2_REPLACE_METHOD(0x140684CA0, MaidIngredient, SetItem, 98, 0xA762B9F0);
 
@@ -205,7 +205,7 @@ int CMaidRecipeTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -302,7 +302,7 @@ int CMaidRecipeGroupTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);

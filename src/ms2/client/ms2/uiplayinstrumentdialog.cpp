@@ -218,6 +218,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiplayinstrumentdialog.cpp"
 
 #define MS2_PTR_MOVE_CONVERT
+#define MS2_ASUICOMPONENT_SLOTS   // ASButtonBar::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "uiplayinstrumentdialog.h"
@@ -250,6 +251,7 @@
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -273,20 +275,6 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_140acd6e0 : public ASButton
 {
 public:
-};
-
-// The tab bar "m_tab".
-class Unk_PiTabBar : public ASDisplayObject
-{
-public:
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13();
-    virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
-    virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-    int FUN_1422e3210();                                                    // the selected tab
-    void FUN_1422e31e0(int nTab);                                           // select a tab
 };
 
 // The movie clips of the pages (child buttons by name).
@@ -468,7 +456,7 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     m_nKind = 0;
     if (m_spTab.get())
     {
-        m_spTab->FUN_1422e31e0(m_nTab);
+        m_spTab->SetSelectedIndex(m_nTab);
         m_spTab->vfunc_24(true);
         m_30->Invoke("onSelectTab", m_nTab);
     }
@@ -540,7 +528,7 @@ int UIPlayInstrumentDialog::vfunc_54(void* pCfg)
 int UIPlayInstrumentDialog::vfunc_53(void* pCfg)
 {
     if (m_spTab.get())
-        m_nTab = m_spTab->FUN_1422e3210();
+        m_nTab = m_spTab->GetSelectedIndex();
     UIDialog::vfunc_53(pCfg);
     XmlSetChildAttr((class TiXmlElement*)(pCfg), "Histroy", "lastRadioIndex", m_nTab, true);
     return 1;
@@ -887,7 +875,7 @@ int UIPlayInstrumentDialog::GetSelectedTabIndex()
 {
     if (m_spTab == 0)
         return -1;
-    return m_spTab->FUN_1422e3210();
+    return m_spTab->GetSelectedIndex();
 }
 
 // @0x14100c8f0

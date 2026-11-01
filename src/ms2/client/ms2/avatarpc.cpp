@@ -197,12 +197,8 @@ public:
 };
 
 // The effect manager (TSingleton<CEffectService>): spawn requests are 0x78 bytes built by 0x140a52ef0, released by 0x1405a89e0.
-void FUN_140a52ef0(void* pRequest);
-void FUN_1405a89e0(void* pRequest);
 struct Unk_AvEffectRequest
 {
-    Unk_AvEffectRequest() { FUN_140a52ef0(this); }
-    ~Unk_AvEffectRequest() { FUN_1405a89e0(this); }
     CString& Name() { return reinterpret_cast<CString&>(m_pName); }
     void* m_pName;                                          // +0x00 (CString)
     int m_nKind;                                            // +0x08
@@ -213,7 +209,10 @@ MS2_CHECK_SIZE(Unk_AvEffectRequest, 0x70);
 class NoticeMessage   // C3: member view for the former free stand-ins
 {
 public:
+    NoticeMessage();
+    ~NoticeMessage();
     void SetActor(int);
+    void* m_storage[14];
 };
 
 // The mode service (FUN_1409f7c90): one flag read from a global.
@@ -235,55 +234,18 @@ void* FUN_1409f72e0(void* p);                       // efd::Matrix3 ctor
 Unk_CharEquip* FUN_1406c4340(Unk_CharEquip* p, float a, float b, float c);
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
 
-// The default-outfit preset table (FUN_140281980) and its row.
-struct Unk_AvPresetRow { char m_pad_00[0x3c]; unsigned m_nEquipA; int m_n40; unsigned m_nEquipB; };
-class Unk_AvPresetPtr
-{
-public:
-    ~Unk_AvPresetPtr() { FUN_14056c2d0(); }
-    void FUN_14056c2d0();                                   // release
-    Unk_AvPresetRow* FUN_14059cf00() const;                 // get
-    Unk_AvPresetRow* FUN_14056d570() const;                 // operator->
-    void* m_pad_00;
-    Unk_AvPresetRow* m_p;
-};
-class Unk_IngTable { public: Unk_AvPresetPtr FUN_1405587f0(int nId, int n); };
-Unk_IngTable* FUN_140281980();
+#include "ms2/commonfiles/itemdatatable.h"   // C3: CItemDataTable::GetPaletteColor (0x1405587f0)
+#include "ms2/commonfiles/itemdata.h"        // C3: ItemColorEx
+class Unk_IngTable* FUN_140281980();   // TSingleton<CItemDataTable>::GetInstance (exe copy)
 
-// The pet table (FUN_14052d210) and its row handle.
-struct Unk_PetRow { int FUN_140728820(); };                 // the npc id of the pet
-class Unk_PetRef
-{
-public:
-    ~Unk_PetRef() { FUN_14052c420(); }
-    void FUN_14052c420();                                   // release
-    bool FUN_140729a90(int nNull) const;                    // null test
-    Unk_PetRow* FUN_14052ceb0() const;                      // operator->
-    void* m_pad_00;
-    Unk_PetRow* m_p;
-};
-class Unk_PetTable { public: Unk_PetRef FUN_1407290f0(int nPetId); };
+#include "ms2/placeholder/cpetdatatable.h"   // C3: CPetDataTable::Find (0x1407290f0)
+// The pet table (FUN_14052d210).
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 // The npc table of the pet effect (FUN_1406d6e90).
-struct Unk_AvNpcEntry
-{
-    char m_pad_000[0x570];
-    CString m_strEffect;                                    // +0x570
-    bool FUN_1406ccf40();
-};
-struct Unk_AvNpcHandle
-{
-    ~Unk_AvNpcHandle() { FUN_1406d5390(); }
-    void FUN_1406d5390();                                   // release
-    bool FUN_1409f90f0(int nNull) const;                    // 0x1409f90f0 null test
-    Unk_AvNpcEntry* FUN_140965990() const;                  // operator->
-    void* m_pad_00;
-    Unk_AvNpcEntry* m_p;
-};
-class Unk_AvNpcTable { public: Unk_AvNpcHandle FUN_140a7cab0(int nNpcId); };
+#include "ms2/client/ms2/npcdatacli.h"   // C3: NpcDataTableCli::Find (0x140a7cab0)
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
 // CString comparisons of the exe.
@@ -314,8 +276,8 @@ class CSkillRecord : public CPtred
 public:
     CSkillRecord();                                         // 0x141759260
     bool Init(Unk_InventorySkillRequest& kReq);
-    int FUN_141759960();                                    // skill id
-    short FUN_141759990();                                  // level
+    unsigned GetSkillId();                                  // 0x141759960
+    unsigned short GetLevel();                              // 0x141759990
     char m_pad_18[0x18];
     Unk_SkillStateRef m_ref;                                // +0x30
     char m_pad_40[0x180];
@@ -350,7 +312,6 @@ public:
     StatePlayInstrumentData(MS2Ptr<CItemData> spData, __int64 n);   // 0x140dde0b0
     char m_pad_18[0x18];
 };
-class Unk_McState;
 class StateFishing   // C3: member view for the former free stand-ins
 {
 public:
@@ -368,16 +329,10 @@ public:
 class Unk_PCLook;
 unsigned __int64 FUN_141662e90(PC* pPC);
 void FUN_141662d60(PC* pPC, unsigned __int64 n);
-void FUN_14166ed30(PC* pPC, int n);
 void FUN_141656a50(PC* pPC, unsigned __int64 n);
-void FUN_140638200(Unk_PCLook* pLook, int a, int b, short c);
-void FUN_14166cc40(PCBase* pPC, int n);
+#include "ms2/commonfiles/jobsystem.h"   // C3: JobSystem::SetJob (0x140638200)
 void FUN_1416591e0(PC* pPC, int nSlot, const Unk_CharEquip& kEquip);
-Unk_McState* FUN_14166ccb0(PCBase* pPC);                    // current state
 float FUN_14166da40(PCBase* pPC);
-int FUN_141673ef0(PCBase* pPC);                             // skill id of the running state
-float FUN_141671940(PC* pPC);
-void FUN_14166d8e0(PCBase* pPC, efd::Point3 kDir);
 void FUN_141661ba0(PC* pPC, int n);
 void FUN_14165cac0(PC* pPC);
 void* FUN_14165f460(PC* pPC);
@@ -510,7 +465,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
         return 0;
     efd::SmartPointer<AvatarPC> spAvatar(new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0));
     spAvatar->SetType(1);
-    FUN_14166ed30(spAvatar, 0);
+    spAvatar->FUN_14166ed30(false);
     spAvatar->FUN_14123c5a0(FUN_1409f6ee0());
     FUN_141656a50(spAvatar, kUser.m_8);
     spAvatar->FUN_14123bb80(CString(strName));
@@ -519,19 +474,19 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     spAvatar->vfunc_131(kUser.m_34);
     spAvatar->vfunc_76(kUser.FUN_1408f19e0());
     ((class PC*)(class PC*)(spAvatar))->FUN_141658e40(nSex);
-    FUN_140638200(((class Unk_PCLook*)((class PC*)(spAvatar))->FUN_1416546d0()), kUser.m_3c, kUser.m_40, kUser.m_34);
-    ((class PCBase*)(class PCBase*)(spAvatar))->FUN_14166cce0(4);
+    ((JobSystem*)((class PC*)(spAvatar))->FUN_1416546d0())->SetJob(kUser.m_3c, kUser.m_40, kUser.m_34);
+    ((class PCBase*)(class PCBase*)(spAvatar))->AddStateFlags(4);
     spAvatar->vfunc_59(1, 0, 0, 0);
     Unk_CharEquip aEquip[2];
     aEquip[0] = FUN_141b6dea0(kUser.m_58[0]);
     aEquip[1] = FUN_141b6dea0(kUser.m_58[1]);
     if (nPreset != 0)
     {
-        Unk_AvPresetPtr kPreset = FUN_140281980()->FUN_1405587f0(nPreset, 0);
-        if (kPreset.FUN_14059cf00() != 0)
+        MS2Ptr<ItemColorEx> kPreset = ((CItemDataTable*)FUN_140281980())->GetPaletteColor(nPreset, 0);
+        if (kPreset.get() != 0)
         {
-            aEquip[0] = FUN_141b6dea0(kPreset.FUN_14056d570()->m_nEquipA);
-            aEquip[1] = FUN_141b6dea0(kPreset.FUN_14056d570()->m_nEquipB);
+            aEquip[0] = FUN_141b6dea0(kPreset->m_aValues[0]);
+            aEquip[1] = FUN_141b6dea0(kPreset->m_aValues[2]);
         }
     }
     FUN_1416591e0(spAvatar, 0, aEquip[0]);
@@ -631,7 +586,7 @@ void AvatarPC::FUN_1409f43d0(int nSkillId, short nLevel)
     MS2Ptr<CSkillRecord> spSkill(new CSkillRecord());
     if (spSkill->Init(kReq))
     {
-        int nCurrent = ::FUN_141673ef0(this);
+        int nCurrent = FUN_141673ef0();
         bool bStart = !(nCurrent == nSkillId && nSkillId != 0);
         if (bStart)
             vfunc_59(1, 0, 0, 0);
@@ -647,14 +602,14 @@ void AvatarPC::FUN_1409f45a0(MS2Ptr<CItemData> spData)
     int nInstrument = ((class CItemData*)(spData.operator->()))->GetInstrumentId();
     if (static_cast<PCBase*>(this)->FUN_14166c930() == 0x2f)
     {
-        Unk_McState* pState = ::FUN_14166ccb0(this);
-        if (pState != 0 && ((class StatePlayInstrument*)(class Unk_McState*)(pState))->FUN_140ddfbb0() == nInstrument)
+        State* pState = FUN_14166ccb0();
+        if (pState != 0 && reinterpret_cast<class StatePlayInstrument*>(pState)->FUN_140ddfbb0() == nInstrument)
             return;
     }
     vfunc_59(1, 0, 0, 0);
     __int64 nItemUid = 0;
     vfunc_59(0x2f, new StatePlayInstrumentData(MS2Ptr<CItemData>(spData), nItemUid), 0x7d, 0);
-    ::FUN_14166cc40(this, 0x7f);
+    FUN_14166cc40(0x7f);
 }
 
 // @0x1409f4750
@@ -685,7 +640,7 @@ void AvatarPC::FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     }
     vfunc_59(1, 0, 0, 0);
     vfunc_19(m_kPos);
-    ::FUN_14166d8e0(this, m_kDir);
+    FUN_14166d8e0(m_kDir);
     if (m_spRidee)
     {
         m_spRidee->vfunc_19(m_kPos);
@@ -813,7 +768,7 @@ void AvatarPC::vfunc_142()
 // @0x1409f5340
 bool AvatarPC::vfunc_102(MS2Ptr<CSkillRecord> spSkill)
 {
-    if (spSkill == 0 || spSkill->FUN_141759960() == 0)
+    if (spSkill == 0 || spSkill->GetSkillId() == 0)
         return false;
     if (spSkill->m_ref.FUN_14063ed50()->FUN_1407e9bd0() != 0)
     {
@@ -824,8 +779,8 @@ bool AvatarPC::vfunc_102(MS2Ptr<CSkillRecord> spSkill)
         else
         {
             Unk_PayloadPtr<StateSkillData> spState(new StateSkillData());
-            spState->m_nSkillId = spSkill->FUN_141759960();
-            spState->m_nLevel = spSkill->FUN_141759990();
+            spState->m_nSkillId = spSkill->GetSkillId();
+            spState->m_nLevel = spSkill->GetLevel();
             vfunc_59(nState, spState.get(), 0, 1);
         }
     }
@@ -835,7 +790,7 @@ bool AvatarPC::vfunc_102(MS2Ptr<CSkillRecord> spSkill)
 // @0x1409f5510
 float AvatarPC::vfunc_95()
 {
-    float fRet = ::FUN_141671940(this);
+    float fRet = FUN_141671940();
     return fRet;
 }
 
@@ -896,7 +851,7 @@ int AvatarPC::vfunc_10()
 {
     PC::vfunc_10();
     vfunc_109(0);
-    ::FUN_14166cc40(this, 10);
+    FUN_14166cc40(10);
     m_kDir = vfunc_20();
     m_kPos = vfunc_18();
     if (m_pListener != 0)
@@ -1150,8 +1105,8 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
     int nRod = spItem->FUN_1405276c0();
     if (static_cast<PCBase*>(this)->FUN_14166c930() == 0x2d)
     {
-        Unk_McState* pState = ::FUN_14166ccb0(this);
-        if (pState != 0 && ((class StateFishing*)(class Unk_McState*)(pState))->FUN_140ddb5d0() == nRod)
+        State* pState = FUN_14166ccb0();
+        if (pState != 0 && reinterpret_cast<class StateFishing*>(pState)->FUN_140ddb5d0() == nRod)
             return;
     }
     vfunc_59(1, 0, 0, 0);
@@ -1259,10 +1214,10 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
     CString strModel(m_strModel);
     if (spData.get() != 0)
     {
-        Unk_PetRef kPet = ((class Unk_PetTable*)FUN_14052d210())->FUN_1407290f0(((class CItemData*)(spData.operator->()))->GetPetId());
-        if (kPet.FUN_140729a90(0))
+        MS2Ptr<CPetData> kPet = ((CPetDataTable*)FUN_14052d210())->Find(((class CItemData*)(spData.operator->()))->GetPetId());
+        if (kPet == 0)
             return;
-        int nNpcId = kPet.FUN_14052ceb0()->FUN_140728820();
+        int nNpcId = kPet->GetId();
         MS2Ptr<CNpcData> kNpc = FUN_1406cd330(nNpcId);
         if (kNpc.get() != 0)
         {
@@ -1336,18 +1291,18 @@ void AvatarPet::FUN_1409f8e10()
         return;
     if (m_spItemData == 0)
         return;
-    Unk_PetRef kPet = ((class Unk_PetTable*)FUN_14052d210())->FUN_1407290f0(((class CItemData*)(m_spItemData.operator->()))->GetPetId());
-    if (kPet.FUN_140729a90(0))
+    MS2Ptr<CPetData> kPet = ((CPetDataTable*)FUN_14052d210())->Find(((class CItemData*)(m_spItemData.operator->()))->GetPetId());
+    if (kPet == 0)
         return;
-    Unk_AvNpcHandle kNpc = ((class Unk_AvNpcTable*)FUN_1406d6e90())->FUN_140a7cab0(kPet.FUN_14052ceb0()->FUN_140728820());
-    if (kNpc.FUN_1409f90f0(0))
+    MS2Ptr<NpcDataCli> kNpc = ((NpcDataTableCli*)FUN_1406d6e90())->Find(kPet->GetId());
+    if (kNpc == 0)
         return;
-    if (!kNpc.FUN_140965990()->m_strEffect.IsEmpty())
+    if (!kNpc->m_strKeepEffect.IsEmpty())
     {
-        Unk_AvEffectRequest kRequest;
-        reinterpret_cast<CString&>(kRequest.m_pName) = kNpc.FUN_140965990()->m_strEffect;
-        ((class NoticeMessage*)(struct Unk_AvEffectRequest*)(&kRequest))->SetActor(FUN_14123c580());
-        kRequest.m_nKind = kNpc.FUN_140965990()->FUN_1406ccf40() ? 6 : 5;
+        NoticeMessage kRequest;   // C3: was Unk_AvEffectRequest
+        reinterpret_cast<CString&>(reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_pName) = kNpc->m_strKeepEffect;
+        kRequest.SetActor(FUN_14123c580());
+        reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_nKind = kNpc->IsBoss() ? 6 : 5;
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
     }
 }
@@ -1472,10 +1427,10 @@ void AvatarRidee::vfunc_12()
     }
     if (kRow.get() != 0 && (kRow.get() ? true : false) && FUN_1402a5b40(kRow->m_strEffect, "") != 0)
     {
-        Unk_AvEffectRequest kRequest;
-        reinterpret_cast<CString&>(kRequest.m_pName) = kRow->m_strEffect;
-        kRequest.m_nKind = 0;
-        ((class NoticeMessage*)(struct Unk_AvEffectRequest*)(&kRequest))->SetActor(FUN_14123c580());
+        NoticeMessage kRequest;   // C3: was Unk_AvEffectRequest
+        reinterpret_cast<CString&>(reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_pName) = kRow->m_strEffect;
+        reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_nKind = 0;
+        kRequest.SetActor(FUN_14123c580());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kRequest));
     }
     if (m_unk_80 != 0)

@@ -47,6 +47,13 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/cugcitemlook.h"
+#include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/commonfiles/itemlapensharddata.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/scaleform/include/gfx/gfx_value.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -72,9 +79,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_ChatWindow, m_log, 0x48);
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
-void FUN_141a24890(Unk_ChatLog*, const CStringW&, int, int, int);
 void FUN_141a24cb0(Unk_ChatLog*, const CStringW&, int, int, int, int);
-void FUN_141a247c0(Unk_ChatLog*, const CStringW&, int);
 
 class UISystemText : public UIObject {                  // the system message line (UI id 0x4e41)
 public:
@@ -88,7 +93,6 @@ public:
 
 class Unk_PlayerActor { public: char m_pad_00[8]; };
 class Unk_PlayerRef;
-int FUN_141adcbb0(void*, int (*pred)(MS2Ptr<UIDialog>));
 void FUN_14151f460(int);
 void FUN_141a8a730();
 int FUN_141a8a760();
@@ -99,8 +103,7 @@ class UITalkManager   // C3: member view for the former free stand-ins
 public:
     int GetTalking();
 };
-int FUN_1416595d0(void*);
-int FUN_141659690(void*);
+class PC { public: int FUN_1416595d0(); int FUN_141659690(); };   // C3: unit-local view
 CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW);
 UISystemText* FUN_141278110(int nId);
@@ -117,6 +120,8 @@ class UIGroupMessengerBrowser* FUN_140a3aad0(int);   // C3: was FUN_140a3aad0
 class UIMessengerBrowser   // C3: member view for the former free stand-ins
 {
 public:
+    void FUN_141a247c0(const CStringW& strText, int nType);
+    void FUN_141a24890(CItem* pItem, unsigned nCount, int nManyId, int nOneId);
     void FUN_141a23c20();
 };
 void FUN_1418d6410(UICommunityDialog*);
@@ -175,7 +180,7 @@ MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
 // @0x141274f80
 int FUN_141274f80()
 {
-    if (FUN_141adcbb0(TSingleton<CUIService>::GetInstance(), FUN_141274d10) != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(FUN_141274d10) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -189,7 +194,7 @@ MS2_REPLACE(0x141274f80, FUN_141274f80, 97, 0x2E5323AD);
 // @0x141274ff0
 int FUN_141274ff0()
 {
-    if (FUN_141adcbb0(TSingleton<CUIService>::GetInstance(), FUN_141274df0) != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(FUN_141274df0) != 0)
         return 1;
     if (FUN_141a8a760() != 0)
         return 1;
@@ -214,7 +219,7 @@ int FUN_141275080()
         return 0;
     void* pActor = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pActor != 0) {
-        if (FUN_1416595d0(pActor) != 0 && FUN_141659690(pActor) == 0)
+        if (((PC*)pActor)->FUN_1416595d0() != 0 && ((PC*)pActor)->FUN_141659690() == 0)
             return 0;
         if (CAutoFindTaxiStation::GetInstance()->FUN_141278a40() != 0)
             return 0;
@@ -226,7 +231,7 @@ int FUN_141275080()
 void FUN_1412750f0(const CStringW& str, int a, int b, int c)
 {
     if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
-        FUN_141a24890(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log, str, a, b, c);
+        reinterpret_cast<UIMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log)->FUN_141a24890((CItem*)&str, a, b, c);
 }
 MS2_REPLACE(0x1412750f0, FUN_1412750f0, 77, 0x2112E627);
 
@@ -242,7 +247,7 @@ MS2_REPLACE(0x141275150, FUN_141275150, 85, 0xA770C8C1);
 void FUN_1412751b0(const CStringW& str, int nType)
 {
     if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
-        FUN_141a247c0(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log, str, nType);
+        reinterpret_cast<UIMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log)->FUN_141a247c0(str, nType);
 }
 MS2_REPLACE(0x1412751b0, FUN_1412751b0, 54, 0x5701C5EE);
 
@@ -367,7 +372,7 @@ MS2_CHECK_OFFSET(Unk_ClientConsts, m_b320, 0xb320);
 MS2_CHECK_OFFSET(Unk_ClientConsts, m_b408, 0xb408);
 // clientconstants.h declares FUN_1401d3200 as Common::Constants*; this unit uses its own view of the block
 #define UNK_CLIENT_CONSTS() reinterpret_cast<Unk_ClientConsts*>(FUN_1401d3200())
-unsigned* FUN_140a81910(Unk_McValue<unsigned>* pSlot);
+template<class T> struct Unk_NpcConstant { T* Get(); };
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 
 class CItem;
@@ -379,7 +384,6 @@ CStringW FUN_140b8f7a0(const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_140719a00(__int64);
 __int64 FUN_140718320(const CStringW&);
-void FUN_1405569f0(void*, int);
 
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot);
 CString FUN_1412756c0(__int64 a, __int64 b);
@@ -506,21 +510,21 @@ MS2_REPLACE(0x141275aa0, FUN_141275aa0, 139, 0x50397E44);
 // @0x141275b40
 unsigned FUN_141275b40()
 {
-    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b270)));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&UNK_CLIENT_CONSTS()->m_b270)->Get()));
 }
 MS2_REPLACE(0x141275b40, FUN_141275b40, 36, 0x353EE636);
 
 // @0x141275b70
 unsigned FUN_141275b70()
 {
-    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b2c8)));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&UNK_CLIENT_CONSTS()->m_b2c8)->Get()));
 }
 MS2_REPLACE(0x141275b70, FUN_141275b70, 36, 0x92818E0E);
 
 // @0x141275ba0
 unsigned FUN_141275ba0()
 {
-    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(&UNK_CLIENT_CONSTS()->m_b320)));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&UNK_CLIENT_CONSTS()->m_b320)->Get()));
 }
 MS2_REPLACE(0x141275ba0, FUN_141275ba0, 36, 0xB9F8727F);
 
@@ -534,7 +538,7 @@ MS2_REPLACE(0x141275bd0, FUN_141275bd0, 33, 0x3752B9CB);
 // @0x141275c00
 void FUN_141275c00(int nValue)
 {
-    FUN_1405569f0(TSingleton<CItemDataTable>::GetInstance(), nValue);
+    TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nValue);
 }
 MS2_REPLACE(0x141275c00, FUN_141275c00, 30, 0x3CCFEEBB);
 
@@ -542,7 +546,6 @@ MS2_REPLACE(0x141275c00, FUN_141275c00, 30, 0x3CCFEEBB);
 class ASWindow : public ASDisplayObjectContainer {      // the dialog frame wrapper (RTTI .?AVASWindow@@)
 public:
     int FUN_1422e6310();                                // width of the frame
-    int FUN_1422c1500();                                // width of the whole window
 };
 struct Unk_AlignOffset { float x, y; };
 
@@ -585,7 +588,7 @@ MS2_REPLACE(0x141275c30, FUN_141275c30, 1201, 0xE804638C);
 
 // ---- helpers for the name-filter / screen-scale functions below -----------------------------------------------------
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);
-int FUN_1411a5a60(void* pMgr, const CString& str, const CString& strArg);
+class CEffectService { public: unsigned FUN_1411a5a60(const CString& strName, const CString& strArg); };
 int FUN_141276180(const CString& str, const CString& strArg);
 
 // @0x1412760f0
@@ -602,7 +605,7 @@ int FUN_141276180(const CString& str, const CString& strArg)
 {
     if (str.IsEmpty())
         return 0;
-    return FUN_1411a5a60(TSingleton<CEffectService>::GetInstance(), str, strArg) != 0;
+    return TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(str, strArg) != 0;
 }
 MS2_REPLACE(0x141276180, FUN_141276180, 90, 0x95D6641F);
 
@@ -623,10 +626,10 @@ MS2_REPLACE(0x1412761e0, FUN_1412761e0, 223, 0xBC6F98B8);
 struct Unk_Point2 { float m_x, m_y; public:
     float FUN_140affe70() const;   // C3: was free FUN_140affe70
 };
-class Unk_Vec2Pair;
 // the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
 // this obj does not instantiate a second copy (LNK2005 in the full-exe link)
 template<> class TSingleton<CameraMgr> { public: static CameraMgr* s_instance; static CameraMgr* GetInstance(); };
+class Unk_Vec2Pair;
 class Unk_Vec2 {
 public:
     float m_x, m_y;
@@ -641,15 +644,12 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
+    Vector3 FUN_140a17e10();
 };
 // CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes) by value. The type has a user ctor (never called here), so it
 // is returned through a hidden pointer and is not a /GS buffer.
-struct Unk_HlpVec3 { float m_x, m_y, m_z; Unk_HlpVec3(const Unk_HlpVec3& o); };
-struct Unk_HlpCamera { Unk_HlpVec3 FUN_140a17e10(); };
 float FUN_141032df0(void*);
 float FUN_141032e60(void*);
-const float& FUN_1409ffe80(const float&, const float&);
-const float& FUN_140805fc0(const float&, const float&);
 float FUN_14028aed0(float);
 
 // @0x1412762d0
@@ -667,10 +667,10 @@ float FUN_1412762d0(const Unk_Point2* pPos)
     float fZoom;
     if (((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140a18070() == 0)
         return 0.0f;
-    Unk_HlpVec3 vOrigin = ((Unk_HlpCamera*)TSingleton<CameraMgr>::GetInstance())->FUN_140a17e10();
+    Vector3 vOrigin = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     Unk_Vec2 vFromBuf, vToBuf;
     Unk_Vec2Pair vDelta;
-    fLength = ((struct Unk_Point2*)(class Unk_Vec2Pair*)(vToBuf.FUN_140a0a600(vOrigin.m_x, vOrigin.m_y)->FUN_140a4e500(&vDelta, vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y))))->FUN_140affe70();
+    fLength = ((struct Unk_Point2*)(class Unk_Vec2Pair*)(vToBuf.FUN_140a0a600(vOrigin.x, vOrigin.y)->FUN_140a4e500(&vDelta, vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y))))->FUN_140affe70();
     fBase = -40.0f;
     fRange = 70.0f;
     fZoomRaw = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());
@@ -682,7 +682,7 @@ float FUN_1412762d0(const Unk_Point2* pPos)
     fMaxAngle = 90.0f;
     fAngle = FUN_141032e60(TSingleton<CameraMgr>::GetInstance());
     fZero = 0.0f;
-    fT = FUN_140805fc0(fZero, FUN_1409ffe80(fAngle, fMaxAngle));
+    fT = (std::max)(fZero, (std::min)(fAngle, fMaxAngle));
     return FUN_14028aed0((fBase + (fRange * fT) / 90.0f) * fZoom);
 }
 MS2_REPLACE(0x1412762d0, FUN_1412762d0, 390, 0x7A9ACA89);
@@ -749,9 +749,9 @@ float FUN_141276490(float fWidth, float fHeight)
 #endif
 
 // ---- console window ---------------------------------------------------------------------------------------------------
-class Unk_ConsoleView {
+class Unk_GdTextArea : public CPtred {
 public:
-    virtual void vfunc_00(); virtual void vfunc_01(); virtual void vfunc_02(); virtual void vfunc_03();
+    virtual void vfunc_01(); virtual void vfunc_02(); virtual void vfunc_03();
     virtual void vfunc_04(); virtual void vfunc_05(); virtual void vfunc_06(); virtual void vfunc_07();
     virtual void vfunc_08(); virtual void vfunc_09(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
@@ -759,97 +759,84 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bFlag);                                // +0xc0
 };
-class Unk_ConsoleRef {                                           // by-value handle to the console view (callee-destroyed)
+class ASTextInput {
 public:
-    ~Unk_ConsoleRef();                                           // 0x140c27070
-    Unk_ConsoleView* FUN_140c270b0() const;
-    void* m_00; void* m_08;
+    void FUN_1422e0b80(const CString& strText);
+    void FUN_1422e1430(const CStringW& strText);
 };
-void FUN_1422e0b80(Unk_ConsoleView*, const CString&);
 class ASTextArea   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1422e4720();
 };
-void FUN_1422e1430(Unk_ConsoleView*, const CStringW&);
-CStringW FUN_14183e930(const CStringW&, int nColor);
+CStringW FUN_14183e930(const CStringW&, unsigned nColor);
 CStringW FUN_14061ad70(const CStringW&, const wchar_t*);
 
 // @0x141276700
-void FUN_141276700(Unk_ConsoleRef console)
+void FUN_141276700(MS2Ptr<Unk_GdTextArea> console)
 {
     {
         CString strEmpty("");
-        FUN_1422e0b80(console.FUN_140c270b0(), strEmpty);
+        reinterpret_cast<ASTextInput*>(console.operator->())->FUN_1422e0b80(strEmpty);
     }
-    Unk_ConsoleView* pView = console.FUN_140c270b0();
+    Unk_GdTextArea* pView = console.operator->();
     pView->vfunc_24(true);
 }
 MS2_REPLACE(0x141276700, FUN_141276700, 124, 0x0745A959);
 
 // @0x141276790
-void FUN_141276790(Unk_ConsoleRef console)
+void FUN_141276790(MS2Ptr<Unk_GdTextArea> console)
 {
-    Unk_ConsoleView* pView = console.FUN_140c270b0();
+    Unk_GdTextArea* pView = console.operator->();
     pView->vfunc_24(true);
-    ((class ASTextArea*)(class Unk_ConsoleView*)(console.FUN_140c270b0()))->FUN_1422e4720();
+    ((class ASTextArea*)(console.operator->()))->FUN_1422e4720();
 }
 MS2_REPLACE(0x141276790, FUN_141276790, 88, 0x0E6E447B);
 
 // @0x1412767f0
-void FUN_1412767f0(Unk_ConsoleRef console)
+void FUN_1412767f0(MS2Ptr<Unk_GdTextArea> console)
 {
     CStringW strLine(L"------------------------------------------\n");
-    FUN_1422e1430(console.FUN_140c270b0(), FUN_14183e930(strLine, 0xffff));
+    reinterpret_cast<ASTextInput*>(console.operator->())->FUN_1422e1430(FUN_14183e930(strLine, 0xffff));
 }
 MS2_REPLACE(0x1412767f0, FUN_1412767f0, 136, 0xF81C6C2B);
 
 // @0x141276880
-void FUN_141276880(Unk_ConsoleRef console, int nColor, const wchar_t* pszFormat, ...)
+void FUN_141276880(MS2Ptr<Unk_GdTextArea> console, int nColor, const wchar_t* pszFormat, ...)
 {
     CStringW str;
     va_list args;
     va_start(args, pszFormat);
     str.FormatV(pszFormat, args);
     va_end(args);
-    FUN_1422e1430(console.FUN_140c270b0(), FUN_14183e930(FUN_14061ad70(str, L"\n"), nColor));
+    reinterpret_cast<ASTextInput*>(console.operator->())->FUN_1422e1430(FUN_14183e930(FUN_14061ad70(str, L"\n"), nColor));
 }
 MS2_REPLACE(0x141276880, FUN_141276880, 246, 0x4A32C7FC);
 
 // ---- filters ----------------------------------------------------------------------------------------------------------
-class Unk_UIHolder : public UISwfEntity { };
-Unk_UIHolder* FUN_140a7b2b0(int nId) noexcept;
+class UITalkCinematic : public UISwfEntity { };
+UITalkCinematic* FUN_140a7b2b0(int nId) noexcept;
 bool FUN_1401647e0(const CString&, const CString&) noexcept;
 
 // @0x141276980
 int FUN_141276980()
 {
-    Unk_UIHolder* pHolder = FUN_140a7b2b0(0x4e40);
+    UITalkCinematic* pHolder = FUN_140a7b2b0(0x4e40);
     bool bMatch = pHolder != 0 && FUN_1401647e0(pHolder->FUN_1422db6e0(), s_strEmpty);
     if (bMatch)
         return 0;
     return 1;
 }
 
-class Unk_TextFilter { public: };
-int FUN_140225210(Unk_TextFilter*, const CStringW& str, CStringW& strOut, int nMode);
-class Unk_TextFilterPtr {
-public:
-    ~Unk_TextFilterPtr();                                        // 0x14025c670
-    Unk_TextFilter* FUN_14025cea0() const;
-    Unk_TextFilter* FUN_14025cf10() const;
-    void* m_00; void* m_08;
-};
-class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // @0x141276a30
 int FUN_141276a30(const CStringW& str, CStringW& strOut)
 {
     {
-        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
-        if (filter.FUN_14025cea0() != 0) {
-            if (FUN_140225210(filter.FUN_14025cf10(), str, strOut, 1) != 0)
+        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        if ((CBanTextChecker*)filter != 0) {
+            if (filter->FUN_140225210(str, strOut, 1) != 0)
                 return 0;
         }
     }
@@ -870,10 +857,10 @@ int FUN_141276ad0(const CStringW& strName, int* pnResult, unsigned nMask)
         }
     }
     if ((nMask & 2) != 0) {
-        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
-        if (filter.FUN_14025cea0() != 0) {
+        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        if ((CBanTextChecker*)filter != 0) {
             CStringW strOut;
-            if (FUN_140225210(filter.FUN_14025cf10(), strName, strOut, 0) != 0) {
+            if (filter->FUN_140225210(strName, strOut, 0) != 0) {
                 *pnResult = 2;
                 return 0;
             }
@@ -897,9 +884,9 @@ int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strOut)
         }
     }
     {
-        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
-        if (filter.FUN_14025cea0() != 0) {
-            int nResult = FUN_140225210(filter.FUN_14025cf10(), strName, strOut, 0);
+        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        if ((CBanTextChecker*)filter != 0) {
+            int nResult = filter->FUN_140225210(strName, strOut, 0);
             return nResult;
         }
     }
@@ -919,9 +906,9 @@ int FUN_141276e00(const CStringW& strName, CStringW& strOut)
         }
     }
     {
-        Unk_TextFilterPtr filter = reinterpret_cast<Unk_TextFilterMgr*>(((class Unk_TextFilterMgr*)FUN_14025e7d0()))->FUN_140229a50();
-        if (filter.FUN_14025cea0() != 0) {
-            int nResult = FUN_140225210(filter.FUN_14025cf10(), strName, strOut, 0);
+        MS2Ptr<CBanTextChecker> filter = FUN_14025e7d0()->GetChecker();
+        if ((CBanTextChecker*)filter != 0) {
+            int nResult = filter->FUN_140225210(strName, strOut, 0);
             if (nResult != 0)
                 return nResult;
         }
@@ -932,35 +919,12 @@ MS2_REPLACE(0x141276e00, FUN_141276e00, 365, 0xC07834C7);
 
 // ---- chat send --------------------------------------------------------------------------------------------------------
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-struct Unk_PenaltyRecord {
-    char m_pad_00[0x28];
-    int m_nKind;                                                 // +0x28 (2 = permanent)
-    char m_pad_2c[0xc];
-    __int64 m_n38;
-    __int64 m_n40;
-};
-MS2_CHECK_OFFSET(Unk_PenaltyRecord, m_n40, 0x40);
-class Unk_PenaltyPtr {
-public:
-    ~Unk_PenaltyPtr();                                           // 0x1401cb250
-    void* FUN_1401cb3d0() const;
-    Unk_PenaltyRecord* FUN_1401cb410() const;
-    void* m_00; void* m_08;
-};
-class Unk_PenaltyMgr { public: Unk_PenaltyPtr FUN_140a2f620(int nKind); };
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 CStringW FUN_140a2fcd0(__int64 nBegin, __int64 nEnd);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket&);
 extern int DAT_143ab2914;
-class Unk_ChatMapData : public CFieldData { };
-class Unk_ChatMapPtr {
-public:
-    ~Unk_ChatMapPtr();                                           // 0x1408850f0
-    Unk_ChatMapData* FUN_140885340() const;
-    void* m_00; void* m_08;
-};
-struct Unk_ChatWorldView { Unk_ChatMapPtr FUN_141bd30a0(); };   // WorldService member (this=rcx, hidden return=rdx)
+void FUN_1401fa700(unsigned char*, class COutputStream&);
 
 // @0x141276f80
 int FUN_141276f80(Unk_CommandChat* pChat)
@@ -976,12 +940,12 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     {
-        Unk_PenaltyPtr penalty = reinterpret_cast<Unk_PenaltyMgr*>(((class Unk_PenaltyMgr*)FUN_140a6a830()))->FUN_140a2f620(2);
-        if (penalty.FUN_1401cb3d0() != 0) {
-            if (penalty.FUN_1401cb410()->m_nKind == 2) {
+        BlockPtr penalty = reinterpret_cast<CBlockManager*>(FUN_140a6a830())->FindBlockedAction(2);
+        if (penalty.get() != 0) {
+            if (penalty->kind == 2) {
                 FUN_1412751b0(GetStringCommon(0x433), 0x14);
             } else {
-                CStringW strRemain = FUN_140a2fcd0(penalty.FUN_1401cb410()->m_n38, penalty.FUN_1401cb410()->m_n40);
+                CStringW strRemain = FUN_140a2fcd0((__int64)penalty->m_38, penalty->expiry);
                 FUN_1412751b0(GetStringCommon(0x442), 0x14);
                 FUN_1412751b0(strRemain, 0x14);
             }
@@ -989,14 +953,14 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     if (DAT_143ab2914 < 0x32) {
-        int nRestricted = reinterpret_cast<Unk_ChatWorldView*>(WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
+        int nRestricted = WorldService::GetInstance()->FUN_141bd30a0()->FUN_140375660(0x100);
         if (nRestricted != 0) {
             FUN_1412751b0(GetStringCommonByKey(L"s_field_limit_content_chat"), 0x14);
             return 0;
         }
     }
     COutPacket packet(static_cast<int>(SendOp::UserChat), 0);
-    pChat->FUN_1401fa700(packet);
+    FUN_1401fa700(reinterpret_cast<unsigned char*>(pChat), reinterpret_cast<COutputStream&>(packet));
     FUN_140710590(packet);
     return 1;
 }
@@ -1094,60 +1058,31 @@ MS2_REPLACE(0x141277410, FUN_141277410, 1056, 0x44216BDE);
 // ---- item / icon names ------------------------------------------------------------------------------------------------
 class Unk_IconItemData : public CItemData {
 };
-class Unk_IconItemPtr {                                          // an item handle (callee-destroyed when passed by value)
-public:
-    Unk_IconItemPtr(const Unk_IconItemPtr&);                     // 0x1403bb3b0
-    ~Unk_IconItemPtr();                                          // 0x1401b50d0
-    bool FUN_1402ffd90() const;
-    void* m_00; void* m_08;
-};
-struct Unk_LapenData {
-    char m_pad_00[0x24];
-    int m_nColor;                                                // +0x24 (1 red, 2 blue, 4 green)
-};
-MS2_CHECK_OFFSET(Unk_LapenData, m_nColor, 0x24);
-class Unk_LapenPtr {
-public:
-    ~Unk_LapenPtr();                                             // 0x1405b6e60
-    void* FUN_140c6a370() const;
-    Unk_LapenData* FUN_1405b70e0() const;
-    void* m_00; void* m_08;
-};
-class Unk_LapenMgr { public: Unk_LapenPtr FUN_1405b56a0(int nItemId); };
 class Unk_SlotLapenTable* FUN_1409c4b30();   // C3: was FUN_1409c4b30
 
-CStringW FUN_141277be0(Unk_IconItemPtr item);
+CStringW FUN_141277be0(MS2Ptr<CItemData> item);
 CStringW FUN_141277b90(const CStringW& str);
 
 // @0x141277910
-CStringW FUN_141277910(Unk_IconItemPtr item)
+CStringW FUN_141277910(MS2Ptr<CItemData> item)
 {
-    if (item.FUN_1402ffd90() != 0)
+    if (item.IsNull() != 0)
         return CStringW(L"");
-    if (reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053cbc0() != 0)
-        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->FUN_14053c620());
-    if (reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->IsLapenshardType() != 0)
+    if (reinterpret_cast<Unk_IconItemData*>(item.operator->())->FUN_14053cbc0() != 0)
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, reinterpret_cast<Unk_IconItemData*>(item.operator->())->FUN_14053c620());
+    if (reinterpret_cast<Unk_IconItemData*>(item.operator->())->IsLapenshardType() != 0)
         return FUN_141277be0(item);
-    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetIconCode());
+    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
 }
 MS2_REPLACE(0x141277910, FUN_141277910, 365, 0x0A17FA5D);
 
-class Unk_NamedSource {
-public:
-    char m_pad_00[0x28];
-    CStringW m_strName;                                          // +0x28
-    int FUN_140893520();
-    CString FUN_140892ec0();
-};
-MS2_CHECK_OFFSET(Unk_NamedSource, m_strName, 0x28);
-
 // @0x141277a90
-CStringW FUN_141277a90(Unk_NamedSource* pSource, const CStringW& strFallback)
+CStringW FUN_141277a90(CUgcItemLook* pSource, const CStringW& strFallback)
 {
     if (pSource->FUN_140893520() != 0)
         return GetStringCommon(0xf4);
-    if (pSource->FUN_140892ec0().GetLength() > 0)
-        return FUN_141277b90(pSource->m_strName);
+    if (pSource->GetLocalPath().GetLength() > 0)
+        return FUN_141277b90(pSource->m_str28);
     return CStringW(strFallback);
 }
 MS2_REPLACE(0x141277a90, FUN_141277a90, 236, 0xA59909FA);
@@ -1160,11 +1095,11 @@ CStringW FUN_141277b90(const CStringW& str)
 MS2_REPLACE(0x141277b90, FUN_141277b90, 59, 0x41F5801C);
 
 // @0x141277be0
-CStringW FUN_141277be0(Unk_IconItemPtr item)
+CStringW FUN_141277be0(MS2Ptr<CItemData> item)
 {
-    Unk_LapenPtr lapen = reinterpret_cast<Unk_LapenMgr*>(((class Unk_LapenMgr*)FUN_1409c4b30()))->FUN_1405b56a0(reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetItemId());
-    if (lapen.FUN_140c6a370() != 0) {
-        switch (lapen.FUN_1405b70e0()->m_nColor)
+    MS2Ptr<CItemLapenshardData> lapen = reinterpret_cast<CItemLapenshardTable*>(FUN_1409c4b30())->Get(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetItemId());
+    if (lapen.get() != 0) {
+        switch (lapen->m_nMask)
         {
         case 1:
         {
@@ -1183,26 +1118,21 @@ CStringW FUN_141277be0(Unk_IconItemPtr item)
         }
         }
     }
-    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->GetIconCode());
+    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
 }
 MS2_REPLACE(0x141277be0, FUN_141277be0, 478, 0xA2D611FC);
 
-class Unk_ConstString {
+class Unk_ConstString : public Scaleform::GFx::Value {
 public:
-    char m_pad_00[0x10];
-    const wchar_t* m_pszValue;                                   // +0x10
-    int FUN_1407cccd0();
-    void* FUN_140b63540();
-    bool FUN_141278ab0() { return FUN_1407cccd0() == 7; }        // COMDAT 0x141278ab0
-    const wchar_t* FUN_1412788a0() { return m_pszValue; }        // COMDAT 0x1412788a0
+    bool FUN_141278ab0() { return GetType() == 7; }              // COMDAT 0x141278ab0
+    const wchar_t* FUN_1412788a0() { return mValue.pStringW; }   // COMDAT 0x1412788a0
 };
-MS2_CHECK_OFFSET(Unk_ConstString, m_pszValue, 0x10);
-CStringW FUN_1408767c0(void*);
+CStringW XmlWide(const char*);
 
 // @0x141277dd0
 CStringW FUN_141277dd0(Unk_ConstString* pValue)
 {
-    return CStringW(pValue->FUN_141278ab0() ? pValue->FUN_1412788a0() : (const wchar_t*)FUN_1408767c0(pValue->FUN_140b63540()));
+    return CStringW(pValue->FUN_141278ab0() ? pValue->FUN_1412788a0() : (const wchar_t*)XmlWide(pValue->GetString()));
 }
 MS2_REPLACE(0x141277dd0, FUN_141277dd0, 194, 0x729980BF);
 
@@ -1239,7 +1169,7 @@ MS2_REPLACE(0x141277f60, FUN_141277f60, 367, 0xF155C2F4);
 // @0x1412780f0
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot)
 {
-    return Unk_ColorValue(*(struct Unk_ConstColor const*)(FUN_140a81910(pSlot)));
+    return Unk_ColorValue(*(struct Unk_ConstColor const*)(reinterpret_cast<Unk_NpcConstant<unsigned>*>(pSlot)->Get()));
 }
 MS2_REPLACE(0x1412780f0, FUN_1412780f0, 32, 0x2D2EB095);
 

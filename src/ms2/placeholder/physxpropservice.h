@@ -7,6 +7,9 @@
 #include <efd/utf8string.h>
 #include <ecr/ecrSystemServiceIDs.h>
 
+class NiPhysXProp;
+namespace egf { class EntityID; }
+
 namespace ecrPhysX
 {
 class PropService
@@ -14,5 +17,7 @@ class PropService
 public:
     static const efd::ClassID CLASS_ID = efd::kCLASSID_PhysXPropService;
     void SetDebugRender(const efd::utf8string& sceneName, bool bActive);
+    unsigned GetNumProps(const egf::EntityID& kId);
+    NiPhysXProp* GetPropAt(const egf::EntityID& kId, unsigned nIndex);
 };
 }

@@ -354,7 +354,7 @@ void FUN_140dffb50(void* pListener)
     if (s_bHost)
     {
         strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_host");
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
     }
     else
     {

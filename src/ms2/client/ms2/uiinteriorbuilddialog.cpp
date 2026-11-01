@@ -178,10 +178,10 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     {
         ASObj obj(m_28);
         obj.FUN_1407cba60(s_itemMovie, spData->property.movie);
-        obj.FUN_1407cbb20("packageName", FUN_14052bd00(0x6ed, spItem->FUN_140527b10()));
-        obj.FUN_1407cbb20("packageDesc", BlockFormat(0x6ee));
-        obj.FUN_1407cbb20("installName", BlockFormat(0x6ef));
-        obj.FUN_1407cbb20("installDesc", FUN_14028dee0(0x6f0, spPackage->m_strIndoorSizeType));
+        ((class AScript&)(obj)).FUN_1407cbb20("packageName", FUN_14052bd00(0x6ed, spItem->FUN_140527b10()));
+        ((class AScript&)(obj)).FUN_1407cbb20("packageDesc", BlockFormat(0x6ee));
+        ((class AScript&)(obj)).FUN_1407cbb20("installName", BlockFormat(0x6ef));
+        ((class AScript&)(obj)).FUN_1407cbb20("installDesc", FUN_14028dee0(0x6f0, spPackage->m_strIndoorSizeType));
         pDialog->FUN_140acd1f0("setData", AScript(obj));
     }
 }
@@ -236,8 +236,8 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb93, 0, 0, CStringW(L""));
         return;
     }
-    unsigned char nWidth = ((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
-    unsigned char nLength = ((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
+    unsigned char nWidth = ((unsigned char)((class CubeMapInformationService*)(((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3470());
+    unsigned char nLength = ((unsigned char)((class CubeMapInformationService*)(((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c34b0());
     ATL::CAtlArray<int> aSize;
     FUN_140177de0(spPackage->m_strIndoorSizeType, &aSize, "x");
     if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<int, class ATL::CElementTraits<int>>&>(aSize))->GetCount() < 3)

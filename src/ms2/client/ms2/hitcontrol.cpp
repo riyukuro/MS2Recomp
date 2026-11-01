@@ -79,7 +79,7 @@ bool CPushControl::vfunc_1(GameObject* pActor, double dTime)
         NiPoint3 kPos = pActor->vfunc_18();
         efd::Point3 kHit = efd::Point3::ZERO;
         // CPhysXHelper takes the same 12-byte point as its placeholder Vector3
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<const Vector3&>(kPos),
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kPos),
                                            reinterpret_cast<Vector3&>(kHit), 0, 0, 0, 0) != 0) {
             kHit.z = kHit.z + 1.0f;
             if (kPos.z > kHit.z)

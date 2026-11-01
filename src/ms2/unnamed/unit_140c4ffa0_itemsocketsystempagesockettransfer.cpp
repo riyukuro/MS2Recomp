@@ -41,6 +41,7 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/equipment.h"
 
 // The header statics of the original TU (the same set as the other pages of the family).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -59,7 +60,6 @@ class PC   // C3: member view for the former free stand-ins
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
-void FUN_1411e1ce0(Unk_TrInventory*, CAtlList<MS2Ptr<CEquipItem>>&, int);
 // The player's inventory (global 0x143ab2a90).
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
@@ -271,7 +271,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
     }
     CAtlList<MS2Ptr<CEquipItem>> equipped(10);
     Unk_TrInventory* inventory = ((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->FUN_1416561a0());
-    FUN_1411e1ce0(inventory, equipped, 1);
+    reinterpret_cast<CEquipment*>(inventory)->CollectShownItemsInLayer(equipped, 1);
     for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
         if (equip == 0)

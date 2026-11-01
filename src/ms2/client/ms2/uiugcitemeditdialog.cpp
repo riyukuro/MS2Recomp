@@ -280,7 +280,7 @@ int UIUGCItemEditDialog::vfunc_73()
         return 0;
     if (m_spEditItem.get() != 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
         if (spUpload.get() != 0)
             spUpload->m_itemUid = m_spEditItem->GetItemUid();
     }
@@ -345,7 +345,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onClickOpenFolder", szMethod) == 0)
     {
-        ((class CUgcManager*)FUN_14052d220())->FUN_1418829b0(m_nKind);
+        ((class CUgcManager*)FUN_14052d220())->OpenUploadFolder(m_nKind);
         return 1;
     }
     else if (_stricmp("onChangeIndexDesign", szMethod) == 0)
@@ -786,7 +786,7 @@ void UIUGCItemEditDialog::FUN_141b3e640(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
     auto pModel = spAvatar->vfunc_24();
     if (pModel == 0)
         return;
-    spAvatar->FUN_1418ba280(0);
+    spAvatar->ApplyPosition(0);
     if (bResetCamera)
         FUN_141b3f180(spAvatar);
     FUN_141b3e780(spAvatar, bUseItem);
@@ -1190,7 +1190,7 @@ MS2_REPLACE_METHOD(0x141B40880, UIUGCItemEditDialog, FUN_141b40880, 546, 0x00982
 // @0x141b40ab0
 void UIUGCItemEditDialog::FUN_141b40ab0(int nKind, int nImage)
 {
-    ((class CUgcManager*)FUN_14052d220())->FUN_141889ce0(nKind);
+    ((class CUgcManager*)FUN_14052d220())->RefreshLocalFiles(nKind);
     FUN_141b40b00(0);
     FUN_141b41700(nImage);
 }
@@ -1313,7 +1313,7 @@ void UIUGCItemEditDialog::FUN_141b41700(int nIndex)
         return;
     if (nIndex != -1)
     {
-        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->FUN_14188a4b0(nIndex);
+        MS2Ptr<CUploadFile> spFile = ((class CUgcManager*)FUN_14052d220())->GetUploadFile(nIndex);
         if (spFile == 0)
             return;
         ((class CUgcManager*)FUN_14052d220())->FUN_141882a70(nIndex, 0);
@@ -1325,7 +1325,7 @@ MS2_REPLACE_METHOD(0x141B41700, UIUGCItemEditDialog, FUN_141b41700, 203, 0x72678
 // @0x141b417e0
 bool UIUGCItemEditDialog::FUN_141b417e0()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0 || spUpload->m_spViewer == 0)
         return false;
     MS2Ptr<IUgcViewer> spViewer = spUpload->m_spViewer;
@@ -1459,7 +1459,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
 {
     if (spAvatar == 0)
         return;
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != nKind)
@@ -1516,7 +1516,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
 // @0x141b42800
 void UIUGCItemEditDialog::FUN_141b42800()
 {
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != m_nKind || spUpload->m_spViewer == 0)
@@ -1689,7 +1689,7 @@ bool UIUGCItemEditDialog::FUN_141b43660(int nImage)
 {
     if (nImage >= 0)
     {
-        if (((class CUgcManager*)FUN_14052d220())->FUN_141881a40(nImage) == 0)
+        if (((class CUgcManager*)FUN_14052d220())->DoesFileExistByIndex(nImage) == 0)
         {
             FUN_140d74390(GetStringCommon(0x2e2), 0,
                 Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b45980));
@@ -1847,7 +1847,7 @@ void UIUGCItemEditDialog::OnClickInitialize()
     if (pAvatar != 0)
     {
         pAvatar->FUN_1418ba340(0);
-        pAvatar->FUN_1418ba280(0);
+        pAvatar->ApplyPosition(0);
         FUN_141b3f180(MS2Ptr<UIAvatarBase>(pAvatar));
     }
     FUN_141b417e0();
@@ -1995,7 +1995,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+    MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spUpload == 0)
         return;
     if (spUpload->m_nKind != 1 && spUpload->m_nKind != 2 && spUpload->m_nKind != 7)
@@ -2122,7 +2122,7 @@ bool UIUGCItemEditDialog::FUN_141b46070(int nResult, const CMsgBoxData& box)
         if (m_spMadeItem.get() != 0)
             m_spMadeItem->SetName(CString(""));
         m_spMadeItem = 0;
-        if (!((class CUgcManager*)FUN_14052d220())->FUN_14187f410())
+        if (!((class CUgcManager*)FUN_14052d220())->BeginUpload())
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
         if (m_spEditItem.get() != 0)
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)vfunc_48());
@@ -2148,7 +2148,7 @@ bool UIUGCItemEditDialog::FUN_141b461b0(int nResult, const CMsgBoxData& box)
     }
     if (nResult == 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
         if (spUpload.get() != 0)
             FUN_141b428d0(spUpload->m_nKind);
     }
@@ -2172,7 +2172,7 @@ bool UIUGCItemEditDialog::FUN_141b462a0(int nResult, const CMsgBoxData& box)
     }
     if (nResult == 0)
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->FUN_141882610();
+        MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
         if (spUpload.get() != 0)
             FUN_141b428d0(spUpload->m_nKind);
     }

@@ -178,7 +178,7 @@ CPhysXHelper::~CPhysXHelper()
     m_pLock = 0;
 }
 // @0x1416892a0
-Unk_PhysXSceneHandle* CPhysXHelper::FUN_1416892a0(int nScene)
+Unk_PhysXSceneHandle* CPhysXHelper::GetScene(int nScene)
 {
     if (m_apScene[nScene] == 0)
         FUN_14168a5a0();
@@ -446,7 +446,7 @@ int CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, f
     return 0;
 }
 // @0x14168a310
-int CPhysXHelper::FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
+int CPhysXHelper::RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
                                 Vector3* pNormal, int nMask)
 {
     int nDefaultGroups = 0x389;
@@ -564,7 +564,7 @@ int CPhysXHelper::FUN_14168a9b0(void* pEntity, const Vector3& ptFrom)
 {
     Unk_RayCastInfo kInfo;
     Vector3 ptHit = g_143b01a60;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(ptFrom, ptHit, &kInfo, 0, 0, 0))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(ptFrom, ptHit, &kInfo, 0, 0, 0))
         return kInfo.m_hitEntity == pEntity;
     return 0;
 }
@@ -655,10 +655,10 @@ bool ClosestHitReport::onHit(const NxRaycastHit& kHit)
     m_hit = kHit;
     return true;
 }
-MS2_REPLACE_METHOD(0x1416892A0, CPhysXHelper, FUN_1416892a0, 61, 0x19AF2D89);
+MS2_REPLACE_METHOD(0x1416892A0, CPhysXHelper, GetScene, 61, 0x19AF2D89);
 MS2_REPLACE_METHOD(0x14168A1C0, CPhysXHelper, FUN_14168a1c0, 63, 0x5C1A7CCA);
 MS2_REPLACE_METHOD(0x14168A210, CPhysXHelper, FUN_14168a210, 14, 0xE4E8D95F);
-MS2_REPLACE_METHOD(0x14168A310, CPhysXHelper, FUN_14168a310, 302, 0x52623978);
+MS2_REPLACE_METHOD(0x14168A310, CPhysXHelper, RayCastFixedDirection, 302, 0x52623978);
 MS2_REPLACE_METHOD(0x14168A450, CPhysXHelper, FUN_14168a450, 232, 0x8C3C8D12);
 MS2_REPLACE_METHOD(0x14168A540, CPhysXHelper, FUN_14168a540, 32, 0xEC94BD02);
 MS2_REPLACE_METHOD(0x14168A570, CPhysXHelper, FUN_14168a570, 28, 0xC37B47B6);

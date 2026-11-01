@@ -158,7 +158,6 @@ __int64 GetServerTime();                                    // server time
 __int64 NextWeekdayStart(int nWeekday, __int64 tFrom);      // NextWeekdayStart
 int DaysToSeconds(int nDays);                               // DaysToSeconds
 __int64 GetWeekOfYear(int nYear, int nMonth, int nDay);
-const __int64& FUN_1402e49a0(const __int64& a, const __int64& b);   // the smaller of the two
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -178,7 +177,8 @@ private:
 
 // A scheduled game event (the <eventTag> lookup), handed out as an intrusive pointer.
 class Unk_EventEntry;
-class Unk_GEManagerA { public: Unk_PayloadPtr<Unk_EventEntry> FUN_140479410(CStringW* pTag); bool FUN_1404793a0(const CStringW* pTag); };
+class Unk_GEManagerA { public: Unk_PayloadPtr<Unk_EventEntry> FUN_140479410(CStringW* pTag); };
+class CGameRule { public: bool HasTermTag(const CStringW& name); };   // C3: member view (gamerule.h)
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // One <questCondition> pair of the quest manager query (0x1407470f0): the quests whose state is checked.
@@ -186,10 +186,10 @@ struct Unk_E16 { int m_questA, m_questB, m_stateA, m_stateB; };
 struct Unk_Arr16 { void* m_p; unsigned __int64 m_n; };
 Unk_E16* FUN_14027f040(Unk_Arr16* pArr, unsigned __int64 n);
 unsigned __int64 FUN_1402815b0(Unk_Arr16* pArr);
+class QuestMask { public: int FUN_140266970() const; };   // C3: member view (questmasktable.h)
 class Unk_QuestCondition
 {
 public:
-    int FUN_140266970();
     char m_pad[0x18];
     unsigned m_result;
     Unk_Arr16 m_list;
@@ -212,7 +212,7 @@ public:
     float FUN_1404c17a0(unsigned int, int);
 };
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);
-int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& value);
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0
 int FUN_1407474d0(const ATL::CAtlArray<int>* pArr, const int* pValue);
 int FUN_140747460(const ATL::CAtlArray<int>* pArr, const int* pValue);
 
@@ -284,7 +284,7 @@ __int64 CQuestCommon::FUN_1407448a0()
         tEvent = reinterpret_cast<TermTagContext*>(event.operator->())->FUN_140866720().Get();
     }
     if (tPeriod != 0 && tEvent != 0)
-        return FUN_1402e49a0(tPeriod, tEvent);
+        return std::min<__int64>(tPeriod, tEvent);
     return tPeriod != 0 ? tPeriod : tEvent;
 }
 MS2_REPLACE_METHOD(0x1407448A0, CQuestCommon, FUN_1407448a0, 732, 0x32941A8A);
@@ -341,7 +341,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     if (data->m_require.m_dayOfWeek.GetCount() > 0)
     {
         int nDay = now.GetDayOfWeek();
-        if (FUN_1402bacf0(data->m_require.m_dayOfWeek, nDay) == -1)
+        if (Common::FindElement<int>(data->m_require.m_dayOfWeek, nDay) == -1)
             return 0;
     }
     __int64 tStart = 0;
@@ -722,7 +722,7 @@ int CQuestManagerCommon::FUN_140747000(int questId)
 // @0x1407470f0
 unsigned CQuestManagerCommon::vfunc_o10_23(const Unk_QuestCondition& condition)
 {
-    if (const_cast<Unk_QuestCondition&>(condition).FUN_140266970() == 0)
+    if (reinterpret_cast<const QuestMask&>(condition).FUN_140266970() == 0)
         return 1;
     for (unsigned __int64 i = 0; i < FUN_1402815b0(&const_cast<Unk_QuestCondition&>(condition).m_list); ++i)
     {
@@ -1253,8 +1253,8 @@ int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* p
 int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
-int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
+int XmlQuery(class TiXmlElement*, char const*, CString&);    // C3: was FUN_140873ad0
+int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 int FUN_14028e160(CString& str);
 int FUN_140718170(const CString& str);
 int FUN_1407181d0(const CString& str);
@@ -1272,7 +1272,7 @@ int FUN_140752570(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_140752630(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 class Unk_FeatureFlags;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-unsigned char FUN_14036d570(Unk_FeatureFlags* pFlags, int nFeature);
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
 // @0x1407495d0
 bool CQuestData::Load(Unk_140165cf0* pElem)
@@ -1289,7 +1289,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         FUN_14035ba10(pBasic, "repeatable", &m_20);
         FUN_140751ee0(pBasic, "questType", &m_type);
         XmlGetAttr((class TiXmlElement*)(pBasic), "account", reinterpret_cast<bool&>((bool&)m_2c));
-        FUN_140873b30(pBasic, "eventTag", m_schedule);
+        XmlQuery((class TiXmlElement*)(pBasic), "eventTag", m_schedule);
         XmlGetAttr((class TiXmlElement*)(pBasic), "locking", reinterpret_cast<bool&>((bool&)m_30));
         XmlGetAttr((class TiXmlElement*)(pBasic), "tabIndex", reinterpret_cast<int&>(m_48));
         XmlGetAttr((class TiXmlElement*)(pBasic), "forceRegistGuide", reinterpret_cast<bool&>((bool&)m_31));
@@ -1307,7 +1307,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
                 m_54.set(nProperty, true);
         }
         CString strPeriod;
-        FUN_140873ad0(pBasic, "usePeriod", strPeriod);
+        XmlQuery((class TiXmlElement*)(pBasic), "usePeriod", strPeriod);
         int nResetType = FUN_14028e160(strPeriod);
         if (nResetType != 0)
             m_resetType = nResetType;
@@ -1477,7 +1477,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pDispatch), "portal", reinterpret_cast<int&>(m_2f0.m_8));
         XmlGetAttr((class TiXmlElement*)(pDispatch), "script", reinterpret_cast<int&>(m_2f0.m_c));
     }
-    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x42) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x42) == 1)
     {
         Unk_140165cf0* pGotoNpc = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoNpc"));
         if (pGotoNpc)
@@ -1584,7 +1584,7 @@ int FUN_14074b210(CQuestData* pData)
 {
     if (pData->m_schedule.GetLength() != 0)
     {
-        if (!((class Unk_GEManagerA*)FUN_1401c0d90())->FUN_1404793a0(&pData->m_schedule))
+        if (!((class CGameRule*)FUN_1401c0d90())->HasTermTag(pData->m_schedule))
             return 0;
     }
     return 1;
@@ -1705,7 +1705,7 @@ int FUN_14074b790(int nQuestId)
 // @0x14074b840
 int FUN_14074b840(int nQuestId)
 {
-    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x6e))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6e))
     {
         MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
         if (data.IsNull())
@@ -1722,7 +1722,7 @@ int FUN_14074b840(int nQuestId)
 // @0x14074b950
 int FUN_14074b950(int nQuestId)
 {
-    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x6e))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6e))
     {
         MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
         if (data.IsNull())
@@ -1743,7 +1743,7 @@ int FUN_14074b950(int nQuestId)
 // @0x14074bae0
 int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
 {
-    if (FUN_14036d570(((class Unk_FeatureFlags*)FUN_140166410()), 0x6e))
+    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6e))
     {
         MS2Ptr<CQuestData> a = FUN_14074bc40(nQuestA);
         MS2Ptr<CQuestData> b = FUN_14074bc40(nQuestB);

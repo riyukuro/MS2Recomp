@@ -24,7 +24,7 @@ class CMsgBoxData;
 class CItemData;
 class CCashUnlockDialog;
 class UIMsg;
-class Unk_CashBag;
+class ASTileList;
 class Unk_CashBannerRecord;
 class Unk_CashButton;
 class Unk_CashList;
@@ -143,7 +143,6 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_CashBag> FUN_140ba4b70(const CString& strName);      // child lookup (shared COMDAT)
     MS2Ptr<Unk_CashButton> FUN_140bb4b10(const CString& strName);   // child lookup (shared COMDAT)
 
     int m_nCash;                                                    // +0x178 the cash balance

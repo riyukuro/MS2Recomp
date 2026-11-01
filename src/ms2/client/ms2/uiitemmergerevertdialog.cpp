@@ -173,9 +173,9 @@ void UIItemMergeRevertDialog::FUN_140e4c440()
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     ASObj obj(2);
-    obj.FUN_1407cb9c0("isReady", 1);
+    ((class AScript&)(obj)).FUN_1407cb9c0("isReady", 1);
     obj.FUN_1407cba60("binding", GetTypeName());
-    obj.FUN_1407cb9c0("price", 0);
+    ((class AScript&)(obj)).FUN_1407cb9c0("price", 0);
     m_30->Invoke("setData", obj);
 }
 
@@ -200,12 +200,12 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053c620();
     FUN_14083d2b0(strText);
     ASObj obj(2);
-    obj.FUN_1407cb9c0("isReady", 0);
+    ((class AScript&)(obj)).FUN_1407cb9c0("isReady", 0);
     obj.FUN_1407cba60("binding", GetTypeName());
-    obj.FUN_1407cbb20("name", pItem->FUN_140528160());
-    obj.FUN_1407cbb20("optionStr", CStringW(strText));
+    ((class AScript&)(obj)).FUN_1407cbb20("name", pItem->FUN_140528160());
+    ((class AScript&)(obj)).FUN_1407cbb20("optionStr", CStringW(strText));
     obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);
-    obj.FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->GetItemUid()));
+    ((class AScript&)(obj)).FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->GetItemUid()));
     obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->FUN_140526bd0(), nType));
     m_30->Invoke("setData", obj);
 }

@@ -15,7 +15,7 @@
 #include "ms2/placeholder/uidialog.h"
 
 class Unk_TpInput;
-class Unk_TpBar;
+class ASButtonBar;
 
 class UITextPreviewDialog : public UIDialog
 {
@@ -36,13 +36,12 @@ public:
     void OnDescriptionCheck();                                       // "OnDescriptionCheck"
 
     MS2Ptr<Unk_TpInput> FUN_140c26f60(const CString& strName);  // 0x140c26f60 input child lookup (a UIDialog member)
-    MS2Ptr<Unk_TpBar> FUN_140c02870(const CString& strName);    // 0x140c02870 button bar child lookup
 
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<Unk_TpInput> m_178;                                  // +0x178 "m_input1"
     MS2Ptr<Unk_TpInput> m_188;                                  // +0x188 "m_input2"
-    MS2Ptr<Unk_TpBar> m_198;                                    // +0x198 "m_buttonBar"
+    MS2Ptr<ASButtonBar> m_198;                                 // +0x198 "m_buttonBar"
 };
 MS2_CHECK_SIZE(UITextPreviewDialog, 0x1a8);
 MS2_CHECK_OFFSET(UITextPreviewDialog, m_178, 0x178);

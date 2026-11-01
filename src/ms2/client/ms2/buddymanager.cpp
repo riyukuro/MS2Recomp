@@ -13,6 +13,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/uibuddyeventdispatcher.h"
+#include "ms2/placeholder/cinpacket.h"
+#include "ms2/commonfiles/serverpacketdef.h"
 static const CString s_buddyAgree("buddy_agree");
 static const CString s_buddyDeny("buddy_deny");
 static const CString s_buddyRequest("buddy_request");
@@ -73,25 +75,26 @@ class Unk_BuddyNotifications {
 public:
     virtual void vfunc_0(); virtual void vfunc_1(__int64); virtual void vfunc_2(__int64); virtual void vfunc_3(__int64); virtual void vfunc_4(__int64,int); virtual void vfunc_5(__int64); virtual void vfunc_6(__int64); virtual void vfunc_7(__int64); virtual void vfunc_8(__int64); virtual void vfunc_9(__int64); virtual void vfunc_10(__int64,int); virtual void vfunc_11(__int64);
 };
-CStringW FUN_14052bd00(int,const CStringW&);
+template <class T> CStringW FormatStringId(int nId, const T& arg);   // C3: was FUN_14052bd00
 CStringW GetStringCommon(int);
 CStringW BlockFormat(int);
-void FUN_140961010(int,int,int,const CStringW&);
+template <class T> void Unk_AkoMessage(int,int,int,const T&);   // C3: was FUN_140961010
 void FUN_1412751b0(const CStringW&,int);
 int FUN_141276180(const CString&,const CString&);
-void FUN_140d73aa0(CStringW,int,__int64,CStringW);
+void FUN_140d73aa0(CStringW,int,void*,CStringW);
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/client/ms2/uiservice.h"
+void FUN_1401fc790(unsigned char* pRequest, COutputStream& out);   // C3: the request encoder (was Unk_BuddyRequest::FUN_1401fc790)
 class UICommunityDialog : public UIDialog { public: int FUN_1418d6960(); void FUN_1418d6430(int); };
 class UICommunityQueryDialog : public UIDialog {};
-class Unk_BuddyPopup : public UIDialog { public: void FUN_141937e70(int); };
+class UIGameMenuDialog : public UIDialog { public: void FUN_141937e70(int); };   // C3: unit-local view
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 UICommunityDialog* FUN_140ae5990(int);
 UICommunityQueryDialog* FUN_140ae5a30(int);
 // @0x140ae2e90
 void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     unsigned position=input.vfunc_0();
-    Unk_BuddyResponse response; response.FUN_1407a3cc0(input); input.FUN_140715280(position);
+    Unk_BuddyResponse response; reinterpret_cast<Unk_SPDB*>(&response)->FUN_1407a3cc0(reinterpret_cast<Unk_SPDReader&>(input)); reinterpret_cast<CInPacket&>(input).SetOffset(position);
     Ptr buddy(0); int field=0; int channel=0;
     (&input.stream)->vfunc_1();
     switch(response.protocol) {
@@ -102,7 +105,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
         break;
     }
     case 8: case 9: {
-        unsigned position=input.vfunc_0(); __int64 id=(&input.stream)->vfunc_4(); input.FUN_140715280(position);
+        unsigned position=input.vfunc_0(); __int64 id=(&input.stream)->vfunc_4(); reinterpret_cast<CInPacket&>(input).SetOffset(position);
         buddy=FindById(id);
         if(buddy==0) {
             buddy=new CBuddy;
@@ -118,7 +121,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     }
     }
     switch(response.protocol) {
-    case 2: if(response.result==0) FUN_140961010(0x600,1,1,response.name); break;
+    case 2: if(response.result==0) Unk_AkoMessage<CStringW>(0x600,1,1,response.name); break;
     case 9:
         if(response.result==0) {
             if((buddy->flags>>1)&1) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_3(buddy->id); }
@@ -130,50 +133,50 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
         if(buddy->FUN_1401cc5f0() && (field!=buddy->FUN_1401cc3e0() || channel!=buddy->FUN_1401cc3a0())) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_10(buddy->FUN_1401cc2f0(),field); } break;
     case 7:
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) {
-            if(buddy->FUN_1401cc660()) FUN_140961010(0x602,1,1,buddy->name);
-            else { CStringW message(L""); if(buddy->FUN_1401cc5d0()) message=FUN_14052bd00(0x603,buddy->name); else message=FUN_14052bd00(0x605,buddy->name); FUN_1412751b0(message,12); }
+            if(buddy->FUN_1401cc660()) Unk_AkoMessage<CStringW>(0x602,1,1,buddy->name);
+            else { CStringW message(L""); if(buddy->FUN_1401cc5d0()) message=FormatStringId<CStringW>(0x603,buddy->name); else message=FormatStringId<CStringW>(0x605,buddy->name); FUN_1412751b0(message,12); }
             Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_5(buddy->id); RemoveBuddy(buddy);
         }} break;
     case 6:
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) {
-            CStringW message=FUN_14052bd00(0x606,buddy->name); FUN_1412751b0(message,12);
+            CStringW message=FormatStringId<CStringW>(0x606,buddy->name); FUN_1412751b0(message,12);
             Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_6(buddy->id);
             __int64 id=buddy->FUN_1401cc230(); RemoveBuddy(buddy); Unk_BuddyNotifications* next=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); next->vfunc_7(id);
         }} break;
     case 3:
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) {
             buddy->flags&=~1u; buddy->FUN_1401cc4b0(1); FUN_141276180(s_buddyAgree,"");
-            CStringW message=FUN_14052bd00(0x5fd,buddy->name); FUN_1412751b0(message,12);
+            CStringW message=FormatStringId<CStringW>(0x5fd,buddy->name); FUN_1412751b0(message,12);
             Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_3(buddy->id);
         }} break;
     case 4:
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) {
-            FUN_141276180(s_buddyDeny,""); CStringW message=FUN_14052bd00(0x601,buddy->name); FUN_1412751b0(message,12);
+            FUN_141276180(s_buddyDeny,""); CStringW message=FormatStringId<CStringW>(0x601,buddy->name); FUN_1412751b0(message,12);
             Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_2(buddy->id); RemoveBuddy(buddy);
         }} break;
     case 5:
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) {
-            buddy->flags|=4; buddy->FUN_1401cc4b0(1); CStringW message=FUN_14052bd00(0x5fe,buddy->name); FUN_1412751b0(message,12);
+            buddy->flags|=4; buddy->FUN_1401cc4b0(1); CStringW message=FormatStringId<CStringW>(0x5fe,buddy->name); FUN_1412751b0(message,12);
             Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_4(buddy->id,1);
         }} break;
     case 11:
-        buddy=FindById(response.id); if(buddy.get()) { buddy->flags&=~2u; buddy->FUN_1401cc4b0(1); CStringW message=FUN_14052bd00(0x5fd,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_3(buddy->id); } break;
+        buddy=FindById(response.id); if(buddy.get()) { buddy->flags&=~2u; buddy->FUN_1401cc4b0(1); CStringW message=FormatStringId<CStringW>(0x5fd,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_3(buddy->id); } break;
     case 12:
-        if(response.result==0) { CStringW message=FUN_14052bd00(0x5fe,response.name); FUN_1412751b0(message,12); } else if(response.result==10) FUN_140961010(0x61b,1,1,response.name); break;
+        if(response.result==0) { CStringW message=FormatStringId<CStringW>(0x5fe,response.name); FUN_1412751b0(message,12); } else if(response.result==10) Unk_AkoMessage<CStringW>(0x61b,1,1,response.name); break;
     case 13: {
         unsigned count=(&input.stream)->vfunc_3();
         for(unsigned i=0;i<count;++i) { CStringW message; CStringW name=(&input.stream)->vfunc_8(); CStringW action=(&input.stream)->vfunc_8(); __int64 id=(&input.stream)->vfunc_4();
-            if(operator==(action, "approved")) { buddy=FindByName(name); if(buddy.get()) buddy->FUN_1401cc4b0(1); message=FUN_14052bd00(0x5fd,name); }
-            else if(operator==(action, "declined")) message=FUN_14052bd00(0x602,name);
-            else if(operator==(action, "removed")) message=FUN_14052bd00(0x605,name);
+            if(operator==(action, "approved")) { buddy=FindByName(name); if(buddy.get()) buddy->FUN_1401cc4b0(1); message=FormatStringId<CStringW>(0x5fd,name); }
+            else if(operator==(action, "declined")) message=FormatStringId<CStringW>(0x602,name);
+            else if(operator==(action, "removed")) message=FormatStringId<CStringW>(0x605,name);
             FUN_1412751b0(message,12);
         } break;
     }
-    case 14: { CStringW message; switch(response.flag) { case 0:message=FUN_14052bd00(0x608,response.name);break; case 1:message=FUN_14052bd00(0x609,response.name);break; } FUN_1412751b0(message,12); } break;
+    case 14: { CStringW message; switch(response.flag) { case 0:message=FormatStringId<CStringW>(0x608,response.name);break; case 1:message=FormatStringId<CStringW>(0x609,response.name);break; } FUN_1412751b0(message,12); } break;
     case 10:
-        buddy=FindById(response.id); if(response.result==0) { FUN_140961010(0x5ff,1,1,response.name); if(buddy.get()) { buddy->memo=response.memo; Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_11(buddy->id); } } break;
+        buddy=FindById(response.id); if(response.result==0) { Unk_AkoMessage<CStringW>(0x5ff,1,1,response.name); if(buddy.get()) { buddy->memo=response.memo; Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_11(buddy->id); } } break;
     case 17:
-        if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) { CStringW message=FUN_14052bd00(0x604,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_8(buddy->id); RemoveBuddy(buddy); } } break;
+        if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) { CStringW message=FormatStringId<CStringW>(0x604,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_8(buddy->id); RemoveBuddy(buddy); } } break;
     case 18: {
         UICommunityQueryDialog* query=FUN_140ae5a30(0x4e4e); if(query && !query->vfunc_55()) query->vfunc_67();
         UICommunityDialog* community=FUN_140ae5990(0x4e4d); if(community) community->FUN_1418d6430(community->FUN_1418d6960());
@@ -181,25 +184,25 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     }
     case 20: SendBuddyMode20(); break;
     }
-    Unk_BuddyPopup* popup=((class Unk_BuddyPopup*)FUN_140938b90(0x4e28)); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
+    UIGameMenuDialog* popup=FUN_140938b90(0x4e28); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
 }
 
 // @0x140ae4820
-void CBuddyManager::SendBuddyRequest(Unk_BuddyRequest& request) { COutPacket packet(static_cast<int>(SendOp::Buddy),0); request.FUN_1401fc790(packet); FUN_140710590(packet); }
+void CBuddyManager::SendBuddyRequest(Unk_BuddyRequest& request) { COutPacket packet(static_cast<int>(SendOp::Buddy),0); FUN_1401fc790(reinterpret_cast<unsigned char*>(&request), packet); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140AE4820, CBuddyManager, SendBuddyRequest, 83, 0x6E66E430);
 // @0x140ae4880
-CBuddyManager::Ptr CBuddyManager::FindByAccount(__int64 key) { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { Ptr p; accounts.Lookup(key,p); return p; } }
+CBuddyManager::Ptr CBuddyManager::FindByAccount(__int64 key) { if(Unk_LockGuard guard=lock) { __assume(0); } else { Ptr p; accounts.Lookup(key,p); return p; } }
 // @0x140ae4950
 CBuddyManager::Ptr CBuddyManager::FindByName(const CStringW& name) {{
-    if(Unk_BuddyGuard guard=lock) { __assume(0); } else { Ptr p;
+    if(Unk_LockGuard guard=lock) { __assume(0); } else { Ptr p;
         for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(p->name.CompareNoCase(name)==0) return p; }
         return Ptr(0);
     }
 }}
 // @0x140ae4ad0
-CBuddyManager::Ptr CBuddyManager::GetNewestBuddy() { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { return list.GetTail();} }
+CBuddyManager::Ptr CBuddyManager::GetNewestBuddy() { if(Unk_LockGuard guard=lock) { __assume(0); } else { return list.GetTail();} }
 // @0x140ae4b70
-CBuddyManager::Ptr CBuddyManager::FindById(__int64 key) { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { Ptr p; ids.Lookup(key,p); return p; } }
+CBuddyManager::Ptr CBuddyManager::FindById(__int64 key) { if(Unk_LockGuard guard=lock) { __assume(0); } else { Ptr p; ids.Lookup(key,p); return p; } }
 // @0x140ae4c30
 CBuddyManager::Ptr CBuddyManager::FindBuddy(__int64 id,__int64 account,const CStringW& name) {
     Ptr p=FindById(id); if(p==0) { p=FindByAccount(account); if(p==0) p=FindByName(name); } return p;
@@ -210,16 +213,16 @@ bool CBuddyManager::FUN_140ae4d70(__int64 account) { { Ptr p=FindByAccount(accou
 MS2_REPLACE_METHOD(0x140AE4D70, CBuddyManager, FUN_140ae4d70, 120, 0x328D9A99);
 // @0x140ae4df0
 void CBuddyManager::GetAllBuddies(ATL::CAtlArray<Ptr>& out) {
-    if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); out.Add(p); } }
+    if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); out.Add(p); } }
 }
 MS2_REPLACE_METHOD(0x140AE4DF0, CBuddyManager, GetAllBuddies, 210, 0xDAE8B35A);
 // @0x140ae4ed0
-unsigned CBuddyManager::GetBuddyCount() { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { return static_cast<unsigned>(list.GetCount());} }
+unsigned CBuddyManager::GetBuddyCount() { if(Unk_LockGuard guard=lock) { __assume(0); } else { return static_cast<unsigned>(list.GetCount());} }
 // @0x140ae4f50
-int CBuddyManager::FUN_140ae4f50() { int count=0; { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc680()) ++count; } } } return count; }
+int CBuddyManager::FUN_140ae4f50() { int count=0; { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc680()) ++count; } } } return count; }
 MS2_REPLACE_METHOD(0x140AE4F50, CBuddyManager, FUN_140ae4f50, 273, 0xD93331C5);
 // @0x140ae5070
-int CBuddyManager::FUN_140ae5070() { int count=0; { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc5d0()) ++count; } } } return count; }
+int CBuddyManager::FUN_140ae5070() { int count=0; { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc5d0()) ++count; } } } return count; }
 MS2_REPLACE_METHOD(0x140AE5070, CBuddyManager, FUN_140ae5070, 273, 0x235EB834);
 // @0x140ae5190
 void CBuddyManager::FUN_140ae5190() { ClearBuddies(); }
@@ -231,25 +234,25 @@ MS2_REPLACE_METHOD(0x140AE51B0, CBuddyManager, FUN_140ae51b0, 128, 0xB4C2B217);
 unsigned CBuddyManager::FUN_140ae5240(const CStringW& name) { Ptr p=FindByName(name); if(p.get()) return (p->flags>>2)&1; return 0; }
 MS2_REPLACE_METHOD(0x140AE5240, CBuddyManager, FUN_140ae5240, 128, 0xC030A7B8);
 // @0x140ae52d0
-int CBuddyManager::FUN_140ae52d0(int field,int channel) { { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(!p) continue; if(p->FUN_1401cc3e0()==field && p->FUN_1401cc3a0()==channel) return 1; } } } return 0; }
+int CBuddyManager::FUN_140ae52d0(int field,int channel) { { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(!p) continue; if(p->FUN_1401cc3e0()==field && p->FUN_1401cc3a0()==channel) return 1; } } } return 0; }
 MS2_REPLACE_METHOD(0x140AE52D0, CBuddyManager, FUN_140ae52d0, 310, 0x55F6200B);
 // @0x140ae5410
-int CBuddyManager::FUN_140ae5410(CStringW name) { { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(!p) continue; if(p->FUN_1401cc350()==name) return 1; } } } return 0; }
+int CBuddyManager::FUN_140ae5410(CStringW name) { { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(!p) continue; if(p->FUN_1401cc350()==name) return 1; } } } return 0; }
 MS2_REPLACE_METHOD(0x140AE5410, CBuddyManager, FUN_140ae5410, 379, 0xD246D2B4);
 // @0x140ae55a0
 void CBuddyManager::SendBuddyMode20() { COutPacket packet(static_cast<int>(SendOp::Buddy),0); packet.Encode1(20); int reject=reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings().autoReject?1:0; packet.Encode4(reject); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140AE55A0, CBuddyManager, SendBuddyMode20, 136, 0x33CF1841);
 // @0x140ae5630
-void CBuddyManager::AddBuddy(Ptr p) { if(Unk_BuddyGuard guard=lock) {} else { if(ids.Lookup(p->id)) return; POSITION pos=list.AddTail(p); p->position=pos; ids.SetAt(p->id,p); accounts.SetAt(p->account,p); } }
+void CBuddyManager::AddBuddy(Ptr p) { if(Unk_LockGuard guard=lock) {} else { if(ids.Lookup(p->id)) return; POSITION pos=list.AddTail(p); p->position=pos; ids.SetAt(p->id,p); accounts.SetAt(p->account,p); } }
 MS2_REPLACE_METHOD(0x140AE5630, CBuddyManager, AddBuddy, 268, 0x737F3292);
 // @0x140ae5750
-void CBuddyManager::FUN_140ae5750(__int64 id) { if(Unk_BuddyGuard guard=lock) {} else { Ptr pBuddy; ids.Lookup(id,pBuddy); MS2_ASSERT_AT(102,pBuddy); if(pBuddy.get()) RemoveBuddy(pBuddy); } }
+void CBuddyManager::FUN_140ae5750(__int64 id) { if(Unk_LockGuard guard=lock) {} else { Ptr pBuddy; ids.Lookup(id,pBuddy); MS2_ASSERT_AT(102,pBuddy); if(pBuddy.get()) RemoveBuddy(pBuddy); } }
 MS2_REPLACE_METHOD(0x140AE5750, CBuddyManager, FUN_140ae5750, 237, 0x8966D4E2);
 // @0x140ae5850
-void CBuddyManager::RemoveBuddy(Ptr p) { if(Unk_BuddyGuard guard=lock) {} else { list.RemoveAt(p->position); ids.RemoveKey(p->id); accounts.RemoveKey(p->account); } }
+void CBuddyManager::RemoveBuddy(Ptr p) { if(Unk_LockGuard guard=lock) {} else { list.RemoveAt(p->position); ids.RemoveKey(p->id); accounts.RemoveKey(p->account); } }
 MS2_REPLACE_METHOD(0x140AE5850, CBuddyManager, RemoveBuddy, 178, 0xE4E576ED);
 // @0x140ae5910
-void CBuddyManager::ClearBuddies() { if(Unk_BuddyGuard guard=lock) {} else { list.RemoveAll(); ids.RemoveAll(); accounts.RemoveAll(); } }
+void CBuddyManager::ClearBuddies() { if(Unk_LockGuard guard=lock) {} else { list.RemoveAll(); ids.RemoveAll(); accounts.RemoveAll(); } }
 MS2_REPLACE_METHOD(0x140AE5910, CBuddyManager, ClearBuddies, 128, 0x25C639A2);
 
 class Unk_BuddyUIManager { public: };

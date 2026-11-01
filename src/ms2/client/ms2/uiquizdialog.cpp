@@ -16,6 +16,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/ms2recover.h"
+class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -88,8 +89,8 @@ CString UIQuizDialog::GetTypeName()
 void UIQuizDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140c57ce0("m_question", m_question);
-    FUN_140c57ce0("m_answer", m_answer);
+    reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_question", m_question);
+    reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_answer", m_answer);
     FUN_14129b5f0("m_countDown", m_countDown);
     m_countDown.operator->()->SetCount(5);
     FUN_14129ad50();

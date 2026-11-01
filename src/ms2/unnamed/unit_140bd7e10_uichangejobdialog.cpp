@@ -11,6 +11,7 @@
 #include "ms2/placeholder/cchangejobtable.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/questdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -85,15 +86,7 @@ public:
     int m_n2e8;                                                 // +0x2e8
 };
 MS2_CHECK_OFFSET(Unk_CjJobRow, m_n2e8, 0x2e8);
-void FUN_14064d3e0(void* p);
-struct Unk_CjJobRef
-{
-    ~Unk_CjJobRef() { FUN_14064d3e0(this); }
-    bool FUN_14064d4e0() const;                                 // IsNull
-    Unk_CjJobRow* FUN_14064d520() const;                        // operator->
-    void* m_0; void* m_8;
-};
-Unk_CjJobRef FUN_14074bc40(int nJobCode);
+MS2Ptr<CQuestData> FUN_14074bc40(int nJobCode);
 void FUN_14078f140(void* p);
 struct Unk_CjNotice
 {
@@ -236,13 +229,13 @@ int UIChangeJobDialog::FUN_140bd88e0()
 // @0x140bd89d0
 void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
 {
-    Unk_CjJobRef spJob = FUN_14074bc40(nJobCode);
-    if (spJob.FUN_14064d4e0())
+    MS2Ptr<CQuestData> spJob = FUN_14074bc40(nJobCode);
+    if (!spJob)
         return;
-    Unk_CjNotice kNotice = FUN_1408564b0(spJob.FUN_14064d520()->FUN_14074b030(), 100);
+    Unk_CjNotice kNotice = FUN_1408564b0(reinterpret_cast<Unk_CjJobRow*>(spJob.operator->())->FUN_14074b030(), 100);
     if (kNotice.FUN_14085a420())
         return;
-    ((class Unk_CjMsgSvc*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(kNotice, spJob.FUN_14064d520()->m_n2e8, 4, 0);
+    ((class Unk_CjMsgSvc*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(kNotice, reinterpret_cast<Unk_CjJobRow*>(spJob.operator->())->m_n2e8, 4, 0);
 }
 
 // @0x140bd8af0

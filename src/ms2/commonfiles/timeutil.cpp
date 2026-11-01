@@ -35,7 +35,6 @@ class CLogString* GetLogString();
 class Unk_TimeStrList {
 public:
     Unk_TimeStrList(); ~Unk_TimeStrList();
-    size_t FUN_1401662c0() const;
     CString& FUN_140164930(size_t index);
     void* m_data; size_t m_count; size_t m_alloc; int m_pad_18;
 };
@@ -43,8 +42,7 @@ MS2_CHECK_SIZE(Unk_TimeStrList,0x20);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_140177de0(CString& text, ATL::CAtlArray<int>& out, const char* delimiter);
 void FUN_1401d9a30(const CStringW& text, ATL::CAtlArray<int>& out, const wchar_t* delimiter);
-CStringW FormatStringId(int id, const fmt::ArgList& args);   // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
+#include "ms2/placeholder/formatstringid.h"
 
 // Statics (0x143ab1f40..0x143ab1fa8).
 __int64 g_timeOffset;
@@ -178,7 +176,7 @@ Unk_TimeRange::Unk_TimeRange() { startHour = 0; startMinute = 0; endHour = 0; en
 int Unk_TimeRange::Parse(CString text) {
     Unk_TimeStrList halves;
     Unk_SplitA(text, (ATL::CAtlArray<CStringA>*)&(halves), "-");
-    if(halves.FUN_1401662c0() != 2) return 0;
+    if(reinterpret_cast<ATL::CAtlArray<CStringA>*>(&halves)->GetCount() != 2) return 0;
     ATL::CAtlArray<int> start;
     ATL::CAtlArray<int> end;
     FUN_140177de0(halves.FUN_140164930(0), start, ":");

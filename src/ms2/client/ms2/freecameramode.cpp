@@ -84,7 +84,6 @@ struct Unk_FcNiPoint3 : public Vector3
 void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, const Unk_FcNiPoint3& pt);   // SetPointAttribute
 void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
-void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_140a0fda0(float a, float b);              // max
 
@@ -179,10 +178,10 @@ void CFreeCameraMode::vfunc_8(double fTime)
         Unk_EfdMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
-        FUN_140a01190(&kRot, 0, &ptRight);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(0, *reinterpret_cast<efd::Point3*>(&ptRight));
         ptRight.FUN_140968990();
         Vector3 ptForward;
-        FUN_140a01190(&kRot, 2, &ptForward);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, *reinterpret_cast<efd::Point3*>(&ptForward));
         ptForward.FUN_140968990();
         Vector3 ptPos = FUN_1409f2540();
         ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y))

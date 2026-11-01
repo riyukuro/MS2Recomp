@@ -400,7 +400,7 @@ void CubeSpawnObject::FUN_140a4f3f0(int n)
                 {
                     CStringW strText = spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strText;
                     if (strText.GetLength() > 0)
-                        FUN_14166fff0(strText);
+                        ShowChatBalloon(strText);
                     if (spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strSound.GetLength() > 0)
                         TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(
                             spScript.FUN_14085a610()->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound,

@@ -48,9 +48,9 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     NiPointer<CMesh> m_spMesh;      // +0x30 "BeamEffect"
-    Unk_NodePtr m_spRoot;           // +0x38 "Effect Root" EffectNode
+    efd::SmartPointer<NiNode> m_spRoot;           // +0x38 "Effect Root" EffectNode
     NiPointer<NiTexturingProperty> m_spTexProp;    // +0x40
-    Unk_NodePtr m_spTarget;         // +0x48 node the effect follows (resolved from the target handle)
+    efd::SmartPointer<NiNode> m_spTarget;         // +0x48 node the effect follows (resolved from the target handle)
     float m_fHalfWidth;             // +0x50 param width / 2
     int m_nQuality;                 // +0x54 param quality (samples per curve segment)
     int m_nUVSets;                  // +0x58 = 1

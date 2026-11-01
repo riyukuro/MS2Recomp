@@ -220,16 +220,15 @@ pin already attributed	client/ms2/pc.cpp: MS2-PIN ??4?$MS2Ptr@VUnk_PCBaseComp_a6
 pin already attributed	client/ms2/postprocessing/postprocesssetting.cpp: MS2-PIN ??1?$map@IV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@U?$less@I@std@@@efd@@QEAA@XZ 0x1416b60e0: already attributed (tag), ignored
 pin already attributed	client/ms2/postprocessing/postprocesssetting.cpp: MS2-PIN ??1?$map@IV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@@std@@@2@@std@@QEAA@XZ 0x1416b6100: already attributed (tag), ignored
 pin already attributed	client/ms2/postprocessing/postprocesssetting.cpp: MS2-PIN ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIV?$SmartPointer@UPropertyData@BuiltinHelper@egf@@@efd@@@1@XZ 0x1416b6120: already attributed (tag), ignored
-pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cb4d0@CQuestManager@@QEAAXAEAV?$vector@IV?$allocator@I@std@@@std@@V?$vector@W4Unk_QmQuestState@@V?$allocator@W4Unk_QmQuestState@@@std@@@3@HH@Z 0x1416cb4d0: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416d2910@CQuestManager@@QEAAHIAEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@std@@H@Z 0x1416d2910: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416d40a0@CQuestManager@@QEAAHHIIAEAV?$list@IV?$allocator@I@std@@@std@@AEAV?$list@V?$list@IV?$allocator@I@std@@@std@@V?$allocator@V?$list@IV?$allocator@I@std@@@std@@@2@@3@PEAV43@@Z 0x1416d40a0: already attributed (tag), ignored
+pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?GetQuestIdsByStates@CQuestManager@@QEAAXAEAV?$vector@IV?$allocator@I@std@@@std@@V?$vector@W4Unk_QmQuestState@@V?$allocator@W4Unk_QmQuestState@@@std@@@3@HH@Z 0x1416cb4d0: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?OnQuest@CQuestManager@@QEAAXAEAVCInPacket@@@Z 0x1416cbd90: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode12@CQuestManager@@QEAAXH@Z 0x1416cf510: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode13@CQuestManager@@QEAAXH@Z 0x1416cf630: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode14@CQuestManager@@QEAAXXZ 0x1416d0c10: already attributed (tag), ignored
 pin already attributed	client/ms2/questmanager_2.cpp: MS2-PIN ?SendQuestMode19@CQuestManager@@QEAAXH@Z 0x1416cf750: already attributed (tag), ignored
-pin already attributed	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtViewPtr@@QEAA@AEBU0@@Z 0x1416fa0e0: already attributed (tag), ignored
-pin already attributed	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ?GetValue_1416f9ae0@RenderedTextureRenderClick@@QEAA?AUUnk_RtViewPtr@@XZ 0x1416f9ae0: already attributed (tag), ignored
+pin already attributed	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ?GetValue_1416f9ae0@RenderedTextureRenderClick@@QEAA?AV?$SmartPointer@VNi3DRenderView@@@efd@@XZ 0x1416f9ae0: already attributed (tag), ignored
 pin already attributed	client/ms2/scenestategame.cpp: MS2-PIN ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@PEAVUGCMapBlueprintInfo@@@Z 0x141745880: already attributed (tag), ignored
 pin already attributed	client/ms2/skilltieroptionmanager.cpp: MS2-PIN ?FUN_14080c370@@YAHIW4eJobCode@@PEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@Z 0x14080c370: already attributed (tag), ignored
 pin already attributed	client/ms2/skilltieroptionmanager.cpp: MS2-PIN ?LoadItemOptionSkillTier@@YAHXZ 0x14080bc00: already attributed (tag), ignored
@@ -1287,6 +1286,7 @@ pin names no function	client/ms2/npcdatacli.cpp: MS2-PIN ??$insert@AEAU?$pair@$$
 pin names no function	client/ms2/partymanager.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVCPartyManager@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
 pin names no function	client/ms2/pvprankduelcomponent.cpp: MS2-PIN ??__Es_strSkill@@YAXXZ: no such function in the obj
 pin names no function	client/ms2/pvprankduelcomponent.cpp: MS2-PIN ??__Es_strStun@@YAXXZ: no such function in the obj
+pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ??R<lambda_6350e5a2645340f9cbac3e1d2031332b>@@QEBA_NH@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cbd90@@YAXPEAXAEAVCInPacket@@@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cf510@@YAXPEAVCQuestManager@@H@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cf630@@YAXPEAVCQuestManager@@H@Z: no such function in the obj
@@ -1295,26 +1295,8 @@ pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416d0c10@@YAX
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_141bc2800@Unk_QmWorld@@QEAA?AUUnk_QmFieldHandle@@H@Z: no such function in the obj
 pin names no function	client/ms2/raindroponcubeemitter.cpp: MS2-PIN ?lower_bound@?$_Hash@V?$_Umap_traits@IIV?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@2@AEBI@Z: no such function in the obj
 pin names no function	client/ms2/randomtargeteffect.cpp: MS2-PIN ??9Unk_NodePtr@@QEBA_NH@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_Rt3DRenderView@@QEAA@PEAX0_N@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtClickPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtColor@@QEAA@MMMM@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtDepthPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtFixedStr@@QEAA@PEBD@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtFormatPrefs@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtMeshCullingProcess@@QEAA@PEAX0@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtObjPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtTargetPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtTexturePtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtViewPtr@@QEAA@PEAX@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtClickPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtDepthPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtFixedStr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtObjPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtTargetPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtTexturePtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1Unk_RtViewPtr@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??2Unk_RtNiNew@@SAPEAX_KI@Z: no such function in the obj
-pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??3Unk_RtNiNew@@SAXPEAXI@Z: no such function in the obj
+pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0NiMeshCullingProcess@@QEAA@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@Z: no such function in the obj
+pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??2MemObject@efd@@SAPEAX_KVMemHint@1@@Z: no such function in the obj
 pin names no function	client/ms2/scenestategame.cpp: MS2-PIN ??0?$MS2Ptr@VCSplashDamageRecord@@@@QEAA@PEAVCSplashDamageRecord@@@Z: no such function in the obj
 pin names no function	client/ms2/scenestategame.cpp: MS2-PIN ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ: no such function in the obj
 pin names no function	client/ms2/scenestatemulti.cpp: MS2-PIN ?_Xrange@?$vector@_KV?$allocator@_K@std@@@std@@CAXXZ: no such function in the obj
@@ -1340,6 +1322,10 @@ pin names no function	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEAVGame
 pin names no function	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEBD@std@@YA$$QEAPEBDAEAPEBD@Z: no such function in the obj
 pin names no function	client/ms2/stateemotionidle.cpp: MS2-PIN ??C?$MS2Ptr@VRideOffAction@@@@QEBAPEAVRideOffAction@@XZ: no such function in the obj
 pin names no function	client/ms2/statemanager.cpp: MS2-PIN ??4?$MS2Ptr@VUnk_StateArg22@@@@QEAAAEAV0@H@Z: no such function in the obj
+pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ??0?$MS2Ptr@VUnk_PetItemBag@@@@QEAA@H@Z: no such function in the obj
+pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ??C?$MS2Ptr@VUnk_PetItemBag@@@@QEBAPEAVUnk_PetItemBag@@XZ: no such function in the obj
+pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?AddRef@?$MS2Ptr@VUnk_PetItemBag@@@@AEBAXXZ: no such function in the obj
+pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?Release@?$MS2Ptr@VUnk_PetItemBag@@@@AEAAXXZ: no such function in the obj
 pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?get@?$MS2Ptr@VUnk_PetButton@@@@QEBAPEAVUnk_PetButton@@XZ: no such function in the obj
 pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?get@?$MS2Ptr@VUnk_PetItemBag@@@@QEBAPEAVUnk_PetItemBag@@XZ: no such function in the obj
 pin names no function	client/ms2/taileffectobject.cpp: MS2-PIN ??0Unk_TeRequest@@QEAA@XZ: no such function in the obj
@@ -1912,6 +1898,7 @@ pin names no function	unnamed/unit_14092f420_accountsessionstate.cpp: MS2-PIN ?a
 pin names no function	unnamed/unit_140f6c680_itemsocketsystempagesbase.cpp: MS2-PIN ??$FUN_14028dfa0@IW4Unk_SocketPageResult@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBIAEBW4Unk_SocketPageResult@@@Z: no such function in the obj
 pin names no function	unnamed/unit_140f6c680_itemsocketsystempagesbase.cpp: MS2-PIN ?RemoveKey@?$CAtlMap@HV?$MS2Ptr@VCItem@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@3@@ATL@@QEAA_NH@Z: no such function in the obj
 pin names no function	unnamed/unit_140fa9eb0_uihomesaveslotdialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
+pin names no function	unnamed/unit_14108e1e0_npcactorandvibrate.cpp: MS2-PIN ?get@?$Unk_UmValuePtr@UUnk_UmDescRow@@@@QEBAPEAUUnk_UmDescRow@@XZ: no such function in the obj
 pin names no function	unnamed/unit_1410e78b0_cubemapinformationservicetreecomdats.cpp: MS2-PIN ??$_Eqrange@_J@?$_Tree@V?$_Tmap_traits@_JV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@std@@@std@@V12@@1@AEB_J@Z: no such function in the obj
 pin names no function	unnamed/unit_1410e78b0_cubemapinformationservicetreecomdats.cpp: MS2-PIN ?_Get_first@?$_Compressed_pair@U?$less@_J@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@_J@2@XZ: no such function in the obj
 pin names no function	unnamed/unit_141299650_uihomesummondialog.cpp: MS2-PIN ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHomeSummonDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ: no such function in the obj
@@ -1919,9 +1906,9 @@ pin names no function	unnamed/unit_1413a9df0.cpp: MS2-PIN ??0CMsTime@@QEAA@HHHHH
 pin names no function	unnamed/unit_1413a9df0.cpp: MS2-PIN ??0Unk_G9Val@@QEAA@H@Z: no such function in the obj
 pin names no function	unnamed/unit_1413a9df0.cpp: MS2-PIN ??0Unk_G9Val@@QEAA@HAEAVUnk_GcNode@@@Z: no such function in the obj
 pin names no function	unnamed/unit_1413a9df0_2.cpp: MS2-PIN ??0CMsTime@@QEAA@_J@Z: no such function in the obj
-pin names no function	unnamed/unit_1413a9df0_2.cpp: MS2-PIN ??1Unk_G9Iter@@QEAA@XZ: no such function in the obj
+pin names no function	unnamed/unit_1413a9df0_2.cpp: MS2-PIN ??1?$Unk_MentorPtr@VUIMentoringPage@@@@QEAA@XZ: no such function in the obj
 pin names no function	unnamed/unit_1413a9df0_2.cpp: MS2-PIN ??GCMsTime@@QEBA?AVCTimeSpan@ATL@@AEBV0@@Z: no such function in the obj
-pin names no function	unnamed/unit_1413a9df0_2.cpp: MS2-PIN ?FUN_140e5e890@Unk_G9Pane@@QEAA?AUUnk_G9Iter@@XZ: no such function in the obj
+pin names no function	unnamed/unit_1413a9df0_2.cpp: MS2-PIN ?GetPage@UIMentoringDialog@@QEAA?AV?$Unk_MentorPtr@VUIMentoringPage@@@@XZ: no such function in the obj
 pin names no function	unnamed/unit_1414a6be0.cpp: MS2-PIN ??Yutf8string@efd@@QEAAAEAV01@PEBD@Z: no such function in the obj
 pin names no function	unnamed/unit_1414d2460.cpp: MS2-PIN ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$SmartPointer@VNiNode@@@efd@@H@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBV?$SmartPointer@VNiNode@@@efd@@H@1@XZ: no such function in the obj
 pin names no function	unnamed/unit_141572e00.cpp: MS2-PIN ??0CNMSerializableEncoder@@QEAA@PEAVCNMStream@@PEAVCNMSerializable@@@Z: no such function in the obj
@@ -2020,6 +2007,24 @@ pin outside MS2-RANGEs	client/ms2/guildmanager.cpp: MS2-PIN ??0?$MS2Ptr@VCGuildM
 pin outside MS2-RANGEs	client/ms2/localtargetcameramode.cpp: MS2-PIN ??C?$MS2Ptr@VCCameraMode@@@@QEBAPEAVCCameraMode@@XZ 0x1409f21a0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/localtargetcameramode.cpp: MS2-PIN ?get@?$MS2Ptr@VCCameraMode@@@@QEBAPEAVCCameraMode@@XZ 0x1409f2180: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/nifeffectparam.cpp: MS2-PIN ?Clone@CAtlStringMgr@ATL@@UEAAPEAUIAtlStringMgr@2@XZ 0x14103c770: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0?$SmartPointer@VNi3DRenderView@@@efd@@QEAA@PEAVNi3DRenderView@@@Z 0x1409a73e0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0?$SmartPointer@VNiAVObject@@@efd@@QEAA@AEBV01@@Z 0x14097eb60: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0?$SmartPointer@VNiDepthStencilBuffer@@@efd@@QEAA@PEAVNiDepthStencilBuffer@@@Z 0x1416ae2e0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0?$SmartPointer@VNiRenderClick@@@efd@@QEAA@PEAVNiRenderClick@@@Z 0x1414747a0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0?$SmartPointer@VNiRenderTargetGroup@@@efd@@QEAA@PEAVNiRenderTargetGroup@@@Z 0x1414748a0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0?$SmartPointer@VNiRenderedTexture@@@efd@@QEAA@PEAVNiRenderedTexture@@@Z 0x14127c2a0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0FormatPrefs@NiTexture@@QEAA@XZ 0x140984420: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Ni3DRenderView@@QEAA@PEAVNiCamera@@PEAVNiCullingProcess@@_N@Z 0x140d9de30: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0NiColorA@@QEAA@MMMM@Z 0x14097f1d0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0NiFixedString@@QEAA@PEBD@Z 0x140984450: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1?$SmartPointer@VNi3DRenderView@@@efd@@QEAA@XZ 0x1409a7ad0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1?$SmartPointer@VNiAVObject@@@efd@@QEAA@XZ 0x1405a85c0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1?$SmartPointer@VNiDepthStencilBuffer@@@efd@@QEAA@XZ 0x1416aed20: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1?$SmartPointer@VNiRenderClick@@@efd@@QEAA@XZ 0x141474ca0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1?$SmartPointer@VNiRenderTargetGroup@@@efd@@QEAA@XZ 0x141474d60: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1?$SmartPointer@VNiRenderedTexture@@@efd@@QEAA@XZ 0x14127c650: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??1NiFixedString@@QEAA@XZ 0x1409845a0: outside the unit's MS2-RANGEs, ignored
+pin outside MS2-RANGEs	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??3MemObject@efd@@SAXPEAXVMemHint@1@@Z 0x14097f700: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/scenestategame.cpp: MS2-PIN ?IsNull@?$MS2Ptr@VCInteractObject@@@@QEBA_NXZ 0x140a7b5e0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/scenestategame.cpp: MS2-PIN ?get@?$MS2Ptr@VCInteractObjectData@@@@QEBAPEAVCInteractObjectData@@XZ 0x1411926f0: outside the unit's MS2-RANGEs, ignored
 pin outside MS2-RANGEs	client/ms2/scenestatemulti.cpp: MS2-PIN ??B?$SmartPointer@VUnk_LobbyActor@@@efd@@QEBAPEAVUnk_LobbyActor@@XZ 0x140965780: outside the unit's MS2-RANGEs, ignored

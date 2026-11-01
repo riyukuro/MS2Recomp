@@ -46,14 +46,11 @@ class Unk_JscSkillSys { public: MS2Ptr<Unk_JscSkillSet> FUN_141768380(); };
 class Unk_JscPlayer
 {
 public:
-    unsigned short FUN_14152fce0(int nSkillId);                 // the override level of the skill
     MS2Ptr<Unk_JscTree> FUN_1409eee00();
 };
 Unk_JscPlayer* FUN_1409613d0(PCBase* pPC);                      // the MyPC of a PC, or 0
 
 
-int FUN_14165c570(PCBase* pPC);                                 // the active stance skill
-void FUN_14165c720(PCBase* pPC, int nSkillId, unsigned short nLevel);
 void FUN_1401fdb50(unsigned char* payload, COutputStream& stream);
 void FUN_140710590(COutPacket& packet);
 
@@ -84,7 +81,7 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
         }
         if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3))
         {
-            unsigned short nLevel = pPlayer->FUN_14152fce0(nSkillId);
+            unsigned short nLevel = reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId);
             if (nLevel != 0)
                 return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(nSkillId, nLevel);
         }
@@ -111,7 +108,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
         }
         if (((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)
             return true;
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3) && pPlayer->FUN_14152fce0(nSkillId) > 0)
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3) && reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId) > 0)
             return true;
         JobData* pJobData = GetJobData().get();
         if (pJobData != 0)
@@ -221,7 +218,7 @@ void JobSystemCli::RefreshActiveStance()
         const int nStanceSlot = 1;
         JobSkillPtr spSkill = FindSkill(nStanceSlot);
         if (spSkill.get() != 0)
-            NotifySkill(FUN_14165c570(m_pOwner), spSkill->m_nLevel);
+            NotifySkill(reinterpret_cast<PC*>(m_pOwner)->FUN_14165c570(), spSkill->m_nLevel);
     }
 }
 
@@ -233,7 +230,7 @@ void JobSystemCli::NotifySkill(int nSkillId, unsigned short nLevel)
         MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spRow.IsNull())
             return;
-        FUN_14165c720(m_pOwner, nSkillId, nLevel);
+        reinterpret_cast<PC*>(m_pOwner)->FUN_14165c720(nSkillId, nLevel);
     }
 }
 

@@ -60,7 +60,6 @@ extern CString DAT_143af3e30;
 class Unk_MsgDisplay : public ASDisplayObject
 {
 public:
-    int FUN_1422c1500();                                            // width
     int FUN_1422c1530();                                            // height
     void FUN_1422c0f60(float* pX, float* pY);                       // position
 };

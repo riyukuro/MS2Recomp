@@ -116,15 +116,15 @@ public:
     int FUN_1422b9fd0(int nSubSceneId);
 };
 UISwfEntityManager* FUN_140b632f0();
-class Unk_140a94350
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9();
-    virtual void vfunc_10(int n);
-};
-Unk_140a94350* FUN_140a94350();
+#include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+
+
+
+
+
+
+
+
 GFxManager* FUN_14025e7a0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
@@ -198,7 +198,7 @@ void UITalkCinematic::vfunc_2()
 {
     FUN_1422dbf00(0x1c, 0, 0);
     FUN_140b632f0()->AddToLayer(this, 4);
-    FUN_140a94350()->vfunc_10(2);
+    ChromaSDK::GetChromaManager()->SetState(2);
 }
 
 // @0x141b1a0e0
@@ -207,7 +207,7 @@ void UITalkCinematic::vfunc_3()
     m_nLoaded = 0;
     FUN_1422dc080();
     FUN_140b632f0()->RemoveFromLayer(this, 4);
-    FUN_140a94350()->vfunc_10(0);
+    ChromaSDK::GetChromaManager()->SetState(0);
 }
 
 // @0x141b1a140
@@ -766,12 +766,12 @@ CTalkScript* FUN_140854fa0(void* pThis, CInPacket& in);        // CTalkScript::C
 
 
 // The UI message sent to the swf entity registered for an event id (same shape as functioncubeobject.cpp's).
-struct Unk_FcUIMsg
-{
-    Unk_FcUIMsg();                                              // 0x1422e4490
-    ~Unk_FcUIMsg();                                             // 0x140c30570
-    void* m_pad[10];
-};
+#include "ms2/gfxui/uimsg.h"  // C3: UIMsg
+
+
+
+
+
 
 // The emoticon-like component of the npc (PCBase slot 83): kind 2 shows the text.
 class Unk_PCBaseComp_a88 : public UIEmoticon::Entity {};
@@ -1062,7 +1062,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
                 MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = pNpc->vfunc_85();
                 if (spBalloon.get() != 0)
                     spBalloon->FUN_1418fb6d0();
-                pNpc->FUN_14166fff0(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
+                pNpc->ShowChatBalloon(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
             }
         }
         else
@@ -1088,10 +1088,10 @@ void UITalkManager::FUN_141b1e8a0(CInPacket& in)
     UISwfEntity* pEntity = ((UISwfEntity*)((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9e20(0x620001f));
     if (pEntity != 0)
     {
-        Unk_FcUIMsg kMsg;
-        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->AddString("moveMyPC");
-        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->AddInt(nValue);
-        ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->FUN_1422b8030(((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
+        UIMsg kMsg;
+        kMsg.AddString("moveMyPC");
+        kMsg.AddInt(nValue);
+        kMsg.FUN_1422b8030(((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212c0());
         pEntity->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
     }
 }
@@ -1386,9 +1386,9 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
             UISwfEntity* pEntity = ((UISwfEntity*)((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9e20(0x620001f));
             if (pEntity != 0)
             {
-                Unk_FcUIMsg kMsg;
-                    ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->AddString("openDialog");
-                ((class ASData*)(struct Unk_FcUIMsg*)(&kMsg))->AddInt(nDialogId);
+                UIMsg kMsg;
+                    kMsg.AddString("openDialog");
+                kMsg.AddInt(nDialogId);
                 pEntity->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
             }
             if (nMode != 0)
@@ -1455,7 +1455,7 @@ void UITalkManager::SendNpcTalkMode0()
         FUN_140710590(packet);
     }
     FUN_141b20210();
-    FUN_140a94350()->vfunc_10(0);
+    ChromaSDK::GetChromaManager()->SetState(0);
 }
 
 // @0x141b1ff80
@@ -1505,7 +1505,7 @@ void UITalkManager::FUN_141b200d0(unsigned nNpcId, CTalkScript* pScript)
                 m_48 = pNpc->FUN_141094200();
         }
         pNpc->FUN_141093fa0();
-        FUN_140a94350()->vfunc_10(2);
+        ChromaSDK::GetChromaManager()->SetState(2);
     }
 }
 
@@ -1542,7 +1542,7 @@ void UITalkManager::FUN_141b20210()
     m_nSpecialNpc = 0;
     m_nLastTick = GetTickCountMs2();
     m_reward.FUN_141b1dbd0();
-    FUN_140a94350()->vfunc_10(0);
+    ChromaSDK::GetChromaManager()->SetState(0);
 }
 
 // @0x141b204d0
@@ -1601,7 +1601,7 @@ void UITalkManager::FUN_141b20790(int nNpcId, int nFriendly)
     MS2Ptr<CTalkScript> spScript = FUN_140856fa0(((class CNpc*)(class PCBase*)(pNpc))->FUN_141092fa0(), nKind);
     if ((spScript.get() ? true : false) && spScript->m_contents.FUN_14078fae0() > 0)
     {
-        pNpc->FUN_14166fff0(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
+        pNpc->ShowChatBalloon(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
         if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking() == 0 && spScript->m_contents.FUN_14078f350(0)->m_unk20.GetLength() != 0)
             ((CEffectService*)FUN_1403ed280())->FUN_1411a4f40(CString(spScript->m_contents.FUN_14078f350(0)->m_unk20), pNpc->vfunc_18());
     }
