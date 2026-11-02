@@ -153,7 +153,7 @@ int UITamingBar::Entity::vfunc_8(int n)
         return 1;
     if (m_b4 == 0)
         return 1;
-    int nDead = pActor->FUN_14166ce30();
+    int nDead = pActor->IsDead();
     if (nDead != 0)
         return 1;
     Unk_TamingTamed* pTamed = static_cast<Unk_TamingTamed*>(efd::DynamicCast<CPet, PCBase>(pActor));

@@ -149,9 +149,8 @@ class Unk_CameraPickObject
 public:
     GameObject* FUN_140a38a00();                                        // the npc (or null)
 };
-// The pick record holder (ecr::PickService::PickRecord, reference counted by FUN_140a17eb0).
+// The pick record holder (ecr::PickService::PickRecord, reference counted).
 class Unk_GoPickHit;
-void FUN_140a17eb0(ecr::PickService::PickRecord* pRecord);              // add a reference
 class Unk_GoPickListPtr
 {
 public:
@@ -161,7 +160,7 @@ public:
     {
         m_p = o.m_p;
         if (m_p)
-            FUN_140a17eb0(m_p);
+            m_p->IncRefCount();
     }
     ~Unk_GoPickListPtr();                                               // 0x140a16120
     ecr::PickService::PickRecord* FUN_140a16c00() const;
@@ -223,7 +222,6 @@ class Unk_SceneApp;
 class Unk_UIManager;
 class Unk_140ad4b90;
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
-bool FUN_141863100(Unk_140ad4b90* p, int nMapId, const Vector3& ptPos);   // the point is in the map's area
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n); // set a global shader constant
 extern NiFixedString DAT_143ae5380;                                     // camera shader constant name
@@ -277,11 +275,8 @@ public:
 };
 class Unk_Clock;
 void FUN_140a0b2a0(NiAVObject* pNode);                                  // detach the node from its parent
-class Unk_CameraPostEffect
-{
-public:
-    void FUN_1411780e0(float f1, float f2);
-};
+class Unk_CameraPostEffect;
+void FUN_1411780e0(void* pEffect, float f1, float f2);                // set the depth of field focus
 class PostProcessingService   // C3: member view for the former free stand-ins
 {
 public:
@@ -1259,7 +1254,7 @@ void CameraMgr::FUN_140aece50()
             }
             else if (setup.m_28 == 3)
             {
-                if (FUN_141863100(((class Unk_140ad4b90*)FUN_140ad4b90()), setup.m_34, pTarget->vfunc_18()))
+                if (reinterpret_cast<CTriggerService*>(FUN_140ad4b90())->ObjectContains(setup.m_34, pTarget->vfunc_18()))
                     bHit = true;
             }
             if (bHit)
@@ -1636,7 +1631,7 @@ void CameraMgr::FUN_140af0b70(int bOn, float f1, float f2)
             m_1b8 = 0;
             Unk_CameraPostEffect* pEffect = ((class Unk_CameraPostEffect*)((class PostProcessingService*)(class Unk_1409a8b20*)(((class Unk_1409a8b20*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetDoF());
             if (pEffect)
-                pEffect->FUN_1411780e0(f1, f2);
+                FUN_1411780e0(pEffect, f1, f2);
         }
         else
             m_1b8 = 1;
@@ -2221,7 +2216,7 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
                 m_1b8 = 0;
                 Unk_CameraPostEffect* pPostEffect = ((class Unk_CameraPostEffect*)((class PostProcessingService*)(class Unk_1409a8b20*)(((class Unk_1409a8b20*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetDoF());
                 if (pPostEffect)
-                    pPostEffect->FUN_1411780e0(m_spMode->FUN_140af7ef0(), m_spMode->FUN_140af7e90());
+                    FUN_1411780e0(pPostEffect, m_spMode->FUN_140af7ef0(), m_spMode->FUN_140af7e90());
             }
         }
         m_spMode->vfunc_6(1);

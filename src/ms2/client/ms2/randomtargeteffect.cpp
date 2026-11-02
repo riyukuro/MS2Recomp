@@ -63,7 +63,7 @@ class WorldService
 public:
     ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0();     // &m_118
     ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0();     // &m_148
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
 };
@@ -379,7 +379,7 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByNpcMap(unsigned
 MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::Find(unsigned nId)
 {
     MS2Ptr<CRandomTargetEffect> spResult(0);
-    void* pObj = reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FUN_141bd1180(nId);
+    void* pObj = reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FindObjectById(nId);
     if (Unk_RtePlayer* pPlayer = reinterpret_cast<Unk_RtePlayer*>(efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(pObj))))
         spResult.AssignRaw(pPlayer->GetEffectPtr());
     else if (Unk_UpperNpc* pNpc = (Unk_UpperNpc*)FUN_140a38a00((Unk_BossObject*)pObj))

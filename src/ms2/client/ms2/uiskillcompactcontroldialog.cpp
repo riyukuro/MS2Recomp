@@ -169,7 +169,7 @@ int UISkillCompactControlDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0 && pSender == dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         FUN_14151f200();
         if (nResult == 0)
         {
@@ -347,7 +347,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
     if (_stricmp(szMethod, "onChangeTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             m_strTab = data.FUN_1422b8f40();
             FUN_140fa16f0(CStringW(m_strTab));
@@ -357,10 +357,10 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
     else if (_stricmp(szMethod, "onClickCompactControlCheckbox") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned nSkillId = data.FUN_1422b8a10();
-            int bOn = data.FUN_1422b8a90();
+            unsigned nSkillId = data.PopInt();
+            int bOn = data.PopBool();
             MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(m_strTab));
             if (spConfig.get() != 0)
             {
@@ -375,7 +375,7 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
     else if (_stricmp(szMethod, "onRemoveTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
             int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strName)), 0);
@@ -411,15 +411,15 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
     else if (_stricmp(szMethod, "onRenameTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 0xc37, 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 m_strRename = strName;
-                spBox->FUN_141a01d30(0, strName, 5, 0, 0);
-                spBox->FUN_141a027c0(ScBoxDelegate(this, &UISkillCompactControlDialog::FUN_140fa0820));
+                spBox->SetInput(0, strName, 5, 0, 0);
+                spBox->SetCallback(ScBoxDelegate(this, &UISkillCompactControlDialog::FUN_140fa0820));
                 FUN_140d73c60(spBox);
             }
         }
@@ -432,8 +432,8 @@ int UISkillCompactControlDialog::vfunc_28(const char* szMethod, const Scaleform:
             if (spBox.get() != 0)
             {
                 CStringW strName;
-                spBox->FUN_141a01d30(0, strName, 5, 0, 0);
-                spBox->FUN_141a027c0(ScBoxDelegate(this, &UISkillCompactControlDialog::FUN_140fa0d80));
+                spBox->SetInput(0, strName, 5, 0, 0);
+                spBox->SetCallback(ScBoxDelegate(this, &UISkillCompactControlDialog::FUN_140fa0d80));
                 FUN_140d73c60(spBox);
             }
         }
@@ -487,7 +487,7 @@ void UISkillCompactControlDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
     CString strName = pArgs->FUN_1422b8d30();
     if (strName.Find("compactSkill", 0) != -1)
     {
-        int nSkillId = pArgs->FUN_1422b8a10();
+        int nSkillId = pArgs->PopInt();
         ASTooltip tip(pPlayer, 0x10, 2);
         if (FUN_1409e1b80(&tip, nSkillId, 0) != 0)
         {
@@ -773,7 +773,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
             obj.FUN_1409c0d20("skillID", nSkillId);
             obj.FUN_1407cba60("iconPath", CString(pRow->m_strIcon));
             obj.FUN_1407cb9c0("selected", bSelected);
-            arrSkills.FUN_1422bbf00(obj);
+            arrSkills.PushObj(obj);
         }
         for (std::set<unsigned>::iterator it = setOther.begin(); it != setOther.end(); ++it)
         {
@@ -787,7 +787,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
             obj.FUN_1409c0d20("skillID", nSkillId);
             obj.FUN_1407cba60("iconPath", CString(pRow->m_strIcon));
             obj.FUN_1407cb9c0("selected", bSelected);
-            arrSkills.FUN_1422bbf00(obj);
+            arrSkills.PushObj(obj);
         }
         pDialog->FUN_140bd2cb0("buildSkills", arrSkills);
         pDialog->Invoke("selectTab", CStringW(strTab));

@@ -56,7 +56,7 @@ private:
 };
 class Unk_GrUIManager { public: };
                 // the guild id
-class Unk_GrGuildManager { public: int FUN_1413b6160(); char m_pad[8]; CGuildInfo m_8; };
+class Unk_GrGuildManager { public: char m_pad[8]; CGuildInfo m_8; };
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);    // date + time text
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);                   // narrows a string
@@ -781,7 +781,7 @@ __int64 CGameRankingCli::OwnerId(int nBoard)
 {
     __int64 nId = 0;
     if (nBoard == 1 || nBoard == 5) {
-        if (reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->FUN_1413b6160() == 0)
+        if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
             return 0;
         nId = reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_8.FUN_1404ccbd0();
     }

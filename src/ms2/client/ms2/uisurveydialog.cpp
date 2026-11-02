@@ -79,7 +79,7 @@ int UISurveyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (_stricmp("OnVote", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nAnswer = atoi(data.FUN_1422b8d30());
             if (nAnswer == -1)
@@ -238,7 +238,7 @@ void UISurveyDialog::FUN_140edad50(CInPacket& packet)
 // @0x140edb160
 int UISurveyDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
-    int nResult = pMsg->FUN_1422b8a10();
+    int nResult = pMsg->PopInt();
     CStringW strTag = pMsg->FUN_1422b8f40();
     if (strTag.CompareNoCase(L"Close") == 0 && nResult == 0)
         vfunc_67();

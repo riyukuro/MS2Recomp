@@ -95,7 +95,7 @@ void ASObj::FUN_140bd0d90(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 MS2_REPLACE_METHOD(0x140BD0D90, ASObj, FUN_140bd0d90, 152, 0x1CED670B);
 

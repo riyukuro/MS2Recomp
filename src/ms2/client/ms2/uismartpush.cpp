@@ -114,9 +114,9 @@ int UISmartPush::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     if (_stricmp("onSmartPush", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
+            int nId = data.PopInt();
             reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd8620(nId);
         }
     }

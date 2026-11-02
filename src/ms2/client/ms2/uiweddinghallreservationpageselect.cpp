@@ -162,9 +162,9 @@ bool UIWeddingHallReservationPageSelect::vfunc_4(__int64 a1, __int64 a2, int a3)
     if (_stricmp((const char*)a1, "onSelectWeddingHall") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)a2, a3))
         {
-            m_nSelectedSlot = data.FUN_1422b8a10();
+            m_nSelectedSlot = data.PopInt();
             FUN_140fe4fb0(this, m_nSelectedSlot);
             ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SetHall(m_nSelectedSlot);
         }

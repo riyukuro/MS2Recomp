@@ -202,14 +202,14 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     if ((strType == "giftItem"))
     {
-        unsigned nGiftId = pArgs->FUN_1422b8b10();
+        unsigned nGiftId = pArgs->PopUInt();
         MS2Ptr<ItemGiftPcBang> spGift;
         if (!m_gifts.Lookup(nGiftId, spGift))
             return;
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(spGift->m_itemId, spGift->vfunc_o18_1(), 0) != 0)
         {
-            spItem->FUN_140526c70(spGift->m_count);
+            spItem->SetCountClamped(spGift->m_count);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
             ASTooltip tip(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 4, 2);
             if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
@@ -218,7 +218,7 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     }
     else if ((strType == "playGift"))
     {
-        unsigned nIndex = pArgs->FUN_1422b8b10();
+        unsigned nIndex = pArgs->PopUInt();
         if (nIndex >= m_playBonus.GetCount())
             return;
         MS2Ptr<PlayBonusItemGift> spBonus = m_playBonus[nIndex];
@@ -259,9 +259,9 @@ int UIPcBangDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (_stricmp(szMethod, "onClickReceive") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nIndex = data.FUN_1422b8b10();
+            int nIndex = data.PopUInt();
             COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
             packet.WriteUInt8(2);
             packet.WriteInt32(nIndex);
@@ -351,9 +351,9 @@ void UIPcBangDialog::OnPacketReward(CInPacket& packet)
         MS2Ptr<CItem> spItem(new CItem());
         if (!spItem->FUN_140523c40(spGift->m_itemId, spGift->vfunc_o18_1(), 0))
             return;
-        spItem->FUN_140526c70(spGift->m_count);
+        spItem->SetCountClamped(spGift->m_count);
         spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-        spBox->FUN_141a01700(0x475, 0, 0);
+        spBox->SetButtonLabelIds(0x475, 0, 0);
         FUN_140d73c60(spBox);
         FUN_141276180(s_strBuySound, "");
     }
@@ -475,7 +475,7 @@ void UIPcBangDialog::UpdateBuff()
     m_30->Invoke("setIcon", spBuff->GetIcon());
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("buffText"))
     {
-        spText->FUN_1422c4f00(GetStringTable()->FUN_141812290(spBuff->GetID(), spBuff->GetLevel(), "tooltipDescription"));
+        spText->SetTextHTMLW(GetStringTable()->FUN_141812290(spBuff->GetID(), spBuff->GetLevel(), "tooltipDescription"));
         FUN_140d01340((*spText).FUN_1422bb890(), 2, 2);
     }
 }

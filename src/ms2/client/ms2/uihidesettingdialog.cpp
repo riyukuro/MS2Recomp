@@ -152,12 +152,12 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (!_stricmp("OnConfirm", szMethod)) {
         ASData data;
-        data.FUN_1422b9620(pArgs, nArgs);
+        data.SetArgsIfAny(pArgs, nArgs);
         return 1;
     } else if (!_stricmp("OnCheck", szMethod)) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bChecked = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bChecked = data.PopBool();
             CString strName = data.FUN_1422b8d30();
             ATL::CAtlMap<CString, MS2Ptr<SwfInfo>, ATL::CStringElementTraits<CString> >::CPair* pPair = m_178.Lookup(strName);
             if (pPair) {

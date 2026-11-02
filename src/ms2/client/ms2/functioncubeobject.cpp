@@ -181,7 +181,7 @@ public:
 class Unk_FcItemRow : public CPtred
 {
 public:
-    __int64 m_18;                                                   // +0x18 (the store id FUN_141228100 resets)
+    __int64 m_18;                                                   // +0x18 (the store id OpenObjectStore resets)
     char m_pad_20[0xe0];
     MS2Ptr<Unk_FcItemText> m_spText;                                // +0x100
 };
@@ -698,13 +698,13 @@ void CFunctionCubeObject::vfunc_14(MS2Ptr<Unk_FcStateMsg> sp)
 }
 
 // @0x141226b80
-void CFunctionCubeObject::FUN_141226b80(CString str)
+void CFunctionCubeObject::SetId(CString str)
 {
     m_strId = str;
 }
 
 // @0x141226bd0
-CString CFunctionCubeObject::FUN_141226bd0()
+CString CFunctionCubeObject::GetId()
 {
     return m_strId;
 }
@@ -740,7 +740,7 @@ int CFunctionCubeObject::FUN_141226cd0()
 }
 
 // @0x141226d00
-Vector3 CFunctionCubeObject::FUN_141226d00()
+Vector3 CFunctionCubeObject::GetPosition()
 {
     Vector3 vPos;
     reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vPos));
@@ -773,7 +773,7 @@ Unk_EntRef CFunctionCubeObject::GetEnt()
 }
 
 // @0x141226eb0
-egf::EntityID CFunctionCubeObject::FUN_141226eb0()
+egf::EntityID CFunctionCubeObject::GetEntityId()
 {
     const egf::EntityID* pId = m_ent.FUN_1408a9090() != 0 ? &reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetEntityID() : &s_nullId;
     return *pId;
@@ -909,10 +909,10 @@ void CFunctionCubeObject::OpenSubKindDialog()
     switch (m_spData->m_nSubKind)
     {
     case 1:
-        FUN_141228060();
+        OpenTriggerEditor();
         break;
     case 4:
-        FUN_141228100();
+        OpenObjectStore();
         break;
     case 5:
         OpenCubeSubScene();
@@ -1036,7 +1036,7 @@ void CFunctionCubeObject::FUN_141227dd0(int nSkip)
 }
 
 // @0x141228060
-void CFunctionCubeObject::FUN_141228060()
+void CFunctionCubeObject::OpenTriggerEditor()
 {
     if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))))
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e6b);
@@ -1049,7 +1049,7 @@ void CFunctionCubeObject::FUN_141228060()
 }
 
 // @0x141228100
-void CFunctionCubeObject::FUN_141228100()
+void CFunctionCubeObject::OpenObjectStore()
 {
     Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByKey(m_nArg));
@@ -1314,7 +1314,7 @@ void CHomemadeCubeObject::vfunc_8(CString str)
                 spAct->m_n38 = 0x8f;
                 ((class MyPC*)(class Unk_FcActor*)(pActor))->SendRequestRideMode1(spAct);
             }
-            else if (((class PCBase*)(pActor))->FUN_14166c930() != 0x37)
+            else if (((class PCBase*)(pActor))->GetCurStateId() != 0x37)
             {
                 MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(vfunc_16(), str, nItemId));
                 pActor->vfunc_59(0x37, spData.get(), 0x8f, 0);
@@ -1562,7 +1562,7 @@ CStringW CBreedingCubeObject::vfunc_6()
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(FUN_14112e110()));
     if (pRow == 0)
         return CStringW(L"");
-    if (((class PCBase*)(pActor))->FUN_14166c930() == 0x37)
+    if (((class PCBase*)(pActor))->GetCurStateId() == 0x37)
         return CStringW(L"");
     if (vfunc_17() == 0)
         return GetStringCommonByKey(L"s_gathering_object_lack_mastery");
@@ -1699,7 +1699,7 @@ CStringW CFarmingCubeObject::vfunc_6()
     Unk_FcItemRow* pRow = reinterpret_cast<Unk_FcItemRow*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(kSvc).operator->())->GetCubeByKey(FUN_14112e110()));
     if (pRow == 0)
         return CStringW(L"");
-    if (((class PCBase*)(pActor))->FUN_14166c930() == 0x37)
+    if (((class PCBase*)(pActor))->GetCurStateId() == 0x37)
         return CStringW(L"");
     if (vfunc_17() == 0)
         return GetStringCommonByKey(L"s_gathering_object_lack_mastery");
@@ -1871,7 +1871,7 @@ void CNurturingCubeObject::vfunc_3()
     {
         if (((class MyPC*)(class Unk_FcActor*)(pActor))->IsDailyRecordStale() != 0)
             ((class MyPC*)(class Unk_FcActor*)(pActor))->ResetDailyRecords();
-        float fDist = const_cast<Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pActor->vfunc_18()))).FUN_140965c40(FUN_141226d00()).FUN_140967ac0();
+        float fDist = const_cast<Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pActor->vfunc_18()))).FUN_140965c40(GetPosition()).FUN_140967ac0();
         unsigned nNear = fDist < *((float*)&((class Unk_IntOptionEntry*)(struct Unk_FcCellFloat*)(&((struct Unk_FcConstTable*)FUN_1401d3200())->m_near))->FUN_140298f40());
         if ((unsigned)m_bNear != nNear)
         {
@@ -1927,7 +1927,7 @@ void CNurturingCubeObject::vfunc_8(CString str)
             spAct->m_s28 = str;
             ((class MyPC*)(class Unk_FcActor*)(pActor))->SendRequestRideMode1(spAct);
         }
-        else if (((class PCBase*)(pActor))->FUN_14166c930() != 0x40)
+        else if (((class PCBase*)(pActor))->GetCurStateId() != 0x40)
         {
             pActor->vfunc_59(0x40, 0, FUN_14122d200(), 0);
         }
@@ -2473,7 +2473,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                         {
                             pActor->vfunc_59(0x29, new StateUseFurnitureData(strId), 0, 0);
                         }
-                        else if (((class PCBase*)(pActor))->FUN_14166c930() == 0x29)
+                        else if (((class PCBase*)(pActor))->GetCurStateId() == 0x29)
                         {
                             pActor->vfunc_59(1, 0, 0, 0);
                         }
@@ -2678,10 +2678,10 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FindCube(CString strId)
 
 // A cube object was created: it replaces its pending twin and goes into the table.
 // @0x141230c90
-void CFunctionCubeService::FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject)
+void CFunctionCubeService::AddCube(MS2Ptr<CFunctionCubeObject> spObject)
 {
-    TransferPendingState(spObject->FUN_141226bd0(), spObject);
-    m_mapCubes.SetAt(spObject->FUN_141226bd0(), spObject);
+    TransferPendingState(spObject->GetId(), spObject);
+    m_mapCubes.SetAt(spObject->GetId(), spObject);
     spObject->vfunc_13();
     if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))))
     {
@@ -2693,7 +2693,7 @@ void CFunctionCubeService::FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject)
 
 // A cube was removed: destroy its entity, drop it, and refresh or close the editor dialog.
 // @0x141230df0
-void CFunctionCubeService::FUN_141230df0(CString strId)
+void CFunctionCubeService::RemoveCube(CString strId)
 {
     MS2Ptr<CFunctionCubeObject> spCube;
     if (m_mapCubes.Lookup(strId, spCube))
@@ -3040,12 +3040,12 @@ MS2_REPLACE_METHOD(0x141226300, CFunctionCubeObject, vfunc_3, 6, 0xA9AF6E37);
 MS2_REPLACE_METHOD(0x141226310, CFunctionCubeObject, vfunc_4, 6, 0xA9AF6E37);
 MS2_REPLACE_METHOD(0x141226320, CFunctionCubeObject, vfunc_5, 12, 0x90591540);
 MS2_REPLACE_METHOD(0x141226B20, CFunctionCubeObject, vfunc_14, 88, 0x2063E5F2);
-MS2_REPLACE_METHOD(0x141226B80, CFunctionCubeObject, FUN_141226b80, 63, 0xE18B625C);
-MS2_REPLACE_METHOD(0x141226BD0, CFunctionCubeObject, FUN_141226bd0, 66, 0xBB932E49);
+MS2_REPLACE_METHOD(0x141226B80, CFunctionCubeObject, SetId, 63, 0xE18B625C);
+MS2_REPLACE_METHOD(0x141226BD0, CFunctionCubeObject, GetId, 66, 0xBB932E49);
 MS2_REPLACE_METHOD(0x141226CD0, CFunctionCubeObject, FUN_141226cd0, 34, 0x9D097096);
-MS2_REPLACE_METHOD(0x141226D00, CFunctionCubeObject, FUN_141226d00, 93, 0x773D38C8);
+MS2_REPLACE_METHOD(0x141226D00, CFunctionCubeObject, GetPosition, 93, 0x773D38C8);
 MS2_REPLACE_METHOD(0x141226E60, CFunctionCubeObject, GetEnt, 65, 0x1741F7DD);
-MS2_REPLACE_METHOD(0x141226EB0, CFunctionCubeObject, FUN_141226eb0, 115, 0x9567809B);
+MS2_REPLACE_METHOD(0x141226EB0, CFunctionCubeObject, GetEntityId, 115, 0x9567809B);
 MS2_REPLACE_METHOD(0x141226F30, CFunctionCubeObject, vfunc_15, 78, 0xC045165D);
 MS2_REPLACE_METHOD(0x1412271C0, CFunctionCubeObject, FUN_1412271c0, 31, 0x808A9532);
 MS2_REPLACE_METHOD(0x1412271F0, CFunctionCubeObject, FUN_1412271f0, 107, 0xFAC255D5);

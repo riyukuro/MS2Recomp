@@ -31,7 +31,7 @@
 
 ecr::RenderService* Unk_GetRenderService(char* pCell);          // gfxmoviebackground.cpp; the framework's render service (null if none)
 int FUN_14151e740();                                            // GFx allocator bytes in use
-void FUN_1422d9020(int n);
+class GFxMovieEventHandler { public: static void FUN_1422d9020(bool bEnable); };   // gfxmovie.h; IME enable flag
 CLogString* GetLogString();
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -273,7 +273,7 @@ MS2_REPLACE_METHOD(0x1422EA230, GFxService, SetFont, 63, 0xB0476F43);
 // @0x1422ea280
 void GFxService::FUN_1422ea280(bool b)
 {
-    FUN_1422d9020(0);
+    GFxMovieEventHandler::FUN_1422d9020(false);
 }
 MS2_REPLACE_METHOD(0x1422EA280, GFxService, FUN_1422ea280, 25, 0x285AC38D);
 

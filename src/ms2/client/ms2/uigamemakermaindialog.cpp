@@ -93,7 +93,7 @@ int UIGameMakerMainDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnExecute", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CString strCommand = data.FUN_1422b8d30();
             if (strCommand.GetLength() == 0)
                 return 1;

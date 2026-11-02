@@ -29,13 +29,13 @@ class Unk_ReplList { void* m_p[4]; };
 void FUN_140660c40(Unk_ReplList*) noexcept;
 void FUN_140660c80(Unk_ReplMap*) noexcept;
 // Placeholder substitution builder: feed (key, value) pairs, then read the result.
+class MailText { public: CStringW ResolveTitle(); };   // C3: member view (mailtextutil.cpp)
 class Unk_StrRepl {
 public:
     Unk_StrRepl(int mode);                                                     // 0x14065cfa0
     // @0x140692c60
     ~Unk_StrRepl() { FUN_140660c40(&m_list); FUN_140660c80(&m_map); }          // 0x140692c60
     void FUN_14065d590(const CStringW& key, const CStringW& value);
-    CStringW FUN_14065d9d0();
 private:
     void* m_unk_00;
     Unk_ReplMap m_map;
@@ -115,7 +115,7 @@ CMailAttachItem::CMailAttachItem(CInPacket& packet)
     {
         spItem->SetItemUid(nUid);
         spItem->FUN_140526b70(nRarity);
-        spItem->FUN_140526c70(nEnchant);
+        spItem->SetCountClamped(nEnchant);
         spItem->FUN_140524eb0(packet);
         m_item = spItem;
     }
@@ -191,11 +191,11 @@ CMailSendKeep::~CMailSendKeep()
 
 __int64 CMailSendKeep::FUN_14068fe20(int slot)
 {
-    if (m_item.get() && m_item->FUN_140526bd0() == slot)
+    if (m_item.get() && m_item->GetRarity() == slot)
         return m_item->FUN_140527640();
     if (m_attach.get() ? true : false)
     {
-        if ((m_attach->m_item.get() ? true : false) && m_attach->m_item->FUN_140526bd0() == slot)
+        if ((m_attach->m_item.get() ? true : false) && m_attach->m_item->GetRarity() == slot)
             return m_attach->m_item->FUN_140527640();
     }
     return 0;
@@ -657,9 +657,9 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
                 m_str30 = spTpl->m_strSender;
             m_str48 = spTpl->m_strSubject;
             m_str50 = spTpl->m_strContent;
-            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str30);
-            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str48);
-            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fb340(m_str50);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceValueWords(m_str30);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceValueWords(m_str48);
+            TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceValueWords(m_str50);
         }
         else
         {
@@ -677,9 +677,9 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         repl1.FUN_14065d590(m_str48, m_str58);
         Unk_StrRepl repl2(2);
         repl2.FUN_14065d590(m_str50, m_str60);
-        m_str30 = repl0.FUN_14065d9d0();
-        m_str48 = repl1.FUN_14065d9d0();
-        m_str50 = repl2.FUN_14065d9d0();
+        m_str30 = reinterpret_cast<MailText&>(repl0).ResolveTitle();
+        m_str48 = reinterpret_cast<MailText&>(repl1).ResolveTitle();
+        m_str50 = reinterpret_cast<MailText&>(repl2).ResolveTitle();
     }
     if (FUN_140692720(m_nKind))
         TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->ReplaceObjectAndValueWords(m_str50);

@@ -148,7 +148,7 @@ void Unk_CMISDriveTail6()
 
 void FUN_1411225a0(void* pThis);      // 0x1411225a0: async queue ctor
 void FUN_140ae79e0(void* pThis);      // 0x140ae79e0: async queue aux ctor
-void FUN_14112fe10(void* pThis);      // MS2Ptr<AutomaticCreateCubeInfo> link
+void FUN_14112fe10(struct Unk_Obj8* pThis);   // MS2Ptr<AutomaticCreateCubeInfo> link
 void FUN_14112faf0(void* pThis);      // MS2Ptr<CFunctionCubeObject> link
 void FUN_14112fb20(void* pThis);      // MS2Ptr<Unk_CMISUidRecord> link
 void FUN_140dd7940(void* pThis);      // MS2Ptr<SaleStateData> link
@@ -157,7 +157,7 @@ void FUN_14112fb50(void* pThis);      // MS2Ptr<Unk_CMISHouseRef> link
 void FUN_14112fb80(void* pThis);      // MS2Ptr<Unk_CMISBlueprintPtr>/<Unk_CMISDesignPtr> link
 void FUN_140fac7c0(void* pThis);
 void FUN_140fac7f0(void* pThis);
-void FUN_14112fbb0(void* pThis);
+void FUN_14112fbb0(struct Unk_BoxedPointer* pThis);
 extern char DAT_142eb3950;            // TSingleton<CubeMapInformationService> vtable
 extern void* DAT_143ab3908;           // TSingleton<CubeMapInformationService>::ms_pInstance
 
@@ -173,7 +173,7 @@ void* FUN_14111e640(void* pThis)
 void* FUN_14111e6e0(void* pThis, void* pUnused)
 {
     *(void**)((char*)pThis + 8) = 0;
-    FUN_14112fe10(pThis);
+    FUN_14112fe10(static_cast<Unk_Obj8*>(pThis));
     return pThis;
 }
 
@@ -268,7 +268,7 @@ void* FUN_14111eaa0(void* pThis, void* pRaw)
 void* FUN_14111eaf0(void* pThis, void* pRaw)
 {
     *(void**)((char*)pThis + 8) = pRaw;
-    FUN_14112fbb0(pThis);
+    FUN_14112fbb0(static_cast<Unk_BoxedPointer*>(pThis));
     return pThis;
 }
 

@@ -128,7 +128,7 @@ void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
 
 class Unk_SingletonObj* FUN_140939a10();
 
-class CKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };
+class CKeyTable { public: CStringW GetActionKeyName(int nBind, int n); };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GpKeys (calls cast back)
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
@@ -430,7 +430,7 @@ int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
         CStringW strTip = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(spMenu->m_strLabel);
         if (FUN_140c1d2f0()->IsChild(nMenu, (EGameMenuSet)FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
         {
-            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(spMenu->m_nKeyBind, 0);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(spMenu->m_nKeyBind, 0);
             if (strKey.GetLength() > 0)
                 strTip += StringFormat<CStringW>(L" [{0}]", strKey);
         }

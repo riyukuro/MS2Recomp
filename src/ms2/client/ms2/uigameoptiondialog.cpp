@@ -62,9 +62,9 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class CKeyTable
 {
 public:
-    size_t FUN_14142cbb0();                                     // count
+    size_t GetQuickSlotActionCount();                           // count
     __int64 GetQuickSlotAction(unsigned int nIndex);                 // id of the row
-    int FUN_14142cb40(unsigned int nIndex, int n);              // the row is done
+    int FindKeyByQuickSlot(unsigned int nIndex, int nPriority); // the row is done
 };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the CKeyTable (calls cast back)
 
@@ -231,8 +231,8 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnOpenTab", szMethod) == 0)
     {
         ASData kArgs;
-        if (kArgs.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_1419436e0(kArgs.FUN_1422b8b10());
+        if (kArgs.SetArgsIfAny(pArgs, nArgs) != 0)
+            FUN_1419436e0(kArgs.PopUInt());
     }
     else if (_stricmp("OnCloseTab", szMethod) == 0)
         OnCloseTab(m_nTab);
@@ -251,9 +251,9 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnTabInit", szMethod) == 0)
     {
         ASData kArgs;
-        if (kArgs.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (kArgs.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nTab = kArgs.FUN_1422b8b10();
+            int nTab = kArgs.PopUInt();
             MS2Ptr<CBaseOption> sp = FUN_141944460(nTab);
             if (sp.get() != 0)
                 sp->vfunc_2();
@@ -278,7 +278,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (operator==(strTag, L"OnSave"))
@@ -526,7 +526,7 @@ int UIGameOptionDialog::FUN_141944250()
 {
     if (m_bSimple)
         return 1;
-    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cbb0(); ++i)
+    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotActionCount(); ++i)
     {
         if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a137)
             continue;
@@ -534,7 +534,7 @@ int UIGameOptionDialog::FUN_141944250()
             continue;
         if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a139)
             continue;
-        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cb40((unsigned)i, 0) == 0)
+        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByQuickSlot((unsigned)i, 0) == 0)
             return 0;
     }
     return 1;

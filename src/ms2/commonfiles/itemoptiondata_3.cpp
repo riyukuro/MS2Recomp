@@ -611,7 +611,7 @@ bool CItemOptionTable::IsHighRollValue(MS2Ptr<CItem> spItem, int nStat, int nUnu
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(spItem->GetRarity()));
     if (spRandom == 0)
         return false;
     int nId = spRandom->GetStatIdByStat(nStat);
@@ -636,7 +636,7 @@ bool CItemOptionTable::IsHighRollSpecialValue(MS2Ptr<CItem> spItem, unsigned nSp
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(spItem->GetRarity()));
     if (spRandom == 0)
         return false;
     int nId = spRandom->GetStatIdBySpecial(nSpecial);

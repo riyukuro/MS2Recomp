@@ -381,7 +381,7 @@ int UICommunityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     }
     else if (dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strText = pMsg->FUN_1422b8f40();
         if (strText.Find(L"communityBanMemoFail", 0) != -1)
         {
@@ -468,9 +468,9 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     if (_stricmp("OnChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            FUN_1418d69f0(data.FUN_1422b8a10());
+            FUN_1418d69f0(data.PopInt());
             return 1;
         }
     }
@@ -487,7 +487,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnAcceptBuddy", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             Unk_BuddyRequest request;
             request.protocol = 3;
@@ -499,7 +499,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnDeclineBuddy", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             Unk_BuddyRequest request;
             request.protocol = 4;
@@ -511,7 +511,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnDeleteBuddy", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             Unk_BuddyRequest request;
             request.protocol = 7;
@@ -523,7 +523,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnCancelBuddy", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             Unk_BuddyRequest request;
             request.protocol = 0x11;
@@ -535,7 +535,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("onHomeVisit", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nId = 0;
             int nKind = 0;
@@ -569,7 +569,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnBuddyPopupMenu", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fX = data.PopFloat();
             float fY = data.PopFloat();
@@ -622,7 +622,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnEditBanMemo", szMethod) == 0)
     {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs))
+        if (!data.SetArgsIfAny(pArgs, nArgs))
             return 1;
         m_1a0 = 0;
         CStringW strName = data.FUN_1422b8f40();
@@ -657,7 +657,7 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnEditBanMemoStart", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_1a0 = FUN_140718350(data.FUN_1422b8d30());
         return 1;
     }
@@ -1693,9 +1693,9 @@ int UICommunityQueryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp("OnOk", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nMode = data.FUN_1422b8a10();
+            int nMode = data.PopInt();
             m_188 = data.FUN_1422b8f40();
             m_1a0 = data.FUN_1422b8f40();
             FUN_1418dbcb0(nMode);
@@ -1718,8 +1718,8 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 0;
     if (dynamic_cast<UIPopUpMenu*>(pSender) || dynamic_cast<UICommunityDialog*>(pSender) || dynamic_cast<UIInviteMentoringDialog*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
-        m_180 = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
+        m_180 = pMsg->PopInt();
         m_188 = pMsg->FUN_1422b8f40();
         m_190 = FUN_140718350(pMsg->FUN_1422b8d30());
         m_198 = FUN_140718350(pMsg->FUN_1422b8d30());
@@ -1745,7 +1745,7 @@ int UICommunityQueryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     }
     else if (dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nButton = pMsg->FUN_1422b8a10();
+        int nButton = pMsg->PopInt();
         if (nButton == 0)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();

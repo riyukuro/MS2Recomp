@@ -429,7 +429,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
             if (spBox.get() != 0)
             {
                 spBox->Append<int>(spGame->m_nId);
-                spBox->FUN_141a027c0(ArcBoxDelegate(this, &UIArcadeMainDialog::FUN_140ef7ab0));
+                spBox->SetCallback(ArcBoxDelegate(this, &UIArcadeMainDialog::FUN_140ef7ab0));
                 FUN_140d73c60(spBox);
             }
         }
@@ -549,7 +549,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
     efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (spPC == (MyPC*)0)
         return false;
-    if (spPC->FUN_14166ce30() == 1)
+    if (spPC->IsDead() == 1)
     {
         FUN_141275260(0x279, 1, 1);
         return false;

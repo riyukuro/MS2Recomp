@@ -96,19 +96,19 @@ int UIRimLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp("onChangeSliderLightAngle", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_1417097a0(data);
         return 1;
     }
     else if (_stricmp("onChangeSliderShadow", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141709800(data);
         return 1;
     }
     else if (_stricmp("onChangeSliderSSS", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141709870(data);
         return 1;
     }

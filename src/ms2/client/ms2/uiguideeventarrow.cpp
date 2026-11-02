@@ -262,7 +262,7 @@ CStringW UIGuideEvent::GetGuideText(unsigned int id)
     CStringW text;
     if (!m_strings.Lookup(id, text))
         return CStringW(L"");
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(text);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(text);
     return text;
 }
 
@@ -326,7 +326,7 @@ void UIGuideEvent::FUN_14195b970()
         XmlGetAttr((class TiXmlElement*)(node), "voiceID", voice);
         if (!name.IsEmpty()) {
             name.Replace(L"\\n", L"\n");
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(name);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(name);
             m_strings.SetAt(id, name);
         }
         if (!voice.IsEmpty())
@@ -392,12 +392,12 @@ void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
                 ChromaSDK::GetChromaManager()->OnKeyName(value);
             } else if (name == L"keyAction") {
                 int action = FUN_141389500(value, 0);
-                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+                CStringW key = FUN_1409331f0()->GetActionKeyName(action, 0);
                 info.FUN_1407cbb20("key", key);
                 ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
             } else if (name == L"keyActionSub") {
                 int action = FUN_141389500(value, 0);
-                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+                CStringW key = FUN_1409331f0()->GetActionKeyName(action, 1);
                 info.FUN_1407cbb20("key", key);
                 ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
             }
@@ -440,12 +440,12 @@ void UIGuideEvent::FUN_14195a520(unsigned int guideId, unsigned int stringId, in
                 m_tutorial->Invoke("addDirectionKey");
             } else if (name == L"keyAction") {
                 int action = FUN_141389500(value, 0);
-                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+                CStringW key = FUN_1409331f0()->GetActionKeyName(action, 0);
                 ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", key);
                 ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
             } else if (name == L"keyActionSub") {
                 int action = FUN_141389500(value, 0);
-                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+                CStringW key = FUN_1409331f0()->GetActionKeyName(action, 1);
                 ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", key);
                 ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
             }
@@ -486,22 +486,22 @@ void UIGuideEvent::FUN_14195ab40(unsigned int guideId, unsigned int stringId, in
             } else if (name == L"keyAction") {
                 if (*((unsigned char*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
                     int action = FUN_141389500(value, 0);
-                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
+                    CStringW key = FUN_1409331f0()->GetActionKeyName(action, 2);
                     ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
                 } else {
                     int action = FUN_141389500(value, 0);
-                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+                    CStringW key = FUN_1409331f0()->GetActionKeyName(action, 0);
                     ((AScript*)GuideAS(m_summary))->Invoke("addKeyButton", key);
                     ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
                 }
             } else if (name == L"keyActionSub") {
                 if (*((unsigned char*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
                     int action = FUN_141389500(value, 0);
-                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
+                    CStringW key = FUN_1409331f0()->GetActionKeyName(action, 2);
                     ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
                 } else {
                     int action = FUN_141389500(value, 0);
-                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+                    CStringW key = FUN_1409331f0()->GetActionKeyName(action, 1);
                     ((AScript*)GuideAS(m_summary))->Invoke("addKeyButton", key);
                     ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
                 }

@@ -123,7 +123,6 @@ class Unk_KFStream
 public:
     Unk_KFStream();                             // 0x141d44620
     ~Unk_KFStream();                            // 0x141d451c0
-    bool FUN_141d476d0(const char* pcFile);     // loads the file under the label
     void* m_pVtbl;
     char m_acLabel[0x5c8];
 };
@@ -290,7 +289,7 @@ void MS2AnimationService::ReloadFemaleKF()
                     NiFixedString kFile = pTool->GetFullKFFilename(uiID);
                     Unk_KFStream kStream;
                     FUN_1403b0860(kStream.m_acLabel, "female");
-                    if (kStream.FUN_141d476d0(kFile))
+                    if (reinterpret_cast<NiStream*>(&kStream)->NiStream::Load(kFile))
                         pActor->ReloadKFFile(*reinterpret_cast<NiStream*>(&kStream));
                 }
                 if (pIDs != 0)
@@ -333,7 +332,7 @@ void MS2AnimationService::ReloadMaleKF()
                     NiFixedString kFile = pTool->GetFullKFFilename(uiID);
                     Unk_KFStream kStream;
                     FUN_1403b0860(kStream.m_acLabel, "male");
-                    if (kStream.FUN_141d476d0(kFile))
+                    if (reinterpret_cast<NiStream*>(&kStream)->NiStream::Load(kFile))
                         pActor->ReloadKFFile(*reinterpret_cast<NiStream*>(&kStream));
                 }
                 if (pIDs != 0)

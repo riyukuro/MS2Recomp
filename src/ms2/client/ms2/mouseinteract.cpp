@@ -317,7 +317,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         bTalk = 0;
     if (((class UITalkManager*)(void*)(FUN_140967100()))->IsTalkIntervalElapsed() == 0)
         bTalk = 0;
-    if (((class PCBase*)(struct Unk_MiPlayer*)(pPlayer))->FUN_14166c930() == 0x20)
+    if (((class PCBase*)(struct Unk_MiPlayer*)(pPlayer))->GetCurStateId() == 0x20)
         bHold = 0;
     Unk_NpcTree* pTree = reinterpret_cast<Unk_NpcTree*>(WorldService::GetInstance()->FUN_141bd36d0());
     for (Unk_NpcNode* pos = pTree->Begin(); pos != 0; pTree->GetNext(pos)) {

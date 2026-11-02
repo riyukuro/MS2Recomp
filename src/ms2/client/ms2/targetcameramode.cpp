@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include "ms2/client/ms2/camera.h"
 
 extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
 
@@ -151,7 +152,7 @@ CTargetCameraMode::CTargetCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode
       m_fc(0),
       m_100(0.0f)
 {
-    if (Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0())
+    if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
         CTargetCameraMode::vfunc_31();
     m_b4 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bd4120();
 }
@@ -363,7 +364,7 @@ MS2_REPLACE_METHOD(0x14183b270, CTargetCameraMode, vfunc_9, 758, 0x07F55314);
 void CTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
+    reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x14183b570, CTargetCameraMode, vfunc_10, 74, 0x9E7A33EE);
 
@@ -429,7 +430,7 @@ MS2_REPLACE_METHOD(0x14183b9f0, CTargetCameraMode, vfunc_26, 112, 0x8A79092F);
 // @0x14183ba70
 void CTargetCameraMode::vfunc_11(float f)
 {
-    if (Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0())
+    if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
         f = m_ac;
     m_setting.m_0 = f;
     m_pOwner->FUN_140947940(f);
@@ -439,7 +440,7 @@ MS2_REPLACE_METHOD(0x14183ba70, CTargetCameraMode, vfunc_11, 92, 0x587F1513);
 // @0x14183bae0
 void CTargetCameraMode::vfunc_12(float fDegree)
 {
-    float fOffset = Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0() == 1 ? m_a8 : 0.0f;
+    float fOffset = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0() == 1 ? m_a8 : 0.0f;
     m_48 = (fDegree + fOffset) * 3.14159265f / 180.0f + 3.14159265f;
 }
 MS2_REPLACE_METHOD(0x14183bae0, CTargetCameraMode, vfunc_12, 126, 0x7DE2A65C);
@@ -447,7 +448,7 @@ MS2_REPLACE_METHOD(0x14183bae0, CTargetCameraMode, vfunc_12, 126, 0x7DE2A65C);
 // @0x14183bb70
 void CTargetCameraMode::vfunc_16(float f)
 {
-    m_54 = Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0() ? m_b0 : f;
+    m_54 = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0() ? m_b0 : f;
     if (-1.0f != m_5c)
         m_98 = efd::Clamp(m_98, m_58, m_54 + m_b4);
 }
@@ -504,7 +505,7 @@ void CTargetCameraMode::vfunc_33()
     if (reinterpret_cast<Unk_CameraOption*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spOption).get()))
     {
         float fRotation = spOption.FUN_140885340()->m_154;
-        if (Unk_CameraManager::FUN_1409478c0()->FUN_140af01d0())
+        if (reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af01d0())
         {
             vfunc_31();
             vfunc_16(m_b0);
@@ -586,11 +587,11 @@ bool CTargetCameraMode::FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot)
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     if (pTarget)
     {
-        float fYaw = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->vfunc_23();
-        float fPitch = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->vfunc_22();
+        float fYaw = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af24f0()->vfunc_23();
+        float fPitch = reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af24f0()->vfunc_22();
         float fDist = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10();
         Vector3 ptTarget = pTarget->vfunc_17();
-        ptTarget.z += Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->vfunc_27();
+        ptTarget.z += reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af24f0()->vfunc_27();
         float fX = fDist * FUN_1409f25a0(fYaw) + ptTarget.x;
         float fY = fDist * FUN_1409f2310(fYaw) + ptTarget.y;
         float fZ = fDist * FUN_1409f2310(fPitch) + ptTarget.z;

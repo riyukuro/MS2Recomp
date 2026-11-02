@@ -916,11 +916,11 @@ int UIMicroGameRps::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         return 1;
     if (_stricmp(szMethod, "onSelectCard") == 0) {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs)) {
+        if (!data.SetArgsIfAny(pArgs, nArgs)) {
             MS2_ASSERT_AT(0x73, 0);
             return 0;
         }
-        int nCard = data.FUN_1422b8b10();
+        int nCard = data.PopUInt();
         SetCard(nCard);
         return 1;
     }
@@ -1007,7 +1007,7 @@ void UIMicroGameRps::OnRandChat()
     Unk_141bd0cc0* pState = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pState == NULL)
         return;
-    if (pState->FUN_14166c930() != 0x3c)
+    if (pState->GetCurStateId() != 0x3c)
         return;
     Unk_14166ccb0* p = reinterpret_cast<Unk_14166ccb0*>(pState->FUN_14166ccb0());
     if (p == NULL)
@@ -1023,7 +1023,7 @@ int UIMicroGameRps::FUN_140e66710()
     Unk_141bd0cc0* pState = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pState)
         return 1;
-    if (pState->FUN_14166c930() != 0x3c)
+    if (pState->GetCurStateId() != 0x3c)
         return 1;
     return 0;
 }

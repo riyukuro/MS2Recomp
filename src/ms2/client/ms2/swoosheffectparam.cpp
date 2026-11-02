@@ -149,7 +149,7 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140b850d0(void* pLog, int nA, int nB, const wchar_t* pszFormat, const char*& pszArg, CString* pstrArg);
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class).
 class Unk_NodeQueue
 {
 public:
@@ -157,10 +157,10 @@ public:
     ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
 typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // The resource manager (singleton, instance pointer at 0x143ab5bc8): model / texture cache by path.
 class Unk_ResourceMgr : public CNifLoadingService
@@ -174,12 +174,10 @@ Unk_ResourceMgr* FUN_140a0afd0();
            // release by path
 CFilePreload* FUN_140ab7a10();
 
-// The effect manager (singleton 0x1403ed280): scene root, quality level.
+// The effect manager (singleton 0x1403ed280): quality level.
 class Unk_EffectMgr
 {
 public:
-    void* FUN_1411a6b10();                          // scene root
-
     char m_pad_08[0x128];
     int m_nTrailMode;                               // +0x128
 };
@@ -303,7 +301,6 @@ CSwooshEffect::~CSwooshEffect()
 {
 }
 
-// MS2-FUNCTIONAL: code shape matches through the sample-rate setup; the exe frame is 0x60 smaller with 8 fewer EH states (temporary slots of the property allocations differ).
 // @0x14181d760
 // Builds the ribbon: an EffectNode root holding a SeparateNode that holds the CMesh strip. The mesh is either a plain
 // textured strip (param texturePath) or a copy of the first mesh of the param's nif (its properties, controllers and

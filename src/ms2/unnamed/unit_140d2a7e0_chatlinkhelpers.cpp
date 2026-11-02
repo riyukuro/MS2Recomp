@@ -588,7 +588,7 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem)
 {
     if (spItem == NULL)
         return;
-    FUN_140d2d060(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), spItem->GetItemUid());
+    FUN_140d2d060(spItem->FUN_1405276c0(), spItem->GetRarity(), spItem->GetItemUid());
 }
 
 // @0x140d2d060
@@ -716,7 +716,7 @@ CStringW FUN_140d2e090(unsigned __int64 nUid, MS2Ptr<CItem> spItem)
     int nZero2 = 0;
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_REF;
     CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nUid, nZero2, nZero1);
-    CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
+    CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->GetRarity());
     return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), spItem->FUN_140527b10());
 }
 
@@ -752,12 +752,12 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
 CStringW FUN_140d2e6f0(MS2Ptr<CItem> spItem)
 {
     unsigned __int64 nUid = spItem->GetItemUid();
-    ItemGradeKey eGrade = (ItemGradeKey)spItem->FUN_140526bd0();
+    ItemGradeKey eGrade = (ItemGradeKey)spItem->GetRarity();
     unsigned nItemId = spItem->FUN_1405276c0();
     unsigned __int64 nUid2 = spItem->GetItemUid();
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_UID;
     CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nUid, eKind, nUid2, nItemId, eGrade);
-    CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
+    CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->GetRarity());
     return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), spItem->FUN_140527b10());
 }
 

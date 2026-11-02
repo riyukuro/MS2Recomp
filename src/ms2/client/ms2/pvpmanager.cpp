@@ -102,7 +102,7 @@ void CPVPManager::SendCancelRequest()
         Unk_PvpActorPtr spActor(((class Unk_PvpActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
         if (spActor == 0)
             return;
-        if (reinterpret_cast<PCBase*>(spActor.operator->())->FUN_14166ce30() != 0)
+        if (reinterpret_cast<PCBase*>(spActor.operator->())->IsDead() != 0)
         {
             FUN_140d73aa0(GetStringCommon(0x42e), 0, 0, CStringW(L""));
             return;

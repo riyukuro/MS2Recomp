@@ -364,8 +364,8 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (pSkin == 0)
         return;
     pSkin->m_nPetId = nPetId;
-    unsigned nSockets = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(spData->property.socketDataId, spResult->FUN_140526bd0(), spResult->FUN_140527840());
-    CItemSocket* pSocket = spResult->FUN_1405279c0();
+    unsigned nSockets = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(spData->property.socketDataId, spResult->GetRarity(), spResult->FUN_140527840());
+    CItemSocket* pSocket = spResult->GetSocket();
     if (pSocket != 0)
         pSocket->InitSlots(nSockets, 0);
     m_nTargetUid = nItemUid;
@@ -376,11 +376,11 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
         ASArray items(2);
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
-        objTarget.FUN_1407cbb20("name", FUN_14183e9c0(spPet->FUN_140527b10(), spPet->FUN_140526bd0()));
+        objTarget.FUN_1407cbb20("name", FUN_14183e9c0(spPet->FUN_140527b10(), spPet->GetRarity()));
         items.PushValue(objTarget.FUN_1422bb870());
         ASObj objResult(2);
         objResult.FUN_1407cba60("binding", m_strBag);
-        objResult.FUN_1407cbb20("name", FUN_14183e9c0(spResult->FUN_140527b10(), spResult->FUN_140526bd0()));
+        objResult.FUN_1407cbb20("name", FUN_14183e9c0(spResult->FUN_140527b10(), spResult->GetRarity()));
         items.PushValue(objResult.FUN_1422bb870());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
@@ -418,7 +418,7 @@ void UIPetExtractionScrollDialog::OnOk()
         1, FUN_140298ea0(CStringW(L"s_petextraction_conform")), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPetExtractionScrollDialog::FUN_140e71880));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPetExtractionScrollDialog::FUN_140e71880));
         FUN_140d73c60(spBox);
     }
 }

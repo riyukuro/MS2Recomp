@@ -164,7 +164,7 @@ void UIWeddingGuestDialog::OnLoadComplete()
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
-        spCounter->FUN_1422c4cd0(FUN_14028dfa0(CStringW(L"s_wedding_guest_counter"), nCount, nMax));
+        spCounter->SetTextW(FUN_14028dfa0(CStringW(L"s_wedding_guest_counter"), nCount, nMax));
     }
 }
 
@@ -199,7 +199,7 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "onAddPage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             std::map<CString, PagePtr>::iterator it = m_pages.find(strPage);
@@ -214,7 +214,7 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp(szMethod, "onRemovePage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             std::map<CString, PagePtr>::iterator it = m_pages.find(strPage);
@@ -241,7 +241,7 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp(szMethod, "CanAdd") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nFirst = FUN_140718370(data.FUN_1422b8f40());
@@ -299,7 +299,7 @@ void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
-        spCounter->FUN_1422c4cd0(FUN_14028dfa0(CStringW(L"s_wedding_guest_counter"), nCount, nMax));
+        spCounter->SetTextW(FUN_14028dfa0(CStringW(L"s_wedding_guest_counter"), nCount, nMax));
     }
 }
 
@@ -311,7 +311,7 @@ void UIWeddingGuestDialog::FUN_140fcd9d0(const CStringW& strName)
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
-        spCounter->FUN_1422c4cd0(FUN_14028dfa0(CStringW(L"s_wedding_guest_counter"), nCount, nMax));
+        spCounter->SetTextW(FUN_14028dfa0(CStringW(L"s_wedding_guest_counter"), nCount, nMax));
     }
 }
 
@@ -512,9 +512,9 @@ bool UIWeddingGuestPageFriend::vfunc_4(const char* szMethod, const Scaleform::GF
     if (_stricmp(szMethod, "onSelectCheckbox") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bSelected = data.FUN_1422b8a90();
+            bool bSelected = data.PopBool();
             CStringW strName = data.FUN_1422b8f40();
             CBuddyManager::Ptr spBuddy = CBuddyManager::GetInstance()->FindByName(strName);
             if (spBuddy.get() != 0)
@@ -596,9 +596,9 @@ bool UIWeddingGuestPageGuild::vfunc_4(const char* szMethod, const Scaleform::GFx
     if (_stricmp(szMethod, "onSelectCheckbox") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bSelected = data.FUN_1422b8a90();
+            bool bSelected = data.PopBool();
             CStringW strName = data.FUN_1422b8f40();
             MS2Ptr<CGuildMember> spMember = FUN_140fd80e0(strName);
             if (spMember.get() != 0)
@@ -691,7 +691,7 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
     if (_stricmp(szMethod, "onFind") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strName = data.FUN_1422b8f40();
             COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
@@ -703,9 +703,9 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
     else if (_stricmp(szMethod, "onSelectCheckbox") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bSelected = data.FUN_1422b8a90();
+            bool bSelected = data.PopBool();
             CStringW strName = data.FUN_1422b8f40();
             std::map<CStringW, GuestPtr>::iterator it = m_strangers.find(strName);
             if (it != m_strangers.end())

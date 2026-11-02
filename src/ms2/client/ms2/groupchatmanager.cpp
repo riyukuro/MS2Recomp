@@ -124,8 +124,8 @@ public:
     virtual CStringW vfunc_77();
 };
 // The camera option row of the game context (flags tested by FUN_140375660) and its smart pointer (pointer at +8).
-struct Unk_CameraOption {
-    int FUN_140375660(int flags);
+class CFieldData { public: int FUN_140375660(unsigned nFlags); };   // C3: member view (fielddata.h)
+struct Unk_CameraOption : public CFieldData {
 };
 class Unk_CameraOptionPtr {
 public:

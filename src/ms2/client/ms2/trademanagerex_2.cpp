@@ -124,7 +124,7 @@ int TradeSlot::vfunc_0(void* p)
     {
         if (IsMine())
         {
-            tip.FUN_1409c69b0(GetStringCommon(0x750));
+            tip.SetEnablePuton(GetStringCommon(0x750));
             {
                 CStringW strText(L"");
                 tip.SetEnableUseDbClick(strText);
@@ -134,7 +134,7 @@ int TradeSlot::vfunc_0(void* p)
         {
             {
                 CStringW strTitle(L"");
-                tip.FUN_1409c69b0(strTitle);
+                tip.SetEnablePuton(strTitle);
             }
             {
                 CStringW strText(L"");

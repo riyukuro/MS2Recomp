@@ -139,7 +139,7 @@ extern Unk_Inventory g_143ab2a90;
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166c930();
+    int GetCurStateId();
     int FUN_1416769d0();
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -187,7 +187,7 @@ public:
     int m_nKind;                                                // +0xc4
 };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);                    // cell of a point
-int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
+int FUN_1408a03c0(Unk_Int3 pt);          // by value: the callers copy the cell into a temporary
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy
@@ -384,7 +384,7 @@ void UIItemBillBoardDialog::FUN_140c32360(__int64 nItemUid)
 MS2_REPLACE_METHOD(0x140C32360, UIItemBillBoardDialog, FUN_140c32360, 131, 0x2C15A77E);
 
 // @0x140c323f0
-// MS2-FUNCTIONAL: the frame is 0x10 larger and most stack slots shift (local layout not found)
+// MS2-FUNCTIONAL: op-identical; the frame is 0x10 larger and most stack slots shift (local layout not found)
 bool UIItemBillBoardDialog::FUN_140c323f0()
 {
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -408,7 +408,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }
-    if (((class PCBase*)(class PCBase*)(pPc))->FUN_14166c930() != 1) {
+    if (((class PCBase*)(class PCBase*)(pPc))->GetCurStateId() != 1) {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
@@ -455,7 +455,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
         if (spActor == (Unk_RxNpc*)0)
             continue;
-        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_14166c930() == 2)
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->GetCurStateId() == 2)
             continue;
         bool bNotNpcKind = reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData().operator->())->GetFriendly() != 2;
         if (bNotNpcKind)
@@ -573,7 +573,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
     }
     CStringW strMsg = GetStringCommonByKey(L"s_special_item_billboard_install_info");
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strMsg, 1);
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
     FUN_1405340b0(spBox.operator->(), m_nItemUid);
     spBox->FUN_140b76940(CStringW(strInfo));
     FUN_140d73c60(spBox);

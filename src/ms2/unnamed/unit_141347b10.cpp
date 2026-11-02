@@ -528,7 +528,7 @@ void FUN_141349ba0(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl
         return;
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x11));
     spBox->SetMsg(strText);
-    spBox->FUN_141a027c0(FUN_140b76b10(FUN_141349e10));
+    spBox->SetCallback(FUN_140b76b10(FUN_141349e10));
     if (!strUrl.IsEmpty())
         spBox->SetSound(strUrl);
     spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);

@@ -395,7 +395,7 @@ void UIAdPushDialog::vfunc_76()
 void UIAdPushDialog::vfunc_49(Scaleform::GFx::Value* pValue, ASData* pData)
 {
     UIObject::vfunc_49(pValue, pData);
-    int nId = ((class ASData*)(class ASData*)(pData))->FUN_1422b8a10();
+    int nId = ((class ASData*)(class ASData*)(pData))->PopInt();
     MS2Ptr<AdPushEntityBase> entity(0);
     if (m_entities.Lookup(nId, entity))
     {
@@ -931,7 +931,7 @@ bool AdPushEntityLimitedBundle::UpdateRemainTime()
         strHours = StringFormat(L"{0}", nHours);
     long nMinutes = left.GetMinutes();
     CStringW text = StringFormat(L"{0}:{1:02d}:{2:02d}", strHours, nMinutes, nSeconds);
-    m_remain->FUN_1422c4cd0(text);
+    m_remain->SetTextW(text);
     return true;
 }
 

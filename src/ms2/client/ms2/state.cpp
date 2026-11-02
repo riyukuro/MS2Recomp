@@ -1053,7 +1053,7 @@ void StateClimb::vfunc_4(StateData* pData)
                 m_n10 = 0x61;
         }
     }
-    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
+    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
 }
 MS2_REPLACE_METHOD(0x1417bc180, StateClimb, vfunc_4, 429, 0x2DF306D0);
 
@@ -1061,7 +1061,7 @@ MS2_REPLACE_METHOD(0x1417bc180, StateClimb, vfunc_4, 429, 0x2DF306D0);
 void StateClimb::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
+    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
     m_pOwner->FUN_14123cb20(true);
 }
 MS2_REPLACE_METHOD(0x1417bc340, StateClimb, vfunc_5, 70, 0xFD7CFEDA);
@@ -1077,8 +1077,8 @@ void StateClimb::vfunc_3(double fTime)
     FUN_1417bda60();
     if (FUN_1417bd6c0())
         m_pOwner->vfunc_59(1, 0, 0, 0);
-    if (((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())))
-        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->FUN_140cfaf30();
+    if (((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())))
+        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->FUN_140cfaf30();
 }
 MS2_REPLACE_METHOD(0x1417bc390, StateClimb, vfunc_3, 203, 0x491A3090);
 
@@ -1310,7 +1310,7 @@ int StateClimb::FUN_1417bd6c0()
     kDown.m_maxDist = 50.0f;
     kDown.m_groups = FUN_1417bc010();
     if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
-        if (kDown.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->GetEntityID()) {
+        if (kDown.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(kDown.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = reinterpret_cast<CBreakableObject*>(spObj.operator->())->GetPtVelocity();
@@ -1325,7 +1325,7 @@ int StateClimb::FUN_1417bd6c0()
     kUp.m_maxDist = 50.0f;
     kUp.m_groups = FUN_1417bc010();
     if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
-        if (kUp.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240f20()->GetEntityID()) {
+        if (kUp.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(kUp.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = reinterpret_cast<CBreakableObject*>(spObj.operator->())->GetPtVelocity();
@@ -1382,7 +1382,7 @@ int StateClimb::FUN_1417bda60()
         return 1;
     }
     if (FUN_1417bd310(MS2_ST_POINT(m_pOwner->vfunc_18())) == 0) {
-        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
+        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
         m_pOwner->vfunc_59(5, 0, 0, 0);
         return 0;
     }
@@ -1670,7 +1670,7 @@ void StateCrawl::vfunc_3(double fTime)
             MS2_ST_POINT(m_pOwner->FUN_14123c360()));
         float fSpeed = m_bCrawling ? m_pOwner->vfunc_95() : 0.0001f;
         kMove = kDir * fSpeed * (float)fTime;
-        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->SetKVelocity(kDir * fSpeed);
+        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->SetKVelocity(kDir * fSpeed);
     }
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
@@ -1725,7 +1725,7 @@ void StateCrawl::vfunc_9(double fTime)
                 else
                     m_pOwner->FUN_141671960(0.84f);
                 efd::utf8string strName((const char*)strAnim);
-                m_pOwner->FUN_14166dd20(strName, reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0(), false, false);
+                m_pOwner->PlayAnimation(strName, reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0(), false, false);
             }
         } break;
         }
@@ -1788,7 +1788,7 @@ void StateDash::vfunc_4(StateData* pData)
     m_posLast = m_pOwner->vfunc_18();
     m_dir = m_pOwner->GetForwardDirection();
     m_pOwner->FUN_141671960(20.0f);
-    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))->FUN_141240730();
+    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
     reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
     NoticeMessage kEffect;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kEffect)).m_strName = FUN_1401d31f0()->m_strDashEffect;

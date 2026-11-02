@@ -28,7 +28,7 @@ public:
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14152a960();
+    void StopObserving();
 };
 
 // @0x141a732e0
@@ -70,7 +70,7 @@ int UIObserveDialog::vfunc_13()
     {
         void* pActor = ((void*)((WorldService*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
-            ((class MyPC*)(void*)(pActor))->FUN_14152a960();
+            ((class MyPC*)(void*)(pActor))->StopObserving();
         return 1;
     }
     if (UIDialog::vfunc_13() != 0)

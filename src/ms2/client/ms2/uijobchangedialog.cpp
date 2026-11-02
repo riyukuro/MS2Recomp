@@ -159,7 +159,7 @@ void UIJobChangeDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (FUN_1409e1b80(&tip, spPreview->m_skills[nIndex], 0) != 0)
         {
-            tip.FUN_1409c69b0(L"");
+            tip.SetEnablePuton(L"");
             *pRetVal = tip.FUN_1422bb870();
         }
     }
@@ -304,9 +304,9 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
         if (m_descs.Lookup(nJob, spDesc))
         {
             if (MS2Ptr<ASTextField> spDescText = GetChild<ASTextField>("m_jobDesc"))
-                spDescText->FUN_1422c4cd0(spDesc->m_strSpecific);
+                spDescText->SetTextW(spDesc->m_strSpecific);
             if (MS2Ptr<ASTextField> spHistoryText = GetChild<ASTextField>("m_jobHistory"))
-                spHistoryText->FUN_1422c4cd0(spDesc->m_strHistory);
+                spHistoryText->SetTextW(spDesc->m_strHistory);
             reinterpret_cast<Unk_JcInvokeS*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strMain, spDesc->m_strSub);
             reinterpret_cast<AScript*>(pDlg)->Invoke("setJob", nJob);
             reinterpret_cast<AScript*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);

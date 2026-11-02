@@ -491,7 +491,7 @@ MS2_REPLACE_METHOD(0x1418B92A0, UIAvatarBase, vfunc_23, 33, 0xFA59B52F);
 GameObject* UIAvatarBase::vfunc_24()
 {
     if (m_nObjectId > 0)
-        return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1180(m_nObjectId));
+        return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectById(m_nObjectId));
     return 0;
 }
 MS2_REPLACE_METHOD(0x1418B92D0, UIAvatarBase, vfunc_24, 50, 0xB89C59A3);
@@ -522,9 +522,9 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
     if (_stricmp("OnAvatarMouseDown", szEvent) == 0)
     {
         ASData kData;
-        if (kData.FUN_1422b9620(pArgs, nArgs))
+        if (kData.SetArgsIfAny(pArgs, nArgs))
         {
-            int nButton = kData.FUN_1422b8a10();
+            int nButton = kData.PopInt();
             if (SetModeFromButton(nButton) != 0)
             {
                 if (m_nLocked == 0 && m_nMode == 2)
@@ -540,9 +540,9 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
     else if (_stricmp("OnAvatarMouseWheel", szEvent) == 0)
     {
         ASData kData;
-        if (kData.FUN_1422b9620(pArgs, nArgs))
+        if (kData.SetArgsIfAny(pArgs, nArgs))
         {
-            int nWheel = kData.FUN_1422b8a10();
+            int nWheel = kData.PopInt();
             if (nWheel > 0)
                 vfunc_5();
             else
@@ -553,11 +553,11 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
     else if (_stricmp("OnAvatarMouseMove", szEvent) == 0)
     {
         ASData kData;
-        if (kData.FUN_1422b9620(pArgs, nArgs))
+        if (kData.SetArgsIfAny(pArgs, nArgs))
         {
-            int nDx = kData.FUN_1422b8a10();
-            int nDy = kData.FUN_1422b8a10();
-            int nButton = kData.FUN_1422b8a10();
+            int nDx = kData.PopInt();
+            int nDy = kData.PopInt();
+            int nButton = kData.PopInt();
             int nMode = GetMode();
             if (GetModeForButton(nButton) != nMode)
                 return 1;
@@ -982,7 +982,7 @@ GameObject* UIAvatarPC::vfunc_23()
     {
         unsigned nRideeId = pAvatar->FUN_1409f6450();
         if (nRideeId > 0)
-            return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1180(nRideeId));
+            return reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectById(nRideeId));
     }
     return UIAvatarBase::vfunc_24();
 }
@@ -995,10 +995,10 @@ int UIAvatarPC::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs
     if (_stricmp("OnAvatarSkinColor", szEvent) == 0)
     {
         ASData kData;
-        if (kData.FUN_1422b9620(pArgs, nArgs))
+        if (kData.SetArgsIfAny(pArgs, nArgs))
         {
-            int nColorA = kData.FUN_1422b8b10();
-            int nColorB = kData.FUN_1422b8b10();
+            int nColorA = kData.PopUInt();
+            int nColorB = kData.PopUInt();
             FUN_1418bca10(FUN_141b6dea0(nColorA), FUN_141b6dea0(nColorB));
         }
         return 1;
@@ -1006,9 +1006,9 @@ int UIAvatarPC::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs
     else if (_stricmp("OnAvatarClickPose", szEvent) == 0)
     {
         ASData kData;
-        if (kData.FUN_1422b9620(pArgs, nArgs))
+        if (kData.SetArgsIfAny(pArgs, nArgs))
         {
-            int nPose = kData.FUN_1422b8a10();
+            int nPose = kData.PopInt();
             FUN_1418bd860(nPose);
         }
         return 1;
@@ -1369,7 +1369,7 @@ void UIAvatarPC::FUN_1418bc790(int nState, int nParam)
                 FUN_1418bca60(nState, nParam);
             else
             {
-                if (pAvatar->FUN_14166c930() != nState)
+                if (pAvatar->GetCurStateId() != nState)
                     pAvatar->vfunc_59(nState, 0, 0, 0);
                 ((class PCBase*)(class PCBase*)(pAvatar))->FUN_14166cc40(nParam);
             }
@@ -1423,7 +1423,7 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (!pAvatar)
         return;
-    if (pAvatar->FUN_14166c930() != nState)
+    if (pAvatar->GetCurStateId() != nState)
         pAvatar->vfunc_59(nState, 0, 0, 0);
     if (nState == 1)
     {
@@ -1431,12 +1431,12 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
         if (nParam == 10)
         {
             efd::utf8string kIdle("Idle_A");
-            pAvatar->FUN_14166dd20(kIdle, 1.0f, false, false);
+            pAvatar->PlayAnimation(kIdle, 1.0f, false, false);
         }
         else if (nParam == 0xb)
         {
             efd::utf8string kIdle("Idle_B");
-            pAvatar->FUN_14166dd20(kIdle, 1.0f, false, false);
+            pAvatar->PlayAnimation(kIdle, 1.0f, false, false);
         }
     }
     else if (nState == 0xe)
@@ -1447,12 +1447,12 @@ void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
         if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(kName))->empty())
         {
             efd::utf8string kSword("Sword");
-            pAvatar->FUN_14166dd20(kSword, 1.0f, false, false);
+            pAvatar->PlayAnimation(kSword, 1.0f, false, false);
         }
         else
         {
             kName.erase(kName.length() - 1, 1);
-            pAvatar->FUN_14166dd20(kName, 1.0f, false, false);
+            pAvatar->PlayAnimation(kName, 1.0f, false, false);
         }
     }
 }

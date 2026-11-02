@@ -91,7 +91,7 @@ public:
     __int64 GetKeyAction(int nKey);                        // the action bound to the key, 0 = none
     CStringW GetKeyName(int nKey);                       // the key's display name
     CStringW GetKeyDisplayName(int nKey);
-    CStringW FUN_14142d760(int nAction, int nPriority);     // the key name of a binding
+    CStringW GetActionKeyName(int nAction, int nPriority);     // the key name of a binding
     CStringW GetKeyActionLabel(const int& nKey);
     int GetKeySkillId(stKeyData* pKey);
     int FUN_14142dad0(unsigned nSlot);                      // the skill id of the quick slot

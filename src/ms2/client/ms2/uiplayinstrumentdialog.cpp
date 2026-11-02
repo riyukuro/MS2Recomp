@@ -458,7 +458,7 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     CStringW strText = StringFormat<CStringW, CStringW>(L"{0} {1}", static_cast<Unk_PiInstrData*>(spData.get())->GetCategoryName(), static_cast<Unk_PiInstrData*>(spData.get())->GetName());
     MS2Ptr<ASTextField> spCurrent = GetChild<ASTextField>("m_currentInstrument");
     if (spCurrent.get())
-        spCurrent->FUN_1422c4cd0(strText);
+        spCurrent->SetTextW(strText);
     m_nCurrent = 0;
     m_nSlotCount = spData->m_nSoloRelayScoreCount;
     UpdateSlotCount();
@@ -635,7 +635,7 @@ int UIPlayInstrumentDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (strTag.CompareNoCase(L"askClose") == 0 && nResult == 0)
@@ -684,9 +684,9 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnSelectTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nTab = data.FUN_1422b8a10();
+            int nTab = data.PopInt();
             FUN_14100c200(nTab);
         }
         return 1;
@@ -694,17 +694,17 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("onNoteRadioSelectChange", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            m_nKind = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            m_nKind = data.PopInt();
         FUN_14100e9a0(m_nMode);
         return 1;
     }
     else if (_stricmp("OnKeyPress", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nKey = data.FUN_1422b8a10();
+            int nKey = data.PopInt();
             int nNote = m_nOctave * 12 + 11 + nKey;
             ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d073b0(nNote);
             return 1;
@@ -713,9 +713,9 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnKeyUp", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nKey = data.FUN_1422b8a10();
+            int nKey = data.PopInt();
             int nNote = m_nOctave * 12 + 11 + nKey;
             ((class Unk_PiMgr*)FUN_140c8dac0())->NoteOff(nNote);
             return 1;
@@ -724,9 +724,9 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnOctave", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nDelta = data.FUN_1422b8a10();
+            int nDelta = data.PopInt();
             m_nOctave += nDelta;
             ClampAndApplyOctave();
             return 1;
@@ -735,13 +735,13 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnItemDragEnd", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             if (!FUN_14100c8f0())
                 return 1;
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             CString strName = data.FUN_1422b8d30();
-            Scaleform::GFx::Value value = data.FUN_1422b9260();
+            Scaleform::GFx::Value value = data.PopValue();
             efd::SmartPointer<InvenSlot> spSlot = FUN_140f15b80(Unk_NotifyContext::FUN_1422c8e90(strName));
             if (spSlot)
             {
@@ -765,9 +765,9 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("onClearSlot", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_14100ca90(nIndex - 1, MS2Ptr<CItem>(0));
         }
         return 1;
@@ -972,7 +972,7 @@ void UIPlayInstrumentDialog::FUN_14100d260(int nStart, int nEnd)
                 strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_solo_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
             else
                 strText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
-            m_spFold->FUN_1422c4cd0(strText);
+            m_spFold->SetTextW(strText);
         }
     }
 }
@@ -990,7 +990,7 @@ void UIPlayInstrumentDialog::FUN_14100d600()
             m_spScorePage->Invoke("setPlaying", m_nCurrent + 1, false);
     }
     if (m_spFold.get())
-        m_spFold->FUN_1422c4cd0(L"");
+        m_spFold->SetTextW(L"");
     m_nCurrent++;
     bool bFound = false;
     while (m_nCurrent < nLimit && m_nCurrent >= 0)
@@ -1078,7 +1078,7 @@ void UIPlayInstrumentDialog::FUN_14100da10()
         FUN_141b706a0(nTotal, reinterpret_cast<unsigned*>(&nTotalMin), reinterpret_cast<unsigned*>(&nTotalSec), reinterpret_cast<unsigned*>(&nTotalCenti));
         strTotal = StringFormat<int, int>(GetStringCommonByKey(L"s_writemusic_text_playtimer_total"), nTotalMin, nTotalSec);
         CStringW strText = StringFormat<CStringW, CStringW>(L"{0} {1}", strCur, strTotal);
-        spTime->FUN_1422c4cd0(strText);
+        spTime->SetTextW(strText);
         if ((m_nCurrent < 3 || m_nCurrent >= 0) && (m_spFold.get() ? true : false) && m_spScores[m_nCurrent].get())
         {
             CStringW strScore;
@@ -1087,7 +1087,7 @@ void UIPlayInstrumentDialog::FUN_14100da10()
             else
                 strScore = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_unfold_ensemble_text"), m_spScores[m_nCurrent]->FUN_1405296c0());
             CStringW strFold = StringFormat<CStringW, CStringW>(L"{0} {1}", strText, strScore);
-            m_spFold->FUN_1422c4cd0(strFold);
+            m_spFold->SetTextW(strFold);
         }
     }
 }
@@ -1134,7 +1134,7 @@ void UIPlayInstrumentDialog::FUN_14100e060()
             if (spLabel == 0)
                 continue;
             CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyDisplayName(key.first);
-            spLabel->FUN_1422c4cd0(strKey);
+            spLabel->SetTextW(strKey);
         }
         else if (key.second == 100)
         {

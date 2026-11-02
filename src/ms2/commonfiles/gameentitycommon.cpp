@@ -4,9 +4,12 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gameentitycommon.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameentitycommon.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-Unk_1403bb3b0<Unk_14053c510> FUN_14053f870(int);
+// The copy is this unit's COMDAT (0x1403bb3b0).
+template<> inline MS2Ptr<CItemData>::MS2Ptr(const MS2Ptr& o) { m_p = o.m_p; AddRef(); }
+MS2Ptr<CItemData> FUN_14053f870(int);
 
 // @0x1403ba180
 int FUN_1403ba180(int value) {
@@ -153,18 +156,18 @@ MS2_REPLACE(0x1403BA790, FUN_1403ba790, 177, 0x87532FF8);
 
 // @0x1403ba8c0
 int FUN_1403ba8c0(int id) {
-    Unk_1403bb3b0<Unk_14053c510> item = FUN_14053f870(id);
+    MS2Ptr<CItemData> item = FUN_14053f870(id);
     if (item == NULL) return 0;
     return FUN_1403ba950(item);
 }
 MS2_REPLACE(0x1403BA8C0, FUN_1403ba8c0, 138, 0xA458837E);
 
 // @0x1403ba950
-int FUN_1403ba950(Unk_1403bb3b0<Unk_14053c510> item) {
+int FUN_1403ba950(MS2Ptr<CItemData> item) {
     if (item == NULL) return 0;
-    int id = item->FUN_14053c510();
+    int id = item->GetItemId();
     if (id == 0) return 0;
-    int type = item->FUN_14053c5c0();
+    int type = item->GetType();
     if (type == 4) {
         int kind = FUN_1403ba790(id);
         if (kind != 0) return kind;
@@ -172,7 +175,7 @@ int FUN_1403ba950(Unk_1403bb3b0<Unk_14053c510> item) {
     switch (type) {
     case 1:
         if (item->FUN_14053ce80()) return 8;
-        else if (item->FUN_14053cf90()) return 25;
+        else if (item->HasSkinType()) return 25;
         return 1;
     case 2:
         return 2;

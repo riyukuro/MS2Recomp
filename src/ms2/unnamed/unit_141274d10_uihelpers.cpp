@@ -102,7 +102,7 @@ class UITalkManager   // C3: member view for the former free stand-ins
 public:
     int GetTalking();
 };
-class PC { public: int FUN_1416595d0(); int FUN_141659690(); };   // C3: unit-local view
+class PC { public: int IsInCubeMode(); int FUN_141659690(); };   // C3: unit-local view
 CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW);
 UISystemText* FUN_141278110(int nId);
@@ -219,7 +219,7 @@ int FUN_141275080()
         return 0;
     void* pActor = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pActor != 0) {
-        if (((PC*)pActor)->FUN_1416595d0() != 0 && ((PC*)pActor)->FUN_141659690() == 0)
+        if (((PC*)pActor)->IsInCubeMode() != 0 && ((PC*)pActor)->FUN_141659690() == 0)
             return 0;
         if (CAutoFindTaxiStation::GetInstance()->FUN_141278a40() != 0)
             return 0;
@@ -1069,7 +1069,7 @@ CStringW FUN_141277910(MS2Ptr<CItemData> item)
     if (item.IsNull() != 0)
         return CStringW(L"");
     if (reinterpret_cast<Unk_IconItemData*>(item.operator->())->FUN_14053cbc0() != 0)
-        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, reinterpret_cast<Unk_IconItemData*>(item.operator->())->FUN_14053c620());
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetEquipSubtype());
     if (reinterpret_cast<Unk_IconItemData*>(item.operator->())->IsLapenshardType() != 0)
         return FUN_141277be0(item);
     return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());

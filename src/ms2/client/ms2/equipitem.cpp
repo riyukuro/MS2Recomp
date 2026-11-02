@@ -183,7 +183,7 @@ void CEquipItem::FUN_1411dc210()
             m_pPC->FUN_141659000(1);
         FUN_1411dd9a0();
         float fBlend = 1.0f;
-        if (m_pPC->FUN_14166c930() == 0x2f)
+        if (m_pPC->GetCurStateId() == 0x2f)
             fBlend = m_pPC->FUN_14165eb80();
         FUN_1411dd520(m_pPC->FUN_141658d20(), m_pPC->vfunc_60(), m_pPC->FUN_14166e0d0(), fBlend, false);
     }
@@ -455,7 +455,7 @@ MS2_REPLACE_METHOD(0x1411DCFC0, CEquipItem, FUN_1411dcfc0, 191, 0xC7A3714C);
 // @0x1411dd090
 void CEquipItem::FUN_1411dd090()
 {
-    if (FUN_1411dc7f0()->FUN_14053c620() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
+    if (FUN_1411dc7f0()->GetEquipSubtype() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
         reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e5c10();
 }
 MS2_REPLACE_METHOD(0x1411DD090, CEquipItem, FUN_1411dd090, 84, 0x5F4E7D1F);
@@ -463,7 +463,7 @@ MS2_REPLACE_METHOD(0x1411DD090, CEquipItem, FUN_1411dd090, 84, 0x5F4E7D1F);
 // @0x1411dd0f0
 void CEquipItem::FUN_1411dd0f0()
 {
-    if (FUN_1411dc7f0()->FUN_14053c620() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
+    if (FUN_1411dc7f0()->GetEquipSubtype() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
         reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e6ab0();
 }
 MS2_REPLACE_METHOD(0x1411DD0F0, CEquipItem, FUN_1411dd0f0, 84, 0xD926319C);
@@ -520,7 +520,7 @@ MS2_REPLACE_METHOD(0x1411DD280, CEquipItem, FUN_1411dd280, 293, 0x8597AC58);
 // @0x1411dd3b0
 void CEquipItem::FUN_1411dd3b0()
 {
-    if (FUN_1411dc7f0()->FUN_14053c620() == 0x12)
+    if (FUN_1411dc7f0()->GetEquipSubtype() == 0x12)
         reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e7380();
 }
 MS2_REPLACE_METHOD(0x1411DD3B0, CEquipItem, FUN_1411dd3b0, 59, 0xFC5D8593);

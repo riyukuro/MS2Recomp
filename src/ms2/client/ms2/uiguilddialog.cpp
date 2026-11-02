@@ -565,7 +565,7 @@ int UIGuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
         bool bClose = true;
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
@@ -658,7 +658,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnCategoryChanged", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141969040(data.FUN_1422b8f40());
         return 1;
     }
@@ -667,7 +667,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x3da), static_cast<IMessageListener*>(this), CStringW(L"addMember"));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01d30(2, CStringW(L""), 0, 0, 0);
+            spBox->SetInput(2, CStringW(L""), 0, 0, 0);
             FUN_140d73c60(spBox);
         }
         return 1;
@@ -697,16 +697,16 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             return 1;
         }
         CStringW strText = FUN_14028dfa0<CStringW, int, int>(L"s_guild_ui_donate_popup", FUN_140763e10(nDonate), nCount, nMax);
-        CReservedWordTable::GetInstance()->FUN_1416fb340(strText);
+        CReservedWordTable::GetInstance()->ReplaceValueWords(strText);
         m_30->FUN_141979f30("showDonatePopup", nCount, nMax, strText);
         return 1;
     }
     if (_stricmp("onDonate", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nCount = data.FUN_1422b8a10();
+            int nCount = data.PopInt();
             CGuildManager::GetInstance()->FUN_1413b8540(nCount);
         }
         return 1;
@@ -745,7 +745,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_14028dee0<int, int, int>(0x3db, *FUN_1401d3200()->GuildCreatePrice.Get(), nMin, nMax), static_cast<IMessageListener*>(this), CStringW(L"createGuild"));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01d30(0, CStringW(L""), nMax, 0, 0);
+            spBox->SetInput(0, CStringW(L""), nMax, 0, 0);
             FUN_140d73c60(spBox);
         }
         return 1;
@@ -769,7 +769,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (spBox.get() != 0)
         {
             CStringW strNotice = CGuildManager::GetInstance()->GetNotice();
-            spBox->FUN_141a01d30(0, strNotice, 300, 1, 0x14);
+            spBox->SetInput(0, strNotice, 300, 1, 0x14);
             FUN_140d73c60(spBox);
         }
         return 1;
@@ -812,7 +812,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnGuildMemberPopupMenu", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float x = data.PopFloat();
             float y = data.PopFloat();
@@ -830,7 +830,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnClickMemoButton", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -841,7 +841,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_140298ea0(CStringW(L"s_guild_ui_memo")), static_cast<IMessageListener*>(this), CStringW(L"changeMemo"));
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a01d30(0, CStringW(L""), 0x14, 0, 0);
+                spBox->SetInput(0, CStringW(L""), 0x14, 0, 0);
                 FUN_140d73c60(spBox);
             }
         }
@@ -850,7 +850,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onChangeMaster", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             if (strName == CGuildManager::GetInstance()->GetMasterMember()->data.FUN_1404ca890())
@@ -876,10 +876,10 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onChangeMemberGrade", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
-            int nGrade = data.FUN_1422b8a10();
+            int nGrade = data.PopInt();
             if (strName == CGuildManager::GetInstance()->GetMasterMember()->data.FUN_1404ca890())
             {
                 FUN_1412751f0(BlockFormat(0x3e1), 1, 1);
@@ -892,7 +892,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onExpelMember", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             if (strName == CGuildManager::GetInstance()->GetMasterMember()->data.FUN_1404ca890())
@@ -918,9 +918,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onChageGradeError", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nError = data.FUN_1422b8a10();
+            int nError = data.PopInt();
             CStringW strText;
             if (nError == 1)
                 strText = BlockFormat(999);
@@ -934,9 +934,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnChangeGrade", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            Scaleform::GFx::Value vGrades = data.FUN_1422b9260();
+            Scaleform::GFx::Value vGrades = data.PopValue();
             unsigned nGrades = vGrades.GetArraySize();
             CStringW strErrors;
             for (int i = 0; i < (int)nGrades; i++)
@@ -1076,9 +1076,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnChangedInformArenaMatching", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bInform = data.FUN_1422b8a90();
+            bool bInform = data.PopBool();
             reinterpret_cast<bool&>(CGameOption::GetInstance()->FUN_140c9b8b0()->m_n00) = bInform;
             CGameOption::GetInstance()->SaveCharacterSettings();
         }
@@ -1087,9 +1087,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnGuildSkillUse", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nSkillId = data.FUN_1422b8a10();
+            int nSkillId = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
             Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
             if (spSkill == 0)
@@ -1101,12 +1101,12 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 strMsg = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_ui_skill_use_skill_event"), strCost, strName);
             else
                 strMsg = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_ui_skill_use_skill"), strCost, strName);
-            CReservedWordTable::GetInstance()->FUN_1416fb340(strMsg);
+            CReservedWordTable::GetInstance()->ReplaceValueWords(strMsg);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1f, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 FUN_14151f200();
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974ba0));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974ba0));
                 spBox->Append<int>(nSkillId);
                 spBox->FUN_141a01800(2);
                 spBox->SetCheckbox0(GetStringCommonByKey(CStringW(L"s_guild_ui_skill_use_skill_term_agree")), 0);
@@ -1119,9 +1119,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnGuildMemberSkillUse", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nSkillId = data.FUN_1422b8a10();
+            int nSkillId = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
             Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
             if (spSkill == 0)
@@ -1129,9 +1129,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (!spSkill->FUN_1404d4e40())
                 return 1;
             CStringW strMsg = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_ui_skill_use_personal_skill"), FUN_140763e10(CGuildManager::GetInstance()->GetPersonalSkillDiscountedCost(nSkillId, nLevel)), CStringTable::GetInstance()->FUN_141812290(spSkill->f34, (unsigned short)spSkill->f38, CString("name")));
-            CReservedWordTable::GetInstance()->FUN_1416fb340(strMsg);
+            CReservedWordTable::GetInstance()->ReplaceValueWords(strMsg);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974bf0));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974bf0));
             spBox->Append<int>(nSkillId);
             FUN_140d73c60(spBox);
         }
@@ -1140,9 +1140,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnGuildSkillUpgrade", szMethod) == 0 || _stricmp("OnGuildMemberSkillUpgrade", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nSkillId = data.FUN_1422b8a10();
+            int nSkillId = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
             int nNextLevel = nLevel + 1;
             Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->GetSkill(nSkillId, nLevel);
@@ -1159,7 +1159,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             else
                 strMsg = FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_guild_ui_skill_upgrade_popup"), strCost, strName, nNextLevel);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974c40));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974c40));
             spBox->Append<int>(nSkillId);
             FUN_140d73c60(spBox);
         }
@@ -1168,9 +1168,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onEventOpen", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nEventId = data.FUN_1422b8a10();
+            int nEventId = data.PopInt();
             CGuildManager::GetInstance()->FUN_1413ba080(nEventId);
         }
         return 0;
@@ -1178,9 +1178,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onEventJoin", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nEventId = data.FUN_1422b8a10();
+            int nEventId = data.PopInt();
             CGuildManager::GetInstance()->SendGuildMode100(nEventId);
         }
         return 0;
@@ -1193,9 +1193,9 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("OnUpgradeNpc", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nKind = data.FUN_1422b8a10();
+            int nKind = data.PopInt();
             int nLevel = CGuildManager::GetInstance()->FUN_1404d2990(nKind);
             int nNextLevel = nLevel + 1;
             Unk_PayloadPtr<CGuildXmlData::GuildNpc> spNpc = CGuildXmlData::GetInstance()->GetNpc((Unk_GuildNpcKind)nKind, nNextLevel);
@@ -1205,7 +1205,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (nLevel == 0)
                 strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_guild_ui_house_npc_upgrade_popup_first"), CStringTable::GetInstance()->FUN_141811980(0x3f, spNpc->f30));
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974c90));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974c90));
             spBox->Append<int>(nKind);
             FUN_140d73c60(spBox);
         }
@@ -1214,13 +1214,13 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     if (_stricmp("onGiftGuildItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strReceiver = data.FUN_1422b8f40();
             ItemEntity item;
-            item.m_itemId = data.FUN_1422b8a10();
-            item.SetRank(data.FUN_1422b8a10());
-            item.m_count = data.FUN_1422b8b10();
+            item.m_itemId = data.PopInt();
+            item.SetRank(data.PopInt());
+            item.m_count = data.PopUInt();
             if (CGuildManager::GetInstance()->FUN_1413bb490(item, strReceiver) && m_storagePage.get() != 0)
                 m_storagePage->Invoke("onGiftPopDown");
         }
@@ -1299,7 +1299,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnRequestJoin", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nGuildId = FUN_140718350(data.FUN_1422b8d30());
             CGuildManager::GetInstance()->SendGuildMode82(nGuildId);
@@ -1309,7 +1309,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnRequestCancelJoin", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nGuildId = FUN_140718350(data.FUN_1422b8d30());
             CGuildManager::GetInstance()->SendGuildMode83(nGuildId);
@@ -1319,7 +1319,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnSearchGuildMasterPopupMenu", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float x = data.PopFloat();
             float y = data.PopFloat();
@@ -1365,7 +1365,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnAcceptMemeber", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
             CGuildManager::GetInstance()->SendGuildMode84(nCharId, 1);
@@ -1375,7 +1375,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnRejectMember", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
             CGuildManager::GetInstance()->SendGuildMode84(nCharId, 0);
@@ -1385,7 +1385,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnAcceptGuildMemeberPopupMenu", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float x = data.PopFloat();
             float y = data.PopFloat();
@@ -1408,10 +1408,10 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onSetPropensity", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nType = data.FUN_1422b8a10();
-            int nValue = data.FUN_1422b8a10();
+            int nType = data.PopInt();
+            int nValue = data.PopInt();
             if (nType == 1)
             {
                 CGuildManager::GetInstance()->FUN_14197e040(nValue);
@@ -1429,9 +1429,9 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChageRegistSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bArg = data.FUN_1422b8a90();
+            bool bArg = data.PopBool();
             int bRegist = FUN_14028d760(bArg);
             int nPropensity = CGuildManager::GetInstance()->GetPropensity();
             CGuildManager::GetInstance()->SendGuildMode68(bRegist, nPropensity);
@@ -1918,12 +1918,12 @@ void UIGuildDialog::UpdateBelongGuildText()
         if (strGuild.GetLength() < 1)
         {
             CStringW strText(L"");
-            spText->FUN_1422c4cd0(strText);
+            spText->SetTextW(strText);
         }
         else
         {
             CStringW strText = FormatStringId<CStringW>(0x3fb, strGuild);
-            spText->FUN_1422c4cd0(strText);
+            spText->SetTextW(strText);
         }
     }
 }
@@ -2153,9 +2153,9 @@ void UIGuildDialog::FUN_141973610()
             strPeriod = StringFormat<CStringW, CStringW>(L"{0} ~ {1}", strBegin, strEnd);
         }
         if (MS2Ptr<ASTextField> spTitle = m_championshipPage->FUN_1409b4620("m_titleText"))
-            spTitle->FUN_1422c4cd0(strTitle);
+            spTitle->SetTextW(strTitle);
         if (MS2Ptr<ASTextField> spPeriod = m_championshipPage->FUN_1409b4620("m_periodText"))
-            spPeriod->FUN_1422c4cd0(strPeriod);
+            spPeriod->SetTextW(strPeriod);
         UpdateBelongGuildText();
         if (m_bLoading)
         {
@@ -2472,13 +2472,13 @@ void UIGuildDialog::FUN_141971490()
     {
         MS2Ptr<ASTextField> spTheme = spHouseClip->FUN_1409b4620("m_themeTitle");
         if (spTheme.get() != 0)
-            spTheme->FUN_1422c4cd0(CStringTable::GetInstance()->FUN_141811980(0x36, spHouse->f20));
+            spTheme->SetTextW(CStringTable::GetInstance()->FUN_141811980(0x36, spHouse->f20));
         MS2Ptr<ASMovieClip> spInfo = spHouseClip->FUN_1409b4560("m_houseInfo");
         if (spInfo.get() != 0)
         {
             MS2Ptr<ASTextField> spArea = spInfo->FUN_1409b4620("m_areaText");
             if (spArea.get() != 0)
-                spArea->FUN_1422c4cd0(FUN_14028dfa0<int>(L"s_home_info_area", spHouse->f24));
+                spArea->SetTextW(FUN_14028dfa0<int>(L"s_home_info_area", spHouse->f24));
             ASArray arrFacility(2);
             std::vector<int>& arrIds = spHouse->f38;
             size_t i = 0;

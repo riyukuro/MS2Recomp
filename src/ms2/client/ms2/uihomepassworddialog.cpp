@@ -142,10 +142,10 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("OnConfirm", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strPassword = data.FUN_1422b8f40();
-            unsigned nFlag = data.FUN_1422b8a90();
+            unsigned nFlag = data.PopBool();
             strPassword.Trim();
             if (strPassword.GetLength() != 6)
                 FUN_140d73bc0(0xb0a, 0, 0, L"");
@@ -190,7 +190,7 @@ int UIHomePasswordDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (nResult == 0)

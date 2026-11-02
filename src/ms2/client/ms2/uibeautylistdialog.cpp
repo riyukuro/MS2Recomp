@@ -126,7 +126,7 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), 0, L""))
             {
                 box->Append<int>(nType);
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
+                box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
                 FUN_140d73c60(box);
             }
         }

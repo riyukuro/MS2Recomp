@@ -41,11 +41,11 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 
 CLogString* GetLogString();                                // the log singleton
 // The scene-graph texture cache (CNifLoadingService-like; scenegraph units call it Unk_SgNifLoader).
-class Unk_UgcTextureCache
+class CNifLoadingService { public: NiTexturePtr GetTextureFrom(CString strKey, CString strFile, int nClass); };   // C3: member view (nifeffectparam.h)
+class Unk_UgcTextureCache : public CNifLoadingService
 {
 public:
     NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf);
-    NiTexturePtr FUN_141553910(CString strKey, CString strPath, int nPriority);
     NiTexturePtr FUN_1415534d0(CString strKey, NiPixelDataPtr spPixelData, int nPriority);
 };
 Unk_UgcTextureCache* FUN_140a0afd0();
@@ -1189,7 +1189,7 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                     {
                         CStringW strDstFile = converter.GetDstFile();
                         if (FUN_140a0afd0())
-                            spTexture = FUN_140a0afd0()->FUN_141553910(FUN_14016a5c0(pData->m_strPath, 0),
+                            spTexture = FUN_140a0afd0()->GetTextureFrom(FUN_14016a5c0(pData->m_strPath, 0),
                                                                        FUN_14016a600(strDstFile, 0), 5);
                         if (_waccess(strDstFile, 0) == 0)
                             DeleteFileW(strDstFile);

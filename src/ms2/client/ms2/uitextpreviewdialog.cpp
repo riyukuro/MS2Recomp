@@ -133,11 +133,11 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp("ReplaceReserveWord", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strText = data.FUN_1422b8f40();
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceColorWords(strText);
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strText);
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             FUN_1422bb8b0(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value((const wchar_t*)strText));
         }
     }

@@ -173,7 +173,7 @@ void StateNurturing::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
-    m_pOwner->FUN_14166dd20(FUN_140ac13a0(), 1.0f, false, false);
+    m_pOwner->PlayAnimation(FUN_140ac13a0(), 1.0f, false, false);
     PCBase* pPC = FUN_1417b8370();
     MyPC* pRider = FUN_1417b84b0();
     if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
@@ -198,9 +198,9 @@ void StateNurturing::vfunc_4(StateData* pData)
         for (size_t i = 0; i < aCubes.GetCount(); i++)
         {
             MS2Ptr<CNurturingCubeObject> spCube = aCubes[i];
-            float fDist = reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18().FUN_140965c40(spCube->FUN_141226d00()).FUN_140967ac0();
+            float fDist = reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
             bool bUsable = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get();
-            if (FUN_1408a1360(reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18(), spCube->FUN_141226d00()) == 0)
+            if (FUN_1408a1360(reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18(), spCube->GetPosition()) == 0)
                 bUsable = false;
             if (spCube->FUN_140967140() != static_cast<unsigned char>(bUsable))
                 spCube->FUN_1412277d0(bUsable);
@@ -311,7 +311,7 @@ void StateNurturing::EndOfSequence(NiActorManager*, unsigned int, NiControllerSe
 {
     if (m_pOwner)
     {
-        m_pOwner->FUN_14166dd20(FUN_140ac13a0(), 1.0f, true, false);
+        m_pOwner->PlayAnimation(FUN_140ac13a0(), 1.0f, true, false);
     }
 }
 MS2_REPLACE_METHOD(0x140AC12C0, StateNurturing, EndOfSequence, 163, 0xB108BB78);
@@ -364,9 +364,9 @@ MS2Ptr<CNurturingCubeObject> StateNurturing::FUN_140ac1650()
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CNurturingCubeObject> spCube = aCubes[i];
-        float fDist = reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18().FUN_140965c40(spCube->FUN_141226d00()).FUN_140967ac0();
+        float fDist = reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
         bool bUsable = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get();
-        if (FUN_1408a1360(reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18(), spCube->FUN_141226d00()) == 0)
+        if (FUN_1408a1360(reinterpret_cast<Unk_NuPos*>(pPC)->vfunc_18(), spCube->GetPosition()) == 0)
             bUsable = false;
         if (spCube->FUN_140967140() != static_cast<unsigned char>(bUsable))
             spCube->FUN_1412277d0(bUsable);
@@ -389,7 +389,7 @@ void StateNurturing::SendFunctionCubeMode4()
     for (size_t i = 0; i < m_aCubes.size(); i++)
     {
         Unk_FcUseInfo kInfo;
-        kInfo.m_strId = m_aCubes[i]->FUN_141226bd0();
+        kInfo.m_strId = m_aCubes[i]->GetId();
         kInfo.m_nCount = 1;
         FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }
@@ -413,7 +413,7 @@ void StateNurturing::SendFunctionCubeMode5()
     for (size_t i = 0; i < aUsable.size(); i++)
     {
         Unk_FcUseInfo kInfo;
-        kInfo.m_strId = aUsable[i]->FUN_141226bd0();
+        kInfo.m_strId = aUsable[i]->GetId();
         kInfo.m_nCount = 1;
         FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }

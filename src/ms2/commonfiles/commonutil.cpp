@@ -772,7 +772,7 @@ CString FUN_14028d890(const CString& strPath)
 // @0x14028d990
 CString FUN_14028d990(const CString& strPath)
 {
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e510())
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsRegionCN())
         return FUN_14028d890(strPath);
     return FUN_14028d7a0(strPath);
 }

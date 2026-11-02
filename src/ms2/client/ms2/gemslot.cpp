@@ -243,7 +243,7 @@ int GemSlot::vfunc_0(void* p)
         ASTooltip tip(pActor, nFlags, 2);
         if (tip.FUN_1409e0d40(vfunc_25()))
         {
-            tip.FUN_1409c69b0(vfunc_22());
+            tip.SetEnablePuton(vfunc_22());
             *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
             return 1;
         }

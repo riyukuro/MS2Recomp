@@ -238,7 +238,7 @@ MS2Ptr<UnlimitedEnchantOption> UnlimitedEnchantTable::FindForItem(MS2Ptr<CItem> 
 {
     if (spItem == 0)
         return MS2Ptr<UnlimitedEnchantOption>(0);
-    return Find(spItem->FUN_1405276c0(), spItem->FUN_140527270());
+    return Find(spItem->FUN_1405276c0(), spItem->GetPlusLevel());
 }
 
 // @0x1408c4600
@@ -247,7 +247,7 @@ MS2Ptr<UnlimitedEnchantOption> UnlimitedEnchantTable::Find(unsigned nItemId, int
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return MS2Ptr<UnlimitedEnchantOption>(0);
-    unsigned nSlot = spData->FUN_14053c620();
+    unsigned nSlot = spData->GetEquipSubtype();
     std::map<int, GradeMap>::iterator itSlot = m_options.find(nSlot);
     if (itSlot == m_options.end())
         return MS2Ptr<UnlimitedEnchantOption>(0);

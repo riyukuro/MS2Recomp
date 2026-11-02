@@ -197,18 +197,18 @@ int UIDailyMissionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "onReceiveItem") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nItem = data.FUN_1422b8b10();
+            int nItem = data.PopUInt();
             SendQuest(nItem);
         }
     }
     else if (_stricmp(szMethod, "onChangeIndex") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             if (m_1b0 >= 0 && m_1b0 < 6)
             {
                 m_1b0 = nIndex;
@@ -230,7 +230,7 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
-    int nId = pArgs->FUN_1422b8b10();
+    int nId = pArgs->PopUInt();
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nId);
     if (!spData)
         return;
@@ -406,7 +406,7 @@ void UIDailyMissionDialog::FUN_140c00500()
             spPoint->vfunc_13(strFrame);
         }
         if (MS2Ptr<ASTextField> spText = spPoint->FUN_1409b4620("textField"))
-            spText->FUN_1422c4cd0(StringFormat(L"{0} / {1}", nCur, nMax));
+            spText->SetTextW(StringFormat(L"{0} / {1}", nCur, nMax));
     }
 }
 
@@ -475,7 +475,7 @@ void UIDailyMissionDialog::FUN_140c00cd0()
         {
             int nMax = FUN_140c020d0();
             int nCur = FUN_140c01f50();
-            spText->FUN_1422c4cd0(StringFormat(L"{0} / {1}", nCur, nMax));
+            spText->SetTextW(StringFormat(L"{0} / {1}", nCur, nMax));
         }
     }
 }
@@ -564,7 +564,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(pReward->m_itemId, pReward->m_count, 0) == 0)
         return;
-    spItem->FUN_140526c70(pReward->m_job);
+    spItem->SetCountClamped(pReward->m_job);
     int nFlags = 0x415;
     CString strBind;
     strBind.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);

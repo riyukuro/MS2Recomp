@@ -112,13 +112,10 @@ public:
     class PCBase* FUN_140b10360();
     int FUN_140b11180();
     void FUN_140b114e0(int);
+    MS2Ptr<Unk_PetRow> GetRow();                                           // the pet's row (by value)
+    PCBase* FUN_140b10320();                                               // the owner
 };
 int FUN_140b11e90(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FUN_140b11e90
-struct Unk_SmPet
-{
-    MS2Ptr<Unk_PetRow> FUN_140b102b0();                                    // 0x140b102b0 CPet: the pet's row (by value)
-    PCBase* FUN_140b10320();                                               // 0x140b10320 CPet: the owner
-};
 
 // The client constants table and its Value<T> accessors.
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -387,10 +384,10 @@ void StateSummon::vfunc_9(double fTime)
     switch (m_n10)
     {
     case 0x82:
-        m_pOwner->FUN_14166dd20("Object_React_A", m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation("Object_React_A", m_pOwner->FUN_1416713c0(), false, false);
         break;
     case 0x83:
-        m_pOwner->FUN_14166dd20("Emotion_Pet_A", m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation("Emotion_Pet_A", m_pOwner->FUN_1416713c0(), false, false);
         break;
     }
 }
@@ -435,7 +432,7 @@ void StateGoToHome::vfunc_4(StateData* pData)
 
     int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x35d0))->FUN_140ad5c50();
     efd::utf8string strAnim("Object_React_A");
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 
     if (FUN_1417b8560() != 0)
     {
@@ -511,7 +508,7 @@ void StateRecall::vfunc_4(StateData* pData)
 
     int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)FUN_1401d3200())) + 0x3628))->FUN_140ad5c50();
     efd::utf8string strAnim("Object_React_A");
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 
     if (FUN_1417b8560() != 0)
     {
@@ -641,13 +638,13 @@ void StateSummonIdle::vfunc_9(double fTime)
     PCBase* pPet = FUN_1417b83a0();
     if (pPet == 0)
         return;
-    PCBase* pOwner = reinterpret_cast<Unk_SmPet*>(pPet)->FUN_140b10320();
+    PCBase* pOwner = reinterpret_cast<CPet*>(pPet)->FUN_140b10320();
     if (pOwner == 0)
         return;
 
-    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->IsRevivalBlocked() != 0)
+    if (pOwner->IsDead() != 0 && reinterpret_cast<PC*>(pOwner)->IsRevivalBlocked() != 0)
     {
-        m_pOwner->FUN_14166dd20("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
         return;
     }
 
@@ -768,7 +765,7 @@ void FUN_1417f9320(StateSummonIdle* pState, int nActorId)
 void FUN_1417f9380(StateSummonIdle* pState, int nActorId)
 {
     if (pState->m_pOwner->FUN_14166de90(0x44, nActorId) == 0)
-        pState->m_pOwner->FUN_14166dd20("Revive_A", pState->m_pOwner->FUN_1416713c0(), false,
+        pState->m_pOwner->PlayAnimation("Revive_A", pState->m_pOwner->FUN_1416713c0(), false,
                                         false);
     FUN_1417f94a0(pState, 0x60);
 }
@@ -815,7 +812,7 @@ void StateSummonRevive::vfunc_3(double fTime)
     if (m_timer.FUN_140868c00() != 0)    // expired (0x140868c00), not still running
     {
         m_timer.FUN_1408687f0();
-        if (pPet->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pPet)->IsRevivalBlocked() == 0)
+        if (pPet->IsDead() != 0 && reinterpret_cast<PC*>(pPet)->IsRevivalBlocked() == 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.Encode1(3);
@@ -839,13 +836,13 @@ void StateSummonRevive::vfunc_9(double fTime)
     PCBase* pPet = FUN_1417b83a0();
     if (pPet == 0)
         return;
-    PCBase* pOwner = reinterpret_cast<Unk_SmPet*>(pPet)->FUN_140b10320();
+    PCBase* pOwner = reinterpret_cast<CPet*>(pPet)->FUN_140b10320();
     if (pOwner == 0)
         return;
 
-    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->IsRevivalBlocked() != 0)
+    if (pOwner->IsDead() != 0 && reinterpret_cast<PC*>(pOwner)->IsRevivalBlocked() != 0)
     {
-        m_pOwner->FUN_14166dd20("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
         return;
     }
 
@@ -875,7 +872,7 @@ void StateSummonExpire::vfunc_3(double fTime)
     if (pPet == 0)
         return;
 
-    MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<Unk_SmPet*>(pPet)->FUN_140b102b0();
+    MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<CPet*>(pPet)->GetRow();
     if (spRow == 0)
         return;
     if (reinterpret_cast<Unk_IntervalTimer&>(m_t40).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e38)->Get()) != 0)

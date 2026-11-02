@@ -218,7 +218,7 @@ void PcHudNavigationEntity::vfunc_4(const TraceResult* pResult)
     if (m_20 == 0)
         return;
     if (MS2Ptr<ASTextField> spText = m_20->FUN_1409b4620("m_distance"))
-        spText->FUN_1422c4cd0(pResult->m_38);
+        spText->SetTextW(pResult->m_38);
 }
 
 // @0x140e78c40
@@ -274,7 +274,7 @@ int NpcNavigationEntity::vfunc_5(const TraceResult* pResult)
     Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
     if (!pNpc)
         return 0;
-    if (pNpc->FUN_14166ce30())
+    if (pNpc->IsDead())
         return 0;
     return 1;
 }
@@ -287,7 +287,7 @@ int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
     Unk_SSGNpc* pNpc = reinterpret_cast<Unk_SSGNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_30));
     if (!pNpc)
         return 0;
-    if (pNpc->FUN_14166ce30())
+    if (pNpc->IsDead())
         return 0;
     return 1;
 }

@@ -346,8 +346,8 @@ int UIDungeonClosingPhotoDialog::vfunc_28(const char* szMethod, const Scaleform:
         return 1;
     if (_stricmp("onAddFriend", szMethod) == 0) {
         ASData d;
-        if (d.FUN_1422b9620(pArgs, nArgs))
-            FUN_140e104d0(d.FUN_1422b8a10());
+        if (d.SetArgsIfAny(pArgs, nArgs))
+            FUN_140e104d0(d.PopInt());
         return 1;
     }
     return 0;

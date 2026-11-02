@@ -106,19 +106,18 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-int FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<int>&);
 
 // Item accessors (the CItem members are declared in citem.h; the rest are unrecovered members taken as free functions).
 
 // @0x140626aa0
 bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Init(MS2Ptr<CItem> pItem, int nSocketMode, int nUnlockMode)
 {
-    if (pItem == (CItem*)0 || pItem.get()->FUN_1405279c0() == 0)
+    if (pItem == (CItem*)0 || pItem.get()->GetSocket() == 0)
         return false;
     m_n18 = ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId();
-    m_n1C = pItem.get()->FUN_140526bd0();
+    m_n1C = pItem.get()->GetRarity();
     m_n20 = pItem.get()->GetItemUid();
-    m_n28 = ((class CItemSocket*)(void*)(pItem.get()->FUN_1405279c0()))->GetOpenSlotCount();
+    m_n28 = ((class CItemSocket*)(void*)(pItem.get()->GetSocket()))->GetOpenSlotCount();
     m_nSocketMode = nSocketMode;
     m_nUnlockMode = nUnlockMode;
     return true;
@@ -131,9 +130,9 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Matches(MS2Ptr<CItem> pI
         return false;
     if (m_n20 == (unsigned __int64)pItem.get()->GetItemUid())
         return false;
-    if (m_n18 != ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId() || m_n1C != pItem.get()->FUN_140526bd0())
+    if (m_n18 != ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId() || m_n1C != pItem.get()->GetRarity())
         return false;
-    void* pEnhance = pItem.get()->FUN_1405279c0();
+    void* pEnhance = pItem.get()->GetSocket();
     if (pEnhance == 0 || ((class CItemSocket*)(void*)(pEnhance))->GetMaxSlot() == 0)
         return false;
     if (m_n28 != ((class CItemSocket*)(void*)(pEnhance))->GetOpenSlotCount())
@@ -305,10 +304,10 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<CItemSocketScrollData> spScroll)
         return 1;
     if (!FUN_140627930(spData, spScroll))
         return 8;
-    unsigned nSlotKind = spData->FUN_14053c620();
+    unsigned nSlotKind = spData->GetEquipSubtype();
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spScroll->m_arrSlot), reinterpret_cast<const int&>(nSlotKind)) == -1)
         return 5;
-    unsigned nRank = spItem->FUN_140526bd0();
+    unsigned nRank = spItem->GetRarity();
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spScroll->m_arrRank), reinterpret_cast<const int&>(nRank)) == -1)
         return 6;
     int nLevel = spData->limit.levelLimit;
@@ -322,9 +321,9 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<CItemSocketScrollData> spScroll)
         if (nLevel < (int)spScroll->m_nMinLv || nLevel > (int)spScroll->m_nMaxLv)
             return 7;
     }
-    if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
+    if (spItem->GetSocket() == 0 || spItem->FUN_140529560() == 0)
         return 3;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket->GetMaxSlot() == 0)
         return 3;
     int nLeft = pSocket->GetLockedSlotCount();
@@ -444,11 +443,11 @@ int FUN_140627e80(MS2Ptr<CItem> spItem)
         return 0;
     if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->CanTransferSocket() == 0)
         return 0;
-    if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
+    if (spItem->GetSocket() == 0 || spItem->FUN_140529560() == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetOpenSlotCount() == 0)
+    if (((class CItemSocket*)(void*)(spItem->GetSocket()))->GetOpenSlotCount() == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetFilledSlotCount() != 0)
+    if (((class CItemSocket*)(void*)(spItem->GetSocket()))->GetFilledSlotCount() != 0)
         return 0;
     if (spItem->FUN_140526160() == 1)
         return 0;
@@ -465,11 +464,11 @@ int FUN_140628050(MS2Ptr<CItem> spItem)
         return 0;
     if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->CanTransferSocket() == 0)
         return 0;
-    if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
+    if (spItem->GetSocket() == 0 || spItem->FUN_140529560() == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetOpenSlotCount() != 0)
+    if (((class CItemSocket*)(void*)(spItem->GetSocket()))->GetOpenSlotCount() != 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spItem->FUN_1405279c0()))->GetFilledSlotCount() != 0)
+    if (((class CItemSocket*)(void*)(spItem->GetSocket()))->GetFilledSlotCount() != 0)
         return 0;
     return 1;
 }
@@ -480,7 +479,7 @@ int FUN_140628200(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
     if (FUN_140627e80(spA) == 0 || FUN_140628050(spB) == 0)
         return 0;
-    if (((class CItemSocket*)(void*)(spA->FUN_1405279c0()))->GetMaxSlot() != ((class CItemSocket*)(void*)(spB->FUN_1405279c0()))->GetMaxSlot())
+    if (((class CItemSocket*)(void*)(spA->GetSocket()))->GetMaxSlot() != ((class CItemSocket*)(void*)(spB->GetSocket()))->GetMaxSlot())
         return 0;
     return 1;
 }
@@ -874,14 +873,14 @@ MS2_REPLACE(0x14062A090, FUN_14062a090, 104, 0x1A92EBE0);
 // @0x140628ff0
 void FUN_140628ff0(Unk_SockItemMsg& v, COutputStream& out, bool bTransfer)
 {
-    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+    if (v.m_spItem == 0 || v.m_spItem->GetSocket() == 0)
         return;
     out.WriteUInt8(v.m_bValid);
     out.WriteInt64(v.m_spItem->GetItemUid());
     if (v.m_bValid)
     {
         out.WriteUInt8(v.m_nByte);
-        v.m_spItem->FUN_1405279c0()->WriteToStream(out);
+        v.m_spItem->GetSocket()->WriteToStream(out);
         out.WriteBool(bTransfer);
         if (bTransfer)
             reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_1(out);
@@ -892,7 +891,7 @@ MS2_REPLACE(0x140628FF0, FUN_140628ff0, 322, 0x2CF4AD29);
 // @0x140629140
 void FUN_140629140(Unk_SockItemMsg& v, CInPacket& in)
 {
-    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+    if (v.m_spItem == 0 || v.m_spItem->GetSocket() == 0)
         return;
     v.m_bValid = in.ReadUInt8() == 1 ? true : false;
     __int64 nUid = in.ReadInt64();
@@ -901,7 +900,7 @@ void FUN_140629140(Unk_SockItemMsg& v, CInPacket& in)
         v.m_nByte = in.ReadUInt8();
         if (v.m_spItem->GetItemUid() == nUid)
         {
-            v.m_spItem->FUN_1405279c0()->ReadFromStream(in);
+            v.m_spItem->GetSocket()->ReadFromStream(in);
             bool bTransfer = in.ReadBool();
             if (bTransfer)
                 reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_2(in);
@@ -913,14 +912,14 @@ MS2_REPLACE(0x140629140, FUN_140629140, 502, 0x90571525);
 // @0x140629400
 void FUN_140629400(Unk_SockItemPair& v, COutputStream& out, int nMode)
 {
-    if (v.m_spA == 0 || v.m_spA->FUN_1405279c0() == 0)
+    if (v.m_spA == 0 || v.m_spA->GetSocket() == 0)
         return;
-    if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
+    if (v.m_spB == 0 || v.m_spB->GetSocket() == 0)
         return;
     out.WriteInt64(v.m_spA->GetItemUid());
-    v.m_spA->FUN_1405279c0()->WriteToStream(out);
+    v.m_spA->GetSocket()->WriteToStream(out);
     out.WriteInt64(v.m_spB->GetItemUid());
-    v.m_spB->FUN_1405279c0()->WriteToStream(out);
+    v.m_spB->GetSocket()->WriteToStream(out);
     out.WriteBool(nMode == 1);
     if (nMode != 0)
         reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_1(out);
@@ -930,18 +929,18 @@ MS2_REPLACE(0x140629400, FUN_140629400, 411, 0x09CAED1C);
 // @0x1406295b0
 void FUN_1406295b0(Unk_SockItemPair& v, CInPacket& in)
 {
-    if (v.m_spA == 0 || v.m_spA->FUN_1405279c0() == 0)
+    if (v.m_spA == 0 || v.m_spA->GetSocket() == 0)
         return;
-    if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
+    if (v.m_spB == 0 || v.m_spB->GetSocket() == 0)
         return;
     __int64 nUidA = in.ReadInt64();
     if (v.m_spA->GetItemUid() != nUidA)
         return;
-    v.m_spA->FUN_1405279c0()->ReadFromStream(in);
+    v.m_spA->GetSocket()->ReadFromStream(in);
     __int64 nUidB = in.ReadInt64();
     if (v.m_spB->GetItemUid() != nUidB)
         return;
-    v.m_spB->FUN_1405279c0()->ReadFromStream(in);
+    v.m_spB->GetSocket()->ReadFromStream(in);
     int bTransfer = in.ReadBool();
     if (bTransfer != 0)
         reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_2(in);
@@ -1082,7 +1081,7 @@ MS2_REPLACE(0x140629E60, FUN_140629e60, 191, 0xB6E1E065);
 // @0x14062a100
 void FUN_14062a100(Unk_SockItemOne& v, COutputStream& out)
 {
-    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+    if (v.m_spItem == 0 || v.m_spItem->GetSocket() == 0)
         return;
     out.WriteUInt8(v.m_bFlag);
     v.m_nUid = v.m_spItem->GetItemUid();
@@ -1091,7 +1090,7 @@ void FUN_14062a100(Unk_SockItemOne& v, COutputStream& out)
     if (v.m_bFlag)
     {
         out.WriteInt32(v.m_spItem->GetTransferCount());
-        v.m_spItem->FUN_1405279c0()->WriteToStream(out);
+        v.m_spItem->GetSocket()->WriteToStream(out);
     }
 }
 MS2_REPLACE(0x14062A100, FUN_14062a100, 291, 0x952C6E87);
@@ -1099,7 +1098,7 @@ MS2_REPLACE(0x14062A100, FUN_14062a100, 291, 0x952C6E87);
 // @0x14062a230
 void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
 {
-    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+    if (v.m_spItem == 0 || v.m_spItem->GetSocket() == 0)
         return;
     v.m_bFlag = in.ReadUInt8() == 1 ? true : false;
     v.m_nUid = in.ReadInt64();
@@ -1110,7 +1109,7 @@ void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
         {
             int nCount = in.ReadInt32();
             v.m_spItem->SetTransferCount(nCount);
-            v.m_spItem->FUN_1405279c0()->ReadFromStream(in);
+            v.m_spItem->GetSocket()->ReadFromStream(in);
         }
     }
 }
@@ -1131,7 +1130,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
 {
     if (spItem == (CItem*)0 || spItem->FUN_140527840() == 0 || spGem == (CItem*)0)
         return false;
-    void* pSocket = spItem->FUN_1405279c0();
+    void* pSocket = spItem->GetSocket();
     if (pSocket == 0)
         return false;
     if (((class CItemSocket*)(void*)(pSocket))->GetMaxSlot() == 0)
@@ -1180,7 +1179,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, L"");
     if (spBox == (CMsgBoxData*)0)
         return false;
-    spBox->FUN_141a027c0(cb);
+    spBox->SetCallback(cb);
     spBox->FUN_141a024a0(0);
     spBox->Append<__int64>(spGem->GetItemUid());
     spBox->Append<int>(nTarget);
@@ -1363,14 +1362,12 @@ CItemSocketTable::~CItemSocketTable()
 }
 
 // @0x14062cbc0
-// MS2-FUNCTIONAL: first-pass source; temp order and the CString locals are not byte-compared
 int CItemSocketTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("itemSocket.xml"));
+    CString strPath = FUN_14071a5b0("Table", "itemSocket.xml");
     FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1378,45 +1375,50 @@ int CItemSocketTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 1;
     }
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("itemSocket")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("itemSocket")))
+    const CString& strItemSocket = "itemSocket";
+    const CString& strId = "id";
+    const CString& strGrade = "grade";
+    const CString& strMaxCount = "maxCount";
+    const CString& strOpenType = "openType";
+    const CString& strRandomOpenRange = "randomOpenRange";
+    const CString& strFixOpenCount = "fixOpenCount";
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strItemSocket)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strItemSocket)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nItemId = 0;
-        XmlGetAttr((class TiXmlElement*)(pNode), "id", nItemId);
+        XmlGetAttr((class TiXmlElement*)(pNode), strId, nItemId);
         if (nItemId == 0)
             continue;
         ContainerPtr spContainer(0);
         if (!m_items.Lookup(nItemId, spContainer))
             spContainer.AssignRaw(new CItemSocketDataContainer);
         MS2Ptr<CItemSocketData> spData(new CItemSocketData);
-        if (spData.IsNull())
+        if (spData == 0)
             continue;
-        Unk_ReadRank((class Unk_XmlNode*)(pNode), "grade", &spData->m_nGrade);
-        XmlGetAttr((class TiXmlElement*)(pNode), "maxCount", spData->m_nMaxCount);
+        Unk_ReadRank((class Unk_XmlNode*)(pNode), strGrade, &spData->m_nGrade);
+        XmlGetAttr((class TiXmlElement*)(pNode), strMaxCount, spData->m_nMaxCount);
         int nOpenType = 0;
-        XmlGetAttr((class TiXmlElement*)(pNode), "openType", nOpenType);
+        XmlGetAttr((class TiXmlElement*)(pNode), strOpenType, nOpenType);
         spData->m_nOpenType = nOpenType;
         if (nOpenType == 1)
         {
-            ATL::CAtlArray<int> range;
-            FUN_140178670(pNode, "randomOpenRange", range);
+            ATL::CAtlArray<unsigned> range;
+            XmlTokenList(pNode, strRandomOpenRange, range);
             if (range.GetCount() == 2)
-            {
-                spData->m_range.m_nMin = range[0];
-                spData->m_range.m_nMax = range[1];
-            }
+                spData->m_range.Range(range.GetAt(0), range.GetAt(1));
         }
         else if (nOpenType == 0)
         {
             int nCount = 0;
-            XmlGetAttr((class TiXmlElement*)(pNode), "fixOpenCount", nCount);
-            spData->m_range.m_nMin = nCount;
-            spData->m_range.m_nMax = nCount;
+            XmlGetAttr((class TiXmlElement*)(pNode), strFixOpenCount, nCount);
+            spData->m_range.Range(nCount, nCount);
         }
         spContainer->m_rows.Add(spData);
-        Unk_LockGuard guard(m_lock);
-        if (guard == 0)
+        if (Unk_LockGuard guard = m_lock)
+        {
+        }
+        else
             m_items.SetAt(nItemId, spContainer);
     }
     return 1;
@@ -1452,7 +1454,7 @@ unsigned CItemSocketTable::GetMaxSocketCount(int nSocketId, int nGrade, MS2Ptr<C
     {
         int nCount = 0;
         unsigned short nLevel = (unsigned short)spData->limit.levelLimit;
-        int nItemType = spData->FUN_14053c620();
+        int nItemType = spData->GetEquipSubtype();
         int nSubType = spData->GetSkinType();
         ((class CLua*)(void*)(((void*)FUN_1401c0db0())))->CalcItemSocketMaxCount(nItemType, nGrade, nLevel, nSubType, &nCount);
         return nCount;
@@ -1479,7 +1481,7 @@ unsigned CItemSocketTable::GetInitialSocketCount(int nSocketId, int nGrade, MS2P
         return 0;
     int nOpenType = spRow->m_nOpenType;
     if (nOpenType == 0)
-        nCount = spRow->m_range.m_nMin;
+        nCount = spRow->m_range.m_min;
     return nCount;
 }
 MS2_REPLACE_METHOD(0x14062D6F0, CItemSocketTable, GetInitialSocketCount, 400, 0x7C262BE8);
@@ -2307,7 +2309,7 @@ bool FUN_140633700(MS2Ptr<CItem> spItem)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->CanDestroy() == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
         return false;
     CItemEnchantInfo* pEnchant = spItem->FUN_1405278a0()->GetEnchant();
@@ -2325,7 +2327,7 @@ bool FUN_140633840(MS2Ptr<CItem> spItem)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->IsSellable() == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->CheckGemsShopSellable() == 0)
         return false;
     return true;
@@ -2340,7 +2342,7 @@ bool FUN_140633930(MS2Ptr<CItem> spItem)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->FUN_140635580() == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->FUN_140622780() == 0)
         return false;
     return true;
@@ -2363,7 +2365,7 @@ bool FUN_140633a90(MS2Ptr<CItem> spItem)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->HasTradeCountLeft() == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->CheckNoBoundGem() == 0)
         return false;
     return true;
@@ -2386,7 +2388,7 @@ bool FUN_140633bf0(MS2Ptr<CItem> spItem)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->CanBreak() == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->CheckGemsBreakable() == 0)
         return false;
     return true;
@@ -2409,7 +2411,7 @@ bool FUN_140633d50(MS2Ptr<CItem> spItem)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->CanRegisterMeratMarket() == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->CheckGemsMeratMarketRegistrable() == 0)
         return false;
     return true;
@@ -2428,7 +2430,7 @@ bool FUN_140633e40(MS2Ptr<CItem> spItem, int* pReason)
         *pReason = 1;
         return false;
     }
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->FUN_140622790() == 0)
     {
         *pReason = 2;
@@ -2456,7 +2458,7 @@ bool FUN_140633fb0(MS2Ptr<CItem> spItem, int* pReason)
         *pReason = 1;
         return false;
     }
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->FUN_1406227f0() == 0)
     {
         *pReason = 2;
@@ -2484,7 +2486,7 @@ bool FUN_140634120(MS2Ptr<CItem> spItem, int* pReason)
         *pReason = 1;
         return false;
     }
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->CheckNoLockedGem() == 0)
     {
         *pReason = 2;
@@ -2518,7 +2520,7 @@ bool FUN_140634290(MS2Ptr<CItem> spItem, int* pReason)
         *pReason = 1;
         return true;
     }
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->HasBoundGem() == true)
     {
         *pReason = 2;
@@ -2536,7 +2538,7 @@ bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId)
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
     if (pTransfer != 0 && pTransfer->FUN_140635980(pCharacterId) == false)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->AllGemsUsableByCharacter(pCharacterId) == false)
         return false;
     return true;
@@ -2568,7 +2570,7 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacterId, ItemUtilTr
         pTransfer->GetBindingInfo(&pOut->characterId, &pOut->name);
         return false;
     }
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->AllGemsUsableByCharacter(pCharacterId) == false)
     {
         pOut->kind = 2;
@@ -2650,7 +2652,7 @@ void CItemTransfer::InitFromItem(CItem* pItem)
                 m_b3E = 1;
             m_b3A = pData->CanRegisterMeratMarket() ? true : false;
             m_nCount = pData->FUN_14053d800() ? 1 : 0;
-            m_b41 = ((class CItemSocketTable*)FUN_14052d200())->FUN_14062d980(reinterpret_cast<CItemData*>(pItem->FUN_140527840()), pItem->FUN_140526bd0());
+            m_b41 = ((class CItemSocketTable*)FUN_14052d200())->FUN_14062d980(reinterpret_cast<CItemData*>(pItem->FUN_140527840()), pItem->GetRarity());
             m_b42 = m_b41;
             RefreshRule();
         }
@@ -2790,11 +2792,11 @@ unsigned CItemTransfer::HasBindingRule()
 MS2_REPLACE_METHOD(0x140635100, CItemTransfer, HasBindingRule, 17, 0xB9EB22D4);
 
 // @0x140635120
-int CItemTransfer::FUN_140635120()
+int CItemTransfer::HasBinding()
 {
     return m_spBinding.get() != 0 ? 1 : 0;
 }
-MS2_REPLACE_METHOD(0x140635120, CItemTransfer, FUN_140635120, 58, 0x06ED1646);
+MS2_REPLACE_METHOD(0x140635120, CItemTransfer, HasBinding, 58, 0x06ED1646);
 
 // @0x140635160
 CItemTransfer::CItemBinding* CItemTransfer::GetBinding()
@@ -2915,7 +2917,7 @@ MS2_REPLACE_METHOD(0x1406354D0, CItemTransfer, IsSellable, 70, 0x2CA2E2B6);
 // @0x140635520
 unsigned CItemTransfer::CanDestroy()
 {
-    if (FUN_140635120() != 0)
+    if (HasBinding() != 0)
         return 0;
     if (FUN_140634cc0() == 0)
         return 0;
@@ -2935,7 +2937,7 @@ MS2_REPLACE_METHOD(0x140635580, CItemTransfer, FUN_140635580, 8, 0x7F371472);
 // @0x140635590
 unsigned CItemTransfer::FUN_140635590()
 {
-    if (FUN_140635120() != 0)
+    if (HasBinding() != 0)
         return 0;
     if (FUN_140634cc0() == 0)
         return 0;
@@ -2953,7 +2955,7 @@ MS2_REPLACE_METHOD(0x140635590, CItemTransfer, FUN_140635590, 154, 0xE947292A);
 // @0x140635630
 int CItemTransfer::HasTradeCountLeft()
 {
-    if (FUN_140635120() != 0)
+    if (HasBinding() != 0)
         return 0;
     if (FUN_140634cc0() == 0)
         return 0;
@@ -2968,7 +2970,7 @@ MS2_REPLACE_METHOD(0x140635630, CItemTransfer, HasTradeCountLeft, 89, 0xAC2D2E1A
 // @0x140635690
 unsigned CItemTransfer::CanListOnBlackMarket()
 {
-    if (FUN_140635120() != 0)
+    if (HasBinding() != 0)
         return 0;
     if (FUN_140634cc0() == 0)
         return 0;
@@ -3004,9 +3006,9 @@ int CItemTransfer::CanBreak()
     {
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3a))
             return 0;
-        if (m_pItem->HasCubeTextureMesh() != 0 && m_pItem->FUN_1405279c0() != 0)
+        if (m_pItem->HasCubeTextureMesh() != 0 && m_pItem->GetSocket() != 0)
         {
-            if (((class CItemSocket*)(void*)(m_pItem->FUN_1405279c0()))->GetOpenSlotCount() == 0)
+            if (((class CItemSocket*)(void*)(m_pItem->GetSocket()))->GetOpenSlotCount() == 0)
                 return 0;
         }
     }
@@ -3050,7 +3052,7 @@ MS2_REPLACE_METHOD(0x140635900, CItemTransfer, CanTransferSocket, 45, 0xF1A2447C
 // @0x140635940
 bool CItemTransfer::FUN_140635940()
 {
-    return FUN_140635120() == 1;
+    return HasBinding() == 1;
 }
 MS2_REPLACE_METHOD(0x140635940, CItemTransfer, FUN_140635940, 52, 0xE032FB84);
 
@@ -3087,7 +3089,7 @@ void CItemTransfer::RefreshRule()
     if (m_pItem->FUN_140527840() == 0)
         return;
     CItemData* pData = reinterpret_cast<CItemData*>(m_pItem->FUN_140527840());
-    m_nRule = ComputeRule(m_nType, pData, m_pItem->FUN_140526bd0());
+    m_nRule = ComputeRule(m_nType, pData, m_pItem->GetRarity());
 }
 MS2_REPLACE_METHOD(0x140635A60, CItemTransfer, RefreshRule, 111, 0xE6CA5D84);
 

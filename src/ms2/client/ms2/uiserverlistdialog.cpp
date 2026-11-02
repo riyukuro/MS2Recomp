@@ -419,15 +419,15 @@ int UIServerListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     } else if (_stricmp("OnSelectServer", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_141ad25a0(data.FUN_1422b8f40());
             return 1;
         }
     } else if (_stricmp("OnConnectServer", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             m_strServer = data.FUN_1422b8f40();
-            int nChannel = data.FUN_1422b8a10();
+            int nChannel = data.PopInt();
             FUN_141ad2560(nChannel);
             return 1;
         }

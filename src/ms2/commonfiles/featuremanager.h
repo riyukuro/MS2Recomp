@@ -76,7 +76,7 @@ public:
     CStringW FUN_14036dfa0(const CStringW& strA, const CStringW& strB);     // the one matching this locale
     Unk_140165cf0* FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* pB);    // the winner of two <feature> rows
     bool FUN_14036e4c0();                                       // locale KR
-    bool FUN_14036e510();                                       // locale CN
+    bool IsRegionCN();                                       // locale CN
     bool IsRegionNA();                                       // locale NA
     bool IsRegionJP();                                       // locale JP
 

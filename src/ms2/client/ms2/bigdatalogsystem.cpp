@@ -14,6 +14,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/networkservice.h"
+#include "ms2/placeholder/coptimizer.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -26,7 +27,6 @@
 
 // ---- exe callees ----
                    // the frame timer: frame rate
-class Unk_BdMemory { public: unsigned __int64 FUN_14161bdc0(); };       // the memory monitor: bytes in use
               // the network service: latency
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
@@ -150,7 +150,7 @@ void CBigDataLogSystem::Update()
         SendStatistics();
     float fFrameRate = TSingleton<CMainSystem>::GetInstance()->GetFps();
     AddSample(SAMPLE_FPS, (__int64)fFrameRate);
-    unsigned __int64 nMemory = ((class Unk_BdMemory*)FUN_1409f7c90())->FUN_14161bdc0();
+    unsigned __int64 nMemory = ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB();
     AddSample(SAMPLE_MEMORY, (__int64)(float)nMemory);
     unsigned nLatency = FUN_140714f90()->GetAverageLatency();
     AddSample(SAMPLE_LATENCY, nLatency);

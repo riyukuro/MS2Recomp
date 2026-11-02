@@ -193,7 +193,7 @@ void StateUseFurniture::vfunc_4(StateData* pData)
             m_pOwner->FUN_14166ef10(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8, 1, 0, false);
         bool bModel = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
         if (bModel)
-            m_pOwner->FUN_14166dd20((const char*)static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
+            m_pOwner->PlayAnimation((const char*)static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
         bool bEffect = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0 != "";
         if (bEffect)
         {
@@ -220,7 +220,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         bool bModel = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
         if (bModel)
         {
-            NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>((FUN_141b6f910()))->GetActorManager(m_spCube->FUN_141226eb0());
+            NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>((FUN_141b6f910()))->GetActorManager(m_spCube->GetEntityId());
             if (pMgr != 0)
             {
                 NiControllerSequence* pSeq = pMgr->GetActiveSequence(static_cast<NiActorManager*>(pMgr)->GetCurAnimation(), true, true);
@@ -345,7 +345,7 @@ void StateUseFurniture::vfunc_5(int n)
             if (pMe != 0)
             {
                 Unk_UfUseInfo kUse;
-                kUse.m_strId = m_spCube->FUN_141226bd0();
+                kUse.m_strId = m_spCube->GetId();
                 kUse.m_nCount = 1;
                 COutPacket packet(static_cast<int>(SendOp::FunctionCube), 0);
                 packet.Encode1(5);
@@ -357,7 +357,7 @@ void StateUseFurniture::vfunc_5(int n)
         }
         efd::Point3 kRot = reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
         kRot.z = pPC->vfunc_20().z;
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
     }
     m_spCube = 0;
     m_spFurniture = 0;

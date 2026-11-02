@@ -160,8 +160,8 @@ void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
 {
     if (m_30.get() != 0)
     {
-        Vector3 pt = pCube->FUN_141226d00();
-        Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pCube->FUN_141226bd0(), pt.x, pt.y);
+        Vector3 pt = pCube->GetPosition();
+        Scaleform::GFx::Value v = m_30->FUN_140e5bfe0("create", pCube->GetId(), pt.x, pt.y);
         if (!((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined())
         {
             ASGameEntity* pEntity = new ASGameEntity(v, m_28);
@@ -170,14 +170,14 @@ void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
                 pEntity->vfunc_3(0);
                 MS2Ptr<EntityContext> spContext(new EntityContext);
                 spContext->m_spEntity.AssignRaw(pEntity);
-                m_cubes.SetAt(pCube->FUN_141226bd0(), spContext);
+                m_cubes.SetAt(pCube->GetId(), spContext);
             }
         }
     }
     else
     {
         MS2Ptr<EntityContext> spEmpty(0);
-        m_cubes.SetAt(pCube->FUN_141226bd0(), spEmpty);
+        m_cubes.SetAt(pCube->GetId(), spEmpty);
     }
 }
 
@@ -339,8 +339,8 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         if ((spHome.get() ? true : false) && nOwnerOk != 0)
         {
             Vector3 ptScreen;
-            Vector3 ptWorld = spHome->FUN_141226d00().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
-            float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->FUN_141226d00()).FUN_140967ac0();
+            Vector3 ptWorld = spHome->GetPosition().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
+            float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->GetPosition()).FUN_140967ac0();
             int nRiding = static_cast<Unk_McPc*>(pPC)->GetCubeMode() != 0;
             if (!reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
             {
@@ -354,12 +354,12 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             else
             {
                 ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-                ptScreen.y += FUN_1412762d0(spHome->FUN_141226d00());
+                ptScreen.y += FUN_1412762d0(spHome->GetPosition());
                 ptScreen.x += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_de80)->FUN_140298f40());
                 ptScreen.y += reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_ded8)->FUN_140298f40());
                 spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
                 int nShow = (fDist < reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((struct Unk_AuConfig*)FUN_1401d3200())->m_dfe0)->FUN_140298f40()) && spHome->FUN_141229080() != 0) ? 1 : 0;
-                if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), spHome->FUN_141226d00()) == 0)
+                if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), spHome->GetPosition()) == 0)
                     nShow = 0;
                 if (spContext->m_nShown != nShow)
                 {

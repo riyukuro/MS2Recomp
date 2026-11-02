@@ -268,8 +268,8 @@ void UIIndividualPvPDialog::FUN_1412cae10(int nArena)
     if (spData == 0)
         return;
     m_nSelected = nArena;
-    m_spName->FUN_1422c4cd0(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
-    m_spDetail->FUN_1422c4f00(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nDetailId)));
+    m_spName->SetTextW(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
+    m_spDetail->SetTextHTMLW(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nDetailId)));
     FUN_1412cacc0();
     m_30->Invoke("setBanner", CStringW(m_strBannerDir), CString(spData->m_strBanner));
     ASObj rewards(2);

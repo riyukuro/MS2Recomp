@@ -562,7 +562,7 @@ int COptimizer::FUN_14161ce60(unsigned nId)
     {
         if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
-            PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd1180(nId));
+            PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FindObjectById(nId));
             if (pPC != 0)
             {
                 return pPC->vfunc_25();

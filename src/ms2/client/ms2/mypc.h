@@ -155,7 +155,7 @@ public:
 
     // non-virtual members used by other units (placeholder mypc.h)
     void StartObserving(PCBase* pTarget);                    // observe pTarget
-    void FUN_14152a960();                                   // stop observing
+    void StopObserving();                                   // stop observing
     void FocusConstructionGuideCamera(PCBase* pTarget);                     // point the construction guide camera at pTarget
     void FUN_14152a700(PCBase* pTarget);                     // fly the camera to the construction guide pTarget
     void FUN_14152a640(int nTeam);                          // observe a guild team

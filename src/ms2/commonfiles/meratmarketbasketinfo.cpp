@@ -2367,7 +2367,7 @@ int FUN_1406a50b0(Unk_MeratProductMap& map)
             continue;
         if (spProduct->m_ugc.IsMusicType())
             continue;
-        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
+        if (TSingleton<CFeatureManager>::GetInstance()->IsRegionCN())
         {
             if (spProduct->m_ugc.m_n28 == 2 || spProduct->m_ugc.m_n28 == 1)
                 ++nCount;
@@ -2647,7 +2647,7 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
             int nScore = spScore->FUN_14054ad00();
             if (spItem->FUN_140527340() != nScore)
                 return false;
-            if (spItem->FUN_140526bd0() != 2)
+            if (spItem->GetRarity() != 2)
                 return false;
             if (!FUN_140633d50(spItem))
                 return false;

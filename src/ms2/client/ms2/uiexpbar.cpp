@@ -71,7 +71,6 @@ public:
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
     virtual void s24();
     virtual void vfunc_25();
-    void FUN_1422c0e80(float fScale);                               // set the scale
     Scaleform::GFx::Value FUN_141932fd0(const char* szMethod, float a1, float a2, CStringW a3, unsigned int a4);
 };
 
@@ -192,7 +191,7 @@ void UIExpBar::vfunc_43()
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
     {
-        static_cast<Unk_ExpEntity*>(pEntity.operator->())->FUN_1422c0e80((float)DAT_143af62d4 * FUN_14025e7a0()->FUN_1422afec0(m_28));
+        reinterpret_cast<ASDisplayObject*>(pEntity.operator->())->SetWidthFloat((float)DAT_143af62d4 * FUN_14025e7a0()->FUN_1422afec0(m_28));
         static_cast<Unk_ExpEntity*>(pEntity.operator->())->vfunc_25();
     }
 }
@@ -231,7 +230,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
                 strText += StringFormat(L"[{0}]", DAT_143ab28a8);
         }
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
         ASObj obj(2);
         obj.FUN_1407cbb20("text", CStringW(strText));
         *pRetVal = obj.FUN_1422bb870();

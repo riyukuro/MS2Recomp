@@ -223,7 +223,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
         m_bufItems.WriteInt32(spItem->FUN_1405276c0());
         m_bufItems.WriteInt64(spItem->GetItemUid());
         m_bufItems.WriteUInt8(spItem->FUN_140526c30());
-        m_bufItems.WriteInt32(spItem->FUN_140526bd0());
+        m_bufItems.WriteInt32(spItem->GetRarity());
         spItem->FUN_140524ad0(m_bufItems);
     }
     bool bTimed = false;
@@ -242,7 +242,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
         m_bufItems.WriteInt32(spItem->FUN_1405276c0());
         m_bufItems.WriteInt64(spItem->GetItemUid());
         m_bufItems.WriteUInt8(spItem->FUN_140526c30());
-        m_bufItems.WriteInt32(spItem->FUN_140526bd0());
+        m_bufItems.WriteInt32(spItem->GetRarity());
         spItem->FUN_140524ad0(m_bufItems);
     }
     int nExtra = (int)aExtra.GetCount();
@@ -252,7 +252,7 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
         m_bufExtra.WriteUInt8(spItem->FUN_140526b50());
         m_bufExtra.WriteInt32(spItem->FUN_1405276c0());
         m_bufExtra.WriteInt64(spItem->GetItemUid());
-        m_bufExtra.WriteInt32(spItem->FUN_140526bd0());
+        m_bufExtra.WriteInt32(spItem->GetRarity());
         spItem->FUN_140524ad0(m_bufExtra);
     }
 }

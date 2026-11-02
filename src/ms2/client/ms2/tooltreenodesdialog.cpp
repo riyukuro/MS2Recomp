@@ -12,11 +12,13 @@
 
 // ---- unit-local placeholders (the node hierarchy is unrecovered) ----
 
-class Unk_TreeNode
+class Unk_TreeNode;
+class NiAVObject;
+class NiNode   // C3: member view
 {
 public:
-    unsigned FUN_14098daf0();                                   // the child count
-    Unk_TreeNode* FUN_14098db40(unsigned nIndex);               // the nIndex-th child entry
+    unsigned int GetArrayCount() const;
+    NiAVObject* GetAt(unsigned int i) const;
 };
 class Unk_NodeManager { public: Unk_TreeNode* FUN_14098d8d0(Unk_TreeNode* pEntry); };   // the node of an entry (NULL: gone)
 extern int DAT_143afa4d8;                                       // the global node manager
@@ -113,8 +115,8 @@ void CToolTreeNodesDialog::FUN_141858b50(Unk_TreeNode* pRoot)
 // @0x141858c00
 void CToolTreeNodesDialog::FUN_141858c00(HTREEITEM hParent, Unk_TreeNode* pNode)
 {
-    for (unsigned i = 0; i < pNode->FUN_14098daf0(); ++i) {
-        Unk_TreeNode* pEntry = pNode->FUN_14098db40(i);
+    for (unsigned i = 0; i < reinterpret_cast<NiNode*>(pNode)->GetArrayCount(); ++i) {
+        Unk_TreeNode* pEntry = reinterpret_cast<Unk_TreeNode*>(reinterpret_cast<NiNode*>(pNode)->GetAt(i));
         if (((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry) != 0) {
             TVINSERTSTRUCT tvis;
             tvis.hParent = hParent;

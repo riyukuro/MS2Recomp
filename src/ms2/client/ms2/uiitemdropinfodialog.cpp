@@ -215,7 +215,7 @@ MS2_REPLACE_METHOD(0x140C3AAE0, UIItemDropInfoDialog, vfunc_26, 188, 0xAC8F9059)
 // @0x140c3abb0
 void UIItemDropInfoDialog::vfunc_49(Scaleform::GFx::Value* result, ASData* args) {
     UIObject::vfunc_49(result, args);
-    unsigned int index = args->FUN_1422b8b10();
+    unsigned int index = args->PopUInt();
     if (m_items.IsEmpty()) return;
     if (index >= m_items.GetCount()) return;
     MS2Ptr<CItem> item(m_items.GetAt(index));
@@ -234,8 +234,8 @@ void UIItemDropInfoDialog::FUN_140c3ad20() {
     if (slot.get()) slot->FUN_1422e4840(m_slot);
     if (m_name.get()) {
         CStringW name = FUN_141425950(m_item->FUN_1405276c0());
-        CStringW label = FUN_14183e9c0(name, m_item->FUN_140526bd0());
-        ((ASTextField*)m_name.operator->())->FUN_1422c4f00(label);
+        CStringW label = FUN_14183e9c0(name, m_item->GetRarity());
+        ((ASTextField*)m_name.operator->())->SetTextHTMLW(label);
     }
 }
 MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, FUN_140c3ad20, 578, 0x5553B0EC);

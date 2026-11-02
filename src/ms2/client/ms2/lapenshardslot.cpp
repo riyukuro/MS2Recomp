@@ -324,14 +324,14 @@ int LapenshardSlot::vfunc_0(void* p)
     if (spItem == 0)
         return 0;
     int nFlags = 0x20;
-    int nGrade = spItem->FUN_140526bd0();
+    int nGrade = spItem->GetRarity();
     if (m_nSlot != 0)
         spItem->FUN_140526bf0(spItem->FUN_140527840()->GetRank());
     int nResult = 0;
     ASTooltip tip(pPc, nFlags, 2);
     if (tip.FUN_1409e0d40(spItem))
     {
-        tip.FUN_1409c69b0(vfunc_22());
+        tip.SetEnablePuton(vfunc_22());
         FUN_1409b4bc0(p, tip.FUN_1422bb870());
         nResult = 1;
     }

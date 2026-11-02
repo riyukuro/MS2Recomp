@@ -100,7 +100,7 @@ class CMsgBoxData : public CPtred
 public:
     CMsgBoxData(int nType);
     void SetMsg(const CStringW& strText);
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     void FUN_141a024a0(int n);
     bool FUN_140b19130(unsigned nIndex, __int64& nValue) const;    // the nIndex-th stored value (this unit)
 
@@ -951,7 +951,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_141275260(0x386, 1, 1);
         return false;
     }
-    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+    if (!TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
         FUN_141275260(0x36c, 1, 1);
         return false;
@@ -1163,7 +1163,7 @@ void CClubClientManager::FUN_140b16d20(CInPacket& packet)
     {
         FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
         box.operator->()->FUN_141a024a0(false);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
         FUN_1405340b0(box.operator->(), spInvite->m_inviteId);
         FUN_140d73c60(box);
     }
@@ -1591,7 +1591,7 @@ Unk_MsgBoxPtr FUN_140b191a0(CStringW strText, int nType, Delegate<bool(int, cons
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->SetMsg(strText);
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     FUN_1405340b0(box.operator->(), nUid);
     FUN_14151f150(box);
     return box;

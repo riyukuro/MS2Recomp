@@ -109,7 +109,7 @@ void CLiftableTarget::FUN_1414483e0()
     Unk_LtActor* pActor = ((class Unk_LtActor*)((class WorldService*)(class Unk_LtPlayer*)(reinterpret_cast<Unk_LtPlayer*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor == 0)
         return;
-    if (pActor->FUN_1416595d0() == 0)
+    if (pActor->IsInCubeMode() == 0)
     {
         DestroyEffect();
         return;

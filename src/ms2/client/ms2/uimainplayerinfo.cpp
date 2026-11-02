@@ -617,7 +617,7 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0)
     {
-        int nType = pMsg->FUN_1422b8a10();
+        int nType = pMsg->PopInt();
         if (nType == 0)
         {
             CStringW strCmd = pMsg->FUN_1422b8f40();
@@ -660,14 +660,14 @@ int UIMainPlayerInfo::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     ASData args;
     if (_stricmp("OnToggleSkillExpansionSlot", szMethod) == 0)
     {
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
-            m_bSkillMinimize = args.FUN_1422b8a90();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
+            m_bSkillMinimize = args.PopBool();
         return 1;
     }
     else if (_stricmp("OnToggleCommonExpansionSlot", szMethod) == 0)
     {
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
-            m_bCommonMinimize = args.FUN_1422b8a90();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
+            m_bCommonMinimize = args.PopBool();
         return 1;
     }
     else if (_stricmp("onRideOff", szMethod) == 0)

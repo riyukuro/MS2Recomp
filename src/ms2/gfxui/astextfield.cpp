@@ -41,11 +41,11 @@ void ASTextField::SetTextA(const CString& strText)
 MS2_REPLACE_METHOD(0x1422C4C80, ASTextField, SetTextA, 61, 0xE4942A47);
 
 // @0x1422c4cd0
-void ASTextField::FUN_1422c4cd0(const CStringW& strText)
+void ASTextField::SetTextW(const CStringW& strText)
 {
     FUN_1422bb870().SetText(strText);
 }
-MS2_REPLACE_METHOD(0x1422C4CD0, ASTextField, FUN_1422c4cd0, 61, 0x9903C860);
+MS2_REPLACE_METHOD(0x1422C4CD0, ASTextField, SetTextW, 61, 0x9903C860);
 
 // @0x1422c4d20
 CString ASTextField::GetTextA()
@@ -77,11 +77,11 @@ void ASTextField::SetTextHTMLA(const CString& strText)
 MS2_REPLACE_METHOD(0x1422C4EB0, ASTextField, SetTextHTMLA, 61, 0xAF866D5D);
 
 // @0x1422c4f00
-void ASTextField::FUN_1422c4f00(const CStringW& strText)
+void ASTextField::SetTextHTMLW(const CStringW& strText)
 {
     FUN_1422bb870().SetTextHTML(strText);
 }
-MS2_REPLACE_METHOD(0x1422C4F00, ASTextField, FUN_1422c4f00, 61, 0xC299544E);
+MS2_REPLACE_METHOD(0x1422C4F00, ASTextField, SetTextHTMLW, 61, 0xC299544E);
 
 // @0x1422c4f50
 CString ASTextField::GetTextHTMLA()

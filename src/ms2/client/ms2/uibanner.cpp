@@ -147,7 +147,7 @@ int UIBanner::Entity::vfunc_8(int n)
     Unk_BannerActor* pActor = (Unk_BannerActor*)FUN_140f49330();
     if (pActor == 0)
         return 1;
-    return UIHudEntity::Entity::vfunc_8(pActor->FUN_14166ce30());
+    return UIHudEntity::Entity::vfunc_8(pActor->IsDead());
 }
 
 // @0x140ba8690
@@ -230,12 +230,12 @@ int UIBanner::vfunc_28(const char* szName, const Scaleform::GFx::Value* pArgs, u
     if (_stricmp(szName, "onClick") == 0)
     {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs))
+        if (!data.SetArgsIfAny(pArgs, nArgs))
         {
             MS2_ASSERT_AT(185, 0);
             return 0;
         }
-        int nActorId = data.FUN_1422b8b10();
+        int nActorId = data.PopUInt();
         FUN_140ba8b80(nActorId);
         return 1;
     }
@@ -399,7 +399,7 @@ void Unk_BannerASObj::FUN_140ba9670(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140baa6b0

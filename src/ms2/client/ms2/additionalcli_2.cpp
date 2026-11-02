@@ -83,7 +83,6 @@ class Unk_AclUpperBar : public UIUpperHpBar
 {
 public:
     void FUN_141b4cf40(MS2Ptr<AdditionalCli> sp);           // add a buff icon
-    void FUN_141b4d060(PCBase* pActor, int nKey);           // remove a buff icon
 };
 class Unk_AclDuelBar : public UINpcDuelHPBarDialog
 {
@@ -606,7 +605,7 @@ int AdditionalCliList::GetForceApplyTarget()
 unsigned AdditionalCliList::FUN_140970b30()
 {
     unsigned nValue = 0;
-    if (m_pOwner->FUN_14166c930() == 0x10)
+    if (m_pOwner->GetCurStateId() == 0x10)
     {
         StateSkill* pState = static_cast<StateSkill*>(m_pOwner->FUN_14166ccb0());
         if (pState)
@@ -1027,7 +1026,7 @@ void AdditionalCliList::FUN_140972770()
 {
     if (FUN_140973640())
         return;
-    if ((FUN_1409735c0() || FUN_140973600()) && m_pOwner->FUN_14166ce30())
+    if ((FUN_1409735c0() || FUN_140973600()) && m_pOwner->IsDead())
         return;
     float fAlpha = ComputeAlphaBlending();
     if (fAlpha != m_fAlpha)
@@ -1274,7 +1273,7 @@ void AdditionalCliList::FUN_140973cc0(MS2Ptr<AdditionalCli> sp)
     {
         UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
         if (pBar)
-            static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4d060(m_pOwner, sp->GetKey());
+            pBar->FUN_141b4d060(m_pOwner, sp->GetKey());
         UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
         if (pDuel)
             pDuel->RemoveBuffEffect(sp->GetKey());

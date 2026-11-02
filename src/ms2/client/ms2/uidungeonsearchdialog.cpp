@@ -162,11 +162,11 @@ void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ab20();
+    bool IsInParty();
     bool IsMatchSearching(int);
     bool CanEnterDungeonRoom(int);
     unsigned int FUN_14162c1e0();
-    unsigned short FUN_14162c0b0();
+    unsigned short GetMinMemberLevel();
 };
 bool FUN_14162ab70(void*);
 class MyPC   // C3: member view for the former free stand-ins
@@ -493,8 +493,8 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
         return;
     short nLevelMin = 0;
     int nLevelMax = 0;
-    if (((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ab20()) {
-        nLevelMin = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162c0b0();
+    if (((class CPartyManager*)(void*)(FUN_1409670d0()))->IsInParty()) {
+        nLevelMin = ((class CPartyManager*)(void*)(FUN_1409670d0()))->GetMinMemberLevel();
         nLevelMax = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162c1e0();
     } else {
         nLevelMin = pActor->vfunc_78();

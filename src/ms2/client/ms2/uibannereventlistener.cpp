@@ -41,7 +41,7 @@ struct Unk_Pos { Unk_Pos(); float m_0; float m_4; float m_8; };
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
-    int FUN_14166c930();                                    // 0x14166c930 current state id
+    int GetCurStateId();                                    // 0x14166c930 current state id
     __int64 FUN_141656a80();                                // the character id
 };
 class Unk_141bd0cc0
@@ -234,7 +234,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0x5f, 0);
         return true;
     }
-    if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() != 0x3c)
+    if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() != 0x3c)
         return true;
     State* pState = pPlayer->FUN_14166ccb0();
     if (!pState)
@@ -328,7 +328,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
         MS2_ASSERT_AT(0xd0, 0);
         return true;
     }
-    if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() != 0x45)
+    if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() != 0x45)
         return true;
     State* pState = pPlayer->FUN_14166ccb0();
     if (!pState)

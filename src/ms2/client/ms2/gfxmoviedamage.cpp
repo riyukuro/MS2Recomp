@@ -23,6 +23,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/gfxservice.h"
 
 // ---- file statics (.text$di) ----
 // The ids of the loaded fonts, saved by FUN_140b622b0 (vfunc_11) and reloaded by FUN_140b621a0 (mutable: the functions
@@ -44,18 +45,13 @@ unsigned int FUN_1407181d0(const CString& s);                       // the font 
 CString FUN_140719210(long n);                                      // number text
 __int64 GetServerTime();                                            // the current server time
 
-class Unk_DmgGFxUIManager
+class GFxManager   // C3: member view (gfxmanager.h)
 {
 public:
     void FUN_1422b0790(int nMovieId);
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_DmgGFxUIManager (calls cast back)
+class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 
-class Unk_DmgSceneManager
-{
-public:
-    int FUN_1422b9dc0();                                            // the current scene id
-};
 
 // The UISwfEntityManager slots the movie calls (vftable 0x143112518; see gfxmoviepostdisplay.cpp). The swf key and the AS
 // root object are taken by value (the callee destroys them).
@@ -153,7 +149,7 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
             Scaleform::GFx::Value vThird(pArgs[2]);
             FUN_1422be510(FUN_140b62400(m_18, vStage));
             FUN_1422be5b0(FUN_140b62350(m_18, vLoader));
-            reinterpret_cast<Unk_DmgGFxUIManager*>(FUN_14025e7a0())->FUN_1422b0790(m_18);
+            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0790(m_18);
         }
         m_128.AssignRaw(Unk_DmgFindUI<UIDamageText>(0x4e32));
         FUN_140b62270();
@@ -334,7 +330,7 @@ bool GFxMovieDamage::FUN_140b621a0()
 // @0x140b62270
 void GFxMovieDamage::FUN_140b62270()
 {
-    if (((Unk_DmgSceneManager*)CUserMail::FUN_1408e57f0())->FUN_1422b9dc0() == 0x620000c)
+    if (reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->GetSceneId() == 0x620000c)
         CUIService::GetInstance()->FUN_141add040((eUIClassID)0x4e32);
 }
 

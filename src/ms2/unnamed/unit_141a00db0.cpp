@@ -140,13 +140,13 @@ void CMsgBoxData::SetButtonLabels(const CStringW& strBtn0, const CStringW& strBt
 MS2_REPLACE_METHOD(0x141A01690, CMsgBoxData, SetButtonLabels, 98, 0x50FBFC55);
 
 // @0x141a01700
-void CMsgBoxData::FUN_141a01700(int nA, int nB, int nC)
+void CMsgBoxData::SetButtonLabelIds(int nA, int nB, int nC)
 {
     m_strBtn0 = GetStringCommon(nA);
     m_strBtn1 = GetStringCommon(nB);
     m_strBtn2 = GetStringCommon(nC);
 }
-MS2_REPLACE_METHOD(0x141A01700, CMsgBoxData, FUN_141a01700, 247, 0xF5BEBE7F);
+MS2_REPLACE_METHOD(0x141A01700, CMsgBoxData, SetButtonLabelIds, 247, 0xF5BEBE7F);
 
 // @0x141a01800
 // The button label presets (OK/Cancel, Yes/No, OK, ...).
@@ -216,7 +216,7 @@ void CMsgBoxData::SetTimer(int nSec, int nShowFormat, const CStringW& strFormat)
 MS2_REPLACE_METHOD(0x141A01CA0, CMsgBoxData, SetTimer, 124, 0xA9E8F79C);
 
 // @0x141a01d30
-void CMsgBoxData::FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned int nMax, int nShowLimit, int nMaxLine)
+void CMsgBoxData::SetInput(int nMode, const CStringW& strDefault, unsigned int nMax, int nShowLimit, int nMaxLine)
 {
     m_nFlags |= 2;
     m_input.m_nType = nMode;
@@ -227,7 +227,7 @@ void CMsgBoxData::FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned 
     m_input.m_strMaxLineMsg = GetStringCommon(0x982);
     m_input.m_strCountMsg = GetStringCommon(0x984);
 }
-MS2_REPLACE_METHOD(0x141A01D30, CMsgBoxData, FUN_141a01d30, 293, 0xB4B29E7F);
+MS2_REPLACE_METHOD(0x141A01D30, CMsgBoxData, SetInput, 293, 0xB4B29E7F);
 
 // @0x141a01e60
 void CMsgBoxData::SetItem(MS2Ptr<CMsgBoxDataItem> spItem)
@@ -249,7 +249,7 @@ void CMsgBoxData::FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, i
         if (m_spItem == NULL)
             return;
         m_nFlags |= 1;
-        m_spItem->FUN_141a06630(strName, nColorMode == 1, spItem->FUN_140526bd0());
+        m_spItem->FUN_141a06630(strName, nColorMode == 1, spItem->GetRarity());
         m_spItem->m_spItem = spItem;
         m_spItem->m_nCount = nCount;
         m_spItem->m_nMax = nMax;
@@ -264,7 +264,7 @@ void CMsgBoxData::SetItemById(int nItemId, int nRarity, int n)
 {
     MS2Ptr<CItem> spItem(new CItem);
     spItem->FUN_140523c40(nItemId, nRarity, 0);
-    spItem->FUN_140526c70(n);
+    spItem->SetCountClamped(n);
     FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, n, -1, -1, 1);
 }
 MS2_REPLACE_METHOD(0x141A020B0, CMsgBoxData, SetItemById, 352, 0x59C6C9F8);
@@ -383,11 +383,11 @@ void CMsgBoxData::SetSize(int nWidth, int nHeight)
 MS2_REPLACE_METHOD(0x141A02770, CMsgBoxData, SetSize, 70, 0x79022C97);
 
 // @0x141a027c0
-void CMsgBoxData::FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb)
+void CMsgBoxData::SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb)
 {
     m_callback = cb;
 }
-MS2_REPLACE_METHOD(0x141A027C0, CMsgBoxData, FUN_141a027c0, 63, 0xADB0997D);
+MS2_REPLACE_METHOD(0x141A027C0, CMsgBoxData, SetCallback, 63, 0xADB0997D);
 
 // @0x141a02810
 void CMsgBoxData::FUN_141a02810(CStringW strTag)

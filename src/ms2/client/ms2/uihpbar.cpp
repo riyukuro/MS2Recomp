@@ -194,7 +194,7 @@ int UIHpBar::Entity::vfunc_8(int n)
         return 1;
     if (m_b8 == 0)
         return 1;
-    int nDead = pActor->FUN_14166ce30();
+    int nDead = pActor->IsDead();
     if (nDead != 0)
         return 1;
     Unk_HpPet* pPet = reinterpret_cast<Unk_HpPet*>(efd::DynamicCast<CPet, PCBase>(pActor));
@@ -492,7 +492,7 @@ int UITombStoneBar::Entity::vfunc_8(int n)
         return 1;
     if (m_50 != 0)
         return 0;
-    if (pPc->FUN_14166ce30() == 0)
+    if (pPc->IsDead() == 0)
         return 1;
     Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pLocal != 0 && pLocal->vfunc_122(pPc) != 0)

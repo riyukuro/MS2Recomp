@@ -46,7 +46,6 @@ class Unk_FdWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the local player
-    int FUN_141bbb1e0(GameObject* pObject, int bFullInit, int nCamera);   // register a created object
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -54,6 +53,7 @@ public:
     class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
     class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // C3: the real member, register a created object
     static class WorldService* GetInstance();
 };
 
@@ -68,7 +68,7 @@ MS2_CHECK_OFFSET(Unk_FdItemRec, m_nObjectId, 0x1e0);
 MS2SvrPtr<Unk_FdItemRec> FUN_14053f870(unsigned nItemId);   // the item record of an id
 
 // The graphics options (singleton FUN_1409f7c90).
-class Unk_FdGfx
+class COptimizer   // C3: member view (coptimizer.h)
 {
 public:
     int FUN_14109a9d0();                                    // 0: the colour keys are looked up by name
@@ -202,7 +202,7 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
             return 0;
         ((FittingDollPC*)pObject)->type = nType;
         ((FittingDollPC*)pObject)->index = nSourceId;
-        if (((class Unk_FdWorld*)WorldService::GetInstance())->FUN_141bbb1e0(pObject, 0, 1) == 0)
+        if (WorldService::GetInstance()->FUN_141bbb1e0(pObject, 0, 1) == 0)
             return 0;
     }
     return (FittingDollPC*)pObject;
@@ -381,7 +381,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
     if (pRoot == 0)
         return;
     const char* pszKey = 0;
-    if (((class Unk_FdGfx*)FUN_1409f7c90())->FUN_14109a9d0() == 0)
+    if (((class COptimizer*)FUN_1409f7c90())->FUN_14109a9d0() == 0)
     {
         if (nSlot == 0)
             pszKey = (const char*)DAT_143ae50c8;
@@ -420,7 +420,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                             pGloss->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossTo), 1));
                         }
                     }
-                    if (((class Unk_FdGfx*)FUN_1409f7c90())->FUN_14109a9d0() != 0)
+                    if (((class COptimizer*)FUN_1409f7c90())->FUN_14109a9d0() != 0)
                     {
                         switch (nSlot)
                         {
@@ -488,7 +488,7 @@ int FittingDollPC::FUN_14121c870(CItem* pItem)
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0xb;
-    if (pPlayer->FUN_14166ce30() != 0)
+    if (pPlayer->IsDead() != 0)
         return 0xb;
     if (g_143ab2a90.FUN_140a65770(pItem) != 0)
         return 6;

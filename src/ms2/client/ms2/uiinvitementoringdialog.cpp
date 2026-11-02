@@ -262,7 +262,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "onInviteMenteeBySN") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
@@ -272,7 +272,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "onInviteMentee") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             FUN_140c2f860(0, strName);
@@ -287,7 +287,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             return 1;
         }
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
@@ -301,7 +301,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             {
                 spBox->FUN_141a024a0(0);
                 spBox->Append<__int64>(nSerial);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInviteMentoringDialog::FUN_140c2fae0));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInviteMentoringDialog::FUN_140c2fae0));
                 FUN_140d73c60(spBox);
                 return 1;
             }
@@ -316,7 +316,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             return 1;
         }
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
@@ -330,7 +330,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "onBuddy") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nChar = 0;
@@ -359,7 +359,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "onWhisper") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             if (((class Unk_InvChat*)FUN_141482e80())->m_48 != 0)
@@ -370,7 +370,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float x = data.PopFloat();
             float y = data.PopFloat();

@@ -158,7 +158,7 @@ int UIHomeSummonDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (nResult == 0)

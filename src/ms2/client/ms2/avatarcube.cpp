@@ -143,7 +143,7 @@ unsigned int FUN_1409f2cd0()
 {
     for (unsigned int nId = 0x410; nId < 0x41a; nId++)
     {
-        if (WorldService::GetInstance()->FUN_141bd1180(nId) == 0)
+        if (WorldService::GetInstance()->FindObjectById(nId) == 0)
             return nId;
     }
     return 0;

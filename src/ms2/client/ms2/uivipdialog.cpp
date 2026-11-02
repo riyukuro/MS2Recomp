@@ -73,7 +73,6 @@ void FUN_140710590(COutPacket& packet);                         // send the pack
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
-bool FUN_140e452e0(const ATL::CTimeSpan& a, ATL::CTimeSpan b);  // a < b
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 int FUN_141276180(const CString& strSound, const CString& strArg);   // play a sound
@@ -152,8 +151,8 @@ int UIVIPDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         return 1;
     if (_stricmp(szMethod, "OnClickGetItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nBenefitId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nBenefitId = data.PopUInt();
             COutPacket packet(static_cast<int>(SendOp::PremiumClub), 0);
             packet.Encode1(2);
             packet.Encode4(nBenefitId);
@@ -177,13 +176,13 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
     if (operator==(strType, "benefitItem")) {
-        unsigned nBenefitId = pArgs->FUN_1422b8b10();
+        unsigned nBenefitId = pArgs->PopUInt();
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);
         if (spBenefit == 0)
             return;
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0) != 0) {
-            spItem->FUN_140526c70(spBenefit->m_nItemCount);
+            spItem->SetCountClamped(spBenefit->m_nItemCount);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
             ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
             if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
@@ -254,9 +253,9 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
             MS2Ptr<CItem> spItem(new CItem());
             if (!spItem->FUN_140523c40(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0))
                 return;
-            spItem->FUN_140526c70(spBenefit->m_nItemCount);
+            spItem->SetCountClamped(spBenefit->m_nItemCount);
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x475, 0, 0);
+            spBox->SetButtonLabelIds(0x475, 0, 0);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             FUN_141276180(s_sndCashBuy, "");
         }
@@ -275,17 +274,17 @@ void UIVIPDialog::FUN_140fb8d10()
     if (spTime == 0)
         return;
     if (((class PC*)(class PCBase*)(pPlayer))->FUN_141662de0() == 0) {
-        spTime->FUN_1422c4cd0(GetStringCommonByKey(L"s_vip_dialog_end_time"));
+        spTime->SetTextW(GetStringCommonByKey(L"s_vip_dialog_end_time"));
     } else {
         ATL::CTimeSpan span = CMsTime(((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90()) - CMsTime(GetServerTime());
-        if (FUN_140e452e0(span, 0))
+        if (span < 0)
             return;
         CStringW strRemain = FormatTimeSpan(span, true, true, false, false);
         if (strRemain.IsEmpty())
             strRemain = GetStringCommonByKey(L"s_vip_dialog_remain_time_hour");
         else
             strRemain = FUN_1405c2690(L"s_vip_dialog_remain_time", strRemain);
-        spTime->FUN_1422c4f00(strRemain);
+        spTime->SetTextHTMLW(strRemain);
     }
     unsigned nTextWidth = spTime->GetTextWidth();
     float fX, fY;

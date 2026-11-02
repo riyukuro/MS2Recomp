@@ -586,7 +586,7 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
     }
     spItem->FUN_140524eb0(packet);
     spItem->SetItemUid(uid);
-    spItem->FUN_140526c70(nSlotInItem);
+    spItem->SetCountClamped(nSlotInItem);
     spItem->FUN_140526b70(nCount);
     if (bMine)
     {

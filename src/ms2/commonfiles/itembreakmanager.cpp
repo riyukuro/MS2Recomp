@@ -191,8 +191,8 @@ class CMsgBoxData {
 public:
     int FUN_141a02e50(int,int) const; __int64 FUN_141a02f10(int,__int64) const; CStringW FUN_141a02d50() const;
     void FUN_141a01d30(int,const CStringW&,unsigned,int,int);
-    void FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>);
-    void FUN_141a01600(__int64); void FUN_141a01ee0(Unk_BreakItemPtr,const CStringW&,int,int,int,int,int); void FUN_141a01700(int,int,int);
+    void SetCallback(Delegate<bool(int,const CMsgBoxData&)>);
+    void FUN_141a01600(__int64); void FUN_141a01ee0(Unk_BreakItemPtr,const CStringW&,int,int,int,int,int); void SetButtonLabelIds(int,int,int);
     template<class T> void Append(T value);
     void* p0;
     void* p8;
@@ -346,7 +346,7 @@ void FUN_140530c90(MS2Ptr<Unk_BreakTemplate> item,int grade,int enhance,CIngredi
 MS2_REPLACE(0x140530C90, FUN_140530c90, 1004, 0x6E41BE6D);
 // @0x140531090
 void FUN_140531090(Unk_BreakItemPtr item,CIngredientContainer& output) {
-    if(item==0 || ((Unk_BreakEnhance*)item->FUN_1405279c0())==0) return; FUN_140530c90(MS2Ptr<Unk_BreakTemplate>(((Unk_BreakTemplate*)item->FUN_140527840())),item->FUN_140526bd0(),((Unk_BreakEnhance*)item->FUN_1405279c0())->GetOpenSlotCount(),output);
+    if(item==0 || ((Unk_BreakEnhance*)item->GetSocket())==0) return; FUN_140530c90(MS2Ptr<Unk_BreakTemplate>(((Unk_BreakTemplate*)item->FUN_140527840())),item->GetRarity(),((Unk_BreakEnhance*)item->GetSocket())->GetOpenSlotCount(),output);
 }
 // @0x140531180
 CItemBreakManager::CItemBreakManager() : type(0) { pending.RemoveAll(); ItemBreakCommon::FUN_140530b00(items,100); }
@@ -357,7 +357,7 @@ int CItemBreakManager::CanBreakItem(ItemPtr item) {
     if(!item) return 0; if(item->FUN_140528e20()==true) return 0;
     if(FUN_140531510(item)==1) return 1;
     if(!FUN_140531630(item)) return 0; if(!FUN_140633bf0(item)) return 0; if(!FUN_140531850(item)) return 0;
-    if(item->HasCubeTextureMesh()!=0) { if(TSingleton<CFeatureManager>::GetInstance()->IsRegionJP()) { if(((Unk_BreakEnhance*)item->FUN_1405279c0())!=0 && ((Unk_BreakEnhance*)item->FUN_1405279c0())->GetOpenSlotCount()>0) return 0; } }
+    if(item->HasCubeTextureMesh()!=0) { if(TSingleton<CFeatureManager>::GetInstance()->IsRegionJP()) { if(((Unk_BreakEnhance*)item->GetSocket())!=0 && ((Unk_BreakEnhance*)item->GetSocket())->GetOpenSlotCount()>0) return 0; } }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140531270, CItemBreakManager, CanBreakItem, 653, 0xB1394540);
@@ -372,7 +372,7 @@ int CItemBreakManager::FUN_140531630(ItemPtr item) { unsigned __int64 id=FUN_140
 MS2_REPLACE_METHOD(0x140531630, CItemBreakManager, FUN_140531630, 149, 0x879E8F78);
 // @0x1405316d0
 bool CItemBreakManager::FUN_1405316d0(ItemPtr item) {
-    if(item->FUN_140526fc0()>0) return true; if(item->GetEnchantCharge()>0) return true; if(item->FUN_140527270()>0) return true;
+    if(item->FUN_140526fc0()>0) return true; if(item->GetEnchantCharge()>0) return true; if(item->GetPlusLevel()>0) return true;
     if(item->FUN_140528c20()>1) return true; if(item->FUN_140528b90()>0) return true; if(((unsigned)item->FUN_140528bd0())>0) return true; if(item->FUN_140528c60()!=0) return true; return false;
 }
 MS2_REPLACE_METHOD(0x1405316D0, CItemBreakManager, FUN_1405316d0, 373, 0x79429692);
@@ -382,7 +382,7 @@ bool CItemBreakManager::FUN_140531850(ItemPtr item) {
     MS2Ptr<CIngredientContainer> p=FUN_140535300()->FUN_14052e650(item->FUN_1405276c0());
     if(p.get()) { const Unk_BreakIngredients& list=p->FUN_14026c230(); if(!list.FUN_14028a8c0()) return true; }
     int level=((CItemData*)item->FUN_140527840())->GetSkinType(); if(level) {
-        unsigned short category=((unsigned short)item->GetRequiredLevel()); int grade=item->FUN_140526bd0(); __int64 value=item->GetSellPrice(); CIngredientContainer result;
+        unsigned short category=((unsigned short)item->GetRequiredLevel()); int grade=item->GetRarity(); __int64 value=item->GetSellPrice(); CIngredientContainer result;
         ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,result); if(!result.ingredients.FUN_14028a8c0()) return true;
     } return false;
 }
@@ -408,7 +408,7 @@ CItemBreakManager::ItemPtr CItemBreakManager::GetSlotItemClone(int index) {
     if(index<0 || index>=(int)items.GetCount()) return ItemPtr(0);
     ItemBreakCommon::Ptr p=items[index]; if(p==0) return ItemPtr(0);
     unsigned __int64 id=p->id; ItemPtr item=reinterpret_cast<Unk_BreakInventory&>(g_143ab2a90).FUN_140a5d680(id); if(item==0) return ItemPtr(0);
-    int count=p->count; ItemPtr clone=item->FUN_140524250(); clone->FUN_140526c70(count); return clone;
+    int count=p->count; ItemPtr clone=item->FUN_140524250(); clone->SetCountClamped(count); return clone;
 }
 MS2_REPLACE_METHOD(0x140531CE0, CItemBreakManager, GetSlotItemClone, 482, 0xE8C92A3B);
 // @0x140531ed0
@@ -501,7 +501,7 @@ MS2_REPLACE_METHOD(0x140532B60, CItemBreakManager, HasBreakItems, 192, 0xFD11FFE
 // @0x140532c30
 int CItemBreakManager::GetMaxItemRarity() {
     int grade=0; for(size_t i=0;i<items.GetCount();++i) { ItemBreakCommon::Ptr p=items[i]; if(p==0 || p->FUN_140530750()) continue;
-        ItemPtr item=reinterpret_cast<Unk_BreakInventory&>(g_143ab2a90).FUN_140a5d680(p->id); if(!item) continue; if(item->FUN_140526bd0()>grade) grade=item->FUN_140526bd0();
+        ItemPtr item=reinterpret_cast<Unk_BreakInventory&>(g_143ab2a90).FUN_140a5d680(p->id); if(!item) continue; if(item->GetRarity()>grade) grade=item->GetRarity();
     } return grade;
 }
 MS2_REPLACE_METHOD(0x140532C30, CItemBreakManager, GetMaxItemRarity, 329, 0x048AC1F8);
@@ -513,7 +513,7 @@ int CItemBreakManager::TryAddItem(ItemPtr item,int arg) {
     if(item==0) return 0;
     if(FUN_140535310() && !((CItemLockManager*)FUN_140535310())->FUN_140613160(item.get())) return 0;
     if(ItemBreakCommon::FUN_140530a10(items,item->GetItemUid())!=-1) { FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_selected_item"),1,1); return 0; }
-    Unk_BreakEnhance* enhance=((Unk_BreakEnhance*)item->FUN_1405279c0()); if(enhance && !enhance->CheckGemsBreakable()) { FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
+    Unk_BreakEnhance* enhance=((Unk_BreakEnhance*)item->GetSocket()); if(enhance && !enhance->CheckGemsBreakable()) { FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
     if(type==2) { if(!CanBreakItem(item)) { FUN_141275260(0x8f7,1,1); return 0; }
         if(!((CItemData*)item->FUN_140527840())->FUN_14053cbc0() && !item->HasSkin()) { FUN_141275260(0x8f7,1,1); return 0; }
     } else if(!CanBreakItem(item)) { FUN_141275260(0x8f6,1,1); return 0; }
@@ -538,16 +538,16 @@ void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
         if(Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
             unsigned count=((unsigned)item->GetCount()); CStringW text; text.Format(L"%d",count);
             box->FUN_141a01d30(1,text,count,0,0);
-            box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnDismantleCountMsgBox));
+            box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnDismantleCountMsgBox));
             box->Append(arg); box->Append(item->GetItemUid()); box->Append((int)count); FUN_140d73c60(box);
         }
     } else {
         CStringW option; bool flag=false; FUN_1409e4950(item,option,&flag);
-        if(item->FUN_140526bd0()>=5 && flag==1) {
+        if(item->GetRarity()>=5 && flag==1) {
             CStringW warning=GetStringCommonByKey(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
             Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(0x11,text,0,L"");
-            if(box) { box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnConfirmMessageBoxResult));
-                box->FUN_141a01600(item->GetItemUid()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->FUN_141a01700(0x475,0x476,0);
+            if(box) { box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnConfirmMessageBoxResult));
+                box->FUN_141a01600(item->GetItemUid()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->SetButtonLabelIds(0x475,0x476,0);
                 box->Append(arg); box->Append(item->GetItemUid()); box->Append(((unsigned)item->GetCount())); FUN_140d73c60(box);
             }
         } else SendItemDismantleMode1(item->GetItemUid(),((unsigned)item->GetCount()),arg);

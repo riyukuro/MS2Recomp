@@ -235,7 +235,7 @@ int UIRankPvPDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
@@ -326,7 +326,7 @@ void UIRankPvPDialog::FUN_140f94490()
     if (nWidth > m_gaugeWidth)
         nWidth = m_gaugeWidth;
     m_gauge->SetWidthInt(nWidth);
-    m_rewardText->FUN_1422c4cd0(FUN_14083dc40(L"{0} / {1}", nValue, nMax));
+    m_rewardText->SetTextW(FUN_14083dc40(L"{0} / {1}", nValue, nMax));
     if (nValue > nMax)
         m_rewardText->SetTextColor(0xc00000);
     else
@@ -337,9 +337,9 @@ void UIRankPvPDialog::FUN_140f94490()
     CStringW strRating = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), nRating);
     CStringW strBest = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), nBest);
     CStringW strWin = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_count"), nWin);
-    m_rating->FUN_1422c4cd0(strRating);
-    m_seasonWinCount->FUN_1422c4cd0(strWin);
-    m_seasonBestRating->FUN_1422c4cd0(strBest);
+    m_rating->SetTextW(strRating);
+    m_seasonWinCount->SetTextW(strWin);
+    m_seasonBestRating->SetTextW(strBest);
     RankingArenaData* pGrade = ((class CRankingArenaDataTable*)FUN_140dc19b0())->GetGradeOfRating(nRating);
     int nGrade = pGrade->m_nGrade;
     CString strLabel = FUN_1402bb1c0("_{0}", nGrade);
@@ -379,7 +379,7 @@ void UIRankPvPDialog::FUN_140f94840()
             FUN_140cfee80((*spRow).FUN_1422bb890(), "winCount", strNone);
             if (spWinRate)
             {
-                spWinRate->FUN_1422c4cd0(strNone);
+                spWinRate->SetTextW(strNone);
                 spWinRate->SetTextColor(0);
             }
         }
@@ -389,7 +389,7 @@ void UIRankPvPDialog::FUN_140f94840()
             int nRate = spRecord->m_value1c * 100 / (spRecord->m_value1c + spRecord->m_value20);
             if (spWinRate)
             {
-                spWinRate->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_rate"), nRate));
+                spWinRate->SetTextW(FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_rate"), nRate));
                 if (nRate >= 60)
                     spWinRate->SetTextColor(0xa2ed);
                 else if (nRate <= 40)

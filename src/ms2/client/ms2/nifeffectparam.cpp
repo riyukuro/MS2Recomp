@@ -502,8 +502,9 @@ public:
     int GetMode48();
     class NiNode* GetRoot();
     double GetTimestamp();
+    class GameObject* GetOwner();                                    // 0x140a533b0
+    unsigned __int64 GetValue38();                                   // 0x140a53440: the target's attach object
 };
-void* FUN_140a53440(Unk_EffectTarget* pTarget);                     // the target's attach object
 bool FUN_14028d470(float a, float b);                               // nearly equal
 efd::ServiceManager* FUN_1413f9850();
 
@@ -531,7 +532,6 @@ class EffectSkipMgr   // C3: member view for the former free stand-ins
 public:
     int IsOutOfView(struct Unk_SkipCheck*) const;
 };
-void FUN_1411a3fa0(void* pEffectNode, bool bOnGround);
 void FUN_141567a10(class NiAVObject*);   // C3: was FUN_141567a10
 void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
 void FUN_141851f90(void* pNode, float fTime);                       // seek the node's animations
@@ -722,7 +722,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     if (pT->m_pPost != 0)
         m_kXform = m_kXform * *pT->m_pPost;
     spRoot->SetLocalTransform(m_kXform);
-    FUN_1411a3fa0(spRoot, m_spParam->m_bOnGround);
+    ((class EffectNode*)(void*)(spRoot))->SetOnGround(m_spParam->m_bOnGround);
 
     switch (m_spParam->m_nAttachType)
     {
@@ -1097,7 +1097,7 @@ void CNifEffect::AttachToModelNode(Unk_EffectTarget* pTarget)
     {
         if (!bFlag && ((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetMode48() != 6)
         {
-            Unk_NifPCPtr spPC(FUN_14099eef0(pTarget->FUN_140a533b0()));
+            Unk_NifPCPtr spPC(FUN_14099eef0(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
             if (FUN_140aac420(&spPC) != 0)
             {
                 MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2610((spFound).operator NiAVObject*(), 0, 6, true);
@@ -1151,7 +1151,7 @@ void CNifEffect::FUN_14154c260(Unk_EffectTarget* pTarget)
 // Attach types 3 / 4: hang the effect on the model of the weapon in equip slot nSlot.
 void CNifEffect::FUN_14154c440(Unk_EffectTarget* pTarget, int nSlot)
 {
-    Unk_NifPCPtr spPC(FUN_14099eef0(pTarget->FUN_140a533b0()));
+    Unk_NifPCPtr spPC(FUN_14099eef0(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
     if (FUN_140c206b0(&spPC, 0))
         return;
     MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e1860(nSlot, 6, 0);
@@ -1189,7 +1189,7 @@ MS2_REPLACE_METHOD(0x14154C580, CNifEffect, FUN_14154c580, 611, 0x338E1372);
 void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
 {
     CString strWhere;
-    Unk_NifPCPtr spPC(FUN_14099eef0(pTarget->FUN_140a533b0()));
+    Unk_NifPCPtr spPC(FUN_14099eef0(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
     if (FUN_140aac420(&spPC) != 0 && MS2_NODEPTR(m_spTarget).operator NiNode*() != 0)
     {
         Unk_NodePtr kTarget(m_spTarget.m_p);
@@ -1291,14 +1291,14 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
 {
     if (pTarget == 0 || (reinterpret_cast<Unk_NifTarget*>(pTarget)->m_hNode).operator==((NiAVObject*)0) || pszName == 0)
         return NiAVObjectPtr(0);
-    Unk_NifPCPtr spPC(FUN_14099eef0(pTarget->FUN_140a533b0()));
+    Unk_NifPCPtr spPC(FUN_14099eef0(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
     if (FUN_140c206b0(&spPC, 0))
         return NiAVObjectPtr(0);
     NiAVObjectPtr spFound(0);
-    if ((unsigned __int64)FUN_140a53440(pTarget) > 0)
+    if ((unsigned __int64)((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetValue38() > 0)
     {
         CString strName(pszName);
-        spFound = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2a60((__int64)FUN_140a53440(pTarget), strName, bFlag);
+        spFound = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2a60((__int64)((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetValue38(), strName, bFlag);
     }
     if ((spFound).operator==((NiAVObject*)0))
     {
@@ -1588,6 +1588,7 @@ MS2_REPLACE_METHOD(0x1415513E0, CNiStreamLoadThread, Load, 1055, 0xC7CEE07E);
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/coptimizer.h"
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -1615,7 +1616,6 @@ void FUN_1411ab740(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 struct Unk_NifDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100006; };
 void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, int nRequired);
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
-__int64 FUN_14161bdc0(void* pObj);                                  // pagefile use, MB
 class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
 class GFxService   // C3: member view for the former free stand-ins
 {
@@ -1769,12 +1769,12 @@ bool CNifLoadingService::OnDeviceReset(char bBefore, void* pRenderer)
         {
             DAT_143ae1f20 = 0;
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Reset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-                FUN_14161bdc0(((void*)FUN_1409f7c90())), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+                ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
         }
         else
         {
             reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *beforeReset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-                FUN_14161bdc0(((void*)FUN_1409f7c90())), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+                ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
         }
     }
     return true;
@@ -1785,7 +1785,7 @@ bool CNifLoadingService::OnDeviceLost(void* pRenderer)
 {
     DAT_143ae1f20 = 1;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("\n *Lost Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
-        FUN_14161bdc0(((void*)FUN_1409f7c90())), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+        ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB(), ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
     return true;
 }
 

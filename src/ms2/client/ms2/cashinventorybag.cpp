@@ -742,7 +742,7 @@ void CCashMarketMan::FUN_140b07cb0(CInPacket& packet)
         if (spBox.get() != 0)
         {
             spBox->SetMsg(FormatStringId(0xa63, strArg));
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CCashMarketMan::FUN_140b08fe0));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CCashMarketMan::FUN_140b08fe0));
             FUN_140d73c60(spBox);
         }
     }

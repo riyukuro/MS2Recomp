@@ -262,7 +262,7 @@ void ASObj::FUN_140be2660(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // ======== ItemCloset::TabInfo (ctor / dtor emitted here) ========
@@ -583,7 +583,7 @@ int UIClosetDialog::vfunc_13()
                             if (box.get() != 0)
                             {
                                 box->Append<int>(nIndex);
-                                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnKeyConfirmed));
+                                box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnKeyConfirmed));
                                 FUN_140d73c60(box);
                             }
                         }
@@ -625,7 +625,7 @@ void UIClosetDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     const CStringW& strType = pArgs->FUN_1422b8f40();
     if (strType == L"slot")
     {
-        int nIndex = pArgs->FUN_1422b8a10();
+        int nIndex = pArgs->PopInt();
         ASTooltip tooltip(2);
         BuildTooltip(tooltip, nIndex);
         *pRetVal = tooltip.FUN_1422bb870();
@@ -1028,7 +1028,7 @@ void UIClosetDialog::OnSave(const Scaleform::GFx::FunctionHandler::Params& param
         {
             box->Append<int>(nIndex);
             box->Append<int>(nLayer);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnSaveConfirmed));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnSaveConfirmed));
             FUN_140d73c60(box);
         }
     }
@@ -1050,7 +1050,7 @@ void UIClosetDialog::OnClear(const Scaleform::GFx::FunctionHandler::Params& para
     if (box.get() != 0)
     {
         box->Append<int>(nIndex);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnClearConfirmed));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnClearConfirmed));
         FUN_140d73c60(box);
     }
 }
@@ -1085,8 +1085,8 @@ void UIClosetDialog::OnTabAdd(const Scaleform::GFx::FunctionHandler::Params& par
     {
         unsigned __int64 nNumber = nIndex + 1;
         CStringW strName = FUN_14028dfa0(L"s_closet_default_tab_name", nNumber);
-        box->FUN_141a01d30(0, strName, Client::Constants::GetInstance()->MaxClosetTabNameLength, 0, 0);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnAddConfirmed));
+        box->SetInput(0, strName, Client::Constants::GetInstance()->MaxClosetTabNameLength, 0, 0);
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnAddConfirmed));
         FUN_140d73c60(box);
     }
 }
@@ -1180,8 +1180,8 @@ void UIClosetDialog::OnTabMenu(const Scaleform::GFx::FunctionHandler::Params& pa
     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, GetStringCommonByKey(L"s_closet_ask_rename_tab"), 0, CStringW(L""));
     if (box.get() != 0)
     {
-        box->FUN_141a01d30(0, sp->GetName(), Client::Constants::GetInstance()->MaxClosetTabNameLength, 0, 0);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnRenameConfirmed));
+        box->SetInput(0, sp->GetName(), Client::Constants::GetInstance()->MaxClosetTabNameLength, 0, 0);
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClosetDialog::OnRenameConfirmed));
         FUN_140d73c60(box);
     }
 }

@@ -90,7 +90,7 @@ int MailItemSlot::vfunc_0(void* p)
     {
         {
             CStringW strEmpty(L"");
-            tip.FUN_1409c69b0(strEmpty);
+            tip.SetEnablePuton(strEmpty);
         }
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;

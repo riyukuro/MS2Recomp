@@ -320,7 +320,7 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 class ItemGachaBoxTable* FUN_14052d230();   // C3: was FUN_14052d230
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_PcBangTable* FUN_140541580();   // C3: was FUN_140541580
-class Unk_PriceTable* FUN_140552df0();   // C3: was FUN_140552df0
+class CPriceTable* FUN_140552df0();   // C3: was FUN_140552df0
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void* FUN_140764020();   // C3: was FUN_140764020

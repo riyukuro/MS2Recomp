@@ -211,7 +211,7 @@ int UIUGCPortalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("onChangeTrigger", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_188 = atoi(data.FUN_1422b8d30());
         }
@@ -219,7 +219,7 @@ int UIUGCPortalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("onChangeTargetType", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_18c = atoi(data.FUN_1422b8d30());
             switch (m_18c)

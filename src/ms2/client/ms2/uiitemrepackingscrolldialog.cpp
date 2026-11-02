@@ -118,7 +118,7 @@ public:
     void FUN_141a01600(__int64 n);
     void FUN_141a024a0(int n);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
-    void FUN_141a01700(int nA, int nB, int nC);
+    void SetButtonLabelIds(int nA, int nB, int nC);
 };
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -235,7 +235,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     if (static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
         return;
     if (MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title"))
-        spTitle->FUN_1422c4cd0(static_cast<CItem*>(spScroll)->FUN_140527b10());
+        spTitle->SetTextW(static_cast<CItem*>(spScroll)->FUN_140527b10());
     MS2Ptr<Unk_RpRow> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
     if (spRow == 0)
         return;
@@ -282,7 +282,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
     if (_stricmp(szMethod, "onRePacking") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nTarget = FUN_140718370(data.FUN_1422b8f40());
             MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(nTarget);
@@ -337,7 +337,7 @@ int UIItemRePackingScrollDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
         FUN_14151f200();
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0 && strTag == L"repacking_ok")
         {
@@ -402,7 +402,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
         box->FUN_141a01600(nUid);
         box->FUN_141a024a0(0);
         box->FUN_141a01ee0(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
-        box->FUN_141a01700(0x475, 0, 0);
+        box->SetButtonLabelIds(0x475, 0, 0);
         FUN_140d73c60(box);
     }
     FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_item_repacking_scroll_success_system"), static_cast<CItem*>(spItem)->FUN_140527b10()), 0x14);

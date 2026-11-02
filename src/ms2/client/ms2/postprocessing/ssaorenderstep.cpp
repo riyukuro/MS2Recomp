@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ssaorenderstep.h"
 #include "hook/ms2hook.h"
+#include <NiSourceTexture.h>
 
 // @0x1400fca40
 const NiRTTI SSAORenderStep::ms_RTTI("SSAORenderStep", &ReloadablePostProcess::ms_RTTI);
@@ -33,7 +34,7 @@ bool SSAORenderStep::vfunc_15(unsigned int a, void* b)
     FUN_14169f6d0(&m_c0, &((void**)b)[1]);
     {
         NiFixedString file((const char*)*(CSimpleStringT<char, 1>*)((char*)FUN_1401d31f0() + 0xf8));
-        m_b8.Assign(FUN_141d33230(&file, &DAT_1439fc800, 0, 0, true));
+        m_b8.Assign(NiSourceTexture::Create(file, *reinterpret_cast<NiTexture::FormatPrefs*>(&DAT_1439fc800), false, false, true));
     }
     if (m_b8.Get() == 0) {
         vfunc_16();

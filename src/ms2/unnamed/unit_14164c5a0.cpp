@@ -46,7 +46,7 @@ class NxMat34
 public:
     ~NxMat34();                                   // 0x140adbb80
     void multiply(NxVec3 const&, NxVec3&) const;
-    int i0, i1, i2, i3, i4, i5, i6, i7, i8, j0, j1, j2, j3, j4, j5, j6;   // aux part at j0
+    int i0, i1, i2, i3, i4, i5, i6, i7, i8, j0, j1, j2;   // M (3x3), then t at j0
 };
 
 class NxTriangleMeshDesc {
@@ -130,7 +130,6 @@ public:
 };
 MS2_CHECK_SIZE(cPhysXTriangleMeshWrapper, 0x40);
 
-// MS2-FUNCTIONAL: stack layout differs (the exe keeps the 0x24-byte transform and its 0x1c-byte aux at 0xe8/0x10c; MSVC aligns our copies differently, +0x10 frame)
 // @0x14164c5a0
 cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* axisMap, float scale) {
     NxMat34 xf = src->GetXform();

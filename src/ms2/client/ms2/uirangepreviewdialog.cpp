@@ -89,13 +89,13 @@ int UIRangePreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp("onCheckCollision", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_141346dc0(this, &data);
         return 1;
     }
     else if (_stricmp("onCheckSkillRange", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_141346e00(this, &data);
         return 1;
     }
@@ -110,15 +110,15 @@ MS2_REPLACE_METHOD(0x141346C40, UIRangePreviewDialog, vfunc_28, 370, 0x2E61E272)
 // @0x141346dc0
 void FUN_141346dc0(UIRangePreviewDialog* pDialog, ASData* pArgs)
 {
-    reinterpret_cast<bool&>(DAT_143ae95e2) = pArgs->FUN_1422b8a90();
-    reinterpret_cast<bool&>(DAT_143ae95e3) = pArgs->FUN_1422b8a90();
+    reinterpret_cast<bool&>(DAT_143ae95e2) = pArgs->PopBool();
+    reinterpret_cast<bool&>(DAT_143ae95e3) = pArgs->PopBool();
 }
 
 // @0x141346e00
 void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs)
 {
-    DAT_143ae95e0 = pArgs->FUN_1422b8a90();
-    DAT_143ae95e1 = pArgs->FUN_1422b8a90();
+    DAT_143ae95e0 = pArgs->PopBool();
+    DAT_143ae95e1 = pArgs->PopBool();
 }
 
 // @0x141346e40
@@ -137,7 +137,7 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
             Unk_RpExtent kSize;
             FUN_141670d50(pNpc, *FUN_140a0a600(&kSize, *(float*)((char*)kData.operator->() + 0x2d8),
                                                *(float*)((char*)kData.operator->() + 0x2dc)));
-            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(*(float*)((char*)kData.operator->() + 0x2d8), *(float*)((char*)kData.operator->() + 0x2dc));
+            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->FUN_141240520(*(float*)((char*)kData.operator->() + 0x2d8), *(float*)((char*)kData.operator->() + 0x2dc));
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += *(float*)((char*)kData.operator->() + 0x2dc);
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));

@@ -108,8 +108,8 @@ int UIQuestPostBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     ASData unused;
     if (!_stricmp("onSelectPost", szMethod)) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuest = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuest = data.PopUInt();
             FUN_140e7f920(nQuest);
         }
         return 1;

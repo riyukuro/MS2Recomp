@@ -86,7 +86,8 @@ public:
 };
 
 // The world (the own character) and the chat window.
-class Unk_EdChat { public: CStringW FUN_1414829e0(); };
+struct Unk_MdNames { CStringW FUN_1414829e0(); };   // messengerdata.cpp
+class Unk_EdChat : public Unk_MdNames { };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 
 // The notify manager.
@@ -238,7 +239,7 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
     if (spCli.IsNull())
         return;
-    int nEmoticonId = pArgs->FUN_1422b8b10();
+    int nEmoticonId = pArgs->PopUInt();
     ChatEmoticonDataPtr spEmo = TSingleton<CChatEmoticonTable>::GetInstance()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
         return;
@@ -274,17 +275,17 @@ int UIChatEmoticonDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "onSelectTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        int nTab = data.FUN_1422b8b10();
+        int nTab = data.PopUInt();
         SelectTab(nTab);
     }
     else if (_stricmp(szMethod, "onSelectEmoticon") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        int nEmoticonId = data.FUN_1422b8b10();
+        int nEmoticonId = data.PopUInt();
         if (nEmoticonId == 0)
             return 0;
         PostEmoticonSelected(nEmoticonId);
@@ -309,7 +310,7 @@ void UIChatEmoticonDialog::FUN_140bd1720()
         tabInfo.FUN_1407cb9c0("id", -1);
         tabInfo.FUN_1407cbb20("imgPath", s_strCategoryPath);
         tabInfo.FUN_1407cbbe0("newIcon", false);
-        tabs.FUN_1422bbf00(tabInfo);
+        tabs.PushObj(tabInfo);
     }
     std::list<UIChatEmoticonTab>& tabList = m_tabs;
     std::list<UIChatEmoticonTab>::const_iterator itEnd = tabList.end();
@@ -324,7 +325,7 @@ void UIChatEmoticonDialog::FUN_140bd1720()
         info.FUN_1407cb9c0("id", spCategory->m_nId);
         info.FUN_1407cbb20("imgPath", spCategory->m_strIconPath);
         info.FUN_1407cbbe0("newIcon", bNew);
-        tabs.FUN_1422bbf00(info);
+        tabs.PushObj(info);
     }
     pDialog->FUN_140bd2cb0("buildTab", tabs);
 }
@@ -370,7 +371,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
         item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
         item.FUN_1407cbbe0("enable", bEnable);
         item.FUN_1407cbbe0("newIcon", spInfo->m_bNew);
-        items.FUN_1422bbf00(item);
+        items.PushObj(item);
         if (bEnable)
         {
             MS2Ptr<ChatEmoticonGroupInfo> spGroup = spCli->FindGroup(spEmo->m_nGroupId);

@@ -254,24 +254,24 @@ CReservedWordTable::~CReservedWordTable()
 // @0x1416fb300
 void CReservedWordTable::ReplaceObjectAndValueWords(CStringW& str)
 {
-    FUN_1416fb380(str);
-    FUN_1416fb340(str);
+    ReplaceObjectWords(str);
+    ReplaceValueWords(str);
 }
 MS2_REPLACE_METHOD(0x1416FB300, CReservedWordTable, ReplaceObjectAndValueWords, 49, 0x892501A7);
 
 // @0x1416fb340
-void CReservedWordTable::FUN_1416fb340(CStringW& str)
+void CReservedWordTable::ReplaceValueWords(CStringW& str)
 {
     FUN_1416fc320(str, m_mapValue);
 }
-MS2_REPLACE_METHOD(0x1416FB340, CReservedWordTable, FUN_1416fb340, 46, 0xFE89D269);
+MS2_REPLACE_METHOD(0x1416FB340, CReservedWordTable, ReplaceValueWords, 46, 0xFE89D269);
 
 // @0x1416fb380
-void CReservedWordTable::FUN_1416fb380(CStringW& str)
+void CReservedWordTable::ReplaceObjectWords(CStringW& str)
 {
     FUN_1416fc320(str, m_mapObject);
 }
-MS2_REPLACE_METHOD(0x1416FB380, CReservedWordTable, FUN_1416fb380, 46, 0xF2AE5A81);
+MS2_REPLACE_METHOD(0x1416FB380, CReservedWordTable, ReplaceObjectWords, 46, 0xF2AE5A81);
 
 // @0x1416fb3c0
 int CReservedWordTable::ReplaceColorWords(CStringW& str)
@@ -377,11 +377,11 @@ void CReservedWordTable::ReplaceTokensForGender(CStringW& str, int nGender)
 }
 
 // @0x1416fbf20
-void CReservedWordTable::FUN_1416fbf20(CStringW& str)
+void CReservedWordTable::ReplaceBoldWords(CStringW& str)
 {
     FUN_1416fc320(str, m_mapBold);
 }
-MS2_REPLACE_METHOD(0x1416FBF20, CReservedWordTable, FUN_1416fbf20, 48, 0x967B40A5);
+MS2_REPLACE_METHOD(0x1416FBF20, CReservedWordTable, ReplaceBoldWords, 48, 0x967B40A5);
 
 // @0x1416fbf60
 void CReservedWordTable::ReplaceLevelToken(CStringW& str, unsigned short nLevel)

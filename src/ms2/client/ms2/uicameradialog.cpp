@@ -119,31 +119,31 @@ int UICameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         return 1;
     if (_stricmp("onChangeSliderFOV", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_1410326e0(data);
         return 1;
     }
     else if (_stricmp("onClickReset", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141032780(data);
         return 1;
     }
     else if (_stricmp("onClickApplyMinDistance", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141032a90(data);
         return 1;
     }
     else if (_stricmp("onClickApplyMaxDistance", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141032970(data);
         return 1;
     }
     else if (_stricmp("onClickApplyNearFar", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_1410328d0(data);
         return 1;
     }
@@ -221,7 +221,7 @@ void UICameraDialog::FUN_1410326e0(ASData& data)
 // @0x141032780
 void UICameraDialog::FUN_141032780(ASData& data)
 {
-    Scaleform::GFx::Value vRoot = data.FUN_1422b9260();
+    Scaleform::GFx::Value vRoot = data.PopValue();
     MS2Ptr<AScript> spRoot = FUN_1409e7dc0(m_28, vRoot);
     if (((MS2Ptr<AScript>*)(void*)(&spRoot))->IsNull())
         return;

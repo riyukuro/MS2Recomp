@@ -69,11 +69,11 @@ class Unk_LgUIMgr                                       // the UI service (FUN_1
 {
 public:
 };
+class CNetworkService { public: int FUN_1415384e0(); int ConnectToConfiguredServer(); };   // C3: member view (networkservice.h), FUN_140714f90
 class Unk_LgWorld;                                      // FUN_1403ed2d0
 class Unk_LgHost;                                       // FUN_14025e7a0
 class Unk_LgPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1409331f0 (m_8 +8)
 class Unk_LgInput;                                      // FUN_14025e7c0
-class Unk_LgNet { public: int FUN_1415384e0(); void FUN_1415382c0(); };   // FUN_140714f90
 class Unk_LgMsgBox { public: virtual int vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
@@ -211,7 +211,7 @@ void UISceneLogin::vfunc_15()
         {
             if (FUN_140714f90() != 0)
             {
-                if (reinterpret_cast<Unk_LgNet*>(FUN_140714f90())->FUN_1415384e0() == 0 && DAT_143ab284b == 0)
+                if (reinterpret_cast<CNetworkService*>(FUN_140714f90())->FUN_1415384e0() == 0 && DAT_143ab284b == 0)
                     FUN_141acf420();
             }
         }
@@ -250,7 +250,7 @@ int UISceneLogin::vfunc_13()
 void UISceneLogin::vfunc_61(MS2Ptr<AScript> spBackground, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     ASData kData;
-    if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
+    if (kData.SetArgsIfAny(pArgs, nArgs) != 0)
     {
         CString strEvent = kData.FUN_1422b8d30();
         if (_stricmp("showTitle", strEvent) == 0)
@@ -489,7 +489,7 @@ void UISceneLogin::FUN_141acfc70()
 void UISceneLogin::OnEndPopdown()
 {
     if (FUN_141acfb40() == 0)
-        reinterpret_cast<Unk_LgNet*>(FUN_140714f90())->FUN_1415382c0();
+        reinterpret_cast<CNetworkService*>(FUN_140714f90())->ConnectToConfiguredServer();
 }
 
 // @0x141acfd00

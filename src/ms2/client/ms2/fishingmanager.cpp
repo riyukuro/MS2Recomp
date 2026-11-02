@@ -1190,7 +1190,7 @@ int CFishingManager::FUN_140cdc810()
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    int nState = pPC->FUN_14166c930();
+    int nState = pPC->GetCurStateId();
     int nSub = pPC->FUN_14166cc80();
     if (nState == 1)
     {
@@ -1213,7 +1213,7 @@ int CFishingManager::FUN_140cdc810()
         efd::SmartPointer<Ridee> spRidee(pPC->FUN_1416764a0());
         if (spRidee)
         {
-            int nRideState = spRidee->FUN_14166c930();
+            int nRideState = spRidee->GetCurStateId();
             if (nRideState == 1 || nRideState == 2)
                 return 1;
         }
@@ -1335,7 +1335,7 @@ void CFishingManager::FUN_140cdd030()
     if (m_nReelSound != 0)
         ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/))->FUN_1411a6060(m_nReelSound);
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pPC != 0 && pPC->FUN_14166c930() == 0x2d)
+    if (pPC != 0 && pPC->GetCurStateId() == 0x2d)
         pPC->vfunc_59(1, 0, 0, 0);
     if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);

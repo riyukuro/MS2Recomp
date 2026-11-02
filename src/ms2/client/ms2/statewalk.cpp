@@ -207,7 +207,7 @@ void StateWalk::vfunc_3(double fTime)
     efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
-    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
+    reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
@@ -342,7 +342,7 @@ void StateWalk::vfunc_9(double fTime)
     if (m_n48 == 0)
         nKey = 0x1d;
     PCBase* pPC = FUN_1417b8370();
-    if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_1416595d0() != 0)
+    if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0)
     {
         if (((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
         {
@@ -369,7 +369,7 @@ void StateWalk::vfunc_9(double fTime)
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
         efd::utf8string strAnim(m_pOwner->vfunc_123(nKey));
-        m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, bForce);
+        m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), bChanged, bForce);
     }
 }
 
@@ -463,7 +463,7 @@ void StateWalkNPC::vfunc_9(double fTime)
         m_fSpeed2 = m_pOwner->vfunc_97();
         const efd::utf8string& strName = reinterpret_cast<Unk_WkAnimSvc*>(FUN_141b6f910())->FUN_141206030(m_pOwner->FUN_14123c460());
         efd::utf8string strAnim(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strName))->c_str());
-        m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
+        m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
     }
 }
 

@@ -276,15 +276,15 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);           // 0x141226d70
 
-    void FUN_141226b80(CString str);                              // 0x141226b80 set the id
-    CString FUN_141226bd0();                                      // 0x141226bd0 the id
+    void SetId(CString str);                              // 0x141226b80 set the id
+    CString GetId();                                      // 0x141226bd0 the id
     void FUN_141226c20(bool bFlag);                               // 0x141226c20
     int FUN_141226cd0();                                          // 0x141226cd0 item id
-    Vector3 FUN_141226d00();                                     // 0x141226d00 position property
+    Vector3 GetPosition();                                     // 0x141226d00 position property
     // @0x140967140 (inline; COMDAT in actionkeyobject.cpp's range)
     unsigned char FUN_140967140() { return m_bAlt; }
     Unk_EntRef GetEnt();                                   // 0x141226e60 copy of the entity handle
-    egf::EntityID FUN_141226eb0();                               // 0x141226eb0 the entity id (or 0)
+    egf::EntityID GetEntityId();                               // 0x141226eb0 the entity id (or 0)
     MS2Ptr<CBoxCollision> UpdateAndGetBoxCollision();                        // 0x141226f90 refresh the box pose, return it
     void PlayHitSoundAtPosition(int nSound);                               // 0x141227100
     void FUN_1412271c0(int nState);                               // 0x1412271c0
@@ -300,8 +300,8 @@ public:
     void FUN_141227950();                                         // 0x141227950
     void FUN_141227cd0();                                         // 0x141227cd0
     void FUN_141227dd0(int nSkip);                                // 0x141227dd0
-    void FUN_141228060();                                         // 0x141228060
-    void FUN_141228100();                                         // 0x141228100
+    void OpenTriggerEditor();                                         // 0x141228060
+    void OpenObjectStore();                                         // 0x141228100
     void OpenCubeSubScene();                                         // 0x141228200
     void OpenHomePassword();                                         // 0x1412282d0
     void OpenHomeSummon();                                         // 0x141228340
@@ -520,8 +520,8 @@ public:
     void AddPendingCube(unsigned nA, unsigned nB, int nKind);
     void TransferPendingState(CString strId, MS2Ptr<CFunctionCubeObject> spObject);
     MS2Ptr<CFunctionCubeObject> FindCube(CString strId);
-    void FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject);
-    void FUN_141230df0(CString strId);
+    void AddCube(MS2Ptr<CFunctionCubeObject> spObject);
+    void RemoveCube(CString strId);
     MS2Ptr<CFunctionCubeObject> FUN_141230f60(Vector3 pt, float fRange, __int64 nOwner);
     MS2Ptr<CFunctionCubeObject> FUN_141231200(Vector3 pt, float fRange, __int64 nOwner, int nKind);
     void FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut);

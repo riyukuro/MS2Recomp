@@ -66,8 +66,6 @@ class Unk_WsC_GameObj : public GameObject { };
 // The buff container of an actor (PCBase::FUN_1416749a0).
 class Unk_PCBaseBuffs : public AdditionalCliList
 {
-public:
-    unsigned int FUN_140970b10();                                   // extra target flags the actor's buffs grant
 };
 
 int FUN_14165ef30(PCBase* pPC);                                     // the team / pvp side
@@ -792,7 +790,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
     PCBase* pOther = efd::DynamicCast<PCBase>(pTarget);
     if (pOther == NULL)
         return 0;
-    unsigned int nExtra = pActor->FUN_1416749a0()->FUN_140970b10();
+    unsigned int nExtra = pActor->FUN_1416749a0()->GetForceApplyTarget();
     if (nExtra != 0)
         nFlags |= nExtra;
     if (pOther->vfunc_116() == 2)

@@ -111,7 +111,7 @@ void ASMentoringMenteePage::Refresh()
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
     int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
-    ((class ASTextField*)(m_coin))->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
+    ((class ASTextField*)(m_coin))->SetTextW(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
 }
 MS2_REPLACE_METHOD(0x140C6EA90, ASMentoringMenteePage, Refresh, 187, 0x8A4892D4);
 
@@ -157,13 +157,13 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp(szMethod, "onPartyRequest") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             TSingleton<CPartyManager>::GetInstance()->SendPartyMode1(data.FUN_1422b8f40());
     }
     else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float x = data.PopFloat();
             float y = data.PopFloat();

@@ -920,7 +920,7 @@ void CGuildManager::FUN_1413ba4b0()
     if (!FUN_1413b6160()) return;
     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pc == 0) return;
-    if (pc->FUN_14166ce30() == 1) {
+    if (pc->IsDead() == 1) {
         FUN_141275260(0x279, 1, 1);
         return;
     }
@@ -1206,7 +1206,7 @@ void CGuildManager::SendPVPMode3()
     }
     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pc == 0) return;
-    if (pc->FUN_14166ce30() == 1) {
+    if (pc->IsDead() == 1) {
         FUN_141275260(0x279, 1, 1);
         return;
     }
@@ -2699,7 +2699,7 @@ void CGuildManager::FUN_1413c45e0(CInPacket& packet)
     if (f350 == 0)
         return;
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_guild_notify_vsGame_open"), 1)) {
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::SendGuildMode120));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::SendGuildMode120));
         box->SetTimer(0x1e, 1, GetStringCommon(0x2b8));
         box->FUN_141a02460(1);
         box->FUN_141a02480(1);

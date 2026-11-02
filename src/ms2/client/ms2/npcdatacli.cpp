@@ -68,7 +68,6 @@ class Unk_NpcEffectDummies
 {
 public:
     size_t FUN_140a40200();
-    bool FUN_140a40230(unsigned nIndex, CEffectDummy& dummy);
 };
 
 // An entry of the Common::Constants table (the shared Object header, then the value).
@@ -184,7 +183,7 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
         m_effectDummies.reserve(nCount);
         for (size_t i = 0; i < nCount; i++)
         {
-            if (reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())->FUN_140a40230((unsigned)i, dummy))
+            if (TSingleton<CommonEffectDummy>::GetInstance()->Get((unsigned)i, &dummy))
                 m_effectDummies.push_back(dummy);
         }
         Unk_140165cf0* pDummies = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("effectdummy"));

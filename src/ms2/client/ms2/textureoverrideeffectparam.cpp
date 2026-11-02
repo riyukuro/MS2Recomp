@@ -26,18 +26,6 @@ public:
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 
-// World TextureLayerManager (?\layer.cpp).
-class Unk_TextureLayerMgr
-{
-public:
-    void FUN_141443af0(TextureLayer* pLayer);                  // add
-    void FUN_141443da0(TextureLayer* pLayer);                  // remove
-};
-class Unk_World
-{
-public:
-    Unk_TextureLayerMgr* FUN_141bd3650();                      // WorldService::m_spTextureLayerManager
-};
 
 // Depth-first walk over a node's subtree (0x30 bytes; ?\uichaoslightdialog.cpp COMDATs).
 class Unk_NodeWalker
@@ -152,7 +140,7 @@ void TextureOverrideEffect::FUN_14184bbb0(NiAVObjectPtr spNode)
             continue;
         TextureLayer* pLayer = new (efd::MemHint(efd::MemHint::NONE))
             TextureLayer(2, pTexturing, m_spTexture.Get(), NULL);
-        reinterpret_cast<Unk_World*>(WorldService::GetInstance())->FUN_141bd3650()->FUN_141443af0(pLayer);
+        WorldService::GetInstance()->GetTextureLayerManager()->AddLayer(pLayer);
         m_arrLayers.Add(pLayer);
     }
     spNode->UpdateProperties();
@@ -164,7 +152,7 @@ void TextureOverrideEffect::FUN_14184bd70()
 {
     size_t nCount = m_arrLayers.GetCount();
     for (size_t i = 0; i < nCount; i++)
-        reinterpret_cast<Unk_World*>(WorldService::GetInstance())->FUN_141bd3650()->FUN_141443da0(m_arrLayers[i]);
+        WorldService::GetInstance()->GetTextureLayerManager()->RemoveLayer(m_arrLayers[i]);
     MS2_FOR_EACH(NiAVObjectPtr spNode, m_vecNodes)
         spNode->UpdateProperties();
     m_arrLayers.RemoveAll();

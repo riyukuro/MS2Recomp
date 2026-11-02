@@ -254,14 +254,16 @@ class UICartoonDialog* FUN_140ff7030(int);   // C3: was FUN_140ff7030
 class CWebBrowserService;
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CPartyManager;
-class Unk_MessageBoxItemLock { public: void FUN_140612e10(); };
+class Unk_MessageBoxItemLock { };
+class CItemLockManager { public: int SendRequestItemLockMode3(); };   // C3: member view (unit_1406125d0.h)
 extern Unk_MessageBoxItemLock* DAT_143aaf308;
 inline Unk_MessageBoxItemLock* FUN_140535310() { return DAT_143aaf308; }
 CFeatureManager* FUN_140166410();
 class Unk_MessageBoxShutdown { public: int FUN_1402c4c90(int nId); };
 class Unk_MessageBoxContents { public: void* m_0; Unk_MessageBoxShutdown m_shutdown; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class Unk_MessageBoxFilter : public CPtred { public: int FUN_140225720(const CStringW& str, CStringW& strOut); };
+class CBanTextChecker { public: int CheckGuildName(const CStringW& strName, CStringW& strOut); };   // C3: member view (commonstringtable.h)
+class Unk_MessageBoxFilter : public CPtred { };
 class Unk_MessageBoxFilters { public: MS2Ptr<Unk_MessageBoxFilter> FUN_140229a50(); };
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_MessageBoxNameDialog : public UICharacterListDialog { public: };
@@ -375,10 +377,8 @@ class Unk_MessageBoxWorld
 {
 public:
     MS2Ptr<Unk_MessageBoxPortal> FUN_141bc2800(int nId);
-    void FUN_141bc2980(std::vector<int>& ids);
     void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& out);   // AddRefs each portal it appends
     Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
-    Unk_MessageBoxActor* FUN_141bd1420(CStringW strName);
 };
 extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
@@ -527,12 +527,12 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     if (!_stricmp("OnClick", name))
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nButton = data.FUN_1422b8a10();
-            int nBoxId = data.FUN_1422b8b10();
+            int nButton = data.PopInt();
+            int nBoxId = data.PopUInt();
             CStringW strTag = data.FUN_1422b8f40();
-            Scaleform::GFx::Value extra = data.FUN_1422b9260();
+            Scaleform::GFx::Value extra = data.PopValue();
             if (m_data.get())
                 m_data->FUN_141a02810(strTag);
             FUN_1419f9410(nButton, nBoxId, strTag, extra);
@@ -544,9 +544,9 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (m_data.get())
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
-                int nSec = data.FUN_1422b8a10();
+                int nSec = data.PopInt();
                 m_data->FUN_141a03130(this, nSec);
             }
         }
@@ -712,7 +712,7 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
     int bAsk = 0;
     if (spItem.get())
     {
-        if (spItem->FUN_140526bd0() > 3)
+        if (spItem->GetRarity() > 3)
             bAsk = 1;
         else if (spItem->HasSkin() != 0 ||
                  spItem->GetSellPrice() * (int)nCount >= *FUN_1401d7c10(&reinterpret_cast<Unk_MessageBoxConsts*>(FUN_1401d3200())->m_sellConfirmPrice))
@@ -737,10 +737,10 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         if (spBox.get())
         {
             MS2Ptr<CItem> spCopy = spItem->Clone();
-            spCopy->FUN_140526c70(nCount);
+            spCopy->SetCountClamped(nCount);
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spCopy, spCopy->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x47e, 0x476, 0);
+            spBox->SetButtonLabelIds(0x47e, 0x476, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -1698,7 +1698,7 @@ int UIMessageBox::HandleItemlockConfirmButton(int nButton)
     if (m_data == 0)
         return 1;
     if (nButton == 0)
-        FUN_140535310()->FUN_140612e10();
+        reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode3();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FD0D0, UIMessageBox, HandleItemlockConfirmButton, 78, 0x7F02717F);
@@ -2211,7 +2211,7 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
         if (Unk_MessageBoxFilter* pFilter = ((class Unk_MessageBoxFilters*)FUN_14025e7d0())->FUN_140229a50().get())
         {
             CStringW strMsg;
-            if (pFilter->FUN_140225720(strName, strMsg))
+            if (reinterpret_cast<CBanTextChecker*>(pFilter)->CheckGuildName(strName, strMsg))
             {
                 FUN_1412751f0(strMsg, 1, 1);
                 return 0;
@@ -2259,7 +2259,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
             return 0;
         }
-        if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1)
+        if (((class PCBase*)(class PC*)(pPlayer))->GetCurStateId() != 1)
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
@@ -2271,7 +2271,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         }
         int nOpen = 0;
         std::vector<int> ids;
-        reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2980(ids);
+        WorldService::GetInstance()->FUN_141bc2980(&ids);   // C3: WorldService (worldservice.h)
         for (size_t i = 0; i < ids.size(); i++)
         {
             MS2Ptr<Unk_MessageBoxPortal> spPortal = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bc2800(ids[i]);
@@ -2346,7 +2346,7 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
     CStringW strName = m_data->FUN_141a02fd0(0, CStringW());
     int bAccept = nButton == 0;
     Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxWorld*>(WorldService::GetInstance())->FUN_141bd1420(strName);
+    Unk_MessageBoxActor* pTarget = reinterpret_cast<Unk_MessageBoxActor*>(WorldService::GetInstance()->FUN_141bd1420(strName));   // C3: WorldService (worldservice.h)
     if (!pPlayer || !pTarget)
     {
         (void)((!!(0)) || (_wassert(L"0", _CRT_WIDE(MS2_THIS_FILE), 0x8be), 0));

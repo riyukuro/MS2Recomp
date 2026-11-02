@@ -179,7 +179,7 @@ void UIPvPGuildTeamDialog::vfunc_67()
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    pPC->FUN_14152a960();
+    pPC->StopObserving();
 }
 MS2_REPLACE_METHOD(0x141339900, UIPvPGuildTeamDialog, vfunc_67, 62, 0xA2383290);
 
@@ -419,7 +419,7 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp("onObserve", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringW strName = data.FUN_1422b8f40();
             if (FUN_141b70f50(strName, m_strObserved))
                 FUN_14133bec0();
@@ -431,7 +431,7 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp("OnGuildMemberPopupMenu", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             float x = data.PopFloat();
             float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
@@ -545,7 +545,7 @@ void UIPvPGuildTeamDialog::FUN_14133bec0()
     if (spPC == 0)
         return;
     m_strObserved = "";
-    spPC->FUN_14152a960();
+    spPC->StopObserving();
     FUN_14133bf60(0);
 }
 MS2_REPLACE_METHOD(0x14133BEC0, UIPvPGuildTeamDialog, FUN_14133bec0, 149, 0x63734D08);

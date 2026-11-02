@@ -463,16 +463,16 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp(szMethod, "onClose") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.PopInt());
             if (spQuest.get())
                 spQuest->RequestTrackingState(0);
         }
     } else if (_stricmp(szMethod, "onTrace") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
-            bool bTrace = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
+            bool bTrace = data.PopBool();
             int bChanged = 0;
             if (!bTrace) {
                 if (FUN_140e7c990()->IsSelected(nQuestId)) {
@@ -488,8 +488,8 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
     } else if (_stricmp(szMethod, "onEntityOverflow") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(data.PopInt());
             if (spQuest.get()) {
                 spQuest->RequestTrackingState(0);
                 FUN_141275260(0x5f1, 1, 1);
@@ -497,8 +497,8 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
     } else if (_stricmp(szMethod, "onLinkQuestDialog") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
             if (spQuest.get()) {
                 if (!spQuest->GetTrackingState())
@@ -512,14 +512,14 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
     } else if (_stricmp(szMethod, "onMoveField") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode12(nQuestId);
         }
     } else if (_stricmp(szMethod, "onMoveDungeon") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode13(nQuestId);
         }
     } else if (_stricmp(szMethod, "onLinkFieldMission") == 0) {
@@ -529,30 +529,30 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
     } else if (_stricmp(szMethod, "onFieldMissionToggle") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            m_bMissionToggle = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            m_bMissionToggle = data.PopBool();
     } else if (_stricmp(szMethod, "onMoveReEntry") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode19(nQuestId);
         }
     } else if (_stricmp(szMethod, "onClickDispatch") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cf870(nQuestId);
         }
     } else if (_stricmp(szMethod, "onClickPartyFind") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cf980(nQuestId, 0);
         }
     } else if (_stricmp(szMethod, "onClickPartyFindCancel") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nQuestId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nQuestId = data.PopUInt();
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->FUN_1416cf980(nQuestId, 1);
         }
     }
@@ -747,13 +747,13 @@ void UIQuestGuideDialog::FUN_141aaba00()
         ASObj obj(2);
         if (!FUN_141aad6b0(spQuest.get(), obj))
             continue;
-        list.FUN_1422bbf00(obj);
+        list.PushObj(obj);
     }
     m_nRecommendQuest = FUN_141aae6d0();
     if (m_nRecommendQuest) {
         ASObj obj(2);
         if (FUN_141aae8d0(m_nRecommendQuest, obj))
-            list.FUN_1422bbf00(obj);
+            list.PushObj(obj);
     }
     m_30->FUN_140bd2cb0("buildAll", list);
 }
@@ -845,13 +845,13 @@ void UIQuestGuideDialog::FUN_141aac3e0(ASObj& obj, CQuest* pQuest)
         ASObj entry(2);
         entry.FUN_1407cbb20("text", FUN_1416e57d0(pQuest->FUN_140bfc580(), (int)i));
         entry.FUN_1407cbbe0("satisfied", pQuest->GetProgress((int)i) >= spCond->m_nGoal);
-        conditions.FUN_1422bbf00(entry);
+        conditions.PushObj(entry);
     }
     if (pQuest->IsComplete()) {
         ASObj entry(2);
         entry.FUN_1407cbb20("text", FUN_1416e55b0(pQuest->FUN_140bfc580()));
         entry.FUN_1407cb9c0("satisfied", 0);
-        conditions.FUN_1422bbf00(entry);
+        conditions.PushObj(entry);
     }
     obj.FUN_1409eb1d0("conditions", conditions);
 }
@@ -1122,7 +1122,7 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
             ASObj entry(2);
             entry.FUN_1407cbb20("text", FUN_1416e57d0(nQuestId, (int)j));
             entry.FUN_1407cb9c0("satisfied", bSatisfied);
-            conditions.FUN_1422bbf00(entry);
+            conditions.PushObj(entry);
         }
     }
     obj.FUN_1409eb1d0("conditions", conditions);
@@ -1155,7 +1155,7 @@ bool UIQuestGuideDialog::FUN_141aae150(ASObj& obj)
         ASObj entry(2);
         entry.FUN_1407cbb20("text", FUN_141aae4f0(spEntry));
         entry.FUN_1407cbbe0("satisfied", false);
-        conditions.FUN_1422bbf00(entry);
+        conditions.PushObj(entry);
     }
     obj.FUN_1409eb1d0("conditions", conditions);
     obj.FUN_1407cb9c0("toggle", m_bMissionToggle);
@@ -1248,12 +1248,12 @@ int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
     ASObj entry(2);
     entry.FUN_1407cbb20("text", FUN_141aaedd0(nQuestId));
     entry.FUN_1407cb9c0("satisfied", 0);
-    conditions.FUN_1422bbf00(entry);
+    conditions.PushObj(entry);
     if ((int)(unsigned short)pActor->vfunc_78() < (int)(unsigned short)spData->m_require.m_level) {
         ASObj level(2);
         level.FUN_1407cbb20("text", FUN_14028dfa0(CStringW(L"s_quest_condition_lack_level"), spData->m_require.m_level));
         level.FUN_1407cb9c0("satisfied", 0);
-        conditions.FUN_1422bbf00(level);
+        conditions.PushObj(level);
     }
     obj.FUN_1409eb1d0("conditions", conditions);
     return 1;
@@ -1280,7 +1280,7 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
         str = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_current_field"), spData->m_2e8);
     else
         str = FUN_1409e9890(CStringW(L"s_quest_desc_beginable"), nField, spData->m_2e8);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(str);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(str);
     return str;
 }
 MS2_REPLACE_METHOD(0x141aaedd0, UIQuestGuideDialog, FUN_141aaedd0, 883, 0xB5583F38);
@@ -1293,7 +1293,7 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     if (params.ArgCount < 1)
         return;
     ASData data;
-    if (!data.FUN_1422b9620(params.pArgs, params.ArgCount))
+    if (!data.SetArgsIfAny(params.pArgs, params.ArgCount))
         return;
     PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pActor == NULL)
@@ -1302,7 +1302,7 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     if (spMap.IsNull())
         return;
     QuestNavigation::TraceResult result;
-    result.m_18 = data.FUN_1422b8b10();
+    result.m_18 = data.PopUInt();
     ASObj obj(2);
     if (FUN_140e7c990()->FUN_140c9a4c0(&result) != 1) {
         obj.FUN_1407cb9c0("tracing", 1);
@@ -1345,7 +1345,7 @@ void ASObj::FUN_141aafcd0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x141ab1fc0

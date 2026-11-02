@@ -67,7 +67,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The minimap dialog (ui class 0x4e29); only what the MinimapMaximize action calls.
-class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // C3: member view (the key name of a binding)
+class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // C3: member view (the key name of a binding)
 class Unk_SoundSink* FUN_1409331f0();   // C3: the CKeyTable (calls cast back)
 class UIMinimapDialog : public UIDialog
 {
@@ -1147,7 +1147,7 @@ void CGuideActionSequenceCamera::vfunc_3()
         {
             CStringW strKey = GetStringCommon(0x666);
             if (*reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
-                strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
+                strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x49409, 2);
             pCinematic->StartCinematic(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",

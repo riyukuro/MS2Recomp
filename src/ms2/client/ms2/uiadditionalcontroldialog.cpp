@@ -137,15 +137,15 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     ASData data;
     if (_stricmp("OnGroupChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strSearch(L"");
             FUN_1418b2e80(data.FUN_1422b8d30(), strSearch);
         }
         return 1;
     } else if (_stricmp("OnAddEffect", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
-            unsigned nLevel = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
+            unsigned nLevel = data.PopUInt();
             float fValue = data.PopDouble();
             MS2Ptr<AdditionalLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nId, nLevel);
             if (spLevel.get() != 0) {
@@ -165,7 +165,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
         packet.WriteUInt8(1);
         FUN_140710590(packet);
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CString strGroup("");
             FUN_1418b2e80(strGroup, data.FUN_1422b8f40());
         }

@@ -1336,7 +1336,7 @@ void UIDamageText::FUN_141916340()
     if (nNow < m_nLastQueueTime + 200)
         return;
     MS2Ptr<DamageQueueParam> spParam = m_queue.RemoveHead();
-    GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(spParam->m_nActorId);
+    GameObject* pTarget = WorldService::GetInstance()->FindObjectById(spParam->m_nActorId);
     if (pTarget == 0)
         return;
     FUN_141912a80(pTarget, spParam->m_nValue, spParam->m_nType);

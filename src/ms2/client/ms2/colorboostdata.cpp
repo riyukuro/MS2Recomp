@@ -153,7 +153,7 @@ int UIColorBoostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp("onChangeSliderNPC", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             g_1439f7024 = data.PopFloat();
             g_1439f7028 = data.PopFloat();
@@ -163,7 +163,7 @@ int UIColorBoostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onChangeSliderPC", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             g_1439f702c = data.PopFloat();
             g_1439f7030 = data.PopFloat();
@@ -173,7 +173,7 @@ int UIColorBoostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onChangeSliderAccumRatio", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             g_1439f7034 = data.PopFloat();
         return 1;
     }

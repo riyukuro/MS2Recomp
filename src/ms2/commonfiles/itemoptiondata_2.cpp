@@ -345,7 +345,7 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
     if (m_nLuaIndex == 0)
         return 0;
     int nLevel = spItem->FUN_14053f0a0();
-    int nStat = spItem->FUN_14053c620();
+    int nStat = spItem->GetEquipSubtype();
     int nJob = FUN_1405d2410(spItem);
     switch (GetStat())
     {
@@ -511,7 +511,6 @@ int ItemOptionValueRef::FUN_1405cf650(int nStat, int nLevel)
 }
 
 // @0x1405cf6e0
-// MS2-FUNCTIONAL: the pow(1.0 + dGrowth, n) argument is built in xmm1 in the exe (a (double) cast, ::pow, (0, x) and 1.0L do not reproduce it)
 int ItemOptionValueRef::FUN_1405cf6e0(int nStat, int nLevel, int nRank, int nOptionLevel)
 {
     switch (nStat)
@@ -528,8 +527,7 @@ int ItemOptionValueRef::FUN_1405cf6e0(int nStat, int nLevel, int nRank, int nOpt
             double dBase = 600.0;
             double dScale = 0.6;
             double dGrowth = 0.06;
-            double dStart = dBase * dScale;
-            return (int)round(dStart * std::pow(1.0 + dGrowth, nLevel - 53));
+            return (int)round(dBase * dScale * std::pow(1.0 + dGrowth, nLevel - 53));
         }
         else if (nOptionLevel >= 60 && nRank >= 4)
         {
@@ -540,8 +538,7 @@ int ItemOptionValueRef::FUN_1405cf6e0(int nStat, int nLevel, int nRank, int nOpt
                 dBase *= 0.6;
             else if (nRank == 6)
                 dBase *= 1.2624;
-            double dStart = dBase * dScale;
-            return (int)round(dStart * std::pow(1.0 + dGrowth, nLevel - ((nLevel / 10 - 6) * 6 + 53)));
+            return (int)round(dBase * dScale * std::pow(1.0 + dGrowth, nLevel - ((nLevel / 10 - 6) * 6 + 53)));
         }
         else
             return (int)round((nLevel - 50) * 6.5);

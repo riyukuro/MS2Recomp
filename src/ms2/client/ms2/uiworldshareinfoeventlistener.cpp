@@ -51,7 +51,7 @@ int FUN_140475e80(int nType);
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140476ad0();
+    unsigned int GetAdventureLevelBonusExpRate();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CStringW FUN_1409404f0(__int64 n);                                          // the number as text
@@ -207,7 +207,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
 void FUN_1413610f0(__int64 nAmount)
 {
     CStringW strText = FUN_14028dfa0<CStringW>(L"s_msg_take_adventure_level_exp", FUN_1409404f0(nAmount));
-    if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140476ad0() != 0)
+    if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetAdventureLevelBonusExpRate() != 0)
         strText += FUN_140298ea0(L"s_msg_take_event_additional");
     FUN_1412751b0(strText, 8);
 }

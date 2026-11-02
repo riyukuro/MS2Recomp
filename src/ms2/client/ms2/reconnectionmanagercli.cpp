@@ -37,7 +37,7 @@ public:
     virtual void vfunc_52(int a, int b);
 };
 
-class Unk_MachineId { public: CStringW FUN_14067c400(); };
+class Unk_MachineId { public: CStringW FUN_14067c400() const; };
 class Unk_RCUIManager { public: };
 // The exe's caller treats 0x1415384e0 as an int-returning function (no movzx after the call).
 class Unk_RCState;

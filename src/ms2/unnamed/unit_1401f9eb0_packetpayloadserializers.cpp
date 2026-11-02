@@ -993,7 +993,7 @@ void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,MS2Ptr<CItem> item
     stream.WriteUInt8(item->FUN_140526b50());
     stream.WriteInt32(item->FUN_1405276c0());
     stream.WriteInt64(item->GetItemUid());
-    stream.WriteInt32(item->FUN_140526bd0());
+    stream.WriteInt32(item->GetRarity());
     item->FUN_140524ad0(stream);
 }
 MS2_REPLACE_METHOD(0x1401FCE90, Unk_PayloadItemWire, FUN_1401fce90, 287, 0x518F52E0);

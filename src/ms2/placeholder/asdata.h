@@ -61,9 +61,9 @@ public:
     void PopStringW(CStringW& strOut);                                           // next argument as a wide string
     void ReadUInt64(unsigned __int64* pOut);                                     // next argument as unsigned __int64
     void ReadValue(Scaleform::GFx::Value& vOut);                                // next argument
-    int FUN_1422b8a10();                                                            // next argument as int (result code)
-    bool FUN_1422b8a90();                                                           // next argument as bool
-    int FUN_1422b8b10();                                                            // next argument as unsigned (callers use int)
+    int PopInt();                                                            // next argument as int (result code)
+    bool PopBool();                                                           // next argument as bool
+    int PopUInt();                                                            // next argument as unsigned (callers use int)
     unsigned long PopULong();                                                  // next argument as unsigned long
     float PopFloat();                                                          // next argument as float
     double PopDouble();                                                         // next argument as double
@@ -71,11 +71,11 @@ public:
     CStringW FUN_1422b8f40();                                                       // next argument as a wide string
     __int64 PopInt64();                                                        // next argument as __int64
     unsigned __int64 PopUInt64();                                               // next argument as unsigned __int64
-    Scaleform::GFx::Value FUN_1422b9260();                                          // next argument
+    Scaleform::GFx::Value PopValue();                                          // next argument
     bool FUN_1422b9330();                                                           // no arguments left
     int FUN_1422b9360();                                                            // argument count
     int AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst);                  // append all arguments to a list (TRUE if any)
-    int FUN_1422b9620(const Scaleform::GFx::Value* pArgs, unsigned int nArgs);    // replace the arguments
+    int SetArgsIfAny(const Scaleform::GFx::Value* pArgs, unsigned int nArgs);    // replace the arguments
 
     ATL::CAtlList<Scaleform::GFx::Value> m_args;    // +0x18
 };

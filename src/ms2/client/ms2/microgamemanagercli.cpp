@@ -116,7 +116,6 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet);
 bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet);
 static bool FUN_140b768a0(const CStringW& strTag);
 UICoupleDanceEventDialog* FUN_140b769d0(int nId);
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 
 // Opcode 0x114: one of the two switches handles the sub type.
 // @0x140b73cc0
@@ -154,7 +153,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
-            if (pMyPC->FUN_14166c930() != 0x3b)
+            if (pMyPC->GetCurStateId() != 0x3b)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -197,7 +196,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_141275260(0xd09, 1, 1);
                 break;
             }
-            if (((class PC*)(class PCBase*)(pMyPC))->FUN_1416595d0() == 1)
+            if (((class PC*)(class PCBase*)(pMyPC))->IsInCubeMode() == 1)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -249,9 +248,9 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             }
             spBox->SetExtra(s_strRpsWaiting);
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
-            spBox->FUN_141a027c0(FUN_140b76b10(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bac700)));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bac700)));
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01700(0x476, 0, 0);
+            spBox->SetButtonLabelIds(0x476, 0, 0);
             FUN_140d73c60(spBox);
         }
         break;
@@ -263,7 +262,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 break;
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() != 0x3c)
+            if (pMyPC->GetCurStateId() != 0x3c)
                 break;
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
@@ -286,7 +285,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 break;
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() != 0x3c)
+            if (pMyPC->GetCurStateId() != 0x3c)
                 break;
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
@@ -303,7 +302,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
         break;
     case 4:
         {
-            if (pMyPC->FUN_14166c930() != 0x3c)
+            if (pMyPC->GetCurStateId() != 0x3c)
                 break;
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
@@ -344,7 +343,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_14151f200();
             if (FUN_140b768a0(s_strRpsRequest) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() != 0x3c)
+            if (pMyPC->GetCurStateId() != 0x3c)
                 break;
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
@@ -362,7 +361,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             unsigned int nMode = packet.ReadUInt8();
             unsigned int nCard = packet.ReadUInt8();
             unsigned int nPick = packet.ReadUInt8();
-            if (pMyPC->FUN_14166c930() != 0x3c)
+            if (pMyPC->GetCurStateId() != 0x3c)
                 break;
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
@@ -416,7 +415,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
-            if (pMyPC->FUN_14166c930() != 0x3b)
+            if (pMyPC->GetCurStateId() != 0x3b)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -463,7 +462,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_1412752d0(L"s_microgame_couple_dance_response_failed_blocked_user", 1);
                 break;
             }
-            if (((class PC*)(class PCBase*)(pMyPC))->FUN_1416595d0() == 1)
+            if (((class PC*)(class PCBase*)(pMyPC))->IsInCubeMode() == 1)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -518,9 +517,9 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             }
             spBox->SetExtra(s_strCoupleDanceWaiting);
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
-            spBox->FUN_141a027c0(FUN_140b76b10(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bacda0)));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bacda0)));
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01700(0x476, 0, 0);
+            spBox->SetButtonLabelIds(0x476, 0, 0);
             FUN_140d73c60(spBox);
         }
         break;
@@ -532,7 +531,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             PCBase* pTarget = (PCBase*)WorldService::GetInstance()->FUN_141bd1530(nTargetId);
             if (pTarget == 0)
                 break;
-            if (pMyPC->FUN_14166c930() != 0x45)
+            if (pMyPC->GetCurStateId() != 0x45)
                 break;
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
             if (pState == 0)
@@ -555,7 +554,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 break;
             if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() != 0x45)
+            if (pMyPC->GetCurStateId() != 0x45)
                 break;
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
             if (pState == 0)
@@ -593,7 +592,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         break;
     case 0x12:
         {
-            if (pMyPC->FUN_14166c930() != 0x45)
+            if (pMyPC->GetCurStateId() != 0x45)
                 break;
             UICoupleDanceEventDialog* pPane = (UICoupleDanceEventDialog*)FUN_140b769d0(0x4f71);
             if (pPane != 0 && pPane->FUN_141924630() != 0)
@@ -627,7 +626,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             bool bFlag = packet.ReadUInt8() != 0;
             unsigned int nA = (unsigned short)packet.ReadInt16();
             unsigned int nB = (unsigned short)packet.ReadInt16();
-            if (pMyPC->FUN_14166c930() != 0x45)
+            if (pMyPC->GetCurStateId() != 0x45)
                 break;
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
             if (pState == 0)
@@ -648,7 +647,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_14151f200();
             if (FUN_140b768a0(s_strCoupleDanceRequest) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() != 0x45)
+            if (pMyPC->GetCurStateId() != 0x45)
                 break;
             StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
             if (pState == 0)
@@ -709,16 +708,6 @@ bool CMsgBoxData::FUN_140b76a70(unsigned int nIndex, CStringW& strOut) const
         return false;
     strOut = FUN_140718600(m_args[nIndex]);
     return true;
-}
-
-// ---- Delegate<bool(int, const CMsgBoxData&)> over a free function ----
-
-// MS2-FUNCTIONAL: 0x140b76b10 is the Delegate<bool(int,const CMsgBoxData&)>(pfn) ctor itself (our ctor COMDAT matches it
-//   byte-exact); this free-function name (imported by 5 units, same rcx=ret/rdx=pfn ABI) only forwards to that ctor
-// @0x140b76b10
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&))
-{
-    return Delegate<bool(int, const CMsgBoxData&)>(pfn);
 }
 
 // @0x140b76ee0

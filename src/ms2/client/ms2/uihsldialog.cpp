@@ -67,9 +67,9 @@ int UIHSLDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     if (_stricmp("onChangeSliderHue", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            m_nHue = data.FUN_1422b8a10();
+            m_nHue = data.PopInt();
             FUN_1412c9c50(this);
         }
         return 1;
@@ -77,9 +77,9 @@ int UIHSLDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     else if (_stricmp("onChangeSliderSaturation", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            m_nSaturation = data.FUN_1422b8a10();
+            m_nSaturation = data.PopInt();
             FUN_1412c9c50(this);
         }
         return 1;
@@ -87,9 +87,9 @@ int UIHSLDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     else if (_stricmp("onChangeSliderLightness", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            m_nLightness = data.FUN_1422b8a10();
+            m_nLightness = data.PopInt();
             FUN_1412c9c50(this);
         }
         return 1;

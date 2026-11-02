@@ -386,6 +386,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/weddingmanager.h"
 #include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/packethandlermanager.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // The exe's out-of-line CStringW operator+ copies (the clang hook build cannot compile ATL's: MFC CopyChars import).
@@ -463,7 +464,6 @@ class Unk_MsgField : public CUIService
 {
 public:
     void FUN_141adc530(int nUiId);                                  // opens a UI
-    int FUN_141adc940(int nUiId);                                   // the UI can open
 };
 
 // The notify manager.
@@ -522,14 +522,17 @@ public:
 extern Unk_Inventory g_143ab2a90;                                   // the player's inventory
 
 // The messenger state (messengerdata.cpp's Unk_MdState): the current window name and the browser (+0x48).
-class Unk_MsgState
+struct Unk_MdNames
 {
-public:
     CStringW FUN_1414829e0();                                       // the current window name
     void FUN_141482c80(CStringW strName);                           // make a window the current one
     CStringW FUN_141482a50();                                       // the whisper window name
     void FUN_141482b70();                                           // reset
     void FUN_141482d30(CStringW strName);                           // forget a window
+};
+class Unk_MsgState : public Unk_MdNames
+{
+public:
     char m_pad_00[0x38];
     int m_nNewTabMode;                                              // +0x38 why the new tab dialog opened (1 menu, 2 button)
     UIMessenger* m_pNewTabWindow;                                   // +0x40 the window asking for a new tab
@@ -2172,7 +2175,7 @@ void UIMessenger::vfunc_91()
 // @0x141a15f60
 void UIMessenger::vfunc_92()
 {
-    if (reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e62))
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e62))
     {
         const CStringW& strName = FUN_141a13d20();
         if (CreateTab(strName, 1, 1, 0))
@@ -2390,7 +2393,7 @@ void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
         return;
     }
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
         return;
@@ -2433,7 +2436,7 @@ void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
         return;
     }
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
         return;
@@ -2620,15 +2623,6 @@ struct Unk_1407a5820
 };
 void FUN_1407a5960(Unk_1407a5820& extra, CInputStream& in);
 
-// The packet handlers by opcode.
-class Unk_MbPackets
-{
-public:
-    void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> cb);   // subscribe
-    void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> cb);   // unsubscribe
-};
-Unk_MbPackets* FUN_140bccd50();
-
 // The inventory item events.
 class Unk_MbItemEvents;
 Unk_MbItemEvents* FUN_140a6a840();
@@ -2740,11 +2734,11 @@ UIMessengerBrowser::UIMessengerBrowser()
     FUN_141925e70(0, 1);
     m_itHistory = m_history.end();
     ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser = this;
-    FUN_140bccd50()->FUN_140da5180(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
-    FUN_140bccd50()->FUN_140da5180(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
-    FUN_140bccd50()->FUN_140da5180(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
-    FUN_140bccd50()->FUN_140da5180(0x92, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22fc0));
-    FUN_140bccd50()->FUN_140da5180(0x109, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a23060));
+    TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
+    TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
+    TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
+    TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x92, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22fc0));
+    TSingleton<PacketHandlerManager>::GetInstance()->RegisterHandler(0x109, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a23060));
 }
 
 // @0x141a215a0
@@ -2753,11 +2747,11 @@ UIMessengerBrowser::~UIMessengerBrowser()
     m_history.clear();
     m_itHistory = m_history.end();
     ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser = 0;
-    FUN_140bccd50()->FUN_140da51e0(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
-    FUN_140bccd50()->FUN_140da51e0(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
-    FUN_140bccd50()->FUN_140da51e0(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
-    FUN_140bccd50()->FUN_140da51e0(0x92, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22fc0));
-    FUN_140bccd50()->FUN_140da51e0(0x109, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a23060));
+    TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
+    TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
+    TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
+    TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x92, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22fc0));
+    TSingleton<PacketHandlerManager>::GetInstance()->UnregisterHandler(0x109, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a23060));
 }
 
 // @0x141a21a60
@@ -3293,7 +3287,7 @@ void UIMessengerBrowser::FUN_141a247c0(const CStringW& strText, int nType)
     if (strText.IsEmpty())
         return;
     CStringW strLine(strText);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLine);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLine);
     strLine = FUN_14183f080(strLine, 0, DAT_143adda48.m_nFontSize);
     FUN_141a26e00(strLine, nType);
 }
@@ -3541,7 +3535,7 @@ void UIMessengerBrowser::FUN_141a25ad0(CStringW& strHtml)
         {
             MS2Ptr<CItem> spItem = FUN_141a263d0(nUid);
             if (spItem.get() != 0)
-                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->FUN_140526bd0());
+                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->GetRarity());
         }
         CStringW strColored = FUN_14183e930(strLink, nColor);
         strHtml.Replace(strLink, strColored);
@@ -3852,63 +3846,68 @@ int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& s
     return 1;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27570
 int UIMessengerBrowser::FUN_141a27570()
 {
-    bool bValid = true;
+    int bValid = 1;
     int bAny = 0;
     ATL::CAtlList<CStringW> names;
-    for (int i = 0; i < 100 && bValid; i++)
+    for (unsigned i = 0; i < 100; i++)
     {
         CString strFile;
         strFile.Format("%s%d.xml", "MessengerDialog", i);
         FUN_1401d3700(strFile);
         TiXmlDocument doc;
-        int bLoaded = ((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(
+        bool bFailed = !((class Unk_MsgFiles*)GetFileSystem())->FUN_1403974b0(
             &doc, FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile), 0, false, false);
-        if (!bLoaded)
+        if (bFailed)
             continue;
         void* pDialog = FUN_140165cf0(&doc, "MessengerDialog");
         if (pDialog == 0)
         {
-            bValid = false;
+            bValid = 0;
             break;
         }
         void* pTabXml = FUN_140165cf0(pDialog, "Tab");
         if (pTabXml == 0)
         {
-            bValid = false;
+            bValid = 0;
             break;
         }
         for (; pTabXml != 0; pTabXml = ((void*)((class Unk_XmlNode*)(void*)(pTabXml))->NextSibling("Tab")))
         {
             MS2Ptr<TalkTab> spTab(new TalkTab);
-            if (spTab.get() == 0 || !spTab->FUN_1414827c0((Unk_MdXml*)pTabXml))
+            if ((spTab.get() ? true : false) && spTab->FUN_1414827c0((Unk_MdXml*)pTabXml))
             {
-                bValid = false;
+                if (spTab->m_nAdditive != 0)
+                    bAny = 1;
+                if (names.Find(spTab->m_strName) == 0)
+                    names.AddTail(spTab->m_strName);
+                else
+                {
+                    bValid = 0;
+                    break;
+                }
+            }
+            else
+            {
+                bValid = 0;
                 break;
             }
-            if (spTab->m_nAdditive != 0)
-                bAny = 1;
-            if (names.Find(spTab->m_strName) != 0)
-            {
-                bValid = false;
-                break;
-            }
-            names.AddTail(spTab->m_strName);
         }
     }
-    if (bValid)
-        return bAny;
-    for (int i = 0; i < 100; i++)
+    if (!bValid)
     {
-        CString strFile;
-        strFile.Format("%s%d.xml", "MessengerDialog", i);
-        FUN_1401d3700(strFile);
-        DeleteFileA(FUN_140cc2a00(FUN_1412755f0(), FUN_14016a5c0(strFile, 0)));
+        for (unsigned i = 0; i < 100; i++)
+        {
+            CString strFile;
+            strFile.Format("%s%d.xml", "MessengerDialog", i);
+            FUN_1401d3700(strFile);
+            DeleteFileA(FUN_140cc2a00(FUN_1412755f0(), FUN_14016a5c0(strFile, 0)));
+        }
+        return 0;
     }
-    return 0;
+    return bAny;
 }
 
 // @0x141a27ad0
@@ -4002,14 +4001,14 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     else if (_stricmp("eventChangeText", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             vfunc_94(data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("eventWhisperTarget", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             vfunc_95(data.FUN_1422b8f40());
         return 1;
     }
@@ -4043,21 +4042,21 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     else if (_stricmp("eventTabMenu", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            vfunc_96(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            vfunc_96(data.PopInt());
         return 1;
     }
     else if (_stricmp("eventChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             vfunc_97(data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("eventAttachTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             CString strWindow = data.FUN_1422b8d30();
@@ -4069,14 +4068,14 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     else if (_stricmp("eventDetachTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             int nX = (int)data.PopFloat();
             int nY = (int)data.PopFloat();
             int nWidth = (int)data.PopFloat();
             int nHeight = (int)data.PopFloat();
-            int nTarget = data.FUN_1422b8a10();
+            int nTarget = data.PopInt();
             FUN_141a16730(strName, nX, nY, nWidth, nHeight, nTarget);
         }
         return 1;
@@ -4102,18 +4101,18 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     else if (_stricmp("eventChatEmoticonPush", szMethod) == 0)
     {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs))
+        if (!data.SetArgsIfAny(pArgs, nArgs))
             return 0;
-        int nEmoticonId = data.FUN_1422b8a10();
+        int nEmoticonId = data.PopInt();
         FUN_141a0fe20(nEmoticonId);
     }
     else if (_stricmp("eventChatEmoticonFavorite", szMethod) == 0)
     {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs))
+        if (!data.SetArgsIfAny(pArgs, nArgs))
             return 0;
-        int nEmoticonId = data.FUN_1422b8a10();
-        bool bFavorite = data.FUN_1422b8a90();
+        int nEmoticonId = data.PopInt();
+        bool bFavorite = data.PopBool();
         FUN_141a10490(nEmoticonId, bFavorite);
     }
     return 0;
@@ -4519,7 +4518,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_141a01800(1);
             spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
         }
@@ -4533,7 +4532,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_141a01800(1);
             spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
         }
@@ -4547,7 +4546,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             spBox->FUN_141a01800(1);
             spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return true;
         }
@@ -4869,7 +4868,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
             spBox->FUN_141a01800(1);
             spBox->FUN_1405340b0(nWeddingId);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f980));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f980));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
     }

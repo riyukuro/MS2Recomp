@@ -6512,3 +6512,48 @@
 1416cff70	CQuestManager::FUN_1416cff70	CQuestManager::CountCompletedLevelGuideQuests	descriptive	accepted	son3	2026-11-02
 14188c430	CUgcManager::FUN_14188c430	CUgcManager::GetRandomRollingImage	descriptive	accepted	son3	2026-11-02
 141a5a5c0	UIMyInfoDialog::FUN_141a5a5c0	UIMyInfoDialog::MarkDirty	descriptive	accepted	son3	2026-11-02
+14036e510	CFeatureManager::FUN_14036e510	CFeatureManager::IsRegionCN	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1405279c0	CItem::FUN_1405279c0	CItem::GetSocket	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+14053cd90	CItemData::FUN_14053cd90	CItemData::HasFunction	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+140635120	CItemTransfer::FUN_140635120	CItemTransfer::HasBinding	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1409c69b0	ASTooltip::FUN_1409c69b0	ASTooltip::SetEnablePuton	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+14107ec40	CQuestAcceptCinematicComponent::FUN_14107ec40	CQuestAcceptCinematicComponent::OnMsgBoxResult	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1410b55b0	CubeHolderManager::FUN_1410b55b0	CubeHolderManager::GetSelectedInfo	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1410c8030	CubeMapInformationService::FUN_1410c8030	CubeMapInformationService::GetOwnerId	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141226b80	CFunctionCubeObject::FUN_141226b80	CFunctionCubeObject::SetId	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141226bd0	CFunctionCubeObject::FUN_141226bd0	CFunctionCubeObject::GetId	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141226d00	CFunctionCubeObject::FUN_141226d00	CFunctionCubeObject::GetPosition	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141226eb0	CFunctionCubeObject::FUN_141226eb0	CFunctionCubeObject::GetEntityId	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141228060	CFunctionCubeObject::FUN_141228060	CFunctionCubeObject::OpenTriggerEditor	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141228100	CFunctionCubeObject::FUN_141228100	CFunctionCubeObject::OpenObjectStore	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141230c90	CFunctionCubeService::FUN_141230c90	CFunctionCubeService::AddCube	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141230df0	CFunctionCubeService::FUN_141230df0	CFunctionCubeService::RemoveCube	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+14142d760	CKeyTable::FUN_14142d760	CKeyTable::GetActionKeyName	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+14162ab20	CPartyManager::FUN_14162ab20	CPartyManager::IsInParty	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+14166dd20	PCBase::FUN_14166dd20	PCBase::PlayAnimation	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1416fb340	CReservedWordTable::FUN_1416fb340	CReservedWordTable::ReplaceValueWords	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1416fb380	CReservedWordTable::FUN_1416fb380	CReservedWordTable::ReplaceObjectWords	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1416fbf20	CReservedWordTable::FUN_1416fbf20	CReservedWordTable::ReplaceBoldWords	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+141a027c0	CMsgBoxData::FUN_141a027c0	CMsgBoxData::SetCallback	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+1422b9260	ASData::FUN_1422b9260	ASData::PopValue	descriptive	blind namer + 2 audit lenses agree	son3	2026-11-02
+140526bd0	CItem::FUN_140526bd0	CItem::GetRarity	descriptive	accepted	son3	2026-11-02
+140526c70	CItem::FUN_140526c70	CItem::SetCountClamped	descriptive	accepted	son3	2026-11-02
+140527270	CItem::FUN_140527270	CItem::GetPlusLevel	descriptive	accepted	son3	2026-11-02
+14053c620	CItemData::FUN_14053c620	CItemData::GetEquipSubtype	descriptive	accepted	son3	2026-11-02
+14152a960	MyPC::FUN_14152a960	MyPC::StopObserving	descriptive	accepted	son3	2026-11-02
+141655c30	PC::FUN_141655c30	PC::GetEquipByUid	descriptive	accepted	son3	2026-11-02
+1416595d0	PC::FUN_1416595d0	PC::IsInCubeMode	descriptive	accepted	son3	2026-11-02
+14166c930	PCBase::FUN_14166c930	PCBase::GetCurStateId	descriptive	accepted	son3	2026-11-02
+14166ce30	PCBase::FUN_14166ce30	PCBase::IsDead	descriptive	accepted	son3	2026-11-02
+14166d220	PCBase::FUN_14166d220	PCBase::GetPhysicsBody	descriptive	accepted	son3	2026-11-02
+14166d970	PCBase::FUN_14166d970	PCBase::SetRotationAndTargetYaw	descriptive	accepted	son3	2026-11-02
+141a01700	CMsgBoxData::FUN_141a01700	CMsgBoxData::SetButtonLabelIds	descriptive	accepted	son3	2026-11-02
+141a01d30	CMsgBoxData::FUN_141a01d30	CMsgBoxData::SetInput	descriptive	accepted	son3	2026-11-02
+141bd1180	WorldService::FUN_141bd1180	WorldService::FindObjectById	descriptive	accepted	son3	2026-11-02
+1422b8a10	ASData::FUN_1422b8a10	ASData::PopInt	descriptive	accepted	son3	2026-11-02
+1422b8a90	ASData::FUN_1422b8a90	ASData::PopBool	descriptive	accepted	son3	2026-11-02
+1422b8b10	ASData::FUN_1422b8b10	ASData::PopUInt	descriptive	accepted	son3	2026-11-02
+1422b9620	ASData::FUN_1422b9620	ASData::SetArgsIfAny	descriptive	accepted	son3	2026-11-02
+1422bbf00	ASArray::FUN_1422bbf00	ASArray::PushObj	descriptive	accepted	son3	2026-11-02
+1422c4cd0	ASTextField::FUN_1422c4cd0	ASTextField::SetTextW	descriptive	accepted	son3	2026-11-02
+1422c4f00	ASTextField::FUN_1422c4f00	ASTextField::SetTextHTMLW	descriptive	accepted	son3	2026-11-02

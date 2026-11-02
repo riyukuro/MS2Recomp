@@ -164,7 +164,7 @@ void ASDropdownMenu::AddItemRow(const ASObj& row)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get())
-        spProvider->FUN_1422bbf00(row);
+        spProvider->PushObj(row);
 }
 MS2_REPLACE_METHOD(0x1422DFC70, ASDropdownMenu, AddItemRow, 93, 0xAF8585F2);
 
@@ -175,7 +175,7 @@ void ASDropdownMenu::AddItemLabel(const CStringW& strLabel)
     if (spProvider.get()) {
         ASObj row(2);
         row.FUN_1407cbb20("label", strLabel);
-        spProvider->FUN_1422bbf00(row);
+        spProvider->PushObj(row);
     }
 }
 MS2_REPLACE_METHOD(0x1422DFCE0, ASDropdownMenu, AddItemLabel, 185, 0xB5C5021F);

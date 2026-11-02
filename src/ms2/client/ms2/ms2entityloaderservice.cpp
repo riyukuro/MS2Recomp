@@ -2,8 +2,6 @@
 // efd::map<BlockIdentification, WorldLoadedInfoPtr> lookups.
 // MS2-UNIT: ?\ms2entityloaderservice.cpp
 // MS2-RANGE: 0x1414b3ee0-0x1414b4a90 .text$mn
-// MS2-FUNCTIONAL: the BlockIdentification key compare (0x1414b4480) is the engine's inline operator<; the exe loads
-// this between computing and passing &other.m_blockAsset to AssetID ==/<, ours passes it first (arg-move order only).
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2entityloaderservice.h"
 #include <set>
@@ -174,8 +172,11 @@ char* FUN_1414b4440(long long* p) { return (char*)*p + 0x20; }
 // @0x1414b4460
 void* FUN_1414b4460(void* it) { return FUN_1414b4440((long long*)it); }
 
-// @0x1414b4480  egf::BlockIdentification::operator< (BlockIdentification.inl), emitted as this map's key compare
-struct Unk_ELSKey : egf::BlockIdentification {
+// @0x1414b4480  egf::BlockIdentification::operator< (BlockIdentification.inl), emitted as this map's key compare;
+// the view holds the fields itself, as a base-class view would add a this conversion the exe does not have
+struct Unk_ELSKey {
+    efd::AssetID m_blockAsset;
+    efd::UInt32 m_instance;
     bool FUN_1414b4480(const egf::BlockIdentification& other) const;
 };
 bool Unk_ELSKey::FUN_1414b4480(const egf::BlockIdentification& other) const

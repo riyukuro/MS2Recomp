@@ -678,7 +678,7 @@ void AdditionalCli::FUN_14096db40()
         return;
     if (m_spLevel->m_setUsedSkillIDs.empty())
         return;
-    if (pMyPC->FUN_14166c930() != 16)
+    if (pMyPC->GetCurStateId() != 16)
     {
         m_bEnabled = 0;
     }

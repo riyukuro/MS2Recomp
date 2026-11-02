@@ -131,7 +131,7 @@ void UITimeRunEventDialog::OnLoadComplete()
     }
     reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setDay", FUN_140ee4bb0(spContext));
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_remainTime"))
-        spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
+        spText->SetTextW(FUN_140ee4380(spContext));
     FUN_140ee3580();
     FUN_140ee4ca0();
 }
@@ -162,7 +162,7 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
     } else if ((strMethod == "getTooltip")) {
         CStringW strKind = pArgs->FUN_1422b8f40();
         if (operator==(strKind, "guide")) {
-            int nQuest = pArgs->FUN_1422b8b10();
+            int nQuest = pArgs->PopUInt();
             MS2Ptr<CQuestData> data = FUN_14074bc40(nQuest);
             if (data.get() != 0) {
                 void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
@@ -184,15 +184,15 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs)) return 1;
     if (!_stricmp(szMethod, "onTabChange")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nTab = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nTab = data.PopInt();
             FUN_140ee3c00(nTab + 1);
         }
         return 1;
     } else if (!_stricmp(szMethod, "onReceiveItem")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nItem = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nItem = data.PopUInt();
             COutPacket packet(static_cast<int>(SendOp::Quest), 0);
             packet.Encode1(0x1b);
             packet.Encode4(nItem);
@@ -213,8 +213,8 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     } else if (!_stricmp(szMethod, "onClickReward")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nKey = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nKey = data.PopUInt();
             MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
             if (spContext.get() != 0) {
                 int nDefault = 0;
@@ -260,7 +260,7 @@ void UITimeRunEventDialog::vfunc_15()
             return;
         }
         if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_remainTime"))
-            spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
+            spText->SetTextW(FUN_140ee4380(spContext));
     }
 }
 
@@ -314,14 +314,14 @@ void UITimeRunEventDialog::FUN_140ee3580()
         row.FUN_1407cba60("binding", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>((ItemEntity*)spItem)));
         row.FUN_1407cbbe0("enabled", bReached && bNext && !bTaken ? true : false);
         row.FUN_1407cb9c0("visible", bReached);
-        rewards.FUN_1422bbf00(row);
+        rewards.PushObj(row);
     }
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>(&spContext->m_item)), nDistance >= (unsigned)spContext->m_1c && nReceived == 0 ? true : false);
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_totalDistance"))
     {
         CStringW strDistance = FUN_14028dfa0(CStringW(L"s_timerun_total_distance"), nDistance);
-        spText->FUN_1422c4cd0(strDistance);
+        spText->SetTextW(strDistance);
     }
 }
 

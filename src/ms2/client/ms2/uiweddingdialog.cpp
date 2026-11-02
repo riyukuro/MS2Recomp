@@ -192,7 +192,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (_stricmp(szMethod, "onAddPage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             PageMap::iterator it = m_pages.find(strPage);
@@ -206,7 +206,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onRemovePage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             PageMap::iterator it = m_pages.find(strPage);
@@ -220,7 +220,7 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onRemovePage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             PageMap::iterator it = m_pages.find(strPage);
@@ -249,8 +249,8 @@ int UIWeddingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onChangeTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            m_nTab = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
+            m_nTab = data.PopInt();
     }
     if (m_spPage.get() != 0)
     {

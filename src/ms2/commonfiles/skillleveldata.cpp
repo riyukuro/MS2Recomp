@@ -59,7 +59,7 @@ static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 static MS2Ptr<SkillMotionData> s_spMotion(new SkillMotionData);
 
 // Unrecovered helpers.
-void FUN_140873dc0(void* pElem, const char* pszName, unsigned nTicks);     // SetAttribute(name, tick value)
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned long);   // C3: was FUN_140873dc0
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);          // SetAttribute(name, int)
 void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);     // SetAttribute(name, unsigned)
@@ -202,9 +202,9 @@ void Unk_SkillSensor::SaveElement(void* pParent, CString strName)
     Unk_TiXmlElement elem(strName);
     FUN_140800570(&elem);
     if (m_nSensorStartDelay != kDefault.m_nSensorStartDelay)
-        FUN_140873dc0(&elem, "sensorStartDelay", m_nSensorStartDelay);
+        XmlSetAttr((class TiXmlElement*)(&elem), "sensorStartDelay", (unsigned long)m_nSensorStartDelay);
     if (m_nSensorSplashStartDelay != kDefault.m_nSensorSplashStartDelay)
-        FUN_140873dc0(&elem, "sensorSplashStartDelay", m_nSensorSplashStartDelay);
+        XmlSetAttr((class TiXmlElement*)(&elem), "sensorSplashStartDelay", (unsigned long)m_nSensorSplashStartDelay);
     if (m_nSensorForceInvokeByInterval != kDefault.m_nSensorForceInvokeByInterval)
         FUN_140873ca0(&elem, "sensorForceInvokeByInterval", m_nSensorForceInvokeByInterval);
     if (m_nTargetHasBuffID != kDefault.m_nTargetHasBuffID)

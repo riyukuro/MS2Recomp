@@ -344,7 +344,7 @@ bool StateReact::FUN_140b8e030()
     if (m_spData->m_strAnim.GetLength() > 0)
     {
         kName = (const char*)FUN_1409a2360(m_spData->m_strAnim, 0);
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
     else
     {
@@ -362,7 +362,7 @@ bool StateReact::FUN_140b8e030()
         {
             kName = (const char*)FUN_1409a2360(strAnim, 0);
             m_spData->m_strAnim = strAnim;
-            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+            m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         }
     }
     return true;

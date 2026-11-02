@@ -136,7 +136,7 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
             {
                 m_n68 = 0;
                 efd::utf8string kAnim((const char*)*m_spEmotion->m_names.FUN_14027f1c0(m_n68));
-                m_pOwner->FUN_14166dd20(kAnim, m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->PlayAnimation(kAnim, m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
         }
@@ -144,7 +144,7 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
     else if (!m_spData.get()->m_strAnim.IsEmpty())
     {
         efd::utf8string kAnim((const char*)m_spData.get()->m_strAnim);
-        m_pOwner->FUN_14166dd20(kAnim, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kAnim, m_pOwner->FUN_1416713c0(), false, false);
         return;
     }
     m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -215,13 +215,13 @@ void StateWeddingEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
         }
         m_n68 = nNext;
         efd::utf8string kAnim((const char*)*m_spEmotion->m_names.FUN_14027f1c0(m_n68));
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, true, true);
+        m_pOwner->PlayAnimation(kAnim, 1.0f, true, true);
         return;
     }
     if (m_spData.get()->m_b2c != 0)
     {
         efd::utf8string kAnim((const char*)m_spData.get()->m_strAnim);
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, true, false);
+        m_pOwner->PlayAnimation(kAnim, 1.0f, true, false);
         return;
     }
     m_pOwner->vfunc_59(1, 0, 0, 0);

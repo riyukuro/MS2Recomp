@@ -59,7 +59,6 @@ UIRenderView* FUN_141a90540(int nWidth, int nHeight, GameObject* pObject, float 
 }
 
 // @0x141a905f0
-// MS2-FUNCTIONAL: the NiPoint3 temporaries sit 4 bytes higher in the frame than in the exe
 void UIPortrait::vfunc_2()
 {
     if (m_spCamera)
@@ -68,8 +67,7 @@ void UIPortrait::vfunc_2()
         if (pPlayer)
         {
             NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->FUN_14123c410())) + NiPoint3(0.0f, 0.0f, 25.0f);
-            NiPoint3 kPosition = kTarget + pPlayer->GetForwardDirection() * 130.0f;
-            m_spCamera->SetTranslate(kPosition);
+            m_spCamera->SetTranslate(kTarget + pPlayer->GetForwardDirection() * 130.0f);
             m_spCamera->Update(GetCurrentTime(), true);
             m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);
             m_spCamera->Update(GetCurrentTime(), true);

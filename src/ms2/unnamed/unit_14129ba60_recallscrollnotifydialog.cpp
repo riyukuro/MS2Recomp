@@ -153,8 +153,8 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
     if (spField == 0) return 0;
     if (!_stricmp(szMethod, "OnNotify")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nSlot = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nSlot = data.PopInt();
             if (nSlot < 0 || nSlot >= 3)
                 return 1;
             MS2Ptr<CFieldDataCli> spSender = CFieldDataCli::Find(m_fields[nSlot]);
@@ -169,7 +169,7 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
                     box->FUN_141a02460(1);
                     box->FUN_141a02480(1);
                     box->FUN_141a024a0(0);
-                    box->FUN_141a01700(0x477, 0x478, 0);
+                    box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
                 }
             }

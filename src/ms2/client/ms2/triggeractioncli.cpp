@@ -486,7 +486,7 @@ bool FUN_140de8e30(const efd::utf8string& str, const char* psz);          // == 
 // efd::utf8string keeps its std::string at +0.
 struct Unk_Utf8StringBody { std::string m_string; };
 int FUN_140de9280(const std::string& s, const char* psz);
-bool FUN_140de8ea0(const void* pA, const void* pB);
+bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
 efd::AssetID* FUN_140de8c90(efd::AssetID* pDst, const efd::AssetID* pSrc);
 void FUN_140de9160(std::string& s, size_t n);
 void FUN_140de91c0(std::string& s) noexcept;
@@ -1342,13 +1342,13 @@ bool FUN_140de8e30(const efd::utf8string& str, const char* psz)
 // @0x140de8e70
 bool FUN_140de8e70(const efd::AssetID* a, const efd::AssetID* b)
 {
-    return FUN_140de8ea0((const char*)a + 8, (const char*)b + 8);
+    return FUN_140de8ea0(*(const efd::utf8string*)((const char*)a + 8), *(const efd::utf8string*)((const char*)b + 8));
 }
 
 // @0x140de8ea0
-bool FUN_140de8ea0(const void* pA, const void* pB)
+bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b)
 {
-    return !(*reinterpret_cast<const efd::utf8string*>(pA) == *reinterpret_cast<const efd::utf8string*>(pB));
+    return !(a == b);
 }
 
 // @0x140de9160

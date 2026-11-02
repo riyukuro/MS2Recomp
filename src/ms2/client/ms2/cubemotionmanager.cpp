@@ -243,7 +243,7 @@ void CCubeMotionManager::AddScale(const egf::EntityID& id, float fFrom, float fT
 MS2_REPLACE_METHOD(0x14115B1E0, CCubeMotionManager, AddScale, 121, 0x9CC36F9E);
 
 // @0x14115b260
-void CCubeMotionManager::AddRotate(const egf::EntityID& id, float fFrom, float fTo, unsigned nMs)
+void CCubeMotionManager::AddRotate(egf::EntityID id, float fFrom, float fTo, unsigned nMs)
 {
     Unk_CmRotate rotate(fFrom, fTo, nMs);
     m_rotate.SetAt(id, rotate);
@@ -259,7 +259,7 @@ void CCubeMotionManager::AddBounce(const egf::EntityID& id, float fFrom, float f
 MS2_REPLACE_METHOD(0x14115B2E0, CCubeMotionManager, AddBounce, 138, 0x90835330);
 
 // @0x14115b370
-void CCubeMotionManager::AddFade(const egf::EntityID& id, float fFrom, float fTo, unsigned nMs, bool bHide)
+void CCubeMotionManager::AddFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, bool bHide)
 {
     Unk_CmFade fade(id, fFrom, fTo, nMs, bHide);
     m_fade.SetAt(id, fade);
@@ -267,7 +267,7 @@ void CCubeMotionManager::AddFade(const egf::EntityID& id, float fFrom, float fTo
 MS2_REPLACE_METHOD(0x14115B370, CCubeMotionManager, AddFade, 175, 0x2DBF5238);
 
 // @0x14115b430
-void CCubeMotionManager::RemoveFade(const egf::EntityID& id)
+void CCubeMotionManager::RemoveFade(egf::EntityID id)
 {
     Unk_CmFade fade;
     if (m_fade.Lookup(id, fade))

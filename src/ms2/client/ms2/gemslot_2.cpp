@@ -446,14 +446,14 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
     Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return false;
-    if (pActor->FUN_14166ce30() != 0)
+    if (pActor->IsDead() != 0)
     {
         FUN_140d73bc0(0x42, 0, 0, L"");
         return false;
     }
     if (nFlag == 0
         && FUN_140527930(spItem.operator->())->HasBindingRule() != 0
-        && FUN_140527930(spItem.operator->())->FUN_140635120() == 0)
+        && FUN_140527930(spItem.operator->())->HasBinding() == 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);
@@ -462,7 +462,7 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
             spBox->Append<int>(nSlot);
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(1143, 1144, 0);
+            spBox->SetButtonLabelIds(1143, 1144, 0);
             FUN_140d73c60(spBox);
             return true;
         }
@@ -490,7 +490,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
     Unk_GmActor* pActor = static_cast<Unk_GmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pActor == 0)
         return false;
-    if (pActor->FUN_14166ce30() != 0)
+    if (pActor->IsDead() != 0)
     {
         FUN_140d73bc0(0x42, 0, 0, L"");
         return false;

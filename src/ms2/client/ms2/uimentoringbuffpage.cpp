@@ -38,7 +38,7 @@ int UIMentoringBuffPage::vfunc_1()
         if (i < lines.GetCount())
             strLine = lines[i];
         if (MS2Ptr<ASTextField> text = m_script->FUN_1409b4620(FUN_140c43630("m_benefitDesc{0}", i)))
-            text->FUN_1422c4cd0(strLine);
+            text->SetTextW(strLine);
     }
     return 1;
 }

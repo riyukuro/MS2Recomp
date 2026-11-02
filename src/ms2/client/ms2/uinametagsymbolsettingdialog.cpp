@@ -163,9 +163,9 @@ int UINameTagSymbolSettingDialog::vfunc_28(const char* szMethod, const Scaleform
     if (_stricmp("onOk", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            short nId = data.FUN_1422b8a10();
+            short nId = data.PopInt();
             if (FUN_14131e120()->FUN_1406c5a70(nId) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::Insignia), 0);

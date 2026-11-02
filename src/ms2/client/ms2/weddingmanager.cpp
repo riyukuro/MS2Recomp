@@ -608,7 +608,7 @@ void WeddingManager::OnPropose(CInPacket& packet)
     if (box.get()) {
         box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box->FUN_141a024a0(0);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeAnswer));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeAnswer));
         box->FUN_140b76940(FUN_141b71910(id));
         FUN_140d73c60(box);
     }
@@ -646,10 +646,10 @@ void WeddingManager::ShowStep()
         if (box.get()) {
             {
                 CStringW blank(L"");
-                box->FUN_141a01d30(2, blank, 0, 0, 0);
+                box->SetInput(2, blank, 0, 0, 0);
             }
             box->SetCheckbox0(FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_confirm_checkbox")), 0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnNicknameAnswer));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnNicknameAnswer));
             FUN_140d73c60(box);
         }
     }
@@ -666,7 +666,7 @@ void WeddingManager::ShowLastStep()
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_enter_nickname_confirm_final"), name);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
         if (box.get()) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnLastStepAnswer));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnLastStepAnswer));
             FUN_140d73c60(box);
         }
     }
@@ -690,7 +690,7 @@ void WeddingManager::ShowStepResult(int result)
         }
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, (void*)0, CStringW(L""));
         if (box.get()) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnActingAnswer));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnActingAnswer));
             box->Append<unsigned>(result);
             FUN_140d73c60(box);
         }
@@ -711,7 +711,7 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
             box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
             box->FUN_141a01800(4);
             box->FUN_141a024a0(0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeSentAnswer));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeSentAnswer));
             box->FUN_140b76940(FUN_141b71910(((PCBase*)user)->FUN_141656a80()));
             FUN_140d73c60(box);
         }
@@ -800,7 +800,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
     {
         MS2Ptr<CMsgBoxData> retry = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
         if (retry.get()) {
-            retry->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnStepNext));
+            retry->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnStepNext));
             FUN_140d73c60(retry);
         }
     }
@@ -1131,7 +1131,7 @@ void WeddingManager::PlayEmotion(int type)
         switch (type) {
             break;
         case 1: {
-            int kind = user->FUN_14166c930();
+            int kind = user->GetCurStateId();
             if ((kind == 1 || kind == 2 || kind == 0x47) == false)
                 return;
             FacePartner(user);
@@ -1142,7 +1142,7 @@ void WeddingManager::PlayEmotion(int type)
             break;
         }
         case 3: {
-            int kind = user->FUN_14166c930();
+            int kind = user->GetCurStateId();
             if (kind != 0x47)
                 return;
             user->vfunc_59(1, 0, 0, 0);
@@ -1164,7 +1164,7 @@ void WeddingManager::OnMode27Accept(CInPacket& packet)
         data->m_b2c = packet.ReadBool();
         if (data->m_b2c)
             data->m_n30 = packet.ReadInt32();
-        int kind = user->FUN_14166c930();
+        int kind = user->GetCurStateId();
         if ((kind == 1 || kind == 2 || kind == 0x47) == false)
             return;
         user->vfunc_59(0x47, data.get(), 0, 1);
@@ -1204,7 +1204,7 @@ bool WeddingManager::CanStartWedding(__int64 partnerId)
         FUN_141275260(0xc00, 1, 0);
         return false;
     }
-    if (((PCBase*)user)->FUN_14166ce30()) {
+    if (((PCBase*)user)->IsDead()) {
         FUN_141275260(0xbfd, 1, 0);
         return false;
     }

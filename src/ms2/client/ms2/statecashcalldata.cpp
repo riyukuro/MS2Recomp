@@ -165,7 +165,7 @@ void StateCashCall::vfunc_4(StateData* pData)
     else
     {
         m_n10 = 0x6b;
-        m_pOwner->FUN_14166dd20(GetEffectName(), 1.0f, false, false);
+        m_pOwner->PlayAnimation(GetEffectName(), 1.0f, false, false);
         unsigned nNow = GetTickCountMs2();
         int nDuration = GetDuration();
         m_nStart = nNow;

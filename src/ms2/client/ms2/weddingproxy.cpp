@@ -683,7 +683,7 @@ unsigned int FUN_140900d70()
     return *TSingleton<Client::Constants>::GetInstance()->WeddingDivorceMeso.Get();
 }
 // @0x140900da0
-unsigned int FUN_140900da0()
+__int64 FUN_140900da0()
 {
     return *TSingleton<Client::Constants>::GetInstance()->WeddingInvitationMeso.Get();
 }

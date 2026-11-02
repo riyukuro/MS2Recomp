@@ -181,12 +181,12 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     ASData data;
     if (_stricmp("OnNpcCreate", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 1;
-            int nNpc = data.FUN_1422b8a10();
-            int nCount = data.FUN_1422b8a10();
+            int nNpc = data.PopInt();
+            int nCount = data.PopInt();
             COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
             pkt.WriteInt32(nNpc);
             pkt.WriteVector3(pPlayer->vfunc_18());
@@ -198,13 +198,13 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         }
         return 1;
     } else if (_stricmp("OnSummonPet", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             Unk_NcPlayer* pPlayer = ((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 1;
-            int nNpc = data.FUN_1422b8a10();
+            int nNpc = data.PopInt();
             float fValue = data.PopFloat();
-            int nCount = data.FUN_1422b8a10();
+            int nCount = data.PopInt();
             COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
             pkt.WriteInt32(nNpc);
             pkt.WriteVector3(pPlayer->vfunc_18());
@@ -223,14 +223,14 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         FUN_141276f80(chat);
         return 1;
     } else if (_stricmp("OnSearchNpc", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strFilter = data.FUN_1422b8f40();
             FUN_141a6be40(strFilter);
         }
         return 1;
     } else if (_stricmp("OnMoveToNpc", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nNpc = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nNpc = data.PopInt();
             unsigned nField;
             if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(nNpc, &nField) != 0) {
                 if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {

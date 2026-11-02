@@ -189,7 +189,6 @@ MS2_REPLACE(0x140F328A0, FUN_140f328a0, 455, 0x566F2A2D);
 
 // The size / degree / position pickers of the customize controller.
 // @0x140f32a70
-// MS2-FUNCTIONAL: behaviour-checked against the exe; instructions match, frame is 0x10 larger (one local slot)
 void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASObj& obj, unsigned* pnFlags)
 {
     if (spCustomize == 0)
@@ -216,8 +215,8 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
                 float fMax = pRange->m_fMax;
                 if (pRange->m_n08 != 0)
                 {
-                    float fFlip = fMax - fCur;
-                    fCur = fFlip + fMin;
+                    fCur = fMax - fCur;
+                    fCur = fCur + fMin;
                 }
                 ASObj kEntry(2);
                 int nIndex = i;

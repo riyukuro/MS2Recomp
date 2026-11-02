@@ -161,7 +161,7 @@ int UIConstructHelpDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nIndex = pMsg->FUN_1422b8a10();
+        int nIndex = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         return 1;

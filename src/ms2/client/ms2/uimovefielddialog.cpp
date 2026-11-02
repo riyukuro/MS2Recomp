@@ -104,11 +104,11 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     ASData data;
     if (_stricmp("OnMoveField", szMethod) == 0) {
         MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (pPlayer == 0 || pPlayer->FUN_14166ce30() != 0) {
+        if (pPlayer == 0 || pPlayer->IsDead() != 0) {
             FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
             return 1;
         }
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strField = data.FUN_1422b8f40();
             int nField = _wtoi(strField);
             if (CFieldData::FUN_140374410(nField) == true) {
@@ -123,7 +123,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         }
         return 1;
     } else if (_stricmp("OnAddField", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strField = data.FUN_1422b8f40();
             int nField = _wtoi(strField);
             if (CFieldData::FUN_140374410(nField)) {
@@ -137,7 +137,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         }
         return 1;
     } else if (_stricmp("OnSearchField", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strFilter = data.FUN_1422b8f40();
             FUN_140841420(strFilter);
             strFilter.Remove(L' ');

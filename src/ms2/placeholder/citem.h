@@ -38,7 +38,7 @@ public:
     int DecrementTransferCount();
     int IncrementTransferCount();
     unsigned HasBindingRule();                           // m_nRule & 8
-    int FUN_140635120();                               // has a binding
+    int HasBinding();                               // has a binding
     CItemBinding* GetBinding();                      // the binding
     int GetType();
     bool FUN_1406351b0();
@@ -108,8 +108,8 @@ public:
   void FUN_140526c10(int);
   int FUN_140526b50();
   void FUN_140526b70(int);
-  void FUN_140526c70(int);
-  int FUN_140526bd0();
+  void SetCountClamped(int);
+  int GetRarity();
   int GetUgcTag();                    // 0x140528840 (astooltip.cpp)
   int FUN_1405276c0();
   Unk_ItemEquipData* FUN_1405277b0();   // 0x1405277b0
@@ -141,7 +141,7 @@ public:
   int FUN_140526fc0();                    // 0x140526fc0 enchant level
   int GetEnchantCharge();                    // 0x1405270a0 enchant exp
   void SetEnchantCharge(int);                // 0x140527110 set enchant exp
-  int FUN_140527270();
+  int GetPlusLevel();
   int FUN_140527030();
   Unk_ItemEnchantData* FUN_1405278a0();   // 0x1405278a0 the enchant data object (null when absent)
   Unk_ItemOwnerRef* FUN_140527930();      // 0x140527930 binding owner holder
@@ -308,7 +308,7 @@ public:
   void WriteItemBody(__int64);
   CItemCustomMusicScore* FUN_140527960();
   CItemCustomMusicScore* FUN_140527990();
-  CItemSocket* FUN_1405279c0();
+  CItemSocket* GetSocket();
   CItemGem* GetGem();
   void FUN_140529210(unsigned, __int64);
   void SetCoupleInfo(const CItemCoupleInfo&);

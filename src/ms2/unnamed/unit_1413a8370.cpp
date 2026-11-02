@@ -16,6 +16,7 @@
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/ckeytable.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
@@ -51,9 +52,6 @@ public:
 };
 int FUN_1405451c0(CStringA&);             // the equip slot of a slot name
 
-class Unk_GcKeyBinds { };                                   // the key / skill-slot binding table
-Unk_SoundSink* FUN_1409331f0();
-int FUN_14142e090(Unk_GcKeyBinds* pBinds, int nSkill, int nFlag);   // the skill's slot, -1 = none
 
 class Unk_GcHome : public CubeMapInformationService { };         // the home state
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
@@ -123,7 +121,7 @@ MS2_REPLACE_METHOD(0x1413A8460, CGuideConditionEquipSkill, vfunc_2, 63, 0x7F9BBE
 // @0x1413a84b0
 int CGuideConditionEquipSkill::vfunc_3()
 {
-    unsigned nEquipped = (FUN_14142e090(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()), m_n20, 0) != -1);
+    unsigned nEquipped = (FUN_1409331f0()->FindQuickSlotBySkillAndItemUid(m_n20, 0) != -1);
     return FUN_1413a5600(nEquipped == (unsigned)m_nIsEquip);
 }
 MS2_REPLACE_METHOD(0x1413A84B0, CGuideConditionEquipSkill, vfunc_3, 110, 0x37B43B46);

@@ -304,7 +304,7 @@ CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return "";
-        spItem->FUN_140526c70(nAmount);
+        spItem->SetCountClamped(nAmount);
         FUN_141415450(strBind, spItem, 0, 0x411, 0);
         m_slots.insert(strBind);
     }

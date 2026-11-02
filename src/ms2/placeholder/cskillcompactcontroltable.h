@@ -14,5 +14,6 @@ class CSkillCompactControlTable : public TSingleton<CSkillCompactControlTable>,
 public:
     CSkillCompactControlTable();                            // 0x140dca750
     virtual ~CSkillCompactControlTable();
+    static int Load();                                      // 0x140dca800
 };
 MS2_CHECK_SIZE(CSkillCompactControlTable, 0x10);

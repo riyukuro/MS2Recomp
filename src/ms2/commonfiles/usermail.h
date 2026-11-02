@@ -41,9 +41,8 @@ private:
 
 class Unk_MailSession;
 Unk_MailSession* FUN_1403ed2d0();
-bool FUN_141bcb0a0(Unk_MailSession*);
 int FUN_141bcfbd0(Unk_MailSession*);
-class Unk_MailService { public: __int64 FUN_140676020(__int64 id, __int64 a, __int64 b, __int64 c, __int64 d, __int64 e, __int64 f); };
+class Unk_MailService;
 Unk_MailService* FUN_1401c0db0();
 int FUN_1422b9ea0(__int64);
 void FUN_141276180(const CString&, const CString&);

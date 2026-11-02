@@ -71,7 +71,7 @@ public:
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166c930();
+    int GetCurStateId();
     int FUN_14166cc80();
     __int64 FUN_1416769f0();
 };
@@ -657,7 +657,7 @@ int CGuideConditionPlayingInstrument::vfunc_3()
     Unk_G9Player* pPlayer = static_cast<Unk_G9Player*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    if (((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166c930() != 0x2f)
+    if (((class PCBase*)(class Unk_G9Player*)(pPlayer))->GetCurStateId() != 0x2f)
         return FUN_1413a55a0(0);
     return FUN_1413a5600(((class PCBase*)(class Unk_G9Player*)(pPlayer))->FUN_14166cc80() == 0x7f);
 }

@@ -172,9 +172,6 @@ struct Unk_TrigPvpB
 MS2_CHECK_SIZE(Unk_TrigPvpB, 0x48);
 class Unk_TrigPvpDlg : public UIPvPObserverDialog
 {
-public:
-    void FUN_141a91940(const Unk_TrigPvpA& rBlock);
-    void FUN_141a91a30(const Unk_TrigPvpB& rBlock);
 };
 template <class T> T* MyPCDialog(int nId);
 void FUN_140743ca0(Unk_TrigPvpA* pOut, CInPacket* pPacket);
@@ -570,7 +567,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             }
             else
             {
-                pUi->FUN_141a91940(kBlock);
+                pUi->FUN_141a91940(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
                 (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
@@ -592,7 +589,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             }
             else
             {
-                pUi->FUN_141a91a30(kBlock);
+                pUi->FUN_141a91a30(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
                 (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }

@@ -96,7 +96,7 @@ int UGCItemSlot::vfunc_26(ASObj& obj)
         obj.FUN_1407cbbe0(s_strItemConditionLock, true);
     obj.FUN_1407cb9c0(s_strIndex, m_nIndex);
     obj.FUN_1407cb9c0(s_strItemCount, 0);
-    obj.FUN_1409adc90(s_strItemGrade, m_spItem->FUN_140526bd0());
+    obj.FUN_1409adc90(s_strItemGrade, m_spItem->GetRarity());
     obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(m_spItem->FUN_140528590(), 0));
     obj.FUN_1407cb9c0(s_strItemNew, 0);
     return 1;

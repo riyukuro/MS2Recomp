@@ -641,7 +641,7 @@ void UIBeautyShopDialog::vfunc_15()
     if (m_1c8)
         reinterpret_cast<UICameraEditDialog*>(m_1c8)->SetEnableFlagIfHidden(m_1b8->IsDragging() == 0);
     Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPc && pPc->FUN_14166c930() != 0xe)
+    if (pPc && pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
 }
 
@@ -685,8 +685,8 @@ int UIBeautyShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         }
         else if (dynamic_cast<UIBillDialog*>(pSender))
         {
-            int nResult = pMsg->FUN_1422b8a10();
-            m_10 = pMsg->FUN_1422b8a90() ? 1 : 0;
+            int nResult = pMsg->PopInt();
+            m_10 = pMsg->PopBool() ? 1 : 0;
             if (nResult == 0)
                 FUN_1418c9f20();
             return 1;
@@ -705,12 +705,12 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp("OnChangeItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             FUN_1418c7400(0);
             int nItemId = FUN_141b71a10(data.FUN_1422b8d30());
-            int nIndex = data.FUN_1422b8a10();
-            int nSub = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
+            int nSub = data.PopInt();
             if (nIndex >= 0 && nIndex < (int)m_198.GetCount())
                 m_278 = m_198.GetAt(nIndex);
             else
@@ -723,11 +723,11 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChangeColor", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nUnused = data.FUN_1422b8a10();
+            int nUnused = data.PopInt();
             CString strName = data.FUN_1422b8d30();
-            AScript obj(data.FUN_1422b9260(), 2);
+            AScript obj(data.PopValue(), 2);
             unsigned nColorSN = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("colorSN")))->GetUInt();
             unsigned nPaletteId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("paletteID")))->GetUInt();
             m_288 = std::pair<unsigned, unsigned>(nPaletteId, nColorSN);
@@ -740,7 +740,7 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChangeDetailColor", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_288 = std::pair<unsigned, unsigned>(0, 0);
             int nPalette = 0;
@@ -755,10 +755,10 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChangeDegree", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             FUN_1418c7400(0);
-            int nDegree = data.FUN_1422b8a10();
+            int nDegree = data.PopInt();
             FUN_1418c79f0((float)nDegree);
             FUN_1418c7ab0();
         }
@@ -767,10 +767,10 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChangePosition", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             FUN_1418c7400(0);
-            int nPos = data.FUN_1422b8a10();
+            int nPos = data.PopInt();
             FUN_1418c7830(nPos);
             FUN_1418c7ab0();
         }
@@ -779,10 +779,10 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChangeSize", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             FUN_1418c7400(0);
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             float fSize = data.PopFloat();
             SetPartSize(nIndex, fSize);
             FUN_1418c7ab0();
@@ -847,9 +847,9 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (FUN_1418cbbe0() != 1)
             return 1;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int bPreview = data.FUN_1422b8a90() != 0;
+            int bPreview = data.PopBool() != 0;
             SetPreviewMode(bPreview);
             if (bPreview && m_2b0)
                 FUN_141275260(0x270, 1, 0);
@@ -859,9 +859,9 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnClickRandomSelect", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nSlot = data.FUN_1422b8a10();
+            int nSlot = data.PopInt();
             SendBeautyMode12(nSlot);
             m_2b5 = 0;
         }
@@ -870,9 +870,9 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onChangeSelectedIndexItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_1418c7fe0(nIndex);
         }
         return 1;
@@ -897,7 +897,7 @@ void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString&
         Unk_BSPlayer* pPc = reinterpret_cast<Unk_BSPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (!pPc)
             return;
-        int nIndex = pArgs->FUN_1422b8a10();
+        int nIndex = pArgs->PopInt();
         if (nIndex < 0 || nIndex >= (int)m_198.GetCount())
             return;
         MS2Ptr<Unk_BSPriceRow> spRow(m_198.GetAt(nIndex));
@@ -1699,7 +1699,7 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
                 strTitle = FUN_14025e7a0()->Localize(CString((const wchar_t*)strTitle));
             CStringW strDebug = StringFormat<unsigned>(L"<font color='#909090'>| [debug] shopId: {0}</font>", (unsigned&)m_1d0.m_18);
             strTitle.Append(strDebug);
-            spTitle->FUN_1422c4f00(strTitle);
+            spTitle->SetTextHTMLW(strTitle);
         }
     }
     return 1;
@@ -1844,7 +1844,7 @@ void UIBeautyShopDialog::FUN_1418c9d80()
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->FUN_141a01800(2);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDialog::FUN_1418c9960));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDialog::FUN_1418c9960));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
 }
@@ -2392,7 +2392,7 @@ void UIBillDialog::OnLoadComplete()
                     spCheck->vfunc_24(true);
                 }
                 if (MS2Ptr<ASTextField> spWarning = GetChild<ASTextField>("m_warning"))
-                    spWarning->FUN_1422c4cd0(m_188->m_58);
+                    spWarning->SetTextW(m_188->m_58);
             }
             pDlg->Invoke("buildList", Scaleform::GFx::Value(spRows->FUN_1422bb870()), m_188->m_30, CString(strMode));
         }
@@ -2423,10 +2423,10 @@ int UIBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     if (_stricmp("OnSubmit", strMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nResult = data.FUN_1422b8a10();
-            int bChecked = data.FUN_1422b8a90() ? 1 : 0;
+            int nResult = data.PopInt();
+            int bChecked = data.PopBool() ? 1 : 0;
             if (IMessageListener* pOwner = m_188->m_18)
             {
                 Unk_BSUIMsg msg;

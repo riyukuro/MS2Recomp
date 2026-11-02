@@ -80,7 +80,7 @@ public:
     MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
     int FUN_140a5f780(int itemId, int a);
     void FUN_140a5d530(CItem* item);
-    int FUN_140a5f7b0(int itemId, unsigned a);
+    int FUN_140a5f7b0(int itemId, int a);
     void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem> >& out);
 };
 extern Unk_Inventory g_143ab2a90;
@@ -281,16 +281,16 @@ int UIItemRemakeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     if (_stricmp(szMethod, "onSelectItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             CString strUid = data.FUN_1422b8d30();
             unsigned __int64 uid = FUN_140718350(strUid);
-            unsigned int bSelected = data.FUN_1422b8a90();
+            unsigned int bSelected = data.PopBool();
             SendChangeAttributesMode4(uid);
         }
         return 1;
     } else if (_stricmp("onClickRemake", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14129e950(&data);
         return 1;
     } else if (_stricmp("onEndRemakeAni", szMethod) == 0) {
@@ -298,20 +298,20 @@ int UIItemRemakeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     } else if (_stricmp("onClickApply", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14129ed90(&data);
         return 1;
     } else if (_stricmp("onClickForceRemake", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14129e190(&data);
     } else if (_stricmp("onClickCompareEnchant", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14129e530(&data);
     } else if (_stricmp("GetEnableLockOption", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14129f360(&data);
     }
     return 0;
@@ -430,7 +430,7 @@ void UIItemRemakeOptionDialog::FUN_14129e190(ASData* pData)
     if (DAT_143ab2914 < 0x32)
         return;
     unsigned __int64 uid = FUN_140718350(pData->FUN_1422b8d30());
-    int option = pData->FUN_1422b8a10();
+    int option = pData->PopInt();
     if (uid == 0)
         return;
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
@@ -466,7 +466,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
     if (DAT_143ab2914 < 0x32)
         return;
     unsigned __int64 uid = FUN_140718350(pData->FUN_1422b8d30());
-    int option = pData->FUN_1422b8a10();
+    int option = pData->PopInt();
     CString valueText = pData->FUN_1422b8d30();
     valueText.Replace(",", "");
     int value = FUN_1407181d0(&valueText);
@@ -506,7 +506,7 @@ void UIItemRemakeOptionDialog::FUN_14129e530(ASData* pData)
 void UIItemRemakeOptionDialog::FUN_14129e950(ASData* pData)
 {
     unsigned __int64 uid = FUN_140718350(pData->FUN_1422b8d30());
-    int option = pData->FUN_1422b8a10();
+    int option = pData->PopInt();
     if (option < 0) {
         FUN_1412a1d40(uid, option, true);
         return;
@@ -541,7 +541,7 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
     if (m_enchantAni == 0)
         return;
     SetState(4);
-    int select = pData->FUN_1422b8a10();
+    int select = pData->PopInt();
     if (select == -1) {
         CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_fail_apply_option");
         FUN_1412751f0(strMsg, 1, 1);
@@ -586,7 +586,7 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
 {
     if (m_enchantAni == 0 || m_cur == 0)
         return;
-    const Scaleform::GFx::Value arg = pData->FUN_1422b9260();
+    const Scaleform::GFx::Value arg = pData->PopValue();
     ASObj result(arg, 2);
     if (result.IsUndefinedOrNull())
         return;
@@ -981,7 +981,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
     CStringW highSa;
     bool bHighSa = false;
     FUN_1409e4950(MS2Ptr<CItem>(item), highSa, &bHighSa);
-    if (item->FUN_140526bd0() >= 5 && bHighSa == true) {
+    if (item->GetRarity() >= 5 && bHighSa == true) {
         CStringW ask = GetStringCommonByKey(L"s_itemremake_ask_high_sa_item_option");
         CStringW text;
         text.Append(highSa);
@@ -989,10 +989,10 @@ void UIItemRemakeOptionDialog::FUN_1412a1d40(unsigned __int64 uid, int nOption, 
         text.Append(ask);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(text), 0, CStringW(L""));
         if (box.get() != 0) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0650));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemRemakeOptionDialog::FUN_1412a0650));
             box->FUN_141a01600(item->GetItemUid());
             box->FUN_141a01ee0(MS2Ptr<CItem>(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
-            box->FUN_141a01700(0x475, 0x476, 0);
+            box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<__int64>(uid);
             box->Append<int>(nOption);
             FUN_140f73320(box.operator->(), bConfirm);

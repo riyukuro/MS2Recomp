@@ -283,7 +283,7 @@ ItemInfoSlot::~ItemInfoSlot()
 int ItemInfoSlot::vfunc_15()
 {
     if (m_spItem.get())
-        FUN_140d2d150(m_spItem->FUN_1405276c0(), m_spItem->FUN_140526bd0());
+        FUN_140d2d150(m_spItem->FUN_1405276c0(), m_spItem->GetRarity());
     return DragSlot::vfunc_15();
 }
 

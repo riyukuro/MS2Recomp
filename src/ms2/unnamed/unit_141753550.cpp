@@ -43,11 +43,11 @@ public:
     bool GetAlphaBlending() const;
 };
 struct Unk_BoundView { NiPoint3 m_kCenter; float m_fRadius; };   // NiBound's layout (its members are protected)
-int FUN_14098daf0(NiAVObject* o);                       // child count
 class NiNode   // C3: member view for the former free stand-ins
 {
 public:
     static const NiRTTI ms_RTTI;
+    unsigned int GetArrayCount() const;
     class NiAVObject* GetAt(unsigned int) const;
 };
 int FUN_140ad02f0(int a, int b);                        // combine
@@ -108,7 +108,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
         if (p == 0 || !((class NiAlphaProperty*)(class NiProperty*)(p))->GetAlphaBlending() || FUN_141753a00(obj)) {
             if (NiObject::IsExactKindOf((class NiRTTI const*)(&NiLODNode::ms_RTTI), (class NiObject const*)(obj))) {
                 NiAVObject* o2 = obj;
-                for (k = 0; k < FUN_14098daf0(o2); ++k) {
+                for (k = 0; k < (int)((class NiNode*)(class NiAVObject*)(o2))->GetArrayCount(); ++k) {
                     void* c = ((void*)((class NiNode*)(class NiAVObject*)(o2))->GetAt(k));
                     if (c != 0 && !((class NiAVObject*)(void*)(c))->IsNode()) break;
                 }

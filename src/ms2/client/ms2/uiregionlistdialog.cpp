@@ -183,7 +183,7 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("onSelectRegion", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_140e80f10(data.FUN_1422b8f40());
             FUN_140e811d0();
         }

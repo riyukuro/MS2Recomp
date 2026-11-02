@@ -91,7 +91,7 @@ void StateGrabTarget::vfunc_4(StateData* pData)
     }
     else
     {
-        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240730();
+        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
         m_pOwner->vfunc_31(false);
         MyPC* pPC = FUN_1417b84b0();
         if (pPC != 0)
@@ -101,8 +101,8 @@ void StateGrabTarget::vfunc_4(StateData* pData)
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240f20()->FUN_140cfaf30();
-        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141241070();
+        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240f20()->FUN_140cfaf30();
+        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141241070();
     }
 }
 
@@ -110,7 +110,7 @@ void StateGrabTarget::vfunc_4(StateData* pData)
 void StateGrabTarget::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
 }
@@ -123,7 +123,7 @@ void StateGrabTarget::vfunc_3(double fTime)
         return;
     StateDataGrabTarget* pData = m_spGrab.get();
     PCBase* pGrabber = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTarget));
-    if (pGrabber == 0 || pGrabber->FUN_14166ce30() != 0 || reinterpret_cast<AdditionalCliList*>(pGrabber->FUN_1416749a0())->FUN_1409709b0() != 0)
+    if (pGrabber == 0 || pGrabber->IsDead() != 0 || reinterpret_cast<AdditionalCliList*>(pGrabber->FUN_1416749a0())->FUN_1409709b0() != 0)
     {
         m_pOwner->vfunc_59(5, 0, 0, 0);
         return;

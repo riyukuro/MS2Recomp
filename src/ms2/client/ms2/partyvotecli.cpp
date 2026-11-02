@@ -97,8 +97,6 @@ void FUN_1412751f0(const CStringW& str, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
 void FUN_140710590(COutPacket& packet);
 void FUN_141a759b0(void* pDialog);
-void FUN_141a75a20(void* pDialog);
-void FUN_141a75a00(void* pDialog, int nValue);
 CInputStream& FUN_14070f340(CInputStream& in, unsigned char& v);
 CInputStream& FUN_14070f480(CInputStream& in, int& v);
 CInputStream& FUN_14070f4c0(CInputStream& in, __int64& v);
@@ -273,7 +271,7 @@ void PartyVoteKickUserCli::vfunc_2()
     if (pDialog != 0)
     {
         FUN_141a759b0(pDialog);
-        FUN_141a75a20(pDialog);
+        reinterpret_cast<UIPartyDialog*>(pDialog)->ArrangeBottomButton();
     }
 }
 
@@ -308,7 +306,7 @@ void PartyVoteReadyCli::vfunc_2()
 
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)
-        FUN_141a75a00(pDialog, 0);
+        reinterpret_cast<UIPartyDialog*>(pDialog)->SetDeadline(0);
     FUN_1412751b0(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 2);
     {
         CString strEmpty("");
@@ -333,7 +331,7 @@ void PartyVoteReadyCli::vfunc_3()
     TSingleton<CPartyManager>::GetInstance()->FUN_14162c3a0();
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)
-        FUN_141a75a00(pDialog, (int)GetTickCountMs2() + ((class Unk_PartyConsts*)FUN_1401d3200())->m_nReadySeconds * 1000);
+        reinterpret_cast<UIPartyDialog*>(pDialog)->SetDeadline((int)GetTickCountMs2() + ((class Unk_PartyConsts*)FUN_1401d3200())->m_nReadySeconds * 1000);
 }
 
 // @0x140a8a040

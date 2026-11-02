@@ -188,27 +188,27 @@ int UINpcPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 0;
     if (_stricmp("onListChange", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nRow = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nRow = data.PopInt();
             return FUN_141a6fd90(nRow);
         }
         return 1;
     } else if (_stricmp("onLoad", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringW strFilter = data.FUN_1422b8f40();
             return FUN_141a6e7e0(strFilter);
         }
     } else if (_stricmp("onSelectNpc", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nNpc = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nNpc = data.PopUInt();
             return FUN_141a6ee60(nNpc);
         }
     } else if (_stricmp("onTalk", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nRow = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nRow = data.PopInt();
             if (FUN_141a711b0())
                 FUN_141a70b90(nRow);
             else
@@ -304,7 +304,7 @@ int UINpcPreviewDialog::LoadNpcName()
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(nId));
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strName);
         strName.Replace(L"\\n", L"\n");
         m_names.SetAt(nId, strName);
     }
@@ -326,9 +326,9 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
         return 0;
     }
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
-        spName->FUN_1422c4cd0(FUN_1401aa6a0(nNpcId));
+        spName->SetTextW(FUN_1401aa6a0(nNpcId));
     if (MS2Ptr<ASTextField> spKind = GetChild<ASTextField>("m_kind"))
-        spKind->FUN_1422c4cd0(GetStringTable()->FUN_141811980(10, nNpcId));
+        spKind->SetTextW(GetStringTable()->FUN_141811980(10, nNpcId));
     if (MS2Ptr<ASTextField> spIllust = GetChild<ASTextField>("m_illust"))
     {
     }
@@ -413,7 +413,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
     MS2Ptr<ASTextField> spOut = GetChild<ASTextField>("m_output");
     if (spOut.IsNull())
         return 0;
-    spOut->FUN_1422c4cd0(L"");
+    spOut->SetTextW(L"");
     Unk_NpRow row = m_rows.GetAt(nRow);
     if (row.m_kind == 1) {
         Unk_FieldIdList ids(10);
@@ -433,12 +433,12 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
                 CStringW strText = spTalk->m_contents[j]->m_text;
                 strText.Replace(L"$MaidName$", L"메이드");
                 strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
                 strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
             }
             strOut.AppendFormat(L"-----------------------------------------------------\n\n");
         }
-        spOut->FUN_1422c4f00(strOut);
+        spOut->SetTextHTMLW(strOut);
     } else if (row.m_kind == 4) {
         CStringW strOut;
         TalkPtr spTalk = FUN_140856c50(m_nNpcId, row.m_c);
@@ -448,10 +448,10 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
             CStringW strText = spTalk->m_contents[j]->m_text;
             strText.Replace(L"$MaidName$", L"메이드");
             strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
         }
-        spOut->FUN_1422c4f00(strOut);
+        spOut->SetTextHTMLW(strOut);
     } else if (row.m_kind == 3) {
         CStringW strOut;
         TalkPtr spTalk = FUN_140856820(m_nNpcId, row.m_c);
@@ -461,10 +461,10 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
             CStringW strText = spTalk->m_contents[j]->m_text;
             strText.Replace(L"$MaidName$", L"메이드");
             strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
         }
-        spOut->FUN_1422c4f00(strOut);
+        spOut->SetTextHTMLW(strOut);
     } else if (row.m_kind == 5) {
         CStringW strOut;
         TalkPtr spTalk = FUN_140856af0(m_nNpcId, row.m_c);
@@ -474,10 +474,10 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
             CStringW strText = spTalk->m_contents[j]->m_text;
             strText.Replace(L"$MaidName$", L"메이드");
             strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
         }
-        spOut->FUN_1422c4f00(strOut);
+        spOut->SetTextHTMLW(strOut);
     }
     return 1;
 }
@@ -557,7 +557,7 @@ void UINpcPreviewDialog::FUN_141a71050(int nRow)
     Unk_NpRow row = m_rows.GetAt(nRow);
     if (row.m_kind == 6) {
         efd::utf8string strAnim(FUN_14016a600(row.m_text, 0));
-        pActor->FUN_14166dd20(strAnim, 1.0f, false, false);
+        pActor->PlayAnimation(strAnim, 1.0f, false, false);
     }
 }
 

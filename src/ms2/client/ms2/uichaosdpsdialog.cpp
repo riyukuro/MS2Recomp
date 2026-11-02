@@ -280,7 +280,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIChaosDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bbe0() == 0 || TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() == 0
+    if (reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()->FUN_14125bbe0() == 0 || TSingleton<CPartyManager>::GetInstance()->IsInParty() == 0
         || ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbe) == 0)
         vfunc_67();
     else {
@@ -320,7 +320,7 @@ void ASObj::FUN_140e06d60(const char* szName, double d)
 {
     ASData args;
     ((class ASData*)(class ASData*)(&args))->AddDouble(d);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, args.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, args.PopValue());
 }
 
 // @0x140e09150

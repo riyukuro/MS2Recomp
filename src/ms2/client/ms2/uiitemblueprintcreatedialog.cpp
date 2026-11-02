@@ -42,8 +42,8 @@
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;
 
-class Unk_BpImage {
-public: CStringW FUN_14187e9f0(); CStringW FUN_14187ebe0();
+class CUploadFile { public: CStringW GetPath(); CStringW GetThumbnailPath(); };   // C3: member view (ugcmanager_4.cpp)
+class Unk_BpImage : public CUploadFile {
 };
 class Unk_BpViewerBase {
 public:
@@ -5283,7 +5283,7 @@ private: DelegateImplBase* p;
 class CMsgBoxData {
 public:
     void FUN_141a01ee0(MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);   // item entry
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);                  // result callback
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);                  // result callback
 };
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -5397,7 +5397,7 @@ void UIItemBlueprintCreateDialog::FUN_140c36b40(Unk_BpItem* item) {
     FUN_1412750f0(reinterpret_cast<CItem*>(item), reinterpret_cast<CItem*>(item)->GetCount(), 0x2ba, 0x2b9);
     CStringW name = GetTrimmedName();
     message->FUN_141a01ee0(m_item, name, 1, 0, -1, -1, 1);
-    message->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37f90));
+    message->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37f90));
     FUN_140d73c60(message);
 }
 MS2_REPLACE_METHOD(0x140C36B40, UIItemBlueprintCreateDialog, FUN_140c36b40, 1174, 0xC8EB1C6A);
@@ -5424,10 +5424,10 @@ void UIItemBlueprintCreateDialog::FUN_140c370a0(const int& type, Unk_BpPtr<Unk_B
     CStringW path;
     if (type == 9) {
         kind = "image";
-        if (image.get()) path = image->FUN_14187e9f0();
+        if (image.get()) path = image->GetPath();
     } else if (type == 0xd1) {
         kind = "icon";
-        if (image.get()) path = image->FUN_14187ebe0();
+        if (image.get()) path = image->GetThumbnailPath();
         if (!path.IsEmpty()) FUN_14186cc30(path);
     }
     reinterpret_cast<Unk_BpAScript*>(m_30.operator->())->FUN_140c38f00("setImage", kind, path);
@@ -5436,7 +5436,7 @@ MS2_REPLACE_METHOD(0x140C370A0, UIItemBlueprintCreateDialog, FUN_140c370a0, 685,
 // @0x140c37360
 void UIItemBlueprintCreateDialog::FUN_140c37360(Unk_BpPtr<Unk_BpImage> image, const int& mask) {
     if (image == NULL) return;
-    if (static_cast<bool>(image.get()) && static_cast<bool>(static_cast<const wchar_t*>(image->FUN_14187ebe0()))) FUN_1418ffec0((unsigned int*)&m_ready, mask);
+    if (static_cast<bool>(image.get()) && static_cast<bool>(static_cast<const wchar_t*>(image->GetThumbnailPath()))) FUN_1418ffec0((unsigned int*)&m_ready, mask);
     else FUN_1418ffef0((unsigned int*)&m_ready, mask);
 }
 MS2_REPLACE_METHOD(0x140C37360, UIItemBlueprintCreateDialog, FUN_140c37360, 315, 0xEDCB99AB);

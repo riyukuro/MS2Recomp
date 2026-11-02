@@ -305,7 +305,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     {
         CStringW strText = m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_14078f3d0()->m_strText;
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
-        spScript->FUN_1422c4f00(strText);
+        spScript->SetTextHTMLW(strText);
     }
     BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.FUN_14078fae0() - 1);
     if (MS2Ptr<Unk_PnButton> spEnd = FUN_140bb4b10("m_end"))
@@ -329,7 +329,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
             else
                 strKey = L"s_field_quest_talk_ok";
         }
-        CStringW strNext = FUN_14028dfa0<CStringW>(strKey, FUN_1409331f0()->FUN_14142d760(0x493e2, 0));
+        CStringW strNext = FUN_14028dfa0<CStringW>(strKey, FUN_1409331f0()->GetActionKeyName(0x493e2, 0));
         spNext->FUN_1422cdfb0(strNext);
     }
     return 1;

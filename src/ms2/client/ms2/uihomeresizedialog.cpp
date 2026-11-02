@@ -144,7 +144,7 @@ void UIHomeResizeDialog::OnShrinkArea()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_141a01800(1);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
                 FUN_140d73c60(spBox);
             }
         }
@@ -169,7 +169,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_141a01800(1);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
                 FUN_140d73c60(spBox);
             }
         }
@@ -193,7 +193,7 @@ void UIHomeResizeDialog::OnExtensionArea()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode37));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode37));
         FUN_140d73c60(spBox);
     }
 }
@@ -212,7 +212,7 @@ void UIHomeResizeDialog::OnExtensionHeight()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode44));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode44));
         FUN_140d73c60(spBox);
     }
 }

@@ -176,7 +176,7 @@ int PCInfo::FUN_140dbaa10()
     MS2Ptr<CItem> spItem = GetEquipItemSet0((Unk_InventoryEquipSlot)5);
     if (spItem == 0)
         return 0;
-    return ((CItem*)spItem)->FUN_140526bd0();
+    return ((CItem*)spItem)->GetRarity();
 }
 
 // @0x140dbac00

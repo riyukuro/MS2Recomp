@@ -119,7 +119,7 @@ void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& st
 {
     UIObject::vfunc_45(pOut, strMethod, pArgs);
     if ((strMethod == "getTooltipQuest")) {
-        int nQuest = pArgs->FUN_1422b8b10();
+        int nQuest = pArgs->PopUInt();
         if (!((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuest) && !((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuest)) return;
         CStringW strText = FUN_1416e5660(nQuest);
         ASTooltip tip(1, 2);
@@ -128,8 +128,8 @@ void UIStampEventDialog::vfunc_45(Scaleform::GFx::Value* pOut, const CString& st
             *pOut = tip.FUN_1422bb870();
         }
     } else if ((strMethod == "getTooltipItem")) {
-        int nItem = pArgs->FUN_1422b8b10();
-        int nRank = pArgs->FUN_1422b8b10();
+        int nItem = pArgs->PopUInt();
+        int nRank = pArgs->PopUInt();
         void* pActor = WorldService::GetInstance()->FUN_141bd0cc0();
         if (pActor) {
             ASTooltip tip(pActor, 32, 2);
@@ -149,9 +149,9 @@ int UIStampEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     } else {
         if (!_stricmp(szMethod, "onClickReward")) {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs)) {
-                int nCount = data.FUN_1422b8a10();
-                int nSpecial = data.FUN_1422b8a90();
+            if (data.SetArgsIfAny(pArgs, nArgs)) {
+                int nCount = data.PopInt();
+                int nSpecial = data.PopBool();
                 SendEventRewardMode0(nCount, nSpecial);
                 return 1;
             }
@@ -303,7 +303,7 @@ void UIStampEventDialog::FUN_140ed8c70()
     }
     CStringW strText = FUN_14028dfa0<int, int>(CStringW(L"s_stampevent_count"), nDone, nTotal);
     if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_count")) {
-        spCount->FUN_1422c4cd0(strText);
+        spCount->SetTextW(strText);
     }
 }
 MS2_REPLACE_METHOD(0x140ED8C70, UIStampEventDialog, FUN_140ed8c70, 475, 0x07A666E2);

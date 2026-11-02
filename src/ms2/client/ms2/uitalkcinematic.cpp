@@ -314,9 +314,9 @@ int UITalkCinematic::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("OnSelect", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8b10();
+            int nIndex = data.PopUInt();
             if (nIndex == -1)
                 return 1;
             if (m_spComponent.get() != 0)
@@ -1041,8 +1041,8 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
         CStringW strScript = in.ReadUnicodeString();
         CString strSound = in.ReadUnicodeStringA();
         CString strIllust = in.ReadUnicodeStringA();
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strScript);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strScript);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strScript);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strScript);
         UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
         if (pUi != 0)
             pUi->FUN_141b1a8e0(strScript, strSound, strIllust);
@@ -1413,7 +1413,7 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
     {
-        int nState = pPC->FUN_14166c930();
+        int nState = pPC->GetCurStateId();
         if ((nState == 1 || nState == 0xb || nState == 0xf || nState == 0x21 || nState == 2) == 0)
             return;
     }
@@ -1516,9 +1516,9 @@ void UITalkManager::FUN_141b20210()
         if (pPC->vfunc_85().get())
             pPC->vfunc_85()->vfunc_3();
         efd::SmartPointer<Ridee> kRide((Ridee*)(void*)((class PCBase*)(class PCBase*)(pPC))->FUN_1416764a0());
-        if (((Ridee*)kRide ? true : false) && ((PCBase*)kRide.operator->())->FUN_14166c930() == 0x16)
+        if (((Ridee*)kRide ? true : false) && ((PCBase*)kRide.operator->())->GetCurStateId() == 0x16)
             pPC->vfunc_59(1, 0, 0, 0);
-        else if (pPC->FUN_14166c930() == 0x16)
+        else if (pPC->GetCurStateId() == 0x16)
             pPC->vfunc_59(1, 0, 0, 0);
         m_ids.Reset();
         UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);

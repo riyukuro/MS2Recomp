@@ -235,29 +235,29 @@ int UIBlueprintMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp("OnChangeList", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             ChangeList(data, false);
         return 1;
     } else if (_stricmp("OnChangePage", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             OnChangePage(data);
         return 1;
     } else if (_stricmp("OnChangePageRequest", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             OnChangePageRequest(data);
         return 1;
     } else if (_stricmp("OnClickBuy", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringA strMovie(szMethod);
             OnClickBuy(strMovie, data);
         }
         return 1;
     } else if (_stricmp("OnClickReport", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140ec1340(data);
         return 1;
     }
@@ -595,7 +595,7 @@ bool UIBlueprintMarketDialog::ChangeList(ASData& data, bool bReset)
     MS2Ptr<CMeratMarketSchCond> spCond = GetSearchCond();
     if (spCond == 0)
         return false;
-    Scaleform::GFx::Value v = data.FUN_1422b9260();
+    Scaleform::GFx::Value v = data.PopValue();
     AScript searchData(v, 2);
     ApplySearchData(spCond, searchData);
     spCond->m_3c = bReset;
@@ -683,8 +683,8 @@ MS2_REPLACE_METHOD(0x140bbd360, UIBlueprintMarketDialog, UpdateItem, 0, 0);
 // @0x140bbd4b0
 void UIBlueprintMarketDialog::OnChangePageRequest(ASData& data)
 {
-    int nPage = data.FUN_1422b8a10();
-    int nDir = data.FUN_1422b8a10();
+    int nPage = data.PopInt();
+    int nDir = data.PopInt();
     if (m_spCond.get() != 0) {
         m_spCond->m_30 = nPage;
         m_spCond->m_44 = nDir < 0;
@@ -697,8 +697,8 @@ MS2_REPLACE_METHOD(0x140bbd4b0, UIBlueprintMarketDialog, OnChangePageRequest, 0,
 // @0x140bbd580
 void UIBlueprintMarketDialog::OnChangePage(ASData& data)
 {
-    int nFirst = data.FUN_1422b8a10();
-    int nCount = data.FUN_1422b8a10();
+    int nFirst = data.PopInt();
+    int nCount = data.PopInt();
     BuildPage(nFirst, nFirst + nCount);
 }
 MS2_REPLACE_METHOD(0x140bbd580, UIBlueprintMarketDialog, OnChangePage, 0, 0);
@@ -758,7 +758,7 @@ void UIBlueprintMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
 {
     if (m_30 == 0)
         return;
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     UIMeratMarketDialogUtil::ASClickOutData click(value, FUN_1422db730());
     MS2Ptr<ASMeratMarketProductBase> spRow = click.FUN_140ec28b0();
     if (spRow == 0)

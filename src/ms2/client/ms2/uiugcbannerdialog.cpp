@@ -308,7 +308,7 @@ int UIUGCBannerDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
@@ -348,9 +348,9 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnPreview", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_141b35d00(nIndex);
         }
         return 1;
@@ -358,9 +358,9 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnUpload", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_141b35e10(nIndex);
         }
         return 1;
@@ -378,9 +378,9 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("onScrollPosition", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             if (nIndex >= 0)
                 FUN_141b36140(nIndex);
         }
@@ -394,12 +394,12 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnTimeReserve", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nHour = data.FUN_1422b8a10();
+            int nHour = data.PopInt();
             if (nHour >= 0)
             {
-                bool bPicked = data.FUN_1422b8a90();
+                bool bPicked = data.PopBool();
                 FUN_141b36230(nHour, bPicked);
             }
         }
@@ -408,9 +408,9 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnDateOffset", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nOffset = data.FUN_1422b8a10();
+            int nOffset = data.PopInt();
             FUN_141b362b0(nOffset);
         }
         return 1;
@@ -418,9 +418,9 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     else if (_stricmp("OnItemDoubleClick", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             if (nIndex == -1)
             {
                 FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
@@ -439,7 +439,7 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     CString strType = pArgs->FUN_1422b8d30();
     if ((strType == "image"))
     {
-        Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
+        Scaleform::GFx::Value arg = pArgs->PopValue();
         AScript root((const Scaleform::GFx::Value&)arg, 2);
         if (root.IsUndefinedOrNull() == 0)
         {
@@ -910,7 +910,7 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     if (_stricmp("OnSnapShot", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDialog != 0)

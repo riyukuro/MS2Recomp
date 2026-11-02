@@ -179,7 +179,7 @@ StateHold::~StateHold()
 void StateHold::vfunc_4(StateData* pData)
 {
     StateMoveSkill::vfunc_4(pData);
-    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
     m_spHold.AssignRaw(dynamic_cast<StateHoldData*>(pData));
     if (m_spHold == 0)
     {
@@ -197,8 +197,8 @@ void StateHold::vfunc_4(StateData* pData)
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240f20()->FUN_140cfaf30();
-        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141241070();
+        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240f20()->FUN_140cfaf30();
+        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141241070();
     }
 }
 
@@ -206,7 +206,7 @@ void StateHold::vfunc_4(StateData* pData)
 void StateHold::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220()))))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
     MyPC* pPC = FUN_1417b84b0();
@@ -227,7 +227,7 @@ void StateHold::vfunc_3(double fTime)
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(pData->m_nTargetId));
     if (pTarget != 0)
         spNode = pTarget->FUN_1416757c0(m_spHold.get()->m_strTargetName);
-    if (((NiAVObject*)spNode ? true : false) && pTarget != 0 && pTarget->FUN_14166ce30() == 0)
+    if (((NiAVObject*)spNode ? true : false) && pTarget != 0 && pTarget->IsDead() == 0)
     {
         if (pTarget->GetClassID() == 0x6200003 || pTarget->GetClassID() == 0x6200004)
         {
@@ -308,13 +308,13 @@ void StateHold::vfunc_9(double fTime)
             if (nNpcId == 0xa7e02a)
             {
                 Unk_HoldString kAnim("Ride_Idle_U");
-                m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
             else if (nNpcId == 0xadf341 || nNpcId == 0xadf342)
             {
                 Unk_HoldString kAnim("Idle_A");
-                m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
         }
@@ -334,54 +334,54 @@ void StateHold::vfunc_9(double fTime)
             if (spModel == 0)
                 return;
             {
-                if (pRidee->FUN_14166c930() == 2 || pRidee->FUN_14166c930() == 0x1b)
+                if (pRidee->GetCurStateId() == 2 || pRidee->GetCurStateId() == 0x1b)
                 {
                     if (pRidee->FUN_14166cc80() == 0x17 || pRidee->FUN_14166cc80() == 0x85)
                     {
                         Unk_HoldString kAnim(spModel->m_str50);
-                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
                         Unk_HoldString kAnim(spModel->m_str38);
-                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                 }
-                else if (pRidee->FUN_14166c930() == 6)
+                else if (pRidee->GetCurStateId() == 6)
                 {
                     if (pRidee->FUN_14166cc80() == 0x27)
                     {
                         Unk_HoldString kAnim(spModel->m_str58);
-                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
                         Unk_HoldString kAnim(spModel->m_str40);
-                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                 }
-                else if (pRidee->FUN_14166c930() == 1 || pRidee->FUN_14166c930() == 4)
+                else if (pRidee->GetCurStateId() == 1 || pRidee->GetCurStateId() == 4)
                 {
                     if (pRidee->FUN_14166cc80() == 0xc || pRidee->FUN_14166cc80() == 0x87)
                     {
                         Unk_HoldString kAnim(spModel->m_str48);
-                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
                         Unk_HoldString kAnim(spModel->m_str30);
-                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->FUN_141676b70() != 0)
                 {
                     Unk_HoldString kAnim(spModel->m_str48);
-                    m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                    m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                 }
                 else
                 {
                     Unk_HoldString kAnim(spModel->m_str28);
-                    m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
+                    m_pOwner->PlayAnimation(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                 }
             }
         }

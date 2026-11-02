@@ -666,7 +666,7 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             case 100: nGroup = 55; break;
             case 110: nGroup = 56; break;
             }
-            if (pItem->FUN_14053c620() != nGroup)
+            if (pItem->GetEquipSubtype() != nGroup)
                 continue;
         }
         else if (nType == 4)
@@ -689,7 +689,7 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             }
             if (nGroup == 0)
                 continue;
-            if (pItem->FUN_14053c620() != nGroup)
+            if (pItem->GetEquipSubtype() != nGroup)
                 continue;
         }
         if (nMaxLevel < pItem->limit.levelLimit)

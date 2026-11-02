@@ -400,7 +400,7 @@ int CPetInventory::GetItemCount(int nItemId, int nRarity)
             continue;
         if (spItem->FUN_1405276c0() != nItemId)
             continue;
-        if (nRarity != 0 && spItem->FUN_140526bd0() != nRarity)
+        if (nRarity != 0 && spItem->GetRarity() != nRarity)
             continue;
         nTotal += spItem->GetCount();
     }
@@ -609,8 +609,8 @@ void CPetInventory::MoveItemToPetInventory(ItemPtr spItem, int nSlot)
             CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->GetCount());
             spBox->FUN_141a01620(nSlot);
             spBox->FUN_141a01600(spItem->GetItemUid());
-            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->GetSlotMax()), 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->GetInventory(), &CPetInventory::OnMoveToPetCountResult));
+            spBox->SetInput(1, strCount, FUN_1412773a0(spItem->GetSlotMax()), 0, 0);
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->GetInventory(), &CPetInventory::OnMoveToPetCountResult));
             FUN_140d73c60(spBox);
         }
     }
@@ -637,8 +637,8 @@ void CPetInventory::MoveItemFromPetInventory(ItemPtr spItem, int nSlot)
             CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->GetCount());
             spBox->FUN_141a01620(nSlot);
             spBox->FUN_141a01600(spItem->GetItemUid());
-            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->GetSlotMax()), 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->GetInventory(), &CPetInventory::OnMoveFromPetCountResult));
+            spBox->SetInput(1, strCount, FUN_1412773a0(spItem->GetSlotMax()), 0, 0);
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(((class CPetManager*)FUN_140535320())->GetInventory(), &CPetInventory::OnMoveFromPetCountResult));
             FUN_140d73c60(spBox);
         }
     }

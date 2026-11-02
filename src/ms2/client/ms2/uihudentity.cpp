@@ -194,7 +194,7 @@ int UIHudEntity::Entity::vfunc_8(int n)
     Unk_HudActor* pActor = (Unk_HudActor*)FUN_140f49330();
     if (pActor == 0)
         return 1;
-    int nAction = pActor->FUN_14123bea0() ? pActor->FUN_14166c930() : pActor->FUN_14166c960();
+    int nAction = pActor->FUN_14123bea0() ? pActor->GetCurStateId() : pActor->FUN_14166c960();
     switch (nAction)
     {
     case 0x3f:

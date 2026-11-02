@@ -222,16 +222,16 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
 {
     if (_stricmp("onIndexChangeSlot0", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0) {
-            int index = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count) != 0) {
+            int index = data.PopInt();
             MS2Ptr<CItem> item = GetItemAt(m_sourceItems, index);
             FUN_140c51680(item);
         }
         return 1;
     } else if (_stricmp("onIndexChangeSlot1", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0) {
-            int index = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count) != 0) {
+            int index = data.PopInt();
             MS2Ptr<CItem> item = GetItemAt(m_targetItems, index);
             FUN_140c51a60(item);
         }
@@ -262,7 +262,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
                 continue;
             if (!item->FUN_140529560())
                 continue;
-            if (!item->FUN_1405279c0())
+            if (!item->GetSocket())
                 continue;
             if (!FUN_140627e80(MS2Ptr<CItem>(item)))
                 continue;
@@ -281,7 +281,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
             continue;
         if (!item->FUN_140529560())
             continue;
-        if (!item->FUN_1405279c0())
+        if (!item->GetSocket())
             continue;
         if (!FUN_140627e80(MS2Ptr<CItem>(item)))
             continue;
@@ -292,7 +292,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
 // @0x140c51410
 void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
 {
-    if (m_source == 0 || !m_source->FUN_1405279c0())
+    if (m_source == 0 || !m_source->GetSocket())
         return;
     Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!player)
@@ -332,7 +332,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51680(MS2Ptr<CItem> item)
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
     }
-    CItemSocket* socket = item->FUN_1405279c0();
+    CItemSocket* socket = item->GetSocket();
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     FUN_141276180(s_strSelectSound, "");
@@ -354,7 +354,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
 {
     if (m_root == 0 || m_source == 0)
         return;
-    CItemSocket* socket = m_source->FUN_1405279c0();
+    CItemSocket* socket = m_source->GetSocket();
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     if (item == 0 || item->FUN_140527840() == 0)
@@ -373,7 +373,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51a60(MS2Ptr<CItem> item)
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_transfer", 1);
         return;
     }
-    CItemSocket* targetSocket = item->FUN_1405279c0();
+    CItemSocket* targetSocket = item->GetSocket();
     if (targetSocket == 0 || targetSocket->GetMaxSlot() == 0)
         return;
     Unk_TrPlayer* player = ((class Unk_TrPlayer*)((class WorldService*)(class Unk_TrWorld*)(reinterpret_cast<Unk_TrWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -400,7 +400,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
     }
-    CItemSocket* sourceSocket = m_source->FUN_1405279c0();
+    CItemSocket* sourceSocket = m_source->GetSocket();
     if (sourceSocket == 0 || sourceSocket->GetMaxSlot() == 0)
         return;
     __int64 targetUid = 0;
@@ -439,7 +439,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
     MS2Ptr<CItemData> targetData(m_target->FUN_140527840());
     if (targetData == 0)
         return;
-    CItemSocket* targetSocket = m_target->FUN_1405279c0();
+    CItemSocket* targetSocket = m_target->GetSocket();
     if (targetSocket == 0)
         return;
     if (FUN_140628200(MS2Ptr<CItem>(m_source), MS2Ptr<CItem>(m_target)) == 0) {
@@ -447,7 +447,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
         return;
     }
     if (targetData->HasSkinType()) {
-        if (reinterpret_cast<CItemTransfer*>(m_target->FUN_140527930())->FUN_140635120() == 0 && targetSocket->GetOpenSlotCount() == 0) {
+        if (reinterpret_cast<CItemTransfer*>(m_target->FUN_140527930())->HasBinding() == 0 && targetSocket->GetOpenSlotCount() == 0) {
             MS2Ptr<CMsgBoxData> box = FUN_140d74090(
                 Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageSocketTransfer::FUN_140c54210),
                 L"s_itemsocketsystem_socketunlock_msg_ask_transfer_skin_first");
@@ -520,7 +520,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52b20(ASObj& data)
     FUN_140c52ac0();
     if (m_source == 0 || m_source->FUN_140527840() == 0)
         return;
-    CItemSocket* socket = m_source->FUN_1405279c0();
+    CItemSocket* socket = m_source->GetSocket();
     if (socket == 0)
         return;
     MS2Ptr<CItemData> sourceData(m_source->FUN_140527840());
@@ -547,7 +547,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
 {
     if (item == 0 || item->FUN_140527840() == 0)
         return;
-    CItemSocket* socket = item->FUN_1405279c0();
+    CItemSocket* socket = item->GetSocket();
     if (socket == 0)
         return;
     if (socket->GetMaxSlot() == 0)
@@ -588,7 +588,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
         return;
     if (m_source == 0 || m_target == 0)
         return;
-    CItemSocket* socket = m_source->FUN_1405279c0();
+    CItemSocket* socket = m_source->GetSocket();
     if (socket == 0)
         return;
     __int64 uid = m_source->GetItemUid();
@@ -655,7 +655,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return;
     }
-    CItemSocket* socket = m_source->FUN_1405279c0();
+    CItemSocket* socket = m_source->GetSocket();
     if (socket == 0 || socket->GetMaxSlot() == 0)
         return;
     __int64 targetUid = 0;
@@ -684,7 +684,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
 // @0x140c53e40
 void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    if (m_source == 0 || !m_source->FUN_1405279c0())
+    if (m_source == 0 || !m_source->GetSocket())
         return;
     if (DAT_143ab2914 < 0x32)
         return;

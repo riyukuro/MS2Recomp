@@ -34,7 +34,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* p);                               // enti
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166ce30();
+    int IsDead();
 };
 bool FUN_14028d470(float a, float b);                       // nearly equal
 void FUN_140a0b2a0(class NiAVObject*);   // C3: was FUN_140a0b2a0
@@ -427,7 +427,7 @@ bool CTailEffectObject::vfunc_1()
 {
     if (m_pOwner == 0)
         return false;
-    if (((class PCBase*)(class GameObject*)(m_pOwner))->FUN_14166ce30())
+    if (((class PCBase*)(class GameObject*)(m_pOwner))->IsDead())
         return true;
     return false;
 }

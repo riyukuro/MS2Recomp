@@ -142,7 +142,7 @@ void ASObj::FUN_141a65c70(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x141a623e0
@@ -201,7 +201,7 @@ void UINpcControlDialog::vfunc_79(void* p)
                 strExtra += StringFormat<CString, int>(L"\n{0} : {1}", strKey, nValue);
             }
             CStringW strTarget(L"");
-            Unk_CtlObj* pObj = reinterpret_cast<Unk_CtlObj*>(WorldService::GetInstance()->FUN_141bd1180(nTarget));
+            Unk_CtlObj* pObj = reinterpret_cast<Unk_CtlObj*>(WorldService::GetInstance()->FindObjectById(nTarget));
             if (pObj != 0) {
                 PCBase* pPc = reinterpret_cast<PCBase*>(efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(pObj)));
                 if (pPc != 0) {
@@ -295,16 +295,16 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     ASData data;
     if (_stricmp("OnCommandChange", szMethod) == 0) {
-        data.FUN_1422b9620(pArgs, nArgs);
+        data.SetArgsIfAny(pArgs, nArgs);
         return 1;
     } else if (_stricmp("OnGroupChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_141a63ce0(data.FUN_1422b8d30());
         }
         return 1;
     } else if (_stricmp("OnExecute", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nCommand = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nCommand = data.PopUInt();
             CStringW strArg = data.FUN_1422b8f40();
             FUN_141a64ba0(nCommand, strArg);
         }
@@ -330,7 +330,7 @@ void UINpcControlDialog::FUN_141a63770()
     int nNpc = ((class CNpc*)(class PCBase*)(pActor))->FUN_141092fa0();
     CStringW strTitle = StringFormat<CStringW, unsigned, unsigned>(L"[{0}] [GameOID : {1}] [npcID : {2}]", strName, reinterpret_cast<const unsigned&>(m_nNpcId), reinterpret_cast<const unsigned&>(nNpc));
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_npcName"))
-        spName->FUN_1422c4cd0(strTitle);
+        spName->SetTextW(strTitle);
 }
 
 // @0x141a638c0

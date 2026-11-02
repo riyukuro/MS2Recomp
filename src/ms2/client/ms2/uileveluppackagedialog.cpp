@@ -156,15 +156,15 @@ int UILevelUpPackageDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp(szMethod, "onReceiveItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nItemId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nItemId = data.PopUInt();
             SendQuest(nItemId);
         }
     }
     else if (_stricmp(szMethod, "onLevelSelect") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned short nLevel = (unsigned short)data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned short nLevel = (unsigned short)data.PopInt();
             FUN_140ea4f10(nLevel);
         }
     }
@@ -338,7 +338,7 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(pReward->m_itemId, pReward->m_count, 0) == 0)
         return;
-    spItem->FUN_140526c70(pReward->m_job);
+    spItem->SetCountClamped(pReward->m_job);
     int nSlotFlags = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);

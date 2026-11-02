@@ -115,6 +115,9 @@
 // MS2-PIN: ?push_back@?$list@V?$MS2Ptr@VPendingEffect@@@@V?$allocator@V?$MS2Ptr@VPendingEffect@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VPendingEffect@@@@@Z 0x1411b83b0
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@AEAA_N_K@Z 0x1411b1f80
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\effectservice.cpp"
+// The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
+#include <vcruntime_string.h>
+#pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <egf/Entity.h>
 #include "effectservice.h"
@@ -1095,12 +1098,7 @@ extern int DAT_143ae2b30;                                       // 1: the scene 
 efd::MessageService* FUN_1413f9830();
 // The field sound callback (strName, strArg) -> sound id.
 typedef TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > Unk_EsSoundFunctor;
-// The owner of the field sound callback (FUN_14025e7a0).
-class Unk_EsSoundCallbackHost
-{
-public:
-    void FUN_1422b0690(Unk_EsSoundFunctor callback);           // set the callback
-};
+class GFxManager { public: void SetSoundCallback(Unk_EsSoundFunctor fn); };   // C3: member view (gfxmanager.h), the field sound callback
 class Unk_AltStringMgr* FUN_14025e7a0();
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 int FUN_140ad0d60(int n, int nMin, int nMax);                  // clamp
@@ -2277,7 +2275,7 @@ efd::AsyncResult CEffectService::OnInit()
     }
     FUN_1413f9830()->Subscribe(this, s_catEffectChannel, 0, false);
     TSingleton<CSoundEventMgr>::GetInstance()->GetEventGroup("ms2sound/sound/attack/hit", 1);
-    reinterpret_cast<Unk_EsSoundCallbackHost*>(FUN_14025e7a0())->FUN_1422b0690(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
+    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->SetSoundCallback(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
     {
         CNifLoadingService* pLoader = ((class CNifLoadingService*)FUN_140a0afd0());
         m_aPreloaded.Add(0);
@@ -2541,3 +2539,6 @@ Unk_EsEffectGroup::~Unk_EsEffectGroup()
 int Unk_EsEffectGroup::FUN_1411b1f50() { return m_sTotalEffectCount; }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cacca0-0x142cace40 .text$yd
+
+// The templates are generated here and keep the exe's inline memset; only the CRT memcpy_s above calls it.
+#pragma intrinsic(memset)

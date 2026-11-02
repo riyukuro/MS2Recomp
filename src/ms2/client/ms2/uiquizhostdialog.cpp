@@ -89,7 +89,7 @@ int UIQuizHostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp("OnQuestionSubmit", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140e7e160(this, data.FUN_1422b8f40());
         return 1;
     } else if (_stricmp("OnFinishEvent", szMethod) == 0)

@@ -21,6 +21,7 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0 / OpenDialog
 #include "ms2/client/ms2/uicashshopdialog.h"
+#include "ms2/commonfiles/logstring.h"
 #include <stdarg.h>
 #include <efd/Win32/Win32PlatformService.h>
 
@@ -61,7 +62,7 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg0, const CStringA& strArg1);
 void FUN_1403a1280(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg0);
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
-void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const __int64& nArg0,
+void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned __int64& nArg0,
                    const CStringA& strArg1, const CStringA& strArg2);
 __int64 FUN_140930240();
 __int64 FUN_140930390(unsigned int);   // C3: was FUN_140930390
@@ -474,7 +475,7 @@ void CClientPlatformBase::vfunc_68()
     Unk_NxEvent kEvent;
     kEvent.m_nType = 4;
     kEvent.m_strSerial = (const char*)strSerial;
-    __int64 nId = 0;
+    unsigned __int64 nId = 0;
     CStringA strId = vfunc_77();
     unsigned __int64 nParsed = FUN_140718350(strId);
     if (nParsed > 0)
@@ -550,17 +551,15 @@ CStringA CClientPlatformBase::vfunc_77()
 }
 
 // @0x140c76c70
-// MS2-FUNCTIONAL: the exe expands the {0}/{1}/{2} format with an inlined variadic template; this substitutes directly
-void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const __int64& nArg0,
+// The log call with three arguments (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
+void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned __int64& nArg0,
                    const CStringA& strArg1, const CStringA& strArg2)
 {
-    CStringW strText(pszFormat);
-    CStringW strValue;
-    strValue.Format(L"%I64d", nArg0);
-    strText.Replace(L"{0}", strValue);
-    strText.Replace(L"{1}", CStringW(strArg1));
-    strText.Replace(L"{2}", CStringW(strArg2));
-    Unk_AdditionalLog((class CLogString*)(pLog), nLevel, nCategory, strText);
+    const fmt::internal::ArgArray<3>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(nArg0),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(strArg1),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(strArg2)};
+    static_cast<CLogString*>(pLog)->FUN_1406530d0(nLevel, nCategory, pszFormat,
+                                                  fmt::ArgList(fmt::internal::make_type(nArg0, strArg1, strArg2), args));
 }
 
 // @0x140c76fd0

@@ -17,6 +17,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#define MS2_GAMEEVENTVALUE_TYPES   // GetShutdownValue
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // ---- callees ------------------------------------------------------------------------------------------------------
@@ -51,12 +52,9 @@ Unk_SingletonObj* FUN_1401d31f0();
 class Unk_UgcContentRule
 {
 public:
-    bool FUN_1407d1210(int nType);
 };
 class Unk_UgcGameRules
 {
-public:
-    Unk_UgcContentRule* FUN_14046d0d0(int nRule);
 };
 
 // The client feature flags.
@@ -337,7 +335,7 @@ CString FUN_1410280d0(int nKind, CString strName)
 {
     if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) != 0)
     {
-        if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14046d0d0(0xb)->FUN_1407d1210(nKind))
+        if (TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->FUN_1407d1210(nKind))
             return CString("");
     }
     CString strPath;

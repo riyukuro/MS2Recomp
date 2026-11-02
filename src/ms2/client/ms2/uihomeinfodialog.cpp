@@ -158,9 +158,6 @@ public:
 class Unk_HiPc : public MyPC
 {
 public:
-    void FUN_14152feb0(int nMode, int nFlag);
-    void FUN_1415283c0(int n);
-    void FUN_1415286a0();
     __int64 FUN_141662830();                                        // time of the last bank use
     __int64 FUN_141662870();                                        // time of the last doctor use
 };
@@ -332,7 +329,7 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("OnRemoveUser", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             SendRequestCubeMode58(strName);
@@ -409,7 +406,7 @@ void UIHomeInfoDialog::FUN_1412c5c30()
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_notice"))
-            spText->FUN_1422c4cd0(FUN_1412c7090());
+            spText->SetTextW(FUN_1412c7090());
     }
 }
 
@@ -433,7 +430,7 @@ void UIHomeInfoDialog::FUN_1412c5f00()
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_address"))
-            spText->FUN_1422c4cd0(FUN_1412c7140());
+            spText->SetTextW(FUN_1412c7140());
     }
 }
 
@@ -449,7 +446,7 @@ void UIHomeInfoDialog::FUN_1412c6070()
         {
             int nMax = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3430();
             int nCur = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c33f0();
-            spText->FUN_1422c4cd0(FormatStringId<int, int>(0x25, nCur, nMax));
+            spText->SetTextW(FormatStringId<int, int>(0x25, nCur, nMax));
         }
     }
 }
@@ -475,9 +472,9 @@ void UIHomeInfoDialog::FUN_1412c6220()
                 spBalance->vfunc_4(bOwner);
             }
             if (MS2Ptr<ASTextField> spMeso = spConv->FUN_1409b4620("m_balanceMeso"))
-                spMeso->FUN_1422c4f00(FUN_1409404f0(spService->FUN_1410d5730()));
+                spMeso->SetTextHTMLW(FUN_1409404f0(spService->FUN_1410d5730()));
             if (MS2Ptr<ASTextField> spMerat = spConv->FUN_1409b4620("m_balanceMerat"))
-                spMerat->FUN_1422c4f00(FUN_1409404f0(spService->FUN_1410d5780()));
+                spMerat->SetTextHTMLW(FUN_1409404f0(spService->FUN_1410d5780()));
         }
     }
 }
@@ -540,12 +537,12 @@ void UIHomeInfoDialog::FUN_1412c6b50()
         if (MS2Ptr<ASTextField> spArea = spPanel->FUN_1409b4620("m_extensionArea"))
         {
             int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
-            spArea->FUN_1422c4cd0(FUN_14028dfa0<int>(L"s_home_info_title_area", nArea));
+            spArea->SetTextW(FUN_14028dfa0<int>(L"s_home_info_title_area", nArea));
         }
         if (MS2Ptr<ASTextField> spHeight = spPanel->FUN_1409b4620("m_extensionHeight"))
         {
             int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
-            spHeight->FUN_1422c4cd0(FUN_14028dfa0<int>(L"s_home_info_title_height", nHeight));
+            spHeight->SetTextW(FUN_14028dfa0<int>(L"s_home_info_title_height", nHeight));
         }
     }
 }
@@ -562,9 +559,9 @@ void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASTextField> spName = spPanel->FUN_1409b4620("m_itemName"))
-            spName->FUN_1422c4cd0(strItemName);
+            spName->SetTextW(strItemName);
         if (MS2Ptr<ASTextField> spCreator = spPanel->FUN_1409b4620("m_creator"))
-            spCreator->FUN_1422c4cd0(strCreator);
+            spCreator->SetTextW(strCreator);
     }
     FUN_1412c6b50();
 }
@@ -604,7 +601,7 @@ int UIHomeInfoDialog::FUN_1412c72d0()
         return 0;
     if (FUN_1418fd2f0() != 0)
     {
-        int nCraft = pPc->FUN_1416595d0();
+        int nCraft = pPc->IsInCubeMode();
         int nMode = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650();
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog)
@@ -665,7 +662,7 @@ void UIHomeInfoDialog::OnConstruct()
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (pPc->FUN_1416595d0() == 0)
+    if (pPc->IsInCubeMode() == 0)
         pPc->FUN_14152feb0(1, 0);
     else
         pPc->SendCraftModeOff();
@@ -702,9 +699,9 @@ void UIHomeInfoDialog::OnBalance()
         unsigned int nMax = FUN_1412772f0(DAT_143ab2d80.Value4558(), 1);
         {
             CStringW strText(L"");
-            spBox->FUN_141a01d30(1, strText, nMax, 0, 0);
+            spBox->SetInput(1, strText, nMax, 0, 0);
         }
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::FUN_1412c7ff0));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::FUN_1412c7ff0));
         FUN_140d73c60(spBox);
     }
 }
@@ -763,7 +760,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
             spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
             spBox->SetAgreement(0);
             spBox->SetSize(0x1c0, 400);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));
             FUN_140d73c60(spBox);
         }
     }

@@ -89,7 +89,7 @@ class Unk_ImBuffs : public AdditionalCliList { };      // an active buff of a ki
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
-    int FUN_14166c930();                                    // 0x14166c930 current state id
+    int GetCurStateId();                                    // 0x14166c930 current state id
     class State* FUN_14166ccb0();
     void FUN_14166cc40(int nSubState);
     int FUN_14166cc80();
@@ -291,7 +291,7 @@ void CInstrumentManager::vfunc_buddy_4(__int64 nId, int n)
     Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1530(spBuddy->FUN_1401cc230()));
     if (pActor == 0)
         return;
-    if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x2f)
+    if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x2f)
         return;
     StatePlayInstrument* pState = (StatePlayInstrument*)reinterpret_cast<PCBase*>(pActor)->FUN_14166ccb0();
     pState->FUN_140ddfc00();
@@ -304,7 +304,7 @@ void CInstrumentManager::vfunc_buddy_7(__int64 nId)
     Unk_ImActor* pActor = reinterpret_cast<Unk_ImActor*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (pActor == 0)
         return;
-    if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x2f)
+    if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x2f)
         return;
     StatePlayInstrument* pState = (StatePlayInstrument*)reinterpret_cast<PCBase*>(pActor)->FUN_14166ccb0();
     pState->FUN_140ddfc00();
@@ -544,7 +544,7 @@ bool CInstrumentManager::SetPcState(int nState)
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return false;
-    if (reinterpret_cast<PCBase*>(pMe)->FUN_14166c930() == 0x2f)
+    if (reinterpret_cast<PCBase*>(pMe)->GetCurStateId() == 0x2f)
     {
         reinterpret_cast<PCBase*>(pMe)->FUN_14166cc40(nState);
         return true;
@@ -969,7 +969,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
         ((class Unk_ImPlatform*)FUN_140d86260())->vfunc_52(m_scoreUid, bRemote == true ? 1 : 0);
         m_performing = true;
         m_remote = bRemote;
-        if (reinterpret_cast<PCBase*>(pMe)->FUN_14166c930() != 0x2f)
+        if (reinterpret_cast<PCBase*>(pMe)->GetCurStateId() != 0x2f)
         {
             StopPerform();
             return;
@@ -1372,7 +1372,7 @@ void CInstrumentManager::PlayEvents()
             if (itEvent->first > nNow)
                 break;
             std::pair<int, int>* pEvent = &itEvent->second;
-            if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x2f)
+            if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x2f)
                 return;
             if (pEvent->first == 0)
             {
@@ -1420,7 +1420,7 @@ void CInstrumentManager::CheckPlayState()
     Unk_ImActor* pMe = ((Unk_ImActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
-    if (reinterpret_cast<PCBase*>(pMe)->FUN_14166c930() != 0x2f)
+    if (reinterpret_cast<PCBase*>(pMe)->GetCurStateId() != 0x2f)
         return;
     if (reinterpret_cast<PCBase*>(pMe)->FUN_14166cc80() == 0x80)
     {

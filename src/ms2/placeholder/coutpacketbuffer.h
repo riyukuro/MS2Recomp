@@ -10,7 +10,7 @@ public:
     void PushPendingPacket(COutPacket&);
     void RetransmitClientPackets(CGameSocket* pSocket, unsigned lastSequence);  // 0x140208ab0
     void DiscardAcked(unsigned ackSequence);              // drop acknowledged packets
-    void Reset(); void FUN_140209340(int); void SetCaptureEnabled(int); void FUN_140209430();
+    void Reset(); void FUN_140209340(int); void SetCaptureEnabled(int); int GetSequence();
 private:
     void* p18;void* p20;void* p28;void* p30;
     CLockCriticalSection lock;

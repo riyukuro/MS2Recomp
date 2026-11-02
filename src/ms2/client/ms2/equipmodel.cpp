@@ -104,7 +104,7 @@ void* FUN_1411de2e0(void* guard, void* model); void FUN_140b02860(void* guard);
 void* FUN_1403ed2d0();class WorldService // C3: member view for the former free stand-ins
 {
 public:
-class Unk_WsC_GameObj* FUN_141bd1180(int);
+class Unk_WsC_GameObj* FindObjectById(int);
 void* FUN_141bd0cc0();
 };
 class CEffectService // C3: member view for the former free stand-ins
@@ -147,7 +147,7 @@ char FUN_1401b50d0(void* p);   void* FUN_140203c60(void* p);   void* FUN_1402035
 class CItemData   // C3: member view for the former free stand-ins
 {
 public:
-int FUN_14053c620();
+int GetEquipSubtype();
 bool FUN_14053ce80();
     bool HasSkinType();
 bool FUN_14053cfd0();
@@ -616,7 +616,7 @@ void* FUN_141200820(CEquipModel* self)
 // @0x141200850
 void* FUN_141200850(CEquipModel* self)
 {
-    return ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
+    return ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FindObjectById(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
 }
 
 // @0x1412008e0
@@ -1028,7 +1028,7 @@ void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLoca
 // @0x1412024f0
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot)
 {
-    void* pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
+    void* pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FindObjectById(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
     if (pEnt == 0)
         return;
     void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->FUN_14123c460());
@@ -1311,7 +1311,7 @@ CString CEquipModel::FUN_141203830()
                 if (!((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0())
                     return CString("");
                 if (pTpl->m_nLevel >= 100) {
-                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(((class CItemData*)(void*)(pTpl))->FUN_14053c620(), ((class CItem*)(void*)(kId2.operator->()))->FUN_140526fc0(), ((class CItem*)(void*)(kId2.operator->()))->FUN_140527270(), pTpl->m_nLevel);
+                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(((class CItemData*)(void*)(pTpl))->GetEquipSubtype(), ((class CItem*)(void*)(kId2.operator->()))->FUN_140526fc0(), ((class CItem*)(void*)(kId2.operator->()))->GetPlusLevel(), pTpl->m_nLevel);
                 } else {
                     return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529eb0();
                 }

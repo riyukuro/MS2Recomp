@@ -28,7 +28,7 @@ public:
     class NiRenderListProcessor* GetProcessor() const;
 };
 void* FUN_1414cfbe0(void* p);
-void FUN_1414cf920(void* p, unsigned char v);
+class Unk_LsPassFlag { public: void FUN_1414cf920(bool bOn); };   // the pass flag setter (ms2lightservice)
 class PostProcessingService   // C3: member view for the former free stand-ins
 {
 public:
@@ -104,13 +104,13 @@ void FUN_1411780e0(void* a, float x, float y)
 MS2_REPLACE(0x1411780E0, FUN_1411780e0, 94, 0xC811E5B5);
 
 // @0x141178150
-void FUN_141178150(unsigned char on)
+void FUN_141178150(bool on)
 {
     void* a = FUN_1411782c0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1);
     void* b = ((void*)((class NiViewRenderClick*)(void*)(a))->GetProcessor());
     void* p = FUN_1414cfbe0(b);
-    FUN_1414cf920(FUN_141178240(FUN_141178210(p, 1)), on);
-    FUN_1414cf920(FUN_141178240(FUN_141178210(p, 2)), on);
+    reinterpret_cast<Unk_LsPassFlag*>(FUN_141178240(FUN_141178210(p, 1)))->FUN_1414cf920(on);
+    reinterpret_cast<Unk_LsPassFlag*>(FUN_141178240(FUN_141178210(p, 2)))->FUN_1414cf920(on);
 }
 MS2_REPLACE(0x141178150, FUN_141178150, 138, 0x939E3141);
 

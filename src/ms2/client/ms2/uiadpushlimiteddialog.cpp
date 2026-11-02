@@ -223,16 +223,16 @@ int UIAdPushLimitedDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("onClickBuy", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140e039c0(szMethod, data);
         return 1;
     }
     else if (_stricmp("onClickMinMax", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bMin = data.FUN_1422b8a90();
+            bool bMin = data.PopBool();
             FUN_140e04460(bMin);
         }
     }
@@ -255,7 +255,7 @@ int UIAdPushLimitedDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             CStringA strImgPath;
             strA = pMsg->FUN_1422b8d30();
             strImgPath = pMsg->FUN_1422b8d30();
-            bool bFlag = reinterpret_cast<ASData*>(pMsg)->FUN_1422b8a90();
+            bool bFlag = reinterpret_cast<ASData*>(pMsg)->PopBool();
             FUN_140e036e0(strA, strImgPath, bFlag);
             return 1;
         }
@@ -428,7 +428,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     MS2Ptr<Unk_AdMarketItem> spItem = m_spOwner->m_item;
     if (spItem == 0)
         return;
-    Scaleform::GFx::Value v = data.FUN_1422b9260();
+    Scaleform::GFx::Value v = data.PopValue();
     UIMeratMarketDialogUtil::ASClickOutData out(v, FUN_1422db730());
     MS2Ptr<ASMeratMarketProductBase> spProduct = out.FUN_140ec28b0();
     if (spProduct == 0)

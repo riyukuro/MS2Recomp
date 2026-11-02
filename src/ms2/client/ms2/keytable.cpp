@@ -758,7 +758,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
     case 400010:
     {
         Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
-        if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
+        if (pPlayer != 0 && !pPlayer->IsDead())
         {
             UISceneEntity* pScene = ((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene();
             if (pScene != 0)
@@ -774,7 +774,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
     case 400011:
     {
         Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
-        if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
+        if (pPlayer != 0 && !pPlayer->IsDead())
             ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001f);
         break;
     }
@@ -926,7 +926,7 @@ void CKeyTable::FUN_14142bb10()
     Unk_KtPlayer* pPlayer = reinterpret_cast<Unk_KtWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    if (pPlayer->FUN_1416595d0())
+    if (pPlayer->IsInCubeMode())
         return;
     int nCameraMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af7e30();
     switch (nCameraMode)
@@ -982,7 +982,7 @@ void CKeyTable::FUN_14142bb10()
                 MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(entry.m_nItemUid);
                 if (spItem.get())
                 {
-                    if (spData->FUN_14053cd90())
+                    if (spData->HasFunction())
                         UseItem(spItem, 0);
                 }
                 else
@@ -990,7 +990,7 @@ void CKeyTable::FUN_14142bb10()
                     MS2Ptr<CItem> spAny = g_143ab2a90.FUN_140a5e2e0(entry.m_nItemId);
                     if (spAny.get())
                     {
-                        if (spData->FUN_14053cd90())
+                        if (spData->HasFunction())
                             UseItem(spAny, 0);
                     }
                     else if (spData->GetStringTag() == 0xd9)
@@ -1397,13 +1397,13 @@ CStringW CKeyTable::GetKeyDisplayName(int nKey)
 MS2_REPLACE_METHOD(0x14142D580, CKeyTable, GetKeyDisplayName, 433, 0xC3BED9B7);
 
 // @0x14142d760
-CStringW CKeyTable::FUN_14142d760(int nAction, int nPriority)
+CStringW CKeyTable::GetActionKeyName(int nAction, int nPriority)
 {
     __int64 nCode = nAction;
     int nKey = FUN_14142c940(nCode, nPriority);
     return GetKeyName(nKey);
 }
-MS2_REPLACE_METHOD(0x14142D760, CKeyTable, FUN_14142d760, 107, 0xA4DDC314);
+MS2_REPLACE_METHOD(0x14142D760, CKeyTable, GetActionKeyName, 107, 0xA4DDC314);
 
 // @0x14142d7e0
 CStringW CKeyTable::GetKeyActionLabel(const int& nKey)
@@ -1463,7 +1463,7 @@ int CKeyTable::FUN_14142dad0(unsigned nKey)
     {
         if (pPlayer->FUN_1416764d0())
             return 0;
-        if (pPlayer->FUN_14166c930() == 0x1b || pPlayer->FUN_14166c930() == 0x1c)
+        if (pPlayer->GetCurStateId() == 0x1b || pPlayer->GetCurStateId() == 0x1c)
             return 0x1312d01;
         else
             return pPlayer->FUN_14165c570();

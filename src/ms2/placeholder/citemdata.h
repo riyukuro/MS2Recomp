@@ -353,7 +353,7 @@ public:
     int GetType();    // 0x14053c5c0
     int GetSubtype();    // 0x14053c5e0
     int GetIconCode();    // 0x14053c600
-    int FUN_14053c620();    // 0x14053c620
+    int GetEquipSubtype();    // 0x14053c620
     int FUN_14053c650();    // 0x14053c650
     int FUN_14053c670();    // 0x14053c670
     bool HasStringTag(int nStringTag);    // 0x14053c6b0
@@ -375,7 +375,7 @@ public:
     bool FUN_14053ccc0();    // 0x14053ccc0
     bool FUN_14053cd10();    // 0x14053cd10
     bool FUN_14053cd50();    // 0x14053cd50
-    bool FUN_14053cd90();    // 0x14053cd90
+    bool HasFunction();    // 0x14053cd90
     bool IsPCBangItem();    // 0x14053ce20
     bool FUN_14053ce40();    // 0x14053ce40
     bool FUN_14053ce80();    // 0x14053ce80

@@ -49,7 +49,7 @@ int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class
 int FUN_14015f480(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringW>& rOut);   // list of strings
 template <class C> void XmlSplit(const CString&, C&, const char*);    // split into numbers
 void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);   // split a list of ids
-class CReservedWordTable { public: void FUN_1416fbf20(CStringW&); };   // post-process a UI text
+class CReservedWordTable { public: void ReplaceBoldWords(CStringW&); };   // post-process a UI text
 
 // The unit's exe globals are in symbols-manual.tsv; the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -192,7 +192,7 @@ CStringW CFishData::FUN_1403b16b0(int bDetail) const
         str += GetStringTable()->FUN_141811980(0x1f, m_nId);
     else
         str += GetStringTable()->FUN_141811980(0x1e, m_nId);
-    ((CReservedWordTable*)CFishingTable::GetTextFilter())->FUN_1416fbf20(str);
+    ((CReservedWordTable*)CFishingTable::GetTextFilter())->ReplaceBoldWords(str);
     return str;
 }
 

@@ -26,13 +26,13 @@ public:
     virtual ~CReservedWordTable();
 
     void ReplaceObjectAndValueWords(CStringW& str);                      // expands the object words, then the value words
-    void FUN_1416fb340(CStringW& str);                      // the value words only
-    void FUN_1416fb380(CStringW& str);                      // the object words only
+    void ReplaceValueWords(CStringW& str);                      // the value words only
+    void ReplaceObjectWords(CStringW& str);                      // the object words only
     int ReplaceColorWords(CStringW& str);                       // the colour tags "[y" ...
     void FUN_1416fb400(CStringW& str, void* pMaid);         // $OwnerName$ / $Maid..$ of a maid (housing) entry
     void ReplaceTokensForPc(CStringW& str, class PC* pPc);       // $male..$/$female..$ markers by the gender of pPc (null: local player)
     void ReplaceTokensForGender(CStringW& str, int nGender);         // the same by a gender id
-    void FUN_1416fbf20(CStringW& str);                      // the bold object words
+    void ReplaceBoldWords(CStringW& str);                      // the bold object words
     void ReplaceLevelToken(CStringW& str, unsigned short nLevel);   // $level$
     CStringW FUN_1416fbfe0(unsigned int nMapId, CStringW strColor);   // a world map link of a map id
     CStringW GetTokenName(CStringW str);                   // the part before ':' of a marker

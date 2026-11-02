@@ -63,7 +63,6 @@ class Unk_WbUIMgr { public: float FUN_141adbe70(); };
 class Unk_WbBrowser : public COffscreenWebBrowser { public:                                               // one browser page of the manager
 };
 class Unk_WbBrowserMgr : public CWebBrowserService { public:                                            // the browser manager
-    Unk_WbBrowser* FUN_141b796e0(int nId);
 };
 class Unk_WbPages { public: MS2Ptr<WebGuide> FUN_141927640(CString strKey); };   // the web guide of a dialog
 CFeatureManager* FUN_140166410();
@@ -194,7 +193,7 @@ void UIWebBrowser::vfunc_26()
     m_btnMinSize = 0;
     m_btnMaxSize = 0;
     TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("dialog_close", "webbrowser");
-    Unk_WbBrowser* pBrowser = reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b796e0(m_nBrowserId);
+    Unk_WbBrowser* pBrowser = static_cast<Unk_WbBrowser*>(TSingleton<CWebBrowserService>::GetInstance()->FindBrowser(m_nBrowserId));
     if (pBrowser != 0)
         pBrowser->FUN_141612ba0();
 }
@@ -270,7 +269,7 @@ void UIWebBrowser::vfunc_84(bool bVisible)
 void UIWebBrowser::vfunc_89(const CString& strUrl)
 {
     UIWebBrowserBase::vfunc_89(strUrl);
-    Unk_WbBrowser* pBrowser = reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b796e0(m_nBrowserId);
+    Unk_WbBrowser* pBrowser = static_cast<Unk_WbBrowser*>(TSingleton<CWebBrowserService>::GetInstance()->FindBrowser(m_nBrowserId));
     if (pBrowser != 0)
         pBrowser->SetOnNavigate(Delegate<void(const CString&)>(this, &UIWebBrowser::SetStored));
     TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("dialog_open", "webbrowser");

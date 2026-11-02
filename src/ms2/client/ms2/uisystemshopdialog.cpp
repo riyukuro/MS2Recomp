@@ -111,7 +111,8 @@ MS2_CHECK_OFFSET(Unk_SsPushMgr, m_pushes, 0x10);
 class Unk_SingletonObj* FUN_140cea070();   // C3: was FUN_140cea070
 
 // The local player's buffs (PCBase +0x748).
-class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); };
+class AdditionalCliList { public: int HasEnabledWithEventBuffType(int nType); };   // C3: member view (additionalclilist.h)
+class Unk_PCBaseBuffs : public AdditionalCliList { };
 
 extern Unk_Inventory g_143ab2a90;
 namespace NotifyContext { class BindData; }
@@ -248,9 +249,9 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp("OnShop", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nAction = data.FUN_1422b8a10();
+            int nAction = data.PopInt();
             if (m_nMode == 4)
             {
                 if (nAction == 0)
@@ -267,7 +268,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         if (spBox.get())
                         {
                             spBox->SetCheckbox0(GetStringCommon(0xc65), 1);
-                            spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa64a0));
+                            spBox->SetCallback(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa64a0));
                             FUN_140d73c60(spBox);
                         }
                     }
@@ -287,7 +288,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             buff.m_nLevel = 1;
                             buff.m_strDesc = GetStringCommonByKey(L"s_msg_autofishing_extend_showcurrentduration_buff_desc");
                             spBox->FUN_141a01800(1);
-                            spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa62d0));
+                            spBox->SetCallback(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa62d0));
                             spBox->FUN_141a029b0(buff);
                             spBox->FUN_141a024a0(0);
                             int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->GetAutoFishingName());
@@ -318,7 +319,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     if (spBox.get())
                     {
                         spBox->SetCheckbox0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 1);
-                        spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa6970));
+                        spBox->SetCallback(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa6970));
                         FUN_140d73c60(spBox);
                     }
                 }
@@ -339,7 +340,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         buff.m_nLevel = 1;
                         buff.m_strDesc = GetStringCommonByKey(L"s_msg_auto_play_instrument_extend_showcurrentduration_buff_desc");
                         spBox->FUN_141a01800(1);
-                        spBox->FUN_141a027c0(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa67a0));
+                        spBox->SetCallback(SsMsgBoxFn(this, &UISystemShopDialog::FUN_140fa67a0));
                         spBox->FUN_141a029b0(buff);
                         spBox->FUN_141a024a0(0);
                         int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->GetAutoPlayInstrumentName());
@@ -421,7 +422,7 @@ void UISystemShopDialog::FUN_140fa5bc0()
         CStringW strTitle = GetStringCommonByKey(L"s_system_shop_title_fishing");
         CStringW strDesc = GetStringCommonByKey(L"s_system_shop_desc_fishing");
         CStringW strExtend;
-        if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->FUN_1409701d0(1) != 0)
+        if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->HasEnabledWithEventBuffType(1) != 0)
         {
             bCancel = CFishingManager::GetInstance()->GetAutoCount() > 0;
             if (bCancel != 0)
@@ -443,7 +444,7 @@ bool UISystemShopDialog::FUN_140fa62d0(int nButton, const CMsgBoxData& box)
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc == 0)
         return true;
-    if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->FUN_1409701d0(1) == 0)
+    if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->HasEnabledWithEventBuffType(1) == 0)
         return true;
     int nPos = 0;
     CStringW strResult = box.FUN_141a02d50();

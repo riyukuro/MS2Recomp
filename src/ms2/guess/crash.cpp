@@ -12,6 +12,7 @@
 #include <windows.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/ms2.h"
 
 namespace Crash
 {
@@ -35,7 +36,6 @@ public:
 }
 
 void* FUN_140aae430();
-void FUN_14148b090(void* p);
 void FUN_140159b70(long hr);                                    // AtlThrow
 
 // @0x140cca840
@@ -138,7 +138,7 @@ void FUN_140cca840(int nType)
         throw std::bad_alloc();
         break;
     case 13:
-        FUN_14148b090(FUN_140aae430());
+        reinterpret_cast<MS2*>(FUN_140aae430())->SetCrashOnShutdown();
         break;
     }
 }

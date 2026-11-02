@@ -127,6 +127,8 @@
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/placeholder/cube.h"
 #include "ms2/placeholder/cbreakableobject.h"
+#include "ms2/placeholder/coptimizer.h"
+#include "ms2/client/ms2/pvpmanager.h"
 #include <egf/EntityIDFactory.h>
 #include "ms2/placeholder/csetitemmanager.h"
 #include "ms2/client/ms2/statemanager.h"
@@ -306,7 +308,7 @@ public:
 void FUN_1419f37f0(unsigned int);   // C3: was FUN_1419f37f0
 // CItem::FUN_1405278a0's record (CItemStatus, commonfiles/item.h): the enchant record.
 // The movement keys of the local player (PCBase +0x6d8; unit_141682f80.cpp's Unk_PCMove).
-class Unk_PCMoveKeys
+class Unk_PCMove
 {
 public:
     bool FUN_141682fe0(int nKey);                                   // the key is down
@@ -380,14 +382,18 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);                     // the item re
 class Unk_PCHousingSvc
 {
 public:
-    void FUN_1410cc160(int nKind);                                  // the cube build mode UI
     Cube* FUN_1410b8f30(NiPoint3 kFrom, efd::Point3* pHit, float fRange);   // the cube under a point
     efd::Point3 FUN_1410b9150(efd::Point3 kPos);                    // snap a point onto the cube grid
-    Cube* FUN_1410b8a60(Unk_Int3 kCell);                            // the cube of a grid cell
-    Cube* FUN_1410b9080(Cube* pBase, int nOffset);                  // the neighbour cube (packed cell offset)
-    Cube* FUN_1410b8e60(void* pEntity);                             // the cube of an entity
     int FUN_1410b9330(Cube* pCube, efd::Point3 kHit, float fStep, efd::Point3* pPos, efd::Point3* pRot, int* pnDir,
         Cube** ppFound);                                            // the climb-on spot of a cube face
+};
+class CubeMapInformationService   // C3: member view (cubemapinformationservice_3.h)
+{
+public:
+    void FUN_1410cc160(int nKind);                                  // the cube build mode UI
+    Cube* FUN_1410b9080(Cube* pBase, int nOffset);                  // the neighbour cube (packed cell offset)
+    Cube* GetCubeAtCell(Unk_Int3 kCell);                            // the cube of a grid cell
+    Cube* GetCubeByEntity(egf::Entity* pEntity);                    // the cube of an entity
 };
 class Unk_AkoHouseSvc   // C3: static member view for the former free stand-ins
 {
@@ -444,7 +450,6 @@ private:
 class Unk_PCPvPMgr
 {
 public:
-    void FUN_141280ca0(__int64 nCharId);                            // leave
 };
 class CPVPManager;
 // The dialog 0x4e8a (FUN_141531b40): a name at +0x178.
@@ -488,10 +493,6 @@ public:
 };
 class Unk_PCEquipConfig
 {
-public:
-    int FUN_141622790() const;                                      // the visibility limit is on
-    int FUN_14161cf40() const;                                      // others are shown
-    void FUN_14161cf60(PCBase* pPC);                                // register a loaded player
 };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 // The dialogs 0x4e96 / 0x4ec4 (FUN_141531c80 / FUN_141531be0): the hp of a party member changed.
@@ -636,16 +637,7 @@ public:
 class Unk_PCActionTimer : public CPtred                             // CBreakableObject (the tomb stone; cbreakableobject.h)
 {
 public:
-    void FUN_140adf370(egf::Entity* pEntity, int nObjectId, MS2Ptr<CGemTombStone> spTomb);   // bind as a tomb stone
     virtual void vfunc_1(void* p, int nMode);                       // 1 notify (FUN_14165c970: 2 / 5)
-    int FUN_140addea0();                                            // active
-    int FUN_140adea80();                                            // the state
-    void FUN_140adeaf0(int nNow);                                   // per-frame update (timers, movement)
-    int FUN_140adf350();                                            // m_n184
-    void FUN_140adf770(efd::Point3 ptPos);                          // move: position property
-    void FUN_140ade030(int nHitter, int nKind);                     // play the hit sound
-    void FUN_140ade420(int nState, unsigned int nDelay);            // set the state (animations, effects, actor)
-    egf::EntityPtr FUN_140adf980();                                 // the entity
 };
 
 // ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
@@ -804,7 +796,7 @@ PC::~PC()
     if (m_spInteractMode.get() != 0)
     {
         if (((CPvPInfo*)(Unk_PCInteractMode*)(reinterpret_cast<CPvPInfo*>(m_spInteractMode.operator->())))->HasPoint() && reinterpret_cast<Unk_PCPvPMgr*>(TSingleton<CPVPManager>::GetInstance()))
-            reinterpret_cast<Unk_PCPvPMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_141280ca0(FUN_141656a80());
+            TSingleton<CPVPManager>::GetInstance()->ForwardToEntries((void*)FUN_141656a80());
         m_spInteractMode = 0;
     }
     if (m_n1060 != 0)
@@ -817,7 +809,7 @@ PC::~PC()
         if (PC::vfunc_77().GetLength() > 0 && pDialog->FUN_141667f70() == PC::vfunc_77())
         {
             if (Unk_PCLocalPlayer* pPlayer = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0()))
-                pPlayer->FUN_14152a960();
+                pPlayer->StopObserving();
         }
     }
     for (std::set<unsigned int>::iterator it = m_set11a8.begin(), itEnd = m_set11a8.end(); it != itEnd; ++it)
@@ -905,7 +897,7 @@ void PC::vfunc_12()
         if (spGem.get())
             spGem->vfunc_8();
     }
-    ((class Unk_PCEquipConfig*)FUN_1409f7c90())->FUN_14161cf60(this);
+    reinterpret_cast<COptimizer*>(FUN_1409f7c90())->ApplyModeToPlayer(this);
     if (DAT_143ae2b38 != 0)
     {
         if (NiAVObject* pModel = FUN_141b6ef70(FUN_14123c460()))
@@ -943,7 +935,7 @@ void PC::vfunc_33(void* a, void* b)
     int bReact = ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(pRecord->GetAttackData(), 0) == 0;
     int nMapId = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd3060();
     int bPush = false;
-    if (FUN_14166c930() == 0x2b)
+    if (GetCurStateId() == 0x2b)
     {
         if (pRecord->GetAttackData()->m_damage.GetPush(nMapId) != 0 && pRecord->GetAttackData()->m_eGrabTargetType != 1)
             bPush = true;
@@ -952,7 +944,7 @@ void PC::vfunc_33(void* a, void* b)
     }
     else
     {
-        if (FUN_14166c930() == 0xd)
+        if (GetCurStateId() == 0xd)
         {
             StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
             if (pHit->FUN_1417cb2a0() && pRecord->GetAttackData()->m_damage.m_nPushPriorityHitImmune != 0)
@@ -990,7 +982,7 @@ void PC::vfunc_33(void* a, void* b)
                 bHit = true;
             }
         }
-        if (!bHit && (bPush || FUN_14166c930() == 0x2f))
+        if (!bHit && (bPush || GetCurStateId() == 0x2f))
         {
             vfunc_59(1, 0, 0, 0);
             pState = FUN_14166ccb0();
@@ -1004,7 +996,7 @@ void PC::vfunc_33(void* a, void* b)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, static_cast<const NiPoint3&>(kPos), fVolume);
     }
     FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
-    if (FUN_14166ce30())
+    if (IsDead())
         FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
     CDPSMeterSystem::GetInstance()->OnDamage(MS2Ptr<CDamageRecord>(pRecord));
     vfunc_113(pRecord);
@@ -1047,7 +1039,7 @@ void PC::vfunc_34(void* p)
         ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, 1, nOwnerRel, vfunc_18(), fVolume);
     } while (0);
     FUN_141672020(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
-    if (FUN_14166ce30())
+    if (IsDead())
         FUN_141653740(static_cast<CDotDamageRecord*>(p)->m_nOwnerId, static_cast<CDotDamageRecord*>(p)->m_nCasterId, nOwnerRel, nCasterRel);
     CDPSMeterSystem::GetInstance()->OnDotDamage(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
     vfunc_113(static_cast<CDotDamageRecord*>(p));
@@ -1067,7 +1059,7 @@ void PC::vfunc_35(void* p)
     int bReact = ((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(pRecord->GetAttackData(), 0) == 0;
     int nMapId = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd3060();
     int bPush = false;
-    if (FUN_14166c930() == 0x2b)
+    if (GetCurStateId() == 0x2b)
     {
         if (pRecord->GetAttackData()->m_damage.GetPush(nMapId) != 0 && pRecord->GetAttackData()->m_eGrabTargetType != 1)
             bPush = true;
@@ -1076,7 +1068,7 @@ void PC::vfunc_35(void* p)
     }
     else
     {
-        if (FUN_14166c930() == 0xd)
+        if (GetCurStateId() == 0xd)
         {
             StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
             if (pHit->FUN_1417cb2a0() && pRecord->GetAttackData()->m_damage.m_nPushPriorityHitImmune != 0)
@@ -1127,7 +1119,7 @@ void PC::vfunc_35(void* p)
         ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
     FUN_1416721d0(MS2Ptr<CSplashDamageRecord>(pRecord));
-    if (FUN_14166ce30())
+    if (IsDead())
         FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
     CDPSMeterSystem::GetInstance()->OnSplashDamage(MS2Ptr<CSplashDamageRecord>(pRecord));
     vfunc_113(pRecord);
@@ -1206,7 +1198,7 @@ void PC::vfunc_52(double fTime)
 // @0x141652030
 void PC::vfunc_31(bool enabled)
 {
-    switch (FUN_14166c930())
+    switch (GetCurStateId())
     {
     case 0x3f:
         enabled = false;
@@ -1246,7 +1238,7 @@ int PC::vfunc_124(int a, int b)
 {
     __int64 nHp = FUN_141670a00(4);
     __int64 nMaxHp = FUN_141670a30(4);
-    if (!((FUN_14166ce30() == 0 && (nMaxHp <= 0 || nHp != 0)) || a == 0xc || a == 0x18 || a == 0x3f))
+    if (!((IsDead() == 0 && (nMaxHp <= 0 || nHp != 0)) || a == 0xc || a == 0x18 || a == 0x3f))
         return 0;
     return 1;
 }
@@ -1371,14 +1363,14 @@ int PC::vfunc_118(const NiPoint3& kPos, float* pDist, CString* pName)
 // @0x141655b80
 MS2Ptr<CItem> PC::FUN_141655b80(__int64 nItemUid)
 {
-    MS2Ptr<CEquipItem> spEquip = FUN_141655c30(nItemUid);
+    MS2Ptr<CEquipItem> spEquip = GetEquipByUid(nItemUid);
     if (!spEquip)
         return MS2Ptr<CItem>(0);
     return spEquip->GetItem();
 }
 
 // @0x141655c30
-MS2Ptr<CEquipItem> PC::FUN_141655c30(__int64 nItemUid)
+MS2Ptr<CEquipItem> PC::GetEquipByUid(__int64 nItemUid)
 {
     return reinterpret_cast<CEquipment*>(&m_kEquipDE0)->FUN_1411e1580(nItemUid);
 }
@@ -1746,19 +1738,19 @@ int PC::vfunc_132(CItem* pItem, int nSlot, bool bForce)
             {
                 MS2Ptr<CEquipItem> spEquip = FUN_141655c90(5);
                 if (spEquip.get())
-                    nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                    nResult = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
                 if (nResult == 0)
                 {
                     spEquip = FUN_141655c90(4);
                     if (spEquip.get())
-                        nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                        nResult = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
                 }
             }
             else if (spData->FUN_14053d510())
             {
                 MS2Ptr<CEquipItem> spEquip = FUN_141655c90(nSlot);
                 if (spEquip.get())
-                    nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                    nResult = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
             }
             else if (spData->FUN_14053d340())
             {
@@ -1766,13 +1758,13 @@ int PC::vfunc_132(CItem* pItem, int nSlot, bool bForce)
                 {
                     MS2Ptr<CEquipItem> spEquip = FUN_141655c90(5);
                     if (spEquip.get())
-                        nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                        nResult = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
                 }
                 else
                 {
                     MS2Ptr<CEquipItem> spEquip = FUN_141655c90(4);
                     if (spEquip.get())
-                        nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                        nResult = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
                 }
             }
         }
@@ -1828,7 +1820,7 @@ CString PC::FUN_141658d20()
     CString strPrefix;
     do
     {
-        if (FUN_14166c930() != 0x10)
+        if (GetCurStateId() != 0x10)
             break;
         StateSkill* pState = static_cast<StateSkill*>(FUN_14166ccb0());
         if (pState == 0)
@@ -1889,7 +1881,7 @@ const NiColor& PC::FUN_141659220(int nSlot) { return m_colorD98[nSlot]; }
 int PC::GetCubeMode() { return m_nCubeModeFFC; }
 
 // @0x1416595d0
-int PC::FUN_1416595d0() { return m_nCubeModeFFC != 0; }
+int PC::IsInCubeMode() { return m_nCubeModeFFC != 0; }
 
 // @0x141659610
 int PC::IsCubeMode1() { return m_nCubeModeFFC == 1; }
@@ -1920,7 +1912,7 @@ MS2_REPLACE_METHOD(0x141659700, PC, GetCubeCraft, 18, 0x829A31E1);
 // @0x141659720
 void PC::FUN_141659720()
 {
-    if (FUN_1416595d0() == 0)
+    if (IsInCubeMode() == 0)
         return;
     if (m_pCubeCraft == 0)
         return;
@@ -2422,7 +2414,7 @@ void PC::FUN_141663be0(const NiFixedString& kSequence, float fSpeed, const NiFix
     std::set<unsigned int>::iterator it;
     for (it = m_set1210.begin(); it != m_set1210.end(); ++it)
     {
-        GameObject* pObj = ((GameObject*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1180(*it));
+        GameObject* pObj = ((GameObject*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FindObjectById(*it));
         if (pObj == 0)
             continue;
         CEffectObject* pEffect = dynamic_cast<CEffectObject*>(pObj);
@@ -2438,7 +2430,7 @@ void PC::FUN_141663d00(efd::Point3 kDir)
     std::set<unsigned int>::iterator it;
     for (it = m_set1210.begin(); it != m_set1210.end(); ++it)
     {
-        GameObject* pObj = ((GameObject*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1180(*it));
+        GameObject* pObj = ((GameObject*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FindObjectById(*it));
         if (pObj == 0)
             continue;
         CEffectObject* pEffect = dynamic_cast<CEffectObject*>(pObj);
@@ -2538,7 +2530,7 @@ void PC::FUN_141657c80(bool bEnable)
 void PC::FUN_141659000(int bForce)
 {
     int bActive = vfunc_65() && m_spStateMgr->GetState()->vfunc_15();
-    if (FUN_1416595d0())
+    if (IsInCubeMode())
         bActive = 0;
     if (m_spStateMgr->GetState()->vfunc_16())
         bActive = 1;
@@ -2627,7 +2619,7 @@ Unk_PCActionTimer* PC::FUN_14165ca50()
 {
     if (m_spFC8 == 0)
         return 0;
-    if (!m_spFC8->FUN_140addea0())
+    if (!reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140addea0())
         return 0;
     return m_spFC8.get();
 }
@@ -2758,9 +2750,9 @@ void PC::vfunc_24(int nFlags)
     {
         int bShow = 1;
         int bVisible = 1;
-        if (((class Unk_PCEquipConfig*)FUN_1409f7c90())->FUN_141622790())
+        if (((class COptimizer*)FUN_1409f7c90())->GetEnabled())
         {
-            bVisible = ((class Unk_PCEquipConfig*)FUN_1409f7c90())->FUN_14161cf40();
+            bVisible = ((class COptimizer*)FUN_1409f7c90())->GetSuppressed();
             if (bVisible == 0)
                 bShow = 0;
         }
@@ -2842,12 +2834,12 @@ int PC::FUN_1416538d0(CDamageRecord* pRecord)
         return 0;
     if (pAttack->m_eGrabTargetType != 1)
         return 0;
-    if (FUN_14166c930() == 0x2b)
+    if (GetCurStateId() == 0x2b)
         return 0;
     PCBase* pOwner = ((PCBase*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd1200(pRecord->m_nOwnerId));
     if (pOwner == 0)
         return 0;
-    if (pOwner->FUN_14166ce30())
+    if (pOwner->IsDead())
         return 0;
     if (((AdditionalCliList*)(Unk_PCBaseBuffs*)(pOwner->FUN_1416749a0()))->FUN_1409709b0())
         return 0;
@@ -2890,7 +2882,7 @@ int PC::FUN_141653f00()
     if (spRight == 0)
         spRight = FUN_141655ee0(5, 1);
     if (spRight.get())
-        nRight = spRight->FUN_1411dc7f0()->FUN_14053c620();
+        nRight = spRight->FUN_1411dc7f0()->GetEquipSubtype();
     if ((spRight.get() ? true : false) && (spRight->GetItem().get() ? true : false))
     {
         if (FUN_141662eb0(spRight->GetItem().get()) == 0)
@@ -2900,7 +2892,7 @@ int PC::FUN_141653f00()
     if (spLeft == 0)
         spLeft = FUN_141655ee0(4, 1);
     if (spLeft.get())
-        nLeft = spLeft->FUN_1411dc7f0()->FUN_14053c620();
+        nLeft = spLeft->FUN_1411dc7f0()->GetEquipSubtype();
     if ((spLeft.get() ? true : false) && (spLeft->GetItem().get() ? true : false))
     {
         if (FUN_141662eb0(spLeft->GetItem().get()) == 0)
@@ -3013,7 +3005,7 @@ MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
 // @0x141660120
 bool PC::FUN_141660120()
 {
-    if (FUN_14166c930() != 0x20)
+    if (GetCurStateId() != 0x20)
         return false;
     State* pState = FUN_14166ccb0();
     if (pState == 0)
@@ -3044,7 +3036,7 @@ int PC::FUN_14165c090(efd::Point3 kPos)
     kInfo.m_groups = 0x201;
     if (!((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
         return false;
-    return !FUN_14166d220()->FUN_1412410c0(kPos, m_unk_620.y * 0.5f);
+    return !GetPhysicsBody()->FUN_1412410c0(kPos, m_unk_620.y * 0.5f);
 }
 
 // @0x14165df00
@@ -3084,7 +3076,7 @@ void PC::vfunc_49()
 // @0x141659250
 void PC::FUN_141659250(int nValue, CubeItemInfo* pInfo)
 {
-    if (FUN_1416595d0())
+    if (IsInCubeMode())
     {
         if (m_pCubeCraft != 0)
         {
@@ -3114,9 +3106,9 @@ void PC::FUN_141659250(int nValue, CubeItemInfo* pInfo)
 // @0x141659450
 void PC::vfunc_135(int nMode, int nValue, void* pInfo)
 {
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
         return;
-    if (FUN_1416595d0() == 0)
+    if (IsInCubeMode() == 0)
     {
         if (FUN_14123bea0() == 0)
             vfunc_59(5, 0, 0, 0);
@@ -3131,9 +3123,9 @@ void PC::vfunc_135(int nMode, int nValue, void* pInfo)
     {
         Unk_PCHousingSvcPtr spHousing(FUN_1401cd040(&DAT_143b059e8));
         if (nMode == 0)
-            reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())->FUN_1410cc160(0);
+            reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())->FUN_1410cc160(0);
         else if (nValue != 2)
-            reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())->FUN_1410cc160(1);
+            reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spHousing).operator->())->FUN_1410cc160(1);
     }
 }
 
@@ -3200,7 +3192,7 @@ void PC::FUN_1416599b0()
 // @0x141659af0
 egf::Entity* PC::FUN_141659af0(int nKind)
 {
-    if (FUN_1416595d0())
+    if (IsInCubeMode())
         return 0;
     egf::Entity* pEntity = FUN_141659b80(nKind, 0xbadf0a13, 90.0f);
     if (pEntity)
@@ -3214,7 +3206,7 @@ egf::Entity* PC::FUN_141659af0(int nKind)
 // @0x141659b80
 egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
 {
-    if (FUN_1416595d0())
+    if (IsInCubeMode())
         return 0;
     efd::Point3 kMy = reinterpret_cast<Unk_PCRideView*>(this)->FUN_1416767d0();
     float fRange = 50.0f;
@@ -3241,11 +3233,11 @@ egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
         if (FUN_140966ea0(kMy, kPos) >= fRange)
             continue;
         if (nKind == 0 && nModel == 0xc13e30c8 &&
-            !static_cast<Unk_PCMoveKeys*>(FUN_14166d240())->FUN_141683100(0x30d41) &&
+            !static_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141683100(0x30d41) &&
             CMouseController::GetInstance()->FUN_140ad2220() == 0)
             continue;
         if (nKind == 0 && nModel == 0xbadf0a13 &&
-            !static_cast<Unk_PCMoveKeys*>(FUN_14166d240())->FUN_141682fe0(0x30d41) &&
+            !static_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141682fe0(0x30d41) &&
             CMouseController::GetInstance()->FUN_140ad2220() == 0)
             continue;
         if (kMy.z < kPos.z)
@@ -3337,14 +3329,14 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
         MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (!spItem)
             continue;
-        if (spItem->FUN_140526bd0() < *Client::Constants::GetInstance()->ShowNameTagEnchantItemGrade.Get())
+        if (spItem->GetRarity() < *Client::Constants::GetInstance()->ShowNameTagEnchantItemGrade.Get())
             continue;
         CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchant();
         if (pEnchant == 0)
             continue;
         if (pEnchant->GetLevel() < *Client::Constants::GetInstance()->ShowNameTagEnchantLevel.Get())
             continue;
-        aEnchants.push_back(std::make_pair(pEnchant->GetLevel(), spItem->FUN_140526bd0()));
+        aEnchants.push_back(std::make_pair(pEnchant->GetLevel(), spItem->GetRarity()));
     }
     std::sort(aEnchants.begin(), aEnchants.end(), Unk_PCEnchantOrder());
     if (aEnchants.size() > 0)
@@ -3373,22 +3365,22 @@ void PC::FUN_1416629d0(Vector3 kPos, Vector3 kRot)
         if (spStates.get())
             ((CStateManager*)spStates)->FUN_1417daa70();
     }
-    if (FUN_14166ce30() == 0 && spRidee == NULL && FUN_14166c930() != 0x3a)
+    if (IsDead() == 0 && spRidee == NULL && GetCurStateId() != 0x3a)
         vfunc_59(1, 0, 0, 0);
     vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
     vfunc_21(reinterpret_cast<const efd::Point3&>(kRot));
     SetTargetYaw(kRot.z);
-    if (FUN_14166d220())
+    if (GetPhysicsBody())
     {
-        FUN_14166d220()->FUN_141240730();
-        ((class GameObjectControllerHitReport*)(void*)(((void*)((GameObjectController*)(Unk_PCBaseBody*)(FUN_14166d220()))->FUN_141240f20())))->FUN_140cfaf30();
+        GetPhysicsBody()->FUN_141240730();
+        ((class GameObjectControllerHitReport*)(void*)(((void*)((GameObjectController*)(Unk_PCBaseBody*)(GetPhysicsBody()))->FUN_141240f20())))->FUN_140cfaf30();
     }
     if (spRidee)
     {
         spRidee->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
         spRidee->vfunc_21(reinterpret_cast<const efd::Point3&>(kRot));
         spRidee->SetTargetYaw(kRot.z);
-        Unk_PCBaseBody* pBody = spRidee->FUN_14166d220();
+        Unk_PCBaseBody* pBody = spRidee->GetPhysicsBody();
         if (pBody)
         {
             pBody->FUN_141240730();
@@ -3517,7 +3509,7 @@ void PC::FUN_14165d300(int nA, int nB, int nHitter)
         bool bLocal = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0()) == this;
         if (nHitter != 0)
         {
-            m_spFC8->FUN_140ade030(nHitter, bLocal ? 1 : 3);
+            reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140ade030(nHitter, bLocal ? 1 : 3);
             if (bLocal)
                 ((CEffectService*)(Unk_PCFxMgr*)(((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())))->FUN_1411a5770(4, (GameObject*)(PCBase*)(this));
         }
@@ -3526,8 +3518,8 @@ void PC::FUN_14165d300(int nA, int nB, int nHitter)
     else
     {
         bool bLocal = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0()) == this;
-        m_spFC8->FUN_140ade030(nHitter, bLocal ? 1 : 3);
-        m_spFC8->FUN_140ade420(6, 1000);
+        reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140ade030(nHitter, bLocal ? 1 : 3);
+        reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140ade420(6, 1000);
         if (FUN_141657730().get())
             FUN_141657730()->FUN_141992ea0(nA, nB);
     }
@@ -3538,10 +3530,10 @@ void PC::FUN_14165d550(int bHide)
 {
     if (m_spFC8 == 0)
         return;
-    m_spFC8->FUN_140ade420(3, 1000);
+    reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140ade420(3, 1000);
     if (bHide != 0)
     {
-        egf::EntityPtr spEntity = m_spFC8->FUN_140adf980();
+        egf::EntityPtr spEntity = reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->GetEntity();
         if (spEntity)
         {
             bool bVisible = false;
@@ -3649,7 +3641,7 @@ void PC::FUN_141660ee0()
     if (m_unk_b0 == 0)
         vfunc_23(0);
     vfunc_144();
-    ((class Unk_PCEquipConfig*)FUN_1409f7c90())->FUN_14161cf60(this);
+    reinterpret_cast<COptimizer*>(FUN_1409f7c90())->ApplyModeToPlayer(this);
 }
 
 // @0x1416616a0
@@ -3738,7 +3730,7 @@ int PC::FUN_14165a540()
             // the cell above the cube must be free
             Unk_Int3 kCell = pCube->position;
             kCell.z += 1;
-            Cube* pAbove = ((class Unk_PCHousingSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410b8a60(kCell);
+            Cube* pAbove = ((class CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->GetCubeAtCell(kCell);
             if (pAbove != 0)
                 return 0;
             efd::Point3 kDir(0.0f, 0.0f, 0.0f);
@@ -3755,13 +3747,13 @@ int PC::FUN_14165a540()
                 case 1:
                     kDir.y = 1.0f;
                     kDir.x = -1.0f;
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0x100);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0x100);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3771,13 +3763,13 @@ int PC::FUN_14165a540()
                 case 3:
                     kDir.y = 1.0f;
                     kDir.x = 1.0f;
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 1);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 1);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0x100);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0x100);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3787,13 +3779,13 @@ int PC::FUN_14165a540()
                 case 5:
                     kDir.y = -1.0f;
                     kDir.x = 1.0f;
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 1);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 1);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff00);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff00);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3803,13 +3795,13 @@ int PC::FUN_14165a540()
                 case 7:
                     kDir.y = -1.0f;
                     kDir.x = -1.0f;
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff);
                     if (pSide != 0)
                     {
                         *ppSide = pSide->entity;
                         ppSide = &pSideB;
                     }
-                    pSide = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff00);
+                    pSide = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pFound, 0xff00);
                     if (pSide != 0)
                         *ppSide = pSide->entity;
                     break;
@@ -3914,7 +3906,7 @@ int PC::FUN_14165b500(int nKind)
                 kInfo.m_groups = StateClimb::FUN_1417bc010();
                 if (((class CPhysXHelper*)FUN_1409f7ca0())->CastRay(&kInfo, 0))
                 {
-                    if (reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b8e60(kInfo.m_hitEntity) != 0)
+                    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->GetCubeByEntity((egf::Entity*)kInfo.m_hitEntity) != 0)
                     {
                         efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220)
                             - efd::Point3(0.0f, 0.0f, 90.0f);
@@ -3966,7 +3958,7 @@ int PC::FUN_14165b500(int nKind)
             {
                 int nOffset = aOffsets[i];
                 efd::Point3 kDir = aDirs[i];
-                if (reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pCube, nOffset) == 0)
+                if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9080(pCube, nOffset) == 0)
                 {
                     efd::Point3 kFrom = kMy;
                     kFrom += -kDir * 25.0f;
@@ -4016,7 +4008,7 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
     {
         MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(5, false);
         if (spWeapon.get())
-            nRightType = spWeapon->FUN_1411dc7f0()->FUN_14053c620();
+            nRightType = spWeapon->FUN_1411dc7f0()->GetEquipSubtype();
         ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
         spRight->GetModels(aModels);
         for (unsigned int i = 0; i < aModels.GetCount(); i++)
@@ -4039,7 +4031,7 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
     {
         MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(4, false);
         if (spWeapon.get())
-            nLeftType = spWeapon->FUN_1411dc7f0()->FUN_14053c620();
+            nLeftType = spWeapon->FUN_1411dc7f0()->GetEquipSubtype();
         ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
         spLeft->GetModels(aModels);
         for (unsigned int i = 0; i < aModels.GetCount(); i++)
@@ -4137,7 +4129,7 @@ void PC::FUN_14165cac0()
     efd::UInt32 nObjectId = FUN_14123c580();
     static_cast<Unk_CachedEntity*>(spEntity.operator->())->SetPropertyValue(0x85b708e6, nObjectId);
     m_spFC8.AssignRaw(reinterpret_cast<Unk_PCActionTimer*>(new CBreakableObject));
-    m_spFC8->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
+    reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
     if (FUN_141657730().get())
         FUN_141657730()->FUN_141992e40();
 }
@@ -4331,7 +4323,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
         return;
     if (((AdditionalCliList*)(Unk_PCBaseBuffList*)&(m_unk_748))->FUN_140970c10(spRecord->GetAttackData(), 1) != 0)
         return;
-    if (FUN_14166c930() == 0xc)
+    if (GetCurStateId() == 0xc)
         return;
     if (spRecord->GetTotalDamage() == 0)
         return;
@@ -4648,7 +4640,7 @@ void PC::vfunc_40(float a, float b, float c, float d)
 // Die: the dying state, and the PvP slow motion.
 int PC::vfunc_137()
 {
-    if (FUN_14166c930() != 0xc && FUN_141670a00(4) == 0)
+    if (GetCurStateId() != 0xc && FUN_141670a00(4) == 0)
     {
         m_nFF4 = 1;
         if (m_n10ec > 0)
@@ -4669,8 +4661,8 @@ void PC::vfunc_142()
 {
     if (m_spFC8 == 0)
         return;
-    int bFinished = m_spFC8->FUN_140adea80() != 3 && FUN_14166c930() != 0xc;
-    if (m_spFC8->FUN_140adf350() || bFinished)
+    int bFinished = reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->GetState() != 3 && GetCurStateId() != 0xc;
+    if (reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140adf350() || bFinished)
     {
         m_spFC8 = 0;
         return;
@@ -4681,8 +4673,8 @@ void PC::vfunc_142()
         if (spSvc.FUN_140885310())
             kPos = reinterpret_cast<Unk_PCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410b9150(kPos);
     }
-    m_spFC8->FUN_140adf770(kPos);
-    m_spFC8->FUN_140adeaf0(GetTickCountMs2());
+    reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140adf770(kPos);
+    reinterpret_cast<CBreakableObject*>(m_spFC8.operator->())->FUN_140adeaf0(GetTickCountMs2());
 }
 
 // Hide (n != 0) / show the player: the equipment under the default reason, the tails and the random target effect.

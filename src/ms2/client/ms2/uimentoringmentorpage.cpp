@@ -81,7 +81,6 @@ public:
 class Unk_MentorInfo
 {
 public:
-    int FUN_140b71650();
     MS2Ptr<Unk_MentorEntry> FUN_140b71680(int n);
     int FUN_140b71720();
     int FUN_140b71750();
@@ -91,7 +90,8 @@ extern Unk_MentorInfo* DAT_143abb6d8;
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class Unk_MentorInviteDialog { public: void FUN_140c2f010(); };
+class Unk_MentorInviteDialog;
+class UIInviteMentoringDialog { public: void FUN_140c2f010(); };   // C3: member view (uiinvitementoringdialog.h)
 Unk_MentorInviteDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
 unsigned __int64 FUN_140718350(const CString& str);
@@ -110,7 +110,7 @@ CString FUN_140719530(unsigned __int64 n);                               // numb
 CStringW FUN_14052b9d0(CStringW strFormat, const CStringW& a, const CStringW& b);
 
 // @0x140c70240 (mentee unit)
-class CMentoringManager;
+class CMentoringManager { public: int FUN_140b71650(); };   // C3: member view (mentoringmanager.h)
 
 // ============================================================================
 // ASMentoringMentorPage / UIMentoringMentorPage
@@ -139,9 +139,9 @@ void ASMentoringMentorPage::OnInit()
 void ASMentoringMentorPage::Refresh()
 {
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
-    int nMentor = reinterpret_cast<Unk_MentorInfo*>(TSingleton<CMentoringManager>::GetInstance())->FUN_140b71650();
+    int nMentor = TSingleton<CMentoringManager>::GetInstance()->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMentorDailyRewardCoin();
-    m_coin->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentor, nReward));
+    m_coin->SetTextW(FUN_1409e9890(L"s_mentoring_coin_info", nMentor, nReward));
 }
 
 // @0x140c716e0
@@ -178,19 +178,19 @@ int UIMentoringMentorPage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             return 1;
         }
         Unk_MentorInviteDialog* pDlg = FUN_140b6f4c0(0x4f4c);
-        if (pDlg) pDlg->FUN_140c2f010();
+        if (pDlg) reinterpret_cast<UIInviteMentoringDialog*>(pDlg)->FUN_140c2f010();
         return 1;
     }
     else if (_stricmp(szMethod, "onPartyRequest") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             TSingleton<CPartyManager>::GetInstance()->SendPartyMode1(data.FUN_1422b8f40());
     }
     else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float x = data.PopFloat();
             float y = data.PopFloat();
@@ -345,13 +345,13 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
         nStartMonth = tStart.GetMonth();
         nStartYear = tStart.GetYear();
         CStringW strMsg = FUN_14028dfa0<int, int, int, int, int, int, CStringW>(L"s_mentoring_mentor_register_warn", nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay, pActor->GetName());
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->FUN_141a024a0(0);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMentorRegisterPage::SendMentor));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMentorRegisterPage::SendMentor));
                 FUN_140d73c60(spBox);
             }
         }
@@ -543,7 +543,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
     CStringW strName = pArgs->FUN_1422b8f40();
     if (operator==(strName, "guide"))
     {
-        int nQuest = pArgs->FUN_1422b8b10();
+        int nQuest = pArgs->PopUInt();
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuest);
         if (spQuest.get() != 0)
         {
@@ -559,7 +559,7 @@ void UIMentoringMissionPage::vfunc_4(Scaleform::GFx::Value* pOut, ASData* pArgs)
     }
     else if (operator==(strName, "menteeCoin"))
     {
-        int nQuest = pArgs->FUN_1422b8b10();
+        int nQuest = pArgs->PopUInt();
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuest);
         if (spQuest.get() != 0)
         {
@@ -582,18 +582,18 @@ int UIMentoringMissionPage::vfunc_5(const char* szMethod, const Scaleform::GFx::
     if (_stricmp(szMethod, "onChangeOpeningDay") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nDay = data.FUN_1422b8a10();
+            int nDay = data.PopInt();
             FUN_140c74450(nDay + 1);
         }
     }
     else if (_stricmp(szMethod, "onReceiveItem") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nQuest = data.FUN_1422b8b10();
+            int nQuest = data.PopUInt();
             COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
             pkt.Encode1(0x1d);
             pkt.Encode4(nQuest);

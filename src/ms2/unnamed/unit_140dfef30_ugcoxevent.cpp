@@ -95,7 +95,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 CStringW FUN_140719630(int n);
 CStringW FUN_140719a00(__int64 n);
 CStringW FUN_1409404f0(__int64 n);
@@ -184,7 +183,7 @@ void FUN_140dfef30(CInPacket& packet)
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
     spBox->SetTitle(strTitle);
-    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff210));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff210));
     FUN_140d73c60(spBox);
 }
 
@@ -233,7 +232,7 @@ void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax,
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
     spBox->SetTitle(strTitle);
-    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff8d0));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff8d0));
     spBox->Append<__int64>(nId);
     FUN_140d73c60(spBox);
 }
@@ -331,7 +330,7 @@ void FUN_140dff970()
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
-    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dffad0));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dffad0));
     FUN_140d73c60(spBox);
 }
 
@@ -363,7 +362,7 @@ void FUN_140dffb50(void* pListener)
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
-    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dffdf0));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dffdf0));
     spBox->FUN_141a02860(pListener);
     spBox->SetExtra(L"leaveInField");
     FUN_140d73c60(spBox);
@@ -531,7 +530,7 @@ void FUN_140e00690(CInPacket& packet)
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
     spBox->SetTitle(GetStringCommonByKey(L"s_ugcox_move_eventmap_confirm"));
-    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff700));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dff700));
     spBox->FUN_140534050(nMapId);
     spBox->FUN_140534050(nPortalId);
     spBox->FUN_140e01830(nFee);

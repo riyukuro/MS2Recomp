@@ -154,7 +154,7 @@ bool TSocketGemStoneInfo::IsLocked()
 // @0x14061fc00
 bool TSocketGemStoneInfo::SetBindFromItem(MS2Ptr<CItem> spGem)
 {
-    if (spGem == 0 || spGem->FUN_140527930() == 0 || spGem->FUN_140527930()->FUN_140635120() == 0)
+    if (spGem == 0 || spGem->FUN_140527930() == 0 || spGem->FUN_140527930()->HasBinding() == 0)
         return false;
     CItemTransfer::CItemBinding* pBinding = spGem->FUN_140527930()->GetBinding();
     if (pBinding != 0)

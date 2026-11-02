@@ -505,7 +505,7 @@ bool Unk_PCMove::FUN_141683ef0()
     if (m_pOwner->GetKind() != 0x6200045 && pSelf != m_pOwner && reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671b20() == 0
         && m_pOwner->GetKind() != 0x6200064 && m_pOwner->GetKind() != 0x6200081)
         return false;
-    if (reinterpret_cast<PCBase*>(pSelf)->FUN_14166ce30() != 0)
+    if (reinterpret_cast<PCBase*>(pSelf)->IsDead() != 0)
         return false;
     if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d7a0(0xf))
         return false;

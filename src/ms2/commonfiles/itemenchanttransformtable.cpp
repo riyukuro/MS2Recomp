@@ -201,8 +201,8 @@ int CItemEnchantTransformTable::FUN_140592110(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    CEnchantTransformDataPtr spData = GetInstance()->Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->FUN_140526bd0(),
-        spItem->GetRequiredLevel(), spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c620());
+    CEnchantTransformDataPtr spData = GetInstance()->Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->GetRarity(),
+        spItem->GetRequiredLevel(), spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetEquipSubtype());
     if (spData == 0)
         return 0;
     if (spItem->FUN_140528ca0() == 0)
@@ -245,8 +245,8 @@ CEnchantTransformDataPtr CItemEnchantTransformTable::FindByItem(MS2Ptr<CItem> sp
 {
     if (spItem == 0)
         return CEnchantTransformDataPtr(0);
-    return Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->FUN_140526bd0(), spItem->GetRequiredLevel(),
-                         spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c620());
+    return Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->GetRarity(), spItem->GetRequiredLevel(),
+                         spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetEquipSubtype());
 }
 
 // @0x140592620

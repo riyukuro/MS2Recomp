@@ -216,7 +216,7 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     else if (_stricmp("OnSave", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             MaidProfile profile;
             for (unsigned i = 0; i < nArgs; i++)
@@ -336,7 +336,7 @@ void UIMaidDialog::FUN_1412d7aa0()
     obj.FUN_1407cb9c0("affinityGauge", nGauge);
     obj.FUN_1407cb9c0("mood", spMaid->m_nMood);
     CStringW strBackground(spDesc->background);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strBackground);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strBackground);
     obj.FUN_1407cbb20("background", CStringW(strBackground));
     unsigned nEditable = spMaid->FUN_1409eeda0().IsEmpty();
     if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
@@ -384,7 +384,7 @@ int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         ATL::CAtlArray<Unk_MaidUnused*> kArr;
         FUN_14151f200();

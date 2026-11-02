@@ -223,7 +223,7 @@ int CGuideConditionDead::vfunc_3()
     Unk_GcPC* pPC = ((Unk_GcPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(pPC->FUN_14166ce30());
+    return FUN_1413a55a0(pPC->IsDead());
 }
 MS2_REPLACE_METHOD(0x1413A8210, CGuideConditionDead, vfunc_3, 66, 0x63E40D3D);
 

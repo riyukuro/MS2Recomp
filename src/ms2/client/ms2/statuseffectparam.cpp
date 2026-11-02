@@ -298,10 +298,10 @@ static __inline errno_t ms2_sep_memcpy_s(void* const d, rsize_t const dsz, void 
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnSepMemcpyS)(void*, rsize_t, const void*, rsize_t) = &ms2_sep_memcpy_s;
 #pragma intrinsic(memcpy, memset)
 
-void* FUN_1420b8410();                                              // default memory log handler factory
+namespace efd { class IMemLogHandler; IMemLogHandler* CreateDefaultMemoryLogHandler(); }   // C3: was FUN_1420b8410
 
 // @0x1418031f0
 void FUN_1418031f0()
 {
-    FUN_1420b8410();
+    efd::CreateDefaultMemoryLogHandler();
 }

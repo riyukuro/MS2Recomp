@@ -151,13 +151,13 @@ void ASTooltip::SetEnableLClick(const CStringW& strText)
 MS2_REPLACE_METHOD(0x1409C6940, ASTooltip, SetEnableLClick, 91, 0x7BDAE921);
 
 // @0x1409c69b0
-void ASTooltip::FUN_1409c69b0(const CStringW& strTitle)
+void ASTooltip::SetEnablePuton(const CStringW& strTitle)
 {
     if (m_48 & 0x100)
         return;
     FUN_1407cbb20("enablePuton", strTitle);
 }
-MS2_REPLACE_METHOD(0x1409C69B0, ASTooltip, FUN_1409c69b0, 91, 0x3AB5F601);
+MS2_REPLACE_METHOD(0x1409C69B0, ASTooltip, SetEnablePuton, 91, 0x3AB5F601);
 
 // @0x1409c6c80
 void ASTooltip::FUN_1409c6c80()
@@ -234,7 +234,7 @@ void ASObj::FUN_1409eb310(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 MS2_REPLACE_METHOD(0x1409EB310, ASObj, FUN_1409eb310, 152, 0x1164D0E6);
 
@@ -294,7 +294,7 @@ MS2_REPLACE_METHOD(0x1409C7C10, ASTooltip, SetItemName, 80, 0x3F6AE606);
 // @0x1409c7c70
 void ASTooltip::SetItemGrade(CItem* pItem)
 {
-    FUN_1409adc90(s_strItemGrade, pItem->FUN_140526bd0());
+    FUN_1409adc90(s_strItemGrade, pItem->GetRarity());
 }
 MS2_REPLACE_METHOD(0x1409C7C70, ASTooltip, SetItemGrade, 66, 0xFE5BD3AD);
 
@@ -369,7 +369,7 @@ void ASTooltip::SetItemPetRankAndDisableShadow(CItem* pItem)
 {
     if (pItem->IsPetItem() != 0)
     {
-        FUN_1409adc90(s_strItemPetRank, pItem->FUN_140526bd0());
+        FUN_1409adc90(s_strItemPetRank, pItem->GetRarity());
         FUN_1407cb9c0(s_strDropShadowDisable, 1);
     }
 }
@@ -640,42 +640,41 @@ extern CStringW GetStringCommonByKey(const CStringW& strKey);
 static int s_bTextsLoaded;
 
 // @0x1409e5480  loads the tooltip texts once
-// MS2-FUNCTIONAL: frame/unwind layout differs (the exe keeps one temporary per string, 0x348 frame); same loads and stores
 void FUN_1409e5480()
 {
-    if (s_bTextsLoaded == 0)
-    {
-        s_wsKindLabel[0] = GetStringCommon(0xbf3);
-        s_wsKindLabel[2] = GetStringCommon(0xbf4);
-        s_wsKindLabel[4] = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_kinds_merge_1step"));
-        s_wsMerge = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_kinds_merge"));
-        s_wsText0xbf5 = GetStringCommon(0xbf5);
-        s_wsText0x48d = GetStringCommon(0x48d);
-        s_wsText0xbf8 = GetStringCommon(0xbf8);
-        s_wsStatRowBest = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_stat_row_best"));
-        s_wsNewline = L"\n";
-        s_wsText0xbf6 = GetStringCommon(0xbf6);
-        s_wsText0xbf7 = GetStringCommon(0xbf7);
-        s_wsEnchantExp = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_enchant_exp"));
-        s_wsWhiteFont = L"<font color='#ffffff'>{0}</font>";
-        s_wsUnlimited = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_unlimited"));
-        s_wsSetTitle = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_setitem_set_title"));
-        s_wsSetNameRow = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_setitem_name_row"));
-        s_wsSetStatRow = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_setitem_stat_row"));
-        s_wsSetName = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_setitem_name"));
-        s_wsUgcSetName = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_ugcmap_setitem_name"));
-        s_wsUgcSetRow = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_ugcmap_setitem_row"));
-        s_wsSocket = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket"));
-        s_wsSocketByPet = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_by_pet"));
-        s_wsSocketRowStat = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_stat"));
-        s_wsSocketRowStatByPet = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_stat_by_pet"));
-        s_wsSocketRowEmpty = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_empty"));
-        s_wsSocketRowLock = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_lock"));
-        s_wsSocketTransfer = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_transfer"));
-        s_wsPetEvolutionPoint = GetStringCommonByKey(CStringW(L"s_pet_tooltip_evolution_point"));
-        s_wsPetExp = GetStringCommonByKey(CStringW(L"s_pet_tooltip_exp"));
-        s_bTextsLoaded = 1;
-    }
+    if (s_bTextsLoaded != 0)
+        return;
+
+    s_wsKindLabel[0] = GetStringCommon(0xbf3);
+    s_wsKindLabel[2] = GetStringCommon(0xbf4);
+    s_wsKindLabel[4] = GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge_1step");
+    s_wsMerge = GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge");
+    s_wsText0xbf5 = GetStringCommon(0xbf5);
+    s_wsText0x48d = GetStringCommon(0x48d);
+    s_wsText0xbf8 = GetStringCommon(0xbf8);
+    s_wsStatRowBest = GetStringCommonByKey(L"s_tooltip_itemoption_stat_row_best");
+    s_wsNewline = L"\n";
+    s_wsText0xbf6 = GetStringCommon(0xbf6);
+    s_wsText0xbf7 = GetStringCommon(0xbf7);
+    s_wsEnchantExp = GetStringCommonByKey(L"s_tooltip_itemoption_enchant_exp");
+    s_wsWhiteFont = L"<font color='#ffffff'>{0}</font>";
+    s_wsUnlimited = GetStringCommonByKey(L"s_tooltip_itemoption_unlimited");
+    s_wsSetTitle = GetStringCommonByKey(L"s_tooltip_itemoption_setitem_set_title");
+    s_wsSetNameRow = GetStringCommonByKey(L"s_tooltip_itemoption_setitem_name_row");
+    s_wsSetStatRow = GetStringCommonByKey(L"s_tooltip_itemoption_setitem_stat_row");
+    s_wsSetName = GetStringCommonByKey(L"s_tooltip_itemoption_setitem_name");
+    s_wsUgcSetName = GetStringCommonByKey(L"s_tooltip_itemoption_ugcmap_setitem_name");
+    s_wsUgcSetRow = GetStringCommonByKey(L"s_tooltip_itemoption_ugcmap_setitem_row");
+    s_wsSocket = GetStringCommonByKey(L"s_tooltip_itemoption_socket");
+    s_wsSocketByPet = GetStringCommonByKey(L"s_tooltip_itemoption_socket_by_pet");
+    s_wsSocketRowStat = GetStringCommonByKey(L"s_tooltip_itemoption_socket_row_stat");
+    s_wsSocketRowStatByPet = GetStringCommonByKey(L"s_tooltip_itemoption_socket_row_stat_by_pet");
+    s_wsSocketRowEmpty = GetStringCommonByKey(L"s_tooltip_itemoption_socket_row_empty");
+    s_wsSocketRowLock = GetStringCommonByKey(L"s_tooltip_itemoption_socket_row_lock");
+    s_wsSocketTransfer = GetStringCommonByKey(L"s_tooltip_itemoption_socket_transfer");
+    s_wsPetEvolutionPoint = GetStringCommonByKey(L"s_pet_tooltip_evolution_point");
+    s_wsPetExp = GetStringCommonByKey(L"s_pet_tooltip_exp");
+    s_bTextsLoaded = 1;
 }
 // not hooked: writes the unit statics s_ws*/s_bTextsLoaded (DLL-local copies; the exe readers would see empty strings)
 
@@ -701,7 +700,7 @@ bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
         }
         return true;
     }
-    std::pair<int, int> range = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandomOptionRange(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), nIndex);
+    std::pair<int, int> range = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandomOptionRange(spItem->FUN_1405276c0(), spItem->GetRarity(), nIndex);
     bool bBest = range.second == spOption->GetValue();
     if (bBest)
     {
@@ -739,7 +738,7 @@ bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
         }
         return true;
     }
-    std::pair<int, int> range = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandomSpecialOptionRange(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), nIndex);
+    std::pair<int, int> range = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandomSpecialOptionRange(spItem->FUN_1405276c0(), spItem->GetRarity(), nIndex);
     bool bBest = range.second == spOption->GetValue();
     if (bBest)
     {
@@ -1258,7 +1257,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
         CStringW& strSocket = strKinds[2];
         if (pItem->IsPetItem())
         {
-            unsigned nCount = FUN_14072fd00(pItem->FUN_140526bd0());
+            unsigned nCount = FUN_14072fd00(pItem->GetRarity());
             strSocket.Append(StringFormat(s_wsText0xbf8, FUN_14028dfa0(CStringW(L"s_pet_item_option_count"), nCount)));
         }
     }
@@ -1389,7 +1388,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
         {
             __int64 nExp = pItem->FUN_140528b90();
             unsigned short nRank = pItem->FUN_1405282d0();
-            int nGrade = pItem->FUN_140526bd0();
+            int nGrade = pItem->GetRarity();
             unsigned short nLevel = pItem->FUN_140528c20();
             __int64 nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetExp(nLevel, nGrade, nRank);
             int nPercent = 0;
@@ -1553,7 +1552,7 @@ void ASTooltip::FUN_1409cc090(CItem* pItem)
                 strCount = BlockFormat(0x7a8, nTotal);
             strText.Append(StringFormat(s_wsWhiteFont, strCount));
         }
-        unsigned nMaxSockets = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(pItem->FUN_140527840()->property.socketDataId, pItem->FUN_140526bd0(), MS2Ptr<CItemData>(pItem->FUN_140527840()));
+        unsigned nMaxSockets = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(pItem->FUN_140527840()->property.socketDataId, pItem->GetRarity(), MS2Ptr<CItemData>(pItem->FUN_140527840()));
         if (nMaxSockets > 0 && pItem->IsPetItem() == 0)
         {
             bool bShow = (FUN_1409c6560() & 0x4000) == 0;
@@ -1578,11 +1577,11 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
 {
     if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x2e))
         return;
-    if (pItem == 0 || pItem->FUN_140527840() == 0 || pItem->FUN_1405279c0() == 0)
+    if (pItem == 0 || pItem->FUN_140527840() == 0 || pItem->GetSocket() == 0)
         return;
     if (pItem->HasSkin() != 0 && !reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x5e))
         return;
-    CItemSocket* pSocket = pItem->FUN_1405279c0();
+    CItemSocket* pSocket = pItem->GetSocket();
     unsigned nFlags = FUN_1409c6560();
     if (nFlags & 0x800)
     {
@@ -1595,7 +1594,7 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
             CStringW strRows;
             if (pSocket->GetMaxSlot() == 0)
             {
-                unsigned nMax = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(pItem->FUN_140527840()->property.socketDataId, pItem->FUN_140526bd0(),
+                unsigned nMax = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(pItem->FUN_140527840()->property.socketDataId, pItem->GetRarity(),
                                                               MS2Ptr<CItemData>(pItem->FUN_140527840()));
                 for (unsigned i = 0; i < nMax; i++)
                     strRows.Append(strRowEmpty);
@@ -1737,7 +1736,7 @@ void ASTooltip::FUN_1409cd750(CItem* pItem)
 {
     if (FUN_1409c6540() == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(FUN_1409c6540())->FUN_141655c30(pItem->GetItemUid());
+    MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(FUN_1409c6540())->GetEquipByUid(pItem->GetItemUid());
     if (spEquip.get() != 0)
         FUN_1407cbb20(s_strItemEquip, GetStringCommon(0x58a));
     else if ((m_48 & 0x80) != 0)
@@ -2031,7 +2030,6 @@ void ASTooltip::FUN_1409cf4d0(Unk_ShopLifeRef spLife)
 
 // itemCompare: the stat change of equipping the item (stats, special stats, the item level score).
 // @0x1409cfbf0
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe
 void ASTooltip::FUN_1409cfbf0(CItem* pItem)
 {
     MyPC* pPC = reinterpret_cast<MyPC*>(efd::DynamicCast<Unk_AkoMyPC, PCBase>((PCBase*)m_40));
@@ -2100,7 +2098,7 @@ void ASTooltip::FUN_1409cfbf0(CItem* pItem)
     for (unsigned i = 0; i < 0xcf; i++)
     {
         int nStat = i;
-        CStringW strName = FUN_140630e10(i);
+        CStringW strName = FUN_140630e10(nStat);
         if (strName.IsEmpty())
             continue;
         if (aSpecial[nStat] != 0)
@@ -2167,7 +2165,7 @@ void ASTooltip::FUN_1409d0710(CItem* pItem)
     else
     {
         CStringW strText = TSingleton<CStringTable>::GetInstance()->GetItemDescription(pItem->FUN_1405276c0(), "tooltipDescription");
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
         FUN_1407cbb20("itemDescription", strText);
     }
 }
@@ -2251,7 +2249,7 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                 }
             }
         }
-        else if (spData->FUN_14053cd90() == true && spData->function.name == L"InstallBillBoard")
+        else if (spData->HasFunction() == true && spData->function.name == L"InstallBillBoard")
         {
             if (DAT_143ab2964 > 0)
                 strGuide.Append(FUN_14028dfa0(CStringW(L"s_special_item_billboard_tooltip_limit_defence_spamer_level"), DAT_143ab2964));
@@ -2513,7 +2511,7 @@ bool ASTooltip::FUN_1409d2cb0(CItem* pItem)
     bool bHasColor = spData->FUN_14053e2b0(0) >= 0;
     if (bEquipCheck && !bHasColor)
     {
-        MS2Ptr<CEquipItem> spEquip = pPC->FUN_141655c30(pItem->GetItemUid());
+        MS2Ptr<CEquipItem> spEquip = pPC->GetEquipByUid(pItem->GetItemUid());
         if (spEquip == 0)
         {
             CStringW strLines;
@@ -2727,7 +2725,7 @@ void ASTooltip::FUN_1409d4490(CItem* pItem)
         return;
     if (pItem->IsPetItem() == 0)
         return;
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(pItem->FUN_1405282d0(), pItem->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(pItem->FUN_1405282d0(), pItem->GetRarity());
     if (nNeed == 0)
         return;
     if (pItem->FUN_140528c20() < *FUN_1401d3200()->PetMaxLevel.Get())
@@ -2917,7 +2915,7 @@ namespace p3hook { MS2_REPLACE_METHOD(0x1409D5920, ASTooltip, FUN_1409d5920, 363
 void ASTooltip::SetItemDescription(int nItemId)
 {
     CStringW str = TSingleton<CStringTable>::GetInstance()->GetItemDescription(nItemId, "tooltipDescription");
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(str);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(str);
     FUN_1407cbb20("itemDescription", str);
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D5AA0, ASTooltip, SetItemDescription, 189, 0xA32EDB32); }
@@ -3321,9 +3319,9 @@ void ASTooltip::FUN_1409d8570(CItem* pItem)
     if (pItem->FUN_140529640() != 0)
         nItemId = pItem->FUN_140529640();
     int nSockets = 0;
-    if (pItem->FUN_1405279c0() != 0)
-        nSockets = pItem->FUN_1405279c0()->GetOpenSlotCount();
-    FUN_1409d8650(nItemId, pItem->FUN_140526bd0(), nSockets);
+    if (pItem->GetSocket() != 0)
+        nSockets = pItem->GetSocket()->GetOpenSlotCount();
+    FUN_1409d8650(nItemId, pItem->GetRarity(), nSockets);
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D8570, ASTooltip, FUN_1409d8570, 212, 0xF9182D6C); }
 
@@ -3945,7 +3943,7 @@ void ASTooltip::FUN_1409dbfa0(int nSkillId)
         if (nSlot != -1)
             FUN_1407cbb20(s_strItemEquip, GetStringCommon(0x58a));
         else
-            FUN_1409c69b0(GetStringCommon(0x75a));
+            SetEnablePuton(GetStringCommon(0x75a));
     }
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DBFA0, ASTooltip, FUN_1409dbfa0, 386, 0xE6EADCDD); }
@@ -4043,12 +4041,12 @@ void ASTooltip::FUN_1409dc700(int nSkillId, unsigned short nLevel)
     {
         MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(FUN_1409c6540())->FUN_141655c90(5);
         if (spEquip.get() != 0)
-            nRight = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+            nRight = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
     }
     {
         MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(FUN_1409c6540())->FUN_141655c90(4);
         if (spEquip.get() != 0)
-            nLeft = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+            nLeft = spEquip->FUN_1411dc7f0()->GetEquipSubtype();
     }
     {
         int nAllowed = 0;
@@ -4446,7 +4444,7 @@ void ASTooltip::FUN_1409dfa50(CItem* pItem, int& nTransferable, int& nReady, CSt
         if (pTransfer->HasBindingRule() != 0)
         {
             nTransferable = 1;
-            if (pTransfer->FUN_140635120() != 0)
+            if (pTransfer->HasBinding() != 0)
             {
                 nReady = 1;
                 pTransfer->GetBindingOwnerName(reinterpret_cast<PCBase*>(FUN_1409c6540()), &strName);
@@ -4466,9 +4464,9 @@ int ASTooltip::FUN_1409dfae0(CItem* pItem)
         return 0;
     if (!pItem->FUN_140528e20())
         return 0;
-    if (pItem->FUN_1405279c0() != 0 && pItem->FUN_1405279c0()->FUN_140622790() == 0)
+    if (pItem->GetSocket() != 0 && pItem->GetSocket()->FUN_140622790() == 0)
         return 0;
-    if ((pItem->IsPetItem() != 0 || pItem->FUN_140526bd0() >= 4) && pTransfer->GetCount() > 0)
+    if ((pItem->IsPetItem() != 0 || pItem->GetRarity() >= 4) && pTransfer->GetCount() > 0)
         return 1;
     return 0;
 }
@@ -4723,7 +4721,7 @@ int ASTooltip::FUN_1409e0d40(CItem* pItem)
     FUN_1409d0710(pItem);
     FUN_1409d0a80(pItem);
     FUN_1409d1d30(pItem);
-    FUN_1409d64a0(pItem->FUN_1405276c0(), pItem->FUN_140526bd0(), pItem->FUN_140529070(), pItem->FUN_140529090());
+    FUN_1409d64a0(pItem->FUN_1405276c0(), pItem->GetRarity(), pItem->FUN_140529070(), pItem->FUN_140529090());
     FUN_1409c7b10(pItem);
     FUN_1409c72c0(pItem);
     FUN_1409d88e0(MS2Ptr<CItem>(pItem));
@@ -5046,7 +5044,7 @@ void FUN_1409e2ed0(Scaleform::GFx::Value* pOut, ItemAble& item)
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_14052b130(item.vfunc_o18_0(), item.vfunc_o18_1(), 0) != 0)
     {
-        spItem->FUN_140526c70(item.vfunc_o18_2());
+        spItem->SetCountClamped(item.vfunc_o18_2());
         ASTooltip tip((void*)reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0()), 0x20, 2);
         if (tip.FUN_1409e0d40(spItem.get()) != 0)
             *pOut = tip.FUN_1422bb870();
@@ -5702,7 +5700,7 @@ namespace p5hook { MS2_REPLACE_METHOD(0x1409E7460, ASTooltip, FUN_1409e7460, 104
 // @0x1409e7880
 CStringW FUN_1409e7880()
 {
-    CStringW strKey = FUN_1409331f0()->FUN_14142d760(0x49406, 0);
+    CStringW strKey = FUN_1409331f0()->GetActionKeyName(0x49406, 0);
     CStringW str = FUN_14028dfa0(CStringW(L"s_msg_tooltip_enable_preview"), strKey);
     return str;
 }
@@ -5789,7 +5787,7 @@ void ASObj::FUN_1409eb1d0(const char* szName, const ASArray& arr)
 {
     ASData data;
     data.AddObj(arr);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409eb270
@@ -5797,7 +5795,7 @@ void ASObj::FUN_1409eb270(const char* szName, const ASObj& obj)
 {
     ASData data;
     data.AddObj(obj);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409eb3b0
@@ -5805,7 +5803,7 @@ void ASObj::FUN_1409eb3b0(const char* szName, long n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409e7dc0

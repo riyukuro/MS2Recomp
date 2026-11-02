@@ -200,7 +200,7 @@ void StateTaxiCall::vfunc_4(StateData* pData)
         }
         m_nEnd = nNow + nDuration;
         m_bSurprise = 0.9f < FUN_140768090();
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         if (FUN_1417b8560() != 0)
         {
             UICastingBar* pBar = FUN_140ac2270(0x4e72);

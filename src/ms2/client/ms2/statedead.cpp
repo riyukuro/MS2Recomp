@@ -143,7 +143,7 @@ void StateDead::vfunc_4(StateData* pData)
     if (bRevive == true)
     {
         m_pOwner->vfunc_23(0);
-        m_pOwner->FUN_14166dd20(m_pOwner->FUN_141679170(0x40, nAnimId), 1.0f, false, false);
+        m_pOwner->PlayAnimation(m_pOwner->FUN_141679170(0x40, nAnimId), 1.0f, false, false);
         m_pOwner->vfunc_31(false);
     }
     else
@@ -151,7 +151,7 @@ void StateDead::vfunc_4(StateData* pData)
         m_pOwner->vfunc_23(1);
         {
             efd::utf8string kAnim(m_pOwner->vfunc_123(0x34));
-            m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+            m_pOwner->PlayAnimation(kAnim, 1.0f, false, false);
         }
         m_pOwner->vfunc_31(false);
         PCBase* pPCAgain = FUN_1417b8370();
@@ -259,8 +259,8 @@ void StateDeadNPC::vfunc_4(StateData* pData)
         ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
-    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_14123fbf0(5);
-    m_pOwner->FUN_14166dd20(efd::utf8string((const char*)FUN_1409a2360(m_strAnim, 0)), 1.0f, false, false);
+    reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_14123fbf0(5);
+    m_pOwner->PlayAnimation(efd::utf8string((const char*)FUN_1409a2360(m_strAnim, 0)), 1.0f, false, false);
 }
 
 // @0x1417c2f50
@@ -295,7 +295,7 @@ void StateDeadNPC::vfunc_6()
                     else
                         return;
                 }
-                m_pOwner->FUN_14166dd20(kAnim, 1.0f, true, false);
+                m_pOwner->PlayAnimation(kAnim, 1.0f, true, false);
             }
         }
     }
@@ -340,7 +340,7 @@ void StateRevival::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     efd::utf8string kAnim(m_pOwner->vfunc_123(0x33));
-    m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+    m_pOwner->PlayAnimation(kAnim, 1.0f, false, false);
 }
 
 // @0x1417c3350

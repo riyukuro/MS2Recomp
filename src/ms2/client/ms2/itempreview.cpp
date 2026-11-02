@@ -24,6 +24,7 @@ static CString s_tabIndex = "tabIndex";
 #include "ms2/commonfiles/itemgem.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/asmousecursor.h"
 #include "ms2/placeholder/uimeratmarketweapontype.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -57,9 +58,6 @@ MS2Ptr<Unk_PackageItems> FUN_1406e5af0(int nPackageId);                 // the i
 class Unk_GpHud : public CPtred
 {
 public:
-    void FUN_1422cedb0();
-    void FUN_1422cee00();
-    void FUN_1422cee50(int n);
 };
 class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -949,13 +947,13 @@ void ItemPreviewMgr::SetHudMode(int bOn)
     m_bHudOn = bOn;
     if (bOn)
     {
-        spHud->FUN_1422cee50(4);
-        spHud->FUN_1422cedb0();
+        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cee50((Unk_MouseCursorType)4);
+        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cedb0();
     }
     else
     {
-        spHud->FUN_1422cee00();
-        spHud->FUN_1422cee50(0);
+        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cee00();
+        reinterpret_cast<ASMouseCursor*>(spHud.operator->())->FUN_1422cee50((Unk_MouseCursorType)0);
     }
 }
 MS2_REPLACE_METHOD(0x140D406D0, ItemPreviewMgr, SetHudMode, 213, 0xDBA85ECF);

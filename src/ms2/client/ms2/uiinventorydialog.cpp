@@ -644,7 +644,7 @@ void UIInventoryDialog::vfunc_oa0_11(void* a1)
     if (vfunc_55() != 0)
         return;
     if (MS2Ptr<ASTextField> spMeso = GetChild<ASTextField>("m_meso"))
-        spMeso->FUN_1422c4cd0(FUN_1409404f0((__int64)a1));
+        spMeso->SetTextW(FUN_1409404f0((__int64)a1));
 }
 MS2_REPLACE_METHOD_VIA(0x1419976E0, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_11, 272, 0);
 
@@ -690,7 +690,7 @@ void UIInventoryDialog::vfunc_26(int nItemId)
     MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    if (pPc->FUN_14166c930() != 1 && pPc->FUN_14166c930() != 0xe)
+    if (pPc->GetCurStateId() != 1 && pPc->GetCurStateId() != 0xe)
         return;
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
@@ -698,13 +698,13 @@ void UIInventoryDialog::vfunc_26(int nItemId)
     CString strModel = pPc->FUN_14166dc50();
     if (strModel == "Idle_A" && pPc->FUN_141527120() != 0)
     {
-        if (spData->FUN_14053c620() == 0xd)
+        if (spData->GetEquipSubtype() == 0xd)
             pPc->FUN_14166cc40(0x4c);
-        else if (spData->FUN_14053c620() == 0x10)
+        else if (spData->GetEquipSubtype() == 0x10)
             pPc->FUN_14166cc40(0x51);
-        else if (spData->FUN_14053c620() == 0x12)
+        else if (spData->GetEquipSubtype() == 0x12)
             pPc->FUN_14166cc40(0x52);
-        else if (spData->FUN_14053c620() == 0x11)
+        else if (spData->GetEquipSubtype() == 0x11)
             pPc->FUN_14166cc40(0x53);
         else if (spData->FUN_14053d110())
             pPc->FUN_14166cc40(0x4e);
@@ -795,7 +795,7 @@ int UIInventoryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (dynamic_cast<UIMessageBox*>(pSender) != 0)
         {
-            int nAnswer = pMsg->FUN_1422b8a10();
+            int nAnswer = pMsg->PopInt();
             CStringW strTag = pMsg->FUN_1422b8f40();
             if (nAnswer == 0)
             {
@@ -836,7 +836,7 @@ int UIInventoryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             CString strCmd = pMsg->FUN_1422b8d30();
             if (strCmd == "openWindowPos")
             {
-                m_190 = pMsg->FUN_1422b8a10();
+                m_190 = pMsg->PopInt();
                 if (vfunc_55() != 0)
                 {
                     reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->OpenDialog((eUIClassID)(vfunc_48()));
@@ -870,7 +870,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x2a1, 0, CStringW(L""));
                 if (box.get() != 0)
                 {
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::OnSortConfirm));
+                    box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::OnSortConfirm));
                     box->FUN_141a01800(1);
                     box->FUN_141a024a0(0);
                     box->FUN_141a02480(1);
@@ -968,14 +968,14 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     if (_stricmp("OnItemSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14199b800(data.FUN_1422b8f40());
         return 1;
     }
     if (_stricmp("onClickSlotExpand", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strArg = data.FUN_1422b8f40();
             if (FUN_14199d980() == 0)
@@ -1253,7 +1253,7 @@ void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Par
             CStringW strLower = FUN_1413fa9b0(names.GetAt(pos));
             ASObj row(2);
             row.FUN_1407cbb20("label", CStringW(names.GetAt(pos)));
-            candidates.FUN_1422bbf00(row);
+            candidates.PushObj(row);
         }
     }
     int nRows = candidates.GetLength() > 5 ? 5 : (int)candidates.GetLength();
@@ -1352,7 +1352,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
         {
             spBox->Append<__int64>(nItemUid);
             spBox->FUN_140b76940(CStringW(strName));
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199b100));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199b100));
             FUN_140d73c60(spBox);
         }
     }
@@ -1377,9 +1377,9 @@ bool UIInventoryDialog::FUN_14199b100(int nResult, const CMsgBoxData& box)
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_coupleeffect_recevie_name"), 0, L""))
         {
             CStringW strEmpty(L"");
-            spBox->FUN_141a01d30(2, strEmpty, 0xc, 0, 0);
+            spBox->SetInput(2, strEmpty, 0xc, 0, 0);
             spBox->Append<__int64>(nItemUid);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199ac30));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199ac30));
             FUN_140d73c60(spBox);
         }
     }
@@ -1562,7 +1562,7 @@ int UIInventoryDialog::FUN_14199bfc0()
     if (TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185d8b0() == 0)
         return 0;
     MyPC* pPc = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
-    if (pPc != 0 && pPc->FUN_14166ce30() == 0)
+    if (pPc != 0 && pPc->IsDead() == 0)
         return 1;
     return 0;
 }
@@ -1635,7 +1635,7 @@ void UIInventoryDialog::FUN_14199c2b0(CStringW strText)
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0, 0x937, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199c7b0));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199c7b0));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -1979,7 +1979,7 @@ void UIInviteGroupDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount"))
-        spCount->FUN_1422c4cd0(BlockFormat<int>(0x48a, 0));
+        spCount->SetTextW(BlockFormat<int>(0x48a, 0));
     FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199F8A0, UIInviteGroupDialog, OnLoadInit, 237, 0);
@@ -2009,25 +2009,25 @@ int UIInviteGroupDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp("OnInvite", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             TSingleton<CGroupChatManager>::GetInstance()->Invite(m_180, data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("OnChangeUserCount", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nCount = data.FUN_1422b8b10();
+            int nCount = data.PopUInt();
             FUN_14199fe70(nCount);
         }
     }
     else if (_stricmp("OnRefreshUserCount", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nCount = data.FUN_1422b8b10();
+            int nCount = data.PopUInt();
             SetUserCount(nCount);
         }
     }
@@ -2119,7 +2119,7 @@ MS2_REPLACE_METHOD(0x14199FE70, UIInviteGroupDialog, FUN_14199fe70, 735, 0);
 void UIInviteGroupDialog::SetUserCount(unsigned nCount)
 {
     if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount"))
-        spCount->FUN_1422c4cd0(FUN_14028dee0(0x48a, nCount));
+        spCount->SetTextW(FUN_14028dee0(0x48a, nCount));
 }
 MS2_REPLACE_METHOD(0x1419A0160, UIInviteGroupDialog, SetUserCount, 204, 0);
 
@@ -2495,7 +2495,7 @@ CString UIItemBreakBase::FUN_1419a1dc0(int nItemId, int nRarity, int nCount)
     CItem* pItem = new CItem();
     if (pItem->FUN_140523c40(nItemId, nRarity, 0))
     {
-        pItem->FUN_140526c70(nCount);
+        pItem->SetCountClamped(nCount);
         CString strName;
         strName.Format("%s_%d", (const char*)GetTypeName(), nItemId);
         FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
@@ -2716,7 +2716,7 @@ int UIItemBreakDialog::vfunc_46()
             strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->Localize("$s_itembreak_desc_skin"));
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
             strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->Localize("$s_itembreak_desc_socket"));
-        spDesc->FUN_1422c4cd0(strDesc);
+        spDesc->SetTextW(strDesc);
     }
     if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
     {
@@ -2790,7 +2790,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     spBox->SetCheckboxMust(1);
                     spBox->FUN_141a024a0(0);
                     spBox->SetCheckbox0(strCheck, 0);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -2799,7 +2799,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x8f9, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -2821,15 +2821,15 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     if (_stricmp(szMethod, "OnBundleType") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            m_1f8 = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            m_1f8 = data.PopInt();
         return 1;
     }
     if (_stricmp(szMethod, "OnBundleRank") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            m_1fc = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            m_1fc = data.PopInt();
         return 1;
     }
     if (_stricmp(szMethod, "OnBundleRegister") == 0)
@@ -3044,7 +3044,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
                     spBox->SetCheckboxMust(1);
                     spBox->FUN_141a024a0(0);
                     spBox->SetCheckbox0(strCheck, 0);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -3053,7 +3053,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x8fa, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
                     FUN_140d73c60(spBox);
                 }
             }

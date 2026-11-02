@@ -150,11 +150,12 @@ void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat 
 
 
 // The local player's buffs (PCBase +0x748).
-class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList
+class AdditionalCliList { public: int HasEnabledWithEventBuffType(int nType); MS2Ptr<AdditionalCli> FindEnabledByEventBuffType(int nType); };   // C3: member view (additionalclilist.h)
+class Unk_PCBaseBuffs : public AdditionalCliList { };
 class AdditionalCli : public CPtred {};
 
 // The safe riding map table (FUN_140ba4fa0).
-class Unk_SpRideMaps { public: bool FUN_1401955f0(int nMapId); };
+class CAdventureLevelTableHelper { public: bool IsReached(unsigned nLevel); };   // C3: member view (adventureleveltablehelper.h)
 class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
 
 // The play instrument manager (FUN_140c8dac0).
@@ -211,14 +212,17 @@ extern Unk_SpCountMap DAT_143ab3150;
 unsigned char FUN_140450290(Unk_SpCountMap* pMap, int nId, int* pnCount);  // Lookup
 
 // The bag.
-class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
-class Unk_SpInventory : public Unk_Inventory
+class Unk_Inventory   // C3: member view (inventory.h)
 {
 public:
+    int FUN_140a5f780(int nTag, int nRarity);
     MS2Ptr<CItem> FUN_140a5e2e0(int nItemId);                          // the item in the bag
-    unsigned FUN_140a5f180(int nItemId, int nRarity);                  // owned count of the item
+    int FUN_140a5f180(int nItemId, int nRarity);                       // owned count of the item
     void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& out);
     unsigned FUN_140a635f0(CItem* pItem);                              // use the item
+};
+class Unk_SpInventory : public Unk_Inventory
+{
 };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_SpInventory
 extern __int64 DAT_143ab2898;                                           // the money
@@ -239,31 +243,31 @@ void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n)
 {
     ASData data;
     data.FUN_1422b8030(n);
-    pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str)
 {
     ASData data;
     data.AddWString(str);
-    pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 void Unk_SetBoxInt64(CMsgBoxData* pBox, const char* szName, __int64 n)
 {
     ASData data;
     data.AddInt64(n);
-    pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 void Unk_SetBoxBool(CMsgBoxData* pBox, const char* szName, bool b)
 {
     ASData data;
     data.AddBool(b);
-    pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 
 static MyPC* Unk_SpGetMyPC()
@@ -323,7 +327,7 @@ void CSmartPush::vfunc_3()
         if (spBox)
         {
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPush::FUN_140dcf800));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPush::FUN_140dcf800));
             spBox->SetBuff(m_data->m_nActionValue, 1, CStringW(L""));
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
@@ -443,7 +447,7 @@ void CSmartPushAutoFishing::vfunc_2()
         return;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
         return;
-    MS2Ptr<AdditionalCli> spBuff = pMy->FUN_1416749a0()->FUN_14096fd30(1);
+    MS2Ptr<AdditionalCli> spBuff = pMy->FUN_1416749a0()->FindEnabledByEventBuffType(1);
     if (m_bActive != 0 && !spBuff)
     {
         int nCount = CFishingManager::GetInstance()->GetAutoCount();
@@ -491,7 +495,7 @@ void CSmartPushAutoFishing::vfunc_3()
     if (spBox)
     {
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFishing::FUN_140dd0a00));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFishing::FUN_140dd0a00));
         spBox->SetBuff(m_data->m_nActionValue, 1,
             FUN_1409e97f0(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
         spBox->FUN_141a024a0(0);
@@ -532,7 +536,7 @@ int CSmartPushAutoFishing::vfunc_6()
         return 0;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
         return 0;
-    if (pMy->FUN_1416749a0()->FUN_1409701d0(1))
+    if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(1))
         return 2;
     return 1;
 }
@@ -675,7 +679,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return;
-    if (pMy->FUN_14166c930() != 0x2f)
+    if (pMy->GetCurStateId() != 0x2f)
         return;
     unsigned nCount;
     int nBlocked = ((class Unk_SpInstrument*)FUN_140c8dac0())->CanPlayEnsemble();
@@ -743,7 +747,7 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
     if (spBox)
     {
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoPlayInstrument::FUN_140dd1df0));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoPlayInstrument::FUN_140dd1df0));
         spBox->SetBuff(m_data->m_nActionValue, 1,
             FUN_140938ae0(CStringW(L"s_msg_auto_play_instrument_extend_desc"),
                 *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get()));
@@ -779,7 +783,7 @@ int CSmartPushAutoPlayInstrument::vfunc_6()
     MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
-    if (pMy->FUN_14166c930() != 0x2f)
+    if (pMy->GetCurStateId() != 0x2f)
         return 0;
     if (!((class Unk_SpInstrument*)FUN_140c8dac0())->IsPerforming())
         return 0;
@@ -933,7 +937,7 @@ int CSmartPushSafeRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
-    if (pMy->FUN_1416749a0()->FUN_1409701d0(2))
+    if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(2))
         return 2;
     return 1;
 }
@@ -964,7 +968,7 @@ bool CSmartPushSafeRiding::vfunc_12()
     MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return false;
-    if (((class Unk_SpRideMaps*)FUN_140ba4fa0())->FUN_1401955f0(pMy->vfunc_141()))
+    if (((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
         return true;
     return false;
 }
@@ -1005,9 +1009,9 @@ int CSmartPushSafeWaterRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
-    if (((class Unk_SpRideMaps*)FUN_140ba4fa0())->FUN_1401955f0(pMy->vfunc_141()))
+    if (((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
         return 0;
-    if (pMy->FUN_1416749a0()->FUN_1409701d0(3))
+    if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(3))
         return 2;
     return 1;
 }
@@ -1086,9 +1090,9 @@ int CSmartPushSafeWaterRidingToggle::vfunc_6()
         return 0;
     if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
-    if (!((class Unk_SpRideMaps*)FUN_140ba4fa0())->FUN_1401955f0(pMy->vfunc_141()))
+    if (!((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
         return 0;
-    if (pMy->FUN_1416749a0()->FUN_1409701d0(3))
+    if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(3))
         return 2;
     return 1;
 }
@@ -1186,13 +1190,13 @@ void CSmartPushAutoInteraction::vfunc_3()
         int nItem = m_data->m_requireItem.FUN_14026b500();
         if (static_cast<CItem*>(spItem)->FUN_140523c40(nItem, FUN_14053feb0(nItem), 0))
         {
-            static_cast<CItem*>(spItem)->FUN_140526c70(m_data->m_requireItem.m_c);
+            static_cast<CItem*>(spItem)->SetCountClamped(m_data->m_requireItem.m_c);
             Unk_SetBoxString(spBox.operator->(), "buffIcon", m_data->m_strImgPath);
             Unk_SetBoxString(spBox.operator->(), "buffDesc", strDesc);
             spBox->FUN_141a01800(1);
             spBox->FUN_141a01ee0(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, m_data->m_requireItem.m_c, nUse, -1, 1);
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteraction::FUN_140dd3a70));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteraction::FUN_140dd3a70));
         }
         FUN_140d73c60(spBox);
     }
@@ -1424,7 +1428,7 @@ void CSmartPushAutoInteractObjectBuffItem::vfunc_3()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
     if (spBox.get())
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteractObjectBuffItem::FUN_140dd4b70));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteractObjectBuffItem::FUN_140dd4b70));
         FUN_140d73c60(spBox);
     }
 }
@@ -1466,7 +1470,7 @@ void CSmartPushAutoFunctionCubeObjectBuffItem::vfunc_3()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
     if (spBox.get())
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFunctionCubeObjectBuffItem::FUN_140dd4ff0));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFunctionCubeObjectBuffItem::FUN_140dd4ff0));
         FUN_140d73c60(spBox);
     }
 }

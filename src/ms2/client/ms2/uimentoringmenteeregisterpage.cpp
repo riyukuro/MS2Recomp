@@ -137,13 +137,13 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
         nStartMonth = tStart.GetMonth();
         nStartYear = tStart.GetYear();
         CStringW strMsg = FUN_14028dfa0(CStringW(L"s_mentoring_mentee_register_warn"), nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay, pActor->GetName());
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox)
             {
                 spBox.get()->FUN_141a024a0(false);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMenteeRegisterPage::SendMentor));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMenteeRegisterPage::SendMentor));
                 FUN_140d73c60(spBox);
             }
         }

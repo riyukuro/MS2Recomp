@@ -676,7 +676,7 @@ bool FUN_14125bbe0(struct Unk_InterfaceState const*);   // C3: was FUN_14125bbe0
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ab20();
+    bool IsInParty();
 };
 class CUserEventManager   // C3: member view for the former free stand-ins
 {
@@ -754,7 +754,7 @@ void CUIService::FUN_141ad9e50(int nScene)
         if (FUN_14125bb90((struct Unk_InterfaceState const*)(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150()))))
             AddOpenId(m_listOpen, 0x4edf);
         if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150())))) {
-            if (((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab20())
+            if (((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->IsInParty())
                 AddOpenId(m_listOpen, 0x4f23);
         }
         if (((class CUserEventManager*)(void*)(((void*)TSingleton<CUserEventManager>::GetInstance())))->HasDTReward((unsigned short)pPlayer->vfunc_78()) != 0)
@@ -1074,7 +1074,7 @@ void CUIService::FUN_141adbbb0()
     if (((void*)FUN_140b632f0()) != 0)
     {
         ((class UISwfEntityManager*)(void*)(((void*)FUN_140b632f0())))->FUN_1422d49f0();
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
         {
             bool bOn = ((class Unk_C2UiMgr*)(void*)(((void*)FUN_140b632f0())))->FUN_1410af770();
             PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -1114,7 +1114,7 @@ void CUIService::ShowLackMeratAsk()
 {
     if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_err_lack_merat_ask"), 1))
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add940));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add940));
         FUN_140d73c60(spBox);
     }
 }
@@ -1126,7 +1126,7 @@ void CUIService::ShowLackMesoMarketTokenAsk()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 1);
     if (spBox == 0)
         return;
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add9b0));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add9b0));
     FUN_140d73c60(spBox);
 }
 
@@ -1136,7 +1136,7 @@ void CUIService::FUN_141add520(CStringW strText, CStringW strArg)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 1);
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add880));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CUIService::FUN_141add880));
         spBox->FUN_140b76940(CStringW(strArg));
         FUN_140d73c60(spBox);
     }
@@ -3169,9 +3169,9 @@ static void FUN_141ade740(const Unk_UisAsParams& params)
     if (pArgs == 0)
         return;
     ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+    if (data.SetArgsIfAny(pArgs, nArgs) == 0)
         return;
-    Scaleform::GFx::Value val = data.FUN_1422b9260();
+    Scaleform::GFx::Value val = data.PopValue();
     CStringW strArg(data.FUN_1422b8d30());
     CStringW strText = FUN_140e70010(strArg);
     ASObj obj(val, 2);
@@ -3188,9 +3188,9 @@ static void FUN_141ade900(const Unk_UisAsParams& params)
     if (pArgs == 0)
         return;
     ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+    if (data.SetArgsIfAny(pArgs, nArgs) == 0)
         return;
-    Scaleform::GFx::Value val = data.FUN_1422b9260();
+    Scaleform::GFx::Value val = data.PopValue();
     CStringW strArg(data.FUN_1422b8d30());
     CStringW strText = FUN_14083ccf0(strArg);
     ASObj obj(val, 2);
@@ -3262,68 +3262,77 @@ CStringW FUN_1407197a0(float f);
 CStringW FUN_141277dd0(class Unk_ConstString* pValue);   // C3: the definition's signature
 Scaleform::GFx::Value FUN_1412dd680(const wchar_t* sz);
 
+// The format arguments of a text (see stringtable.cpp): the type bits of the arguments and their values.
+struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; Unk_StFmtArg(); };
+Unk_StFmtArg FUN_1401cfcf0(const CStringW& str);
+
 // @0x141addb30
-// MS2-FUNCTIONAL: the fmt argument storage is a std::vector here (the exe uses an out-of-line buffer class)
 void FUN_141addb30(long long n)
 {
-    const Unk_UisAsParams* pParams = reinterpret_cast<const Unk_UisAsParams*>(n);
-    int nArgs = (int)pParams->ArgCount;
+    int nArgs = (int)reinterpret_cast<const Unk_UisAsParams*>(n)->ArgCount;
     if (nArgs < 1)
         return;
-    const Scaleform::GFx::Value* pArgs = pParams->pArgs;
+    const Scaleform::GFx::Value* pArgs = reinterpret_cast<const Unk_UisAsParams*>(n)->pArgs;
     if (pArgs == 0)
         return;
     ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) == 0)
-        return;
-    Scaleform::GFx::Value kRet = data.FUN_1422b9260();
-    CString strKey = data.FUN_1422b8d30();
-    CStringW strKeyW(strKey);
-    if (strKey.IsEmpty())
-        return;
-    CStringW strFormat;
-    if (strKeyW.Find(L"$", 0) == 0)
-        strFormat = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
-    else if (strKeyW.Find(L"s_", 0) == 0)
-        strFormat = GetStringCommonByKey(strKeyW);
-    else
-        strFormat = strKeyW;
-    if (strFormat.IsEmpty())
-        return;
-    CStringW strResult;
-    if (nArgs - 2 < 1)
-        strResult = strFormat;
-    else
+    if (data.SetArgsIfAny(pArgs, nArgs))
     {
-        ATL::CAtlArray<CStringW> arrKeep;
-        std::vector<fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> > > arrValues;
-        arrValues.reserve(nArgs);
-        fmt::ULongLong kTypes = 0;
-        for (int i = 2; i < nArgs; ++i)
+        Scaleform::GFx::Value kRet = data.PopValue();
+        CString strKey = data.FUN_1422b8d30();
+        CStringW strKeyW(strKey);
+        if (strKey.IsEmpty())
+            return;
+        CStringW strFormat;
+        if (strKeyW.Find(L"$", 0) == 0)
+            strFormat = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
+        else if (strKeyW.Find(L"s_", 0) == 0)
+            strFormat = GetStringCommonByKey(strKeyW);
+        else
+            strFormat = strKeyW;
+        if (strFormat.IsEmpty())
+            return;
+        CStringW strResult;
+        int nFirst = 2;
+        if (nArgs - nFirst > 0)
         {
-            Scaleform::GFx::Value kArg = pArgs[i];
-            CStringW strArg;
-            int nType = kArg.GetType();
-            if (nType == 3)
-                strArg = FUN_140719630(((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(kArg))->GetInt());
-            else if (nType == 4)
-                strArg = FUN_1407196b0(((Scaleform::GFx::Value*)(void*)(&kArg))->GetUInt());
-            else if (nType == 5)
-                strArg = FUN_1407197a0((float)((Scaleform::GFx::Value*)(void*)(&kArg))->GetNumber());
-            else if (nType > 5 && nType < 8)
-                strArg = FUN_141277dd0(reinterpret_cast<Unk_ConstString*>(&kArg));
-            fmt::ULongLong kType = fmt::internal::make_type(strArg);
-            if (arrValues.empty())
-                kTypes = kType;
-            else
-                kTypes |= kType << ((arrValues.size() & 0xf) << 2);
-            arrKeep.Add(strArg);
-            arrValues.push_back(fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >());
-            arrValues.back().set_string(arrKeep[arrKeep.GetCount() - 1]);
+            ATL::CAtlArray<CStringW> arrKeep;
+            ATL::CAtlArray<Unk_StFmtArg> arrValues;
+            fmt::ULongLong kTypes = 0;
+            for (int i = nFirst; i < nArgs; ++i)
+            {
+                Scaleform::GFx::Value kArg = pArgs[i];
+                CStringW strArg;
+                switch (kArg.GetType())
+                {
+                case 3:
+                    strArg = FUN_140719630(kArg.GetInt());
+                    break;
+                case 4:
+                    strArg = FUN_1407196b0(kArg.GetUInt());
+                    break;
+                case 5:
+                    strArg = FUN_1407197a0((float)kArg.GetNumber());
+                    break;
+                case 6:
+                case 7:
+                    strArg = FUN_141277dd0(reinterpret_cast<Unk_ConstString*>(&kArg));
+                    break;
+                }
+                if (arrValues.IsEmpty())
+                    kTypes = fmt::internal::make_type(strArg);
+                else
+                    kTypes |= fmt::internal::make_type(strArg) << (arrValues.GetCount() << 2);
+                arrKeep.Add(strArg);
+                arrValues.Add(FUN_1401cfcf0(strArg));
+            }
+            fmt::ArgList kList(kTypes, reinterpret_cast<const fmt::internal::Value*>(&arrValues[0]));
+            strResult = StringFormat((const wchar_t*)strFormat, kList);
         }
-        strResult = StringFormat(strFormat, fmt::ArgList(kTypes, &arrValues[0]));
+        else
+            strResult = strFormat;
+        kRet.SetMember("text", FUN_1412dd680(strResult));
     }
-    ((Scaleform::GFx::Value*)(void*)(&kRet))->SetMember("text", FUN_1412dd680(strResult));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc2670-0x142cc27b0 .text$yd

@@ -221,15 +221,15 @@ int UILevelUpGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onReceiveItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nItem = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nItem = data.PopUInt();
             FUN_140f857e0(nItem);
         }
     }
     else if (_stricmp(szMethod, "onClickContents") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nId = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nId = data.PopInt();
             FUN_140f854b0(nId);
         }
     }
@@ -238,8 +238,8 @@ int UILevelUpGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp(szMethod, "onLevelSelect") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned short nLevel = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned short nLevel = data.PopInt();
             FUN_140f87af0(nLevel);
             FUN_140f861c0();
         }
@@ -254,7 +254,7 @@ void UILevelUpGuideDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     CStringW strType = pArgs->FUN_1422b8f40();
     if (operator==(strType, "contents"))
     {
-        int nId = pArgs->FUN_1422b8a10();
+        int nId = pArgs->PopInt();
         MS2Ptr<RecommendContnets> spRow(0);
         if (m_1e0.Lookup(nId, spRow))
         {
@@ -399,7 +399,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_recommend_contents_newbie_warn"), 0, L"")) {
             spBox->Append<unsigned>(nQuest);
-            spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
+            spBox->SetCallback(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
             FUN_140d73c60(spBox);
         }
     }
@@ -478,7 +478,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
             strTitle = FUN_14028dfa0<unsigned short, unsigned short>(CStringW(L"s_recommend_contents_title"), m_1c8.m_nLow, m_1c8.m_nHigh);
         else
             strTitle = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_title_equal"), m_1c8.m_nLow);
-        spLevel->FUN_1422c4cd0(strTitle);
+        spLevel->SetTextW(strTitle);
     }
     if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_contentsList")) {
         spList->Invoke("resetRenderer");
@@ -619,7 +619,7 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(pItem->m_itemId, pItem->m_count, 0) == 0)
         return;
-    spItem->FUN_140526c70(pItem->m_job);
+    spItem->SetCountClamped(pItem->m_job);
     int nSlot = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_1a8.GetCount() + 1);

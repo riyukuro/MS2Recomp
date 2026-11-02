@@ -307,7 +307,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         if (spRow->m_eType == ITEM_SOCKET_SCROLL_TYPE_1)
         {
             strProb = FUN_14028dfa0<unsigned int>(CStringW(L"s_itemsocket_scroll_success_prob"), m_nProb);
-            CItemSocket* pSocket = spTarget->FUN_1405279c0();
+            CItemSocket* pSocket = spTarget->GetSocket();
             unsigned nMax = pSocket->GetMaxSlot();
             unsigned nShown = nMax < m_nCount ? nMax : m_nCount;
             unsigned nOpen = pSocket->GetOpenSlotCount();
@@ -482,7 +482,7 @@ void UIItemSocketScrollDialog::OnClickAction()
     if (spRow->m_eType == ITEM_SOCKET_SCROLL_TYPE_1 && m_nProb == 100)
     {
         unsigned nCount = m_nCount;
-        CItemSocket* pSocket = spTarget->FUN_1405279c0();
+        CItemSocket* pSocket = spTarget->GetSocket();
         if (pSocket->GetMaxSlot() < nCount)
         {
             unsigned nMax = pSocket->GetMaxSlot();
@@ -564,8 +564,8 @@ void UIItemSocketScrollDialog::FUN_140f672a0(CInPacket& packet)
     {
         box->FUN_141a024a0(0);
         box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-        box->FUN_141a01700(0x475, 0, 0);
-        box->FUN_141a027c0(SsMsgBoxFn(this, &UIItemSocketScrollDialog::FUN_140f659e0));
+        box->SetButtonLabelIds(0x475, 0, 0);
+        box->SetCallback(SsMsgBoxFn(this, &UIItemSocketScrollDialog::FUN_140f659e0));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
     }
 }

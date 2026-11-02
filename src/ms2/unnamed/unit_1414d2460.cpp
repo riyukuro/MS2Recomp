@@ -48,7 +48,6 @@ public:
 };
 extern NiFixedString DAT_143ae5130;                         // colour-shift float extra data
 extern NiFixedString DAT_143ae5138;                         // colour-shift float extra data
-NiNode* FUN_141d15010(NiAVObject* pkObject);                // topmost ancestor of the object
 
 // @0x1414d2460
 void MS2OuterGlowMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData)
@@ -77,7 +76,7 @@ void MS2OuterGlowMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArra
             kRest.Add(*pkObject);
             continue;
         }
-        std::map<NiNodePtr, int>::const_iterator it = ((class Unk_OgPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find(FUN_141d15010(pkObject));
+        std::map<NiNodePtr, int>::const_iterator it = ((class Unk_OgPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find((NiNode*)pkObject->GetRoot());
         if (it == ((class Unk_OgPostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.end())
         {
             kRest.Add(*pkObject);

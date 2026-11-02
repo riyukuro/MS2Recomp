@@ -259,7 +259,7 @@ public:
     virtual const char* vfunc_123(int n);                   // 123 0x1416790b0 (looks up in +0xd00; a string per Ridee)
 
     // non-virtual helpers called by derived units
-    bool FUN_14166dd20(const efd::utf8string& strAnim, float fSpeed, bool bA, bool bB);   // 0x14166dd20 play animation
+    bool PlayAnimation(const efd::utf8string& strAnim, float fSpeed, bool bA, bool bB);   // 0x14166dd20 play animation
     void ShowChatBalloon(CStringW str);                       // 0x14166fff0 chat balloon text (by value)
     bool FUN_141674ef0(const CEffectDummy& kDummy);         // 0x141674ef0 attach an effect node per the dummy
     MS2Ptr<CStateManager> GetStateMgr();                  // 0x141678750 copy of m_spStateMgr (w17)
@@ -294,13 +294,13 @@ public:
     __int64 FUN_141670a30(int nStat);                       // 0x141670a30 max value of a stat
     // ridee.cpp (w67)
     ATL::CRBMap<CString, efd::SmartPointer<NiAVObject> >& FUN_141708b10() { return m_unk_b88; }   // COMDAT 0x141708b10
-    int FUN_14166c930();                                    // 0x14166c930 current state id (0: none)
+    int GetCurStateId();                                    // 0x14166c930 current state id (0: none)
     int FUN_14166cc80();                                    // 0x14166cc80 current sub state
     State* FUN_14166ccb0();                                 // 0x14166ccb0 current state
     void FUN_141670700(int nType, __int64 nValue);           // 0x141670700 (scenestategame packet 0x64: 10, skill id)
     __int64 FUN_141656a80();                                // 0x141656a80 (scenestategame packet 0x39 battle record key)
     void FUN_14166ce50(int n);                              // 0x14166ce50 (scenestategame packet 0x34: 0)
-    int FUN_14166ce30();                                    // 0x14166ce30 dead (1)
+    int IsDead();                                    // 0x14166ce30 dead (1)
     // @0x140976780
     int FUN_140976780() { return m_unk_118; }               // sound pitch (additionalcli.cpp)
     // @0x1409788b0
@@ -385,7 +385,7 @@ public:
     void FUN_14166cc40(int nValue);                         // 0x14166cc40
     void AddStateFlags(unsigned int nFlags);                // 0x14166cce0 m_unk_158 |= (rider and mount)
     void RemoveStateFlags(unsigned int nFlags);                // 0x14166cd70 m_unk_158 &= ~
-    Unk_PCBaseBody* FUN_14166d220();                        // 0x14166d220 the physics body
+    Unk_PCBaseBody* GetPhysicsBody();                        // 0x14166d220 the physics body
     void* FUN_14166d240();                                  // 0x14166d240 &m_unk_6d8
     void FUN_14166d260();                                   // 0x14166d260 move the body to the actor
     void LookAtPoint(efd::Point3 kTarget, int bTurn);          // 0x14166d2d0 face a point (by value: the callers copy)
@@ -393,7 +393,7 @@ public:
     void TurnTowardTargetYaw(float fTime);                        // 0x14166d630 turn toward m_f934
     void SetTargetYaw(float fAngle);                       // 0x14166d8b0 target yaw
     void FUN_14166d8e0(efd::Point3 kTilt);                  // 0x14166d8e0
-    void FUN_14166d970(const efd::Point3& kRot);            // 0x14166d970
+    void SetRotationAndTargetYaw(const efd::Point3& kRot);            // 0x14166d970
     void FUN_14166d9d0(const NiPoint3& kPos);               // 0x14166d9d0
     void SetTurnSpeed(float fSpeed);                       // 0x14166da10 turn speed
     float FUN_14166da60();                                  // 0x14166da60

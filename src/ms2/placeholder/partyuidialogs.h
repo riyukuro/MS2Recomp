@@ -12,6 +12,10 @@ class UIPartySearchRegisterDialog : public UIModalDialog {
 MS2_CHECK_SIZE(UIPartyDPSDialog, 0x1a0);
 MS2_CHECK_SIZE(UIPartySearchRegisterDialog, 0x228);
 class UIPartyDialog : public UIDialog {
+public:
+    void SetDeadline(unsigned int nDeadline);   // 0x141a75a00
+    void ArrangeBottomButton();                 // 0x141a75a20
+private:
     unsigned char unrecovered[0x70];
 };
 MS2_CHECK_SIZE(UIPartyDialog, 0x1e8);

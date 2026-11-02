@@ -98,7 +98,7 @@ Unk_CMISDemolishUI* FUN_1410dbf80(unsigned nId)
 }
 
 // @0x1410dc020   the house mark dialog
-unsigned FUN_14112e2a0();
+unsigned __int64 FUN_14112e2a0();
 Unk_CMISHouseMark* FUN_1410dc020()
 {
     CUIService* pUI = TSingleton<CUIService>::GetInstance();

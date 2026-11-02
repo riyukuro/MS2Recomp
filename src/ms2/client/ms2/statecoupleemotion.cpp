@@ -493,7 +493,7 @@ void StateCoupleEmotion::vfunc_5(int n)
     {
         if (n != 0x3a)
             break;
-        pOwnerPC->FUN_14166d970(m_posSaved);
+        pOwnerPC->SetRotationAndTargetYaw(m_posSaved);
     } while (0);
     FUN_140a0b2a0((NiAVObject*)FUN_1409475d0(&m_spLoopEffectNode));
     FUN_1409f76f0(&m_spLoopEffectNode, 0);
@@ -526,7 +526,7 @@ void StateCoupleEmotion::vfunc_3(double fTime)
         }
         break;
     case 0x96:
-        if (pPartner->FUN_14166c930() != 0x3a)
+        if (pPartner->GetCurStateId() != 0x3a)
             Stop(0);
         else if (pPartner->FUN_14166cc80() < 0x95)
             Stop(0);
@@ -613,7 +613,7 @@ void StateCoupleEmotion::vfunc_24()
             * ((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode))->GetLocalTransform();
         FUN_140a0b1f0(*(struct Unk_NiMatrix3 const*)(&kXform), (struct Vector3*)(&kRot));
         kRot = reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posEnd)->FUN_14097fd50(kRot);
-        pOwnerPC->FUN_14166d970(kRot);
+        pOwnerPC->SetRotationAndTargetYaw(kRot);
     } while (0);
     do
     {
@@ -964,7 +964,7 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
     PCBase* pPeer = GetPartner();
     if (pPeer == 0)
         return;
-    if (pPeer->FUN_14166c930() != 0x3a)
+    if (pPeer->GetCurStateId() != 0x3a)
         return;
     if (pPeer->FUN_14166cc80() != FUN_1417b7e40())
         return;
@@ -1187,7 +1187,7 @@ bool StateCoupleEmotion::PlayAni(int nAni)
     CStringA strName = m_spAnimInfo->GetAniName(nAni);
     m_spAnimInfo->Load(nAni);
     m_spAnimInfo->SetStartTime((float)reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280());
-    pOwnerPC->FUN_14166dd20((const char*)strName, 1.0f, true, false);
+    pOwnerPC->PlayAnimation((const char*)strName, 1.0f, true, false);
     return true;
 }
 
@@ -1245,7 +1245,7 @@ void FUN_140b84010(int nWhy)
             MS2_ASSERT_AT(0x3cf, "pMyPC" && 0);
             break;
         }
-        if (pMyPC->FUN_14166c930() != 0x3a)
+        if (pMyPC->GetCurStateId() != 0x3a)
             break;
         StateCoupleEmotion* pState = (StateCoupleEmotion*)pMyPC->FUN_14166ccb0();
         if (pState == 0)
@@ -1383,7 +1383,7 @@ bool RequestCoupleEmotion(__int64 nTargetId, int nEmotionId)
         FUN_141275260(0xcfa, 1, 1);
         return false;
     }
-    if (!FUN_140b83f60(pMyPC->FUN_14166c930()))
+    if (!FUN_140b83f60(pMyPC->GetCurStateId()))
     {
         COutPacket kPacket(static_cast<int>(SendOp::BuddyEmote), 0);
         kPacket.Encode1(2);
@@ -1400,7 +1400,7 @@ bool RequestCoupleEmotion(__int64 nTargetId, int nEmotionId)
     spData->m_posStart = pMyPC->vfunc_18();
     spData->m_posEnd = pMyPC->vfunc_20();
     pMyPC->vfunc_59(0x3a, spData.get(), 0x94, 1);
-    if (pMyPC->FUN_14166c930() != 0x3a)
+    if (pMyPC->GetCurStateId() != 0x3a)
     {
         MS2_ASSERT_AT(0x443, "pMyPC->GetState() == gosCoupleEmotion" && 0);
         return false;

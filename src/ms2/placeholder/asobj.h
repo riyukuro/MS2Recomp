@@ -89,7 +89,7 @@ public:
     unsigned int FUN_1422bbdb0(unsigned long n);                         // push a UInt (unsigned long)
     unsigned int PushFloat(float f);                                 // push a Number
     unsigned int PushDouble(double d);                                // push a Number
-    unsigned int FUN_1422bbf00(const ASObj& obj);                        // push an AS object
+    unsigned int PushObj(const ASObj& obj);                        // push an AS object
     unsigned int FUN_1422bbf00(const AScript& obj);                      // push an AS object (the same callee; ascorelist.cpp)
     unsigned int PushString(const char* sz);                          // push a string (uimainplayerinfo empty slot names)
     unsigned int PushWString(const wchar_t* sz);                       // push a wide string

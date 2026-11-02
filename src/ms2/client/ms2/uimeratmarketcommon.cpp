@@ -647,11 +647,11 @@ bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBill
     if (pMan == 0)
         return false;
     Unk_MeratProductKey key;
-    Scaleform::GFx::Value valRow = data.FUN_1422b9260();
+    Scaleform::GFx::Value valRow = data.PopValue();
     ASObj objRow(valRow, 2);
     if (objRow.IsUndefinedOrNull())
         return false;
-    int nIndex = data.FUN_1422b8b10();
+    int nIndex = data.PopUInt();
     MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(nIndex);
     if (spBill == 0)
         return false;
@@ -1526,7 +1526,7 @@ void ASObj::FUN_140ec3230(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    m_value.SetMember(szName, data.FUN_1422b9260());
+    m_value.SetMember(szName, data.PopValue());
 }
 
 // @0x140ec3560

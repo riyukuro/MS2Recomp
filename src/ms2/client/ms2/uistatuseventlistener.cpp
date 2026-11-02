@@ -326,7 +326,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 9)
     {
         ST_EACH_LISTENER(i9, pL)
-            pL->vfunc_oa0_12(pPlayer->FUN_14166c930());
+            pL->vfunc_oa0_12(pPlayer->GetCurStateId());
     }
     else if (nEvent == 0xb)
     {
@@ -635,7 +635,7 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         int nResult = 1;
         if (nAnswer == 0)
@@ -686,7 +686,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             {
                 __int64 nMoney = DAT_143ab2d80.Value4558();
                 int nMax = FUN_1412772f0(nMoney, 1);
-                box->FUN_141a01d30(1, L"", nMax, 0, 0);
+                box->SetInput(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
         }
@@ -704,7 +704,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (box.get() != 0)
             {
                 int nMax = FUN_1412772f0(DAT_143ab2d80.Value45b0(), 1);
-                box->FUN_141a01d30(1, L"", nMax, 0, 0);
+                box->SetInput(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
         }
@@ -737,14 +737,14 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     else if (_stricmp("OnItemSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_141b10ed0(data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("OnSelected", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strItem = FUN_1413fa9b0(data.FUN_1422b8f40());
             FUN_141b116d0(strItem);
@@ -964,7 +964,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
             CStringW strName = FUN_1413fa9b0(set.GetAt(pos));
             ASObj row(2);
             row.FUN_1407cbb20("label", set.GetAt(pos));
-            aCandidates.FUN_1422bbf00(row);
+            aCandidates.PushObj(row);
         }
     }
     int nShown = aCandidates.GetLength() > 5 ? 5 : aCandidates.GetLength();
@@ -1087,7 +1087,7 @@ int UIStoreDialog::FUN_141b11490()
     if (DAT_143ab2d80.Id() != 0)
         return 0;
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
-    if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0)
+    if (pPlayer != 0 && pPlayer->IsDead() == 0)
         return 1;
     return 0;
 }
@@ -1151,7 +1151,7 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
                 MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0, 0x937, 0, CStringW(L""));
                 if (box.get() != 0)
                 {
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::FUN_141b11ba0));
+                    box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::FUN_141b11ba0));
                     FUN_140d73c60(box);
                 }
             }

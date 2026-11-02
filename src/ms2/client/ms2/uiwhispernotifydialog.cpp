@@ -293,7 +293,7 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
         }
         slot.SetItemGUID(FUN_140719a80(spItem->GetItemUid()));
         slot.SetIconPathString(strName);
-        slot.SetItemGrade(spItem->FUN_140526bd0());
+        slot.SetItemGrade(spItem->GetRarity());
         if (1 < spItem->GetSlotMax())
             slot.SetItemCountValue(spItem->GetCount());
         slot.SetUgcTag(spItem->GetUgcTag());
@@ -311,7 +311,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     if (FUN_141b52a60(pInfo->m_nId) != 0)
         return;
     CStringW strText = FormatStringId<CStringW>(0x5eb, FUN_1401aa6a0(pInfo->m_nId));
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
     MS2Ptr<CNpcData> sender = FUN_1406cd330(pInfo->m_nId);
     if (!sender)
         return;
@@ -338,7 +338,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     CStringW strLog = FormatStringId<int, int, CStringW>(0x5ec, nHour, nMinute, FUN_1401aa6a0(pInfo->m_nId));
     if (nMode == 1)
         strLog += strExtra;
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLog);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLog);
     FUN_1412751b0(strLog, 0x14);
 }
 

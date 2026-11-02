@@ -327,7 +327,7 @@ void StateMicroGameRps::vfunc_9(double fTime)
     if (!m_pOwner->FUN_14166f790(&strKey, strAnim, 0))
         return;
     efd::utf8string kAnim((const char*)strAnim);
-    m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+    m_pOwner->PlayAnimation(kAnim, 1.0f, false, false);
 }
 
 // @0x140b870a0
@@ -606,7 +606,7 @@ void StateMicroGameRps::FUN_140b88290(double)
     {
         pRider->vfunc_59(1, 0, 0, 0);
     }
-    else if (pPartner->FUN_14166c930() != 0x3c && pPartner->FUN_14166c930() != 0x3b)
+    else if (pPartner->GetCurStateId() != 0x3c && pPartner->GetCurStateId() != 0x3b)
     {
         if (FUN_1417b7e40() == 0x9a)
             FUN_141275260(0xd05, 1, 1);
@@ -823,7 +823,7 @@ void StateMicroGameCoupleDance::vfunc_9(double fTime)
         FUN_140b89e40(nSeq);
         return;
     }
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
 }
 
 // @0x140b892f0
@@ -893,7 +893,7 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
 }
 
@@ -951,7 +951,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)spEvent->m_aDances[nDance];
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
     pRider->FUN_14166cc40(0xad);
 }
@@ -992,7 +992,7 @@ void StateMicroGameCoupleDance::FUN_140b89ed0(double)
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    if (pPartner->FUN_14166c930() != 0x45 && pPartner->FUN_14166c930() != 0x3b)
+    if (pPartner->GetCurStateId() != 0x45 && pPartner->GetCurStateId() != 0x3b)
         pRider->vfunc_59(1, 0, 0, 0);
 }
 
@@ -1090,7 +1090,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
     if (pMessage != 0)
         pMessage->FUN_140e65ce0(m_nStage + 1, FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
 }
 
@@ -1119,7 +1119,7 @@ void StateMicroGameCoupleDance::FUN_140b8a5f0()
         return;
     Unk_MgDanceText* pText = spEvent->FUN_140402080(2);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     UIMicroGameCoupleDance* pUI = Unk_MgGetDialog<UIMicroGameCoupleDance>(0x4f70);
     if (pUI == 0)
     {
@@ -1164,7 +1164,7 @@ void StateMicroGameCoupleDance::FUN_140b8a910()
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
 }
 
@@ -1196,7 +1196,7 @@ void StateMicroGameCoupleDance::FUN_140b8acc0()
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_pOwner->PlayAnimation((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = GetTickCountMs2() + 3000;
 }
 
@@ -1265,7 +1265,7 @@ int FUN_140b8b540(PCBase* pActor)
 {
     if (pActor == 0)
         return -1;
-    if (pActor->FUN_14166c930() != 0x3c)
+    if (pActor->GetCurStateId() != 0x3c)
         return -1;
     StateMicroGameRps* pState = static_cast<StateMicroGameRps*>(pActor->FUN_14166ccb0());
     if (pState == 0)

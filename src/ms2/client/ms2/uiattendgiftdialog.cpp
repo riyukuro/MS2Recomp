@@ -44,6 +44,7 @@
 #include "ms2/client/ms2/itempreview.h"
 #include "ms2/placeholder/cadbannermanagercli.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/cinputkeyhandler.h"   // C3: CInputKeyHandler::FUN_14116dcb0
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -170,12 +171,9 @@ class Unk_AttendUIMgr { public:
     virtual void vfunc_43(int,int,int);
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
-class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; };
+class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; void FUN_141a01800(int n);
+    void SetCheckbox0(CStringW,bool); void SetCheckbox0Enabled(bool); void SetCallback(Delegate<bool(int,const CMsgBoxData&)>); };
 class Unk_AttendMsgBox { public:
-    void FUN_141a01800(int);
-    void FUN_141a024e0(CStringW,bool);
-    void FUN_141a02670(bool);
-    void FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>);
     void FUN_1405340b0(__int64);
 };
 MS2Ptr<Unk_AttendMsgBox> FUN_140d73f20(CStringW,int);
@@ -189,9 +187,8 @@ CStringW FUN_140b8e910(const Unk_AttendDate&);
 CStringW FUN_14083bab0(const Unk_AttendDate&,CStringW);
 CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
 CStringW FUN_1405c2690(CStringW,const CStringW&);
-class Unk_AttendCtl { public: bool FUN_14116dcb0(int,int,int); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_AttendCursor : public ItemPreviewMgr { public: void FUN_140d40120(MS2Ptr<CItem>,int); };
+class Unk_AttendCursor : public ItemPreviewMgr { };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 MS2Ptr<CItem> FUN_140ebc360(int,int);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
@@ -252,7 +249,7 @@ int UIAttendGiftDialog::vfunc_28(const char* method,const Scaleform::GFx::Value*
     if(UIDialog::vfunc_28(method,args,count)) return 1;
     if(!_stricmp("OnRightClickRenderer",method)) {
         ASData data;
-        if(data.FUN_1422b9620(args,count)) FUN_14102f180(data);
+        if(data.SetArgsIfAny(args,count)) FUN_14102f180(data);
         return 1;
     }
     return 0;
@@ -483,10 +480,10 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
             CStringW text=FUN_140f09c60(strKey,remain,m_selected->FUN_140ce38e0());
             MS2Ptr<Unk_AttendMsgBox> box=FUN_140d73f20(text,0x19);
             if(box.get()!=0) {
-                box->FUN_141a01800(1);
-                box->FUN_141a024e0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
-                box->FUN_141a02670(couponUid!=0);
-                box->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::OnAttendanceMsgBox));
+                reinterpret_cast<CMsgBoxData*>(box.operator->())->FUN_141a01800(1);
+                reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCheckbox0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
+                reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCheckbox0Enabled(couponUid!=0);
+                reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::OnAttendanceMsgBox));
                 box->FUN_1405340b0(couponUid);
                 FUN_140d73c60(box);
             }
@@ -644,15 +641,15 @@ MS2_REPLACE_METHOD(0x14102ED90, UIAttendGiftDialog, FUN_14102ed90, 734, 0x1FFE8C
 void UIAttendGiftDialog::FUN_14102f180(ASData& data)
 {
     if(m_30==0) return;
-    if(!((class Unk_AttendCtl*)FUN_14025e7c0())->FUN_14116dcb0(0x49406,0,0)) return;
-    Scaleform::GFx::Value args=data.FUN_1422b9260();
+    if(!reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dcb0(0x49406,0,0)) return;
+    Scaleform::GFx::Value args=data.PopValue();
     ASSlot slot(args,FUN_1422db730());
     if(slot.FUN_1422ba9a0()) return;
     int a=slot.GetItemID();
     int b=slot.GetItemGrade();
     MS2Ptr<CItem> item=FUN_140ebc360(a,b);
     if(item==0) return;
-    if(((class Unk_AttendCursor*)FUN_1409bb9e0())->IsHudOn()) ((class Unk_AttendCursor*)FUN_1409bb9e0())->FUN_140d40120(item,0);
+    if(((class Unk_AttendCursor*)FUN_1409bb9e0())->IsHudOn()) ((class Unk_AttendCursor*)FUN_1409bb9e0())->OpenPreview(item,0);
 }
 MS2_REPLACE_METHOD(0x14102F180, UIAttendGiftDialog, FUN_14102f180, 435, 0xBEDCF0BE);
 // @0x141030e20

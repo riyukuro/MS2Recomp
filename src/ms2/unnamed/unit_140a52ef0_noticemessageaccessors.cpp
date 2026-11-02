@@ -191,7 +191,7 @@ MS2_REPLACE_METHOD(0x140A53480, NoticeMessage, GetMode48, 14, 0x921EE467);
 void NoticeMessage::Bind()
 {
     if (m_pOwner == 0 && m_nActor != 0)
-        m_pOwner = ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1180(m_nActor));
+        m_pOwner = ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FindObjectById(m_nActor));
     if (m_spNode == 0 && m_pOwner != 0)
         m_spNode = FUN_141b6ef70(m_pOwner->FUN_14123c460());
 }
@@ -208,7 +208,7 @@ MS2_REPLACE_METHOD(0x140A53550, NoticeMessage, Stamp, 37, 0x77A3EC3C);
 GameObject* NoticeMessage::ResolveOwner()
 {
     if (m_nLookupId)
-        return ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1180(m_nLookupId));
+        return ((class GameObject*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FindObjectById(m_nLookupId));
     return m_pOwner;
 }
 MS2_REPLACE_METHOD(0x140A53580, NoticeMessage, ResolveOwner, 57, 0x380DA0FA);

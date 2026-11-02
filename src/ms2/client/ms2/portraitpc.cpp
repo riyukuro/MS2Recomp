@@ -25,6 +25,7 @@
 #include "ms2/placeholder/notifychange.h"
 #include "ms2/placeholder/notifysystem.h"
 #include <NiActorManager.h>
+#include "ms2/client/ms2/uirenderview.h"
 
 // ---- unit-local stand-ins for the unrecovered pointee types ----
 
@@ -42,7 +43,6 @@ public:
     virtual void vfunc_9();
     virtual void vfunc_10(int nObjectId);
     virtual void vfunc_11(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& kEquip);   // 11 shows the equip models
-    int FUN_141ab7660();                                    // 0x141ab7660 the view is still loading
 };
 
 // The equipment FUN_14165f460 hands out: a PCGemEquip.
@@ -254,7 +254,7 @@ void PortraitPC::vfunc_53(float f)
     FUN_141087770();
     if (m_b12f9 && (static_cast<UIModelView*>(m_spModelView) ? true : false))
     {
-        if (m_spModelView->FUN_141ab7660() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(500) != 0)
+        if (reinterpret_cast<UIRenderView*>(m_spModelView.operator->())->GetDirty() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(500) != 0)
             RefreshModelEquipment();
     }
     FUN_141087790();

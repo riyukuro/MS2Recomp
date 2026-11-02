@@ -41,7 +41,6 @@
 // ---- out-of-unit callees and globals (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
 NiRenderer* GetNiRenderer();                                    // NiRenderer::GetRenderer
-unsigned FUN_1411d7c70(NiDX9Renderer* p, bool (*pfnNotify)(bool, void*), void* pvData);   // AddResetNotificationFunc
 void* FUN_141d61a80(unsigned uiWidth, unsigned uiHeight, NiRenderer* pRenderer, NiTexture::FormatPrefs* pPrefs,
                     unsigned short usFlags);                    // NiRenderedTexture::Create
 NiRenderedTexture* FUN_14127c9b0(Unk_PPSmartA* pSmart);         // the pointer held by the smart pointer
@@ -255,7 +254,7 @@ bool CMeshUVPicker::CreateResources()
 
     m_48 = ((class NiDX9Renderer*)(class NiDX9Renderer*)(pDX9))->GetD3DDevice();
     m_48->AddRef();
-    m_18 = FUN_1411d7c70(pDX9, OnRendererResetThunk, this);
+    m_18 = pDX9->AddResetNotificationFunc(OnRendererResetThunk, this);
 
     NiTexture::FormatPrefs kPrefs;
     kPrefs.m_ePixelLayout = (NiTexture::FormatPrefs::PixelLayout)12;

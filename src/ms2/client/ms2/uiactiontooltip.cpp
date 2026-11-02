@@ -44,7 +44,7 @@ public:
 
 
 // The key hint table (FUN_1409331f0) and the options flag behind FUN_1409a8b10.
-class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // ckeytable.h's key table (its FUN_1409331f0 decl is aliased)
+class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table (its FUN_1409331f0 decl is aliased)
 class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
 class CGameOption;
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
@@ -185,7 +185,7 @@ CStringW UIActionTooltip::FUN_1418b1990()
 {
     int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))) ? 2 : 0;
     int nId = FUN_1418b1950();
-    return reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(nId, nFlag);
+    return reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(nId, nFlag);
 }
 
 // @0x1418b1a20
@@ -281,7 +281,7 @@ int UIActionTooltip::FUN_1418b2140()
         MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return 1;
-        return pMyPC->FUN_14166c930() == 0x19;
+        return pMyPC->GetCurStateId() == 0x19;
     }
     case 0xe:
         return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e77) == 0;
@@ -292,14 +292,14 @@ int UIActionTooltip::FUN_1418b2140()
         MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return 1;
-        return pMyPC->FUN_14166c930() == 0x3d;
+        return pMyPC->GetCurStateId() == 0x3d;
     }
     case 0x1c:
     {
         MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pMyPC == 0)
             return 1;
-        return pMyPC->FUN_14166c930() == 0x3e;
+        return pMyPC->GetCurStateId() == 0x3e;
     }
     }
     return 0;

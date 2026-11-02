@@ -245,7 +245,7 @@ public:
     MS2Ptr<CItem> FUN_141655b80(__int64 nItemUid);          // 0x141655b80 an owned item by uid
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);            // 0x141655e10 the worn item of a slot (customize.cpp)
     int FUN_1416569b0(CItem* pItem);                        // 0x1416569b0 the equip slot of an item (customize.cpp)
-    MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // 0x141655c30 a worn item by uid
+    MS2Ptr<CEquipItem> GetEquipByUid(__int64 nItemUid);     // 0x141655c30 a worn item by uid
     MS2Ptr<CEquipItem> GetEquipBySlotKind(int nSlot, int nKind); // 0x141655e80 the worn item of a slot (scenestategame 0x7b)
     void FUN_1416642c0(bool b);                             // 0x1416642c0 +0x1224 (scenestategame 0x79 mode 6)
     void FUN_141661c70(int n);                              // 0x141661c70 +0x10f4, refreshes the name tag (scenestategame 0xa8 mode 1)
@@ -257,7 +257,7 @@ public:
     int FUN_1416639e0();                                    // 0x1416639e0 the selected super world chat item id (uisidepopuptalk_2.cpp)
     int FUN_141662eb0(class CItem* pItem);                  // 0x141662eb0 the item may be used (mypc)
     class Unk_PCItemCooldowns* FUN_1416561c0();             // 0x1416561c0
-    int FUN_1416595d0();                                    // the cube craft mode (scenestategame 0x1417235a0)
+    int IsInCubeMode();                                    // the cube craft mode (scenestategame 0x1417235a0)
     class Unk_PCCubeCraft* GetCubeCraft();                 // the cube craft controller
     void FUN_14165f1f0(int nA, int nB);                     // scenestategame 0x69 (cube weapon held / dropped)
     class Unk_MyPCEmotion* FUN_14165f100();                 // the playing emotion (actionkeyobject.cpp)
@@ -445,7 +445,7 @@ public:
     int m_nFF4;                                             // +0xff4
     unsigned char m_nFF8;                                   // +0xff8 PC bang grade (FUN_141658ed0 / FUN_141658f10)
     unsigned char m_nFF9;                                   // +0xff9 PC bang bonus flags (FUN_141658f70)
-    int m_nCubeModeFFC;                                     // +0xffc the cube craft mode (GetCubeMode / FUN_1416595d0)
+    int m_nCubeModeFFC;                                     // +0xffc the cube craft mode (GetCubeMode / IsInCubeMode)
     int m_n1000;                                            // +0x1000
     MS2Ptr<CubeItemInfo> m_spCube1008;                      // +0x1008
     int m_n1018;                                            // +0x1018

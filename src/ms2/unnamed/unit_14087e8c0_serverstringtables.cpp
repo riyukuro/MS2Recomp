@@ -76,7 +76,7 @@ bool CServerStringGroup::Load()
         CStringW strId = FUN_1401bf530(pKey, "id", CStringW(L""));
         CStringW strName = FUN_1401bf530(pKey, "name", CStringW(L""));
         strName.Replace(L"\\n", L"\n");
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strName);
         if (m_mapFile.Lookup(strId) != 0)
             FUN_14054c030(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", strPath, FUN_1401d4330(strId, 0));
         m_mapFile.SetAt(strId, strName);
@@ -102,12 +102,12 @@ CStringW CServerStringGroup::GetString(const CStringW& strKey)
         CStringW strText;
         if (m_mapRuntime.Lookup(strName, strText))
         {
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             return strText;
         }
         if (m_mapFile.Lookup(strName, strText))
         {
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             return strText;
         }
         return StringFormat<CStringW>(L"NO KEY : {0}", strKey);

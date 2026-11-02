@@ -502,10 +502,10 @@ void PetInfoBasic::vfunc_3()
     if (basic == 0)
         return;
     unsigned short nPetClass = pet->FUN_140528c20();
-    int nRank = pet->FUN_140526bd0();
+    int nRank = pet->GetRarity();
     if (MS2Ptr<ASTextField> name = basic->FUN_1409b4620("m_name"))
     {
-        name->FUN_1422c4cd0(pet->FUN_140527b10());
+        name->SetTextW(pet->FUN_140527b10());
         static_cast<Unk_PiText*>(name.operator->())->SetAutoSize(1);
     }
     if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
@@ -555,7 +555,7 @@ void PetInfoBasic::vfunc_4()
     if (basic == 0)
         return;
     if (MS2Ptr<ASTextField> name = basic->FUN_1409b4620("m_name"))
-        name->FUN_1422c4cd0(L"");
+        name->SetTextW(L"");
     if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
     {
         reinterpret_cast<ASButton*>(change.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
@@ -625,8 +625,8 @@ void PetInfoBasic::OnChangeName()
     {
         unsigned nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PetConfig*)FUN_1401d3200())->m_nameLimit)->Get();
         CStringW strEmpty(L"");
-        box->FUN_141a01d30(2, strEmpty, nMax, 0, 0);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cb9ba0));
+        box->SetInput(2, strEmpty, nMax, 0, 0);
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cb9ba0));
         FUN_140d73c60(box);
     }
     ((class Unk_PiNetwork*)FUN_140d86260())->vfunc_43(2, 0, 1000);
@@ -664,7 +664,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                     if (MS2Ptr<CMsgBoxData> confirm = FUN_140d73d20(1, strText, 0, L""))
                     {
                         confirm->FUN_140b76940(strName);
-                        confirm->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::SendRequestPet));
+                        confirm->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::SendRequestPet));
                         FUN_140d73c60(confirm);
                     }
                 }
@@ -761,7 +761,7 @@ void PetInfoInventory::vfunc_3()
             {
                 MS2Ptr<ASTextField> text = notInv->FUN_1409b4620("textField");
                 if (text.get() != 0)
-                    text->FUN_1422c4cd0(GetStringCommonByKey(L"s_pet_not_inventory"));
+                    text->SetTextW(GetStringCommonByKey(L"s_pet_not_inventory"));
                 notInv->vfunc_3(1);
             }
         }
@@ -776,9 +776,9 @@ void PetInfoInventory::vfunc_3()
             if (text.get() != 0)
             {
                 if (nSlotMax > 0)
-                    text->FUN_1422c4cd0(FUN_14028dfa0<int>(L"s_pet_otherpet_inventory", nSlotMax));
+                    text->SetTextW(FUN_14028dfa0<int>(L"s_pet_otherpet_inventory", nSlotMax));
                 else
-                    text->FUN_1422c4cd0(GetStringCommonByKey(L"s_pet_otherpet_not_inventory"));
+                    text->SetTextW(GetStringCommonByKey(L"s_pet_otherpet_not_inventory"));
             }
             notInv->vfunc_3(1);
         }
@@ -786,7 +786,7 @@ void PetInfoInventory::vfunc_3()
     if (MS2Ptr<ASTextField> count = inv->FUN_1409b4620("m_slotUseCount"))
     {
         CStringW strText = FormatStringId(0xc11, nSlotUse, nSlotMax);
-        count->FUN_1422c4cd0(strText);
+        count->SetTextW(strText);
     }
 }
 
@@ -830,7 +830,7 @@ void PetInfoInventory::vfunc_5(int nTab)
         if (MS2Ptr<ASTextField> count = inv->FUN_1409b4620("m_slotUseCount"))
         {
             CStringW strText = FormatStringId(0xc11, nSlotUse, nSlotMax);
-            count->FUN_1422c4cd0(strText);
+            count->SetTextW(strText);
         }
         break;
     }
@@ -1052,7 +1052,7 @@ void PetInfoPreview::vfunc_3()
         m_avatar.AssignRaw(new UIAvatarPet(data.get()));
         m_avatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
     }
-    PI(preview)->FUN_140caf230("setGrade", pet->FUN_140526bd0());
+    PI(preview)->FUN_140caf230("setGrade", pet->GetRarity());
 }
 
 // @0x140cbbe20
@@ -1226,7 +1226,7 @@ int TabContentsPetInfo::EquipSlot::vfunc_0(void* p)
     if (tip.FUN_1409e0d40(pet.get()) != 0)
     {
         if (m_nPet != 0)
-            tip.FUN_1409c69b0(vfunc_22());
+            tip.SetEnablePuton(vfunc_22());
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }

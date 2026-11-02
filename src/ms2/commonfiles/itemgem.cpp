@@ -75,6 +75,7 @@ static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                       
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<T>::Get/Read
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/cpetdatatable.h"
 
 // The actor components behind PCBase slots 82 / 85 (see pcbase.h): the name tag and chat balloon entities.
 class Unk_PCBaseComp_a78 : public CPtred {};
@@ -109,7 +110,6 @@ struct Unk_GemItemDataFlags
 // The pet table (FUN_14052d210) and its row.
 struct Unk_GemPetRow
 {
-    int FUN_1407287e0(int nKind);                                   // 0x1407287e0 the item id of the pet's skin
 };
 class Unk_GemPetTable
 {
@@ -913,7 +913,7 @@ CString CGemPetSkin::vfunc_10()
     MS2Ptr<Unk_GemPetRow> spPet = ((class Unk_GemPetTable*)FUN_14052d210())->FUN_1407290f0(m_nPetId);
     if (spPet.IsNull())
         return "";
-    unsigned int nItemId = spPet->FUN_1407287e0(1);
+    unsigned int nItemId = reinterpret_cast<CPetData*>(spPet.operator->())->GetItemId(1);
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem.IsNull())
         return "";

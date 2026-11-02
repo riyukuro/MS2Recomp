@@ -17,11 +17,11 @@ public:
     ASTextField(const Scaleform::GFx::Value& v, int nMovieId);          // 0x1422c4c00 (the Value is not copied: const&)
     virtual ~ASTextField();                                             // 0x1422c4c50
     void SetTextA(const CString& strText);                         // set the text (narrow; UICameraDialog)
-    void FUN_1422c4cd0(const CStringW& strText);                        // set the text
+    void SetTextW(const CStringW& strText);                        // set the text
     CString GetTextA();                                            // the text (narrow)
     CStringW GetTextW();                                           // the text
     void SetTextHTMLA(const CString& strText);                         // set the html text (narrow)
-    void FUN_1422c4f00(const CStringW& strText);                        // set the html text
+    void SetTextHTMLW(const CStringW& strText);                        // set the html text
     CString GetTextHTMLA();                                            // the html text (narrow)
     CStringW GetTextHTMLW();                                           // the html text
     void SetTextColor(unsigned int nColor);                            // set "textColor" (0xRRGGBB; uirankpvpdialog.cpp)

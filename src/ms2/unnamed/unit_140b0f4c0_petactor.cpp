@@ -87,7 +87,8 @@ struct Unk_PetConfig { char m_pad_00[8]; Unk_PetBanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The buffs of an actor.
-class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nLevel, int a, int b); };
+class AdditionalCliList { public: int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare); };   // C3: member view (additionalclilist.h)
+class Unk_PCBaseBuffs : public AdditionalCliList { };
 
 // The pet owner as a player: the equipped pet skin gem.
 class Unk_OwnerPC : public PC { };
@@ -545,7 +546,7 @@ void CPet::FUN_140b107f0(int nKind)
     {
         if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == m_nKind)
         {
-            bool bShow = FUN_14166ce30() == 0 && (vfunc_129().get() != 0 ? true : false);
+            bool bShow = IsDead() == 0 && (vfunc_129().get() != 0 ? true : false);
             if (bShow)
             {
                 vfunc_129()->FUN_140e97ca0(1);
@@ -669,7 +670,7 @@ int CPet::FUN_140b11180()
     PCBase* pOwner = FUN_140b10360();
     if (pOwner == 0)
         return 0;
-    if (pOwner->FUN_14166ce30() != 0)
+    if (pOwner->IsDead() != 0)
         return 0;
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_PetConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(3)) == 1)
         return 0;
@@ -681,7 +682,7 @@ int CPet::FUN_140b11180()
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
         if (spData == 0)
             return 0;
-        if (FUN_140b11810(pOwner->FUN_14166c930(), spData->FUN_14053dc20(), spData->FUN_14053dc40()) != 0)
+        if (FUN_140b11810(pOwner->GetCurStateId(), spData->FUN_14053dc20(), spData->FUN_14053dc40()) != 0)
         {
             if (((class Unk_PetSkillSvcInner*)((class CPetManager*)(class Unk_PetSkillSvc*)(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320()))))->FUN_140c8b430())->FUN_140c89220(nItemId) != 0)
                 return 1;

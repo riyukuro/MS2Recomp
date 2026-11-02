@@ -204,7 +204,7 @@ int FittingDollSlot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(pItem) != 0)
     {
-        tip.FUN_1409c69b0(GetStringCommon(0x75c));
+        tip.SetEnablePuton(GetStringCommon(0x75c));
         if (IsEnabled() == true)
             tip.FUN_1409db7b0(MS2Ptr<CItem>(pItem));
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
@@ -232,7 +232,7 @@ int FittingDollSlot::vfunc_8(void* p)
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
-    int bOwner = pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54) == ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
+    int bOwner = pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) == ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
     ASSlot slot(2);
     if (slot.FUN_1409c41f0(pItem, pPlayer, m_nSlot, 0x49))
     {
@@ -311,7 +311,7 @@ int FittingDollSlot::FUN_14121ddc0()
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
-    if (pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54) != ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0())
+    if (pSvc->GetOwnerId(pCube->m_n50, pCube->m_n54) != ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0())
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)

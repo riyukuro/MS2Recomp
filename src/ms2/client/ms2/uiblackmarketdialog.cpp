@@ -158,7 +158,7 @@ int UIBlackMarketDialog::vfunc_73()
         return 0;
     }
     Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pPlayer && pPlayer->FUN_14166ce30() != 0)
+    if (pPlayer && pPlayer->IsDead() != 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
         FUN_1412751f0(strMsg, 1, 1);
@@ -172,7 +172,7 @@ void UIBlackMarketDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
     Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pPlayer && pPlayer->FUN_14166ce30() != 0 && m_68 == 0)
+    if (pPlayer && pPlayer->IsDead() != 0 && m_68 == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
         FUN_1412751f0(strMsg, 1, 1);
@@ -254,8 +254,8 @@ int UIBlackMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp("OnChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1418d0c20(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            FUN_1418d0c20(data.PopInt());
         return 1;
     }
     if (m_pCurPage)
@@ -450,7 +450,7 @@ void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
     {
         MS2Ptr<CItem> spItem = spEntry->m_item;
         MS2Ptr<CItem> spNew = new CItem();
-        static_cast<CItem*>(spNew)->InitWithCount(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), ((class CItem*)(class CItem*)(spItem))->FUN_140526bd0(), 0, n);
+        static_cast<CItem*>(spNew)->InitWithCount(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), ((class CItem*)(class CItem*)(spItem))->GetRarity(), 0, n);
         FUN_141349ae0(spNew, 0x945, "");
         m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
     }

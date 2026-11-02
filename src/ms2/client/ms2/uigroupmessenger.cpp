@@ -564,8 +564,8 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0x7d1)
     {
         CStringW strTag = pMsg->FUN_1422b8f40();
-        int nResult = pMsg->FUN_1422b8a10();
-        Scaleform::GFx::Value root = static_cast<Unk_GrmMsg*>(pMsg)->FUN_1422b9260();
+        int nResult = pMsg->PopInt();
+        Scaleform::GFx::Value root = static_cast<Unk_GrmMsg*>(pMsg)->PopValue();
         if (strTag == s_strGroupEdit)
         {
             if (nResult == 0)
@@ -699,7 +699,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("OnPopupMenu", szMethod) == 0)
     {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
+        if (args.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = args.FUN_1422b8f40();
             float x = args.PopFloat();
@@ -718,7 +718,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         else if (_stricmp("scrollPosition", szMethod) == 0)
         {
             ASData args;
-            if (args.FUN_1422b9620(pArgs, nArgs))
+            if (args.SetArgsIfAny(pArgs, nArgs))
                 m_nScrollPosition = (int)args.PopFloat();
         }
         else if (_stricmp("eventChatEmoticonOpen", szMethod) == 0)
@@ -728,24 +728,24 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         else if (_stricmp("eventChatEmoticonPush", szMethod) == 0)
         {
             ASData args;
-            if (!args.FUN_1422b9620(pArgs, nArgs))
+            if (!args.SetArgsIfAny(pArgs, nArgs))
                 return 0;
-            int nEmoticonId = args.FUN_1422b8a10();
+            int nEmoticonId = args.PopInt();
             SendMessengerMode4(nEmoticonId);
         }
         else if (_stricmp("eventChatEmoticonFavorite", szMethod) == 0)
         {
             ASData args;
-            if (!args.FUN_1422b9620(pArgs, nArgs))
+            if (!args.SetArgsIfAny(pArgs, nArgs))
                 return 0;
-            int nEmoticonId = args.FUN_1422b8a10();
-            bool bFavorite = args.FUN_1422b8a90();
+            int nEmoticonId = args.PopInt();
+            bool bFavorite = args.PopBool();
             FUN_14194b190(nEmoticonId, bFavorite);
         }
         else if (_stricmp("eventChatEmoticonPush", szMethod) == 0)
         {
             ASData args;
-            if (args.FUN_1422b9620(pArgs, nArgs))
+            if (args.SetArgsIfAny(pArgs, nArgs))
             {
                 CStringW strText = args.FUN_1422b8f40();
                 CGroupChatManager::GetInstance()->SendGroupChatMode10(m_nGroupId, strText);
@@ -1546,8 +1546,8 @@ int UIGroupMessengerBrowser::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0x7d1)
     {
         CStringW strTag = pMsg->FUN_1422b8f40();
-        int nResult = pMsg->FUN_1422b8a10();
-        Scaleform::GFx::Value root = static_cast<Unk_GrmMsg*>(pMsg)->FUN_1422b9260();
+        int nResult = pMsg->PopInt();
+        Scaleform::GFx::Value root = static_cast<Unk_GrmMsg*>(pMsg)->PopValue();
         if (strTag == s_strGroupList)
         {
             int bDone = 0;
@@ -1597,7 +1597,7 @@ int UIGroupMessengerBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp("OnToggleDialog", szMethod) == 0)
     {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
+        if (args.SetArgsIfAny(pArgs, nArgs))
             FUN_141953240(args.FUN_1422b8f40());
         return 1;
     }
@@ -2163,7 +2163,7 @@ CStringW UIGroupMessengerBrowser::FUN_141953b10(const CStringW& strMsg)
         {
             MS2Ptr<CItem> spItem = FindItemByUid(nUid);
             if (spItem.get())
-                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->FUN_140526bd0());
+                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->GetRarity());
         }
         CStringW strColored = FUN_14183e930(strLink, nColor);
         strHtml.Replace(strLink, strColored);

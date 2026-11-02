@@ -42,7 +42,9 @@ class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     bool FUN_1410c3e00(int nRow);                                   // row enabled
-    int FUN_1410c3e80(int nRow);                                    // row level
+};
+class CubeMapInformationService { public:   // C3: member view (cubemapinformationservice_3.h)
+    int FUN_1410c3e80(int nKey);                                    // row level
     bool FUN_1410d5640();                                           // may change the options
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
@@ -81,7 +83,7 @@ void FUN_140fa9c90(ASObj* pObj, const char* szName, unsigned char b)
 {
     ASData data;
     data.AddInt(b);
-    ((Scaleform::GFx::Value*)(void*)(reinterpret_cast<Scaleform::GFx::Value*>(reinterpret_cast<char*>(pObj) + 0x20)))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(reinterpret_cast<Scaleform::GFx::Value*>(reinterpret_cast<char*>(pObj) + 0x20)))->SetMember(szName, data.PopValue());
 }
 
 // @0x140fa8cc0
@@ -121,9 +123,9 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onConfirm", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            unsigned char bConfirm = data.FUN_1422b8a90();
+            unsigned char bConfirm = data.PopBool();
             if (bConfirm == 1)
                 FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnConfirm"));
             else
@@ -133,17 +135,17 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("apply", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
             if (spService.FUN_140ef4cb0(0))
                 return 1;
-            if (reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5640() == 0)
+            if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5640() == 0)
             {
                 FUN_140d73bc0(0x6e1, 0, 0, CStringW(L""));
                 return 1;
             }
-            unsigned char nOpenType = data.FUN_1422b8a10();
+            unsigned char nOpenType = data.PopInt();
             CStringW strPassword = data.FUN_1422b8f40();
             strPassword.Trim();
             if (strPassword.GetLength() != 6)
@@ -156,7 +158,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 FUN_140fa99b0(nOpenType, CStringW(strPassword));
             }
             for (int i = 0; i < 9; ++i)
-                FUN_140fa9a50(i, data.FUN_1422b8a10());
+                FUN_140fa9a50(i, data.PopInt());
         }
     }
     else if (_stricmp("onKickUser", szMethod) == 0)
@@ -178,7 +180,7 @@ int UIHomeOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         ATL::CAtlArray<Unk_HoUnused*> aUnused;
         FUN_14151f200();
@@ -218,7 +220,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
         {
             int nRow = i;
             bool bOn = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e00(nRow);
-            int nLevel = reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e80(nRow);
+            int nLevel = reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410c3e80(nRow);
             int nValue;
             if (!bOn)
                 nValue = 0;

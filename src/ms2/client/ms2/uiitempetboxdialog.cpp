@@ -72,7 +72,7 @@ public:
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
 // the obtained items (std::vector<ItemEntity>) and the "binding" strings (std::vector<CString>) with the exe helpers
 class Unk_PetBoxItems : public Unk_ItemVec
@@ -511,7 +511,7 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
         Unk_PetBoxDrop* d = filtered.FUN_140c461b0(i);
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(d->vfunc_0(), d->vfunc_1(), 0) != 0) {
-            item->FUN_140526c70(d->vfunc_2());
+            item->SetCountClamped(d->vfunc_2());
             items.Add(item);
         }
         m_special1.insert(ItemEntity(d->vfunc_0(), d->vfunc_1(), d->vfunc_2(), false, false, false, false));
@@ -554,7 +554,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
             else
                 unc->vfunc_4(false);
         }
-        item->FUN_140526c70(e.vfunc_o18_2());
+        item->SetCountClamped(e.vfunc_o18_2());
         CString bagKey;
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
         unsigned count = item->GetCount();
@@ -584,7 +584,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
                 MS2Ptr<CItem> item(new CItem);
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
-                item->FUN_140526c70(e.vfunc_o18_2());
+                item->SetCountClamped(e.vfunc_o18_2());
                 bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 PETBOX_BINDS.FUN_1403b0310(bagKey);
@@ -676,7 +676,7 @@ void UIItemPetBoxDialog::FUN_140e519b0(MS2Ptr<ASMovieClip> clip, const ItemEntit
     if (txt == 0)
         return;
     CStringW name = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, item.m_itemId);
-    txt->FUN_1422c4cd0(name);
+    txt->SetTextW(name);
     if (const_cast<ItemEntity&>(item).vfunc_o18_1() == 2)
         clip->vfunc_15("rare");
     else if (const_cast<ItemEntity&>(item).vfunc_o18_1() == 3)
@@ -716,7 +716,7 @@ void UIItemPetBoxDialog::FUN_140e51e40()
         return;
     } else if (r == 1) {
         if (MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_lullu_key_not_enough_key"), 1)) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemPetBoxDialog::FUN_140e4fc50));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemPetBoxDialog::FUN_140e4fc50));
             FUN_140d73c60(box);
         }
         return;

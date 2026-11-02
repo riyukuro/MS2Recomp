@@ -14,7 +14,8 @@
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
 // The option table (CItemOptionTable; FUN_140166430 returns the singleton).
-class Unk_140166430 { public: unsigned FUN_1405f6ed0(int nKey); };
+class Unk_140166430;
+class CItemOptionTable { public: int GetDisplayOrder(Unk_SocketSpecialStat nKey) const; };   // C3: member view (citemoptiontable.h)
 Unk_140166430* FUN_140166430();
 int FUN_14081d480(int nStat);                   // the display key of a stat
 const CString& FUN_14082efb0(int nStat);        // the xml name of a stat
@@ -158,7 +159,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         Unk_EnchantPtr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(pos);
         int nKey=0;
         if (spOption->HasValue()) nKey=FUN_14081d480(nStat);
-        unsigned nOrder=FUN_140166430()->FUN_1405f6ed0(nKey);
+        unsigned nOrder=reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetDisplayOrder((Unk_SocketSpecialStat)nKey);
         kOut.SetAt(nOrder,FUN_14082efb0(nStat));
     }
     for (POSITION pos=m_aSpecial[nGroup].GetStartPosition();pos;m_aSpecial[nGroup].GetNext(pos)) {
@@ -166,7 +167,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         Unk_EnchantPtr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(pos);
         CString strName;
         if (spOption->HasValue()) strName=FUN_14081d380(eStat);
-        unsigned nOrder=FUN_140166430()->FUN_1405f6ed0(eStat);
+        unsigned nOrder=reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetDisplayOrder(eStat);
         kOut.SetAt(nOrder,FUN_14081d380(eStat));
     }
 }

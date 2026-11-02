@@ -310,7 +310,6 @@ class Unk_EffectDummyTable
 {
 public:
     size_t FUN_140a40200();                                 // row count
-    bool FUN_140a40230(int nIndex, CEffectDummy* pOut);     // read row nIndex
 };
 
 void LoadRidingEffectDummy(CRideeDataPtr spData);                   // fill the effect dummy list (default table, then the row's file)
@@ -1006,7 +1005,7 @@ void LoadRidingEffectDummy(CRideeDataPtr spData)
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
         CEffectDummy dummy;
-        if (reinterpret_cast<Unk_EffectDummyTable*>(CommonEffectDummy::GetInstance())->FUN_140a40230((int)i, &dummy))
+        if (CommonEffectDummy::GetInstance()->Get((int)i, &dummy))
             spData->m_effectDummies.push_back(dummy);
     }
     CString strPath;

@@ -27,12 +27,12 @@ class Unk_JscSkillRow : public CPtred { public:  };
 class CSkillSet   // C3: member view (real class not in this TU)
 {
 public:
+    int HasSkill(int nSkillId, unsigned short nLevel);
     unsigned short GetSkillLevel(int);
 };
 class Unk_JscSkillSet : public CPtred
 {
 public:
-    int FUN_140809410(int nSkillId, int a1);                    // the set contains the skill
 };
 class CSkillTierOptionManager   // C3: member view (real class not in this TU)
 {
@@ -103,7 +103,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
         MS2Ptr<Unk_JscSkillSet> spSet = reinterpret_cast<Unk_JscSkillSys*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141768380();
         if (spSet.get() != 0)
         {
-            if (spSet->FUN_140809410(nSkillId, 0) != 0)
+            if (reinterpret_cast<CSkillSet*>(spSet.operator->())->HasSkill(nSkillId, 0) != 0)
                 return true;
         }
         if (((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)

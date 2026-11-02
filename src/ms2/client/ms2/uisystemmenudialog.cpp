@@ -201,7 +201,7 @@ int UISystemMenuDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
@@ -255,9 +255,9 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnChangeChannel", szMethod) == 0)
     {
         ASData channel;
-        if (channel.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (channel.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nChannel = channel.FUN_1422b8a10();
+            int nChannel = channel.PopInt();
             if (reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bc80c0(nChannel) == 0)
                 FUN_141b14630();
         }
@@ -332,7 +332,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a01700(0x476, 0, 0);
+        spBox->SetButtonLabelIds(0x476, 0, 0);
         spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
@@ -355,7 +355,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+        spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
     else if (FUN_1409670e0()->FUN_1410c3600(1))
@@ -365,7 +365,7 @@ void UISystemMenuDialog::FUN_141b13b30()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+            spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
         else
@@ -380,7 +380,7 @@ void UISystemMenuDialog::FUN_141b13b30()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+            spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
         else
@@ -395,7 +395,7 @@ void UISystemMenuDialog::FUN_141b13b30()
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+            spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         }
     }
@@ -403,7 +403,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(SmBoxDelegate([](int nResult, const CMsgBoxData&) -> bool
+        spBox->SetCallback(SmBoxDelegate([](int nResult, const CMsgBoxData&) -> bool
         {
             if (nResult == 0)
             {

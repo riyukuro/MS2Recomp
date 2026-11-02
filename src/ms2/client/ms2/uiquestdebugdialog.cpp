@@ -166,8 +166,8 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
     UIDialog::vfunc_28(method, args, count);
     ASData data;
     if (_stricmp("OnChapterChange", method) == 0) {
-        if (data.FUN_1422b9620(args, count)) {
-            m_chapter = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count)) {
+            m_chapter = data.PopInt();
             FUN_141a95010();
             FUN_141a95310(m_chapter, 0);
         }
@@ -176,16 +176,16 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
         FUN_141a95010();
         FUN_141a95310(0, 1);
     } else if (_stricmp("OnModifyQuest", method) == 0) {
-        if (data.FUN_1422b9620(args, count)) {
+        if (data.SetArgsIfAny(args, count)) {
             int id;
             CStringW quest = data.FUN_1422b8f40();
-            id = data.FUN_1422b8b10();
+            id = data.PopUInt();
             FUN_140761f00(quest, id);
         }
         return 1;
     } else if (_stricmp("OnChangeQuest", method) == 0) {
-        if (data.FUN_1422b9620(args, count)) {
-            unsigned int id = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(args, count)) {
+            unsigned int id = data.PopUInt();
             MS2Ptr<CQuestData> quest = FUN_14074bc40(id);
             if (quest.IsNull()) return 1;
             void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
@@ -236,8 +236,8 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             }
         }
     } else if (_stricmp("onReqQuest", method) == 0) {
-        if (data.FUN_1422b9620(args, count)) {
-            unsigned int id = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(args, count)) {
+            unsigned int id = data.PopUInt();
             MS2Ptr<CQuestData> quest = FUN_14074bc40(id);
             if (quest.get()) {
                 CStringW list;
@@ -251,16 +251,16 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             }
         }
     } else if (_stricmp("onXml", method) == 0) {
-        if (data.FUN_1422b9620(args, count)) {
-            unsigned int id = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(args, count)) {
+            unsigned int id = data.PopUInt();
             CString path;
             path.Format("./Data/Xml/Quest/%08d.xml", id);
             path.Replace('/', '\\');
             ShellExecuteA(NULL, "open", path, NULL, NULL, 1);
         }
     } else if (_stricmp("onExcel", method) == 0) {
-        if (data.FUN_1422b9620(args, count)) {
-            unsigned int id = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(args, count)) {
+            unsigned int id = data.PopUInt();
             char dir[260] = {0};
             if (GetEnvironmentVariableA("MS2EXCEL", dir, 260) > 0) {
                 CString file;
@@ -333,7 +333,7 @@ void UIQuestDebugDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& met
 {
     UIObject::vfunc_45(out, method, args);
     if (method == "getRequire") {
-        unsigned int id = args->FUN_1422b8b10();
+        unsigned int id = args->PopUInt();
         ASArray array(2);
         {
             auto quest = FUN_14074bc40(id);
@@ -347,7 +347,7 @@ void UIQuestDebugDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& met
                         data.FUN_1409c0d20("id", reqId);
                         data.FUN_1407cb9c0("locking", quest->m_30 != 0);
                         data.FUN_1407cb9c0("selectable", 0);
-                        array.FUN_1422bbf00(data);
+                        array.PushObj(data);
                     }
                 }
                 for (size_t i = 0; i < quest->m_require.m_selectableQuest.GetCount(); ++i) {
@@ -359,7 +359,7 @@ void UIQuestDebugDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& met
                         data.FUN_1409c0d20("id", reqId);
                         data.FUN_1407cb9c0("locking", quest->m_30 != 0);
                         data.FUN_1407cb9c0("selectable", 1);
-                        array.FUN_1422bbf00(data);
+                        array.PushObj(data);
                     }
                 }
             }
@@ -448,7 +448,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 8);
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 9);
         CStringW format = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_textfield_count");
-        text->FUN_1422c4cd0(StringFormat(format, available.GetCount(), completed.GetCount()));
+        text->SetTextW(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
     unsigned int progress = 0, complete = 0, autoStart = 0, exceptLocking = 0;
     if (Unk_QuestDebugPtr<Unk_QuestDebugCheck> check = FUN_140e52670("m_checkAutoStart")) autoStart = check->FUN_1422ce0e0();
@@ -521,7 +521,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         }
         list->vfunc_24(1);
     }
-    if (MS2Ptr<ASTextField> text = GetChild<ASTextField>("m_currentCount")) text->FUN_1422c4cd0(StringFormat<int>(L"Search count : {0}", count));
+    if (MS2Ptr<ASTextField> text = GetChild<ASTextField>("m_currentCount")) text->SetTextW(StringFormat<int>(L"Search count : {0}", count));
 }
 MS2_REPLACE_METHOD(0x141A95310, UIQuestDebugDialog, FUN_141a95310, 4998, 0x217DF313);
 

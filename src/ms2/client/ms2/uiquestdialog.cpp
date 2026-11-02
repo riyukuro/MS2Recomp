@@ -366,9 +366,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     ASData data;
     if (_stricmp("OnSelectQuest", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nQuestId = data.FUN_1422b8b10();
+            int nQuestId = data.PopUInt();
             SelectQuest(nQuestId);
             RemovePinned(nQuestId);
             return 1;
@@ -378,9 +378,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         if (_stricmp("OnSelectChapter", szMethod) == 0)
         {
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nChapter = data.FUN_1422b8a10();
+                int nChapter = data.PopInt();
                 SelectChapter(nChapter);
                 RefreshDetail();
             }
@@ -396,17 +396,17 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onGiveUpQuest", szMethod) == 0)
         {
             ASData dataGiveUp;
-            if (dataGiveUp.FUN_1422b9620(pArgs, nArgs) != 0)
-                GiveUpQuest(dataGiveUp.FUN_1422b8b10());
+            if (dataGiveUp.SetArgsIfAny(pArgs, nArgs) != 0)
+                GiveUpQuest(dataGiveUp.PopUInt());
             return 1;
         }
         else if (_stricmp("onRegister", szMethod) == 0)
         {
             ASData dataReg;
-            if (dataReg.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataReg.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nQuestId = dataReg.FUN_1422b8b10();
-                int bRegist = dataReg.FUN_1422b8a90();
+                int nQuestId = dataReg.PopUInt();
+                int bRegist = dataReg.PopBool();
                 Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
                 if (pPlayer == 0)
                     return 0;
@@ -432,11 +432,11 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onSelectProperLevel", szMethod) == 0)
         {
             ASData dataLevel;
-            if (dataLevel.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataLevel.SetArgsIfAny(pArgs, nArgs) != 0)
             {
                 int nTab = GetTab();
                 if (nTab != 4)
-                    m_filterA[nTab] = dataLevel.FUN_1422b8a90();
+                    m_filterA[nTab] = dataLevel.PopBool();
                 RefreshTab();
             }
             return 1;
@@ -444,11 +444,11 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onSelectProgressOnly", szMethod) == 0)
         {
             ASData dataProgress;
-            if (dataProgress.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataProgress.SetArgsIfAny(pArgs, nArgs) != 0)
             {
                 int nTab = GetTab();
                 if (nTab != 4)
-                    m_filterB[nTab] = dataProgress.FUN_1422b8a90();
+                    m_filterB[nTab] = dataProgress.PopBool();
                 RefreshTab();
             }
             return 1;
@@ -456,11 +456,11 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onOkSetting", szMethod) == 0)
         {
             ASData dataSetting;
-            if (dataSetting.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataSetting.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_20 = dataSetting.FUN_1422b8a90();
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_21 = dataSetting.FUN_1422b8a90();
-                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_22 = dataSetting.FUN_1422b8a90();
+                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_20 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_21 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_22 = dataSetting.PopBool();
                 Unk_QdGuide* pGuide = FUN_140961730(0x4e42);
                 if (pGuide != 0 && pGuide->FUN_141924630() != 0)
                     pGuide->FUN_141b5bd30();
@@ -475,9 +475,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onGotoNpc", szMethod) == 0)
         {
             ASData dataGoto;
-            if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataGoto.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nQuestId = dataGoto.FUN_1422b8b10();
+                int nQuestId = dataGoto.PopUInt();
                 ((class CQuestManager*)FUN_140764020())->SendQuestMode12(nQuestId);
             }
             return 1;
@@ -485,9 +485,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onGotoDungeon", szMethod) == 0)
         {
             ASData dataGoto;
-            if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataGoto.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nQuestId = dataGoto.FUN_1422b8b10();
+                int nQuestId = dataGoto.PopUInt();
                 ((class CQuestManager*)FUN_140764020())->SendQuestMode13(nQuestId);
             }
             return 1;
@@ -495,9 +495,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("onGotoDispatch", szMethod) == 0)
         {
             ASData dataGoto;
-            if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (dataGoto.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nQuestId = dataGoto.FUN_1422b8b10();
+                int nQuestId = dataGoto.PopUInt();
                 ((class CQuestManager*)FUN_140764020())->FUN_1416cf870(nQuestId);
                 return 1;
             }
@@ -507,9 +507,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (_stricmp("onGotoReEntry", szMethod) == 0)
             {
                 ASData dataGoto;
-                if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
+                if (dataGoto.SetArgsIfAny(pArgs, nArgs) != 0)
                 {
-                    int nQuestId = dataGoto.FUN_1422b8b10();
+                    int nQuestId = dataGoto.PopUInt();
                     ((class CQuestManager*)FUN_140764020())->SendQuestMode19(nQuestId);
                     return 1;
                 }
@@ -519,9 +519,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 if (_stricmp("onGotoFindParty", szMethod) == 0)
                 {
                     ASData dataGoto;
-                    if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
+                    if (dataGoto.SetArgsIfAny(pArgs, nArgs) != 0)
                     {
-                        int nQuestId = dataGoto.FUN_1422b8b10();
+                        int nQuestId = dataGoto.PopUInt();
                         ((class CQuestManager*)FUN_140764020())->FUN_1416cf980(nQuestId, 0);
                         return 1;
                     }
@@ -531,9 +531,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     if (_stricmp("onGotoFindPartyCancel", szMethod) == 0)
                     {
                         ASData dataGoto;
-                        if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
+                        if (dataGoto.SetArgsIfAny(pArgs, nArgs) != 0)
                         {
-                            int nQuestId = dataGoto.FUN_1422b8b10();
+                            int nQuestId = dataGoto.PopUInt();
                             ((class CQuestManager*)FUN_140764020())->FUN_1416cf980(nQuestId, 1);
                             return 1;
                         }
@@ -718,7 +718,7 @@ void UIQuestDialog::RefreshList()
                 node.FUN_1407cbb20("label", strContinent);
                 node.FUN_140e35d00("type", 0);
                 node.FUN_1409c0dc0("rendererClassName", "qd_renderer_continent");
-                nodes.FUN_1422bbf00(node);
+                nodes.PushObj(node);
             }
             TPtrValue<ChapterQuests> spGroup(groups.GetValueAt(pos));
             for (POSITION pos2 = spGroup->GetStartPosition(); pos2 != 0; spGroup->GetNext(pos2))
@@ -736,7 +736,7 @@ void UIQuestDialog::RefreshList()
                     node.FUN_1407cbb20("field", strRegion);
                     node.FUN_140e35d00("type", 0);
                     node.FUN_1409c0dc0("rendererClassName", "qd_renderer_region");
-                    nodes.FUN_1422bbf00(node);
+                    nodes.PushObj(node);
                 }
                 for (size_t j = 0; j < spIds->GetCount(); j++) {
                     int nQuestId = (*spIds.operator->())[j];
@@ -786,7 +786,7 @@ void UIQuestDialog::RefreshCompleted()
             node.FUN_1409c0dc0("rendererClassName", "qd_renderer_chapter");
             node.FUN_1409eb1d0("nodes", children);
             if (AddChapterQuests(MS2Ptr<CQuestData>(spData), children) != 0)
-                nodes.FUN_1422bbf00(node);
+                nodes.PushObj(node);
         }
         root.FUN_140e35d00("type", 1);
         root.FUN_1409eb1d0("nodes", nodes);
@@ -1004,7 +1004,7 @@ CString UIQuestDialog::RewardIconName(int nItemId, int nRarity, int nCount, CStr
     CItem* pItem = new CItem();
     if (pItem->FUN_14052b130(nItemId, nRarity, 0) != 0)
     {
-        pItem->FUN_140526c70(nCount);
+        pItem->SetCountClamped(nCount);
         CString strIcon;
         strIcon.Format("%s_%s", (const char*)GetTypeName(), (const char*)FUN_14016a5c0((const char*)strBindName, 0));
         FUN_141415450(strIcon, MS2Ptr<CItem>(pItem), 0, 0x11, 0x800);
@@ -1078,7 +1078,7 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
         }
     }
     strResult += FUN_1416e5450(pQuest->FUN_140bfc580());
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strResult);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strResult);
     return strResult;
 }
 
@@ -1110,7 +1110,7 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
             strText = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_current_field"), &spData->m_2e8);
         else
             strText = FUN_1409e9890(CStringW(L"s_quest_desc_beginable"), &nMap, &spData->m_2e8);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strText);
         return strText;
     }
     else
@@ -1194,7 +1194,7 @@ CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
         spText.operator->();
     }
     strTitle = FUN_1416e4df0(nQuestId);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strTitle);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strTitle);
     return strTitle;
 }
 
@@ -1329,7 +1329,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
         node.FUN_1407cb9c0("isNew", HasPinned(spQuest->FUN_140bfc580()));
         node.FUN_1407cba60("icon", QuestStateName(spQuest.get()));
         node.FUN_1409c0dc0("rendererClassName", "qd_renderer_questList");
-        children.FUN_1422bbf00(node);
+        children.PushObj(node);
         nAdded = 1;
     }
     if (nAdded != 0)
@@ -1344,7 +1344,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
             chapter.FUN_1409c0dc0("rendererClassName", "qd_renderer_chapter");
             chapter.FUN_1409eb1d0("nodes", children);
         }
-        rNodes.FUN_1422bbf00(chapter);
+        rNodes.PushObj(chapter);
     }
     return nAdded;
 }
@@ -1502,7 +1502,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
         node.FUN_1407cb9c0("isNew", 0);
         node.FUN_1409c0dc0("icon", "");
         node.FUN_1409c0dc0("rendererClassName", "qd_renderer_questList");
-        rNodes.FUN_1422bbf00(node);
+        rNodes.PushObj(node);
         nAdded = 1;
     }
     return nAdded;
@@ -1836,7 +1836,7 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
         if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_quest_giveup_warning"), 0, L""))
         {
             box.operator->()->Append<unsigned int>(nQuestId);
-            box->FUN_141a027c0(Unk_MsgBoxCallback(this, &UIQuestDialog::OnGiveUpConfirm));
+            box->SetCallback(Unk_MsgBoxCallback(this, &UIQuestDialog::OnGiveUpConfirm));
             FUN_140d73c60(box);
         }
     }

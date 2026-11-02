@@ -112,7 +112,7 @@ typedef MS2Ptr<CEquipItem> Unk_IEEquipPtr;
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
-    int FUN_14166c930();                                    // 0x14166c930 current state id
+    int GetCurStateId();                                    // 0x14166c930 current state id
     void FUN_14166cc40(int nValue);                         // C3: view of pcbase.h
 };
 class PC { public: MS2Ptr<CEquipItem> FUN_141655e10(int nSlot); };   // C3: view of the real class
@@ -298,7 +298,7 @@ int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         }
         else if (dynamic_cast<UIMessageBox*>(pSender))
         {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             CStringW strTag = pMsg->FUN_1422b8f40();
             FUN_14151f200();
             if (nResult == 0 && operator==(strTag, L"errorEdit"))
@@ -362,7 +362,7 @@ void UIItemEditDialog::vfunc_24(void* p)
     Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (reinterpret_cast<PCBase*>(pPc)->FUN_14166c930() != 0xe)
+    if (reinterpret_cast<PCBase*>(pPc)->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     reinterpret_cast<PCBase*>(pPc)->FUN_14166cc40(0x4c);
     NoticeMessage effect;   // C3: was Unk_IEEffectRequest
@@ -508,7 +508,7 @@ void UIItemEditDialog::FUN_1419bd9f0()
     if (FUN_1419bdb90() != 0)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
         spBox->FUN_141a01800(2);
         FUN_140d73c60(spBox);
     }

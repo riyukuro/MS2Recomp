@@ -102,12 +102,12 @@ void StateStun::vfunc_4(StateData* pData)
     }
     else if (m_n10 == 0x46)
     {
-        m_pOwner->FUN_14166dd20((LPCSTR)m_pOwner->FUN_1416749a0()->GetStunAnimation(), 1.0f, false, false);
+        m_pOwner->PlayAnimation((LPCSTR)m_pOwner->FUN_1416749a0()->GetStunAnimation(), 1.0f, false, false);
     }
     else if (m_pAnims != 0)
     {
         efd::utf8string kName(m_pAnims[FUN_1417f7140()]);
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
     m_pOwner->FUN_14166ef10("Stun", 1, 0, false);
 }
@@ -152,7 +152,7 @@ void StateStun::vfunc_3(double fTime)
                     m_pAnims = s_szStunAnimsB;
             }
             efd::utf8string kName(m_pAnims[FUN_1417f7140()]);
-            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+            m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         }
         break;
     }
@@ -182,12 +182,12 @@ void StateStun::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
                     m_pAnims = s_szStunAnimsB;
             }
             efd::utf8string kName(m_pAnims[FUN_1417f7140()]);
-            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+            m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         }
         break;
     case 0x46:
         {
-            m_pOwner->FUN_14166dd20((LPCSTR)m_pOwner->FUN_1416749a0()->GetStunAnimation(), 1.0f, true, false);
+            m_pOwner->PlayAnimation((LPCSTR)m_pOwner->FUN_1416749a0()->GetStunAnimation(), 1.0f, true, false);
         }
         break;
     }

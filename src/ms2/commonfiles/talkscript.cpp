@@ -80,6 +80,7 @@ class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
     char const* Attribute(char const*) const;
+    int QueryIntAttribute(const char* name, int* value) const;   // 0x14086f600
 };
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
@@ -107,7 +108,6 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-void FUN_14086f600(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOut);
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
@@ -616,9 +616,9 @@ void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script)
 void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 {
     if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("popupProp") != 0)
-        FUN_14086f600(pNode, "popupProp", &script->m_popupProp);
+        ((class TiXmlElement*)(pNode))->QueryIntAttribute("popupProp", &script->m_popupProp);
     if (((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("popupState") != 0)
-        FUN_14086f600(pNode, "popupState", &script->m_popupState);
+        ((class TiXmlElement*)(pNode))->QueryIntAttribute("popupState", &script->m_popupState);
     for (Unk_ScriptXmlNode* child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(pNode))->FirstChild("content")); child != 0; child = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(child))->NextSibling("content")))
     {
         Unk_ScriptPtr<CChatballonContent> content(new CChatballonContent());

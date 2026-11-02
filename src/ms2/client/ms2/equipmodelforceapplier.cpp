@@ -67,7 +67,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -159,12 +159,12 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (spOwner == (Unk_EquipModelOwner*)0) {
         return;
     }
-    Unk_WindObj* pObj = reinterpret_cast<Unk_WindObj*>(WorldService::GetInstance()->FUN_141bd1180(spOwner->GetItem()->FUN_140526b10()));
+    Unk_WindObj* pObj = reinterpret_cast<Unk_WindObj*>(WorldService::GetInstance()->FindObjectById(spOwner->GetItem()->FUN_140526b10()));
     if (pObj == 0) {
         return;
     }
     PC* pWindModel = efd::DynamicCast<PC>(reinterpret_cast<GameObject*>(pObj));
-    if (pWindModel == 0 || pWindModel->FUN_14166c930() == 3) {
+    if (pWindModel == 0 || pWindModel->GetCurStateId() == 3) {
         return;
     }
 

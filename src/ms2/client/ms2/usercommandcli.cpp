@@ -395,7 +395,6 @@ MS2_CHECK_OFFSET(Unk_CommandItemData,transferType,0x190);
 
 // ---- g1 declarations ----
 struct Unk_g1_Iter16 { void* m_00; void* m_08; };
-struct Unk_g1_List24 { void* m_00; void* m_08; void* m_10; };
 struct Unk_g1_List48 { void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; };
 MS2_CHECK_SIZE(Unk_g1_List48,0x30);
 struct Unk_g1_EffectReq { void* m_name; int m_value; int m_pad; };
@@ -435,14 +434,8 @@ void FUN_141253f40(void*);
 void FUN_141254640(void*,__int64*);
 void FUN_141253ee0(void*);
 enum Unk_CommandKeyCode : int {}; // custom-formatted fmt argument (make_type == CUSTOM)
-void* FUN_1406feea0(void*);
-void FUN_140374090(void*);
-__int64 FUN_140704520(void*);
-__int64 FUN_140704540(void*);
-__int64 FUN_140300710(__int64);
 void FUN_140841420(CStringW&);
 int FUN_14083fec0(CStringW,CStringW);
-void FUN_1406ff2b0(void*);
 // @0x141371ac0
 inline void* FUN_141371ac0(void* p) { return (char*)p+0x160; }
 // ATL::CAtlList of world objects (same shape as uidevelopdialog's Unk_DevList)
@@ -528,6 +521,7 @@ MS2_CHECK_SIZE(Unk_g2_Pair16,0x10);
 void* FUN_140764020(); CStringW StringFormat(const wchar_t*);
 void FUN_140186480(void*,void**);
 void FUN_14074bc40(Unk_g2_Pair16*,int);
+MS2Ptr<CQuestData> FUN_14074bc40(int);
 void* FUN_14064d520(Unk_g2_Pair16*);
 void FUN_14064d3e0(Unk_g2_Pair16*);
 CString FUN_14136f6f0(int);
@@ -639,6 +633,7 @@ extern bool DAT_143ae9750;
 #include "ms2/client/ms2/uiguideeventarrow.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/fishingmanager.h"
+#include "ms2/client/ms2/terrainexportscheduler.h"  // Unk_TESMapList
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/commonfiles/questdatatable.h"  // C3: GetQuestIdsByChapter
@@ -757,7 +752,7 @@ void CUserCommandCli::Register(CStringW name,Command callback) { commands.SetAt(
 void CUserCommandCli::RegisterInternal(CStringW name,Command callback) { internalCommands.SetAt(name,callback); }
 // @0x141362920
 bool CUserCommandCli::Load() {
-    CString path=FUN_14071a5b0(CString("Table"),CString("chatCommand.xml"));
+    CString path=FUN_14071a5b0("Table","chatCommand.xml");
     TiXmlDocument doc;
     if(GetFileSystem()->FUN_1403974b0(&doc,path,0,true,false)==0) return false;
     void* root=((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
@@ -774,21 +769,22 @@ bool CUserCommandCli::Load() {
         if(names.IsEmpty()) continue;
         ATL::CAtlArray<CStringW> items;
         FUN_14025a680(names,items,L"\n");
-        if(items.IsEmpty()) continue;
-        FUN_14136f660(node,"chatType",info->chatType);
-        XmlGetAttr((class TiXmlElement*)(node), "function", info->function);
-        for(size_t i=0;i<items.GetCount();i++) {
-            CStringW name=items[i].Trim();
-            if(name.IsEmpty()) continue;
-            if(info->firstAlias.IsEmpty()) info->firstAlias=name;
-            aliases.SetAt(name,info);
-        }
-        int order=0;
-        XmlGetAttr((class TiXmlElement*)(node), "stringOrder", order);
-        if(order>0) {
-            CStringW suffix;
-            XmlGetAttr((class TiXmlElement*)(node), "stringSuffix", suffix);
-            if(!suffix.IsEmpty()) { info->suffix=suffix; ordered.SetAt(order,info); }
+        if(!items.IsEmpty()) {
+            FUN_14136f660(node,"chatType",info->chatType);
+            XmlGetAttr((class TiXmlElement*)(node), "function", info->function);
+            for(size_t i=0;i<items.GetCount();i++) {
+                CStringW name=items[i].Trim();
+                if(name.IsEmpty()) continue;
+                if(info->firstAlias.IsEmpty()) info->firstAlias=name;
+                aliases.SetAt(name,info);
+            }
+            int order=0;
+            XmlGetAttr((class TiXmlElement*)(node), "stringOrder", order);
+            if(order>0) {
+                CStringW suffix;
+                XmlGetAttr((class TiXmlElement*)(node), "stringSuffix", suffix);
+                if(!suffix.IsEmpty()) { info->suffix=suffix; ordered.SetAt(order,info); }
+            }
         }
     }
     return true;
@@ -1329,35 +1325,12 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
     CStringW extra2=args.FUN_1408d21c0(2,L"");
     if(!extra1.IsEmpty()) query=FUN_1401d0080(FUN_14061ad70(query,L" "),extra1);
     if(!extra2.IsEmpty()) query=FUN_1401d0080(FUN_14061ad70(query,L" "),extra2);
-    Unk_g1_List24 list;
-    FUN_1406feea0(&list);
-    FUN_140374090(&list);
-    __int64 it=FUN_140704520(&list);
-    __int64 end=FUN_140704540(&list);
-    while(true) {
-        if(it==end) {
-            __int64 it2=FUN_140704520(&list);
-            __int64 end2=FUN_140704540(&list);
-            while(true) {
-                if(it2==end2) {
-                    FUN_1406ff2b0(&list);
-                    return 1;
-                }
-                unsigned mapId=*(unsigned*)(FUN_140300710(it2)+0x18);
-                CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
-                FUN_140841420(name);
-                int found=FUN_14083fec0(CStringW(name),CStringW(query));
-                if(found!=-1) break;
-                it2+=0x10;
-            }
-            Unk_CommandChat record;
-            record.kind=0;
-            record.message=StringFormat(L"/MoveField {0} 1",*(unsigned*)(FUN_140300710(it2)+0x18));
-            FUN_141276f80(&record);
-            FUN_1406ff2b0(&list);
-            return 1;
-        }
-        unsigned mapId=*(unsigned*)(FUN_140300710(it)+0x18);
+    Unk_TESMapList list;
+    list.FUN_140374090();
+    Unk_TESMapList* range=&list;
+    for(Unk_TESMapRecord* it=range->FUN_140704520(),*end=range->FUN_140704540(); it!=end; ++it) {
+        Unk_TESMapRecord& rec=*it;
+        unsigned mapId=FUN_140300710(&rec)->id;
         CStringW idText=StringFormat(L"{0}",mapId);
         CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
         FUN_140841420(name);
@@ -1366,11 +1339,23 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
             record.kind=0;
             record.message=StringFormat(L"/MoveField {0} 1",mapId);
             FUN_141276f80(&record);
-            FUN_1406ff2b0(&list);
             return 1;
         }
-        it+=0x10;
     }
+    Unk_TESMapList* range2=&list;
+    for(Unk_TESMapRecord* it=range2->FUN_140704520(),*end=range2->FUN_140704540(); it!=end; ++it) {
+        Unk_TESMapRecord& rec=*it;
+        unsigned mapId=FUN_140300710(&rec)->id;
+        CStringW name=TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,mapId);
+        FUN_140841420(name);
+        if(FUN_14083fec0(CStringW(name),CStringW(query))==-1) continue;
+        Unk_CommandChat record;
+        record.kind=0;
+        record.message=StringFormat(L"/MoveField {0} 1",mapId);
+        FUN_141276f80(&record);
+        return 1;
+    }
+    return 1;
 }
 // @0x1413686b0
 int CUserCommandCli::RecordFishing(Unk_CommandArgs&) {
@@ -1591,9 +1576,7 @@ int CUserCommandCli::ShowDungeonVoiceChatUi(Unk_CommandArgs&) { return 1; }
 int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
     CStringW text;
     for (int pass = 0; pass < 2; pass++) {
-        void* list;
-        if (pass == 0) list = (char*)FUN_140764020() + 0x1c0;
-        else list = (char*)FUN_140764020() + 0x208;
+        ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>* list = (ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)static_cast<char* const&>(pass == 0 ? (char*)FUN_140764020() + 0x1c0 : (char*)FUN_140764020() + 0x208);
         ATL::CAtlArray<CString> names;
         ATL::CAtlArray<int> counts;
         ATL::CAtlArray<int> alliances;
@@ -1602,51 +1585,33 @@ int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
         counts.SetCount(10,-1);
         names.SetCount(5,-1);
         alliances.SetCount(5,-1);
-        void* pos = ((void*)((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(list))->GetStartPosition());
-        while (pos != 0) {
-            int* key = (int*)((void*)&((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(list))->GetKeyAt((struct __POSITION*)(pos)));
-            Unk_g2_Pair16 q;
-            FUN_14074bc40(&q,*key);
-            if (!((MS2Ptr<CQuestData>*)(struct Unk_g2_Pair16*)(&q))->IsNull()) {
-                Unk_g2_Row* d = (Unk_g2_Row*)FUN_14064d520(&q);
-                names[d->m_50] += FUN_14038f6d0(FUN_14136f6f0(d->m_4c),L" ");
-                d = (Unk_g2_Row*)FUN_14064d520(&q);
-                int* c1 = &counts[d->m_4c];
-                *c1 = *c1 + 1;
-                d = (Unk_g2_Row*)FUN_14064d520(&q);
-                int* c2 = &alliances[d->m_50];
-                *c2 = *c2 + 1;
-                d = (Unk_g2_Row*)FUN_14064d520(&q);
-                CString* line = &quests[d->m_4c];
-                if (line->GetLength() != 0) {
-                    d = (Unk_g2_Row*)FUN_14064d520(&q);
-                    quests[d->m_4c] += L", ";
-                }
-                int v = FUN_14074b030((CQuestData *)(FUN_14064d520(&q)));
-                CStringW w = FUN_1416e4df0(v);
-                quests[((Unk_g2_Row*)FUN_14064d520(&q))->m_4c] += (const wchar_t*)w;
-                FUN_14064d3e0(&q);
-            } else {
-                FUN_14064d3e0(&q);
-            }
-            FUN_140186480(list,&pos);
+        for (POSITION pos = list->GetStartPosition(); pos != 0; list->GetNext(pos)) {
+            MS2Ptr<CQuestData> q = FUN_14074bc40(list->GetKeyAt(pos));
+            if (q.IsNull())
+                continue;
+            names[((Unk_g2_Row*)q.operator->())->m_50] += static_cast<const CString&>(FUN_14038f6d0(static_cast<const CString&>(FUN_14136f6f0(((Unk_g2_Row*)q.operator->())->m_4c)),L" "));
+            int* c1 = &counts[((Unk_g2_Row*)q.operator->())->m_4c];
+            *c1 = *c1 + 1;
+            int* c2 = &alliances[((Unk_g2_Row*)q.operator->())->m_50];
+            *c2 = *c2 + 1;
+            if (quests[((Unk_g2_Row*)q.operator->())->m_4c].GetLength() != 0)
+                quests[((Unk_g2_Row*)q.operator->())->m_4c] += L", ";
+            quests[((Unk_g2_Row*)q.operator->())->m_4c] += (const wchar_t*)static_cast<const CStringW&>(FUN_1416e4df0(FUN_14074b030(q.operator->())));
         }
-        const wchar_t* kind;
-        if (pass == 0) kind = L"Daily"; else kind = L"Weekly";
-        FUN_1412751b0(StringFormat(L"---------------------------- {0} -------------------------------------",kind),20);
-        for (unsigned __int64 i = 0; i < 5; i++) {
-            CString* n = &names[i];
-            int* c = &alliances[i];
-            FUN_1412751b0(StringFormat(L"{0} Rank : {1} \n [{2}]",FUN_14136f730((int)i),*c,*n),20);
+        FUN_1412751b0(StringFormat(L"---------------------------- {0} -------------------------------------",pass == 0 ? L"Daily" : L"Weekly"),20);
+        for (unsigned __int64 i = 0; i < 5; i++)
+            FUN_1412751b0(StringFormat(L"{0} Rank : {1} \n [{2}]",FUN_14136f730((int)i),alliances[i],names[i]),20);
+        {
+            CStringW strLine(L"------------------------------------------------------------------");
+            FUN_1412751b0(strLine,20);
         }
-        FUN_1412751b0(CStringW(L"------------------------------------------------------------------"),20);
-        for (unsigned __int64 i = 1; i < 10; i++) {
-            int* c = &counts[i];
-            FUN_1412751b0(StringFormat(L"{0} Alliance Count : {1}",FUN_14136f6f0((int)i),*c),20);
+        for (unsigned __int64 i = 1; i < 10; i++)
+            FUN_1412751b0(StringFormat(L"{0} Alliance Count : {1}",FUN_14136f6f0((int)i),counts[i]),20);
+        {
+            CStringW strLine(L"------------------------------------------------------------------");
+            FUN_1412751b0(strLine,20);
         }
-        FUN_1412751b0(CStringW(L"------------------------------------------------------------------"),20);
-        if (pass == 0) kind = L"Daily"; else kind = L"Weekly";
-        text += StringFormat(L"---------------------------- {0} -------------------------------------",kind);
+        text += StringFormat(L"---------------------------- {0} -------------------------------------",pass == 0 ? L"Daily" : L"Weekly");
         for (unsigned __int64 i = 0; i < quests.GetCount(); i++) {
             text += StringFormat(L"{0} : ",FUN_14136f6f0((int)i));
             text += (const char*)quests[i];
@@ -1654,7 +1619,10 @@ int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
         }
     }
     FUN_14083d890(text);
-    FUN_1412751b0(CStringW(L"SaveClipboard!"),20);
+    {
+        CStringW strDone(L"SaveClipboard!");
+        FUN_1412751b0(strDone,20);
+    }
     return 1;
 }
 // @0x14136a4c0

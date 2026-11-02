@@ -163,29 +163,32 @@ int UIUGCImageUploadDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
-            if (operator==(strTag, L"noexist") == 0)
+            if (operator==(strTag, L"noexist"))
+            {
+                FUN_141b3a600();
+                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
+                if (spUpload.get() != 0 ? true : false)
+                {
+                    if (spUpload->m_spViewer.get() != 0 ? true : false)
+                        spUpload->m_spViewer->vfunc_4();
+                }
+            }
+            else
             {
                 if (FUN_140d74e80(strTag) != 0)
                     ((class CUgcManager*)FUN_14052d220())->FUN_141882020();
             }
-            else
-            {
-                FUN_141b3a600();
-                MS2Ptr<CUgcUploadCtrl> spUpload = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
-                if (spUpload.get() != 0)
-                {
-                    if (spUpload->m_spViewer.get() != 0)
-                        spUpload->m_spViewer->vfunc_4();
-                }
-            }
             FUN_14151f200();
             return 1;
         }
-        FUN_14151f200();
+        else
+        {
+            FUN_14151f200();
+        }
     }
     return 0;
 }
@@ -203,9 +206,9 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnPreview", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_141b3acb0(nIndex);
         }
         return 1;
@@ -213,9 +216,9 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnUpload", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_141b3adc0(nIndex);
         }
         return 1;
@@ -233,9 +236,9 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("onScrollPosition", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             if (nIndex == -1)
                 return 0;
             FUN_141b3b0e0(nIndex);
@@ -245,9 +248,9 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("OnItemDoubleClick", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             if (nIndex == -1)
             {
                 FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
@@ -264,7 +267,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 void UIUGCImageUploadDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strType = pArgs->FUN_1422b8d30();
-    Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
+    Scaleform::GFx::Value arg = pArgs->PopValue();
     if (((Scaleform::GFx::Value*)(void*)(&arg))->IsUndefined() || ((Scaleform::GFx::Value*)(void*)(&arg))->IsNull())
         return;
     AScript root((const Scaleform::GFx::Value&)arg, 2);
@@ -321,6 +324,9 @@ void UIUGCImageUploadDialog::FUN_141b3a690(int nResult)
             FUN_141275260(0x467, 1, 1);
         else if (m_188 == 3)
             FUN_141275260(0x469, 1, 1);
+        else if (m_188 != 6 && m_188 == 7)
+        {
+        }
     }
     else
     {

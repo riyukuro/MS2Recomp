@@ -612,14 +612,13 @@ void Unk_WsInst3HiderInsert(WsReal::Map990& m990, egf::EntityID& id, CEntityHide
 // Helpers of part 1 (worldservice_1.cpp): the field object map value (efd::SmartPointer<GameObject>), the PhysX prop
 // pointer (add-ref 0x140ae1dd0), the callback / visible sets and the 16-byte field reference swapped by FUN_141bc2c90.
 class Unk_WsA_PropObj;
-void FUN_140ae1dd0(Unk_WsA_PropObj* p);                 // AddRef
-void FUN_140ae1b60(Unk_WsA_PropObj* p);                 // Release
+namespace egfPhysX { class EntityActorData { public: void IncRefCount() const; void DecRefCount() const; }; }   // C3: member view (0x140ae1dd0, 0x140ae1b60)
 class Unk_WsA_PropPtr
 {
 public:
-    Unk_WsA_PropPtr(Unk_WsA_PropObj* p = 0) : m_p(p) { if (m_p) FUN_140ae1dd0(m_p); }
-    Unk_WsA_PropPtr(const Unk_WsA_PropPtr& o) : m_p(o.m_p) { if (m_p) FUN_140ae1dd0(m_p); }
-    ~Unk_WsA_PropPtr() { if (m_p) FUN_140ae1b60(m_p); }
+    Unk_WsA_PropPtr(Unk_WsA_PropObj* p = 0) : m_p(p) { if (m_p) reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->IncRefCount(); }
+    Unk_WsA_PropPtr(const Unk_WsA_PropPtr& o) : m_p(o.m_p) { if (m_p) reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->IncRefCount(); }
+    ~Unk_WsA_PropPtr() { if (m_p) reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->DecRefCount(); }
 private:
     Unk_WsA_PropObj* m_p;
 };

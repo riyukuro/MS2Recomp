@@ -11,6 +11,7 @@
 #include <windowsx.h>
 #include <imm.h>
 #include <NiRenderTargetGroup.h>
+#include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/gfxmanager.h"
@@ -22,7 +23,6 @@
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
-ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service's default surface
 
 // Windows virtual key -> Scaleform key code for the keys outside the A-Z/F1-F15/0-9/numpad ranges (the SDK's
 // Platform_XInput.h KeyCodeMap without VK_SNAPSHOT; 0x143a290e0).
@@ -311,7 +311,7 @@ void GFxMovieEventHandler::vfunc_16()
     void* pService = FUN_14127bf80(&DAT_143b059e8);
     if (pService != 0)
     {
-        NiRenderTargetGroup* pTarget = FUN_140af7da0((ecr::RenderService*)pService)->GetRenderTargetGroup();
+        NiRenderTargetGroup* pTarget = ((ecr::RenderService*)pService)->GetActiveRenderSurface()->GetRenderTargetGroup();
         if (pTarget != 0)
             vfunc_7(pTarget->GetWidth(0), pTarget->GetHeight(0));
     }

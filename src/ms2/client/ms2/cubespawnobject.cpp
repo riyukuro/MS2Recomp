@@ -301,7 +301,7 @@ void CubeSpawnObject::FUN_140a4f2b0(unsigned int nState)
 {
     CString strAnim("");
     if (m_mapAnim.Lookup(nState, strAnim))
-        FUN_14166dd20(efd::utf8string(FUN_1409a2360(strAnim, 0)), 1.0f, false, false);
+        PlayAnimation(efd::utf8string(FUN_1409a2360(strAnim, 0)), 1.0f, false, false);
     m_nAnimState = nState;
 }
 MS2_REPLACE_METHOD(0x140a4f2b0, CubeSpawnObject, FUN_140a4f2b0, 301, 0x4DD60614);

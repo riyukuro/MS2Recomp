@@ -12,6 +12,7 @@
 // The GFx UI library is built with /fp:precise (IEEE-ordered float compares); the per-unit build uses the game's /fp:fast.
 #pragma float_control(precise, on)
 #include <NiRenderTargetGroup.h>
+#include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/gfxrenderer2d.h"
@@ -29,7 +30,6 @@
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
-ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service's default surface
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);   // set a String value
 
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
@@ -132,7 +132,7 @@ int GFxMovie::vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlags)
             void* pService = FUN_14127bf80(&DAT_143b059e8);
             if (pService != 0)
             {
-                NiRenderTargetGroup* pTarget = FUN_140af7da0((ecr::RenderService*)pService)->GetRenderTargetGroup();
+                NiRenderTargetGroup* pTarget = ((ecr::RenderService*)pService)->GetActiveRenderSurface()->GetRenderTargetGroup();
                 if (pTarget != 0)
                     vfunc_7(pTarget->GetWidth(0), pTarget->GetHeight(0));
             }

@@ -165,7 +165,7 @@ int UIDynamicActionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0) {
         if (pSender == dynamic_cast<UIMessageBox*>(pSender)) {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             FUN_14151f200();
             if (nResult == 0) {
                 unsigned __int64 nAction = (unsigned)m_178.m_4;
@@ -278,7 +278,7 @@ MS2_REPLACE_METHOD(0x14192B520, UIDynamicActionDialog, vfunc_13, 1539, 0);
 // @0x14192bb30
 void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    unsigned int nAction = pArgs->FUN_1422b8b10();
+    unsigned int nAction = pArgs->PopUInt();
     MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nAction);
     if (spData.IsNull())
         return;
@@ -319,16 +319,16 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp(szMethod, "onSelectEmotion") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nAction = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nAction = data.PopUInt();
             if (nAction == 0)
                 return 0;
             FUN_14192c9b0(nAction);
         }
     } else if (_stricmp(szMethod, "onFocusIn") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nAction = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nAction = data.PopUInt();
             if (nAction == 0)
                 return 0;
             m_178.Clear();
@@ -344,36 +344,36 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             m_178.Clear();
     } else if (_stricmp(szMethod, "onShiftRClick") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nAction = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nAction = data.PopUInt();
             if (nAction == 0)
                 return 0;
             PreviewAction(nAction);
         }
     } else if (_stricmp(szMethod, "onFavoriteSort") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        m_1b1 = data.FUN_1422b8a90();
+        m_1b1 = data.PopBool();
         FUN_14192c6b0();
     } else if (_stricmp(szMethod, "onSort") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        m_1b0 = data.FUN_1422b8a90();
+        m_1b0 = data.PopBool();
         FUN_14192c6b0();
     } else if (_stricmp(szMethod, "onFavorite") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        unsigned nAction = data.FUN_1422b8b10();
+        unsigned nAction = data.PopUInt();
         if (nAction == 0)
             return 0;
         std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_190.find(nAction);
         if (it == m_190.end())
             return 0;
         unsigned short nLevel = it->second->m_level;
-        bool bFavorite = data.FUN_1422b8a90();
+        bool bFavorite = data.PopBool();
         it->second->m_favorite = bFavorite;
         COutPacket packet(static_cast<int>(SendOp::Emote), 0);
         packet.WriteUInt8(4);
@@ -385,7 +385,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             FUN_14192c6b0();
     } else if (_stricmp(szMethod, "onSearch") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
         CStringW strSearch = data.FUN_1422b8f40();
         SetSearchText(strSearch);
@@ -460,7 +460,7 @@ void UIDynamicActionDialog::FUN_14192c9b0(int nAction)
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (reinterpret_cast<PC*>(pPlayer)->FUN_1416595d0())
+    if (reinterpret_cast<PC*>(pPlayer)->IsInCubeMode())
         return;
     pPlayer->FUN_141525480(nAction, 0);
 }
@@ -548,7 +548,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
             action.FUN_1407cb9c0("isLocked", 0);
             action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
             action.FUN_1407cbbe0("isFavorite", bFavorite);
-            actions.FUN_1422bbf00(action);
+            actions.PushObj(action);
         }
         PadEntriesToGrid(actions);
         pDlg->FUN_140bd2cb0("buildActions", actions);
@@ -617,7 +617,7 @@ void UIDynamicActionDialog::FUN_14192d100()
             action.FUN_1407cb9c0("isLocked", 0);
             action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
             action.FUN_1407cbbe0("isFavorite", bFavorite);
-            actions.FUN_1422bbf00(action);
+            actions.PushObj(action);
         }
         PadEntriesToGrid(actions);
         pDlg->FUN_140bd2cb0("buildActions", actions);

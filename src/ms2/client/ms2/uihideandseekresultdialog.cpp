@@ -22,6 +22,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/hideandseek.h"   // C3: HideAndSeek::Info
 #include <string.h>
 
 static CString s_strResultSound = "System_HideNSeek_Result_01";
@@ -32,10 +33,6 @@ static CString s_strResultSound = "System_HideNSeek_Result_01";
 class Unk_HsInfo : public CPtred
 {
 public:
-    int FUN_14050a6a0();                                    // +0x2c team
-    unsigned int FUN_14050a660();                           // +0x28 kills
-    bool FUN_14050a4d0();                                   // +0x19 dead
-    __int64 FUN_14050a600();                                // +0x20 exp
 };
 class Unk_HsPC : public PC
 {
@@ -70,7 +67,7 @@ void ASObj::FUN_140c1f8b0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140c1f740 Invoke(name, int, AS object, AS array): both by-value arguments are destroyed by the callee
@@ -182,7 +179,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eb20()
         MS2Ptr<Unk_HsInfo> spInfo = static_cast<Unk_HsPC*>(static_cast<PC*>(spActor.operator->()))->GetHideAndSeekInfo();
         if (spInfo == 0)
             continue;
-        if (spInfo->FUN_14050a6a0() == 0)
+        if (reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0() == 0)
             continue;
         bool bMine = (static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0()) == spActor.get());
         if (bMine)
@@ -217,12 +214,12 @@ void UIHideAndSeekResultDialog::FUN_140c1eec0(AScript objMine, MS2Ptr<Unk_HsInfo
 void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> spInfo, PC* pPC, bool bMine)
 {
     ASObj row(2);
-    row.FUN_140c1f8b0("team", spInfo->FUN_14050a6a0());
+    row.FUN_140c1f8b0("team", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0());
     ((class ASObj*)(class ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->FUN_141654730());
     ((class AScript&)(row)).FUN_1407cbb20("charName", pPC->vfunc_77());
-    row.FUN_1409c0d20("kill", spInfo->FUN_14050a660());
-    ((class AScript&)(row)).FUN_1407cb9c0("death", spInfo->FUN_14050a4d0() != 0);
-    row.FUN_1409c1180("exp", spInfo->FUN_14050a600());
+    row.FUN_1409c0d20("kill", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a660());
+    ((class AScript&)(row)).FUN_1407cb9c0("death", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a4d0() != 0);
+    row.FUN_1409c1180("exp", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a600());
     row.FUN_1407cbbe0("isMe", bMine);
     rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
 }
@@ -237,7 +234,7 @@ CString UIHideAndSeekResultDialog::FUN_140c1f300(unsigned int nItemId, int nCoun
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
             return CString("");
-        spItem->FUN_140526c70(nCount);
+        spItem->SetCountClamped(nCount);
         FUN_141415450(strKey, spItem, 0, 0x411, 0);
         m_boundIcons.insert(strKey);
     }

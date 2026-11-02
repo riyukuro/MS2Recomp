@@ -66,7 +66,7 @@ public:
     void OnLostSoundDevice();
     void FUN_14177bf20();
     void SetCategoryMute(int, unsigned int);
-    void FUN_14177dc80(unsigned int);
+    void SetAllMute(unsigned int);
     void FUN_14177af40(FMOD::EventSystem* pEvents, void* pSystem);
 };
 void FUN_14125fe20(struct Unk_SoundState*);   // C3: was FUN_14125fe20
@@ -374,7 +374,7 @@ void CSoundService::FUN_1417ae840(int nFlag)
 {
     if (nFlag != 0)
     {
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177dc80(1);
+        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetAllMute(1);
     }
     else
     {

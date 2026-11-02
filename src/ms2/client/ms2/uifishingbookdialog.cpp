@@ -137,18 +137,18 @@ int UIFishingBookDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp(szMethod, "onChangeFish") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nFishId = data.FUN_1422b8b10();
+            int nFishId = data.PopUInt();
             FUN_140f42100(nFishId);
         }
     }
     else if (_stricmp(szMethod, "onTabChange") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_nTab = data.FUN_1422b8a10();
+            m_nTab = data.PopInt();
             m_nPage = 0;
             FUN_140f42790(m_nTab);
         }
@@ -354,7 +354,7 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
     {
         int nCur = m_nPage + 1;
-        spPage->FUN_1422c4cd0(StringFormat<int>(L"{0}", nCur));
+        spPage->SetTextW(StringFormat<int>(L"{0}", nCur));
     }
     FUN_140f41e90();
 }
@@ -548,7 +548,7 @@ void ASObj::FUN_140f43b40(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140f43be0 (std::max<int>)

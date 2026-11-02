@@ -120,7 +120,7 @@ int UIEnterEventFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 1);
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIEnterEventFieldDialog::OnEnterConfirm));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIEnterEventFieldDialog::OnEnterConfirm));
                 FUN_140d73c60(spBox);
             }
         }

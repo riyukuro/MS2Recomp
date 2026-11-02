@@ -251,9 +251,9 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp(szMethod, "OnChangeTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nTab = data.FUN_1422b8a10();
+            int nTab = data.PopInt();
             if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
             {
                 reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
@@ -296,7 +296,7 @@ int UIItemLockDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (dynamic_cast<UIMessageBox*>(pSender) != 0)
         {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             if (nResult == 0)
                 reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode3();
         }

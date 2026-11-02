@@ -173,7 +173,7 @@ class CMsgBoxData   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_141a01600(__int64);
-    void FUN_141a01700(int, int, int);
+    void SetButtonLabelIds(int, int, int);
     void FUN_141a01ee0(MS2Ptr<CItem>, const CStringW&, int, int, int, int, int);
 };
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -469,7 +469,7 @@ void PetEvolutionPetEnchant::vfunc_3()
     if (pet == 0)
         return;
     unsigned nPoint = (unsigned)((CItem*)(pet))->FUN_140528bd0();
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     bool bDebug = ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode();
     if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
@@ -566,7 +566,7 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     ATL::CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
@@ -626,7 +626,7 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
             continue;
         __int64 nCost = 0;
         if (((class CItem*)(class CItem*)(item))->IsPetItem() != 0)
-            nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionCost(item->FUN_140526bd0());
+            nCost = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionCost(item->GetRarity());
         nTotal += nCost;
     }
     ASObj obj(2);
@@ -649,7 +649,7 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     int nState = m_pOwner->GetState();
     CStringW strResult = FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_evolution_success"), reinterpret_cast<const unsigned&>(nState));
     CStringW strMax = FUN_140298ea0(CStringW(L"s_pet_evolution_max"));
@@ -686,7 +686,7 @@ void PetEvolutionPetEnchant::FUN_140ac9a60()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     int nState = m_pOwner->GetState();
     CStringW strPointUp = FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_evolution_pointup_success"), reinterpret_cast<const unsigned&>(nState));
     CStringW strEnable = FUN_140298ea0(CStringW(L"s_pet_evolution_enable_evolution"));
@@ -709,7 +709,7 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
     if (info == 0)
         return;
     ItemPtr preview(new CItem);
-    int nNextRank = pet->FUN_140526bd0() + 1;
+    int nNextRank = pet->GetRarity() + 1;
     unsigned short nGrade = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionResultLevel(nNextRank, ((class CItem*)(class CItem*)(pet))->FUN_1405282d0());
     if (nGrade == 0)
         return;
@@ -829,9 +829,9 @@ int TabContentsPetEvolution::vfunc_6(const char* szEvent, const Scaleform::GFx::
     if (_stricmp("OnSelectPetCard", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
+            int nId = data.PopInt();
             FUN_140acbd70(nId);
         }
         return 1;
@@ -839,9 +839,9 @@ int TabContentsPetEvolution::vfunc_6(const char* szEvent, const Scaleform::GFx::
     else if (_stricmp("OnSelectPetIngredient", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
+            int nId = data.PopInt();
             FUN_140acbe00(nId);
         }
         return 1;
@@ -849,9 +849,9 @@ int TabContentsPetEvolution::vfunc_6(const char* szEvent, const Scaleform::GFx::
     else if (_stricmp("OnSelectPetEnchant", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
+            int nId = data.PopInt();
             FUN_140acc1d0(nId);
         }
         return 1;
@@ -864,9 +864,9 @@ int TabContentsPetEvolution::vfunc_6(const char* szEvent, const Scaleform::GFx::
     else if (_stricmp("OnPetEnchantDebug", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
+            int nId = data.PopInt();
             FUN_140acb560(nId);
         }
         return 1;
@@ -921,7 +921,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
     else
     {
         unsigned nPoint = (unsigned)((CItem*)(pet))->FUN_140528bd0();
-        unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+        unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
         SetState(0);
         if (nPoint >= nNeed)
         {
@@ -936,7 +936,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
                 return;
             if (bUsePoint == 0)
             {
-                if (reinterpret_cast<CItemTransfer*>(((class CItem*)(class CItem*)(pet))->FUN_140527930())->HasBindingRule() != 0 && reinterpret_cast<CItemTransfer*>(((class CItem*)(class CItem*)(pet))->FUN_140527930())->FUN_140635120() == 0)
+                if (reinterpret_cast<CItemTransfer*>(((class CItem*)(class CItem*)(pet))->FUN_140527930())->HasBindingRule() != 0 && reinterpret_cast<CItemTransfer*>(((class CItem*)(class CItem*)(pet))->FUN_140527930())->HasBinding() == 0)
                 {
                     CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_pet_evolution", player->vfunc_77());
                     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_evolutionBindPet);
@@ -944,7 +944,7 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
                     {
                         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01600(pet->GetItemUid());
                         box.operator->()->FUN_141a01ee0(ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
-                        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01700(0x477, 0x478, 0);
+                        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetButtonLabelIds(0x477, 0x478, 0);
                         FUN_140d73c60(box);
                         return;
                     }
@@ -972,7 +972,7 @@ void TabContentsPetEvolution::FUN_140acb560(unsigned nPoint)
     if (pet == 0)
         return;
     unsigned nHave = (unsigned)((CItem*)(pet))->FUN_140528bd0();
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     if (nHave >= nNeed)
         return;
     SetState(nPoint);
@@ -1043,7 +1043,7 @@ void TabContentsPetEvolution::FUN_140acba80()
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     if (nNeed == 0)
         return;
     ATL::CAtlArray<unsigned __int64> ids;
@@ -1060,7 +1060,7 @@ void TabContentsPetEvolution::FUN_140acba80()
             continue;
         if (((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetPetId() != ((class CItemData*)(class Unk_ItemEquipData*)(pet->FUN_140527840()))->GetPetId())
             continue;
-        if (item->FUN_140526bd0() != pet->FUN_140526bd0())
+        if (item->GetRarity() != pet->GetRarity())
             continue;
         m_pool.Add(FUN_140acc7d0(id));
     }
@@ -1099,7 +1099,7 @@ void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
     __int64 nPrice = ((class CItem*)(class CItem*)(item))->FUN_140528e00();
     unsigned short nPetClass = ((class CItem*)(class CItem*)(pet))->FUN_140528c20();
     unsigned nPoint = (unsigned)((CItem*)(pet))->FUN_140528bd0();
-    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->FUN_140526bd0());
+    unsigned nNeed = reinterpret_cast<CExpTable*>(FUN_1404a1bb0())->GetPetEvolution(((class CItem*)(class CItem*)(pet))->FUN_1405282d0(), pet->GetRarity());
     unsigned nTotal = nPoint + FUN_140acb6f0();
     if (((class CItem*)(class CItem*)(item))->FUN_140528c60() != 0)
     {

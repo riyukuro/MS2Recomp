@@ -292,9 +292,9 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp("onSelectMainCategory", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_nCategory = data.FUN_1422b8a10();
+            m_nCategory = data.PopInt();
             Unk_RankCatPtr spCategory = FUN_140e350c0(m_nCategory);
             if (spCategory)
             {
@@ -312,9 +312,9 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_nTab = data.FUN_1422b8a10();
+            m_nTab = data.PopInt();
             FUN_140e31910(1);
             CGameRankingParam::Key key;
             FUN_140e351d0(m_nCategory, &key);
@@ -328,16 +328,16 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnChangePageRequest", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_nPage = data.FUN_1422b8a10();
+            m_nPage = data.PopInt();
             FUN_140e32f30(1, 0, CStringW(L""));
         }
     }
     else if (_stricmp("onSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strSearch = data.FUN_1422b8f40();
             FUN_140e34d50(strSearch);
@@ -346,7 +346,7 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onMoveHome", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nId0 = FUN_140718350(data.FUN_1422b8d30());
             unsigned __int64 nId1 = FUN_140718350(data.FUN_1422b8d30());
@@ -361,7 +361,7 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onRankingMemberPopupMenu", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             float x = data.PopFloat();
             float y = data.PopFloat();
@@ -412,8 +412,8 @@ int UIGameRankingDialog::vfunc_13()
 void UIGameRankingDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strName = pArgs->FUN_1422b8d30();
-    int nRow = pArgs->FUN_1422b8a10();
-    int nType = pArgs->FUN_1422b8a10();
+    int nRow = pArgs->PopInt();
+    int nType = pArgs->PopInt();
     if ((strName == "m_pbname"))
         FUN_140e355d0(pRetVal, nRow, nType);
 }
@@ -774,7 +774,7 @@ void UIGameRankingDialog::FUN_140e31140()
                 }
                 node.FUN_1407cb9c0("id", spCat->m_nId);
                 node.FUN_1409c0dc0("rendererClassName", "export_renderer_category");
-                static_cast<Unk_RankArr&>(nodes).FUN_1422bbf00(node);
+                static_cast<Unk_RankArr&>(nodes).PushObj(node);
             }
         }
         root.FUN_140e35d00("type", 1);
@@ -918,7 +918,7 @@ void UIGameRankingDialog::FUN_140e32a00(Unk_RankCatPtr spCategory, ASArray& arr)
                 node.FUN_140e35da0("rankType", spSub->m_nType);
                 node.FUN_140e35d00("type", 0);
                 node.FUN_1409c0dc0("rendererClassName", "export_renderer_category_low");
-                static_cast<Unk_RankArr&>(arr).FUN_1422bbf00(node);
+                static_cast<Unk_RankArr&>(arr).PushObj(node);
             }
         }
         if (spSub->m_nId == m_nCategory)
@@ -1428,7 +1428,7 @@ void ASObj::FUN_140e35d00(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140e35da0
@@ -1436,7 +1436,7 @@ void ASObj::FUN_140e35da0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140e37aa0

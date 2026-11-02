@@ -12,8 +12,11 @@
 // The service whose averaged frame time is sampled (reached through the game's service manager).
 class Unk_FrameTimeSource : public efd::IBase
 {
+};
+class MS2SceneService   // C3: member view (ms2sceneservice.h needs PhysX without min/max)
+{
 public:
-    float FUN_1415040f0();                                  // average since the last call (resets the accumulator)
+    float TakeAverageSimulateTime();                        // 0x1415040f0: average since the last call (resets the accumulator)
 };
 
 class Unk_ServiceHost;
@@ -50,7 +53,7 @@ float FrameEventUpdate::TakeSample(float fTime)
 {
     efd::SmartPointer<Unk_FrameTimeSource> spSource(FUN_1411d15f0(((class Unk_ServiceHost*)FUN_1413f9850())));
     if (spSource)
-        return spSource->FUN_1415040f0() * 1000.0f;
+        return reinterpret_cast<MS2SceneService*>(spSource.operator->())->TakeAverageSimulateTime() * 1000.0f;
     return 0.0f;
 }
 MS2_REPLACE_METHOD(0x1414bc430, FrameEventUpdate, TakeSample, 146, 0x3FA1487C);

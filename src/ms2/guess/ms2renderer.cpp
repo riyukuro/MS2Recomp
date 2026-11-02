@@ -9,16 +9,16 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <NiDX9Renderer.h>
+#include <NiVisibleArray.h>
 #include "ms2/client/ms2/ms2fragmentshader.h"
 
 // ---- unit-local Gamebryo placeholders (NiDX9Renderer is unrecovered; engine headers are not on the include path) --------------
 struct Unk_PtrArray {                                                    // NiTPrimitiveArray<void*>
     void** m_pBase; unsigned m_uiSize; unsigned m_uiMax; unsigned m_uiGrow;
-    void FUN_141d54bb0(unsigned newMax);
     // @0x140d9d620
     void Add(void* p)
     {
-        if (m_uiSize == m_uiMax) FUN_141d54bb0(m_uiMax + m_uiGrow);
+        if (m_uiSize == m_uiMax) reinterpret_cast<NiVisibleArray*>(this)->SetAllocatedSize(m_uiMax + m_uiGrow);
         m_pBase[m_uiSize] = p;
         m_uiSize = m_uiSize + 1;
     }

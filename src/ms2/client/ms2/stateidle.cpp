@@ -354,7 +354,7 @@ void StateIdle::vfunc_9(double fTime)
     case 0xc:
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x1e));
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
         break;
     case 6:
@@ -397,7 +397,7 @@ void StateIdle::vfunc_9(double fTime)
         bool bPlayed;
         {
             efd::utf8string kName("FittingDoll_Idle_A");
-            bPlayed = m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+            bPlayed = m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         }
         if (bPlayed)
             m_pOwner->FUN_14166f8f0(0, 1);
@@ -410,7 +410,7 @@ void StateIdle::vfunc_9(double fTime)
         bool bPlayed;
         {
             efd::utf8string kName("Emotion_MusicStart_A");
-            bPlayed = m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+            bPlayed = m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         }
         if (bPlayed)
             m_pOwner->FUN_14166f8f0(0, 1);
@@ -425,31 +425,31 @@ void StateIdle::vfunc_9(double fTime)
     case 0x4c:
     {
         efd::utf8string kName("Equip_Change_Cap_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
         break;
     case 0x4e:
     {
         efd::utf8string kName("Equip_Change_Body_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
         break;
     case 0x53:
     {
         efd::utf8string kName("Equip_Change_Shoes_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
         break;
     case 0x51:
     {
         efd::utf8string kName("Equip_Change_Glove_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
         break;
     case 0x52:
     {
         efd::utf8string kName("Equip_Change_Mantle_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
         break;
     }
@@ -525,7 +525,7 @@ void StateIdle::FUN_1417ce6f0(unsigned nSeq)
     {
         {
             efd::utf8string kName(m_pOwner->vfunc_123(nKey));
-            m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+            m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
         }
         m_pOwner->FUN_14166f8f0(0, 1);
     }
@@ -540,7 +540,7 @@ void StateIdle::FUN_1417ce820(unsigned nSeq)
         efd::utf8string kName = m_pOwner->FUN_141679170(0x27, nSub);
         if (!m_pOwner->HasAnimSequence(kName.c_str()))
             kName = m_pOwner->FUN_141679170(0x27, 0);
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -566,7 +566,7 @@ void StateIdle::FUN_1417ce9f0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x2e, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x2e));
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->PlayAnimation(kName, 1.0f, false, false);
     }
 }
 
@@ -591,7 +591,7 @@ void StateIdle::FUN_1417ceab0(unsigned nSeq)
         kName = m_pOwner->vfunc_123(nKey);
     bool bPlayed = false;
     if (!kName.empty())
-        bPlayed = m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        bPlayed = m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     if (bPlayed)
         FUN_1417cf210();
     if (m_nSoundIdle == 0)
@@ -604,7 +604,7 @@ void StateIdle::FUN_1417ceca0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x37, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x37));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -614,7 +614,7 @@ void StateIdle::FUN_1417ced70(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x36, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x36));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -631,7 +631,7 @@ void StateIdle::FUN_1417cee90(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x4a, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x4a));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -782,7 +782,7 @@ void StateIdleNPC::FUN_1417cf860(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(nKey, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(nKey));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -838,10 +838,10 @@ void StateIdlePet::vfunc_9(double fTime)
     PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet == 0)
         return;
-    if (pPet->FUN_14166ce30() != 0 && AsPC(pPet)->IsRevivalBlocked() != 0)
+    if (pPet->IsDead() != 0 && AsPC(pPet)->IsRevivalBlocked() != 0)
     {
         efd::utf8string kName("Tired_A");
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     else
     {
@@ -927,12 +927,12 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
     if (m_pOwner->FUN_14166de90(0x27, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x27));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     else if (!m_pOwner->FUN_14166de90(0, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -942,7 +942,7 @@ void StateIdlePet::FUN_1417d0140(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x27, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x27));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x5c);
 }
@@ -953,7 +953,7 @@ void StateIdlePet::FUN_1417d0210(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x42, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x42));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x5d);
 }
@@ -964,7 +964,7 @@ void StateIdlePet::FUN_1417d02e0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x43, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x43));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x5e);
 }
@@ -975,7 +975,7 @@ void StateIdlePet::FUN_1417d03b0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x44, nSeq))
     {
         efd::utf8string kName("Revive_A");
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x60);
 }
@@ -986,7 +986,7 @@ void StateIdlePet::FUN_1417d0470(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x45, nSeq))
     {
         efd::utf8string kName(m_pOwner->vfunc_123(0x45));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x61);
 }
@@ -1018,7 +1018,7 @@ void StateJumpNpc::vfunc_4(StateData* pData)
         return;
     CString strAnim = m_pNpc->FUN_141093530();
     efd::utf8string kName((const char*)strAnim);
-    m_pNpc->FUN_14166dd20(kName, 1.0f, false, false);
+    m_pNpc->PlayAnimation(kName, 1.0f, false, false);
 }
 
 // ---- StatePuppetNpc ----
@@ -1053,7 +1053,7 @@ void StateIdleFittingDoll::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     m_n10 = 1;
     efd::utf8string kName("EMPTY_SEQUENCE_AT_0f");
-    m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+    m_pOwner->PlayAnimation(kName, 1.0f, false, false);
 }
 
 // @0x1417d0890

@@ -381,7 +381,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
     CString strType = static_cast<ASData*>(pData)->FUN_1422b8d30();
     if ((strType == "collect_pet"))
     {
-        int nPet = static_cast<ASData*>(pData)->FUN_1422b8a10();
+        int nPet = static_cast<ASData*>(pData)->PopInt();
         MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(nPet);
         if (spPet == 0)
             return;
@@ -470,9 +470,9 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
     ASData data;
     if (_stricmp("OnCollectAvatar", szEvent) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nPet = data.FUN_1422b8b10();
+            int nPet = data.PopUInt();
             MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(nPet);
             if (spPet == 0)
                 return 0;
@@ -499,9 +499,9 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
     }
     else
     {
-        if (_stricmp("onGotoCollect", szEvent) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (_stricmp("onGotoCollect", szEvent) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nGroup = data.FUN_1422b8b10();
+            int nGroup = data.PopUInt();
             m_ui->Invoke("gotoIndexFromGroupId", nGroup);
         }
     }

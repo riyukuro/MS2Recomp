@@ -141,7 +141,7 @@ StateLadder::~StateLadder()
 void StateLadder::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240730();
+    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240730();
     m_timerPos.FUN_140868750(100);
     m_timerUp.FUN_1408687f0();
     m_timerDown.FUN_1408687f0();
@@ -176,7 +176,7 @@ void StateLadder::vfunc_4(StateData* pData)
         pLadder->GetPropertyValue(0xf8b99313, fDist);
         kRot.z = kRot.z + 180.0f;
         FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
         kBase = kBase + (-m_pOwner->GetForwardDirection()) * fDist;
         kBase.z = FUN_1417d9880(pLadder);
         NiPoint3 kPos = pPC->vfunc_18();
@@ -208,11 +208,11 @@ void StateLadder::vfunc_5(int n)
 {
     State::vfunc_5(n);
     m_pOwner->SetTargetYaw(m_pOwner->vfunc_20().z);
-    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240730();
+    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240730();
     m_pOwner->FUN_14123cb20(true);
     m_n10 = 0x2a;
-    if (m_pOwner->FUN_14166d220() != 0)
-        ((class GameObjectControllerHitReport*)(void*)(((void*)((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->FUN_14166d220()))->FUN_141240f20())))->FUN_140cfaf30();
+    if (m_pOwner->GetPhysicsBody() != 0)
+        ((class GameObjectControllerHitReport*)(void*)(((void*)((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240f20())))->FUN_140cfaf30();
     m_pLadder = 0;
 }
 
@@ -408,7 +408,7 @@ float StateLadder::FUN_1417d8c00()
                     {
                         efd::Point3 kAt = kTop;                     // unused copy (the exe makes it)
                         efd::Point2 kSize = m_pOwner->FUN_141671390();
-                        if (reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_1412410c0(kTop, kSize.y * 0.5f) == 0)
+                        if (reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_1412410c0(kTop, kSize.y * 0.5f) == 0)
                         {
                             efd::Point3 kMid = kPos;
                             kMid.z = kTop.z;

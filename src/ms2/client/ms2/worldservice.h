@@ -458,7 +458,7 @@ public:
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // the game object of an entity (by value: callers copy the id)
     class Unk_WsC_GameObj* FindObjectByKey(unsigned __int64 key);
     class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);
+    class Unk_WsC_GameObj* FindObjectById(int id);
     class Unk_WsC_GameObj* FUN_141bd1200(int id);
     class Unk_WsC_GameObj* FUN_141bd1290(int id);
     class Unk_WsC_GameObj* FUN_141bd1320(int id);

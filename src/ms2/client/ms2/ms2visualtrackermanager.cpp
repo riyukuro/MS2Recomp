@@ -82,6 +82,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
+#include "ms2/placeholder/coptimizer.h"
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 
@@ -193,8 +194,6 @@ class Unk_VtmWorldCounts { public: unsigned FUN_1411d0ab0(); unsigned FUN_1411d0
 class Unk_VtmSystem                                                          // memory/system statistics
 {
 public:
-    unsigned FUN_14161bdc0();                                               // page file (MB)
-    unsigned FUN_14161be50();                                               // private usage (MB)
     unsigned __int64 FUN_141245b10();                                       // physical memory (MB)
 };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
@@ -418,9 +417,9 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
 
     if (m_nPage == 2)
     {
-        unsigned nMb = ((class Unk_VtmSystem*)FUN_1409f7c90())->FUN_14161bdc0();
+        unsigned nMb = ((class COptimizer*)FUN_1409f7c90())->GetPagefileUsageMB();
         m_spPageFile->FUN_14118b9b0(nMb, bForce, 0);
-        nMb = ((class Unk_VtmSystem*)FUN_1409f7c90())->FUN_14161be50();
+        nMb = ((class COptimizer*)FUN_1409f7c90())->GetPrivateUsageMB();
         m_spPrivateUsage->FUN_14118b9b0(nMb, bForce, 0);
         efd::MemManager::Get();
         Unk_SmallObjectAllocator* pAlloc = FUN_14151e750();

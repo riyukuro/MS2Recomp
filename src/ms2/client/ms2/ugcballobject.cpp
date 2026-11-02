@@ -336,7 +336,7 @@ void FUN_140dee4a0(CInPacket& packet)
     case 2:
     {
         int nObjectId = packet.ReadInt32();
-        CUGCBallObject* pBall = FUN_140dee810(reinterpret_cast<GameObject*>(pWorld->FUN_141bd1180(nObjectId)));
+        CUGCBallObject* pBall = FUN_140dee810(reinterpret_cast<GameObject*>(pWorld->FindObjectById(nObjectId)));
         if (!pBall)
             break;
         pBall->FUN_140dee050(&packet);
@@ -345,7 +345,7 @@ void FUN_140dee4a0(CInPacket& packet)
     case 3:
     {
         int nObjectId = packet.ReadInt32();
-        CUGCBallObject* pBall = FUN_140dee810(reinterpret_cast<GameObject*>(pWorld->FUN_141bd1180(nObjectId)));
+        CUGCBallObject* pBall = FUN_140dee810(reinterpret_cast<GameObject*>(pWorld->FindObjectById(nObjectId)));
         if (!pBall)
             break;
         pBall->FUN_140dee220(&packet);

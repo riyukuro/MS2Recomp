@@ -81,7 +81,7 @@ public:
     CItem();
     bool FUN_140523c40(int nId, int nRarity, int nFlag);
     int FUN_14052b130(int nId, int nRarity, int nFlag);
-    void FUN_140526c70(int nCount);
+    void SetCountClamped(int nCount);
 private:
     void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
     void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
@@ -362,7 +362,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
     CString strBindID;
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_140523c40(pStep->d, pStep->f, 0)) {
-        item->FUN_140526c70(pStep->e);
+        item->SetCountClamped(pStep->e);
         strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
         FUN_141415450(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
@@ -481,7 +481,7 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
     CString strBindID;
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_140523c40(pStep->d, pStep->f, 0)) {
-        item->FUN_140526c70(pStep->e);
+        item->SetCountClamped(pStep->e);
         strBindID.Format("%s_%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
         FUN_141415450(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
@@ -505,7 +505,7 @@ void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    unsigned int nID = pArgs->FUN_1422b8b10();
+    unsigned int nID = pArgs->PopUInt();
     Unk_DTPtr<Unk_DTReward> pReward(0);
     if (!m_active.Lookup(nID, pReward))
         return;
@@ -514,7 +514,7 @@ void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_14052b130(pStep->d, pStep->f, 0)) {
-        item->FUN_140526c70(pStep->e);
+        item->SetCountClamped(pStep->e);
         ASTooltip tooltip(pPlayer, 0x20, 2);
         if (tooltip.FUN_1409e0d40(item.get())) {
             *pRetVal = tooltip.FUN_1422bb870();

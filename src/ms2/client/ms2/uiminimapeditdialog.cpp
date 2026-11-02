@@ -292,7 +292,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     ASData data;
     if (_stricmp("OnApplyCameraData", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             m_strImageIcon = data.FUN_1422b8d30();
             m_strImageName = data.FUN_1422b8d30();
@@ -301,7 +301,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnFov", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
             float fFov = data.PopFloat();
             FUN_140ad4ff0((Unk_CameraManager*)(CameraMgr::GetInstance()), fFov);
@@ -310,7 +310,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnDistance", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
             float fDistance = data.PopFloat();
             FUN_141032ed0((void*)(CameraMgr::GetInstance()), fDistance);
@@ -321,7 +321,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnVAngle", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
             float fAngle = data.PopFloat();
             CameraMgr::GetInstance()->FUN_140af98d0(fAngle);
@@ -330,9 +330,9 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnRotation", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
-            bool bRotation = data.FUN_1422b8a90();
+            bool bRotation = data.PopBool();
             WorldService::GetInstance()->FUN_141bd3cf0(bRotation);
         }
     }

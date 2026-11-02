@@ -84,7 +84,6 @@ public:
     virtual void vfunc_126();
     virtual void vfunc_127(CItem* pItem, int n);             // MS2: slot 127 (0x3f8) puts the item into the hand
     virtual void vfunc_128(CItem* pItem, int n);             // MS2: slot 128 (0x400) takes it out again
-    Unk_FsSpeed* FUN_141671920();                            // the move speeds (pcbase.h: float*)
     Vector3 FUN_14123c360();                                 // m_pos98 (gameobject.h: NiPoint3)
     efd::Point3 FUN_141674b60(Vector3 kDir);                 // local dir -> world dir (pcbase.h)
 };
@@ -158,7 +157,7 @@ int FUN_1408a03c0(Unk_FsCell kCell);                         // the cell as a ke
 #define MS2_FS_PLAY(pszAnim)                                                                                  \
     {                                                                                                         \
         efd::utf8string kAnim(pszAnim);                                                                       \
-        m_pOwner->FUN_14166dd20(kAnim, m_pOwner->FUN_1416713c0(), false, false);                              \
+        m_pOwner->PlayAnimation(kAnim, m_pOwner->FUN_1416713c0(), false, false);                              \
     }
 
 // @0x140ddc910
@@ -307,7 +306,7 @@ void StateFishing::vfunc_3(double fTime)
             if (pGuide != 0)
             {
                 efd::Point3 kRot = FUN_140a0b080(pGuide->vfunc_18(), pPC->vfunc_18(), reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
-                static_cast<Unk_FsPC*>(pPC)->FUN_14166d970(kRot);
+                static_cast<Unk_FsPC*>(pPC)->SetRotationAndTargetYaw(kRot);
                 if (m_spEffect)
                 {
                     NiMatrix3 kMat;
@@ -606,7 +605,7 @@ void StateFishingFloat::vfunc_3(double fTime)
     State::vfunc_3(fTime);
     if (m_pOwner->vfunc_63() == 0)
         return;
-    Unk_FsSpeed* pSpeed = static_cast<Unk_FsPC*>(m_pOwner)->FUN_141671920();
+    Unk_FsSpeed* pSpeed = reinterpret_cast<Unk_FsSpeed*>(static_cast<Unk_FsPC*>(m_pOwner)->FUN_141671920());
     efd::Point3 kDir = static_cast<Unk_FsPC*>(m_pOwner)->FUN_141674b60(static_cast<Unk_FsPC*>(m_pOwner)->FUN_14123c360());
     efd::Point3 kVel = kDir * pSpeed->m_f8;
     efd::Point3 kStep = kVel * (float)fTime;

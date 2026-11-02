@@ -165,9 +165,9 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_SiEquip : public PCGemEquip { };
 
 // The pieces of the interact row this unit reads (offsets proven by the callers).
-class Unk_SiRowNames { public: CString FUN_14051c870(); };           // +0xc8: the reaction animation name
+class Unk_IaNames { public: CString FUN_14051c870(); };              // +0xc8: the reaction animation name
 #define SiRowOff(p, off) (reinterpret_cast<char*>(p) + (off))
-#define SiRowNames(p) reinterpret_cast<Unk_SiRowNames*>(SiRowOff(p, 0xc8))
+#define SiRowNames(p) reinterpret_cast<Unk_IaNames*>(SiRowOff(p, 0xc8))
 #define SiRowMask(p) reinterpret_cast<const QuestMask*>(SiRowOff(p, 0x1d0))
 #define SiRowEffect(p) (*reinterpret_cast<CString*>(SiRowOff(p, 0x148)))
 #define SiRowAnimA(p) (*reinterpret_cast<CString*>(SiRowOff(p, 0xf0)))
@@ -306,7 +306,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         {
             strAnim = (const char*)FUN_1409a2360(SiRowAnimA(spRow.operator->()), 0);
             if (strAnim.length() != 0)
-                m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+                m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
         }
     }
     else if (m_n10 == 0x8c)
@@ -316,7 +316,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         {
             strAnim = (const char*)FUN_1409a2360(SiRowAnimB(spRow.operator->()), 0);
             if (strAnim.length() != 0)
-                m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+                m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
         }
     }
 }
@@ -524,7 +524,7 @@ void StateInteraction::FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow)
     if ((m_spInteract.get() ? true : false) && m_spInteract->m_strAnim.GetLength() > 0)
     {
         strAnim = (const char*)FUN_1409a2360(m_spInteract->m_strAnim, 0);
-        m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
     }
     else if (spRow.get())
     {
@@ -533,13 +533,13 @@ void StateInteraction::FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow)
         {
             m_spInteract->m_strAnim = strName;
             strAnim = (const char*)FUN_1409a2360(strName, 0);
-            m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+            m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
         }
     }
     else
     {
         efd::utf8string strReact("Object_React_A");
-        m_pOwner->FUN_14166dd20(strReact, 1.0f, false, false);
+        m_pOwner->PlayAnimation(strReact, 1.0f, false, false);
     }
 }
 
@@ -600,7 +600,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
             }
         }
     }
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
@@ -688,7 +688,7 @@ void StateAutoInteraction::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
-    m_pOwner->FUN_14166dd20(FUN_1417d36b0(), 1.0f, false, false);
+    m_pOwner->PlayAnimation(FUN_1417d36b0(), 1.0f, false, false);
     m_spAuto.AssignRaw(dynamic_cast<StateAutoInteractionData*>(pData));
     PCBase* pPC = FUN_1417b8370();
     if (pPC)

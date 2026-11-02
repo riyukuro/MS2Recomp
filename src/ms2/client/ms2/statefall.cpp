@@ -125,7 +125,7 @@ void StateFall::vfunc_4(StateData* pData)
                     m_strAnim = kAnim;
             }
         }
-        m_pOwner->FUN_14166dd20(m_strAnim, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(m_strAnim, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -153,7 +153,7 @@ void StateFall::vfunc_3(double fTime)
     {
         float fSpeed = m_pOwner->vfunc_95();
         efd::Point3 kVel = kDir * (fSpeed * reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_FallConsts*)FUN_1401d3200())->m_scale)->FUN_140298f40()));
-        reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
+        reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     }
     efd::Point3 kMove = efd::Point3::ZERO;
     m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);

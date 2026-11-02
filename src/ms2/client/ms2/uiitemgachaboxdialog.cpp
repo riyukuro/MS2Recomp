@@ -78,7 +78,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
 class Unk_GachaDropTable { public: void FUN_1402ea4c0(int, std::vector<class Unk_GachaDrop>&); };
 // ItemDropResult (0x70 bytes, owned by commonfiles\dungeonmatch.cpp): polymorphic drop entry, item id / rank / count.
@@ -142,7 +142,7 @@ void ASObj::FUN_140c43830(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140c3ff80
@@ -248,12 +248,12 @@ int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onSendOpenBox") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140c41e10();
     } else if (_stricmp(szMethod, "onCanOpenBox") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            m_multi = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            m_multi = data.PopBool();
             int r = FUN_140c41700();
             if (r == 0)
                 m_30->Invoke("onOpenBox");
@@ -265,7 +265,7 @@ int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     } else if (_stricmp(szMethod, "onOpenProbability") == 0) {
     } else if (_stricmp(szMethod, "onChangeState") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140c42ee0(CString(pArgs->GetString()));
     }
     return 0;
@@ -324,7 +324,7 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
         Unk_GachaDrop& d = filtered[idx];
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(d.vfunc_0(), d.vfunc_1(), 0) != 0) {
-            item->FUN_140526c70(d.vfunc_2());
+            item->SetCountClamped(d.vfunc_2());
             items.push_back(item);
         }
     }
@@ -396,7 +396,7 @@ void UIItemGachaBoxDialog::FUN_140c41900(int error)
         CStringW text = FUN_14028dfa0<CStringW>(L"s_itemgacha_dialog_not_enough_item_shop_link", m_title);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(text, 1);
         if (box.get()) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemGachaBoxDialog::FUN_140c42fd0));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemGachaBoxDialog::FUN_140c42fd0));
             FUN_140d73c60(box);
         }
     } else if (error == 2) {
@@ -604,7 +604,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
             else
                 unc->vfunc_4(false);
         }
-        item->FUN_140526c70(e.vfunc_o18_2());
+        item->SetCountClamped(e.vfunc_o18_2());
         static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
         CString bagKey;
         bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), 1);
@@ -630,7 +630,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
                 MS2Ptr<CItem> item(new CItem);
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
-                item->FUN_140526c70(e.vfunc_o18_2());
+                item->SetCountClamped(e.vfunc_o18_2());
                 static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
                 bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);

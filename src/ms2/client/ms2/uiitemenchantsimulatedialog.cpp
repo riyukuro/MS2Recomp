@@ -52,7 +52,7 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
         return 1;
     if (_stricmp("OnSelect", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             int n1 = atoi(args.FUN_1422b8d30());
             int n2 = atoi(args.FUN_1422b8d30());
             int n3 = atoi(args.FUN_1422b8d30());
@@ -69,7 +69,7 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
     }
     else if (_stricmp("OnEnchant", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             int n1 = atoi(args.FUN_1422b8d30());
             int n2 = atoi(args.FUN_1422b8d30());
             int n3 = atoi(args.FUN_1422b8d30());
@@ -110,13 +110,13 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
             CStringW strIngredient = static_cast<CInPacket*>(p)->ReadUnicodeString();
             CStringW strReturn = static_cast<CInPacket*>(p)->ReadUnicodeString();
             if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfSuccess"))
-                spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fSuccess));
+                spText->SetTextW(FUN_1406329c0(L"{0}", &fSuccess));
             if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfReset"))
-                spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fReset));
+                spText->SetTextW(FUN_1406329c0(L"{0}", &fReset));
             if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfReturn"))
-                spText->FUN_1422c4cd0(strReturn);
+                spText->SetTextW(strReturn);
             if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_tfIngredient"))
-                spText->FUN_1422c4cd0(strIngredient);
+                spText->SetTextW(strIngredient);
         } else if (nKind == 0xe) {
             unsigned int nSuccess = static_cast<CInPacket*>(p)->ReadInt32();
             unsigned int nBroken = static_cast<CInPacket*>(p)->ReadInt32();
@@ -127,7 +127,7 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
             strResult += StringFormat<CStringW>(L"총 재료 갯수 : {0}\n", strIngredient);
             strResult += StringFormat<CStringW>(L"총 위로금 갯수 : {0}\n", strReturn);
             if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_result"))
-                spText->FUN_1422c4cd0(strResult);
+                spText->SetTextW(strResult);
         }
     }
 }

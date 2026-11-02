@@ -152,10 +152,10 @@ int UICharacterCreateSelectDialog::vfunc_28(const char* szMethod, const Scalefor
     if (_stricmp("onChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8b10();
-            int nJobCode = data.FUN_1422b8a10();
+            int nIndex = data.PopUInt();
+            int nJobCode = data.PopInt();
             FUN_140f2fba0(nIndex, nJobCode);
         }
         return 1;
@@ -165,9 +165,9 @@ int UICharacterCreateSelectDialog::vfunc_28(const char* szMethod, const Scalefor
         if (_stricmp("onClickCreate", szMethod) == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nJobCode = data.FUN_1422b8a10();
+                int nJobCode = data.PopInt();
                 FUN_140f2fa00(nJobCode);
             }
             return 1;

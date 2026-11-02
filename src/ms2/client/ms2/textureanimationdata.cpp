@@ -530,9 +530,9 @@ int UITextureDensityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp("onCheckEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bEnable = data.FUN_1422b8a90();
+            bool bEnable = data.PopBool();
             m_bEnable = bEnable;
             ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a4570(bEnable);
         }
@@ -541,9 +541,9 @@ int UITextureDensityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     else if (_stricmp("onChangeRadio", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nMode = data.FUN_1422b8a10();
+            int nMode = data.PopInt();
             m_nMode = nMode;
             ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetDensityMode(nMode);
         }

@@ -147,7 +147,7 @@ void SkillTargetRecord::FUN_1417591b0()
         return;
     Unk_SrMyPC* pMe = reinterpret_cast<Unk_SrMyPC*>(efd::DynamicCast<MyPC, PCBase>(reinterpret_cast<PCBase*>(pOwner)));
     if (pMe != 0) {
-        int nState = pMe->FUN_14166c930();
+        int nState = pMe->GetCurStateId();
         if (nState == 0x10) {
             Unk_SrState* pState = reinterpret_cast<Unk_SrState*>(pMe->FUN_14166ccb0());
             if (pState != 0)

@@ -83,7 +83,7 @@ public:
     int FUN_1409e0d40(CItem* pItem);
     int FUN_1409e2750(void* pSkillAttr, int a1, unsigned a2);              // additional effect (buff) tooltip: an AdditionalLevelData, align, remaining ms (unsigned: jae/jb)
     void FUN_1409db870(Unk_GalleryPtr<Unk_GalleryItem> item);
-    void FUN_1409c69b0(const CStringW& strTitle);                        // set the tooltip title line
+    void SetEnablePuton(const CStringW& strTitle);                        // set the tooltip title line
     void SetEnableUseDbClick(const CStringW& strText);                         // set the tooltip text line
     void FUN_1409c6640(const CStringW& strLhs, const CStringW& strRhs);   // enableUseDbClick on both comparison tooltips
     void FUN_1409c6ef0(const CStringW& strText);                        // append to textBgArr

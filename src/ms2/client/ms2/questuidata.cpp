@@ -168,13 +168,13 @@ void FUN_1416e43d0()
     for (POSITION pos = s_quests.GetStartPosition(); pos != NULL; s_quests.GetNext(pos))
     {
         MS2Ptr<CQuestUIData> spData = s_quests.GetValueAt(pos);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_strName);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_strComplete);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(spData->m_strDesc);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(spData->m_strSummary);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_strDescFameUI);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spData->m_strName);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spData->m_strComplete);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(spData->m_strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(spData->m_strSummary);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spData->m_strDescFameUI);
         for (size_t i = 0; i < spData->m_manual.GetCount(); i++)
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spData->m_manual[i]);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spData->m_manual[i]);
     }
 }
 
@@ -251,7 +251,7 @@ CStringW FUN_1416e4df0(int nQuestId)
     {
         strName = spUI->m_strName;
     }
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strName);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strName);
     if (DAT_143ae0fc0 != 0)
         strName.AppendFormat(L" [%d]", spUI->m_nQuestId);
     return strName;
@@ -276,7 +276,7 @@ CStringW FUN_1416e5350(int nQuestId, int nIndex)
     if (!spUI)
         return L"";
     CStringW strText = spUI->m_strSummary;
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
     return spUI->FUN_1416e6900(nIndex, strText);
 }
 
@@ -487,14 +487,14 @@ CStringW CQuestUIData::GetConditionText(int nIndex)
     CStringW strManual = GetManualText(nIndex);
     if (strManual.GetLength() != 0)
     {
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strManual);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strManual);
         return FUN_1416e6900(nIndex, strManual);
     }
     FnCondText pfn = 0;
     if (!s_condTexts.Lookup(spCond->m_nType, pfn))
         return L"";
     CStringW strText = (*pfn)(this, spCond);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
     return FUN_1416e6900(nIndex, strText);
 }
 
@@ -705,8 +705,8 @@ void FUN_1416e7c00(CString strPath)
         spChapter->m_nId = FUN_140197350(pChapter, "id", 0);
         CStringW strName = FUN_1401bf530(pChapter, "name", CStringW(L""));
         CStringW strDesc = FUN_1401bf530(pChapter, "desc", CStringW(L""));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strName);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strDesc);
         spChapter->m_strName = strName;
         XmlGetAttr((class TiXmlElement*)(pChapter), "isTutorial", reinterpret_cast<int&>(spChapter->m_bTutorial));
         s_chapters.SetAt(spChapter->m_nId, spChapter);

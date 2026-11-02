@@ -252,7 +252,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
             if (m_pOwner->vfunc_18() != m_pos)
             {
                 int bFound = 0;
-                egf::EntityID kId = reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())->FUN_141240f20()->GetEntityID();
+                egf::EntityID kId = reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_141240f20()->GetEntityID();
                 egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(kId);
                 if (pEntity != 0)
                 {
@@ -398,11 +398,11 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         reinterpret_cast<PCBase*>(pActor)->FUN_1416781a0(pReq->m_n54);
         reinterpret_cast<PCBase*>(pActor)->FUN_141671990(1.0f);
         int bApply = 0;
-        if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x10 && pReq->m_nState != 0x10 && pReq->m_nState != 4)
+        if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x10 && pReq->m_nState != 0x10 && pReq->m_nState != 4)
         {
             bApply = 1;
         }
-        else if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() == 0x10)
+        else if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() == 0x10)
         {
             MS2Ptr<Unk_PCBaseComp_b18> spComp = pActor->vfunc_103();
             if (spComp.get() != 0)
@@ -437,7 +437,7 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
         pActor->vfunc_22(pReq->m_vel3c);
         pActor->vfunc_21(pReq->m_dir2c);
         reinterpret_cast<PCBase*>(pActor)->SetTargetYaw(pReq->m_f58);
-        if (reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x10 && pReq->m_nState != 0x10)
+        if (reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x10 && pReq->m_nState != 0x10)
         {
             int nForce = 0;
             if (GetCur() == pReq->m_nState)
@@ -487,7 +487,7 @@ void CStateManager::FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq)
         fLimit = 400.0f;
     if (FUN_14029d220(fDz) > fLimit)
         bSnap = true;
-    if (pReq->m_nState == 0x1e && reinterpret_cast<PCBase*>(pActor)->FUN_14166c930() != 0x1e)
+    if (pReq->m_nState == 0x1e && reinterpret_cast<PCBase*>(pActor)->GetCurStateId() != 0x1e)
         bSnap = true;
     if (bSnap)
         pActor->vfunc_19(pReq->m_pos20);
@@ -1016,7 +1016,7 @@ void StateRegen::vfunc_9(double fTime)
         {
             {
                 efd::utf8string kName(m_nVariantB != 0 ? "Regen_B" : "Regen_A");
-                static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, true, false);
+                static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, true, false);
             }
             reinterpret_cast<PCBase*>(m_pOwner)->RemoveHideReason(9);
             NiTransform kXform;
@@ -1048,7 +1048,7 @@ void StateRegen::vfunc_9(double fTime)
         {
             {
                 efd::utf8string kName("Regen_A");
-                static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, true, false);
+                static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, true, false);
             }
             reinterpret_cast<PCBase*>(m_pOwner)->RemoveHideReason(9);
         }
@@ -1155,59 +1155,59 @@ void StateRide::vfunc_9(double fTime)
     MS2Ptr<Unk_SMRideAnim> spAnim = spRide->FUN_140784970();
     if (spAnim == 0)
         return;
-    if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 2 || reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 0x1b)
+    if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 2 || reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 0x1b)
     {
         if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x17 || reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x85)
         {
             efd::utf8string kName(spAnim->m_str50);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
             efd::utf8string kName(spAnim->m_str38);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
-    else if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 6)
+    else if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 6)
     {
         if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x27)
         {
             efd::utf8string kName(spAnim->m_str58);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
             efd::utf8string kName(spAnim->m_str40);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
-    else if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 4)
+    else if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 4)
     {
         efd::utf8string kName(spAnim->m_str30);
-        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+        static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
-    else if (reinterpret_cast<PCBase*>(pRider)->FUN_14166c930() == 1)
+    else if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 1)
     {
         if (reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0xc || reinterpret_cast<PCBase*>(pRider)->FUN_14166cc80() == 0x87)
         {
             efd::utf8string kName(spAnim->m_str48);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
         else
         {
             efd::utf8string kName(spAnim->m_str30);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
         }
     }
     else if (reinterpret_cast<PCBase*>(pRider)->FUN_141676b70())
     {
         efd::utf8string kName(spAnim->m_str48);
-        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+        static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
     else
     {
         efd::utf8string kName(spAnim->m_str28);
-        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
+        static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, reinterpret_cast<PCBase*>(pRider)->FUN_1416713c0(), false, false);
     }
 }
 
@@ -1250,7 +1250,7 @@ StateRope::~StateRope()
 void StateRope::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())->FUN_141240730();
+    reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_141240730();
     m_n10 = 0x38;
     m_timerA0.FUN_1408687f0();
     m_timerD8.FUN_1408687f0();
@@ -1322,7 +1322,7 @@ void StateRope::vfunc_3(double fTime)
         kDelta *= m_timer68.FUN_140868940();
         efd::Point3 kTarget = m_pos48 + kDelta;
         efd::Point2 kExtent = m_pOwner->FUN_141671390();
-        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))
+        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))
             m_pOwner->vfunc_19(kTarget);
         m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, -((m_fAngle * 180.0f) / 3.1415927f)));
         if (m_timer68.FUN_140868c00() != 0)
@@ -1537,7 +1537,7 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
     if (FUN_140552700(m_pOwner->vfunc_18(), kTarget))
     {
         efd::Point2 kExtent = m_pOwner->FUN_141671390();
-        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d220())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))
+        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))
             m_pOwner->vfunc_19(static_cast<efd::Point3&>(kTarget));
     }
 }

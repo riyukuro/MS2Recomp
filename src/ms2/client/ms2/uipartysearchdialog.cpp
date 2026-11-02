@@ -197,7 +197,7 @@ void ASObj::FUN_140f8f970(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140f8fa10
@@ -205,7 +205,7 @@ void ASObj::FUN_140f8fa10(const char* szName, unsigned int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140f8f850
@@ -433,7 +433,7 @@ int UIPartySearchDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (nAnswer == 0 && strTag.Find(L"askPartyJoinByAlreadyMemberSearch", 0) == 0)
@@ -463,7 +463,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp("onChangeIndexDungeonList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_180->fieldId = 0;
             m_180->category = 0;
@@ -478,9 +478,9 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onChangeSortMemeberSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nSort = data.FUN_1422b8a10();
+            int nSort = data.PopInt();
             CStringW strText = data.FUN_1422b8f40();
             m_180->kind = nSort;
             if (FUN_140f8e480(strText))
@@ -491,11 +491,11 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onChangePage", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nStart = data.FUN_1422b8a10();
-            int nCount = data.FUN_1422b8a10();
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            int nStart = data.PopInt();
+            int nCount = data.PopInt();
+            Scaleform::GFx::Value ret = data.PopValue();
             bool bOk = false;
             if (FUN_140f8e3a0() != 0)
             {
@@ -510,10 +510,10 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnChangeList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nPage = data.FUN_1422b8a10();
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            int nPage = data.PopInt();
+            Scaleform::GFx::Value ret = data.PopValue();
             bool bOk = false;
             if (FUN_140f8e3a0() != 0)
                 bOk = true;
@@ -537,7 +537,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onClickRefresh", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strText = data.FUN_1422b8f40();
             if (FUN_140f8e480(strText))
@@ -548,7 +548,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onClickSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strText = data.FUN_1422b8f40();
             if (FUN_140f8e480(strText))
@@ -559,7 +559,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onClickPartyInvite", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             if (!strName.IsEmpty())
@@ -586,7 +586,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onClickPartyJoin", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             if (nId == 0)
@@ -622,7 +622,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onClickWhisper", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             if (!strName.IsEmpty())
@@ -645,10 +645,10 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onRightClickChiefName", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int x = data.FUN_1422b8a10();
-            int y = data.FUN_1422b8a10();
+            int x = data.PopInt();
+            int y = data.PopInt();
             __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             if (nId == 0)
                 return 1;

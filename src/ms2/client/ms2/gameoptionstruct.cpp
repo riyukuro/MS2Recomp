@@ -224,7 +224,7 @@ int CGameOptionInterface::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         if (nResult == 0)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();
@@ -364,7 +364,7 @@ void CGameOptionInterface::vfunc_10()
     }
     if (FUN_14125bbe0(&m_state))
     {
-        if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+        if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
             CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f23);
     }
     else if (!FUN_14125bbe0(&m_state))
@@ -3043,7 +3043,7 @@ int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
     ReadGameOptionBool(pDoc, "autoLooting", "isEnableConsume", &p->m_bConsume);
     ReadGameOptionBool(pDoc, "autoLooting", "isEnableETC", &p->m_bEtc);
     ReadGameOptionBool(pDoc, "autoLooting", "isEnableMeso", &p->m_bMeso);
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsRegionCN())
     {
         if (ReadGameOptionBool(pDoc, "autoLooting", "isEnableMerat", &p->m_bMerat) == 0)
             p->m_bMerat = p->m_bMeso;
@@ -3069,7 +3069,7 @@ void SaveGameOptionAutoLooting(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableConsume", p->m_bConsume);
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableETC", p->m_bEtc);
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableMeso", p->m_bMeso);
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsRegionCN())
         WriteGameOptionBool(pDoc, "autoLooting", "isEnableMerat", p->m_bMerat);
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableToken", p->m_bToken);
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableOther", p->m_bOther);
@@ -3114,7 +3114,7 @@ bool FUN_141261340(Unk_GsAutoLoot* p, CItem* pItem, bool bAuto)
         return p->m_bConsume;
     if (pItem->FUN_140527840()->FUN_14053cbc0())
     {
-        if (p->m_bEquip && pItem->FUN_140526bd0() >= p->m_nEquipGrade)
+        if (p->m_bEquip && pItem->GetRarity() >= p->m_nEquipGrade)
             return true;
         return false;
     }
@@ -3546,7 +3546,7 @@ void CPersonalInfoAgreement::FUN_141262180()
                 spBox->FUN_141a024c0();
                 spBox->SetAlign(0);
                 spBox->SetButtonLabels(strPublic, strPassword, strPrivate);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262830));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262830));
                 FUN_140d73c60(spBox);
             }
         }
@@ -3613,8 +3613,8 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
     {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_input_password"), 0, CStringW(L"")))
         {
-            spBox->FUN_141a01d30(2, L"", 6, 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262b70));
+            spBox->SetInput(2, L"", 6, 0, 0);
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262b70));
             FUN_140d73c60(spBox);
         }
     }
@@ -3641,7 +3641,7 @@ bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommonByKey(L"s_home_password_string_error"), 0, CStringW(L"")))
             {
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262f10));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262f10));
                 FUN_140d73c60(spBox);
             }
             return false;

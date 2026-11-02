@@ -628,7 +628,7 @@ void UIDungeonRoomInfo::Refresh()
 {
     FUN_140d011c0(m_spBannerLoader, FUN_14016a730(m_spRoom->m_dungeonBanner, 0), true);
     FUN_140cfee80((*m_spPanel).FUN_1422bb890(), "m_title", FUN_140e14bd0(m_spRoom, false));
-    m_dungeonDesc->FUN_1422c4f00(GetStringTable()->FUN_141811980(0x15, m_spRoom->GetDungeonRoomID()));
+    m_dungeonDesc->SetTextHTMLW(GetStringTable()->FUN_141811980(0x15, m_spRoom->GetDungeonRoomID()));
     m_dungeonDesc->SetHeightInt((int)m_dungeonDesc->GetTextHeight() + 0x14);
     FUN_140cff840((*m_spPanel).FUN_1422bb890(), "m_cooldownIcon", IsCooldown());
     m_favoriteMark->FUN_1422ce090(FUN_140931510()->GetRecord()->IsSeasonRoom(m_spRoom->GetDungeonRoomID()));
@@ -737,7 +737,7 @@ void UIDungeonRoomInfo::RefreshLimits()
             strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_time", strTimes));
         }
     }
-    m_limitText->FUN_1422c4f00(strLimit);
+    m_limitText->SetTextHTMLW(strLimit);
     nY = (int)m_limitText->GetTextHeight() + (int)m_limitText->FUN_1422c1110() + 5;
     m_limitText->SetHeightInt(nY);
     m_spLimitTextGroup->Clear();
@@ -850,7 +850,7 @@ void UIDungeonRoomInfo::FUN_1412b0110()
         MS2Ptr<ASTextField> spRewardCount;
         if (m_helpCoinInfo->FUN_140beaf20("rewardCount", spRewardCount))
         {
-            spRewardCount->FUN_1422c4f00(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_helper_reward_count", FUN_140e152a0()));
+            spRewardCount->SetTextHTMLW(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_helper_reward_count", FUN_140e152a0()));
             MS2Ptr<ASMovieClip> spIcon;
             if (m_helpCoinInfo->FUN_140bc71c0("m_dungeonHelperIcon", spIcon))
             {
@@ -1079,7 +1079,7 @@ void UIDungeonRoomInfo::RefreshEnterButtons()
 {
     if (m_spRoom == 0)
         return;
-    if (!TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+    if (!TSingleton<CPartyManager>::GetInstance()->IsInParty())
         FUN_1412b3180();
     else
         FUN_1412b3430();
@@ -1095,7 +1095,7 @@ void UIDungeonRoomInfo::FUN_1412b3180()
     if (pPlayer == NULL)
         return;
     if (m_enterStatusText)
-        m_enterStatusText->FUN_1422c4cd0(GetStringCommon(0x9af));
+        m_enterStatusText->SetTextW(GetStringCommon(0x9af));
     m_strBanner.Empty();
     int nState = GetClearCount();
     m_partyMembers[0]->vfunc_3(1);
@@ -1113,7 +1113,7 @@ void UIDungeonRoomInfo::FUN_1412b3430()
 {
     m_strBanner.Empty();
     if (m_enterStatusText)
-        m_enterStatusText->FUN_1422c4cd0(GetStringCommon(0x9b0));
+        m_enterStatusText->SetTextW(GetStringCommon(0x9b0));
     for (int i = 0; i < (int)m_partyMembers.size(); ++i)
     {
         MS2Ptr<CPartyMember> spMember = TSingleton<CPartyManager>::GetInstance()->GetMemberAt(i);
@@ -1138,7 +1138,7 @@ void UIDungeonRoomInfo::RefreshResetButton()
     m_resetButton->vfunc_3(0);
     if (FUN_140930b40())
         return;
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && m_spRoom->m_maxUserCount > 1 && TSingleton<CPartyManager>::GetInstance()->IsMatchmaking()
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty() && m_spRoom->m_maxUserCount > 1 && TSingleton<CPartyManager>::GetInstance()->IsMatchmaking()
         && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID() && TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
         m_resetButton->vfunc_3(1);
 }
@@ -1164,7 +1164,7 @@ void UIDungeonRoomInfo::FUN_1412b3890()
         return;
     if (m_spRoom->m_minUserCount == 0 || FUN_140931510()->FUN_140d9f5d0(3))
         m_enterSoloButton->FUN_1422c1fe0(1);
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && m_spRoom->m_maxUserCount > 1)
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty() && m_spRoom->m_maxUserCount > 1)
     {
         bool bLeader = TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader();
         if (TSingleton<CPartyManager>::GetInstance()->IsMatchmaking() && TSingleton<CPartyManager>::GetInstance()->GetDungeonId() == m_spRoom->GetDungeonRoomID())
@@ -1366,7 +1366,7 @@ void UIDungeonRoomInfo::OnAddExtraRewardCount(const ASParams& params)
     MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMsg, 1);
     if (box)
     {
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonRoomInfo::OnUseExtraRewardItem));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonRoomInfo::OnUseExtraRewardItem));
         box->FUN_141a01800(1);
         box->Append<unsigned>(spRewardRoom->GetDungeonRoomID());
         FUN_140d73c60(box);
@@ -1405,7 +1405,7 @@ void UIDungeonRoomInfo::OnFindHelper(const ASParams& params)
     if (!CanAskHelp())
         return;
     int nPartyRoom = TSingleton<CPartyManager>::GetInstance()->GetDungeonId();
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && nPartyRoom != 0 && m_spRoom->GetDungeonRoomID() != nPartyRoom)
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty() && nPartyRoom != 0 && m_spRoom->GetDungeonRoomID() != nPartyRoom)
     {
         // the party's current dungeon name comes first, then this room's
         CStringW strMsg = FUN_14028dfa0(L"s_dungeonRoom_change_help_dungeon",
@@ -1429,7 +1429,7 @@ void UIDungeonRoomInfo::OnFindMember(const ASParams& params)
     if (!CanAskHelp())
         return;
     int nPartyRoom = TSingleton<CPartyManager>::GetInstance()->GetDungeonId();
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20() && nPartyRoom != 0 && m_spRoom->GetDungeonRoomID() != nPartyRoom)
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty() && nPartyRoom != 0 && m_spRoom->GetDungeonRoomID() != nPartyRoom)
     {
         // the party's current dungeon name comes first, then this room's
         CStringW strMsg = FUN_14028dfa0(L"s_dungeonRoom_change_help_dungeon",
@@ -1644,7 +1644,7 @@ bool UIDungeonRoomInfo::CanAskHelp()
     void* pPc = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
         if (!TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())
         {
@@ -1689,7 +1689,7 @@ bool UIDungeonRoomInfo::AskExtraTicketEnter(bool bParty)
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMsg, 1);
         if (box)
         {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonRoomInfo::OnUseExtraTicketEnter));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonRoomInfo::OnUseExtraTicketEnter));
             box->FUN_141a01800(1);
             FUN_140f73320(box.operator->(), bParty);
             FUN_140d73c60(box);
@@ -2438,7 +2438,7 @@ void UIDungeonRoomDialog::GetPartyLevel(unsigned short& nLevel, unsigned& nGearS
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty())
     {
         nLevel = TSingleton<CPartyManager>::GetInstance()->GetMinMemberLevel();
         nGearScore = TSingleton<CPartyManager>::GetInstance()->FUN_14162c1e0();

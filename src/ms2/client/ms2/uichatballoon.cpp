@@ -179,7 +179,7 @@ void UIChatBalloon::Entity::vfunc_5()
         obj.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_1418fb7e0(), 0));
         obj.FUN_1407cbbe0("bNpc", efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
         const char* szSkin;
-        if (pActor->FUN_14166ce30() != 0)
+        if (pActor->IsDead() != 0)
             szSkin = "dead";
         else
             szSkin = (const char*)m_a8;
@@ -219,7 +219,7 @@ int UIChatBalloon::Entity::vfunc_8(int n)
         return 1;
     if (FUN_1418fbbf0() == 0)
         return 1;
-    return TimerEntity::vfunc_8(pActor->FUN_14166ce30());
+    return TimerEntity::vfunc_8(pActor->IsDead());
 }
 
 // @0x1418fb670

@@ -760,7 +760,7 @@ int UICharacterListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
@@ -1511,7 +1511,7 @@ void UICharacterListDialog::FUN_1418f13f0()
                     {
                         CStringW strDefault(L"");
                         spBox->Append<__int64>(spCharacter->FUN_1418e9cb0());
-                        spBox->FUN_141a01d30(2, strDefault, 0xc, 0, 0);
+                        spBox->SetInput(2, strDefault, 0xc, 0, 0);
                         FUN_140d73c60(spBox);
                     }
                     return;
@@ -1766,7 +1766,7 @@ void UICharacterListDialog::CheckDeleteAccount()
 // @0x1418f2480
 void UICharacterListDialog::FUN_1418f2480(CStringW str1, CStringW str2)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e510() == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsRegionCN() == 1)
     {
         HandleDeleteReply(0, L"", L"", L"");
         return;
@@ -1872,7 +1872,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
         static_cast<Unk_ClBox*>(m_228.operator->())->SetMsg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_2")));
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_2")), 0);
         static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(FUN_140298ea0(CStringW(L"s_delete_account_hyperlink_msg")), *FUN_140298f80(&((struct Unk_ClOptions*)FUN_1401d3200())->m_url));
-        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
+        static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_14151f4e0(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 2;
         return false;
@@ -1883,7 +1883,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
         static_cast<Unk_ClBox*>(m_228.operator->())->SetCheckbox0Enabled(false);
         static_cast<Unk_ClBox*>(m_228.operator->())->SetAgreement(true);
         static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02a70(CStringW(L""), CString(""));
-        static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
+        static_cast<Unk_ClBox*>(m_228.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_14151f4e0(static_cast<Unk_ClBox*>(m_228.operator->())->FUN_141a02b90(), m_228);
         m_224 = 3;
         return false;
@@ -1895,7 +1895,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
         {
             m_228->FUN_140b76940(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label1")));
             m_228->FUN_140b76940(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label2")));
-            m_228->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
+            m_228->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
             FUN_140d73c60(m_228);
             m_224 = 4;
         }
@@ -1943,7 +1943,7 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
             m_228->SetButtonLabels(GetStringCommonByKey(L"s_delete_account_terms_step_end_game_button"), L"", L"");
             static_cast<Unk_ClBox*>(m_228.operator->())->SetTitle(GetStringCommonByKey(L"s_delete_account_terms_step_end_title"));
             m_228->SetAgreement(true);
-            m_228->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
+            m_228->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f3bd0));
             FUN_140d73c60(m_228);
             m_224 = 6;
         }
@@ -2109,7 +2109,7 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     spBox->Append<__int64>(spCharacter->FUN_1418e9cb0());
     if (!spFound->m_50.IsEmpty())
         static_cast<Unk_ClBox*>(spBox.operator->())->SetTitle(StringFormat<CStringW>(GetStringCommonByKey(spFound->m_50), spCharacter->FUN_1418e9cd0()));
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::SendEventReward));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::SendEventReward));
     FUN_140d73c60(spBox);
 }
 
@@ -2174,7 +2174,7 @@ void UICharacterListDialog::FUN_1418f2190()
     {
         m_228->FUN_141a01800(2);
         m_228->SetCheckbox0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_1")), 0);
-        m_228->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
+        m_228->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
         FUN_140d73c60(m_228);
         m_224 = 1;
     }
@@ -2202,8 +2202,8 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
         spFirst.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
         spItem->FUN_140523c40((&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_0(), (&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_1(), 0);
-        spItem->FUN_140526c70((&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_2());
-        spFirst->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->FUN_140526bd0());
+        spItem->SetCountClamped((&spEvent->m_90.FUN_1403e8aa0()->m_ref)->vfunc_2());
+        spFirst->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spFirst->m_spItem = spItem;
         spFirst->m_nCount = spItem->GetCount();
         spFirst->m_48 = 0x411;
@@ -2213,8 +2213,8 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
         spSecond.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
         spItem->FUN_140523c40((&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_0(), (&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_1(), 0);
-        spItem->FUN_140526c70((&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_2());
-        spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->FUN_140526bd0());
+        spItem->SetCountClamped((&spEvent->m_70.FUN_14028a200().FUN_140bfe440()->m_ref)->vfunc_2());
+        spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spSecond->m_spItem = spItem;
         spSecond->m_nCount = spItem->GetCount();
         spSecond->m_48 = 0x411;
@@ -2267,7 +2267,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xe, strMsg, static_cast<IMessageListener*>(this), L"deletePC");
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01d30(2, L"", 0, 0, 0);
+                    spBox->SetInput(2, L"", 0, 0, 0);
                     spBox->SetCheckbox0(BlockFormat(7), 0);
                     FUN_140d73c60(spBox);
                 }
@@ -2278,7 +2278,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("OnGameStart", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             CharPtr spFound = FindCharacter(nId);
@@ -2304,7 +2304,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 if (nState == 0)
                 {
                     ASData data;
-                    if (data.FUN_1422b9620(pArgs, nArgs))
+                    if (data.SetArgsIfAny(pArgs, nArgs))
                     {
                         unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
                         CharPtr spPrev(m_188);
@@ -2342,7 +2342,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         else if (_stricmp("onClickCancelDelete", szMethod) == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
                 CancelDelete(FindCharacter(nId));
@@ -2352,7 +2352,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         else if (_stricmp("onClickRevivalChar", szMethod) == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
                 CharPtr spCharacter = FindCharacter(nId);
@@ -2369,7 +2369,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         else if (_stricmp("onClickFinalDelete", szMethod) == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
                 CharPtr spCharacter = FindCharacter(nId);
@@ -2386,9 +2386,9 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         else if (_stricmp("onClickDownArrow", szMethod) == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
-                int nIndex = data.FUN_1422b8b10();
+                int nIndex = data.PopUInt();
                 if (MS2Ptr<Unk_UeBag> list = m_30->FUN_140accef0<Unk_UeBag>("m_charlist"))
                 {
                     int nNext = nIndex + 1;
@@ -2406,9 +2406,9 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         else if (_stricmp("onClickUpArrow", szMethod) == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
-                int nIndex = data.FUN_1422b8b10();
+                int nIndex = data.PopUInt();
                 if (nIndex == 0)
                     return 1;
                 if (MS2Ptr<Unk_UeBag> list = m_30->FUN_140accef0<Unk_UeBag>("m_charlist"))

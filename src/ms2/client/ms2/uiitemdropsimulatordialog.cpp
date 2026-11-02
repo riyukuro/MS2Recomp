@@ -57,19 +57,19 @@ int UIItemDropSimulatorDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp("onClickDropButton", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nA = args.FUN_1422b8a10();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nA = args.PopInt();
             CString strA = args.FUN_1422b8d30();
-            int nB = args.FUN_1422b8a10();
-            int nC = args.FUN_1422b8a10();
-            int nD = args.FUN_1422b8a10();
-            int nE = args.FUN_1422b8a10();
-            int nF = args.FUN_1422b8a10();
-            int nG = args.FUN_1422b8a10();
-            int nH = args.FUN_1422b8a10();
-            int nI = args.FUN_1422b8a10();
-            int nJ = args.FUN_1422b8a10();
-            bool bFlag = args.FUN_1422b8a90();
+            int nB = args.PopInt();
+            int nC = args.PopInt();
+            int nD = args.PopInt();
+            int nE = args.PopInt();
+            int nF = args.PopInt();
+            int nG = args.PopInt();
+            int nH = args.PopInt();
+            int nI = args.PopInt();
+            int nJ = args.PopInt();
+            bool bFlag = args.PopBool();
             CString strB = args.FUN_1422b8d30();
             FUN_14192a900(nA, strA, nB, nC, nD, nE, nF, nG, nH, nI, nJ, bFlag, strB);
         }
@@ -77,18 +77,18 @@ int UIItemDropSimulatorDialog::vfunc_28(const char* szMethod, const Scaleform::G
     }
     else if (_stricmp("onClickCustomDrop", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             CString strA = args.FUN_1422b8d30();
-            int nA = args.FUN_1422b8a10();
-            int nB = args.FUN_1422b8a10();
-            int nC = args.FUN_1422b8a10();
-            int nD = args.FUN_1422b8a10();
-            int nE = args.FUN_1422b8a10();
-            int nF = args.FUN_1422b8a10();
+            int nA = args.PopInt();
+            int nB = args.PopInt();
+            int nC = args.PopInt();
+            int nD = args.PopInt();
+            int nE = args.PopInt();
+            int nF = args.PopInt();
             CString strB = args.FUN_1422b8d30();
-            int nG = args.FUN_1422b8a10();
-            int nH = args.FUN_1422b8a10();
-            int nI = args.FUN_1422b8a10();
+            int nG = args.PopInt();
+            int nH = args.PopInt();
+            int nI = args.PopInt();
             FUN_14192a940(strA, strB, nA, nD, nF, nB, nC, nE, nG, nH, nI);
         }
         return 1;
@@ -112,7 +112,7 @@ void UIItemDropSimulatorDialog::FUN_14192a940(CString strA, CString strB, int nA
 void UIItemDropSimulatorDialog::FUN_14192a9a0(CStringW strText)
 {
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_simulateResult"))
-        spText->FUN_1422c4cd0(strText);
+        spText->SetTextW(strText);
 }
 
 // @0x14192aa50

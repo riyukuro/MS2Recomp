@@ -410,14 +410,15 @@ public:
 
 // The single-instance marker: a named auto-reset event "<base>_<n>" for the first n that does not exist yet. The index
 // numbers the log file ("MapleStory2_<n>.log"). Name invented (inline in the exe; dtor also folded into engine code).
+void FUN_1414a5a80(HANDLE* pEvent);                             // Close: CloseHandle, index 0
+int FUN_1414a56b0(char* pEvent);                                // the index
+
 class Unk_InstanceEvent
 {
 public:
     explicit Unk_InstanceEvent(const efd::utf8string& strBase) : m_hEvent(0), m_nIndex(0) { Create(strBase); }
-    ~Unk_InstanceEvent() { FUN_1414a5a80(); }
+    ~Unk_InstanceEvent() { FUN_1414a5a80((HANDLE*)this); }
     bool Create(const efd::utf8string& strBase);
-    void FUN_1414a5a80();                                       // Close: CloseHandle, index 0
-    int FUN_1414a56b0() const;                                  // m_nIndex
 
     HANDLE m_hEvent;
     int m_nIndex;
@@ -478,10 +479,10 @@ template Unk_GFxImageCallback& Unk_GFxImageCallback::operator=(const Unk_GFxImag
 class Unk_GFxManager
 {
 public:
-    void FUN_1422af0b0(BOOL bArchive, int n);                  // loads ./Data/Resource/gfx/fontconfig.txt
     void FUN_1414a61c0(Unk_GFxImageCallback fnCallback);        // the image creator callback (+0x138)
 };
 Unk_GFxManager* FUN_14025e7a0();
+class GFxManager { public: void FUN_1422af0b0(int bArchive, int bRelease); };   // loads ./Data/Resource/gfx/fontconfig.txt
 Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtocol,
     Scaleform::Render::TextureManager* pTextureManager);       // ?\asyncimageloader.cpp
 int FUN_1406516b0();                                            // the service locale: 1 jp, 2 en, 3 cn, else kr
@@ -1050,7 +1051,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(spPropertyVisualization);
 
     int n = 0;
-    FUN_14025e7a0()->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
+    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
     FUN_14025e7a0()->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
     RegisterUIScenes();
     efd::SmartPointer<DecoEditService> spDecoEdit = EE_NEW DecoEditService;
@@ -1066,7 +1067,7 @@ efd::Logger* MS2::CreateLogger()
 {
     efd::SmartPointer<efd::Logger> spLogger = EE_NEW efd::Logger;
     efd::LoggerSingleton::Initialize(spLogger);
-    efd::utf8string strLogFile(efd::Formatted, "%s_%d.log", "MapleStory2", s_instanceEvent.FUN_1414a56b0());
+    efd::utf8string strLogFile(efd::Formatted, "%s_%d.log", "MapleStory2", FUN_1414a56b0((char*)&s_instanceEvent));
     m_strLogFile = strLogFile;
     efd::FileDestination::FileOption eOption = efd::FileDestination::kFileOverwrite;
     eOption = efd::FileDestination::kFileAppend;
@@ -1217,7 +1218,7 @@ int FUN_141b6db40(size_t nSize);
 CString FUN_14028dbd0();                                        // the machine id text
 CStringW FUN_140719630(int n);                                  // int -> CStringW
 int FUN_1414a5690(CFileSystem* pFileSystem);                    // the ignore file mode of the file system
-void FUN_141851840(int n);
+void FUN_141851840(class NiDevImageConverter* pkConverter);
 class CChatEmoticonCli;
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
@@ -1263,7 +1264,6 @@ public:
 };
 void FUN_140d4fd50(CMachineIDManager* p);
 void FUN_140d86330();
-void FUN_140dca800();
 class CDebugConsole   // C3: member view for the former free stand-ins
 {
 public:
@@ -1989,7 +1989,7 @@ BOOL CGameApp::InitInstance()
     ((class CInstrumentDataTable*)(class CInstrumentDataTable*)(TSingleton<CInstrumentDataTable>::GetInstance()))->Load();
     Unk_SingletonCreator<CSkillCompactControlTable>::CreateInstance();
     TSingleton<CSkillCompactControlTable>::GetInstance();
-    FUN_140dca800();
+    CSkillCompactControlTable::Load();
     Unk_SingletonCreator<CGloabalFactor>::CreateInstance();
     ((class CGloabalFactor*)(class CGloabalFactor*)(TSingleton<CGloabalFactor>::GetInstance()))->Load();
     Unk_SingletonCreator<CSmartPushTable>::CreateInstance();
@@ -2462,7 +2462,7 @@ MS2_REPLACE(0x141492410, MakeWindowTitle, 779, 0x9C281391);
 // @0x141498cb0
 inline bool Unk_InstanceEvent::Create(const efd::utf8string& strBase)
 {
-    FUN_1414a5a80();
+    FUN_1414a5a80((HANDLE*)this);
     for (unsigned int n = 1; n != 0; n++) {
         m_strName.sprintf("%s_%d", strBase.c_str(), n);
         HANDLE hEvent = CreateEventA(NULL, FALSE, TRUE, m_strName.c_str());

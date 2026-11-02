@@ -577,7 +577,7 @@ void AvatarPC::FUN_1409f45a0(MS2Ptr<CItemData> spData)
     if (spData == 0)
         return;
     int nInstrument = ((class CItemData*)(spData.operator->()))->GetInstrumentId();
-    if (static_cast<PCBase*>(this)->FUN_14166c930() == 0x2f)
+    if (static_cast<PCBase*>(this)->GetCurStateId() == 0x2f)
     {
         State* pState = FUN_14166ccb0();
         if (pState != 0 && reinterpret_cast<class StatePlayInstrument*>(pState)->FUN_140ddfbb0() == nInstrument)
@@ -656,7 +656,7 @@ void AvatarPC::FUN_1409f4d80(MS2Ptr<CItem> spItem)
 // @0x1409f4f20
 bool AvatarPC::FUN_1409f4f20()
 {
-    if (static_cast<PCBase*>(this)->FUN_14166c930() != 0x21)
+    if (static_cast<PCBase*>(this)->GetCurStateId() != 0x21)
         return false;
     if ((m_spRidee ? true : false) && m_spRidee->FUN_14123bea0() != 0)
         return true;
@@ -724,9 +724,9 @@ void AvatarPC::vfunc_128(CItem* pItem, int n)
 // @0x1409f5210
 void AvatarPC::vfunc_59(int nState, StateData* pData, int nSub, int bForce)
 {
-    int nOldAction = static_cast<PCBase*>(this)->FUN_14166c930();
+    int nOldAction = static_cast<PCBase*>(this)->GetCurStateId();
     PC::vfunc_59(nState, pData, nSub, bForce);
-    bool bChanged = nOldAction != static_cast<PCBase*>(this)->FUN_14166c930();
+    bool bChanged = nOldAction != static_cast<PCBase*>(this)->GetCurStateId();
     if (bChanged)
     {
         vfunc_19(m_kPos);
@@ -915,7 +915,7 @@ void AvatarPC::FUN_1409f5d20()
     }
     if (m_spRidee ? true : false)
     {
-        if (m_spRidee->FUN_14123bea0() != 0 && static_cast<PCBase*>(this)->FUN_14166c930() == 0x21)
+        if (m_spRidee->FUN_14123bea0() != 0 && static_cast<PCBase*>(this)->GetCurStateId() == 0x21)
         {
             NiNodePtr spRideeNode(static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(m_spRidee->FUN_14123c410())))));
             if (spRideeNode)
@@ -1073,7 +1073,7 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
         return;
     }
     int nRod = spItem->FUN_1405276c0();
-    if (static_cast<PCBase*>(this)->FUN_14166c930() == 0x2d)
+    if (static_cast<PCBase*>(this)->GetCurStateId() == 0x2d)
     {
         State* pState = FUN_14166ccb0();
         if (pState != 0 && reinterpret_cast<class StateFishing*>(pState)->FUN_140ddb5d0() == nRod)
@@ -1291,7 +1291,7 @@ unsigned int FUN_1409f9060()
 {
     for (unsigned int nId = 0x426; nId < 0x430; nId++)
     {
-        if (((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bd1180(nId) == 0)
+        if (((class Unk_AvWorld*)WorldService::GetInstance())->FindObjectById(nId) == 0)
             return nId;
     }
     return 0;
@@ -1529,7 +1529,7 @@ void AvatarRidee::FUN_1409fa7c0()
         if ((m_spRow.get() ? true : false) && !m_bReloading)
         {
             m_pRider->vfunc_59(0x21, 0, 0, 0);
-            m_pRider->FUN_14166dd20((const char*)m_spRow->FUN_140784970().FUN_1407895c0()->m_strRideAnim, 1.0f, false,
+            m_pRider->PlayAnimation((const char*)m_spRow->FUN_140784970().FUN_1407895c0()->m_strRideAnim, 1.0f, false,
                 false);
         }
     }
@@ -1540,7 +1540,7 @@ void AvatarRidee::FUN_1409fa940()
 {
     if (m_pRider == 0 || m_spAttach == 0 || m_spRow.FUN_1407893c0(0))
         return;
-    if (m_bReloading == true || m_pRider->FUN_14166c930() != 0x21)
+    if (m_bReloading == true || m_pRider->GetCurStateId() != 0x21)
         return;
     FUN_1417083a0(m_pRider, NiAVObjectPtr(m_spAttach), m_spRow->FUN_140784970());
 }
@@ -1550,7 +1550,7 @@ unsigned int FUN_1409faa70()
 {
     for (unsigned int nId = 0x41b; nId < 0x425; nId++)
     {
-        if (((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bd1180(nId) == 0)
+        if (((class Unk_AvWorld*)WorldService::GetInstance())->FindObjectById(nId) == 0)
             return nId;
     }
     return 0;

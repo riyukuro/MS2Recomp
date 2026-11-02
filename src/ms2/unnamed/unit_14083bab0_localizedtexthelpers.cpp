@@ -22,7 +22,7 @@
 class CFileSystem;
 
 int FUN_1406516a0();                                                    // client language (localepath.cpp)
-void FUN_1406514e0(int nCountry, ATL::CAtlArray<int>& rLanguages);     // fallback language list of a country
+int FUN_1406514e0(int nCountry, ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& rLanguages);     // fallback language list of a country
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
 CStringA FUN_14016a5c0(const char* psz, int n);
 class Unk_Be790Xml;
@@ -349,7 +349,7 @@ CStringW FUN_14083d340(CStringW str)
     if (!strText.IsEmpty())
         return strText;
     ATL::CAtlArray<int> arrLang;
-    FUN_1406514e0(DAT_143ab0248, arrLang);
+    FUN_1406514e0(DAT_143ab0248, reinterpret_cast<ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>&>(arrLang));
     for (unsigned i = 0; i < arrLang.GetCount(); ++i)
     {
         int nLang = arrLang[i];

@@ -675,7 +675,7 @@ void UIMeratMarketDialog::OnLoadComplete()
         data.FUN_1409adbe0("dpDropDownSearch", Scaleform::GFx::Value(search.FUN_1422bb870()));
         data.FUN_1407cbb20("blueMerat", FUN_1409404f0(FUN_140930240()));
         data.FUN_1407cbb20("notice", ((CMeratMarketMan*)FUN_140939a00())->GetMarketNotice());
-        bool bRefresh = ((class CFeatureManager*)FUN_140166410())->FUN_14036e510();
+        bool bRefresh = ((class CFeatureManager*)FUN_140166410())->IsRegionCN();
         data.FUN_1407cbbe0("useMeratRefreshButton", bRefresh);
         bool bStarShop = FUN_1406a5930();
         data.FUN_1407cbbe0("useStarShop", bStarShop);
@@ -722,19 +722,19 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp("OnChangeTab", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnChangeTab(args);
         return 1;
     }
     else if (_stricmp("OnChangeModel", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnChangeModel(args);
         return 1;
     }
     else if (_stricmp("onCheckPreviewColoring", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnCheckPreviewColoring(args);
         return 1;
     }
@@ -748,9 +748,9 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onChangeHomeCategory", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nCategory = args.FUN_1422b8a10();
-            Scaleform::GFx::Value value = args.FUN_1422b9260();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nCategory = args.PopInt();
+            Scaleform::GFx::Value value = args.PopValue();
             SelectCategory(ShopKindOf(m_250), nCategory);
             ASObj obj(value, 2);
             if (!obj.IsUndefinedOrNull()) {
@@ -762,25 +762,25 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnChangeCategory", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnChangeList(args, 0);
         return 1;
     }
     else if (_stricmp("OnChangeCategoryOnly", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
-            m_254 = args.FUN_1422b8a10();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
+            m_254 = args.PopInt();
         return 1;
     }
     else if (_stricmp("OnChangeList", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnChangeList(args, 0);
         return 1;
     }
     else if (_stricmp("OnChangePage", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnChangePage(args);
         return 1;
     }
@@ -790,7 +790,7 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnClickBuy", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringA strMethod(szMethod);
             OnClickBuy(strMethod, args);
         }
@@ -798,7 +798,7 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnClickRandomSalePick", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringA strMethod(szMethod);
             OnClickRandomSalePick(strMethod, args);
         }
@@ -813,19 +813,19 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("OnUnEquip", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnUnEquip(args);
         return 1;
     }
     else if (_stricmp("OnClickReport", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140ec1340(args);
         return 1;
     }
     else if (_stricmp("OnChangePageRequest", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnChangePageRequest(args);
         return 1;
     }
@@ -835,7 +835,7 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
         else {
             ASData args;
-            if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (args.SetArgsIfAny(pArgs, nArgs) != 0)
                 OnChangeList(args, 1);
         }
         return 1;
@@ -846,56 +846,56 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
         else {
             ASData args;
-            if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (args.SetArgsIfAny(pArgs, nArgs) != 0)
                 OnClickBookMark(args);
         }
         return 1;
     }
     else if (_stricmp("onClickRecipe", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickRecipe(args);
         return 1;
     }
     else if (_stricmp("onClickPreview", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickPreview(args);
         return 1;
     }
     else if (_stricmp("OnClickSearchAll", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickSearchAll(args);
         return 1;
     }
     else if (_stricmp("OnClickBasket", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickBasket(args);
         return 1;
     }
     else if (_stricmp("OnSelectItem", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnSelectItem(args);
         return 1;
     }
     else if (_stricmp("OnGetSearchAttrVisible", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnGetSearchAttrVisible(args);
         return 1;
     }
     else if (_stricmp("onClickBanner", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickBanner(args);
         return 1;
     }
     else if (_stricmp("onSearchItemLink", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnSearchItemLink(args);
         return 1;
     }
@@ -913,7 +913,7 @@ int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onClickExtraButton", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickExtraButton(args);
         return 1;
     }
@@ -1146,12 +1146,12 @@ void UIMeratMarketDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
             spProduct = ((CMeratMarketMan*)pMan)->FindProduct(key);
         }
     } else if (m_250 == 6) {
-        int nId = pArgs->FUN_1422b8b10();
+        int nId = pArgs->PopUInt();
         MS2Ptr<CMeratMarketBasket> spEntry = ((CMeratMarketMan*)pMan)->GetBasketLine(nId);
         if (spEntry.get() != 0)
             spProduct = spEntry->m_spProduct;
     } else if (m_250 == 7) {
-        int nId = pArgs->FUN_1422b8b10();
+        int nId = pArgs->PopUInt();
         spProduct = ((CMeratMarketMan*)pMan)->FUN_140d578d0(key);
     } else {
         spProduct = ((CMeratMarketMan*)pMan)->FUN_140d57150(key, CurrentSearchId());
@@ -1592,7 +1592,7 @@ void UIMeratMarketDialog::RefreshMyShop()
     {
         int nCount = ((CMeratMarketMan*)FUN_140939a00())->GetProductCount();
         int nMax = 100;
-        m_5a0->FUN_1422c4cd0(FUN_14028dfa0(L"s_common_cur_max", nCount, nMax));
+        m_5a0->SetTextW(FUN_14028dfa0(L"s_common_cur_max", nCount, nMax));
     }
 }
 
@@ -2736,7 +2736,7 @@ bool UIMeratMarketDialog::OnChangeList(ASData& data, bool bRefresh)
     MS2Ptr<CMeratMarketSchCond> spCond = GetSearchCondition();
     if (spCond == 0)
         return false;
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
     bool bSearchAll = m_250 == 8;
     if (bSearchAll)
@@ -3300,35 +3300,35 @@ int UIMeratMarketDialog::OnCommandMyShop(const char* szName, const Scaleform::GF
     if (_stricmp("onClickStopSale", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickCancelSale(data);
         return 1;
     }
     else if (_stricmp("onClickReSale", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickRemoveSale(data);
         return 1;
     }
     else if (_stricmp("onClickRemove", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickRegisterSale(data);
         return 1;
     }
     else if (_stricmp("onClickPassSuccess", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickSaleCommand(data);
         return 1;
     }
     else if (_stricmp("onClickPassFailed", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickSaleCommand(data);
         return 1;
     }
@@ -3348,9 +3348,9 @@ int UIMeratMarketDialog::OnCommandMyShop(const char* szName, const Scaleform::GF
             }
         }
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bAll = data.FUN_1422b8a90();
+            bool bAll = data.PopBool();
             if (bAll)
             {
                 if (((class CMeratMarketMan*)(void*)(((class Unk_MeratMarketMan*)FUN_140939a00())))->FUN_140d56470() > 0)
@@ -3388,35 +3388,35 @@ int UIMeratMarketDialog::OnCommandBasket(const char* szName, const Scaleform::GF
     if (_stricmp("onClickBasketItem", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnClickProductLink(data);
         return 1;
     }
     else if (_stricmp("onClickRemoveBasketItem", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnRemoveBasketItem(data);
         return 1;
     }
     else if (_stricmp("onClickBuyBasketItem", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnBuyBasketItem(szName, data);
         return 1;
     }
     else if (_stricmp("onClickBuyBasketItemAll", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnBuySelected(szName, data);
         return 1;
     }
     else if (_stricmp("onClickGiftBasketItemAll", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnBuyGiftSelected(szName, data);
         return 1;
     }
@@ -3429,28 +3429,28 @@ int UIMeratMarketDialog::OnCommandBookmark(const char* szName, const Scaleform::
     if (_stricmp("OnClickRemoveSeller", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnRemoveSeller(data);
         return 1;
     }
     else if (_stricmp("OnChangeIndexSeller", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnSellerInfo(data);
         return 1;
     }
     else if (_stricmp("OnGetSellerProductList", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnGetSellerProductList(data);
         return 1;
     }
     else if (_stricmp("OnRightClickSeller", szName) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             OnRightClickSeller(data);
         return 1;
     }
@@ -3468,7 +3468,7 @@ void UIMeratMarketDialog::OnChangeTab(ASData& data)
 {
     if (m_30 == 0)
         return;
-    int nTab = data.FUN_1422b8a10();
+    int nTab = data.PopInt();
     int nPrevTab = m_250;
     m_250 = nTab;
     ShowUgcTerms(nPrevTab, nTab);
@@ -3535,7 +3535,7 @@ void UIMeratMarketDialog::OnChangeModel(ASData& data)
     }
     else
     {
-        int nIndex = data.FUN_1422b8a10();
+        int nIndex = data.PopInt();
         UIAvatarBase* pPreview = GetPreview(nIndex);
         MS2Ptr<CItemData> spData(0);
         if ((m_spItem.get() != 0 ? true : false) && m_298 == nIndex)
@@ -3548,16 +3548,16 @@ void UIMeratMarketDialog::OnChangeModel(ASData& data)
 // @0x1412fe520
 void UIMeratMarketDialog::OnChangePage(ASData& data)
 {
-    int nFirst = data.FUN_1422b8a10();
-    int nCount = data.FUN_1422b8a10();
+    int nFirst = data.PopInt();
+    int nCount = data.PopInt();
     BuildPage(nFirst, nFirst + nCount);
 }
 
 // @0x1412fe580
 void UIMeratMarketDialog::OnChangePageRequest(ASData& data)
 {
-    int nPage = data.FUN_1422b8a10();
-    int nDirection = data.FUN_1422b8a10();
+    int nPage = data.PopInt();
+    int nDirection = data.PopInt();
     if (FUN_1406a5040(m_254))
         return;
     if (m_spSearch.get() != 0)
@@ -3572,7 +3572,7 @@ void UIMeratMarketDialog::OnChangePageRequest(ASData& data)
 // @0x1412fe6a0
 void UIMeratMarketDialog::OnCheckPreviewColoring(ASData& data)
 {
-    bool bColoring = data.FUN_1422b8a90();
+    bool bColoring = data.PopBool();
     m_bPreviewColoring = bColoring;
     if (m_spAvatarPC.get() != 0)
         m_spAvatarPC->FUN_1418bc280(bColoring);
@@ -3584,7 +3584,7 @@ void UIMeratMarketDialog::OnCheckPreviewColoring(ASData& data)
 void UIMeratMarketDialog::OnUnEquip(ASData& data)
 {
     CStringA strName = data.FUN_1422b8d30();
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     AScript icon(value, 2);
     int nSlot = FUN_1407181d0(strName);
     bool bApply = false;
@@ -3679,7 +3679,7 @@ void UIMeratMarketDialog::OnSelectItem(ASData& data)
 {
     if (m_spModelView == 0)
         return;
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     UIMeratMarketDialogUtil::ASOutData out(value, FUN_1422db730());
     if (m_250 == 7)
     {
@@ -3701,7 +3701,7 @@ void UIMeratMarketDialog::OnSelectItem(ASData& data)
 // @0x1412ff230
 void UIMeratMarketDialog::OnSearchItemLink(ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
     if (obj.IsUndefinedOrNull())
         return;
@@ -3756,8 +3756,8 @@ void UIMeratMarketDialog::OnSearchItemLink(ASData& data)
 // @0x1412ff700
 void UIMeratMarketDialog::OnGetSearchAttrVisible(ASData& data)
 {
-    int nCategory = data.FUN_1422b8a10();
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    int nCategory = data.PopInt();
+    Scaleform::GFx::Value value = data.PopValue();
     bool bGender = false;
     bool bJob = false;
     int nList = CurrentListId(m_250);
@@ -3822,7 +3822,7 @@ void UIMeratMarketDialog::OnClickBuyMerat()
 // @0x1412ffb80
 void UIMeratMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     UIMeratMarketDialogUtil::ASClickOutData click(value, FUN_1422db730());
     if (m_250 == 7)
     {
@@ -3866,7 +3866,7 @@ void UIMeratMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
 // @0x1413000d0
 void UIMeratMarketDialog::OnClickRandomSalePick(const CStringA& strName, ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     UIMeratMarketDialogUtil::ASClickOutData out(value, FUN_1422db730());
     MS2Ptr<ASMeratMarketProductBase> spOut = out.FUN_140ec28b0();
     if (spOut == 0)
@@ -3932,7 +3932,7 @@ void UIMeratMarketDialog::OnClickBuyEquipAll(const CStringA& strMovie)
             return;
         }
     }
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036e510() && nKind == 5) {
+    if (!((class CFeatureManager*)FUN_140166410())->IsRegionCN() && nKind == 5) {
         if (pIcons->IsEmpty() || pIcons->GetCount() > 1)
             return;
         MS2Ptr<CMeratMarketProduct> spProduct =
@@ -4045,7 +4045,7 @@ void UIMeratMarketDialog::OnClickSearchAll(ASData& data)
     MS2Ptr<CMeratMarketSchCond> spCond = GetSearchCondition();
     if (spCond == 0)
         return;
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
     ApplySearchAll(spCond, obj, true);
     ASObj tab(2);
@@ -4055,8 +4055,8 @@ void UIMeratMarketDialog::OnClickSearchAll(ASData& data)
 // @0x1413019e0
 void UIMeratMarketDialog::OnClickBasket(ASData& data)
 {
-    Scaleform::GFx::Value vSlot = data.FUN_1422b9260();
-    Scaleform::GFx::Value vProduct = data.FUN_1422b9260();
+    Scaleform::GFx::Value vSlot = data.PopValue();
+    Scaleform::GFx::Value vProduct = data.PopValue();
     ASObj objProduct(vProduct, FUN_1422db730());
     ASObj objSlot(vSlot, FUN_1422db730());
     Unk_MeratProductKey key;
@@ -4090,7 +4090,7 @@ void UIMeratMarketDialog::OnClickBasket(ASData& data)
         FUN_140d73bc0(0xa16, 0, 0, CStringW(L""));
         return;
     }
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e510() == false && spProduct->IsUgc() != 0 && spProduct->m_ugc.IsMusicType() != 0) {
+    if (((class CFeatureManager*)FUN_140166410())->IsRegionCN() == false && spProduct->IsUgc() != 0 && spProduct->m_ugc.IsMusicType() != 0) {
         FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_error_add_basket_by_music_score"), 0, 0, CStringW(L""));
         return;
     }
@@ -4144,7 +4144,7 @@ void UIMeratMarketDialog::OnClickStarShop()
 // @0x1413025a0
 void UIMeratMarketDialog::OnClickExtraButton(ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     UIMeratMarketDialogUtil::ASClickOutData click(value, FUN_1422db730());
     MS2Ptr<ASMeratMarketProductBase> spBase = click.FUN_140ec28b0();
     if (spBase == 0)
@@ -4292,7 +4292,7 @@ void UIMeratMarketDialog::OnClickProductLink(ASData& data)
 {
     if (m_spModelView == 0)
         return;
-    int nId = data.FUN_1422b8b10();
+    int nId = data.PopUInt();
     MS2Ptr<CMeratMarketBasket> spEntry = ((CMeratMarketMan*)FUN_140939a00())->GetBasketLine(nId);
     if (spEntry.get() != 0)
         OpenProduct(spEntry->m_spProduct);
@@ -4301,14 +4301,14 @@ void UIMeratMarketDialog::OnClickProductLink(ASData& data)
 // @0x141303580
 void UIMeratMarketDialog::OnRemoveBasketItem(ASData& data)
 {
-    int nId = data.FUN_1422b8b10();
+    int nId = data.PopUInt();
     ((CMeratMarketMan*)FUN_140939a00())->RemoveBasketLine(nId);
 }
 
 // @0x1413035c0
 void UIMeratMarketDialog::OnBuyBasketItem(const CStringA& strName, ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
     int nIndex = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("index")))->GetUInt();
     MS2Ptr<CMeratMarketBasket> spEntry = ((CMeratMarketMan*)FUN_140939a00())->GetBasketLine(nIndex);
@@ -4346,7 +4346,7 @@ void UIMeratMarketDialog::OnBuyBasketItem(const CStringA& strName, ASData& data)
 // @0x141303b50
 void UIMeratMarketDialog::OnBuySelected(const CStringA& strWho, ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     ASArray items(value, FUN_1422db730());
     if (items.GetLength() == 0) {
         FUN_140d73bc0(0xa22, 0, 0, CStringW(L""));
@@ -4359,7 +4359,7 @@ void UIMeratMarketDialog::OnBuySelected(const CStringA& strWho, ASData& data)
 // @0x141303ca0
 void UIMeratMarketDialog::OnBuyGiftSelected(const CStringA& strWho, ASData& data)
 {
-    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    Scaleform::GFx::Value value = data.PopValue();
     ASArray items(value, FUN_1422db730());
     if (items.GetLength() == 0) {
         FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_basket_empty_giftall"), 0, 0, CStringW(L""));
@@ -4382,7 +4382,7 @@ void UIMeratMarketDialog::OnSellerInfo(ASData& data)
     m_2a0 = FUN_140718350(data.FUN_1422b8d30());
     CStringW strName = data.FUN_1422b8f40();
     if (!strName.IsEmpty()) {
-        Scaleform::GFx::Value value = data.FUN_1422b9260();
+        Scaleform::GFx::Value value = data.PopValue();
         ASObj info(value, 2);
         info.FUN_1407cbb20("text", FormatStringId<CStringW>(0xa10, strName));
     }
@@ -4480,7 +4480,7 @@ void UIMeratMarketDialog::OnClickCancelSale(ASData& data)
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0xa2b), 1);
             if (spBox == 0)
                 return;
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketDialog::OnAskCancelSale));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketDialog::OnAskCancelSale));
             spBox->FUN_140b76940(CStringW(strKey));
             FUN_140d73c60(spBox);
         }
@@ -4509,7 +4509,7 @@ void UIMeratMarketDialog::OnClickRemoveSale(ASData& data)
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0xa37), 1);
                 if (spBox == 0)
                     return;
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketDialog::OnAskRemoveSale));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketDialog::OnAskRemoveSale));
                 spBox->FUN_140b76940(CStringW(strKey));
                 FUN_140d73c60(spBox);
             } else {
@@ -4537,7 +4537,7 @@ void UIMeratMarketDialog::OnClickRegisterSale(ASData& data)
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0xa2c), 1);
             if (spBox == 0)
                 return;
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketDialog::OnAskRegisterSale));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketDialog::OnAskRegisterSale));
             spBox->FUN_140b76940(CStringW(strKey));
             FUN_140d73c60(spBox);
         }
@@ -4550,7 +4550,7 @@ void UIMeratMarketDialog::OnClickSaleCommand(ASData& data)
     if (DAT_143ab2914 < 0x32)
         return;
     CStringW strKey = FUN_14016a730(data.FUN_1422b8d30(), 0);
-    int nCount = data.FUN_1422b8a10();
+    int nCount = data.PopInt();
     Unk_MeratProductKey key;
     reinterpret_cast<Unk_MeratOid&>(key).FUN_1409c1640(CStringW(strKey));
     MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)FUN_140939a00())->FindProduct(key);
@@ -4970,7 +4970,7 @@ void UIMeratMarketDialog::Refresh7710(bool bApply)
     if (m_spSlider)
         m_spSlider->FUN_1422ce800(0);
     if (m_5d0)
-        m_5d0->FUN_1422c4cd0(L"00:00");
+        m_5d0->SetTextW(L"00:00");
     StopMusicPreview(bApply);
 }
 
@@ -6818,7 +6818,7 @@ void UIMeratMarketDialog::SetModelTime(int nSeconds)
         int nThird;
         FUN_141b706a0(nSeconds, (unsigned int*)(&nFirst), (unsigned int*)(&nSecond), (unsigned int*)(&nThird));
         CStringW strTime = StringFormat(L"{0:02d}:{1:02d}", nFirst, nSecond);
-        m_5d0->FUN_1422c4cd0(strTime);
+        m_5d0->SetTextW(strTime);
         if (m_spSlider.get() != 0)
         {
             int nTotal = nFirst * 60 + nSecond;
@@ -7013,7 +7013,7 @@ void Unk_MmEnumSetter::FUN_141313320(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1413133c0
@@ -7021,7 +7021,7 @@ void Unk_MmEnumSetter::FUN_1413133c0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x141313460
@@ -7029,7 +7029,7 @@ void Unk_MmEnumSetter::FUN_141313460(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // A bill row of a UGC product (gifts are only offered for UGC rows).

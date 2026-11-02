@@ -177,12 +177,12 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "OnSaveSlot") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
             {
-                int nSlot = data.FUN_1422b8a10();
+                int nSlot = data.PopInt();
                 if (spService->FUN_1410c3600(3))
                     FUN_140fabae0(nSlot);
                 else
@@ -193,12 +193,12 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp(szMethod, "OnLoadSlot") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
             if (spService)
             {
-                int nSlot = data.FUN_1422b8a10();
+                int nSlot = data.PopInt();
                 if (spService->FUN_1410c3600(3))
                     FUN_140fabe80(nSlot);
                 else
@@ -298,7 +298,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
             {
                 spBox->Append<int>(nSlot);
                 spBox->FUN_140b76940(CStringW(strName));
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
                 FUN_140d73c60(spBox);
                 return true;
             }
@@ -381,7 +381,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
             {
                 spBox->Append<int>(nSlot);
                 spBox->FUN_140b76940(CStringW(strName));
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
                 FUN_140d73c60(spBox);
                 return true;
             }
@@ -443,8 +443,8 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
     {
         spBox->Append<int>(nSlot);
         spBox->SetButtonLabels(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
-        spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
+        spBox->SetInput(0, strTitle, 0x14, 1, 1);
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
         FUN_140d73c60(spBox);
     }
 }
@@ -459,7 +459,7 @@ void UIHomeSaveSlotDialog::FUN_140fab8c0(int nSlot)
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faac30));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faac30));
         FUN_140d73c60(spBox);
     }
 }
@@ -476,8 +476,8 @@ void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
     {
         spBox->Append<int>(nSlot);
         spBox->SetButtonLabels(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
-        spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
+        spBox->SetInput(0, strTitle, 0x14, 1, 1);
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
         FUN_140d73c60(spBox);
     }
 }
@@ -492,7 +492,7 @@ void UIHomeSaveSlotDialog::FUN_140fabe80(int nSlot)
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode65));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode65));
         FUN_140d73c60(spBox);
     }
 }

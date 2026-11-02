@@ -191,8 +191,8 @@ public:
     CStringW FUN_141a02fd0(int nIndex, CStringW strDefault) const;  // the nIndex-th argument as a string
     CStringW FUN_141a02d50() const;                                 // the +0x218 string (the text input's text)
     void SetButtonLabels(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2);   // button texts
-    void FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // text input setup
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb); // result callback
+    void SetInput(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // text input setup
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb); // result callback
     void FUN_141a01600(__int64 n);                                  // uiugccubepalettedialog.cpp: the item uid
     void FUN_141a01620(int n);                                      // petmanager.cpp: the inventory slot argument
     void SetTimer(int nButton, int nTime, const CStringW& strText);   // guildmanager.cpp: the auto-decline countdown
@@ -203,7 +203,7 @@ public:
     void SetAgreement(bool b);
     void SetSize(int nWidth, int nHeight);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
-    void FUN_141a01700(int nA, int nB, int nC);
+    void SetButtonLabelIds(int nA, int nB, int nC);
     void SetItemById(int nItemId, int nRarity, int n);       // item icon entry (unit_140d1ae30: ChatEmoticonAdd)
     void SetStrike(const CStringW& str);
     void SetSound(const CString& strUrl);                      // the link url (unit_141347b10: shop item box)

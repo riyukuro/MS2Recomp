@@ -195,10 +195,10 @@ void CHomeCameraMode::vfunc_7()
         g_143abb090 = 0.0f;
     Unk_CameraSetting setting;
     setting.m_0 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
-    setting.m_4 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7f00();
-    setting.m_8 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7ea0();
+    setting.m_4 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7f00();
+    setting.m_8 = TSingleton<CameraMgr>::GetInstance()->FUN_140af7ea0();
     setting.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
-    setting.m_18 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290();
+    setting.m_18 = TSingleton<CameraMgr>::GetInstance()->FUN_140af8290();
     static_cast<Unk_CameraManagerData*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()))->m_e0 = setting;
 }
 MS2_REPLACE_METHOD(0x140B651D0, CHomeCameraMode, vfunc_7, 222, 0x3F1915D8);

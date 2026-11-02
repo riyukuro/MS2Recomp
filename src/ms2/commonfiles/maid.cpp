@@ -499,7 +499,7 @@ int CMaidDescTable::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), "SpecialTitle", spDesc->specialTitle);
         XmlGetAttr((class TiXmlElement*)(pNode), "Background", spDesc->background);
         spDesc->background.Replace(L"\\n", L"\n");
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spDesc->background);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spDesc->background);
         m_descs.SetAt(spDesc->maidId, spDesc);
     }
     SetInit(true);
@@ -548,19 +548,19 @@ int CMaidManufactureMsgTable::Load()
         TPtrValue<MaidManufactureMsg> spMsg(Unk_GrNewTag(0));
         XmlGetAttr((class TiXmlElement*)(pNode), "MaidID", reinterpret_cast<int&>(spMsg->maidId));
         XmlGetAttr((class TiXmlElement*)(pNode), "SelectItem", spMsg->selectItem);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->selectItem);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->selectItem);
         XmlGetAttr((class TiXmlElement*)(pNode), "CraftRequest", spMsg->craftRequest);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->craftRequest);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->craftRequest);
         XmlGetAttr((class TiXmlElement*)(pNode), "CraftCancel", spMsg->craftCancel);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->craftCancel);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->craftCancel);
         XmlGetAttr((class TiXmlElement*)(pNode), "RecieveItem", spMsg->receiveItem);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->receiveItem);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->receiveItem);
         XmlGetAttr((class TiXmlElement*)(pNode), "RecieveJackpot", spMsg->receiveJackpot);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->receiveJackpot);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->receiveJackpot);
         XmlGetAttr((class TiXmlElement*)(pNode), "NotEnoughIgd", spMsg->notEnoughIgd);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->notEnoughIgd);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->notEnoughIgd);
         XmlGetAttr((class TiXmlElement*)(pNode), "Expired", spMsg->expired);
-        CReservedWordTable::GetInstance()->FUN_1416fb380(spMsg->expired);
+        CReservedWordTable::GetInstance()->ReplaceObjectWords(spMsg->expired);
         m_msgs.SetAt(spMsg->maidId, spMsg);
     }
     SetInit(true);

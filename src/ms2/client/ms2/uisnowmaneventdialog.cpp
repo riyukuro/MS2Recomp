@@ -18,6 +18,7 @@
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/gameeventuservaluemanager.h"
 
 namespace UICommon {
 class CAlignmentInfo : public CPtred {
@@ -36,11 +37,6 @@ private:
 };
 MS2_CHECK_SIZE(CAlignmentInfo, 0x30);
 }
-class Unk_SnowmanEventManager {
-public:
-    void FUN_140da5430(int id, Delegate<void(GameEventVariable*)> handler);
-    void FUN_140da5490(int id, Delegate<void(GameEventVariable*)> handler);
-};
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_SnowmanContextManager {
 public:
@@ -128,7 +124,8 @@ template<class T> bool Contains(T& values, int n) {
     }
     return false;
 }
-class Unk_SnowmanItem : public CPtred { public: CString FUN_14053fdd0(); };
+class Unk_SnowmanItem : public CPtred { };
+class CItemData { public: CString GetIconPath(); };   // C3: member view (itemdata.cpp)
 MS2Ptr<Unk_SnowmanItem> FUN_14053f870(int);
 void FUN_140710590(COutPacket&);
 
@@ -182,10 +179,10 @@ MS2_REPLACE_METHOD(0x140E945B0, UISnowmanEventDialog, vfunc_65, 37, 0xACC9F404);
 void UISnowmanEventDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5490(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
 }
 MS2_REPLACE_METHOD(0x140E945E0, UISnowmanEventDialog, vfunc_67, 645, 0x4676E7F6);
 
@@ -193,10 +190,10 @@ MS2_REPLACE_METHOD(0x140E945E0, UISnowmanEventDialog, vfunc_67, 645, 0x4676E7F6)
 void UISnowmanEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
-    ((class Unk_SnowmanEventManager*)FUN_140933220())->FUN_140da5430(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
     MS2Ptr<Unk_SnowmanContext> context = ((class Unk_SnowmanContextManager*)FUN_1401c0d90())->FUN_14047d050();
     if (context == NULL)
         return;
@@ -210,8 +207,8 @@ void UISnowmanEventDialog::vfunc_45(Scaleform::GFx::Value* result, const CString
 {
     UIObject::vfunc_45(result, method, args);
     if ((method == "getTooltipItem")) {
-        int id = args->FUN_1422b8b10();
-        int rank = args->FUN_1422b8b10();
+        int id = args->PopUInt();
+        int rank = args->PopUInt();
         void* owner = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (owner) {
             ASTooltip tooltip(owner, 0x20, 2);
@@ -232,20 +229,20 @@ int UISnowmanEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
         return 0;
     if (!_stricmp("OnDailyCompleteReward", method)) {
         ASData data;
-        if (!data.FUN_1422b9620(args, count)) {
+        if (!data.SetArgsIfAny(args, count)) {
             MS2_ASSERT_AT(134, "data.Parsing(args, argCount)" && 0);
             return 0;
         }
-        int n = data.FUN_1422b8b10();
+        int n = data.PopUInt();
         SendEventRewardMode12(n);
         return 1;
     } else if (!_stricmp("OnAccumCompleteReward", method)) {
         ASData data;
-        if (!data.FUN_1422b9620(args, count)) {
+        if (!data.SetArgsIfAny(args, count)) {
             MS2_ASSERT_AT(144, "data.Parsing(args, argCount)" && 0);
             return 0;
         }
-        int n = data.FUN_1422b8b10();
+        int n = data.PopUInt();
         SendEventRewardMode13(n);
         return 1;
     }
@@ -514,7 +511,7 @@ CString UISnowmanEventDialog::FUN_140e96500(int itemId)
     MS2Ptr<Unk_SnowmanItem> item = FUN_14053f870(itemId);
     if (item.IsNull())
         return "";
-    return item->FUN_14053fdd0();
+    return reinterpret_cast<CItemData*>(item.operator->())->GetIconPath();
 }
 MS2_REPLACE_METHOD(0x140E96500, UISnowmanEventDialog, FUN_140e96500, 211, 0x675DA32B);
 

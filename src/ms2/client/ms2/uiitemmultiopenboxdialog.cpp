@@ -197,7 +197,7 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fca0()
     if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_count"))
     {
         int nUsed = m_190 - m_194;
-        spCount.operator->()->FUN_1422c4cd0(FUN_14028dfa0<int, int>(CStringW(L"s_item_multi_open_box_count"), nUsed, m_190));
+        spCount.operator->()->SetTextW(FUN_14028dfa0<int, int>(CStringW(L"s_item_multi_open_box_count"), nUsed, m_190));
     }
 }
 MS2_REPLACE_METHOD(0x140C3FCA0, UIItemMultiOpenBoxDialog, FUN_140c3fca0, 310, 0xAF05CB1C);

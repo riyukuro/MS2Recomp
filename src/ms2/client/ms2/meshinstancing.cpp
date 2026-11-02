@@ -8,18 +8,20 @@
 #include "entityworldmanager.h"
 #include "entityinstancing.h"
 #include <NiInstancingUtilities.h>
+#include <efd/Color.h>
 #include <ecr/RenderService.h>
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
+#include "ms2/client/ms2/ms2lightservice.h"
 
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 efd::IBase* FUN_14098c5b0(void* framework);
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-efd::Point3 FUN_1413fa320(egf::Entity*);
-void FUN_141568ac0(egf::Entity*, const efd::Point3&);
+efd::Color FUN_1413fa320(egf::Entity*);
+void FUN_141568ac0(egf::Entity*, const efd::Color&);
 bool FUN_1413fa390(egf::Entity*);
 void FUN_1413fa4c0(egf::Entity*);
 void FUN_141567330(NiAVObject*, bool);
@@ -37,9 +39,6 @@ public:
 public:
     bool FUN_141bc7b20(unsigned __int64 const&);   // C3: was free FUN_141bc7b20
 };
-class MS2LightService;
-template<> MS2LightService* TSingleton<MS2LightService>::GetInstance();
-void FUN_1414c0bb0(void*, egf::Entity*, NiNode*);
 ecr::RenderService* FUN_1413f9890();
 class CameraMgr;
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();
@@ -181,7 +180,7 @@ void MeshInstancing::FUN_14147ccf0() {
     for (std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
         egf::Entity* entity = it->second.entity;
         if (entity != NULL) {
-            if (!((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7b20(*(unsigned __int64 const*)&static_cast<class egf::EntityID const&>(it->first))) FUN_1414c0bb0(TSingleton<MS2LightService>::GetInstance(), entity, it->second.original);
+            if (!((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bc7b20(*(unsigned __int64 const*)&static_cast<class egf::EntityID const&>(it->first))) TSingleton<MS2LightService>::GetInstance()->RemoveRenderedEntity(entity, it->second.original);
         }
     }
 }

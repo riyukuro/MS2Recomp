@@ -168,7 +168,7 @@ int UIWeddingBillboardDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     if (_stricmp(szMethod, "onAttend") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nSN = FUN_140718370(data.FUN_1422b8f40());
             TSingleton<WeddingManager>::GetInstance()->SendInvitation(nSN);
@@ -260,7 +260,7 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
     if (MS2Ptr<Unk_140acd6e0> spPrev = GetChild<Unk_140acd6e0>("m_prevPage"))
         spPrev->FUN_1422c1fe0(nFirst == 0);
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
-        spPage->FUN_1422c4cd0(StringFormat<int>(L"{0}", m_nPage));
+        spPage->SetTextW(StringFormat<int>(L"{0}", m_nPage));
     bool bEmpty = true;
     PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)

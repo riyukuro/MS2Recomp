@@ -206,7 +206,6 @@ public:
 
 class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
 
-class Unk_CashAdMgr { public: int FUN_14096b540(int nType, ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rOut); };
 
 CStringTable* GetStringTable();                                        // FUN_1401a9d70
 
@@ -224,7 +223,8 @@ UIMarketBillDialog* FUN_140b09580(int uiId);                        // the open 
 
 class Unk_CashMsgBox : public CMsgBoxData { public: };
 
-class Unk_CashInventoryTabs { public: bool FUN_140a5cdc0(unsigned category); };
+class Unk_CashInventoryTabs { };
+class Unk_Inventory { public: bool FUN_140a5cdc0(unsigned category); };   // C3: member view (inventory.h)
 extern Unk_CashInventoryTabs DAT_143ab2a90;
 extern int DAT_1439f4a84;
 extern int DAT_1439f4a88;
@@ -432,7 +432,7 @@ void UICashShopDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     m_nDirty = 0;
     ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> > banners;
-    if (reinterpret_cast<Unk_CashAdMgr*>(TSingleton<CAdBannerManagerCli>::GetInstance())->FUN_14096b540(1, banners) != 0)
+    if (TSingleton<CAdBannerManagerCli>::GetInstance()->FUN_14096b540(1, reinterpret_cast<Unk_AdBannerArray&>(banners)) != 0)
         FUN_141035260(banners);
     m_nCash = 0;
     m_nCategory = 1;
@@ -505,7 +505,7 @@ int UICashShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0) {
         FUN_14151f200();
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0) {
             ATL::CAtlArray<CStringW> parts;
@@ -534,7 +534,7 @@ int UICashShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 if (spBox.get() != 0) {
                     spBox->Append<int>(nSerial);
                     spBox->FUN_140534050(nCount);
-                    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039da0));
+                    spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039da0));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -551,7 +551,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     if (_stricmp("onBuyProduct", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             int nProductId = FUN_1407181d0(data.FUN_1422b8d30());
             MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
             if (spProduct == 0)
@@ -569,7 +569,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnUseLink", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             int nProductId = FUN_1407181d0(data.FUN_1422b8d30());
             MS2Ptr<CCashSaleProduct> spProduct = TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06750(nProductId);
             if (!spProduct)
@@ -589,13 +589,13 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onBasket", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             int nProductId = FUN_140718200(data.FUN_1422b8f40());
             if (TSingleton<CCashMarketMan>::GetInstance()->FUN_140b06600(nProductId) == 0) {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa5f, 0, CStringW(L""));
                 if (spBox.get() != 0) {
                     spBox->FUN_140534050(nProductId);
-                    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039bf0));
+                    spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039bf0));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -603,7 +603,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onClickRemoveBasketItem", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             int nProductId = FUN_140718200(data.FUN_1422b8f40());
             POSITION pos = m_basket.Find(nProductId);
             if (pos != 0) {
@@ -614,7 +614,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onBuyBasketAll", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringW strIds = data.FUN_1422b8f40();
             ATL::CAtlArray<CStringW> parts;
             FUN_14025a680(strIds, parts, L",");
@@ -658,7 +658,7 @@ void UICashShopDialog::FUN_141034e00(int nCash)
 {
     m_nCash = nCash;
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_cash"))
-        spText->FUN_1422c4cd0(FUN_140763e10(nCash));
+        spText->SetTextW(FUN_140763e10(nCash));
 }
 
 // @0x141034ef0
@@ -835,7 +835,7 @@ void UICashShopDialog::FUN_141035e40()
     if (MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10("m_btnPrev"))
         spPrev->FUN_1422c1fe0(m_nCategory > 1);
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
-        spPage->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", m_nCategory));
+        spPage->SetTextW(FUN_1401ceea0(L"{0}", m_nCategory));
 }
 
 // @0x1410360c0
@@ -955,11 +955,11 @@ void UICashShopDialog::FUN_141037360()
                 continue;
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
             if (spBox.get() != 0) {
-                spGift->FUN_140526c70(1);
+                spGift->SetCountClamped(1);
                 spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->Append<int>(spRow->m_n1c);
                 spBox->FUN_140534050(spRow->m_n18);
-                spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
+                spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
                 FUN_140d73c60(spBox);
             }
         }
@@ -1028,7 +1028,7 @@ bool UICashShopDialog::FUN_141037cd0(int nItemId, int* pnReason, int* pnTab)
             *pnTab = FUN_1402912d0(pArgs->FUN_1408d21c0(1, CStringW(L"")));
         if (*pnTab == -1) {
         }
-        else if (DAT_143ab2a90.FUN_140a5cdc0(*pnTab) != 0) {
+        else if (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5cdc0(*pnTab) != 0) {
             *pnReason = 0xa5b;
             return false;
         }
@@ -1116,7 +1116,7 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0) {
                     spBox->FUN_140534050(nProductId);
-                    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039ca0));
+                    spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039ca0));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -1209,10 +1209,10 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
             spBox->FUN_140534050(spGift->m_n18);
             spBox->FUN_140b76940(strRecipient);
             spBox->FUN_140b76940(strMessage);
-            spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039e80));
+            spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039e80));
             spBox->FUN_141a024a0(0);
             static_cast<Unk_CashMsgBox*>(spBox.operator->())->SetItemById(spGift->m_data.m_n28, spGift->m_data.m_n2c, 0);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -1226,11 +1226,11 @@ bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rDa
         return false;
     if (spParam == 0)
         return false;
-    const Scaleform::GFx::Value vArg = rData.FUN_1422b9260();
+    const Scaleform::GFx::Value vArg = rData.PopValue();
     ASObj obj(vArg, 2);
     if (obj.IsUndefinedOrNull())
         return false;
-    unsigned nIndex = rData.FUN_1422b8b10();
+    unsigned nIndex = rData.PopUInt();
     MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(nIndex);
     if (spBill == 0)
         return false;
@@ -1263,7 +1263,7 @@ void UICashShopDialog::FUN_141039a90()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_cashshop_lack_balance_ask"), 1);
     if (spBox == NULL)
         return;
-    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_14103a040));
+    spBox->SetCallback(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_14103a040));
     FUN_140d73c60(spBox);
 }
 

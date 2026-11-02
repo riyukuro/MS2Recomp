@@ -230,7 +230,7 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
             MS2Ptr<CItem> spItem(new CItem);
             if (spItem->FUN_140523c40(m_item->m_nItemId, m_item->m_nItemRank, 0))
             {
-                spItem->FUN_140526c70(m_item->m_nItemCount);
+                spItem->SetCountClamped(m_item->m_nItemCount);
                 m_strBagKey = GetTypeName();
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 int nMode = m_item->m_nRequireMoney != 0 ? 1 : 2;
@@ -391,7 +391,7 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
             MS2Ptr<CItem> spItem(new CItem);
             if (spItem->FUN_140523c40(m_item->m_nItemId, m_item->m_nItemRank, 0))
             {
-                spItem->FUN_140526c70(m_item->m_nItemCount);
+                spItem->SetCountClamped(m_item->m_nItemCount);
                 m_strBagKey = GetTypeName();
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strItemDescription, m_item->m_strBuyButtonText, m_item->m_nNpcImageType);

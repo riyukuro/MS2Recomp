@@ -195,7 +195,7 @@ int UIWeddingHallReservationDialog::vfunc_28(const char* szMethod, const Scalefo
     if (_stricmp(szMethod, "onAddPage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             PageMap::iterator it = m_pages.find(strPage);
@@ -210,7 +210,7 @@ int UIWeddingHallReservationDialog::vfunc_28(const char* szMethod, const Scalefo
     else if (_stricmp(szMethod, "onRemovePage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strPage = data.FUN_1422b8d30();
             PageMap::iterator it = m_pages.find(strPage);
@@ -225,9 +225,9 @@ int UIWeddingHallReservationDialog::vfunc_28(const char* szMethod, const Scalefo
     else if (_stricmp(szMethod, "onChangeTab") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_nTab = data.FUN_1422b8a10();
+            m_nTab = data.PopInt();
             FUN_140fdcfc0();
         }
     }
@@ -264,8 +264,8 @@ int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (dynamic_cast<UIBillDialog*>(pSender) != 0)
         {
-            int nResult = pMsg->FUN_1422b8a10();
-            bool bCoupon = reinterpret_cast<ASData*>(pMsg)->FUN_1422b8a90();
+            int nResult = pMsg->PopInt();
+            bool bCoupon = reinterpret_cast<ASData*>(pMsg)->PopBool();
             if (nResult == 0)
             {
                 WeddingManager::GetInstance()->SendReservation(m_nPackage, m_nHall, m_nTime, m_bNight, bCoupon);

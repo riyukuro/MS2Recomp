@@ -207,9 +207,9 @@ int UIVIPGoodsShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "onClickBuyGoods") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nGoodsId = data.FUN_1422b8b10();
+            int nGoodsId = data.PopUInt();
             FUN_140fbbae0(nGoodsId);
         }
         return 1;
@@ -226,14 +226,14 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
     if (operator==(strType, "bonusItem")) {
-        unsigned nGoodsId = pArgs->FUN_1422b8b10();
-        unsigned nIndex = pArgs->FUN_1422b8b10() - 1;
+        unsigned nGoodsId = pArgs->PopUInt();
+        unsigned nIndex = pArgs->PopUInt() - 1;
         MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[nIndex], spGoods->m_bonusItemRanks[nIndex], 0) != 0) {
-            spItem->FUN_140526c70(spGoods->m_bonusItemCounts[nIndex]);
+            spItem->SetCountClamped(spGoods->m_bonusItemCounts[nIndex]);
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
             ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
             if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
@@ -251,7 +251,7 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         tip.FUN_1409e2750(effect.FUN_140184830(), 3, 0);
     }
     else if (operator==(strType, "buyLimit")) {
-        unsigned nGoodsId = pArgs->FUN_1422b8b10();
+        unsigned nGoodsId = pArgs->PopUInt();
         MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
         if (spGoods == 0)
             return;
@@ -384,7 +384,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
             CString strBindId;
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[j], spGoods->m_bonusItemRanks[j], 0) != 0) {
-                spItem->FUN_140526c70(spGoods->m_bonusItemCounts[j]);
+                spItem->SetCountClamped(spGoods->m_bonusItemCounts[j]);
                 strBindId.Format("%s_%d", (LPCSTR)GetTypeName(), m_bindIds.GetCount() + 1);
                 FUN_141415450(strBindId, spItem, 0, 0x415, 0);
                 m_bindIds.Add(strBindId);
@@ -504,7 +504,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[i], spGoods->m_bonusItemRanks[i], 0) == 0)
             return;
-        spItem->FUN_140526c70(spGoods->m_bonusItemCounts[i]);
+        spItem->SetCountClamped(spGoods->m_bonusItemCounts[i]);
         MS2Ptr<ASSlot> spItemSlot(new ASSlot(2));
         if (spItemSlot.get()->FUN_1409c3860(spItem.get(), pPlayer, 0x415) == 0)
             return;
@@ -572,11 +572,11 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
     MS2Ptr<CVIPGoods> spGoods = FUN_140fb9980()->GetGoods(nGoodsId);
     if (spGoods == 0)
         return false;
-    Scaleform::GFx::Value v = rData.FUN_1422b9260();
+    Scaleform::GFx::Value v = rData.PopValue();
     ASObj obj(v, 2);
     if (obj.IsUndefinedOrNull())
         return false;
-    unsigned nIndex = rData.FUN_1422b8b10();
+    unsigned nIndex = rData.PopUInt();
     if (nIndex == 0) {
         Unk_VgEffectRef effect = ((Unk_VgTable*)FUN_140fb9980())->FUN_1408f70b0();
         if (effect.FUN_14096e7e0(0))
@@ -591,7 +591,7 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_14052b130(spGoods->m_bonusItemIds[nItem], spGoods->m_bonusItemRanks[nItem], 0) == 0)
             return false;
-        spItem->FUN_140526c70(spGoods->m_bonusItemCounts[nItem]);
+        spItem->SetCountClamped(spGoods->m_bonusItemCounts[nItem]);
         MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
         ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
         if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
@@ -608,7 +608,7 @@ void ASObj::FUN_140fbd930(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140fbf740

@@ -527,7 +527,7 @@ int CInteractObject::CheckItemRequirement()
             return 0;
         if ((unsigned)((CItem*)spItem)->GetCount() < m_spRow->m_item.m_nConsume)
             return 0;
-        if (((CItem*)spItem)->FUN_140526bd0() != nRarity)
+        if (((CItem*)spItem)->GetRarity() != nRarity)
             return 0;
     }
     return 1;
@@ -980,7 +980,7 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
         {
             CStringW strTitle = GetStringCommon(0x666);
             if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
-                strTitle = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
+                strTitle = FUN_1409331f0()->GetActionKeyName(0x49409, 2);
             pHelp->StartCinematic(9, strDesc);
             pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(CStringW(L"NotifyCutSceneCinematicSkip"),

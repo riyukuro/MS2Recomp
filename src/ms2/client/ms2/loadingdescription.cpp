@@ -183,7 +183,7 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
             spDesc->m_strEnd = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("endTime");
             spDesc->m_strText = FUN_1401bf530(pNode, "text", CStringW(L""));
             spDesc->m_strText.Replace(L"\\n", L"\n");
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spDesc->m_strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spDesc->m_strText);
             m_spData->m_descs.Add(spDesc);
         }
         return 1;

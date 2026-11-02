@@ -915,8 +915,8 @@ int UIMicroGameCoupleDance::vfunc_28(const char* method, const Scaleform::GFx::V
     if (UISwfEntity::vfunc_28(method,args,count)) return 1;
     if (_stricmp(method,"onSelectDance") == 0) {
         ASData data;
-        if (!data.FUN_1422b9620(args,count)) { MS2_ASSERT_AT(200, 0); return 0; }
-        int dance = data.FUN_1422b8b10();
+        if (!data.SetArgsIfAny(args,count)) { MS2_ASSERT_AT(200, 0); return 0; }
+        int dance = data.PopUInt();
         if (m_mode == 0) FUN_140e64a10(dance);
         else if (m_mode == 1) SendPlayArcade(dance);
         return 1;
@@ -1032,7 +1032,7 @@ void UIMicroGameCoupleDance::FUN_140e64c00() {
     }
     PCBase* state = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!state) return;
-    if (state->FUN_14166c930() != 0x45) return;
+    if (state->GetCurStateId() != 0x45) return;
     StateMicroGameCoupleDance* dance = dynamic_cast<StateMicroGameCoupleDance*>(state->FUN_14166ccb0());
     if (!dance) { MS2_ASSERT_AT(0x12d, 0); return; }
     COutPacket packet(static_cast<int>(SendOp::Microgame),0);
@@ -1050,7 +1050,7 @@ MS2_REPLACE_METHOD(0x140E64E70, UIMicroGameCoupleDance, FUN_140e64e70, 6, 0xA9AF
 int UIMicroGameCoupleDance::FUN_140e64e80() {
     PCBase* state = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (!state) return 1;
-    if (m_mode == 0 && state->FUN_14166c930() != 0x45) return 1;
+    if (m_mode == 0 && state->GetCurStateId() != 0x45) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x140E64E80, UIMicroGameCoupleDance, FUN_140e64e80, 85, 0xF496F339);

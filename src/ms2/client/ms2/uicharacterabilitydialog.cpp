@@ -412,9 +412,9 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             return 1;
         }
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nId = data.FUN_1422b8b10();
+            int nId = data.PopUInt();
             if (FUN_140f2d240()->FUN_140f2a0b0(nId))
                 return 1;
             MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
@@ -441,7 +441,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             if (box.get())
             {
                 ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a024a0(0);
-                ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01700(0xc5c, 0x476, 0);
+                ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetButtonLabelIds(0xc5c, 0x476, 0);
                 FUN_140d73c60(box);
                 return 1;
             }
@@ -465,7 +465,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     CString strKind = pArgs->FUN_1422b8d30();
     if (strKind == "ability")
     {
-        int nId = pArgs->FUN_1422b8b10();
+        int nId = pArgs->PopUInt();
         MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
         if (ref == NULL)
             return;
@@ -477,7 +477,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     }
     else if (strKind == "CategoryIcon")
     {
-        int nId = pArgs->FUN_1422b8b10();
+        int nId = pArgs->PopUInt();
         MS2Ptr<Unk_CaCategoryRow> cat = FUN_140f2d250()->FUN_1401e0560(nId);
         if (cat == NULL)
             return;
@@ -493,7 +493,7 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (!pMsg->FUN_1422e4520() && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"OnMesoReset", 0) == 0 && nResult == 0)
         {
@@ -580,7 +580,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
             item.FUN_1407cb9c0("disableAbility", FUN_140f2d240()->FUN_140f2a100(a->m_nId));
             item.FUN_1407cb9c0("learnAbility", FUN_140f2d240()->FUN_140f2a0b0(a->m_nId));
             item.FUN_1407cbbe0("newAbility", false);
-            arr.FUN_1422bbf00(item);
+            arr.PushObj(item);
         }
         FUN_1409ee290(&m_30)->FUN_140f2c5d0("buildAbility", cat->m_nId, arr);
     }

@@ -938,7 +938,7 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"moveportal") != -1)
         {
@@ -1186,7 +1186,7 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
     if (bAnyTime == 0 && fCool > 0.0f)
     {
         // still cooling down: only queue it behind the skill being cast
-        if (FUN_14166c930() != 0x10)
+        if (GetCurStateId() != 0x10)
             return false;
         StateSkill* pSkill = dynamic_cast<StateSkill*>(FUN_14166ccb0());
         if (pSkill == 0)
@@ -1208,7 +1208,7 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
             return false;
         bool bUnbound = !spItem->IsPetItem() ? true : false;
         if (bUnbound && !spRecord->m_bNoBindCheck
-            && spItem->FUN_140527930()->HasBindingRule() != 0 && spItem->FUN_140527930()->FUN_140635120() == 0)
+            && spItem->FUN_140527930()->HasBindingRule() != 0 && spItem->FUN_140527930()->HasBinding() == 0)
         {
             // using it binds the item: confirm first
             CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_use", vfunc_77());
@@ -1218,7 +1218,7 @@ bool MyPC::vfunc_102(MS2Ptr<CSkillRecord> spRecord)
                 spBox->FUN_141a01600(spItem->GetItemUid());
                 spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->Append<unsigned>(spRecord->m_spRow->GetId());
-                spBox->FUN_141a01700(0x477, 0x478, 0);
+                spBox->SetButtonLabelIds(0x477, 0x478, 0);
                 FUN_140d73c60(spBox);
                 return true;
             }
@@ -1375,7 +1375,7 @@ MS2_REPLACE_METHOD(0x141523670, MyPC, vfunc_88, 169, 0x6E74ABEE);
 int MyPC::vfunc_137()
 {
     int nResult = PC::vfunc_137();
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
     {
         vfunc_59(0xc, 0, 0, 0);
         ChromaSDK::GetChromaManager()->SetState(7);
@@ -1395,10 +1395,10 @@ MS2_REPLACE_METHOD(0x141523720, MyPC, vfunc_137, 425, 0xD688D519);
 // @0x1415238d0
 void MyPC::vfunc_135(int a, int b, void* p)
 {
-    int nOld = FUN_1416595d0();
+    int nOld = IsInCubeMode();
     PC::vfunc_135(a, b, p);
     FUN_140ef4330();
-    int nNew = FUN_1416595d0();
+    int nNew = IsInCubeMode();
     if (nOld != nNew && b != 2)
     {
         if (nNew != 0)
@@ -1600,7 +1600,7 @@ void MyPC::FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, in
                 Unk_MyPCSpecialType eType = static_cast<Unk_MyPCSpecialType>(nStat);
                 pSpecials[nStat] += pStatus->FUN_140630290(eType, 3, 5);
             }
-            CItemSocket* pSocket = spItem->FUN_1405279c0();
+            CItemSocket* pSocket = spItem->GetSocket();
             if (pSocket != 0)
             {
                 Unk_EnchantMap kStats;
@@ -1702,9 +1702,9 @@ template MS2Ptr<Unk_MyPCCastRecord>::MS2Ptr(int);
 // held-key skills give up once the key was held longer than KeyIsDownSkill_MaxDurationTick.
 MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
 {
-    if (FUN_1416595d0() != 0)
+    if (IsInCubeMode() != 0)
         return 0;
-    if (FUN_14166c930() == 0x2f)
+    if (GetCurStateId() == 0x2f)
         return 0;
     if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
         return 0;
@@ -1726,7 +1726,7 @@ MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
         {
             if (FUN_141662eb0(spItem.get()) == 0)
                 return 0;
-            if (spItem->FUN_140527840()->FUN_14053cd90())
+            if (spItem->FUN_140527840()->HasFunction())
                 return 0;
             kReq.skill = spItem->FUN_140527840()->FUN_14053dc20();
         }
@@ -1895,7 +1895,7 @@ MS2_REPLACE_METHOD(0x141526730, MyPC, FUN_141526730, 1351, 0x04FEDA5A);
 // @0x141527120
 int MyPC::FUN_141527120()
 {
-    if (FUN_14166c930() == 0x2a || FUN_14166c930() == 0x25)
+    if (GetCurStateId() == 0x2a || GetCurStateId() == 0x25)
         return 0;
     return 1;
 }
@@ -1904,7 +1904,7 @@ MS2_REPLACE_METHOD(0x141527120, MyPC, FUN_141527120, 53, 0xDDB76C33);
 // @0x141527160
 int MyPC::FUN_141527160(int nNext)
 {
-    int nState = FUN_14166c930();
+    int nState = GetCurStateId();
     int nSub = FUN_14166cc80();
     if (nNext == 0x25 && nSub == 7)
         return 0;
@@ -1942,7 +1942,7 @@ MS2_REPLACE_METHOD(0x1415272b0, MyPC, FUN_1415272b0, 750, 0xD54A0604);
 // @0x141527280
 bool MyPC::FUN_141527280()
 {
-    return reinterpret_cast<Unk_MyPCPetMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ab20();
+    return reinterpret_cast<Unk_MyPCPetMgr*>(TSingleton<CPartyManager>::GetInstance())->IsInParty();
 }
 MS2_REPLACE_METHOD(0x141527280, MyPC, FUN_141527280, 27, 0x3FAC08A6);
 
@@ -1976,7 +1976,7 @@ int MyPC::FUN_141527650(int nKind)
             }
         } while (0);
     } else if (nKind == 0x1c) {
-        if (FUN_14166c930() != 0x1b)
+        if (GetCurStateId() != 0x1b)
             nNotice = 0x53;
     } else if (nKind == 0x1e) {
         MS2Ptr<CFieldDataCli> spField = ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd30a0();
@@ -2239,7 +2239,7 @@ int MyPC::FUN_1415283c0(int nArg)
         FUN_140d73bc0(0x662, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
     {
         FUN_140d73bc0(0x660, 0, 0, CStringW(L""));
         return 0;
@@ -2276,7 +2276,7 @@ int MyPC::FUN_1415286a0()
         FUN_140d73bc0(0xb90, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
     {
         FUN_140d73bc0(0x664, 0, 0, CStringW(L""));
         return 0;
@@ -2318,7 +2318,7 @@ MS2_REPLACE(0x1415337C0, FUN_1415337c0, 60, 0x1D92A140);
 // passed); bForce sends one regardless. Twin of Ridee::FUN_141706650.
 void MyPC::FUN_141524a80(bool bForce)
 {
-    if (!FUN_14166c930())
+    if (!GetCurStateId())
         return;
     if (reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
         m_posBF4 = reinterpret_cast<NiPoint3&&>(static_cast<Vector3&&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af8290()));
@@ -2337,7 +2337,7 @@ void MyPC::FUN_141524a80(bool bForce)
     bool bSend = false;
     unsigned nTick = reinterpret_cast<Unk_MyPCGameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473390();
     MS2Ptr<Unk_StateArg22> spCur = m_kStateCtl.FUN_1417b7620();
-    if (bForce || m_b15d5 || spCur == 0 || spCur->m_nState != FUN_14166c930() || spCur->m_vel3c != m_pos98
+    if (bForce || m_b15d5 || spCur == 0 || spCur->m_nState != GetCurStateId() || spCur->m_vel3c != m_pos98
         || FUN_1415337c0(spCur->m_nAC, nTick, 1000) || spCur->m_f58 != m_f934 || FUN_14166ccb0()->vfunc_22(spCur))
         bSend = true;
     if (!bSend)
@@ -2353,7 +2353,7 @@ void MyPC::FUN_141524a80(bool bForce)
             (&m_kStateCtl)->vfunc_0();
     }
 
-    MS2Ptr<Unk_StateArg22> spNew = FUN_140835450(FUN_14166c930());
+    MS2Ptr<Unk_StateArg22> spNew = FUN_140835450(GetCurStateId());
     spNew->m_nSub = FUN_14166cc80();
     spNew->m_vel3c = m_pos98;
     spNew->m_pos20 = vfunc_18();
@@ -2465,7 +2465,7 @@ public:
 // @0x141525580
 bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
 {
-    switch (FUN_14166c930())
+    switch (GetCurStateId())
     {
     case 0x2b:
     case 0x2f:
@@ -2519,7 +2519,7 @@ bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
             return false;
     }
     Unk_MyPCSkillMotion* pMotion = reinterpret_cast<Unk_MyPCSkillMotion*>(spRecord->GetMotionData());
-    if (pMotion != 0 && !FUN_14028d470(pMotion->m_fB8, 0.0f) && FUN_14166d220() == 0)
+    if (pMotion != 0 && !FUN_14028d470(pMotion->m_fB8, 0.0f) && GetPhysicsBody() == 0)
         return false;
     if (FUN_141675ed0() != 0 && spRow->m_bDisableWater)
         return false;
@@ -2775,17 +2775,17 @@ void MyPC::FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera)
     else
         reinterpret_cast<StatePcGuideObjectController&>(m_kStateCtl).FUN_1417b7450();
     m_b15d6 = false;
-    if (FUN_14166ce30() == 0 && spRidee == 0 && FUN_14166c930() != 0x3a)
+    if (IsDead() == 0 && spRidee == 0 && GetCurStateId() != 0x3a)
         vfunc_59(5, 0, 0, 0);
     NiPoint3 kOldPos = vfunc_18();
     FUN_141676060(reinterpret_cast<const NiPoint3&>(DAT_143b01a60));
     vfunc_19(kPos);
     vfunc_21(kRot);
     SetTargetYaw(kRot.z);
-    if (FUN_14166d220() != 0)
+    if (GetPhysicsBody() != 0)
     {
-        reinterpret_cast<GameObjectController*>(FUN_14166d220())->FUN_141240730();
-        reinterpret_cast<GameObjectController*>(FUN_14166d220())->FUN_141240f20()->FUN_140cfaf30();
+        reinterpret_cast<GameObjectController*>(GetPhysicsBody())->FUN_141240730();
+        reinterpret_cast<GameObjectController*>(GetPhysicsBody())->FUN_141240f20()->FUN_140cfaf30();
     }
     m_pushControl.FUN_1413fcf90();
     if (spRidee)
@@ -2793,7 +2793,7 @@ void MyPC::FUN_141528e50(efd::Point3 kPos, efd::Point3 kRot, int bFlyCamera)
         spRidee->vfunc_19(kPos);
         spRidee->vfunc_21(kRot);
         spRidee->SetTargetYaw(kRot.z);
-        Unk_PCBaseBody* pBody = spRidee->FUN_14166d220();
+        Unk_PCBaseBody* pBody = spRidee->GetPhysicsBody();
         if (pBody != 0)
         {
             reinterpret_cast<GameObjectController*>(pBody)->FUN_141240730();
@@ -2839,9 +2839,9 @@ void MyPC::FUN_141528c90(efd::Point3 kPos, efd::Point3 kDir)
     pRidee->vfunc_19(kPos);
     pRidee->vfunc_21(kDir);
     pRidee->SetTargetYaw(kDir.z);
-    if (pRidee->FUN_14166d220() != 0) {
-        reinterpret_cast<GameObjectController*>(pRidee->FUN_14166d220())->FUN_141240730();
-        reinterpret_cast<GameObjectController*>(pRidee->FUN_14166d220())->FUN_141240f20()->FUN_140cfaf30();
+    if (pRidee->GetPhysicsBody() != 0) {
+        reinterpret_cast<GameObjectController*>(pRidee->GetPhysicsBody())->FUN_141240730();
+        reinterpret_cast<GameObjectController*>(pRidee->GetPhysicsBody())->FUN_141240f20()->FUN_140cfaf30();
     }
 }
 MS2_REPLACE_METHOD(0x141528c90, MyPC, FUN_141528c90, 428, 0x4C50DA48);
@@ -2868,7 +2868,7 @@ void MyPC::SendFunctionCube()
 {
     if (reinterpret_cast<Unk_MyPCWidgets*>(FUN_1409331e0())->GetStateChanged() != 0)
         reinterpret_cast<Unk_MyPCWidgets*>(FUN_1409331e0())->SendStates();
-    if (FUN_14166c930() == 0x29)
+    if (GetCurStateId() == 0x29)
     {
         StateUseFurniture* pState = dynamic_cast<StateUseFurniture*>(FUN_14166ccb0());
         if (pState)
@@ -2998,7 +2998,7 @@ void MyPC::vfunc_53(float fDelta)
         FUN_14166ccb0()->vfunc_8(fDelta);
         break;
     }
-    if (FUN_1416595d0())
+    if (IsInCubeMode())
         m_pCubeCraft->FUN_1410ac9b0();
     if (m_pGetExp)
         m_pGetExp->Update(fDelta);
@@ -3029,7 +3029,7 @@ void MyPC::vfunc_53(float fDelta)
     }
     if (!reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() && m_n15ec != 0)
     {
-        if (!reinterpret_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141682f80(m_n15ec) && FUN_14166c930() != 0x10 && m_n15f0 != 0)
+        if (!reinterpret_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141682f80(m_n15ec) && GetCurStateId() != 0x10 && m_n15f0 != 0)
         {
             m_n15f0 = 0;
             m_n15ec = 0;
@@ -3257,7 +3257,7 @@ void MyPC::FUN_14152b8d0(__int64 nItemUid)
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
         return;
-    if (FUN_14072f970(FUN_14166c930()) == 0)
+    if (FUN_14072f970(GetCurStateId()) == 0)
     {
         FUN_141275260(0x654, 1, 0);
         return;
@@ -3309,9 +3309,9 @@ void MyPC::FUN_14152b2d0(__int64 nItemUid)
         FUN_141275260(0x654, 1, 0);
         return;
     }
-    if (FUN_14072f890(FUN_14166c930()) == 0)
+    if (FUN_14072f890(GetCurStateId()) == 0)
     {
-        CStringW strKey = FUN_14072f9a0(FUN_14166c930());
+        CStringW strKey = FUN_14072f9a0(GetCurStateId());
         if (strKey.GetLength() < 1)
             FUN_141275260(0x654, 1, 0);
         else
@@ -3382,8 +3382,6 @@ MS2_CHECK_SIZE(StateCashCallData, 0x30);
 bool RequestCoupleEmotion(__int64, int);   // C3: was FUN_140b845a0
 
 // Dismounted: drop the ridee's skill, then run the action the dismount was for.
-// MS2-FUNCTIONAL: same calls and branches; the frame is 0x10 smaller, cl adds an unreachable jmp after the
-// case dispatch and the hold range / function-item uid go through extra temps.
 // @0x14152c670
 void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
 {
@@ -3409,6 +3407,8 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
             FUN_14152a310(spCast);
         switch (spAction->m_nType)
         {
+        case 0x17:
+            break;
         case 1:
         {
             MS2Ptr<RideOffActionUseSkill> spSkill(static_cast<RideOffActionUseSkill*>(spAction.get()));
@@ -3485,8 +3485,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
         {
             MS2Ptr<StateHoldData> spHold(new StateHoldData());
             float fFind = FUN_1401d3200()->FindHoldTargetRange.Get(230.0f);
-            float fRange = fFind + 20.0f;
-            if (this->FUN_14165c1b0(&spHold->m_nTargetId, reinterpret_cast<CString*>(&spHold->m_strTargetName), fRange) != 0)
+            if (this->FUN_14165c1b0(&spHold->m_nTargetId, reinterpret_cast<CString*>(&spHold->m_strTargetName), fFind + 20.0f) != 0)
             {
                 PCBase* pTarget = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1290(spHold->m_nTargetId));
                 if (pTarget == 0)
@@ -3587,7 +3586,8 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
             MS2Ptr<RideOffActionUseFunctionItem> spUse(static_cast<RideOffActionUseFunctionItem*>(spAction.get()));
             if (spUse->m_n28 != 0)
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spUse->m_n28);
+                const __int64& nUid = spUse->m_n28;
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
                 if (spItem == 0)
                     return;
                 g_143ab2a90.FUN_140a63880(spItem.get(), spUse->m_s30);
@@ -3740,7 +3740,7 @@ void MyPC::StartObserving(PCBase* pTarget)
 MS2_REPLACE_METHOD(0x14152A4A0, MyPC, StartObserving, 396, 0x27797A65);
 
 // @0x14152a960
-void MyPC::FUN_14152a960()
+void MyPC::StopObserving()
 {
     m_pObserved = 0;
     reinterpret_cast<Unk_MyPCCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraTargetEntity*>(this), 1);
@@ -3765,7 +3765,7 @@ void MyPC::FUN_14152a960()
     if (pTeam)
         pTeam->FUN_14133b0b0();
 }
-MS2_REPLACE_METHOD(0x14152A960, MyPC, FUN_14152a960, 290, 0x402A4FC1);
+MS2_REPLACE_METHOD(0x14152A960, MyPC, StopObserving, 290, 0x402A4FC1);
 
 // @0x14152aa90
 // Summon the pet of an item: the field must allow pets, binding the item is confirmed first (bConfirmed: the
@@ -3791,7 +3791,7 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
         return;
     }
     if (bConfirmed == 0 && spItem->FUN_140527930()->HasBindingRule() != 0
-        && spItem->FUN_140527930()->FUN_140635120() == 0)
+        && spItem->FUN_140527930()->HasBinding() == 0)
     {
         // summoning binds the pet: confirm first
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_pet_summon", vfunc_77());
@@ -3800,7 +3800,7 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
         {
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return;
         }
@@ -3898,7 +3898,7 @@ MS2_REPLACE_METHOD(0x14152A700, MyPC, FUN_14152a700, 590, 0x52A01046);
 // @0x14152a640
 void MyPC::FUN_14152a640(int nTeam)
 {
-    FUN_14152a960();
+    StopObserving();
     ((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bdb5a0(2);
     Unk_MyPCExpBar* pExpBar = ((class Unk_MyPCExpBar*)FUN_140ac55a0(0x4e3c));
     if (pExpBar)
@@ -4119,7 +4119,7 @@ CItem* MyPC::FUN_14152efa0(__int64 nItemUid, __int64* pOwner)
     Unk_MyPCPlot* pPlot = pSvc->FUN_1410b8c90(pPC->FUN_14123c460());
     if (pPlot == 0)
         return 0;
-    if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
+    if (pSvc->GetOwnerId(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
         return 0;
     MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e1580(nItemUid);
     if (!spItem)
@@ -4140,7 +4140,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
     Unk_MyPCPlot* pPlot = pSvc->FUN_1410b8c90(pPC->FUN_14123c460());
     if (pPlot == 0)
         return;
-    if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
+    if (pSvc->GetOwnerId(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aItems(10);
     reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->CollectShownItems(aItems);
@@ -4176,7 +4176,7 @@ void MyPC::FUN_14152f3c0()
             Unk_MyPCPlot* pPlot = pSvc->FUN_1410b8c90(pPC->FUN_14123c460());
             if (pPlot != 0)
             {
-                if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
+                if (pSvc->GetOwnerId(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
                     continue;
                 FUN_14152f140(pPlot->m_nOwnerId);
             }
@@ -4189,7 +4189,7 @@ MS2_REPLACE_METHOD(0x14152F3C0, MyPC, FUN_14152f3c0, 349, 0xE2E5430C);
 // @0x14152feb0
 int MyPC::FUN_14152feb0(int nMode, bool bPalette)
 {
-    if (FUN_14166ce30() != 0 && (nMode == 1 || nMode == 2))
+    if (IsDead() != 0 && (nMode == 1 || nMode == 2))
         return 0;
     Unk_MyPCSvcPtr spSvc(((Unk_Service6100017*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     reinterpret_cast<Unk_MyPCHousingSvc*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spSvc).operator->())->FUN_1410cd440();
@@ -4214,7 +4214,7 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
     packet.Encode1((unsigned char)nMode);
     MS2Ptr<CubeItemInfo> spInfo;
     if (bPalette)
-        spInfo = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->FUN_1410b55b0();
+        spInfo = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->GetSelectedInfo();
     else
         reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->FUN_1410b50d0(spInfo);
     if (spInfo.get() != 0)
@@ -4553,9 +4553,9 @@ MS2_REPLACE_METHOD(0x141530200, MyPC, SendCraftModeOff, 128, 0x3E56095B);
 // @0x141530290
 Unk_PCCubeCraft* MyPC::GetActiveCubeCraft()
 {
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
         return 0;
-    if (FUN_1416595d0() == 0)
+    if (IsInCubeMode() == 0)
         return 0;
     return GetCubeCraft();
 }
@@ -4591,7 +4591,7 @@ MS2_REPLACE(0x141530930, MyPC::FUN_141530930, 22, 0xD4B3D5CA);
 // @0x141530d70
 void MyPC::FUN_141530d70(double dTime)
 {
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
         return;
     FUN_141530db0();
 }
@@ -4635,7 +4635,7 @@ void FUN_1401fcc90(unsigned char* pReq, COutputStream& stream);   // encode the 
 // Ride on with the item of the pending item cast (packet 0x40 0), if the state allows it and the ridee may be used.
 void MyPC::FUN_14152dbc0()
 {
-    int nState = FUN_14166c930();
+    int nState = GetCurStateId();
     if (nState != 1 && nState != 2)
         return;
     if (FUN_14166cc80() == 7)
@@ -4735,7 +4735,7 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
                 int bOk = 1;
                 if (FUN_141662eb0(spItem.get()) == 0)
                     bOk = 0;
-                if (spMount->FUN_14166c930() != 1)
+                if (spMount->GetCurStateId() != 1)
                     bOk = 0;
                 if (FUN_1415271e0(spMount, (Unk_MyPCSkillUse*)spRidee.get()) == 0)
                     bOk = 0;
@@ -4771,7 +4771,7 @@ MS2_REPLACE_METHOD(0x14152BA80, MyPC, FUN_14152ba80, 2028, 0x1786F585);
 // Auto loot: flag the drop items the auto loot options take, pick up the mesos, and the pet pickup buff.
 void MyPC::FUN_141530db0()
 {
-    if (FUN_14166ce30() == 0)
+    if (IsDead() == 0)
     {
         if (FUN_141676410() != 0)
         {
@@ -4981,7 +4981,7 @@ void MyPC::vfunc_112(void* p, int n)
     if (pHpBar != 0)
     {
         PCBase* pActor = reinterpret_cast<PCBase*>(((class Unk_MyPCWorld*)WorldService::GetInstance())->FUN_141bd1320(n));
-        if (pActor != 0 && ((class CNpc*)(class PCBase*)(pActor))->FUN_141092ff0() != 0 && pActor->FUN_14166ce30() == 0)
+        if (pActor != 0 && ((class CNpc*)(class PCBase*)(pActor))->FUN_141092ff0() != 0 && pActor->IsDead() == 0)
             pHpBar->FUN_141b4c510(reinterpret_cast<Unk_UpperActor*>(pActor), n);
     }
     Unk_MyPCExpBar* pExpBar = ((class Unk_MyPCExpBar*)FUN_140ac55a0(0x4e3c));

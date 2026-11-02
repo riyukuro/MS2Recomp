@@ -121,7 +121,6 @@ class Unk_NtWorld
 public:
     PCBase* FUN_141bd0cc0();                            // the local player
     Unk_NtCamPtr FUN_141bd30a0();
-    Unk_NtSymbolRec* FUN_141bcab60(int n);
 };
 class Unk_NtUIMgr { public: };
 bool FUN_140930110(int nActorId);
@@ -357,7 +356,7 @@ int UINameTag::Entity::vfunc_8(int n)
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return 1;
-    switch (((class PCBase*)(class PCBase*)(pActor))->FUN_14166c930())
+    switch (((class PCBase*)(class PCBase*)(pActor))->GetCurStateId())
     {
     case 0x3f:
         return 1;
@@ -372,7 +371,7 @@ int UINameTag::Entity::vfunc_8(int n)
         if (bMounted)
             return 1;
     }
-    return UIHudEntity::Entity::vfunc_8(((class PCBase*)(class PCBase*)(pActor))->FUN_14166ce30());
+    return UIHudEntity::Entity::vfunc_8(((class PCBase*)(class PCBase*)(pActor))->IsDead());
 }
 
 // @0x141a5edb0
@@ -400,7 +399,7 @@ float UINameTag::Entity::vfunc_9()
     Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor));
     if (pPc != 0)
     {
-        bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->FUN_14166ce30() != 0 && (pPc->FUN_141657730().FUN_1416676b0() ? true : false)
+        bool bSeated = ((class PCBase*)(class PCBase*)(pPc))->IsDead() != 0 && (pPc->FUN_141657730().FUN_1416676b0() ? true : false)
             && pPc->FUN_141657730().FUN_141667740()->FUN_140f48d40() != 0;
         if (bSeated)
             return reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_NtCfg*)FUN_1401d3200())->m_848)->Read();
@@ -447,7 +446,7 @@ void UINameTag::Entity::FUN_141a5f080()
                                     nHp, nMaxHp, nStr, nInt, nDex, nLuk, nPen, nPap, nMap);
             strInfo = StringFormat(L"{0} state:[{1}] pos:[{2}] rot:[{3}] {4}",
                                    pPc->vfunc_77(),
-                                   FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pPc))->FUN_14166c930(), s_gosNames), 0),
+                                   FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pPc))->GetCurStateId(), s_gosNames), 0),
                                    FUN_140b8f730(pPc->vfunc_18()),
                                    FUN_140b8f730(pPc->vfunc_20()),
                                    pPc->vfunc_134());
@@ -474,7 +473,7 @@ void UINameTag::Entity::FUN_141a5f080()
             int nRank = reinterpret_cast<Unk_NtNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_7c;
             strInfo.Format(L"name:[%s] state:[%s] lv:%d rank:[%s]",
                            (LPCWSTR)pNpc->vfunc_77(),
-                           (LPCWSTR)FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pNpc))->FUN_14166c930(), s_gosNames), 0),
+                           (LPCWSTR)FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pNpc))->GetCurStateId(), s_gosNames), 0),
                            (unsigned int)nLevel,
                            (LPCWSTR)GetStringCommon(aRankStr[nRank]));
             bool bShop = reinterpret_cast<CNpcData*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->GetShopId() > 0;
@@ -518,7 +517,7 @@ void UINameTag::Entity::FUN_141a5ff60()
             if (((class PC*)(class PC*)(pPc))->FUN_141661c50() != 0)
                 strName = StringFormat(L"{0} {1}", FUN_141b720b0(((class PC*)(class PC*)(pPc))->FUN_141661c50(), pPc), strName);
             bool bSymbol = false;
-            if (Unk_NtSymbolRec* pRec = reinterpret_cast<Unk_NtWorld*>(WorldService::GetInstance())->FUN_141bcab60(5))
+            if (Unk_NtSymbolRec* pRec = reinterpret_cast<Unk_NtSymbolRec*>(WorldService::GetInstance()->FindFieldProperty(5)))
             {
                 Unk_NtSymbolRec& rec = *pRec;
                 if (((class PCBase*)(class PC*)(pPc))->FUN_141678320() == 1)

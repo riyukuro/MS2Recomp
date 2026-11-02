@@ -158,7 +158,7 @@ void FUN_140a43b10(void*)
 void FUN_140a43b20()
 {
     FUN_140a439d0();
-    if (FUN_140166410()->FUN_14036e510())
+    if (FUN_140166410()->IsRegionCN())
     {
         int nStart = 0;
         CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();

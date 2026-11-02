@@ -250,7 +250,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                    ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->GetRarity(), nStat);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -271,7 +271,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                    ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->GetRarity(), nSpecial);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -314,10 +314,10 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
     }
     else
     {
-        if (Unk_ArrayFind<unsigned>(spScroll->m_arrSlots, spData->FUN_14053c620()) == -1)
+        if (Unk_ArrayFind<unsigned>(spScroll->m_arrSlots, spData->GetEquipSubtype()) == -1)
             return 4;
     }
-    if (Unk_ArrayFind<unsigned>(spScroll->m_arrRanks, item->FUN_140526bd0()) == -1)
+    if (Unk_ArrayFind<unsigned>(spScroll->m_arrRanks, item->GetRarity()) == -1)
         return 5;
     int nLevel = spData->limit.levelLimit;
     if (nLevel < spScroll->m_nLevelMin || nLevel > spScroll->m_nLevelMax)
@@ -326,7 +326,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         return 0xb;
     int bExclusive = spData->FUN_14053d600();
     {
-        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(item->FUN_140526bd0()));
+        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(item->GetRarity()));
         Unk_SocketSpecialMap& specials = spOption->GetSpecialMap(2);
         Unk_EnchantMap& stats = spOption->GetStatMap(2);
         if (specials.IsEmpty() && stats.IsEmpty())
@@ -437,7 +437,7 @@ unsigned FUN_140616f10(MS2Ptr<CItem> item)
         return 0;
     if (item->IsPetItem() != 0)
         return 0;
-    return item->FUN_140526bd0();
+    return item->GetRarity();
 }
 
 // Whether the options of an item may be locked (per item kind feature).
@@ -763,7 +763,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631600(nStat, spBase.get());
             std::pair<int, int> range =
-                ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->GetRarity(), nStat);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = FUN_1401e8510(strBest, strName);
@@ -799,7 +799,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
             std::pair<int, int> range =
-                ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->GetRarity(), nSpecial);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = FUN_1401e8510(strBest, strName);

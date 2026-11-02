@@ -117,7 +117,6 @@ struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 
 int FUN_140768010(int nRange, int nBase);                    // random number in [nBase, nBase + nRange)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-bool FUN_14212c720(egf::Entity* pEntity);                    // the entity has finished loading
 void FUN_140a38a50(egf::Entity* pEntity, unsigned nProp, const Vector3* pValue);   // SetProperty(point)
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140ae1240(egf::Entity* pEntity, unsigned nProp, const efd::utf8string* pValue);   // SetProperty(string)
@@ -408,7 +407,7 @@ void StatePlayInstrument::vfunc_3(double fTime)
             }
         }
     }
-    if (!m_bB4 && ((egf::Entity*)m_spEntity ? true : false) && FUN_14212c720(m_spEntity.operator->()))
+    if (!m_bB4 && ((egf::Entity*)m_spEntity ? true : false) && m_spEntity.operator->()->IsCreated())
     {
         AvatarPC* pAvatar = FUN_140de0900(m_pOwner);
         if (pAvatar != 0)
@@ -672,7 +671,7 @@ void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
     if (pPC == 0)
         return;
     efd::utf8string kAnim((const char*)FUN_1409a2360(strAnim, 0));
-    m_pOwner->FUN_14166dd20(kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false, false);
+    m_pOwner->PlayAnimation(kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false, false);
     m_strLastAnim = strAnim;
     if (m_spEntity)
         reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(reinterpret_cast<const egf::EntityPtr*>(&m_spEntity)->operator->()->GetEntityID(), kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);

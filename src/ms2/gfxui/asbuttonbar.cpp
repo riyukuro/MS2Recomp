@@ -172,7 +172,7 @@ void ASButtonBar::AddItem(const ASObj& item)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get())
-        spProvider->FUN_1422bbf00(item);
+        spProvider->PushObj(item);
 }
 MS2_REPLACE_METHOD(0x1422E3460, ASButtonBar, AddItem, 93, 0x213F3009);
 
@@ -183,7 +183,7 @@ void ASButtonBar::AddLabelItem(const CStringW& strLabel)
     if (spProvider.get()) {
         ASObj item(2);
         item.FUN_1407cbb20("label", strLabel);
-        spProvider->FUN_1422bbf00(item);
+        spProvider->PushObj(item);
     }
 }
 MS2_REPLACE_METHOD(0x1422E34D0, ASButtonBar, AddLabelItem, 185, 0xE6038828);

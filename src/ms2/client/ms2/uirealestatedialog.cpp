@@ -283,7 +283,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             if (box.get() != 0)
             {
                 CStringW strEmpty(L"");
-                box->FUN_141a01d30(3, strEmpty, 0x10, 0, 0);
+                box->SetInput(3, strEmpty, 0x10, 0, 0);
                 FUN_140d73c60(box);
             }
         }
@@ -450,7 +450,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         ATL::CAtlArray<CStringW> aParts;
         if (nAnswer == 0)
@@ -741,7 +741,7 @@ void Unk_ReObj::FUN_141ab5b30(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc1af0-0x142cc1b60 .text$yd

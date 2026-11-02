@@ -110,7 +110,6 @@ class Unk_IngTable : public CItemDataTable
 {
 public:
     MS2Ptr<ItemModelData> FUN_1405577f0(int nPreset);       // loads the model of an item preset
-    CString FUN_140558690(int nSoundId);
 };
 unsigned FUN_140557640(Unk_IngTable*, CString*);
 
@@ -514,7 +513,7 @@ int CItemData::GetIconCode()
 }
 
 // @0x14053c620
-int CItemData::FUN_14053c620()
+int CItemData::GetEquipSubtype()
 {
     if (GetType() != 1)
         return 0;
@@ -581,9 +580,9 @@ bool CItemData::FUN_14053c810()
 {
     if (FUN_14053d550())
         return false;
-    if (FUN_14053c620() == 0x13)
+    if (GetEquipSubtype() == 0x13)
         return false;
-    if (FUN_14053c620() == 0x15)
+    if (GetEquipSubtype() == 0x15)
         return false;
     return true;
 }
@@ -593,7 +592,7 @@ bool CItemData::FUN_14053c870()
 {
     if (FUN_14053d550())
         return false;
-    if (FUN_14053c620() == 0)
+    if (GetEquipSubtype() == 0)
         return false;
     return true;
 }
@@ -651,7 +650,7 @@ int CItemData::FUN_14053c9e0(int nGender, int nB)
 // @0x14053cae0
 int CItemData::FUN_14053cae0(int nGender, int nCategory)
 {
-    if (FUN_14053d2f0() && nCategory != 0 && FUN_14053c620() != nCategory)
+    if (FUN_14053d2f0() && nCategory != 0 && GetEquipSubtype() != nCategory)
         return false;
     return IsGenderAllowed(nGender);
 }
@@ -712,7 +711,7 @@ bool CItemData::FUN_14053cd50()
 }
 
 // @0x14053cd90
-bool CItemData::FUN_14053cd90()
+bool CItemData::HasFunction()
 {
     return !function.name.IsEmpty();
 }
@@ -793,7 +792,7 @@ bool CItemData::FUN_14053d0c0()
 // @0x14053d110
 bool CItemData::FUN_14053d110()
 {
-    switch (FUN_14053c620())
+    switch (GetEquipSubtype())
     {
     case 0xe:
     case 0xf:
@@ -823,7 +822,7 @@ bool CItemData::FUN_14053d150()
     case 0x1b:
         return true;
     }
-    if (FUN_14053cd90())
+    if (HasFunction())
         return true;
     return false;
 }
@@ -855,7 +854,7 @@ bool CItemData::FUN_14053d270()
 // @0x14053d2b0
 bool CItemData::FUN_14053d2b0()
 {
-    return FUN_14053c620() == 0x16;
+    return GetEquipSubtype() == 0x16;
 }
 
 // @0x14053d2f0
@@ -869,7 +868,7 @@ bool CItemData::FUN_14053d340()
 {
     if (GetType() == 1)
     {
-        switch (FUN_14053c620())
+        switch (GetEquipSubtype())
         {
         case 0x1e:
         case 0x1f:
@@ -902,7 +901,7 @@ bool CItemData::FUN_14053d460()
 {
     if (GetType() == 1)
     {
-        switch (FUN_14053c620())
+        switch (GetEquipSubtype())
         {
         case 0x32:
         case 0x33:
@@ -932,7 +931,7 @@ bool CItemData::FUN_14053d460()
 // @0x14053d510
 bool CItemData::FUN_14053d510()
 {
-    switch (FUN_14053c620())
+    switch (GetEquipSubtype())
     {
     case 0x1f:
     case 0x22:
@@ -950,7 +949,7 @@ bool CItemData::FUN_14053d550()
 // @0x14053d5c0
 bool CItemData::FUN_14053d5c0()
 {
-    switch (FUN_14053c620())
+    switch (GetEquipSubtype())
     {
     case 0xc:
     case 0x12:
@@ -965,7 +964,7 @@ bool CItemData::FUN_14053d5c0()
 // @0x14053d600
 bool CItemData::FUN_14053d600()
 {
-    switch (FUN_14053c620())
+    switch (GetEquipSubtype())
     {
     case 0xd:
     case 0xe:
@@ -1008,7 +1007,7 @@ bool CItemData::FUN_14053d760()
 {
     if (GetType() != 1)
         return false;
-    switch (FUN_14053c620())
+    switch (GetEquipSubtype())
     {
     case 0x1e: case 0x1f: case 0x20: case 0x21: case 0x22:
     case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37: case 0x38:
@@ -1355,7 +1354,7 @@ int CItemData::FUN_14053e3c0()
 // @0x14053e410
 int CItemData::FUN_14053e410()
 {
-    if (FUN_14053c620() == 0x16)
+    if (GetEquipSubtype() == 0x16)
         return 2;
     if (FUN_14053d460())
         return 2;
@@ -1373,7 +1372,7 @@ bool CItemData::FUN_14053e460()
         return true;
     if (IsRideItem())
         return true;
-    if (FUN_14053cd90())
+    if (HasFunction())
     {
         const CStringW& strName = function.name;
         if (strName == L"TreasureMap")
@@ -1446,7 +1445,7 @@ Unk_PayloadPtr<CItemExtraData> CItemData::CreateExtraData()
     {
         pExtra = new CHairExtraData;
     }
-    else if (FUN_14053c620() == 0xd)
+    else if (GetEquipSubtype() == 0xd)
     {
         pExtra = new CCapExtraData;
     }
@@ -1479,7 +1478,7 @@ bool CItemData::FUN_14053e940()
         return false;
     if (HasSkinType())
     {
-        switch (FUN_14053c620())
+        switch (GetEquipSubtype())
         {
         case 0xc:
         case 0xd:
@@ -1495,7 +1494,7 @@ bool CItemData::FUN_14053e940()
     }
     else
     {
-        switch (FUN_14053c620())
+        switch (GetEquipSubtype())
         {
         case 0xc:
         case 0x13:
@@ -1564,7 +1563,7 @@ void CItemData::FUN_14053ec70()
 // @0x14053eca0
 CString CItemData::GetMaterialSoundName()
 {
-    return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558690(material.unknown0);
+    return TSingleton<CItemDataTable>::GetInstance()->GetUiMaterialSound(material.unknown0);
 }
 
 // @0x14053ecf0
@@ -1681,7 +1680,7 @@ int CItemData::FUN_14053f0d0(int nRank)
     int nGear = property.gearScore;
     if (rank != 0)
         nRank = rank;
-    int nSub = FUN_14053c620();
+    int nSub = GetEquipSubtype();
     int nGrade = nRank;
     double dResult = 0.0;
     if (0 < nGear)
@@ -1864,7 +1863,7 @@ bool CItemData::FUN_14053f750(long long nParam)
 // @0x14053f7c0
 int CItemData::FUN_14053f7c0()
 {
-    switch (FUN_14053c620())
+    switch (GetEquipSubtype())
     {
     case 0xc:
     case 0x14:

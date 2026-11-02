@@ -696,7 +696,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
             if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
-            if (item->FUN_140526bd0() != rarity) continue;
+            if (item->GetRarity() != rarity) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             return item;
         }
@@ -770,7 +770,7 @@ int Unk_Inventory::FUN_140a5eda0(const int* filter) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
             if (item->FUN_1405276c0() != *filter) continue;
-            if (*(filter + 1) != 0 && item->FUN_140526bd0() != *(filter + 1)) continue;
+            if (*(filter + 1) != 0 && item->GetRarity() != *(filter + 1)) continue;
             if (*(filter + 2) != 0 && item->FUN_140528e20()) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             count += item->GetCount();
@@ -809,7 +809,7 @@ int Unk_Inventory::FUN_140a5f180(int itemId, int rarity) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
             if (item->FUN_1405276c0() != itemId) continue;
-            if (rarity != 0 && item->FUN_140526bd0() != rarity) continue;
+            if (rarity != 0 && item->GetRarity() != rarity) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             count += item->vfunc_4();
         }
@@ -834,7 +834,7 @@ int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
             if (item->FUN_1405276c0() != itemId) continue;
-            if (item->FUN_140526bd0() != reference->FUN_140526bd0()) continue;
+            if (item->GetRarity() != reference->GetRarity()) continue;
             if (player->FUN_141662eb0(reference.get()) == 0) continue;
             if (item->FUN_140529640() != reference->FUN_140529640()) continue;
             count += reference->vfunc_4();
@@ -858,7 +858,7 @@ int Unk_Inventory::FUN_140a5f7b0(int tag, int rarity) {
             if (item == nullptr) continue;
             if (!item->HasStringTag(tag)) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
-            if (rarity != 0 && item->FUN_140526bd0() != rarity) continue;
+            if (rarity != 0 && item->GetRarity() != rarity) continue;
             count += item->vfunc_4();
         }
     }
@@ -1223,7 +1223,7 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     if (checkState != 0) {
         Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (player == nullptr) return 0;
-        if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
+        if (player->IsDead() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     }
     if (FUN_140a65e30(item.get()) != 0) return 0;
     Unk_InventoryUsePacket payload;
@@ -1253,12 +1253,12 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     if (item == nullptr) return 0;
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
-    if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
+    if (player->IsDead() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     if (FUN_140a65e30(item) != 0) return 0;
     int selected = slot == 0 ? FUN_141420a70(item, (class AvatarPC*)(player)) : slot;
     if (FUN_140a63950(item, selected, mode) == 0) return 0;
     if (skipBinding == 0) {
-        if (((CItemTransfer*)item->FUN_140527930())->HasBindingRule() != 0 && ((CItemTransfer*)item->FUN_140527930())->FUN_140635120() == 0) {
+        if (((CItemTransfer*)item->FUN_140527930())->HasBindingRule() != 0 && ((CItemTransfer*)item->FUN_140527930())->HasBinding() == 0) {
             CStringW prompt = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", player->vfunc_77());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(17, prompt, nullptr, s_useBindEquipItem);
             if (box.get() != nullptr) {
@@ -1266,7 +1266,7 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
                 box->Append<unsigned>(mode);
                 box->FUN_141a01600(item->GetItemUid());
                 box->FUN_141a01ee0(ItemPtr(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
-                box->FUN_141a01700(1143, 1144, 0);
+                box->SetButtonLabelIds(1143, 1144, 0);
                 FUN_140d73c60(box);
                 return 1;
             }
@@ -1294,7 +1294,7 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(5) != 0) { FUN_141275260(2185, 1, 1); return 0; }
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 1;
-    if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
+    if (player->IsDead() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     ItemPtr item = player->FUN_141655b80(id);
     if (!item) return 1;
     if (item->HasAnyEquipSlotOf() != 0) { FUN_140d73bc0(207, 0, nullptr, L""); return 0; }
@@ -1418,7 +1418,7 @@ MS2_REPLACE_METHOD(0x140a635f0, Unk_Inventory, FUN_140a635f0, 650, 0x3575D5E0);
 int Unk_Inventory::FUN_140a63880(CItem* item, const CStringW& argument) {
     if (!(item != nullptr && item->FUN_140527840() != nullptr))
         return 0;
-    if (item->FUN_140527840()->FUN_14053cd90())
+    if (item->FUN_140527840()->HasFunction())
         return FUN_140a61db0(item->GetItemUid(), argument);
     return 0;
 }
@@ -1473,7 +1473,7 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
     int mask = player->FUN_141658e60();
     bool gotoCheck = true;   // false: the combined-slot path ran and jumped past the generic check
     if (mode != 2 && !data.get()->HasSkinType()) {
-        int type = data.get()->FUN_14053c620();
+        int type = data.get()->GetEquipSubtype();
         gotoCheck = false;
         if (!data.get()->FUN_14053d460()) {
             if (data.get()->FUN_14053d2f0()) {
@@ -1536,7 +1536,7 @@ int Unk_Inventory::FUN_140a655b0(CItem* item) {
     if (player == nullptr) return 0;
     MS2Ptr<CItemData> data(item->FUN_140527840());
     if (!data) return 0;
-    if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
+    if (player->IsDead() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     if (FUN_140a61430(FUN_140a617f0(ItemPtr(item))) == 0) {
         FUN_141275260(67, 1, 1);
         FUN_141276180(DAT_143ab78e8, "");
@@ -1551,7 +1551,7 @@ int Unk_Inventory::FUN_140a65770(CItem* item) {
     CItemData* data = item->FUN_140527840();
     if (data == nullptr) return 11;
     if (item->IsExpired() && !data->HasMaidId()) return 5;
-    int result = FUN_140a65860(MS2Ptr<CItemData>(data), item->FUN_140526bd0());
+    int result = FUN_140a65860(MS2Ptr<CItemData>(data), item->GetRarity());
     if (result != 0) return result;
     if (!item->FUN_140528980()) return 10;
     return 0;
@@ -1633,7 +1633,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     *reason = 1;
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
-    if (player->FUN_14166ce30() != 0) return 0;
+    if (player->IsDead() != 0) return 0;
     Unk_InventoryBinding* binding = ((Unk_InventoryBinding*)item->FUN_140527930());
     if (binding == nullptr) return 0;
     CStringW unused;
@@ -1642,7 +1642,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     if (FUN_1406344b0(ItemPtr(item), &character, &output)) return 1;
     name = output.name;
     bool allowed = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && item->HasSkin() != 0;
-    bool enchanted = ((Unk_InventoryEnchant*)item->FUN_1405279c0())->HasAnyGem();
+    bool enchanted = ((Unk_InventoryEnchant*)item->GetSocket())->HasAnyGem();
     if (allowed && enchanted) { *reason = 2; return 0; }
     if (allowed) return 1;
     unsigned __int64 owner = output.characterId;

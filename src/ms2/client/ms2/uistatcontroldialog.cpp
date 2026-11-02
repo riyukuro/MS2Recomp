@@ -132,9 +132,9 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     ASData data;
     if (_stricmp("onSetButton", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nStat = data.FUN_1422b8b10();
+            int nStat = data.PopUInt();
             float fValue = (float)data.PopDouble();
             Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor != 0)
@@ -151,12 +151,12 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onSelectItem", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0)
                 return 0;
-            int nStat = data.FUN_1422b8b10();
+            int nStat = data.PopUInt();
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30.get());
             if (pDialog != 0)
             {
@@ -167,9 +167,9 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     }
     else if (_stricmp("onResetButton", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nStat = data.FUN_1422b8b10();
+            int nStat = data.PopUInt();
             Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor != 0)
             {

@@ -141,7 +141,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
         return;
     MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_themeTitle");
     if (spTitle.get())
-        spTitle->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
+        spTitle->SetTextW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
     if (m_upgradeButton.get())
     {
         bool bEnable = true;
@@ -166,7 +166,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e39da0()
     {
         MS2Ptr<ASTextField> spArea = spInfo->FUN_1409b4620("m_areaText");
         if (spArea.get())
-            spArea->FUN_1422c4cd0(FUN_14028dfa0<int>(CStringW(L"s_home_info_area"), house->f24));
+            spArea->SetTextW(FUN_14028dfa0<int>(CStringW(L"s_home_info_area"), house->f24));
         ASArray arr(2);
         std::vector<int>& facilities = house->f38;
         size_t i = 0;
@@ -269,7 +269,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
             CStringW strText = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_guild_ui_skill_use_change_theme"), FUN_140763e10(house->f30),
                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a720));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a720));
             box->Append<int>(nTheme);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }
@@ -281,7 +281,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
             CStringW strText = FUN_140d26d90(CStringW(L"s_guild_ui_house_use_upgrade"), FUN_140763e10(house->f28), &nLevel,
                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a6b0));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a6b0));
             box->Append<int>(nLevel);
             box->Append<int>(nTheme);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));

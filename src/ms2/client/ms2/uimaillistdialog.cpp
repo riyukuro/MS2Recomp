@@ -617,7 +617,7 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
                 CItem* pItem = new CItem();
                 if (pItem->FUN_14052b130(spAd->m_n18, spAd->m_n20, 0) != 0)
                 {
-                    pItem->FUN_140526c70(spAd->m_n1c);
+                    pItem->SetCountClamped(spAd->m_n1c);
                     CStringA strKey;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), nCount);
                     FUN_1414727e0(strKey, MS2Ptr<CItem>(pItem), spAd->m_n24, i);
@@ -757,7 +757,7 @@ void UIMailListDialog::FUN_1419e73f0()
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
     {
         int nShown = m_nPage + 1;
-        spPage->FUN_1422c4cd0(StringFormat<int>(L"{0}", nShown));
+        spPage->SetTextW(StringFormat<int>(L"{0}", nShown));
     }
 }
 MS2_REPLACE_METHOD(0x1419E73F0, UIMailListDialog, FUN_1419e73f0, 225, 0x8A7532B9); // FUN_1419e73f0
@@ -778,7 +778,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
         return false;
     if (spParam == 0)
         return false;
-    Scaleform::GFx::Value vArg = data.FUN_1422b9260();
+    Scaleform::GFx::Value vArg = data.PopValue();
     ASObj obj(vArg, 2);
     if (obj.IsUndefinedOrNull())
         return false;
@@ -789,7 +789,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     CMailInfo* pMail = g_143ab2ee0.FindMailById(nMailId).get();
     if (pMail == 0)
         return true;
-    int nBillIndex = data.FUN_1422b8b10();
+    int nBillIndex = data.PopUInt();
     MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(nBillIndex);
     if (spBill == 0)
         return false;
@@ -826,7 +826,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onSelectMail", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
             FUN_1419e5a10(nMailId);
@@ -858,7 +858,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onRecieveAll", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
             SendMailMode11(nMailId);
@@ -867,7 +867,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onReply", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
             FUN_1419e6360(nMailId);
@@ -876,7 +876,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onRemove", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
             FUN_1419e6410(nMailId);
@@ -909,14 +909,14 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onReadList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22d), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->FUN_140b76940(CStringW(strIds));
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode18));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode18));
                 FUN_140d73c60(spBox);
             }
         }
@@ -924,7 +924,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onDeleteList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
             if (FUN_1419e70c0(CStringW(strIds)) != 0)
@@ -935,7 +935,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                     spBox->FUN_141a01800(1);
                     spBox->SetCheckbox0(GetStringCommon(0x232), 0);
                     spBox->FUN_140b76940(CStringW(strIds));
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -945,7 +945,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_140b76940(CStringW(strIds));
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -954,14 +954,14 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onReceiveList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22f), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->FUN_140b76940(CStringW(strIds));
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode19));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode19));
                 FUN_140d73c60(spBox);
             }
         }
@@ -969,10 +969,10 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onClickMailCheckbox", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
-            int bChecked = data.FUN_1422b8a90();
+            int bChecked = data.PopBool();
             m_mapChecked.SetAt(nMailId, bChecked);
         }
     }
@@ -981,7 +981,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         do
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+            if (data.SetArgsIfAny(pArgs, nArgs) == 0)
                 break;
             unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
             CStringW strSender = data.FUN_1422b8f40();
@@ -1002,7 +1002,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onBuyAd", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
             FUN_1419e8080(nMailId);
@@ -1047,7 +1047,7 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
     if (spBox.get() != 0)
     {
         spBox->FUN_140b76940(FUN_141b71910(nMailId));
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode13));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode13));
         FUN_140d73c60(spBox);
     }
 }
@@ -1513,7 +1513,7 @@ int UIMailSendDialog::vfunc_74(int nMsg, void* p2, void* p3)
             {
                 ASObj row(2);
                 row.FUN_1407cbb20("label", CStringW(names.GetValueAt(pos)));
-                candidates.FUN_1422bbf00(row);
+                candidates.PushObj(row);
             }
         }
     }

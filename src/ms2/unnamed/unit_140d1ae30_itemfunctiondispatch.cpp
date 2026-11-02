@@ -508,7 +508,7 @@ int UseItem(MS2Ptr<CItem> spItem, int bConfirmed)
     }
     if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
         return 0;
-    if (bConfirmed == 0 && spItem->FUN_140527930()->HasBindingRule() != 0 && spItem->FUN_140527930()->FUN_140635120() == 0)
+    if (bConfirmed == 0 && spItem->FUN_140527930()->HasBindingRule() != 0 && spItem->FUN_140527930()->HasBinding() == 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_use", pPlayer->vfunc_77());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseBindFuncItem);
@@ -516,7 +516,7 @@ int UseItem(MS2Ptr<CItem> spItem, int bConfirmed)
         {
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -653,7 +653,7 @@ void OpenItemBox(CItem* pItem, int nCount)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, L"");
         if (spBox.get())
         {
-            spBox->FUN_141a027c0(Unk_IuBoxCallback(OnOpenItemBoxConfirm));
+            spBox->SetCallback(Unk_IuBoxCallback(OnOpenItemBoxConfirm));
             spBox->FUN_141a01600(pItem->GetItemUid());
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(pItem), pItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01800(1);
@@ -680,7 +680,7 @@ void OpenItemBoxSingle(CItem* pItem)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, L"");
         if (spBox.get())
         {
-            spBox->FUN_141a027c0(Unk_IuBoxCallback(OnOpenItemBoxCapacity));
+            spBox->SetCallback(Unk_IuBoxCallback(OnOpenItemBoxCapacity));
             spBox->FUN_141a01600(pItem->GetItemUid());
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(pItem), pItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a01800(2);
@@ -716,7 +716,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
         if (spBox.get())
         {
             MS2Ptr<CMsgBoxDataItem> spEntry(new CMsgBoxDataItem);
-            spEntry->FUN_141a06630(pItem->FUN_140527b10(), true, pItem->FUN_140526bd0());
+            spEntry->FUN_141a06630(pItem->FUN_140527b10(), true, pItem->GetRarity());
             spEntry->m_nUnitCount = 1;
             spEntry->m_nCount = nCount;
             spEntry->m_nMax = nCount;
@@ -725,7 +725,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
             spBox->SetTitle(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_title"));
             spBox->SetButtonLabels(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_ok"), GetStringCommonByKey(L"s_word_cancel"), L"");
             spBox->FUN_140b76940(strArgs);
-            spBox->FUN_141a027c0(Unk_IuBoxCallback(OnOpenItemBoxMulti));
+            spBox->SetCallback(Unk_IuBoxCallback(OnOpenItemBoxMulti));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01600(pItem->GetItemUid());
             FUN_140d73c60(spBox);
@@ -792,7 +792,7 @@ bool OnOpenItemBoxMulti(int nButton, const CMsgBoxData& box)
     {
         UIItemMultiOpenBoxDialog* pDialog = GetItemUseDialog<UIItemMultiOpenBoxDialog>(0x4f88);
         if (pDialog != 0 && pDialog->FUN_141924630() == 0)
-            pDialog->FUN_140c3f9d0(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), strArgs, nCount);
+            pDialog->FUN_140c3f9d0(spItem->FUN_1405276c0(), spItem->GetRarity(), strArgs, nCount);
     }
     else
     {
@@ -865,7 +865,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -887,12 +887,12 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
         return 0;
     }
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166ce30() != 0 || pPlayer->vfunc_65() != 0 || ((class PC*)(class PC*)(pPlayer))->FUN_1416595d0() != 0 || ((class PC*)(class PC*)(pPlayer))->FUN_141659690() != 0)
+    if (((class PCBase*)(class PC*)(pPlayer))->IsDead() != 0 || pPlayer->vfunc_65() != 0 || ((class PC*)(class PC*)(pPlayer))->IsInCubeMode() != 0 || ((class PC*)(class PC*)(pPlayer))->FUN_141659690() != 0)
     {
         FUN_1412752d0(L"s_msg_item_err_change_beauty_invalid_state", 1);
         return 0;
     }
-    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d220())->FUN_141240f20()->GetEntity());
+    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->GetPhysicsBody())->FUN_141240f20()->GetEntity());
     if (spEntity != 0)
     {
         MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());
@@ -915,7 +915,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1018,8 +1018,8 @@ int BlueprintImport(MS2Ptr<CItem> spItem, PC* pPlayer)
                 spBox->FUN_141a01600(spItem->GetItemUid());
                 spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->FUN_141a024a0(0);
-                spBox->FUN_141a01700(0x477, 0x478, 0);
-                spBox->FUN_141a027c0(Unk_IuBoxCallback(pDialog, &UIUGCCubeBillDialog::FUN_140ee8000));
+                spBox->SetButtonLabelIds(0x477, 0x478, 0);
+                spBox->SetCallback(Unk_IuBoxCallback(pDialog, &UIUGCCubeBillDialog::FUN_140ee8000));
                 FUN_140d73c60(spBox);
             }
         }
@@ -1059,8 +1059,8 @@ int ChatEmoticonAdd(MS2Ptr<CItem> spItem, PC* pPlayer)
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01600(spItem->GetItemUid());
-            spBox->SetItemById(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), 0);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetItemById(spItem->FUN_1405276c0(), spItem->GetRarity(), 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1090,9 +1090,9 @@ int OpenCoupleEffectBox(MS2Ptr<CItem> spItem, PC* pPlayer)
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_coupleeffect_recevie_name"), 0, L""))
         {
             CStringW strEmpty(L"");
-            spBox->FUN_141a01d30(2, strEmpty, 0xc, 0, 0);
+            spBox->SetInput(2, strEmpty, 0xc, 0, 0);
             spBox->Append<__int64>(spItem->GetItemUid());
-            spBox->FUN_141a027c0(Unk_IuBoxCallback(pDialog, &UIInventoryDialog::FUN_14199ac30));
+            spBox->SetCallback(Unk_IuBoxCallback(pDialog, &UIInventoryDialog::FUN_14199ac30));
             FUN_140d73c60(spBox);
         }
     }
@@ -1134,7 +1134,7 @@ int QuestScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
             if (spBox.get() != 0)
             {
                 spBox->Append<__int64>(spItem->GetItemUid());
-                spBox->FUN_141a027c0(Unk_IuBoxCallback(OnQuestScrollConfirm));
+                spBox->SetCallback(Unk_IuBoxCallback(OnQuestScrollConfirm));
                 FUN_140d73c60(spBox);
             }
         }
@@ -1412,7 +1412,7 @@ int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
         {
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1454,7 +1454,7 @@ int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1477,7 +1477,7 @@ int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
         {
             CStringW strEmpty(L"");
             spBox->FUN_141a01600(spItem->GetItemUid());
-            spBox->FUN_141a01d30(0, strEmpty, nMax, 0, 0);
+            spBox->SetInput(0, strEmpty, nMax, 0, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -1501,7 +1501,7 @@ int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
         {
             CStringW strEmpty(L"");
             spBox->FUN_141a01600(spItem->GetItemUid());
-            spBox->FUN_141a01d30(2, strEmpty, 0xc, 0, 0);
+            spBox->SetInput(2, strEmpty, 0xc, 0, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -1531,7 +1531,7 @@ int ExpandInven(MS2Ptr<CItem> spItem, PC* pPlayer)
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1588,7 +1588,7 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(FUN_14028dfa0<unsigned short>(L"s_err_cannot_already_target_level_potion", nLevel), 0, 0, L"");
         return 0;
     }
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166ce30() != 0)
+    if (((class PCBase*)(class PC*)(pPlayer))->IsDead() != 0)
     {
         FUN_140d73bc0(0x54, 0, 0, L"");
         return 0;
@@ -1621,7 +1621,7 @@ int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
         {
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1649,7 +1649,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
         {
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1729,7 +1729,7 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
     MS2Ptr<CItemData> spData(spItem->FUN_140527840());
     if (spData == 0)
         return 0;
-    if (!spData->FUN_14053cd90())
+    if (!spData->HasFunction())
         return 0;
     unsigned nQuestId = ((Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60(0, 0);
     unsigned short nLevel = (unsigned short)((Unk_CommandArgs&)(spData->function.parameter)).FUN_1408d1f60(1, 0);
@@ -1760,7 +1760,7 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
             spBox->SetTitle(strTitle);
             spBox->FUN_141a01600(spItem->GetItemUid());
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
             return 1;
         }
@@ -1842,7 +1842,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1)
+    if (((class PCBase*)(class PC*)(pPlayer))->GetCurStateId() != 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
         return 0;
@@ -1867,7 +1867,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
         {
             CStringW strEmpty(L"");
             spBox->FUN_141a01600(spItem->GetItemUid());
-            spBox->FUN_141a01d30(5, strEmpty, 6, 0, 0);
+            spBox->SetInput(5, strEmpty, 6, 0, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -1887,12 +1887,12 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     if (pPlayer == 0)
         return 0;
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166ce30() != 0)
+    if (((class PCBase*)(class PC*)(pPlayer))->IsDead() != 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1)
+    if (((class PCBase*)(class PC*)(pPlayer))->GetCurStateId() != 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
@@ -1912,7 +1912,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
     }
-    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->FUN_14166d220())->FUN_141240f20()->GetEntity());
+    Unk_EntRef spEntity(((GameObjectController*)((class PCBase*)(class PCBase*)(pPlayer))->GetPhysicsBody())->FUN_141240f20()->GetEntity());
     if (spEntity != 0)
     {
         MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());

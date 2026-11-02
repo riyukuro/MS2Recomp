@@ -307,7 +307,6 @@ public:
 void FUN_14257ec50(Unk_BgDispHandle* p) throw();   // RTHandle::~RTHandle: an explicit dtor call emits ??_G at /Od
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 class Unk_BgWorldMgr : public WorldService { public: NiPoint3 FUN_141bd3dc0(); };   // 3dc0 returns by value (hidden pointer, worldservice.h)
-bool* FUN_1422dad70(void* pThis, void* pOut, char n);   // pOut: caller temp (key-state flags), returned
 class NiMaterialLibrary   // C3: member view for the former free stand-ins
 {
 public:
@@ -642,8 +641,8 @@ int GFxMovieBackground::vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wPar
         break;
     case 0x102:
     {
-        bool bKeys;
-        vfunc_39(0, 0, (unsigned)wParam, 1, *FUN_1422dad70(this, &bKeys, 0));
+        // the KeyModifiers byte goes in vfunc_39's bool slot (see gfxmovie.h)
+        vfunc_39(0, 0, (unsigned)wParam, 1, *(const bool*)&static_cast<const Scaleform::KeyModifiers&>(UpdateModifiers(false)));
     }
     }
     return 0;

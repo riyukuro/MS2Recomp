@@ -412,7 +412,7 @@ void CGameSocket::FUN_1412672d0()
 }
 MS2_REPLACE_METHOD(0x1412672d0, CGameSocket, FUN_1412672d0, 219, 0xB0C1948F);
 // @0x1412673c0
-void CGameSocket::FUN_1412673c0() { m_out->FUN_140209430(); }
+void CGameSocket::FUN_1412673c0() { m_out->GetSequence(); }
 MS2_REPLACE_METHOD(0x1412673c0, CGameSocket, FUN_1412673c0, 41, 0x0124E8F1);
 // @0x1412673f0
 int CGameSocket::GetSequence() { return m_sequence; }
@@ -509,7 +509,7 @@ inline void CSocketThread::FUN_1412696b0()
 {
     if(!GetThread()) {
         HANDLE event=WSACreateEvent(); m_events.Add(event);
-        if(!event || !FUN_141215220(0,0,0,0,0)) throw Exception(GetLastError());
+        if(!event || !Start(0,0,0,0,0)) throw Exception(GetLastError());
     }
 }
 // @0x141269750

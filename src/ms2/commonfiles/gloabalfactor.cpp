@@ -17,6 +17,7 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/featuremanager.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -32,7 +33,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int FUN_140179060(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // int or enum value by name
-class Unk_140166410 { public: unsigned short FUN_14036db20(); };           // the game settings (max level)
+class Unk_140166410;   // the game settings (CFeatureManager)
 Unk_140166410* FUN_140166410();
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
@@ -170,7 +171,7 @@ bool CGloabalFactor::LoadMultiControl()
 float CGloabalFactor::FUN_1404c1730(unsigned int nLevel, int nKind)
 {
     CheckInit();
-    if (nLevel < 1 || nLevel > FUN_140166410()->FUN_14036db20())
+    if (nLevel < 1 || nLevel > (unsigned short)reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLevelCap())
         return 1.0f;
     return m_fMesoRate[nKind][nLevel];
 }
@@ -179,7 +180,7 @@ float CGloabalFactor::FUN_1404c1730(unsigned int nLevel, int nKind)
 float CGloabalFactor::FUN_1404c17a0(unsigned int nLevel, int nKind)
 {
     CheckInit();
-    if (nLevel < 1 || nLevel > FUN_140166410()->FUN_14036db20())
+    if (nLevel < 1 || nLevel > (unsigned short)reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLevelCap())
         return 1.0f;
     return m_fExpRate[nKind][nLevel];
 }

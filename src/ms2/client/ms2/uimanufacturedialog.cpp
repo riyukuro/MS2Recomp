@@ -405,9 +405,9 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnSelectedList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_nSelected = data.FUN_1422b8a10();
+            m_nSelected = data.PopInt();
             FUN_1412e5c90();
         }
         return 1;
@@ -415,9 +415,9 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnCraft", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_1412e5dd0(nIndex);
         }
         return 1;
@@ -425,9 +425,9 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnCraftAdmin", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_1412e5f70(nIndex);
         }
         return 1;
@@ -492,7 +492,7 @@ int UIManufactureDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         ATL::CAtlArray<CStringW> kArr;
         FUN_14151f200();
@@ -642,7 +642,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                 MS2Ptr<CItem> spItem(new CItem());
                 if (spItem->FUN_14052b130(nItemId, nRarity, 0))
                 {
-                    spItem->FUN_140526c70(nAmount);
+                    spItem->SetCountClamped(nAmount);
                     int nFlags = 0;
                     if (bAvailable != 0)
                         nFlags = 0x415;
@@ -684,7 +684,7 @@ void UIManufactureDialog::FUN_1412e4240()
             MS2Ptr<CItem> spItem(new CItem());
             if (spItem->FUN_14052b130(nItemId, nRarity, 0))
             {
-                spItem->FUN_140526c70(nAmount);
+                spItem->SetCountClamped(nAmount);
                 m_strProgressKey.Format("%s_prgress", (const char*)GetTypeName());
                 FUN_141415600(m_strProgressKey);
                 FUN_141415450(m_strProgressKey, spItem, 0, 0x415, 0x800);
@@ -753,7 +753,7 @@ void UIManufactureDialog::FUN_1412e48a0()
         MS2Ptr<CItem> spProduct(new CItem());
         if (spProduct->FUN_14052b130(nItemId, nRarity, 0))
         {
-            spProduct->FUN_140526c70(nAmount);
+            spProduct->SetCountClamped(nAmount);
             m_strProductKey.Format("%s_product", (const char*)GetTypeName());
             FUN_141415450(m_strProductKey, spProduct, 0, 0x415, 0x800);
             m_30->Invoke("bindProduct", CString(m_strProductKey));
@@ -776,7 +776,7 @@ void UIManufactureDialog::FUN_1412e48a0()
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
-                spIngItem->FUN_140526c70(nNeeded);
+                spIngItem->SetCountClamped(nNeeded);
                 CString strKey;
                 strKey.Format("%s_Ingredient.%d", (const char*)GetTypeName(), k + 1);
                 FUN_141415450(strKey, spIngItem, (int)k, 0x415, 0x800);
@@ -1068,7 +1068,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
     MS2Ptr<CItem> spItem(new CItem());
     if (spItem->FUN_140523c40(nItemId, nRarity, 0))
     {
-        spItem->FUN_140526c70(nAmount);
+        spItem->SetCountClamped(nAmount);
         Unk_TalkItemList aItems;
         aItems.Add(spItem);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);

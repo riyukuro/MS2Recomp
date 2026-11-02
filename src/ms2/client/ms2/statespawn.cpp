@@ -110,7 +110,7 @@ void StateSpawn::vfunc_3(double fTime)
         {
             if (!m_spSpawn->m_str.IsEmpty())
             {
-                m_pOwner->FUN_14166dd20((const char*)m_spSpawn->m_str, 1.0f, true, false);
+                m_pOwner->PlayAnimation((const char*)m_spSpawn->m_str, 1.0f, true, false);
                 m_fDuration = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_spSpawn->m_str));
             }
         }

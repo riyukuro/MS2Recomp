@@ -241,7 +241,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
                     if (spText.get() != 0)
                     {
                         CStringW strText = FormatStringId<int, int>(0x700, nCount, nLimit);
-                        spText->FUN_1422c4f00(strText);
+                        spText->SetTextHTMLW(strText);
                     }
                 }
             }
@@ -253,7 +253,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         if (spText.get() != 0)
         {
             CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0);
-            spText->FUN_1422c4f00(strText);
+            spText->SetTextHTMLW(strText);
         }
     }
     m_bRefreshed = true;

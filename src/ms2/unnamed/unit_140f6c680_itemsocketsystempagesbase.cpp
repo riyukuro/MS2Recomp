@@ -813,7 +813,7 @@ int ItemSocketSystemPageBase::FUN_140f6e580(MS2Ptr<CItem> item, MS2Ptr<CItem> ex
         return 0;
     if (excluded.get() != 0)
         excluded->FUN_1405269d0(1);
-    int count = ((class Unk_Inventory*)(class Unk_SocketPageInventoryCount*)(reinterpret_cast<Unk_SocketPageInventoryCount*>(&DAT_143ab2a90)))->FUN_140a5f180(item->FUN_1405276c0(), item->FUN_140526bd0());
+    int count = ((class Unk_Inventory*)(class Unk_SocketPageInventoryCount*)(reinterpret_cast<Unk_SocketPageInventoryCount*>(&DAT_143ab2a90)))->FUN_140a5f180(item->FUN_1405276c0(), item->GetRarity());
     int group = ((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetStringTag();
     if (group != 0)
         count = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5f780(group, 0);
@@ -957,24 +957,24 @@ int ItemSocketSystemPageGemStoneManage::vfunc_3(const char* event, const Scalefo
         return 1;
     if (_stricmp("onIndexChangeSlot0", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0) {
-            int index = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count) != 0) {
+            int index = data.PopInt();
             MS2Ptr<CItem> item = GetItemAt(m_equipment, index);
             FUN_140f70f90(item);
         }
         return 1;
     } else if (_stricmp("onIndexChangeSlot1", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0) {
-            int index = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count) != 0) {
+            int index = data.PopInt();
             MS2Ptr<CItem> item = GetItemAt(m_gems, index);
             FUN_140f71330(item);
         }
         return 1;
     } else if (_stricmp("onClickSocketDel", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0) {
-            int slot = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(args, count) != 0) {
+            int slot = data.PopUInt();
             FUN_140f71530(slot);
         }
         return 1;
@@ -1066,9 +1066,9 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70770()
             MS2Ptr<CItem> item(items.GetAt(i));
             if (item == 0)
                 continue;
-            if (item->FUN_1405279c0() == 0 || item->FUN_140529560() == 0)
+            if (item->GetSocket() == 0 || item->FUN_140529560() == 0)
                 continue;
-            if (item->FUN_1405279c0()->GetMaxSlot() == 0)
+            if (item->GetSocket()->GetMaxSlot() == 0)
                 continue;
             m_equipment.Add(item);
         }
@@ -1084,9 +1084,9 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70770()
         MS2Ptr<CItem> item = equip->GetItem();
         if (!item)
             continue;
-        if (item->FUN_1405279c0() == 0)
+        if (item->GetSocket() == 0)
             continue;
-        if (item->FUN_1405279c0()->GetMaxSlot() == 0)
+        if (item->GetSocket()->GetMaxSlot() == 0)
             continue;
         m_equipment.Add(item);
     }
@@ -1151,7 +1151,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70f90(MS2Ptr<CItem> item)
 {
     if (m_root == 0)
         return;
-    if (item == 0 || item->FUN_1405279c0() == 0)
+    if (item == 0 || item->GetSocket() == 0)
         return;
     __int64 uid = item->GetItemUid();
     if (FUN_141425750(uid, 0) == 0) {
@@ -1161,7 +1161,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70f90(MS2Ptr<CItem> item)
     FUN_141276180(s_strManageSound, "");
     m_selected = item;
     SetInfoSlotItem(m_selectedName, m_selected);
-    CItemSocket* socket = item->FUN_1405279c0();
+    CItemSocket* socket = item->GetSocket();
     unsigned open = socket->GetOpenSlotCount();
     ASObj data(2);
     data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
@@ -1192,7 +1192,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
 {
     if (m_selected == 0 || m_selected->FUN_140527840() == 0)
         return;
-    CItemSocket* socket = m_selected->FUN_1405279c0();
+    CItemSocket* socket = m_selected->GetSocket();
     if (socket == 0)
         return;
     if (socket->GetMaxSlot() == 0)
@@ -1253,7 +1253,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
         box = FUN_140d73d20(1, msg, 0, L"");
     }
     box->FUN_141a024a0(0);
-    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageGemStoneManage::FUN_140f72c80));
+    box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageGemStoneManage::FUN_140f72c80));
     box->FUN_140533ff0(slot);
     FUN_140f73320(box.operator->(), lack);
     FUN_140d73c60(box);
@@ -1272,9 +1272,9 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71ea0(ASObj& data)
 {
     FUN_140cfe1b0(m_socketName);
     m_sockets.RemoveAll();
-    if (m_selected == 0 || m_selected->FUN_1405279c0() == 0)
+    if (m_selected == 0 || m_selected->GetSocket() == 0)
         return;
-    CItemSocket* socket = m_selected->FUN_1405279c0();
+    CItemSocket* socket = m_selected->GetSocket();
     if (socket == 0)
         return;
     MS2Ptr<CItem> selected(m_selected);
@@ -1315,7 +1315,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f72460(CInPacket* packet)
     __int64 nItemUid = result.m_nItemUid;
     bool restore = false;
     MS2Ptr<CItem> item = FUN_141425750(nItemUid, &restore);
-    if (item == 0 || item->FUN_1405279c0() == 0)
+    if (item == 0 || item->GetSocket() == 0)
         return;
     MS2Ptr<TSocketGemStoneInfo> info(result.m_spGem);
     if (info == 0)
@@ -1348,7 +1348,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f727e0(CInPacket* packet)
     __int64 nItemUid = result.m_nItemUid;
     bool restore = false;
     MS2Ptr<CItem> item = FUN_141425750(nItemUid, &restore);
-    if (item == 0 || item->FUN_1405279c0() == 0)
+    if (item == 0 || item->GetSocket() == 0)
         return;
     int nSlot = result.m_nSlot;
     ClearListSelection(m_gemControl);
@@ -1371,13 +1371,13 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f727e0(CInPacket* packet)
 // @0x140f72a40
 void ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    if (m_selected == 0 || m_selected->FUN_1405279c0() == 0)
+    if (m_selected == 0 || m_selected->GetSocket() == 0)
         return;
     if ((int)DAT_143ab2914 < 0x32)
         return;
     if (m_state != 1)
         return;
-    CItemSocket* socket = m_selected->FUN_1405279c0();
+    CItemSocket* socket = m_selected->GetSocket();
     if (socket->GetMaxSlot() == 0 || socket->GetOpenSlotCount() == 0)
         return;
     int gemId = socket->GetFirstGemId();
@@ -1438,7 +1438,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f72e60(ItemInfoSlot& slot, ASSlo
 {
     int seal = 0;
     if (MS2Ptr<CItem> item = slot.vfunc_25()) {
-        seal = item->FUN_1405279c0() != 0 ? item->FUN_1405279c0()->GetOpenSlotCount() == 0 : 0;
+        seal = item->GetSocket() != 0 ? item->GetSocket()->GetOpenSlotCount() == 0 : 0;
         if (!FUN_1414258e0(item->GetItemUid()))
             asSlot.SetItemEquip(1);
     }
@@ -1619,8 +1619,8 @@ int ItemSocketSystemPageGemStoneUpgrade::vfunc_3(const char* event, const Scalef
 {
     if (_stricmp("onIndexChangeSlot", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0) {
-            int nIndex = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count) != 0) {
+            int nIndex = data.PopInt();
             FUN_140f76420(nIndex);
         }
         return 1;
@@ -1717,7 +1717,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f75c50()
                 continue;
             if (item->FUN_140529560() == 0)
                 continue;
-            CItemSocket* socket = item->FUN_1405279c0();
+            CItemSocket* socket = item->GetSocket();
             if (socket->GetOpenSlotCount() == 0)
                 continue;
             if (socket->HasNoSlots() == true)
@@ -1729,9 +1729,9 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f75c50()
         size_t count = equipment.GetCount();
         for (size_t i = 0; i < count; ++i) {
             MS2Ptr<CItem> equip(equipment.GetAt(i));
-            if (equip == 0 || equip->FUN_1405279c0() == 0)
+            if (equip == 0 || equip->GetSocket() == 0)
                 continue;
-            CItemSocket* socket = equip->FUN_1405279c0();
+            CItemSocket* socket = equip->GetSocket();
             if (socket->GetOpenSlotCount() == 0)
                 continue;
             Unk_SocketGemArray& gems = socket->GetGems();
@@ -2013,13 +2013,13 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f78110(MS2Ptr<CItem> item)
                 float percent = (float)(unsigned)sale->rate * 0.01f;
                 text = FUN_14042cb90(CStringW(L"s_itemsocketsystem_gemstoneupgrade_sale_desc"), percent);
             }
-            desc->FUN_1422c4f00(text);
+            desc->SetTextHTMLW(text);
         }
         // the fee text goes to the sale text field, as in the exe
         MS2Ptr<ASTextField> feeField = content->FUN_1409b4620("m_upgradeFee");
         if (feeField.get() != 0) {
             CStringW text = FUN_1405c2690(L"s_itemenchant_fee", FUN_1409404f0(fee));
-            desc->FUN_1422c4f00(text);
+            desc->SetTextHTMLW(text);
         }
     }
 }
@@ -2049,7 +2049,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f787a0(CInPacket* packet)
         if (!valid) {
             m_selected = item;
             resultUid = item->GetItemUid();
-        } else if (!item->FUN_1405279c0()->SetGemInfo(result.m_nSlot, MS2Ptr<TSocketGemStoneInfo>(result.m_spInfo))) {
+        } else if (!item->GetSocket()->SetGemInfo(result.m_nSlot, MS2Ptr<TSocketGemStoneInfo>(result.m_spInfo))) {
             return;
         }
     }
@@ -2297,7 +2297,7 @@ bool ItemSocketSystemPageGemStoneUpgrade::FUN_140f79e10(MS2Ptr<TGemStoneInEquip>
 {
     if (out != 0)
         *out = 0;
-    if (owner == 0 || owner->FUN_1405279c0() == 0)
+    if (owner == 0 || owner->GetSocket() == 0)
         return true;
     if (record == 0 || record->FUN_140f74590() == true)
         return true;
@@ -2305,7 +2305,7 @@ bool ItemSocketSystemPageGemStoneUpgrade::FUN_140f79e10(MS2Ptr<TGemStoneInEquip>
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return false;
     }
-    int id = owner->FUN_1405279c0()->GetGemId(record->m_slot);
+    int id = owner->GetSocket()->GetGemId(record->m_slot);
     if (record->m_gem == 0 || id != record->m_gem->FUN_1405276c0()) {
         FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         return false;

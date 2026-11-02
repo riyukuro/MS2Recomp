@@ -108,7 +108,7 @@ Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, Unk_FdKey key);   // by value (th
 class CubeMapInformationService   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_1410c8030(int, int);
+    __int64 GetOwnerId(int, int);
 };
 
 // The doll / player helpers.
@@ -131,7 +131,7 @@ typedef ATL::CAtlList<MS2Ptr<CEquipItem> > Unk_FdEquipList;
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     char m_pad[0x2a0 - 0x18];
 };
 MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
@@ -338,10 +338,10 @@ void UIFittingDollDialog::FUN_141933b00()
     int nItemId = ((class Unk_AkoFittingDoll*)(class FittingDollPC*)(pDoll))->FUN_140967160();
 
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
-        spName->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+        spName->SetTextW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
 
     if (MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_desc"))
-        spDesc->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->GetItemDescription(nItemId, CString("functionDescription")));
+        spDesc->SetTextW(TSingleton<CStringTable>::GetInstance()->GetItemDescription(nItemId, CString("functionDescription")));
 
     if (MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character"))
     {
@@ -378,7 +378,7 @@ void UIFittingDollDialog::FUN_141934070()
     Unk_FdPlotMgr* pMgr = ((class Unk_FdPlotMgr*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
     Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot != 0)
-        bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410c8030(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
+        bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
     bool bEquip = pDoll->FUN_14121c710() == 1;
     FUN_14121e670(GetTypeName(), ((class GameObject*)(class PC*)(pMe))->FUN_14123c580(), DAT_143af25f0, bEquip);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -403,7 +403,7 @@ void UIFittingDollDialog::FUN_141934340()
     PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pMe == 0)
         return;
-    if (((class PCBase*)(class PC*)(pMe))->FUN_14166c930() == 0x22)
+    if (((class PCBase*)(class PC*)(pMe))->GetCurStateId() == 0x22)
         return;
     if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
     {
@@ -425,7 +425,7 @@ int UIFittingDollDialog::FUN_141934430()
     Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot == 0)
         return 0xd;
-    if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410c8030(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->FUN_141656ad0())
+    if (((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->GetOwnerId(pPlot->m_nKeyA, pPlot->m_nKeyB) != ((class PC*)(class PC*)(pMe))->FUN_141656ad0())
         return 2;
 
     Unk_FdEquipList list(10);
@@ -442,7 +442,7 @@ int UIFittingDollDialog::FUN_141934430()
             return nResult;
         void* pTransfer;
         void* pDead = pTransfer = spEquip->GetItem()->FUN_140527930();
-        if (pTransfer != 0 && ((class CItemTransfer*)(void*)(pTransfer))->HasBindingRule() != 0 && ((class CItemTransfer*)(void*)(pTransfer))->FUN_140635120() == 0)
+        if (pTransfer != 0 && ((class CItemTransfer*)(void*)(pTransfer))->HasBindingRule() != 0 && ((class CItemTransfer*)(void*)(pTransfer))->HasBinding() == 0)
             bBound = true;
     }
     list.RemoveAll();
@@ -469,7 +469,7 @@ int UIFittingDollDialog::FUN_141934430()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x303, 0, CStringW(L""));
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIFittingDollDialog::FUN_141934c10));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIFittingDollDialog::FUN_141934c10));
                 FUN_140d73c60(spBox);
             }
         }

@@ -130,6 +130,7 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_140aec8a0(bool);
+    void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
 };
 
 float FUN_14029d220(float f);                       // fabs
@@ -400,7 +401,7 @@ void CConsoleCameraMode::vfunc_30()
         Unk_RpgActor* pActor = FUN_1409ffd30(pObject);
         if (pActor)
         {
-            Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(pActor, 1);
+            reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(pActor, 1);
             break;
         }
     }

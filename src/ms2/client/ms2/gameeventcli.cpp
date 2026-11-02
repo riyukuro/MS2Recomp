@@ -1013,7 +1013,7 @@ void GameEventRpsCli::vfunc_6()
     Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    switch (pPlayer->FUN_14166c930()) {
+    switch (pPlayer->GetCurStateId()) {
     case 0x3c:
         pPlayer->vfunc_59(1, 0, 0, 0);
         break;
@@ -1060,7 +1060,7 @@ void GameEventCoupleDanceCli::vfunc_6()
     Unk_CliPlayer* pPlayer = (Unk_CliPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    switch (pPlayer->FUN_14166c930()) {
+    switch (pPlayer->GetCurStateId()) {
     case 0x45:
         pPlayer->vfunc_59(1, 0, 0, 0);
         break;
@@ -1240,8 +1240,8 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
             {
                 MS2Ptr<CItem> spItem(new CItem());
                 ((CItem*)spItem)->FUN_140523c40(m_d0->m_spJumpingItem->vfunc_o18_0(), m_d0->m_spJumpingItem->vfunc_o18_1(), 0);
-                ((CItem*)spItem)->FUN_140526c70(m_d0->m_spJumpingItem->vfunc_o18_2());
-                spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
+                ((CItem*)spItem)->SetCountClamped(m_d0->m_spJumpingItem->vfunc_o18_2());
+                spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->GetRarity());
                 spData->m_spItem = spItem;
                 spData->m_nCount = ((CItem*)spItem)->GetCount();
                 spData->m_48 = 0x411;
@@ -1259,8 +1259,8 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
             {
                 MS2Ptr<CItem> spItem(new CItem());
                 ((CItem*)spItem)->FUN_140523c40(m_d0->m_rewardItems.begin()->vfunc_o18_0(), m_d0->m_rewardItems.begin()->vfunc_o18_1(), 0);
-                ((CItem*)spItem)->FUN_140526c70(m_d0->m_rewardItems.begin()->vfunc_o18_2());
-                spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
+                ((CItem*)spItem)->SetCountClamped(m_d0->m_rewardItems.begin()->vfunc_o18_2());
+                spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->GetRarity());
                 spData->m_spItem = spItem;
                 spData->m_nCount = ((CItem*)spItem)->GetCount();
                 spData->m_48 = 0x411;
@@ -1296,8 +1296,8 @@ void GameEventBurningLevelupCli::FUN_140ce7250(Unk_CliPkt& pkt)
             {
                 MS2Ptr<CItem> spItem(new CItem());
                 ((CItem*)spItem)->FUN_140523c40(m_d0->m_spJumpingItem->vfunc_o18_0(), m_d0->m_spJumpingItem->vfunc_o18_1(), 0);
-                ((CItem*)spItem)->FUN_140526c70(m_d0->m_spJumpingItem->vfunc_o18_2());
-                spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
+                ((CItem*)spItem)->SetCountClamped(m_d0->m_spJumpingItem->vfunc_o18_2());
+                spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->GetRarity());
                 spData->m_spItem = spItem;
                 spData->m_nCount = ((CItem*)spItem)->GetCount();
                 spData->m_48 = 0x411;

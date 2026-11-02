@@ -62,7 +62,7 @@ int CScriptContent::vfunc_2(Unk_ScriptXmlNode* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "text", m_text);
     XmlGetAttr((class TiXmlElement*)(pNode), "voiceID", m_voiceId);
     XmlGetAttr((class TiXmlElement*)(pNode), "illust", m_illust);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(m_text);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(m_text);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14078CFD0, CScriptContent, vfunc_2, 158, 0x04708005);
@@ -276,7 +276,7 @@ int CCinematicContent::vfunc_2(Unk_ScriptXmlNode* pNode)
         XmlGetAttr((class TiXmlElement*)(pChoice), "text", choice.m_text);
         XmlGetAttr((class TiXmlElement*)(pChoice), "goto", choice.m_goto);
         XmlGetAttr((class TiXmlElement*)(pChoice), "gotoFail", choice.m_gotoFail);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(choice.m_text);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(choice.m_text);
         spDistractor->m_choices.Add(choice);
     }
     m_distractors = spDistractor;

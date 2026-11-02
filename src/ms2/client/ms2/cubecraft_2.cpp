@@ -912,7 +912,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
             {
                 FUN_14115b1e0(GetCubeMotionManager(), spCell->entity->GetEntityID(), fCur, m_fScale + 0.05f, 200);
             }
-            else if (((class CFeatureManager*)FUN_140166410())->FUN_14036e510() && m_bVisible)
+            else if (((class CFeatureManager*)FUN_140166410())->IsRegionCN() && m_bVisible)
             {
                 FUN_14115b1e0(GetCubeMotionManager(), spCell->entity->GetEntityID(), fCur, m_fScale - 0.05f, 200);
             }
@@ -1249,7 +1249,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
     PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    if (((class PC*)(pPC))->FUN_1416595d0() == 0)
+    if (((class PC*)(pPC))->IsInCubeMode() == 0)
         return;
     Vector3 kCell = m_ptCell;
     if (m_spGuide.operator==(0))
@@ -1544,7 +1544,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
     PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == m_pOwner)
     {
-        if (((class PCBase*)(class PC*)(pPC))->FUN_14166c930() == 0x10)
+        if (((class PCBase*)(class PC*)(pPC))->GetCurStateId() == 0x10)
         {
             SetGuideVisible(false);
             SetGuide2Visible(false);

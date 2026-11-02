@@ -31,7 +31,11 @@ class Unk_BuddyInput : public Unk_BuddyInputBase { public: Unk_BuddyReadStream s
 class Unk_Service6100017 : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    int FUN_1410d33a0(unsigned, Vector3*);
+};
+class CubeMapInformationService   // C3: member view (cubemapinformationservice_3.h brings header statics that move this unit's initializer)
+{
+public:
+    int TryGetHouseMarkPosition(int nKey, Vector3* pOut);       // 0x1410d33a0
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -122,7 +126,7 @@ int CBuddy::FUN_1401cc400(Vector3* out) {
     *out = DAT_143b01a60;
     if ((unsigned)m_b8 > 0) {
         efd::SmartPointer<Unk_Service6100017> service(FUN_1401cd040(&DAT_143b059e8));
-        if (service->FUN_1410d33a0(m_bc, out)) return 1;
+        if (reinterpret_cast<CubeMapInformationService*>(service.operator->())->TryGetHouseMarkPosition(m_bc, out)) return 1;
     }
     return 0;
 }

@@ -413,7 +413,7 @@ void Customize::EditItems::SelectUid(__int64 nUid)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spEquip = pPc->GetEquipByUid(nUid);
     Select(spEquip);
 }
 MS2_REPLACE_METHOD(0x140CCB7D0, Customize::EditItems, SelectUid, 130, 0x43251E96);
@@ -705,7 +705,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
                 bEquip = true;
             }
         } else {
-            MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(spCur->GetItemUid());
+            MS2Ptr<CEquipItem> spEquip = pPc->GetEquipByUid(spCur->GetItemUid());
             if ((spEquip.get() ? true : false) && spEquip->FUN_1411dc820() == spCur->FUN_1405276c0())
                 bEquip = false;
         }
@@ -1374,7 +1374,7 @@ void Customize::Equipment::UnequipUid(__int64 nUid)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spEquip = pPc->GetEquipByUid(nUid);
     if (spEquip == 0)
         return;
     MS2Ptr<CItem> spItem = spEquip->GetItem();

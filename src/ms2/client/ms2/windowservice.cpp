@@ -159,7 +159,6 @@ void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
 
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBoxData&));
 bool FUN_141902530(int, const CMsgBoxData&);
 CNetworkService* FUN_140714f90();
 CReconnectionManagerCli* FUN_140e800e0();
@@ -617,7 +616,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         else
         {
             int nCode = (int)wParam;
-            FUN_140d74390(BlockFormat<int>(0x20e, nCode), 0, FUN_140b76b10(FUN_141902530));
+            FUN_140d74390(BlockFormat<int>(0x20e, nCode), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
             if (GetClientPlatform() != 0)
                 GetClientPlatform()->vfunc_58(0x20e, nCode);
         }

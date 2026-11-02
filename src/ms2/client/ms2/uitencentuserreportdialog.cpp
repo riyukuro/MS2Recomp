@@ -495,7 +495,7 @@ void UITencentUserReportPage::FUN_140edcfd0(CStringW name)
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetName", text))
-        text->FUN_1422c4cd0(name);
+        text->SetTextW(name);
 }
 MS2_REPLACE_METHOD(0x140EDCFD0, UITencentUserReportPage, FUN_140edcfd0, 374, 0xFE5824BF);
 
@@ -504,7 +504,7 @@ void UITencentUserReportPage::FUN_140edd150(CStringW name)
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemName", text))
-        text->FUN_1422c4cd0(name);
+        text->SetTextW(name);
 }
 MS2_REPLACE_METHOD(0x140EDD150, UITencentUserReportPage, FUN_140edd150, 374, 0x721E8FEF);
 
@@ -513,7 +513,7 @@ void UITencentUserReportPage::FUN_140edd2d0(CStringW name)
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemSellerName", text))
-        text->FUN_1422c4cd0(name);
+        text->SetTextW(name);
 }
 MS2_REPLACE_METHOD(0x140EDD2D0, UITencentUserReportPage, FUN_140edd2d0, 374, 0x8887ABE7);
 
@@ -523,10 +523,10 @@ void UITencentUserReportPage::FUN_140edd450()
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldWarnig", text)) {
         switch (m_type) {
-        case 3: text->FUN_1422c4cd0(GetStringCommon(0x8b2)); break;
-        case 4: text->FUN_1422c4cd0(GetStringCommon(0x8b1)); break;
-        case 16: text->FUN_1422c4cd0(GetStringCommon(0x8b1)); break;
-        default: text->FUN_1422c4cd0(GetStringCommon(0x8b0)); break;
+        case 3: text->SetTextW(GetStringCommon(0x8b2)); break;
+        case 4: text->SetTextW(GetStringCommon(0x8b1)); break;
+        case 16: text->SetTextW(GetStringCommon(0x8b1)); break;
+        default: text->SetTextW(GetStringCommon(0x8b0)); break;
         }
     }
 }

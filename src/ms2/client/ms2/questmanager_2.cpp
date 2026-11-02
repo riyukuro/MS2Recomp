@@ -292,7 +292,7 @@ void FUN_141275260(int stringId, int, int);
 class Unk_QmNpcTable { public:  };
 class Unk_QmQuestFilter { public: int FUN_141261b90(unsigned questId); };
 class Unk_QmOptions { public: Unk_QmQuestFilter* FUN_140c9b8b0(); };
-CStringW FUN_140763550(unsigned questId, int state);     // one tooltip line of a quest
+CStringW FUN_140763550(int questId, int state);     // one tooltip line of a quest
 PCBase* FUN_140aac420(Unk_WsV118* user);              // the user's object (CComPtrBase::operator T*)
 // CRBTree<unsigned, Unk_WsV118> members belong to other objects (0x140c20a10, 0x14112e170, 0x14112e2b0).
 template<> POSITION ATL::CRBTree<unsigned, Unk_WsV118, ATL::CElementTraits<unsigned>, ATL::CElementTraits<Unk_WsV118>>::GetHeadPosition() const throw();

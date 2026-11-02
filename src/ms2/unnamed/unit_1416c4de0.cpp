@@ -26,7 +26,7 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
 };
 
@@ -264,7 +264,7 @@ Vector3 CPVPCameraMode::FUN_1416c5d30()
         ptOther = ptCenter = pSelf->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, m_128));
         m_50 = m_124;
     }
-    m_110 = reinterpret_cast<Unk_CameraTargetEntity*>(WorldService::GetInstance()->FUN_141bd1180(m_108));
+    m_110 = reinterpret_cast<Unk_CameraTargetEntity*>(WorldService::GetInstance()->FindObjectById(m_108));
     if (m_110 != NULL)
     {
         float fDist = 0.0f;

@@ -238,8 +238,7 @@ void CMenteeSearchManager::OnWebResult(MS2Ptr<CMenteeSearchParam> pParam, MS2Ptr
             MS2Ptr<MenteeSearch::ResponseMenteeList> spList(new MenteeSearch::ResponseMenteeList);
             if (spList == 0)
                 throw Exception(0x20);
-            int nRead = spList->FUN_140b6dfb0(pResult->m_buffer);
-            if (nRead == 0)
+            if (spList->FUN_140b6dfb0(pResult->m_buffer) == 0)
                 throw Exception(0x21);
             if (spList->m_nResult == 0)
             {
@@ -256,7 +255,7 @@ void CMenteeSearchManager::OnWebResult(MS2Ptr<CMenteeSearchParam> pParam, MS2Ptr
     }
     if (nError != 0)
     {
-        CStringW strText = GetStringCommonByKey(CStringW(L"s_mentoring_error_request_mentee_list_search_error"));
+        CStringW strText = GetStringCommonByKey(L"s_mentoring_error_request_mentee_list_search_error");
         FUN_1412751b0(strText, 20);
     }
 }

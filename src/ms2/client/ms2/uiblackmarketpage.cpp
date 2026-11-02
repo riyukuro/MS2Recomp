@@ -401,10 +401,10 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     if (_stricmp("OnChangeCategory", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nTab = data.FUN_1422b8a10();
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            int nTab = data.PopInt();
+            Scaleform::GFx::Value ret = data.PopValue();
             MS2Ptr<AScript> spRet = FUN_1409e7dc0(m_50, ret);
             if (spRet.get())
                 FillSubTabArray(static_cast<ASObj&>(*spRet), nTab);
@@ -414,10 +414,10 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     else if (_stricmp("OnChangeLowCategory", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nTab = data.FUN_1422b8a10();
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            int nTab = data.PopInt();
+            Scaleform::GFx::Value ret = data.PopValue();
             MS2Ptr<AScript> spRet = FUN_1409e7dc0(m_50, ret);
             if (spRet.get())
                 FUN_140f0e940(static_cast<ASObj&>(*spRet), nTab);
@@ -427,11 +427,11 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     else if (_stricmp("OnChangePage", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nFirst = data.FUN_1422b8a10();
-            int nCount = data.FUN_1422b8a10();
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            int nFirst = data.PopInt();
+            int nCount = data.PopInt();
+            Scaleform::GFx::Value ret = data.PopValue();
             bool bResult = false;
             if (m_nPending == 0 && CanSearchNow())
             {
@@ -445,10 +445,10 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     else if (_stricmp("OnChangeList", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nPage = data.FUN_1422b8a10();
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            int nPage = data.PopInt();
+            Scaleform::GFx::Value ret = data.PopValue();
             bool bResult = false;
             if (m_nPending == 0 && CanSearchNow() && m_spCond.get())
             {
@@ -464,10 +464,10 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     else if (_stricmp("OnClickSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             int nResult = FUN_140f0f310(&data, 0);
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            Scaleform::GFx::Value ret = data.PopValue();
             (&ret)->SetMember("result", nResult != 0);
         }
         return 1;
@@ -475,12 +475,12 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     else if (_stricmp("OnClickSortButton", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strSort = data.FUN_1422b8f40();
-            int nUp = data.FUN_1422b8a90() ? 1 : 0;
+            int nUp = data.PopBool() ? 1 : 0;
             bool bResult = false;
-            Scaleform::GFx::Value ret = data.FUN_1422b9260();
+            Scaleform::GFx::Value ret = data.PopValue();
             if (m_nPending == 0 && CanSearchNow() && m_spCond.get())
             {
                 m_spCond->m_dw48 = 1;
@@ -506,7 +506,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
             }
         }
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             CString strState = data.FUN_1422b8d30();
@@ -569,7 +569,7 @@ void BlackMarketPageItemSearch::FUN_140f0d630(int nMsg, void* p2, void* p3)
                 ASObj entry(2);
                 entry.FUN_1407cbb20("label", strName);
                 entry.FUN_1409c0d20("id", nId);
-                candidates.FUN_1422bbf00(entry);
+                candidates.PushObj(entry);
             }
         }
     }
@@ -838,7 +838,7 @@ int BlackMarketPageItemSearch::FUN_140f0f310(ASData* pArgs, int n)
         return 0;
     if (!m_spCond)
         m_spCond.AssignRaw(new CBlackMarketSchCond());
-    Scaleform::GFx::Value ret = pArgs->FUN_1422b9260();
+    Scaleform::GFx::Value ret = pArgs->PopValue();
     {
         MS2Ptr<AScript> spData = FUN_1409e7dc0(m_50, ret);
         if (spData.get())
@@ -1035,16 +1035,16 @@ void BlackMarketPageItemSearch::FUN_140f108e0(MS2Ptr<CBlackMarketProduct> spEntr
             MS2Ptr<CItem> spItem = spEntry->m_item;
             int nUnitCount = 1;
             spBox->SetTitle(GetStringCommon(0x45f));
-            spBox->FUN_141a01700(0x47d, 0x476, 0);
+            spBox->SetButtonLabelIds(0x47d, 0x476, 0);
             MS2Ptr<CMsgBoxDataItem> spData = new CMsgBoxDataItem();
-            spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->FUN_140526bd0());
+            spData->FUN_141a06630(((CItem*)spItem)->FUN_140527b10(), true, ((CItem*)spItem)->GetRarity());
             spData->m_nUnitCount = nUnitCount;
             spData->m_nCount = 1;
             spData->m_nMax = spEntry->RollCount();
             spData->m_nPrice = (int)spEntry->PriceFor(1);
             spData->m_spItem = spItem;
             spBox->SetItem(spData);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::FUN_140f113e0));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::FUN_140f113e0));
             spBox->FUN_141a024a0(0);
             spBox->Append<__int64>(nProductId);
             FUN_140d73c60(spBox);
@@ -1068,7 +1068,7 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
     if (nCount != ((CItem*)spShow)->GetCount())
     {
         spShow.AssignRaw(new CItem());
-        ((CItem*)spShow)->InitWithCount(((CItem*)spItem)->FUN_1405276c0(), ((CItem*)spItem)->FUN_140526bd0(), 0, nCount);
+        ((CItem*)spShow)->InitWithCount(((CItem*)spItem)->FUN_1405276c0(), ((CItem*)spItem)->GetRarity(), 0, nCount);
     }
     __int64 nProductId = spEntry->m_qw18;
     __int64 nPrice = spEntry->PriceFor(nCount);
@@ -1088,8 +1088,8 @@ void BlackMarketPageItemSearch::FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntr
     MS2Ptr<CMsgBoxData> spBox = new CMsgBoxData(0x11);
     spBox->FUN_141a01ee0(spShow, ((CItem*)spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
     spBox->SetMsg(strMsg);
-    spBox->FUN_141a01700(0x477, 0x478, 0);
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::OnBuyCountMsgBox));
+    spBox->SetButtonLabelIds(0x477, 0x478, 0);
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemSearch::OnBuyCountMsgBox));
     spBox->Append<__int64>(nProductId);
     spBox->Append<int>(nCount);
     FUN_140d73c60(spBox);
@@ -1166,7 +1166,7 @@ int BlackMarketRegisterItem::Set(MS2Ptr<CItem> spItem)
         return 0;
     }
     int nId = spItem->FUN_1405276c0();
-    int nRank = spItem->FUN_140526bd0();
+    int nRank = spItem->GetRarity();
     if (IsSame(nId, nRank))
         return 0;
     m_nItemId = nId;
@@ -1225,7 +1225,7 @@ void BlackMarketPageItemRegister::OnInit()
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xc5) == true)
             {
                 spNumber->vfunc_4(true);
-                spNumber->FUN_1422c4f00(FUN_141275860(0));
+                spNumber->SetTextHTMLW(FUN_141275860(0));
                 m_spTotalPriceNumber = spNumber;
             }
             else
@@ -1275,10 +1275,10 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
     if (_stricmp("OnEnableRegister", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CString strSlot = data.FUN_1422b8d30();
-            Scaleform::GFx::Value vResult = data.FUN_1422b9260();
+            Scaleform::GFx::Value vResult = data.PopValue();
             efd::SmartPointer<InvenSlot> spSlot = FUN_140f15b80(Unk_NotifyContext::FUN_1422c8e90(strSlot));
             if (spSlot)
             {
@@ -1306,11 +1306,11 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
     else if (_stricmp("OnClickRegister", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             __int64 nUid = FUN_141b71960(data.FUN_1422b8d30());
             __int64 nPrice = FUN_140718320(data.FUN_1422b8f40());
-            int nCount = data.FUN_1422b8a10();
+            int nCount = data.PopInt();
             FUN_140f13e70(nUid, nPrice, nCount);
         }
         return 1;
@@ -1318,7 +1318,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
     else if (_stricmp("OnClickCancelSell", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
             MS2Ptr<CBlackMarketProduct> spEntry = CBlackMarketMan::GetInstance()->FUN_140a20e70(nId);
@@ -1337,8 +1337,8 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
                 MS2Ptr<CMsgBoxData> spBox = new CMsgBoxData(0x11);
                 spBox->FUN_141a01ee0(spEntry->m_item, spEntry->m_item->FUN_140527b10(), 1, 0, -1, -1, 1);
                 spBox->SetMsg(strMsg);
-                spBox->FUN_141a01700(0x477, 0x478, 0);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemRegister::FUN_140f13950));
+                spBox->SetButtonLabelIds(0x477, 0x478, 0);
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageItemRegister::FUN_140f13950));
                 FUN_140d73c60(spBox);
             }
         }
@@ -1369,7 +1369,7 @@ void BlackMarketPageItemRegister::vfunc_5()
             int nCount = (int)CBlackMarketMan::GetInstance()->FUN_140a210b0();
             int nMax = 0x1c;
             CStringW strText = FUN_14028dfa0(CStringW(L"s_blackmarket_register_counter"), nCount, nMax);
-            m_spCounter->FUN_1422c4f00(strText);
+            m_spCounter->SetTextHTMLW(strText);
         }
         m_bFilled = false;
     }
@@ -1460,7 +1460,7 @@ void BlackMarketPageItemRegister::UpdateTotalPriceNumber(const Scaleform::GFx::F
     CStringW strPrice = FUN_14083cf10(m_spTotalPrice->GetTextW());
     CStringW strText = FUN_14028dfa0(CStringW(L"s_blackmarket_totalprice_numberstring"), FUN_141275900(strPrice));
     m_spTotalPriceNumber->vfunc_4(true);
-    m_spTotalPriceNumber->FUN_1422c4f00(strText);
+    m_spTotalPriceNumber->SetTextHTMLW(strText);
 }
 MS2_REPLACE_METHOD(0x140F13610, BlackMarketPageItemRegister, UpdateTotalPriceNumber, 380, 0xC3B47861);
 
@@ -1616,7 +1616,7 @@ int BlackMarketPageItemRegister::FUN_140f14650(ASObj& obj, CItem& item, BlackMar
 {
     __int64 nDefault = 0;
     int nId = item.FUN_1405276c0();
-    int nRank = item.FUN_140526bd0();
+    int nRank = item.GetRarity();
     if (reg.IsSame(nId, nRank))
     {
         if (reg.GetPrice() != 0)
@@ -1630,7 +1630,7 @@ int BlackMarketPageItemRegister::FUN_140f14650(ASObj& obj, CItem& item, BlackMar
     obj.FUN_1407cbb20("defaultPrice", FUN_1409404f0(nDefault));
     obj.FUN_1407cbb20("itemGUID", FUN_141b71910(item.GetItemUid()));
     obj.FUN_1407cbb20("itemName", FUN_140f14c20(item));
-    int nItemRank = item.FUN_140526bd0();
+    int nItemRank = item.GetRarity();
     if (nItemRank != reg.m_nRank && reg.m_nDefault != FUN_1401bcd30())
     {
         CStringW strFee = FUN_140f14900(nItemRank);
@@ -1675,7 +1675,7 @@ MS2_REPLACE(0x140F14AE0, FUN_140f14ae0, 302, 0x062046CE);
 // @0x140f14c20
 CStringW FUN_140f14c20(CItem& item)
 {
-    unsigned int nColor = CItemDataTable::GetInstance()->GetTextColor((ItemGradeKey)item.FUN_140526bd0());
+    unsigned int nColor = CItemDataTable::GetInstance()->GetTextColor((ItemGradeKey)item.GetRarity());
     CStringW strName = FUN_14183e930(item.FUN_140527b10(), nColor);
     return strName;
 }
@@ -1841,7 +1841,7 @@ inline void ASObj::FUN_140f17290(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    (&m_value)->SetMember(szName, data.FUN_1422b9260());
+    (&m_value)->SetMember(szName, data.PopValue());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca8e80-0x142ca8f40 .text$yd

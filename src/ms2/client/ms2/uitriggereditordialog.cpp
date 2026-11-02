@@ -1015,7 +1015,7 @@ inline void ASObj::FUN_141b2ffc0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x141b30060
@@ -1023,7 +1023,7 @@ inline MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxD
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
     spBox->SetMsg(strText);
-    spBox->FUN_141a027c0(cb);
+    spBox->SetCallback(cb);
     spBox->FUN_141b2fe80(pszTag);
     FUN_14151f150(spBox);
     return spBox;

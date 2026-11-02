@@ -89,7 +89,7 @@ void StateWaitingSelect::vfunc_2(int n)
     case 0x4d:
         m_n10 = n;
         m_pOwner->FUN_14166ce70(0);
-        m_pOwner->FUN_14166dd20("Equip_Change_Idle_A", 1.0f, false, false);
+        m_pOwner->PlayAnimation("Equip_Change_Idle_A", 1.0f, false, false);
         m_pOwner->FUN_14166f8f0(0, 1);
         break;
     case 0x4c:
@@ -99,7 +99,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = (strModel == "Equip_Change_Cap_A");
-            pPC->FUN_14166dd20("Equip_Change_Cap_A", 1.0f, bSame, false);
+            pPC->PlayAnimation("Equip_Change_Cap_A", 1.0f, bSame, false);
         }
         break;
     case 0x4e:
@@ -109,7 +109,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = (strModel == "Equip_Change_Body_A");
-            pPC->FUN_14166dd20("Equip_Change_Body_A", 1.0f, bSame, false);
+            pPC->PlayAnimation("Equip_Change_Body_A", 1.0f, bSame, false);
         }
         break;
     case 0x4f:
@@ -119,7 +119,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = (strModel == "Equip_Change_Head_A");
-            pPC->FUN_14166dd20("Equip_Change_Head_A", 1.0f, bSame, false);
+            pPC->PlayAnimation("Equip_Change_Head_A", 1.0f, bSame, false);
         }
         break;
     case 0x50:
@@ -155,7 +155,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = (strModel == "Equip_Change_Glove_A");
-            pPC->FUN_14166dd20("Equip_Change_Glove_A", 1.0f, bSame, false);
+            pPC->PlayAnimation("Equip_Change_Glove_A", 1.0f, bSame, false);
         }
         break;
     case 0x52:
@@ -165,7 +165,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = (strModel == "Equip_Change_Mantle_A");
-            pPC->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, bSame, false);
+            pPC->PlayAnimation("Equip_Change_Mantle_A", 1.0f, bSame, false);
         }
         break;
     case 0x53:
@@ -175,7 +175,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = (strModel == "Equip_Change_Shoes_A");
-            pPC->FUN_14166dd20("Equip_Change_Shoes_A", 1.0f, bSame, false);
+            pPC->PlayAnimation("Equip_Change_Shoes_A", 1.0f, bSame, false);
         }
         break;
     }
@@ -238,7 +238,7 @@ void StateWaitingSelect::FUN_1417ff590(int* pnSub, const CString& strAnim)
         m_n10 = *pnSub;
         pPC->FUN_14166ce70(0);
         bool bSame = FUN_1401c0090(strModel, strAnim);
-        pPC->FUN_14166dd20(strAnim.GetString(), 1.0f, bSame, false);
+        pPC->PlayAnimation(strAnim.GetString(), 1.0f, bSame, false);
     }
 }
 

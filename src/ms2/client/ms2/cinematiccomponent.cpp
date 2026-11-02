@@ -161,7 +161,7 @@ void FUN_140d73bc0(int, int, void*, CStringW);
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     unsigned int FUN_141a02e90(int, unsigned int) const;
     bool FUN_141a02e10(int, bool) const;
     template<class T> void Append(T);
@@ -321,7 +321,7 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
                 text = FUN_1401aa6a0(nNpcId);
             }
         }
-        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(name);
+        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(name);
         obj.FUN_1407cbb20("npc", CStringW(text));
         obj.FUN_1407cbb20("script", CStringW(name));
         obj.FUN_1407cba60("movie", CString(m_spContent->m_movie));
@@ -343,7 +343,7 @@ void CCinematicComponent::FUN_14107d4b0(const ATL::CAtlArray<CQuestData::QuestRe
         int nCount = rewards[i].m_job;         // and +0x20 is the count
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_14052b130(nItemId, nRarity, 0) != 0) {
-            spItem->FUN_140526c70(nCount);
+            spItem->SetCountClamped(nCount);
             CString key;
             key.Format("%s_%d", (const char*)m_pOwner->GetTypeName(), i);
             FUN_141415450(key, spItem, 0, 0x11, 0x800);
@@ -423,13 +423,13 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
 CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
 {
     CStringW text = GetStringCommon(nStringId);
-    reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(text);
+    reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(text);
     CStringW keyConfirm = FUN_1409331f0()->GetKeyName(1);
     CStringW keyNext = FUN_1409331f0()->GetKeyName(0x39);
     int nVariant = *reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0 ? 2 : 0;
     if (nVariant == 2)
-        text.Replace(keyConfirm, FUN_1409331f0()->FUN_14142d760(0x49409, nVariant));
-    text.Replace(keyNext, FUN_1409331f0()->FUN_14142d760(0x493e2, nVariant));
+        text.Replace(keyConfirm, FUN_1409331f0()->GetActionKeyName(0x49409, nVariant));
+    text.Replace(keyNext, FUN_1409331f0()->GetActionKeyName(0x493e2, nVariant));
     return text;
 }
 
@@ -521,7 +521,7 @@ void CDistractorCinematicComponent::vfunc_6(const Unk_CinIconArray& icons, ASObj
         ASObj item(2);
         CStringW text(icons.GetAt(i).m_text);
         reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(text, (Unk_CinNpc*)((UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalkNpc());
-        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(text);
+        reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(text);
         item.FUN_1407cba60("iconClass", CString(icons.GetAt(i).m_icon));
         item.FUN_1407cbb20("text", CStringW(text));
         distractors.PushValue(item.FUN_1422bb870());
@@ -545,7 +545,7 @@ int CQuestAcceptCinematicComponent::vfunc_2(int nMsg)
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
         if (bool(spQuest.get() != 0) && spQuest->m_require.m_unrequireGroup.GetCount() > 0) {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_alliance_quest_unreq_group_warn"), 0, L"");
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CQuestAcceptCinematicComponent::FUN_14107ec40));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CQuestAcceptCinematicComponent::OnMsgBoxResult));
             spBox->Append<unsigned>(m_spContent->m_questId);
             FUN_140f73320(spBox.operator->(), m_spContent->m_redirect != 0);
             FUN_140d73c60(spBox);
@@ -565,7 +565,7 @@ void CQuestAcceptCinematicComponent::vfunc_5(ASObj& obj)
     obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d3));
 }
 // @0x14107ec40
-bool CQuestAcceptCinematicComponent::FUN_14107ec40(int nButton, const CMsgBoxData& data)
+bool CQuestAcceptCinematicComponent::OnMsgBoxResult(int nButton, const CMsgBoxData& data)
 {
     if (nButton != 0) {
         ((UITalkManager*)Unk_AkoCutscene::GetInstance())->SendNpcTalkMode0();
@@ -992,7 +992,7 @@ int CChangeJobComponent::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0) {
         if (dynamic_cast<UIMessageBox*>(pSender) != 0) {
             FUN_14151f200();
-            int nButton = pMsg->FUN_1422b8a10();
+            int nButton = pMsg->PopInt();
             if (nButton == 0) {
                 Unk_CinNpcId npc;
                 npc.m_n = ((UITalkManager*)Unk_AkoCutscene::GetInstance())->GetNpcId();
@@ -1035,7 +1035,7 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
         if (FUN_1408a0890(((class WorldService*)(class Unk_CinWorld*)(reinterpret_cast<Unk_CinWorld*>(WorldService::GetInstance())))->FUN_141bd3060(), pc->FUN_141529620(), &nOut) == 0)
             return 0;
         efd::SmartPointer<Unk_Service6100017> spSvc2(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-        if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->FUN_1410c8030(pc->FUN_141529620(), 0) == ((PC*)pc)->FUN_141656ad0()) {
+        if (reinterpret_cast<Unk_CinSvc*>(spSvc2.operator->())->GetOwnerId(pc->FUN_141529620(), 0) == ((PC*)pc)->FUN_141656ad0()) {
             COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);
             pkt.Encode4(pc->FUN_141529620());

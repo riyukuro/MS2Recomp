@@ -51,11 +51,11 @@ CString FUN_1409a2360(const char* sz, int n);               // a copy of the str
 unsigned int FUN_1407181d0(const CString& str);             // atoi of the string (the emoticon id)
 
 // The texture cache of the loading service (singleton 0x140a0afd0).
-class Unk_TexCache
+class CNifLoadingService   // C3: member view (nifeffectparam.h)
 {
 public:
-    efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, int nFlags);                       // find a loaded texture
-    efd::SmartPointer<NiTexture> FUN_1415534d0(CString strPath, NiPointer<NiPixelData> spPixels, int nClass);   // register one from pixels
+    efd::SmartPointer<NiTexture> FindTexture(CString strPath, const NiTexture::FormatPrefs* pPrefs);   // find a loaded texture
+    efd::SmartPointer<NiTexture> CreateTexture(CString strPath, NiPointer<NiPixelData> spPixels, int nClass);   // register one from pixels
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
@@ -246,7 +246,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         return false;
     }
     CString strFile = FUN_14016a5c0(spParam->m_18, 0);
-    efd::SmartPointer<NiTexture> spTexture = ((class Unk_TexCache*)FUN_140a0afd0())->FUN_141553eb0(CString(strFile), 0);
+    efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(CString(strFile), 0);
     if (spTexture.operator NiTexture*() != 0)
     {
         spParam->m_20 = spTexture;
@@ -265,7 +265,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         MS2_ASSERT_AT(0xd3, 0);
         return false;
     }
-    efd::SmartPointer<NiTexture> spCreated = ((class Unk_TexCache*)FUN_140a0afd0())->FUN_1415534d0(CString(strFile), spPixels, 5);
+    efd::SmartPointer<NiTexture> spCreated = ((class CNifLoadingService*)FUN_140a0afd0())->CreateTexture(CString(strFile), spPixels, 5);
     if (spCreated.operator NiTexture*() == 0)
     {
         MS2_ASSERT_AT(0xda, 0);
@@ -395,7 +395,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
         return pImage;
     do
     {
-        efd::SmartPointer<NiTexture> spTexture = ((class Unk_TexCache*)FUN_140a0afd0())->FUN_141553eb0(CString(strFile), 0);
+        efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(CString(strFile), 0);
         if (spTexture.operator NiTexture*() == 0)
             break;
         NiTexture::RendererData* pRendererData = spTexture->GetRendererData();

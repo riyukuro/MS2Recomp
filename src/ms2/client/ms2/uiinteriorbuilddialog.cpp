@@ -141,7 +141,7 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         if (nAnswer == 0)
         {
             CStringW strTag = pMsg->FUN_1422b8f40();

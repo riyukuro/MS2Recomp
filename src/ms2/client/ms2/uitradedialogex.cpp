@@ -268,7 +268,7 @@ int UITradeDialogEx::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("OnLock", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMeso = FUN_1407182f0(data.FUN_1422b8d30());
             if (FUN_141b295a0(nMeso))
@@ -435,7 +435,7 @@ void UITradeDialogEx::FUN_141b284b0()
     int nFeePercent = Client::Constants::GetInstance()->TradeFeePercent.Read();
     CStringW strNotice = FUN_14028dfa0<int>(CStringW(L"s_trade_notice_fee"), nFeePercent);
     if (MS2Ptr<ASTextField> spNotice = m_30->FUN_1409b4620("m_feeNotice"))
-        spNotice->FUN_1422c4f00(strNotice);
+        spNotice->SetTextHTMLW(strNotice);
 }
 
 // @0x141b28d10
@@ -447,11 +447,11 @@ void UITradeDialogEx::FUN_141b28d10(bool bMine, __int64 nMeso)
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xc5))
     {
         CStringW strMeso = FUN_141275860(nMeso);
-        spText->FUN_1422c4f00(strMeso);
+        spText->SetTextHTMLW(strMeso);
     }
     else
     {
-        spText->FUN_1422c4f00(L"");
+        spText->SetTextHTMLW(L"");
     }
 }
 
@@ -462,7 +462,7 @@ void UITradeDialogEx::FUN_141b28e30(bool bMine, __int64 nFee)
     MS2Ptr<ASTextField> spText = bMine ? m_spMyFee : m_spTargetFee;
     if (spText == 0)
         return;
-    spText->FUN_1422c4f00(strFee);
+    spText->SetTextHTMLW(strFee);
 }
 
 // @0x141b28f40
@@ -486,7 +486,7 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
     CStringW strFee = FUN_14028dfa0<CStringW>(L"s_trade_fee", FUN_1409404f0(nFee));
     if (bVip)
         strFee += GetStringCommonByKey(L"s_vip_reduce_fee");
-    spText->FUN_1422c4f00(strFee);
+    spText->SetTextHTMLW(strFee);
     FUN_141b28d10(bMine, nMeso);
 }
 

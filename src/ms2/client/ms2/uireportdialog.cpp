@@ -60,7 +60,6 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_ReportBlindManager : public BlindManager
 {
 public:
-    bool FUN_140a25950(int nKind, __int64 nId);
 };
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
@@ -155,7 +154,7 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (dynamic_cast<UIMessageBox*>(pSender) != 0)
         {
             FUN_14151f200();
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             CStringW strTag = pMsg->FUN_1422b8f40();
             if (nResult == 0)
             {
@@ -198,16 +197,16 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (_stricmp("onReport", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strMethod = data.FUN_1422b8d30();
-            int nMode = data.FUN_1422b8a10();
+            int nMode = data.PopInt();
             CStringW strText = data.FUN_1422b8f40();
-            bool bCategory1 = data.FUN_1422b8a90();
-            bool bCategory2 = data.FUN_1422b8a90();
-            bool bCategory3 = data.FUN_1422b8a90();
-            bool bCategory4 = data.FUN_1422b8a90();
-            bool bCategory5 = data.FUN_1422b8a90();
+            bool bCategory1 = data.PopBool();
+            bool bCategory2 = data.PopBool();
+            bool bCategory3 = data.PopBool();
+            bool bCategory4 = data.PopBool();
+            bool bCategory5 = data.PopBool();
             unsigned int nFlags = 0;
             if (bCategory1)
                 nFlags = nFlags | 1;
@@ -436,12 +435,12 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     }
     else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
     {
-        ((class Unk_ReportBlindManager*)FUN_1409c1730())->FUN_140a25950(2, m_nPosterId);
+        ((class BlindManager*)FUN_1409c1730())->BlockId(2, m_nPosterId);
         ((class CUgcManager*)FUN_14052d220())->FUN_1418885b0(m_nBannerId);
     }
     else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
     {
-        ((class Unk_ReportBlindManager*)FUN_1409c1730())->FUN_140a25950(3, m_nItemId);
+        ((class BlindManager*)FUN_1409c1730())->BlockId(3, m_nItemId);
         ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
     }
     else if (strMethod.CompareNoCase("OnSelectRealStatePage") == 0)

@@ -534,11 +534,11 @@ int UISceneGameBeautyShop::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (pMsg->FUN_1422e4520() == 0) {
         CString strMethod = pMsg->FUN_1422b8d30();
         if (_stricmp("moveMyPC", strMethod) == 0) {
-            m_b0 = pMsg->FUN_1422b8a10();
-            m_b4 = static_cast<Unk_GsUIMsg*>(pMsg)->FUN_1422b8b10();
+            m_b0 = pMsg->PopInt();
+            m_b4 = static_cast<Unk_GsUIMsg*>(pMsg)->PopUInt();
             return 1;
         } else if (_stricmp("openDialog", strMethod) == 0) {
-            m_ac = pMsg->FUN_1422b8a10();
+            m_ac = pMsg->PopInt();
             return 1;
         } else if (_stricmp("setCubeID", strMethod) == 0) {
             m_b8 = pMsg->FUN_1422b8d30();
@@ -706,7 +706,7 @@ void UISceneGameBeautyShop::FUN_141ac9270()
 {
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0) {
-        if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() != 0xe) pPlayer->vfunc_59(0xe, 0, 0, 0);
+        if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() != 0xe) pPlayer->vfunc_59(0xe, 0, 0, 0);
     }
 }
 MS2_REPLACE_METHOD(0x141ac9270, UISceneGameBeautyShop, FUN_141ac9270, 93, 0xEF3CF752);
@@ -1130,7 +1130,7 @@ int UISceneGamePlay::vfunc_14()
         return 1;
     } else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0) != 0) {
         Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
-        if (pPlayer != 0 && reinterpret_cast<PCBase*>(pPlayer)->FUN_14166ce30() == 0 && pPlayer->vfunc_63() != 0) ((Unk_GsMode*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->ActivateCurrentAction();
+        if (pPlayer != 0 && reinterpret_cast<PCBase*>(pPlayer)->IsDead() == 0 && pPlayer->vfunc_63() != 0) ((Unk_GsMode*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->ActivateCurrentAction();
         return 0;
     }
     return 0;
@@ -1446,7 +1446,7 @@ int UISceneGamePlay::FUN_141aca870()
     }
     else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x493e2, false, 0)) {
         Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
-        if (pPlayer != 0 && reinterpret_cast<PCBase*>(pPlayer)->FUN_14166ce30() == 0 && pPlayer->vfunc_63() != 0) {
+        if (pPlayer != 0 && reinterpret_cast<PCBase*>(pPlayer)->IsDead() == 0 && pPlayer->vfunc_63() != 0) {
             if (((Unk_GsMode*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->TryActivateCurrentAction()) {
             }
             else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493e2, 0, 0)) ((Unk_GsMode*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->ActivateCurrentAction();
@@ -1461,7 +1461,7 @@ int UISceneGamePlay::FUN_141aca870()
         if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(0x13) != 0) return 1;
         Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0) {
-            if (reinterpret_cast<PC*>(pPlayer)->FUN_1416595d0() == 0) reinterpret_cast<MyPC*>(pPlayer)->FUN_14152feb0(1, false);
+            if (reinterpret_cast<PC*>(pPlayer)->IsInCubeMode() == 0) reinterpret_cast<MyPC*>(pPlayer)->FUN_14152feb0(1, false);
             else reinterpret_cast<MyPC*>(pPlayer)->SendCraftModeOff();
         }
         return 1;

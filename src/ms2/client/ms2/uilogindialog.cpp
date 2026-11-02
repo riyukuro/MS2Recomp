@@ -99,7 +99,7 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show it
@@ -287,7 +287,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (dynamic_cast<UIMessageBox*>(pSender) != 0)
         {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             if (nResult == 0)
             {
                 if (FUN_1406c34c0() == 1)
@@ -340,9 +340,9 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     else if (_stricmp("OnSaveID", szMethod) == 0)
     {
         ASData arg;
-        if (arg.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (arg.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bSave = arg.FUN_1422b8a90();
+            bool bSave = arg.PopBool();
             reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bSaveId = bSave;
             return 1;
         }
@@ -357,9 +357,9 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else if (_stricmp("OnChkLocaleName", szMethod) == 0)
         {
             ASData arg;
-            if (arg.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (arg.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                bool bChecked = arg.FUN_1422b8a90();
+                bool bChecked = arg.PopBool();
                 if (bChecked == 0)
                 {
                     CMsTime deadline(2019, 2, 6, 15, 0, 0);
@@ -370,7 +370,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
-                            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2730));
+                            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2730));
                             FUN_140d73c60(spBox);
                         }
                     }
@@ -380,7 +380,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
-                            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2690));
+                            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2690));
                             FUN_140d73c60(spBox);
                         }
                     }

@@ -452,12 +452,12 @@ void CGuideObject::vfunc_126()
     MS2Ptr<Unk_GuideRecord> spOld = m_ctrl.GetCurrent();
     if (!spOld
         || spOld->m_pos3c != m_pos98
-        || spOld->m_nType != FUN_14166c930()
+        || spOld->m_nType != GetCurStateId()
         || reinterpret_cast<Unk_CcStateMgr*>(PCBase::FUN_14166ccb0())->vfunc_22(spOld) != 0)
     {
         if (spOld.get() != 0)
             m_ctrl.vfunc_0();
-        MS2Ptr<Unk_GuideRecord> spNew = FUN_140835450(FUN_14166c930());
+        MS2Ptr<Unk_GuideRecord> spNew = FUN_140835450(GetCurStateId());
         spNew->m_nObjId = FUN_14166cc80();
         spNew->m_pos3c = m_pos98;
         spNew->m_pos20 = vfunc_18();
@@ -1203,7 +1203,7 @@ void CFishingGuideObject::vfunc_53(float f)
         Vector3 kPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(vfunc_18() + efd::Point3(0.0f, 0.0f, 75.0f)));
         m_spBirdHead->FUN_1418ce8c0(kPos);
     }
-    if (pOwner != 0 && pOwner->FUN_14166c930() == 0x2d && pOwner->FUN_14166cc80() != 0x75 && m_nShown == 0)
+    if (pOwner != 0 && pOwner->GetCurStateId() == 0x2d && pOwner->FUN_14166cc80() != 0x75 && m_nShown == 0)
         FUN_1410a4cb0();
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200004))
     {

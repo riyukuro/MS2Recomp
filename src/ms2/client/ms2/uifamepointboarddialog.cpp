@@ -102,9 +102,9 @@ int UIFamePointBoardDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp("onChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nAlliance = data.FUN_1422b8a10();
+            int nAlliance = data.PopInt();
             FUN_140c15a10(nAlliance);
         }
         return 1;
@@ -202,7 +202,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
         ASObj line(2);
         line.FUN_1407cbb20("msg", strMsg);
         line.FUN_1407cbb20("date", strDate);
-        logs.FUN_1422bbf00(line);
+        logs.PushObj(line);
     }
     data.FUN_140c16160("log", logs);
     reinterpret_cast<AScript*>(static_cast<Unk_FpScript*>(m_30.operator->()))->Invoke("setData", data);
@@ -213,7 +213,7 @@ void ASObj::FUN_140c16160(const char* szName, ASArray arr)
 {
     ASData data;
     data.AddValue(arr.FUN_1422bb890());
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140c164c0

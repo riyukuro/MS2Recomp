@@ -110,7 +110,7 @@ void UIKillCount::FUN_1419df2a0(void* pKilled)
         __int64 nCur = pMob->FUN_141670a00(4);
         if (0 < nMax && nCur == 0)
         {
-            if (pMob->FUN_14166ce30() == 0)
+            if (pMob->IsDead() == 0)
             {
                 PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPlayer != 0)

@@ -133,21 +133,21 @@ int UILightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         return 1;
     if (_stricmp("onChangeFogEnable", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bEnable = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bEnable = data.PopBool();
             FUN_141449190(bEnable);
         }
         return 1;
     }
     else if (_stricmp("onChangeSliderColor", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141448ec0(&data);
         return 1;
     }
     else if (_stricmp("onChangeSliderDepth", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141448fd0(&data);
         return 1;
     }

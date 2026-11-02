@@ -66,7 +66,6 @@ class Unk_AttendTable { public:                                             // t
 };
 extern Unk_AttendTable g_attendTable;
 class Unk_TextFilter : public CServerStringGroup { };   // string-table translation
-class Unk_EobTextMgr { public: Unk_TextFilter* FUN_140be95b0(); };
          // the name / profanity filter
 class Unk_EobPackets { public:                                              // the packet handler table (TSingleton)
     void FUN_140da5180(int, Delegate<void(CInPacket&)>);
@@ -180,8 +179,8 @@ void UIItemEventOpenBoxDialog::FUN_140e48050()
         return;
     if (FUN_141924630() != 0)
         vfunc_67();
-    m_180 = reinterpret_cast<Unk_EobTextMgr*>(TSingleton<CServerString>::GetInstance())->FUN_140be95b0()->GetString(spCtx->m_title);
-    m_188 = reinterpret_cast<Unk_EobTextMgr*>(TSingleton<CServerString>::GetInstance())->FUN_140be95b0()->GetString(spCtx->m_desc);
+    m_180 = TSingleton<CServerString>::GetInstance()->GetGameEvent()->GetString(spCtx->m_title);
+    m_188 = TSingleton<CServerString>::GetInstance()->GetGameEvent()->GetString(spCtx->m_desc);
     m_190 = (const wchar_t*)spCtx->m_bannerPath;
     m_178 = spCtx->m_boxItemID;
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(m_180);
@@ -198,9 +197,9 @@ void UIItemEventOpenBoxDialog::FUN_140e483b0()
         return;
     if (m_198 == 0 || m_1b8 == 0 || m_1a8 == 0)
         return;
-    m_198->FUN_1422c4cd0(m_180);
-    m_1a8->FUN_1422c4f00(m_180);
-    m_1b8->FUN_1422c4f00(m_188);
+    m_198->SetTextW(m_180);
+    m_1a8->SetTextHTMLW(m_180);
+    m_1b8->SetTextHTMLW(m_188);
     if (m_1e8.GetLength() > 0)
         static_cast<Unk_EobSlot*>(m_1d8.operator->())->FUN_1407cba60((const char*)s_strBinding, m_1e8);
     m_30->Invoke("LoadImage", m_190);

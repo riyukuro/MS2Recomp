@@ -60,14 +60,15 @@ class Unk_JpBody : public GameObjectController
 public:
     unsigned FUN_141240ef0();
 };
-inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->FUN_14166d220()); }
+inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->GetPhysicsBody()); }
 
 // The actor's buffs.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/commonfiles/hideandseek.h"   // C3: HideAndSeek::Info
 class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The hide and seek record of the actor (MS2Ptr<T> from PC::FUN_141664200).
-class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };
+class Unk_HsInfo : public CPtred { };
 int FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -150,7 +151,7 @@ void StateJump::vfunc_4(StateData* pData)
         MS2Ptr<Unk_HsInfo> spInfo = pPC->GetHideAndSeekInfo();
         if (spInfo.get() ? true : false)
         {
-            if (spInfo->FUN_14050a6a0() == 1)
+            if (reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0() == 1)
                 FUN_141276180(s_strHideSeekJump, "");
         }
     }
@@ -182,7 +183,7 @@ void StateJump::vfunc_6()
     if (!m_pOwner->FUN_14166de90(0x35, nSeq))
     {
         efd::utf8string strAnim(m_pOwner->vfunc_123(0x35));
-        m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
     }
 }
 
@@ -201,7 +202,7 @@ void StateJump::vfunc_3(double fTime)
             {
                 efd::Point3 kJump = m_spJump->m_pos;
                 efd::Point3 kRot = FUN_140a0b080(kJump, static_cast<const efd::Point3&>(m_pOwner->vfunc_18()), DAT_143a08cf8);
-                m_pOwner->FUN_14166d970(kRot);
+                m_pOwner->SetRotationAndTargetYaw(kRot);
             }
         }
         else
@@ -306,7 +307,7 @@ void StateJump::vfunc_9(double fTime)
     {
         int nAnim;
         PCBase* pPC = FUN_1417b8370();
-        if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_1416595d0() != 0 && ((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
+        if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_PCCubeCraft*)((Unk_CubeSelection*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft())))->FUN_1410aa010())
         {
             if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
                 nAnim = 0x3a;
@@ -352,7 +353,7 @@ void StateJump::vfunc_9(double fTime)
         if (!m_pOwner->FUN_14166de90(nAnim, nSeq))
         {
             efd::utf8string strAnim(m_pOwner->vfunc_123(nAnim));
-            m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+            m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
         }
     }
 }

@@ -876,12 +876,10 @@ TSingleton<CSoundEventMgr>::TSingleton()
 // @0x141788f10
 const char* FUN_141788f10(FMOD_RESULT nResult)
 {
-    const char* pszText;
     switch ((int)nResult)
     {
 #include "soundservice_errors.inc"
     }
-    return pszText;
 }
 
 // Out-of-unit callees of the manager.

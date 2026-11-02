@@ -118,5 +118,4 @@ Unk_PPRes FUN_1416b4990(NiDefaultClickRenderStep* step, const char* name, void* 
 void* FUN_140c8f690(const Unk_PPRes& res);
 void* FUN_1401d31f0();
 extern char DAT_1439fc800;
-void* FUN_141d33230(NiFixedString* name, void* a, int b, int c, bool d);
 void FUN_14169f6d0(void* smartPtrA, void* p);

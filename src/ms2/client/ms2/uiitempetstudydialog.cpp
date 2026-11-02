@@ -88,10 +88,10 @@ class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> fn);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> fn);
     void FUN_141a01600(__int64 n);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
-    void FUN_141a01700(int nA, int nB, int nC);
+    void SetButtonLabelIds(int nA, int nB, int nC);
 };
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
@@ -173,7 +173,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             return 0;
         if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBindingRule() != 0)
         {
-            if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->FUN_140635120() == 0)
+            if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBinding() == 0)
             {
                 CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_transfer_bind_pet_study"), pPC->vfunc_77());
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMessage), 0, CStringW(s_strStudyBindPet));
@@ -181,7 +181,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 {
                     box->FUN_141a01600(m_spPet->GetItemUid());
                     box->FUN_141a01ee0(m_spPet, m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
-                    box->FUN_141a01700(0x477, 0x478, 0);
+                    box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return 1;
                 }
@@ -276,13 +276,13 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (spPet->FUN_1405279c0()->GetMaxSlot() == 0)
+    if (spPet->GetSocket()->GetMaxSlot() == 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (spPet->FUN_1405279c0()->HasGemId(m_spBox->FUN_1405276c0()) != 0)
+    if (spPet->GetSocket()->HasGemId(m_spBox->FUN_1405276c0()) != 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_already_option"), 1, 0);

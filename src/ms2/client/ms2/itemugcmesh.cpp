@@ -328,7 +328,7 @@ float FUN_141422340(Unk_PickTarget* pPart, int nIndex)
         if (pProxy != 0)
             return pProxy->m_afValue[nIndex];
     }
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
@@ -362,7 +362,7 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
         if (pProxy != 0)
             pProxy->m_afValue[nIndex] = fValue < 0.0f ? 0.0f : fValue;
     }
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0 && nIndex == 0)
@@ -422,7 +422,7 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     efd::Matrix3 kRot;
     kRot.FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                             (kEuler.z * 3.1415927f) / 180.0f);
-    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
@@ -657,7 +657,7 @@ int FUN_141423a70(__int64 nUid, const Unk_UgcColorList& kColors, Unk_UgcPlayer* 
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
     MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
@@ -681,7 +681,7 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
     Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
@@ -708,7 +708,7 @@ int FUN_141423fb0(__int64 nUid, void* pColor, int nIndex, Unk_UgcPlayer* pPlayer
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
     MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
@@ -732,7 +732,7 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
     ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0()));
@@ -753,7 +753,7 @@ int FUN_1414244b0(__int64 nUid, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlay
         if (pPlayer == 0)
             return 0;
     }
-    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->GetEquipByUid(nUid);
     return FUN_141424580(spItem, pOut, nIndex);
 }
 
@@ -988,7 +988,7 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
     Unk_UgcPlayer* pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return MS2Ptr<CItem>(0);
-    MS2Ptr<CEquipItem> spEquip = ((PC*)pPlayer)->FUN_141655c30(nUid);
+    MS2Ptr<CEquipItem> spEquip = ((PC*)pPlayer)->GetEquipByUid(nUid);
     if (spEquip.get() != 0)
     {
         if (pbEquipped != 0)

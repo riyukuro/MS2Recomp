@@ -186,10 +186,8 @@ virtual void vfunc_73();
 virtual void vfunc_74();
 virtual void vfunc_75();
 virtual void vfunc_76();
-virtual CStringW vfunc_77();
-void FUN_141663a00(int); };
+virtual CStringW vfunc_77(); };
 class Unk_NetworkWorld : public WorldService { public: Unk_NetworkPlayer* FUN_141bd0cc0();};
-class Unk_NetworkTick { public: void FUN_1409a33d0(); };
 class CReconnectionManagerCli* FUN_140e800e0();   // C3: was FUN_140e800e0
 void FUN_140aada20(void*,CInPacket&);  // CReconnectionManagerCli::FUN_140aada20
 void FUN_140a84960(void*,CInPacket&);
@@ -635,7 +633,7 @@ efd::SyncResult CNetworkService::OnPreInit(efd::IDependencyRegistrar*) {
 efd::AsyncResult CNetworkService::OnInit() { return efd::AsyncResult_Complete; }
 // @0x141539450
 efd::AsyncResult CNetworkService::OnTick() {
-    if(reinterpret_cast<Unk_NetworkTick*>(TSingleton<CAntiHackManager>::GetInstance())!=0) reinterpret_cast<Unk_NetworkTick*>(TSingleton<CAntiHackManager>::GetInstance())->FUN_1409a33d0();
+    if(TSingleton<CAntiHackManager>::GetInstance()!=0) TSingleton<CAntiHackManager>::GetInstance()->FUN_1409a33d0();
     unsigned now=GetTickCountMs2();
     while(!m_sends.empty()) {
         const unsigned& due=m_sends.front().first;
@@ -931,7 +929,7 @@ void CNetworkService::FUN_14153b570(CInPacket& input) {
     } else if(code==0x31) {
         if(Unk_MessageBoxPtr data=FUN_140d73d20(10,GetStringCommonByKey(L"s_char_rename_input"),0,s_changeInvalidCharName)) {
             CStringW empty=L"";MS2_BOX(data)->Append<__int64>(result.character);
-            MS2_BOX(data)->FUN_141a01d30(2,empty,12,0,0);FUN_140d73c60(data);
+            MS2_BOX(data)->SetInput(2,empty,12,0,0);FUN_140d73c60(data);
         }
     } else if(code==0x1a) {
         CStringW text=result.message;text.Replace(L"\\n",L"\n");
@@ -1061,7 +1059,7 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
     } else if(result==0x1a) {
         FUN_140d86260()->vfunc_23(0x394,"AuthFailed_CannotRpgFoundersPack");
         Unk_MessageBoxPtr data=FUN_140d73f20(GetStringCommonByKey(L"s_founderspack_need"),1);
-        MS2_BOX(data)->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&CNetworkService::OnFoundersMsgBoxResult));
+        MS2_BOX(data)->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CNetworkService::OnFoundersMsgBoxResult));
         MS2_BOX(data)->FUN_141a024a0(0);
         { CStringW empty=L"";CStringW close=L"s_gamemode_rpg_close";
         MS2_BOX(data)->SetButtonLabels(GetStringCommon(0x47d),GetStringCommonByKey(close),empty); }
@@ -1122,7 +1120,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         }
         Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if(!player) { MS2_ASSERT_AT(0x625,"pMyPC" && 0);return; }
-        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166c930()==0x3a) {
+        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()==0x3a) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(2);FUN_140710590(packet);FUN_141275260(0xceb,1,1);break;
         }
         if(!FUN_140b83ec0()) {
@@ -1131,7 +1129,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         if(((class CBuddyManager*)(void*)(((void*)TSingleton<CBuddyManager>::GetInstance())))->FUN_140ae51b0(targetId)!=0) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);break;
         }
-        if(((class PC*)(class Unk_NetworkPlayer*)(player))->FUN_1416595d0()==1) {
+        if(((class PC*)(class Unk_NetworkPlayer*)(player))->IsInCubeMode()==1) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);break;
         }
         if(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId()==0x620001f) {
@@ -1151,14 +1149,14 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
     case 2: {
         unsigned result=input.ReadUInt8();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if(!player) { MS2_ASSERT_AT(0x687,"pMyPC" && 0);return; }
-        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166c930()!=0x3a) break;
+        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         FUN_140b84010(result);player->vfunc_59(1,0,0,0);
     } break;
     case 3: {
         int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));
         if(!target) { MS2_ASSERT_AT(0x696,"pTargetPC" && 0);return; }
         Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!player) { MS2_ASSERT_AT(0x699,"pMyPC" && 0);return; }
-        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166c930()!=0x3a) break;
+        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x69f,"pStateCoupleState" && 0);return; }
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166cc80()!=0x93) break;
         if(((class StateCoupleEmotion*)(void*)(state))->GetEmotionId()!=emotion) break;
@@ -1168,7 +1166,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
     case 4: {
         int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if(!player) { MS2_ASSERT_AT(0x6b3,"pMyPC" && 0);return; }
-        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166c930()!=0x3a) break;
+        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166cc80()!=0x93) break;
         Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));if(!target) { MS2_ASSERT_AT(0x6bc,"pTargetPC" && 0);return; }
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x6bf,"pStateCoupleState" && 0);return; }
@@ -1180,7 +1178,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         int emotion=input.ReadInt32();__int64 first=input.ReadInt64();__int64 second=input.ReadInt64();
         Vector3 start=input.ReadVector3();Vector3 end=input.ReadVector3();int value=input.ReadInt32();
         Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!player) { MS2_ASSERT_AT(0x6d7,"pMyPC" && 0);return; }
-        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166c930()!=0x3a) break;
+        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         __int64 peer=((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_141656a80()!=first?first:second;Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(peer));
         if(!target) { MS2_ASSERT_AT(0x6df,"pPeerPC" && 0);return; }
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x6e2,"pStateCoupleState" && 0);return; }
@@ -1192,7 +1190,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         int emotion=input.ReadInt32();__int64 id=input.ReadInt64();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if(!player) { MS2_ASSERT_AT(0x6f7,"pMyPC" && 0);return; }
         Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));if(!target) { MS2_ASSERT_AT(0x6fa,"pPeerPC" && 0);return; }
-        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166c930()!=0x3a) break;
+        if(((class PCBase*)(class Unk_NetworkPlayer*)(player))->GetCurStateId()!=0x3a) break;
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x700,"pStateCoupleState" && 0);return; }
         if(((class StateCoupleEmotion*)(void*)(state))->GetEmotionId()!=emotion) break;
         if(((class StateCoupleEmotion*)(void*)(state))->GetPartnerId()!=((class GameObject*)(class Unk_NetworkPlayer*)(target))->FUN_14123c580()) break;
@@ -1224,8 +1222,8 @@ void CNetworkService::FUN_14153f8c0(CInPacket& input) {
     Unk_NetworkPlayer* player=reinterpret_cast<Unk_NetworkPlayer*>(WorldService::GetInstance()->FUN_141bd1290(id));
     if(!player) return;
     switch(kind) {
-    case 0: { int value=input.ReadInt32(); player->FUN_141663a00(value); break; }
-    case 1: player->FUN_141663a00(0); break;
+    case 0: { int value=input.ReadInt32(); ((class PC*)(player))->FUN_141663a00(value); break; }
+    case 1: ((class PC*)(player))->FUN_141663a00(0); break;
     }
     void* dialog=((void*)FUN_140a3ab70(0x4e61));
     if(dialog) ((class UIMessengerBrowser*)(void*)(dialog))->FUN_141a23a70();

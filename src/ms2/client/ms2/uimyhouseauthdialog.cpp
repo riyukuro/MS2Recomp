@@ -82,11 +82,11 @@ int UIMyHouseAuthDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnConfirm", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nValue = data.FUN_1422b8b10();
-            bool bFirst = data.FUN_1422b8a90();
-            bool bSecond = data.FUN_1422b8a90();
+            int nValue = data.PopUInt();
+            bool bFirst = data.PopBool();
+            bool bSecond = data.PopBool();
         }
     }
     return 0;
@@ -99,7 +99,7 @@ int UIMyHouseAuthDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nButton = pMsg->FUN_1422b8a10();
+        int nButton = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         return 1;

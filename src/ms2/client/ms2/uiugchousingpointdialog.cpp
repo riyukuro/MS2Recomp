@@ -376,7 +376,7 @@ bool UIUGCHousingPointDialog::IsInMyHome()
     Unk_UhpPc* pPc = ((class Unk_UhpPc*)((class WorldService*)(class Unk_UhpWorld*)(((class Unk_UhpWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    return reinterpret_cast<PC*>(pPc)->FUN_1416595d0() ? true : false;
+    return reinterpret_cast<PC*>(pPc)->IsInCubeMode() ? true : false;
 }
 MS2_REPLACE_METHOD(0x140FAF060, UIUGCHousingPointDialog, IsInMyHome, 75, 0x05CE87F6);
 

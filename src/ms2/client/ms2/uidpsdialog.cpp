@@ -170,7 +170,7 @@ int UIDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     if (_stricmp("OnStart", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nDelay = atoi(data.FUN_1422b8d30());
             int nDuration = atoi(data.FUN_1422b8d30());

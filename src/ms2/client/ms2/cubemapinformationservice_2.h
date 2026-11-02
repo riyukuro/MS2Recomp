@@ -15,7 +15,7 @@ public:
     void SelectByItemId(int);
     void SelectByInstanceId(__int64);
     void SelectByIndex(int);
-    MS2Ptr<CubeItemInfo> FUN_1410b55b0();
+    MS2Ptr<CubeItemInfo> GetSelectedInfo();
     MS2Ptr<CubeItemInfo> GetInfoByIndex(int);
     MS2Ptr<CubeItemInfo> GetInfoByInstanceId(__int64);
     CubePtr GetSelected();

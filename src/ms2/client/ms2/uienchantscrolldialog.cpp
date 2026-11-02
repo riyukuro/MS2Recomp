@@ -162,7 +162,7 @@ int UIEnchantScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp(szMethod, "onEnchant") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             unsigned __int64 nItemUid = FUN_140718370(data.FUN_1422b8f40());
             MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
             if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0) {
@@ -187,7 +187,7 @@ int UIEnchantScrollDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0) {
         FUN_14151f200();
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0 && strTag == L"enchant_ok") {
             vfunc_67();
@@ -255,7 +255,7 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
             data.FUN_1407cbb20("resultItemName", FUN_140f3d320(spItem->FUN_140526fc0(), spItem, 0, 1));
             break;
         case 3: {
-            CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
+            CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->GetRarity());
             CStringW strName = BlockFormat(0xb6e, strRank, FUN_140f3e390(), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
             data.FUN_1407cbb20("resultItemName", strName);
             FUN_140f3db20(spItem, data, packet);
@@ -285,7 +285,7 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
             spBox.operator->()->FUN_141a01600(nItemUid);
             spBox.operator->()->FUN_141a024a0(0);
             spBox.operator->()->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox.operator->()->FUN_141a01700(0x475, 0, 0);
+            spBox.operator->()->SetButtonLabelIds(0x475, 0, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -361,7 +361,7 @@ void UIEnchantScrollDialog::FUN_140f3d210()
 // @0x140f3d320
 CStringW UIEnchantScrollDialog::FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, int bStable, int bRandom)
 {
-    CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
+    CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->GetRarity());
     CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
     if (bStable)
         strName += FUN_1401d0160(L" ", GetStringCommon(0xb6f));
@@ -504,7 +504,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e550(MS2Ptr<CItem> spItem)
     CStringW strDesc = FormatStringId(nId, spItem->FUN_140528160(), FUN_140f3e390());
     if (m_bDisableBreak)
         strDesc += GetStringCommonByKey(L"s_enchantscroll_desc_disable_break");
-    FUN_1403b4750()->FUN_1416fb340(strDesc);
+    FUN_1403b4750()->ReplaceValueWords(strDesc);
     return strDesc;
 }
 
@@ -538,7 +538,7 @@ void ASObj::FUN_140f3f020(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca9410-0x142ca9560 .text$yd

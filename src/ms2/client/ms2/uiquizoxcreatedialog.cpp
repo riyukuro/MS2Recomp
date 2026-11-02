@@ -125,7 +125,7 @@ int UIQuizOXCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp("OnCreate", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             return FUN_140e7e900(this, &args);
     } else if (_stricmp("OnCancel", szMethod) == 0) {
         CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f47);
@@ -137,9 +137,9 @@ MS2_REPLACE_METHOD(0x140E7E7F0, UIQuizOXCreateDialog, vfunc_28, 254, 0x832B405C)
 // @0x140e7e900
 int FUN_140e7e900(UIQuizOXCreateDialog* pDialog, ASData* pArgs)
 {
-    __int64 n1 = pArgs->FUN_1422b8a10();
-    int n2 = pArgs->FUN_1422b8a10();
-    int n3 = pArgs->FUN_1422b8a10();
+    __int64 n1 = pArgs->PopInt();
+    int n2 = pArgs->PopInt();
+    int n3 = pArgs->PopInt();
     FUN_140dfee10(n1, n2, n3);
     return 0;
 }

@@ -434,7 +434,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     Unk_SsPlayer* pPlayer = ((Unk_SsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (pPlayer->FUN_14166ce30() != 0)
+    if (pPlayer->IsDead() != 0)
     {
         FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
         return 0;
@@ -450,7 +450,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     {
         CStringW strName(param.name);
         bool bAllow = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->HasSkin() != 0;
-        bool bGem = spItem->FUN_1405279c0()->HasAnyGem();
+        bool bGem = spItem->GetSocket()->HasAnyGem();
         if (bAllow && bGem)
         {
             FUN_140d73bc0(0xed, 0, 0, CStringW(L""));
@@ -517,7 +517,7 @@ int StoreSlot::vfunc_0(void* p)
     ASTooltip tip(((Unk_SsPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x80, 2);
     if (tip.FUN_1409e0d40(spItem.get()))
     {
-        tip.FUN_1409c69b0(GetStringCommon(0x754));
+        tip.SetEnablePuton(GetStringCommon(0x754));
         if (IsEnabled() == true)
             tip.FUN_1409db7b0(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();

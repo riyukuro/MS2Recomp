@@ -27,6 +27,7 @@
 #include "ms2/client/ms2/uitalkcinematic.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/placeholder/weddingguest.h"
 #include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe objects ----
@@ -42,7 +43,6 @@ public:
 class Unk_WiGuest : public CPtred
 {
 public:
-    void FUN_1409003c0(COutPacket& packet);                     // write the guest into the packet
     __int64 m_18; __int64 m_20; __int64 m_28;
     CStringW m_strName;                                         // +0x30
 };
@@ -58,7 +58,6 @@ struct Unk_WiTicket
     CStringW m_strGroom;                                        // +0x48
     CStringW m_strBride;                                        // +0x50
 };
-class Unk_WiHallTable { public: int FUN_140908d50(int nPackageId, int nHallId, bool bNight); };
 class UIWeddingGuestDialog : public UIObject
 {
 public:
@@ -170,7 +169,7 @@ void UIWeddingInvitationDialog::OnLoadComplete()
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
     obj.FUN_1407cbb20("bride", CStringW(pTicket->m_strBride));
     obj.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
-        reinterpret_cast<Unk_WiHallTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
+        TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
     obj.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(pTicket->m_nTime)));
     m_30->Invoke("setData", obj);
 }
@@ -239,7 +238,7 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
     packet.WriteUInt8(0x1c);
     packet.WriteInt32((int)m_guests.size());
     for (size_t i = 0; i < m_guests.size(); i++)
-        m_guests[i]->FUN_1409003c0(packet);
+        reinterpret_cast<WeddingGuest*>(m_guests[i].operator->())->Write(packet);
     FUN_140710590(packet);
     return true;
 }

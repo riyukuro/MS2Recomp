@@ -136,7 +136,7 @@ public:
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 void FUN_140a0b330(void* obj, bool b, short flags);
-void* FUN_140a00e10(const void* a, void* out, const void* b);class CMainSystem   // C3: member view for the former free stand-ins
+class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
     double FUN_141473280();
@@ -157,7 +157,6 @@ public:
     int FUN_140ddcc90();
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-struct Unk_ShadowPt3 { private: float x, y, z; };   // FUN_140a00e10 cross-product result slot
 
 // @0x14160fb10
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo)
@@ -205,7 +204,6 @@ void FUN_14160fe70(CObjectShadow* self, bool v)
 }
 
 // @0x14160feb0   per-frame update: position/orient the shadow under the character, fade by distance, push LOD visibility to the owner's models
-// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions and branch order); same code, but t8c/xf/t48 sit 8 bytes higher and the frame is 0x10 larger
 void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void* dir, float dt, bool force)
 {
     FUN_1416105c0(self);
@@ -213,13 +211,12 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         float one = 1.0f;
         float fade;
         NiTransform xf;
-        Unk_ShadowPt3 t98, t8c;
-        xf.m_Translate = NiPoint3(*(const efd::Point3*)pos);
+        xf.m_Translate = *(const efd::Point3*)pos;
         xf.m_Translate.z = xf.m_Translate.z + self->m_fZOffset;
         Unk_NiPoint3 p110(*(const Vector3*)&DAT_143a08cd8);
-        Unk_NiPoint3 p148(*(const Vector3*)FUN_140a00e10(dir, &t98, &p110));
+        Unk_NiPoint3 p148(((const Vector3*)dir)->FUN_140a00e10(*(const Vector3*)&p110));
         ((Vector3*)&p148)->FUN_140968990();
-        Unk_NiPoint3 p130(*(const Vector3*)FUN_140a00e10(&p148, &t8c, dir));
+        Unk_NiPoint3 p130(((const Vector3*)&p148)->FUN_140a00e10(*(const Vector3*)dir));
         ((Vector3*)&p130)->FUN_140968990();
         Unk_NiPoint3 p100(*(const Vector3*)dir);
         *(Unk_NiMatrix3*)&xf.m_Rotate = Unk_NiMatrix3(p130, p148, p100);
@@ -340,7 +337,6 @@ void FUN_1416105c0(CObjectShadow* self)
 }
 
 // @0x1416106e0   build the shadow quad mesh, its render properties and the scene node
-// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls in the same order); the exe frame is 0x50 larger, so locals and temp slots differ
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset)
 {
     self->m_pOwner = (Unk_ShadowOwner*)owner;
@@ -352,14 +348,14 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     self->m_bVisible = false;
     self->m_fZOffset = zOffset;
     self->m_bFlag31 = true;
-    radius = radius / 2.0f;
+    float r = radius / 2.0f;
 
     NiPoint3* verts = (NiPoint3*)self->Lock(NiCommonSemantics::POSITION(), 0, 2);   // 4 x NiPoint3
     if (verts != 0) {
-        verts[0] = NiPoint3(-radius, -radius, 0.0f);
-        verts[1] = NiPoint3(radius, -radius, 0.0f);
-        verts[2] = NiPoint3(radius, radius, 0.0f);
-        verts[3] = NiPoint3(-radius, radius, 0.0f);
+        verts[0] = NiPoint3(-r, -r, 0.0f);
+        verts[1] = NiPoint3(r, -r, 0.0f);
+        verts[2] = NiPoint3(r, r, 0.0f);
+        verts[3] = NiPoint3(-r, r, 0.0f);
         self->Unlock(NiCommonSemantics::POSITION(), 0, 2);
     }
     NiPoint2* uv = (NiPoint2*)self->Lock(NiCommonSemantics::TEXCOORD(), 0, 2);   // 4 x NiPoint2
@@ -410,8 +406,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     self->SetVertexCount(4);
     self->SetTriangleCount(6);
     NiBound bound;
-    NiPoint3 origin(0.0f, 0.0f, 0.0f);
-    bound.SetCenterAndRadius(origin, radius);
+    bound.SetCenterAndRadius(NiPoint3(0.0f, 0.0f, 0.0f), r);
     ((NiMesh*)self->GetMesh())->SetModelBound(bound);
 
     self->m_node = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0);
@@ -422,8 +417,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     scene->AttachChild(self->m_node, true);
     self->m_node->UpdateEffects();
     self->m_node->UpdateProperties();
-    float now = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
-    self->m_node->Update(now, true);
+    self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     FUN_141611370(((void*)self->GetMesh()), 0);
 }
 

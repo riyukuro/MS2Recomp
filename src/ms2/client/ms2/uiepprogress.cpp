@@ -23,7 +23,6 @@
 class UIStatusEventDispatcher;
 
 struct Unk_EpCfgData { char m_pad_00[5]; unsigned char m_bEnabled; };
-class Unk_EpCfgHolder { public: Unk_EpCfgData* FUN_141248630(); };
 class GFxSceneService { public: int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 
 // The target's name-tag anchor record.
@@ -118,7 +117,7 @@ int UIEpProgress::vfunc_57(int nForce)
         return 1;
     if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
         return 1;
-    if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
+    if (reinterpret_cast<Unk_EpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_141248630())->m_bEnabled == 0)
         return 1;
     return 0;
 }
@@ -138,7 +137,7 @@ void UIEpProgress::vfunc_oa0_5(int a1, int a2)
     m_e0 = a1;
     if (nOld <= (unsigned int)a1)
         return;
-    if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
+    if (reinterpret_cast<Unk_EpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_141248630())->m_bEnabled == 0)
         return;
     if (vfunc_56() == 0)
         vfunc_54(0);
@@ -152,7 +151,7 @@ void UIEpProgress::FUN_141931bd0(int nEp, int a2)
 {
     int nOld = m_e0;
     m_e0 = nEp;
-    if (reinterpret_cast<Unk_EpCfgHolder*>(TSingleton<CGameOption>::GetInstance())->FUN_141248630()->m_bEnabled == 0)
+    if (reinterpret_cast<Unk_EpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_141248630())->m_bEnabled == 0)
         return;
     if (vfunc_56() == 0)
         vfunc_54(0);

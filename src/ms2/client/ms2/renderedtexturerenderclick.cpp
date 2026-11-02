@@ -221,9 +221,9 @@ void RenderedTextureRenderClick::vfunc_15(bool bFree)
 void RenderedTextureRenderClick::vfunc_16(float, float) {}
 
 // @0x1416f99d0
-void FUN_1416f99d0(RTRC* p, void* a)
+void RenderedTextureRenderClick::FUN_1416f99d0(NiCamera* pCamera)
 {
-    if (p->m_spView) p->m_spView->SetCamera((class NiCamera*)(a));
+    if (m_spView) m_spView->SetCamera(pCamera);
 }
 
 // @0x1416f9a30
@@ -237,7 +237,7 @@ void* FUN_1416f9a30(RTRC* p)
 float FUN_1416f9a80(RTRC* p) { return (float)p->m_uiWidth / (float)p->m_uiHeight; }
 
 // @0x1416f9ab0
-void FUN_1416f9ab0(RTRC* p) { FUN_140c8f680(&p->m_spTexture); }
+NiRenderedTexture* RenderedTextureRenderClick::FUN_1416f9ab0() { return (NiRenderedTexture*)FUN_140c8f680(&m_spTexture); }
 
 // @0x1416f9ae0
 Ni3DRenderViewPtr RenderedTextureRenderClick::GetValue_1416f9ae0()
@@ -391,10 +391,10 @@ MS2_REPLACE_METHOD(0x1416f9730, RenderedTextureRenderClick, vfunc_13, 75, 0xAFAE
 MS2_REPLACE_METHOD(0x1416f9790, RenderedTextureRenderClick, vfunc_14, 248, 0x22CA9050);
 MS2_REPLACE_METHOD(0x1416f9890, RenderedTextureRenderClick, vfunc_15, 268, 0x3C8AFFDE);
 MS2_REPLACE_METHOD(0x1416f99b0, RenderedTextureRenderClick, vfunc_16, 18, 0x23F7B45B);
-MS2_REPLACE(0x1416f99d0, FUN_1416f99d0, 75, 0xC7F7E72D);
+MS2_REPLACE_METHOD(0x1416f99d0, RenderedTextureRenderClick, FUN_1416f99d0, 75, 0xC7F7E72D);
 MS2_REPLACE(0x1416f9a30, FUN_1416f9a30, 69, 0xD991FF44);
 MS2_REPLACE(0x1416f9a80, FUN_1416f9a80, 42, 0xE184552A);
-MS2_REPLACE(0x1416f9ab0, FUN_1416f9ab0, 33, 0xFE4E70E9);
+MS2_REPLACE_METHOD(0x1416f9ab0, RenderedTextureRenderClick, FUN_1416f9ab0, 33, 0xFE4E70E9);
 MS2_REPLACE_METHOD(0x1416f9ae0, RenderedTextureRenderClick, GetValue_1416f9ae0, 67, 0x6AB96D37);
 MS2_REPLACE(0x1416f9b30, FUN_1416f9b30, 59, 0xBD7A40FD);
 MS2_REPLACE(0x1416f9b80, FUN_1416f9b80, 94, 0xA3074616);

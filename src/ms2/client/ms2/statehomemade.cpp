@@ -156,7 +156,7 @@ void StateHomemade::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
-    m_pOwner->FUN_14166dd20(FUN_140ca4e50(), 1.0f, false, false);
+    m_pOwner->PlayAnimation(FUN_140ca4e50(), 1.0f, false, false);
     m_spHarvest.AssignRaw(dynamic_cast<StateHomemadeData*>(pData));
     PCBase* pPC = FUN_1417b8370();
     if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->FUN_14165f100())))
@@ -178,10 +178,10 @@ void StateHomemade::vfunc_4(StateData* pData)
         {
             if (aCubes[i]->FUN_141229000(0) == 0)
                 continue;
-            float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->FUN_141226d00()).FUN_140967ac0();
+            float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->GetPosition()).FUN_140967ac0();
             if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
                 continue;
-            if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), aCubes[i]->FUN_141226d00()) == 0)
+            if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), aCubes[i]->GetPosition()) == 0)
                 continue;
             m_aCubes.push_back(aCubes[i]);
         }
@@ -334,10 +334,10 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];
         if (nMode != 0 && spCube->FUN_141229000(1) == 0)
             continue;
-        float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->FUN_141226d00()).FUN_140967ac0();
+        float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->GetPosition()).FUN_140967ac0();
         if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
             continue;
-        if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->FUN_141226d00()) == 0)
+        if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->GetPosition()) == 0)
             continue;
         if (!static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580())
             continue;
@@ -359,7 +359,7 @@ void StateHomemade::SendFunctionCubeMode4()
     for (size_t i = 0; i < m_aCubes.size(); i++)
     {
         Unk_HmUseInfo kInfo;
-        kInfo.m_strId = m_aCubes[i]->FUN_141226bd0();
+        kInfo.m_strId = m_aCubes[i]->GetId();
         kInfo.m_nCount = 1;
         FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }
@@ -383,7 +383,7 @@ void StateHomemade::SendFunctionCubeMode5()
     for (size_t i = 0; i < aUsable.size(); i++)
     {
         Unk_HmUseInfo kInfo;
-        kInfo.m_strId = aUsable[i]->FUN_141226bd0();
+        kInfo.m_strId = aUsable[i]->GetId();
         kInfo.m_nCount = 1;
         FUN_1401fc610((unsigned char*)(&kInfo), *(class COutputStream*)(&kPacket));
     }

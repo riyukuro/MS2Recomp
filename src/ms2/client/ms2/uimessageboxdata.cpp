@@ -559,7 +559,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(items[i].m_itemId, items[i].vfunc_o18_1(), 0))
         {
-            spItem->FUN_140526c70(items[i].m_count);
+            spItem->SetCountClamped(items[i].m_count);
             CString strBind;
             strBind.Format("MsgBoxRequieData_%d_%d", m_nId, i);
             ItemInfoSlot::CreateParam param;
@@ -570,7 +570,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
             ASObj entry(2);
             entry.FUN_1407cba60("binding", strBind);
             entry.FUN_1409c0d20("itemCount", m_reqItems.m_items[i].m_count);
-            ((Unk_MsgASArray&)list).FUN_1422bbf00(entry);
+            ((Unk_MsgASArray&)list).PushObj(entry);
             m_reqItems.m_binds.Add(strBind);
         }
     }
@@ -762,7 +762,7 @@ void Unk_MsgASObj::FUN_141a07250(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x141a07430

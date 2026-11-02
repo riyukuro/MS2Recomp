@@ -977,7 +977,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             ASObj item(2);
             item.FUN_1407cbb20("text", spInfo->m_20);
             item.FUN_1409c0d20("id", spInfo->m_28);
-            indoors.FUN_1422bbf00(item);
+            indoors.PushObj(item);
             bFound = TRUE;
         }
         else
@@ -992,7 +992,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 if (!spField->FUN_140375130() && spField->FUN_1403753d0() != 0)
                     item.FUN_1409c0dc0("icon", "cashTaxi");
             }
-            maps.FUN_1422bbf00(item);
+            maps.PushObj(item);
             bFound = TRUE;
         }
     }
@@ -1020,7 +1020,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                     item.FUN_1409c0d20("id", nField);
                     item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
                     item.FUN_1409c0d20("iconData", spRoom->m_dungeonRoomID);
-                    dungeons.FUN_1422bbf00(item);
+                    dungeons.PushObj(item);
                     bFound = TRUE;
                 }
             }
@@ -1064,13 +1064,13 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             if ((spGate.get() ? true : false) && spGate->m_nMoveFieldId != 0)
             {
                 CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLabel);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLabel);
                 if (FUN_14083fec0(strLabel, search) == -1)
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("text", strLabel);
                 item.FUN_1409c0d20("id", nField);
-                gates.FUN_1422bbf00(item);
+                gates.PushObj(item);
                 bFound = TRUE;
             }
         }
@@ -1083,7 +1083,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             ASObj item(2);
             item.FUN_1407cbb20("text", strName);
             item.FUN_1409c0d20("id", nField);
-            npcs.FUN_1422bbf00(item);
+            npcs.PushObj(item);
             bFound = TRUE;
         }
         else if (spNpc->GetFriendly() == 0)
@@ -1112,9 +1112,9 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             item.FUN_1409c0d20("id", nField);
             switch (spNpc->m_nClass)
             {
-            case 4: case 6: bosses.FUN_1422bbf00(item); break;
-            case 3: case 7: elites.FUN_1422bbf00(item); break;
-            default: monsters.FUN_1422bbf00(item); break;
+            case 4: case 6: bosses.PushObj(item); break;
+            case 3: case 7: elites.PushObj(item); break;
+            default: monsters.PushObj(item); break;
             }
             bFound = TRUE;
         }
@@ -1286,7 +1286,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
             item.FUN_1409c0d20("id", field);
             item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
             item.FUN_1409c0d20("iconData", spRoom->m_dungeonRoomID);
-            dungeons.FUN_1422bbf00(item);
+            dungeons.PushObj(item);
         }
     }
     ATL::CAtlMap<CStringW, int, ATL::CStringElementTraits<CStringW> > seen;
@@ -1321,10 +1321,10 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                     if (spTarget)
                     {
                         CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
-                        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strLabel);
+                        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLabel);
                         ASObj item(2);
                         item.FUN_1407cbb20("text", strLabel);
-                        gates.FUN_1422bbf00(item);
+                        gates.PushObj(item);
                     }
                 }
             }
@@ -1334,7 +1334,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("text", strName);
-                npcs.FUN_1422bbf00(item);
+                npcs.PushObj(item);
             }
             else if (spNpc->GetFriendly() == 0)
             {
@@ -1365,9 +1365,9 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                 item.FUN_1407cbb20("text", strName);
                 switch (spNpc->m_nClass)
                 {
-                case 4: case 6: bosses.FUN_1422bbf00(item); break;
-                case 3: case 7: elites.FUN_1422bbf00(item); break;
-                default: monsters.FUN_1422bbf00(item); break;
+                case 4: case 6: bosses.PushObj(item); break;
+                case 3: case 7: elites.PushObj(item); break;
+                default: monsters.PushObj(item); break;
                 }
             }
         }
@@ -1383,7 +1383,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
             continue;
         ASObj item(2);
         item.FUN_1407cbb20("text", GetStringTable()->FUN_141811980(3, nConnected));
-        indoors.FUN_1422bbf00(item);
+        indoors.PushObj(item);
     }
     CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->FUN_140cdc000(field);
@@ -1420,7 +1420,7 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
         {
             ASObj item(2);
             item.FUN_1407cbb20("text", lines[j]);
-            missions.FUN_1422bbf00(item);
+            missions.PushObj(item);
         }
     }
     CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);

@@ -70,7 +70,7 @@ float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);           // &p->m_setting
 class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
-bool FUN_141863100(void* service, int mapId, const Vector3& pos);   // is the position inside the map?
+class CTriggerService { public: bool ObjectContains(int, const Vector3&); };   // C3: member view (0x141863100)
 float FUN_141b6fe40(float t, int nInterpolator);            // easing
 
 // @0x140d4fc90
@@ -152,7 +152,7 @@ void CLocalTargetCameraMode::vfunc_7()
 {
     if (m_1ec == 2)
     {
-        CCameraMode* pMode = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af24f0();
+        CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0();
         if (pMode)
             static_cast<CTargetCameraMode*>(pMode)->FUN_14183dfe0(m_c0, m_d8);
     }
@@ -189,7 +189,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         }
         else if (m_184 == 0)
         {
-            if (!FUN_141863100(((void*)FUN_140ad4b90()), m_108.m_34, pTarget->vfunc_18()))
+            if (!reinterpret_cast<CTriggerService*>(FUN_140ad4b90())->ObjectContains(m_108.m_34, pTarget->vfunc_18()))
                 FUN_140d4f830();
         }
     }
@@ -329,7 +329,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
 void CLocalTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140d4f520, CLocalTargetCameraMode, vfunc_10, 74, 0x67DE058B);
 

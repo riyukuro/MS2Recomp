@@ -93,6 +93,7 @@ static CString s_strMenuSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/placeholder/cgamemenutable.h"
 #include "ms2/commonfiles/adventureleveltablehelper.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameevent.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -132,9 +133,7 @@ class Unk_GmEvtMgr
 public:
     MS2Ptr<Unk_GmStampEvent> FUN_14047ca40(const Unk_GmEvtKey& key);
     MS2Ptr<Unk_GmLtaEvent> FUN_14047ce70();
-    MS2Ptr<Unk_GmGalleryEvent> FUN_14047cf60();
     MS2Ptr<Unk_GmRpsEvent> FUN_14047d140();
-    MS2Ptr<Unk_GmTimeRunEvent> FUN_14047d6c0();
 };
 class Unk_GmNet
 {
@@ -589,7 +588,7 @@ class Unk_GmDtEvents;
 class Unk_GmMentorStatus { public: int FUN_140424de0(); };
 class Unk_GmMentorConfig { public: Unk_GmMentorStatus* FUN_14041d160(); };
 class Unk_GmEventHolder { public: MS2Ptr<Unk_GmDanceEvent> FUN_140428700(); };
-class CKeyTable { public: CStringW FUN_14142d760(int nId, int n); };   // C3: the real CKeyTable member (local view)   // member (this=rcx, hidden return=rdx)
+class CKeyTable { public: CStringW GetActionKeyName(int nId, int n); };   // C3: the real CKeyTable member (local view)   // member (this=rcx, hidden return=rdx)
 class Unk_GmShieldUIScale;
 class Unk_GmUtilHolder;
 
@@ -648,6 +647,8 @@ public:
     float FUN_14047d4e0();
     float FUN_14047d5c0();
     void FUN_14047c870(ATL::CAtlArray<unsigned>& out);
+    MS2Ptr<GalleryContext> GetGallery();             // 0x14047cf60
+    MS2Ptr<TimeRunEventContext> GetTimeRunEvent();   // 0x14047d6c0
 };
 bool FUN_14028d470(float, float);
 CStringW FUN_14042cb90(CStringW strFmt, const float* pArg);
@@ -1749,7 +1750,7 @@ int UIGameMenuDialog::FUN_14193a7b0(int nId, ASObj* pObj)
                 return 0;
             CStringW strTip = static_cast<GFxManager*>(((void*)FUN_14025e7a0()))->Localize(ref.FUN_140c1cda0()->m_strCaption);
             if (IsChildMenu(nId) != 0 && ref.FUN_140c1cda0()->m_58 != 0) {
-                CStringW strExtra = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(ref.FUN_140c1cda0()->m_58, 0);
+                CStringW strExtra = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(ref.FUN_140c1cda0()->m_58, 0);
                 if (strExtra.GetLength() > 0)
                     strTip += StringFormat<CStringW>(L" [{0}]", strExtra);
             }
@@ -1943,7 +1944,7 @@ void UIGameMenuDialog::FUN_14193b750()
         FUN_141275260(0x86e, 1, 0);
         return;
     }
-    if (((class PCBase*)(class PCBase*)(pPc))->FUN_14166ce30() != 0 || ((class MyPC*)(class PCBase*)(pPc))->FUN_141527160(0x27) == 0) {
+    if (((class PCBase*)(class PCBase*)(pPc))->IsDead() != 0 || ((class MyPC*)(class PCBase*)(pPc))->FUN_141527160(0x27) == 0) {
         FUN_141275260(0x86e, 1, 0);
         return;
     }
@@ -1978,7 +1979,7 @@ void UIGameMenuDialog::FUN_14193b750()
         }
         MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x875, 0, CStringW(L""));
         if (box.get() != 0) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d9e0));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d9e0));
             FUN_140d73c60(box);
         }
     }
@@ -2066,7 +2067,7 @@ void UIGameMenuDialog::FUN_14193c000()
             FUN_1412751f0(GetStringCommonByKey(L"s_quest_epic_restart_invalid_field"), 1, 1);
         } else {
             if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_quest_epic_restart_warning"), nullptr, CStringW(L""))) {
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendQuest));
+                box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendQuest));
                 FUN_140d73c60(box);
             }
         }
@@ -2143,7 +2144,7 @@ void UIGameMenuDialog::FUN_14193c800()
         FUN_141275260(0x2f7, 1, 1);
         return;
     }
-    MS2Ptr<Unk_GmTimeRunEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047d6c0();
+    MS2Ptr<TimeRunEventContext> spEvent = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spEvent.IsNull())
         return;
     void* pDlg = FindUIDialog<UITimeRunEventDialog>(0x4f43);
@@ -2220,7 +2221,7 @@ void UIGameMenuDialog::FUN_14193cea0()
 // @0x14193cf60
 void UIGameMenuDialog::FUN_14193cf60()
 {
-    MS2Ptr<Unk_GmGalleryEvent> spEvent = ((class Unk_GmEvtMgr*)FUN_1401c0d90())->FUN_14047cf60();
+    MS2Ptr<GalleryContext> spEvent = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->GetGallery();
     if (spEvent == NULL) {
         FUN_1412751f0(GetStringCommonByKey(L"s_galleryevent_invalid_event"), 1, 1);
         return;
@@ -2234,7 +2235,7 @@ void UIGameMenuDialog::FUN_14193d030()
     if (((class CQuestManager*)(class Unk_GmQuestHolder*)(((class Unk_GmQuestHolder*)FUN_140764020())))->FUN_1416d09d0(*reinterpret_cast<const int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_GmTable*)FUN_1401d3200())->m_8de0)->Get()), 1) == 0)
         return;
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_sky_fortress_goto_map"), nullptr, CStringW(L""))) {
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193dab0));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193dab0));
         FUN_140d73c60(box);
     }
 }
@@ -2454,7 +2455,7 @@ void UIGameMenuDialog::FUN_14193dd70()
 // @0x14193dd90
 void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, const CStringW& strFmt, int nTipId)
 {
-    CStringW strTip = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(nTipId, 0);
+    CStringW strTip = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(nTipId, 0);
     CStringW strBracket;
     if (!strTip.IsEmpty())
         strBracket = StringFormat<CStringW>(L"[{0}]", strTip);
@@ -2514,14 +2515,14 @@ void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
     if (nBeauty == 0 && nField == 0) {
         if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), nullptr, CStringW(L""))) {
             box->Append<int>(nMapType);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
     } else {
         CStringW strMsg = GetStringCommonByKey(StringFormat<int>(L"s_beauty_goto_map_beauty_{0}", nMapType));
         if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), nullptr, CStringW(L""))) {
             box->Append<int>(nMapType);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
     }

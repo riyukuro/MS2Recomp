@@ -60,8 +60,6 @@ public:
 class Unk_RideeData
 {
 public:
-    CString FUN_140784880(int nLevel);                      // animation (kfm) name for the rider's level
-    CString FUN_140784920(int nLevel);                      // scene graph (nif) name for the rider's level
     MS2Ptr<Unk_RideeModel> FUN_140784970();                 // the default model entry
     MS2Ptr<Unk_RideeModel> FUN_1407849c0(int i);            // model entry i of the seat list
 

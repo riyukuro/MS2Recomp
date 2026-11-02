@@ -74,8 +74,10 @@ float CCylinderCollision::vfunc_6()
 
 // @0x141083470 GetTopZ and 0x1410834a0 GetBottomZ are the in-class inline members above
 
+extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT imports
+extern "C" float (__cdecl* __imp_cosf)(float);
+
 // @0x1410834d0
-// MS2-FUNCTIONAL: ring-point arg evaluation order differs (exe copies sin*r through xmm1/xmm2; no source form found)
 void CCylinderCollision::vfunc_5()
 {
     m_bBuilt = 1;
@@ -95,8 +97,8 @@ void CCylinderCollision::vfunc_5()
     Vector3 akPoints[0x168];
     for (int i = 0; i < kSegments; i++)
     {
-        float fSin = sinf((float)i * 3.1415927f / 180.0f) * m_radius;
-        akPoints[i] = m_center.FUN_14097fd50(Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_radius, fSin, 0));
+        akPoints[i] = m_center.FUN_14097fd50(Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_radius,
+                                                      __imp_sinf((float)i * 3.1415927f / 180.0f) * m_radius, 0));
     }
     m_spMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spMesh, akPoints, kSegments);
@@ -104,21 +106,21 @@ void CCylinderCollision::vfunc_5()
     float fBottom = GetBottomZ() - m_center.z;
     for (int j = 0; j < kSegments; j++)
     {
-        float fSin = sinf((float)j * 3.1415927f / 180.0f) * m_radius;
-        akPoints[j] = m_center.FUN_14097fd50(Vector3(cosf((float)j * 3.1415927f / 180.0f) * m_radius, fSin, fTop));
+        akPoints[j] = m_center.FUN_14097fd50(Vector3(__imp_cosf((float)j * 3.1415927f / 180.0f) * m_radius,
+                                                      __imp_sinf((float)j * 3.1415927f / 180.0f) * m_radius, fTop));
     }
     m_spTopMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spTopMesh, akPoints, kSegments);
     for (int k = 0; k < kSegments; k++)
     {
-        float fSin = sinf((float)k * 3.1415927f / 180.0f) * m_radius;
-        akPoints[k] = m_center.FUN_14097fd50(Vector3(cosf((float)k * 3.1415927f / 180.0f) * m_radius, fSin, fBottom));
+        akPoints[k] = m_center.FUN_14097fd50(Vector3(__imp_cosf((float)k * 3.1415927f / 180.0f) * m_radius,
+                                                      __imp_sinf((float)k * 3.1415927f / 180.0f) * m_radius, fBottom));
     }
     m_spBottomMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildLines(m_spBottomMesh, akPoints, kSegments);
 
-    akPoints[0] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fBottom));
-    int nCount = 1;
+    int nCount = 0;
+    akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(-m_radius, 0, fBottom));
     akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(m_radius, 0, fBottom));
     akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, -m_radius, fBottom));
     akPoints[nCount++] = m_center.FUN_14097fd50(Vector3(0, m_radius, fBottom));

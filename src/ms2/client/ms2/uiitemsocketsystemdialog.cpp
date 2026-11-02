@@ -80,7 +80,7 @@
 // MS2-PIN: ?size@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@QEBA_KXZ 0x140f6c520 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: ?at@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@QEBAAEBQEAVItemSocketSystemPageBase@@_K@Z 0x140f6c100 ; w332 hand (size check + _Xrange: at(), not operator[])
-// MS2-PIN: ?resize@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@QEAAX_KAEBQEAVItemSocketSystemPageBase@@@Z 0x140f6be60 ; w332 hand
+// MS2-PIN: ?assign@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@QEAAX_KAEBQEAVItemSocketSystemPageBase@@@Z 0x140f6be60 ; w332 hand (the body is assign(n, val), not resize)
 // MS2-PIN: ?_Xlength@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@CAXXZ 0x140f6bda0 ; vector<T> too long
 // MS2-PIN: ?_Xrange@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@CAXXZ 0x140f6bde0 ; invalid vector<T> subscript
 // MS2-GUESS-LOOKALIKES
@@ -201,9 +201,9 @@ int UIItemSocketSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     if (_stricmp("OnChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nTab = data.FUN_1422b8a10();
+            int nTab = data.PopInt();
             FUN_140f69a60(nTab);
         }
         return 1;
@@ -237,7 +237,7 @@ int UIItemSocketSystemDialog::vfunc_65()
     if (m_pages.empty())
     {
         ItemSocketSystemPageBase* pNull = 0;
-        m_pages.resize(5, pNull);
+        m_pages.assign(5, pNull);
         m_pages[0] = new ItemSocketSystemPageGemStoneUpgrade();
         m_pages[1] = new ItemSocketSystemPageGemStoneManage();
         m_pages[2] = new ItemSocketSystemPageSocketUnlock();

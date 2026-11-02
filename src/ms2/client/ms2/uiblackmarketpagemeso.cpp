@@ -161,7 +161,7 @@ int BlackMarketPageMesoSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     if (_stricmp("OnClickListItem", szMethod) == 0)
     {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs))
+        if (!data.SetArgsIfAny(pArgs, nArgs))
             return 1;
         unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
         if (!CMesoMarketMan::GetInstance()->CanBuy(nId))
@@ -498,7 +498,7 @@ int BlackMarketPageMesoRegister::vfunc_4(const char* szMethod, const Scaleform::
     if (_stricmp("OnClickListItem", szMethod) == 0)
     {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs))
+        if (!data.SetArgsIfAny(pArgs, nArgs))
             return 1;
         unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
         MS2Ptr<CMesoMarketProductCli> spProduct = CMesoMarketMan::GetInstance()->FindOwnProduct(nId);

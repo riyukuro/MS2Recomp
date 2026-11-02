@@ -709,7 +709,7 @@ int CUGCBuildValidatorCli::vfunc_10(unsigned* pErr)
     int nMapId = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd3060();
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
-    __int64 nOwner = m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54);
+    __int64 nOwner = m_pCubeService->GetOwnerId(spCube->field50, spCube->field54);
     if (nOwner != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
     {
         if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
@@ -737,7 +737,7 @@ int CUGCBuildValidatorCli::vfunc_11(unsigned* pErr)
     int nMapId = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd3060();
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
-    __int64 nOwner = m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54);
+    __int64 nOwner = m_pCubeService->GetOwnerId(spCube->field50, spCube->field54);
     if (nOwner != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
     {
         if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
@@ -762,7 +762,7 @@ int CUGCBuildValidatorCli::vfunc_12(unsigned* pErr)
         return 0;
     if (DAT_143ae0fb4 != 0)
         return 1;
-    if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+    if (m_pCubeService->GetOwnerId(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
         return 0;
     return 1;
 }
@@ -1033,7 +1033,7 @@ int CUGCBuildValidatorCli::vfunc_23(unsigned* pErr)
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
+    if (m_pCubeService->GetOwnerId(spCube->field50, spCube->field54) != reinterpret_cast<PC*>(pPC)->FUN_141656ad0())
     {
         *pErr = 8;
         return 0;

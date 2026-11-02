@@ -96,6 +96,7 @@
 #include <efd/MemObject.h>
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/ascript.h"
 
 // ---- out-of-unit callees ----
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
@@ -183,11 +184,11 @@ class Unk_IsKeys : public CInputKeyHandler
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
+class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // C3: member view (keytable.cpp)
 // The key bindings (FUN_1409331f0).
 class Unk_IsKeyMap
 {
 public:
-    CStringW FUN_14142d760(int nAction, int n);           // the key text of an action
     int FUN_140a700b0();
 };
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
@@ -250,7 +251,6 @@ public:
     ~Unk_IsScript();
     Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float a1, float a2);
     Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);
-    Scaleform::GFx::Value FUN_140bfe360(const char* szMethod, bool b);
 private:
     void* m_pad[8];
 };
@@ -438,7 +438,7 @@ void FUN_1414043e0(__int64 nUid, int nCount, int nMax, int bTake, int nSlot)
         strCount.Format(L"%d", nCount);
         spBox->FUN_141a01620(nSlot);
         spBox->FUN_141a01600(nUid);
-        spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(nMax), 0, 0);
+        spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
         FUN_140d73c60(spBox);
     }
 }
@@ -457,7 +457,7 @@ void FUN_1414045d0(__int64 nUid, int nCount, int nMax, int bTake, int nSlot)
         strCount.Format(L"%d", nCount);
         spBox->FUN_141a01620(nSlot);
         spBox->FUN_141a01600(nUid);
-        spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(nMax), 0, 0);
+        spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
         FUN_140d73c60(spBox);
     }
 }
@@ -644,8 +644,8 @@ void FUN_141405440(MS2Ptr<CItem> spItem)
             CStringW strDefault(L"");
             spBox->Append<__int64>(spItem->GetItemUid());
             spBox->FUN_140b76940(spItem->GetDisplayName());
-            spBox->FUN_141a01d30(2, strDefault, 0xc, 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(pDlg, &UIInventoryDialog::FUN_14199b4e0));
+            spBox->SetInput(2, strDefault, 0xc, 0, 0);
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(pDlg, &UIInventoryDialog::FUN_14199b4e0));
             FUN_140d73c60(spBox);
         }
     }
@@ -900,7 +900,7 @@ int InvenSlot::vfunc_13()
                 reinterpret_cast<UIWriteMusicDialog*>(pDialog)->FUN_140fef8f0(spItem);
         }
     }
-    else if (spItem->FUN_140527840()->FUN_14053cd90() == true)
+    else if (spItem->FUN_140527840()->HasFunction() == true)
     {
         if (g_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
             return 0;
@@ -1446,7 +1446,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (pPC->FUN_14166ce30() != 0)
+    if (pPC->IsDead() != 0)
     {
         FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
         return 0;
@@ -1464,7 +1464,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
     }
     if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(spItem.get()) == 0)
         return 0;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"), 0, 0, L"");
@@ -1492,7 +1492,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         {
             strError = FUN_14028dfa0<CStringW>(CStringW(L"s_item_err_questitem_destroy"), FUN_14140c2b0(spItem));
         }
-        else if (spItem->FUN_140527930()->FUN_140635120() != 0)
+        else if (spItem->FUN_140527930()->HasBinding() != 0)
         {
             CStringW strOwner;
             spItem->FUN_140527930()->GetBindingOwnerName(pPC, &strOwner);
@@ -1500,7 +1500,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         }
         else
         {
-            MS2Ptr<TSocketGemStoneInfo> spGem = spItem->FUN_1405279c0()->FindFirstBoundGem();
+            MS2Ptr<TSocketGemStoneInfo> spGem = spItem->GetSocket()->FindFirstBoundGem();
             if (spGem.get() != 0)
             {
                 CStringW strOwner = spGem->GetBindName();
@@ -1539,7 +1539,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 spBox->FUN_141a01600(m_nItemUid);
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->GetCount(), -1, -1, 1);
-                spBox->FUN_141a01700(0x475, 0x476, 0);
+                spBox->SetButtonLabelIds(0x475, 0x476, 0);
                 FUN_140d73c60(spBox);
                 return 0;
             }
@@ -1686,7 +1686,7 @@ CStringW InvenSlot::vfunc_22()
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e) && spItem->HasSkin() != 0)
         {
             CStringW strText = GetStringCommonByKey(L"s_msg_rclick_puton_equip_to_coditab");
-            CStringW strKey = ((class Unk_IsKeyMap*)FUN_1409331f0())->FUN_14142d760(0x4940d, 0);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x4940d, 0);
             if (!strKey.IsEmpty())
             {
                 strText.Append(L"\n");
@@ -1799,7 +1799,7 @@ int InvenSlot::MatchSearchName(CStringW strSearch)
     if (m_value18.IsObject())
     {
         Unk_IsScript script(m_value18, 2);
-        script.FUN_140bfe360(s_strUpdateIconSearchOn, bFound);
+        reinterpret_cast<AScript&>(script).Invoke(s_strUpdateIconSearchOn, bFound);
     }
     if (bFound != false)
         return m_nIndex;
@@ -1921,9 +1921,9 @@ static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
             CStringW strCount;
             strCount.Format(L"%d", nCount);
             spBox->FUN_141a01600(nUid);
-            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(nMax), 0, 0);
+            spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
             spBox->FUN_141a01ee0(spCur, spCur->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_141a01700(0x477, 0x478, 0);
+            spBox->SetButtonLabelIds(0x477, 0x478, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -1961,7 +1961,7 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
             {
                 spBox->FUN_141a01600(nUid);
                 spBox->SetTitle(GetStringCommon(0x460));
-                spBox->FUN_141a01700(0x47e, 0x476, 0);
+                spBox->SetButtonLabelIds(0x47e, 0x476, 0);
                 spBox->FUN_141a01ee0(spCur, strName, 1, nCount, nMax, nPrice, 1);
                 FUN_140d73c60(spBox);
             }
@@ -1982,7 +1982,7 @@ static void FUN_14140d200(__int64 nUid, int nCount, int nMax)
         CStringW strCount;
         strCount.Format(L"%d", nCount);
         spBox->FUN_141a01600(nUid);
-        spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(nMax), 0, 0);
+        spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
         FUN_140d73c60(spBox);
     }
 }

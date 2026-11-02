@@ -151,8 +151,8 @@ void UIItemPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
                 }
             }
         }
-        if (bNoSlot) spMessage->FUN_1422c4cd0(GetStringCommon(0x9b8));
-        else spMessage->FUN_1422c4cd0(GetStringCommon(0));
+        if (bNoSlot) spMessage->SetTextW(GetStringCommon(0x9b8));
+        else spMessage->SetTextW(GetStringCommon(0));
         MS2Ptr<CItem> spShown = ((class Unk_IpPreview*)FUN_1409bb9e0())->GetSourceItem();
         FUN_1412d6330(spShown);
     }

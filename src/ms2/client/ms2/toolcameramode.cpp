@@ -16,6 +16,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/camera.h"
 
 // ---- unit-local placeholders ----
 
@@ -234,7 +235,7 @@ void CToolCameraMode::vfunc_9()
     }
     Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
     if (FUN_140af8140())
-        Unk_CameraManager::FUN_1409478c0()->FUN_140af0170(m_70, true);
+        reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0170(m_70, true);
 }
 MS2_REPLACE_METHOD(0x141853780, CToolCameraMode, vfunc_9, 687, 0x270105CE);
 

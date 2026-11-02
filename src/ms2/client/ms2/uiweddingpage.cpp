@@ -80,8 +80,6 @@ public:
 class Unk_WpPerk : public CPtred
 {
 public:
-    unsigned short FUN_140907ad0(int nGrade);                            // the skill level the grade gives
-    float FUN_140907b50(int nGrade);                            // the progress to the next level
 
     int m_pad_18;
     int m_nType;                                                // +0x1c 0 = skill, 1 = item
@@ -142,7 +140,7 @@ void ASObj::FUN_140fe95a0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // ---- UIWeddingPage ----
@@ -245,13 +243,13 @@ bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "onChangeMessage") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strMessage = data.FUN_1422b8f40();
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
                 spBox->FUN_140b76940(CStringW(strMessage));
                 FUN_140d73c60(spBox);
             }
@@ -305,12 +303,12 @@ bool UIWeddingPageSkill::vfunc_1()
             obj.FUN_1407cbbe0("activate", nGrade >= spPerk->m_nGrade);
             if (spPerk->m_nType == 0)
             {
-                unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
+                unsigned short nSkillLevel = std::max<unsigned short>(reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetLevel(nGrade), 1);
                 MS2Ptr<AdditionalLevelData> spSkill = reinterpret_cast<SkillDataTableCli*>(FUN_1401958b0())->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
                 if (spSkill == 0)
                     continue;
                 obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
-                obj.FUN_1409c4a30("status", spPerk->FUN_140907b50(nGrade));
+                obj.FUN_1409c4a30("status", reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetValue(nGrade));
                 obj.FUN_1407cba60("imgPath", spSkill->GetIcon());
             }
             else if (spPerk->m_nType == 1)
@@ -345,9 +343,9 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp(szMethod, "onReceive") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
+            int nId = data.PopInt();
             MS2Ptr<Unk_WpPerk> spPerk = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909910(nId);
             if (spPerk == 0)
                 return true;
@@ -374,14 +372,14 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
 // @0x140fe8720
 void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    int nId = pArgs->FUN_1422b8a10();
+    int nId = pArgs->PopInt();
     MS2Ptr<Unk_WpPerk> spPerk = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909910(nId);
     if (spPerk == 0)
         return;
     int nGrade = FUN_141b89950(TSingleton<WeddingManager>::GetInstance());
     if (spPerk->m_nType == 0)
     {
-        unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
+        unsigned short nSkillLevel = std::max<unsigned short>(reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetLevel(nGrade), 1);
         MS2Ptr<AdditionalLevelData> spSkill = reinterpret_cast<SkillDataTableCli*>(FUN_1401958b0())->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
         if (spSkill.get() != 0)
         {
@@ -441,9 +439,9 @@ bool UIWeddingPageMission::vfunc_3(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp(szMethod, "onReceiveItem") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nQuestId = data.FUN_1422b8b10();
+            int nQuestId = data.PopUInt();
             SendQuest(nQuestId);
         }
         return true;
@@ -459,7 +457,7 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     if (pScene == 0)
         return;
     CStringW strName = pArgs->FUN_1422b8f40();
-    int nQuestId = pArgs->FUN_1422b8b10();
+    int nQuestId = pArgs->PopUInt();
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (spData.IsNull())
         return;

@@ -41,9 +41,13 @@ CString FUN_1401d2b10(const CString& strLeft, const CString& strRight);   // the
 CString FUN_14038f6d0(const CString& str, const char* psz);               // would import MFC CopyChars)
 struct Unk_PreloadEntry;
 class NiString;
-typedef int (*Unk_PreloadReader)(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries);
 int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries);   // ms2animationservice.cpp
-void FUN_141c51dd0(Unk_PreloadReader pfn);                  // installs the KF preload table reader (engine side)
+class NiTextKey;
+class NiTextKeyExtraData                                     // C3: view for the engine-side MS2 hook
+{
+public:
+    static void MS2SetTextKeyReader(int (*pfn)(NiString, NiString, NiTextKey**));   // installs the KF preload table reader
+};
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);   // narrows a wide string (commonstruct_wc.h)
 void* FUN_141508060();                                      // creates an MS2SearchTexturePath (ms2searchtexturepath.cpp)
 
@@ -328,7 +332,7 @@ void FUN_141627390()
     FUN_1401d17b0(Unk_FileChangeFunctor(GetFileSystem(),
         reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::MarkCharacterModelLoaded)));
     GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
-    FUN_141c51dd0(FUN_1414a90c0);
+    NiTextKeyExtraData::MS2SetTextKeyReader(reinterpret_cast<int (*)(NiString, NiString, NiTextKey**)>(FUN_1414a90c0));
     UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
 
@@ -352,7 +356,7 @@ void FUN_1416275e0()
     NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
     NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(LoadFlashDebug));
-    FUN_141c51dd0(FUN_1414a90c0);
+    NiTextKeyExtraData::MS2SetTextKeyReader(reinterpret_cast<int (*)(NiString, NiString, NiTextKey**)>(FUN_1414a90c0));
     UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
 

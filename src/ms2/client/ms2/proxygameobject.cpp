@@ -232,7 +232,7 @@ MS2_REPLACE_METHOD(0x1416C2220, CProxyGameObject, FUN_1416c2220, 65, 0xD6E756B3)
 // @0x1416c2270
 Vector3 CProxyGameObject::FUN_1416c2270()
 {
-    Unk_PosObject* obj = ((class Unk_PosObject*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FUN_141bd1180(m_proxyId));
+    Unk_PosObject* obj = ((class Unk_PosObject*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FindObjectById(m_proxyId));
     if (obj != 0) {
         return obj->vfunc_18();
     } else {

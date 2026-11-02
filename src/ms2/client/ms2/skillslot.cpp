@@ -779,7 +779,7 @@ int SkillSlot::vfunc_0(void* p)
         if (tip.FUN_1409e1770(m_nItemId, nRarity) != 0)
         {
             if (IsFixed() == 0)
-                tip.FUN_1409c69b0(GetStringCommon(0x759));
+                tip.SetEnablePuton(GetStringCommon(0x759));
             FUN_1409b4bc0(p, tip.FUN_1422bb870());
             return 1;
         }
@@ -794,7 +794,7 @@ int SkillSlot::vfunc_0(void* p)
                 if (tip.FUN_1409e0d40(spItem.get()) != 0)
                 {
                     if (IsFixed() == 0)
-                        tip.FUN_1409c69b0(GetStringCommon(0x759));
+                        tip.SetEnablePuton(GetStringCommon(0x759));
                     FUN_1409b4bc0(p, tip.FUN_1422bb870());
                     return 1;
                 }
@@ -832,7 +832,7 @@ int SkillSlot::vfunc_0(void* p)
                         if (tip.FUN_1409e1c50(nSkillId, nLevel, 0) != 0)
                         {
                             if (IsFixed() == 0)
-                                tip.FUN_1409c69b0(GetStringCommon(0x759));
+                                tip.SetEnablePuton(GetStringCommon(0x759));
                             FUN_1409b4bc0(p, tip.FUN_1422bb870());
                             return 1;
                         }
@@ -867,7 +867,7 @@ int SkillSlot::vfunc_8(void* p)
             int nUgcTag = spItem->GetUgcTag();
             if (nUgcTag != 0)
                 slot.FUN_1407cb9c0(s_strUgcTag, nUgcTag);
-            slot.FUN_1409adc90(s_strItemGrade, spItem->FUN_140526bd0());
+            slot.FUN_1409adc90(s_strItemGrade, spItem->GetRarity());
         }
         CString strIcon = GetIconName();
         m_strIcon = strIcon;
@@ -884,7 +884,7 @@ int SkillSlot::vfunc_8(void* p)
         {
             if ((spItem.get() ? true : false) && spItem->IsPetItem() != 0)
             {
-                slot.FUN_1409adc90(s_strItemPetRank, spItem->FUN_140526bd0());
+                slot.FUN_1409adc90(s_strItemPetRank, spItem->GetRarity());
                 slot.FUN_1407cb9c0(s_strDropShadowDisable, 1);
             }
         }
@@ -1481,7 +1481,7 @@ int SkillSlot::FUN_141761900()
     Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
     if (spData.FUN_1402ffd90())
         return 0;
-    return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->FUN_14053cd90();
+    return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->HasFunction();
 }
 
 // @0x141761990
@@ -2095,11 +2095,11 @@ extern CString DAT_143aea1e0;
 // @0x141764ad0
 int CSkillSystem::FUN_141764ad0(SkillData* pData)
 {
-    Unk_SsBody* pBody = reinterpret_cast<Unk_SsBody*>(m_pOwner->FUN_14166d220());
+    Unk_SsBody* pBody = reinterpret_cast<Unk_SsBody*>(m_pOwner->GetPhysicsBody());
     efd::SmartPointer<Ridee> spRidee(m_pOwner->FUN_1416764a0());
     if (spRidee != 0)
     {
-        Unk_SsBody* pRideeBody = reinterpret_cast<Unk_SsBody*>(spRidee->FUN_14166d220());
+        Unk_SsBody* pRideeBody = reinterpret_cast<Unk_SsBody*>(spRidee->GetPhysicsBody());
         if (pRideeBody != 0)
             pBody = pRideeBody;
     }
@@ -3103,11 +3103,11 @@ int CSkillSystem::FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
         return 1;
     if (spLevel->FUN_140804450())
     {
-        Unk_SsBody* pBody = reinterpret_cast<Unk_SsBody*>(m_pOwner->FUN_14166d220());
+        Unk_SsBody* pBody = reinterpret_cast<Unk_SsBody*>(m_pOwner->GetPhysicsBody());
         efd::SmartPointer<Ridee> spRidee(m_pOwner->FUN_1416764a0());
         if (spRidee != 0)
         {
-            Unk_SsBody* pRideeBody = reinterpret_cast<Unk_SsBody*>(spRidee->FUN_14166d220());
+            Unk_SsBody* pRideeBody = reinterpret_cast<Unk_SsBody*>(spRidee->GetPhysicsBody());
             if (pRideeBody != 0)
                 pBody = pRideeBody;
         }
@@ -3425,7 +3425,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
         if (pHeld->FUN_140527840()->FUN_14053dc90() != (int)pData->GetId())
             return 0x21;
     }
-    if (m_pOwner->FUN_14166ce30() != 0)
+    if (m_pOwner->IsDead() != 0)
         return 0xc;
     return 0;
 }

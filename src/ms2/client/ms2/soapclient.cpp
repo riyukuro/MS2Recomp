@@ -47,7 +47,6 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-int FUN_1427221f0(z_stream* pStream, int nFlush);   // inflate
 unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut);
 
 // ---- CSoapClient ----
@@ -476,7 +475,7 @@ unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut)
         {
             strm.avail_out = 0x30000;
             strm.next_out = out;
-            ret = FUN_1427221f0(&strm, Z_NO_FLUSH);
+            ret = inflate(&strm, Z_NO_FLUSH);
             if (ret == Z_STREAM_ERROR)
                 return 0;
             switch (ret)

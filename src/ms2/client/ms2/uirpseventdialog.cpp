@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/actionkeyobject.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/astooltip.h"  // C3: ASTooltip::FUN_1409e1770
 #include "ms2/placeholder/packethandlermanager.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 
@@ -33,7 +34,7 @@ public:
     template<class T> void Set(const char* name, T value) {
         ASData args;
         args.AddSize(value);
-        SetValue(m_value, name, args.FUN_1422b9260());
+        SetValue(m_value, name, args.PopValue());
     }
 private:
     void* p18;
@@ -107,7 +108,7 @@ class Unk_RpsMode : public Unk_ActionKeyManager { };
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
-    int FUN_14166c930();                                    // 0x14166c930 current state id
+    int GetCurStateId();                                    // 0x14166c930 current state id
 };
 class Unk_RpsAvatar {
 public:
@@ -209,7 +210,6 @@ class Unk_RpsTooltip : public AScript {
 public:
     Unk_RpsTooltip(Unk_RpsAvatar*, int, int);
     virtual ~Unk_RpsTooltip();
-    int FUN_1409e1770(int, int);
 private: void* p40; void* p48; void* p50; void* p58;
 };
 MS2_CHECK_SIZE(Unk_RpsTooltip, 0x60);
@@ -248,7 +248,7 @@ void UIRpsEventDialog::vfunc_67() {
     reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x709, Delegate<void(GameEventVariable*)>(this, &UIRpsEventDialog::FUN_140e84350));
     Unk_RpsAvatar* avatar = reinterpret_cast<Unk_RpsAvatarManager*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (avatar) {
-        if (reinterpret_cast<PCBase*>(avatar)->FUN_14166c930() == 0x3b) avatar->vfunc_59(1, 0, 0, 0);
+        if (reinterpret_cast<PCBase*>(avatar)->GetCurStateId() == 0x3b) avatar->vfunc_59(1, 0, 0, 0);
     }
 }
 MS2_REPLACE_METHOD(0x140e825a0, UIRpsEventDialog, vfunc_67, 408, 0x3669444F);
@@ -267,12 +267,12 @@ MS2_REPLACE_METHOD(0x140e82740, UIRpsEventDialog, OnLoadComplete, 462, 0x921991B
 void UIRpsEventDialog::vfunc_45(Scaleform::GFx::Value* result, const CString& method, ASData* args) {
     UIObject::vfunc_45(result, method, args);
     if (FUN_140184310(method, "getTooltipItem")) {
-        int item = args->FUN_1422b8b10();
-        int rank = args->FUN_1422b8b10();
+        int item = args->PopUInt();
+        int rank = args->PopUInt();
         Unk_RpsAvatar* avatar = reinterpret_cast<Unk_RpsAvatarManager*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (avatar) {
             Unk_RpsTooltip tooltip(avatar, 0x20, 2);
-            if (tooltip.FUN_1409e1770(item, rank)) *result = tooltip.FUN_1422bb870();
+            if (reinterpret_cast<ASTooltip*>(&tooltip)->FUN_1409e1770(item, rank)) *result = tooltip.FUN_1422bb870();
         }
     }
 }
@@ -306,8 +306,8 @@ int UIRpsEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* 
     }
     if (_stricmp("onReward", method) == 0) {
         ASData data;
-        if (!data.FUN_1422b9620(args, count)) { MS2_ASSERT_AT(304, 0); return 0; }
-        int index = data.FUN_1422b8b10();
+        if (!data.SetArgsIfAny(args, count)) { MS2_ASSERT_AT(304, 0); return 0; }
+        int index = data.PopUInt();
         FUN_140e83fa0(index);
         return 1;
     }
@@ -331,7 +331,7 @@ MS2_REPLACE_METHOD(0x140e82e40, UIRpsEventDialog, vfunc_71, 451, 0x5752C4F7);
 int UIRpsEventDialog::OnMessage(UISwfEntity* sender, UIMsg* msg) {
     if (UIDialog::OnMessage(sender, msg)) return 1;
     if (msg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(sender)) {
-        int result = msg->FUN_1422b8a10();
+        int result = msg->PopInt();
         CStringW tag = msg->FUN_1422b8f40();
         FUN_14151f200();
         if (tag.CompareNoCase(L"askClose") == 0 && result == 0) vfunc_67();

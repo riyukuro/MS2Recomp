@@ -104,7 +104,7 @@ class CPartyManager;
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14162ab20();
+    bool IsInParty();
     bool IsLocalPlayerLeader();
 };
 
@@ -229,7 +229,7 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         {
             nWeekly = mission->GetBonusRewardCountNow();
             nWeeklyMax = mission->GetMaxCount();
-            m_weekly->FUN_1422c4cd0(FUN_14028dfa0(L"s_dungeonSearch_reward_weekly", nWeekly, nWeeklyMax));
+            m_weekly->SetTextW(FUN_14028dfa0(L"s_dungeonSearch_reward_weekly", nWeekly, nWeeklyMax));
         }
     }
     if (nWeekly >= nWeeklyMax) {
@@ -240,7 +240,7 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
             unsigned nDaily = mission->GetClearCount(GetServerTime());
             unsigned nDailyMax = mission->GetSubRewardCount();
             m_daily->vfunc_3(1);
-            m_daily->FUN_1422c4cd0(FUN_14028dfa0(L"s_dungeonSearch_reward_daily", nDaily, nDailyMax));
+            m_daily->SetTextW(FUN_14028dfa0(L"s_dungeonSearch_reward_daily", nDaily, nDailyMax));
         }
     }
     unsigned nGauge = 0;
@@ -323,7 +323,7 @@ bool FUN_140e146a0()
 {
     if (FUN_140930b40())
         return false;
-    if (((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab20() && !((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader())
+    if (((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->IsInParty() && !((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader())
         return false;
     return true;
 }

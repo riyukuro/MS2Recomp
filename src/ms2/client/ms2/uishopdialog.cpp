@@ -955,7 +955,7 @@ int UIShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0) {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0) {
             if (strTag.Find(L"buyItem", 0) != -1) {
@@ -988,7 +988,7 @@ int UIShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                             spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                             spBox->SetAgreement(0);
                             spBox->SetSize(0x1c0, 400);
-                            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIShopDialog::ConfirmUgcPurchase));
+                            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIShopDialog::ConfirmUgcPurchase));
                             FUN_140d73c60(spBox);
                         }
                     }
@@ -1016,14 +1016,14 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         return 1;
     if (_stricmp("OnChangeTab", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             ChangeTab(args);
         return 1;
     }
     else if (_stricmp("OnChangeCategory", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            m_nCategory = args.FUN_1422b8a10();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            m_nCategory = args.PopInt();
             RefreshItems(CStringW(L""));
             RefreshCategories();
         }
@@ -1031,12 +1031,12 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnBuyItem", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            Scaleform::GFx::Value value = args.FUN_1422b9260();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            Scaleform::GFx::Value value = args.PopValue();
             AScript obj(value, 2);
             int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
             int nType = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("productType")))->GetInt();
-            unsigned nQuantity = args.FUN_1422b8b10();
+            unsigned nQuantity = args.PopUInt();
             if (m_nShopType == 4) {
                 if (nType == 1)
                     BuyMeratItem(nSerial, nQuantity, obj);
@@ -1056,9 +1056,9 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnRightClick", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             if (((class ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn() != 0) {
-                Scaleform::GFx::Value value = args.FUN_1422b9260();
+                Scaleform::GFx::Value value = args.PopValue();
                 AScript obj(value, 2);
                 int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
                 int nType = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("productType")))->GetInt();
@@ -1073,14 +1073,14 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnSell", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             SellItem(args.FUN_1422b8d30());
         return 1;
     }
     else if (_stricmp("OnUseLink", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            Scaleform::GFx::Value value = args.FUN_1422b9260();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            Scaleform::GFx::Value value = args.PopValue();
             AScript obj(value, 2);
             int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
             int nType = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("productType")))->GetInt();
@@ -1093,8 +1093,8 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnUsePreview", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            Scaleform::GFx::Value value = args.FUN_1422b9260();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            Scaleform::GFx::Value value = args.PopValue();
             AScript obj(value, 2);
             int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
             int nType = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("productType")))->GetInt();
@@ -1107,8 +1107,8 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnCheckEnableItems", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            m_bCheckEnableItems = args.FUN_1422b8a90();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            m_bCheckEnableItems = args.PopBool();
             if (m_nGroup == 0)
                 RefreshItems(CStringW(L""));
         }
@@ -1116,7 +1116,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnSearch", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringW strText = args.FUN_1422b8f40();
             Search(strText);
         }
@@ -1124,8 +1124,8 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("onClickRecipe", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            Scaleform::GFx::Value value = args.FUN_1422b9260();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            Scaleform::GFx::Value value = args.PopValue();
             AScript obj(value, 2);
             int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("itemID")))->GetUInt();
             float fX = args.PopFloat();
@@ -1148,8 +1148,8 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("onClickPreview", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
-            Scaleform::GFx::Value value = args.FUN_1422b9260();
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0) {
+            Scaleform::GFx::Value value = args.PopValue();
             AScript obj(value, 2);
             int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("itemID")))->GetUInt();
             float fX = 0.0f;
@@ -1183,7 +1183,7 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     }
     else if (_stricmp("OnUnEquip", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (args.SetArgsIfAny(pArgs, nArgs) != 0)
             Unequip(args);
         return 1;
     }
@@ -1280,7 +1280,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         }
     }
     else {
-        Scaleform::GFx::Value value = pArgs->FUN_1422b9260();
+        Scaleform::GFx::Value value = pArgs->PopValue();
         AScript obj(value, 2);
         if (obj.IsUndefinedOrNull())
             return;
@@ -1486,7 +1486,7 @@ bool UIShopDialog::BillTooltip(Scaleform::GFx::Value* pOut, ASData& args, MS2Ptr
 {
     if (m_spShop == 0)
         return false;
-    Scaleform::GFx::Value value = args.FUN_1422b9260();
+    Scaleform::GFx::Value value = args.PopValue();
     AScript obj(value, 2);
     if (obj.IsUndefinedOrNull())
         return false;
@@ -2093,7 +2093,7 @@ bool UIShopDialog::CanSellItem(MS2Ptr<CItem> spItem)
     }
     if (FUN_140535310() && reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140613160(((MS2Ptr<CItem>*)(void*)(&spItem))->get()) == 0)
         return false;
-    CItemSocket* pSocket = spItem->FUN_1405279c0();
+    CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket && pSocket->CheckGemsShopSellable() == 0) {
         FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"), 0, 0, CStringW(L""));
         return false;
@@ -2405,7 +2405,7 @@ void UIShopDialog::ChangeTab(ASData& args)
         return;
     int nOld = m_nGroup;
     SelectTab(nOld, 0);
-    m_nGroup = args.FUN_1422b8a10();
+    m_nGroup = args.PopInt();
     if (FUN_141b046e0(m_nGroup))
         UpdateProductList(m_nGroup);
 }
@@ -2559,9 +2559,9 @@ void UIShopDialog::LinkProduct(int nSerial)
             return;
         int nKind = spProduct->FUN_140db5ee0();
         if (nKind == 0)
-            FUN_140d2d230(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), m_nShopId, nSerial);
+            FUN_140d2d230(spItem->FUN_1405276c0(), spItem->GetRarity(), m_nShopId, nSerial);
         else if (nKind == 2)
-            FUN_140d2d150(spItem->FUN_1405276c0(), spItem->FUN_140526bd0());
+            FUN_140d2d150(spItem->FUN_1405276c0(), spItem->GetRarity());
     }
 }
 MS2_REPLACE_METHOD(0x141afe960, UIShopDialog, LinkProduct, 319, 0xFAB3FF8A);
@@ -2881,7 +2881,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
         }
         data.FUN_1407cbb20("itemCount", strCount);
         data.FUN_1407cbb20("remain", strRemain);
-        int nRarity = spItem->FUN_140526bd0();
+        int nRarity = spItem->GetRarity();
         unsigned nColor = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTextColor((ItemGradeKey)nRarity);
         CStringW strLabel = FUN_14183e930(spItem->FUN_140527b10(), nColor);
         data.FUN_1407cbb20("label", strLabel);
@@ -3137,9 +3137,9 @@ void UIShopDialog::ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsign
             m_selection.Set(nSerial, nQuantity, 4);
             int nUnit = spProduct->m_b8;
             spBox->SetTitle(GetStringCommon(0x45f));
-            spBox->FUN_141a01700(0x47d, 0x476, 0);
+            spBox->SetButtonLabelIds(0x47d, 0x476, 0);
             MS2Ptr<CMsgBoxDataItem> spData = new CMsgBoxDataItem();
-            spData->FUN_141a06630(spProduct->GetItem()->FUN_140527b10(), true, spItem->FUN_140526bd0());
+            spData->FUN_141a06630(spProduct->GetItem()->FUN_140527b10(), true, spItem->GetRarity());
             spData->m_nUnitCount = nUnit;
             spData->m_nCount = 1;
             spData->m_nMax = spProduct->FUN_140db8400();
@@ -3208,16 +3208,16 @@ void UIShopDialog::OnPriceChanged(const Scaleform::GFx::FunctionHandler::Params&
     if (params.ArgCount < 3)
         return;
     ASData args;
-    if (args.FUN_1422b9620(params.pArgs, params.ArgCount) != 0) {
-        int nSerial = args.FUN_1422b8a10();
-        Scaleform::GFx::Value field = args.FUN_1422b9260();
-        unsigned __int64 nAmount = (unsigned)args.FUN_1422b8b10();
+    if (args.SetArgsIfAny(params.pArgs, params.ArgCount) != 0) {
+        int nSerial = args.PopInt();
+        Scaleform::GFx::Value field = args.PopValue();
+        unsigned __int64 nAmount = (unsigned)args.PopUInt();
         MS2Ptr<CNpcShopProductCli> spProduct(dynamic_cast<CNpcShopProductCli*>(FindCurrentProduct(nSerial).get()));
         if (spProduct == 0)
             return;
         CStringW strText = ProductPriceText(nAmount, spProduct);
         ASTextField text(field, 2);
-        text.FUN_1422c4f00(strText);
+        text.SetTextHTMLW(strText);
     }
 }
 MS2_REPLACE_METHOD(0x141b03240, UIShopDialog, OnPriceChanged, 552, 0x690F4AC2);
@@ -3241,7 +3241,7 @@ void UIShopDialog::SetTalk(const CStringW& strText)
 {
     if (m_spTalk == 0)
         return;
-    m_spTalk->FUN_1422c4f00(strText);
+    m_spTalk->SetTextHTMLW(strText);
 }
 MS2_REPLACE_METHOD(0x141B035C0, UIShopDialog, SetTalk, 81, 0xC45BDEF7);
 
@@ -3494,7 +3494,7 @@ MS2_REPLACE_METHOD(0x141B04510, UIShopDialog, ShowMainItems, 24, 0x8EF078DD);
 void UIShopDialog::Unequip(ASData& args)
 {
     CString strSlot = args.FUN_1422b8d30();
-    Scaleform::GFx::Value value = args.FUN_1422b9260();
+    Scaleform::GFx::Value value = args.PopValue();
     AScript obj(value, 2);
     int nSlot = FUN_1407181d0(strSlot);
     CString strGuid;
@@ -3752,7 +3752,7 @@ void Unk_ShopRowObj::FUN_141b06f60(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 MS2_REPLACE_METHOD(0x141b06f60, Unk_ShopRowObj, FUN_141b06f60, 152, 0xD9DC44A4);
 
@@ -3761,7 +3761,7 @@ void Unk_ShopRowObj::FUN_141b07000(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 MS2_REPLACE_METHOD(0x141b07000, Unk_ShopRowObj, FUN_141b07000, 152, 0x2D7DABD1);
 
@@ -3770,7 +3770,7 @@ void FUN_141b070a0(CMsgBoxData* pBox, const char* szName, Scaleform::GFx::Value 
 {
     ASData data;
     data.AddValue(v);
-    pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 MS2_REPLACE(0x141b070a0, FUN_141b070a0, 233, 0x8ECC6B84);
 // Atexit thunks of this unit's statics (gap1 yd sweep).

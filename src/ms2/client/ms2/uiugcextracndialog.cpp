@@ -108,7 +108,6 @@ class Unk_UgcUiMgr { public: void FUN_141adc530(int nId); };
 CameraMgr* FUN_1409478c0();
 // The update list of the entity app (its count and item i; slot 1 of an item is its per-frame update).
 class Unk_UgcUpdatable { public: virtual void vfunc_0(); virtual void vfunc_1(float fTime); };
-class Unk_UgcUpdateList { public: unsigned FUN_140c2b8c0(); Unk_UgcUpdatable* FUN_140c2b890(unsigned n); };
 Unk_ServiceManager*FUN_1413f9850();                           // the game's service manager
 ecr::RenderService*FUN_1413f9890();
 CStringW TakeScreenshotJpg(int a, int b);                       // the screenshot path
@@ -173,7 +172,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
             {
                 reinterpret_cast<CMsgBoxData*>(spBox.get())->FUN_141a024a0(false);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCExtraCNDialog::FUN_140fad0a0));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCExtraCNDialog::FUN_140fad0a0));
                 FUN_140d73c60(spBox);
             }
         }
@@ -207,13 +206,13 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
     efd::ServiceManager* pManager = reinterpret_cast<efd::ServiceManager *>(FUN_1413f9850());
     if (pManager == 0)
         return false;
-    Unk_UgcUpdateList* pList = reinterpret_cast<Unk_UgcUpdateList *>(FUN_1413f9890());
+    ecr::RenderService* pList = FUN_1413f9890();
     if (pList == 0)
         return false;
     float fTime = (float)pManager->GetTime(0xe001001b);
-    for (unsigned i = 0; i < reinterpret_cast<ecr::RenderService*>(pList)->GetRenderContextCount(); i++)
+    for (unsigned i = 0; i < pList->GetRenderContextCount(); i++)
     {
-        Unk_UgcUpdatable* pItem = pList->FUN_140c2b890(i);
+        Unk_UgcUpdatable* pItem = reinterpret_cast<Unk_UgcUpdatable*>(pList->GetRenderContextAt(i));
         if (pItem == 0)
             continue;
         pItem->vfunc_1(fTime);

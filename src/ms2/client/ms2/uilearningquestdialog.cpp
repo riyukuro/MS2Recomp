@@ -193,10 +193,10 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (_stricmp(szMethod, "onSelectQuest") == 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nQuest = data.FUN_1422b8b10();
-                int nId = data.FUN_1422b8a10();
+                int nQuest = data.PopUInt();
+                int nId = data.PopInt();
                 if (m_194 != nQuest)
                 {
                     LqPtr spData = CLearningQuestTable::GetInstance()->Get(nId);
@@ -257,8 +257,8 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
     {
         CStringW strName = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_name"), strCategory);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strName);
-        spName->FUN_1422c4cd0(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strName);
+        spName->SetTextW(strName);
     }
     if (MS2Ptr<Unk_140acd6e0> spOk = GetChild<Unk_140acd6e0>("m_ok"))
     {
@@ -526,13 +526,13 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
             leaf.FUN_1407cb9c0("guide", nFirst);
             leaf.FUN_1407cbb20("label", FUN_1416e4df0(quests[k]));
             leaf.FUN_1409c0dc0("rendererClassName", "UILearningQuestDialog_renderer_contents");
-            children.FUN_1422bbf00(leaf);
+            children.PushObj(leaf);
             if ((int)quests[k] == m_194)
                 nSelected = nNode;
             if (nType == 1)
                 nNode++;
         }
-        nodes.FUN_1422bbf00(node);
+        nodes.PushObj(node);
     }
     root.FUN_140e35d00("type", 1);
     root.FUN_1409eb1d0("nodes", nodes);

@@ -230,7 +230,7 @@ int UIRewardNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         return 1;
     if (_stricmp(szMethod, "onReward") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CString strType = data.FUN_1422b8d30();
             if ((strType == "achieve"))
                 FUN_141276180(s_strTrophyHero, "");
@@ -360,7 +360,7 @@ void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
     if (FUN_14053f900(item->FUN_1405276c0()))
         return;
     if ((item.get() ? true : false) && item->FUN_140527840()) {
-        int nGrade = item->FUN_140526bd0();
+        int nGrade = item->GetRarity();
         unsigned long nCount = TSingleton<CItemDataTable>::GetInstance()->GetTextColor(static_cast<ItemGradeKey>(nGrade));
         CStringW strMsg = FormatStringId(0x687, nCount, item->FUN_140527b10());
         MS2Ptr<AScript> pObj(new ASObj(2));
@@ -956,7 +956,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ATL::CAtlArray<MS2Ptr<CItem> > items;
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_140523c40(m_spins[m_spinIndex].m_itemId, m_spins[m_spinIndex].m_rarity, 0)) {
-            item->FUN_140526c70(m_spins[m_spinIndex].m_count);
+            item->SetCountClamped(m_spins[m_spinIndex].m_count);
             items.Add(item);
         }
         m_spinIndex++;
@@ -996,11 +996,11 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     CString strName = pArgs->FUN_1422b8d30();
     if ((strName == "resultItem")) {
-        int nSlot = pArgs->FUN_1422b8b10();
+        int nSlot = pArgs->PopUInt();
         int nIndex = nSlot - 1;
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(m_itemIds[nIndex], m_rarities[nIndex], 0)) {
-            item->FUN_140526c70(m_counts[nIndex]);
+            item->SetCountClamped(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
             if (tooltip.FUN_1409e0d40(item.get())) {
                 *pRetVal = tooltip.FUN_1422bb870();
@@ -1013,7 +1013,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         int nIndex = atoi(strName.Mid(5)) - 1;
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(m_itemIds[nIndex], m_rarities[nIndex], 0)) {
-            item->FUN_140526c70(m_counts[nIndex]);
+            item->SetCountClamped(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
             if (tooltip.FUN_1409e0d40(item.get())) {
                 *pRetVal = tooltip.FUN_1422bb870();
@@ -1049,7 +1049,7 @@ void UIRouletteDialog::FUN_141ac5a30()
             int nCount = m_counts[i];
             MS2Ptr<CItem> item(new CItem);
             if (item->FUN_140523c40(nItemId, nRarity, 0)) {
-                item->FUN_140526c70(nCount);
+                item->SetCountClamped(nCount);
                 CString strBind;
                 strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(strBind, item, i, 0x415, 0);

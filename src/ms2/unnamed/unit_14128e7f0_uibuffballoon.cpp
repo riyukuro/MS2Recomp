@@ -130,7 +130,7 @@ int UIBuffBalloon::Entity::vfunc_8(int n)
     Unk_BuffActor* pActor = (Unk_BuffActor*)FUN_140f49330();
     if (pActor == 0)
         return 1;
-    return TimerEntity::vfunc_8(pActor->FUN_14166ce30());
+    return TimerEntity::vfunc_8(pActor->IsDead());
 }
 
 // @0x14128ecb0

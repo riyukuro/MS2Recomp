@@ -388,15 +388,15 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
     ASData data;
     if (_stricmp("onTabChange", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs)) {
-            int nTab = args.FUN_1422b8a10();
+        if (args.SetArgsIfAny(pArgs, nArgs)) {
+            int nTab = args.PopInt();
             FUN_140c0c600(nTab);
         }
         return 1;
     } else if (_stricmp("onSubTabChange", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs)) {
-            m_nSubTab = args.FUN_1422b8a10();
+        if (args.SetArgsIfAny(pArgs, nArgs)) {
+            m_nSubTab = args.PopInt();
             FUN_140c0c660(1);
         }
         return 1;
@@ -419,13 +419,13 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     } else if (_stricmp("onEnterLobby", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
-            SendRoomDungeon(args.FUN_1422b8b10());
+        if (args.SetArgsIfAny(pArgs, nArgs))
+            SendRoomDungeon(args.PopUInt());
         return 1;
     } else if (_stricmp("onClickTile", szMethod) == 0) {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
-            FUN_140c0cdb0(args.FUN_1422b8b10());
+        if (args.SetArgsIfAny(pArgs, nArgs))
+            FUN_140c0cdb0(args.PopUInt());
         return 1;
     }
     return 0;
@@ -750,7 +750,7 @@ int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange
         obj.FUN_1407cba60("banner", pRoom->m_strBanner);
         obj.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
-        out.FUN_1422bbf00(obj);
+        out.PushObj(obj);
     }
     return out.GetLength() != 0;
 }
@@ -776,10 +776,10 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
         item.FUN_1407cba60("banner", pRoom->m_strBanner);
         item.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                   TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
-        list.FUN_1422bbf00(item);
+        list.PushObj(item);
     }
     obj.FUN_1409eb1d0("list", list);
-    out.FUN_1422bbf00(obj);
+    out.PushObj(obj);
 }
 MS2_REPLACE_METHOD(0x140C0D260, UIDungeonControlCenter, FUN_140c0d260, 944, 0xD7B5DA54);
 
@@ -798,7 +798,7 @@ void UIDungeonControlCenter::FUN_140c0d620(MS2Ptr<UIDungeonCategory> pCategory, 
         ASArray list(2);
         if (FUN_140c0cf80(nGroupType, pCategory->m_range, list)) {
             obj.FUN_1409eb1d0("list", list);
-            out.FUN_1422bbf00(obj);
+            out.PushObj(obj);
         }
     }
 }
@@ -813,7 +813,7 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
         return;
     unsigned short nLevel = 0;
     int nJob = 0;
-    if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ab20()) {
+    if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->IsInParty()) {
         nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberLevel();
         nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
     } else {
@@ -852,7 +852,7 @@ void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
         return;
     unsigned short nLevel = 0;
     int nJob = 0;
-    if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ab20()) {
+    if (reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->IsInParty()) {
         nLevel = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->GetMinMemberLevel();
         nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
     } else {
@@ -903,7 +903,7 @@ void ASObj::FUN_140c0e050(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    m_value.SetMember(szName, data.FUN_1422b9260());
+    m_value.SetMember(szName, data.PopValue());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca2310-0x142ca23a0 .text$yd

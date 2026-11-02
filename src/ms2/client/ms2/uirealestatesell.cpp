@@ -187,7 +187,7 @@ int UIRealEstateSell::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (box.get() != 0)
             {
                 CStringW strDefault(L"");
-                box->FUN_141a01d30(2, strDefault, 0x18, 0, 0);
+                box->SetInput(2, strDefault, 0x18, 0, 0);
                 FUN_140d73c60(box);
             }
         }
@@ -292,7 +292,7 @@ int UIRealEstateSell::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nAnswer = pMsg->FUN_1422b8a10();
+        int nAnswer = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"confirmName", 0) == 0 && nAnswer == 0)
         {

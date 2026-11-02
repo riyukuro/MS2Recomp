@@ -222,7 +222,7 @@ int EquipSlot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(spItem.get()) != 0)
     {
-        tip.FUN_1409c69b0(vfunc_22());
+        tip.SetEnablePuton(vfunc_22());
         if (IsEnabled() == true)
             tip.FUN_1409db7b0(spItem);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();

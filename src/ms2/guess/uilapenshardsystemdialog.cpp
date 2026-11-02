@@ -611,9 +611,9 @@ int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Va
         if (FUN_140c62520() == 0)
             return 1;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nSlot = data.FUN_1422b8a10();
+            int nSlot = data.PopInt();
             int bMounted = pPlayer->GetLapenshardItemId((Unk_MyPCLapenSlot)nSlot);
             if (bMounted != 0)
             {
@@ -767,10 +767,10 @@ int UILapenshardSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         OnLeaveTab();
         return 1;
     }
-    else if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnChangeTab", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
     {
-        unsigned nTab = data.FUN_1422b8b10();
-        Scaleform::GFx::Value root = data.FUN_1422b9260();
+        unsigned nTab = data.PopUInt();
+        Scaleform::GFx::Value root = data.PopValue();
         FUN_140c627a0(nTab, root);
         return 1;
     }
@@ -1209,9 +1209,9 @@ int LapenshardSourceItemSlotBagPanel::vfunc_8(const char* szMethod, const Scalef
     if (_stricmp("OnSelectSourceItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_140c63bb0(nIndex);
         }
         return 1;
@@ -1278,7 +1278,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
                 unsigned nLeft = (unsigned)spCopy->GetCount() - 1 > 0 ? spCopy->GetCount() - 1 : 0;
                 if (nLeft > 0)
                 {
-                    spCopy->FUN_140526c70(nLeft);
+                    spCopy->SetCountClamped(nLeft);
                     m_items.Add(spCopy);
                 }
             }
@@ -1335,9 +1335,9 @@ int LapenshardIngredientItemSlotBagPanel::vfunc_8(const char* szMethod, const Sc
     if (_stricmp("OnSelectIngredientItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_140c64390(nIndex);
         }
         return 1;
@@ -1386,7 +1386,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
                 box->Append<int>(nIndex);
                 box->Append<unsigned>(spSource->FUN_1405276c0());
                 box->Append<unsigned>(nNeed);
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &LapenshardIngredientItemSlotBagPanel::FUN_140c64bc0));
+                box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &LapenshardIngredientItemSlotBagPanel::FUN_140c64bc0));
                 FUN_140d73c60(box);
             }
         }
@@ -1400,7 +1400,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64960(int nIndex, int nCount)
     if (spItem.get() != 0)
     {
         m_pTab->FUN_140c68e60(spItem->GetItemUid(), -nCount);
-        spItem->FUN_140526c70(spItem->GetCount() + nCount);
+        spItem->SetCountClamped(spItem->GetCount() + nCount);
         if (spItem->FUN_14052a290(2))
             spItem->FUN_14052a260(2);
         else
@@ -1618,7 +1618,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65360(ItemInfoSlot& slot, ASTooltip& to
     if (spItem.get() != 0)
     {
         MS2Ptr<CItem> spShown = spItem;
-        if (spItem->FUN_140526bd0() == 0)
+        if (spItem->GetRarity() == 0)
         {
             spShown = spItem->Clone();
             if (spShown.get() != 0)
@@ -1729,9 +1729,9 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
         if (FUN_140c62520() == 0)
             return 1;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nAction = data.FUN_1422b8a10();
+            int nAction = data.PopInt();
             if (nAction == 1)
                 SendLapenshardMode5();
             else if (nAction == 3)
@@ -2383,7 +2383,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<CItemLape
         CString strBinding = FUN_1422cc860(strBag, i);
         ASObj row(2);
         row.FUN_1407cba60("binding", strBinding);
-        int nHave = spItem->IsLapenshard() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &kinds[i]);
+        int nHave = spItem->IsLapenshard() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->GetRarity(), &kinds[i]);
         int nNeed = spItem->GetCount();
         row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nNeed));
         rows.PushValue(row.FUN_1422bb870());
@@ -2430,7 +2430,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
             if (MS2Ptr<ASTextField> tf = spNameClip->FUN_1409b4620("textField"))
             {
                 FUN_140d01420((*spNameClip).FUN_1422bb890(), CString("textField"), 2);
-                tf->FUN_1422c4f00(strName);
+                tf->SetTextHTMLW(strName);
             }
         }
     }
@@ -2461,7 +2461,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
             if (MS2Ptr<ASTextField> tf = spNameClip->FUN_1409b4620("textField"))
             {
                 FUN_140d01420((*spNameClip).FUN_1422bb890(), CString("textField"), 2);
-                tf->FUN_1422c4f00(strName);
+                tf->SetTextHTMLW(strName);
             }
         }
     }
@@ -2483,7 +2483,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c660f0()
         CString strBinding = FUN_1422cc860(m_strBind, i);
         ASObj row(2);
         row.FUN_1407cba60("binding", strBinding);
-        int nHave = spItem->IsLapenshard() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
+        int nHave = spItem->IsLapenshard() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->GetRarity(), &m_kinds[i]);
         int nNeed = spItem->GetCount();
         row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nNeed));
         rows.PushValue(row.FUN_1422bb870());

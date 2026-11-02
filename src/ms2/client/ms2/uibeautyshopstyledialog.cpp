@@ -224,7 +224,7 @@ public:
     int FUN_141658e60();
     int FUN_141658f30();
     class Unk_MyPCEquip* FUN_14165f460();
-    MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);
+    MS2Ptr<CEquipItem> GetEquipByUid(__int64 nItemUid);
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);
     struct Unk_PCEquipSet* FUN_1416561a0();
 };
@@ -480,7 +480,7 @@ void FUN_140f01350()
     Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (pPc->FUN_14166c930() != 0xe)
+    if (pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     ((class PCBase*)(class PCBase*)(pPc))->FUN_14166cc40(0x50);
     Unk_QmEffectRequest request;
@@ -550,11 +550,11 @@ bool FUN_140f01800(ASTooltip& tip, unsigned nR, unsigned nG, unsigned nB, unsign
 // @0x140f01670
 bool FUN_140f01670(ASTooltip& tip, int, ASData* pArgs)
 {
-    unsigned nR = pArgs->FUN_1422b8b10();
-    unsigned nG = pArgs->FUN_1422b8b10();
-    unsigned nB = pArgs->FUN_1422b8b10();
-    int nType = pArgs->FUN_1422b8b10();
-    AScript obj(pArgs->FUN_1422b9260(), 2);
+    unsigned nR = pArgs->PopUInt();
+    unsigned nG = pArgs->PopUInt();
+    unsigned nB = pArgs->PopUInt();
+    int nType = pArgs->PopUInt();
+    AScript obj(pArgs->PopValue(), 2);
     int nPalette = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("paletteID")))->GetUInt();
     int nIndex = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("colorSN")))->GetUInt();
     return FUN_140f01800(tip, nR, nG, nB, nPalette, nIndex);
@@ -667,12 +667,12 @@ Unk_BSColorPtr FUN_140f022f0(int nPalette, unsigned nIndex)
 // @0x140f024e0
 void FUN_140f024e0(ASData* pArgs, int* pnPalette, int* pnType)
 {
-    *pnPalette = pArgs->FUN_1422b8b10();
-    *pnType = pArgs->FUN_1422b8b10() == 0 ? 0 : 2;
-    unsigned nR = pArgs->FUN_1422b8b10();
-    unsigned nG = pArgs->FUN_1422b8b10();
-    unsigned nB = pArgs->FUN_1422b8b10();
-    const Scaleform::GFx::Value value = pArgs->FUN_1422b9260();
+    *pnPalette = pArgs->PopUInt();
+    *pnType = pArgs->PopUInt() == 0 ? 0 : 2;
+    unsigned nR = pArgs->PopUInt();
+    unsigned nG = pArgs->PopUInt();
+    unsigned nB = pArgs->PopUInt();
+    const Scaleform::GFx::Value value = pArgs->PopValue();
     AScript obj(value, 2);
     static_cast<ASObj&>(obj).FUN_1407cbb20("colorTooltip", LocalizedMentorFormat(L"s_beauty_tooltip_color", nR, nG, nB));
 }
@@ -890,13 +890,13 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     if (_stricmp("OnChangeItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             FUN_140f08950(0);
             int nItemId = FUN_141b71a10(data.FUN_1422b8d30());
-            int nArg1 = data.FUN_1422b8a10();
-            int nArg2 = data.FUN_1422b8a10();
-            Scaleform::GFx::Value value = data.FUN_1422b9260();
+            int nArg1 = data.PopInt();
+            int nArg2 = data.PopInt();
+            Scaleform::GFx::Value value = data.PopValue();
             AScript obj(value, 2);
             if (!obj.IsUndefinedOrNull())
             {
@@ -976,9 +976,9 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (FUN_140f07980() != 1)
             return 1;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int bPreview = data.FUN_1422b8a90() != 0;
+            int bPreview = data.PopBool() != 0;
             FUN_140f08a30(bPreview);
             if (bPreview && m_268)
                 FUN_141275260(0x270, 1, 0);
@@ -1000,7 +1000,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             __int64 nPrice = FUN_140f01180();
             CStringW strText = LocalizedMentorFormat(L"s_beauty_msg_ask_save_style_extend_in_style_npc", nPrice, nCount);
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05880));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05880));
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
             return 1;
@@ -1019,7 +1019,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         unsigned nCount = FUN_140f01220();
         CStringW strText = LocalizedMentorFormat(L"s_beauty_msg_ask_save_style_extend", nCount, nPrice);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::SendBeautyMode19));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::SendBeautyMode19));
         spBox->FUN_141a024a0(0);
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         return 1;
@@ -1027,9 +1027,9 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp("onClickDeleteCharacterCreateItem", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            Scaleform::GFx::Value value = data.FUN_1422b9260();
+            Scaleform::GFx::Value value = data.PopValue();
             AScript obj(value, 2);
             int nIndex = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("index")))->GetInt();
             MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
@@ -1065,7 +1065,7 @@ int UIBeautyShopStyleDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         }
         else if (dynamic_cast<UIBillDialog*>(pSender))
         {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             if (nResult == 0)
                 FUN_140f08be0();
             return 1;
@@ -1086,8 +1086,8 @@ void UIBeautyShopStyleDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     }
     else if (_stricmp("getTooltip", strMethod) == 0)
     {
-        int nArgs = pArgs->FUN_1422b8a10();
-        Scaleform::GFx::Value value = pArgs->FUN_1422b9260();
+        int nArgs = pArgs->PopInt();
+        Scaleform::GFx::Value value = pArgs->PopValue();
         if (((Scaleform::GFx::Value*)(void*)(&value))->IsUndefined())
         {
             AScript empty(2);
@@ -1293,7 +1293,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
         Unk_BSPlayer* pPc = ((Unk_BSPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPc)
         {
-            MS2Ptr<CEquipItem> spEquip = ((class PC*)(class PCBase*)(pPc))->FUN_141655c30(nUid);
+            MS2Ptr<CEquipItem> spEquip = ((class PC*)(class PCBase*)(pPc))->GetEquipByUid(nUid);
             if (spEquip == 0)
                 return;
             MS2Ptr<CItem> spCopy = spEquip->GetItem()->Clone();
@@ -1626,7 +1626,7 @@ void UIBeautyShopStyleDialog::FUN_140f082d0()
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
     spBox->FUN_141a01800(2);
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05850));
+    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05850));
     FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
 }
 
@@ -1994,7 +1994,7 @@ MS2Ptr<CMsgBoxData> FUN_140f0a930(CStringW strText, int nType, Delegate<bool(int
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
     spBox->SetMsg(strText);
-    spBox->FUN_141a027c0(cb);
+    spBox->SetCallback(cb);
     spBox->Append<int>(nArg);
     FUN_14151f150(MS2Ptr<CMsgBoxData>(spBox));
     return spBox;

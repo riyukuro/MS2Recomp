@@ -16,7 +16,7 @@
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
-    int FUN_14166c930();                                    // 0x14166c930 current state id
+    int GetCurStateId();                                    // 0x14166c930 current state id
 };
 
 const unsigned CTrafficOptimizer::MIN_TRAFFIC = 100;
@@ -53,7 +53,7 @@ unsigned CTrafficOptimizer::FUN_14087d410(Unk_TOEntity* entity) {
     } else {
         traffic += GetTraffic(4);
     }
-    if (reinterpret_cast<PCBase*>(entity)->FUN_14166c930() == 1) {
+    if (reinterpret_cast<PCBase*>(entity)->GetCurStateId() == 1) {
         traffic += GetTraffic(5);
     } else {
         traffic += GetTraffic(6);
@@ -72,7 +72,7 @@ MS2_REPLACE_METHOD(0x14087D500, CTrafficOptimizer, FUN_14087d500, 54, 0x149E8801
 // @0x14087d540
 unsigned CTrafficOptimizer::FUN_14087d540(Unk_TOEntity* entity) {
     unsigned traffic = 0;
-    if (reinterpret_cast<PCBase*>(entity)->FUN_14166c930() == 1) {
+    if (reinterpret_cast<PCBase*>(entity)->GetCurStateId() == 1) {
         traffic = GetTraffic(1);
     } else {
         traffic = GetTraffic(2);

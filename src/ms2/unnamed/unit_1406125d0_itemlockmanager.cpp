@@ -296,7 +296,7 @@ void CMsgBoxData::FUN_140613810(const char* szName, const wchar_t* szText)
 {
     ASData data;
     data.AddWString(szText);
-    m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
+    m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 
 // ASData::~ASData (0x1406147b0) is implicit (asdata.h); its CAtlList<Value> dtor COMDATs follow from the ASData local above.

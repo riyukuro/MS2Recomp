@@ -61,8 +61,8 @@ bool FUN_140164830(const CStringW& strA, const CStringW& strB);
 CStringW FUN_140875470(Unk_140165cf0* pElem);                               // the <feature> row as text
 int Parse_140219a50(const CString& strType);                                // the server type name -> id
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);   // split
-void FUN_140291e40(CStringW strName, bool bOn, const char* pszTag);
-class Unk_1406aeee0 { public: void FUN_1406af150(); };
+void FUN_140291e40(CStringW strName, char bOn, void* pszTag);
+class Unk_LaunchOptions { public: void FUN_1406af150(); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 
 // The enum customization of the log formatter for the feature id (the exe copy keeps a stack cookie and scratch locals).
@@ -745,7 +745,7 @@ bool CFeatureManager::Init()
         return false;
     SetInit(true);
     if (FUN_14036d570(2))
-        ((class Unk_1406aeee0*)FUN_1406aeee0())->FUN_1406af150();
+        FUN_1406aeee0()->FUN_1406af150();
     return true;
 }
 
@@ -811,7 +811,7 @@ bool CFeatureManager::LoadFeature()
         Unk_FeatureId nId = (Unk_FeatureId)1;
         if (CFeatureTable::GetInstance()->m_map.Lookup(strName, nId))
             m_idLevels.SetAt(nId, nLevel);
-        FUN_140291e40(CStringW(strName), nLevel <= m_nLevel ? true : false, "feature");
+        FUN_140291e40(CStringW(strName), (char)(nLevel <= m_nLevel ? true : false), (void*)"feature");
     }
     return true;
 }
@@ -1091,7 +1091,7 @@ bool CFeatureManager::FUN_14036e4c0()
 }
 
 // @0x14036e510
-bool CFeatureManager::FUN_14036e510()
+bool CFeatureManager::IsRegionCN()
 {
     return (GetLocaleName() == "CN");
 }

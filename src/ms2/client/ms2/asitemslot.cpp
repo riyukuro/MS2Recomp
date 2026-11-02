@@ -1299,12 +1299,12 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
     if (nFlags & 1)
     {
         SetItemID(spData->GetItemId());
-        SetItemGrade(pItem->FUN_140526bd0());
+        SetItemGrade(pItem->GetRarity());
         SetIndex(pItem->FUN_140526b50());
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8c))
         {
             if (spData->IsPetItem())
-                SetItemPetRankAndDisableShadow(pItem->FUN_140526bd0());
+                SetItemPetRankAndDisableShadow(pItem->GetRarity());
         }
         else
         {
@@ -1341,7 +1341,7 @@ int ASSlot::FUN_1409c3860(CItem* pItem, void* pPlayer, int nFlags)
             BOOL bEquipped = FALSE;
             if (pItem->FUN_140527840()->FUN_14053cbc0())
             {
-                MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(pPc)->FUN_141655c30(pItem->GetItemUid());
+                MS2Ptr<CEquipItem> spEquip = reinterpret_cast<PC*>(pPc)->GetEquipByUid(pItem->GetItemUid());
                 if (spEquip.get() != NULL)
                     bEquipped = TRUE;
             }
@@ -1512,7 +1512,7 @@ void ASObj::FUN_1409c48f0(const char* szName, short n)
 {
     ASData data;
     data.AddInt((unsigned short)n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c4990
@@ -1520,7 +1520,7 @@ void ASObj::FUN_1409c4990(const char* szName, unsigned long n)
 {
     ASData data;
     data.AddULong(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c4a30
@@ -1528,7 +1528,7 @@ void ASObj::FUN_1409c4a30(const char* szName, float f)
 {
     ASData data;
     data.AddFloat(f);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c4b20 TSingleton<item break manager>::GetInstance
@@ -2706,7 +2706,7 @@ void ASObj::FUN_1409c0d20(const char* szName, unsigned int n)
 {
     ASData data;
     data.FUN_1422b8030(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c0dc0
@@ -2714,7 +2714,7 @@ void ASObj::FUN_1409c0dc0(const char* szName, const char* szValue)
 {
     ASData data;
     data.AddString(szValue);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c0e60
@@ -2722,7 +2722,7 @@ void ASObj::FUN_1409c0e60(const char* szName, const wchar_t* szValue)
 {
     ASData data;
     data.AddWString(szValue);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c0f00
@@ -2730,7 +2730,7 @@ void ASMeratMarketProductBase::FUN_1409c0f00(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c0fa0
@@ -2738,7 +2738,7 @@ void ASMeratMarketProductBase::FUN_1409c0fa0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c1040
@@ -2746,7 +2746,7 @@ void ASMeratMarketProductBase::FUN_1409c1040(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c10e0
@@ -2754,7 +2754,7 @@ void ASMeratMarketProductBase::FUN_1409c10e0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c1180
@@ -2762,7 +2762,7 @@ void ASObj::FUN_1409c1180(const char* szName, __int64 n)
 {
     ASData data;
     data.AddInt64(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409c1640

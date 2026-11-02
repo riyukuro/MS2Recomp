@@ -119,7 +119,7 @@ class PCBase   // C3: member view (real class not in this TU)
 public:
     void AddStateFlags(unsigned int);
     void RemoveStateFlags(unsigned int);
-    int FUN_14166ce30();
+    int IsDead();
 };
 class Unk_RankActor
 {
@@ -450,7 +450,7 @@ bool CPvpRankDuelComponent::RequestCancelMatch()
     Unk_RankComPtr<Unk_RankActor> spActor(((class Unk_RankActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()));
     if (spActor == 0)
         return false;
-    if (((PCBase*)(spActor).operator->())->FUN_14166ce30() == 1)
+    if (((PCBase*)(spActor).operator->())->IsDead() == 1)
     {
         FUN_141275260(0x279, 1, 1);
         return false;

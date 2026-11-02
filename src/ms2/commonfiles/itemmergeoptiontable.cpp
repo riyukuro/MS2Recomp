@@ -134,7 +134,7 @@ public:
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int, int, CItemData *);  // C3: the definition's signature
 CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);           // a + b
-CStringW FUN_14052bd00(int nStringId, const CStringW& str);             // the highlighted text
+template <class A> CStringW FormatStringId(int nId, const A& a);             // the highlighted text
 bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
 bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
 int FUN_140408410(const ATL::CAtlArray<unsigned>& arr, const unsigned& nValue);   // the index of a value, -1 when absent
@@ -443,7 +443,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId,
     DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
     if (spData.IsNull())
         return DataPtr(0);
-    int nPart = spItem->FUN_14053c620();
+    int nPart = spItem->GetEquipSubtype();
     if (spData->m_aPartLimit.GetCount() != 0)
     {
         if (FUN_140408410(spData->m_aPartLimit, nPart) == -1)
@@ -639,7 +639,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             if (FUN_1405c0870(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
             {
                 if (FUN_1405c0c70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
-                    strLine = FUN_14052bd00(0x48d, strLine);
+                    strLine = FormatStringId<CStringW>(0x48d, strLine);
                 strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
             }
             if (nFlag == 0)
@@ -658,7 +658,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
             {
                 if (FUN_1405c0e80(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
-                    strLine = FUN_14052bd00(0x48d, strLine);
+                    strLine = FormatStringId<CStringW>(0x48d, strLine);
                 strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
             }
             if (nFlag == 0)
@@ -685,7 +685,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
         MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
         if (!spItem)
             return DataPtr(nullptr);
-        nPart = spItem->FUN_14053c620();
+        nPart = spItem->GetEquipSubtype();
     }
     std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::pair<int, int>(spMaterial->FUN_14053de10(), nPart));
     if (it != m_data.end())

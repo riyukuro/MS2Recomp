@@ -185,7 +185,7 @@ class CMsgBoxData : public CPtred
 {
 public:
     template <class T> void Append(T v);                            // 0x140533ff0 (int) / 0x1405340b0 (__int64)
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     void FUN_141a024a0(int n);
     __int64 FUN_141a02f10(int nIndex, __int64 nDefault) const;
 private:
@@ -396,7 +396,7 @@ int FUN_1418fd330(__int64 nOwner)
         return 0;
     if (((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == nOwner)
         return 0;
-    if (((class PCBase*)(class PCBase*)(pPC))->FUN_14166ce30() != 0)
+    if (((class PCBase*)(class PCBase*)(pPC))->IsDead() != 0)
     {
         FUN_141275260(0x87a, 1, 0);
         return 0;
@@ -642,7 +642,7 @@ void FUN_1418fde20(__int64 nId0, __int64 nId1, int nValue, const CStringW& strAr
         spBox->Append<__int64>(nId0);
         spBox->Append<__int64>(nId1);
         spBox->Append<int>(nValue);
-        spBox->FUN_141a027c0(cb);
+        spBox->SetCallback(cb);
         FUN_140d73c60(spBox);
     }
 }
@@ -653,7 +653,6 @@ class Unk_UcSlotMgr
 {
 public:
     bool FUN_141b867e0(__int64 nKey);
-    void FUN_141b86750(__int64 nKey);
 };
 bool FUN_140930b10();
 unsigned int FUN_1409301f0();   // C3: was FUN_1409301f0
@@ -671,8 +670,6 @@ public:
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
 class Unk_UcUiMgr : public CUIService
 {
-public:
-    void FUN_141adc690(int nUiId);
 };
 
 // @0x1418fdfd0
@@ -687,7 +684,7 @@ void FUN_1418fdfd0(__int64 nKey)
         return;
     if (!reinterpret_cast<Unk_UcSlotMgr*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b867e0(nKey))
         return;
-    reinterpret_cast<Unk_UcSlotMgr*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b86750(nKey);
+    TSingleton<WeddingManager>::GetInstance()->SendInvitation(nKey);
 }
 MS2_REPLACE(0x1418fdfd0, FUN_1418fdfd0, 126, 0x943A0D11);
 
@@ -1427,7 +1424,7 @@ bool FUN_141900a90(UIDialog* pDlg)
         pDlg->FUN_1419235d0();
         return true;
     }
-    reinterpret_cast<Unk_UcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(pDlg->vfunc_48());
+    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)pDlg->vfunc_48());
     pDlg->FUN_141904ad0(&nLayer);
     pDlg->FUN_141904ab0(&nAlign);
     return true;
@@ -2050,12 +2047,12 @@ bool FUN_1419025f0(bool bMessage)
 MS2_REPLACE(0x1419025f0, FUN_1419025f0, 91, 0xD61ABD29);
 
 // The pet / enchant part of an item (FUN_1405278a0: the record at +0xf8).
+class CItemStatus { public: CItemEnchantInfo* GetEnchant(); };   // C3: member view (itemsocketsystemutil.cpp), m_spEnchant.get()
 class Unk_UcItemExtra : public CPtred
 {
 public:
     void* m_pad_18; void* m_pad_20;
     MS2Ptr<CItemEnchantInfo> m_spEnchant;                           // +0x28
-    CItemEnchantInfo* FUN_140630d60();                              // m_spEnchant.get()
 };
 MS2_CHECK_OFFSET(Unk_UcItemExtra, m_spEnchant, 0x28);
 
@@ -2074,7 +2071,6 @@ bool SendRequestItemEnchant(int nButton, const CMsgBoxData& box)
 }
 MS2_REPLACE(0x1419028d0, SendRequestItemEnchant, 140, 0xDDD7FCD0);
 
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 
 // @0x141902660
 // Ask whether to refund the enchant experience of the item.
@@ -2083,14 +2079,14 @@ int FUN_141902660(MS2Ptr<CItem> spItem)
     Unk_UcItemExtra* pExtra = ((class Unk_UcItemExtra*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_1405278a0());
     if (pExtra != 0)
     {
-        CItemEnchantInfo* pEnchant = pExtra->FUN_140630d60();
+        CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(pExtra)->GetEnchant();
         if (pEnchant != 0 && pEnchant->NeedsChargeVersionUpdate() != 0)
         {
             if (Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_itemenchant_enchant_exp_refund"), 0, CStringW(L"")))
             {
                 spBox->Append<__int64>(spItem->GetItemUid());
                 spBox->FUN_141a024a0(false);
-                spBox->FUN_141a027c0(FUN_140b76b10(SendRequestItemEnchant));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(SendRequestItemEnchant));
                 FUN_140d73c60(spBox);
             }
             return 1;

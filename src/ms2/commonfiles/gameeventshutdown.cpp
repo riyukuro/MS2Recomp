@@ -28,6 +28,7 @@
 #include "gameeventshutdown.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#define MS2_GAMEEVENTVALUE_TYPES   // GetShutdownValue
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // Out-of-unit helpers.
@@ -59,7 +60,6 @@ GameEvent* FUN_14041e230();
 // The per-kind shut-down value (gameeventvalue.cpp): OnStart takes a reference on an id, vfunc_6 releases it again.
 class Unk_ShutdownEventValue;
 class CGameEventValueManager;
-Unk_ShutdownEventValue* FUN_14046d0d0(CGameEventValueManager* pManager, int nValueId);
 
 // The comma splitter (commonstringtable.cpp) and the token reader.
 void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wchar_t* delims);
@@ -104,14 +104,14 @@ void GameEventShutdown::vfunc_2() { FUN_140274fc0(m_68, m_items, L","); }
 void GameEventShutdown::OnStart()
 {
     for (size_t i = 0; i < m_items.GetCount(); i++)
-        ((class CShutdownEventValue*)(class Unk_ShutdownEventValue*)(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId)))->FUN_1407d10e0(m_items[i]);
+        TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(m_nId)->FUN_1407d10e0(m_items[i]);
 }
 
 // @0x14041d610
 void GameEventShutdown::vfunc_6()
 {
     for (size_t i = 0; i < m_items.GetCount(); i++)
-        ((class CShutdownEventValue*)(class Unk_ShutdownEventValue*)(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId)))->FUN_1407d1160(m_items[i]);
+        TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(m_nId)->FUN_1407d1160(m_items[i]);
 }
 
 // MS2-PIN: ??1GameEventShutdown@@UEAA@XZ 0x14041e430 ; implicit dtor (no vftable store)
@@ -136,13 +136,13 @@ void GameEventShutdownNoParam::vfunc_2() {}
 // @0x14041d790
 void GameEventShutdownNoParam::OnStart()
 {
-    ((class CShutdownEventValue*)(class Unk_ShutdownEventValue*)(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId)))->FUN_1407d10e0(m_id);
+    TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(m_nId)->FUN_1407d10e0(m_id);
 }
 
 // @0x14041d7d0
 void GameEventShutdownNoParam::vfunc_6()
 {
-    ((class CShutdownEventValue*)(class Unk_ShutdownEventValue*)(FUN_14046d0d0(TSingleton<CGameEventValueManager>::GetInstance(), m_nId)))->FUN_1407d1160(m_id);
+    TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(m_nId)->FUN_1407d1160(m_id);
 }
 
 // MS2-PIN: ??1GameEventShutdownNoParam@@UEAA@XZ 0x14041e560 ; implicit dtor (no vftable store)

@@ -150,12 +150,12 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     ASData data;
     if (_stricmp("OnObjectCreate", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPlayer == 0)
                 return 0;
-            int nKind = data.FUN_1422b8a10();
+            int nKind = data.PopInt();
             CString str1 = data.FUN_1422b8d30();
             CString str2 = data.FUN_1422b8d30();
             CString str3 = data.FUN_1422b8d30();
@@ -177,9 +177,9 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     }
     else if (_stricmp("onIndexChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             if (FUN_14051f670(nIndex).IsNull())
                 return 0;
             if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_position"))
@@ -205,7 +205,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             }
         }
     }
-    else if (_stricmp("OnMove", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnMove", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
     {
         Vector3 kPoint;
         kPoint.x = data.PopFloat();

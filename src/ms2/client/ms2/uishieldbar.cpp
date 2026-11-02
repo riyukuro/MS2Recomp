@@ -24,14 +24,9 @@ public:
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
     virtual void vfunc_13(const CString& strLabel);     // 13 gotoAndPlay(label)
-    void FUN_1422c0e20(int nWidth);
 };
 class Unk_ShieldEntity : public ASGameEntity
 {
-public:
-    Scaleform::GFx::Value FUN_140cb6990(const char* szMethod, __int64 a1, __int64 a2);          // "open"
-    Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1422c0290(float cx, float cy);
 };
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
@@ -118,7 +113,7 @@ void UIShieldBar::Entity::vfunc_5()
     UIHudEntity::Entity::vfunc_5();
     if (m_38.get())
     {
-        ((Unk_ShieldEntity*)m_38.operator->())->FUN_140cb6990("open", m_a0, m_a8);
+        ((Unk_ShieldEntity*)m_38.operator->())->Invoke("open", (__int64)m_a0, (__int64)m_a8);
         MS2Ptr<ASMovieClip> shield = m_38->FUN_1409b4560("m_shield");
         if (shield.get())
         {
@@ -152,7 +147,7 @@ void UIShieldBar::Entity::vfunc_6(NiPoint3* pPos)
                         if (0 < m_64)
                             m_68.FUN_140868750(m_64);
                         float fRate = (float)m_a0 / (float)m_a8;
-                        ((Unk_ShieldClip*)gauge.operator->())->FUN_1422c0e20((int)(fRate * (float)m_b8));
+                        ((Unk_ShieldClip*)gauge.operator->())->SetWidthInt((int)(fRate * (float)m_b8));
                         ((Unk_ShieldClip*)gaugeMc.operator->())->vfunc_13("defence");
                         m_b4 = 0;
                     }
@@ -188,7 +183,7 @@ int UIShieldBar::Entity::vfunc_8(int n)
         return 1;
     if (m_b0 == 0)
         return 1;
-    int nDead = pActor->FUN_14166ce30();
+    int nDead = pActor->IsDead();
     if (nDead != 0)
         return 1;
     return TimerEntity::vfunc_8(nDead);
@@ -250,7 +245,7 @@ void UIShieldBar::Entity::FUN_140e85fc0(__int64 nCur, __int64 nMax)
 void UIShieldBar::Entity::FUN_140e86090()
 {
     if (m_38.get())
-        ((Unk_ShieldEntity*)m_38.operator->())->FUN_1422c0290(100.0f, 100.0f);
+        ((Unk_ShieldEntity*)m_38.operator->())->SetScaleFloat(100.0f, 100.0f);
 }
 
 // @0x140e860f0

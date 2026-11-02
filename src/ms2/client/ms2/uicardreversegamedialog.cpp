@@ -202,7 +202,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     MS2Ptr<CItem> spItem(new CItem);
                     if (spItem->FUN_140523c40(spCard->m_nItemId, spCard->m_nRank, 0))
                     {
-                        spItem->FUN_140526c70(spCard->m_nCount);
+                        spItem->SetCountClamped(spCard->m_nCount);
                         int nSeq = m_1a0++;
                         strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                         FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
@@ -289,12 +289,12 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (m_1f8 == 0 && 0 < m_1f4 && m_30.get() != 0 && m_1f0 == -1)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::CardReverseGame), 0);
                 packet.WriteUInt8(2);
                 FUN_140710590(packet);
-                m_1f0 = data.FUN_1422b8b10();
+                m_1f0 = data.PopUInt();
             }
         }
         return 1;
@@ -304,10 +304,10 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (m_30.get() != 0)
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                int nIndex = data.FUN_1422b8b10();
-                int bOpened = data.FUN_1422b8a90();
+                int nIndex = data.PopUInt();
+                int bOpened = data.PopBool();
                 ASObj obj(2);
                 if (bOpened && m_1f8.get() != 0)
                 {
@@ -316,7 +316,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                     MS2Ptr<CItem> spItem(new CItem);
                     if (spItem->FUN_140523c40(m_1f8->m_nItemId, m_1f8->m_nRank, 0))
                     {
-                        spItem->FUN_140526c70(m_1f8->m_nCount);
+                        spItem->SetCountClamped(m_1f8->m_nCount);
                         int nSeq = m_1a0++;
                         strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                         FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
@@ -344,7 +344,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         MS2Ptr<CItem> spItem(new CItem);
                         if (spItem->FUN_140523c40(spCard->m_nItemId, spCard->m_nRank, 0))
                         {
-                            spItem->FUN_140526c70(spCard->m_nCount);
+                            spItem->SetCountClamped(spCard->m_nCount);
                             int nSeq = m_1a0++;
                             strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
                             FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
@@ -389,13 +389,13 @@ void UICardReverseGameDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* p
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    int nItemId = pArgs->FUN_1422b8b10();
-    int nRank = pArgs->FUN_1422b8b10();
-    int nCount = pArgs->FUN_1422b8b10();
+    int nItemId = pArgs->PopUInt();
+    int nRank = pArgs->PopUInt();
+    int nCount = pArgs->PopUInt();
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(nItemId, nRank, 0) != 0)
     {
-        spItem->FUN_140526c70(nCount);
+        spItem->SetCountClamped(nCount);
         ASTooltip tip(pPlayer, 0x20, 2);
         if (tip.FUN_1409e0d40(spItem.get()) != 0)
         {
@@ -413,7 +413,7 @@ int UICardReverseGameDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && pSender == dynamic_cast<UIMessageBox*>(pSender))
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         FUN_14151f200();
         if (nResult == 0)
             vfunc_67();

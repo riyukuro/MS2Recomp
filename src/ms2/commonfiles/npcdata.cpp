@@ -83,6 +83,7 @@ class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
     char const* Attribute(char const*) const;
+    void SetDoubleAttribute(char const *, double);
 };
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -106,7 +107,6 @@ static CStringA s_sortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Creat
 static CStringA s_sortNames7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unrecovered helpers.
-void FUN_14086f970(void* pElem, const char* pszName, double fValue);            // SetDoubleAttribute
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);               // SetAttribute(name, int)
 void FUN_140874050(void* pElem, const char* pszName, const CStringA& strValue); // SetAttribute(name, string)
 struct Unk_NpcPoint3
@@ -143,9 +143,9 @@ void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
         if (m_strKfm != "")
             FUN_140874050(&elem, "kfm", m_strKfm);
         if (m_fScale != 1.0f)
-            FUN_14086f970(&elem, "scale", m_fScale);
+            reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("scale", m_fScale);
         if (m_fAniSpeed != 1.0f)
-            FUN_14086f970(&elem, "anispeed", m_fAniSpeed);
+            reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("anispeed", m_fAniSpeed);
         if (m_nSpawnAlphaAnimation != 1)
             FUN_140873ca0(&elem, "spawnAlphaAnimation", m_nSpawnAlphaAnimation);
         if (m_vOffset.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))

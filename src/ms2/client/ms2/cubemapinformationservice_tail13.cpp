@@ -13,18 +13,17 @@
 #include <ecr/CoreRuntimeMessages.h>
 
 class NoticeCubeInfo;
-void FUN_140ae1b60(void* pProp);                                // Release of the PhysX prop object
-void FUN_140ae1dd0(void* pProp);                                // AddRef
+namespace egfPhysX { class EntityActorData { public: void IncRefCount() const; void DecRefCount() const; }; }   // C3: member view (0x140ae1dd0, 0x140ae1b60)
 
 Unk_CMISPropPtr& Unk_CMISPropPtr::operator=(const Unk_CMISPropPtr& o)
 {
     if (m_p != o.m_p)
     {
         if (m_p != 0)
-            FUN_140ae1b60(m_p);
+            reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->DecRefCount();
         m_p = o.m_p;
         if (m_p != 0)
-            FUN_140ae1dd0(m_p);
+            reinterpret_cast<egfPhysX::EntityActorData*>(m_p)->IncRefCount();
     }
     return *this;
 }

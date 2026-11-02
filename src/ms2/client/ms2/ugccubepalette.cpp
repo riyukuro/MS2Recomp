@@ -111,7 +111,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
-CStringW FUN_1402918a0(int nType, int nId);
+CStringW FUN_1402918a0(int nType, unsigned nId);
 int FUN_141901d20(int, __int64, __int64);   // C3: was FUN_141901d20
 int FUN_141901f70(int, __int64, __int64);   // C3: was FUN_141901f70
 CStringW FUN_14016a730(const char* sz, int nCodePage);

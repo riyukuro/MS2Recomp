@@ -35,8 +35,7 @@ void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice
 
 // the ids of the cash call items the player may use
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
-class Unk_CcConfig { public: unsigned char FUN_14036e5b0(); };
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool FUN_14036d570(int nFeature); bool IsRegionJP(); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CGameRule* FUN_1401c0d90();
 // A 16-byte item handle.
@@ -46,8 +45,8 @@ struct Unk_CcHandle
     void* m_p8;
     ~Unk_CcHandle() { reinterpret_cast<MS2Ptr<class CItem>*>(this)->~MS2Ptr(); }
 };
-class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); int FUN_140a5f7b0(int nSlot, int n); };
-class Unk_Inventory;
+class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); };
+class Unk_Inventory { public: int FUN_140a5f7b0(int nTag, int nRarity); };   // C3: member view (inventory.h)
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_CcInventory
 void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
 __int64 FUN_14052cd70(Unk_CcHandle* p);
@@ -77,9 +76,9 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (pPC->FUN_14166ce30() != 0)
+    if (pPC->IsDead() != 0)
         return 0;
-    if (pPC->FUN_14166c930() == 0x25 || pPC->FUN_14166c930() == 0x2a)
+    if (pPC->GetCurStateId() == 0x25 || pPC->GetCurStateId() == 0x2a)
         return 0;
     bool bOwned = false;
     for (unsigned i = 0; i < DAT_143ab3058.GetCount(); i++)
@@ -117,9 +116,9 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     else
     {
         int nNeed = 3;
-        if (((class Unk_CcConfig*)FUN_140166410())->FUN_14036e5b0() != 0)
+        if (((class CFeatureManager*)FUN_140166410())->IsRegionJP() != 0)
             nNeed = 1;
-        int nHave = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5f7b0(0xb, 0);
+        int nHave = g_143ab2a90.FUN_140a5f7b0(0xb, 0);
         if (nHave >= nNeed)
         {
             Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb);
@@ -155,7 +154,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         if (pPC->FUN_141527160(0x2a) == 0)
             return 0;
         NiPoint3 kRot = pPC->vfunc_20();
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
         pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, nCallType), 0, 0);
     }
     return 1;
@@ -167,12 +166,12 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (pPC->FUN_14166ce30() != 0)
+    if (pPC->IsDead() != 0)
     {
         FUN_140d73bc0(0x95, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_14166c930() == 0x25 || pPC->FUN_14166c930() == 0x2a)
+    if (pPC->GetCurStateId() == 0x25 || pPC->GetCurStateId() == 0x2a)
     {
         FUN_140d73bc0(0x95, 0, 0, CStringW(L""));
         return 0;
@@ -203,7 +202,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
             return 0;
         }
         NiPoint3 kRot = pPC->vfunc_20();
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
         pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, 0), 0, 0);
     }
     return 1;
@@ -220,12 +219,12 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (pPC->FUN_14166ce30() != 0)
+    if (pPC->IsDead() != 0)
     {
         FUN_140d73bc0(0x9a, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_14166c930() == 0x25 || pPC->FUN_14166c930() == 0x2a)
+    if (pPC->GetCurStateId() == 0x25 || pPC->GetCurStateId() == 0x2a)
     {
         FUN_140d73bc0(0x9a, 0, 0, CStringW(L""));
         return 0;
@@ -251,7 +250,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
             return 0;
         }
         NiPoint3 kRot = pPC->vfunc_20();
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
         pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, 0), 0, 0);
     }
     return 1;
@@ -268,12 +267,12 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (pPC->FUN_14166ce30() != 0)
+    if (pPC->IsDead() != 0)
     {
         FUN_140d73bc0(0x9d, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_14166c930() == 0x25 || pPC->FUN_14166c930() == 0x2a)
+    if (pPC->GetCurStateId() == 0x25 || pPC->GetCurStateId() == 0x2a)
     {
         FUN_140d73bc0(0x9d, 0, 0, CStringW(L""));
         return 0;
@@ -294,7 +293,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
             return 0;
         }
         NiPoint3 kRot = pPC->vfunc_20();
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
         pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, 0), 0, 0);
     }
     return 1;
@@ -307,17 +306,17 @@ int CCashCallManager::FUN_140b040a0(int nCount)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (pPC->FUN_14166ce30() != 0)
+    if (pPC->IsDead() != 0)
     {
         FUN_140d73bc0(0xb57, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_14166c930() == 0x2c)
+    if (pPC->GetCurStateId() == 0x2c)
     {
         FUN_140d73bc0(0xb57, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_14166c930() != 1 || pPC->FUN_141675ed0() != 0)
+    if (pPC->GetCurStateId() != 1 || pPC->FUN_141675ed0() != 0)
     {
         FUN_140d73bc0(0xb59, 0, 0, CStringW(L""));
         return 0;
@@ -372,7 +371,7 @@ int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
             return 0;
         }
         NiPoint3 kRot = pPC->vfunc_20();
-        pPC->FUN_14166d970(kRot);
+        pPC->SetRotationAndTargetYaw(kRot);
         pPC->vfunc_59(0x2c, new StateRecallData(reinterpret_cast<void*>(nTarget)), 0, 0);
     }
     return 1;

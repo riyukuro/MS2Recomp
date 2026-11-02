@@ -267,11 +267,11 @@ int CItem::FUN_140526b90()
 MS2_REPLACE_METHOD(0x140526B90, CItem, FUN_140526b90, 14, 0xA1BBC3FF);
 
 // @0x140526bd0
-int CItem::FUN_140526bd0()
+int CItem::GetRarity()
 {
     return m_64;
 }
-MS2_REPLACE_METHOD(0x140526BD0, CItem, FUN_140526bd0, 14, 0xB9C4E423);
+MS2_REPLACE_METHOD(0x140526BD0, CItem, GetRarity, 14, 0xB9C4E423);
 
 // @0x140526bf0
 void CItem::FUN_140526bf0(int v)
@@ -1146,11 +1146,11 @@ CItemCustomMusicScore* CItem::FUN_140527990()
 MS2_REPLACE_METHOD(0x140527990, CItem, FUN_140527990, 33, 0xC78B125C);
 
 // @0x1405279c0
-CItemSocket* CItem::FUN_1405279c0()
+CItemSocket* CItem::GetSocket()
 {
     return m_spSocket.get();
 }
-MS2_REPLACE_METHOD(0x1405279C0, CItem, FUN_1405279c0, 33, 0x830CFC5C);
+MS2_REPLACE_METHOD(0x1405279C0, CItem, GetSocket, 33, 0x830CFC5C);
 
 // @0x1405279f0
 int CItem::FUN_1405279f0()
@@ -1172,17 +1172,17 @@ int CItem::FUN_140526160()
 MS2_REPLACE_METHOD(0x140526160, CItem, FUN_140526160, 29, 0x4E475867);
 
 // @0x140526c70
-void CItem::FUN_140526c70(int nCount)
+void CItem::SetCountClamped(int nCount)
 {
     m_6c = (unsigned)nCount < GetSlotMax() ? nCount : GetSlotMax();
 }
-MS2_REPLACE_METHOD(0x140526C70, CItem, FUN_140526c70, 70, 0x1DBDC687);
+MS2_REPLACE_METHOD(0x140526C70, CItem, SetCountClamped, 70, 0x1DBDC687);
 
 // @0x140526cc0
 unsigned CItem::AddCount(int nAdd)
 {
     m_6c = m_6c + nAdd;
-    FUN_140526c70((unsigned)m_6c < 0 ? 0 : m_6c);
+    SetCountClamped((unsigned)m_6c < 0 ? 0 : m_6c);
     return m_6c;
 }
 MS2_REPLACE_METHOD(0x140526CC0, CItem, AddCount, 93, 0x92394BB5);
@@ -1238,7 +1238,7 @@ MS2_REPLACE_METHOD(0x140527640, CItem, FUN_140527640, 36, 0x1268982F);
 // @0x140527670
 __int64 CItem::GetSellPrice()
 {
-    return m_spData->GetSellPrice(FUN_140526bd0());
+    return m_spData->GetSellPrice(GetRarity());
 }
 MS2_REPLACE_METHOD(0x140527670, CItem, GetSellPrice, 59, 0xD7F60E55);
 
@@ -1480,7 +1480,7 @@ void CItem::SetEnchantCharge(int nExp)
 MS2_REPLACE_METHOD(0x140527110, CItem, SetEnchantCharge, 104, 0x12B5FEE3);
 
 // @0x140527270
-int CItem::FUN_140527270()
+int CItem::GetPlusLevel()
 {
     if (m_spStatus == NULL)
         return 0;
@@ -1489,7 +1489,7 @@ int CItem::FUN_140527270()
         return 0;
     return pInfo->GetLevel();
 }
-MS2_REPLACE_METHOD(0x140527270, CItem, FUN_140527270, 100, 0x46C766FE);
+MS2_REPLACE_METHOD(0x140527270, CItem, GetPlusLevel, 100, 0x46C766FE);
 
 // @0x140527360
 bool CItem::FUN_140527360()
@@ -1554,12 +1554,12 @@ void CItem::FUN_1405290b0()
         m_b0 = 0;
         return;
     }
-    int nA = FUN_140526bd0();
-    int nB = FUN_140527840()->FUN_14053c620();
+    int nA = GetRarity();
+    int nB = FUN_140527840()->GetEquipSubtype();
     int nLevel = FUN_140526fc0();
     int nBase = FUN_140527840()->FUN_14053f0d0(nA);
     m_b4 = FUN_140527840()->FUN_14053f390(nBase, nLevel);
-    int nPlus = FUN_140527270();
+    int nPlus = GetPlusLevel();
     if (0 < nPlus)
     {
         int nExtra = FUN_140527840()->GetUnlimitedEnchantMaxGrade();
@@ -1780,7 +1780,7 @@ int CItem::FUN_140525a80()
     case 0x18:
         return 1;
     }
-    if (m_spData->FUN_14053cd90())
+    if (m_spData->HasFunction())
     {
         CStringW* pName = &m_spData->function.name;
         if (*pName == L"RecallParty" || *pName == L"TreasureMap")
@@ -1819,7 +1819,7 @@ int CItem::FUN_140526390()
         return 0;
     if (m_spData->HasAdditionalEffect())
         return 1;
-    CItemSocket* pSocket = FUN_1405279c0();
+    CItemSocket* pSocket = GetSocket();
     if (pSocket != 0 && pSocket->FUN_140620de0())
         return 1;
     if (m_spStatus.get() != 0)
@@ -1850,7 +1850,7 @@ int CItem::FUN_1405264c0(int nSlot, unsigned* pResult)
         *pResult = 1;
         return false;
     }
-    if (FUN_140526bd0() < 4)
+    if (GetRarity() < 4)
     {
         *pResult = 7;
         return false;
@@ -1896,7 +1896,7 @@ int CItem::FUN_140526670(int nSlot, unsigned* pResult)
         *pResult = 1;
         return false;
     }
-    if (FUN_140526bd0() < 3)
+    if (GetRarity() < 3)
     {
         *pResult = 7;
         return false;
@@ -2117,7 +2117,7 @@ MS2_REPLACE_METHOD(0x140529DE0, CItem, FUN_140529de0, 187, 0x2B386C86);
 // @0x140529eb0
 CString CItem::FUN_140529eb0()
 {
-    return FUN_140529f60(m_spData->FUN_14053c620(), FUN_140526fc0(), FUN_140527270(), m_spData->effect.enchantShape);
+    return FUN_140529f60(m_spData->GetEquipSubtype(), FUN_140526fc0(), GetPlusLevel(), m_spData->effect.enchantShape);
 }
 MS2_REPLACE_METHOD(0x140529EB0, CItem, FUN_140529eb0, 168, 0xB191BA0F);
 
@@ -2131,17 +2131,17 @@ MS2_REPLACE_METHOD(0x140529F60, CItem, FUN_140529f60, 97, 0xF4F758D0);
 // @0x14052a060
 int CItem::FUN_14052a060()
 {
-    MS2Ptr<ItemOptionRandom> spOption = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandom(m_spData->FUN_14053eff0(FUN_140526bd0()));
+    MS2Ptr<ItemOptionRandom> spOption = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandom(m_spData->FUN_14053eff0(GetRarity()));
     if (spOption == NULL)
         return 0;
-    return spOption->FUN_1405d5fe0(FUN_140526bd0());
+    return spOption->FUN_1405d5fe0(GetRarity());
 }
 MS2_REPLACE_METHOD(0x14052A060, CItem, FUN_14052a060, 197, 0x509A0B26);
 
 // @0x14052b370
 void CItem::FUN_14052b370()
 {
-    int nMax = ((CItemSocketTable*)FUN_14052d200())->GetInitialSocketCount(m_spData->property.socketDataId, FUN_140526bd0(),
+    int nMax = ((CItemSocketTable*)FUN_14052d200())->GetInitialSocketCount(m_spData->property.socketDataId, GetRarity(),
         MS2Ptr<CItemData>(FUN_140527840()));
     FUN_14052b420(nMax);
 }
@@ -2158,7 +2158,7 @@ int CItem::FUN_14052b420(unsigned nMax)
         return 1;
     if (FUN_140525c60() != 0)
         return 1;
-    unsigned nCur = ((CItemSocketTable*)FUN_14052d200())->GetMaxSocketCount(m_spData->property.socketDataId, FUN_140526bd0(),
+    unsigned nCur = ((CItemSocketTable*)FUN_14052d200())->GetMaxSocketCount(m_spData->property.socketDataId, GetRarity(),
         MS2Ptr<CItemData>(FUN_140527840()));
     unsigned nUse = nCur < nMax ? nCur : nMax;
     MS2Ptr<CItemSocket> spSocket = m_spSocket;
@@ -2317,7 +2317,7 @@ CStringW CItem::FUN_140527b10()
 // @0x140528160
 CStringW CItem::FUN_140528160()
 {
-    return FUN_14183e9c0(FUN_140527b10(), FUN_140526bd0());
+    return FUN_14183e9c0(FUN_140527b10(), GetRarity());
 }
 
 // @0x140528590
@@ -2515,8 +2515,8 @@ int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
     else if (nKind[0] > nKind[1])
         return 1;
     int nLevel[2];
-    nLevel[0] = pFirst->FUN_14053c620();
-    nLevel[1] = pSecond->FUN_14053c620();
+    nLevel[0] = pFirst->GetEquipSubtype();
+    nLevel[1] = pSecond->GetEquipSubtype();
     if (nLevel[0] < nLevel[1])
         return -1;
     else if (nLevel[0] > nLevel[1])
@@ -2531,8 +2531,8 @@ int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
         else if (nLimit[0] > nLimit[1])
             return 1;
         int nRarity[2];
-        nRarity[0] = spFirst->FUN_140526bd0();
-        nRarity[1] = spSecond->FUN_140526bd0();
+        nRarity[0] = spFirst->GetRarity();
+        nRarity[1] = spSecond->GetRarity();
         if (nRarity[0] < nRarity[1])
             return -1;
         else if (nRarity[0] > nRarity[1])
@@ -2614,7 +2614,7 @@ int CItem::FUN_14052b130(int nItemId, int nRarity, int nAmount)
     if (!FUN_140523c40(nItemId, nRarity, nAmount))
         return 0;
     m_19c = 1;
-    m_spStatus->GenerateOptions(nItemId, FUN_140526bd0(), nAmount);
+    m_spStatus->GenerateOptions(nItemId, GetRarity(), nAmount);
     if (FUN_140527840()->FUN_14053cd10())
     {
         MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(nItemId);
@@ -2714,7 +2714,7 @@ void CItem::FUN_140524eb0(CInputStream& in)
 MS2Ptr<CItem> CItem::Clone()
 {
     MS2Ptr<CItem> spNew(new CItem);
-    if (!spNew->FUN_140523c40(FUN_1405276c0(), FUN_140526bd0(), 0))
+    if (!spNew->FUN_140523c40(FUN_1405276c0(), GetRarity(), 0))
         return MS2Ptr<CItem>(0);
     spNew->m_48 = m_48;
     spNew->m_50 = m_50;
@@ -2775,7 +2775,7 @@ bool CItem::FUN_140523c40(int nItemId, int nRarity, int nStatusArg)
     else
         FUN_140526bf0(m_spData->GetRank());
     reinterpret_cast<Unk_PayloadPtr<CItemExtraData>&>(m_spProxy) = m_spData->CreateExtraData();
-    m_spStatus.AssignRaw(new CItemStatus(nItemId, FUN_140526bd0(), nStatusArg));
+    m_spStatus.AssignRaw(new CItemStatus(nItemId, GetRarity(), nStatusArg));
     if (HasCubeTextureMesh() != 0 || FUN_140526010() != 0)
         m_spUgc.AssignRaw(new CItemUgc);
     if (FUN_140525a30() != 0)

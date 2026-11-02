@@ -49,7 +49,6 @@ void FUN_141901390(int a1, int nUIType);
 class Unk_140d13c70 { public: bool m_bMute; void FUN_14125fe20(); float FUN_1412602e0(); };
 class Unk_1409a8b10 { public: Unk_140d13c70* FUN_140d13c70(); };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-class Unk_1414a5700 { public: CString FUN_140d44f90(int n1, int n2); };
 void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 class Unk_140298f40 { public: };
@@ -191,7 +190,7 @@ int UICutSceneMovie::HasSceneVideo(int nScene)
     if (!m_strScenePath.IsEmpty())
         return 1;
     int nId = reinterpret_cast<Unk_1403ed2d0*>(WorldService::GetInstance())->FUN_141bd3060();
-    CString strPath = reinterpret_cast<Unk_1414a5700*>(TSingleton<CLoadingImageTable>::GetInstance())->FUN_140d44f90(nId, nScene);
+    CString strPath = TSingleton<CLoadingImageTable>::GetInstance()->GetMovieFile(nId, nScene);
     return strPath.GetLength() != 0;
 }
 MS2_REPLACE_METHOD(0x14190F1D0, UICutSceneMovie, HasSceneVideo, 153, 0x29014FD9);
@@ -313,7 +312,7 @@ int UICutSceneMovie::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (!pMsg->FUN_1422e4520()) {
         if (dynamic_cast<UIMessageBox*>(pSender)) {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             if (nResult == 0) {
                 Exit();
                 if (m_pExit.get()) {
@@ -368,7 +367,7 @@ void UICutSceneMovie::ShowSkipButton()
             CStringW strKey(L"$s_cutscene_skip_key");
             CStringW strText(L"$s_cutscene_skip");
             if (*reinterpret_cast<const bool*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
-                strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
+                strKey = FUN_1409331f0()->GetActionKeyName(0x49409, 2);
             m_30->Invoke("setSkipKey", strKey, strText);
         }
     }
@@ -448,7 +447,7 @@ void UICutSceneMovie::PlayDefaultScene()
     Unk_1419e04b0* p = ((class Unk_1419e04b0*)FUN_141540270(TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->GetMode()));
     if (p)
         nScene = p->FUN_1419e04b0();
-    CString strPath = reinterpret_cast<Unk_1414a5700*>(TSingleton<CLoadingImageTable>::GetInstance())->FUN_140d44f90(nId, nScene);
+    CString strPath = TSingleton<CLoadingImageTable>::GetInstance()->GetMovieFile(nId, nScene);
     if (strPath.GetLength()) {
         TSingleton<CAutoFindTaxiStation>::GetInstance()->FUN_1409f1e20();
         vfunc_52(strPath, 0.0f);

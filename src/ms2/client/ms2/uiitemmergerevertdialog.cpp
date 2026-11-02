@@ -146,7 +146,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     if (_stricmp(szMethod, "onOk") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
             MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
@@ -199,7 +199,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     }
     CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
     CStringW strText = StringFormat<CStringW, CStringW>(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);
-    int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053c620();
+    int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->GetEquipSubtype();
     FUN_14083d2b0(strText);
     ASObj obj(2);
     ((class AScript&)(obj)).FUN_1407cb9c0("isReady", 0);
@@ -208,7 +208,7 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
     ((class AScript&)(obj)).FUN_1407cbb20("optionStr", CStringW(strText));
     obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);
     ((class AScript&)(obj)).FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->GetItemUid()));
-    obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->FUN_140526bd0(), nType));
+    obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->GetRarity(), nType));
     m_30->Invoke("setData", obj);
 }
 
@@ -287,7 +287,7 @@ int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
     MS2Ptr<CItem> spBase = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spBase.IsNull())
         return 5;
-    if (spBase->FUN_140526bd0() != pItem->FUN_140526bd0())
+    if (spBase->GetRarity() != pItem->GetRarity())
         return 6;
     if (!((class CItemStatus*)(void*)(pItem->FUN_1405278a0()))->FUN_140630810())
         return 7;

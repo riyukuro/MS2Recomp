@@ -122,7 +122,7 @@ void StateSwimDash::vfunc_3(double fTime)
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
     m_pOwner->FUN_141671960(reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_SwimConsts*)FUN_1401d3200())->m_scale)->FUN_140298f40()));
-    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(kVel);
+    reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(kVel);
     reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
@@ -182,7 +182,7 @@ void StateSwimDash::vfunc_9(double fTime)
     {
         Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
         vfunc_10(m_pOwner->vfunc_95(), pSpeed->m_w, pSpeed->m_y, 1.0f, 0);
-        bPlayed = m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
+        bPlayed = m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), false, false);
     }
     if (bPlayed)
         FUN_1417fbec0();

@@ -61,11 +61,11 @@ void StatePvPWinLose::vfunc_4(StateData* pData)
     }
     if (m_n10 == 0x73)
     {
-        m_pOwner->FUN_14166dd20(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141679170(0x41, nId), 1.0f, false, false);
+        m_pOwner->PlayAnimation(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141679170(0x41, nId), 1.0f, false, false);
     }
     else if (m_n10 == 0x74)
     {
-        m_pOwner->FUN_14166dd20(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141679170(0x40, nId), 1.0f, false, false);
+        m_pOwner->PlayAnimation(reinterpret_cast<PCBase*>(m_pOwner)->FUN_141679170(0x40, nId), 1.0f, false, false);
     }
 }
 

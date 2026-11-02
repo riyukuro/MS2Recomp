@@ -22,7 +22,6 @@ public:
 void* FUN_140aadf80();                                              // the screen
 void FUN_140ad4c30(void* pScreen, RECT* pRect);                     // the screen rect
 void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);
-void FUN_14098a5d0(CWnd* pWnd);
 
 IMPLEMENT_DYNAMIC(CCashUnlockDialog, CDialogEx)
 
@@ -117,7 +116,7 @@ void CCashUnlockDialog::OnClose()
         if (ref.FUN_140b051c0() != 0)
             ((class UICashShopDialog*)(class UICashShopDialog*)(ref.FUN_140b051d0()))->SetUnlockState(0);
     }
-    FUN_14098a5d0(this);
+    CWnd::OnClose();
 }
 
 BEGIN_EVENTSINK_MAP(CCashUnlockDialog, CDialogEx)

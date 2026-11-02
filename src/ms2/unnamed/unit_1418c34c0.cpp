@@ -21,7 +21,7 @@ extern void* FUN_140527870(void*);
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140599fd0(unsigned int);
+    int GetCurrentRgbComponent(unsigned int);
 };
 void FUN_1418c35d0(Unk_ItemProxySummary*);
 
@@ -34,7 +34,7 @@ void FUN_1418c34c0(Unk_ItemProxySummary* result, MS2Ptr<class CItem> node)
         void* proxy = FUN_140527870(node.operator->());
         if (proxy) {
             for (int i = 0; i < 3; ++i)
-                result->m_values[i] = ((class CItemExtraData*)(void*)(proxy))->FUN_140599fd0(i);
+                result->m_values[i] = ((class CItemExtraData*)(void*)(proxy))->GetCurrentRgbComponent(i);
         } else {
             for (int i = 0; i < 3; ++i)
                 result->m_values[i] = 0;

@@ -182,10 +182,10 @@ int UIPetSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         OnRemoveTab();
         return 1;
     }
-    else if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnChangeTab", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
     {
         CString strName = data.FUN_1422b8d30();
-        Scaleform::GFx::Value root = data.FUN_1422b9260();
+        Scaleform::GFx::Value root = data.PopValue();
         FUN_140e74970(strName, root);
         return 1;
     }

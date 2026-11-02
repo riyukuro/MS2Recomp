@@ -38,7 +38,7 @@ unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefa
 __int64 GetServerTime();                                    // the server clock
 __int64 MakeTime(int year, int month, int day, int hour, int minute, int second);
 __int64 GetNextMonthStart(__int64 nTime);                   // midnight of the day
-__int64 FUN_14086ba60(const __int64& nTime, int nDays);
+__time64_t GetNthMonthStart(__int64* time, unsigned n);   // C3: was FUN_14086ba60
 int IsMonthChanged(__int64 nTime);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -111,7 +111,7 @@ bool PaybackTable::Load()
     }
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d650())
     {
-        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
+        if (TSingleton<CFeatureManager>::GetInstance()->IsRegionCN())
             m_bLocale = true;
     }
     SetInit(true);
@@ -209,7 +209,7 @@ bool PaybackTable::InMonthPeriod(__int64 nTime)
         return false;
     CMsTime start(GetNextMonthStart(m_nStart));
     __int64 nEndDay = GetNextMonthStart(m_nEnd);
-    CMsTime end(FUN_14086ba60(nEndDay, 0));
+    CMsTime end(GetNthMonthStart(&nEndDay, 0));
     bool bIn = start.Get() <= nTime && nTime < end.Get();
     return bIn;
 }

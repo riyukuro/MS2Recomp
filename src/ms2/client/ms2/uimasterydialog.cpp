@@ -449,7 +449,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     UIObject::vfunc_49(pRetVal, pArgs);
     CStringW strName = pArgs->FUN_1422b8f40();
     if (strName == "housingSlot") {
-        int nId = pArgs->FUN_1422b8b10();
+        int nId = pArgs->PopUInt();
         int nRank = FUN_14053feb0(nId);
         MS2Ptr<CItem> spItem(new CItem);
         if (spItem->FUN_140523c40(nId, nRank, 0)) {
@@ -461,7 +461,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         }
     } else if (strName == "masteryRecipe") {
         if (GetMainTabIndex() == 1) {
-            int nId = pArgs->FUN_1422b8a10();
+            int nId = pArgs->PopInt();
             ItemEntity* pEntry = FUN_1409670c0()->FirstItem(nId);
             if (pEntry) {
                 MS2Ptr<CItem> spItem(new CItem);
@@ -484,28 +484,28 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         return 1;
     if (!_stricmp(szMethod, "onSelectCategory")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140eafde0();
         return 1;
     } else if (!_stricmp(szMethod, "onSelectMastery")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140eb53a0();
         return 1;
     } else if (!_stricmp(szMethod, "onSelectList")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nIndex = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nIndex = data.PopInt();
             FUN_140eb5450(nIndex);
         }
         return 1;
     } else if (!_stricmp(szMethod, "onReceiveItem")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             switch (GetMainTabIndex()) {
             case 0:
             case 1: {
-                int nId = data.FUN_1422b8b10();
+                int nId = data.PopUInt();
                 COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
                 pkt.Encode1(1);
                 pkt.Encode4(nId);
@@ -514,13 +514,13 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             }
             case 2:
                 if (FUN_140eb86b0() == 8) {
-                    int nId = data.FUN_1422b8a10();
+                    int nId = data.PopInt();
                     COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
                     pkt.Encode1(0x29);
                     pkt.Encode1((unsigned char)nId);
                     FUN_140710590(pkt);
                 } else if (FUN_140eb86b0() == 9) {
-                    int nId = data.FUN_1422b8b10();
+                    int nId = data.PopUInt();
                     COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
                     pkt.Encode1(1);
                     pkt.Encode4(nId);
@@ -532,8 +532,8 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         return 1;
     } else if (!_stricmp(szMethod, "onCraftOk")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nId = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nId = data.PopInt();
             switch (GetMainTabIndex()) {
             case 1:
                 FUN_140eb55e0(nId);
@@ -549,17 +549,17 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         return 1;
     } else if (!_stricmp(szMethod, "onDebug")) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             CStringW strCommand;
             CStringW strFormat(L"/ManufacturingMastery {0} {1}");
             switch (GetMainTabIndex()) {
             case 1: {
-                int nId = data.FUN_1422b8a10();
+                int nId = data.PopInt();
                 strCommand = StringFormat((const wchar_t*)strFormat, nId, "");
                 break;
             }
             case 3: {
-                int nId = data.FUN_1422b8a10();
+                int nId = data.PopInt();
                 strCommand = StringFormat((const wchar_t*)strFormat, nId, "magicscroll");
                 break;
             }
@@ -574,9 +574,9 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (m_304 != 0)
             return 1;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nSlot = FUN_140eb86b0();
-            int nPos = data.FUN_1422b8a10();
+            int nPos = data.PopInt();
             m_scroll[nSlot] = nPos;
         }
         return 1;
@@ -754,7 +754,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
             for (int i = 1; i <= nCount; i++) {
                 ASObj obj(2);
                 FUN_140eb6920(nType, i, obj);
-                reinterpret_cast<Unk_MArray&>(arr).FUN_1422bbf00(obj);
+                reinterpret_cast<Unk_MArray&>(arr).PushObj(obj);
             }
             spLevel->FUN_140eba060("setGrade", arr, nNow);
         }
@@ -968,7 +968,7 @@ void UIMasteryDialog::FUN_140eb24a0()
                 MS2Ptr<ItemEntity> spItem0(items[0]);
                 row.FUN_1407cba60("binding", m_mastery.BindNewItem(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
             }
-            reinterpret_cast<Unk_MArray&>(rows).FUN_1422bbf00(row);
+            reinterpret_cast<Unk_MArray&>(rows).PushObj(row);
         }
         spLevel->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
         CStringW strGrade = StringFormat(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
@@ -1041,7 +1041,7 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
             row.FUN_1409c0d20("id", spFurn->FUN_1405494e0());
             row.FUN_1407cba60("icon", spDef->GetIconPath());
             row.FUN_1407cbbe0("lock", FUN_140eb8cd0(MS2Ptr<ItemHousing>(spFurn)) == 0);
-            reinterpret_cast<Unk_MPageArray&>(page).FUN_1422bbf00(row);
+            reinterpret_cast<Unk_MPageArray&>(page).PushObj(row);
         }
         MPage(m_30)->Invoke("setPage", reinterpret_cast<const ASDataProvider&>(page));
     }
@@ -1395,7 +1395,7 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(0, spRec->m_nId), spRec->m_nRequireMeso, 1);
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a02a30(ingredients);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnRecipeCraftCountInput));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnRecipeCraftCountInput));
             FUN_140d73c60(spBox);
         }
     }
@@ -1440,7 +1440,7 @@ void UIMasteryDialog::FUN_140eb5e60(int nId)
             spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a02a30(ingredients);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnMagicScrollCraftConfirm));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnMagicScrollCraftConfirm));
             FUN_140d73c60(spBox);
         }
     }
@@ -2105,7 +2105,7 @@ void Unk_MObjSetter::FUN_140eba4a0(const char* szName, unsigned int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140eba610

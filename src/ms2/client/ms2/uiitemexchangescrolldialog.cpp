@@ -92,11 +92,6 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_IesChild : public ASMovieClip
 {
 };
-class Unk_IesArray : public ASArray
-{
-public:
-    Scaleform::GFx::Value FUN_1422bc6b0(int nIndex);                      // element
-};
 struct Unk_IesParams                                                      // Scaleform FunctionHandler::Params
 {
     void* m_pad_00[4];
@@ -205,7 +200,7 @@ int UIItemExchangeScrollDialog::vfunc_28(const char* szMethod, const Scaleform::
     if (_stricmp(szMethod, "onOk") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             SendItemExchangeScrollMode1(&data);
         return 1;
     }
@@ -260,11 +255,11 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
     if (spItem->FUN_14052b130(pRef->m_nId, pRef->m_nRank, 0) == 0)
         return;
     if (nFlags & 0x10)
-        spItem->FUN_140526c70(0);
+        spItem->SetCountClamped(0);
     else
     {
         int nCount = pRef->m_nCount * nMul;
-        spItem->FUN_140526c70(nCount);
+        spItem->SetCountClamped(nCount);
     }
     ASObj slot(2);
     ItemInfoSlot::CreateParam param;
@@ -375,7 +370,7 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
         int nCount = nBase * nMul;
         param.m_strCount = FUN_1402bad60("{0}", &nCount);
         strText = spItem->FUN_140528160();
-        spItem->FUN_140526c70(nCount);
+        spItem->SetCountClamped(nCount);
     }
     CString strBind;
     strBind.Format("%s_info_%d", (const char*)GetTypeName(), m_infoKeys.GetCount());
@@ -484,7 +479,7 @@ void UIItemExchangeScrollDialog::FUN_140f52880()
     if (m_spOk.get() != 0)
         m_spOk->FUN_1422c1fe0(bEnable);
     if (MS2Ptr<ASTextField> spTitle = ((Unk_IesEntity*)this)->GetChild<ASTextField>("m_title"))
-        spTitle->FUN_1422c4cd0(strTitle);
+        spTitle->SetTextW(strTitle);
 }
 
 // @0x140f52c80
@@ -589,7 +584,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
 // @0x140f53950
 void UIItemExchangeScrollDialog::SendItemExchangeScrollMode1(ASData* pData)
 {
-    int nCount = pData->FUN_1422b8a10();
+    int nCount = pData->PopInt();
     if (nCount == 0)
     {
         int nCode = 7;
@@ -725,7 +720,7 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
     bool bEnough = true;
     for (int i = 0; i < nLen; i++)
     {
-        ASObj item(reinterpret_cast<Unk_IesArray&>(argList).FUN_1422bc6b0(i), 2);
+        ASObj item(argList.GetElement(i), 2);
         if (item.IsUndefinedOrNull())
             continue;
         ASObj data(item.GetMember("data"), 2);

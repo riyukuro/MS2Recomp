@@ -12,18 +12,9 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/commonfiles/itemdroptable.h"
 
 class Unk_140165cf0;    // xml element (declared where the loader is)
-
-// A min / max pair (the exe's ctor is 0x1402fc100, the setter 0x140303060 in dungeonmatch.cpp).
-struct Unk_SocketRange
-{
-    // @0x1402fc100
-    Unk_SocketRange() : m_nMin(0), m_nMax(0) {}
-    int m_nMin;
-    int m_nMax;
-};
-MS2_CHECK_SIZE(Unk_SocketRange, 8);
 
 // One <itemSocket> row, 0x30 bytes.
 class CItemSocketData : public CPtred
@@ -35,7 +26,7 @@ public:
     int m_nGrade;                           // +0x18 "grade"
     unsigned m_nMaxCount;                   // +0x1c "maxCount"
     int m_nOpenType;                        // +0x20 "openType": 0 fixed count, 1 random range
-    Unk_SocketRange m_range;                // +0x24 "fixOpenCount" (min = max) / "randomOpenRange"
+    ItemDropCount m_range;                  // +0x24 "fixOpenCount" (min = max) / "randomOpenRange"
 };
 MS2_CHECK_SIZE(CItemSocketData, 0x30);
 MS2_CHECK_OFFSET(CItemSocketData, m_nOpenType, 0x20);

@@ -61,7 +61,7 @@ class UIChatEmoticonDialog : public UIDialog
 public:
     void FUN_140bd2620();                                           // refresh
     void ClearEmoticonData();                                           // rebuild
-    void FUN_140bd26c0(unsigned nEmoticonId);                            // select
+    void AddNewGroup(unsigned nGroupId);                                // flag a pack "new"
     unsigned char unrecovered[0x50];
 };
 class UIMessenger { public: void FUN_141a10010(int nFlag, int nId); };   // C3: member view
@@ -228,7 +228,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
     if (pDlg != 0)
     {
         MS2_FOR_EACH(unsigned nId, setAdded)
-            pDlg->FUN_140bd26c0(nId);
+            pDlg->AddNewGroup(nId);
         pDlg->FUN_140bd2620();
     }
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
@@ -243,7 +243,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
         CStringW strName = FUN_14016a730((const char*)reinterpret_cast<Unk_EmoItemData*>(item.operator->())->GetIconPath(), 0);
         CStringW strMsg = FUN_1405c2690(L"s_msg_chat_emoticon_add_notify_message",
                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
         FUN_141ac1580(pChat, strName, strMsg, 1);
         FUN_1412751f0(strMsg, 0, 1);
     }

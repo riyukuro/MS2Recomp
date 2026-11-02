@@ -118,7 +118,6 @@ public:
     CStringW* FUN_141656d90();                                  // the memo of the player
 };
 class CEquipItem : public CPtred { public: MS2Ptr<CItem> GetItem(); };   // ?\equipitem.cpp, only the member this unit calls
-struct Unk_MiSlotPc { MS2Ptr<CEquipItem> FUN_141655e10(int nSlot); };   // PC: the equip of a slot
 
 // The movie children bound through the ASObj helpers.
 class Unk_MiScript : public AScript
@@ -388,17 +387,17 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp("OnConfig", szMethod) == 0)
     {
-        if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (kData.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nConfig = kData.FUN_1422b8a10();
+            int nConfig = kData.PopInt();
             FUN_141a5a9f0(nConfig);
         }
     }
     else if (_stricmp("OnTitleChange", szMethod) == 0)
     {
-        if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (kData.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nTitle = kData.FUN_1422b8b10();
+            int nTitle = kData.PopUInt();
             OnTitleChange(nTitle);
         }
     }
@@ -408,12 +407,12 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp("OnScreenshot", szMethod) == 0)
     {
-        if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (kData.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int a = kData.FUN_1422b8a10();
-            int b = kData.FUN_1422b8a10();
-            int c = kData.FUN_1422b8a10();
-            int d = kData.FUN_1422b8a10();
+            int a = kData.PopInt();
+            int b = kData.PopInt();
+            int c = kData.PopInt();
+            int d = kData.PopInt();
             OnScreenshot(a, b, c, d);
         }
     }
@@ -423,17 +422,17 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp("OnAddStatPointRepeat", szMethod) == 0)
     {
-        if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (kData.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nStat = kData.FUN_1422b8a10() - 1;
+            int nStat = kData.PopInt() - 1;
             FUN_141a5b080(nStat);
         }
     }
     else if (_stricmp(szMethod, "OnAddStatPointStop") == 0)
     {
-        if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (kData.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nStat = kData.FUN_1422b8a10() - 1;
+            int nStat = kData.PopInt() - 1;
             FUN_141a5cf30(nStat);
         }
     }
@@ -538,8 +537,8 @@ void UIMyInfoDialog::vfunc_il23(void* p)
         PC* pPc = efd::DynamicCast<PC, GameObject>(pAvatar->vfunc_24());
         if (pPc != 0)
         {
-            MS2Ptr<CEquipItem> spOne = reinterpret_cast<Unk_MiSlotPc*>(pPc)->FUN_141655e10(4);
-            MS2Ptr<CEquipItem> spTwo = reinterpret_cast<Unk_MiSlotPc*>(pPc)->FUN_141655e10(5);
+            MS2Ptr<CEquipItem> spOne = pPc->FUN_141655e10(4);
+            MS2Ptr<CEquipItem> spTwo = pPc->FUN_141655e10(5);
             if (static_cast<CEquipItem*>(spOne) != 0)
             {
                 MS2Ptr<CItem> spItem = spOne->GetItem();
@@ -699,7 +698,7 @@ void UIMyInfoDialog::OnChangeTodayMemo()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, BlockFormat(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a01d30(0, *static_cast<Unk_MiPc*>(pPc)->FUN_141656d90(), 0x14, 0, 0);
+        spBox->SetInput(0, *static_cast<Unk_MiPc*>(pPc)->FUN_141656d90(), 0x14, 0, 0);
         FUN_140d73c60(spBox);
     }
 }
@@ -878,7 +877,7 @@ void UIMyInfoDialog::vfunc_90(int nTab)
     }
     else if (m_258.get() != 0)
     {
-        m_258->FUN_1422c4cd0(L"");
+        m_258->SetTextW(L"");
     }
 }
 
@@ -982,7 +981,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
                 m_258 = spEquip->FUN_1409b4620("m_period");
         }
         if (m_258.get() != 0)
-            m_258->FUN_1422c4f00(strPeriod);
+            m_258->SetTextHTMLW(strPeriod);
     }
     m_270 = (unsigned int)m_274 > 0;
 }
@@ -1084,7 +1083,7 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_char_info_changetab_not_active_codi_tab"), 0);
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMyInfoDialog::FUN_141a5c640));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMyInfoDialog::FUN_141a5c640));
             spBox->Append<int>(nTab);
             FUN_140d73c60(spBox);
         }
@@ -1164,7 +1163,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
         if (MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620("m_remainStatPoint"))
         {
             CStringW strRemain = StringFormat(L"{0}", nRemain);
-            spText->FUN_1422c4cd0(strRemain);
+            spText->SetTextW(strRemain);
             unsigned nColor2 = 0xffffff;
             if (nRemain > 0)
                 nColor2 = 0xffa200;

@@ -28,7 +28,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 
-class Unk_PriceTable* FUN_140552df0();   // C3: was FUN_140552df0
+class CPriceTable* FUN_140552df0();   // C3: was FUN_140552df0
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
@@ -239,7 +239,7 @@ UGCMapBlock::UGCMapBlock() : m_n18(0), m_n20(0), m_n24(0), m_n28(0), m_n2c(0), m
 // @0x1408b3f10
 UserUGCMapInfo::UserUGCMapInfo() : m_n18(0), m_n1c(0), m_n20(0), m_n24(0), m_str28(""), m_n30(0), m_n38(0), m_n40(0)
 {
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e510())
+    if (TSingleton<CFeatureManager>::GetInstance()->IsRegionCN())
         m_n40 = 2;
 }
 

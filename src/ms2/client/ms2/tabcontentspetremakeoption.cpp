@@ -635,7 +635,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
     MS2Ptr<CPetData> pet = ((class CPetDataTable*)FUN_14052d210())->Find(item->FUN_140527840()->GetPetId());
     if (pet == 0)
         return 0;
-    ((class CItemOptionTable*)FUN_140166430())->CalcPetRemakeCost(nRemakeCount, item->FUN_140526bd0(), ingredient);
+    ((class CItemOptionTable*)FUN_140166430())->CalcPetRemakeCost(nRemakeCount, item->GetRarity(), ingredient);
     MS2SvrPtr<CIngredientContainer> container(
         static_cast<const MS2SvrPtr<CIngredientContainer>&>(ingredient.m_spContainer));
     if (container == 0)
@@ -673,7 +673,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
             if (nType == 0x60 && nCount > nHave && DAT_143ab2898 < (nFee = (__int64)((nCount - nHave) * 1000)))
                 bEnough = 0;
             entry.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nCount));
-            list.FUN_1422bbf00(entry);
+            list.PushObj(entry);
         }
     }
     obj.FUN_1409eb1d0("ingredient", list);
@@ -695,7 +695,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
                 float fRate = (float)nDiscount * 0.01f;
                 strDesc = FUN_14042cb90(CStringW(L"s_pet_remake_sa_sale_desc"), fRate);
             }
-            desc->FUN_1422c4f00(strDesc);
+            desc->SetTextHTMLW(strDesc);
         }
     }
     return bEnough;
@@ -825,9 +825,9 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     if (_stricmp("OnSelectPetCard", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_140b97170(nIndex);
         }
         return 1;
@@ -835,9 +835,9 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     else if (_stricmp("OnSelectPetIngredient", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             FUN_140b972f0(nIndex);
         }
         return 1;
@@ -850,13 +850,13 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     else if (_stricmp("GetEnableLockOption", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140b973b0(&data);
     }
     else if (_stricmp("OnClickApply", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140b97870(&data);
     }
     else if (_stricmp("OnClickRetry", szEvent) == 0)
@@ -870,7 +870,7 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     else if (_stricmp("OnClickCompareEnchant", szEvent) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140b95db0(&data);
     }
     return 0;
@@ -975,7 +975,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
     {
         if (bUsePoint == 0)
         {
-            if (pet->FUN_140527930()->HasBindingRule() != 0 && pet->FUN_140527930()->FUN_140635120() == 0)
+            if (pet->FUN_140527930()->HasBindingRule() != 0 && pet->FUN_140527930()->HasBinding() == 0)
             {
                 CStringW strMsg = FUN_1405c2690(CStringW(L"s_msg_transfer_bind_pet_remakeoption"), player->vfunc_77());
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_remakeOptionBindPet);
@@ -983,7 +983,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
                 {
                     box->FUN_141a01600(pet->GetItemUid());
                     box->FUN_141a01ee0(ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
-                    box->FUN_141a01700(0x477, 0x478, 0);
+                    box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return;
                 }
@@ -1368,8 +1368,8 @@ void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
     ItemPtr pet = g_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    unsigned nLocked = pData->FUN_1422b8b10();
-    unsigned nMax = pData->FUN_1422b8b10();
+    unsigned nLocked = pData->PopUInt();
+    unsigned nMax = pData->PopUInt();
     if (nMax == 0)
     {
         CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
@@ -1401,7 +1401,7 @@ MS2_REPLACE_METHOD(0x140B973B0, TabContentsPetRemakeOption, FUN_140b973b0, 1208,
 void TabContentsPetRemakeOption::FUN_140b97870(ASData* pData)
 {
     FUN_140b96520(5);
-    int nSelect = pData->FUN_1422b8a10();
+    int nSelect = pData->PopInt();
     if (nSelect == -1)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_pet_remake_error_server_fail_apply_option");

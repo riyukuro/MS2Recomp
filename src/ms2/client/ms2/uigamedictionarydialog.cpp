@@ -121,7 +121,7 @@ void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
 {
     ASData data;
     data.AddValue(tooltip.FUN_1422bb890());
-    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140f47320
@@ -129,7 +129,7 @@ void FUN_140f47320(AScript* pScript, const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_GdScript*>(pScript)->m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x140f48210
@@ -222,27 +222,27 @@ int UIGameDictionaryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     ASData data;
     if (_stricmp("OnSearchItem", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140f46c90(data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("OnChangeTab", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            m_178 = data.FUN_1422b8a10();
+            m_178 = data.PopInt();
             m_180 = data.FUN_1422b8f40();
             FUN_140f45870();
         }
     }
     else if (_stricmp("OnItemChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nId = data.FUN_1422b8a10();
-            int nType = data.FUN_1422b8a10();
+            int nId = data.PopInt();
+            int nType = data.PopInt();
             CStringW strName = data.FUN_1422b8f40();
-            int nGrade = data.FUN_1422b8a10();
+            int nGrade = data.PopInt();
             FUN_140f45c20(nId, nType, CStringW(strName), nGrade);
         }
     }
@@ -494,7 +494,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         else
                             strMaps = StringFormat<unsigned int>(L"$map:{0}$", nField);
                         CStringW strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
-                        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strContent);
+                        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.FUN_1407cbb20("content", CStringW(strContent));
                         detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
@@ -550,7 +550,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, GetStringCommon(0x573));
                         else
                             strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, strMaps);
-                        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strContent);
+                        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.FUN_1407cbb20("content", CStringW(strContent));
                         detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));

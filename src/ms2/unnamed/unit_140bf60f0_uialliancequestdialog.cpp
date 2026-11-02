@@ -236,7 +236,7 @@ MS2Ptr<CMsgBoxData> FUN_140bfab20(CStringW strText, int nType, AqAnswerDelegate 
 {
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
     spBox->SetMsg(strText);
-    spBox->FUN_141a027c0(cb);
+    spBox->SetCallback(cb);
     spBox->Append<unsigned int>(nQuest);
     FUN_14151f150(MS2Ptr<CMsgBoxData>(spBox));
     return spBox;
@@ -290,9 +290,9 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("onAccept", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nQuest = data.FUN_1422b8b10();
+            int nQuest = data.PopUInt();
             if (((class CQuestManager*)FUN_140764020())->IsQuestComplete(nQuest) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
@@ -335,9 +335,9 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("onTicket", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nQuest = data.FUN_1422b8b10();
+            int nQuest = data.PopUInt();
             FUN_140bf8c30(nQuest);
         }
     }

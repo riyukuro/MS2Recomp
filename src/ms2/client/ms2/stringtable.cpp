@@ -260,7 +260,7 @@ void CStoryQuest::FUN_140d73960()
         {
             CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
             CStringW strText = StringFormat<CStringW>((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0)
@@ -268,7 +268,7 @@ void CStoryQuest::FUN_140d73960()
                     spBox->Append<unsigned>(FUN_14074b030(m_data.operator->()));
                     spBox->Append<int>(m_7c);
                     spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
                     spBox->SetButtonLabels(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
                     FUN_140d73c60(spBox);
                 }
@@ -584,7 +584,7 @@ CStringW CStringTable::CDesc::FUN_141813a30(const CString& strTag)
     {
         if (pPair->m_value->m_bPending != 0)
         {
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(pPair->m_value->m_strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(pPair->m_value->m_strText);
             pPair->m_value->m_bPending = pPair->m_value->m_strText.Find(L"$", 0) != -1;
         }
         return pPair->m_value->m_strText;
@@ -650,7 +650,7 @@ BOOL CStringTable::Load()
             CStringW strText(spCache->m_strings.GetValueAt(posStr));
             if (strText.Find(L"$", 0) != -1)
             {
-                TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strText);
+                TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strText);
                 spCache->m_strings.SetAt(nStringId, strText);
             }
         }
@@ -894,7 +894,7 @@ CStringW CStringTable::FUN_141812f60(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return CStringW(L"");
-    int nStringId = spItem->FUN_14053c620();
+    int nStringId = spItem->GetEquipSubtype();
     if (nStringId == 0)
         return GetStringCommon(0);
     return GetStringTable()->FUN_141811980(8, nStringId);
@@ -929,7 +929,7 @@ CStringW CStringTable::FUN_141813200(__int64 nItemUid)
         return GetStringCommon(0);
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
     if (spItem.get() != 0)
-        return GetRankName(spItem->FUN_140526bd0());
+        return GetRankName(spItem->GetRarity());
     return GetStringCommon(0);
 }
 

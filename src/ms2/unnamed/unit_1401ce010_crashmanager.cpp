@@ -245,7 +245,7 @@ void CCrashManager::FUN_1401ceb50()
 // @0x1401ceb60
 void FUN_1401ceb60()
 {
-    if (FUN_140166410()->FUN_14036e510())
+    if (FUN_140166410()->IsRegionCN())
     {
         int nStart = 0;
         CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();

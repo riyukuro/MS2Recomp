@@ -451,7 +451,7 @@ void ASObj::FUN_140cfd0d0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    m_value.SetMember(szName, data.FUN_1422b9260());
+    m_value.SetMember(szName, data.PopValue());
 }
 
 // @0x140cfd170
@@ -459,7 +459,7 @@ void ASObj::FUN_140cfd170(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    m_value.SetMember(szName, data.FUN_1422b9260());
+    m_value.SetMember(szName, data.PopValue());
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

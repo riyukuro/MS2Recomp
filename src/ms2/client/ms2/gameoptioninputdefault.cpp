@@ -325,25 +325,25 @@ int CGameOptionInputDefault::vfunc_5(const char* pszName, void* pArg, int nArg)
     ASData data;
     if (_stricmp("OnSelectCategory", pszName) == 0)
     {
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg) != 0)
-            FUN_141250cc0(data.FUN_1422b8b10());
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
+            FUN_141250cc0(data.PopUInt());
         return 1;
     }
     else if (_stricmp("onFocusInPrimary", pszName) == 0)
     {
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg) != 0)
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
             FUN_1412525c0(data.FUN_1422b8d30(), 0);
         return 1;
     }
     else if (_stricmp("onFocusInSecondary", pszName) == 0)
     {
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg) != 0)
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
             FUN_1412525c0(data.FUN_1422b8d30(), 1);
         return 1;
     }
     else if (_stricmp("onFocusInThirdly", pszName) == 0)
     {
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg) != 0)
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg) != 0)
             FUN_1412525c0(data.FUN_1422b8d30(), 2);
         return 1;
     }
@@ -417,7 +417,7 @@ void CGameOptionInputDefault::vfunc_12()
                     CStringW strPad = StringFormat<int>(L"{0}", bPad);
                     spBox->FUN_140b76940(strPad);
                     spBox->FUN_141a01800(2);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGameOptionInputDefault::FUN_1412523d0));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CGameOptionInputDefault::FUN_1412523d0));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -721,7 +721,7 @@ int CGameOptionInputDefault::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         m_bConfirm = 0;
         FUN_14151f200();
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strKey = pMsg->FUN_1422b8f40();
         int nKey = _wtoi(strKey);
         if (nResult == 0)
@@ -863,7 +863,7 @@ void ASObj::FUN_141253870(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1412536b0

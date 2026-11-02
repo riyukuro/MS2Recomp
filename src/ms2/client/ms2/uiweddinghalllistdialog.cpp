@@ -31,7 +31,6 @@
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The hall tables: package -> hall -> string id of the hall name (day / night).
-class Unk_WhTable { public: MS2Ptr<WeddingPackage> FUN_140908b80(int nPackageId); };
 
 // The own character: its wedding hall tickets and the "enter the wedding" request.
 
@@ -102,7 +101,7 @@ int UIWeddingHallListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp(szMethod, "onEnter") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             unsigned __int64 nWeddingSn = FUN_140718370(data.FUN_1422b8f40());
             TSingleton<WeddingManager>::GetInstance()->SendInvitation(nWeddingSn);
             return 1;
@@ -137,7 +136,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     __int64 nNow = GetServerTime();
     for (; it != itEnd; ++it) {
         WeddingHallTicket& ticket = it->second;
-        MS2Ptr<WeddingPackage> pPackage = reinterpret_cast<Unk_WhTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908b80(ticket.m_nPackageId);
+        MS2Ptr<WeddingPackage> pPackage = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
         if (pPackage == 0)
             continue;
         MS2Ptr<WeddingHallData> pHall = pPackage->FUN_140907110(ticket.m_nHallId);

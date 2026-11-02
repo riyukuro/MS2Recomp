@@ -477,7 +477,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp("onClickMake", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140ff03b0(&data);
         return 1;
     }
@@ -506,7 +506,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onClickPlayStart", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140ff12d0(&data);
         return 1;
     }
@@ -533,9 +533,9 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("OnAskRemoveTabMusic", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            m_nRemoveTab = data.FUN_1422b8a10();
+            m_nRemoveTab = data.PopInt();
             if (m_nRemoveTab >= 0)
                 FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_msg_ask_remove_tab"), 1, static_cast<IMessageListener*>(this),
                               L"askRemoveTabMusic");
@@ -545,7 +545,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onClickCopyMusicNote", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strNote = data.FUN_1422b8f40();
             if (!strNote.IsEmpty())
@@ -566,9 +566,9 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onChangeInstrument", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nCategory = data.FUN_1422b8a10();
+            int nCategory = data.PopInt();
             CInstrumentDataTable::CategoryPtr spCategory = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory);
             if (spCategory == 0)
                 return 1;
@@ -582,7 +582,7 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onChangeValuePlayBar", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140ff21a0(&data);
         return 1;
     }
@@ -591,9 +591,9 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onClickPlayLinePage", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nDelta = data.FUN_1422b8a10();
+            int nDelta = data.PopInt();
             m_nPage = m_nPage + nDelta;
             FUN_140ff1b10(m_nPage);
         }
@@ -614,7 +614,7 @@ int UIWriteMusicDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (nResult == 0)
@@ -828,14 +828,14 @@ void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
             return;
         }
     }
-    int nCategory = pArgs->FUN_1422b8a10();
+    int nCategory = pArgs->PopInt();
     CInstrumentDataTable::CategoryPtr spCategory = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory);
     if (spCategory == 0)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_invalid_instrument_type"), 0, 0, L"");
         return;
     }
-    Scaleform::GFx::Value tabs = pArgs->FUN_1422b9260();
+    Scaleform::GFx::Value tabs = pArgs->PopValue();
     MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
     CString strMml;
     if (!spTabs || spTabs->GetLength() == 0)
@@ -927,14 +927,14 @@ void UIWriteMusicDialog::OnClickPlayGoFirstAndPause()
 // @0x140ff12d0
 void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
 {
-    int nCategory = pArgs->FUN_1422b8a10();
+    int nCategory = pArgs->PopInt();
     bool bInvalid = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory) == 0;
     if (bInvalid)
     {
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_invalid_instrument_type"), 0, 0, CStringW(L""));
         return;
     }
-    Scaleform::GFx::Value tabs = pArgs->FUN_1422b9260();
+    Scaleform::GFx::Value tabs = pArgs->PopValue();
     MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
     if (!spTabs || spTabs->GetLength() == 0)
     {
@@ -1098,7 +1098,7 @@ void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nCategory = pArgs->FUN_1422b8a10();
+    int nCategory = pArgs->PopInt();
     bool bInvalid = ((class CInstrumentDataTable*)FUN_14052d1d0())->GetCategory(nCategory) == 0;
     if (bInvalid)
     {
@@ -1375,7 +1375,7 @@ void UIWriteMusicDialog::FUN_140ff3610(int nTime)
         int nMinutes, nSeconds, nCentis;
         FUN_141b706a0(nTime, (unsigned int*)(&nMinutes), (unsigned int*)(&nSeconds), (unsigned int*)(&nCentis));
         CStringW strText = StringFormat(m_strTimerFormat, nMinutes, nSeconds);
-        m_spTimer->FUN_1422c4cd0(strText);
+        m_spTimer->SetTextW(strText);
         if (m_spPlayBar)
         {
             int nPos = nMinutes * 60 + nSeconds;
@@ -1404,7 +1404,7 @@ void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
         int nMinutes, nSeconds, nCentis;
         FUN_141b706a0(nLength, (unsigned int*)(&nMinutes), (unsigned int*)(&nSeconds), (unsigned int*)(&nCentis));
         CStringW strText = FUN_14028dfa0(CStringW(L"s_writemusic_text_playtimer_total"), nMinutes, nSeconds);
-        m_spTotalTimer->FUN_1422c4cd0(strText);
+        m_spTotalTimer->SetTextW(strText);
         if (m_spPlayBar)
             reinterpret_cast<ASSlider*>(m_spPlayBar.operator->())->FUN_1422ce800(0);
     }

@@ -342,8 +342,8 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
 {
     UIObject::vfunc_45(result, method, args);
     if ((method == "getTooltipItem")) {
-        int id = args->FUN_1422b8b10();
-        int rank = args->FUN_1422b8b10();
+        int id = args->PopUInt();
+        int rank = args->PopUInt();
         void* owner = reinterpret_cast<Unk_LtaPlayerMgr*>(WorldService::GetInstance())->FUN_141bd0cc0();
         if (owner) {
             MS2Ptr<CItem> item(new CItem);
@@ -379,8 +379,8 @@ int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GF
     }
     else if (!_stricmp(method, "onClickReward")) {
         ASData data;
-        if (data.FUN_1422b9620(args, count)) {
-            int nDay = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(args, count)) {
+            int nDay = data.PopInt();
             SendEventRewardMode25(nDay);
             return 1;
         }

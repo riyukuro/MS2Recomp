@@ -93,11 +93,11 @@ unsigned int ASArray::PushDouble(double d)
 MS2_REPLACE_METHOD(0x1422BBE90, ASArray, PushDouble, 100, 0xE3E055D1);
 
 // @0x1422bbf00
-unsigned int ASArray::FUN_1422bbf00(const ASObj& obj)
+unsigned int ASArray::PushObj(const ASObj& obj)
 {
     return Invoke("push", obj).GetUInt();
 }
-// (no hook: FUN_1422bbf00 is overloaded, the const AScript& form names the same exe function)
+// (no hook: PushObj is overloaded, the const AScript& form names the same exe function)
 
 // @0x1422bbf70
 unsigned int ASArray::PushString(const char* sz)

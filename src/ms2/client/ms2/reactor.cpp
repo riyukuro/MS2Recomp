@@ -156,19 +156,9 @@ public:
     char m_pad_48[8];
     int m_nCount;                                               // +0x50
 };
-class Unk_RxGrid {};
-class Unk_RxGridRef
-{
-public:
-    Unk_RxGridRef(Unk_RxGrid* p);                               // efd::SmartPointer<>(p) 0x1401cd0b0: stores p and AddRefs it
-    ~Unk_RxGridRef();                                           // 0x1401cd150: Releases
-    Unk_RxGrid* m_p;
-};
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-void FUN_1401cd0b0(Unk_RxGridRef* p, Unk_RxGrid* pGrid);
-void FUN_1401cd150(Unk_RxGridRef* p);
-Unk_RxGridRef::Unk_RxGridRef(Unk_RxGrid* p) { FUN_1401cd0b0(this, p); }
-Unk_RxGridRef::~Unk_RxGridRef() { FUN_1401cd150(this); }
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
 class Unk_RxMapInfo : public CPtred
 {
 public:
@@ -613,7 +603,7 @@ int FUN_140b7a5e0(PCBase* pPc)
 {
     if (pPc == 0)
         return 1;
-    if (((class PCBase*)(class PCBase*)(pPc))->FUN_14166c930() != 1)
+    if (((class PCBase*)(class PCBase*)(pPc))->GetCurStateId() != 1)
         return 1;
     if (((class PCBase*)(class PCBase*)(pPc))->FUN_141675ed0() != 0)
         return 1;
@@ -623,7 +613,7 @@ int FUN_140b7a5e0(PCBase* pPc)
 }
 
 // @0x140b7a650
-// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions, constants and vector lifetimes); the stand-in grid/actor/raycast helper types and the exe's by-reference point locals keep the frame different.
+// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions, constants and vector lifetimes); the stand-in actor/raycast helper types and the exe's by-reference point locals keep the frame different.
 int FUN_140b7a650(PCBase* pPc)
 {
     if (pPc == 0)
@@ -643,8 +633,8 @@ int FUN_140b7a650(PCBase* pPc)
     if (bBlocked)
         return 1;
 
-    Unk_RxGridRef grid(((class Unk_RxGrid*)FUN_1401cd040(&DAT_143b059e8)));
-    if (reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator Unk_Service6100017*() == 0)
+    efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
+    if (grid.operator Unk_Service6100017*() == 0)
     {
         MS2_ASSERT_AT(0x21e, 0);
         return 1;
@@ -684,7 +674,7 @@ int FUN_140b7a650(PCBase* pPc)
         MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
         if (!spActor.IsNull())
         {
-            if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_14166c930() == 2)
+            if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->GetCurStateId() == 2)
                 continue;
             bool bNotNpcKind = ((CNpcData*)(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData()).operator->())->GetFriendly() != 2;
             if (!bNotNpcKind)
@@ -702,7 +692,7 @@ int FUN_140b7a650(PCBase* pPc)
             }
         }
     }
-    if (reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeByKey(nCellId) != 0)
+    if (reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeByKey(nCellId) != 0)
         return 1;
 
     {
@@ -724,7 +714,7 @@ int FUN_140b7a650(PCBase* pPc)
 
     Vector3 ptLow = ptCenter;
     ptLow.z = ptLow.z - 150.0f;
-    Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtPoint(ptLow));
+    Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeAtPoint(ptLow));
     if (pInfo == 0)
         return 1;
     if (pInfo->m_nState != 1)
@@ -744,7 +734,7 @@ int FUN_140b7a650(PCBase* pPc)
     cells.push_back(Unk_Int3(cell.x + 1, cell.y + 1, cell.z - 1));
     for (size_t i = 0; i < cells.size(); ++i)
     {
-        Unk_RxCellInfo* pCell = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtCell(cells[i]));
+        Unk_RxCellInfo* pCell = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeAtCell(cells[i]));
         if (pCell == 0)
             continue;
         if (pCell->m_nCount != 0)

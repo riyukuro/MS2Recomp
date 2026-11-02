@@ -142,8 +142,8 @@ void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
         return;
     if (_stricmp("getTooltipFromItemID", (const char*)strMethod) == 0)
     {
-        int nItemId = pArgs->FUN_1422b8b10();
-        int nRank = pArgs->FUN_1422b8b10();
+        int nItemId = pArgs->PopUInt();
+        int nRank = pArgs->PopUInt();
         ASTooltip tooltip(pActor, 8, m_28);
         if (tooltip.FUN_1409e1770(nItemId, nRank) != 0)
             *pRetVal = tooltip.FUN_1422bb870();
@@ -183,7 +183,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
                 MS2Ptr<CItem> spItem(new CItem);
                 if (spItem->FUN_14052b130(nCubeItemId, nAmount, 0) != 0)
                 {
-                    spItem->FUN_140526c70(spPackage->FUN_1408b9ab0(nCubeItemId));
+                    spItem->SetCountClamped(spPackage->FUN_1408b9ab0(nCubeItemId));
                     CString strKey;
                     ++nBound;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), nBound);
@@ -198,11 +198,11 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
             }
         }
         if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_itemName"))
-            spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, m_178));
+            spName->SetTextW(GetStringTable()->FUN_141811980(1, m_178));
         if (MS2Ptr<ASTextField> spSize = GetChild<ASTextField>("m_cubeSize"))
         {
             CStringW strSize = StringFormat(L"{0} {1}", GetStringCommon(0x56c), spPackage->m_strIndoorSizeType);
-            spSize->FUN_1422c4cd0(strSize);
+            spSize->SetTextW(strSize);
         }
         ASObj objData(m_28);
         objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.FUN_1422bb870());

@@ -161,7 +161,7 @@ void UIDevelopDialog::FUN_141292ca0(const CString& strName, const CStringW& strT
 {
     MS2Ptr<ASTextField> spText = GetChild<ASTextField>(strName);
     if (spText.get())
-        spText->FUN_1422c4cd0(strText);
+        spText->SetTextW(strText);
 }
 
 // @0x1412921e0
@@ -212,23 +212,23 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("onClickResetGameSpeed", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             FUN_141292f50(data);
         }
         return 1;
     }
     else if (_stricmp("OnCheckPhysXDebugRender", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bOn = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bOn = data.PopBool();
             FUN_141293010(bOn);
         }
         return 1;
     }
     else if (_stricmp("OnCheckEnableEffect", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bOn = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bOn = data.PopBool();
             FUN_141293150(bOn);
         }
         return 1;
@@ -238,32 +238,32 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("OnCheckPropertyVisualizer", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bOn = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bOn = data.PopBool();
             FUN_1412931c0(bOn);
         }
         return 1;
     }
     else if (_stricmp("OnCheckShowInstancing", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bOn = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bOn = data.PopBool();
             FUN_141293180(bOn);
         }
         return 1;
     }
     else if (_stricmp("OnCheckOneInstancing", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bOn = data.FUN_1422b8a90();
-            int nValue = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bOn = data.PopBool();
+            int nValue = data.PopInt();
             FUN_141293210(bOn, nValue);
         }
         return 1;
     }
     else if (_stricmp("OnChangeSliderGameSpeed", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
             FUN_141293360(fValue);
         }
@@ -271,7 +271,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("OnChangeSliderDropItemScale", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
             FUN_1412932a0(fValue);
         }
@@ -279,7 +279,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("OnChangeSliderCharacterScale", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
             FUN_141293390(fValue);
         }
@@ -287,15 +287,15 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("OnChangeSliderInstancing", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nValue = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nValue = data.PopInt();
             FUN_1412933f0(nValue);
         }
         return 1;
     }
     else if (_stricmp("OnClickApplyDropItemHeight", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
             FUN_141293680(fValue);
         }
@@ -303,7 +303,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp("OnClickApplyDropItemPeriod", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
             FUN_141293730(fValue);
         }
@@ -326,7 +326,7 @@ void UIDevelopDialog::OnClickReloadNpcExtent()
             if (kData == 0)
                 continue;
             pNpc->FUN_141670d50(efd::Point2(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight));
-            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight);
+            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->FUN_141240520(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight);
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += kData.operator->()->m_capsule.m_fHeight;
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
@@ -349,7 +349,7 @@ void UIDevelopDialog::OnClickClearDebugInfo()
 // @0x141292f50
 void UIDevelopDialog::FUN_141292f50(ASData& data)
 {
-    Scaleform::GFx::Value kValue = data.FUN_1422b9260();
+    Scaleform::GFx::Value kValue = data.PopValue();
     MS2Ptr<AScript> spRoot = FUN_1409e7dc0(m_28, kValue);
     if (!spRoot)
         return;

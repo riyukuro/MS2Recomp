@@ -215,7 +215,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
     unsigned nNow = FUN_141472bc0();
     if (nNow > nStart)
     {
-        m_topText->FUN_1422c4cd0(GetStringCommonByKey(L"s_music_concert_can_register_text"));
+        m_topText->SetTextW(GetStringCommonByKey(L"s_music_concert_can_register_text"));
     }
     else
     {
@@ -223,14 +223,14 @@ void UIMusicConcertDialog::FUN_140e6a290()
         nRemain = nRemain / 1000;
         unsigned nMin = nRemain / 0x3c;
         unsigned nSec = nRemain % 0x3c;
-        m_topText->FUN_1422c4cd0(FUN_1409e8970(CStringW(L"s_music_concert_playing_text"), nMin, nSec));
+        m_topText->SetTextW(FUN_1409e8970(CStringW(L"s_music_concert_playing_text"), nMin, nSec));
         __int64 nOwner = (__int64)WorldService::GetInstance()->FUN_141bcaf80();
         if (pPC->FUN_141656a80() == nOwner)
             strAction = GetStringCommonByKey(L"s_music_concert_abort_play");
     }
     MS2Ptr<ASTextField> spName = m_clips[0]->FUN_1409b4620("m_actionName");
     if (spName.get() != 0)
-        spName->FUN_1422c4cd0(strAction);
+        spName->SetTextW(strAction);
 }
 
 // @0x140e6a5d0
@@ -245,7 +245,7 @@ void UIMusicConcertDialog::FUN_140e6a5d0(int nIndex, const CString& strIcon, con
     m_30->FUN_140e6b140("setImage", nIndex + 1, strIcon);
     MS2Ptr<ASTextField> spName = m_clips[nIndex]->FUN_1409b4620("m_actionName");
     if (spName.get() != 0)
-        spName->FUN_1422c4cd0(strTooltip);
+        spName->SetTextW(strTooltip);
 }
 
 // @0x140e6a780
@@ -259,7 +259,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
     if (nNow > nStart)
     {
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_music_concert_msg_confirm_register"), 1);
-        box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode11));
+        box->SetCallback(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode11));
         FUN_140d73c60(box);
     }
     else
@@ -279,7 +279,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
 void UIMusicConcertDialog::FUN_140e6a9d0()
 {
     MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_music_concert_msg_confirm_unregister"), 1);
-    box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode12));
+    box->SetCallback(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode12));
     FUN_140d73c60(box);
 }
 
@@ -330,7 +330,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
         return;
     if (pPC->FUN_141675ed0() == 1)
         return;
-    switch (pPC->FUN_14166c930())
+    switch (pPC->GetCurStateId())
     {
     case 1:
         break;

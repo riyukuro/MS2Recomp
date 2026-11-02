@@ -463,8 +463,8 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     }
     else if (_stricmp("getTooltipByID", strMethod) == 0)
     {
-        int nId = pArgs->FUN_1422b8b10();
-        int nRank = pArgs->FUN_1422b8b10();
+        int nId = pArgs->PopUInt();
+        int nRank = pArgs->PopUInt();
         ASTooltip tooltip(((Unk_MergeSelf*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x20, 2);
         if (tooltip.FUN_1409e1770(nId, nRank))
             *pRetVal = tooltip.FUN_1422bb870();
@@ -511,7 +511,7 @@ int UIItemMergeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     if (_stricmp(szMethod, "onMergeItemSelect") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             if (GetPhase() == 0)
                 return 1;
@@ -527,7 +527,7 @@ int UIItemMergeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "onMaterialItemSelect") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             m_nMaterialUid = FUN_141b71960(data.FUN_1422b8d30());
             SetPhase(3);
@@ -547,7 +547,7 @@ int UIItemMergeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_item_merge_option_warn"), 1);
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemMergeOptionDialog::ConfirmMerge));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemMergeOptionDialog::ConfirmMerge));
             FUN_140d73c60(spBox);
             SetPhase(4);
         }
@@ -579,8 +579,8 @@ int UIItemMergeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "onMergeSelectOption") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            RequestChoice(data.FUN_1422b8a90());
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
+            RequestChoice(data.PopBool());
         return 1;
     }
     return 0;
@@ -652,7 +652,7 @@ void UIItemMergeOptionDialog::RefreshSelectedIngredient()
             return;
         ASObj obj(2);
         obj.FUN_1407cba60("iconPath", spMaterialData->GetIconPath());
-        obj.FUN_1409adc90("itemGrade", spMaterial->FUN_140526bd0());
+        obj.FUN_1409adc90("itemGrade", spMaterial->GetRarity());
         obj.FUN_1407cb9c0("index", Unk_BreakFind(reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(m_items190), m_nMaterialUid));
         obj.FUN_1407cbb20("itemGUID", FUN_141b71910(spMaterial->GetItemUid()));
         m_30->Invoke("setIngredient", obj);
@@ -902,7 +902,7 @@ void UIItemMergeOptionDialog::FUN_1419d1490(int nNormal, int nSpecial, int nValu
         obj.FUN_1407cbb20("oldOption", FUN_14028dfa0(CStringW(L"s_item_merge_option_old_option"), strOld));
         obj.FUN_1407cbb20("newOption", FUN_14028dfa0(CStringW(L"s_item_merge_option_new_option"), strNew));
         obj.FUN_1407cba60("iconPath", reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetIconPath());
-        obj.FUN_1409adc90("itemGrade", spItem->FUN_140526bd0());
+        obj.FUN_1409adc90("itemGrade", spItem->GetRarity());
         obj.FUN_1407cbb20("itemName", spItem->FUN_140528160());
         m_30->Invoke("selectOption", obj);
         m_30->Invoke("onMerge");
@@ -915,7 +915,7 @@ void UIItemMergeOptionDialog::FUN_1419d1ad0(MS2Ptr<CItem> spItem)
 {
     ASObj obj(2);
     obj.FUN_1407cba60("iconPath", reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetIconPath());
-    obj.FUN_1409adc90("itemGrade", spItem->FUN_140526bd0());
+    obj.FUN_1409adc90("itemGrade", spItem->GetRarity());
     obj.FUN_1407cbb20("itemName", spItem->FUN_140528160());
     obj.FUN_1407cbb20("option", GetCurrentOption(spItem));
     if (m_30.get() != 0)
@@ -1147,7 +1147,7 @@ static int FUN_1419d2eb0(MS2Ptr<CItem> spItem)
 {
     unsigned nEquipped = FUN_1419d2df0(spItem) == 0;
     unsigned nMerged = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810();
-    unsigned nRank = spItem->FUN_140526bd0();
+    unsigned nRank = spItem->GetRarity();
     unsigned nResult = 0;
     nResult |= nEquipped << 4;
     nResult |= nMerged << 3;

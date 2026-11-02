@@ -170,13 +170,13 @@ public:
     void* m_pObj; void* m_pCtrl;
 };
 class Unk_CommonVec3;
-// Model manager (editor side), 0xa8 bytes.
+// Model manager (editor side), 0x98 bytes (unit_140a2a0a0_modelpropertycache.cpp).
 class Unk_ModelMgr
 {
 public:
     Unk_ModelMgr();                                             // 0x140a2a0a0
     ~Unk_ModelMgr();                                            // 0x140a2a140
-    void* m_pad[0x15];
+    void* m_pad[0x13];
 public:
     int FUN_140a2a180();   // C3: was free FUN_140a2a180
     // Property readers: (entity element, model name, property name, out).
@@ -188,7 +188,7 @@ public:
     int FUN_140a2b9d0(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
     int FUN_140a2bc30(Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
 };
-MS2_CHECK_SIZE(Unk_ModelMgr, 0xa8);
+MS2_CHECK_SIZE(Unk_ModelMgr, 0x98);
 
 // Containers filled by the field meta table export.
 typedef std::map<unsigned int, Unk_FieldIdListPtr> Unk_FieldMapA;
@@ -369,8 +369,10 @@ int FUN_141827210(ATL::CAtlArray<CString>& rArray, const CString& str);
 CString Unk_SocketFormat(const char* pszFormat, const fmt::ArgList& args);
 CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, const CString& strName);
 
+// The exe's other COMDAT copy of StringFormat<CString, int>, the one FUN_141821bf0 calls.
+CString FUN_140740820(const char* pszFormat, const CString& a0, const int& a1);
+
 // Removes the named <property> children from every xblock / block entity whose model the model manager knows.
-// MS2-FUNCTIONAL: instruction sequence matches but stack frame is 0x10 larger than the exe
 // @0x141821bf0
 void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
 {
@@ -419,7 +421,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), StringFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
+                FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), FUN_140740820("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
             }
         }
     }
@@ -458,7 +460,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), StringFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
+                FUN_1411683e0(((class Unk_ExportLog*)CDebugConsole::FUN_141168200()), FUN_140740820("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
             }
         }
     }

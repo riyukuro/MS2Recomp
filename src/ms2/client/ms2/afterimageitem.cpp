@@ -116,10 +116,6 @@ public:
 };
 
 float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);                    // distance
-class Unk_Camera { public: void FUN_140af05d0(const efd::Point3& kWorld, efd::Point2* pkScreen); };   // world -> screen
-
-// The effect manager (singleton 0x1403ed280): the scene root.
-class Unk_1403ed280 { public: void* FUN_1411a6b10(); };
 
 // The object table (singleton 0x1403ed2d0) and an actor's position (vtable slot 18).
 class Unk_AfterImageActor                                           // MS2: slot 18 is GetPosition
@@ -240,21 +236,18 @@ AfterImageItem::AfterImageItem()
 }
 
 // @0x14097c2d0
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 void AfterImageItem::Init(Unk_AfterImageRef kParam, NiDynamicTexturePtr spTexture, const NiPoint3& kPos, float fSize,
                           unsigned nLife)
 {
     m_kParam = kParam;
     m_kColor = *kParam->GetColor();
-    NiMeshScreenElementsPtr spQuad =
-        CreateQuad(NiTexturePtr((NiTexture*)spTexture), fSize * 2.0f, NiTexturePtr((NiTexture*)0), m_kColor,
-                   kParam->GetLightenMode());
-    m_spMesh = spQuad;
+    m_spMesh = CreateQuad(NiTexturePtr((NiTexture*)spTexture), fSize * 2.0f, NiTexturePtr((NiTexture*)0), m_kColor,
+                          kParam->GetLightenMode());
     m_spNode = new (efd::MemHint(efd::MemHint::NONE)) NiBillboardNode;
     m_spNode->SetMode((NiBillboardNode::FaceMode)1);
     m_spNode->SetRotate(-1.5707964f, 1.0f, 0.0f, 0.0f);
     m_spNode->AttachChild(m_spMesh, false);
-    NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
+    NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
     pRoot->AttachChild(m_spNode, false);
     m_spNode->SetTranslate(kPos);
     m_spNode->UpdateEffects();
@@ -272,7 +265,7 @@ void AfterImageItem::Release()
     m_spMesh = (NiMeshScreenElements*)0;
     if ((NiBillboardNode*)m_spNode != 0)
     {
-        NiNode* pRoot = static_cast<NiNode*>(reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10());
+        NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
         pRoot->DetachChild(m_spNode);
         m_spNode->RemoveAllChildren();
         m_spNode = (NiBillboardNode*)0;
@@ -451,7 +444,7 @@ void CAfterImageEffect::StartCapture()
     {
         efd::Point3 kCorner = kBound.GetCenter() + (s_akCorner[i] * kBound.GetRadius()) * 0.5f;
         efd::Point2 kScreen;
-        reinterpret_cast<Unk_Camera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af05d0(kCorner, &kScreen);
+        TSingleton<CameraMgr>::GetInstance()->WorldToScreen(kCorner, reinterpret_cast<NiPoint2&>(kScreen));
         if (kRect.b < kScreen.y)
             kRect.b = kScreen.y;
         if (kRect.t > kScreen.y)

@@ -34,7 +34,7 @@ public:
     static class WorldService* GetInstance();
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
-class PC { public: int FUN_1416595d0(); };   // C3: unit-local view
+class PC { public: int IsInCubeMode(); };   // C3: unit-local view
 class MyPC   // C3: member view for the former free stand-ins
 {
 public:
@@ -110,12 +110,12 @@ MS2_REPLACE_METHOD(0x1410B5460, CubeHolderManager, SelectByItemId, 95, 0x0111D5C
 void CubeHolderManager::SelectByIndex(int index) { selected=FindByIndex(index); }
 MS2_REPLACE_METHOD(0x1410B54D0, CubeHolderManager, SelectByInstanceId, 96, 0x00C47404);
 // @0x1410b55b0
-MS2Ptr<CubeItemInfo> CubeHolderManager::FUN_1410b55b0() {
+MS2Ptr<CubeItemInfo> CubeHolderManager::GetSelectedInfo() {
     if(selected.get()) return selected->FUN_140def3d0();
     return MS2Ptr<CubeItemInfo>(0);
 }
 MS2_REPLACE_METHOD(0x1410B5540, CubeHolderManager, SelectByIndex, 95, 0x3B066F7B);
-MS2_REPLACE_METHOD(0x1410B55B0, CubeHolderManager, FUN_1410b55b0, 125, 0xB63FE91C);
+MS2_REPLACE_METHOD(0x1410B55B0, CubeHolderManager, GetSelectedInfo, 125, 0xB63FE91C);
 // @0x1410b5640
 MS2Ptr<CubeItemInfo> CubeHolderManager::GetInfoByIndex(int index) {
     CubePtr cube=FindByIndex(index);
@@ -207,7 +207,7 @@ MS2_REPLACE_METHOD(0x1410B5DC0, CubeHolderManager, FindItemByInstanceId, 170, 0x
 int CubeHolderManager::FUN_1410b5e70() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
-    return ((PC*)pc)->FUN_1416595d0();
+    return ((PC*)pc)->IsInCubeMode();
 }
 MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, FUN_1410b5e70, 54, 0x2F3817D5);
 // @0x1410b5eb0

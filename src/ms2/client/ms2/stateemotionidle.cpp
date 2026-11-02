@@ -241,7 +241,7 @@ void StateEmotion::vfunc_4(StateData* pData)
         if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strLoop, 0))
         {
             efd::utf8string kName(m_strLoop);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, true, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, true, false);
         }
     }
 }
@@ -415,7 +415,7 @@ void StateTriggerEmotion::vfunc_4(StateData* pData)
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount() != 0)
     {
         efd::utf8string kName(m_aEmotions[0]);
-        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, m_spData2->m_bLoop, false);
+        static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, m_spData2->m_bLoop, false);
     }
     m_nStart = GetTickCountMs2();
 }
@@ -448,7 +448,7 @@ void StateTriggerEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
             if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount() != 0)
             {
                 efd::utf8string kName(m_aEmotions[0]);
-                static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
+                static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, false, false);
             }
         }
     }
@@ -462,7 +462,7 @@ void StateTriggerEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
         else
         {
             efd::utf8string kName(m_aEmotions[m_nIndex]);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, false, false);
         }
     }
 }
@@ -541,7 +541,7 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
     {
         m_pOwner->vfunc_19(reinterpret_cast<Unk_SeiSlots*>(pNpc)->vfunc_18());
         efd::Point3 kRot = reinterpret_cast<Unk_SeiSlots*>(pNpc)->vfunc_20();
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d970(kRot);
+        reinterpret_cast<PCBase*>(m_pOwner)->SetRotationAndTargetYaw(kRot);
         short nAnim = reinterpret_cast<CNpc*>(pNpc)->FUN_141093510();
         if (nAnim != 0 && m_nAnim != nAnim)
         {
@@ -564,7 +564,7 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
             if (!strAnim.IsEmpty())
             {
                 efd::utf8string kName(strAnim);
-                static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
+                static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, false, false);
             }
         }
     }
@@ -687,7 +687,7 @@ void StateEmotionIdle::vfunc_4(StateData* pData)
         if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strNext, 1))
         {
             efd::utf8string kName(m_strNext);
-            static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, true, false);
+            static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, true, false);
         }
         FUN_1417b92a0();
     }
@@ -830,7 +830,7 @@ void StateEmotionIdle::vfunc_9(double fTime)
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166f790((void*)&m_strAnim, m_strNext, nKind))
     {
         efd::utf8string kName(m_strNext);
-        static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
+        static_cast<PCBase*>(m_pOwner)->PlayAnimation(kName, 1.0f, false, false);
     }
 }
 

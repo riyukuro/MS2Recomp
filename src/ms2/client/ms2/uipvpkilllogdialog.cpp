@@ -117,7 +117,7 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
         if (!strTarget.IsEmpty())
         {
             CStringW strMsg = FormatStringId<CStringW>(0x973, strTarget);
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
             FUN_1412751b0(strMsg, 0x14);
         }
     }
@@ -126,7 +126,7 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
         if (!strAttacker.IsEmpty())
         {
             CStringW strMsg = FormatStringId<CStringW>(0x972, strAttacker);
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
             FUN_1412751b0(strMsg, 0x14);
         }
     }

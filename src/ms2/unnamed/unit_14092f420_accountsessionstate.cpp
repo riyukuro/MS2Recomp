@@ -126,7 +126,6 @@ class Unk_SkillRec { public: char m_pad_00[0xa8]; int m_pad_a8; unsigned char m_
 class Unk_SkillObj : public CPtred
 {
 public:
-    Unk_SkillRec* FUN_140803e10();
     unsigned char FUN_140804450();
 };
 class Unk_SkillBook
@@ -141,7 +140,7 @@ unsigned FUN_141525480(Unk_MyPc* pPc, int nSkillId, unsigned char nFlag);
 // The "slot in use" restrictions (0x143ab3330).
 class Unk_Restrictions : public CGuideManager { };
 // The sound/effect sink (0x143ab3328).
-class Unk_SoundSink { public: void FUN_14142f470(int nId, int nParam); };
+class Unk_SoundSink;
 // Three more one-method singletons.
 class Unk_Hud { public: virtual void vfunc_0(); virtual void vfunc_1(); };
 Unk_Hud* FUN_140933230();
@@ -158,7 +157,7 @@ class Unk_SkillSlots { public: void FUN_14035a870(int nSlot, int nValue); };
 class Unk_StatTable { public: };
 
 class CGuideManager;
-class CKeyTable;
+class CKeyTable { public: void FUN_14142f470(int nPage, int nSlot); };   // C3: member view (ckeytable.h)
 class CMasteryInteriorTable;
 class CTitleTable;
 class GameEventUserValueManager;
@@ -338,7 +337,7 @@ unsigned FUN_14092f4e0(int nSkillId)
             MS2Ptr<Unk_SkillObj> spSkill = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0())->vfunc_1(nSkillId);
             if (spSkill.get() != 0)
             {
-                if (spSkill->FUN_140803e10()->m_bBlocked)
+                if (reinterpret_cast<Unk_SkillRec*>(reinterpret_cast<SkillLevelData*>(spSkill.operator->())->GetSkill())->m_bBlocked)
                     return 0;
                 return FUN_141525480(pPc, nSkillId, spSkill->FUN_140804450());
             }
@@ -510,7 +509,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
         packet.WriteInt32(nSkillId);
         packet.WriteInt64(nItemUid);
         FUN_140710590(packet);
-        FUN_1409331f0()->FUN_14142f470(nSlot, nParam);
+        reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142f470(nSlot, nParam);
     }
     return 1;
 }
@@ -991,7 +990,7 @@ bool FUN_1409312f0()
     Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    if (((class PCBase*)(class Unk_MyPc*)(pPc))->FUN_14166ce30())
+    if (((class PCBase*)(class Unk_MyPc*)(pPc))->IsDead())
         return false;
     MS2Ptr<Unk_FieldRef> spField = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spField.IsNull())
@@ -1182,7 +1181,10 @@ extern "C" void (__cdecl* __imp_free)(void*);
 
 struct Unk_TailAlc { };                                     // empty std::allocator stand-in
 struct Unk_TailProxy { void* m_pCont; void* m_pIter; };    // _Container_proxy
-struct Unk_TailVecBase : Unk_TailAlc { Unk_TailProxy m_val; };
+struct Unk_TailZeroTag;
+struct Unk_TailVecBase : Unk_TailAlc { Unk_TailProxy m_val; Unk_TailVecBase(Unk_TailZeroTag); };
+// _Compressed_pair<less, _Compressed_pair<allocator, _Tree_val>>
+struct Unk_TailOuterPair : std::less<unsigned> { Unk_TailVecBase m_inner; Unk_TailOuterPair(bool, const std::less<unsigned>& cmp, Unk_TailZeroTag& tag); };
 struct Unk_TailIter { void* m_pNode; };                     // _Tree_const_iterator (checked iterators off the register path)
 struct Unk_TailRefBox { void* m_p; };
 struct Unk_TailSetVal { void* m_unk_00; Unk_TailRefBox m_ref; char m_pad_10[0x8]; };                // element of the set tree (0x18)
@@ -1279,11 +1281,10 @@ void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
 
 // @0x140931620
-Unk_TailVecBase* FUN_140931620(Unk_TailVecBase* pThis, Unk_TailZeroTag)
+Unk_TailVecBase::Unk_TailVecBase(Unk_TailZeroTag)
 {
-    FUN_140932820(pThis);
-    FUN_140932780(&pThis->m_val);
-    return pThis;
+    FUN_140932820(this);
+    FUN_140932780(&m_val);
 }
 
 // @0x140931680
@@ -1295,12 +1296,9 @@ Unk_TailPair* FUN_140931680(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 }
 
 // @0x140931720
-// MS2-FUNCTIONAL: the exe loads pThis into rcx before it copies the tag byte into edx; the free-function call copies the tag first
-Unk_TailVecBase* FUN_140931720(Unk_TailVecBase* pThis, bool, const std::less<unsigned>& cmp, Unk_TailZeroTag& tag)
+Unk_TailOuterPair::Unk_TailOuterPair(bool, const std::less<unsigned>& cmp, Unk_TailZeroTag& tag)
+    : std::less<unsigned>(FUN_140180bc0(cmp)), m_inner(FUN_140162f10(tag))
 {
-    FUN_140180bc0(cmp);
-    FUN_140931620(pThis, FUN_140162f10(tag));
-    return pThis;
 }
 
 // @0x1409317c0

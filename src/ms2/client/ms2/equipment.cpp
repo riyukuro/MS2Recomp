@@ -1517,8 +1517,8 @@ void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
     Unk_ItemEquipData* pData = spData->FUN_140527840();
     if (pData == NULL)
         return;
-    if (pData->FUN_14053c620() == 0xe || pData->FUN_14053c620() == 0xf || pData->FUN_14053c620() == 0x16 ||
-        pData->FUN_14053c620() == 0x10 || pData->FUN_14053c620() == 0x11) {
+    if (pData->GetEquipSubtype() == 0xe || pData->GetEquipSubtype() == 0xf || pData->GetEquipSubtype() == 0x16 ||
+        pData->GetEquipSubtype() == 0x10 || pData->GetEquipSubtype() == 0x11) {
         int nSlot = spData->FUN_140527a20();
         MS2Ptr<CEquipmentSlot> spSlot(0);
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
@@ -2467,7 +2467,7 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const 
     MS2Ptr<CEquipItem> spItem = static_cast<Unk_EquipModelCalls*>(pModel)->FUN_141200a40();
     if (spItem == 0)
         return;
-    if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
+    if (spItem->FUN_1411dc7f0()->GetEquipSubtype() != 0xd)
         return;
     Unk_UserProxyItemData* pProxy = spItem->GetItem()->FUN_140527870();
     if (pProxy == NULL)
@@ -2659,7 +2659,7 @@ void CEquipment::FUN_1411edbb0()
     bool bMiss = false;
     bool bMiss2 = false;
     if (spTopBase.get() != NULL) {
-        int nKind = spTopBase->FUN_1411dc7f0()->FUN_14053c620();
+        int nKind = spTopBase->FUN_1411dc7f0()->GetEquipSubtype();
         int bUsable = m_pPC->FUN_141662eb0(spTopBase->GetItem().get());
         if (spTop.get() != NULL && spTop->GetItem().get() != NULL) {
             bMiss = spTop->GetItem()->FUN_140525e50(nGender, nKind) == 0;
@@ -2673,7 +2673,7 @@ void CEquipment::FUN_1411edbb0()
         }
     }
     if (spBottomBase.get() != NULL) {
-        int nKind = spBottomBase->FUN_1411dc7f0()->FUN_14053c620();
+        int nKind = spBottomBase->FUN_1411dc7f0()->GetEquipSubtype();
         int bUsable = m_pPC->FUN_141662eb0(spBottomBase->GetItem().get());
         if (spBottom.get() != NULL && spBottom->GetItem().get() != NULL) {
             if (spBottom->GetItem()->FUN_140525e50(nGender, nKind) == 0)

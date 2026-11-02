@@ -97,7 +97,7 @@ void UIChapterBook::OnLoadComplete()
         if (spBook.get() != 0)
         {
             CStringW strEpilogue = GetStringTable()->FUN_141811980(0x3a, m_nEpilogue);
-            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strEpilogue);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strEpilogue);
             ASObj obj(2);
             ((class AScript&)(obj)).FUN_1407cb9c0("id", spBook->m_nId);
             ((class AScript&)(obj)).FUN_1407cbb20("chapter", GetStringTable()->FUN_141811980(0x39, m_nEpilogue));

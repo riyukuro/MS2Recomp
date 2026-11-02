@@ -20,6 +20,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/triggerservice.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/commonfiles/hideandseek.h"   // C3: HideAndSeek::Info
 
 // The header statics of the including TU: the sort type names and the skill / stun marks.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -38,7 +39,7 @@ public:
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
 // The hide and seek record of a player.
-class Unk_HsInfo : public CPtred { public: bool FUN_14050a4d0(); };   // +0x19 dead
+class Unk_HsInfo : public CPtred { };
 
 // The trigger service: the camera steps.
 CTriggerService* FUN_140ad4b90();
@@ -218,7 +219,7 @@ void UIWatchAGameDialog::FUN_140fc1560(int nIndex, const CString& strIcon, const
     m_30->FUN_140e6b140("setImage", nIndex + 1, strIcon);
     MS2Ptr<ASTextField> spName = m_clips[nIndex]->FUN_1409b4620("m_actionName");
     if (spName.get() != 0)
-        spName->FUN_1422c4cd0(strTooltip);
+        spName->SetTextW(strTooltip);
 }
 
 // @0x140fc1710
@@ -251,7 +252,7 @@ void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
         return;
     if (pPC->FUN_141675ed0() == 1)
         return;
-    switch (pPC->FUN_14166c930())
+    switch (pPC->GetCurStateId())
     {
     case 1:
         break;
@@ -265,7 +266,7 @@ void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
     MS2Ptr<Unk_HsInfo> spInfo = pPC->GetHideAndSeekInfo();
     if (spInfo == 0)
         return;
-    if (spInfo->FUN_14050a4d0())
+    if (reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a4d0())
         pPC->FUN_14166ed70(nEmotion);
 }
 

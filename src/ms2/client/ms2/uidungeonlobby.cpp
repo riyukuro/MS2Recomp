@@ -99,7 +99,7 @@ void UIDungeonLobby::OnLoadComplete()
         {
             CStringW strTitle = FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
                                               TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->GetDungeonRoomID()));
-            m_pTitle->FUN_1422c4cd0(strTitle);
+            m_pTitle->SetTextW(strTitle);
             FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_14028dfa0<unsigned int>(L"s_dungeonLobby_subTitle", (unsigned&)m_n17c));
             if (pRoom->m_groupType == 2 || pRoom->m_groupType == 3) {
                 const float fOffset = 10.0f;

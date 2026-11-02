@@ -80,8 +80,8 @@ MS2_REPLACE_METHOD(0x140E5E4F0, UIMentoringDialog, vfunc_79, 34, 0xEDA5A5B7);
 // @0x140e5e520
 int UIMentoringDialog::vfunc_28(const char* method,const Scaleform::GFx::Value* args,unsigned count){
  if(UIDialog::vfunc_28(method,args,count))return 1;
- if(_stricmp(method,"onAddPage")==0){ASData data;if(data.FUN_1422b9620(args,count)){CString name=data.FUN_1422b8d30();Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(name,page)){m_page=page;page->vfunc_1();}}return 1;}
- else if(_stricmp(method,"onRemovePage")==0){ASData data;if(data.FUN_1422b9620(args,count)){CString name=data.FUN_1422b8d30();Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(name,page)){page->vfunc_2();m_page=0;}}return 1;}
+ if(_stricmp(method,"onAddPage")==0){ASData data;if(data.SetArgsIfAny(args,count)){CString name=data.FUN_1422b8d30();Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(name,page)){m_page=page;page->vfunc_1();}}return 1;}
+ else if(_stricmp(method,"onRemovePage")==0){ASData data;if(data.SetArgsIfAny(args,count)){CString name=data.FUN_1422b8d30();Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(name,page)){page->vfunc_2();m_page=0;}}return 1;}
  else if(_stricmp(method,"onClickShop")==0){Unk_MentorActor* actor=((Unk_MentorActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(actor){int type=actor->FUN_14165ffe0();switch(type){case 1:case 2:FUN_1413499b0(6);break;case 4:case 5:FUN_1413499b0(7);break;}}}
  else if(m_page.get()){if(m_page->vfunc_5(method,args,count))return 1;}
  return 0;

@@ -146,42 +146,42 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnAssetChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14191bd30(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnLayerInsert", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14191c060(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnLayerDelete", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14191c0d0(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnLayerChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14191c140(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnBrushChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_14191c1b0(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
+            FUN_14191c1b0(data.PopInt());
     }
     else if (_stricmp("OnBrushRadiusChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14191c1e0(data.PopFloat());
     }
     else if (_stricmp("OnBrushDensityChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_14191c230(data.PopFloat());
     }
     else if (_stricmp("OnBrushScaleChange", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             float fX = data.PopFloat();
             float fY = data.PopFloat();
@@ -189,7 +189,7 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             FUN_14191c280(*vScale.FUN_140a0a600(fX, fY));
         }
     }
-    else if (_stricmp("OnBrushRotationChange", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnBrushRotationChange", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
     {
         float fX = data.PopFloat();
         float fY = data.PopFloat();

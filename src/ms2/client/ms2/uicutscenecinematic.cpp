@@ -92,7 +92,7 @@ public:
     static class Unk_AkoCutscene* GetInstance();
 };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // ckeytable.h's key table: the key name of a binding
+class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table: the key name of a binding
 class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
 class GFxManager { public: float FUN_1422afec0(int nUiId); };   // the GFx manager (UI scale)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
@@ -196,7 +196,7 @@ void UICutSceneCinematic::OnLoadComplete()
     }
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
-        strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
+        strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x49409, 2);
     FUN_141907d60(m_nSkipState, CStringW(strKey), CStringW(m_strSkipLabel));
 }
 
@@ -723,7 +723,7 @@ void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
     m_strSkipMsg = packet.ReadString();
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
-        strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
+        strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x49409, 2);
     FUN_141907d60(nType, CStringW(strKey), CStringW(strLabel));
 }
 MS2_REPLACE_METHOD(0x14190A4C0, UICutSceneCinematic, FUN_14190a4c0, 523, 0xECC7A13D);

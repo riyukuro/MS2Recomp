@@ -318,7 +318,7 @@ void CBlackMarketMan::FUN_140a211a0(CInPacket& packet)
     {
         MS2Ptr<CBlackMarketProduct> sp(new CBlackMarketProduct);
         sp->Read(&packet);
-        sp->m_item->FUN_140526c70(sp->GetRemain());
+        sp->m_item->SetCountClamped(sp->GetRemain());
         FUN_140a20cf0(sp);
     }
     UIBlackMarketDialog* pDlg = FUN_140a22f10(0x4e97);
@@ -373,7 +373,7 @@ void CBlackMarketMan::FUN_140a216b0(CInPacket& packet)
     {
         MS2Ptr<CBlackMarketProduct> sp(new CBlackMarketProduct);
         sp->Read(&packet);
-        sp->m_item->FUN_140526c70(sp->GetRemain());
+        sp->m_item->SetCountClamped(sp->GetRemain());
         if (sp->m_item->FUN_140527840() != 0)
             FUN_140a20f30(sp);
     }
@@ -393,7 +393,7 @@ void CBlackMarketMan::FUN_140a21930(CInPacket& packet)
     if (sp == 0)
         return;
     sp->m_nBought += nBought;
-    sp->m_item->FUN_140526c70(sp->GetRemain());
+    sp->m_item->SetCountClamped(sp->GetRemain());
     if (sp->GetRemain() == 0)
         sp->m_nStateA = 1;
     CBlackMarketProduct* pOld = FUN_140a20e70(qwId).get();

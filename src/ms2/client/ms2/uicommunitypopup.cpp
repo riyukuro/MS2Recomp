@@ -162,13 +162,13 @@ void UICommunityPopup::FUN_140bea730() {
         m_movie->vfunc_3(0);
     } else {
         m_movie->vfunc_3(1);
-        m_field->FUN_1422c4f00(m_text);
+        m_field->SetTextHTMLW(m_text);
         m_width = (int)m_field->GetTextWidth();
         int totalWidth = m_width + 275;
         int repeat = totalWidth / m_width + 1;
         CStringW text;
         for (int i=0; i<repeat; ++i) text += m_text;
-        m_field->FUN_1422c4f00(text);
+        m_field->SetTextHTMLW(text);
         m_field->SetWidthInt((int)(m_field->GetTextWidth() + 20.0));
         m_x = 275.0f;
         m_pending = false;

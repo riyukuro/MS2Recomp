@@ -11,6 +11,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+class WorldService { public: bool HasTutorial(); };   // C3: member view (0x141bcb0a0)
+class CLua { public: long long CalcSendMailFee(long long, long long, long long, long long, long long, long long, long long); };   // C3: member view (0x140676020)
+
 extern __int64 DAT_143ab2828;
 extern __int64 DAT_143ab25e8;
 
@@ -74,7 +77,7 @@ CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CS
 void CUserMail::SetUnreadCount(unsigned v) {
     m_00 = v;
     if (v > 0) {
-        if (!FUN_141bcb0a0(FUN_1403ed2d0())) {
+        if (!reinterpret_cast<WorldService*>(FUN_1403ed2d0())->HasTutorial()) {
             m_d8 = 1;
         }
     }
@@ -224,7 +227,7 @@ int CUserMail::FUN_1408e3b70(__int64 id, int force, int reason) {
             }
         }
     }
-    if (!FUN_141bcb0a0(FUN_1403ed2d0())) {
+    if (!reinterpret_cast<WorldService*>(FUN_1403ed2d0())->HasTutorial()) {
         m_dc = 1;
     }
     return 1;
@@ -386,7 +389,7 @@ void CUserMail::FUN_1408e45e0() {
             sum6 += keep->FUN_14068fe20(6);
         }
     }
-    __int64 total = FUN_1401c0db0()->FUN_140676020(m_08, sum1, sum2, sum3, sum4, sum5, sum6);
+    __int64 total = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcSendMailFee(m_08, sum1, sum2, sum3, sum4, sum5, sum6);
     m_30 = total;
 }
 

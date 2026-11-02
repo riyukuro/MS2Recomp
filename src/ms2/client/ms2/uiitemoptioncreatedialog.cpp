@@ -90,7 +90,6 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
     int FUN_1422dfb90();                                    // row count
-    void FUN_1422dfc70(const ASObj& row);                   // append a row
 };
 class Unk_CoupleInput : public AScript
 {
@@ -158,46 +157,46 @@ int UIItemOptionCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     ASData data;
     if (_stricmp("OnItemChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            m_nItemId = data.FUN_1422b8b10();
-            m_nRank = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            m_nItemId = data.PopUInt();
+            m_nRank = data.PopUInt();
             FUN_1412d33b0();
             FUN_1412d3740();
             FUN_1412d3a60();
         }
         return 1;
     } else if (_stricmp("OnItemRank", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            data.FUN_1422b8b10();
-            m_nRank = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            data.PopUInt();
+            m_nRank = data.PopUInt();
             FUN_1412d3740();
             FUN_1412d3a60();
         }
         return 1;
     } else if (_stricmp("OnGroupChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_1412d3c10(data.FUN_1422b8d30(), L"");
         }
         return 1;
     } else if (_stricmp("OnCreateItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int a = data.FUN_1422b8b10();
-            int b = data.FUN_1422b8b10();
-            int c = data.FUN_1422b8b10();
-            int d = data.FUN_1422b8b10();
-            Scaleform::GFx::Value options = data.FUN_1422b9260();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int a = data.PopUInt();
+            int b = data.PopUInt();
+            int c = data.PopUInt();
+            int d = data.PopUInt();
+            Scaleform::GFx::Value options = data.PopValue();
             FUN_1412d2e50(a, b, c, d, options);
         }
         return 1;
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_1412d3c10("", data.FUN_1422b8f40());
         }
         return 1;
     } else if (_stricmp("OnOptionInit", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            m_nItemId = data.FUN_1422b8b10();
-            m_nRank = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            m_nItemId = data.PopUInt();
+            m_nRank = data.PopUInt();
             FUN_1412d3a60();
         }
         return 1;
@@ -266,7 +265,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
             ASObj row(2);
             row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
             row.FUN_1409adc90("itemRank", item->GetRank());
-            combo->FUN_1422dfc70(row);
+            reinterpret_cast<ASDropdownMenu*>(combo.operator->())->AddItemRow(row);
             nSelected = 0;
             m_nRank = item->GetRank();
         } else {
@@ -277,7 +276,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
                 row.FUN_1407cb9c0("itemRank", nRank);
                 if (nItemRank == m_nRank)
                     nSelected = combo->FUN_1422dfb90();
-                combo->FUN_1422dfc70(row);
+                reinterpret_cast<ASDropdownMenu*>(combo.operator->())->AddItemRow(row);
             }
         }
         unsigned nCount = combo->FUN_1422dfb90();
@@ -473,7 +472,7 @@ inline void ASObj::FUN_1412d4860(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1412d4900
@@ -481,7 +480,7 @@ inline void ASObj::FUN_1412d4900(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1412d49a0
@@ -489,7 +488,7 @@ inline void ASObj::FUN_1412d49a0(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caf580-0x142caf5d0 .text$yd

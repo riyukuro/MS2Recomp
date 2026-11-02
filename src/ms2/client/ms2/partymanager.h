@@ -34,7 +34,7 @@ public:
     void SendMatchPartyMode0(const Unk_PartyRecruitRequest&);
     void SendMatchPartyMode2(const CMatchPartyRecruitSchCond&);
     int GetPartyId();
-    bool FUN_14162ab20();
+    bool IsInParty();
     bool IsLocalPlayerLeader();
     bool IsPartyId(int);
     bool IsMatchmaking();

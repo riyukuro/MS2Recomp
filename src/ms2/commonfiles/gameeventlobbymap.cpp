@@ -46,7 +46,7 @@ class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14047b990(int);
-    void FUN_14047bb20(bool, class CMsTime const&);
+    void SetLoginNotice(bool, class CMsTime const&);
 };
 
 GameEvent* FUN_14041c1a0();
@@ -116,10 +116,10 @@ GameEventLoginNotice::GameEventLoginNotice()
 void GameEventLoginNotice::vfunc_2() {}
 
 // @0x14041c520
-void GameEventLoginNotice::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047bb20(true, *(class CMsTime const*)(&m_38)); }
+void GameEventLoginNotice::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->SetLoginNotice(true, *(class CMsTime const*)(&m_38)); }
 
 // @0x14041c560
-void GameEventLoginNotice::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047bb20(false, *(class CMsTime const*)(&m_38)); }
+void GameEventLoginNotice::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->SetLoginNotice(false, *(class CMsTime const*)(&m_38)); }
 
 // @0x14041c5a0
 GameEvent* FUN_14041c5a0() { return new GameEventCharacterCountRestricted; }

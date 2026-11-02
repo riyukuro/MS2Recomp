@@ -32,6 +32,9 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+#include <efd/StringUtilities.h>
+#include <ecr/RenderService.h>
+#include <ecr/RenderSurface.h>
 #include "ms2/commonfiles/os.h"
 #include "ms2/client/ms2/uiservice.h"
 
@@ -47,15 +50,11 @@ public:
 };
 // The exe's RGBA32 (symbols.tsv maps ?RGBA32@NiPixelFormat to a different static).
 extern const NiPixelFormat DAT_1439fb040;                                  // MS2Renderer::ms_RTTI
-void FUN_140a34190(void* pDst, const void* pSrc, size_t n);   // bounded memcpy helper
-int FUN_1416b0b80(unsigned int uiFBMode);                   // frame-buffer mode -> D3DMULTISAMPLE_TYPE
 
 // screenshot plumbing from other units
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 void* FUN_14127bf80(void* pkHolder);                        // registry singleton
-void* FUN_140af7da0(void* pkRegistry);                      // its current scene
-NiRenderTargetGroup* FUN_14127cca0(void* pkScene);          // the scene's render-target group
    // the renderer wrapper
 PostProcessingService* FUN_1409a8b20();
 CStringW FUN_1401d0080(const CStringW& kA, const CStringW& kB);   // CStringW concatenation
@@ -153,7 +152,7 @@ IDirect3DSurface9* CreateRenderTargetSurface(unsigned int uiWidth, unsigned int 
         unsigned int uiRefreshRate;
         pkRenderer->GetCreationParameters(uiCreateWidth, uiCreateHeight, uiUseFlags, kWndDevice, kWndFocus, uiAdapter, eDesc,
             eFBFormat, eDSFormat, ePresentationInterval, eSwapEffect, uiFBMode, uiBackBufferCount, uiRefreshRate);
-        D3DMULTISAMPLE_TYPE eMultiSample = (D3DMULTISAMPLE_TYPE)FUN_1416b0b80(uiFBMode);
+        D3DMULTISAMPLE_TYPE eMultiSample = NiDX9Renderer::GetMultiSampleType(uiFBMode);
         DWORD uiQuality = NiDX9Renderer::GetMultiSampleQuality(uiFBMode);
         LPDIRECT3DDEVICE9 pkDevice = pkRenderer->GetD3DDevice();
         if (pkDevice != NULL)
@@ -239,7 +238,7 @@ NiSourceTexture* CopyTexturePixels(NiTexture* pkTexture, bool bMipmap, bool bSta
     unsigned char* pucSrc = (unsigned char*)kLocked.pBits;
     for (unsigned int uiRow = 0; uiRow < kDesc.Height; uiRow++)
     {
-        FUN_140a34190(pucDst, pucSrc, uiRowBytes);
+        efd::Memcpy(pucDst, pucSrc, uiRowBytes);
         pucDst += uiRowBytes;
         pucSrc += kLocked.Pitch;
     }
@@ -287,7 +286,7 @@ void BlitTexturePixels(NiSourceTexture* pkSource, NiPixelData* pkDest, const NiR
     {
         for (unsigned int uiRow = 0; uiRow < pkSource->GetHeight(); uiRow++)
         {
-            FUN_140a34190(pucDestBase + (kRect.m_left + (uiRow + kRect.m_top) * iDestWidth) * uiStride,
+            efd::Memcpy(pucDestBase + (kRect.m_left + (uiRow + kRect.m_top) * iDestWidth) * uiStride,
                 pucSrcBase + (unsigned int)(uiRow * (pkSource->GetWidth() * uiStride)), pkSource->GetWidth() * uiStride);
         }
     }
@@ -339,7 +338,7 @@ void FillPixelRect(const unsigned char* pucPixel, NiPixelData* pkDest, const NiR
     {
         for (unsigned int uiCol = kRect.m_left; uiCol < kRect.m_right; uiCol++)
         {
-            FUN_140a34190(pucBase + (uiCol + uiRow * iWidth) * uiStride, pucPixel, uiStride);
+            efd::Memcpy(pucBase + (uiCol + uiRow * iWidth) * uiStride, pucPixel, uiStride);
         }
     }
 }
@@ -366,7 +365,7 @@ NiPixelData* DownsamplePixels(NiPixelData* pkSource, unsigned int uiStep)
     {
         for (unsigned int uiCol = 0; uiCol < uiDestWidth; uiCol++)
         {
-            FUN_140a34190(pucDst, pucSrc, uiStride);
+            efd::Memcpy(pucDst, pucSrc, uiStride);
             pucDst += uiStride;
             pucSrc += uiStride * uiStep;
         }
@@ -406,7 +405,7 @@ void CopyPixelRect(NiPixelData* pkSource, const NiRect<unsigned int>& kSrcRect, 
     {
         for (unsigned int uiCol = 0; uiCol < kSrcRect.GetWidth(); uiCol++)
         {
-            FUN_140a34190(pucDst + (uiCol + kDestRect.m_left + (uiRow + kDestRect.m_top) * iDstWidth) * uiStride,
+            efd::Memcpy(pucDst + (uiCol + kDestRect.m_left + (uiRow + kDestRect.m_top) * iDstWidth) * uiStride,
                 pucSrc + (uiCol + kSrcRect.m_left + (uiRow + kSrcRect.m_top) * iSrcWidth) * uiStride, uiStride);
         }
     }
@@ -1086,7 +1085,7 @@ void TakeSceneScreenshotPng(int bNotify)
     void* pkRegistry = FUN_14127bf80(&DAT_143b059e8);
     if (pkRegistry != NULL)
     {
-        NiRenderTargetGroup* pkGroup = FUN_14127cca0(FUN_140af7da0(pkRegistry));
+        NiRenderTargetGroup* pkGroup = reinterpret_cast<ecr::RenderService*>(pkRegistry)->GetActiveRenderSurface()->GetRenderTargetGroup();
         if (pkGroup != NULL)
         {
             RECT kClient = { 0, 0, 0, 0 };

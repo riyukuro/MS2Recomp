@@ -21,39 +21,44 @@ public:
     void SetPhase(float);
     enum CycleType { LOOP, REVERSE, CLAMP };
     void SetCycleType(CycleType eType);
+    enum AnimType { APP_TIME, APP_INIT };
+    void SetAnimType(AnimType eType);
 };
+template <class T> class NiTPointerList;
+namespace efd { template <class T> class SmartPointer; }
+class NiProperty;
+class NiDynamicEffect;
 class NiObject   // C3: member view for the former free stand-ins
 {
 public:
     static bool IsKindOf(class NiRTTI const*, class NiObject const*);
 };
-void* FUN_14127cc40(void* pObj);                    // property list
 void* FUN_14098ddb0(void* pList);                   // list begin position
 void* FUN_14098de00(void* pList, void** ppPos);     // slot at position, advances it
 void* FUN_140993f00(void* pSlot);                   // slot -> property
-unsigned int FUN_14098daf0(void* pObj);             // child count
 class NiNode   // C3: member view for the former free stand-ins
 {
 public:
     static const class NiRTTI ms_RTTI;
+    unsigned int GetArrayCount() const;
     class NiAVObject* GetAt(unsigned int) const;
+    const NiTPointerList<NiDynamicEffect*>& GetEffectList() const;
 };
 class NiAVObject
 {
 public:
     static const class NiRTTI ms_RTTI;
+    NiTPointerList<efd::SmartPointer<NiProperty> >& GetPropertyList();
 };
 class NiAlphaController
 {
 public:
     static const class NiRTTI ms_RTTI;
 };
-void* FUN_1413fc1d0(void* pObj);                    // child array
 void* FUN_1413fc1f0(void* pArr);                    // array begin position
 bool FUN_141546cb0(void* pList);
 bool FUN_141546c80(void* pArr);
 void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
-void FUN_14098e870(void* pCtrl, int nValue);
 
 // Controller interface with the two virtual slots used here (the slots in between are unrecovered).
 struct Unk_CtrlIface
@@ -145,7 +150,7 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
     if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
-        void* pList = FUN_14127cc40(pObj);
+        void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
         void* pPos = FUN_14098ddb0(pList);
         while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
@@ -157,12 +162,12 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
     if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
-        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
+        for (unsigned int i = 0; i < ((class NiNode*)(void*)(pNode))->GetArrayCount(); ++i)
         {
             void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852690(pChild, pArg);
         }
-        void* pArr = FUN_1413fc1d0(pNode);
+        void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
         void* pIter = FUN_1413fc1f0(pArr);
         while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
@@ -187,7 +192,7 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
     if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
-        void* pList = FUN_14127cc40(pObj);
+        void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
         void* pPos = FUN_14098ddb0(pList);
         while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
@@ -199,12 +204,12 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
     if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
-        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
+        for (unsigned int i = 0; i < ((class NiNode*)(void*)(pNode))->GetArrayCount(); ++i)
         {
             void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852290(pChild, pArg);
         }
-        void* pArr = FUN_1413fc1d0(pNode);
+        void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
         void* pIter = FUN_1413fc1f0(pArr);
         while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
@@ -229,7 +234,7 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
     if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
-        void* pList = FUN_14127cc40(pObj);
+        void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
         void* pPos = FUN_14098ddb0(pList);
         while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
@@ -241,12 +246,12 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
     if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
-        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
+        for (unsigned int i = 0; i < ((class NiNode*)(void*)(pNode))->GetArrayCount(); ++i)
         {
             void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852490(pChild, pArg);
         }
-        void* pArr = FUN_1413fc1d0(pNode);
+        void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
         void* pIter = FUN_1413fc1f0(pArr);
         while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
@@ -271,7 +276,7 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
     if (NiObject::IsKindOf(&NiAVObject::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pObj = pRoot;
-        void* pList = FUN_14127cc40(pObj);
+        void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
         void* pPos = FUN_14098ddb0(pList);
         while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
@@ -283,12 +288,12 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
     if (NiObject::IsKindOf(&NiNode::ms_RTTI, (class NiObject const*)(pRoot)))
     {
         void* pNode = pRoot;
-        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
+        for (unsigned int i = 0; i < ((class NiNode*)(void*)(pNode))->GetArrayCount(); ++i)
         {
             void* pChild = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             FUN_141852690(pChild, pArg);
         }
-        void* pArr = FUN_1413fc1d0(pNode);
+        void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
         void* pIter = FUN_1413fc1f0(pArr);
         while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
@@ -334,7 +339,7 @@ void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl)
 // @0x141852970
 void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
 {
-    FUN_14098e870(pCtrl, 1);
+    ((NiTimeController*)pCtrl)->SetAnimType(NiTimeController::APP_INIT);
     ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
     ((class NiTimeController*)(void*)(pCtrl))->SetPhase(pArg->m_fValue);
 }

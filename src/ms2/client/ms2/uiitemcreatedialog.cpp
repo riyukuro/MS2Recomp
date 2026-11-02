@@ -227,34 +227,34 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     ASData data;
     if (_stricmp("OnItemChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nItemId = data.FUN_1422b8b10();
-            int nRank = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nItemId = data.PopUInt();
+            int nRank = data.PopUInt();
             FUN_1419b5560(nItemId, nRank);
         }
         return 1;
     } else if (_stricmp("OnGroupChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_1419b5730(data.FUN_1422b8d30(), L"");
         }
         return 1;
     } else if (_stricmp("OnFunctionChange", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_1419b5730("", data.FUN_1422b8f40());
         }
         return 1;
     } else if (_stricmp("OnCreateItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nItemId = data.FUN_1422b8b10();
-            int nCount = data.FUN_1422b8b10();
-            int nRank = data.FUN_1422b8b10();
-            int nLevel = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nItemId = data.PopUInt();
+            int nCount = data.PopUInt();
+            int nRank = data.PopUInt();
+            int nLevel = data.PopUInt();
             int nEnchant = FUN_1419b5280(nItemId, nLevel);
-            int nPeriod = data.FUN_1422b8b10();
-            int g = data.FUN_1422b8a10();
-            int h = data.FUN_1422b8a10();
-            int i = data.FUN_1422b8a10();
-            int j = data.FUN_1422b8a10();
+            int nPeriod = data.PopUInt();
+            int g = data.PopInt();
+            int h = data.PopInt();
+            int i = data.PopInt();
+            int j = data.PopInt();
             CCCreateItemPacket packet;
             packet.a = nItemId;
             packet.b = nCount;
@@ -270,16 +270,16 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
         return 1;
     } else if (_stricmp("OnCompareItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nItemId = data.FUN_1422b8b10();
-            int nCount = data.FUN_1422b8b10();
-            int nRank = data.FUN_1422b8b10();
-            int nLevel = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nItemId = data.PopUInt();
+            int nCount = data.PopUInt();
+            int nRank = data.PopUInt();
+            int nLevel = data.PopUInt();
             int nEnchant = FUN_1419b5280(nItemId, nLevel);
-            int nPeriod = data.FUN_1422b8b10();
-            int g = data.FUN_1422b8a10();
-            int h = data.FUN_1422b8a10();
-            int i = data.FUN_1422b8a10();
+            int nPeriod = data.PopUInt();
+            int g = data.PopInt();
+            int h = data.PopInt();
+            int i = data.PopInt();
             CCCompareItemPacket packet;
             packet.a = nItemId;
             packet.b = nCount;
@@ -293,17 +293,17 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             FUN_1419b53d0(packet);
         }
     } else if (_stricmp("OnRepeatItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nItemId = data.FUN_1422b8b10();
-            int nCount = data.FUN_1422b8b10();
-            int nRank = data.FUN_1422b8b10();
-            int nLevel = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nItemId = data.PopUInt();
+            int nCount = data.PopUInt();
+            int nRank = data.PopUInt();
+            int nLevel = data.PopUInt();
             int nEnchant = FUN_1419b5280(nItemId, nLevel);
-            int nPeriod = data.FUN_1422b8b10();
-            int g = data.FUN_1422b8a10();
-            int h = data.FUN_1422b8a10();
-            int i = data.FUN_1422b8a10();
-            int nRepeat = data.FUN_1422b8b10();
+            int nPeriod = data.PopUInt();
+            int g = data.PopInt();
+            int h = data.PopInt();
+            int i = data.PopInt();
+            int nRepeat = data.PopUInt();
             CCCompareItemPacket packet;
             packet.a = nItemId;
             packet.b = nCount;
@@ -318,7 +318,7 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             FUN_1419b54a0(packet);
         }
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             FUN_1419b5730("", data.FUN_1422b8f40());
         }
         return 1;
@@ -334,10 +334,10 @@ void UIItemCreateDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     UIObject::vfunc_49(pRetVal, pArgs);
     if (pArgs->FUN_1422b9360() != 2)
         return;
-    int nItemId = pArgs->FUN_1422b8b10();
+    int nItemId = pArgs->PopUInt();
     if (nItemId == 0 || FUN_14053f870(nItemId) == 0)
         return;
-    int nRank = pArgs->FUN_1422b8b10();
+    int nRank = pArgs->PopUInt();
     if (!FUN_14053ff30(nItemId, nRank))
         nRank = FUN_14053feb0(nItemId);
     MS2Ptr<CItem> item(new CItem);

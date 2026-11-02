@@ -28,8 +28,8 @@ public:
     int GetHall();
     void SetNight(bool bNight);
     void SetTime(__int64);
+    __int64 GetTime();
 };
-void* FUN_140fdca40(UIDialog* pDialog);                                     // the reservation target
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140b8e910(const CMsTime& time);                                // date text
@@ -183,9 +183,9 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
     else if (_stricmp((const char*)a1, "onSelectTime") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)a2, a3))
         {
-            int nHour = data.FUN_1422b8a10();
+            int nHour = data.PopInt();
             if (nHour == -1)
             {
                 m_nTime = 0;
@@ -202,9 +202,9 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
     else if (_stricmp((const char*)a1, "onSelectPublic") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)a2, a3))
         {
-            m_bPrivate = data.FUN_1422b8a10() == 0 ? true : false;
+            m_bPrivate = data.PopInt() == 0 ? true : false;
             ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SetNight(m_bPrivate);
         }
     }
@@ -220,7 +220,7 @@ void UIWeddingHallReservationPageSchedule::vfunc_5()
 // @0x140fe3980
 void UIWeddingHallReservationPageSchedule::vfunc_6()
 {
-    if (FUN_140fdca40(m_pDialog) == 0)
+    if (reinterpret_cast<UIWeddingHallReservationDialog*>(m_pDialog)->GetTime() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_time");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
@@ -315,7 +315,7 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
     if (MS2Ptr<Unk_SchedButton> spNext = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_next"))
         spNext->FUN_1422c1fe0(nTo == 0x18);
     if (MS2Ptr<ASTextField> spDate = pPage->m_pScript->FUN_1409b4620("m_date"))
-        spDate->FUN_1422c4cd0(FUN_140b8e910(pPage->m_date));
+        spDate->SetTextW(FUN_140b8e910(pPage->m_date));
 }
 
 // @0x140fe42c0

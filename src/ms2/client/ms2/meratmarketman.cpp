@@ -144,7 +144,6 @@ static CString s_skill2 = "skill";
 class Unk_MmDialog : public UIMeratMarketDialog
 {
 public:
-    void FUN_14130bee0(CMsTime time);                           // store the time of the last refresh
     void FUN_14130f310(Unk_MeratProductKey key, int nIndex);    // a basket line was removed
     void FUN_14130c670(int nPage);                             // the main page products arrived
     void FUN_14130ce70(bool bEmpty);                            // the advertised products arrived
@@ -184,12 +183,6 @@ template <class T> T* Unk_MmGetDialog(int nId)
             return dynamic_cast<T*>(static_cast<UIObject*>(spObject));
     }
     return 0;
-}
-
-// The ad push dialog's view of a market product (unit_140e3efd0.h's Unk_AdMarketItem): the same exe object.
-static MS2Ptr<Unk_AdMarketItem> Unk_MmAdItem(MS2Ptr<CMeratMarketProduct> spProduct)
-{
-    return MS2Ptr<Unk_AdMarketItem>(reinterpret_cast<Unk_AdMarketItem*>(spProduct.get()));
 }
 
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
@@ -731,7 +724,7 @@ void CMeratMarketMan::RefreshRandomSaleProducts()
         spProduct->m_premium.m_n1ac = 0;
         pDialog->ShowProduct(spProduct);
     }
-    pDialog->FUN_14130bee0(now);
+    pDialog->SetOpenTime(now);
 }
 
 // Add a UGC product; true when it is new.
@@ -1443,7 +1436,7 @@ void CMeratMarketMan::FinishPendingPurchases(int bCancel)
                 CStringW strCaption = GetStringCommon(nCaptionId);
                 spBox->SetTitle(strCaption);
                 spBox->SetSize(0x1e0, 300);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CMeratMarketMan::OnPurchaseResultBoxClosed));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CMeratMarketMan::OnPurchaseResultBoxClosed));
                 if (nFailed == 0) {
                     int nMsgId = bPremium ? 0x9fe : 0x9f8;
                     spBox->SetMsg(StringFormat(strTitle, GetStringCommon(nMsgId), strOk));
@@ -2668,8 +2661,9 @@ void CMeratMarketMan::OnBuySucceeded(CInPacket& packet)
                         if (pDialog != 0)
                             pDialog->OnProductSelected(spProduct);
                         UIAdPushDialog* pAdDialog = Unk_MmGetDialog<UIAdPushDialog>(0x4f34);
+                        // The ad push dialog's Unk_AdMarketItem (unit_140e3efd0.h) is the same exe object; the exe copies the pointer.
                         if (pAdDialog != 0)
-                            pAdDialog->UpdateBundles(Unk_MmAdItem(spProduct));
+                            pAdDialog->UpdateBundles(reinterpret_cast<const MS2Ptr<Unk_AdMarketItem>&>(spProduct));
                         UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
                         if (pMenu != 0)
                             pMenu->FUN_14193dd50();

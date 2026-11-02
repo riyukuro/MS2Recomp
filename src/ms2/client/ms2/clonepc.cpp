@@ -136,7 +136,7 @@ egmAnimation::AnimationService* FUN_141b6f910();
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     class Unk_WsC_GameObj* FUN_141bd1200(int id);   // C3: the real member (0x141bd1200, an object by id)
     class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
@@ -707,7 +707,7 @@ unsigned int FUN_141088660()
 {
     for (unsigned int nId = 0x43c; nId < 0x45a; nId++)
     {
-        if (WorldService::GetInstance()->FUN_141bd1180(nId) == 0)
+        if (WorldService::GetInstance()->FindObjectById(nId) == 0)
             return nId;
     }
     return 0;

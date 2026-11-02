@@ -133,7 +133,7 @@ void StateGlide::vfunc_4(StateData* pData)
         if (m_bTooHigh && m_pOwner->vfunc_108() != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
     }
-    ((GameObjectController*)m_pOwner->FUN_14166d220())->FUN_141240730();
+    ((GameObjectController*)m_pOwner->GetPhysicsBody())->FUN_141240730();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
@@ -157,15 +157,15 @@ void StateGlide::vfunc_4(StateData* pData)
     m_pOwner->FUN_141670330((float)m_spRow->m_nNameTagOffset);
     m_pOwner->FUN_141670360((float)m_spRow->m_nNameTagOffset);
     efd::utf8string strAnim(m_spRow->m_strAniIdle);
-    m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
+    m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), false, false);
 }
 
 // @0x1417c8f60
 void StateGlide::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    if (m_pOwner->FUN_14166d220() != 0)
-        ((Unk_GlideHit*)(reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_141240f20()))->FUN_140cfaf30();
+    if (m_pOwner->GetPhysicsBody() != 0)
+        ((Unk_GlideHit*)(reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_141240f20()))->FUN_140cfaf30();
     if (m_spRow == 0)
         return;
     FUN_1417c9880((float)fTime);
@@ -194,7 +194,7 @@ void StateGlide::vfunc_3(double fTime)
 void StateGlide::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((GameObjectController*)m_pOwner->FUN_14166d220())->FUN_141240730();
+    ((GameObjectController*)m_pOwner->GetPhysicsBody())->FUN_141240730();
     m_pOwner->FUN_141670330(0);
     m_pOwner->FUN_141670360(0);
     m_pOwner->vfunc_47(true);
@@ -249,7 +249,7 @@ void StateGlide::vfunc_9(double fTime)
                 m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
             efd::utf8string strAnim(m_spRow->m_strAniRun);
-            m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
+            m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
         else
         {
@@ -264,7 +264,7 @@ void StateGlide::vfunc_9(double fTime)
                 m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
             efd::utf8string strAnim(m_spRow->m_strAniIdle);
-            m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
+            m_pOwner->PlayAnimation(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
         m_nAnim = m_n10;
     }
@@ -312,7 +312,7 @@ void StateGlide::FUN_1417c9880(float fTime)
     m_fTime += fTime;
     efd::Point3 kMove = (FUN_1417c9c00() + FUN_1417c9ee0()) * fTime;
     m_pOwner->FUN_141671960(FUN_1417c9b70());
-    reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->SetKVelocity(FUN_1417c9ee0());
+    reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(FUN_1417c9ee0());
     reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0x10, 1);
 }
 

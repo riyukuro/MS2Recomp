@@ -271,12 +271,12 @@ void UISelectItemBoxDialog::FUN_140f9a700()
         for (unsigned i = 0; i < m_selectedSlots.size(); ++i)
             ((Unk_SibSlot*)m_selectedSlots[i])->vfunc_3(false);
         m_selectNotice->vfunc_3(true);
-        reinterpret_cast<ASTextField*>(m_selectNotice.operator->())->FUN_1422c4cd0(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_notice"), m_nSelectCount));
+        reinterpret_cast<ASTextField*>(m_selectNotice.operator->())->SetTextW(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_notice"), m_nSelectCount));
     } else {
         m_selectNotice->vfunc_3(false);
         m_selectedCount->vfunc_3(true);
         size_t nCount = selected.GetCount();
-        reinterpret_cast<ASTextField*>(m_selectedCount.operator->())->FUN_1422c4cd0(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_itemCount"), nCount, m_nSelectCount));
+        reinterpret_cast<ASTextField*>(m_selectedCount.operator->())->SetTextW(FUN_14028dfa0(CStringW(L"s_selectItemBox_select_itemCount"), nCount, m_nSelectCount));
         m_binderSel.FUN_140d43990();
         for (unsigned i = 0; i < m_selectedSlots.size(); ++i) {
             if (i >= selected.GetCount()) {

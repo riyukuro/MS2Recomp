@@ -330,7 +330,7 @@ void UIDebuggingDialog::vfunc_72()
             FUN_141286050("m_npcName", strNpcName);
             FUN_141286050("m_aniName", FUN_14016a730(((efd::utf8string*)(struct Unk_DbgModelSet*)(&kModel))->c_str(), 0));
             CStringW strState;
-            strState.Format(L"%d", pNpc->FUN_14166c930());
+            strState.Format(L"%d", pNpc->GetCurStateId());
             FUN_141286050("m_state", strState);
             CStringW strSubState;
             strSubState.Format(L"%d", pNpc->FUN_14166cc80());
@@ -381,7 +381,7 @@ void UIDebuggingDialog::FUN_141286050(const CString& strName, const CStringW& st
 {
     MS2Ptr<ASTextField> spText = GetChild<ASTextField>(strName);
     if (spText.get() != 0)
-        spText->FUN_1422c4cd0(strText);
+        spText->SetTextW(strText);
 }
 
 // @0x1412860c0

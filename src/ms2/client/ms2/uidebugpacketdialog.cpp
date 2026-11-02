@@ -241,7 +241,7 @@ void UIDebugPacketDialog::vfunc_72()
             }
             m_nRandomNext += m_nRandomDelay;
             m_nRandomRemain--;
-            m_randomRemain->FUN_1422c4cd0(StringFormat<int>(L"{0} 개 남았습니다.", m_nRandomRemain));
+            m_randomRemain->SetTextW(StringFormat<int>(L"{0} 개 남았습니다.", m_nRandomRemain));
         }
     }
 }

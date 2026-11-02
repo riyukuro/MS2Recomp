@@ -66,7 +66,6 @@ extern int DAT_143ae0dd0;                                   // shimmer mode (0: 
 extern float DAT_1439f8010;                                 // distance scale
 extern bool DAT_143ae53c0;                                  // "any shimmer object this frame" flag
 
-unsigned FUN_140d89680(const NiVisibleArray* pkInput);                          // NiVisibleArray count
 class Unk_PtrArray   // C3: member view for the former free stand-ins
 {
 public:
@@ -103,7 +102,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
     efd::Point3 kPlayerPos = DAT_143b01a60;
     if (pActor != 0)
         FUN_140194470(static_cast<NiPoint3*>(&kPlayerPos), const_cast<NiPoint3*>(&static_cast<const NiPoint3&>(pActor->GetPosition())));
-    for (unsigned int ui = 0; ui < FUN_140d89680(pkInput); ui++)
+    for (unsigned int ui = 0; ui < pkInput->GetCount(); ui++)
     {
         NiRenderObject* pkObject = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui));
         if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) != 0)
@@ -143,7 +142,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         {
             bool bFlag = false;
             FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);
-            for (unsigned int ui = 0; ui < FUN_140d89680(pkInput); ui++)
+            for (unsigned int ui = 0; ui < pkInput->GetCount(); ui++)
                 FUN_14150cc30(this, ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui)));
         }
         else
@@ -152,7 +151,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
             FUN_1409a5850(*(class NiFixedString*)(&DAT_143ae53c0), (bool const*)(&bFlag), 1);
             if (DAT_143ae0dd0 == 0)
             {
-                for (unsigned int ui = 0; ui < FUN_140d89680(pkInput); ui++)
+                for (unsigned int ui = 0; ui < pkInput->GetCount(); ui++)
                 {
                     NiRenderObject* pkObject = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui));
                     if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) != 0)

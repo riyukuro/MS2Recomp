@@ -11,8 +11,8 @@
 // MS2-PIN: ??__Fs_condition2@@YAXXZ 0x142cb4340 ; hand: atexit of s_condition2
 // MS2-PIN: ??__Fs_condition3@@YAXXZ 0x142cb43d0 ; hand: atexit of s_condition3
 // MS2-PIN: ?GetRTTI@CPonyTailController@@UEBAPEBVNiRTTI@@XZ 0x141695f00 ; manual
-// MS2-FUNCTIONAL: extern-heavy; the exe's engine/PhysX/game helpers are opaque FUN_ externs, the long pose functions
-// (vfunc_32, FUN_141694650) are restructured around a shared helper.
+// MS2-FUNCTIONAL: extern-heavy; the exe's engine/PhysX/game helpers are opaque FUN_ externs, the long pose function
+// vfunc_32 is restructured around a shared helper.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ponytailphysxhelper.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ponytailphysxhelper.h"
@@ -38,6 +38,7 @@
 #undef min
 #undef max
 #include <NxD6JointDesc.h>
+#include <NiPhysXActorDesc.h>
 #pragma pop_macro("max")
 #pragma pop_macro("min")
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -116,7 +117,7 @@ void FUN_141202480(class CEquipModel*, class NiPoint3*, float*, void*, void*, vo
 #define PONY_PRESETS(pInfo) ((const std::vector<MS2Ptr<ItemCustom> >*)((char*)(pInfo) + 0x58)) // the part info's preset array
 
 // Geometry / scene helpers.
-void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation
+void FUN_140a01250(NiPoint3 ptRot, NiPoint3* pForward, NiPoint3* pRight);   // basis from a z rotation
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // euler of a look-at
 NiAVObject* FUN_141167cf0(const CString& strName);              // scene node by name
 
@@ -140,10 +141,8 @@ class Unk_WindPropDesc   // C3: member view for the former free stand-ins
 {
 public:
     unsigned int GetActorCount() const;
+    NiPhysXActorDescPtr GetActorAt(unsigned uiIndex);           // 0x14120abd0
 };
-void* FUN_14120abd0(void* p, void* pOut, unsigned nIndex);
-void* FUN_14120a6e0(void* p);
-void FUN_14120a600(void* p);
 class NiPhysXD6JointDesc   // C3: member view for the former free stand-ins
 {
 public:
@@ -187,6 +186,20 @@ MS2_CHECK_SIZE(Unk_PonyJointEntry, 0x18);
 // iterator wrappers (the iterator is 8 bytes; begin/end return it through a hidden pointer).
 typedef std::set<efd::SmartPointer<NiAVObject> > Unk_MeshSet;   // the part's mesh objects
 Unk_MeshSet* FUN_141201c90(class CEquipModel*);
+
+// CEquipModel's vfunc_24/vfunc_26 as the exe calls them in FUN_141694650: the point goes by value (16-aligned arg copy).
+class Unk_PonyModelSlots
+{
+public:
+#define MS2_PONY_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_PONY_SLOTS(0, 1, 2, 3, 4) MS2_PONY_SLOTS(5, 6, 7, 8, 9) MS2_PONY_SLOTS(10, 11, 12, 13, 14) MS2_PONY_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_PONY_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
+    virtual void vfunc_24(NiPoint3 p);                                      // 24 0x141200040
+    virtual void vfunc_25();
+    virtual void vfunc_26(NiPoint3 p);                                      // 26 0x1412000a0
+};
 
 static inline const NiPoint3& N3(const Vector3& p) { return reinterpret_cast<const NiPoint3&>(p); }
 static inline Vector3 SPV(const NiPoint3& p) { return Vector3(p.x, p.y, p.z); }
@@ -304,7 +317,6 @@ void CPonyTailController::vfunc_5()
 }
 
 // @0x141691de0
-// MS2-FUNCTIONAL: loop over the two parts is unrolled in the exe
 void CPonyTailController::vfunc_6()
 {
     ReadValues();
@@ -314,26 +326,35 @@ void CPonyTailController::vfunc_6()
         return;
     if (m_bBusy != 0)
         FUN_1416955b0(0, 0, &CPonyTailController::FUN_141694fb0, 0);
-    egf::EntityID kId = pPlayer->FUN_14123c460();
-    NiActorManager* pActor = pSvc->GetActorManager(kId);
+    NiActorManager* pActor = pSvc->GetActorManager(pPlayer->FUN_14123c460());
     if (pActor == 0)
         return;
-    Unk_PonyPart* apPart[2] = {&m_kFirst, &m_kSecond};
-    for (int i = 0; i < 2; i++)
+    MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
+    if (spFirst.get())
     {
-        MS2Ptr<Unk_PickTarget> spPart = apPart[i]->m_spModel;
-        if (spPart.get() == 0)
-            continue;
-        CString strName = reinterpret_cast<CEquipModel*>(spPart.operator->())->FUN_1412029d0();
-        NiAVObject* pObj = ((class NiNode*)((class NiActorManager*)(class NiActorManager*)(pActor))->GetNIFRoot())->GetObjectByName(NiFixedString((const char*)strName));
+        NiAVObject* pObj = pActor->GetNIFRoot()->GetObjectByName((const char*)reinterpret_cast<CEquipModel*>(spFirst.operator->())->FUN_1412029d0());
         if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pObj)) != 0)
         {
-            FUN_141202240(reinterpret_cast<CEquipModel*>(spPart.operator->()), &apPart[i]->m_kRest);
+            FUN_141202240(reinterpret_cast<CEquipModel*>(spFirst.operator->()), &m_kFirst.m_kRest);
             NiPoint3 kPos, kEuler, kA, kB;
-            FUN_141202480((class CEquipModel*)(spPart.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kA, &kB, &apPart[i]->m_kRest);
-            reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_24(kPos);
-            reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_26(kEuler);
-            reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_31();
+            FUN_141202480((class CEquipModel*)(spFirst.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kA, &kB, &m_kFirst.m_kRest);
+            reinterpret_cast<Unk_PonyModelSlots*>(spFirst.operator->())->vfunc_24(kPos);
+            reinterpret_cast<Unk_PonyModelSlots*>(spFirst.operator->())->vfunc_26(kEuler);
+            reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_31();
+        }
+    }
+    MS2Ptr<Unk_PickTarget> spSecond = m_kSecond.m_spModel;
+    if (spSecond.get())
+    {
+        NiAVObject* pObj = pActor->GetNIFRoot()->GetObjectByName((const char*)reinterpret_cast<CEquipModel*>(spSecond.operator->())->FUN_1412029d0());
+        if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pObj)) != 0)
+        {
+            FUN_141202240(reinterpret_cast<CEquipModel*>(spSecond.operator->()), &m_kSecond.m_kRest);
+            NiPoint3 kPos, kEuler, kA, kB;
+            FUN_141202480((class CEquipModel*)(spSecond.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kA, &kB, &m_kSecond.m_kRest);
+            reinterpret_cast<Unk_PonyModelSlots*>(spSecond.operator->())->vfunc_24(kPos);
+            reinterpret_cast<Unk_PonyModelSlots*>(spSecond.operator->())->vfunc_26(kEuler);
+            reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_31();
         }
     }
 }
@@ -623,7 +644,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
     if (spSecond.get() == 0)
         return;
     Vector3 kForward, kRight;
-    FUN_140a01250(Vector3(pPlayer->vfunc_20().x, pPlayer->vfunc_20().y, pPlayer->vfunc_20().z), &kForward, &kRight);
+    FUN_140a01250(NiPoint3(pPlayer->vfunc_20().x, pPlayer->vfunc_20().y, pPlayer->vfunc_20().z), (NiPoint3*)&kForward, (NiPoint3*)&kRight);
     Vector3 kAnchor = SP(m_kFirst.m_kAnchor);
     Vector3 kPlayerPos = SPV(pPlayer->vfunc_18());
     Vector3 kMirror = FUN_141695bc0(kPlayerPos, kHitPt, kRight);
@@ -665,7 +686,9 @@ void CPonyTailController::vfunc_33()
 void CPonyTailController::FUN_141694650()
 {
     Unk_PonyPlayer* pPlayer = ((Unk_PonyPlayer*)((WorldService*)(Unk_PonyWorld*)(reinterpret_cast<Unk_PonyWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
-    if (pPlayer == 0 || m_spEquipItem == (CEquipItem*)0)
+    if (pPlayer == 0)
+        return;
+    if (m_spEquipItem == (CEquipItem*)0)
         return;
     Unk_PickTarget* pFirst = 0;
     Unk_PickTarget* pSecond = 0;
@@ -676,46 +699,39 @@ void CPonyTailController::FUN_141694650()
     m_kSecond.m_spModel.AssignRaw(pSecond);
     m_kFirst.m_fValue = 180.0f;
     m_kSecond.m_fValue = 0;
-    if (m_kFirst.m_spModel.get())
+    if (m_kFirst.m_spModel.get() && reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_9())
     {
-        CEquipModel* pModel = reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->());
-        if (pModel->vfunc_9() != 0)
-        {
-            NiPoint3 kPos, kEuler, kAnchor, kUnused;
-            FUN_141202480((class CEquipModel*)(m_kFirst.m_spModel.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kAnchor, &kUnused, 0);
-            pModel->vfunc_24(kPos);
-            pModel->vfunc_26(kEuler);
-            FUN_1412021a0((class CEquipModel*)(m_kFirst.m_spModel.operator->()), &m_kFirst.m_kRest);
-            m_kFirst.m_kAnchor = Unk_NiPoint3(reinterpret_cast<Vector3&>(kAnchor));
-        }
+        NiPoint3 kPos, kEuler, kAnchor, kUnused;
+        FUN_141202480((class CEquipModel*)(m_kFirst.m_spModel.operator->()), (NiPoint3*)&kPos, (float*)&kEuler, &kAnchor, &kUnused, 0);
+        reinterpret_cast<Unk_PonyModelSlots*>(m_kFirst.m_spModel.operator->())->vfunc_24(kPos);
+        reinterpret_cast<Unk_PonyModelSlots*>(m_kFirst.m_spModel.operator->())->vfunc_26(kEuler);
+        FUN_1412021a0((class CEquipModel*)(m_kFirst.m_spModel.operator->()), &m_kFirst.m_kRest);
+        m_kFirst.m_kAnchor = reinterpret_cast<Vector3&>(kAnchor);
     }
-    if (m_kFirst.m_spModel.get() && m_kSecond.m_spModel.get())
+    if ((m_kFirst.m_spModel.get() ? true : false) && (m_kSecond.m_spModel.get() ? true : false)
+        && reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_9()
+        && reinterpret_cast<CEquipModel*>(m_kSecond.m_spModel.operator->())->vfunc_9())
     {
-        CEquipModel* pModel1 = reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->());
-        CEquipModel* pModel2 = reinterpret_cast<CEquipModel*>(m_kSecond.m_spModel.operator->());
-        if (pModel1->vfunc_9() != 0 && pModel2->vfunc_9() != 0)
-        {
-            m_kSecond.m_kAnchor = Unk_NiPoint3(DAT_143b01a60);
-            Vector3 kForward, kRight;
-            FUN_140a01250(SPV(pPlayer->vfunc_20()), &kForward, &kRight);
-            Vector3 kPlayerPos = SPV(pPlayer->vfunc_18());
-            Vector3 kPartPos = SPV(pModel1->vfunc_23());
-            Vector3 kMirror = FUN_141695bc0(kPlayerPos, kPartPos, kRight);
-            pModel2->vfunc_24(N3(kMirror));
-            Vector3 kTip = SPV(pModel1->vfunc_23())
-                                       .FUN_14097fd50(SP(m_kFirst.m_kAnchor).FUN_14097fc90(10.0f));
-            kPlayerPos = SPV(pPlayer->vfunc_18());
-            Vector3 kMirrorTip = FUN_141695bc0(kPlayerPos, kTip, kRight);
-            m_kSecond.m_kAnchor = Unk_NiPoint3(kMirrorTip.FUN_140965c40(kMirror));
-            SP(m_kSecond.m_kAnchor).FUN_140968990();
-            Vector3 kLookAt = kMirror.FUN_14097fd50(SP(m_kSecond.m_kAnchor).FUN_14097fc90(10.0f));
-            Vector3 kEuler = FUN_140a0b080(kMirror, kLookAt, DAT_143a08cf8);
-            kEuler.z = kEuler.z + 90.0f;
-            pModel2->vfunc_26(N3(kEuler));
-            FUN_1412021a0((class CEquipModel*)(m_kSecond.m_spModel.operator->()), &m_kSecond.m_kRest);
-        }
+        m_kSecond.m_kAnchor = DAT_143b01a60;
+        NiPoint3 kRight, kForward;
+        FUN_140a01250(pPlayer->vfunc_20(), &kForward, &kRight);
+        NiPoint3 kPlayerPos = pPlayer->vfunc_18();
+        Vector3 kMirror = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos),
+                                        reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23())),
+                                        reinterpret_cast<const Vector3&>(kRight));
+        reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_24(reinterpret_cast<const NiPoint3&>(kMirror));
+        Vector3 kTip = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23()))
+                                   .FUN_14097fd50(reinterpret_cast<Vector3&>(m_kFirst.m_kAnchor).FUN_14097fc90(10.0f));
+        kPlayerPos = pPlayer->vfunc_18();
+        m_kSecond.m_kAnchor = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, reinterpret_cast<const Vector3&>(kRight)).FUN_140965c40(kMirror);
+        m_kSecond.m_kAnchor.FUN_140968990();
+        Vector3 kEuler = FUN_140a0b080(kMirror, kMirror.FUN_14097fd50(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).FUN_14097fc90(10.0f)), DAT_143a08cf8);
+        kEuler.z = kEuler.z + 90.0f;
+        reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_26(reinterpret_cast<const NiPoint3&>(kEuler));
+        FUN_1412021a0((class CEquipModel*)(m_kSecond.m_spModel.operator->()), &m_kSecond.m_kRest);
     }
-    Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->GetItem())->FUN_140527870();
+    Unk_UserProxyItemData* pData;
+    Unk_UserProxyItemData* pCopy = pData = m_spEquipItem->GetItem()->FUN_140527870();
     if (pData)
         m_nValue = ((class CItemExtraData*)(class Unk_UserProxyItemData*)(pData))->GetPick();
 }
@@ -1013,13 +1029,13 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(Unk_PickTarget* pModel, const 
     CKfmModel* pKfm = efd::DynamicCast<CKfmModel, CEquipModel>((class CEquipModel*)(pModel));
     if (pKfm == 0)
         return;
-    ecrPhysX::PropService* pProp = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310())->GetSystemServiceAs<ecrPhysX::PropService>();
+    Unk_ServiceManager* pServiceManager = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PonyApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310());
+    ecrPhysX::PropService* pProp = pServiceManager->GetSystemServiceAs<ecrPhysX::PropService>();
     unsigned nJoints = pProp->GetNumProps(pKfm->FUN_14143ff70());
     NiObjectNET* pNode = (NiObjectNET*)FUN_1412018c0((class CEquipModel*)(pModel));
     if (pNode == 0)
         return;
     Unk_NiPoint3 kReference(((struct Unk_EfdMatrix3*)&((class NiAVObject*)(class NiObjectNET*)(pNode))->GetWorldRotate())->FUN_140a00720(DAT_143a08cd8));
-    (void)kReference;
     for (unsigned i = 0; i < nJoints; i++)
     {
         NiPhysXProp* pInfo = pProp->GetPropAt(pKfm->FUN_14143ff70(), i);
@@ -1031,75 +1047,83 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(Unk_PickTarget* pModel, const 
         unsigned nCount = ((class Unk_WindPropDesc*)(void*)(pSet))->GetActorCount();
         for (unsigned j = 0; j < nCount; j++)
         {
-            alignas(8) char hnd[8];
-            void* pH = FUN_14120abd0(pSet, hnd, j);
-            void* pComp = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiPhysXD6JointDesc::ms_RTTI), (class NiObject const*)(FUN_14120a6e0(pH))));
-            FUN_14120a600(hnd);
-            if (pComp == 0)
-                continue;
-            Unk_PonyJoint* pJoint = (Unk_PonyJoint*)((void*)((class NiPhysXD6JointDesc*)(void*)(pComp))->GetJoint());
-            if (pJoint == 0)
-                continue;
-            CString strName(pJoint->vfunc_23());
-            unsigned k;
-            for (k = 0; k < 4; k++)
+            void* pComp = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiPhysXD6JointDesc::ms_RTTI), (NiPhysXActorDesc*)((class Unk_WindPropDesc*)(void*)(pSet))->GetActorAt(j)));
+            if (pComp)
             {
-                if ((strName == ((const Unk_PonyJointEntry*)pJoints)[k].m_strName))
-                    break;
-            }
-            if (k >= 4)
-                continue;
-            NxD6JointDesc kDesc;
-            pJoint->vfunc_26(kDesc);
-            FUN_141696ea0(&kDesc, ((const Unk_PonyJointEntry*)pJoints)[k].m_fLimit);
-            Unk_NiMatrix3 mRot;
-            ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerX * 3.1415927f / 180.0f, ((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerY * 3.1415927f / 180.0f, ((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerZ * 3.1415927f / 180.0f);
-            NxMat33 mAxis;
-            FUN_141696f40(&mRot, &mAxis);
-            kDesc.localAxis[0] = mAxis * NxVec3(0, 0, 1);
-            kDesc.localNormal[0] = mAxis * NxVec3(1, 0, 0);
-            CString strBase(pJoint->vfunc_23());
-            for (int l = 0; l < 2; l++)
-            {
-                CString strKey;
-                strKey.Format("%s%d", (const char*)strBase, l);
-                NiFixedString kFixed((const char*)strKey);
-                NiFloatsExtraData* pExtra = (NiFloatsExtraData*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiFloatsExtraData::ms_RTTI), (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pNode))->GetExtraData(*(class NiFixedString const*)(&kFixed))))));
-                kFixed = NiFixedString();
-                if (pExtra == 0)
+                Unk_PonyJoint* pJoint = (Unk_PonyJoint*)((void*)((class NiPhysXD6JointDesc*)(void*)(pComp))->GetJoint());
+                if (pJoint)
                 {
-                    float v[3] = {kDesc.localAnchor[l].x, kDesc.localAnchor[l].y, kDesc.localAnchor[l].z};
-                    pExtra = EE_NEW NiFloatsExtraData(3, v);
-                    pNode->AddExtraData(NiFixedString((const char*)strKey), pExtra);
-                    kDesc.localAnchor[l] = kDesc.localAnchor[l] * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                    CString strName(pJoint->vfunc_23());
+                    unsigned k;
+                    for (k = 0; k < 4; k++)
+                    {
+                        if ((strName == ((const Unk_PonyJointEntry*)pJoints)[k].m_strName))
+                            break;
+                    }
+                    if (k < 4)
+                    {
+                        NxD6JointDesc kDesc;
+                        pJoint->vfunc_26(kDesc);
+                        FUN_141696ea0(&kDesc, ((const Unk_PonyJointEntry*)pJoints)[k].m_fLimit);
+                        Unk_NiMatrix3 mRot;
+                        ((efd::Matrix3*)(Unk_EfdMatrix3*)&(mRot))->FromEulerAnglesXYZ(((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerX * 3.1415927f / 180.0f, ((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerY * 3.1415927f / 180.0f, ((const Unk_PonyJointEntry*)pJoints)[k].m_fEulerZ * 3.1415927f / 180.0f);
+                        NxMat33 mAxis;
+                        FUN_141696f40(&mRot, &mAxis);
+                        kDesc.localAxis[0] = mAxis * NxVec3(0, 0, 1);
+                        kDesc.localNormal[0] = mAxis * NxVec3(1, 0, 0);
+                        CString strBase(pJoint->vfunc_23());
+                        for (int l = 0; l < 2; l++)
+                        {
+                            CString strKey;
+                            strKey.Format("%s%d", (const char*)strBase, l);
+                            NiFloatsExtraData* pExtra;
+                            {
+                                NiFixedString kName((const char*)strKey);
+                                pExtra = (NiFloatsExtraData*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiFloatsExtraData::ms_RTTI), (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pNode))->GetExtraData(kName)))));
+                            }
+                            if (pExtra)
+                            {
+                                kDesc.localAnchor[l].x = ((class NiFloatsExtraData*)(void*)(pExtra))->GetValue(0) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                                kDesc.localAnchor[l].y = ((class NiFloatsExtraData*)(void*)(pExtra))->GetValue(1) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                                kDesc.localAnchor[l].z = ((class NiFloatsExtraData*)(void*)(pExtra))->GetValue(2) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                            }
+                            else
+                            {
+                                float v[3];
+                                v[0] = kDesc.localAnchor[l].x;
+                                v[1] = kDesc.localAnchor[l].y;
+                                v[2] = kDesc.localAnchor[l].z;
+                                pExtra = EE_NEW NiFloatsExtraData(3, v);
+                                {
+                                    NiFixedString kName((const char*)strKey);
+                                    pNode->AddExtraData(kName, pExtra);
+                                }
+                                kDesc.localAnchor[l] = kDesc.localAnchor[l] * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                            }
+                        }
+                        int bBad = 0;
+                        for (int l = 0; l < 2; l++)
+                        {
+                            if (!kDesc.localAnchor[l].isFinite() || !kDesc.localNormal[l].isFinite() || !kDesc.localAxis[l].isFinite())
+                            {
+                                bBad = 1;
+                                break;
+                            }
+                        }
+                        if (bBad)
+                        {
+                            EE_LOG_AT(0x12, efd::ILogger::kERR1, ("CPonyTailPhysXHelper::UpdateModelPhysXValues"), MS2_THIS_FILE, 0xc5);
+                            if (DAT_143afc898 != 0)
+                                throw 13;
+                        }
+                        else
+                        {
+                            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(1);
+                            pJoint->vfunc_25(kDesc);
+                            ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
+                        }
+                    }
                 }
-                else
-                {
-                    kDesc.localAnchor[l].x = ((class NiFloatsExtraData*)(void*)(pExtra))->GetValue(0) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
-                    kDesc.localAnchor[l].y = ((class NiFloatsExtraData*)(void*)(pExtra))->GetValue(1) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
-                    kDesc.localAnchor[l].z = ((class NiFloatsExtraData*)(void*)(pExtra))->GetValue(2) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
-                }
-            }
-            bool bBad = false;
-            for (int l = 0; l < 2; l++)
-            {
-                if (!kDesc.localAnchor[l].isFinite() || !kDesc.localNormal[l].isFinite() || !kDesc.localAxis[l].isFinite())
-                {
-                    bBad = true;
-                    break;
-                }
-            }
-            if (!bBad)
-            {
-                ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a540(1);
-                pJoint->vfunc_25(kDesc);
-                ((class CPhysXHelper*)(class CPhysXHelper*)(((class CPhysXHelper*)FUN_1409f7ca0())))->FUN_14168a570();
-            }
-            else
-            {
-                EE_LOG_AT(0x12, 1, ("CPonyTailPhysXHelper::UpdateModelPhysXValues"), MS2_THIS_FILE, 0xc5);
-                if (DAT_143afc898 != 0)
-                    throw 13;
             }
         }
     }

@@ -69,9 +69,21 @@ class Unk_GoGameCfg
 {
 public:
     Unk_GoAutoLoot* FUN_141533e20();
-    void* FUN_141244300();
-    void FUN_141243540();
 };
+struct Unk_GsAutoLoot;   // C3: the auto-loot options as gameoptionstruct.cpp declares them
+Unk_GsAutoLoot* FUN_141260ea0(Unk_GsAutoLoot* p);                       // reset, returns p
+void FUN_141260ed0(Unk_GsAutoLoot* p);                                  // reset to the defaults
+int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, class TiXmlDocument* pDoc);   // C3: was FUN_141260f40
+void FUN_141261530(Unk_GsAutoLoot* p, bool b);                          // set equip
+void FUN_141261550(Unk_GsAutoLoot* p, int n);                           // set the grade
+void FUN_141261570(Unk_GsAutoLoot* p, bool b);                          // set consume
+void FUN_141261590(Unk_GsAutoLoot* p, bool b);                          // set etc
+void FUN_1412615b0(Unk_GsAutoLoot* p, bool b);                          // set meso
+void FUN_1412615d0(Unk_GsAutoLoot* p, bool b);                          // set merat
+void FUN_1412615f0(Unk_GsAutoLoot* p, bool b);                          // set token
+void FUN_141261610(Unk_GsAutoLoot* p, bool b);                          // set other
+void FUN_141261630(Unk_GsAutoLoot* p, bool b);                          // set gemstone
+void FUN_141261650(Unk_GsAutoLoot* p, bool b);                          // set pet
 
 // ---- out-of-unit callees ----
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -79,18 +91,18 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14036d570(int);
-    bool FUN_14036e510();
+    bool IsRegionCN();
 };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 Unk_GoAutoCfg* FUN_140c8b450(void* pHolder);
-class CGameOption;
+class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* FUN_141244300(); };   // C3: member view (gameoption.cpp)
 void FUN_140710590(COutPacket& packet);                         // send
 
 // @0x1419d95c0
 UIItemGetOptionDialog::UIItemGetOptionDialog()
 {
     m_nMode = 1;
-    m_opt.FUN_141260ea0();
+    FUN_141260ea0((Unk_GsAutoLoot*)&m_opt);
     FUN_141924170(1);
 }
 
@@ -169,99 +181,99 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("OnCheckEquip", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_141261530(bValue);
+            bool bValue = data.PopBool();
+            FUN_141261530((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("OnCheckConsume", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_141261570(bValue);
+            bool bValue = data.PopBool();
+            FUN_141261570((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("OnCheckEtc", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_141261590(bValue);
+            bool bValue = data.PopBool();
+            FUN_141261590((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("onCheckGemStone", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_141261630(bValue);
+            bool bValue = data.PopBool();
+            FUN_141261630((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("OnCheckMeso", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_1412615b0(bValue);
+            bool bValue = data.PopBool();
+            FUN_1412615b0((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("OnCheckMerat", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_1412615d0(bValue);
+            bool bValue = data.PopBool();
+            FUN_1412615d0((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("OnCheckToken", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_1412615f0(bValue);
+            bool bValue = data.PopBool();
+            FUN_1412615f0((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("OnCheckOther", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_141261610(bValue);
+            bool bValue = data.PopBool();
+            FUN_141261610((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("onCheckPet", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            bool bValue = data.FUN_1422b8a90();
-            m_opt.FUN_141261650(bValue);
+            bool bValue = data.PopBool();
+            FUN_141261650((Unk_GsAutoLoot*)&m_opt, bValue);
         }
         return 1;
     }
     else if (_stricmp("onChangeEquipRank", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             int nGrade = 1;
             if (nIndex == 0)
                 nGrade = 1;
@@ -275,7 +287,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 nGrade = 5;
             else if (nIndex == 5)
                 nGrade = 6;
-            m_opt.FUN_141261550(nGrade);
+            FUN_141261550((Unk_GsAutoLoot*)&m_opt, nGrade);
         }
         return 1;
     }
@@ -314,7 +326,7 @@ int UIItemGetOptionDialog::vfunc_46()
             pCheck->vfunc_3(0);
         }
     }
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510() == true)
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN() == true)
     {
         if (MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
         {
@@ -332,24 +344,24 @@ void UIItemGetOptionDialog::FUN_1419da8f0()
 {
     if (m_nMode != 0)
     {
-        m_opt.FUN_141260ed0();
-        m_opt.FUN_141260f40(reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141244300());
+        FUN_141260ed0((Unk_GsAutoLoot*)&m_opt);
+        LoadGameOptionAutoLooting((Unk_GsAutoLoot*)&m_opt, TSingleton<CGameOption>::GetInstance()->FUN_141244300());
     }
     else
     {
-        m_opt.FUN_1412615b0(FUN_140c8b450(((void*)FUN_140535320()))->m_nMeso != 0);
-        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
-            m_opt.FUN_1412615d0(FUN_140c8b450(((void*)FUN_140535320()))->m_nMerat != 0);
-        m_opt.FUN_141261590(FUN_140c8b450(((void*)FUN_140535320()))->m_nEtc != 0);
-        m_opt.FUN_1412615f0(FUN_140c8b450(((void*)FUN_140535320()))->m_nToken != 0);
-        m_opt.FUN_141261530(FUN_140c8b450(((void*)FUN_140535320()))->m_nEquip != 0);
-        m_opt.FUN_141261570(FUN_140c8b450(((void*)FUN_140535320()))->m_nConsume != 0);
-        m_opt.FUN_141261610(FUN_140c8b450(((void*)FUN_140535320()))->m_nOther != 0);
-        m_opt.FUN_141261550(FUN_140c8b450(((void*)FUN_140535320()))->m_nGrade);
+        FUN_1412615b0((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMeso != 0);
+        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
+            FUN_1412615d0((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMerat != 0);
+        FUN_141261590((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEtc != 0);
+        FUN_1412615f0((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nToken != 0);
+        FUN_141261530((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEquip != 0);
+        FUN_141261570((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nConsume != 0);
+        FUN_141261610((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nOther != 0);
+        FUN_141261550((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGrade);
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
-            m_opt.FUN_141261630(FUN_140c8b450(((void*)FUN_140535320()))->m_nGemstone != 0);
+            FUN_141261630((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGemstone != 0);
         if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
-            m_opt.FUN_141261650(FUN_140c8b450(((void*)FUN_140535320()))->m_nPet != 0);
+            FUN_141261650((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nPet != 0);
     }
 }
 
@@ -359,13 +371,13 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
     if (m_nMode != 0)
     {
         reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20()->FUN_141261310(m_opt);
-        reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
+        TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
     else
     {
         Unk_GoPacket data;
         data.m_nMeso = m_opt.FUN_1419daea0();
-        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
+        if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
             data.m_nMerat = m_opt.FUN_1419dae90();
         data.m_nEtc = m_opt.FUN_1419dae60();
         data.m_nToken = m_opt.FUN_1419daed0();

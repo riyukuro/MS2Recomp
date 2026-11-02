@@ -96,7 +96,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
             spBuy->FUN_1422cdfb0(L"$s_common_confirm");
         MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title");
         if (spTitle.get() != 0)
-            spTitle->FUN_1422c4cd0(L"$s_ugc_cube_bill_title_calculate");
+            spTitle->SetTextW(L"$s_ugc_cube_bill_title_calculate");
         if (s_cost.m_nKind == 3)
             strDesc = FUN_140938ae0(CStringW(L"s_home_bill_description_blueprint_preview"), s_cost.m_nArg);
     }
@@ -104,7 +104,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         strDesc = FUN_140938ae0(CStringW(L"s_home_bill_description"), s_cost.m_nArg);
     MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_billDescription");
     if (spDesc.get() != 0)
-        spDesc->FUN_1422c4f00(strDesc);
+        spDesc->SetTextHTMLW(strDesc);
     ASObj obj(2);
     for (POSITION pos = s_cost.m_map.GetHeadPosition(); pos != 0; s_cost.m_map.GetNext(pos))
     {

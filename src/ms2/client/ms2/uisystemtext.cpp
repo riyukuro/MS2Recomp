@@ -251,7 +251,7 @@ void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption
         case 11: strMethod = "appendGuildMegaphone"; break;
         }
         CStringW strFiltered(strText);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strFiltered);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strFiltered);
         if (nType == 9)
         {
             pEntity.operator->()->Invoke(strMethod, CStringW(strFiltered), nOption);
@@ -284,7 +284,7 @@ void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDurati
         if (strMethod.GetLength() < 1)
             return;
         CStringW strFiltered(strText);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strFiltered);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strFiltered);
         pEntity.operator->()->Invoke(strMethod, CStringW(strFiltered));
         std::map<int, unsigned int>::iterator it = m_88.find(nType);
         if (it != m_88.end())

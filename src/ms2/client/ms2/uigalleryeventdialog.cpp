@@ -46,7 +46,6 @@ public:
     Scaleform::GFx::Value& FUN_1422bb870();
     void FUN_1409c0d20(const char*, unsigned int);
     void FUN_1409adc90(const char*, int);
-    void FUN_1409eb270(const char*, const Unk_GalleryAS&);
 private:
     void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
 };
@@ -173,7 +172,7 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
 {
     UIObject::vfunc_45(out, method, args);
     if ((method == "getTooltipQuest")) {
-        int quest = args->FUN_1422b8b10();
+        int quest = args->PopUInt();
         if (!((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->IsQuestActive(quest) && !((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->FUN_140745590(quest)) return;
         CStringW text = FUN_1416e5660(quest);
         ASTooltip tip(1, 2);
@@ -182,8 +181,8 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
             *out = tip.FUN_1422bb870();
         }
     } else if ((method == "getTooltipItem")) {
-        int id = args->FUN_1422b8b10();
-        int rank = args->FUN_1422b8b10();
+        int id = args->PopUInt();
+        int rank = args->PopUInt();
         do {
         void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
         if (!actor) return;
@@ -213,11 +212,11 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
                 return 1;
             }
             ASData data;
-            if (!data.FUN_1422b9620(args, count)) {
+            if (!data.SetArgsIfAny(args, count)) {
                 MS2_ASSERT_AT(146, "data.Parsing(args, argCount)" && 0);
                 return 0;
             }
-            int index = data.FUN_1422b8b10();
+            int index = data.PopUInt();
             SendEventRewardMode7(index);
         }
         return 1;
@@ -226,18 +225,18 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
         return 1;
     } else if (!_stricmp(method, "onQuestReward")) {
         ASData data;
-        if (!data.FUN_1422b9620(args, count)) {
+        if (!data.SetArgsIfAny(args, count)) {
             MS2_ASSERT_AT(163, "data.Parsing(args, argCount)" && 0);
             return 0;
         }
-        int index = data.FUN_1422b8b10();
+        int index = data.PopUInt();
         SendEventRewardMode8(index);
         return 1;
     } else if (!_stricmp(method, "OnPreviewItem")) {
         ASData data;
-        if (!data.FUN_1422b9620(args, count)) return 0;
-        int id = data.FUN_1422b8b10();
-        int rank = data.FUN_1422b8b10();
+        if (!data.SetArgsIfAny(args, count)) return 0;
+        int id = data.PopUInt();
+        int rank = data.PopUInt();
         FUN_140c18e10(id, rank);
         return 1;
     }
@@ -338,7 +337,7 @@ void UIGalleryEventDialog::FUN_140c176f0(MS2Ptr<GalleryContext> context)
         questInfo.FUN_1409adc90("itemRank", item.m_count);
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cb9c0("itemCount", item.m_job);
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("iconPath", FUN_140c189d0(item.m_itemId));
-        cardInfo.FUN_1409eb270("questInfo", questInfo);
+        reinterpret_cast<ASObj*>(&cardInfo)->FUN_1409eb270("questInfo", reinterpret_cast<const ASObj&>(questInfo));
         m_30->Invoke("addCard", reinterpret_cast<const AScript&>(cardInfo));
     }
 }

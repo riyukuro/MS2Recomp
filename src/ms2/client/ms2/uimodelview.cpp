@@ -29,7 +29,7 @@
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // C3: the real member (0x141bd30a0, copy of m_298)
 };
@@ -340,7 +340,7 @@ void UIModelView::FUN_140e685d0()
 {
     if ((unsigned int)m_nObjectId > 0)
     {
-        GameObject* pObject = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1180(m_nObjectId));
+        GameObject* pObject = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectById(m_nObjectId));
         if (pObject != 0)
         {
             if (m_nZoomState != 0)

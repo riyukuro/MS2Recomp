@@ -64,7 +64,7 @@ void FUN_141b4a150(PCBase* actor,bool flag,int* stage,__int64* cur,__int64* max,
  if(actor==0)return;
  *max=actor->FUN_141670a60(4);
  __int64 base;
- if(actor->FUN_14166ce30()!=0)base=0;else base=actor->FUN_141670a00(4);
+ if(actor->IsDead()!=0)base=0;else base=actor->FUN_141670a00(4);
  *cur=base;
  *hpText=StringFormat(L"{0}",*cur);
  *stage=0;
@@ -180,7 +180,7 @@ void UpperHpBarEntity::FUN_141b4b500(){
  if(m_id==0)return;
  if(!GetVisible())return;
  {
-  PCBase* actor=efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1180(m_id)));
+  PCBase* actor=efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(WorldService::GetInstance()->FindObjectById(m_id)));
   if(actor==0){m_id=0;m_hp=0;}
   else{
    MS2Ptr<ASEffectManager> obj;
@@ -384,14 +384,14 @@ MS2_REPLACE_METHOD(0x141B4D170, UIUpperHpBar, FUN_141b4d170, 411, 0xEE28EACC);
 // @0x141b4d320
 bool UIUpperHpBar::FUN_141b4d320(UpperHpBarEntity& target){
  if(m_current!=0&&m_current->GetVisible()==true){
-  CNpc* npc=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FUN_141bd1180(m_current->FUN_141b4bbe0()))));
+  CNpc* npc=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FindObjectById(m_current->FUN_141b4bbe0()))));
   bool isBoss=npc&&npc->GetNpcData().operator->()->HasPropertyTag(4);
   if(isBoss)return false;
  }
  int kind=target.FUN_141b4bbc0();
  if(kind==3){
-  if(m_entities[1].GetVisible()){CNpc* npc1=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FUN_141bd1180(m_entities[1].FUN_141b4bbe0()))));if(npc1!=0)return false;}
-  if(m_entities[0].GetVisible()){CNpc* npc0=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FUN_141bd1180(m_entities[0].FUN_141b4bbe0()))));if(npc0!=0)return false;}
+  if(m_entities[1].GetVisible()){CNpc* npc1=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FindObjectById(m_entities[1].FUN_141b4bbe0()))));if(npc1!=0)return false;}
+  if(m_entities[0].GetVisible()){CNpc* npc0=((class CNpc*)FUN_140a38a00((class Unk_BossObject*)(WorldService::GetInstance()->FindObjectById(m_entities[0].FUN_141b4bbe0()))));if(npc0!=0)return false;}
   if(m_entities[2].GetVisible())return false;
  }
  FUN_141b4d5c0();

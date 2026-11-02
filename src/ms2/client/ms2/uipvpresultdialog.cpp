@@ -52,12 +52,12 @@ public:
     bool m_bOnline;                     // +0x28
 };
 
-class Unk_PrTable { public: int FUN_141017f80(); };                 // the row count
+class Unk_PrTable { };                                              // the rank list (Unk_PvpTimer)
 class Unk_PrService                                                 // the game-mode service
 {
 public:
     Unk_PrEntry* FUN_141343810(int nRank);                          // the row of a rank
-    int FUN_141344a80() { return m_table.FUN_141017f80(); }         // 0x141344a80 the row count
+    int FUN_141344a80() { return reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017f80(); }         // 0x141344a80 the row count
 private:
     void* m_pad_00;
     Unk_PrTable m_table;

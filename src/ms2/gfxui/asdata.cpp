@@ -229,34 +229,34 @@ void ASData::ReadValue(Scaleform::GFx::Value& vOut)
 MS2_REPLACE_METHOD(0x1422B8990, ASData, ReadValue, 113, 0xF9310785);
 
 // @0x1422b8a10
-int ASData::FUN_1422b8a10()
+int ASData::PopInt()
 {
     int n = 0;
     if (m_args.GetCount() > 0)
         n = m_args.RemoveHead().GetInt();
     return n;
 }
-MS2_REPLACE_METHOD(0x1422B8A10, ASData, FUN_1422b8a10, 118, 0x268CC9E9);
+MS2_REPLACE_METHOD(0x1422B8A10, ASData, PopInt, 118, 0x268CC9E9);
 
 // @0x1422b8a90
-bool ASData::FUN_1422b8a90()
+bool ASData::PopBool()
 {
     bool b = false;
     if (m_args.GetCount() > 0)
         b = m_args.RemoveHead().GetBool();
     return b;
 }
-MS2_REPLACE_METHOD(0x1422B8A90, ASData, FUN_1422b8a90, 116, 0x81CA83A0);
+MS2_REPLACE_METHOD(0x1422B8A90, ASData, PopBool, 116, 0x81CA83A0);
 
 // @0x1422b8b10
-int ASData::FUN_1422b8b10()
+int ASData::PopUInt()
 {
     unsigned int n = 0;
     if (m_args.GetCount() > 0)
         n = m_args.RemoveHead().GetUInt();
     return n;
 }
-MS2_REPLACE_METHOD(0x1422B8B10, ASData, FUN_1422b8b10, 118, 0x1792AF1E);
+MS2_REPLACE_METHOD(0x1422B8B10, ASData, PopUInt, 118, 0x1792AF1E);
 
 // @0x1422b8b90
 unsigned long ASData::PopULong()
@@ -341,14 +341,14 @@ unsigned __int64 ASData::PopUInt64()
 MS2_REPLACE_METHOD(0x1422B91A0, ASData, PopUInt64, 175, 0x1382280E);
 
 // @0x1422b9260
-Scaleform::GFx::Value ASData::FUN_1422b9260()
+Scaleform::GFx::Value ASData::PopValue()
 {
     Scaleform::GFx::Value v;
     if (m_args.GetCount() > 0)
         v = m_args.RemoveHead();
     return v;
 }
-MS2_REPLACE_METHOD(0x1422B9260, ASData, FUN_1422b9260, 191, 0x4EC70087);
+MS2_REPLACE_METHOD(0x1422B9260, ASData, PopValue, 191, 0x4EC70087);
 
 // @0x1422b9330
 bool ASData::FUN_1422b9330()
@@ -434,7 +434,7 @@ int ASData::AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst)
 MS2_REPLACE_METHOD(0x1422B9580, ASData, AppendArgsTo, 147, 0xDFAF04B0);
 
 // @0x1422b9620
-int ASData::FUN_1422b9620(const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+int ASData::SetArgsIfAny(const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (nArgs > 0) {
         m_args.RemoveAll();
@@ -444,4 +444,4 @@ int ASData::FUN_1422b9620(const Scaleform::GFx::Value* pArgs, unsigned int nArgs
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B9620, ASData, FUN_1422b9620, 125, 0xCE5FD531);
+MS2_REPLACE_METHOD(0x1422B9620, ASData, SetArgsIfAny, 125, 0xCE5FD531);

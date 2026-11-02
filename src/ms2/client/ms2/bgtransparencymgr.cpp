@@ -136,6 +136,7 @@
 #include <NiMaterial.h>
 #include <efd/EEMath.h>
 #include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/alphacomponent.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/client/ms2/hardwareinstancingservice.h"
@@ -157,7 +158,6 @@ class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);            // the entity's flat model
 void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
-void FUN_14098f4d0(NiAVObject* pNode, bool b);
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
@@ -504,7 +504,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                 NiNode* pRoot = FUN_1413fa030(pEntity);
                 if (pRoot != 0)
                 {
-                    FUN_14098f4d0(pRoot, false);
+                    AlphaShellComposite::MarkScene(pRoot, false);
                     NiBound kBound = *((class NiBound const*)&((class NiAVObject*)(pRoot))->GetWorldBound());
                     Unk_CmWalker kWalker((NiAVObject*)(pRoot));
                     while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))

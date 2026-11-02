@@ -136,10 +136,6 @@ public:
 class Unk_ALTable
 {
 public:
-    Unk_ALIdSet<unsigned short>& FUN_140195eb0();                   // the levels
-    Unk_ALIdSet<unsigned int>& FUN_140195f50();                     // the abilities
-    Unk_ALAbility* FUN_140195ed0(unsigned int nId);
-    Unk_ALReward* FUN_140195e30(unsigned int nLevel);
     Unk_ALMission* FUN_140196090(unsigned int nMissionId);
 };
 
@@ -166,7 +162,7 @@ extern Unk_ALClaimed g_unkClaimed;                                          // 0
 // The ability manager of the player and the current ability state.
 class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_ALAbilityMgr : public AdditionalCliList { };
 class PCBase { public: class Unk_PCBaseBuffs* FUN_1416749a0(); };   // C3: member view
-class Unk_ALCurrent { public: int* FUN_140195640(); };
+class Unk_ALCurrent { public: };
 extern void* DAT_143aac280;
 
 // The client configuration constants.
@@ -285,8 +281,8 @@ int UIAdventureLevelOldDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp(szMethod, "onReceiveItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned short nLevel = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned short nLevel = data.PopUInt();
             SendPrestige(nLevel);
         }
     }
@@ -300,8 +296,8 @@ void UIAdventureLevelOldDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData*
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    unsigned int nId = pArgs->FUN_1422b8b10();
-    Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(nId);
+    unsigned int nId = pArgs->PopUInt();
+    Unk_ALAbility* pAbility = (Unk_ALAbility*)TSingleton<CAdventureLevelTable>::GetInstance()->GetAbility(nId);
     if (pAbility->m_0 == 0)
         return;
     unsigned short nStep = ((class CAdventureLevelAbility*)(pAbility))->GetCount(pPlayer->vfunc_141());
@@ -350,7 +346,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5ab0()
 {
     if (m_30.IsNull())
         return;
-    Unk_ALIdSet<unsigned short>& levels = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195eb0();
+    Unk_ALIdSet<unsigned short>& levels = reinterpret_cast<Unk_ALIdSet<unsigned short>&>(TSingleton<CAdventureLevelTable>::GetInstance()->GetLevels());
     for (Unk_ALIter<unsigned short> it = levels.FUN_140194c80(); it.FUN_140195770(levels.FUN_1401950d0()); it.FUN_1401957c0()) {
         unsigned short nLevel = *it.FUN_1401957b0();
         ASObj obj(2);
@@ -388,10 +384,10 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         return;
     spList->Invoke("resetRenderer");
     ((class ASCoreList*)(spList))->FUN_1422dd1d0();
-    Unk_ALIdSet<unsigned int>& abilities = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195f50();
+    Unk_ALIdSet<unsigned int>& abilities = reinterpret_cast<Unk_ALIdSet<unsigned int>&>(TSingleton<CAdventureLevelTable>::GetInstance()->GetAbilityIds());
     for (Unk_ALIter<unsigned int> it = abilities.FUN_140194c80(); it.FUN_140195770(abilities.FUN_1401950d0()); it.FUN_1401957c0()) {
         unsigned int* pId = it.FUN_1401957b0();
-        Unk_ALAbility* pAbility = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195ed0(*pId);
+        Unk_ALAbility* pAbility = (Unk_ALAbility*)TSingleton<CAdventureLevelTable>::GetInstance()->GetAbility(*pId);
         unsigned short nStep = ((class CAdventureLevelAbility*)(pAbility))->GetCount(pPlayer->vfunc_141());
         MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(pAbility->m_0, nStep);
         if (spAttr == NULL) {
@@ -401,7 +397,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         }
         bool bLock = pPlayer->vfunc_141() < pAbility->m_8;
         if (reinterpret_cast<Unk_ALAbilityMgr*>(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416749a0())->FUN_140970020(pAbility->m_0, nStep, 0, 1) == 0) {
-            if (pAbility->m_0 != *FUN_140ba4fa0()->FUN_140195640())
+            if (pAbility->m_0 != *reinterpret_cast<int*>(reinterpret_cast<CAdventureLevelTableHelper*>(FUN_140ba4fa0())->GetCurrent()))
                 bLock = true;
         }
         ASObj obj(2);
@@ -442,7 +438,7 @@ int UIAdventureLevelOldDialog::FUN_140ba61b0(ASObj& obj, unsigned int nLevel)
 // @0x140ba63d0
 int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
 {
-    Unk_ALReward* pReward = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195e30(nLevel);
+    Unk_ALReward* pReward = (Unk_ALReward*)TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
     if (pReward->FUN_1401958d0())
         return 0;
     if (pReward->m_0 != 1)
@@ -453,7 +449,7 @@ int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(pReward->m_4, pReward->m_8, 0) == 0)
         return 0;
-    spItem->FUN_140526c70(pReward->m_c);
+    spItem->SetCountClamped(pReward->m_c);
     int nIconType = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
@@ -466,7 +462,7 @@ int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
 // @0x140ba66a0
 int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
 {
-    Unk_ALReward* pReward = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195e30(nLevel);
+    Unk_ALReward* pReward = (Unk_ALReward*)TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
     if (pReward->FUN_1401958d0())
         return 0;
     if (pReward->m_0 != 2)
@@ -495,7 +491,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
 // @0x140ba6a10
 void UIAdventureLevelOldDialog::SendPrestige(unsigned int nLevel)
 {
-    Unk_ALReward* pReward = reinterpret_cast<Unk_ALTable*>(TSingleton<CAdventureLevelTable>::GetInstance())->FUN_140195e30(nLevel);
+    Unk_ALReward* pReward = (Unk_ALReward*)TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
     if (pReward->FUN_1401958d0())
         return;
     if (pReward->m_0 == 2)

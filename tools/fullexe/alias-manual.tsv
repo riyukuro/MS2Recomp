@@ -85,6 +85,7 @@
 1428d8f2c	?setMute@ChannelGroup@FMOD@@QEAA?AW4FMOD_RESULT@@_N@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
 14280ef5e	__RTDynamicCast	CRT import thunk (jmp [IAT])
 14280f28e	atan2f	CRT import thunk (jmp [IAT])
+14280f246	strcpy_s	CRT import thunk (jmp [IAT])
 14311c1e0	??_C@_09OBGBNIAF@BitBucket?$AA@	CryptoPP BitBucket::AlgorithmName literal (gb:CryptoPP cryptlib)
 14311c638	??_C@_07JPFGOEIJ@NullRNG?$AA@	CryptoPP NullRNG AlgorithmName literal (gb:CryptoPP cryptlib)
 14312b860	??_C@_0M@POHHOAKA@ThisObject?3?$AA@	CryptoPP GetValueHelper "ThisObject:" literal (gb:CryptoPP)

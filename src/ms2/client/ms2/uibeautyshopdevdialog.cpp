@@ -423,9 +423,9 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("OnChangeTab", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nTab = data.FUN_1422b8a10();
+            int nTab = data.PopInt();
             m_1a0 = nTab;
             if (nTab == 0)
                 FUN_14191f970();
@@ -448,7 +448,7 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         case 6:
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 int nItemId = FUN_141b71a10(data.FUN_1422b8d30());
                 FUN_14191f620(nItemId);
@@ -461,7 +461,7 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         case 5:
         {
             ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
+            if (data.SetArgsIfAny(pArgs, nArgs))
             {
                 int nIndex = FUN_141b71a10(data.FUN_1422b8d30());
                 FUN_14191f8e0(nIndex);
@@ -527,11 +527,11 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("OnChangeColor", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            int nIndex = data.FUN_1422b8a10();
+            int nIndex = data.PopInt();
             CString strName = data.FUN_1422b8d30();
-            AScript obj(data.FUN_1422b9260(), 2);
+            AScript obj(data.PopValue(), 2);
             int nColorSN = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("colorSN")))->GetUInt();
             int nPaletteId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("paletteID")))->GetUInt();
             vfunc_86(nPaletteId, nColorSN);
@@ -542,7 +542,7 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("OnChangeDetailColor", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             int nPalette = 0;
             int nType = 0;
@@ -555,7 +555,7 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     else if (_stricmp("OnClickSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strSearch = data.FUN_1422b8f40();
             vfunc_84(m_1a0, 0, strSearch);
@@ -839,7 +839,7 @@ void UIBeautyShopDevDialog::FUN_14191f620(int nItemId)
     {
         if (m_1a0 == 4 && spData->FUN_14053d2f0())
         {
-            if (pPc->FUN_14166c930() != 0xe)
+            if (pPc->GetCurStateId() != 0xe)
                 pPc->vfunc_59(0xe, 0, 0, 0);
             pPc->FUN_14166cc40(0x55);
         }
@@ -912,7 +912,7 @@ void UIBeautyShopDevDialog::FUN_14191fae0()
     else
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDevDialog::FUN_14191e9e0));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopDevDialog::FUN_14191e9e0));
         spBox->FUN_141a01800(2);
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
@@ -942,7 +942,7 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
         return;
     if (pPc->FUN_14166cc80() == 0x50)
         return;
-    if (pPc->FUN_14166c930() != 0xe)
+    if (pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x50);
     Unk_EffectTarget target;
@@ -1040,7 +1040,7 @@ void UIBeautyShopDevDialog::FUN_1419206a0(int* pnTab, MS2Ptr<CItemData> spData)
         *pnTab = 1;
     else if (spData->FUN_14053d0c0())
         *pnTab = 2;
-    else if (spData->FUN_14053c620() == 0xd)
+    else if (spData->GetEquipSubtype() == 0xd)
         *pnTab = 6;
 }
 

@@ -213,7 +213,7 @@ public:
     int ArePointsWithinRange2D(const Unk_CMISPt2* a, const Unk_CMISPt2* b, float fLimX, float fLimY);
     void FUN_1410caa60(const CString* pKey, int v);
     void SetOwnerName(int nA, int nB, CStringW strName);
-    __int64 FUN_1410c8030(int nA, int nB);
+    __int64 GetOwnerId(int nA, int nB);
     void FUN_1410c4240(int nGroup, int nBlock, const CStringW& strName, __int64 nUnused, __int64 nOwnerId);
     void FUN_1410c44b0(int nGroup, int nBlock, int bFlag);
     void FUN_1410ccc00(int nGroup, int nA, int nB);
@@ -313,12 +313,12 @@ public:
     int FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount);
     unsigned __int64 FUN_1410d4940();
     int FUN_1410c7110(int* pCell);
-    bool FUN_1410c7500(CString* pOut);
+    int FUN_1410c7500(CString* pOut);
     void FUN_1410c93c0();
     void FUN_1410d0000(void* pCtx, MS2Ptr<Cube> spCube);
     void FUN_1410bb610(unsigned nMask, struct Unk_CMISPawn* pPawn, float fDist, struct Unk_CMISRefList* pOut);
     void FUN_1410caf20(Cube* pCube, int nTime);
-    void FUN_1410bbf20(int nGroup, const egf::EntityID& id);
+    void FUN_1410bbf20(int nGroup, egf::EntityID id);
     void FUN_1410bf470();
     void FUN_1410ce600(int nItemId, Unk_Int3 pt, int nZ);
     Unk_CMISEntityRef FUN_1410cb1b0();

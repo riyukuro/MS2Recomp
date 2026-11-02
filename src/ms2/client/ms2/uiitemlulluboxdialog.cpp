@@ -91,7 +91,7 @@ public:
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
 #define LULLUBOX_ATTR(p) reinterpret_cast<CXmlData*>(reinterpret_cast<char*>((p).operator->()) + 0x320)
 class Unk_LulluBoxData : public CItemData
@@ -367,7 +367,7 @@ void UIItemLulluBoxDialog::UpdateTitle()
 {
     if (m_30 == 0)
         return;
-    m_title->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_boxItemId));
+    m_title->SetTextW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_boxItemId));
 }
 
 // @0x140e9c3e0
@@ -504,7 +504,7 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
         ItemDropResult& d = filtered[i];
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(d.vfunc_o18_0(), d.vfunc_o18_1(), 0) != 0) {
-            item->FUN_140526c70(d.vfunc_o18_2());
+            item->SetCountClamped(d.vfunc_o18_2());
             items.Add(item);
         }
         if (data->function.name != L"OpenItemBoxLulluSimple")
@@ -553,7 +553,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
             else
                 unc->vfunc_4(false);
         }
-        item->FUN_140526c70(e.vfunc_o18_2());
+        item->SetCountClamped(e.vfunc_o18_2());
         CString bagKey;
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
         unsigned count = item->GetCount();
@@ -580,7 +580,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
                 MS2Ptr<CItem> item(new CItem);
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
-                item->FUN_140526c70(e.vfunc_o18_2());
+                item->SetCountClamped(e.vfunc_o18_2());
                 bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 m_slotBinds.push_back(bagKey);
@@ -678,7 +678,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(msg);
                 MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
                 if (box.get()) {
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c2a0));
+                    box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c2a0));
                     FUN_140d73c60(box);
                 }
             } else
@@ -741,7 +741,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(msg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
         if (box.get()) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c260));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c260));
             FUN_140d73c60(box);
         }
     } else {

@@ -65,13 +65,13 @@ int UIVisualTrackerListDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     if (_stricmp("onClickAddToList", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_141b73260(this, data, true);
         return 1;
     }
     else if (_stricmp("onClickRemoveFromList", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_141b73260(this, data, false);
         return 1;
     }

@@ -284,13 +284,13 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp("eventJointsList", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_141982440(data.FUN_1422b8d30());
         return 1;
     }
     else if (_stricmp("eventJointsSoft", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fSoft = data.PopFloat();
             FUN_141982480(fSoft);
@@ -299,7 +299,7 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp("eventJointsAxis", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fX = data.PopFloat();
             float fY = data.PopFloat();
@@ -310,14 +310,14 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp("eventPhysDebug", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1419821d0(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            FUN_1419821d0(data.PopInt());
         return 1;
     }
     else if (_stricmp("eventOnlyPonytail", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_141982350(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs))
+            FUN_141982350(data.PopInt());
         return 1;
     }
     else if (_stricmp("eventSelectTransform", szMethod) == 0)
@@ -327,7 +327,7 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     else if (_stricmp("eventTransformValue", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fX = data.PopFloat();
             float fY = data.PopFloat();

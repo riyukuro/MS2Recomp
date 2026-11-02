@@ -635,7 +635,7 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = ((ASData*)pMsg)->FUN_1422b8a10();
+        int nResult = ((ASData*)pMsg)->PopInt();
         CStringW strTag = ((ASData*)pMsg)->FUN_1422b8f40();
         FUN_14151f200();
         if (nResult == 0)
@@ -686,9 +686,9 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp("onChangeTab", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nTab = data.FUN_1422b8a10();
+            int nTab = data.PopInt();
             vfunc_90(nTab);
         }
     }
@@ -699,9 +699,9 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     else if (_stricmp("OnAddStatPoint", szMethod) == 0)
     {
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nStat = data.FUN_1422b8a10() - 1;
+            int nStat = data.PopInt() - 1;
             vfunc_91(nStat);
         }
         return 1;
@@ -711,7 +711,7 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (vfunc_93() != 0)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_char_info_reset_stat_point"), 0, L"");
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::OnResetStatPointsAnswer));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::OnResetStatPointsAnswer));
             FUN_140d73c60(spBox);
         }
         return 1;
@@ -1076,7 +1076,7 @@ void UIPCInfoDialog::vfunc_87()
             {
                 spText->vfunc_4(true);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
                 CStringW strRemain = StringFormat(L"{0}", nRemaining);
-                spText->FUN_1422c4cd0(strRemain);
+                spText->SetTextW(strRemain);
                 unsigned int nColor = 0xffffff;
                 if (nRemaining > 0)
                     nColor = 0xffa200;

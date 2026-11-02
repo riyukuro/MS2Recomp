@@ -145,13 +145,13 @@ void StateTalk::vfunc_4(StateData* pData)
     {
         m_n10 = 0x47;
         Unk_TalkString strPlay(m_pOwner->vfunc_123(0x2d));
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(strPlay), 1.0f, true, false);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimation(reinterpret_cast<const efd::utf8string&>(strPlay), 1.0f, true, false);
     }
     else
     {
         m_n10 = 0x49;
         Unk_TalkString strPlay(m_pOwner->vfunc_123(0));
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(strPlay), 1.0f, false, false);
+        reinterpret_cast<PCBase*>(m_pOwner)->PlayAnimation(reinterpret_cast<const efd::utf8string&>(strPlay), 1.0f, false, false);
     }
     m_n40 = m_n10;
 }
@@ -186,12 +186,12 @@ void StateTalk::vfunc_9(double fTime)
         if ((m_pOwner->vfunc_85().get() ? true : false) && reinterpret_cast<UIHudEntity::Entity*>(m_pOwner->vfunc_85().operator->())->FUN_140f48d40() != 0)
         {
             Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
-            m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+            m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
         }
         else
         {
             Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2f));
-            m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+            m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
         }
     }
     if (m_n40 != m_n10)
@@ -290,13 +290,13 @@ void StateTalkNpc::vfunc_4(StateData* pData)
         Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
         if (((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)strAnim.m_buf))->empty() || !m_pOwner->HasAnimSequence(((efd::utf8string*)&static_cast<class efd::utf8string const&>(*(const efd::utf8string*)strAnim.m_buf))->c_str()))
             strAnim = m_pOwner->vfunc_123(0);
-        m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+        m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
     }
     else
     {
         m_n10 = 0x49;
         Unk_TalkString strAnim(m_pOwner->vfunc_123(0));
-        m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
+        m_pOwner->PlayAnimation(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
     }
 }
 

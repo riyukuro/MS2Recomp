@@ -38,7 +38,6 @@ NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 extern char DAT_143ae5320;
 extern int DAT_1439f823c;
-struct Unk_WFApp { void FUN_141473020(int a); };
 struct Unk_WFRect {
     Unk_WFRect(int a, int b, int c, int d);     // 0x140a5a400
     int a, b, c, d;
@@ -199,7 +198,7 @@ bool FUN_1416bafb0(void* a, void* step)
         if (reinterpret_cast<NiRenderStep*>(s)->GetActive() == 1) {
             reinterpret_cast<PostProcessingService*>(((PostProcessEffect*)s)->m_70)->QueueStepEvent(0xf);
             s_fade = 0.0f;
-            reinterpret_cast<Unk_WFApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473020(0);
+            TSingleton<CMainSystem>::GetInstance()->SetRenderStepActive(false);
         }
     }
     s_fade = s_fade * s_fade;

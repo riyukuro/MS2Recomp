@@ -535,7 +535,7 @@ void CMouseController::FUN_140ad23f0(int nX, int nY)
         return;
     if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1)
         return;
-    int nAction = reinterpret_cast<PCBase*>(pPc)->FUN_14166c930();
+    int nAction = reinterpret_cast<PCBase*>(pPc)->GetCurStateId();
     Vector3 pt = DAT_143b01a60;
     if (FUN_140ad3550(nX, nY, &pt) == 0)
     {
@@ -631,7 +631,7 @@ void CMouseController::FUN_140ad2830()
         return;
     if (FUN_140ad3d60() != 0)
         return;
-    switch (reinterpret_cast<PCBase*>(pPc)->FUN_14166c930())
+    switch (reinterpret_cast<PCBase*>(pPc)->GetCurStateId())
     {
     case 2:
     case 0x1b:
@@ -657,7 +657,7 @@ void CMouseController::FUN_140ad2830()
             Unk_McState* pState = reinterpret_cast<Unk_McState*>(reinterpret_cast<PC*>(pPc)->FUN_14166ccb0());
             if (pState == 0)
                 return;
-            switch (reinterpret_cast<PCBase*>(pPc)->FUN_14166c930())
+            switch (reinterpret_cast<PCBase*>(pPc)->GetCurStateId())
             {
             case 2:
             case 0x1b:
@@ -784,7 +784,7 @@ void CMouseController::FUN_140ad3040()
                     FUN_140ad22d0();
                     return;
                 }
-                if (reinterpret_cast<PCBase*>(pPc)->FUN_14166c930() != 6)
+                if (reinterpret_cast<PCBase*>(pPc)->GetCurStateId() != 6)
                     m_fAccumDist = m_fAccumDist + (fDist - m_fLastDist);
                 if (15.0f < m_fAccumDist)
                 {

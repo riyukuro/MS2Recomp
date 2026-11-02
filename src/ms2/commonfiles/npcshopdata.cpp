@@ -1010,44 +1010,44 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops);
 
 // Loads the shop tables from Table/Server and Table/Server/New and logs the shops that differ (a table check).
-// MS2-FUNCTIONAL: the exe's iterator and string temporaries differ; it always returns 0.
+// It always returns 0.
 // @0x1406df690
 int FUN_1406df690()
 {
     Unk_NpcShopMap oldShops;
     Unk_NpcShopMap newShops;
     std::vector<CString> infoFiles;
-    infoFiles.push_back(CString("shop_game_info.xml"));
-    infoFiles.push_back(CString("shop_gacha_info.xml"));
-    infoFiles.push_back(CString("shop_specialRandom_info.xml"));
+    infoFiles.push_back("shop_game_info.xml");
+    infoFiles.push_back("shop_gacha_info.xml");
+    infoFiles.push_back("shop_specialRandom_info.xml");
     int bFailed = 0;
     for (std::vector<CString>::iterator it = infoFiles.begin(); it != infoFiles.end(); ++it)
     {
         CString strFile(*it);
-        CString strOld = FUN_14071a5b0(CString("Table/Server"), strFile);
+        CString strOld = FUN_14071a5b0("Table/Server", strFile);
         FUN_1406e0390(strOld, oldShops, false);
-        CString strNew = FUN_14071a5b0(CString("Table/Server/New"), strFile);
+        CString strNew = FUN_14071a5b0("Table/Server/New", strFile);
         FUN_1406e0390(strNew, newShops, true);
     }
     std::vector<CString> itemFiles;
-    itemFiles.push_back(CString("shop_game.xml"));
-    itemFiles.push_back(CString("shop_specialRandom.xml"));
-    itemFiles.push_back(CString("shop_gacha.xml"));
+    itemFiles.push_back("shop_game.xml");
+    itemFiles.push_back("shop_specialRandom.xml");
+    itemFiles.push_back("shop_gacha.xml");
     for (std::vector<CString>::iterator it = itemFiles.begin(); it != itemFiles.end(); ++it)
     {
         CString strFile(*it);
-        CString strOld = FUN_14071a5b0(CString("Table/Server"), strFile);
+        CString strOld = FUN_14071a5b0("Table/Server", strFile);
         if (FUN_1406e0bd0(strOld, oldShops, false) == 0)
             bFailed = 1;
-        CString strNew = FUN_14071a5b0(CString("Table/Server/New"), strFile);
+        CString strNew = FUN_14071a5b0("Table/Server/New", strFile);
         if (FUN_1406e0bd0(strNew, newShops, true) == 0)
             bFailed = 1;
     }
     CString strNewFile("shop_specialRandom_new.xml");
-    CString strOld = FUN_14071a5b0(CString("Table/Server"), strNewFile);
+    CString strOld = FUN_14071a5b0("Table/Server", strNewFile);
     if (FUN_1406e1a50(strOld, oldShops) == 0)
         bFailed = 1;
-    CString strNew = FUN_14071a5b0(CString("Table/Server/New"), strNewFile);
+    CString strNew = FUN_14071a5b0("Table/Server/New", strNewFile);
     if (FUN_1406e1a50(strNew, newShops) == 0)
         bFailed = 1;
     if (oldShops.size() != newShops.size())
@@ -1075,7 +1075,7 @@ int FUN_1406df690()
     for (Unk_NpcShopMap::iterator it = oldShops.begin(); it != oldShops.end(); ++it)
     {
         Unk_NpcShopMap::iterator other = newShops.find(it->first);
-        if (*other->second.operator->() != *it->second.operator->() && GetLogString() != 0)
+        if (*it->second.operator->() != *other->second.operator->() && GetLogString() != 0)
             Unk_AdditionalLog(GetLogString(), 0xb, 0x13, StringFormat(L"Diff in ShopID : {0}", it->first));
     }
     return 0;

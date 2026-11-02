@@ -65,7 +65,7 @@ class Unk_Mode : public Unk_ActionKeyManager { };
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
-    int FUN_14166c930();                                    // 0x14166c930 current state id
+    int GetCurStateId();                                    // 0x14166c930 current state id
 };
 class Unk_141bd0cc0
 {
@@ -212,7 +212,7 @@ void UICoupleDanceEventDialog::vfunc_67()
 {
     Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer) {
-        if (reinterpret_cast<PCBase*>(pPlayer)->FUN_14166c930() == 0x3b)
+        if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() == 0x3b)
             pPlayer->vfunc_59(1, 0, 0, 0);
     }
     UIDialog::vfunc_67();
@@ -277,11 +277,11 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     if (_stricmp("onReward", szMethod) == 0) {
         ASData data;
-        if (!data.FUN_1422b9620(pArgs, nArgs)) {
+        if (!data.SetArgsIfAny(pArgs, nArgs)) {
             MS2_ASSERT_AT(293, 0);
             return 0;
         }
-        int nStep = data.FUN_1422b8b10();
+        int nStep = data.PopUInt();
         FUN_140bfdf60(nStep);
         return 1;
     }
@@ -316,7 +316,7 @@ int UICoupleDanceEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (UIDialog::OnMessage(pSender, pMsg))
         return 1;
     if (!pMsg->FUN_1422e4520() && dynamic_cast<UIMessageBox*>(pSender)) {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (strTag.CompareNoCase(L"askClose") == 0 && nResult == 0)

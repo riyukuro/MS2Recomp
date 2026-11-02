@@ -51,7 +51,7 @@ public:
     void SetExtra(const CStringW& strTag);                         // tag
     void FUN_141a01800(int n);
     void FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned nMax, int a4, int a5);   // input box setup
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);     // result callback
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);     // result callback
     void SetBuff(int nBuffId, short nLevel, CStringW strName);         // club buff description
 };
 extern template class MS2Ptr<CMsgBoxData>;
@@ -178,8 +178,8 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("onSelectCategory", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            m_nCategory = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            m_nCategory = data.PopInt();
             m_nClubId = FUN_140718350(data.FUN_1422b8d30());
             FUN_140e0c570(m_nClubId);
         }
@@ -189,7 +189,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(10, 0x361, 0, CStringW(L""));
             if (box.get() != 0) {
                 box->FUN_141a01d30(2, L"", 0x18, 0, 0);
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bcd0));
+                box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bcd0));
                 FUN_140d73c60(box);
             }
         }
@@ -200,7 +200,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (club.get() != 0) {
             if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, StringFormat<CStringW>(GetStringCommon(0x363), club->FUN_14020f1a0()), 0, CStringW(L""))) {
                 box->FUN_141a01800(2);
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bdb0));
+                box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bdb0));
                 FUN_140d73c60(box);
             }
         }
@@ -216,7 +216,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (box.get() != 0) {
             box->SetExtra(s_strClubBuff);
             box->FUN_141a01800(2);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::OnMsgBoxBuffConfirm));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::OnMsgBoxBuffConfirm));
             if (club->GetBuffId() != 0) {
                 box->SetBuff(club->GetBuffId(), club->GetBuffLevel(),
                                    TSingleton<CStringTable>::GetInstance()->FUN_141812290(club->GetBuffId(), club->GetBuffLevel(), CString("name")));
@@ -230,12 +230,12 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028dfa0<int, int>(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
             box->FUN_141a01d30(2, L"", nCost, 0, 0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bef0));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bef0));
             FUN_140d73c60(box);
         }
     } else if (_stricmp("OnClubMemberPopupMenu", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             float x = data.PopFloat();
             float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();

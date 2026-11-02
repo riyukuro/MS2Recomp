@@ -305,8 +305,8 @@ bool CLinearMotionController::vfunc_5(double fTime)
     {
         nProbe = nProbe + FUN_14028d260(m_pData->m_fDistance);
     }
-    int bBlocked = (m_pTarget->vfunc_99(nProbe) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsJumping() != 0
-        || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsLift() != 0) ? 1 : 0;
+    int bBlocked = (m_pTarget->vfunc_99(nProbe) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsJumping() != 0
+        || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsLift() != 0) ? 1 : 0;
     if (bBlocked)
         return false;
     if (FUN_14028d470(m_fSpeed, 0))
@@ -384,8 +384,8 @@ bool CMoveMotionController::vfunc_5(double fTime)
         return false;
     CMotionController::vfunc_5(fTime);
     m_kMove = DAT_143b01a60;
-    bool bBlocked = (m_pTarget->vfunc_99(0) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsJumping() != 0
-        || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->FUN_14166d220())))->IsLift() != 0) ? true : false;
+    bool bBlocked = (m_pTarget->vfunc_99(0) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsJumping() != 0
+        || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsLift() != 0) ? true : false;
     if (bBlocked)
         return false;
     if (FUN_14028d470(m_fSpeed, 0))

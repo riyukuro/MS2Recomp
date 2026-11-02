@@ -290,7 +290,7 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         FUN_140f23da0();
     } else if (_stricmp(szMethod, "onClickDebugDice") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             int nDice1 = FUN_1407181a0(data.FUN_1422b8f40());
             int nDice2 = FUN_1407181a0(data.FUN_1422b8f40());
             if (nDice1 < 1 || 6 < nDice1)
@@ -382,7 +382,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 else
                     strRound = FUN_14062b4f0(CStringW(L"s_bluemarble_reward_repeat"), &nRound);
                 row.FUN_1407cbb20("round", strRound);
-                rewards.FUN_1422bbf00(row);
+                rewards.PushObj(row);
             }
         }
     }
@@ -484,7 +484,7 @@ void UIBlueMarbleGameDialog::FUN_140f23b90()
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_coinCount")) {
         int nCoins = g_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
         CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_coin_count"), &nCoins);
-        spText->FUN_1422c4cd0(strText);
+        spText->SetTextW(strText);
     }
 }
 
@@ -494,7 +494,7 @@ void UIBlueMarbleGameDialog::FUN_140f23ca0()
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_finishCount")) {
         int nFinish = m_nPosition / 0x1c;
         CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_finish_count"), &nFinish);
-        spText->FUN_1422c4cd0(strText);
+        spText->SetTextW(strText);
     }
 }
 
@@ -521,7 +521,7 @@ CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCou
     MS2Ptr<CItem> spItem(new CItem);
     if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
         return "";
-    spItem->FUN_140526c70(nCount);
+    spItem->SetCountClamped(nCount);
     FUN_141415450(strId, spItem, 0, 0, 0);
     m_boundIds.Add(strId);
     return strId;

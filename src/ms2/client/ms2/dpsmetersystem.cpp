@@ -972,7 +972,7 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
     spData->m_nDamage = nDamage;
     spData->m_dRate = fRate;
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(nTargetId));
-    if (pTarget != 0 && pTarget->FUN_14166ce30() != 0)
+    if (pTarget != 0 && pTarget->IsDead() != 0)
         spData->m_bKilled = 1;
     if (Unk_LockGuard guard = m_lock)
     {

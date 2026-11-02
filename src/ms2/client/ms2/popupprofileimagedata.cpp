@@ -42,7 +42,6 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
 
 // The character state manager (singleton 0x1409670d0).
-class Unk_PpStateMgr { public: int FUN_14162ae20(unsigned __int64 nId); };   // CPartyManager: a party member
 
 // The popup target of a character: the entity manager finds the entity, whose slot 86 hands out a reference to the
 // popup object that is hidden by its slot 3.
@@ -199,7 +198,7 @@ int CPopupProfileImageData::FUN_141697260(int nNow)
 {
     unsigned int nElapsed = nNow - m_nTime;
     unsigned int nDelay = 0;
-    if (reinterpret_cast<Unk_PpStateMgr*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162ae20(m_nId) == 1)
+    if (TSingleton<CPartyManager>::GetInstance()->IsMemberByCharId(m_nId) == 1)
         nDelay = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expireB);
     else
         nDelay = FUN_141697bc0(&((class Unk_PpConstants*)FUN_1401d3200())->m_expireA);

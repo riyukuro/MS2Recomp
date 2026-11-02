@@ -146,7 +146,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, Unk_FactoryPlayer* pPlaye
         }
         else
         {
-            if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
+            if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() == 0xd)
             {
                 CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
                 spItem->FUN_1411dcc80(aParts);

@@ -1012,11 +1012,11 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
     NiControllerSequence* pkSeq, float fEventTime)
 {
     if (strncmp(((const char*)kTextKey), "run", 3) == 0) {
-        if (FUN_14166c930() != 0 && GetClassID() != 0x6200028)
+        if (GetCurStateId() != 0 && GetClassID() != 0x6200028)
             ((CGroundEffectDataManager*)(Unk_PCBaseSound*)(reinterpret_cast<Unk_PCBaseSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())))->PlayEffects((GameObject*)(PCBase*)(this), CString(((const char*)kTextKey)));
     }
     else if (strncmp(((const char*)kTextKey), "walk", 4) == 0) {
-        if (FUN_14166c930() != 0 && GetClassID() != 0x6200028)
+        if (GetCurStateId() != 0 && GetClassID() != 0x6200028)
             ((CGroundEffectDataManager*)(Unk_PCBaseSound*)(reinterpret_cast<Unk_PCBaseSound*>(TSingleton<CGroundEffectDataManager>::GetInstance())))->PlayEffects((GameObject*)(PCBase*)(this), CString(((const char*)kTextKey)));
     }
     else if (strncmp(((const char*)kTextKey), "effect_", 7) == 0) {
@@ -1025,7 +1025,7 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
         ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = strName;
         ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
         ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
-        ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = FUN_14166c930() == 0x35;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = GetCurStateId() == 0x35;
         ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a4a00(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
     }
     else if (strncmp(((const char*)kTextKey), "ani_eff_", 8) == 0) {
@@ -1034,7 +1034,7 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
         ((Unk_PCBaseFxQuery&)(kQuery)).m_strName = strName;
         ((Unk_PCBaseFxQuery&)(kQuery)).m_nPlayer = WorldService::GetInstance()->FUN_141bd1a10((Unk_WsC_GameObj*)(PCBase*)(this));
         ((NoticeMessage*)(Unk_PCBaseFxQuery*)&(((Unk_PCBaseFxQuery&)(kQuery))))->SetActor(FUN_14123c580());
-        ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = FUN_14166c930() == 0x35;
+        ((Unk_PCBaseFxQuery&)(kQuery)).m_bEmotion = GetCurStateId() == 0x35;
         unsigned int nHandle = ((CEffectService*)(Unk_PCBaseFxMgr*)(reinterpret_cast<Unk_PCBaseFxMgr*>(TSingleton<CEffectService>::GetInstance())))->FUN_1411a49c0(*(Unk_EffectTarget*)(Unk_PCBaseFxQuery*)(&((Unk_PCBaseFxQuery&)(kQuery))));
         if (nHandle != 0) {
             m_unk_d20 = eSequenceID;
@@ -1044,7 +1044,7 @@ void PCBase::TextKeyEvent(NiActorManager* pkManager, NiActorManager::SequenceID 
     if (eSequenceID == ((class NiActorManager*)(class NiActorManager*)(pkManager))->GetTargetAnimation() && m_b9d1 && kTextKey.GetLength() > 4) {
         if (strncmp(((const char*)kTextKey), "emo_", 4) == 0) {
             bool bEmotion = false;
-            if (FUN_14166c930() == 0x35)
+            if (GetCurStateId() == 0x35)
                 bEmotion = true;
             CString strEmotion(&((const char*)kTextKey)[4]);
             FUN_14166ef10(strEmotion, true, 0, bEmotion);
@@ -1126,11 +1126,11 @@ void PCBase::vfunc_59(int nState, StateData* pData, int nSub, int bForce)
 MS2_REPLACE_METHOD(0x14166c800, PCBase, vfunc_59, 292, 0xAA88E2C6);
 
 // @0x14166c930
-int PCBase::FUN_14166c930()
+int PCBase::GetCurStateId()
 {
     return m_spStateMgr->GetCur();
 }
-MS2_REPLACE_METHOD(0x14166c930, PCBase, FUN_14166c930, 41, 0xB1D51893);
+MS2_REPLACE_METHOD(0x14166c930, PCBase, GetCurStateId, 41, 0xB1D51893);
 
 // @0x14166c960
 int PCBase::FUN_14166c960()
@@ -1265,7 +1265,7 @@ int PCBase::vfunc_63()
 }
 
 // @0x14166ce30
-int PCBase::FUN_14166ce30()
+int PCBase::IsDead()
 {
     return m_unk_15c;
 }
@@ -1307,7 +1307,7 @@ void PCBase::vfunc_66(int n)
 MS2_REPLACE_METHOD(0x14166cef0, PCBase, vfunc_66, 73, 0x590E688A);
 
 // @0x14166d220
-Unk_PCBaseBody* PCBase::FUN_14166d220()
+Unk_PCBaseBody* PCBase::GetPhysicsBody()
 {
     return m_unk_150;
 }
@@ -1355,7 +1355,7 @@ MS2_REPLACE_METHOD(0x14166cf40, PCBase, vfunc_67, 730, 0x7C8F1331);
 // @0x14166d260
 void PCBase::FUN_14166d260()
 {
-    if (Unk_PCBaseBody* pBody = FUN_14166d220())
+    if (Unk_PCBaseBody* pBody = GetPhysicsBody())
         pBody->FUN_14123fe70(vfunc_18());
 }
 MS2_REPLACE_METHOD(0x14166d260, PCBase, FUN_14166d260, 98, 0x6C91CBAE);
@@ -1452,17 +1452,17 @@ void PCBase::FUN_14166d8e0(efd::Point3 kTilt)
     UpdateTargetYawFromLook();
     NiPoint3 kRot = vfunc_20();
     kRot.z = GetTargetYaw();
-    FUN_14166d970(kRot);
+    SetRotationAndTargetYaw(kRot);
 }
 MS2_REPLACE_METHOD(0x14166d8e0, PCBase, FUN_14166d8e0, 132, 0x81D98B51);
 
 // @0x14166d970
-void PCBase::FUN_14166d970(const efd::Point3& kRot)
+void PCBase::SetRotationAndTargetYaw(const efd::Point3& kRot)
 {
     SetTargetYaw(kRot.z);
     vfunc_21(kRot);
 }
-MS2_REPLACE_METHOD(0x14166d970, PCBase, FUN_14166d970, 87, 0x4BF2CA41);
+MS2_REPLACE_METHOD(0x14166d970, PCBase, SetRotationAndTargetYaw, 87, 0x4BF2CA41);
 
 // @0x14166d9d0
 void PCBase::FUN_14166d9d0(const NiPoint3& kPos)
@@ -1530,19 +1530,19 @@ CString PCBase::FUN_14166dc50()
 MS2_REPLACE_METHOD(0x14166dc50, PCBase, FUN_14166dc50, 190, 0x36C8CC31);
 
 // @0x14166dd20
-bool PCBase::FUN_14166dd20(const efd::utf8string& strAnim, float fSpeed, bool bA, bool bB)
+bool PCBase::PlayAnimation(const efd::utf8string& strAnim, float fSpeed, bool bA, bool bB)
 {
     m_unk_968 = bB;
     if (m_unk_968 != 0)
         fSpeed = 1.0f;
     return m_spAnimMgr->FUN_14099e050(const_cast<efd::utf8string&>(strAnim), fSpeed, bA);
 }
-MS2_REPLACE_METHOD(0x14166dd20, PCBase, FUN_14166dd20, 116, 0x26C26AF1);
+MS2_REPLACE_METHOD(0x14166dd20, PCBase, PlayAnimation, 116, 0x26C26AF1);
 
 // @0x14166dda0
 bool PCBase::PlayAnimationById(int nId)
 {
-    return FUN_14166dd20(vfunc_123(nId), FUN_1416713c0(), false, false);
+    return PlayAnimation(vfunc_123(nId), FUN_1416713c0(), false, false);
 }
 
 // @0x14166de50
@@ -1555,11 +1555,11 @@ MS2_REPLACE_METHOD(0x14166de50, PCBase, FUN_14166de50, 51, 0x1292505D);
 // @0x14166f6d0
 int PCBase::FUN_14166f6d0()
 {
-    if (FUN_14166c930() == 0xb) {
+    if (GetCurStateId() == 0xb) {
         Unk_PCBaseState0b* pState = static_cast<Unk_PCBaseState0b*>(FUN_14166ccb0());
         return reinterpret_cast<StateEmotion*>(pState)->FUN_1417c4320();
     }
-    if (FUN_14166c930() == 0xf) {
+    if (GetCurStateId() == 0xf) {
         Unk_PCBaseState0f* pState = static_cast<Unk_PCBaseState0f*>(FUN_14166ccb0());
         return pState->FUN_1417c6a30();
     }
@@ -1676,7 +1676,7 @@ MS2_REPLACE_METHOD(0x14166fd50, PCBase, vfunc_77, 68, 0x928E7FA5);
 void PCBase::ShowChatBalloon(CStringW str)
 {
     vfunc_94(0);
-    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(str);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(str);
     MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
     if (spBalloon.get() != 0) {
         spBalloon->FUN_1418fb730(str);
@@ -1792,7 +1792,7 @@ bool PCBase::vfunc_68(void* pMove, double dTime, int b, unsigned nFlags, int bNo
         bNoVelocity = 1;
     if (bNoVelocity == 0) {
         efd::Point3 kVel = m_unk_150->FUN_1412407f0((float)dTime, vfunc_99(0) && *static_cast<efd::Point3*>(pMove) == efd::Point3::ZERO);
-        int nState = FUN_14166c930();
+        int nState = GetCurStateId();
         if (nState != 2 && nState != 5 && nState != 6) {
             if ((nState == 0x10 && m_unk_150->IsJumping()) == 0) {
                 kVel.x = 0.0f;
@@ -2311,7 +2311,7 @@ MS2_REPLACE_METHOD(0x1416700b0, PCBase, FUN_1416700b0, 198, 0xEB11A23B);
 // @0x141670180
 void PCBase::FUN_141670180(bool bShow)
 {
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
         return;
     MS2Ptr<Unk_PCBaseComp_a58> spBar = vfunc_80();
     if (spBar.get() != 0) {
@@ -2325,7 +2325,7 @@ MS2_REPLACE_METHOD(0x141670180, PCBase, FUN_141670180, 213, 0x5B144CC8);
 // @0x141670260
 void PCBase::FUN_141670260(int nShield, bool bShow)
 {
-    if (FUN_14166ce30() != 0)
+    if (IsDead() != 0)
         return;
     MS2Ptr<Unk_PCBaseComp_a68> spBar = vfunc_81();
     if (spBar.get() != 0) {
@@ -2473,7 +2473,7 @@ void PCBase::vfunc_93(bool bMaterial)
         m_unk_9a8 = 1;
         m_f9c8 = 0;
         m_pos9ac = vfunc_18();
-        m_pos9b8 = reinterpret_cast<NiPoint3&&>(static_cast<efd::Point3&&>(FUN_14166d220()->FUN_141240df0()));
+        m_pos9b8 = reinterpret_cast<NiPoint3&&>(static_cast<efd::Point3&&>(GetPhysicsBody()->FUN_141240df0()));
     }
     else {
         Unk_RayCastInfo kHit;
@@ -2544,11 +2544,11 @@ MS2_REPLACE_METHOD(0x1416719c0, PCBase, IsDashModel, 103, 0xCE9ED2D7);
 int PCBase::FUN_141671a30()
 {
     efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
-    if (spRidee != 0 && FUN_14166c930() == 0x21)
+    if (spRidee != 0 && GetCurStateId() == 0x21)
         return spRidee->FUN_141671a30();
-    if (FUN_14166d220() == 0)
+    if (GetPhysicsBody() == 0)
         return 0;
-    return FUN_14166d220()->FUN_141240f40() != 0;
+    return GetPhysicsBody()->FUN_141240f40() != 0;
 }
 MS2_REPLACE_METHOD(0x141671a30, PCBase, FUN_141671a30, 220, 0x9D9E0C20);
 
@@ -2562,7 +2562,7 @@ int PCBase::vfunc_99(int nSlope)
     if (nSlope == 0)
         nSlope = 100;
     int nLimit = m_unk_150->FUN_141240ef0();
-    if (nLimit > nSlope && FUN_14028d380(0.3f) < m_f9c8 && (FUN_14166d220()->GetCollisionFlags() & 4) == 0)
+    if (nLimit > nSlope && FUN_14028d380(0.3f) < m_f9c8 && (GetPhysicsBody()->GetCollisionFlags() & 4) == 0)
         return 1;
     else
         return 0;
@@ -3371,11 +3371,11 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     NiPoint3 kDir = m_spB10->vfunc_20();
     int bFall = 1;
     FUN_141678300(m_spB10->FUN_1416782e0());
-    Unk_PCBaseBody* pBody = m_spB10->FUN_14166d220();
+    Unk_PCBaseBody* pBody = m_spB10->GetPhysicsBody();
     if (pBody != 0) {
         efd::SmartPointer<egf::Entity> spEntity(((Unk_PCBaseEntity*)(((((GameObjectController*)(Unk_PCBaseBody*)(pBody))->FUN_141240f20())))->GetEntity()));
         if (spEntity != 0) {
-            (((FUN_14166d220()->FUN_141240f20())))->SetEntity((Unk_Entity*)(egf::Entity*)(spEntity));
+            (((GetPhysicsBody()->FUN_141240f20())))->SetEntity((Unk_Entity*)(egf::Entity*)(spEntity));
             MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(spEntity);
             if (reinterpret_cast<MS2Ptr<Unk_RideeFieldObj>&>(spObj).get()) {
                 if (m_spB10->FUN_141671a30() != 0)
@@ -3417,12 +3417,12 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     m_spB10 = 0;
     FUN_141676320(MS2Ptr<RideOnAction>(0));
     FUN_1416766b0(MS2Ptr<Unk_PCBaseComp_b18>(0));
-    FUN_14166d220()->FUN_141240730();
+    GetPhysicsBody()->FUN_141240730();
     if (bGround != 0) {
         vfunc_59(1, 0, 0, 0);
     }
     else {
-        FUN_14166d220()->FUN_141241070();
+        GetPhysicsBody()->FUN_141241070();
         vfunc_59(5, new StateFallData(kRideePos), 0, 0);
     }
     if (vfunc_25() == 0) {
@@ -3688,7 +3688,7 @@ void PCBase::FUN_14166ed70(int nEmotion)
     MS2Ptr<SkillData> spRow = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nEmotion);
     if (spRow == 0)
         return;
-    if (FUN_14166c930() == 0xb) {
+    if (GetCurStateId() == 0xb) {
         Unk_PCBaseState0b* pState = static_cast<Unk_PCBaseState0b*>(FUN_14166ccb0());
         if (pState->FUN_14167f950() == (spRow).operator->()->GetParamStr())
             return;
@@ -3775,7 +3775,7 @@ GameObject* PCBase::FUN_141679800(CAtlArray<efd::SmartPointer<GameObject> >& arr
             int nDead = 0;
             PCBase* pPC = efd::DynamicCast<PCBase, GameObject>(pTarget);
             if (pPC != 0)
-                nDead = pPC->FUN_14166ce30();
+                nDead = pPC->IsDead();
             if (nDead != 0)
             {
                 int bPick = 0;
@@ -3838,7 +3838,7 @@ GameObject* PCBase::FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arr
             int nDead = 0;
             PCBase* pPC = efd::DynamicCast<PCBase, GameObject>(pTarget);
             if (pPC != 0)
-                nDead = pPC->FUN_14166ce30();
+                nDead = pPC->IsDead();
             if (nDead != 0)
             {
                 int bPick = 0;
@@ -4081,7 +4081,7 @@ void PCBase::FUN_141678360()
         int nHit = ((CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kFrom), reinterpret_cast<Vector3&>(kHit), &kRay, 50.0f, (Vector3*)&kNormal, 0);
         if (nHit != 0 && kRay.m_hitEntity != 0)
         {
-            if (((egf::Entity*)kRay.m_hitEntity)->GetEntityID() != (FUN_14166d220()->FUN_141240f20())->GetEntityID())
+            if (((egf::Entity*)kRay.m_hitEntity)->GetEntityID() != (GetPhysicsBody()->FUN_141240f20())->GetEntityID())
             {
                 MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)kRay.m_hitEntity);
                 if (reinterpret_cast<MS2Ptr<Unk_RideeFieldObj>&>(spObj).get())
@@ -4093,7 +4093,7 @@ void PCBase::FUN_141678360()
                         efd::Point3 kPos = reinterpret_cast<efd::Point3&>(kRay.m_hitPoint);
                         kPos.z = ((CBreakableObject*)(spObj).operator->())->GetPtPos().z + ((CBreakableObject*)(spObj).operator->())->GetPtSize().z + 10.0f;
                         vfunc_19(kPos);
-                        (((FUN_14166d220()->FUN_141240f20())))->SetEntity((Unk_Entity*)(egf::Entity*)(kRay.m_hitEntity));
+                        (((GetPhysicsBody()->FUN_141240f20())))->SetEntity((Unk_Entity*)(egf::Entity*)(kRay.m_hitEntity));
                     }
                 }
             }
@@ -4369,7 +4369,7 @@ void PCBase::FUN_141676140()
     if (spField.get() != 0 && spField->m_nFallDamage == 0)
         return;
     Unk_PCBaseState0d* pState;
-    if (FUN_14166c930() == 0xd && (pState = static_cast<Unk_PCBaseState0d*>(FUN_14166ccb0())) != 0 && pState->FUN_1417cb160() == 0)
+    if (GetCurStateId() == 0xd && (pState = static_cast<Unk_PCBaseState0d*>(FUN_14166ccb0())) != 0 && pState->FUN_1417cb160() == 0)
         return;
     if (FUN_141675ed0() == 0) {
         float fHeight = m_posC10.z - vfunc_18().z;

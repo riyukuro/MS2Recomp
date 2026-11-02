@@ -196,12 +196,12 @@ void StateTreeWatering::vfunc_9(double fTime)
     if (m_n10 == 0xa0)
     {
         efd::utf8string kName((const char*)m_spWatering->m_strAnim);
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     if (m_n10 == 0xa1)
     {
         efd::utf8string kName((const char*)m_spWatering->m_strAnim);
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 

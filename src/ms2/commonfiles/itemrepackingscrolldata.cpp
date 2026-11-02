@@ -175,7 +175,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
     {
     case 0:
     {
-        int nType = pItemData->FUN_14053c620();
+        int nType = pItemData->GetEquipSubtype();
         if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(pData->m_arrSlot), nType) == -1)
             return 3;
         break;
@@ -187,7 +187,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
             return 3;
         break;
     }
-    int nRank = ((CItem*)pItem)->FUN_140526bd0();
+    int nRank = ((CItem*)pItem)->GetRarity();
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(pData->m_arrRank), nRank) == -1)
         return 4;
     int nLevel = pItemData->limit.levelLimit;

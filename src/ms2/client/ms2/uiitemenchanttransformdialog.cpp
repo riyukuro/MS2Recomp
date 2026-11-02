@@ -47,8 +47,8 @@ public:
     int FUN_141a02e50(int a, int b) const;
     void FUN_141a01600(__int64 n);
     void FUN_141a01ee0(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, int e);
-    void FUN_141a01700(int a, int b, int c);
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void SetButtonLabelIds(int a, int b, int c);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     template <class T> void Append(T v);                            // Append<int> 0x140533ff0 (inline COMDAT)
 };
 extern template class MS2Ptr<CMsgBoxData>;
@@ -210,8 +210,8 @@ int UIItemEnchantTransformDialog::vfunc_28(const char* szMethod, const Scaleform
         return 1;
     if (_stricmp("OnSelectTargetItem", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nIndex = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nIndex = data.PopInt();
             FUN_140c3d960(nIndex);
         }
         return 1;
@@ -288,7 +288,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
     CStringW strOption;
     bool bHighSa = false;
     FUN_1409e4950(item, strOption, &bHighSa);
-    if (item->FUN_140526bd0() >= 5 && bHighSa == 1) {
+    if (item->GetRarity() >= 5 && bHighSa == 1) {
         CStringW strAsk = GetStringCommonByKey(L"s_item_enchant_transform_ask_high_sa_option_item");
         CStringW strMsg;
         strMsg.Append(strOption);
@@ -296,10 +296,10 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
         strMsg.Append(strAsk);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMsg), 0, CStringW(L""));
         if (box.get() != 0) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantTransformDialog::FUN_140c3eda0));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantTransformDialog::FUN_140c3eda0));
             box->FUN_141a01600(item->GetItemUid());
             box->FUN_141a01ee0(item, item->FUN_140527b10(), 1, 0, -1, -1, 1);
-            box->FUN_141a01700(0x475, 0x476, 0);
+            box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<int>(nIndex);
             FUN_140d73c60(box);
         }
@@ -355,7 +355,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         ASObj entry(2);
         entry.FUN_1407cba60("binding", strName);
         entry.FUN_1407cbb20(s_strItemName, out->FUN_140528160());
-        outputs.FUN_1422bbf00(entry);
+        outputs.PushObj(entry);
     }
     ((class ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
     if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))

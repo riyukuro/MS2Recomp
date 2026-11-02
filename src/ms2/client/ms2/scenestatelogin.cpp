@@ -31,7 +31,6 @@ void FUN_141489ff0(void*, NiColorA);                    // the app's clear colou
 extern int DAT_1439f4a78;
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140353fc0(void*, int, int, const wchar_t*, const int&);
-Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBoxData&));
 bool FUN_141902530(int, const CMsgBoxData&);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
@@ -125,7 +124,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         else
         {
             FUN_140353fc0(((void*)GetLogString()), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
-            FUN_140d74390(BlockFormat<int>(0x20e, 0), 0, FUN_140b76b10(FUN_141902530));
+            FUN_140d74390(BlockFormat<int>(0x20e, 0), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
             FUN_140d86260()->vfunc_58(0x20e, 0);
         }
         break;

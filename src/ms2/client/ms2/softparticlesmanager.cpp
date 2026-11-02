@@ -98,14 +98,14 @@ void FUN_141773630(void* viewSystem)
 
 // Turns the click off/on; turning it on registers every scene of the main view as a soft-particle scene.
 // @0x141773940
-void FUN_141773940(void* viewSystem, bool bEnable)
+void SoftParticlesManager::FUN_141773940(bool bEnable)
 {
-    ((SoftParticlesManager*)viewSystem)->m_spClick->SetActive(bEnable);
+    m_spClick->SetActive(bEnable);
     ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa6a0((Unk_PPTexture)1, bEnable);
 
     if (bEnable)
     {
-        ((SoftParticlesManager*)viewSystem)->m_spView->RemoveAllScenes();
+        m_spView->RemoveAllScenes();
 
         Ni3DRenderView* pkMainView = FUN_1413f9a70();
         NiTPointerList<NiAVObjectPtr>& kScenes = pkMainView->GetScenes();
@@ -113,19 +113,19 @@ void FUN_141773940(void* viewSystem, bool bEnable)
         while (kPos != 0)
         {
             const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
-            FUN_141773a90(viewSystem, (NiAVObject*)spScene);
+            FUN_141773a90(this, (NiAVObject*)spScene);
         }
     }
     else
     {
-        NiTPointerList<NiAVObjectPtr>& kScenes = ((SoftParticlesManager*)viewSystem)->m_spView->GetScenes();
+        NiTPointerList<NiAVObjectPtr>& kScenes = m_spView->GetScenes();
         NiTListIterator kPos = kScenes.GetHeadPos();
         while (kPos != 0)
         {
             const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
             spScene->SetAppCulled(false);
         }
-        ((SoftParticlesManager*)viewSystem)->m_spView->RemoveAllScenes();
+        m_spView->RemoveAllScenes();
     }
 }
 
@@ -291,7 +291,7 @@ CRuntimeClass* FUN_141774210()
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 #include "hook/ms2hook.h"
-MS2_REPLACE(0x141773940, FUN_141773940, 321, 0x4C2A5D6B);
+MS2_REPLACE_METHOD(0x141773940, SoftParticlesManager, FUN_141773940, 321, 0x4C2A5D6B);
 MS2_REPLACE(0x141773cc0, FUN_141773cc0, 198, 0xFB373809);
 MS2_REPLACE(0x141773ed0, FUN_141773ed0, 310, 0xBBA392D9);
 MS2_REPLACE_METHOD(0x141774010, Unk_PPSecondView, GetClick, 31, 0x7FC3E510);

@@ -246,12 +246,12 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
     {
         if (spNpc->HasPropertyTag(3))
         {
-            m_spTitle->FUN_1422c4cd0(FUN_140f26120(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), L"??"));
+            m_spTitle->SetTextW(FUN_140f26120(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), L"??"));
         }
         else
         {
             unsigned short nLevel = spNpc->GetLevel();
-            m_spTitle->FUN_1422c4cd0(FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
+            m_spTitle->SetTextW(FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
         }
     }
     MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(m_nNpcId);

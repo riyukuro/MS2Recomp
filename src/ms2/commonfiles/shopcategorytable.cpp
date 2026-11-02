@@ -73,28 +73,28 @@ void AScript::FUN_1407cb9c0(const char* pszName, int nValue)
 {
     ASData data;
     data.AddInt(nValue);
-    m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.PopValue());
 }
 
 void AScript::FUN_1407cba60(const char* pszName, CString strValue)
 {
     ASData data;
     data.AddString(strValue);
-    m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.PopValue());
 }
 
 void AScript::FUN_1407cbb20(const char* pszName, CStringW strValue)
 {
     ASData data;
     data.AddWString(strValue);
-    m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.PopValue());
 }
 
 void AScript::FUN_1407cbbe0(const char* pszName, bool bValue)
 {
     ASData data;
     data.AddBool(bValue);
-    m_value.SetMember(pszName, data.FUN_1422b9260());
+    m_value.SetMember(pszName, data.PopValue());
 }
 
 // ---- TabInfo

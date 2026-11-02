@@ -377,12 +377,12 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         ASArray items(2);
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
-        ((class AScript&)(objTarget)).FUN_1407cbb20("name", FUN_14183e9c0(spItem->FUN_140527b10(), spItem->FUN_140526bd0()));
+        ((class AScript&)(objTarget)).FUN_1407cbb20("name", FUN_14183e9c0(spItem->FUN_140527b10(), spItem->GetRarity()));
         ((class AScript&)(objTarget)).FUN_1407cbb20("consume", FUN_140938ae0(CStringW(L"s_itemextraction_consume"), spRow->m_nConsume));
         items.PushValue(objTarget.FUN_1422bb870());
         ASObj objScroll(2);
         objScroll.FUN_1407cba60("binding", m_strBag);
-        ((class AScript&)(objScroll)).FUN_1407cbb20("name", FUN_14183e9c0(spScroll->FUN_140527b10(), spScroll->FUN_140526bd0()));
+        ((class AScript&)(objScroll)).FUN_1407cbb20("name", FUN_14183e9c0(spScroll->FUN_140527b10(), spScroll->GetRarity()));
         items.PushValue(objScroll.FUN_1422bb870());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
@@ -423,7 +423,7 @@ void UIItemExtractionScrollDialog::OnOk()
         1, FUN_140938ae0(CStringW(L"s_itemextraction_conform"), spRow->m_nConsume), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemExtractionScrollDialog::SendItemExtractionScroll));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemExtractionScrollDialog::SendItemExtractionScroll));
         FUN_140d73c60(spBox);
     }
 }

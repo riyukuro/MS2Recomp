@@ -316,10 +316,10 @@ void UIBingoEventDialog::OnLoadComplete()
         if ((size_t)i != 7)
         {
             unsigned n = i + 1;
-            text->FUN_1422c4cd0(StringFormat<unsigned int>(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition"), n));
+            text->SetTextW(StringFormat<unsigned int>(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition"), n));
         }
         else
-            text->FUN_1422c4cd0(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition_last")));
+            text->SetTextW(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition_last")));
         MS2Ptr<Unk_140acd6e0> receive = BINGO_CLIP(list)->FUN_140acce30("m_receiveButton");
         if (receive.IsNull())
             continue;
@@ -399,7 +399,7 @@ void UIBingoEventDialog::OnLoadComplete()
             return;
         CStringW str = FUN_14025e7a0()->Localize("$s_bingo_event_description");
         str = StringFormat<CStringW, CStringW>((const wchar_t*)str, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2->m_freeItemId), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2->m_cashItemId));
-        desc->FUN_1422c4cd0(str);
+        desc->SetTextW(str);
     }
     FUN_140bb14d0();
 }
@@ -479,7 +479,7 @@ void UIBingoEventDialog::vfunc_26()
 int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     m_msgOpen = false;
-    int nResult = pMsg->FUN_1422b8a10();
+    int nResult = pMsg->PopInt();
     int nIndex = StrToIntW(pMsg->FUN_1422b8f40());
     if (nResult != 0)
         return 0;
@@ -517,7 +517,7 @@ void UIBingoEventDialog::vfunc_72()
                 FUN_14151f890()->FUN_1419f8120();
                 m_msgOpen = false;
             }
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb1460));
+            box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb1460));
             FUN_14151f150(box);
         }
     }
@@ -678,7 +678,7 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
         if (box.IsNull())
             return;
         box->SetSound(s_sndRegPopUp);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb14a0));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb14a0));
         FUN_14151f150(box);
         m_msgOpen = true;
         m_cash.FUN_140bb7fd0();
@@ -695,7 +695,7 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
         if (box.IsNull())
             return;
         box->SetSound(s_sndRegPopUp);
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb14a0));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb14a0));
         FUN_14151f150(box);
         m_msgOpen = true;
         m_cash.FUN_140bb8100();
@@ -917,7 +917,7 @@ void UIBingoEventDialog::FUN_140bb2310()
         MS2Ptr<ASTextField> text = card->FUN_1409b4620("textField");
         if (text.IsNull())
             break;
-        text->FUN_1422c4cd0(StringFormat<int>(L"{0}", m_called[i]));
+        text->SetTextW(StringFormat<int>(L"{0}", m_called[i]));
     }
 }
 

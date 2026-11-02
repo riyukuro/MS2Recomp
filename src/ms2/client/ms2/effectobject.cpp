@@ -29,7 +29,7 @@ class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int);
+    class Unk_WsC_GameObj* FindObjectById(int);
     class Unk_WsC_GameObj* FUN_141bd1290(int);
     static class WorldService* GetInstance();
 };
@@ -133,7 +133,7 @@ static unsigned int FUN_140a53830()
 {
     for (unsigned int nId = 0x4bf; nId < 0x8a7; nId++)
     {
-        if (((class GameObject*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1180(nId)) == 0)
+        if (((class GameObject*)((class WorldService*)(WorldService::GetInstance()))->FindObjectById(nId)) == 0)
             return nId;
     }
     return 0x4bf;
@@ -192,7 +192,7 @@ void CEffectObject::vfunc_21(efd::Point3 kDir)
     if (vfunc_20() != kDir)
     {
         PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
-        if (pOwner && ((class PCBase*)(pOwner))->FUN_14166c930() == 0x10)
+        if (pOwner && ((class PCBase*)(pOwner))->GetCurStateId() == 0x10)
         {
             Unk_EffState* pState = ((class Unk_EffState*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
             if (pState)
@@ -225,7 +225,7 @@ void CEffectObject::vfunc_53(float f)
         if (pOwner)
         {
             float fScale = 1.0f;
-            if (((class PCBase*)(pOwner))->FUN_14166c930() == 0x10)
+            if (((class PCBase*)(pOwner))->GetCurStateId() == 0x10)
             {
                 Unk_EffState* pState = ((class Unk_EffState*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
                 if (pState)

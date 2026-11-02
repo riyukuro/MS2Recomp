@@ -65,7 +65,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
                 m_strAnim = kAnim;
         }
     }
-    m_pOwner->FUN_14166dd20(m_strAnim, m_pOwner->FUN_1416713c0(), false, false);
+    m_pOwner->PlayAnimation(m_strAnim, m_pOwner->FUN_1416713c0(), false, false);
 }
 
 // @0x1417c7f30

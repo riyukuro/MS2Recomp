@@ -87,8 +87,8 @@ void StateLand::vfunc_4(StateData* pData)
     int nHit = reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kFrom), reinterpret_cast<Vector3&>(kHit), &kRay, 50.0f, reinterpret_cast<Vector3*>(&kNormal), 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
-        if (reinterpret_cast<egf::Entity*>(kRay.m_hitEntity)->GetEntityID() != ((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20()->GetEntityID())
-            ((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20()->SetEntity(reinterpret_cast<Unk_Entity*>(kRay.m_hitEntity));
+        if (reinterpret_cast<egf::Entity*>(kRay.m_hitEntity)->GetEntityID() != ((GameObjectController*)pPC->GetPhysicsBody())->FUN_141240f20()->GetEntityID())
+            ((GameObjectController*)pPC->GetPhysicsBody())->FUN_141240f20()->SetEntity(reinterpret_cast<Unk_Entity*>(kRay.m_hitEntity));
     }
     m_pOwner->vfunc_93(true);
     reinterpret_cast<CGroundEffectDataManager*>(TSingleton<CGroundEffectDataManager>::GetInstance())->PlayEffects(m_pOwner, CString("land"));
@@ -137,7 +137,7 @@ void StateLand::vfunc_9(double fTime)
         if (m_n10 == 0x86)
         {
             PCBase* pPC = FUN_1417b8370();
-            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->FUN_1416595d0() != 0 && ((Unk_LandCube*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft()))->FUN_1410aa010())
+            if (pPC != 0 && reinterpret_cast<PC*>(pPC)->IsInCubeMode() != 0 && ((Unk_LandCube*)(reinterpret_cast<PC*>(pPC)->GetCubeCraft()))->FUN_1410aa010())
             {
                 strAnim = pPC->vfunc_123(0x3c);
             }
@@ -158,7 +158,7 @@ void StateLand::vfunc_9(double fTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
         return;
     }
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 }
 
 // @0x1417da580

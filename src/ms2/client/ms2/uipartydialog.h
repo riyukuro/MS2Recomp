@@ -353,7 +353,7 @@ public:
     __int64 m_a0;                                               // target account id
     __int64 m_a8;                                               // target character id
     CStringW m_b0;                                              // target name (report)
-    __int64 m_b8;                                               // ugc banner id
+    unsigned __int64 m_b8;                                      // ugc banner id
     CString m_c0;                                               // ugc banner text
     int m_c8;                                                   // ugc banner index
     __int64 m_d0;                                               // buddy id

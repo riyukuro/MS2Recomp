@@ -259,7 +259,7 @@ void StateHomeConvenient::vfunc_4(StateData* pData)
         return;
     }
     m_n10 = 0x88;
-    m_pOwner->FUN_14166dd20(GetAnimation(), 1.0f, false, false);
+    m_pOwner->PlayAnimation(GetAnimation(), 1.0f, false, false);
     int nStart = GetTickCountMs2();
     int nDuration = GetDuration();
     m_n44 = nStart;

@@ -48,6 +48,7 @@
 #include "ms2/commonfiles/itemgemstonedata.h"  // C3: CItemGemStoneUpgradeTable::FindData
 #include "ms2/commonfiles/timeutil.h"  // C3: GetServerTime
 #include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/inventory.h"  // C3: Unk_Inventory (was Unk_HlDb members)
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // The key-input controller singleton of this unit.
@@ -82,11 +83,6 @@ int UseItem(MS2Ptr<CItem> spItem, int n);                  // 0x140d1bd60
 // The item / record tables (DAT_143ab2a90) and their callees.
 class Unk_HlDb
 {
-public:
-    MS2Ptr<CItem> FUN_140a5e2e0(int nId);                       // item by id
-    MS2Ptr<CItem> FUN_140a5d680(__int64 nId);               // item by instance id
-    void FUN_140a60880(int nBag, ATL::CAtlArray<MS2Ptr<CItem> >& out);   // the items of a bag
-    int FUN_140a65770(P pId);
 };
 extern Unk_HlDb DAT_143ab2a90;
 extern char DAT_143ab2ee0[];
@@ -536,7 +532,7 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp(szMethod, "enchantscroll") == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nScrollItem);
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5d680(m_nScrollItem);
         if (FUN_14052cd70(&spItem) != 0)
         {
             UseItem(spItem, 0);
@@ -641,9 +637,9 @@ void UIHighlightGameMenu::vfunc_21(void* pItem)
     {
         if (m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0() == true) {} else
         {
-            if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0()) == 0) {} else
+            if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->GetSocket()) == 0) {} else
             {
-                if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0())))->HasEmptyOpenSlot()) {} else
+                if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->GetSocket())))->HasEmptyOpenSlot()) {} else
                     m_bitsGem.FUN_140c260a0(0, true);
             }
         }
@@ -657,9 +653,9 @@ void UIHighlightGameMenu::vfunc_22(void* pItem)
     {
         if (!m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0()) {} else
         {
-            if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0()) == 0) {} else
+            if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->GetSocket()) == 0) {} else
             {
-                if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_1405279c0())))->HasEmptyOpenSlot()) {} else
+                if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->GetSocket())))->HasEmptyOpenSlot()) {} else
                     m_bitsGem.FUN_140c260a0(0, true);
             }
         }
@@ -704,7 +700,7 @@ int UIHighlightGameMenu::FUN_140c231b0()
     if (pPc == 0)
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > bag;
-    DAT_143ab2a90.FUN_140a60880(0, bag);
+    reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(0, bag);
     CMsTime limit(GetServerTime());
     AddMinutes(limit, 0xfffffff6);
     for (unsigned __int64 i = 0; i < bag.GetCount(); ++i)
@@ -712,7 +708,7 @@ int UIHighlightGameMenu::FUN_140c231b0()
         MS2Ptr<CItem> item = bag[i];
         if (item->GetCreationTime() < limit.Get())
             continue;
-        if (DAT_143ab2a90.FUN_140a65770(item.get()) != 0)
+        if (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a65770(item.get()) != 0)
             continue;
         MS2Ptr<CItemData> rec((CItemData*)item->FUN_140527840());
         if (!rec)
@@ -797,7 +793,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
     MS2Ptr<CItem> scroll(0);
     for (unsigned __int64 i = 0; i < ids.GetCount(); ++i)
     {
-        MS2Ptr<CItem> found = DAT_143ab2a90.FUN_140a5e2e0(ids[i]);
+        MS2Ptr<CItem> found = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5e2e0(ids[i]);
         if (found.get() != 0)
         {
             scroll = found;
@@ -816,7 +812,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
     if (ench.IsNull())
         return false;
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2a90.FUN_140a60880(0, items);
+    reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(0, items);
     ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
     ((CEquipment*)FUN_1416561a0(pPc))->CollectShownItemsInLayer(list, 0);
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
@@ -835,9 +831,9 @@ int UIHighlightGameMenu::FUN_140c237a0()
             continue;
         if (it->GetRequiredLevel() < 0x32)
             continue;
-        if (it->FUN_140526bd0() != 3)
+        if (it->GetRarity() != 3)
             continue;
-        int nId = data->FUN_14053c620();
+        int nId = data->GetEquipSubtype();
         if (FUN_140408410(&ench->m_slots, &nId) == -1)
             continue;
         if (TSingleton<CItemEnchantLimitTable>::GetInstance()->FUN_14058df90(it.get()) == 0)
@@ -879,7 +875,7 @@ int UIHighlightGameMenu::FUN_140c23f10()
             if (h == 0 || h->GetItem() == 0)
                 continue;
             MS2Ptr<CItem> it = h->GetItem();
-            if (it->FUN_1405279c0() == 0 || it->FUN_1405279c0()->HasEmptyOpenSlot() == 0)
+            if (it->GetSocket() == 0 || it->GetSocket()->HasEmptyOpenSlot() == 0)
                 continue;
             unsigned nBit = it->HasSkin() != 0 ? 8 : 7;
             nMask |= nBit;
@@ -889,7 +885,7 @@ int UIHighlightGameMenu::FUN_140c23f10()
         if (nMask != 0)
         {
             ATL::CAtlArray<MS2Ptr<CItem> > gems;
-            DAT_143ab2a90.FUN_140a60880(6, gems);
+            reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(6, gems);
             for (unsigned __int64 k = 0; k < gems.GetCount(); ++k)
             {
                 MS2Ptr<CItem> g = gems[k];

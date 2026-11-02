@@ -946,11 +946,6 @@ bool Unk_GoResModeLess::operator()(const Unk_GoResMode& a, const Unk_GoResMode& 
 }
 
 // More members of the singletons used here.
-class Unk_GoRenderCfg : public CGraphicOptionTable
-{
-public:
-    int FUN_141376510(int nLevel);                              // the hdr flag of a quality level
-};
 class Unk_GoUiMgr { public: void FUN_141adc530(int nUiId); };
 
 // The graphic state blocks' methods (client\ms2\gameoptionstruct.cpp).
@@ -1017,13 +1012,13 @@ int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg
         if (m_n74 == 0)
             return 0;
         ASData data;
-        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg))
+        if (data.SetArgsIfAny((const Scaleform::GFx::Value*)pArg, nArg))
         {
-            int nLevel = data.FUN_1422b8a10();
+            int nLevel = data.PopInt();
             {
                 MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_hdr"), -1);
                 if (static_cast<Unk_GoCheck*>(sp) != 0)
-                    sp->FUN_1422ce090(reinterpret_cast<Unk_GoRenderCfg*>(TSingleton<CGraphicOptionTable>::GetInstance())->FUN_141376510(nLevel));
+                    sp->FUN_1422ce090(TSingleton<CGraphicOptionTable>::GetInstance()->IsHdrSupported(nLevel));
             }
             {
                 MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
@@ -1125,7 +1120,7 @@ void CGameOptionGraphicDefault::vfunc_6()
     {
         MS2Ptr<ASTextField> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e120(CString("m_devicename"), -1);
         if (static_cast<ASTextField*>(sp) != 0)
-            sp->FUN_1422c4cd0(FUN_141245b20()->FUN_141245ab0());
+            sp->SetTextW(FUN_141245b20()->FUN_141245ab0());
     }
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
@@ -1319,7 +1314,7 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
         TSingleton<CEffectService>::GetInstance()->FUN_1411a8880(m_state.m_nEffectStep);
     if (m_state.m_nMultisampling != pGfx->m_nMultisampling)
     {
-        FUN_14125e4b0(&m_state, reinterpret_cast<Unk_GoRenderCfg*>(TSingleton<CGraphicOptionTable>::GetInstance())->GetMultisampleValue(m_state.m_nMultisampling));
+        FUN_14125e4b0(&m_state, TSingleton<CGraphicOptionTable>::GetInstance()->GetMultisampleValue(m_state.m_nMultisampling));
         bNotify = 1;
     }
     if (m_state.m_bVsync != pGfx->m_bVsync)

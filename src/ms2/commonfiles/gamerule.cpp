@@ -413,7 +413,7 @@ CGameRule::CGameRule()
       m_bc0(0), m_c00(0), m_c10(0), m_c14(0), m_c60(false), m_d10(false),
       m_e98(0), m_ef8(0)
 {
-    if (((class CFeatureManager*)(void*)(TSingleton<CFeatureManager>::GetInstance()))->FUN_14036e510())
+    if (((class CFeatureManager*)(void*)(TSingleton<CFeatureManager>::GetInstance()))->IsRegionCN())
         m_a98 = 1;
     else
         m_a98 = 0;

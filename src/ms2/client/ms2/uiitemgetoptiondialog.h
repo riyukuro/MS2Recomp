@@ -11,19 +11,7 @@
 class Unk_GoOpt
 {
 public:
-    Unk_GoOpt* FUN_141260ea0();                                 // reset, returns this
-    void FUN_141260ed0();                                       // reset to the defaults
-    void FUN_141260f40(void* pConfig);                          // read the "autoLooting" section
-    void FUN_141261530(bool b);                                 // set equip
-    void FUN_141261550(int n);                                  // set the grade
-    void FUN_141261570(bool b);                                 // set consume
-    void FUN_141261590(bool b);                                 // set etc
-    void FUN_1412615b0(bool b);                                 // set meso
-    void FUN_1412615d0(bool b);                                 // set merat
-    void FUN_1412615f0(bool b);                                 // set token
-    void FUN_141261610(bool b);                                 // set other
-    void FUN_141261630(bool b);                                 // set gemstone
-    void FUN_141261650(bool b);                                 // set pet
+    // C3: the setters, reset and load are free functions on Unk_GsAutoLoot* (gameoptionstruct.cpp)
 
     // @0x1419dae30
     int FUN_1419dae30() { return m_nGrade; }

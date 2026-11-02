@@ -146,14 +146,14 @@ void ASEffect::Update()
         if (m_a0->FUN_1422c2300() != nFrame)
             m_a0->vfunc_14(nFrame);
         if (reinterpret_cast<Unk_IntervalTimer&>(m_94).Check(100) != 0)
-            m_c0->FUN_1422c4cd0(FormatRemain(fRemain));
+            m_c0->SetTextW(FormatRemain(fRemain));
         return;
     }
     m_e8 = false;
     int nEndFrame = 0x95;
     if (m_a0->FUN_1422c2300() != nEndFrame)
         m_a0->vfunc_14(nEndFrame);
-    m_c0->FUN_1422c4cd0(L"");
+    m_c0->SetTextW(L"");
 }
 
 // @0x1409b3700
@@ -251,10 +251,10 @@ void ASEffect::UpdateIcon()
         m_b0->vfunc_15("red");
 
     if (m_buff->m_24 > 1)
-        m_d0->FUN_1422c4cd0(FUN_1407196b0(m_buff->m_24));
+        m_d0->SetTextW(FUN_1407196b0(m_buff->m_24));
     else if (m_buff->m_24 <= 1)
-        m_d0->FUN_1422c4cd0(L"");
-    m_c0->FUN_1422c4cd0(L"");
+        m_d0->SetTextW(L"");
+    m_c0->SetTextW(L"");
     Invoke("setIcon", m_buff->FUN_14096d810()->GetIcon());
     m_e9 = false;
 }

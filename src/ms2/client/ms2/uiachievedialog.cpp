@@ -81,7 +81,7 @@ public:
     bool IsDebugMode();
     bool FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel);
 };
-class PCBase { public: int FUN_14166ce30(); };
+class PCBase { public: int IsDead(); };
 class Unk_140166410* FUN_140166410();
 
 // strings
@@ -232,9 +232,9 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         return 1;
     if (_stricmp(szMethod, "onTabChange") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            m_178 = data.FUN_1422b8a10();
-            m_17c = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            m_178 = data.PopInt();
+            m_17c = data.PopInt();
             FUN_1418a8ff0();
             m_1e0.RemoveAll();
             return 1;
@@ -246,15 +246,15 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onReward") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
             void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
             if (pPlayer == 0)
                 return 0;
-            if (((class PCBase*)pPlayer)->FUN_14166ce30() != 0) {
+            if (((class PCBase*)pPlayer)->IsDead() != 0) {
                 FUN_141275260(0x80d, 1, 1);
                 return 0;
             }
-            unsigned nId = data.FUN_1422b8b10();
+            unsigned nId = data.PopUInt();
             COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
             packet.WriteUInt8(3);
             packet.WriteInt32(nId);
@@ -265,9 +265,9 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "OnUseLink") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
-            unsigned nRank = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
+            unsigned nRank = data.PopUInt();
             FUN_140d2cca0(nId, nRank);
         }
         return 1;
@@ -276,8 +276,8 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (DAT_143ab2914 < 50)
             return 0;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
             if (FUN_1418acd10(nId) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.WriteUInt8(5);
@@ -291,8 +291,8 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (DAT_143ab2914 < 50)
             return 0;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
             COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
             packet.WriteUInt8(5);
             packet.WriteInt32(nId);
@@ -304,8 +304,8 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (DAT_143ab2914 < 50)
             return 0;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
             if (FUN_1418acd10(nId) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.WriteUInt8(5);
@@ -319,8 +319,8 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (DAT_143ab2914 < 50)
             return 0;
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
             if (FUN_1418acd10(nId) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::Achieve), 0);
                 packet.WriteUInt8(5);
@@ -332,21 +332,21 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onClickAchieveDetail") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            int nId = data.FUN_1422b8a10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            int nId = data.PopInt();
             FUN_1418aa9b0(nId);
         }
     }
     else if (_stricmp(szMethod, "onSearch") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             RequestSearch();
     }
     else if (_stricmp(szMethod, "onBookmark") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
-            int bBookmark = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
+            int bBookmark = data.PopBool();
             MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
             if (spAchieve.get() != 0) {
                 spAchieve->SetBookmark(bBookmark);
@@ -364,24 +364,24 @@ int UIAchieveDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     else if (_stricmp(szMethod, "onClickSummary") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
             FUN_1418aa9b0(nId);
         }
         return 1;
     }
     else if (_stricmp(szMethod, "onExpand") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned nId = data.FUN_1422b8b10();
-            int bExpand = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned nId = data.PopUInt();
+            int bExpand = data.PopBool();
             m_1e0.SetAt(nId, bExpand);
         }
     }
     else if (_stricmp(szMethod, "onFilter") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            m_190 = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            m_190 = data.PopBool();
             CStringW strKinds = data.FUN_1422b8f40();
             ATL::CAtlArray<CStringW> tokens;
             FUN_14025a680(strKinds, tokens, L",");
@@ -461,7 +461,7 @@ void UIAchieveDialog::vfunc_80(void* pRequest)
 void UIAchieveDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    int nItemId = pArgs->FUN_1422b8b10();
+    int nItemId = pArgs->PopUInt();
     int nRank = FUN_14053feb0(nItemId);
     ASTooltip tip(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e1770(nItemId, nRank) != 0)
@@ -510,11 +510,11 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         *pRetVal = value;
     }
     else if (_stricmp("getTooltipColor", strMethod) == 0) {
-        unsigned nUnk1 = pArgs->FUN_1422b8b10();
-        unsigned nUnk2 = pArgs->FUN_1422b8b10();
-        unsigned nUnk3 = pArgs->FUN_1422b8b10();
-        unsigned nUnk4 = pArgs->FUN_1422b8b10();
-        ASObj data(pArgs->FUN_1422b9260(), 2);
+        unsigned nUnk1 = pArgs->PopUInt();
+        unsigned nUnk2 = pArgs->PopUInt();
+        unsigned nUnk3 = pArgs->PopUInt();
+        unsigned nUnk4 = pArgs->PopUInt();
+        ASObj data(pArgs->PopValue(), 2);
         unsigned nPalette = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("paletteID")))->GetUInt();
         unsigned nSN = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("colorSN")))->GetUInt();
         MS2Ptr<ItemColorEx> elem = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorBySN(nPalette, nSN);
@@ -537,8 +537,8 @@ void UIAchieveDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
     }
     else if (_stricmp("getTooltipAchieve", strMethod) == 0) {
         void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
-        unsigned nId = pArgs->FUN_1422b8b10();
-        unsigned nGrade = pArgs->FUN_1422b8b10();
+        unsigned nId = pArgs->PopUInt();
+        unsigned nGrade = pArgs->PopUInt();
         ASTooltip tip(pPlayer, 2, 2);
         if (tip.FUN_1409e21a0(nId, nGrade) != 0) {
             tip.FUN_1407cbb20("comment", GetStringCommon(0x781));
@@ -629,11 +629,11 @@ void UIAchieveDialog::FUN_1418a9360()
             row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4a, spChild->m_nId));
             row.FUN_1409c0dc0("rendererClassName", "export_renderer_category_low");
             FUN_1418ae010(row, "tabType", spChild->m_nTab);
-            children.FUN_1422bbf00(row);
+            children.PushObj(row);
         }
         if (children.GetLength() != 0)
             node.FUN_1409eb1d0("nodes", children);
-        nodes.FUN_1422bbf00(node);
+        nodes.PushObj(node);
     }
     ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("setCategory", tree);
 }
@@ -988,7 +988,7 @@ void UIAchieveDialog::FUN_1418abaa0(ASObj& rRow, CAchieve* pAchieve)
         ASObj item(2);
         item.FUN_1407cbb20("condition", FUN_1418ad5d0(pAchieve->GetCondType(), nId));
         item.FUN_1407cb9c0("complete", FUN_1418ad960(pAchieve->GetCondType(), nId));
-        list.FUN_1422bbf00(item);
+        list.PushObj(item);
     }
     rRow.FUN_1409eb1d0("reqCondition", list);
 }
@@ -1019,7 +1019,7 @@ void UIAchieveDialog::FUN_1418abc60(ASObj& rRow, CAchieve* pAchieve)
                     item.FUN_1407cbb20("trophy", FUN_14093b970(nId));
                     item.FUN_1407cb9c0("complete", ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(nId, nReqGrade));
                     item.FUN_1407cb9c0("grade", nReqGrade);
-                    list.FUN_1422bbf00(item);
+                    list.PushObj(item);
                 }
             }
             rRow.FUN_1409eb1d0("reqAchieve", list);
@@ -1054,7 +1054,7 @@ void UIAchieveDialog::FUN_1418abfa0(ASObj& rRow, CAchieve* pAchieve)
             if (m_198.Lookup(spGrade->m_reward.m_nType, nChecked))
                 item.FUN_1407cb9c0("checked", nChecked);
         }
-        list.FUN_1422bbf00(item);
+        list.PushObj(item);
     }
     rRow.FUN_1409eb1d0("clearAchieve", list);
 }
@@ -1408,7 +1408,7 @@ static void FUN_1418ae010(ASObj& rObj, const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_AcObjView&>(rObj).m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&static_cast<Unk_AcObjView&>(rObj).m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1418adf60
@@ -1416,7 +1416,7 @@ void AScript::FUN_1418adf60(const char* szName, AScript obj)
 {
     ASData data;
     data.AddValue(obj.FUN_1422bb890());
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc7e0-0x142cbc890 .text$yd

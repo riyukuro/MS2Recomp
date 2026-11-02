@@ -158,8 +158,6 @@ void FUN_140159b70(long hr);                                        // AtlThrow
 // The singletons the price helpers talk to (0x143aac4c8 / 0x143aac4d0, the locale one is TSingleton<CLocaleLanguage>).
 class Unk_BmPriceMgr : public CLua
 {
-public:
-    void FUN_1406752e0(long long);
 };
 class CGameRule   // C3: member view for the former free stand-ins
 {
@@ -219,7 +217,7 @@ long long FUN_1401bcbf0(CItem* pItem, long long nPrice)
     MS2Ptr<Unk_BmItemData> data(reinterpret_cast<Unk_BmItemData*>(pItem->FUN_140527840()));
     if (data == 0)
         return 0;
-    int nRarity = pItem->FUN_140526bd0();
+    int nRarity = pItem->GetRarity();
     unsigned nGroup = data->m_nGroup;
     unsigned nEnchant = FUN_140630d00(pItem->FUN_1405278a0());
     long long nResult = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcBlackMarketBuyFeeCost(nPrice, nRarity, nGroup, nEnchant);
@@ -245,7 +243,7 @@ float FUN_1401bcd60()
 // @0x1401bcdb0
 void FUN_1401bcdb0(long long n)
 {
-    FUN_1401c0db0()->FUN_1406752e0(n);
+    FUN_1401c0db0()->CalcBlackMarketRegisterDeposit(n);
 }
 
 // @0x1401bcde0
@@ -555,7 +553,7 @@ void CBlackMarketProduct::Write(COutputStream* pStream)
     pStream->WriteUInt8((unsigned char)m_nStateB);
     pStream->WriteInt64(m_item->GetItemUid());
     pStream->WriteInt32(m_item->FUN_1405276c0());
-    pStream->WriteUInt8((unsigned char)m_item->FUN_140526bd0());
+    pStream->WriteUInt8((unsigned char)m_item->GetRarity());
     pStream->WriteInt64(m_qw68);
     m_item->FUN_140524ad0(*pStream);
 }

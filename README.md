@@ -32,14 +32,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 178,315 | 177,507 (99.5%) | 769 (0.4%) | 100.0% |
-| Runtime & middleware | 21,836 | 19,577 (89.7%) | 2,093 (9.6%) | 99.2% |
-| Gamebryo engine | 16,742 | 16,594 (99.1%) | 119 (0.7%) | 99.8% |
-| Game framework · egf | 12,742 | 12,648 (99.3%) | 74 (0.6%) | 99.8% |
-| Libraries | 6,708 | 6,310 (94.1%) | 52 (0.8%) | 94.8% |
-| Foundation | 11,658 | 11,526 (98.9%) | 100 (0.9%) | 99.7% |
+| Game · ms2 | 177,800 | 177,217 (99.7%) | 571 (0.3%) | 100.0% |
+| Runtime & middleware | 22,048 | 19,960 (90.5%) | 1,922 (8.7%) | 99.2% |
+| Gamebryo engine | 16,769 | 16,612 (99.1%) | 122 (0.7%) | 99.8% |
+| Game framework · egf | 12,744 | 12,651 (99.3%) | 73 (0.6%) | 99.8% |
+| Libraries | 6,707 | 6,312 (94.1%) | 49 (0.7%) | 94.8% |
+| Foundation | 11,933 | 11,793 (98.8%) | 98 (0.8%) | 99.6% |
 | Imports | 782 | 744 (95.1%) | 1 (0.1%) | 95.3% |
-| **Total** | **248,783** | 244,906 (98.4%) | 3,208 (1.3%) | 99.7% |
+| **Total** | **248,783** | 245,289 (98.6%) | 2,836 (1.1%) | 99.7% |
 
 Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild.
 <!-- progress:end -->

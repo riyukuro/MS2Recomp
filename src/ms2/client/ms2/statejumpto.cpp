@@ -89,7 +89,7 @@ void StateJumpTo::vfunc_5(int n)
         {
             NiPoint3 kRot = m_pOwner->vfunc_20();
             kRot.z = m_spJump->m_f38;
-            m_pOwner->FUN_14166d970(*reinterpret_cast<efd::Point3*>(&kRot));
+            m_pOwner->SetRotationAndTargetYaw(*reinterpret_cast<efd::Point3*>(&kRot));
         }
         m_pOwner->vfunc_19(m_spJump->m_pos);
     }

@@ -188,10 +188,10 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
         return 0;
     if (pItem->FUN_140525c60() == 1)
         return 0;
-    if (pItem->FUN_140527270() > 0)
+    if (pItem->GetPlusLevel() > 0)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
-    if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
+    if (!m_map.Lookup(ITEM_DATA(pItem)->GetEquipSubtype(), spLimit))
         return 0;
     if (pItem->GetRequiredLevel() < spLimit->m_nMinLv)
         return 0;
@@ -218,7 +218,7 @@ int CItemEnchantLimitTable::FUN_14058e230(CItem* pItem)
     if (pItem->FUN_140527840() == 0)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
-    if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
+    if (!m_map.Lookup(ITEM_DATA(pItem)->GetEquipSubtype(), spLimit))
         return 0;
     if (pItem->GetRequiredLevel() < spLimit->m_nMinLv)
         return 0;
@@ -238,7 +238,7 @@ unsigned CItemEnchantLimitTable::IsMaxGrade(CItem* pItem)
     if (pItem->FUN_140527840() == 0)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
-    if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
+    if (!m_map.Lookup(ITEM_DATA(pItem)->GetEquipSubtype(), spLimit))
         return 0;
     return pItem->FUN_140526fc0() == spLimit->m_nMaxGrade;
 }
@@ -246,7 +246,7 @@ unsigned CItemEnchantLimitTable::IsMaxGrade(CItem* pItem)
 // @0x14058e4a0
 bool CItemEnchantLimitTable::HasLimit(CItemData* pData)
 {
-    return m_map.Lookup(pData->FUN_14053c620()) != 0;
+    return m_map.Lookup(pData->GetEquipSubtype()) != 0;
 }
 
 // @0x14058e500
@@ -257,7 +257,7 @@ int CItemEnchantLimitTable::FUN_14058e500(unsigned nItemId, int nGrade)
     if (!spData)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
-    if (!m_map.Lookup(spData->FUN_14053c620(), spLimit))
+    if (!m_map.Lookup(spData->GetEquipSubtype(), spLimit))
         return 0;
     CItemData* pLow = spData.operator->();
     if (pLow->limit.levelLimit < spLimit->m_nMinLv)

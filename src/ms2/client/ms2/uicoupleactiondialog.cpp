@@ -275,7 +275,7 @@ MS2_REPLACE_METHOD(0x140BEC570, UICoupleActionDialog, vfunc_13, 488, 0x3C8B1F60)
 // @0x140bec760
 void UICoupleActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    int nEmotion = pArgs->FUN_1422b8b10();
+    int nEmotion = pArgs->PopUInt();
     MS2Ptr<CDynamicActionData> spData = CDynamicActionData::Find(nEmotion);
     if (spData.IsNull())
         return;
@@ -299,8 +299,8 @@ int UICoupleActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onSelectEmotion") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            int nEmotion = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
+            int nEmotion = data.PopUInt();
             if (nEmotion == 0)
                 return 0;
             FUN_140bed1f0(nEmotion);
@@ -308,28 +308,28 @@ int UICoupleActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
     } else if (_stricmp(szMethod, "onFavoriteSort") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        m_1a1 = data.FUN_1422b8a90();
+        m_1a1 = data.PopBool();
         FUN_140becef0();
     } else if (_stricmp(szMethod, "onSort") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        m_1a0 = data.FUN_1422b8a90();
+        m_1a0 = data.PopBool();
         FUN_140becef0();
     } else if (_stricmp(szMethod, "onFavorite") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
-        unsigned int nEmotion = data.FUN_1422b8b10();
+        unsigned int nEmotion = data.PopUInt();
         if (nEmotion == 0)
             return 0;
         std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.find(nEmotion);
         if (it == m_180.end())
             return 0;
         unsigned short nLevel = it->second->m_level;
-        bool bFavorite = data.FUN_1422b8a90();
+        bool bFavorite = data.PopBool();
         it->second->m_favorite = bFavorite;
         COutPacket packet(static_cast<int>(SendOp::Emote), 0);
         packet.WriteUInt8(4);
@@ -341,7 +341,7 @@ int UICoupleActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             FUN_140becef0();
     } else if (_stricmp(szMethod, "onSearch") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) == 0)
             return 0;
         CStringW strSearch = data.FUN_1422b8f40();
         SetSearchText(strSearch);
@@ -485,7 +485,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
         action.FUN_1407cb9c0("isNew", nNew);
         action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
         action.FUN_1407cbbe0("isFavorite", bFavorite);
-        actions.FUN_1422bbf00(action);
+        actions.PushObj(action);
     }
     PadEntriesToGrid(actions);
     pDlg->FUN_140bd2cb0("buildActions", actions);
@@ -548,7 +548,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
         action.FUN_1407cb9c0("isNew", nNew);
         action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
         action.FUN_1407cbbe0("isFavorite", bFavorite);
-        actions.FUN_1422bbf00(action);
+        actions.PushObj(action);
     }
     PadEntriesToGrid(actions);
     pDlg->FUN_140bd2cb0("buildActions", actions);

@@ -260,7 +260,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
                 MS2Ptr<CItem> spItem(new CItem());
                 if (spItem->FUN_14052b130(nItemId, nRarity, 0))
                 {
-                    spItem->FUN_140526c70(nAmount);
+                    spItem->SetCountClamped(nAmount);
                     int nSlotType = 0x415;
                     CString strKey;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
@@ -543,9 +543,9 @@ int UIManufactureStatus::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("OnRecipe", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            int nBook = data.FUN_1422b8b10();
+            int nBook = data.PopUInt();
             float fX = data.PopFloat();
             float fY = data.PopFloat();
             if (nBook > 0)
@@ -640,7 +640,7 @@ void UIManufactureStatus::FUN_1412dc480()
                 MS2Ptr<CItem> spItemObj(new CItem());
                 if (spItemObj->FUN_14052b130(nItemId, nRank, 0))
                 {
-                    spItemObj->FUN_140526c70(nAmount);
+                    spItemObj->SetCountClamped(nAmount);
                     strBind.Format("ManufactureStatusPanel_.%d", nIndex + 1);
                     FUN_141415450(strBind, spItemObj, nIndex, 0x415, 0x800);
                     m_178.Add(strBind);
@@ -714,7 +714,7 @@ int UIManufactureStatus::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"confirmName", 0) == 0 && nResult == 0)
         {
@@ -936,7 +936,7 @@ int UIMDEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         if (nResult == 0 && strTag.Find(L"exportMerat", 0) != -1)
@@ -1075,7 +1075,7 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
         ASTooltip tip(4, 2);
         if (tip.FUN_1409e1770(nItemId, pProduct->m_nGrade) != 0)
         {
-            tip.FUN_1409c69b0(GetStringCommon(0x758));
+            tip.SetEnablePuton(GetStringCommon(0x758));
             pRow->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
         }
     }
@@ -1407,7 +1407,7 @@ void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
     if (!spList)
         return;
     if (MS2Ptr<ASTextField> spName = reinterpret_cast<AScript*>(spPanel.get())->FUN_1409b4620("m_name"))
-        reinterpret_cast<ASTextField*>(spName.operator->())->FUN_1422c4cd0(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5");
+        reinterpret_cast<ASTextField*>(spName.operator->())->SetTextW(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5");
     ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >& rProducts = m_180 == 2 ? s_shop.m_products : *TSingleton<CMeratMarketPremium>::GetInstance()->GetProducts();
     spList->Invoke("resetRenderer");
     for (size_t i = 0; i < rProducts.GetCount(); i++)
@@ -1464,9 +1464,9 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (_stricmp("getItemData", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
-            Scaleform::GFx::Value vRow = data.FUN_1422b9260();
+            Scaleform::GFx::Value vRow = data.PopValue();
             MS2Ptr<ASObj> spObj = FUN_1409e7dc0(m_28, vRow);
             if (spObj.get())
             {
@@ -1515,7 +1515,7 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     else if (_stricmp("onClickImportLayout", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && m_30.get())
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0 && m_30.get())
         {
             CString strFile = data.FUN_1422b8d30();
             FUN_1412dfe70(strFile, &*m_30);
@@ -1539,7 +1539,7 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     else if (_stricmp("onClickItemSearch", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strSearch = data.FUN_1422b8f40();
             FUN_1412dea90(strSearch);
@@ -1549,7 +1549,7 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     else if (_stricmp("onChangeMode", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CString strMode = data.FUN_1422b8d30();
             FUN_1401d3700(strMode);

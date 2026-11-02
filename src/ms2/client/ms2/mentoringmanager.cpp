@@ -566,11 +566,11 @@ bool FUN_140b73bc0(MyPC* pMyPC)
         return false;
     if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x620001f)
         return false;
-    if (((Unk_MMPlayer*)pMyPC)->FUN_1416595d0() == 1)
+    if (((Unk_MMPlayer*)pMyPC)->IsInCubeMode() == 1)
         return false;
     if (((Unk_MMPlayer*)pMyPC)->FUN_141675ed0() == 1)
         return false;
-    switch (((Unk_MMPlayer*)pMyPC)->FUN_14166c930())
+    switch (((Unk_MMPlayer*)pMyPC)->GetCurStateId())
     {
     case 1:
     case 2:

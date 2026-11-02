@@ -15,7 +15,9 @@
 // MS2-PIN: ??$format_arg@_WW4Unk_UnlimitedEnchantError@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_UnlimitedEnchantError@@@Z 0x140fb7ad0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiunlimitedenchantdialog.cpp"    // assumed
 
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/astilelist.h"
 
 #include "uiunlimitedenchantdialog.h"
 
@@ -50,18 +52,6 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 
 class ASDialog : public ASDisplayObject {};
 
-// The item list control of the movie.
-class Unk_UeBag : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
 
 // A dialog's position record (the maid dialog's, UI type 0x4e40).
 UITalkCinematic* FUN_140a7b2b0(int nId);
@@ -120,11 +110,11 @@ extern Unk_Inventory g_143ab2a90;
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
-template <> MS2Ptr<Unk_UeBag>::MS2Ptr(int nNull);                    // 0x140acd430
-template <> MS2Ptr<Unk_UeBag>::~MS2Ptr();                           // 0x140acd710
-template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::get() const;              // 0x140acd9d0
-template <> MS2Ptr<Unk_UeBag>::operator Unk_UeBag*() const;           // 0x140acd9d0
-template <> Unk_UeBag* MS2Ptr<Unk_UeBag>::operator->() const;       // 0x140acd9f0
+template <> MS2Ptr<ASTileList>::MS2Ptr(int nNull);                    // 0x140acd430
+template <> MS2Ptr<ASTileList>::~MS2Ptr();                           // 0x140acd710
+template <> ASTileList* MS2Ptr<ASTileList>::get() const;              // 0x140acd9d0
+template <> MS2Ptr<ASTileList>::operator ASTileList*() const;           // 0x140acd9d0
+template <> ASTileList* MS2Ptr<ASTileList>::operator->() const;       // 0x140acd9f0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -184,7 +174,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     if (_stricmp(szMethod, "OnEnchant") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
             SendLimitBreakMode1(nUid);
@@ -194,7 +184,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     else if (_stricmp(szMethod, "OnSelect") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
             SendLimitBreakMode0(nUid);
@@ -204,7 +194,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     else if (_stricmp(szMethod, "OnRetry") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
             SendLimitBreakMode0(nUid);
@@ -247,7 +237,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
         return;
     {
         MS2Ptr<CItem> spResult(new CItem());
-        if (!spResult->FUN_140523c40(spTarget->FUN_1405276c0(), spTarget->FUN_140526bd0(), 0))
+        if (!spResult->FUN_140523c40(spTarget->FUN_1405276c0(), spTarget->GetRarity(), 0))
             return;
         {
             spResult->FUN_140524eb0(*pPacket);
@@ -276,7 +266,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                     ASObj entry(2);
                     entry.FUN_1407cba60("binding", m_binder.BindItem(pIngredient));
                     entry.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nCount));
-                    list.FUN_1422bbf00(entry);
+                    list.PushObj(entry);
                 }
                 if (ref->m_b == 0x60 && nCount > nHave)
                     nFee = (__int64)((nCount - nHave) * 1000);
@@ -365,7 +355,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
         FUN_14141f970(GetTypeName());
         MS2Ptr<CItem> (*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
         FUN_14141f770(GetTypeName(), (unsigned)m_items.GetCount(), m_items, pfnGetItem, 0x535, 8);
-        if (MS2Ptr<Unk_UeBag> spBag = FUN_140ba4b70("m_itemBag"))
+        if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
         {
             reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);
             reinterpret_cast<MS2Ptr<ASCoreList>&>(spBag)->FUN_1422dd1d0();
@@ -428,7 +418,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb7690(__int64 nUid)
                 nSelected = i;
         }
     }
-    if (MS2Ptr<Unk_UeBag> spBag = FUN_140ba4b70("m_itemBag"))
+    if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
     {
         spBag->Invoke("update");
         reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);
@@ -447,7 +437,7 @@ Unk_UnlimitedEnchantError UIUnlimitedEnchantDialog::FUN_140fb7870(MS2Ptr<CItem> 
         return UNLIMITED_ENCHANT_INVALID_ITEM;
     if (spData->GetUnlimitedEnchantMaxGrade() == 0)
         return UNLIMITED_ENCHANT_INVALID_ITEM;
-    int nLevel = spItem->FUN_140527270();
+    int nLevel = spItem->GetPlusLevel();
     if (nLevel == 0)
     {
         if (reinterpret_cast<CItemEnchantLimitTable*>(TSingleton<CItemEnchantLimitTable>::GetInstance())->IsMaxGrade(spItem.get()) == 0)

@@ -770,7 +770,7 @@ void CStore::OnCount(CInPacket* pPacket)
     if (!pItem) {
         return;
     }
-    ((CItem*)pItem)->FUN_140526c70(nCount);
+    ((CItem*)pItem)->SetCountClamped(nCount);
     ((struct Unk_StoreEvents*)FUN_140a6a840())->vfunc_10(pItem.get());
 }
 

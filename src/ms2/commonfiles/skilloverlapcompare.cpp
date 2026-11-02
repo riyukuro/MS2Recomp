@@ -113,7 +113,7 @@ public:
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
-void FUN_14086f970(void* pElem, const char* pszName, double fValue);        // SetDoubleAttribute
+class TiXmlElement { public: void SetDoubleAttribute(char const *, double); };   // C3: member view (was FUN_14086f970)
 class JobData   // C3: member view for the former free stand-ins
 {
 public:
@@ -414,7 +414,7 @@ int SkillBeginCondition::Save(void* pParent)
     {
         Unk_TiXmlElement elem("beginCondition");
         if (0.0f < m_fProbability)
-            FUN_14086f970(&elem, "probability", m_fProbability);
+            reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("probability", m_fProbability);
         if (m_nUseTargetCountFactor != s_default.m_nUseTargetCountFactor)
             XmlSetAttr((class TiXmlElement*)(&elem), "useTargetCountFactor", m_nUseTargetCountFactor);
         if (m_nAllowBattleRidingState != s_default.m_nAllowBattleRidingState)
@@ -573,9 +573,9 @@ int SkillCondition::Save(void* pParent)
         // The element name is the beginCondition one in the original.
         Unk_TiXmlElement elem("beginCondition");
         if (s_default.m_fInvokeEffectFactor != m_fInvokeEffectFactor)
-            FUN_14086f970(&elem, "invokeEffectFactor", m_fInvokeEffectFactor);
+            reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("invokeEffectFactor", m_fInvokeEffectFactor);
         if (s_default.m_fDefaultRechargingCooldownTime != m_fDefaultRechargingCooldownTime)
-            FUN_14086f970(&elem, "defaultRechargingCooldownTime", m_fDefaultRechargingCooldownTime);
+            reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("defaultRechargingCooldownTime", m_fDefaultRechargingCooldownTime);
         if (m_nUseCoolDownShowUI != s_default.m_nUseCoolDownShowUI)
             XmlSetAttr((class TiXmlElement*)(&elem), "useCoolDownShowUI", m_nUseCoolDownShowUI);
         if (m_nOnlyShadowWorld != s_default.m_nOnlyShadowWorld)

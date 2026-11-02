@@ -212,7 +212,7 @@ int UIRevivalDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0)
     {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
@@ -241,7 +241,7 @@ bool UIRevivalDialog::SendRevivalMode1(int nResult, const CMsgBoxData& box)
         MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPc == 0)
             return false;
-        if (pPc->FUN_14166ce30() != 0)
+        if (pPc->IsDead() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.WriteUInt8(1);
@@ -282,8 +282,8 @@ int UIRevivalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (_stricmp("onRevival", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141abad30(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
+            FUN_141abad30(data.PopInt());
         return 1;
     }
     return 0;
@@ -413,7 +413,7 @@ void UIRevivalDialog::FUN_141abb600()
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMsg, static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01700(0x476, 0, 0);
+            spBox->SetButtonLabelIds(0x476, 0, 0);
             spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
             FUN_140d73c60(spBox);
         }
@@ -428,7 +428,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (nFieldId != nTo)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FormatStringId<CStringW>(0x287, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nTo)), 1);
-            spBox->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode0));
+            spBox->SetCallback(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode0));
             spBox->FUN_141a01800(2);
             FUN_140d73c60(spBox);
         }
@@ -491,7 +491,7 @@ void UIRevivalDialog::FUN_141abbb20()
             strMsg = FormatStringId<__int64>(0x283, m_190);
         m_180 = FUN_140d73f20(strMsg, 1);
         m_180->FUN_141a01540(L"revival_merat");
-        m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
+        m_180->SetCallback(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
         FUN_140d73c60(m_180);
     }
 }
@@ -535,7 +535,7 @@ void UIRevivalDialog::FUN_141abc080()
             strMsg = FUN_14028dfa0<__int64>(L"s_msg_revival_meso_cannot_merat_msg_box", nCost);
         m_180 = FUN_140d73f20(strMsg, 1);
         m_180->FUN_141a01540(L"revival_merat");
-        m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
+        m_180->SetCallback(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
         FUN_140d73c60(m_180);
         return;
     }

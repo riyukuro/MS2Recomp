@@ -42,10 +42,11 @@
 
 MS2InputService* FUN_140a58540();                       // TSingleton<MS2InputService>::GetInstance
 
+void FUN_140a439b0(void* pCrashManager);
+
 class Unk_140a44830                                     // the game log / diagnostics object
 {
 public:
-    void FUN_140a439b0();
     bool FUN_140d8f0b0() const { return m_bFlag; }      // 0x140d8f0b0
     char m_pad[0x60];
     bool m_bFlag;
@@ -55,12 +56,6 @@ public:
 class Unk_SettingsHolder;                               // option flags
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
-
-class Unk_KeyBindings                                   // key binding table
-{
-public:
-    int FUN_141431a90(int nKey);
-};
 
 UIMainPlayerInfo* FUN_140931900(int nId);
 
@@ -100,7 +95,7 @@ class CBigDataLogSystem;
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
+    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
 };
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -152,7 +147,7 @@ efd::AsyncResult MS2InputService::OnInit()
 {
     efd::AsyncResult result = InputService::OnInit();
     if (!reinterpret_cast<Unk_140a44830*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_140d8f0b0())
-        reinterpret_cast<Unk_140a44830*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_140a439b0();
+        FUN_140a439b0(TSingleton<CrashManagerCli>::GetInstance());
     NiInputSystem* pInput = GetInputSystem();
     if (pInput != NULL)
     {
@@ -445,7 +440,7 @@ MS2_REPLACE(0x140D8B2C0, MS2InputService::GetMouseButtonIndex, 50, 0x886E2638);
 // @0x140d8b300
 int MS2InputService::GetGamePadButtonIndex(int nKey)
 {
-    if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a90(nKey) != 0 && nKey < 0xa2)
+    if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->IsGamepadKey(nKey) != 0 && nKey < 0xa2)
     {
         nKey = FUN_140a58540()->RemapPadButtonForDualShock(nKey);
         return nKey - 0x92;
@@ -627,7 +622,7 @@ void MS2InputService::SetGamePadEnabled(bool bEnable, bool bNotify)
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(L"s_gamepad_notice_search_gamepad"), 0, L"");
                 if (box)
                 {
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::OnNoGamePadMsgBoxResult));
+                    box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::OnNoGamePadMsgBoxResult));
                     FUN_140d73c60(box);
                 }
             }

@@ -371,14 +371,14 @@ int UIItemRemakeScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     if (_stricmp(szMethod, "onClickConfirm") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140f5acf0(data);
         return 1;
     }
     else if (_stricmp("GetEnableLockOption", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        if (data.SetArgsIfAny(pArgs, nArgs) != 0)
             FUN_140f5bbb0(data);
     }
     return 0;
@@ -479,7 +479,7 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
     CStringW strHighSa;
     unsigned char bHighSa = 0;
     FUN_1409e4950(MS2Ptr<CItem>(spItem), strHighSa, (bool*)&bHighSa);
-    if (spItem->FUN_140526bd0() >= 5 && bHighSa == 1)
+    if (spItem->GetRarity() >= 5 && bHighSa == 1)
     {
         CStringW strAsk = GetStringCommonByKey(L"s_itemremake_scroll_ask_high_sa_item_option");
         CStringW strText;
@@ -489,10 +489,10 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strText), 0, CStringW(L""));
         if (box.get() != 0)
         {
-            box->FUN_141a027c0(RmMsgBoxFn(this, &UIItemRemakeScrollDialog::FUN_140f5f2a0));
+            box->SetCallback(RmMsgBoxFn(this, &UIItemRemakeScrollDialog::FUN_140f5f2a0));
             box->FUN_141a01600(spItem->GetItemUid());
             box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            box->FUN_141a01700(0x475, 0x476, 0);
+            box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<__int64>(nOptionUid);
             box->Append<int>(nUnk);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
@@ -526,7 +526,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
         return;
     if (spRow->m_nPetKind != 0 && nUnk == 0)
     {
-        if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->HasBindingRule() != 0 && reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->FUN_140635120() == 0)
+        if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->HasBindingRule() != 0 && reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->HasBinding() == 0)
         {
             CStringW strAsk = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_transfer_bind_pet_remakeoption"), pPlayer->vfunc_77());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strAsk), 0, CStringW(s_strBindPetTag));
@@ -535,7 +535,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
                 box->FUN_141a01600(spItem->GetItemUid());
                 box->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                 box->Append<__int64>(nOptionUid);
-                box->FUN_141a01700(0x477, 0x478, 0);
+                box->SetButtonLabelIds(0x477, 0x478, 0);
                 FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
                 return;
             }
@@ -756,7 +756,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
         RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_item");
         return;
     }
-    const Scaleform::GFx::Value v = data.FUN_1422b9260();
+    const Scaleform::GFx::Value v = data.PopValue();
     ASObj obj(v, 2);
     int nSelected = obj.GetMember("selectedOptionIndex").GetInt();
     if (nSelected == -1)
@@ -806,8 +806,8 @@ void UIItemRemakeScrollDialog::FUN_140f5bbb0(ASData& data)
 {
     if ((m_30 == (AScript*)0) != 0 || m_spTarget == 0)
         return;
-    unsigned nHave = data.FUN_1422b8b10();
-    unsigned nNeed = data.FUN_1422b8b10();
+    unsigned nHave = data.PopUInt();
+    unsigned nNeed = data.PopUInt();
     if (m_nOptionCount <= 1)
     {
         NOTICE(GetStringCommonByKey(L"s_itemremake_notice_disable_lock_item_option_error_count"));

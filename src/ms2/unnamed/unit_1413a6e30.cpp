@@ -79,7 +79,7 @@ public:
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14166c930();
+    int GetCurStateId();
 };
 
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp); the factories not defined here belong
@@ -230,7 +230,7 @@ int CGuideConditionState::vfunc_3()
     Unk_GcPC* pPC = (Unk_GcPC*)((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    return FUN_1413a55a0(((class PCBase*)(class Unk_GcPC*)(pPC))->FUN_14166c930() == m_n20);
+    return FUN_1413a55a0(((class PCBase*)(class Unk_GcPC*)(pPC))->GetCurStateId() == m_n20);
 }
 MS2_REPLACE_METHOD(0x1413A7450, CGuideConditionState, vfunc_3, 96, 0xB70C5F8D);
 

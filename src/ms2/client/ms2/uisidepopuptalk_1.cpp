@@ -112,9 +112,9 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (_stricmp(szMethod, "onHideComplete") == 0)
     {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
+        if (args.SetArgsIfAny(pArgs, nArgs))
         {
-            int nKind = args.FUN_1422b8a10();
+            int nKind = args.PopInt();
             if (nKind == 1)
                 FUN_140e886f0(1);
         }
@@ -123,9 +123,9 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onPlayVoice") == 0)
     {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
+        if (args.SetArgsIfAny(pArgs, nArgs))
         {
-            eSidePopupVoice eKey = (eSidePopupVoice)args.FUN_1422b8a10();
+            eSidePopupVoice eKey = (eSidePopupVoice)args.PopInt();
             unsigned nEffect = 0;
             if (m_voices.Lookup(eKey, nEffect))
             {
@@ -148,9 +148,9 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onPlaySound") == 0)
     {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
+        if (args.SetArgsIfAny(pArgs, nArgs))
         {
-            int nKind = args.FUN_1422b8a10();
+            int nKind = args.PopInt();
             CString strSound = args.FUN_1422b8d30();
             FUN_141276180(strSound, "");
         }
@@ -164,7 +164,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp(szMethod, "onEnterWeddingHall") == 0)
     {
         ASData args;
-        if (args.FUN_1422b9620(pArgs, nArgs))
+        if (args.SetArgsIfAny(pArgs, nArgs))
         {
             unsigned __int64 nId = FUN_140718370(args.FUN_1422b8f40());
             if (nId == 0)
@@ -377,5 +377,5 @@ void ASObj::FUN_140e88a10(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }

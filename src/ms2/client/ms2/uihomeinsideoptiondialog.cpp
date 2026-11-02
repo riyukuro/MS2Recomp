@@ -59,7 +59,6 @@ public:
     virtual void vfunc_24(bool bEnable);                        // 24
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                    // add an item
-    unsigned char FUN_1422df6c0();                              // the selection
 };
 class Unk_HioButton : public ASMovieClip
 {
@@ -182,7 +181,7 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
         if (box.get() != 0)
         {
-            box.operator->()->FUN_141a027c0(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c27fd0));
+            box.operator->()->SetCallback(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c27fd0));
             FUN_140d73c60(box);
         }
     }
@@ -195,7 +194,7 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
                 if (box.get() != 0)
                 {
-                    box.operator->()->FUN_141a027c0(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c28000));
+                    box.operator->()->SetCallback(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c28000));
                     FUN_140d73c60(box);
                 }
             }
@@ -236,7 +235,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
 {
     if (MS2Ptr<ASDropdownMenu> spBg = FUN_140c28560<ASDropdownMenu>("m_background"))
     {
-        unsigned char nSelected = reinterpret_cast<Unk_HioCombo*>(spBg.operator->())->FUN_1422df6c0();
+        unsigned char nSelected = (unsigned char)spBg->GetSelectedIndex();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x33);
         packet.WriteUInt8(nSelected);
@@ -244,7 +243,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     }
     if (MS2Ptr<ASDropdownMenu> spLight = FUN_140c28560<ASDropdownMenu>("m_light"))
     {
-        unsigned char nSelected = reinterpret_cast<Unk_HioCombo*>(spLight.operator->())->FUN_1422df6c0();
+        unsigned char nSelected = (unsigned char)spLight->GetSelectedIndex();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x34);
         packet.WriteUInt8(nSelected);
@@ -252,7 +251,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
     }
     if (MS2Ptr<ASDropdownMenu> spCamera = FUN_140c28560<ASDropdownMenu>("m_camera"))
     {
-        unsigned char nSelected = reinterpret_cast<Unk_HioCombo*>(spCamera.operator->())->FUN_1422df6c0();
+        unsigned char nSelected = (unsigned char)spCamera->GetSelectedIndex();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x36);
         packet.WriteUInt8(nSelected);

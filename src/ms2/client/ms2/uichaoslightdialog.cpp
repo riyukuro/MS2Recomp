@@ -209,45 +209,45 @@ int UIChaosLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("onCheckApply", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            bool bApply = data.FUN_1422b8a90();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            bool bApply = data.PopBool();
             FUN_1410411e0(bApply);
         }
         return 1;
     }
     else if (_stricmp("onChangeSliderBoost", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_spParam->m_fFresnelBoost = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderExponent", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_spParam->m_fFresnelExponent = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderDimmer", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_spParam->m_fDimmer = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderRed", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_spParam->m_fRed = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderGreen", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_spParam->m_fGreen = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderBlue", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             m_spParam->m_fBlue = data.PopFloat();
         return 1;
     }

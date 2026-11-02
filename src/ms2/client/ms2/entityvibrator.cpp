@@ -33,6 +33,7 @@ public:
     void* m_storage[14];
 };
 #include <efd/ISystemService.h>
+#include <NiAVObject.h>   // C3: NiAVObject::GetTranslate, GetRotate
 // The ref'd service (class id 0x06100017) the framework hands out; buddy.cpp keeps the same view.
 class Unk_Service6100017 : public efd::ISystemService { };
 struct Unk_EntityAppFramework;
@@ -109,8 +110,6 @@ struct Unk_VibMat : Unk_NiMatrix3
 {
     Unk_VibMat() {}
     Unk_VibMat(const Unk_EfdMatrix3& m) : Unk_NiMatrix3(m) {}
-    void FUN_1420849a0();                                           // identity
-    void FUN_140a34220(unsigned nCol, float x, float y, float z);   // set column
     void FUN_14109aa30(unsigned nCol, const Vector3& v);    // set column
     Vector3 FUN_140a00720(const Vector3& v) const;  // matrix * vector
 };
@@ -126,8 +125,6 @@ MS2_CHECK_SIZE(Unk_VibXform, 0x34);
 class Unk_VibObj                                                    // the entity's scene graph root
 {
 public:
-    Vector3* FUN_140e69200();                               // world translation
-    Unk_NiMatrix3* FUN_1410b23c0();                                 // world rotation
 };
 class NiAVObject;
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
@@ -197,8 +194,8 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, MS2Ptr<CSkillRecord> param
     if (pObj != 0) {
         Unk_VibXform xf;
         xf.m_scale = 1.0f;
-        xf.m_trans = *reinterpret_cast<NiPoint3*>(pObj->FUN_140e69200());
-        xf.m_rot = *pObj->FUN_1410b23c0();
+        xf.m_trans = reinterpret_cast<NiAVObject*>(pObj)->GetTranslate();
+        xf.m_rot = reinterpret_cast<const Unk_NiMatrix3&>(reinterpret_cast<NiAVObject*>(pObj)->GetRotate());
         {
             efd::utf8string strFx;
             reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue(0xdd2ac78a, strFx);
@@ -221,8 +218,8 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, MS2Ptr<CSkillRecord> param
             if (bFound) {
                 Unk_VibXform xf2;
                 xf2.m_scale = 1.0f;
-                xf2.m_trans = *reinterpret_cast<NiPoint3*>(pObj->FUN_140e69200());
-                xf2.m_rot = *pObj->FUN_1410b23c0();
+                xf2.m_trans = reinterpret_cast<NiAVObject*>(pObj)->GetTranslate();
+                xf2.m_rot = reinterpret_cast<const Unk_NiMatrix3&>(reinterpret_cast<NiAVObject*>(pObj)->GetRotate());
                 efd::utf8string strFx2;
                 reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue(0xdd2ac78a, strFx2);
                 NoticeMessage req2;   // C3: was Unk_VibEffectReq
@@ -382,14 +379,14 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
         fScale = fScale * m_a4;
     }
     Unk_VibMat rot;
-    rot.FUN_1420849a0();
+    ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->MakeIdentity();
     rot.FUN_142084c10(FUN_14109ace0() * 1.5707964f * 0.7f);
     NxVec3 vGravity;
     pScene->getGravity(vGravity);
     float fFall = -vGravity.z;
     float fTime = efd::Sqrt((1.0f * 0.1f * 2.0f) / fFall);
     Unk_VibMat basis;
-    basis.FUN_1420849a0();
+    ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis))->MakeIdentity();
     Unk_VibPt ptDir = m_48.FUN_140965c40(m_70);
     ptDir.FUN_140968990();
     Unk_VibPt ptSide = ptDir.FUN_14109adc0(g_143a08cf8);
@@ -467,9 +464,9 @@ void CEntityVibrator::FUN_1411cd0c0()
         Unk_VibNiPt col1 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(1);
         Unk_VibNiPt col2 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(2);
         Unk_VibMat rot;
-        rot.FUN_140a34220(0, col0.x, col0.y, col0.z);
-        rot.FUN_140a34220(1, col1.x, col1.y, col1.z);
-        rot.FUN_140a34220(2, col2.x, col2.y, col2.z);
+        ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(0, col0.x, col0.y, col0.z);
+        ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(1, col1.x, col1.y, col1.z);
+        ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot))->SetCol(2, col2.x, col2.y, col2.z);
         Vector3 ptUp;
         rot.FUN_140a01190(2, ptUp);
         ptUp = ptUp.FUN_1409f7960();

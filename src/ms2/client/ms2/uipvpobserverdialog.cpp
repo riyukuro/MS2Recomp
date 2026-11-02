@@ -121,7 +121,7 @@ void UIPvPObserverDialog::vfunc_67()
     Unk_PoMe* pPC = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    pPC->FUN_14152a960();
+    pPC->StopObserving();
 }
 
 // @0x141a91400
@@ -216,7 +216,7 @@ int UIPvPObserverDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0) {
-        int nResult = pMsg->FUN_1422b8a10();
+        int nResult = pMsg->PopInt();
         CStringW strTag = pMsg->FUN_1422b8f40();
         FUN_14151f200();
         return 1;

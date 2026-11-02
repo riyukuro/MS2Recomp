@@ -83,7 +83,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036e510();
+    bool IsRegionCN();
 };
 class CGuildManager;
 __int64 FUN_1404ccbd0(void* pGuild);                        // the guild id
@@ -246,7 +246,7 @@ int CUgcViewerEquip::vfunc_2()
     Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
     if (pWearer == 0)
         return 0;
-    MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
+    MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
     if (spEquip == 0)
         return 0;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();
@@ -286,7 +286,7 @@ void CUgcViewerEquip::vfunc_4()
     Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
     if (pWearer == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
+    MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
     if (spEquip == 0)
         return;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();
@@ -301,7 +301,7 @@ void CUgcViewerEquip::vfunc_5()
     Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
     if (pWearer == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
+    MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
     if (spEquip == 0)
         return;
     MS2Ptr<CItem> spItem = spEquip->GetItem();
@@ -1597,7 +1597,7 @@ int CUgcUploadCtrl::FUN_1418a4470(__int64 uid)
     int nResult = 1;
     int nSize = m_spViewer->vfunc_9();
     bool bSwitch = false;
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e510())
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
         bSwitch = true;
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, bSwitch);
     if (result.m_nResult != 0)

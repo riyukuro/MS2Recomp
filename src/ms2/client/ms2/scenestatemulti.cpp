@@ -561,7 +561,7 @@ int CSceneStateMulti::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (dynamic_cast<UIMessageBox*>(pSender))
         {
-            int nResult = pMsg->FUN_1422b8a10();
+            int nResult = pMsg->PopInt();
             CStringW strTag = pMsg->FUN_1422b8f40();
             if (operator==(strTag, L"waitingticketdialog")) {}  // empty body: the exe tests the result and does nothing
         }
@@ -808,7 +808,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
     reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetExtra(L"waitingticketdialog");
     UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
     if (pList != 0)
-        reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
+        reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
     FUN_140d73c60(Unk_MessageBoxPtr(box));
 }
 

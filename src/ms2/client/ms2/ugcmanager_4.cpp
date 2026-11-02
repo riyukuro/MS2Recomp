@@ -134,8 +134,6 @@ CStringW FUN_141026920(int nType);                          // the upload direct
 // An entry of the character list dialog; +0x20 is the character id.
 class Unk_CharListEntry : public CPtred
 {
-public:
-    __int64 FUN_1418e9cb0();                                // the character id
 };
 
 // Messages and strings.
@@ -183,11 +181,15 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 int FUN_14088db90(int nType);
 
 // The character select dialog (0x4ef1): a character's new profile image.
-class Unk_CharSelectDialog
+class UICharacterListDialog   // C3: member view (uicharacterlistdialog.h)
 {
 public:
-    void FUN_1418ed4e0(__int64 characterId, CString strPath);
-    void FUN_1418ed5a0(__int64 characterId, CString strUrl);
+    class CCharacterInfo { public: unsigned __int64 FUN_1418e9cb0(); };   // the character id
+    void FUN_1418ed4e0(unsigned __int64 nId, CString str);
+    void FUN_1418ed5a0(unsigned __int64 nId, CString str);
+};
+class Unk_CharSelectDialog : public UICharacterListDialog
+{
 };
 Unk_CharSelectDialog* FUN_140b72de0(int nId);
 
@@ -922,7 +924,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
     MS2Ptr<CUgcViewerProfile> spViewer(new CUgcViewerProfile());
     spViewer->m_user.m_nType = DAT_143ab2830;
     spViewer->m_user.m_accountId = DAT_143ab2820;
-    spViewer->m_user.m_characterId = spEntry->FUN_1418e9cb0();
+    spViewer->m_user.m_characterId = reinterpret_cast<UICharacterListDialog::CCharacterInfo*>(spEntry.operator->())->FUN_1418e9cb0();
     MS2Ptr<CUploadFile> spFile(new CUploadFile());
     spFile->SetInDir(result.m_strPath, FUN_141026ab0(), 0, 0, 1);
     MS2Ptr<CUgcUploadCtrl> spCtrl(new CUgcUploadCtrl());
@@ -2129,7 +2131,7 @@ int CUgcManager::FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture)
     CString strMesh = spData->cubeTextureName.mesh;
     if (strMesh.GetLength() == 0)
         return 0;
-    MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(pItem->m_itemUid);
+    MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(pItem->m_itemUid);
     if (spEquip == 0)
         return 0;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();

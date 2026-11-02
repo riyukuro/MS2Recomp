@@ -380,21 +380,21 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onClickGiftOk", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140eaa1e0(szMethod, &data);
         return 1;
     }
     else if (_stricmp("onUpdateTotalPrice", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140eaa5e0(&data);
         return 1;
     }
     else if (_stricmp("onChangeMode", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_140eaa860(&data);
         return 1;
     }
@@ -602,8 +602,8 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
             strAmountText.Append(FUN_14028dfa0<CStringW>(L"s_bill_givepoint_total", strGiveAmounts));
         }
     }
-    spFeeText->FUN_1422c4f00(strNameText);
-    spFee->FUN_1422c4f00(strAmountText);
+    spFeeText->SetTextHTMLW(strNameText);
+    spFee->SetTextHTMLW(strAmountText);
     spFeeText->SetXFloat(spFee->FUN_1422c10a0());
     int nNewHeight = spFee->GetHeightCeil();
     int nDiff = nNewHeight - nOldHeight;
@@ -631,8 +631,8 @@ float UIMarketBillDialog::FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<AS
         strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
         nIndex++;
     }
-    spPaybackText->FUN_1422c4f00(strNames);
-    spPayback->FUN_1422c4f00(strAmounts);
+    spPaybackText->SetTextHTMLW(strNames);
+    spPayback->SetTextHTMLW(strAmounts);
     int nNewHeight = spPayback->GetHeightCeil();
     int nDiff = nNewHeight - nOldHeight;
     return (float)nDiff;
@@ -929,8 +929,8 @@ void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) || m_spParam == 0)
         return;
-    Scaleform::GFx::Value value = pData->FUN_1422b9260();
-    int nIndex = pData->FUN_1422b8b10();
+    Scaleform::GFx::Value value = pData->PopValue();
+    int nIndex = pData->PopUInt();
     if (nIndex < 0)
         return;
     ASBillData bill(value, 2);
@@ -952,7 +952,7 @@ void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
 // @0x140eaa860
 void UIMarketBillDialog::FUN_140eaa860(ASData* pData)
 {
-    bool bOn = pData->FUN_1422b8a90();
+    bool bOn = pData->PopBool();
     if (bOn)
     {
         SetMode(2);
@@ -1049,7 +1049,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                     spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     spBox->SetAgreement(false);
                     spBox->SetSize(0x1c0, 400);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
                     FUN_140d73c60(spBox);
                     return true;
                 }
@@ -1066,7 +1066,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                     spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     spBox->SetAgreement(false);
                     spBox->SetSize(0x1c0, 400);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
+                    spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0));
                     FUN_140d73c60(spBox);
                     return true;
                 }

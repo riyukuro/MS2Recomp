@@ -91,7 +91,7 @@ MS2_REPLACE_METHOD(0x140C04230, UIDTAttendPopup, RefreshVisibility, 90, 0xC83AE1
 void UIDTAttendPopup::UpdateIcon(){if(m_item==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e==0)return;MS2Ptr<ItemGift> reward=e->GetGiftByDay(e->GetAttendedDays());if(reward==0)return;m_icon->FUN_1409ba630(*reinterpret_cast<Unk_ItemSlotSource*>(reinterpret_cast<char*>(reward.operator->())+0x18));}
 MS2_REPLACE_METHOD(0x140C04290, UIDTAttendPopup, UpdateIcon, 275, 0xA850FFEE);
 // @0x140c043b0
-void UIDTAttendPopup::SetTime(unsigned sec){if(m_time==0)return;m_time->FUN_1422c4cd0(StringFormat(L"{0:02}:{1:02}",sec/60,sec%60));}
+void UIDTAttendPopup::SetTime(unsigned sec){if(m_time==0)return;m_time->SetTextW(StringFormat(L"{0:02}:{1:02}",sec/60,sec%60));}
 MS2_REPLACE_METHOD(0x140C043B0, UIDTAttendPopup, SetTime, 179, 0xFC1A1CC5);
 // @0x140c04470
 void UIDTAttendPopup::Request(){if(!reinterpret_cast<Unk_IntervalTimer&>(m_requestTick).Check(5000))return;if(m_entries.size()==0)return;Unk_DTPtr<Unk_DTEntry> e=GetCurrent();if(e->IsCheckedInToday())return;COutPacket packet(static_cast<int>(SendOp::Attendance),0);packet.Encode1(0);FUN_140710590(packet);}

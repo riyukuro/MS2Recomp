@@ -14,6 +14,7 @@
 #include "ms2/commonfiles/packet.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextinput.h"
+#include "ms2/placeholder/asslider.h"   // C3: ASSlider::FUN_1422ce630
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
@@ -27,8 +28,6 @@
 // instance); the value is a float.
 class Unk_HudSlider : public ASDisplayObject
 {
-public:
-    float FUN_1422ce630();
 };
 MS2Ptr<Unk_HudSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
 extern template class MS2Ptr<Unk_HudSlider>;                         // instances owned by uiupperhuddialog.cpp
@@ -102,7 +101,7 @@ void UIUGCCubeNoticeDialog::OnApply()
     if (MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textMessage"))
         m_strMessage = spText->GetText();
     if (MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>("m_sliderDistance"))
-        m_nDistance = (int)spSlider->FUN_1422ce630();
+        m_nDistance = (int)reinterpret_cast<ASSlider*>(spSlider.operator->())->FUN_1422ce630();
     CBanTextChecker* pChecker;
     CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
     if (pChecker != 0)

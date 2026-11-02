@@ -100,9 +100,9 @@ void LoadSystemMailContent()
         XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
         XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
         XmlGetAttr((class TiXmlElement*)(pNode), "content", spMail->m_strContent);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSender);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSubject);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strContent);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spMail->m_strSender);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spMail->m_strSubject);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spMail->m_strContent);
         if (Unk_LockGuard guard = g_cacheLock)
         {
         }
@@ -126,9 +126,9 @@ void FUN_140851c40(Unk_140165cf0* pRoot)
         XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
         XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
         XmlGetAttr((class TiXmlElement*)(pNode), "content", spMail->m_strContent);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSender);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSubject);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strContent);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spMail->m_strSender);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spMail->m_strSubject);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spMail->m_strContent);
         if (Unk_LockGuard guard = g_cacheLock)
         {
         }

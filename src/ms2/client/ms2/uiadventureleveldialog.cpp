@@ -224,16 +224,16 @@ int UIAdventureLevelDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp(szMethod, "onReceiveItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned short nLevel = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned short nLevel = data.PopUInt();
             FUN_140ba4960(nLevel);
         }
         return 1;
     }
     if (_stricmp(szMethod, "onReceiveMissionReward") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            unsigned int nMissionId = data.FUN_1422b8b10();
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            unsigned int nMissionId = data.PopUInt();
             FUN_140ba4a10(nMissionId);
         }
         return 1;
@@ -248,7 +248,7 @@ void UIAdventureLevelDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == NULL)
         return;
-    unsigned int nId = pArgs->FUN_1422b8b10();
+    unsigned int nId = pArgs->PopUInt();
     const CAdventureLevelAbility* pAbility = TSingleton<CAdventureLevelTable>::GetInstance()->GetAbility(nId);
     if (pAbility->m_nEffectId == 0)
         return;
@@ -457,7 +457,7 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(pReward->m_nId, pReward->m_nRank, 0) == 0)
         return 0;
-    spItem->FUN_140526c70(pReward->m_nValue);
+    spItem->SetCountClamped(pReward->m_nValue);
     int nIconType = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
@@ -510,13 +510,13 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
     MS2Ptr<CItem> spItem(new CItem);
     if (spItem->FUN_14052b130(pMission->m_nItemId, pMission->m_nItemRank, 0) == 0)
         return 0;
-    spItem->FUN_140526c70(pMission->m_nItemCount);
+    spItem->SetCountClamped(pMission->m_nItemCount);
     int nIconType = 0x415;
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
-    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->FUN_140526bd0()));
+    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->GetRarity()));
     m_binds.Add(strBindID);
     return 1;
 }

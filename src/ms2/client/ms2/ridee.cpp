@@ -118,6 +118,12 @@ private:
 
 // The riding table (unit_140781d80).
 MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);
+class CRideeData   // C3: member view (the riding table row)
+{
+public:
+    CString FUN_140784880(int nLevel);                      // animation (kfm) name for the rider's level
+    CString FUN_140784920(int nLevel);                      // scene graph (nif) name for the rider's level
+};
 
 // MS2Ptr members instantiated by other objs.
 template <> MS2Ptr<Unk_RideeData>::MS2Ptr(int nNull);                                   // 0x140788a00
@@ -453,8 +459,8 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
     int nLevel = 1;
     if (Unk_RideePC* pc = reinterpret_cast<Unk_RideePC*>(efd::DynamicCast<PC, PCBase>(pRider)))
         nLevel = ((PC*)pc)->FUN_141658e60();
-    const CString& strAnim = spData->FUN_140784880(nLevel);
-    const CString& strModel = spData->FUN_140784920(nLevel);
+    const CString& strAnim = reinterpret_cast<CRideeData*>(spData.operator->())->FUN_140784880(nLevel);
+    const CString& strModel = reinterpret_cast<CRideeData*>(spData.operator->())->FUN_140784920(nLevel);
     if (strAnim.IsEmpty() && strModel.IsEmpty())
         return 0;
 
@@ -941,7 +947,7 @@ MS2_REPLACE_METHOD(0x1417065f0, Ridee, vfunc_114, 75, 0x2A3EE1C8);
 // @0x141706650
 void Ridee::FUN_141706650(bool bForce)
 {
-    if (!FUN_14166c930())
+    if (!GetCurStateId())
         return;
     ((StatePcGuideObjectController*)&m_controller)->FUN_1417b76b0(reinterpret_cast<Unk_RideeClock*>(TSingleton<CMainSystem>::GetInstance())->GetLastGameTimeDelta());
     if (((StatePcGuideObjectController*)&m_controller)->FUN_1417b7490())
@@ -957,7 +963,7 @@ void Ridee::FUN_141706650(bool bForce)
 
     bool bSend = false;
     MS2Ptr<Unk_StateArg22> spCur = m_controller.FUN_1417b7620();
-    if (bForce || m_bDF8 || spCur == 0 || spCur->m_vel3c != m_pos98 || spCur->m_nState != FUN_14166c930()
+    if (bForce || m_bDF8 || spCur == 0 || spCur->m_vel3c != m_pos98 || spCur->m_nState != GetCurStateId()
         || FUN_14166ccb0()->vfunc_22(spCur))
         bSend = true;
     if (!bSend)
@@ -973,7 +979,7 @@ void Ridee::FUN_141706650(bool bForce)
             m_controller.vfunc_0();
     }
 
-    MS2Ptr<Unk_StateArg22> spNew = FUN_140835450(FUN_14166c930());
+    MS2Ptr<Unk_StateArg22> spNew = FUN_140835450(GetCurStateId());
     spNew->m_nSub = FUN_14166cc80();
     spNew->m_vel3c = m_pos98;
     spNew->m_pos20 = vfunc_18();

@@ -161,31 +161,31 @@ int UIGraphicOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     ASData data;
     if (_stricmp("OnDisplayHdr", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            FUN_1419475a0(data.FUN_1422b8a90());
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            FUN_1419475a0(data.PopBool());
             return 1;
         }
     }
     else if (_stricmp("OnDisplayShimmer", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            FUN_141947600(data.FUN_1422b8a90());
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            FUN_141947600(data.PopBool());
             return 1;
         }
     }
     else if (_stricmp("OnDisplayMirror", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            FUN_141947710(data.FUN_1422b8a90());
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            FUN_141947710(data.PopBool());
             return 1;
         }
     }
     else if (_stricmp("OnDisplayShadow", szMethod) == 0) {
-        if (data.FUN_1422b9620(pArgs, nArgs)) {
-            FUN_141947770(data.FUN_1422b8a10());
+        if (data.SetArgsIfAny(pArgs, nArgs)) {
+            FUN_141947770(data.PopInt());
             return 1;
         }
     }
-    else if (_stricmp("OnUIScale", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs)) {
-        int nValue = data.FUN_1422b8a10();
+    else if (_stricmp("OnUIScale", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs)) {
+        int nValue = data.PopInt();
         float fScale = (200 - nValue) * 0.01;
         if (TSingleton<CUIService>::GetInstance()->FUN_141adbe00(fScale, 1) != 0)
             reinterpret_cast<Unk_GoMovieMgr*>(FUN_140b632f0())->vfunc_6();      // MS2: slot 6

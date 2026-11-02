@@ -529,7 +529,7 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         break;
     }
     TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb400(strText, pNpc);
-    reinterpret_cast<Unk_MfWordTable*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb340(strText);
+    reinterpret_cast<Unk_MfWordTable*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(strText);
     return strText;
 }
 

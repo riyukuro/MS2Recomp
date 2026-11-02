@@ -289,7 +289,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
                             const CString& strPath = FUN_141425220(pPart->name0, 1);
                             ITEMLOADER_LOAD_NIF(strPath)
                         }
-                        else if (data->FUN_14053c620() == 12)
+                        else if (data->GetEquipSubtype() == 12)
                         {
                             const CString& strPath = FUN_1414253b0(pPart->name0, 1);
                             ITEMLOADER_LOAD_NIF(strPath)

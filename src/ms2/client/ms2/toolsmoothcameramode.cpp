@@ -60,6 +60,11 @@ class Unk_RpgActor : public Unk_CameraTargetEntity
 Unk_RpgActor* FUN_1409ffd30(Unk_CameraTargetEntity* p);
 
 // The game context (FUN_1403ed2d0).
+class CameraMgr   // C3: member view (real class not in this TU)
+{
+public:
+    void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
+};
 class Unk_GameContext
 {
 public:
@@ -384,7 +389,7 @@ void CToolSmoothCameraMode::vfunc_30()
         Unk_RpgActor* pActor = FUN_1409ffd30(pObject);
         if (pActor)
         {
-            Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(pActor, 1);
+            reinterpret_cast<CameraMgr*>(Unk_CameraManager::FUN_1409478c0())->FUN_140aeaf40(pActor, 1);
             break;
         }
     }

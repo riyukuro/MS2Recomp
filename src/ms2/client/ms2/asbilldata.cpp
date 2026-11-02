@@ -687,7 +687,7 @@ void ASObj::FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v)
 {
     ASData data;
     data.AddValue(v);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409adc90
@@ -695,7 +695,7 @@ void ASObj::FUN_1409adc90(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.FUN_1422b9260());
+    ((Scaleform::GFx::Value*)(void*)(&m_value))->SetMember(szName, data.PopValue());
 }
 
 // @0x1409b03d0

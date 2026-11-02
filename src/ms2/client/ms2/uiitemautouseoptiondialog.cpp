@@ -536,9 +536,9 @@ void UIItemAutoUseOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (MS2Ptr<ASTextField> spText1 = ((Unk_AuEntity*)this)->GetChild<ASTextField>("m_textFieldItem1"))
-        spText1->FUN_1422c4cd0(GetStringCommon(0xc08));
+        spText1->SetTextW(GetStringCommon(0xc08));
     if (MS2Ptr<ASTextField> spText2 = ((Unk_AuEntity*)this)->GetChild<ASTextField>("m_textFieldItem2"))
-        spText2->FUN_1422c4cd0(GetStringCommon(0xc08));
+        spText2->SetTextW(GetStringCommon(0xc08));
     for (unsigned i = 0; i < DAT_1439ed000; i++)
     {
         int nNumber = i + 1;

@@ -49,6 +49,7 @@
 #include "ms2/client/ms2/equipment.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include "ms2/placeholder/cinputkeyhandler.h"   // C3: CInputKeyHandler::FUN_14116d950
 
 // ---- exe data ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -68,8 +69,6 @@ struct Unk_GVec3 : public Vector3
 // The item data of the equipped cap (?\itemdatastruct.cpp); only the flags this unit reads.
 struct Unk_CapItemData : public ItemModelHead
 {
-    unsigned char FUN_140547130();                              // customizing allowed
-    unsigned char FUN_140547150();                              // right button allowed
 };
 struct Unk_CapItem : public CItemData
 {
@@ -118,7 +117,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual Vector3 vfunc_20();                         // rotation (x, y, z degrees)
     Unk_CapEntityKey& FUN_14123c460(Unk_CapEntityKey& kOut);    // the entity key
-    float FUN_14123c260();                                      // model scale
 };
 
 struct Unk_CapEntityLoader
@@ -132,10 +130,8 @@ Unk_CapCursor* FUN_140aadf80();
 
 struct Unk_CapCamera : public CameraMgr
 {
-    bool FUN_140af0520(const Unk_PickXY& kCursor, Vector3* pOrigin, Vector3* pDir);   // cursor ray
 };
 
-struct Unk_CapInput { bool FUN_14116d950(int nKey, int nA, int nB); };   // key state
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 float Unk_Acos(float fCos);                                     // acos
@@ -306,7 +302,7 @@ void CCapRotationController::vfunc_31()
         {
             Unk_GVec3 kOrigin;
             Unk_GVec3 kDir;
-            if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
+            if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), reinterpret_cast<NiPoint3&>(kOrigin), reinterpret_cast<NiPoint3&>(kDir)) != 0)
             {
                 Unk_GVec3 kHit;
                 FUN_14147aa60(kOrigin, kDir, FUN_140947900(m_spMesh.operator->()), m_fRadius, &kHit);
@@ -358,7 +354,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         return;
     if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
     {
-        if (((struct Unk_CapInput*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0) != 0)
+        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0) != 0)
         {
             vfunc_31();
         }
@@ -373,7 +369,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
             Unk_NiMatrix3 kFix;
             FUN_142084020(&kFix, 1.5707964f, 3.1415927f, 0.0f);
             NiTransform kXf;
-            kXf.m_fScale = pPlayer->FUN_14123c260();
+            kXf.m_fScale = reinterpret_cast<GameObject*>(pPlayer)->FUN_14123c260();   // C3: GameObject via fittingdollpc.h, model scale
             Unk_NiMatrix3 kRot(Unk_NiMatrix3(kN, kSide, kUp).FUN_140a33480(kFix));
             reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
             FUN_14097fad0(&kXf.m_Translate, &kHit);
@@ -427,7 +423,7 @@ void CCapRotationController::vfunc_35()
         {
             Unk_GVec3 kOrigin;
             Unk_GVec3 kDir;
-            if (reinterpret_cast<Unk_CapCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
+            if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), reinterpret_cast<NiPoint3&>(kOrigin), reinterpret_cast<NiPoint3&>(kDir)) != 0)
             {
                 float fDelta = (m_kDragStart.x - kCursor.x) * m_fSpeed;
                 float fYaw = m_kCurEuler.z + fDelta;
@@ -512,7 +508,7 @@ Vector3 CCapRotationController::GetPartEuler()
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
         return DAT_143b01a60;
-    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->FUN_14053c620() != 0xd)
+    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() != 0xd)
         return DAT_143b01a60;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)
@@ -526,7 +522,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
         return;
-    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->FUN_14053c620() != 0xd)
+    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->GetEquipSubtype() != 0xd)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)

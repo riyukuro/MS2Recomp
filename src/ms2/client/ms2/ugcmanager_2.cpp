@@ -146,7 +146,7 @@ public:
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
+    class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
     class Unk_WsC_GameObj* FUN_141bd1290(int id);   // C3: the real member (0x141bd1290, an object by id)
     static class WorldService* GetInstance();
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
@@ -629,7 +629,7 @@ void CUgcDownloadItemIcon::ProcessResult()
                 continue;
             if (sp->m_nKind == 1)
             {
-                Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1180(sp->m_nObjectId));
+                Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FindObjectById(sp->m_nObjectId));
                 Unk_SSGDropItem* pOwner;
                 if (pPlayer && (pOwner = efd::DynamicCast<Unk_SSGDropItem>(reinterpret_cast<GameObject*>(pPlayer))) != NULL)
                     pOwner->FUN_1411911f0();

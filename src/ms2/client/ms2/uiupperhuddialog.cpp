@@ -54,6 +54,7 @@
 #include <NiGlobalConstantEntry.h>
 #include <NiNode.h>
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/asslider.h"   // C3: ASSlider (was Unk_HudSlider members)
 #include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/weaponattachtransformnode.h"
@@ -144,10 +145,6 @@ public:
     virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool bFocus);                                          // 24 set the focus
-    int FUN_1422c76c0();                                                        // is focused
-    void FUN_1422c7630(int bFocus);
-    CStringW FUN_1422e0b00();                                                   // the text
-    void FUN_1422de780(const HudClickDelegate& onEvent, int a1, int a2);
 };
 
 class Unk_HudText : public ASTextField
@@ -160,7 +157,6 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_HudUIMgr
 {
 public:
-    int FUN_141adc890(int nUiId);                                               // is open
     float FUN_141adbe70();                                                      // the ui scale
 };
 
@@ -205,12 +201,10 @@ class Unk_HudMaidOwner;
 int FUN_141276180(const CString& strSound, const CString& strArg);
 
 // Misc.
-class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); float FUN_1422afec0(int nMovieId); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_HudKeys : public CInputKeyHandler   // FUN_14116d9c0 (key pressed) from the base
 {
 public:
-    bool FUN_14116d840();                                                       // escape pressed
-    float FUN_1422afec0(int nUiId);                                             // the ui scale of a movie
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
@@ -319,7 +313,7 @@ void UIUpperHudDialog::OnLoadComplete()
     }
     if (FUN_14129a040("m_searchInput", m_searchInput))
     {
-        m_searchInput->FUN_1422de780(HudClickDelegate(this, &UIUpperHudDialog::FUN_141357050), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_searchInput.get())->FUN_1422de780(HudClickDelegate(this, &UIUpperHudDialog::FUN_141357050), 0, 0);
         m_searchInput->vfunc_3(0);
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xaf) == true)
@@ -350,7 +344,7 @@ void UIUpperHudDialog::OnLoadComplete()
         {
             spVersion->vfunc_4(true);
             CStringW strVersion = GetStringCommonByKey(L"s_upper_hud_version");
-            spVersion->FUN_1422c4f00(strVersion);
+            spVersion->SetTextHTMLW(strVersion);
         }
     }
     {
@@ -440,19 +434,19 @@ int UIUpperHudDialog::vfunc_13()
 {
     if (UISwfEntity::vfunc_13() != 0)
         return 1;
-    if (m_searchInput->FUN_1422c76c0() != 0)
+    if (reinterpret_cast<ASUIComponent*>(m_searchInput.get())->GetFocused() != 0)
     {
         if (((class Unk_HudKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
         {
-            CStringW strText = m_searchInput->FUN_1422e0b00();
+            CStringW strText = reinterpret_cast<ASTextInput*>(m_searchInput.get())->GetText();
             if (!strText.IsEmpty())
                 CUserCommandCli::GetInstance()->Execute(StringFormat<CStringW>(L"/search {0}", strText));
-            m_searchInput->FUN_1422c7630(0);
+            reinterpret_cast<ASUIComponent*>(m_searchInput.get())->SetFocused(0);
             return 1;
         }
         else if (((class Unk_HudKeys*)FUN_14025e7c0())->FUN_14116d840())
         {
-            m_searchInput->FUN_1422c7630(0);
+            reinterpret_cast<ASUIComponent*>(m_searchInput.get())->SetFocused(0);
             return 1;
         }
     }
@@ -530,7 +524,7 @@ void UIUpperHudDialog::FUN_141356d00(const Scaleform::GFx::FunctionHandler::Para
 // @0x141356d30
 void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc890(0x4ecf))
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4ecf))
     {
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ecf);
     }
@@ -591,7 +585,7 @@ void UIUpperHudDialog::FUN_141356f90(const Scaleform::GFx::FunctionHandler::Para
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f0b)));
     else
     {
-        m_searchInput->FUN_1422c7630(1);
+        reinterpret_cast<ASUIComponent*>(m_searchInput.get())->SetFocused(1);
         m_searchInput->vfunc_3(1);
         m_search->FUN_1422c1fe0(false);
     }
@@ -602,7 +596,7 @@ void UIUpperHudDialog::FUN_141357050(const Scaleform::GFx::FunctionHandler::Para
 {
     if (m_searchInput->GetVisible())
     {
-        if (m_searchInput->FUN_1422c76c0() == 0)
+        if (reinterpret_cast<ASUIComponent*>(m_searchInput.get())->GetFocused() == 0)
         {
             m_searchInput->vfunc_3(0);
             reinterpret_cast<ASTextInput*>(m_searchInput.operator->())->SetTextW(L"");
@@ -696,12 +690,12 @@ void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
         return;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc9) == true)
     {
-        spVersion->FUN_1422c4f00(StringFormat(L"{0}\n{1}\t{2:+#}", GetStringCommonByKey(L"s_upper_hud_version"),
+        spVersion->SetTextHTMLW(StringFormat(L"{0}\n{1}\t{2:+#}", GetStringCommonByKey(L"s_upper_hud_version"),
                                               FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
     }
     else
     {
-        spVersion->FUN_1422c4f00(StringFormat(L"{0}\t{1:+#}", FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
+        spVersion->SetTextHTMLW(StringFormat(L"{0}\t{1:+#}", FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
     }
 }
 
@@ -867,14 +861,14 @@ void UIUpperHudDialog::FUN_141358490()
         return;
     }
     m_eventText->vfunc_3(1);
-    m_noticeText->FUN_1422c4f00(m_strNotice);
+    m_noticeText->SetTextHTMLW(m_strNotice);
     m_nNoticeWidth = (int)m_noticeText->GetTextWidth();
     int nTotal = m_nNoticeWidth + 0x1d6;
     int nCount = nTotal / m_nNoticeWidth + 1;
     CStringW strRepeat;
     for (int i = 0; i < nCount; i++)
         strRepeat += m_strNotice;
-    m_noticeText->FUN_1422c4f00(strRepeat);
+    m_noticeText->SetTextHTMLW(strRepeat);
     m_noticeText->SetWidthInt((int)(m_noticeText->GetTextWidth() + 20.0));
     m_fNoticePos = 470.0f;
     m_bNoticeOnce = false;
@@ -1019,7 +1013,7 @@ void UIUpperHudDialog::SetPcBangState(int nState)
         if (nState >= 0)
             m_pcBang->vfunc_3(1);
     }
-    else if (((class CFeatureManager*)FUN_140166410())->FUN_14036e510())
+    else if (((class CFeatureManager*)FUN_140166410())->IsRegionCN())
     {
         switch (nState)
         {
@@ -1216,9 +1210,6 @@ class Unk_HudBrowserInst;
 class Unk_HudBrowserTex;
 class Unk_HudBrowserMgr : public CWebBrowserService
 {
-public:
-    bool FUN_141b78910(int nId, int nMsg, void* p2, void* p3, int x, int y);   // forward an input message
-    Unk_HudBrowserInst* FUN_141b786a0(int nId);
 };
 class NiDX9TextureData   // C3: member view for the former free stand-ins
 {
@@ -1367,9 +1358,6 @@ public:
     virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool b);
-    void FUN_1422ce6a0(float f);
-    void FUN_1422ce8b0(float f);
-    void FUN_1422ce5f0(float f);                                                // the slider value
 };
 
 class Unk_HudRenderOpt { public: char m_pad_00[0x1e]; bool m_bOutGlow; };      // +0x1e outer glow
@@ -1616,8 +1604,8 @@ void UIVisualEffectDialog::OnLoadComplete()
     m_30->Invoke("initData", obj.FUN_1422bb870());
     if (MS2Ptr<Unk_HudSlider> spSlider = m_30->FUN_140accef0<Unk_HudSlider>("m_sliderGaussianBlur"))
     {
-        spSlider->FUN_1422ce6a0(3.0f);
-        spSlider->FUN_1422ce8b0(0.1f);
+        reinterpret_cast<ASSlider*>(spSlider.get())->FUN_1422ce6a0(3.0f);
+        reinterpret_cast<ASSlider*>(spSlider.get())->FUN_1422ce8b0(0.1f);
         spSlider->vfunc_24(true);
     }
 }
@@ -1630,9 +1618,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp("onCheckBlackWhiteEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             FUN_14135d310(bValue);
         }
         return 1;
@@ -1650,7 +1638,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderMotionBlur", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5450, fValue);
@@ -1660,9 +1648,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onCheckRadialBlurEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             FUN_14135d410(bValue);
         }
         return 1;
@@ -1670,7 +1658,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderRadialBlur", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5458, fValue);
@@ -1680,9 +1668,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onCheckScreenMaskEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             FUN_14135d440(bValue);
         }
         return 1;
@@ -1690,7 +1678,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderHdrBPThreshold", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5358, fValue);
@@ -1700,7 +1688,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderHdrBPOffset", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5360, fValue);
@@ -1710,7 +1698,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderHdrBloomScale", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5370, fValue);
@@ -1720,7 +1708,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderHdrGlowScale", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5378, fValue);
@@ -1730,9 +1718,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onCheckShimmerEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             FUN_14135d490(bValue);
         }
         return 1;
@@ -1740,7 +1728,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderShimmerMultiplier", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5430, fValue);
@@ -1750,7 +1738,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderShimmerBrightness", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5440, fValue);
@@ -1760,9 +1748,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onCheckOutGlowEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             SetGlowEnabled(bValue);
         }
         return 1;
@@ -1770,7 +1758,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderOutGlowColor", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fRed = data.PopFloat();
             float fGreen = data.PopFloat();
@@ -1782,7 +1770,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderEffectTime", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             DAT_1439f824c = data.PopFloat();
             DAT_1439f8250 = data.PopFloat();
@@ -1793,9 +1781,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onCheckGaussianBlurEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             FUN_14135d630(bValue);
         }
         return 1;
@@ -1803,7 +1791,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderGaussianBlur", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fValue = data.PopFloat();
             FUN_14135d660(fValue);
@@ -1813,7 +1801,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderDOF", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fNear = data.PopFloat();
             float fFar = data.PopFloat();
@@ -1824,9 +1812,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onCheckColorPersEnable", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
-            bool bValue = data.FUN_1422b8a90();
+            bool bValue = data.PopBool();
             FUN_14135d700(bValue);
         }
         return 1;
@@ -1834,7 +1822,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("onChangeSliderColorPerspective", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_14135d730(data);
         return 1;
     }
@@ -1965,7 +1953,7 @@ void UIVisualEffectDialog::SetSliderValue(const CString& strName, float fValue)
 {
     MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>(strName);
     if (static_cast<Unk_HudSlider*>(spSlider) != 0)
-        spSlider->FUN_1422ce5f0(fValue);
+        reinterpret_cast<ASSlider*>(spSlider.get())->FUN_1422ce5f0(fValue);
 }
 
 // @0x14135d9d0
@@ -2238,14 +2226,14 @@ int UIWeaponDummyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp("onChangeSliderRotation", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_14135e660(data);
         return 1;
     }
     else if (_stricmp("onChangeSliderTranslation", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
             FUN_14135e7a0(data);
         return 1;
     }
@@ -2271,9 +2259,9 @@ CString UIWeaponDummyDialog::FUN_14135e570()
 void UIWeaponDummyDialog::FUN_14135e660(ASData& data)
 {
     Unk_HudStreamPoint kRot;
-    kRot.x = (float)data.FUN_1422b8a10();
-    kRot.y = (float)data.FUN_1422b8a10();
-    kRot.z = (float)data.FUN_1422b8a10();
+    kRot.x = (float)data.PopInt();
+    kRot.y = (float)data.PopInt();
+    kRot.z = (float)data.PopInt();
     kRot = kRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
     m_rotation = kRot;
     FUN_14135e880(FUN_14135e570(), kRot, m_translation);
@@ -2283,9 +2271,9 @@ void UIWeaponDummyDialog::FUN_14135e660(ASData& data)
 void UIWeaponDummyDialog::FUN_14135e7a0(ASData& data)
 {
     Unk_HudStreamPoint kTrans;
-    kTrans.x = (float)data.FUN_1422b8a10();
-    kTrans.y = (float)data.FUN_1422b8a10();
-    kTrans.z = (float)data.FUN_1422b8a10();
+    kTrans.x = (float)data.PopInt();
+    kTrans.y = (float)data.PopInt();
+    kTrans.z = (float)data.PopInt();
     m_translation = kTrans;
     FUN_14135e880(FUN_14135e570(), m_rotation, kTrans);
 }
@@ -2436,7 +2424,7 @@ void UIWebBrowserBase::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
         return;
     if (p3 == 0)
         return;
-    Unk_HudBrowserInst* pInst = reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b786a0(m_nBrowserId);
+    Unk_HudBrowserInst* pInst = (Unk_HudBrowserInst*)reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b786a0(m_nBrowserId);
     if (pInst != 0)
     {
         Unk_HudBrowserTex* pTex = ((class Unk_HudBrowserTex*)((class NiTexture*)(class Unk_HudBrowserInst*)(pInst))->GetRendererData());
@@ -2463,7 +2451,7 @@ int UIWebBrowserBase::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (_stricmp(szMethod, "onResize") == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
+        if (data.SetArgsIfAny(pArgs, nArgs))
         {
             float fWidth = data.PopFloat();
             float fHeight = data.PopFloat();
@@ -2511,13 +2499,13 @@ int UIWebBrowserBase::vfunc_74(int a1, void* p2, void* p3)
     kPoint.y = (short)HIWORD(p3);   // GET_Y_LPARAM
     if ((unsigned int)a1 == 0x20a)
         ScreenToClient(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kPoint);
-    kPoint.x *= ((class Unk_HudKeys*)FUN_14025e7a0())->FUN_1422afec0(m_28);
-    kPoint.y *= ((class Unk_HudKeys*)FUN_14025e7a0())->FUN_1422afec0(m_28);
+    kPoint.x *= reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
+    kPoint.y *= reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
     // one bool for the hit test and the forward result (WM_MOUSEFIRST..WM_MOUSELAST, unsigned)
     bool bResult = vfunc_90(&kPoint);
     if (!bResult && (unsigned int)a1 >= 0x200 && (unsigned int)a1 <= 0x20d)
         return UIDialog::vfunc_74(a1, p2, p3);
-    bResult = reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78910(m_nBrowserId, a1, p2, p3, kPoint.x, kPoint.y);
+    bResult = reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78910(m_nBrowserId, a1, (WPARAM)p2, (LPARAM)p3, kPoint.x, kPoint.y);
     if (bResult == 1)
         return bResult;
     return UIDialog::vfunc_74(a1, p2, p3);
@@ -2562,8 +2550,8 @@ bool UIWebBrowserBase::vfunc_90(POINT* pPos)
         return false;
     pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(spTarget.operator->()))->FUN_1422c10a0();
     pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(spTarget.operator->()))->FUN_1422c1110();
-    pPos->x /= ((class Unk_HudKeys*)FUN_14025e7a0())->FUN_1422afec0(m_28);
-    pPos->y /= ((class Unk_HudKeys*)FUN_14025e7a0())->FUN_1422afec0(m_28);
+    pPos->x /= reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
+    pPos->y /= reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
     if (pPos->x < 0 || pPos->y < 0 || pPos->x > m_size.cx || pPos->y > m_size.cy)
         return false;
     return true;

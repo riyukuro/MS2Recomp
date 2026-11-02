@@ -206,10 +206,9 @@ struct Unk_CMISDeadString
     char m_buf[0x20];
 };
 
-void FUN_1408a8700(void* pStr);                          // efd::utf8string()
 struct Unk_CMISCellName
 {
-    Unk_CMISCellName() { FUN_1408a8700(m_buf); }
+    Unk_CMISCellName() { reinterpret_cast<efd::utf8string*>(m_buf)->efd::utf8string::utf8string(); }
     ~Unk_CMISCellName() { FUN_1408a8900(m_buf); }
     char m_buf[0x20];
 };

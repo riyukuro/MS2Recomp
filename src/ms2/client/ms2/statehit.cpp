@@ -86,7 +86,7 @@ void StateHit::vfunc_4(StateData* pData)
     if (!FUN_14028d470(m_fB0, 0))
     {
         m_strAnim = (const char*)FUN_1409a2360("Jump_FlyDamg_A", 0);
-        Unk_PCBaseBody* pBody = m_pOwner->FUN_14166d220();
+        Unk_PCBaseBody* pBody = m_pOwner->GetPhysicsBody();
         reinterpret_cast<GameObjectController*>(pBody)->FUN_141240d70();
         reinterpret_cast<GameObjectController*>(pBody)->FUN_141240cb0(m_fA4, m_fB0, m_fAc);
     }
@@ -102,7 +102,7 @@ void StateHit::vfunc_4(StateData* pData)
     }
     if (m_pOwner->HasAnimSequence(m_strAnim.c_str()))
     {
-        m_pOwner->FUN_14166dd20(m_strAnim, fSpeed, true, false);
+        m_pOwner->PlayAnimation(m_strAnim, fSpeed, true, false);
         float fLength = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_strAnim.c_str()));
         m_timer.FUN_140868750((int)(fLength * 1000.0f * 0.7f));
     }
@@ -123,7 +123,7 @@ void StateHit::vfunc_3(double fTime)
         if (reinterpret_cast<CMainSystem*>(((void*)TSingleton<CMainSystem>::GetInstance()))->FUN_141473280() >= m_fEndTime)
         {
             if (m_nB4 != 0)
-                m_pOwner->FUN_14166dd20("Damg_C", 1.0f, false, false);
+                m_pOwner->PlayAnimation("Damg_C", 1.0f, false, false);
             else
                 m_pOwner->vfunc_59(1, 0, 0, 0);
         }
@@ -136,7 +136,7 @@ void StateHit::vfunc_5(int n)
     State::vfunc_5(n);
     if (m_pOwner != 0)
     {
-        Unk_PCBaseBody* pBody = m_pOwner->FUN_14166d220();
+        Unk_PCBaseBody* pBody = m_pOwner->GetPhysicsBody();
         if (pBody != 0)
             reinterpret_cast<GameObjectController*>(pBody)->FUN_141240d70();
     }
@@ -167,7 +167,7 @@ void StateHit::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID
         else
         {
             if (nFly == (int)eSequenceID)
-                m_pOwner->FUN_14166dd20("Jump_FlyDamg_A", 1.0f, true, false);
+                m_pOwner->PlayAnimation("Jump_FlyDamg_A", 1.0f, true, false);
             m_fEndTime = m_fA0 + m_f9c;
         }
     }
@@ -176,7 +176,7 @@ void StateHit::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID
 // @0x1417cad10
 void StateHit::vfunc_8(double fTime)
 {
-    Unk_PCBaseBody* pBody = m_pOwner->FUN_14166d220();
+    Unk_PCBaseBody* pBody = m_pOwner->GetPhysicsBody();
     if (pBody != 0 && reinterpret_cast<GameObjectController*>(pBody)->IsLift() != 0 && reinterpret_cast<GameObjectController*>(pBody)->IsLiftFalling() == 0)
         return;
     State::vfunc_8(fTime);
@@ -291,7 +291,7 @@ void StateHitNPC::vfunc_3(double fTime)
             else
             {
                 efd::utf8string kName("Damg_C");
-                m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+                m_pOwner->PlayAnimation(kName, 1.0f, false, false);
             }
         }
     }

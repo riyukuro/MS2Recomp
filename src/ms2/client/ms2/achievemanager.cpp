@@ -831,10 +831,10 @@ void CAchieveUIData::LoadDesc()
         CStringW strComplete = FUN_1401bf530(pElem, "complete", CStringW(L""));
         CStringW strManualDesc = FUN_1401bf530(pElem, "manualDesc", CStringW(L""));
         CStringW strManualComplete = FUN_1401bf530(pElem, "manualComplete", CStringW(L""));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strComplete);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(strManualComplete);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strDesc);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strManualDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strComplete);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strManualComplete);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strManualDesc);
         pUI->m_strDesc = strDesc;
         pUI->m_strComplete = strComplete;
         pUI->m_strManualDesc = strManualDesc;
@@ -869,8 +869,8 @@ void CAchieveUIData::LoadSpecialReward()
         pDesc->m_strSpecialDesc = FUN_1401bf530(pElem, "specialDesc", CStringW(L""));
         pDesc->m_strNotifyIcon = FUN_1401bf530(pElem, "specialNotifyIcon", CStringW(L""));
         pDesc->m_strNotifyString = FUN_1401bf530(pElem, "specialNotifyString", CStringW(L""));
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(pDesc->m_strSpecialDesc);
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(pDesc->m_strNotifyString);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(pDesc->m_strSpecialDesc);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(pDesc->m_strNotifyString);
         if (Unk_LockGuard guard = s_lockTables) {} else
         {
             s_mapSpecial.SetAt((ULONGLONG)nId << 32 | (__int64)nGrade, pDesc);

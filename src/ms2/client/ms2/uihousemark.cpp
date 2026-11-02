@@ -208,7 +208,7 @@ void UIHouseMarkEntity::FUN_14198b100()
         return;
     }
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->FUN_1416595d0() != 0)
+    if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->IsInCubeMode() != 0)
     {
         if ((unsigned)(m_nPopupTick + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4390)->Get()) < GetTickCountMs2())
             FUN_14198b320();

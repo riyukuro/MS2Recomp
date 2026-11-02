@@ -124,7 +124,7 @@ Unk_PhysRpgActor* FUN_1409ffd30(Unk_PhysGameObj* p);
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
-    class Unk_PCBaseBody* FUN_14166d220();
+    class Unk_PCBaseBody* GetPhysicsBody();
 };
 class GameObjectController   // C3: member view for the former free stand-ins
 {
@@ -250,7 +250,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
         {
             Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
             if (pRpg != 0)
-                pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
+                pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->FUN_141240e70();
         }
         return pActor;
     }
@@ -261,7 +261,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
         Unk_PhysWorldSvc* pWorld = FUN_14168ab40(pScene);
         Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
         if (pRpg != 0)
-            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
+            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->FUN_141240e70();
         return pActor;
     }
 }

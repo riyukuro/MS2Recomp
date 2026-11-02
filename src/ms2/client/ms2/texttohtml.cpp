@@ -646,7 +646,7 @@ CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nSize)
 {
     CStringW strQuote(L"''");
     CStringW strName = FormatStringId<CStringW>(0x626, pItem->FUN_140527b10());
-    ULong nColor = FUN_141275c00(pItem->FUN_140526bd0());
+    ULong nColor = FUN_141275c00(pItem->GetRarity());
     CStringW strResult = FUN_14028dee0(0x678, strQuote, nColor, nSize, strName);
     return strResult;
 }

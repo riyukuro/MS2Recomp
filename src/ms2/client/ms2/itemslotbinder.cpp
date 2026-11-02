@@ -54,7 +54,7 @@ CString ItemSlotBinder::BindNewItem(int nItemId, int nRarity, int nAmount)
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_14052b130(nItemId, nRarity, 0) != 0)
     {
-        item->FUN_140526c70(nAmount);
+        item->SetCountClamped(nAmount);
         m_20++;
         CString strName = StringFormat("{0}_{1}", m_18, m_20);
         FUN_141415450(strName, MS2Ptr<CItem>(item), 0, m_24, m_28);
@@ -70,7 +70,7 @@ CString ItemSlotBinder::FUN_140d43510(const void* pItem)
     MS2Ptr<CItem> item(new CItem);
     if (item->FUN_14052b130(((Unk_SlotBindInfo*)pItem)->vfunc_0(), ((Unk_SlotBindInfo*)pItem)->vfunc_1(), 0) != 0)
     {
-        item->FUN_140526c70(((Unk_SlotBindInfo*)pItem)->vfunc_2());
+        item->SetCountClamped(((Unk_SlotBindInfo*)pItem)->vfunc_2());
         if (((Unk_SlotBindInfo*)pItem)->vfunc_3() != 0)
             item->SetTransferCount(0);
         m_20++;

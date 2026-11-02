@@ -30,6 +30,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- out-of-unit callees ----
@@ -41,8 +42,7 @@ struct Unk_MorphRangeList
     int FUN_140545090();                                        // number of ranges
 };
 struct Unk_MorphItemSection { Unk_MorphRangeList* FUN_14054b2f0(int nKind); };
-struct Unk_MorphItemData { Unk_MorphItemSection* FUN_14053eba0(); };
-struct Unk_MorphItem { Unk_MorphItemData* FUN_14053ec70(); };
+struct Unk_MorphItem { CItemData* FUN_14053ec70(); };
 
 class CEquipItem : public CPtred
 {
@@ -58,7 +58,7 @@ struct Unk_MorphConfigFloat { char m_pad[0x58]; };
 struct Unk_ClientConfig { char m_pad[0x2d90]; Unk_MorphConfigFloat m_2d90; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; float FUN_141473230(); };   // the app framework
+struct Unk_MorphApp { char m_pad[8]; char m_manager[1]; };   // the app framework
 namespace efd { class ServiceManager; }
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
 
@@ -145,13 +145,13 @@ float CItemMorphController::vfunc_20()
 // @0x141416f70
 const Unk_CustomizeRange* CItemMorphController::vfunc_23()
 {
-    return reinterpret_cast<Unk_MorphItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(m_nCurIndex);
+    return reinterpret_cast<Unk_MorphItemSection*>(reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty())->FUN_14054b2f0(0)->FUN_140544f20(m_nCurIndex);
 }
 
 // @0x141416fd0
 const Unk_CustomizeRange* CItemMorphController::vfunc_24(int nIndex)
 {
-    return reinterpret_cast<Unk_MorphItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(nIndex);
+    return reinterpret_cast<Unk_MorphItemSection*>(reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty())->FUN_14054b2f0(0)->FUN_140544f20(nIndex);
 }
 
 // @0x141417030
@@ -193,7 +193,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 // @0x1414171e0
 int CItemMorphController::vfunc_27()
 {
-    return reinterpret_cast<Unk_MorphItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140545090();
+    return reinterpret_cast<Unk_MorphItemSection*>(reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty())->FUN_14054b2f0(0)->FUN_140545090();
 }
 
 // @0x141417230
@@ -283,7 +283,7 @@ void CItemMorphController::vfunc_42(int nIndex, float fValue, NiInterpController
         m_afValue[nIndex] = efd::Clamp(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow = vfunc_22(nIndex);
         for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
-            pCtrl->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), fNow, us);
+            pCtrl->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), fNow, us);
         FUN_141422660(m_spEquipItem, nIndex, fNow);
         if (m_pListener != 0)
             reinterpret_cast<Unk_MorphListener*>(m_pListener)->vfunc_2(this, fNow, nIndex);
@@ -356,13 +356,13 @@ void CItemMorphController::ApplyMorph()
         if (pCtrl0 != 0)
         {
             for (unsigned short us = 0; us < pCtrl0->GetInterpolatorCount(); us++)
-                pCtrl0->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), vfunc_22(0), us);
+                pCtrl0->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), vfunc_22(0), us);
         }
         NiInterpController* pCtrl1 = SelectMorphController(1);
         if (pCtrl1 != 0)
         {
             for (unsigned short us = 0; us < pCtrl1->GetInterpolatorCount(); us++)
-                pCtrl1->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), vfunc_22(1), us);
+                pCtrl1->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), vfunc_22(1), us);
         }
     }
     else
@@ -371,7 +371,7 @@ void CItemMorphController::ApplyMorph()
         if (pCtrl != 0)
         {
             for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
-                pCtrl->UpdateValue(reinterpret_cast<Unk_MorphApp*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473230(), vfunc_21(), us);
+                pCtrl->UpdateValue(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta(), vfunc_21(), us);
         }
     }
 }
