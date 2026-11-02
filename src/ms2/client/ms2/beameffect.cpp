@@ -428,7 +428,7 @@ class Unk_BmCameraMgr { public: Unk_BmNiPoint3 FUN_140af0250(); };
 struct Unk_BmPoint3
 {
     float x, y, z;
-    explicit Unk_BmPoint3(const void* efdPoint);                    // 0x14027dcf0
+    Unk_BmPoint3(const void* efdPoint);                             // 0x14027dcf0 (converting)
     Unk_BmPoint3& operator=(const Unk_BmPoint3& pt);                // 0x14097faa0
 };
 
@@ -440,7 +440,6 @@ public:
 };
 
 // @0x140a081d0
-// MS2-FUNCTIONAL: frame and temporaries differ from the exe.
 // Picks a random texture of the param, builds the curve and rewrites the strip: two vertex rows (left / right edge of
 // the curve, offset by half the width along the camera-facing side vector) and the 2 triangles per curve segment.
 void CBeamEffect::UpdateMesh()
@@ -479,9 +478,9 @@ void CBeamEffect::UpdateMesh()
     for (int i = 0; i < (int)nCount; ++i)
     {
         NiColorA kWhite(1.0f, 1.0f, 1.0f, 1.0f);
-        pPos[i] = Unk_BmPoint3(&kLeft[i]);
+        pPos[i] = &kLeft[i];   // implicit NiPoint3(const efd::Point3&) temp
         pCol[i] = kWhite;
-        pPos[i + nCount] = Unk_BmPoint3(&kRight[i]);
+        pPos[i + nCount] = &kRight[i];
         pCol[i + nCount] = kWhite;
     }
     m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);

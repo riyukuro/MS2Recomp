@@ -270,31 +270,39 @@ MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
 
 // ---- Full-exe entry points under the FUN_ spellings the commonstruct slices call (ICF-folded template instances). ----
 // _Vector_alloc::_Copy_alloc for std::allocator: nothing to copy.
-// MS2-FUNCTIONAL: empty; the exe calls the (empty) _Pocca instance
+void FUN_14027a4a0(__int64 a, __int64 b);                       // _Pocca
+void FUN_14027a4e0(__int64 a, __int64 b);                       // _Pocca
+__int64 FUN_1402882f0(__int64 vec);                             // _Getal
+__int64 FUN_1402883f0(__int64 vec);                             // _Getal
 // @0x140287550
-void FUN_140287550(__int64, __int64) {}
+void FUN_140287550(__int64 a, __int64 b)
+{
+    FUN_14027a4a0(FUN_1402882f0(a), b);
+}
 
-// MS2-FUNCTIONAL: empty; the exe calls the (empty) _Pocca instance
 // @0x140287580
-void FUN_140287580(__int64, __int64) {}
+void FUN_140287580(__int64 a, __int64 b)
+{
+    FUN_14027a4e0(FUN_1402883f0(a), b);
+}
 
 // _Tree<map<int,int>>::_Freeheadnode
-// MS2-FUNCTIONAL: frees the node directly; the exe destroys its links and deallocates through the allocator traits
 // @0x140287dc0
+void FUN_140278630(__int64, __int64) noexcept;
 void FUN_140287dc0(void* tree, __int64 head)
 {
-    (void)tree;
-    std::allocator<std::_Tree_node<std::pair<const int, int>, void*> >().deallocate(
-        reinterpret_cast<std::_Tree_node<std::pair<const int, int>, void*>*>(head), 1);
+    FUN_140278630(reinterpret_cast<__int64>(&reinterpret_cast<std::_Tree_comp_alloc<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int> >, false> >*>(tree)->_Getal()), head);
 }
 
 struct Unk_TVal;
-// _Tree<map<int,int>>::_Get_data: the tree value is at offset 0.
-// MS2-FUNCTIONAL: returns the argument; the exe forwards through two folded accessor instances
+// _Tree<map<int,int>>::_Get_data
+typedef std::pair<const int, int> Unk_TreePair;
+typedef std::_Compressed_pair<std::allocator<std::_Tree_node<Unk_TreePair, void*> >, std::_Tree_val<std::_Tree_simple_types<Unk_TreePair> >, true> Unk_TreeInnerPair;
+struct Unk_TreeLayout { std::_Compressed_pair<std::less<int>, Unk_TreeInnerPair, true> _Mypair; };
 // @0x140287ee0
 Unk_TVal* FUN_140287ee0(void* tree)
 {
-    return (Unk_TVal*)tree;
+    return (Unk_TVal*)&static_cast<const Unk_TreeLayout*>(tree)->_Mypair._Get_second()._Get_second();
 }
 
 void FUN_140277470(__int64 first, __int64 last, __int64 al);   // _Destroy_range (trivially destructible: no-op)

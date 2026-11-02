@@ -18,13 +18,14 @@
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/commonfiles/os.h"  // C3: Unk_OSInput::Read6
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
-// The incoming packet stream (a sub-object at +8 of CInPacket); FUN_14070f480 reads one int.
-class Unk_CInStream { public: void FUN_14070f480(int& n); };
-class CInPacket { public: void* m_pad_00; Unk_CInStream m_stream; };
+// The incoming packet stream is a sub-object at +8 of CInPacket.
+class CInPacket { public: void* m_pad_00; Unk_OSInput m_stream; };
 
 // The packet manager: handlers are registered per opcode.
 class Unk_140bccd50
@@ -37,10 +38,7 @@ Unk_140bccd50* FUN_140bccd50();
 
     // string table lookup
 CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> pRoom);                          // dungeon name of a room
-CStringW FUN_140938ae0(CStringW strKey, const int& n);                              // localized, formatted
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
-// "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
-CString FUN_140be2000(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,8 +67,8 @@ MS2_REPLACE_METHOD(0x140E178E0, UIDungeonLobby, GetTypeName, 61, 0x141A279F);
 // @0x140e17930
 void UIDungeonLobby::FUN_140e17930(CInPacket& packet)
 {
-    packet.m_stream.FUN_14070f480(m_nRoomId);
-    packet.m_stream.FUN_14070f480(m_n17c);
+    packet.m_stream.Read6((unsigned&)m_nRoomId);
+    packet.m_stream.Read6((unsigned&)m_n17c);
     FUN_141924680();
 }
 MS2_REPLACE_METHOD(0x140E17930, UIDungeonLobby, FUN_140e17930, 85, 0xCFBA290E);
@@ -84,15 +82,15 @@ void UIDungeonLobby::OnLoadComplete()
     {
         FUN_1419260d0("m_webGuideButton", 0);
         do {
-            m_30->FUN_140bbe640<ASButton>("m_webGuideButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pWebGuideButton));
+            m_30->FUN_140bbe640<ASButton>("m_webGuideButton", m_pWebGuideButton);
             if (m_pWebGuideButton == NULL)
-                throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
+                throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                             MS2_THIS_FILE, MS2_LINE(45), __FUNCTION__));
         } while (0);
         do {
             m_30->FUN_140beaf20<ASTextField>("m_title", m_pTitle);
             if (m_pTitle == NULL)
-                throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
+                throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                             MS2_THIS_FILE, MS2_LINE(46), __FUNCTION__));
         } while (0);
         DungeonRoomPtr pRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_nRoomId);
@@ -102,17 +100,17 @@ void UIDungeonLobby::OnLoadComplete()
             CStringW strTitle = FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
                                               TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->GetDungeonRoomID()));
             m_pTitle->FUN_1422c4cd0(strTitle);
-            FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_140938ae0(L"s_dungeonLobby_subTitle", m_n17c));
+            FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", FUN_14028dfa0<unsigned int>(L"s_dungeonLobby_subTitle", (unsigned&)m_n17c));
             if (pRoom->m_groupType == 2 || pRoom->m_groupType == 3) {
                 const float fOffset = 10.0f;
                 float x = 0.0f;
                 float y = 0.0f;
-                m_pWebGuideButton->FUN_1422c0f60(&x, &y);
+                m_pWebGuideButton->GetPosition(&x, &y);
                 x += static_cast<float>(m_pTitle->GetTextWidth()) / 2.0f;
                 x += fOffset;
-                m_pWebGuideButton->FUN_1422c00f0(x, y);
+                m_pWebGuideButton->SetPositionFloat(x, y);
             } else {
-                m_pWebGuideButton->vfunc_4(0);
+                m_pWebGuideButton->vfunc_4(false);
             }
         }
     }

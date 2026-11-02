@@ -23,6 +23,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/pvpmanager.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe types ----
 
@@ -79,7 +80,7 @@ private:
 
 int FUN_141654730(PCBase* pPC);                                     // the job
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
-void* FUN_1403ed2b0();                                              // the UI service
+class CUIService;
 void FUN_14151f200();
 
 // @0x141342f10
@@ -188,8 +189,8 @@ int UIPvPRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (FUN_1418fc760(szMethod, (void*)pArgs, nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnShowResult", szMethod) == 0) {
-        if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e9b) != 0)
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e9b)));
+        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9b) != 0)
+            (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e9b)));
         return 1;
     }
     if (_stricmp("OnClose", szMethod) == 0) {

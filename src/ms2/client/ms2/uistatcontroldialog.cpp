@@ -20,6 +20,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -41,7 +42,7 @@ public:
 };
 
 // The status / item listener registries (singletons 0x140aa6d40 / 0x140a6a840).
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 class Unk_StatItemEvents;
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 class Unk_ItemEventSystem   // C3: member view for the former free stand-ins
@@ -56,7 +57,7 @@ void FUN_141276f80(const Unk_CommandChat&);
 
 const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
 CStringW FUN_14082f000(int nStat);                      // the display name of a stat
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);    // string table text with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);    // string table text with one argument
 extern int DAT_143ab2914;                               // the character level
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,7 @@ int UIStatControlDialog::vfunc_oa0_1()
 void UIStatControlDialog::vfunc_67()
 {
     ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
 
@@ -105,7 +106,7 @@ void UIStatControlDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     ((class Unk_ItemEventSystem*)(class Unk_StatItemEvents*)(((class Unk_StatItemEvents*)FUN_140a6a840())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14134f150();
 }
 
@@ -134,7 +135,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nStat = data.FUN_1422b8b10();
-            float fValue = (float)data.FUN_1422b8ca0();
+            float fValue = (float)data.PopDouble();
             Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor != 0)
             {
@@ -331,7 +332,7 @@ void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat,
         fValue = (float)pActor->FUN_141670a30(nStat);
     CStringW strValue;
     if (bFloat != 0)
-        strValue = FUN_14052bd00(0x98e, StringFormat(L"{0:0.1f}", fValue));
+        strValue = FormatStringId<CStringW>(0x98e, StringFormat(L"{0:0.1f}", fValue));
     else
         strValue = StringFormat(L"{0}", (__int64)fValue);
     CStringW strBonus;

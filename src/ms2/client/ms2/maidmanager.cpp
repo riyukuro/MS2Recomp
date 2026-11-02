@@ -31,7 +31,7 @@ public:
 
 // ---- out-of-unit callees ----
 void* FUN_14025e7c0();                                  // the client's text-hook object
-unsigned char FUN_14116d720(void* pHook);
+class CInputKeyHandler { public: bool IsDebugMode(void); };
 void FUN_140710590(COutPacket& packet);                 // send
 struct Unk_MaidUIService { MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };   // the dialog's UI object
 class CManufactureManager   // C3: member view for the former free stand-ins
@@ -200,7 +200,7 @@ MS2Ptr<CMaid> CUserMaidManager::GetMaid(unsigned __int64 nId)
 // @0x14127ecc0
 void CUserMaidManager::SendRequest5(unsigned __int64 nId)
 {
-    if (FUN_14116d720(FUN_14025e7c0()) == 0)
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.WriteUInt8(5);
@@ -211,7 +211,7 @@ void CUserMaidManager::SendRequest5(unsigned __int64 nId)
 // @0x14127ed40
 void CUserMaidManager::SendRequest6(unsigned __int64 nId)
 {
-    if (FUN_14116d720(FUN_14025e7c0()) == 0)
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.WriteUInt8(6);
@@ -222,7 +222,7 @@ void CUserMaidManager::SendRequest6(unsigned __int64 nId)
 // @0x14127edc0
 void CUserMaidManager::SendRequest7(unsigned __int64 nId)
 {
-    if (FUN_14116d720(FUN_14025e7c0()) == 0)
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.WriteUInt8(7);
@@ -233,7 +233,7 @@ void CUserMaidManager::SendRequest7(unsigned __int64 nId)
 // @0x14127ee40
 void CUserMaidManager::SendRequest8(unsigned __int64 nId)
 {
-    if (FUN_14116d720(FUN_14025e7c0()) == 0)
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.WriteUInt8(8);
@@ -244,7 +244,7 @@ void CUserMaidManager::SendRequest8(unsigned __int64 nId)
 // @0x14127eec0
 void CUserMaidManager::SendRequest9(unsigned __int64 nId)
 {
-    if (FUN_14116d720(FUN_14025e7c0()) == 0)
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.WriteUInt8(9);
@@ -255,7 +255,7 @@ void CUserMaidManager::SendRequest9(unsigned __int64 nId)
 // @0x14127ef40
 void CUserMaidManager::SendRequest10(unsigned __int64 nId, unsigned __int64 nValue, int cFlag)
 {
-    if (FUN_14116d720(FUN_14025e7c0()) == 0)
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode() == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::Maid), 0);
     packet.WriteUInt8(10);

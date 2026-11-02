@@ -50,7 +50,7 @@ class CServerStringGroup   // C3: member view for the former free stand-ins
 public:
     bool Load();
 };
-bool FUN_141811960(Unk_PatchTableB* p);
+
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class CommonString   // C3: member view for the former free stand-ins
 {
@@ -69,7 +69,7 @@ private:
     MS2_LAYOUT_FRIEND;
     __int64 m_pad_8;
 };
-extern Unk_PatchTextOwner* DAT_143ab2080;
+class CServerString;
 Unk_PatchTextOwner* FUN_140a87680();
 
 // @0x140a86e50
@@ -91,7 +91,7 @@ COnlinePatchFileContext::~COnlinePatchFileContext()
 // @0x140a87680
 Unk_PatchTextOwner* FUN_140a87680()
 {
-    return DAT_143ab2080;
+    return reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::s_instance);
 }
 
 // @0x140a848a0
@@ -290,7 +290,7 @@ void COnlinePatchManagerCli::ReloadTables()
     LoadSystemMailContent();
     LoadTalkScripts();
     ((class CServerStringGroup*)(class Unk_PatchTextFilter*)(FUN_140a87680()->FUN_140a87690()))->Load();
-    FUN_141811960(reinterpret_cast<Unk_PatchTableB*>(TSingleton<CStringTable>::GetInstance()));
+    TSingleton<CStringTable>::GetInstance()->FUN_141811960();
     ((class CommonString*)(void*)(((void*)FUN_14025e7d0())))->Reload();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -118,7 +118,7 @@ void UIItemDropSimulatorDialog::FUN_14192a9a0(CStringW strText)
 // @0x14192aa50
 CStringW UIItemDropSimulatorDialog::FUN_14192aa50(int nId)
 {
-    return GetStringTable()->FUN_141813150(nId);
+    return GetStringTable()->GetRankName(nId);
 }
 
 // @0x14192ab00

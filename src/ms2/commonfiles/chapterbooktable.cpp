@@ -7,7 +7,9 @@
 // MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$pair@HH@std@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1401d9820 ; unique
 // MS2-PIN: ??$?0U_Exact_args_t@std@@AEBI$$V$0A@@?$tuple@AEBI@std@@QEAA@U_Exact_args_t@1@AEBI@Z 0x1401d9870 ; unique
 // MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIU?$pair@HH@std@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1401d9920 ; unique
-// MS2-PIN: ??$?4HH$0A@@?$pair@HH@std@@QEAAAEAU01@$$QEAU01@@Z 0x1401d99b0 ; unique
+// MS2-PIN: ??$?4JH$0A@@?$pair@HH@std@@QEAAAEAU01@$$QEAU?$pair@JH@1@@Z 0x1401d99b0 ; unique
+// MS2-PIN: ??0?$pair@JH@std@@QEAA@AEBJAEBH@Z 0x1401d9970 ; unique
+// MS2-PIN: ??$make_pair@AEBJAEBH@std@@YA?AU?$pair@JH@0@AEBJAEBH@Z 0x1401db630 ; unique
 // MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1401d9c70 ; unique
 // MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIU?$pair@HH@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$pair@HH@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$pair@HH@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIU?$pair@HH@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@1@@Z 0x1401da130 ; unique
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIU?$pair@HH@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$pair@HH@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIU?$pair@HH@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBIU?$pair@HH@std@@@std@@PEAX@1@@Z 0x1401dad70 ; unique
@@ -338,25 +340,6 @@ CChapterBookTable::~CChapterBookTable()
 {
 }
 
-// The leaf pair ctor this unit's make_pair 0x1401db630 calls: it stores both ints without std::forward calls (the
-// toolchain's pair<int,int>(int&,int&) is the shared 0x1404d9610), so it stands in as a free function.
-// @0x1401d9970
-std::pair<int, int>* FUN_1401d9970(std::pair<int, int>* pThis, const int& a, const int& b)
-{
-    pThis->first = a;
-    pThis->second = b;
-    return pThis;
-}
-
-// make_pair<int&,int&>: the exe keeps this unit's own copy (it calls the leaf pair ctor 0x1401d9970, so it is not
-// byte-identical to the shared copy 0x14111d460 the symbol table names); Load calls it under its own name.
-// MS2-FUNCTIONAL ?FUN_1401db630@@YA?AU?$pair@HH@std@@AEAH0@Z: std::make_pair<int&,int&>; differs only through the pair ctor (see 0x1401d9970)
-// @0x1401db630
-std::pair<int, int> FUN_1401db630(int& a, int& b)
-{
-    return std::pair<int, int>(std::forward<int&>(a), std::forward<int&>(b));
-}
-
 // @0x1401d8ff0
 int CChapterBookTable::Load()
 {
@@ -380,9 +363,9 @@ int CChapterBookTable::Load()
             return 0;
         for (unsigned __int64 j = 0; j < data->m_rewards.GetCount(); j++)
         {
-            Unk_ChapterReward& rReward = data->m_rewards[j];
+            const Unk_ChapterReward& rReward = data->m_rewards[j];
             if (rReward.m_nType == 3)
-                m_skill[data->m_nEpilogue] = FUN_1401db630(rReward.m_nKind, rReward.m_nValue);
+                m_skill[data->m_nEpilogue] = std::make_pair(rReward.m_nKind, rReward.m_nValue);
             else if (rReward.m_nType == 2)
                 m_stat.SetAt(data->m_nEpilogue, rReward.m_nValue);
         }

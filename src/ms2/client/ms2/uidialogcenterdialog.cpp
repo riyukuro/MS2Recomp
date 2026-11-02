@@ -77,7 +77,7 @@ public:
 };
 
 // The log dialog singleton (0x1412976a0 returns the global) and its toggle.
-extern void* DAT_143ad6820;
+class ClientLogManager;
 class ClientLogManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -129,7 +129,7 @@ static Unk_DcService* FUN_141296a60(Unk_DcService* pSvc)
 // @0x1412976a0
 static void* FUN_1412976a0()
 {
-    return DAT_143ad6820;
+    return reinterpret_cast<void*>(TSingleton<ClientLogManager>::s_instance);
 }
 
 // @0x1412976b0
@@ -173,7 +173,7 @@ static MS2Ptr<Unk_140acd6e0> FUN_1412968a0(int nMovieId, CString strLinkage, __i
 }
 
 // The ui text service (singleton): the text of a "$s_..." key.
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 
 // ---- UIDialogCenterDialog -------------------------------------------------------------------------------------------
@@ -440,7 +440,7 @@ MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn,
         MS2Ptr<Unk_140acd6e0> spBtn = FUN_1412968a0(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
         if (spBtn.get() != 0)
         {
-            spBtn->FUN_1422c0060(x, y);
+            spBtn->SetPositionUInt(x, y);
             spBtn->FUN_1422cdfb0(strLabel);
             m_buttons.Add(spBtn);
             m_90->FUN_1422c6900(spBtn->FUN_1422bb870());
@@ -453,7 +453,7 @@ MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn,
 // @0x141296370
 void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId)
 {
-    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
+    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
     MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
@@ -465,7 +465,7 @@ void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, 
 // @0x141296500
 void UIDialogCenterDialog::FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
-    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
+    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
     MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
         spBtn->FUN_1422ce240(cb, 0);

@@ -37,7 +37,7 @@ int FUN_141420f10(CItemData* pData, AvatarPC* pAvatar)
                 return nCustomizeId;
         }
     }
-    return pData->FUN_14053eba0()->FUN_14054b400();
+    return pData->GetModelOrEmpty()->FUN_14054b400();
 }
 
 // @0x141420f90

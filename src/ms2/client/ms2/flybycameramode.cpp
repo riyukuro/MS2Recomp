@@ -42,8 +42,8 @@ public:
     void FUN_140947980(int);
     void FUN_140aed720(struct Unk_CameraSetting const&);
 };
-void FUN_140af99d0(CCameraMode* pMode, float f);        // m_setting.m_4 = f (+ owner property)
-void FUN_140af9950(CCameraMode* pMode, float f);        // m_setting.m_8 = f (+ owner property)
+
+
 
 // @0x1412201a0
 Unk_FlyByCameraData* Unk_CameraManager::FUN_1412201a0()
@@ -81,8 +81,8 @@ void CFlyByCameraMode::vfunc_8(double fTime)
     Unk_FlyByCameraData* pFly = Unk_CameraManager::FUN_1409478c0()->FUN_1412201a0();
     Vector3 ptRot = CCameraMode::FUN_140afdec0(fRatio, pFly->m_from.m_18, pFly->m_to.m_18);
     vfunc_11(data.m_0);
-    ::FUN_140af99d0(this, data.m_4);
-    ::FUN_140af9950(this, data.m_8);
+    ((CCameraMode*)this)->FUN_140af99d0(data.m_4);
+    ((CCameraMode*)this)->FUN_140af9950(data.m_8);
     vfunc_4(ptRot);
     vfunc_3(data.m_c);
     vfunc_5(data.m_24);

@@ -519,7 +519,6 @@ void CGroupChatManager::Create(CStringW name) {
 }
 MS2_REPLACE_METHOD(0x14137E8A0, CGroupChatManager, Create, 596, 0xCDD6234E);
 // @0x14137eb00
-// MS2-FUNCTIONAL: the by-value name copy and message box temps sit in different stack slots; EH states differ
 void CGroupChatManager::Invite(unsigned oid, CStringW name) {
     Unk_ChatPtrChat chat = FindChat(oid);
     if (chat == 0)
@@ -533,25 +532,26 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
     if (chat->FUN_14137bad0() >= 0x14) {
         CStringW text = GetStringCommon(0x814);
         Unk_MessageBoxPtr active = FUN_14151f820();
-        if (FUN_140534fc0(active) != 0) {
-            if (FUN_141a02ce0(FUN_140534fe0(active)) == text)
-                return;
+        if ((FUN_140534fc0(active) ? true : false)
+            && FUN_141a02ce0(FUN_140534fe0(active)) == text)
+        {
+            return;
         }
         Unk_MessageBoxPtr box = FUN_140d73d20(0, text, 0, text);
         if (FUN_140534fc0(box) != 0)
             FUN_140d73c60(box);
     }
     int len = name.GetLength();
-    if (len >= 0x19) {
+    if (len > 0x18) {
         MS2_ASSERT_AT(0xc9, FALSE);
         ((class Unk_TimeLogger*)GetLogString())->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
-    } else {
-        COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-        packet.WriteUInt8(2);
-        packet.WriteUnicodeString(name);
-        packet.WriteInt32(oid);
-        FUN_140710590(packet);
+        return;
     }
+    COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
+    packet.WriteUInt8(2);
+    packet.WriteUnicodeString(name);
+    packet.WriteInt32(oid);
+    FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14137EB00, CGroupChatManager, Invite, 1173, 0xCDB2E8FE);
 // @0x14137efa0
@@ -577,7 +577,7 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
         if (blocked.get() != 0) {
             CStringW msg = FUN_1401ca400(blocked, 2);
             if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
-                ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951bf0(oid, GetLocalPlayerName(), msg);
+                ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->AddNoticeLine(oid, GetLocalPlayerName(), msg);
             return;
         }
     }
@@ -628,7 +628,7 @@ void CGroupChatManager::FUN_14137f590(CInPacket* packet) {
     CGroupChat* chat = FindChat(oid).get();
     if (chat != 0) {
         if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
-            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_1419515c0(oid);
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->OnChatCreated(oid);
     }
 }
 MS2_REPLACE_METHOD(0x14137F590, CGroupChatManager, FUN_14137f590, 164, 0x1AA86B3B);
@@ -683,7 +683,7 @@ void CGroupChatManager::FUN_14137f9d0(CInPacket* packet) {
     if (chat->AddMember(member) == 0)
         return;
     if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
-        ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_1419519e0(oid, name, member->m_proxy.FUN_1408f19e0());
+        ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->OnMemberInvited(oid, name, member->m_proxy.FUN_1408f19e0());
 }
 MS2_REPLACE_METHOD(0x14137F9D0, CGroupChatManager, FUN_14137f9d0, 576, 0xD23A1A70);
 // @0x14137fc20
@@ -713,7 +713,7 @@ void CGroupChatManager::FUN_14137fe40(CInPacket* packet) {
     if (member.get() != 0) {
         member->m_state = 1;
         if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
-            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951af0(oid, name);
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->OnGroupMemberOnline(oid, name);
     }
 }
 MS2_REPLACE_METHOD(0x14137FE40, CGroupChatManager, FUN_14137fe40, 372, 0xCEC78FAD);
@@ -728,7 +728,7 @@ void CGroupChatManager::FUN_14137ffc0(CInPacket* packet) {
     if (member.get() != 0) {
         member->m_state = 2;
         if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
-            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951b70(oid, name);
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->OnGroupMemberOffline(oid, name);
     }
 }
 MS2_REPLACE_METHOD(0x14137FFC0, CGroupChatManager, FUN_14137ffc0, 372, 0xE5740DDB);
@@ -743,7 +743,7 @@ void CGroupChatManager::FUN_141380140(CInPacket* packet) {
     CGroupChatMember* found = chat->FindMemberByName(first).get();
     if (found != 0) {
         if (((class Unk_ChatUI*)FUN_141482e80())->m_messenger != 0)
-            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->FUN_141951c50(oid, first, second);
+            ((class Unk_ChatUI*)FUN_141482e80())->m_messenger->QueueTalkLog(oid, first, second);
     }
 }
 MS2_REPLACE_METHOD(0x141380140, CGroupChatManager, FUN_141380140, 469, 0x39B109A7);

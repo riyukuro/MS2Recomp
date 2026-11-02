@@ -217,18 +217,11 @@ MS2_CHECK_OFFSET(Unk_AkoPortal, m_bConfirm, 0x18c);
 
 // The cube map service (efd class id 0x06100017; named as in buddy.cpp); FUN_1401cd040 looks it up in the framework's
 // service manager.
-class Unk_Service6100017 : public efd::ISystemService
+class Unk_Service6100017 : public CubeMapInformationService
 {
 public:
     egf::EntityID FUN_1410cb1b0();                          // the entity of the house's fitting doll
     bool FUN_1410c35c0();                                   // the player is in a house
-    Vector3 FUN_1410b7ad0(PCBase* pActor, float fDist, Vector3* pOut, int bSnap);  // the cell in front of the actor
-    Vector3 FUN_1410b7a20(Vector3 pt, Vector3* pOut);   // the cell position of a point
-    Cube* FUN_1410b8ab0(Vector3 pt);                // the cube at a cell position
-    // The same three as PullObjectWeaponAction calls them (its cell list is a std::vector<efd::Point3>).
-    efd::Point3 FUN_1410b7ad0(PCBase* pActor, float fDist, efd::Point3* pOut, int bSnap);
-    efd::Point3 FUN_1410b7a20(efd::Point3 pt, efd::Point3* pOut);
-    Cube* FUN_1410b8ab0(efd::Point3 pt);
     bool FUN_1410b7e80(Vector3 pt);                 // a cube stands at a cell position
     void FUN_1410ccc00(int nMapId, int nType, int nSize);   // show the map's owner profile
     int FUN_1410c8580(int nGroup);                          // the error code for buying a house group (0 = ok)
@@ -237,7 +230,6 @@ public:
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)
-extern Vector3 DAT_143b01a60;                       // the zero point                // the game framework
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 
 // The player's lifted object (MyPC::FUN_141523c00); only tested for null here.
@@ -260,13 +252,12 @@ CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);   // psz + str 
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 
 // The house service: CubeMapInformationService, viewed through the calls made here. Its singleton slot (0x143ab3908)
-// is TSingleton<CubeMapInformationService>::s_instance, defined by cubemapinformationservice_3.cpp (an explicit
-// TSingleton specialization this TU cannot see); a TSingleton<Unk_AkoHouseSvc> of its own would be a second copy.
-extern void* DAT_143ab3908;
+// is TSingleton<CubeMapInformationService>::s_instance, defined by cubemapinformationservice_3.cpp; a
+// TSingleton<Unk_AkoHouseSvc> of its own would be a second copy.
 class Unk_AkoHouseSvc
 {
 public:
-    static Unk_AkoHouseSvc* GetInstance() { return static_cast<Unk_AkoHouseSvc*>(DAT_143ab3908); }
+    static Unk_AkoHouseSvc* GetInstance() { return reinterpret_cast<Unk_AkoHouseSvc*>(TSingleton<CubeMapInformationService>::s_instance); }
 };
 
 // The guide manager (global 0x143ab3330).
@@ -403,13 +394,12 @@ int FUN_141276980();                                        // npc talk is allow
 class Unk_AkoWorldView : public WorldService
 {
 public:
-    Unk_WsC_GameObj* FUN_141bd0fa0(egf::EntityID id);       // the game object of an entity
     MS2Ptr<Unk_AkoPortal> FUN_141bc2800(int nPortalId);     // the portal by id
 };
 // The quest manager (FUN_140764020).
 void* FUN_140764020();   // C3: was FUN_140764020
 int FUN_140855d10(int nNpcId);                              // the npc has an event talk
-Unk_Int3 FUN_1408a1430(Vector3 pt);                 // the cube cell of a world position
+Unk_Int3 FUN_1408a1430(NiPoint3 pt);                // the cube cell of a world position
 // MyPC seen as the local player.
 class Unk_AkoPlayerView : public MyPC
 {
@@ -473,7 +463,7 @@ inline CFunctionCubeService* FUN_1409670b0() { return TSingleton<CFunctionCubeSe
 // @0x1409670e0 the house service (CubeMapInformationService) singleton
 void* FUN_1409670e0()
 {
-    return DAT_143ab3908;
+    return TSingleton<CubeMapInformationService>::s_instance;
 }
 
 // @0x140967100 the cutscene service (UITalkManager) singleton
@@ -528,13 +518,10 @@ public:
 
 // The taxi station lists (CAtlArray<int>): the known stations (0x143ab3078) and the stations already reported to the
 // server (0x143ab3098).
-class Unk_AkoTaxiList
-{
-public:
-    int FUN_140408410(const int* pValue);                   // index of a value (-1: absent)
-};
-extern Unk_AkoTaxiList DAT_143ab3078;
-extern Unk_AkoTaxiList DAT_143ab3098;
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // index of a value (-1: absent)
+struct Unk_PtrB;
+extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;
+extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3098;
 extern int DAT_143ab2870;                                   // the current map id
 // The player's movement controller (PCBase +0x6d8; PCBase::FUN_14166d240 hands it out as void*).
 class Unk_PCMove
@@ -841,9 +828,9 @@ int TaxiStationAction::vfunc_1()
     }
     else
     {
-        if (DAT_143ab3078.FUN_140408410(&DAT_143ab2870) < 0)
+        if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0)
         {
-            if (DAT_143ab3098.FUN_140408410(&DAT_143ab2870) >= 0)
+            if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) >= 0)
                 return 0;
             else
             {
@@ -1335,7 +1322,7 @@ int LiftCubeAction::vfunc_1()
         return false;
     if (pPlayer->FUN_141523c00().get())
         return false;
-    Unk_WsB_Lift* pOld = WorldService::GetInstance()->FUN_141bc5a20(m_str18).get();
+    Unk_WsB_Lift* pOld = WorldService::GetInstance()->FindLiftByName(m_str18).get();
     Unk_WsB_Lift* pLift = FUN_140957890();
     if (pOld && pOld != pLift)
         ((CLiftableObject*)(pOld))->FUN_141447d50(0);
@@ -1353,7 +1340,7 @@ void LiftCubeAction::vfunc_2()
         return;
     if (pPlayer->FUN_141523c00().get())
         return;
-    Unk_WsB_Lift* pLift = WorldService::GetInstance()->FUN_141bc5a20(m_str18).get();
+    Unk_WsB_Lift* pLift = WorldService::GetInstance()->FindLiftByName(m_str18).get();
     if (!pLift)
         return;
     if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
@@ -1382,7 +1369,7 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
         if (((CLiftableObject*)(spLift.operator->()))->CanLift() == 0)
             continue;
         Vector3 ptLift = ((CLiftableObject*)(spLift.operator->()))->FUN_141447c80();
-        Unk_Int3 cell = FUN_1408a1430(ptLift);
+        Unk_Int3 cell = FUN_1408a1430(reinterpret_cast<NiPoint3&>(ptLift));
         Vector3 diff = ptLift.FUN_140965c40(pos);
         float fDist = diff.FUN_140968990();
         if (fDist > ((CLiftableObject*)(spLift.operator->()))->GetRange())
@@ -1398,7 +1385,7 @@ MS2_REPLACE_METHOD(0x140957720, LiftCubeAction, vfunc_5, 11, 0xB512670C);
 // @0x140957740
 CStringW LiftCubeAction::vfunc_6()
 {
-    Unk_WsB_Lift* pLift = WorldService::GetInstance()->FUN_141bc5a20(m_str18);
+    Unk_WsB_Lift* pLift = WorldService::GetInstance()->FindLiftByName(m_str18);
     if (!pLift)
         return L"";
     return FUN_140960c30(0x63a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((CLiftableObject*)(pLift))->FUN_141447cc0()));
@@ -1423,7 +1410,7 @@ int TalkAction::vfunc_1()
         return 0;
     if (((class Unk_AkoGuide*)FUN_1409331e0())->IsRestricted(2))
         return 0;
-    if (!reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b211d0())
+    if (!reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->IsTalkIntervalElapsed())
         return 0;
     if (pPlayer->FUN_14166c930() == 8 || pPlayer->FUN_14166c930() == 9)
         return 0;
@@ -1506,7 +1493,7 @@ MS2_REPLACE_METHOD(0x140958A60, InteractAction, vfunc_5, 11, 0xCC810D29);
 // @0x140958120
 int InteractAction::vfunc_1()
 {
-    CInteractObject* pOld = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    CInteractObject* pOld = WorldService::GetInstance()->FindProp(m_strObjectId);
     CInteractObject* pObject = FUN_140958e70();
     if (pOld && pOld != pObject)
     {
@@ -1551,7 +1538,7 @@ MS2_REPLACE_METHOD(0x140958E70, InteractAction, FUN_140958e70, 273, 0xBA3636FF);
 // @0x140958cb0
 void InteractAction::vfunc_3()
 {
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
     if (!pObject)
         return;
     m_n20 = 0;
@@ -1561,7 +1548,7 @@ MS2_REPLACE_METHOD(0x140958CB0, InteractAction, vfunc_3, 143, 0xC0354D66);
 // @0x140958d50
 Unk_AkoTarget InteractAction::vfunc_12()
 {
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
     if (!pObject)
         return ActionKeyObject::vfunc_12();
     return Unk_AkoTarget(pObject->GetPos());
@@ -1582,7 +1569,7 @@ MS2_REPLACE_METHOD(0x140958E20, InteractAction, vfunc_13, 62, 0xA6B5DED9);
 // @0x1409582b0
 void InteractAction::vfunc_2()
 {
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
     if (!pObject)
         return;
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -1657,7 +1644,7 @@ CStringW InteractAction::vfunc_6()
 {
     if (m_strObjectId.IsEmpty())
         return L"";
-    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    Unk_WsB_Prop* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
     if (!pObject)
         return L"";
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
@@ -1884,11 +1871,11 @@ int PullObjectWeaponAction::FUN_140959eb0()
             efd::Point3 ptFront;
             efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
             if (spRidee)
-                spCubeMap->FUN_1410b7ad0(spRidee, 0.0f, &ptFront, i);
+                spCubeMap->GetCellInFrontOfActor(spRidee, 0.0f, reinterpret_cast<Vector3*>(&ptFront), i);
             else
-                spCubeMap->FUN_1410b7ad0(pPlayer, 0.0f, &ptFront, i);
+                spCubeMap->GetCellInFrontOfActor(pPlayer, 0.0f, reinterpret_cast<Vector3*>(&ptFront), i);
             efd::Point3 ptCell;
-            spCubeMap->FUN_1410b7a20(ptFront, &ptCell);
+            spCubeMap->GetCellPosition(reinterpret_cast<Vector3&>(ptFront), reinterpret_cast<Vector3*>(&ptCell));
             aCells.push_back(ptCell);
             continue;
         }
@@ -1897,11 +1884,11 @@ int PullObjectWeaponAction::FUN_140959eb0()
             efd::Point3 ptFront;
             efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
             if (spRidee)
-                spCubeMap->FUN_1410b7ad0(spRidee, 0.0f, &ptFront, 0);
+                spCubeMap->GetCellInFrontOfActor(spRidee, 0.0f, reinterpret_cast<Vector3*>(&ptFront), 0);
             else
-                spCubeMap->FUN_1410b7ad0(pPlayer, 0.0f, &ptFront, 0);
+                spCubeMap->GetCellInFrontOfActor(pPlayer, 0.0f, reinterpret_cast<Vector3*>(&ptFront), 0);
             efd::Point3 ptCell;
-            spCubeMap->FUN_1410b7a20(ptFront, &ptCell);
+            spCubeMap->GetCellPosition(reinterpret_cast<Vector3&>(ptFront), reinterpret_cast<Vector3*>(&ptCell));
             ptCell.z -= 150.0f;
             aCells.push_back(ptCell);
             break;
@@ -1909,7 +1896,7 @@ int PullObjectWeaponAction::FUN_140959eb0()
     }
     for (size_t j = 0; j < aCells.size(); ++j)
     {
-        Cube* pCube = spCubeMap->FUN_1410b8ab0(aCells[j]);
+        Cube* pCube = spCubeMap->GetCubeAtPoint(reinterpret_cast<Vector3&>(aCells[j]));
         if (!pCube)
             continue;
         if (pCube->field78 != 0)
@@ -2039,9 +2026,9 @@ int PutDownLiftableAction::vfunc_1()
     for (size_t i = 0; i < aTargets.size(); ++i)
     {
         Unk_AkoLiftTargetPtr spTarget = aTargets[i];
-        Vector3 ptTargetCell = DAT_143b01a60;
+        Vector3 ptTargetCell = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
         ((CubeMapInformationService*)(spCubeMap.operator->()))->GetCellPosition(spTarget->FUN_1409673f0(), &ptTargetCell);
-        if (ptCell.FUN_140552690(ptTargetCell))
+        if (reinterpret_cast<efd::Point3&>(ptCell) == reinterpret_cast<efd::Point3&>(ptTargetCell))
             return 1;
     }
     return 0;
@@ -2212,7 +2199,7 @@ void FittingDollAction::vfunc_2()
         FUN_141275260(99, 1, 1);
         return;
     }
-    Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bd0fa0(id));
+    Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FindObjectByEntityId(id));
     if (pDoll)
     {
         DAT_143af25f0 = pDoll->FUN_141656a80();
@@ -2224,7 +2211,7 @@ MS2_REPLACE_METHOD(0x14095B940, FittingDollAction, vfunc_2, 249, 0xB3E2B065);
 CStringW FittingDollAction::vfunc_6()
 {
     CStringW strName;
-    Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bd0fa0(m_id));
+    Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FindObjectByEntityId(m_id));
     if (pDoll)
         strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pDoll->FUN_140967160());
     return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x646), L" - "), strName);
@@ -2597,7 +2584,7 @@ CInteractGatheringObject* GatheringAction::FUN_14095d840()
 {
     if (m_strObjectId.IsEmpty())
         return 0;
-    CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
     if (pObject == 0)
         return 0;
     if (pObject->vfunc_5() != 6)
@@ -2620,7 +2607,7 @@ CStringW BillBoardInteractAction::vfunc_6()
 {
     if (m_strObjectId.IsEmpty())
         return L"";
-    CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc66b0(m_strObjectId);
+    CInteractObject* pObject = WorldService::GetInstance()->FindProp(m_strObjectId);
     if (pObject == 0)
         return L"";
     CInteractBillBoardObject* pBoard = dynamic_cast<CInteractBillBoardObject*>(pObject);
@@ -3188,7 +3175,7 @@ int TreeWateringAction::vfunc_1()
     efd::SmartPointer<egf::Entity> spTree = WorldService::GetInstance()->FUN_141bd2cd0(spContext->m_strTreeName);
     if (spTree == 0)
         return 0;
-    NiPoint3 ptTree = reinterpret_cast<const NiPoint3&>(DAT_143b01a60);
+    NiPoint3 ptTree = reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO);
     spTree->GetPropertyValue(0xfd95ca52, static_cast<efd::Point3&>(ptTree));
     float fDist = FUN_140966ea0(pPlayer->vfunc_18(), ptTree);
     if (fDist < 400.0f)

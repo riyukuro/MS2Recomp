@@ -206,7 +206,7 @@ float CMakeupController::vfunc_18()
 // @0x141476740
 const Unk_CustomizeRange* CMakeupController::vfunc_23()
 {
-    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->GetGroup(0)->FUN_140544f20(0));
+    return reinterpret_cast<const Unk_CustomizeRange*>(m_spEquipItem->FUN_1411dc7f0()->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(0));
 }
 
 // @0x141476790
@@ -303,7 +303,7 @@ void CMakeupController::vfunc_9(int nIndex)
 {
     if (nIndex >= 0)
     {
-        CharacterDecalData* pOwner = m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = m_spEquipItem->FUN_1411dc7f0()->GetModelOrEmpty()->FUN_14054b6b0();
         if (pOwner != 0)
         {
             std::vector<MS2Ptr<ItemCustom> >* pList = pOwner->FUN_1401e41c0();
@@ -574,7 +574,7 @@ int FUN_141477dd0(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem.get() != 0)
     {
-        CharacterDecalData* pOwner = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
+        CharacterDecalData* pOwner = spItem->FUN_1411dc7f0()->GetModelOrEmpty()->FUN_14054b6b0();
         if (pOwner != 0)
         {
             return (int)pOwner->FUN_1401e41c0()->size();

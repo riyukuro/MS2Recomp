@@ -12,6 +12,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/client/ms2/cubemapinformationservice_tail.h"  // the two element vectors the range assigns take
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -41,7 +42,6 @@ void FUN_141135960(Unk_ContA* pThis, void* pFirst);
 void** FUN_141149110(const Unk_ContA& o);
 void** FUN_141148f90(const Unk_ContA& o);
 void FUN_14114c3a0(Unk_ContA* pThis);
-void FUN_141117760(Unk_ContA* pThis, void* pFirst, void* pLast);
 
 Unk_ContA& Unk_ContA::Assign(const Unk_ContA& o)
 {
@@ -50,7 +50,7 @@ Unk_ContA& Unk_ContA::Assign(const Unk_ContA& o)
         if (0)
             FUN_14114c3a0(this);
         FUN_141135960(this, FUN_141145120(o));
-        FUN_141117760(this, *FUN_141148f90(o), *FUN_141149110(o));
+        reinterpret_cast<Unk_CMISEntVec*>(this)->assign((egf::EntityPtr*)*FUN_141148f90(o), (egf::EntityPtr*)*FUN_141149110(o));
     }
     return *this;
 }
@@ -80,7 +80,6 @@ void FUN_141135990(Unk_ContB* pThis, void* pFirst);
 void** FUN_141149150(const Unk_ContB& o);
 void** FUN_141148fd0(const Unk_ContB& o);
 void FUN_14114c470(Unk_ContB* pThis);
-void FUN_1411177c0(Unk_ContB* pThis, void* pFirst, void* pLast);
 
 Unk_ContB& Unk_ContB::Assign(const Unk_ContB& o)
 {
@@ -89,7 +88,7 @@ Unk_ContB& Unk_ContB::Assign(const Unk_ContB& o)
         if (0)
             FUN_14114c470(this);
         FUN_141135990(this, FUN_141145180(o));
-        FUN_1411177c0(this, *FUN_141148fd0(o), *FUN_141149150(o));
+        reinterpret_cast<Unk_CMISEntityIdVec*>(this)->assign((egf::EntityID*)*FUN_141148fd0(o), (egf::EntityID*)*FUN_141149150(o));
     }
     return *this;
 }

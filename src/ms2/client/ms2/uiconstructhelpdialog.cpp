@@ -61,7 +61,6 @@ private:
 };
 unsigned char FUN_140ef4cb0(Unk_HoServicePtr* pService, int n);
 
-WorldService* FUN_1403ed2d0();
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 int FUN_1418fd280();
@@ -139,7 +138,7 @@ void UIConstructHelpDialog::vfunc_43()
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
     {
-        if (FUN_1403ed2d0()->FUN_141bcb1a0() && FUN_1418fd280() != 0)
+        if (WorldService::GetInstance()->FUN_141bcb1a0() && FUN_1418fd280() != 0)
         {
             Unk_ChTree kVisitors;
             reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5930(&kVisitors);

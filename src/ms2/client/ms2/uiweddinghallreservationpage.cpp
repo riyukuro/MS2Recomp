@@ -13,15 +13,16 @@
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- exe callees ----
-void* FUN_1409eed90();                                                      // the singleton of the own character
+class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
     class WeddingHallTicket const& GetTicket();
 };
-void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, unsigned char bPrivate, ASObj* pData);   // fills the page data object
+void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, bool bPrivate, ASObj* pData);   // fills the page data object
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);                 // Value::IsNull
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
@@ -148,7 +149,7 @@ bool UIWeddingHallReservationPageCancel::vfunc_1()
 {
     if (!UIWeddingHallReservationPage::vfunc_1())
         return false;
-    Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
+    Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
     ASObj kData(2);
     FUN_140fdac50(pTicket->m_nHallId, pTicket->m_nSlot, pTicket->m_nTime, pTicket->m_bPrivate, &kData);
     m_pScript->Invoke("setData", kData);

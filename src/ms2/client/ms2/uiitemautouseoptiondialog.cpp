@@ -166,7 +166,9 @@ void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140710590(COutPacket& packet);                             // send
 bool FUN_140534e50(MS2Ptr<CItem>* pItem);                           // the item is expired / unusable
-void* FUN_140a50b50(DragSlot* pSlot);                               // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -328,7 +330,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
         FUN_1414048f0(m_nItemId);
         vfunc_10();
     }
-    else if (void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p)))
+    else if (void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))))
     {
         MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(((class InvenSlot*)(void*)(pItemSlot))->FUN_141405980());
         if (FUN_140534e50(&spItem) != 0)
@@ -703,7 +705,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
 {
     if (pCombo == 0)
         return;
-    ((Unk_AuCombo*)pCombo)->FUN_1422dfc10();
+    ((Unk_AuCombo*)pCombo)->ClearItems();
     for (unsigned i = 0; i < m_thresholds.GetCount(); i++)
     {
         int nCond = m_thresholds[i];
@@ -712,14 +714,14 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
             ASObj entry(2);
             entry.FUN_1409c0d20("condition", nCond);
             entry.FUN_1407cbb20("label", GetStringCommon(0x576));
-            ((Unk_AuCombo*)pCombo)->FUN_1422dfc70(entry);
+            ((Unk_AuCombo*)pCombo)->AddItemRow(entry);
         }
         else
         {
             ASObj entry(2);
             entry.FUN_1409c0d20("condition", nCond);
             entry.FUN_1407cbb20("label", FUN_1409e97f0(0xc09, nCond));
-            ((Unk_AuCombo*)pCombo)->FUN_1422dfc70(entry);
+            ((Unk_AuCombo*)pCombo)->AddItemRow(entry);
         }
     }
     ((Unk_AuCombo*)pCombo)->vfunc_24(true);

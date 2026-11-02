@@ -9,6 +9,7 @@
 // The exe's memmove call is a plain call (no /Oi expansion); the pragma must precede the inline copy.
 #pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 #include <errno.h>
 #include <new>
 #include <string.h>
@@ -30,7 +31,7 @@ public:
 
 };
 Unk_SingletonObj* FUN_140ac74e0();                          // 0x140ac74e0 (defined below)
-extern Unk_SingletonObj* DAT_143ab26c8;                     // 0x143ab26c8
+class WeddingEmotionTable;
 
 // MyPC / PCBase helpers (free-function form: `this` is the first argument).
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -260,7 +261,7 @@ MS2Ptr<StateData> StateWeddingEmotion::vfunc_27()
 // @0x140ac74e0
 Unk_SingletonObj* FUN_140ac74e0()
 {
-    return DAT_143ab26c8;
+    return reinterpret_cast<Unk_SingletonObj*>(TSingleton<WeddingEmotionTable>::s_instance);
 }
 
 // @0x140ac7500

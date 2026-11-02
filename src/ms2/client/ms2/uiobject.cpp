@@ -60,8 +60,7 @@ class Unk_140961730 : public UIWorldMapDialog { };
 Unk_140961730* FUN_140961730(int nUIType);
 class Unk_140b99ba0 : public UIPetSystemDialog { };
 Unk_140b99ba0* FUN_140b99ba0(int nUIType);
-class Unk_140961550 : public UIDungeonRoomDialog { };
-Unk_140961550* FUN_140961550(int nUIType);
+template <class T> T* Unk_GetUI(int nUiType);
 
 class Unk_1401aa6a0                     // 8-byte dictionary key (ctor 0x1401aa6a0)
 {
@@ -190,7 +189,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         p->FUN_140e74550(nGroupId);
     } else if (strMethod == "dungeon") {
         int nDungeonId = FUN_1407181d0(pArgs->FUN_1422b8d30());
-        Unk_140961550* p = FUN_140961550(0x4ebd);
+        UIDungeonRoomDialog* p = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
         if (p == NULL)
             return;
         if (p->FUN_141924630())
@@ -236,7 +235,7 @@ void UIObject::OnLoadComplete()
     if (nGroup == 2) {
         ASUIComponent* p = dynamic_cast<ASUIComponent*>((AScript*)m_30);
         if (p) {
-            p->FUN_1422c7a90(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIObject::vfunc_51), 0);
+            p->SetGetTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIObject::vfunc_51), 0);
             FUN_1422c6380(p->FUN_1422bb870(), nGroup);
         }
     }

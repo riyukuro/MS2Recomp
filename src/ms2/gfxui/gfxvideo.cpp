@@ -106,7 +106,7 @@ MS2_REPLACE_METHOD(0x1422EC860, GFxVideo, FUN_1422ec860, 65, 0x48503F42);
 void GFxClipboard::OnTextStore(const wchar_t* ptext, Scaleform::UPInt len)
 {
     Scaleform::GFx::TextClipboard::OnTextStore(ptext, len);
-    if (FUN_14025e7a0()->FUN_1422af580(2) == 0)
+    if (FUN_14025e7a0()->IsWindowFocusedAndTextFieldFocused(2) == 0)
         return;
     if (OpenClipboard(NULL))
     {

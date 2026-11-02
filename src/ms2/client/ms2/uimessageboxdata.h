@@ -166,36 +166,36 @@ public:
     bool IsCheckbox1Checked();                                           // check box 1 state
     CStringW FUN_141a04da0();                                 // the text input's text
     void FUN_141a050b0();                                           // set the layout and the sound event
-    void FUN_141a051e0(ASObj& obj);                                 // type specific members
-    void FUN_141a05380(ASObj& obj);                                 // profile_ok
-    void FUN_141a05470(ASObj& obj);                                 // groupEdit
+    void FillObjByType(ASObj& obj);                                 // type specific members
+    void FillCharProfileObj(ASObj& obj);                                 // profile_ok
+    void FillGroupObj(ASObj& obj);                                 // groupEdit
     void FUN_141a05540(ASObj& obj);                                 // groupList
-    void FUN_141a056f0(ASObj& obj);                                 // terms
-    void FUN_141a05730(ASObj& obj);                                 // market_retract
-    void FUN_141a05770(ASObj& obj);                                 // buffNotify
-    void FUN_141a058c0(ASObj& obj);                                 // ugcterms
+    void WriteAgreement(ASObj& obj);                                 // terms
+    void WriteRetraction(ASObj& obj);                                 // market_retract
+    void FillBuffObj(ASObj& obj);                                 // buffNotify
+    void FillUgcNoticeObj(ASObj& obj);                                 // ugcterms
     void FUN_141a05930(ASObj& obj);                                 // itemlock_confirm
     void FUN_141a05bd0(ASObj& obj);                                 // itemCrafting
     void FUN_141a05f30(ASObj& obj);                                 // clubbuff
-    void FUN_141a06250(ASObj& obj);                                 // input_reset
-    void FUN_141a063e0(ASObj& obj);                                 // input_multi
+    void FillInputSelectList(ASObj& obj);                                 // input_reset
+    void FillTwoLabelObj(ASObj& obj);                                 // input_multi
     bool GetStringArg(unsigned int nIndex, CString& strOut) const; // the nIndex-th argument as a string
     bool GetBoolArg(unsigned int nIndex, bool& bOut) const;      // the nIndex-th argument as a bool
 
     // 0x141a01800 / 0x141a014d0 / 0x141a01480 / 0x141a03070 live in uimessagebox.cpp's range.
     void FUN_141a01800(int n);
     bool HasCallback();
-    bool FUN_141a014d0(int n, Scaleform::GFx::Value* pMovie);
+    bool InvokeCallback(int n, Scaleform::GFx::Value* pMovie);
     bool IsModaless() const;
     int FUN_141a02e50(int nIndex, int nDefault) const;              // the nIndex-th argument as an int
     CStringW FUN_141a02fd0(int nIndex, CStringW strDefault) const;  // the nIndex-th argument as a string
     CStringW FUN_141a02d50() const;                                 // the +0x218 string (the text input's text)
-    void FUN_141a01690(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2);   // button texts
+    void SetButtonLabels(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2);   // button texts
     void FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // text input setup
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb); // result callback
     void FUN_141a01600(__int64 n);                                  // uiugccubepalettedialog.cpp: the item uid
     void FUN_141a01620(int n);                                      // petmanager.cpp: the inventory slot argument
-    void FUN_141a01ca0(int nButton, int nTime, const CStringW& strText);   // guildmanager.cpp: the auto-decline countdown
+    void SetTimer(int nButton, int nTime, const CStringW& strText);   // guildmanager.cpp: the auto-decline countdown
     void FUN_141a02460(int n);
     void FUN_141a02480(int n);
     void FUN_141a024a0(int n);
@@ -210,7 +210,7 @@ public:
     void SetCheckbox0Enabled(bool b);
     void SetCheckbox0(CStringW str, bool bSelected);               // check box 0 label and state
     void SetCheckbox1(CStringW str, bool bSelected);               // check box 1 label and state (skill window reset)
-    void FUN_141a026f0(bool b);                                     // a check is required (skill window reset)
+    void SetCheckboxMust(bool b);                                     // a check is required (skill window reset)
     // Appends a message argument: inline COMDATs Append<int> 0x140533ff0, Append<unsigned> 0x140534050, Append<__int64>
     // 0x1405340b0 (the bodies are in itembreakmanager.cpp).
     template <class T> void Append(T v);

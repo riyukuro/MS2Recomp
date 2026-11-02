@@ -101,7 +101,7 @@ void UITalkPanelSettingDialog::vfunc_69()
                 MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
                 if (pTab != 0)
                 {
-                    FUN_141482e80()->m_p40->FUN_141a0e350(pTab->m_strName);
+                    FUN_141482e80()->m_p40->RemoveTabByName(pTab->m_strName);
                     FUN_141482e80()->m_p40->vfunc_4();
                 }
             }
@@ -135,8 +135,8 @@ void UITalkPanelSettingDialog::OnLoadComplete()
         {
             if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
             {
-                spTab->FUN_1422e0ab0(pTab->m_strName);
-                spTab->FUN_1422e1500(0, pTab->m_strName.GetLength());
+                spTab->SetTextW(pTab->m_strName);
+                spTab->FocusAndSetSelection(0, pTab->m_strName.GetLength());
                 spTab->vfunc_24(true);
             }
             FUN_141b24ee0(&pTab->m_panel);
@@ -155,7 +155,7 @@ int UITalkPanelSettingDialog::vfunc_13()
     {
         if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         {
-            if (spTab->FUN_1422c76c0() != 0)
+            if (spTab->GetFocused() != 0)
             {
                 Unk_BlockList request(0x4e62);
                 request.Add("OnKeyHandler", FUN_141b23550(), false);
@@ -216,7 +216,7 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->GetCurrentTab();
             if (pTab != 0)
             {
-                FUN_141482e80()->m_p40->FUN_141a0e350(pTab->m_strName);
+                FUN_141482e80()->m_p40->RemoveTabByName(pTab->m_strName);
                 FUN_141482e80()->m_p40->vfunc_4();
             }
         }
@@ -253,7 +253,7 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
         return;
     }
     if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
-        spTab->FUN_1422e0a60("");
+        spTab->SetTextA("");
     FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
 }
 
@@ -305,7 +305,7 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
             CStringW strNewName(strName);
             FUN_141b23ab0(&pTab->m_panel);
             FUN_141482e80()->m_p40->RenameTab(strOldName, strNewName);
-            FUN_141482e80()->m_p40->FUN_141a0e990();
+            FUN_141482e80()->m_p40->ReselectCurrentTab();
             if (pTab->m_panel.FUN_141482150() != 0)
             {
                 FUN_141482e80()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);

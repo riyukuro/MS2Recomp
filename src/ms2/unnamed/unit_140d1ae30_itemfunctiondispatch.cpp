@@ -723,7 +723,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
             spEntry->m_spItem.AssignRaw(pItem);
             spBox->SetItem(spEntry);
             spBox->SetTitle(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_title"));
-            spBox->FUN_141a01690(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_ok"), GetStringCommonByKey(L"s_word_cancel"), L"");
+            spBox->SetButtonLabels(GetStringCommonByKey(L"s_msg_item_open_item_box_multiopen_ok"), GetStringCommonByKey(L"s_word_cancel"), L"");
             spBox->FUN_140b76940(strArgs);
             spBox->FUN_141a027c0(Unk_IuBoxCallback(OnOpenItemBoxMulti));
             spBox->FUN_141a024a0(0);
@@ -1783,7 +1783,7 @@ WeddingProxy* WeddingManager::FUN_140d295d0()
 }
 
 // The massive event portal item: open a portal (wedding party or event field) where none is.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
+// MS2-FUNCTIONAL: op-identical; "fieldID" goes through the second GetInt COMDAT 0x14054c530 and "maxCount" through 0x1403d8110, which needs a second CXmlData getter in cxmldata.h
 // @0x140d20710
 int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1794,7 +1794,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     ATL::CAtlArray<MS2Ptr<CPortal> > arrPortals;
     reinterpret_cast<Unk_IuWorld*>(WorldService::GetInstance())->FUN_141bc2c90(pPlayer->vfunc_18(), arrPortals);
-    if (FUN_140966da0(arrPortals) != 0)
+    if (FUN_140966da0(arrPortals) > 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
         return 0;
@@ -1842,12 +1842,17 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
         return 0;
     }
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1 || ((class GFxSceneService*)(class Unk_IuScene*)(((Unk_IuScene*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
         return 0;
     }
-    const wchar_t* pszKey = bWedding ? L"s_msg_item_open_massive_open_wedding" : L"s_msg_item_open_massive_open";
+    if (((class GFxSceneService*)(class Unk_IuScene*)(((Unk_IuScene*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
+        return 0;
+    }
+    CStringW strKey = bWedding ? L"s_msg_item_open_massive_open_wedding" : L"s_msg_item_open_massive_open";
     int nFieldDefault = 0;
     int nFieldId = spItem->FUN_140527840()->function.xml.GetInt(L"fieldID", nFieldDefault);
     unsigned long nTickDefault = 60000;
@@ -1855,19 +1860,21 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
     int nMaxDefault = 1;
     int nMaxCount = spItem->FUN_140527840()->function.xml.GetInt(L"maxCount", nMaxDefault);
     CStringW strDuration = FUN_141b708a0(MsToSeconds(nDuration), false);
-    CStringW strMsg = FUN_14028dfa0(CStringW(pszKey), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nFieldId), nMaxCount, strDuration);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, strMsg, 0, s_strOpenMassive);
-    if (spBox.get() != 0)
+    CStringW strMsg = FUN_14028dfa0(strKey, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nFieldId), nMaxCount, strDuration);
     {
-        spBox->FUN_141a01600(spItem->GetItemUid());
-        spBox->FUN_141a01d30(5, L"", 6, 0, 0);
-        FUN_140d73c60(spBox);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, strMsg, 0, s_strOpenMassive);
+        if (spBox.get() != 0)
+        {
+            CStringW strEmpty(L"");
+            spBox->FUN_141a01600(spItem->GetItemUid());
+            spBox->FUN_141a01d30(5, strEmpty, 6, 0, 0);
+            FUN_140d73c60(spBox);
+        }
     }
     return 1;
 }
 
 // The instrument item: play it where the field and the player's state allow.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d23c50
 int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1880,7 +1887,12 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     }
     if (pPlayer == 0)
         return 0;
-    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166ce30() != 0 || ((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1)
+    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166ce30() != 0)
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
+        return 0;
+    }
+    if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166c930() != 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
@@ -1888,9 +1900,14 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     bool bMovable = false;
     if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166cc80() == 1)
         bMovable = true;
-    else if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166cc80() > 1 && ((class PCBase*)(class PC*)(pPlayer))->FUN_14166cc80() < 6)
+    else if (((class PCBase*)(class PC*)(pPlayer))->FUN_14166cc80() >= 2 && ((class PCBase*)(class PC*)(pPlayer))->FUN_14166cc80() <= 5)
         bMovable = true;
-    if (!bMovable || ((void*)((class PC*)(class PC*)(pPlayer))->FUN_14165f100()) != 0)
+    if (!bMovable)
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
+        return 0;
+    }
+    if (((void*)((class PC*)(class PC*)(pPlayer))->FUN_14165f100()) != 0)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_state"), 1, 1);
         return 0;
@@ -1899,17 +1916,19 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
     if (spEntity != 0)
     {
         MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10((egf::Entity*)spEntity.FUN_1408a9090());
-        if (spObj.get() != 0 && reinterpret_cast<CBreakableObject*>(spObj.operator->())->FUN_140ae0700())
+        if ((spObj.get() ? true : false) && reinterpret_cast<CBreakableObject*>(spObj.operator->())->FUN_140ae0700())
         {
             FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_position"), 1, 1);
             return 0;
         }
     }
-    BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0xf);
-    if (spBlock.get() != 0)
     {
-        FUN_140a30ad0(spBlock, 0xf, 0);
-        return 0;
+        BlockPtr spBlock = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(0xf);
+        if (spBlock.get() != 0)
+        {
+            FUN_140a30ad0(spBlock, 0xf, 0);
+            return 0;
+        }
     }
     MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField == 0)
@@ -1946,8 +1965,7 @@ int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     }
     __int64 nItemUid = spItem->GetItemUid();
-    StatePlayInstrumentData* pData = new StatePlayInstrumentData(MS2Ptr<CItemData>(spItem->FUN_140527840()), nItemUid);
-    pPlayer->vfunc_59(0x2f, pData, 0x7d, 0);
+    pPlayer->vfunc_59(0x2f, new StatePlayInstrumentData(MS2Ptr<CItemData>(spItem->FUN_140527840()), nItemUid), 0x7d, 0);
     Unk_InventoryUsePacket use;
     use.id = nItemUid;
     COutPacket packet(static_cast<int>(SendOp::RequestItemUse), 0);

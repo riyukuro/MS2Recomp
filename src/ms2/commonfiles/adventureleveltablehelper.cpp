@@ -20,11 +20,11 @@
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_ALValue@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_ALValue@@@std@@PEAX@2@XZ 0x1401a0c20 ; unique
 // MS2-PIN: ?_Root@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_ALValue@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_ALValue@@@std@@PEAX@2@XZ 0x1401a0cc0 ; unique
 // MS2-PIN: ?_Rrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_ALValue@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIUUnk_ALValue@@@std@@PEAX@2@@Z 0x1401a0d60 ; unique
-// MS2-PIN: ?begin@?$_Tree@V?$_Tset_traits@UUnk_ALSetKey@@U?$less@UUnk_ALSetKey@@@std@@V?$allocator@UUnk_ALSetKey@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_ALSetKey@@@std@@@std@@@2@XZ 0x1401a16d0 ; unique
+// MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@_K_KU?$less@_K@std@@V?$allocator@U?$pair@$$CB_K_K@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_K_K@std@@@std@@@std@@@2@XZ 0x1401a16d0 ; unique
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@IUCAdventureLevelReward@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUCAdventureLevelReward@@@std@@@3@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUCAdventureLevelReward@@@std@@@std@@@std@@@2@XZ 0x1401a1ca0 ; prop
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IUCAdventureLevelAbility@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUCAdventureLevelAbility@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUCAdventureLevelAbility@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUCAdventureLevelAbility@@@std@@@std@@@std@@@2@@Z 0x1401a20f0 ; unique
-// MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_ALSetKey@@U?$less@UUnk_ALSetKey@@@std@@V?$allocator@UUnk_ALSetKey@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_ALSetKey@@@std@@@std@@@2@V32@0@Z 0x1401a2680 ; unique
-// MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@UUnk_ALSetKey@@U?$less@UUnk_ALSetKey@@@std@@V?$allocator@UUnk_ALSetKey@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_ALSetKey@@@std@@@std@@@2@V32@@Z 0x1401a2770 ; unique
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@_K_KU?$less@_K@std@@V?$allocator@U?$pair@$$CB_K_K@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_K_K@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_K_K@std@@@std@@@std@@@2@0@Z 0x1401a2680 ; unique
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@_K_KU?$less@_K@std@@V?$allocator@U?$pair@$$CB_K_K@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_K_K@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_K_K@std@@@std@@@std@@@2@@Z 0x1401a2770 ; unique
 // MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@2@AEBI@Z 0x1401a2ac0 ; unique
 // MS2-PINS-END tplpin
 // hand pins from tplpin --simulate (w143)
@@ -120,7 +120,7 @@
 // MS2-PIN: ??_7CAdventureLevelTable@@6B?$CValidData@VCAdventureLevelTable@@@@@ 0x142ceb9e8
 // hand pins (w145): set<unsigned> / map<unsigned,unsigned> copies the loaders never call
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIUCAdventureLevelReward@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIUCAdventureLevelReward@@@std@@PEAX@2@_K@Z 0x1401a1c10
-// MS2-PIN: ?_Tidy@?$_Tree@V?$_Tset_traits@UUnk_ALSetKey@@U?$less@UUnk_ALSetKey@@@std@@V?$allocator@UUnk_ALSetKey@@@3@$0A@@std@@@std@@IEAAXXZ 0x1401a1340
+// MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@_K_KU?$less@_K@std@@V?$allocator@U?$pair@$$CB_K_K@std@@@2@$0A@@std@@@std@@IEAAXXZ 0x1401a1340
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\adventureleveltablehelper.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "adventureleveltablehelper.h"
@@ -159,8 +159,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 class Unk_ALSkillTable;   // TSingleton<SkillDataTableCli>::GetInstance's result
 
 extern bool DAT_143aac290;    // set once the table loaded
-extern void* DAT_143aac278;   // the CAdventureLevelTable singleton
-extern void* DAT_143aac288;   // the effect manager singleton
+class CAdventureLevelTable;
+class SkillDataTableCli;
 extern CAdventureLevelReward DAT_142ceae98;    // the exe's default rows
 extern CAdventureLevelAbility DAT_142ceaea8;
 extern CAdventureLevelMission DAT_142ceaec8;
@@ -209,7 +209,7 @@ float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault)
 // @0x1401958b0
 static Unk_ALSkillTable* GetEffectMgr()
 {
-    return (Unk_ALSkillTable*)DAT_143aac288;
+    return (Unk_ALSkillTable*)reinterpret_cast<void*>(TSingleton<SkillDataTableCli>::s_instance);
 }
 
 // @0x1401958c0
@@ -239,7 +239,7 @@ bool FUN_140195ae0(CAdventureLevelMission* p)
 // @0x1401958a0
 static CAdventureLevelTable* GetTable()
 {
-    return static_cast<CAdventureLevelTable*>(DAT_143aac278);
+    return static_cast<CAdventureLevelTable*>(reinterpret_cast<void*>(TSingleton<CAdventureLevelTable>::s_instance));
 }
 
 // @0x140195b20
@@ -568,10 +568,10 @@ template class std::map<unsigned, CAdventureLevelAbility>;
 template class std::map<unsigned, CAdventureLevelMission>;
 template class std::map<unsigned, CAdventureLevelReward>;
 template class std::map<unsigned, Unk_ALValue>;
-template class std::set<Unk_ALSetKey>;
+template class std::map<unsigned long long, unsigned long long>;
 
-// The unused set / map members are cleared and erased by code the exe keeps but nothing here calls.
-void Unk_ALTreeAnchor(std::set<Unk_ALSetKey>& s, std::map<unsigned, Unk_ALValue>& m)
+// The unused map members are cleared and erased by code the exe keeps but nothing here calls.
+void Unk_ALTreeAnchor(std::map<unsigned long long, unsigned long long>& s, std::map<unsigned, Unk_ALValue>& m)
 {
     s.clear();
     m.clear();

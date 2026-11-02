@@ -114,7 +114,7 @@ class NoticeMessage   // C3: member view for the former free stand-ins
 public:
     int GetActor();
 };
-bool FUN_14119f3c0(CEffect* pEffect);                               // the effect has been started
+
 float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);                    // distance
 class Unk_Camera { public: void FUN_140af05d0(const efd::Point3& kWorld, efd::Point2* pkScreen); };   // world -> screen
 
@@ -404,7 +404,7 @@ bool CAfterImageEffect::IsTimeUp() const
     if (m_b2d)
         return false;
     double dNow = reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473280();
-    if (!::FUN_14119f3c0(const_cast<CAfterImageEffect*>(this)))
+    if (!((CEffect*)const_cast<CAfterImageEffect*>(this))->FUN_14119f3c0())
         return false;
     return dNow > m_dStartTime + (double)m_fDuration ? !m_b2c : false;
 }
@@ -465,7 +465,6 @@ void CAfterImageEffect::StartCapture()
 }
 
 // @0x14097d4f0
-// MS2-FUNCTIONAL: the exe has a /GS cookie (RECT local) and a different temp layout for the surface chain and the Init arguments; behaviour equivalent
 void CAfterImageEffect::Capture(RenderedTextureClickPtr spClick)
 {
     m_bPending = false;
@@ -478,7 +477,8 @@ void CAfterImageEffect::Capture(RenderedTextureClickPtr spClick)
     IDirect3DSurface9* pSrc = ((NiDX92DBufferData*)pBuffer->GetRendererData())->GetSurface();
     IDirect3DSurface9* pDst = 0;
     IDirect3DTexture9* pD3DTexture = 0;
-    pD3DTexture = (IDirect3DTexture9*)((NiDX9TextureData*)spTexture->GetRendererData())->GetD3DTexture();
+    NiDX9TextureData* pTexData = (NiDX9TextureData*)spTexture->GetRendererData();
+    pD3DTexture = (IDirect3DTexture9*)pTexData->GetD3DTexture();
     pD3DTexture->GetSurfaceLevel(0, &pDst);
     if (pSrc != 0 && pDst != 0)
     {

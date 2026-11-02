@@ -26,7 +26,7 @@ using namespace CommonUserEvent;
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);   // split
 void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);    // split ids
 bool FUN_1407183f0(const CStringW& value);
-short FUN_1407181a0(const CStringW& value);
+int FUN_1407181a0(const CStringW& value);
 // The DTReward rows hang off the context through Unk_EventRewardList (usereventcontext.cpp).
 // CUserEventManager::AddDTReward: the context handle is passed as the exe's own handle type.
 void FUN_1408d7cd0(CUserEventManager* pManager, Unk_DTCtxArg<DTRewardEventContext> spContext);

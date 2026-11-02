@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
@@ -44,24 +45,9 @@ struct Unk_CameraOption
     float m_23c;
 };
 
-// Smart pointer to it (pointer at +8).
-class Unk_CameraOptionPtr
-{
-public:
-    ~Unk_CameraOptionPtr() { FUN_140885ab0(); }     // 0x1408850f0 (another obj)
-    Unk_CameraOption* FUN_140885340() const;        // operator->
-    void FUN_140885ab0();                           // release
-
-    void* m_pad_00;
-    Unk_CameraOption* m_p;
-};
-
 // A view of the world service.
 class Unk_GameContext : public WorldService
 {
-public:
-    Unk_LocalPlayer* FUN_141bd0cc0();
-    Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
 };
 
 // A float table value of the client configuration (FUN_1401d3200).
@@ -80,14 +66,14 @@ struct Unk_ClientConfig
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The scene camera (FUN_1413f9890()->FUN_140af7da0()->FUN_140af7df0()) and its frustum.
-struct Unk_Frustum
+struct Unk_HomeFrustum
 {
     float m_0, m_4, m_8, m_c, m_10;                 // left, right, top, bottom, near
 };
 class Unk_NiCamera
 {
 public:
-    Unk_Frustum* FUN_1409a8de0();                   // +0x128
+    Unk_HomeFrustum* FUN_1409a8de0();                   // +0x128
 };
 class Unk_SceneCamera
 {
@@ -106,7 +92,7 @@ class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (re
 class CPhysXHelper
 {
 public:
-    int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
+    int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
 };
 
 float FUN_14029d220(float f);                       // fabs
@@ -211,7 +197,7 @@ void CHomeCameraMode::vfunc_7()
     setting.m_0 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
     setting.m_4 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7f00();
     setting.m_8 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af7ea0();
-    setting.m_c = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a17e10();
+    setting.m_c = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     setting.m_18 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af8290();
     static_cast<Unk_CameraManagerData*>(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()))->m_e0 = setting;
 }
@@ -220,7 +206,7 @@ MS2_REPLACE_METHOD(0x140B651D0, CHomeCameraMode, vfunc_7, 222, 0x3F1915D8);
 // @0x140b652c0
 void CHomeCameraMode::vfunc_10()
 {
-    reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aeaf40(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140B652C0, CHomeCameraMode, vfunc_10, 59, 0x3AEC2CB0);
 
@@ -340,7 +326,7 @@ MS2_REPLACE_METHOD(0x140B65310, CHomeCameraMode, vfunc_8, 2901, 0xFFFC5422);
 void CHomeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    Unk_LocalPlayer* pPlayer = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300009))
@@ -352,11 +338,11 @@ MS2_REPLACE_METHOD(0x140B65E70, CHomeCameraMode, vfunc_9, 208, 0x69A99AEA);
 // @0x140b65f50
 void CHomeCameraMode::vfunc_33()
 {
-    Unk_CameraOptionPtr spOption = static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<Unk_CameraOption*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spOption).get()))
+    MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->FUN_141bd30a0();
+    if (reinterpret_cast<Unk_CameraOption*>(spOption.get()))
     {
-        float fRotation = spOption.FUN_140885340()->m_154;
-        if (reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0())
+        float fRotation = reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_154;
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0())
         {
             vfunc_31();
             vfunc_16(m_a8);
@@ -365,7 +351,7 @@ void CHomeCameraMode::vfunc_33()
         }
         else
         {
-            vfunc_16(spOption.FUN_140885340()->m_23c);
+            vfunc_16(reinterpret_cast<Unk_CameraOption*>(spOption.operator->())->m_23c);
             vfunc_11(static_cast<Unk_GameContext*>(WorldService::GetInstance())->FUN_141bcfc50());
             vfunc_12(fRotation);
         }
@@ -377,7 +363,7 @@ MS2_REPLACE_METHOD(0x140B65F50, CHomeCameraMode, vfunc_33, 334, 0x0FD2BF9A);
 // @0x140b660b0
 void CHomeCameraMode::vfunc_11(float f)
 {
-    if (reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0())
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0())
         f = m_a4;
     m_setting.m_0 = f;
     m_pOwner->FUN_140947940(f);
@@ -387,7 +373,7 @@ MS2_REPLACE_METHOD(0x140B660B0, CHomeCameraMode, vfunc_11, 92, 0xC0A00B6B);
 // @0x140b66120
 void CHomeCameraMode::vfunc_16(float f)
 {
-    m_54 = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af01d0() ? m_a8 : f;
+    m_54 = TSingleton<CameraMgr>::GetInstance()->FUN_140af01d0() ? m_a8 : f;
     if (-1.0f != m_5c)
         m_98 = efd::Clamp(m_98, m_58, m_54 + m_9c);
 }
@@ -607,7 +593,7 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             kRot.FUN_140a01190(0, kDir);
             kRot.FUN_140a01190(1, kUp);
             kRot.FUN_140a01190(2, kRight);
-            Unk_Frustum* pFrustum = pCamera->FUN_1409a8de0();
+            Unk_HomeFrustum* pFrustum = pCamera->FUN_1409a8de0();
             float fNear = pFrustum->m_10;
             float fFov = FUN_140ad4b30();
             float fAspect = (pFrustum->m_4 - pFrustum->m_0) / (pFrustum->m_8 - pFrustum->m_c);
@@ -637,15 +623,15 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
                 float fLen = ptDir.FUN_140968990();
                 Vector3 ptBack = ptDir.FUN_1409f7960();
                 Vector3 ptHit = g_143b01a60;
-                if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
+                if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(m_88, ptHit, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(m_88, ptHit, ptBack, fLen, 0x209))
                         return 1;
                 }
                 else
                 {
                     Vector3 ptHit2 = g_143b01a60;
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(ptHit, ptHit2, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(ptHit, ptHit2, ptBack, fLen, 0x209))
                         return 1;
                 }
             }

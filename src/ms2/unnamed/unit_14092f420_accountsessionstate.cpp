@@ -136,7 +136,6 @@ public:
     virtual MS2Ptr<Unk_SkillObj> vfunc_1(int nSkillId);
     virtual bool vfunc_2(int nSkillId);
 };
-Unk_SkillBook* FUN_1416546d0(Unk_MyPc* pPc);
 unsigned FUN_141525480(Unk_MyPc* pPc, int nSkillId, unsigned char nFlag);
 
 // The "slot in use" restrictions (0x143ab3330).
@@ -158,12 +157,12 @@ void FUN_140663010(Unk_QuestTable* pTable, unsigned nId, unsigned nValue, ATL::C
 class Unk_SkillSlots { public: void FUN_14035a870(int nSlot, int nValue); };
 class Unk_StatTable { public: };
 
-extern Unk_Restrictions* DAT_143ab3330;
-extern Unk_SoundSink* DAT_143ab3328;
-extern Unk_QuestTable* DAT_143ab0260;
-extern Unk_ItemSlotTable* DAT_143ab1fc8;
-extern Unk_BonusBar* DAT_143ab3338;
-extern Unk_Hud* DAT_143ab3340;
+class CGuideManager;
+class CKeyTable;
+class CMasteryInteriorTable;
+class CTitleTable;
+class GameEventUserValueManager;
+class UIServerEventDispatcher;
 
 // ---- data of the zone -------------------------------------------------------------------------------------------------
 
@@ -279,12 +278,6 @@ int FUN_14035a870(Unk_QuickSlots* pSlots, int nSlot, unsigned nValue);
 Unk_EmoNpcTable* FUN_140764010();
 CMyCharacter* FUN_140931510();
 void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, __int64>&& value);
-extern Unk_Restrictions* DAT_143ab3330;
-extern Unk_SoundSink* DAT_143ab3328;
-extern Unk_QuestTable* DAT_143ab0260;
-extern Unk_ItemSlotTable* DAT_143ab1fc8;
-extern Unk_BonusBar* DAT_143ab3338;
-extern Unk_Hud* DAT_143ab3340;
 Unk_Restrictions* FUN_1409331e0();
 Unk_SoundSink* FUN_1409331f0();
 Unk_QuestTable* FUN_140933200();
@@ -339,10 +332,10 @@ unsigned FUN_14092f4e0(int nSkillId)
     Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
     if (pPc != 0)
     {
-        Unk_SkillBook* pBook = FUN_1416546d0(pPc);
+        Unk_SkillBook* pBook = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0());
         if (pBook->vfunc_2(nSkillId))
         {
-            MS2Ptr<Unk_SkillObj> spSkill = FUN_1416546d0(pPc)->vfunc_1(nSkillId);
+            MS2Ptr<Unk_SkillObj> spSkill = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0())->vfunc_1(nSkillId);
             if (spSkill.get() != 0)
             {
                 if (spSkill->FUN_140803e10()->m_bBlocked)
@@ -1087,37 +1080,37 @@ template class ATL::CAtlArray<unsigned>;
 // @0x1409331e0
 Unk_Restrictions* FUN_1409331e0()
 {
-    return DAT_143ab3330;
+    return reinterpret_cast<Unk_Restrictions*>(TSingleton<CGuideManager>::s_instance);
 }
 
 // @0x1409331f0
 Unk_SoundSink* FUN_1409331f0()
 {
-    return DAT_143ab3328;
+    return reinterpret_cast<Unk_SoundSink*>(TSingleton<CKeyTable>::s_instance);
 }
 
 // @0x140933200
 Unk_QuestTable* FUN_140933200()
 {
-    return DAT_143ab0260;
+    return reinterpret_cast<Unk_QuestTable*>(TSingleton<CMasteryInteriorTable>::s_instance);
 }
 
 // @0x140933210
 Unk_ItemSlotTable* FUN_140933210()
 {
-    return DAT_143ab1fc8;
+    return reinterpret_cast<Unk_ItemSlotTable*>(TSingleton<CTitleTable>::s_instance);
 }
 
 // @0x140933220
 Unk_BonusBar* FUN_140933220()
 {
-    return DAT_143ab3338;
+    return reinterpret_cast<Unk_BonusBar*>(TSingleton<GameEventUserValueManager>::s_instance);
 }
 
 // @0x140933230
 Unk_Hud* FUN_140933230()
 {
-    return DAT_143ab3340;
+    return reinterpret_cast<Unk_Hud*>(TSingleton<UIServerEventDispatcher>::s_instance);
 }
 
 // ---- hooks (logic free functions; template glue, FUN_140931450 and FUN_140931510 are not hooked)

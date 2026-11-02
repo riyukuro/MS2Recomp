@@ -38,8 +38,10 @@
 // MS2-PIN: ?StringCompare@?$ChTraitsCRT@_W@ATL@@SAHPEB_W0@Z 0x14036c840
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\featuremanager.cpp"
 #include <wchar.h>
-#pragma function(wcscmp)   // the exe calls the CRT wcscmp from ATL StringCompare instead of expanding it
+extern "C" int (__cdecl* __imp_wcscmp)(const wchar_t*, const wchar_t*);   // the exe calls the CRT import from ATL StringCompare
+#define wcscmp(a, b) __imp_wcscmp(a, b)
 #include "ms2/placeholder/ms2stdafx.h"
+#undef wcscmp
 #include "featuremanager.h"
 #include "filesystem.h"
 #include "logstring.h"
@@ -49,8 +51,6 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <algorithm>
-
-// Unrecovered helpers.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);

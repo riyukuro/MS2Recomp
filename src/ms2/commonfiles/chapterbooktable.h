@@ -22,7 +22,7 @@ struct Unk_ChapterReward
     int m_nType;                        // +0x00
     int m_nValue;                       // +0x04 point count (types 2, 3)
     ItemEntity m_item;                  // +0x08 the item (type 1)
-    int m_nKind;                        // +0x38 skill point kind (1 / 2)
+    long m_nKind;                       // +0x38 skill point kind (1 / 2)
 };
 MS2_CHECK_SIZE(Unk_ChapterReward, 0x40);
 MS2_CHECK_OFFSET(Unk_ChapterReward, m_item, 0x08);

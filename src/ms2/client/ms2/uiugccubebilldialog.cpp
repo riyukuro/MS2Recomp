@@ -142,7 +142,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
                         ASObj objRow(2);
                         ((class AScript&)(objRow)).FUN_1407cbb20("name", FUN_1418fe5d0(nType));
                         ((class AScript&)(objRow)).FUN_1407cbb20("money", FUN_1418fec00(3, nMoney, bAlt));
-                        arrMerats.FUN_1422bc050(objRow.FUN_1422bb870());
+                        arrMerats.PushValue(objRow.FUN_1422bb870());
                     }
                     obj.FUN_140c16160("merats", ASArray(arrMerats));
                 }

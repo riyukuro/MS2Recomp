@@ -70,9 +70,8 @@ private:
 };
 
 // The row lookup of the PC bang table: a 24-byte handle and the node it resolves to.
-struct Unk_TableHandle { ~Unk_TableHandle(); unsigned long long unknown0, unknown8, unknown10; };   // dtor 0x1403b87a0
-class Unk_HandleNode { public: void* unknown0; void* pValue; };   // the row's MS2Ptr<CChangeBeautyData> (operator-> 0x140541270)
-class Unk_PcBangTable { public: Unk_HandleNode* FUN_1403b7c40(Unk_TableHandle* pOut, int nMode, int nId); };
+struct Unk_TableHandle : CItemChangeBeautyTable::DataPtr { ~Unk_TableHandle(); };   // dtor 0x1403b87a0
+class Unk_PcBangTable { public: Unk_TableHandle FUN_1403b7c40(int nMode, int nId); };
 Unk_PcBangTable* FUN_140541580();
 extern Unk_PcBangTable* g_pPcBangTable;      // 0x143aaecf8
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -96,6 +95,7 @@ bool CItemChangeBeautyTable::s_bInit;
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/commonfiles/os.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -122,7 +122,7 @@ public:
     ATL::CAtlArray<Unk_PriceRow*> prices;                   // +0xa020
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-void* FUN_140302b10();
+class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
 public:
@@ -190,13 +190,12 @@ CItemChangeBeautyTable::~CItemChangeBeautyTable()
 }
 
 // @0x1405394c0
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool CItemChangeBeautyTable::Load()
 {
     CachePtr cache(new CCacheData);
-    if (cache.IsNull())
+    if (cache == 0)
         return false;
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("ItemChangeBeauty.xml"));
+    const CString& strPath = FUN_14071a5b0("Table", "ItemChangeBeauty.xml");
     cache->FUN_1401d1160(CString(strPath));
     m_caches.Add(cache);
     TiXmlDocument doc;
@@ -208,27 +207,32 @@ bool CItemChangeBeautyTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = ((Unk_140165cf0*)((Unk_XmlNode*)(pRoot))->FirstChild("beauty")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("beauty")))
+    const CStringA& strBeauty = "beauty";
+    const CStringA& strId = "id";
+    const CStringA& strItem = "item";
+    const CStringA& strItemId = "itemID";
+    for (Unk_140165cf0* pNode = ((Unk_140165cf0*)((Unk_XmlNode*)(pRoot))->FirstChild(strBeauty)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strBeauty)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         int nId;
-        XmlGetAttr((class TiXmlElement*)(pNode), "id", *(unsigned int*)&static_cast<int&>(nId));
+        XmlGetAttr((class TiXmlElement*)(pNode), strId, *(unsigned int*)&static_cast<int&>(nId));
         if (nId == 0)
             continue;
         DataPtr data(new CChangeBeautyData);
-        if (data.IsNull())
+        if (data == 0)
             continue;
         data->m_nId = nId;
         data->FUN_14053a7c0(pNode);
-        for (Unk_140165cf0* pItem = ((Unk_140165cf0*)((Unk_XmlNode*)(pNode))->FirstChild("item")); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling("item")))
+        for (Unk_140165cf0* pItem = ((Unk_140165cf0*)((Unk_XmlNode*)(pNode))->FirstChild(strItem)); pItem != 0; pItem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pItem))->NextSibling(strItem)))
         {
             if (!FUN_14028f710((struct Unk_XmlElement*)(pItem)))
                 continue;
             int nItemId;
-            XmlGetAttr((class TiXmlElement*)(pItem), "itemID", *(unsigned int*)&static_cast<int&>(nItemId));
+            XmlGetAttr((class TiXmlElement*)(pItem), strItemId, *(unsigned int*)&static_cast<int&>(nItemId));
             // The exe looks up item (nItemId == 0), i.e. item 0, not nItemId, and drops the result.
-            bool bItem = nItemId == 0 || FUN_14053f870(nItemId == 0);
+            if (nItemId == 0 || FUN_14053f870(nItemId == 0))
+                continue;
         }
         if (Unk_LockGuard guard = m_lock)
         {
@@ -333,7 +337,6 @@ CItemData::~CItemData()
 }
 
 // @0x14053b830
-// MS2-FUNCTIONAL: stack frame is 0x10 larger than the exe (temp slot layout of the log-argument locals); behaviour matches
 bool CItemData::Load(Unk_140165cf0* pElem)
 {
     Unk_140165cf0* pBasic = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("basic"));
@@ -389,10 +392,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2f) == 1 && FUN_140541580()) {
-        Unk_TableHandle handle;
-        Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, GetItemId());
-        Unk_HandleNode* pRow = pNode;
-        property.flag09 = reinterpret_cast<CItemChangeBeautyTable::DataPtr*>(pRow)->operator->() != 0;
+        property.flag09 = FUN_140541580()->FUN_1403b7c40(3, GetItemId()).operator->() != 0;
     }
     return true;
 }
@@ -556,12 +556,12 @@ bool CItemData::FUN_14053c710()
 {
     if (!FUN_14053cbc0())
         return false;
-    size_t nGroups = FUN_14053eba0()->FUN_14054b3d0();
+    size_t nGroups = GetModelOrEmpty()->FUN_14054b3d0();
     if (nGroups == 0)
         return false;
     for (size_t i = 0; i < nGroups; ++i)
     {
-        const ModelGroup* pGroup = FUN_14053eba0()->GetGroup(i);
+        const ModelGroup* pGroup = GetModelOrEmpty()->GetGroup(i);
         if (pGroup->FUN_1405451a0() == 0)
             return false;
     }
@@ -633,9 +633,9 @@ int CItemData::FUN_14053c9e0(int nGender, int nB)
 {
     if (FUN_14053d2f0())
     {
-        for (size_t i = 0; i < FUN_14053eba0()->FUN_14054b3d0(); ++i)
+        for (size_t i = 0; i < GetModelOrEmpty()->FUN_14054b3d0(); ++i)
         {
-            const ModelGroup* pGroup = FUN_14053eba0()->GetGroup(i);
+            const ModelGroup* pGroup = GetModelOrEmpty()->GetGroup(i);
             for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
             {
                 const ModelPart* pPart = pGroup->FUN_140544fe0(j);
@@ -757,7 +757,7 @@ bool CItemData::IsAvatarColorItem()
 // @0x14053cf40
 bool CItemData::FUN_14053cf40()
 {
-    return FUN_14053eba0()->FUN_14054b400() == 0x12;
+    return GetModelOrEmpty()->FUN_14054b400() == 0x12;
 }
 
 // @0x14053cf90
@@ -769,25 +769,25 @@ bool CItemData::HasSkinType()
 // @0x14053cfd0
 bool CItemData::FUN_14053cfd0()
 {
-    return FUN_14053eba0()->FUN_14054b400() == 1;
+    return GetModelOrEmpty()->FUN_14054b400() == 1;
 }
 
 // @0x14053d020
 bool CItemData::FUN_14053d020()
 {
-    return FUN_14053eba0()->FUN_14054b400() == 2;
+    return GetModelOrEmpty()->FUN_14054b400() == 2;
 }
 
 // @0x14053d070
 bool CItemData::FUN_14053d070()
 {
-    return FUN_14053eba0()->FUN_14054b400() == 3;
+    return GetModelOrEmpty()->FUN_14054b400() == 3;
 }
 
 // @0x14053d0c0
 bool CItemData::FUN_14053d0c0()
 {
-    return FUN_14053eba0()->FUN_14054b400() == 3;
+    return GetModelOrEmpty()->FUN_14054b400() == 3;
 }
 
 // @0x14053d110
@@ -887,12 +887,12 @@ bool CItemData::FUN_14053d340()
     }
     else if (GetType() == 0x17)
     {
-        if (FUN_14053eba0()->FUN_14054b450(5))
+        if (GetModelOrEmpty()->FUN_14054b450(5))
         {
-            if (FUN_14053eba0()->FUN_14054b450(4))
+            if (GetModelOrEmpty()->FUN_14054b450(4))
                 return false;
         }
-        return FUN_14053eba0()->FUN_14054b450(5) || FUN_14053eba0()->FUN_14054b450(4);
+        return GetModelOrEmpty()->FUN_14054b450(5) || GetModelOrEmpty()->FUN_14054b450(4);
     }
     return false;
 }
@@ -920,9 +920,9 @@ bool CItemData::FUN_14053d460()
     }
     else if (GetType() == 0x17)
     {
-        if (FUN_14053eba0()->FUN_14054b450(5))
+        if (GetModelOrEmpty()->FUN_14054b450(5))
         {
-            if (FUN_14053eba0()->FUN_14054b450(4))
+            if (GetModelOrEmpty()->FUN_14054b450(4))
                 return true;
         }
     }
@@ -1528,7 +1528,7 @@ unsigned long long CItemData::GetSellPrice(int nRank)
                 (void)(nPrice != 0 || (_wassert(L"sellPrice", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdata.cpp", 0x685), 0));
             }
         }
-        float fRate = ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1810(3, nRank);
+        float fRate = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(3, nRank);
         nPrice = (long long)((float)nPrice * fRate);
     }
     return nPrice;
@@ -1541,7 +1541,7 @@ void CItemData::LoadModel()
 }
 
 // @0x14053eba0
-ItemModelData* CItemData::FUN_14053eba0()
+ItemModelData* CItemData::GetModelOrEmpty()
 {
     static ItemModelData s_emptyModel;
     if (model.get() != 0)
@@ -1558,7 +1558,7 @@ int CItemData::GetItemPreset()
 // @0x14053ec70
 void CItemData::FUN_14053ec70()
 {
-    FUN_14053eba0()->FUN_14054b690();
+    GetModelOrEmpty()->FUN_14054b690();
 }
 
 // @0x14053eca0

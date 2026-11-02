@@ -6,13 +6,13 @@
 // MS2-RANGE: 0x140b7edf0-0x140b7fa70 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statebannerdata.cpp"
 // The exe's memcpy_s / memmove_s are plain calls (no /Oi expansion); the pragma must precede the inline copies.
+#include <vcruntime_string.h>
 #pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
 #include <errno.h>
 #include <new>
 #include <string.h>
-#include <vcruntime_string.h>
 
 #include <NiActorManager.h>
 #include <egf/EntityID.h>
@@ -213,7 +213,7 @@ int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId)
     return (int)static_cast<NiActorManager*>(pActor)->GetTargetAnimation();
 }
 
-// MS2-FUNCTIONAL: the UCRT's static __inline body differs in size (317 vs 319) and unwind codes; trailing unreferenced copy
+// The pragma above sits after <vcruntime_string.h>, so this copy calls memcpy and memset as the exe does.
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, kept alive by the pointer below).
 // MS2-PIN: memcpy_s 0x140b7f800
 __declspec(selectany) extern errno_t(__cdecl* const ms2_memcpy_s)(void*, size_t, const void*, size_t) = &memcpy_s;

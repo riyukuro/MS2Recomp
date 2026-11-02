@@ -81,7 +81,6 @@ MS2_CHECK_OFFSET(CAdventureLevelTableHelper, m_pCurrent, 0x08);
 
 // Stand-in element types of the two unused containers below. The exe's nodes are 0x30 bytes (set of a 16-byte key,
 // map<unsigned, 8-byte value>); the real types are unrecovered and never constructed with data.
-struct Unk_ALSetKey { unsigned long long m_a; unsigned long long m_b; bool operator<(const Unk_ALSetKey& o) const { return m_a < o.m_a; } };
 struct Unk_ALValue { unsigned long long m_v; };
 
 class CAdventureLevelTable : public TSingleton<CAdventureLevelTable>, public CValidData<CAdventureLevelTable>
@@ -106,7 +105,7 @@ public:
     int CountUnclaimedRewards(unsigned nLevel, const std::set<unsigned>& setClaimed);    // 0x140195f70
     void CollectMissionIds(std::vector<unsigned>& aOut) const;         // 0x140196110
 
-    std::set<Unk_ALSetKey> m_map10;             // +0x10 placeholder, never filled (a set: the exe uses _Tset_traits here)
+    std::map<unsigned long long, unsigned long long> m_map10;             // +0x10 placeholder, never filled (a 16-byte map: _Tidy takes the iterator conversion)
     std::map<unsigned, Unk_ALValue> m_map20;    // +0x20 placeholder, never filled
     std::vector<unsigned> m_vecLevels;          // +0x30 reward levels in file order
     std::map<unsigned, CAdventureLevelReward> m_mapReward;      // +0x48

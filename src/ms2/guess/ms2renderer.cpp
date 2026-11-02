@@ -25,6 +25,7 @@ struct Unk_PtrArray {                                                    // NiTP
     // @0x140d9d8d0
     void RemoveAll() { m_uiSize = 0; }
 };
+struct Unk_AeFogState { void FUN_1409a9bf0(float fMaxFog); };
 struct Unk_DevCaps {                                                     // object at MS2Renderer+0xba8 (render state block)
     char m_pad_00[0x98]; float m_f98; char m_pad_9c[0x68]; int m_i104;
     // @0x140d9d800
@@ -33,7 +34,6 @@ struct Unk_DevCaps {                                                     // obje
     float GetValue98() const { return m_f98; }
     // @0x140d9dab0
     void SetEnabled(bool b) { int v; if (b) v = 1; else v = 0; m_i104 = v; }
-    void FUN_1409a9bf0(float f);
 };
 
 class MS2Renderer : public NiDX9Renderer {
@@ -182,7 +182,7 @@ bool MS2Renderer::SetLeftRightSwap(bool bSwap)
 }
 
 // @0x140d9db20
-void MS2Renderer::SetMaxFogValue(float fFogVal) { ((Unk_DevCaps*)m_pkRenderState)->FUN_1409a9bf0(fFogVal); }
+void MS2Renderer::SetMaxFogValue(float fFogVal) { ((Unk_AeFogState*)m_pkRenderState)->FUN_1409a9bf0(fFogVal); }
 
 // @0x140d9db50
 void FUN_140d9db50(bool b) { DAT_143a4b228 = b; }

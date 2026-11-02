@@ -98,7 +98,7 @@ Unk_UgcContractDialog* FUN_140961690(int nId);
 
 
 // The client constants (0x58-byte value cells).
-struct Unk_HouseMarkCfgInt { int* FUN_1402056b0(); char m_pad[0x50]; };
+struct Unk_HouseMarkCfgInt { char m_pad[0x50]; };
 struct Unk_HouseMarkCfgFloat { char m_pad[0x58]; };
 struct Unk_HouseMarkCfgValue { int FUN_14025a620(); char m_pad[0x58]; };
 struct Unk_HouseMarkCfg
@@ -130,7 +130,7 @@ NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                     // Point3 op
 float FUN_140966f00(NiPoint3 a, NiPoint3 b);                        // distance
 float FUN_14029d220(float f);                                       // fabs
 
-CBuddyManager* FUN_14097a780();
+class CBuddyManager;
 
 int FUN_1406516b0();
 int FUN_141277f40();
@@ -210,7 +210,7 @@ void UIHouseMarkEntity::FUN_14198b100()
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->FUN_1416595d0() != 0)
     {
-        if ((unsigned)(m_nPopupTick + *((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4390.FUN_1402056b0()) < GetTickCountMs2())
+        if ((unsigned)(m_nPopupTick + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_4390)->Get()) < GetTickCountMs2())
             FUN_14198b320();
     }
     FUN_14198b340();
@@ -290,7 +290,7 @@ void UIHouseMarkEntity::FUN_14198b340()
     if (bShow)
     {
         float fDistance = FUN_140966f00(m_pos, ptPc);
-        if (fDistance > (float)*((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1240.FUN_1402056b0())
+        if (fDistance > (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)FUN_1401d3200())->m_1240)->Get())
             bShow = false;
     }
     if (bShow)
@@ -300,7 +300,7 @@ void UIHouseMarkEntity::FUN_14198b340()
         {
             FUN_14198c0d0(true);
             FUN_140ad0c10(&ptScreen, ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_clip->FUN_14198f250()));
-            m_clip->FUN_1422c00f0(ptScreen.x, ptScreen.y);
+            m_clip->SetPositionFloat(ptScreen.x, ptScreen.y);
         }
         else
         {
@@ -366,7 +366,7 @@ void UIHouseMarkEntity::FUN_14198b7b0()
             if (m_debugText.get() != NULL)
             {
                 CString strText = StringFormat<int>("<font size='18' color='#3df0fb'>SalableGroup - {0}</font>", m_nId);
-                m_debugText->FUN_1422c4eb0(strText);
+                m_debugText->SetTextHTMLA(strText);
             }
         }
     }
@@ -406,7 +406,7 @@ void UIHouseMarkEntity::FUN_14198b970()
             strOwner = spOwner->ownerName;
             if (spOwner->ownerID == reinterpret_cast<PC*>(pPc)->FUN_141656ad0())
                 nState = 1;
-            else if (FUN_14097a780()->FUN_140ae52d0(nMapId, nGroup) != 0)
+            else if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae52d0(nMapId, nGroup) != 0)
                 nState = 2;
         }
         else

@@ -63,24 +63,24 @@ public:
     CStringW FUN_14175fe60();                           // the text of the key binding
     int FUN_141760190();                                // the item is a skill scroll
     unsigned FUN_141760220(int n);                      // the item count
-    int FUN_1417603f0();                                // the recharge count left
+    int GetRechargeRemainingCount();                                // the recharge count left
     int GetRechargeMaxCount();                                // the recharge max count
     int FUN_141760590();                                // the item's data field a
     int FUN_141760610();                                // the item's data field b
-    CString FUN_141760690();                            // the icon path
-    CString FUN_1417607f0(int* pSkillId);               // the icon path of a skill
+    CString GetIconName();                            // the icon path
+    CString GetSkillIconName(int* pSkillId);               // the icon path of a skill
     CStringW GetHotkeyText();                           // the shortcut key text (wide, see the .cpp)
     int GetHotkey(int nMode);                       // the key code bound to the slot
     __int64 FUN_141760a10();                            // the bind key of the slot index
-    float FUN_141760a30();                              // the cooldown total
+    float GetCooldownDuration();                              // the cooldown total
     float FUN_141760b90();                              // the cooldown left
     int FUN_141760c00();                                // the slot is disabled
     int FUN_141761530(MS2Ptr<SkillData>* pOut);                      // the replacing skill (combo / change)
     int FUN_141761900();
     int FUN_141761990();                                // the slot is fixed or bound
-    int FUN_1417619d0();                                // the slot index has a key binding
+    int HasKeyBinding();                                // the slot index has a key binding
     int FUN_141761a10();                                // the skill (or item) is in the active set
-    CStringW FUN_141761c30();                           // the name of the key binding
+    CStringW GetActionLabel();                           // the name of the key binding
     int GetEffectiveSkillId();                                // the effective skill id
 
 public:

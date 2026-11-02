@@ -55,12 +55,11 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CStringW FUN_1409404f0(__int64 n);                                          // the number as text
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);
-CStringW FUN_140632a60(int nId, const CStringW& strArg1, const CStringW& strArg2);
+template <class A> CStringW FormatStringId(int nId, const A& a);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW GetStringCommon(int nId);
 CStringW BlockFormat(int nId);
-CStringW FUN_14086d060(int nId, const __int64& n);
 void FUN_1412751b0(const CStringW& strText, int nColor);                    // add a chat message
 UIRewardNotify* FUN_140938cd0(int nId);
 bool FUN_1406a5720();
@@ -141,20 +140,20 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     switch (nType)
     {
     case 0xea62:
-        strA = FUN_14052bd00(0x2be, strNum);
-        strB = FUN_14052bd00(0x2bf, strNum);
+        strA = FormatStringId<CStringW>(0x2be, strNum);
+        strB = FormatStringId<CStringW>(0x2bf, strNum);
         break;
     case 3001:
     case 3002:
-        strA = FUN_140632a60(0x2c0, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
+        strA = FormatStringId<CStringW, CStringW>(0x2c0, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         bNotify = 1;
         break;
     case 3000:
-        strA = FUN_140632a60(0x2c1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
+        strA = FormatStringId<CStringW, CStringW>(0x2c1, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         bNotify = 1;
         break;
     case 3003:
-        strA = FUN_140632a60(0x2c2, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
+        strA = FormatStringId<CStringW, CStringW>(0x2c2, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nLevel), strNum);
         break;
     case 0x427:
         strA = FUN_14028dfa0<CStringW>(L"s_msg_take_play_instrument_exp", strNum);
@@ -176,11 +175,11 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
         break;
     case 3004:
     case 3007:
-        strA = FUN_14052bd00(0x2bd, strNum);
+        strA = FormatStringId<CStringW>(0x2bd, strNum);
         bNotify = 1;
         break;
     default:
-        strA = FUN_14052bd00(0x2bd, strNum);
+        strA = FormatStringId<CStringW>(0x2bd, strNum);
         break;
     }
     if (bAdditional)
@@ -230,19 +229,19 @@ void FUN_1413612c0(__int64 nAmount, int nType)
     if (nAmount > 0)
     {
         CStringW strNum = FUN_1409404f0(nAmount);
-        CStringW strText = FUN_14052bd00(0x2c3, strNum);
+        CStringW strText = FormatStringId<CStringW>(0x2c3, strNum);
         PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC != 0)
         {
             if ((((class PC*)(class PCBase*)(pPC))->FUN_141658fa0() & *reinterpret_cast<Common::Constants::Value<unsigned int>*>(((unsigned char*)FUN_1401d3200()) + 0x5968)->Get()) != 0 && (nType == 0x15 || nType == 0xea61))
-                strText += FUN_14052bd00(0x2c5, strNum);
+                strText += FormatStringId<CStringW>(0x2c5, strNum);
         }
         FUN_1412751b0(strText, 5);
     }
     else if (nAmount < 0)
     {
         CStringW strNum = FUN_1409404f0(-nAmount);
-        CStringW strText = FUN_14052bd00(0x2c4, strNum);
+        CStringW strText = FormatStringId<CStringW>(0x2c4, strNum);
         FUN_1412751b0(strText, 5);
     }
 }
@@ -281,7 +280,7 @@ void FUN_141361460(unsigned nType, __int64 nAmount, int)
             strText = FUN_14028dfa0<__int64>(L"s_msg_take_star_point", nAmount);
             break;
         case 13:
-            strText = FUN_14086d060(0x2ce, nAmount);
+            strText = FormatStringId<__int64>(0x2ce, nAmount);
             break;
         }
         FUN_1412751b0(strText, 7);
@@ -297,12 +296,12 @@ void FUN_141361990(__int64 nAmount, int nUnused)
     if (nAmount > 0)
     {
         CStringW strNum = FUN_1409404f0(nAmount);
-        strText = FUN_14052bd00(0x2c8, strNum);
+        strText = FormatStringId<CStringW>(0x2c8, strNum);
     }
     else if (nAmount < 0)
     {
         CStringW strNum = FUN_1409404f0(-nAmount);
-        strText = FUN_14052bd00(0x2da, strNum);
+        strText = FormatStringId<CStringW>(0x2da, strNum);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba) != 0)
             FUN_1412751b0(BlockFormat(0x2db), 6);
     }

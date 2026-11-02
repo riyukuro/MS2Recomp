@@ -116,6 +116,7 @@
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@AEAA_N_K@Z 0x1411b1f80
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\effectservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <egf/Entity.h>
 #include "effectservice.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -187,13 +188,8 @@ public:
 };
 MS2_CHECK_SIZE(CRibbonEffectParam, 0x68);
 
-// Game TinyXML element: FirstChildElement / NextSiblingElement by name.
-class Unk_140165cf0
-{
-public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);
-    Unk_140165cf0* FUN_140168650(const char* pszName);
-};
+// Game TinyXML element.
+class Unk_140165cf0;
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp).
 int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
@@ -605,7 +601,7 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
         return CEffectDataPtr(0);
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
@@ -857,9 +853,9 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_effectDataMemcpyS)(void*
 #include "effectdummy.h"
 
 // The ground probe: physxhelper.h's Unk_RayCastInfo / CPhysXHelper::FUN_14168a310 with efd::Point3 points.
-struct Unk_EffNodeRayHit
+struct Unk_RayCastInfo
 {
-    Unk_EffNodeRayHit();                                        // 0x140ad4440
+    Unk_RayCastInfo();                                        // 0x140ad4440
     efd::Point3 m_origin;                                       // +0x00
     efd::Point3 m_dir;                                          // +0x0c
     float m_maxDist;                                            // +0x18
@@ -873,17 +869,16 @@ struct Unk_EffNodeRayHit
     efd::Point3 m_hitPoint;                                     // +0x4c
     efd::Point3 m_hitNormal;                                    // +0x58
 };
-MS2_CHECK_SIZE(Unk_EffNodeRayHit, 0x68);
+MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
 class Unk_EffNodeEntity
 {
 public:
-    void FUN_140ae1160(unsigned int uiPropId, unsigned short* pOut);    // short property
 };
-class Unk_EffNodePhysX
+class CPhysXHelper
 {
 public:
-    int FUN_14168a310(const efd::Point3& kFrom, efd::Point3& kHit, Unk_EffNodeRayHit* pInfo, float fMaxDist,
-                      efd::Point3* pNormal, int nMask);
+    int FUN_14168a310(const Vector3& kFrom, Vector3& kHit, Unk_RayCastInfo* pInfo, float fMaxDist,
+                      Vector3* pNormal, int nMask);
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
@@ -972,14 +967,14 @@ void EffectNode::UpdateWorldData()
         m_kWorld = m_spMovement->UpdateMovement(dTime, m_kWorld);
     }
     if (m_bOnGround) {
-        Unk_EffNodeRayHit kInfo;
+        Unk_RayCastInfo kInfo;
         efd::Point3 kHit;
-        if (((class Unk_EffNodePhysX*)FUN_1409f7ca0())->FUN_14168a310(m_kWorld.m_Translate + NiPoint3(0.0f, 0.0f, 60.0f), kHit, &kInfo, 0, 0, 0)) {
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(*reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(m_kWorld.m_Translate + NiPoint3(0.0f, 0.0f, 60.0f))), reinterpret_cast<Vector3&>(kHit), &kInfo, 0, 0, 0)) {
             m_kWorld.m_Translate = kHit;
             m_kWorld.m_Translate.z += 1.0f;
             if (kInfo.m_hitEntity != 0) {
                 unsigned short nKind = 0;
-                kInfo.m_hitEntity->FUN_140ae1160(0xada5c5d2, &nKind);
+                reinterpret_cast<egf::Entity*>(kInfo.m_hitEntity)->GetPropertyValue<unsigned short>(0xada5c5d2, nKind);
                 if (nKind == 8)
                     m_kWorld.m_Translate.z += 50.0f;
             }
@@ -1049,6 +1044,7 @@ CSoundService* FUN_140c9cb10();                                // the sound serv
 #include <ecr/RenderService.h>
 #include <ecr/LightService.h>
 #include <NiRenderObject.h>
+#include <NiPSParticleSystem.h>
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/placeholder/tfunctor_search.h"
@@ -1105,7 +1101,7 @@ class Unk_EsSoundCallbackHost
 public:
     void FUN_1422b0690(Unk_EsSoundFunctor callback);           // set the callback
 };
-Unk_EsSoundCallbackHost* FUN_14025e7a0();
+class Unk_AltStringMgr* FUN_14025e7a0();
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 int FUN_140ad0d60(int n, int nMin, int nMax);                  // clamp
 struct Unk_EsOptionData
@@ -1115,7 +1111,9 @@ struct Unk_EsOptionData
     bool m_bHide13;                                             // +0x13 hides type-2 effects
 };
 // The voice gender option (+0xe4 of the game option).
-class Unk_EsVoiceOption { public: int FUN_141260470(); };      // nonzero: the female voices
+struct Unk_SoundFlag;
+int FUN_141260470(Unk_SoundFlag* pFlag);                        // nonzero: the female voices
+class Unk_EsVoiceOption { };
 class Unk_EsOption
 {
 public:
@@ -1178,8 +1176,6 @@ public:
     virtual void vfunc_40();
     virtual void SetFadeValue(float fValue);                    // slot 41
 };
-extern char DAT_143afbfb8;                                      // RTTI descriptor of Unk_EsFadeObject
-void FUN_141d2c900(NiAVObject* pObject, bool bFlag);
 
 // The application service (class id 0x06100001, physxhelper.cpp); only its dependency id is used here.
 struct Unk_EsAppService { static const efd::ClassID CLASS_ID = 0x06100001; };
@@ -1378,7 +1374,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
 // @0x1411a5580
 unsigned CEffectService::FUN_1411a5580(int nA, int nB, int nKind, const NiPoint3& kPos, float fVolume)
 {
-    unsigned nHit = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141792d70(nA, nB);
+    unsigned nHit = TSingleton<SoundPropertyMgr>::GetInstance()->GetHitSound(nA, nB);
     if (nHit != 0) {
         NiTransform kXform;
         kXform.m_fScale = 1.0f;
@@ -1397,7 +1393,7 @@ unsigned CEffectService::FUN_1411a5770(int nId, GameObject* pActor)
     Unk_EventVoice kVoice;
     if (TSingleton<SoundPropertyMgr>::GetInstance()->GetEventVoice(nId, pActor, &kVoice)) {
         CString strName;
-        if (reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30()->FUN_141260470())
+        if (FUN_141260470(reinterpret_cast<Unk_SoundFlag*>(reinterpret_cast<Unk_EsOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1411b1f30())))
             strName = kVoice.m_strRestoreSoundId;
         else
             strName = kVoice.m_strSoundId;
@@ -1450,7 +1446,7 @@ unsigned CEffectService::FUN_1411a5d80(const CString& strName)
         nGender = pPlayer->FUN_141658e60();
         nJob = pPlayer->FUN_141654700();
     }
-    MS2Ptr<TriggerVoiceProperty> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793110(strName);
+    MS2Ptr<TriggerVoiceProperty> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FindTriggerVoice(strName);
     if (spProp.get() != 0) {
         CString strSound;
         if (!spProp->GetVoice(nGender, nJob, strSound))
@@ -1908,8 +1904,8 @@ void CEffectService::FUN_1411a7960(unsigned nIndex)
         while ((pObject = kWalker.Next(true)) != NULL) {
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObject);
             if (pRender != NULL) {
-                FUN_141d2c900(pRender, true);
-                Unk_EsFadeObject* pFade = ((class Unk_EsFadeObject*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afbfb8), (class NiObject const*)(pRender)));
+                NiRenderObject::RecursiveSetMaterialNeedsUpdate(pRender, true);
+                Unk_EsFadeObject* pFade = ((class Unk_EsFadeObject*)NiObject::DynamicCast(&NiPSParticleSystem::ms_RTTI, (class NiObject const*)(pRender)));
                 if (pFade != NULL)
                     pFade->SetFadeValue(-FLT_MAX);
             }
@@ -2281,7 +2277,7 @@ efd::AsyncResult CEffectService::OnInit()
     }
     FUN_1413f9830()->Subscribe(this, s_catEffectChannel, 0, false);
     TSingleton<CSoundEventMgr>::GetInstance()->GetEventGroup("ms2sound/sound/attack/hit", 1);
-    FUN_14025e7a0()->FUN_1422b0690(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
+    reinterpret_cast<Unk_EsSoundCallbackHost*>(FUN_14025e7a0())->FUN_1422b0690(Unk_EsSoundFunctor(this, &CEffectService::FUN_1411a5a60));
     {
         CNifLoadingService* pLoader = ((class CNifLoadingService*)FUN_140a0afd0());
         m_aPreloaded.Add(0);

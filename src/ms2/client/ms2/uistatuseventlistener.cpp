@@ -185,7 +185,6 @@ public:
 void* FUN_140967100();
 struct Unk_AlignOffset { float x, y; };                                     // dialog offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight);
-CStringW FUN_140720ca0(void*);
 
 // The candidate list (setCandidates) values.
 class Unk_StCandList { public: char m_pad[0x40]; };
@@ -613,7 +612,7 @@ void UIStoreDialog::OnLoadComplete()
         ASTextInput* pInput = m_30.operator->()->FUN_140bbe940<ASTextInput>("m_inputSearch", m_1a8).get();
         if (pInput != 0)
         {
-            m_1a8->FUN_1422e0920(StoreDelegate(this, &UIStoreDialog::FUN_141b10bc0));
+            m_1a8->AddChangeHandler(StoreDelegate(this, &UIStoreDialog::FUN_141b10bc0));
         }
         CStringW strMoney = FUN_140719a00(DAT_143ab28f8);
         m_30.operator->()->FUN_140c38f00("initData", m_188, CStringW(strMoney));
@@ -791,15 +790,15 @@ int UIStoreDialog::vfunc_13()
             }
             if (m_1a8.get() != 0)
             {
-                if (((class ASUIComponent*)m_1a8.operator->())->FUN_1422c76c0() != 0)
+                if (((class ASUIComponent*)m_1a8.operator->())->GetFocused() != 0)
                 {
                     FUN_141b10ed0(m_1a8->GetText());
-                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(1);
-                    ((class ASUIComponent*)m_1a8.operator->())->FUN_1422c7630(0);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->SetFocused(1);
+                    ((class ASUIComponent*)m_1a8.operator->())->SetFocused(0);
                 }
                 else
                 {
-                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(0);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->SetFocused(0);
                 }
             }
             return 1;
@@ -825,7 +824,7 @@ void UIStoreDialog::vfunc_80(void* pRequest)
             }
             else
             {
-                m_1a8->FUN_1422e0bd0(L"");
+                m_1a8->SetHtmlTextW(L"");
                 FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
             }
         }
@@ -948,7 +947,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
 {
     if (!m_1a8)
         return;
-    if (((class ASUIComponent*)m_1a8.operator->())->FUN_1422c76c0() == 0)
+    if (((class ASUIComponent*)m_1a8.operator->())->GetFocused() == 0)
         return;
     CStringW strText = m_1a8->GetText();
     if (strText.IsEmpty())
@@ -1145,8 +1144,8 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
             {
                 if (m_1a8.get() != 0)
                 {
-                    ((class ASUIComponent*)m_1a8.operator->())->FUN_1422c7630(0);
-                    m_1a8->FUN_1422e0bd0(L"");
+                    ((class ASUIComponent*)m_1a8.operator->())->SetFocused(0);
+                    m_1a8->SetHtmlTextW(L"");
                     m_1a8->vfunc_24(1);
                 }
                 MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0, 0x937, 0, CStringW(L""));
@@ -1193,7 +1192,7 @@ bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
     if (pDlg != 0 && m_1a8.get() != 0)
     {
         FUN_140b632f0()->FUN_1422d4dd0(CString(m_20));
-        ((class ASUIComponent*)m_1a8.operator->())->FUN_1422c7630(1);
+        ((class ASUIComponent*)m_1a8.operator->())->SetFocused(1);
     }
     return true;
 }

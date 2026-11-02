@@ -47,9 +47,9 @@ CStringW GetStringCommon(int nStringId);                      // string table te
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 int FUN_14015f480(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CStringW>& rOut);   // list of strings
-void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);    // split into numbers
+template <class C> void XmlSplit(const CString&, C&, const char*);    // split into numbers
 void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned int>* pOut, const wchar_t* pszSep);   // split a list of ids
-void FUN_1416fbf20(Unk_FishTextFilter* pFilter, CStringW& str);   // post-process a UI text
+class CReservedWordTable { public: void FUN_1416fbf20(CStringW&); };   // post-process a UI text
 
 // The unit's exe globals are in symbols-manual.tsv; the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -108,7 +108,7 @@ int CFishData::Load(Unk_140165cf0* pNode)
     ATL::CAtlArray<int> arr;
     CString strSmall;
     XmlQuery((class TiXmlElement *)(pNode), "smallSize", strSmall);
-    FUN_140177e10(strSmall, arr, L"-");
+    XmlSplit(strSmall, (ATL::CAtlArray<unsigned int>&)arr, (const char*)L"-");
     if (arr.GetCount() != 2)
         return 0;
     int nSmallMax = 0;
@@ -119,7 +119,7 @@ int CFishData::Load(Unk_140165cf0* pNode)
     arr.RemoveAll();
     CString strBig;
     XmlQuery((class TiXmlElement *)(pNode), "bigSize", strBig);
-    FUN_140177e10(strBig, arr, L"-");
+    XmlSplit(strBig, (ATL::CAtlArray<unsigned int>&)arr, (const char*)L"-");
     if (arr.GetCount() != 2)
         return 0;
     nMidMax = arr[0] - 1;
@@ -192,7 +192,7 @@ CStringW CFishData::FUN_1403b16b0(int bDetail) const
         str += GetStringTable()->FUN_141811980(0x1f, m_nId);
     else
         str += GetStringTable()->FUN_141811980(0x1e, m_nId);
-    FUN_1416fbf20(CFishingTable::GetTextFilter(), str);
+    ((CReservedWordTable*)CFishingTable::GetTextFilter())->FUN_1416fbf20(str);
     return str;
 }
 

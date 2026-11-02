@@ -177,7 +177,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
+struct Unk_XmlElement; void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 
@@ -1541,7 +1541,7 @@ bool ItemDropTable::LoadIndividualBoxes()
         return false;
     }
     std::vector<Unk_140165cf0*> elems;
-    FUN_14028f5d0(pRoot, "dropBox", elems);
+    FUN_14028f5d0((struct Unk_XmlElement*)pRoot, "dropBox", (std::vector<struct Unk_XmlElement*>&)elems);
     CLockCriticalSection lock;
     // @0x140301bf0 (the lambda body)
     Concurrency::parallel_for_each(elems.begin(), elems.end(), [&lock, this](Unk_140165cf0* pElem) {

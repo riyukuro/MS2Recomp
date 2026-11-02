@@ -75,6 +75,8 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/placeholder/blindmanager.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- callees ------------------------------------------------------------------------------------------------------
 
@@ -101,9 +103,7 @@ class Unk_UgcWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the player
-    egf::Entity* FUN_141bd04d0(int nObjectId);              // an entity by object id
     Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > FUN_141bd0420(unsigned nModel);   // the entities of a model
-    int FUN_141bd0dd0(efd::Point3& kA, efd::Point3& kB);
 };
 
 // The game settings; FUN_14036d570 tests a content switch.
@@ -127,11 +127,6 @@ extern int DAT_143ab2914;                                   // my level
 
 // The player and its effect points (the profile shot).
 const efd::Point3& FUN_140947900(NiAVObject* pObject);      // the world translate of a node
-class Unk_UgcCamera
-{
-public:
-    bool FUN_140af0700(const efd::Point3& kWorld, efd::Point3& kScreen);   // world to screen
-};
 Unk_UgcFileResult SaveUgcThumbnailImage(NiRect<unsigned int> kRect, int nTarget);   // ugcmanager.cpp#1
 CStringW FUN_141026ab0();                                   // ".\Custom\Thumbnail"
 CStringW FUN_141026920(int nType);                          // the upload directory of an upload kind
@@ -145,17 +140,14 @@ public:
 
 // Messages and strings.
 class IMessageListener;
-void FUN_140d73aa0(CStringW strMessage, int nType, IMessageListener* pListener, CStringW strArg);   // message box
-void FUN_140d73bc0(int nStringId, int nType, IMessageListener* pListener, CStringW strArg);         // message box
+void FUN_140d73aa0(CStringW strMessage, int nType, void* pListener, CStringW strArg);   // message box
+void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strArg);         // message box
 CStringW GetStringCommonByKey(const CStringW& strKey);             // a string table entry by key
 CStringW GetStringCommon(int nId);                            // a string table entry
-CStringW FormatStringId(int nId, const fmt::ArgList& args);   // a string table entry with {0} arguments
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);   // equal to a literal
+FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)                 // the string table formatter (formatstringid.h)
 void FUN_140841420(CStringW& str);                         // lower case
 CString FUN_1410272e0(CString strName);                     // the cache key of a downloaded file
 int FUN_140768010(int nCount, int nUnused);                 // random index in [0, count)
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // string table entry with two integer arguments
 CStringW FUN_140a2fcd0(__int64 tFrom, __int64 tTo);         // a remaining time text
 void FUN_1412751b0(const CStringW& strText, int nType);     // chat notice
 CStringW FUN_141b6e360(const CStringW& strDir, const wchar_t* szFilter, const CStringW& strFile);   // open-file dialog
@@ -213,7 +205,7 @@ CString FUN_1410280d0(int nKind, CString strUrl);           // the local file of
 class CubeItemInfo : public CPtred
 {
 public:
-    int FUN_1408b3860();                                    // the cube has a UGC look
+    int FUN_1408b3860() const;                              // the cube has a UGC look
     int itemId;                                             // +0x18
     __int64 instanceId;                                     // +0x20
     int count;                                              // +0x28
@@ -318,11 +310,6 @@ CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wi
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);   // wide to multi-byte
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 // Hidden (reported) content.
-class Unk_UgcBlindManager
-{
-public:
-    bool FUN_140a259b0(int nKind, __int64 uid);             // the content is blinded
-};
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
 
 unsigned __int64 FUN_14088dbf0(int nDate, int nHour);       // the reservation key of an hour
@@ -381,7 +368,6 @@ public:
 
 CString FUN_141028be0(__int64 characterId, const CString& strUrl, int nSize, CString strExt);   // the profile image file
 CStringW BlockFormat(int nId);
-CStringW FUN_140a228f0(int nId, const int& nArg, const CStringW& strArg);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 
 // The open dialog of a UI id (0 when it is not created).
@@ -906,7 +892,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
         return;
     efd::Point3 kA;
     efd::Point3 kB;
-    if (reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd0dd0(kB, kA) == 0)
+    if (WorldService::GetInstance()->FUN_141bd0dd0(reinterpret_cast<Vector3*>(&kB), reinterpret_cast<Vector3*>(&kA)) == 0)
         return;
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -920,7 +906,7 @@ void CUgcManager::FUN_141880600(MS2Ptr<Unk_CharListEntry> spEntry)
     efd::Point3 kTop;
     efd::Point3 kBottom;
     NiRect<unsigned int> kRect;
-    if (!reinterpret_cast<Unk_UgcCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(FUN_140947900(pUI), kTop) || !reinterpret_cast<Unk_UgcCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(FUN_140947900(pBody), kBottom))
+    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(FUN_140947900(pUI), reinterpret_cast<NiPoint3&>(kTop)) || !TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(FUN_140947900(pBody), reinterpret_cast<NiPoint3&>(kBottom)))
         return;
     int n = (int)(kBottom.y - kTop.y);
     int nMargin = (int)(n * 0.2f);
@@ -1038,7 +1024,7 @@ int CUgcManager::FUN_1418810c0(const CStringW& strDir, const wchar_t* szFilter)
     int nLimit = FUN_1401d3200()->UGCImgUploadSizeLimit.Read();
     if ((int)info.Width > nLimit || (int)info.Height > nLimit)
     {
-        FUN_140d73aa0(FUN_140811740(0x2ea, nLimit, nLimit), 0, 0, L"");
+        FUN_140d73aa0(FormatStringId(0x2ea, nLimit, nLimit), 0, 0, L"");
         return 0;
     }
     CAtlArray<CStringW> parts;
@@ -2329,7 +2315,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
         {
             m_mapBanner.RemoveKey(nBannerId);
         }
-        efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
+        efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
         if (spEntity != 0)
         {
             NiTexturePtr spTexture = GetObjectTexture(nBannerId);
@@ -2337,7 +2323,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
                 FUN_141888770(spEntity, spTexture);
         }
     }
-    else if (((class Unk_UgcBlindManager*)FUN_1409c1730())->FUN_140a259b0(2, spBanner->m_upload.m_uid))
+    else if (reinterpret_cast<BlindManager*>(FUN_1409c1730())->IsBlockedId(2, spBanner->m_upload.m_uid))
     {
         FUN_1418885b0(nBannerId);
     }
@@ -2373,7 +2359,7 @@ int CUgcManager::FUN_1418881e0(int nBannerId, CString strPath, MS2Ptr<CUgcRegist
 {
     if (spBanner == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
     if (spEntity == 0)
         return 0;
     NiTexturePtr spTexture = ((class Unk_UgcTextureCache*)FUN_140a0afd0())->FUN_141553eb0(strPath, 0);
@@ -2389,7 +2375,7 @@ MS2_REPLACE_METHOD(0x1418881e0, CUgcManager, FUN_1418881e0, 569, 0xBC422A61);
 // @0x141888420
 int CUgcManager::ApplyBannerTexture(int nBannerId, CString strPath)
 {
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
     if (spEntity == 0)
         return 0;
     NiTexture* pTexture = LoadCachedTexture(FUN_14016a730(strPath, 0));
@@ -2410,7 +2396,7 @@ void CUgcManager::FUN_1418885b0(int nBannerId)
     {
         m_mapBanner.RemoveKey(nBannerId);
     }
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_UgcWorld*>(WorldService::GetInstance())->FUN_141bd04d0(nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(nBannerId);
     if (spEntity != 0)
     {
         if (m_spDefaultTexture != 0)
@@ -2606,7 +2592,7 @@ void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<
         }
         ASObj obj(2);
         if (FillUploadSlotRow(obj, nState, strName, bSelected))
-            pArray->FUN_1422bc050(obj.FUN_1422bb870());
+            pArray->PushValue(obj.FUN_1422bb870());
     }
 }
 
@@ -2869,7 +2855,7 @@ void CUgcManager::FUN_141889e20(unsigned int nCount, int nStart, ASArray* pArray
             ConvertIconFile(spFile->GetPath());
         ASObj obj(2);
         if (FUN_14188d8c0(obj, spFile.get()))
-            pArray->FUN_1422bc050(obj.FUN_1422bb870());
+            pArray->PushValue(obj.FUN_1422bb870());
     }
 }
 MS2_REPLACE_METHOD(0x141889e20, CUgcManager, FUN_141889e20, 785, 0x44BE99D6);
@@ -2905,7 +2891,7 @@ void CUgcManager::FUN_14188a140(unsigned int nCount, unsigned int nStart, ASArra
             ConvertIconFile(spFile->GetPath());
         ASObj obj(2);
         if (FUN_14188d8c0(obj, spFile.get()))
-            pArray->FUN_1422bc050(obj.FUN_1422bb870());
+            pArray->PushValue(obj.FUN_1422bb870());
     }
 }
 MS2_REPLACE_METHOD(0x14188a140, CUgcManager, FUN_14188a140, 815, 0x6BD4FDF8);
@@ -2999,7 +2985,7 @@ void CUgcManager::FUN_14188a7c0(const CStringW& strDir, int bRemoveDir, std::set
         {
             CStringW strName(fd.cFileName);
             CStringW strPath = StringFormat(L"{0}\\{1}", strDir, strName);
-            if (FUN_1403b3c40(strName, L".") || FUN_1403b3c40(strName, L".."))
+            if (strName == L"." || strName == L"..")
                 continue;
             BOOL bDir = (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? TRUE : FALSE;
             if (bDir == TRUE)
@@ -3295,7 +3281,7 @@ MS2_REPLACE_METHOD(0x14188c300, CUgcManager, FindRollingImageByBanner, 292, 0x0E
 
 // @0x14188c430
 // A random one of the default rolling images (m_n20 == 0).
-MS2Ptr<CUgcBannerRollingImage> CUgcManager::FUN_14188c430()
+MS2Ptr<CUgcBannerRollingImage> CUgcManager::GetRandomRollingImage()
 {
     CAtlArray<MS2Ptr<CUgcBannerRollingImage> > images;
     if (Unk_LockGuard guard = m_lock)
@@ -3317,7 +3303,7 @@ MS2Ptr<CUgcBannerRollingImage> CUgcManager::FUN_14188c430()
     unsigned int nIndex = FUN_140768010(images.GetCount(), 0);
     return images[nIndex];
 }
-MS2_REPLACE_METHOD(0x14188c430, CUgcManager, FUN_14188c430, 366, 0xF62438B0);
+MS2_REPLACE_METHOD(0x14188c430, CUgcManager, GetRandomRollingImage, 366, 0xF62438B0);
 
 // @0x14188c5b0
 // Shows a rolling image on its banners, downloading it first when it is not cached.
@@ -3355,7 +3341,7 @@ void CUgcManager::FUN_14188c6f0()
             {
                 MS2Ptr<CUgcBannerRollingImage> spImage = FindRollingImageByBanner(nBannerId);
                 if (spImage == 0)
-                    spImage = FUN_14188c430();
+                    spImage = GetRandomRollingImage();
                 if (spImage.get())
                 {
                     CRBMap<CString, std::vector<unsigned int> >::CPair* pPair = urls.Lookup(spImage->m_str48);
@@ -3500,7 +3486,7 @@ void CUgcManager::FUN_14188d380(int nType, CAtlArray<MS2Ptr<CUploadFile> >& file
             DWORD bDir = fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
             CStringW strName(fd.cFileName);
             CStringW strPath = StringFormat(L"{0}\\{1}", strDir, strName);
-            if (FUN_1403b3c40(strName, L".") || FUN_1403b3c40(strName, L".."))
+            if (strName == L"." || strName == L"..")
                 continue;
             if (bDir != 0)
                 continue;
@@ -3874,7 +3860,7 @@ void CUgcManager::FUN_14188f450(CInPacket& packet)
         FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_change_price"), 0, 0, L"");
         break;
     case 0x87:
-        FUN_1412751f0(FUN_140a228f0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), BlockFormat(0x5a8)), 1, 1);
+        FUN_1412751f0(FUN_14028dee0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), BlockFormat(0x5a8)), 1, 1);
         break;
     case 0x8a:
         break;

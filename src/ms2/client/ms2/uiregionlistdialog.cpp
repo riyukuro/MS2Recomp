@@ -107,7 +107,6 @@ CString FUN_140e819e0(CString strHost);
 // The scene manager of the application.
 class CNetworkService { public: int ConnectToConfiguredServer(); };   // C3: member view
 class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
-void FUN_141acfad0(UISceneLogin* pScene, const int& nUiId);     // UISceneLogin: hide the title and the dialogs
 
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& a);    // set a Value from an AS object
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set an Int value
@@ -302,7 +301,7 @@ void UIRegionListDialog::FUN_140e80c30()
         obj.FUN_1407cba60("icon", strPath + m_regions[i]->m_image);
 #endif
         obj.FUN_1407cb9c0("status", m_regions[i]->m_status);
-        arr.FUN_1422bc050(Scaleform::GFx::Value(obj.FUN_1422bb870()));
+        arr.PushValue(Scaleform::GFx::Value(obj.FUN_1422bb870()));
     }
     static_cast<Unk_RlScript*>(m_30.operator->())->FUN_140e813f0("buildRegionList", arr, m_nSelected);
 }
@@ -343,7 +342,7 @@ void UIRegionListDialog::FUN_140e811d0()
         UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene());
         if (pLogin != 0) {
             int nUiId = vfunc_48();
-            FUN_141acfad0(pLogin, nUiId);
+            pLogin->FUN_141acfad0((__int64)&nUiId);
         }
     } else {
         FUN_140e808b0();

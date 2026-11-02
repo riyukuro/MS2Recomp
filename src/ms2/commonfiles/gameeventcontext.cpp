@@ -358,7 +358,7 @@ GameEvent* FUN_1403fb9a0();
 void FUN_1403fbe50(Unk_GEReader* in, ATL::CAtlArray<MS2Ptr<ItemGift> >* gifts);
 void FUN_1403fbf30(Unk_GEOut* out, ATL::CAtlArray<MS2Ptr<ItemGift> >* gifts);
 
-extern Unk_AttendGiftDataGroup* DAT_143aac2a8;
+class AttendGiftDataTable;
 
 // Sort-key names (header static shared with several units).
 static CStringA s_sortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -549,7 +549,7 @@ void FUN_1403fbf30(Unk_GEOut* out, ATL::CAtlArray<MS2Ptr<ItemGift> >* gifts)
 MS2_REPLACE(0x1403fbf30, FUN_1403fbf30, 152, 0x0FCC86CE);
 
 // @0x1403fc330
-Unk_AttendGiftDataGroup* FUN_1403fc330() { return DAT_143aac2a8; }
+Unk_AttendGiftDataGroup* FUN_1403fc330() { return reinterpret_cast<Unk_AttendGiftDataGroup*>(TSingleton<AttendGiftDataTable>::s_instance); }
 MS2_REPLACE(0x1403fc330, FUN_1403fc330, 8, 0xA0DCC569);
 
 // @0x1403fc640

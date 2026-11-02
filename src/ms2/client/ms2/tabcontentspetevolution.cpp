@@ -709,16 +709,13 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
     if (info == 0)
         return;
     ItemPtr preview(new CItem);
-    int nNextRank = pet->FUN_140526bd0();
-    nNextRank = nNextRank + 1;
-    short nGrade = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionResultLevel(nNextRank, ((class CItem*)(class CItem*)(pet))->FUN_1405282d0());
+    int nNextRank = pet->FUN_140526bd0() + 1;
+    unsigned short nGrade = ((class Unk_PetRecipe*)FUN_1401c0db0())->CalcPetEvolutionResultLevel(nNextRank, ((class CItem*)(class CItem*)(pet))->FUN_1405282d0());
     if (nGrade == 0)
         return;
-    int nItemId = pet->FUN_1405276c0();
-    if (preview->FUN_14052b130(nItemId, nNextRank, 0) == 0)
+    if (preview->FUN_14052b130(pet->FUN_1405276c0(), nNextRank, 0) == 0)
         return;
-    CStringW* pUnk = ((CItem*)(pet))->FUN_140528b40();
-    ((CItem*)(preview))->FUN_140528b00(*pUnk);
+    ((CItem*)(preview))->FUN_140528b00(*((CItem*)(pet))->FUN_140528b40());
     ((class CItem*)(class CItem*)(preview))->FUN_14052b760(ItemPtr(pet));
     ((CItem*)(preview))->FUN_140528bf0(nGrade);
     if (((class Unk_PetItemInfo*)((class CItem*)(class CItem*)(preview))->FUN_1405278a0()) != 0)
@@ -726,10 +723,10 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
     MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    MS2Ptr<ASMovieClip> evolutionSlot = ench->FUN_1409b4560(CString("m_evolutionSlot"));
+    MS2Ptr<ASMovieClip> evolutionSlot = ench->FUN_1409b4560("m_evolutionSlot");
     if (evolutionSlot == 0)
         return;
-    MS2Ptr<ASMovieClip> slot = evolutionSlot->FUN_1409b4560(CString("m_slot"));
+    MS2Ptr<ASMovieClip> slot = evolutionSlot->FUN_1409b4560("m_slot");
     if (slot == 0)
         return;
     FUN_141415600(m_strResult);

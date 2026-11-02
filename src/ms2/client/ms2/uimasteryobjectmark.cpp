@@ -295,7 +295,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
                 if (FUN_140e5b520(pGather, spContext.get()) != 0)
                     FUN_140e5bd80(spContext.get());
                 bool bVisible = nShow != 0 ? true : spContext->m_nEnabled != 0;
-                if (spContext->m_spEntity->FUN_1422bfca0() != bVisible)
+                if (spContext->m_spEntity->GetVisible() != bVisible)
                     spContext->m_spEntity->vfunc_4(bVisible);
             }
         }
@@ -369,7 +369,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
                 if (FUN_140e5b620(spHome.get(), spContext.get()) != 0)
                     FUN_140e5bd80(spContext.get());
                 bool bVisible = nShow != 0 ? 1 : spContext->m_nEnabled != 0;
-                if (spContext->m_spEntity->FUN_1422bfca0() != bVisible)
+                if (spContext->m_spEntity->GetVisible() != bVisible)
                     spContext->m_spEntity->vfunc_4(bVisible);
             }
         }

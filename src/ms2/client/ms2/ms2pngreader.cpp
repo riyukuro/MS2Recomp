@@ -52,14 +52,16 @@ MS2_CHECK_OFFSET(Unk_PngInfo, m_ppRowPointers, 0x150);
 
 typedef void (*PngMessageFn)(Unk_PngStruct*, const char*);
 typedef void (*PngReadFn)(Unk_PngStruct*, unsigned char*, unsigned int);
-Unk_PngStruct* FUN_1427086a0(const char* szVersion, void* pUser, PngMessageFn pfnError, PngMessageFn pfnWarn);   // png_create_read_struct
-Unk_PngInfo* FUN_1427062f0(Unk_PngStruct* pPng);                         // png_create_info_struct
-void* FUN_142706d40(Unk_PngStruct* pPng);                                // png_get_io_ptr
-void FUN_142708730(Unk_PngStruct** ppPng, Unk_PngInfo** ppInfo, Unk_PngInfo** ppEnd);   // png_destroy_read_struct
-void FUN_142707920(Unk_PngStruct* pPng, int nNumBytes);                  // png_set_sig_bytes
-void FUN_14270bd30(Unk_PngStruct* pPng, Unk_PngInfo* pInfo, int nTransforms, void* pParams);   // png_read_png
-void FUN_14270d120(Unk_PngStruct* pPng, void* pIoPtr, PngReadFn pfnRead);   // png_set_read_fn
-jmp_buf* FUN_14270ce60(Unk_PngStruct* pPng, void (*pfnLongjmp)(jmp_buf, int), size_t nSize);   // png_set_longjmp_fn
+extern "C" {
+Unk_PngStruct* png_create_read_struct(const char* szVersion, void* pUser, PngMessageFn pfnError, PngMessageFn pfnWarn);
+Unk_PngInfo* png_create_info_struct(Unk_PngStruct* pPng);
+void* png_get_io_ptr(Unk_PngStruct* pPng);
+void png_destroy_read_struct(Unk_PngStruct** ppPng, Unk_PngInfo** ppInfo, Unk_PngInfo** ppEnd);
+void png_set_sig_bytes(Unk_PngStruct* pPng, int nNumBytes);
+void png_read_png(Unk_PngStruct* pPng, Unk_PngInfo* pInfo, int nTransforms, void* pParams);
+void png_set_read_fn(Unk_PngStruct* pPng, void* pIoPtr, PngReadFn pfnRead);
+jmp_buf* png_set_longjmp_fn(Unk_PngStruct* pPng, void (*pfnLongjmp)(jmp_buf, int), size_t nSize);
+}
 
 // The exe's NiPixelFormat constants (symbols.tsv does not map them to the NiPixelFormat statics).
 extern const NiPixelFormat DAT_1439faff0;                   // the reader's initial format
@@ -300,23 +302,23 @@ NiPixelData* MS2PNGReader::ReadImage(efd::File& kIst, NiPixelData* pkOptDest)
     Unk_PngStruct* pPng = 0;
     Unk_PngInfo* pInfo = 0;
     int nUser;
-    pPng = FUN_1427086a0("1.6.17", &nUser, PngError, PngWarning);
+    pPng = png_create_read_struct("1.6.17", &nUser, PngError, PngWarning);
     if (pPng == 0)
         return 0;
-    pInfo = FUN_1427062f0(pPng);
+    pInfo = png_create_info_struct(pPng);
     if (pInfo == 0)
     {
-        FUN_142708730(&pPng, 0, 0);
+        png_destroy_read_struct(&pPng, 0, 0);
         return 0;
     }
-    if (setjmp(*FUN_14270ce60(pPng, longjmp, sizeof(jmp_buf))) != 0)
+    if (setjmp(*png_set_longjmp_fn(pPng, longjmp, sizeof(jmp_buf))) != 0)
     {
-        FUN_142708730(&pPng, &pInfo, 0);
+        png_destroy_read_struct(&pPng, &pInfo, 0);
         return 0;
     }
-    FUN_14270d120(pPng, &kIst, PngRead);
-    FUN_142707920(pPng, 0);
-    FUN_14270bd30(pPng, pInfo, 0, 0);
+    png_set_read_fn(pPng, &kIst, PngRead);
+    png_set_sig_bytes(pPng, 0);
+    png_read_png(pPng, pInfo, 0, 0);
     if (pInfo->m_pPalette != 0)
     {
         m_bPalettized = 1;
@@ -379,7 +381,7 @@ NiPixelData* MS2PNGReader::ReadImage(efd::File& kIst, NiPixelData* pkOptDest)
         pucDst = pucDst + (int)uiPitch;
     }
     m_pucRow = 0;
-    FUN_142708730(&pPng, &pInfo, 0);
+    png_destroy_read_struct(&pPng, &pInfo, 0);
     return pkPixels;
 }
 
@@ -613,7 +615,7 @@ void PngWarning(Unk_PngStruct*, const char*)
 // @0x140d9cc60
 void PngRead(Unk_PngStruct* pPng, unsigned char* pucData, unsigned int uiBytes)
 {
-    void* pvStream = FUN_142706d40(pPng);
+    void* pvStream = png_get_io_ptr(pPng);
     efd::File* pkFile = (efd::File*)pvStream;
     pkFile->Read(pucData, uiBytes);
 }

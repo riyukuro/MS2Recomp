@@ -43,7 +43,7 @@ struct Unk_WdWedding
     char m_pad_38[0x130 - 0x38];
     Unk_WdLog m_log;                    // +0x130
 };
-void* FUN_1409eed90();                                          // the singleton of the own character
+class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -53,6 +53,7 @@ __int64 GetServerTime();                                        // server time
 int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
 CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/commonfiles/os.h"
 
 // @0x140fc2090
 UIWeddingAffinityDialog::UIWeddingAffinityDialog()
@@ -89,7 +90,7 @@ void UIWeddingAffinityDialog::vfunc_67()
 void UIWeddingAffinityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_WdWedding* pWedding = ((struct Unk_WdWedding*)((class WeddingManager*)(void*)(FUN_1409eed90()))->FUN_140d295d0());
+    Unk_WdWedding* pWedding = ((struct Unk_WdWedding*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0());
     __int64 nExp = reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908e60(1, 0);
     int nDays = GetDayNumberDifference(pWedding->m_nMarriedTime, GetServerTime());
     nExp = nExp * nDays;

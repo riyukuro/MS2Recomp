@@ -120,7 +120,7 @@ void StateFall::vfunc_4(StateData* pData)
             if (!strRec.IsEmpty())
             {
                 efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
-                if (FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) !=
+                if (((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) !=
                     NiActorManager::INVALID_SEQUENCE_ID)
                     m_strAnim = kAnim;
             }
@@ -143,12 +143,12 @@ void StateFall::vfunc_5(int n)
 }
 
 // @0x1417c73c0
-// MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
+// The position is a by-value argument, so the exe copies the call result into the argument slot.
 void StateFall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    NiPoint3 kPos = m_pOwner->FUN_14123c360();
-    efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(reinterpret_cast<const efd::Point3&>(kPos));
+
+    efd::Point3 kDir = m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     if (kDir != efd::Point3::ZERO)
     {
         float fSpeed = m_pOwner->vfunc_95();

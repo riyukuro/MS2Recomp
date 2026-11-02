@@ -47,7 +47,7 @@ struct Unk_SpawnXform
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
-void* FUN_140a332d0(Unk_SpawnXform* p);                                    // NiTransform default ctor
+#include <NiTransform.h>
 struct Unk_SpawnNiPoint3 : public Vector3
 {
     Unk_SpawnNiPoint3(const NiPoint3& pt);                          // 0x14027dcf0
@@ -118,7 +118,7 @@ void StateSpawn::vfunc_3(double fTime)
         if (pMount != 0)
         {
             Unk_SpawnXform xf;
-            FUN_140a332d0(&xf);
+            reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             ((efd::Matrix3*)(struct Unk_SpawnRot*)(&xf.m_rotate))->MakeIdentity();
             xf.m_fScale = 1.0f;
             Unk_SpawnNiPoint3 niPt(m_pOwner->vfunc_18());

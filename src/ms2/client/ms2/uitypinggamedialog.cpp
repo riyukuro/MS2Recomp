@@ -210,7 +210,7 @@ void UITypingGameDialog::FUN_140ee5a20()
     for (unsigned i = 0; i < (unsigned)m_nCount; i++)
     {
         unsigned nDigit = FUN_140768010(10, 0);
-        ((class ASArray*)(class ASArray*)(&kSequence))->FUN_1422bbd40(nDigit);
+        ((class ASArray*)(class ASArray*)(&kSequence))->PushUInt(nDigit);
         m_answer.push_back(nDigit);
     }
     if (m_30.get() != 0)

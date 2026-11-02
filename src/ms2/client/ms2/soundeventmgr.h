@@ -32,14 +32,14 @@ public:
     virtual ~CSoundEvent();                                     // 0x14177a800
 
     int Start();                                        // start
-    void FUN_14177a920(int bFadeOut);                           // stop (0 = request stop, else reset)
+    void StopOrReset(int bFadeOut);                           // stop (0 = request stop, else reset)
     void SetPosition(const Vector3& vPos);            // 3D position (+ attenuation shape)
-    void FUN_14177aac0(const Vector3& vPos, const Vector3& vVel);   // 3D position + velocity
+    void SetPositionVelocity(const Vector3& vPos, const Vector3& vVel);   // 3D position + velocity
     int IsPlaying();                                        // the event is playing
     // @0x1411b1ba0
     CTwoCircleCollision* FUN_1411b1ba0() { return m_pRange; }
-    void FUN_14177abc0(FMOD_EVENT_CALLBACK pfnCallback, void* pUserData);
-    int FUN_14177ac00();                                        // getMute succeeded
+    void SetCallback(FMOD_EVENT_CALLBACK pfnCallback, void* pUserData);
+    int CanGetMute();                                        // getMute succeeded
     void SetMute(unsigned bMute);
     int FUN_14177ac80();                                        // started or stopped
     CString GetName();                                    // the event name
@@ -238,7 +238,7 @@ public:
     void SetMusicMute(unsigned bMute);                         // mute the music
     float FUN_14177c9e0();                                      // the music volume
     void FUN_14177ca30(float fVolume);                          // set the music volume
-    int FUN_14177caa0();                                        // the current music cue id
+    int GetCurrentMusicId();                                        // the current music cue id
     MS2Ptr<CSoundEvent> FUN_14177cbe0(Unk_EntityPtr spEntity, const char* pszEvent);   // the entity's environment sound
     void FUN_14177ce30(Unk_EntityPtr spEntity, int bOn);        // switch the entity's environment sound
     void FUN_14177d230();                                       // start the environment sounds
@@ -247,15 +247,15 @@ public:
     void ClearEnvironmentSounds();                                       // remove all environment sounds
     FMOD::EventGroup* GetEventGroup(const char* pszName, int bLoad);   // the (cached) event group
     void UnloadEventGroup(const char* pszName);                    // free an event group
-    void FUN_14177d9b0(const char* pszGroup, std::vector<CString>& rNames);   // event names of a group
+    void GetEventNames(const char* pszGroup, std::vector<CString>& rNames);   // event names of a group
     void FUN_14177da80(int nCategory, float fVolume);           // category volume
     float GetCategoryVolume(int nCategory);
     void SetCategoryMute(int nCategory, unsigned bMute);          // mute a category
-    void FUN_14177dc80(unsigned bMute);                         // mute everything
+    void SetAllMute(unsigned bMute);                         // mute everything
     int IsCategoryMuted(int nCategory);
     int FUN_14177ddd0(void* pUnused, int nUnused1, int nUnused2);   // 1
-    void FUN_14177ddf0(int nCategory, int nMs);                 // start a fade in
-    void FUN_14177dea0(int nCategory, int nMs);                 // start a fade out
+    void StartFadeIn(int nCategory, int nMs);                 // start a fade in
+    void StartFadeOut(int nCategory, int nMs);                 // start a fade out
     void FUN_14177df50(int nCategory, float fVolume);           // finish a fade
     CStringW FUN_14177e020();                                   // the music debug text
     void FUN_14177e1c0();                                       // draw the attenuation shapes

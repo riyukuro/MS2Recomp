@@ -511,7 +511,7 @@ int ItemOptionValueRef::FUN_1405cf650(int nStat, int nLevel)
 }
 
 // @0x1405cf6e0
-// MS2-FUNCTIONAL: the pow(1.0 + dGrowth, n) argument is built in xmm1 in the exe
+// MS2-FUNCTIONAL: the pow(1.0 + dGrowth, n) argument is built in xmm1 in the exe (a (double) cast, ::pow, (0, x) and 1.0L do not reproduce it)
 int ItemOptionValueRef::FUN_1405cf6e0(int nStat, int nLevel, int nRank, int nOptionLevel)
 {
     switch (nStat)
@@ -2277,7 +2277,6 @@ int ItemOptionRandom::FUN_1405d7940(std::vector<ItemOptionValueRandom*>& vOut, C
 }
 
 // @0x1405d7bf0
-// MS2-FUNCTIONAL: exe frame 0x10 smaller, the MS2Ptr temps of the locked rows get other slots; 2 attempts used
 // The weighted pick of nCount rows: locked stats, one armor and one special entry each, then the rest by weight.
 bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, unsigned& nCount, Unk_Random* pRandom,
                                      BOOL bFixedCount, MS2Ptr<ItemOptionRandomContext> spContext,
@@ -2372,8 +2371,8 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
     int nPick = nCount;
     if (!vLocked.empty())
         nPick -= (int)vLocked.size();
-    int nLeft = nPick < 0 ? 0 : nPick;
-    if (!picker.PickN(vPicked, nLeft, pRandom))
+    nPick = nPick < 0 ? 0 : nPick;
+    if (!picker.PickN(vPicked, nPick, pRandom))
         return false;
     vOut.insert(vOut.end(), vPicked.begin(), vPicked.end());
     if (vOut.empty())

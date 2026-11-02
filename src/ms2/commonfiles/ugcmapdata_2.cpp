@@ -282,7 +282,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         bool adminOnly=false; XmlQuery((class TiXmlElement*)(node), "adminOnly", *(bool*)(&adminOnly));
         CString indoorSizeType=Unk_ReadString((class Unk_XmlNode*)(node), "indoorSizeType", CString(""));
         int useCouponEvent=0; XmlGetBool((class TiXmlElement*)(node), "useCouponEvent", *(int*)(&useCouponEvent));
-        if(value->groups.find(no)==value->groups.end()) value->groups[no]=static_cast<const Unk_UGCGroup&>(Unk_UGCGroup());
+        if(value->groups.find(no)==value->groups.end()) { Unk_UGCGroup newGroup; value->groups[no]=newGroup; }
         Unk_UGCGroup& group=value->groups[no];
         group.contractPrice=contractPrice; group.contractPriceItemCode=contractItemCode;
         group.extensionPrice=extensionPrice; group.extensionPriceItemCode=extensionItemCode;

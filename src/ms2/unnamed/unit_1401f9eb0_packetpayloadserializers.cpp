@@ -84,6 +84,7 @@
 #include "ms2/placeholder/ccitemcoloringpacket.h"
 #include "ms2/placeholder/cmeratmarketpacket.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CItem> for the item wire
 #include "ms2/commonfiles/constraints.h"   // C3: Unk_1402c41d0..Unk_1402c43f0
 #include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Object::Error
 // Invented constraint names; the representation follows commonfiles/constraints.h calls.
@@ -185,20 +186,7 @@ struct Unk_PayloadReader {
         *(point.values+2)=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
         return point;
     }
-    // MS2-FUNCTIONAL: code is byte-identical; the exe's Replace calls use separate copies of the L"<"/L">" literals.
-    template<class C>CStringW ReadMarkup(C constraint,int& valid){
-        CStringW original=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadUnicodeString();
-        CStringW stripped(original);
-        int begin=0;
-        while((begin=stripped.Find(L"<",0))!=-1) {
-            int end=stripped.Find(L">",begin+1);
-            if(end==-1)break;
-            stripped.Delete(begin,end-begin+1);
-        }
-        stripped.Replace(L"&lt;",L"<");stripped.Replace(L"&gt;",L">");
-        if(!constraint.Check(stripped))valid=0;
-        return original;
-    }
+    template<class C>CStringW ReadMarkup(C constraint,int& valid);
 
     template<class C> CStringW ReadWide(C constraint) {
         CStringW value=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadUnicodeString();
@@ -212,6 +200,21 @@ struct Unk_PayloadReader {
     }
     template<class C> CString ReadNarrowWrapper(C constraint) {return ReadNarrow(constraint);}
 };
+// An out-of-line explicit specialization: the exe's Find/Replace calls use separate per-use copies of the L"<"/L">"
+// literals, which an inline template body pools into ??_C COMDATs.
+template<>CStringW Unk_PayloadReader::ReadMarkup<Unk_WideMaximum>(Unk_WideMaximum constraint,int& valid){
+    CStringW original=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadUnicodeString();
+    CStringW stripped(original);
+    int begin=0;
+    while((begin=stripped.Find(L"<",0))!=-1) {
+        int end=stripped.Find(L">",begin+1);
+        if(end==-1)break;
+        stripped.Delete(begin,end-begin+1);
+    }
+    stripped.Replace(L"&lt;",L"<");stripped.Replace(L"&gt;",L">");
+    if(!constraint.Check(stripped))valid=0;
+    return original;
+}
 MS2_CHECK_SIZE(Unk_WideRange,8);
 MS2_CHECK_SIZE(Unk_WideMaximum,4);
 MS2_CHECK_SIZE(Unk_NarrowMaximum,4);
@@ -293,10 +296,10 @@ MS2_CHECK_SIZE(Unk_PayloadDetails,0xe8);
 MS2_CHECK_OFFSET(Unk_PayloadDetails,v38,0x38);
 MS2_CHECK_OFFSET(Unk_PayloadDetails,s98,0x98);
 struct Unk_PayloadItemWire {
-    void FUN_1401fcdd0(COutputStream&,Unk_PayloadPtr<CItem>);
-    Unk_PayloadPtr<CItem> FUN_1401fce40(CInputStream&);
-    void FUN_1401fce90(COutputStream&,Unk_PayloadPtr<CItem>);
-    Unk_PayloadPtr<CItem> FUN_1401fcfc0(CInputStream&);
+    void FUN_1401fcdd0(COutputStream&,MS2Ptr<CItem>);
+    MS2Ptr<CItem> FUN_1401fce40(CInputStream&);
+    void FUN_1401fce90(COutputStream&,MS2Ptr<CItem>);
+    MS2Ptr<CItem> FUN_1401fcfc0(CInputStream&);
 };
 // Payloads are opaque: these helpers neither allocate nor copy whole payload objects.
 // Typed accesses preserve each observed field offset and wire width.
@@ -969,7 +972,7 @@ MS2_REPLACE(0x1401FCD80, FUN_1401fcd80, 60, 0x21DC48C6);
 
 
 // @0x1401fcdd0
-void Unk_PayloadItemWire::FUN_1401fcdd0(COutputStream& stream,Unk_PayloadPtr<CItem> item)
+void Unk_PayloadItemWire::FUN_1401fcdd0(COutputStream& stream,MS2Ptr<CItem> item)
 {
     COutputStream& out=stream;
     FUN_1401fce90(out,item);
@@ -977,14 +980,14 @@ void Unk_PayloadItemWire::FUN_1401fcdd0(COutputStream& stream,Unk_PayloadPtr<CIt
 MS2_REPLACE_METHOD(0x1401FCDD0, Unk_PayloadItemWire, FUN_1401fcdd0, 104, 0x0BE4AB2C);
 
 // @0x1401fce40
-Unk_PayloadPtr<CItem> Unk_PayloadItemWire::FUN_1401fce40(CInputStream& stream)
+MS2Ptr<CItem> Unk_PayloadItemWire::FUN_1401fce40(CInputStream& stream)
 {
     return FUN_1401fcfc0(stream);
 }
 MS2_REPLACE_METHOD(0x1401FCE40, Unk_PayloadItemWire, FUN_1401fce40, 68, 0xA85E3908);
 
 // @0x1401fce90
-void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,Unk_PayloadPtr<CItem> item)
+void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,MS2Ptr<CItem> item)
 {
     if(item==static_cast<CItem*>(0))return;
     stream.WriteUInt8(item->FUN_140526b50());
@@ -996,15 +999,15 @@ void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,Unk_PayloadPtr<CIt
 MS2_REPLACE_METHOD(0x1401FCE90, Unk_PayloadItemWire, FUN_1401fce90, 287, 0x518F52E0);
 
 // @0x1401fcfc0
-Unk_PayloadPtr<CItem> Unk_PayloadItemWire::FUN_1401fcfc0(CInputStream& stream)
+MS2Ptr<CItem> Unk_PayloadItemWire::FUN_1401fcfc0(CInputStream& stream)
 {
     unsigned char state=stream.ReadUInt8();
     int type=stream.ReadInt32();
     __int64 id=stream.ReadInt64();
     int value=stream.ReadInt32();
-    Unk_PayloadPtr<CItem> item=new CItem;
+    MS2Ptr<CItem> item=new CItem;
     int ok=item->FUN_140523c40(type,value,0);
-    if(!ok)return Unk_PayloadPtr<CItem>(0);
+    if(!ok)return MS2Ptr<CItem>(0);
     item->FUN_140524eb0(stream);
     item->FUN_140526b70(state);
     item->SetItemUid(id);

@@ -59,7 +59,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14016a5c0(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-void FUN_1406363a0(Unk_140165cf0*, const char*, Unk_CcJob&);
+enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 unsigned char FUN_1401d1320(CCacheData*);                                 // the file changed since it was loaded
@@ -116,7 +116,7 @@ int CSkillCompactControlTable::Load()
         Unk_CcSkillListPtr spList;
         spList = Unk_SocketNew(0);
         Unk_CcJob nCode = Unk_CcJob_None;
-        FUN_1406363a0(pJob, "code", nCode);
+        XmlValue(pJob, "code", *(Unk_JobGroupID*)&nCode);
         __int64 nBaseSP = 50;
         XmlGetAttr((class TiXmlElement*)(pJob), "baseSP", nBaseSP);
         for (Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pJob))->FirstChild("skill")); pSkill != 0; pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pSkill))->NextSibling("skill")))

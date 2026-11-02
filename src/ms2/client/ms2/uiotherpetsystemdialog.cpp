@@ -19,6 +19,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/os.h"
 
 // ---- out-of-unit callees (names describe uses) ----
 
@@ -39,7 +40,7 @@ public:
     virtual CStringW vfunc_77();                                // character name
 };
 class Unk_OpUIService;
-Unk_OpUIService* FUN_1403ed2b0();
+class CUIService;
 UIOtherPetSystemDialog* FUN_140cbe300(int nId);                             // the dialog of a UI id
 
 template <> inline MS2Ptr<ASLabel> UISwfEntity::GetChild<ASLabel>(const CString& strName);
@@ -86,7 +87,7 @@ void UIOtherPetSystemDialog::FUN_140e6d5b0(int nOwnerId, MS2Ptr<CItem> spPet)
     m_1e0 = nOwnerId;
     m_1e8 = spPet;
     if (vfunc_55() != 0)
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->OpenDialog((eUIClassID)0x4f41);
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f41);
     else
     {
         FUN_140e6d6b0();

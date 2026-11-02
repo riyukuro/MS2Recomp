@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicubeugchead.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#include <NiPoint3.h>
 #include "uicubeugchead.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asgameentity.h"
@@ -14,15 +15,12 @@
 #include "ms2/client/ms2/camera.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern int DAT_143ae0fc0;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
 int FUN_140707710(int nKind);
-struct Unk_UgcRes16 { Unk_UgcRes16(const Unk_UgcRes16& o) : m_a(o.m_a), m_b(o.m_b) {} __int64 m_a, m_b; };
-Unk_UgcRes16 FUN_1408a15b0(Unk_UgcCell cell, Vector3 ptOrigin);   // the world point of a cell
-Unk_UgcRes16 FUN_14027dcf0(const Unk_UgcRes16& res);
-class Unk_WorldToScreen { public: bool FUN_140af0700(const Unk_UgcRes16& world, Vector3& out); };
+efd::Point3 FUN_1408a15b0(Unk_UgcCell cell, efd::Point3& ptOrigin);   // the world point of a cell
+class Unk_WorldToScreen { public: bool FUN_140af0700(const NiPoint3& world, Vector3& out); };
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -128,7 +126,7 @@ void UICubeUGCHead::vfunc_52()
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         CStringW strId;
         strId.Format(L"ID:%d", m_88);
-        reinterpret_cast<ASDialog*>((class ASDialog*)((pClip.operator->())))->FUN_140e78470("setData", m_78, strId);
+        reinterpret_cast<ASDialog*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
         pClip->Invoke("setFontSize", 0x12);
         if (FUN_140707660(m_8c) != 0)
             pClip->Invoke("setFontColor", 0x45ff98);
@@ -160,11 +158,11 @@ int UICubeUGCHead::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     return 0;
 }
 
-// MS2-FUNCTIONAL: code identical; world, the FUN_1408a15b0 temporary and pEntity sit in different stack slots
 // @0x141906b60
 void UICubeUGCHead::FUN_141906b60()
 {
-    Unk_UgcRes16 world = FUN_14027dcf0(FUN_1408a15b0(m_68, DAT_143b01a60));
+    efd::Point3 ptOrigin = efd::Point3::ZERO;
+    NiPoint3 world = FUN_1408a15b0(m_68, ptOrigin);
     Vector3 screen;
     if (reinterpret_cast<Unk_WorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(world, screen) != 0)
     {
@@ -176,7 +174,7 @@ void UICubeUGCHead::FUN_141906b60()
             else
                 vfunc_8(0);
             FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->FUN_1422c00f0(screen.x, screen.y);
+            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y);
         }
     }
     else

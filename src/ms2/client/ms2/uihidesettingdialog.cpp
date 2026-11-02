@@ -236,10 +236,10 @@ void UIHideSettingDialog::FUN_141987990()
                 ASArray list(2);
                 const std::vector<MS2Ptr<AScript> >& entries = lists[i];
                 for (size_t j = 0; j < entries.size(); j++)
-                    list.FUN_1422bc050(entries[j]->FUN_1422bb870());
+                    list.PushValue(entries[j]->FUN_1422bb870());
                 group.FUN_1409adbe0("list", list.FUN_1422bb870());
             }
-            all.FUN_1422bc050(group.FUN_1422bb870());
+            all.PushValue(group.FUN_1422bb870());
         }
         m_30->Invoke("buildList", all.FUN_1422bb870());
     }

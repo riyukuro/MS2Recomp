@@ -21,6 +21,7 @@
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<T>::Get/Read
 
 // ---- unit-local views of exe objects ----
 
@@ -43,23 +44,20 @@ struct Unk_CcHandle
 {
     void* m_p0;
     void* m_p8;
-    ~Unk_CcHandle() { FUN_1401bfde0(this); }
-    static void FUN_1401bfde0(Unk_CcHandle* p);
+    ~Unk_CcHandle() { reinterpret_cast<MS2Ptr<class CItem>*>(this)->~MS2Ptr(); }
 };
 class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); int FUN_140a5f7b0(int nSlot, int n); };
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_CcInventory
 void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
 __int64 FUN_14052cd70(Unk_CcHandle* p);
-void* FUN_1401c0180(Unk_CcHandle* p);
-class CItem   // C3: member view for the former free stand-ins
+class CItem : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
     __int64 GetItemUid();
 };
 __int64 FUN_140930240();
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-__int64* FUN_1402c05b0(char* p);
 unsigned char FUN_140930b10();
 extern int DAT_1439f4a7c;
 
@@ -107,7 +105,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
                 FUN_140692c90(&hItem, reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb));
             if (FUN_14052cd70(&hItem) != 0)
             {
-                nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->GetItemUid();
+                nItemUid = reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator->()->GetItemUid();
                 nKind = 2;
             }
         }
@@ -127,14 +125,14 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
             Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb);
             if (reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator==(0))
                 return 0;
-            nItemUid = ((class CItem*)(void*)(FUN_1401c0180(&hItem)))->GetItemUid();
+            nItemUid = reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator->()->GetItemUid();
             nKind = 2;
         }
         else
         {
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x83) != 0)
             {
-                if (FUN_140930240() < *FUN_1402c05b0(((char*)FUN_1401d3200()) + 0x8aa8))
+                if (FUN_140930240() < *reinterpret_cast<Common::Constants::Value<__int64>*>(((char*)FUN_1401d3200()) + 0x8aa8)->Get())
                     return 0;
                 nKind = 3;
             }

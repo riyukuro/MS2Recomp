@@ -57,10 +57,11 @@ public:
 // The UI service (TSingleton<CUIService>::GetInstance).
 
 // The game's TinyXML element (0x90 bytes).
-class Unk_TiXmlElement
+class Unk_TiXmlElement;
+class TiXmlElement
 {
 public:
-    Unk_TiXmlElement(const char* pszValue);                         // 0x14086f2f0
+    TiXmlElement(const char* pszValue);                         // 0x14086f2f0
 private:
     char m_pad_00[0x90];
 };
@@ -82,10 +83,8 @@ struct Unk_FcNiPoint3 : public Vector3
     Unk_FcNiPoint3(const Vector3& pt);                      // 0x14027dcf0
 };
 void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, const Unk_FcNiPoint3& pt);   // SetPointAttribute
-void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -119,8 +118,8 @@ void CFreeCameraMode::vfunc_8(double fTime)
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fAbsZ = FUN_140a38cd0(ptInput.z);
-            float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);
+            float fMaxYZ = efd::Max<float>(FUN_140a38cd0(ptInput.y), fAbsZ);
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x), fMaxYZ);
             float fScale = fStep * fMax;
             float fRotX = ptInput.y * fScale;
             float fRotY = ptInput.z * fScale;
@@ -150,22 +149,22 @@ void CFreeCameraMode::vfunc_8(double fTime)
                     TiXmlDocument doc;
                     if (!doc.FUN_140870fc0("./data/xml/camera/customize.xml", 0))
                     {
-                        ((void*)((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(new Unk_TiXmlElement("ms2"))));
+                        ((void*)((class TiXmlNode*)(void*)(&doc))->LinkEndChild((class TiXmlNode*)(new TiXmlElement("ms2"))));
                     }
-                    Unk_TiXmlElement* pMs2 = ((class Unk_TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild("ms2"));
+                    TiXmlElement* pMs2 = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&doc))->FirstChild("ms2"));
                     if (pMs2 != 0)
                     {
                         Vector3 ptDir = FUN_1409f2540().FUN_140965c40(pActor->vfunc_18());
                         float fDist = ptDir.FUN_140968990();
-                        Unk_TiXmlElement* pCamera = new Unk_TiXmlElement("camera");
+                        TiXmlElement* pCamera = new TiXmlElement("camera");
                         ((void*)((class TiXmlNode*)(void*)(pMs2))->LinkEndChild((class TiXmlNode*)(pCamera)));
                         XmlSetAttr((class TiXmlElement*)(pCamera), "fov", spOption.FUN_140885340()->m_1f4);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "distance", fDist);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomIn", 50);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomOut", 150);
-                        FUN_140874ad0(pCamera, "direction", ptDir);
-                        FUN_140874ad0(pCamera, "rotation", FUN_140af8260());
-                        FUN_140870f90(&doc);
+                        FUN_140874ad0((Unk_TiXmlElement*)pCamera, "direction", ptDir);
+                        FUN_140874ad0((Unk_TiXmlElement*)pCamera, "rotation", FUN_140af8260());
+                        doc.SaveFile();
                     }
                 }
             }

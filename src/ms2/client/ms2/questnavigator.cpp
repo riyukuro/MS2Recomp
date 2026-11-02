@@ -399,7 +399,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                 int nNextMap = FUN_140c9b8e0()->GetNextMapOnPath(nCurrentMap, nTargetMap);
                 if (nNextMap != 0)
                 {
-                    MS2Ptr<CPortal> spNext = WorldService::GetInstance()->FUN_141bc2880(nNextMap);
+                    MS2Ptr<CPortal> spNext = WorldService::GetInstance()->FindPortalByDestMap(nNextMap);
                     if (spNext.get() ? true : false)
                     {
                         if (spNext->FUN_14169d160() == 1)
@@ -503,9 +503,9 @@ Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return DAT_143b01a60;
-    const auto& ptPC = pPC->vfunc_18();
-    Vector3 posPC = reinterpret_cast<const Vector3&>(ptPC);
-    return FUN_140a0b080(posPC, pos, DAT_143a08cf8);
+    auto ptPC = pPC->vfunc_18();
+    Vector3 posEnd = FUN_140a0b080(reinterpret_cast<const Vector3&>(ptPC), pos, DAT_143a08cf8);
+    return posEnd;
 }
 
 // The distance text from the player to pos.

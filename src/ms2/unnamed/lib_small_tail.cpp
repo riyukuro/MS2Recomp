@@ -28,7 +28,7 @@ enum { BT_NONXML = 0, BT_MALFORM = 1, BT_LEAD2 = 5, BT_LEAD3 = 6, BT_LEAD4 = 7, 
        BT_LSQB = 20, BT_S = 21, BT_NMSTRT = 22, BT_HEX = 24, BT_MINUS = 27, BT_CR = 9, BT_LF = 10, BT_PERCNT = 30 };
 
 // @0x1423c55a0  expat normal_scanComment: ptr is past "<!-"; returns XML_TOK_COMMENT (13) after "-->"
-int FUN_1423c55a0(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
+__declspec(noinline) int FUN_1423c55a0(const ExpatNormalEncoding* enc, const char* ptr, const char* end, const char** nextTokPtr)
 {
     if (ptr == end)
         return -1;

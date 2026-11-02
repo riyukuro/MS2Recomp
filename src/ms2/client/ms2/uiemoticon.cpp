@@ -69,12 +69,7 @@ public:
     int GetSubSceneId();
 };
 bool FUN_140930110(int nActorId);
-class Unk_EmoClip : public ASGameEntity
-{
-public:
-    Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1422c00f0(float x, float y);
-};
+class Unk_EmoClip : public ASGameEntity { };   // C3: FUN_1422bb870 (AScript) and FUN_1422c00f0 (ASDisplayObject) are inherited
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
@@ -239,7 +234,7 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
             break;
         }
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-        ((Unk_EmoClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
+        ((Unk_EmoClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
     }
 }
 

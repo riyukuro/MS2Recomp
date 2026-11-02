@@ -104,7 +104,7 @@ unsigned CItemLoader::vfunc_1(void*, Unk_140659080& start)
     m_hStop = CreateEventA(0, 0, 0, 0);
     if (m_hStop == 0)
     {
-        start.FUN_140659080(E_FAIL);
+        start.Fail(E_FAIL);
         return -1;
     }
     start.FUN_1401d42d0();
@@ -259,15 +259,15 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
             MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(info->m_item->FUN_140527840()));
             if (data->FUN_14053d070())
             {
-                CharacterDecalData* pDecal = data->FUN_14053eba0()->FUN_14054b6b0();
+                CharacterDecalData* pDecal = data->GetModelOrEmpty()->FUN_14054b6b0();
                 if (pDecal != 0)
                     FUN_140a0afd0()->GetTexture(CString(pDecal->GetTexture()), 5);
             }
             std::map<std::string, std::list<NiAVObjectPtr> >& nifs = info->m_nifs;
             NiAVObjectPtr nif(0);
-            for (size_t i = 0; i < data->FUN_14053eba0()->FUN_14054b3d0(); ++i)
+            for (size_t i = 0; i < data->GetModelOrEmpty()->FUN_14054b3d0(); ++i)
             {
-                const ModelGroup* pGroup = data->FUN_14053eba0()->GetGroup(i);
+                const ModelGroup* pGroup = data->GetModelOrEmpty()->GetGroup(i);
                 for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
                 {
                     const ModelPart* pPart = pGroup->FUN_140544fe0(j);

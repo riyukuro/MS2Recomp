@@ -206,6 +206,18 @@ static float Fmod(float fX, float fY)
     return FUN_14029d430(fX, fY);
 }
 
+// The exe's swap moves through std::move on every access, the middle assignment's right side first, and has a cookie (strict GS).
+#pragma strict_gs_check(push, on)
+namespace std {
+template <> inline void swap<Unk_Int3, void>(Unk_Int3& a, Unk_Int3& b) noexcept
+{
+    Unk_Int3 tmp = std::move(a);
+    std::move(a) = std::move(b);
+    std::move(b) = tmp;
+}
+}
+#pragma strict_gs_check(pop)
+
 // @0x1416ee350
 static void ShuffleColumns(ATL::CAtlArray<Unk_Int3>& arrCube)
 {

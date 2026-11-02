@@ -5,7 +5,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\asequipicon.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
-#include <new>
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "asequipicon.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -78,7 +78,7 @@ void ASEquipIcon::FUN_1409b91f0(MS2Ptr<CItem> p)
 void ASEquipIcon::FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, long long n)
 {
     if (m_50.get())
-        m_50->FUN_1422c7a90(cb, n);
+        m_50->SetGetTooltipFunction(cb, n);
 }
 
 // @0x1409b92e0
@@ -101,7 +101,7 @@ MS2Ptr<ASMovieClip> ASEquipIcon::FUN_1409b9380()
         Scaleform::GFx::Value slot = m_50->GetMember("m_slot");
         MS2Ptr<ASMovieClip> clip(new ASMovieClip(slot, 2));
         m_60 = clip;
-        if (clip == (ASMovieClip*)0 || clip->FUN_1422ba9a0())
+        if (clip == (ASMovieClip*)0 || clip->IsUndefinedOrNull())
             return MS2Ptr<ASMovieClip>(0);
         return clip;
     }
@@ -166,9 +166,9 @@ void ASMeratMarketEquipData::FUN_1409b9810(void* p)
 }
 
 // @0x1409b9830
-MS2Ptr<Unk_MeratEquipEntry> ASMeratMarketEquipData::FUN_1409b9830()
+MS2Ptr<CMeratMarketProduct> ASMeratMarketEquipData::FUN_1409b9830()
 {
-    return m_40;
+    return reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(m_40);
 }
 
 // @0x1409b9880

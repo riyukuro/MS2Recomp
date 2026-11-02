@@ -81,14 +81,16 @@
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 // ---- helpers of other units (opaque here) ----
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
-CStringW FormatStringId(int id, const fmt::ArgList& args);   // 0x14028dee0
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/commonresource.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/jobsystemcli.h"
 
 // The client config singleton: the string fields the reward toasts read (icon paths).
 struct Unk_RNConfig {
     char m_pad_00[0x158]; CString m_158; char m_pad_160[0x10]; CString m_170, m_178, m_180, m_188, m_190;
     char m_pad_198[8]; CString m_1a0, m_1a8, m_1b0, m_1b8, m_1c0; char m_pad_1c8[8]; CString m_1d0;
-    CString FUN_140cca050(int nKind);
 };
 MS2_CHECK_OFFSET(Unk_RNConfig, m_158, 0x158);
 MS2_CHECK_OFFSET(Unk_RNConfig, m_170, 0x170);
@@ -107,14 +109,8 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_RNUIManager { public: void FUN_141adc530(int nUiId); };
 CStringW FUN_14016a730(const char*, int);
 CStringW FUN_1409404f0(__int64);
-CStringW FUN_14052bd00(int, const CStringW&);
-CStringW FUN_14086d060(int, const __int64&);
-CStringW FUN_140c160b0(CStringW, const __int64&);
-CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
-CStringW FUN_141b720b0(int, int);
-CStringW FUN_140292a70(const wchar_t*, const unsigned int&);
-CStringW FUN_14093b970(unsigned);
-CStringW FUN_1405c2690(CStringW, const CStringW&);
+CStringW FUN_141b720b0(int, __int64);
+CStringW FUN_14093b970(int);
 CString Name_14021a6b0(int);
 int FUN_141276180(const CString& str, const CString& strArg);
 int FUN_1418dd0d0();
@@ -126,21 +122,19 @@ public:
 void* FUN_1408e57f0();
 extern int DAT_1439fa004;
 
-class Unk_RNGrades { public: unsigned long FUN_1405569f0(int); };
 
 // Item records.
-class Unk_RNItemData : public CItemData { public: unsigned char FUN_14053d990();};
-class Unk_RNItem : public CItem { public: Unk_RNItemData* FUN_140527840();};
-class Unk_RNItemRef {
-public:
-    Unk_RNItemRef(const Unk_RNItemRef& o) : m_0(o.m_0), m_8(o.m_8) { if (m_8) CPtred::AddRefPtred(static_cast<CPtred*>(m_8)); }   // 0x1402034d0
-    ~Unk_RNItemRef();                           // 0x1401bfde0
-    Unk_RNItem* FUN_1401c0180() const;
-    void* FUN_14052cd70() const;
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_RNItemRef, 0x10);
+
+
+
+
+
+
+
+
+
+
+
 MS2Ptr<CItemData> FUN_14053f870(int);
 bool FUN_14053f900(unsigned int);   // C3: was FUN_14053f900
 
@@ -148,19 +142,6 @@ bool FUN_14053f900(unsigned int);   // C3: was FUN_14053f900
 class Unk_RNAchieve : public CAchieve { };
 
 // Skills.
-struct Unk_RNSkillRow { char m_pad_00[0x48]; CString m_48; unsigned char FUN_1407e9d30(); unsigned char FUN_1407e9de0(); };
-class Unk_RNSkillRef {
-public:
-    ~Unk_RNSkillRef();                          // 0x14063e5c0
-    void* FUN_14063ed10() const;
-    Unk_RNSkillRow* FUN_14063ed50() const;
-    unsigned char FUN_14063eab0(int);
-    unsigned char FUN_1407f6e90() const;
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_RNSkillRef, 0x10);
-class Unk_RNSkillTable { public: Unk_RNSkillRef FUN_1407ee1d0(int nSkillId); };
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
 
 // Fishing.
@@ -277,39 +258,39 @@ void UIRewardNotify::FUN_141abea50(NotifyObject* pNotice)
         __int64 nCount = pN->m_count;
         switch ((unsigned)pN->m_kind) {
         case 3: {
-            FUN_141ac0cd0(FUN_14086d060(0x68c, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_180, 0));
+            ShowIconNotice(FormatStringId(0x68c, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_180, 0));
             break;
         }
         case 4: {
-            FUN_141ac0cd0(FUN_14086d060(0x68d, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_178, 0));
+            ShowIconNotice(FormatStringId(0x68d, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_178, 0));
             break;
         }
         case 5: {
-            FUN_141ac0cd0(FUN_14086d060(0x68e, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_188, 0));
+            ShowIconNotice(FormatStringId(0x68e, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_188, 0));
             break;
         }
         case 6: {
-            FUN_141ac0cd0(FUN_14086d060(0x68f, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_190, 0));
+            ShowIconNotice(FormatStringId(0x68f, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_190, 0));
             break;
         }
         case 9: {
-            FUN_141ac0cd0(FUN_140c160b0(L"s_system_achieve_reward_reverse_coin", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1a0, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_reverse_coin", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1a0, 0));
             break;
         }
         case 10: {
-            FUN_141ac0cd0(FUN_140c160b0(L"s_system_achieve_reward_mentor_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1a8, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_mentor_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1a8, 0));
             break;
         }
         case 11: {
-            FUN_141ac0cd0(FUN_140c160b0(L"s_system_achieve_reward_mentee_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1b0, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_mentee_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1b0, 0));
             break;
         }
         case 12: {
-            FUN_141ac0cd0(FUN_140c160b0(L"s_system_achieve_reward_star_point", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1b8, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_star_point", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1b8, 0));
             break;
         }
         case 13: {
-            FUN_141ac0cd0(FUN_140c160b0(L"s_system_achieve_reward_meso_market_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1c0, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_meso_market_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1c0, 0));
             break;
         }
         }
@@ -332,7 +313,7 @@ void UIRewardNotify::FUN_141abf230(__int64 nExp, __int64 nBonus)
     if (nBonus > 0) {
         RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x682, FUN_1409404f0(nExp), nBonus));
     } else {
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0x681, FUN_1409404f0(nExp)));
+        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x681, FUN_1409404f0(nExp)));
     }
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "exp");
     AppendReward(pObj);
@@ -346,7 +327,7 @@ void UIRewardNotify::FUN_141abf450(__int64 nMoney, __int64 nBonus)
     if (nBonus > 0) {
         RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x684, FUN_1409404f0(nMoney), nBonus));
     } else {
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0x683, FUN_1409404f0(nMoney)));
+        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x683, FUN_1409404f0(nMoney)));
     }
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
     RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_158, 0));
@@ -359,14 +340,14 @@ void UIRewardNotify::FUN_141abf6e0(int nItemId, int nGrade)
 {
     MS2Ptr<CItemData> info = FUN_14053f870(nItemId);
     if (info.get()) {
-        unsigned long nCount = reinterpret_cast<Unk_RNGrades*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nGrade);
+        unsigned long nCount = TSingleton<CItemDataTable>::GetInstance()->GetTextColor(static_cast<ItemGradeKey>(nGrade));
         CStringW strMsg = FormatStringId(0x687, nCount, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
         RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(reinterpret_cast<Unk_RNItemData*>(info.operator->())->GetIconPath(), 0));
+        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(info.operator->()->GetIconPath(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
-        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", reinterpret_cast<Unk_RNItemData*>(info.operator->())->FUN_14053d990() == 1);
+        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", info.operator->()->IsPieceItem() == 1);
         RN_OBJ(pObj)->FUN_1409c0d20("key", nItemId);
         AppendReward(pObj);
     }
@@ -374,21 +355,21 @@ void UIRewardNotify::FUN_141abf6e0(int nItemId, int nGrade)
 MS2_REPLACE_METHOD(0x141abf6e0, UIRewardNotify, FUN_141abf6e0, 801, 0xC67E6D8B);
 
 // @0x141abfa10
-void UIRewardNotify::FUN_141abfa10(Unk_RNItemRef item)
+void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
 {
-    if (FUN_14053f900(item.FUN_1401c0180()->FUN_1405276c0()))
+    if (FUN_14053f900(item->FUN_1405276c0()))
         return;
-    if ((item.FUN_14052cd70() ? true : false) && item.FUN_1401c0180()->FUN_140527840()) {
-        int nGrade = item.FUN_1401c0180()->FUN_140526bd0();
-        unsigned long nCount = reinterpret_cast<Unk_RNGrades*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nGrade);
-        CStringW strMsg = FormatStringId(0x687, nCount, item.FUN_1401c0180()->FUN_140527b10());
+    if ((item.get() ? true : false) && item->FUN_140527840()) {
+        int nGrade = item->FUN_140526bd0();
+        unsigned long nCount = TSingleton<CItemDataTable>::GetInstance()->GetTextColor(static_cast<ItemGradeKey>(nGrade));
+        CStringW strMsg = FormatStringId(0x687, nCount, item->FUN_140527b10());
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
         RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(item.FUN_1401c0180()->FUN_140528590(), 0));
+        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(item->FUN_140528590(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
-        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", item.FUN_1401c0180()->FUN_140527840()->FUN_14053d990() == 1);
-        RN_OBJ(pObj)->FUN_1409c0d20("key", item.FUN_1401c0180()->FUN_1405276c0());
+        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", reinterpret_cast<CItemData*>(item->FUN_140527840())->IsPieceItem() == 1);
+        RN_OBJ(pObj)->FUN_1409c0d20("key", item->FUN_1405276c0());
         AppendReward(pObj);
     }
 }
@@ -411,14 +392,14 @@ MS2_REPLACE_METHOD(0x141abfdc0, UIRewardNotify, FUN_141abfdc0, 463, 0xECE96FC9);
 // @0x141abffa0
 void UIRewardNotify::FUN_141abffa0(int nEmotionId)
 {
-    Unk_RNSkillRef ref = reinterpret_cast<Unk_RNSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nEmotionId);
-    if (ref.FUN_14063ed10()) {
-        if (!ref.FUN_14063ed50()->FUN_1407e9d30())
+    MS2Ptr<SkillData> ref = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nEmotionId);
+    if (ref.get()) {
+        if (!ref->FUN_1407e9d30())
             return;
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0x85b, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nEmotionId)));
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(ref.FUN_14063ed50()->m_48, 0));
+        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x85b, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nEmotionId)));
+        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(ref->m_strIcon, 0));
         RN_OBJ(pObj)->FUN_1407cb9c0("grade", 1);
         AppendReward(pObj);
     }
@@ -426,20 +407,6 @@ void UIRewardNotify::FUN_141abffa0(int nEmotionId)
 MS2_REPLACE_METHOD(0x141abffa0, UIRewardNotify, FUN_141abffa0, 610, 0x51241394);
 
 // Learned skills of a player (a list of 16-byte refs).
-class Unk_RNLearn { public: unsigned FUN_140637cc0(); char m_pad_00[0x1e]; bool m_1e; };
-class Unk_RNLearnRef { public: Unk_RNLearn* FUN_14063ed30(); private: void* m_0; void* m_8; };
-MS2_CHECK_SIZE(Unk_RNLearnRef, 0x10);
-class Unk_RNLearnList {
-public:
-    Unk_RNLearnList();                          // 0x14063e490
-    ~Unk_RNLearnList();                         // 0x14063e800
-    Unk_RNLearnRef* FUN_1406420e0();
-    Unk_RNLearnRef* FUN_1406421b0();
-private:
-    void* m_0; void* m_8; void* m_10;
-};
-MS2_CHECK_SIZE(Unk_RNLearnList, 0x18);
-class Unk_RNLook { public: void FUN_1406395c0(Unk_RNLearnList* pOut, int a, bool b); };
 class PC   // C3: member view for the former free stand-ins
 {
 public:
@@ -449,22 +416,22 @@ public:
 // @0x141ac0210
 void UIRewardNotify::FUN_141ac0210(PC* pPlayer)
 {
-    Unk_RNLearnList list;
-    ((class Unk_RNLook*)((class PC*)(class PC*)(pPlayer))->FUN_1416546d0())->FUN_1406395c0(&list, 1, true);
+    std::vector<JobSkillPtr> list;
+    ((class PC*)(class PC*)(pPlayer))->FUN_1416546d0()->GetSkills(list, 1, true);
     int bAny = 0;
-    Unk_RNLearnList& rList = list;
-    for (Unk_RNLearnRef* it = rList.FUN_1406420e0(), *itEnd = rList.FUN_1406421b0(); it != itEnd; it++) {
-        Unk_RNLearnRef& learn = *it;
-        Unk_RNSkillRef ref = reinterpret_cast<Unk_RNSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(learn.FUN_14063ed30()->FUN_140637cc0());
-        if (ref.FUN_1407f6e90())
+    std::vector<JobSkillPtr>& rList = list;
+    for (JobSkillPtr* it = rList._Unchecked_begin(), *itEnd = rList._Unchecked_end(); it != itEnd; it++) {
+        JobSkillPtr& learn = *it;
+        MS2Ptr<SkillData> ref = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(learn->GetID());
+        if (ref.IsNull())
             continue;
-        if (learn.FUN_14063ed30()->m_1e) {
+        if (learn->m_bChanged) {
             bAny = 1;
             MS2Ptr<AScript> pObj(new ASObj(2));
             RN_OBJ(pObj)->FUN_1409c0dc0("type", "learn_skill");
-            RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0x804, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, learn.FUN_14063ed30()->FUN_140637cc0())));
-            RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref.FUN_14063ed50()->FUN_1407e9de0() != 0);
-            RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref.FUN_14063ed50()->m_48);
+            RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x804, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, learn->GetID())));
+            RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref->FUN_1407e9de0() != 0);
+            RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref->m_strIcon);
             AppendReward(pObj);
         }
     }
@@ -475,56 +442,56 @@ void UIRewardNotify::FUN_141ac0210(PC* pPlayer)
 // @0x141ac05d0
 void UIRewardNotify::FUN_141ac05d0(int nSkillId, CStringW strMsg, int nSkillType)
 {
-    Unk_RNSkillRef ref = reinterpret_cast<Unk_RNSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
-    if (ref.FUN_14063eab0(0))
+    MS2Ptr<SkillData> ref = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(nSkillId);
+    if (ref == 0)
         return;
-    FUN_141ac1f40();
+    RewardComplete();
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "skill_msg");
     RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
     if (nSkillType == 0) {
-        RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref.FUN_14063ed50()->FUN_1407e9de0() != 0);
+        RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref->FUN_1407e9de0() != 0);
     } else {
         RN_OBJ(pObj)->FUN_1407cb9c0("skillType", DAT_1439fa004);
     }
-    RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref.FUN_14063ed50()->m_48);
+    RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref->m_strIcon);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac05d0, UIRewardNotify, FUN_141ac05d0, 641, 0xFD5E4298);
 
 // @0x141ac0860
-void UIRewardNotify::FUN_141ac0860(__int64 nValue)
+void UIRewardNotify::ShowMeratNotice(__int64 nValue)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14086d060(0x685, nValue));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x685, nValue));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "merat");
     AppendReward(pObj);
 }
-MS2_REPLACE_METHOD(0x141ac0860, UIRewardNotify, FUN_141ac0860, 287, 0xD0EB08AF);
+MS2_REPLACE_METHOD(0x141ac0860, UIRewardNotify, ShowMeratNotice, 287, 0xD0EB08AF);
 
 // @0x141ac0990
-void UIRewardNotify::FUN_141ac0990(__int64 nValue)
+void UIRewardNotify::ShowMeratRedNotice(__int64 nValue)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14086d060(0x685, nValue));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x685, nValue));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "merat_red");
     AppendReward(pObj);
 }
-MS2_REPLACE_METHOD(0x141ac0990, UIRewardNotify, FUN_141ac0990, 287, 0x7A6551AC);
+MS2_REPLACE_METHOD(0x141ac0990, UIRewardNotify, ShowMeratRedNotice, 287, 0x7A6551AC);
 
 // @0x141ac0ac0
 void UIRewardNotify::FUN_141ac0ac0(int nId)
 {
     FUN_141276180(s_strPCTitleGet, "");
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0x689, FUN_141b720b0(nId, 0)));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x689, FUN_141b720b0(nId, 0)));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
     RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_170, 0));
     AppendReward(pObj);
 }
 
 // @0x141ac0cd0
-void UIRewardNotify::FUN_141ac0cd0(const CStringW& strMsg, const CStringW& strIcon)
+void UIRewardNotify::ShowIconNotice(const CStringW& strMsg, const CStringW& strIcon)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
@@ -532,7 +499,7 @@ void UIRewardNotify::FUN_141ac0cd0(const CStringW& strMsg, const CStringW& strIc
     RN_OBJ(pObj)->FUN_1407cbb20("icon", strIcon);
     AppendReward(pObj);
 }
-MS2_REPLACE_METHOD(0x141ac0cd0, UIRewardNotify, FUN_141ac0cd0, 378, 0x4267BFD9);
+MS2_REPLACE_METHOD(0x141ac0cd0, UIRewardNotify, ShowIconNotice, 378, 0x4267BFD9);
 
 // @0x141ac0e50
 void UIRewardNotify::FUN_141ac0e50(int nFishId, unsigned nLength)
@@ -543,10 +510,10 @@ void UIRewardNotify::FUN_141ac0e50(int nFishId, unsigned nLength)
     int nSize = pFish->FUN_1403b1520(nLength);
     int nMedal = pFish->FUN_1403b1590(nLength);
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0xbd8, pFish->FUN_1403b1650()));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0xbd8, pFish->FUN_1403b1650()));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "fishing_success");
     RN_OBJ(pObj)->FUN_1407cbb20("icon", pFish->FUN_1403b1600());
-    RN_OBJ(pObj)->FUN_1407cbb20("size", FUN_140292a70(L"{0}cm", nLength));
+    RN_OBJ(pObj)->FUN_1407cbb20("size", StringFormat(L"{0}cm", nLength));
     RN_OBJ(pObj)->FUN_1407cb9c0("success", 1);
     RN_OBJ(pObj)->FUN_1407cbbe0("bigFish", nSize == 3);
     RN_OBJ(pObj)->FUN_140f43b40("medal", nMedal);
@@ -563,10 +530,10 @@ void UIRewardNotify::FUN_141ac11b0(int nFishId, unsigned nLength)
         return;
     int nMedal = pFish->FUN_1403b1590(nLength);
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14052bd00(0xbd9, pFish->FUN_1403b1650()));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0xbd9, pFish->FUN_1403b1650()));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "fishing_fail");
     RN_OBJ(pObj)->FUN_1407cbb20("icon", pFish->FUN_1403b1600());
-    RN_OBJ(pObj)->FUN_1407cbb20("size", FUN_140292a70(L"{0}cm", nLength));
+    RN_OBJ(pObj)->FUN_1407cbb20("size", StringFormat(L"{0}cm", nLength));
     RN_OBJ(pObj)->FUN_1407cb9c0("success", 0);
     RN_OBJ(pObj)->FUN_140f43b40("medal", nMedal);
     RN_OBJ(pObj)->FUN_1409c0d20("key", nFishId);
@@ -575,13 +542,13 @@ void UIRewardNotify::FUN_141ac11b0(int nFishId, unsigned nLength)
 MS2_REPLACE_METHOD(0x141ac11b0, UIRewardNotify, FUN_141ac11b0, 760, 0xE99C7EF6);
 
 // @0x141ac14b0
-void UIRewardNotify::FUN_141ac14b0()
+void UIRewardNotify::ShowSkillLevelUpNotice()
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "skillLevelUp");
     AppendReward(pObj);
 }
-MS2_REPLACE_METHOD(0x141ac14b0, UIRewardNotify, FUN_141ac14b0, 194, 0x6F4EDF58);
+MS2_REPLACE_METHOD(0x141ac14b0, UIRewardNotify, ShowSkillLevelUpNotice, 194, 0x6F4EDF58);
 
 // @0x141ac1580
 void UIRewardNotify::FUN_141ac1580(const CStringW& strIcon, const CStringW& strMsg, int nEffect)
@@ -608,13 +575,13 @@ void UIRewardNotify::FUN_141ac1730(const CStringW& strMsg, int nSpecial, const C
 MS2_REPLACE_METHOD(0x141ac1730, UIRewardNotify, FUN_141ac1730, 416, 0x96962105);
 
 // @0x141ac18e0
-void UIRewardNotify::FUN_141ac18e0(bool bOpen)
+void UIRewardNotify::NotifySkillBookDialog(bool bOpen)
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("OnSkillBookDialog", bOpen);
 }
-MS2_REPLACE_METHOD(0x141ac18e0, UIRewardNotify, FUN_141ac18e0, 99, 0xA9B9EAE6);
+MS2_REPLACE_METHOD(0x141ac18e0, UIRewardNotify, NotifySkillBookDialog, 99, 0xA9B9EAE6);
 
 // @0x141ac1950
 void UIRewardNotify::FUN_141ac1950(int nPoint, int nKind)
@@ -624,8 +591,8 @@ void UIRewardNotify::FUN_141ac1950(int nPoint, int nKind)
     CStringW strKey = L"s_reward_notify_skill_point";
     if (nKind == 2)
         strKey = L"s_reward_notify_skill_point_sub_1";
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14062b4f0(strKey, &nPoint));
-    RN_OBJ(pObj)->FUN_1407cba60("icon", ((struct Unk_RNConfig*)FUN_1401d31f0())->FUN_140cca050(nKind));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14028dfa0(strKey, nPoint));
+    RN_OBJ(pObj)->FUN_1407cba60("icon", ((class CommonResource*)FUN_1401d31f0())->GetPath(nKind));
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac1950, UIRewardNotify, FUN_141ac1950, 499, 0xDF525E27);
@@ -635,7 +602,7 @@ void UIRewardNotify::FUN_141ac1b50(int nPoint)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14062b4f0(L"s_reward_notify_stat_point", &nPoint));
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14028dfa0(L"s_reward_notify_stat_point", nPoint));
     RN_OBJ(pObj)->FUN_1407cba60("icon", ((struct Unk_RNConfig*)FUN_1401d31f0())->m_1d0);
     AppendReward(pObj);
 }
@@ -645,7 +612,7 @@ MS2_REPLACE_METHOD(0x141ac1b50, UIRewardNotify, FUN_141ac1b50, 430, 0xA44E763B);
 void UIRewardNotify::FUN_141ac1d10(int nItemId)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    Unk_RNItemData* pItem = static_cast<Unk_RNItemData*>(FUN_14053f870(nItemId).get());
+    CItemData* pItem = FUN_14053f870(nItemId).get();
     if (!pItem)
         return;
     CString strName = pItem->GetIconPath();
@@ -658,13 +625,13 @@ void UIRewardNotify::FUN_141ac1d10(int nItemId)
 MS2_REPLACE_METHOD(0x141ac1d10, UIRewardNotify, FUN_141ac1d10, 552, 0x6C02BD1D);
 
 // @0x141ac1f40
-void UIRewardNotify::FUN_141ac1f40()
+void UIRewardNotify::RewardComplete()
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("rewardComplete");
 }
-MS2_REPLACE_METHOD(0x141ac1f40, UIRewardNotify, FUN_141ac1f40, 89, 0xB3A9AAD0);
+MS2_REPLACE_METHOD(0x141ac1f40, UIRewardNotify, RewardComplete, 89, 0xB3A9AAD0);
 
 // @0x141ac1fa0
 void UIRewardNotify::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
@@ -833,7 +800,7 @@ int UIFameContentsNotify::FUN_141ac27d0()
     CStringW strKey(nKind != 0 ? L"s_fame_contents_notify_opening" : L"s_fame_contents_notify_ending");
     ASObj o(2);
     o.FUN_1407cba60("alliance", strAlliance);
-    o.FUN_1407cbb20("msg", FUN_1405c2690(strKey, FUN_140762de0(nId)));
+    o.FUN_1407cbb20("msg", FUN_14028dfa0(strKey, FUN_140762de0(nId)));
     o.FUN_1407cb9c0("current", nCurrent);
     o.FUN_1407cb9c0("max", nMax);
     o.FUN_1407cbb20("point", strPoint);
@@ -860,15 +827,11 @@ static CString s_strSpinStart = "spin_Start";
 // The root AS object of the roulette movie.
 class ASDialog : public ASDisplayObject {
 public:
-    Scaleform::GFx::Value FUN_140f356e0(const char* szMethod, int nIndex, unsigned char bFlag);   // "spin"
     Scaleform::GFx::Value FUN_141ac65b0(const char* szMethod, CString strBind, unsigned long long nSlot, CString strName, int nRarity);   // "bind"
-    void FUN_1407cb9c0(const char* szName, int n);
 };
 
 class Unk_RLPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-class Unk_RLSound { public: int FUN_1411a5a60(const CString& strName, const CString& strArg); };
-class Unk_RLRewardUI : public UITalkCinematic { public: void FUN_141b1ac40(ATL::CAtlArray<MS2Ptr<CItem> >& items, const CStringW& strTitle, unsigned nMeso, unsigned nExp, __int64 nMerat); };
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
@@ -879,10 +842,8 @@ UIRewardNotify* FUN_140938cd0(int nId);
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 void* FUN_14025e7c0();
-unsigned char FUN_14116d720(void*);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415600(const CString& strBindID);
-void* FUN_14052cd70(const MS2Ptr<CItem>& spItem);
 void FUN_140710590(COutPacket&);
 
 // @0x141ac65b0
@@ -950,7 +911,7 @@ void UIRouletteDialog::vfunc_43()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
-        Unk_RLRewardUI* pUI = ((class Unk_RLRewardUI*)FUN_140a7b2b0(0x4e40));
+        UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
         if (pUI != 0) {
             int n = pUI->GetLowerCutGlobalY();
             if (n != -1) {
@@ -990,7 +951,7 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (pReward != 0)
                 pReward->FUN_141abf6e0(m_spins[0].m_itemId, m_spins[0].m_rarity);
         } else {
-            m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinMultiStart, "");
+            m_hSound = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_strSpinMultiStart, "");
         }
         ATL::CAtlArray<MS2Ptr<CItem> > items;
         MS2Ptr<CItem> item(new CItem);
@@ -1002,15 +963,15 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (m_spinIndex < (int)m_spins.GetCount()) {
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDlg != 0)
-                pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
+                { bool bDebug = static_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode(); pDlg->Invoke("spin", m_spins[m_spinIndex].m_slot + 1, bDebug); }
             CStringW strResult = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b20ed0();
             CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
-            Unk_RLRewardUI* pUI = ((class Unk_RLRewardUI*)FUN_140a7b2b0(0x4e40));
+            UITalkCinematic* pUI = FUN_140a7b2b0(0x4e40);
             if (pUI != 0) {
                 if (items.GetCount() > 0)
-                    pUI->FUN_141b1ac40(items, strTitle, 0, 0, 0);
+                    pUI->FUN_141b1ac40(reinterpret_cast<Unk_TalkItemList&>(items), strTitle, 0, 0, 0);
                 pUI->FUN_141b1a8e0(strResult, "", "");
             }
         } else {
@@ -1041,7 +1002,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (item->FUN_14052b130(m_itemIds[nIndex], m_rarities[nIndex], 0)) {
             item->FUN_140526c70(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
-            if (tooltip.FUN_1409e0d40((CItem*)FUN_14052cd70(item))) {
+            if (tooltip.FUN_1409e0d40(item.get())) {
                 *pRetVal = tooltip.FUN_1422bb870();
                 return;
             }
@@ -1054,7 +1015,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (item->FUN_14052b130(m_itemIds[nIndex], m_rarities[nIndex], 0)) {
             item->FUN_140526c70(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
-            if (tooltip.FUN_1409e0d40((CItem*)FUN_14052cd70(item))) {
+            if (tooltip.FUN_1409e0d40(item.get())) {
                 *pRetVal = tooltip.FUN_1422bb870();
                 return;
             }
@@ -1143,11 +1104,11 @@ void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
             return;
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
-            pDlg->FUN_140f356e0("spin", m_spins[m_spinIndex].m_slot + 1, FUN_14116d720(FUN_14025e7c0()));
+            { bool bDebug = static_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode(); pDlg->Invoke("spin", m_spins[m_spinIndex].m_slot + 1, bDebug); }
         if (m_spins.GetCount() == 1)
-            m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinStart, "");
+            m_hSound = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_strSpinStart, "");
         else
-            m_hSound = reinterpret_cast<Unk_RLSound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5a60(s_strSpinMultiStart, "");
+            m_hSound = TSingleton<CEffectService>::GetInstance()->FUN_1411a5a60(s_strSpinMultiStart, "");
     }
 }
 #endif

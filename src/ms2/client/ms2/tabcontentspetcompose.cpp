@@ -222,7 +222,7 @@ void FUN_141275260(int nMsgId, int a1, int a2);
 // String helpers.
 CStringW FUN_14062b4f0(CStringW fmt, const int* pn);
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
-CStringW FUN_14052bd00(int nStringId, const CStringW& str);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
@@ -568,7 +568,7 @@ void PetComposePetEnchant::FUN_140cb34b0()
     unsigned nSale = (unsigned)((float)(((class CGameRule*)FUN_1401c0d90())->GetPetComposeSaleRate() / 100) + 0.5f);
     if (nSale > 0)
         obj.FUN_1407cbb20("sale", FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_compose_cost_sale"), nSale));
-    obj.FUN_1407cbb20(s_meso, FUN_14052bd00(0x986, FUN_1409404f0(nTotal)));
+    obj.FUN_1407cbb20(s_meso, FormatStringId<CStringW>(0x986, FUN_1409404f0(nTotal)));
     ench->FUN_140acd1f0("selectPetIngredient", AScript(obj));
     FUN_141276180("pet_Button_Click", "");
 }

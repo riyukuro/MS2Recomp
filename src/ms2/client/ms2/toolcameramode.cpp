@@ -90,7 +90,7 @@ void CToolCameraMode::vfunc_6(int n)
             vfunc_24(pTarget, 1);
         }
     }
-    m_90 = ((class Unk_GameContext*)WorldService::GetInstance())->FUN_141bcab60(0xb) != 0;
+    m_90 = ((class Unk_GameContext*)WorldService::GetInstance())->FindFieldProperty(0xb) != 0;
 }
 MS2_REPLACE_METHOD(0x141852d20, CToolCameraMode, vfunc_6, 370, 0x51A5235E);
 

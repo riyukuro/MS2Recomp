@@ -335,7 +335,7 @@ class UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
 class UICameraEditDialog   // C3: member view
 {
 public:
-    void FUN_1418dda30(int n);
+    void SetEnableFlagIfHidden(int n);
 };
 class Unk_BSSound;
 Unk_BSSound* FUN_1408e57f0();
@@ -878,7 +878,7 @@ void UIBeautyShopStyleDialog::vfunc_15()
     if (vfunc_55() != 0)
         return;
     if (m_1a8.get())
-        reinterpret_cast<UICameraEditDialog*>(m_1a8.operator->())->FUN_1418dda30(1);
+        reinterpret_cast<UICameraEditDialog*>(m_1a8.operator->())->SetEnableFlagIfHidden(1);
 }
 
 // The AS calls of the page.
@@ -898,7 +898,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             int nArg2 = data.FUN_1422b8a10();
             Scaleform::GFx::Value value = data.FUN_1422b9260();
             AScript obj(value, 2);
-            if (!obj.FUN_1422ba9a0())
+            if (!obj.IsUndefinedOrNull())
             {
                 int nIndex = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("index")))->GetInt();
                 FUN_140f08ae0(nItemId, nIndex);
@@ -1252,7 +1252,7 @@ void UIBeautyShopStyleDialog::FUN_140f05a80(CInPacket& packet)
                 {
                     ASObj obj(2);
                     FUN_140f09810(obj, true);
-                    arr.FUN_1422bc050(Scaleform::GFx::Value(obj.FUN_1422bb870()));
+                    arr.PushValue(Scaleform::GFx::Value(obj.FUN_1422bb870()));
                 }
                 m_30->Invoke("updateItems", nOld, Scaleform::GFx::Value(arr.FUN_1422bb870()));
             }
@@ -1569,7 +1569,7 @@ void UIBeautyShopStyleDialog::FUN_140f07e20()
         }
         else
             FUN_140f09810(obj, false);
-        arr.FUN_1422bc050(Scaleform::GFx::Value(obj.FUN_1422bb870()));
+        arr.PushValue(Scaleform::GFx::Value(obj.FUN_1422bb870()));
     }
     long nIndex = -1;
     m_30->Invoke("buildItems", arr.FUN_1422bb870(), nIndex);
@@ -1659,12 +1659,12 @@ int UIBeautyShopStyleDialog::FUN_140f084e0(AScript& out, unsigned* pPrice)
         static_cast<ASObj&>(out).FUN_1409c0dc0("category", "$s_beauty_saved_hair_style");
         ASObj row(2);
         CString strKey(bChanged ? "$s_beauty_change_style" : "$s_beauty_none");
-        CStringW strName = FUN_14025e7a0()->FUN_1422b0570(strKey);
+        CStringW strName = FUN_14025e7a0()->Localize(strKey);
         row.FUN_1407cbb20("detail", StringFormat<CStringW>(strRow, strName));
         CStringW strPrice = bChanged ? FUN_14134a220(pFee, (const unsigned*)&static_cast<const unsigned __int64&>(*pPrice))
                                      : GetStringCommonByKey(L"s_beauty_fee_default");
         row.FUN_1407cbb20("strPrice", strPrice);
-        arr.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        arr.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     static_cast<ASObj&>(out).FUN_1409adbe0("list", Scaleform::GFx::Value(arr.FUN_1422bb870()));
     return 1;

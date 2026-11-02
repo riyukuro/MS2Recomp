@@ -89,7 +89,7 @@ public:
     void FUN_141adc530(int nClass);                                 // open a dialog
 };
 
-CStringW FUN_14052bd00(int nStringId, const CStringW& strName);     // formatted message
+template <class A> CStringW FormatStringId(int nId, const A& a);     // formatted message
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a sound by name
 void FUN_1402a9d70(void*, int, float, float, float, int);
@@ -190,7 +190,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
     {
         int nStringId = packet.ReadInt32();
         CStringW strName = packet.ReadUnicodeString();
-        CStringW strText = FUN_14052bd00(nStringId, strName);
+        CStringW strText = FormatStringId<CStringW>(nStringId, strName);
         FUN_1412751f0(strText, 4, 1);
         FUN_141276180(s_killSlayer, "");
     }

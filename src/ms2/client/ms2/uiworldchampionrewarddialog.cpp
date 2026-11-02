@@ -42,21 +42,7 @@
 #include "ms2/placeholder/mstime.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
-class Unk_WcClip : public AScript {
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(bool);
-    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
-    virtual void vfunc_15(const CString&);
-    MS2Ptr<Unk_WcButton> FUN_140acce30(const CString&);
-};
-class Unk_WcFrame : public Unk_WcClip {};
-class Unk_WcButton : public Unk_WcClip {
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, size_t);
-};
+class Unk_WcFrame : public ASMovieClip {};
 class Unk_WcTitle {};
 // MS2Ptr<Unk_WcTitle> members and the AScript child binder are COMDATs of this unit (explicit specializations, defined last).
 template <> MS2Ptr<Unk_WcTitle>::MS2Ptr();
@@ -64,14 +50,6 @@ template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=(int);
 template <> template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=<Unk_WcTitle>(const MS2Ptr<Unk_WcTitle>&);
 template <> MS2Ptr<Unk_WcTitle> AScript::FUN_140bbe640<Unk_WcTitle>(const CString&, MS2Ptr<Unk_WcTitle>&);
 class Unk_WcTitleFinder { public: MS2Ptr<Unk_WcTitle> FUN_140c436d0(const CString&); };
-class Unk_WcItemSlot : public Unk_WcClip {
-public:
-    Unk_WcItemSlot(CString, int);
-private:
-    void* p40; void* p48; void* p50; void* p58; void* p60; void* p68;
-    void* p70; void* p78; void* p80; void* p88; void* p90;
-};
-MS2_CHECK_SIZE(Unk_WcItemSlot, 0x98);
 class Unk_WcStream {
 public:
     virtual void vfunc_0();
@@ -79,17 +57,12 @@ public:
     void FUN_14070f340(unsigned char&);
     void FUN_14070f480(int&);
     void FUN_14070f500(__int64&);
-    void FUN_14070f6b0(Unk_WcDate&);
+    void FUN_14070f6b0(CMsTime&);
     void FUN_140408160(std::vector<unsigned int>&);
 };
 class CInPacket { public: void* p0; Unk_WcStream stream; };
 MS2_CHECK_OFFSET(CInPacket, stream, 8);
-class Unk_WcPacketManager {
-public:
-    void FUN_140da5180(int, Delegate<void(CInPacket&)>);
-    void FUN_140da51e0(int, Delegate<void(CInPacket&)>);
-};
-Unk_WcPacketManager* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();
 class Unk_WcAvatar;
 class Unk_WcField : public WorldService { public: Unk_WcAvatar* FUN_141bd0cc0(); };
 CStringW FUN_140298ea0(CStringW);
@@ -132,13 +105,13 @@ WC_WRAP(1)
 WC_WRAP(3)
 CString FUN_140c38a90(const char*, const char*, const char*, const int&, const char*);
 void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);
-size_t FUN_140bd09c0(void*);
+int FUN_140bd09c0(void*);
 class CMsgBoxData : public CPtred {};
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 
-void FUN_140bc7c10(const Scaleform::GFx::Value&, CString, int, std::vector<MS2Ptr<Unk_WcClip>>&, int);
+void FUN_140bc7c10(const Scaleform::GFx::Value&, CString, int, std::vector<MS2Ptr<ASMovieClip>>&, int);
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
 class Unk_WcAvatar {
 public:
@@ -249,19 +222,22 @@ void UIWorldChampionRewardDialog::OnLoadComplete() {
     FUN_141925ec0("m_closeButton");
     FUN_1419260d0("m_webGuideButton", 0);
     FUN_140bc7c10(m_30.get()->FUN_1422bb890(), "m_stepSlot", 10, m_stepSlotVecotr, 0);
-    std::vector<MS2Ptr<Unk_WcClip>>& slots = m_stepSlotVecotr;
-    for (std::vector<MS2Ptr<Unk_WcClip>>::const_iterator end = slots.end(), it = slots.begin(); it != end; ++it) {
-        MS2Ptr<Unk_WcClip> slot = *it;
-        MS2Ptr<Unk_WcButton> button = slot->FUN_140acce30("m_levelButton");
+    std::vector<MS2Ptr<ASMovieClip>>& slots = m_stepSlotVecotr;
+    for (std::vector<MS2Ptr<ASMovieClip>>::const_iterator end = slots.end(), it = slots.begin(); it != end; ++it) {
+        MS2Ptr<ASMovieClip> slot = *it;
+        MS2Ptr<ASButton> button = slot->FUN_140acce30<ASButton>("m_levelButton");
         if (button == NULL) throw new GfxExceptionSwfLoad(FUN_140c38a90("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(49), __FUNCTION__));
         m_stepSlotButtonVecotr.push_back(button);
-        button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnStepClick), m_stepSlotButtonVecotr.size());
+        button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnStepClick), (void*)m_stepSlotButtonVecotr.size());
     }
     WC_BIND("m_prevPage", m_prev, 55);
     WC_BIND("m_nextPage", m_next, 56);
     WC_BIND("m_moveFieldButton", m_move, 57);
     WC_BIND("m_rewardTitle", m_title, 58);
-    WC_BIND("m_rewardItemArea", m_area, 59);
+    do {
+        m_30->FUN_140bc71c0("m_rewardItemArea", m_area);
+        if (m_area == NULL) throw new GfxExceptionSwfLoad(FUN_140c38a90("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(59), __FUNCTION__));
+    } while (0);
     m_prev->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnPrevPageClick), 0);
     m_next->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnNextPageClick), 0);
     m_move->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::FUN_140fec310), 0);
@@ -330,7 +306,7 @@ MS2_REPLACE_METHOD(0x140feb630, UIWorldChampionRewardDialog, UpdatePageFromStep,
 void UIWorldChampionRewardDialog::FUN_140feb6b0() {
     FUN_140feb870();
     FUN_140febc40();
-    CStringW season = FUN_14028dfa0(L"s_world_champion_season_info", m_season, FUN_140b8ed80(reinterpret_cast<const CMsTime&>(m_start)), FUN_140b8ed80(reinterpret_cast<const CMsTime&>(m_end)));
+    CStringW season = FUN_14028dfa0(L"s_world_champion_season_info", m_season, FUN_140b8ed80(m_start), FUN_140b8ed80(m_end));
     FUN_140cff1b0(FUN_1422dbb40(), "m_curSeason", season);
 }
 MS2_REPLACE_METHOD(0x140feb6b0, UIWorldChampionRewardDialog, FUN_140feb6b0, 429, 0xA66C5C9A);
@@ -368,19 +344,19 @@ void UIWorldChampionRewardDialog::FUN_140febc40() {
     if (!((RewardContentsTable*)FUN_140764030())->GetReward(m_rewardVector[index], avatar->vfunc_78(), rewards)) return;
     FUN_140fec540(rewards.m_items.size());
     for (size_t i = 0; i < m_items.size(); ++i) {
-        MS2Ptr<Unk_WcItemSlot> slot = m_items[i];
+        MS2Ptr<ASItemSlot> slot = m_items[i];
         if (i >= rewards.m_items.size()) {
-            reinterpret_cast<ASDisplayObject*>(slot.operator->())->FUN_1422bffe0(0, 0);
+            reinterpret_cast<ASDisplayObject*>(slot.operator->())->SetPositionInt(0, 0);
             slot->vfunc_4(false);
             continue;
         }
         slot->vfunc_4(true);
-        reinterpret_cast<ASItemSlot*>(slot.operator->())->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[i])));
-        reinterpret_cast<ASDisplayObject*>(slot.operator->())->FUN_1422bffe0(static_cast<int>(i) * 70, 0);
+        slot->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[i])));
+        reinterpret_cast<ASDisplayObject*>(slot.operator->())->SetPositionInt(static_cast<int>(i) * 70, 0);
     }
     int x = (reinterpret_cast<ASDisplayObject*>(reinterpret_cast<MS2Ptr<Unk_WcFrame>*>(&m_90)->operator->())->FUN_1422c1340() - reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1340()) / 2;
     int y = static_cast<int>(reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1110());
-    reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422bffe0(x, y);
+    reinterpret_cast<ASDisplayObject*>(m_area.operator->())->SetPositionInt(x, y);
 }
 
 MS2_REPLACE_METHOD(0x140febc40, UIWorldChampionRewardDialog, FUN_140febc40, 1461, 0xF1231A3C);
@@ -430,7 +406,7 @@ void UIWorldChampionRewardDialog::FUN_140fec540(size_t count) {
     if (m_area == NULL) return;
     size_t needed = count - m_items.size();
     for (size_t i = 0; i < needed; ++i) {
-        MS2Ptr<Unk_WcItemSlot> slot(new Unk_WcItemSlot("export_slot", 2));
+        MS2Ptr<ASItemSlot> slot(new ASItemSlot(CString("export_slot"), 2));
         reinterpret_cast<ASDisplayObjectContainer*>(m_area.operator->())->FUN_1422c6900(slot.get()->FUN_1422bb890());
         m_items.push_back(slot);
     }

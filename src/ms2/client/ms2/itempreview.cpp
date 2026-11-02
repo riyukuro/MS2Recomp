@@ -394,7 +394,7 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     if (spData == 0)
         return;
 
-    int nModelType = spData->FUN_14053eba0()->FUN_14054b400();
+    int nModelType = spData->GetModelOrEmpty()->FUN_14054b400();
     if (nModelType != 0 && spData->FUN_14053cbc0())
         m_spAvatar->vfunc_19(FUN_141b48480(1, nModelType), 0);
     else if (spData->FUN_14053cb80())
@@ -413,7 +413,7 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     UIAvatarPC* pAvatarPC = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     if (pAvatarPC)
     {
-        kCamera.FUN_141b48530();
+        kCamera.ApplyCharCamera();
         kCamera.m_fMinDistance = 1000.0f;
         kCamera.m_nSteps = 5;
         kCamera.m_kTarget += pObj->vfunc_18();
@@ -434,14 +434,14 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     }
     else if (UIAvatarCube* pAvatarCube = dynamic_cast<UIAvatarCube*>((UIAvatarBase*)m_spAvatar))
     {
-        kCamera.FUN_141b485d0();
+        kCamera.ApplyCubeCamera();
         kCamera.m_fMinDistance = 300.0f;
         kCamera.m_kTarget += pObj->vfunc_18();
         kCamera.m_kPosition += kCamera.m_kTarget;
     }
     else if (UIAvatarRidee* pAvatarRidee = dynamic_cast<UIAvatarRidee*>((UIAvatarBase*)m_spAvatar))
     {
-        kCamera.FUN_141b48670();
+        kCamera.ApplyRideeCamera();
         float fScale = 1.0f;
         Unk_RideePtr spRow = FUN_1407844b0(spData->GetRideeId());
         if (spRow.get())
@@ -452,7 +452,7 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     }
     else if (UIAvatarPet* pAvatarPet = dynamic_cast<UIAvatarPet*>((UIAvatarBase*)m_spAvatar))
     {
-        kCamera.FUN_141b48670();
+        kCamera.ApplyRideeCamera();
         kCamera.m_fMinDistance = 300.0f;
         kCamera.m_kTarget += pObj->vfunc_18();
         kCamera.m_kPosition = kCamera.m_kPosition;
@@ -512,7 +512,7 @@ void ItemPreview::ResetCamera()
     UIAvatarPC* pAvatarPC = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     if (pAvatarPC)
     {
-        kCamera.FUN_141b48530();
+        kCamera.ApplyCharCamera();
         kCamera.m_fMinDistance = 1000.0f;
         kCamera.m_nSteps = 5;
         kCamera.m_kTarget += pObj->vfunc_18();
@@ -645,9 +645,9 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
         }
         else
         {
-            for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); ++i)
+            for (size_t i = 0; i < spData->GetModelOrEmpty()->FUN_14054b3d0(); ++i)
             {
-                int nType = spData->FUN_14053eba0()->GetGroup(i)->FUN_1405451a0();
+                int nType = spData->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0();
                 if (nType == 0x13)
                 {
                     spItem->FUN_140526c10(5);

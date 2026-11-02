@@ -18,6 +18,7 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
 #include <sstream>
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 static CString s_strBlackMarketSell = "BlackMarket_Sell";
 
@@ -41,7 +42,7 @@ int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // The client constants block: a table of readable values; the exe reads one at +0x6aa8.
-class Unk_BmConstInt { public: const int& FUN_1402056b0(); };
+class Unk_BmConstInt { public: };
 class Unk_BmConstants
 {
 public:
@@ -487,7 +488,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0x8b7, 0, 0, CStringW(L""));
         break;
     case 37:
-        FUN_140d73aa0(FUN_14028dee0(0x688, ((class Unk_BmConstants*)FUN_1401d3200())->m_nRegisterFee.FUN_1402056b0(), BlockFormat(0x5a5)), 0, 0,
+        FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_BmConstants*)FUN_1401d3200())->m_nRegisterFee)->Get(), BlockFormat(0x5a5)), 0, 0,
                       CStringW(L""));
         break;
     case 38:

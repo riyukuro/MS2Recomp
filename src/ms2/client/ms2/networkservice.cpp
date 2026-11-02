@@ -253,7 +253,7 @@ class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 class CMicroGameManagerCli;
 template<> CMicroGameManagerCli* TSingleton<CMicroGameManagerCli>::GetInstance();
-bool FUN_140b73cc0(void*, class CInPacket&);   // C3: was FUN_140b73cc0
+void FUN_140b73cc0(void*, class CInPacket&);   // C3: was FUN_140b73cc0
 class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 void FUN_1417e27d0(void*,CInPacket&);
 void FUN_141adbfb0(void*,CInPacket&);
@@ -339,7 +339,7 @@ FMT_VARIADIC_W(CStringW, BlockFormat, int)
 class CUIService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141add6e0(int);
+    void SetMode(int);
 };
 // Their units define s_instance; declaring the getters keeps os.h's generic s_instance from being instantiated here
 // (cl takes `template<> T* TSingleton<T>::s_instance;` for a definition).
@@ -422,7 +422,7 @@ public:
 bool FUN_140b83ec0();
 void FUN_140534050(void*,int);class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
-CStringW FUN_140632a60(int,const CStringW&,const CStringW&);CStringW FUN_14052bd00(int,const CStringW&);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b); template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_1412751f0(const CStringW&,int,int);void FUN_140b84010(int);   // C3: was FUN_140b84010
 void FUN_140b820d0(void*,const Vector3&);void FUN_140b82130(void*,const Vector3&);
 
@@ -822,7 +822,7 @@ void CNetworkService::FUN_14153a820(CInPacket& input) {
 // @0x14153a8a0
 void CNetworkService::FUN_14153a8a0(CInPacket& input) {
     int value=input.ReadInt32();
-    reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())->FUN_141bca170(value);
+    reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())->SetIdleInterval(value);
 }
 // @0x14153a8f0
 void CNetworkService::OnGvg(CInPacket& input) {
@@ -925,7 +925,7 @@ void CNetworkService::FUN_14153b440(CInPacket& input) {
 void CNetworkService::FUN_14153b570(CInPacket& input) {
     Unk_NetworkTransfer result;result.FUN_1407a4c60(input);int code=result.result;
     if(code==0) {
-        FUN_140d86260()->vfunc_9();((class CUIService*)(void*)(((void*)TSingleton<CUIService>::GetInstance())))->FUN_141add6e0(0x3ed);
+        FUN_140d86260()->vfunc_9();((class CUIService*)(void*)(((void*)TSingleton<CUIService>::GetInstance())))->SetMode(0x3ed);
         DAT_143ab2a48=FUN_14028bd10(result.ip);DAT_143ab2848=result.port;DAT_143ab284c=result.token1;DAT_143ab2850=result.token2;
         DAT_1439f4a78=2;DAT_143ab2874=0;((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bbc580(0, result.field);MyPC::FUN_1415308d0();
     } else if(code==0x31) {
@@ -1064,7 +1064,7 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         MS2_BOX(data)->FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>(this,&CNetworkService::OnFoundersMsgBoxResult));
         MS2_BOX(data)->FUN_141a024a0(0);
         { CStringW empty=L"";CStringW close=L"s_gamemode_rpg_close";
-        MS2_BOX(data)->FUN_141a01690(GetStringCommon(0x47d),GetStringCommonByKey(close),empty); }
+        MS2_BOX(data)->SetButtonLabels(GetStringCommon(0x47d),GetStringCommonByKey(close),empty); }
         FUN_140d73c60(data);
     } else {
         FUN_140d86260()->vfunc_23(0x395,"AuthFailed_LoginFailedOthers");DAT_143ab29d8="";DAT_143ab2a28="";
@@ -1137,16 +1137,16 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         if(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId()==0x620001f) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);break;
         }
-        Unk_MessageBoxPtr data=FUN_140d73d20(1,FUN_140632a60(0xce5,targetName,TSingleton<CStringTable>::GetInstance()->FUN_141811980(4,emotion)),0,s_coupleEmotion);
+        Unk_MessageBoxPtr data=FUN_140d73d20(1,FormatStringId<CStringW, CStringW>(0xce5,targetName,TSingleton<CStringTable>::GetInstance()->FUN_141811980(4,emotion)),0,s_coupleEmotion);
         if(((MS2Ptr<CMsgBoxData>*)&(data))->IsNull()) { MS2_ASSERT_AT(0x665,"pData" && 0);return; }
         MS2_BOX(data)->Append<unsigned int>(emotion);MS2_BOX(data)->Append<__int64>(targetId);MS2_BOX(data)->FUN_140b76940(targetName);
-        MS2_BOX(data)->FUN_141a01ca0(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(((void*)FUN_1401d3200()))+0x3838)),1,GetStringCommon(0x2b8));MS2_BOX(data)->FUN_141a02460(1);MS2_BOX(data)->FUN_141a02480(1);MS2_BOX(data)->FUN_141a024a0(0);FUN_140d73c60(data);
+        MS2_BOX(data)->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(((void*)FUN_1401d3200()))+0x3838)),1,GetStringCommon(0x2b8));MS2_BOX(data)->FUN_141a02460(1);MS2_BOX(data)->FUN_141a02480(1);MS2_BOX(data)->FUN_141a024a0(0);FUN_140d73c60(data);
         COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(1);packet.WriteInt64(targetId);FUN_140710590(packet);
     } break;
     case 1: {
         __int64 id=input.ReadInt64();Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));
         if(!target) { MS2_ASSERT_AT(0x67c,"pTargetPC" && 0);return; }
-        CStringW text=FUN_14052bd00(0xce6,target->vfunc_77());FUN_1412751f0(text,1,1);
+        CStringW text=FormatStringId<CStringW>(0xce6,target->vfunc_77());FUN_1412751f0(text,1,1);
     } break;
     case 2: {
         unsigned result=input.ReadUInt8();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1174,7 +1174,7 @@ void CNetworkService::FUN_14153e280(CInPacket& input) {
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x6bf,"pStateCoupleState" && 0);return; }
         if(((class StateCoupleEmotion*)(void*)(state))->GetEmotionId()!=emotion) break;
         if(((class StateCoupleEmotion*)(void*)(state))->GetPartnerId()!=((class GameObject*)(class Unk_NetworkPlayer*)(target))->FUN_14123c580()) break;
-        player->vfunc_59(1,0,0,0);CStringW text=FUN_14052bd00(0xce9,target->vfunc_77());FUN_1412751f0(text,1,1);
+        player->vfunc_59(1,0,0,0);CStringW text=FormatStringId<CStringW>(0xce9,target->vfunc_77());FUN_1412751f0(text,1,1);
     } break;
     case 5: {
         int emotion=input.ReadInt32();__int64 first=input.ReadInt64();__int64 second=input.ReadInt64();

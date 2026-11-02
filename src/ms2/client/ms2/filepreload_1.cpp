@@ -507,8 +507,8 @@ MS2_REPLACE_METHOD(0x141210da0, CFilePreload, FUN_141210da0, 91, 0x9EA0C72E);
 // Named, typed external operations. Unknown service classes are forward-only.
 class CReactorDataTable; class CNifLoadingService; class SkillDataTableCli; class SkillData;
 class Unk_PreloadServiceA; class Unk_PreloadServiceB; class Unk_PreloadServiceC; class Unk_PreloadServiceD;
-extern CLearningQuestTable* DAT_143ab0200;
-extern CMeratMarketPremium* DAT_143ab0540;
+class CLearningQuestTable;
+class CMeratMarketPremium;
 CLearningQuestTable* FUN_141215480();
 CMeratMarketPremium* FUN_141215500();
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
@@ -766,11 +766,11 @@ MS2_REPLACE_METHOD(0x141215220, CThread, Start, 594, 0x0FE72BCD);
 // Unhooked: these allocate using executable constructors and expose singletons.
 // @0x141215480
 CLearningQuestTable* FUN_141215480() {
-    return DAT_143ab0200!=0 ? TSingleton<CLearningQuestTable>::GetInstance() : new CLearningQuestTable;
+    return TSingleton<CLearningQuestTable>::s_instance!=0 ? TSingleton<CLearningQuestTable>::GetInstance() : new CLearningQuestTable;
 }
 // @0x141215500
 CMeratMarketPremium* FUN_141215500() {
-    return DAT_143ab0540!=0 ? TSingleton<CMeratMarketPremium>::GetInstance() : new CMeratMarketPremium;
+    return TSingleton<CMeratMarketPremium>::s_instance!=0 ? TSingleton<CMeratMarketPremium>::GetInstance() : new CMeratMarketPremium;
 }
 // @0x141215630
 int COptimizer::FUN_141215630() const { return preloadMode; }

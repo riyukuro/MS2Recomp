@@ -505,10 +505,7 @@ MS2_REPLACE_METHOD(0x1413A99B0, CGuideConditionCountInDoorInstallItem, vfunc_3, 
 // ---- dynamic initializers (.text$di) -------------------------------------------------------------------------------------
 
 #ifndef MS2_HOOK_DLL
-ClassObject* FUN_1413a59a0();
 
-ClassObject* FUN_1413aaed0();
-ClassObject* FUN_1413ad660();
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 void FUN_1401cd100(void*, int);
 struct Unk_RegMarker {};
@@ -516,12 +513,12 @@ struct Unk_RegMarker {};
 // @0x1400f4460
 static char s_regTrigger;
 static Unk_RegMarker s_initTrigger =
-    (FUN_140316aa0(&s_regTrigger, CStringW(L"CGuideConditionTrigger"), FUN_1413a59a0), Unk_RegMarker());
+    (FUN_140316aa0(&s_regTrigger, CStringW(L"CGuideConditionTrigger"), CGuideConditionTrigger::CreateObject), Unk_RegMarker());
 
 // @0x1400f44b0
 static char s_regUgcCollectMoney;
 static Unk_RegMarker s_initUgcCollectMoney =
-    (FUN_140316aa0(&s_regUgcCollectMoney, CStringW(L"CGuideConditionUgcCollectMoney"), FUN_1413aaed0), Unk_RegMarker());
+    (FUN_140316aa0(&s_regUgcCollectMoney, CStringW(L"CGuideConditionUgcCollectMoney"), CGuideConditionUgcCollectMoney::CreateObject), Unk_RegMarker());
 
 // @0x1400f4500
 static char s_regUgcManagementTab;
@@ -531,7 +528,7 @@ static Unk_RegMarker s_initUgcManagementTab =
 // @0x1400f4550
 static char s_regUgcProductExpireDays;
 static Unk_RegMarker s_initUgcProductExpireDays =
-    (FUN_140316aa0(&s_regUgcProductExpireDays, CStringW(L"CGuideConditionUgcProductExpireDays"), FUN_1413ad660), Unk_RegMarker());
+    (FUN_140316aa0(&s_regUgcProductExpireDays, CStringW(L"CGuideConditionUgcProductExpireDays"), CGuideConditionUgcProductExpireDays::CreateObject), Unk_RegMarker());
 
 // @0x1400f45a0
 static CStringA s_EnumNamesA[8] = { "None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd" };

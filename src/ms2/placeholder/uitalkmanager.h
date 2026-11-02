@@ -77,8 +77,8 @@ public:
     void FUN_141b1f350(CInPacket& in);                      // mode 5: reward items
     void FUN_141b1f620(CInPacket& in);                      // mode 6: meso
     void FUN_141b1f6b0(CInPacket& in);                      // mode 7: merat
-    void FUN_141b1f740(CInPacket& in);                      // mode 8: exp
-    void FUN_141b1f7a0(CInPacket& in);                      // mode 9: affinity exp, jackpot flag
+    void OnRewardExp(CInPacket& in);                      // mode 8: exp
+    void OnRewardAffinity(CInPacket& in);                      // mode 9: affinity exp, jackpot flag
     void FUN_141b1f840(CInPacket& in);                      // mode 10: pop up a message
     void FUN_141b1f920(const CString& strArgs);             // BeautyShopDialog
     void FUN_141b1fa20(const CString& strArgs);             // BeautyStyleDialog (the argument is not read)
@@ -96,31 +96,31 @@ public:
     void FUN_141b20af0();                                   // end the talk when the npc is gone
     int FUN_141b20bb0();                                    // show the current page
     void SendNpcTalkMode2(unsigned nNpcId);                    // ask the server to continue
-    void FUN_141b20e60(MS2Ptr<CTalkScript> spScript, int nId, int nPage);   // begin at a page
+    void OpenScript(MS2Ptr<CTalkScript> spScript, int nId, int nPage);   // begin at a page
     CStringW FUN_141b20ed0();                               // the name of the current page
-    MS2Ptr<CTalkScript> GetScript();                    // the script handle
+    Unk_ScriptPtr<CTalkScript> GetScript();                    // the script handle
     MS2Ptr<CCinematicContent> GetCurrentContent();              // the current page
     void FUN_141b21190(int nFlags, int nParam, int nPage);   // set the state words
-    int FUN_141b211d0();                                    // the talk cooldown elapsed
+    int IsTalkIntervalElapsed();                                    // the talk cooldown elapsed
     int GetTalking();                                    // IsTalking
     int FUN_141b21240(int nNpcId);                          // IsTalkingWith
-    unsigned FUN_141b212c0();                               // npc id (0 when not talking)
+    unsigned GetNpcId();                               // npc id (0 when not talking)
     int FUN_141b212f0();                                    // npc id of the open talk
-    Unk_TcNpc* FUN_141b21350();                             // the npc actor
+    Unk_TcNpc* GetTalkNpc();                             // the npc actor
     void FUN_141b21390();                                   // stop
     int FUN_141b213c0();                                    // the talk has no npc
     unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound);   // begin without an npc
     void FUN_141b215b0(int bSamePage);                      // advance to the next page
     void FUN_141b217b0();                                   // clear the id queue
     void FUN_141b217e0(unsigned nId);                       // queue an id
-    unsigned FUN_141b21810(int nIndex);                     // the queued id
+    unsigned GetIdAt(int nIndex);                     // the queued id
     unsigned __int64 FUN_141b21860();                       // queue length
     unsigned FUN_141b21890();                               // m_48
     int FUN_141b218b0(Unk_TcNpc* pNpc);                     // refuse a talk (shows a notice)
     Unk_TalkIdList* FUN_141b21a10();                        // the dialogs the talk opened
     void FUN_141b21a30();                                   // close them
     void FUN_141b21ae0(const CString& strDialog);           // remember or close the dialog
-    MS2Ptr<CTalkScript> FUN_141b21b90();                    // find the script of the talk
+    Unk_ScriptPtr<CTalkScript> FUN_141b21b90();                    // find the script of the talk
     unsigned FUN_141b21d70();                               // the sound of the page
     int FUN_141b1d810() { return m_nSound; }                // 0x141b1d810 (inline)
 

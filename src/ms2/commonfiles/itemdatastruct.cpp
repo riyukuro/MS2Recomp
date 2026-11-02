@@ -67,11 +67,6 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers.
-class TiXmlElement   // C3: member view for the former free stand-ins
-{
-public:
-    char const* Attribute(char const*) const;
-};
 int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
 int FUN_14021bdc0(CString& strName);    // slot name -> slot type
@@ -86,8 +81,8 @@ public:
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
-void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);  // SetAttribute(name, string)
-void FUN_1408740a0(void* pElem, const char* pszName, const CStringW& strValue); // SetAttribute(name, wide string)
+void XmlSetAttr(class TiXmlElement*, char const*, const CString&);   // C3: was FUN_140874050
+void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);   // C3: was FUN_1408740a0
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void FUN_140874ad0(void* pElem, const char* pszName, const efd::Point3& kValue);    // SetAttribute(name, "x, y, z")
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
@@ -104,11 +99,11 @@ int FUN_141901d20(int, __int64, __int64);  // C3: the definition's signature
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 
 // The item price table (commonfiles\pricetable.cpp).
-extern CPriceTable* DAT_143aaf5e8;
+class CPriceTable;
 // @0x140552df0
 inline CPriceTable* FUN_140552df0()
 {
-    return DAT_143aaf5e8;
+    return TSingleton<CPriceTable>::s_instance;
 }
 
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
@@ -169,11 +164,12 @@ public:
     Unk_TiXmlAttribute sentinel;
 };
 
-class Unk_TiXmlElement
+class TiXmlElement
 {
 public:
-    Unk_TiXmlElement(const char* pszName);      // 0x14086f2f0
-    ~Unk_TiXmlElement();                        // 0x14086f450
+    TiXmlElement(const char* pszName);      // 0x14086f2f0
+    virtual ~TiXmlElement();                // 0x14086f450
+    char const* Attribute(char const*) const;
     // @0x140552e00
     bool HasAttributes() { return attributeSet.First() == 0 ? false : true; }
     // @0x140552e40
@@ -181,12 +177,12 @@ public:
     // @0x140552e70
     bool HasContent() { return HasAttributes() || HasChildren(); }
 private:
-    void* unknown00[5];                         // TiXmlBase, parent, type
+    void* unknown00[4];                         // TiXmlBase, parent, type
     void* firstChild;                           // +0x28
     void* unknown30[4];                         // lastChild, value, prev, next
     Unk_TiXmlAttributeSet attributeSet;         // +0x50
 };
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
 
 // Drops one leading and one trailing comma of a joined list (an inline helper of the XML writers).
 inline void TrimCommas(CString& str)
@@ -600,14 +596,14 @@ int ItemLimit::Save(void* pParent)
     static ItemLimit s_default;
     if (FUN_140545a80(&s_default))
         return 1;
-    Unk_TiXmlElement elem("limit");
+    TiXmlElement elem("limit");
     if (jobLimit.GetCount() > 0)
     {
         CString str;
         for (size_t i = 0; i < jobLimit.GetCount(); i++)
             str.AppendFormat(",%d", jobLimit[i]);
         TrimCommas(str);
-        FUN_140874050(&elem, "jobLimit", str);
+        XmlSetAttr((class TiXmlElement*)(&elem), "jobLimit", str);
     }
     if (disableJobLimit.GetCount() > 0)
     {
@@ -615,7 +611,7 @@ int ItemLimit::Save(void* pParent)
         for (size_t i = 0; i < disableJobLimit.GetCount(); i++)
             str.AppendFormat(",%d", disableJobLimit[i]);
         TrimCommas(str);
-        FUN_140874050(&elem, "disableJobLimit", str);
+        XmlSetAttr((class TiXmlElement*)(&elem), "disableJobLimit", str);
     }
     if (recommendJobs.size() > 0)
     {
@@ -623,7 +619,7 @@ int ItemLimit::Save(void* pParent)
         for (std::set<int>::iterator it = recommendJobs.begin(); it != recommendJobs.end(); ++it)
             str.AppendFormat(",%d", *it);
         TrimCommas(str);
-        FUN_140874050(&elem, "recommendJobs", FUN_14016a5c0(str, 0));
+        XmlSetAttr((class TiXmlElement*)(&elem), "recommendJobs", FUN_14016a5c0(str, 0));
     }
     if (levelLimit != 1)
         XmlSetAttr((class TiXmlElement*)(&elem), "levelLimit", levelLimit);
@@ -824,7 +820,7 @@ int ItemPeriod::Save(void* pParent)
     if (usePeriod == 0 && expiration.Get() == 0 && expirationType == ItemExpirationTypeNone && numberOfWeeksMonths == 0 &&
         termTag.IsEmpty())
         return 1;
-    Unk_TiXmlElement elem("life");
+    TiXmlElement elem("life");
     if (usePeriod > 0)
         XmlSetAttr((class TiXmlElement*)(&elem), "usePeriod", usePeriod);
     CString strExpiration("");
@@ -834,13 +830,13 @@ int ItemPeriod::Save(void* pParent)
                              expiration.GetDay(), expiration.GetHour(), expiration.GetMinute(), expiration.GetSecond());
     }
     if (!strExpiration.IsEmpty())
-        FUN_140874050(&elem, "expirationPeriod", strExpiration);
+        XmlSetAttr((class TiXmlElement*)(&elem), "expirationPeriod", strExpiration);
     if (expirationType != ItemExpirationTypeNone)
         XmlSetAttr((class TiXmlElement*)(&elem), "expirationType", expirationType);
     if (numberOfWeeksMonths != 0)
         XmlSetAttr((class TiXmlElement*)(&elem), "numberOfWeeksMonths", numberOfWeeksMonths);
     if (!termTag.IsEmpty())
-        FUN_1408740a0(&elem, "termTag", termTag);
+        XmlSetAttr((class TiXmlElement*)(&elem), "termTag", termTag);
     ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     return 1;
 }
@@ -963,7 +959,7 @@ int ItemModelHead::Load(Unk_140165cf0* pElem)
 // @0x140546d70
 int ItemModelHead::Save(void* pParent)
 {
-    Unk_TiXmlElement elem("customize");
+    TiXmlElement elem("customize");
     if (flag10)
         XmlSetAttr((class TiXmlElement*)(&elem), "color", flag10 ? 1 : 0);
     if (unknown14 != 0)
@@ -992,7 +988,7 @@ int ItemModelHead::Save(void* pParent)
         XmlSetAttr((class TiXmlElement*)(&elem), "capAttach", 1);
     if (handle.get() != 0)
     {
-        Unk_TiXmlElement transform("transform");
+        TiXmlElement transform("transform");
         handle->SaveXml(&transform);
         if (transform.HasContent())
             ((void*)((class TiXmlNode*)(void*)(&elem))->InsertEndChild(*(class TiXmlNode const*)(&transform)));
@@ -1169,15 +1165,15 @@ void ItemProperty::FUN_1405479a0(void* pElem)
     if (slotMax != 1)
         XmlSetAttr((class TiXmlElement*)(pElem), "slotMax", slotMax);
     if (!slotIcon.IsEmpty())
-        FUN_140874050(pElem, "slotIcon", slotIcon);
+        XmlSetAttr((class TiXmlElement*)(pElem), "slotIcon", slotIcon);
     if (!category.IsEmpty())
-        FUN_140874050(pElem, "category", category);
+        XmlSetAttr((class TiXmlElement*)(pElem), "category", category);
     if (!blackMarketCategory.IsEmpty())
-        FUN_140874050(pElem, "blackMarketCategory", blackMarketCategory);
+        XmlSetAttr((class TiXmlElement*)(pElem), "blackMarketCategory", blackMarketCategory);
     if (remakeDisable)
         XmlSetAttr((class TiXmlElement*)(pElem), "remakeDisable", remakeDisable);
     if (!movie.IsEmpty())
-        FUN_140874050(pElem, "movie", movie);
+        XmlSetAttr((class TiXmlElement*)(pElem), "movie", movie);
     if (gearScore != 0)
         XmlSetAttr((class TiXmlElement*)(pElem), "gearScore", gearScore);
     if (unlimitedEnchantMaxGrade > 0)
@@ -1194,7 +1190,7 @@ void ItemProperty::FUN_1405479a0(void* pElem)
         for (unsigned i = 0; i < rePackingScrollID.GetCount(); i++)
             str.AppendFormat(",%d", rePackingScrollID[i]);
         TrimCommas(str);
-        FUN_140874050(pElem, "rePackingScrollID", str);
+        XmlSetAttr((class TiXmlElement*)(pElem), "rePackingScrollID", str);
     }
     if (moveDisable)
         XmlSetAttr((class TiXmlElement*)(pElem), "moveDisable", moveDisable);
@@ -1214,9 +1210,9 @@ void ItemProperty::FUN_1405479a0(void* pElem)
         TrimCommas(str);
         if (!str.IsEmpty())
         {
-            Unk_TiXmlElement sell("sell");
+            TiXmlElement sell("sell");
             if (!str.IsEmpty())
-                FUN_140874050(&sell, "price", str);
+                XmlSetAttr((class TiXmlElement*)(&sell), "price", str);
             ((void*)((class TiXmlNode*)(void*)(pElem))->InsertEndChild(*(class TiXmlNode const*)(&sell)));
         }
     }
@@ -1327,7 +1323,7 @@ int ItemInstallData::Save(void* pParent)
     static ItemInstallData s_default;
     if (FUN_140548a50(&s_default))
         return 1;
-    Unk_TiXmlElement elem("install");
+    TiXmlElement elem("install");
     if (placeable != 0)
         XmlSetAttr((class TiXmlElement*)(&elem), "placeable", placeable);
     if (unchangeable != 0)
@@ -1353,19 +1349,19 @@ int ItemInstallData::Save(void* pParent)
     if (staticAngle != 0)
         XmlSetAttr((class TiXmlElement*)(&elem), "staticAngle", staticAngle);
     if (!asset.IsEmpty())
-        FUN_140874050(&elem, "asset", asset);
+        XmlSetAttr((class TiXmlElement*)(&elem), "asset", asset);
     if (!preset.IsEmpty())
-        FUN_140874050(&elem, "preset", preset);
+        XmlSetAttr((class TiXmlElement*)(&elem), "preset", preset);
     if (!useInstancing)
         XmlSetAttr((class TiXmlElement*)(&elem), "useInstancing", useInstancing);
     if (physXdimension != efd::Point3::ZERO)
     {
         CString str;
         str.Format("%.6f, %.6f, %.6f", physXdimension.x, physXdimension.y, physXdimension.z);
-        FUN_140874050(&elem, "physXdimension", str);
+        XmlSetAttr((class TiXmlElement*)(&elem), "physXdimension", str);
     }
     if (!mapAttribute.IsEmpty())
-        FUN_140874050(&elem, "mapAttribute", mapAttribute);
+        XmlSetAttr((class TiXmlElement*)(&elem), "mapAttribute", mapAttribute);
     if (propCollisionGroup != 0)
         XmlSetAttr((class TiXmlElement*)(&elem), "propCollisionGroup", propCollisionGroup);
     ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
@@ -1496,7 +1492,7 @@ int ItemHousing::Save(void* pParent)
     static ItemHousing s_default;
     if (FUN_140549380(&s_default))
     {
-        Unk_TiXmlElement elem("housing");
+        TiXmlElement elem("housing");
         if (filter != ItemHousingFilterDefault)
             XmlSetAttr((class TiXmlElement*)(&elem), "filter", filter);
         if (categoryIndex != ItemHousingCategoryDefault)
@@ -1598,8 +1594,8 @@ int ItemUccMesh::SaveXml(void* pParent)
 {
     if (!mesh.IsEmpty())
     {
-        Unk_TiXmlElement elem("ucc");
-        FUN_140874050(&elem, "mesh", mesh);
+        TiXmlElement elem("ucc");
+        XmlSetAttr((class TiXmlElement*)(&elem), "mesh", mesh);
         ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
@@ -1634,17 +1630,17 @@ int ItemEffect::Save(void* pParent)
 {
     if (FUN_140549b10())
     {
-        Unk_TiXmlElement elem("effect");
+        TiXmlElement elem("effect");
         if (enchantShape != 1)
             XmlSetAttr((class TiXmlElement*)(&elem), "enchantShape", enchantShape);
         if (!idle.IsEmpty())
-            FUN_140874050(&elem, "idle", idle);
+            XmlSetAttr((class TiXmlElement*)(&elem), "idle", idle);
         if (!battleIdle.IsEmpty())
-            FUN_140874050(&elem, "battleIdle", battleIdle);
+            XmlSetAttr((class TiXmlElement*)(&elem), "battleIdle", battleIdle);
         if (!characterIdle.IsEmpty())
-            FUN_140874050(&elem, "characterIdle", characterIdle);
+            XmlSetAttr((class TiXmlElement*)(&elem), "characterIdle", characterIdle);
         if (!characterBattleIdle.IsEmpty())
-            FUN_140874050(&elem, "characterBattleIdle", characterBattleIdle);
+            XmlSetAttr((class TiXmlElement*)(&elem), "characterBattleIdle", characterBattleIdle);
         ((void*)((class TiXmlNode*)(void*)(pParent))->InsertEndChild(*(class TiXmlNode const*)(&elem)));
     }
     return 1;
@@ -1904,7 +1900,7 @@ int ItemMusicScore::Save(void* pParent)
     static ItemMusicScore s_default;
     if (FUN_14054abd0(&s_default))
     {
-        Unk_TiXmlElement elem("MusicScore");
+        TiXmlElement elem("MusicScore");
         if (playCount != 0)
             XmlSetAttr((class TiXmlElement*)(&elem), "playCount", playCount);
         if (masteryValueMax != 0)
@@ -1914,7 +1910,7 @@ int ItemMusicScore::Save(void* pParent)
         if (noteLengthMax != 0)
             XmlSetAttr((class TiXmlElement*)(&elem), "noteLengthMax", noteLengthMax);
         if (!fileName.IsEmpty())
-            FUN_140874050(&elem, "fileName", fileName);
+            XmlSetAttr((class TiXmlElement*)(&elem), "fileName", fileName);
         if (playTime != 0)
             XmlSetAttr((class TiXmlElement*)(&elem), "playTime", playTime);
         if (recommendCategoryId != 0)

@@ -86,7 +86,7 @@ void AScript::FUN_1407cba60(const char* pszName, CString strValue)
 void AScript::FUN_1407cbb20(const char* pszName, CStringW strValue)
 {
     ASData data;
-    data.FUN_1422b8310(strValue);
+    data.AddWString(strValue);
     m_value.SetMember(pszName, data.FUN_1422b9260());
 }
 

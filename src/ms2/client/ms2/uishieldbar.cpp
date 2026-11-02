@@ -31,7 +31,6 @@ class Unk_ShieldEntity : public ASGameEntity
 public:
     Scaleform::GFx::Value FUN_140cb6990(const char* szMethod, __int64 a1, __int64 a2);          // "open"
     Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1422c00f0(float x, float y);
     void FUN_1422c0290(float cx, float cy);
 };
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
@@ -41,7 +40,7 @@ public:
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 struct Unk_ShieldCfgFloat { char m_pad[0x58]; };
-struct Unk_ShieldCfgInt { int* FUN_1402056b0(); void* m_unknown; };
+struct Unk_ShieldCfgInt { void* m_unknown; };
 struct Unk_ShieldCfg
 {
     char m_pad_0000[0x2c8];
@@ -161,7 +160,7 @@ void UIShieldBar::Entity::vfunc_6(NiPoint3* pPos)
                     pPos->y = pPos->y + vfunc_9();
                     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
                     pPos->x = pPos->x - (float)(m_38->FUN_1422c1340() / 2);
-                    ((Unk_ShieldEntity*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
+                    ((Unk_ShieldEntity*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
                 }
             }
         }
@@ -202,7 +201,7 @@ float UIShieldBar::Entity::vfunc_9()
     if (pActor == 0)
         return 0.0f;
     float f = pActor->FUN_141670390();
-    return f + (float)*((struct Unk_ShieldCfg*)FUN_1401d3200())->m_e610.FUN_1402056b0();
+    return f + (float)*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ShieldCfg*)FUN_1401d3200())->m_e610)->Get();
 }
 
 // @0x140e85ed0

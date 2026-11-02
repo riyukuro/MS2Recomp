@@ -95,6 +95,7 @@
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asslot.h"
 #include "ms2/client/ms2/iteminfoslot.h"
+#include "ms2/placeholder/uientityeventdispatcher.h"
 
 // The tooltip callback's Delegate base is first emitted here.
 // @0x140c69f90
@@ -881,7 +882,6 @@ class AdditionalCli { public: unsigned GetRemainTicks(); AdditionalLevelData* FU
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
 #endif
 
-extern Unk_LsEntityEvents* DAT_143abf028;                               // the entity event hub
 class Unk_UpperEvents   // C3: member view for the former free stand-ins
 {
 public:
@@ -898,7 +898,7 @@ float FUN_14028d280(unsigned nMs);                                      // ms ->
 // @0x140c607b0
 Unk_LsEntityEvents* FUN_140c607b0()
 {
-    return DAT_143abf028;
+    return reinterpret_cast<Unk_LsEntityEvents*>(TSingleton<UIEntityEventDispatcher>::s_instance);
 }
 
 // @0x140c5efa0
@@ -974,7 +974,7 @@ void UILapenshardShieldBar::vfunc_3()
     m_spBuff = 0;
     UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
     if (pReward != 0)
-        pReward->FUN_141ac1f40();
+        pReward->RewardComplete();
 }
 
 // @0x140c5f610
@@ -2119,15 +2119,13 @@ int UILapenshardSystemDialog::vfunc_65()
 extern Unk_Inventory g_143ab2a90;                                       // the inventory
 extern __int64 DAT_143ab2898;                                           // the money
 
-// Unk_Inventory::FUN_140a5f780 returns the count (inventory.h declares it void).
-int FUN_140a5f780(Unk_Inventory* pInv, int nTag, int nGrade);
 
 // @0x140c69670
 int FUN_140c69670(unsigned nItemId, int nGrade, int* pnTag)
 {
     int nCount = g_143ab2a90.FUN_140a5f180(nItemId, nGrade);
     if (*pnTag != 0)
-        nCount = FUN_140a5f780(&g_143ab2a90, *pnTag, 0);
+        nCount = g_143ab2a90.FUN_140a5f780(*pnTag, 0);
     return nCount;
 }
 
@@ -2388,7 +2386,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<CItemLape
         int nHave = spItem->IsLapenshard() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &kinds[i]);
         int nNeed = spItem->GetCount();
         row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nNeed));
-        rows.FUN_1422bc050(row.FUN_1422bb870());
+        rows.PushValue(row.FUN_1422bb870());
     }
     out.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
     if (0 < spRec->m_nMeso)
@@ -2398,8 +2396,6 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<CItemLape
 
 CStringW FUN_14183e9c0(CStringW strName, int nRank);                    // the item name coloured by rank
 void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);   // set a child's mode
-void FUN_141416650(ItemInfoSlot* pSlot, Delegate<void(ItemInfoSlot&, ASSlot&)> fn);
-void FUN_1414166a0(ItemInfoSlot* pSlot, Delegate<void(ItemInfoSlot&, ASTooltip&)> fn);
 
 // @0x140c664e0
 void LapenshardUpgradeSlotPanel::FUN_140c664e0()
@@ -2420,8 +2416,8 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                 ItemInfoSlot* pBag = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(m_strSource));
                 if (pBag != 0)
                 {
-                    FUN_141416650(pBag, Delegate<void(ItemInfoSlot&, ASSlot&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c652d0));
-                    FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+                    pBag->SetSlotFn(Delegate<void(ItemInfoSlot&, ASSlot&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c652d0));
+                    pBag->SetTipFn(Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strSource);
                     spSourceSlot->FUN_140acd1f0("setData", AScript(obj));
@@ -2452,7 +2448,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                 ItemInfoSlot* pBag = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(m_strResult));
                 if (pBag != 0)
                 {
-                    FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+                    pBag->SetTipFn(Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strResult);
                     spResultSlot->FUN_140acd1f0("setData", AScript(obj));
@@ -2490,7 +2486,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c660f0()
         int nHave = spItem->IsLapenshard() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
         int nNeed = spItem->GetCount();
         row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nNeed));
-        rows.FUN_1422bc050(row.FUN_1422bb870());
+        rows.PushValue(row.FUN_1422bb870());
     }
     ASObj data(2);
     data.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
@@ -2546,7 +2542,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
             FUN_140c654a0(strSuccess, spItem);
             ItemInfoSlot* pBag = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(strSuccess));
             if (pBag != 0)
-                FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+                pBag->SetTipFn(Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
         }
         CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
         obj.FUN_1407cba60("successSlotBindID", strSuccess);
@@ -2570,7 +2566,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
             FUN_140c654a0(strFail, spItem);
             ItemInfoSlot* pBag = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(strFail));
             if (pBag != 0)
-                FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+                pBag->SetTipFn(Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
         }
         CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
         obj.FUN_1407cba60("failSlotBindID", strFail);

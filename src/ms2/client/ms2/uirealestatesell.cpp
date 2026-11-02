@@ -87,8 +87,7 @@ extern __int64 DAT_143ab2820;                                       // my accoun
 
 __int64 GetServerTime();                                            // the server time
 CStringW FUN_140979570(int nMapId);                                 // the address of a map
-CStringW FUN_14086d060(int nId, const __int64& n);                  // string table text with one number
-CStringW FUN_14052bd00(int nId, const CStringW& arg);               // string table text with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);                  // string table text with one number
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);   // the sale price (item, amount)
 int FUN_1408a0b80(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);   // the extension price
@@ -223,7 +222,7 @@ void UIRealEstateSell::FUN_141ab6230()
     if (span.GetDays() >= 0)
     {
         CStringW strExpire;
-        strExpire = FUN_14086d060(0x7ce, span.GetDays());
+        strExpire = FormatStringId<__int64>(0x7ce, span.GetDays());
         ((class AScript&)(obj)).FUN_1407cbb20("expire", strExpire);
     }
     ((class AScript&)(obj)).FUN_1407cb9c0("priceType", 0);
@@ -235,11 +234,11 @@ void UIRealEstateSell::FUN_141ab6230()
     FUN_1408a0b80(&nItem2, &nPrice2, target.FUN_14050dee0()->m_20, target.FUN_14050dee0()->m_24);
     if (FUN_14053f8c0(nItem))
     {
-        ((class AScript&)(obj)).FUN_1407cbb20("price", FUN_14052bd00(0x7e2, FUN_1409404f0(nPrice)));
+        ((class AScript&)(obj)).FUN_1407cbb20("price", FormatStringId<CStringW>(0x7e2, FUN_1409404f0(nPrice)));
     }
     else if (FUN_14053f940(nItem))
     {
-        ((class AScript&)(obj)).FUN_1407cbb20("price", FUN_14052bd00(0x7e3, FUN_1409404f0(nPrice)));
+        ((class AScript&)(obj)).FUN_1407cbb20("price", FormatStringId<CStringW>(0x7e3, FUN_1409404f0(nPrice)));
     }
     else
     {
@@ -249,11 +248,11 @@ void UIRealEstateSell::FUN_141ab6230()
     }
     if (FUN_14053f8c0(nItem2))
     {
-        ((class AScript&)(obj)).FUN_1407cbb20("extend", FUN_14052bd00(0x7e2, FUN_1409404f0(nPrice2)));
+        ((class AScript&)(obj)).FUN_1407cbb20("extend", FormatStringId<CStringW>(0x7e2, FUN_1409404f0(nPrice2)));
     }
     else if (FUN_14053f940(nItem2))
     {
-        ((class AScript&)(obj)).FUN_1407cbb20("extend", FUN_14052bd00(0x7e3, FUN_1409404f0(nPrice2)));
+        ((class AScript&)(obj)).FUN_1407cbb20("extend", FormatStringId<CStringW>(0x7e3, FUN_1409404f0(nPrice2)));
     }
     else
     {
@@ -285,7 +284,7 @@ int UIRealEstateSell::SendRequestCube(const CStringW& strName)
     return 1;
 }
 
-// MS2-FUNCTIONAL: ops match except the exe emits dead strInput/aParts dtors after the confirm block's return 1 (source form not found)
+// The braces around the confirm block's return 1 give the exe's dead strInput/aParts dtors.
 // @0x141ab6c50
 int UIRealEstateSell::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
@@ -303,7 +302,7 @@ int UIRealEstateSell::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             CStringW strInput(aParts[1]);
             if (SendRequestCube(strInput) != 0)
                 FUN_14151f200();
-            return 1;
+            { return 1; }
         }
         FUN_14151f200();
         return 1;

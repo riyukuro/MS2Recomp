@@ -120,7 +120,7 @@ MS2_CHECK_OFFSET(Unk_PcMapData, m_b9c, 0x9c);
 
 // The field record (the table behind DAT_143abfb18 hands them out by key).
 class Unk_PcFieldTable : public WorldMapManager { };
-extern Unk_PcFieldTable* DAT_143abfb18;
+class WorldMapManager;
 Unk_PcFieldTable* FUN_140cb17d0();
 
 // The event value manager's battle pet spawn table.
@@ -144,7 +144,7 @@ struct Unk_PetBoxCameraData
 };
 MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
 float FUN_141b48480(int a, int b);
-class Unk_ModelViewCamera { public: void FUN_141b48670(); };
+class Unk_ModelViewCamera { public: void ApplyRideeCamera(); };
 class Unk_PcActor
 {
 public:
@@ -239,7 +239,7 @@ void TabContentsPetCollect::FUN_140cac8a0()
         ASObj objAll(2);
         objAll.FUN_1407cbb20("tabName", GetStringCommonByKey(L"s_pet_collect_total_category"));
         objAll.FUN_1407cb9c0("groupId", 0);
-        arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objAll.FUN_1422bb870()));
+        arrTabs.PushValue(Scaleform::GFx::Value(objAll.FUN_1422bb870()));
         std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
         for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
@@ -250,7 +250,7 @@ void TabContentsPetCollect::FUN_140cac8a0()
             CStringW strName = GetStringTable()->FUN_141811980(0x41, it->first);
             objTab.FUN_1407cbb20("tabName", strName);
             objTab.FUN_1407cb9c0("groupId", it->first);
-            arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
+            arrTabs.PushValue(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
         }
         PC(m_ui)->FUN_140caf140("setupGroup", ASArray(arrTabs));
     }
@@ -294,7 +294,7 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
         objPet.FUN_1407cba60("iconPath", strIcon); \
         objPet.FUN_1409c0d20("petID", *pPet); \
         objPet.FUN_1407cb9c0("grade", nGrade); \
-        arrPets.FUN_1422bc050(Scaleform::GFx::Value(objPet.FUN_1422bb870()));
+        arrPets.PushValue(Scaleform::GFx::Value(objPet.FUN_1422bb870()));
 
 // @0x140cacce0
 void TabContentsPetCollect::FUN_140cacce0()
@@ -399,7 +399,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         else if (spPet->m_nType == 0)
             strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_default_pet");
         if (0 < nGrade)
-            strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->FUN_141813150(nGrade));
+            strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->GetRankName(nGrade));
         strTip += FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_collect_pet_tooltip_limit_level"), spData->limit.levelLimit);
         {
             CStringW strPlace;
@@ -526,7 +526,7 @@ void TabContentsPetCollect::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void*
         return;
     reinterpret_cast<Unk_PcAvatarView*>(m_avatar.operator->())->vfunc_28(a1, a2, a3, a4);
     Unk_PetBoxCameraData kCamera;
-    reinterpret_cast<Unk_ModelViewCamera*>(&kCamera)->FUN_141b48670();
+    reinterpret_cast<Unk_ModelViewCamera*>(&kCamera)->ApplyRideeCamera();
     kCamera.n28 = 5;
     kCamera.f20 = 100.0f;
     kCamera.f1c = 500.0f;
@@ -649,7 +649,7 @@ int IUIAvatarEventListener::vfunc_o178_1(void*) { return 1; }
 // @0x140cb17d0
 Unk_PcFieldTable* FUN_140cb17d0()
 {
-    return DAT_143abfb18;
+    return reinterpret_cast<Unk_PcFieldTable*>(TSingleton<WorldMapManager>::s_instance);
 }
 
 

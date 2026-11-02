@@ -132,7 +132,7 @@ public:
     bool FindPlacement(efd::Point3& posA, efd::Point3& posB, float* pfYaw);   // 0x140b82230
     PCBase* GetPartner();                                   // 0x140b82a00
     void Stop(int bNotify);                                 // 0x140b82aa0 leave the state, tell the server
-    bool SyncWithPartner(double fTime);                     // 0x140b82c40
+    void SyncWithPartner(double fTime);                     // 0x140b82c40
     CStringA GetCurAniName();                                // 0x140b83260
     int GetAniIndex();                                      // 0x140b833a0 (-1 without a payload)
     bool AddEffect(CStringA strName);                        // 0x140b833f0

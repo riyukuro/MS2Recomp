@@ -59,14 +59,14 @@ Unk_MachineId* Unk_MachineId::FUN_14067c080(const Unk_MachineId* pOther)
 }
 MS2_REPLACE_METHOD(0x14067C080, Unk_MachineId, FUN_14067c080, 49, 0xD3408B84);
 
-// MS2-FUNCTIONAL: the exe's length temp goes through rax before rcx
+// The length is read inside the memcpy call.
 // @0x14067c0c0
 Unk_MachineId* Unk_MachineId::FUN_14067c0c0(const CByteBuffer& buf)
 {
     if (!(buf.GetLength() > 0x10))
     {
-        unsigned __int64 nLen = buf.GetLength();
-        memcpy(m_data, buf.FUN_14067c4c0(), nLen);
+        memcpy(m_data, buf.FUN_14067c4c0(), buf.GetLength());
+
     }
     return this;
 }

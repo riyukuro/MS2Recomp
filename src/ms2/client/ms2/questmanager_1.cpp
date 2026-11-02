@@ -20,19 +20,12 @@
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/client/ms2/equipment.h"
+#include "ms2/placeholder/clientconstants.h"
 
 // This object's header statics omit the sort-name array in header_statics_a.h.
-class Unk_QuestHeaderMap
-{
-public:
-    Unk_QuestHeaderMap(int, float, float, float, int);
-    ~Unk_QuestHeaderMap();
-    void* m_storage[10];
-};
-MS2_CHECK_SIZE(Unk_QuestHeaderMap, 0x50);
 static CString s_skill = "skill";
 static CString s_stun = "stun";
-static Unk_QuestHeaderMap s_headerMap(17, 0.75f, 0.25f, 2.25f, 10);
+static ATL::CAtlMap<unsigned int, CString, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<CString> > s_headerMap(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_accept = "quest_accept";
 static CString s_complete = "quest_complete";
 static CString s_progress = "quest_progress";
@@ -93,8 +86,8 @@ class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1404774a0(unsigned int, int);
-    unsigned int FUN_14047ea00(unsigned int, unsigned int, int);
-    unsigned int FUN_14047eb30(unsigned int, unsigned int, unsigned int);
+    unsigned int GetQuestAdditionalRewardRate(unsigned int, unsigned int, int);
+    unsigned int GetQuestAdditionalRewardItemRate(unsigned int, unsigned int, unsigned int);
 };
 int FUN_14074b070(CQuestData*);
 int FUN_14074b050(CQuestData*);
@@ -104,15 +97,6 @@ __int64 FUN_140761cc0(int, int);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751b0(const CStringW&, int);
 
-// Read-only prefix of the constants singleton. The embedded checked constant's
-// accessor (0x1402056b0) validates its initialized flag before returning its value.
-class Unk_QuestIntConstant { public: const int& FUN_1402056b0() const; };
-struct Unk_QuestConstants {
-    unsigned char m_unrecovered[0x59c0];
-    Unk_QuestIntConstant m_bonusLevel;
-};
-MS2_CHECK_OFFSET(Unk_QuestConstants, m_bonusLevel, 0x59c0);
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // @0x1416c6210
 CQuest::CQuest() : m_state(3), m_data(0), m_startTime(0), m_completeTime(0),
@@ -128,8 +112,8 @@ MS2Ptr<CQuestData> CQuest::GetData() { return m_data; }
 int CQuest::IsComplete() const
 {
     if (GetState() != 1) return 0;
-    for (size_t i = 0; i < ((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount(); ++i) {
-        if (m_progress.FUN_1401b88c0(i) < m_data->m_conditions.GetAt(i)->m_nGoal) return 0;
+    for (size_t i = 0; i < m_progress.GetCount(); ++i) {
+        if (static_cast<const ATL::CAtlArray<__int64, ATL::CElementTraits<__int64> >&>(m_progress)[i] < m_data->m_conditions.GetAt(i)->m_nGoal) return 0;
     }
     return 1;
 }
@@ -153,7 +137,7 @@ int CQuest::Init(int id, int state)
     m_68 = 0;
     m_completeTime = 0;
     m_state = state;
-    for (size_t i = 0; i < m_data->m_conditions.GetCount(); ++i) ((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->Add(0);
+    for (size_t i = 0; i < m_data->m_conditions.GetCount(); ++i) m_progress.Add(0);
     return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x1416C64F0, CQuest, CQuestCommon, GetStartTime, 15, 0x8B0075C1);
@@ -164,25 +148,25 @@ unsigned char CQuest::GetFlag() { return m_data->m_flag; }
 // @0x1416c6640
 __int64 CQuest::GetProgress(int index) const
 {
-    if (index >= (int)((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount()) return 0;
-    return m_progress.FUN_1401b88c0(index);
+    if (index >= (int)m_progress.GetCount()) return 0;
+    return static_cast<const ATL::CAtlArray<__int64, ATL::CElementTraits<__int64> >&>(m_progress)[index];
 }
 MS2_REPLACE_METHOD(0x1416C6610, CQuest, GetFlag, 35, 0x7487077B);
 MS2_REPLACE_METHOD(0x1416C6640, CQuest, GetProgress, 70, 0xF8DB8031);
 // @0x1416c6690
 void CQuest::SetProgress(int index, __int64 count)
 {
-    if (index >= (int)((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount()) return;
-    m_progress.FUN_1401b7ff0(index) = count;
+    if (index >= (int)m_progress.GetCount()) return;
+    m_progress[index] = count;
 }
 MS2_REPLACE_METHOD(0x1416C6690, CQuest, SetProgress, 78, 0xA488EC14);
 // @0x1416c66f0
 int CQuest::IsConditionComplete(int index)
 {
     if (GetState() != 1) return 0;
-    if (index >= (int)((ATL::CAtlArray<__int64, ATL::CElementTraits<__int64>>*)(Unk_QuestProgressArray*)&(m_progress))->GetCount()) return 0;
+    if (index >= (int)m_progress.GetCount()) return 0;
     if (index >= (int)m_data->m_conditions.GetCount()) return 0;
-    return m_progress.FUN_1401b7ff0(index) >= m_data->m_conditions[index]->m_nGoal;
+    return m_progress[index] >= m_data->m_conditions[index]->m_nGoal;
 }
 MS2_REPLACE_METHOD(0x1416C66F0, CQuest, IsConditionComplete, 231, 0xDACD67C9);
 
@@ -347,7 +331,7 @@ void CQuest::ShowRewards(int reward)
     int subtype = FUN_14074b070(m_data.operator->());
     int eventBonus = 0;
     for (size_t i = 0; i < 8; ++i) {
-        if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047ea00(type, subtype, (int)i) != 0) {
+        if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardRate(type, subtype, (int)i) != 0) {
             eventBonus = 1;
             break;
         }
@@ -355,11 +339,11 @@ void CQuest::ShowRewards(int reward)
     UIRewardNotify* dialog = FUN_140938cd0(0x4e5d);
     if (dialog) {
         int useBonus = 1;
-        if (m_data->m_level < ((struct Unk_QuestConstants*)FUN_1401d3200())->m_bonusLevel.FUN_1402056b0()) useBonus = 0;
+        if (m_data->m_level < *FUN_1401d3200()->QuestRewardSAIgnoreLevel.Get()) useBonus = 0;
         __int64 experience = FUN_140761ba0(id, reward);
         if (experience != 0) {
             float multiplier = 0.0f;
-            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047ea00(type, subtype, 0);
+            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardRate(type, subtype, 0);
             if (bonus != 0) multiplier = (float)bonus / 10000.0f;
             __int64 extra = 0;
             if (useBonus) {
@@ -372,7 +356,7 @@ void CQuest::ShowRewards(int reward)
         __int64 money = FUN_140761cc0(id, reward);
         if (money != 0) {
             float multiplier = 0.0f;
-            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047ea00(type, subtype, 1);
+            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardRate(type, subtype, 1);
             if (bonus != 0) multiplier = (float)bonus / 10000.0f;
             __int64 extra = 0;
             money = (__int64)((float)money * (1.0f + multiplier));
@@ -388,7 +372,7 @@ void CQuest::ShowRewards(int reward)
                             int itemId = m_data->m_complete.m_choiceRewards[i].m_itemId;
                             int count = m_data->m_complete.m_choiceRewards[i].m_count;
                             dialog->FUN_141abf6e0(itemId, count);
-                            if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047eb30(type, subtype, itemId) != 0) eventBonus = 1;
+                            if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardItemRate(type, subtype, itemId) != 0) eventBonus = 1;
                         }
                     }
                 }
@@ -398,7 +382,7 @@ void CQuest::ShowRewards(int reward)
                 int item = m_data->m_rewards[i].m_itemId;
                 int count = m_data->m_rewards[i].m_count;
                 dialog->FUN_141abf6e0(item, count);
-                if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_14047eb30(type, subtype, item) != 0) eventBonus = 1;
+                if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardItemRate(type, subtype, item) != 0) eventBonus = 1;
             }
         }
     }

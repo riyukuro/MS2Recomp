@@ -47,7 +47,7 @@ public:
 };
 void* FUN_1403ed2b0();                                          // the UI service
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
-void FUN_14135ec00(void* pDialog, const CString& strUrl, bool bFlag);
+class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool bFlag); };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -141,7 +141,7 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             void* pPage = ((void*)FUN_140c43790(0x4e6a));
             if (pPage == 0)
                 return 1;
-            FUN_14135ec00(pPage, m_strRankingUrl, true);
+            ((class UIWebBrowserBase*)pPage)->FUN_14135ec00(m_strRankingUrl, true);
         }
         return 1;
     }

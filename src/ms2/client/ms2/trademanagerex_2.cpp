@@ -38,7 +38,9 @@ WorldService* FUN_1403ed2d0();
 class Unk_InvenSlot : public InvenSlot
 {
 };
-Unk_InvenSlot* FUN_140a50b50(DragSlot* pSlot);          // pSlot->TypeCast(0x6200023), 0 on failure
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 // The bag of the player's inventory items by uid.
 extern Unk_Inventory g_143ab2a90;
@@ -98,7 +100,7 @@ int TradeSlot::vfunc_15()
 // @0x14185de60
 int TradeSlot::vfunc_18(void* p)
 {
-    Unk_InvenSlot* pInven = FUN_140a50b50(static_cast<DragSlot*>(p));
+    Unk_InvenSlot* pInven = reinterpret_cast<Unk_InvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))));
     if (pInven != 0)
     {
         if (IsMine())

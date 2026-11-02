@@ -51,9 +51,9 @@ CString FUN_140fdab30(const Unk_WeddingPartner* pPartner)
 MS2_REPLACE(0x140FDAB30, FUN_140fdab30, 281, 0xC1D9E733);
 
 // @0x140fdac50
-// MS2-FUNCTIONAL: the exe's public flag is a bool parameter passed on without a conversion; the reservation pages
-// (uiweddinghallreservationpage*.cpp) declare it unsigned char, so here it is converted for ASObj's bool setter.
-void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, unsigned char bPublic, ASObj* pData)
+// Fills the page data object from the package, hall, time and public flag.
+//
+void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, bool bPublic, ASObj* pData)
 {
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FUN_140908b80(nPackageId);

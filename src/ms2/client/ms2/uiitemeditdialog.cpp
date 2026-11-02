@@ -39,6 +39,8 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/effectservice.h"   // C3: TSingleton<> needs the class
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/equipitem.h"   // C3: CEquipItem, the worn item of PC::FUN_141655e10
+#include "ms2/client/ms2/uiservice.h"   // C3: eUIClassID
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
@@ -105,17 +107,15 @@ MS2_CHECK_OFFSET(Unk_IEConstants, m_cc50, 0xcc50);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The player and its equipment.
-class Unk_IEEquip : public CPtred
-{
-public:
-    CItemData* FUN_1411dc7f0();                 // the worn item data
-};
-typedef MS2Ptr<Unk_IEEquip> Unk_IEEquipPtr;
+struct Unk_EquipItemData : CItemData {};
+typedef MS2Ptr<CEquipItem> Unk_IEEquipPtr;
 class PCBase   // C3: member view for 0x14166c930
 {
 public:
     int FUN_14166c930();                                    // 0x14166c930 current state id
+    void FUN_14166cc40(int nValue);                         // C3: view of pcbase.h
 };
+class PC { public: MS2Ptr<CEquipItem> FUN_141655e10(int nSlot); };   // C3: view of the real class
 class Unk_IEPlayer
 {
 public:
@@ -126,8 +126,6 @@ public:
     virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49();
     virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58();
     virtual void vfunc_59(int nState, int a2, int a3, int a4);      // 59 (0x1d8) switch the player state
-    void FUN_14166cc40(int n);
-    Unk_IEEquipPtr FUN_141655e10(int nSlot);    // the handle of the worn item of a slot
 };
 class GameObject   // C3: member view for the former free stand-ins
 {
@@ -177,7 +175,8 @@ class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoCutscene* GetInstance();
 };
-Unk_BSCamera* FUN_140cd47b0(int nId);
+class UICameraEditDialog { public: void SetEnableFlagIfHidden(int n); };   // C3: view of uicameraeditdialog.h
+UICameraEditDialog* FUN_140cd47b0(eUIClassID nId);
 class Unk_IESound;
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -192,7 +191,7 @@ class CItemCustomizeController   // C3: member view for the former free stand-in
 public:
     int GetEquipItemValue();
 };
-void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
 CStringW FUN_140f09f90(int nId, const int& nArg);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -249,7 +248,7 @@ void UIItemEditDialog::OnLoadComplete()
         m_198.AssignRaw(new Customize(((class GameObject*)(class Unk_IEPlayer*)(pPc))->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
         m_198->SelectSlot(6);
     }
-    m_1a8 = FUN_140cd47b0(0x4ef2);
+    m_1a8 = (Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2);
     if (m_30.get())
     {
         CString strGuide = ((struct Unk_IEConstants*)FUN_1401d3200())->m_cc50.FUN_1409f6f30();
@@ -280,7 +279,7 @@ void UIItemEditDialog::vfunc_15()
     if (m_198.get())
         m_198->FUN_140cd1bf0();
     if (m_1a8)
-        m_1a8->FUN_1418dda30(m_198->IsDragging() == 0);
+        reinterpret_cast<UICameraEditDialog*>(m_1a8)->SetEnableFlagIfHidden(m_198->IsDragging() == 0);
 }
 
 // The answers of the scene (OnExit) and of the message box (errorEdit).
@@ -325,7 +324,7 @@ void UIItemEditDialog::vfunc_79(void* p)
         int nResult = static_cast<CInPacket*>(p)->ReadInt32();
         if (nResult != 0)
         {
-            FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, this, L"errorEdit");
+            FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, static_cast<IMessageListener*>(this), L"errorEdit");
             OnReset();
         }
     }
@@ -365,7 +364,7 @@ void UIItemEditDialog::vfunc_24(void* p)
         return;
     if (reinterpret_cast<PCBase*>(pPc)->FUN_14166c930() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
-    pPc->FUN_14166cc40(0x4c);
+    reinterpret_cast<PCBase*>(pPc)->FUN_14166cc40(0x4c);
     NoticeMessage effect;   // C3: was Unk_IEEffectRequest
     ((Unk_IEEffectRequest&)(effect)).m_strName = ((struct Unk_IEEffectPaths*)FUN_1401d31f0())->m_hairApply;
     ((Unk_IEEffectRequest&)(effect)).m_n08 = 1;
@@ -463,7 +462,7 @@ bool UIItemEditDialog::FUN_1419bd7a0()
     if (pPc == 0)
         return false;
     {
-        Unk_IEEquipPtr spEquip = pPc->FUN_141655e10(6);
+        Unk_IEEquipPtr spEquip = reinterpret_cast<PC*>(pPc)->FUN_141655e10(6);
         if (spEquip.get() && spEquip->FUN_1411dc7f0() && spEquip->FUN_1411dc7f0()->FUN_14053e210())
             return true;
     }

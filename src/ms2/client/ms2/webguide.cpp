@@ -45,10 +45,5 @@ WebGuideTable::WebGuideTable()
     Load(CString("Table"), CString("WebGuide.xml"), CString("v"));
 }
 
-// @0x141b82110
-WebGuide::~WebGuide()
-{
-}
-
 // @0x141b834b0
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -63,10 +63,9 @@ public:
     Unk_CaIntSlot m_quest;                              // +0x6dd0 the quest that opens the dialog
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-__int64* FUN_1402c05b0(Unk_CaIntSlot* pSlot);
 extern __int64 DAT_143ab2898;                           // the meso of the player
-extern void* DAT_143aca188;                             // the manager
-extern void* DAT_143aac648;                             // the ability table
+class CCharacterAbilityManager;
+class CCharacterAbilityTable;
 
 // The quest state (holder + 0x10) and the quest rows.
 class Unk_CaQuestState { public: int FUN_140745590(int nQuest); };
@@ -85,7 +84,7 @@ CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);
 template <class A, class B> CStringW BlockFormat(int nStringId, const A& a, const B& b);
-CStringW FUN_14093fd30(int nStringId, const __int64* pDays, const __int64* pMeso);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_14151f200();
@@ -118,9 +117,9 @@ public:
 };
 MS2_CHECK_SIZE(NotifyChangeMyLevel, 0x20);
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);
+void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
 void FUN_140710590(COutPacket& packet);
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
@@ -168,13 +167,13 @@ Scaleform::GFx::Value AScript::FUN_140f2c690(const char* szMethod, int n, CStrin
 // @0x140f2d240
 CCharacterAbilityManager* FUN_140f2d240()
 {
-    return (CCharacterAbilityManager*)DAT_143aca188;
+    return (CCharacterAbilityManager*)reinterpret_cast<void*>(TSingleton<CCharacterAbilityManager>::s_instance);
 }
 
 // @0x140f2d250
 Unk_CaTable* FUN_140f2d250()
 {
-    return (Unk_CaTable*)DAT_143aac648;
+    return (Unk_CaTable*)reinterpret_cast<void*>(TSingleton<CCharacterAbilityTable>::s_instance);
 }
 
 // @0x140f2c530
@@ -437,7 +436,7 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         {
             ATL::CTimeSpan cooldown((unsigned)(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_cooldown)->Get()) * 0x3c));
             __int64 nDays = cooldown.GetDays();
-            CStringW strText = FUN_14093fd30(0xc5b, &nDays, FUN_1402c05b0(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso));
+            CStringW strText = FormatStringId<__int64, __int64>(0xc5b, nDays, *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso)->Get());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"OnMesoReset"));
             if (box.get())
             {
@@ -498,7 +497,7 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (strTag.Find(L"OnMesoReset", 0) == 0 && nResult == 0)
         {
-            if (DAT_143ab2898 < *FUN_1402c05b0(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso))
+            if (DAT_143ab2898 < *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)FUN_1401d3200())->m_meso)->Get())
             {
                 FUN_141275260(0xc58, 1, 1);
                 return 1;

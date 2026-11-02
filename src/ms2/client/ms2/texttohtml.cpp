@@ -236,8 +236,8 @@ class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
 
 // Unrecovered string formatters whose instances live in other units.
-CStringW FUN_14052bd00(int nId, const CStringW& a);
-CStringW FUN_14086d060(int nId, const __int64& n);              // FormatStringId<__int64>
+template <class A> CStringW FormatStringId(int nId, const A& a);
+              // FormatStringId<__int64>
 CStringW TranslateEnumDungeonGroup(unsigned nId);               // the dungeon name
 unsigned FUN_141275c00(unsigned nRank);
 unsigned FUN_141275bd0(void* pId);
@@ -645,7 +645,7 @@ CStringW FUN_141841a80(const CStringW& strText, int nSize)
 CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nSize)
 {
     CStringW strQuote(L"''");
-    CStringW strName = FUN_14052bd00(0x626, pItem->FUN_140527b10());
+    CStringW strName = FormatStringId<CStringW>(0x626, pItem->FUN_140527b10());
     ULong nColor = FUN_141275c00(pItem->FUN_140526bd0());
     CStringW strResult = FUN_14028dee0(0x678, strQuote, nColor, nSize, strName);
     return strResult;
@@ -679,7 +679,7 @@ CStringW FUN_141841fd0(CStringW strName, unsigned nSize)
 CStringW FUN_141842130(__int64 nId)
 {
     CStringW strBody;
-    strBody = FUN_14086d060(0x625, nId);
+    strBody = FormatStringId<__int64>(0x625, nId);
     return FUN_14183e930(strBody, FUN_141275bd0((void*)nId));
 }
 
@@ -687,7 +687,7 @@ CStringW FUN_141842130(__int64 nId)
 CStringW FUN_1418421e0(__int64 nId)
 {
     CStringW strBody;
-    strBody = FUN_14086d060(0x624, nId);
+    strBody = FormatStringId<__int64>(0x624, nId);
     return FUN_14183e930(strBody, FUN_141275b40());
 }
 

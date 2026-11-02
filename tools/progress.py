@@ -577,11 +577,16 @@ def vftable_va(sym, bases, vft, siblings=()):
 _va_names = {}             # exe VA -> function identifiers the symbol table names there (look-alike guess, 2c)
 
 
+_table_path = None      # the table load_table loaded last
+
+
 def load_table(path):
     """bm.load_symbols + MS2_VA_NAMES_RESET=1: drop _va_names, which is built lazily from the table loaded at the first
     process_unit. Unset (old behaviour), a merge's in-process gate pass reuses the symbols-manual one and so lets look-alike
     guesses through that the unit's own gate (committed table) rejects (200-unit slice, 10-31: tail9 kept 24 more
     auto-guess pairs and 0 instead of 1 stub; MS2_MATCH_J>1 workers fork with it empty, i.e. already behave like 1)."""
+    global _table_path
+    _table_path = path
     bm.load_symbols(path)
     if os.environ.get("MS2_VA_NAMES_RESET"):
         _va_names.clear()
@@ -1105,6 +1110,32 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
             for i, n in enumerate(names):
                 if i < len(vas) or len(names) > len(vas):
                     guessed[n] = vas[i % len(vas)]
+        # 2d. MS2_GUESS_PROVE=1: a look-alike whose owner is not arbitrary is no guess. n owns v if n fits v under the
+        # committed table (strict trial, chained body compared) and either n's own row is v, or n has no row, v is the
+        # only VA it fits (the other copies are ruled out by a target the table binds) and no other name fits v. The
+        # pair joins `known`, so step 3 decides ok and harvests as for any pair. Names sharing a VA or a copy (ICF
+        # folds, twins) and names whose row lies elsewhere stay guesses. Not under the symbols-manual table of a
+        # merge's first pass: a table of few rows rules nothing out, and the gate pass re-runs guessing units.
+        if guessed and os.environ.get("MS2_GUESS_PROVE") and _table_path == bm.SYMBOLS_TSV:
+            bm.CHAIN = CHAIN
+            fit = {n: [v for v in h if trial(n, v)] for n, h in cands_g.items() if h}
+            bm.CHAIN = False
+            claim = {}
+            for n, h in fit.items():
+                for v in h:
+                    claim.setdefault(v, []).append(n)
+            for n, h in sorted(fit.items()):
+                row = outside.get(n)
+                if row in h:
+                    v = row
+                elif row is None and len(h) == 1 and claim[h[0]] == [n]:
+                    v = h[0]
+                else:
+                    continue
+                if v in implied.get(n, (v,)):
+                    known[n] = v
+                    how[n] = "auto-proof"
+                    guessed.pop(n, None)
     # 3. match everything paired (harvests the symbol map)
     bm.CHAIN = CHAIN
     funclets = {}
@@ -1367,6 +1398,8 @@ def main():
         a.report = True
     if a.agent and not re.fullmatch(r"[A-Za-z0-9_.-]+", a.agent):
         sys.exit(f"bad agent name {a.agent!r}")
+    # a queue.tsv key is `?\\name.cpp` while MS2-UNIT carries the real `client\\ms2\\` directory
+    a.filters = [x[2:] if x.startswith("?\\") else x for x in a.filters]
     if a.filters and not (a.agent or a.report):
         # a filtered merge rebuilds progress/symbols.tsv from the selected units' harvest only (2026-10-17: a worker's
         # `progress.py -v <unit>` without MS2_AGENT cut it from 73478 to 2655 rows); merges always run on all units
@@ -1421,7 +1454,7 @@ def main():
         if u.rel in failed or not os.path.exists(u.obj):
             cache[u.rel] = {"key": None, "failed": True, "res": None}
             continue
-        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g2" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "")]
+        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g2" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "") + ("p" if os.environ.get("MS2_GUESS_PROVE") else "")]
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: persistent tree, match results also keyed by their inputs
             key.append(mergekey.game_stamp())
             key.append(mergekey.rows_stamp(u.obj, manual_tsv))
@@ -1479,6 +1512,15 @@ def main():
                     kept += 1
                     if s2 < s1:
                         print(f"gate pass: {u.rel}: stubs {s1[0]} -> {s2[0]}, exact {-s1[1]} -> {-s2[1]}")
+                elif os.environ.get("MS2_GUESS_PROVE"):
+                    # the unit keeps its first pairing, but a guess the gate pass proved at the same VA, on the name's own
+                    # row, is no guess. Only verdicts change: no pair moves, so no VA loses a name.
+                    p1 = c["res"]["pairs"]
+                    proved = {n: p for n, p in res2["pairs"].items() if p["ok"] and bm.SYMBOLS.get(n) == p["va"]
+                              and p1.get(n, {}).get("how") == "auto-guess" and p1[n]["va"] == p["va"]}
+                    if proved:
+                        c["res2"] = dict(c["res"], pairs={**p1, **proved})
+                        print(f"gate pass: {u.rel}: {len(proved)} guess(es) proved, first pairing kept")
                 c["key2"] = [c["key"], stamp2(u)]
             load_table(manual_tsv)
             print(f"gate pass: {kept} of {len(gate_todo)} unit(s) keep their gate pairing", flush=True)

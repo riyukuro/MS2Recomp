@@ -18,7 +18,7 @@ class MyPC : public PCBase
 public:
     MyPC();                                                 // 0x141520680
     int vfunc_116() override;                               // declared only so the class is concrete
-    void FUN_14152a4a0(PCBase* pTarget);                    // observe pTarget (guild battle, uipvpguildteamdialog)
+    void StartObserving(PCBase* pTarget);                    // observe pTarget (guild battle, uipvpguildteamdialog)
     void FUN_14152a960();                                   // stop observing
     void FUN_14152a2f0(int n);                              // scenestategame packet 0x35
     class Unk_MyPCSkillSlots* FUN_141523bc0();              // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
@@ -52,6 +52,7 @@ public:
     void FUN_14152ed60(class Unk_UserProxy* pProxy);        // scenestategame OnAddUser
     void FUN_1416634a0(__int64 nCharId);                    // PC member (scenestategame OnAddUser)
     int FUN_141527eb0();                                    // (scenestategame storage update)
+    int FUN_141529620();
     int FUN_14152e060();                                    // 0x14152e060 the id of the actor held (state 0x20), else 0 (scenestategame 0x79)
     MS2Ptr<CHomePrivilege> FUN_140967010();                 // 0x140967010 the house privileges (+0x1628; scenestategame taxi)
 private:

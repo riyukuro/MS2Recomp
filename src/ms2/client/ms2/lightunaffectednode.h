@@ -6,10 +6,6 @@
 // Light-like effect (FUN_140afe6c0 yields them from the global list); names inferred (NiLight::AttachAffectedNode etc.).
 class Unk_LUNLight {
 public:
-    void FUN_141175880(NiNode* node);
-    void FUN_1411758d0(NiNode* node);
-    void FUN_141175a10(NiNode* node);
-    void FUN_141175a70(NiNode* node);
     void FUN_141176660(bool flag);
 };
 // Intrusive list of lights hanging off a global (FUN_140afe770 = DAT_143afa980 + 400).

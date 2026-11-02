@@ -75,14 +75,8 @@ class NoticeMessage   // C3: member view for the former free stand-ins
 public:
     class NiNode* GetRoot();
 };
-void FUN_1409807b0(NiTexturingProperty* pProp, int n);
-void FUN_1409805c0(NiTexturingProperty* pProp, int n);
-void FUN_1409806e0(NiTexturingProperty* pProp, int n);
-void FUN_140980f60(NiAlphaProperty* pProp, int nMode);              // source blend mode
-void FUN_140980af0(NiAlphaProperty* pProp, int nMode);              // destination blend mode
 void FUN_1415672e0(NiAVObject* pObj, int n);
 // Time controller / extra data helpers.
-void FUN_1416f18b0(NiTimeController* pCtrl, int n);
 // Property list of an NiMesh (hash/list walk with a position cursor).
 class Unk_PropList;
 void* FUN_14098de00(Unk_PropList* pList, void** ppPos);             // slot at the position, advances it
@@ -242,7 +236,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
                 NiTimeController* pCtrl = ((class NiObjectNET*)(class NiObjectNET*)(pProp))->GetControllers();
                 while (pCtrl != 0)
                 {
-                    FUN_1416f18b0(pCtrl, 0);
+                    pCtrl->SetCycleType(NiTimeController::LOOP);
                     pCtrl = ((class NiTimeController*)(class NiTimeController*)(pCtrl))->GetNext();
                 }
             }
@@ -280,9 +274,9 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, 0x1f42, 8000, 0x15);
         m_spMesh->GetMesh()->SetName("RibbonEffect");
         NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-        FUN_1409807b0(spTexture.operator->(), 0);
-        FUN_1409805c0(spTexture.operator->(), 1);
-        FUN_1409806e0(spTexture.operator->(), 0);
+        spTexture->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
+        spTexture->SetApplyMode((NiTexturingProperty::ApplyMode)1);
+        spTexture->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
         ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5).Get()));
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spTexture);
 
@@ -296,16 +290,16 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         switch (pRibbon->m_nAlphaMode)
         {
         case 0:
-            FUN_140980f60(pAlpha, 6);
-            FUN_140980af0(pAlpha, 0);
+            pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
+            pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
             break;
         case 1:
-            FUN_140980f60(pAlpha, 6);
-            FUN_140980af0(pAlpha, 7);
+            pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
+            pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)7);
             break;
         case 2:
-            FUN_140980f60(pAlpha, 0);
-            FUN_140980af0(pAlpha, 0);
+            pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)0);
+            pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
             break;
         }
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(pAlpha);

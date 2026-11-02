@@ -129,6 +129,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/commonfiles/ugcmappackageinfo.h"
+#include "ms2/commonfiles/ugcmapdata.h"
 #include "ms2/commonfiles/itemenchantinfo.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/ms2format.h"
@@ -1113,7 +1114,7 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
         if (nOpt == 0)
             reinterpret_cast<Unk_UcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add1f0();
         else if (nOpt == 1)
-            reinterpret_cast<Unk_UcUiMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141add210();
+            reinterpret_cast<Unk_UcUiMgr*>(TSingleton<CUIService>::GetInstance())->ShowLackMeratAsk();
         break;
     case 4:
         FUN_141275260(0x39, 1, 1);
@@ -1212,16 +1213,12 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_UcItemData, m_strType, 0x290);
 MS2_CHECK_OFFSET(Unk_UcItemData, m_args, 0x2b0);
-struct Unk_UcSalable { void* m[22]; void* m_strB0; void* m2[2]; };    // 200-byte working record; +0xb0 is a CString (built by the ctor 0x1408ad110)
-void FUN_1408ad110(Unk_UcSalable* p);
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
-void FUN_14050de70(Unk_UcSalable* p);
 bool FUN_14034eee0(const CStringW& a, const wchar_t* pszB);
 CString FUN_14016a600(const wchar_t* psz, int n);
 bool FUN_1401647e0(const CString& a, const CString& b) noexcept;
 
 // @0x1418ffba0
-// MS2-FUNCTIONAL: the exe keeps sal as an RAII object (ctor 0x1408ad110, dtor 0x14050de70 after the result is set); ours calls them by hand
 int FUN_1418ffba0(Unk_UcItemPtr item)
 {
     if (item.FUN_1401b5240(0) != 0)
@@ -1234,24 +1231,20 @@ int FUN_1418ffba0(Unk_UcItemPtr item)
     Unk_UcPCInfo* pInfo = ((class Unk_UcPCInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50());
     if (pInfo == 0)
         return 0;
-    Unk_UcSalable sal;
-    FUN_1408ad110(&sal);
-    if (FUN_1408a0d30(1, *(struct Unk_UGCGroup*)(&sal), pInfo->m_nField1c) != 0)
+    Unk_UGCGroup sal;
+    if (FUN_1408a0d30(1, sal, pInfo->m_nField1c) != 0)
     {
         CString strPackage = FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_args.FUN_1408d21c0(0, L""), 0);
         UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
-        if ((CUGCMapPackageData*)spPackage != 0 && FUN_1401647e0(spPackage->m_strIndoorSizeType, reinterpret_cast<const CString&>(sal.m_strB0)))
+        if ((CUGCMapPackageData*)spPackage != 0 && FUN_1401647e0(spPackage->m_strIndoorSizeType, sal.indoorSizeType))
         {
-            FUN_14050de70(&sal);
             return 1;
         }
     }
     if (pInfo->m_nField1c == 0 && ((class MyPC*)(class MyPC*)(pPC))->HasNoHome() == 0)
     {
-        FUN_14050de70(&sal);
         return 1;
     }
-    FUN_14050de70(&sal);
     return 0;
 }
 
@@ -1286,7 +1279,7 @@ void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, con
 {
     ASObj obj(2);
     FUN_1418fffd0(&obj, nTabIndex, strLabel, strText);
-    pArray->FUN_1422bc050(obj.FUN_1422bb870());
+    pArray->PushValue(obj.FUN_1422bb870());
 }
 MS2_REPLACE(0x1418fff20, FUN_1418fff20, 162, 0x243A22D7);
 
@@ -1327,7 +1320,7 @@ public:
     int OpenBook(int, int, int);
     int GetBookId();
 };
-void* FUN_140cc18a0();
+class CWebBrowserService;
 void FUN_141b794e0(void* pSvc, CString& strOut, const char* szPath);
 
 // @0x141900510
@@ -1475,7 +1468,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
     else if (nKind == 3)
     {
         CString strUrl;
-        FUN_141b794e0(FUN_140cc18a0(), strUrl, ((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.FUN_140298f80());
+        FUN_141b794e0(reinterpret_cast<void*>(TSingleton<CWebBrowserService>::GetInstance()), strUrl, ((struct Unk_UcCfg*)FUN_1401d3200())->m_d2f8.FUN_140298f80());
         FUN_1418fe1c0(strUrl);
         return false;
     }
@@ -2093,8 +2086,7 @@ int FUN_141902660(MS2Ptr<CItem> spItem)
         CItemEnchantInfo* pEnchant = pExtra->FUN_140630d60();
         if (pEnchant != 0 && pEnchant->NeedsChargeVersionUpdate() != 0)
         {
-            Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_itemenchant_enchant_exp_refund"), 0, CStringW(L""));
-            if (spBox.get() != 0)
+            if (Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_itemenchant_enchant_exp_refund"), 0, CStringW(L"")))
             {
                 spBox->Append<__int64>(spItem->GetItemUid());
                 spBox->FUN_141a024a0(false);

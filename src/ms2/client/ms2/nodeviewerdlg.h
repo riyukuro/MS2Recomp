@@ -10,6 +10,8 @@ class CToolTreeNodesDialog : public CDialog
 {
 public:
     CToolTreeNodesDialog(TFunctor<void, ParamList<CString, EmptyParam> > kOnSelect, CWnd* pParent);
+    void FUN_141858b50(class Unk_TreeNode* pRoot);                  // show the hierarchy of a node
+    afx_msg void OnClose();                                         // 0x141858d20
     char m_pad_tree[0x228 - sizeof(CDialog)];
 };
 

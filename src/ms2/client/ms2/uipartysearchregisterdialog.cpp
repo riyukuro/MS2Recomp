@@ -20,49 +20,22 @@
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/placeholder/blockformat.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/commonfiles/commonstringtable.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
-// The child controls bound by name. All four share the display-object base (FUN_1422c1fe0 = set enabled).
-class Unk_PsDisplay : public ASMovieClip
-{
-public:
-};
-class Unk_PsCombo : public Unk_PsDisplay            // m_maxUserCountCombo
-{
-public:
-    void FUN_1422dfc10();                           // remove all rows
-    void FUN_1422df5f0(unsigned int nRows);         // visible rows
-    void FUN_1422dfce0(const CStringW& strRow);     // add a row
-    int FUN_1422df6c0();                            // selected row
-};
-class Unk_PsInput : public Unk_PsDisplay            // m_inputTitle
-{
-};
-class Unk_PsCheck : public ASButton                 // m_checkAllowAutoJoin
-{
-};
-
-// The party size choices (ints) held by the global config at +0xe770.
-class Unk_PsIntList
-{
-public:
-    size_t FUN_1401910d0() const;                   // count
-    int* FUN_1404f0a10(size_t nIndex);              // element
-};
 class Unk_PsConfig
 {
 public:
     unsigned char m_pad_0[0xe770];
-    Unk_PsIntList m_e770;
+    std::vector<int> m_e770;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 CStringW GetStringCommon(int nId);                    // string table
 CStringW FUN_140719630(int n);                      // "%d"
-CStringW FUN_1408116a0(int nId, const int& nArg);
-CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& strArg, const int& nArg);
-bool FUN_140164830(const CStringW& a, const CStringW& b);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_14151f200();
@@ -70,30 +43,11 @@ void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 int FUN_140695080(class CMatchPartyRecruit const*);   // C3: was FUN_140695080
 
-// Name filter (bad words) of the title.
-class Unk_PsFilter : public CPtred
-{
-public:
-    int FUN_1402262e0(const CStringW& strText, CStringW& strBad);    // nonzero: the text is rejected, strBad = the reason
-};
-class Unk_PsFilterMgr
-{
-public:
-    MS2Ptr<Unk_PsFilter> FUN_140229a50();
-};
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
 // Keyboard state.
 class Unk_PsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-
-// Dialog manager: the top dialog of a layer.
-class Unk_PsDialogMgr
-{
-public:
-    UISwfEntity* FUN_1422d4980(int nLayer);
-};
-Unk_PsDialogMgr* FUN_140b632f0();
 
 // The party search list dialog (UI id 0x4eda); only its RTTI is needed here.
 class UIPartySearchDialog : public UIObject
@@ -214,20 +168,20 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         do { m_30->FUN_140bbe640("m_btnRegister", m_1e0); if (m_1e0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(75), __FUNCTION__)); } while (0);
         do { m_30->FUN_140bbe640("m_btnRemove", m_1f0); if (m_1f0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(76), __FUNCTION__)); } while (0);
 
-        m_1b0->FUN_1422dfc10();
-        m_1b0->FUN_1422df5f0((unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0());
+        m_1b0->ClearItems();
+        m_1b0->SetMenuRowCount((unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size());
         m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRegisterClicked), 0);
         m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::OnRemoveClicked), 0);
-        for (unsigned int i = 0; i < (unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0(); ++i)
+        for (unsigned int i = 0; i < (unsigned int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size(); ++i)
         {
-            m_1b0->FUN_1422dfce0(FUN_140719630(*((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1404f0a10(i)));
+            m_1b0->AddItemLabel(FUN_140719630(((class Unk_PsConfig*)FUN_1401d3200())->m_e770[i]));
         }
         CMatchPartyRecruit* pRecruit = &TSingleton<CPartyManager>::GetInstance()->FUN_141631ce0();
         if (FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)))
         {
-            reinterpret_cast<ASTextInput*>(m_1c0.operator->())->FUN_1422e0ab0(m_190.m_text);
-            reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090((unsigned int)m_190.m_flag);
-            reinterpret_cast<ASDropdownMenu*>(m_1b0.operator->())->SetSelectedIndex((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0() - 1));
+            m_1c0->SetTextW(m_190.m_text);
+            m_1d0->FUN_1422ce090((unsigned int)m_190.m_flag);
+            m_1b0->SetSelectedIndex((int)(((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size() - 1));
             m_1e0->vfunc_4(1);
             m_1f0->vfunc_4(0);
         }
@@ -236,9 +190,9 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
             m_1c0->FUN_1422c1fe0(0);
             m_1d0->FUN_1422c1fe0(0);
             m_1b0->FUN_1422c1fe0(0);
-            reinterpret_cast<ASTextInput*>(m_1c0.operator->())->FUN_1422e0ab0(pRecruit->title);
-            reinterpret_cast<ASButton*>(m_1d0.operator->())->FUN_1422ce090(pRecruit->minimumLevel);
-            reinterpret_cast<ASDropdownMenu*>(m_1b0.operator->())->SetSelectedIndex(FindMaxUserCountIndex(pRecruit->members));
+            m_1c0->SetTextW(pRecruit->title);
+            m_1d0->FUN_1422ce090(pRecruit->minimumLevel);
+            m_1b0->SetSelectedIndex(FindMaxUserCountIndex(pRecruit->members));
             m_1e0->vfunc_4(0);
             m_1f0->vfunc_4(1);
         }
@@ -263,7 +217,7 @@ int UIPartySearchRegisterDialog::vfunc_13()
         return 1;
     if (vfunc_55() == 0 && (m_30.get() ? true : false))
     {
-        if (FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
+        if (FUN_140b632f0()->GetTopEntity(m_e0) == this)
         {
             CString strKey("");
             if (((class Unk_PsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
@@ -310,7 +264,7 @@ int UIPartySearchRegisterDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // @0x141321cc0
 void UIPartySearchRegisterDialog::ApplyTitleAndAutoJoin(CStringW* pText, unsigned char nAutoJoin, Unk_PsRegState* pState)
 {
-    if (FUN_140164830(m_220, *pText))
+    if (m_220 != *pText)
         pState->m_text = *pText;
     pState->m_flag = nAutoJoin;
 }
@@ -337,7 +291,7 @@ CStringW UIPartySearchRegisterDialog::GetRandomTitle(CStringW strArg, int nArg)
 {
     if (m_200.GetCount() == 0)
         return CStringW(L"");
-    return FUN_140275590((const wchar_t*)m_200[(unsigned long long)(long long)rand() % m_200.GetCount()], strArg, nArg);
+    return StringFormat<CStringW, int>((const wchar_t*)m_200[(unsigned long long)(long long)rand() % m_200.GetCount()], strArg, nArg);
 }
 
 // @0x141322020
@@ -345,10 +299,10 @@ int UIPartySearchRegisterDialog::GetSelectedMaxUserCount()
 {
     if (m_1b0 == 0)
         return 10;
-    int nRow = m_1b0->FUN_1422df6c0();
-    if (nRow < 0 || nRow >= (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0())
+    int nRow = m_1b0->GetSelectedIndex();
+    if (nRow < 0 || nRow >= (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size())
         return 10;
-    return *((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1404f0a10(nRow);
+    return ((class Unk_PsConfig*)FUN_1401d3200())->m_e770[nRow];
 }
 
 // @0x1413220d0
@@ -356,10 +310,10 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
 {
     if (pState->m_text.GetLength() < 2)
     {
-        FUN_140d73aa0(FUN_1408116a0(0xb53, 2), 0, 0, CStringW(L""));
+        FUN_140d73aa0(BlockFormat<int>(0xb53, 2), 0, 0, CStringW(L""));
         return 0;
     }
-    if (Unk_PsFilter* pFilter = ((class Unk_PsFilterMgr*)FUN_14025e7d0())->FUN_140229a50().get())
+    if (CBanTextChecker* pFilter = FUN_14025e7d0()->GetChecker().get())
     {
         CStringW strBad;
         if (pFilter->FUN_1402262e0(pState->m_text, strBad) != 0)
@@ -383,9 +337,9 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
 // @0x141322380
 int UIPartySearchRegisterDialog::FindMaxUserCountIndex(int nValue)
 {
-    for (int i = 0; i < (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1401910d0(); ++i)
+    for (int i = 0; i < (int)((class Unk_PsConfig*)FUN_1401d3200())->m_e770.size(); ++i)
     {
-        if (*((class Unk_PsConfig*)FUN_1401d3200())->m_e770.FUN_1404f0a10(i) == nValue)
+        if (((class Unk_PsConfig*)FUN_1401d3200())->m_e770[i] == nValue)
             return i;
     }
     return -1;
@@ -396,7 +350,7 @@ void UIPartySearchRegisterDialog::OnRegisterClicked(const Scaleform::GFx::Functi
 {
     if (m_1c0 == 0 || m_1d0 == 0)
         return;
-    m_180.m_text = reinterpret_cast<ASTextInput*>(m_1c0.operator->())->GetText();
+    m_180.m_text = m_1c0->GetText();
     m_180.m_text.Trim();
     m_180.m_flag = m_1d0->FUN_1422ce0e0();
     if (FUN_1413220d0(&m_180, 0) != 0)

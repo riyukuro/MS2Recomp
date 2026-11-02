@@ -324,7 +324,6 @@ class Unk_RideeEntity
 {
 public:
     void FUN_1408a20a0(unsigned int uiPropId, bool* pOut);          // bool property
-    void FUN_140ae1160(unsigned int uiPropId, unsigned short* pOut); // short property
     
 };
 class Unk_RideeEntityMgr
@@ -333,11 +332,12 @@ public:
 };
 
 // The application service (class id 0x06100017) found through the framework cell (buddy.cpp keeps the same view).
+class Cube;
+class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };   // C3: member view
 class Unk_Service6100017 : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    void* FUN_1410b8ab0(NiPoint3 kPos);                             // the cube at a position
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -398,16 +398,16 @@ Ridee::Ridee()
 {
     FUN_141682f60(&m_unk_6d8, this);
     m_spStateMgr.AssignRaw(new CStateManager(this));
-    m_spStateMgr->FUN_1417daeb0(1, new StateIdle(this));
-    m_spStateMgr->FUN_1417daeb0(2, new StateWalk(this));
-    m_spStateMgr->FUN_1417daeb0(4, new StateLand(this));
-    m_spStateMgr->FUN_1417daeb0(5, new StateFall(this));
-    m_spStateMgr->FUN_1417daeb0(6, new StateJump(this));
-    m_spStateMgr->FUN_1417daeb0(0x10, new StateSkill(this));
-    m_spStateMgr->FUN_1417daeb0(0x1b, new StateSwim(this));
-    m_spStateMgr->FUN_1417daeb0(0x16, new StateTalk(this));
-    m_spStateMgr->FUN_1417daeb0(0x35, new StateTriggerEmotion(this));
-    m_spStateMgr->FUN_1417daeb0(0x46, new StateTriggerFollowNpc(this));
+    m_spStateMgr->RegisterState(1, new StateIdle(this));
+    m_spStateMgr->RegisterState(2, new StateWalk(this));
+    m_spStateMgr->RegisterState(4, new StateLand(this));
+    m_spStateMgr->RegisterState(5, new StateFall(this));
+    m_spStateMgr->RegisterState(6, new StateJump(this));
+    m_spStateMgr->RegisterState(0x10, new StateSkill(this));
+    m_spStateMgr->RegisterState(0x1b, new StateSwim(this));
+    m_spStateMgr->RegisterState(0x16, new StateTalk(this));
+    m_spStateMgr->RegisterState(0x35, new StateTriggerEmotion(this));
+    m_spStateMgr->RegisterState(0x46, new StateTriggerFollowNpc(this));
     m_unk_180.m_z = 3.5f;
     m_unk_180.m_y = 1.2f;
     m_unk_180.m_w = 3.5f;
@@ -1005,13 +1005,13 @@ void Ridee::FUN_141706650(bool bForce)
                 bool bRideable = false;
                 unsigned short nKind = 0;
                 pEntity->FUN_1408a20a0(0xecfdd742, &bRideable);
-                pEntity->FUN_140ae1160(0xada5c5d2, &nKind);
+                reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<unsigned short>(0xada5c5d2, nKind);
                 if (bRideable && (nKind == 9 || nKind == 8))
                 {
                     NiPoint3 kPropPos;
                     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPropPos));
                     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-                    if (spService->FUN_1410b8ab0(kPropPos) && vfunc_99(0) == 0)
+                    if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->GetCubeAtPoint(reinterpret_cast<Vector3&>(kPropPos)) && vfunc_99(0) == 0)
                     {
                         if (FUN_1409f7ca0()->FUN_14168a9b0(pEntity, vfunc_18()))
                             spNew->m_nA0 = FUN_1408a13d0(kPropPos);

@@ -135,8 +135,6 @@ public:
     int FUN_140b11180();
     void FUN_140b114e0(int);
 };
-class Unk_SiPetRow : public CPtred { };
-class Unk_SiPetTable { public: MS2Ptr<Unk_SiPetRow> FUN_140c892c0(int nId); };
 class Unk_SiPetBook { public: char m_c; };
 int FUN_140b11e90(struct Unk_PetFoodBook* pBook, PCBase* pPet);   // C3: the real free function
 class Unk_SiPetData { public: char m_pad[0x68]; Unk_SiPetBook m_book; };
@@ -148,8 +146,8 @@ class CPetManager   // C3: member view for the former free stand-ins
 public:
     class Unk_PetManagerEmpty* FUN_140c8b430();
     CCPetInfoPacket::Info* GetInfo();
+    MS2Ptr<CItem> FindItemById(int nItemId);
 };
-bool FUN_1401c0050(MS2Ptr<Unk_SiPetRow>* p, int n);      // MS2Ptr::operator==(T*)
 
 // ---- StateIdle ----
 
@@ -235,8 +233,7 @@ void StateIdle::vfunc_8(double fTime)
         return;
     int nWater = m_pOwner->FUN_141675ed0();
     Unk_PCMove* pBuff = static_cast<Unk_PCMove*>(m_pOwner->FUN_14166d240());
-    Vector3 kPos = static_cast<const Vector3&>(pBuff->FUN_141683290());
-    m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (m_pOwner->FUN_141676b70() != 0)
     {
         vfunc_2(0xc);
@@ -298,8 +295,7 @@ void StateIdle::vfunc_8(double fTime)
 void StateIdle::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    efd::UInt64 qwKey;
-    unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+    unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
     const efd::ClassInfo* pDesc;
     if (m_pOwner != 0)
         pDesc = m_pOwner->GetClassDesc();
@@ -542,7 +538,7 @@ void StateIdle::FUN_1417ce820(unsigned nSeq)
     {
         int nSub = m_n10 - 2;
         efd::utf8string kName = m_pOwner->FUN_141679170(0x27, nSub);
-        if (!m_pOwner->FUN_141679220(kName.c_str()))
+        if (!m_pOwner->HasAnimSequence(kName.c_str()))
             kName = m_pOwner->FUN_141679170(0x27, 0);
         m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
@@ -768,8 +764,7 @@ void StateIdleNPC::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n10 = 1;
-    efd::UInt64 qwKey;
-    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()))->GetActorManager(m_pOwner->FUN_14123c460());
     if (pMgr != 0)
     {
         unsigned nSeq = static_cast<NiActorManager*>(pMgr)->GetTargetAnimation();
@@ -843,15 +838,14 @@ void StateIdlePet::vfunc_9(double fTime)
     PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet == 0)
         return;
-    if (pPet->FUN_14166ce30() != 0 && AsPC(pPet)->FUN_141661970() != 0)
+    if (pPet->FUN_14166ce30() != 0 && AsPC(pPet)->IsRevivalBlocked() != 0)
     {
         efd::utf8string kName("Tired_A");
         m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
     else
     {
-        efd::UInt64 qwKey;
-        unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+        unsigned nSeq = FUN_140b7f6a0(reinterpret_cast<Unk_SiAnimSvc*>(FUN_141b6f910()), m_pOwner->FUN_14123c460());
         switch (m_n10)
         {
         case 1:
@@ -924,7 +918,7 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
             int nPetId = FUN_140b11e90((struct Unk_PetFoodBook*)&reinterpret_cast<Unk_SiPetData*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo())->m_book, pPet);
             if (nPetId != 0)
             {
-                MS2Ptr<Unk_SiPetRow> spRow = ((class Unk_SiPetTable*)((class CPetManager*)(class Unk_SiPetMgr*)(((class Unk_SiPetMgr*)FUN_140535320())))->FUN_140c8b430())->FUN_140c892c0(nPetId);
+                MS2Ptr<CItem> spRow = reinterpret_cast<CPetManager*>(((class CPetManager*)(class Unk_SiPetMgr*)(((class Unk_SiPetMgr*)FUN_140535320())))->FUN_140c8b430())->FindItemById(nPetId);
                 if (spRow == 0)
                     FUN_1417d0540(0x5f);
             }

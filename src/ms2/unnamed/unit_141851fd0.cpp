@@ -19,6 +19,8 @@ public:
     float GetEndKeyTime() const;
     class NiTimeController* GetNext() const;
     void SetPhase(float);
+    enum CycleType { LOOP, REVERSE, CLAMP };
+    void SetCycleType(CycleType eType);
 };
 class NiObject   // C3: member view for the former free stand-ins
 {
@@ -52,7 +54,6 @@ bool FUN_141546cb0(void* pList);
 bool FUN_141546c80(void* pArr);
 void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
 void FUN_14098e870(void* pCtrl, int nValue);
-void FUN_1416f18b0(void* pCtrl, unsigned int uValue);
 
 // Controller interface with the two virtual slots used here (the slots in between are unrecovered).
 struct Unk_CtrlIface
@@ -327,7 +328,7 @@ void FUN_1418528f0(Unk_CtrlMax* pMax, void* pCtrl)
 void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl)
 {
     if (((Unk_CtrlIface*)pCtrl)->vfunc_22())
-        FUN_1416f18b0(pCtrl, pArg->m_uValue);
+        ((NiTimeController*)pCtrl)->SetCycleType((NiTimeController::CycleType)pArg->m_uValue);
 }
 
 // @0x141852970

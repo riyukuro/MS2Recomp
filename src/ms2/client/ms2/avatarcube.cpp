@@ -102,7 +102,7 @@ void AvatarCube::vfunc_12()
         if (reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_140999490(FUN_14123c460(AC_KEY(kId1)), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
             Unk_AcKey kId2;
-            reinterpret_cast<Unk_AcAnimSvc*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0((class egf::EntityID const &)(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId2)))), kIdle, 1.0f, true);
+            reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((class egf::EntityID const &)(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId2)))), kIdle, 1.0f, true);
         }
     }
 }

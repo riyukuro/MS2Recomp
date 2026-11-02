@@ -680,7 +680,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strTooltip = L"s_tooltip_gamemenu_learning_quest";
         pDef->m_nUiId = 0x4f18;
         pDef->m_nKeyBind = 400030;
-        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193bdf0);
+        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::OpenLearningQuestDialog);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {
@@ -792,7 +792,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strLabel = "$s_gamemenu_popup_stampevent";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_stampevent";
         pDef->m_nUiId = 0x4f33;
-        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193c550);
+        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::OpenStampEventDialog);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {
@@ -1039,7 +1039,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strLabel = "$s_gamemenu_popup_longtermattendgift";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_longtermattendgift";
         pDef->m_nUiId = 0x4f98;
-        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193c660);
+        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::OpenLongTermAttendGiftDialog);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {

@@ -73,11 +73,11 @@ public:
     virtual void vfunc_ugc_1(void* pId, CString strText);                   // 1 0x14194b360 a member is typing
 
     void FUN_14194a320(int nKind, const CStringW& strName, const CStringW& strText);    // empty
-    void FUN_14194a340(int nKind, const CStringW& strName, const CStringW& strOther);   // invited
+    void AddInvitedMessage(int nKind, const CStringW& strName, const CStringW& strOther);   // invited
     void FUN_14194a3c0(int nKind, const CStringW& strName, int nMode);      // joined / refused
-    void FUN_14194a4d0(int nKind, const CStringW& strName);                 // left
-    void FUN_14194a540(int nKind, const CStringW& strName);                 // kicked
-    void FUN_14194a5b0(int nKind, const CStringW& strName, const CStringW& strMsg);     // a member's line
+    void AddMemberOnlineMessage(int nKind, const CStringW& strName);                 // left
+    void AddMemberOfflineMessage(int nKind, const CStringW& strName);                 // kicked
+    void AddChatMessage(int nKind, const CStringW& strName, const CStringW& strMsg);     // a member's line
     void AddSystemMessage(int nKind, const CStringW& strName, const CStringW& strMsg);     // a notice line
     void FUN_14194a6f0(NotifyObject* pNotify);                              // NotifyChatEmoticonSelected
     void FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoticons);    // opens the emoticon preview
@@ -87,25 +87,25 @@ public:
     int FUN_14194b190(int nEmoticonId, bool bFavorite);                     // (un)marks a favorite emoticon
     void FUN_14194b440(const CStringW& strName, float x, float y);          // the member popup menu
     int IsUserList();                                                    // the member list is shown
-    CString FUN_14194b8a0();                                                // the settings file name
+    CString GetXmlFileName();                                                // the settings file name
     CStringW GetName();                                               // the chat name
     unsigned GetGroupId();                                               // the group id
-    int FUN_14194b9d0(__int64 nCharacterId);                                // is a member
+    int IsGroupMember(__int64 nCharacterId);                                // is a member
     CStringW FUN_14194ba80(unsigned __int64 nCharacterId);                  // a member's name
     void SetName(CStringW strName);                                   // renames the chat
-    void FUN_14194bcc0(CStringW strText);                                   // appends to the input
+    void SetInputText(CStringW strText);                                   // appends to the input
     void FUN_14194bde0();                                                   // refreshes the window
     void OnBuildScrollingList();                                                   // refreshes the member list
     int FUN_14194c6d0();                                                    // has the key focus
     int FUN_14194c830();                                                    // sends the input
     int FUN_14194cbb0();                                                    // enter: focus the input or send
-    int FUN_14194cd00();                                                    // escape: leave the input
+    int ClearInput();                                                    // escape: leave the input
     int FUN_14194ce40(CStringW strName);                                    // the new name is refused
     void FUN_14194d100(MS2Ptr<class Unk_RankInput> spInput, const CStringW& strText, int bSelectEnd);
     void FUN_14194d3d0(int nKind, const CStringW& strName, const CStringW& strMsg, int bSystem);   // adds a line
     void FUN_14194d6f0();                                                   // shows the typing members
-    static CStringW FUN_14194d8f0(const CStringW& strName, int bSystem);    // the line frame name (static in the exe: rcx = sret)
-    static bool FUN_14194da30(CStringW strMsg);                                  // the line shows a background
+    static CStringW GetMessageFrameName(const CStringW& strName, int bSystem);    // the line frame name (static in the exe: rcx = sret)
+    static bool ShowsLineBackground(CStringW strMsg);                                  // the line shows a background
 
 
 private:
@@ -143,23 +143,23 @@ public:
     virtual void vfunc_67();                                                // 67 0x141950a10 Close: closes every window
     virtual void vfunc_80(void* pPacket);                                   // 80 0x1419512f0 the rename check result
 
-    void FUN_1419515c0(int nGroupId);                                       // a chat was created
+    void OnChatCreated(int nGroupId);                                       // a chat was created
     void FUN_141951720(int nGroupId, const CStringW& strName, const CStringW& strText);
     void FUN_1419517b0(int nGroupId, const CStringW& strName, const CStringW& strOther);   // invited to a chat
     void RemoveGroup(int nGroupId);                                       // a chat was left
-    void FUN_1419519e0(int nGroupId, const CStringW& strName, const CStringW& strOther);   // a member was invited
+    void OnMemberInvited(int nGroupId, const CStringW& strName, const CStringW& strOther);   // a member was invited
     void FUN_141951a70(int nGroupId, const CStringW& strName, int nMode);   // a member joined / refused
-    void FUN_141951af0(int nGroupId, const CStringW& strName);              // a member left
-    void FUN_141951b70(int nGroupId, const CStringW& strName);              // a member was kicked
-    void FUN_141951bf0(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // a notice line
-    void FUN_141951c50(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // queues a member's line
+    void OnGroupMemberOnline(int nGroupId, const CStringW& strName);              // a member left
+    void OnGroupMemberOffline(int nGroupId, const CStringW& strName);              // a member was kicked
+    void AddNoticeLine(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // a notice line
+    void QueueTalkLog(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // queues a member's line
     void FUN_141951d80(int nGroupId, const CStringW& strName, CInPacket* pPacket);       // the item links of a line
     void FUN_141951f70(const CStringW& strText);                           // shares a text with a chat
-    void FUN_1419524e0();                                                   // forgets everything
+    void ClearAll();                                                   // forgets everything
     void FUN_141952530();                                                   // refreshes the tray
     int FUN_141952780();                                                    // minimizes every window
     int FUN_141952840();                                                    // a window is shown
-    unsigned FUN_141952900();                                               // the first free window slot
+    unsigned FindFreeWindowSlot();                                               // the first free window slot
     void FUN_141952960(unsigned nGroupId);                                  // marks a chat read
     int FUN_141952a30(unsigned nGroupId);                                   // the read line count
     int FUN_141952b30(unsigned nGroupId);                                   // the unread line count
@@ -170,12 +170,12 @@ public:
     void FUN_141953090(const CStringW& strName);                            // shows a window
     void FUN_141953160(const CStringW& strName);                            // a window was hidden
     void FUN_141953240(const CStringW& strName);                            // toggles a window
-    void FUN_1419532d0(int nGroupId);                                       // closes the window of a chat
+    void CloseGroupWindow(int nGroupId);                                       // closes the window of a chat
     void FUN_141953460(const CStringW& strName);                            // a window was closed
     void FUN_141953660(CStringW strText);                                   // appends to the current window's input
     void FUN_141953810(int nGroupId, const CStringW& strName, const CStringW& strMsg, int bSystem, int bMinimized);
     CStringW FUN_141953b10(const CStringW& strMsg);                         // colours the item links
-    MS2Ptr<CItem> FUN_141953df0(__int64 nUid);                              // an item link's item
+    MS2Ptr<CItem> FindItemByUid(__int64 nUid);                              // an item link's item
 
     float m_fOffsetX;                                                       // +0x178
     float m_fOffsetY;                                                       // +0x17c

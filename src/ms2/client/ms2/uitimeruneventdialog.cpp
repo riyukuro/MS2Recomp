@@ -31,6 +31,8 @@
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/ascorelist.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -45,8 +47,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                               // clear
-    void FUN_1422dd230(const ASObj& row);               // append a row
 };
 
 // The day tab strip of the movie.
@@ -59,8 +59,6 @@ public:
 class Unk_TrScript
 {
 public:
-    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int a1);                          // 1 int
-    Scaleform::GFx::Value FUN_140acd070(const char* szMethod, unsigned int a1, unsigned int a2);   // 2 unsigned
     Scaleform::GFx::Value FUN_140eba060(const char* szMethod, const AScript& a1, unsigned int a2);  // array, unsigned
     Scaleform::GFx::Value FUN_140ee5060(const char* szMethod, CString a1, bool a2);             // string, bool
 };
@@ -68,27 +66,21 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* szText);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 
 // The counter tables (0x143ab3010): lookup by (kind, id) with a default.
-class Unk_TrCounters;
 class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
-extern Unk_TrCounters g_trCounters;
+extern GameEventUserValue DAT_143ab3010;
 
-WorldService* FUN_1403ed2d0();
 class Unk_TrDlg { public: void FUN_140ea5f80(); };
 Unk_TrDlg* FUN_140938b90(int nType);
 
-CGameRule* FUN_1401c0d90();
-CQuestManager* FUN_140764020();
+void* FUN_1401c0d90();
+void* FUN_140764020();
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 int FUN_140718170(const CString& str);
 __int64 GetServerTime();                                // the server time
-__int64 FUN_140282020(const CMsTime& kTime);            // time_t of a CMsTime
 __int64 FUN_140761ba0(int nA, int nB);
-__int64 FUN_140761ba0(unsigned nA, int nB);
 CStringW FUN_1409404f0(__int64 n);
-CStringW FUN_140938ae0(CStringW strKey, const int& n);
-CStringW FUN_140938ae0(CStringW strKey, const unsigned& n);
-CStringW FUN_1416e5350(unsigned nQuest, int n);
+CStringW FUN_1416e5350(int nQuest, int n);
 void FUN_140710590(COutPacket& packet);
 #ifdef __clang__
 // clang otherwise emits an unavailable CopyChars DLL import for CString + const char*; bind the exe's operator+.
@@ -132,12 +124,12 @@ void UITimeRunEventDialog::vfunc_67()
 void UITimeRunEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull()) {
         vfunc_67();
         return;
     }
-    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_1409ba030("setDay", FUN_140ee4bb0(spContext));
+    reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setDay", FUN_140ee4bb0(spContext));
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_remainTime"))
         spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
     FUN_140ee3580();
@@ -154,7 +146,7 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
     UIObject::vfunc_45(pRetVal, strMethod, pArgs);
     if ((strMethod == "getTabTooltip")) {
         int nTab = FUN_140718170(pArgs->FUN_1422b8d30());
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+        MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
         if (spContext.get() != 0) {
             CMsTime now(GetServerTime());
             CMsTime start(FUN_140ee4990(spContext));
@@ -173,7 +165,7 @@ void UITimeRunEventDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
             int nQuest = pArgs->FUN_1422b8b10();
             MS2Ptr<CQuestData> data = FUN_14074bc40(nQuest);
             if (data.get() != 0) {
-                void* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+                void* pMyPC = WorldService::GetInstance()->FUN_141bd0cc0();
                 if (pMyPC == 0) return;
                 ASTooltip tip(2);
                 if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nQuest, 1)))) {
@@ -208,10 +200,10 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         return 1;
     } else if (!_stricmp(szMethod, "onClickFinalReward")) {
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+        MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
         if (spContext.get() != 0) {
             int nDefault = 0;
-            int nReceived = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
+            int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
             if (nReceived == 0) {
                 COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                 packet.Encode1(3);
@@ -223,10 +215,10 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nKey = data.FUN_1422b8b10();
-            MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+            MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
             if (spContext.get() != 0) {
                 int nDefault = 0;
-                int nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
+                int nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
                 if (nKey == spContext->GetNextRewardKey(nTaken)) {
                     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
                     packet.Encode1(4);
@@ -246,7 +238,7 @@ void UITimeRunEventDialog::vfunc_o178_10(void* pQuest)
     if (m_30.IsNull()) return;
     bool bSkip = static_cast<CQuest*>(pQuest)->GetData()->m_350.m_value != 3;
     if (bSkip) return;
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull()) return;
     MS2Ptr<TimeRunEventContext::QuestContext> spQuest(0);
     if (spContext->m_quests.Lookup(static_cast<CQuest*>(pQuest)->FUN_140bfc580(), spQuest)) {
@@ -262,7 +254,7 @@ void UITimeRunEventDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
     if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000)) {
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+        MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
         if (spContext.IsNull()) {
             vfunc_67();
             return;
@@ -276,19 +268,19 @@ void UITimeRunEventDialog::vfunc_15()
 // @0x140ee3290
 int UITimeRunEventDialog::FUN_140ee3290()
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull()) return 0;
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-        Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+        Unk_PayloadPtr<CQuest> quest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(spQuest->m_questId);
         if (quest.IsNull()) return 0;
         if (quest->GetState() == 3) return 0;
     }
     int nDefault = 0;
-    int nReceived = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
+    int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault);
     if (nReceived == 0) return 1;
     int nDefault2 = 0;
-    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         if (nTaken < nKey) return 1;
@@ -296,83 +288,76 @@ int UITimeRunEventDialog::FUN_140ee3290()
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
 // @0x140ee3580
 void UITimeRunEventDialog::FUN_140ee3580()
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull())
         return;
     unsigned nDistance = FUN_140ee4280(spContext);
     int nDefault = 0;
-    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault);
     int nDefault2 = 0;
-    int nReceived = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault2);
+    int nReceived = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault2);
     unsigned nNext = spContext->GetNextRewardKey(nTaken);
-    TimeRunEventContext* pContext = spContext.operator->();
-    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140acd070("setMapData", pContext->m_1c, nDistance);
+    reinterpret_cast<AScript*>(m_30.operator->())->Invoke("setMapData", (int)spContext->m_1c, (int)nDistance);
     m_mapBinder.FUN_140d43990();
     ASArray rewards(2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         MS2Ptr<ItemEntity> spItem = spContext->m_rewards.GetValueAt(pos);
-        bool bReached = nKey <= nDistance;
-        bool bNext = nKey == nNext;
-        bool bTaken = nKey < nTaken;
+        BOOL bReached = nKey <= nDistance;
+        BOOL bNext = nKey == nNext;
+        BOOL bTaken = nKey < nTaken;
         ASObj row(2);
         row.FUN_1409c0d20("distance", nKey);
-        ItemEntity* pItem = spItem.get();
-        row.FUN_1407cba60("binding", m_mapBinder.FUN_140d43510(pItem ? static_cast<ItemAble*>(pItem) : 0));
-        bool bEnabled;
-        if (!bReached || !bNext || bTaken) bEnabled = false; else bEnabled = true;
-        row.FUN_1407cbbe0("enabled", bEnabled);
+        row.FUN_1407cba60("binding", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>((ItemEntity*)spItem)));
+        row.FUN_1407cbbe0("enabled", bReached && bNext && !bTaken ? true : false);
         row.FUN_1407cb9c0("visible", bReached);
         rewards.FUN_1422bbf00(row);
     }
     reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140eba060("setRewardData", rewards, spContext->m_1c);
-    bool bFinal;
-    if (nDistance < (unsigned)spContext->m_1c || nReceived != 0) bFinal = false; else bFinal = true;
-    TimeRunEventContext* pFinal = spContext.operator->();
-    ItemEntity* pFinalItem = &pFinal->m_item;
-    CString strBind = m_mapBinder.FUN_140d43510(pFinalItem ? static_cast<ItemAble*>(pFinalItem) : 0);
-    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", strBind, bFinal);
+    reinterpret_cast<Unk_TrScript*>(m_30.operator->())->FUN_140ee5060("setFinalReward", m_mapBinder.FUN_140d43510(static_cast<ItemAble*>(&spContext->m_item)), nDistance >= (unsigned)spContext->m_1c && nReceived == 0 ? true : false);
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_totalDistance"))
-        spText->FUN_1422c4cd0(FUN_140938ae0(CStringW(L"s_timerun_total_distance"), nDistance));
+    {
+        CStringW strDistance = FUN_14028dfa0(CStringW(L"s_timerun_total_distance"), nDistance);
+        spText->FUN_1422c4cd0(strDistance);
+    }
 }
 
 // MS2-PIN: ??B?$MS2Ptr@VUnk_TrList@@@@QEBAPEAVUnk_TrList@@XZ 0x140ee51b0 ; sfb: m_list operator T*, byte-identical to the ASTextField copy
 // @0x140ee3c00
 void UITimeRunEventDialog::FUN_140ee3c00(int nDay)
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull()) {
         vfunc_67();
         return;
     }
     m_missionBinder.FUN_140d43990();
     if (MS2Ptr<Unk_TrList> spList = FUN_140c02900("m_list")) {
-        spList->FUN_1422dd1d0();
+        reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();
         for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
             MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
             if (spQuest->m_20 != nDay)
                 continue;
-            Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+            Unk_PayloadPtr<CQuest> quest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(spQuest->m_questId);
             if (quest.IsNull())
                 continue;
             if (quest->GetData()->m_complete.m_choiceRewards.GetCount() == 0)
                 continue;
             const CQuestData::QuestRewardItem& reward = quest->GetData()->m_complete.m_choiceRewards[0];
-            CStringW strDesc = FUN_1416e5350(quest->FUN_140bfc580(), 0);
+            CStringW strDesc = FUN_1416e5350((int)quest->FUN_140bfc580(), 0);
             strDesc.Replace(L"#5c2b00", L"#ffffff");
             ASObj row(2);
             row.FUN_1409c0d20("id", spQuest->m_questId);
             row.FUN_1407cb9c0("completed", quest->IsRewarded());
             row.FUN_1407cb9c0("satisfied", quest->IsComplete());
-            row.FUN_1407cbb20("label", FUN_140938ae0(CStringW(L"s_timerun_event_distance"), spQuest->m_1c));
+            row.FUN_1407cbb20("label", FUN_14028dfa0(CStringW(L"s_timerun_event_distance"), spQuest->m_1c));
             row.FUN_1407cbb20("desc", CStringW(strDesc));
             row.FUN_1407cba60("binding", m_missionBinder.BindNewItem(reward.m_itemId, reward.m_count, reward.m_job));
-            row.FUN_1409c1180("exp", FUN_140761ba0(spQuest->m_questId, 1));
-            spList->FUN_1422dd230(row);
+            row.FUN_1409c1180("exp", FUN_140761ba0((int)spQuest->m_questId, 1));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);
         }
         spList->vfunc_24(true);
     }
@@ -385,7 +370,7 @@ int UITimeRunEventDialog::FUN_140ee4280(MS2Ptr<TimeRunEventContext> spContext)
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
         TimeRunEventContext::QuestContext* pQuest = spQuest.operator->();
-        if (FUN_140764020()->FUN_140745590(pQuest->m_questId) != 0)
+        if (static_cast<CQuestManager*>(FUN_140764020())->FUN_140745590(pQuest->m_questId) != 0)
             nSum += spQuest->m_1c;
     }
     return nSum;
@@ -398,7 +383,7 @@ CStringW UITimeRunEventDialog::FUN_140ee4380(MS2Ptr<TimeRunEventContext> spConte
     __int64 nEnd = 0;
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-        Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+        Unk_PayloadPtr<CQuest> quest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(spQuest->m_questId);
         if (quest.get() != 0) {
             nEnd = quest->FUN_1407448a0();
             break;
@@ -420,7 +405,7 @@ void UITimeRunEventDialog::FUN_140ee4570(int)
 // @0x140ee45c0
 int UITimeRunEventDialog::FUN_140ee45c0()
 {
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull()) return 0;
     int nCount = 0;
     int bAll = 1;
@@ -428,11 +413,11 @@ int UITimeRunEventDialog::FUN_140ee45c0()
     CMsTime now(GetServerTime());
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-        Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+        Unk_PayloadPtr<CQuest> quest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(spQuest->m_questId);
         if (quest.get() != 0) {
             CMsTime start(quest->GetStartTime());
             AddDays(start, spQuest->m_20 - 1);
-            if (FUN_140282020(now) < FUN_140282020(start)) {
+            if (now.Get() < start.Get()) {
                 bAll = 0;
                 continue;
             }
@@ -442,10 +427,10 @@ int UITimeRunEventDialog::FUN_140ee45c0()
     }
     if (bAll) {
         int nDefault = 0;
-        if (reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault) == 0) nCount = nCount + 1;
+        if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dc, spContext->m_eventId, nDefault) == 0) nCount = nCount + 1;
     }
     int nDefault2 = 0;
-    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(g_trCounters).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
+    unsigned nTaken = reinterpret_cast<Unk_AttendTable&>(DAT_143ab3010).FUN_1409617d0(0x5dd, spContext->m_eventId, nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
         if (nTotal < nKey)
@@ -463,7 +448,7 @@ __int64 UITimeRunEventDialog::FUN_140ee4990(MS2Ptr<TimeRunEventContext> spContex
 {
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-        Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+        Unk_PayloadPtr<CQuest> quest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(spQuest->m_questId);
         if (quest.get() != 0)
             return quest->GetStartTime();
     }
@@ -494,7 +479,7 @@ int UITimeRunEventDialog::FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext)
 void UITimeRunEventDialog::FUN_140ee4ca0()
 {
     if (m_30.IsNull()) return;
-    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->GetTimeRunEvent();
+    MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
     if (spContext.IsNull()) return;
     std::map<int, int> counts;
     for (unsigned __int64 i = 1; i <= 7; ++i)
@@ -502,11 +487,11 @@ void UITimeRunEventDialog::FUN_140ee4ca0()
     CMsTime now(GetServerTime());
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
         MS2Ptr<TimeRunEventContext::QuestContext> spQuest = spContext->m_quests.GetValueAt(pos);
-        Unk_PayloadPtr<CQuest> quest = FUN_140764020()->vfunc_o10_3(spQuest->m_questId);
+        Unk_PayloadPtr<CQuest> quest = static_cast<CQuestManager*>(FUN_140764020())->vfunc_o10_3(spQuest->m_questId);
         if (quest.get() != 0) {
             CMsTime start(quest->GetStartTime());
             AddDays(start, spQuest->m_20 - 1);
-            if (FUN_140282020(now) < FUN_140282020(start)) continue;
+            if (now.Get() < start.Get()) continue;
             if (quest->IsComplete() == 0) continue;
             ++counts[spQuest->m_20];
         }

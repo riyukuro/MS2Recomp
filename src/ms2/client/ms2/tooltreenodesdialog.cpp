@@ -8,6 +8,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <NiFixedString.h>
 
 // ---- unit-local placeholders (the node hierarchy is unrecovered) ----
 
@@ -24,7 +25,6 @@ class NiObjectNET   // C3: member view for the former free stand-ins
 public:
     class NiFixedString const& GetName() const;
 };
-const char* FUN_142087e50(void* pName);                         // its text
 
 IMPLEMENT_DYNAMIC(CToolTreeNodesDialog, CDialog)
 
@@ -105,7 +105,7 @@ void CToolTreeNodesDialog::FUN_141858b50(Unk_TreeNode* pRoot)
     tvis.hParent = TVI_ROOT;
     tvis.hInsertAfter = TVI_LAST;
     tvis.item.mask = TVIF_TEXT;
-    tvis.item.pszText = (LPSTR)FUN_142087e50(((void*)&((class NiObjectNET*)(class Unk_TreeNode*)(pRoot))->GetName()));
+    tvis.item.pszText = (LPSTR)((class NiObjectNET*)(class Unk_TreeNode*)(pRoot))->GetName().operator const char*();
     HTREEITEM hItem = m_treeNodes.InsertItem(&tvis);
     FUN_141858c00(hItem, pRoot);
 }
@@ -120,7 +120,7 @@ void CToolTreeNodesDialog::FUN_141858c00(HTREEITEM hParent, Unk_TreeNode* pNode)
             tvis.hParent = hParent;
             tvis.hInsertAfter = TVI_LAST;
             tvis.item.mask = TVIF_TEXT;
-            tvis.item.pszText = (LPSTR)FUN_142087e50(((void*)&((class NiObjectNET*)(class Unk_TreeNode*)(pEntry))->GetName()));
+            tvis.item.pszText = (LPSTR)((class NiObjectNET*)(class Unk_TreeNode*)(pEntry))->GetName().operator const char*();
             FUN_141858c00(m_treeNodes.InsertItem(&tvis), ((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry));
         }
     }

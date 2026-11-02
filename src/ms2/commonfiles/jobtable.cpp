@@ -56,7 +56,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Out-of-unit callees.
-JobTable* FUN_1401d7a50();                              // the JobTable singleton
+class JobTable;
 CStringTable* GetStringTable();                          // the string table singleton
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -76,6 +76,22 @@ JobSkillData::JobSkillData()
     : m_skillID(0), m_uiHighlight(false), m_quickSlotPriority(0x7fffffff), m_jobLevel(0), m_isLearn(false),
       m_requireQuestID(0)
 {
+}
+
+// @0x140645190
+int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt)
+{
+    CString str;
+    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
+    if (nRet == 0)
+    {
+        int nPos = 0;
+        CString strToken = str.Tokenize(",", nPos);
+        pt.x = FUN_140718170(strToken);
+        strToken = str.Tokenize(",", nPos);
+        pt.y = FUN_140718170(strToken);
+    }
+    return nRet;
 }
 
 // @0x140643720

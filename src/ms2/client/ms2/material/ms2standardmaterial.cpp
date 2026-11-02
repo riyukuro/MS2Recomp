@@ -86,11 +86,7 @@ bool MS2StandardMaterial::HandleColorOverride(Context& kContext, NiStandardPixel
     NiMaterialResource** apkUVSets, NiMaterialResource*& pkDiffuseTexAccum)
 {
     NiMaterialResource* pkColor = NULL;
-    if (!pkPixDesc->GetCUSTOMMAP00COUNT())
-    {
-        pkColor = pkDiffuseTexAccum;
-    }
-    else
+    if (pkPixDesc->GetCUSTOMMAP00COUNT())
     {
         // dye: custom map 00 holds the per-channel weights of the three override colours
         NiMaterialResource* pkControl = NULL;
@@ -108,6 +104,10 @@ bool MS2StandardMaterial::HandleColorOverride(Context& kContext, NiStandardPixel
             NiShaderAttributeDesc::ATTRIB_TYPE_COLOR);
         if (!ColorOverride(kContext, pkDiffuseTexAccum, pkControl, pkColor0, pkColor1, pkColor2, pkColor))
             return false;
+    }
+    else
+    {
+        pkColor = pkDiffuseTexAccum;
     }
 
     if (m_eMaterialType == 3 || !pkPixDesc->GetCUSTOMMAP01COUNT())
@@ -135,11 +135,7 @@ bool MS2StandardMaterial::HandleColorOverride(Context& kContext, NiStandardPixel
     if (!SplitColorAndOpacity(kContext, pkDecalSample, pkDecalColor, pkDecalAlpha))
         return false;
 
-    if (!pkPixDesc->GetCUSTOMMAP02COUNT())
-    {
-        pkDecal = pkDecalColor;
-    }
-    else
+    if (pkPixDesc->GetCUSTOMMAP02COUNT())
     {
         NiMaterialResource* pkControl = NULL;
         if (!InsertTextureSample(kContext, MAP_CUSTOM02, pkDecalUV, pkControl))
@@ -153,6 +149,10 @@ bool MS2StandardMaterial::HandleColorOverride(Context& kContext, NiStandardPixel
             NiShaderAttributeDesc::ATTRIB_TYPE_COLOR);
         if (!DecalColorOverride(kContext, pkDecalColor, pkControl, pkColor0, pkColor1, pkColor2, pkDecal))
             return false;
+    }
+    else
+    {
+        pkDecal = pkDecalColor;
     }
 
     return AlphaBlendColors(kContext, pkColor, pkDecal, pkDecalAlpha, pkDiffuseTexAccum);
@@ -261,7 +261,7 @@ bool MS2StandardMaterial::GenerateDescriptor(const NiRenderObject* pkGeometry, c
 MS2_REPLACE_METHOD(0x14274E2E0, MS2StandardMaterial, GenerateDescriptor, 169, 0x2B239A86);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: block layout and register allocation differ (same node graph)
+// Builds the pixel shade tree: the node graph from the descriptor, one shared light total for the lighting setup.
 // @0x14274e390
 bool MS2StandardMaterial::GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc)
 {
@@ -290,8 +290,8 @@ bool MS2StandardMaterial::GeneratePixelShadeTree(Context& kContext, NiGPUProgram
     unsigned int uiPointLightCount = pkPixelDesc->GetPOINTLIGHTCOUNT();
     unsigned int uiDirLightCount = pkPixelDesc->GetDIRLIGHTCOUNT();
     unsigned int uiSpotLightCount = pkPixelDesc->GetSPOTLIGHTCOUNT();
+    unsigned int uiTotalLightCount = uiPointLightCount + uiDirLightCount + uiSpotLightCount;
     bool bSpecular = pkPixelDesc->GetSPECULAR() ? true : false;
-
     NiMaterialResource* pkMatDiffuse = NULL;
     NiMaterialResource* pkMatSpecular = NULL;
     NiMaterialResource* pkSpecularPower = NULL;
@@ -309,7 +309,7 @@ bool MS2StandardMaterial::GeneratePixelShadeTree(Context& kContext, NiGPUProgram
     LightingModeEnum eLightingMode = LIGHTING_E_A_D;
 
     if (!HandlePixelMaterialInitialValues(kContext, pkPixelDesc,
-        uiPointLightCount + uiDirLightCount + uiSpotLightCount, bSpecular, eLightingMode, pkMatDiffuse,
+        uiTotalLightCount, bSpecular, eLightingMode, pkMatDiffuse,
         pkMatSpecular, pkSpecularPower, pkGlossiness, pkMatAmbient, pkMatEmissive, pkTexDiffuseAccum,
         pkTexSpecularAccum, pkDiffuseAccum, pkSpecularAccum, pkOpacityAccum, pkLightDiffuseAccum,
         pkLightSpecularAccum, pkLightAmbientAccum))
@@ -418,11 +418,11 @@ bool MS2StandardMaterial::GeneratePixelShadeTree(Context& kContext, NiGPUProgram
         return false;
 
     return HandleMS2FinalPixelOutputs(kContext, pkPixelDesc, pkPixelWorldNorm, pkPixelWorldViewVector,
-        pkDiffuseAccum, pkSpecularAccum, pkOpacityAccum);
+        pkDiffuseAccum, pkSpecularAccum, pkOpacityAccum) ? true : false;
 }
 MS2_REPLACE_METHOD(0x14274E390, MS2StandardMaterial, GeneratePixelShadeTree, 2225, 0xFAB40BEF);
 
-//--------------------------------------------------------------------------------------------------
+// MS2-FUNCTIONAL: register allocation only (exe keeps the result in edi and pkRenderPasses in rsi; ours swaps them).
 // @0x14274ec50
 NiFragmentMaterial::ReturnCode MS2StandardMaterial::GenerateShaderDescArray(
     NiMaterialDescriptor* pkMaterialDescriptor, RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount,
@@ -442,7 +442,7 @@ NiFragmentMaterial::ReturnCode MS2StandardMaterial::GenerateShaderDescArray(
 
         // characters with APPLYMODE set get a world view vector in both stages
         unsigned int uiApplyMode = pkRealMaterialDesc->GetAPPLYMODE();
-        if (uiApplyMode && (unsigned int)(m_eMaterialType - 1) <= 2)
+        if ((unsigned int)(m_eMaterialType - 1) <= 2 && uiApplyMode)
         {
             pkVertexDesc->SetOUTPUTWORLDVIEW(1);
             pkPixelDesc->SetWORLDVIEW(1);
@@ -1394,7 +1394,7 @@ bool MS2StandardMaterial::HandlePixelUVSets(Context& kContext, NiStandardPixelPr
 MS2_REPLACE_METHOD(0x142752240, MS2StandardMaterial, HandlePixelUVSets, 642, 0x38F78E68);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: block layout differs (exe 2735 bytes); same transform fragments
+// Skinned transforms pick the bone count before the fragment; the rest are the stock transform fragments.
 // @0x1427524d0
 bool MS2StandardMaterial::HandlePositionFragment(Context& kContext, TransformType eTransType,
     NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix)
@@ -1421,10 +1421,10 @@ bool MS2StandardMaterial::HandlePositionFragment(Context& kContext, TransformTyp
     if (eTransType == TRANSFORM_SKINNED)
     {
         // characters are skinned with up to 60 bones per partition
+        unsigned int uiBones = m_bCharacterLighting ? 60 : 30;
         NiMaterialNode* pkProjFrag = GetAttachableNodeFromLibrary(
             m_bCharacterLighting ? g_pcTransformSkinnedPosition60
                                  : "TransformSkinnedPosition");
-        unsigned int uiBones = m_bCharacterLighting ? 60 : 30;
         kContext.m_spConfigurator->AddNode(pkProjFrag);
 
         kContext.m_spInputs->AddOutputResource("float3", "Position", "Local", "Position");

@@ -4,6 +4,8 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gpumanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gpumanager.h"
+#include "ms2/placeholder/cmainsystem.h"
+#include "ms2/placeholder/crashmanagercli.h"
 #include "hook/ms2hook.h"
 // MS2: the exe calls the imported wcslen through the IAT (no /Oi inline loop, no static call).
 extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);
@@ -72,7 +74,7 @@ int GPUManager::FUN_141375390(CStringW adapterName)
 // @0x1413758b0
 void GPUManager::FUN_1413758b0()
 {
-    m_elapsed += FUN_14086d260()->FUN_141473260();
+    m_elapsed += TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
     if (0.1f > m_elapsed) {
         m_elapsed = 0;
     } else if (m_timer.FUN_140868c00() != 0) {
@@ -105,9 +107,9 @@ void GPUManager::FUN_141375a80()
     float pct = (float)percent * 0.01f;
     float mb = pct * (float)total;
     FUN_140392040(text, 0x40, "Nv Using GPU memory %% %0.f(MB)", (double)mb);
-    FUN_140a44830()->FUN_1401ce2b0(text);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0(text);
     FUN_140392040(text, 0x40, "Nv Alloc GPU memory %zu/%zu(MB)", used, total);
-    FUN_140a44830()->FUN_1401ce2b0(text);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0(text);
 }
 
 // @0x141375c80

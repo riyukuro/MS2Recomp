@@ -201,7 +201,7 @@ public:
     float m_fRemainTime;                                            // +0xc8
     unsigned m_nLastTick;                                           // +0xcc
     int m_nD0;                                                      // +0xd0
-    Unk_NodePtr m_spScene;                                          // +0xd8 "Scene Root"
+    efd::SmartPointer<class NiNode> m_spScene;                      // +0xd8 "Scene Root"
     unsigned m_nEffectId;                                           // +0xe0
     unsigned m_nEffectId2;                                          // +0xe4
     CMagicData m_data;                                              // +0xe8 working copy of the move
@@ -243,7 +243,7 @@ public:
     Unk_NiMatrix3 GetRotation();                                  // 0x141467cb0 projectile rotation
     void SetPosition(Vector3 ptNew);                      // 0x141467d00 move the projectile
     void SetDirection(Vector3 ptDirection);                // 0x141467d50 turn the projectile
-    void FUN_141467ed0();                                           // 0x141467ed0 begin the destroy phase of an orphaned model
+    void RunEndEffects();                                           // 0x141467ed0 begin the destroy phase of an orphaned model
     void FUN_141467da0();                                           // 0x141467da0
     void FUN_141467800();                                           // 0x141467800
     int CanCancel(unsigned long long nTag);                     // 0x141467dd0 can this cast be cancelled

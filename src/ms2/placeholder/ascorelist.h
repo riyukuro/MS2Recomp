@@ -28,9 +28,9 @@ public:
     int GetSelectedIndex();                                                // "selectedIndex"
     MS2Ptr<class ASDataProvider> GetDataProvider();                       // "dataProvider" (null if it is not an object)
     void SetItemRendererList(Scaleform::GFx::Value list);                     // set "itemRendererList" (by value: the callee destroys it)
-    void FUN_1422dce60(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // add a "listIndexChange" listener
-    void FUN_1422dcee0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);                // remove the "listIndexChange" listener
-    void FUN_1422dcf40(int nCount);                                     // a data provider of nCount undefined entries (slot 25)
+    void AddListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // add a "listIndexChange" listener
+    void RemoveListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);                // remove the "listIndexChange" listener
+    void SetEmptyItemCount(int nCount);                                     // a data provider of nCount undefined entries (slot 25)
     void SetRowCount(unsigned nRows);                                 // set "rowCount"
     unsigned GetRowCount();                                           // "rowCount"
     void ScrollToIndex(int nIndex);                                     // scrollToIndex(index)
@@ -38,22 +38,22 @@ public:
     unsigned GetItemCount();                                           // the entry count (0 without a data provider; asscrollinglist.cpp: `< 0` is an unsigned test)
     void FUN_1422dd1d0();                                               // remove every entry
     void AddItem(const class ASObj& item);                        // append an entry
-    void FUN_1422dd2a0(const CString& strLabel);                        // append a { label } entry (narrow text)
-    void FUN_1422dd310(const CStringW& strLabel);                       // append a { label } entry
-    void FUN_1422dd3d0(const CString& strLabel);                        // select the entry with this label (narrow text)
-    void FUN_1422dd440(const CStringW& strLabel);                       // select the entry with this label
-    CString FUN_1422dd4a0();                                            // the selected entry's label (narrow text)
-    CStringW FUN_1422dd520();                                           // the selected entry's label ("" if none)
+    void AddLabelItemA(const CString& strLabel);                        // append a { label } entry (narrow text)
+    void AddLabelItemW(const CStringW& strLabel);                       // append a { label } entry
+    void SelectByLabelA(const CString& strLabel);                        // select the entry with this label (narrow text)
+    void SelectByLabelW(const CStringW& strLabel);                       // select the entry with this label
+    CString GetSelectedLabelA();                                            // the selected entry's label (narrow text)
+    CStringW GetSelectedLabelW();                                           // the selected entry's label ("" if none)
     bool GetSelectedItem(AScript& item);                                  // the selected entry (false if none)
-    void FUN_1422dd880(const CString& strMember, int nValue);           // select the first entry whose member is a string with GetInt() == nValue
+    void SelectByIntMember(const CString& strMember, int nValue);           // select the first entry whose member is a string with GetInt() == nValue
     void FUN_1422dd9e0(const CString& strMember, int nValue);           // the same with GetUInt()
     void FUN_1422ddb40(const CString& strMember, const CStringW& strValue);   // select the first entry whose member equals strValue
     void RemoveItemAt(int nIndex);                                     // remove the entry at an index
     void FUN_1422dddc0(const CString& strLabel);                        // remove the first entry with this label
     // "itemPress" / "itemClick" / "itemRollOver" / "itemRollOut" / "itemDoubleClick" listeners: add (pUser: the AS
     // function object's user data), remove
-    void FUN_1422de000(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422de080(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void AddItemPressHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void RemoveItemPressHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
     void FUN_1422de160(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     void FUN_1422de1c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
@@ -124,11 +124,11 @@ public:
     int GetSelectedIndex();                                                // the selected entry
     // Registers the selection-change callback; pUser comes back in Params::pUserData.
     void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);
-    void FUN_1422dfce0(const CStringW& strLabel);                       // append an entry
-    void FUN_1422dfc10();                                               // remove every entry
-    unsigned FUN_1422dfb90();                                           // the entry count (0 without a data provider)
+    void AddItemLabel(const CStringW& strLabel);                       // append an entry
+    void ClearItems();                                               // remove every entry
+    unsigned GetItemCount();                                           // the entry count (0 without a data provider)
     CStringW FUN_1422dfe00();                                           // the selected row's "label"
-    void FUN_1422dfc70(const class ASObj& row);                         // append a row object
+    void AddItemRow(const class ASObj& row);                         // append a row object
     void SetDataProvider(const Scaleform::GFx::Value& v);                 // set "dataProvider" (asdropdownmenu.cpp)
     MS2Ptr<class ASDataProvider> GetDataProvider();                       // "dataProvider" (asdropdownmenu.cpp)
     void FUN_140f1fe00(const CString& strMember, __int64* pOut);        // 0x140f1fe00 the selected entry's member (inline COMDAT, defined in uiblackmarketpagemeso.cpp)

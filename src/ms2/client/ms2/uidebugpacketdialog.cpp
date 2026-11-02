@@ -103,32 +103,32 @@ void UIDebugPacketDialog::OnLoadInit()
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "None");
-            m_type[i]->FUN_1422dfc70(row);
+            m_type[i]->AddItemRow(row);
         }
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "1 Byte");
-            m_type[i]->FUN_1422dfc70(row);
+            m_type[i]->AddItemRow(row);
         }
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "2 Byte");
-            m_type[i]->FUN_1422dfc70(row);
+            m_type[i]->AddItemRow(row);
         }
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "4 Byte");
-            m_type[i]->FUN_1422dfc70(row);
+            m_type[i]->AddItemRow(row);
         }
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "8 Byte");
-            m_type[i]->FUN_1422dfc70(row);
+            m_type[i]->AddItemRow(row);
         }
         {
             ASObj row(2);
             row.FUN_1409c0dc0((const char*)s_strLabel, "String");
-            m_type[i]->FUN_1422dfc70(row);
+            m_type[i]->AddItemRow(row);
         }
         m_type[i]->SetSelectedIndex(0);
     }

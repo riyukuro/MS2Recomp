@@ -54,11 +54,12 @@
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
+#include "ms2/client/ms2/uichatballoon.h"  // C3: UIChatBalloon::Entity (the balloon text)
+#include "ms2/client/ms2/uihudentity.h"  // C3: UIHudEntity::Entity::FUN_140f48da0
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
 // ---- unit-local views of exe objects (Unk_ names and member names are invented) ----
 
-NotifySystem* FUN_140939a10();
 struct Unk_CscRemoveNotice { void* m_00; void* m_08; void* m_10; int m_nObjectId; };   // NotifyRemoveGameObject (+0x18 the id)
 
 // The balloon of an actor (PCBase slot 85: UIChatBalloon::Entity).
@@ -68,9 +69,6 @@ public:
     virtual void vfunc_1();
     virtual void vfunc_2();                                         // show
     virtual void vfunc_3();                                         // hide
-    void FUN_1418fb730(const CStringW& strText);                    // set the text
-    void FUN_1418fb6d0();                                           // m_a0 = 1
-    void FUN_140f48da0();                                           // UIHudEntity::Entity: m_50 = 1
 };
 class Unk_CscWorld
 {
@@ -78,7 +76,7 @@ public:
     MyPC* FUN_141bd0cc0();                                          // the local player
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
-Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);
+struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer* pPlayer);   // C3: was FUN_140a7b810 (mouseinteract.cpp)
 
 class Unk_CscEffects : public CEffectService
 {
@@ -88,8 +86,6 @@ public:
 CSoundService* FUN_140c9cb10();
 
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
-CFeatureManager* FUN_140166410();
-CInputKeyHandler* FUN_14025e7c0();
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
 public:
@@ -103,8 +99,8 @@ class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast bac
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);   // new ASGameEntity(root, nUiId)
 
 class Unk_CscTextKeys : public CServerStringGroup { };
-class Unk_CscTexts { public: Unk_CscTextKeys* FUN_140a87690(); Unk_CscTextKeys* FUN_141747b40(); };
-CReservedWordTable* FUN_1403b4750();
+class Unk_PatchTextOwner { public: class Unk_PatchTextFilter* FUN_140a87690(); };   // C3: CServerString accessor view (onlinepatchmanagercli.cpp)
+class Unk_SSGPatchMgr { public: class Unk_SSGTextFilter* FUN_141747b40(); };   // C3: CServerString accessor view (scenestategame.cpp)
 class CMsgBoxData : public CPtred {};                             // the message box (unit_1406125d0.h; only released here)
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 
@@ -127,15 +123,15 @@ UICutSceneCinematic::UICutSceneCinematic()
       m_groups(17, 0.75f, 0.25f, 2.25f, 10), m_nSkipState(0), m_bSkipped(false)
 {
     m_2c = 0x1c;
-    FUN_140939a10()->RegisterNotify(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_1419085e0));
-    FUN_140939a10()->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_141908620));
+    TSingleton<NotifySystem>::GetInstance()->RegisterNotify(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::RemoveBalloonGroup));
+    TSingleton<NotifySystem>::GetInstance()->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::ResetSkipState));
 }
 
 // @0x1419072a0
 UICutSceneCinematic::~UICutSceneCinematic()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_1419085e0));
-    FUN_140939a10()->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::FUN_141908620));
+    TSingleton<NotifySystem>::GetInstance()->UnregisterNotify(L"NotifyRemoveGameObject", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::RemoveBalloonGroup));
+    TSingleton<NotifySystem>::GetInstance()->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UICutSceneCinematic::ResetSkipState));
 }
 
 // @0x141907520
@@ -189,13 +185,13 @@ void UICutSceneCinematic::OnLoadComplete()
     switch (m_nMode)
     {
     case 1:
-        FUN_141909490();
+        InvokeSetCinematic();
         break;
     case 2:
-        FUN_141909550();
+        InvokeSetOpening();
         break;
     case 3:
-        FUN_141909610();
+        InvokeSetIntro();
         break;
     }
     CStringW strKey(L"$s_cutscene_skip_key");
@@ -231,16 +227,16 @@ int UICutSceneCinematic::vfunc_13()
 {
     if (UISwfEntity::vfunc_13())
         return 1;
-    if (FUN_140166410()->FUN_14036d570(2) && FUN_14025e7c0()->FUN_14116d950(0x2a, 0, 0) && FUN_14025e7c0()->FUN_14116d950(1, 0, 0))
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(2) && TSingleton<CInputKeyHandler>::GetInstance()->FUN_14116d950(0x2a, 0, 0) && TSingleton<CInputKeyHandler>::GetInstance()->FUN_14116d950(1, 0, 0))
     {
         SendTrigger();
         SetCinematicKeyMode(false);
         FUN_1419080b0();
         return 1;
     }
-    if (FUN_14025e7c0()->FUN_14116d840())
+    if (TSingleton<CInputKeyHandler>::GetInstance()->FUN_14116d840())
     {
-        FUN_141908fc0();
+        RequestSkip();
         return 1;
     }
     return 0;
@@ -265,18 +261,18 @@ void UICutSceneCinematic::FUN_141907d60(int nState, CStringW strKey, CStringW st
 MS2_REPLACE_METHOD(0x141907D60, UICutSceneCinematic, FUN_141907d60, 531, 0x897BCD1A);
 
 // @0x141907f80
-void UICutSceneCinematic::FUN_141907f80(int nId, CStringW strText)
+void UICutSceneCinematic::StartCinematic(int nId, CStringW strText)
 {
     if (nId == 0)
         return;
     m_nMode = 1;
     m_nCinematicId = nId;
     m_strText = strText;
-    FUN_1419092a0(m_strText);
-    FUN_141909490();
+    TranslateScriptText(m_strText);
+    InvokeSetCinematic();
     ChromaSDK::GetChromaManager()->SetState(0xb);
 }
-MS2_REPLACE_METHOD(0x141907F80, UICutSceneCinematic, FUN_141907f80, 174, 0x4D855AE2);
+MS2_REPLACE_METHOD(0x141907F80, UICutSceneCinematic, StartCinematic, 174, 0x4D855AE2);
 
 // @0x141908040
 void UICutSceneCinematic::SetCinematicKeyMode(bool bOn)
@@ -313,18 +309,18 @@ void UICutSceneCinematic::OnPacket(CInPacket& packet)
     int nType = packet.ReadUInt8();
     switch (nType)
     {
-    case 1: FUN_141909700(packet); break;
+    case 1: OnPacketKeyMode(packet); break;
     case 2: FUN_141909750(packet); break;
-    case 3: FUN_141909780(packet); break;
+    case 3: OnPacketStartCinematic(packet); break;
     case 6: FUN_141909880(packet); break;
     case 7: FUN_141909e80(packet); break;
     case 8: FUN_141909eb0(packet); break;
-    case 9: FUN_14190a400(packet); break;
+    case 9: OnPacketClearBalloonGroup(packet); break;
     case 4: FUN_14190a4c0(packet); break;
     case 10: FUN_14190a6e0(packet); break;
     case 11: FUN_14190ac70(packet); break;
-    case 12: FUN_14190aee0(packet); break;
-    case 5: FUN_14190afb0(packet); break;
+    case 12: OnPacketSetIntro(packet); break;
+    case 5: OnPacketResetSkip(packet); break;
     }
 }
 MS2_REPLACE_METHOD(0x141908290, UICutSceneCinematic, OnPacket, 327, 0x2227BCC9);
@@ -347,22 +343,22 @@ void UICutSceneCinematic::SetScript(CStringW strName, CStringW strText, CStringW
 MS2_REPLACE_METHOD(0x141908470, UICutSceneCinematic, SetScript, 361, 0x81464EF3);
 
 // @0x1419085e0
-void UICutSceneCinematic::FUN_1419085e0(NotifyObject* pNotice)
+void UICutSceneCinematic::RemoveBalloonGroup(NotifyObject* pNotice)
 {
     Unk_CscRemoveNotice* pRemove = reinterpret_cast<Unk_CscRemoveNotice*>(pNotice);
     m_groups.RemoveKey(pRemove->m_nObjectId);
 }
-MS2_REPLACE_METHOD(0x1419085E0, UICutSceneCinematic, FUN_1419085e0, 56, 0x844E23E8);
+MS2_REPLACE_METHOD(0x1419085E0, UICutSceneCinematic, RemoveBalloonGroup, 56, 0x844E23E8);
 
 // @0x141908620
-void UICutSceneCinematic::FUN_141908620(NotifyObject* pNotice)
+void UICutSceneCinematic::ResetSkipState(NotifyObject* pNotice)
 {
     m_nSkipState = 0;
     m_strSkipKey.Empty();
     m_strSkipLabel.Empty();
     m_strSkipMsg.Empty();
 }
-MS2_REPLACE_METHOD(0x141908620, UICutSceneCinematic, FUN_141908620, 94, 0x765E5887);
+MS2_REPLACE_METHOD(0x141908620, UICutSceneCinematic, ResetSkipState, 94, 0x765E5887);
 
 // @0x141908690
 void UICutSceneCinematic::ClearTalks()
@@ -458,9 +454,9 @@ void UICutSceneCinematic::FUN_141908c00()
             MS2Ptr<BalloonTalk> spTalk = spGroup->m_talks.GetAt(i);
             if (spTalk->m_nStart < nTick)
             {
-                spBalloon->FUN_1418fb730(spTalk->m_strText);
-                spBalloon->FUN_1418fb6d0();
-                spBalloon->FUN_140f48da0();
+                reinterpret_cast<UIChatBalloon::Entity*>(spBalloon.operator->())->FUN_1418fb730(spTalk->m_strText);
+                reinterpret_cast<UIChatBalloon::Entity*>(spBalloon.operator->())->FUN_1418fb6d0();
+                reinterpret_cast<UIHudEntity::Entity*>(spBalloon.operator->())->FUN_140f48da0();
                 spBalloon->vfunc_2();
                 spGroup->m_bShown = true;
                 spGroup->m_nHide = spTalk->m_nEnd;
@@ -475,26 +471,26 @@ void UICutSceneCinematic::FUN_141908c00()
 MS2_REPLACE_METHOD(0x141908C00, UICutSceneCinematic, FUN_141908c00, 954, 0x50B57242);
 
 // @0x141908fc0
-void UICutSceneCinematic::FUN_141908fc0()
+void UICutSceneCinematic::RequestSkip()
 {
     if (m_nSkipState == 0)
         return;
     if (m_bSkipped)
         return;
     if (m_strSkipMsg.GetLength() != 0)
-        FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UICutSceneCinematic::FUN_141909420), StringFormat(L"s_cutscene_skip_msg_{0}", m_strSkipMsg));
+        FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UICutSceneCinematic::OnSkipMsgBox), StringFormat(L"s_cutscene_skip_msg_{0}", m_strSkipMsg));
     else
-        FUN_141909100();
+        SkipCinematic();
 }
 
 // @0x141909100
-void UICutSceneCinematic::FUN_141909100()
+void UICutSceneCinematic::SkipCinematic()
 {
     SendTrigger();
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC)
-        FUN_140a7b810(pPC)->FUN_1409536d0();
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyCutSceneCinematicSkip));
+        reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->FUN_1409536d0();
+    TSingleton<NotifySystem>::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyCutSceneCinematicSkip));
     m_bSkipped = true;
     if (m_spSkip)
         m_spSkip->vfunc_4(false);
@@ -513,13 +509,13 @@ void UICutSceneCinematic::SendTrigger()
 MS2_REPLACE_METHOD(0x141909230, UICutSceneCinematic, SendTrigger, 103, 0x1F36D64F);
 
 // @0x1419092a0
-void UICutSceneCinematic::FUN_1419092a0(CStringW& strText)
+void UICutSceneCinematic::TranslateScriptText(CStringW& strText)
 {
-    strText = reinterpret_cast<Unk_CscTexts*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690()->GetString(strText);
+    strText = reinterpret_cast<Unk_CscTextKeys*>(reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690())->GetString(strText);
     strText.Replace(L"\\n", L"\n");
-    FUN_1403b4750()->ReplaceObjectAndValueWords(strText);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
 }
-MS2_REPLACE_METHOD(0x1419092A0, UICutSceneCinematic, FUN_1419092a0, 145, 0x2D9D36A2);
+MS2_REPLACE_METHOD(0x1419092A0, UICutSceneCinematic, TranslateScriptText, 145, 0x2D9D36A2);
 
 // @0x141909340
 void UICutSceneCinematic::FUN_141909340(int nActorId)
@@ -538,63 +534,63 @@ void UICutSceneCinematic::FUN_141909340(int nActorId)
 MS2_REPLACE_METHOD(0x141909340, UICutSceneCinematic, FUN_141909340, 210, 0x52979E7F);
 
 // @0x141909420
-bool UICutSceneCinematic::FUN_141909420(int nResult, const CMsgBoxData& box)
+bool UICutSceneCinematic::OnSkipMsgBox(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
-    FUN_141909100();
+    SkipCinematic();
     return true;
 }
-MS2_REPLACE_METHOD(0x141909420, UICutSceneCinematic, FUN_141909420, 46, 0xF76CB353);
+MS2_REPLACE_METHOD(0x141909420, UICutSceneCinematic, OnSkipMsgBox, 46, 0xF76CB353);
 
 // @0x141909460
 void UICutSceneCinematic::FUN_141909460(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_141908fc0();
+    RequestSkip();
 }
 MS2_REPLACE_METHOD(0x141909460, UICutSceneCinematic, FUN_141909460, 29, 0xE9715B8A);
 
 // @0x141909490
-void UICutSceneCinematic::FUN_141909490()
+void UICutSceneCinematic::InvokeSetCinematic()
 {
     if (m_30 == 0)
         return;
     reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("setCinematic", m_nCinematicId, CStringW(m_strText));
 }
-MS2_REPLACE_METHOD(0x141909490, UICutSceneCinematic, FUN_141909490, 184, 0x56FF538B);
+MS2_REPLACE_METHOD(0x141909490, UICutSceneCinematic, InvokeSetCinematic, 184, 0x56FF538B);
 
 // @0x141909550
-void UICutSceneCinematic::FUN_141909550()
+void UICutSceneCinematic::InvokeSetOpening()
 {
     if (m_30 == 0)
         return;
     m_30->FUN_140f5ff80("setOpening", CStringW(m_strText), m_bOpening);
 }
-MS2_REPLACE_METHOD(0x141909550, UICutSceneCinematic, FUN_141909550, 186, 0x5FB2857B);
+MS2_REPLACE_METHOD(0x141909550, UICutSceneCinematic, InvokeSetOpening, 186, 0x5FB2857B);
 
 // @0x141909610
-void UICutSceneCinematic::FUN_141909610()
+void UICutSceneCinematic::InvokeSetIntro()
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("setIntro", CStringW(m_strText));
 }
-MS2_REPLACE_METHOD(0x141909610, UICutSceneCinematic, FUN_141909610, 161, 0x0CC3B5AF);
+MS2_REPLACE_METHOD(0x141909610, UICutSceneCinematic, InvokeSetIntro, 161, 0x0CC3B5AF);
 
 // @0x1419096c0
-bool UICutSceneCinematic::FUN_1419096c0()
+bool UICutSceneCinematic::IsCinematicKeyGroupActive()
 {
     return ((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200041;
 }
-MS2_REPLACE_METHOD(0x1419096C0, UICutSceneCinematic, FUN_1419096c0, 57, 0x1B8A4E6C);
+MS2_REPLACE_METHOD(0x1419096C0, UICutSceneCinematic, IsCinematicKeyGroupActive, 57, 0x1B8A4E6C);
 
 // @0x141909700
-void UICutSceneCinematic::FUN_141909700(CInPacket& packet)
+void UICutSceneCinematic::OnPacketKeyMode(CInPacket& packet)
 {
     bool bOn = packet.ReadBool();
     SetCinematicKeyMode(bOn);
 }
-MS2_REPLACE_METHOD(0x141909700, UICutSceneCinematic, FUN_141909700, 71, 0x9EF82459);
+MS2_REPLACE_METHOD(0x141909700, UICutSceneCinematic, OnPacketKeyMode, 71, 0x9EF82459);
 
 // @0x141909750
 void UICutSceneCinematic::FUN_141909750(CInPacket& packet)
@@ -604,14 +600,14 @@ void UICutSceneCinematic::FUN_141909750(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141909750, UICutSceneCinematic, FUN_141909750, 29, 0x72FB9950);
 
 // @0x141909780
-void UICutSceneCinematic::FUN_141909780(CInPacket& packet)
+void UICutSceneCinematic::OnPacketStartCinematic(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
     CStringW strText = packet.ReadUnicodeString();
     CStringW strUnused = packet.ReadUnicodeString();
-    FUN_141907f80(nId, CStringW(strText));
+    StartCinematic(nId, CStringW(strText));
 }
-MS2_REPLACE_METHOD(0x141909780, UICutSceneCinematic, FUN_141909780, 241, 0x184D9336);
+MS2_REPLACE_METHOD(0x141909780, UICutSceneCinematic, OnPacketStartCinematic, 241, 0x184D9336);
 
 // @0x141909880
 void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
@@ -624,11 +620,11 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
     CString strSound = FUN_14016a600(strText, 0);
     if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
         strSound.Remove('$');
-    FUN_1419092a0(strText);
+    TranslateScriptText(strText);
     if (strText.IsEmpty())
         return;
     unsigned nSound = 0;
-    MS2Ptr<TriggerVoiceProperty> spVoice = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793110(strSound);
+    MS2Ptr<TriggerVoiceProperty> spVoice = TSingleton<SoundPropertyMgr>::GetInstance()->FindTriggerVoice(strSound);
     if (spVoice.get())
     {
         MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -676,11 +672,11 @@ void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
         strSound = FUN_14016a600(strText, 0);
         if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
             strSound.Remove('$');
-        FUN_1419092a0(strText);
+        TranslateScriptText(strText);
     }
     else
     {
-        strText = reinterpret_cast<Unk_CscTexts*>(TSingleton<CServerString>::GetInstance())->FUN_141747b40()->GetString(strText);
+        strText = reinterpret_cast<Unk_CscTextKeys*>(reinterpret_cast<Unk_SSGPatchMgr*>(TSingleton<CServerString>::GetInstance())->FUN_141747b40())->GetString(strText);
     }
     if (strText.IsEmpty())
         return;
@@ -701,7 +697,7 @@ void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
 }
 
 // @0x14190a400
-void UICutSceneCinematic::FUN_14190a400(CInPacket& packet)
+void UICutSceneCinematic::OnPacketClearBalloonGroup(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
     MS2Ptr<BalloonGroup> spGroup;
@@ -712,7 +708,7 @@ void UICutSceneCinematic::FUN_14190a400(CInPacket& packet)
         spGroup->m_talks.RemoveAll();
     }
 }
-MS2_REPLACE_METHOD(0x14190A400, UICutSceneCinematic, FUN_14190a400, 177, 0xE46A55A7);
+MS2_REPLACE_METHOD(0x14190A400, UICutSceneCinematic, OnPacketClearBalloonGroup, 177, 0xE46A55A7);
 
 // @0x14190a4c0
 void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
@@ -745,11 +741,11 @@ void UICutSceneCinematic::FUN_14190a6e0(CInPacket& packet)
     float fX = packet.ReadFloat();
     float fY = packet.ReadFloat();
     float fScale = packet.ReadFloat();
-    FUN_1419092a0(strText1);
+    TranslateScriptText(strText1);
     CString strSound = FUN_14016a600(strText2, 0);
     if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
         strSound.Remove('$');
-    FUN_1419092a0(strText2);
+    TranslateScriptText(strText2);
     ASObj obj(2);
     obj.FUN_1407cb9c0("captionID", 0);
     obj.FUN_1407cbb20("captionType", CStringW(strType));
@@ -775,9 +771,9 @@ void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
     CString strSound = FUN_14016a600(m_strText, 0);
     if (strSound.Left(1) == "$" && strSound.Right(1) == "$")
         strSound.Remove('$');
-    FUN_1419092a0(m_strText);
-    FUN_141909550();
-    if (!FUN_1419096c0())
+    TranslateScriptText(m_strText);
+    InvokeSetOpening();
+    if (!IsCinematicKeyGroupActive())
         SetCinematicKeyMode(true);
     if (!strSound.IsEmpty())
         reinterpret_cast<Unk_CscEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5d80(strSound);
@@ -785,25 +781,25 @@ void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14190AC70, UICutSceneCinematic, FUN_14190ac70, 617, 0xE5FDE549);
 
 // @0x14190aee0
-void UICutSceneCinematic::FUN_14190aee0(CInPacket& packet)
+void UICutSceneCinematic::OnPacketSetIntro(CInPacket& packet)
 {
     m_strText = packet.ReadUnicodeString();
     m_nMode = 3;
-    FUN_1419092a0(m_strText);
-    FUN_141909610();
-    if (!FUN_1419096c0())
+    TranslateScriptText(m_strText);
+    InvokeSetIntro();
+    if (!IsCinematicKeyGroupActive())
         SetCinematicKeyMode(true);
 }
-MS2_REPLACE_METHOD(0x14190AEE0, UICutSceneCinematic, FUN_14190aee0, 190, 0xC358CCEE);
+MS2_REPLACE_METHOD(0x14190AEE0, UICutSceneCinematic, OnPacketSetIntro, 190, 0xC358CCEE);
 
 // @0x14190afb0
-void UICutSceneCinematic::FUN_14190afb0(CInPacket& packet)
+void UICutSceneCinematic::OnPacketResetSkip(CInPacket& packet)
 {
     m_talks.RemoveAll();
     m_strSkipMsg.Empty();
     FUN_141907d60(0, CStringW(L""), CStringW(L""));
 }
-MS2_REPLACE_METHOD(0x14190AFB0, UICutSceneCinematic, FUN_14190afb0, 165, 0x7F0B1D8B);
+MS2_REPLACE_METHOD(0x14190AFB0, UICutSceneCinematic, OnPacketResetSkip, 165, 0x7F0B1D8B);
 
 // @0x14190b060
 void UICutSceneCinematic::vfunc_41(const Scaleform::GFx::Value& root)

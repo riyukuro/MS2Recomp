@@ -41,7 +41,7 @@ typedef UIMsg Unk_OsUIMsg;
 // The bound slot bag of a bag id (StoreSlotBag) and the control state it keeps.
 class Unk_OsBind;
 class Unk_OsSlotBag;
-Unk_OsSlotBag* FUN_14180b940(Unk_OsBind* pBind);                        // the slot bag of it (NULL when unbound)
+namespace NotifyContext { class BindData; } class StoreSlotBag* FUN_14180b940(NotifyContext::BindData* pBind);                        // the slot bag of it (NULL when unbound)
 class DragSlotBag   // C3: member view for the former free stand-ins
 {
 public:
@@ -235,7 +235,7 @@ int UIObjectStoreDialog::vfunc_oa0_1()
 void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
 {
     if (FUN_1422dc390() != 0) {
-        Unk_OsSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_OsBind*>(Unk_NotifyContext::FUN_1422c8e90(m_180)));
+        Unk_OsSlotBag* pBag = (Unk_OsSlotBag*)FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_180));
         if (pBag != 0)
             ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -245,7 +245,7 @@ void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
 void UIObjectStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 {
     if (FUN_1422dc390() != 0) {
-        Unk_OsSlotBag* pBag = FUN_14180b940(reinterpret_cast<Unk_OsBind*>(Unk_NotifyContext::FUN_1422c8e90(m_180)));
+        Unk_OsSlotBag* pBag = (Unk_OsSlotBag*)FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_180));
         if (pBag != 0)
             ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }

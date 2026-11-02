@@ -194,7 +194,7 @@ int UISwfEntity::vfunc_9()
 {
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
-        return pClip->FUN_1422bfca0();
+        return pClip->GetVisible();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1422DBCC0, UISwfEntity, vfunc_9, 164, 0x6E48A992);
@@ -205,7 +205,7 @@ void UISwfEntity::FUN_1422dbd70(int a1, int a2)
     if (FUN_140b632f0()) {
         if (m_20 == s_strNoKey && !FUN_1422db790().IsEmpty()) {
             m_2c = a1;
-            FUN_140b632f0()->FUN_1422d1210(m_28, m_20, FUN_1422db790(), a1, a2);
+            FUN_140b632f0()->PreloadSwf(m_28, m_20, FUN_1422db790(), a1, a2);
         }
     }
 }

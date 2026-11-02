@@ -100,9 +100,9 @@ int FUN_141275a10(CItem* pItem);                            // the item's lock k
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                   // item link / popup for the item
 CStringW GetStringCommon(int nStringId);                      // a string table text
 CString FUN_1405451e0(int nType);                           // the name of an equip slot type
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // string table text with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);                     // send the packet
 void FUN_14121b840(int nResult);                            // the notice of a doll item result (fittingdollslot#1)
@@ -229,41 +229,31 @@ int FittingDollSlot::vfunc_8(void* p)
     if (pItem == 0)
         return 0;
     Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-    egf::EntityID kId;
-    Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460(kId));
+    Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
-    __int64 nOwner = pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54);
-    __int64 nLocalOwner = ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
+    int bOwner = pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54) == ((class PC*)(class PCBase*)(pLocal))->FUN_141656ad0();
     ASSlot slot(2);
-    if (slot.FUN_1409c41f0(pItem, pPlayer, m_nSlot, 0x49) == 0)
-        return 0;
-    if (nOwner == nLocalOwner)
+    if (slot.FUN_1409c41f0(pItem, pPlayer, m_nSlot, 0x49))
     {
-        int nLock = FUN_141275a10(vfunc_25().get());
-        if (nLock == 1)
-            slot.SetItemLock(1);
-        else if (nLock == 2)
-            slot.SetDisable(1);
-        else if (nLock == 3)
-            slot.SetItemConditionLock(1);
-    }
-    if (m_nSlot == 4)
-    {
-        if (pItem->FUN_140527840()->FUN_14053d460() != false)
+        if (bOwner)
         {
-            slot.SetGrayColor(1);
-            goto LAB_gray_done;
+            int nLock = FUN_141275a10(vfunc_25().get());
+            if (nLock == 1)
+                slot.SetItemLock(1);
+            else if (nLock == 2)
+                slot.SetDisable(1);
+            else if (nLock == 3)
+                slot.SetItemConditionLock(1);
         }
-    }
-    if (m_nSlot == 9)
-    {
-        if (pItem->FUN_140527840()->FUN_14053d2b0() != false)
+        if (m_nSlot == 4 && pItem->FUN_140527840()->FUN_14053d460() != false)
             slot.SetGrayColor(1);
+        else if (m_nSlot == 9 && pItem->FUN_140527840()->FUN_14053d2b0() != false)
+            slot.SetGrayColor(1);
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        return 1;
     }
-LAB_gray_done:
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
-    return 1;
+    return 0;
 }
 
 // @0x14121db80
@@ -287,7 +277,7 @@ void FittingDollSlot::vfunc_9()
     if (((Scaleform::GFx::Value*)(void*)(&m_value18))->IsNull() == 0)
     {
         ASObj obj(m_value18, 2);
-        if (obj.FUN_1422ba9a0() == 0)
+        if (obj.IsUndefinedOrNull() == 0)
             obj.FUN_1407cba60("m_strSlotType", FUN_1405451e0(m_nSlot));
     }
 }
@@ -342,10 +332,10 @@ int FittingDollSlot::FUN_14121ddc0()
                 FUN_140d73bc0(0xdc, 0, 0, CStringW(L""));
                 break;
             case 4:
-                strText = FUN_14052bd00(0xdb, strName);
+                strText = FormatStringId<CStringW>(0xdb, strName);
                 break;
             case 5:
-                strText = FUN_14052bd00(0xde, strName);
+                strText = FormatStringId<CStringW>(0xde, strName);
                 break;
             default:
                 MS2_ASSERT_AT(0xfe, 0);
@@ -359,7 +349,7 @@ int FittingDollSlot::FUN_14121ddc0()
                     spBox->FUN_141a01600(((CItem*)spItem)->GetItemUid());
                     spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->GetCount(), -1, -1, 1);
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a026f0(1);
+                    spBox->SetCheckboxMust(1);
                     spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
                     FUN_140d73c60(spBox);
                 }

@@ -23,8 +23,8 @@ public:
     int FUN_1410315a0();                                            // m_74 (shown)
     void FUN_1410315c0();                                           // m_78 = m_74 = 1
     void FUN_1410315f0();                                           // unregister from the manager; m_78 = m_74 = 0
-    void FUN_141031660(const Vector3& pt);                  // m_68 = pt (the world anchor)
-    void FUN_141031690(const egf::EntityID& kId);                   // m_80 = kId
+    void FUN_141031660(Vector3 pt);                  // m_68 = pt (the world anchor)
+    void FUN_141031690(egf::EntityID kId);                   // m_80 = kId
     void FUN_1410316d0(int nItemId);                                // m_88 = nItemId
     void FUN_141031890();                                           // project m_68 to the screen and move the movie
     void FUN_141031a60(int bShow);                                  // show/hide; on show push the item name + description

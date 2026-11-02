@@ -177,10 +177,9 @@ CFieldMetaTable::~CFieldMetaTable()
 // @0x1406f9dd0
 void CFieldMetaTable::LoadFieldMetaData()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("FieldMetaData.xml"));
+    CString strPath = FUN_14071a5b0("Table", "FieldMetaData.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -220,8 +219,8 @@ void CFieldMetaTable::LoadFieldMetaData()
                 CString strEnd;
                 FUN_1408733e0(pField, "startTime", strStart);
                 FUN_1408733e0(pField, "endTime", strEnd);
-                __int64 nEnd = 0;
                 __int64 nStart = 0;
+                __int64 nEnd = 0;
                 if (!FUN_1406fc8a0(CString(strStart), &nStart))
                     continue;
                 if (!FUN_1406fc8a0(CString(strEnd), &nEnd))
@@ -247,13 +246,13 @@ void CFieldMetaTable::LoadFieldMetaData()
     }
 
     // <fieldPortal field= indoor=><portal targetField= portalType= id= portalIndoor=/></fieldPortal>
-    std::map<unsigned, bool> outdoor;
+    std::map<unsigned long, bool> outdoor;
     for (Unk_140165cf0* pPortal = pRoot->FUN_140165cf0("fieldPortal"); pPortal != 0; pPortal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pPortal))->NextSibling("fieldPortal")))
     {
-        unsigned nField = 0;
+        unsigned long nField = 0;
         int nIndoor = 0;
         XmlGetAttr((class TiXmlElement*)(pPortal), "indoor", nIndoor);
-        XmlGetAttr((class TiXmlElement*)(pPortal), "field", nField);
+        XmlGetAttr((class TiXmlElement*)(pPortal), "field", reinterpret_cast<unsigned&>(nField));
         if (FUN_1406fc870(nField) == 0)
             continue;
         Unk_FieldIdListPtr pTargets;
@@ -370,22 +369,18 @@ void CFieldMetaTable::LoadFieldMetaData()
     // Fold the outdoor-only indoor portals into the closure: for each such field, the fields reachable from it.
     for (POSITION posField = m_indoorPortals.GetStartPosition(); posField != 0; m_indoorPortals.GetNext(posField))
     {
-        unsigned nField = m_indoorPortals.GetKeyAt(posField);
+        unsigned long nField = m_indoorPortals.GetKeyAt(posField);
         if (outdoor[nField] == 0)
             continue;
         Unk_FieldIdListPtr pSeed(Unk_FieldNewTag(0));
-        Unk_FieldIdListPtr pDone(Unk_FieldNewTag(0));
         pSeed.get()->AddTail(nField);
+        Unk_FieldIdListPtr pDone(Unk_FieldNewTag(0));
         FUN_1406fbdf0(const_cast<const Unk_FieldIdListPtr&>(pSeed), const_cast<const Unk_FieldIdListPtr&>(pDone));
-        if (pDone.get()->GetCount() != 0)
+        if (pDone.get()->GetCount() > 0)
         {
             m_indoorClosure.SetAt(nField, pDone);
-            POSITION pos = pDone.get()->GetHeadPosition();
-            while (pos != 0)
-            {
+            for (POSITION pos = pDone.get()->GetHeadPosition(); pos != 0; pDone.get()->GetNext(pos))
                 m_reverse.SetAt(pDone.get()->GetAt(pos), nField);
-                pDone.get()->GetNext(pos);
-            }
         }
     }
 }

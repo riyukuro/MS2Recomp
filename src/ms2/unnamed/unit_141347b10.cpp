@@ -209,7 +209,7 @@ void ShopBanner::FUN_141348190(ASArray& arr)
         {
             ASObj obj(2);
             spInfo->vfunc_1(&obj);
-            arr.FUN_1422bc050(obj.FUN_1422bb890());
+            arr.PushValue(obj.FUN_1422bb890());
         }
     }
 }
@@ -374,7 +374,7 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
         ((class AScript&)(obj)).FUN_1407cb9c0("space", 1);
         if (pfnEach != 0 && !pfnEach->IsNull())
             (*pfnEach)(obj);
-        out.FUN_1422bc050(obj.FUN_1422bb870());
+        out.PushValue(obj.FUN_1422bb870());
     }
 }
 
@@ -403,18 +403,18 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
     if (pPlayer == 0)
         return;
     MS2Ptr<CItem> spEquipped(0);
-    int bAlt = spItem->FUN_1405258b0() != 0;
+    int bAlt = spItem->HasSkin() != 0;
     MS2Ptr<CEquipItem> spEquip(0);
     if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d510())
     {
         if (TSingleton<CUIService>::GetInstance()->FUN_141adcb40())
-            spEquip = reinterpret_cast<CEquipment*>((class CEquipment*)((static_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411e1780(4, bAlt);
+            spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1780(4, bAlt);
         else
-            spEquip = reinterpret_cast<CEquipment*>((class CEquipment*)((static_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411e1780(5, bAlt);
+            spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1780(5, bAlt);
     }
     else
     {
-        spEquip = reinterpret_cast<CEquipment*>((class CEquipment*)((static_cast<PC*>(pPlayer)->FUN_1416561a0())))->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
+        spEquip = reinterpret_cast<CEquipment*>(static_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1780(spItem->FUN_140527a20(), bAlt);
     }
     if (spEquip.get())
         spEquipped = spEquip->GetItem();
@@ -613,14 +613,14 @@ MS2_REPLACE(0x14134a170, FUN_14134a170, 22, 0xFF2C17B2);
 // @0x14134a190
 __int64 FUN_14134a190(Unk_BSFee* pFee)
 {
-    return FUN_141349ef0((((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
+    return FUN_141349ef0((((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
 MS2_REPLACE(0x14134a190, FUN_14134a190, 54, 0xA554498C);
 
 // @0x14134a1d0
 bool FUN_14134a1d0(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
-    return FUN_14134a030((((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
+    return FUN_14134a030((((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
 }
 MS2_REPLACE(0x14134a1d0, FUN_14134a1d0, 64, 0xD9B549FA);
 
@@ -628,7 +628,7 @@ MS2_REPLACE(0x14134a1d0, FUN_14134a1d0, 64, 0xD9B549FA);
 CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
     CStringW strText;
-    FUN_141349f30(strText, (((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice, ((class TShopPaymentAttr*)(pFee))->GetIconTag());
+    FUN_141349f30(strText, (((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice, ((class TShopPaymentAttr*)(pFee))->GetIconTag());
     return strText;
 }
 MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
@@ -636,7 +636,7 @@ MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
 // @0x14134a2e0
 void FUN_14134a2e0(Unk_BSFee* pFee)
 {
-    FUN_14134a120((((int)((class TShopPaymentAttr*)((int)((class TShopPaymentAttr*)(pFee))))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
+    FUN_14134a120((((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
 MS2_REPLACE(0x14134a2e0, FUN_14134a2e0, 54, 0x2D3D1D1C);
 

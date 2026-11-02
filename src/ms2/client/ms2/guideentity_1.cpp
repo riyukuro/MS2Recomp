@@ -248,7 +248,6 @@ bool GuideTriggerEventGroup::HasSubValue(int nValue)
 // ---- dynamic initializers (.text$di) -------------------------------------------------------------------------------------
 
 #ifndef MS2_HOOK_DLL
-ClassObject* FUN_1413aa580();
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 struct Unk_RegMarker {};
 
@@ -259,7 +258,7 @@ static Unk_1402a9d70 s_8ee0(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_
 // @0x1400f2e30
 static char s_regAchieveExistTrophy;
 static Unk_RegMarker s_initAchieveExistTrophy =
-    (FUN_140316aa0(&s_regAchieveExistTrophy, CStringW(L"CGuideConditionAchieveExistTrophy"), FUN_1413aa580), Unk_RegMarker());
+    (FUN_140316aa0(&s_regAchieveExistTrophy, CStringW(L"CGuideConditionAchieveExistTrophy"), CGuideConditionAchieveExistTrophy::CreateObject), Unk_RegMarker());
 
 // @0x1400f2e80
 static char s_regAchieveTab;

@@ -182,7 +182,7 @@ void StateDead::vfunc_4(StateData* pData)
             ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
         }
-        if (reinterpret_cast<PC*>(FUN_1417b84b0())->FUN_141661970() != 0)
+        if (reinterpret_cast<PC*>(FUN_1417b84b0())->IsRevivalBlocked() != 0)
             reinterpret_cast<CGuideManager*>(((void*)FUN_1409331e0()))->AddTrigger((CGuideManager::TriggerType)(8), 0, 0);
     }
 }

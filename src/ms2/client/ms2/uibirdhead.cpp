@@ -184,7 +184,7 @@ void UIBirdHead::FUN_1418cee70()
         {
             vfunc_8(1);
             FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->FUN_1422c00f0(screen.x, screen.y + m_a0);
+            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y + m_a0);
         }
     }
     else

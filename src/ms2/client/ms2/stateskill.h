@@ -118,15 +118,15 @@ public:
     void FUN_1417f0d60(unsigned nTick, const char* szPoint);                                 // fire the current attack
     float FUN_1417f0ec0();
     void FUN_1417f0f10(unsigned nTick, const char* szPoint);              // fire the attack of a cast point
-    void FUN_1417f1060();
+    void StopRecordEffects();
     void FUN_1417f11d0();
     void FUN_1417f16f0(MS2Ptr<CSkillRecord> spRecord);
-    static float FUN_1417ec0d0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);  // the sequence frequency of a cast
-    static void FUN_1417ec210(MS2Ptr<CSkillRecord> spRecord, float fStart, float fEnd, float fSpeed);  // arm a move phase
-    int FUN_1417f1a10(unsigned nNow, unsigned nStart);
+    static float GetMotionSpeedScale(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);  // the sequence frequency of a cast
+    static void CalcSkillDuration(MS2Ptr<CSkillRecord> spRecord, float fStart, float fEnd, float fSpeed);  // arm a move phase
+    int ClampedElapsedAfter16ms(unsigned nNow, unsigned nStart);
     void FUN_1417f1a90();
-    void FUN_1417f1ea0();
-    void FUN_1417f1fe0();
+    void StartLoopEffect();
+    void StopLoopEffect();
     void PlayLoopEndEffect();
     void FUN_1417f2150();
     void FUN_1417f27d0();
@@ -141,10 +141,10 @@ public:
     unsigned GetSkillId();                                           // the running skill id (0: none)
     float FUN_1417f4ea0(PCBase* pOwner, efd::Point3 kRot);
     void SendSkillMode4();
-    void FUN_1417f4d20();                                               // start the super armor effect
-    void FUN_1417f4dc0();                                               // stop it
+    void PlaySuperArmorEffect();                                               // start the super armor effect
+    void StopSuperArmorEffect();                                               // stop it
     bool FUN_1417f5060();                                               // the combo input may chain
-    static void FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord);           // fire the due magic models of a cast
+    static void SetTargetStartTicks(MS2Ptr<CSkillRecord> spRecord);           // fire the due magic models of a cast
     static int FUN_1417ea570(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);   // check a cast by kind
     static void FUN_1417ea750(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);   // the cast's start effect
     static int FUN_1417ea920(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);    // fire the cast's first attack

@@ -17,6 +17,7 @@
 #include "ms2/client/ms2/menteesearch.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/gfxui/uimsg.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/mstime.h"
@@ -32,6 +33,7 @@
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/commonfiles/os.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -73,7 +75,7 @@ struct Unk_MMIdPacket7
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160).
 class Unk_MentorSchedule : public CGameEventValueMentoring { };
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
-Unk_MentorScheduleHolder* FUN_140302b00();
+class CGameEventValueManager;
 
 // The blocked-action flags.
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
@@ -108,15 +110,6 @@ class Unk_GuildBuddyMgr { public: Unk_GuildBuddyRef FUN_140ae4950(const CStringW
 class UICommunityQueryDialog : public UIDialog {};
 UICommunityQueryDialog* FUN_140ae5a30(int);
 
-// The UI message ("setData"-like ActionScript call, 0x50 bytes); dtor 0x140c30570 is in this unit.
-class Unk_InvUIMsg
-{
-public:
-    Unk_InvUIMsg();                                                 // 0x1422e4490
-    ~Unk_InvUIMsg() { reinterpret_cast<ASData*>(this)->ASData::~ASData(); }   // @0x140c30570
-private:
-    void* m_data[10];
-};
 #define Unk_InvArgs(msg) (*reinterpret_cast<ASData*>(&(msg)))      // the message args (no call at /Od)
 
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);
@@ -199,7 +192,7 @@ void UIInviteMentoringDialog::OnLoadComplete()
         }
         FUN_141925fa0(CString("m_mentorDragBar"));
         CMenteeSearchParam param;
-        param.m_nOption30 = FUN_140302b00()->FUN_14041d160()->GetId();
+        param.m_nOption30 = reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetId();
         CMenteeSearchManager::GetInstance()->RequestSearch(&param);
     }
     else
@@ -298,7 +291,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
-            CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->GetEndTime());
+            CMsTime tEnd(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetEndTime());
             int nDay = tEnd.GetDay();
             int nMonth = tEnd.GetMonth();
             int nYear = tEnd.GetYear();
@@ -352,10 +345,10 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 }
             }
             CString strChar = FUN_140719530(nChar);
-            Unk_InvUIMsg msg;
+            UIMsg msg;
             Unk_InvArgs(msg).AddInt(0);
             Unk_InvArgs(msg).AddInt(1);
-            Unk_InvArgs(msg).FUN_1422b8310(strName);
+            Unk_InvArgs(msg).AddWString(strName);
             Unk_InvArgs(msg).AddString(strChar);
             UICommunityQueryDialog* pQuery = FUN_140ae5a30(0x4e4e);
             if (pQuery != 0)
@@ -379,8 +372,8 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float x = data.FUN_1422b8c10();
-            float y = data.FUN_1422b8c10();
+            float x = data.PopFloat();
+            float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
@@ -429,7 +422,7 @@ void UIInviteMentoringDialog::FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<C
         row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
         row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
         row.FUN_1407cbb20("charInfo", CStringW(strInfo));
-        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     m_spPage->FUN_140bd2cb0("buildCandidate", rows);
 }
@@ -462,7 +455,7 @@ void UIInviteMentoringDialog::FUN_140c2f490()
         row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
         row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
         row.FUN_1407cbb20("charInfo", CStringW(strInfo));
-        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     m_spPage->FUN_140bd2cb0("buildCandidate", rows);
 }

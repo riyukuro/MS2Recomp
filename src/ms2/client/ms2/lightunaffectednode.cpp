@@ -43,8 +43,8 @@ LightUnaffectedNode::LightUnaffectedNode(bool affectsLights, bool isTemplate) : 
         void* pos = FUN_140afe720(list);
         while (pos != 0) {
             Unk_LUNLight* light = FUN_140afe6c0(FUN_140afe730(list, &pos));
-            light->FUN_141175880(this);
-            light->FUN_1411758d0(this);
+            reinterpret_cast<NiShadowGenerator*>(light)->AttachUnaffectedCasterNode(this);
+            reinterpret_cast<NiShadowGenerator*>(light)->AttachUnaffectedReceiverNode(this);
         }
     }
 }
@@ -63,8 +63,8 @@ LightUnaffectedNode::~LightUnaffectedNode()
         void* pos2 = FUN_140afe720(list2);
         while (pos2 != 0) {
             Unk_LUNLight* light2 = FUN_140afe6c0(FUN_140afe730(list2, &pos2));
-            light2->FUN_141175a10(this);
-            light2->FUN_141175a70(this);
+            reinterpret_cast<NiShadowGenerator*>(light2)->DetachUnaffectedCasterNode(this);
+            reinterpret_cast<NiShadowGenerator*>(light2)->DetachUnaffectedReceiverNode(this);
         }
     }
 }

@@ -10,6 +10,9 @@
 // MS2-FLAGS: gamebryo
 // MS2-PIN: ?FindEnumValue@?$DataDrivenEnum@I@efd@@QEAA_NAEBVutf8string@2@AEAI@Z 0x1420e62a0
 #define MS2_THIS_FILE ""
+// The exe calls utf8string(const char*) (0x1409989e0) and std::less<utf8string> (0x140999060) out of line here.
+#define EE_MS2_UTF8_CHAR_CTOR_CALL
+#define EE_MS2_LESS_UTF8_CALL
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/QOSCompare.h>
 #include <efd/efdQualityOfService.h>
@@ -19,6 +22,8 @@
 #include <efd/DataDrivenEnum.h>
 #include <efd/efdLogIDs.h>
 #include <efd/Logger.h>
+#include <efd/ThreadFunctor.h>
+#include <efd/AssetFactoryManager.h>
 #include <windows.h>
 #include <stdlib.h>
 
@@ -31,26 +36,26 @@ struct AssetLoaderThreadFunctorLayout
     char pad18[0xd0 - 0x18];
     volatile bool m_shutdown;
 };
-void FUN_1420af780(void* self);                                                     // ThreadFunctor::ThreadFunctor
-void FUN_14209f570(void* self, size_t requestQueueSize, efd::UInt32 sleepInterval, void* pFore);   // AssetFactoryManager::AssetFactoryManager
 extern "C" void* DAT_1430d1b68[];   // AssetLoaderThreadFunctor vftable (ThreadFunctor part)
 extern "C" void* DAT_1430d1b80[];   // AssetLoaderThreadFunctor vftable (AssetFactoryManager part)
 
 // AssetLoaderThreadFunctor::AssetLoaderThreadFunctor(requestQueueSize, pForeAssetFactoryManager): a background
 // AssetFactoryManager that takes the foreground manager's sleep interval (+0xb8).
-// MS2-FUNCTIONAL: the exe gives the ctor an EH frame that unwinds the ThreadFunctor base if the AssetFactoryManager
-// base throws; this raw-layout version constructs both bases through their out-of-line ctors without one.
-// @0x1420e5f50
-AssetLoaderThreadFunctorLayout* FUN_1420e5f50(AssetLoaderThreadFunctorLayout* self, efd::UInt32 requestQueueSize,
-    const char* pForeAssetFactoryManager)
+// The real bases give the exe's unwind of ThreadFunctor if AssetFactoryManager throws; novtable leaves the stores to
+// the exe's two vftables.
+struct __declspec(novtable) AssetLoaderThreadFunctorBases : efd::ThreadFunctor, efd::AssetFactoryManager
 {
-    FUN_1420af780(self);
-    FUN_14209f570(&self->managerVftable, requestQueueSize,
-        *(const efd::UInt32*)(pForeAssetFactoryManager + 0xb8), (void*)pForeAssetFactoryManager);
-    self->vftable = DAT_1430d1b68;
-    self->managerVftable = DAT_1430d1b80;
-    self->m_shutdown = false;
-    return self;
+    AssetLoaderThreadFunctorBases(efd::UInt32 requestQueueSize, efd::AssetFactoryManager* pForeAssetFactoryManager);
+    volatile bool m_shutdown;
+};
+// @0x1420e5f50
+AssetLoaderThreadFunctorBases::AssetLoaderThreadFunctorBases(efd::UInt32 requestQueueSize,
+    efd::AssetFactoryManager* pForeAssetFactoryManager)
+    : efd::AssetFactoryManager(requestQueueSize, pForeAssetFactoryManager->GetSleepInterval(), pForeAssetFactoryManager)
+{
+    *(void***)static_cast<efd::ThreadFunctor*>(this) = DAT_1430d1b68;
+    *(void***)static_cast<efd::AssetFactoryManager*>(this) = DAT_1430d1b80;
+    m_shutdown = false;
 }
 
 // AssetLoaderThreadFunctor::Execute: ticks the background manager (vftable +0x68, OnTick) until shut down, then calls
@@ -68,7 +73,6 @@ efd::UInt32 FUN_1420e6090(AssetLoaderThreadFunctorLayout* self, void* pArg)
 }
 
 // The out-of-line instance the QOS lookups call.
-// MS2-FUNCTIONAL: codegen only: the exe keeps std::less<utf8string> (0x140999060) out of line and uses an r11 frame.
 template bool efd::DataDrivenEnum<efd::UInt32>::FindEnumValue(const efd::utf8string&, efd::UInt32&);   // 0x1420e62a0
 
 // QOSCompare.cpp's file statics and QOSCompare's static members. The file statics have internal linkage in the engine
@@ -94,7 +98,6 @@ extern "C" bool DAT_143b05548;                    // QOSCompare::ms_configRead
 extern "C" efd::map<efd::QualityOfService, efd::QualityOfService> DAT_143b05550;   // QOSCompare::ms_virtualToPhysical
 
 // QOSCompare::GetPhysicalQOS: the named physical QOS from the "efdQualityOfService" enum, else atoi of the name.
-// MS2-FUNCTIONAL: codegen only: the exe keeps the utf8string(const char*) ctor (0x1409989e0) out of line and uses an r11 frame.
 // @0x1420e6380
 efd::QualityOfService FUN_1420e6380(efd::EnumManager* pEnumManager, const efd::utf8string& stringName)
 {
@@ -114,7 +117,6 @@ efd::QualityOfService FUN_1420e6380(efd::EnumManager* pEnumManager, const efd::u
 }
 
 // QOSCompare::GetVirtualQOS: the same lookup in the "efdVirtualQualityOfService" enum.
-// MS2-FUNCTIONAL: codegen only: the exe keeps the utf8string(const char*) ctor (0x1409989e0) out of line and uses an r11 frame.
 // @0x1420e64b0
 efd::QualityOfService FUN_1420e64b0(efd::EnumManager* pEnumManager, const efd::utf8string& stringName)
 {
@@ -138,8 +140,7 @@ efd::QualityOfService FUN_1420e64b0(efd::EnumManager* pEnumManager, const efd::u
 
 // QOSCompare::ReadConfig: maps virtual to physical QOS, once. Unreliable and connectionless default to their
 // unreliable physical QOS; the [QualityOfService] config section can set the physical Default and add mappings.
-// MS2-FUNCTIONAL: codegen only: the exe keeps the utf8string(const char*) ctor (0x1409989e0) and the map's
-// std::less out of line, inlines GetVirtualQOS, and uses an r11 frame.
+// MS2-FUNCTIONAL: codegen only: the exe inlines GetVirtualQOS (0x200 frame) and uses an r11 frame.
 // @0x1420e65e0
 void FUN_1420e65e0(efd::IConfigManager* pConfigManager, efd::EnumManager* pEnumManager)
 {

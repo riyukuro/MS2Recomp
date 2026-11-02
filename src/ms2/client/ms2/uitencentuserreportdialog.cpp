@@ -538,10 +538,10 @@ void UITencentUserReportPage::FUN_140edd730()
     MS2Ptr<ASCheckBox> check;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140c12010("m_checkBoxBlock", check)) {
         switch (m_type) {
-        case 3: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_blind_contents_check")); break;
-        case 4: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_blind_contents_check")); break;
-        case 16: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_blind_contents_check")); break;
-        default: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->FUN_1422b0570("$s_report_ban_character_check")); break;
+        case 3: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->Localize("$s_report_blind_contents_check")); break;
+        case 4: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->Localize("$s_report_blind_contents_check")); break;
+        case 16: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->Localize("$s_report_blind_contents_check")); break;
+        default: check->FUN_1422cdfb0(SingletonClass<GFxManager>::GetInstance()->Localize("$s_report_ban_character_check")); break;
         }
     }
 }

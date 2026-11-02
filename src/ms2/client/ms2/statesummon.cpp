@@ -46,6 +46,7 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
 #include "ms2/client/ms2/uihudentity.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -74,7 +75,7 @@ public:
     class Unk_WsC_GameObj* FUN_141bd1a50(class Unk_WsC_GameObj*);
     static class WorldService* GetInstance();
 };
-void* FUN_1403ed280();                                                     // 0x1403ed280 the effect manager
+class CEffectService;
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
@@ -94,7 +95,7 @@ egmAnimation::AnimationService* FUN_141b6f910();                                
 int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);          // 0x140b7f6a0 the actor id at that key
 
 // The client settings / skill services.
-void* FUN_1409a8b10();                                                     // 0x1409a8b10 the client-settings service
+class CGameOption;
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 void* FUN_140c8b450(void* pSvc);                                           // 0x140c8b450
 class Unk_SmPetSkills { public: MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nSkillId); };   // 0x140c892c0 (member)
@@ -250,7 +251,7 @@ void StateSummon::vfunc_4(StateData* pData)
         BOOL bPreload = TRUE;
         if (FUN_1417b8560() == 0)
         {
-            if (*reinterpret_cast<unsigned char*>(static_cast<char*>((void*)reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140b123b0()) + 0x12) != 0)
+            if (*reinterpret_cast<unsigned char*>(static_cast<char*>((void*)TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()) + 0x12) != 0)
                 bPreload = FALSE;
         }
         if (bPreload)
@@ -260,7 +261,7 @@ void StateSummon::vfunc_4(StateData* pData)
             msg.m_strName = "CH/Common/Eff_PetOn.xml";
             msg.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
             msg.SetActor(reinterpret_cast<GameObject*>(m_pOwner)->FUN_14123c580());
-            ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a4a00(*(class Unk_EffectTarget*)&static_cast<class NoticeMessage&>(msg));
+            ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a4a00(*(class Unk_EffectTarget*)&static_cast<class NoticeMessage&>(msg));
         }
     }
 
@@ -357,7 +358,7 @@ void StateSummon::vfunc_8(double fTime)
                         *reinterpret_cast<__int64*>(reinterpret_cast<char*>(spAction.operator->()) + 0x38) =
                             spItem->GetItemUid();
                         *(reinterpret_cast<char*>(spAction.operator->()) + 0x28) =
-                            *(static_cast<char*>(((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_14124ab20())) + 2);
+                            *(static_cast<char*>(((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_14124ab20())) + 2);
                         COutPacket packet(static_cast<int>(SendOp::RequestRide), 0);
                         packet.Encode1(0);
                         spAction->vfunc_1(reinterpret_cast<COutputStream*>(&packet));
@@ -644,7 +645,7 @@ void StateSummonIdle::vfunc_9(double fTime)
     if (pOwner == 0)
         return;
 
-    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->FUN_141661970() != 0)
+    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->IsRevivalBlocked() != 0)
     {
         m_pOwner->FUN_14166dd20("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
         return;
@@ -814,7 +815,7 @@ void StateSummonRevive::vfunc_3(double fTime)
     if (m_timer.FUN_140868c00() != 0)    // expired (0x140868c00), not still running
     {
         m_timer.FUN_1408687f0();
-        if (pPet->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pPet)->FUN_141661970() == 0)
+        if (pPet->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pPet)->IsRevivalBlocked() == 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
             packet.Encode1(3);
@@ -842,7 +843,7 @@ void StateSummonRevive::vfunc_9(double fTime)
     if (pOwner == 0)
         return;
 
-    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->FUN_141661970() != 0)
+    if (pOwner->FUN_14166ce30() != 0 && reinterpret_cast<PC*>(pOwner)->IsRevivalBlocked() != 0)
     {
         m_pOwner->FUN_14166dd20("Tired_A", m_pOwner->FUN_1416713c0(), false, false);
         return;
@@ -862,7 +863,7 @@ StateSummonExpire::StateSummonExpire(PCBase* pOwner) : State(pOwner) {}
 void StateSummonExpire::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_t40 = Unk_140517b00();
+    reinterpret_cast<Unk_IntervalTimer&>(m_t40) = Unk_IntervalTimer();
 }
 
 // @0x1417f9900

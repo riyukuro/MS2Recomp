@@ -45,7 +45,6 @@ class Unk_LdButton : public ASDisplayObject
 {
 public:
     Unk_LdButton(const Scaleform::GFx::Value& v, int nMovieId);
-    void FUN_1422c1fe0(int bEnabled);                       // enable / disable
 };
 
 // The item lock manager (global 0x143aaf308, CItemLockManager of unit_1406125d0).
@@ -67,8 +66,8 @@ public:
     void FUN_1406132f0();
     Unk_LockMode GetMode() const;                           // the tab (0 lock, 1 unlock)
 };
-extern Unk_LdLockMgr* DAT_143aaf308;
-inline Unk_LdLockMgr* FUN_140535310() { return DAT_143aaf308; }
+class CItemLockManager;
+inline Unk_LdLockMgr* FUN_140535310() { return reinterpret_cast<Unk_LdLockMgr*>(TSingleton<CItemLockManager>::s_instance); }
 
 // The sound event sink (TSingleton<CBigDataLogSystem>::GetInstance).
 
@@ -88,7 +87,7 @@ typedef UIMsg Unk_LdUIMsg;
 // The message box machinery (unit_140d73aa0.cpp) and the string tables.
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_14151f200();
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 
 void FUN_140d42100(const CString& strName);
@@ -136,9 +135,9 @@ void UIItemLockDialog::FUN_140f56c80()
 void UIItemLockDialog::FUN_140f56e00()
 {
     if (MS2Ptr<Unk_LdButton> spLock = GetChild<Unk_LdButton>("m_lock"))
-        spLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+        reinterpret_cast<ASMovieClip*>(spLock.operator->())->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
     if (MS2Ptr<Unk_LdButton> spUnLock = GetChild<Unk_LdButton>("m_unLock"))
-        spUnLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+        reinterpret_cast<ASMovieClip*>(spUnLock.operator->())->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
 }
 
 // @0x140f56f50
@@ -147,7 +146,7 @@ int UIItemLockDialog::FUN_140f56f50()
     if (m_30 == 0)
         return 0;
     if (MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag"))
-        return spBag->FUN_1422bfca0();
+        return spBag->GetVisible();
     return 0;
 }
 
@@ -221,7 +220,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
-                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
@@ -240,7 +239,7 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
-                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
@@ -326,7 +325,7 @@ void UIItemLockDialog::vfunc_43()
         if (pDlg != 0)
         {
             int nWidth = pDlg->FUN_1422c1340();
-            pDlg->FUN_1422c00f0(fX - (float)nWidth, fY);
+            pDlg->SetPositionFloat(fX - (float)nWidth, fY);
             return;
         }
     }

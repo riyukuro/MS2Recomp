@@ -88,7 +88,7 @@ extern NiFixedString DAT_143ae50a8;                         // alpha shell group
 extern NiFixedString DAT_143ae50b0;                         // alpha shell member flag (boolean extra data)
 extern NiFixedString DAT_143ae51d0;                         // alpha depth-bias tag
 extern NiFixedString DAT_143ae52a8;                         // outline material name
-NiNode* FUN_141d15010(NiAVObject* pkObject);                // topmost ancestor of the object
+
 float FUN_141b71c50();                                      // depth bias of tagged alpha objects
 bool FUN_141568c20(NiRenderObject* pkObject);
 bool FUN_141568c90(NiRenderObject* pkObject);
@@ -510,7 +510,7 @@ void MS2RenderListProcessor::ApplyEffectMaterial(NiRenderObject* pkObject, MS2Sa
     if (!pkEntry->IsActive())
         return;
 
-    std::map<NiNodePtr, int>::const_iterator it = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find(FUN_141d15010(pkObject));
+    std::map<NiNodePtr, int>::const_iterator it = ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.find((NiNode*)pkObject->GetRoot());
     if (it == ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_kRootModes.end())
         return;
 

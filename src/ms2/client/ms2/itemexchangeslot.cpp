@@ -27,7 +27,9 @@
 class Unk_InvenSlot : public InvenSlot
 {
 };
-Unk_InvenSlot* FUN_140a50b50(DragSlot* pSlot);          // pSlot->TypeCast(0x6200023), 0 on failure
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 // The inventory's bag of items by uid.
 extern Unk_Inventory g_143ab2a90;
@@ -84,7 +86,7 @@ int ItemExchangeSlot::vfunc_17()
 // @0x140b6c9e0
 int ItemExchangeSlot::vfunc_18(void* p)
 {
-    Unk_InvenSlot* pInven = FUN_140a50b50(static_cast<DragSlot*>(p));
+    Unk_InvenSlot* pInven = reinterpret_cast<Unk_InvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))));
     if (pInven != 0)
     {
         MS2Ptr<CItem> spItem = ((class Unk_Inventory&)(g_143ab2a90)).FUN_140a5d680(pInven->GetItemUid());

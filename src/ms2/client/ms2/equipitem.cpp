@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/kfmmodel.h"
 #include "ms2/client/ms2/itemugcmesh.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/equipment.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cugcmanager.h"
@@ -42,19 +43,15 @@ struct Unk_EquipItemData : public Unk_ItemEquipData {};
 
 // The non-virtual CEquipModel members this unit calls (defined in ?\equipmodel.cpp; equipmodel.h does not declare
 // them). ModelPart is the model's <asset> record (CEquipModel::m_unk_20).
-class Unk_EquipModelCalls : public CEquipModel
-{
-public:
-    ModelPart* FUN_141200ab0();                                     // the <asset> record
-    int FUN_141200bb0(const CString& strTag);                       // AddTag (1: changed)
-    int FUN_141200c10(const CString& strTag);                       // RemoveTag (1: changed)
-    int FUN_141200c50(const CString& strTag);                       // HasTag
-    void FUN_141200230();                                           // ApplyPointEffect
-    void FUN_141201180(const CString& strName);                     // show the meshes named strName
-    int FUN_141202940();                                            // the model kind
-    void FUN_141202dc0(int nSlot);                                  // RemoveEffect
-};
-#define MODEL(sp) static_cast<Unk_EquipModelCalls*>((sp).operator->())
+void* FUN_141200ab0(CEquipModel* self);                            // the <asset> record
+int FUN_141200bb0(CEquipModel* self, CString* pTag);               // AddTag (1: changed)
+int FUN_141200c10(CEquipModel* self, CString* pTag);               // RemoveTag (1: changed)
+int FUN_141200c50(CEquipModel* self, CString* pTag);               // HasTag
+void FUN_141200230(CEquipModel* self);                             // ApplyPointEffect
+void FUN_141201180(CEquipModel* self, const CString& strName);     // show the meshes named strName
+int FUN_141202940(CEquipModel* self);                              // the model kind
+void FUN_141202dc0(CEquipModel* self, int nSlot);                  // RemoveEffect
+#define MODEL(sp) ((sp).operator->())
 
 CString FUN_1410280d0(int nKind, CString strName);                  // the local file of a ugc content kind
 
@@ -100,7 +97,7 @@ void CEquipItem::FUN_1411dbf80(int bKeepModels)
     else
     {
         FUN_1411dc560();
-        m_pPC->FUN_1416561a0()->FUN_1411e0ba0();
+        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->RefreshModel();
     }
 }
 MS2_REPLACE_METHOD(0x1411DBF80, CEquipItem, FUN_1411dbf80, 69, 0x7DB620F3);
@@ -111,7 +108,7 @@ void CEquipItem::ReleaseLinkedItems()
     PC* pPC = FUN_1411dc8c0();
     if (pPC != 0)
     {
-        pPC->FUN_1416561a0()->FUN_1411e3d20(m_linkedItems, 0);
+        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(m_linkedItems, 0);
         m_linkedItems.RemoveAll();
     }
 }
@@ -180,7 +177,7 @@ void CEquipItem::FUN_1411dc210()
         FUN_1411dd0f0();
         FUN_1411dd150();
         FUN_1411dd3b0();
-        m_pPC->FUN_1416561a0()->FUN_1411e46b0(MS2Ptr<CEquipItem>(this));
+        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e46b0(MS2Ptr<CEquipItem>(this));
         FUN_1411dd4a0(m_pPC->vfunc_65());
         if (FUN_1411dc7f0()->FUN_14053d2f0())
             m_pPC->FUN_141659000(1);
@@ -228,7 +225,7 @@ int CEquipItem::FUN_1411dc560()
     m_models.RemoveAll();
     FUN_1411dd0f0();
     FUN_1411dd150();
-    m_pPC->FUN_1416561a0()->FUN_1411e4b30(MS2Ptr<CEquipItem>(this));
+    reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e4b30(MS2Ptr<CEquipItem>(this));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1411DC560, CEquipItem, FUN_1411dc560, 259, 0xED376193);
@@ -251,7 +248,7 @@ int CEquipItem::HasEarFold()
 {
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
-        if (MODEL(m_models.GetAt(pos))->FUN_141200ab0()->earfold == 1)
+        if (((ModelPart*)FUN_141200ab0(MODEL(m_models.GetAt(pos))))->earfold == 1)
             return 1;
     }
     return 0;
@@ -319,7 +316,7 @@ MS2Ptr<CEquipModel> CEquipItem::FindModelByName(const CString& strName)
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
         MS2Ptr<CEquipModel>& spModel = m_models.GetAt(pos);
-        if (MODEL(spModel)->FUN_141200ab0()->name0 == strName)
+        if (((ModelPart*)FUN_141200ab0(MODEL(spModel)))->name0 == strName)
             return spModel;
     }
     return MS2Ptr<CEquipModel>(0);
@@ -332,8 +329,8 @@ void CEquipItem::FUN_1411dca30(int nKind, ATL::CAtlArray<CString>& aOut)
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
         MS2Ptr<CEquipModel>& spModel = m_models.GetAt(pos);
-        if (MODEL(spModel)->FUN_141202940() == nKind)
-            aOut.Add(MODEL(spModel)->FUN_141200ab0()->name0);
+        if (FUN_141202940(MODEL(spModel)) == nKind)
+            aOut.Add(((ModelPart*)FUN_141200ab0(MODEL(spModel)))->name0);
     }
 }
 MS2_REPLACE_METHOD(0x1411DCA30, CEquipItem, FUN_1411dca30, 161, 0x0761C1C2);
@@ -416,7 +413,7 @@ int CEquipItem::FUN_1411dce60(const CString& strTag)
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
         MS2Ptr<CEquipModel>& spModel = m_models.GetAt(pos);
-        if (MODEL(spModel)->FUN_141200bb0(strTag))
+        if (FUN_141200bb0(MODEL(spModel), const_cast<CString*>(&strTag)))
         {
             m_bTagsDirty = 1;
             bChanged = 1;
@@ -433,7 +430,7 @@ int CEquipItem::FUN_1411dcf10(const CString& strTag)
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
         MS2Ptr<CEquipModel>& spModel = m_models.GetAt(pos);
-        if (MODEL(spModel)->FUN_141200c10(strTag))
+        if (FUN_141200c10(MODEL(spModel), const_cast<CString*>(&strTag)))
         {
             m_bTagsDirty = 1;
             bChanged = 1;
@@ -451,7 +448,7 @@ int CEquipItem::FUN_1411dcfc0(const CString& strTag)
     MS2Ptr<CEquipModel> spModel = m_models.GetAt(m_models.GetHeadPosition());
     if (spModel == 0)
         return 0;
-    return MODEL(spModel)->FUN_141200c50(strTag);
+    return FUN_141200c50(MODEL(spModel), const_cast<CString*>(&strTag));
 }
 MS2_REPLACE_METHOD(0x1411DCFC0, CEquipItem, FUN_1411dcfc0, 191, 0xC7A3714C);
 
@@ -459,7 +456,7 @@ MS2_REPLACE_METHOD(0x1411DCFC0, CEquipItem, FUN_1411dcfc0, 191, 0xC7A3714C);
 void CEquipItem::FUN_1411dd090()
 {
     if (FUN_1411dc7f0()->FUN_14053c620() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
-        m_pPC->FUN_1416561a0()->FUN_1411e5c10();
+        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e5c10();
 }
 MS2_REPLACE_METHOD(0x1411DD090, CEquipItem, FUN_1411dd090, 84, 0x5F4E7D1F);
 
@@ -467,7 +464,7 @@ MS2_REPLACE_METHOD(0x1411DD090, CEquipItem, FUN_1411dd090, 84, 0x5F4E7D1F);
 void CEquipItem::FUN_1411dd0f0()
 {
     if (FUN_1411dc7f0()->FUN_14053c620() == 0xd || FUN_1411dc7f0()->FUN_14053cfd0())
-        m_pPC->FUN_1416561a0()->FUN_1411e6ab0();
+        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e6ab0();
 }
 MS2_REPLACE_METHOD(0x1411DD0F0, CEquipItem, FUN_1411dd0f0, 84, 0xD926319C);
 
@@ -513,7 +510,7 @@ void CEquipItem::FUN_1411dd280()
             for (POSITION posEffect = m_models.GetHeadPosition(); posEffect != NULL; m_models.GetNext(posEffect))
             {
                 MS2Ptr<CEquipModel>& spEffect = m_models.GetAt(posEffect);
-                MODEL(spEffect)->FUN_141200230();
+                FUN_141200230(MODEL(spEffect));
             }
         }
     }
@@ -524,7 +521,7 @@ MS2_REPLACE_METHOD(0x1411DD280, CEquipItem, FUN_1411dd280, 293, 0x8597AC58);
 void CEquipItem::FUN_1411dd3b0()
 {
     if (FUN_1411dc7f0()->FUN_14053c620() == 0x12)
-        m_pPC->FUN_1416561a0()->FUN_1411e7380();
+        reinterpret_cast<CEquipment*>(m_pPC->FUN_1416561a0())->FUN_1411e7380();
 }
 MS2_REPLACE_METHOD(0x1411DD3B0, CEquipItem, FUN_1411dd3b0, 59, 0xFC5D8593);
 
@@ -580,7 +577,7 @@ void CEquipItem::FUN_1411dd5e0(const CString& strName)
     while (pos != NULL)
     {
         MS2Ptr<CEquipModel>& spModel = m_models.GetNext(pos);
-        MODEL(spModel)->FUN_141201180(strName);
+        FUN_141201180(MODEL(spModel), strName);
     }
 }
 MS2_REPLACE_METHOD(0x1411DD5E0, CEquipItem, FUN_1411dd5e0, 101, 0x7B61FF3C);
@@ -591,7 +588,7 @@ void CEquipItem::FUN_1411dd650()
     for (POSITION pos = m_models.GetHeadPosition(); pos != NULL; m_models.GetNext(pos))
     {
         MS2Ptr<CEquipModel>& spModel = m_models.GetAt(pos);
-        MODEL(spModel)->FUN_141202dc0(2);
+        FUN_141202dc0(MODEL(spModel), 2);
     }
 }
 MS2_REPLACE_METHOD(0x1411DD650, CEquipItem, FUN_1411dd650, 120, 0xAA779C63);

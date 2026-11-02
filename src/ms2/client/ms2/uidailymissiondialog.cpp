@@ -283,7 +283,7 @@ void UIDailyMissionDialog::vfunc_o178_8(void* pQuestPtr)
 // @0x140bffee0
 void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
 {
-    if (WorldService::GetInstance()->FUN_141bcb0a0())
+    if (WorldService::GetInstance()->HasTutorial())
         return;
     if (((class GFxSceneService*)(class Unk_DmSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
         return;
@@ -455,14 +455,14 @@ void UIDailyMissionDialog::FUN_140c00cd0()
     for (size_t i = 0; i < 6; i++)
     {
         int nGroup = (int)i;
-        clear.FUN_1422bbc60(FUN_140c01b50(nGroup));
+        clear.PushInt(FUN_140c01b50(nGroup));
     }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshClearCount", clear);
     ASArray satisfied(2);
     for (size_t i = 0; i < 6; i++)
     {
         int nGroup = (int)i;
-        satisfied.FUN_1422bbc60(FUN_140c01d30(nGroup));
+        satisfied.PushInt(FUN_140c01d30(nGroup));
     }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
     if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_missionPoint"))

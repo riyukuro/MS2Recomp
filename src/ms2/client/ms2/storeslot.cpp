@@ -114,7 +114,7 @@ bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacter, ItemUtilTran
 
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 CStringW GetStringCommon(int nStringId);                    // a string table text
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
 void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
@@ -449,7 +449,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (!FUN_1406344b0(spItem, &nCharacter, &param))
     {
         CStringW strName(param.name);
-        bool bAllow = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
+        bool bAllow = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && spItem->HasSkin() != 0;
         bool bGem = spItem->FUN_1405279c0()->HasAnyGem();
         if (bAllow && bGem)
         {
@@ -473,9 +473,9 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 else
                 {
                     if (nKind == 1)
-                        strMsg = FUN_14052bd00(0xda, strName);
+                        strMsg = FormatStringId<CStringW>(0xda, strName);
                     else if (nKind == 2)
-                        strMsg = FUN_14052bd00(0xdd, strName);
+                        strMsg = FormatStringId<CStringW>(0xdd, strName);
                 }
             }
             else
@@ -499,7 +499,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
             spBox->FUN_141a01600(GetStoreItemId());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->GetCount(), -1, -1, 1);
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a026f0(1);
+            spBox->SetCheckboxMust(1);
             spBox->SetCheckbox0(GetStringCommon(0x9d1), 0);
             FUN_140d73c60(spBox);
             return 1;

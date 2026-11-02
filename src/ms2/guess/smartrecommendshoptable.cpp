@@ -117,7 +117,6 @@ MS2Ptr<CRecommendItem> CSmartRecommendShopTable::FUN_140815890(int nCode)
 MS2_REPLACE_METHOD(0x140815890, CSmartRecommendShopTable, FUN_140815890, 364, 0xA094458D);
 
 // @0x140815a10
-// MS2-FUNCTIONAL: `this->m_spData` is reached through rax+mov rcx instead of the exe's direct add rcx,0x10 (no source form found)
 void CSmartRecommendShopTable::FUN_140815a10(MS2Ptr<CRecommendItem> spItem)
 {
     if (Unk_LockGuard guard = m_spData->m_lock)
@@ -126,8 +125,7 @@ void CSmartRecommendShopTable::FUN_140815a10(MS2Ptr<CRecommendItem> spItem)
     }
     else
     {
-        CRecommendItem* pItem = spItem.operator->();
-        m_spData->m_items.SetAt(pItem->m_nCode, spItem);
+        m_spData->m_items.SetAt(spItem->m_nCode, spItem);
     }
 }
 MS2_REPLACE_METHOD(0x140815A10, CSmartRecommendShopTable, FUN_140815a10, 155, 0x3D6FB2DA);

@@ -12,17 +12,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
-
-// +0x180 (0x48): a CAtlMap-shaped table (ctor 0x1401d7020, dtor 0x1401d73c0, out-of-unit COMDATs of ?\changejobtable.cpp).
-class Unk_CjMap;
-void FUN_1401d7020(Unk_CjMap* p, int nBins, float fOptimal, float fLow, float fHigh, int nBlock) noexcept;    // ctor
-void FUN_1401d73c0(Unk_CjMap* p) noexcept;                                                                  // dtor
-class Unk_CjMap
-{
-public:
-    __int64 m_raw[9];
-};
-MS2_CHECK_SIZE(Unk_CjMap, 0x48);
+#include "ms2/commonfiles/changejobtable.h"
 
 class UIChangeJobDialog : public UIDialog
 {
@@ -41,7 +31,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     int m_nJobCode;                                                         // +0x178 the job shown
-    Unk_CjMap m_map;                                                        // +0x180
+    CChangeJobTable::DataMap m_map;                                         // +0x180
 };
 MS2_CHECK_SIZE(UIChangeJobDialog, 0x1c8);
 MS2_CHECK_OFFSET(UIChangeJobDialog, m_nJobCode, 0x178);

@@ -76,7 +76,7 @@ public:
     virtual void vfunc_3() {}                                   // 3 0x141a4df80 (empty)
     virtual int vfunc_4() { return 0; }                         // 4 0x141a4b200 kind
 
-    void FUN_141a310e0(NpcDataCli* pNpc);                       // InitializeNpc
+    void SetFromNpcData(NpcDataCli* pNpc);                       // InitializeNpc
     void FUN_141a31270(ASObj& data, efd::SmartPointer<MinimapViewport> spViewport);   // BuildData
     int FUN_141a316d0(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer);   // ResolvePortalNpc
     CStringW FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strName, bool b);          // NpcTooltip
@@ -84,12 +84,12 @@ public:
     void FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params);          // the AS "userFunction"
     bool FUN_141a32260(ASObj& data);                            // BuildTooltip
     void SendSetDebugMode();                                       // OnClick
-    void FUN_141a323e0(MS2Ptr<CPortal> spPortal);               // InitializePortal
-    bool FUN_141a32640(CNpcData* pNpc);                         // NpcVisible
+    void SetFromPortal(MS2Ptr<CPortal> spPortal);               // InitializePortal
+    bool HasNpcMinimapInfo(CNpcData* pNpc);                         // NpcVisible
     CString FUN_141a32750(NpcDataCli* pNpc);                    // NpcIcon
-    CString FUN_141a329e0(const CString& strIcon);              // NpcState
+    CString GetStateForIcon(const CString& strIcon);              // NpcState
     CString GetLayerForNpc(NpcDataCli* pNpc, const CString& strIcon);   // NpcLayer
-    CStringW FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy);       // BuddyHomeText
+    CStringW GetFriendHomeTooltip(Unk_BuddyPtr<CBuddy> spBuddy);       // BuddyHomeText
 
     MS2Ptr<ASMovieClip> m_clip;                                 // +0x18
     CString m_icon;                                             // +0x28 mcname
@@ -192,7 +192,7 @@ public:
     UIMinimapEntityStorm(int nId, const efd::Point3& kPos, const CStringW& strIcon);   // 0x141a34db0
     virtual void GetText(CStringW& strText, ASObj& data);       // 1 0x141a34eb0
 
-    void FUN_141a34e30(int nId, const efd::Point3& kPos, const CStringW& strIcon);   // Initialize
+    void Initialize(int nId, const efd::Point3& kPos, const CStringW& strIcon);   // Initialize
 
     int m_id;                                                   // +0x68
 };
@@ -205,7 +205,7 @@ public:
     explicit UIMinimapEntityPing(const efd::Point3& kPos);      // 0x141a34ee0
     virtual void GetText(CStringW& strText, ASObj& data);       // 1 0x141a351e0
 
-    void FUN_141a34f40(const efd::Point3& kPos);                // Initialize
+    void SetPing(const efd::Point3& kPos);                // Initialize
     void FUN_141a35000(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName);   // Update
 };
 MS2_CHECK_SIZE(UIMinimapEntityPing, 0x68);
@@ -292,15 +292,15 @@ public:
     void FUN_141a391f0(MS2Ptr<CInteractObject> spObject);       // RefreshNamedObject
     void FUN_141a39770(MS2Ptr<CInteractObject> spObject);       // AddNamed
     void FUN_141a39bf0(MS2Ptr<CInteractObject> spObject);       // RemoveNamed
-    void FUN_141a39d40(int nId, int bVisible);                  // SetTriggerVisible
+    void SetTriggerVisible(int nId, int bVisible);                  // SetTriggerVisible
     void FUN_141a39e40();                                       // CheckSuppression
     void FUN_141a39e60();                                       // RefreshHousing
     void FUN_141a3a200();                                       // RefreshTaxi
-    void FUN_141a3a780(int n);                                  // EnableTaxi
-    void FUN_141a3a890();                                       // EnableTelescope
+    void EnableTaxiFrame(int n);                                  // EnableTaxi
+    void EnableTelescopeFrame();                                       // EnableTelescope
     void FUN_141a3a9a0(bool b);                                 // UpdateReturn
-    void FUN_141a3abd0();                                       // EndTabView
-    void FUN_141a3aca0();                                       // BeginTabView
+    void OnTabKeyUp();                                       // EndTabView
+    void OnTabKeyDown();                                       // BeginTabView
     void FUN_141a3ad80(bool b);                                 // m_1fb
     void FUN_141a3ada0();                                       // InvalidateEntities
     void FUN_141a3add0();                                       // RefreshQuestIconChecks ("checkIcons")
@@ -308,7 +308,7 @@ public:
     void FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos);   // UpdatePing
     void FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId);   // PingSelection
     EntityPtr FindEntityByProxy(ProxyPtr spProxy);                  // FindProxyEntity
-    HomeListPtr FUN_141a3b660(const int& nField);               // PortalHomes
+    HomeListPtr FindHomeList(const int& nField);               // PortalHomes
     void FUN_141a3b6f0();                                       // BuildShowAttributes
     bool FUN_141a3bda0(ASObj& data, ProxyPtr spProxy);          // BuildPlayerData
     void FUN_141a3c150();                                       // BuildUIData
@@ -354,8 +354,8 @@ public:
     bool FUN_141a44730(const efd::Point3& kPos, MS2Ptr<ASMovieClip> spClip);   // ProjectClip
     bool FUN_141a44850(EntityPtr spEntity, const int& nField, bool b);   // TryHousingPortal
     bool FUN_141a44c00(EntityPtr spEntity, const int& nField, bool b1, const CString& strIcon, const CString& strLayer, bool b2, bool b3);   // TryNpcPortal
-    void FUN_141a44e60();                                       // ChangeStageSize
-    void FUN_141a44ed0();                                       // ResetSelectedChannel
+    void ChangeStageSize();                                       // ChangeStageSize
+    void ApplySelectedChannel();                                       // ResetSelectedChannel
     void FUN_141a44f40();                                       // ApplyAlignment
     void SendMinimapPing(int nColor, float x, float y);           // SendPing
     bool FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOut);   // PingPosition
@@ -369,7 +369,7 @@ public:
     bool GetWindowSize(int& nWidth, int& nHeight);              // WindowSize
     bool FUN_141a45b70(ProxyPtr spProxy);                       // ProxyVisible
     bool IsBossIcon(const CString& strIcon);                 // IsBossIcon
-    bool FUN_141a45ce0();                                       // CanPing
+    bool IsPingAllowed();                                       // CanPing
     CStringW FUN_141a45d50(const unsigned __int64& nId);        // PingText
     CStringW FUN_141a45ed0(const int& nId, int nKind);          // QuestGuideText
     void FUN_141a46c90(EntityMap& map);                         // RemoveEntities

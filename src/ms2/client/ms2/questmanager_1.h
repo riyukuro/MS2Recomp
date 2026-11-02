@@ -5,25 +5,6 @@
 #include "ms2/placeholder/cinpacket.h"
 
 class PCBase;
-// This array's element/traits spelling is not recovered. Both standard signed
-// and unsigned CAtlArray instantiations bind to different exe helpers, so retain
-// a declaration-only typed interface to this distinct instantiation. Its ctor,
-// dtor, bounds checks and growth are in unit_1401b6d10, outside this object.
-class Unk_QuestProgressArray
-{
-public:
-    Unk_QuestProgressArray() noexcept;
-    ~Unk_QuestProgressArray() noexcept;
-    size_t FUN_1401b8910() const;
-    const __int64& FUN_1401b88c0(size_t index) const;
-    __int64& FUN_1401b7ff0(size_t index);
-    size_t FUN_140280400(__int64 value);
-private:
-    __int64* m_values;
-    size_t m_size, m_capacity;
-    int m_growBy;
-};
-MS2_CHECK_SIZE(Unk_QuestProgressArray, 0x20);
 class CQuestCommon
 {
 public:
@@ -94,7 +75,7 @@ public:
 
     int m_state;
     MS2Ptr<CQuestData> m_data;
-    Unk_QuestProgressArray m_progress;
+    ATL::CAtlArray<__int64, ATL::CElementTraits<__int64> > m_progress;
     __int64 m_startTime, m_completeTime;
     int m_68, m_trackingState, m_trackedValue;
 };

@@ -92,8 +92,7 @@ struct Unk_GsFound
 };
 MS2_CHECK_OFFSET(Unk_GsFound, m_info, 0x8);
 
-void* FUN_1409eed90();                                          // the singleton of the own character
-CStringTable* GetStringTable();
+class WeddingManager;
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // message popup
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -106,7 +105,6 @@ unsigned int FUN_140900f00();                                            // max 
 // takes eax as is).
 #include "ms2/placeholder/wcformat.h"
 Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
-struct Unk_WgBuddyLevel { int FUN_1401cc210(); };
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
@@ -484,8 +482,8 @@ bool UIWeddingGuestPageFriend::vfunc_1()
             row.FUN_1407cbb20("charSN", FUN_141b71910(spBuddy->FUN_1401cc230()));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spBuddy->FUN_1401cc1c0()));
             row.FUN_1407cbb20("extra", FUN_14028dfa0<int, CStringW>(CStringW(L"s_wedding_guest_user"),
-                                                      reinterpret_cast<Unk_WgBuddyLevel*>(spBuddy.operator->())->FUN_1401cc210(),
-                                                      GetStringTable()->FUN_141811980(6, spBuddy->FUN_1401cc2b0())));
+                                                      spBuddy->FUN_1401cc210(),
+                                                      TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spBuddy->FUN_1401cc2b0())));
             row.FUN_1407cba60("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
                                                        FUN_14016a5c0((const char*)*spBuddy->FUN_1401cc530(), 0), 1, CString("")));
             spList->AddItem(row);
@@ -569,7 +567,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
             row.FUN_1407cbb20("charSN", FUN_141b71910(spMember->data.f08));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spMember->data.FUN_1404ca890()));
             row.FUN_1407cbb20("extra", FUN_14028dfa0<unsigned short, CStringW>(CStringW(L"s_wedding_guest_user"), spMember->data.f1c,
-                                                      GetStringTable()->FUN_141811980(6, spMember->data.f18)));
+                                                      TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMember->data.f18)));
             row.FUN_1407cba60("profile", FUN_141028be0(spMember->data.f08,
                                                        FUN_14016a5c0(spMember->data.FUN_1404ca980(), 0), 1, CString("")));
             spList->AddItem(row);

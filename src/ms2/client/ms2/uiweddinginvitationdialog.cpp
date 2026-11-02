@@ -27,6 +27,7 @@
 #include "ms2/client/ms2/uitalkcinematic.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -70,7 +71,7 @@ public:
 };
 class Unk_WiMsgOwner { };
 
-void* FUN_1409eed90();                                          // the singleton of the own character
+class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -163,7 +164,7 @@ void UIWeddingInvitationDialog::vfunc_43()
 void UIWeddingInvitationDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_WiTicket* pTicket = ((struct Unk_WiTicket*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
+    Unk_WiTicket* pTicket = ((struct Unk_WiTicket*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
     ASObj obj(2);
     obj.FUN_1407cbb20("invitation", GetStringCommonByKey(L"s_wedding_invitation_message"));
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
@@ -226,7 +227,7 @@ bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& bo
 {
     if (nResult != 0)
         return true;
-    Unk_WiTicket* pTicket = ((struct Unk_WiTicket*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
+    Unk_WiTicket* pTicket = ((struct Unk_WiTicket*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
     CMsTime kLimit(pTicket->m_nTime);
     AddMinutes(kLimit, -10);
     if (GetServerTime() >= ((class CMsTime*)&static_cast<class CMsTime const&>(kLimit))->Get())

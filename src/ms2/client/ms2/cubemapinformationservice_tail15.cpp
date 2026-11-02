@@ -516,7 +516,7 @@ void Unk_CMISDriveTail15(void* p)
 // MS2-FUNCTIONAL: the exe's ??1MS2Ptr<CFunctionCubeObject> / ??1pair<const int,MS2Ptr<Cube>> COMDATs; here a FUN_ name
 // so the call resolves without depending on which instantiation the compiler keeps
 // @0x1411237f0
-void FUN_1411237f0(void* p)
+void FUN_1411237f0(void* p) noexcept
 {
     Unk_CMISDestroy((MS2Ptr<CFunctionCubeObject>*)p);
 }

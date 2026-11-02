@@ -109,14 +109,19 @@ extern char DAT_14312d848[];   // vftable of the first Exception subclass
 extern char DAT_143130c18[];   // vftable of the second Exception subclass
 
 // CryptoPP::Exception: vptr + two zeroed words + m_errorType + m_what, as the exe's copy lays it out
-struct CppCryptoException
+struct CppStdException
 {
     void* vptr;
     void* m_whatPtr;
     void* m_doFree;
+    CppStdException() : m_whatPtr(0), m_doFree(0) {}
+    ~CppStdException() { __std_exception_destroy(reinterpret_cast<__std_exception_data*>(&m_whatPtr)); }
+};
+struct CppCryptoException : CppStdException
+{
     int m_errorType;
     std::string m_what;
-    CppCryptoException(int type, const std::string& s) : vptr(DAT_142d30650), m_whatPtr(0), m_doFree(0), m_errorType(type), m_what(s) {}
+    CppCryptoException(int type, const std::string& s) : m_errorType((vptr = DAT_142d30650, type)), m_what(s) {}
 };
 // a std::string temporary whose constructor is the out-of-line one
 struct CppTempString
@@ -126,24 +131,30 @@ struct CppTempString
     CppTempString(const char* p) { FUN_1401d2620(&s, p); }
     ~CppTempString() { s.~basic_string(); }
 };
+// the same temporary, with the string's small buffer visible so /GS counts it as a buffer
+struct CppTempStringBuf
+{
+    __declspec(align(8)) char m_raw[sizeof(std::string)];
+    std::string& s() { return *reinterpret_cast<std::string*>(m_raw); }
+    CppTempStringBuf(const char* p) { FUN_1401d2620(&s(), p); }
+    ~CppTempStringBuf() { s().~basic_string(); }
+};
 // Crypto++ exception subclasses; the derived vftable is stored last
 struct CppCryptoExceptionA : CppCryptoException
 {
-    CppCryptoExceptionA() : CppCryptoException(4, CppTempString(DAT_14312d8d8).s) { vptr = DAT_14312d848; }
+    CppCryptoExceptionA() : CppCryptoException(4, CppTempStringBuf(DAT_14312d8d8).s()) { vptr = DAT_14312d848; }
 };
 struct CppCryptoExceptionB : CppCryptoException
 {
-    CppCryptoExceptionB() : CppCryptoException(6, CppTempString(DAT_143130c28).s) { vptr = DAT_143130c18; }
+    CppCryptoExceptionB() : CppCryptoException(6, CppTempStringBuf(DAT_143130c28).s()) { vptr = DAT_143130c18; }
 };
 
-// MS2-FUNCTIONAL: identical but for the exe's /GS cookie (its string temporary is a GS buffer; our union temporary is not)
 // @0x14235bce0
 CppCryptoExceptionA* FUN_14235bce0(CppCryptoExceptionA* self)
 {
     return new (self) CppCryptoExceptionA();
 }
 
-// MS2-FUNCTIONAL: identical but for the exe's /GS cookie (its string temporary is a GS buffer; our union temporary is not)
 // @0x14237b650
 CppCryptoExceptionB* FUN_14237b650(CppCryptoExceptionB* self)
 {

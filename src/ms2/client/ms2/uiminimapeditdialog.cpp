@@ -212,33 +212,29 @@ void UIMinimapEditDialog::vfunc_67()
 }
 
 // @0x141a522a0
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
 void UIMinimapEditDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141a53100();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != NULL)
-        pDialog->FUN_1422c00f0(0, 0);
+        pDialog->SetPositionFloat(0, 0);
 
-    MS2Ptr<Unk_HudSlider> spFov = GetChild<Unk_HudSlider>("m_sliderFov");
-    if (spFov.get())
+    if (MS2Ptr<Unk_HudSlider> spFov = GetChild<Unk_HudSlider>("m_sliderFov"))
     {
         spFov->FUN_1422ce750(0);
         spFov->FUN_1422ce6a0(90.0f);
         spFov->FUN_1422ce5f0(((Unk_CameraManager*)(CameraMgr::GetInstance()))->FUN_140ad4b40());
         spFov->FUN_1422c1fe0(0);
     }
-    MS2Ptr<Unk_HudSlider> spDistance = GetChild<Unk_HudSlider>("m_sliderDistance");
-    if (spDistance.get())
+    if (MS2Ptr<Unk_HudSlider> spDistance = GetChild<Unk_HudSlider>("m_sliderDistance"))
     {
         spDistance->FUN_1422ce750(10.0f);
         spDistance->FUN_1422ce6a0(20000.0f);
         spDistance->FUN_1422ce5f0(FUN_1409f2430((class Unk_CameraManager*)(CameraMgr::GetInstance())));
         spDistance->FUN_1422c1fe0(0);
     }
-    MS2Ptr<Unk_HudSlider> spVAngle = GetChild<Unk_HudSlider>("m_sliderVAngle");
-    if (spVAngle.get())
+    if (MS2Ptr<Unk_HudSlider> spVAngle = GetChild<Unk_HudSlider>("m_sliderVAngle"))
     {
         spVAngle->FUN_1422ce750(0);
         spVAngle->FUN_1422ce6a0(90.0f);
@@ -246,49 +242,43 @@ void UIMinimapEditDialog::OnLoadComplete()
         spVAngle->FUN_1422c1fe0(0);
     }
 
-    MS2Ptr<ASLabel> spLabelFov = GetChild<ASLabel>("m_labelFov");
-    if (spLabelFov.get())
+    if (MS2Ptr<ASLabel> spLabelFov = GetChild<ASLabel>("m_labelFov"))
     {
         CString strText;
         strText.Format("Camera Fov [%f]", (double)((Unk_CameraManager*)(CameraMgr::GetInstance()))->FUN_140ad4b40());
         spLabelFov->FUN_1422e4a00(strText);
     }
-    MS2Ptr<ASLabel> spLabelDistance = GetChild<ASLabel>("m_labelDistance");
-    if (spLabelDistance.get())
+    if (MS2Ptr<ASLabel> spLabelDistance = GetChild<ASLabel>("m_labelDistance"))
     {
         CString strText;
         strText.Format("Camera Distance [%f]", (double)FUN_1409f2430((class Unk_CameraManager*)(CameraMgr::GetInstance())));
         spLabelDistance->FUN_1422e4a00(strText);
     }
-    MS2Ptr<ASLabel> spLabelVAngle = GetChild<ASLabel>("m_labelVAngle");
-    if (spLabelVAngle.get())
+    if (MS2Ptr<ASLabel> spLabelVAngle = GetChild<ASLabel>("m_labelVAngle"))
     {
         CString strText;
         strText.Format("Camera VAngle [%f]", (double)FUN_141032e60((void*)(CameraMgr::GetInstance())));
         spLabelVAngle->FUN_1422e4a00(strText);
     }
 
-    MS2Ptr<ASTextInput> spEmblem = GetChild<ASTextInput>("m_emblem");
-    if (spEmblem.get())
-        spEmblem->FUN_1422e0a60(m_strImageIcon);
-    MS2Ptr<ASTextInput> spFileName = GetChild<ASTextInput>("m_fileName");
-    if (spFileName.get())
+    if (MS2Ptr<ASTextInput> spEmblem = GetChild<ASTextInput>("m_emblem"))
+        spEmblem->SetTextA(m_strImageIcon);
+    if (MS2Ptr<ASTextInput> spFileName = GetChild<ASTextInput>("m_fileName"))
     {
         if (m_strImageName.GetLength() < 1)
             m_strImageName = FUN_141a549c0();
-        spFileName->FUN_1422e0a60(m_strImageName);
+        spFileName->SetTextA(m_strImageName);
     }
 
-    MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea");
-    if (spArea.get())
+    if (MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea"))
     {
-        float fLeft = m_spMinimap->m_rcImage.l >= 0.0f ? m_spMinimap->m_rcImage.l : 0.0f;
-        float fTop = m_spMinimap->m_rcImage.t >= 0.0f ? m_spMinimap->m_rcImage.t : 0.0f;
+        float fLeft = 0.0f > m_spMinimap->m_rcImage.l ? 0.0f : m_spMinimap->m_rcImage.l;
+        float fTop = 0.0f > m_spMinimap->m_rcImage.t ? 0.0f : m_spMinimap->m_rcImage.t;
         float fWidth = m_spMinimap->m_rcImage.r - m_spMinimap->m_rcImage.l;
         float fHeight = m_spMinimap->m_rcImage.b - m_spMinimap->m_rcImage.t;
-        spArea->FUN_1422c00f0(fLeft, fTop);
-        ((ASDisplayObject*)(spArea.get()))->FUN_1422c0e80(fWidth);
-        ((ASDisplayObject*)(spArea.get()))->FUN_1422c0f20(fHeight);
+        spArea->SetPositionFloat(fLeft, fTop);
+        ((ASDisplayObject*)(spArea.get()))->SetWidthFloat(fWidth);
+        ((ASDisplayObject*)(spArea.get()))->SetHeightFloat(fHeight);
     }
     if (m_30.get())
         m_30->Invoke("OnSetting");
@@ -313,7 +303,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
-            float fFov = data.FUN_1422b8c10();
+            float fFov = data.PopFloat();
             FUN_140ad4ff0((Unk_CameraManager*)(CameraMgr::GetInstance()), fFov);
             FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
@@ -322,7 +312,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
-            float fDistance = data.FUN_1422b8c10();
+            float fDistance = data.PopFloat();
             FUN_141032ed0((void*)(CameraMgr::GetInstance()), fDistance);
             FUN_141032f30((void*)(CameraMgr::GetInstance()), fDistance);
             CameraMgr::GetInstance()->FUN_140af9b40(fDistance);
@@ -333,7 +323,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
-            float fAngle = data.FUN_1422b8c10();
+            float fAngle = data.PopFloat();
             CameraMgr::GetInstance()->FUN_140af98d0(fAngle);
             FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
@@ -391,7 +381,8 @@ void UIMinimapEditDialog::FUN_141a53100()
 }
 
 // @0x141a53750
-// MS2-FUNCTIONAL: TiXml decl/comment/element are built with manual ctor calls, so the EH states and the new-expression differ from the exe
+// MS2-FUNCTIONAL: the camera vectors are implicit-conversion temporaries in the exe (packed 12 bytes apart); that needs a converting
+// Unk_GVec3 ctor in fielddatacli.h (68 dependents), and the named locals here sit 4 bytes higher. Same code otherwise.
 void UIMinimapEditDialog::FUN_141a53750()
 {
     MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
@@ -405,8 +396,10 @@ void UIMinimapEditDialog::FUN_141a53750()
             ecr::CameraData* pCamera = FUN_1413f9910()->GetActiveCamera(pSurface);
             if (pCamera != NULL && CameraMgr::GetInstance()->FUN_140a18070() != 0)
             {
-                m_spMinimap->m_vecCamPos = Unk_GVec3(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
-                m_spMinimap->m_vecCamRot = Unk_GVec3(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290())));
+                Unk_GVec3 vecCamPos(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
+                m_spMinimap->m_vecCamPos = vecCamPos;
+                Unk_GVec3 vecCamRot(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290())));
+                m_spMinimap->m_vecCamRot = vecCamRot;
                 m_spMinimap->m_frustum = reinterpret_cast<const Unk_Frustum&>(pCamera->GetCamera()->GetViewFrustum());
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();
                 m_spMinimap->m_strImageName = m_strImageName;
@@ -425,10 +418,7 @@ void UIMinimapEditDialog::FUN_141a53750()
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
         reinterpret_cast<TiXmlNode*>(&doc)->InsertEndChild(decl);
-        {
-            TiXmlComment comment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
-            reinterpret_cast<TiXmlNode*>(&doc)->InsertEndChild(comment);
-        }
+        reinterpret_cast<TiXmlNode*>(&doc)->InsertEndChild(static_cast<const TiXmlNode&>(TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0))));
         TiXmlElement root("ms2");
         reinterpret_cast<TiXmlNode*>(&doc)->InsertEndChild(root);
     }

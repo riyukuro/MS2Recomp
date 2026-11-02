@@ -89,8 +89,8 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         ((efd::Matrix3*)(class NiMatrix3 const*)(&kRot))->GetCol(2, *(class efd::Point3*)(&kZ));
         ((struct Vector3*)&(kZ))->FUN_140968990();
         kPos = kPos + kY * -spModel->m_fY;
-        kPos = kPos + kX * spModel->m_fX;
-        kPos = kPos + kZ * spModel->m_fZ;
+        kPos = kPos + kX * (0, spModel->m_fX);
+        kPos = kPos + kZ * (0, spModel->m_fZ);
         ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetTranslate(kPos);
         ((class NiAVObject*)(class NiAVObject*)(pRoot))->SetRotate(kRot);
         ((class NiAVObject*)(void*)(pRoot))->UpdateEffects();

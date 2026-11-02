@@ -13,7 +13,7 @@
 // MS2-PIN: ?FUN_140a5cdc0@Unk_Inventory@@QEAA_NI@Z 0x140a5cdc0 ; unique
 // MS2-PIN: ?FUN_140a5d680@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@_J@Z 0x140a5d680 ; unique
 // MS2-PIN: ?FUN_140a5d9a0@Unk_Inventory@@QEAA?AV?$MS2Ptr@VCItem@@@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z 0x140a5d9a0 ; unique
-// MS2-PIN: ?FUN_140a5f780@Unk_Inventory@@QEAAXHH@Z 0x140a5f780 ; unique
+// MS2-PIN: ?FUN_140a5f780@Unk_Inventory@@QEAAHHH@Z 0x140a5f780 ; unique
 // MS2-PIN: ?FUN_140a603e0@Unk_Inventory@@QEAAHHHH@Z 0x140a603e0 ; unique
 // MS2-PIN: ?FUN_140a60790@Unk_Inventory@@QEAAXAEAV?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@@Z 0x140a60790 ; unique
 // MS2-PIN: ?FUN_140a617f0@Unk_Inventory@@QEAAHV?$MS2Ptr@VCItem@@@@@Z 0x140a617f0 ; unique
@@ -210,6 +210,8 @@ static CString s_chartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Cr
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/client/ms2/uiinventorydialog.h"
 class Unk_ItemEquipData : public CItemData { };   // CItem::FUN_140527840's record (item.cpp)
 struct Unk_EquipItemData : public CItemData {};    // CEquipItem::FUN_1411dc7f0's record (as customize.cpp)
 #ifndef MS2_HOOK_DLL   // s_warningBag: the exe's object at 0x143ab78e8, which other units reach as DAT_143ab78e8 (the hook DLL binds it)
@@ -227,7 +229,6 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 int FUN_140a66510(int category);
 int FUN_140a66750(int category);
-class Unk_InventoryNames { public: CStringW FUN_141813300(unsigned category); };
 class Unk_InventoryListener {
 public:
     virtual void vfunc_0() = 0;
@@ -254,8 +255,6 @@ MS2_CHECK_SIZE(Unk_InventorySkillRequest, 0x48);
 MS2_CHECK_OFFSET(Unk_InventorySkillRequest, remap, 0x38);
 MS2_CHECK_OFFSET(Unk_InventorySkillRequest, itemUse, 0x3a);
 MS2_CHECK_OFFSET(Unk_InventorySkillRequest, item, 0x40);
-class Unk_InventorySkillLevel;
-class Unk_InventorySkillTable { public: MS2Ptr<Unk_InventorySkillLevel> FUN_1407ee2f0(int, unsigned short); };
 int FUN_141769320(MS2Ptr<CItemData>);
 class Unk_InventoryPlayer : public MyPC { };   // view of WorldService::FUN_141bd0cc0's local player
 // Block-notice record returned through a hidden pointer by 0x140a2f620 and released by 0x1401cb250.
@@ -272,12 +271,12 @@ void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, un
 extern CString DAT_143ab78e8;
 int FUN_14052a7e0(Unk_Inventory::ItemPtr, Unk_Inventory::ItemPtr);
 bool FUN_1406a5a50(Unk_Inventory::ItemPtr, const __int64*);
-struct Unk_InventoryScopedLock {
-    Unk_InventoryScopedLock(CLockCriticalSection&, int);
-    ~Unk_InventoryScopedLock();
+struct Unk_1401b4ec0 {
+    Unk_1401b4ec0(CLockCriticalSection&, int);
+    ~Unk_1401b4ec0();
     void* lock;
 };
-MS2_CHECK_SIZE(Unk_InventoryScopedLock, 8);
+MS2_CHECK_SIZE(Unk_1401b4ec0, 8);
 struct Unk_InventoryStackIdentity {
     void* unknown[6];
     __int64 owner;
@@ -328,7 +327,6 @@ MS2_CHECK_OFFSET(Unk_InventoryConstants, bagLimit0, 0x74d8);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMinLevel, 0xe6c0);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMaxLevel, 0xe718);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-void FUN_1402b7560(Unk_InventoryArraySetting*, const char*);
 void FUN_140d73bc0(int, int, void*, CStringW);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
@@ -336,7 +334,6 @@ int FUN_141276180(const CString&, const CString&);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_140710590(COutPacket&);
    // CItemData member (this=rcx, hidden return=rdx)
-class Unk_InventorySound { public: int FUN_1411a5110(CString, CString, CString, int, __int64, float, int); };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 bool FUN_1403b3c40(const CStringW&, const wchar_t*);
 extern Unk_Inventory g_143ab2a90;
@@ -365,10 +362,6 @@ struct Unk_InventoryEquipPacket {
 MS2_CHECK_SIZE(Unk_InventoryEquipPacket, 0x10);
 class CMsgBoxData;
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
-void FUN_140534050(CMsgBoxData*, unsigned);
-void FUN_141a01600(CMsgBoxData*, __int64);
-void FUN_141a01ee0(CMsgBoxData*, Unk_Inventory::ItemPtr, const CStringW&, int, int, int, int, int);
-void FUN_141a01700(CMsgBoxData*, int, int, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 class Unk_InventoryBinding { public: int FUN_140635100(); int FUN_140635120(); };
 int FUN_141420a70(class CItem*, class AvatarPC*);   // C3: was FUN_141420a70
@@ -392,12 +385,11 @@ public:
 };
 extern Unk_InventoryCharacters DAT_143ab2a30;
 bool FUN_1403344a0(const Unk_InventoryCharacterIterator&, const Unk_InventoryCharacterIterator&);
-class Unk_InventoryDialog { public: int FUN_141999de0(); };
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_InventoryDialog* FUN_1405344f0 (calls cast back)
 class Unk_InventoryStateManager;
-extern Unk_InventoryStateManager* DAT_143ab5cc8;
-extern Unk_InventoryListener* DAT_143ab7908;
+class CBlockManager;
+class UIItemEventDispatcher;
 
 // @0x140a5c650
 bool FUN_140a5c650(Unk_Inventory::ItemPtr first, Unk_Inventory::ItemPtr second) {
@@ -494,7 +486,7 @@ int Unk_Inventory::FUN_140a5ce30(CStringW& names) {
     for (size_t i = 0; i < 15; ++i) {
         if (FUN_140a5cdc0((unsigned)i)) {
             if (count++ > 0) names += L", ";
-            names += reinterpret_cast<Unk_InventoryNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141813300((unsigned)i);
+            names += TSingleton<CStringTable>::GetInstance()->FUN_141813300((int)i);
         }
     }
     return count < 15;
@@ -852,7 +844,7 @@ int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
 }
 MS2_REPLACE_METHOD(0x140a5f410, Unk_Inventory, FUN_140a5f410, 859, 0x51CE102B);
 // @0x140a5f780
-void Unk_Inventory::FUN_140a5f780(int tag, int rarity) { FUN_140a5f7b0(tag, rarity); }
+int Unk_Inventory::FUN_140a5f780(int tag, int rarity) { return FUN_140a5f7b0(tag, rarity); }
 MS2_REPLACE_METHOD(0x140a5f780, Unk_Inventory, FUN_140a5f780, 42, 0x941253E9);
 // @0x140a5f7b0
 int Unk_Inventory::FUN_140a5f7b0(int tag, int rarity) {
@@ -1031,7 +1023,7 @@ void Unk_Inventory::FUN_140a609a0(int category, ATL::CAtlArray<unsigned __int64>
 MS2_REPLACE_METHOD(0x140a609a0, Unk_Inventory, FUN_140a609a0, 284, 0x2A368F4F);
 // @0x140a60ad0
 int Unk_Inventory::FUN_140a60ad0(int type) {
-    Unk_InventoryScopedLock guard(lock, 1);
+    Unk_1401b4ec0 guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
@@ -1044,7 +1036,7 @@ int Unk_Inventory::FUN_140a60ad0(int type) {
 MS2_REPLACE_METHOD(0x140a60ad0, Unk_Inventory, FUN_140a60ad0, 321, 0x274281EB);
 // @0x140a60c20
 int Unk_Inventory::FUN_140a60c20(int type) {
-    Unk_InventoryScopedLock guard(lock, 1);
+    Unk_1401b4ec0 guard(lock, 1);
     int count = 0;
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
@@ -1058,7 +1050,7 @@ int Unk_Inventory::FUN_140a60c20(int type) {
 MS2_REPLACE_METHOD(0x140a60c20, Unk_Inventory, FUN_140a60c20, 326, 0x43BB48CE);
 // @0x140a60d70
 int Unk_Inventory::FUN_140a60d70(int type) {
-    Unk_InventoryScopedLock guard(lock, 1);
+    Unk_1401b4ec0 guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
@@ -1071,7 +1063,7 @@ int Unk_Inventory::FUN_140a60d70(int type) {
 MS2_REPLACE_METHOD(0x140a60d70, Unk_Inventory, FUN_140a60d70, 313, 0x04FAC3B5);
 // @0x140a60ec0
 int Unk_Inventory::FUN_140a60ec0(int tag) {
-    Unk_InventoryScopedLock guard(lock, 1);
+    Unk_1401b4ec0 guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
@@ -1243,7 +1235,7 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
         if (data.get() != nullptr)
-            reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return 1;
 }
@@ -1263,19 +1255,18 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     if (player == nullptr) return 0;
     if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     if (FUN_140a65e30(item) != 0) return 0;
-    int selected = slot;
-    if (slot == 0) selected = FUN_141420a70(item, (class AvatarPC*)(player));
+    int selected = slot == 0 ? FUN_141420a70(item, (class AvatarPC*)(player)) : slot;
     if (FUN_140a63950(item, selected, mode) == 0) return 0;
     if (skipBinding == 0) {
-        if (((Unk_InventoryBinding*)item->FUN_140527930())->FUN_140635100() != 0 && ((Unk_InventoryBinding*)item->FUN_140527930())->FUN_140635120() == 0) {
+        if (((CItemTransfer*)item->FUN_140527930())->HasBindingRule() != 0 && ((CItemTransfer*)item->FUN_140527930())->FUN_140635120() == 0) {
             CStringW prompt = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", player->vfunc_77());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(17, prompt, nullptr, s_useBindEquipItem);
             if (box.get() != nullptr) {
-                FUN_140534050(box.operator->(), slot);
-                FUN_140534050(box.operator->(), mode);
-                FUN_141a01600(box.operator->(), item->GetItemUid());
-                FUN_141a01ee0(box.operator->(), ItemPtr(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
-                FUN_141a01700(box.operator->(), 1143, 1144, 0);
+                box->Append<unsigned>(slot);
+                box->Append<unsigned>(mode);
+                box->FUN_141a01600(item->GetItemUid());
+                box->FUN_141a01ee0(ItemPtr(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
+                box->FUN_141a01700(1143, 1144, 0);
                 FUN_140d73c60(box);
                 return 1;
             }
@@ -1290,9 +1281,11 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     packet.Encode1(0);
     payload.FUN_1401fb760(packet);
     FUN_140710590(packet);
-    MS2Ptr<CItemData> data(item->FUN_140527840());
-    if (data.get() != nullptr)
-        reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
+    {
+        MS2Ptr<CItemData> data(item->FUN_140527840());
+        if (data.get() != nullptr)
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a62270, Unk_Inventory, FUN_140a62270, 1692, 0x65CDD949);
@@ -1304,7 +1297,7 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     ItemPtr item = player->FUN_141655b80(id);
     if (!item) return 1;
-    if (item->FUN_140525cf0() != 0) { FUN_140d73bc0(207, 0, nullptr, L""); return 0; }
+    if (item->HasAnyEquipSlotOf() != 0) { FUN_140d73bc0(207, 0, nullptr, L""); return 0; }
     if (FUN_140a655b0(item.get()) == 0) return 0;
     Unk_InventoryUnequipPacket payload;
     payload.id = id;
@@ -1315,7 +1308,7 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
         if (data.get() != nullptr)
-            reinterpret_cast<Unk_InventorySound*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<CItemData*>(data.operator->())->GetMaterialSoundName(), "", 0, 0, 1.0f, 0);
     }
     return 1;
 }
@@ -1338,10 +1331,10 @@ unsigned Unk_Inventory::FUN_140a62d30(int skill) {
     if (item->FUN_140527840()->FUN_14053d270() ||
         item->FUN_140527840()->FUN_14053cb40() ||
         item->FUN_140527840()->IsRideItem()) {
-        MS2Ptr<Unk_InventorySkillLevel> data = reinterpret_cast<Unk_InventorySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(skill, 1);
+        MS2Ptr<SkillLevelData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(skill, 1);
         if (data == 0) return 0;
         Unk_InventorySkillRequest request(skill, 1);
-        request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
+        request.remap = data.operator->()->FUN_140804450();
         request.item = item->GetItemUid();
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
         if (record == 0) return 0;
@@ -1361,10 +1354,10 @@ unsigned Unk_Inventory::FUN_140a63000(int itemId) {
     if (item == 0) return 0;
     if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(8)) { FUN_141275260(2184, 1, 1); return 0; }
     if (item->FUN_140527840()->FUN_14053d270()) {
-        MS2Ptr<Unk_InventorySkillLevel> data = reinterpret_cast<Unk_InventorySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(metadata->FUN_14053dc20(), 1);
+        MS2Ptr<SkillLevelData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(metadata->FUN_14053dc20(), 1);
         if (data == 0) return 0;
         Unk_InventorySkillRequest request(metadata->FUN_14053dc20(), 1);
-        request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
+        request.remap = data.operator->()->FUN_140804450();
         request.itemUse = true;
         request.item = item->GetItemUid();
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
@@ -1383,10 +1376,10 @@ unsigned Unk_Inventory::FUN_140a63360(int skill) {
     if (item == 0) return 0;
     if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(8)) { FUN_141275260(2184, 1, 1); return 0; }
     if (item->FUN_140527840()->FUN_14053d270()) {
-        MS2Ptr<Unk_InventorySkillLevel> data = reinterpret_cast<Unk_InventorySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(skill, 1);
+        MS2Ptr<SkillLevelData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(skill, 1);
         if (data == 0) return 0;
         Unk_InventorySkillRequest request(skill, 1);
-        request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
+        request.remap = data.operator->()->FUN_140804450();
         request.item = item->GetItemUid();
         request.itemUse = true;
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
@@ -1407,12 +1400,12 @@ unsigned Unk_Inventory::FUN_140a635f0(CItem* item) {
         item->FUN_140527840()->IsRideItem()) {
         int skill = FUN_141769320(MS2Ptr<CItemData>(item->FUN_140527840()));
         unsigned short level = 1;
-        MS2Ptr<Unk_InventorySkillLevel> data = reinterpret_cast<Unk_InventorySkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee2f0(skill, level);
+        MS2Ptr<SkillLevelData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(skill, level);
         if (data == 0) return 0;
         player->FUN_141526c80(skill, level);
         Unk_InventorySkillRequest request(skill, 1);
         request.level = level;
-        request.remap = ((class SkillLevelData*)(class Unk_InventorySkillLevel*)(data.operator->()))->FUN_140804450();
+        request.remap = data.operator->()->FUN_140804450();
         request.item = item->GetItemUid();
         MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
         if (record == 0) return 0;
@@ -1583,7 +1576,7 @@ int Unk_Inventory::FUN_140a65860(MS2Ptr<CItemData> data, int) {
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a65b70
 int Unk_Inventory::FUN_140a65b70() {
-    Unk_InventoryDialog* dialog = reinterpret_cast<Unk_InventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(20013));
+    UIInventoryDialog* dialog = Unk_BreakDialog<UIInventoryDialog>(20013);
     if (dialog != nullptr)
         return dialog->FUN_141999de0();
     return -1;
@@ -1648,7 +1641,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     __int64 character = player->FUN_141656a80();
     if (FUN_1406344b0(ItemPtr(item), &character, &output)) return 1;
     name = output.name;
-    bool allowed = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && item->FUN_1405258b0() != 0;
+    bool allowed = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && item->HasSkin() != 0;
     bool enchanted = ((Unk_InventoryEnchant*)item->FUN_1405279c0())->HasAnyGem();
     if (allowed && enchanted) { *reason = 2; return 0; }
     if (allowed) return 1;
@@ -1876,13 +1869,13 @@ Unk_InventoryUsePacket::~Unk_InventoryUsePacket() {}
 // @0x140a6a0d0
 bool Unk_InventoryAccount::FUN_140a6a0d0() { return flag; }
 // @0x140a6a830
-Unk_InventoryStateManager* FUN_140a6a830() { return DAT_143ab5cc8; }
+Unk_InventoryStateManager* FUN_140a6a830() { return reinterpret_cast<Unk_InventoryStateManager*>(TSingleton<CBlockManager>::s_instance); }
 // @0x140a6a840
-Unk_InventoryListener* FUN_140a6a840() { return DAT_143ab7908; }
+Unk_InventoryListener* FUN_140a6a840() { return reinterpret_cast<Unk_InventoryListener*>(TSingleton<UIItemEventDispatcher>::s_instance); }
 
 // @0x140a6aa40
 const std::vector<int>& Unk_InventoryArraySetting::FUN_140a6aa40() {
-    if (!initialized) FUN_1402b7560(this, "constants is not set");
+    if (!initialized) reinterpret_cast<Common::Constants::Object*>(this)->Error("constants is not set");
     return values;
 }
 

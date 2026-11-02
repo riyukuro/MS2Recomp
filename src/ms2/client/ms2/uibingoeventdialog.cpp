@@ -157,7 +157,7 @@ GFxManager* FUN_14025e7a0();
 
 // Client globals: the account's bingo event record (singleton 0x140302b00 -> member +0xd78).
 class Unk_BingoMgr;
-Unk_BingoMgr* FUN_140302b00();
+class CGameEventValueManager;
 int FUN_14053feb0(int);
 CStringW StringFormat(const wchar_t*);
 
@@ -300,7 +300,7 @@ void UIBingoEventDialog::OnLoadComplete()
     m_rewardLists.SetCount(8, -1);
     m_rewardSlots.RemoveAll();
     m_rewardSlots.SetCount(8, -1);
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
     ATL::CAtlArray<BingoContext::RewardPtr>* rewards = &ref->m_rewards;
@@ -316,10 +316,10 @@ void UIBingoEventDialog::OnLoadComplete()
         if ((size_t)i != 7)
         {
             unsigned n = i + 1;
-            text->FUN_1422c4cd0(StringFormat<unsigned int>(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_dialog_reward_condition"), n));
+            text->FUN_1422c4cd0(StringFormat<unsigned int>(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition"), n));
         }
         else
-            text->FUN_1422c4cd0(StringFormat(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_dialog_reward_condition_last")));
+            text->FUN_1422c4cd0(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition_last")));
         MS2Ptr<Unk_140acd6e0> receive = BINGO_CLIP(list)->FUN_140acce30("m_receiveButton");
         if (receive.IsNull())
             continue;
@@ -394,10 +394,10 @@ void UIBingoEventDialog::OnLoadComplete()
     MS2Ptr<ASTextField> desc = GetChild<ASTextField>("m_description");
     if (desc.get() != 0)
     {
-        MS2Ptr<BingoContext> ref2 = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+        MS2Ptr<BingoContext> ref2 = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
         if (!ref2)
             return;
-        CStringW str = FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_description");
+        CStringW str = FUN_14025e7a0()->Localize("$s_bingo_event_description");
         str = StringFormat<CStringW, CStringW>((const wchar_t*)str, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2->m_freeItemId), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2->m_cashItemId));
         desc->FUN_1422c4cd0(str);
     }
@@ -487,7 +487,7 @@ int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 0;
     if (Common::FindElement<int>(m_checked, m_board[nIndex]) != -1)
         return 0;
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return 0;
     COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
@@ -509,7 +509,7 @@ void UIBingoEventDialog::vfunc_72()
     if (FUN_14086ab70(CMsTime(m_time), CMsTime(GetServerTime()), 0))
     {
         m_time = CMsTime(GetServerTime());
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_change_day"), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, FUN_14025e7a0()->Localize("$s_bingo_event_change_day"), 0, CStringW(L""));
         if (box.get() != 0)
         {
             if (m_msgOpen == true)
@@ -534,7 +534,7 @@ void UIBingoEventDialog::vfunc_72()
     }
     if (step.m_kind == 0)
     {
-        if (!clip->FUN_1422bfca0())
+        if (!clip->GetVisible())
         {
             clip->vfunc_4(true);
             clip->vfunc_13("appear");
@@ -571,7 +571,7 @@ void UIBingoEventDialog::vfunc_72()
     }
     else if (step.m_kind == 1)
     {
-        if (!clip->FUN_1422bfca0())
+        if (!clip->GetVisible())
         {
             clip->vfunc_4(true);
             clip->vfunc_13("appear");
@@ -611,10 +611,10 @@ void UIBingoEventDialog::vfunc_43()
 void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nIndex = FUN_140bb9640(params.pUserData);
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
-    CStringW strMsg = FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_check");
+    CStringW strMsg = FUN_14025e7a0()->Localize("$s_bingo_event_check");
     if (m_state == 1)
     {
         if (Common::FindElement<int>(m_called, m_board[nIndex]) == -1)
@@ -674,7 +674,7 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
     m_state = nType + 1;
     if (m_state == 1)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_click_normal"), 0);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14025e7a0()->Localize("$s_bingo_event_click_normal"), 0);
         if (box.IsNull())
             return;
         box->SetSound(s_sndRegPopUp);
@@ -686,10 +686,10 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
     }
     else
     {
-        MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+        MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
         if (!ref)
             return;
-        CStringW strMsg = StringFormat<CStringW>(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_click_rare"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref->m_cashItemId));
+        CStringW strMsg = StringFormat<CStringW>(FUN_14025e7a0()->Localize("$s_bingo_event_click_rare"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref->m_cashItemId));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMsg, 0);
         if (box.IsNull())
@@ -786,7 +786,7 @@ void UIBingoEventDialog::FUN_140bb1580()
         shown->vfunc_4(true);
         MS2Ptr<ASTextField> text = shown->FUN_1409b4620("textField");
         if (text.get() != 0)
-            BINGO_TEXT(text)->FUN_1422c4c80(StringFormat<int>("{0}", nValue));
+            BINGO_TEXT(text)->SetTextA(StringFormat<int>("{0}", nValue));
         if (Common::FindElement<int>(m_checked, nValue) == -1)
         {
             clip->vfunc_15("nor");
@@ -807,7 +807,7 @@ void UIBingoEventDialog::FUN_140bb1d60()
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
     int nFreeId = ref->m_freeItemId;
@@ -821,9 +821,9 @@ void UIBingoEventDialog::FUN_140bb1d60()
     int nFree = g_143ab2a90.FUN_140a5eda0(&freeKey.m_id);
     int nCash = g_143ab2a90.FUN_140a5eda0(&cashKey.m_id);
     if (m_free.m_text.get() != 0)
-        BINGO_TEXT(m_free.m_text)->FUN_1422c4c80(StringFormat<int>("X {0}", nFree));
+        BINGO_TEXT(m_free.m_text)->SetTextA(StringFormat<int>("X {0}", nFree));
     if (m_cash.m_text.get() != 0)
-        BINGO_TEXT(m_cash.m_text)->FUN_1422c4c80(StringFormat<int>("X {0}", nCash));
+        BINGO_TEXT(m_cash.m_text)->SetTextA(StringFormat<int>("X {0}", nCash));
     if (m_free.m_use == 0)
         return;
     if (nFree > 0)
@@ -927,7 +927,7 @@ void UIBingoEventDialog::FUN_140bb2720()
     if (m_30 == 0)
         return;
     unsigned nLines = FUN_140bb3f80();
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
     for (unsigned i = 0; i < (size_t)8; i++)
@@ -1151,7 +1151,7 @@ void UIBingoEventDialog::FUN_140bb3bd0()
 // @0x140bb3f80
 unsigned UIBingoEventDialog::FUN_140bb3f80()
 {
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return 0;
     return ref->CountLines(m_stage, m_checked);
@@ -1175,10 +1175,10 @@ void UIBingoEventDialog::FUN_140bb4150(unsigned nLines)
 {
     if ((size_t)nLines == 12)
     {
-        FUN_1412751f0(StringFormat(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_complete_all_bingo")), 3, 1);
+        FUN_1412751f0(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_complete_all_bingo")), 3, 1);
         return;
     }
-    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetBingoEvent())->Get();
+    MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
     ATL::CAtlArray<BingoContext::RewardPtr>* rewards = &ref->m_rewards;
@@ -1186,7 +1186,7 @@ void UIBingoEventDialog::FUN_140bb4150(unsigned nLines)
     {
         if (i == nLines)
         {
-            FUN_1412751f0(StringFormat<unsigned int>(FUN_14025e7a0()->FUN_1422b0570("$s_bingo_event_complete_bingo"), nLines), 3, 1);
+            FUN_1412751f0(StringFormat<unsigned int>(FUN_14025e7a0()->Localize("$s_bingo_event_complete_bingo"), nLines), 3, 1);
             return;
         }
     }

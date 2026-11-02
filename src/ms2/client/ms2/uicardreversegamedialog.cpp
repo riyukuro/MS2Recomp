@@ -46,10 +46,10 @@ void FUN_140614800(const Scaleform::GFx::Value& v);                // destroy a 
 Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
 
 // The name table (global strings).
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_1409e97f0(int nId, const int& nArg);
 CStringW GetStringCommon(int nId);
-void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
 
 // Item slot bindings (the bound slot key -> the item).
 void FUN_141415600(const CString& strKey);                         // unbind
@@ -121,7 +121,7 @@ void UICardReverseGameDialog::OnCardTweenComplete()
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     int nType = 3;
-    CStringW strText = FUN_140811740(0xc40, m_1f4, nType);
+    CStringW strText = FormatStringId<int, int>(0xc40, m_1f4, nType);
     static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("setSelectInfoText", CStringW(strText));
 }
 

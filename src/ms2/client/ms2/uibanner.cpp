@@ -130,7 +130,7 @@ void UIBanner::Entity::vfunc_6(NiPoint3* pPos)
     {
         float fScale = ((class GFxManager*)(class Unk_BannerUIScale*)(((class Unk_BannerUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
         FUN_140ad0c10(pPos, fScale);
-        ((Unk_BannerClip*)m_38.operator->())->FUN_1422c00f0(pPos->x - 110.0f, pPos->y);
+        ((Unk_BannerClip*)m_38.operator->())->SetPositionFloat(pPos->x - 110.0f, pPos->y);
     }
 }
 

@@ -875,13 +875,13 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
             CStringW stat = FUN_14062b310(info);
             text = FUN_1406564a0(rowStat, FUN_140627390(gemId), name, stat);
         }
-        rows.FUN_1422bbfe0(text);
+        rows.PushWString(text);
     }
     unsigned left = socket->GetLockedSlotCount();
     if (left > 0) {
         CStringW lockText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_lock");
         for (unsigned i = 0; i < left; ++i)
-            rows.FUN_1422bbfe0(lockText);
+            rows.PushWString(lockText);
     }
     data.FUN_1409adbe0("arrSocket", rows.FUN_1422bb870());
     data.FUN_1407cb9c0("unlockSocketIndex", unlockIndex);
@@ -1023,7 +1023,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82ba0(const Scaleform::GFx::Funct
     ASListEvent evt(params);
     Scaleform::GFx::Value row = evt.FUN_1422e27d0();
     ASListItemRenderer renderer(row, 2);
-    if (renderer.FUN_1422ba9a0())
+    if (renderer.IsUndefinedOrNull())
         return;
     unsigned index = evt.FUN_1422e2820();
     if (reinterpret_cast<ASButton*>(&renderer)->FUN_1422ce0e0()) {

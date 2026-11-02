@@ -46,6 +46,8 @@ static CStringW s_strRpsWaiting(L"rpsGameWaiting");
 // @0x1400c8a20 .. 0x1400c8b40
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
@@ -53,7 +55,9 @@ static CStringW s_strRpsWaiting(L"rpsGameWaiting");
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 // The constants table (singleton 0x1401d3200); the slot at +0x3890 holds the countdown of a request box in seconds.
-class Unk_McSlot { public: int FUN_14025a620(); void* m_unknown; };
+class Unk_McSlot { public: void* m_unknown; };
+class Unk_ConstVal;
+int FUN_14025a620(Unk_ConstVal* slot);
 class Unk_McConsts
 {
 public:
@@ -61,17 +65,6 @@ public:
     Unk_McSlot m_boxSeconds;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-
-// The couple dance event (FUN_140428700) as far as the banner handler uses it: the number of its stages.
-class Unk_McEvent : public CPtred
-{
-public:
-    char m_pad[0x34 - sizeof(CPtred)];
-    int m_nStages;                                                  // +0x34
-};
-MS2_CHECK_OFFSET(Unk_McEvent, m_nStages, 0x34);
-class Unk_McEventHolder { public: MS2Ptr<Unk_McEvent> FUN_140428700(); };
-class Unk_McEventService { public: Unk_McEventHolder* FUN_1403ed140(); };
 
 class Unk_McUIMgr { public: };
 
@@ -85,7 +78,6 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSubSceneId();
 };
-bool FUN_140164830(const CStringW& strA, const CStringW& strB);    // the strings differ
 void FUN_14151f200();                                               // close the message box on top / show the next
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the message box on top
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* nUnk, CStringW tag);
@@ -103,8 +95,8 @@ CStringW FUN_140b887d0(__int64 nActorId, int nWhy);                 // statemicr
 CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy);
 UIRewardNotify* FUN_140938cd0(int nUiType);
 
-bool FUN_140bac700(int nButton, const CMsgBoxData& data);           // the rps waiting box result
-bool FUN_140bacda0(int nButton, const CMsgBoxData& data);           // the couple dance waiting box result
+bool FUN_140bac700(int nButton, const class Unk_CMsgBoxData& data);           // the rps waiting box result
+bool FUN_140bacda0(int nButton, const class Unk_CMsgBoxData& data);           // the couple dance waiting box result
 
 // ---- the singleton ----
 
@@ -127,22 +119,15 @@ UICoupleDanceEventDialog* FUN_140b769d0(int nId);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 
 // Opcode 0x114: one of the two switches handles the sub type.
-// MS2-FUNCTIONAL: the exe returns the callee's al without a spill.
 // @0x140b73cc0
-bool FUN_140b73cc0(void* pThis, CInPacket& packet)
+void FUN_140b73cc0(void* pThis, CInPacket& packet)
 {
     unsigned int nType = (unsigned short)packet.ReadInt16();
-    bool bHandled = FUN_140b73d60(pThis, nType, packet);
-    if (!bHandled)
-    {
-        bHandled = FUN_140b751b0(pThis, nType, packet);
-        if (!bHandled)
-        {
-            MS2_ASSERT_AT(0x50, 0);
-            bHandled = false;
-        }
-    }
-    return bHandled;
+    if (FUN_140b73d60(pThis, nType, packet))
+        return;
+    if (FUN_140b751b0(pThis, nType, packet))
+        return;
+    MS2_ASSERT_AT(0x50, 0);
 }
 
 // Rock-paper-scissors: banner (0), request received (1), answer: accepted (2) / declined (3), cancel (4), the request
@@ -242,7 +227,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->FUN_140b76940(CStringW(strName));
-            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
@@ -263,8 +248,8 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->SetExtra(s_strRpsWaiting);
-            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
-            spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bac700));
+            spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a027c0(FUN_140b76b10(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bac700)));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01700(0x476, 0, 0);
             FUN_140d73c60(spBox);
@@ -338,7 +323,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
             if (spBox == 0)
                 break;
-            if (FUN_140164830(spBox->GetExtra(), s_strRpsRequest))
+            if (spBox->GetExtra() != s_strRpsRequest)
                 break;
             CStringW strRequester;
             if (!spBox->FUN_140b76a70(0, strRequester))
@@ -510,9 +495,9 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x202, 0);
                 break;
             }
-            spBox->FUN_140534050(nValue);
+            spBox->Append<unsigned>(nValue);
             spBox->Append<__int64>(nTargetId);
-            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
@@ -532,8 +517,8 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 break;
             }
             spBox->SetExtra(s_strCoupleDanceWaiting);
-            spBox->FUN_141a01ca0(((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
-            spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bacda0));
+            spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a027c0(FUN_140b76b10(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bacda0)));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01700(0x476, 0, 0);
             FUN_140d73c60(spBox);
@@ -590,7 +575,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
             if (spBox == 0)
                 break;
-            if (FUN_140164830(spBox->GetExtra(), s_strCoupleDanceRequest))
+            if (spBox->GetExtra() != s_strCoupleDanceRequest)
                 break;
             int nFirst = 0;
             if (!spBox->FUN_140961900(0, nFirst))
@@ -619,7 +604,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x29c, 0);
                 break;
             }
-            MS2Ptr<Unk_McEvent> spEvent = reinterpret_cast<Unk_McEventService*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+            MS2Ptr<CoupleDanceContext> spEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
             if (spEvent == 0)
             {
                 MS2_ASSERT_AT(0x2a2, 0);
@@ -628,7 +613,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
                 FUN_14151f200();
             std::vector<int> aStages;
-            for (int i = 0; i < spEvent->m_nStages; i = i + 1)
+            for (int i = 0; i < (int)spEvent->m_maxRound; i = i + 1)
             {
                 int nStage = (unsigned short)packet.ReadInt16();
                 aStages.push_back(nStage);
@@ -689,7 +674,7 @@ static bool FUN_140b768a0(const CStringW& strTag)
     MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
     if (spBox == 0)
         return false;
-    if (FUN_140164830(spBox->GetExtra(), strTag))
+    if (spBox->GetExtra() != strTag)
         return false;
     return true;
 }

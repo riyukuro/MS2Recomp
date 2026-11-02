@@ -38,7 +38,7 @@ void* FUN_140159860(u64 nSize, void* pWhere);                  // placement oper
 
 // ---- scalar deleting destructors ---------------------------------------------------------------------------------
 // of the record / handle types (59 bytes: dtor, then operator delete when bit 0 of the flags is set)
-void FUN_1411237f0(void* p);
+void FUN_1411237f0(void* p) noexcept;
 void FUN_140fac610(void* p);
 void FUN_140fac640(void* p);
 void FUN_1411238b0(void* p);

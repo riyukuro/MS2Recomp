@@ -77,14 +77,14 @@ CString FUN_1402bb1c0(const char* szFormat, const int& n);
 CString FUN_140e10af0(const char* szFormat, const Unk_JobCode& job);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
-void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW tag);     // toast
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
+void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);     // toast
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the message box
 void FUN_1412751f0(const CStringW& text, int nA, int nB);           // notice
 void FUN_14151f200();                                               // close the open modal box
 int FUN_1413499b0(int);   // C3: was FUN_1413499b0
 bool FUN_1407105c0(COutPacket* packet, int key, int delay);         // rate limited send
-bool FUN_14028d780(bool b);
+bool FUN_14028d780(unsigned char b);
 int FUN_140bb9640(void* p);                                         // the click's user data
 
 // @0x140f91d90
@@ -188,9 +188,9 @@ void UIRankPvPDialog::OnLoadComplete()
         {
             if (it->second == 0)
                 continue;
-            if (!it->second->FUN_1422bfca0())
+            if (!it->second->GetVisible())
                 continue;
-            it->second->FUN_1422c04a0(y);
+            it->second->SetYInt(y);
             y += nStep;
         }
     }
@@ -325,7 +325,7 @@ void UIRankPvPDialog::FUN_140f94490()
     int nWidth = (int)((float)m_gaugeWidth * fRate);
     if (nWidth > m_gaugeWidth)
         nWidth = m_gaugeWidth;
-    m_gauge->FUN_1422c0e20(nWidth);
+    m_gauge->SetWidthInt(nWidth);
     m_rewardText->FUN_1422c4cd0(FUN_14083dc40(L"{0} / {1}", nValue, nMax));
     if (nValue > nMax)
         m_rewardText->SetTextColor(0xc00000);
@@ -364,7 +364,7 @@ void UIRankPvPDialog::FUN_140f94840()
         MS2Ptr<ASMovieClip> spRow(it->second);
         if (spRow == 0)
             continue;
-        if (!spRow->FUN_1422bfca0())
+        if (!spRow->GetVisible())
             continue;
         int nJobGroup = it->first;
         MS2Ptr<RankDuelStatisticalData> spRecord = CPVPManager::GetInstance()->GetRankDuel()->FindRecord(nJobGroup);
@@ -443,7 +443,7 @@ void UIRankPvPDialog::FUN_140f95260(const Scaleform::GFx::FunctionHandler::Param
     if (nObserver == 1)
     {
         // Registering while observing: ask first (OnMessage "rankArenaRegister").
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_rank_duel_ui_regist_on_observe"), this,
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_rank_duel_ui_regist_on_observe"), static_cast<IMessageListener*>(this),
                                                       s_strRankArenaRegister))
         {
             spBox->FUN_141a02460(1);

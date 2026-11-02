@@ -12,22 +12,11 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/uidialog.h"
 
 class CInPacket;
-
-// The "m_webGuideButton" clip (an AS* wrapper). Class unknown.
-class Unk_ASWebGuideButton : public CPtred
-{
-public:
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4(int nVisible);                 // slot 4: SetVisible?
-    void FUN_1422c00f0(float x, float y);               // set position
-    void FUN_1422c0f60(float* pX, float* pY);           // get position
-};
 
 class UIDungeonLobby : public UIDialog
 {
@@ -46,7 +35,7 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_nRoomId;                                  // +0x178 read from the packet
     int m_n17c;                                     // +0x17c read from the packet
-    MS2Ptr<Unk_ASWebGuideButton> m_pWebGuideButton; // +0x180 "m_webGuideButton"
+    MS2Ptr<ASButton> m_pWebGuideButton;            // +0x180 "m_webGuideButton"
     MS2Ptr<ASTextField> m_pTitle;               // +0x190 "m_title"
 };
 MS2_CHECK_SIZE(UIDungeonLobby, 0x1a0);

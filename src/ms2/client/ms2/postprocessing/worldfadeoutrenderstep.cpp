@@ -32,7 +32,7 @@ class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
-void* FUN_140af8310(char* p);
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
 void* FUN_1411d15b0(void* p);
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
@@ -214,7 +214,7 @@ void WorldFadeOutRenderStep::vfunc_19()
     if (reinterpret_cast<NiRenderStep*>(this)->GetActive() == 1) {
         Unk_WFTarget* a = reinterpret_cast<Unk_WFTarget *>(reinterpret_cast<PostProcessingService*>(m_70)->GetFirstActiveStep());
         if (a->vfunc_17() != 0) {
-            void* h = FUN_1411d15b0(FUN_140af8310(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8));
+            void* h = FUN_1411d15b0(reinterpret_cast<Unk_GameContext*>(((char*)Unk_AeFeatureMgr::FUN_1409a8b20()) + 8)->FUN_140af8310());
             NiRenderer* p = GetNiRenderer();
             NiRenderTargetGroup* q = p->GetDefaultRenderTargetGroup();
             int w = q->GetWidth(0);

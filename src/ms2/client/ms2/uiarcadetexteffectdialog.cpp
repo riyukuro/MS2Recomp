@@ -48,7 +48,7 @@ void UIArcadeTextEffectDialog::vfunc_43()
     if (spEntity.get() != 0)
     {
         int nY = 0xd2;
-        spEntity->FUN_1422bffe0((int)(spEntity->FUN_1422c1500() * 0.5f), nY);
+        spEntity->SetPositionInt((int)(spEntity->FUN_1422c1500() * 0.5f), nY);
     }
 }
 

@@ -40,7 +40,7 @@
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/creservedwordtable.h"
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-
+class Unk_MeratProductKey { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> FUN_1409b0470(void) const; };
 // return types of the getters this unit calls
 class CReservedWordTable;
 
@@ -401,12 +401,12 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
             if (s_nCameraObject != nObject)
             {
                 s_nCameraObject = nObject;
-                ((class CTriggerService*)FUN_140ad4b90())->FUN_1418631f0(nObject, 1);
+                ((class CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 1);
             }
             else
             {
                 s_nCameraObject = -1;
-                ((class CTriggerService*)FUN_140ad4b90())->FUN_1418631f0(nObject, 0);
+                ((class CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 0);
             }
         }
     }
@@ -755,7 +755,7 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
             tip.SetOnDelay(300);
             tip.SetOffDelay(5000);
             tip.SetTooltipAlign(5);
-            reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c7cd0(tip.FUN_1422bb890());
+            reinterpret_cast<Unk_OxButton*>(hButton.operator->())->SetTooltipData(tip.FUN_1422bb890());
             reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c1fe0(nPromoted < nTotal);
             if (nPromoted < nTotal)
                 ((class UIOxQuizDialog*)(class UIOxQuizDialog*)(pQuiz))->FUN_140e6e6c0((float)nCooltime / 1000.0f, (float)s_nPromoteCooltime / 1000.0f);
@@ -860,7 +860,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 CString FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item)
 {
     if (item.get() != 0)
-        return FUN_140540050("limited_{0}", CString(item->m_id.FUN_1409b0470()));
+        return FUN_140540050("limited_{0}", CString(((class Unk_MeratProductKey&)(item->m_id)).FUN_1409b0470()));
     return CString("");
 }
 

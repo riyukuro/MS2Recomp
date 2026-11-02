@@ -136,8 +136,8 @@ struct Unk_NxValue
     unsigned short m_nFlags;
     unsigned m_nSize;
     unsigned __int64 m_n8;
-    unsigned __int64 m_n10; unsigned __int64 m_n18; unsigned __int64 m_n20; unsigned __int64 m_n28;
-    unsigned __int64 m_n30;
+    unsigned __int64 m_n10;
+    unsigned __int64 m_an18[4];
 };
 MS2_CHECK_SIZE(Unk_NxValue, 0x38);
 
@@ -145,8 +145,8 @@ struct Unk_NxString : Unk_NxValue
 {
     Unk_NxString() { Reset(); }                                 // @0x140c77120
     void FUN_140c777f0(const char* psz, int nMode);             // @0x140c777f0 -> Set
-    Unk_NxString(const char* psz);                              // @0x140c77310
-    Unk_NxString(const char* psz, int nMode);                   // 0x14092e380 (unit_14092cb30_nxa)
+    Unk_NxString& operator=(const char* psz);                   // @0x140c77310
+    Unk_NxString(const char* psz, int nMode = 3);               // 0x14092e380 (unit_14092cb30_nxa)
     ~Unk_NxString();                                            // 0x14092e560 (another unit)
     void Set(const char* psz, int nMode);                       // 0x14092e710
 };
@@ -156,7 +156,7 @@ struct Unk_NxNumber : Unk_NxValue
     Unk_NxNumber() { Reset(); }                                 // @0x140c77170
     Unk_NxNumber(int n);                                        // @0x140c77140
     Unk_NxNumber(unsigned n);                                   // @0x140c77190
-    Unk_NxNumber(__int64 n);                                    // @0x140c77340
+    Unk_NxNumber& operator=(__int64 n);                         // @0x140c77340
     ~Unk_NxNumber();                                            // @0x140c772f0 (calls 0x14092e580)
     void Set(unsigned n);                                       // @0x140c77850
     void Set(__int64 n);                                        // @0x140c77820 -> 0x140c778a0
@@ -186,7 +186,7 @@ public:
     bool FUN_14092ca70(const char* pszModule);
     bool FUN_14092d1f0(int nCode, const CStringA& strLog);
     bool FUN_14092d280(int nCode, const CStringA& strLog);
-    bool FUN_14092ce80(const Unk_NxString* pVersion, const Unk_NxString* pHost);
+    bool FUN_14092ce80(const Unk_NxString& kVersion, const Unk_NxString* pHost);
     bool FUN_14092cf80(const Unk_NxEvent* pEvent, const Unk_NxString* pHost, const Unk_NxNumber* pService);
     void FUN_14092d070(bool bFlush);
     void FUN_14092cbf0();

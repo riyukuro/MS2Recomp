@@ -23,10 +23,9 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 // ---- unit-local views of exe functions ----
 extern __int64 DAT_143ab2828;                                       // the own character id
 CStringW GetStringCommon(int nStringId);                              // string table text
-CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_1409eadb0(int nStringId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
-CStringW FUN_14093fa20(int nStringId, const CStringW& str, const unsigned& nCount);
-CStringW FUN_14052bd00(int nStringId, const CStringW& arg);         // string table text with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);         // string table text with one argument
 CStringW FUN_1401d0160(const wchar_t* sz, const CStringW& str);    // sz + str
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* sz);     // str + sz
 CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
@@ -148,7 +147,7 @@ void UISurveyDialog::FUN_140eda3c0(CInPacket& packet)
     CStringW strName = packet.ReadUnicodeString();
     bool bKind = packet.ReadUInt8() == 1;
     CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
-    FUN_1412751b0(FUN_140632a60(0xc93, strKind, strName), 0x14);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0xc93, strKind, strName), 0x14);
     FUN_1412751b0(GetStringCommon(0xc92), 0x14);
 }
 
@@ -158,7 +157,7 @@ void UISurveyDialog::FUN_140eda530(CInPacket& packet)
     CStringW strName = packet.ReadUnicodeString();
     bool bKind = packet.ReadUInt8() == 1;
     CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
-    FUN_1412751b0(FUN_140632a60(0xc91, strKind, strName), 0x14);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0xc91, strKind, strName), 0x14);
     int nCount = packet.ReadUInt8();
     for (int i = 0; i < nCount; i++)
     {
@@ -196,7 +195,7 @@ void UISurveyDialog::FUN_140eda980(CInPacket& packet)
     if (m_178 == DAT_143ab2828)
     {
         CStringW strKind = GetStringCommon(m_188 != 0 ? 0xc8d : 0xc8e);
-        FUN_1412751b0(FUN_140632a60(0xc97, strKind, m_190), 0x14);
+        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0xc97, strKind, m_190), 0x14);
     }
 }
 
@@ -204,7 +203,7 @@ void UISurveyDialog::FUN_140eda980(CInPacket& packet)
 void UISurveyDialog::FUN_140edacb0(CInPacket& packet)
 {
     CStringW strName = packet.ReadUnicodeString();
-    FUN_1412751b0(FUN_14052bd00(0xc98, strName), 0x14);
+    FUN_1412751b0(FormatStringId<CStringW>(0xc98, strName), 0x14);
 }
 
 // @0x140edad50
@@ -214,7 +213,7 @@ void UISurveyDialog::FUN_140edad50(CInPacket& packet)
     bool bKind = packet.ReadUInt8() == 1;
     CStringW strName = packet.ReadUnicodeString();
     CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
-    FUN_1412751b0(FUN_140632a60(0xc99, strKind, strName), 0x14);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0xc99, strKind, strName), 0x14);
     unsigned nCount = packet.ReadUInt8();
     for (int i = 0; i <= (int)nCount; i++)
     {
@@ -224,7 +223,7 @@ void UISurveyDialog::FUN_140edad50(CInPacket& packet)
         unsigned nVotes = packet.ReadUInt8();
         if ((unsigned)i == nCount && nVotes == 0)
             continue;
-        CStringW strLine = FUN_14093fa20(0xc9a, strAnswer, nVotes);
+        CStringW strLine = FormatStringId<CStringW, int>(0xc9a, strAnswer, reinterpret_cast<const int&>(nVotes));
         if (bKind)
         {
             for (int j = 0; j < (int)nVotes; j++)

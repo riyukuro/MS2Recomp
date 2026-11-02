@@ -195,7 +195,7 @@ void CWebBrowserService::FUN_141b781e0(int nIndex, const char* pszUrl, const cha
 }
 
 // @0x141b784f0
-void CWebBrowserService::FUN_141b784f0(int nIndex)
+void CWebBrowserService::CloseBrowser(int nIndex)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser) {
@@ -235,7 +235,7 @@ void* CWebBrowserService::FUN_141b786a0(int nIndex)
 MS2_REPLACE_METHOD(0x141B786A0, CWebBrowserService, FUN_141b786a0, 59, 0xDFAC4E8D);
 
 // @0x141b786f0
-void CWebBrowserService::FUN_141b786f0(int nIndex, const char* pszUrl)
+void CWebBrowserService::Navigate(int nIndex, const char* pszUrl)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser == NULL) {
@@ -244,7 +244,7 @@ void CWebBrowserService::FUN_141b786f0(int nIndex, const char* pszUrl)
     CStringA strUrl(pszUrl);
     pBrowser->LoadUrl(strUrl);
 }
-MS2_REPLACE_METHOD(0x141B786F0, CWebBrowserService, FUN_141b786f0, 105, 0x3FC9B551);
+MS2_REPLACE_METHOD(0x141B786F0, CWebBrowserService, Navigate, 105, 0x3FC9B551);
 
 // @0x141b78760
 void CWebBrowserService::FUN_141b78760(int nIndex, int nPage)
@@ -254,7 +254,7 @@ void CWebBrowserService::FUN_141b78760(int nIndex, int nPage)
         if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x5c) == true) {
             // empty in the exe (the feature test is all that is left)
         }
-        FUN_141b786f0(nIndex, FUN_1401d2b10(g_strMaviewURL, strPath));
+        Navigate(nIndex, FUN_1401d2b10(g_strMaviewURL, strPath));
     } else {
         COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
         if (pBrowser == NULL) {
@@ -265,7 +265,7 @@ void CWebBrowserService::FUN_141b78760(int nIndex, int nPage)
 }
 
 // @0x141b78840
-void CWebBrowserService::FUN_141b78840(int nIndex, bool bShow)
+void CWebBrowserService::ShowBrowser(int nIndex, bool bShow)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser == NULL) {
@@ -276,7 +276,7 @@ void CWebBrowserService::FUN_141b78840(int nIndex, bool bShow)
 }
 
 // @0x141b788b0
-void CWebBrowserService::FUN_141b788b0(int nIndex, int nWidth, int nHeight)
+void CWebBrowserService::ResizeBrowser(int nIndex, int nWidth, int nHeight)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser == NULL) {
@@ -284,7 +284,7 @@ void CWebBrowserService::FUN_141b788b0(int nIndex, int nWidth, int nHeight)
     }
     pBrowser->SetViewSize(nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x141B788B0, CWebBrowserService, FUN_141b788b0, 76, 0x1560CF1E);
+MS2_REPLACE_METHOD(0x141B788B0, CWebBrowserService, ResizeBrowser, 76, 0x1560CF1E);
 
 // @0x141b78910
 bool CWebBrowserService::FUN_141b78910(int nIndex, unsigned nMsg, WPARAM wParam, LPARAM lParam, int x, int y)
@@ -369,7 +369,7 @@ void CWebBrowserService::SendNewsNotification(bool bUnk, int nUnk)
 MS2_REPLACE_METHOD(0x141B78B40, CWebBrowserService, SendNewsNotification, 146, 0xF1A79B50);
 
 // @0x141b78be0
-void CWebBrowserService::FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback)
+void CWebBrowserService::RequestTokenWithCallback(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback)
 {
     if (Unk_LockGuard guard = m_tokenLock) {
     } else {
@@ -384,7 +384,7 @@ void CWebBrowserService::FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPt
 }
 
 // @0x141b78cf0
-void CWebBrowserService::FUN_141b78cf0(int nIndex, const CStringA& strToken)
+void CWebBrowserService::SendTokenToBrowser(int nIndex, const CStringA& strToken)
 {
     if (m_tokenContext.get() == NULL || m_tokenCallback.get() == NULL) {
         return;
@@ -395,7 +395,7 @@ void CWebBrowserService::FUN_141b78cf0(int nIndex, const CStringA& strToken)
     args->SetString(0, token);
     m_aBrowsers[nIndex]->SendRendererMessage(message);
 }
-MS2_REPLACE_METHOD(0x141B78CF0, CWebBrowserService, FUN_141b78cf0, 372, 0x4E1DE1B4);
+MS2_REPLACE_METHOD(0x141B78CF0, CWebBrowserService, SendTokenToBrowser, 372, 0x4E1DE1B4);
 
 // @0x141b78e70
 void CWebBrowserService::FUN_141b78e70(CefRefPtr<CefProcessMessage> message)

@@ -56,6 +56,7 @@
 #define MS2_STATICS_A_BEFORE_CONDITION "ms2/client/ms2/uiitembillboarddialog_statics.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/jobtable.h"   // C3: TSingleton<> needs the class
+#include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
@@ -149,7 +150,7 @@ public:
 bool FUN_140930b10();
 bool FUN_140930b70();
 unsigned int FUN_1409313b0();   // C3: was FUN_1409313b0
-void* FUN_140302b00();
+class CGameEventValueManager;
 void* FUN_1403f31f0(void* p);
 bool FUN_1407d1d00(class CShutdownEventBillboard*);   // C3: was FUN_1407d1d00
 struct Unk_EntityAppFramework { char m_pad[8]; };
@@ -163,10 +164,11 @@ public:
     char m_pad_48[8];
     int m_nCount;                                               // +0x50
 };
+class Cube;
+class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };   // C3: member view
 class Unk_RxGrid
 {
 public:
-    Unk_RxCellInfo* FUN_1410b8ab0(Vector3 pt);          // cell info at a point
     Unk_RxCellInfo* FUN_1410b8a60(Unk_Int3 cell);               // cell info of a cell
 };
 // efd::SmartPointer<>: the ctor AddRefs (vfunc 1), the dtor Releases (vfunc 2).
@@ -414,7 +416,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
-    if (FUN_1407d1d00((class CShutdownEventBillboard*)(FUN_1403f31f0(FUN_140302b00()))) != 0) {
+    if (FUN_1407d1d00((class CShutdownEventBillboard*)(FUN_1403f31f0((void*)TSingleton<CGameEventValueManager>::GetInstance()))) != 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_banner_billboard_shutdown"), 1, 1);
         return false;
     }
@@ -474,7 +476,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         Unk_GmGridRef grid(((class Unk_RxGrid*)FUN_1401cd040(&DAT_143b059e8)));
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
-        Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxGrid*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410b8ab0(ptLow);
+        Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtPoint(ptLow));
         if (pInfo == 0) {
             FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
             return false;

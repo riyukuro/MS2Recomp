@@ -79,13 +79,13 @@ public:
 };
 
 // Delegate bodies of the three callbacks (the exe checks for an empty delegate before the call).
-template<> inline void ItemInfoSlotSlotFn::operator()(ItemInfoSlot* a1, ASSlot* a2) const
+template<> inline void ItemInfoSlotSlotFn::operator()(ItemInfoSlot& a1, ASSlot& a2) const
 {
     if (m_pImpl == 0)
         Unk_140657820();
     m_pImpl->Invoke(a1, a2);
 }
-template<> inline void ItemInfoSlotTipFn::operator()(ItemInfoSlot* a1, ASTooltip* a2) const
+template<> inline void ItemInfoSlotTipFn::operator()(ItemInfoSlot& a1, ASTooltip& a2) const
 {
     if (m_pImpl == 0)
         Unk_140657820();
@@ -97,7 +97,7 @@ void FUN_141416840()
 {
     throw InvalidCallException();
 }
-template<> inline int ItemInfoSlotCanFn::operator()(ItemInfoSlot* a1) const
+template<> inline int ItemInfoSlotCanFn::operator()(ItemInfoSlot& a1) const
 {
     if (m_pImpl == 0)
         FUN_141416840();
@@ -335,7 +335,7 @@ int ItemInfoSlot::vfunc_18(void* pv)
 // @0x141415c90 (ITooltip::vfunc_0)
 int ItemInfoSlot::vfunc_0(void* p)
 {
-    if (!m_fnCan.IsNull() && m_fnCan(this) == 0)
+    if (!m_fnCan.IsNull() && m_fnCan(*this) == 0)
         return 0;
     if (m_spItem == 0 && m_strTip.GetLength() != 0)
     {
@@ -352,7 +352,7 @@ int ItemInfoSlot::vfunc_0(void* p)
     int nResult = 0;
     if (!m_fnTip.IsNull())
     {
-        m_fnTip(this, &tip);
+        m_fnTip(*this, tip);
         nResult = 1;
     }
     else
@@ -425,7 +425,7 @@ int ItemInfoSlot::vfunc_8(void* p)
     if (slot.FUN_1409c3860(spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), m_nIconType))
     {
         if (!m_fnSlot.IsNull())
-            m_fnSlot(this, &slot);
+            m_fnSlot(*this, slot);
         if (m_strCount.GetLength() > 0)
             slot.FUN_1407cba60((const char*)s_itemCount, m_strCount);
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
@@ -456,7 +456,7 @@ void ItemInfoSlot::SetCanFn(ItemInfoSlotCanFn fn)
 void ItemInfoSlot::SetCountText(int a, int b)
 {
     AScript root(m_value18, 2);
-    if (root.FUN_1422ba9a0())
+    if (root.IsUndefinedOrNull())
         return;
     CStringW strCount = FUN_1419021b0(a, b);
     FUN_140cff1b0(m_value18, "m_count", strCount);

@@ -376,7 +376,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 // Unrecovered helpers.
 CLogString* GetLogString();                                                // the log singleton
 class Unk_AdditionalFlags : public StanceTable { };
-extern Unk_AdditionalFlags* DAT_143aac270;
+class StanceTable;
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 int Parse_140219400(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 int Parse_140218c20(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
@@ -399,7 +399,7 @@ inline CString FUN_140188f50(const char* psz, int nCodePage)
 // @0x140186320
 inline Unk_AdditionalFlags* FUN_140186320()
 {
-    return DAT_143aac270;
+    return reinterpret_cast<Unk_AdditionalFlags*>(TSingleton<StanceTable>::s_instance);
 }
 
 // fmt's ostream formatting of a custom argument (cppformat's format(BasicFormatter&, const Char*&, const T&)) with

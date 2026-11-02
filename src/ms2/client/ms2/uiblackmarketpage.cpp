@@ -411,7 +411,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         }
         return 1;
     }
-    if (_stricmp("OnChangeLowCategory", szMethod) == 0)
+    else if (_stricmp("OnChangeLowCategory", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -424,7 +424,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         }
         return 1;
     }
-    if (_stricmp("OnChangePage", szMethod) == 0)
+    else if (_stricmp("OnChangePage", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -438,11 +438,11 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
                 bResult = true;
                 FillSearchResults(nFirst, nFirst + nCount, CBlackMarketMan::GetInstance()->m_listSearch.FindIndex(nFirst));
             }
-            (&ret)->SetMember("result", Scaleform::GFx::Value(bResult));
+            (&ret)->SetMember("result", bResult);
         }
         return 1;
     }
-    if (_stricmp("OnChangeList", szMethod) == 0)
+    else if (_stricmp("OnChangeList", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -457,43 +457,43 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
                 m_bSendPending = true;
                 bResult = true;
             }
-            (&ret)->SetMember("result", Scaleform::GFx::Value(bResult));
+            (&ret)->SetMember("result", bResult);
         }
         return 1;
     }
-    if (_stricmp("OnClickSearch", szMethod) == 0)
+    else if (_stricmp("OnClickSearch", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nResult = FUN_140f0f310(&data, 0);
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
-            (&ret)->SetMember("result", Scaleform::GFx::Value(nResult != 0));
+            (&ret)->SetMember("result", nResult != 0);
         }
         return 1;
     }
-    if (_stricmp("OnClickSortButton", szMethod) == 0)
+    else if (_stricmp("OnClickSortButton", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             CStringW strSort = data.FUN_1422b8f40();
-            bool bUp = data.FUN_1422b8a90();
+            int nUp = data.FUN_1422b8a90() ? 1 : 0;
             bool bResult = false;
             Scaleform::GFx::Value ret = data.FUN_1422b9260();
             if (m_nPending == 0 && CanSearchNow() && m_spCond.get())
             {
                 m_spCond->m_dw48 = 1;
-                m_spCond->m_dw54 = FUN_140f156d0(strSort, bUp != false);
+                m_spCond->m_dw54 = FUN_140f156d0(strSort, nUp);
                 m_nPending = m_nCategory;
                 m_bSendPending = true;
                 bResult = true;
             }
-            (&ret)->SetMember("result", Scaleform::GFx::Value(bResult));
+            (&ret)->SetMember("result", bResult);
         }
         return 1;
     }
-    if (_stricmp("OnClickBuy", szMethod) == 0)
+    else if (_stricmp("OnClickBuy", szMethod) == 0)
     {
         if (ItemPreviewMgr::GetInstance()->IsHudOn() != 0)
             return 1;
@@ -509,7 +509,8 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
-            FUN_140f103c0(nId, data.FUN_1422b8d30());
+            CString strState = data.FUN_1422b8d30();
+            FUN_140f103c0(nId, strState);
         }
         return 1;
     }
@@ -542,7 +543,7 @@ void BlackMarketPageItemSearch::FUN_140f0d630(int nMsg, void* p2, void* p3)
 {
     if (!m_bAutoCompleteName)
         return;
-    if (m_spInputName == 0 || m_spInputName->FUN_1422c76c0() == 0)
+    if (m_spInputName == 0 || m_spInputName->GetFocused() == 0)
         return;
     CStringW strText = m_spInputName->GetText();
     if (FUN_1418fccc0(nMsg, (unsigned __int64)p2, (unsigned __int64)p3, strText) == 0)
@@ -662,7 +663,7 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
         ASArray jobs(2);
         ASObj jobAll(2);
         if (AddLabeledEntry(jobAll, L"$s_blackmarket_dropdown_joball", "code", 200))
-            jobs.FUN_1422bc050(jobAll.FUN_1422bb870());
+            jobs.PushValue(jobAll.FUN_1422bb870());
         ATL::CAtlArray<unsigned int> jobCodes;
         FUN_140222be0(jobCodes);
         size_t nJobs = jobCodes.GetCount();
@@ -672,21 +673,21 @@ void BlackMarketPageItemSearch::FUN_140f0e050()
             CStringW strJob = CStringTable::GetInstance()->FUN_141811980(0x4d, nJob);
             ASObj job(2);
             if (AddLabeledEntry(job, strJob, "code", nJob))
-                jobs.FUN_1422bc050(job.FUN_1422bb870());
+                jobs.PushValue(job.FUN_1422bb870());
         }
         data.FUN_1409adbe0("jobArray", jobs.FUN_1422bb870());
         data.FUN_1407cb9c0("maxLevel", 99);
         ASArray ranks(2);
         ASObj rankAll(2);
         if (AddLabeledEntry(rankAll, L"$s_blackmarket_dropdown_rankall", "rank", 0))
-            ranks.FUN_1422bc050(rankAll.FUN_1422bb870());
+            ranks.PushValue(rankAll.FUN_1422bb870());
         CStringW strRankFormat = GetStringCommon(0x91c);
         for (int nRank = 2; nRank < 7; nRank++)
         {
-            CStringW strRank = StringFormat((const wchar_t*)strRankFormat, CStringTable::GetInstance()->FUN_141813150(nRank));
+            CStringW strRank = StringFormat((const wchar_t*)strRankFormat, CStringTable::GetInstance()->GetRankName(nRank));
             ASObj rank(2);
             if (AddLabeledEntry(rank, strRank, "rank", nRank))
-                ranks.FUN_1422bc050(rank.FUN_1422bb870());
+                ranks.PushValue(rank.FUN_1422bb870());
         }
         data.FUN_1409adbe0("itemRankArray", ranks.FUN_1422bb870());
     }
@@ -705,7 +706,7 @@ void BlackMarketPageItemSearch::AppendTabs(ASArray& out, ATL::CAtlList<Unk_BmPtr
         {
             ASObj tab(2);
             FUN_140f15760(tab, spTab);
-            out.FUN_1422bc050(tab.FUN_1422bb870());
+            out.PushValue(tab.FUN_1422bb870());
             m_tabs.SetAt(spTab->m_nId, spTab);
             if (spTab->m_bShowIncludeLowTab)
                 AppendTabs(out, &spTab->m_children);
@@ -728,7 +729,7 @@ void BlackMarketPageItemSearch::FUN_140f0e940(ASObj& out, int nTabId)
         if (nOptionId >= 0 && m_nOptionId != nOptionId)
         {
             CBlackMarketTable::IdArrayPtr spTables = s_pTable->GetOptionStats(nOptionId);
-            if (spTables.operator->() && !spTables->IsEmpty())
+            if (spTables.get() && !spTables->IsEmpty())
             {
                 size_t nTables = spTables->GetCount();
                 for (size_t i = 0; i < nTables; i++)
@@ -743,7 +744,7 @@ void BlackMarketPageItemSearch::FUN_140f0e940(ASObj& out, int nTabId)
                         ASObj none(2);
                         none.FUN_1409c0dc0("label", "$s_blackmarket_dropdown_notselect");
                         none.FUN_1407cb9c0("idx", -1);
-                        list.FUN_1422bc050(none.FUN_1422bb870());
+                        list.PushValue(none.FUN_1422bb870());
                         CStringW strPercentFormat(L"%s (%%)");
                         for (size_t j = 0; j < nStats; j++)
                         {
@@ -761,12 +762,12 @@ void BlackMarketPageItemSearch::FUN_140f0e940(ASObj& out, int nTabId)
                             stat.FUN_140f17290("group", spStat->m_nKind);
                             stat.FUN_1407cb9c0("percent", spStat->m_nPercent);
                             stat.FUN_1409c4a30("defaultValue", spStat->m_fDefault);
-                            list.FUN_1422bc050(stat.FUN_1422bb870());
+                            list.PushValue(stat.FUN_1422bb870());
                         }
                         m_nOptionId = nOptionId;
-                        CString strList = StringFormat("option{0}", i);
+                        CString strList = Unk_SocketFormat("option{0}", i);
                         out.FUN_1409adbe0(strList, list.FUN_1422bb870());
-                        CString strId = StringFormat("option{0}_id", i);
+                        CString strId = Unk_SocketFormat("option{0}_id", i);
                         out.FUN_1409c0d20(strId, nTableId);
                     }
                 }
@@ -807,7 +808,7 @@ void BlackMarketPageItemSearch::FillSearchResults(int nFirst, int nEnd, POSITION
 void BlackMarketPageItemSearch::ClearNameInput()
 {
     if (m_spInputName)
-        m_spInputName->FUN_1422e0ab0(L"");
+        m_spInputName->SetTextW(L"");
 }
 MS2_REPLACE_METHOD(0x140F0F1D0, BlackMarketPageItemSearch, ClearNameInput, 110, 0xB6448B2E);
 
@@ -831,7 +832,6 @@ int BlackMarketPageItemSearch::CanSearchNow()
 }
 
 // @0x140f0f310
-// MS2-FUNCTIONAL: frame layout (40 locals)
 int BlackMarketPageItemSearch::FUN_140f0f310(ASData* pArgs, int n)
 {
     if (m_nPending > 0)
@@ -839,124 +839,124 @@ int BlackMarketPageItemSearch::FUN_140f0f310(ASData* pArgs, int n)
     if (!m_spCond)
         m_spCond.AssignRaw(new CBlackMarketSchCond());
     Scaleform::GFx::Value ret = pArgs->FUN_1422b9260();
-    MS2Ptr<AScript> spData = FUN_1409e7dc0(m_50, ret);
-    if (!spData.get())
-        return 0;
-    int nCategory = spData->GetMember("categoryId").GetInt();
-    Unk_BmPtr<CBlackMarketTable::TabInfo> spTab(0);
-    if (!m_tabs.Lookup(nCategory, spTab))
-        return 0;
-    CStringW strItemName = spData->FUN_1422bb2b0("itemName");
-    int nMinLevel = atoi(spData->GetMember("minLevel").GetString());
-    int nMaxLevel = atoi(spData->GetMember("maxLevel").GetString());
-    if (nMaxLevel == 0)
-        nMaxLevel = 99;
-    nMinLevel = nMinLevel < nMaxLevel ? nMinLevel : nMaxLevel;
-    nMaxLevel = nMaxLevel < nMinLevel ? nMinLevel : nMaxLevel;
-    int nJobCode = spData->GetMember("jobCode").GetInt();
-    int nRank = spData->GetMember("rank").GetInt();
-    int nPage = spData->GetMember("pageNumber").GetInt();
-    CStringW strSort = spData->FUN_1422bb2b0("sortDataName");
-    BOOL bSortUp = spData->GetMember("isSortUp").GetBool() != false;
-    BOOL bOptionSearch = spData->GetMember("isOptionSearch").GetBool() != false;
-    int nLimit = 1;
-    int nEnchantMin = spData->GetMember("enchantMinLevel").GetInt();
-    int nEnchantMax = spData->GetMember("enchantMaxLevel").GetInt();
-    if (nEnchantMax == -1)
-        nEnchantMax = 15;
-    int nSocketMin = spData->GetMember("socketMinCount").GetInt();
-    int nSocketMax = spData->GetMember("socketMaxCount").GetInt();
-    if (nSocketMax == -1)
-        nSocketMax = 3;
-    if (!m_spCond.get())
-        return 0;
-    m_nCategory = nCategory;
-    m_spCond->m_dw18 = FUN_1401bd000(nCategory);
-    m_spCond->m_dw1c = FUN_1401bd010(nCategory);
-    m_spCond->m_dw20 = nMinLevel;
-    m_spCond->m_dw24 = nMaxLevel;
-    m_spCond->m_dw28 = FUN_1402227e0(nJobCode, nJobCode == 200);
-    m_spCond->m_dw2c = nRank;
-    m_spCond->m_strName = strItemName;
-    m_spCond->m_dw48 = nPage;
-    m_spCond->m_dw54 = FUN_140f156d0(strSort, bSortUp != 0);
-    m_spCond->m_dw5c = bOptionSearch;
-    m_spCond->m_dw60 = nLimit;
-    m_spCond->m_dw30 = nEnchantMin;
-    m_spCond->m_dw34 = nEnchantMax;
-    m_spCond->m_dw38 = nSocketMin;
-    m_spCond->m_dw3c = nSocketMax;
-    if (bOptionSearch)
     {
-        CString strKey;
-        for (int i = 0; i < 3; i++)
+        MS2Ptr<AScript> spData = FUN_1409e7dc0(m_50, ret);
+        if (spData.get())
         {
-            strKey = StringFormat("option{0}", i);
-            Scaleform::GFx::Value option = spData->GetMember(strKey);
-            if (!option.IsUndefined())
+            int nCategory = spData->GetMember("categoryId").GetInt();
+            Unk_BmPtr<CBlackMarketTable::TabInfo> spTab(0);
+            if (!m_tabs.Lookup(nCategory, spTab))
+                return 0;
+            CStringW strItemName = spData->GetWString("itemName");
+            int nMinLevel = atoi(spData->GetMember("minLevel").GetString());
+            int nMaxLevel = atoi(spData->GetMember("maxLevel").GetString());
+            if (nMaxLevel == 0)
+                nMaxLevel = 99;
+            nMinLevel = nMinLevel < nMaxLevel ? nMinLevel : nMaxLevel;
+            nMaxLevel = nMinLevel > nMaxLevel ? nMinLevel : nMaxLevel;
+            int nJobCode = spData->GetMember("jobCode").GetInt();
+            int nRank = spData->GetMember("rank").GetInt();
+            int nPage = spData->GetMember("pageNumber").GetInt();
+            CStringW strSort = spData->GetWString("sortDataName");
+            BOOL bSortUp = spData->GetMember("isSortUp").GetBool() != false;
+            BOOL bOptionSearch = spData->GetMember("isOptionSearch").GetBool() != false;
+            int nLimit = 1;
+            int nEnchantMin = spData->GetMember("enchantMinLevel").GetInt();
+            int nEnchantMax = spData->GetMember("enchantMaxLevel").GetInt();
+            if (nEnchantMax == -1)
+                nEnchantMax = 15;
+            int nSocketMin = nSocketMin = spData->GetMember("socketMinCount").GetInt();
+            int nSocketMax = nSocketMax = spData->GetMember("socketMaxCount").GetInt();
+            if (nSocketMax == -1)
+                nSocketMax = 3;
+            if (m_spCond.get())
             {
-                MS2Ptr<AScript> spOption = FUN_1409e7dc0(m_50, option);
-                if (spOption.get())
+                m_nCategory = nCategory;
+                m_spCond->m_dw18 = FUN_1401bd000(nCategory);
+                m_spCond->m_dw1c = FUN_1401bd010(nCategory);
+                m_spCond->m_dw20 = nMinLevel;
+                m_spCond->m_dw24 = nMaxLevel;
+                m_spCond->m_dw28 = FUN_1402227e0(nJobCode, nJobCode == 200);
+                m_spCond->m_dw2c = nRank;
+                m_spCond->m_strName = strItemName;
+                m_spCond->m_dw48 = nPage;
+                m_spCond->m_dw54 = FUN_140f156d0(strSort, bSortUp);
+                m_spCond->m_dw5c = bOptionSearch;
+                m_spCond->m_dw60 = nLimit;
+                m_spCond->m_dw30 = nEnchantMin;
+                m_spCond->m_dw34 = nEnchantMax;
+                m_spCond->m_dw38 = nSocketMin;
+                m_spCond->m_dw3c = nSocketMax;
+                if (bOptionSearch)
                 {
-                    int nStat = spOption->GetMember("idx").GetInt();
-                    int nGroup = spOption->GetMember("group").GetInt();
-                    BOOL bPercent = spOption->GetMember("percent").GetInt() == 1;
-                    if (nGroup == 0)
-                        m_spCond->m_aMin[i] = FUN_1401bce20(0, bPercent, nStat);
-                    else
-                        m_spCond->m_aMin[i] = FUN_1401bceb0(nGroup, bPercent, nStat);
-                    double dValue = spOption->GetMember("minValue").GetNumber();
-                    int nValue = 0;
-                    if (!bPercent)
+                    CString strKey;
+                    for (int i = 0; i < 3; i++)
                     {
-                        nValue = (int)dValue;
-                    }
-                    else
-                    {
-                        int nScaled = FUN_1406198a0(100, (float)dValue);
-                        int nRem = nScaled % 10;
-                        int nRound = nScaled - nRem;
-                        int nStep;
-                        if (nScaled == nRound)
+                        strKey = StringFormat("option{0}", i);
+                        Scaleform::GFx::Value option = spData->GetMember(strKey);
+                        if (!option.IsUndefined())
                         {
-                            nStep = -5;
+                            MS2Ptr<AScript> spOption = FUN_1409e7dc0(m_50, option);
+                            if (spOption.get())
+                            {
+                                int nStat = spOption->GetMember("idx").GetInt();
+                                int nGroup = spOption->GetMember("group").GetInt();
+                                BOOL bPercent = spOption->GetMember("percent").GetInt() == 1;
+                                if (nGroup == 0)
+                                    m_spCond->m_aMin[i] = FUN_1401bce20(nGroup, bPercent, nStat);
+                                else
+                                    m_spCond->m_aMin[i] = FUN_1401bceb0(nGroup, bPercent, nStat);
+                                double dValue = spOption->GetMember("minValue").GetNumber();
+                                int nValue = 0;
+                                if (bPercent)
+                                {
+                                    int nScaled = FUN_1406198a0(100, (float)dValue);
+                                    int nRem = nScaled % 10;
+                                    int nRound = nScaled - nRem;
+                                    int nStep = 0;
+                                    if (nScaled != nRound)
+                                    {
+                                        nRound = nRem >= 5 ? nRound + 10 : nRound;
+                                        nStep = nScaled < nRound ? -5 : 5;
+                                    }
+                                    else
+                                    {
+                                        nStep = -5;
+                                    }
+                                    nRound = nRound + nStep;
+                                    nValue = nRound < 0 ? 0 : nRound;
+                                }
+                                else
+                                {
+                                    nValue = (int)dValue;
+                                }
+                                m_spCond->m_aMax[i] = nValue;
+                            }
                         }
                         else
                         {
-                            int nUp = nRound;
-                            if (nRem > 4)
-                                nUp = nRound + 10;
-                            nRound = nUp;
-                            nStep = nScaled < nUp ? -5 : 5;
+                            m_spCond->m_aMin[i] = 0;
+                            m_spCond->m_aMax[i] = 0;
                         }
-                        int nResult = nRound + nStep;
-                        if (nResult < 0)
-                            nResult = 0;
-                        nValue = nResult;
                     }
-                    m_spCond->m_aMax[i] = nValue;
                 }
-            }
-            else
-            {
-                m_spCond->m_aMin[i] = 0;
-                m_spCond->m_aMax[i] = 0;
+                if (m_spCond->m_dw5c == 1)
+                {
+                    CStringW strName = m_spCond->m_strName.Trim();
+                    if (strName.IsEmpty() == true && m_spCond->m_dw1c == 99999)
+                    {
+                        m_spCond = 0;
+                        FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_cannot_searchex_without_condition"), 0, 0, L"");
+                        return 0;
+                    }
+                }
+                m_nPending = nCategory;
+                m_bSendPending = true;
+                return 1;
             }
         }
     }
-    if (m_spCond->m_dw5c == 1)
-    {
-        CStringW strName = m_spCond->m_strName.Trim();
-        if (strName.IsEmpty() && m_spCond->m_dw1c == 99999)
-        {
-            m_spCond = 0;
-            FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_cannot_searchex_without_condition"), 0, 0, L"");
-            return 0;
-        }
-    }
-    m_nPending = nCategory;
-    m_bSendPending = true;
-    return 1;
+    return 0;
 }
 
 // @0x140f103c0
@@ -1234,10 +1234,10 @@ void BlackMarketPageItemRegister::OnInit()
                 MS2Ptr<ASTextField> spMax = spControl->FUN_1409b4620("m_maxPrice");
                 float y = spNumber->FUN_1422c1110();
                 if (spMax)
-                    spMax->FUN_1422c05a0(y);
+                    spMax->SetYFloat(y);
                 MS2Ptr<ASTextField> spTextMax = spControl->FUN_1409b4620("m_textMaxPrice");
                 if (spTextMax)
-                    spTextMax->FUN_1422c05a0(y);
+                    spTextMax->SetYFloat(y);
             }
         }
     }
@@ -1282,7 +1282,8 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
             efd::SmartPointer<InvenSlot> spSlot = FUN_140f15b80(Unk_NotifyContext::FUN_1422c8e90(strSlot));
             if (spSlot)
             {
-                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(spSlot->GetItemUid());
+                __int64 nItemUid = spSlot->GetItemUid();
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
                 if (spItem.get())
                 {
                     if (spSlot->FUN_141409150(&*spItem))
@@ -1302,7 +1303,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
         }
         return 1;
     }
-    if (_stricmp("OnClickRegister", szMethod) == 0)
+    else if (_stricmp("OnClickRegister", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -1314,7 +1315,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
         }
         return 1;
     }
-    if (_stricmp("OnClickCancelSell", szMethod) == 0)
+    else if (_stricmp("OnClickCancelSell", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -1324,8 +1325,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
             if (spEntry.get())
             {
                 m_request.SetProduct(3, nId, spEntry->GetRemain());
-                int nRemain = spEntry->GetRemain();
-                __int64 nPrice = spEntry->PriceFor(nRemain);
+                __int64 nPrice = spEntry->PriceFor(spEntry->GetRemain());
                 CStringW strMsg;
                 int nState = (int)spEntry->GetState(true);
                 if (nState == 5)
@@ -1344,7 +1344,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
         }
         return 1;
     }
-    if (_stricmp("OnClearSlot", szMethod) == 0)
+    else if (_stricmp("OnClearSlot", szMethod) == 0)
     {
         m_item.Reset();
         return 1;
@@ -1751,7 +1751,7 @@ int FUN_140f15350(int nFirst, int nEnd, POSITION pos, ASArray& out, CBlackMarket
                 if (FUN_140f14ce0(obj, spEntry, false))
                 {
                     spEntry->m_n88 = i;
-                    out.FUN_1422bc050(obj.FUN_1422bb870());
+                    out.PushValue(obj.FUN_1422bb870());
                 }
             }
         }
@@ -1771,7 +1771,7 @@ void FUN_140f15570(ASArray& out, CBlackMarketMan::ProductMap& own)
         {
             if (FUN_140f14ce0(obj, spEntry, true))
             {
-                out.FUN_1422bc050(obj.FUN_1422bb870());
+                out.PushValue(obj.FUN_1422bb870());
                 spEntry->m_n88 = nIndex;
             }
         }

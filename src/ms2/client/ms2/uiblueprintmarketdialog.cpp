@@ -103,7 +103,7 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataPa
 bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& prices, const CStringW& strTo,
                    const CStringW& strMessage);                             // pay the bill as a gift
 bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);   // the bill's tooltip
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> callback);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
@@ -291,8 +291,8 @@ int UIBlueprintMarketDialog::vfunc_13()
         return 1;
     if (vfunc_55() != 0 || m_30 == 0)
         return 0;
-    if (FUN_140b632f0()->FUN_1422d4980(m_e0) == this) {
-        if (((class Unk_MeratKeyState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) && (bool)m_inputSearch.get() && m_inputSearch->FUN_1422c76c0() == 1) {
+    if (FUN_140b632f0()->GetTopEntity(m_e0) == this) {
+        if (((class Unk_MeratKeyState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) && (bool)m_inputSearch.get() && m_inputSearch->GetFocused() == 1) {
             Scaleform::GFx::FunctionHandler::Params params;
             OnSearch(params);
             return 1;
@@ -397,17 +397,17 @@ void UIBlueprintMarketDialog::ShowSearchResult(int nPage, int nFirst, int nLast,
         bShow = true;
         bHasText = !m_saved.m_strText.IsEmpty();
         if (m_inputSearch.get() != 0) {
-            m_inputSearch->FUN_1422e0ab0(m_saved.m_strText);
+            m_inputSearch->SetTextW(m_saved.m_strText);
             m_inputSearch->vfunc_24(false);
         }
         if (nFirst == 0 && nFirst >= nLast)
-            strNotice = FUN_14052bd00(0xa10, m_saved.m_strText);
+            strNotice = FormatStringId<CStringW>(0xa10, m_saved.m_strText);
     } else if (m_spCond.get() != 0) {
         bShow = true;
         bPrev = m_spCond->m_44 == 1;
         bHasText = !m_spCond->m_str.IsEmpty();
         if (bHasText)
-            strNotice = FUN_14052bd00(0xa10, m_spCond->m_str);
+            strNotice = FormatStringId<CStringW>(0xa10, m_spCond->m_str);
     }
     if (bHasText && m_sort.get() != 0) {
         m_sort->SetSelectedIndex(-1);
@@ -461,7 +461,7 @@ void UIBlueprintMarketDialog::ClearSearchInput()
     if (m_inputSearch == 0)
         return;
     CStringA strEmpty("");
-    m_inputSearch->FUN_1422e0a60(strEmpty);
+    m_inputSearch->SetTextA(strEmpty);
 }
 MS2_REPLACE_METHOD(0x140bbbcf0, UIBlueprintMarketDialog, ClearSearchInput, 0, 0);
 
@@ -549,7 +549,7 @@ int UIBlueprintMarketDialog::FillPage(int nFirst, int nLast, ASArray& rows, Unk_
             continue;
         ASMeratMarketProduct row(FUN_1422db730());
         if (FillRow(row, spProduct, pScope))
-            rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+            rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     return (int)list.GetCount();
 }
@@ -608,7 +608,7 @@ void UIBlueprintMarketDialog::ApplySearchData(MS2Ptr<CMeratMarketSchCond> spCond
 {
     if (spCond == 0)
         return;
-    if (data.FUN_1422ba9a0())
+    if (data.IsUndefinedOrNull())
         return;
     Scaleform::GFx::Value vSort = data.GetMember("sort");
     int nSort = 0;
@@ -647,7 +647,7 @@ void UIBlueprintMarketDialog::SearchText(MS2Ptr<CMeratMarketSchCond> spCond, CSt
     if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker()) {
         CStringW strMessage;
         if (pChecker->FUN_1402261e0(strText, strMessage) != 0) {
-            CStringW strNotice = FUN_14052bd00(0xa13, strMessage);
+            CStringW strNotice = FormatStringId<CStringW>(0xa13, strMessage);
             ASDataProvider rows(2);
             m_30->FUN_140bbec80("buildItemList", rows, 0, true);
             m_30->Invoke("updateNoticeText", CStringW(strNotice));
@@ -724,11 +724,11 @@ void UIBlueprintMarketDialog::OnClickCalculate(const Scaleform::GFx::FunctionHan
     if (m_30 == 0 || params.ArgCount == 0)
         return;
     AScript row(params.pArgs[0], 2);
-    if (row.FUN_1422ba9a0())
+    if (row.IsUndefinedOrNull())
         return;
     Unk_MeratProductKey key;
     CStringW strOid;
-    row.FUN_1422baad0("productOID", strOid);
+    row.TryGetWString("productOID", strOid);
     key.FUN_1409c1640(CStringW(strOid));
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140ec2300(key, 4, 0);
     FUN_140ec0b50(spProduct);
@@ -744,9 +744,9 @@ void UIBlueprintMarketDialog::OnClickModelHouse(const Scaleform::GFx::FunctionHa
     Unk_MeratProductKey key;
     CStringW strOid;
     AScript row(params.pArgs[0], 2);
-    if (row.FUN_1422ba9a0())
+    if (row.IsUndefinedOrNull())
         return;
-    row.FUN_1422baad0("productOID", strOid);
+    row.TryGetWString("productOID", strOid);
     key.FUN_1409c1640(CStringW(strOid));
     Preview(key);
 }

@@ -3,7 +3,7 @@
 // MS2-RANGE: 0x1400d7230-0x1400d72c0 .text$di
 // MS2-RANGE: 0x140e0aa10-0x140e0da60 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??B?$MS2Ptr@VUnk_ClubMap@@@@QEBAPEAVUnk_ClubMap@@XZ 0x140e0d860 ; unique
+// MS2-PIN: ??B?$Unk_SocketPtr@V?$CRBMap@_KV?$MS2Ptr@VCClubCli@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCClubCli@@@@@3@@ATL@@@@QEBAPEAV?$CRBMap@_KV?$MS2Ptr@VCClubCli@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VCClubCli@@@@@3@@ATL@@XZ 0x140e0d860 ; unique
 // MS2-PIN: ??B?$MS2Ptr@VCClubMember@@@@QEBAPEAVCClubMember@@XZ 0x140e0d870 ; unique
 // MS2-PINS-END tplpin
 //
@@ -38,6 +38,8 @@ template<> void MS2Ptr<CClubCli>::Release();
 #include "ms2/client/ms2/clubcli.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/commonfiles/contentshutdown.h"
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -59,33 +61,25 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTa
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // The club manager (global 0x143abad48): the joined clubs and the server requests.
-class Unk_ClubMap : public CPtred {};
-typedef Unk_ClubCliMap Unk_ClubCliRBMap;                                  // the boxed map (clubcli.h)
-// The map is boxed behind its CPtred (clubcli.h's Unk_SocketPtr<Unk_ClubCliMap>, the value at +0x18), so the plain
-// MS2Ptr release would DecRef the map itself. Call clubcli's boxed release (0x140b19b20) instead.
-template<> MS2Ptr<Unk_ClubMap>::~MS2Ptr();
 class Unk_ClubManager : public CClubClientManager
 {
 public:
-    MS2Ptr<Unk_ClubMap> FUN_140b14e40();
 };
-extern Unk_ClubManager* DAT_143abad48;
-inline Unk_ClubManager* FUN_140e0d900() { return DAT_143abad48; }
+class CClubClientManager;
+inline Unk_ClubManager* FUN_140e0d900() { return reinterpret_cast<Unk_ClubManager*>(TSingleton<CClubClientManager>::s_instance); }
 
 class Unk_ClubBuffTable;   // the CClubDataTable instance
 Unk_ClubBuffTable* FUN_140b1a4e0();
 
             // my character name
 
-class Unk_ClubFlag { public: int FUN_1402c4c90(int nFlag); };
-class Unk_ClubState { public: void* m_pad_00; Unk_ClubFlag m_flags; };
+class Unk_ClubState { public: void* m_pad_00; CContentShutdown m_flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int nMsgId, int a2, int a3);
 
 class Unk_ClubConstInt { public: int m_n; };
 class Unk_ClubConsts { public: char m_pad[0x9e68]; Unk_ClubConstInt m_nameChange; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_ClubConstInt* p);
 
 // The movie clip holding the lists.
 class Unk_ClubClip : public CPtred
@@ -102,8 +96,7 @@ unsigned __int64 FUN_140718350(const CString& str);                             
 CStringW GetStringCommon(int nId);                                        // string table text
 CStringW FUN_140298ea0(CStringW strKey);                                // localized string by key
 template <class A1, class A2> CStringW FUN_14028dfa0(CStringW strKey, const A1& a1, const A2& a2);   // wcformat.h's key formatter
-CStringW FUN_14086cfc0(int nId, const int& n);
-CStringW FUN_14086d060(int nId, const __int64& n);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 template <class A1, class A2> CStringW FUN_14028dee0(int nId, const A1& a1, const A2& a2);   // the string-id formatter (formatstringid.h)
 CString FUN_141028be0(__int64 nId, const CString& strPicture, int n, CString strKey);   // profile image path
 __time64_t GetServerTime();                                             // current time
@@ -161,7 +154,7 @@ MS2_REPLACE_METHOD(0x140E0AB60, UIClubDialog, vfunc_26, 24, 0x250F3EDA);
 // @0x140e0ab80
 int UIClubDialog::vfunc_73()
 {
-    if (((class Unk_ClubState*)FUN_14025e7b0())->m_flags.FUN_1402c4c90(0x31) != 0) {
+    if (((class Unk_ClubState*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)0x31) != 0) {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
@@ -233,7 +226,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             FUN_140d73c60(box);
         }
     } else if (_stricmp("onNameChange", szMethod) == 0) {
-        int nCost = *FUN_1402056b0(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameChange);
+        int nCost = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameChange)->Get();
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028dfa0<int, int>(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
             box->FUN_141a01d30(2, L"", nCost, 0, 0);
@@ -243,8 +236,8 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     } else if (_stricmp("OnClubMemberPopupMenu", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            float x = data.FUN_1422b8c10();
-            float y = data.FUN_1422b8c10();
+            float x = data.PopFloat();
+            float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             {
                 MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
@@ -335,7 +328,7 @@ MS2_REPLACE_METHOD(0x140E0BEF0, UIClubDialog, FUN_140e0bef0, 217, 0x8D1F2157);
 // @0x140e0bfd0
 void UIClubDialog::FUN_140e0bfd0()
 {
-    MS2Ptr<Unk_ClubMap> spMap = FUN_140e0d900()->FUN_140b14e40();
+    Unk_SocketPtr<Unk_ClubCliMap> spMap = FUN_140e0d900()->FUN_140b14e40();
     if (spMap != 0) {
         {
             if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_category")) {
@@ -343,9 +336,9 @@ void UIClubDialog::FUN_140e0bfd0()
                 spList->FUN_1422dd1d0();
                 ASDataProvider rows(2);
                 CStringW strMyName = WorldService::GetInstance()->FUN_141bd0d30();
-                for (POSITION pos = reinterpret_cast<Unk_ClubCliRBMap*>(spMap.operator->())->GetHeadPosition(); pos != 0; reinterpret_cast<Unk_ClubCliRBMap*>(spMap.operator->())->GetNext(pos)) {
-                    __int64 nClubSN = reinterpret_cast<Unk_ClubCliRBMap*>(spMap.operator->())->GetKeyAt(pos);
-                    MS2Ptr<CClubCli> spClub = reinterpret_cast<Unk_ClubCliRBMap*>(spMap.operator->())->GetValueAt(pos);
+                for (POSITION pos = spMap.operator->()->GetHeadPosition(); pos != 0; spMap.operator->()->GetNext(pos)) {
+                    __int64 nClubSN = spMap.operator->()->GetKeyAt(pos);
+                    MS2Ptr<CClubCli> spClub = spMap.operator->()->GetValueAt(pos);
                     if (spClub == 0)
                         continue;
                     ASObj row(2);
@@ -355,11 +348,11 @@ void UIClubDialog::FUN_140e0bfd0()
                     row.FUN_1407cbb20("memberCount", StringFormat<int, int>(GetStringCommon(0x367), spClub->GetMemberCount(), 10));
                     SetRowBuffIcon(row, spClub->GetBuffId(), spClub->GetBuffLevel());
                     SetRowNameChange(row, spClub->GetNameChangeAvailableTime());
-                    rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                    rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
                 }
                 spList->vfunc_25(rows.FUN_1422bb870());
                 spList->vfunc_24(true);
-                if (m_nCategory >= (int)reinterpret_cast<Unk_ClubCliRBMap*>(spMap.operator->())->GetCount())
+                if (m_nCategory >= (int)spMap.operator->()->GetCount())
                     m_nCategory = 0;
                 spList->SetSelectedIndex(m_nCategory);
             }
@@ -385,7 +378,7 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
                 ASObj row(2);
                 row.FUN_1407cbbe0("master", true);
                 FUN_140e0ca20(row, spLeader);
-                rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
             }
             ATL::CAtlArray<MS2Ptr<CClubMember> > members;
             spClub->GetAllMembers(members);
@@ -395,7 +388,7 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
                 ASObj row(2);
                 row.FUN_1407cbbe0("master", false);
                 FUN_140e0ca20(row, members[i]);
-                rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
             }
             spList->vfunc_25(rows.FUN_1422bb870());
             spList->vfunc_24(true);
@@ -417,11 +410,11 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
         __time64_t nElapsed = GetServerTime() - spMember->m_d8;
         ATL::CTimeSpan span(nElapsed);
         if (span.GetDays() > 0)
-            strTime = FUN_14086d060(0x359, span.GetDays());
+            strTime = FormatStringId<__int64>(0x359, span.GetDays());
         else if (span.GetHours() > 0)
-            strTime = FUN_14086cfc0(0x35a, span.GetHours());
+            strTime = FormatStringId<long>(0x35a, span.GetHours());
         else if (span.GetMinutes() > 0)
-            strTime = FUN_14086cfc0(0x35b, span.GetMinutes());
+            strTime = FormatStringId<long>(0x35b, span.GetMinutes());
         else
             strTime = GetStringCommon(0x35c);
         strLocation = StringFormat<CStringW>(GetStringCommon(0x35e), strTime);

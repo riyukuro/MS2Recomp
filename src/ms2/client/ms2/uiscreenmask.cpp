@@ -95,7 +95,7 @@ void UIScreenMask::vfunc_43()
 {
     MS2Ptr<ASUIComponent> spComponent = dynamic_cast<ASUIComponent*>((AScript*)m_30);
     if (spComponent.get()) {
-        spComponent->FUN_1422c79e0(spComponent->FUN_1422c1500(), spComponent->FUN_1422c1530());
+        spComponent->SetSizeInt(((class ASDisplayObject*)spComponent.operator->())->FUN_1422c1500(), ((class ASDisplayObject*)spComponent.operator->())->FUN_1422c1530());
         spComponent->vfunc_2(5, 0, 0);
         spComponent->vfunc_3(1);
     }

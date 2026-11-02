@@ -9,6 +9,8 @@
 // The buff object itself is AdditionalCli (RTTI; unit additionalcli.cpp, not recovered yet): Unk_AsBuff stands in.
 #pragma once
 
+#include "ms2/placeholder/intervaltimer.h"
+
 #include <afx.h>
 #include <atlcoll.h>
 #include <list>
@@ -42,17 +44,7 @@ MS2_CHECK_OFFSET(Unk_AsBuff, m_20, 0x20);
 MS2_CHECK_OFFSET(Unk_AsBuff, m_24, 0x24);
 
 // 8-byte millisecond poll timer (ctor 0x140517b00, "interval elapsed" test 0x140268870 re-arms).
-class Unk_AsTimer
-{
-public:
-    Unk_AsTimer();                      // 0x140517b00
-    int FUN_140268870(int nInterval);
-private:
-    MS2_LAYOUT_FRIEND;
-    unsigned m_nInterval;
-    unsigned m_nLast;
-};
-MS2_CHECK_SIZE(Unk_AsTimer, 8);
+typedef Unk_IntervalTimer Unk_AsTimer;
 
 class ASEffect : public ASMovieClip
 {

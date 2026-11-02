@@ -30,8 +30,8 @@
 // MS2-PIN: ?GcFmtSize@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_K@Z 0x1406c6bd0
 // MS2-PIN: ?GcFmtStr@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV12@@Z 0x1401e8510
 // MS2-PIN: ??0CMsTime@@QEAA@HHHHHH@Z 0x1406c47d0
-// MS2-PIN: ??0Unk_G9Val@@QEAA@H@Z 0x140d02f80
-// MS2-PIN: ??0Unk_G9Val@@QEAA@HAEAVUnk_GcNode@@@Z 0x140d01be0
+// MS2-PIN: ??0?$MS2Ptr@VASDisplayObject@@@@QEAA@H@Z 0x140d02f80
+// MS2-PIN: ?FUN_140d01be0@@YA?AV?$MS2Ptr@VASDisplayObject@@@@HAEBVValue@GFx@Scaleform@@@Z 0x140d01be0
 // GcFmtId and GcFmtIntInt: the exe's copies are StringFormat<unsigned int> / <unsigned int, unsigned int> (make_type<unsigned
 // int>), so the int ids are formatted as unsigned.
 __declspec(noinline) CStringW GcFmtId(const wchar_t* f, const int& a) { return StringFormat(f, reinterpret_cast<const unsigned&>(a)); }
@@ -52,11 +52,12 @@ struct Unk_NullableInt { int* GetValue(); bool m_bSet; int m_nValue; };
 class CAchieveManager { public: int HasCompletedOfType(Unk_NullableInt nType); };
 class CKeyTable { public: int GetQuickSlotSkillId(unsigned nSlot); };
 class CMeratMarketMan { public: __int64 FUN_140d56470(); };
-class UIPartyDialog { public: int FUN_141a75840(); };
+class UIPartyDialog { public: int IsObserveModeAvailable(); };
 class UIGuideEvent { public: int GetLastTip(); };
+#include "ms2/commonfiles/os.h"
 class CManufactureManager { public: int HasManufacture(); };
 struct Unk_ImNullableInt { bool HasValue() const; bool m_bSet; int m_nValue; };
-class CubeMapInformationService { public: class Cube* FindCubeByItemId(int nItemId); int HasCubeWithIconCode(int nCategory); int CountCubes(); };
+class CubeMapInformationService { public: class Cube* FindCubeByItemId(int nItemId); int HasCubeWithIconCode(int nCategory); int CountCubes(); class Cube* GetCubeAtPoint(Vector3 pos); };
 __int64 GetServerTime();
 int XmlGetAttr(class TiXmlElement*, char const*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, CMsTime&);
@@ -403,7 +404,7 @@ int CGuideConditionCanObserveMode::vfunc_3()
     void* pDialog = FUN_1413b1c60("PartyDialog");
     if (pDialog == 0)
         return 0;
-    return FUN_1413a55a0(reinterpret_cast<UIPartyDialog*>(pDialog)->FUN_141a75840());
+    return FUN_1413a55a0(reinterpret_cast<UIPartyDialog*>(pDialog)->IsObserveModeAvailable());
 }
 
 // @0x1413ab0e0
@@ -532,8 +533,7 @@ int CGuideConditionPlaceUgcCubeItem::vfunc_3()
 {
     if (Unk_GcVec3IsNull(&m_pos))
         return 0;
-    Vector3 pos = m_pos.GetValue();
-    void* pCube = reinterpret_cast<Unk_G9Home*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410b8ab0(pos);
+    void* pCube = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->GetCubeAtPoint(m_pos.GetValue());
     if (pCube == 0)
         return FUN_1413a55a0(0);
     if (Unk_GcBoolHasValue(&m_attachable)) {
@@ -814,7 +814,7 @@ CStringW CGuideConditionHasManufacture::GetTypeName()
 // @0x1413ace10
 int CGuideConditionHasManufacture::vfunc_3()
 {
-    return reinterpret_cast<CManufactureManager*>(FUN_1409eed40())->HasManufacture();
+    return TSingleton<CManufactureManager>::GetInstance()->HasManufacture();
 }
 
 // @0x1413ace40

@@ -251,7 +251,9 @@ Unk_SsSkillUi* FUN_140a94350();
 
 class Unk_SsInvSlot : public MS2DragSlot { };
 class Unk_SsItemSlot : public MS2DragSlot { };
-Unk_SsInvSlot* FUN_140a50b50(DragSlot* p);
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class LapenshardSlot* FUN_140a6fef0(class DragSlot*);   // C3: was FUN_140a6fef0
 bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* pValue);
 bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* pValue);
@@ -611,7 +613,7 @@ int SkillSlot::vfunc_18(void* p)
         }
         else
         {
-            Unk_SsInvSlot* pInvSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+            Unk_SsInvSlot* pInvSlot = reinterpret_cast<Unk_SsInvSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))));
             if (pInvSlot != 0)
             {
                 int nSkillId = reinterpret_cast<InvenSlot*>(pInvSlot)->FUN_1414058f0();
@@ -722,7 +724,7 @@ int SkillSlot::vfunc_21()
 void SkillSlot::vfunc_9()
 {
     m_spRoot.AssignRaw(new AScript(m_value18, 2));
-    if (FUN_140ba28d0(&m_spRoot, 0) && m_spRoot->FUN_1422ba9a0())
+    if (FUN_140ba28d0(&m_spRoot, 0) && m_spRoot->IsUndefinedOrNull())
         return;
     {
         CString strName("startIconTween");
@@ -807,10 +809,10 @@ int SkillSlot::vfunc_0(void* p)
             }
             else
             {
-                if (FUN_1417619d0() != 0)
+                if (HasKeyBinding() != 0)
                 {
                     ASTooltip tip(1, 2);
-                    int nOk = tip.ApplyTextTooltip(FUN_141761c30());
+                    int nOk = tip.ApplyTextTooltip(GetActionLabel());
                     if (nOk != 0)
                     {
                         tip.SetTooltipAlign(5);
@@ -845,7 +847,7 @@ int SkillSlot::vfunc_0(void* p)
 // @0x14175e9e0
 int SkillSlot::vfunc_8(void* p)
 {
-    float fTotal = FUN_141760a30();
+    float fTotal = GetCooldownDuration();
     float fRemain = FUN_141760b90();
     PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc != 0 && m_nSkillId != 0)
@@ -867,7 +869,7 @@ int SkillSlot::vfunc_8(void* p)
                 slot.FUN_1407cb9c0(s_strUgcTag, nUgcTag);
             slot.FUN_1409adc90(s_strItemGrade, spItem->FUN_140526bd0());
         }
-        CString strIcon = FUN_141760690();
+        CString strIcon = GetIconName();
         m_strIcon = strIcon;
         m_nDisabled = FUN_141760c00();
         m_nItemCount = (int)FUN_141760220(0);
@@ -900,7 +902,7 @@ int SkillSlot::vfunc_8(void* p)
         slot.FUN_1407cbbe0(s_strDisableDrag, FUN_14028d780(FUN_141761990()));
         if (GetRechargeMaxCount() > 0)
         {
-            m_nRecharge = FUN_1417603f0();
+            m_nRecharge = GetRechargeRemainingCount();
             slot.FUN_1407cb9c0(s_strRechargeRemainCount, m_nRecharge);
         }
         else
@@ -991,7 +993,7 @@ void SkillSlot::FUN_14175f280(unsigned nFlags)
     }
     if ((nFlags & 4) != 0)
     {
-        int nRecharge = FUN_1417603f0();
+        int nRecharge = GetRechargeRemainingCount();
         if (m_nRecharge != nRecharge)
         {
             obj.FUN_1407cb9c0("rechargeRemainCount", nRecharge);
@@ -1033,7 +1035,7 @@ void SkillSlot::FUN_14175f510()
     {
         nSkillId = spReplace->GetId();
         bChanged = true;
-        strIcon = FUN_1417607f0(&nSkillId);
+        strIcon = GetSkillIconName(&nSkillId);
         if (spReplace->m_bDisableChangeSkillIconEffect)
         {
             if (bChanged || !m_bUsable)
@@ -1059,7 +1061,7 @@ void SkillSlot::FUN_14175f510()
     }
     else
     {
-        strIcon = FUN_1417607f0(&m_nSkillId);
+        strIcon = GetSkillIconName(&m_nSkillId);
         if (m_strIcon != strIcon)
         {
             m_strIcon = strIcon;
@@ -1088,7 +1090,7 @@ void SkillSlot::FUN_14175f510()
     {
         m_bCooling = true;
     }
-    int nRecharge = FUN_1417603f0();
+    int nRecharge = GetRechargeRemainingCount();
     if (nRecharge != m_nRecharge)
     {
         if (m_spRecharge.get() != 0)
@@ -1191,7 +1193,7 @@ unsigned SkillSlot::FUN_141760220(int n)
 }
 
 // @0x1417603f0
-int SkillSlot::FUN_1417603f0()
+int SkillSlot::GetRechargeRemainingCount()
 {
     int nSkillId = GetEffectiveSkillId();
     if (nSkillId == 0)
@@ -1202,7 +1204,7 @@ int SkillSlot::FUN_1417603f0()
         PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
         if (pPc == 0)
             return 0;
-        return static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768770(spSkill.get());
+        return static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetRechargeRemainCount(spSkill.get());
     }
     return 0;
 }
@@ -1242,7 +1244,7 @@ int SkillSlot::FUN_141760610()
 }
 
 // @0x141760690
-CString SkillSlot::FUN_141760690()
+CString SkillSlot::GetIconName()
 {
     {
         MS2Ptr<CItem> spItem = vfunc_25();
@@ -1252,7 +1254,7 @@ CString SkillSlot::FUN_141760690()
     if (m_nItemId == 0)
     {
         int nSkillId = 0;
-        return FUN_1417607f0(&nSkillId);
+        return GetSkillIconName(&nSkillId);
     }
     else
     {
@@ -1264,7 +1266,7 @@ CString SkillSlot::FUN_141760690()
 }
 
 // @0x1417607f0
-CString SkillSlot::FUN_1417607f0(int* pSkillId)
+CString SkillSlot::GetSkillIconName(int* pSkillId)
 {
     CString strIcon;
     unsigned nSkillId = *pSkillId;
@@ -1300,7 +1302,7 @@ __int64 SkillSlot::FUN_141760a10()
 }
 
 // @0x141760a30
-float SkillSlot::FUN_141760a30()
+float SkillSlot::GetCooldownDuration()
 {
     PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
@@ -1367,7 +1369,7 @@ int SkillSlot::FUN_141760c00()
         return 1;
     if (FUN_141760b90() > 0.0f && spSkill->m_condition.m_nUseCoolDownShowUI != 0)
     {
-        if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768770(spSkill.get()) == 0)
+        if (static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetRechargeRemainCount(spSkill.get()) == 0)
             return 1;
     }
     int nKey = GetHotkey(0);
@@ -1487,11 +1489,11 @@ int SkillSlot::FUN_141761990()
 {
     if (IsFixed() != 0)
         return 1;
-    return FUN_1417619d0();
+    return HasKeyBinding();
 }
 
 // @0x1417619d0
-int SkillSlot::FUN_1417619d0()
+int SkillSlot::HasKeyBinding()
 {
     if (m_kKeys.Lookup(m_nIndex) != 0)
         return 1;
@@ -1517,7 +1519,7 @@ int SkillSlot::FUN_141761a10()
 }
 
 // @0x141761c30
-CStringW SkillSlot::FUN_141761c30()
+CStringW SkillSlot::GetActionLabel()
 {
     int nAction = 0;
     if (m_kKeys.Lookup(m_nIndex, nAction))
@@ -1743,7 +1745,7 @@ int FUN_14028d260(float fTime);                           // seconds to millisec
 float FUN_14028d280(unsigned uMilliseconds);              // milliseconds to seconds
 bool FUN_14028d470(float a, float b);                     // a == b (within epsilon)
 class Unk_SsBody;
-class Unk_SsPhys { public: int FUN_14168a450(NiPoint3* pPos, float* pOut, float fRange); };
+class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& pPos, float* pOut, float fRange); };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // the comparators of the emotion list (uicoupleactiondialog.cpp sorts with them)
@@ -1889,7 +1891,7 @@ CSkillSystem::~CSkillSystem()
 }
 
 // @0x141764a80
-int CSkillSystem::FUN_141764a80(MyPC* pOwner)
+int CSkillSystem::Init(MyPC* pOwner)
 {
     if (pOwner == 0)
         return 0;
@@ -1921,7 +1923,7 @@ int CSkillSystem::GetCastAllowed()
 }
 
 // @0x141765d90
-int CSkillSystem::FUN_141765d90()
+int CSkillSystem::HasCooltime()
 {
     return !m_mapCooltime.IsEmpty();
 }
@@ -2450,7 +2452,7 @@ void CSkillSystem::FUN_141766d70()
     {
         NiPoint3 kPos = m_pOwner->vfunc_18();
         float fDist = 0.0f;
-        if (((class Unk_SsPhys*)FUN_1409f7ca0())->FUN_14168a450(&kPos, &fDist, 200.0f) != 0)
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(reinterpret_cast<const efd::Point3&>(kPos), &fDist, 200.0f) != 0)
         {
             int bChanged = 0;
             if (100.0f > m_fGroundDistance && fDist >= 100.0f)
@@ -2561,7 +2563,7 @@ int CSkillSystem::FUN_1417674a0(int bAny)
         {
             float fCool = FUN_141765fe0(spLevel->FUN_140803dc0(), 0);
             int bRecharge = spLevel->GetSkill()->GetRechargeMaxCount() > 0;
-            if ((bRecharge == 0 && fCool > 0.0f) || (bRecharge != 0 && FUN_1417686e0(spLevel->FUN_140803dc0()) == 0))
+            if ((bRecharge == 0 && fCool > 0.0f) || (bRecharge != 0 && GetRechargeCountById(spLevel->FUN_140803dc0()) == 0))
             {
                 if (spLevel->GetSkill()->m_condition.m_nUseCoolDownShowUI != 0)
                     continue;
@@ -2637,7 +2639,7 @@ void CSkillSystem::FUN_141767ae0(CByteBuffer* pBuffer)
 }
 
 // @0x141767d90
-void CSkillSystem::FUN_141767d90(ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> >* pList)
+void CSkillSystem::SetCompactConfigs(ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> >* pList)
 {
     m_lstCompact.RemoveAll();
     m_lstCompact.AddTailList(pList);
@@ -2656,7 +2658,7 @@ void CSkillSystem::FUN_141767df0(int bOn)
 }
 
 // @0x141767e60
-CStringW CSkillSystem::FUN_141767e60(unsigned __int64 nKey)
+CStringW CSkillSystem::GetCompactConfigName(unsigned __int64 nKey)
 {
     for (POSITION pos = m_lstCompact.GetHeadPosition(); pos != 0; m_lstCompact.GetNext(pos))
     {
@@ -2731,16 +2733,16 @@ void CSkillSystem::FUN_1417683d0()
 }
 
 // @0x141768530
-void CSkillSystem::FUN_141768530(int nSkillId, int nUses)
+void CSkillSystem::SetRechargeUsesById(int nSkillId, int nUses)
 {
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spSkill == 0)
         return;
-    FUN_1417685c0(spSkill.get(), nUses);
+    SetRechargeUses(spSkill.get(), nUses);
 }
 
 // @0x1417685c0
-void CSkillSystem::FUN_1417685c0(SkillData* pData, int nUses)
+void CSkillSystem::SetRechargeUses(SkillData* pData, int nUses)
 {
     if (pData == 0)
         return;
@@ -2748,14 +2750,14 @@ void CSkillSystem::FUN_1417685c0(SkillData* pData, int nUses)
 }
 
 // @0x141768610
-int CSkillSystem::FUN_141768610(int nSkillId)
+int CSkillSystem::GetRechargeUsesById(int nSkillId)
 {
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
-    return FUN_141768680(spSkill.get());
+    return GetRechargeUses(spSkill.get());
 }
 
 // @0x141768680
-int CSkillSystem::FUN_141768680(SkillData* pData)
+int CSkillSystem::GetRechargeUses(SkillData* pData)
 {
     if (pData == 0)
         return 0;
@@ -2765,23 +2767,23 @@ int CSkillSystem::FUN_141768680(SkillData* pData)
 }
 
 // @0x1417686e0
-int CSkillSystem::FUN_1417686e0(int nSkillId)
+int CSkillSystem::GetRechargeCountById(int nSkillId)
 {
     MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (spSkill == 0)
         return 0;
-    return FUN_141768770(spSkill.get());
+    return GetRechargeRemainCount(spSkill.get());
 }
 
 // @0x141768770
-int CSkillSystem::FUN_141768770(SkillData* pData)
+int CSkillSystem::GetRechargeRemainCount(SkillData* pData)
 {
     if (pData == 0)
         return 0;
     unsigned nMax = pData->GetRechargeMaxCount();
     if (nMax == 0)
         return 0;
-    unsigned nUsed = FUN_141768680(pData);
+    unsigned nUsed = GetRechargeUses(pData);
     if (nMax <= nUsed)
         return 0;
     return nMax - nUsed;
@@ -2793,11 +2795,11 @@ void CSkillSystem::FUN_1417687e0(Unk_SkillCooltime* pCool)
     if (pCool->m_bCombo != 0)
         return;
     unsigned nSkillId = FUN_1417692f0(pCool->m_nKey);
-    unsigned nUses = FUN_141768610(nSkillId);
+    unsigned nUses = GetRechargeUsesById(nSkillId);
     if (nUses > 0)
     {
         nUses = nUses - 1;
-        FUN_141768530(nSkillId, nUses);
+        SetRechargeUsesById(nSkillId, nUses);
         if (nUses > 0)
         {
             MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<Unk_SsSkillBook*>(reinterpret_cast<PC*>(m_pOwner)->FUN_1416546d0())->vfunc_1(nSkillId);
@@ -2808,7 +2810,7 @@ void CSkillSystem::FUN_1417687e0(Unk_SkillCooltime* pCool)
 }
 
 // @0x141768900
-void CSkillSystem::FUN_141768900(MS2Ptr<CSkillRecord> spRecord)
+void CSkillSystem::OnRechargeSkillUsed(MS2Ptr<CSkillRecord> spRecord)
 {
     if (spRecord == 0)
         return;
@@ -2816,9 +2818,9 @@ void CSkillSystem::FUN_141768900(MS2Ptr<CSkillRecord> spRecord)
         return;
     if (spRecord->m_spSkill->GetRechargeMaxCount() == 0)
         return;
-    int nUsed = FUN_141768680(spRecord->m_spSkill.get());
+    int nUsed = GetRechargeUses(spRecord->m_spSkill.get());
     nUsed++;
-    FUN_1417685c0(spRecord->m_spSkill.get(), nUsed);
+    SetRechargeUses(spRecord->m_spSkill.get(), nUsed);
     FUN_141768d40(spRecord->m_spSkill);
     FUN_1419f37f0(5);
 }
@@ -2843,11 +2845,11 @@ void CSkillSystem::FUN_141768a50()
 }
 
 // @0x141768bd0
-int CSkillSystem::FUN_141768bd0(MS2Ptr<CSkillRecord> spRecord)
+int CSkillSystem::CanUseRechargeSkill(MS2Ptr<CSkillRecord> spRecord)
 {
     if (spRecord->m_spSkill->GetRechargeMaxCount() == 0)
         return 0;
-    if (FUN_141768770(spRecord->m_spSkill.get()) == 0)
+    if (GetRechargeRemainCount(spRecord->m_spSkill.get()) == 0)
         return 0;
     unsigned nNow = FUN_141472bc0();
     int nLast = FUN_141768dd0(spRecord->m_spSkill);
@@ -3217,7 +3219,7 @@ int CSkillSystem::FUN_14176a530(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySki
     }
     float fCool = FUN_141765fe0(spLevel->FUN_140803dc0(), 0);
     bool bRecharge = spLevel->GetSkill()->GetRechargeMaxCount() > 0;
-    if ((!bRecharge && fCool > 0.0f) || (bRecharge && FUN_141768770(spLevel->GetSkill()) == 0))
+    if ((!bRecharge && fCool > 0.0f) || (bRecharge && GetRechargeRemainCount(spLevel->GetSkill()) == 0))
     {
         if (spLevel->GetSkill()->m_condition.m_nUseCoolDownShowUI != 0)
         {
@@ -3261,7 +3263,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
                 bBlocked = 1;
             NiPoint3 kPos = reinterpret_cast<Unk_SsPc*>(m_pOwner)->vfunc_18();
             float fDist = 0.0f;
-            if (((class Unk_SsPhys*)FUN_1409f7ca0())->FUN_14168a450(&kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
+            if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(reinterpret_cast<const efd::Point3&>(kPos), &fDist, 200.0f) != 0 && fDist < 100.0f)
                 bBlocked = 1;
             if (bBlocked != 0)
                 return 0xe;

@@ -21,6 +21,7 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/os.h"
 class Unk_MentorEmptyPacket { public: void FUN_14069a480(class Unk_MentorWriter &); };
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The player actor (RTTI unknown): slot 77 returns the character name.
@@ -50,7 +51,7 @@ class Unk_MentorWorldV { public: Unk_MentorActorV* FUN_141bd0cc0(); };
 class Unk_MentorIdArray;
 class Unk_MentorSchedule : public CGameEventValueMentoring { public: void FUN_140424ed0(Unk_MentorIdArray& ids); };
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
-Unk_MentorScheduleHolder* FUN_140302b00();
+class CGameEventValueManager;
 
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 // The wide argument-type chain of this unit's FUN_14028dfa0<int x6, CStringW> instance (as in item.cpp's own two-argument one).
@@ -83,11 +84,11 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
 WC_WRAP(7)
 template CStringW FUN_14028dfa0<int, int, int, int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const int&, const int&, const int&, const CStringW&);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-CReservedWordTable* FUN_1403b4750();
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+class CReservedWordTable;
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 // The register role byte (ctor 0x140c71120 always stores 4).
@@ -126,8 +127,8 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     {
         Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pActor == 0) return 1;
-        CMsTime tStart(FUN_140302b00()->FUN_14041d160()->GetBeginTime());
-        CMsTime tEnd(FUN_140302b00()->FUN_14041d160()->GetEndTime());
+        CMsTime tStart(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetBeginTime());
+        CMsTime tEnd(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetEndTime());
         int nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay;
         nEndDay = tEnd.GetDay();
         nEndMonth = tEnd.GetMonth();
@@ -136,7 +137,7 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
         nStartMonth = tStart.GetMonth();
         nStartYear = tStart.GetYear();
         CStringW strMsg = FUN_14028dfa0(CStringW(L"s_mentoring_mentee_register_warn"), nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay, pActor->GetName());
-        FUN_1403b4750()->FUN_1416fb340(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox)

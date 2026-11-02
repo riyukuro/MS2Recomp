@@ -24,6 +24,7 @@ static CString s_itemCount("itemCount");
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/placeholder/citem.h"   // C3: the real CItem
 #include "ms2/placeholder/astextfield.h"   // C3: ASTextField::FUN_1422c4f00
+#include "ms2/gfxui/asmdragtarget.h"   // C3: the item slot child
 
 // Unit-local declarations; Unk names and member names are invented.
 class CItemData;
@@ -31,25 +32,14 @@ class CItemData;
 class Unk_DropText : public ASDisplayObject { public: };
 class Unk_DropInput : public ASDisplayObject { public: };
 class Unk_DropButton : public ASButton { public: };
-class Unk_DropSlot : public ASDisplayObject {
-public:
-    Unk_DropSlot(const Scaleform::GFx::Value&, int);
-    void FUN_1422e4840(CString);
-    void FUN_14015b020(); int FUN_140159bc0(); void FUN_140159ba0();
-private:
-    MS2_LAYOUT_FRIEND;
-    void* m_pad_80;
-};
-MS2_CHECK_SIZE(Unk_DropSlot, 0x88);
 template <class T> Unk_DropHandle<T> MakeDropChild(int id, const Scaleform::GFx::Value& v) {
     Unk_DropHandle<T> h(new T(v, id));
     return h;
 }
 class Unk_DropScript : public CPtred {
 public:
-    Scaleform::GFx::Value FUN_1422baa20(const char*);
     template <class T> Unk_DropHandle<T> GetChild(const CString& name) {
-        Scaleform::GFx::Value child = FUN_1422baa20(name);
+        Scaleform::GFx::Value child = reinterpret_cast<AScript*>(this)->GetMember(name);
         if (child.IsObject())
             return MakeDropChild<T>(m_id, child);
         return Unk_DropHandle<T>(0);
@@ -105,7 +95,7 @@ private: void* m_40; void* m_48; void* m_50; void* m_58;
 MS2_CHECK_SIZE(ASTooltip, 0x60);
 void FUN_141415600(const CString&);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
-CStringW FUN_141425950(int);
+CStringW FUN_141425950(unsigned);
 CStringW FUN_14183e9c0(CStringW, int);
 int FUN_1407181a0(const CStringW&);
 class CUserCommandCli { public: static void SendCommand(CStringW); };   // C3: member view
@@ -140,11 +130,9 @@ MS2Ptr<CItemData> FUN_14053f870(int);
 class ASObj : public AScript {
 public: ASObj(int); virtual ~ASObj();
     void FUN_1409c5bd0(Unk_DropEntry*);
-    void FUN_1407cb9c0(const char*, int);
-    void FUN_1407cbb20(const char*, CStringW);
 };
 class ASArray : public AScript {
-public: int FUN_1422bc050(Scaleform::GFx::Value);
+public: int PushValue(Scaleform::GFx::Value);
 };
 class ASDataProvider : public ASArray {
 public: ASDataProvider(int); virtual ~ASDataProvider();
@@ -242,7 +230,7 @@ void UIItemDropInfoDialog::FUN_140c3ad20() {
     if (m_item == NULL) return;
     FUN_141415600(m_slot);
     FUN_141415450(m_slot,m_item,0,0,0);
-    Unk_DropHandle<Unk_DropSlot> slot = GetDropChild<Unk_DropSlot>("m_itemSlot");
+    Unk_DropHandle<ASMDragTarget> slot = GetDropChild<ASMDragTarget>("m_itemSlot");
     if (slot.get()) slot->FUN_1422e4840(m_slot);
     if (m_name.get()) {
         CStringW name = FUN_141425950(m_item->FUN_1405276c0());
@@ -275,7 +263,7 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
             else range = StringFormat<CStringW, CStringW>(L"{0} ~ {1}",FUN_1409eb450(entry->m_min),FUN_1409eb450(entry->m_max));
             obj.FUN_1407cbb20("rangeCount",range);
         }
-        array.FUN_1422bc050(obj.FUN_1422bb870());
+        array.PushValue(obj.FUN_1422bb870());
         m_items.Add(item);
     }
     m_list->vfunc_25(array.FUN_1422bb870());
@@ -284,7 +272,7 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
 MS2_REPLACE_METHOD(0x140C3AF70, UIItemDropInfoDialog, FUN_140c3af70, 1646, 0x97FF2445);
 // @0x140c3b5f0
 CStringW UIItemDropInfoDialog::GetStringById(int id) {
-    return TSingleton<CStringTable>::GetInstance()->FUN_141813150(id);
+    return TSingleton<CStringTable>::GetInstance()->GetRankName(id);
 }
 MS2_REPLACE_METHOD(0x140C3B5F0, UIItemDropInfoDialog, GetStringById, 71, 0xFC4CFB82);
 // @0x140c3b640

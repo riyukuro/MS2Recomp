@@ -94,7 +94,7 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);             // the common npc row
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 CStringW FUN_140763e10(int nMoney);                         // a money text
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
@@ -307,9 +307,9 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
             if (spInfo.get())
             {
                 if (spInfo->FUN_1409eee80())
-                    str.Replace(L"$MaidSalary$", FUN_14052bd00(0x7a6, FUN_140763e10(spInfo->salary)));
+                    str.Replace(L"$MaidSalary$", FormatStringId<CStringW>(0x7a6, FUN_140763e10(spInfo->salary)));
                 else
-                    str.Replace(L"$MaidSalary$", FUN_14052bd00(0x7a7, FUN_140763e10(spInfo->salary)));
+                    str.Replace(L"$MaidSalary$", FormatStringId<CStringW>(0x7a7, FUN_140763e10(spInfo->salary)));
             }
             nPassed = spMaid->GetOverDays();
             __int64 nBase = (std::max)(spMaid->m_nExpireTime, GetServerTime());
@@ -354,7 +354,7 @@ void CReservedWordTable::ReplaceTokensForPc(CStringW& str, PC* pPc)
 }
 
 // @0x1416fbda0
-void CReservedWordTable::FUN_1416fbda0(CStringW& str, int nGender)
+void CReservedWordTable::ReplaceTokensForGender(CStringW& str, int nGender)
 {
     int nPos = 0;
     int nEnd;

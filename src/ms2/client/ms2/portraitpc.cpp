@@ -62,15 +62,15 @@ public:
     int FUN_141bbb1e0(GameObject*, int, unsigned int);
     void* FUN_141bd0cc0();
     void* FUN_141bd3620();
+    static WorldService* GetInstance();
 };
 class Unk_PtWorld
 {
 public:
 };
-Unk_PtWorld* FUN_1403ed2d0();
 
 // The notify centre (singleton FUN_140939a10): named notify handlers.
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 
 // The item event hub (singleton FUN_140a6a840).
 class Unk_ItemEventSystem   // C3: member view (real class not in this TU)
@@ -126,7 +126,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
 {
     if ((unsigned char)DAT_143acdb20 != 0)
         return 0;
-    PortraitPC* pPortrait = ((PortraitPC*)((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bd3620());
+    PortraitPC* pPortrait = ((PortraitPC*)WorldService::GetInstance()->FUN_141bd3620());
     if (pPortrait != 0)
         return pPortrait;
     pPortrait = new (efd::MemHint(efd::MemHint::NONE)) PortraitPC(pSource);
@@ -145,7 +145,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
     pPortrait->FUN_1416591e0(1, pSource->FUN_141659220(1));
     pPortrait->FUN_141658ed0(((class PC*)(class PC*)(pSource))->FUN_141658f10());
     pPortrait->FUN_141662d60(FUN_141662e90(pSource));
-    if (((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bbb1e0((GameObject*)(PortraitPC*)(pPortrait), 0, 1) != 0)
+    if (WorldService::GetInstance()->FUN_141bbb1e0((GameObject*)(PortraitPC*)(pPortrait), 0, 1) != 0)
         return pPortrait;
     return 0;
 }
@@ -201,7 +201,7 @@ void PortraitPC::vfunc_33(int nClass, int n)
 void PortraitPC::vfunc_14()
 {
     ((Unk_ItemEventSystem*)(Unk_PtItemEvents*)(FUN_140a6a840()))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_140939a10()->UnregisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
 }
 
 // @0x14169a160
@@ -218,12 +218,12 @@ int PortraitPC::vfunc_10()
     PC::vfunc_10();
     vfunc_149();
     vfunc_109(0);
-    PC* pMyPC = ((PC*)((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    PC* pMyPC = ((PC*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC != 0 && m_pSourcePC != 0)
     {
         if (m_pSourcePC->FUN_14123c580() == pMyPC->FUN_14123c580())
         {
-            FUN_140939a10()->RegisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
+            reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab", Delegate<void(NotifyObject*)>(this, &PortraitPC::FUN_14169a710));
             ((Unk_ItemEventSystem*)(Unk_PtItemEvents*)(FUN_140a6a840()))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
         }
     }
@@ -320,7 +320,7 @@ void PortraitPC::vfunc_31(void*)
 // @0x14169a860
 Unk_PtVec3 FUN_14169a860()
 {
-    PC* pMyPC = ((PC*)((WorldService*)(Unk_PtWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    PC* pMyPC = ((PC*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMyPC != 0)
     {
         efd::Point3 kLook(0.0f, -1.0f, 0.0f);

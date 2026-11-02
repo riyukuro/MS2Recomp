@@ -44,7 +44,7 @@ efd::Point3 FUN_140a0b080(const efd::Point3& kFrom, const efd::Point3& kTo, cons
 extern efd::Point3 DAT_143a08cf8;                          // the up axis
 
 // The animation service: the sequence id of the model.
-class Unk_JpAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
+int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // C3: the real free function (def in statebannerdata)
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
@@ -178,7 +178,7 @@ void StateJump::vfunc_6()
 {
     State::vfunc_6();
     m_n10 = 0x26;
-    unsigned nSeq = reinterpret_cast<Unk_JpAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
     if (!m_pOwner->FUN_14166de90(0x35, nSeq))
     {
         efd::utf8string strAnim(m_pOwner->vfunc_123(0x35));
@@ -289,7 +289,7 @@ void StateJump::vfunc_9(double fTime)
 {
     static int s_nDelay = FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
     State::vfunc_9(fTime);
-    unsigned nSeq = reinterpret_cast<Unk_JpAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
     unsigned nLimit = s_nDelay;
     nLimit += FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
     if (m_pOwner->FUN_141671a30() != 0)
@@ -317,7 +317,7 @@ void StateJump::vfunc_9(double fTime)
         {
             bool bHas = true;
             efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2a));
-            if (!m_pOwner->FUN_141679220(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strSpecial))->c_str()))
+            if (!m_pOwner->HasAnimSequence(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strSpecial))->c_str()))
                 bHas = false;
             if (bHas && (m_n10 == 0x22 || m_n10 == 0x24))
             {
@@ -335,7 +335,7 @@ void StateJump::vfunc_9(double fTime)
         {
             bool bHas = true;
             efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2b));
-            if (!m_pOwner->FUN_141679220(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strSpecial))->c_str()))
+            if (!m_pOwner->HasAnimSequence(((efd::utf8string*)&static_cast<class efd::utf8string const&>(strSpecial))->c_str()))
                 bHas = false;
             if (bHas && (m_n10 == 0x22 || m_n10 == 0x24))
             {
@@ -376,8 +376,7 @@ bool StateJump::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 // @0x1417d65d0
 bool StateJump::FUN_1417d65d0()
 {
-    int nEnd = reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->GetLast() + m_n80;
-    if ((unsigned)nEnd < GetTickCountMs2())
+    if (reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->GetLast() + m_n80 < GetTickCountMs2())
         return true;
     return false;
 }

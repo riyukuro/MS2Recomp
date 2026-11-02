@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include <vector>
 #include <algorithm>
+#include "ms2/placeholder/cquestmanagercommon.h"
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
@@ -33,7 +34,7 @@
 class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
 class Unk_QuestDebugCheck : public ASButton { };
 CString FUN_140bc6280(const char*, const char*, const char*, const int&, const char*);
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 class Unk_QuestDebugAccess : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -73,8 +74,6 @@ int FUN_1416e6100(int, int);
 class Unk_QuestDebugState
 {
 public:
-    int FUN_140745630(unsigned int);
-    int FUN_140745590(unsigned int);
 };
 class Unk_QuestDebugGlobal { public: void* m_0; void* m_8; Unk_QuestDebugState state; };
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -193,10 +192,10 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (!actor) return 1;
             if (Unk_QuestDebugPtr<Unk_QuestDebugDesc> desc = FUN_140c26f60("m_desc")) {
                 CStringW text;
-                CStringW expLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_exp");
-                CStringW mesoLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_meso");
-                CStringW statLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_stat_point");
-                CStringW skillLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_skill_point");
+                CStringW expLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_exp");
+                CStringW mesoLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_meso");
+                CStringW statLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_stat_point");
+                CStringW skillLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_skill_point");
                 text += FUN_140ba7890(expLabel, FUN_140761ba0(id, 1));
                 text += FUN_140ba7890(mesoLabel, FUN_140761cc0(id, 1));
                 if (quest->m_require.m_quest.GetCount()) {
@@ -207,11 +206,11 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
                     }
                 }
                 if (quest->m_2e8 != 0) {
-                    CStringW label = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_start_npc");
+                    CStringW label = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_start_npc");
                     text += StringFormat<CStringW, unsigned int>(label, FUN_1401aa6a0(quest->m_2e8), reinterpret_cast<unsigned&>(quest->m_2e8));
                 }
                 if (quest->m_2ec != 0) {
-                    CStringW label = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_desc_complate_npc");
+                    CStringW label = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_complate_npc");
                     text += StringFormat<CStringW, unsigned int>(label, FUN_1401aa6a0(quest->m_2ec), reinterpret_cast<unsigned&>(quest->m_2ec));
                 }
                 size_t condCount = quest->m_conditions.GetCount();
@@ -233,7 +232,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
                         }
                     }
                 }
-                reinterpret_cast<ASTextInput*>(desc.operator->())->FUN_1422e0ab0(text);
+                reinterpret_cast<ASTextInput*>(desc.operator->())->SetTextW(text);
             }
         }
     } else if (_stricmp("onReqQuest", method) == 0) {
@@ -243,7 +242,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (quest.get()) {
                 CStringW list;
                 for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
-                    if (((class Unk_QuestDebugGlobal*)FUN_140764020())->state.FUN_140745590(quest->m_require.m_quest[i]) == 0) {
+                    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->FUN_140745590(quest->m_require.m_quest[i]) == 0) {
                         if (list.GetLength() != 0) list += L",";
                         list += StringFormat<unsigned int>(L"{0}", quest->m_require.m_quest[i]);
                     }
@@ -448,7 +447,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 6);
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 8);
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 9);
-        CStringW format = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_quest_debug_textfield_count");
+        CStringW format = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_textfield_count");
         text->FUN_1422c4cd0(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
     unsigned int progress = 0, complete = 0, autoStart = 0, exceptLocking = 0;
@@ -478,8 +477,8 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             if (!FUN_141a96960(id, name, idText, filter)) continue;
             if (progress || complete) {
                 int keep = 0;
-                if (progress) { if (((class Unk_QuestDebugGlobal*)FUN_140764020())->state.FUN_140745630(id)) keep = 1; }
-                if (complete) { if (((class Unk_QuestDebugGlobal*)FUN_140764020())->state.FUN_140745590(id)) keep = 1; }
+                if (progress) { if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->IsQuestActive(id)) keep = 1; }
+                if (complete) { if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->FUN_140745590(id)) keep = 1; }
                 if (!keep) continue;
             }
             if (autoStart && !quest->m_2d) continue;

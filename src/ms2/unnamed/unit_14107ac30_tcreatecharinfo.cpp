@@ -114,8 +114,7 @@ extern const efd::Color g_143a09660;                        // the default appea
 Unk_CharEquip FUN_141b6dea0(unsigned nColor);     // Unk_CharEquip from a colour value
 bool FUN_1402226b0(int nJob);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-Unk_NiPoint3 FUN_14027dcf0(const Vector3& pt);
-Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& kSrc);
+Vector3* FUN_14097faa0(Vector3* pDst, const NiPoint3& kSrc);
 void FUN_140deec40(Vector3* p);
 bool FUN_140a33ff0(const void* pf);
 __declspec(noreturn) void FUN_140159b70(long hr);
@@ -267,7 +266,7 @@ void FUN_14107b010()
 MS2_REPLACE(0x14107b010, FUN_14107b010, 57, 0x7150A5CF);
 
 // @0x14107b050
-// MS2-FUNCTIONAL: temporary slot order of the point conversions differs
+// The rotated points reach FUN_14097faa0 (NiPoint3 assignment) through an implicit NiPoint3(const efd::Point3&) conversion (0x14027dcf0).
 void FUN_14107b050(const Vector3& kDir)
 {
     Vector3 kRight = kDir;
@@ -275,14 +274,14 @@ void FUN_14107b050(const Vector3& kDir)
     kFlat.z = 0;
     FUN_140deec40(&kFlat);
     Unk_NiMatrix3 matRot;
-    Vector3 kAxis(0, 0, 1.0f);
-    FUN_14097faa0(&kAxis, FUN_14027dcf0(kAxis.FUN_140a00e10(kRight)));
-    matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), kAxis);
-    FUN_14097faa0(&kRight, FUN_14027dcf0(matRot.FUN_140a00720(kRight)));
-    FUN_14097faa0(&kFlat, FUN_14027dcf0(matRot.FUN_140a00720(kFlat)));
+    NiPoint3 kAxis(0, 0, 1.0f);
+    FUN_14097faa0(reinterpret_cast<Vector3*>(&kAxis), reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kAxis).FUN_140a00e10(kRight))));
+    matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), reinterpret_cast<Vector3&>(kAxis));
+    FUN_14097faa0(&kRight, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kRight))));
+    FUN_14097faa0(&kFlat, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kFlat))));
     matRot.FUN_142084c10((Unk_RimLight::s_fYaw * 3.1415927f) / 180.0f);
-    FUN_14097faa0(&kRight, FUN_14027dcf0(matRot.FUN_140a00720(kRight)));
-    FUN_14097faa0(&kFlat, FUN_14027dcf0(matRot.FUN_140a00720(kFlat)));
+    FUN_14097faa0(&kRight, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kRight))));
+    FUN_14097faa0(&kFlat, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kFlat))));
     FUN_14107cad0(&DAT_143ae5388, &kRight, 1);
     FUN_14107cad0(&DAT_143ae5390, &kFlat, 1);
 }
@@ -515,7 +514,7 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
                 if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d2f0())
                     nSlot = 5;
                 else
-                    nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400();
+                    nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b400();
                 spItem->FUN_140526c10(nSlot);
                 spItem->SetItemUid(pPC->GenerateSerialId());
                 spItem->SetObjectId(m_nType);

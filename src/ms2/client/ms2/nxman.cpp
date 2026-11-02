@@ -118,7 +118,7 @@ CNXMan::~CNXMan()
 }
 
 // @0x14160d820
-unsigned CNXMan::FUN_14160d820()
+unsigned CNXMan::Start()
 {
     Unk_PlatformErrorTable kErrors;
     if (LoadAnySetting() == 0)
@@ -146,7 +146,7 @@ unsigned CNXMan::FUN_14160d820()
 }
 
 // @0x14160da80
-void CNXMan::FUN_14160da80()
+void CNXMan::Shutdown()
 {
     Logout();
     FUN_14160db10();
@@ -172,7 +172,7 @@ void CNXMan::FUN_14160db40(void* p1, void* p2)
 }
 
 // @0x14160db80
-int CNXMan::FUN_14160db80()
+int CNXMan::LoginWithPassport()
 {
     CString strAddress = g_strPassport;
     int bConnected = 0;
@@ -182,7 +182,7 @@ int CNXMan::FUN_14160db80()
         if (nError == 0)
         {
             m_30 = 1;
-            FUN_14160e410();
+            UpdateAuthStrings();
             bConnected = 1;
         }
         else
@@ -281,7 +281,7 @@ void FUN_14160e3e0(void* pParam)
 }
 
 // @0x14160e410
-void CNXMan::FUN_14160e410()
+void CNXMan::UpdateAuthStrings()
 {
     if (m_30 == 0)
     {
@@ -300,13 +300,13 @@ void CNXMan::FUN_14160e410()
 }
 
 // @0x14160e500
-CString CNXMan::FUN_14160e500()
+CString CNXMan::GetPassportString()
 {
     return m_90;
 }
 
 // @0x14160e550
-CString CNXMan::FUN_14160e550()
+CString CNXMan::GetHardwareIdString()
 {
     return m_98;
 }

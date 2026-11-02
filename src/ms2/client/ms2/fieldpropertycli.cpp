@@ -32,6 +32,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #endif
 #include <atlbase.h>
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local stand-ins for helpers of other units (opaque) ----
 struct Unk_Handle {                 // 16 byte handle filled by FUN_141bd0420, released by ~Unk_Handle (0x1409f20e0)
@@ -68,8 +69,8 @@ public:
     void FUN_141bcad60(void* p, int n);
     static class WorldService* GetInstance();
 };
-void* FUN_1403ed280();
-void* FUN_1403ed2b0();
+class CEffectService;
+class CUIService;
 void* FUN_1409478c0();
 class PCBase   // C3: member view for the former free stand-ins
 {
@@ -193,9 +194,9 @@ void FieldPropertyLockMyPCCli::vfunc_5()
 void FieldPropertyUserTagSymbolCli::vfunc_4() { ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bcabf0(); }
 
 // @0x140b278d0
-void FieldPropertyWeatherCli::vfunc_4() { ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7e80(m_nWeather); }
+void FieldPropertyWeatherCli::vfunc_4() { TSingleton<CEffectService>::GetInstance()->FUN_1411a7e80(m_nWeather); }
 // @0x140b27900
-void FieldPropertyWeatherCli::vfunc_5() { ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a7e80(0); }
+void FieldPropertyWeatherCli::vfunc_5() { TSingleton<CEffectService>::GetInstance()->FUN_1411a7e80(0); }
 
 // @0x140b27930
 void FieldPropertyAmbientLightCli::vfunc_4()
@@ -244,9 +245,9 @@ void FieldPropertyEnableLocalCameraCli::vfunc_4() { ((CameraMgr*)FUN_1409478c0()
 void FieldPropertyEnableLocalCameraCli::vfunc_5() { ((CameraMgr*)FUN_1409478c0())->FUN_140aeb900(1); }
 
 // @0x140b27d00
-void FieldPropertyPhotoStudioCli::vfunc_4() { (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f8f))); }
+void FieldPropertyPhotoStudioCli::vfunc_4() { (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f8f))); }
 // @0x140b27d30
-void FieldPropertyPhotoStudioCli::vfunc_5() { reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f8f); }
+void FieldPropertyPhotoStudioCli::vfunc_5() { TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f8f); }
 
 // ---- Entity property helpers (egf::Entity; the change-tracking map lives at entity+0xd0) ----
 void* FUN_1409481f0(void* map, void* it);

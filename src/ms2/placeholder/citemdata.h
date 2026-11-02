@@ -453,7 +453,7 @@ public:
     int GetUnlimitedEnchantMaxGrade();    // 0x14053e9e0
     unsigned long long GetSellPrice(int nRank);    // 0x14053ea00
     void LoadModel();    // 0x14053eb20
-    ItemModelData* FUN_14053eba0();    // 0x14053eba0
+    ItemModelData* GetModelOrEmpty();    // 0x14053eba0
     int GetItemPreset();    // 0x14053ec50
     void FUN_14053ec70();    // 0x14053ec70
     CString GetMaterialSoundName();    // 0x14053eca0

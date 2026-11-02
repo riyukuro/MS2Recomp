@@ -403,7 +403,7 @@ void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
 {
     if (!LoadEvent())
         return;
-    if (WorldService::GetInstance()->FUN_141bcb0a0())
+    if (WorldService::GetInstance()->HasTutorial())
         return;
     if (vfunc_55())
         FUN_141924680();
@@ -502,7 +502,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c250()
         ASObj row(2);
         row.FUN_1407cba60("frame", FUN_140c6d470());
         row.FUN_1407cba60("state", GetDayStateFrame((unsigned int)i, nCur, nCatchUp));
-        days.FUN_1422bc050(row.FUN_1422bb870());
+        days.PushValue(row.FUN_1422bb870());
     }
     m_30->Invoke("setAttendance", days.FUN_1422bb870());
 }

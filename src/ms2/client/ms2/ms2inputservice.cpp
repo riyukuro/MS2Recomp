@@ -26,6 +26,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/ckeytable.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
@@ -35,6 +36,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/crashmanagercli.h"
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/commonfiles/os.h"
 
 // ---- out-of-unit callees ----
 
@@ -57,15 +59,8 @@ class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: un
 class Unk_KeyBindings                                   // key binding table
 {
 public:
-    int FUN_141431a30(int nKey);
-    int FUN_141431a60(int nKey);
     int FUN_141431a90(int nKey);
-    int FUN_14142c940(__int64 nSetting, int nDefault);
-    __int64 FUN_14142d190(int nKey);
-    int FUN_141430b10(__int64 pBinding);
-    void FUN_141429e60(const CString& strFile);
 };
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_KeyBindings (calls cast back)
 
 UIMainPlayerInfo* FUN_140931900(int nId);
 
@@ -90,7 +85,7 @@ class Unk_HudMgr { public: Unk_HudPtr FUN_1422b0370(int n); };
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 struct Unk_PadCursorCfg { int m_0; float fSpeedX; float fSpeedY; };
-void* FUN_1409a8b10();
+class CGameOption;
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 
 class Unk_1403ed2b0 { public: int FUN_141adbd10(); };
@@ -100,7 +95,7 @@ extern int DAT_143af7d40;                               // input enabled
 extern float DAT_143ac30a8;                             // last stick x
 extern float DAT_143ac30ac;                             // last stick y
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Unk_EventSink* DAT_143ab5c70;                    // UI event sink
+class CBigDataLogSystem;
 
 class CMsgBoxData : public CPtred
 {
@@ -122,7 +117,7 @@ struct MS2NiInputSystemAccess : public NiInputSystem
 // @0x140d8ee90
 Unk_EventSink* FUN_140d8ee90()
 {
-    return DAT_143ab5c70;
+    return reinterpret_cast<Unk_EventSink*>(TSingleton<CBigDataLogSystem>::s_instance);
 }
 
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
@@ -270,10 +265,10 @@ bool MS2InputService::IsKeyDownGated(int nKey, int bAllowGroup)
             {
                 if (nSlot != nKey)
                     return false;
-                __int64 pBinding = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142d190(nSlot);
+                __int64 pBinding = FUN_1409331f0()->GetKeyAction(nSlot);
                 if (pBinding == 0)
                     return false;
-                if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141430b10(pBinding) == 0)
+                if (FUN_1409331f0()->FUN_141430b10(pBinding) == 0)
                     return true;
                 return false;
             }
@@ -313,10 +308,10 @@ bool MS2InputService::WasKeyPressedGated(int nKey)
                 }
                 if (nSlot != nKey)
                     return false;
-                __int64 pBinding = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142d190(nSlot);
+                __int64 pBinding = FUN_1409331f0()->GetKeyAction(nSlot);
                 if (pBinding == 0)
                     return false;
-                if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141430b10(pBinding) == 0)
+                if (FUN_1409331f0()->FUN_141430b10(pBinding) == 0)
                 {
                     if (WasKeyPressed(nSlot))
                         return true;
@@ -432,7 +427,7 @@ MS2_REPLACE_METHOD(0x140D8B250, MS2InputService, InjectKeyRelease, 57, 0x5191D96
 // @0x140d8b290
 int MS2InputService::GetKeyboardCode(int nKey)
 {
-    if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a30(nKey))
+    if (FUN_1409331f0()->FUN_141431a30(nKey))
         return nKey;
     return 0;
 }
@@ -441,7 +436,7 @@ MS2_REPLACE(0x140D8B290, MS2InputService::GetKeyboardCode, 42, 0x6B27C144);
 // @0x140d8b2c0
 int MS2InputService::GetMouseButtonIndex(int nKey)
 {
-    if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141431a60(nKey))
+    if (FUN_1409331f0()->FUN_141431a60(nKey))
         return nKey - 200;
     return -1;
 }
@@ -636,12 +631,12 @@ void MS2InputService::SetGamePadEnabled(bool bEnable, bool bNotify)
                     FUN_140d73c60(box);
                 }
             }
-            if (reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142c940(0x30d41, 2) == 0)
+            if (FUN_1409331f0()->FUN_14142c940(0x30d41, 2) == 0)
             {
                 if (FUN_140a58540()->FUN_140d8ee40() == 2)
-                    reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
+                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
                 else
-                    reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
+                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
             }
         }
         else
@@ -678,14 +673,14 @@ MS2_REPLACE_METHOD(0x140D8BD00, MS2InputService, ToggleCursorMode, 210, 0x770EEE
 // @0x140d8bde0
 float MS2InputService::FUN_140d8bde0()
 {
-    return ((struct Unk_PadCursorCfg*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10())))->fSpeedX;
+    return ((struct Unk_PadCursorCfg*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())))->fSpeedX;
 }
 MS2_REPLACE_METHOD(0x140D8BDE0, MS2InputService, FUN_140d8bde0, 32, 0xA407171B);
 
 // @0x140d8be10
 float MS2InputService::FUN_140d8be10()
 {
-    return ((struct Unk_PadCursorCfg*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10())))->fSpeedY;
+    return ((struct Unk_PadCursorCfg*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())))->fSpeedY;
 }
 MS2_REPLACE_METHOD(0x140D8BE10, MS2InputService, FUN_140d8be10, 32, 0xCBEBD717);
 
@@ -739,7 +734,7 @@ MS2_REPLACE_METHOD(0x140D8BE40, MS2InputService, DetectGamePad, 600, 0x7CBF8EF8)
 // @0x140d8c0a0
 int MS2InputService::FUN_140d8c0a0(__int64 nSetting)
 {
-    int nKey = reinterpret_cast<Unk_KeyBindings*>(FUN_1409331f0())->FUN_14142c940(nSetting, 2);
+    int nKey = FUN_1409331f0()->FUN_14142c940(nSetting, 2);
     nKey = RemapPadButtonForDualShock(nKey);
     int nSlot = nKey - 0x92;
     return nSlot;

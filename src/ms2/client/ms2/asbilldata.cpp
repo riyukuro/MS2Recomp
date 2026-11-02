@@ -266,7 +266,7 @@ MS2_REPLACE_METHOD(0x1409ABEF0, ASBillData, vfunc_4, 14, 0x7A15C443);
 int ASBillData::vfunc_5()
 {
     int nIndex = -1;
-    AScript::FUN_1422bae10("index", &nIndex);
+    AScript::TryGetInt("index", &nIndex);
     return nIndex;
 }
 MS2_REPLACE_METHOD(0x1409ABF10, ASBillData, vfunc_5, 48, 0x488E5FE8);
@@ -358,7 +358,7 @@ __int64 ASBillData::GetSalePriceFromData(ASObj* pData)
 {
     const CString& strName = CString("salePrice");
     CString strValue;
-    pData->FUN_1422bac00(strName, strValue);
+    pData->TryGetString(strName, strValue);
     return FUN_1407182f0(strValue);
 }
 MS2_REPLACE_METHOD(0x1409AC2C0, ASBillData, GetSalePriceFromData, 141, 0x06C8075C);
@@ -617,7 +617,7 @@ void ASBillData::FUN_1409ad420(ASArray& arr, int nCurrency, CDBPremiumProduct* p
     if (nBaseId != pSub->m_nId)
         nMarketSN = pSub->m_nId;
     FUN_1409ad970(row, nMarketSN);
-    arr.FUN_1422bc050(row.FUN_1422bb870());
+    arr.PushValue(row.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x1409AD420, ASBillData, FUN_1409ad420, 903, 0xADC38BEA);
 
@@ -669,7 +669,7 @@ int FUN_1409ada50(const Scaleform::GFx::Value& vData)
         return 0;
     ASObj data(vData, 2);
     CString strValue;
-    data.FUN_1422bac00("marketSN", strValue);
+    data.TryGetString("marketSN", strValue);
     return FUN_140718170(strValue);
 }
 MS2_REPLACE(0x1409ADA50, FUN_1409ada50, 152, 0xDC2CABB0);
@@ -678,7 +678,7 @@ MS2_REPLACE(0x1409ADA50, FUN_1409ada50, 152, 0xDC2CABB0);
 __int64 ASMeratMarketBuyBillData::FUN_1409adb70(const CString& strName, ASObj* pData)
 {
     CString strValue;
-    pData->FUN_1422bac00(strName, strValue);
+    pData->TryGetString(strName, strValue);
     return FUN_1407182f0(strValue);
 }
 

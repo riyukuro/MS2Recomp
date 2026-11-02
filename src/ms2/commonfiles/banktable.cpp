@@ -51,7 +51,7 @@ class CItemData : public CPtred   // C3: member view for the former free stand-i
 public:
     int GetType();                      // item type
     int GetSubtype();                   // item sub type
-    class ItemModelData* FUN_14053eba0();
+    class ItemModelData* GetModelOrEmpty();
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class ItemModelData   // C3: member view for the former free stand-ins
@@ -201,7 +201,7 @@ int CBankTable::FindBankId(int nItemId)
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item == 0)
         return -1;
-    int nSlot = item->FUN_14053eba0()->FUN_14054b400();
+    int nSlot = item->GetModelOrEmpty()->FUN_14054b400();
     int nType = item->GetType();
     int nSubType = item->GetSubtype();
     int nFound = -1;

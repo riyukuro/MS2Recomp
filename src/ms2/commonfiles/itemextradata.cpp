@@ -29,6 +29,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/itemdatatable.h"
 
+template<> EquipColorInfo* Unk_SocketRef<EquipColorInfo>::Create(void*) { return static_cast<EquipColorInfo*>(FUN_1401ba820(New(NULL))); }
+
 // ---- out-of-unit callees ----
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14059d150(float* p);
@@ -359,11 +361,11 @@ int CItemExtraData::GetSlotColorId(unsigned nSlot)
 MS2_REPLACE_METHOD(0x14059A040, CItemExtraData, GetSlotColorId, 93, 0x09AAFA23);
 
 // @0x14059a0b0
-int CItemExtraData::FUN_14059a0b0(unsigned nSlot)
+int CItemExtraData::GetSlotPaletteId(unsigned nSlot)
 {
     return GetSlotColor(nSlot)->m_n28;
 }
-MS2_REPLACE_METHOD(0x14059A0B0, CItemExtraData, FUN_14059a0b0, 93, 0x45D820B0);
+MS2_REPLACE_METHOD(0x14059A0B0, CItemExtraData, GetSlotPaletteId, 93, 0x45D820B0);
 
 // @0x14059a120
 int CItemExtraData::GetCurrentDelay()
@@ -414,7 +416,7 @@ CItemExtraData::ColorPtr CItemExtraData::GetCurrentColor()
 MS2_REPLACE_METHOD(0x14059A2C0, CItemExtraData, GetCurrentColor, 135, 0x5AAF8249);
 
 // @0x14059a350
-bool CItemExtraData::FUN_14059a350()
+bool CItemExtraData::AdvanceCycle()
 {
     if (!m_bMulti)
         return false;
@@ -428,7 +430,7 @@ bool CItemExtraData::FUN_14059a350()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x14059A350, CItemExtraData, FUN_14059a350, 156, 0x2C345355);
+MS2_REPLACE_METHOD(0x14059A350, CItemExtraData, AdvanceCycle, 156, 0x2C345355);
 
 // @0x14059d130
 int CItemExtraData::FUN_14059d130() const
@@ -470,7 +472,7 @@ static float FUN_14059d120(CharacterDecalData* p) { return p->unknown24; }
 void CDecalExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    CharacterDecalData* pDecal = pData->FUN_14053eba0()->FUN_14054b6b0();
+    CharacterDecalData* pDecal = pData->GetModelOrEmpty()->FUN_14054b6b0();
     if (pDecal != 0)
     {
         m_f58 = FUN_14059d110(pDecal);
@@ -487,8 +489,8 @@ void CDecalExtraData::vfunc_4(CItemData* pData)
             m_f5c = spCustom->unknown18.y;
             m_f64 = spCustom->unknown24.z;
         }
-        if (pData->FUN_14053eba0()->FUN_14054b3d0() > 0)
-            m_f60 = pData->FUN_14053eba0()->GetGroup(0)->FUN_1405450f0(0);
+        if (pData->GetModelOrEmpty()->FUN_14054b3d0() > 0)
+            m_f60 = pData->GetModelOrEmpty()->GetGroup(0)->FUN_1405450f0(0);
     }
 }
 MS2_REPLACE_METHOD(0x14059A480, CDecalExtraData, vfunc_4, 408, 0x409B00C4);
@@ -588,9 +590,9 @@ MS2_REPLACE_METHOD(0x14059AA20, CHairExtraData, ClampScales, 111, 0x557560E6);
 void CHairExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    if (pData->FUN_14053eba0()->FUN_14054b3d0() == 0)
+    if (pData->GetModelOrEmpty()->FUN_14054b3d0() == 0)
         return;
-    const ModelGroup* pGroup = pData->FUN_14053eba0()->GetGroup(0);
+    const ModelGroup* pGroup = pData->GetModelOrEmpty()->GetGroup(0);
     int nPick = -1;
     int nSlot = 0;
     for (size_t i = 0; i < pGroup->FUN_1405450c0() && nSlot < 2; i++)
@@ -734,9 +736,9 @@ CCapExtraData::CCapExtraData()
 void CCapExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    if (pData->FUN_14053eba0()->FUN_14054b3d0() == 0)
+    if (pData->GetModelOrEmpty()->FUN_14054b3d0() == 0)
         return;
-    const ModelGroup* pGroup = pData->FUN_14053eba0()->GetGroup(0);
+    const ModelGroup* pGroup = pData->GetModelOrEmpty()->GetGroup(0);
     for (unsigned int i = 0; i < 1; i++)
     {
         if (i >= pGroup->FUN_1405450c0())

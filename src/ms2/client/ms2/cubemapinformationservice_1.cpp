@@ -95,7 +95,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
         Cube* cube=((class CubeMapInformationService*)(service))->GetCubeAtCell(position);
         if(cube!=0) {
             if((egf::Entity*)cube->entity!=0) {
-                MS2Ptr<Unk_WsB_Vibrator> vibrator=WorldService::GetInstance()->FUN_141bc8f60(cube->entity->GetEntityIDValue());
+                MS2Ptr<Unk_WsB_Vibrator> vibrator=WorldService::GetInstance()->FindVibrator(cube->entity->GetEntityIDValue());
                 if(vibrator.get()!=0) {
                     if(((class CEntityVibrator*)(class Unk_WsB_Vibrator*)(vibrator.operator->()))->FUN_1411cd550()!=0) continue;
                 }

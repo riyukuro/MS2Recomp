@@ -149,7 +149,7 @@ public:
     MS2Ptr<Unk_ClubBuffData> FUN_140211760(int nBuffId, int nLevel);
 };
 
-extern Unk_ClubBuffTable* DAT_143aac6f8;
+class CClubDataTable;
 Unk_ClubBuffTable* FUN_140b1a4e0();
 
 // The club name limits, kept in the game constants.
@@ -166,7 +166,6 @@ public:
     Unk_ClubLimit m_nameMax;                                       // +0x9e68
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_ClubLimit* pLimit);
 
 // Feature flags (FUN_140166410 / FUN_14036d570) and the party manager (TSingleton<CPartyManager>::GetInstance).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -177,6 +176,7 @@ CStringW GetStringCommon(int nId);
 CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW BlockFormat(int nId);
 #include "ms2/placeholder/blockformat.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
@@ -942,8 +942,8 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_1412751f0(BlockFormat<int>(0x381, 3), 1, 1);
         return false;
     }
-    int nMinLength = *FUN_1402056b0(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMin);
-    int nMaxLength = *FUN_1402056b0(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMax);
+    int nMinLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMin)->Get();
+    int nMaxLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameMax)->Get();
     if (strName.GetLength() < nMinLength || strName.GetLength() > nMaxLength)
         return false;
     if (strName.Find(L" ", 0) != -1)
@@ -1562,7 +1562,7 @@ CStringW FUN_140b18ef0()
 // @0x140b1a4e0
 Unk_ClubBuffTable* FUN_140b1a4e0()
 {
-    return DAT_143aac6f8;
+    return reinterpret_cast<Unk_ClubBuffTable*>(TSingleton<CClubDataTable>::s_instance);
 }
 
 // @0x140b19090

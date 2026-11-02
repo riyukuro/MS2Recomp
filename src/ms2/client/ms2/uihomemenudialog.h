@@ -11,21 +11,7 @@
 
 class CMsgBoxData;
 
-// The screenshot uploader (CImageHttpClient of commonfiles\imagehttpclient.cpp, 0x78 bytes, vftable at +0): the dialog
-// embeds one and asks it for the upload address. Stand-in: only the members this dialog calls.
-class Unk_HmImageHttp
-{
-public:
-    Unk_HmImageHttp();                                                     // 0x140511030
-    ~Unk_HmImageHttp();                                                    // 0x1405110d0 (non-virtual call)
-    void FUN_140511190(int n);                                             // m_20 = n
-    bool FUN_1405116c0();                                                  // true when the uploader is ready
-
-private:
-    void* m_vftable;                                                       // +0x00
-    char m_pad[0x70];
-};
-MS2_CHECK_SIZE(Unk_HmImageHttp, 0x78);
+#include "ms2/commonfiles/imagehttpclient.h"
 
 class UIHomeMenuDialog : public UIDialog
 {
@@ -69,7 +55,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     bool m_bFreeCamera;                                                    // +0x178 (the 8 bytes up to +0x180 are padding)
-    Unk_HmImageHttp m_screenshot;                                          // +0x180
+    CImageHttpClient m_screenshot;                                          // +0x180
 };
 MS2_CHECK_SIZE(UIHomeMenuDialog, 0x1f8);
 MS2_CHECK_OFFSET(UIHomeMenuDialog, m_bFreeCamera, 0x178);

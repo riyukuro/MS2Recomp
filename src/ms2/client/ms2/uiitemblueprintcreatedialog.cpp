@@ -5290,7 +5290,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int, const CStringW&, const CStringW&, Delegate<bool(int, const CMsgBoxData&)>);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 CStringW GetStringCommonByKey(const CStringW&);
-void FUN_1412750f0(Unk_BpItem*, int, int, int);
+void FUN_1412750f0(CItem*, int, int, int);
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_BpIdentity {
 public:
@@ -5345,7 +5345,7 @@ void UIItemBlueprintCreateDialog::OnLoadComplete() {
     if (m_addIcon.get()) m_addIcon->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddIconClick), 0);
     if (m_addImage.get()) m_addImage->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnAddImageClick), 0);
     if (m_create.get()) m_create->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37700), 0);
-    if (m_input.get()) m_input->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnNameInputChanged));
+    if (m_input.get()) m_input->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBlueprintCreateDialog::OnNameInputChanged));
     Unk_BpASObj data(2);
     int minLength = *((class Unk_BpSettings*)FUN_1401d3200())->minLength.Get();
     int maxLength = *((class Unk_BpSettings*)FUN_1401d3200())->maxLength.Get();
@@ -5394,7 +5394,7 @@ void UIItemBlueprintCreateDialog::FUN_140c36b40(Unk_BpItem* item) {
     CStringW text = GetStringCommonByKey(L"s_blueprint_msg_item_edit_complete");
     MS2Ptr<CMsgBoxData> message = FUN_140d73d20(0x11, text, 0, L"");
     if (message == NULL) return;
-    FUN_1412750f0(item, reinterpret_cast<CItem*>(item)->GetCount(), 0x2ba, 0x2b9);
+    FUN_1412750f0(reinterpret_cast<CItem*>(item), reinterpret_cast<CItem*>(item)->GetCount(), 0x2ba, 0x2b9);
     CStringW name = GetTrimmedName();
     message->FUN_141a01ee0(m_item, name, 1, 0, -1, -1, 1);
     message->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBlueprintCreateDialog::FUN_140c37f90));

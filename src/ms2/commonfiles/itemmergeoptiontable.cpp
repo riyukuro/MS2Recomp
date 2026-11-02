@@ -106,7 +106,7 @@ void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector
 CString FUN_1401d9af0(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat, one numeric argument
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 int FindStatByName(const CString& strName);         // normal option id by name (-1: none)
-int FUN_14081d2f0(const CString& strName);          // special option id by name (0: none)
+enum SAType { SAType_None = 0 }; SAType FUN_14081d2f0(const CString& strName);          // special option id by name (0: none)
 int GetStatValueType(int nNormal);
 int FUN_14081dd50(int nSpecial);
 void FUN_1403d7960(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nA, const unsigned& nB);

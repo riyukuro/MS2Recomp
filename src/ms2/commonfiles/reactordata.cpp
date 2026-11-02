@@ -130,7 +130,6 @@ static int ReadStateType(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\reactordata.cpp"
 
 // @0x14076a550
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool ReactorStateData::Load(Unk_140165cf0* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
@@ -144,11 +143,15 @@ bool ReactorStateData::Load(Unk_140165cf0* pNode)
     typedef ConditionPtr (*CondLoader)(Unk_140165cf0*);
     std::list<std::pair<CondLoader, CStringA> > loaders;
     loaders.push_back(std::make_pair(FUN_14076a1e0, "condItem"));
-    for (std::list<std::pair<CondLoader, CStringA> >::iterator it = loaders.begin(); it != loaders.end(); ++it)
+    std::list<std::pair<CondLoader, CStringA> >& rLoaders = loaders;
+    std::list<std::pair<CondLoader, CStringA> >::const_iterator itEnd = rLoaders.end();
+    for (std::list<std::pair<CondLoader, CStringA> >::const_iterator it = rLoaders.begin(); it != itEnd; ++it)
     {
-        ConditionPtr cond = it->first(((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild(it->second)));
-        if (!cond.IsNull())
-            m_conditions.AddTail(cond);
+        const std::pair<CondLoader, CStringA>& kLoader = *it;
+        ConditionPtr cond = static_cast<ConditionPtr&&>(kLoader.first(((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild(kLoader.second))));
+        if (cond.IsNull())
+            continue;
+        m_conditions.AddTail(cond);
     }
     return true;
 }
@@ -318,7 +321,6 @@ bool CReactorDataTable::Reload()
 }
 
 // @0x14076b7f0
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool CReactorDataTable::Load()
 {
     SetInit(false);
@@ -329,14 +331,18 @@ bool CReactorDataTable::Load()
         else
         {
             m_cacheFiles.RemoveAll();
-            m_strReactorXml = FUN_14071a5b0(CString("Table"), CString("reactor.xml"));
-            m_strStateXml = FUN_14071a5b0(CString("Table"), CString("reactorState.xml"));
-            CachePtr reactorCache(new CCacheData);
-            reactorCache->FUN_1401d1160(CString(m_strReactorXml));
-            m_cacheFiles.AddHead(reactorCache);
-            CachePtr stateCache(new CCacheData);
-            stateCache->FUN_1401d1160(CString(m_strStateXml));
-            m_cacheFiles.AddHead(stateCache);
+            m_strReactorXml = FUN_14071a5b0("Table", "reactor.xml");
+            m_strStateXml = FUN_14071a5b0("Table", "reactorState.xml");
+            {
+                CachePtr reactorCache(new CCacheData);
+                reactorCache->FUN_1401d1160(CString(m_strReactorXml));
+                m_cacheFiles.AddHead(reactorCache);
+            }
+            {
+                CachePtr stateCache(new CCacheData);
+                stateCache->FUN_1401d1160(CString(m_strStateXml));
+                m_cacheFiles.AddHead(stateCache);
+            }
         }
     }
     if (!LoadStates())

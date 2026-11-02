@@ -35,10 +35,10 @@ public:
     void FUN_14199fe70(unsigned nCount);                        // the selected count changed: the limit check
     void SetUserCount(unsigned nCount);                        // the "m_userCount" text
     void FUN_1419a0240();                                       // rebuild the user list
-    void FUN_1419a06d0(EntryList& entries);                     // add the friends
-    void FUN_1419a07d0(EntryList& entries);                     // add the guild members
+    void CollectPartyMembers(EntryList& entries);                     // add the friends
+    void CollectGuildMembers(EntryList& entries);                     // add the guild members
     void AddBuddyEntries(EntryList& entries);                     // add the club members
-    int FUN_1419a0a10(__int64 nCharacterId, EntryList& entries);   // already in the chat or listed
+    int IsAlreadyListedOrInGroup(__int64 nCharacterId, EntryList& entries);   // already in the chat or listed
     int FUN_1419a0b20();                                        // the input has the focus and nothing blocks it
 
 private:

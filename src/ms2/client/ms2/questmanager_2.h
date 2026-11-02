@@ -139,8 +139,8 @@ public:
     int IsQuestPinned(int);
     void FUN_1416cfc60(int);
     void FUN_1416cfc70(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&, int, int);
-    int FUN_1416cfe20();
-    int FUN_1416cff70();
+    int CountCompletedDailyMissionQuests();
+    int CountCompletedLevelGuideQuests();
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
     int CountAvailableLearningQuests();
     struct Vector3 GetTargetObjectPosition();

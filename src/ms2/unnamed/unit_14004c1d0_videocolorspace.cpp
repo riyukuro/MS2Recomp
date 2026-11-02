@@ -116,39 +116,34 @@ void FUN_14004c250(Unk_PlaneSet* pSrc, Unk_PlaneDst* pDst, const unsigned char* 
 // Builds the three 256-entry curves used by the YCbCr conversion.
 void FUN_14004c370(void)
 {
-    unsigned int i;
+    int i;
     int k;
-    for (i = 0; (int)i < 0x30; i += 3)
-        DAT_143bac690[i / 3] = (double)(int)i * 0.5;
-    for (i = 0; i < 160; ++i)
-        DAT_143bac690[16 + i] = (double)(int)i * 0.5 + 24.0;
     for (i = 0; i < 16; ++i)
-        DAT_143bac690[176 + i] = (double)(int)i + 104.0;
-    for (i = 0; i < 64; ++i)
+        DAT_143bac690[i] = (double)(i * 3) * 0.5;
+    for (i = 16; i < 176; ++i)
+        DAT_143bac690[i] = (double)(i - 16) * 0.5 + 24.0;
+    for (i = 176; i < 192; ++i)
+        DAT_143bac690[i] = (double)(i - 176) + 104.0;
+    for (i = 192; i < 256; ++i)
     {
-        double d = (double)(int)i * 2.0 + 120.0;
-        if (255.0 < d)
-            d = 255.0;
-        DAT_143bac690[192 + i] = d;
+        double d = (double)(i - 192) * 2.0 + 120.0;
+        DAT_143bac690[i] = d <= 255.0 ? d : 255.0;
     }
     for (k = 0; k < 24; ++k)
     {
-        double lo = 128.0 - (double)k / 3.0;
-        double hi = (double)k / 3.0 + 128.0;
-        DAT_143babdf0[128 + k] = hi;
-        DAT_143bace90[128 + k] = hi;
-        DAT_143babdf0[128 - k] = lo;
-        DAT_143bace90[128 - k] = lo;
+        double d = (double)k / 3.0;
+        DAT_143babdf0[128 + k] = d + 128.0;
+        DAT_143bace90[128 + k] = d + 128.0;
+        DAT_143babdf0[128 - k] = 128.0 - d;
+        DAT_143bace90[128 - k] = 128.0 - d;
     }
-    for (k = 24; k < 128; ++k)
+    for (; k < 128; ++k)
     {
         double d = ((double)(k - 24) * 120.0) / 104.0 + 8.0;
-        double lo = 128.0 - d;
-        double hi = d + 128.0;
-        DAT_143babdf0[128 + k] = hi;
-        DAT_143bace90[128 + k] = hi;
-        DAT_143babdf0[128 - k] = lo;
-        DAT_143bace90[128 - k] = lo;
+        DAT_143babdf0[128 + k] = d + 128.0;
+        DAT_143bace90[128 + k] = d + 128.0;
+        DAT_143babdf0[128 - k] = 128.0 - d;
+        DAT_143bace90[128 - k] = 128.0 - d;
     }
     DAT_143bace90[0] = 0;
     DAT_143babdf0[0] = 0;

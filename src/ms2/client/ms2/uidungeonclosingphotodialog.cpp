@@ -33,6 +33,9 @@
 #include <string.h>
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 #include "ms2/client/ms2/uirenderview.h"
+#include "ms2/client/ms2/uimassiveevent.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/wcformat.h"
 static CString s_winSound = "BattleField_Win";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
@@ -77,7 +80,6 @@ public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual Unk_ClosingVector vfunc_18();
-    void FUN_1410885b0(bool);
     Unk_ClosingJob FUN_141654730();
     void FUN_140e11d00();
     // 76 and 77 are the name setter (by value: the callee destroys it) and getter
@@ -189,17 +191,14 @@ public:
     virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19(); virtual void s20();
     virtual void s21(); virtual void s22(); virtual void s23();
     virtual void vfunc_24(bool);
-    void FUN_1422c0180(unsigned, unsigned);
 };
-class Unk_BuddyInput { public: virtual unsigned vfunc_0(); int FUN_14070fe80(); void FUN_140715280(unsigned); };
-class Unk_RewardOtherDialog : public UIDialog { public: void FUN_1419f6a70(int, CStringW, int); };
+class ClonePC { public: void FUN_1410885b0(bool b); };   // clonepc.h brings a PC that clashes with this unit's PC view
+class Unk_BuddyInput { public: virtual unsigned vfunc_0(); };
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW GetStringCommon(int);
-CString FUN_14031c9d0(unsigned);
-CStringW FUN_14062b4f0(CStringW, const int*);
 void FUN_141275260(int, int, int);
 void FUN_140961010(int, int, int, const CStringW&);
 int FUN_141276180(const CString&, const CString&);
@@ -269,8 +268,8 @@ void UIDungeonClosingPhotoDialog::OnLoadComplete()
         int x = 0, y = 0;
         unsigned scale = 100;
         FUN_140e10010(x, y, scale, (int)(i + 1), n);
-        static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->FUN_1422c00f0((float)x, (float)y);
-        static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->FUN_1422c0180(scale, scale);
+        static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->SetPositionFloat((float)x, (float)y);
+        static_cast<ASDisplayObject*>(static_cast<Unk_ClosingClip*>(e.m_clip.operator->()))->SetScaleInt(scale, scale);
         static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->vfunc_24(1);
         FUN_140e102b0(&e);
     }
@@ -331,11 +330,11 @@ bool UIDungeonClosingPhotoDialog::vfunc_17()
 void UIDungeonClosingPhotoDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (static_cast<Unk_BuddyInput*>(p)->FUN_14070fe80() == 0x61) {
+    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x61) {
         unsigned pos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         Unk_BuddyResponse r;
         r.FUN_1407a3cc0(*static_cast<Unk_BuddyInput*>(p));
-        static_cast<Unk_BuddyInput*>(p)->FUN_140715280(pos);
+        static_cast<CInPacket*>(p)->SetOffset(pos);
         FUN_140e10800(r.result, r.name);
     }
 }
@@ -396,16 +395,16 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
         CStringW text;
         if (value > 0) {
             switch (type) {
-            case 0: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_damage"), &value); break;
-            case 1: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_heal"), &value); break;
-            case 2: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_hit_count"), &value); break;
-            case 3: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_boss_last_hit"), &value); break;
-            case 4: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_move_distance"), &value); break;
-            case 5: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_critical_damage"), &value); break;
-            case 6: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_max_critial_damage"), &value); break;
-            case 7: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_monster_kill"), &value); break;
-            case 8: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_be_hit_count"), &value); break;
-            case 9: text = FUN_14062b4f0(CStringW(L"s_dungeon_record_accum_default_skill_damage"), &value); break;
+            case 0: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_damage"), value); break;
+            case 1: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_heal"), value); break;
+            case 2: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_hit_count"), value); break;
+            case 3: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_boss_last_hit"), value); break;
+            case 4: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_move_distance"), value); break;
+            case 5: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_critical_damage"), value); break;
+            case 6: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_max_critial_damage"), value); break;
+            case 7: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_monster_kill"), value); break;
+            case 8: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_be_hit_count"), value); break;
+            case 9: text = FUN_14028dfa0(CStringW(L"s_dungeon_record_accum_default_skill_damage"), value); break;
             }
         }
         if (m_entries.size() < 10) {
@@ -413,10 +412,9 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             if (player == 0)
                 continue;
             UIAvatarPC* av = new UIAvatarPC(player, false);
-            Unk_ClosingActor* actor = av->FUN_1418bd1d0();
-            actor->vfunc_76(player->vfunc_77());
+            av->FUN_1418bd1d0()->vfunc_76(player->vfunc_77());
             av->FUN_1418bd1d0()->FUN_140e11d00();
-            av->FUN_1418bd1d0()->FUN_1410885b0(true);
+            reinterpret_cast<ClonePC*>(av->FUN_1418bd1d0())->FUN_1410885b0(true);
             reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->FUN_1418bd1d0())->FUN_14165f460())->FUN_141270610();
             av->vfunc_1(this);
             Unk_ClosingEntry entry;
@@ -430,20 +428,25 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
     }
     m_1bc = reinterpret_cast<Unk_ClosingWorld*>(WorldService::GetInstance())->FUN_141bd3060();
     unsigned flag = 0;
-    if (res == 1) {
-        Unk_RewardOtherDialog* dlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
+    switch (res) {
+    case 1: {
+        UIMassiveEvent* dlg = FUN_140e01890(0x4e4c);
         if (dlg) {
             flag = 2000;
             ChromaSDK::GetChromaManager()->SetState(9);
-            dlg->FUN_1419f6a70(5, GetStringCommonByKey(CStringW(L"s_room_dungeon_clear")), 2000);
+            dlg->FUN_1419f6a70(5, GetStringCommonByKey(L"s_room_dungeon_clear"), 2000);
             FUN_141276180(s_winSound, "");
         }
-    } else if (res == 2) {
-        Unk_RewardOtherDialog* dlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
+        break;
+    }
+    case 2: {
+        UIMassiveEvent* dlg = FUN_140e01890(0x4e4c);
         if (dlg) {
             flag = 2000;
-            dlg->FUN_1419f6a70(7, GetStringCommonByKey(CStringW(L"s_room_dungeon_fail")), 2000);
+            dlg->FUN_1419f6a70(7, GetStringCommonByKey(L"s_room_dungeon_fail"), 2000);
         }
+        break;
+    }
     }
     if (flag > 0)
         FUN_140e0fcf0(2000);
@@ -467,34 +470,35 @@ void UIDungeonClosingPhotoDialog::ClearEntries()
 void UIDungeonClosingPhotoDialog::FUN_140e0f790()
 {
     for (size_t i = 0; i < m_entries.size(); ++i) {
-        Unk_ClosingEntry& e = m_entries[i];
-        if (e.m_clip == 0)
+        if (m_entries[i].m_clip == 0)
             continue;
-        UIAvatarPC* av = e.m_avatar;
-        Unk_ClosingActor* actor = av ? av->FUN_1418bd1d0() : 0;
+        UIAvatarPC* av = m_entries[i].m_avatar;
+        if (!av)
+            continue;
+        Unk_ClosingActor* actor = av->FUN_1418bd1d0();
         if (!actor)
             continue;
-        MS2Ptr<ASMovieClip> info = e.m_clip->FUN_1409b4560("m_characterInfo");
-        if (info.get() == 0)
+        MS2Ptr<ASMovieClip> info = m_entries[i].m_clip->FUN_1409b4560("m_characterInfo");
+        if (info == 0)
             return;
         MS2Ptr<ASMovieClip> charInfo = info->FUN_1409b4560("m_charInfo");
         if (charInfo.get()) {
-            FUN_140cfee80(charInfo->FUN_1422bb890(), "m_charName", actor->vfunc_77());
+            FUN_140cfee80((*charInfo).FUN_1422bb890(), "m_charName", actor->vfunc_77());
             Unk_ClosingJob job = actor->FUN_141654730();
             CString jobStr = StringFormat("_{0}", job);
-            FUN_140cffca0(charInfo->FUN_1422bb890(), "m_jobMovie", jobStr);
+            FUN_140cffca0((*charInfo).FUN_1422bb890(), "m_jobMovie", jobStr);
         }
         MS2Ptr<ASMovieClip> rank = info->FUN_1409b4560("m_rank");
         if (rank.get()) {
-            if (e.m_rank < 0) {
-                rank->vfunc_4(false);
-            } else {
-                CString rankStr = FUN_14031c9d0((unsigned)e.m_rank);
+            if (m_entries[i].m_rank >= 0) {
+                CString rankStr = GetRankName(m_entries[i].m_rank);
                 rank->vfunc_4(true);
                 rank->vfunc_15(rankStr);
+            } else {
+                rank->vfunc_4(false);
             }
         }
-        FUN_140cfee80(info->FUN_1422bb890(), "m_etcInfo", e.m_text);
+        FUN_140cfee80((*info).FUN_1422bb890(), "m_etcInfo", m_entries[i].m_text);
     }
 }
 

@@ -4,9 +4,9 @@
 // global printf options. The profiler class (Unk_StepProfiler) is declared in ms2.h; only its ctor/dtor are defined here.
 // MS2-UNIT: unit_1402e1070
 // MS2-RANGE: 0x1402e1070-0x1402e12c0 .text$mn
-// Unk_StepProfiler adds no virtuals of its own, so its vftable is ICF-folded onto CLockCriticalSection's (the exe's ctor
-// stores 0x142ce6750 only), leaving no distinct RTTI vftable in the exe for the obj-emitted ??_7 to pair with.
-// MS2-PIN: ??_7Unk_StepProfiler@@6B@ 0x142ce6750
+// Unk_StepProfiler holds its CLockCriticalSection as the first member, not as a base: the exe's ctor/dtor store no
+// vftable of their own (0x142ce6750 is stored by the lock's ctor), and the dtor is non-virtual.
+// MS2-PIN: ??1Unk_StepProfiler@@QEAA@XZ 0x1402e1260
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/ms2.h"

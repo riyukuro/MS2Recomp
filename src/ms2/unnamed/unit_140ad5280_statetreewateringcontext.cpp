@@ -22,8 +22,8 @@
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-// A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 of this obj; Get is FUN_1402056b0).
-class Unk_SSGConstValue { public: int* FUN_1402056b0(); int FUN_140ad5c50(); };
+// A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 of this obj; Get is Value<int>::Get).
+class Unk_SSGConstValue { public: int FUN_140ad5c50(); };
 
 class Unk_StateDataArg                                   // the state-sync record (slots 1/2 of StateData)
 {
@@ -50,7 +50,7 @@ class Unk_TwBuffMgr { public: };
 // @0x140ad5c50
 int Unk_SSGConstValue::FUN_140ad5c50()
 {
-    return *FUN_1402056b0();
+    return *reinterpret_cast<Common::Constants::Value<int>*>(this)->Get();
 }
 
 // ---- StateTreeWateringData ----
@@ -158,7 +158,6 @@ void StateTreeWatering::vfunc_5(int n)
 }
 
 // @0x140ad58a0
-// MS2-FUNCTIONAL: the exe lays the state-point copies out in different stack slots (kPos above kArg)
 void StateTreeWatering::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
@@ -182,9 +181,8 @@ void StateTreeWatering::vfunc_8(double fTime)
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
     Unk_TwBuffMgr* pBuff = ((class Unk_TwBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
-    Vector3 kPos = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290();
-    Vector3 kArg = kPos;
-    pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
+    pRider->vfunc_22(reinterpret_cast<const efd::Point3&>(
+        static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else

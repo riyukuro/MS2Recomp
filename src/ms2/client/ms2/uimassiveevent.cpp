@@ -96,7 +96,7 @@ void UIMassiveEvent::vfunc_43()
     if (spRoot.get())
     {
         spRoot->vfunc_2(5, 0, 0);
-        float fScale = reinterpret_cast<Unk_ExpUiScale*>((class GFxManager*)((FUN_14025e7a0())))->FUN_1422afec0(m_28);
+        float fScale = reinterpret_cast<Unk_ExpUiScale*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
         reinterpret_cast<AScript*>(spRoot.operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
         spRoot->vfunc_3(1);
     }

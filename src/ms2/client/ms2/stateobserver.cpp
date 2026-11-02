@@ -55,6 +55,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uihudentity.h"
+#include "ms2/client/ms2/fielddatacli.h"
 
 // ---- unit statics (.text$di): three statics ahead of the shared header statics ----
 
@@ -89,7 +90,6 @@ class Unk_PCBaseComp_a78 : public CPtred
 {
 public:
 };
-class Unk_FieldRef : public CPtred {};                      // the current map record (only null-tested here)
 
 // The notice the pvp kill log posts (NotifyKillPlayer in scenestategame.cpp): the two names behind the NotifyObject.
 struct Unk_ObsKillView
@@ -107,8 +107,6 @@ class Unk_ObsWorld
 public:
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);                // the proxy of a player by id
     MS2Ptr<CProxyGameObject> FUN_141bc9d60(const CStringW& strName);    // the proxy of a player by name
-    MS2Ptr<Unk_FieldRef> FUN_141bd30a0();                               // the current map
-    Unk_ObsProxyMap* FUN_141bc9fb0();                                   // the proxy table
 };
 
 class UIDamageEffect : public UIObject
@@ -155,7 +153,7 @@ static void FUN_140ac4fe0(std::vector<__int64>& ids)
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
-    Unk_ObsProxyMap* pMap = pWorld->FUN_141bc9fb0();
+    Unk_ObsProxyMap* pMap = reinterpret_cast<Unk_ObsProxyMap*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9fb0());
     for (POSITION pos = pMap->GetStartPosition(); pos != 0; pMap->GetNext(pos))
     {
         MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
@@ -179,7 +177,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return 0;
-    MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->FUN_141bd30a0();
     if (spMap.IsNull())
         return 0;
     PCBase* pPlayer = reinterpret_cast<PCBase*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0cc0());
@@ -187,7 +185,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
         return 0;
     float fBest = FLT_MAX;
     MS2Ptr<CProxyGameObject> spBest;
-    Unk_ObsProxyMap* pMap = pWorld->FUN_141bc9fb0();
+    Unk_ObsProxyMap* pMap = reinterpret_cast<Unk_ObsProxyMap*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9fb0());
     for (POSITION pos = pMap->GetStartPosition(); pos != 0; pMap->GetNext(pos))
     {
         MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
@@ -413,7 +411,7 @@ void StateObserver::FUN_140ac45e0()
         pDamage->FUN_141910660();
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
-        pInfo->FUN_1419f1d10(8, false);
+        pInfo->SetHideReason(8, false);
     reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e43, 0);
     reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e28, 0);
     reinterpret_cast<NotifySystem *>(FUN_140939a10())->RegisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
@@ -433,7 +431,7 @@ void StateObserver::FUN_140ac4760()
         pDamage->FUN_141910700();
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo != 0)
-        pInfo->FUN_1419f1d10(8, true);
+        pInfo->SetHideReason(8, true);
     reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e43, 1);
     reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e28, 1);
     reinterpret_cast<NotifySystem *>(FUN_140939a10())->UnregisterNotify(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
@@ -544,7 +542,7 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
         ObserveOther();
         return;
     }
-    MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->FUN_141bd30a0();
     if (spMap.IsNull())
         return;
     MS2Ptr<CProxyGameObject> spKiller = pWorld->FUN_141bc9d60(strKiller);

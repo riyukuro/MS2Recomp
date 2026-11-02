@@ -176,7 +176,7 @@ class Unk_KtRuleFlags { public: int FUN_1402c4c90(int nRule); };
 class Unk_KtRules { public: unsigned char m_pad[8]; Unk_KtRuleFlags m_flags; };
 Unk_KtRules* FUN_14025e7b0();
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text (second table)
-void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);   // message box
+void FUN_140d73aa0(CStringW strMsg, int nType, void* pListener, CStringW strTag);   // message box
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
 int UseItem(MS2Ptr<CItem> spItem, int nMode);              // 0x140d1bd60
 int FUN_140dffeb0(ItemFunctionArgs* pArgs);                 // the ugc event item command
@@ -880,7 +880,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         {
             UIGameMenuDialog* pPopup = FUN_140938b90(0x4e28);
             if (pPopup != 0)
-                pPopup->FUN_14193bdf0();
+                pPopup->OpenLearningQuestDialog();
         }
         break;
     case 400031:

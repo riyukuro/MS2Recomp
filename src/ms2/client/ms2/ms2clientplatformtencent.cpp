@@ -45,7 +45,7 @@ bool FUN_1407105c0(COutPacket& packet, int nKind, int nParam);
 int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_1412751b0(const CStringW& strText, int nKind);
 CStringW FUN_1409404f0(__int64 nValue);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int nStringId);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_1409304d0(__int64 nValue, int a, int b, int c);
@@ -174,14 +174,14 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         if (nDelta > 0) {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
-                pNotify->FUN_141ac0860(nDelta);
+                pNotify->ShowMeratNotice(nDelta);
             FUN_141276180("Merat_Get", "");
             CStringW strDelta = FUN_1409404f0(nDelta);
-            FUN_1412751b0(FUN_14052bd00(0x2c7, strDelta), 6);
+            FUN_1412751b0(FormatStringId<CStringW>(0x2c7, strDelta), 6);
         } else if (nDelta < 0) {
             FUN_141276180("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
-            FUN_1412751b0(FUN_14052bd00(0x2d9, strDelta), 6);
+            FUN_1412751b0(FormatStringId<CStringW>(0x2d9, strDelta), 6);
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba))
                 FUN_1412751b0(BlockFormat(0x2db), 6);
         }
@@ -196,14 +196,14 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         if (nDelta > 0) {
             UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
-                pNotify->FUN_141ac0990(nDelta);
+                pNotify->ShowMeratRedNotice(nDelta);
             FUN_141276180("Merat_Get", "");
             CStringW strDelta = FUN_1409404f0(nDelta);
-            FUN_1412751b0(FUN_14052bd00(0x2c8, strDelta), 6);
+            FUN_1412751b0(FormatStringId<CStringW>(0x2c8, strDelta), 6);
         } else if (nDelta < 0) {
             FUN_141276180("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
-            FUN_1412751b0(FUN_14052bd00(0x2da, strDelta), 6);
+            FUN_1412751b0(FormatStringId<CStringW>(0x2da, strDelta), 6);
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba))
                 FUN_1412751b0(BlockFormat(0x2db), 6);
         }

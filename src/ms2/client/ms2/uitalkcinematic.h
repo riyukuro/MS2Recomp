@@ -52,14 +52,14 @@ public:
     void FUN_141b1b000(Unk_TalkItemList& rItems, const CStringW& strTitle, const CStringW& strMood, const CStringW& strAffinityExp, int nJackpot);   // maid reward page
     int FUN_141b1b440(CCinematicContent* pContent, int bLast);                  // show a page (nonzero: shown)
     void FUN_141b1b8b0();                                           // clear the page and close the window
-    void FUN_141b1b9f0();                                           // the skip button
-    void FUN_141b1bad0();                                           // focus up
-    void FUN_141b1bb80();                                           // focus down
-    void FUN_141b1bc30();                                           // select
+    void SkipTalk();                                           // the skip button
+    void FocusUp();                                           // focus up
+    void FocusDown();                                           // focus down
+    void SelectOption();                                           // select
     void FUN_141b1bce0(int nMsg);                                   // forward a key to the page component
-    void FUN_141b1be50();                                           // firework effect
-    void FUN_141b1beb0(CString strImage);                           // remember a loaded reward image (by value: destroyed by the callee)
-    void FUN_141b1bf00();                                           // release the reward images
+    void PlayFireworkEffect();                                           // firework effect
+    void AddImage(CString strImage);                           // remember a loaded reward image (by value: destroyed by the callee)
+    void ClearImages();                                           // release the reward images
     void SetKeyGroup(unsigned nKeyGroup);                         // 0x141b1bf80
     void FUN_141b1bfa0();                                           // 0x141b1bfa0 default key group
     int GetLoaded();                                            // 0x141b1bfc0

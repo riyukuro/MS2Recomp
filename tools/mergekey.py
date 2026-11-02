@@ -42,7 +42,7 @@ def game_stamp():
     if "game" not in _memo:
         files, es = _common()
         files += [os.path.join(ROOT, "tools", "progress.py")]
-        env = "".join(f"{k}={os.environ.get(k, '')};" for k in ("MS2_NO_ICF_FOLD", "MS2_NO_MULTICOPY", "MS2_GUESS_LOOKALIKES"))
+        env = "".join(f"{k}={os.environ.get(k, '')};" for k in ("MS2_NO_ICF_FOLD", "MS2_NO_MULTICOPY", "MS2_GUESS_LOOKALIKES", "MS2_GUESS_PROVE"))
         _memo["game"] = _hash(files, es + env)
     return _memo["game"]
 

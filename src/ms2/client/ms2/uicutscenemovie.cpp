@@ -204,12 +204,12 @@ void UICutSceneMovie::SetSoundFade(bool bFade)
     const int nFadeTime = 1000;
     if (bFade) {
         reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
-        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177dea0(2, nFadeTime);
-        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177dea0(1, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeOut(2, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeOut(1, nFadeTime);
     } else {
         reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()->FUN_14125fe20();
-        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177ddf0(2, nFadeTime);
-        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->FUN_14177ddf0(1, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeIn(2, nFadeTime);
+        TSingleton<CSoundEventMgr>::GetInstance()/*C3:TSingleton<CSoundEventMgr>::GetInstance*/->StartFadeIn(1, nFadeTime);
     }
     m_bSoundFaded = bFade;
 }
@@ -245,7 +245,7 @@ MS2_REPLACE_METHOD(0x14190F400, UICutSceneMovie, OnLoadInit, 253, 0x31B35ED8);
 // @0x14190f510
 int UICutSceneMovie::vfunc_13()
 {
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->FUN_1422bfca0() &&
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && (m_pExit.get() ? true : false) && reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible() &&
         FUN_14151f6e0()) {
         FUN_140d73bc0(0x88c, 1, this, L"");
         return 1;
@@ -260,7 +260,7 @@ void UICutSceneMovie::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30.IsNull())
         return;
-    if (m_bIntroStory && (m_pExit.get() ? true : false) && !reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->FUN_1422bfca0()) {
+    if (m_bIntroStory && (m_pExit.get() ? true : false) && !reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible()) {
         if (MS2Ptr<Unk_ASVideoPlayer> pPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
             if (pPlayer->FUN_1422e9540() >= reinterpret_cast<float&>(reinterpret_cast<Unk_IntOptionEntry*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_3c00)->FUN_140298f40()))
                 ShowSkipButton();
@@ -412,7 +412,7 @@ bool UICutSceneMovie::PlaySwf()
         return false;
     Unk_140d13c70* pSound = reinterpret_cast<Unk_1409a8b10*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
     if (pSound)
-        FUN_14025e7a0()->FUN_1422afdd0(pSound->m_bMute ? 0.0f : pSound->FUN_1412602e0());
+        FUN_14025e7a0()->SetMasterVolume(pSound->m_bMute ? 0.0f : pSound->FUN_1412602e0());
     m_30->Invoke("playSwfMovie", m_strPath);
     return true;
 }

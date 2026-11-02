@@ -56,7 +56,8 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: the real return type (cachedat
 class Unk_PoCameraUI : public UIDamageText                                            // the spectator camera buttons (UI 0x4e32)
 {
 };
-Unk_PoCameraUI* FUN_140b624b0(int nUiId);
+class UIDamageText;
+template <class T> T* Unk_DmgFindUI(int nId);
 
 bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);
@@ -109,7 +110,7 @@ void UIPvPObserverDialog::vfunc_67()
         m_1d0 = 0;
     }
     if (m_1d5 != false) {
-        Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
+        Unk_PoCameraUI* pCamera = reinterpret_cast<Unk_PoCameraUI*>(Unk_DmgFindUI<UIDamageText>(0x4e32));
         if (pCamera != 0) {
             pCamera->SetObserver(false);
             __int64 nNone = 0;
@@ -190,12 +191,12 @@ int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     else if (_stricmp("onObserveLeft", szMethod) == 0) {
         PC* pTarget = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_178.m_nCharId));
         if (pTarget != 0)
-            pMe->FUN_14152a4a0(pTarget);
+            pMe->StartObserving(pTarget);
     }
     else if (_stricmp("onObserveRight", szMethod) == 0) {
         PC* pTarget = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(m_1a0.m_nCharId));
         if (pTarget != 0)
-            pMe->FUN_14152a4a0(pTarget);
+            pMe->StartObserving(pTarget);
     }
     else if (_stricmp("onObserveCenter", szMethod) == 0) {
         pMe->FUN_14152a640(m_1c8);
@@ -327,7 +328,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
         m_1a0.m_nShownWins = m_1a0.m_nWins;
     }
     if (m_1d5 != false) {
-        Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
+        Unk_PoCameraUI* pCamera = reinterpret_cast<Unk_PoCameraUI*>(Unk_DmgFindUI<UIDamageText>(0x4e32));
         if (pCamera != 0) {
             pCamera->SetObserver(true);
             if (!bObservableA && !bObservableB)

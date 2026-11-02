@@ -112,7 +112,7 @@ void BlackMarketPageMesoSearch::OnInit()
             ASObj row(2);
             ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c1180("meso", nUnit);
-            list.FUN_1422bc050(row.FUN_1422bb890());
+            list.PushValue(row.FUN_1422bb890());
         }
         m_spSearchBegin->SetDataProvider(list.FUN_1422bb870());
         m_spSearchBegin->SetSelectedIndex(0);
@@ -330,7 +330,7 @@ void BlackMarketPageMesoSearch::UpdateMerat()
         return;
     if (m_58.CompareNoCase("m_mesoSearchPage") != 0)
         return;
-    CStringW strText = StringFormat(L"{0}  {1}", FUN_14025e7a0()->FUN_1422b0570("$s_mesoMarket_myMerat"), FUN_1409404f0(FUN_140930300()));
+    CStringW strText = StringFormat(L"{0}  {1}", FUN_14025e7a0()->Localize("$s_mesoMarket_myMerat"), FUN_1409404f0(FUN_140930300()));
     m_20->Invoke("UpdateMerat", strText);
 }
 MS2_REPLACE_METHOD(0x140F1A420, BlackMarketPageMesoSearch, UpdateMerat, 371, 0x964E65C5);
@@ -435,7 +435,7 @@ void BlackMarketPageMesoRegister::OnInit()
         m_spMesoDropdown->FUN_1422df9a0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c900), 0);
     m_30->FUN_140bbe940("m_mesoSingleRange", m_spSingleRange);
     if (m_30->FUN_140bbe940("m_buyMerat", m_spBuyMerat))
-        m_spBuyMerat->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c930));
+        m_spBuyMerat->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c930));
     if (m_30->FUN_140bbe640("m_register", m_spRegister))
         m_spRegister->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &BlackMarketPageMesoRegister::FUN_140f1c3b0), 0);
     if (m_30->FUN_140bbe640("m_prevPage", m_spPrevPage))
@@ -453,7 +453,7 @@ void BlackMarketPageMesoRegister::OnInit()
             ASObj row(2);
             ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c1180("meso", nUnit);
-            list.FUN_1422bc050(row.FUN_1422bb890());
+            list.PushValue(row.FUN_1422bb890());
         }
         m_spMesoDropdown->SetDataProvider(list.FUN_1422bb870());
         m_spMesoDropdown->SetSelectedIndex(0);
@@ -599,7 +599,7 @@ void BlackMarketPageMesoRegister::FUN_140f1c930(const Scaleform::GFx::FunctionHa
     Unk_MesoLimits& limits = CMesoMarketMan::GetInstance()->GetLimits();
     __int64 nValue = FUN_140718320(FUN_14083cf10(m_spBuyMerat->GetText()));
     if (nValue > limits.m_nMax)
-        m_spBuyMerat->FUN_1422e0ab0(FUN_140763e10(limits.m_nMax));
+        m_spBuyMerat->SetTextW(FUN_140763e10(limits.m_nMax));
     FUN_140f1d5b0();
 }
 MS2_REPLACE_METHOD(0x140F1C930, BlackMarketPageMesoRegister, FUN_140f1c930, 315, 0x4D803DB7);
@@ -655,7 +655,7 @@ void BlackMarketPageMesoRegister::FUN_140f1cc00()
         if (m_spSingleRange)
         {
             m_spSingleRange->vfunc_3(1);
-            m_spSingleRange->FUN_1422e0ab0(FUN_1409404f0(FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0)));
+            m_spSingleRange->SetTextW(FUN_1409404f0(FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0)));
         }
     }
     MS2Ptr<ASTextField> spFee;
@@ -679,7 +679,7 @@ void BlackMarketPageMesoRegister::ResetInputs()
     if (m_spMesoDropdown)
         m_spMesoDropdown->SetSelectedIndex(0);
     if (m_spBuyMerat)
-        m_spBuyMerat->FUN_1422e0ab0(L"0");
+        m_spBuyMerat->SetTextW(L"0");
 }
 MS2_REPLACE_METHOD(0x140F1CF70, BlackMarketPageMesoRegister, ResetInputs, 159, 0x3467551F);
 
@@ -745,7 +745,7 @@ void BlackMarketPageMesoRegister::FUN_140f1d5b0()
     FUN_140cfee80(m_30->FUN_1422bb870(), "m_totalPrice", FUN_1409404f0(nTotal));
     __int64 nFee = (__int64)((float)nTotal * limits.m_fRateA);
     __int64 nAfterTax = nTotal - nFee;
-    m_spAfterTaxMerat->FUN_1422e0ab0(FUN_1409404f0(nAfterTax));
+    m_spAfterTaxMerat->SetTextW(FUN_1409404f0(nAfterTax));
 }
 MS2_REPLACE_METHOD(0x140F1D5B0, BlackMarketPageMesoRegister, FUN_140f1d5b0, 369, 0x7D0D3B99);
 
@@ -838,9 +838,9 @@ MS2_REPLACE_METHOD(0x140F1DFA0, BlackMarketPageMesoRegister, FUN_140f1dfa0, 236,
 inline void ASDataProvider::FUN_140f1fd70(unsigned nIndex, const CString& strMember, __int64* pOut)
 {
     AScript row = FUN_1422df140(nIndex);
-    if (row.FUN_1422ba9a0())
+    if (row.IsUndefinedOrNull())
         return;
-    row.FUN_1422bb070(strMember, pOut);
+    row.TryGetInt64(strMember, pOut);
 }
 
 // @0x140f1fe00

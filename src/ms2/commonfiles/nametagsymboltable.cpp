@@ -85,11 +85,12 @@ class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: me
 
 class Unk_NametagTitles { public: int FUN_140408410(const unsigned int* pCode); };   // the owned titles
 extern Unk_NametagTitles DAT_143ab3268;
-class Unk_NametagScore { public: int FUN_140267c10(); };    // the trophy points
+class Unk_IntTriple { public: int Sum(); };
+class Unk_NametagScore : public Unk_IntTriple {};    // the trophy points
 class Unk_NametagTrophy { public: Unk_NametagScore* FUN_140938ad0(); };
-extern Unk_NametagTrophy* DAT_143ab0668;
+class CAchieveManager;
 struct Unk_NametagFlags { char m_pad[0x30]; unsigned char m_bEnabled; };
-extern Unk_NametagFlags* DAT_143ab0468;
+class MentoringDataTable;
 Unk_NametagTrophy* FUN_1406c7600();
 Unk_NametagFlags* FUN_1406c7610();
 
@@ -245,7 +246,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         case NAMETAG_CONDITION_LEVEL:
             return pActor->vfunc_78() >= 50;
         case NAMETAG_CONDITION_TROPHY_POINT:
-            return FUN_1406c7600()->FUN_140938ad0()->FUN_140267c10() >= 1000;
+            return FUN_1406c7600()->FUN_140938ad0()->Sum() >= 1000;
         case NAMETAG_CONDITION_TITLE:
             return DAT_143ab3268.FUN_140408410(&spData->m_nCode) != -1;
         case NAMETAG_CONDITION_ENCHANT:
@@ -313,9 +314,9 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
         MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(((void*)WorldService::GetInstance()))->FUN_141bc9be0(((class GameObject*)(class Unk_NametagActor*)(pActor))->FUN_14123c580());
         if (spChar.get() != 0)
         {
-            if (spChar->m_score.FUN_140267c10() < 2000)
+            if (spChar->m_score.Sum() < 2000)
                 strIcon += L"1000";
-            else if (spChar->m_score.FUN_140267c10() < 3000)
+            else if (spChar->m_score.Sum() < 3000)
                 strIcon += L"2000";
             else
                 strIcon += L"3000";
@@ -441,13 +442,13 @@ int Unk_NametagActor::GetGmGrade()
 // @0x1406c7600
 Unk_NametagTrophy* FUN_1406c7600()
 {
-    return DAT_143ab0668;
+    return reinterpret_cast<Unk_NametagTrophy*>(TSingleton<CAchieveManager>::s_instance);
 }
 
 // @0x1406c7610
 Unk_NametagFlags* FUN_1406c7610()
 {
-    return DAT_143ab0468;
+    return reinterpret_cast<Unk_NametagFlags*>(TSingleton<MentoringDataTable>::s_instance);
 }
 
 // @0x1406c82c0

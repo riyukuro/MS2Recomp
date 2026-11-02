@@ -493,16 +493,16 @@ private:
     int m_nPvPState;                                        // +0x100
     int m_nPvPArg;                                          // +0x104
 };
-class Unk_SSGProfile
+// The web browser service (client\ms2\webbrowserservice.cpp); only the members this unit calls.
+class CWebBrowserService
 {
 public:
-    static void FUN_141b77e50(const CString& str);
-    static void FUN_141b77e90(const CString& str);
-    static void FUN_141b77ed0(const CString& str);
+    static void SetMaviewUrl(const CString& strUrl);
+    static void SetWebApiUrl(const CString& strUrl);
+    static void AddAllowedUrls(const CString& strUrls);
     void FUN_141b794e0(CString& strOut, const char* pszUrl);  // resolve the url macros
     void FUN_141b78cf0(int nType, const CString& strUrl);  // open the url externally
 };
-class CWebBrowserService;
 UIServerListDialog* FUN_14136f520(int nId);
 class Unk_SSG1c0d90 : public CGameRule { public: MS2Ptr<class Unk_SnowmanContext> FUN_14047d050(); };   // game rules (the two are pet-taming event checks)
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
@@ -588,7 +588,7 @@ extern int DAT_143ab2890;
 UITalkManager* FUN_140967100();
 class Unk_SSG9331e0 : public CGuideManager { public:  };
 Unk_SSG9331e0* FUN_1409331e0();
-class Unk_SSGSoundCtl { public: void FUN_1422ba0d0(); void FUN_1422b9fd0(int nId); UISwfEntity* FUN_1422b9e20(int nId); UISwfEntity* FUN_1422b9e80(); };
+class Unk_SSGSoundCtl { public: void FUN_1422b9fd0(int nId); UISwfEntity* FUN_1422b9e20(int nId); UISwfEntity* FUN_1422b9e80(); };
 class Unk_SSG931510 : public CMyCharacter { public: MS2Ptr<class Unk_SSGDungeonRecord> FUN_140d9f2c0(); MS2Ptr<class Unk_SSGChatEmoticon> FUN_140d9f8f0(); };
 void FUN_1412b9870(int nId, int nType);
 
@@ -696,20 +696,9 @@ public:
     virtual void vfunc_125(int n);                          // 125 (called with 1 on packet 0x57)
     MS2Ptr<Unk_SSGNpcData> FUN_141093270();                 // the npc table row
     void FUN_1410932c0(int n);
-    void FUN_1410918e0(CByteBuffer& buf);                   // apply a sync block
     void FUN_14174a560(char c) { m_ce50 = c; }
-    void FUN_141092c50(CInPacket& packet);
-    void FUN_141094df0(__int64 nExp);                       // pet/npc exp gain
-    void FUN_141094790(__int64 n);
     void FUN_14174a580(unsigned short n) { m_ne58 = n; }
     void FUN_14174a4f0(int n) { m_nea8 = n; }
-    void FUN_141095190(const CString& strName);
-    void FUN_141094f90(CString strModel);
-    void FUN_1410951d0(const CString& strScript);           // 0xe8 mode 2
-    void FUN_141095290(int n);
-    void FUN_141095240(__int64 n);
-    void FUN_1410952b0(bool b);
-    int FUN_141092ff0();                                    // nonzero: the npc carries a custom model block
 
     char m_pad_d40[0xe50 - 0xd40];
     char m_ce50;                                            // +0xe50
@@ -721,6 +710,16 @@ public:
 MS2_CHECK_OFFSET(Unk_SSGNpc, m_ce50, 0xe50);
 MS2_CHECK_OFFSET(Unk_SSGNpc, m_ne58, 0xe58);
 MS2_CHECK_OFFSET(Unk_SSGNpc, m_nea8, 0xea8);
+// The equipment of a player (client\ms2\equipment.cpp); equipment.h clashes with the AdditionalCli views here.
+class CEquipment
+{
+public:
+    void SetLayerPeriod(const CMsTime& kStart, const CMsTime& kEnd);   // set the codi tab period
+    MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid);         // FindByUid
+    void FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer);   // move an item to another slot
+    void FUN_1411e7660();
+    void FUN_1411ea7c0();
+};
 class Unk_PCItemCooldowns { public: void FUN_140c86510(__int64 nItemUid); void FUN_140c86450(MS2Ptr<CItem> spItem); void FUN_140c860b0(CInputStream& stream, int nObjId); };
 // The item event hub (FUN_140a6a840); slots 5/21/23 are item notifications.
 class Unk_SSGItemHub
@@ -765,6 +764,7 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     class UISceneEntity* FUN_1422b9e50();
     int GetSubSceneId();
+    void FUN_1422ba0d0();
 };
 class UISceneEntity : public UISwfEntity { };
 class UISceneGameBeautyShop : public UISceneEntity { public: void FUN_141ac9270(); };
@@ -918,15 +918,17 @@ public:
     void FUN_140b10f90(unsigned short n);
     GameObject* FUN_140b10320();                            // the owner (the sound plays at it)
     void FUN_140b10c80(CStringW strName);
+    void FUN_140b11760(CString strEffect);                  // play an effect on the object
 
     char m_pad_eb0[0x10b0 - 0xeb0];
 };
 MS2_CHECK_SIZE(CPet, 0x10b0);
 extern int DAT_143ab2900;
 extern int DAT_143ab2918;
-class Unk_SSGDlg4e28 : public UIDialog { public: void FUN_141938ae0(int nId, int n); void FUN_141939620(); void FUN_140ea5f80(); void FUN_141938190(); void FUN_1419391c0();
-    void FUN_141937e00(int nMode); void FUN_141937e40(int nMode); };   // UIGameMenuDialog
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+class UIGameMenuDialog : public UIDialog { public: void FUN_141938ae0(int nId, int n); void FUN_141939620(); void FUN_141938190(); void FUN_1419391c0();
+    void FUN_141937e00(int nMode); void FUN_141937e40(int nMode); };
+class Unk_SSGDlg4e28 : public UIGameMenuDialog { public: void FUN_140ea5f80(); };   // def in uileveluppackagedialog
+UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 class Unk_MyPCSkillSlots : public CSkillSystem { public:
 };
 class Unk_MyPCStatPoints : public CStatPointManager { };
@@ -977,12 +979,16 @@ public:
 };
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 
-class Unk_SSGCommandLog
+class CLogString
+{
+public:
+    void FUN_1406530d0(int nCat, int nLevel, const wchar_t* pszFormat, const fmt::ArgList& args);
+};
+class Unk_SSGCommandLog : public CLogString
 {
 public:
     int FUN_1401859c0(int nType, int nValue, const wchar_t* pszText);
     void FUN_14015eb90(int nCat, int nLevel, const wchar_t* pszFormat, const CString& strArg);
-    void FUN_1406530d0(int nCat, int nLevel, const wchar_t* pszFormat, const fmt::ArgList& args);
     // fmt log line with two arguments (0x141740800 = <unsigned, Unk_SSGSkillUseError>).
     template <class A, class B> void Log(int nCat, int nLevel, const wchar_t* pszFormat, const A& a, const B& b)
     {
@@ -990,7 +996,7 @@ public:
         FUN_1406530d0(nCat, nLevel, pszFormat, fmt::ArgList(fmt::internal::make_type(a, b), values));
     }
 };
-class CLogString* GetLogString();   // C3: was FUN_140166440
+CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_SSGChatDialog : public UIRewardNotify { public: };
 Unk_SSGChatDialog* FUN_140938cd0(int nId);                  // GetDialog<UIChatDialog>
 class Unk_SSGMessengerBrowser : public UIMessengerBrowser { public: };
@@ -1069,11 +1075,11 @@ public:
     Unk_SSGNotifyInventory();                               // 0x141328cf0 (vftable 0x142eebd58)
 };
 MS2_CHECK_SIZE(Unk_SSGNotifyInventory, 0x18);
-class Unk_SSGDlgInv : public UIDialog { public: void FUN_141999f60(); void FUN_141999e00(); int FUN_141999de0(); void FUN_141999e50(); };
-class UIInventoryDialog;
+class UIInventoryDialog : public UIDialog { public: void FUN_141999f60(); void FUN_141999e00(); int FUN_141999de0(); void FUN_141999e50(); };
+class Unk_SSGDlgInv : public UIInventoryDialog {};
 template <class T> T* Unk_BreakDialog(int nId);   // the dialog of class T
 CStringW FUN_140d2e2b0(int nA, int nB, __int64 nC);
-CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 class UIEnchantScrollDialog : public UIDialog
 {
 public:
@@ -1103,7 +1109,7 @@ public:
     void FUN_140f48dc0(int bVisible);
 };
 extern template class MS2Ptr<Unk_PCBaseComp_a78>;           // instances live outside the unit (0x1405a89b0...)
-class UIMainPlayerInfo : public UIDialog { public: void FUN_1419f1d10(unsigned int nMask, bool bShow); void FUN_1419f2720(bool bArcade); };
+class UIMainPlayerInfo : public UIDialog { public: void SetHideReason(unsigned int nMask, bool bShow); void SetHideAndSeekSlotMode(bool bArcade); };
 UIMainPlayerInfo* FUN_140931900(int nId);                   // GetDialog<UIMainPlayerInfo>
 class UIHpBar : public UIDialog { };
 void FUN_1419929f0(int nActorId);                           // refresh the hp bar of an actor
@@ -1145,14 +1151,14 @@ public:
     __int64 FUN_140a66f20();
     void FUN_140a66f40(__int64);
     int FUN_140a67000();
-};
-class Unk_SSGInventory
-{
-public:
     MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);
     // 0x21 (item inventory updates)
     MS2Ptr<CItem> FUN_140a60280(int nTab, int nSlot);       // the item in a tab slot
     void FUN_140a66ae0(MS2Ptr<CItem> spItem);
+};
+class Unk_SSGInventory
+{
+public:
     // 0x25 (equip): the item the auto-install prompt was raised for
 };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_SSGInventory // the local player's inventory
@@ -1294,9 +1300,8 @@ private:
 };
 CStringW FormatStringId(int id, const fmt::ArgList& args);  // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);   // formatted system text
+template <class A> CStringW FormatStringId(int nId, const A& a);   // formatted system text
 CStringW FUN_1409404f0(__int64 nAmount);                    // money string
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text (util.cpp)
 CStringW BlockFormat(int nId);                                  // 0/1/2 -> same, else 6
 // The EP gauge of the HUD (?\uiepprogress.cpp).
 // MyPC's vftable as far as slot 88: MyPC overrides slot 88 to return its EP gauge (PCBase declares it as int).
@@ -2181,11 +2186,11 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
     CString str1 = packet.ReadUnicodeStringA();
     CString str2 = packet.ReadUnicodeStringA();
     CString str3 = packet.ReadUnicodeStringA();
-    if (reinterpret_cast<Unk_SSGProfile*>(TSingleton<CWebBrowserService>::GetInstance()) != 0)
+    if (TSingleton<CWebBrowserService>::GetInstance() != 0)
     {
-        reinterpret_cast<Unk_SSGProfile*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b77e50(str1);
-        reinterpret_cast<Unk_SSGProfile*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b77e90(str2);
-        reinterpret_cast<Unk_SSGProfile*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b77ed0(str3);
+        TSingleton<CWebBrowserService>::GetInstance()->SetMaviewUrl(str1);
+        TSingleton<CWebBrowserService>::GetInstance()->SetWebApiUrl(str2);
+        TSingleton<CWebBrowserService>::GetInstance()->AddAllowedUrls(str3);
     }
     UIServerListDialog* pDlg = FUN_14136f520(0x4ef0);
     if (pDlg != 0)
@@ -2413,7 +2418,7 @@ void CSceneStateGame::FUN_14170f930(CInPacket& packet)
     {
         FUN_140d73aa0(FUN_140cc20a0(nError), 0, 0, CStringW(L""));
     }
-    ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422ba0d0();
+    ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422ba0d0();
     if (DAT_143ab287c == 0xd)
         ((Unk_SSGSoundCtl*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200086);
 }
@@ -2652,10 +2657,10 @@ void CSceneStateGame::OnItemPutOnOrOff(CInPacket& packet)
         MyPC* pMyPC = FUN_1409613d0(((PC*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1290(nId)));
         if (pMyPC == 0)
             return;
-        MS2Ptr<CEquipItem> spEquip = pMyPC->FUN_1416561a0()->FUN_1411e1580(nItemUid);
+        MS2Ptr<CEquipItem> spEquip = ((CEquipment*)pMyPC->FUN_1416561a0())->FUN_1411e1580(nItemUid);
         if (!spEquip)
             return;
-        pMyPC->FUN_1416561a0()->FUN_1411e4150(nItemUid, nSlot, nKind);
+        ((CEquipment*)pMyPC->FUN_1416561a0())->FUN_1411e4150(nItemUid, nSlot, nKind);
         Unk_SSGItemHub* pHub = ((class Unk_SSGItemHub*)FUN_140a6a840());
         pHub->vfunc_22(spEquip->GetItem().get());
     }
@@ -2718,7 +2723,7 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
             ((CPetInventory*)(Unk_SSGStorage*)(((Unk_SSGStorage*)((CPetManager*)(Unk_SSG535320*)(((class Unk_SSG535320*)FUN_140535320())))->GetInventory())))->AddItem(spItem.get());
             ((class Unk_SSGItemHub*)FUN_140a6a840())->vfunc_5(spItem.get());
         }
-        MS2Ptr<CItem> spSelected = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(((class Unk_SSG535320*)FUN_140535320())->GetSummonUid());
+        MS2Ptr<CItem> spSelected = g_143ab2a90.FUN_140a5d680(((class Unk_SSG535320*)FUN_140535320())->GetSummonUid());
         if (spSelected.get() != 0)
             spSelected->FUN_140528c40(((Unk_SSGStorage*)((CPetManager*)(Unk_SSG535320*)(((class Unk_SSG535320*)FUN_140535320())))->GetInventory())->GetUsedSlotCount() > 0);
     }
@@ -2730,7 +2735,7 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
             return;
         ((CPetInventory*)(Unk_SSGStorage*)(((Unk_SSGStorage*)((CPetManager*)(Unk_SSG535320*)(((class Unk_SSG535320*)FUN_140535320())))->GetInventory())))->RemoveItem(nItemUid);
         ((class Unk_SSGItemHub*)FUN_140a6a840())->vfunc_6(spItem.get());
-        MS2Ptr<CItem> spSelected = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(((class Unk_SSG535320*)FUN_140535320())->GetSummonUid());
+        MS2Ptr<CItem> spSelected = g_143ab2a90.FUN_140a5d680(((class Unk_SSG535320*)FUN_140535320())->GetSummonUid());
         if (spSelected.get() != 0)
             spSelected->FUN_140528c40(((Unk_SSGStorage*)((CPetManager*)(Unk_SSG535320*)(((class Unk_SSG535320*)FUN_140535320())))->GetInventory())->GetUsedSlotCount() > 0);
     }
@@ -2895,7 +2900,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
         __int64 nItemUid = packet.ReadInt64();
         int nArg = packet.ReadInt32();
         CStringW strName = packet.ReadUnicodeString();
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.get() != 0)
         {
             spItem->FUN_1405268d0(1);
@@ -2912,7 +2917,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
             if (FUN_140166410()->FUN_14036d570(0xe8))
             {
                 if (spItem->FUN_140527840()->FUN_14053cbc0())
-                    reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a66ae0(spItem);
+                    g_143ab2a90.FUN_140a66ae0(spItem);
             }
         }
     }
@@ -2941,7 +2946,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     else if (nMode == 1)
     {
         __int64 nItemUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (!spItem)
             return;
         if (spItem->FUN_140526b90() >= 0)
@@ -2953,7 +2958,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
     {
         __int64 nItemUid = packet.ReadInt64();
         int nAmount = packet.ReadInt32();
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (!spItem)
             return;
         int nOld = spItem->GetCount();
@@ -2978,13 +2983,13 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
                 if (pDlg != 0)
                 {
                     int nTab = pDlg->FUN_141999de0();
-                    MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a60280(nTab, nSlot);
+                    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a60280(nTab, nSlot);
                     if (spItem.get() != 0)
                         ((class Unk_SSGItemHub*)FUN_140a6a840())->vfunc_2(spItem.get(), true);
                 }
                 continue;
             }
-            aspItem[i] = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+            aspItem[i] = g_143ab2a90.FUN_140a5d680(nItemUid);
             if (!aspItem[i])
                 continue;
             ((Unk_Inventory*)(Unk_SSGInventory*)&(reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90)))->FUN_140a5d390(nItemUid);
@@ -3019,7 +3024,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
         __int64 nItemUid = packet.ReadInt64();
         if (nItemUid != 0)
         {
-            MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
             if (spItem.get() != 0)
             {
                 spItem->FUN_140524eb0(packet);
@@ -3350,7 +3355,6 @@ MS2_REPLACE_METHOD(0x141717580, CSceneStateGame, OnUserBattle, 297, 0xF8FFE207);
 class Unk_SSGLinkedActor : public PCBase
 {
 public:
-    void FUN_140b11760(CString strEffect);                  // play an effect on the object
 };
 // @0x141717b40
 void CSceneStateGame::OnSkillUse(CInPacket& packet)
@@ -3401,7 +3405,7 @@ void CSceneStateGame::OnSkillUse(CInPacket& packet)
         Unk_SSGLinkedActor* pLinked;
         if (bEffect && (pLinked = static_cast<Unk_SSGLinkedActor*>(pActor->FUN_141676a10())) != 0)
         {
-            pLinked->FUN_140b11760(*Client::Constants::GetInstance()->PetEffectSkill.Get());
+            ((CPet*)pLinked)->FUN_140b11760(*Client::Constants::GetInstance()->PetEffectSkill.Get());
             pLinked->FUN_14166cc40(0x10);
         }
         MyPC* pMyPC = efd::DynamicCast<MyPC, PCBase>(pActor);
@@ -3524,7 +3528,7 @@ void CSceneStateGame::OnSkillUseFailed(CInPacket& packet)
         {
             pMyPC->FUN_141523bc0()->FUN_141765e70(nSkillId);
         }
-        pMyPC->FUN_141523bc0()->FUN_141768530(nSkillId, nValue);
+        pMyPC->FUN_141523bc0()->SetRechargeUsesById(nSkillId, nValue);
         if (((class Unk_SSGCommandLog*)GetLogString()) != 0)
             ((class Unk_SSGCommandLog*)GetLogString())->Log(0xb, 0x134, L"OnSkillUseFailed skillID :{0}, errorType :{1}", nSkillId, eError);
     }
@@ -3562,6 +3566,17 @@ class CNpc : public Unk_SSGNpc
 public:
     CNpc();
     void SetOwnerId(int nOwnerId);                          // m_nOwnerId = nOwnerId
+    void FUN_1410918e0(CByteBuffer& buf);                   // apply a sync block
+    void FUN_141092c50(CInPacket& packet);
+    void FUN_141094df0(__int64 nExp);                       // pet/npc exp gain
+    void FUN_141094790(__int64 n);
+    void FUN_141095190(const CString& strName);
+    void FUN_141094f90(CString strModel);
+    void FUN_1410951d0(const CString& strScript);           // 0xe8 mode 2
+    void FUN_141095290(int n);
+    void FUN_141095240(__int64 n);
+    void FUN_1410952b0(bool b);
+    int FUN_141092ff0();                                    // nonzero: the npc carries a custom model block
     char m_pad_eb0[0xf40 - 0xeb0];
 };
 MS2_CHECK_SIZE(CNpc, 0xf40);
@@ -3581,12 +3596,12 @@ public:
     void FUN_14096f500(int, int);
     void FUN_14096fc00(int);
     void FUN_140970ff0(CInPacket&);
+    int FUN_14096f070(MS2Ptr<AdditionalCli> spCli);         // add a buff
+    MS2Ptr<AdditionalCli> FUN_14096fc80(int nBuffId);       // find a buff
 };
 class Unk_PCBaseBuffs
 {
 public:
-    int FUN_14096f070(MS2Ptr<AdditionalCli> spCli);         // add a buff
-    MS2Ptr<AdditionalCli> FUN_14096fc80(int nBuffId);       // find a buff
     MS2Ptr<AdditionalCli> FUN_14096f820(Unk_SSGBuffOwner* pOwner, CInPacket& packet);   // update a buff from the packet
 };
 MS2Ptr<Unk_SSGNpcData> FUN_1406cd330(int nNpcId);           // the npc table row
@@ -3606,7 +3621,7 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
     if (((CNpcData*)(spData).operator->())->IsBoss())
     {
         CString strName = packet.ReadString();
-        spNpc->FUN_141095190(strName);
+        ((CNpc*)spNpc.operator->())->FUN_141095190(strName);
     }
     spNpc->FUN_14123c5a0(nObjId);
     spNpc->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
@@ -3618,13 +3633,13 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
     if (bHidden != 0)
         spNpc->vfunc_125(0);
     ((AdditionalCliList*)(Unk_PCBaseBuffs*)(spNpc->FUN_1416749a0()))->FUN_140970ff0(packet);
-    spNpc->FUN_141094790(packet.ReadInt64());
+    ((CNpc*)spNpc.operator->())->FUN_141094790(packet.ReadInt64());
     spNpc->FUN_14174a560(packet.ReadUInt8());
     spNpc->FUN_14174a580(packet.ReadInt32());
     spNpc->FUN_14174a4f0(packet.ReadInt32());
-    if (spNpc->FUN_141092ff0() != 0)
+    if (((CNpc*)spNpc.operator->())->FUN_141092ff0() != 0)
     {
-        spNpc->FUN_141094f90(packet.ReadUnicodeStringA());
+        ((CNpc*)spNpc.operator->())->FUN_141094f90(packet.ReadUnicodeStringA());
         int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
@@ -3632,12 +3647,12 @@ void CSceneStateGame::OnFieldAddNpc(CInPacket& packet)
             short nType = packet.ReadInt16();
             TSingleton<CFilePreload>::GetInstance()->FUN_141210540(nId, nType, 4);
         }
-        spNpc->FUN_141095290(packet.ReadInt32());
+        ((CNpc*)spNpc.operator->())->FUN_141095290(packet.ReadInt32());
     }
     if (((CNpcData*)(spData).operator->())->HasPropertyTag(5) == true)
-        spNpc->FUN_141095240(packet.ReadInt64());
+        ((CNpc*)spNpc.operator->())->FUN_141095240(packet.ReadInt64());
     bool bFlag = packet.ReadUInt8() == 1;
-    spNpc->FUN_1410952b0(bFlag);
+    ((CNpc*)spNpc.operator->())->FUN_1410952b0(bFlag);
     if (((WorldService*)(Unk_SSGWorld*)(pWorld))->FUN_141bbb1e0(spNpc, 0, 1) == 0)
         return;
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyAddNpc(spNpc)));
@@ -3686,7 +3701,7 @@ void CSceneStateGame::OnNpcControl(CInPacket& packet)
         int nId = buf.CByteBuffer::ReadInt32();
         Unk_SSGNpc* pNpc = ((Unk_SSGNpc*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1320(nId));
         if (pNpc != 0)
-            pNpc->FUN_1410918e0(buf);
+            ((CNpc*)pNpc)->FUN_1410918e0(buf);
     }
 }
 MS2_REPLACE_METHOD(0x141719840, CSceneStateGame, OnNpcControl, 329, 0xF8C75F47);
@@ -3806,7 +3821,7 @@ void CSceneStateGame::OnWebOpen(CInPacket& packet)
     int nType = packet.ReadUInt8();
     CString strUrl = packet.ReadUnicodeStringA();
     CString strTarget(strUrl);
-    reinterpret_cast<Unk_SSGProfile*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(strTarget, strUrl);
+    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strTarget, strUrl);
     if (nType == 1)
     {
         if (FUN_140166410()->FUN_14036d570(0x3f) == true)
@@ -3859,7 +3874,7 @@ void CSceneStateGame::FUN_141733440(CInPacket& packet)
             int nType = packet.ReadInt32();
             if (!bInGame)
             {
-                reinterpret_cast<Unk_SSGProfile*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78cf0(nType, strUrl);
+                TSingleton<CWebBrowserService>::GetInstance()->FUN_141b78cf0(nType, strUrl);
             }
             else
             {
@@ -3968,8 +3983,7 @@ MS2_REPLACE_METHOD(0x141735410, CSceneStateGame, FUN_141735410, 29, 0x1B221102);
 
 CMasteryTable* FUN_1409670c0();
 // Packet 0xcd: life-skill mastery (exp and grade changes, rewards, recipe unlocks).
-class Unk_SSGFishData { public: CStringW FUN_1403b2240(int nGrade); };     // the fishing grade name
-class CFishingTable;
+class CFishingTable { public: CStringW FUN_1403b2240(int nGrade); };     // the fishing grade name
 class UIFishingBookDialog : public UIDialog { public: void FUN_140f41a10(); };     // refresh
 class UIFishingBookDialog;
 template <class T> T* Unk_FmGetDialog(eUIClassID nId);   // the dialog of class T
@@ -4000,7 +4014,7 @@ void CSceneStateGame::OnMastery(CInPacket& packet)
             if (bGradeUp)
             {
                 int nGrade = static_cast<PC*>(static_cast<PCBase*>(pMyPC))->GetMasteryGrade(1);
-                CStringW strGrade = reinterpret_cast<Unk_SSGFishData*>(TSingleton<CFishingTable>::GetInstance())->FUN_1403b2240(nGrade);
+                CStringW strGrade = TSingleton<CFishingTable>::GetInstance()->FUN_1403b2240(nGrade);
                 if (nGrade == FUN_1409670c0()->MaxGrade(1))
                     FUN_1412751b0(FUN_1405c2690(CStringW(L"s_fishing_grade_up_max"), strGrade), 10);
                 else
@@ -4123,7 +4137,7 @@ void CSceneStateGame::FUN_14173a0d0(CInPacket& packet)
 // @0x14173a5b0
 void CSceneStateGame::FUN_14173a5b0(CInPacket& packet)
 {
-    ((CTriggerService*)(Unk_SSGad4b90*)(((class Unk_SSGad4b90*)FUN_140ad4b90())))->FUN_141861f60((CInPacket*)(CInPacket*)&(packet));
+    ((CTriggerService*)(Unk_SSGad4b90*)(((class Unk_SSGad4b90*)FUN_140ad4b90())))->OnCameraInterpolation((CInPacket*)(CInPacket*)&(packet));
 }
 MS2_REPLACE_METHOD(0x14173a5b0, CSceneStateGame, FUN_14173a5b0, 37, 0xDB58DC13);
 
@@ -4208,7 +4222,7 @@ void CSceneStateGame::FUN_14171ab00(CInPacket& packet)
             Unk_SSGNpc* pNpc = ((Unk_SSGNpc*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1320(nNpcId));
             if (pNpc != 0)
             {
-                pNpc->FUN_141094df0(nExp);
+                ((CNpc*)pNpc)->FUN_141094df0(nExp);
             }
             else
             {
@@ -4276,7 +4290,7 @@ void CSceneStateGame::OnMyInfo(CInPacket& packet)
         }
         else if (strMsg.IsEmpty() == true)
         {
-            FUN_140d73aa0(FUN_14052bd00(0x8b9, strName), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FormatStringId<CStringW>(0x8b9, strName), 0, 0, CStringW(L""));
         }
         else
         {
@@ -4766,7 +4780,7 @@ void CSceneStateGame::FUN_141737db0(CInputStream& in)
     const CStringW& strName = kResult.m_strName;
     if (kResult.m_bFailed == true)
     {
-        CStringW strMsg = FUN_14052bd00(0x2a, strName);
+        CStringW strMsg = FormatStringId<CStringW>(0x2a, strName);
         FUN_140d73aa0(strMsg, 0, 0, CStringW(L""));
         return;
     }
@@ -4774,7 +4788,7 @@ void CSceneStateGame::FUN_141737db0(CInputStream& in)
         MyPC* pMyPC = ((MyPC*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
         if (pMyPC != 0)
         {
-            CStringW strMsg = FUN_140632a60(0x28, pMyPC->vfunc_77(), strName);
+            CStringW strMsg = FormatStringId<CStringW, CStringW>(0x28, pMyPC->vfunc_77(), strName);
             FUN_14151f200();
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, s_confirmChangeCharName);
             if (spBox.get() != 0)
@@ -4805,10 +4819,10 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
         if (DAT_143ab2904 == 0)
         {
             DAT_143ab2904 = nInvite;
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0x902, strName), 0, DAT_143ae79f8);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0x902, strName), 0, DAT_143ae79f8);
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+                spBox->SetTimer(0x14, 1, GetStringCommon(0x2b8));
                 spBox->FUN_141a02460(1);
                 spBox->FUN_141a02480(1);
                 spBox->FUN_141a024a0(0);
@@ -4823,15 +4837,15 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
         CStringW strName = packet.ReadUnicodeString();
         int nResult = packet.ReadUInt8();
         if (nResult == 0 || nResult == 2)
-            strMsg = FUN_14052bd00(0x8fb, strName);
+            strMsg = FormatStringId<CStringW>(0x8fb, strName);
         else if (nResult == 1 || nResult == 3)
-            strMsg = FUN_14052bd00(0x8fc, strName);
+            strMsg = FormatStringId<CStringW>(0x8fc, strName);
         FUN_1412751b0(strMsg, 0x14);
     }
     else if (nMode == 6)
     {
         CStringW strName = packet.ReadUnicodeString();
-        strMsg = FUN_14052bd00(0x8fd, strName);
+        strMsg = FormatStringId<CStringW>(0x8fd, strName);
         FUN_1412751b0(strMsg, 0x14);
     }
     else if (nMode == 7)
@@ -4841,16 +4855,16 @@ void CSceneStateGame::FUN_141731c10(CInPacket& packet)
         switch (nResult)
         {
         case 2:
-            strMsg = FUN_14052bd00(0x8ff, strName);
+            strMsg = FormatStringId<CStringW>(0x8ff, strName);
             break;
         case 4:
-            strMsg = FUN_14052bd00(0x901, strName);
+            strMsg = FormatStringId<CStringW>(0x901, strName);
             break;
         case 6:
-            strMsg = FUN_14052bd00(0x8fe, strName);
+            strMsg = FormatStringId<CStringW>(0x8fe, strName);
             break;
         default:
-            strMsg = FUN_14052bd00(0x900, strName);
+            strMsg = FormatStringId<CStringW>(0x900, strName);
             break;
         }
         FUN_1412751b0(strMsg, 0x14);
@@ -4937,7 +4951,7 @@ void CSceneStateGame::OnNpcRide(CInPacket& packet)
     Unk_SSGNpc* pNpc = ((Unk_SSGNpc*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1320(nId));
     if (pNpc == 0)
         return;
-    pNpc->FUN_141092c50(packet);
+    ((CNpc*)pNpc)->FUN_141092c50(packet);
 }
 MS2_REPLACE_METHOD(0x141738ad0, CSceneStateGame, OnNpcRide, 104, 0x158C510C);
 
@@ -5107,7 +5121,7 @@ void CSceneStateGame::OnPvp(CInPacket& packet)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, DAT_143ae7a08);
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01ca0(0x19, 1, GetStringCommon(0x2b8));
+            spBox->SetTimer(0x19, 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a02480(1);
             spBox->FUN_141a024a0(0);
@@ -5317,7 +5331,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         {
             UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
             if (pInfo != 0)
-                pInfo->FUN_1419f2720(true);
+                pInfo->SetHideAndSeekSlotMode(true);
             UIArcadeLifeBar* pBar = Unk_SSGGetDialog<UIArcadeLifeBar>(0x4efc);
             if (pBar != 0)
             {
@@ -5329,7 +5343,7 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         {
             UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
             if (pInfo != 0)
-                pInfo->FUN_1419f1d10(2, false);
+                pInfo->SetHideReason(2, false);
             UIArcadeLifeBar* pBar = Unk_SSGGetDialog<UIArcadeLifeBar>(0x4efc);
             if (pBar != 0)
             {
@@ -5349,8 +5363,8 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
         UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
         if (pInfo != 0)
         {
-            pInfo->FUN_1419f2720(false);
-            pInfo->FUN_1419f1d10(2, true);
+            pInfo->SetHideAndSeekSlotMode(false);
+            pInfo->SetHideReason(2, true);
         }
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)(0x4efc));
     }
@@ -5993,7 +6007,7 @@ void CSceneStateGame::OnItemFusion(CInPacket& packet)
     else if (nMode == 6)
     {
         __int64 nItemUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.get() != 0)
         {
             spItem->FUN_140524eb0(packet);
@@ -6024,12 +6038,12 @@ void CSceneStateGame::OnItemFusion(CInPacket& packet)
                 UIItemMergeOptionDialog* pDlg = FUN_14123a9b0(0x4e68);
                 if (pDlg != 0)
                     pDlg->FUN_1419d1ad0(spItem);
-                int bInInventory = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid).get() != 0;
+                int bInInventory = g_143ab2a90.FUN_140a5d680(nItemUid).get() != 0;
                 if (!bInInventory)
                 {
                     MyPC* pMyPC = ((MyPC*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
                     if (pMyPC != 0)
-                        pMyPC->FUN_1416561a0()->FUN_1411e7660();
+                        ((CEquipment*)pMyPC->FUN_1416561a0())->FUN_1411e7660();
                 }
             }
         }
@@ -6113,7 +6127,6 @@ struct Unk_SSGXform
     float m_fScale;                                         // +0x30
 };
 MS2_CHECK_SIZE(Unk_SSGXform, 0x34);
-void FUN_140a332d0(Unk_SSGXform* p);                        // NiTransform default ctor
 void FUN_14097faa0(Unk_SSGPt3* pDst, const Unk_SSGNiPt3& src);   // NiPoint3::operator=
 void FUN_140a33240(Unk_SSGRot* pDst, const Unk_EfdMatrix3* pSrc);   // NiMatrix3 from efd::Matrix3
 extern Unk_EfdMatrix3 DAT_143a09600;                        // identity rotation
@@ -6161,7 +6174,7 @@ public:
     void FUN_1419c37f0(unsigned __int64 nItemUid, CInPacket& packet);   // re-read the item
     void FUN_1419c3950(CInPacket& packet);
     void FUN_1419c3b90(CInPacket& packet);
-    void FUN_1419c3e70(CInPacket& packet);
+    void OnFailStackPacket(CInPacket& packet);
     void SendRequestItemEnchantMode1();                     // request the exp refund list again
     void FUN_1419c41b0();
 };
@@ -6251,7 +6264,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
     {
         UIItemEnchantDialog* pDlg = ((class UIItemEnchantDialog*)FUN_1413b1bc0(0x4e92));
         if (pDlg != 0)
-            pDlg->FUN_1419c3e70(packet);
+            pDlg->OnFailStackPacket(packet);
     }
     else if (nMode == 9)
     {
@@ -6348,7 +6361,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
                     if (spObj->vfunc_5() == 2)
                     {
                         if (Unk_SSGDlg4e29* pDlg = ((class Unk_SSGDlg4e29*)FUN_140c9b540(0x4e29)))
-                            pDlg->FUN_141a3a890();
+                            pDlg->EnableTelescopeFrame();
                         FUN_141275260(0x897, 3, 1);
                         FUN_141276180(DAT_143ae79e0, "");
                     }
@@ -6512,7 +6525,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
         if (strEffect.GetLength() != 0)
         {
             Unk_SSGXform xf;
-            FUN_140a332d0(&xf);
+            reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             ((NiTransform*)(Unk_SSGXform*)&(xf))->MakeIdentity();
             Unk_SSGNiPt3 pos(spObj->GetPos());
             FUN_14097faa0(&xf.m_translate, pos);
@@ -6713,10 +6726,10 @@ void CSceneStateGame::FUN_14173aa10(CInPacket& packet)
         SendRequestHome(strName, 5);
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0x87f, strName), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0x87f, strName), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+            spBox->SetTimer(0x14, 1, GetStringCommon(0x2b8));
             spBox->FUN_141a02460(1);
             spBox->FUN_141a02480(1);
             spBox->FUN_141a024a0(0);
@@ -6737,22 +6750,22 @@ void CSceneStateGame::FUN_14173ad60(CInPacket& packet)
     switch (nResult)
     {
     case 1:
-        FUN_1412751f0(FUN_14052bd00(0x880, strName), 1, 1);
+        FUN_1412751f0(FormatStringId<CStringW>(0x880, strName), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(FUN_14052bd00(0x881, strName), 1, 1);
+        FUN_1412751f0(FormatStringId<CStringW>(0x881, strName), 1, 1);
         break;
     case 3:
         FUN_141275260(0x882, 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14052bd00(0x883, strName), 1, 1);
+        FUN_1412751f0(FormatStringId<CStringW>(0x883, strName), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(FUN_14052bd00(0x884, strName), 1, 1);
+        FUN_1412751f0(FormatStringId<CStringW>(0x884, strName), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(FUN_14052bd00(0x885, strName), 1, 1);
+        FUN_1412751f0(FormatStringId<CStringW>(0x885, strName), 1, 1);
         break;
     case 7:
         {
@@ -6761,7 +6774,7 @@ void CSceneStateGame::FUN_14173ad60(CInPacket& packet)
         }
         break;
     case 9:
-        FUN_1412751f0(FUN_14052bd00(0x887, strName), 1, 1);
+        FUN_1412751f0(FormatStringId<CStringW>(0x887, strName), 1, 1);
         break;
     }
 }
@@ -6876,7 +6889,7 @@ void CSceneStateGame::FUN_14173ce30(CInPacket& packet)
         {
             int nA = packet.ReadInt32();
             int nB = packet.ReadInt32();
-            FUN_1412751f0(FUN_140811740(0xd1d, nA, nB), 1, 1);
+            FUN_1412751f0(FormatStringId<int, int>(0xd1d, nA, nB), 1, 1);
         }
         if (nResult == 1)
             FUN_1412751f0(BlockFormat(0xd1f), 1, 1);
@@ -6890,7 +6903,7 @@ void CSceneStateGame::FUN_14173ce30(CInPacket& packet)
         {
             int nA = packet.ReadInt32();
             int nB = packet.ReadInt32();
-            FUN_1412751f0(FUN_140811740(0xd1e, nA, nB), 1, 1);
+            FUN_1412751f0(FormatStringId<int, int>(0xd1e, nA, nB), 1, 1);
         }
         if (nResult == 3)
             FUN_1412751f0(BlockFormat(0xd21), 1, 1);
@@ -7076,7 +7089,7 @@ void CSceneStateGame::FUN_14173feb0()
             pUI->FUN_141ad9e50(nScene);
             pUI->FUN_141adafd0(nScene);
             pUI->FUN_141ad9650();
-            pUI->FUN_141ad9b60();
+            pUI->AddMovieDamage();
         }
         efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
         if (spService)
@@ -7130,16 +7143,16 @@ void CSceneStateGame::OnMeret(CInPacket& packet)
     {
         FUN_141276180("Merat_Get", "");
         CStringW strMoney = FUN_1409404f0(nDelta);
-        FUN_1412751b0(FUN_14052bd00(0x2c6, strMoney), 6);
+        FUN_1412751b0(FormatStringId<CStringW>(0x2c6, strMoney), 6);
         Unk_SSGChatDialog* pChat = FUN_140938cd0(0x4e5d);
         if (pChat != 0)
-            pChat->FUN_141ac0860(nDelta);
+            pChat->ShowMeratNotice(nDelta);
     }
     else if (nDelta < 0)
     {
         FUN_141276180("Merat_Use", "");
         CStringW strMoney = FUN_1409404f0(-nDelta);
-        FUN_1412751b0(FUN_14052bd00(0x2d8, strMoney), 6);
+        FUN_1412751b0(FormatStringId<CStringW>(0x2d8, strMoney), 6);
         if (FUN_140166410()->FUN_14036d570(0xba))
             FUN_1412751b0(BlockFormat(0x2db), 6);
     }
@@ -7161,10 +7174,10 @@ void CSceneStateGame::FUN_14171bad0(CInPacket& packet)
             FUN_141276180(strEvent, strArg);
         }
         CStringW strAmount = FUN_1409404f0(nDelta);
-        FUN_1412751b0(FUN_14052bd00(0x2c8, strAmount), 6);
+        FUN_1412751b0(FormatStringId<CStringW>(0x2c8, strAmount), 6);
         Unk_SSGChatDialog* pDlg = FUN_140938cd0(0x4e5d);
         if (pDlg != 0)
-            pDlg->FUN_141ac0990(nDelta);
+            pDlg->ShowMeratRedNotice(nDelta);
     }
     else if (nDelta < 0)
     {
@@ -7174,7 +7187,7 @@ void CSceneStateGame::FUN_14171bad0(CInPacket& packet)
             FUN_141276180(strEvent, strArg);
         }
         CStringW strAmount = FUN_1409404f0(-nDelta);
-        FUN_1412751b0(FUN_14052bd00(0x2da, strAmount), 6);
+        FUN_1412751b0(FormatStringId<CStringW>(0x2da, strAmount), 6);
         if (FUN_140166410()->FUN_14036d570(0xba))
             FUN_1412751b0(BlockFormat(0x2db), 6);
     }
@@ -7726,7 +7739,7 @@ void CSceneStateGame::OnBuff(CInPacket& packet)
     {
         MS2Ptr<AdditionalCli> spCli(new AdditionalCli());
         spCli->FUN_14096be10(pActor, &kOwner, packet);
-        if (pActor->FUN_1416749a0()->FUN_14096f070(spCli) == 0)
+        if (((AdditionalCliList*)pActor->FUN_1416749a0())->FUN_14096f070(spCli) == 0)
             return;
         if (efd::DynamicCast<MyPC, PCBase>(pActor) != 0)
         {
@@ -7754,7 +7767,7 @@ void CSceneStateGame::OnBuff(CInPacket& packet)
     }
     else if (nMode == 1)
     {
-        MS2Ptr<AdditionalCli> spCli = pActor->FUN_1416749a0()->FUN_14096fc80(kOwner.m_nBuffId);
+        MS2Ptr<AdditionalCli> spCli = ((AdditionalCliList*)pActor->FUN_1416749a0())->FUN_14096fc80(kOwner.m_nBuffId);
         ((AdditionalCliList*)(Unk_PCBaseBuffs*)(pActor->FUN_1416749a0()))->FUN_14096f500(kOwner.m_nBuffId, kOwner.m_nLevel);
         if (efd::DynamicCast<MyPC, PCBase>(pActor) != 0)
         {
@@ -7868,7 +7881,7 @@ void CSceneStateGame::OnRegionSkill(CInPacket& packet)
     }
     else if (nMode == 2)
     {
-        MS2Ptr<CRegionSkillObject> spObj(((CRegionSkillObject*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bc3360(nId)));
+        MS2Ptr<CRegionSkillObject> spObj(((CRegionSkillObject*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->GetRegionSkillObject(nId)));
         if (spObj.get() != 0)
             spObj->FUN_1416f6e40();
     }
@@ -7904,7 +7917,7 @@ void CSceneStateGame::FUN_14171dc40(CInPacket& packet)
     int nRegionId = packet.ReadInt32();
     int nAttack = packet.ReadUInt8();
     int nCount = packet.ReadUInt8();
-    MS2Ptr<CRegionSkillObject> spRegion(((CRegionSkillObject*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bc3360(nRegionId)));
+    MS2Ptr<CRegionSkillObject> spRegion(((CRegionSkillObject*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->GetRegionSkillObject(nRegionId)));
     if (!spRegion)
         return;
     spRegion->FUN_1416f6900();
@@ -8002,7 +8015,7 @@ void CSceneStateGame::OnSkillCooldown(CInPacket& packet)
             ((CSkillSystem*)(Unk_MyPCSkillSlots*)(pMyPC->FUN_141523bc0()))->FUN_141765f60(nUid);
         else
             ((CSkillSystem*)(Unk_MyPCSkillSlots*)(pMyPC->FUN_141523bc0()))->FUN_141766900(nUid, nSlot);
-        pMyPC->FUN_141523bc0()->FUN_141768530(FUN_1417692f0(nUid), nValue);
+        pMyPC->FUN_141523bc0()->SetRechargeUsesById(FUN_1417692f0(nUid), nValue);
     }
     FUN_1419f37f0(5);
 }
@@ -8050,7 +8063,7 @@ void CSceneStateGame::FUN_141731470(CInPacket& packet)
         FUN_141276180(DAT_143ae79e8, "");
         Unk_SSGDlg4e29* pDlg = ((class Unk_SSGDlg4e29*)FUN_140c9b540(0x4e29));
         if (pDlg != 0)
-            pDlg->FUN_141a3a780(nFirst);
+            pDlg->EnableTaxiFrame(nFirst);
         FUN_141739450(true);
         ((CGuideManager*)(Unk_SSG9331e0*)(FUN_1409331e0()))->AddTrigger((CGuideManager::TriggerType)(0x10), 0, 0);
     }
@@ -8161,7 +8174,7 @@ void CSceneStateGame::OnItemDropNotice(CInPacket& packet)
     int nB = packet.ReadInt32();
     __int64 nC = packet.ReadInt64();
     CStringW strItem = FUN_140d2e2b0(nA, nB, nC);
-    CStringW strMsg = FUN_140632a60(0x342, strName, strItem);
+    CStringW strMsg = FormatStringId<CStringW, CStringW>(0x342, strName, strItem);
     FUN_1412751b0(strMsg, 0x14);
 }
 MS2_REPLACE_METHOD(0x1417343f0, CSceneStateGame, OnItemDropNotice, 309, 0x3BC0794C);
@@ -8306,12 +8319,6 @@ struct Unk_SSGUserChat
 };
 MS2_CHECK_SIZE(Unk_SSGUserChat, 0x20);
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
-// The equipment of a player (client\ms2\equipment.cpp); equipment.h clashes with the AdditionalCli views here.
-class CEquipment
-{
-public:
-    void SetLayerPeriod(const CMsTime& kStart, const CMsTime& kEnd);   // set the codi tab period
-};
 CStringW FUN_14028ee20(unsigned int nFlags, CStringW strText);
 class UISurveyDialog : public UIDialog { public: void FUN_140eda1b0(CInPacket& packet); };
 class UIUGCPortalDialog : public UIDialog { public: void FUN_140fb0290(CInPacket& packet); };
@@ -8377,7 +8384,7 @@ void CSceneStateGame::OnPlayArcade(CInPacket& packet)
         }
         UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
         if (pInfo != 0)
-            pInfo->FUN_1419f1d10(2, false);
+            pInfo->SetHideReason(2, false);
         TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)(0x4e3d));
         TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)(0x4e51));
         ((Unk_SSGUIMgr*)TSingleton<CUIService>::GetInstance())->FUN_141add1b0(8, false);
@@ -8677,7 +8684,7 @@ void CSceneStateGame::OnUgcItemTitle(CInPacket& packet)
     __int64 nItemUid = packet.ReadInt64();
     int nValue = packet.ReadInt32();
     const CStringW& strTitle = packet.ReadUnicodeString();
-    MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
         return;
     CUgcItemLook* pLook = ((CItem*)spItem)->GetUgcLook();
@@ -8693,7 +8700,7 @@ MS2_REPLACE_METHOD(0x14173b220, CSceneStateGame, OnUgcItemTitle, 334, 0xD2E16AC7
 void CSceneStateGame::OnBindItem(CInPacket& packet)
 {
     __int64 nItemUid = packet.ReadInt64();
-    MS2Ptr<CItem> spItem = reinterpret_cast<Unk_SSGInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
     {
         MyPC* pMyPC = ((MyPC*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
@@ -8784,7 +8791,7 @@ void CSceneStateGame::FUN_141739910(CInPacket& packet)
             }
             else if (strMsg.GetLength() != 0)
             {
-                CStringW strText = FUN_14052bd00(0x5f6, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+                CStringW strText = FormatStringId<CStringW>(0x5f6, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
                 strText += L"\n";
                 strText += GetStringCommonByKey(strMsg);
                 FUN_140d73aa0(strText, 0, 0, L"");
@@ -9121,14 +9128,14 @@ void CSceneStateGame::FUN_14173fc40(CInPacket& packet)
     int nBaseId = ((SkillData*)(spRow).operator->())->GetRechargeId();
     if (nBaseId != 0)
         nSkillId = nBaseId;
-    unsigned int nPoint = ((CSkillSystem*)(Unk_MyPCSkillSlots*)(pMyPC->FUN_141523bc0()))->FUN_141768680((SkillData*)(Unk_SSGSkillRow*)(spRow.get()));
+    unsigned int nPoint = ((CSkillSystem*)(Unk_MyPCSkillSlots*)(pMyPC->FUN_141523bc0()))->GetRechargeUses((SkillData*)(Unk_SSGSkillRow*)(spRow.get()));
     nPoint -= (std::min)(nPoint, nUsed);
     unsigned int nValue = nPoint;
     if (nPoint < nMin)
         nValue = nMin;
     if (nValue == 0)
         pMyPC->FUN_141523bc0()->FUN_141765e70(nSkillId);
-    pMyPC->FUN_141523bc0()->FUN_141768530(nSkillId, nValue);
+    pMyPC->FUN_141523bc0()->SetRechargeUsesById(nSkillId, nValue);
 }
 MS2_REPLACE_METHOD(0x14173fc40, CSceneStateGame, FUN_14173fc40, 459, 0x11D57B92);
 
@@ -9171,7 +9178,6 @@ class UITimeRunEventDialog;
 template <class T> T* FindUIDialog(int nId);   // the dialog of class T
 class UISnowmanEventDialog;
 template <class T> T* FindCliDialog(int nId);   // the dialog of class T
-class Unk_SSGGameMenuDlg { public: void FUN_141938ae0(int nId, int n); };
 
 // @0x141735dd0
 void CSceneStateGame::OnEventReward(CInPacket& packet)
@@ -9193,7 +9199,7 @@ void CSceneStateGame::OnEventReward(CInPacket& packet)
         UIStampEventDialog* pStamp = Unk_SSGGetDialog<UIStampEventDialog>(0x4f33);
         if (pStamp != 0)
             pStamp->FUN_140ed7ea0();
-        Unk_SSGGameMenuDlg* pMenu = (Unk_SSGGameMenuDlg*)((class Unk_SSGDlg4e28*)FUN_140938b90(0x4e28));
+        UIGameMenuDialog* pMenu = ((class Unk_SSGDlg4e28*)FUN_140938b90(0x4e28));
         if (pMenu != 0)
             pMenu->FUN_141938ae0(0x4f33, 0);
     }
@@ -9314,7 +9320,7 @@ void CSceneStateGame::FUN_141738430(CInPacket& packet)
         Unk_SSGNpc* pNpc = ((Unk_SSGNpc*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1320(nObjId));
         if (pNpc == 0)
             return;
-        pNpc->FUN_141094f90(strModel);
+        ((CNpc*)pNpc)->FUN_141094f90(strModel);
     }
     else if (nMode == 2)
     {
@@ -9323,7 +9329,7 @@ void CSceneStateGame::FUN_141738430(CInPacket& packet)
         Unk_SSGNpc* pNpc = ((Unk_SSGNpc*)((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bd1320(nObjId));
         if (pNpc == 0)
             return;
-        pNpc->FUN_1410951d0(strScript);
+        ((CNpc*)pNpc)->FUN_1410951d0(strScript);
     }
     else if (nMode == 3)
     {
@@ -9713,7 +9719,7 @@ void CSceneStateGame::OnLevelUp(CInPacket& packet)
                 if (nLevel <= nCap)
                 {
                     if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)(0x4f2d)) != 0)
-                        pNotify->FUN_141ac14b0();
+                        pNotify->ShowSkillLevelUpNotice();
                     FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_add_skillpoint"), 0x14);
                 }
             }
@@ -9785,7 +9791,7 @@ void CSceneStateGame::FUN_14171a2e0(CInPacket& packet)
     if (pTarget != 0 && pObj->vfunc_127() != 0)
     {
         Unk_SSGXform xf;
-        FUN_140a332d0(&xf);
+        reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
         xf.m_fScale = 1.0f;
         Unk_SSGNiPt3 pos(pTarget->vfunc_18());
         FUN_14097faa0(&xf.m_translate, pos);
@@ -9820,7 +9826,7 @@ void CSceneStateGame::OnTombstone(CInPacket& packet)
             if (pPet->vfunc_127() != 0 && (pOwner = pPet->FUN_140b10320()) != 0)
             {
                 Unk_SSGXform xf;
-                FUN_140a332d0(&xf);
+                reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
                 xf.m_fScale = 1.0f;
                 Unk_SSGNiPt3 pos(pOwner->vfunc_18());
                 FUN_14097faa0(&xf.m_translate, pos);
@@ -9859,7 +9865,7 @@ void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
     if (!FUN_14028d470(fScale, 1.0f))
         spPet->SetScaleAC(fScale);
     spPet->vfunc_90(&packet);
-    spPet->FUN_141094790(packet.ReadInt64());
+    ((CNpc*)spPet.operator->())->FUN_141094790(packet.ReadInt64());
     spPet->FUN_14174a560(packet.ReadUInt8());
     spPet->FUN_14174a580(packet.ReadInt16());
     spPet->FUN_140b10f90(packet.ReadInt16());
@@ -9878,7 +9884,7 @@ void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
     if (pOwner != 0 && spPet->vfunc_127() != 0)
     {
         Unk_SSGXform xf;
-        FUN_140a332d0(&xf);
+        reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
         xf.m_fScale = 1.0f;
         Unk_SSGNiPt3 pos(pOwner->vfunc_18());
         FUN_14097faa0(&xf.m_translate, pos);
@@ -9980,7 +9986,8 @@ public:
 };
 class UIUGCEventDispatcher;
 class Unk_SSGTaxiTable { public: bool FUN_14085f730(int nMapId); };
-class Unk_SSGHouseCfg { public: void FUN_141262180(); void FUN_141262650(); void FUN_141261e90(int n); };
+class CPersonalInfoAgreement { public: void FUN_141262180(); void FUN_141262650(); };
+class Unk_SSGHouseCfg : public CPersonalInfoAgreement { public: void FUN_141261e90(int n); };
 int FUN_14151f6e0();                                        // messageboxqueue.cpp
 void FUN_140ee8190(CInPacket& packet);
 void FUN_140ee83f0(CInPacket& packet);
@@ -11452,7 +11459,7 @@ void CSceneStateGame::OnAddUser(CInPacket& packet)
         ((class Unk_SSG535320*)FUN_140535320())->SetSummonUid(proxy.FUN_1408f1330());
         ((class Unk_SSG931510*)FUN_140931510())->SetExpireAndUpdateTimer(proxy.m_50);
         pMyPC->FUN_141699a20();
-        pMyPC->FUN_1416561a0()->FUN_1411ea7c0();
+        ((CEquipment*)pMyPC->FUN_1416561a0())->FUN_1411ea7c0();
         pMyPC->vfunc_88();
         DAT_143ab2942 = true;
         FUN_140d86260()->vfunc_22(0x2d0, "GameBegin");
@@ -11521,7 +11528,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     else if (nMode == 4)
     {
         int nId = packet.ReadInt32();
-        ((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bc9b30(nId);
+        ((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->RemoveProxyObject(nId);
     }
     else if (nMode == 5)
     {
@@ -11564,7 +11571,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     else if (nMode == 7)
     {
         int nId = packet.ReadInt32();
-        ((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bc9b30(nId);
+        ((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->RemoveProxyObject(nId);
     }
     else if (nMode == 8)
     {
@@ -11591,7 +11598,7 @@ void CSceneStateGame::FUN_14172f500(CInPacket& packet)
     else if (nMode == 10)
     {
         int nId = packet.ReadInt32();
-        ((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->FUN_141bc9b30(nId);
+        ((WorldService*)(Unk_SSGWorld*)(FUN_1403ed2d0()))->RemoveProxyObject(nId);
     }
     else if (nMode == 11)
     {
@@ -11765,7 +11772,7 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
         int nUnread = mailNew.m_nUnread;
         g_143ab2ee0.SetUnreadCount(nUnread);
         g_143ab2ee0.FUN_1408e3500(mailNew.m_nUnreadAlarm);
-        if (nUnread != 0 && !FUN_1403ed2d0()->FUN_141bcb0a0() && mailNew.m_bAlarm)
+        if (nUnread != 0 && !FUN_1403ed2d0()->HasTutorial() && mailNew.m_bAlarm)
             FUN_141275260(0x22b, 8, 1);
         UIMailListDialog* pList = Unk_SSGGetUI<UIMailListDialog>();
         if (pList != 0 && pList->FUN_141924630() != 0)
@@ -11773,7 +11780,7 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     }
     else if (nMode == 0xf)
     {
-        if (!FUN_1403ed2d0()->FUN_141bcb0a0())
+        if (!FUN_1403ed2d0()->HasTutorial())
             FUN_141275260(0x257, 1, 0);
         FUN_1412751b0(GetStringCommon(0x258), 0x14);
     }
@@ -11781,7 +11788,7 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
     {
         CCMailPacket::GiftNew gift;
         FUN_140201b00(reinterpret_cast<unsigned char*>(&gift), &packet);
-        if (!FUN_1403ed2d0()->FUN_141bcb0a0())
+        if (!FUN_1403ed2d0()->HasTutorial())
         {
             const CStringW& strSender = gift.m_strSender;
             FUN_1412751f0(FUN_1405c2690(L"s_mail_notify_recieve_gift", strSender), 8, 1);
@@ -12056,7 +12063,7 @@ void CSceneStateGame::FUN_141739450(bool bFlag)
         StopTaxiEffect();
         efd::Point3 kPos;
         Unk_SSGXform xf;
-        FUN_140a332d0(&xf);
+        reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
         spEntity->GetPropertyValue(0xfd95ca52, kPos);
         ((NiTransform*)(Unk_SSGXform*)&(xf))->MakeIdentity();
         Unk_SSGNiPt3 kNiPos(kPos);

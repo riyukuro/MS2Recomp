@@ -439,18 +439,18 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
 }
 MS2_REPLACE_METHOD(0x1403974b0, CFileSystem, FUN_1403974b0, 1311, 0x73EE0E90);
 // @0x1403979e0
-int CFileSystem::FUN_1403979e0(TiXmlDocument* document, BufferPtr buffer) {
+int CFileSystem::LoadXmlFromBuffer(TiXmlDocument* document, BufferPtr buffer) {
     if (buffer.IsNull()) return 0;
     if (!FUN_140870d70(document, buffer->GetBuffer(), buffer->GetSize(), 0)) return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x1403979e0, CFileSystem, FUN_1403979e0, 190, 0xB229CEED);
+MS2_REPLACE_METHOD(0x1403979e0, CFileSystem, LoadXmlFromBuffer, 190, 0xB229CEED);
 // @0x140397ab0
 int CFileSystem::LoadXmlFromString(TiXmlDocument* document, const CStringW& xml) {
     BufferPtr buffer(new CFileBuffer);
     if (buffer == nullptr) return 0;
     buffer->SetText(xml);
-    return FUN_1403979e0(document, buffer);
+    return LoadXmlFromBuffer(document, buffer);
 }
 // MS2-FUNCTIONAL: typed cache lookup retains both locked checks, timestamp updates and hit counters.
 // Not hooked: loader branches construct CFileBuffer objects with DLL-local RTTI.

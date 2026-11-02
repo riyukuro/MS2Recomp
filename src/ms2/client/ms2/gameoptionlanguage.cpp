@@ -193,7 +193,7 @@ void CGameOptionLanguage::vfunc_7()
         if (((void*)list.get()) != 0)
         {
             ASObj item = reinterpret_cast<Unk_LgProv*>(list->GetDataProvider().operator->())->FUN_1422df140(list->GetSelectedIndex());
-            if (item.FUN_1422ba9a0() == 0)
+            if (item.IsUndefinedOrNull() == 0)
                 m_state.m_nLanguage = item.GetMember("index").GetInt();
         }
     }
@@ -202,7 +202,7 @@ void CGameOptionLanguage::vfunc_7()
         if (((void*)list.get()) != 0)
         {
             ASObj item = reinterpret_cast<Unk_LgProv*>(list->GetDataProvider().operator->())->FUN_1422df140(list->GetSelectedIndex());
-            if (item.FUN_1422ba9a0() == 0)
+            if (item.IsUndefinedOrNull() == 0)
                 m_state.m_nVoice = item.GetMember("index").GetInt();
         }
     }
@@ -277,14 +277,14 @@ void CGameOptionLanguage::FUN_140cfbf50()
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_languageSelect", -1);
             if (((void*)list.get()) != 0)
             {
-                list->FUN_1422dfc10();
+                list->ClearItems();
                 for (unsigned __int64 i = 0; i < row->m_languages.GetCount(); i++)
                 {
                     ASObj item(2);
                     CString strCode(row->m_languages.GetAt(i));
                     item.FUN_1407cbb20("label", FUN_140cfc970(CString(strCode)));
                     item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
-                    list->FUN_1422dfc70(item);
+                    list->AddItemRow(item);
                 }
                 if (row->m_languages.GetCount() <= 3)
                     list->FUN_1422df5f0((unsigned int)row->m_languages.GetCount());
@@ -296,7 +296,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_regionSelect", -1);
             if (((void*)list.get()) != 0)
             {
-                list->FUN_1422dfc10();
+                list->ClearItems();
                 if (DAT_143ab0248 == 2)
                 {
                     CString strRegion;
@@ -306,7 +306,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     ASObj item(2);
                     item.FUN_1407cbb20("label", FUN_140cfca90(CString(strRegion)));
                     item.FUN_1407cb9c0("index", 0);
-                    list->FUN_1422dfc70(item);
+                    list->AddItemRow(item);
                     list->FUN_1422df5f0(1);
                     list->SetSelectedIndex(0);
                     list->FUN_1422c1fe0(0);
@@ -319,7 +319,7 @@ void CGameOptionLanguage::FUN_140cfbf50()
                         CString strCode(row->m_regions.GetAt(i));
                         item.FUN_1407cbb20("label", FUN_140cfca90(CString(row->m_regions.GetAt(i))));
                         item.FUN_140cfd170("index", FUN_140651b00(CString(strCode)));
-                        list->FUN_1422dfc70(item);
+                        list->AddItemRow(item);
                     }
                     if (row->m_regions.GetCount() <= 3)
                         list->FUN_1422df5f0((unsigned int)row->m_regions.GetCount());
@@ -332,14 +332,14 @@ void CGameOptionLanguage::FUN_140cfbf50()
             RLg list = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10("m_voiceSelect", -1);
             if (((void*)list.get()) != 0)
             {
-                list->FUN_1422dfc10();
+                list->ClearItems();
                 for (unsigned __int64 i = 0; i < row->m_voices.GetCount(); i++)
                 {
                     ASObj item(2);
                     CString strCode(row->m_voices.GetAt(i));
                     item.FUN_1407cbb20("label", FUN_140cfca00(CString(strCode)));
                     item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
-                    list->FUN_1422dfc70(item);
+                    list->AddItemRow(item);
                 }
                 if (row->m_voices.GetCount() <= 3)
                     list->FUN_1422df5f0((unsigned int)row->m_voices.GetCount());

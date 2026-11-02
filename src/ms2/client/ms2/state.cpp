@@ -2135,7 +2135,7 @@ StateRecallData::StateRecallData(void* p)
 }
 
 // @0x1417c1380
-StateFallData::StateFallData(const efd::Point3& kPos)
+StateFallData::StateFallData(efd::Point3 kPos)
     : m_pos(kPos)
 {
 }

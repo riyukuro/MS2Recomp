@@ -303,7 +303,7 @@ public:
 
 };
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
-void FUN_14028fd90(Unk_140165cf0*,const char*,const char*,const char*,std::vector<Unk_140165cf0*>&);
+void FUN_14028fd90(struct Unk_XmlElement*,const char*,const char*,const char*,std::vector<struct Unk_XmlElement*>&);
 CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
 CString FUN_14071a5b0(const CString&,const CString&);
 bool FUN_1401c0090(const CString&,const CString&);
@@ -320,7 +320,7 @@ int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_140178670(Unk_140165cf0*,const char*,ATL::CAtlArray<int>&);
 int FUN_140178770(Unk_140165cf0*,const char*,std::vector<unsigned>&);
 bool FUN_14028d470(float,float);
-short FUN_140177cf0(const CString&);
+template <class T> T XmlConvert(const CString&);
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
@@ -332,14 +332,14 @@ template<class T> void Unk_FieldLog(void* log,int level,int category,const wchar
     FUN_1406530d0(log,level,category,format,fmt::ArgList(fmt::internal::make_type(arg),values));
 }
 
-class Unk_FieldLock {
+class Unk_1401b4ec0 {
 public:
-    Unk_FieldLock(CLockCriticalSection&,int);
-    ~Unk_FieldLock();
+    Unk_1401b4ec0(CLockCriticalSection&,int);
+    ~Unk_1401b4ec0();
 private:
     CLockCriticalSection* p;
 };
-MS2_CHECK_SIZE(Unk_FieldLock,8);
+MS2_CHECK_SIZE(Unk_1401b4ec0,8);
 typedef Unk_SocketPtr<Unk_FieldSpawnMap> Unk_FieldSpawnMapPtr;
 static ATL::CAtlMap<unsigned,MS2Ptr<CFieldData> > s_fields;
 static ATL::CRBMap<unsigned,Unk_FieldSpawnMapPtr> s_spawnTags;
@@ -499,7 +499,7 @@ void LoadMapSpawnTag()
                 Unk_140165cf0* root=((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
                 if (root) {
                     std::vector<Unk_140165cf0*> nodes;
-                    FUN_14028fd90(root,"region","mapCode","spawnPointID",nodes);
+                    FUN_14028fd90((struct Unk_XmlElement*)root,"region","mapCode","spawnPointID",(std::vector<struct Unk_XmlElement*>&)nodes);
                     for (size_t i=0;i<nodes.size();++i) {
                         Unk_140165cf0* node=nodes[i];
                         TPtr<CFieldSpawnTag> tag(new CFieldSpawnTag);
@@ -611,7 +611,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
     if (id==0) return MS2Ptr<CFieldData>(0);
     MS2Ptr<CFieldData> field;
     {
-        Unk_FieldLock lock(s_fieldLock,1);
+        Unk_1401b4ec0 lock(s_fieldLock,1);
         if (s_fields.Lookup(id,field))
             return field;
         else
@@ -883,7 +883,7 @@ template<class T> void Unk_FieldSplitImpl(const CString& text,std::vector<T>& ou
     int start=0;
     CString token=text.Tokenize(delimiter,start);
     while (!token.IsEmpty()) {
-        out.push_back(FUN_140177cf0(token));
+        out.push_back((short)XmlConvert<unsigned short>(token));
         token=text.Tokenize(delimiter,start);
     }
 }

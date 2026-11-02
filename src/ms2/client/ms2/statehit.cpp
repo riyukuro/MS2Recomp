@@ -97,10 +97,10 @@ void StateHit::vfunc_4(StateData* pData)
     if (!m_strC0.IsEmpty())
     {
         efd::utf8string kName((const char*)FUN_1409a2360((const char*)m_strC0, 0));
-        if (m_pOwner->FUN_141679220(kName.c_str()))
+        if (m_pOwner->HasAnimSequence(kName.c_str()))
             m_strAnim = kName;
     }
-    if (m_pOwner->FUN_141679220(m_strAnim.c_str()))
+    if (m_pOwner->HasAnimSequence(m_strAnim.c_str()))
     {
         m_pOwner->FUN_14166dd20(m_strAnim, fSpeed, true, false);
         float fLength = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_strAnim.c_str()));

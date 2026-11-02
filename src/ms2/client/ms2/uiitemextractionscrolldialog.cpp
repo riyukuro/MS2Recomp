@@ -94,7 +94,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);             // string tab
 CStringW FUN_140938ae0(CStringW strKey, const int& nArg);          // string table text with one number
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
 void FUN_1412751f0(const CStringW& text, int nA, int nB);   // notice
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show it
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIItemExtractionScrollDialog::Slot);
@@ -315,10 +315,10 @@ void UIItemExtractionScrollDialog::OnLoadComplete()
         ASArray items(2);
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
-        items.FUN_1422bc050(objTarget.FUN_1422bb870());
+        items.PushValue(objTarget.FUN_1422bb870());
         ASObj objScroll(2);
         objScroll.FUN_1407cba60("binding", m_strBag);
-        items.FUN_1422bc050(objScroll.FUN_1422bb870());
+        items.PushValue(objScroll.FUN_1422bb870());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
         pDlg->FUN_140acd1f0("setData", AScript(root));
@@ -366,7 +366,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
     MS2Ptr<CItemTransfer> spTransfer(reinterpret_cast<CItemTransfer*>(spScroll->FUN_140527930()));
     if (spTransfer.get() != 0)
     {
-        spTransfer->FUN_140635320(false);
+        spTransfer->SetSocketTransferFlag(false);
         spTransfer->FUN_140635300();
     }
     m_nTargetUid = nItemUid;
@@ -379,11 +379,11 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         objTarget.FUN_1407cba60("binding", m_strBag);
         ((class AScript&)(objTarget)).FUN_1407cbb20("name", FUN_14183e9c0(spItem->FUN_140527b10(), spItem->FUN_140526bd0()));
         ((class AScript&)(objTarget)).FUN_1407cbb20("consume", FUN_140938ae0(CStringW(L"s_itemextraction_consume"), spRow->m_nConsume));
-        items.FUN_1422bc050(objTarget.FUN_1422bb870());
+        items.PushValue(objTarget.FUN_1422bb870());
         ASObj objScroll(2);
         objScroll.FUN_1407cba60("binding", m_strBag);
         ((class AScript&)(objScroll)).FUN_1407cbb20("name", FUN_14183e9c0(spScroll->FUN_140527b10(), spScroll->FUN_140526bd0()));
-        items.FUN_1422bc050(objScroll.FUN_1422bb870());
+        items.PushValue(objScroll.FUN_1422bb870());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
         pDlg->FUN_140acd1f0("setData", AScript(root));

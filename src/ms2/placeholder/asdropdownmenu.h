@@ -25,19 +25,19 @@ public:
     CStringW GetLabelField();                                       // "labelField"
     void SetScrollBar(const CStringW& strScrollBar);               // set "scrollBar"
     CStringW GetScrollBar();                                       // "scrollBar"
-    void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // add the "listIndexChange" listener
-    void FUN_1422dfa20(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);                // remove it
+    void AddListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // add the "listIndexChange" listener
+    void RemoveListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);                // remove it
     void SetTitle(const CStringW& strTitle);                   // set "title"
     void Open();                                           // open()
     void Close();                                           // close()
-    unsigned FUN_1422dfb90();                                       // the row count (0 without a data provider)
-    void FUN_1422dfc10();                                           // remove every row
-    void FUN_1422dfc70(const ASObj& row);                           // add a row
-    void FUN_1422dfce0(const CStringW& strLabel);                   // add a row { label: strLabel }
-    void FUN_1422dfda0(const CStringW& strLabel);                   // select the row labelled strLabel
+    unsigned GetItemCount();                                       // the row count (0 without a data provider)
+    void ClearItems();                                           // remove every row
+    void AddItemRow(const ASObj& row);                           // add a row
+    void AddItemLabel(const CStringW& strLabel);                   // add a row { label: strLabel }
+    void SelectItemByLabel(const CStringW& strLabel);                   // select the row labelled strLabel
     CStringW FUN_1422dfe00();                                       // the selected row's "label" ("" if none)
-    void FUN_1422e0040(const CString& strField, int nValue);        // select the first row whose strField is nValue (*)
-    void FUN_1422e01a0(const CString& strField, unsigned nValue);   // the same with an unsigned (*)
+    void SelectByIntField(const CString& strField, int nValue);        // select the first row whose strField is nValue (*)
+    void SelectByUIntField(const CString& strField, unsigned nValue);   // the same with an unsigned (*)
     void FUN_1422e0300(const CString& strField, const CStringW& strValue);   // select the first row whose strField is strValue
     void FUN_1422e0510(int nIndex);                                 // remove the row at nIndex
     void FUN_1422e0580(const CStringW& strLabel);                   // remove the first row labelled strLabel

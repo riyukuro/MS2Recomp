@@ -208,7 +208,7 @@ template <class T> void GetAll(ASArray& arr, ATL::CAtlArray<T>& aOut)
     unsigned nCount = arr.GetLength();
     for (unsigned i = 0; i < nCount; i++) {
         T value;
-        arr.FUN_1422bc860(i, value);
+        arr.GetUInt(i, value);
         aOut.Add(value);
     }
 }
@@ -219,7 +219,7 @@ template <class T> void GetAll(ASArray& arr, std::vector<T>& aOut)
     unsigned nCount = arr.GetLength();
     for (unsigned i = 0; i < nCount; i++) {
         T value;
-        arr.FUN_1422bc860(i, value);
+        arr.GetUInt(i, value);
         aOut.push_back(value);
     }
 }

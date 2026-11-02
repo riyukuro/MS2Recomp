@@ -13,6 +13,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -27,7 +28,7 @@ class Unk_SmPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1
 class Unk_SmLogin;                                      // FUN_14025e7c0
 
 class Unk_SmUIMgr;
-Unk_SmUIMgr* FUN_1403ed2b0();
+class CUIService;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -40,10 +41,9 @@ class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    class GFxMovie* FUN_1422b01a0(int);
+    class GFxMovie* FindMovie(int);
 };
 CStringW TakeScreenshotJpg(int a, int b);
-bool FUN_14116dd30(Unk_SmLogin* p, int a, int b, int c);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 int FUN_140e85580(Unk_SmPlayerState* p);
@@ -83,14 +83,14 @@ void UISceneModeSelect::vfunc_48(int n)
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
-    reinterpret_cast<CUIService*>((class CUIService*)((FUN_1403ed2b0())))->FUN_141adbe00(1.0f, 0);
+    TSingleton<CUIService>::GetInstance()->FUN_141adbe00(1.0f, 0);
     FUN_1422e7950();
 }
 
 // @0x140e85150
 void UISceneModeSelect::vfunc_49(int n)
 {
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e22);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e22);
     UISceneEntity::vfunc_49(n);
 }
 
@@ -98,7 +98,7 @@ void UISceneModeSelect::vfunc_49(int n)
 void UISceneModeSelect::vfunc_55()
 {
     UISceneEntity::vfunc_55();
-    ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4f6e));
+    ((CUIService*)reinterpret_cast<Unk_SmUIMgr*>(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f6e));
 }
 
 // @0x140e851c0
@@ -126,7 +126,7 @@ void UISceneModeSelect::OnLoadComplete()
     UISwfEntity::OnLoadComplete();
     if (((class WorldService*)(class Unk_SmWorld*)(((class Unk_SmWorld*)WorldService::GetInstance())))->FUN_141bcfbd0() != 0)
         vfunc_55();
-    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_SmHost*)(((class Unk_SmHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_SmHost*)(((class Unk_SmHost*)FUN_14025e7a0())))->FindMovie(4));
     if (pBg != 0)
     {
         if (pBg->IsLoaded() != 0)
@@ -157,15 +157,15 @@ static int FUN_140e853c0()
 {
     if (FUN_140e85580(((class Unk_SmPlayerState*)FUN_1409331f0())) == 0)
         return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->FUN_14116d9c0(0x75, 0, 0);
-    return FUN_14116dd30(((class Unk_SmLogin*)FUN_14025e7c0()), 0x493ef, 0, 0);
+    return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->FUN_14116dd30(0x493ef, false, 0);
 }
 
 // @0x140e85420
 UIIntroMovie* FUN_140e85420(int nUiId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (reinterpret_cast<Unk_SmUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIIntroMovie*>((UIObject*)spUI);
     }

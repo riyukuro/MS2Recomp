@@ -68,7 +68,7 @@ public:
     int IsOwnedByLocalPlayer();                                                    // the local player owns it
     int IsOwner(unsigned __int64 nUid);                               // nUid is an owner
     int FUN_1411900d0();                                                    // owner id and state both set
-    int FUN_141190120(const efd::Point3& kPos, int nA, int nB);             // can pick up from kPos
+    int FUN_141190120(Vector3 kPos, int nA, int nB);                        // can pick up from kPos (kPos by value: the one exe caller copies it)
     int FUN_141190320(GameObject* pActor, int nA, int nB);                 // can pick up with range m_f21c
     int FUN_141190370(GameObject* pActor, int nA, int nB);                 // can pick up with range m_f220
     int FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB);    // can pick up within fRange

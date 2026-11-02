@@ -76,13 +76,6 @@ extern template class MS2Ptr<UIObject>;
 void FUN_140d73c60(Unk_MsgBoxPtr box);
 Unk_MsgBoxPtr FUN_140d74500(CStringW strText, int nType, Unk_MsgBoxCallback cb);
 
-// UI manager and the lookup of a dialog by its id (the party dialog is 0x4e45).
-class Unk_PartyUIManager
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);
-};
-
 // The game constants: the ready-check length in seconds.
 class Unk_PartyConsts
 {
@@ -390,9 +383,9 @@ CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids)
 // @0x140a8a680
 void* FUN_140a8a680(int nUiId)
 {
-    if (reinterpret_cast<Unk_PartyUIManager*>(TSingleton<CUIService>::GetInstance()) != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> spUI = reinterpret_cast<Unk_PartyUIManager*>(TSingleton<CUIService>::GetInstance())->FUN_141adcea0(nUiId);
+        MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
         if (spUI.get() != 0)
             return dynamic_cast<UIPartyDialog*>(spUI.operator->());
     }
@@ -402,10 +395,10 @@ void* FUN_140a8a680(int nUiId)
 // @0x140a8a720
 void* FUN_140a8a720()
 {
-    Unk_PartyUIManager* pManager = reinterpret_cast<Unk_PartyUIManager*>(TSingleton<CUIService>::GetInstance());
+    CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> spUI = pManager->FUN_141adcea0(FUN_140a8ac50());
+    MS2Ptr<UIObject> spUI = pManager->FindObject((eUIClassID)FUN_140a8ac50());
     if (spUI.IsNull())
         return 0;
     return dynamic_cast<UIPartyDialog*>(spUI.operator->());

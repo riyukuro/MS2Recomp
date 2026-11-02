@@ -119,8 +119,8 @@ MS2_REPLACE_METHOD(0x1417095d0, UIRimLightDialog, vfunc_28, 445, 0x2FB16BBD);
 // @0x1417097a0
 void UIRimLightDialog::FUN_1417097a0(ASData& data)
 {
-    float fYaw = data.FUN_1422b8c10() - 90.0f;
-    float fPitch = data.FUN_1422b8c10();
+    float fYaw = data.PopFloat() - 90.0f;
+    float fPitch = data.PopFloat();
     Unk_RimLight::FUN_14107b2a0(fYaw, fPitch);
 }
 MS2_REPLACE_METHOD(0x1417097a0, UIRimLightDialog, FUN_1417097a0, 76, 0x1E22E413);
@@ -128,10 +128,10 @@ MS2_REPLACE_METHOD(0x1417097a0, UIRimLightDialog, FUN_1417097a0, 76, 0x1E22E413)
 // @0x141709800
 void UIRimLightDialog::FUN_141709800(ASData& data)
 {
-    g_1439f81f4 = data.FUN_1422b8c10();
-    g_1439f81f8 = data.FUN_1422b8c10();
-    g_1439f81fc = data.FUN_1422b8c10();
-    g_1439f8200 = data.FUN_1422b8c10();
+    g_1439f81f4 = data.PopFloat();
+    g_1439f81f8 = data.PopFloat();
+    g_1439f81fc = data.PopFloat();
+    g_1439f8200 = data.PopFloat();
 }
 MS2_REPLACE_METHOD(0x141709800, UIRimLightDialog, FUN_141709800, 91, 0x28CBBBB8);
 
@@ -139,10 +139,10 @@ MS2_REPLACE_METHOD(0x141709800, UIRimLightDialog, FUN_141709800, 91, 0x28CBBBB8)
 void UIRimLightDialog::FUN_141709870(ASData& data)
 {
     Unk_Color3 color;
-    color.r = data.FUN_1422b8c10();
-    color.g = data.FUN_1422b8c10();
-    color.b = data.FUN_1422b8c10();
-    float fPower = data.FUN_1422b8c10();
+    color.r = data.PopFloat();
+    color.g = data.PopFloat();
+    color.b = data.PopFloat();
+    float fPower = data.PopFloat();
     Unk_RimLight::FUN_14107b320(color, fPower);
 }
 MS2_REPLACE_METHOD(0x141709870, UIRimLightDialog, FUN_141709870, 109, 0xE8BFE176);

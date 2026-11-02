@@ -70,6 +70,7 @@
 // MS2-PIN: ??__Es_pointer2@@YAXXZ 0x1400e5960
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\npc.cpp"
+#define MS2_TPTRVALUE_ASSIGN_VIA_TEMP
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/clientconstants.h"
@@ -102,6 +103,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include <NiPhysXTypes.h>
 #include <NiTexturingProperty.h>
 #include <NiMesh.h>
 #include "ms2/commonfiles/skillattackdata.h"
@@ -163,7 +165,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 {
 };
 
-class COptimizer { public: void AddSuppressor(const egf::EntityID& kId); void FUN_14161d070(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
+class COptimizer { public: void AddSuppressor(const egf::EntityID& kId); void RemoveSuppressor(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
 class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class CEmotionTable { public: void LoadTextures(unsigned int nId, CString strDir); };   // preload the npc's effects
@@ -174,28 +176,24 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 bool FUN_14028d470(float a, float b);                               // a != b (with epsilon)
 
 class CFieldMaidManager { public: MS2Ptr<CMaid> GetMaid(unsigned __int64 nId); };   // the field maids (before the user's own)
-extern void* DAT_143ace478;                                         // TSingleton<CFieldMaidManager>::s_instance
 // @0x14109a700
 static CFieldMaidManager* FUN_14109a700()
 {
-    return (CFieldMaidManager*)DAT_143ace478;
+    return TSingleton<CFieldMaidManager>::s_instance;
 }
 class Unk_ArcMover { public: bool IsMoving() const; CStringA GetName() const; void FUN_14160bf90(float fTime, Vector3* pPos, float* pYaw); };   // Unk_NpcBeam getters
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name of the string table
 class CQuestMaskTable { public: int HasNpcMask(void* pNpc); int CheckNpcObject(void* pNpc); };
-class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143ab0d68;                             // TSingleton<CQuestMaskTable>::s_instance
 // @0x14109a710
 static CQuestMaskTable* FUN_14109a710()
 {
-    return (CQuestMaskTable*)DAT_143ab0d68;
+    return TSingleton<CQuestMaskTable>::s_instance;
 }
 Unk_NpcTableCli* FUN_1406d6e90();
 class Unk_HudActor { public: float FUN_140f4a450(); };
 class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, int n); };
 template<class T> T* Unk_DmgFindUI(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
-CStringTable* GetStringTable();
 #ifdef __clang__
 CStringA FUN_140298360(const char* psz, const CStringA& str);   // the exe's operator+(const char*, const CStringA&)
 #endif
@@ -208,10 +206,9 @@ public:
 class MyPC { public: void FUN_14152e240(unsigned n); int FUN_14152e280(unsigned n); };
 struct Unk_WsC_NpcAnim;
 // The world service: the spawn animation of a spawn id (worldservice.h).
-class Unk_CapWorld { public: void FUN_141bc7f10(egf::EntityID kId); };   // the argument is built before this, as for a by-value EntityID
-class WorldService { public: static WorldService* GetInstance(); int FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out); public:
+class WorldService { public: static WorldService* GetInstance(); void FUN_141bc7f10(egf::EntityID kId); int FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out); public:
     void FUN_141bc7d40(const unsigned __int64& key);
-    void FUN_141bc7ec0(const unsigned __int64& key);
+    void AddCombatBgmTracker(const unsigned __int64& key);
     void FUN_141bc7fe0(const unsigned __int64& key);
     void FUN_141bc8e00();
     void* FUN_141bd0cc0();                                          // the local player
@@ -230,7 +227,6 @@ static unsigned s_aDeadGroupMask[] = { 0x400, 0x800, 0x1000, 0x2000, 0x4000, 0x8
 static int s_nDeadGroupMask = 8;
 static int s_nDeadActorSerial;
 // game point -> PhysX point; the exe takes the Vector3 as this and the hidden return slot in rdx (a free declaration swapped them)
-struct Unk_PointView { NxVec3 FUN_140ae1df0() const; };
 // The maid description table (the row's +0x08 is the maid npc's title); the 16 byte row pointer of the maid tables
 // (uimanufacturedialog.cpp), its members are COMDATs of other units.
 template <class T> class Unk_UmValuePtr
@@ -481,18 +477,18 @@ CNpc::CNpc()
     m_spNpcData = 0;
     m_unkD88.MakeIdentity();
     m_spStateMgr.AssignRaw(new CStateManager(this));
-    m_spStateMgr->FUN_1417daeb0(1, new StateIdleNPC(this));
-    m_spStateMgr->FUN_1417daeb0(2, new StateWalkNPC(this));
-    m_spStateMgr->FUN_1417daeb0(0xc, new StateDeadNPC(this));
-    m_spStateMgr->FUN_1417daeb0(6, new StateJumpNpc(this));
-    m_spStateMgr->FUN_1417daeb0(0x10, new StateSkill(this));
-    m_spStateMgr->FUN_1417daeb0(0xd, new StateHitNPC(this));
-    m_spStateMgr->FUN_1417daeb0(0x12, new StateStun(this));
-    m_spStateMgr->FUN_1417daeb0(0x16, new StateTalkNpc(this));
-    m_spStateMgr->FUN_1417daeb0(0x11, new StateSpawn(this));
-    m_spStateMgr->FUN_1417daeb0(0x17, new StateRegen(this));
-    m_spStateMgr->FUN_1417daeb0(0x23, new StatePuppetNpc(this));
-    m_spStateMgr->FUN_1417daeb0(0x38, new StateSummonPortal(this));
+    m_spStateMgr->RegisterState(1, new StateIdleNPC(this));
+    m_spStateMgr->RegisterState(2, new StateWalkNPC(this));
+    m_spStateMgr->RegisterState(0xc, new StateDeadNPC(this));
+    m_spStateMgr->RegisterState(6, new StateJumpNpc(this));
+    m_spStateMgr->RegisterState(0x10, new StateSkill(this));
+    m_spStateMgr->RegisterState(0xd, new StateHitNPC(this));
+    m_spStateMgr->RegisterState(0x12, new StateStun(this));
+    m_spStateMgr->RegisterState(0x16, new StateTalkNpc(this));
+    m_spStateMgr->RegisterState(0x11, new StateSpawn(this));
+    m_spStateMgr->RegisterState(0x17, new StateRegen(this));
+    m_spStateMgr->RegisterState(0x23, new StatePuppetNpc(this));
+    m_spStateMgr->RegisterState(0x38, new StateSummonPortal(this));
     m_f164 = FUN_1401d3200()->OffsetNpcHpbar.Read();
     m_f168 = FUN_1401d3200()->OffsetNpcChatballoon.Read();
     m_f16c = FUN_1401d3200()->OffsetNpcNametag.Read();
@@ -525,6 +521,7 @@ CNpc::~CNpc()
     FUN_141095140();
 }
 
+// MS2-FUNCTIONAL: the exe passes egf::EntityID by value to AddCombatBgmTracker and AddSuppressor (the spilled return slot)
 // @0x14108f0a0
 int CNpc::vfunc_10()
 {
@@ -536,7 +533,7 @@ int CNpc::vfunc_10()
             if (pCamera != NULL)
                 pCamera->FUN_140a38550(FUN_14123c580());
         }
-        WorldService::GetInstance()->FUN_141bc7ec0(reinterpret_cast<const unsigned __int64&>(static_cast<const egf::EntityID&>(FUN_14123c460())));
+        WorldService::GetInstance()->AddCombatBgmTracker(reinterpret_cast<const unsigned __int64&>(static_cast<const egf::EntityID&>(FUN_14123c460())));
         ((class COptimizer*)FUN_1409f7c90())->AddSuppressor(FUN_14123c460());
         if ((m_spNpcData->m_nClass == 3 || m_spNpcData->m_nClass == 4) && vfunc_116() == 0)
             ((class COptimizer*)FUN_1409f7c90())->FUN_14109ac50(0);
@@ -614,8 +611,8 @@ void CNpc::vfunc_12()
 void CNpc::vfunc_14()
 {
     if (FUN_141092ff0() != 0) {
-        reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bc7f10(FUN_14123c460());
-        ((class COptimizer*)FUN_1409f7c90())->FUN_14161d070(FUN_14123c460());
+        WorldService::GetInstance()->FUN_141bc7f10(FUN_14123c460());
+        ((class COptimizer*)FUN_1409f7c90())->RemoveSuppressor(FUN_14123c460());
     }
     FUN_1410979a0();
     FUN_141099ab0();
@@ -1246,18 +1243,17 @@ void CNpc::FUN_141093910()
 }
 
 // The name shown for the npc: a maid's own title, else the title of its maid row, else the npc name string.
-// MS2-FUNCTIONAL: the maid temporaries live in different stack slots
 // @0x141093980
 CStringW CNpc::FUN_141093980()
 {
-    if (FUN_141093800().get() != 0) {
-        if (!static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730().IsEmpty())
-            return static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730();
-        TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(FUN_141093800()->m_nMaidId);
-        if (spDesc.get() != 0)
-            return spDesc->title;
+    auto pMaid = FUN_141093800().get();
+    if (pMaid != 0) {
+        bool bEmpty = static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730().IsEmpty();
+        if (bEmpty) {
+            if (TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(FUN_141093800()->m_nMaidId)) return spDesc->title;
+        } else return static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730();
     }
-    return GetStringTable()->FUN_141811980(10, FUN_141092fa0());
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, FUN_141092fa0());
 }
 
 // @0x141093c20
@@ -1285,13 +1281,16 @@ void CNpc::FUN_141093c80()
     m_nE10 = 0;
     int nIcon = m_questState.m_icon;
     int nState = m_questState.m_state;
-    if (!GetNpcData().IsNull() && vfunc_116() != 0 && m_cE40 != 0) {
-        m_questState.Reset();
-        ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->FUN_1416d12d0(FUN_141092fa0(), &m_questState, 0);
-        if (nIcon != m_questState.m_icon || nState != m_questState.m_state) {
-            if (vfunc_83().get() != 0)
-                static_cast<Unk_PCBaseComp_a88*>(vfunc_83().operator->())->FUN_14192f910();
-        }
+    bool bNoData = GetNpcData().IsNull();
+    if (bNoData) return;
+    if (vfunc_116() == 0) return;
+    if ((unsigned char)m_cE40 == 0) return;
+    m_questState.Reset();
+    ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->FUN_1416d12d0(FUN_141092fa0(), &m_questState, 0);
+    if (nIcon != m_questState.m_icon || nState != m_questState.m_state) {
+        auto pBalloon = vfunc_83().get();
+        if (pBalloon != 0)
+            static_cast<Unk_PCBaseComp_a88*>(vfunc_83().operator->())->FUN_14192f910();
     }
 }
 
@@ -1470,7 +1469,9 @@ __int64 CNpc::FUN_1410947c0()
 // @0x1410947e0
 void CNpc::FUN_1410947e0()
 {
-    if (m_nEA8 == 0 || m_spC40 != 0)
+    if (m_nEA8 == 0)
+        return;
+    if (m_spC40)
         return;
     CString strUnused;
     MS2Ptr<CItemData> spItem = FUN_14053f870(m_nEA8);
@@ -1478,20 +1479,21 @@ void CNpc::FUN_1410947e0()
         return;
     CString strNif = CItemDataTable::GetInstance()->GetGradeNif((ItemGradeKey)1);
     strNif += ".nif";
-    m_spC40 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(FUN_140cc2ba0(CString("Item"), strNif), false, 5, 0, 0);
-    efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150(CString("Eff_UI"));
+    m_spC40 = ((class CNifLoadingService*)FUN_140a0afd0())->Load(FUN_140cc2ba0("Item", strNif), false, 5, 0, 0);
+    efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150("Eff_UI");
     {
         Unk_SceneWalker kWalker((NiAVObject*)(m_spC40));
         NiAVObject* pObj;
         while ((pObj = kWalker.Next(true)) != 0) {
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObj);
             if (pRender != 0 && pRender->GetName() == "Editable Mesh")
-                pRender->SetName(NiFixedString("Item_Box"));
+                pRender->SetName("Item_Box");
         }
     }
-    if (spRoot != 0 && m_spC40 != 0) {
+    if ((spRoot ? true : false) && (m_spC40 ? true : false)) {
         spRoot->AttachChild(m_spC40, false);
-        NiAVObject* pIcon = m_spC40->GetObjectByName(NiFixedString("Item_Icon:0"));
+        NiAVObject* pIcon;
+        NiAVObject* pDead = pIcon = m_spC40->GetObjectByName("Item_Icon:0");
         if (pIcon != 0 && NiIsExactKindOf(NiMesh, pIcon)) {
             NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pIcon->GetProperty(8));
             NiTexturingProperty::Map* pMap;
@@ -1657,13 +1659,11 @@ bool CNpc::FUN_1410952d0()
 
 // Builds the npc's collision: the body box ("box" shape) and one box per node collision of the npc row (green, bound
 // to model nodes) and per server node collision (orange, placed at the actor), then the terrain actor.
-// MS2-FUNCTIONAL: the box temporaries live in different stack slots
 // @0x141096730
 void CNpc::FUN_141096730()
 {
     if (m_spNpcData->m_collision.m_strShape == "box") {
-        const Unk_NpcShape& kShape = m_spNpcData->m_collision;
-        efd::Point3 kSize(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth * 0.5f, kShape.m_fHeight);
+        efd::Point3 kSize(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth * 0.5f, m_spNpcData->m_collision.m_fHeight);
         efd::Point3 kOffset(0.0f, m_spNpcData->m_collision.m_fDepth * 0.5f, 0.0f);
         FUN_141670fd0(kSize, kOffset);
     }
@@ -1706,14 +1706,13 @@ void CNpc::FUN_141096730()
 // Creates the dead body's PhysX actor (+0xd60): a box pushed back / up by the killing skill's knockback (scaled by the
 // npc's push values, randomised by NPCRandomDeadPushRate, turned by the hit direction), then picks the dead animation
 // (the "up" one when pushed up and the model has it).
-// MS2-FUNCTIONAL: the PhysX descriptor / matrix temporaries live in different stack slots
 // @0x141096f00
 void CNpc::MakeDeadPhysXActor()
 {
     s_nDeadActorSerial++;
     int nGroup = s_nDeadActorSerial % s_nDeadGroupMask;
-    float fBackScale = 1.0f;
     float fUpScale = 1.0f;
+    float fBackScale = 1.0f;
     float fDensity = 1.0f;
     float fBack = 0.0f;
     float fUp = 0.2f;
@@ -1725,25 +1724,25 @@ void CNpc::MakeDeadPhysXActor()
         fPushUp = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
         fPushBack = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
         static float s_fRate = FUN_1401d3200()->NPCRandomDeadPushRate.Read();
-        fPushBack = fPushBack * (FUN_14109ace0() * s_fRate + 1.0f);
-        fPushUp = fPushUp * (FUN_14109ace0() * s_fRate + 1.0f);
+        fPushBack = fPushBack * (1.0f + FUN_14109ace0() * s_fRate);
+        fPushUp = fPushUp * (1.0f + FUN_14109ace0() * s_fRate);
         if (FUN_14028d470(fPushBack, 0.0f) && FUN_14028d470(fPushUp, 0.0f))
             return;
         if (m_nD80 == 2) {
-            int nRange = 3;
-            float fStep = 30.0f;
-            int nStep = rand() % nRange < 2 ? 1 : rand() % nRange;
+            const int nRange = 3;
+            const float fStep = 30.0f;
+            int nStep = rand() % nRange > 1 ? rand() % nRange : 1;
             float fAngle = (float)nStep * fStep;
             kRot.MakeZRotation((fAngle * 3.1415927f) / 180.0f);
         } else if (m_nD80 == 1) {
-            int nRange = 3;
-            float fStep = 30.0f;
-            int nStep = rand() % nRange < 2 ? 1 : rand() % nRange;
+            const int nRange = 3;
+            const float fStep = 30.0f;
+            int nStep = rand() % nRange > 1 ? rand() % nRange : 1;
             float fAngle = (float)nStep * fStep;
             kRot.MakeZRotation((-fAngle * 3.1415927f) / 180.0f);
         } else if (m_nD80 == 3) {
-            int nRange = 3;
-            float fStep = 30.0f;
+            const int nRange = 3;
+            const float fStep = 30.0f;
             int nStep = rand() % nRange;
             float fAngle = (float)nStep * fStep;
             if (rand() % 2 != 0)
@@ -1763,8 +1762,7 @@ void CNpc::MakeDeadPhysXActor()
     float fTime = efd::Sqrt((fUpScale * fUp * 2.0f) / fGravity);
     float fUpSpeed = fTime * fGravity;
     efd::Matrix3 kDir = m_unkD88 * kRot;
-    float fBackSpeed = (fBackScale * fBack) / (fTime * 2.0f);
-    efd::Point3 kVel = (kDir * efd::Point3::UNIT_Y) * fBackSpeed;
+    efd::Point3 kVel = (kDir * efd::Point3::UNIT_Y) * ((fBackScale * fBack) / (fTime * 2.0f));
     NxBodyDesc kBodyDesc;
     kBodyDesc.angularDamping = 0.0f;
     kBodyDesc.linearDamping = 0.0f;
@@ -1779,10 +1777,10 @@ void CNpc::MakeDeadPhysXActor()
     kActorDesc.shapes.pushBack(&kBoxDesc);
     kActorDesc.body = &kBodyDesc;
     kActorDesc.density = fDensity;
-    efd::Point3 kPos = vfunc_18();
+    NiPoint3 kPos = vfunc_18();
     kActorDesc.globalPose.t = NxVec3(kPos.x, kPos.y, kPos.z);
     kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
-    kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z + 0.05f;
+    kActorDesc.globalPose.t.z = kActorDesc.globalPose.t.z + kBoxDesc.dimensions.z + 0.05f;
     kActorDesc.globalPose.M.rotZ((vfunc_20().z * 3.1415927f) / 180.0f);
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     m_pD60 = pScene->createActor(kActorDesc);
@@ -1794,10 +1792,9 @@ void CNpc::MakeDeadPhysXActor()
     if (0.0f < fPushUp) {
         CString strUp = m_spNpcData->m_dead.GetRandomUpAction();
         if (!strUp.IsEmpty()) {
-            egf::EntityID kId;
-            efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(FUN_14123c460(kId));
-            if (spManager != 0) {
-                if (spManager->FindSequenceID((const char*)strUp) != (NiActorManager::SequenceID)0xfffffffe)
+            efd::SmartPointer<NiActorManager> spManager = FUN_141b6f910()->GetActorManager(FUN_14123c460());
+            if (spManager) {
+                if (spManager->FindSequenceID((const char*)strUp) != NiActorManager::INVALID_SEQUENCE_ID)
                     strAnim = strUp;
             }
         }
@@ -1854,13 +1851,11 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
 
 // A hit: the hit numbers, buff triggers, the boss camera, the hit effect / colour / shake / sound, the knockback record
 // (+0xd70 / +0xd80), the hit direction basis (+0xd88), the death (corpse actor, boss kill effects), the dps meter.
-// MS2-FUNCTIONAL: written from the decompile
 // @0x141097c40
 void CNpc::vfunc_33(void* a, void* b)
 {
     float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
-    efd::Point3 kHitDir = *static_cast<efd::Point3*>(b);
-    GameObject::vfunc_33(a, &kHitDir);
+    GameObject::vfunc_33(a, const_cast<efd::Point3*>(&static_cast<const efd::Point3&>(efd::Point3(*static_cast<efd::Point3*>(b)))));
     FUN_141671c20(MS2Ptr<CDamageRecord>(static_cast<CDamageRecord*>(a)));
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     int nOwnerRel = WorldService::GetInstance()->FUN_141bd19d0(static_cast<CDamageRecord*>(a)->m_nOwnerId);
@@ -1875,11 +1870,13 @@ void CNpc::vfunc_33(void* a, void* b)
                 pCamera->FUN_140a38550(FUN_14123c580());
         }
     }
-    if (static_cast<CDamageRecord*>(a)->FUN_14175ac30() < 0) {
+    if (static_cast<CDamageRecord*>(a)->GetTotalDamage() < 0) {
         FUN_141098fb0(1);
         FUN_14166ccb0()->vfunc_6();
         if (nOwnerRel == 1) {
-            AddColorBoost(m_spNpcData->m_fDamagedColorScale, DAT_1439f6ff4, DAT_1439f6ff8);
+            float fFadeIn = DAT_1439f6ff4;
+            float fFadeOut = DAT_1439f6ff8;
+            AddColorBoost(m_spNpcData->m_fDamagedColorScale, fFadeIn, fFadeOut);
             float fAmp = m_spNpcData->m_fDamagedVibrateAmp;
             if (pAttack != 0)
                 fAmp = fAmp * pAttack->m_damage.m_fDamagedVibrateRatio;
@@ -1897,14 +1894,14 @@ void CNpc::vfunc_33(void* a, void* b)
                 m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         }
     }
-    if (kHitDir != efd::Point3::ZERO) {
-        efd::Point3 kRight = kHitDir.UnitCross(efd::Point3::UNIT_Z);
+    if (*static_cast<efd::Point3*>(b) == efd::Point3::ZERO) {
+        m_unkD88.MakeIdentity();
+    } else {
+        efd::Point3 kRight = static_cast<efd::Point3*>(b)->UnitCross(efd::Point3::UNIT_Z);
         efd::Point3 kForward = -kRight.UnitCross(efd::Point3::UNIT_Z);
         m_unkD88.SetCol(0, kRight);
         m_unkD88.SetCol(1, kForward);
         m_unkD88.SetCol(2, efd::Point3::UNIT_Z);
-    } else {
-        m_unkD88.MakeIdentity();
     }
     if (FUN_14166ce30() == 0 && FUN_141670a00(4) == 0) {
         MakeDeadPhysXActor();
@@ -1924,7 +1921,6 @@ void CNpc::vfunc_33(void* a, void* b)
 }
 
 // A DoT tick: the tick numbers, buff triggers, the boss camera, the buff's sound, the death, the dps meter.
-// MS2-FUNCTIONAL: written from the decompile
 // @0x141098390
 void CNpc::vfunc_34(void* p)
 {
@@ -1940,16 +1936,18 @@ void CNpc::vfunc_34(void* p)
                 pCamera->FUN_140a38550(FUN_14123c580());
         }
     }
-    MS2Ptr<AdditionalCli> spBuff = reinterpret_cast<AdditionalCliList&>(m_unk_748).FUN_14096fc80(static_cast<CDotDamageRecord*>(p)->m_nEffectLevel);
-    if (!spBuff.IsNull()) {
+    do {
+        MS2Ptr<AdditionalCli> spBuff = reinterpret_cast<AdditionalCliList&>(m_unk_748).FUN_14096fc80(static_cast<CDotDamageRecord*>(p)->m_nEffectLevel);
+        if (spBuff.IsNull())
+            break;
         int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
-        if (nMaterial != 0) {
-            Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
-            float fVolume = pVolume->Read();
-            reinterpret_cast<Unk_PCFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
-                nOwnerRel, vfunc_18(), fVolume);
-        }
-    }
+        if (nMaterial == 0)
+            break;
+        Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
+        float fVolume = pVolume->Read();
+        reinterpret_cast<Unk_PCFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
+            nOwnerRel, vfunc_18(), fVolume);
+    } while (0);
     if (FUN_14166ce30() == 0 && FUN_141670a00(4) == 0) {
         vfunc_125(1);
         PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
@@ -1990,7 +1988,7 @@ void CNpc::vfunc_35(void* p)
                 pCamera->FUN_140a38550(FUN_14123c580());
         }
     }
-    if (static_cast<CSplashDamageRecord*>(p)->FUN_14175ac30() < 0) {
+    if (static_cast<CSplashDamageRecord*>(p)->GetTotalDamage() < 0) {
         FUN_141098fb0(1);
         FUN_14166ccb0()->vfunc_6();
         Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &FUN_1401d3200()->VolumePcToNpc : &FUN_1401d3200()->VolumeMyPcToNpc;
@@ -2065,27 +2063,24 @@ void CNpc::FUN_141099170(float fTime)
 // @0x141099370
 void CNpc::FUN_141099370(float fTime)
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() == 0 && m_questState.m_state == 4) {
-        MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
-        if (spBalloon.IsNull())
-            return;
-        if (spBalloon->FUN_1418fb6b0())
-            return;
-        int nRandom = FUN_140a35ca0(FUN_1401d3200()->MonologueRandom.Get());
-        if (spBalloon->FUN_140f48d40() == 0) {
-            m_nDE0 += FUN_14028d260(fTime);
-            unsigned int nElapsed = m_nDE0;
-            int nDelay = m_nDE4;
-            if ((unsigned int)(FUN_140a35ca0(FUN_1401d3200()->MonologueInterval.Get()) + nRandom) <= nElapsed + nDelay) {
-                reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b20790(FUN_14123c580(), vfunc_116());
-                FUN_141099580();
-            }
-        } else {
-            m_nDE0 += FUN_14028d260(fTime);
-            if ((unsigned int)FUN_140a35ca0(FUN_1401d3200()->MonologueShowTime.Get()) <= (unsigned int)m_nDE0) {
-                spBalloon->vfunc_3();
-                FUN_141099580();
-            }
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0) return;
+    if (m_questState.m_state != 4) return;
+    MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
+    if (spBalloon.IsNull()) return;
+    if (spBalloon->FUN_1418fb6b0())
+        return;
+    int nRandom = FUN_140a35ca0(FUN_1401d3200()->MonologueRandom.Get());
+    if (spBalloon->FUN_140f48d40() != 0) {
+        m_nDE0 += (int)FUN_14028d260(fTime);
+        if ((unsigned int)m_nDE0 >= (unsigned int)FUN_140a35ca0(FUN_1401d3200()->MonologueShowTime.Get())) {
+            spBalloon->vfunc_3();
+            FUN_141099580();
+        }
+    } else {
+        m_nDE0 += (int)FUN_14028d260(fTime);
+        if ((unsigned int)(m_nDE0 + m_nDE4) >= (unsigned int)(FUN_140a35ca0(FUN_1401d3200()->MonologueInterval.Get()) + nRandom)) {
+            reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b20790(FUN_14123c580(), vfunc_116());
+            FUN_141099580();
         }
     }
 }
@@ -2103,7 +2098,6 @@ void CNpc::FUN_141099580()
 }
 
 // Sets the npc up from its table row: model, name, collision size, quest flag and the random-target effect.
-// MS2-FUNCTIONAL: behaviour-equivalent (the exe keeps the name / ridee temporaries in other frame slots)
 // @0x141090d60
 int CNpc::vfunc_124(int nNpcId)
 {
@@ -2132,7 +2126,7 @@ int CNpc::vfunc_124(int nNpcId)
     m_nEB8 = FUN_14109a710()->HasNpcMask(this);
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != NULL) {
-        efd::Point3 kPos = pPlayer->vfunc_18();
+        NiPoint3 kPos = pPlayer->vfunc_18();
         efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
         if (spRidee != 0)
             kPos = spRidee->vfunc_18();
@@ -2145,7 +2139,6 @@ int CNpc::vfunc_124(int nNpcId)
 }
 
 // Dies: the dead state, the dead effect / sound and the corpse collision box.
-// MS2-FUNCTIONAL: behaviour-equivalent (one temporary less in the exe)
 // @0x141091210
 void CNpc::vfunc_125(int bShow)
 {
@@ -2160,11 +2153,13 @@ void CNpc::vfunc_125(int bShow)
         if (m_spNpcData.get() != 0)
             ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a4f40(m_spNpcData->m_strSoundDead, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
     }
-    if (GetNpcData()->GetCorpseHitAble() != 0) {
-        const Unk_NpcCorpse& kCorpse = m_spNpcData->m_corpse;
-        efd::Point3 kSize(m_spNpcData->m_corpse.m_shape.m_fWidth, m_spNpcData->m_corpse.m_shape.m_fDepth,
-            m_spNpcData->m_corpse.m_shape.m_fHeight);
-        efd::Point3 kOffset(0.0f, m_spNpcData->m_corpse.m_fAdded, 0.0f);
+    if (GetNpcData()->GetCorpseHitAble()) {
+        float fWidth = m_spNpcData->m_corpse.m_shape.m_fWidth;
+        float fDepth = m_spNpcData->m_corpse.m_shape.m_fDepth;
+        float fHeight = m_spNpcData->m_corpse.m_shape.m_fHeight;
+        float fAdded = m_spNpcData->m_corpse.m_fAdded;
+        efd::Point3 kSize(fWidth, fDepth, fHeight);
+        efd::Point3 kOffset(0.0f, fAdded, 0.0f);
         FUN_141670fd0(kSize, kOffset);
         m_f16c = m_spNpcData->m_corpse.m_fOffsetNametag;
         MS2Ptr<Unk_PCBaseComp_a78> spTag = vfunc_82();
@@ -2172,7 +2167,7 @@ void CNpc::vfunc_125(int bShow)
             spTag->FUN_141a5e540("Eff_Body");
     }
     if (FUN_141092ff0())
-        reinterpret_cast<Unk_CapWorld*>(WorldService::GetInstance())->FUN_141bc7f10(FUN_14123c460());
+        WorldService::GetInstance()->FUN_141bc7f10(FUN_14123c460());
     if (m_nEA8 != 0)
         DetachEffectUiNode();
     m_timerEE8.FUN_140868750(Client::Constants::GetInstance()->NameColorDeadDuration.Read());
@@ -2180,7 +2175,9 @@ void CNpc::vfunc_125(int bShow)
 
 // Places the collision boxes: the model-bound boxes at their named nodes, the free boxes at the actor, and the corpse
 // attachment at the actor turned by the corpse rotation of the dead animation.
-// MS2-FUNCTIONAL: the Point3/NiPoint3 temporaries are built in a different order
+// MS2-FUNCTIONAL: the exe builds the box position and direction by implicit Point3 -> NiPoint3 conversions into by-value
+// NiPoint3 slots. CBoxCollision::vfunc_3 takes Vector3, whose Point3 ctor is explicit (nipoint3.h is off limits), and only a
+// stand-in view of the box gives 0 diff, so the row stays functional until the collision family takes NiPoint3.
 // @0x141095bd0
 void CNpc::vfunc_50()
 {
@@ -2188,49 +2185,43 @@ void CNpc::vfunc_50()
     if (pRoot != NULL) {
         for (unsigned i = 0; i < m_arrE68.GetCount(); i++) {
             MS2Ptr<CBoxCollision> spBox = m_arrE68[i];
-            if (spBox.get() == 0)
+            if (spBox == 0)
                 continue;
-            NiAVObject* pNode = pRoot->GetObjectByName(NiFixedString((const char*)spBox->m_strName));
-            if (pNode != NULL) {
-                CBoxCollision* pBox = spBox.operator->();
-                const NiMatrix3& kRot = ((class NiAVObject*)(void*)(pNode))->GetWorldRotate();
-                Vector3 ptPos = *reinterpret_cast<const Vector3*>(&pNode->GetWorldTranslate());
-                pBox->vfunc_2(ptPos, kRot, 1.0f);
-            }
+            NiAVObject* pNode = pRoot->GetObjectByName((const char*)spBox->m_strName);
+            if (pNode != NULL)
+                spBox->vfunc_2(*reinterpret_cast<const Vector3*>(&pNode->GetWorldTranslate()), pNode->GetWorldRotate(), 1.0f);
         }
     }
     for (unsigned i = 0; i < m_arrE88.GetCount(); i++) {
         MS2Ptr<CBoxCollision> spBox = m_arrE88[i];
-        if (spBox.get() == 0)
+        if (spBox == 0)
             continue;
-        CBoxCollision* pBox = spBox.operator->();
-        float fScale = FUN_14123c260();
-        efd::Point3 kDir = vfunc_20();
-        efd::Point3 kPos = static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108);
-        pBox->vfunc_3(Vector3(kPos), Vector3(kDir), fScale);
+        spBox->vfunc_3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108))),
+            reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(static_cast<const efd::Point3&>(vfunc_20()))), FUN_14123c260());
     }
     if (FUN_14166ce30() != 0 && GetNpcData()->GetCorpseHitAble() != 0) {
         Unk_GoAttachment* pAttachment = vfunc_26();
-        if (pAttachment != NULL && FUN_14166c930() == 0xc) {
-            State* pState = FUN_14166ccb0();
-            const CStringA& strAnim = *reinterpret_cast<const CStringA*>(reinterpret_cast<const char*>(pState) + 0x40);
-            int nIndex = 0;
-            if (strAnim == "Dead_A")
-                nIndex = 0;
-            else if (strAnim == "Dead_B")
-                nIndex = 1;
-            else if (strAnim == "Dead_C")
-                nIndex = 2;
-            int nCount = (int)m_spNpcData->m_corpse.m_aRotation.GetCount();
-            if (nCount != 0) {
-                if (nIndex >= nCount)
-                    nIndex = nCount - 1;
-                int nRot = m_spNpcData->m_corpse.m_aRotation[nIndex];
-                efd::Point3 kDir = static_cast<const efd::Point3&>(vfunc_20()) + efd::Point3(0.0f, 0.0f, (float)nRot);
-                efd::Point3 kPos = static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108);
-                pAttachment->vfunc_3(NiPoint3(kPos), NiPoint3(kDir), 1.0f);
-            }
-        }
+        if (pAttachment == NULL)
+            return;
+        if (FUN_14166c930() != 0xc)
+            return;
+        StateDeadNPC* pState = (StateDeadNPC*)FUN_14166ccb0();
+        int nIndex = 0;
+        int nRot = 0;
+        if (pState->m_strAnim == "Dead_A")
+            nIndex = 0;
+        else if (pState->m_strAnim == "Dead_B")
+            nIndex = 1;
+        else if (pState->m_strAnim == "Dead_C")
+            nIndex = 2;
+        int nCount = (int)m_spNpcData->m_corpse.m_aRotation.GetCount();
+        if (nCount == 0)
+            return;
+        if (nIndex >= nCount)
+            nIndex = nCount - 1;
+        nRot = m_spNpcData->m_corpse.m_aRotation[nIndex];
+        efd::Point3 kDir = static_cast<const efd::Point3&>(vfunc_20()) + efd::Point3(0.0f, 0.0f, (float)nRot);
+        pAttachment->vfunc_3(static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108), kDir, 1.0f);
     } else {
         GameObject::vfunc_50();
     }
@@ -2317,7 +2308,6 @@ void FUN_1410917a0(unsigned int nNpcId)
 
 // Creates the npc's body actor (+0xd68): a box of the npc's collision size standing on its position, turned to its
 // facing, for npcs with property tag 0x13 and a "box" shape.
-// MS2-FUNCTIONAL: the PhysX descriptor temporaries live in different stack slots
 // @0x141099640
 void CNpc::NxTerrainPhsyx()
 {
@@ -2331,8 +2321,7 @@ void CNpc::NxTerrainPhsyx()
     if (pScene == NULL)
         return;
     NxVec3 kUnused;
-    Vector3 ptSelf(vfunc_18());
-    kUnused = reinterpret_cast<const Unk_PointView*>(&ptSelf)->FUN_140ae1df0();
+    NiPhysXTypes::NiPoint3ToNxVec3(vfunc_18(), kUnused);
     NxBoxShapeDesc kBoxDesc;
     kBoxDesc.dimensions.set(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth,
         m_spNpcData->m_collision.m_fHeight);
@@ -2341,7 +2330,7 @@ void CNpc::NxTerrainPhsyx()
     kBoxDesc.shapeFlags &= ~0x120000;
     NxActorDesc kActorDesc;
     kActorDesc.shapes.pushBack(&kBoxDesc);
-    efd::Point3 kPos = vfunc_18();
+    NiPoint3 kPos = vfunc_18();
     kActorDesc.globalPose.t = NxVec3(kPos.x, kPos.y, kPos.z);
     kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
     kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z;
@@ -2352,8 +2341,10 @@ void CNpc::NxTerrainPhsyx()
         m_pD68->setName("CNpc::NxTerrainPhsyx");
         unsigned int nShapes = m_pD68->getNbShapes();
         NxShape* const* ppShapes = m_pD68->getShapes();
-        for (unsigned int i = 0; i < nShapes; i++)
-            ppShapes[i]->setGroup(0);
+        for (unsigned int i = 0; i < nShapes; i++) {
+            NxShape* pShape = ppShapes[i];
+            pShape->setGroup(0);
+        }
     }
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
 }
@@ -2374,7 +2365,8 @@ void CNpc::FUN_141099ab0()
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (frame layout of the temporaries differs)
+// MS2-FUNCTIONAL: the exe passes the entity id by value through a hidden pointer to FUN_141bc7d40 and FUN_141bc7fe0, and
+// worldservice.h declares both with a const reference. Same blocker as vfunc_10.
 // @0x1410952f0
 void CNpc::vfunc_53(float fTime)
 {

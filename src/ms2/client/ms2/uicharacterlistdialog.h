@@ -124,7 +124,7 @@ public:
     void OnClickBurningLevelupDescBtn();                                   // 0x1418f0140 the burning level-up description
     void FUN_1418f0400();                                   // 0x1418f0400 attach the burning level-up description button
     void AttachHealthGame();                                // 0x1418f0550
-    CStringW FUN_1418f05b0(unsigned __int64 nId);           // 0x1418f05b0 the name of a character, empty when unknown
+    CStringW GetCharacterName(unsigned __int64 nId);           // 0x1418f05b0 the name of a character, empty when unknown
     void RefreshLobby();                                    // 0x1418f0810
     void CharacterRemoved(unsigned __int64 nId, int nIndex);   // 0x1418f0e20
     void OpenSelectedCharacter();                           // 0x1418f1060
@@ -145,7 +145,7 @@ public:
     void FUN_1418f20d0();                                   // 0x1418f20d0
     void FUN_1418f2190();                                   // 0x1418f2190 the delete account box, step 1
     void FUN_1418f2480(CStringW str1, CStringW str2);       // 0x1418f2480
-    void FUN_1418f2570(const CStringW& str1, const CStringW& str2, const CStringW& str3);   // 0x1418f2570
+    void SendDeleteAccountRequest(const CStringW& str1, const CStringW& str2, const CStringW& str3);   // 0x1418f2570
     bool FUN_1418f31a0(int nButton, const CMsgBoxData& box);   // 0x1418f31a0 delete account box result, steps 1..3
     bool FUN_1418f3bd0(int nButton, const CMsgBoxData& box);   // 0x1418f3bd0 delete account box result, steps 4, 5
     CStringW FUN_1418f2960(int nError, unsigned __int64 nId);   // 0x1418f2960 the text of a delete account error
@@ -162,7 +162,7 @@ public:
     static void ShowDeleteError(int nError);                // 0x1418f47e0
     static unsigned FindFreePreviewSlot();                  // 0x1418f4da0
     bool SendEventReward(int nResult, const CMsgBoxData& box);   // 0x1418f00b0 event reward box result
-    CharPtr FUN_1418f0730(int nIndex);                      // 0x1418f0730 the character at the index
+    CharPtr GetCharacterAt(int nIndex);                      // 0x1418f0730 the character at the index
     static bool OrderCharacters(CharPtr spA, CharPtr spB);   // 0x1418f4ca0 sort predicate
     void FUN_1418ed6b0(CInPacket& packet);                  // 0x1418ed6b0 the burning level-up reward was taken
     void FUN_1418ed860();                                   // 0x1418ed860

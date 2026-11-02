@@ -67,14 +67,24 @@
 #include "ms2/client/ms2/uipvpobserverdialog.h"
 #include "ms2/client/ms2/uisidepopuptalk.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/cguidemanager.h"
+
+// The exe's handle map is CRBMap<int, int>: Lookup stores the found value as an int (out address loaded first).
+template <>
+bool ATL::CRBMap<int, Unk_TrigHandle, ATL::CElementTraits<int>, ATL::CElementTraits<Unk_TrigHandle>>::Lookup(
+    KINARGTYPE key, VOUTARGTYPE value) const
+{
+    const CPair* pLookup = Find(key);
+    if (pLookup == NULL)
+        return false;
+    value.m_n = pLookup->m_value.m_n;
+    return true;
+}
 
 // ---- services reached through globals ----
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_140353fc0(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const int& rArg);
+template <class A> void Unk_ShopLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const A& rArg);
 void* FUN_1403ed2b0();                                              // the UI manager
-void FUN_141add040(void* pUi, int nId);
-void FUN_141add0b0(void* pUi, int nId);
-class Unk_TrigCmdMgr { public: void FUN_14138bf00(int nKind, int nId, int nArg); };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The effect manager (effect handles) and its request block.
@@ -92,16 +102,8 @@ struct Unk_TrigSvcFxReq
     ~Unk_TrigSvcFxReq();                                            // 0x1405a89e0
 };
 MS2_CHECK_SIZE(Unk_TrigSvcFxReq, 0x70);
-class Unk_TrigSvcFxMgr
-{
-public:
-    int FUN_1411a49c0(Unk_TrigSvcFxReq* pRequest);                  // spawn, returns the handle
-    void FUN_1411a6060(int nHandle);                                // release
-};
 
 // ---- entities ----
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
-void FUN_1408a2020(egf::Entity* pEntity, unsigned uPropId, int* pOut);
 bool FUN_140de6d70(TriggerObject* pObject, egf::EntityID kEntityId);
 bool FUN_140de6db0(TriggerObject* pObject);
 
@@ -116,12 +118,16 @@ public:
     void FUN_140aed750(int, int);
     class CCameraMode* FUN_140af2520();
     int FUN_140af7e30();
+    float FUN_140af7f00();
+    float FUN_140af7ea0();
+    Vector3 FUN_140a17e10();
+    Vector3 FUN_140af8290();
+    class CCameraMode* FUN_140af24f0();
 };
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);
 
 // ---- world service objects ----
 class Unk_TrigNpc;
-void FUN_14166ed50(Unk_TrigNpc* p, int n);
 
 // ---- UI ----
 // usercommandcli.cpp's out-of-line copy of the MS2Ptr<UIObject> object getter (0x141371280).
@@ -141,8 +147,7 @@ Unk_TrigTextUI* FUN_14122d570(int nId);
 class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
 class Unk_TrigTalkUI : public UISidePopupTalk { };
-Unk_TrigTalkUI* FUN_1413868b0(int nId);
-UINpcDuelHPBarDialog* FUN_14096e200(int nId);
+template <class T> T* Unk_GaGetUI(int nId);
 class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 
@@ -171,7 +176,7 @@ public:
     void FUN_141a91940(const Unk_TrigPvpA& rBlock);
     void FUN_141a91a30(const Unk_TrigPvpB& rBlock);
 };
-Unk_TrigPvpDlg* FUN_141531c80(int nId);
+template <class T> T* MyPCDialog(int nId);
 void FUN_140743ca0(Unk_TrigPvpA* pOut, CInPacket* pPacket);
 void FUN_140743f50(Unk_TrigPvpB* pOut, CInPacket* pPacket);
 
@@ -181,15 +186,14 @@ class Unk_PatchTextOwner   // C3: member view for the former free stand-ins
 public:
     class Unk_PatchTextFilter* FUN_140a87690();
 };
-bool FUN_140841300(const CStringW& rText, const char* szCompare);
 CStringW XmlWide(const char* pszUtf8);                              // utf8 -> wide
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
+void FUN_140d73bc0(int nId, int n, void* pListener, CStringW str);
 
 // ---- service plumbing ----
-efd::MessageService* FUN_1411d1530(efd::ServiceManager* pManager);
 #include <egf/EntityManager.h>
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
+template <class T> T* Unk_AcFindUI(eUIClassID nId);
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -197,12 +201,9 @@ public:
     ~NoticeMessage();
     void* m_storage[14];
 };
-egf::EntityManager* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc { public: efd::Category FUN_141235eb0(); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
-void FUN_1411ab6e0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
 
 // ---- static initializers (.text$di, in this order) ----
 // @0x14010e910
@@ -265,7 +266,7 @@ void CTriggerService::vfunc_3(int nMap)
     {
         int nHandle = m_mapHandles.GetValueAt(pos).m_n;
         if (nHandle != 0)
-            reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nHandle);
     }
     m_mapHandles.RemoveAll();
 }
@@ -273,8 +274,8 @@ void CTriggerService::vfunc_3(int nMap)
 // @0x1418610d0
 efd::SyncResult CTriggerService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
-    FUN_1410db4c0(pRegistrar, 1);
-    FUN_1411ab6e0(pRegistrar, 3);
+    pRegistrar->AddDependency<efd::MessageService>(1);
+    pRegistrar->AddDependency<egf::EntityManager>(3);
     return efd::SyncResult_Success;
 }
 
@@ -282,8 +283,8 @@ efd::SyncResult CTriggerService::OnPreInit(efd::IDependencyRegistrar* pRegistrar
 // @0x141861110
 efd::AsyncResult CTriggerService::OnInit()
 {
-    efd::SmartPointer<efd::MessageService> pMessages = FUN_1411d1530(m_pServiceManager);
-    efd::SmartPointer<egf::EntityManager> pEntities = FUN_140ae1200(m_pServiceManager);
+    efd::SmartPointer<efd::MessageService> pMessages = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
+    efd::SmartPointer<egf::EntityManager> pEntities = m_pServiceManager->GetSystemServiceAs<egf::EntityManager>();
     m_catGlobal = pMessages->GetGloballyUniqueCategory();
     pMessages->Subscribe(this, s_catEntityChannel, 0, false);
     pMessages->Subscribe(this, m_catGlobal, 0, false);
@@ -306,8 +307,8 @@ efd::AsyncResult CTriggerService::OnTick()
 // @0x141861410
 efd::AsyncResult CTriggerService::OnShutdown()
 {
-    efd::SmartPointer<efd::MessageService> pMessages = FUN_1411d1530(m_pServiceManager);
-    efd::SmartPointer<egf::EntityManager> pEntities = FUN_140ae1200(m_pServiceManager);
+    efd::SmartPointer<efd::MessageService> pMessages = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
+    efd::SmartPointer<egf::EntityManager> pEntities = m_pServiceManager->GetSystemServiceAs<egf::EntityManager>();
     pMessages->Unsubscribe(this, s_catEntityChannel, 0);
     pMessages->Unsubscribe(this, m_catGlobal, 0);
 
@@ -325,10 +326,10 @@ void CTriggerService::FUN_141861620(const egf::EntityChangeMessage* pMsg, efd::C
     egf::Entity* pEntity = pMsg->GetEntity();
     if (pEntity != 0)
     {
-        if (FUN_1408a9bd0(pEntity)->ContainsModel(0xe8dd99d))
+        if (pEntity->GetModel()->ContainsModel(0xe8dd99d))
         {
             int nId = 0;
-            FUN_1408a2020(pEntity, 0x6c37a861, &nId);
+            pEntity->GetPropertyValue<int>(0x6c37a861, nId);
             MS2Ptr<TriggerObject> spObject = TriggerObject::Create(pEntity);
             if (spObject == 0)
                 return;
@@ -346,10 +347,10 @@ void CTriggerService::FUN_141861760(const egf::EntityChangeMessage* pMsg, efd::C
         egf::Entity* pEntity = pMsg->GetEntity();
         if (pEntity != 0)
         {
-            if (FUN_1408a9bd0(pEntity)->ContainsModel(0xe8dd99d))
+            if (pEntity->GetModel()->ContainsModel(0xe8dd99d))
             {
                 int nId = 0;
-                FUN_1408a2020(pEntity, 0x6c37a861, &nId);
+                pEntity->GetPropertyValue<int>(0x6c37a861, nId);
                 m_mapObjects.RemoveKey(nId);
             }
         }
@@ -368,7 +369,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
     switch (nType)
     {
     case 2:
-        FUN_141861a50(pEvent);
+        ReadTriggerEvents(pEvent);
         break;
     case 3:
         FUN_141861ad0(pEvent);
@@ -383,7 +384,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         FUN_141861f30(pEvent);
         break;
     case 0xc:
-        FUN_141861fc0(pEvent);
+        OnTextPopup(pEvent);
         break;
     case 0xf:
         FUN_141862110(pEvent);
@@ -410,7 +411,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         FUN_141862d30(pEvent);
         break;
     case 0x15:
-        FUN_141862ec0(pEvent);
+        OnNpcDuelHpBar(pEvent);
         break;
     case 0x17:
     case 0x18:
@@ -421,7 +422,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
 }
 
 // @0x141861a50
-void CTriggerService::FUN_141861a50(CInPacket* pEvent)
+void CTriggerService::ReadTriggerEvents(CInPacket* pEvent)
 {
     int nCount = pEvent->ReadInt32();
     for (int i = 0; i < nCount; i++)
@@ -504,7 +505,7 @@ void CTriggerService::FUN_141861f30(CInPacket*)
 }
 
 // @0x141861f60
-void CTriggerService::FUN_141861f60(CInPacket* pEvent)
+void CTriggerService::OnCameraInterpolation(CInPacket* pEvent)
 {
     float fFade = pEvent->ReadFloat();
     FUN_141863460(fFade);
@@ -512,7 +513,7 @@ void CTriggerService::FUN_141861f60(CInPacket* pEvent)
 
 // Show a text popup (UI 0x4e6b) with a text file buffer.
 // @0x141861fc0
-void CTriggerService::FUN_141861fc0(CInPacket* pEvent)
+void CTriggerService::OnTextPopup(CInPacket* pEvent)
 {
     CStringW strWide = XmlWide(pEvent->ReadString());
     MS2Ptr<CFileBuffer> spBuffer(new CFileBuffer);
@@ -541,7 +542,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             if (pUi != 0)
             {
                 pUi->FUN_141b334d0(nD);
-                if (FUN_140841300(strCompare, "TR"))
+                if (strCompare == "TR")
                     pUi->FUN_141b33510(6);
                 else
                     pUi->FUN_141b33510(1);
@@ -560,7 +561,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpA kBlock;
         FUN_140743ca0(&kBlock, pEvent);
-        Unk_TrigPvpDlg* pUi = FUN_141531c80(0x4e96);
+        Unk_TrigPvpDlg* pUi = (Unk_TrigPvpDlg*)MyPCDialog<UIPvPObserverDialog>(0x4e96);
         if (pUi != 0)
         {
             if (kBlock.m_0 == 0 || kBlock.m_20 == 0)
@@ -582,7 +583,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpB kBlock;
         FUN_140743f50(&kBlock, pEvent);
-        Unk_TrigPvpDlg* pUi = FUN_141531c80(0x4e96);
+        Unk_TrigPvpDlg* pUi = (Unk_TrigPvpDlg*)MyPCDialog<UIPvPObserverDialog>(0x4e96);
         if (pUi != 0)
         {
             if (kBlock.m_0 == 0 || kBlock.m_20 == 0)
@@ -688,7 +689,7 @@ void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
     CStringA strSound = pEvent->ReadString();
     CStringA strScript = pEvent->ReadString();
     CStringW strText = pEvent->ReadUnicodeString();
-    Unk_TrigTalkUI* pUi = FUN_1413868b0(0x4f57);
+    Unk_TrigTalkUI* pUi = (Unk_TrigTalkUI*)Unk_GaGetUI<UISidePopupTalk>(0x4f57);
     if (pUi != 0)
     {
         MS2Ptr<SidePopupTalkParam> spParam(new SidePopupTalkParam);
@@ -722,7 +723,7 @@ void CTriggerService::FUN_141862d30(CInPacket* pEvent)
 }
 
 // @0x141862ec0
-void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
+void CTriggerService::OnNpcDuelHpBar(CInPacket* pEvent)
 {
     bool bShow = pEvent->ReadBool();
     if (bShow)
@@ -730,18 +731,18 @@ void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
         int nA = pEvent->ReadInt32();
         int nB = pEvent->ReadInt32();
         int nC = pEvent->ReadInt32();
-        UINpcDuelHPBarDialog* pUi = FUN_14096e200(0x4f62);
+        UINpcDuelHPBarDialog* pUi = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)0x4f62);
         if (pUi != 0)
         {
             pUi->StartDuelBar(nA, nB, nC);
             pUi->FUN_141924680();
         }
-        FUN_141add0b0(FUN_1403ed2b0(), 0x4e3d);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141add0b0((eUIClassID)0x4e3d);
     }
     else
     {
         reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f62);
-        FUN_141add040(FUN_1403ed2b0(), 0x4e3d);
+        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141add040((eUIClassID)0x4e3d);
     }
 }
 
@@ -780,7 +781,7 @@ void CTriggerService::OnTypingGame(CInPacket* pEvent)
 }
 
 // @0x141863100
-bool CTriggerService::FUN_141863100(int nObject, Vector3 pt)
+bool CTriggerService::ObjectContains(int nObject, const Vector3& pt)
 {
     MS2Ptr<TriggerObject> spObject;
     m_mapObjects.Lookup(nObject, spObject);
@@ -802,7 +803,7 @@ void CTriggerService::FUN_1418631c0()
 }
 
 // @0x1418631f0
-void CTriggerService::FUN_1418631f0(int nObject, int bStart)
+void CTriggerService::QueueCameraStep(int nObject, int bStart)
 {
     Unk_TrigCamStep kStep;
     kStep.m_nObject = nObject;
@@ -841,11 +842,11 @@ void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEn
     else
     {
         for (unsigned i = 0; i < aObjects.GetCount(); i++)
-            FUN_1418631f0(aObjects[i], 1);
+            QueueCameraStep(aObjects[i], 1);
         if (!aObjects.IsEmpty() && bEnd != 0)
         {
             int nLast = aObjects[aObjects.GetCount() - 1];
-            FUN_1418631f0(nLast, 0);
+            QueueCameraStep(nLast, 0);
         }
     }
 }
@@ -863,15 +864,15 @@ void CTriggerService::FUN_141863460(float fFade)
         kData.m_fDuration = fFade;
         kData.m_nKind = 1;
         kData.m_from.m_0 = Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40();
-        kData.m_from.m_4 = Unk_CameraManager::FUN_1409478c0()->FUN_140af7f00();
-        kData.m_from.m_8 = Unk_CameraManager::FUN_1409478c0()->FUN_140af7ea0();
-        kData.m_from.m_c = Unk_CameraManager::FUN_1409478c0()->FUN_140a17e10();
-        kData.m_from.m_18 = Unk_CameraManager::FUN_1409478c0()->FUN_140af8290();
+        kData.m_from.m_4 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7f00();
+        kData.m_from.m_8 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af7ea0();
+        kData.m_from.m_c = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a17e10();
+        kData.m_from.m_18 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af8290();
         kData.m_to = kData.m_from;
-        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()))->FUN_140ad4b30();
-        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()))->FUN_140af7ef0();
-        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()))->FUN_140af7e90();
-        kData.m_to.m_18 = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_140af8260();
+        kData.m_to.m_0 = ((class CCameraMode*)(class CCameraMode*)(((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()))->FUN_140ad4b30();
+        kData.m_to.m_4 = ((class CCameraMode*)(class CCameraMode*)(((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()))->FUN_140af7ef0();
+        kData.m_to.m_8 = ((class CCameraMode*)(class CCameraMode*)(((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()))->FUN_140af7e90();
+        kData.m_to.m_18 = ((class CameraMgr*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0()->FUN_140af8260();
         ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&kData), 1, 1.0f);
         bFade = 1;
     }
@@ -892,7 +893,7 @@ void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
         NoticeMessage kRequest;   // C3: was Unk_TrigSvcFxReq
         ((Unk_TrigSvcFxReq&)(kRequest)).m_strName = strName;
         ((Unk_TrigSvcFxReq&)(kRequest)).m_nOwnerId = 0;
-        int nHandle = reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&((Unk_TrigSvcFxReq&)(kRequest)));
+        int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kRequest));
         if (nHandle != 0)
             m_mapHandles.SetAt(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle));
     }
@@ -902,7 +903,7 @@ void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
         if (m_mapHandles.Lookup(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle)))
         {
             if (nHandle != 0)
-                reinterpret_cast<Unk_TrigSvcFxMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nHandle);
             m_mapHandles.RemoveKey(nId);
         }
     }
@@ -954,7 +955,7 @@ void CTriggerService::FUN_141863a90(CInPacket* pEvent, bool bSkipFx)
     if (m_mapObjects.Lookup(nId, spObject))
         spObject->vfunc_2(TrigEvent(pEvent), bSkipFx);
     else
-        FUN_140353fc0(((void*)GetLogString()), 0xc, 0x13, L"Trigger Object Sync Error. ObjectID:{0}", nId);
+        Unk_ShopLog(GetLogString(), 0xc, 0x13, L"Trigger Object Sync Error. ObjectID:{0}", nId);
 }
 
 // Play a cut scene movie (UI 0x4e7e).
@@ -1006,7 +1007,7 @@ void CTriggerService::FUN_141863d80(CInPacket* pEvent)
 void CTriggerService::FUN_141863df0(CInPacket* pEvent)
 {
     int nId = pEvent->ReadInt32();
-    ((class Unk_TrigCmdMgr*)FUN_1409331e0())->FUN_14138bf00(0x15, nId, 0);
+    ((CGuideManager*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x15, nId, 0);
 }
 
 // Play an emotion list on the local player.
@@ -1058,7 +1059,7 @@ void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
         return;
     if (!strText.IsEmpty())
     {
-        FUN_14166ed50(pNpc, 0);
+        ((class PCBase*)(class Unk_TrigNpc*)(pNpc))->FUN_14166ed50(false);
         ((class PCBase*)(class Unk_TrigNpc*)(pNpc))->FUN_14166ef10(strText, 1, 0, true);
     }
     else

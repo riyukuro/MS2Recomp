@@ -10,14 +10,11 @@
 #include <shlwapi.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
-struct Unk_PacketLockGuard { explicit Unk_PacketLockGuard(Unk_PacketLogLock&); ~Unk_PacketLockGuard();int FUN_140164a80();void* lock; };
-struct Unk_PacketScopedLock { Unk_PacketScopedLock(Unk_PacketLogLock&,int);~Unk_PacketScopedLock();void* lock; };
-MS2_CHECK_SIZE(Unk_PacketLockGuard,8);
-MS2_CHECK_SIZE(Unk_PacketScopedLock,8);
+#include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/xmlattr.h"
+class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&,int); ~Unk_1401b4ec0(); private: void* p; };
 CStringW FUN_14016a730(const char*,int);
 CString FUN_14016a600(const wchar_t*,int);
-unsigned __int64 FUN_1404082e0(const CString&);
 unsigned __int64 FUN_1403d7cb0(const CStringW&);
 // @0x140716a40
 CPacketLogger::CPacketLogger() : m_client(false),m_enabled(false),m_sendRate(0),m_sendBytes(0),m_receiveRate(0),m_receiveBytes(0) { m_lastReceive=0;m_lastSend=0; }
@@ -30,7 +27,7 @@ MS2_REPLACE_METHOD(0x140716BF0, CPacketLogger, Configure, 75, 0x7A2643E9);
 void CPacketLogger::LogSend(int opcode,const Unk_LogOutPacket& packet) {
     if(!m_enabled)return;
     {
-        if(m_receiveBytes<0x100000)m_receiveBytes+=packet.FUN_14020b9f0();
+        if(m_receiveBytes<0x100000)m_receiveBytes+=reinterpret_cast<const COutPacket&>(packet).FUN_14020b9f0();
         if(m_file.m_h && ShouldSend(opcode,packet)) {
             CString format=Timestamp(0);Write(format,DescribeSend(opcode,packet));m_lastSend=opcode;
         }
@@ -49,7 +46,7 @@ void CPacketLogger::LogReceive(int opcode,const Unk_LogInPacket& packet) {
 }
 MS2_REPLACE_METHOD(0x140716D60, CPacketLogger, LogReceive, 261, 0xA9C74171);
 // @0x140716e70
-void CPacketLogger::Update() { if(reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000)){m_sendRate=(float)m_sendBytes;m_sendBytes=0;m_receiveRate=(float)m_receiveBytes;m_receiveBytes=0;} }
+void CPacketLogger::Update() { if(m_timer.Check(1000)){m_sendRate=(float)m_sendBytes;m_sendBytes=0;m_receiveRate=(float)m_receiveBytes;m_receiveBytes=0;} }
 MS2_REPLACE_METHOD(0x140716E70, CPacketLogger, Update, 124, 0xD63C88FA);
 // @0x140716f00
 const float& CPacketLogger::SendRate() const {return m_sendRate;}
@@ -67,8 +64,8 @@ void CPacketLogger::Open() {
     if(!GetFullPathNameA(directory,MAX_PATH,path,0)){MS2_ASSERT_AT(302,0);return;}
     if(!PathIsDirectoryA(path))CreateDirectoryA(path,0);
     PathCombineA(filename,path,name);
-    Unk_PacketLockGuard lock(m_lock);
-    if(lock.FUN_140164a80()!=0){}else
+    Unk_LockGuard lock(m_lock);
+    if(lock.operator int()!=0){}else
     {m_file.Create(filename,GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,OPEN_ALWAYS);m_file.Seek(0,FILE_END);if(m_client)WriteHeader();}
 }
 MS2_REPLACE_METHOD(0x140716F40, CPacketLogger, Open, 678, 0xD988DD1E);
@@ -87,7 +84,7 @@ bool CPacketLogger::ShouldReceive(int opcode,const Unk_LogInPacket& packet) cons
 MS2_REPLACE_METHOD(0x140717250, CPacketLogger, ShouldReceive, 105, 0x3032FC2F);
 // @0x1407172d0
 bool CPacketLogger::ShouldSend(int opcode,const Unk_LogOutPacket& packet) const {
-    if(packet.FUN_14020bc40())return false;
+    if(reinterpret_cast<const COutPacket&>(packet).FUN_14020bc40())return false;
     if(opcode==m_lastSend)return false;
     if(m_client)return AllowGame(opcode);else return AllowClient(opcode);
 }
@@ -118,15 +115,15 @@ CString CPacketLogger::DescribeReceive(int opcode,const Unk_LogInPacket& packet)
 MS2_REPLACE_METHOD(0x140717600, CPacketLogger, DescribeReceive, 289, 0x7E4E80BD);
 // @0x140717730
 CString CPacketLogger::DescribeSend(int opcode,const Unk_LogOutPacket& packet) const {
-    CString text;CString name;int code=opcode;int length=packet.FUN_14020b9f0();
+    CString text;CString name;int code=opcode;int length=reinterpret_cast<const COutPacket&>(packet).FUN_14020b9f0();
     if(!m_client){}else {if(!m_sendNames.Lookup(code,name))name="Undefined";}
-    text.Format("%s(%d)(size:%d)(seq:%d)",(const char*)name,code,length,packet.FUN_14020ba00());return text;
+    text.Format("%s(%d)(size:%d)(seq:%d)",(const char*)name,code,length,reinterpret_cast<const COutPacket&>(packet).FUN_14020ba00());return text;
 }
 MS2_REPLACE_METHOD(0x140717730, CPacketLogger, DescribeSend, 289, 0xAA1B9B85);
 // @0x140717860
 void CPacketLogger::Write(const CString& format,const CString& message) {
     CString text;text.Format(format,(const char*)message);
-    Unk_PacketScopedLock lock(m_lock,1);
+    Unk_1401b4ec0 lock(m_lock,1);
     ATL::CAtlStringA output(text);m_file.Write((const char*)output,output.GetLength(),(DWORD*)0);
 }
 MS2_REPLACE_METHOD(0x140717860, CPacketLogger, Write, 222, 0x49D880BC);
@@ -147,10 +144,10 @@ MS2_REPLACE(0x140718140, FUN_140718140, 34, 0x72E13427);
 short FUN_140718170(const CString& value) { return (short)atoi(value); }
 MS2_REPLACE(0x140718170, FUN_140718170, 34, 0x6A12126F);
 // @0x1407181a0
-short FUN_1407181a0(const CStringW& value) { return (short)_wtoi(value); }
+int FUN_1407181a0(const CStringW& value) { return _wtoi(value); }
 MS2_REPLACE(0x1407181A0, FUN_1407181a0, 34, 0x98CF054B);
 // @0x1407181d0
-unsigned short FUN_1407181d0(const CString& value) { return (unsigned short)atoi(value); }
+unsigned int FUN_1407181d0(const CString& value) { return atoi(value); }
 MS2_REPLACE(0x1407181D0, FUN_1407181d0, 34, 0x50004183);
 // @0x140718200
 unsigned short FUN_140718200(const CStringW& value) { return (unsigned short)_wtoi(value); }
@@ -174,7 +171,7 @@ MS2_REPLACE(0x1407182F0, FUN_1407182f0, 34, 0xBE8E21FF);
 __int64 FUN_140718320(const CStringW& value) { return (__int64)_wtoi64(value); }
 MS2_REPLACE(0x140718320, FUN_140718320, 34, 0xA55FE927);
 // @0x140718350
-unsigned __int64 FUN_140718350(const CString& value) {return FUN_1404082e0(value);}
+unsigned __int64 FUN_140718350(const CString& value) {return XmlConvert<unsigned __int64>(value);}
 MS2_REPLACE(0x140718350, FUN_140718350, 24, 0xFD556A71);
 // @0x140718370
 unsigned __int64 FUN_140718370(const CStringW& value) {return FUN_1403d7cb0(value);}

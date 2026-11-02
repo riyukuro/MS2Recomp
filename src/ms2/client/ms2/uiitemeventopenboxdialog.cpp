@@ -127,9 +127,9 @@ void UIItemEventOpenBoxDialog::OnLoadComplete()
     GetChildInto<ASUIComponent>("m_slot", m_1d8);
     if (FUN_140bc6d10("m_requestButton", m_1c8).get())
     {
-        m_1c8->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
+        ((class ASButton*)(m_1c8))->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
         CStringW strLabel(L"s_event_open_item_box_ui_button");
-        m_1c8->FUN_1422cdfb0(GetStringCommonByKey(strLabel));
+        ((class ASButton*)(m_1c8))->FUN_1422cdfb0(GetStringCommonByKey(strLabel));
     }
     FUN_140e483b0();
 }

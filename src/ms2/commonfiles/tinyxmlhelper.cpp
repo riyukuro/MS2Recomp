@@ -7,6 +7,10 @@
 // MS2-RANGE: 0x140872ec0-0x140876dc0 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+// The exe's efd::AtomicDecrement(UInt64&) calls winnt.h's InterlockedDecrement64 out of line.
+LONG64 Unk_InterlockedDecrement64(LONG64 volatile* pAddend);
+#undef InterlockedDecrement64
+#define InterlockedDecrement64 Unk_InterlockedDecrement64
 #include <stdlib.h>
 #include <atlcoll.h>
 #include <atltime.h>
@@ -712,8 +716,6 @@ void XmlParsePoint(const CString& str, NiPoint3& out)
     out.z = (float)atof(values[2]);
 }
 
-// The exe's efd::AtomicDecrement(UInt64&) (0x1408765e0) calls winnt.h's InterlockedDecrement64 out of line (this
-// copy); the SDK header here uses the intrinsic, so the compiled AtomicDecrement does the lock xadd itself.
 // @0x1408769b0
 LONG64 Unk_InterlockedDecrement64(LONG64 volatile* pAddend)
 {
@@ -828,6 +830,5 @@ MS2_REPLACE_OVERLOAD(0x140875760, void(const CString&, NiPoint3&), XmlParsePoint
 // MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@D@efd@@@std@@SA_KAEBV?$CustomAllocator@D@efd@@@Z 0x140876d30 ; unique
 // MS2-PIN: ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@QEBA_KXZ 0x140876d50 ; unique
 // MS2-PINS-END tplpin
-// MS2-FUNCTIONAL ?AtomicDecrement@efd@@YA_KAEA_K@Z: the exe calls InterlockedDecrement64 out of line (Unk_InterlockedDecrement64), the efd header inlines the intrinsic
 // MS2-PIN: ?AtomicDecrement@efd@@YA_KAEA_K@Z 0x1408765e0 ; efd::GlobalStringTable::DecRefCount calls it
 // MS2-PIN: ?Unk_InterlockedDecrement64@@YA_JPEC_J@Z 0x1408769b0 ; called by AtomicDecrement 0x1408765e0

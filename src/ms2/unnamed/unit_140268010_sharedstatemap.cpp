@@ -159,14 +159,8 @@ Unk_LimitValue Unk_LockedIntMap::Get(int nKey)
 }
 
 // @0x140268600
-// MS2-FUNCTIONAL: the exe constructs the reason string between the zeroing of +0x28 and +0x38 (member order of the unrecovered original)
-AccountBlockInfo::AccountBlockInfo()
+AccountBlockInfo::AccountBlockInfo() : m_n18(0), m_nId(0), m_nKind(0), m_nStart(0), m_nExpiry(0)
 {
-    m_n18 = 0;
-    m_nId = 0;
-    m_nKind = 0;
-    m_nStart = 0;
-    m_nExpiry = 0;
 }
 
 // @0x140268690

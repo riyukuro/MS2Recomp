@@ -114,7 +114,9 @@ class Unk_SingletonObj* FUN_140cea070();   // C3: was FUN_140cea070
 class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); };
 
 extern Unk_Inventory g_143ab2a90;
-InvenSlot* FUN_140a50b50(DragSlot* p);                          // the inventory slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
@@ -122,7 +124,7 @@ CStringW FUN_140298ea0(CStringW strKey);                        // string table 
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);    // "{0}" formatting of a narrow key
 bool FUN_140811640(int nKind);                                  // the first use is paid with red merat
 int FUN_1413499b0(int nTab);                                    // open the shop on a tab
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // new message box data
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                 // show it
 
 // CMsgBoxData::SetValue<T> (COMDATs of ?\smartpush.cpp): a named GFx value of the box.
@@ -562,7 +564,7 @@ MS2_REPLACE_METHOD(0x140FA6AB0, UISystemShopDialog, FUN_140fa6ab0, 34, 0xC770924
 // @0x140fa6ae0
 void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
 {
-    InvenSlot* pSrc = FUN_140a50b50(pDrag);
+    InvenSlot* pSrc = reinterpret_cast<InvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
     if (pSrc != 0)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pSrc->GetItemUid());

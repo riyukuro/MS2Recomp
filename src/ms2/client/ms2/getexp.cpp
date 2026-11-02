@@ -38,11 +38,15 @@ CString s_strEffDummy = "Eff_Dummy";                             // @0x1400eb770
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include "ms2/client/ms2/randomeffectparam.h"
+#include <efd/ClassInfo.h>
+#include <algorithm>
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);                                      // 0x140a53190
     void* m_storage[14];
 };
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400eb910
@@ -92,17 +96,16 @@ class GameObject   // C3: member view for the former free stand-ins
 public:
     float FUN_14123c260();
     int FUN_14123c580();
+    unsigned __int64 GenerateSerialId();
 };
-int FUN_14123cec0(Unk_ExpActor* p);                                 // player seed
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
     void AddColorBoost(float, float, float);
+    NiAVObject* FUN_141675150(const CString& strNode);
 };
-NiAVObject* FUN_141675150(Unk_ExpActor* p, const CString& strName); // find a named dummy node
 const Vector3& FUN_140947900(NiAVObject* pNode);            // node translate
-int FUN_14028d0e0();                                                // seed counter
-bool FUN_14087ddc0(void* pClassInfo, int nKind);                    // efd::ClassInfo::IsKindOf
+__int64 FUN_14028d0e0();                                            // seed counter
 
 // The world service (0x1403ed2d0) and its object lookups.
 class Unk_AttendAvatarMgr : public WorldService
@@ -110,20 +113,13 @@ class Unk_AttendAvatarMgr : public WorldService
 public:
 };
 
-// The effect manager (0x1403ed280).
 struct Unk_ExpTarget;
-class Unk_1403ed280
-{
-public:
-    void* FUN_1411a6b10();                                          // the effect root NiNode
-};
 
 // Effect request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0).
 struct Unk_ExpTarget
 {
     Unk_ExpTarget();                                                // 0x140a52ef0
     ~Unk_ExpTarget();                                               // 0x1405a89e0
-    void FUN_140a53190(int nObjectId);                              // set the object
     CString m_strName;                                              // +0x00
     int m_nOwnerId;                                                 // +0x08
     int m_pad_0c;
@@ -132,16 +128,7 @@ struct Unk_ExpTarget
 };
 MS2_CHECK_SIZE(Unk_ExpTarget, 0x70);
 
-// Three-seed random generator (ctor 0x140768290, next float 0x1407680d0, dtor 0x1401cdc30).
-class Unk_ExpRandom
-{
-public:
-    Unk_ExpRandom(int nA, int nB, int nC);                          // 0x140768290
-    ~Unk_ExpRandom();                                               // 0x1401cdc30
-    float FUN_1407680d0();                                          // next value
-private:
-    void* m_unk0; void* m_unk1; void* m_unk2; void* m_unk3; void* m_unk4; void* m_unk5; void* m_unk6; void* m_unk7;
-};
+float FUN_1407680d0(Unk_Random* p);                                 // next value of the three-seed generator
 
 // The client constants (0x1401d3200) and the singleton holding the effect names (0x1401d31f0).
 struct Unk_ClientConfig;
@@ -156,15 +143,13 @@ public:
     char m_pad_10[0x40];
     Vector3 m_value;                                        // +0x50
 };
-class Unk_ConfigString { public: CString* FUN_140298f80(); };      // Value<CString>::get
+struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Value<CString>::get
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 struct Unk_NameHolder { };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-void FUN_1402b7560(void* pObj, const char* pszMessage);
 
 // Unit helpers declared elsewhere.
 void FUN_140194470(void* pDst, void* pSrc);
-const float* FUN_140805fc0(const float* pA, const float* pB);                        // min / max of two floats
 Vector3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
 bool FUN_14147aa60(const Unk_NiPoint3& kOrigin, const Unk_NiPoint3& kDir, const Unk_NiPoint3& kCenter,
                    float fRadius, Unk_GVec3* pHit);                                  // ray / sphere hit
@@ -175,7 +160,7 @@ class Unk_Clock;
 
 // @0x141272630
 CExpEffectInfo::CExpEffectInfo()
-    : m_pOwner(0), m_n20(0), m_hEffect(0), m_spNode((void*)0), m_ptPos(DAT_143b01a60), m_fElapsed(0),
+    : m_pOwner(0), m_n20(0), m_hEffect(0), m_spNode((NiNode*)0), m_ptPos(DAT_143b01a60), m_fElapsed(0),
       m_rot(DAT_143a09600), m_fProgress(0), m_fTotal(0), m_ptTarget(DAT_143b01a60), m_ptSource(DAT_143b01a60),
       m_nState(0)
 {
@@ -186,7 +171,7 @@ CExpEffectInfo::CExpEffectInfo()
 CExpEffectInfo::~CExpEffectInfo()
 {
     StopEffect();
-    FUN_140a0b2a0((NiAVObject*)FUN_1409475d0(&m_spNode));
+    FUN_140a0b2a0((NiAVObject*)m_spNode.operator NiNode*());
 }
 
 // @0x1412727d0
@@ -238,8 +223,8 @@ void CExpEffectInfo::UpdateOrientation()
     kMat.FUN_14109aa30(1, vNeg);
     kMat.FUN_14109aa30(2, vSide);
     m_rot = kMat;
-    ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spNode)))->SetRotate(*(class NiMatrix3 const*)(&kMat));
-    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
+    ((class NiAVObject*)(void*)(m_spNode.operator->()))->SetRotate(*(class NiMatrix3 const*)(&kMat));
+    ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
 }
 
 static int s_nConstInit = 0;                                        // @0x143ad6000
@@ -258,7 +243,7 @@ void CExpEffectInfo::InitConstants()
     s_ptSpreadMin = kMin;
     Vector3 kMax = reinterpret_cast<Unk_ConfigPoint*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x2380)->FUN_141273d00();
     s_ptSpreadMax = kMax;
-    s_strEffDummy = *reinterpret_cast<Unk_ConfigString*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x23e8)->FUN_140298f80();
+    s_strEffDummy = reinterpret_cast<Unk_StringOptionEntry*>((char*)((struct Unk_ClientConfig*)FUN_1401d3200()) + 0x23e8)->FUN_140298f80();
     s_nConstInit = 1;
 }
 #endif
@@ -276,7 +261,7 @@ void CExpEffectInfo::StopEffect()
 // @0x141272c60
 void CExpEffectInfo::Update(float fElapsed)
 {
-    if (m_nState != 0 || FUN_1409475d0(&m_spNode) == 0)
+    if (m_nState != 0 || m_spNode.operator NiNode*() == 0)
         return;
     UpdateMove(fElapsed);
 }
@@ -321,8 +306,8 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     Unk_ExpActor* pObj = reinterpret_cast<Unk_ExpActor*>(WorldService::GetInstance()->FUN_141bd1200(nObjectId));
     if (pObj == 0)
         return 0;
-    FUN_1409f76f0(&m_spNode, new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
-    if (FUN_1409475d0(&m_spNode) == 0)
+    m_spNode = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0);
+    if (m_spNode.operator NiNode*() == 0)
         return 0;
     m_pOwner = pOwner;
     m_fElapsed = 0;
@@ -331,16 +316,16 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
     float fLen = vDir.FUN_140968990();
     float fScaled = fLen * DAT_1439f7340;
-    m_fTotal = *FUN_140805fc0(&DAT_1439f733c, &fScaled);
+    m_fTotal = std::max<float>(DAT_1439f733c, fScaled);
     m_fProgress = fLen / m_fTotal;
     UpdateOrientation();
-    int nSeedA = FUN_14028d0e0() + nObjectId;
-    int nSeedB = FUN_14123cec0(pPlayer) + nObjectId;
+    int nSeedA = (int)FUN_14028d0e0() + nObjectId;
+    int nSeedB = (int)reinterpret_cast<GameObject*>(pPlayer)->GenerateSerialId() + nObjectId;
     int nSeedC = nSeedA * nSeedB * nObjectId;
-    Unk_ExpRandom kRandom(nSeedA, nSeedB, nSeedC);
-    float fRandX = kRandom.FUN_1407680d0();
-    float fRandY = kRandom.FUN_1407680d0();
-    float fRandZ = kRandom.FUN_1407680d0();
+    Unk_Random kRandom(nSeedA, nSeedB, nSeedC);
+    float fRandX = FUN_1407680d0(&kRandom);
+    float fRandY = FUN_1407680d0(&kRandom);
+    float fRandZ = FUN_1407680d0(&kRandom);
     // [0] = spread min, [1] = spread max, both scaled by the distance
     Vector3 aSpread[2] = { s_ptSpreadMin.FUN_14097fc90(fLen), s_ptSpreadMax.FUN_14097fc90(fLen) };
     aSpread[0].y = aSpread[0].y / m_fTotal;
@@ -352,13 +337,13 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
                                     .FUN_14097fd50(GetAxis2().FUN_14097fc90(ptOffset.z))
                                     .FUN_14097fd50(GetAxis0().FUN_14097fc90(ptOffset.x))));
     SetPosition(m_ptSource);
-    NiNode* pRoot = (NiNode*)reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6b10();
-    pRoot->AttachChild((NiAVObject*)FUN_1409475d0(&m_spNode), true);
+    NiNode* pRoot = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
+    pRoot->AttachChild((NiAVObject*)m_spNode.operator NiNode*(), true);
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
-    ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)FUN_1409475d0(&m_spNode);
+    ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)m_spNode.operator NiNode*();
     ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x338);
     ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObj));
-    ((Unk_ExpTarget&)(kRequest)).FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
+    kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pObj))->FUN_14123c580());
     m_hEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     return 1;
 }
@@ -372,17 +357,17 @@ int CExpEffectInfo::GetState() const
 // @0x141273590
 void CExpEffectInfo::SetPosition(const Vector3& pt)
 {
-    if (FUN_1409475d0(&m_spNode) != 0)
+    if (m_spNode.operator NiNode*() != 0)
     {
-        ((class NiAVObject*)(void*)(FUN_1409475f0(&m_spNode)))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(pt));
-        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
+        ((class NiAVObject*)(void*)(m_spNode.operator->()))->SetTranslate(*(class NiPoint3 const*)&static_cast<struct Unk_NiPoint3 const&>(pt));
+        ((NiAVObject*)m_spNode.operator->())->Update((float)((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), false);
     }
 }
 
 // @0x141273630
 void CExpEffectInfo::SetVisible(int nHide)
 {
-    ((NiAVObject*)FUN_1409475f0(&m_spNode))->SetAppCulled(nHide == 0);
+    ((NiAVObject*)m_spNode.operator->())->SetAppCulled(nHide == 0);
 }
 
 // @0x141273680
@@ -392,7 +377,7 @@ void CExpEffectInfo::Finish()
     if (pPlayer == 0)
         return;
     float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c260();
-    Vector3 ptCur = *(const Vector3*)&((NiAVObject*)FUN_1409475f0(&m_spNode))->GetTranslate();
+    Vector3 ptCur = *(const Vector3*)&((NiAVObject*)m_spNode.operator->())->GetTranslate();
     Unk_GVec3 ptHit;
     if (!FUN_14147aa60(ptCur, ptCur.FUN_140965c40(m_ptTarget), m_ptTarget, fRadius, &ptHit))
         ptHit = ptCur;
@@ -402,7 +387,7 @@ void CExpEffectInfo::Finish()
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kRequest)).m_strName = *reinterpret_cast<CString*>((char*)((struct Unk_NameHolder*)FUN_1401d31f0()) + 0x340);
     ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = 1;
-    ((Unk_ExpTarget&)(kRequest)).FUN_140a53190(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
+    kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pPlayer))->FUN_14123c580());
     TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     m_nState = 1;
 }
@@ -412,7 +397,7 @@ void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Vector3* pOut)
 {
     if (pActor == 0)
         return;
-    NiAVObject* pDummy = FUN_141675150(pActor, s_strEffDummy);
+    NiAVObject* pDummy = reinterpret_cast<PCBase*>(pActor)->FUN_141675150(s_strEffDummy);
     if (pDummy != 0)
     {
         FUN_140194470(pOut, (void*)&FUN_140947900(pDummy));
@@ -503,25 +488,25 @@ void CGetExp::SetVisible(int nHide)
 // @0x141274a30
 int FUN_141274a30(Unk_ExpActor* p)
 {
-    return p != 0 && FUN_14087ddc0(p ? p->GetClassInfo() : 0, 0x6200013);
+    return p != 0 && efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(p ? p->GetClassInfo() : 0), 0x6200013);
 }
 
 // @0x141274aa0
 int FUN_141274aa0(Unk_ExpActor* p)
 {
-    return p != 0 && FUN_14087ddc0(p ? p->GetClassInfo() : 0, 0x6200028);
+    return p != 0 && efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(p ? p->GetClassInfo() : 0), 0x6200028);
 }
 
 // @0x141274b10
 int FUN_141274b10(Unk_ExpActor* p)
 {
-    return p != 0 && FUN_14087ddc0(p ? p->GetClassInfo() : 0, 0x6200003);
+    return p != 0 && efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(p ? p->GetClassInfo() : 0), 0x6200003);
 }
 
 // @0x141274b80
 int FUN_141274b80(Unk_ExpActor* p)
 {
-    return p != 0 && FUN_14087ddc0(p ? p->GetClassInfo() : 0, 0x6200011);
+    return p != 0 && efd::ClassInfo::IsKindOf((const efd::ClassInfo*)(p ? p->GetClassInfo() : 0), 0x6200011);
 }
 
 // @0x141273d00
@@ -534,7 +519,7 @@ Vector3 Unk_ConfigPoint::FUN_141273d00() const
 const Vector3& Unk_ConfigPoint::FUN_141274420() const
 {
     if (!m_bInit)
-        FUN_1402b7560((void*)this, "constants is not set");
+        reinterpret_cast<Common::Constants::Object*>(const_cast<Unk_ConfigPoint*>(this))->Error("constants is not set");
     return m_value;
 }
 

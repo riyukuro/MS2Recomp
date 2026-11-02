@@ -33,6 +33,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/commonfiles/os.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -82,7 +83,7 @@ CStringW FUN_14083cb20(const CStringW& str);
 CStringW FUN_1416e7fb0(int nChapter);                                       // chapter name
 CStringW FUN_1416e4df0(int nQuestId);                                       // quest name
       // the name / profanity filter
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 class Unk_LqActor : public MyPC { };
 class Unk_LqWorld { public: Unk_LqActor* FUN_141bd0cc0(); };
 class Unk_LqUIMgr { public: void FUN_141adc530(int nClass); };
@@ -95,7 +96,7 @@ public:
 };
 struct Unk_LqOptions { char m_pad_00[0x50]; unsigned char m_50; unsigned char* FUN_140ea41a0() { return &m_50; } };
 bool FUN_140930b70();
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 unsigned short FUN_14074bd10(int);  // C3: the definition's signature
 class Unk_140acd6e0 : public ASMovieClip { public:
@@ -124,7 +125,7 @@ UILearningQuestDialog::UILearningQuestDialog() : m_1a8(GetTypeName())
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140aa6d40()->FUN_141b0cd00(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
 }
 
 // @0x140ea0da0
@@ -134,7 +135,7 @@ UILearningQuestDialog::~UILearningQuestDialog()
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    FUN_140aa6d40()->FUN_141b0cd90(this);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
 }
 
 // @0x140ea11b0
@@ -256,7 +257,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
     {
         CStringW strName = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_name"), strCategory);
-        FUN_1403b4750()->FUN_1416fb340(strName);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strName);
         spName->FUN_1422c4cd0(strName);
     }
     if (MS2Ptr<Unk_140acd6e0> spOk = GetChild<Unk_140acd6e0>("m_ok"))

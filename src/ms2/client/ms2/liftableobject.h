@@ -35,7 +35,7 @@ public:
     void FUN_141447c10();                                       // stop the cooldown
     Vector3 FUN_141447c80() const;                      // +0xc4
     int FUN_141447cc0() const;                                  // +0xa8
-    void FUN_141447ce0();
+    Unk_Entity* FUN_141447ce0();
     int IsNotFixed() const;                                 // not fixed
     void FUN_141447d50(int nOn);
     void UpdateConditions();                                       // refresh availability

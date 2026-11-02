@@ -70,9 +70,9 @@ static int FUN_1408ba070(void* pNode, const char* pszName, int* pOut)
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\ugcmappackageinfo.cpp"
 // @0x1408ba3b0
-// MS2-FUNCTIONAL: frame has the EH slot at +0x20 in the exe (array at +0x28); cl places both 8 bytes higher
 static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
 {
+    {
     ATL::CAtlArray<int> parts;
     FUN_140177de0(text, parts, ",");
     if (parts.GetCount() == 3)
@@ -86,6 +86,7 @@ static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
         out->z = 0;
         out->y = 0;
         out->x = 0;
+    }
     }
     return out;
 }

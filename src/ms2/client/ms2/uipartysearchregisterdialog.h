@@ -9,9 +9,9 @@
 #include "ms2/placeholder/gfxvalue.h"
 #include <atlcoll.h>
 
-class Unk_PsCombo;
-class Unk_PsInput;
-class Unk_PsCheck;
+class ASDropdownMenu;
+class ASTextInput;
+class ASCheckBox;
 class ASButton;
 
 // One title the dialog remembers: the text and the "allow auto join" flag. Layout: 0x10.
@@ -56,9 +56,9 @@ private:
     Unk_PsRegState m_180;                                       // +0x180 the title being registered
     Unk_PsRegState m_190;                                       // +0x190 the title last registered
     Unk_PsRegState m_1a0;                                       // +0x1a0
-    MS2Ptr<Unk_PsCombo> m_1b0;                                  // +0x1b0 m_maxUserCountCombo
-    MS2Ptr<Unk_PsInput> m_1c0;                                  // +0x1c0 m_inputTitle
-    MS2Ptr<Unk_PsCheck> m_1d0;                                  // +0x1d0 m_checkAllowAutoJoin
+    MS2Ptr<ASDropdownMenu> m_1b0;                                  // +0x1b0 m_maxUserCountCombo
+    MS2Ptr<ASTextInput> m_1c0;                                  // +0x1c0 m_inputTitle
+    MS2Ptr<ASCheckBox> m_1d0;                                  // +0x1d0 m_checkAllowAutoJoin
     MS2Ptr<ASButton> m_1e0;                                     // +0x1e0 m_btnRegister
     MS2Ptr<ASButton> m_1f0;                                     // +0x1f0 m_btnRemove
     ATL::CAtlArray<CStringW> m_200;                             // +0x200 random title templates

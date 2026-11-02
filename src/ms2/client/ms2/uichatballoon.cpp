@@ -40,6 +40,7 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/placeholder/gfxmanager.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 #ifndef MS2_HOOK_DLL   // s_confirmCommend: the exe's object at 0x143af1c18, which other units reach as DAT_143af1c18 (the hook DLL binds it)
@@ -117,7 +118,6 @@ UIGuideEvent* FUN_14136f3e0(int nUiId);
 int FUN_141274ff0();
 int FUN_141275080();
 void FUN_141274f50();
-void* FUN_14209c720(void*);
 void* FUN_140aadf80();
 int FUN_141b710a0(unsigned short wc);
 int FUN_14151f6e0();
@@ -195,7 +195,7 @@ void UIChatBalloon::Entity::vfunc_6(NiPoint3* pPos)
     {
         FUN_140ad0c10(pPos, FUN_14025e7a0()->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
-        m_38->FUN_1422c00f0(pPos->x - 110.0f, pPos->y - 90.0f);
+        m_38->SetPositionFloat(pPos->x - 110.0f, pPos->y - 90.0f);
     }
 }
 
@@ -500,7 +500,7 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
 {
     if (list.FUN_140bc03e0(0))
         return;
-    ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfc10();
+    ((ASDropdownMenu*)list.FUN_140bc0530())->ClearItems();
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if (item == 0)
         return;
@@ -508,9 +508,9 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
     if (item->GetRank() != 0)
     {
         ASObj row(2);
-        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(item->GetRank()));
+        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
         row.FUN_1409adc90("itemRank", item->GetRank());
-        ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfc70(row);
+        ((ASDropdownMenu*)list.FUN_140bc0530())->AddItemRow(row);
         nSel = 0;
     }
     else
@@ -519,14 +519,14 @@ void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
         {
             int nRank = i;
             ASObj row(2);
-            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank));
+            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nRank));
             row.FUN_1407cb9c0("itemRank", i);
             if (nRank == nSelRank)
-                nSel = ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfb90();
-            ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfc70(row);
+                nSel = ((ASDropdownMenu*)list.FUN_140bc0530())->GetItemCount();
+            ((ASDropdownMenu*)list.FUN_140bc0530())->AddItemRow(row);
         }
     }
-    unsigned int nCount = ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422dfb90();
+    unsigned int nCount = ((ASDropdownMenu*)list.FUN_140bc0530())->GetItemCount();
     ((ASDropdownMenu*)list.FUN_140bc0530())->FUN_1422df5f0(nCount > 1 ? nCount : 1);
     ((ASDropdownMenu*)list.FUN_140bc0530())->SetSelectedIndex(nSel);
     list.FUN_140bc0530()->vfunc_24(true);
@@ -541,7 +541,7 @@ int FUN_1418fcb70()
     if (pA != 0 && pA->FUN_1419102c0() != 0)
         return 0;
     UIGuideEvent* pB = FUN_14136f3e0(0x4e53);
-    if (pB != 0 && pB->FUN_141959a20() != 0)
+    if (pB != 0 && pB->SkipTextTip() != 0)
         return 1;
     if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
         return 0;
@@ -570,7 +570,7 @@ int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CS
 {
     if (nMsg == 0x10f)
     {
-        HIMC hImc = ImmGetContext((HWND)FUN_14209c720(FUN_140aadf80()));
+        HIMC hImc = ImmGetContext(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef());
         if (hImc == 0)
             return 0;
         DWORD nLen = 0;
@@ -592,7 +592,7 @@ int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CS
             }
             else
                 return 0;
-            ImmReleaseContext((HWND)FUN_14209c720(FUN_140aadf80()), hImc);
+            ImmReleaseContext(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), hImc);
             *pStr += buf;
         }
         else

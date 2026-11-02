@@ -14,6 +14,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe types ----
 
@@ -23,7 +24,7 @@ class Unk_GoCheck : public ASButton
 public:
 };
 // The combo child.
-class Unk_GoCombo : public ASDisplayObject { public: int FUN_1422df6c0(); };
+class Unk_GoCombo : public ASDisplayObject {};
 class Unk_GoEntity : public UIDialog
 {
 public:
@@ -82,7 +83,7 @@ public:
 };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 Unk_GoAutoCfg* FUN_140c8b450(void* pHolder);
-Unk_GoGameCfg* FUN_1409a8b10();
+class CGameOption;
 void FUN_140710590(COutPacket& packet);                         // send
 
 // @0x1419d95c0
@@ -155,7 +156,7 @@ void UIItemGetOptionDialog::OnLoadComplete()
             nSel = 4;
         else if (nGrade == 6)
             nSel = 5;
-        if (hRank.get()->FUN_1422df6c0() != nSel)
+        if (reinterpret_cast<ASDropdownMenu*>(hRank.get())->GetSelectedIndex() != nSel)
             reinterpret_cast<ASDropdownMenu*>(hRank.get())->SetSelectedIndex(nSel);
     }
 }
@@ -332,7 +333,7 @@ void UIItemGetOptionDialog::FUN_1419da8f0()
     if (m_nMode != 0)
     {
         m_opt.FUN_141260ed0();
-        m_opt.FUN_141260f40(FUN_1409a8b10()->FUN_141244300());
+        m_opt.FUN_141260f40(reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141244300());
     }
     else
     {
@@ -357,8 +358,8 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
 {
     if (m_nMode != 0)
     {
-        FUN_1409a8b10()->FUN_141533e20()->FUN_141261310(m_opt);
-        FUN_1409a8b10()->FUN_141243540();
+        reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20()->FUN_141261310(m_opt);
+        reinterpret_cast<Unk_GoGameCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141243540();
     }
     else
     {

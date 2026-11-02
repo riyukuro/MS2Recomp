@@ -101,13 +101,14 @@ public:
 
 class Unk_PCTimer;      // the 0x38-byte key repeat timer at +8
 class Unk_PCBuffTable;  // FUN_1409331e0 / FUN_1409331f0 singletons (buff block / buff lookup tables)
-// the climb state; FUN_140ad22a0 returns its direction by value
-class Unk_PCClimb
+// the mouse click-to-move state; GetMove returns its direction by value
+class CMouseController   // C3: member view for the former free stand-ins
 {
 public:
-    Vector3 FUN_140ad22a0();
+    void FUN_140ad2070();
+    int FUN_140ad21f0();
+    Vector3 GetMove();
 };
-struct Unk_PCBuffKey { int m_nId; int m_nExtra; };
 class Unk_PCServices;
 // the class's own unit defines s_instance / GetInstance out of line (explicit specializations): only declared here, so
 // this obj does not instantiate a second copy (LNK2005 in the full-exe link)
@@ -153,8 +154,8 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14116dbf0(int*, int*, int*, bool, int);
+    bool FUN_14116d7a0(unsigned nMask);
 };
-bool FUN_14116d7a0(Unk_PCServices* p, int n);
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class CGuideManager   // C3: member view for the former free stand-ins
@@ -169,13 +170,14 @@ public:
     int IsActionKeyDown(int);
     int IsActionKeyPressed(int);
     int IsActionKeyReleased(int);
+    int FUN_14142c940(__int64 nAction, int nPriority);
 };
-int FUN_14142c940(Unk_PCBuffTable* p, int n, int m);
+struct Unk_PCBuffKey { int m_nId; int m_nExtra; };
 Unk_PCBuffKey FUN_14142d190(Unk_PCBuffTable* p, int n);
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141bca010();
+    void ResetIdleTimer();
     void* FUN_141bd0cc0();
     int FUN_141bdb5e0();
     static class WorldService* GetInstance();
@@ -188,9 +190,8 @@ public:
     bool WasKeyPressedGated(int);
     bool WasKeyReleasedGated(int);
     bool FUN_140d8c550();
+    Vector3 GetLeftStickMoveDir();
 };
-// the input controller FUN_140a58540 returns
-struct Unk_PcmInput { Vector3 FUN_140d8c2f0(); };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 int FUN_140a58520(void* p);
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
@@ -199,10 +200,8 @@ class Ridee   // C3: member view for the former free stand-ins
 public:
     class PCBase* GetRider();
 };
-void* FUN_1416749a0(Unk_PCActor* p);
-int FUN_140970a40(void* p);
-int FUN_140ad21f0(Unk_PCClimb* p);
-void FUN_140ad2070(Unk_PCClimb* p);
+#include "ms2/client/ms2/pcbase.h"
+class AdditionalCliList { public: unsigned FUN_1409709b0(); int FUN_140970a40(); };   // C3: member view
 void FUN_140194470(Vector3* pDst, const Vector3& kSrc);
 bool FUN_140552690(Vector3* a, Vector3* b);
 bool FUN_140552700(Vector3* a, Vector3* b);
@@ -219,13 +218,7 @@ class CInstrumentManager   // C3: member view for the former free stand-ins
 public:
     bool IsEnsemble();
 };
-void FUN_140868750(char* pTimer, int n);
-int FUN_140868ba0(char* pTimer);
-void FUN_1408687f0(char* pTimer);
-int FUN_141671b20(Unk_PCActor* p);
-int FUN_14166ce30(Unk_PCActor* p);
-int FUN_1416596d0(Unk_PCActor* p);
-int FUN_1409709b0(void* p);
+class PC { public: int FUN_1416596d0(); };   // C3: member view
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -260,7 +253,7 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
         return false;
     if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyDown(nKey) != 0) {
         if (((void*)WorldService::GetInstance()) != 0)
-            ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca010();
+            ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->ResetIdleTimer();
         return true;
     }
     return false;
@@ -358,16 +351,16 @@ Vector3 Unk_PCMove::FUN_141683290()
         if (pBase != 0)
             pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
-            if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
+            if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(pActor)->FUN_1416749a0())->FUN_140970a40() != 0)
                 bFlipped = 1;
         }
     }
-    if (reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance()) != 0) {
-        if (FUN_140ad21f0(reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance())) != 0) {
+    if (TSingleton<CMouseController>::GetInstance() != 0) {
+        if (TSingleton<CMouseController>::GetInstance()->FUN_140ad21f0() != 0) {
             if (FUN_140552690(&kDir, &DAT_143b01a60))
-                FUN_140194470(&kDir, reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance())->FUN_140ad22a0());
+                FUN_140194470(&kDir, TSingleton<CMouseController>::GetInstance()->GetMove());
         } else {
-            FUN_140ad2070(reinterpret_cast<Unk_PCClimb*>(TSingleton<CMouseController>::GetInstance()));
+            TSingleton<CMouseController>::GetInstance()->FUN_140ad2070();
         }
     }
     if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb5)) {
@@ -383,7 +376,7 @@ Vector3 Unk_PCMove::FUN_141683290()
                     return DAT_143b01a60;
                 }
             } else {
-                Vector3 kCur = reinterpret_cast<Unk_PcmInput*>(((void*)FUN_140a58540()))->FUN_140d8c2f0();
+                Vector3 kCur = FUN_140a58540()->GetLeftStickMoveDir();
                 if (FUN_140552700(&kCur, &DAT_143b01a60))
                     FUN_140194470(&kDir, kCur);
             }
@@ -427,7 +420,7 @@ Vector3 Unk_PCMove::FUN_1416836d0()
         if (pBase != 0)
             pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
-            if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
+            if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(pActor)->FUN_1416749a0())->FUN_140970a40() != 0)
                 FUN_140ad0c10(&kDir, -1.0f);
         }
     }
@@ -440,7 +433,7 @@ Vector3 Unk_PCMove::FUN_141683900()
     if (!FUN_141683ef0()) {
         return DAT_143b01a60;
     }
-    if (!FUN_1416839b0() && (m_moving != 0 || FUN_140868ba0(m_timer) != 0)) {
+    if (!FUN_1416839b0() && (m_moving != 0 || reinterpret_cast<Timer*>(m_timer)->FUN_140868ba0() != 0)) {
         return m_dir;
     } else {
         return FUN_141683290();
@@ -450,13 +443,13 @@ Vector3 Unk_PCMove::FUN_141683900()
 // @0x1416839b0
 bool Unk_PCMove::FUN_1416839b0()
 {
-    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d41, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d41, 2)))
         return true;
-    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d42, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d42, 2)))
         return true;
-    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d43, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d43, 2)))
         return true;
-    if (FUN_141682f80(FUN_14142c940(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0())), 0x30d44, 2)))
+    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142c940(0x30d44, 2)))
         return true;
     return false;
 }
@@ -470,26 +463,26 @@ void Unk_PCMove::FUN_141683a90()
     if ((FUN_141683200(0x30d43) && FUN_141682fe0(0x30d41)) || (FUN_141683200(0x30d41) && FUN_141682fe0(0x30d43))) {
         m_dir.x = 1.0f;
         m_dir.y = 1.0f;
-        FUN_140868750(m_timer, nDelay);
+        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
     } else if ((FUN_141683200(0x30d43) && FUN_141682fe0(0x30d42)) || (FUN_141683200(0x30d42) && FUN_141682fe0(0x30d43))) {
         m_dir.x = 1.0f;
         m_dir.y = -1.0f;
-        FUN_140868750(m_timer, nDelay);
+        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
     } else if ((FUN_141683200(0x30d44) && FUN_141682fe0(0x30d41)) || (FUN_141683200(0x30d41) && FUN_141682fe0(0x30d44))) {
         m_dir.x = -1.0f;
         m_dir.y = 1.0f;
-        FUN_140868750(m_timer, nDelay);
+        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
     } else if ((FUN_141683200(0x30d44) && FUN_141682fe0(0x30d42)) || (FUN_141683200(0x30d42) && FUN_141682fe0(0x30d44))) {
         m_dir.x = -1.0f;
         m_dir.y = -1.0f;
-        FUN_140868750(m_timer, nDelay);
-    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42)) && FUN_140868ba0(m_timer) != 0) {
-        FUN_1408687f0(m_timer);
+        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
+    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42)) && reinterpret_cast<Timer*>(m_timer)->FUN_140868ba0() != 0) {
+        reinterpret_cast<Timer*>(m_timer)->FUN_1408687f0();
         m_moving = 1;
     } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44)) && (FUN_141683200(0x30d41) || FUN_141683200(0x30d42))) {
-        FUN_1408687f0(m_timer);
+        reinterpret_cast<Timer*>(m_timer)->FUN_1408687f0();
     } else if (FUN_141683100(0x30d43) || FUN_141683100(0x30d44) || FUN_141683100(0x30d41) || FUN_141683100(0x30d42)) {
-        FUN_1408687f0(m_timer);
+        reinterpret_cast<Timer*>(m_timer)->FUN_1408687f0();
     }
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
@@ -497,7 +490,7 @@ void Unk_PCMove::FUN_141683a90()
         if (pBase != 0)
             pActor = ((class Unk_PCActor*)((class Ridee*)(class Unk_PCActor*)(pBase))->GetRider());
         if (pActor != 0) {
-            if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
+            if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(pActor)->FUN_1416749a0())->FUN_140970a40() != 0)
                 FUN_140ad0c10(&m_dir, -1.0f);
         }
     }
@@ -509,20 +502,20 @@ bool Unk_PCMove::FUN_141683ef0()
     if (m_pOwner == 0)
         return false;
     Unk_PCActor* pSelf = ((class Unk_PCActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
-    if (m_pOwner->GetKind() != 0x6200045 && pSelf != m_pOwner && FUN_141671b20(m_pOwner) == 0
+    if (m_pOwner->GetKind() != 0x6200045 && pSelf != m_pOwner && reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671b20() == 0
         && m_pOwner->GetKind() != 0x6200064 && m_pOwner->GetKind() != 0x6200081)
         return false;
-    if (FUN_14166ce30(pSelf) != 0)
+    if (reinterpret_cast<PCBase*>(pSelf)->FUN_14166ce30() != 0)
         return false;
-    if (FUN_14116d7a0(reinterpret_cast<Unk_PCServices*>(FUN_14025e7c0()), 0xf))
+    if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d7a0(0xf))
         return false;
     if (m_pOwner->FUN_slot_1f8() == 0)
         return false;
     if (m_ready == 0) {
-        if (FUN_1409709b0(FUN_1416749a0(m_pOwner)) != 0)
+        if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749a0())->FUN_1409709b0() != 0)
             return false;
     }
-    if (pSelf == m_pOwner && FUN_1416596d0(pSelf) != 0)
+    if (pSelf == m_pOwner && reinterpret_cast<PC*>(pSelf)->FUN_1416596d0() != 0)
         return false;
     if (!((class CameraMgr*)(void*)(TSingleton<CameraMgr>::GetInstance()))->FUN_140aed3e0())
         return false;
@@ -566,7 +559,6 @@ MS2_REPLACE_METHOD(0x141684170, Unk_PCMove, FUN_141684170, 44, 0x56BEA03B);
 // The preceding constructors and header statics belong to this controller TU.
 // MS2-RANGE: 0x141682e90-0x141682f80 .text$mn
 // MS2-RANGE: 0x1400fb790-0x1400fb920 .text$di
-#include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 
 static CString s_moveSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

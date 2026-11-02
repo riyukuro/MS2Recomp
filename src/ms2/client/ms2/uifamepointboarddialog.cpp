@@ -48,14 +48,15 @@ public:
 
 class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 void* FUN_140764020();   // C3: was FUN_140764020
-CReservedWordTable* FUN_1403b4750();                                    // the text filter
+class CReservedWordTable;
 __int64 GetServerTime();                                                // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_140762de0(int nAlliance);                                  // the alliance's name
 CString FUN_140762e90(int nAlliance);                                   // the alliance's symbol
 CStringW FUN_140762ee0(int nAlliance, int nGrade);                      // the grade's name
-int FUN_140931210(int nAlliance);                                       // the player's grade
+enum Unk_SlotKey { };
+unsigned FUN_140931210(Unk_SlotKey nAlliance);                          // the player's grade
 void FUN_140762fc0(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);    // the fame points
 
 extern ATL::CRBMap<__int64, int> DAT_143ab31e8;                         // time -> fame log id
@@ -144,7 +145,7 @@ void UIFamePointBoardDialog::FUN_140c15780()
             ASObj row(2);
             row.FUN_1407cbb20("label", FUN_140762de0(nAlliance));
             row.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-            row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
+            row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210((Unk_SlotKey)nAlliance)));
             row.FUN_1407cb9c0("allianceCode", nAlliance);
             reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->AddItem(row);
         }
@@ -162,7 +163,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
     FUN_140762fc0(nAlliance, &nCurrent, &nMax, strPoint);
     ASObj data(2);
     data.FUN_1407cbb20("allianceName", FUN_140762de0(nAlliance));
-    data.FUN_1407cbb20("allianceGrade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
+    data.FUN_1407cbb20("allianceGrade", FUN_140762ee0(nAlliance, FUN_140931210((Unk_SlotKey)nAlliance)));
     data.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
     data.FUN_1407cb9c0("currentFame", nCurrent);
     data.FUN_1407cb9c0("maxFame", nMax);
@@ -176,7 +177,7 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
         if (((class CFameTable*)FUN_140764010())->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
             continue;
         CStringW strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x43, nLogId);
-        FUN_1403b4750()->ReplaceObjectAndValueWords(strMsg);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
         CStringW strDate;
         CMsTime timeLog(nLogTime);
         ATL::CTimeSpan span = timeNow - timeLog;

@@ -108,17 +108,19 @@ class Unk_PickEntry
 public:
     __int64 FUN_140a17cb0();                        // object id
 };
-class Unk_PickArray
+class NiPick
 {
 public:
-    Unk_PickEntry* FUN_140a17d70(unsigned int i);
-    unsigned int FUN_140a17ea0();                   // count
+    class Record;
+    class Results
+    {
+    public:
+        unsigned int GetSize() const;
+        Record* GetAt(unsigned int i) const;
+    };
 };
-class Unk_PickList
-{
-public:
-    Unk_PickArray* FUN_140a17e00();
-};
+namespace ecr { class PickService { public: class PickRecord { public: const NiPick::Results* GetPickResult() const; }; }; }
+class Unk_PickList : public ecr::PickService::PickRecord {};
 class Unk_PickListPtr
 {
 public:
@@ -357,9 +359,9 @@ void CRPGCameraMode::vfunc_30()
     if (!pList.FUN_140a16c00())
         return;
     Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
-    for (unsigned int i = 0; i < pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); ++i)
+    for (unsigned int i = 0; i < pList.FUN_140a16c30()->GetPickResult()->GetSize(); ++i)
     {
-        Unk_PickEntry* pEntry = pList.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(i);
+        Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList.FUN_140a16c30()->GetPickResult()->GetAt(i));
         Unk_CameraTargetEntity* pObject = pContext->FUN_141bd1050(pEntry->FUN_140a17cb0());
         Unk_RpgActor* pActor = FUN_1409ffd30(pObject);
         if (pActor)

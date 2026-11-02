@@ -38,16 +38,16 @@ public:
 };
 
 // ---- the unit's header statics (three headers each define "skill", "stun" and a handle) ----
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100
 static CString s_strSkill1 = "skill";                // @0x1400e7d30
 static CString s_strStun1 = "stun";                  // @0x1400e7d60
-static Unk_Handle1401cd100 s_handle1(0);             // @0x1400e7d90
+static Unk_BuddyHandle s_handle1(0);             // @0x1400e7d90
 static CString s_strSkill2 = "skill";                // @0x1400e7db0
 static CString s_strStun2 = "stun";                  // @0x1400e7de0
-static Unk_Handle1401cd100 s_handle2(0);             // @0x1400e7e10
+static Unk_BuddyHandle s_handle2(0);             // @0x1400e7e10
 static CString s_strSkill3 = "skill";                // @0x1400e7e30
 static CString s_strStun3 = "stun";                  // @0x1400e7e60
-static Unk_Handle1401cd100 s_handle3(0);             // @0x1400e7e90
+static Unk_BuddyHandle s_handle3(0);             // @0x1400e7e90
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0
@@ -108,7 +108,7 @@ public:
     float m_fViewDistance;          // +0xac
 };
 float* FUN_140552770(std::vector<float>*, size_t);          // const operator[]
-void* FUN_1409a8b10();
+class CGameOption;
 class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -183,7 +183,7 @@ int EffectSkipMgr::ShouldSkipByView(CEffectDataPtr spData, int nCaster, Unk_Skip
 // @0x1411b89e0
 bool EffectSkipMgr::LoadOption()
 {
-    int nOption = *(int*)((Unk_AeGameOption*)FUN_1409a8b10())->FUN_1409a8ac0();
+    int nOption = *(int*)((Unk_AeGameOption*)reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))->FUN_1409a8ac0();
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)

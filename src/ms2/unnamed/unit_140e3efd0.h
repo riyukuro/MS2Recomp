@@ -68,8 +68,6 @@ private:
 };
 class Unk_AdItemInfo {
 public:
-    bool FUN_1406a0cc0();                       // a sellable-now flag
-    CMsTime FUN_1406a1a70(int n);               // sale end time
     CStringA FUN_1406a0160();                   // icon path
 private:
     char m_pad_00[0x18];
@@ -88,7 +86,6 @@ public:
     char m_pad_128[0x134 - 0x128];
     int m_nRemain;                              // +0x134 seconds the offer lasts
 
-    int FUN_1406a46e0();                        // CMeratMarketProduct::GetType: the premium type, 0 when not premium
 };
 MS2_CHECK_OFFSET(Unk_AdMarketItem, m_info, 0x30);
 MS2_CHECK_OFFSET(Unk_AdMarketItem, m_nSn, 0x48);

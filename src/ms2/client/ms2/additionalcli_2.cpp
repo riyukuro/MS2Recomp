@@ -1268,7 +1268,7 @@ void AdditionalCliList::FUN_140973cc0(MS2Ptr<AdditionalCli> sp)
     {
         UIMainPlayerInfo* pInfo = FUN_140931900(20063);
         if (pInfo)
-            pInfo->FUN_1419f1180(sp->GetKey());
+            pInfo->RemoveBuffEffect(sp->GetKey());
     }
     else if (FUN_140973680(sp))
     {

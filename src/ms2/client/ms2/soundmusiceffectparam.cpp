@@ -63,7 +63,7 @@ class Unk_SmApp { public: char* FUN_140d13c70(); };
 struct Unk_SoundState;
 float FUN_141260110(Unk_SoundState*, int);                   // the volume of a channel
 // The game clock (?\unit_14086d260.cpp).
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 
 // The category allocator (efd::MemObject::operator new, expanded at the call site).
 void* FUN_140876480(void* pkOut, int nCategory);            // returns the mem category
@@ -177,7 +177,7 @@ bool CSoundMusicEffect::vfunc_9()
 {
     if (!m_b2d)
     {
-        double dNow = FUN_14086d260()->FUN_141473280();
+        double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
         if (dNow <= m_dStartTime + m_fDuration)
         {
             float fT = (float)(dNow - m_dStartTime) / m_fDuration;

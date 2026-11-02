@@ -175,14 +175,14 @@ void UISelectItemBoxDialog::OnLoadComplete()
     ASDataProvider list(2);
     for (unsigned i = 0; i < nCount; ++i) {
         if (i >= m_rewards.size()) {
-            list.FUN_1422bc050(ASObj(2).FUN_1422bb890());
+            list.PushValue(ASObj(2).FUN_1422bb890());
             continue;
         }
         CString strBind = m_binder.FUN_140d43510(reinterpret_cast<Unk_PetBoxDropVec&>(m_rewards).FUN_140c461b0(i));
         if (!strBind.IsEmpty()) {
             ASObj entry(2);
             entry.FUN_1407cba60("bindID", strBind);
-            list.FUN_1422bc050(entry.FUN_1422bb890());
+            list.PushValue(entry.FUN_1422bb890());
         }
     }
     m_selectItemList->Invoke("resetRenderer");

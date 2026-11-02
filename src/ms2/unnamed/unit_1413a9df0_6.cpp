@@ -38,6 +38,8 @@
 #include "ms2/placeholder/partyuidialogs.h"
 #undef FUN_140869440
 #include "ms2/unnamed/unit_1413a9df0.h"
+#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -94,41 +96,30 @@ template CStringW StringFormat<Unk_GcItemType, int, int>(const wchar_t*, const U
 
 // ---- the dialog finders and the dialog value lookup ---------------------------------------------------------------------------
 // The UI manager hands out a reference object (refcount block + object); the finders downcast the held object.
-void* FUN_1403ed2b0();                                      // the UI manager
-
-// A GFx value for a dialog tree node (0x20 bytes; the destructor is 0x140614800).
-class Unk_GcNode
-{
-public:
-    ~Unk_GcNode();
-    bool FUN_1409b4d40();
-    void* m_p[4];
-};
-MS2_CHECK_SIZE(Unk_GcNode, 0x20);
 
 // @0x1413b19d0
-Unk_G9Val Unk_G9Inner::FUN_1413b19d0(const CStringA& strName)
+template <> MS2Ptr<ASDisplayObject> AScript::FUN_140e159f0<ASDisplayObject>(const CString& strName)
 {
-    Unk_GcNode node = FUN_1422baa20(strName);
-    if (node.FUN_1409b4d40())
-        return Unk_G9Val(m_n18, node);
-    return Unk_G9Val(0);
+    Scaleform::GFx::Value node = GetMember(strName);
+    if (node.IsObject())
+        return FUN_140d01be0(m_nMovieId, node);
+    return MS2Ptr<ASDisplayObject>(0);
 }
 
 // @0x1413b1a90
-Unk_G9Val Unk_G9TreeDlg::FUN_1413b1a90(const CStringA& strChild)
+template <> MS2Ptr<ASDisplayObject> UISwfEntity::GetChild<ASDisplayObject>(const CString& strChild)
 {
-    if (m_list.FUN_140ba28d0(0))
-        return Unk_G9Val(0);
-    return m_list.FUN_1409ee290()->FUN_1413b19d0(strChild);
+    if (m_30 == 0)
+        return MS2Ptr<ASDisplayObject>(0);
+    return m_30->FUN_140e159f0<ASDisplayObject>(strChild);
 }
 
 // @0x1413b1b20
 void* FUN_1413b1b20(unsigned nUIId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> ref = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nUIId);
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUIId);
         if (ref.get())
             return dynamic_cast<UIChatEmoticonDialog*>(ref.operator UIObject*());
     }
@@ -138,9 +129,9 @@ void* FUN_1413b1b20(unsigned nUIId)
 // @0x1413b1bc0
 void* FUN_1413b1bc0(unsigned nUIId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> ref = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nUIId);
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUIId);
         if (ref.get())
             return dynamic_cast<UIItemEnchantDialog*>(ref.operator UIObject*());
     }
@@ -150,9 +141,9 @@ void* FUN_1413b1bc0(unsigned nUIId)
 // @0x1413b1c60
 void* FUN_1413b1c60(const CStringA& strName)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> ref = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObjectByName(strName);
+        MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObjectByName(strName);
         if (ref.get())
             return dynamic_cast<UIPartyDialog*>(ref.operator UIObject*());
     }
@@ -163,11 +154,11 @@ void* FUN_1413b1c60(const CStringA& strName)
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
+int XmlGetAttr(class TiXmlElement*, char const*, efd::Point3&);   // C3: was FUN_140874670
 void FUN_1413747d0(unsigned char*);   // C3: was FUN_1413747d0
 void Unk_GcClear0(char*);   // C3: was FUN_1413b5850
 void Unk_GcClear1(char*);   // C3: was FUN_1413b5860
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0
 class Unk_MergeRange   // C3: member view for the former free stand-ins
 {
 public:
@@ -194,7 +185,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
     if (nResult == 0)
     {
         ATL::CAtlArray<int> arr;
-        FUN_140177de0(str, arr, "-");
+        XmlSplit(str, arr, "-");
         if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<int, class ATL::CElementTraits<int>>&>(arr))->GetCount() != 2)
             return 2;
         ((class Unk_MergeRange*)(void*)(pOut))->Set(arr[0], arr[1]);
@@ -207,7 +198,7 @@ int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut
 {
     Unk_GcClear0((char*)(&oOut));
     Vector3 pt;
-    int nResult = FUN_140874670(pElem, pszName, pt);
+    int nResult = XmlGetAttr((class TiXmlElement*)(pElem), pszName, reinterpret_cast<efd::Point3&>(pt));
     if (nResult == 0)
         oOut = pt;
     return nResult;

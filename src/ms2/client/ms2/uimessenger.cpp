@@ -436,9 +436,9 @@ public:
     void SetSelectedIndex(int nIndex);                                 // select an entry
     int GetSelectedIndex();                                            // the selected entry
     void FUN_1422df5f0(int nRowCount);                              // the number of visible rows
-    unsigned FUN_1422dfb90();                                       // the item count
-    void FUN_1422dfc10();                                           // remove every entry
-    void FUN_1422dfc70(const ASObj& item);                          // add an item
+    unsigned GetItemCount();                                       // the item count
+    void ClearItems();                                           // remove every entry
+    void AddItemRow(const ASObj& item);                          // add an item
 };
 
 // The messenger settings element (messengerdata.cpp's view): children by name.
@@ -566,7 +566,7 @@ int FUN_140718200(const CStringW& str);                             // to int
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);        // a system message
 void FUN_1412b9870(int nRoomId, int nState);                        // the room entry refusal message
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);   // a yes/no box
-UIDungeonRoomDialog* FUN_140961550(int nUiId);                      // Unk_GetUI<UIDungeonRoomDialog>
+template <class T> T* Unk_GetUI(int nUiType);
    // names of ids
 UIMessenger* FUN_141a184c0(CString strName);                       // Unk_GetUI<UIMessenger> by name
 
@@ -743,12 +743,12 @@ int UIMessenger::vfunc_54(void* pCfg)
                     m_tabs.RemoveAll();
                     return 0;
                 }
-                if (!FUN_141a0e4d0(pTab))
+                if (!AddTab(pTab))
                     return 0;
             }
         }
         FUN_141a13ac0();
-        pDialog->FUN_1422c79e0(nWidth, nHeight);
+        pDialog->SetSizeInt(nWidth, nHeight);
     }
     return (int)m_tabs.GetCount();
 }
@@ -769,7 +769,7 @@ void UIMessenger::OnLoadComplete()
     m_buttonBar = FUN_140c02870("m_buttonBar");
     m_subject = FUN_140c28560("m_subject");
     m_chatEmoticonPreview = FUN_140ba7930("m_chatEmoticonPreview");
-    m_textInput->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMessenger::FUN_141a0e940));
+    m_textInput->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMessenger::FUN_141a0e940));
     UIDialog::OnLoadComplete();
     FUN_141923680(1);
     FUN_141a14dc0();
@@ -777,7 +777,7 @@ void UIMessenger::OnLoadComplete()
         m_textInput->SetMaxChars(*Client::Constants::GetInstance()->MaxChatLength.Get());
     if (m_buttonBar)
     {
-        m_buttonBar->FUN_1422c7630(1);
+        m_buttonBar->SetFocused(1);
         m_buttonBar->SetSelectedIndex(m_nTabSelectedIndex);
     }
     m_90->FUN_1422c7490(
@@ -786,7 +786,7 @@ void UIMessenger::OnLoadComplete()
     vfunc_4();
     m_bScrollEnd = 1;
     LoadDebugChatCommand();
-    FUN_141a0e990();
+    ReselectCurrentTab();
 }
 
 // @0x141a0a3a0
@@ -826,9 +826,9 @@ int UIMessenger::vfunc_13()
     {
         if (m_textInput)
         {
-            if (!m_textInput->FUN_1422c76c0())
+            if (!m_textInput->GetFocused())
             {
-                m_textInput->FUN_1422c7630(1);
+                m_textInput->SetFocused(1);
                 FUN_141a17900(m_pBrowser->m_strWhisperTarget);
                 return 1;
             }
@@ -844,12 +844,12 @@ int UIMessenger::vfunc_13()
     }
     else if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d840())
         return FUN_141a12260();
-    else if (m_textInput && m_textInput->FUN_1422c76c0() && ((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x79, 0, 0))
+    else if (m_textInput && m_textInput->GetFocused() && ((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x79, 0, 0))
     {
         FUN_141a13c20(1);
         return 1;
     }
-    else if (m_textInput && m_textInput->FUN_1422c76c0() && ((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x7e, 0, 0))
+    else if (m_textInput && m_textInput->GetFocused() && ((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x7e, 0, 0))
     {
         FUN_141a13c20(0);
         return 1;
@@ -858,7 +858,7 @@ int UIMessenger::vfunc_13()
     {
         if (m_textInput)
         {
-            if (!m_textInput->FUN_1422c76c0())
+            if (!m_textInput->GetFocused())
                 return 0;
             if (!m_strLastWhisper.IsEmpty())
             {
@@ -954,7 +954,7 @@ bool UIMessenger::LoadDebugChatCommand()
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0df10
-bool UIMessenger::FUN_141a0df10()
+bool UIMessenger::ReloadDebugChatCommands()
 {
     if (s_spDebugCommandCache == 0)
         return false;
@@ -972,7 +972,7 @@ CStringW UIMessenger::GetName()
 }
 
 // @0x141a0dfc0
-CStringW UIMessenger::FUN_141a0dfc0()
+CStringW UIMessenger::GetSelectedTabName()
 {
     if (m_buttonBar)
         return m_buttonBar->FUN_1422e3790();
@@ -984,7 +984,7 @@ TalkTab* UIMessenger::GetCurrentTab()
 {
     if (m_tabs.GetCount() == 1)
         return m_tabs[0].get();
-    return FindTabByName(FUN_141a0dfc0());
+    return FindTabByName(GetSelectedTabName());
 }
 
 // @0x141a0e0f0
@@ -1003,11 +1003,11 @@ TalkTab* UIMessenger::FindTabByName(const CStringW& strName)
 }
 
 // @0x141a0e1f0
-int UIMessenger::FUN_141a0e1f0(int nIndex)
+int UIMessenger::SelectTabByIndex(int nIndex)
 {
     if (m_buttonBar)
     {
-        m_buttonBar->FUN_1422c7630(1);
+        m_buttonBar->SetFocused(1);
         m_buttonBar->SetSelectedIndex(nIndex);
         m_buttonBar->vfunc_24(1);
     }
@@ -1015,11 +1015,11 @@ int UIMessenger::FUN_141a0e1f0(int nIndex)
 }
 
 // @0x141a0e2a0
-int UIMessenger::FUN_141a0e2a0(const CStringW& strName)
+int UIMessenger::SelectTabByName(const CStringW& strName)
 {
     if (m_buttonBar)
     {
-        m_buttonBar->FUN_1422c7630(1);
+        m_buttonBar->SetFocused(1);
         m_buttonBar->FUN_1422e3590(strName);
         m_buttonBar->vfunc_24(1);
     }
@@ -1027,7 +1027,7 @@ int UIMessenger::FUN_141a0e2a0(const CStringW& strName)
 }
 
 // @0x141a0e350
-int UIMessenger::FUN_141a0e350(const CStringW& strName)
+int UIMessenger::RemoveTabByName(const CStringW& strName)
 {
     MS2Ptr<TalkTab> spTab = FindTabByName(strName);
     if (!spTab)
@@ -1050,7 +1050,7 @@ int UIMessenger::FUN_141a0e350(const CStringW& strName)
 }
 
 // @0x141a0e4d0
-int UIMessenger::FUN_141a0e4d0(TalkTab* pTab)
+int UIMessenger::AddTab(TalkTab* pTab)
 {
     if (pTab == 0)
         return 0;
@@ -1094,7 +1094,7 @@ int UIMessenger::FUN_141a0e650(TalkTab* pTab)
 }
 
 // @0x141a0e810
-int UIMessenger::FUN_141a0e810(const CStringW& strName, int nClose, int nDetach, int nAdditive)
+int UIMessenger::CreateTab(const CStringW& strName, int nClose, int nDetach, int nAdditive)
 {
     MS2Ptr<TalkTab> spTab = new TalkTab(strName, nClose, nDetach, nAdditive);
     return FUN_141a0e650(spTab);
@@ -1120,9 +1120,9 @@ void UIMessenger::FUN_141a0e940(const Scaleform::GFx::FunctionHandler::Params& p
 }
 
 // @0x141a0e990
-void UIMessenger::FUN_141a0e990()
+void UIMessenger::ReselectCurrentTab()
 {
-    vfunc_97(FUN_141a0dfc0());
+    vfunc_97(GetSelectedTabName());
 }
 
 // @0x141a0e9f0
@@ -1176,18 +1176,18 @@ void UIMessenger::FUN_141a0ec30(const CStringW& strText)
     // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
     if (FUN_141a14ce0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace), m_textInput->GetMaxChars()))
     {
-        m_textInput->FUN_1422e0bd0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace));
+        m_textInput->SetHtmlTextW(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace));
 #else
     if (FUN_141a14ce0(strHtml + strText + strSpace, m_textInput->GetMaxChars()))
     {
-        m_textInput->FUN_1422e0bd0(strHtml + strText + strSpace);
+        m_textInput->SetHtmlTextW(strHtml + strText + strSpace);
 #endif
         m_textInput->vfunc_24(1);
         int nLength = m_textInput->GetText().GetLength();
         if (0 < nLength)
         {
             vfunc_78();
-            m_textInput->FUN_1422e1500(nLength, nLength);
+            m_textInput->FocusAndSetSelection(nLength, nLength);
         }
         m_textInput->vfunc_24(1);
         m_inputHistory.Add(strText);
@@ -1331,7 +1331,7 @@ void UIMessenger::FUN_141a0f870()
         }
     }
     FUN_141a14dc0();
-    FUN_141a0e990();
+    ReselectCurrentTab();
 }
 
 // @0x141a0f900
@@ -1372,7 +1372,7 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
         FUN_141a12e40(0x10, strText, 1);
         {
             CString strNone("");
-            m_textInput->FUN_1422e0b80(strNone);
+            m_textInput->SetHtmlTextA(strNone);
         }
         m_textInput->vfunc_24(1);
     }
@@ -1393,7 +1393,7 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
         FUN_141a12e40(0xb, strText, 1);
         {
             CString strNone("");
-            m_textInput->FUN_1422e0b80(strNone);
+            m_textInput->SetHtmlTextA(strNone);
         }
         m_textInput->vfunc_24(1);
     }
@@ -1414,7 +1414,7 @@ bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
         FUN_141a12e40(0xc, strText, 1);
         {
             CString strNone("");
-            m_textInput->FUN_1422e0b80(strNone);
+            m_textInput->SetHtmlTextA(strNone);
         }
         m_textInput->vfunc_24(1);
     }
@@ -1552,7 +1552,7 @@ void UIMessenger::FUN_141a11e30()
 {
     if (m_textInput == 0)
         return;
-    if (m_textInput->FUN_1422c76c0() != 0)
+    if (m_textInput->GetFocused() != 0)
     {
         FUN_140d2c2a0(m_textInput, m_inputHistory);
         CStringW strText = FUN_141842320(m_textInput->GetText());
@@ -1575,19 +1575,19 @@ void UIMessenger::FUN_141a11e30()
         vfunc_78();
         if (m_pBrowser->m_1b0 == 4)
         {
-            m_textInput->FUN_1422c7630(1);
+            m_textInput->SetFocused(1);
             FUN_141a17900(m_pBrowser->m_strWhisperTarget);
         }
         else if (m_pBrowser->m_1b0 == 0x1a)
         {
-            m_textInput->FUN_1422c7630(1);
+            m_textInput->SetFocused(1);
             FUN_141a17a60(m_pBrowser->m_1a8);
         }
         else
         {
             int nLength = m_textInput->GetText().GetLength();
-            m_textInput->FUN_1422c7630(1);
-            m_textInput->FUN_1422e1500(nLength, nLength);
+            m_textInput->SetFocused(1);
+            m_textInput->FocusAndSetSelection(nLength, nLength);
             m_textInput->vfunc_24(1);
         }
     }
@@ -1598,11 +1598,11 @@ int UIMessenger::FUN_141a12260()
 {
     if (MS2Ptr<ASTextInput> spInput = m_textInput)
     {
-        if (spInput->FUN_1422c76c0() != 0)
+        if (spInput->GetFocused() != 0)
         {
             m_inputHistory.RemoveAll();
-            spInput->FUN_1422c7630(0);
-            spInput->FUN_1422e0bd0(L"<FONT></FONT>");
+            spInput->SetFocused(0);
+            spInput->SetHtmlTextW(L"<FONT></FONT>");
             spInput->vfunc_24(1);
             FUN_141a0d880(0);
             return 1;
@@ -1626,7 +1626,7 @@ int UIMessenger::FUN_141a12f30()
         return 0;
     {
         MS2Ptr<ASTextInput> spInput = m_textInput;
-        if (spInput.get() != 0 && spInput->FUN_1422c76c0() != 0)
+        if (spInput.get() != 0 && spInput->GetFocused() != 0)
             return 1;
     }
     if (((class Unk_MsgKeys*)FUN_14025e7c0())->FUN_14116d7a0(0xf))
@@ -1700,7 +1700,7 @@ void UIMessenger::FUN_141a13210()
     if (found.empty())
         return;
     FUN_141a13510(found);
-    spInput->FUN_1422e0ab0(L"");
+    spInput->SetTextW(L"");
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
@@ -1761,9 +1761,9 @@ void UIMessenger::FUN_141a139c0(const CStringW& strText, int bClear)
     {
         int bAtEnd = m_textOutput->FUN_1422e4680();
         if (bClear)
-            m_textOutput->FUN_1422e0b80("");
+            m_textOutput->SetHtmlTextA("");
         if (!strText.IsEmpty())
-            m_textOutput->FUN_1422e1430(strText);
+            m_textOutput->AppendHtmlW(strText);
         if (bAtEnd)
             m_textOutput->FUN_1422e4720();
     }
@@ -1795,7 +1795,7 @@ void UIMessenger::FUN_141a13c20(int bUp)
 {
     if (m_textInput == 0)
         return;
-    if (m_textInput->FUN_1422c76c0() == 0)
+    if (m_textInput->GetFocused() == 0)
         return;
     Unk_MsgHistory entry;
     if (m_pBrowser->FUN_141a261b0(bUp, entry))
@@ -2175,9 +2175,9 @@ void UIMessenger::vfunc_92()
     if (reinterpret_cast<Unk_MsgField*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e62))
     {
         const CStringW& strName = FUN_141a13d20();
-        if (FUN_141a0e810(strName, 1, 1, 0))
+        if (CreateTab(strName, 1, 1, 0))
         {
-            FUN_141a0e2a0(strName);
+            SelectTabByName(strName);
             vfunc_4();
             ((class Unk_MsgState*)FUN_141482e80())->m_nNewTabMode = 2;
             ((class Unk_MsgState*)FUN_141482e80())->m_pNewTabWindow = this;
@@ -2243,7 +2243,7 @@ void UIMessenger::vfunc_96(int nMenu)
     }
     else if (nMenu == 1)
     {
-        if (FUN_141a0e350(FUN_141a0dfc0()))
+        if (RemoveTabByName(GetSelectedTabName()))
         {
             if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
                 ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a245d0(m_strName);
@@ -2285,11 +2285,11 @@ void UIMessenger::vfunc_98(const CStringW& strName, const CString& strWindow)
     UIMessenger* pWindow = FUN_141a184c0(CString(strWindow));
     if (pWindow == 0)
         return;
-    if (FUN_141a0e350(spTab->m_strName))
+    if (RemoveTabByName(spTab->m_strName))
     {
         if (pWindow->FUN_141a0e650(spTab.get()))
         {
-            pWindow->FUN_141a0e2a0(spTab->m_strName);
+            pWindow->SelectTabByName(spTab->m_strName);
             pWindow->vfunc_4();
         }
         if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
@@ -2306,13 +2306,13 @@ void UIMessenger::FUN_141a16730(const CStringW& strName, int nX, int nY, int nWi
         return;
     if (m_tabs.GetCount() < 2)
         return;
-    if (FUN_141a0e350(spTab->m_strName))
+    if (RemoveTabByName(spTab->m_strName))
     {
         ATL::CAtlArray<MS2Ptr<TalkTab> > tabs;
         tabs.Add(spTab);
         if (((class Unk_MsgState*)FUN_141482e80())->m_pBrowser != 0)
             ((class Unk_MsgState*)FUN_141482e80())->m_pBrowser->FUN_141a24160(tabs, nX, nY, nWidth, nHeight, nTarget);
-        FUN_141a0e990();
+        ReselectCurrentTab();
         vfunc_4();
     }
 }
@@ -2368,7 +2368,7 @@ void UIMessenger::FUN_141a16bb0(int nProductId, int nA, int nB)
 // @0x141a16c50
 void UIMessenger::FUN_141a16c50(int nRoomId)
 {
-    UIDungeonRoomDialog* pDialog = FUN_140961550(0x4ebd);
+    UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
     if (pDialog != 0)
     {
         if (pDialog->FUN_141924630())
@@ -2475,9 +2475,9 @@ void UIMessenger::FUN_141a17700()
     {
         if (m_chatEmoticonPreview.IsNull())
             break;
-        if (!m_textInput->FUN_1422c76c0())
+        if (!m_textInput->GetFocused())
             break;
-        if (!m_chatEmoticonPreview->FUN_1422bfca0())
+        if (!m_chatEmoticonPreview->GetVisible())
             break;
         pDialog->Invoke("pushChatEmoticon");
         return;
@@ -2490,10 +2490,10 @@ void UIMessenger::FUN_141a17830(const CStringW& strText, int bSelectEnd)
 {
     if (m_textInput == 0)
         return;
-    m_textInput->FUN_1422e0bd0(strText);
+    m_textInput->SetHtmlTextW(strText);
     int nLength = strText.GetLength();
     if (bSelectEnd != 0 && nLength > 0)
-        m_textInput->FUN_1422e1500(nLength, nLength);
+        m_textInput->FocusAndSetSelection(nLength, nLength);
     m_textInput->vfunc_24(1);
 }
 
@@ -2659,7 +2659,6 @@ public:
 
                // UITalkManager: a talk is running
 UITalkManager* FUN_140967100();
-class Unk_MbItemTable { public: int FUN_1405569f0(int nGrade); };   // the grade colour
                // ClientLogManager::Flush
 class Unk_MbConfig { public: char m_pad_00[0x60]; CString m_strRoot; };   // +0x60 the client root
 Unk_MbConfig* FUN_1401d31f0();
@@ -2671,7 +2670,7 @@ extern int DAT_143ab2864;                                          // the own ob
 extern unsigned long s_color25;                                    // the system notice colour
 
 CStringW FUN_1401aa6a0(int n);                                      // to string
-CStringW FUN_140632a60(int nStringId, const CStringW& a, const CStringW& b);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 void FUN_141275260(int nStringId, int nA, int nB);                  // a system message by id
 int FUN_141276180(const CString& strSound, const CString& strB);    // plays a system sound
 void FUN_141275150(CItem* pItem, int nCount, int nOld, int nManyId, int nOneId);   // inventory count message
@@ -2871,7 +2870,6 @@ void UIMessengerBrowser::vfunc_43()
     }
 }
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141a22140
 void UIMessengerBrowser::vfunc_84(CInPacket& packet)
 {
@@ -2882,8 +2880,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     int nType = line.m_nType;
     __int64 nCharId = line.m_nCharId;
     FUN_140d2c650(strText);
-    Unk_MbChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get();
-    if (pChecker != 0)
+    if (Unk_MbChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get())
     {
         pChecker->FUN_140226980(strText);
         pChecker->FUN_140226b10(strText);
@@ -3034,7 +3031,7 @@ void UIMessengerBrowser::FUN_141a22ee0(CInPacket& packet)
     CStringW strName = packet.ReadUnicodeString();
     int nValue = packet.ReadInt32();
     CStringW strValue = FUN_1401aa6a0(nValue);
-    CStringW strMessage = FUN_140632a60(0x898, strName, strValue);
+    CStringW strMessage = FormatStringId<CStringW, CStringW>(0x898, strName, strValue);
     FUN_141a247c0(strMessage, 0x14);
 }
 
@@ -3082,19 +3079,17 @@ void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
     FUN_141a26e00(strHtml, 0x1b);
 }
 
-// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
 // @0x141a233d0
 void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    unsigned nNeedHelper = in.ReadUInt8();
-    unsigned nNeedMember = in.ReadUInt8();
-    unsigned nPartyId = in.ReadInt32();
-    CStringW strLeader = in.ReadUnicodeString();
-    unsigned __int64 nAccountId = in.ReadInt64();
-    unsigned __int64 nCharId = in.ReadInt64();
-    unsigned nRoomId = in.ReadInt32();
-    int nMembers = in.ReadUInt8();
+    unsigned nNeedHelper = packet.ReadUInt8();
+    unsigned nNeedMember = packet.ReadUInt8();
+    unsigned nPartyId = packet.ReadInt32();
+    CStringW strLeader = packet.ReadUnicodeString();
+    unsigned __int64 nAccountId = packet.ReadInt64();
+    unsigned __int64 nCharId = packet.ReadInt64();
+    unsigned nRoomId = packet.ReadInt32();
+    int nMembers = packet.ReadUInt8();
     DungeonRoomPtr spRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
     if (spRoom == 0)
         return;
@@ -3340,7 +3335,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
 }
 
 // @0x141a24cb0
-void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta)
+void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta, int nManyId, int nOneId)
 {
     if (!((class Unk_MsgKeys*)FUN_14025e7c0())->IsDebugMode())
         return;
@@ -3546,7 +3541,7 @@ void UIMessengerBrowser::FUN_141a25ad0(CStringW& strHtml)
         {
             MS2Ptr<CItem> spItem = FUN_141a263d0(nUid);
             if (spItem.get() != 0)
-                nColor = reinterpret_cast<Unk_MbItemTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(spItem->FUN_140526bd0());
+                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->FUN_140526bd0());
         }
         CStringW strColored = FUN_14183e930(strLink, nColor);
         strHtml.Replace(strLink, strColored);
@@ -3941,7 +3936,7 @@ void UIMessengerBrowser::FUN_141a27bf0()
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
-            pWindow->FUN_141a0e990();
+            pWindow->ReselectCurrentTab();
     }
     m_194 = (int)m_logs.GetCount();
     m_pendingLogs.RemoveAll();
@@ -3987,7 +3982,6 @@ int UIMessengerBrowser::vfunc_48()
 
 int FUN_1418fc760(const char* szMethod, void* pArgs, unsigned int nArgs, UIMessenger* pDialog);   // uicommon.cpp: the shared AS events
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0bfd0
 int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -4000,103 +3994,104 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         vfunc_90();
         return 1;
     }
-    if (_stricmp("eventFocusOut", szMethod) == 0)
+    else if (_stricmp("eventFocusOut", szMethod) == 0)
     {
         vfunc_91();
         return 1;
     }
-    if (_stricmp("eventChangeText", szMethod) == 0)
+    else if (_stricmp("eventChangeText", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             vfunc_94(data.FUN_1422b8f40());
         return 1;
     }
-    if (_stricmp("eventWhisperTarget", szMethod) == 0)
+    else if (_stricmp("eventWhisperTarget", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             vfunc_95(data.FUN_1422b8f40());
         return 1;
     }
-    if (_stricmp("eventAdditiveTab", szMethod) == 0)
+    else if (_stricmp("eventAdditiveTab", szMethod) == 0)
     {
         vfunc_92();
         return 1;
     }
-    if (_stricmp("eventChangeTalkTarget", szMethod) == 0)
+    else if (_stricmp("eventChangeTalkTarget", szMethod) == 0)
     {
         vfunc_93();
         return 1;
     }
-    if (_stricmp("eventPressSubjectTab", szMethod) == 0)
+    else if (_stricmp("eventPressSubjectTab", szMethod) == 0)
     {
         FUN_141a15890();
         if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f58)));
         return 1;
     }
-    if (_stricmp("eventShowWhisperList", szMethod) == 0)
+    else if (_stricmp("eventShowWhisperList", szMethod) == 0)
     {
         FUN_141a131f0();
         return 1;
     }
-    if (_stricmp("eventHideWhisperList", szMethod) == 0)
+    else if (_stricmp("eventHideWhisperList", szMethod) == 0)
     {
         FUN_141a13200();
         return 1;
     }
-    if (_stricmp("eventTabMenu", szMethod) == 0)
+    else if (_stricmp("eventTabMenu", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             vfunc_96(data.FUN_1422b8a10());
         return 1;
     }
-    if (_stricmp("eventChangeTab", szMethod) == 0)
+    else if (_stricmp("eventChangeTab", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             vfunc_97(data.FUN_1422b8f40());
         return 1;
     }
-    if (_stricmp("eventAttachTab", szMethod) == 0)
+    else if (_stricmp("eventAttachTab", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
             CString strWindow = data.FUN_1422b8d30();
-            vfunc_98(strName, strWindow);
+            const CString& rWindow = strWindow;
+            vfunc_98(strName, rWindow);
         }
         return 1;
     }
-    if (_stricmp("eventDetachTab", szMethod) == 0)
+    else if (_stricmp("eventDetachTab", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
-            float fX = data.FUN_1422b8c10();
-            float fY = data.FUN_1422b8c10();
-            float fWidth = data.FUN_1422b8c10();
-            float fHeight = data.FUN_1422b8c10();
+            int nX = (int)data.PopFloat();
+            int nY = (int)data.PopFloat();
+            int nWidth = (int)data.PopFloat();
+            int nHeight = (int)data.PopFloat();
             int nTarget = data.FUN_1422b8a10();
-            FUN_141a16730(strName, (int)fX, (int)fY, (int)fWidth, (int)fHeight, nTarget);
+            FUN_141a16730(strName, nX, nY, nWidth, nHeight, nTarget);
         }
         return 1;
     }
-    if (_stricmp("eventTextInput", szMethod) == 0)
+    else if (_stricmp("eventTextInput", szMethod) == 0)
     {
         FUN_140d2c2a0(m_textInput, m_inputHistory);
         return 1;
     }
-    if (_stricmp("updateAlignTypeAndOffset", szMethod) == 0)
+    else if (_stricmp("updateAlignTypeAndOffset", szMethod) == 0)
     {
         FUN_141a0f180();
         return 1;
     }
-    if (_stricmp("eventEmotion", szMethod) == 0)
+    else if (_stricmp("eventEmotion", szMethod) == 0)
     {
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e7a)));
     }
@@ -4109,7 +4104,8 @@ int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         ASData data;
         if (!data.FUN_1422b9620(pArgs, nArgs))
             return 0;
-        FUN_141a0fe20(data.FUN_1422b8a10());
+        int nEmoticonId = data.FUN_1422b8a10();
+        FUN_141a0fe20(nEmoticonId);
     }
     else if (_stricmp("eventChatEmoticonFavorite", szMethod) == 0)
     {
@@ -4131,7 +4127,7 @@ int UIMessenger::vfunc_46()
     if (m_subject.get() != 0)
     {
         CStringW strTooltip = TSingleton<CUserCommandCli>::GetInstance()->Tooltip();
-        m_subject->FUN_1422c7b40(strTooltip);
+        m_subject->SetTooltipText(strTooltip);
     }
     return 1;
 }
@@ -4152,9 +4148,9 @@ UIMessengerBrowser* FUN_140a3ab70(int nUiId);                       // Unk_GetUI
 // @0x141a0cab0
 int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
 {
-    if ((a1 != 0x10f && a1 != 0x102) || m_textInput == 0)
+    if (a1 != 0x10f && a1 != 0x102)
         return 0;
-    if (!m_textInput->FUN_1422c76c0())
+    if (m_textInput == 0 || !m_textInput->GetFocused())
         return 0;
     CStringW strText = m_textInput->GetText();
     if (!FUN_1418fccc0(a1, p2, p3, &strText))
@@ -4168,31 +4164,24 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
     }
     if (m_2e0 == 0)
     {
-        m_2e0 = new ASUIComponent(CString("export_input_textarea_for_scroll"), 2);
+        m_2e0.AssignRaw(new ASUIComponent(CString("export_input_textarea_for_scroll"), 2));
         if (m_2e0 != 0)
         {
             int nHeight = 300;
-            static_cast<ASObj*>((AScript*)(ASUIComponent*)m_2e0)->FUN_1407cbbe0("editable", false);
-            int nWidth = m_textInput->FUN_1422c1340() + 0x1e;
-            m_2e0->FUN_1422c79e0(nWidth, nHeight);
-            float fY = m_textInput->FUN_1422c1110();
-            float fTop = fY - (float)((ASDialog*)(ASUIComponent*)m_2e0)->GetHeightCeil();
-            float fX = m_textInput->FUN_1422c10a0();
-            m_2e0->FUN_1422c00f0(fX, fTop);
-            ((Unk_MsgPopup*)(ASUIComponent*)m_2e0)->vfunc_24(false);
+            m_2e0->FUN_1407cbbe0("editable", false);
+            m_2e0->SetSizeInt(m_textInput->FUN_1422c1340() + 0x1e, nHeight);
+            m_2e0->SetPositionFloat(m_textInput->FUN_1422c10a0(), m_textInput->FUN_1422c1110() - (float)((ASDialog*)m_2e0.operator->())->GetHeightCeil());
+            ((Unk_MsgPopup*)m_2e0.operator->())->vfunc_24(false);
             m_90->FUN_1422c6900(Scaleform::GFx::Value(m_2e0->FUN_1422bb870()));
-            m_2f0 = new ASUIComponent(CString("export_scroll"), 2);
+            m_2f0.AssignRaw(new ASUIComponent(CString("export_scroll"), 2));
             if (m_2f0 != 0)
             {
                 m_90->FUN_1422c6900(Scaleform::GFx::Value(m_2f0->FUN_1422bb870()));
-                static_cast<ASObj*>((AScript*)(ASUIComponent*)m_2f0)->FUN_1409adbe0("scrollBar", Scaleform::GFx::Value(m_2f0->FUN_1422bb870()));
-                float fAreaY = m_2e0->FUN_1422c1110();
-                float fAreaX = m_2e0->FUN_1422c10a0();
-                float fScrollX = fAreaX + (float)m_textInput->FUN_1422c1340() + 4.0f;
-                m_2f0->FUN_1422c00f0(fScrollX, fAreaY);
-                m_2f0->FUN_1422c79e0(0x18, nHeight);
-                ((Unk_MsgPopup*)(ASUIComponent*)m_2f0)->vfunc_24(false);
-                static_cast<ASObj*>((AScript*)(ASUIComponent*)m_2f0)->FUN_1409adbe0("scrollTarget", m_2e0->FUN_1422c6b00(CString("textField")));
+                m_2f0->FUN_1409adbe0("scrollBar", Scaleform::GFx::Value(m_2f0->FUN_1422bb870()));
+                m_2f0->SetPositionFloat(m_2e0->FUN_1422c10a0() + (float)m_textInput->FUN_1422c1340() + 4.0f, m_2e0->FUN_1422c1110());
+                m_2f0->SetSizeInt(0x18, nHeight);
+                ((Unk_MsgPopup*)m_2f0.operator->())->vfunc_24(false);
+                m_2f0->FUN_1409adbe0("scrollTarget", m_2e0->FUN_1422c6b00("textField"));
             }
         }
     }
@@ -4207,19 +4196,23 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
     if (!strLower.IsEmpty())
         strCommand = words.GetAt(0);
     MS2Ptr<UIMessengerBrowser> spBrowser(FUN_140a3ab70(0x4e61));
-    if (spBrowser != 0 && strLower.GetLength() > 0)
+    if (spBrowser == 0)
+        return 0;
+    if (strLower.GetLength() > 0)
     {
+        const std::vector<std::pair<CStringW, MS2Ptr<TDebugCommand> > >& vecCommands = s_debugCommands;
         std::set<MS2Ptr<TDebugCommand> > shown;
         CStringW strHtml;
         bool bFirst = false;
-        for (size_t i = 0; i < s_debugCommands.size(); i++)
+        for (size_t i = 0; i < vecCommands.size(); i++)
         {
-            CStringW strKey = FUN_1413fa9b0(s_debugCommands[i].first);
+            const CStringW& strName = vecCommands[i].first;
+            CStringW strKey = FUN_1413fa9b0(strName);
             if (!strKey.IsEmpty() && strKey.Find(strCommand, 0) != -1)
             {
-                MS2Ptr<TDebugCommand> spCmd(s_debugCommands[i].second);
+                MS2Ptr<TDebugCommand> spCmd(vecCommands[i].second);
                 CStringW strLine;
-                if (spCmd.get() != 0 && shown.find(spCmd) == shown.end())
+                if ((spCmd.get() ? true : false) && shown.find(spCmd) == shown.end())
                 {
                     if (!bFirst)
                     {
@@ -4227,25 +4220,25 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
                         bFirst = true;
                     }
                     strLine = StringFormat<CStringW>(L"<font color='#FFD200'>{0}</font> ", spCmd->m_strName);
-                    strLine += spCmd->m_strArg;
-                    strLine += L"\n";
-                    strLine += spCmd->m_strDesc;
+                    strLine.Append(spCmd->m_strArg);
+                    strLine.Append(L"\n");
+                    strLine.Append(spCmd->m_strDesc);
                     if (!spCmd->m_strEx.IsEmpty())
                     {
-                        strLine += L"\n";
-                        strLine += spCmd->m_strEx;
+                        strLine.Append(L"\n");
+                        strLine.Append(spCmd->m_strEx);
                     }
-                    strLine += L"\n\n";
+                    strLine.Append(L"\n\n");
                     shown.insert(spCmd);
                 }
-                strHtml += strLine;
+                strHtml.Append(strLine);
             }
         }
-        static_cast<ASObj*>((AScript*)(ASUIComponent*)m_2e0)->FUN_1407cbb20("htmlText", CStringW(strHtml));
+        static_cast<ASObj*>((AScript*)m_2e0.operator->())->FUN_1407cbb20("htmlText", CStringW(strHtml));
         bool bShow = !strHtml.IsEmpty();
         FUN_141a0d880(bShow);
         if (bShow)
-            ((Unk_MsgPopup*)(ASUIComponent*)m_2e0)->vfunc_24(false);
+            ((Unk_MsgPopup*)m_2e0.operator->())->vfunc_24(false);
     }
     return 0;
 }
@@ -4253,9 +4246,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
 CClubClientManager* FUN_140e0d900(); template <> void MS2Ptr<CClubCli>::AddRef() const; template <> void MS2Ptr<CClubCli>::Release(); // clubcli.cpp (CPtred at +0xd8)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item table record
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // str equals psz
-void FUN_141bca010(Unk_MsgWorld* pWorld);                           // the chat sent: resets the idle state
 
-// MS2-FUNCTIONAL: the per-channel blocks are folded; temporaries differ from the exe (functional-first)
 // @0x141a10660
 void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget, __int64 nClubId)
 {
@@ -4263,69 +4254,26 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     if (pMe == 0)
         return;
     int nChannel = FUN_141482f00(nType);
-    Unk_MbChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get();
-    if (pChecker != 0)
+    if (Unk_MbChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get())
     {
         pChecker->FUN_140226980(strText);
         pChecker->FUN_140226b10(strText);
     }
     switch (nChannel)
     {
-    case 1:
-    {
-        Unk_CommandChat chat;
-        chat.kind = nType;
-        chat.message = strText;
-        chat.target = strTarget;
-        FUN_141276f80(chat);
-        m_pBrowser->m_1b0 = nChannel;
-        break;
-    }
-    case 2:
+    case 0x17:
         if (!strText.IsEmpty())
         {
-            if (!pMe->FUN_141527280())
-            {
-                FUN_141275260(0x335, 1, 1);
-            }
-            else
-            {
-                Unk_CommandChat chat;
-                chat.kind = 7;
-                chat.message = strText;
-                chat.target = strTarget;
-                FUN_141276f80(chat);
-                m_pBrowser->m_1b0 = nChannel;
-            }
-        }
-        break;
-    case 3:
-        if (!strText.IsEmpty())
-        {
-            if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
-            {
-                FUN_141275260(0x388, 1, 1);
-            }
-            else
-            {
-                Unk_CommandChat chat;
-                chat.kind = 8;
-                chat.message = strText;
-                chat.target = strTarget;
-                FUN_141276f80(chat);
-                m_pBrowser->m_1b0 = nChannel;
-            }
-        }
-        break;
-    case 4:
-        if (!strText.IsEmpty())
-        {
+            int nItemId = pMe->FUN_1416639e0();
+            MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+            if (FUN_140166410()->FUN_14036d570(0x104) && (spData.get() ? true : false)
+                && FUN_1403b3c40(spData->function.name, L"WeddingChat"))
+                nType = 0x19;
             Unk_CommandChat chat;
-            chat.kind = 4;
+            chat.kind = nType;
             chat.message = strText;
             chat.target = strTarget;
             FUN_141276f80(chat);
-            m_pBrowser->m_strWhisperTarget = strTarget;
             m_pBrowser->m_1b0 = nChannel;
         }
         break;
@@ -4351,20 +4299,62 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             m_pBrowser->m_1b0 = nChannel;
         }
         break;
-    case 0x17:
+    case 1:
+    {
+        Unk_CommandChat chat;
+        chat.kind = nType;
+        chat.message = strText;
+        chat.target = strTarget;
+        FUN_141276f80(chat);
+        m_pBrowser->m_1b0 = nChannel;
+        break;
+    }
+    case 4:
         if (!strText.IsEmpty())
         {
-            MS2Ptr<CItemData> spData = FUN_14053f870(pMe->FUN_1416639e0());
-            int nSendType = nType;
-            if (FUN_140166410()->FUN_14036d570(0x104) && spData.get() != 0
-                && FUN_1403b3c40(spData->function.name, L"WeddingChat"))
-                nSendType = 0x19;
             Unk_CommandChat chat;
-            chat.kind = nSendType;
+            chat.kind = 4;
             chat.message = strText;
             chat.target = strTarget;
             FUN_141276f80(chat);
+            m_pBrowser->m_strWhisperTarget = strTarget;
             m_pBrowser->m_1b0 = nChannel;
+        }
+        break;
+    case 2:
+        if (!strText.IsEmpty())
+        {
+            if (pMe->FUN_141527280())
+            {
+                Unk_CommandChat chat;
+                chat.kind = 7;
+                chat.message = strText;
+                chat.target = strTarget;
+                FUN_141276f80(chat);
+                m_pBrowser->m_1b0 = nChannel;
+            }
+            else
+            {
+                FUN_141275260(0x335, 1, 1);
+            }
+        }
+        break;
+    case 3:
+        if (!strText.IsEmpty())
+        {
+            if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() != 0)
+            {
+                Unk_CommandChat chat;
+                chat.kind = 8;
+                chat.message = strText;
+                chat.target = strTarget;
+                FUN_141276f80(chat);
+                m_pBrowser->m_1b0 = nChannel;
+            }
+            else
+            {
+                FUN_141275260(0x388, 1, 1);
+            }
         }
         break;
     case 0x18:
@@ -4373,31 +4363,26 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             if (TSingleton<CGuildManager>::GetInstance()->FUN_1413b6160() == 0)
             {
                 FUN_141275260(0x388, 1, 1);
+                break;
             }
-            else if (!TSingleton<CGuildManager>::GetInstance()->HasMemberPermission(pMe->vfunc_77(), 0x800))
+            if (!TSingleton<CGuildManager>::GetInstance()->HasMemberPermission(pMe->vfunc_77(), 0x800))
             {
                 FUN_141275260(0x415, 1, 1);
+                break;
             }
-            else
-            {
-                Unk_CommandChat chat;
-                chat.kind = 0x12;
-                chat.message = strText;
-                chat.target = strTarget;
-                FUN_141276f80(chat);
-                m_pBrowser->m_1b0 = nChannel;
-            }
+            Unk_CommandChat chat;
+            chat.kind = 0x12;
+            chat.message = strText;
+            chat.target = strTarget;
+            FUN_141276f80(chat);
+            m_pBrowser->m_1b0 = nChannel;
         }
         break;
     case 0x1a:
         if (!strText.IsEmpty() && nClubId != 0)
         {
             MS2Ptr<CClubCli> spClub = FUN_140e0d900()->GetClub(nClubId);
-            if (spClub.get() == 0)
-            {
-                FUN_141275260(0x36b, 1, 1);
-            }
-            else
+            if (spClub.get() != 0)
             {
                 Unk_CommandChat chat;
                 chat.kind = 0x14;
@@ -4408,13 +4393,16 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
                 m_pBrowser->m_1a8 = spClub->FUN_14020f1a0();
                 m_pBrowser->m_1b0 = nChannel;
             }
+            else
+            {
+                FUN_141275260(0x36b, 1, 1);
+            }
         }
         break;
     }
-    FUN_141bca010(reinterpret_cast<Unk_MsgWorld*>(WorldService::GetInstance()));
+    WorldService::GetInstance()->ResetIdleTimer();
 }
 
-// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
 // @0x141a10fd0
 int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
 {
@@ -4444,33 +4432,6 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
         if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f58)));
         return 1;
-    case 4:
-        strTarget = strText.Tokenize(L" ", nPos);
-        strTarget.Trim(L"\"");
-        strMsg = strText.Mid(nPos);
-        strMsg = strMsg.Trim();
-        if (strMsg.IsEmpty())
-            return 0;
-        if (strTarget.IsEmpty())
-        {
-            FUN_1412751f0(GetStringCommon(0x4e), 1, 1);
-            return 0;
-        }
-        if (bLinks)
-        {
-            strMsg = strHtml;
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-            CStringW strPart = FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(strCommand, L" "), strTarget), L" ");
-#else
-            CStringW strPart = strCommand + L" " + strTarget + L" ";
-#endif
-            if (!FUN_141a14c40(strMsg, strPart))
-                return 0;
-        }
-        if (strMsg.IsEmpty() || strTarget.IsEmpty())
-            return 0;
-        break;
     case 0x14:
     {
         CStringW strClub = strText.Tokenize(L" ", nPos);
@@ -4501,6 +4462,33 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
             return 0;
         break;
     }
+    case 4:
+        strTarget = strText.Tokenize(L" ", nPos);
+        strTarget.Trim(L"\"");
+        strMsg = strText.Mid(nPos);
+        strMsg = strMsg.Trim();
+        if (strMsg.IsEmpty())
+            return 0;
+        if (strTarget.IsEmpty())
+        {
+            FUN_1412751f0(GetStringCommon(0x4e), 1, 1);
+            return 0;
+        }
+        if (bLinks)
+        {
+            strMsg = strHtml;
+#ifdef __clang__
+            // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
+            CStringW strPart = FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(strCommand, L" "), strTarget), L" ");
+#else
+            CStringW strPart = strCommand + L" " + strTarget + L" ";
+#endif
+            if (!FUN_141a14c40(strMsg, strPart))
+                return 0;
+        }
+        if (strMsg.IsEmpty() || strTarget.IsEmpty())
+            return 0;
+        break;
     }
     FUN_141a10660(nType, CStringW(strMsg), CStringW(strTarget), nClubId);
     return 1;
@@ -4511,7 +4499,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                      // shows a m
 int FUN_1403bb830();                                                // the world chat price
 int FUN_1403bb850();                                                // the channel chat price
 
-// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
 // @0x141a12380
 bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 {
@@ -4528,10 +4515,9 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01600(spItem->GetItemUid());
-            CStringW strName = spItem->FUN_140527b10();
-            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), strName, 1, 1, 1, -1, 1);
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, 1, -1, 1);
             spBox->FUN_141a01800(1);
-            spBox->SetCheckbox0Enabled(!FUN_140166410()->IsRegionJP());
+            spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -4540,13 +4526,12 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
     }
     if (nType == 0xb && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b1)
     {
-        int nPrice = FUN_1403bb830();
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa2, nPrice), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa2, FUN_1403bb830()), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
-            spBox->SetCheckbox0Enabled(!FUN_140166410()->IsRegionJP());
+            spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -4555,13 +4540,12 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
     }
     if (nType == 0xc && MSG_COMMUNITY_FLAGS(reinterpret_cast<Unk_MbGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_140ae6540())->m_b2)
     {
-        int nPrice = FUN_1403bb850();
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa3, nPrice), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa3, FUN_1403bb850()), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_140b76940(CStringW(strText));
             spBox->FUN_141a01800(1);
-            spBox->SetCheckbox0Enabled(!FUN_140166410()->IsRegionJP());
+            spBox->SetCheckbox0Enabled(FUN_140166410()->IsRegionJP() ? false : true);
             spBox->SetCheckbox0(GetStringCommon(0xaa4), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -4593,7 +4577,7 @@ void UIMessenger::FUN_141a14dc0()
     MS2Ptr<ASDropdownMenu> spSubject = m_subject;
     if (spSubject == 0)
         return;
-    spSubject->FUN_1422dfc10();
+    spSubject->ClearItems();
     spSubject->FUN_1422c1fe0(1);
     if (!m_pBrowser->FUN_141a264c0(0x10))
     {
@@ -4606,9 +4590,9 @@ void UIMessenger::FUN_141a14dc0()
         ASObj item(2);
         item.FUN_1409c0dc0(s_strFrame, "super");
         item.FUN_1407cbb20(s_strIconPath, CStringW(strIcon));
-        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_super")));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_super"));
         item.FUN_1409c4990(s_strColor, s_color18);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0xb))
     {
@@ -4616,9 +4600,9 @@ void UIMessenger::FUN_141a14dc0()
         item.FUN_1409c0dc0(s_strFrame, "world");
         item.FUN_1409c0d20(s_strPrice, FUN_1403bb830());
         item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8a0());
-        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_world")));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_world"));
         item.FUN_1409c4990(s_strColor, s_color19);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0xc))
     {
@@ -4626,44 +4610,44 @@ void UIMessenger::FUN_141a14dc0()
         item.FUN_1409c0dc0(s_strFrame, "channel");
         item.FUN_1409c0d20(s_strPrice, FUN_1403bb850());
         item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8d0());
-        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_channel")));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_channel"));
         item.FUN_1409c4990(s_strColor, s_color20);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0))
     {
         ASObj item(2);
-        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_social")));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_social"));
         item.FUN_1409c4990(s_strColor, s_color10);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
     if (!m_pBrowser->FUN_141a264c0(7))
     {
         ASObj item(2);
-        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_party")));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_party"));
         item.FUN_1409c4990(s_strColor, s_color16);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
     if (!m_pBrowser->FUN_141a264c0(8))
     {
         ASObj item(2);
-        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_guild")));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->Localize("$s_talkpanelsetting_guild"));
         item.FUN_1409c4990(s_strColor, s_color17);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
     if (!m_pBrowser->FUN_141a264c0(0x12))
     {
         ASObj item(2);
         item.FUN_1409c0dc0(s_strFrame, "guildMegaphone");
         item.FUN_1407cbb20(s_strLabel,
-                           FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_guild_megaphone")));
+                           FUN_14025e7a0()->Localize("$s_talkpanelsetting_guild_megaphone"));
         item.FUN_1409c4990(s_strColor, s_color17);
-        spSubject->FUN_1422dfc70(item);
+        spSubject->AddItemRow(item);
     }
-    if (m_subjectIndex.find(m_nTargetSelectedIndex) == m_subjectIndex.end())
+    auto it = m_subjectIndex.find(m_nTargetSelectedIndex);
+    if (it == m_subjectIndex.end())
         m_nTargetSelectedIndex = FUN_141a14110();
-    unsigned nRows = Unk_HpxMin(spSubject->FUN_1422dfb90(), 8u);
-    spSubject->FUN_1422df5f0(nRows);
+    spSubject->FUN_1422df5f0(Unk_HpxMin(spSubject->GetItemCount(), 8u));
     spSubject->SetSelectedIndex(m_nTargetSelectedIndex);
     ((Unk_MsgPopup*)(ASUIComponent*)spSubject)->vfunc_24(true);
     FUN_141a15890();
@@ -4730,7 +4714,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
             tooltip.FUN_1409c6c80();
             CStringW strState = pArgs->FUN_1422b8f40();
             CStringW strDate = pArgs->FUN_1422b8f40();
-            if (strDate.GetLength() > 0)
+            if (strDate.GetLength() != 0)
                 strState = FUN_140656190(L"{0} ({1})", strState, strDate);
             tooltip.FUN_1407cbb20("state", CStringW(strState));
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
@@ -4738,15 +4722,16 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
     }
     else if (_stricmp("whisper", strMethod) == 0)
     {
-        FUN_141a14bb0(pArgs->FUN_1422b8f40());
+        CStringW strName = pArgs->FUN_1422b8f40();
+        FUN_141a14bb0(strName);
     }
     else if (_stricmp("menu", strMethod) == 0)
     {
         CStringW strName = pArgs->FUN_1422b8f40();
         CStringW strAccount = pArgs->FUN_1422b8f40();
         CStringW strChar = pArgs->FUN_1422b8f40();
-        float x = pArgs->FUN_1422b8c10();
-        float y = pArgs->FUN_1422b8c10();
+        float x = pArgs->PopFloat();
+        float y = pArgs->PopFloat();
         __int64 nAccountId = 0;
         if (strAccount.GetLength() > 0)
             nAccountId = _wtoi64(strAccount);
@@ -4761,7 +4746,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
                 Unk_PopupMenuInfo info(x, y, 3, 0x635e, 0, "", (void*)nAccountId);
                 CStringW strHistory;
                 m_pBrowser->FUN_141a254c0(GetServerTime(), strHistory);
-                pMenu->FUN_141a805f0(info, (void*)nAccountId, nCharId, strName, strHistory, 4);
+                pMenu->OpenForCharacter(info, (void*)nAccountId, nCharId, strName, strHistory, 4);
             }
         }
     }
@@ -4783,7 +4768,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
     {
         int nProductId = FUN_1407181d0(pArgs->FUN_1422b8d30());
         int nA = FUN_1407181d0(pArgs->FUN_1422b8d30());
-        FUN_140718170(pArgs->FUN_1422b8d30());
+        int nC = FUN_140718170(pArgs->FUN_1422b8d30());
         int nB = FUN_140718170(pArgs->FUN_1422b8d30());
         FUN_141a16bb0(nProductId, nA, nB);
     }
@@ -4802,34 +4787,40 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         CStringW strArg = pArgs->FUN_1422b8f40();
         ATL::CAtlArray<CStringW> args;
         FUN_14025a680(strArg, args, L",");
-        if (args.GetCount() < 2)
+        if (args.GetCount() <= 1)
             return;
         CStringW strKind(args[1]);
-        if (!FUN_140841300(strKind, "HongBao"))
+        if (FUN_140841300(strKind, "HongBao"))
+        {
+            if (args.GetCount() <= 2)
+                return;
+            {
+                int nId = FUN_1407181a0(args[2]);
+                COutPacket packet(static_cast<int>(SendOp::ItemBillboard), 0);
+                packet.Encode1(1);
+                packet.Encode4(nId);
+                FUN_140710590(packet);
+            }
             return;
-        if (args.GetCount() < 3)
-            return;
-        int nId = FUN_1407181a0(args[2]);
-        COutPacket packet(static_cast<int>(SendOp::ItemBillboard), 0);
-        packet.Encode1(1);
-        packet.Encode4(nId);
-        FUN_140710590(packet);
+        }
     }
     else if (_stricmp("hyperLinkLeft", strMethod) == 0)
     {
         CStringW strArg = pArgs->FUN_1422b8f40();
         ATL::CAtlArray<CStringW> args;
         FUN_14025a680(strArg, args, L",");
-        if (args.GetCount() != 0)
-            FUN_141a168a0(args);
+        if (args.GetCount() == 0)
+            return;
+        FUN_141a168a0(args);
     }
     else if (_stricmp("hyperLinkRight", strMethod) == 0)
     {
         CStringW strArg = pArgs->FUN_1422b8f40();
         ATL::CAtlArray<CStringW> args;
         FUN_14025a680(strArg, args, L",");
-        if (args.GetCount() != 0)
-            FUN_141a16b90(args);
+        if (args.GetCount() == 0)
+            return;
+        FUN_141a16b90(args);
     }
     else if (_stricmp("joinUGCEvent", strMethod) == 0)
     {
@@ -4869,8 +4860,11 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         int nB = 0;
         if (strB.GetLength() > 0)
             nB = _wtoi(strB);
-        CStringW strText = FUN_140632a60(0xbfb, strGroom, strBride);
-        if (reinterpret_cast<Unk_MsgWedding*>(TSingleton<WeddingManager>::GetInstance()) != 0 && reinterpret_cast<Unk_MsgWedding*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b867e0(nWeddingId))
+        CStringW strText = FormatStringId<CStringW, CStringW>(0xbfb, strGroom, strBride);
+        if (reinterpret_cast<Unk_MsgWedding*>(TSingleton<WeddingManager>::GetInstance()) == 0)
+            return;
+        if (!reinterpret_cast<Unk_MsgWedding*>(TSingleton<WeddingManager>::GetInstance())->FUN_141b867e0(nWeddingId))
+            return;
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
             spBox->FUN_141a01800(1);

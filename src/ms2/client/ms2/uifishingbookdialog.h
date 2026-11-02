@@ -11,7 +11,6 @@
 
 typedef ATL::CAtlArray<int> FbIdArray;
 
-struct Unk_FbListRef;
 
 class UIFishingBookDialog : public UIDialog
 {
@@ -43,7 +42,6 @@ public:
     int FUN_140f436f0(int nFishId);                             // 0x140f436f0 big-size catch count
     int FUN_140f437d0(int nFishId);                             // 0x140f437d0 best record
 
-    Unk_FbListRef FUN_140ba4b70(const CString& strName);        // list control child
 
 private:
     MS2_LAYOUT_FRIEND;

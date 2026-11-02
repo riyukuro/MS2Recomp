@@ -58,8 +58,8 @@ extern int DAT_143ae2960;                   // shadow quality (forced)
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 Unk_ServiceManager * FUN_1413f9850(void);  // C3: the definition's signature
 ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
-void FUN_1414f11d0(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // attach the entity's scene graph
-void FUN_1414f1240(ecr::SceneGraphService* pService, egf::Entity* pEntity);    // detach it
+class MS2SceneGraphService { public: void MarkEntityDynamic(egf::Entity*); void RemoveEntityFromUpdate(egf::Entity*); };    // attach the entity's scene graph
+
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene root
 void FUN_14098b3e0(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the model alpha
 void FUN_141567330(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
@@ -295,7 +295,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aRegenAnims.GetCount();
             efd::utf8string strAnim(m_aRegenAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
     }
     else if (m_nState == 2)
@@ -307,7 +307,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         }
         MakeNxBoxController();
         if (m_bHasAnim != 0)
-            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), m_strIdleAnim, 1.0f, true);
         FUN_140ae07d0(1);
     }
     if (m_nState == 6)
@@ -319,7 +319,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aDamageAnims.GetCount();
             efd::utf8string strAnim(m_aDamageAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, true);
         }
         FUN_140ae07d0(1);
     }
@@ -332,7 +332,7 @@ void CBreakableObject::FUN_140ade420(int nState, unsigned int nDelay)
         {
             int nIndex = rand() % m_aReviveAnims.GetCount();
             efd::utf8string strAnim(m_aReviveAnims[nIndex]);
-            reinterpret_cast<Unk_BoAnimService*>((class Unk_AnimSvc*)((FUN_141b6f910())))->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
+            reinterpret_cast<Unk_BoAnimService*>(FUN_141b6f910())->FUN_1409a1fc0(m_spEntity->GetEntityID(), strAnim, 1.0f, false);
         }
         FUN_140ae07d0(1);
     }
@@ -854,7 +854,7 @@ void CBreakableObject::FUN_140ae0e40()
         return;
     if (m_spEntity == 0)
         return;
-    FUN_1414f11d0(GetSceneGraphService(), m_spEntity);
+    ((MS2SceneGraphService*)GetSceneGraphService())->MarkEntityDynamic(m_spEntity);
     m_bDetached = true;
 }
 
@@ -871,7 +871,7 @@ void CBreakableObject::FUN_140ae0ec0(int nDelay)
     }
     else
     {
-        FUN_1414f1240(GetSceneGraphService(), m_spEntity);
+        ((MS2SceneGraphService*)GetSceneGraphService())->RemoveEntityFromUpdate(m_spEntity);
         m_bDetached = false;
     }
 }

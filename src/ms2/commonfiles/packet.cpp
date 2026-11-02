@@ -37,7 +37,7 @@ unsigned __int64 FUN_140282020(const Unk_OSNumber&);
 // CAtlArray<unsigned char>: operator[] 0x1406c35b0 vs 0x140203bf0, both byte-identical).
 int FUN_1406c3660(const ATL::CAtlArray<char>&);                       // element count
 const unsigned char* FUN_1406c3630(const ATL::CAtlArray<char>&);      // data pointer (null when empty)
-extern CBufferCryptManager* DAT_143aac528;
+class CBufferCryptManager;
 CBufferCryptManager* GetBufferCryptManager();
 CNetworkService* FUN_140714f90();
 CPacketBuffer* FUN_1407138b0(unsigned, const Unk_SocketNew&);
@@ -392,7 +392,7 @@ CPacketBuffer* FUN_1407138b0(unsigned size, const Unk_SocketNew&)
     return buffer;
 }
 // @0x140714f80
-CBufferCryptManager* GetBufferCryptManager() { return DAT_143aac528; }
+CBufferCryptManager* GetBufferCryptManager() { return TSingleton<CBufferCryptManager>::s_instance; }
 // @0x140714f90
 CNetworkService* FUN_140714f90() { return TSingleton<CNetworkService>::s_instance; }
 

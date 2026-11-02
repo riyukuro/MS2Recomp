@@ -53,7 +53,7 @@ public:
     void FUN_1411c66e0();
     void FUN_1411c67f0(const egf::EntityID&);
     void FUN_1411c68d0();
-    bool FUN_1411c6a50(const egf::EntityID&);
+    bool FUN_1411c6a50(egf::EntityID id);   // by value: the exe callers copy
     void FUN_1411c6ae0(unsigned);
     std::list<egf::EntityID> hidden;
 };

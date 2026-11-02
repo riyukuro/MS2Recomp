@@ -203,7 +203,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             if (pPlayer == 0)
                 return 1;
             int nNpc = data.FUN_1422b8a10();
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             int nCount = data.FUN_1422b8a10();
             COutPacket pkt(static_cast<int>(SendOp::RequestNpcCreate), 0);
             pkt.WriteInt32(nNpc);
@@ -232,25 +232,26 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nNpc = data.FUN_1422b8a10();
             unsigned nField;
-            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(nNpc, &nField) == 0) {
-                FUN_1412751f0(GetStringCommon(0x578), 1, 1);
-            } else if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {
-                MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(nNpc);
-                if (spObj.get() != 0) {
-                    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-                    pkt.WriteUInt8(2);
-                    pkt.WriteVector3Short(spObj->FUN_1416c2270());
-                    FUN_140710590(pkt);
+            if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(nNpc, &nField) != 0) {
+                if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {
+                    MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(nNpc);
+                    if (spObj.get() != 0) {
+                        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
+                        pkt.WriteUInt8(2);
+                        pkt.WriteVector3Short(spObj->FUN_1416c2270());
+                        FUN_140710590(pkt);
+                    }
+                } else {
+                    if (((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
+                        reinterpret_cast<MyPC*>(((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->SendFunctionCube();
+                    Unk_CommandChat chat;
+                    chat.kind = 0;
+                    chat.message = (const char*)static_cast<const CString&>(Unk_SocketFormat("/MoveField {0}", nField));
+                    FUN_141276f80(chat);
+                    m_nPendingNpc = nNpc;
                 }
             } else {
-                if (((Unk_NcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) != 0)
-                    reinterpret_cast<MyPC*>(((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0())->SendFunctionCube();
-                Unk_CommandChat chat;
-                chat.kind = 0;
-                CString strCmd = Unk_SocketFormat("/MoveField {0}", nField);
-                chat.message = (const char*)strCmd;
-                FUN_141276f80(chat);
-                m_nPendingNpc = nNpc;
+                FUN_1412751f0(GetStringCommon(0x578), 1, 1);
             }
         }
         return 1;
@@ -310,7 +311,7 @@ void UINpcCreateDialog::ReadNpcFromFile()
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcFromFile");
     m_files.clear();
     CAtlArray<CString> files;
-    FUN_140399100(CString(".xml"), CString("./Data/Xml/NpcData/"), files, CString(""), false);
+    FUN_140399100(CString(".xml"), FUN_14038f6d0(CString("./Data/Xml/"), "NpcData/"), files, CString(""), false);
     for (unsigned __int64 i = 0; i < files.GetCount(); i++) {
         CString strFile = files[i];
         TiXmlDocument doc;
@@ -320,8 +321,9 @@ void UINpcCreateDialog::ReadNpcFromFile()
         for (Unk_NcNode* pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")); pNpc != 0; pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc"))) {
             CStringW strId((const wchar_t*)0);
             strId = FUN_1401bf530((Unk_140165cf0*)pNpc, "id", CStringW(L""));
-            if (!strId.IsEmpty())
-                m_files.push_back(strId);
+            if (strId.IsEmpty())
+                continue;
+            m_files.push_back(strId);
         }
     }
     m_bFilesRead = true;
@@ -371,21 +373,15 @@ void UINpcCreateDialog::FUN_141a6b8f0()
         MS2Ptr<NpcDataCli> row = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpc);
         if (row.IsNull())
             continue;
-        int bFriendly = row->GetFriendly();
-        CStringW strKind = FUN_141a6b6a0(row->m_nClass, bFriendly);
+        CStringW strKind = FUN_141a6b6a0(row->m_nClass, row->GetFriendly());
         CStringW strName = GetStringTable()->FUN_141811980(10, nNpc);
         CStringW strNpc = FUN_1401aa6a0(nNpc);
         CStringW strEmpty(L"");
-        unsigned nHp = row->GetClassConstant();
-        unsigned short nLevel = row->GetLevel();
-        CStringW strLine = FUN_14028dfa0(CStringW(L"s_npccreate_render_name_format"), strKind, nLevel, strEmpty, nHp, strName, strNpc);
-        unsigned short nLevel2 = row->GetLevel();
-        CStringW strSearch = FUN_14028dfa0(CStringW(L"s_npccreate_name_format"), strKind, nLevel2, strEmpty, strName, strNpc);
-        if (row->GetShopId() != 0) {
-            unsigned nShop = row->GetShopId();
-            strLine += FUN_14028dfa0(CStringW(L"s_npccreate_add_shopid"), nShop);
-            unsigned nShop2 = row->GetShopId();
-            strSearch += FUN_14028dfa0(CStringW(L"s_npccreate_add_shopid"), nShop2);
+        CStringW strLine = FUN_14028dfa0(CStringW(L"s_npccreate_render_name_format"), strKind, row->GetLevel(), strEmpty, row->GetClassConstant(), strName, strNpc);
+        CStringW strSearch = FUN_14028dfa0(CStringW(L"s_npccreate_name_format"), strKind, row->GetLevel(), strEmpty, strName, strNpc);
+        if (row->GetShopId() > 0) {
+            strLine += FUN_14028dfa0(CStringW(L"s_npccreate_add_shopid"), row->GetShopId());
+            strSearch += FUN_14028dfa0(CStringW(L"s_npccreate_add_shopid"), row->GetShopId());
         }
         FUN_140841420(strSearch);
         strSearch.Remove(L' ');

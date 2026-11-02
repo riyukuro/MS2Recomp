@@ -95,13 +95,19 @@ struct Unk_InstanceTracker
 };
 MS2_CHECK_OFFSET(Unk_InstanceTracker, m_visible, 0x2a);
 
+class MeshInstancing;
+class HardwareInstancingService : public efd::ISystemService   // C3: member view
+{
+public:
+    MeshInstancing* FUN_1413d66b0(egf::Entity* pEntity);
+    int FUN_1413d6e60(egf::Entity* pEntity, bool bFlag);
+};
+
 // The service 0x06100009 (hardware instancing).
 class Unk_HwService : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100009;
-    Unk_InstanceTracker* FUN_1413d66b0(egf::Entity* pEntity);
-    int FUN_1413d6e60(egf::Entity* pEntity, bool bFlag);
 };
 
 class Unk_ActorSlots                            // player/actor object reached from the game context (slot 39 = 0x138)
@@ -575,7 +581,7 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
         efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
         if (spService)
         {
-            Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
+            Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
             if (pTracker != 0)
             {
                 m_bWasShown = pTracker->FUN_14098dfe0();
@@ -607,7 +613,7 @@ CEntityShower::~CEntityShower()
         efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
         if (spService && spEntity)
         {
-            Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
+            Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
             if (pTracker)
             {
                 bool bFalse = false;
@@ -637,8 +643,8 @@ bool CEntityShower::vfunc_2()
             {
                 m_fAlpha = m_pInterpolator->Get((float)((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->GetDeltaTime());
                 FUN_14098b3e0(m_spNode, m_fAlpha, 0);
-                spService->FUN_1413d6e60(spEntity, true);
-                Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
+                reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d6e60(spEntity, true);
+                Unk_InstanceTracker* pTracker = reinterpret_cast<Unk_InstanceTracker*>(reinterpret_cast<HardwareInstancingService*>(spService.operator->())->FUN_1413d66b0(spEntity));
                 if (pTracker)
                 {
                     bool bFalse = false;

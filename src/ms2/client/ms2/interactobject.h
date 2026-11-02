@@ -19,6 +19,9 @@
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/client/ms2/cubespawnobject.h"
+#include <efd/SmartPointer.h>
+namespace egf { class Entity; }
+namespace egfPhysX { class EntityActorData; }
 
 struct Unk_InteractMsg;         // the message handed to vfunc_2 (a stream sits at +8)
 class Unk_PhysPropObj;          // prop object behind a physics prop pointer
@@ -85,7 +88,7 @@ public:
     // @0x141c04fc0
     unsigned char FUN_141c04fc0() { return m_bSpawned; }   // WorldService 0x141bbfb50 (?\worldservice.cpp#6)
 
-    Unk_EntRef GetEnt();                                 // copy of the entity handle
+    efd::SmartPointer<egf::Entity> GetEnt();                                 // copy of the entity handle
     egf::EntityID FUN_1413fd8e0();                              // id of the entity (0 when unbound)
     unsigned __int64 FUN_1413fd960();                           // 64-bit id of the entity (0 when unbound)
     void ShowStateEffect();                                       // (re)create the state effect
@@ -102,7 +105,7 @@ public:
     void EnableHighlight();                                       // register with the highlight manager
     void DisableDynamicUpdate(int nDelay);                             // unregister (now, or after nDelay ms)
 
-    Unk_EntRef m_ent;                                           // +0x18 the map entity
+    efd::SmartPointer<egf::Entity> m_ent;                                           // +0x18 the map entity
     CString m_strName;                                          // +0x20 name of the entity's template
     int m_nState;                                               // +0x28 current state (0 / 1 / 2)
     int m_nShownState;                                          // +0x2c state the effect was created for (3: none)
@@ -148,7 +151,7 @@ public:
     void FUN_1413ff8a0();                                       // play the second asset
 
     NxActor* m_pActor;                                          // +0xb0 the box actor
-    Unk_InteractPropPtr m_spProp;                               // +0xb8
+    efd::SmartPointer<egfPhysX::EntityActorData> m_spProp;                               // +0xb8
     unsigned char m_nAssetType;                                 // +0xc0 1: AssetID properties, 2: utf8 properties
     CString m_strAssetA;                                        // +0xc8
     CString m_strAssetB;                                        // +0xd0

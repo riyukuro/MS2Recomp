@@ -45,8 +45,8 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
 class Unk_RsWorld : public WorldService { };
 CStringTable* GetStringTable();
-CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
 void* FUN_140c24ef0();   // C3: was FUN_140c24ef0
@@ -159,7 +159,7 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
                 return 1;
             MS2Ptr<CFieldDataCli> spSender = CFieldDataCli::Find(m_fields[nSlot]);
             if (spSender == 0) return 0;
-            CStringW strMsg = FUN_140632a60(0xb62, m_names[nSlot], GetStringTable()->FUN_141811980(3, m_fields[nSlot]));
+            CStringW strMsg = FormatStringId<CStringW, CStringW>(0xb62, m_names[nSlot], GetStringTable()->FUN_141811980(3, m_fields[nSlot]));
             {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
                 if (box.get() != 0) {
@@ -193,7 +193,7 @@ void UIRecallScrollNotifyDialog::vfunc_72()
             if (m_times[i] == zero)
                 continue;
             if (m_clips[i].get() != 0 ? true : false) {
-                if (m_clips[i]->FUN_1422bfca0()) {
+                if (m_clips[i]->GetVisible()) {
                     nActive = nActive + 1;
                     if (now > m_times[i]) {
                         reinterpret_cast<Unk_RsScript*>(m_30.operator->())->Invoke("CloseNotify", i);

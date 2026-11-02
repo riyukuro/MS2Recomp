@@ -81,8 +81,8 @@ void UITokenPocketDialog::OnLoadComplete()
     MS2Ptr<ASMovieClip> spBgBlack = GetChild<ASMovieClip>("m_bgBlack");
     int nBlackY = m_178 - 0x2c;
     int nWhiteY = nBlackY + 0x37;
-    static_cast<Unk_TpClip*>(spBgWhite.get())->FUN_1422c0ec0(nWhiteY);
-    static_cast<Unk_TpClip*>(spBgBlack.get())->FUN_1422c0ec0(nBlackY);
+    static_cast<Unk_TpClip*>(spBgWhite.get())->SetHeightInt(nWhiteY);
+    static_cast<Unk_TpClip*>(spBgBlack.get())->SetHeightInt(nBlackY);
     FUN_140939a10()->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
     FUN_141352560();
 }
@@ -150,12 +150,12 @@ MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const C
     int nVSpace = -4;
     const CStringW& strSrc = FUN_1418fe870(nTokenKind, &nVSpace, 0);
     FUN_140cff1b0(spSlot->FUN_1422bb890(), "icon", FUN_140275590(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
-    spSlot.get()->FUN_1422bffe0(0xe, m_178);
+    spSlot.get()->SetPositionInt(0xe, m_178);
     m_178 += 0x17;
     m_90->FUN_1422c6900(spSlot->FUN_1422bb890());
     ASTooltip tooltip(2);
     tooltip.ApplyTextTooltip(strTooltip);
     tooltip.SetTooltipAlign(5);
-    static_cast<Unk_TpComp*>(spSlot.get())->FUN_1422c7cd0(tooltip.FUN_1422bb870());
+    static_cast<Unk_TpComp*>(spSlot.get())->SetTooltipData(tooltip.FUN_1422bb870());
     return spSlot;
 }

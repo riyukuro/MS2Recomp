@@ -57,12 +57,12 @@ void* FUN_14025e7c0();
 class Unk_GcKeyBinds
 {
 public:
-    int FUN_14142c830(int nKey, int* pOut);                 // the key's alternate, 0 = none
+
 };
 Unk_SoundSink* FUN_1409331f0();
 class CKeyTable   // C3: member view for the former free stand-ins
 {
-public:
+public: int GetPairKey(int nKey, int& rOut);
     int FUN_14142c940(__int64, int);
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -168,7 +168,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
             return FUN_1413a55a0(1);
         nAltKey0 = 0;
-        if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey0, false, 0))
+        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey0, false, 0))
             return FUN_1413a55a0(1);
     }
     nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 1);
@@ -177,7 +177,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
             return FUN_1413a55a0(1);
         nAltKey1 = 0;
-        if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey1, false, 0))
+        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey1, false, 0))
             return FUN_1413a55a0(1);
     }
     nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FUN_14142c940(m_n20, 2);
@@ -186,7 +186,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
             return FUN_1413a55a0(1);
         nAltKey2 = 0;
-        if (reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())->FUN_14142c830(nKey, &nAltKey2) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey2, false, 0))
+        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey2) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey2, false, 0))
             return FUN_1413a55a0(1);
     }
     return FUN_1413a55a0(0);

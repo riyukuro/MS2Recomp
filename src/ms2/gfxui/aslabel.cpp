@@ -124,8 +124,8 @@ MS2_REPLACE_METHOD(0x1422E4E80, ASLabel, FUN_1422e4e80, 102, 0xA832DBEC);
 // @0x1422e4ef0
 void ASLabel::FUN_1422e4ef0(int nBegin, int nEnd)
 {
-    if (FUN_1422c76c0() == 0)
-        FUN_1422c7630(1);
+    if (GetFocused() == 0)
+        SetFocused(1);
     vfunc_24(true);
     MS2Ptr<ASTextField> spTextField = FUN_1422e4e80();
     if (spTextField.get())

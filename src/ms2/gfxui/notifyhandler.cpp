@@ -19,7 +19,7 @@ NotifyHandler::NotifyHandler(Unk_NotifyContext* pContext)
 }
 
 // @0x1423008f0
-void NotifyHandler::FUN_1423008f0(int nMovieId, Scaleform::GFx::Value& obj)
+void NotifyHandler::RegisterCallbacks(int nMovieId, Scaleform::GFx::Value& obj)
 {
     if (obj.IsObject())
     {
@@ -35,7 +35,7 @@ void NotifyHandler::FUN_1423008f0(int nMovieId, Scaleform::GFx::Value& obj)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1423008F0, NotifyHandler, FUN_1423008f0, 260, 0x1E16D067);
+MS2_REPLACE_METHOD(0x1423008F0, NotifyHandler, RegisterCallbacks, 260, 0x1E16D067);
 
 // @0x142300a00
 void NotifyHandler::Call(const Params& params)

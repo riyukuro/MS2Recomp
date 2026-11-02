@@ -200,7 +200,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // 
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);         // notice box
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);            // notice box by string id
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                    // system notice
-CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);                  // formatted string table text
+template <class A> CStringW FormatStringId(int nId, const A& a);                  // formatted string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table text
 void FUN_140d01340(const Scaleform::GFx::Value& v, unsigned nFont, int n);   // the key label's font
 int FUN_1407181a0(const CStringW& str);                                      // _wtoi
@@ -579,7 +579,7 @@ int UIClosetDialog::vfunc_13()
                         CStringW strKey = FUN_1409331f0()->GetKeyActionLabel(nKey);
                         if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
                         {
-                            MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14052bd00(0x84f, strKey), 1);
+                            MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FormatStringId<CStringW>(0x84f, strKey), 1);
                             if (box.get() != 0)
                             {
                                 box->Append<int>(nIndex);
@@ -671,7 +671,7 @@ void UIClosetDialog::vfunc_72()
             ASSlot slot(2);
             BuildSlot(slot, sp, nKey);
             slot.FUN_1407cb9c0("slotIndex", nKey);
-            arr.FUN_1422bc050(slot.FUN_1422bb870());
+            arr.PushValue(slot.FUN_1422bb870());
         }
         m_30->Invoke("updateSlotItems", arr.FUN_1422bb870());
         m_changed.RemoveAll();
@@ -754,7 +754,7 @@ void UIClosetDialog::BuildTabRow(ASObj& obj, MS2Ptr<UICloset::CTab> spTab)
     {
         ASObj item(2);
         item.FUN_1409c0e60("label", L"$s_closet_menu_change_name");
-        menu.FUN_1422bc050(item.FUN_1422bb870());
+        menu.PushValue(item.FUN_1422bb870());
     }
     obj.FUN_1409adbe0("menuDp", menu.FUN_1422bb870());
     obj.FUN_1407cb9c0("tabIndex", spTab->GetIndex());
@@ -765,7 +765,7 @@ void UIClosetDialog::AddTabRow(ASArray& dp, MS2Ptr<UICloset::CTab> spTab)
 {
     ASObj obj(2);
     BuildTabRow(obj, spTab);
-    dp.FUN_1422bc050(obj.FUN_1422bb870());
+    dp.PushValue(obj.FUN_1422bb870());
 }
 
 // @0x140bdc6f0
@@ -777,7 +777,7 @@ void UIClosetDialog::UpdateTabRow(MS2Ptr<ASButton> spButton, MS2Ptr<UICloset::CT
         return;
     ASObj obj(2);
     BuildTabRow(obj, spTab);
-    m_tab->GetDataProvider()->FUN_1422bc730(nIndex, obj.FUN_1422bb870());
+    m_tab->GetDataProvider()->SetElementIfInRange(nIndex, obj.FUN_1422bb870());
     m_tab->FUN_1422e4060(nIndex);
 }
 
@@ -787,7 +787,7 @@ void UIClosetDialog::AddEquipRow(ASArray& dp, const CStringW& strLabel, const in
     ASObj obj(2);
     obj.FUN_1407cbb20("label", strLabel);
     obj.FUN_140be2660("tabIndex", nIndex);
-    dp.FUN_1422bc050(obj.FUN_1422bb870());
+    dp.PushValue(obj.FUN_1422bb870());
 }
 
 // @0x140bdca40
@@ -844,7 +844,7 @@ void UIClosetDialog::UpdateTab(int nIndex)
     int nKey = FUN_1409331f0()->FUN_14142c940(nId, FUN_1409331f0()->FUN_1414319f0());
     CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
     m_inputKey->FUN_1422cdfb0(strKey);
-    m_inputKey->FUN_1422c7630(0);
+    m_inputKey->SetFocused(0);
     if (nKey > 0x91)
         FUN_140d01340((*m_inputKey->FUN_1422ce400()).FUN_1422bb890(), 1, 2);
     else
@@ -950,7 +950,7 @@ void UIClosetDialog::BuildSlots(ASObj& obj)
             }
             slot.FUN_1407cba60("strSlotType", Name_14021c050(eType));
         }
-        arr.FUN_1422bc050(slot.FUN_1422bb870());
+        arr.PushValue(slot.FUN_1422bb870());
     }
     obj.FUN_1409adbe0("list", arr.FUN_1422bb870());
 }

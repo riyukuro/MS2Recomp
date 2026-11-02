@@ -59,7 +59,7 @@ public:
     bool FUN_1418c6870(ASObj& row, MS2Ptr<Unk_BSPriceRow> spRow, class Unk_BSPlayer* pPc, bool bFirst);
     int IsSaveButtonEnabled();
     void SetSaveButtonEnabled(int nValue);
-    void FUN_1418c6c80(int nValue);
+    void SetResetButtonEnabled(int nValue);
     void UpdateFee(Unk_BSFee* pFee, unsigned* pPrice);             // show the fee
     void FUN_1418c7180(int nItemId);                    // show the item
     void FUN_1418c7400(int bPreview);
@@ -68,7 +68,7 @@ public:
     void FUN_1418c7750(int nPalette, int nColor);
     void FUN_1418c77c0(int nA, int nB);
     void FUN_1418c7830(int nPos);
-    void FUN_1418c78d0(int nIndex, float fSize);
+    void SetPartSize(int nIndex, float fSize);
     void FUN_1418c79f0(float fDegree);
     void FUN_1418c7aa0(int);                            // empty
     void FUN_1418c7ab0();

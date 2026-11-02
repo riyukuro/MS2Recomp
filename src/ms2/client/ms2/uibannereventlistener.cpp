@@ -42,6 +42,7 @@ class PCBase   // C3: member view for 0x14166c930
 {
 public:
     int FUN_14166c930();                                    // 0x14166c930 current state id
+    __int64 FUN_141656a80();                                // the character id
 };
 class Unk_141bd0cc0
 {
@@ -108,7 +109,6 @@ public:
     virtual void vfunc_59(int a1, int a2, int a3, int a4);          // 59: switch to a microgame state
     int FUN_14123c580();                                            // the actor kind / team
     State* FUN_14166ccb0();                                         // current state
-    __int64 FUN_141656a80();                                        // the character id
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b883c0();
@@ -155,7 +155,7 @@ class Unk_CoupleEventHolder { public: MS2Ptr<Unk_CoupleDanceEvent> FUN_140428700
 class Unk_140302b00 { public: Unk_CoupleEventHolder* FUN_1403ed140(); };
 
 // The buddy manager (blocked users).
-CBuddyManager* FUN_14097a780();
+class CBuddyManager;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -190,7 +190,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         FUN_140d73c60(box);
         return;
     }
-    if (FUN_14097a780()->FUN_140ae51b0(pTarget->FUN_141656a80()))
+    if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80()))
     {
         FUN_141275260(0xd08, 1, 1);
         return;
@@ -219,7 +219,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     }
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(1);
-    packet.Encode8(pTarget->FUN_141656a80());
+    packet.Encode8(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80());
     FUN_140710590(packet);
 }
 
@@ -247,7 +247,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
         return true;
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(5);
-    packet.Encode8(pTarget->FUN_141656a80());
+    packet.Encode8(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80());
     FUN_140710590(packet);
     pPlayer->vfunc_59(1, 0, 0, 0);
     return true;
@@ -288,7 +288,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
         FUN_1412752d0(L"s_microgame_couple_dance_end_event", 1);
         return;
     }
-    if (FUN_14097a780()->FUN_140ae51b0(pTarget->FUN_141656a80()))
+    if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae51b0(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80()))
     {
         FUN_1412752d0(L"s_microgame_couple_dance_request_failed_blocked_user", 1);
         return;
@@ -313,7 +313,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0xe);
     packet.Encode4(pEvent->m_id);
-    packet.Encode8(pTarget->FUN_141656a80());
+    packet.Encode8(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80());
     FUN_140710590(packet);
 }
 
@@ -346,7 +346,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0x13);
     packet.Encode4(nEventId);
-    packet.Encode8(pTarget->FUN_141656a80());
+    packet.Encode8(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80());
     FUN_140710590(packet);
     pPlayer->vfunc_59(1, 0, 0, 0);
     return true;

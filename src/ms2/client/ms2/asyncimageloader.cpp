@@ -44,12 +44,11 @@
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 extern const NiPixelFormat DAT_1439fb040;                         // RGBA32
 extern NiTexture::FormatPrefs DAT_1439fc800;                // the format preferences of the placeholder image
-int FUN_140659080(Unk_140659080* pStart, int hr);           // report the failed start to the creator of the thread
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 NiImageConverter* FUN_141851720();                          // the calling thread's NiImageConverter
 CString FUN_14016a5c0(const char* sz, int n);               // the normalized asset path
 CString FUN_1409a2360(const char* sz, int n);               // a copy of the string
-int FUN_1407181d0(const CString& str);                      // atoi of the string (the emoticon id)
+unsigned int FUN_1407181d0(const CString& str);             // atoi of the string (the emoticon id)
 
 // The texture cache of the loading service (singleton 0x140a0afd0).
 class Unk_TexCache
@@ -197,7 +196,7 @@ unsigned int CAsyncImageLoader::vfunc_1(void*, Unk_140659080& start)
     m_28 = CreateEventA(0, 0, 0, 0);
     if (m_28 == 0)
     {
-        FUN_140659080(&start, E_FAIL);
+        start.Fail(E_FAIL);
         return -1;
     }
     start.FUN_1401d42d0();

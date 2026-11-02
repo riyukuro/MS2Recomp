@@ -17,7 +17,7 @@ public:
     virtual ~CNifAnimationController();                               // 0x141544750 (deleting 0x1415452e0)
     virtual const NiRTTI* GetRTTI() const;                            // 0x141545340
     bool FUN_141544850(int mode, CStringA name, const efd::Point3& kEuler);      // load nif + hook up controllers
-    void FUN_141544ec0(float time);                                   // update (mode 1): sample camera transform
+    void Update(float time);                                   // update (mode 1): sample camera transform
     efd::Point3 FUN_141545020();                                      // copy of +0x38
     efd::Point3 FUN_141545050();                                      // copy of +0x44
 

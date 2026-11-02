@@ -167,8 +167,8 @@ public:
     int FUN_140479560();
 };
 class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143aac4c8;
-extern void* DAT_143aac4d0;
+class CLuaClient;
+class CGameRule;
 extern Unk_SingletonObj* DAT_143aac4d8;
 
 // An 8-byte handle (the exe ctor 0x1401cd100 stores its argument at +0, as for the other handles).
@@ -1031,7 +1031,7 @@ CBlackMarketTable* FUN_1401c0d80()
 // @0x1401c0d90
 void* FUN_1401c0d90()
 {
-    return DAT_143aac4d0;
+    return reinterpret_cast<void*>(TSingleton<CGameRule>::s_instance);
 }
 
 // @0x1401c0da0
@@ -1043,7 +1043,7 @@ CLocaleLanguage* FUN_1401c0da0()
 // @0x1401c0db0
 Unk_BmPriceMgr* FUN_1401c0db0()
 {
-    return reinterpret_cast<Unk_BmPriceMgr*>(DAT_143aac4c8);
+    return reinterpret_cast<Unk_BmPriceMgr*>(reinterpret_cast<Unk_SingletonObj*>(TSingleton<CLuaClient>::s_instance));
 }
 
 // @0x1401c3aa0

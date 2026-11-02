@@ -12,6 +12,7 @@
 #include "ms2/placeholder/ascorelist.h"
 
 #include "uiquestpostboxdialog.h"
+#include "uidailymissiondialog.h"
 
 #include <stdlib.h>
 #include <atlcoll.h>
@@ -120,7 +121,7 @@ MS2_REPLACE_METHOD(0x140E7F540, UIQuestPostBoxDialog, vfunc_28, 268, 0x60E4B318)
 // @0x140e7f660
 void UIQuestPostBoxDialog::FUN_140e7f660()
 {
-    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_list")) {
+    if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_list")) {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<unsigned> quests;
         ((class CQuestManager*)FUN_140764020())->FUN_1416d0920(quests);

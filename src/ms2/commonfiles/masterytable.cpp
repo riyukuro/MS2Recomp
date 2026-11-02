@@ -62,7 +62,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14016a5c0(const char* psz, int n);
-int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int& nOut);     // enum value (mastery type)
+enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);     // enum value (mastery type)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
 CStringW GetStringCommonByKey(const CStringW& strKey);                              // string table lookup
@@ -97,7 +97,7 @@ CMasteryTable::Mastery::Mastery() : m_nGrade(0), m_nValue(0)
 int CMasteryReceipe::Load(Unk_140165cf0* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(m_nId));
-    FUN_14051fd20(pNode, "masteryType", m_nType);
+    XmlValue(pNode, "masteryType", *(Unk_InteractMasteryType*)&m_nType);
     XmlGetAttr((class TiXmlElement*)(pNode), "requireMastery", m_nRequireMastery);
     XmlGetAttr((class TiXmlElement*)(pNode), "requireMeso", reinterpret_cast<__int64&>(m_nRequireMeso));
     XmlTokenList(pNode, "requireQuest", m_requireQuest);
@@ -172,10 +172,9 @@ int CMasteryTable::Load()
 // MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CMasteryTable::LoadMastery()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("mastery.xml"));
+    CString strPath = FUN_14071a5b0("Table", "mastery.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -224,10 +223,9 @@ int CMasteryTable::LoadMastery()
 // MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CMasteryTable::LoadReceipes()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("masteryReceipe.xml"));
+    CString strPath = FUN_14071a5b0("Table", "masteryReceipe.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -242,19 +240,20 @@ int CMasteryTable::LoadReceipes()
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned&>(nId));
         ReceipePtr spReceipe(new CMasteryReceipe);
-        if (spReceipe->Load(pNode) == 0)
-            continue;
-        m_receipes.SetAt(nId, spReceipe);
-        for (size_t i = 0; i < spReceipe->m_ingredients.FUN_14026bee0(); i++)
+        if (spReceipe->Load(pNode) != 0)
         {
-            Unk_IngRef ref = spReceipe->m_ingredients.FUN_14026bdc0(i);
-            IngredientListPtr spList(0);
-            if (!m_ingredientReceipes.Lookup(ref->FUN_14026b500(), spList))
+            m_receipes.SetAt(nId, spReceipe);
+            for (size_t i = 0; i < spReceipe->m_ingredients.FUN_14026bee0(); i++)
             {
-                spList = Unk_GrNewTag(0);
-                m_ingredientReceipes.SetAt(ref->FUN_14026b500(), spList);
+                Unk_IngRef ref = spReceipe->m_ingredients.FUN_14026bdc0(i);
+                IngredientListPtr spList(0);
+                if (!m_ingredientReceipes.Lookup(ref->FUN_14026b500(), spList))
+                {
+                    spList = Unk_GrNewTag(0);
+                    m_ingredientReceipes.SetAt(ref->FUN_14026b500(), spList);
+                }
+                spList->Add(std::make_pair(spReceipe->m_nId, reinterpret_cast<unsigned&>(ref->m_c)));
             }
-            spList->Add(std::make_pair(spReceipe->m_nId, (unsigned)ref->m_c));
         }
     }
     return 1;
@@ -658,29 +657,37 @@ CStringW CMasteryTable::TypeName(int nType)
 }
 
 // @0x14066c110
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 CStringW CMasteryTable::SuccessDescription(int nType, int nReceipeId, int nColored)
 {
     CStringW strText;
-    int nState = LimitState(nReceipeId);
-    if (nState == 0)
+    switch (LimitState(nReceipeId))
+    {
+    case 0:
         strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_high"), TypeName(nType));
-    else if (nState == 1)
+        break;
+    case 1:
         strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_normal"), TypeName(nType));
-    else if (nState == 2)
+        break;
+    case 2:
         strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_low"), TypeName(nType));
-    else if (nState == 3)
+        break;
+    case 3:
         strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_zero"), TypeName(nType));
+        break;
+    }
     if (nColored == 0)
         return strText;
-    nState = LimitState(nReceipeId);
-    if (nState == 0)
+    switch (LimitState(nReceipeId))
+    {
+    case 0:
         return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_green"), strText);
-    if (nState == 1)
+    case 1:
         return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_yellow"), strText);
-    if (nState < 2 || nState > 3)
-        return CStringW(L"");
-    return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_red"), strText);
+    case 2:
+    case 3:
+        return FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_success_prop_red"), strText);
+    }
+    return CStringW(L"");
 }
 
 // @0x14066c690

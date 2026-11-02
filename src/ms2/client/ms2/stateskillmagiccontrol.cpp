@@ -23,14 +23,30 @@ public:
     NiPoint3 FUN_1410a6750();                    // destination
 };
 
-NiPoint3* FUN_14123c360(PCBase* p, NiPoint3* pOut);                 // move direction (member: this=rcx, hidden return=rdx)
-NiPoint3* FUN_141674b60(PCBase* p, NiPoint3* pOut, NiPoint3* pDir); // local dir -> world dir (by-value dir = pointer to a copy)
-NiPoint3* FUN_14097fc90(const NiPoint3* pIn, NiPoint3* pOut, float f);   // scale (member: this=rcx, hidden return=rdx)
 float FUN_140966ea0(NiPoint3 a, NiPoint3 b);                        // horizontal distance
-class Unk_PCMove   // C3: member view for the former free stand-ins
+class Unk_PCMove { public: Vector3 FUN_141683900(); };   // C3: view of the real class (unit_141682f80)
+
+// PCBase seen with Vector3 points (as in statefloat.cpp): slots 19, 22 and 68 take the point by value, and the
+// local -> world dir transform takes / returns it by value too.
+class Unk_FloatOwner
 {
 public:
-    struct Vector3* FUN_141683900(struct Vector3*);
+#define MS2_SF_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_SF_SLOTS(0, 1, 2, 3, 4) MS2_SF_SLOTS(5, 6, 7, 8, 9) MS2_SF_SLOTS(10, 11, 12, 13, 14)
+    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
+    virtual Vector3 vfunc_18();                                            // 18 0x14166bbe0
+    virtual void vfunc_19(Vector3 kPos);                                   // 19 0x14166bb10
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(Vector3 kPos);                                   // 22 0x14123c3a0
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_SF_SLOTS(25, 26, 27, 28, 29) MS2_SF_SLOTS(30, 31, 32, 33, 34) MS2_SF_SLOTS(35, 36, 37, 38, 39)
+    MS2_SF_SLOTS(40, 41, 42, 43, 44) MS2_SF_SLOTS(45, 46, 47, 48, 49) MS2_SF_SLOTS(50, 51, 52, 53, 54)
+    MS2_SF_SLOTS(55, 56, 57, 58, 59) MS2_SF_SLOTS(60, 61, 62, 63, 64)
+#undef MS2_SF_SLOTS
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+    virtual bool vfunc_68(Vector3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+    Vector3 FUN_141674b60(efd::Point3 kDir);                                // 0x141674b60 local dir -> world dir
 };
 
 // @0x140ac06f0
@@ -72,8 +88,6 @@ void StateSkillMagicControl::vfunc_4(StateData* pData)
 }
 
 // @0x140ac0380
-// MS2-FUNCTIONAL: PCBase::vfunc_68 takes the move by value in the exe (shared header declares void*), and the
-// vtable-in-local call shape of the final vfunc_18().z compare is not reproduced.
 void StateSkillMagicControl::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -82,37 +96,26 @@ void StateSkillMagicControl::vfunc_3(double fTime)
     Unk_ControlTarget* pTarget = FUN_140ac06f0(m_pOwner);
     if (!pTarget)
         return;
-    NiPoint3 kDir, kUnit;
-    FUN_141674b60(m_pOwner, &kUnit, FUN_14123c360(m_pOwner, &kDir));
-    ((struct Vector3*)(class NiPoint3*)(&kUnit))->FUN_140968990();
-    NiPoint3 kStep, kMove;
-    FUN_14097fc90(&kUnit, &kStep, pTarget->FUN_1410a6790());
-    FUN_14097fc90(&kStep, &kMove, (float)fTime);
-    NiPoint3 kOld = m_pOwner->vfunc_18();
-    NiPoint3 kNew = kMove;
-    m_pOwner->vfunc_68(&kNew, fTime, 0, 0, 1);
+    Vector3 kWorld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->FUN_141674b60(m_pOwner->FUN_14123c360());
+    kWorld.FUN_140968990();
+    Vector3 kSpeed = kWorld.FUN_14097fc90(pTarget->FUN_1410a6790());
+    Vector3 kStep = kSpeed.FUN_14097fc90((float)fTime);
+    Vector3 kOld = reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_18();
+    reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_68(kStep, fTime, 0, 0, 1);
     float fDist = FUN_140966ea0(pTarget->FUN_1410a6750(), pTarget->vfunc_18());
-    if (fDist < pTarget->FUN_1410a67d0())
-    {
-        const NiPoint3& rDest = pTarget->FUN_1410a6750();
-        if (pTarget->vfunc_18().z == rDest.z)
-            return;
-    }
-    m_pOwner->vfunc_19(kOld);
+    if (fDist >= pTarget->FUN_1410a67d0() || pTarget->FUN_1410a6750().z != pTarget->vfunc_18().z)
+        reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_19(kOld);
 }
 
 // @0x140ac0640
-// MS2-FUNCTIONAL: slot 22 of GameObject takes the point by value in the exe (second 12-byte copy), but the shared
-// header declares it void*; the temporary/copy pair cannot be expressed without editing gameobject.h.
 void StateSkillMagicControl::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     if (!m_pOwner->vfunc_63())
         return;
-    void* pBuffs = ((class PCBase*)(class PCBase*)(m_pOwner))->FUN_14166d240();
-    NiPoint3 kPos;
-    ((class NiPoint3*)((class Unk_PCMove*)(void*)(pBuffs))->FUN_141683900((struct Vector3*)(&kPos)));
-    m_pOwner->vfunc_22(kPos);
+    void* pBuffs = m_pOwner->FUN_14166d240();
+    Vector3 kPos = reinterpret_cast<Unk_PCMove*>(pBuffs)->FUN_141683900();
+    reinterpret_cast<Unk_FloatOwner*>(m_pOwner)->vfunc_22(kPos);
 }
 
 // @0x140ac07c0

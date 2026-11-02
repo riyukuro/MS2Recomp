@@ -72,7 +72,7 @@ public:
 };
 
 // An entry of the Common::Constants table (the shared Object header, then the value).
-void FUN_1402b7560(void*, const char*);
+namespace Common { class Constants { public: class Object { public: void Error(const char*); }; }; }
 template <class T> struct alignas(8) Unk_NpcConstant
 {
     char m_pad_00[8];
@@ -83,7 +83,7 @@ template <class T> struct alignas(8) Unk_NpcConstant
     T* Get()
     {
         if (!m_bSet)
-            FUN_1402b7560(this, "constants is not set");
+            ((Common::Constants::Object*)this)->Error("constants is not set");
         return &m_value;
     }
 };

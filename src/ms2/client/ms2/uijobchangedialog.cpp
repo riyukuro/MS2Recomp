@@ -36,6 +36,10 @@
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/blockformat.h"
+#include "ms2/placeholder/gfxmanager.h"
+#include "ms2/commonfiles/skilloverlapcompare.h"
+#include "ms2/commonfiles/os.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -48,7 +52,6 @@ public:
 class ASDialog : public ASDisplayObject {};
 
 // The xml reader of the exe (see achievemanager.cpp).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
 class Unk_JcFileSystem : public CFileSystem { };
 CStringA FUN_14071ae20(const CStringA& strFile);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -58,21 +61,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 // The skill table: the row of a skill id.
 struct Unk_JcSkillRow { char m_pad_00[0x48]; CString m_strIcon; };
-class Unk_JcSkillRef
-{
-public:
-    ~Unk_JcSkillRef();                                          // 0x14063e5c0
-    bool FUN_1407f6e90() const;                                 // the skill is missing
-    Unk_JcSkillRow* FUN_14063ed50() const;
-    void* m_pad_00;
-    void* m_p;
-};
-class Unk_JcSkillTable { public: Unk_JcSkillRef FUN_1407ee1d0(int nSkillId); };
-Unk_JcSkillTable* FUN_1401958b0();
-CStringW FUN_1409e88d0(int nStringId, const unsigned short& n);     // formatted string table entry
+class Unk_JcSkillTable;
+class SkillDataTableCli;
 
-class Unk_JcUi { public: float FUN_1422afec0(int nUiId); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_JcUi (calls cast back)
 UITalkCinematic* FUN_140a7b2b0(int nId);
 
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
@@ -200,7 +191,7 @@ void UIJobChangeDialog::vfunc_43()
     }
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
         reinterpret_cast<AScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
-                      reinterpret_cast<Unk_JcUi*>(FUN_14025e7a0())->FUN_1422afec0(m_28));
+                      FUN_14025e7a0()->FUN_1422afec0(m_28));
 }
 
 // @0x1419db600
@@ -286,15 +277,15 @@ void UIJobChangeDialog::FUN_1419dbe30(int nJob)
             {
                 int nSkill = spPreview->m_skills[i];
                 unsigned short nLevel = spPreview->m_levels[i];
-                Unk_JcSkillRef ref = FUN_1401958b0()->FUN_1407ee1d0(nSkill);
-                if (ref.FUN_1407f6e90())
+                MS2Ptr<SkillData> ref = reinterpret_cast<SkillDataTable*>(reinterpret_cast<Unk_JcSkillTable*>(TSingleton<SkillDataTableCli>::GetInstance()))->GetSkillData(nSkill);
+                if (ref.IsNull())
                     continue;
                 CStringW strLevel;
-                strLevel = FUN_1409e88d0(0x582, nLevel);
+                strLevel = BlockFormat(0x582, nLevel);
                 ASObj obj(2);
                 obj.FUN_1407cbb20("skillName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkill));
                 obj.FUN_1407cbb20("skillLevel", strLevel);
-                obj.FUN_1407cba60("imgPath", ref.FUN_14063ed50()->m_strIcon);
+                obj.FUN_1407cba60("imgPath", reinterpret_cast<Unk_JcSkillRow*>(ref.operator->())->m_strIcon);
                 reinterpret_cast<Unk_JcInvokeSkill*>(pDlg)->FUN_1419dc5e0("setSkill", i, obj);
             }
             reinterpret_cast<AScript*>(pDlg)->Invoke("setDifficulty", spPreview->m_nDifficulty);

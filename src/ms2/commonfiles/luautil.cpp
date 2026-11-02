@@ -25,6 +25,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include <cmath>
+#include "ms2/commonfiles/os.h"
 
 // Unrecovered helpers.
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
@@ -345,49 +346,52 @@ CLua::ContextPtr CLua::GetContext()
 bool CLua::LoadScripts(lua_State* pLuaState)
 {
     MS2_ASSERT_AT(0x16b, pLuaState);
-    if (!GetFileSystem()->FUN_140398190())
+    if (GetFileSystem()->FUN_140398190())
+    {
+        CString strPath("./data/lua/Precompiled/luapack64.o");
+        CString strName = FUN_14016a5c0(strPath, 0);
+        void* pBuffer;
+        unsigned __int64 nSize;
+        if (GetFileSystem()->FUN_1403972f0(strPath, &pBuffer, &nSize, 0) != 0)
+        {
+            if (luaL_loadbuffer(pLuaState, (const char*)pBuffer, (int)nSize, strName) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1)
+            {
+                efd::_Free(pBuffer, (size_t)-1);
+                return false;
+            }
+            efd::_Free(pBuffer, (size_t)-1);
+        }
+        else
+        {
+            Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
+            return false;
+        }
+    }
+    else
     {
         ATL::CAtlArray<CString> arrPaths;
-        arrPaths.Add(CString("./data/lua/Common/common.lua"));
-        arrPaths.Add(CString("./data/lua/Client/client.lua"));
-        arrPaths.Add(CString("./data/lua/Common/itemOption.lua"));
+        arrPaths.Add("./data/lua/Common/common.lua");
+        arrPaths.Add("./data/lua/Client/client.lua");
+        arrPaths.Add("./data/lua/Common/itemOption.lua");
         m_scripts.RemoveAll();
         for (unsigned int i = 0; i < arrPaths.GetCount(); ++i)
         {
             CString strPath = arrPaths[i];
             CString strFile = FUN_14016a5c0(strPath, 0);
-            MS2Ptr<CCacheData> spCache(new CCacheData);
-            if (spCache.get() != 0)
             {
-                spCache.operator->()->FUN_1401d1160(strPath);
-                m_scripts.Add(spCache);
+                MS2Ptr<CCacheData> spCache(new CCacheData);
+                if (spCache.get() != 0)
+                {
+                    spCache.operator->()->FUN_1401d1160(strPath);
+                    m_scripts.Add(spCache);
+                }
             }
-            int nError = luaL_loadfile(pLuaState, strFile) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1;
-            if (nError != 0)
+            if (luaL_loadfile(pLuaState, strFile) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1)
             {
                 Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
                 return false;
             }
         }
-    }
-    else
-    {
-        CString strPath("./data/lua/Precompiled/luapack64.o");
-        CString strName = FUN_14016a5c0(strPath, 0);
-        void* pBuffer;
-        int nSize[2];                                   // the callee writes a 64-bit size; only the low DWORD is read back
-        if (GetFileSystem()->FUN_1403972f0(strPath, &pBuffer, (unsigned __int64*)nSize, 0) == 0)
-        {
-            Unk_AchieveLog<CString>(GetLogString(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
-            return false;
-        }
-        int nError = luaL_loadbuffer(pLuaState, (const char*)pBuffer, nSize[0], strName) == 0 && lua_pcall(pLuaState, 0, LUA_MULTRET, 0) == 0 ? 0 : 1;
-        if (nError != 0)
-        {
-            efd::_Free(pBuffer, (size_t)-1);
-            return false;
-        }
-        efd::_Free(pBuffer, (size_t)-1);
     }
     return true;
 }
@@ -1015,7 +1019,7 @@ void CLua::CalcMeratSkinItemBreakReward(unsigned short a, int b, long long c, in
             {
                 int nItem = (int)context->Integer(i);
                 int nAmount = (int)context->Integer(i + 1);
-                int nTag = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(CString(context->String(i + 2)));
+                int nTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(CString(context->String(i + 2)));
                 Unk_IngRef info(new CIngredientInfo(nItem, nAmount, 0));
                 Unk_GemIngredientTag(info.operator->(), nTag);
                 rRewards.AddIngredient(info);

@@ -21,7 +21,7 @@
 
 // ---- unit-local views of exe objects ----
 
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 
 // The client constants (singleton): the reward icons.
 class CommonResource { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> GetPath(int); }; class Unk_CbIcons : public CommonResource {
@@ -97,7 +97,7 @@ void UIChapterBook::OnLoadComplete()
         if (spBook.get() != 0)
         {
             CStringW strEpilogue = GetStringTable()->FUN_141811980(0x3a, m_nEpilogue);
-            FUN_1403b4750()->FUN_1416fb340(strEpilogue);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strEpilogue);
             ASObj obj(2);
             ((class AScript&)(obj)).FUN_1407cb9c0("id", spBook->m_nId);
             ((class AScript&)(obj)).FUN_1407cbb20("chapter", GetStringTable()->FUN_141811980(0x39, m_nEpilogue));

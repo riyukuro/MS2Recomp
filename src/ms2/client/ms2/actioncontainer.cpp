@@ -109,7 +109,7 @@ PCActionDataTable* TSingleton<PCActionDataTable>::s_instance;
 #endif
 
 // The names attribute of a node (a list of strings), outside this unit.
-void FUN_1406cfaa0(Unk_140165cf0* pNode, const char* szName, std::vector<CStringA>* pOut);
+int FUN_1406cfaa0(Unk_140165cf0* pNode, const char* szName, std::vector<CStringA>& out);
 
 // MS2-PIN: ??_7PCActionDataTable@@6B?$TSingleton@VPCActionDataTable@@@@@ 0x142dae568
 // MS2-PIN: ??_7PCActionDataTable@@6B?$DataTable@VPCActionGroup@@@@@ 0x142dae578
@@ -138,7 +138,7 @@ PCActionList::PCActionList()
 // @0x140948470
 void PCActionList::Load(Unk_140165cf0* pNode)
 {
-    FUN_1406cfaa0(pNode, "names", &m_names);
+    FUN_1406cfaa0(pNode, "names", m_names);
 }
 MS2_REPLACE_METHOD(0x140948470, PCActionList, Load, 48, 0xEFF912D6);
 

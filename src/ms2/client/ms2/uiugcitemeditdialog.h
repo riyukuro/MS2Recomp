@@ -67,7 +67,7 @@ public:
     void LoadRenderTarget();                                       // "loadRenderTarget"
     void UnloadRenderTarget();                                       // "unloadRenderTarget"
     void FUN_141b3da90(int nModel);                             // create the avatar of a model radio index
-    void FUN_141b3e370();                                       // drop every avatar and the render view
+    void ReleaseAvatars();                                       // drop every avatar and the render view
     void FUN_141b3e410(MS2Ptr<UIAvatarBase> spAvatar, bool bChanged);   // show an avatar in the render view
     void FUN_141b3e640(MS2Ptr<UIAvatarBase> spAvatar, bool bUseItem, bool bResetCamera);   // reset the avatar's pose
     void FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUseItem);   // the avatar's facing angle
@@ -78,12 +78,12 @@ public:
     bool FUN_141b3f690(ASObj& obj, MS2Ptr<CItem> spItem);       // fill the entry of the item being re-edited
     void FUN_141b3f960(ASObj& obj, MS2Ptr<CUGCDesignData> spDesign);   // the price members of a design entry
     void FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChanged);    // set the design item
-    void FUN_141b401b0(MS2Ptr<CItem> spItem);                   // set the design item (ignores the model change)
+    void SetItem(MS2Ptr<CItem> spItem);                   // set the design item (ignores the model change)
     void FUN_141b40220();                                       // drop the design and the image
     void Restart();                                       // "restart"
     bool FUN_141b40300(__int64 nPrice, int nMeret);             // send the make request
     void FUN_141b40880(ASObj& obj);                             // the model radio buttons
-    void FUN_141b40ab0(int nKind, int nImage);                  // switch the content kind and reload the images
+    void SelectKindAndImage(int nKind, int nImage);                  // switch the content kind and reload the images
     void FUN_141b40b00(int nPage);                              // "buildImageFiles"
     void FUN_141b40c30();                                       // "buildDesignItems"
     void FUN_141b41090(ASObj& obj);                             // the category and gender drop downs
@@ -116,7 +116,7 @@ public:
     void OnClickInitialize();                                       // onClickInitialize
     void OnClickNewDraw();                                       // onClickNewDraw
     void FUN_141b44a60(ASData& args);                           // onStartCapture
-    void FUN_141b44b30(int nPosition);                          // onImageScrollPosition
+    void ShowFilePage(int nPosition);                          // onImageScrollPosition
     void FUN_141b44b90(ASData& args);                           // onChangeIndexDropDownCategory
     void FUN_141b44d10(ASData& args);                           // onChangeIndexDropDownGender
     void FUN_141b44d50(NotifyObject* pNotify);                  // "NotifyGameEventChanged"

@@ -24,7 +24,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 
 // Main system (commonfiles singleton 0x14086d260): resource root path and the current time in seconds.
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 
 // Resource manager (singleton 0x140a0afd0): texture load by path.
 class Unk_ResourceMgr
@@ -57,7 +57,7 @@ void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
 bool FUN_140c900e0(const NiFixedString& kName, const efd::Point2* pk, int n);
 int FUN_140c902f0(const efd::Point2& k);               // both components finite
 void FUN_140c8f490(Unk_PPSmartC spTexture);             // swap the shimmer texture of the live step
-void* FUN_14097fbe0(void* smartPtr);                    // PostProcessEffect m_88 getter
+
 
 extern NiFixedString DAT_143ae5438;                     // shimmer blend constant name
 extern NiFixedString DAT_143ae5448;                     // shimmer uv-move constant name
@@ -102,7 +102,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
     if (!PostProcessEffect::vfunc_15(a, 0) || m_70 == 0)
         return false;
     CString strPath;
-    strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)FUN_14086d260()->GetDataPath());
+    strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
     s_shimmerTexture = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
     NiViewRenderClick* pkClick = (NiViewRenderClick*)FUN_140c8f690(FUN_1416b4990(this, "PostShimmer", 0, this,
         FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", s_shimmerTexture.Get(), 0, 0));
@@ -162,7 +162,7 @@ void* FUN_140c8f690(const Unk_PPRes& res)
 // @0x140c8f810
 void* PostProcessEffect::vfunc_18()
 {
-    return FUN_14097fbe0(&m_88);
+    return (void*)(class NiRenderTargetGroup*)*reinterpret_cast<efd::SmartPointer<class NiRenderTargetGroup>*>(&m_88);
 }
 
 // @0x140c8f840
@@ -263,7 +263,7 @@ void PostShimmerEffect::vfunc_1()
     ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(0x12, true);
     float fBlend = 0.0f;
     CString strPath;
-    strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
+    strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
     FUN_140c8f490(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
     FUN_1409a5770(DAT_143ae5438, &fBlend, 1);
     efd::Point2 kMove(0.0f, 0.0f);
@@ -277,7 +277,7 @@ bool PostShimmerEffect::vfunc_2()
     bool bRet = CScreenEffectBase::vfunc_2();
     if (bRet && m_bStarted)
     {
-        float fElapsed = (float)(FUN_14086d260()->FUN_141473280() - m_dStart);
+        float fElapsed = (float)(TSingleton<CMainSystem>::GetInstance()->FUN_141473280() - m_dStart);
         efd::Point2 kMove = fElapsed * m_kMove;
         FUN_140c900e0(DAT_143ae5448, &kMove, 1);
     }
@@ -299,7 +299,7 @@ bool PostShimmerEffect::vfunc_6(bool b)
     if (!b)
     {
         CString strPath;
-        strPath.Format("%s/Image/ScreenMask/%s", (const char*)FUN_14086d260()->GetDataPath(), (const char*)m_strTexture);
+        strPath.Format("%s/Image/ScreenMask/%s", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath(), (const char*)m_strTexture);
         FUN_140c8f490(FUN_140a0afd0()->FUN_141552f90(CString((const char*)strPath), 5));
         vfunc_7(m_nState, m_fAlpha);
     }
@@ -314,7 +314,7 @@ void PostShimmerEffect::vfunc_7(int nState, float fAlpha)
     float fT = fAlpha;
     switch (nState)
     {
-    default:
+    case 0:
         break;
     case 1:
         fT = 1.0f - fAlpha;

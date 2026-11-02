@@ -19,6 +19,7 @@
 #include "ms2/placeholder/cguidecondition.h"
 #include "ms2/client/ms2/guideentity.h"
 #include "ms2/placeholder/cguidemanager.h"
+#include "ms2/placeholder/cguideaction.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/classobject.h"
 #include "ms2/ms2format.h"
@@ -61,7 +62,6 @@ Unk_GcOptInt* FUN_140d11940(Unk_GcOptInt* pOpt);                        // Nulla
 class Unk_140165cf0* FUN_140345b40(class TiXmlDocument*);   // C3: was FUN_140345b40
 Unk_GcCondRef FUN_1413a5420(CStringA strTag);                           // the condition class of a tag
 void* FUN_141395500(void* pNode);
-Unk_GeActRef FUN_141382b90(Unk_140165cf0* pElem);                       // builds the action of an <action> element
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
 #define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>((list).m_arr)
 
@@ -101,8 +101,8 @@ void* FUN_1413a5160(void* pNode);
 // @0x1413a3d00
 std::pair<int, int>* FUN_1413a3d00(std::pair<int, int>* pDst, const std::pair<int, int>* pSrc)
 {
-    pDst->first = pSrc->first;
-    pDst->second = pSrc->second;
+    pDst->first = std::forward<CGuideManager::Occurrence>(*(CGuideManager::Occurrence*)&pSrc->first);
+    pDst->second = std::forward<int>(*(int*)&pSrc->second);
     return pDst;
 }
 
@@ -223,9 +223,9 @@ Unk_GcCondRef& Unk_GcCondRef::operator=(const Unk_GcCondRef& rhs)
 }
 
 // @0x1413a47b0
-bool FUN_1413a47b0(const Unk_GeActRef& ref)
+bool FUN_1413a47b0(const MS2Ptr<CGuideAction>& ref)
 {
-    return ref.m_p == 0;
+    return reinterpret_cast<const Unk_GeActRef&>(ref).m_p == 0;
 }
 
 // @0x1413a47e0
@@ -275,7 +275,13 @@ void* FUN_1413a5160(void* pNode)
 // @0x1413a5180
 errno_t FUN_1413a5180(void* pDst, size_t nDstSize, const void* pSrc, size_t nCount)
 {
-    return memmove_s(pDst, nDstSize, pSrc, nCount);
+    if (nCount == 0)
+        return 0;
+    { int _Expr_val = !!(pDst != NULL); if (!(_Expr_val)) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int _Expr_val = !!(pSrc != NULL); if (!(_Expr_val)) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int _Expr_val = !!(nDstSize >= nCount); if (!(_Expr_val)) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+    memmove(pDst, pSrc, nCount);
+    return 0;
 }
 
 // @0x1413a52a0
@@ -757,12 +763,10 @@ void CGuideEntity::LoadActions(Unk_140165cf0* pElem, Unk_GeActList& list)
 {
     for (Unk_140165cf0* pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("action")); pAct != 0; pAct = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pAct))->NextSibling("action")))
     {
-        Unk_GeActRef ref = FUN_141382b90(pAct);
-        if (FUN_1413a47b0(ref))
-            _wassert(L"action", _CRT_WIDE(MS2_THIS_FILE), 212);
-        if (ref.FUN_141387ba0() != 0)
-            list.FUN_1413883b0(ref);
-        ref.FUN_141387630();
+        MS2Ptr<CGuideAction> ref = FUN_141382b90(pAct);
+        (void)((FUN_1413a47b0(ref) == 0) || (_wassert(L"action", _CRT_WIDE(MS2_THIS_FILE), 212), 0));
+        if (ref.operator->())
+            list.FUN_1413883b0(reinterpret_cast<const Unk_GeActRef&>(ref));
     }
 }
 

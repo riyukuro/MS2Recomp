@@ -39,13 +39,13 @@ public:
     void FUN_140fdc030();                                       // next tab
     void SetHall(int nHall);                              // set the hall
     void SetTime(__int64 nTime);                          // set the time
-    void SetNight(unsigned char bNight);                   // set the night flag
+    void SetNight(bool bNight);                            // set the night flag
     void FUN_140fdc180();                                       // open the bill of the reservation
     void FUN_140fdc970();                                       // send the reservation change
     void FUN_140fdc9f0();                                       // send the reservation cancel
     int GetHall();                                        // the hall
     __int64 GetTime();                                    // the time
-    unsigned char GetNight();                              // the night flag
+    bool GetNight();                                       // the night flag
     int GetMode();                                        // the mode (0 reserve, 1 change, 2 cancel)
     void FUN_140fdcaa0(const CString& strMode);                 // set the mode by name
     __int64 FUN_140fdcb30();                                    // the price of the hall
@@ -64,7 +64,7 @@ private:
     PageMap m_pages;                                            // +0x1a8 page name -> page
     int m_nHall;                                                // +0x1b8 the hall id
     __int64 m_nTime;                                            // +0x1c0 the reserved time
-    unsigned char m_bNight;                                     // +0x1c8
+    bool m_bNight;                                              // +0x1c8
     int m_nMode;                                                // +0x1cc 0 reserve, 1 change, 2 cancel
 };
 MS2_CHECK_SIZE(UIWeddingHallReservationDialog, 0x1d0);

@@ -28,7 +28,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 int FUN_14109a9e0();                                                // rand()
 void FUN_1405a85c0(void* pHandle);                                  // release the handle returned by a detach
-void FUN_140adc7f0(NiMesh* pkMesh, int nType);                      // NiMesh::SetPrimitiveType
+
 float FUN_14028aed0(float f);                                       // floorf
 NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius);
 extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
@@ -330,7 +330,7 @@ NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
     pkVC->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
     NiMesh* pkMesh = new (efd::MemHint(efd::MemHint::NONE)) NiMesh;
     pkMesh->AttachProperty(pkVC);
-    FUN_140adc7f0(pkMesh, 3);
+    pkMesh->SetPrimitiveType((NiPrimitiveType::Type)3);
     ((class NiMesh*)(class NiMesh*)(pkMesh))->RemoveAllStreamRefs();
     pkMesh->AddStream(NiCommonSemantics::POSITION(), 0, NiDataStreamElement::F_FLOAT32_3, 360, 0x13,
         NiDataStream::USAGE_VERTEX, aPoints, false, true);

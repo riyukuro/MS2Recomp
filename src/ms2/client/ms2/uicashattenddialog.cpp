@@ -120,6 +120,7 @@
 // The ASUIComponent slot list (validateNow = 24, ASCoreList's dataProvider setter = 25) for the list calls.
 #define MS2_ASUICOMPONENT_SLOTS
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/gameeventuservaluemanager.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "uicashattenddialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
@@ -133,20 +134,17 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/cmycharacter.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/packethandlermanager.h"
+#include "ms2/placeholder/asgaugecontrol.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
 
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyController;
 
-class Unk_140bccd50 { public:
-    void FUN_140da5180(int,Delegate<void(CInPacket&)>);
-    void FUN_140da51e0(int,Delegate<void(CInPacket&)>);
-};
+class Unk_140bccd50;
 class Unk_SingletonObj;
 extern Unk_SingletonObj* DAT_143abd630;
-class Unk_140933220 { public:
-    void FUN_140da5430(int,Delegate<void(GameEventVariable*)>);
-    void FUN_140da5490(int,Delegate<void(GameEventVariable*)>);
-};
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_CadReader { public:
     virtual ~Unk_CadReader();
@@ -163,14 +161,10 @@ template<> Delegate<void(GameEventVariable*)>::DelegateImplBase::~DelegateImplBa
 template<> Delegate<void(CInPacket&)>::~Delegate();
 template<> Delegate<void(GameEventVariable*)>::~Delegate();
 CMyCharacter* FUN_140931510();
-class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; };
+class CMsgBoxData { public: bool IsCheckbox0Checked(); __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendTable { public:
     int FUN_1409617d0(int nKind,unsigned nId,const int& nDefault);
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
-    void* m_pad_38; void* m_pad_40; void* m_pad_48;
 };
-extern Unk_AttendTable g_attendTable;       // 0x143ab2fc0
 
 // One day of a cash attend event: the reward items (ItemAble at +0x18 of each) from +0x18.
 class Unk_CadDay : public CPtred { public: std::vector<MS2Ptr<ItemEntity> > m_items; };
@@ -193,32 +187,19 @@ class GameEventCashAttendCli : public GameEventCashAttend { public:
 };
 
 // The event button (attendgift: Unk_140acd6e0).
-class Unk_140acd6e0 : public ASButton { public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,void*);
-    void FUN_1422c1fe0(unsigned);
-    bool FUN_1422c7b40(CStringW strTooltip);
-};
+class Unk_140acd6e0 : public ASButton { };
 // The gift row clip (0x88 bytes, ctor 0x1422e1f00).
-class Unk_CadGiftClip : public ASUIComponent { public:
+class Unk_CadGiftClip : public ASItemRendererBase { public:
     Unk_CadGiftClip(const Scaleform::GFx::Value& v,int nMovieId);
-    void FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>,void*);
-};
-class ASGaugeControl : public ASUIComponent { public:
-    ASGaugeControl(const Scaleform::GFx::Value& v,int nMovieId);
-    void FUN_1409b9f60(unsigned nValue,unsigned nMax);
 };
 // The array loaders' container over a Value (0x80 bytes: ctor 0x1422c6570, dtor 0x1422c65c0).
 class Unk_CadNode : public ASDisplayObjectContainer { public:
-    Unk_CadNode(const Scaleform::GFx::Value& v,int nMovieId);
-    ~Unk_CadNode();
     template<class T> MS2Ptr<T> FUN_140bc7400(const CString& strName);
     template<class T> MS2Ptr<T> FUN_140bc74a0(const Scaleform::GFx::Value& v,const CString& strName);
 };
 
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
-CStringW FUN_140938ae0(CStringW,const int&);
-CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
 CStringW FUN_14083bdc0(const CMsTime& t,bool b,CStringW strSep,CStringW strSep2);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
@@ -245,8 +226,8 @@ template<> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CStr
 // The AS objects this unit binds children of: the gauge binder and the item slot lookup.
 class Unk_CadScript : public AScript { public:
     template<class T> MS2Ptr<T> FUN_140bc6e60(const CString& strName,MS2Ptr<T>& outChild);
-    MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString& strName);
 };
+class Unk_BingoClip { public: MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString& strName); };
 // gfxutil.h: binds strName0..strName{nCount-1} (from nStart) into out.
 template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart);
 
@@ -303,7 +284,7 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     bool bPassed=nDay<spEvent->GetAttendedDays();
     ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->FUN_1422c6640(true);
     m_disabled->vfunc_4(bPassed);
-    FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_140938ae0(L"s_cashAttend_day_index",nDay+1));
+    FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_14028dfa0<unsigned>(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
         if(i>=spDay->m_items.size()) {
             m_rewardItems[i]->vfunc_4(false);
@@ -335,16 +316,16 @@ UICashAttendDialog::UICashAttendDialog() : m_eventId(0)
 {
     FUN_141924170(1);
     m_80=0;
-    FUN_140bccd50()->FUN_140da5180(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5430(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc2f90
 UICashAttendDialog::~UICashAttendDialog()
 {
-    FUN_140bccd50()->FUN_140da51e0(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
-    ((class Unk_140933220*)FUN_140933220())->FUN_140da5490(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
+    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc3250
 CString UICashAttendDialog::GetTypeName() { return "CashAttendGiftDialog"; }
@@ -445,7 +426,7 @@ bool UICashAttendDialog::OnAttendMsgBox(int nButton,const CMsgBoxData& data)
 {
     if(nButton==0) {
         __int64 nItemUid=0;
-        if(data.FUN_141a04aa0()) nItemUid=data.FUN_141a02f10(0,0);
+        if(const_cast<CMsgBoxData&>(data).IsCheckbox0Checked()) nItemUid=data.FUN_141a02f10(0,0);
         COutPacket packet(static_cast<int>(SendOp::Attendance),0);
         packet.Encode1(4);
         packet.Encode4(m_selected->FUN_1402e1d00());
@@ -490,7 +471,7 @@ void UICashAttendDialog::FUN_140bc44b0()
         m_eventButtons[i]->vfunc_3(1);
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->GetEventName());
         FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->HasTime(events[i]->FUN_1402e1d00()));
-        m_eventButtons[i]->FUN_1422c7b40(events[i]->GetDesc());
+        m_eventButtons[i]->SetTooltipText(events[i]->GetDesc());
         m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
         if(m_eventButtons[i]->FUN_140bc7100("m_slot",spSlot).get()) {
@@ -507,9 +488,9 @@ void UICashAttendDialog::FUN_140bc4980()
     if(m_selected==NULL) return;
     unsigned nAttended=m_selected->GetAttendedDays();
     unsigned nDays=m_selected->GetGroupCount();
-    m_progressGauge->FUN_1409b9f60(nAttended,nDays);
-    m_giftList->FUN_1422dcf40(m_selected->GetGroupCount());
-    CStringW strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",
+    m_progressGauge->SetValue(nAttended,nDays);
+    m_giftList->SetEmptyItemCount(m_selected->GetGroupCount());
+    CStringW strPeriod=FUN_14028dfa0<CStringW,CStringW>(L"s_attendGift_event_period",
         FUN_14083bdc0(m_selected->GetBeginTime(),true,L"/",L":"),
         FUN_14083bdc0(m_selected->GetEndTime(),true,L"/",L":"));
     FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
@@ -522,9 +503,9 @@ void UICashAttendDialog::FUN_140bc4d40()
     m_usePointButton->vfunc_4(false);
     if(m_selected==NULL) return;
     int nDefault=0;
-    int nPoints=g_attendTable.FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
+    int nPoints=reinterpret_cast<Unk_AttendTable&>(g_gameEventUserValue).FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
     m_usePointButton->vfunc_4(true);
-    m_usePointButton->FUN_1422cdfb0(FUN_140938ae0(L"s_attendGift_usePoint_button",nPoints));
+    m_usePointButton->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",(unsigned&)nPoints));
     m_usePointButton->FUN_1422c1fe0((unsigned)nPoints>0);
 }
 
@@ -615,7 +596,7 @@ void FUN_140bc5f90(ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& dst,const AT
 // @0x140bc5fc0
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId,const Scaleform::GFx::Value& v)
 {
-    MS2Ptr<ASDisplayObjectContainer> sp(new Unk_CadNode(v,nMovieId));
+    MS2Ptr<ASDisplayObjectContainer> sp(new ASDisplayObjectContainer(v,nMovieId));
     return sp;
 }
 // @0x140bc6070 (gauge; 0x140bc6120 gift row clip, 0x140bc61d0 day list)
@@ -663,7 +644,7 @@ template<class T> MS2Ptr<T> UICashAttendDialog::FUN_140bc7070(const CString& str
 template<class T> MS2Ptr<T> AScript::FUN_140bc7100(const CString& strName,MS2Ptr<T>& outChild)
 {
     MS2_ASCRIPT_INL_ASSERT(0xd5,outChild == NULL);
-    outChild=static_cast<Unk_CadScript*>(this)->FUN_140bb4ba0(strName);
+    outChild=reinterpret_cast<Unk_BingoClip*>(this)->FUN_140bb4ba0(strName);
     return outChild;
 }
 // @0x140bc71c0
@@ -715,8 +696,8 @@ template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString s
     out.clear();
     out.reserve(nCount);
     for(unsigned i=nStart;i<nCount+nStart;++i) {
-        Unk_CadNode node(root,2);
-        MS2Ptr<T> spChild=node.FUN_140bc7400<T>(StringFormat("{0}{1}",strName,i));
+        ASDisplayObjectContainer node(root,2);
+        MS2Ptr<T> spChild=reinterpret_cast<Unk_CadNode&>(node).FUN_140bc7400<T>(StringFormat("{0}{1}",strName,i));
         if(spChild==NULL) {
             MS2_GFXUTIL_ASSERT(99,0);
             return false;

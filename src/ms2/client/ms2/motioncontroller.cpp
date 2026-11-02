@@ -6,6 +6,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\motioncontroller.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ, MakeZRotation
 
 #include "motioncontroller.h"
 
@@ -144,7 +145,7 @@ bool CMotionController::vfunc_5(double fTime)
             Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
             Vector3 kAxis = DAT_143a08cd8;
             Unk_EfdMatrix3 mxEuler;
-            mxEuler.FUN_142083d40(kEuler.x, kEuler.y, kEuler.z);
+            reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
             kAxis = mxEuler.FUN_140a00720(kAxis);
             kBase = kAxis;
         }
@@ -153,7 +154,7 @@ bool CMotionController::vfunc_5(double fTime)
             kBase = FUN_14123cc80(m_pData->m_kDir);
         }
         Unk_EfdMatrix3 mxTilt;
-        mxTilt.FUN_142084c10((fTiltAngle * 3.1415927f) / 180.0f);
+        reinterpret_cast<efd::Matrix3*>(&mxTilt)->MakeZRotation((fTiltAngle * 3.1415927f) / 180.0f);
         kDir = mxTilt.FUN_140a00720(kBase);
         float fRad = (fTiltAngle * 3.1415927f) / 180.0f;
         if (0.0f < fRad)
@@ -199,7 +200,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
         Vector3 kEuler = m_pData->m_kDir.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
         Vector3 kAxis = DAT_143a08cd8.FUN_1409f7960();
         Unk_EfdMatrix3 mxEuler;
-        mxEuler.FUN_142083d40(kEuler.x, kEuler.y, kEuler.z);
+        reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
         kAxis = mxEuler.FUN_140a00720(kAxis);
         kBase = kAxis;
     }
@@ -218,7 +219,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
         fAngle = pTilt->m_fAngle;
     }
     Unk_EfdMatrix3 mxTilt;
-    mxTilt.FUN_142084c10((fAngle * 3.1415927f) / 180.0f);
+    reinterpret_cast<efd::Matrix3*>(&mxTilt)->MakeZRotation((fAngle * 3.1415927f) / 180.0f);
     kRot = mxTilt.FUN_140a00720(kBase);
     float fRad = (fAngle * 3.1415927f) / 180.0f;
     if (0.0f < fRad)

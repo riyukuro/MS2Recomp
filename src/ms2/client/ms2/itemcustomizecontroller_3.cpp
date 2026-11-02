@@ -47,7 +47,7 @@ struct Unk_MorphItem { Unk_MorphItemData* FUN_14053ec70(); };
 class CEquipItem : public CPtred
 {
 public:
-    Unk_MorphItemData* FUN_1411dc7f0();                         // the item's data
+    struct Unk_EquipItemData* FUN_1411dc7f0();                         // the item's data
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
 };
@@ -145,13 +145,13 @@ float CItemMorphController::vfunc_20()
 // @0x141416f70
 const Unk_CustomizeRange* CItemMorphController::vfunc_23()
 {
-    return m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(m_nCurIndex);
+    return reinterpret_cast<Unk_MorphItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(m_nCurIndex);
 }
 
 // @0x141416fd0
 const Unk_CustomizeRange* CItemMorphController::vfunc_24(int nIndex)
 {
-    return m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(nIndex);
+    return reinterpret_cast<Unk_MorphItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544f20(nIndex);
 }
 
 // @0x141417030
@@ -193,7 +193,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 // @0x1414171e0
 int CItemMorphController::vfunc_27()
 {
-    return m_spEquipItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140545090();
+    return reinterpret_cast<Unk_MorphItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140545090();
 }
 
 // @0x141417230

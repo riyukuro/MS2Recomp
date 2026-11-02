@@ -15,6 +15,8 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateinteractdata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#include <efd/Matrix3.h>
+#include <NiTransform.h>
 
 #include <io.h>
 #include <string>
@@ -99,7 +101,7 @@ MS2_CHECK_SIZE(Unk_CastInfo, 0x38);
 class UICastingBar : public UIObject
 {
 public:
-    void FUN_1418e12b0(ICastingEventListener* pListener, Unk_CastInfo& kInfo);   // show
+    void StartCasting(class Unk_CastingListener* pListener, const struct Unk_CastingParam* pInfo);   // show (0x1418e12b0)
     void FUN_1418e1390();                                                        // cancel
 };
 UICastingBar* FUN_140ac2270(int nId);
@@ -120,13 +122,13 @@ public:
 CStringW GetStringCommonByKey(const CStringW& str);
 CString FUN_1409a2360(const char* psz, int nCodePage);   // CString from a narrow string (0 = default code page)
 
-// A npc seen through the two members this unit reads.
+// A npc as this unit reads it.
 class Unk_SiNpc : public CNpc
 {
-public:
-    float FUN_140f4a450();                               // the distance to the local player
-    void FUN_141094730();                                // face the local player
 };
+
+// The actor's distance to the local player.
+class Unk_HudActor { public: float FUN_140f4a450(); };
 
 // The world manager: the interact objects and the actors.
 class Unk_SiWorld : public WorldService
@@ -137,19 +139,6 @@ public:
 };
 
 // The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
-struct Unk_SiRot                                         // efd::Matrix3 without the empty ctor call (NiTransform's ctor builds it)
-{
-    void FUN_142083d40(float fX, float fY, float fZ);    // efd::Matrix3::FromEulerAnglesXYZ (radians)
-    float m_afEntry[3][3];
-};
-struct Unk_SiXform
-{
-    Unk_SiRot m_rotate;
-    float m_afTranslate[3];
-    float m_fScale;
-};
-MS2_CHECK_SIZE(Unk_SiXform, 0x34);
-void* FUN_140a332d0(Unk_SiXform* p);
 void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
 
 // The quest manager: does the quest state satisfy a mask.
@@ -307,7 +296,7 @@ void StateInteraction::vfunc_4(StateData* pData)
             spObject->vfunc_6(reinterpret_cast<Unk_InteractCursor*>(&kInfo));
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar)
-                pBar->FUN_1418e12b0(this, kInfo);
+                pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
     }
     else if (m_n10 == 0x8b)
@@ -512,11 +501,10 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
             if (spObject.get())
             {
                 Vector3 kRot = spObject->GetRot();
-                Unk_SiXform kXform;
-                FUN_140a332d0(&kXform);
+                NiTransform kXform;
                 Unk_NiPoint3 kNiPos(spObject->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
-                FUN_14097faa0(kXform.m_afTranslate, &kNiPos);
-                kXform.m_rotate.FUN_142083d40((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
+                FUN_14097faa0(reinterpret_cast<float*>(&kXform.m_Translate), &kNiPos);
+                reinterpret_cast<efd::Matrix3*>(&kXform.m_Rotate)->FromEulerAnglesXYZ((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
                                               (kRot.z * 3.1415927f) / 180.0f);
                 kXform.m_fScale = 1.0f;
                 NoticeMessage kRequest;
@@ -620,7 +608,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
-            pBar->FUN_1418e12b0(this, kInfo);
+            pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
     }
 }
 
@@ -649,10 +637,10 @@ void StateInteractionNpc::vfunc_8(double fTime)
         if (pNpc)
         {
             if (m_n48 != 0)
-                pNpc->FUN_141094730();
+                pNpc->SendInteractNpc();
             else
             {
-                float fDist = pNpc->FUN_140f4a450();
+                float fDist = reinterpret_cast<Unk_HudActor*>(pNpc)->FUN_140f4a450();
                 if (*static_cast<Client::Constants*>(FUN_1401d3200())->InteractionDistance.Get() < fDist)
                 {
                     pPC->vfunc_59(1, 0, 0, 0);
@@ -715,7 +703,7 @@ void StateAutoInteraction::vfunc_4(StateData* pData)
         {
             Unk_CastInfo kInfo;
             FUN_1417d3700(&kInfo);
-            pBar->FUN_1418e12b0(this, kInfo);
+            pBar->StartCasting((Unk_CastingListener*)(ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
     }
 }

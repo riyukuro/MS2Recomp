@@ -24,7 +24,7 @@ MS2_CHECK_SIZE(Unk_RemakeOptionRef, 0x10);
 
 // std::vector of 8-byte values (v2525: _Buy multiplies the count by 8).
 struct Unk_RemakeOptionList50 {
-    Unk_RemakeOptionList50();                                       // 0x14027d690
+    Unk_RemakeOptionList50() noexcept;                              // 0x14027d690 (std::vector default ctor, noexcept)
     ~Unk_RemakeOptionList50();                                      // 0x14027e3f0
     Unk_RemakeOptionList50& operator=(const Unk_RemakeOptionList50& o); // 0x14027eb30
     void* m_p[3];
@@ -34,7 +34,7 @@ MS2_CHECK_SIZE(Unk_RemakeOptionList50, 0x18);
 // std::vector of 16-byte refcounted handles.
 void FUN_1402876b0(void* list, void* first, void* last);    // vector<MS2Ptr<CPtred>>::_Destroy
 struct Unk_RemakeOptionList68 {
-    Unk_RemakeOptionList68();                                       // 0x14027d750
+    Unk_RemakeOptionList68() noexcept;                              // 0x14027d750 (std::vector default ctor, noexcept)
     ~Unk_RemakeOptionList68();                                      // 0x14027e4b0
     Unk_RemakeOptionList68& operator=(const Unk_RemakeOptionList68& o); // 0x14027ebb0
     // 0x14028a690 (commonstruct.cpp's vector::clear; no other definition): _Destroy(_Myfirst, _Mylast), _Mylast = _Myfirst
@@ -65,7 +65,6 @@ MS2_CHECK_OFFSET(RemakeOptionContext, m_option28, 0x28);
 MS2_CHECK_OFFSET(RemakeOptionContext, m_list68, 0x68);
 
 // @0x140267390
-// MS2-FUNCTIONAL: the exe has no EH-state nop after the m_option38 / m_list50 ctor calls (m_option28 has one, same callee)
 RemakeOptionContext::RemakeOptionContext()
     : m_value18(0), m_value1c(0), m_value20(0), m_option28(0), m_option38(0), m_value48(1), m_value4c(1)
 {

@@ -16,6 +16,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/timer.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/partybits.h"
 #include "ms2/client/ms2/scenestatebase.h"
@@ -118,10 +119,10 @@ public:
 
     void FUN_1417daa70();                                           // drop every queued request
     void FUN_1417daaa0(double fTime);                               // per-frame update
-    void FUN_1417daeb0(int nId, State* pState);                     // AddState (asserts nId == pState->vfunc_1())
+    void RegisterState(int nId, State* pState);                     // AddState (asserts nId == pState->vfunc_1())
     void FUN_1417dafa0(int nState, StateData* pData, int nSub, int bForce);   // change state
     State* GetState();                                         // current state
-    State* FUN_1417db1e0(int nId);                                  // state by id, or NULL
+    State* FindState(int nId);                                  // state by id, or NULL
     void FUN_1417db230(int nValue);                                 // current state slot 2
     int GetCur();                                            // current state id
     int FUN_1417db290();                                            // current state's m_n10
@@ -180,13 +181,8 @@ public:
     short m_pad_1e;
 };
 // skill table row (int at +0x1c)
-class Unk_SMSkillRec : public CPtred
-{
-public:
-    char m_pad_18[4];
-    int m_n1c;
-};
 
+class SkillLevelData;
 // 0x78. Plays a move skill (abstract: vfunc_1 is _purecall in its vftable 0x142f716b0).
 class StateMoveSkill : public State
 {
@@ -213,12 +209,11 @@ public:
     int m_n44;
     int m_nFallbackState;                                           // +0x48
     int m_nFallbackSub;                                             // +0x4c
-    Unk_140517b00 m_tick;                                           // +0x50
+    Unk_IntervalTimer m_tick;                                           // +0x50
     MS2Ptr<Unk_SMSkillData> m_spData;                               // +0x58
-    MS2Ptr<Unk_SMSkillRec> m_spRec;                                 // +0x68
+    MS2Ptr<SkillLevelData> m_spRec;                                 // +0x68
 };
 MS2_CHECK_SIZE(StateMoveSkill, 0x78);
-MS2_CHECK_SIZE(Unk_140517b00, 8);
 MS2_CHECK_OFFSET(StateMoveSkill, m_nMode, 0x40);
 MS2_CHECK_OFFSET(StateMoveSkill, m_tick, 0x50);
 MS2_CHECK_OFFSET(StateMoveSkill, m_spData, 0x58);

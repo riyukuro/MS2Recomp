@@ -494,28 +494,28 @@ void CClubMemberProxy::FUN_14020e350(Unk_UserProxy* p)
 // @0x14020e5d0
 CStringW CClubMemberProxy::GetName()
 {
-    Unk_UserProxyWriteLock g(m_lock, 1);
+    Unk_PetLock g(m_lock, 1);
     return m_name;
 }
 
 // @0x14020e650
 void CClubMemberProxy::SetName(CStringW strName)
 {
-    Unk_UserProxyWriteLock g(m_lock, 1);
+    Unk_PetLock g(m_lock, 1);
     m_name = strName;
 }
 
 // @0x14020e6c0
 CString CClubMemberProxy::GetPicture()
 {
-    Unk_UserProxyWriteLock g(m_lock, 1);
+    Unk_PetLock g(m_lock, 1);
     return m_picture;
 }
 
 // @0x14020e740
 void CClubMemberProxy::SetPicture(CString strPicture)
 {
-    Unk_UserProxyWriteLock g(m_lock, 1);
+    Unk_PetLock g(m_lock, 1);
     m_picture = strPicture;
 }
 
@@ -1531,7 +1531,7 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_140211a40()
 // ---- instantiation glue of the club buff table (MS2Ptr<ClubBuffData> / CRBTree helpers), as plain functions ----
 
 extern void* FUN_140217140(void* pTree, void* pNode);
-extern void FUN_140159b70(int hr);
+
 extern void FUN_1402176a0(void** pThis);
 extern void* FUN_1401ba820(void* p);
 
@@ -1607,7 +1607,7 @@ void* Unk_TreeNodePair(void* pTree, char* pNode)
         int bOk = (pNode != 0);
         do {} while (0);
         if (!bOk)
-            FUN_140159b70(0x80004005);
+            ATL::AtlThrowImpl(0x80004005);
     } while (0);
     return pNode + 8;
 }

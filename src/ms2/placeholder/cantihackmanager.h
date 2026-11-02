@@ -10,5 +10,5 @@ class CAntiHackManager : public TSingleton<CAntiHackManager>
 public:
     CAntiHackManager();
     virtual ~CAntiHackManager();
-    void FUN_1409a3410(void* pParam);                   // CClientPlatformNexonKorea::vfunc_32 forwards its argument
+    void FUN_1409a3410(struct Unk_AntiHackRecord* pRecord);   // CClientPlatformNexonKorea::vfunc_32 forwards its argument (antihackmanager.cpp)
 };

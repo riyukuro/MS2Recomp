@@ -40,6 +40,7 @@ static CString s_strPremiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh"
                                           "EnumEnd"};
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
+#include "ms2/commonfiles/os.h"
 static CStringA s_strJobCode = "jobCode";
 static CStringA s_strSortValue = "sortValue";
 static CStringA s_strTabIndex = "tabIndex";
@@ -59,13 +60,13 @@ Unk_140bccd50* FUN_140bccd50();
 
 // The status-listener registry.
 class Unk_PbStatusMgr;
-Unk_PbStatusMgr* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 
 // The UI manager.
 class Unk_PbUiMgr;
-Unk_PbUiMgr* FUN_1403ed2b0();
+class CUIService;
 
-PaybackTable* FUN_14071d7d0();                                      // the payback table
+class PaybackTable;
 class Unk_MeratButtonHelper;
 Unk_MeratButtonHelper* FUN_1409c1740();                             // the payback manager
 UIMarketBillDialog* FUN_140b09580(int nUiId);                       // the bill dialog of a UI id
@@ -108,7 +109,7 @@ CString UIPaybackDialog::GetTypeName()
 // @0x140e6eec0
 void UIPaybackDialog::vfunc_67()
 {
-    reinterpret_cast<UIStatusEventDispatcher*>(FUN_140aa6d40())->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    reinterpret_cast<UIStatusEventDispatcher*>(reinterpret_cast<Unk_PbStatusMgr*>(TSingleton<UIStatusEventDispatcher>::GetInstance()))->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
 
@@ -125,7 +126,7 @@ void UIPaybackDialog::OnLoadComplete()
     }
     else
     {
-        reinterpret_cast<UIStatusEventDispatcher*>(FUN_140aa6d40())->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+        reinterpret_cast<UIStatusEventDispatcher*>(reinterpret_cast<Unk_PbStatusMgr*>(TSingleton<UIStatusEventDispatcher>::GetInstance()))->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
         FUN_140e6f8c0();
         FUN_140e6fba0();
         FUN_140e6fdf0();
@@ -139,9 +140,9 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         return 1;
     if (_stricmp(szMethod, "OnBuy") == 0)
     {
-        if (FUN_14071d7d0()->IsResetWindow())
+        if (TSingleton<PaybackTable>::GetInstance()->IsResetWindow())
         {
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f93);
+            reinterpret_cast<CUIService*>(reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance()))->CloseDialog((eUIClassID)0x4f93);
             FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
             return 1;
         }
@@ -185,7 +186,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             spParam->m_bills.Add(spRow);
         }
         pDialog->FUN_140ea7770(spParam.get());
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->OpenDialog((eUIClassID)0x4f17);
+        reinterpret_cast<CUIService*>(reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)0x4f17);
         return 1;
     }
     return 0;
@@ -196,7 +197,7 @@ void UIPaybackDialog::FUN_140e6f7c0(CInPacket& packet)
 {
     if (FUN_141924630() == 0)
         return;
-    if (!FUN_14071d7d0()->IsResetWindow())
+    if (!TSingleton<PaybackTable>::GetInstance()->IsResetWindow())
         return;
     vfunc_67();
 }
@@ -225,18 +226,18 @@ void UIPaybackDialog::FUN_140e6f8c0()
         return;
     int nIndex = 0;
     __int64 nNow = GetServerTime();
-    std::vector<PaybackTable::LevelEntry>& levels = FUN_14071d7d0()->GetLevels(nNow);
+    std::vector<PaybackTable::LevelEntry>& levels = TSingleton<PaybackTable>::GetInstance()->GetLevels(nNow);
     for (std::vector<PaybackTable::LevelEntry>::iterator it = levels.begin(); it != levels.end(); ++it)
     {
         const PaybackTable::LevelEntry* pEntry = &*it;
         ASObj row(2);
         row.FUN_1407cb9c0("index", nIndex++);
         row.FUN_1409c0d20("level", pEntry->m_nLevel);
-        row.FUN_1407cbb20("merat", FUN_140e70010(StringFormat(L"{0}", FUN_14071d7d0()->GetLevelMerat(
+        row.FUN_1407cbb20("merat", FUN_140e70010(StringFormat(L"{0}", TSingleton<PaybackTable>::GetInstance()->GetLevelMerat(
                                                      pEntry, reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->GetMerat(), nNow))));
-        row.FUN_1407cbb20("percent", StringFormat(L"{0}", FUN_140291d90(FUN_14071d7d0()->GetLevelPercent(pEntry, nNow))));
+        row.FUN_1407cbb20("percent", StringFormat(L"{0}", FUN_140291d90(TSingleton<PaybackTable>::GetInstance()->GetLevelPercent(pEntry, nNow))));
         row.FUN_1409c0d20("targetLevel", reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->FUN_140a8b320());
-        row.FUN_1407cbbe0("isRed", FUN_14071d7d0()->IsLocaleEnabled());
+        row.FUN_1407cbbe0("isRed", TSingleton<PaybackTable>::GetInstance()->IsLocaleEnabled());
         m_30->Invoke("setEntity", row);
     }
 }
@@ -247,11 +248,11 @@ void UIPaybackDialog::FUN_140e6fba0()
     if (m_30 == 0)
         return;
     __int64 nNow = GetServerTime();
-    CStringW strTotal = FUN_1409404f0(FUN_14071d7d0()->GetMeratTotal(reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->GetMerat(), nNow));
+    CStringW strTotal = FUN_1409404f0(TSingleton<PaybackTable>::GetInstance()->GetMeratTotal(reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->GetMerat(), nNow));
     CStringW strCurrent = FUN_1409404f0(
-        FUN_14071d7d0()->GetMeratUpTo(reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->FUN_140a8b320(), reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->GetMerat(), nNow));
+        TSingleton<PaybackTable>::GetInstance()->GetMeratUpTo(reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->FUN_140a8b320(), reinterpret_cast<PaybackManagerClient*>(FUN_1409c1740())->GetMerat(), nNow));
     CStringW strText = FUN_14028dfa0(CStringW(L"s_payback_dialog_maret"), strCurrent, strTotal);
-    if (FUN_14071d7d0()->IsLocaleEnabled())
+    if (TSingleton<PaybackTable>::GetInstance()->IsLocaleEnabled())
         strText = FUN_14028dfa0(CStringW(L"s_payback_dialog_merat_text_red_merat"), strCurrent, strTotal);
     m_30->Invoke("setPaybackMerat", strText);
 }

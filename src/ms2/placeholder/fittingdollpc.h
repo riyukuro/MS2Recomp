@@ -234,7 +234,7 @@ public:
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
-    int FUN_141661970();                                    // busy
+    int IsRevivalBlocked();                                    // busy
     BOOL FUN_141661e40(int* pnEnchant, int* pnGrade);       // the best enchant level / grade of the worn items (name tag)
     void FUN_141657c80(bool bEnable);                       // apply the attach effects of the equipment
     bool FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary);   // collect the weapons' attach effects and their nodes
@@ -282,7 +282,7 @@ public:
     __int64 FUN_141658eb0();                                // +0xfe8
     unsigned char FUN_141658f10();                          // the PC bang grade
     unsigned char FUN_141658fa0();                          // the PC bang bonus flags
-    void FUN_141658fc0(const egf::EntityID& kId);           // +0xdb0
+    void FUN_141658fc0(egf::EntityID kId);                  // +0xdb0, callers pass a copy
     int GetCubeMode();                                    // the cube craft mode
     int IsCubeMode1();                                    // cube craft mode 1
     int IsCubeMode2();                                    // cube craft mode 2

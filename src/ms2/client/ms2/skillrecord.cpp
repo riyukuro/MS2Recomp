@@ -562,7 +562,7 @@ void CDamageRecord::AddDamage(int nType, __int64 nDamage)
 }
 
 // @0x14175ac30
-__int64 CDamageRecord::FUN_14175ac30()
+__int64 CDamageRecord::GetTotalDamage()
 {
     __int64 nTotal = 0;
     for (unsigned i = 0; i < m_damages.GetCount(); i++)
@@ -608,7 +608,7 @@ unsigned __int64 CDamageRecord::FUN_14175aeb0()
 }
 
 // @0x14175aee0
-int CDamageRecord::FUN_14175aee0(int nIndex, int& nType)
+int CDamageRecord::GetDamageType(int nIndex, int& nType)
 {
     if ((int)m_types.GetCount() <= nIndex)
         return 0;
@@ -659,7 +659,7 @@ int CDotDamageRecord::vfunc_1()
 }
 
 // @0x14175b130
-int CDotDamageRecord::FUN_14175b130()
+int CDotDamageRecord::GetFirstType()
 {
     if (m_types.IsEmpty())
         return 0;

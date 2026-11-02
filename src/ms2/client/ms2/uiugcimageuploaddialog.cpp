@@ -276,10 +276,10 @@ void UIUGCImageUploadDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
         // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
         AScript data((Scaleform::GFx::Value&)root.GetMember("data"), 2);
 #endif
-        if (data.FUN_1422ba9a0() == 0)
+        if (data.IsUndefinedOrNull() == 0)
         {
             ASTooltip tip(1, 2);
-            CStringW strText = ((Unk_UgcImageData*)&data)->FUN_1422bb2b0("tooltip");
+            CStringW strText = ((Unk_UgcImageData*)&data)->GetWString("tooltip");
             if (tip.ApplyTextTooltip(strText) != 0)
             {
                 tip.SetTooltipAlign(2);

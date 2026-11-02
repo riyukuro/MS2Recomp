@@ -29,6 +29,7 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/os.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -46,7 +47,7 @@ int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_1403ed280;                                                    // the effect service
-Unk_1403ed280* FUN_1403ed280();
+class CEffectService;
 void FUN_1411a4800(const CString& strEffect, int nType);                // preloads an effect
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
@@ -149,22 +150,22 @@ void CGemTombStoneData::TModelAttr::FUN_1405ac670()
 {
     if (!m_strRegenEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strRegenEffect, 5);
     }
     if (!m_strIdleEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strIdleEffect, 5);
     }
     if (!m_strDmgEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strDmgEffect, 5);
     }
     if (!m_strReviveEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strReviveEffect, 5);
     }
 }
@@ -212,17 +213,17 @@ void CGemSwimData::FUN_1405ac9e0()
 {
     if (!m_strIdleEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strIdleEffect, 5);
     }
     if (!m_strRunEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strRunEffect, 5);
     }
     if (!m_strDashEffect.IsEmpty())
     {
-        FUN_1403ed280();
+        reinterpret_cast<Unk_1403ed280*>(TSingleton<CEffectService>::GetInstance());
         FUN_1411a4800(m_strDashEffect, 5);
     }
 }

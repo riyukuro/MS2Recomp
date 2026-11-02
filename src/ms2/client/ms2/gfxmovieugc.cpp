@@ -12,6 +12,7 @@
 #include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/gfxrenderer2d.h"
 #include "ms2/placeholder/gfxrenderhandle.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -79,9 +80,8 @@ int GFxMovieUgc::vfunc_7(int x, int y)
     m_60->HandleEvent(kEvent);
     return 1;
 }
-// MS2-FUNCTIONAL: code identical; the exe types spHandle as Ptr<Unk_GFxUIRenderer2D> (separate operator->/dtor COMDATs 0x14127c980/0x14127c5c0), but gfxmovie.h spells both vfunc_9 arguments Ptr<Unk_GFxHandleObj>
 // @0x14127d720
-void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxHandleObj) spHandle)
+void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle)
 {
     if (m_spRenderTarget == 0)
         return;
@@ -90,8 +90,8 @@ void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_G
     {
         spObj->vfunc_17(m_spRenderTarget, true);
         Unk_BgDispHandle kHandle(reinterpret_cast<const Unk_BgDispHandle&>(m_60->GetDisplayHandle()));
-        if (kHandle.FUN_1425805a0(spHandle->FUN_142582270()))
-            spHandle->Assign(kHandle);
+        if (kHandle.FUN_1425805a0(reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->FUN_142582270()))
+            reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->Assign(kHandle);
         spObj->vfunc_17(spTarget, true);
     }
 }

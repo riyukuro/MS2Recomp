@@ -94,17 +94,17 @@ MS2_REPLACE_METHOD(0x1422B81C0, ASData, AddInt64, 92, 0xBE5630E6);
 void ASData::AddArgsFrom(ASData* pOther)
 {
     if (pOther != NULL)
-        pOther->FUN_1422b9580(m_args);
+        pOther->AppendArgsTo(m_args);
 }
 MS2_REPLACE_METHOD(0x1422B8230, ASData, AddArgsFrom, 49, 0x732ACD52);
 
 // @0x1422b8270
-void ASData::FUN_1422b8270(const AScript& obj)
+void ASData::AddObj(const AScript& obj)
 {
     if (&obj != NULL)
         AddValue(const_cast<AScript&>(obj).FUN_1422bb870());
 }
-MS2_REPLACE_METHOD(0x1422B8270, ASData, FUN_1422b8270, 50, 0x247FE890);
+MS2_REPLACE_METHOD(0x1422B8270, ASData, AddObj, 50, 0x247FE890);
 
 // @0x1422b82b0
 void ASData::AddString(const char* sz)
@@ -116,13 +116,13 @@ void ASData::AddString(const char* sz)
 MS2_REPLACE_METHOD(0x1422B82B0, ASData, AddString, 87, 0x804F3DC2);
 
 // @0x1422b8310
-void ASData::FUN_1422b8310(const wchar_t* sz)
+void ASData::AddWString(const wchar_t* sz)
 {
     Scaleform::GFx::Value v;
     v.SetStringW(sz);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B8310, ASData, FUN_1422b8310, 87, 0xDC102A34);
+MS2_REPLACE_METHOD(0x1422B8310, ASData, AddWString, 87, 0xDC102A34);
 
 // @0x1422b8370
 void ASData::AddSize(size_t n)
@@ -141,92 +141,92 @@ void ASData::AddValue(const Scaleform::GFx::Value& v)
 MS2_REPLACE_METHOD(0x1422B83F0, ASData, AddValue, 41, 0x3427F45B);
 
 // @0x1422b8420
-void ASData::FUN_1422b8420(int* pOut)
+void ASData::ReadInt(int* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = m_args.RemoveHead().GetInt();
 }
-MS2_REPLACE_METHOD(0x1422B8420, ASData, FUN_1422b8420, 114, 0x6E08547E);
+MS2_REPLACE_METHOD(0x1422B8420, ASData, ReadInt, 114, 0x6E08547E);
 
 // @0x1422b84a0
-void ASData::FUN_1422b84a0(bool* pOut)
+void ASData::ReadBool(bool* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = m_args.RemoveHead().GetBool();
 }
-MS2_REPLACE_METHOD(0x1422B84A0, ASData, FUN_1422b84a0, 114, 0x8528F3FD);
+MS2_REPLACE_METHOD(0x1422B84A0, ASData, ReadBool, 114, 0x8528F3FD);
 
 // @0x1422b8520
-void ASData::FUN_1422b8520(unsigned int* pOut)
+void ASData::ReadUInt(unsigned int* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = m_args.RemoveHead().GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422B8520, ASData, FUN_1422b8520, 114, 0xEAE566E5);
+MS2_REPLACE_METHOD(0x1422B8520, ASData, ReadUInt, 114, 0xEAE566E5);
 
 // @0x1422b85a0
-void ASData::FUN_1422b85a0(unsigned long* pOut)
+void ASData::ReadULong(unsigned long* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = m_args.RemoveHead().GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422B85A0, ASData, FUN_1422b85a0, 114, 0x0909B330);
+MS2_REPLACE_METHOD(0x1422B85A0, ASData, ReadULong, 114, 0x0909B330);
 
 // @0x1422b8620
-void ASData::FUN_1422b8620(float* pOut)
+void ASData::ReadFloat(float* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = (float)m_args.RemoveHead().GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422B8620, ASData, FUN_1422b8620, 120, 0x05F25E65);
+MS2_REPLACE_METHOD(0x1422B8620, ASData, ReadFloat, 120, 0x05F25E65);
 
 // @0x1422b86a0
-void ASData::FUN_1422b86a0(double* pOut)
+void ASData::ReadDouble(double* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = m_args.RemoveHead().GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422B86A0, ASData, FUN_1422b86a0, 116, 0x19BC633A);
+MS2_REPLACE_METHOD(0x1422B86A0, ASData, ReadDouble, 116, 0x19BC633A);
 
 // @0x1422b8720
-void ASData::FUN_1422b8720(__int64* pOut)
+void ASData::ReadInt64(__int64* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = (__int64)m_args.RemoveHead().GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422B8720, ASData, FUN_1422b8720, 120, 0xCCCE6FEE);
+MS2_REPLACE_METHOD(0x1422B8720, ASData, ReadInt64, 120, 0xCCCE6FEE);
 
 // @0x1422b87a0
-void ASData::FUN_1422b87a0(CString& strOut)
+void ASData::PopString(CString& strOut)
 {
     if (m_args.GetCount() > 0)
         strOut = FUN_1409a23d0(m_args.RemoveHead().GetString(), 0);
 }
-MS2_REPLACE_METHOD(0x1422B87A0, ASData, FUN_1422b87a0, 176, 0x1D9F2174);
+MS2_REPLACE_METHOD(0x1422B87A0, ASData, PopString, 176, 0x1D9F2174);
 
 // @0x1422b8860
-void ASData::FUN_1422b8860(CStringW& strOut)
+void ASData::PopStringW(CStringW& strOut)
 {
     if (m_args.GetCount() > 0)
         strOut = m_args.RemoveHead().GetStringW();
 }
-MS2_REPLACE_METHOD(0x1422B8860, ASData, FUN_1422b8860, 122, 0x76BD877B);
+MS2_REPLACE_METHOD(0x1422B8860, ASData, PopStringW, 122, 0x76BD877B);
 
 // @0x1422b88e0
-void ASData::FUN_1422b88e0(unsigned __int64* pOut)
+void ASData::ReadUInt64(unsigned __int64* pOut)
 {
     if (m_args.GetCount() > 0)
         *pOut = (unsigned __int64)m_args.RemoveHead().GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422B88E0, ASData, FUN_1422b88e0, 169, 0xEE2F7113);
+MS2_REPLACE_METHOD(0x1422B88E0, ASData, ReadUInt64, 169, 0xEE2F7113);
 
 // @0x1422b8990
-void ASData::FUN_1422b8990(Scaleform::GFx::Value& vOut)
+void ASData::ReadValue(Scaleform::GFx::Value& vOut)
 {
     if (m_args.GetCount() > 0)
         vOut = m_args.RemoveHead();
 }
-MS2_REPLACE_METHOD(0x1422B8990, ASData, FUN_1422b8990, 113, 0xF9310785);
+MS2_REPLACE_METHOD(0x1422B8990, ASData, ReadValue, 113, 0xF9310785);
 
 // @0x1422b8a10
 int ASData::FUN_1422b8a10()
@@ -259,34 +259,34 @@ int ASData::FUN_1422b8b10()
 MS2_REPLACE_METHOD(0x1422B8B10, ASData, FUN_1422b8b10, 118, 0x1792AF1E);
 
 // @0x1422b8b90
-unsigned long ASData::FUN_1422b8b90()
+unsigned long ASData::PopULong()
 {
     unsigned long n = 0;
     if (m_args.GetCount() > 0)
         n = m_args.RemoveHead().GetUInt();
     return n;
 }
-MS2_REPLACE_METHOD(0x1422B8B90, ASData, FUN_1422b8b90, 118, 0xF7AE0274);
+MS2_REPLACE_METHOD(0x1422B8B90, ASData, PopULong, 118, 0xF7AE0274);
 
 // @0x1422b8c10
-float ASData::FUN_1422b8c10()
+float ASData::PopFloat()
 {
     float f = 0.0f;
     if (m_args.GetCount() > 0)
         f = (float)m_args.RemoveHead().GetNumber();
     return f;
 }
-MS2_REPLACE_METHOD(0x1422B8C10, ASData, FUN_1422b8c10, 127, 0x840657A8);
+MS2_REPLACE_METHOD(0x1422B8C10, ASData, PopFloat, 127, 0x840657A8);
 
 // @0x1422b8ca0
-double ASData::FUN_1422b8ca0()
+double ASData::PopDouble()
 {
     double d = 0.0;
     if (m_args.GetCount() > 0)
         d = m_args.RemoveHead().GetNumber();
     return d;
 }
-MS2_REPLACE_METHOD(0x1422B8CA0, ASData, FUN_1422b8ca0, 123, 0xACBBEEB3);
+MS2_REPLACE_METHOD(0x1422B8CA0, ASData, PopDouble, 123, 0xACBBEEB3);
 
 // @0x1422b8d30
 CString ASData::FUN_1422b8d30()
@@ -321,14 +321,14 @@ CStringW ASData::FUN_1422b8f40()
 MS2_REPLACE_METHOD(0x1422B8F40, ASData, FUN_1422b8f40, 455, 0xBDEEFC16);
 
 // @0x1422b9110
-__int64 ASData::FUN_1422b9110()
+__int64 ASData::PopInt64()
 {
     __int64 n = 0;
     if (m_args.GetCount() > 0)
         n = (__int64)m_args.RemoveHead().GetNumber();
     return n;
 }
-MS2_REPLACE_METHOD(0x1422B9110, ASData, FUN_1422b9110, 126, 0xCFB41D83);
+MS2_REPLACE_METHOD(0x1422B9110, ASData, PopInt64, 126, 0xCFB41D83);
 
 // @0x1422b91a0
 unsigned __int64 ASData::PopUInt64()
@@ -425,13 +425,13 @@ __int64 FUN_1422b9550(const Scaleform::GFx::Value& v)
 MS2_REPLACE(0x1422B9550, FUN_1422b9550, 29, 0xFE531800);
 
 // @0x1422b9580
-int ASData::FUN_1422b9580(ATL::CAtlList<Scaleform::GFx::Value>& dst)
+int ASData::AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst)
 {
     for (POSITION pos = m_args.GetHeadPosition(); pos != NULL; m_args.GetNext(pos))
         dst.AddTail(m_args.GetAt(pos));
     return dst.GetCount() > 0;
 }
-MS2_REPLACE_METHOD(0x1422B9580, ASData, FUN_1422b9580, 147, 0xDFAF04B0);
+MS2_REPLACE_METHOD(0x1422B9580, ASData, AppendArgsTo, 147, 0xDFAF04B0);
 
 // @0x1422b9620
 int ASData::FUN_1422b9620(const Scaleform::GFx::Value* pArgs, unsigned int nArgs)

@@ -12,23 +12,8 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/commonfiles/maid.h"
 
-// The profile edit buffer (13 texts, 0x68 bytes). The ctor / dtor / assignment / packet writer are out-of-unit COMDATs.
-class COutPacket;
-class Unk_MaidProfile;
-void FUN_14067e520(Unk_MaidProfile* p);                                     // ctor
-void FUN_14067e650(Unk_MaidProfile* p);                                     // dtor
-Unk_MaidProfile* FUN_14067e750(Unk_MaidProfile* p, const Unk_MaidProfile* pSrc);   // assignment
-void FUN_14067c610(Unk_MaidProfile* p, COutPacket* pPacket);                // write the profile into the packet
-class Unk_MaidProfile
-{
-public:
-    Unk_MaidProfile() { FUN_14067e520(this); }
-    ~Unk_MaidProfile() { FUN_14067e650(this); }
-    Unk_MaidProfile& operator=(const Unk_MaidProfile& o) { FUN_14067e750(this, &o); return *this; }
-    void* m_raw[13];                                                        // void* pads: a char buffer would draw a /GS cookie the exe lacks
-};
-MS2_CHECK_SIZE(Unk_MaidProfile, 0x68);
 
 class UIMaidDialog : public UIDialog
 {
@@ -48,7 +33,7 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x1412d8c40
 
     void FUN_1412d7aa0();                                                   // 0x1412d7aa0 "setData": the whole movie
-    int FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* pProfile);   // 0x1412d8e10 check one edited text
+    int FUN_1412d8e10(int nField, CStringW strValue, MaidProfile* pProfile);   // 0x1412d8e10 check one edited text
     void FUN_1412d9640(int nMaidId, unsigned __int64 nMaidUid);             // 0x1412d9640 show another maid
     void FUN_1412d9680();                                                   // 0x1412d9680 "updateStatus"
     void FUN_1412d9b90();                                                   // 0x1412d9b90 "updateProperty"
@@ -59,7 +44,7 @@ private:
     int m_nMaidId;                                                          // +0x178 the maid npc's object id
     unsigned __int64 m_nMaidUid;                                            // +0x180 the maid's key (CMaid::m_nId)
     CStringW m_strSpecialTitle;                                             // +0x188 the "special title" text of the maid
-    Unk_MaidProfile m_profile;                                              // +0x190 the edited profile
+    MaidProfile m_profile;                                              // +0x190 the edited profile
 };
 MS2_CHECK_SIZE(UIMaidDialog, 0x1f8);
 MS2_CHECK_OFFSET(UIMaidDialog, m_nMaidId, 0x178);

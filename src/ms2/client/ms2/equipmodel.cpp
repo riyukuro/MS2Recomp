@@ -82,6 +82,7 @@
 #include <NiMesh.h>
 #include "ms2/client/ms2/weaponattachtransformnode.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
+#include "ms2/commonfiles/os.h"
 
 // ---- exe data ----
 extern float DAT_143ac3d08;     // the engine's frame step
@@ -106,7 +107,7 @@ public:
 class Unk_WsC_GameObj* FUN_141bd1180(int);
 void* FUN_141bd0cc0();
 };
-void* FUN_1403ed280();class CEffectService // C3: member view for the former free stand-ins
+class CEffectService // C3: member view for the former free stand-ins
 {
 public:
 unsigned int FUN_1411a49c0(class Unk_EffectTarget&);
@@ -164,10 +165,12 @@ bool FUN_1405471b0();
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
-bool FUN_14059a350();
+bool AdvanceCycle();
 };
 
-void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* FUN_1409a8b10(); void* FUN_140c77560(void* p);
+class CGameOption;
+void* FUN_140aa6d30();      // CStateService singleton (64-bit pointer)
+void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* FUN_140c77560(void* p);
 class ModelGroup   // C3: member view for the former free stand-ins
 {
 public:
@@ -197,7 +200,7 @@ void* FUN_1411a3f30(void* p); void FUN_1411a3e30(void* p); void FUN_1411a4080(vo
 bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);
 struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
 
-void* FUN_140965c40(void* a, void* out, void* b);class Vector3 // C3: member view for the former free stand-ins
+class Vector3 // C3: member view for the former free stand-ins
 {
 public:
 float FUN_140968990();
@@ -205,7 +208,6 @@ float FUN_140968990();
 void* FUN_140194470(void* dst, const void* src);
 
 void* FUN_141068d50p(void* a, const char* psz);
-void* FUN_14086d260();
 // game
 void FUN_1411cf000(void* a);
 void* FUN_141658e60p(void* ent);
@@ -345,7 +347,6 @@ struct Unk_HoldTarget
 };
 
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
-void* FUN_140aa6d30();      // CStateService singleton (64-bit pointer)
    
 
 // ---- static data (.text$di) ----
@@ -370,7 +371,7 @@ void FUN_141207f70(Unk_AttachDummy* p, const void* pRotate);
 void FUN_141207fb0(Unk_HoldTarget* p, float f);
 void FUN_141207fd0(Unk_AttachDummy* p, const NiPoint3& pt);
 void FUN_1411ffee0(CEquipModel* self, double fTime);
-void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot);
+void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot);
 void* FUN_141200820(CEquipModel* self);
 void* FUN_141200850(CEquipModel* self);
 void* FUN_1412008e0(CEquipModel* self);
@@ -450,7 +451,7 @@ void FUN_1411ffee0(CEquipModel* self, double fTime)
         void* p = ((void*)((class CItem*)(void*)(EQUIP(self->m_spOwner)->GetItem().operator->()))->FUN_140527870());
         if (p == 0)
             return;
-        if (((class CItemExtraData*)(void*)(p))->FUN_14059a350())
+        if (((class CItemExtraData*)(void*)(p))->AdvanceCycle())
             self->vfunc_11();
     }
 }
@@ -602,7 +603,7 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
             FUN_141205a40((Unk_AttachDummy*)pDummy, e->m_bFlag);
             FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().FUN_1411a3f30(), e->m_fScale);
         }
-        pDummy->Update((float)((class CMainSystem*)FUN_14086d260())->FUN_141473280(), true);
+        pDummy->Update((float)((class CMainSystem*)(void*)TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
     }
 }
 
@@ -759,7 +760,7 @@ void FUN_141200e30(CEquipModel* self, int bClear)
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
-                          ((class CItem*)(void*)(spItem.operator->()))->FUN_1405258b0(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
+                          ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
         ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411ea500(reinterpret_cast<MS2Ptr<CEquipItem>&>(self->m_spOwner));
     }
     if (bClear != 0)
@@ -866,7 +867,7 @@ efd::utf8string CEquipModel::FUN_141201780()
             return efd::utf8string("MS2MannequinEquipItem");
         }
         if (efd::DynamicCast<PC, GameObject>((GameObject*)(pEnt)) != 0) {
-            if (*((bool*)FUN_140c77560(FUN_1409a8b10()) + 0x11)) {
+            if (*((bool*)FUN_140c77560(TSingleton<CGameOption>::GetInstance()) + 0x11)) {
                 return efd::utf8string("MS2EquipItem");
             }
         }
@@ -1020,31 +1021,22 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
 void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLocal, void* pTrans, void* pRot)
 {
     float fScale = 1.0f;
-    FUN_1412024f0(self, pPos, pEuler, &fScale, pLocal, pTrans, pRot);
+    FUN_1412024f0(self, pPos, (efd::Point3*)pEuler, &fScale, pLocal, pTrans, pRot);
 }
 
 // World position / Euler angles (degrees) / scale of the named attach point of the loaded model.
 // @0x1412024f0
-void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot)
+void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot)
 {
-    void* pEnt;
-    {
-        MS2Ptr<CItem> kId = ((class CEquipItem*)(void*)(OWNER(self)))->GetItem();
-        unsigned nId = ((class CItem*)(void*)(kId.operator->()))->FUN_140526b10();
-        pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(nId));
-    }
+    void* pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd1180(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
     if (pEnt == 0)
         return;
-    alignas(8) char kEntId[24];
-    void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(*reinterpret_cast<const egf::EntityID*>(FUN_14123c460(pEnt, kEntId)));
-    if (pActor == 0 || ((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()) == 0)
+    void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->FUN_14123c460());
+    if (pActor == 0)
         return;
-    void* pObj;
-    {
-        CString kPart = self->FUN_1412029d0();
-        NiFixedString fs(kPart);
-        pObj = ((NiAVObject*)((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()))->GetObjectByName(fs);
-    }
+    if (((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()) == 0)
+        return;
+    void* pObj = ((NiAVObject*)((void*)((class NiActorManager*)(void*)(pActor))->GetNIFRoot()))->GetObjectByName((LPCSTR)self->FUN_1412029d0());
     if (pObj == 0)
         return;
     void* pAttach = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pObj)));
@@ -1054,24 +1046,22 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
     if (pRoot == 0)
         return;
     NiTransform kXf;
-    if (pRot == 0)
-        (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform())));
-    else
+    if (pRot != 0)
         (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(pRot));
+    else
+        (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform())));
     FUN_140194470(pTrans, &kXf.m_Translate);
-    alignas(8) char kWorld[0x34];
-    memcpy(kWorld, ((void*)&((class NiAVObject*)(void*)(pAttach))->GetWorldTransform()), 0x34);
+    NiTransform kWorld = ((class NiAVObject*)(void*)(pAttach))->GetWorldTransform();
     if (((void*)((class NiAVObject*)(void*)(pRoot))->GetParent()) != 0)
-        (*reinterpret_cast<NiTransform*>(kWorld) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(((void*)((class NiAVObject*)(void*)(pRoot))->GetParent())))->GetWorldTransform())));
-    kXf = *reinterpret_cast<NiTransform*>(kWorld) * ((class NiAVObject*)(void*)(pRoot))->GetLocalTransform();
+        (kWorld = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(((void*)((class NiAVObject*)(void*)(pRoot))->GetParent())))->GetWorldTransform())));
+    kXf = kWorld * ((class NiAVObject*)(void*)(pRoot))->GetLocalTransform();
     FUN_140194470(pPos, &kXf.m_Translate);
-    alignas(8) char kDelta[16], kLen[20];
-    FUN_140194470(pLocal, FUN_140965c40(pPos, kDelta, kLen));
+    *(efd::Point3*)pLocal = *pPos - kWorld.m_Translate;
     ((class Vector3*)(void*)(pLocal))->FUN_140968990();
-    kXf.m_Rotate.ToEulerAnglesXYZ(pEuler[0], pEuler[1], pEuler[2]);
-    pEuler[0] = (pEuler[0] * 180.0f) / 3.1415927f;
-    pEuler[1] = (pEuler[1] * 180.0f) / 3.1415927f;
-    pEuler[2] = (-pEuler[2] * 180.0f) / 3.1415927f;
+    kXf.m_Rotate.ToEulerAnglesXYZ(pEuler->x, pEuler->y, pEuler->z);
+    pEuler->x = (pEuler->x * 180.0f) / 3.1415927f;
+    pEuler->y = (pEuler->y * 180.0f) / 3.1415927f;
+    pEuler->z = (-pEuler->z * 180.0f) / 3.1415927f;
     *pScale = kXf.m_fScale;
 }
 
@@ -1160,7 +1150,7 @@ void FUN_141202dc0(CEquipModel* self, int nSlot)
 {
     int nHandle = 0;
     if (self->m_map78.Lookup(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot), nHandle)) {
-        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6060(nHandle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nHandle);
         self->m_map78.RemoveKey(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot));
     }
 }
@@ -1203,8 +1193,7 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
     int nType = ((class CItem*)(void*)(kId.operator->()))->FUN_140526c30();
     if (nType != 4 && nType != 5) {
         CString kTag = FUN_140298360("Equip_Attach_Transform", FUN_14016a5c0(*pName, 0));
-        void* pNewTmp = new (efd::MemHint((efd::MemHint::Bits)0)) NiNode(0);
-        void* pNew = pNewTmp;
+        void* pNew = new (efd::MemHint((efd::MemHint::Bits)0)) NiNode(0);
         {
             NiFixedString fs2(kTag);
             ((class NiObjectNET*)(void*)(pNew))->SetName(fs2);
@@ -1213,8 +1202,7 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         (*reinterpret_cast<efd::SmartPointer<NiNode>*>(NODE(self)) = (NiNode*)(void*)(pNew));
     } else {
         CString kNode((nType == 4) ? "Weapon_Attach_TransformLH" : "Weapon_Attach_TransformRH");
-        void* pNewTmp = new (efd::MemHint((efd::MemHint::Bits)0)) WeaponAttachTransformNode;
-        void* pNew = pNewTmp;
+        void* pNew = new (efd::MemHint((efd::MemHint::Bits)0)) WeaponAttachTransformNode;
         {
             NiFixedString fs2(kNode);
             ((class NiObjectNET*)(void*)(pNew))->SetName(fs2);
@@ -1249,7 +1237,7 @@ void FUN_1412034e0(CEquipModel* self)
 {
     for (POSITION pos = self->m_map78.GetStartPosition(); pos != 0; self->m_map78.GetNext(pos)) {
         int nHandle = self->m_map78.GetValueAt(pos);
-        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6060(nHandle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nHandle);
     }
     self->m_map78.RemoveAll();
 }
@@ -1289,7 +1277,7 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
     (*reinterpret_cast<efd::SmartPointer<NiAVObject>*>(&kReq.m_spNode) = (NiAVObject*)(void*)(pNode));
     kReq.m_nObject = ((Unk_EmEntity*)pEnt)->vfunc_58();
     kReq.SetActor(((GameObject*)pEnt)->FUN_14123c580());
-    unsigned nHandle = ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a49c0(*(class Unk_EffectTarget*)(&kReq));
+    unsigned nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*(class Unk_EffectTarget*)(&kReq));
     if (nHandle > 0)
         self->m_map78.SetAt((Unk_EquipEffectSlot&)nSlot, nHandle);
     self->m_b111 = 0;
@@ -1299,33 +1287,34 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
 // @0x141203830
 CString CEquipModel::FUN_141203830()
 {
-    CEquipModel* self = this;
-    if ((*reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner) == (CEquipItem*)0) != 0)
+    if ((*reinterpret_cast<MS2Ptr<CEquipItem>*>(&this->m_spOwner) == (CEquipItem*)0) != 0)
         return CString("");
-    MS2Ptr<CItem> kId = ((class CEquipItem*)(void*)(OWNER(self)))->GetItem();
+    MS2Ptr<CItem> kId = ((class CEquipItem*)(void*)(OWNER(this)))->GetItem();
     if (kId == (CItem*)0)
         return CString("");
-    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0());
+    Unk_EquipTpl* pTpl = (Unk_EquipTpl*)((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc7f0());
     if (pTpl == 0)
         return CString("");
     if (!((class CItemData*)(void*)(pTpl))->FUN_14053d2f0())
         return CString("");
     if (((class CItemData*)(void*)(pTpl))->HasSkinType()) {
-        void* pParent = ((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc8c0());
+        void* pParent = ((void*)((class CEquipItem*)(void*)(OWNER(this)))->FUN_1411dc8c0());
         if (pParent != 0) {
             MS2Ptr<CEquipItem> spPart = ((class PC*)pParent)->FUN_141655c90(((class CItem*)(void*)(kId.operator->()))->FUN_140527a20());
             if (spPart.operator CEquipItem*() != 0) {
                 MS2Ptr<CItem> kId2 = spPart->GetItem();
+                if (kId2 == (CItem*)0)
+                    return CString("");
                 char* pTpl2 = (char*)((void*)((class CEquipItem*)(void*)(spPart.operator->()))->FUN_1411dc7f0());
-                if (kId2 == (CItem*)0 || pTpl2 == 0 || !((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0())
+                if (pTpl2 == 0)
+                    return CString("");
+                if (!((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0())
                     return CString("");
                 if (pTpl->m_nLevel >= 100) {
-                    unsigned nA = ((class CItem*)(void*)(kId2.operator->()))->FUN_140527270();
-                    unsigned nB = ((class CItem*)(void*)(kId2.operator->()))->FUN_140526fc0();
-                    unsigned nC = ((class CItemData*)(void*)(pTpl))->FUN_14053c620();
-                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(nC, nB, nA, pTpl->m_nLevel);
+                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(((class CItemData*)(void*)(pTpl))->FUN_14053c620(), ((class CItem*)(void*)(kId2.operator->()))->FUN_140526fc0(), ((class CItem*)(void*)(kId2.operator->()))->FUN_140527270(), pTpl->m_nLevel);
+                } else {
+                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529eb0();
                 }
-                return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529eb0();
             }
         }
     }
@@ -1380,7 +1369,7 @@ void FUN_141203e60(CEquipModel* self)
         MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             ((CEquipment*)((class PC*)(void*)(pEnt))->FUN_1416561a0())->FUN_1411e9fa0(((class CItem*)(void*)(spItem.operator->()))->FUN_140527a20(), self->FUN_1412029d0(),
-                          ((class CItem*)(void*)(spItem.operator->()))->FUN_1405258b0(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
+                          ((class CItem*)(void*)(spItem.operator->()))->HasSkin(), ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     }
 }
 

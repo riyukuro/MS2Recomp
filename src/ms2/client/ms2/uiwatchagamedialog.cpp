@@ -231,7 +231,7 @@ void UIWatchAGameDialog::FUN_140fc1710()
     if (nNext >= (int)m_cameras.size())
         m_nCamera = 0;
     int nObject = m_cameras[m_nCamera];
-    FUN_140ad4b90()->FUN_1418631f0(nObject, 1);
+    FUN_140ad4b90()->QueueCameraStep(nObject, 1);
 }
 
 // @0x140fc17d0
@@ -240,7 +240,7 @@ void UIWatchAGameDialog::FUN_140fc17d0()
     if (m_nCamera < 0 || m_nCamera >= (int)m_cameras.size())
         return;
     int nObject = m_cameras[m_nCamera];
-    FUN_140ad4b90()->FUN_1418631f0(nObject, 0);
+    FUN_140ad4b90()->QueueCameraStep(nObject, 0);
 }
 
 // @0x140fc1850

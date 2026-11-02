@@ -143,6 +143,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/gemstoneslot.h"
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/commonfiles/os.h"
 
 // return types of the getters this unit calls
 class Unk_140166410;
@@ -200,7 +201,7 @@ class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 class UIMyInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141a5a5c0();
+    void MarkDirty();
 };
 CItemGemStoneUpgradeTable* FUN_14062c280();
 void FUN_1412761e0(MS2Ptr<AScript>, int);
@@ -222,8 +223,8 @@ class Unk_Inventory   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a5f180(int, int);
+    int FUN_140a5f780(int, int);
 };
-int FUN_140a5f780(Unk_SocketPageInventoryCount*, int, int);
 int FUN_140627b80(int, unsigned int);   // C3: was FUN_140627b80
 CString FUN_1422cc860(const CString&, int);
 void FUN_14141f970(const CString&);
@@ -441,7 +442,7 @@ void ItemSocketSystemPageBase::vfunc_2()
             ((class CEquipment*)(class Unk_SocketPageInventory*)(((class Unk_SocketPageInventory*)((class PC*)(class Unk_SocketPagePlayer*)(player))->FUN_1416561a0())))->FUN_1411e7660();
         Unk_SocketPageDialog* dialog = ((class Unk_SocketPageDialog*)FUN_140938c30(10001));
         if (dialog != 0)
-            ((class UIMyInfoDialog*)(class Unk_SocketPageDialog*)(dialog))->FUN_141a5a5c0();
+            ((class UIMyInfoDialog*)(class Unk_SocketPageDialog*)(dialog))->MarkDirty();
     }
     m_restoreInventory = false;
 }
@@ -758,7 +759,7 @@ void ItemSocketSystemPageBase::FUN_140f6dc70(const CString& name, CIngredientCon
         unsigned baseNeeded = item->GetCount();
         unsigned needed = enabled != 0 ? FUN_140627b80(baseNeeded, rate) : baseNeeded;
         row.FUN_1407cbb20("countText", FUN_1419021b0(owned, needed));
-        rows.FUN_1422bc050(row.FUN_1422bb870());
+        rows.PushValue(row.FUN_1422bb870());
         if (owned < needed) {
             if (item->FUN_140526320() != 0)
                 *price += static_cast<unsigned __int64>((needed - owned) * 1000);
@@ -815,7 +816,7 @@ int ItemSocketSystemPageBase::FUN_140f6e580(MS2Ptr<CItem> item, MS2Ptr<CItem> ex
     int count = ((class Unk_Inventory*)(class Unk_SocketPageInventoryCount*)(reinterpret_cast<Unk_SocketPageInventoryCount*>(&DAT_143ab2a90)))->FUN_140a5f180(item->FUN_1405276c0(), item->FUN_140526bd0());
     int group = ((class CItemData*)(class Unk_ItemEquipData*)(item->FUN_140527840()))->GetStringTag();
     if (group != 0)
-        count = FUN_140a5f780(reinterpret_cast<Unk_SocketPageInventoryCount*>(&DAT_143ab2a90), group, 0);
+        count = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5f780(group, 0);
     if (excluded.get() != 0)
         excluded->FUN_1405269d0(0);
     return count;
@@ -1212,10 +1213,10 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
     int shown = slot + 1;
     bool lack = false;
     __int64 fee = 0;
-    int itemId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)costItemId);
+    int itemId = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)costItemId);
     if (costCount > 0) {
         int grade = FUN_14053feb0(itemId);
-        int have = FUN_140a5f780(reinterpret_cast<Unk_SocketPageInventoryCount*>(&DAT_143ab2a90), costItemId, grade);
+        int have = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5f780(costItemId, grade);
         if (have < costCount) {
             if (costItemId == 0x60) {
                 unsigned missing = costCount - have;
@@ -2284,7 +2285,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79c50(ItemInfoSlot& slot, ASTo
             MS2Ptr<AScript> sub = reinterpret_cast<ASTooltip*>(&tooltip)->GetLhsTooltip();
             if (sub.get() != 0) {
                 ASTooltip compare(sub->FUN_1422bb870(), 2);
-                if (!compare.FUN_1422ba9a0() && !FUN_1414258e0(equip->GetItemUid()))
+                if (!compare.IsUndefinedOrNull() && !FUN_1414258e0(equip->GetItemUid()))
                     compare.SetItemEquipText(true);
             }
         }

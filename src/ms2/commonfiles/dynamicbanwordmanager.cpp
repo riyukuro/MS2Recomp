@@ -16,14 +16,14 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "dynamicbanwordmanager.h"
 #include "ms2/ms2format.h"
+#include "logstring.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 class Unk_BanLogger {
 public:
-    void Write(void*,void*,int,const wchar_t*,const fmt::ArgList&);
     template<class T> void Write(void* a,void* b,int flags,const wchar_t* format,const T& value) {
         fmt::internal::Value values[]={fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
-        Write(a,b,flags,format,fmt::ArgList(fmt::internal::make_type(value),values));
+        reinterpret_cast<CLogString*>(this)->FUN_1406535b0((unsigned __int64)a,(unsigned __int64)b,flags,format,fmt::ArgList(fmt::internal::make_type(value),values));
     }
 };
 class CLogString* GetLogString();
@@ -114,16 +114,16 @@ MS2_REPLACE_METHOD(0x140349D00, CBannedWordFilter, FUN_140349d00, 548, 0x609142C
 // @0x140349f30
 CDynamicBanWordManager::CDynamicBanWordManager() : current(0),next(0) {}
 // @0x140349fb0
-void CDynamicBanWordManager::SetCurrent(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { current=value; } }
+void CDynamicBanWordManager::SetCurrent(const Ptr& value) { if(Unk_LockGuard guard=lock) {} else { current=value; } }
 MS2_REPLACE_METHOD(0x140349FB0, CDynamicBanWordManager, SetCurrent, 100, 0xF3B3E865);
 // @0x14034a020
-CDynamicBanWordManager::Ptr CDynamicBanWordManager::GetCurrent() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return current; } }
+CDynamicBanWordManager::Ptr CDynamicBanWordManager::GetCurrent() { if(Unk_LockGuard guard=lock) { __assume(0); } else { return current; } }
 MS2_REPLACE_METHOD(0x14034a020, CDynamicBanWordManager, GetCurrent, 136, 0xDD3192F5);
 // @0x14034a0b0
-void CDynamicBanWordManager::SetNext(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { next=value; } }
+void CDynamicBanWordManager::SetNext(const Ptr& value) { if(Unk_LockGuard guard=lock) {} else { next=value; } }
 MS2_REPLACE_METHOD(0x14034A0B0, CDynamicBanWordManager, SetNext, 100, 0x9E82B8B1);
 // @0x14034a120
-CDynamicBanWordManager::Ptr CDynamicBanWordManager::GetNext() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return next; } }
+CDynamicBanWordManager::Ptr CDynamicBanWordManager::GetNext() { if(Unk_LockGuard guard=lock) { __assume(0); } else { return next; } }
 MS2_REPLACE_METHOD(0x14034a120, CDynamicBanWordManager, GetNext, 136, 0x81959B88);
 // @0x14034a1b0
 __int64 CDynamicBanWordManager::GetCurrentVersion() { Ptr value=GetCurrent(); if(value==0) return 0; return value->FUN_140349400(); }

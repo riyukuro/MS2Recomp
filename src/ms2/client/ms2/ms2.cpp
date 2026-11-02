@@ -425,9 +425,6 @@ public:
 };
 MS2_CHECK_SIZE(Unk_InstanceEvent, 0x30);
 
-// The scoped lock of CLockCriticalSection (ctor 0x140203610, dtor 0x1401b5120).
-struct Unk_EngineLogLock { Unk_EngineLogLock(CLockCriticalSection& cs, int n); ~Unk_EngineLogLock(); void* p; };
-MS2_CHECK_SIZE(Unk_EngineLogLock, 8);
 
 // Unk_1401cd100 (ctor 0x1401cd100) comes from cubemapinformationservice_3.h.
 
@@ -736,24 +733,24 @@ void MS2::MessageLoop()
 }
 MS2_REPLACE_METHOD(0x14148A820, MS2, MessageLoop, 372, 0x6165E8A6);
 // ---- MS2::PrepareShaderCache callees: the game TinyXML (bare global names, not efd::) and the shader file helpers
-class Unk_TiXmlElement
+class TiXmlElement   // C3: member view of the game TinyXML element
 {
 public:
-    Unk_TiXmlElement(const char* pszName);                      // 0x14086f2f0
-    ~Unk_TiXmlElement();                                        // 0x14086f450
+    TiXmlElement(const char* pszName);                          // 0x14086f2f0
+    virtual ~TiXmlElement();                                    // 0x14086f450
 private:
-    void* m_data[0x12];
+    void* m_data[0x11];
 };
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
-class Unk_TiXmlDeclaration
+MS2_CHECK_SIZE(TiXmlElement, 0x90);
+class TiXmlDeclaration   // C3: member view
 {
 public:
-    Unk_TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // 0x1408704d0
-    ~Unk_TiXmlDeclaration();                                    // 0x14081ad20
+    TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // 0x1408704d0
+    virtual ~TiXmlDeclaration();                                // 0x14081ad20
 private:
-    void* m_data[0xd];
+    void* m_data[0xc];
 };
-MS2_CHECK_SIZE(Unk_TiXmlDeclaration, 0x68);
+MS2_CHECK_SIZE(TiXmlDeclaration, 0x68);
 class Unk_TiXmlComment
 {
 public:
@@ -764,9 +761,12 @@ private:
 };
 MS2_CHECK_SIZE(Unk_TiXmlComment, 0x50);
 Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);             // the root element
-void* FUN_14086e000(void* pParent, const void* pChild);         // InsertEndChild
+class TiXmlNode   // C3: member view for the former free stand-in FUN_14086e000
+{
+public:
+    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
+};
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);   // SaveFile
 CString FUN_1409a2360(const char* psz, int n);                  // text conversion
 void FUN_141b70490(const CStringA& strDir);                     // deletes a directory tree
 
@@ -797,7 +797,7 @@ void MS2::PrepareShaderCache()
             if (nVersion != 8)
             {
                 XmlSetAttr((class TiXmlElement*)(pShader), "ver", 8);
-                FUN_1408710c0(&kDoc, strVersionFile);
+                kDoc.SaveFile(strVersionFile);
             }
             bWriteVersion = false;
         }
@@ -805,24 +805,24 @@ void MS2::PrepareShaderCache()
     if (bWriteVersion)
     {
         TiXmlDocument kNewDoc;
-        Unk_TiXmlDeclaration kDeclaration("1.0", "utf-8", "");
-        FUN_14086e000(&kNewDoc, &kDeclaration);
+        TiXmlDeclaration kDeclaration("1.0", "utf-8", "");
+        ((class TiXmlNode*)(void*)(&kNewDoc))->InsertEndChild(*(class TiXmlNode const*)(&kDeclaration));
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
 #endif
         // the comment is a temporary whose address is passed (MSVC extension: & of an rvalue)
-        FUN_14086e000(&kNewDoc, &Unk_TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
+        ((class TiXmlNode*)(void*)(&kNewDoc))->InsertEndChild(*(class TiXmlNode const*)&Unk_TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
             "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0)));
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-        Unk_TiXmlElement kRoot("ms2");
-        Unk_TiXmlElement kShader("shader");
+        TiXmlElement kRoot("ms2");
+        TiXmlElement kShader("shader");
         XmlSetAttr((class TiXmlElement*)(&kShader), "ver", 8);
-        FUN_14086e000(&kRoot, &kShader);
-        FUN_14086e000(&kNewDoc, &kRoot);
-        FUN_1408710c0(&kNewDoc, strVersionFile);
+        ((class TiXmlNode*)(void*)(&kRoot))->InsertEndChild(*(class TiXmlNode const*)(&kShader));
+        ((class TiXmlNode*)(void*)(&kNewDoc))->InsertEndChild(*(class TiXmlNode const*)(&kRoot));
+        kNewDoc.SaveFile(strVersionFile);
     }
     if (nVersion != 8)
     {
@@ -2352,7 +2352,7 @@ EngineLog::EngineLog()
     s_strEngineLogFile = "MS2Log.txt";
     if (!efd::File::DefaultDirectoryExistsFunc("ms2log"))
         FUN_1414a5a40(CStringW(L"ms2log"));
-    Unk_EngineLogLock lock(s_engineLogLock, 1);
+    Unk_PetLock lock(s_engineLogLock, 1);
     if (s_pEngineLogFile == 0) {
         CString strName;
         bool bAllExist = false;
@@ -2408,7 +2408,7 @@ EngineLog::EngineLog()
 // @0x1414921b0
 EngineLog::~EngineLog()
 {
-    Unk_EngineLogLock lock(s_engineLogLock, 1);
+    Unk_PetLock lock(s_engineLogLock, 1);
     if (s_pEngineLogFile) {
         fclose(s_pEngineLogFile);
         s_pEngineLogFile = 0;
@@ -2417,7 +2417,7 @@ EngineLog::~EngineLog()
 // @0x141492230
 void EngineLog::Write(efd::UInt16 uiModule, efd::UInt8 uiLevel, const char* pszMessage)
 {
-    Unk_EngineLogLock lock(s_engineLogLock, 1);
+    Unk_PetLock lock(s_engineLogLock, 1);
     if (s_pEngineLogFile == 0)
         s_pEngineLogFile = fopen(s_strEngineLogFile, "a");
     if (s_pEngineLogFile) {

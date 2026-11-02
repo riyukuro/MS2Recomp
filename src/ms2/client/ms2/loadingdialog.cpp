@@ -15,6 +15,11 @@
 // declared up front so the pragma applies before the CRT headers define abs(long)
 extern "C" long __cdecl labs(long);
 #pragma function(labs)
+// the exe calls memset out of line in the CImage::CreateEx header inline; the pragma needs memset declared first
+#include <string.h>
+#pragma function(memset)
+// the exe's ATL was built XP-targeted: _AtlInitializeCriticalSectionEx falls back to InitializeCriticalSectionAndSpinCount
+#define _ATL_XP_TARGETING
 #include "ms2/placeholder/cloadingdialog.h"
 
 #include <afxwin.h>
@@ -24,6 +29,8 @@ extern "C" long __cdecl labs(long);
 
 #include "ms2/placeholder/ms2memfile.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+// this unit's own code (FillWndClass) gets the inline rep stosb
+#pragma intrinsic(memset)
 
 // Header statics this TU shares with its neighbours (unit_1400d2c40 holds the other TUs' copies): the sort-type name
 // table and a null MS2Ptr handle whose pointee type is unknown. The handle's MS2Ptr COMDATs (0x140d4ba40 ctor,
@@ -431,5 +438,3 @@ LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 // MS2-PIN: ?CreateEx@CImage@ATL@@QEAAHHHHKPEBKK@Z 0x140d4c420
 // MS2-PIN: ?_AtlInitializeCriticalSectionEx@ATL@@YAHPEAU_RTL_CRITICAL_SECTION@@KK@Z 0x140d4db60
 // MS2-PIN: ?abs@@YAJJ@Z 0x140d4dcc0
-// MS2-FUNCTIONAL ?CreateEx@CImage@ATL@@QEAAHHHHKPEBKK@Z: the exe calls memset out of line for the BITMAPINFO/palette clears; /Oi expands the memset intrinsic (rep stosb, extra rdi save) inside the header inline
-// MS2-FUNCTIONAL ?_AtlInitializeCriticalSectionEx@ATL@@YAHPEAU_RTL_CRITICAL_SECTION@@KK@Z: the exe's ATL takes the pre-Vista branch (InitializeCriticalSectionAndSpinCount(cs, spin)); 14.16 calls InitializeCriticalSectionEx(cs, spin, flags), same result for flags 0

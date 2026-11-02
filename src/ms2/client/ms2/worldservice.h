@@ -230,7 +230,7 @@ struct Unk_WsVac0 { void* p; };
 struct Unk_WsVad0 { void* p0; void* p1; };
 // Target of the MS2Ptr members (some CPtred subclass; TYPE? per member).
 class Unk_WsPtred : public CPtred {};
-class CPortal;                                           // m_350 value (FUN_141bc2880)
+class CPortal;                                           // m_350 value (FindPortalByDestMap)
 class CFieldDataCli;                                     // m_298 value (FUN_141bd30a0, fielddatacli.h)
 class Unk_WsRec708;                                      // m_708 value (defined in worldservice.cpp#1 / #4)
 class Unk_WsPtred298 : public CPtred       // one class per MS2Ptr member (distinct ctor/dtor COMDATs in the exe)
@@ -309,7 +309,7 @@ public:
     void FUN_141bc0530(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category targetChannel);      // EE_HANDLER_WRAP id 12299
     void FUN_141bc0a70(const egf::EntityLoadResult* pMsg, efd::Category targetChannel);
     void FUN_141bbf9f0(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
-    void FUN_141bbfde0(const egmAnimation::ActorRemovedMessage* pMsg, efd::Category targetChannel);
+    void OnActorRemoved(const egmAnimation::ActorRemovedMessage* pMsg, efd::Category targetChannel);
     void FUN_141bc0f50(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
     efd::SmartPointer<egf::EntityManager> GetEntityManager();   // copy of m_268
     int FUN_141bc2b30();                                // sum of m_350 values' +0x188
@@ -318,14 +318,14 @@ public:
     void* FUN_141bd3620();                              // (unrecovered, #1)
     void FUN_141bc8fe0(unsigned __int64 key);           // m_468.RemoveKey
     void FUN_141bc9fd0(int key);                        // m_9d0.SetAt(key, 0)
-    void FUN_141bca010();                               // re-arm the 0xa5 timer (m_a70/m_a74/m_a78)
-    void FUN_141bca090();                               // timer expired -> send 0xa5(1)
+    void ResetIdleTimer();                               // re-arm the 0xa5 timer (m_a70/m_a74/m_a78)
+    void CheckIdleTimeout();                               // timer expired -> send 0xa5(1)
     void SendSyncWorld(bool b);                         // send COutPacket 0xa5 { u8 b }
-    void FUN_141bca170(int interval);                   // m_a70 = interval
+    void SetIdleInterval(int interval);                   // m_a70 = interval
     void FUN_141bca1e0();                               // m_2b8 = 1 ...
     void FUN_141bca240();
     void* FUN_141bd0cc0();                              // the local player: m_2d8's pointee, a MyPC (cast with static_cast<PC*>; fittingdollpc.h has PC with slots to 146)
-    void FUN_141bcf9f0();                               // (unrecovered, #1)
+    void OnGameStart();                               // (unrecovered, #1)
     void NotifyChangeServer();                               // (unrecovered, #1)
     void FUN_141bca390(unsigned key);                   // m_1a8.RemoveKey
     void FUN_141bca630();
@@ -351,9 +351,9 @@ public:
     void FUN_141bbd490(egf::Entity* entity, void* sceneNode);                           // track a shadow-casting entity in m_2e8
     Vector3 FUN_141bc0ff0(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
     void FUN_141bc12b0();                                                              // take extra refs on the parts of every object of the active class filter
-    void FUN_141bc2730();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
+    void ClearFieldObjects();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
     Unk_WsA_FieldRef FUN_141bc2800(int id);                                            // m_350.Lookup(field object id), by value (null when absent)
-    MS2Ptr<CPortal> FUN_141bc2880(int mapType);                                        // first m_350 portal with this map type (by value)
+    MS2Ptr<CPortal> FindPortalByDestMap(int mapType);                                        // first m_350 portal with this map type (by value)
     void FUN_141bc2980(void* outIds);                                                  // append every field object id to the CAtlArray<int>
     void FUN_141bc2a70(int type, void* outRefs);                                       // collect the field objects of this type into the CAtlArray of refs
     void FUN_141bc24e0(int id);                                                        // unregister field object id (entity lists, m_838, m_350, proxy)
@@ -364,7 +364,7 @@ public:
     void FUN_141bc3140(int id, int visible, int enabled, int hidden);                  // set the field object's visible / enabled / hidden properties
     void FUN_141bc31d0(int id, Vector3 pos, Vector3 scale);            // set the field object's position / scale
     int FUN_141bc32d0(void* obj);                                                      // register obj (id at +0x40) in m_3a0; 1 if it was new
-    void* FUN_141bc3360(int id);                                                       // m_3a0 lookup, or null
+    void* GetRegionSkillObject(int id);                                                       // m_3a0 lookup, or null
     void FUN_141bc33d0(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
     void FUN_141bc3470(Unk_WsR3f0Val value, Unk_WsR3f0Key key);                  // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
     void FUN_141bc2c90(Vector3 pt, void* outRefs);                             // field objects containing pt appended to the ref array, sorted nearest first
@@ -379,10 +379,10 @@ public:
     void FUN_141bc51d0(float dt); // 0x141bc51d0
     void FUN_141bc5420(class Unk_WsB_Packet* pkt); // 0x141bc5420
     void FUN_141bc5830(CString name); // 0x141bc5830
-    MS2Ptr<class Unk_WsB_Lift> FUN_141bc5a20(CString name); // 0x141bc5a20
+    MS2Ptr<class Unk_WsB_Lift> FindLiftByName(CString name); // 0x141bc5a20
     void FUN_141bc5ab0(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5ab0
-    void FUN_141bc5b30(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5b30
-    efd::SmartPointer<class Unk_WsB_RefObj> FUN_141bc5bb0(unsigned __int64 key); // 0x141bc5bb0
+    void RemoveRefObject(efd::SmartPointer<class Unk_WsB_RefObj> obj); // 0x141bc5b30
+    efd::SmartPointer<class Unk_WsB_RefObj> FindRefObject(unsigned __int64 key); // 0x141bc5bb0
     void AddProp(MS2Ptr<class Unk_WsB_Prop> prop); // 0x141bc5c40
     void FUN_141bc5d60(const CString& name); // 0x141bc5d60
     void FUN_141bc5e20(int category); // 0x141bc5e20
@@ -390,34 +390,34 @@ public:
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc6090(const Vector3& pos, int skipDisabled); // 0x141bc6090
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled); // 0x141bc62b0
     MS2Ptr<class Unk_WsB_Prop> FUN_141bc6510(const Vector3& pos, int kind); // 0x141bc6510
-    MS2Ptr<class Unk_WsB_Prop> FUN_141bc66b0(const CString& name); // 0x141bc66b0
+    MS2Ptr<class Unk_WsB_Prop> FindProp(const CString& name); // 0x141bc66b0
     void FUN_141bc6760(const CString& name, int arg3, int category, int arg5); // 0x141bc6760
     void FUN_141bc6860(const CString& name, int arg3, int category); // 0x141bc6860
     void FUN_141bc6930(int kind, int arg); // 0x141bc6930
     efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6c60(const Vector3& pos, int skipUnusable); // 0x141bc6c60
-    efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6eb0(const CString& name); // 0x141bc6eb0
+    efd::SmartPointer<class Unk_WsB_Spawn> FindSpawnByName(const CString& name); // 0x141bc6eb0
     int FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const;  // 0x141bc6fb0 (returns 0/1 in eax)
-    class FieldProperty* FUN_141bcab60(unsigned type); // 0x141bcab60
+    class FieldProperty* FindFieldProperty(unsigned type); // 0x141bcab60
     int FUN_141bc7920(std::set<void*>& visible); // 0x141bc7920 (returns 0/1 in eax)
     int FUN_141bc7aa0(int id, std::set<unsigned __int64>& out);  // 0x141bc7aa0 (returns !out.empty() as an int)
     bool FUN_141bc7b20(const unsigned __int64& key); // 0x141bc7b20 (merge3: is `key` present in m_1d8; was mis-recovered as erase(iterator))
     void FUN_141bc7b80(int force); // 0x141bc7b80
     void FUN_141bc7d40(const unsigned __int64& key); // 0x141bc7d40
-    void FUN_141bc7ec0(const unsigned __int64& key); // 0x141bc7ec0
-    void FUN_141bc7f10(const unsigned __int64& key); // 0x141bc7f10
+    void AddCombatBgmTracker(const unsigned __int64& key); // 0x141bc7ec0
+    void FUN_141bc7f10(egf::EntityID key); // 0x141bc7f10 (by value at both exe sites)
     void FUN_141bc7fe0(const unsigned __int64& key); // 0x141bc7fe0
     int FUN_141bc80c0(int channel); // 0x141bc80c0
     void FUN_141bc8e00(); // 0x141bc8e00
-    void FUN_141bc8ef0(unsigned __int64 key, MS2Ptr<class Unk_WsB_Vibrator> vibrator); // 0x141bc8ef0 (key by value, as m_468's SetAt)
-    MS2Ptr<class Unk_WsB_Vibrator> FUN_141bc8f60(unsigned __int64 key); // 0x141bc8f60 (key by value in r8, as m_468's Lookup)
+    void AddVibrator(unsigned __int64 key, MS2Ptr<class Unk_WsB_Vibrator> vibrator); // 0x141bc8ef0 (key by value, as m_468's SetAt)
+    MS2Ptr<class Unk_WsB_Vibrator> FindVibrator(unsigned __int64 key); // 0x141bc8f60 (key by value in r8, as m_468's Lookup)
     void FUN_141bc9020(CString name, class Unk_WsB_ShakeRef shake, CString shakeName, bool flag); // 0x141bc9020
     void FUN_141bc92e0(CString name); // 0x141bc92e0
     void FUN_141bc9480(CString name); // 0x141bc9480
     void FUN_141bc9560(CString name, CString model, unsigned char mode); // 0x141bc9560
     int  FUN_141bc9830(int* id, CString& name, float maxDist); // 0x141bc9830
-    void FUN_141bc9aa0(MS2Ptr<class Unk_WsB_Notice> notice); // 0x141bc9aa0
-    void FUN_141bc9b30(unsigned id); // 0x141bc9b30
-    MS2Ptr<class Unk_WsB_Notice> FUN_141bc9be0(unsigned id); // 0x141bc9be0
+    void AddProxyObject(MS2Ptr<class Unk_WsB_Notice> notice); // 0x141bc9aa0
+    void RemoveProxyObject(unsigned id); // 0x141bc9b30
+    MS2Ptr<class Unk_WsB_Notice> FindProxyObject(unsigned id); // 0x141bc9be0
     MS2Ptr<class Unk_WsB_Notice> FUN_141bc9c60(void* owner); // 0x141bc9c60
     MS2Ptr<class Unk_WsB_Notice> FUN_141bc9d60(const CStringW& text); // 0x141bc9d60
     MS2Ptr<class Unk_WsB_Notice> FUN_141bc9e70(int kind); // 0x141bc9e70
@@ -428,7 +428,7 @@ public:
     void FUN_141bcabf0(); // 0x141bcabf0
     bool FUN_141bcada0(__int64 id); // 0x141bcada0
     int FUN_141bcafa0(egf::Entity* entity); // 0x141bcafa0
-    bool FUN_141bcb0a0(); // 0x141bcb0a0
+    bool HasTutorial(); // 0x141bcb0a0
     bool FUN_141bcb150(); // 0x141bcb150
     bool FUN_141bcb1a0(); // 0x141bcb1a0
     bool FUN_141bcb210(); // 0x141bcb210
@@ -451,7 +451,7 @@ public:
     egf::Entity* FUN_141bd04d0(unsigned key);
     egf::Entity* FUN_141bd0560(unsigned key, unsigned prop, float x, float y);
     egf::Entity* FUN_141bd08f0(unsigned key, unsigned prop, float x, float y, __int64 filter);
-    void FUN_141bd0cf0(void* pPlayer);                  // m_2d8 = pPlayer
+    void SetMyPC(void* pPlayer);                  // m_2d8 = pPlayer
     CStringW FUN_141bd0d30();                           // m_2d8's name or ""
     int FUN_141bd0dd0(Vector3* pos, Vector3* dir);
     class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* p);
@@ -557,7 +557,7 @@ public:
     void FUN_141bd97a0(unsigned __int64 id);            // remove the debug tooltip of id
     int FUN_141bd9870();                                // per-class table value of the local player
     int FUN_141bd98d0();                                // m_2c0
-    int FUN_141bd98f0();                                // class index of the local player
+    int GetFieldChannelGroupId();                                // class index of the local player
     void FUN_141bd9950(const CString& s);               // m_a60 = s
     void FUN_141bd9990(const CString& s);               // m_a68 = s
     int FUN_141bd99d0(int id);                          // count the m_678 kind-6 objects linked to record id
@@ -577,9 +577,9 @@ public:
     void FUN_141bda9f0();                               // m_890 operation
     void FUN_141bdaa20();                               // m_890 operation
     efd::SmartPointer<egf::Entity> FUN_141bdaa50(efd::SmartPointer<egf::Entity> spEntity);   // m_890: the entity whose proxy shows spEntity
-    void FUN_141bdaae0();                               // show the node viewer dialog
+    void ShowNodeViewerDialog();                               // show the node viewer dialog
     void ShowResearchAndDevelopmentDialog();                               // show the research and development dialog
-    void FUN_141bdac80(CStringA text);                  // append a line to that dialog
+    void SetResearchDialogStatus(CStringA text);                  // append a line to that dialog
     void FUN_141bdad00(int kind, struct Unk_WsD_Msg* msg);   // forward kind 0x17 / 0x18 / 0x19 messages to m_aa0
     void FUN_141bdb5a0(int v);                          // m_ae0 = v
     int FUN_141bdb5c0();                                // m_ae0

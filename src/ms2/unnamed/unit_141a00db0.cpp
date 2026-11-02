@@ -65,14 +65,14 @@ bool CMsgBoxData::HasCallback()
 MS2_REPLACE_METHOD(0x141A01480, CMsgBoxData, HasCallback, 63, 0x30009C27);
 
 // @0x141a014d0
-bool CMsgBoxData::FUN_141a014d0(int n, Scaleform::GFx::Value* pMovie)
+bool CMsgBoxData::InvokeCallback(int n, Scaleform::GFx::Value* pMovie)
 {
     if (m_callback.IsNull())
         return false;
     m_movie = *pMovie;
     return m_callback(n, *this);
 }
-MS2_REPLACE_METHOD(0x141A014D0, CMsgBoxData, FUN_141a014d0, 105, 0x844FB949);
+MS2_REPLACE_METHOD(0x141A014D0, CMsgBoxData, InvokeCallback, 105, 0x844FB949);
 
 // @0x141a01540
 void CMsgBoxData::FUN_141a01540(const CStringW& strTag)
@@ -131,13 +131,13 @@ void CMsgBoxData::SetExtra(const CStringW& strTag)
 MS2_REPLACE_METHOD(0x141A01660, CMsgBoxData, SetExtra, 42, 0x0C3F20DC);
 
 // @0x141a01690
-void CMsgBoxData::FUN_141a01690(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2)
+void CMsgBoxData::SetButtonLabels(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2)
 {
     m_strBtn0 = strBtn0;
     m_strBtn1 = strBtn1;
     m_strBtn2 = strBtn2;
 }
-MS2_REPLACE_METHOD(0x141A01690, CMsgBoxData, FUN_141a01690, 98, 0x50FBFC55);
+MS2_REPLACE_METHOD(0x141A01690, CMsgBoxData, SetButtonLabels, 98, 0x50FBFC55);
 
 // @0x141a01700
 void CMsgBoxData::FUN_141a01700(int nA, int nB, int nC)
@@ -205,7 +205,7 @@ void CMsgBoxData::SetStrike(const CStringW& str)
 MS2_REPLACE_METHOD(0x141A01C70, CMsgBoxData, SetStrike, 42, 0x96759442);
 
 // @0x141a01ca0
-void CMsgBoxData::FUN_141a01ca0(int nSec, int nShowFormat, const CStringW& strFormat)
+void CMsgBoxData::SetTimer(int nSec, int nShowFormat, const CStringW& strFormat)
 {
     m_nFlags |= 4;
     m_timer.m_nSec = nSec;
@@ -213,7 +213,7 @@ void CMsgBoxData::FUN_141a01ca0(int nSec, int nShowFormat, const CStringW& strFo
     m_timer.m_nShowFormat = nShowFormat;
     m_timer.m_strFormat = strFormat;
 }
-MS2_REPLACE_METHOD(0x141A01CA0, CMsgBoxData, FUN_141a01ca0, 124, 0xA9E8F79C);
+MS2_REPLACE_METHOD(0x141A01CA0, CMsgBoxData, SetTimer, 124, 0xA9E8F79C);
 
 // @0x141a01d30
 void CMsgBoxData::FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned int nMax, int nShowLimit, int nMaxLine)
@@ -352,12 +352,12 @@ void CMsgBoxData::SetCheckbox0Enabled(bool b)
 MS2_REPLACE_METHOD(0x141A02670, CMsgBoxData, SetCheckbox0Enabled, 51, 0x037F8A96);
 
 // @0x141a026f0
-void CMsgBoxData::FUN_141a026f0(bool b)
+void CMsgBoxData::SetCheckboxMust(bool b)
 {
     m_nFlags |= 8;
     m_checks.m_bMust = b;
 }
-MS2_REPLACE_METHOD(0x141A026F0, CMsgBoxData, FUN_141a026f0, 51, 0x68E00F0A);
+MS2_REPLACE_METHOD(0x141A026F0, CMsgBoxData, SetCheckboxMust, 51, 0x68E00F0A);
 
 // @0x141a02730
 void CMsgBoxData::SetAgreement(bool b)

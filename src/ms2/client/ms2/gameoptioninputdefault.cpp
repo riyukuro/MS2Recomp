@@ -88,7 +88,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CSt
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show it
 CStringW BlockFormat(int nStrId);                                       // string table text by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text by key
-CStringW FUN_14052bd00(int nStrId, const CStringW& strArg);             // formatted string table text
+template <class A> CStringW FormatStringId(int nId, const A& a);
 
 template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v)
 {
@@ -304,7 +304,7 @@ int CGameOptionInputDefault::vfunc_8()
             if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
             {
                 m_bConfirm = 1;
-                FUN_140d73aa0(FUN_14052bd00(0x84f, strName), 1, static_cast<IMessageListener*>(this), CStringW(strKey));
+                FUN_140d73aa0(FormatStringId<CStringW>(0x84f, strName), 1, static_cast<IMessageListener*>(this), CStringW(strKey));
             }
             else
             {
@@ -369,11 +369,10 @@ int CGameOptionInputDefault::vfunc_5(const char* pszName, void* pArg, int nArg)
 }
 MS2_REPLACE_METHOD(0x141251A30, CGameOptionInputDefault, vfunc_5, 825, 0xD9D6C1D4);
 
-// MS2-FUNCTIONAL: the exe returns an int (xor eax,eax); the CBaseOption slot is declared bool (xor al,al)
 // @0x141251d90
 int CGameOptionInputDefault::vfunc_14()
 {
-    return m_bChanged != 0;
+    return m_bChanged;
 }
 
 // @0x141251db0

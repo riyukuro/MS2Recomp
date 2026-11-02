@@ -27,9 +27,12 @@
 #include "ms2/placeholder/crashmanagercli.h"
 #include "bigdatalogsystem.h"
 #include "ms2/placeholder/cgameoption.h"
-#include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/ms2format.h"
+#include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2.h"
+#include "uilogindialog.h"
 #pragma comment(lib, "user32.lib")
 
 // Statics of the unit's header (initialized in this order in .text$di).
@@ -131,41 +134,30 @@ private:
     void* m_pad_00;
     struct Unk_Worker* m_p;
 };
-class Unk_HudPtr {                      // handle returned by the UI manager lookup
-public:
-    ~Unk_HudPtr();                      // 0x140a58400
-    void* FUN_140a58470();              // non-null test (operator T*)
-    struct Unk_HudCursor* FUN_140a584a0();  // operator->
-private:
-    void* m_pad_00;
-    void* m_pad_08;
-};
-class Unk_LoginDialog;
 int FUN_141b938f0(int);
 void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
 class Unk_SingletonObj* FUN_1414a56c0();   // C3: was FUN_1414a56c0
 
-extern Unk_WorkerPtr g_workerPtr;       // 0x143ac2bd0
+class Unk_HeldObject;
+extern MS2Ptr<Unk_HeldObject> DAT_143ac2bd0;
+#define g_workerPtr reinterpret_cast<Unk_WorkerPtr&>(DAT_143ac2bd0)
 class CLoadingDialog   // C3: member view for the former free stand-ins
 {
 public:
     void Close();
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class GFxManager { public: MS2Ptr<ASMouseCursor> GetMouseCursor(int nMovieId); };
+class Unk_AltStringMgr* FUN_14025e7a0();
+template <class T> T* Unk_MessageBoxDialog(int);
 float FUN_14028aed0(float f);                                       // floor(float)
-struct Unk_WinMovieMgrView { Unk_HudPtr FUN_1422b0370(int nLayer); };   // member (this=rcx, hidden return=rdx)
-struct Unk_HudCursor : public ASMouseCursor { };   // ASMouseCursor (0x1422cec40)
 void FUN_14209cc20(void*, void*);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW GetStringCommon(unsigned);
+template <typename A> CStringW BlockFormat(int nId, const A& a);
+CStringW GetStringCommon(int);
 CStringW FUN_1401d0080(const CStringW&, const CStringW&);
-CStringW FUN_14052bd00(unsigned, const CStringW&);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
-Unk_LoginDialog* FUN_141a003b0(int);
-void FUN_1419e21e0(Unk_LoginDialog*, CStringW);
+
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*)(int, const CMsgBoxData&));
 bool FUN_141902530(int, const CMsgBoxData&);
@@ -190,10 +182,8 @@ public:
     static class WorldService* GetInstance();
 };
 void* FUN_140aae430();
-int FUN_141489fb0(void*);
-void FUN_141489f40(void*);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-__int64 FUN_141ade340(HWND, UINT, WPARAM, LPARAM);
+__int64 FUN_141ade340(void*, int, void*, void*);
 
 LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -428,9 +418,9 @@ int FUN_141b91ab0()
 void FUN_141b91b20(bool bValue)
 {
     g_byteFlag1439faadc = bValue;
-    Unk_HudPtr hud = static_cast<Unk_WinMovieMgrView*>(((void*)FUN_14025e7a0()))->FUN_1422b0370(6);
-    if (hud.FUN_140a58470())
-        hud.FUN_140a584a0()->FUN_1422cec40(bValue);
+    MS2Ptr<ASMouseCursor> hud = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetMouseCursor(6);
+    if (hud.operator ASMouseCursor*())
+        hud.operator->()->FUN_1422cec40(bValue);
 }
 
 // @0x141b91ba0
@@ -541,7 +531,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 case 0x2afb: nMsgId = 0xd28; break;
                 case 0x2afc: nMsgId = 0xd28;
                 }
-                CStringW strReason = GetStringCommon(nMsgId);
+                CStringW strReason = GetStringCommon((int)nMsgId);
                 if (!strReason.IsEmpty())
                     strReason += L" : ";
                 CStringW strCode;
@@ -551,12 +541,12 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                     nFormatId = 0xc69;
                 else
                     nFormatId = 0x20f;
-                CStringW strMessage = FUN_14052bd00(nFormatId, FUN_1401d0080(strReason, strCode));
+                CStringW strMessage = FormatStringId<CStringW>((int)nFormatId, FUN_1401d0080(strReason, strCode));
                 if (DAT_143ab2858 != 0)
                 {
-                    Unk_LoginDialog* pLogin = FUN_141a003b0(0x4e22);
+                    UILoginDialog* pLogin = Unk_MessageBoxDialog<UILoginDialog>(0x4e22);
                     if (pLogin != 0)
-                        FUN_1419e21e0(pLogin, strMessage);
+                        pLogin->FUN_1419e21e0(strMessage);
                 }
                 else
                 {
@@ -723,10 +713,10 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     case 0x113:
         if (wParam == 1000 && FUN_140aae430() != 0 && DAT_143af7d44 == 0)
         {
-            unsigned nLastInput = FUN_141489fb0(FUN_140aae430());
+            unsigned nLastInput = reinterpret_cast<MS2*>(FUN_140aae430())->GetLastTickTime();
             unsigned nNow = GetTickCountMs2();
             if (nLastInput + 500 < nNow)
-                FUN_141489f40(FUN_140aae430());
+                reinterpret_cast<MS2*>(FUN_140aae430())->Tick();
             static unsigned s_nLastPowerTick = GetTickCountMs2();
             unsigned nElapsed = nNow - s_nLastPowerTick;
             if (nElapsed >= 10000)
@@ -872,7 +862,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         pInfo->ptMaxTrackSize.y = nTrackH + 0x32;
     }
     }
-    if (FUN_141ade340(hWnd, uMsg, wParam, lParam) != 0)
+    if (FUN_141ade340(hWnd, (int)uMsg, (void*)wParam, (void*)lParam) != 0)
         return 0;
     if (((class Unk_MessageHook*)FUN_1414a56c0()) != 0)
     {

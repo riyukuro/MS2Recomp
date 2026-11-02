@@ -16,32 +16,32 @@ class ASTextField : public ASInteractiveObject
 public:
     ASTextField(const Scaleform::GFx::Value& v, int nMovieId);          // 0x1422c4c00 (the Value is not copied: const&)
     virtual ~ASTextField();                                             // 0x1422c4c50
-    void FUN_1422c4c80(const CString& strText);                         // set the text (narrow; UICameraDialog)
+    void SetTextA(const CString& strText);                         // set the text (narrow; UICameraDialog)
     void FUN_1422c4cd0(const CStringW& strText);                        // set the text
-    CString FUN_1422c4d20();                                            // the text (narrow)
+    CString GetTextA();                                            // the text (narrow)
     CStringW GetTextW();                                           // the text
-    void FUN_1422c4eb0(const CString& strText);                         // set the html text (narrow)
+    void SetTextHTMLA(const CString& strText);                         // set the html text (narrow)
     void FUN_1422c4f00(const CStringW& strText);                        // set the html text
-    CString FUN_1422c4f50();                                            // the html text (narrow)
-    CStringW FUN_1422c4fd0();                                           // the html text
+    CString GetTextHTMLA();                                            // the html text (narrow)
+    CStringW GetTextHTMLW();                                           // the html text
     void SetTextColor(unsigned int nColor);                            // set "textColor" (0xRRGGBB; uirankpvpdialog.cpp)
     unsigned int GetTextColor();                                       // "textColor"
     void SetMaxChars(int nMaxChars);                                  // set "maxChars" (uitradedialogex.cpp)
     int GetMaxChars();                                                // "maxChars"
     void SetMultiline(int bMultiline);                                 // set "multiline"
-    int FUN_1422c5250();                                                // "multiline"
+    int GetMultiline();                                                // "multiline"
     void SetSelectable(int bSelectable);                                // set "selectable"
-    int FUN_1422c5310();                                                // "selectable"
+    int GetSelectable();                                                // "selectable"
     void SetCaretIndex(int nIndex);                                     // set "caretIndex"
     int GetCaretIndex();                                                // "caretIndex"
     void SetEmbedFonts(int bEmbed);                                     // set "embedFonts"
-    int FUN_1422c5460();                                                // "embedFonts"
+    int GetEmbedFonts();                                                // "embedFonts"
     void SetDisplayAsPassword(int bPassword);                                  // set "displayAsPassword"
-    int FUN_1422c5520();                                                // "displayAsPassword"
+    int GetDisplayAsPassword();                                                // "displayAsPassword"
     void SetUseRichTextClipboard(int bRich);                                      // set "useRichTextClipboard"
-    int FUN_1422c55e0();                                                // "useRichTextClipboard"
+    int GetUseRichTextClipboard();                                                // "useRichTextClipboard"
     void SetMouseWheelEnabled(int bEnabled);                                   // set "mouseWheelEnabled"
-    int FUN_1422c56a0();                                                // "mouseWheelEnabled"
+    int GetMouseWheelEnabled();                                                // "mouseWheelEnabled"
     void SetRestrict(const CString& strRestrict);                     // set "restrict" (astextinput.cpp)
     CString GetRestrict();                                            // "restrict" (astextinput.cpp)
     int GetLength();                                                // "length"
@@ -49,15 +49,15 @@ public:
     int GetMaxScrollV();                                                // "maxScrollV" (uimessenger.cpp)
     void SetAutoSize(int nAutoSize);                                  // set "autoSize" (0 none, 1 center, 2 left, 3 right)
     double GetTextWidth();                                             // "textWidth" (uivipdialog.cpp)
-    double FUN_1422c59e0();                                             // "textHeight" (uidungeonroomdialog.cpp)
-    void FUN_1422c5a50(const CString& strText);                         // appendText (narrow; uihairphysxdialog.cpp)
-    void FUN_1422c5ab0(const CStringW& strText);                        // appendText (uinpcpreviewdialog.cpp)
-    void FUN_1422c5b10(const CString& strText);                         // replaceSelectedText (narrow)
-    void FUN_1422c5b70(const CStringW& strText);                        // replaceSelectedText
+    double GetTextHeight();                                             // "textHeight" (uidungeonroomdialog.cpp)
+    void AppendTextA(const CString& strText);                         // appendText (narrow; uihairphysxdialog.cpp)
+    void AppendTextW(const CStringW& strText);                        // appendText (uinpcpreviewdialog.cpp)
+    void ReplaceSelectedTextA(const CString& strText);                         // replaceSelectedText (narrow)
+    void ReplaceSelectedTextW(const CStringW& strText);                        // replaceSelectedText
     void FUN_1422c5bd0(int nBegin, int nEnd, const CString& strText);   // replaceText (narrow)
     void FUN_1422c5c60(int nBegin, int nEnd, const CStringW& strText);  // replaceText
     void SetSelection(int nBegin, int nEnd);                           // setSelection(begin, end) (aslabel.cpp)
-    CString FUN_1422c5d40(int nAutoSize);                               // the "autoSize" name ("none"/"center"/"left"/"right", else "")
+    CString AutoSizeToString(int nAutoSize);                               // the "autoSize" name ("none"/"center"/"left"/"right", else "")
     void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // "focusOut" listener (uitradedialogex.cpp)
 };
 MS2_CHECK_SIZE(ASTextField, 0x80);                                      // exe allocates 0x80 bytes

@@ -105,7 +105,7 @@ bool GFxService::vfunc_17()
     {
         NiRenderTargetGroup* pTarget = pService->GetActiveRenderSurface()->GetRenderTargetGroup();
         if (pTarget != 0)
-            GFxManager::GetInstance()->FUN_1422adb80(pTarget->GetWidth(0), pTarget->GetHeight(0));
+            GFxManager::GetInstance()->ResizeMovies(pTarget->GetWidth(0), pTarget->GetHeight(0));
     }
     if (GFxManager::GetInstance())
     {

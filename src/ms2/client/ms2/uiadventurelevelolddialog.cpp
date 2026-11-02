@@ -34,6 +34,7 @@
 #include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local placeholders (names invented; promote to src/ms2/placeholder/ when shared) ----
 
@@ -65,7 +66,7 @@ public:
 class Unk_1403ed2d0 { public: Unk_ALPlayer* FUN_141bd0cc0(); };
 
 // The status-listener registry (singleton 0x140aa6d40).
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 
 void FUN_141415600(const CString& strBindID);                           // release the item bound to the name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
@@ -164,7 +165,7 @@ extern Unk_ALClaimed g_unkClaimed;                                          // 0
 
 // The ability manager of the player and the current ability state.
 class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short, unsigned int, int); }; class Unk_ALAbilityMgr : public AdditionalCliList { };
-Unk_ALAbilityMgr* FUN_1416749a0(Unk_ALPlayer* pPlayer);
+class PCBase { public: class Unk_PCBaseBuffs* FUN_1416749a0(); };   // C3: member view
 class Unk_ALCurrent { public: int* FUN_140195640(); };
 extern void* DAT_143aac280;
 
@@ -189,7 +190,7 @@ CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW FUN_14183e9c0(CStringW str, int n);
 class Unk_1401a9d70 { public: CStringW FUN_141811980(int a1, int a2); };
-Unk_1401a9d70* FUN_1401a9d70();
+class CStringTable;
 
 
 template <> bool MS2Ptr<ASTileList>::operator==(ASTileList* p) const;      // COMDAT 0x140ba4ee0 of this unit
@@ -252,14 +253,14 @@ int UIAdventureLevelOldDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
 
 // @0x140ba55a0
 void UIAdventureLevelOldDialog::vfunc_67()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_binds.GetCount(); i++)
         FUN_141415600(m_binds.GetAt(i));
     UIDialog::vfunc_67();
@@ -399,7 +400,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
                 continue;
         }
         bool bLock = pPlayer->vfunc_141() < pAbility->m_8;
-        if (FUN_1416749a0(pPlayer)->FUN_140970020(pAbility->m_0, nStep, 0, 1) == 0) {
+        if (reinterpret_cast<Unk_ALAbilityMgr*>(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416749a0())->FUN_140970020(pAbility->m_0, nStep, 0, 1) == 0) {
             if (pAbility->m_0 != *FUN_140ba4fa0()->FUN_140195640())
                 bLock = true;
         }

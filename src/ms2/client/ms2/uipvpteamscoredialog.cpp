@@ -17,6 +17,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/pvpmanager.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::ToggleDialog
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ public:
 };
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
-void* FUN_1403ed2b0();                                          // the UI service
+class CUIService;
 
 // FUN_141346960 is a free function, so it reaches the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30)
 // through this layout view.
@@ -70,7 +71,7 @@ int UIPvPTeamScoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnShowResult", szMethod) == 0) {
-        ((CUIService*)FUN_1403ed2b0())->ToggleDialog((eUIClassID)(0x4ed2));
+        ((CUIService*)(void*)TSingleton<CUIService>::GetInstance())->ToggleDialog((eUIClassID)(0x4ed2));
         return 1;
     }
     if (_stricmp("OnClose", szMethod) == 0) {

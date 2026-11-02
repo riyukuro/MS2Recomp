@@ -68,7 +68,7 @@ public:
 
     CSkillSystem();                                         // 0x1417646d0
     virtual ~CSkillSystem();                                // 0x141764900
-    int FUN_141764a80(MyPC* pOwner);                        // init with the owner
+    int Init(MyPC* pOwner);                        // init with the owner
     void FUN_141766af0(float fDelta);                       // per-frame update
     MS2Ptr<CSkillRecord> FUN_141765570(Unk_InventorySkillRequest& kReq);   // build the record of a request
     void FUN_141767f80(int nSkillId);                       // add a temporary skill
@@ -79,13 +79,13 @@ public:
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141764e30(Unk_InventorySkillRequest* pReq);   // the same, the record as the casting skill (vfunc_104)
     int FUN_1417674a0(int n);                               // the pending skill id
     float FUN_141765fe0(int nSkillId, int n);              // the cooldown left of nSkillId
-    int FUN_141768bd0(MS2Ptr<CSkillRecord> spRecord);       // the record may be cast during its cooldown
+    int CanUseRechargeSkill(MS2Ptr<CSkillRecord> spRecord);       // the record may be cast during its cooldown
     void FUN_141766cc0(MS2Ptr<CSkillRecord> spRecord);
     void FUN_141767990(int nSkillId, unsigned short nLevel); // start the cooldown
     int FUN_141768fb0(unsigned int nSkillId, unsigned short nLevel);   // the emotion is learned
     void FUN_1417664e0(unsigned nStart, int nSkillId, float fCool, float fCombo, int bCombo);   // start a cooldown
-    void FUN_141768900(MS2Ptr<CSkillRecord> spRecord);
-    int FUN_141768770(class SkillData* pData);              // the skill's use-count condition
+    void OnRechargeSkillUsed(MS2Ptr<CSkillRecord> spRecord);
+    int GetRechargeRemainCount(class SkillData* pData);              // the skill's use-count condition
     int FUN_141766230(int nSkillId, float* pRemain, float* pTotal, int* pByItem, int nFlag);   // the cooldown of a skill
     int SetShowError(int n);                               // set m_18, return the old
     int SetCastAllowed(int n);                               // set m_88, return the old
@@ -97,7 +97,7 @@ public:
     MS2Ptr<SkillLevelData> FUN_141764c80(int nSkillId);     // the learned level of a skill
     bool FUN_141765b80(int nSkillId);                       // the skill may be cast (by a row of the table)
     int GetCastAllowed();                                    // m_88
-    int FUN_141765d90();                                    // the cooldown table is not empty
+    int HasCooltime();                                    // the cooldown table is not empty
     void FUN_141765de0();                                   // end every cooldown
     void FUN_141765e70(int nSkillId);                       // clear the cooldown of a skill
     void FUN_141765f60(unsigned __int64 nKey);              // clear the cooldown of a key
@@ -106,14 +106,14 @@ public:
     void FUN_141766d70();                                   // watch the ground state of the owner
     void FUN_141766ec0(int bForce);                         // refresh the lapenshard and compact control skills
     void FUN_141767ae0(class CByteBuffer* pBuffer);           // read the compact control configs
-    void FUN_141767d90(ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> >* pList);   // replace the compact control configs
+    void SetCompactConfigs(ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> >* pList);   // replace the compact control configs
     void FUN_141767df0(int bOn);                            // enable or disable the skill use
-    CStringW FUN_141767e60(unsigned __int64 nKey);          // the name of the compact control config of a key
-    void FUN_141768530(int nSkillId, int nUses);            // set the use count of a skill
-    void FUN_1417685c0(SkillData* pData, int nUses);        // set the use count of a recharge id
-    int FUN_141768610(int nSkillId);                        // the use count of a skill
-    int FUN_141768680(SkillData* pData);                    // the use count of a recharge id
-    int FUN_1417686e0(int nSkillId);                        // the uses left of a skill
+    CStringW GetCompactConfigName(unsigned __int64 nKey);          // the name of the compact control config of a key
+    void SetRechargeUsesById(int nSkillId, int nUses);            // set the use count of a skill
+    void SetRechargeUses(SkillData* pData, int nUses);        // set the use count of a recharge id
+    int GetRechargeUsesById(int nSkillId);                        // the use count of a skill
+    int GetRechargeUses(SkillData* pData);                    // the use count of a recharge id
+    int GetRechargeCountById(int nSkillId);                        // the uses left of a skill
     void FUN_1417687e0(Unk_SkillCooltime* pCool);           // an over cooldown restores a use
     void FUN_141768a50();                                   // restart the recharge of the skills with uses
     void FUN_141768d40(MS2Ptr<SkillData> spSkill);          // start the recharge tick

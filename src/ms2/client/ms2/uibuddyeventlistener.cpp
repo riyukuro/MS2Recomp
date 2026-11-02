@@ -118,7 +118,6 @@ public:
 
 // The key state (singleton 0x14025e7c0).
 // the exe reads the buddy level as an int
-struct Unk_BdBuddyLevel { int FUN_1401cc210(); };
 void* FUN_14025e7c0();
 
 // "m_list": the buddy list.
@@ -572,8 +571,8 @@ int UICommunityDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fX = data.FUN_1422b8c10();
-            float fY = data.FUN_1422b8c10();
+            float fX = data.PopFloat();
+            float fY = data.PopFloat();
             unsigned __int64 nTarget = FUN_140718350(data.FUN_1422b8d30());
             if (m_190 == 0)
             {
@@ -1030,7 +1029,7 @@ void UICommunityDialog::FUN_1418d6430(int nTab)
                     continue;
                 ASObj row(2);
                 FUN_1418d7b90(&row, CBuddyManager::Ptr(spBuddy), nTab);
-                arr.FUN_1422bc050(row.FUN_1422bb870());
+                arr.PushValue(row.FUN_1422bb870());
             }
         }
     }
@@ -1082,7 +1081,7 @@ void UICommunityDialog::FUN_1418d6a90()
     ASArray arr(2);
     ASObj vipRow(2);
     if (FUN_1418d8ac0(&vipRow) != 0)
-        arr.FUN_1422bc050(vipRow.FUN_1422bb870());
+        arr.PushValue(vipRow.FUN_1422bb870());
     int nCount = 0;
     void* pMap = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bc9fb0();
     if (!((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->IsEmpty())
@@ -1095,7 +1094,7 @@ void UICommunityDialog::FUN_1418d6a90()
                 ASObj row(2);
                 if (FUN_1418d8540(&row, ref, 0) != 0)
                 {
-                    arr.FUN_1422bc050(row.FUN_1422bb870());
+                    arr.PushValue(row.FUN_1422bb870());
                     nCount++;
                 }
             }
@@ -1125,7 +1124,7 @@ void UICommunityDialog::FUN_1418d6d00()
         CBuddyManager::Ptr spBuddy(reinterpret_cast<const CBuddyManager::Ptr&>(*pIt));
         ASObj row(2);
         FUN_1418d7b90(&row, CBuddyManager::Ptr(spBuddy), 4);
-        arr.FUN_1422bc050(row.FUN_1422bb870());
+        arr.PushValue(row.FUN_1422bb870());
     }
     m_30->FUN_140bd2cb0("buildBuddyList", arr);
 }
@@ -1313,7 +1312,7 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
         int bParty = TSingleton<CPartyManager>::GetInstance()->FindMemberByCharId(nId).get() != 0;
         pRow->FUN_1407cb9c0("isParty", bParty);
         pRow->FUN_1407cbb20("state", CStringW(strState));
-        int nLevel = reinterpret_cast<Unk_BdBuddyLevel*>(spBuddy.operator->())->FUN_1401cc210();
+        int nLevel = spBuddy->FUN_1401cc210();
         CStringW strCharInfo = FUN_14028dee0<int, CStringW>(0x20, nLevel, GetStringTable()->FUN_141811980(6, spBuddy->FUN_1401cc2b0()));
         pRow->FUN_1407cbb20("charinfo", CStringW(strCharInfo));
         pRow->FUN_1407cb9c0("isNew", spBuddy->FUN_1401cc4f0());

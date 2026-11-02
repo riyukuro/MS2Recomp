@@ -48,7 +48,7 @@ unsigned CTrafficOptimizer::FUN_14087d410(Unk_TOEntity* entity) {
         return 100;
     }
     unsigned traffic = 0;
-    if (FUN_14087d630((unsigned)reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd3060()) != 0) {
+    if (FUN_14087d630((unsigned)WorldService::GetInstance()->FUN_141bd3060()) != 0) {
         traffic += GetTraffic(3);
     } else {
         traffic += GetTraffic(4);

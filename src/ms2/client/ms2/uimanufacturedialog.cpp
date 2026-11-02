@@ -29,6 +29,7 @@
 #include "ms2/client/ms2/uitalkcinematic.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
@@ -50,6 +51,7 @@
 #include "ms2/client/ms2/inventory.h"
 #include <algorithm>
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -204,17 +206,17 @@ struct Unk_UmMfItem : public CPtred
 };
 
 // The string table and the client constants.
-class Unk_UmLevelInfo { public: int* FUN_1402056b0(); };        // the player's manufacture level
+class Unk_UmLevelInfo { public: };        // the player's manufacture level
 struct Unk_UmLevels { char m_pad[0x5180]; Unk_UmLevelInfo m_5180; };   // FUN_1401d3200(): the constant slot at +0x5180
 MS2_CHECK_OFFSET(Unk_UmLevels, m_5180, 0x5180);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringW FUN_14093fa20(int nStringId, const CStringW& strArg, const int& nArg);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strArg0, const CStringW& strArg1);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
     // the experience of one affinity grade
@@ -243,18 +245,12 @@ int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsi
 UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by UI id
 
 // The player's inventory (owned counts) and the account id.
-class Unk_MfInventory
-{
-public:
-    unsigned FUN_140a5f780(int nGroup, int nRarity);            // owned count of the group
-};
 class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-class Unk_Inventory;
-extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MfInventory
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 extern __int64 DAT_143ab2820;
 
 // The wallet check of the network callbacks object (slots 40 / 41: the player can pay the amount with meso / merat).
@@ -282,7 +278,6 @@ public:
 class Unk_UmList : public Unk_UmCtl
 {
 public:
-    void FUN_1422dd1d0();                                       // clear
     void FUN_1422dd230(const ASObj& row);                       // append a row
 };
 
@@ -545,7 +540,7 @@ void UIManufactureDialog::vfunc_72()
         int nCurrency = 3;
         if (FUN_140166410()->FUN_14036d710(0x102))
             nCurrency = 10;
-        m_30->Invoke("setItemMeratLabel", FUN_14052bd00(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
+        m_30->Invoke("setItemMeratLabel", FormatStringId<CStringW>(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
         int nTotal = FUN_1412dd760((struct Unk_MdMaidItem*)(spItem.operator->()));
         int nRemain = span.GetTotalSeconds();
         int nPermille = 0;
@@ -583,7 +578,7 @@ void UIManufactureDialog::FUN_1412e34c0()
     Unk_UmValuePtr<Unk_UmDescRow> spDesc = reinterpret_cast<Unk_UmDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid->m_34);
     if (spDesc.IsNull())
         return;
-    CStringW strName = FUN_14052bd00(0x7af, spDesc->m_10);
+    CStringW strName = FormatStringId<CStringW>(0x7af, spDesc->m_10);
     CStringW strMood;
     if (reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade() == 0)
         strMood = GetStringCommon(0x79f);
@@ -591,7 +586,7 @@ void UIManufactureDialog::FUN_1412e34c0()
         strMood = GetStringCommon(0x7a0);
     else
         strMood = GetStringCommon(0x7a1);
-    CStringW strGrade = FUN_14093fa20(0x7b0, strMood, spMaid->m_54);
+    CStringW strGrade = FormatStringId<CStringW, int>(0x7b0, strMood, spMaid->m_54);
     int nNeed = TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid->m_54);
     int nOne = 1;
     int nMax = std::max<int>(nOne, nNeed);
@@ -617,7 +612,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
         return;
     if (MS2Ptr<Unk_UmList> spList = FUN_140c02900<Unk_UmList>("m_scrollList"))
     {
-        spList->FUN_1422dd1d0();
+        reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
         int nFirst = 0;
         for (size_t i = 0; i < spBook.FUN_140689bf0()->FUN_14068acc0(); i++)
         {
@@ -631,7 +626,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                 row.FUN_140e846b0("id", i + 1);
                 row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50));
                 row.FUN_1407cb9c0("recipeID", spRef->m_id);
-                if (spRef->m_level > *reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)FUN_1401d3200()))->m_5180.FUN_1402056b0())   // exe: add rax, 0x5180
+                if (spRef->m_level > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)FUN_1401d3200()))->m_5180)->Get())   // exe: add rax, 0x5180
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->m_level));
                 else
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->m_level));
@@ -702,7 +697,7 @@ void UIManufactureDialog::FUN_1412e4240()
             int nCurrency = 3;
             if (FUN_140166410()->FUN_14036d710(0x102))
                 nCurrency = 10;
-            m_30->Invoke("setItemMeratLabel", FUN_14052bd00(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
+            m_30->Invoke("setItemMeratLabel", FormatStringId<CStringW>(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
             if (tReady > tNow)
                 m_nState = 1;
             else
@@ -790,7 +785,7 @@ void UIManufactureDialog::FUN_1412e48a0()
                 if (nGroup == 0)
                     nHave = g_143ab2a90.FUN_140a5f180(nIngItem, 0);
                 else
-                    nHave = reinterpret_cast<Unk_MfInventory&>(g_143ab2a90).FUN_140a5f780(nGroup, 0);
+                    nHave = g_143ab2a90.FUN_140a5f780(nGroup, 0);
                 CStringW strBreak(L"");
                 if (nHave >= 10000 || (nHave >= 1000 && nNeeded >= 100))
                     strBreak = L"\n";

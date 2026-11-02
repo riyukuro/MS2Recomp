@@ -393,3 +393,5 @@ void Unk_WsInst9()
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tset_traits@VVisibleObjectRecord@WsReal@@U?$less@VVisibleObjectRecord@WsReal@@@std@@V?$allocator@VVisibleObjectRecord@WsReal@@@4@$0A@@std@@@std@@QEBA_KXZ 0x141c2e7a0
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@@std@@SAPEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@2@AEAU32@@Z 0x141c2ea10
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBVEntityID@egf@@VVisibleObjectRecord@WsReal@@@std@@@std@@SAPEAU?$pair@$$CBVEntityID@egf@@VVisibleObjectRecord@WsReal@@@2@AEAU32@@Z 0x141c2ea50
+// m49: find on m_ab0 and the EntityID,int map are identical code, so the int copy took this row; pinned by merge 50.
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@@2@AEBVEntityID@egf@@@Z 0x141c2dd70

@@ -149,12 +149,12 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         spTargetItems->FUN_140c57d70("m_itemBag", m_itemBag);
     FUN_140c55ea0();
     if (m_itemBag.get() != 0)
-        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->FUN_1422dce60(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
+        reinterpret_cast<ASCoreList*>(m_itemBag.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
     if (m_board.get() != 0)
     {
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
         if (m_submit.get() != 0)
-            reinterpret_cast<MS2Ptr<ASMovieClip>&>(m_submit)->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), (void*)0);
+            reinterpret_cast<ASMovieClip*>(m_submit.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), (void*)0);
         CStringW strDesc = GetStringCommonByKey(L"s_item_treasure_map_appraise_desc");
         if (m_bFree != 0)
             strDesc = GetStringCommonByKey(L"s_item_treasure_map_free_appraise_desc");

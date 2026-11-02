@@ -74,41 +74,41 @@ public:
     virtual int vfunc_48() { return 0x4e52; }                       // 48 0x14190ce80 UI type id
 
     void FUN_141907d60(int nState, CStringW strKey, CStringW strLabel);   // set the skip button (by value: the callee destroys them)
-    void FUN_141907f80(int nId, CStringW strText);                  // show a cinematic (mode 1)
+    void StartCinematic(int nId, CStringW strText);                  // show a cinematic (mode 1)
     void SetCinematicKeyMode(bool bOn);                                   // the cinematic key group on/off
     void FUN_1419080b0();                                           // close everything
     void OnPacket(CInPacket& packet);                          // the cinematic packet
     void HideScript();                                           // hideScript
     void SetScript(CStringW strName, CStringW strText, CStringW strIllust, int nFlag);   // setScript (by value)
-    void FUN_1419085e0(NotifyObject* pNotice);                      // NotifyRemoveGameObject
-    void FUN_141908620(NotifyObject* pNotice);                      // NotifyFadeInComplete
+    void RemoveBalloonGroup(NotifyObject* pNotice);                      // NotifyRemoveGameObject
+    void ResetSkipState(NotifyObject* pNotice);                      // NotifyFadeInComplete
     void ClearTalks();                                           // drop the script lines
     void FUN_141908720(float fDelta);                               // update
     void FUN_141908750();                                           // update the script line
     void FUN_141908c00();                                           // update the balloons
-    void FUN_141908fc0();                                           // skip pressed: confirm or skip
-    void FUN_141909100();                                           // skip
+    void RequestSkip();                                           // skip pressed: confirm or skip
+    void SkipCinematic();                                           // skip
     void SendTrigger();                                           // send the skip request
-    void FUN_1419092a0(CStringW& strText);                          // resolve a text key
+    void TranslateScriptText(CStringW& strText);                          // resolve a text key
     void FUN_141909340(int nActorId);                               // hide the balloon of an actor
-    bool FUN_141909420(int nResult, const CMsgBoxData& box);        // skip confirm answer
+    bool OnSkipMsgBox(int nResult, const CMsgBoxData& box);        // skip confirm answer
     void FUN_141909460(const Scaleform::GFx::FunctionHandler::Params& params);   // skip button click
-    void FUN_141909490();                                           // setCinematic
-    void FUN_141909550();                                           // setOpening
-    void FUN_141909610();                                           // setIntro
-    bool FUN_1419096c0();                                           // the cinematic key group is on
-    void FUN_141909700(CInPacket& packet);                          // 1 key group
+    void InvokeSetCinematic();                                           // setCinematic
+    void InvokeSetOpening();                                           // setOpening
+    void InvokeSetIntro();                                           // setIntro
+    bool IsCinematicKeyGroupActive();                                           // the cinematic key group is on
+    void OnPacketKeyMode(CInPacket& packet);                          // 1 key group
     void FUN_141909750(CInPacket& packet);                          // 2 close
-    void FUN_141909780(CInPacket& packet);                          // 3 cinematic
+    void OnPacketStartCinematic(CInPacket& packet);                          // 3 cinematic
     void FUN_141909880(CInPacket& packet);                          // 6 queue a script line
     void FUN_141909e80(CInPacket& packet);                          // 7 drop the script lines
     void FUN_141909eb0(CInPacket& packet);                          // 8 queue a balloon line
-    void FUN_14190a400(CInPacket& packet);                          // 9 drop the balloon lines of an actor
+    void OnPacketClearBalloonGroup(CInPacket& packet);                          // 9 drop the balloon lines of an actor
     void FUN_14190a4c0(CInPacket& packet);                          // 4 skip button
     void FUN_14190a6e0(CInPacket& packet);                          // 10 caption
     void FUN_14190ac70(CInPacket& packet);                          // 11 opening
-    void FUN_14190aee0(CInPacket& packet);                          // 12 intro
-    void FUN_14190afb0(CInPacket& packet);                          // 5 reset the skip button
+    void OnPacketSetIntro(CInPacket& packet);                          // 12 intro
+    void OnPacketResetSkip(CInPacket& packet);                          // 5 reset the skip button
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -41,7 +41,9 @@ public:
 // UI service: handle to a registered UI object.
 class Unk_EnchantUIManager { public: };
 
-void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -92,7 +94,7 @@ int EnchantScrollSlot::vfunc_17()
 // @0x140cd75f0
 int EnchantScrollSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());

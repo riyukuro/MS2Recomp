@@ -12,7 +12,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 
 // Unrecovered helpers.
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_140710590(COutPacket&);
@@ -58,7 +58,7 @@ void CStatPointManager::LoadExtra(CInPacket& packet)
         unsigned nValue = packet.ReadInt32();
         m_extra.SetAt(nKey, nValue);
     }
-    FUN_140aa6d40()->FUN_141b0ce20(0x10, 0);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0x10, 0);
 }
 MS2_REPLACE_METHOD(0x140CA9F10, CStatPointManager, LoadExtra, 298, 0x04657B2B);
 
@@ -77,7 +77,7 @@ void CStatPointManager::LoadStats(CInPacket& packet)
         m_nUsed += nPoints;
     }
     m_nRemaining = m_nTotal - m_nUsed;
-    FUN_140aa6d40()->FUN_141b0ce20(0x10, 0);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0x10, 0);
 }
 MS2_REPLACE_METHOD(0x140CAA040, CStatPointManager, LoadStats, 340, 0x4D535550);
 

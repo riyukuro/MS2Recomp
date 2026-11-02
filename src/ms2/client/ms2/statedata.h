@@ -187,7 +187,7 @@ MS2_CHECK_SIZE(StateRecallData, 0x20);
 class StateFallData : public StateData
 {
 public:
-    StateFallData(const efd::Point3& kPos);                     // 0x1417c1380
+    StateFallData(efd::Point3 kPos);                            // 0x1417c1380
     virtual ~StateFallData() = default;                         // 0x1417c1b80 (implicit)
 
     efd::Point3 m_pos;                                          // +0x18

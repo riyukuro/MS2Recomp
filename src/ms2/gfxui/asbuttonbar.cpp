@@ -36,7 +36,7 @@ ASButtonBar::~ASButtonBar()
 
 // Not hooked: spProvider is destroyed by the callee.
 // @0x1422e2d50
-void ASButtonBar::FUN_1422e2d50(MS2Ptr<ASDataProvider> spProvider)
+void ASButtonBar::SetDataProviderPtr(MS2Ptr<ASDataProvider> spProvider)
 {
     if (spProvider.get())
         SetDataProvider(spProvider->FUN_1422bb870());
@@ -113,11 +113,11 @@ void ASButtonBar::SetButtonWidth(float f)
 MS2_REPLACE_METHOD(0x1422E3130, ASButtonBar, SetButtonWidth, 43, 0x72FEE434);
 
 // @0x1422e3170
-float ASButtonBar::FUN_1422e3170()
+float ASButtonBar::GetButtonWidth()
 {
     return (float)GetMember("buttonWidth").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422E3170, ASButtonBar, FUN_1422e3170, 96, 0x094D4B6A);
+MS2_REPLACE_METHOD(0x1422E3170, ASButtonBar, GetButtonWidth, 96, 0x094D4B6A);
 
 // @0x1422e31e0
 void ASButtonBar::SetSelectedIndex(int nIndex)
@@ -247,7 +247,7 @@ void ASButtonBar::RemoveItemAt(int nIndex)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get())
-        spProvider->FUN_1422bc660(nIndex, 1);
+        spProvider->Splice(nIndex, 1);
 }
 MS2_REPLACE_METHOD(0x1422E3A00, ASButtonBar, RemoveItemAt, 97, 0xFB2142D9);
 
@@ -329,7 +329,7 @@ void ASButtonBar::FUN_1422e4060(int nIndex)
     if (nIndex >= GetItemCount())
         return;
     MS2Ptr<ASButton> spButton = GetButtonAt(nIndex);
-    if (spButton == 0 || spButton->FUN_1422ba9a0())
+    if (spButton == 0 || spButton->IsUndefinedOrNull())
         return;
     FUN_1422e4350("updateRendererAt", spButton->FUN_1422bb870(), (unsigned)nIndex);
     spButton->vfunc_24(false);

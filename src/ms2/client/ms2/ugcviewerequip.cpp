@@ -85,7 +85,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool FUN_14036e510();
 };
-void* FUN_1403ed290();                                      // the guild manager (+8: the own guild)
+class CGuildManager;
 __int64 FUN_1404ccbd0(void* pGuild);                        // the guild id
 struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character's summary (+0x20: 2 = wedding done)
 class WeddingManager   // C3: member view for the former free stand-ins
@@ -893,7 +893,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (FUN_1404ccbd0((char*)FUN_1403ed290() + 8) == 0)
+    if (FUN_1404ccbd0((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8) == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -981,7 +981,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (FUN_1404ccbd0((char*)FUN_1403ed290() + 8) == 0)
+    if (FUN_1404ccbd0((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8) == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)

@@ -1313,14 +1313,14 @@ void HardwareInstancingService::vfunc_0(int nMap)
 }
 MS2_REPLACE_METHOD_VIA(0x1413D7960, HardwareInstancingService, IWorldServiceCallback, vfunc_0, 31, 0x43C64CC5);
 
-// @0x1413d7990 functional: the exe's slot takes the map id unsigned (passes &nMap straight to m_maps[]); the shared
-// IWorldServiceCallback placeholder declares int, so m_maps[nMap] converts through a temporary here.
+// @0x1413d7990 the exe's slot takes the map id unsigned (passes &nMap straight to m_maps[]); the shared
+// IWorldServiceCallback placeholder declares int, so each m_maps[] index reinterprets the int slot as unsigned.
 void HardwareInstancingService::vfunc_3(int nMap)
 {
     m_bReady = false;
     std::vector<egf::EntityID> vecIds;
-    for (std::map<egf::EntityID, MeshInstancing*>::iterator it = m_maps[nMap].m_mapDynamic.begin();
-         it != m_maps[nMap].m_mapDynamic.end(); ++it)
+    for (std::map<egf::EntityID, MeshInstancing*>::iterator it = m_maps[reinterpret_cast<unsigned&>(nMap)].m_mapDynamic.begin();
+         it != m_maps[reinterpret_cast<unsigned&>(nMap)].m_mapDynamic.end(); ++it)
         vecIds.push_back(it->first);
     std::vector<egf::EntityID>& rIds = vecIds;
     std::vector<egf::EntityID>::const_iterator itIdEnd = rIds.end();
@@ -1330,8 +1330,8 @@ void HardwareInstancingService::vfunc_3(int nMap)
         egf::EntityID id = *itId;
         FUN_1413d5220(id);
     }
-    for (std::list<MeshInstancing*>::iterator it = m_maps[nMap].m_listInstancings.begin();
-         it != m_maps[nMap].m_listInstancings.end(); ++it)
+    for (std::list<MeshInstancing*>::iterator it = m_maps[reinterpret_cast<unsigned&>(nMap)].m_listInstancings.begin();
+         it != m_maps[reinterpret_cast<unsigned&>(nMap)].m_listInstancings.end(); ++it)
     {
         if (((class Unk_McInstancing*)((*it)))->FUN_140ad4bb0() == 0)
             static_cast<EntityInstancing*>(*it)->FUN_1411c66e0();
@@ -1339,10 +1339,10 @@ void HardwareInstancingService::vfunc_3(int nMap)
     SetEnabled(false);
     m_mapQueued.RemoveAll();
     m_listPending.clear();
-    m_maps[nMap].m_mapDynamic.clear();
-    m_maps[nMap].m_nVisited = 0;
-    for (std::map<egf::EntityID, int>::iterator it = m_maps[nMap].m_mapExcluded.begin();
-         it != m_maps[nMap].m_mapExcluded.end(); ++it)
+    m_maps[reinterpret_cast<unsigned&>(nMap)].m_mapDynamic.clear();
+    m_maps[reinterpret_cast<unsigned&>(nMap)].m_nVisited = 0;
+    for (std::map<egf::EntityID, int>::iterator it = m_maps[reinterpret_cast<unsigned&>(nMap)].m_mapExcluded.begin();
+         it != m_maps[reinterpret_cast<unsigned&>(nMap)].m_mapExcluded.end(); ++it)
         it->second = 0;
     m_nNextId = 0;
 }

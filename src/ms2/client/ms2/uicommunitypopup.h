@@ -7,16 +7,13 @@
 
 // Unit-local intrusive wrapper: the owned value is the second base of TPtredDummy.
 #include "ms2/placeholder/tptreddummy.h"
-void FUN_14015b020(CPtred*);
-int FUN_140159bc0(CPtred*);
-void FUN_140159ba0(CPtred*);
+#include "ms2/placeholder/socketptr.h"
 CPtred* FUN_1401ba820(CPtred*);
-struct Unk_PopupNewTag { explicit Unk_PopupNewTag(int); };
 template<class T> class Unk_PopupPtr {
 public:
     Unk_PopupPtr(Unk_PopupPtr&& p) : m_p(p.m_p) { p.m_p = 0; }
     Unk_PopupPtr(const Unk_PopupPtr& p) : m_p(p.m_p) { AddRef(); }
-    Unk_PopupPtr(const Unk_PopupNewTag&) : m_p(0) { Make(); }
+    Unk_PopupPtr(const Unk_SocketNew&) : m_p(0) { Make(); }
     ~Unk_PopupPtr() { Release(); }
     T* get() const { return m_p; }
     T* operator->() const { return m_p; }
@@ -39,7 +36,7 @@ private:
     // @0x140beb7b0
     static TPtredDummy<T>* Owner(T* p) { return p == NULL ? NULL : reinterpret_cast<TPtredDummy<T>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<T>, value)); }
     // @0x140bebc20
-    static void Ref(CPtred* p) { FUN_14015b020(p); }
+    static void Ref(CPtred* p) { CPtred::AddRefPtred(p); }
     // @0x140bebca0
     static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
     // @0x140bebc40
@@ -47,7 +44,7 @@ private:
     // @0x140bebd10
     void ReleaseImpl(void*) {
         CPtred* owner = Owner(m_p);
-        if (FUN_140159bc0(owner) == 0) { Ref(owner); FUN_140159ba0(owner); }
+        if (CPtred::ReleasePtred(owner) == 0) { Ref(owner); CPtred::DeletePtred(owner); }
     }
     void* m_00;
     T* m_p;

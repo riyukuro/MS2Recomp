@@ -27,6 +27,13 @@ static CStringW s_strBannerClose(L"bannerClose");
 #include "ms2/placeholder/asobj.h"
 #include "ms2/client/ms2/actionkeyobject.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/commonfiles/itemgift.h"
+#include "ms2/client/ms2/uigamemenudialog.h"
+#include "ms2/client/ms2/uihudentity.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/client/ms2/worldservice.h"
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown)
@@ -39,87 +46,21 @@ static CString s_strChartOrderNames[] = {"None", "Buy", "PriceLow", "PriceHigh",
 
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);               // Value = b
 
-// The event's data: id at +0x18, the reward steps (each a vector of reward items) at +0x38.
-class Unk_RewardItem
-{
-public:
-    virtual int vfunc_0();
-    virtual int vfunc_1();                  // rarity (virtual, called through the embedded object at +0x18; called
-                                            // through `(&e->m_18)->` so clang-cl does not devirtualize it)
-};
-struct Unk_RewardEntry
-{
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-    Unk_RewardItem m_18;                    // embedded object with a vftable (+0x18)
-    int m_20;                               // item id
-    int m_24;                               // amount
-};
-class Unk_Event
-{
-public:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-    int m_18;                               // +0x18 event id
-    int m_1c;
-    void* m_pad_20; void* m_pad_28; void* m_pad_30;
-    std::vector<std::vector<Unk_RewardEntry>> m_38;   // +0x38 reward steps
-};
-
-// The 16-byte smart pointer type of the event handle is MS2Ptr<Unk_Event>.
-// The singleton chain: 0x140302b00 -> +0xae0 -> the current event (copy under a lock).
-class Unk_EventHolder { public: MS2Ptr<Unk_Event> FUN_140428700(); };
-class Unk_140302b00 { public: Unk_EventHolder* FUN_1403ed140(); };
-
-// A table/cache of strings keyed by two ints (global at 0x143ab2fc0, map at +0x18, entry strings at +0x20).
-struct Unk_TableKey
-{
-    Unk_TableKey(int n1, int n2);           // 0x14041eee0
-    int m_0; int m_4;
-};
-class Unk_TableIter                         // 24 bytes; ctor 0x140420170, dtor 0x140420290
-{
-public:
-    Unk_TableIter();
-    ~Unk_TableIter();
-    class Unk_TableValue* FUN_140420460();  // the entry
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-};
-MS2_CHECK_SIZE(Unk_TableIter, 0x18);
-class Unk_TableMap { public: bool FUN_140420bb0(const Unk_TableKey& key, Unk_TableIter& it); };
 CString FUN_1407186a0(const CStringW& str);      // narrow copy of a wide string
-class Unk_Time                                   // ctor 0x1406c47a0, compare 0x1406c4cc0
-{
-public:
-    Unk_Time(__int64 n);
-    bool FUN_1406c4cc0(const Unk_Time& o) const;
-private:
-    __int64 m_0; __int64 m_8;
-};
 __int64 GetServerTime();                         // the current time source
-class Unk_TableValue
+
+// @0x140bfe2c0
+template <> inline CString GameEventVariable::GetValue<CString>(const CString& strDefault)
 {
-public:
-    // @0x140bfe2c0 (inline COMDAT)
-    inline CString FUN_140bfe2c0(const CString& strDefault) const;
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18;
-    CStringW m_20;                          // +0x20 stored string
-    Unk_Time m_28;                          // +0x28 expiry
-};
-class Unk_Table
-{
-public:
-    // @0x140bfe1e0 (inline COMDAT)
-    inline CString FUN_140bfe1e0(int nKind, int nId, const CString& strDefault);
-private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-    Unk_TableMap m_18;                      // +0x18
-};
-extern Unk_Table g_unkTable;                // 0x143ab2fc0
+    CMsTime now(GetServerTime());
+    if (m_time <= now)
+        return strDefault;
+    return FUN_1407186a0(m_value);
+}
 
 // Local player (0x1403ed2d0 singleton -> 0x141bd0cc0): a large virtual class; only a few slots are used here.
 struct Unk_Pos { Unk_Pos(); float m_0; float m_4; float m_8; };
-class Unk_PartyInfo { public: int FUN_140f48d40(); };
+class Unk_PCBaseComp_ac8 : public CPtred { };
 class Unk_Mode : public Unk_ActionKeyManager { };
 class PCBase   // C3: member view for 0x14166c930
 {
@@ -216,27 +157,24 @@ public:
     virtual void vfunc_84();
     virtual void vfunc_85();
     virtual void vfunc_86();
-    virtual MS2Ptr<Unk_PartyInfo> vfunc_87();                      // 87
-    bool FUN_140b7f400();
-    Unk_Mode* FUN_140a7b810();
+    virtual MS2Ptr<Unk_PCBaseComp_ac8> vfunc_87();                      // 87
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
+bool FUN_140b7f400(class MyPC*);
+struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);
 bool FUN_140b884e0(struct Vector3&);   // C3: was FUN_140b884e0
 
 // Message boxes (CMsgBoxData, 0x2a0 bytes).
-class CMsgBoxData { public: void FUN_141a024a0(int n); };   // C3: unit-local view
-class Unk_CMsgBoxData : public CMsgBoxData { public: void FUN_141a01660(const CStringW& str); };
-MS2Ptr<Unk_CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
-void FUN_140d73c60(MS2Ptr<Unk_CMsgBoxData> box);
-void FUN_140d73aa0(CStringW strMessage, int nType, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
+void FUN_140d73aa0(CStringW strMessage, int nType, void* pListener, CStringW strTag);
 CStringW GetStringCommonByKey(const CStringW& strKey);     // translate
 CStringW FUN_140298ea0(CStringW strKey);            // translate (by value)
 void FUN_1412752d0(const CStringW& str, int n);     // system notice
 void FUN_14151f200();
 
 // The game menu dialog found by UI type (0x140938b90).
-class Unk_UIGameMenuDialog { public: void FUN_141938ae0(int nType, int n); };
-class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
+UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
 void FUN_140178270(const CString& str, std::vector<int>& out, const char* szDelim);     // split into ints
 
@@ -295,7 +233,7 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
         return 1;
-    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return 1;
     Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -304,11 +242,11 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 0;
     }
     if (_stricmp("onOpenBanner", szMethod) == 0) {
-        if (!pPlayer->FUN_140b7f400()) {
+        if (!FUN_140b7f400(reinterpret_cast<MyPC*>(pPlayer))) {
             FUN_1412752d0(L"s_microgame_couple_dance_open_banner_failed_wrong_state", 1);
             return 1;
         }
-        if (pPlayer->FUN_140a7b810()->GetCur() != 0x1e) {
+        if (reinterpret_cast<Unk_Mode*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPlayer)))->GetCur() != 0x1e) {
             FUN_1412752d0(L"s_microgame_couple_dance_open_banner_failed_action_key", 1);
             return 1;
         }
@@ -319,20 +257,20 @@ int UICoupleDanceEventDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(0xd);
-        packet.Encode4(pEvent->m_18);
+        packet.Encode4(pEvent->m_eventId);
         FUN_140710590(packet);
         return 1;
     }
     if (_stricmp("onCloseBanner", szMethod) == 0) {
-        MS2Ptr<Unk_PartyInfo> pParty = pPlayer->vfunc_87();
+        MS2Ptr<Unk_PCBaseComp_ac8> pParty = pPlayer->vfunc_87();
         if (pParty == NULL) {
             MS2_ASSERT_AT(270, 0);
             return 0;
         }
-        if (pParty->FUN_140f48d40() == 0)
+        if (reinterpret_cast<UIHudEntity::Entity*>(pParty.operator->())->FUN_140f48d40() == 0)
             return 0;
-        MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
-        box->FUN_141a01660(s_strBannerClose);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
+        box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
         return 1;
@@ -359,13 +297,13 @@ int UICoupleDanceEventDialog::vfunc_71()
         MS2_ASSERT_AT(310, 0);
         return 0;
     }
-    MS2Ptr<Unk_PartyInfo> pParty = pPlayer->vfunc_87();
+    MS2Ptr<Unk_PCBaseComp_ac8> pParty = pPlayer->vfunc_87();
     if (pParty == NULL) {
         MS2_ASSERT_AT(317, 0);
         return 0;
     }
-    if (pParty->FUN_140f48d40() == 1) {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_microgame_couple_dance_event_ask_close"), 1, this, CStringW(L"askClose"));
+    if (reinterpret_cast<UIHudEntity::Entity*>(pParty.operator->())->FUN_140f48d40() == 1) {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_microgame_couple_dance_event_ask_close"), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
         return 1;
     }
     return 0;
@@ -392,22 +330,22 @@ MS2_REPLACE_METHOD_VIA(0x140BFD4D0, UICoupleDanceEventDialog, IMessageListener, 
 // @0x140bfd5e0
 void UICoupleDanceEventDialog::FUN_140bfd5e0()
 {
-    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return;
     FUN_140bfdc00();
     if (m_30 == NULL)
         return;
-    CString strStates = g_unkTable.FUN_140bfe1e0(0x835, pEvent->m_18, "");
+    CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     FUN_140178270(strStates, states, ",");
     ASObj root(2);
     root.FUN_1407cbbe0("isOpenBanner", m_178);
     ASArray items(2);
-    for (size_t i = 0; i < pEvent->m_38.size(); i++) {
+    for (size_t i = 0; i < pEvent->m_dailyItems.size(); i++) {
         ASObj item(2);
-        item.FUN_1407cba60("binding", m_180.BindNewItem(pEvent->m_38[i].begin()->m_20, (&pEvent->m_38[i].begin()->m_18)->vfunc_1(),
-                                                          pEvent->m_38[i].begin()->m_24));
+        item.FUN_1407cba60("binding", m_180.BindNewItem(pEvent->m_dailyItems[i].begin()->m_itemId, ((ItemAble&)*pEvent->m_dailyItems[i].begin().operator->()).vfunc_o18_1(),
+                                                          pEvent->m_dailyItems[i].begin()->m_count));
         if (i >= states.size()) {
             item.FUN_1407cbbe0("received", false);
             item.FUN_1407cbbe0("completed", false);
@@ -441,7 +379,7 @@ void UICoupleDanceEventDialog::FUN_140bfd5e0()
                 break;
             }
         }
-        items.FUN_1422bc050(item.FUN_1422bb870());
+        items.PushValue(item.FUN_1422bb870());
     }
     root.FUN_1409adbe0("rewardInfos", items.FUN_1422bb870());
     m_30->Invoke("setData", root.FUN_1422bb870());
@@ -451,15 +389,15 @@ MS2_REPLACE_METHOD(0x140BFD5E0, UICoupleDanceEventDialog, FUN_140bfd5e0, 1554, 0
 // @0x140bfdc00
 void UICoupleDanceEventDialog::FUN_140bfdc00()
 {
-    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return;
-    CString strStates = g_unkTable.FUN_140bfe1e0(0x835, pEvent->m_18, "");
+    CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     FUN_140178270(strStates, states, ",");
     m_1c0 = 0;
     ASArray unused(2);
-    for (size_t i = 0; i < pEvent->m_38.size(); i++) {
+    for (size_t i = 0; i < pEvent->m_dailyItems.size(); i++) {
         if (i < states.size()) {
             switch (states[i]) {
             case 1:
@@ -471,7 +409,7 @@ void UICoupleDanceEventDialog::FUN_140bfdc00()
             }
         }
     }
-    Unk_UIGameMenuDialog* pMenu = ((class Unk_UIGameMenuDialog*)FUN_140938b90(0x4e28));
+    UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f71, 0);
 }
@@ -487,10 +425,10 @@ void UICoupleDanceEventDialog::FUN_140bfde00()
     Unk_141bd0cc0* pPlayer = ((Unk_141bd0cc0*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    MS2Ptr<Unk_PartyInfo> pParty = pPlayer->vfunc_87();
+    MS2Ptr<Unk_PCBaseComp_ac8> pParty = pPlayer->vfunc_87();
     if (pParty == NULL)
         return;
-    bool bOpen = pParty->FUN_140f48d40() == 1 ? true : false;
+    bool bOpen = reinterpret_cast<UIHudEntity::Entity*>(pParty.operator->())->FUN_140f48d40() == 1 ? true : false;
     if (m_178 == bOpen)
         return;
     m_178 = bOpen;
@@ -501,12 +439,12 @@ MS2_REPLACE_METHOD(0x140BFDE00, UICoupleDanceEventDialog, FUN_140bfde00, 345, 0x
 // @0x140bfdf60
 void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
 {
-    MS2Ptr<Unk_Event> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return;
-    if (nStep < 0 || nStep >= (int)pEvent->m_38.size())
+    if (nStep < 0 || nStep >= (int)pEvent->m_dailyItems.size())
         return;
-    CString strStates = g_unkTable.FUN_140bfe1e0(0x835, pEvent->m_18, "");
+    CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     FUN_140178270(strStates, states, ",");
     if (nStep >= (int)states.size())
@@ -515,7 +453,7 @@ void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
         return;
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0x19);
-    packet.Encode4(pEvent->m_18);
+    packet.Encode4(pEvent->m_eventId);
     packet.Encode4(nStep);
     FUN_140710590(packet);
 }
@@ -539,25 +477,6 @@ void UICoupleDanceEventDialog::FUN_140bfe1a0(void*)
 MS2_REPLACE_METHOD(0x140BFE1A0, UICoupleDanceEventDialog, FUN_140bfe1a0, 55, 0xF5619877);
 
 // ---- inline COMDATs of this unit (exe order: 0x140bfe1e0..) ----
-
-// @0x140bfe1e0
-inline CString Unk_Table::FUN_140bfe1e0(int nKind, int nId, const CString& strDefault)
-{
-    Unk_TableKey key(nKind, nId);
-    Unk_TableIter it;
-    if (m_18.FUN_140420bb0(key, it))
-        return it.FUN_140420460()->FUN_140bfe2c0(strDefault);
-    return strDefault;
-}
-
-// @0x140bfe2c0
-inline CString Unk_TableValue::FUN_140bfe2c0(const CString& strDefault) const
-{
-    Unk_Time now(GetServerTime());
-    if (m_28.FUN_1406c4cc0(now))
-        return strDefault;
-    return FUN_1407186a0(m_20);
-}
 
 // @0x140bfe360
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool b)

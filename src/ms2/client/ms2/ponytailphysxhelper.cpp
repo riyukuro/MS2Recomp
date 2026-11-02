@@ -151,7 +151,7 @@ public:
     static const NiRTTI ms_RTTI;
 };
 int FUN_1409a8f90(const float* pf);                             // is finite
-void* FUN_140a44830();
+class CrashManagerCli;
 class CCrashManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -968,7 +968,7 @@ void FUN_141696de0(NxJointLimitSoftDesc* pLimit, float fValue)
     {
         if (DAT_143afc898 != 0)
         {
-            ((class CCrashManager*)(void*)(FUN_140a44830()))->FUN_1401ce2f0("UpdateJointLimitSoftDesc() %f", (double)fValue);
+            ((class CCrashManager*)(void*)(reinterpret_cast<void*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2f0("UpdateJointLimitSoftDesc() %f", (double)fValue);
             throw 13;
         }
     }

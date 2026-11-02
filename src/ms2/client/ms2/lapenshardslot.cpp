@@ -79,7 +79,7 @@ void FUN_140710590(COutPacket& packet);                 // send
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
 CStringW GetStringCommon(int nStringId);                  // string table text by id
 void FUN_1412751f0(const CStringW& strText, int a, int b);   // a system notice
-void FUN_140d73bc0(int nNoticeId, int a, int b, CStringW str);
+void FUN_140d73bc0(int nNoticeId, int a, void* pListener, CStringW str);
 void FUN_1409b4bc0(void* pDst, const Scaleform::GFx::Value& v);
 
 // Registry of named bags/slots (GFx bind data).

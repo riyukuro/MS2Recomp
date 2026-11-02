@@ -18,6 +18,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include <efd/utf8string.h>
@@ -47,7 +48,7 @@ int FUN_14028d260(float f);                              // seconds -> ms
 bool FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommon(int nId);                         // string table text by id
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);   // formatted system text
+template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_1412751f0(const CStringW& strText, int a, int b);      // system notice
 
 // The strings singleton (FUN_1401d31f0): the station / effect names per call type.
@@ -97,22 +98,8 @@ struct Unk_CcXform
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_CcXform, 0x34);
-struct Unk_CcRequest
-{
-    CString m_strName;                                   // +0
-    int m_nKind;                                         // +8
-    int m_pad_0c;
-    void* m_pSlot10;
-    NiTransform* m_pXform;                               // +0x18
-    char m_pad_20[0x58];
-};
-MS2_CHECK_SIZE(Unk_CcRequest, 0x78);
-void FUN_140a52ef0(Unk_CcRequest* p);                    // construct
-void FUN_1405a89e0(Unk_CcRequest* p);                    // destroy
-
 // Point3 helpers (out-of-line in the exe).
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
-void FUN_14097faa0(NiPoint3* pDst, const NiPoint3* pSrc);   // NiPoint3 assignment
 extern Vector3 DAT_143a08ce8;                       // the default direction
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
@@ -223,7 +210,7 @@ void StateCashCall::vfunc_5(int n)
             {
                 MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
                 if (spItem.get() != 0)
-                    FUN_1412751f0(FUN_14052bd00(0xa0, spItem->FUN_140527b10()), 1, 1);
+                    FUN_1412751f0(FormatStringId<CStringW>(0xa0, spItem->FUN_140527b10()), 1, 1);
             }
         }
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
@@ -412,33 +399,25 @@ void StateCashCall::SetPhase(int nPhase, int nAdd)
 MS2_REPLACE_METHOD(0x141023890, StateCashCall, SetPhase, 47, 0xD4E241C4);
 
 // @0x1410238d0
-// MS2-FUNCTIONAL: transliterated from the decompile (effect request / transform stand-ins)
 void StateCashCall::SpawnEffect(const CString& strEffect)
 {
     Vector3 kPos;
     Vector3 kRot;
     NiTransform xf;
-    PCBase* pPC = FUN_1417b8370();
-    NiPoint3 kDirNi = pPC->vfunc_20();
-    kRot = reinterpret_cast<Vector3&>(kDirNi);
+    kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));
     efd::Matrix3 kMat;
     kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
     Vector3 kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
     xf.MakeIdentity();
-    Vector3 kAhead = kDir.FUN_14097fc90(150.0f);
-    NiPoint3 kNowNi = FUN_1417b8370()->vfunc_18();
-    Vector3 kSum = reinterpret_cast<Vector3&>(kNowNi).FUN_14097fd50(kAhead);
-    FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
-    float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f - 1.5707964f;
+    xf.m_Translate = FUN_1417b8370()->vfunc_18() + reinterpret_cast<efd::Point3&>(kDir) * 150.0f;
+    float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f;
+    fAngle -= 1.5707964f;
     xf.m_Rotate.FromEulerAnglesXYZ(0.0f, 0.0f, fAngle);
-    alignas(8) char requestBuf[sizeof(Unk_CcRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-    Unk_CcRequest& request = *reinterpret_cast<Unk_CcRequest*>(requestBuf);
-    FUN_140a52ef0(&request);
-    request.m_strName = strEffect;
-    request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
-    request.m_pXform = &xf;
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
-    FUN_1405a89e0(&request);
+    NoticeMessage msg;
+    msg.m_strName = strEffect;
+    msg.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
+    msg.m_p18 = &xf;
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&msg));
 }
 MS2_REPLACE_METHOD(0x1410238D0, StateCashCall, SpawnEffect, 623, 0x4B23E957);
 

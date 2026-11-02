@@ -9,6 +9,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
 #include <NiPoint3.h>
+#include <efd/IBase.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
@@ -19,7 +20,7 @@
 
 // ---- unit-local views of exe objects ----
 
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 
 struct Unk_EpCfgData { char m_pad_00[5]; unsigned char m_bEnabled; };
 class Unk_EpCfgHolder { public: Unk_EpCfgData* FUN_141248630(); };
@@ -31,7 +32,8 @@ class Unk_PopupTarget : public CPtred
 public:
     void FUN_141a5e5d0(NiPoint3* pPos);                             // the anchor position
 };
-Unk_PopupOwner* FUN_14096e160(Unk_PopupOwner* pOwner);
+class MyPC; class PCBase;
+template <> MyPC* efd::DynamicCast<MyPC, PCBase>(PCBase* Source);
 
 // The popup clip: ASGameEntity plus the helpers this unit calls.
 class Unk_EpEntity : public ASGameEntity
@@ -48,13 +50,13 @@ UIEpProgress::UIEpProgress(Unk_PopupOwner* pOwner) : UIPopupEntity(pOwner)
     m_90 = 9999999;
     m_94 = 1500.0f;
     FUN_1422dbf00(3, 0, 0);
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x141931640
 UIEpProgress::~UIEpProgress()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
 // @0x1419316f0
@@ -91,7 +93,7 @@ void UIEpProgress::vfunc_53(const NiPoint3& kPos)
         if (pClip.get())
         {
             NiPoint3 pt = kPos;
-            Unk_PopupOwner* pActor = FUN_14096e160(m_68);
+            Unk_PopupOwner* pActor = reinterpret_cast<Unk_PopupOwner*>(efd::DynamicCast<MyPC, PCBase>(reinterpret_cast<PCBase*>(m_68)));
             if (pActor)
             {
                 if (Unk_PopupTarget* pTarget = pActor->vfunc_82().get())
@@ -104,7 +106,7 @@ void UIEpProgress::vfunc_53(const NiPoint3& kPos)
                 }
             }
             pt.y = pt.y - 10.0f;
-            pClip->FUN_1422c00f0(pt.x, pt.y);
+            pClip->SetPositionFloat(pt.x, pt.y);
         }
     }
 }

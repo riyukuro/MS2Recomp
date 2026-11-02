@@ -67,14 +67,14 @@ public:
     bool IsAllowedURL(const CStringA& strUrl);                      // 0x141b78090
     static bool MatchURL(const CStringA& strUrl, ATL::CAtlRegExp<>* pRegExp);   // 0x141b78140
     void FUN_141b781e0(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk); // creates / shows a browser
-    void FUN_141b784f0(int nIndex);                                 // closes a browser
+    void CloseBrowser(int nIndex);                                 // closes a browser
     void QueueBrowserMessage(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message);  // queues a message
     BOOL FUN_141b78650();
     void* FUN_141b786a0(int nIndex);                                // the browser's texture
-    void FUN_141b786f0(int nIndex, const char* pszUrl);             // navigates a browser
+    void Navigate(int nIndex, const char* pszUrl);             // navigates a browser
     void FUN_141b78760(int nIndex, int nPage);
-    void FUN_141b78840(int nIndex, bool bShow);
-    void FUN_141b788b0(int nIndex, int nWidth, int nHeight);
+    void ShowBrowser(int nIndex, bool bShow);
+    void ResizeBrowser(int nIndex, int nWidth, int nHeight);
     bool FUN_141b78910(int nIndex, unsigned nMsg, WPARAM wParam, LPARAM lParam, int x, int y);    // input message
     void FUN_141b789d0(int nIndex);
     void FUN_141b78a10(int nIndex);
@@ -82,8 +82,8 @@ public:
     void SetBrowserKeyboard(int nIndex, bool bUnk);
     void SetBrowserWindowType(int nIndex, int nUnk);
     void SendNewsNotification(bool bUnk, int nUnk);                        // sends packet 0x63
-    void FUN_141b78be0(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback);  // the token callback
-    void FUN_141b78cf0(int nIndex, const CStringA& strToken);       // sends a "token" process message
+    void RequestTokenWithCallback(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback);  // the token callback
+    void SendTokenToBrowser(int nIndex, const CStringA& strToken);       // sends a "token" process message
     void FUN_141b78e70(CefRefPtr<CefProcessMessage> message);       // calls the token callback
     void FUN_141b794e0(CStringA& strOut, const char* pszUrl);       // expands the maview:/api:/search:/external: prefixes
     COffscreenWebBrowser* FindBrowser(int nIndex);                  // 0x141b796e0

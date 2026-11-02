@@ -60,6 +60,7 @@
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/placeholder/propertycache.h"
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
+#include "ms2/commonfiles/os.h"
 #pragma pop_macro("max")
 #pragma pop_macro("min")
 
@@ -86,14 +87,14 @@ egmAnimation::AnimationService* FUN_141b6f910();
 
 // Effect play request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0). Layout as in entityvibrator.cpp.
 void* FUN_1403ed2d0();
-void* FUN_1403ed280();
+class CEffectService;
 int FUN_14123c580(void* p);
 void* FUN_141200850(CEquipModel* p);
 
 // ---- out-of-unit callees ----
 void* FUN_1405a8ed0(void* sp);   void FUN_1405a85c0(void* sp);   void* FUN_1409849b0(void* sp);
-void* GetItem(void* owner, void* out);   void* FUN_14052cd70(void* p);   void FUN_1401bfde0(void* p);
-void* FUN_1401c0180(void* p);   int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);class CItemData   // C3: member view for the former free stand-ins
+void* GetItem(void* owner, void* out);   void* FUN_14052cd70(void* p);
+int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);class CItemData   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14053cfd0();
@@ -153,7 +154,7 @@ bool FUN_1408b70b0(const void* sp, int n);   bool FUN_140965490(const void* sp, 
    void FUN_1401cd100(void* dst, int n);
 void FUN_1408b6ec0(void* sp, void* v);   void FUN_140964eb0(void* sp, const egf::EntityPtr& v);
 void FUN_1414737d0(egf::Entity* e);
-egf::EntityManager* FUN_1409670f0();
+class EntityWorldManager;
 egf::Entity* FUN_1411cf440(egf::EntityManager* m, const egf::EntityID& id);
 bool FUN_1411cf2d0(egf::EntityManager* m, egf::Entity* e, int n);
 struct Unk_KfmEntWorld   // the entity manager's create-from-model-name member
@@ -189,7 +190,6 @@ void FUN_1409f72e0(void* m);
 bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
 bool FUN_1409a1140(const efd::utf8string& a, const efd::utf8string& b);
 CString FUN_1409a2360(const char* psz, int n);   CString FUN_140719190(int v);
-const char* FUN_142087e50(const void* kFixed);
 size_t FUN_14028b4c0(void* v);   CString* FUN_140fe01a0(void* v, unsigned __int64 i);
 bool FUN_14028d470(float a, float b);
 void FUN_14120a440(void* p, void* v);
@@ -275,7 +275,7 @@ void* FUN_141d17b40(void* node, void* name);
 float FUN_141d57ca0(void* ed, int i);
 namespace efd { class ServiceManager; }
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
-void* FUN_14086d260();
+class CMainSystem;
 void* FUN_1412018c0(class CEquipModel*);   // C3: was FUN_1412018c0
 
 #define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
@@ -567,7 +567,7 @@ void CKfmModel::vfunc_13()
     if (spItem.operator!() != 0)
         return;
     int nResult = reinterpret_cast<CEquipment*>(((class PC*)(void*)(pActor))->FUN_1416561a0())->FUN_1411e99a0(spItem->FUN_140527a20(),
-                                ((CEquipModel*)this)->FUN_1412029d0(), spItem->FUN_1405258b0(),
+                                ((CEquipModel*)this)->FUN_1412029d0(), spItem->HasSkin(),
                                 ((class CItemData*)(void*)(((void*)((class CItem*)(void*)(spItem.operator->()))->FUN_140527840())))->FUN_14053d2b0());
     if (nResult != 0) {
         NiNode* pTarget;
@@ -913,7 +913,7 @@ void CKfmModel::TextKeyEvent(NiActorManager*, NiActorManager::SequenceID, const 
         kReq.m_spNode.operator=((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (NiObject*)vfunc_14()));
         if (pActor != 0)
             kReq.SetActor(((GameObject*)pActor)->FUN_14123c580());
-        ((class CEffectService*)(void*)(TSingleton<CEffectService>::GetInstance()))->FUN_1411a4a00(*(class Unk_EffectTarget*)(&kReq));
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*(class Unk_EffectTarget*)(&kReq));
     }
 }
 
@@ -927,7 +927,7 @@ void CKfmModel::CreateEntity()
     unsigned __int64 nScratch;
     void* pDummy = &nScratch;
     m_spEntity.operator=(
-        ((Unk_KfmEntWorld*)FUN_1409670f0())->FUN_1411cec80(FUN_141201780(), FUN_142132a40(pDummy), true));
+        ((Unk_KfmEntWorld*)reinterpret_cast<egf::EntityManager*>(TSingleton<EntityWorldManager>::GetInstance()))->FUN_1411cec80(FUN_141201780(), FUN_142132a40(pDummy), true));
     TSingleton<CItemService>::GetInstance()->RegisterModel(this);
 }
 

@@ -10,36 +10,7 @@
 
 class StateGlideData;
 
-// The glide skill row (a CPtred; fields used by StateGlide only). Name invented.
-class Unk_GlideRow : public CPtred
-{
-public:
-    int FUN_140802ab0();                    // 0x140802ab0 (a value of the row; returned by FUN_1417c9740)
-
-    int m_nSkill;                           // +0x18
-    float m_f1c;                            // +0x1c subtracted from the end height
-    float m_f20;                            // +0x20 maximum fall height (0 = unlimited)
-    float m_f24;                            // +0x24 forward speed per second
-    float m_f28;                            // +0x28 base speed
-    float m_f2c;                            // +0x2c fall speed per second
-    float m_f30;                            // +0x30
-    float m_f34;                            // +0x34 sway amplitude
-    float m_f38;                            // +0x38 sway period
-    float m_f3c;                            // +0x3c fall limit
-    float m_f40;                            // +0x40 forward limit
-    char m_pad_44[4];
-    CStringA m_strEffectA;                  // +0x48
-    CStringA m_strEffectB;                  // +0x50
-    CStringA m_strAnimB;                    // +0x58
-    char m_pad_60[8];
-    CStringA m_strAnimA;                    // +0x68
-    bool m_bCheckGround;                    // +0x70
-    char m_pad_71[3];
-    int m_nSpeedMul;                        // +0x74
-};
-MS2_CHECK_OFFSET(Unk_GlideRow, m_nSkill, 0x18);
-MS2_CHECK_OFFSET(Unk_GlideRow, m_strEffectA, 0x48);
-MS2_CHECK_OFFSET(Unk_GlideRow, m_bCheckGround, 0x70);
+class SkillGlideData;   // the glide skill row (commonfiles/skilloverlapcompare.h)
 
 // 0xa0.
 class StateGlide : public StateMoveSkill
@@ -71,7 +42,7 @@ public:
 
     int m_nAnim;                                            // +0x78 the animation set playing (99 or 100)
     int m_nEffect;                                          // +0x7c effect id (0 = none)
-    MS2Ptr<Unk_GlideRow> m_spRow;                           // +0x80
+    MS2Ptr<SkillGlideData> m_spRow;                         // +0x80
     float m_fTime;                                          // +0x90
     float m_fStartZ;                                        // +0x94
     bool m_bHeightErr;                                      // +0x98

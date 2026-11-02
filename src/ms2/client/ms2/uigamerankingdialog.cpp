@@ -206,7 +206,7 @@ enum Unk_LevelEntry;
 void FUN_140222be0(ATL::CAtlArray<Unk_LevelEntry>& arr);    // the job ids
 class Unk_RankMapInfo : public CPtred {};
 class Unk_RankMapTable { public: MS2Ptr<Unk_RankMapInfo> FUN_140429930(int nId); };
-void* FUN_140302b00();
+class CGameEventValueManager;
 Unk_RankMapTable* FUN_1403ecfe0(void*);
 
 int FUN_140b3f460(int nType);
@@ -363,8 +363,8 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            float x = data.FUN_1422b8c10();
-            float y = data.FUN_1422b8c10();
+            float x = data.PopFloat();
+            float y = data.PopFloat();
             unsigned __int64 nAccount = FUN_140718350(data.FUN_1422b8d30());
             unsigned __int64 nChar = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
@@ -399,7 +399,7 @@ int UIGameRankingDialog::vfunc_13()
             }
             if (MS2Ptr<Unk_RankInput> spInput = FUN_140e35bd0("m_searchInput"))
             {
-                if (((class ASUIComponent*)(class Unk_RankInput*)(spInput.operator->()))->FUN_1422c76c0() != 0)
+                if (((class ASUIComponent*)(class Unk_RankInput*)(spInput.operator->()))->GetFocused() != 0)
                     FUN_140e34d50(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText());
             }
             return 1;
@@ -722,7 +722,7 @@ void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
                 continue;
             if (spRec->m_bIsEventArcade == 1)
             {
-                if (FUN_1403ecfe0(FUN_140302b00())->FUN_140429930(spRec->m_nId) == 0)
+                if (FUN_1403ecfe0(reinterpret_cast<void*>(TSingleton<CGameEventValueManager>::GetInstance()))->FUN_140429930(spRec->m_nId) == 0)
                     continue;
             }
             int nOffset = nSubIdx * 10;
@@ -809,7 +809,7 @@ void UIGameRankingDialog::FUN_140e31510(Unk_RankCatPtr spCategory)
             tip.FUN_1407cbb20("id", CStringW(spData->m_strTooltip));
             tip.FUN_1409c0dc0("align", "topLeft");
             item.FUN_1409eb270("tooltipData", tip);
-            aTabs.FUN_1422bc050(Scaleform::GFx::Value(item.FUN_1422bb870()));
+            aTabs.PushValue(Scaleform::GFx::Value(item.FUN_1422bb870()));
         }
     }
     spTab->SetDataProvider(aTabs.FUN_1422bb870());

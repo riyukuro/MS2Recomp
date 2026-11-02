@@ -17,13 +17,14 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/os.h"
 
 static CString s_strBattleFieldKill = "BattleField_Kill";
 static CString s_strSystemKillPlayer = "System_KillPlayer";
 
 // ---- unit-local views of exe objects ----
 
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -32,7 +33,7 @@ public:
     static class WorldService* GetInstance();
 };
 bool FUN_14025cd60(const CStringW& strA, const CStringW& strB); // names are equal
-CStringW FUN_14052bd00(int nId, const CStringW& strName);       // string table text with one name
+template <class A> CStringW FormatStringId(int nId, const A& a);       // string table text with one name
 int FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
 void FUN_1412751b0(const CStringW& strMsg, int nType);
 void FUN_141925e70(int, int);
@@ -115,8 +116,8 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
         FUN_141276180(s_strBattleFieldKill, "");
         if (!strTarget.IsEmpty())
         {
-            CStringW strMsg = FUN_14052bd00(0x973, strTarget);
-            FUN_1403b4750()->FUN_1416fb340(strMsg);
+            CStringW strMsg = FormatStringId<CStringW>(0x973, strTarget);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
             FUN_1412751b0(strMsg, 0x14);
         }
     }
@@ -124,8 +125,8 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
     {
         if (!strAttacker.IsEmpty())
         {
-            CStringW strMsg = FUN_14052bd00(0x972, strAttacker);
-            FUN_1403b4750()->FUN_1416fb340(strMsg);
+            CStringW strMsg = FormatStringId<CStringW>(0x972, strAttacker);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strMsg);
             FUN_1412751b0(strMsg, 0x14);
         }
     }

@@ -3,6 +3,7 @@
 // reporter can be exercised. Name assumed (the exe has no __FILE__ for this unit); Crash::CBase / CDerived are RTTI names.
 // MS2-UNIT: ?\crash.cpp
 // MS2-RANGE: 0x140cca840-0x140ccac60 .text$mn
+// MS2-PIN: ??1CDerived@Crash@@QEAA@XZ 0x140ccaab0 ; implicit dtor
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\crash.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include <stdio.h>
@@ -64,12 +65,6 @@ Crash::CDerived::CDerived() : CBase(this)
 {
 }
 
-// @0x140ccaab0
-void FUN_140ccaab0(Crash::CBase* p)
-{
-    p->CBase::~CBase();
-}
-
 // @0x140ccaad0
 void Crash::CDerived::vfunc_0()
 {
@@ -91,7 +86,6 @@ int FUN_140ccaae0(const char* pszFormat, ...)
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // @0x140cca840
-// MS2-FUNCTIONAL: the exe's frame has no EH state: the local CDerived is never destroyed there (source form not found)
 void FUN_140cca840(int nType)
 {
     switch (nType)
@@ -104,15 +98,15 @@ void FUN_140cca840(int nType)
     }
     case 1:
         std::terminate();
+        break;
     case 2:
         unexpected();
         break;
     case 3:
     {
         Crash::CDerived derived;
-        FUN_140ccaab0(&derived);
-        break;
     }
+        break;
     case 4:
     {
         const char* psz = 0;
@@ -124,11 +118,13 @@ void FUN_140cca840(int nType)
         break;
     case 6:
         FUN_140159b70(0x8007000e);
+        break;
     case 7:
         RaiseException(0x7b, 1, 0, 0);
         break;
     case 8:
         throw 0xd;
+        break;
     case 9:
         AfxThrowFileException(1, -1, 0);
         break;
@@ -137,8 +133,10 @@ void FUN_140cca840(int nType)
         break;
     case 11:
         throw std::exception();
+        break;
     case 12:
         throw std::bad_alloc();
+        break;
     case 13:
         FUN_14148b090(FUN_140aae430());
         break;

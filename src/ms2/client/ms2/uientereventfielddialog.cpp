@@ -55,7 +55,7 @@ public:
 // The notice dispatcher (FUN_140939a10).
 NotifySystem* FUN_140939a10();
 
-CStringW FUN_14052bd00(int id, const CStringW& arg);            // formatted system text
+template <class A> CStringW FormatStringId(int nId, const A& a);            // formatted system text
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                    // show it
 void FUN_140710590(COutPacket& packet);                         // send the packet
@@ -115,7 +115,7 @@ int UIEnterEventFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         return 1;
     if (_stricmp("onEnterEventField", szMethod) == 0)
     {
-        CStringW strText = FUN_14052bd00(0xc3e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nFieldId));
+        CStringW strText = FormatStringId<CStringW>(0xc3e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_nFieldId));
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 1);
             if (spBox.get() != 0)
@@ -167,7 +167,7 @@ void UIEnterEventFieldDialog::vfunc_43()
                         if (((class ASMovieClip*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c2510(&dX, &dY) != 0)
                             nX = (int)((dX - (double)(int)((float)pDialog->FUN_1422c1340() * 0.5f)) + 10.0);
                     }
-                    pDialog->FUN_1422bffe0(nX > 0 ? nX : 0, 0);
+                    pDialog->SetPositionInt(nX > 0 ? nX : 0, 0);
                 }
             }
         }

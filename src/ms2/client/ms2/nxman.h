@@ -35,18 +35,18 @@ public:
     CNXMan();
     virtual ~CNXMan();
 
-    unsigned FUN_14160d820();                           // 0x14160d820 platform connect
-    void FUN_14160da80();                               // 0x14160da80 shutdown
+    unsigned Start();                           // 0x14160d820 platform connect
+    void Shutdown();                               // 0x14160da80 shutdown
     static bool FUN_14160dac0();                        // 0x14160dac0
     void FUN_14160db10();                               // 0x14160db10
     void FUN_14160db40(void* p1, void* p2);             // 0x14160db40
-    int  FUN_14160db80();                               // 0x14160db80
+    int  LoginWithPassport();                               // 0x14160db80
     void Logout();                               // 0x14160dd20
     int  FUN_14160dd50(CStringW& rResult);              // 0x14160dd50
     int  FUN_14160e260();                               // 0x14160e260
-    void FUN_14160e410();                               // 0x14160e410
-    CString FUN_14160e500();                            // 0x14160e500
-    CString FUN_14160e550();                            // 0x14160e550
+    void UpdateAuthStrings();                               // 0x14160e410
+    CString GetPassportString();                            // 0x14160e500
+    CString GetHardwareIdString();                            // 0x14160e550
     CString FUN_14160e5a0();                            // 0x14160e5a0
     int FUN_14160e5f0();                                // 0x14160e5f0
     int  LoadAnySetting();                               // 0x14160e630

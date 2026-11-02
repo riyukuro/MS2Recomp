@@ -67,7 +67,7 @@ public:
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
 };
-Unk_UpperNpc* FUN_140a38a00(void* pObj);                    // object -> npc
+class Unk_CameraTargetEntity; class Unk_BossObject; Unk_CameraTargetEntity* FUN_140a38a00(Unk_BossObject* pObj);                    // object -> npc
 
 // The exe's map value assign / dtor (0x140aac1c0, 0x140aac2b0, 0x140aac150) are older inline forms of
 // CComPtr::operator= / ~CComPtrBase than the ATL we compile against: the assign releases and addrefs in place
@@ -382,7 +382,7 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::Find(unsigned nId)
     void* pObj = reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FUN_141bd1180(nId);
     if (Unk_RtePlayer* pPlayer = reinterpret_cast<Unk_RtePlayer*>(efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(pObj))))
         spResult.AssignRaw(pPlayer->GetEffectPtr());
-    else if (Unk_UpperNpc* pNpc = FUN_140a38a00(pObj))
+    else if (Unk_UpperNpc* pNpc = (Unk_UpperNpc*)FUN_140a38a00((Unk_BossObject*)pObj))
         spResult = pNpc->GetEffect();
     return spResult;
 }

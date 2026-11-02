@@ -40,7 +40,7 @@ public:
     int FUN_140a5f060(__int64 id);
     int FUN_140a5f180(int itemId, int rarity);
     int FUN_140a5f410(ItemPtr reference);
-    void FUN_140a5f780(int tag, int rarity);
+    int FUN_140a5f780(int tag, int rarity);
     int FUN_140a5f7b0(int tag, int rarity);
     int FUN_140a5f990(CStringW function);
     int FUN_140a5fbd0(int skill, int includeEquipment);

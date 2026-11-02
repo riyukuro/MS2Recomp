@@ -115,7 +115,7 @@ class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (re
 class CPhysXHelper
 {
 public:
-    int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
+    int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
 };
 
 float FUN_14029d220(float f);                       // fabs
@@ -788,15 +788,15 @@ BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
                     fLen = 1.0f;
                 Vector3 ptBack = ptDir.FUN_1409f7960();
                 Vector3 ptHit = g_143b01a60;
-                if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
+                if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(aptCorner[i], ptHit, ptDir, fLen, 0x209) == 0)
                 {
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(m_78, ptHit, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(m_78, ptHit, ptBack, fLen, 0x209))
                         return 1;
                 }
                 else
                 {
                     Vector3 ptHit2 = g_143b01a60;
-                    if (((CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(ptHit, ptHit2, ptBack, fLen, 0x209))
+                    if (((CPhysXHelper*)FUN_1409f7ca0())->RayCastFromPoint(ptHit, ptHit2, ptBack, fLen, 0x209))
                         return 1;
                 }
             }

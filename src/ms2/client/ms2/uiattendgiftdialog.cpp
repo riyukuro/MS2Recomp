@@ -543,7 +543,7 @@ void UIAttendGiftDialog::FUN_14102da40()
     int maxSlots=0x1c;
     for(unsigned int i=0;i<0x1c;i++) {
         if(i>=m_selected->FUN_140ce3660()) {
-            slots.FUN_1422bc050(ASObj(2).FUN_1422bb890());
+            slots.PushValue(ASObj(2).FUN_1422bb890());
             continue;
         }
         {
@@ -574,7 +574,7 @@ void UIAttendGiftDialog::FUN_14102da40()
                         }
                     }
                 }
-                slots.FUN_1422bc050(slot.FUN_1422bb870());
+                slots.PushValue(slot.FUN_1422bb870());
             }
         }
     }

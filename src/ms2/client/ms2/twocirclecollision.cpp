@@ -57,9 +57,9 @@ void CTwoCircleCollision::vfunc_1()
 }
 MS2_REPLACE_METHOD(0x141868D10, CTwoCircleCollision, vfunc_1, 143, 0xC5D47FB4);
 
+extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT imports
+extern "C" float (__cdecl* __imp_cosf)(float);
 // @0x141868db0
-// MS2-FUNCTIONAL: identical calls/order; only registers differ: the exe computes the cosf angle in xmm1
-// (then movaps xmm0) and loads fSin via xmm1 -> xmm2.
 void CTwoCircleCollision::vfunc_5()
 {
     if (!m_spInner)
@@ -77,17 +77,17 @@ void CTwoCircleCollision::vfunc_5()
     Vector3 aPts[nPoints];
     for (int i = 0; i < kRingPoints; i++)
     {
-        float fSin = sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius;
         aPts[i] = m_ptCenter.FUN_14097fd50(
-            Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, fSin, 0.0f));
+            Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius,
+                    __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, 0.0f));
     }
     m_spInner->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildWire(m_spInner, aPts, kRingPoints);
     for (int i = 0; i < kRingPoints; i++)
     {
-        float fSin = sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius;
         aPts[i] = m_ptCenter.FUN_14097fd50(
-            Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, fSin, 0.0f));
+            Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius,
+                    __imp_sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, 0.0f));
     }
     m_spOuter->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
     BuildWire(m_spOuter, aPts, kRingPoints);

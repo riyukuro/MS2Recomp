@@ -27,6 +27,7 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
 #include "ms2/client/ms2/gameobjectcontrollerhitreport.h"
+#include "ms2/client/ms2/skilldatatablecli.h"   // C3: SkillDataTable::GetGlideData, SkillGlideData
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -59,9 +60,6 @@ bool FUN_14028d470(float a, float b);                      // approximately equa
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 void FUN_1412751f0(const CStringW& str, int a, int b);     // 0x1412751f0 chat notice
 
-// The skill table (FUN_1401958b0): the row of a glide data id.
-class Unk_GlideTable { public: MS2Ptr<Unk_GlideRow> FUN_1407ee470(int nId); };
-Unk_GlideTable* FUN_1401958b0();
 
 // The world service (0x1403ed2d0): the upper bound of the map.
 class Unk_GlideWorld { public: efd::Point3 FUN_141bd3820(); };
@@ -81,9 +79,8 @@ Unk_GlCell FUN_1408a0400(int nKey);
 efd::Point3 FUN_1408a15b0(Unk_GlCell kCell, efd::Point3& kCentre);     // fills kCentre with the cell centre
 
 // The PhysX helper (0x1409f7ca0): ground below a point.
-class CPhysXHelper;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-class Unk_GlidePhys
+class CPhysXHelper
 {
 public:
     int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
@@ -141,7 +138,7 @@ void StateGlide::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(pPC)->vfunc_18();
-        if (((Unk_GlidePhys*)((class CPhysXHelper*)FUN_1409f7ca0()))->FUN_14168a770(&kPos))
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770(&kPos))
         {
             pPC->vfunc_59(1, 0, 0, 0);
             return;
@@ -151,15 +148,15 @@ void StateGlide::vfunc_4(StateData* pData)
     }
     m_nAnim = 99;
     Unk_EffectQuery query;
-    query.m_strName = m_spRow->m_strEffectB;
+    query.m_strName = m_spRow->m_strEffectIdle;
     query.m_nObject = 0;
     query.SetActor(m_pOwner->FUN_14123c580());
     query.m_bFlag31 = true;
     m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->vfunc_47(false);
-    m_pOwner->FUN_141670330((float)m_spRow->m_nSpeedMul);
-    m_pOwner->FUN_141670360((float)m_spRow->m_nSpeedMul);
-    efd::utf8string strAnim(m_spRow->m_strAnimB);
+    m_pOwner->FUN_141670330((float)m_spRow->m_nNameTagOffset);
+    m_pOwner->FUN_141670360((float)m_spRow->m_nNameTagOffset);
+    efd::utf8string strAnim(m_spRow->m_strAniIdle);
     m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
 }
 
@@ -173,7 +170,7 @@ void StateGlide::vfunc_3(double fTime)
         return;
     FUN_1417c9880((float)fTime);
     int bLand = 0;
-    if (m_spRow->m_bCheckGround)
+    if (m_spRow->m_bOnGroundDisable)
     {
         if (m_pOwner->FUN_141671a30() != 0)
         {
@@ -183,7 +180,7 @@ void StateGlide::vfunc_3(double fTime)
         {
             efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_18();
             float fDist = 0.0f;
-            if (((Unk_GlidePhys*)((class CPhysXHelper*)FUN_1409f7ca0()))->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
+            if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
                 bLand = 1;
         }
     }
@@ -245,13 +242,13 @@ void StateGlide::vfunc_9(double fTime)
             {
                 reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
                 Unk_EffectQuery query;
-                query.m_strName = m_spRow->m_strEffectA;
+                query.m_strName = m_spRow->m_strEffectRun;
                 query.m_nObject = 0;
                 query.SetActor(m_pOwner->FUN_14123c580());
                 query.m_bFlag31 = true;
                 m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
-            efd::utf8string strAnim(m_spRow->m_strAnimA);
+            efd::utf8string strAnim(m_spRow->m_strAniRun);
             m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
         else
@@ -260,13 +257,13 @@ void StateGlide::vfunc_9(double fTime)
             {
                 reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6060(m_nEffect);
                 Unk_EffectQuery query;
-                query.m_strName = m_spRow->m_strEffectB;
+                query.m_strName = m_spRow->m_strEffectIdle;
                 query.m_nObject = 0;
                 query.SetActor(m_pOwner->FUN_14123c580());
                 query.m_bFlag31 = true;
                 m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
             }
-            efd::utf8string strAnim(m_spRow->m_strAnimB);
+            efd::utf8string strAnim(m_spRow->m_strAniIdle);
             m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
         m_nAnim = m_n10;
@@ -278,7 +275,7 @@ bool StateGlide::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
     if (m_spRow == 0)
         return true;
-    return m_spRow->m_nSkill != p->m_n68;
+    return m_spRow->m_nId != p->m_n68;
 }
 
 // @0x1417c9710
@@ -303,7 +300,7 @@ bool StateGlide::vfunc_38(StateData* pData)
     StateGlideData* pGlide = dynamic_cast<StateGlideData*>(pData);
     if (pGlide == 0)
         return false;
-    m_spRow = FUN_1401958b0()->FUN_1407ee470(pGlide->m_n20);
+    m_spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetGlideData(pGlide->m_n20);
     if (m_spRow == 0)
         return false;
     return true;
@@ -324,11 +321,11 @@ extern "C" float (__cdecl* __imp_cosf)(float);   // cosf through the CRT import 
 // @0x1417c99f0
 float StateGlide::FUN_1417c99f0()
 {
-    if (FUN_14028d470(m_spRow->m_f34, 0))
+    if (FUN_14028d470(m_spRow->m_fVerticalVibrateAmplitude, 0))
         return 0.0f;
-    if (FUN_14028d470(m_spRow->m_f38, 0))
+    if (FUN_14028d470(m_spRow->m_fVerticalVibrateFrequency, 0))
         return 0.0f;
-    return m_spRow->m_f34 * __imp_cosf((m_fTime * 3.1415927f * 2.0f) / m_spRow->m_f38);
+    return m_spRow->m_fVerticalVibrateAmplitude * __imp_cosf((m_fTime * 3.1415927f * 2.0f) / m_spRow->m_fVerticalVibrateFrequency);
 }
 
 // @0x1417c9ad0
@@ -340,13 +337,13 @@ float StateGlide::FUN_1417c9ad0()
     {
         fBonus += pActor->FUN_141662930(0x73);
     }
-    return m_spRow->m_f30 + m_spRow->m_f30 * fBonus;
+    return m_spRow->m_fVerticalVelocity + m_spRow->m_fVerticalVelocity * fBonus;
 }
 
 // @0x1417c9b70
 float StateGlide::FUN_1417c9b70()
 {
-    return m_spRow->m_f28;
+    return m_spRow->m_fHorizontalVelocity;
 }
 
 // @0x1417c9ba0
@@ -361,9 +358,9 @@ efd::Point3 StateGlide::FUN_1417c9c00()
     if (m_bTooHigh)
         return efd::Point3::ZERO;
     float fSway = FUN_1417c99f0();
-    float fFall = m_spRow->m_f2c * m_fTime;
-    if (!FUN_14028d470(m_spRow->m_f3c, 0))
-        fFall = fFall > m_spRow->m_f3c ? m_spRow->m_f3c : fFall;
+    float fFall = m_spRow->m_fVerticalAccelerate * m_fTime;
+    if (!FUN_14028d470(m_spRow->m_fGlideVerticalAccelerateLimit, 0))
+        fFall = fFall > m_spRow->m_fGlideVerticalAccelerateLimit ? m_spRow->m_fGlideVerticalAccelerateLimit : fFall;
     float fTotal = FUN_1417c9ad0() + fFall;
     if (!m_bHeightErr)
     {
@@ -373,16 +370,16 @@ efd::Point3 StateGlide::FUN_1417c9c00()
     }
     float fZ = m_bHeightErr ? fSway : (fTotal += fSway);
     if (!m_bHeightErr)
-        fZ -= m_spRow->m_f1c;
+        fZ -= m_spRow->m_fGravity;
     return efd::Point3::UNIT_Z * fZ;
 }
 
 // @0x1417c9ee0
 efd::Point3 StateGlide::FUN_1417c9ee0()
 {
-    float fForward = m_spRow->m_f24 * m_fTime;
-    if (!FUN_14028d470(m_spRow->m_f40, 0))
-        fForward = fForward > m_spRow->m_f40 ? m_spRow->m_f40 : fForward;
+    float fForward = m_spRow->m_fHorizontalAccelerate * m_fTime;
+    if (!FUN_14028d470(m_spRow->m_fGlideHorizontalAccelerateLimit, 0))
+        fForward = fForward > m_spRow->m_fGlideHorizontalAccelerateLimit ? m_spRow->m_fGlideHorizontalAccelerateLimit : fForward;
     float fSpeed = FUN_1417c9b70() + fForward;
     if (20.0f < fSpeed)
         fSpeed = 20.0f;
@@ -395,7 +392,7 @@ int StateGlide::FUN_1417ca000()
     const efd::Point3& kPos = static_cast<const efd::Point3&>(m_pOwner->vfunc_18());
     if (reinterpret_cast<Unk_GlideWorld*>(WorldService::GetInstance())->FUN_141bd3820().z - 300.0f < kPos.z)
         return 0;
-    if (0.0f < m_spRow->m_f20 && m_spRow->m_f20 < m_pOwner->vfunc_18().z - m_fStartZ)
+    if (0.0f < m_spRow->m_fHeightLimit && m_spRow->m_fHeightLimit < m_pOwner->vfunc_18().z - m_fStartZ)
         return 0;
     return 1;
 }

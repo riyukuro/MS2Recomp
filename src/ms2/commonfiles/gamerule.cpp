@@ -284,6 +284,7 @@ class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_14
 // The ontime getters return MS2Ptr<const OntimeEventContext>: the exe converts the map's MS2Ptr<OntimeEventContext>
 // into a second pointer family (copy 0x140497ca0 reads the source through get(), AddRef 0x1404aeed0, (int) 0x140497ce0)
 // that only this TU instantiates. The CPtred helpers take a non-const pointer.
+template <> template <> inline MS2Ptr<const OntimeEventContext>::MS2Ptr(const MS2Ptr<OntimeEventContext>& o) { m_p = o.get(); AddRef(); }
 template <> inline void MS2Ptr<const OntimeEventContext>::Reference(const OntimeEventContext* p)
 {
     CPtred::AddRefPtred(const_cast<OntimeEventContext*>(p));
@@ -298,15 +299,15 @@ template <> inline void MS2Ptr<const OntimeEventContext>::ReleaseImpl(void*)
 }
 
 // The scoped lock of this TU (the same exe ctor as Unk_PetLock; it acquires immediately, the dtor releases).
-struct Unk_GameRuleLock {
-    Unk_GameRuleLock(CLockCriticalSection& lock, int acquire);      // 0x140203610
-    ~Unk_GameRuleLock();                                            // 0x1401b5120
+struct Unk_PetLock {
+    Unk_PetLock(CLockCriticalSection& lock, int acquire);      // 0x140203610
+    ~Unk_PetLock();                                            // 0x1401b5120
     CLockCriticalSection* m_lock;
 };
-MS2_CHECK_SIZE(Unk_GameRuleLock, 8);
+MS2_CHECK_SIZE(Unk_PetLock, 8);
 
 // Out-of-unit callees.
-extern void* DAT_143aaeb00;                             // the pet table singleton (FUN_140353610 is its method)
+class CExpTable;
 class CExpTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -503,7 +504,7 @@ MS2_REPLACE(0x140475FA0, FUN_140475fa0, 72, 0x2FA61F89);
 // @0x1404a1bb0
 void* FUN_1404a1bb0()
 {
-    return DAT_143aaeb00;
+    return reinterpret_cast<void*>(TSingleton<CExpTable>::s_instance);
 }
 MS2_REPLACE(0x1404A1BB0, FUN_1404a1bb0, 8, 0x01B1E857);
 
@@ -976,7 +977,7 @@ MS2_REPLACE_METHOD(0x140477D10, CGameRule, FUN_140477d10, 163, 0x0372B0CC);
 // @0x140477dc0
 void CGameRule::AddFreeAirTaxiEvent(unsigned eventId)
 {
-    Unk_GameRuleLock lock(m_370, 1);
+    Unk_PetLock lock(m_370, 1);
     m_3a0.insert(eventId);
 }
 MS2_REPLACE_METHOD(0x140477DC0, CGameRule, AddFreeAirTaxiEvent, 98, 0x47F6FCC7);
@@ -984,7 +985,7 @@ MS2_REPLACE_METHOD(0x140477DC0, CGameRule, AddFreeAirTaxiEvent, 98, 0x47F6FCC7);
 // @0x140477e30
 void CGameRule::RemoveFreeAirTaxiEvent(unsigned eventId)
 {
-    Unk_GameRuleLock lock(m_370, 1);
+    Unk_PetLock lock(m_370, 1);
     m_3a0.erase(eventId);
 }
 MS2_REPLACE_METHOD(0x140477E30, CGameRule, RemoveFreeAirTaxiEvent, 93, 0x96A3E339);
@@ -992,7 +993,7 @@ MS2_REPLACE_METHOD(0x140477E30, CGameRule, RemoveFreeAirTaxiEvent, 93, 0x96A3E33
 // @0x140477ea0
 BOOL CGameRule::IsFreeAirTaxiActive()
 {
-    Unk_GameRuleLock lock(m_370, 1);
+    Unk_PetLock lock(m_370, 1);
     return !m_3a0.empty();
 }
 MS2_REPLACE_METHOD(0x140477EA0, CGameRule, IsFreeAirTaxiActive, 110, 0x48ABD90C);
@@ -1044,14 +1045,14 @@ MS2_REPLACE_METHOD(0x1404780E0, CGameRule, HasUserCondition, 132, 0x46133C32);
 // @0x140478170
 void CGameRule::AddOntimeEvent(int eventId, MS2Ptr<OntimeEventContext> spContext)
 {
-    Unk_GameRuleLock lock(m_4d0, 1);
+    Unk_PetLock lock(m_4d0, 1);
     m_500.SetAt(eventId, spContext);
 }
 
 // @0x1404781f0
 void CGameRule::DeactivateOntimeEvent(int eventId)
 {
-    Unk_GameRuleLock lock(m_4d0, 1);
+    Unk_PetLock lock(m_4d0, 1);
     ATL::CAtlMap<int, MS2Ptr<OntimeEventContext> >::CPair* pPair = m_500.Lookup(eventId);
     if (pPair != NULL)
         pPair->m_value->m_1c = false;
@@ -1061,7 +1062,7 @@ MS2_REPLACE_METHOD(0x1404781F0, CGameRule, DeactivateOntimeEvent, 125, 0x1CF96A7
 // @0x140478280
 MS2Ptr<const OntimeEventContext> CGameRule::FUN_140478280()
 {
-    Unk_GameRuleLock lock(m_4d0, 1);
+    Unk_PetLock lock(m_4d0, 1);
     for (POSITION pos = m_500.GetStartPosition(); pos != NULL; m_500.GetNext(pos)) {
         MS2Ptr<OntimeEventContext> pEventCtx = m_500.GetValueAt(pos);
         MS2_ASSERT_AT(0x317, pEventCtx != NULL);
@@ -1075,7 +1076,7 @@ MS2_REPLACE_METHOD(0x140478280, CGameRule, FUN_140478280, 336, 0x21808762);
 // @0x1404783e0
 MS2Ptr<const OntimeEventContext> CGameRule::GetOntimeEvent(int eventId)
 {
-    Unk_GameRuleLock lock(m_4d0, 1);
+    Unk_PetLock lock(m_4d0, 1);
     ATL::CAtlMap<int, MS2Ptr<OntimeEventContext> >::CPair* pPair = m_500.Lookup(eventId);
     if (pPair != NULL)
         return pPair->m_value;
@@ -1626,7 +1627,7 @@ MS2_REPLACE_METHOD(0x14047A1B0, CGameRule, GetEventTimeLimitDungeonRanges, 171, 
 // @0x14047a270
 bool CGameRule::IsFieldShutdown(unsigned id)
 {
-    Unk_GameRuleLock lock(m_7d0, 1);
+    Unk_PetLock lock(m_7d0, 1);
     if (m_800.empty())
         return false;
     if (m_800.find(id) == m_800.end())
@@ -1638,7 +1639,7 @@ MS2_REPLACE_METHOD(0x14047A270, CGameRule, IsFieldShutdown, 227, 0x9C13F15C);
 // @0x14047a360
 void CGameRule::SetFieldShutdownIds(std::set<unsigned> ids)
 {
-    Unk_GameRuleLock lock(m_7d0, 1);
+    Unk_PetLock lock(m_7d0, 1);
     m_800 = ids;
 }
 MS2_REPLACE_METHOD(0x14047A360, CGameRule, SetFieldShutdownIds, 105, 0xEC007177);
@@ -1646,7 +1647,7 @@ MS2_REPLACE_METHOD(0x14047A360, CGameRule, SetFieldShutdownIds, 105, 0xEC007177)
 // @0x14047a3d0
 void CGameRule::ClearFieldShutdownIds()
 {
-    Unk_GameRuleLock lock(m_7d0, 1);
+    Unk_PetLock lock(m_7d0, 1);
     m_800.clear();
 }
 MS2_REPLACE_METHOD(0x14047A3D0, CGameRule, ClearFieldShutdownIds, 73, 0xAB2E3B24);
@@ -2570,7 +2571,7 @@ MS2_REPLACE_METHOD(0x14047E300, CGameRule, ClearIgnoredConstructionLockIds, 94, 
 // @0x14047e370
 unsigned CGameRule::FUN_14047e370(unsigned key)
 {
-    Unk_GameRuleLock lock(m_928, 1);
+    Unk_PetLock lock(m_928, 1);
     if (m_958.size() < 1)
         return 0;
     std::vector<unsigned> rates;
@@ -2590,7 +2591,7 @@ unsigned CGameRule::FUN_14047e370(unsigned key)
 // @0x14047e530
 void CGameRule::AddEnchantRateEvent(MS2Ptr<EnchantRateEventContext> spContext)
 {
-    Unk_GameRuleLock lock(m_928, 1);
+    Unk_PetLock lock(m_928, 1);
     if (spContext->m_nEventId == 0) {
         MS2_ASSERT_AT(0x8aa, 0);
         return;
@@ -2601,7 +2602,7 @@ void CGameRule::AddEnchantRateEvent(MS2Ptr<EnchantRateEventContext> spContext)
 // @0x14047e630
 void CGameRule::RemoveEnchantRateEvent(int eventId)
 {
-    Unk_GameRuleLock lock(m_928, 1);
+    Unk_PetLock lock(m_928, 1);
     std::multimap<unsigned, MS2Ptr<EnchantRateEventContext> >::iterator it = m_958.begin();
     while (it != m_958.end()) {
         MS2Ptr<EnchantRateEventContext> spContext = it->second;
@@ -2616,7 +2617,7 @@ MS2_REPLACE_METHOD(0x14047E630, CGameRule, RemoveEnchantRateEvent, 254, 0x83A1D0
 // @0x14047e740
 void CGameRule::SetRankDuelOpen(bool bOpen)
 {
-    Unk_GameRuleLock lock(m_968, 1);
+    Unk_PetLock lock(m_968, 1);
     m_998 = bOpen;
 }
 MS2_REPLACE_METHOD(0x14047E740, CGameRule, SetRankDuelOpen, 74, 0xFC3499D6);
@@ -2626,7 +2627,7 @@ bool CGameRule::FUN_14047e790()
 {
     if (TSingleton<CFeatureManager>::GetInstance()->GetLocaleName() != "CN")
         return true;
-    Unk_GameRuleLock lock(m_968, 1);
+    Unk_PetLock lock(m_968, 1);
     return m_998;
 }
 MS2_REPLACE_METHOD(0x14047E790, CGameRule, FUN_14047e790, 143, 0x12EC12B9);
@@ -2634,7 +2635,7 @@ MS2_REPLACE_METHOD(0x14047E790, CGameRule, FUN_14047e790, 143, 0x12EC12B9);
 // @0x14047e830
 void CGameRule::SetGuildChampionshipOpen(bool bOpen)
 {
-    Unk_GameRuleLock lock(m_9a0, 1);
+    Unk_PetLock lock(m_9a0, 1);
     m_9d0 = bOpen;
 }
 MS2_REPLACE_METHOD(0x14047E830, CGameRule, SetGuildChampionshipOpen, 74, 0xE9B027F4);
@@ -2642,7 +2643,7 @@ MS2_REPLACE_METHOD(0x14047E830, CGameRule, SetGuildChampionshipOpen, 74, 0xE9B02
 // @0x14047e880
 bool CGameRule::IsGuildChampionshipOpen()
 {
-    Unk_GameRuleLock lock(m_9a0, 1);
+    Unk_PetLock lock(m_9a0, 1);
     return m_9d0;
 }
 MS2_REPLACE_METHOD(0x14047E880, CGameRule, IsGuildChampionshipOpen, 75, 0x69CEC859);
@@ -2650,16 +2651,16 @@ MS2_REPLACE_METHOD(0x14047E880, CGameRule, IsGuildChampionshipOpen, 75, 0x69CEC8
 // @0x14047e8e0
 void CGameRule::SetQuestAdditionalReward(unsigned a, unsigned b, MS2Ptr<QuestAdditionalRewardContext> spContext)
 {
-    Unk_GameRuleLock lock(m_8, 1);
-    std::pair<int, int> key(a, b);
+    Unk_PetLock lock(m_8, 1);
+    std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     m_d00[key] = spContext;
 }
 
 // @0x14047e980
 void CGameRule::RemoveQuestAdditionalReward(unsigned a, unsigned b)
 {
-    Unk_GameRuleLock lock(m_8, 1);
-    std::pair<int, int> key(a, b);
+    Unk_PetLock lock(m_8, 1);
+    std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     m_d00.erase(key);
 }
 MS2_REPLACE_METHOD(0x14047E980, CGameRule, RemoveQuestAdditionalReward, 116, 0x325FC2AB);
@@ -2667,8 +2668,8 @@ MS2_REPLACE_METHOD(0x14047E980, CGameRule, RemoveQuestAdditionalReward, 116, 0x3
 // @0x14047ea00
 unsigned CGameRule::GetQuestAdditionalRewardRate(unsigned a, unsigned b, int index)
 {
-    Unk_GameRuleLock lock(m_8, 1);
-    std::pair<int, int> key(a, b);
+    Unk_PetLock lock(m_8, 1);
+    std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     std::map<std::pair<int, int>, MS2Ptr<QuestAdditionalRewardContext> >::iterator it = m_d00.find(key);
     if (it != m_d00.end()) {
         MS2Ptr<QuestAdditionalRewardContext> spContext = it->second;
@@ -2682,8 +2683,8 @@ MS2_REPLACE_METHOD(0x14047EA00, CGameRule, GetQuestAdditionalRewardRate, 295, 0x
 // @0x14047eb30
 unsigned CGameRule::GetQuestAdditionalRewardItemRate(unsigned a, unsigned b, unsigned itemId)
 {
-    Unk_GameRuleLock lock(m_8, 1);
-    std::pair<int, int> key(a, b);
+    Unk_PetLock lock(m_8, 1);
+    std::pair<int, int> key(a, reinterpret_cast<unsigned long&>(b));
     std::map<std::pair<int, int>, MS2Ptr<QuestAdditionalRewardContext> >::iterator it = m_d00.find(key);
     if (it != m_d00.end()) {
         MS2Ptr<QuestAdditionalRewardContext> spContext = it->second;
@@ -2961,7 +2962,6 @@ void CGameRule::FUN_14047fc60()
     }
 }
 MS2_REPLACE_METHOD(0x14047FC60, CGameRule, FUN_14047fc60, 247, 0x577FF757);
-// MS2-FUNCTIONAL 0x140497ca0: MS2Ptr<const OntimeEventContext>'s converting ctor from MS2Ptr<OntimeEventContext>; the exe reads the source through get() 0x1403e89f0, the shared ascript.h template reads o.m_p
 // MS2-PIN: ??$?0UOntimeEventContext@@@?$MS2Ptr@$$CBUOntimeEventContext@@@@QEAA@AEBV?$MS2Ptr@UOntimeEventContext@@@@@Z 0x140497ca0
 
 int& FUN_140496530(int& r);  // a TU-local copy of the identity forward<int&>
@@ -2975,3 +2975,4 @@ std::pair<int, int>* FUN_14047fff0(std::pair<int, int>* pThis, int& a, int& b)
     pThis->second = FUN_140496530(b);
     return pThis;
 }
+// MS2-PIN: ??$?0AEAIAEAK$0A@@?$pair@HH@std@@QEAA@AEAIAEAK@Z 0x140480d30

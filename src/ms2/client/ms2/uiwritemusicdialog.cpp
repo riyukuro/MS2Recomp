@@ -400,7 +400,7 @@ void UIWriteMusicDialog::OnLoadComplete()
             ASObj row(2);
             row.FUN_1407cb9c0("id", entry.first);
             row.FUN_1407cbb20("label", CStringW(entry.second));
-            provider.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+            provider.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
         }
         obj.FUN_1409adbe0("dpRecommandInstrument", Scaleform::GFx::Value(provider.FUN_1422bb870()));
         obj.FUN_1407cb9c0("selectedIndexRecommandInstrument", 0);
@@ -419,8 +419,8 @@ void UIWriteMusicDialog::OnLoadComplete()
         MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560("m_rollType");
         if (spRollType)
         {
-            spRollType->FUN_1422dfce0(GetStringCommonByKey(L"s_writemusic_playline_show_per_time"));
-            spRollType->FUN_1422dfce0(GetStringCommonByKey(L"s_writemusic_playline_show_per_bar"));
+            spRollType->AddItemLabel(GetStringCommonByKey(L"s_writemusic_playline_show_per_time"));
+            spRollType->AddItemLabel(GetStringCommonByKey(L"s_writemusic_playline_show_per_bar"));
             spRollType->SetSelectedIndex(0);
         }
         FUN_140cff840(FUN_1422dbb40(), "m_drumInfoText", 0);
@@ -971,7 +971,7 @@ void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_empty_score"), 0, 0, CStringW(L""));
         return;
     }
-    int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
+    int nOffset = (int)DoubleSecondsToMs(pArgs->PopDouble());
     int nLength = 0;
     bool bOk = ((class Unk_WmInstrumentMgr*)FUN_140c8dac0())->PreviewScore(m_strPlayMml, nCategory, nOffset, &nLength);
     if (bOk)
@@ -1105,7 +1105,7 @@ void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
         FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_invalid_instrument_type"), 0, 0, CStringW(L""));
         return;
     }
-    int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
+    int nOffset = (int)DoubleSecondsToMs(pArgs->PopDouble());
     FUN_140ff3610(nOffset);
     if (m_bPlaying)
     {
@@ -1206,7 +1206,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
                 {
                     if (nChords > nMaxChords)
                         break;
-                    chords.FUN_1422bbf70(strChord);
+                    chords.PushString(strChord);
                     nChords++;
                 }
             }
@@ -1429,7 +1429,7 @@ void UIWriteMusicDialog::UpdatePlayLine(unsigned nTime)
     nPos -= 15;
     MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560("m_playingLine");
     if (spLine)
-        spLine->FUN_1422c0320(nPos);
+        spLine->SetXInt(nPos);
 }
 
 // @0x140ff3e50
@@ -1498,7 +1498,7 @@ void UIWriteMusicDialog::FUN_140ff41a0()
         if (i == 0)
             strMelody = parts[i];
         else
-            chords.FUN_1422bbf70(parts[i]);
+            chords.PushString(parts[i]);
     }
     SetTabFromText(strMelody, chords, strTitle, nInstrument);
 }
@@ -1641,10 +1641,10 @@ void UIWriteMusicDialog::FUN_140ff4a80()
                 if (spNote == 0)
                     break;
                 m_spPlayLine->FUN_1422c6900(Scaleform::GFx::Value((*spNote).FUN_1422bb890()));
-                spNote->FUN_1422bffe0(x, y);
+                spNote->SetPositionInt(x, y);
                 spNote->FUN_1409ba0d0("setActualSize", w - 1, 3);
                 spNote->Invoke("setColor", colors[nTab]);
-                spNote->FUN_1422c7b40(FUN_140ff5be0(note.second->m_nPitch, nTab, colors[nTab]));
+                spNote->SetTooltipText(FUN_140ff5be0(note.second->m_nPitch, nTab, colors[nTab]));
                 m_notes.push_back(spNote);
             }
         }
@@ -1696,7 +1696,7 @@ void UIWriteMusicDialog::FUN_140ff59a0()
         return;
     MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560("m_playingLine");
     if (spLine)
-        spLine->FUN_1422c0320(0x23);
+        spLine->SetXInt(0x23);
     FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 1);
     FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 1);
 }
@@ -1705,7 +1705,7 @@ void UIWriteMusicDialog::FUN_140ff59a0()
 CStringW UIWriteMusicDialog::FUN_140ff5be0(int nPitch, int nTab, unsigned long nColor)
 {
     CString strKey = StringFormat("$s_writemusic_tab_{0}", nTab);
-    CStringW strTab = FUN_14025e7a0()->FUN_1422b0570(strKey);
+    CStringW strTab = FUN_14025e7a0()->Localize(strKey);
     int nOctave = nPitch / 12;
     int nNote = nPitch % 12;
     CString strNote(s_szNoteNames[nNote]);

@@ -297,8 +297,6 @@ public:
     PI_V(50) PI_V(51) PI_V(52) PI_V(53) PI_V(54) PI_V(55) PI_V(56) PI_V(57) PI_V(58)
 #undef PI_V
     virtual void vfunc_59(int a1, int a2, int a3, int a4);
-    int FUN_141662750(int nKind);                                           // the mastery experience
-    int FUN_1416627d0(int nKind);                                           // the mastery level
 };
 class Unk_WorldSvc { public: Unk_PiPlayer* FUN_141bd0cc0(); };
 
@@ -306,9 +304,7 @@ class Unk_WorldSvc { public: Unk_PiPlayer* FUN_141bd0cc0(); };
 class Unk_PiMgr : public CInstrumentManager
 {
 public:
-    void FUN_140d085a0();                                                   // stop the ensemble
     void FUN_140d073b0(int nNote);                                          // press a note
-    unsigned int FUN_140d0b0c0();                                                  // the auto play volume
     bool FUN_140d07960(__int64 nScoreUid);                                  // play the score
     bool FUN_140d07f00(__int64 nScoreUid);                                  // play the ensemble score
 };
@@ -321,8 +317,6 @@ extern Unk_Inventory g_143ab2a90;
 class Unk_PiUiSvc : public CUIService
 {
 public:
-    int FUN_141adc940(int nUiType);                                         // the dialog is closed
-    void FUN_141adc530(int nUiType);                                        // open it
 };
 
 class Unk_PiPane
@@ -347,7 +341,8 @@ public:
 };
 
 MS2InputService* FUN_140a58540();
-class Unk_PiKeyNames { public: CStringW FUN_14142d220(int nKey); CStringW FUN_14142d580(int nKey); };
+class PC { public: unsigned GetMastery(int nIndex); int GetMasteryGrade(int nIndex); };
+class CKeyTable { public: CStringW GetKeyName(int nKey); CStringW GetKeyDisplayName(int nKey); };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_PiKeyNames (calls cast back)
 class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
 
@@ -361,19 +356,17 @@ public:
 };
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-void FUN_141b706a0(int nMs, int& nMin, int& nSec, int& nCenti);            // split a time
+void FUN_141b706a0(unsigned nMs, unsigned* pMin, unsigned* pSec, unsigned* pCenti);            // split a time
 __int64 FUN_141b71960(const char* sz);                                      // text -> uid
 CStringW FUN_141b71910(__int64 nUid);                                       // uid -> text
-CString FUN_1402bb1c0(const char* szFormat, const int* pn);                 // format one int
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140298ea0(CStringW strKey);                             // notice text
-CStringW FUN_14083dc40(const wchar_t* szFormat, const int& n1, const int& n2);   // StringFormat<int, int>: both by reference
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);       // message box
 void FUN_14151f200();
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool);   // C3: was FUN_140874440
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
+int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* p);
 namespace NotifyContext { class BindData; }
 // The inventory slot (invenslot.cpp): only what this unit calls.
 class InvenSlot : public MS2DragSlot
@@ -392,14 +385,13 @@ void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);                   //
 
 // ---- AScript::Invoke(string, float, string): the SetMasteryExp call ----
 // @0x14100fe60
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, float a2, CStringW a3)
 {
     ASArgList args;
     args.FUN_1409b2800(3);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
     FUN_1422bcd70(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -470,7 +462,7 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     m_nCurrent = 0;
     m_nSlotCount = spData->m_nSoloRelayScoreCount;
     UpdateSlotCount();
-    if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940(0x4e2d))
+    if (reinterpret_cast<Unk_PiUiSvc*>(TSingleton<CUIService>::GetInstance())->FUN_141adc940((eUIClassID)0x4e2d))
     {
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e2d)));
         Unk_PiPane* pPane = reinterpret_cast<Unk_PiPane*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
@@ -510,7 +502,7 @@ void UIPlayInstrumentDialog::vfunc_67()
     {
         if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f07))))
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
-        if (((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d0b0c0() > 0)
+        if ((unsigned)((class Unk_PiMgr*)FUN_140c8dac0())->GetVolume() > 0)
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
         ((class Unk_PiMgr*)FUN_140c8dac0())->SetVolume(0);
     }
@@ -658,7 +650,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)pArgs, nArgs, 0) != 0)
         return 1;
     if (_stricmp("onPlayNote", szMethod) == 0)
     {
@@ -676,13 +668,13 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             if (m_nKind == 0)
                 ((class Unk_PiMgr*)FUN_140c8dac0())->StopPerform();
             else if (m_nKind == 1)
-                ((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d085a0();
+                ((class Unk_PiMgr*)FUN_140c8dac0())->StopEnsemble();
         }
         if (!((class Unk_PiMgr*)FUN_140c8dac0())->IsRemote())
         {
             if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f07))))
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
-            if (((class Unk_PiMgr*)FUN_140c8dac0())->FUN_140d0b0c0() > 0)
+            if ((unsigned)((class Unk_PiMgr*)FUN_140c8dac0())->GetVolume() > 0)
                 FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
             ((class Unk_PiMgr*)FUN_140c8dac0())->SetVolume(0);
         }
@@ -816,8 +808,8 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
     if (!m_spScorePage)
         return;
     {
-        int nExp = pPlayer->FUN_141662750(2);
-        int nLevel = pPlayer->FUN_1416627d0(2);
+        int nExp = (int)reinterpret_cast<PC*>(pPlayer)->GetMastery(2);
+        int nLevel = reinterpret_cast<PC*>(pPlayer)->GetMasteryGrade(2);
         CStringW strProgress(L"");
         float fProgress = 0.0f;
         CStringW strGrade(L"");
@@ -841,7 +833,7 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
             int nNeed = nEnd - nStart;
             int nHave = nExp - nStart;
             fProgress = (float)nHave / (float)nNeed;
-            strProgress = FUN_14083dc40(L"{0} / {1}", nHave, nNeed);
+            strProgress = StringFormat<int, int>(L"{0} / {1}", nHave, nNeed);
         }
         m_spScorePage->Invoke("SetMasteryExp", CStringW(strProgress), fProgress, CStringW(strGrade));
     }
@@ -948,8 +940,8 @@ void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
             if (strWriter.GetLength() > 0)
                 strWriterText = FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
             int nMin, nSec, nCenti;
-            FUN_141b706a0(nDuration * 1000, nMin, nSec, nCenti);
-            CStringW strTime = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
+            FUN_141b706a0(nDuration * 1000, reinterpret_cast<unsigned*>(&nMin), reinterpret_cast<unsigned*>(&nSec), reinterpret_cast<unsigned*>(&nCenti));
+            CStringW strTime = StringFormat<int, int>(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
             slot.FUN_1407cbb20("title", FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_title"), strTitle));
             slot.FUN_1407cbb20("writer", CStringW(strWriterText));
             slot.FUN_1407cbb20("recommendInstrument", FUN_14028dfa0<CStringW>(CStringW(L"s_play_instrument_ui_score_info_instrument"), strInstrument));
@@ -1080,11 +1072,11 @@ void UIPlayInstrumentDialog::FUN_14100da10()
         CStringW strCur;
         CStringW strTotal;
         int nMin, nSec, nCenti;
-        FUN_141b706a0(nElapsed, nMin, nSec, nCenti);
-        strCur = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
+        FUN_141b706a0(nElapsed, reinterpret_cast<unsigned*>(&nMin), reinterpret_cast<unsigned*>(&nSec), reinterpret_cast<unsigned*>(&nCenti));
+        strCur = StringFormat<int, int>(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
         int nTotalMin, nTotalSec, nTotalCenti;
-        FUN_141b706a0(nTotal, nTotalMin, nTotalSec, nTotalCenti);
-        strTotal = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_total"), nTotalMin, nTotalSec);
+        FUN_141b706a0(nTotal, reinterpret_cast<unsigned*>(&nTotalMin), reinterpret_cast<unsigned*>(&nTotalSec), reinterpret_cast<unsigned*>(&nTotalCenti));
+        strTotal = StringFormat<int, int>(GetStringCommonByKey(L"s_writemusic_text_playtimer_total"), nTotalMin, nTotalSec);
         CStringW strText = StringFormat<CStringW, CStringW>(L"{0} {1}", strCur, strTotal);
         spTime->FUN_1422c4cd0(strText);
         if ((m_nCurrent < 3 || m_nCurrent >= 0) && (m_spFold.get() ? true : false) && m_spScores[m_nCurrent].get())
@@ -1113,9 +1105,9 @@ void UIPlayInstrumentDialog::FUN_14100e060()
     for (int i = 0; i < 24; i++)
     {
         int nNo = i + 1;
-        CString strName = FUN_1402bb1c0("m_key{0}", &nNo);
+        CString strName = StringFormat<int>("m_key{0}", nNo);
         MS2Ptr<Unk_140acd6e0> spButton = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30(strName);
-        CStringW strKey = reinterpret_cast<Unk_PiKeyNames*>(FUN_1409331f0())->FUN_14142d220(aKeys[i]);
+        CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyName(aKeys[i]);
         spButton->FUN_1422cdfb0(strKey);
         MapKeyButton(aKeys[i], MS2Ptr<Unk_140acd6e0>(spButton), i);
     }
@@ -1134,24 +1126,24 @@ void UIPlayInstrumentDialog::FUN_14100e060()
         std::pair<int, int>& key = m_octaveKeys.at(nIndex);
         if (key.second <= 8)
         {
-            CString strName = FUN_1402bb1c0("m_octave{0}", &key.second);
+            CString strName = StringFormat<int>("m_octave{0}", key.second);
             MS2Ptr<ASDisplayObject> spControl = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30(strName);
             if (spControl == 0)
                 continue;
             MS2Ptr<ASTextField> spLabel = spControl->FUN_1409b4620("textField");
             if (spLabel == 0)
                 continue;
-            CStringW strKey = reinterpret_cast<Unk_PiKeyNames*>(FUN_1409331f0())->FUN_14142d580(key.first);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyDisplayName(key.first);
             spLabel->FUN_1422c4cd0(strKey);
         }
         else if (key.second == 100)
         {
-            CStringW strKey = reinterpret_cast<Unk_PiKeyNames*>(FUN_1409331f0())->FUN_14142d580(key.first);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyDisplayName(key.first);
             m_spLowerOctave->FUN_1422cdfb0(strKey);
         }
         else if (key.second == 101)
         {
-            CStringW strKey = reinterpret_cast<Unk_PiKeyNames*>(FUN_1409331f0())->FUN_14142d580(key.first);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyDisplayName(key.first);
             m_spUpperOctave->FUN_1422cdfb0(strKey);
         }
     }

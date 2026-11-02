@@ -867,7 +867,7 @@ void UIAchieveDialog::SetSearchText(const CStringW& strText)
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
         if (MS2Ptr<ASTextInput> spInput = spHero->FUN_140bbe880<ASTextInput>("m_searchInput"))
-            spInput->FUN_1422e0ab0(strText);
+            spInput->SetTextW(strText);
     }
 }
 
@@ -1082,7 +1082,7 @@ int UIAchieveDialog::GetFilterIndex()
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
         if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter")) {
-            return spFilter->FUN_1422bfca0() ? spFilter->GetSelectedIndex() : 4;
+            return spFilter->GetVisible() ? spFilter->GetSelectedIndex() : 4;
         }
     }
     return 4;
@@ -1176,7 +1176,7 @@ int UIAchieveDialog::FUN_1418acaf0()
 {
     if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
         if (MS2Ptr<ASDropdownMenu> spFilter = spHero->GetDropdownMenu("m_filter")) {
-            if (!spFilter->FUN_1422bfca0())
+            if (!spFilter->GetVisible())
                 return 0;
             if (spFilter->GetSelectedIndex() != 0)
                 return 0;

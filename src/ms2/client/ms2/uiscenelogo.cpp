@@ -47,7 +47,7 @@ class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 public:
     bool IsPreloadNoThread();
 };
-void FUN_141210cc0(Unk_SlF* p, int n);
+
 
 UIIntroMovie* FUN_140e85420(int nUiId);                 // the intro movie dialog (uiscenemodeselect.cpp's static)
 
@@ -91,7 +91,7 @@ void UISceneLogo::OnLoadComplete()
     CItemDefaultData::Load();
     ((class CThread*)(class Unk_SlD*)(((class Unk_SlD*)FUN_1414a5720())))->Start((void*)(((class Unk_SlC*)GetFileSystem())), 0, 0, 0, (struct _SECURITY_ATTRIBUTES*)(0));
     if (((class Unk_LaunchOptions*)(class Unk_SlE*)(((class Unk_SlE*)FUN_1406aeee0())))->IsPreloadNoThread())
-        FUN_141210cc0(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance()), 0);
+        TSingleton<CFilePreload>::GetInstance()->FUN_141210cc0(false);
     ((class CFilePreload*)(class Unk_SlF*)(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance())))->FUN_14120fcc0();
 }
 MS2_REPLACE_METHOD(0x141AD0510, UISceneLogo, OnLoadComplete, 247, 0x8935B023);

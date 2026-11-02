@@ -13,6 +13,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\costumemanager.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 
 #include "costumemanager.h"
 
@@ -23,12 +24,12 @@
 __int64 FUN_14028d0e0();                                    // the current server time
 int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the customize id of an item
 
-extern Unk_CostumeTable* DAT_143aaf318;
+class CostumeSetTable;
 
 // @0x140b1db00
 Unk_CostumeTable* FUN_140b1db00()
 {
-    return DAT_143aaf318;
+    return reinterpret_cast<Unk_CostumeTable*>(TSingleton<CostumeSetTable>::s_instance);
 }
 
 // @0x140b1d2b0

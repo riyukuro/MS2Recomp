@@ -71,15 +71,14 @@ class Unk_SlotLapenTable;
 struct Unk_MdState;
 
 // ---- unit-local stand-ins -------------------------------------------------------------------------------------------
-class Unk_ChatLog;
+class UIMessengerBrowser;
 class Unk_ChatWindow {                                  // the chat UI singleton: the chat log panel is at +0x48
 public:
     char m_pad_00[0x48];
-    Unk_ChatLog* m_log;
+    UIMessengerBrowser* m_log;
 };
 MS2_CHECK_OFFSET(Unk_ChatWindow, m_log, 0x48);
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
-void FUN_141a24cb0(Unk_ChatLog*, const CStringW&, int, int, int, int);
 
 class UISystemText : public UIObject {                  // the system message line (UI id 0x4e41)
 public:
@@ -122,6 +121,7 @@ class UIMessengerBrowser   // C3: member view for the former free stand-ins
 public:
     void FUN_141a247c0(const CStringW& strText, int nType);
     void FUN_141a24890(CItem* pItem, unsigned nCount, int nManyId, int nOneId);
+    void FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta, int nManyId, int nOneId);
     void FUN_141a23c20();
 };
 void FUN_1418d6410(UICommunityDialog*);
@@ -133,7 +133,7 @@ public:
 class UIGroupMessengerBrowser   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1419524e0();
+    void ClearAll();
 };
 
 // @0x141274d10
@@ -228,18 +228,18 @@ int FUN_141275080()
 }
 
 // @0x1412750f0
-void FUN_1412750f0(const CStringW& str, int a, int b, int c)
+void FUN_1412750f0(CItem* pItem, int a, int b, int c)
 {
     if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
-        reinterpret_cast<UIMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log)->FUN_141a24890((CItem*)&str, a, b, c);
+        reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log->FUN_141a24890(pItem, a, b, c);
 }
 MS2_REPLACE(0x1412750f0, FUN_1412750f0, 77, 0x2112E627);
 
 // @0x141275150
-void FUN_141275150(const CStringW& str, int a, int b, int c, int d)
+void FUN_141275150(CItem* pItem, int a, int b, int c, int d)
 {
     if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
-        FUN_141a24cb0(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log, str, a, b, c, d);
+        reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log->FUN_141a24cb0(pItem, a, b, c, d);
 }
 MS2_REPLACE(0x141275150, FUN_141275150, 85, 0xA770C8C1);
 
@@ -247,7 +247,7 @@ MS2_REPLACE(0x141275150, FUN_141275150, 85, 0xA770C8C1);
 void FUN_1412751b0(const CStringW& str, int nType)
 {
     if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log != 0)
-        reinterpret_cast<UIMessengerBrowser*>(reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log)->FUN_141a247c0(str, nType);
+        reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)FUN_141482e80()))->m_log->FUN_141a247c0(str, nType);
 }
 MS2_REPLACE(0x1412751b0, FUN_1412751b0, 54, 0x5701C5EE);
 
@@ -337,7 +337,7 @@ void FUN_141275500()
         ((class UIInventoryDialog*)(class Unk_GuideInventory*)(pGuide))->FUN_141999e20();
     void* pOther = ((void*)FUN_140a3aad0(0x4e93));
     if (pOther != 0)
-        ((class UIGroupMessengerBrowser*)(void*)(pOther))->FUN_1419524e0();
+        ((class UIGroupMessengerBrowser*)(void*)(pOther))->ClearAll();
 }
 MS2_REPLACE(0x141275500, FUN_141275500, 141, 0xF32E1E3E);
 
@@ -580,9 +580,9 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offL
     if (fOverflow < 0.0f) {
         fX = fX + fOverflow;
         fX = fX - ((float)nTotal - fBoth) * 0.5f;
-        winLeft->FUN_1422c00f0(fX + offLeft.x, fY + offLeft.y);
+        winLeft->SetPositionFloat(fX + offLeft.x, fY + offLeft.y);
     }
-    winRight->FUN_1422c00f0(fX + fLeftWidth + offRight.x, fY + offRight.y);
+    winRight->SetPositionFloat(fX + fLeftWidth + offRight.x, fY + offRight.y);
 }
 MS2_REPLACE(0x141275c30, FUN_141275c30, 1201, 0xE804638C);
 
@@ -761,8 +761,8 @@ public:
 };
 class ASTextInput {
 public:
-    void FUN_1422e0b80(const CString& strText);
-    void FUN_1422e1430(const CStringW& strText);
+    void SetHtmlTextA(const CString& strText);
+    void AppendHtmlW(const CStringW& strText);
 };
 class ASTextArea   // C3: member view for the former free stand-ins
 {
@@ -777,7 +777,7 @@ void FUN_141276700(MS2Ptr<Unk_GdTextArea> console)
 {
     {
         CString strEmpty("");
-        reinterpret_cast<ASTextInput*>(console.operator->())->FUN_1422e0b80(strEmpty);
+        reinterpret_cast<ASTextInput*>(console.operator->())->SetHtmlTextA(strEmpty);
     }
     Unk_GdTextArea* pView = console.operator->();
     pView->vfunc_24(true);
@@ -797,7 +797,7 @@ MS2_REPLACE(0x141276790, FUN_141276790, 88, 0x0E6E447B);
 void FUN_1412767f0(MS2Ptr<Unk_GdTextArea> console)
 {
     CStringW strLine(L"------------------------------------------\n");
-    reinterpret_cast<ASTextInput*>(console.operator->())->FUN_1422e1430(FUN_14183e930(strLine, 0xffff));
+    reinterpret_cast<ASTextInput*>(console.operator->())->AppendHtmlW(FUN_14183e930(strLine, 0xffff));
 }
 MS2_REPLACE(0x1412767f0, FUN_1412767f0, 136, 0xF81C6C2B);
 
@@ -809,7 +809,7 @@ void FUN_141276880(MS2Ptr<Unk_GdTextArea> console, int nColor, const wchar_t* ps
     va_start(args, pszFormat);
     str.FormatV(pszFormat, args);
     va_end(args);
-    reinterpret_cast<ASTextInput*>(console.operator->())->FUN_1422e1430(FUN_14183e930(FUN_14061ad70(str, L"\n"), nColor));
+    reinterpret_cast<ASTextInput*>(console.operator->())->AppendHtmlW(FUN_14183e930(FUN_14061ad70(str, L"\n"), nColor));
 }
 MS2_REPLACE(0x141276880, FUN_141276880, 246, 0x4A32C7FC);
 

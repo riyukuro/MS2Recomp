@@ -60,7 +60,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_StringArgFormatter, 0x10);
 
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
@@ -68,7 +68,7 @@ class Unk_XmlFiles : public CFileSystem { };
 CString FUN_14071ae20(const CString& strFile);                          // path below the Table folder
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // widens a narrow string
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszAttr, CStringW strDefault);   // wide attribute
-extern StringManager* DAT_143ab1c98;                                    // the manager singleton
+class StringManager;
 
 // The download cache root (set by FUN_1410268a0) and the "use the simple cache layout" switch.
 extern CString DAT_143accfc0;
@@ -84,7 +84,7 @@ StringIdInterface::StringIdInterface(const StringIdInterfaceBase& base) : String
 // @0x141025b70
 StringManager* GetStringManager()
 {
-    return DAT_143ab1c98;
+    return TSingleton<StringManager>::s_instance;
 }
 
 // @0x141025220
@@ -122,7 +122,7 @@ CStringW StringIdInterface::FUN_141024e60()
         for (size_t i = 0; i < FUN_14015a000(arguments); i++)
             ((class Unk_TextFormat&)(formatter)).FUN_140840530(FUN_14025e580(arguments, i));
         CStringW strResult = formatter;
-        FUN_1403b4750()->ReplaceObjectAndValueWords(strResult);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
         return strResult;
     }
     else

@@ -154,7 +154,7 @@ int GFxManager::FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer)
 MS2_REPLACE_METHOD(0x1422AD620, GFxManager, FUN_1422ad620, 1361, 0xD8A71BE4);
 
 // @0x1422adb80
-int GFxManager::FUN_1422adb80(unsigned int uiWidth, unsigned int uiHeight)
+int GFxManager::ResizeMovies(unsigned int uiWidth, unsigned int uiHeight)
 {
     m_lock.DoLock();
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
@@ -167,7 +167,7 @@ int GFxManager::FUN_1422adb80(unsigned int uiWidth, unsigned int uiHeight)
     m_lock.Unlock();
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422ADB80, GFxManager, FUN_1422adb80, 266, 0x70530FCA);
+MS2_REPLACE_METHOD(0x1422ADB80, GFxManager, ResizeMovies, 266, 0x70530FCA);
 
 // @0x1422adc90
 int GFxManager::LoadBackgroundMovie(GFxMovie* pMovie)
@@ -345,7 +345,7 @@ void GFxManager::FUN_1422ae7d0()
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
         NiPointer<GFxMovie> spMovie = m_mapMovies.GetValueAt(pos);
         if (spMovie)
-            ((Unk_GmMovie*)spMovie.operator->())->vfunc_10(FUN_1422cf060(), FUN_1422b02b0());
+            ((Unk_GmMovie*)spMovie.operator->())->vfunc_10(FUN_1422cf060(), GetRenderer2D());
     }
     m_lock.Unlock();
 }
@@ -428,18 +428,18 @@ void GFxManager::FUN_1422aed30(bool b)
 MS2_REPLACE_METHOD(0x1422AED30, GFxManager, FUN_1422aed30, 234, 0x5F12DF8C);
 
 // @0x1422aee20
-void GFxManager::FUN_1422aee20(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&))
+void GFxManager::SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&))
 {
     m_pfnFormat = pfn;
 }
-MS2_REPLACE_METHOD(0x1422AEE20, GFxManager, FUN_1422aee20, 28, 0xC6E7BB96);
+MS2_REPLACE_METHOD(0x1422AEE20, GFxManager, SetFormatCallback, 28, 0xC6E7BB96);
 
 // @0x1422aee50
-void GFxManager::FUN_1422aee50(TFunctor<bool, ParamList<HWND, EmptyParam> > fn)
+void GFxManager::SetPostInitMovieCallback(TFunctor<bool, ParamList<HWND, EmptyParam> > fn)
 {
     m_fnIme = fn;
 }
-MS2_REPLACE_METHOD(0x1422AEE50, GFxManager, FUN_1422aee50, 63, 0x02617102);
+MS2_REPLACE_METHOD(0x1422AEE50, GFxManager, SetPostInitMovieCallback, 63, 0x02617102);
 
 // @0x1422aeea0
 void GFxManager::FUN_1422aeea0(void (*pfn)(AScript& kCommon, int nMovieId))
@@ -451,7 +451,7 @@ MS2_REPLACE_METHOD(0x1422AEEA0, GFxManager, FUN_1422aeea0, 28, 0x315C37C6);
 // @0x1422aeed0
 int GFxManager::FUN_1422aeed0(int n)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(n);
+    GFxMovie* pMovie = FindMovie(n);
     if (pMovie)
         return pMovie->FUN_1422be360();
     return 0;
@@ -461,7 +461,7 @@ MS2_REPLACE_METHOD(0x1422AEED0, GFxManager, FUN_1422aeed0, 59, 0x1598FCD0);
 // @0x1422aef20
 void GFxManager::FUN_1422aef20(int nMovieId, int n)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         pMovie->FUN_1422be380(n);
 }
@@ -475,7 +475,7 @@ int GFxManager::IsPause()
 MS2_REPLACE_METHOD(0x1422AEF70, GFxManager, IsPause, 17, 0xCF7F4092);
 
 // @0x1422aef90
-void GFxManager::FUN_1422aef90(int bPause)
+void GFxManager::SetPaused(int bPause)
 {
     if (m_bPause == bPause)
         return;
@@ -488,7 +488,7 @@ void GFxManager::FUN_1422aef90(int bPause)
     m_lock.Unlock();
     m_bPause = bPause;
 }
-MS2_REPLACE_METHOD(0x1422AEF90, GFxManager, FUN_1422aef90, 238, 0x71BE0341);
+MS2_REPLACE_METHOD(0x1422AEF90, GFxManager, SetPaused, 238, 0x71BE0341);
 
 // @0x1422af090
 int GFxManager::IsArchive()
@@ -529,7 +529,7 @@ MS2_REPLACE_METHOD(0x1422AF0B0, GFxManager, FUN_1422af0b0, 531, 0x720498EE);
 // @0x1422af2d0
 int GFxManager::IsTextFieldFocused(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie == NULL)
         return 0;
     Movie* pGFxMovie = pMovie->FUN_1422bd0f0();
@@ -545,7 +545,7 @@ MS2_REPLACE_METHOD(0x1422AF2D0, GFxManager, IsTextFieldFocused, 172, 0x46C36A07)
 // @0x1422af390
 int GFxManager::FUN_1422af390(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie == NULL)
         return 0;
     Movie* pGFxMovie = pMovie->FUN_1422bd0f0();
@@ -567,20 +567,20 @@ int GFxManager::FUN_1422af390(int nMovieId)
 MS2_REPLACE_METHOD(0x1422AF390, GFxManager, FUN_1422af390, 478, 0x0D52860D);
 
 // @0x1422af580
-int GFxManager::FUN_1422af580(int nMovieId)
+int GFxManager::IsWindowFocusedAndTextFieldFocused(int nMovieId)
 {
     if (m_hWnd == NULL)
         return 0;
     return GetFocus() == m_hWnd && IsTextFieldFocused(nMovieId);
 }
-MS2_REPLACE_METHOD(0x1422AF580, GFxManager, FUN_1422af580, 97, 0xF47CE5A7);
+MS2_REPLACE_METHOD(0x1422AF580, GFxManager, IsWindowFocusedAndTextFieldFocused, 97, 0xF47CE5A7);
 
 extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);    // the exe calls the imported wcslen (`call [__imp_wcslen]`)
 
 // @0x1422af5f0
 CStringW GFxManager::FUN_1422af5f0(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie == NULL)
         return CStringW((const wchar_t*)NULL);
     Movie* pGFxMovie = pMovie->FUN_1422bd0f0();
@@ -598,7 +598,7 @@ CStringW GFxManager::FUN_1422af5f0(int nMovieId)
 }
 
 // @0x1422af7a0
-int GFxManager::FUN_1422af7a0(int nMovieId)
+int GFxManager::UpdateJapaneseImeComposition(int nMovieId)
 {
     if (FUN_1422af960(nMovieId) != "Japanese")
         return 0;
@@ -610,12 +610,12 @@ int GFxManager::FUN_1422af7a0(int nMovieId)
         return 0;
     }
 }
-MS2_REPLACE_METHOD(0x1422AF7A0, GFxManager, FUN_1422af7a0, 227, 0x14288614);
+MS2_REPLACE_METHOD(0x1422AF7A0, GFxManager, UpdateJapaneseImeComposition, 227, 0x14288614);
 
 // @0x1422af8a0
 unsigned GFxManager::FUN_1422af8a0(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie == NULL)
         return 0x1000000;
     Movie* pGFxMovie = pMovie->FUN_1422bd0f0();
@@ -631,7 +631,7 @@ MS2_REPLACE_METHOD(0x1422AF8A0, GFxManager, FUN_1422af8a0, 179, 0xE8E05E25);
 // @0x1422af960
 CString GFxManager::FUN_1422af960(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie == NULL)
         return CString("UNKNOWN");
     Movie* pGFxMovie = pMovie->FUN_1422bd0f0();
@@ -683,7 +683,7 @@ Ni2DBuffer* GFxManager::FUN_1422afcf0()
 MS2_REPLACE_METHOD(0x1422AFCF0, GFxManager, FUN_1422afcf0, 78, 0x700458B7);
 
 // @0x1422afd50
-void GFxManager::FUN_1422afd50(bool bMute)
+void GFxManager::MuteSound(bool bMute)
 {
     if (m_spSound == NULL)
         return;
@@ -691,10 +691,10 @@ void GFxManager::FUN_1422afd50(bool bMute)
     if (pRenderer)
         pRenderer->Mute(bMute);
 }
-MS2_REPLACE_METHOD(0x1422AFD50, GFxManager, FUN_1422afd50, 109, 0x0A2838B9);
+MS2_REPLACE_METHOD(0x1422AFD50, GFxManager, MuteSound, 109, 0x0A2838B9);
 
 // @0x1422afdd0
-void GFxManager::FUN_1422afdd0(float fVolume)
+void GFxManager::SetMasterVolume(float fVolume)
 {
     if (m_spSound == NULL)
         return;
@@ -702,7 +702,7 @@ void GFxManager::FUN_1422afdd0(float fVolume)
     if (pRenderer)
         pRenderer->SetMasterVolume(fVolume);
 }
-MS2_REPLACE_METHOD(0x1422AFDD0, GFxManager, FUN_1422afdd0, 112, 0x3A9FCC25);
+MS2_REPLACE_METHOD(0x1422AFDD0, GFxManager, SetMasterVolume, 112, 0x3A9FCC25);
 
 // @0x1422afe50
 void GFxManager::FUN_1422afe50()
@@ -722,7 +722,7 @@ MS2_REPLACE_METHOD(0x1422AFE90, GFxManager, FUN_1422afe90, 35, 0x0DFA95BF);
 // @0x1422afec0
 float GFxManager::FUN_1422afec0(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422bde30();
     return 1.0f;
@@ -738,7 +738,7 @@ int GFxManager::FUN_1422aff10(float fScale)
         NiPointer<GFxMovie> spMovie = m_mapMovies.GetValueAt(pos);
         if (spMovie) {
             FUN_1422b0790(spMovie->FUN_1422be400());
-            if (spMovie == FUN_1422b01a0(4))
+            if (spMovie == FindMovie(4))
                 continue;
             if (spMovie->FUN_1422bde80(fScale))
                 bChanged = 1;
@@ -759,7 +759,7 @@ void GFxManager::FUN_1422b0060(float fScale)
     for (POSITION pos = m_mapMovies.GetHeadPosition(); pos != NULL; m_mapMovies.GetNext(pos)) {
         NiPointer<GFxMovie> spMovie = m_mapMovies.GetValueAt(pos);
         if (spMovie) {
-            if (spMovie == FUN_1422b01a0(4))
+            if (spMovie == FindMovie(4))
                 continue;
             spMovie->FUN_1422bde50(fScale);
         }
@@ -769,7 +769,7 @@ void GFxManager::FUN_1422b0060(float fScale)
 MS2_REPLACE_METHOD(0x1422B0060, GFxManager, FUN_1422b0060, 303, 0x364D4078);
 
 // @0x1422b01a0
-GFxMovie* GFxManager::FUN_1422b01a0(int nMovieId)
+GFxMovie* GFxManager::FindMovie(int nMovieId)
 {
     m_lock.DoLock();
     NiPointer<GFxMovie> spMovie = 0;
@@ -777,7 +777,7 @@ GFxMovie* GFxManager::FUN_1422b01a0(int nMovieId)
     m_lock.Unlock();
     return spMovie;
 }
-MS2_REPLACE_METHOD(0x1422B01A0, GFxManager, FUN_1422b01a0, 130, 0x37892ECF);
+MS2_REPLACE_METHOD(0x1422B01A0, GFxManager, FindMovie, 130, 0x37892ECF);
 
 // @0x1422b0230
 GFxVideo* GFxManager::GetVideo()
@@ -801,16 +801,16 @@ Scaleform::GFx::Loader* GFxManager::FUN_1422b0290()
 MS2_REPLACE_METHOD(0x1422B0290, GFxManager, FUN_1422b0290, 15, 0x680A76B1);
 
 // @0x1422b02b0
-Unk_GFxUIRenderer2D* GFxManager::FUN_1422b02b0()
+Unk_GFxUIRenderer2D* GFxManager::GetRenderer2D()
 {
     return m_spRenderer->vfunc_2();
 }
-MS2_REPLACE_METHOD(0x1422B02B0, GFxManager, FUN_1422b02b0, 52, 0x33FC1C90);
+MS2_REPLACE_METHOD(0x1422B02B0, GFxManager, GetRenderer2D, 52, 0x33FC1C90);
 
 // @0x1422b02f0
 MS2Ptr<ASStage> GFxManager::GetStage(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422be420();
     return MS2Ptr<ASStage>(0);
@@ -820,7 +820,7 @@ MS2_REPLACE_METHOD(0x1422B02F0, GFxManager, GetStage, 120, 0xC165C1AF);
 // @0x1422b0370
 MS2Ptr<ASMouseCursor> GFxManager::GetMouseCursor(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422be470();
     return MS2Ptr<ASMouseCursor>(0);
@@ -830,7 +830,7 @@ MS2_REPLACE_METHOD(0x1422B0370, GFxManager, GetMouseCursor, 120, 0x060B6814);
 // @0x1422b03f0
 MS2Ptr<ASMovieClipLoader> GFxManager::GetMovieClipLoader(int nGroup)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nGroup);
+    GFxMovie* pMovie = FindMovie(nGroup);
     if (pMovie)
         return pMovie->FUN_1422be4c0();
     return MS2Ptr<ASMovieClipLoader>(0);
@@ -840,7 +840,7 @@ MS2_REPLACE_METHOD(0x1422B03F0, GFxManager, GetMovieClipLoader, 120, 0xB0009EE3)
 // @0x1422b0470
 void GFxManager::FUN_1422b0470(int nMovieId, int* pnWidth, int* pnHeight)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         pMovie->FUN_1422be010(pnWidth, pnHeight);
 }
@@ -849,7 +849,7 @@ MS2_REPLACE_METHOD(0x1422B0470, GFxManager, FUN_1422b0470, 75, 0xE4E2E420);
 // @0x1422b04d0
 int GFxManager::FUN_1422b04d0(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422bdf70();
     return 0;
@@ -859,7 +859,7 @@ MS2_REPLACE_METHOD(0x1422B04D0, GFxManager, FUN_1422b04d0, 59, 0x45DD588E);
 // @0x1422b0520
 int GFxManager::FUN_1422b0520(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422bdfc0();
     return 0;
@@ -867,22 +867,22 @@ int GFxManager::FUN_1422b0520(int nMovieId)
 MS2_REPLACE_METHOD(0x1422B0520, GFxManager, FUN_1422b0520, 59, 0x01BCC59E);
 
 // @0x1422b0570
-CStringW GFxManager::FUN_1422b0570(const CString& strKey)
+CStringW GFxManager::Localize(const CString& strKey)
 {
     if (m_spLocalize)
         return m_spLocalize->GetString(strKey);
     return CStringW(L"");
 }
-MS2_REPLACE_METHOD(0x1422B0570, GFxManager, FUN_1422b0570, 145, 0x1114C221);
+MS2_REPLACE_METHOD(0x1422B0570, GFxManager, Localize, 145, 0x1114C221);
 
 // @0x1422b0610
-int GFxManager::FUN_1422b0610(const CString& strSound, const CString& strArg)
+int GFxManager::InvokeSoundCallback(const CString& strSound, const CString& strArg)
 {
     if (!m_fnSound.IsNull())
         return m_fnSound(strSound, strArg) != 0;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B0610, GFxManager, FUN_1422b0610, 109, 0x1019048F);
+MS2_REPLACE_METHOD(0x1422B0610, GFxManager, InvokeSoundCallback, 109, 0x1019048F);
 
 // @0x1422b0690
 void GFxManager::SetSoundCallback(TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > fn)
@@ -892,14 +892,14 @@ void GFxManager::SetSoundCallback(TFunctor<unsigned int, ParamList<const CString
 MS2_REPLACE_METHOD(0x1422B0690, GFxManager, SetSoundCallback, 63, 0x7B4314CC);
 
 // @0x1422b06e0
-void GFxManager::FUN_1422b06e0(int nMovieId, int* pnWidth, int* pnHeight)
+void GFxManager::GetStageSize(int nMovieId, int* pnWidth, int* pnHeight)
 {
     if (ASStage* pStage = GetStage(nMovieId).get()) {
         *pnWidth = pStage->FUN_1422cfec0();
         *pnHeight = pStage->FUN_1422cff20();
     }
 }
-MS2_REPLACE_METHOD(0x1422B06E0, GFxManager, FUN_1422b06e0, 155, 0xEE517CC4);
+MS2_REPLACE_METHOD(0x1422B06E0, GFxManager, GetStageSize, 155, 0xEE517CC4);
 
 // @0x1422b0790
 void GFxManager::FUN_1422b0790(int nMovieId)
@@ -1018,7 +1018,7 @@ MS2_REPLACE_METHOD(0x1422B0E20, GFxManager, FUN_1422b0e20, 122, 0xD95B8B01);
 // @0x1422b0ea0
 void GFxManager::FUN_1422b0ea0(const CStringW& strText)
 {
-    GFxMovieMain* pMain = dynamic_cast<GFxMovieMain*>(FUN_1422b01a0(2));
+    GFxMovieMain* pMain = dynamic_cast<GFxMovieMain*>(FindMovie(2));
     if (pMain)
         pMain->FUN_1422d8fd0(strText);
 }
@@ -1027,7 +1027,7 @@ MS2_REPLACE_METHOD(0x1422B0EA0, GFxManager, FUN_1422b0ea0, 94, 0xD81324AC);
 // @0x1422b0f10
 int GFxManager::FUN_1422b0f10()
 {
-    GFxMovieTooltip* pTooltip = dynamic_cast<GFxMovieTooltip*>(FUN_1422b01a0(5));
+    GFxMovieTooltip* pTooltip = dynamic_cast<GFxMovieTooltip*>(FindMovie(5));
     if (pTooltip)
         return pTooltip->FUN_1422f1020();
     return 0;
@@ -1078,7 +1078,7 @@ int GFxManager::FUN_1422b1620(CString strFontConfig, const CString& strLocale)
 {
     m_spLocalize = EE_NEW NiGFxLocalizeManager;
     if (m_spLocalize)
-        m_spLocalize->FUN_1422eb570(&m_loader, strFontConfig, strLocale);
+        m_spLocalize->LoadFontConfig(&m_loader, strFontConfig, strLocale);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1422B1620, GFxManager, FUN_1422b1620, 287, 0xBCEA5113);
@@ -1250,7 +1250,7 @@ MS2_REPLACE_METHOD(0x1422B24F0, GFxManager, FUN_1422b24f0, 607, 0xCFD7D4E3);
 // @0x1422b2760
 bool GFxManager::FUN_1422b2760()
 {
-    GFxMovieMain* pMain = dynamic_cast<GFxMovieMain*>(FUN_1422b01a0(2));
+    GFxMovieMain* pMain = dynamic_cast<GFxMovieMain*>(FindMovie(2));
     if (pMain)
         return pMain->FUN_1422f0450();
     return false;

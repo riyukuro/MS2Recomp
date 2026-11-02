@@ -53,41 +53,41 @@ void ASDisplayObject::vfunc_1(int a1, int a2, int a3, int a4, int a5)
     if (a1 == 0) {
         int nX = (int)((float)(FUN_1422c1500() - a4) * 0.5f);
         int nY = (int)((float)(FUN_1422c1530() - a5) * 0.5f);
-        FUN_1422bffe0(nX + a2, nY + a3);
+        SetPositionInt(nX + a2, nY + a3);
     }
     else if (a1 == 1) {
         int nX = (int)((float)(FUN_1422c1500() - a4) * 0.5f);
-        FUN_1422bffe0(nX + a2, a3);
+        SetPositionInt(nX + a2, a3);
     }
     else if (a1 == 2) {
         int nX = (int)((float)(FUN_1422c1500() - a4) * 0.5f);
         int nY = FUN_1422c1530() - a5;
-        FUN_1422bffe0(nX + a2, nY + a3);
+        SetPositionInt(nX + a2, nY + a3);
     }
     else if (a1 == 3) {
         int nY = (int)((float)(FUN_1422c1530() - a5) * 0.5f);
-        FUN_1422bffe0(a2, nY + a3);
+        SetPositionInt(a2, nY + a3);
     }
     else if (a1 == 4) {
         int nX = FUN_1422c1500() - a4;
         int nY = (int)((float)(FUN_1422c1530() - a5) * 0.5f);
-        FUN_1422bffe0(nX + a2, nY + a3);
+        SetPositionInt(nX + a2, nY + a3);
     }
     else if (a1 == 5) {
-        FUN_1422bffe0(a2, a3);
+        SetPositionInt(a2, a3);
     }
     else if (a1 == 6) {
         int nX = FUN_1422c1500() - a4;
-        FUN_1422bffe0(nX + a2, a3);
+        SetPositionInt(nX + a2, a3);
     }
     else if (a1 == 7) {
         int nY = FUN_1422c1530() - a5;
-        FUN_1422bffe0(a2, nY + a3);
+        SetPositionInt(a2, nY + a3);
     }
     else if (a1 == 8) {
         int nX = FUN_1422c1500() - a4;
         int nY = FUN_1422c1530() - a5;
-        FUN_1422bffe0(nX + a2, nY + a3);
+        SetPositionInt(nX + a2, nY + a3);
     }
 }
 MS2_REPLACE_METHOD(0x1422BF8C0, ASDisplayObject, vfunc_1, 767, 0x3D15EC4D);
@@ -95,7 +95,7 @@ MS2_REPLACE_METHOD(0x1422BF8C0, ASDisplayObject, vfunc_1, 767, 0x3D15EC4D);
 // @0x1422bfbd0
 void ASDisplayObject::vfunc_4(bool b)
 {
-    if (FUN_1422bfca0() != b) {
+    if (GetVisible() != b) {
         DisplayInfo info;
         info.SetVisible(b);
         FUN_1422c17d0(info);
@@ -111,13 +111,13 @@ void ASDisplayObject::vfunc_3(int nVisible)
 MS2_REPLACE_METHOD(0x1422BFC60, ASDisplayObject, vfunc_3, 58, 0xD413C844);
 
 // @0x1422bfca0
-bool ASDisplayObject::FUN_1422bfca0()
+bool ASDisplayObject::GetVisible()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return info.GetVisible();
 }
-MS2_REPLACE_METHOD(0x1422BFCA0, ASDisplayObject, FUN_1422bfca0, 92, 0xBED04D4E);
+MS2_REPLACE_METHOD(0x1422BFCA0, ASDisplayObject, GetVisible, 92, 0xBED04D4E);
 
 // @0x1422bfd10
 void ASDisplayObject::SetFOV(float fFOV)
@@ -132,7 +132,7 @@ MS2_REPLACE_METHOD(0x1422BFD10, ASDisplayObject, SetFOV, 110, 0x0E1B4542);
 float ASDisplayObject::GetFOV()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetFOV();
 }
 MS2_REPLACE_METHOD(0x1422BFD90, ASDisplayObject, GetFOV, 96, 0xDA1A6BAC);
@@ -147,13 +147,13 @@ void ASDisplayObject::SetAlpha(float fAlpha)
 MS2_REPLACE_METHOD(0x1422BFE00, ASDisplayObject, SetAlpha, 110, 0x436B3027);
 
 // @0x1422bfe80
-float ASDisplayObject::FUN_1422bfe80()
+float ASDisplayObject::GetAlpha()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetAlpha();
 }
-MS2_REPLACE_METHOD(0x1422BFE80, ASDisplayObject, FUN_1422bfe80, 96, 0xA53736ED);
+MS2_REPLACE_METHOD(0x1422BFE80, ASDisplayObject, GetAlpha, 96, 0xA53736ED);
 
 // @0x1422bfef0
 void ASDisplayObject::SetRotation(float fRotation)
@@ -168,151 +168,151 @@ MS2_REPLACE_METHOD(0x1422BFEF0, ASDisplayObject, SetRotation, 110, 0x21578B05);
 float ASDisplayObject::GetRotation()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetRotation();
 }
 MS2_REPLACE_METHOD(0x1422BFF70, ASDisplayObject, GetRotation, 96, 0x2AD71F62);
 
 // @0x1422bffe0
-void ASDisplayObject::FUN_1422bffe0(int x, int y)
+void ASDisplayObject::SetPositionInt(int x, int y)
 {
     DisplayInfo info;
     info.SetPosition(x, y);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422BFFE0, ASDisplayObject, FUN_1422bffe0, 122, 0x21E0AFC2);
+MS2_REPLACE_METHOD(0x1422BFFE0, ASDisplayObject, SetPositionInt, 122, 0x21E0AFC2);
 
 // @0x1422c0060
-void ASDisplayObject::FUN_1422c0060(unsigned int x, unsigned int y)
+void ASDisplayObject::SetPositionUInt(unsigned int x, unsigned int y)
 {
     DisplayInfo info;
     info.SetPosition(x, y);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0060, ASDisplayObject, FUN_1422c0060, 128, 0xD9BC7E96);
+MS2_REPLACE_METHOD(0x1422C0060, ASDisplayObject, SetPositionUInt, 128, 0xD9BC7E96);
 
 // @0x1422c00f0
-void ASDisplayObject::FUN_1422c00f0(float x, float y)
+void ASDisplayObject::SetPositionFloat(float x, float y)
 {
     DisplayInfo info;
     info.SetPosition(x, y);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C00F0, ASDisplayObject, FUN_1422c00f0, 125, 0xBFC88BB6);
+MS2_REPLACE_METHOD(0x1422C00F0, ASDisplayObject, SetPositionFloat, 125, 0xBFC88BB6);
 
 // @0x1422c0180
-void ASDisplayObject::FUN_1422c0180(int xScale, int yScale)
+void ASDisplayObject::SetScaleInt(int xScale, int yScale)
 {
     DisplayInfo info;
     info.SetScale(xScale, yScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0180, ASDisplayObject, FUN_1422c0180, 122, 0xAE8B3511);
+MS2_REPLACE_METHOD(0x1422C0180, ASDisplayObject, SetScaleInt, 122, 0xAE8B3511);
 
 // @0x1422c0200
-void ASDisplayObject::FUN_1422c0200(unsigned int xScale, unsigned int yScale)
+void ASDisplayObject::SetScaleUInt(unsigned int xScale, unsigned int yScale)
 {
     DisplayInfo info;
     info.SetScale(xScale, yScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0200, ASDisplayObject, FUN_1422c0200, 128, 0x90F337AE);
+MS2_REPLACE_METHOD(0x1422C0200, ASDisplayObject, SetScaleUInt, 128, 0x90F337AE);
 
 // @0x1422c0290
-void ASDisplayObject::FUN_1422c0290(float xScale, float yScale)
+void ASDisplayObject::SetScaleFloat(float xScale, float yScale)
 {
     DisplayInfo info;
     info.SetScale(xScale, yScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0290, ASDisplayObject, FUN_1422c0290, 125, 0x6D488ABF);
+MS2_REPLACE_METHOD(0x1422C0290, ASDisplayObject, SetScaleFloat, 125, 0x6D488ABF);
 
 // @0x1422c0320
-void ASDisplayObject::FUN_1422c0320(int x)
+void ASDisplayObject::SetXInt(int x)
 {
     DisplayInfo info;
     info.SetX(x);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0320, ASDisplayObject, FUN_1422c0320, 108, 0x30022F9B);
+MS2_REPLACE_METHOD(0x1422C0320, ASDisplayObject, SetXInt, 108, 0x30022F9B);
 
 // @0x1422c03a0
-void ASDisplayObject::FUN_1422c03a0(unsigned int x)
+void ASDisplayObject::SetXUInt(unsigned int x)
 {
     DisplayInfo info;
     info.SetX(x);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C03A0, ASDisplayObject, FUN_1422c03a0, 111, 0x49D7DC28);
+MS2_REPLACE_METHOD(0x1422C03A0, ASDisplayObject, SetXUInt, 111, 0x49D7DC28);
 
 // @0x1422c0420
-void ASDisplayObject::FUN_1422c0420(float x)
+void ASDisplayObject::SetXFloat(float x)
 {
     DisplayInfo info;
     info.SetX(x);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0420, ASDisplayObject, FUN_1422c0420, 110, 0x53F38A0F);
+MS2_REPLACE_METHOD(0x1422C0420, ASDisplayObject, SetXFloat, 110, 0x53F38A0F);
 
 // @0x1422c04a0
-void ASDisplayObject::FUN_1422c04a0(int y)
+void ASDisplayObject::SetYInt(int y)
 {
     DisplayInfo info;
     info.SetY(y);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C04A0, ASDisplayObject, FUN_1422c04a0, 108, 0x8927D0FA);
+MS2_REPLACE_METHOD(0x1422C04A0, ASDisplayObject, SetYInt, 108, 0x8927D0FA);
 
 // @0x1422c0520
-void ASDisplayObject::FUN_1422c0520(unsigned int y)
+void ASDisplayObject::SetYUInt(unsigned int y)
 {
     DisplayInfo info;
     info.SetY(y);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0520, ASDisplayObject, FUN_1422c0520, 111, 0xAE514023);
+MS2_REPLACE_METHOD(0x1422C0520, ASDisplayObject, SetYUInt, 111, 0xAE514023);
 
 // @0x1422c05a0
-void ASDisplayObject::FUN_1422c05a0(float y)
+void ASDisplayObject::SetYFloat(float y)
 {
     DisplayInfo info;
     info.SetY(y);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C05A0, ASDisplayObject, FUN_1422c05a0, 110, 0x33914884);
+MS2_REPLACE_METHOD(0x1422C05A0, ASDisplayObject, SetYFloat, 110, 0x33914884);
 
 // @0x1422c0620
-void ASDisplayObject::FUN_1422c0620(int z)
+void ASDisplayObject::SetZInt(int z)
 {
     DisplayInfo info;
     info.SetZ(z);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0620, ASDisplayObject, FUN_1422c0620, 108, 0x4EE6034F);
+MS2_REPLACE_METHOD(0x1422C0620, ASDisplayObject, SetZInt, 108, 0x4EE6034F);
 
 // @0x1422c06a0
-void ASDisplayObject::FUN_1422c06a0(unsigned int z)
+void ASDisplayObject::SetZUInt(unsigned int z)
 {
     DisplayInfo info;
     info.SetZ(z);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C06A0, ASDisplayObject, FUN_1422c06a0, 111, 0xABB4FE7C);
+MS2_REPLACE_METHOD(0x1422C06A0, ASDisplayObject, SetZUInt, 111, 0xABB4FE7C);
 
 // @0x1422c0720
-void ASDisplayObject::FUN_1422c0720(float z)
+void ASDisplayObject::SetZFloat(float z)
 {
     DisplayInfo info;
     info.SetZ(z);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0720, ASDisplayObject, FUN_1422c0720, 110, 0x8EC9E9CB);
+MS2_REPLACE_METHOD(0x1422C0720, ASDisplayObject, SetZFloat, 110, 0x8EC9E9CB);
 
 // @0x1422c07a0
 void ASDisplayObject::MoveX(int dx)
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     info.SetX(info.GetX() + dx);
     FUN_1422c17d0(info);
 }
@@ -322,7 +322,7 @@ MS2_REPLACE_METHOD(0x1422C07A0, ASDisplayObject, MoveX, 140, 0x2321F16B);
 void ASDisplayObject::MoveY(int dy)
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     info.SetY(info.GetY() + dy);
     FUN_1422c17d0(info);
 }
@@ -332,140 +332,140 @@ MS2_REPLACE_METHOD(0x1422C0840, ASDisplayObject, MoveY, 140, 0x0D3F84EB);
 void ASDisplayObject::MoveBy(int dx, int dy)
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     info.SetPosition(info.GetX() + dx, info.GetY() + dy);
     FUN_1422c17d0(info);
 }
 MS2_REPLACE_METHOD(0x1422C08E0, ASDisplayObject, MoveBy, 183, 0x499E9910);
 
 // @0x1422c09a0
-void ASDisplayObject::FUN_1422c09a0(int xScale)
+void ASDisplayObject::SetXScaleInt(int xScale)
 {
     DisplayInfo info;
     info.SetXScale(xScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C09A0, ASDisplayObject, FUN_1422c09a0, 108, 0xC4A5EF59);
+MS2_REPLACE_METHOD(0x1422C09A0, ASDisplayObject, SetXScaleInt, 108, 0xC4A5EF59);
 
 // @0x1422c0a20
-void ASDisplayObject::FUN_1422c0a20(unsigned int xScale)
+void ASDisplayObject::SetXScaleUInt(unsigned int xScale)
 {
     DisplayInfo info;
     info.SetXScale(xScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0A20, ASDisplayObject, FUN_1422c0a20, 111, 0x659F08AA);
+MS2_REPLACE_METHOD(0x1422C0A20, ASDisplayObject, SetXScaleUInt, 111, 0x659F08AA);
 
 // @0x1422c0aa0
-void ASDisplayObject::FUN_1422c0aa0(float xScale)
+void ASDisplayObject::SetXScaleFloat(float xScale)
 {
     DisplayInfo info;
     info.SetXScale(xScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0AA0, ASDisplayObject, FUN_1422c0aa0, 110, 0x7AF10865);
+MS2_REPLACE_METHOD(0x1422C0AA0, ASDisplayObject, SetXScaleFloat, 110, 0x7AF10865);
 
 // @0x1422c0b20
-void ASDisplayObject::FUN_1422c0b20(int yScale)
+void ASDisplayObject::SetYScaleInt(int yScale)
 {
     DisplayInfo info;
     info.SetYScale(yScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0B20, ASDisplayObject, FUN_1422c0b20, 108, 0x03F8A57A);
+MS2_REPLACE_METHOD(0x1422C0B20, ASDisplayObject, SetYScaleInt, 108, 0x03F8A57A);
 
 // @0x1422c0ba0
-void ASDisplayObject::FUN_1422c0ba0(unsigned int yScale)
+void ASDisplayObject::SetYScaleUInt(unsigned int yScale)
 {
     DisplayInfo info;
     info.SetYScale(yScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0BA0, ASDisplayObject, FUN_1422c0ba0, 111, 0x47E3694B);
+MS2_REPLACE_METHOD(0x1422C0BA0, ASDisplayObject, SetYScaleUInt, 111, 0x47E3694B);
 
 // @0x1422c0c20
-void ASDisplayObject::FUN_1422c0c20(float yScale)
+void ASDisplayObject::SetYScaleFloat(float yScale)
 {
     DisplayInfo info;
     info.SetYScale(yScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0C20, ASDisplayObject, FUN_1422c0c20, 110, 0x774D0774);
+MS2_REPLACE_METHOD(0x1422C0C20, ASDisplayObject, SetYScaleFloat, 110, 0x774D0774);
 
 // @0x1422c0ca0
-void ASDisplayObject::FUN_1422c0ca0(int zScale)
+void ASDisplayObject::SetZScaleInt(int zScale)
 {
     DisplayInfo info;
     info.SetZScale(zScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0CA0, ASDisplayObject, FUN_1422c0ca0, 108, 0x8C8B2FD5);
+MS2_REPLACE_METHOD(0x1422C0CA0, ASDisplayObject, SetZScaleInt, 108, 0x8C8B2FD5);
 
 // @0x1422c0d20
-void ASDisplayObject::FUN_1422c0d20(unsigned int zScale)
+void ASDisplayObject::SetZScaleUInt(unsigned int zScale)
 {
     DisplayInfo info;
     info.SetZScale(zScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0D20, ASDisplayObject, FUN_1422c0d20, 111, 0x73C6966E);
+MS2_REPLACE_METHOD(0x1422C0D20, ASDisplayObject, SetZScaleUInt, 111, 0x73C6966E);
 
 // @0x1422c0da0
-void ASDisplayObject::FUN_1422c0da0(float zScale)
+void ASDisplayObject::SetZScaleFloat(float zScale)
 {
     DisplayInfo info;
     info.SetZScale(zScale);
     FUN_1422c17d0(info);
 }
-MS2_REPLACE_METHOD(0x1422C0DA0, ASDisplayObject, FUN_1422c0da0, 110, 0x4F1B59B5);
+MS2_REPLACE_METHOD(0x1422C0DA0, ASDisplayObject, SetZScaleFloat, 110, 0x4F1B59B5);
 
 // @0x1422c0e20
-void ASDisplayObject::FUN_1422c0e20(int nWidth)
+void ASDisplayObject::SetWidthInt(int nWidth)
 {
     FUN_1407cb9c0("width", nWidth);
 }
-MS2_REPLACE_METHOD(0x1422C0E20, ASDisplayObject, FUN_1422c0e20, 40, 0xF43A4683);
+MS2_REPLACE_METHOD(0x1422C0E20, ASDisplayObject, SetWidthInt, 40, 0xF43A4683);
 
 // @0x1422c0e50
-void ASDisplayObject::FUN_1422c0e50(unsigned int nWidth)
+void ASDisplayObject::SetWidthUInt(unsigned int nWidth)
 {
     FUN_1409c0d20("width", nWidth);
 }
-MS2_REPLACE_METHOD(0x1422C0E50, ASDisplayObject, FUN_1422c0e50, 40, 0x6CA4A137);
+MS2_REPLACE_METHOD(0x1422C0E50, ASDisplayObject, SetWidthUInt, 40, 0x6CA4A137);
 
 // @0x1422c0e80
-void ASDisplayObject::FUN_1422c0e80(float fWidth)
+void ASDisplayObject::SetWidthFloat(float fWidth)
 {
     FUN_1409c4a30("width", fWidth);
 }
-MS2_REPLACE_METHOD(0x1422C0E80, ASDisplayObject, FUN_1422c0e80, 43, 0xBDE70F30);
+MS2_REPLACE_METHOD(0x1422C0E80, ASDisplayObject, SetWidthFloat, 43, 0xBDE70F30);
 
 // @0x1422c0ec0
-void ASDisplayObject::FUN_1422c0ec0(int nHeight)
+void ASDisplayObject::SetHeightInt(int nHeight)
 {
     FUN_1407cb9c0("height", nHeight);
 }
-MS2_REPLACE_METHOD(0x1422C0EC0, ASDisplayObject, FUN_1422c0ec0, 40, 0x7CDC41CA);
+MS2_REPLACE_METHOD(0x1422C0EC0, ASDisplayObject, SetHeightInt, 40, 0x7CDC41CA);
 
 // @0x1422c0ef0
-void ASDisplayObject::FUN_1422c0ef0(unsigned int nHeight)
+void ASDisplayObject::SetHeightUInt(unsigned int nHeight)
 {
     FUN_1409c0d20("height", nHeight);
 }
-MS2_REPLACE_METHOD(0x1422C0EF0, ASDisplayObject, FUN_1422c0ef0, 40, 0x8BA3A8EF);
+MS2_REPLACE_METHOD(0x1422C0EF0, ASDisplayObject, SetHeightUInt, 40, 0x8BA3A8EF);
 
 // @0x1422c0f20
-void ASDisplayObject::FUN_1422c0f20(float fHeight)
+void ASDisplayObject::SetHeightFloat(float fHeight)
 {
     FUN_1409c4a30("height", fHeight);
 }
-MS2_REPLACE_METHOD(0x1422C0F20, ASDisplayObject, FUN_1422c0f20, 43, 0x01256289);
+MS2_REPLACE_METHOD(0x1422C0F20, ASDisplayObject, SetHeightFloat, 43, 0x01256289);
 
 // @0x1422c0f60
 void ASDisplayObject::GetPosition(float* pX, float* pY)
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     *pX = (float)info.GetX();
     *pY = (float)info.GetY();
 }
@@ -475,7 +475,7 @@ MS2_REPLACE_METHOD(0x1422C0F60, ASDisplayObject, GetPosition, 144, 0x5A46A634);
 void ASDisplayObject::GetScale(float* pXScale, float* pYScale)
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     *pXScale = (float)info.GetXScale();
     *pYScale = (float)info.GetYScale();
 }
@@ -485,7 +485,7 @@ MS2_REPLACE_METHOD(0x1422C1000, ASDisplayObject, GetScale, 144, 0x805C9117);
 float ASDisplayObject::FUN_1422c10a0()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetX();
 }
 MS2_REPLACE_METHOD(0x1422C10A0, ASDisplayObject, FUN_1422c10a0, 96, 0x63D14FD3);
@@ -494,7 +494,7 @@ MS2_REPLACE_METHOD(0x1422C10A0, ASDisplayObject, FUN_1422c10a0, 96, 0x63D14FD3);
 float ASDisplayObject::FUN_1422c1110()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetY();
 }
 MS2_REPLACE_METHOD(0x1422C1110, ASDisplayObject, FUN_1422c1110, 96, 0xA56E69E6);
@@ -503,7 +503,7 @@ MS2_REPLACE_METHOD(0x1422C1110, ASDisplayObject, FUN_1422c1110, 96, 0xA56E69E6);
 float ASDisplayObject::GetZ()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetZ();
 }
 MS2_REPLACE_METHOD(0x1422C1180, ASDisplayObject, GetZ, 96, 0x63B5C7F0);
@@ -512,7 +512,7 @@ MS2_REPLACE_METHOD(0x1422C1180, ASDisplayObject, GetZ, 96, 0x63B5C7F0);
 float ASDisplayObject::GetXScale()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetXScale();
 }
 MS2_REPLACE_METHOD(0x1422C11F0, ASDisplayObject, GetXScale, 96, 0x6DB6F603);
@@ -521,7 +521,7 @@ MS2_REPLACE_METHOD(0x1422C11F0, ASDisplayObject, GetXScale, 96, 0x6DB6F603);
 float ASDisplayObject::GetYScale()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetYScale();
 }
 MS2_REPLACE_METHOD(0x1422C1260, ASDisplayObject, GetYScale, 96, 0xA1BD8121);
@@ -530,7 +530,7 @@ MS2_REPLACE_METHOD(0x1422C1260, ASDisplayObject, GetYScale, 96, 0xA1BD8121);
 float ASDisplayObject::GetZScale()
 {
     DisplayInfo info;
-    FUN_1422c1810(info);
+    GetDisplayInfo(info);
     return (float)info.GetZScale();
 }
 MS2_REPLACE_METHOD(0x1422C12D0, ASDisplayObject, GetZScale, 96, 0x86E13DDA);
@@ -585,11 +585,11 @@ ASStage* ASDisplayObject::vfunc_5()
 MS2_REPLACE_METHOD(0x1422C1560, ASDisplayObject, vfunc_5, 95, 0xFEF77BC5);
 
 // @0x1422c15d0
-int ASDisplayObject::FUN_1422c15d0(int x, int y, bool bShapeFlag)
+int ASDisplayObject::HitTestPointInt(int x, int y, bool bShapeFlag)
 {
     return FUN_1422c1870("hitTestPoint", (float)x, (float)y, bShapeFlag).GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C15D0, ASDisplayObject, FUN_1422c15d0, 147, 0xD9FCB1BD);
+MS2_REPLACE_METHOD(0x1422C15D0, ASDisplayObject, HitTestPointInt, 147, 0xD9FCB1BD);
 
 // @0x1422c1670
 int ASDisplayObject::HitTestPoint(float x, float y, bool bShapeFlag)
@@ -614,7 +614,7 @@ int ASDisplayObject::FUN_1422c17d0(const DisplayInfo& info)
 MS2_REPLACE_METHOD(0x1422C17D0, ASDisplayObject, FUN_1422c17d0, 57, 0x63C11524);
 
 // @0x1422c1810
-int ASDisplayObject::FUN_1422c1810(DisplayInfo& info)
+int ASDisplayObject::GetDisplayInfo(DisplayInfo& info)
 {
     if (!m_value.IsObject())
         return 0;
@@ -622,7 +622,7 @@ int ASDisplayObject::FUN_1422c1810(DisplayInfo& info)
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422C1810, ASDisplayObject, FUN_1422c1810, 85, 0xB2492391);
+MS2_REPLACE_METHOD(0x1422C1810, ASDisplayObject, GetDisplayInfo, 85, 0xB2492391);
 
 // @0x1422c1870
 inline Scaleform::GFx::Value AScript::FUN_1422c1870(const char* szMethod, float a1, float a2, bool a3)

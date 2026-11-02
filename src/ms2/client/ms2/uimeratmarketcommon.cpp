@@ -22,6 +22,7 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCUserReportData@@@@AEBAXPEAX@Z 0x140ec3f70 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimeratmarketcommon.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/jobtable.h"
 #include "asclickoutdata.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/placeholder/ascript.h"
@@ -136,6 +137,7 @@ bool UIMeratMarketCommon::WeaponType::FUN_140ebb780(int nGender, int nJob, MS2Pt
 #include "ms2/placeholder/cugcitemlook.h"
 #include "ms2/client/ms2/uimarketbilldialog.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/commonfiles/os.h"
 
 struct Unk_MeratOid                                            // the AS form of a market product key
 {
@@ -334,7 +336,7 @@ bool FUN_140ebc540(__int64 nPrice)
 {
     if (((class IClientPlatform*)FUN_140d86260())->vfunc_40(nPrice) == 0)
     {
-        reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance())->FUN_141add210();
+        reinterpret_cast<Unk_McUi*>(TSingleton<CUIService>::GetInstance())->ShowLackMeratAsk();
         return false;
     }
     return true;
@@ -542,104 +544,112 @@ class Unk_MeratEquipEntry;
 template <> MS2Ptr<Unk_MeratEquipEntry>& MS2Ptr<Unk_MeratEquipEntry>::operator=(const MS2Ptr<Unk_MeratEquipEntry>& o);
 bool FUN_1406a5930();
 
+__int64 FUN_140869440();                // the server time (commonstruct_wa.h)
+
 // The buy callback of the merat market bill dialog: one buy request per bill row, answered by the server.
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ebded0
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataParam::PaymentMap& mapPay)
 {
     if (spBase == 0)
         return false;
-    TMeratMarketBillDataParam* pParam = dynamic_cast<TMeratMarketBillDataParam*>(spBase.get());
+    MS2Ptr<TMeratMarketBillDataParam> pParam = dynamic_cast<TMeratMarketBillDataParam*>(spBase.get());
     if (pParam == 0)
         return false;
-    if (pParam->m_bills.GetCount() == 0)
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = pParam->m_bills;
+    if (bills.IsEmpty())
         return false;
-    if (pParam->m_spF8 != 0)
+    if (pParam->m_spF8.get() != 0)
     {
-        MS2Ptr<CMeratMarketProduct> spProduct = *(MS2Ptr<CMeratMarketProduct>*)&pParam->m_spF8;
-        CMsTime tNow((__time64_t)GetServerTime());
-        CMeratMarketPremiumProduct& prem = spProduct->m_premium;
-        __int64 nRemain = 0;
-        if (prem.m_time188 > tNow)
-            nRemain = (prem.m_time188 - tNow).GetTotalSeconds();
+        MS2Ptr<CMeratMarketProduct> spProduct = pParam->m_spF8;
+        CMsTime tNow(FUN_140869440());
+        __int64 nRemain = spProduct->m_premium.m_time188.Get() - tNow.Get();
+        if (nRemain < 0)
+            nRemain = 0;
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.WriteUInt8(0x70);
-        pkt.WriteInt32(prem.m_n2c);
-        pkt.WriteUInt8((char)prem.m_n16c);
-        pkt.WriteUInt8((char)prem.m_n170);
-        pkt.WriteInt32(prem.GetRemainCount());
+        pkt.WriteInt32(spProduct->m_premium.m_n2c);
+        pkt.WriteUInt8((char)spProduct->m_premium.m_n16c);
+        pkt.WriteUInt8((char)spProduct->m_premium.m_n170);
+        pkt.WriteInt32(spProduct->m_premium.GetRemainCount());
         pkt.WriteInt64(nRemain);
-        pkt.WriteInt64(prem.m_nSalePrice);
+        pkt.WriteInt64(spProduct->m_premium.m_nSalePrice);
         FUN_140710590(pkt);
     }
-    if (pParam->m_sp108 != 0)
+    if (pParam->m_sp108.get() != 0)
     {
-        MS2Ptr<CMeratMarketProduct> spProduct = *(MS2Ptr<CMeratMarketProduct>*)&pParam->m_sp108;
-        CMeratMarketPremiumProduct& prem = spProduct->m_premium;
-        if (prem.FUN_1406a0090())
+        MS2Ptr<CMeratMarketProduct> spProduct = pParam->m_sp108;
+        if (spProduct->m_premium.FUN_1406a0090())
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_random_expired")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_random_expired"), 1, 1);
             return false;
         }
+        int nNotice;
+        if (spProduct->m_premium.m_nType == 7)
+            nNotice = 0xd68;
+        else
+            nNotice = 0xd72;
         COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
         pkt.WriteUInt8(0x74);
-        pkt.WriteInt32(prem.m_nId);
-        pkt.WriteInt32(prem.m_n1b0);
-        pkt.WriteInt32(prem.m_nType == 7 ? 0xd68 : 0xd72);
+        pkt.WriteInt32(spProduct->m_premium.m_nId);
+        pkt.WriteInt32(spProduct->m_premium.m_n1b0);
+        pkt.WriteInt32(nNotice);
         FUN_140710590(pkt);
     }
     if (!FUN_140ebc590(mapPay))
         return false;
     ATL::CAtlArray<int> arrIds;
-    FUN_1409abfa0(arrIds, pParam->m_bills);
+    FUN_1409abfa0(arrIds, bills);
     if (!FUN_140ebcc20(arrIds))
         return false;
-    int nSrc = FUN_140ec3900(pParam);
+    int nSrc = FUN_140ec3900(pParam.get());
     int nShop = pParam->m_nShopId;
-    Unk_McMan* pMan = (Unk_McMan*)((class Unk_McMarket*)FUN_140939a00());
     if (spBase->FUN_140eacfc0())
     {
         MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
         if (spBuy == 0 || spBuy->m_spPacket == 0)
             return false;
-        spBuy.get()->FUN_140d60a80(*(MS2Ptr<CMeratMarketProduct>*)&pParam->m_spE8, nSrc, pParam->m_nCurrency, 1);
+        spBuy->FUN_140d60a80(reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(pParam->m_spE8), nSrc, pParam->m_nCurrency, 1);
         spBuy->FUN_140d60d60(0, 1);
-        ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60ea0(*(int const*)(&nShop));
-        pMan->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+        spBuy->FUN_140d60ea0(nShop);
+        ((Unk_McMan*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
     }
     else
     {
-        size_t nCount = pParam->m_bills.GetCount();
+        size_t nCount = bills.GetCount();
         for (size_t i = 0; i < nCount; ++i)
         {
-            MS2Ptr<ASMeratMarketBuyBillData> spBill = dynamic_cast<ASMeratMarketBuyBillData*>(pParam->m_bills[i].get());
+            MS2Ptr<ASBillData> spRow = bills[i];
+            if (spRow == 0)
+                continue;
+            MS2Ptr<ASMeratMarketBuyBillData> spBill = dynamic_cast<ASMeratMarketBuyBillData*>(spRow.get());
             if (spBill == 0)
                 continue;
             MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
             if (spBuy == 0 || spBuy->m_spPacket == 0)
                 continue;
-            spBuy.get()->FUN_140d604c0(spBill, nSrc, 1);
+            spBuy->FUN_140d604c0(spBill, nSrc, 1);
             spBuy->FUN_140d60d60((int)i, (int)nCount);
-            ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60ea0(*(int const*)(&nShop));
-            pMan->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+            spBuy->FUN_140d60ea0(nShop);
+            ((Unk_McMan*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
         }
     }
-    pMan->StartPendingPurchases(nSrc);
+    ((Unk_McMan*)FUN_140939a00())->StartPendingPurchases(nSrc);
     return true;
 }
 
 // The tooltip of a bill row.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ebe990
 bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBillDataParam> spParam)
 {
     if (spParam == 0)
         return false;
-    if (((class Unk_McMarket*)FUN_140939a00()) == 0)
+    class Unk_McMarket* pMan = (class Unk_McMarket*)FUN_140939a00();
+    if (pMan == 0)
         return false;
+    Unk_MeratProductKey key;
     Scaleform::GFx::Value valRow = data.FUN_1422b9260();
     ASObj objRow(valRow, 2);
-    if (objRow.FUN_1422ba9a0())
+    if (objRow.IsUndefinedOrNull())
         return false;
     int nIndex = data.FUN_1422b8b10();
     MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(nIndex);
@@ -652,13 +662,7 @@ bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBill
     if (spProduct == 0)
         return false;
     ASTooltip tip(4, 2);
-    if (spProduct->IsPremium() == 0 || spProduct->m_premium.m_nType != 3)
-    {
-        MS2Ptr<CItem> spItem = FUN_140ebc070(spProduct.get());
-        if (spItem != 0)
-            FUN_140ebbb30(&tip, spItem, spProduct, false, true);
-    }
-    else
+    if (spProduct->IsPremium() != 0 && spProduct->m_premium.m_nType == 3)
     {
         int nSub = FUN_140ec3950(spBuy.get());
         if (nSub == 0)
@@ -674,48 +678,63 @@ bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBill
             }
         }
     }
+    else
+    {
+        MS2Ptr<CItem> spItem = FUN_140ebc070(spProduct.get());
+        if (spItem != 0)
+            FUN_140ebbb30(&tip, spItem, spProduct, false, true);
+    }
     *pOut = tip.FUN_1422bb870();
     return true;
 }
 
 // The gift / basket buy callback: one buy request per marked bill row.
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ebef60
 bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataParam::PaymentMap& mapPay, const CStringW& strA,
                    const CStringW& strB)
 {
     if (spBase == 0)
         return false;
-    TMeratMarketBillDataParam* pParam = dynamic_cast<TMeratMarketBillDataParam*>(spBase.get());
+    MS2Ptr<TMeratMarketBillDataParam> pParam = dynamic_cast<TMeratMarketBillDataParam*>(spBase.get());
     if (pParam == 0)
         return false;
-    if (pParam->m_bills.GetCount() == 0)
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spBase->m_bills;
+    if (bills.IsEmpty())
         return false;
     if (!FUN_140ebc590(mapPay))
         return false;
-    int nSrc = FUN_140ec3900(pParam);
+    int nSrc = FUN_140ec3900(pParam.get());
     int nShop = pParam->m_nShopId;
     ATL::CAtlArray<MS2Ptr<ASMeratMarketBuyBillData> > arrBuy;
-    for (size_t i = 0; i < pParam->m_bills.GetCount(); ++i)
+    size_t nBills = bills.GetCount();
+    for (size_t i = 0; i < nBills; ++i)
     {
-        MS2Ptr<ASMeratMarketBuyBillData> spBill = dynamic_cast<ASMeratMarketBuyBillData*>(pParam->m_bills[i].get());
-        if (spBill != 0 && spBill->m_b40)
-            arrBuy.Add(spBill);
+        MS2Ptr<ASBillData> spRow = bills[i];
+        if (spRow == 0)
+            continue;
+        MS2Ptr<ASMeratMarketBuyBillData> spBill = dynamic_cast<ASMeratMarketBuyBillData*>(spRow.get());
+        if (spBill == 0)
+            continue;
+        if (!spBill->FUN_140eacf60())
+            continue;
+        arrBuy.Add(spBill);
     }
-    Unk_McMan* pMan = (Unk_McMan*)((class Unk_McMarket*)FUN_140939a00());
     size_t nCount = arrBuy.GetCount();
     for (size_t i = 0; i < nCount; ++i)
     {
+        MS2Ptr<ASMeratMarketBuyBillData> spBill = arrBuy[i];
+        if (spBill == 0)
+            continue;
         MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
         if (spBuy == 0 || spBuy->m_spPacket == 0)   // exe: CMeratMarketBuy +0x38
             continue;
-        spBuy.get()->FUN_140d604c0(arrBuy[i], nSrc, 1);
+        spBuy->FUN_140d604c0(spBill, nSrc, 1);
         spBuy->FUN_140d60d60((int)i, (int)nCount);
-        ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->SetGift(strA, strB);
-        ((class CMeratMarketBuy*)(class CMeratMarketBuy*)(spBuy.get()))->FUN_140d60ea0(*(int const*)(&nShop));
-        pMan->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+        spBuy->SetGift(strA, strB);
+        spBuy->FUN_140d60ea0(nShop);
+        ((Unk_McMan*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
     }
-    pMan->StartPendingPurchases(nSrc);
+    ((Unk_McMan*)FUN_140939a00())->StartPendingPurchases(nSrc);
     return true;
 }
 
@@ -728,7 +747,7 @@ int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spProduct, AScript* pRow)
     int nType = spProduct->GetCurrency();
     if (nType == 3)
     {
-        if (!pRow->FUN_1422ba9a0())
+        if (!pRow->IsUndefinedOrNull())
             nType = pRow->GetMember("priceType").GetInt();
         else
             nType = 1;
@@ -798,8 +817,7 @@ public:
 };
 int FUN_1406a59f0(struct Unk_MeratJobLimit*, int);   // C3: was FUN_1406a59f0
 bool FUN_140222a70(unsigned nMask, struct Unk_LevelArray* pOut);
-int FUN_140644bb0(void* p, int nJob);
-void* FUN_1401d7a50();
+class JobTable;
 
 // The achievement the product requires.
 // @0x140ebfb90
@@ -903,7 +921,7 @@ bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError)
     FUN_140222a70(pProduct->m_n98, (struct Unk_LevelArray*)&arrJobs);
     for (size_t i = 0; i < arrJobs.GetCount(); ++i)
     {
-        CStringW strName = GetStringTable()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), arrJobs[i]));
+        CStringW strName = GetStringTable()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(arrJobs[i]));
         if (strName.IsEmpty())
             continue;
         if (!strJobs.IsEmpty())
@@ -1084,7 +1102,7 @@ void FUN_140ec07b0(ASArray* pArr, const CStringW& strLabel, int nSort, bool bUgc
         obj.FUN_1407cba60("sortDataName", strName);
         obj.FUN_1409c0d20("sortOpt", nOpt);
     }
-    pArr->FUN_1422bc050(obj.FUN_1422bb870());
+    pArr->PushValue(obj.FUN_1422bb870());
 }
 
 // The entries of the sort drop down: tab 0 = premium products, tab 1 = UGC products.
@@ -1211,7 +1229,6 @@ bool FUN_141b49b50(MS2Ptr<CItemData> spData);
 class Unk_McSortTabInfo : public CPtred { public: char m_pad[0x78 - 0x18]; bool m_b78; bool m_b79; };   // CShopCategoryTable::SortTabInfo
 
 // File a user report about the seller from the market (data: report id, target id, reason, name).
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ec1340
 void FUN_140ec1340(ASData& data)
 {
@@ -1219,33 +1236,33 @@ void FUN_140ec1340(ASData& data)
     if (pPlayer == 0)
         return;
     Unk_ReportId id;
-    ((Unk_MeratOid*)&id)->FUN_1409c1640(FUN_14016a730(data.FUN_1422b8d30(), 0));
-    __int64 nTarget = FUN_140718350(data.FUN_1422b8d30());
+    ((Unk_MeratOid*)&id)->FUN_1409c1640(FUN_14016a730(static_cast<const CString&>(data.FUN_1422b8d30()), 0));
+    __int64 nTarget = FUN_140718350(static_cast<const CString&>(data.FUN_1422b8d30()));
     CStringW strReason = data.FUN_1422b8f40();
     CStringW strName = data.FUN_1422b8f40();
-    if (FUN_141b70f50(pPlayer->vfunc_77(), strName))
+    if (!FUN_141b70f50(static_cast<const CStringW&>(pPlayer->vfunc_77()), strName))
     {
+        MS2Ptr<CUserReportData> spReport = new CUserReportData(3);
+        spReport->SetField28(3);
+        spReport->m_id.Copy(id);
+        spReport->SetField60(nTarget);
+        spReport->SetField38(strReason);
+        spReport->SetTitle(strName);
+        spReport->SetFieldb0(strName);
+        spReport->SetFieldd8(nTarget);
+        spReport->SetFieldb8(strReason);
+        if (MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)((class Unk_McMarket*)FUN_140939a00()))->FUN_140d57150(*(Unk_MeratProductKey*)&id, 0))
+        {
+            spReport->SetFielda0(*(__int64*)((char*)spProduct.get() + 0x318));
+            spReport->SetFielda8(*(__int64*)((char*)spProduct.get() + 0x320));
+            spReport->SetFieldc0(*(__int64*)((char*)spProduct.get() + 0x350));
+            spReport->SetFieldc8(*(CStringA*)((char*)spProduct.get() + 0x390));
+            spReport->m_n110 = spProduct->m_ugc.IsMusicType();
+        }
+        ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
+    }
+    else
         FUN_141275260(0x8ae, 1, 1);
-        return;
-    }
-    MS2Ptr<CUserReportData> spReport = new CUserReportData(3);
-    spReport->SetField28(3);
-    spReport->m_id.Copy(id);
-    spReport->SetField60(nTarget);
-    spReport->SetField38(strReason);
-    spReport->SetTitle(strName);
-    spReport->SetFieldb0(strName);
-    spReport->SetFieldd8(nTarget);
-    spReport->SetFieldb8(strReason);
-    if (MS2Ptr<CMeratMarketProduct> spProduct = ((CMeratMarketMan*)((class Unk_McMarket*)FUN_140939a00()))->FUN_140d57150(*(Unk_MeratProductKey*)&id, 0))
-    {
-        spReport->SetFielda0(*(__int64*)((char*)spProduct.get() + 0x318));
-        spReport->SetFielda8(*(__int64*)((char*)spProduct.get() + 0x320));
-        spReport->SetFieldc0(*(__int64*)((char*)spProduct.get() + 0x350));
-        spReport->SetFieldc8(*(CStringA*)((char*)spProduct.get() + 0x390));
-        spReport->m_n110 = spProduct->m_ugc.IsMusicType();
-    }
-    ((class IClientPlatform*)FUN_140d86260())->vfunc_48(spReport);
 }
 
 // The item class of an item as a report/category code.
@@ -1352,7 +1369,7 @@ CStringW FUN_140ec2010()
 
 // The product row of the click out data: icon, name and ids.
 // @0x140ec20d0
-int FUN_140ec20d0(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItem> spItem, PC* pPlayer)
+int FUN_140ec20d0(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItem> spItem, PC* pPlayer, __int64 nSeller)
 {
     if (spProduct.get())
     {

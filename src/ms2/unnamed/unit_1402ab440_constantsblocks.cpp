@@ -727,7 +727,7 @@ extern CString s_strEffDummy;               // @0x143ad60b8, "Eff_Dummy" (getexp
 void Common::Constants::vfunc_0()
 {
     ResetAll();
-    LookAtInterval.Define("LookAtInterval", MS2Tick(15000));
+    LookAtInterval.Define("LookAtInterval", 15000);
     LookAtDistanceNPC.Define("LookAtDistanceNPC", 300.0f);
     LookAtDistanceCry.Define("LookAtDistanceCry", 500.0f);
     DamageDistance.Define("DamageDistance", 1500.0f);
@@ -759,10 +759,10 @@ void Common::Constants::vfunc_0()
     SkipFrameGameObject.Define("SkipFrameGameObject", 60.0f);
     SkipFrameDistanceGameObject.Define("SkipFrameDistanceGameObject", 1500.0f);
     PassengerProfileImageSize.Define("PassengerProfileImageSize", 50);
-    PassengerProfileImageLifeTime.Define("PassengerProfileImageLifeTime", MS2Tick(10000));
+    PassengerProfileImageLifeTime.Define("PassengerProfileImageLifeTime", 10000);
     PassengerProfileImageShowNumber.Define("PassengerProfileImageShowNumber", 3);
-    PassengerProfileImageShowCooldown.Define("PassengerProfileImageShowCooldown", MS2Tick(300000));
-    PassengerProfileImageShowCooldownParty.Define("PassengerProfileImageShowCooldownParty", MS2Tick(600000));
+    PassengerProfileImageShowCooldown.Define("PassengerProfileImageShowCooldown", 300000);
+    PassengerProfileImageShowCooldownParty.Define("PassengerProfileImageShowCooldownParty", 600000);
     PassengerProfileImageShowRange.Define("PassengerProfileImageShowRange", 750);
     UGCCameraDefaultSize.Define("UGCCameraDefaultSize", 320);
     UGCCameraMinSize.Define("UGCCameraMinSize", 160);
@@ -932,24 +932,16 @@ void Common::Constants::vfunc_0()
     UGCShopSellMinPrice.Define("UGCShopSellMinPrice", 10);
     UGCShopSellMaxPrice.Define("UGCShopSellMaxPrice", 50000);
     // clamp: min price >= 0, max price >= min price
-    int minPrice = UGCShopSellMinPrice.Read();
-    int minClamped = minPrice < 0 ? 0 : UGCShopSellMinPrice.Read();
-    UGCShopSellMinPrice.Set(minClamped);
-    int minNow = UGCShopSellMinPrice.Read();
-    int maxClamped = UGCShopSellMaxPrice.Read() < minNow ? UGCShopSellMinPrice.Read() : UGCShopSellMaxPrice.Read();
-    UGCShopSellMaxPrice.Set(maxClamped);
+    UGCShopSellMinPrice.Set(UGCShopSellMinPrice.Read() < 0 ? 0 : UGCShopSellMinPrice.Read());
+    UGCShopSellMaxPrice.Set(UGCShopSellMinPrice.Read() > UGCShopSellMaxPrice.Read() ? UGCShopSellMinPrice.Read() : UGCShopSellMaxPrice.Read());
     UGCShopAdHour.Define("UGCShopAdHour", 72);
     UGCShopAdFeeMerat.Define("UGCShopAdFeeMerat", 100);
     UGCShopSaleDay.Define("UGCShopSaleDay", 30);
     UGCShopSellingRestrictAmount.Define("UGCShopSellingRestrictAmount", 100000);
     BlackMarketSellMinPrice.Define("BlackMarketSellMinPrice", 10);
     BlackMarketSellMaxPrice.Define("BlackMarketSellMaxPrice", 9900000000LL);
-    __int64 sellMin = BlackMarketSellMinPrice.Read();
-    __int64 sellMinClamped = sellMin < 0 ? 0 : BlackMarketSellMinPrice.Read();
-    BlackMarketSellMinPrice.Set(sellMinClamped);
-    __int64 sellMinNow = BlackMarketSellMinPrice.Read();
-    __int64 sellMaxClamped = BlackMarketSellMaxPrice.Read() < sellMinNow ? BlackMarketSellMinPrice.Read() : BlackMarketSellMaxPrice.Read();
-    BlackMarketSellMaxPrice.Set(sellMaxClamped);
+    BlackMarketSellMinPrice.Set(BlackMarketSellMinPrice.Read() < 0 ? 0 : BlackMarketSellMinPrice.Read());
+    BlackMarketSellMaxPrice.Set(BlackMarketSellMinPrice.Read() > BlackMarketSellMaxPrice.Read() ? BlackMarketSellMinPrice.Read() : BlackMarketSellMaxPrice.Read());
     FallMoveSpeed.Define("FallMoveSpeed", 1.0f);
     GuildCreatePrice.Define("GuildCreatePrice", 1000);
     GuildCreateMinLevel.Define("GuildCreateMinLevel", 0);
@@ -957,6 +949,7 @@ void Common::Constants::vfunc_0()
     guildExpMaxCountForPlayTime.Define("guildExpMaxCountForPlayTime", 3);
     guildDonateMeso.Define("guildDonateMeso", 10000);
     guildStorageGiftNeedPeriod.Define("guildStorageGiftNeedPeriod", 7);
+    const int kPvpFFARewardCount = 10;
     PvpFFARewardItem.Define("PvpFFARewardItem", 0);
     PvpFFAAdditionRewardRate.Define("PvpFFAAdditionRewardRate", 0);
     for (int i = 0; i < 10; i++)
@@ -1165,7 +1158,7 @@ void Common::Constants::vfunc_0()
     ConstructExpMaxCount.Define("ConstructExpMaxCount", 100u);
     NurturingEatMaxCount.Define("NurturingEatMaxCount", 6u);
     NurturingPlayMaxCount.Define("NurturingPlayMaxCount", 2u);
-    NurturingQuestTag.Define("NurturingQuestTag", CStringW(L"20180524_RainbowSlime"));
+    NurturingQuestTag.Define("NurturingQuestTag", L"20180524_RainbowSlime");
     NurturingDuration.Define("NurturingDuration", 3000u);
     NurturingInteractionDistance.Define("NurturingInteractionDistance", 150u);
     NurturingEatGrowth.Define("NurturingEatGrowth", 10u);
@@ -1217,8 +1210,7 @@ void Common::Constants::vfunc_0()
     MaidDescLengthMin.Define("MaidDescLengthMin", 1);
     MaidDescLengthMax.Define("MaidDescLengthMax", 16);
     gemPetSkinBaseItemID.Define("gemPetSkinBaseItemID", 70100000u);
-    bool limitMeratRevivalDefault = false;
-    GetOr("LimitMeratRevival", &LimitMeratRevival, &limitMeratRevivalDefault);
+    GetOr("LimitMeratRevival", &LimitMeratRevival, false);
     GetOr("MaxClosetMaxCount", &MaxClosetMaxCount, 5);
     GetOr("MaxClosetTabNameLength", &MaxClosetTabNameLength, 10);
     GetOr("SummonPetSkillID", &SummonPetSkillID, 82100001);
@@ -1249,8 +1241,7 @@ void Common::Constants::vfunc_0()
     PvpOnePunchRewardItem.Define("PvpOnePunchRewardItem", 0);
     for (int i = 0; i < 10; i++)
     {
-        CString key = StringFormat("PvpOnePunchReward{0}Count", i + 1);
-        PvpOnePunchRewardCount[i].Define(key, 0);
+        PvpOnePunchRewardCount[i].Define(StringFormat("PvpOnePunchReward{0}Count", i + 1), 0);
     }
     PvpOnePunchScoreNpcKill.Define("PvpOnePunchScoreNpcKill", -7);
     BothHandGearScorePenaltyDiv.Define("BothHandGearScorePenaltyDiv", 4.0f);
@@ -1297,15 +1288,6 @@ bool Common::Constants::GetOr(const CString& key, CStringW* out, const CStringW&
 // ---- constants.xml loader -----------------------------------------------------------------------------------------
 // Unrecovered xml helpers (the same ones the table units use).
 class Unk_ConstXmlNode { public: Unk_ConstXmlNode* FUN_140165cf0(const char* name); };
-class Unk_ConstXmlList
-{
-public:
-    void FUN_140163e20();                                       // ctor
-    void FUN_1401644e0();                                       // dtor
-    unsigned __int64 FUN_14016d900();                           // size
-    Unk_ConstXmlNode*& FUN_140164a30(unsigned __int64 n);       // operator[]
-    void *m_a, *m_b, *m_c;
-};
 class Unk_ConstFileSystem : public CFileSystem
 {
 };
@@ -1324,83 +1306,63 @@ struct Unk_ConstFile
     CString path;
     bool required;
     // @0x1402bac00
-    Unk_ConstFile(CString& p, const bool& r) : path(std::forward<CString>(p)), required(std::forward<const bool&>(r)) {}
+    Unk_ConstFile(CString&& p, const bool& r) : path(std::forward<CString>(p)), required(std::forward<const bool&>(r)) {}
 };
 
 // @0x1402b2010
-// MS2-FUNCTIONAL: the exe copies the path-helper result and files[i] through an extra temporary (reads required via the copy); no source form found
 bool Common::Constants::LoadFiles()
 {
     values.RemoveAll();
     ATL::CAtlArray<Unk_ConstFile> files;
-    {
-        bool required = true;
-        CString file("constants.xml");
-        CString dir("Table");
-        CString path = FUN_14071a5b0(dir, file);
-        files.Add(Unk_ConstFile(path, required));
-    }
-    {
-        bool required = true;
-        CString file("colorConstants.xml");
-        CString dir("Table");
-        CString path = FUN_14071a5b0(dir, file);
-        files.Add(Unk_ConstFile(path, required));
-    }
+    files.Add(Unk_ConstFile(FUN_14071a5b0("Table", "constants.xml"), true));
+    files.Add(Unk_ConstFile(FUN_14071a5b0("Table", "colorConstants.xml"), true));
     if (!reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_140398190())
     {
-        bool required = false;
-        CString file("testConstants.xml");
-        CString path = FUN_14071a6f0(file);
-        files.Add(Unk_ConstFile(path, required));
+        files.Add(Unk_ConstFile(FUN_14071a6f0("testConstants.xml"), false));
     }
     cacheRefs.RemoveAll();
     for (size_t i = 0; i < files.GetCount(); i++)
     {
         Unk_ConstFile& entry = files[i];
+        const CString& filePath = entry.path;
         bool required = entry.required;
         TiXmlDocument doc;
-        const char* path = entry.path;
-        if (reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_1403974b0(&doc, path, 0, true, false) == 0)
+        if (reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_1403974b0(&doc, filePath, 0, true, false) == 0)
         {
             if (required)
             {
-                Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
+                Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", filePath);
                 return false;
             }
             continue;
         }
         {
-            CCacheData* cacheData = new CCacheData();
-            Unk_ConstCacheRef ref(cacheData);
-            if (ref.get() != 0)
+            Unk_ConstCacheRef ref(new CCacheData());
+            if (ref.get())
             {
-                ref.get()->FUN_1401d1160(CString(entry.path));
+                ref->FUN_1401d1160(CString(filePath));
                 cacheRefs.Add(ref);
             }
         }
         Unk_ConstXmlNode* root = ((class Unk_ConstXmlNode*)((class Unk_XmlNode*)(reinterpret_cast<Unk_ConstXmlNode*>(&doc)))->FirstChild("ms2"));
         if (root == 0)
         {
-            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", entry.path);
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", filePath);
             return false;
         }
-        Unk_ConstXmlList list;
-        list.FUN_140163e20();
-        FUN_14028faa0((struct Unk_XmlElement*)(root), "v", "key", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&list));
-        for (unsigned __int64 n = 0; n < list.FUN_14016d900(); n++)
+        std::vector<struct Unk_XmlElement*> list;
+        FUN_14028faa0((struct Unk_XmlElement*)(root), "v", "key", list);
+        for (unsigned __int64 n = 0; n < list.size(); n++)
         {
-            Unk_ConstXmlNode* node = list.FUN_140164a30(n);
-            if (node != 0)
-            {
-                CString key;
-                CString value;
-                XmlGetAttr((class TiXmlElement*)(node), "key", key);
-                XmlGetAttr((class TiXmlElement*)(node), "value", value);
-                values.SetAt(key, value);
-            }
+            Unk_ConstXmlNode* node = (Unk_ConstXmlNode*)list[n];
+            if (node == 0)
+                continue;
+            CString key;
+            CString value;
+            XmlGetAttr((class TiXmlElement*)(node), "key", key);
+            XmlGetAttr((class TiXmlElement*)(node), "value", value);
+            values.SetAt(key, value);
         }
-        list.FUN_1401644e0();
     }
     return true;
 }
@@ -1591,8 +1553,8 @@ void Client::Constants::vfunc_0()
     RegionServerUrl_bpo.Define("RegionServerUrl_bpo", "");
     GetOr("TooltipLabelMaxWidth", &TooltipLabelMaxWidth, 0);
     GamePadStickMoveValue.Define("GamePadStickMoveValue", 50);
-    GetOr(CString("RpgModeMoviePath"), &RpgModeMoviePath, CStringW(L""));
-    GetOr(CString("RoyaleModeMoviePath"), &RoyaleModeMoviePath, CStringW(L""));
+    GetOr("RpgModeMoviePath", &RpgModeMoviePath, L"");
+    GetOr("RoyaleModeMoviePath", &RoyaleModeMoviePath, L"");
     HighlightMenuUsingLevel.Define("HighlightMenuUsingLevel", 1u);
     MouseInteractLimitDistance.Define("MouseInteractLimitDistance", 2000u);
     GetOr("PartyVoteReadyTagExpireSeconds", &PartyVoteReadyTagExpireSeconds, 10);
@@ -1624,3 +1586,4 @@ template size_t ATL::CAtlArray<unsigned long, ATL::CElementTraits<unsigned long>
 
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a590-0x142c9a5b0 .text$yd
+// MS2-PIN: ?get@Unk_ConstCacheRef@@QEBAPEAVCCacheData@@XZ 0x1402be5b0 ; manual: LoadFiles

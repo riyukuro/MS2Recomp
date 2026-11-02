@@ -60,14 +60,12 @@ public:
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 class CEquipment { public: float GetAbilityRate(SAType eType); };   // C3: the real member (0x1411e1110, a special ability rate)
 
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 // The trade slot bags (trademanagerex_2.cpp) and the registry of bound slot bags.
 void FUN_14185e850(const CString& strName, int nCount, bool bMine);
 void FUN_14185e920(const CString& strName);
 TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
-TradeSlot* FUN_14140e720(DragSlot* p);                         // the trade slot behind a drag source (null: not one)
 
 // The meso limits and the trade checks.
 __int64 FUN_14087d0c0();                                       // the smallest meso offer
@@ -106,7 +104,6 @@ public:
 // The meso the player owns, the zero offset and the trade table.
 extern __int64 DAT_143ab2898;
 struct Unk_TdXY { float x, y; };                                // dialog offset
-extern Unk_TdXY DAT_143b02320;                                  // zero offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_TdXY offLeft, Unk_TdXY offRight);
 
 // ---- statics of the unit's header (the sort name list, skill, stun, a condition object) and the trade sounds ----
@@ -199,7 +196,7 @@ void UITradeDialogEx::vfunc_66()
         }
         else
         {
-            FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
+            FUN_141275c30(this, pInv, reinterpret_cast<const Unk_TdXY&>(efd::Point2::ZERO), reinterpret_cast<const Unk_TdXY&>(efd::Point2::ZERO));
         }
     }
 }
@@ -221,7 +218,7 @@ void UITradeDialogEx::vfunc_79(void* p)
 // @0x141b27580
 void UITradeDialogEx::FUN_141b27580()
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == (AScript*)0)
         return;
     m_uidTarget = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c10();
     m_strTargetName = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c20();
@@ -319,13 +316,13 @@ void UITradeDialogEx::FUN_141b27d90(__int64 nMeso)
 // @0x141b27de0
 void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == (AScript*)0)
         return;
     CString strBagId = nSide ? m_strMyBagId : m_strTargetBagId;
     TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strBagId));
     if (pBag != 0)
     {
-        efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
+        efd::SmartPointer<TradeSlot> spSlot(efd::DynamicCast<TradeSlot>(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
         if (spSlot == 0)
             return;
         spSlot->SetItem(spItem);
@@ -336,13 +333,13 @@ void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
 // @0x141b27fa0
 void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == (AScript*)0)
         return;
     CString strBagId = nSide ? m_strMyBagId : m_strTargetBagId;
     TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strBagId));
     if (pBag != 0)
     {
-        efd::SmartPointer<TradeSlot> spSlot(FUN_14140e720(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
+        efd::SmartPointer<TradeSlot> spSlot(efd::DynamicCast<TradeSlot>(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
         if (spSlot == 0)
             return;
         spSlot->SetItem(MS2Ptr<CItem>(0));
@@ -353,12 +350,12 @@ void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
 // @0x141b28130
 void UITradeDialogEx::FUN_141b28130(int nSide, __int64 nMeso)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == (AScript*)0)
         return;
     MS2Ptr<ASTextInput> spInput = nSide == 1 ? m_spMyInput : m_spTargetInput;
     if (spInput == 0)
         return;
-    spInput->FUN_1422e0ab0(FUN_1409404f0(nMeso));
+    spInput->SetTextW(FUN_1409404f0(nMeso));
     spInput->vfunc_24(1);
     FUN_141b28f40(nMeso, nSide == 1);
 }
@@ -396,7 +393,7 @@ int UITradeDialogEx::FUN_141b283f0(int* pnSlot)
 // @0x141b28440
 void UITradeDialogEx::vfunc_oa0_11(void* a1)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == (AScript*)0)
         return;
     __int64 nMeso = TSingleton<CTradeManagerEx>::GetInstance()->GetUidLastSent() + DAT_143ab2898;
     FUN_141b27d90(nMeso);
@@ -408,7 +405,7 @@ void UITradeDialogEx::FUN_141b284b0()
     FUN_141b27d90(DAT_143ab2898);
     if ((m_spMyInput = TD_ROOT->FUN_140bbe880<ASTextInput>("m_myInputMeso")).get())
     {
-        m_spMyInput->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b291a0));
+        m_spMyInput->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b291a0));
         if ((m_spMyInputText = m_spMyInput->GetTextField()).get())
         {
             __int64 nMax = FUN_14087d0f0();
@@ -430,10 +427,10 @@ void UITradeDialogEx::FUN_141b284b0()
     {
         m_spMyMeso->vfunc_4(false);
         float fMyY = m_spMyMeso->FUN_1422c1110();
-        m_spMyFee->FUN_1422c05a0(fMyY);
+        m_spMyFee->SetYFloat(fMyY);
         m_spTargetMeso->vfunc_4(false);
         float fTargetY = m_spTargetMeso->FUN_1422c1110();
-        m_spTargetFee->FUN_1422c05a0(fTargetY);
+        m_spTargetFee->SetYFloat(fTargetY);
     }
     int nFeePercent = Client::Constants::GetInstance()->TradeFeePercent.Read();
     CStringW strNotice = FUN_14028dfa0<int>(CStringW(L"s_trade_notice_fee"), nFeePercent);
@@ -504,7 +501,7 @@ void UITradeDialogEx::FUN_141b291a0(const Scaleform::GFx::FunctionHandler::Param
     if (m_nMyMeso < nMeso)
     {
         nMeso = m_nMyMeso;
-        input.FUN_1422e0ab0(FUN_1409404f0(nMeso));
+        input.SetTextW(FUN_1409404f0(nMeso));
     }
     FUN_141b28f40(nMeso, true);
 }
@@ -532,7 +529,7 @@ void UITradeDialogEx::FUN_141b29330(const Scaleform::GFx::FunctionHandler::Param
 // @0x141b294f0
 void UITradeDialogEx::FUN_141b294f0(__int64 nMeso)
 {
-    m_spMyInput->FUN_1422e0ab0(FUN_1409404f0(nMeso));
+    m_spMyInput->SetTextW(FUN_1409404f0(nMeso));
     m_spMyInput->vfunc_24(1);
     FUN_141b28f40(nMeso, true);
 }
@@ -564,7 +561,7 @@ bool UITradeDialogEx::FUN_141b295a0(__int64 nMeso)
 // @0x141b297e0
 void UITradeDialogEx::FUN_141b297e0(int nCode)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == (AScript*)0)
         return;
     if (nCode == 0xe || nCode == 0xd || nCode == 0x11 || nCode == 0x12 || nCode == 0x13)
         FUN_141b294f0(0);

@@ -146,7 +146,7 @@ void UISwfEntityManager::FUN_1422d1180()
 MS2_REPLACE_METHOD(0x1422D1180, UISwfEntityManager, FUN_1422d1180, 137, 0x76CDEFD4);
 
 // @0x1422d1210
-CString UISwfEntityManager::FUN_1422d1210(int nGroup, CString& strKey, const CString& strPath, int a1, int a2)
+CString UISwfEntityManager::PreloadSwf(int nGroup, CString& strKey, const CString& strPath, int a1, int a2)
 {
     if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6ac0(strKey, strPath, a2 == 0))
     {
@@ -157,7 +157,7 @@ CString UISwfEntityManager::FUN_1422d1210(int nGroup, CString& strKey, const CSt
     }
     return s_strNoSwfKey;
 }
-MS2_REPLACE_METHOD(0x1422D1210, UISwfEntityManager, FUN_1422d1210, 256, 0x9D665494);
+MS2_REPLACE_METHOD(0x1422D1210, UISwfEntityManager, PreloadSwf, 256, 0x9D665494);
 
 // @0x1422d1320
 CString UISwfEntityManager::FUN_1422d1320(int nGroup, CString& strKey, const CString& strPath, int a1, int a2,
@@ -206,7 +206,7 @@ MS2_REPLACE_METHOD(0x1422D1320, UISwfEntityManager, FUN_1422d1320, 917, 0x207A48
 // @0x1422d16c0
 CString UISwfEntityManager::FUN_1422d16c0(int nGroup, CString& strKey, const CString& strPath, int a1)
 {
-    FUN_1422d1210(nGroup, strKey, strPath, a1, 0);
+    PreloadSwf(nGroup, strKey, strPath, a1, 0);
     return FUN_1422d1320(nGroup, strKey, strPath, a1, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x1422D16C0, UISwfEntityManager, FUN_1422d16c0, 207, 0x424D9D96);
@@ -237,7 +237,7 @@ CString UISwfEntityManager::FUN_1422d17a0(int nGroup, CString strKey, int n)
 MS2_REPLACE_METHOD(0x1422D17A0, UISwfEntityManager, FUN_1422d17a0, 540, 0x7FF69715);
 
 // @0x1422d19d0
-void UISwfEntityManager::FUN_1422d19d0(const CString& strClass)
+void UISwfEntityManager::RemoveEntitiesByTypeName(const CString& strClass)
 {
     POSITION pos = m_listEntities.GetHeadPosition();
     int bFound = 0;
@@ -267,7 +267,7 @@ void UISwfEntityManager::FUN_1422d19d0(const CString& strClass)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422D19D0, UISwfEntityManager, FUN_1422d19d0, 325, 0x651775BB);
+MS2_REPLACE_METHOD(0x1422D19D0, UISwfEntityManager, RemoveEntitiesByTypeName, 325, 0x651775BB);
 
 // @0x1422d1b20
 void UISwfEntityManager::FUN_1422d1b20(int nGroup, const CString& strKey, int n)
@@ -298,7 +298,7 @@ int UISwfEntityManager::FUN_1422d1c20()
     if (m_pfnInputTaken && m_pfnInputTaken())
         return 1;
     int bTextInput = FUN_14025e7a0()->IsTextFieldFocused(2);
-    int bInput = FUN_14025e7a0()->FUN_1422af7a0(2);
+    int bInput = FUN_14025e7a0()->UpdateJapaneseImeComposition(2);
     for (int i = 0; i < 5; i++)
     {
         POSITION pos = m_listLayers[i].GetTailPosition();
@@ -360,7 +360,7 @@ MS2_REPLACE_METHOD(0x1422D1C20, UISwfEntityManager, FUN_1422d1c20, 1009, 0xD9E90
 // @0x1422d2020
 void UISwfEntityManager::FUN_1422d2020()
 {
-    FUN_1422d2250();
+    FlushUnloading();
     POSITION pos = m_listLoaded.GetHeadPosition();
     while (pos)
     {
@@ -396,7 +396,7 @@ void UISwfEntityManager::FUN_1422d21b0()
 MS2_REPLACE_METHOD(0x1422D21B0, UISwfEntityManager, FUN_1422d21b0, 146, 0xA6AFA4D9);
 
 // @0x1422d2250
-void UISwfEntityManager::FUN_1422d2250()
+void UISwfEntityManager::FlushUnloading()
 {
     if (m_mapUnloading.IsEmpty())
         return;
@@ -407,7 +407,7 @@ void UISwfEntityManager::FUN_1422d2250()
     }
     m_mapUnloading.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x1422D2250, UISwfEntityManager, FUN_1422d2250, 218, 0x800210E7);
+MS2_REPLACE_METHOD(0x1422D2250, UISwfEntityManager, FlushUnloading, 218, 0x800210E7);
 
 // @0x1422d2330
 void UISwfEntityManager::vfunc_1()
@@ -766,22 +766,22 @@ void UISwfEntityManager::RemoveFromLayer(UISwfEntity* p, int nLayer)
 MS2_REPLACE_METHOD(0x1422D4840, UISwfEntityManager, RemoveFromLayer, 163, 0x5D4CCB87);
 
 // @0x1422d48f0
-void UISwfEntityManager::FUN_1422d48f0(UISwfEntity* p, int nLayer)
+void UISwfEntityManager::BringToFront(UISwfEntity* p, int nLayer)
 {
     POSITION pos = m_listLayers[nLayer].Find(p);
     if (pos)
         m_listLayers[nLayer].MoveToTail(pos);
 }
-MS2_REPLACE_METHOD(0x1422D48F0, UISwfEntityManager, FUN_1422d48f0, 135, 0x87E6EA4C);
+MS2_REPLACE_METHOD(0x1422D48F0, UISwfEntityManager, BringToFront, 135, 0x87E6EA4C);
 
 // @0x1422d4980
-UISwfEntity* UISwfEntityManager::FUN_1422d4980(int nLayer)
+UISwfEntity* UISwfEntityManager::GetTopEntity(int nLayer)
 {
     if (m_listLayers[nLayer].IsEmpty())
         return 0;
     return m_listLayers[nLayer].GetTail();
 }
-MS2_REPLACE_METHOD(0x1422D4980, UISwfEntityManager, FUN_1422d4980, 97, 0xFA6B2D4F);
+MS2_REPLACE_METHOD(0x1422D4980, UISwfEntityManager, GetTopEntity, 97, 0xFA6B2D4F);
 
 // @0x1422d49f0
 void UISwfEntityManager::FUN_1422d49f0()

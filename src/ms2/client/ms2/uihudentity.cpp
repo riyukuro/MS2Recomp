@@ -36,7 +36,7 @@ public:
 struct Unk_HudPoint3 { Unk_HudPoint3(); float x, y, z; };
 class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
-void* FUN_140af8310(Unk_HudSub* p);
+class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
 int FUN_141277f40();                                    // next UI layer
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
@@ -341,7 +341,7 @@ void UIHudEntity::FUN_140f49740()
 // @0x140f49890
 int UIHudEntity::FUN_140f49890(int nActorId)
 {
-    if (reinterpret_cast<efd::ServiceManager*>(FUN_140af8310(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub))->GetShutdown())
+    if (reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub)->FUN_140af8310()->GetShutdown())
         return 1;
     Unk_HudActor* pActor = reinterpret_cast<Unk_HudActor*>(WorldService::GetInstance()->FUN_141bd1200(nActorId));
     if (pActor == 0)

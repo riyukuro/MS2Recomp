@@ -154,7 +154,7 @@ public:
     virtual void vfunc_24(int) { m_unk_40 = 0; }            // 24 (inline)
 
     // non-virtual members used by other units (placeholder mypc.h)
-    void FUN_14152a4a0(PCBase* pTarget);                    // observe pTarget
+    void StartObserving(PCBase* pTarget);                    // observe pTarget
     void FUN_14152a960();                                   // stop observing
     void FocusConstructionGuideCamera(PCBase* pTarget);                     // point the construction guide camera at pTarget
     void FUN_14152a700(PCBase* pTarget);                     // fly the camera to the construction guide pTarget

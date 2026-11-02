@@ -75,8 +75,8 @@ public:
     // @0x1413886e0
     static eUIClassID GetUIClassID() { return (eUIClassID)0x4e29; }
     void FUN_141a3ad80(bool bMaximized);
-    void FUN_141a3abd0();                                   // restore
-    void FUN_141a3aca0();                                   // maximize
+    void OnTabKeyUp();                                   // restore
+    void OnTabKeyDown();                                   // maximize
 };
 
 // The side popup talk window (ui class 0x4f57).
@@ -319,12 +319,12 @@ void CGuideActionMinimapMaximize::vfunc_3()
         if (m_isOn != 0)
         {
             pDialog->FUN_141a3ad80(true);
-            pDialog->FUN_141a3aca0();
+            pDialog->OnTabKeyDown();
         }
         else
         {
             pDialog->FUN_141a3ad80(false);
-            pDialog->FUN_141a3abd0();
+            pDialog->OnTabKeyUp();
         }
     }
 }
@@ -816,7 +816,7 @@ void CGuideActionUIArrow::vfunc_4()
     if (m_isNotClose != 0)
         return;
     if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195a0c0(m_entityId);
+        pEvent->ReleaseArrow(m_entityId);
 }
 MS2_REPLACE_METHOD(0x1413847F0, CGuideActionUIArrow, vfunc_4, 87, 0x06DC8ADB);
 
@@ -841,7 +841,7 @@ void CGuideActionUITextTip::vfunc_3()
     if (!FUN_141384200())
         return;
     if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195b330(m_entityId, m_textId);
+        pEvent->QueueOrShowTextTip(m_entityId, m_textId);
 }
 MS2_REPLACE_METHOD(0x141384900, CGuideActionUITextTip, vfunc_3, 83, 0x64D30544);
 
@@ -853,7 +853,7 @@ void CGuideActionUITextTip::vfunc_4()
     if (m_isNotClose != 0)
         return;
     if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195b600(m_entityId);
+        pEvent->AdvanceTextTip(m_entityId);
 }
 MS2_REPLACE_METHOD(0x141384960, CGuideActionUITextTip, vfunc_4, 87, 0x053CEE13);
 
@@ -946,7 +946,7 @@ void CGuideActionUIArrowClose::vfunc_3()
     if (m_isAtOpen != 0)
     {
         if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-            pEvent->FUN_14195a0c0(m_entityId);
+            pEvent->ReleaseArrow(m_entityId);
     }
 }
 MS2_REPLACE_METHOD(0x141384F00, CGuideActionUIArrowClose, vfunc_3, 66, 0xAE2972A5);
@@ -957,7 +957,7 @@ void CGuideActionUIArrowClose::vfunc_4()
     if (m_isAtOpen == 0)
     {
         if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-            pEvent->FUN_14195a0c0(m_entityId);
+            pEvent->ReleaseArrow(m_entityId);
     }
 }
 MS2_REPLACE_METHOD(0x141384F50, CGuideActionUIArrowClose, vfunc_4, 66, 0xD424E1C8);
@@ -1148,7 +1148,7 @@ void CGuideActionSequenceCamera::vfunc_3()
             CStringW strKey = GetStringCommon(0x666);
             if (*reinterpret_cast<const unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
                 strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(0x49409, 2);
-            pCinematic->FUN_141907f80(3, strEmpty);
+            pCinematic->StartCinematic(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
                 Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::FUN_141385ba0));

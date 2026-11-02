@@ -39,9 +39,9 @@ class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class CKeyTable   // C3: member view for the former free stand-ins
 {
 public:
-    int GetLocked();
+    int GetLocked(); int FUN_1414297e0(const CString& strPath, int n);
 };
-void FUN_1414297e0(Unk_KsKeyBinds* p, const CString& strXml, int n);    // load the key xml
+
 
 class Unk_KsInputState                                                  // singleton at FUN_1409a8b10
 {
@@ -106,12 +106,12 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
     int nButton = FUN_140bd09c0(((Unk_KsParams*)&params)->m_pButton);
     if (nButton == 2)
     {
-        FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
+        ((class CKeyTable*)FUN_1409331f0())->FUN_1414297e0("./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
         FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), true);
     }
     else
     {
-        FUN_1414297e0(((class Unk_KsKeyBinds*)FUN_1409331f0()), "./Data/Xml/Table/default/DefaultKey.xml", 0);
+        ((class CKeyTable*)FUN_1409331f0())->FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
         FUN_14125bd20((struct Unk_InterfaceFlag*)(FUN_140c58ac0(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance()))), false);
     }
     ((class CGameOption*)(class Unk_KsInputState*)(((class Unk_KsInputState*)TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();

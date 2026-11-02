@@ -74,8 +74,6 @@ StateStun::~StateStun()
 }
 
 // @0x1417f6870
-// MS2-FUNCTIONAL: case 0x46 binds the returned name CString through an extra rax copy (mov [t],rax; mov rax,[t]) where
-// our const-ref gives lea; named, static_cast, && and CSimpleStringT spellings don't reproduce it (same in EndOfSequence)
 void StateStun::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -104,9 +102,7 @@ void StateStun::vfunc_4(StateData* pData)
     }
     else if (m_n10 == 0x46)
     {
-        const CString& strAnim = m_pOwner->FUN_1416749a0()->GetStunAnimation();
-        efd::utf8string kName((LPCSTR)strAnim);
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20((LPCSTR)m_pOwner->FUN_1416749a0()->GetStunAnimation(), 1.0f, false, false);
     }
     else if (m_pAnims != 0)
     {
@@ -163,7 +159,6 @@ void StateStun::vfunc_3(double fTime)
 }
 
 // @0x1417f6e60
-// MS2-FUNCTIONAL: case 0x46 keeps the returned name CString in an extra stack slot in the exe (same as vfunc_4)
 void StateStun::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
@@ -192,9 +187,7 @@ void StateStun::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
         break;
     case 0x46:
         {
-            const CString& strAnim = m_pOwner->FUN_1416749a0()->GetStunAnimation();
-            efd::utf8string kName((LPCSTR)strAnim);
-            m_pOwner->FUN_14166dd20(kName, 1.0f, true, false);
+            m_pOwner->FUN_14166dd20((LPCSTR)m_pOwner->FUN_1416749a0()->GetStunAnimation(), 1.0f, true, false);
         }
         break;
     }

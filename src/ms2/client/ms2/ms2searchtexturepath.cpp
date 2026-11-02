@@ -26,7 +26,7 @@ MS2_REPLACE(0x141508060, FUN_141508060, 106, 0xD2A657AB);
 // @0x1415080d0
 void MS2SearchTexturePath::Reset()
 {
-    Unk_STPBase::Reset();
+    NiTextureSearchPath::Reset();
     m_bQueried = false;
 }
 
@@ -42,7 +42,7 @@ bool MS2SearchTexturePath::GetNextSearchPath(char* pcPath, unsigned int uiString
             return reinterpret_cast<CFileSystem*>(FUN_140166420())->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
         }
     } else {
-        return Unk_STPBase::GetNextSearchPath(pcPath, uiStringLen);
+        return NiTextureSearchPath::GetNextSearchPath(pcPath, uiStringLen);
     }
     return false;
 }

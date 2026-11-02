@@ -99,7 +99,7 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
     {
         if (i >= aItems.GetCount())
         {
-            list.FUN_1422bc050(ASObj(2).FUN_1422bb890());
+            list.PushValue(ASObj(2).FUN_1422bb890());
             continue;
         }
         MS2Ptr<CItem> spItem = aItems[i];
@@ -115,7 +115,7 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
         entry.FUN_1407cba60("bindID", strBind);
         if (nItemId == pPlayer->FUN_1416639e0())
             entry.FUN_1407cbbe0("select", true);
-        list.FUN_1422bc050(entry.FUN_1422bb890());
+        list.PushValue(entry.FUN_1422bb890());
         m_slotItems.SetAt((unsigned)i, nItemId);
     }
     m_list->Invoke("resetRenderer");

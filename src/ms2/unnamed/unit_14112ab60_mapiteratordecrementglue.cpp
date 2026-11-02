@@ -179,7 +179,6 @@ struct Unk_DkNearer
 {
     GameObject* m_pPlayer;
     // @0x14112cbc0
-    // MS2-FUNCTIONAL: register allocation of the copied 12-byte points differs
     bool operator()(Unk_EntRef kA, Unk_EntRef kB) const
     {
         NiPoint3 kPlayer = m_pPlayer->vfunc_18();
@@ -188,8 +187,7 @@ struct Unk_DkNearer
         reinterpret_cast<egf::Entity*>(kA.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosA));
         reinterpret_cast<egf::Entity*>(kB.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPosB));
         float fA = FUN_140966f00(kPlayer, kPosA);
-        float fB = FUN_140966f00(kPlayer, kPosB);
-        return fA < fB;
+        return fA < FUN_140966f00(kPlayer, kPosB);
     }
 };
 bool Unk_DkNearerAnchor(GameObject* pPlayer, Unk_EntRef kA, Unk_EntRef kB)

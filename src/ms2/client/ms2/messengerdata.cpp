@@ -161,8 +161,7 @@ class Unk_MdPlayers { public: };
 
 // Source records of the chat entries (partial layouts: only what the entry builders read).
 class Unk_MdName { };   // a name box (an Unk_UserProxy view)
-class Unk_MdSrcA : public CBuddy { public: const CString& FUN_1401cc530();
-                   int FUN_1401cc210();};
+class Unk_MdSrcA : public CBuddy { public: const CString& FUN_1401cc530();};
 class Unk_MdSrcB
 {
 public:
@@ -203,7 +202,7 @@ public:
 class Unk_MdClassTable { public: };
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // the local file of an image
 struct Unk_MdTime { unsigned short m_nTime; unsigned short m_pad; };
-CStringW FUN_140c348b0(int chSep, const void* pTime, const CStringW& strText);   // "<time> <text>"
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_140a228f0(int chSep, const void* pTime, const CStringW& strText);   // same, for the other source
 
 struct Unk_MdEntry
@@ -890,7 +889,7 @@ Unk_MdEntry::Unk_MdEntry(__int64 nId)
     m_strImage = (const char*)FUN_141028be0(reinterpret_cast<PC*>(pPlayer)->FUN_141656a80(), reinterpret_cast<PC*>(pPlayer)->FUN_1416612e0(), 1, "");
     m_strName = pPlayer->vfunc_77();
     unsigned short nLevel = pPlayer->vfunc_78();
-    m_strInfo = FUN_140c348b0(0x20, &nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->FUN_141654730()));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, reinterpret_cast<PC*>(pPlayer)->FUN_141654730()));
 }
 
 // @0x141483300
@@ -911,7 +910,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_time[0], TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
 // @0x141483830
@@ -921,7 +920,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca980(), 1, "");
     m_strName = reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca890();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.m_nClass)));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_time[0], TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.m_nClass)));
 }
 
 // @0x141483af0
@@ -931,7 +930,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_time[0], TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
 // @0x141483d80

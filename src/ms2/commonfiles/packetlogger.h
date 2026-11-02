@@ -3,13 +3,8 @@
 #include <atlcoll.h>
 #include <atlfile.h>
 #include "ms2/placeholder/cptred.h"
-struct Unk_PacketLogLock {
-    Unk_PacketLogLock(); ~Unk_PacketLogLock();
-    void* m_vfptr; CRITICAL_SECTION m_section;
-};
-MS2_CHECK_SIZE(Unk_PacketLogLock,0x30);
-struct Unk_PacketLogTimer { Unk_PacketLogTimer(); int FUN_140268870(unsigned);unsigned tick,extra; };
-MS2_CHECK_SIZE(Unk_PacketLogTimer,8);
+#include "ms2/placeholder/clockcriticalsection.h"
+#include "ms2/placeholder/intervaltimer.h"
 struct Unk_LogInPacket {
     int GetLength() const { return length; }
     int GetSequence() const { return sequence; }
@@ -43,12 +38,12 @@ public:
     void Write(const CString&,const CString&);
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_PacketLogLock m_lock;
+    CLockCriticalSection m_lock;
     bool m_client,m_enabled;
     ATL::CAtlFile m_file;
     ATL::CRBMap<int,CString> m_sendNames,m_receiveNames;
     unsigned m_lastSend,m_lastReceive;
-    Unk_PacketLogTimer m_timer;
+    Unk_IntervalTimer m_timer;
     float m_sendRate; int m_sendBytes;
     float m_receiveRate; int m_receiveBytes;
 };

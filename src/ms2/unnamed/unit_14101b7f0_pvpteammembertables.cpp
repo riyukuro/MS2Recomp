@@ -53,8 +53,8 @@ public:
     void FUN_141adc530(int nClass);                                 // open a dialog
 };
 
-CStringW FUN_14052bd00(int nStringId, const CStringW& strName);     // formatted message
-CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);   // formatted message, two arguments
+template <class A> CStringW FormatStringId(int nId, const A& a);     // formatted message
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);   // formatted message, two arguments
 CStringW GetStringCommon(int nStringId);                              // string table text
 void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
 int FUN_141654730(PCBase* pPlayer);                                 // the job of a player
@@ -146,7 +146,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
             strOutcome = GetStringCommon(0xb19);
         else
             return;
-        CStringW strMsg = FUN_140632a60(0xb1a, strKind, strOutcome);
+        CStringW strMsg = FormatStringId<CStringW, CStringW>(0xb1a, strKind, strOutcome);
         FUN_1412751f0(strMsg, 4, 1);
         return;
     }
@@ -167,12 +167,12 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         int nKind = packet.ReadUInt8();
         if (nKind == 1)
         {
-            CStringW strMsg = FUN_14052bd00(0xb1b, strName);
+            CStringW strMsg = FormatStringId<CStringW>(0xb1b, strName);
             FUN_1412751f0(strMsg, 4, 1);
         }
         else if (nKind == 2)
         {
-            CStringW strMsg = FUN_14052bd00(0xb1c, strName);
+            CStringW strMsg = FormatStringId<CStringW>(0xb1c, strName);
             FUN_1412751f0(strMsg, 4, 1);
         }
     }

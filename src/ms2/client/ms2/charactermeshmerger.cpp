@@ -667,9 +667,8 @@ MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
 bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB);   // property states are equal
 
-struct Unk_MaterialTable;                               // DAT_143d69198 (MS2StandardMaterial RTTI)
+class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };
 struct Unk_MaterialEntry;
-extern Unk_MaterialTable DAT_143d69198;
 class Unk_CubeKind   // C3: member view for the former free stand-ins
 {
 public:
@@ -731,16 +730,16 @@ bool FUN_14098dfc0(NiAVObject* pObject);                    // object is an atta
 bool FUN_140a56f50(struct Unk_Vec3Cli const*, struct Unk_Vec3Cli const*);   // C3: was FUN_140a56f50
 extern const NiPixelFormat DAT_1439fb040;                   // atlas pixel format
 extern NiTexture::FormatPrefs DAT_1439fc800;          // atlas texture format preferences
-extern const NiFixedString DAT_143ae50c8;                   // customised texture extra data keys (0x143ae50c8-0x143ae5200)
-extern const NiFixedString DAT_143ae50d0;
-extern const NiFixedString DAT_143ae50d8;
-extern const NiFixedString DAT_143ae50f8;
-extern const NiFixedString DAT_143ae5100;
-extern const NiFixedString DAT_143ae5108;
-extern const NiFixedString DAT_143ae5110;
-extern const NiFixedString DAT_143ae5148;
-extern const NiFixedString DAT_143ae5150;
-extern const NiFixedString DAT_143ae5200;
+extern NiFixedString DAT_143ae50c8;                   // customised texture extra data keys (0x143ae50c8-0x143ae5200)
+extern NiFixedString DAT_143ae50d0;
+extern NiFixedString DAT_143ae50d8;
+extern NiFixedString DAT_143ae50f8;
+extern NiFixedString DAT_143ae5100;
+extern NiFixedString DAT_143ae5108;
+extern NiFixedString DAT_143ae5110;
+extern NiFixedString DAT_143ae5148;
+extern NiFixedString DAT_143ae5150;
+extern NiFixedString DAT_143ae5200;
 
 // Pixel helpers of the atlas packer (texture utility code).
 NiPixelData* DownsamplePixels(NiPixelData* pSource, unsigned int uiStep);
@@ -953,7 +952,7 @@ bool FUN_141049c60(NiMesh* pMesh)
     NiSkinningMeshModifier* pSkin = NiDynamicCast(NiSkinningMeshModifier, pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI));
     if (pSkin == 0)
         return false;
-    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
     if (pEntry == 0)
         return false;
     if (((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() != 2)
@@ -1521,9 +1520,11 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
             iVertexTotal += pMesh->GetVertexCount();
             NiDataStreamRef* pSource = FUN_14104cc20(pMesh);
             if (pSource == 0)
+            {
                 pMesh->GetVertexCount();
-            else
-                kSources.push_back(pSource);
+                continue;
+            }
+            kSources.push_back(pSource);
         }
     }
 
@@ -1547,29 +1548,28 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
     int iDstStride = pMergedRef->GetStride();
     int iVertexBase = 0;
     unsigned char* pDst = (unsigned char*)pMergedRef->GetDataStream()->Lock(10);
-    for (unsigned int uiBucket = 0; uiBucket < kBuckets.size(); uiBucket++)
+    for (size_t uiBucket = 0; uiBucket < kBuckets.size(); uiBucket++)
     {
-        CMM_FOR_EACH(NiMesh* pMesh, kBuckets[uiBucket])
+        const MeshList& kList = kBuckets[uiBucket];
+        CMM_FOR_EACH(NiMesh* pMesh, kList)
         {
             NiTransform kInverseParent;
             NiTransform kParentWorld = pMesh->GetParent()->GetWorldTransform();
             kParentWorld.Invert(kInverseParent);
-            NiTransform kLocalToRoot = pMesh->GetLocalTransform() * kRootTransform;
-            NiTransform kXform = kLocalToRoot * kInverseParent;
+            NiTransform kXform = pMesh->GetLocalTransform() * kRootTransform * kInverseParent;
 
             NiDataStreamRef* pSourceRef = FUN_14104cc20(pMesh);
             unsigned char* pSrc = (unsigned char*)pSourceRef->GetDataStream()->Lock(5);
             int iDstOffset = 0;
             int iSrcStride = pSourceRef->GetStride();
-            for (std::vector<Unk_StreamElementDesc>::const_iterator it = kLayout.begin(), itEnd = kLayout.end(); it != itEnd; ++it)
+            CMM_FOR_EACH(const Unk_StreamElementDesc& kDesc, kLayout)
             {
-                const Unk_StreamElementDesc& kDesc = *it;
                 const NiDataStreamElement& kElement = pSourceRef->FindElementDesc(kDesc.m_kSemantic, kDesc.m_uiIndex);
                 size_t stSize = NiDataStreamElement::SizeOfFormat(kDesc.m_eFormat);
                 if (kElement.IsEqual(NiDataStreamElement::ms_kInvalidElement))
                 {
                     for (unsigned int v = 0; v < pMesh->GetVertexCount(); v++)
-                        memset(pDst + (v + iVertexBase) * iDstStride + iDstOffset, 0, stSize);
+                        memset(pDst + iDstOffset + (v + iVertexBase) * iDstStride, 0, stSize);
                 }
                 else
                 {
@@ -1582,10 +1582,9 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
                         {
                             for (unsigned int c = 0; c < 4; c++)
                             {
-                                unsigned char ucOld = pSrc[c + v * iSrcStride + iSrcOffset];
-                                unsigned char ucMerged = kMeshRemap[ucOld];
+                                unsigned char ucMerged = kMeshRemap[*(pSrc + iSrcOffset + v * iSrcStride + c)];
                                 unsigned char ucBucket = kBucketRemap[ucMerged];
-                                pDst[c + (v + iVertexBase) * iDstStride + iDstOffset] = ucBucket;
+                                *(pDst + iDstOffset + (v + iVertexBase) * iDstStride + c) = ucBucket;
                             }
                         }
                     }
@@ -1593,8 +1592,8 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
                     {
                         for (unsigned int v = 0; v < pMesh->GetVertexCount(); v++)
                         {
-                            NiPoint3* pIn = (NiPoint3*)(pSrc + v * iSrcStride + iSrcOffset);
-                            NiPoint3* pOut = (NiPoint3*)(pDst + (v + iVertexBase) * iDstStride + iDstOffset);
+                            NiPoint3* pIn = (NiPoint3*)(pSrc + iSrcOffset + v * iSrcStride);
+                            NiPoint3* pOut = (NiPoint3*)(pDst + iDstOffset + (v + iVertexBase) * iDstStride);
                             *pOut = kXform * *pIn;
                         }
                     }
@@ -1602,18 +1601,18 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
                     {
                         for (unsigned int v = 0; v < pMesh->GetVertexCount(); v++)
                         {
-                            NiPoint3* pIn = (NiPoint3*)(pSrc + v * iSrcStride + iSrcOffset);
-                            NiPoint3* pOut = (NiPoint3*)(pDst + (v + iVertexBase) * iDstStride + iDstOffset);
+                            NiPoint3* pIn = (NiPoint3*)(pSrc + iSrcOffset + v * iSrcStride);
+                            NiPoint3* pOut = (NiPoint3*)(pDst + iDstOffset + (v + iVertexBase) * iDstStride);
                             *pOut = kXform.m_Rotate * *pIn;
                         }
                     }
                     else
                     {
                         for (unsigned int v = 0; v < pMesh->GetVertexCount(); v++)
-                            NiMemcpy(pDst + (v + iVertexBase) * iDstStride + iDstOffset, pSrc + v * iSrcStride + iSrcOffset, stSize);
+                            NiMemcpy(pDst + iDstOffset + (v + iVertexBase) * iDstStride, pSrc + iSrcOffset + v * iSrcStride, stSize);
                     }
                 }
-                iDstOffset += (int)NiDataStreamElement::SizeOfFormat(kDesc.m_eFormat);
+                iDstOffset += NiDataStreamElement::SizeOfFormat(kDesc.m_eFormat);
             }
             pSourceRef->GetDataStream()->Unlock(5);
             iVertexBase += pMesh->GetVertexCount();
@@ -1627,7 +1626,8 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
     {
         int iCount = 0;
         const MeshList& kList = kBuckets[i];
-        for (unsigned int j = 0; j < kList.size(); j++)
+        unsigned int uiCount = (unsigned int)kList.size();
+        for (unsigned int j = 0; j < uiCount; j++)
             iCount += kList[j]->GetVertexCount();
         NiDataStream::Region kRegion(iStart, iCount);
         if (i == 0)
@@ -1895,7 +1895,7 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
             if (kName.Contains("FA") && kName != "FA_EA")
                 continue;
 
-            Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
+            Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((class NiMaterial*)((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial())));
             if (pEntry == 0)
                 continue;
             if (((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() != 2)

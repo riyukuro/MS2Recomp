@@ -101,10 +101,6 @@ extern int DAT_143af7d58;                                                    // 
 NiRenderer* GetNiRenderer();                                                 // the current NiRenderer
 
 // Debug log (console) of the game.
-class Unk_RsDebugLog : public CCrashManager
-{
-};
-
 // Last renderer creation failure code.
 // @0x1414f0480
 inline int Unk_RsGetFailure() { return DAT_143afa750; }
@@ -326,8 +322,8 @@ void CRenderCallback::Error(const char* pText)
         text.Trim();
         Unk_AdditionalLog(GetLogString(), 1, 0x13, FUN_14016a730(text, 0));
     }
-    if (reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()) != 0) {
-        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Renderer: %s", pText);
+    if (reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance()) != 0) {
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Renderer: %s", pText);
     }
 }
 MS2_REPLACE_METHOD(0x1414EA550, CRenderCallback, Error, 219, 0x9B8E5B6C);
@@ -364,31 +360,25 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
     NiShadowGenerator::ms_pfnStudioForceMaterialNeedsUpdate = (void (*)(NiShadowGenerator*))Unk_RsCollectFade;
     Unk_RsSetHookA(Unk_RsLockHook);
     Unk_RsSetHookB(Unk_RsUnlockHook);
-    ((class CCrashManager*)(class Unk_RsDebugLog*)(reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &MS2RenderService::LogState));
     return result;
 }
 
-// MS2-FUNCTIONAL: 8.6 KB render-state dump; the 86 render-state and 17 texture-stage checks are macro-expanded here, but the exe keeps different temporaries/logging templates per check, so stack layout and unwind states differ.
 // @0x1414ea8b0
 void MS2RenderService::CheckRenderState()
 {
     NiRenderer* pBase = m_spRenderer;
-    if (pBase == 0) {
-        return;
-    }
-    NiDX9Renderer* pRenderer = static_cast<NiDX9Renderer*>(pBase);
-    IDirect3DDevice9* pDevice = pRenderer->GetD3DDevice();
-    NiDX9RenderState* pRenderState = pRenderer->GetRenderState();
-    if (pDevice == 0 || pRenderState == 0) {
-        return;
-    }
+    if (NiDX9Renderer* pRenderer = static_cast<NiDX9Renderer*>(pBase)) {
+        IDirect3DDevice9* pDevice = pRenderer->GetD3DDevice();
+        NiDX9RenderState* pRenderState = pRenderer->GetRenderState();
+    if (pDevice != 0 && pRenderState != 0) {
     DWORD deviceValue = 0;
     unsigned int niValue = 0;
-    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("Check render state Start!!");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("Check render state Start!!");
 #define CHECK_RS(state) \
     niValue = pRenderState->GetRenderState(state); \
     pDevice->GetRenderState(state, &deviceValue); \
-    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CheckRenderState " #state " : Device [%d] NiState[%d]", deviceValue, niValue)
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CheckRenderState " #state " : Device [%d] NiState[%d]", deviceValue, niValue)
         CHECK_RS(D3DRS_ZENABLE);
         CHECK_RS(D3DRS_FILLMODE);
         CHECK_RS(D3DRS_SHADEMODE);
@@ -478,11 +468,11 @@ void MS2RenderService::CheckRenderState()
         CHECK_RS(D3DRS_BLENDOPALPHA);
 #undef CHECK_RS
     for (int stage = 0; stage < 8; stage = stage + 1) {
-        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("TextureStageState %d", stage);
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("TextureStageState %d", stage);
 #define CHECK_TSS(type) \
         niValue = pRenderState->GetTextureStageState(stage, type); \
         pDevice->GetTextureStageState(stage, type, &deviceValue); \
-        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CheckTextureStageState " #type " : Device [%d] NiState[%d]", deviceValue, niValue)
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CheckTextureStageState " #type " : Device [%d] NiState[%d]", deviceValue, niValue)
             CHECK_TSS(D3DTSS_COLOROP);
             CHECK_TSS(D3DTSS_COLORARG1);
             CHECK_TSS(D3DTSS_COLORARG2);
@@ -503,7 +493,9 @@ void MS2RenderService::CheckRenderState()
             CHECK_TSS(D3DTSS_RESULTARG);
 #undef CHECK_TSS
     }
-    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("Check render state End!!");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("Check render state End!!");
+    }
+    }
 }
 
 
@@ -564,7 +556,7 @@ static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, boo
     }
     Unk_RsLog3(GetLogString(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
     if (MessageBoxA(0, text, "Shader error", 4) == 6) {
-        reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("[%x][bRecoverable %d] %s", eErr, (unsigned int)bRecoverable, pcMsg);
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("[%x][bRecoverable %d] %s", eErr, (unsigned int)bRecoverable, pcMsg);
         throw 0xd;
     }
     return 0;
@@ -591,12 +583,11 @@ static void Unk_RsUnlockHook()
 // @0x1414ecf20
 void MS2RenderService::LogState()
 {
-    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- MS2RenderService Log---");
-    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Current Context %x %d", m_pCurrentContext, m_uiCurrentIndex);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- MS2RenderService Log---");
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("Current Context %x %d", m_pCurrentContext, m_uiCurrentIndex);
 }
 MS2_REPLACE_METHOD(0x1414ECF20, MS2RenderService, LogState, 78, 0x102BBE40);
 
-// MS2-FUNCTIONAL: unwind-state boundaries and a few temporaries differ (ip2state offsets are 7 bytes apart after the SmartPointer temporary).
 // @0x1414ecf80
 bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int height)
 {
@@ -630,7 +621,8 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     }
     m_spRenderer = NiBaseRendererSetup::CreateRenderer(&settings, m_parentHandle, m_parentHandle);
     if (settings.m_eRendererID == efd::SystemDesc::RENDERER_DX9) {
-        if (NiDX9Renderer* pDX9Renderer = (NiDX9Renderer*)(NiRenderer*)m_spRenderer) {
+        NiRenderer* pRenderer = m_spRenderer;
+        if (NiDX9Renderer* pDX9Renderer = (NiDX9Renderer*)pRenderer) {
             if (pDX9Renderer->GetVertexShaderVersion() < 0xfffe0300) {
                 Unk_RsSetFailure(0x10);
                 return false;
@@ -648,7 +640,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
                 CStringA driver(FUN_1427cf790(pDX9Renderer));
                 FUN_1401d3700(driver);
                 if (driver == "mctu.dll") {
-                    reinterpret_cast<Unk_RsDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("!!! mctu.dll !!!");
+                    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("!!! mctu.dll !!!");
                 }
             }
             pDX9Renderer->AddLostDeviceNotificationFunc(&ecr::RenderService::OnDeviceLost, this);

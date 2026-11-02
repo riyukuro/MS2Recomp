@@ -131,12 +131,12 @@ public:
     // implicit dtor 0x1417a0710
 
     unsigned Load();                                            // 0x141791940 (all five tables)
-    unsigned FUN_141792d70(int nAttack, int nDefence);          // a random hit sound id of the materials
+    unsigned GetHitSound(int nAttack, int nDefence);          // a random hit sound id of the materials
     int GetEventVoice(int nEventId, GameObject* pActor, Unk_EventVoice* pOut);   // the event voice for the actor
     SystemPtr FUN_141792ee0(const CString& strName, const CString& strArg);       // system sound property
-    VoicePtr FUN_141793110(const CString& strName);                               // trigger voice property
+    VoicePtr FindTriggerVoice(const CString& strName);                               // trigger voice property
     void FUN_141793210(Unk_VoiceGroupMap& rOut);                // every trigger voice -> its sound names
-    int FUN_141793340(int nObjectId, Unk_SoundPitch* pOut);    // the pitch of an object's voice
+    int FindPitch(int nObjectId, Unk_SoundPitch* pOut);    // the pitch of an object's voice
     void Reload();                                              // 0x1417933d0 (clear and Load)
     void FUN_141793450();                                       // reload when a table file changed
 

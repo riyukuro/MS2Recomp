@@ -192,7 +192,7 @@ class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 class UIMyInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141a5a5c0();
+    void MarkDirty();
 };
 
 // The item of an uid in the inventory or the equipment.
@@ -200,8 +200,6 @@ ItemPtr FUN_1419be700(unsigned __int64 uid);
 // CItem members the header declares with another signature.
 int FUN_140526470(CItem* pItem, unsigned nMode);                        // the item may be remade in nMode
 int FUN_14053feb0(int nItemId);                                         // the default rank of an item id
-// Unk_Inventory::FUN_140a5f780 returns the count (inventory.h declares it void).
-int FUN_140a5f780(Unk_Inventory* pInv, int nItemId, int nRank);
 // ASArray: read the int element nIndex.
 bool FUN_1422bc860(ASArray* pArr, unsigned nIndex, int& n);
 // The CItem sub-objects: the binding state (CItemTransfer) and the status record (its option at +0x18).
@@ -721,7 +719,7 @@ int PetRemakeOptionBoard::FUN_140b94340(MS2Ptr<CItem> item)
     int nHave = 0;
     int nItemId = item->FUN_140527840()->GetStringTag();
     if (nItemId != 0)
-        nHave = FUN_140a5f780(&g_143ab2a90, nItemId, 0);
+        nHave = g_143ab2a90.FUN_140a5f780(nItemId, 0);
     return nHave;
 }
 
@@ -1244,7 +1242,7 @@ void TabContentsPetRemakeOption::FUN_140b96960(MS2Ptr<CItem> item)
     ((class CEquipment*)(class Unk_PetEquipSet*)(((class Unk_PetEquipSet*)((class PC*)(class Unk_PetPlayer*)(player))->FUN_1416561a0())))->FUN_1411e7660();
     Unk_PetSocketPage* page = ((class Unk_PetSocketPage*)FUN_140938c30(0x2711));
     if (page != 0)
-        ((class UIMyInfoDialog*)(class Unk_PetSocketPage*)(page))->FUN_141a5a5c0();
+        ((class UIMyInfoDialog*)(class Unk_PetSocketPage*)(page))->MarkDirty();
 }
 MS2_REPLACE_METHOD(0x140B96960, TabContentsPetRemakeOption, FUN_140b96960, 491, 0x387E2EE7);
 

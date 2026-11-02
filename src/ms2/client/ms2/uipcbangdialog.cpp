@@ -88,13 +88,13 @@ CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<
 CString FUN_140513200(const char* szFormat, const unsigned& n); // StringFormat<unsigned>
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // system chat notice
 int FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // pop a system message
-MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show the message box
 void FUN_1409e2ed0(Scaleform::GFx::Value* pRetVal, ItemAble& item);   // the tooltip of a reward item
 void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned nItemId, unsigned nRank, unsigned nCount);
@@ -634,7 +634,7 @@ CStringW UIPcBangDialog::GetPlayTimeText()
     int nHour = nSec / nSecPerHour;
     int nMinute = nSec % nSecPerHour / nSecPerMinute;
     if (nHour > 0)
-        return FUN_140811740(0xad0, nHour, nMinute);
+        return FormatStringId<int, int>(0xad0, nHour, nMinute);
     else
         return BlockFormat<int>(0xad1, nMinute);
 }

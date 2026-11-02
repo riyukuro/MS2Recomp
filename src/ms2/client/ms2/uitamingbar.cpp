@@ -110,7 +110,7 @@ void UITamingBar::Entity::vfunc_5()
     if (m_38.get())
     {
         m_38->Invoke("open", m_a0, m_a8, m_b0);
-        reinterpret_cast<AScript*>(((Unk_TamingEntity*)m_38.operator->()))->FUN_1422baea0("m_barWidth", &m_bc);
+        reinterpret_cast<AScript*>(((Unk_TamingEntity*)m_38.operator->()))->TryGetFloat("m_barWidth", &m_bc);
     }
 }
 
@@ -127,13 +127,13 @@ void UITamingBar::Entity::vfunc_6(NiPoint3* pPos)
                 if (0 < m_64)
                     m_68.FUN_140868750(m_64);
                 float fRate = m_bc / (float)m_a8;
-                ((Unk_TamingClip*)bar.operator->())->FUN_1422c0e20((int)(fRate * (float)m_a0));
+                ((Unk_TamingClip*)bar.operator->())->SetWidthInt((int)(fRate * (float)m_a0));
                 m_b8 = 0;
             }
             FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_TamingUIScale*)(((class Unk_TamingUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-            reinterpret_cast<ASDisplayObject*>(((Unk_TamingEntity*)m_38.operator->()))->FUN_1422c00f0(pPos->x, pPos->y);
+            reinterpret_cast<ASDisplayObject*>(((Unk_TamingEntity*)m_38.operator->()))->SetPositionFloat(pPos->x, pPos->y);
         }
     }
 }

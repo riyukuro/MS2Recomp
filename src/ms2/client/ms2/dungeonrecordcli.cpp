@@ -66,7 +66,7 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 CStringW FUN_140298ea0(CStringW str);
 CStringW BlockFormat(int nId);
-CStringW FUN_14052bd00(int nId, const CStringW& arg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_140b8e9a0(const CMsTime& t);
 void FUN_140d73ff0(CStringW text);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
@@ -357,7 +357,7 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         {
             DungeonRecordCliPtr spRecord = GetRecord(((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->GetDungeonRoomID());
             if (spRecord.get())
-                FUN_140d73aa0(FUN_14052bd00(0x9a2, FUN_140b8e9a0(spRecord->GetExpire())), 0, 0, L"");
+                FUN_140d73aa0(FormatStringId<CStringW>(0x9a2, FUN_140b8e9a0(spRecord->GetExpire())), 0, 0, L"");
         }
         break;
     }

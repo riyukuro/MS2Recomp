@@ -38,11 +38,11 @@ NiGFxLocalizeManager::NiGFxLocalizeManager()
 // @0x1422eb510
 NiGFxLocalizeManager::~NiGFxLocalizeManager()
 {
-    FUN_1422ebe90();
+    ReleaseConfigAndStrings();
 }
 
 // @0x1422eb570
-bool NiGFxLocalizeManager::FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const char* szPath, const CString& strConfig)
+bool NiGFxLocalizeManager::LoadFontConfig(Scaleform::GFx::Loader* pLoader, const char* szPath, const CString& strConfig)
 {
     // The exe asks for state 9 (State_FileOpener). The font lib (state 17) is not set before Apply, so testing it here
     // returned false in the hook DLL and the translator was never set up ($s_* keys showed in the UI).
@@ -59,19 +59,19 @@ bool NiGFxLocalizeManager::FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const 
         return false;
     }
 
-    FUN_1422ebe90();
+    ReleaseConfigAndStrings();
     m_pConfigSet = new FontConfigSet;
     if (m_pConfigSet == 0)
         return false;
     m_pConfigSet->Parse(&parser);
     if (m_pConfigSet->GetSize() > 0)
     {
-        FUN_1422ebb80(pLoader, strConfig);
+        SelectFontConfig(pLoader, strConfig);
         return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422EB570, NiGFxLocalizeManager, FUN_1422eb570, 534, 0x3DE349A6);
+MS2_REPLACE_METHOD(0x1422EB570, NiGFxLocalizeManager, LoadFontConfig, 534, 0x3DE349A6);
 
 // @0x1422eb790
 void NiGFxLocalizeManager::AddString(const CString& strKey, const CStringW& strText)
@@ -98,66 +98,66 @@ MS2_REPLACE_METHOD(0x1422EB860, NiGFxLocalizeManager, GetString, 183, 0x8BDB7639
 // @0x1422eb920
 void NiGFxLocalizeManager::FUN_1422eb920()
 {
-    FUN_1422eb940();
+    LoadStringTables();
 }
 MS2_REPLACE_METHOD(0x1422EB920, NiGFxLocalizeManager, FUN_1422eb920, 24, 0x56AAF3CF);
 
 // @0x1422eb940
-void NiGFxLocalizeManager::FUN_1422eb940()
+void NiGFxLocalizeManager::LoadStringTables()
 {
     if (!ms_kXmlLoader1.IsNull())
     {
         TiXmlDocument doc;
         if (ms_kXmlLoader1(doc))
-            FUN_1422ebc80(&doc, "value");
+            ParseStringXml(&doc, "value");
     }
     if (!ms_kXmlLoader2.IsNull())
     {
         TiXmlDocument doc;
         if (ms_kXmlLoader2(doc))
-            FUN_1422ebc80(&doc, "name");
+            ParseStringXml(&doc, "name");
     }
     if (!ms_kXmlLoader3.IsNull())
     {
         TiXmlDocument doc;
         if (ms_kXmlLoader3(doc))
-            FUN_1422ebc80(&doc, "name");
+            ParseStringXml(&doc, "name");
     }
     if (!ms_kXmlLoader4.IsNull())
     {
         TiXmlDocument doc;
         if (ms_kXmlLoader4(doc))
-            FUN_1422ebc80(&doc, "value");
+            ParseStringXml(&doc, "value");
     }
 }
-MS2_REPLACE_METHOD(0x1422EB940, NiGFxLocalizeManager, FUN_1422eb940, 564, 0x9037D653);
+MS2_REPLACE_METHOD(0x1422EB940, NiGFxLocalizeManager, LoadStringTables, 564, 0x9037D653);
 
 // @0x1422ebb80
-bool NiGFxLocalizeManager::FUN_1422ebb80(Scaleform::GFx::Loader* pLoader, const CString& strConfig)
+bool NiGFxLocalizeManager::SelectFontConfig(Scaleform::GFx::Loader* pLoader, const CString& strConfig)
 {
     FontConfig* pConfig = FUN_1422ebf10(strConfig);
     if (pConfig != 0)
     {
-        FUN_1422eb940();
+        LoadStringTables();
         m_pConfig = pConfig;
         m_pConfig->Apply(pLoader);
         return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422EBB80, NiGFxLocalizeManager, FUN_1422ebb80, 101, 0xB57A75CF);
+MS2_REPLACE_METHOD(0x1422EBB80, NiGFxLocalizeManager, SelectFontConfig, 101, 0xB57A75CF);
 
 // @0x1422ebbf0
-CString NiGFxLocalizeManager::FUN_1422ebbf0()
+CString NiGFxLocalizeManager::GetConfigName()
 {
     if (m_pConfig != 0)
         return m_pConfig->ConfigName.ToCStr();
     return "Default";
 }
-MS2_REPLACE_METHOD(0x1422EBBF0, NiGFxLocalizeManager, FUN_1422ebbf0, 126, 0x0CD82D0D);
+MS2_REPLACE_METHOD(0x1422EBBF0, NiGFxLocalizeManager, GetConfigName, 126, 0x0CD82D0D);
 
 // @0x1422ebc80
-void NiGFxLocalizeManager::FUN_1422ebc80(TiXmlDocument* pDoc, CString strAttrName)
+void NiGFxLocalizeManager::ParseStringXml(TiXmlDocument* pDoc, CString strAttrName)
 {
     Unk_XmlNode* pRoot = ((Unk_XmlNode*)pDoc)->FirstChild("ms2");
     if (pRoot == 0)
@@ -185,14 +185,14 @@ void NiGFxLocalizeManager::FUN_1422ebc80(TiXmlDocument* pDoc, CString strAttrNam
 }
 
 // @0x1422ebe90
-void NiGFxLocalizeManager::FUN_1422ebe90()
+void NiGFxLocalizeManager::ReleaseConfigAndStrings()
 {
     delete m_pConfigSet;
     m_pConfig = 0;
     m_pConfigSet = 0;
     m_strings.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x1422EBE90, NiGFxLocalizeManager, FUN_1422ebe90, 120, 0xA658EE2A);
+MS2_REPLACE_METHOD(0x1422EBE90, NiGFxLocalizeManager, ReleaseConfigAndStrings, 120, 0xA658EE2A);
 
 // @0x1422ebf10
 FontConfig* NiGFxLocalizeManager::FUN_1422ebf10(const CString& strConfig)

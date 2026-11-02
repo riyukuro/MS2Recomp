@@ -9,36 +9,69 @@
 #include <cstddef>
 #include <cstdint>
 
-struct CefUtf16StringCx13
+typedef struct _cef_string_utf16_t
 {
-    void* vtable;
-    void* string;
-    bool ownsString;
-    std::uint8_t padding[7];
+    unsigned short* str;
+    std::size_t length;
+    void (*dtor)(unsigned short* str);
+} cef_string_utf16_t;
+static_assert(sizeof(cef_string_utf16_t) == 0x18, "cef_string_utf16_t size");
+
+extern "C" void cef_string_utf16_clear(cef_string_utf16_t* string);
+
+// include/internal/cef_string_wrappers.h, the parts the destructor uses.
+struct CefStringTraitsUTF16
+{
+    typedef cef_string_utf16_t struct_type;
+    static inline void clear(struct_type* s) { cef_string_utf16_clear(s); }
 };
-static_assert(sizeof(CefUtf16StringCx13) == 0x18, "CEF string wrapper size");
 
-extern "C" void cef_string_utf16_clear(void* string);
+template <class traits>
+class CefStringBase
+{
+public:
+    typedef typename traits::struct_type struct_type;
 
-// MS2-FUNCTIONAL: restores both embedded string wrappers, clears owned UTF-16 data, then frees the temporary; the executable uses compiler-generated wrapper destructors.
+    virtual ~CefStringBase() { ClearAndFree(); }
+
+    void clear()
+    {
+        if (string_ != NULL)
+            traits::clear(string_);
+    }
+
+    void ClearAndFree()
+    {
+        if (!string_)
+            return;
+        if (owner_)
+        {
+            clear();
+            delete string_;
+        }
+        string_ = NULL;
+        owner_ = false;
+    }
+
+    struct_type* string_;
+    bool owner_;
+};
+typedef CefStringBase<CefStringTraitsUTF16> CefStringUTF16;
+static_assert(sizeof(CefStringUTF16) == 0x18, "CEF string wrapper size");
+
+struct CefStringTransferCx13
+{
+    std::uint8_t head[0x20];
+    CefStringUTF16 first;
+    CefStringUTF16 second;
+};
+static_assert(sizeof(CefStringTransferCx13) == 0x50, "transfer temporary size");
+
+// Deletes the transfer temporary; its two string members are destroyed in reverse order.
 // @0x14278a560
 void FUN_14278a560(void*, void* temporary)
 {
-    auto* bytes = static_cast<std::uint8_t*>(temporary);
-    auto* first = reinterpret_cast<CefUtf16StringCx13*>(bytes + 0x20);
-    auto* second = reinterpret_cast<CefUtf16StringCx13*>(bytes + 0x38);
-    for (CefUtf16StringCx13* value : {first, second})
-    {
-        if (value->string)
-        {
-            if (value->ownsString)
-            {
-                cef_string_utf16_clear(value->string);
-                ::operator delete(value->string);
-            }
-            value->string = nullptr;
-            value->ownsString = false;
-        }
-    }
-    ::operator delete(temporary);
+    auto* transfer = static_cast<CefStringTransferCx13*>(temporary);
+    transfer->~CefStringTransferCx13();
+    ::operator delete(transfer, sizeof(CefStringTransferCx13));
 }

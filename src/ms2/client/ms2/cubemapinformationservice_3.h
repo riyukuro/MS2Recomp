@@ -206,7 +206,7 @@ public:
     void FUN_1410d5930(Unk_CMISTree<286>* pOut);
     void* FindPhysXActor(Unk_CMISEntityRef key);
     int ContainsEntityRef(Unk_CMISEntityRef ref);
-    int IsCellInBounds(const Unk_Int3* pPt);
+    int IsCellInBounds(Unk_Int3 pt);
     int FUN_1410d4340(Unk_CubePoint* pOut);
     void FUN_1410c4d80(const Vector3& pt, float fDist);
     bool FUN_1410c2840(Vector3 pt, float fDist);
@@ -327,11 +327,11 @@ public:
         unsigned char bField4c, int nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
     void FUN_1410c4b50(Unk_Int3 pt, bool bKeep);
     void FUN_1410c4e20(__int64 nOwner, Unk_Int3 pt, class CubeItemInfo* pInfo, float fRot, unsigned char bField4c, int nUnused, int nFieldD8);
-    bool FUN_1410bca70(__int64 nOwner, Unk_Int3 pt, float fRot, int nField50, int nField54, __int64 nUnused, int nFieldD8);
+    bool FUN_1410bca70(__int64 nOwner, Unk_Int3 pt, float fRot, int nField50, int nField54, int nUnused, int nFieldD8);
     void FUN_1410bec60(MS2Ptr<Cube> spCube);
     void FUN_1410d4cb0(int nItemId, bool bFlag);
     bool FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float fRot, class CubeItemInfo* pInfo, const efd::utf8string& strName,
-        int nField50, int nField54, unsigned char bField4c, __int64 nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
+        int nField50, int nField54, unsigned char bField4c, int nUnused, int nFieldD8, Unk_PayloadPtr<class NoticeCubeInfo> spNotice);
     egf::EntityPtr FUN_1410bc3d0(struct Unk_CMISBlock rec);
     egf::EntityPtr FUN_1410bc7f0(Vector3 ptPos, Vector3 ptRot, unsigned nIdx, int nItemId);
     bool FUN_1410c3600(int v);

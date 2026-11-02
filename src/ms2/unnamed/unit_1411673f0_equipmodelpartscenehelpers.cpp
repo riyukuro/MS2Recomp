@@ -41,7 +41,7 @@ struct Unk_EmApp
     // C3: the application time is CMainSystem::FUN_141473280
 };
 
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
+// Depth-first walker over a scene graph (0x30 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
 class Unk_NodeQueue
 {
 public:
@@ -49,10 +49,10 @@ public:
     ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
 typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 extern NiFixedString DAT_143ae51b8;     // name of the extra data that tags a node
 extern NiFixedString DAT_143ae50e8;     // substring of that tag that excludes the node from the highlight
@@ -153,7 +153,7 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
 }
 
 // @0x1411679d0
-// MS2-FUNCTIONAL: same instructions, but the frame is 0x10 larger and the loop locals sit in other slots (the exe keeps the node set in an unnamed temp)
+// MS2-FUNCTIONAL: same instructions, but the loop locals sit in other slots (the exe keeps the node set in an unnamed temp)
 // Highlights (fMode != 0) or un-highlights the meshes of the part; pNode narrows the highlight to one mesh.
 void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 {

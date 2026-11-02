@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
+#include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/commonfiles/gamerule.h"
 
@@ -60,7 +61,7 @@ public:
 
 // listener registries
 UIQuestEventDispatcher* FUN_140bfc4b0();
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 
 // items bound to the slots of the rewards
 void FUN_141415600(const CString& strBindID);
@@ -123,7 +124,7 @@ int UILevelUpPackageDialog::vfunc_65()
     if (UIDialog::vfunc_65() == 0)
         return 0;
     FUN_140bfc4b0()->FUN_141aa87c0(this);
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
 
@@ -133,7 +134,7 @@ void UILevelUpPackageDialog::vfunc_67()
     for (size_t i = 0; i < m_188.GetCount(); i++)
         FUN_141415600(m_188.GetAt(i));
     FUN_140bfc4b0()->FUN_141aa8850(this);
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
 

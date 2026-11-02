@@ -101,8 +101,6 @@ CString UIDungeonSearchSettingDialog::GetTypeName()
 }
 MS2_REPLACE_METHOD(0x140C0FFD0, UIDungeonSearchSettingDialog, GetTypeName, 61, 0x5109F1D4);
 
-// MS2-FUNCTIONAL: frame/slot order of the AS bind temporaries (0x10 bytes larger frame, the CString argument temps of the
-// drag bar / close button calls are built differently); calls and logic identical
 // @0x140c10020
 void UIDungeonSearchSettingDialog::OnLoadComplete()
 {
@@ -118,15 +116,15 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
                                                   MS2_THIS_FILE, MS2_LINE(0x2d), __FUNCTION__));
     if (MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_groupDesc"))
         FUN_140d01340((*spDesc).FUN_1422bb890(), 2, 2);
-    m_group->FUN_1422dfce0(GetStringCommonByKey(L"s_dungeon_search_setting_group_none"));
-    m_group->FUN_1422dfce0(FUN_140cbf840(1));
-    m_group->FUN_1422dfce0(FUN_140cbf840(2));
+    m_group->AddItemLabel(GetStringCommonByKey(L"s_dungeon_search_setting_group_none"));
+    m_group->AddItemLabel(FUN_140cbf840(1));
+    m_group->AddItemLabel(FUN_140cbf840(2));
     m_group->FUN_1422df5f0(3);
     m_group->SetSelectedIndex(0);
     m_roomOfRow.resize(m_rows.size(), 0);
     m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c113c0), (void*)0);
     m_group->FUN_1422df9a0(ParamsDelegate(this, &UIDungeonSearchSettingDialog::OnGroupChanged), 0);
-    m_checks.resize(m_rows.size(), MS2Ptr<ASCheckBox>(0));
+    m_checks.resize(m_rows.size(), 0);
     for (unsigned i = 0; i < m_rows.size(); ++i) {
         m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11420), FUN_140bd09d0(i));
         if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]))
@@ -191,7 +189,7 @@ MS2_REPLACE_METHOD(0x140C112E0, UIDungeonSearchSettingDialog, FUN_140c112e0, 24,
 void UIDungeonSearchSettingDialog::UpdateListCount()
 {
     if (m_list)
-        m_list->FUN_1422dcf40((int)m_rooms.size());
+        m_list->SetEmptyItemCount((int)m_rooms.size());
 }
 MS2_REPLACE_METHOD(0x140C11300, UIDungeonSearchSettingDialog, UpdateListCount, 94, 0xBF7D9412);
 

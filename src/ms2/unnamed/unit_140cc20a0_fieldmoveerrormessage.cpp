@@ -26,11 +26,8 @@ struct Unk_FmtPack { i64 m_n; const Unk_FmtArg* m_args; };
 CStringW FUN_14028dfa0(const CStringW& strKey, const Unk_FmtPack& args);   // StringFormat over the string table
 Unk_FmtPack* FUN_140163e50(Unk_FmtPack* pOut, i64 nTypes, Unk_FmtArg arg); // fmt::internal::make_args
 
-// fmt::internal::MakeValue's boxed-argument record: 16 payload bytes + a type tag (1 = int, 0xa = ostream text).
-struct Unk_FmtVal { i64 m_w0, m_w1; int m_type; };
-struct Unk_Str16 { i64 m_w0, m_w1; };
-Unk_Str16* FUN_140182090(Unk_Str16*, const std::wstring&);
-i64 FUN_1402da110(i64 ctx, i64* pOut, Unk_FmtVal* pVal);
+// fmt::BasicFormatter<wchar_t>::format over a boxed argument.
+i64 FUN_1402da110(i64 ctx, i64* pOut, fmt::internal::Arg* pVal);
 
 // The global application/config singleton whose +0x60/+0x68/+0x70 are the base directory strings.
 struct Unk_MoveErrConfig {
@@ -55,11 +52,22 @@ i64 FUN_140cc27c0(int* pValue);
 // @0x140cc2650
 void FUN_140cc2650(i64 ctx, i64* pOut, int* pValue)
 {
-    Unk_FmtVal val;
-    Unk_FmtVal* pv = &val;
-    *(int*)pv = *pValue;   // the exe's generic ostream branch (tag 0xa) is unreachable for int
-    val.m_type = 1;
-    *pOut = FUN_1402da110(ctx, pOut, &val);
+    fmt::internal::Arg arg;
+    fmt::internal::Value& arg_value = arg;
+    if (false != 1)
+    {
+        arg.int_value = *pValue;
+        arg.type = fmt::internal::Arg::INT;
+    }
+    else
+    {
+        std::wostringstream os;
+        os << *pValue;
+        std::wstring str = os.str();
+        arg_value = fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(str);
+        arg.type = fmt::internal::Arg::STRING;
+    }
+    *pOut = FUN_1402da110(ctx, pOut, &arg);
 }
 
 // The lambda thunk: vfunc(value, out) forwarding to MakeValue<int>.

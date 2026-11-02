@@ -10,6 +10,7 @@
 // MS2-PIN: ??_7CEffectObject@@6BCallbackObject@NiActorManager@@@ 0x142dc88c0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\effectobject.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 #include "effectobject.h"
 #include "animationmanager.h"
 #include "pcbase.h"
@@ -75,8 +76,7 @@ CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + 
 
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();                                              // the model cache singleton
-const char* FUN_142087e50(const NiFixedString& kName);              // NiFixedString::operator const char*
-void* FUN_14086d260();                                              // the game clock
+class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -157,17 +157,15 @@ MS2_REPLACE_METHOD(0x140a53880, CEffectObject, FUN_140a53880, 322, 0x61463D26);
 // @0x140a539d0
 void CEffectObject::FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, const NiFixedString& kTextKey)
 {
-    // 0x14123c460 writes an 8-byte entity id; the exe reserves only 8 bytes for it, not the 16 of Unk_GoModelKey.
-    struct { void* p; } kKey;
-    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_GoModelKey&>(FUN_14123c460(reinterpret_cast<Unk_GoModelKey&>(kKey)))));
+    NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(FUN_14123c460());
     if (pMgr != NULL)
     {
-        unsigned int uiSeqId = pMgr->FindSequenceID(FUN_142087e50(kSeqName));
+        unsigned int uiSeqId = pMgr->FindSequenceID(kSeqName.operator const char*());
         if (uiSeqId == NiActorManager::INVALID_SEQUENCE_ID)
             return;
         {
             ((class NiActorManager*)(class NiActorManager*)(pMgr))->SetTargetAnimation(uiSeqId, fSpeed, true);
-            reinterpret_cast<Unk_ActorManagerVt*>(pMgr)->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280());
+            reinterpret_cast<Unk_ActorManagerVt*>(pMgr)->Update((float)((class CMainSystem*)(void*)(reinterpret_cast<void*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280());
             NiControllerSequence* pSeq = pMgr->GetActiveSequence(uiSeqId, true, true);
             if (pSeq != NULL)
             {

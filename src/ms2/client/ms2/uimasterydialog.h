@@ -24,7 +24,7 @@ class ASScrollingList;
 class Unk_MSubTab;
 class Unk_MGroup;
 class Unk_MScroll;
-class Unk_MRec;
+class CMasteryReceipe;
 class Unk_MFurn;
 class CMsgBoxData;
 class NotifyObject;
@@ -102,18 +102,18 @@ public:
     void FUN_140eb6920(int nType, int nIndex, ASObj& obj);  // 0x140eb6920
     void CancelCraft();  // 0x140eb6c80
     int FUN_140eb6d40(int nKind, int nId);  // 0x140eb6d40
-    CStringW FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec);  // 0x140eb71a0
+    CStringW FUN_140eb71a0(MS2Ptr<CMasteryReceipe> spRec);  // 0x140eb71a0
     int CalcAdjustedItemCount(int nType, unsigned int nNeedMastery, ItemEntity* pEntry);  // 0x140eb79b0
     unsigned int CalcIngredientCount(int nType, int nNeedMastery, unsigned int nCount);  // 0x140eb7b40
     unsigned int GetMyMastery(int nType);  // 0x140eb7bb0
-    void FUN_140eb7c00(int nType);  // 0x140eb7c00
+    void UpdateMasteryGrade(int nType);  // 0x140eb7c00
     CStringW GetMasteryTabName(int nType);  // 0x140eb7c50
     CStringW GetHousingTabName();  // 0x140eb7d40
     void FUN_140eb7e30();  // 0x140eb7e30
-    int FUN_140eb8120(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8120
+    int FUN_140eb8120(MS2Ptr<CMasteryReceipe> spRec);  // 0x140eb8120
     int GetSelectedMagicScrollSlot();  // 0x140eb82e0
     int GetSelectedMagicScrollGrade();  // 0x140eb8410
-    int HasRequiredLevel(MS2Ptr<Unk_MRec> spRec);  // 0x140eb8550
+    int HasRequiredLevel(MS2Ptr<CMasteryReceipe> spRec);  // 0x140eb8550
     int GetCachedTypeValue(int nType);  // 0x140eb8630
     void SetTypeValue(int nType, int nValue);  // 0x140eb8670
     int FUN_140eb86b0();  // 0x140eb86b0

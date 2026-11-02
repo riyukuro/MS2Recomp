@@ -57,7 +57,7 @@ public:
 class Unk_SdUIManager { public: };
 
 UIDungeonSearchDialog* FUN_140e28d40(int nUIType);
-void* FUN_1409670d0();
+class CPartyManager;
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -214,7 +214,7 @@ void UIDungeonSearchSelectDialog::InitTitleAndRadio()
 void UIDungeonSearchSelectDialog::UpdateListCount()
 {
     if (m_list.get() != 0)
-        m_list->FUN_1422dcf40((int)m_rooms.size());
+        m_list->SetEmptyItemCount((int)m_rooms.size());
 }
 
 // @0x140e28170
@@ -259,7 +259,7 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
         return;
     }
     {
-        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
+        bool bOk = ((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)

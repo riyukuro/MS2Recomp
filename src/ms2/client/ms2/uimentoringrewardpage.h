@@ -70,7 +70,6 @@ public:UIMentoringMissionPage(UIMentoringDialog*);virtual ~UIMentoringMissionPag
  void FUN_140c74170(ASObj&,Unk_MentorInstance*);void FUN_140c74450(int);int FUN_140c74660();__int64 FUN_140c74720();void FUN_140c74850(Unk_MentorIdArray&,int);void FUN_140c74970();
 };
 MS2_CHECK_SIZE(UIMentoringMissionPage,0x38);
-class Unk_MentorMission:public UIMentoringPage {public:Unk_MentorMission(UIMentoringDialog*);CString vfunc_6();private:void* p30;};
 class UIMentoringDialog:public UIDialog {
 public:
  UIMentoringDialog();virtual ~UIMentoringDialog();virtual CString GetTypeName();virtual void vfunc_67();virtual void OnLoadComplete();

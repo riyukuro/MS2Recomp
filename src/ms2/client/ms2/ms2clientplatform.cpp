@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x140d86270-0x140d86560 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2clientplatform.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/iclientplatform.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -16,7 +17,7 @@ extern IClientPlatform* DAT_143ac2fd8;          // the live platform (read by FU
 extern void* DAT_143abf518;                     // the Nexon platform singleton
 extern void* DAT_143abf628;                     // the Tencent platform singleton
 int FUN_1406c34c0();                            // the Nexon platform enabled predicate
-CClientPlatformNexonKorea* FUN_140c7a240();               // the Nexon platform singleton
+class CClientPlatformNexonKorea;
 IClientPlatform* FUN_140d86370();
 IClientPlatform* FUN_140d863f0();
 CClientPlatformTencent* FUN_140d86550();               // the Tencent platform singleton
@@ -49,7 +50,7 @@ MS2_REPLACE(0x140D86270, FUN_140d86270, 171, 0x003E167D);
 // @0x140d86330
 void FUN_140d86330()
 {
-    if (FUN_140c7a240() != 0)
+    if (TSingleton<CClientPlatformNexonKorea>::GetInstance() != 0)
         FUN_140d86470();
     if (FUN_140d86550() != 0)
         FUN_140d864e0();
@@ -62,7 +63,7 @@ IClientPlatform* FUN_140d86370()
 {
     IClientPlatform* pPlatform;
     if (DAT_143abf518 != 0)
-        pPlatform = FUN_140c7a240();
+        pPlatform = TSingleton<CClientPlatformNexonKorea>::GetInstance();
     else
         pPlatform = new CClientPlatformNexonKorea;
     return pPlatform;
@@ -85,7 +86,7 @@ MS2_REPLACE(0x140D863F0, FUN_140d863f0, 114, 0xB9B68421);
 void FUN_140d86470()
 {
     if (DAT_143abf518 != 0) {
-        delete FUN_140c7a240();
+        delete TSingleton<CClientPlatformNexonKorea>::GetInstance();
         DAT_143abf518 = 0;
     }
 }

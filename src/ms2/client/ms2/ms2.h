@@ -88,13 +88,15 @@ MS2_CHECK_OFFSET(MS2, m_bCrashOnShutdown, 0xa4);
 
 // The start-up step profiler of CGameApp ("Loading"): logs the time between named steps. Owning unit unit_1402e1070 /
 // unit_1402e12c0 (not recovered); only the members CGameApp calls are declared.
-class Unk_StepProfiler : public CLockCriticalSection
+// The lock is a member, not a base: the exe's ctor/dtor store no vftable of their own.
+class Unk_StepProfiler
 {
 public:
     explicit Unk_StepProfiler(CString strName);                     // 0x1402e11c0 (by value: the ctor destroys it)
     ~Unk_StepProfiler();                                            // 0x1402e1260
     void FUN_1402e12c0(const char* pszFormat, ...);                 // starts the next step (logs the previous one)
 
+    CLockCriticalSection m_lock;                                    // +0x00
     CString m_strName;                                              // +0x30
     CString m_strStep;                                              // +0x38
     unsigned int m_uiStepStart;                                     // +0x40

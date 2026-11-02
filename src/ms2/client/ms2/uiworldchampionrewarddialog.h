@@ -1,20 +1,14 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Header name assumed.
 #pragma once
 #include "ms2/placeholder/uidialog.h"
+#include "ms2/placeholder/mstime.h"
 #include <vector>
 class CInPacket;
 class CMsgBoxData;
-class Unk_WcButton;
-class Unk_WcClip;
+class ASButton;
+class ASMovieClip;
 class Unk_WcTitle;
-class Unk_WcItemSlot;
-class Unk_WcDate {
-public:
-    Unk_WcDate();
-    Unk_WcDate(__int64);
-private: __int64 p0; __int64 p8;
-};
-MS2_CHECK_SIZE(Unk_WcDate, 0x10);
+class ASItemSlot;
 class UIWorldChampionRewardDialog : public UIDialog {
 public:
     UIWorldChampionRewardDialog();
@@ -40,17 +34,17 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     unsigned m_season;
-    Unk_WcDate m_start;
-    Unk_WcDate m_end;
+    CMsTime m_start;
+    CMsTime m_end;
     unsigned char m_step, m_maxStep, m_selected, m_page, m_maxPage;
     int m_field;
     std::vector<unsigned int> m_rewardVector;
-    std::vector<MS2Ptr<Unk_WcClip>> m_stepSlotVecotr;
-    std::vector<MS2Ptr<Unk_WcButton>> m_stepSlotButtonVecotr;
-    MS2Ptr<Unk_WcButton> m_prev, m_next, m_move;
+    std::vector<MS2Ptr<ASMovieClip>> m_stepSlotVecotr;
+    std::vector<MS2Ptr<ASButton>> m_stepSlotButtonVecotr;
+    MS2Ptr<ASButton> m_prev, m_next, m_move;
     MS2Ptr<Unk_WcTitle> m_title;
-    MS2Ptr<Unk_WcClip> m_area;
-    std::vector<MS2Ptr<Unk_WcItemSlot>> m_items;
+    MS2Ptr<ASMovieClip> m_area;
+    std::vector<MS2Ptr<ASItemSlot>> m_items;
 };
 MS2_CHECK_SIZE(UIWorldChampionRewardDialog, 0x260);
 MS2_CHECK_OFFSET(UIWorldChampionRewardDialog, m_season, 0x178);

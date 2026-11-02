@@ -20,9 +20,10 @@
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- exe callees ----
-void* FUN_1409eed90();                                                      // the singleton of the own character
+class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -90,7 +91,7 @@ UIWeddingHallReservationPageSelect::~UIWeddingHallReservationPageSelect()
 {
 }
 
-// MS2-FUNCTIONAL: handle/iterator temporaries and frame layout differ
+// Fills the hall list; the selected slot wins over the first enabled row.
 // @0x140fe4720
 bool UIWeddingHallReservationPageSelect::vfunc_1()
 {
@@ -99,13 +100,13 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
     MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(FUN_140fe2d20(m_pDialog));
     if (hall == 0)
         return false;
-    MS2Ptr<ASScrollingList> list = m_pScript->FUN_140bc7280<ASScrollingList>(CString("m_list"));
+    MS2Ptr<ASScrollingList> list = m_pScript->FUN_140bc7280<ASScrollingList>("m_list");
     if (list == 0)
         return false;
     int nPackageSlot = -1;
     if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
     {
-        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
+        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
         nPackageSlot = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(pTicket->m_nHallId, pTicket->m_nSlot);
     }
     list->FUN_1422dd1d0();
@@ -117,28 +118,28 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
     std::map<int, MS2Ptr<WeddingHallData> >::iterator end = hall->m_halls.end();
     int nIndex = 0;
     int nSelect = -1;
-    while (it != end)
+    for (; it != end; ++it)
     {
         MS2Ptr<WeddingHallData> slot(it->second);
         bool bEnabled = true;
         if (nPackageSlot != -1)
-            bEnabled = nPackageSlot <= slot->m_nGrade;
+            bEnabled = slot->m_nGrade >= nPackageSlot;
         ASObj row(2);
         row.FUN_1407cb9c0("id", slot->m_nId);
         row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, slot->FUN_140906e40(bFlag)));
         row.FUN_1407cbbe0("enabled", bEnabled);
         list->AddItem(row);
-        if (m_nSelectedSlot == 0)
+        if (m_nSelectedSlot != 0)
         {
-            if (bEnabled && nSelect == -1)
+            if (slot->m_nId == m_nSelectedSlot)
                 nSelect = nIndex;
         }
-        else if (slot->m_nId == m_nSelectedSlot)
+        else if (bEnabled && nSelect == -1)
         {
             nSelect = nIndex;
         }
         nIndex = nIndex + 1;
-        ++it;
+
     }
     if (nSelect != -1)
         list->SetSelectedIndex(nSelect);
@@ -235,7 +236,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_11(bool a1)
 bool UIWeddingHallReservationPageSelect::vfunc_12()
 {
     if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
-        return FUN_140900f90(FUN_140fe2d20(m_pDialog), (class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket())));
+        return FUN_140900f90(FUN_140fe2d20(m_pDialog), (class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket())));
     return true;
 }
 
@@ -284,7 +285,7 @@ __int64 FUN_140fe5520(UIWeddingHallReservationPageSelect* pPage, int nHallId, in
     }
     else
     {
-        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&((class WeddingManager*)(void*)(FUN_1409eed90()))->GetTicket());
+        Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
         __int64 nOld = TSingleton<WeddingTable>::GetInstance()->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
         __int64 nNew = TSingleton<WeddingTable>::GetInstance()->FUN_140909220(nHallId, nSlot);
         return nNew - nOld;

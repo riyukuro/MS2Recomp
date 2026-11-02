@@ -107,7 +107,7 @@ template <class T> T* Unk_MgGetDialog(int nId)
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 // The animation registry: the default sequence of a model.
-class Unk_MgAnimSvc { public: unsigned FUN_140b7f6a0(const egf::EntityID& kId); };
+int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // C3: the real free function (def in statebannerdata)
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
@@ -151,7 +151,7 @@ extern Unk_Inventory g_143ab2a90;                        // the rps event's cont
 class UICoupleDanceEventDialog* FUN_140b769d0(int);   // C3: was FUN_140b769d0
 
 // The scene-graph probes of the placement test (see statecoupleemotion.cpp: the same helper sits in that obj).
-class Unk_MgPhysics
+class CPhysXHelper
 {
 public:
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);
@@ -315,7 +315,7 @@ void StateMicroGameRps::vfunc_9(double fTime)
     case 0x99:
     case 0x9a:
     {
-        unsigned int nSeq = reinterpret_cast<Unk_MgAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+        unsigned int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
         FUN_140b87a40(nSeq);
         return;
     }
@@ -649,13 +649,13 @@ bool FUN_140b884e0(Vector3& kPoint)
 {
     kPoint.z += 5.0f;
     float fDist = 0.0f;
-    if (((class Unk_MgPhysics*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
-    if (((class Unk_MgPhysics*)FUN_1409f7ca0())->FUN_14168a770((const efd::Point3*)&kPoint))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const efd::Point3*)&kPoint))
         return false;
     Vector3 kDown = DAT_143b01a60;
     Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
-    if (((class Unk_MgPhysics*)FUN_1409f7ca0())->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
     if (kHit.m_hitEntity == 0)
         return false;
@@ -819,7 +819,7 @@ void StateMicroGameCoupleDance::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     if (m_spDance == 0 || m_spDance->m_str.IsEmpty())
     {
-        unsigned int nSeq = reinterpret_cast<Unk_MgAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+        unsigned int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
         FUN_140b89e40(nSeq);
         return;
     }

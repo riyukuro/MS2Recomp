@@ -38,7 +38,7 @@ public:
     MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);
 };
 
-void* FUN_140281980();                                          // the table singleton
+class CItemDataTable;
 
 CStringTable* GetStringTable();
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);             // the movie of a UI layer
@@ -107,7 +107,7 @@ void UITextPreviewDialog::FUN_141351050(CStringW strText)
         return;
     if (m_178 == 0)
         return;
-    m_178.operator->()->FUN_1422e0ab0(strText);
+    m_178.operator->()->SetTextW(strText);
 }
 
 // @0x1413510f0
@@ -117,7 +117,7 @@ void UITextPreviewDialog::FUN_1413510f0(CStringW strText)
         return;
     if (m_188 == 0)
         return;
-    m_188.operator->()->FUN_1422e0ab0(strText);
+    m_188.operator->()->SetTextW(strText);
 }
 
 // @0x141351190
@@ -153,7 +153,7 @@ void UITextPreviewDialog::OnDescriptionCheck()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
         std::vector<unsigned int> ids;
-        reinterpret_cast<CItemDataTable*>(FUN_140281980())->LoadItemNameIds(ids);
+        reinterpret_cast<CItemDataTable*>(reinterpret_cast<void*>(TSingleton<CItemDataTable>::GetInstance()))->LoadItemNameIds(ids);
         for (size_t i = 0; i < ids.size(); i++) {
             unsigned int nId = ids[i];
             CStringW strMain = GetStringTable()->GetItemDescription(nId, CString("mainDescription"));

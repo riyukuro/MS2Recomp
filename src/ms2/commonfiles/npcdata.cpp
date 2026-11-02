@@ -982,7 +982,6 @@ void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* 
 bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);
 void* FUN_140166410();
-bool FUN_14036d4b0(void*, const CStringW&);
 bool FUN_1401647e0(const CString&, const CString&);
 float FUN_14028d2e0();
 CStringW FUN_140298ea0(CStringW strKey);
@@ -990,9 +989,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 // The weight table of the black market's rarity roll, reused for the region spawn weights (0x143aac4c8).
 CLua* FUN_1401c0db0();
 
-class Unk_NpcTableCli { public: MS2Ptr<NpcDataCli> FUN_140a7cab0(int nNpcId); };
-class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143ab06f0;                         // the exe's NpcDataTableCli singleton (0x1406d6e90 returns it)
+class Unk_NpcTableCli;   // the NpcDataTableCli singleton (0x1406d6e90 returns it)
 
 // How often a query's main / sub tags hit one region spawn row.
 struct Unk_RegionTagHit
@@ -1054,13 +1051,13 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId)
 {
     if (nNpcId == 0)
         return MS2Ptr<CNpcData>(0);
-    return FUN_1406d6e90()->FUN_140a7cab0(nNpcId);
+    return reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpcId);
 }
 
 // @0x1406d6e90
 Unk_NpcTableCli* FUN_1406d6e90()
 {
-    return reinterpret_cast<Unk_NpcTableCli*>(DAT_143ab06f0);
+    return reinterpret_cast<Unk_NpcTableCli*>(TSingleton<NpcDataTableCli>::s_instance);
 }
 MS2_REPLACE(0x1406D6E90, FUN_1406d6e90, 8, 0x5738B5AB);
 
@@ -1277,7 +1274,7 @@ void CNpcDataTable::LoadRegionSpawn()
         bool bSkip = !strLocale.IsEmpty() && strLocale != reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
         if (bSkip)
             continue;
-        if (!FUN_14036d4b0(FUN_140166410(), strFeature))
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             continue;
         Unk_BmPtr<CNpcRegionSpawnData> pData(Unk_BmNewTag(0));
         pData->m_nNpcId = atoi(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("npcID"));
@@ -1419,12 +1416,11 @@ CString FUN_14016a5c0(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // The boss notify table (the pc bang style handle table): a handle lookup by (mode, npc id), then a per-node test.
-struct Unk_BossNotifyHandle { ~Unk_BossNotifyHandle(); unsigned long long m_a, m_b; };    // dtor 0x1403b87a0
-struct Unk_BossNotifyNode { bool FUN_1403b8910(int n); };
+struct Unk_BossNotifyHandle { ~Unk_BossNotifyHandle(); bool FUN_1403b8910(int n) const; unsigned long long m_a, m_b; };    // dtor 0x1403b87a0
 class Unk_BossNotifyMgr : public GameDictionaryManager
 {
 public:
-    Unk_BossNotifyNode* FUN_1403b7c40(Unk_BossNotifyHandle* pOut, int nMode, int nNpcId);
+    Unk_BossNotifyHandle FUN_1403b7c40(int nMode, int nNpcId);
 };
 Unk_BossNotifyMgr* FUN_140541580();
 
@@ -1491,16 +1487,12 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         {
             if (GetFriendly() > 0)
             {
-                Unk_BossNotifyHandle handle;
-                Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 1, GetId());
-                m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
+                m_bBossNotifyDefault = FUN_140541580()->FUN_1403b7c40(1, GetId()).FUN_1403b8910(0);
             }
             else
             {
                 {
-                    Unk_BossNotifyHandle handle;
-                    Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 2, GetId());
-                    m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
+                    m_bBossNotifyDefault = FUN_140541580()->FUN_1403b7c40(2, GetId()).FUN_1403b8910(0);
                 }
                 FUN_140541580()->SetMobLevel(GetId(), m_nClass);
             }
@@ -1724,7 +1716,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pChild), "dropDistanceRandom", reinterpret_cast<int&>(m_drop.m_nDropDistanceRandom));
         XmlGetAttr((class TiXmlElement*)(pChild), "fireVelocity", reinterpret_cast<float&>(m_drop.m_fFireVelocity));
     }
-    ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"));
+    Unk_140165cf0* pLookAt = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"));
     pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("corpse"));
     if (pChild)
     {

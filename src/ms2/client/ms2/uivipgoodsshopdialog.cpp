@@ -107,13 +107,13 @@ __int64 GetServerTime();                                        // the server ti
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& nValue);
-CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_1409e8ca0(CStringW strKey, const int& a1, const int& a2, const int& a3, const int& a4, const int& a5);
 CStringW FUN_140ed0b00(CStringW strKey, const unsigned& nValue, const CStringW& strTime);
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);
 CString FUN_140513200(const char* szFormat, const unsigned& n);
-void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);                          // message box
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);                          // message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 
 void FUN_141415450(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
@@ -310,7 +310,7 @@ void UIVIPGoodsShopDialog::vfunc_79(void* pPacket)
         if (spGoods == 0)
             return;
         CStringW strMsg = StringFormat<CStringW, CStringW>(GetStringCommon(0x9f6), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, nGoodsId), spGoods->GetPriceText(0));
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FUN_140632a60(0x9f4, GetStringCommon(0x9f8), strMsg), 0, CStringW(L""))) {
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, FormatStringId<CStringW, CStringW>(0x9f4, GetStringCommon(0x9f8), strMsg), 0, CStringW(L""))) {
             spBox->SetTitle(GetStringCommon(0x9f5));
             spBox->SetSound(s_sndCashBuy);
             spBox->SetSize(0x1e0, 300);
@@ -574,7 +574,7 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
         return false;
     Scaleform::GFx::Value v = rData.FUN_1422b9260();
     ASObj obj(v, 2);
-    if (obj.FUN_1422ba9a0())
+    if (obj.IsUndefinedOrNull())
         return false;
     unsigned nIndex = rData.FUN_1422b8b10();
     if (nIndex == 0) {

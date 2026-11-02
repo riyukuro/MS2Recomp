@@ -93,94 +93,98 @@ i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* 
         return (i64)out;
     }
 }
+// _Insert_hint's repeated pieces: _Key(node), _Kfn(val), _DEBUG_LT_PRED(_Getcomp(), l, r), _Insert_at(leftish, node, forward(val), newnode)
+#define WD_KEY(n) (*(const int*)FUN_1402885e0(tree, (n)))
+#define WD_KFN() (*(const int*)FUN_140288610(tree, val))
+#define WD_LT(l, r) reinterpret_cast<TreeII*>(tree)->_Getcomp()(l, r)
+#define WD_INSERT_AT(left, n) FUN_140278a30(tree, out, left, (n), FUN_14027c160(val), newnode)
+#define WD_PREV(it) ((Unk_TIter*)&--*reinterpret_cast<MapII::const_iterator*>(&(it)))
+#define WD_CIT(it) (*reinterpret_cast<MapII::const_iterator*>(&(it)))
 // @0x140278d90
-// MS2-FUNCTIONAL: _Insert_hint: exe is 3124 bytes with C++ EH (flags=3) and debug-iterator branches; this version has no EH state and is 1763 bytes
-// std::_Tree<map<int,int>>::_Insert_hint(const_iterator where, _Valty&& val, _Nodeptr newnode)
+// std::_Tree<map<int,int>>::_Insert_hint(const_iterator where, _Valty&& val, _Nodeptr newnode) (VS2017 15.8 shape: _Multi branch kept, try/catch(...) frees newnode)
 Unk_TIter* FUN_140278d90(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, Unk_TNode* newnode)
 {
     Unk_TIter next;
     FUN_14027cff0(&next);
+    bool leftish = false;
     Unk_TVal* h = (Unk_TVal*)&reinterpret_cast<TreeII*>(tree)->_Get_data();
-    if (reinterpret_cast<TreeII*>(tree)->size() == 0) {
-        i64 v = FUN_14027c160(val);
-        FUN_140278a30(tree, out, 1, h->head, v, newnode);
-        return out;
-    }
-    Unk_TIter t38, t30, t28, t20[2];
-    char atbegin = FUN_14027ee20(&where, FUN_14028a130(tree, &t38));
-    if (atbegin == 0) {
-        char atend = FUN_14027ee20(&where, FUN_14028a910(tree, &t30));
-        if (atend == 0) {
-            i64 a8 = FUN_1402885e0(tree, where.node);
-            i64 a0 = FUN_140288610(tree, val);
-            char before = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(a0), *(const int*)(a8));
-            if (before != 0) {
-                next = where;
-                i64 k90 = FUN_140288610(tree, val);
-                Unk_TIter* prev = (Unk_TIter*)&--*reinterpret_cast<MapII::const_iterator*>(&next);
-                i64 k88 = FUN_1402885e0(tree, prev->node);
-                char after = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(k88), *(const int*)(k90));
-                if (after != 0) {
-                    if (next.node->right->isnil != 0) {
-                        i64 v = FUN_14027c160(val);
-                        FUN_140278a30(tree, out, 0, next.node, v, newnode);
-                        return out;
-                    }
-                    i64 v = FUN_14027c160(val);
-                    FUN_140278a30(tree, out, 1, where.node, v, newnode);
-                    return out;
-                }
-            }
-            i64 k80 = FUN_140288610(tree, val);
-            i64 k78 = FUN_1402885e0(tree, where.node);
-            char afterw = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(k78), *(const int*)(k80));
-            if (afterw != 0) {
-                next = where;
-                Unk_TIter* nx = (Unk_TIter*)&++*reinterpret_cast<MapII::const_iterator*>(&next);
-                char atend2 = FUN_14027ee20(nx, FUN_14028a910(tree, &t28));
-                if (atend2 == 0) {
-                    i64 k68 = FUN_1402885e0(tree, next.node);
-                    i64 k60 = FUN_140288610(tree, val);
-                    char lt = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(k60), *(const int*)(k68));
-                    if (lt == 0) goto nohint;
-                }
-                if (where.node->right->isnil != 0) {
-                    i64 v = FUN_14027c160(val);
-                    FUN_140278a30(tree, out, 0, where.node, v, newnode);
-                    return out;
-                }
-                i64 v = FUN_14027c160(val);
-                FUN_140278a30(tree, out, 1, next.node, v, newnode);
-                return out;
-            }
-        } else {
-            i64 c0 = FUN_140288610(tree, val);
-            Unk_TNode** rm = (Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost();
-            i64 b8 = FUN_1402885e0(tree, *rm);
-            char lt = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(b8), *(const int*)(c0));
-            if (lt != 0) {
-                Unk_TNode** rm2 = (Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost();
-                i64 v = FUN_14027c160(val);
-                FUN_140278a30(tree, out, 0, *rm2, v, newnode);
-                return out;
-            }
-        }
-    } else {
-        i64 d8 = FUN_1402885e0(tree, where.node);
-        i64 d0 = FUN_140288610(tree, val);
-        char lt = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(d0), *(const int*)(d8));
-        if (lt != 0) {
-            i64 v = FUN_14027c160(val);
-            FUN_140278a30(tree, out, 1, where.node, v, newnode);
+    try {
+        if (reinterpret_cast<TreeII*>(tree)->size() == 0) {
+            WD_INSERT_AT(true, h->head);
             return out;
+        } else if (TreeII::_Multi) {
+            if (WD_CIT(where) == reinterpret_cast<TreeII*>(tree)->begin()) {
+                if (!WD_LT(WD_KEY(where.node), WD_KFN())) {
+                    WD_INSERT_AT(true, where.node);
+                    return out;
+                }
+                leftish = true;
+            } else if (WD_CIT(where) == reinterpret_cast<TreeII*>(tree)->end()) {
+                if (!WD_LT(WD_KFN(), WD_KEY(*(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost()))) {
+                    WD_INSERT_AT(false, *(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost());
+                    return out;
+                }
+            } else if (!WD_LT(WD_KEY(where.node), WD_KFN()) && !WD_LT(WD_KFN(), WD_KEY(WD_PREV(next = where)->node))) {
+                if (next.node->right->isnil) {
+                    WD_INSERT_AT(false, next.node);
+                    return out;
+                } else {
+                    WD_INSERT_AT(true, where.node);
+                    return out;
+                }
+            } else if (!WD_LT(WD_KFN(), WD_KEY(where.node)) && (++WD_CIT(next = where) == reinterpret_cast<TreeII*>(tree)->end() || !WD_LT(WD_KEY(next.node), WD_KFN()))) {
+                if (where.node->right->isnil) {
+                    WD_INSERT_AT(false, where.node);
+                    return out;
+                } else {
+                    WD_INSERT_AT(true, next.node);
+                    return out;
+                }
+            } else
+                leftish = true;
+        } else {
+            if (WD_CIT(where) == reinterpret_cast<TreeII*>(tree)->begin()) {
+                if (WD_LT(WD_KFN(), WD_KEY(where.node))) {
+                    WD_INSERT_AT(true, where.node);
+                    return out;
+                }
+            } else if (WD_CIT(where) == reinterpret_cast<TreeII*>(tree)->end()) {
+                if (WD_LT(WD_KEY(*(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost()), WD_KFN())) {
+                    WD_INSERT_AT(false, *(Unk_TNode**)&reinterpret_cast<TValII*>(h)->_Rmost());
+                    return out;
+                }
+            } else if (WD_LT(WD_KFN(), WD_KEY(where.node)) && WD_LT(WD_KEY(WD_PREV(next = where)->node), WD_KFN())) {
+                if (next.node->right->isnil) {
+                    WD_INSERT_AT(false, next.node);
+                    return out;
+                } else {
+                    WD_INSERT_AT(true, where.node);
+                    return out;
+                }
+            } else if (WD_LT(WD_KEY(where.node), WD_KFN()) && (++WD_CIT(next = where) == reinterpret_cast<TreeII*>(tree)->end() || WD_LT(WD_KFN(), WD_KEY(next.node)))) {
+                if (where.node->right->isnil) {
+                    WD_INSERT_AT(false, where.node);
+                    return out;
+                } else {
+                    WD_INSERT_AT(true, next.node);
+                    return out;
+                }
+            }
         }
+    } catch (...) {
+        FUN_1402876f0(tree, newnode);
+        throw;
     }
-nohint:
-    i64 v = FUN_14027c160(val);
-    Unk_TIterBool* r = FUN_1402799d0(tree, (Unk_TIterBool*)t20, 0, v, newnode);
-    out->node = r->node;
+    Unk_TIterBool r;
+    *out = *(Unk_TIter*)FUN_1402799d0(tree, &r, leftish, FUN_14027c160(val), newnode);
     return out;
 }
+#undef WD_KEY
+#undef WD_KFN
+#undef WD_LT
+#undef WD_INSERT_AT
+#undef WD_PREV
+#undef WD_CIT
 // @0x1402799d0
 // MS2-FUNCTIONAL: exe keeps the STL's _TRY_BEGIN/_CATCH_ALL(_Destroy_if_not_nil(newnode)) frame (EH -2 slot, return jumps through the try end); a real try/catch here spills every local differently, so the guard is left out
 // std::_Tree<map<int,int>>::_Insert_nohint(bool leftish, _Valty&& val, _Nodeptr newnode); 1036 bytes (Ghidra's 1024 is truncated)
@@ -246,56 +250,82 @@ Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 v
     }
 }
 // @0x140279de0
-// MS2-FUNCTIONAL: vector::_Insert(range): exe carries EH state/_Reallocate guard layout (1158 bytes) that this straight version (1096) does not reproduce
-// std::vector<16-byte smart pointer>::_Insert(const_iterator where, _Iter first, _Iter last, forward_iterator_tag)
+// std::vector<16-byte smart pointer>::_Insert_range(const_iterator where, _Iter first, _Iter last, forward_iterator_tag) (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 void FUN_140279de0(void* vec, Unk_E16* where, i64 first, i64 last)
 {
-    i64 dist = FUN_14027bc70(first, last);
-    u64 count = std::_Convert_size<u64>((u64)(dist));
-    Unk_E16** pfirst = (Unk_E16**)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
-    i64 whereoff = where - *pfirst;
-    bool onebback;
-    if (count == 1 && where == *(Unk_E16**)&reinterpret_cast<VIng*>(vec)->_Mylast())
-        onebback = true;
-    else
-        onebback = false;
-    if (count != 0) {
-        if (FUN_140289e50(vec) < count) {
-            i64 size = reinterpret_cast<VIng*>(vec)->size();
-            i64 max = reinterpret_cast<VIng*>(vec)->max_size();
-            if ((u64)(max - size) < count)
-                FUN_140289f00();
-            u64 newcap = FUN_140287070(vec, size + count);
-            void* al = (void*)&reinterpret_cast<VIng*>(vec)->_Getal();
-            Unk_E16* newvec = (Unk_E16*)reinterpret_cast<std::allocator<PIng>*>(al)->allocate(newcap);
+    u64 count = std::_Convert_size<u64>((u64)(FUN_14027bc70(first, last)));
+    i64 whereoff = where - *(Unk_E16**)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
+    bool onebback = count == 1 && where == *(Unk_E16**)&reinterpret_cast<VIng*>(vec)->_Mylast() ? true : false;
+    if (count == 0) {
+    } else if (count > FUN_140289e50(vec)) {
+        u64 oldsize = reinterpret_cast<VIng*>(vec)->size();
+        if (count > reinterpret_cast<VIng*>(vec)->max_size() - oldsize)
+            FUN_140289f00();
+        u64 newsize = oldsize + count;
+        u64 newcap = FUN_140287070(vec, newsize);
+        Unk_E16* newvec = (Unk_E16*)reinterpret_cast<VIng*>(vec)->_Getal().allocate(newcap);
+        Unk_E16* constructed_last = newvec + whereoff + count;
+        Unk_E16* constructed_first = constructed_last;
+        try {
             FUN_14027a900(vec, first, last, (i64)&newvec[whereoff]);
+            constructed_first = newvec + whereoff;
             if (onebback) {
-                i64* l = (i64*)&reinterpret_cast<VIng*>(vec)->_Mylast();
-                i64* f = (i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
-                FUN_140289cc0(vec, *f, *l, (i64)newvec);
+                FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)newvec);
             } else {
-                i64* f = (i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
-                FUN_140289b00(vec, *f, (i64)where, (i64)newvec);
-                i64* l = (i64*)&reinterpret_cast<VIng*>(vec)->_Mylast();
-                FUN_140289b00(vec, (i64)where, *l, (i64)(newvec + whereoff + count));
+                FUN_140289b00(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), (i64)where, (i64)newvec);
+                constructed_first = newvec;
+                FUN_140289b00(vec, (i64)where, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)(newvec + whereoff + count));
             }
-            FUN_1402873b0(vec, newvec, size + count, newcap);
-        } else {
-            Unk_E16* oldlast = *(Unk_E16**)&reinterpret_cast<VIng*>(vec)->_Mylast();
-            if (count < (u64)(oldlast - where)) {
-                i64 nl = FUN_140289b00(vec, (i64)(oldlast - count), (i64)oldlast, (i64)oldlast);
-                *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = nl;
-                FUN_14027a390((i64)where, (i64)(oldlast - count), (i64)oldlast);
-                FUN_140287670(vec, (i64)where, (i64)&where[count]);
-                FUN_14027a900(vec, first, last, (i64)where);
-            } else {
-                i64 nl = FUN_140289b00(vec, (i64)where, (i64)oldlast, (i64)&where[count]);
-                *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = nl;
-                FUN_140287670(vec, (i64)where, (i64)oldlast);
-                FUN_14027a900(vec, first, last, (i64)where);
-            }
-            FUN_140288d20(vec, (i64)where, (i64)oldlast);
+        } catch (...) {
+            FUN_140287670(vec, (i64)constructed_first, (i64)constructed_last);
+            reinterpret_cast<VIng*>(vec)->_Getal().deallocate((PIng*)newvec, newcap);
+            throw;
         }
+        FUN_1402873b0(vec, newvec, newsize, newcap);
+    } else {
+        Unk_E16* oldlast = *(Unk_E16**)&reinterpret_cast<VIng*>(vec)->_Mylast();
+        u64 affected = oldlast - where;
+        if (count < affected) {
+            *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = FUN_140289b00(vec, (i64)(oldlast - count), (i64)oldlast, (i64)oldlast);
+            FUN_14027a390((i64)where, (i64)(oldlast - count), (i64)oldlast);
+            FUN_140287670(vec, (i64)where, (i64)&where[count]);
+            try {
+                FUN_14027a900(vec, first, last, (i64)where);
+            } catch (...) {
+                try {
+                    FUN_140289b00(vec, (i64)&where[count], (i64)&where[2 * count], (i64)where);
+                } catch (...) {
+                    FUN_140288d20(vec, (i64)where, (i64)oldlast);
+                    FUN_140287670(vec, (i64)&where[count], *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
+                    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)where;
+                    throw;
+                }
+                FUN_14027a450((i64)&where[2 * count], *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)&where[count]);
+                FUN_140287670(vec, (i64)oldlast, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
+                *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)oldlast;
+                throw;
+            }
+        } else {
+            Unk_E16* relocated = where + count;
+            *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = FUN_140289b00(vec, (i64)where, (i64)oldlast, (i64)relocated);
+            FUN_140287670(vec, (i64)where, (i64)oldlast);
+            try {
+                FUN_14027a900(vec, first, last, (i64)where);
+            } catch (...) {
+                try {
+                    FUN_140289b00(vec, (i64)relocated, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), (i64)where);
+                } catch (...) {
+                    FUN_140288d20(vec, (i64)where, (i64)oldlast);
+                    FUN_140287670(vec, (i64)relocated, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
+                    *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)where;
+                    throw;
+                }
+                FUN_140287670(vec, (i64)relocated, *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast());
+                *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() = (i64)oldlast;
+                throw;
+            }
+        }
+        FUN_140288d20(vec, (i64)where, (i64)oldlast);
     }
 }
 // @0x14027a270

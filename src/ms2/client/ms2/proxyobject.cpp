@@ -63,7 +63,6 @@ class EntityWorldManager   // C3: member view for the former free stand-ins
 public:
     class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
 };
-void FUN_140961880(egf::Entity* pEntity, unsigned nProperty, float* pOut);
 int FUN_140998250(egf::Entity* pEntity, unsigned nProperty, efd::AssetID* pOut);   // 0 = read
 
 class Unk_PxServiceMgr;
@@ -230,7 +229,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
                 reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)*(reinterpret_cast<Vector3*>(&kPos)));
                 reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)*(reinterpret_cast<Vector3*>(&kRot)));
                 float fRadius = 0.0f;
-                FUN_140961880(pEntity, 0xa12005f8, &fRadius);
+                pEntity->GetPropertyValue(0xa12005f8, fRadius);
                 efd::AssetID asset;
                 if (FUN_140998250(pEntity, 0x74bd51ee, &asset) == 0)
                 {

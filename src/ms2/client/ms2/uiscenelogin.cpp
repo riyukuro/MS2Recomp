@@ -21,6 +21,7 @@
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116dd30
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -80,7 +81,7 @@ class Unk_LgMsgBox { public: virtual int vfunc_0(); virtual void vfunc_1(); virt
     virtual void vfunc_23(int nId, const char* szName); };   // FUN_140d86260: slot 0 is the region count, slot 23 shows a message box
 class Unk_LgState { public: void FUN_1417e25a0(int nSceneId); };   // FUN_140aa6d30
 
-Unk_LgUIMgr* FUN_1403ed2b0();
+class CUIService;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -93,7 +94,7 @@ class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    class GFxMovie* FUN_1422b01a0(int);
+    class GFxMovie* FindMovie(int);
 };
 CStringW TakeScreenshotJpg(int a, int b);
 int FUN_1406c34c0();
@@ -101,7 +102,13 @@ CString FUN_14016a5c0(const char* psz, int n);          // text conversion
 int FUN_1406516b0();
 void* FUN_140d86260();   // C3: was FUN_140d86260
 class CNetworkService* FUN_140714f90();
-Unk_LgState* FUN_140aa6d30();
+class CStateService;
+template <> class TSingleton<CStateService>   // as in statemanager.h: s_instance is defined in statemanager.cpp
+{
+public:
+    static CStateService* s_instance;
+    static CStateService* GetInstance() { return s_instance; }
+};
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
 UIIntroMovie* FUN_140e85420(int nUiId);
@@ -153,7 +160,7 @@ void UISceneLogin::vfunc_48(int n)
     UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adbe00(1.0f, 0);
+    TSingleton<CUIService>::GetInstance()->FUN_141adbe00(1.0f, 0);
     UIDialog* pDlg = FUN_140c300a0(0x4ef0);
     if (pDlg != 0)
     {
@@ -174,9 +181,9 @@ void UISceneLogin::vfunc_49(int n)
         m_nProgress = 0;
     else
         m_nProgress = 0x4000;
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e22);
-    if (((CUIService*)FUN_1403ed2b0())->FUN_141adc890((eUIClassID)(0x4eef)) != 0)
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4eef);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e22);
+    if (((CUIService*)reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4eef)) != 0)
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4eef);
     UISceneEntity::vfunc_49(n);
 }
 
@@ -269,7 +276,7 @@ void UISceneLogin::OnLoadComplete()
         vfunc_55();
     if (TSingleton<CFilePreload>::GetInstance()->FUN_141210c60() != 0)
         FUN_141acf860(0x3ffe);
-    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FindMovie(4));
     if (pBg != 0)
     {
         if (pBg->IsLoaded() != 0)
@@ -290,7 +297,7 @@ int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     {
         if (m_nProgress != 0xffff)
             ((class Unk_LgMsgBox*)FUN_140d86260())->vfunc_23(0x388, "NotPreloadingToModeSelect");
-        FUN_140aa6d30()->FUN_1417e25a0(0x6200085);
+        reinterpret_cast<Unk_LgState*>(TSingleton<CStateService>::GetInstance())->FUN_1417e25a0(0x6200085);
         return 1;
     }
     else if (_stricmp("OnEndPopdown", szMethod) == 0)
@@ -311,7 +318,7 @@ void UISceneLogin::vfunc_64()
 void UISceneLogin::FUN_141acf420()
 {
     if (FUN_141acfb40())
-        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4eef)));
+        (((CUIService*)(reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4eef)));
     else
         FUN_141acfa70();
 }
@@ -370,7 +377,7 @@ void UISceneLogin::FUN_141acf700(unsigned int nBits)
 void UISceneLogin::FUN_141acf7c0()
 {
     ShowTitle();
-    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FUN_1422b01a0(4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_LgHost*)(((class Unk_LgHost*)FUN_14025e7a0())))->FindMovie(4));
     if (pBg != 0)
     {
         if (pBg->GotoAndPlay(FUN_14016a5c0("endTitleAni", 0)) != 0)
@@ -412,8 +419,8 @@ void UISceneLogin::FUN_141acf890()
 void UISceneLogin::FUN_141acfa00()
 {
     if (FUN_141acfb40())
-        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4eef)));
-    (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e22)));
+        (((CUIService*)(reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4eef)));
+    (((CUIService*)(reinterpret_cast<Unk_LgUIMgr*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4e22)));
 }
 
 // @0x141acfa70
@@ -496,7 +503,7 @@ static int FUN_141acfd00()
 // @0x141acfe40
 static UILoginDialog* FUN_141acfe40()
 {
-    CUIService* pMgr = reinterpret_cast<CUIService*>(FUN_1403ed2b0());
+    CUIService* pMgr = TSingleton<CUIService>::GetInstance();
     if (pMgr == 0)
         return 0;
     MS2Ptr<UIObject> spUI = pMgr->FindObject((eUIClassID)FUN_141ad0390());
@@ -508,7 +515,7 @@ static UILoginDialog* FUN_141acfe40()
 // @0x141acfef0
 static UIRegionListDialog* FUN_141acfef0()
 {
-    CUIService* pMgr = reinterpret_cast<CUIService*>(FUN_1403ed2b0());
+    CUIService* pMgr = TSingleton<CUIService>::GetInstance();
     if (pMgr == 0)
         return 0;
     MS2Ptr<UIObject> spUI = pMgr->FindObject((eUIClassID)FUN_141ad03a0());

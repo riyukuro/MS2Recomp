@@ -290,7 +290,6 @@ struct Unk_McRequest
     char m_pad_20[0x50];
 };
 MS2_CHECK_SIZE(Unk_McRequest, 0x70);
-void* FUN_140a332d0(Unk_McXform* p);                            // NiTransform default ctor
 void FUN_14097fad0(float* pDst, const Unk_NiPoint3* pSrc);      // NiPoint3 assignment
 
 // Game-wide constants table (the pick range of the cursor).
@@ -514,7 +513,7 @@ MS2_REPLACE_METHOD(0x140AD22D0, CMouseController, FUN_140ad22d0, 36, 0x7D4F70F3)
 void CMouseController::FUN_140ad2300(const Vector3& pt)
 {
     Unk_McXform xf;
-    FUN_140a332d0(&xf);
+    reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
     xf.m_fScale = 1.0f;
     ((efd::Matrix3*)(struct Unk_McRot*)(&xf.m_rotate))->MakeIdentity();
     Unk_NiPoint3 niPt(pt);

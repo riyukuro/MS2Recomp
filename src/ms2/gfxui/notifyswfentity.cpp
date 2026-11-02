@@ -41,7 +41,7 @@ void NotifySwfEntity::getUserData(const Params& params)
         else if (params.pArgs[i].IsString())
             args.AddString(params.pArgs[i].GetString());
         else if (params.pArgs[i].IsStringW())
-            args.FUN_1422b8310(params.pArgs[i].GetStringW());
+            args.AddWString(params.pArgs[i].GetStringW());
         else
             args.AddValue(params.pArgs[i]);
     }
@@ -66,7 +66,7 @@ void NotifySwfEntity::playSound(const Params& params)
     if (params.ArgCount > 1)
         strArg = params.pArgs[1].GetString();
     if (!strSound.IsEmpty())
-        FUN_14025e7a0()->FUN_1422b0610(strSound, strArg);
+        FUN_14025e7a0()->InvokeSoundCallback(strSound, strArg);
 }
 
 // @0x142303340

@@ -310,7 +310,7 @@ void UIUGCHousingPointDialog::RefreshList()
         item.FUN_1407cbb20("count", strCount);
         item.FUN_1407cbb20("point", strPoint);
         item.FUN_1407cbbe0("active", nCount >= nMax);
-        list.FUN_1422bc050(item.FUN_1422bb870());
+        list.PushValue(item.FUN_1422bb870());
     }
     ASObj obj(2);
     obj.FUN_1409adbe0("interiorList", list.FUN_1422bb870());

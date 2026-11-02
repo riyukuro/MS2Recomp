@@ -151,7 +151,7 @@ NiAVObject* CMorphingAnimation::FindNode(const CString& strNodeName)
     Unk_ModelKey kKey;
     Unk_ModelEntry* pEntry = reinterpret_cast<Unk_ModelEntry*>(reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_ModelCache*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_ModelKey&>(m_pOwner->FUN_14123c460(kKey)))));
     if (pEntry != NULL) {
-        NiNode* pRoot = pEntry->FUN_1409f7cb0();
+        NiNode* pRoot = ((class NiNode *)((class NiActorManager*)(pEntry))->GetNIFRoot());
         if (pRoot == NULL)
             return NULL;
         NiAVObject* pObject;

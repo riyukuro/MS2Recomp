@@ -432,8 +432,8 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("OnGuildMemberPopupMenu", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            float x = data.FUN_1422b8c10();
-            float y = data.FUN_1422b8c10();
+            float x = data.PopFloat();
+            float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
             if (pMenu != 0) {
@@ -533,7 +533,7 @@ void UIPvPGuildTeamDialog::FUN_14133bd80(CStringW strName)
         FUN_14133bec0();
         return;
     }
-    spPC->FUN_14152a4a0(pTarget);
+    spPC->StartObserving(pTarget);
     FUN_14133bf60(pTarget);
 }
 MS2_REPLACE_METHOD(0x14133BD80, UIPvPGuildTeamDialog, FUN_14133bd80, 304, 0x8BA07BA2);

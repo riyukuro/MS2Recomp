@@ -269,7 +269,7 @@ void CStoryQuest::FUN_140d73960()
                     spBox->Append<int>(m_7c);
                     spBox->SetTitle(WorldService::GetInstance()->FUN_141bd0d30());
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(((class CQuestManager*)FUN_140764020()), &CQuestManager::SendQuestMode20));
-                    spBox->FUN_141a01690(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
+                    spBox->SetButtonLabels(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
                     FUN_140d73c60(spBox);
                 }
             }
@@ -813,7 +813,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
         Unk_StPlayer* pPlayer = static_cast<Unk_StPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0)
         {
-            CStringW strName = reinterpret_cast<CSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141767e60((__int64)nId);
+            CStringW strName = reinterpret_cast<CSkillSystem*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->GetCompactConfigName((__int64)nId);
             if (!strName.IsEmpty())
                 return StringFormat<CStringW>(FUN_141811980(5, nId), strName);
         }
@@ -901,18 +901,18 @@ CStringW CStringTable::FUN_141812f60(int nItemId)
 }
 
 // @0x141813060
-CStringW CStringTable::FUN_141813060(int nRank, int nItemId)
+CStringW CStringTable::GetItemRankString(int nRank, int nItemId)
 {
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return CStringW(L"");
     if (spItem->GetRank() != 0)
         return GetStringCommon(0);
-    return FUN_141813150(nRank);
+    return GetRankName(nRank);
 }
 
 // @0x141813150
-CStringW CStringTable::FUN_141813150(int nRank)
+CStringW CStringTable::GetRankName(int nRank)
 {
     if (nRank == 0)
         return GetStringCommon(0x4f9);
@@ -929,7 +929,7 @@ CStringW CStringTable::FUN_141813200(__int64 nItemUid)
         return GetStringCommon(0);
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
     if (spItem.get() != 0)
-        return FUN_141813150(spItem->FUN_140526bd0());
+        return GetRankName(spItem->FUN_140526bd0());
     return GetStringCommon(0);
 }
 
@@ -1012,7 +1012,7 @@ CStringW CStringTable::FUN_141813790(CStringW strFormat, CStringW strArgs)
 // @0x141813970
 void CStringTable::FUN_141813970(Unk_140165cf0* pRoot)
 {
-    FUN_141815a20(m_itemDescs, pRoot);
+    LoadDescEntries(m_itemDescs, pRoot);
 }
 
 // @0x1418139b0
@@ -1024,7 +1024,7 @@ void CStringTable::FUN_1418139b0(Unk_140165cf0* pRoot)
 // @0x1418139f0
 void CStringTable::FUN_1418139f0(Unk_140165cf0* pRoot)
 {
-    FUN_141815a20(m_skillDescs, pRoot);
+    LoadDescEntries(m_skillDescs, pRoot);
 }
 
 // @0x141813c80
@@ -1034,11 +1034,11 @@ int CStringTable::FUN_141813c80(CachePtr spCache, CString strParser, CString str
         return FUN_141813f10(CachePtr(spCache));
     else if ((strParser == "customValue"))
         return FUN_141814310(CachePtr(spCache), CString(strParserValue));
-    return FUN_141813e70(CachePtr(spCache));
+    return LoadNames(CachePtr(spCache));
 }
 
 // @0x141813e70
-int CStringTable::FUN_141813e70(CachePtr spCache)
+int CStringTable::LoadNames(CachePtr spCache)
 {
     return FUN_141814310(CachePtr(spCache), CString("name"));
 }
@@ -1305,7 +1305,7 @@ CStringTable::DescPtr CStringTable::FUN_1418158b0(Unk_140165cf0* pNode)
 }
 
 // @0x141815a20
-void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
+void CStringTable::LoadDescEntries(DescMap& rMap, Unk_140165cf0* pRoot)
 {
     Unk_1401b4ec0 lock(m_lock, 1);
     for (Unk_140165cf0* pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))

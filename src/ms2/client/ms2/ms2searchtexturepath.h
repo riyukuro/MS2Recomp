@@ -13,12 +13,12 @@
 #endif
 #include <efd/MemObject.h>
 
-// Unrecovered class between NiSearchPath (m_uiNextPath, two 260-char paths) and MS2SearchTexturePath; 0x330 bytes.
-// Ctor 0x141f42e30, dtor 0x141f42e80, Reset 0x141f436d0, GetNextSearchPath 0x141f42ff0 (bound in symbols-manual.tsv).
-class Unk_STPBase : public efd::MemObject {
+// View of NiTextureSearchPath: sits between NiSearchPath (m_uiNextPath, two 260-char paths) and MS2SearchTexturePath; 0x330 bytes.
+// Ctor 0x141f42e30, dtor 0x141f42e80, Reset 0x141f436d0, GetNextSearchPath 0x141f42ff0.
+class NiTextureSearchPath : public efd::MemObject {
 public:
-    Unk_STPBase();
-    virtual ~Unk_STPBase();
+    NiTextureSearchPath();
+    virtual ~NiTextureSearchPath();
     virtual void Reset();
     virtual bool GetNextSearchPath(char* pcPath, unsigned int uiStringLen);
 protected:
@@ -28,7 +28,7 @@ protected:
     int m_pad_214;
     void* m_pad_218[35];
 };
-MS2_CHECK_SIZE(Unk_STPBase, 0x330);
+MS2_CHECK_SIZE(NiTextureSearchPath, 0x330);
 
 // Resource manager singleton (FUN_140166420).
 class Unk_STPResMgr {
@@ -38,7 +38,7 @@ public:
 };
 Unk_STPResMgr* FUN_140166420();
 
-class MS2SearchTexturePath : public Unk_STPBase {
+class MS2SearchTexturePath : public NiTextureSearchPath {
 public:
     MS2SearchTexturePath();                                     // 0x141507ff0
     virtual ~MS2SearchTexturePath();                            // 0x141508030

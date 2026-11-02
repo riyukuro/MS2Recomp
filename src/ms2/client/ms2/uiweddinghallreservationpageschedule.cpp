@@ -15,9 +15,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/weddingtable.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- exe callees ----
-void* FUN_1409eed90();                                                      // the singleton of the own character
+class WeddingManager;
 __int64 GetServerTime();                                                    // the current time source
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
@@ -25,9 +26,9 @@ public:
     void FUN_140fdbf70();
     void FUN_140fdc030();
     int GetHall();
+    void SetNight(bool bNight);
     void SetTime(__int64);
 };
-void FUN_140fdc160(UIDialog* pDialog, bool bPrivate);                       // tells the dialog the public/private choice
 void* FUN_140fdca40(UIDialog* pDialog);                                     // the reservation target
 void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
@@ -56,11 +57,11 @@ public:
 
 // The public/private radio group (a view of ASButtonGroup, asbuttongroup.h) and the prev/next buttons (AS wrappers
 // of the page movie).
-class Unk_SchedGroup : public ASDisplayObject
+class ASButtonGroup : public ASDisplayObject
 {
 public:
-    Unk_SchedGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
-    void FUN_1422e8ce0(int nValue, bool bFlag);
+    ASButtonGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
+    bool FUN_1422e8ce0(int nValue, bool bFlag);
 };
 class Unk_SchedButton : public ASMovieClip { public: };
 
@@ -142,11 +143,11 @@ bool UIWeddingHallReservationPageSchedule::vfunc_1()
         TruncateToDay(m_date);
     }
     FUN_140fe3c40(this);
-    if (Unk_WedPtr<Unk_SchedGroup> spPublic = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<Unk_SchedGroup>("m_publicGroup"))
+    if (Unk_WedPtr<ASButtonGroup> spPublic = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<ASButtonGroup>("m_publicGroup"))
         spPublic.get()->FUN_1422e8ce0(m_bPrivate ? 0 : 1, true);
     if (m_nTime != 0)
     {
-        if (Unk_WedPtr<Unk_SchedGroup> spTime = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<Unk_SchedGroup>("m_timeGroup"))
+        if (Unk_WedPtr<ASButtonGroup> spTime = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<ASButtonGroup>("m_timeGroup"))
         {
             CMsTime tTime(m_nTime);
             int nHour = tTime.GetHour();
@@ -204,7 +205,7 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
         if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
         {
             m_bPrivate = data.FUN_1422b8a10() == 0 ? true : false;
-            FUN_140fdc160(m_pDialog, m_bPrivate);
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SetNight(m_bPrivate);
         }
     }
     return false;
@@ -276,13 +277,13 @@ bool UIWeddingHallReservationPageSchedule::vfunc_12()
 // @0x140fe3c40 (refreshes the selectable hours, the day arrows and the date text)
 void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
 {
-    Unk_SchedTarget* pTarget = ((struct Unk_SchedTarget*)((class WeddingManager*)(void*)(FUN_1409eed90()))->FUN_140d295d0());
+    Unk_SchedTarget* pTarget = ((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0());
     int nFrom = 0;
     int nTo = 0x18;
     if (pTarget->m_nKind == 1)
     {
         CMsTime tStart(GetServerTime());
-        CMsTime tEnd(((struct Unk_SchedTarget*)((class WeddingManager*)(void*)(FUN_1409eed90()))->FUN_140d295d0())->m_nTime);
+        CMsTime tEnd(((struct Unk_SchedTarget*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0())->m_nTime);
         AddHours(tStart, 4);
         AddDays(tEnd, 7);
         if (!FUN_14086ab70(CMsTime(tStart), CMsTime(pPage->m_date), 0))

@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x1417d9c70-0x1417da7a0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
+#define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateland.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -24,45 +25,15 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/client/ms2/groundeffectdata.h"
+#include "ms2/client/ms2/physxhelper.h"
+#include "ms2/client/ms2/gameobjectcontrollerhitreport.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// The ray cast request / result (0x68).
-struct Unk_LandRay
-{
-    Unk_LandRay();                                          // 0x140ad4440
-    efd::Point3 m_origin;                                   // +0x00
-    efd::Point3 m_dir;                                      // +0x0c
-    float m_maxDist;                                        // +0x18
-    int m_groups;                                           // +0x1c
-    void* m_20;
-    void* m_28;
-    egf::Entity* m_hitEntity;                               // +0x30
-    void* m_hitActor;
-    void* m_hitShape;
-    float m_hitDist;                                        // +0x48
-    efd::Point3 m_hitPoint;                                 // +0x4c
-    efd::Point3 m_hitNormal;                                // +0x58
-    int m_pad_64;
-};
-MS2_CHECK_SIZE(Unk_LandRay, 0x68);
-class Unk_LandPhysX
-{
-public:
-    int FUN_14168a310(const efd::Point3& kFrom, efd::Point3* pHit, Unk_LandRay* pInfo, float fMaxDist, efd::Point3* pNormal, int nMask);
-};
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
-// The body's hit report: the entity the actor stands on.
-class Unk_LandHitReport
-{
-public:
-    egf::EntityID FUN_140cfaf70();                          // id of the entity stood on
-    void FUN_140cfb020(egf::Entity* pEntity);               // set the entity stood on
-};
 class GameObjectControllerHitReport;
 class GameObjectController { public: GameObjectControllerHitReport* FUN_141240f20(); };   // C3: unit-local view
-const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 // The actor's buff set.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
@@ -109,15 +80,15 @@ void StateLand::vfunc_4(StateData* pData)
     else
         m_n10 = 0x86;
     PCBase* pPC = FUN_1417b8370();
-    Unk_LandRay kRay;
+    Unk_RayCastInfo kRay;
     efd::Point3 kFrom = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 30.0f);
     efd::Point3 kHit = efd::Point3::ZERO;
     efd::Point3 kNormal = efd::Point3::ZERO;
-    int nHit = ((class Unk_LandPhysX*)FUN_1409f7ca0())->FUN_14168a310(kFrom, &kHit, &kRay, 50.0f, &kNormal, 0);
+    int nHit = reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kFrom), reinterpret_cast<Vector3&>(kHit), &kRay, 50.0f, reinterpret_cast<Vector3*>(&kNormal), 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
-        if (*FUN_1408b76f0(kRay.m_hitEntity) != ((Unk_LandHitReport*)((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20())->FUN_140cfaf70())
-            ((Unk_LandHitReport*)((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20())->FUN_140cfb020(kRay.m_hitEntity);
+        if (reinterpret_cast<egf::Entity*>(kRay.m_hitEntity)->GetEntityID() != ((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20()->GetEntityID())
+            ((GameObjectController*)pPC->FUN_14166d220())->FUN_141240f20()->SetEntity(reinterpret_cast<Unk_Entity*>(kRay.m_hitEntity));
     }
     m_pOwner->vfunc_93(true);
     reinterpret_cast<CGroundEffectDataManager*>(TSingleton<CGroundEffectDataManager>::GetInstance())->PlayEffects(m_pOwner, CString("land"));

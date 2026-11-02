@@ -624,7 +624,7 @@ int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
 }
 
 // @0x141792d70
-unsigned SoundPropertyMgr::FUN_141792d70(int nAttack, int nDefence)
+unsigned SoundPropertyMgr::GetHitSound(int nAttack, int nDefence)
 {
     CheckInit();
     std::vector<int>& ids = m_hitSounds[Unk_HitSoundKey(nAttack, nDefence)];
@@ -672,7 +672,7 @@ SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strNa
 }
 
 // @0x141793110
-SoundPropertyMgr::VoicePtr SoundPropertyMgr::FUN_141793110(const CString& strName)
+SoundPropertyMgr::VoicePtr SoundPropertyMgr::FindTriggerVoice(const CString& strName)
 {
     CheckInit();
     if (m_triggerVoices.IsEmpty())
@@ -701,7 +701,7 @@ void SoundPropertyMgr::FUN_141793210(Unk_VoiceGroupMap& rOut)
 }
 
 // @0x141793340
-int SoundPropertyMgr::FUN_141793340(int nObjectId, Unk_SoundPitch* pOut)
+int SoundPropertyMgr::FindPitch(int nObjectId, Unk_SoundPitch* pOut)
 {
     CheckInit();
     std::map<int, Unk_SoundPitch>::iterator it = m_pitches.find(nObjectId);

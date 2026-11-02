@@ -43,7 +43,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_HomeNotifications,8);
 Unk_HomeNotifications* FUN_140a4a7b0();
-extern Unk_HomeNotifications* DAT_143ab6878;
+class UIBuddyEventDispatcher;
 template<class T> inline void HomeMessage(int id,int a,int b,const T& value) {
     const fmt::internal::ArgArray<1>::Type values={fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
     FUN_141275460(id,a,b,fmt::ArgList(fmt::internal::make_type(value),values));
@@ -243,7 +243,7 @@ HomeBlockManager::BuddyPtr HomeBlockManager::FUN_140a47d10(HomePtr home) {
 }
 // @0x140a4a7b0
 Unk_HomeNotifications* FUN_140a4a7b0() {
-    return DAT_143ab6878;
+    return reinterpret_cast<Unk_HomeNotifications*>(TSingleton<UIBuddyEventDispatcher>::s_instance);
 }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)

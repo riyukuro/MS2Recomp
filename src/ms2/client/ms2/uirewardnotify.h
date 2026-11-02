@@ -8,7 +8,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/commonfiles/vipgoods.h"
-class PC; class NotifyObject; class CInPacket; class Unk_RNItemRef; class Unk_RNAchieve;
+class PC; class NotifyObject; class CInPacket; class CItem; class Unk_RNAchieve;
 
 // HUD queue of "reward" toasts (exp, meso, items, titles, skills, fishing, ...). Each Push*/Show* builds an AS object
 // (type/msg/icon/...) and hands it to AppendReward, which sends "appendReward" or queues it until the movie is ready.
@@ -35,25 +35,25 @@ public:
     void FUN_141abf230(__int64 nExp, __int64 nBonus);                                   // exp
     void FUN_141abf450(__int64 nMoney, __int64 nBonus);                                 // meso
     void FUN_141abf6e0(int nItemId, int nGrade);                                        // item by id
-    void FUN_141abfa10(Unk_RNItemRef pItem);                                            // item
+    void FUN_141abfa10(MS2Ptr<CItem> pItem);                                            // item
     void FUN_141abfdc0(Unk_RNAchieve* pAchieve);                                        // achievement / title
     void FUN_141abffa0(int nEmotionId);                                                 // emotion
     void FUN_141ac0210(PC* pPlayer);                                                  // learned skills
     void FUN_141ac05d0(int nSkillId, CStringW strMsg, int nSkillType);                  // skill message (by value: the callee destroys it)
-    void FUN_141ac0860(__int64 nValue);                                                 // "merat"
-    void FUN_141ac0990(__int64 nValue);                                                 // "merat_red"
+    void ShowMeratNotice(__int64 nValue);                                                 // "merat"
+    void ShowMeratRedNotice(__int64 nValue);                                                 // "merat_red"
     void FUN_141ac0ac0(int nId);                                                        // title
-    void FUN_141ac0cd0(const CStringW& strMsg, const CStringW& strIcon);                // token / currency message
+    void ShowIconNotice(const CStringW& strMsg, const CStringW& strIcon);                // token / currency message
     void FUN_141ac0e50(int nFishId, unsigned nLength);                                       // fishing success
     void FUN_141ac11b0(int nFishId, unsigned nLength);                                       // fishing fail
-    void FUN_141ac14b0();                                                               // "skillLevelUp"
+    void ShowSkillLevelUpNotice();                                                               // "skillLevelUp"
     void FUN_141ac1580(const CStringW& strIcon, const CStringW& strMsg, int nEffect);   // message + icon + effect
     void FUN_141ac1730(const CStringW& strMsg, int nSpecial, const CStringW& strTag);   // stamp
-    void FUN_141ac18e0(bool bOpen);                                                     // "OnSkillBookDialog"
+    void NotifySkillBookDialog(bool bOpen);                                                     // "OnSkillBookDialog"
     void FUN_141ac1950(int nPoint, int nKind);                                          // skill point
     void FUN_141ac1b50(int nPoint);                                                     // stat point
     void FUN_141ac1d10(int nItemId);                                                    // box open (cash coupon)
-    void FUN_141ac1f40();                                                               // "rewardComplete"
+    void RewardComplete();                                                               // "rewardComplete"
     void AppendReward(MS2Ptr<AScript> pReward);                                          // send "appendReward" or queue
 
 private:

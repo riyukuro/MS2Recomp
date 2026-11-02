@@ -93,28 +93,28 @@ CStringW FUN_1401ca400(const BlockPtr& record, int action);
 Unk_MessageBoxPtr FUN_14151f820();
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
-void* FUN_140534fc0(const Unk_MessageBoxPtr&);
-void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 class CMsgBoxData   // C3: unit-local view
 {
 public:
     template <class T> void Append(T value);
-    void FUN_141a01ca0(int a, int b, const CStringW& str);
+    void SetTimer(int a, int b, const CStringW& str);
     void FUN_141a02460(int n);
     void FUN_141a02480(int n);
     void FUN_141a024a0(int n);
 };
+template <class T> class Unk_BreakPtr { public: operator T*() const; T* operator->() const; };   // C3: view of itembreakmanager.h
+#define TM_BOX(p) reinterpret_cast<const Unk_BreakPtr<CMsgBoxData>&>(p)
 int FUN_14025a620(class Unk_ConstVal*);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was void* FUN_1401d3200()
 CStringW GetStringCommon(int id);
-CStringW FUN_14052bd00(int id, const CStringW& arg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int id);
 CStringW FUN_140a22c00(int id, const CStringW& a, const unsigned short& n);
 void FUN_1412751b0(const CStringW& text, int channel);
 void FUN_1412751f0(const CStringW& text, int a, int b);
 void FUN_141275260(int stringId, int a, int b);
 int FUN_141276180(const CString& strSound, const CString& strArg);
-void FUN_140961010(int, int, int, const CStringW&);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 void FUN_140f8ff40(int, int, int);
 void FUN_140710590(COutPacket& packet);
 
@@ -205,12 +205,12 @@ void Unk_TradeItemTable::FUN_14185b3d0(__int64 uid)
 }
 
 // @0x14185b4a0
-// MS2-FUNCTIONAL: the exe moves the local into the return slot (shared MS2Ptr has no move ctor); this builds the return value from the raw pointer
+// The exe moves the local into the return slot.
 MS2Ptr<CItem> Unk_TradeItemTable::FUN_14185b4a0(__int64 uid)
 {
     MS2Ptr<CItem> spItem;
     m_byUid.Lookup(uid, spItem);
-    return MS2Ptr<CItem>(spItem.get());
+    return spItem;
 }
 
 // @0x14185b520
@@ -409,20 +409,20 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
         }
     }
     Unk_MessageBoxPtr current = FUN_14151f820();
-    if (FUN_140534fc0(current) != 0)
+    if (TM_BOX(current).operator CMsgBoxData*() != 0)
     {
         SendTradeMode14(uid);
     }
     else
     {
-        Unk_MessageBoxPtr box = FUN_140d73d20(1, FUN_14052bd00(0x823, strName), 0, s_requestTradeEx);
-        if (FUN_140534fc0(box) != 0)
+        Unk_MessageBoxPtr box = FUN_140d73d20(1, FormatStringId<CStringW>(0x823, strName), 0, s_requestTradeEx);
+        if (TM_BOX(box).operator CMsgBoxData*() != 0)
         {
-            ((CMsgBoxData*)FUN_140534fe0(box))->Append<__int64>(uid);
-            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a01ca0(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788)), 1, GetStringCommon(0x2b8));
-            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a02460(true);
-            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a02480(true);
-            ((CMsgBoxData*)FUN_140534fe0(box))->FUN_141a024a0(false);
+            TM_BOX(box).operator->()->Append<__int64>(uid);
+            TM_BOX(box).operator->()->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788)), 1, GetStringCommon(0x2b8));
+            TM_BOX(box).operator->()->FUN_141a02460(true);
+            TM_BOX(box).operator->()->FUN_141a02480(true);
+            TM_BOX(box).operator->()->FUN_141a024a0(false);
             FUN_140d73c60(box);
             SendTradeMode2(uid);
         }
@@ -448,25 +448,25 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
     switch ((int)code)
     {
     case 0:
-        strMsg = FUN_14052bd00(0x827, strName);
+        strMsg = FormatStringId<CStringW>(0x827, strName);
         break;
     case 0xc:
-        strMsg = FUN_14052bd00(0x829, strName);
+        strMsg = FormatStringId<CStringW>(0x829, strName);
         break;
     case 1:
-        strMsg = FUN_14052bd00(0x828, strName);
+        strMsg = FormatStringId<CStringW>(0x828, strName);
         break;
     case 2:
-        strMsg = FUN_14052bd00(0x82a, strName);
+        strMsg = FormatStringId<CStringW>(0x82a, strName);
         break;
     case 3:
-        strMsg = FUN_14052bd00(0x82b, strName);
+        strMsg = FormatStringId<CStringW>(0x82b, strName);
         break;
     case 5:
-        strMsg = FUN_14052bd00(0x82d, strName);
+        strMsg = FormatStringId<CStringW>(0x82d, strName);
         break;
     case 6:
-        strMsg = FUN_14052bd00(0x82e, strName);
+        strMsg = FormatStringId<CStringW>(0x82e, strName);
         break;
     case 0xe:
         strMsg = BlockFormat(0x82c);
@@ -490,10 +490,10 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         strMsg = BlockFormat(0x834);
         break;
     case 0xf:
-        strMsg = FUN_14052bd00(0x835, strName);
+        strMsg = FormatStringId<CStringW>(0x835, strName);
         break;
     case 0x10:
-        strMsg = FUN_14052bd00(0x836, strName);
+        strMsg = FormatStringId<CStringW>(0x836, strName);
         break;
     case 0x11:
         break;
@@ -527,8 +527,8 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
 void CTradeManagerEx::FUN_14185cc60(CInPacket& packet)
 {
     CStringW strName = packet.ReadUnicodeString();
-    FUN_1412751b0(FUN_14052bd00(0x824, strName), 0x12);
-    FUN_140961010(0x824, 1, 0, strName);
+    FUN_1412751b0(FormatStringId<CStringW>(0x824, strName), 0x12);
+    Unk_AkoMessage<CStringW>(0x824, 1, 0, strName);
 }
 
 // @0x14185cd10
@@ -544,7 +544,7 @@ void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
         reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e47);
         m_uidLastSent = 0;
         ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4e83));
-        FUN_1412751b0(FUN_14052bd00(0x846, pPlayer->vfunc_77()), 0x12);
+        FUN_1412751b0(FormatStringId<CStringW>(0x846, pPlayer->vfunc_77()), 0x12);
     }
 }
 
@@ -558,9 +558,9 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
         CStringW strPartner = pDlg->GetPartner();
         reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e83);
         if (bAccepted)
-            FUN_1412751b0(FUN_14052bd00(0x826, strPartner), 0x12);
+            FUN_1412751b0(FormatStringId<CStringW>(0x826, strPartner), 0x12);
         else
-            FUN_1412751b0(FUN_14052bd00(0x825, strPartner), 0x12);
+            FUN_1412751b0(FormatStringId<CStringW>(0x825, strPartner), 0x12);
     }
     m_uidLastSent = 0;
 }

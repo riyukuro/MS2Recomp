@@ -81,46 +81,46 @@ public:
     virtual void vfunc_4(bool b);                               // 4 0x1422bfbd0 SetVisible (only if it changes)
     virtual ASStage* vfunc_5();                                 // 5 0x1422c1560 the stage of the object's movie (ASStage returns itself)
 
-    bool FUN_1422bfca0();                                       // IsVisible
+    bool GetVisible();                                       // IsVisible
     void SetFOV(float fFOV);                             // set the FOV
     float GetFOV();                                      // FOV
     void SetAlpha(float fAlpha);                           // set the alpha (100 = opaque)
-    float FUN_1422bfe80();                                      // alpha
+    float GetAlpha();                                      // alpha
     void SetRotation(float fRotation);                        // set the rotation (degrees; uiminimapentity.cpp)
     float GetRotation();                                      // rotation
-    void FUN_1422bffe0(int x, int y);                           // set the position
-    void FUN_1422c0060(unsigned int x, unsigned int y);         // set the position (uidungeonroomdialog season rank marks)
-    void FUN_1422c00f0(float x, float y);                       // set the position (float)
-    void FUN_1422c0180(int xScale, int yScale);                 // set the scale (100 = 100%)
-    void FUN_1422c0200(unsigned int xScale, unsigned int yScale);
-    void FUN_1422c0290(float xScale, float yScale);
-    void FUN_1422c0320(int x);                                  // set x (uiwritemusicdialog playing line)
-    void FUN_1422c03a0(unsigned int x);                         // set x (uiguilddialog.cpp)
-    void FUN_1422c0420(float x);                                // set x
-    void FUN_1422c04a0(int y);                                  // set y (uirankpvpdialog.cpp)
-    void FUN_1422c0520(unsigned int y);                         // set y
-    void FUN_1422c05a0(float y);                                // set y
-    void FUN_1422c0620(int z);                                  // set z
-    void FUN_1422c06a0(unsigned int z);
-    void FUN_1422c0720(float z);
+    void SetPositionInt(int x, int y);                           // set the position
+    void SetPositionUInt(unsigned int x, unsigned int y);         // set the position (uidungeonroomdialog season rank marks)
+    void SetPositionFloat(float x, float y);                       // set the position (float)
+    void SetScaleInt(int xScale, int yScale);                 // set the scale (100 = 100%)
+    void SetScaleUInt(unsigned int xScale, unsigned int yScale);
+    void SetScaleFloat(float xScale, float yScale);
+    void SetXInt(int x);                                  // set x (uiwritemusicdialog playing line)
+    void SetXUInt(unsigned int x);                         // set x (uiguilddialog.cpp)
+    void SetXFloat(float x);                                // set x
+    void SetYInt(int y);                                  // set y (uirankpvpdialog.cpp)
+    void SetYUInt(unsigned int y);                         // set y
+    void SetYFloat(float y);                                // set y
+    void SetZInt(int z);                                  // set z
+    void SetZUInt(unsigned int z);
+    void SetZFloat(float z);
     void MoveX(int dx);                                 // move x by dx
     void MoveY(int dy);                                 // move y by dy
     void MoveBy(int dx, int dy);                         // move by (dx, dy)
-    void FUN_1422c09a0(int xScale);                             // set the x scale
-    void FUN_1422c0a20(unsigned int xScale);
-    void FUN_1422c0aa0(float xScale);
-    void FUN_1422c0b20(int yScale);                             // set the y scale
-    void FUN_1422c0ba0(unsigned int yScale);
-    void FUN_1422c0c20(float yScale);
-    void FUN_1422c0ca0(int zScale);                             // set the z scale
-    void FUN_1422c0d20(unsigned int zScale);
-    void FUN_1422c0da0(float zScale);
-    void FUN_1422c0e20(int nWidth);                             // set the "width" member (uirankpvpdialog.cpp)
-    void FUN_1422c0e50(unsigned int nWidth);
-    void FUN_1422c0e80(float fWidth);
-    void FUN_1422c0ec0(int nHeight);                            // set the "height" member
-    void FUN_1422c0ef0(unsigned int nHeight);
-    void FUN_1422c0f20(float fHeight);
+    void SetXScaleInt(int xScale);                             // set the x scale
+    void SetXScaleUInt(unsigned int xScale);
+    void SetXScaleFloat(float xScale);
+    void SetYScaleInt(int yScale);                             // set the y scale
+    void SetYScaleUInt(unsigned int yScale);
+    void SetYScaleFloat(float yScale);
+    void SetZScaleInt(int zScale);                             // set the z scale
+    void SetZScaleUInt(unsigned int zScale);
+    void SetZScaleFloat(float zScale);
+    void SetWidthInt(int nWidth);                             // set the "width" member (uirankpvpdialog.cpp)
+    void SetWidthUInt(unsigned int nWidth);
+    void SetWidthFloat(float fWidth);
+    void SetHeightInt(int nHeight);                            // set the "height" member
+    void SetHeightUInt(unsigned int nHeight);
+    void SetHeightFloat(float fHeight);
     void GetPosition(float* pX, float* pY);                   // get the position (uivipdialog.cpp)
     void GetScale(float* pXScale, float* pYScale);         // get the scale
     float FUN_1422c10a0();                                      // x
@@ -135,11 +135,11 @@ public:
     float GetHeight();                                      // height
     int FUN_1422c1500();                                        // the stage width
     int FUN_1422c1530();                                        // the stage height
-    int FUN_1422c15d0(int x, int y, bool bShapeFlag);          // hitTestPoint
+    int HitTestPointInt(int x, int y, bool bShapeFlag);          // hitTestPoint
     int HitTestPoint(float x, float y, bool bShapeFlag);      // hitTestPoint
     int HitTestObject(MS2Ptr<ASDisplayObject> spObj);          // hitTestObject (spObj by value: the callee destroys it)
     int FUN_1422c17d0(const Scaleform::GFx::Value::DisplayInfo& info);   // SetDisplayInfo
-    int FUN_1422c1810(Scaleform::GFx::Value::DisplayInfo& info);         // GetDisplayInfo (false if not a display object)
+    int GetDisplayInfo(Scaleform::GFx::Value::DisplayInfo& info);         // GetDisplayInfo (false if not a display object)
 
     // ---- defined in other units of the GFx UI library ----
     // FUN_1422c3180 (AS -> C++ callback), FUN_1422c3600 (addEventListener) and FUN_1422c3820 (removeEventListener) are

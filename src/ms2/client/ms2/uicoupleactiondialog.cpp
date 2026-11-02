@@ -141,41 +141,26 @@
 #include <vector>
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/placeholder/astextinput.h"
+#include "ms2/placeholder/ckeytable.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/client/ms2/skillsystem.h"
+#include "ms2/commonfiles/dynamicactiondata.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class ASDialog : public ASDisplayObject {};
-// "m_inputSearch": the search text input.
-class Unk_CoupleInput : public ASDisplayObject
-{
-public:
-    CStringW FUN_1422e0b00();                               // the text
-    void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // text changed callback
-};
+class Unk_CoupleInput : public ASTextInput {};          // "m_inputSearch": the search text input
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
-// The emotion description (keywords) of an emotion id: the strings are at +0x38.
-class Unk_EmotionKeywords : public CPtred
-{
-public:
-    void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
-    ATL::CAtlArray<CStringW> m_38;                          // +0x38 keywords
-};
-MS2Ptr<Unk_EmotionKeywords> FUN_140347050(int nEmotion);
-
 // The skill system (emotion list, mode, reset) and the player.
-void FUN_1417691a0(CSkillSystem* p, ATL::CAtlArray<MS2Ptr<Unk_Emotion> >& list);
 void FUN_14151f200();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // Input state, the movie manager, the key binds.
 class Unk_CoupleInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_CoupleUiMgr { public: int FUN_1422d4e20(CString strKey); };
-Unk_CoupleUiMgr* FUN_140b632f0();
-class Unk_CoupleKeyBinds { public: void* FUN_14142d190(int nKey); int FUN_14142b250(int nKey, int a, unsigned __int64 nEmotion, int b, int c); void FUN_14142a8b0(unsigned __int64 nEmotion); };
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
 CStringTable* GetStringTable();
@@ -249,7 +234,7 @@ void UICoupleActionDialog::OnLoadComplete()
     if (m_30.get() != 0) {
         Unk_CoupleInput* pInput = m_30->FUN_140bbe940<Unk_CoupleInput>("m_inputSearch", m_190);
         if (pInput != 0)
-            m_190->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICoupleActionDialog::FUN_140beced0));
+            m_190->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICoupleActionDialog::FUN_140beced0));
     }
 }
 MS2_REPLACE_METHOD(0x140BEC2F0, UICoupleActionDialog, OnLoadComplete, 369, 0xCE6E4FB0);
@@ -274,10 +259,10 @@ int UICoupleActionDialog::vfunc_13()
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
-                if (((class ASUIComponent*)(class Unk_CoupleInput*)(m_190.operator->()))->FUN_1422c76c0() != 0) {
-                    SetSearchText(m_190->FUN_1422e0b00());
-                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->FUN_1422c7630(1);
-                    ((class ASUIComponent*)(class ASDisplayObject*)(m_190.operator->()))->FUN_1422c7630(0);
+                if (((class ASUIComponent*)(class Unk_CoupleInput*)(m_190.operator->()))->GetFocused() != 0) {
+                    SetSearchText(m_190->GetText());
+                    ((class ASUIComponent*)(class ASDisplayObject*)(pDlg))->SetFocused(1);
+                    ((class ASUIComponent*)(class ASDisplayObject*)(m_190.operator->()))->SetFocused(0);
                     return 1;
                 }
             }
@@ -291,7 +276,7 @@ MS2_REPLACE_METHOD(0x140BEC570, UICoupleActionDialog, vfunc_13, 488, 0x3C8B1F60)
 void UICoupleActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     int nEmotion = pArgs->FUN_1422b8b10();
-    MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nEmotion);
+    MS2Ptr<CDynamicActionData> spData = CDynamicActionData::Find(nEmotion);
     if (spData.IsNull())
         return;
     ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
@@ -390,7 +375,7 @@ void UICoupleActionDialog::FUN_140becef0()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0) return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-    FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
+    pPlayer->FUN_141523bc0()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));
     int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->SetShowError(0);
     ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->FUN_141523bc0()))->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
@@ -585,12 +570,12 @@ MS2_REPLACE_METHOD(0x140BEDE70, UICoupleActionDialog, SetSearchText, 124, 0x23F3
 // @0x140bedf00
 CStringW UICoupleActionDialog::GetEmotionKeywords(unsigned int nEmotion)
 {
-    MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nEmotion);
+    MS2Ptr<CDynamicActionData> spData = CDynamicActionData::Find(nEmotion);
     if (!spData)
         return CStringW(L"");
     CStringW strKeywords;
-    for (size_t i = 0; i < spData->m_38.GetCount(); i++)
-        strKeywords.AppendFormat(L"%s ", (const wchar_t*)spData->m_38[i]);
+    for (size_t i = 0; i < spData->m_reserved.GetCount(); i++)
+        strKeywords.AppendFormat(L"%s ", (const wchar_t*)spData->m_reserved[i]);
     strKeywords.TrimRight();
     return strKeywords;
 }
@@ -615,7 +600,7 @@ void UICoupleActionDialog::PadEntriesToGrid(ASArray& arr)
     for (int i = 0; i < nMissing; i++) {
         Scaleform::GFx::Value kEmpty;
         kEmpty.SetNull();
-        arr.FUN_1422bc050(kEmpty);
+        arr.PushValue(kEmpty);
     }
 }
 MS2_REPLACE_METHOD(0x140BEE040, UICoupleActionDialog, PadEntriesToGrid, 254, 0xB7B5AC57);
@@ -652,16 +637,16 @@ MS2_REPLACE_METHOD(0x140BEE150, UICoupleActionDialog, FUN_140bee150, 1067, 0x98B
 // @0x140bee590
 int UICoupleActionDialog::FUN_140bee590(int nKey)
 {
-    return ((class Unk_CoupleKeyBinds*)FUN_1409331f0())->FUN_14142d190(nKey) == 0;
+    return FUN_1409331f0()->GetKeyAction(nKey) == 0;
 }
 MS2_REPLACE_METHOD(0x140BEE590, UICoupleActionDialog, FUN_140bee590, 62, 0xC01866C2);
 
 // @0x140bee5e0
 int UICoupleActionDialog::FUN_140bee5e0(int nKey, unsigned __int64 nEmotion)
 {
-    if (((class Unk_CoupleKeyBinds*)FUN_1409331f0())->FUN_14142b250(nKey, 2, nEmotion, 0, 0) != 0) {
+    if (FUN_1409331f0()->SetKeyBindingAndSync(nKey, 2, nEmotion, 0, 0) != 0) {
         FUN_140becef0();
-        ((class Unk_CoupleKeyBinds*)FUN_1409331f0())->FUN_14142a8b0(nEmotion);
+        FUN_1409331f0()->FUN_14142a8b0(nEmotion);
         return 1;
     }
     return 0;

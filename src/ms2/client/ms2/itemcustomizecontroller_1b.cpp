@@ -42,7 +42,7 @@ struct Unk_FactoryItem : public CItemData
 class CEquipItem : public CPtred
 {
 public:
-    Unk_FactoryItem* FUN_1411dc7f0();                           // the item
+    struct Unk_EquipItemData* FUN_1411dc7f0();                           // the item
     int FUN_1411dc670();                                        // item is a hat (hides hair)
     void FUN_1411dcc80(CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts);   // the item's model parts
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
@@ -87,14 +87,14 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, Unk_FactoryPlayer* pPlaye
     if (pPlayer == 0)
         return ControllerPtr(0);
     ControllerPtr spController(0);
-    if (spItem->FUN_1411dc7f0()->FUN_14053d070())
+    if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053d070())
     {
         spController = new (efd::MemHint(efd::MemHint::NONE)) CMakeupController;
         spController->Initialize(3);
     }
     else
     {
-        if (spItem->FUN_1411dc7f0()->FUN_14053cfd0())
+        if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053cfd0())
         {
             MS2Ptr<CEquipItem> spCap = pPlayer->FUN_141655e10(6);
             bool bHasCap;
@@ -146,7 +146,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, Unk_FactoryPlayer* pPlaye
         }
         else
         {
-            if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
+            if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
             {
                 CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
                 spItem->FUN_1411dcc80(aParts);
@@ -165,7 +165,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, Unk_FactoryPlayer* pPlaye
                     delete pMorph;
                     spController = 0;
                 }
-                if (spItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547150())
+                if (reinterpret_cast<Unk_FactoryItem*>(spItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547150())
                 {
                     spController = new (efd::MemHint(efd::MemHint::NONE)) CCapRotationController;
                     if (spController->Initialize(6) == 0)

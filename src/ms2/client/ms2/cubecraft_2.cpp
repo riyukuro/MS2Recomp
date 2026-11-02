@@ -738,7 +738,7 @@ void Unk_PCCubeCraft::FUN_1410ac960()
 MS2_REPLACE_METHOD(0x1410AC960, Unk_PCCubeCraft, FUN_1410ac960, 74, 0xC5A8022D);
 
 // @0x1410ad5f0
-char Unk_PCCubeCraft::GetPending()
+bool Unk_PCCubeCraft::GetPending()
 {
     return m_bPending;
 }

@@ -270,7 +270,7 @@ void UIDTEventDialog::vfunc_43()
                     if (reinterpret_cast<Unk_DTMovie*>(movie.operator->())->FUN_1422c2510(&fValue, &fExtra))
                         nRemain = (int)(fValue - (double)dialog->FUN_1422c1340());
                 }
-                dialog->FUN_1422bffe0(nRemain > 0 ? nRemain : 0, 0x1c);
+                dialog->SetPositionInt(nRemain > 0 ? nRemain : 0, 0x1c);
             }
         }
     }

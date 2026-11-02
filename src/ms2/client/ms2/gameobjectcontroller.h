@@ -65,7 +65,7 @@ public:
     float FUN_141241000();                                                          // capsule radius (PhysX units)
     void FUN_141241070();                                                           // forget the collision flags
     float FUN_141241090();                                                          // jump apex time (0 unless jumping)
-    bool FUN_1412410c0(efd::Point3 kPos, float fOffset);                            // would the capsule overlap at kPos
+    bool FUN_1412410c0(const efd::Point3& kPos, float fOffset);                            // would the capsule overlap at kPos
     int FUN_1412412b0();                                                            // in the air (falling or descending)
     float GetCenterOffset();                                                          // feet-to-centre offset
 

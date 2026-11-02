@@ -50,7 +50,6 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 class ASDialog : public AScript {
 public:
-    int FUN_1422c1500();
     int FUN_1422c1530();
     int FUN_1422e6270();
     int FUN_1422e6310();
@@ -297,7 +296,7 @@ int UISnowmanEventDialog::vfunc_53(void* cfg)
     if (UIDialog::vfunc_53(cfg)) {
         ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if ((m_alignInfo.get() ? true : false) && dialog) {
-            float x = (float)dialog->FUN_1422c1500();
+            float x = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1500();
             float y = (float)dialog->FUN_1422c1530();
             m_alignInfo->FUN_141901880(m_30, (float)dialog->FUN_1422e6310(), (float)dialog->FUN_1422e6270(), x, y);
             m_alignInfo->FUN_1419015e0(cfg);
@@ -381,7 +380,7 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<Unk_SnowmanContext> context)
             reward.FUN_1407cba60("iconPath", FUN_140e96500(item.m_itemId));
             row.FUN_1409eb270("accumCompleteReward", reward);
         }
-        snowmans.FUN_1422bc050(row.FUN_1422bb870());
+        snowmans.PushValue(row.FUN_1422bb870());
     }
     info.FUN_1409adbe0("snowmans", snowmans.FUN_1422bb870());
     info.FUN_1407cbb20("thema", context->m_thema);
@@ -538,7 +537,7 @@ void UISnowmanEventDialog::FUN_140e965e0()
         row.FUN_1407cb9c0("curDailyCompleteCount", FUN_140e960d0((int)i));
         row.FUN_1407cb9c0("curAccumCompleteCount", FUN_140e96260((int)i));
         row.FUN_1407cbbe0("accumCompleteRewardReceived", IsAccumRewardReceived((int)i));
-        snowmans.FUN_1422bc050(row.FUN_1422bb870());
+        snowmans.PushValue(row.FUN_1422bb870());
     }
     info.FUN_1409adbe0("snowmans", snowmans.FUN_1422bb870());
     m_30->Invoke("updateInfo", info.FUN_1422bb870());

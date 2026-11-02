@@ -72,10 +72,9 @@ public:
 class Unk_GsBag {
 public:
     MS2Ptr<CItem> FUN_140a5d680(__int64 uid);
-    int FUN_140a5f780(int tag, int grade);
     void FUN_140a60880(int tab, CAtlArray<MS2Ptr<CItem>>& out);
 };
-class Unk_Inventory;
+class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_GsBag
 extern __int64 DAT_143ab2898;                   // the meso the ingredient fee may cost
 
@@ -224,7 +223,7 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_1()
 }
 
 // @0x140c47eb0
-// MS2-FUNCTIONAL: real controls; smart-pointer temporary layout differs.
+// Each slot clip is declared in an if condition.
 void ItemSocketSystemPageGemstoneSwap::vfunc_7(MS2Ptr<AScript> root)
 {
     ItemSocketSystemPageBase::vfunc_7(root);
@@ -234,15 +233,15 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_7(MS2Ptr<AScript> root)
         m_root = root->FUN_1409b4560("m_gemStoneSwapPage");
     if (m_root == 0)
         return;
+    if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0"))
     {
-        MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0");
-        if (slots)
-            m_sourceControl = reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
+        m_sourceControl =
+            reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
     }
+    if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1"))
     {
-        MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1");
-        if (slots)
-            m_targetControl = reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
+        m_targetControl =
+            reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
     }
     FUN_140c49fc0();
     ASObj data(2);
@@ -493,7 +492,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         gem->FUN_140c4e720(MS2Ptr<CItem>(item), MS2Ptr<CItem>(gemItem), false);
         CString strName = Unk_SocketFormat("{0}{1}", strPrefix, i);
         FUN_140cfd6f0(strName, MS2Ptr<CGemStoneItem>(gem), i, 0x415, 0x20);
-        pGems->FUN_1422bbf70(strName);
+        pGems->PushString(strName);
     }
     unsigned locked = socket->GetLockedSlotCount();
     for (unsigned j = 0; j < locked; ++j) {
@@ -504,7 +503,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         unsigned index = j + open;
         CString strName = Unk_SocketFormat("{0}{1}", strPrefix, index);
         FUN_140cfd6f0(strName, MS2Ptr<CGemStoneItem>(gem), j, 0x415, 0x20);
-        pGems->FUN_1422bbf70(strName);
+        pGems->PushString(strName);
     }
 }
 
@@ -649,7 +648,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     for (; it != last; ++it) {
         int itemId = reinterpret_cast<CItemDataTable*>(reinterpret_cast<Unk_GsIngTable*>(TSingleton<CItemDataTable>::GetInstance()))->GetTagItemId((ItemTagKey)it->first);
         int grade = FUN_14053feb0(itemId);
-        int have = reinterpret_cast<Unk_GsBag&>(g_143ab2a90).FUN_140a5f780(it->first, grade);
+        int have = g_143ab2a90.FUN_140a5f780(it->first, grade);
         if (have < it->second) {
             if (it->first != Unk_GsCostTag_Meso) {
                 int lack = it->second - have;

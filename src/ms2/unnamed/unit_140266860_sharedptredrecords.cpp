@@ -90,7 +90,6 @@ MS2_CHECK_SIZE(Unk_KeyedRef, 0x20);
 
 // Out-of-line vector helpers and the XML attribute accessors of the game's TinyXML wrapper.
 class Unk_140165cf0;
-efd::Point3* FUN_14027dda0(efd::Point3* pOut, float x, float y, float z);
 struct Unk_XmlPoint { Unk_XmlPoint(const efd::Point3& kIn); float x, y, z; };   // 0x14027dcf0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
@@ -133,11 +132,8 @@ int QuestMask::FUN_140266970() const
 }
 
 // @0x140266a10
-// MS2-FUNCTIONAL: the exe constructs the name string after the two points (out-of-line point ctors)
-ItemCustom::ItemCustom()
+ItemCustom::ItemCustom() : unknown18(0.0f, 0.0f, 0.0f), unknown24(0.0f, 0.0f, 0.0f)
 {
-    FUN_14027dda0(&unknown18, 0.0f, 0.0f, 0.0f);
-    FUN_14027dda0(&unknown24, 0.0f, 0.0f, 0.0f);
 }
 
 // @0x140266aa0

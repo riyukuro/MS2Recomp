@@ -60,7 +60,7 @@ public:
     void FUN_1410ac540();                                               // request the cube's message
     void FUN_1410ac960();                                               // second guide vfunc_1
     void FUN_1410ac9b0();                                               // per-frame update
-    char GetPending();                                               // m_bPending
+    bool GetPending();                                               // m_bPending
     int FUN_1410ad610();                                                // the item id
     __int64 FUN_1410ad640();                                            // the item instance id
     CubeItemInfo* FUN_1410ad670();                                      // the item

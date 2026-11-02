@@ -19,9 +19,9 @@ class ASTooltip;
 class ItemInfoSlot;
 
 // Callbacks of an ItemInfoSlot. The 8-byte Delegate handles are instantiated per signature.
-typedef Delegate<void(ItemInfoSlot*, ASSlot*)> ItemInfoSlotSlotFn;       // fill the slot movie clip
-typedef Delegate<void(ItemInfoSlot*, ASTooltip*)> ItemInfoSlotTipFn;     // fill the tooltip
-typedef Delegate<int(ItemInfoSlot*)> ItemInfoSlotCanFn;                  // may the tooltip be shown?
+typedef Delegate<void(ItemInfoSlot&, ASSlot&)> ItemInfoSlotSlotFn;       // fill the slot movie clip
+typedef Delegate<void(ItemInfoSlot&, ASTooltip&)> ItemInfoSlotTipFn;     // fill the tooltip
+typedef Delegate<int(ItemInfoSlot&)> ItemInfoSlotCanFn;                  // may the tooltip be shown?
 
 // 0xe8 bytes. vftable 0x142f0fea8 (26 slots, ??_G 0x141416b20 sized delete 0xe8), ITooltip @+0x78 0x142f0ff80.
 class ItemInfoSlot : public MS2DragSlot

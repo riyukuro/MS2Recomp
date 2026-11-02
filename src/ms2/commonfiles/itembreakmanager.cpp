@@ -114,12 +114,12 @@ class Unk_BreakSelected : public CPetManager { };
 class Unk_BreakRules { public: };
 class CItemLockManager { public: int FUN_140613160(CItem* pItem); };   // C3: unit-local view (unit_1406125d0.h)
 class Unk_BreakRecipes { public: MS2Ptr<CIngredientContainer> FUN_14052e650(int); };
-extern Unk_BreakRecipes* DAT_143aaf1e0;
-extern Unk_BreakRules* DAT_143aaf308;
-extern Unk_BreakSelected* DAT_143aaf310;
-inline Unk_BreakRecipes* FUN_140535300() { return DAT_143aaf1e0; }
-inline Unk_BreakRules* FUN_140535310() { return DAT_143aaf308; }
-inline Unk_BreakSelected* FUN_140535320() { return DAT_143aaf310; }
+class CItemBreakIngredientTable;
+class CItemLockManager;
+class CPetManager;
+inline Unk_BreakRecipes* FUN_140535300() { return reinterpret_cast<Unk_BreakRecipes*>(TSingleton<CItemBreakIngredientTable>::s_instance); }
+inline Unk_BreakRules* FUN_140535310() { return reinterpret_cast<Unk_BreakRules*>(TSingleton<CItemLockManager>::s_instance); }
+inline Unk_BreakSelected* FUN_140535320() { return reinterpret_cast<Unk_BreakSelected*>(TSingleton<CPetManager>::s_instance); }
 bool FUN_140633bf0(Unk_BreakItemPtr);
 class Unk_BreakInventory { public: Unk_BreakItemPtr FUN_140a5d680(__int64); };
 class Unk_Inventory;
@@ -378,7 +378,7 @@ bool CItemBreakManager::FUN_1405316d0(ItemPtr item) {
 MS2_REPLACE_METHOD(0x1405316D0, CItemBreakManager, FUN_1405316d0, 373, 0x79429692);
 // @0x140531850
 bool CItemBreakManager::FUN_140531850(ItemPtr item) {
-    if(item==0) return false; if(!item->FUN_1405258b0()) return true;
+    if(item==0) return false; if(!item->HasSkin()) return true;
     MS2Ptr<CIngredientContainer> p=FUN_140535300()->FUN_14052e650(item->FUN_1405276c0());
     if(p.get()) { const Unk_BreakIngredients& list=p->FUN_14026c230(); if(!list.FUN_14028a8c0()) return true; }
     int level=((CItemData*)item->FUN_140527840())->GetSkinType(); if(level) {
@@ -515,7 +515,7 @@ int CItemBreakManager::TryAddItem(ItemPtr item,int arg) {
     if(ItemBreakCommon::FUN_140530a10(items,item->GetItemUid())!=-1) { FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_selected_item"),1,1); return 0; }
     Unk_BreakEnhance* enhance=((Unk_BreakEnhance*)item->FUN_1405279c0()); if(enhance && !enhance->CheckGemsBreakable()) { FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
     if(type==2) { if(!CanBreakItem(item)) { FUN_141275260(0x8f7,1,1); return 0; }
-        if(!((CItemData*)item->FUN_140527840())->FUN_14053cbc0() && !item->FUN_1405258b0()) { FUN_141275260(0x8f7,1,1); return 0; }
+        if(!((CItemData*)item->FUN_140527840())->FUN_14053cbc0() && !item->HasSkin()) { FUN_141275260(0x8f7,1,1); return 0; }
     } else if(!CanBreakItem(item)) { FUN_141275260(0x8f6,1,1); return 0; }
     AddItemWithConfirm(item,arg); return 1;
 }

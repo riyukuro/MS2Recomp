@@ -66,7 +66,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-int FUN_14021af40(CStringA* pStr);                                          // the string as a number
+int Parse_14021af40(const CStringA& value);                                          // the string as a number
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int FUN_140197350(Unk_140165cf0 *, char const *, int);  // C3: the definition's signature
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
@@ -102,7 +102,7 @@ int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut)
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, *(&str));
     if (nRet != 0)
         return nRet;
-    *pOut = FUN_14021af40(&str);
+    *pOut = Parse_14021af40(str);
     return nRet;
 }
 

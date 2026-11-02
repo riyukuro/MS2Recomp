@@ -35,7 +35,7 @@ bool FUN_14098dfc0(NiAVObject* pObj);
 bool FUN_141568c90(NiRenderObject* pObj);
 unsigned int FUN_141568d50(class NiAVObject*);   // C3: was FUN_141568d50
 bool FUN_141567260(NiAVObject* pObj);
-void* FUN_141044450(NiProperty* pProp);
+class NiTexturingProperty { public: class Map; Map* GetGlowMap(); };
 
 // @0x1414cf9b0
 MaterialSwapper::MaterialSwapper(MaterialSwapPredicate pfnPredicate, NiMaterial* pMaterial)
@@ -162,7 +162,7 @@ int FUN_1414cffc0(NiRenderObject* pObj)
         return 0;
     if (DAT_143ae0ac0 != 0) {
         NiProperty* pProp = pObj->GetProperty(NiProperty::TEXTURING);
-        if (!(pProp != 0 && FUN_141044450(pProp) != 0))
+        if (!(pProp != 0 && ((NiTexturingProperty*)pProp)->GetGlowMap() != 0))
             return 0;
     }
     if (FUN_141567260(pObj))

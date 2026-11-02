@@ -59,11 +59,10 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 CStringW FUN_140298ea0(CStringW strKey);                            // the string table text
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // case-insensitive equal
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
-CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
@@ -182,11 +181,11 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
     m_bOwnA = m_guildA.m_nGuildId == nOwnGuild;
     m_bSound = true;
     m_bSwap = m_bOwnA;
-    m_guildA.m_strTime = FUN_140811740(0x3ff, m_guildA.m_nMin, m_guildA.m_nSec);
+    m_guildA.m_strTime = FormatStringId<int, int>(0x3ff, m_guildA.m_nMin, m_guildA.m_nSec);
     m_guildB.m_strTime = FUN_1401ceea0(L"{0}", m_guildB.m_nMin);
     if (m_guildB.m_nSec > 0)
     {
-        m_guildB.m_strTime = FUN_140811740(0x3ff, m_guildB.m_nMin, m_guildB.m_nSec);
+        m_guildB.m_strTime = FormatStringId<int, int>(0x3ff, m_guildB.m_nMin, m_guildB.m_nSec);
     }
     else
     {
@@ -195,7 +194,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
     }
     m_strReward.Empty();
     if (nCount != 0)
-        m_strReward = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, 0x55d4a86), nCount);
+        m_strReward = FormatStringId<CStringW, int>(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, 0x55d4a86), nCount);
     m_nRewardItem = 0x55d4a86;
     if (FUN_141924630())
         FUN_1413418a0();

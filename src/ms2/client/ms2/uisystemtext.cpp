@@ -104,16 +104,19 @@
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "uiservice.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe objects ----
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_141277f50();                                                // the UI layer id
 int FUN_141276180(const CString& strKey, const CString& strArg);        // 0x141276180 close a notice by key
-CReservedWordTable* FUN_1403b4750();
-UISwfEntity* FUN_14096e340(int nId);
+class CReservedWordTable;
+class UIUpperHpBar;
+template <class T> T* Unk_AcFindUI(eUIClassID nId);
 class Unk_StEntity : public ASGameEntity { };   // y                                // the UI of a class id
 
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);   // show a formatted notice
@@ -202,7 +205,7 @@ void UISystemText::vfunc_43()
     if (pEntity.get())
     {
         int nTop = 100;
-        UISwfEntity* pUpper = FUN_14096e340(0x4e3d);
+        UISwfEntity* pUpper = reinterpret_cast<UISwfEntity*>(Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d));
         if (pUpper != 0)
         {
             if (MS2Ptr<ASGameEntity> pUpperRoot = dynamic_cast<ASGameEntity*>((AScript*)pUpper->FUN_1422dba00()))
@@ -248,7 +251,7 @@ void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption
         case 11: strMethod = "appendGuildMegaphone"; break;
         }
         CStringW strFiltered(strText);
-        FUN_1403b4750()->FUN_1416fb340(strFiltered);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strFiltered);
         if (nType == 9)
         {
             pEntity.operator->()->Invoke(strMethod, CStringW(strFiltered), nOption);
@@ -281,7 +284,7 @@ void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDurati
         if (strMethod.GetLength() < 1)
             return;
         CStringW strFiltered(strText);
-        FUN_1403b4750()->FUN_1416fb340(strFiltered);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(strFiltered);
         pEntity.operator->()->Invoke(strMethod, CStringW(strFiltered));
         std::map<int, unsigned int>::iterator it = m_88.find(nType);
         if (it != m_88.end())

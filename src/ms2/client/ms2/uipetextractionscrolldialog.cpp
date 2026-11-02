@@ -303,10 +303,10 @@ void UIPetExtractionScrollDialog::OnLoadComplete()
         ASArray items(2);
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
-        items.FUN_1422bc050(objTarget.FUN_1422bb870());
+        items.PushValue(objTarget.FUN_1422bb870());
         ASObj objResult(2);
         objResult.FUN_1407cba60("binding", m_strBag);
-        items.FUN_1422bc050(objResult.FUN_1422bb870());
+        items.PushValue(objResult.FUN_1422bb870());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
         pDlg->FUN_140acd1f0("setData", AScript(root));
@@ -377,11 +377,11 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
         objTarget.FUN_1407cbb20("name", FUN_14183e9c0(spPet->FUN_140527b10(), spPet->FUN_140526bd0()));
-        items.FUN_1422bc050(objTarget.FUN_1422bb870());
+        items.PushValue(objTarget.FUN_1422bb870());
         ASObj objResult(2);
         objResult.FUN_1407cba60("binding", m_strBag);
         objResult.FUN_1407cbb20("name", FUN_14183e9c0(spResult->FUN_140527b10(), spResult->FUN_140526bd0()));
-        items.FUN_1422bc050(objResult.FUN_1422bb870());
+        items.PushValue(objResult.FUN_1422bb870());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
         pDlg->FUN_140acd1f0("setData", AScript(root));

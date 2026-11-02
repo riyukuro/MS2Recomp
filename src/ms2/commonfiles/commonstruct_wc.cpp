@@ -251,20 +251,7 @@ int FUN_1402767f0(void* node, const char* name, unsigned* out)
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonstruct.cpp"
 
-// @0x140276880
-// TPtredDummy<CAtlList<TPtr<CUserLimitHistory>>>::New: operator new(0x48), zero fill, constructor 0x14027cd50.
-i64 FUN_140276880()
-{
-    void* mem = operator new(0x48);
-    i64 result;
-    if (mem != 0) {
-        __stosb((unsigned char*)mem, 0, 0x48);
-        result = FUN_14027cd50((i64)mem);
-    } else {
-        result = 0;
-    }
-    return result;
-}
+// 0x140276880 is TPtrValue<CUserLimitGroup::HistoryList>::Allocate, instantiated at the end of this file.
 // @0x1402768f0
 void FUN_1402768f0(i64, i64, Unk_StlTag) {}
 // @0x140276900
@@ -348,7 +335,7 @@ void FUN_140276d40(i64 vec, i64 first, i64 last, Unk_StlTag)
 }
 // @0x140276fe0
 i64 FUN_140276fe0(i64, i64 b, i64) { return b; }
-// MS2-FUNCTIONAL: _Buynode with try/catch(...) cleanup as in the exe; inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
+// _Buynode with try/catch(...) cleanup as in the exe
 // @0x140277000
 i64 FUN_140277000(i64 list, i64 a, i64 b, i64 c)
 {
@@ -356,7 +343,7 @@ i64 FUN_140277000(i64 list, i64 a, i64 b, i64 c)
     node->m_color = 0;
     node->m_isNil = 0;
     try {
-        FUN_14027b790((i64)&reinterpret_cast<MapII*>(list)->_Getal(), FUN_14027b540((i64)&node->m_value), (i64)&std::forward<const std::piecewise_construct_t&>(*reinterpret_cast<const std::piecewise_construct_t*>(a)), FUN_14027c230(b), (i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*reinterpret_cast<std::tuple<>*>(c))));
+        FUN_14027b790((i64)&reinterpret_cast<MapII*>(list)->_Getal(), (i64)std::addressof(*reinterpret_cast<std::pair<const int, int>*>(&node->m_value)), (i64)&std::forward<const std::piecewise_construct_t&>(*reinterpret_cast<const std::piecewise_construct_t*>(a)), (i64)&reinterpret_cast<std::tuple<const int&>&>(std::forward<std::tuple<const int&>>(*reinterpret_cast<std::tuple<const int&>*>(b))), (i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*reinterpret_cast<std::tuple<>*>(c))));
     } catch (...) {
         reinterpret_cast<MapPUI*>(list)->_Freeheadnode((NodePUI*)node);
         throw;
@@ -365,14 +352,14 @@ i64 FUN_140277000(i64 list, i64 a, i64 b, i64 c)
 }
 // std::_List_node: next, prev, value.
 struct Unk_ListNode { i64 m_next; i64 m_prev; i64 m_value; };
-// MS2-FUNCTIONAL: _Buynode with try/catch(...) cleanup as in the exe; inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
+// _Buynode with try/catch(...) cleanup as in the exe
 // @0x1402770d0
 i64 FUN_1402770d0(i64 list, i64 a, i64 b, i64 c)
 {
     Unk_ListNode* node = (Unk_ListNode*)reinterpret_cast<LHist*>(list)->_Buynode0((NodeHist*)a, (NodeHist*)b);
     i64 al = (i64)&reinterpret_cast<LHist*>(list)->_Getal();
     try {
-        FUN_14027bac0(al, FUN_14027b550((i64)&node->m_value), FUN_14027c1e0(c));
+        FUN_14027bac0(al, (i64)std::addressof(*reinterpret_cast<MS2Ptr<CUserChangeableItemHistory>*>(&node->m_value)), (i64)&reinterpret_cast<const MS2Ptr<CUserChangeableItemHistory>&>(std::forward<const MS2Ptr<CUserChangeableItemHistory>&>(*reinterpret_cast<const MS2Ptr<CUserChangeableItemHistory>*>(c))));
     } catch (...) {
         reinterpret_cast<std::allocator<NodeHist>*>(al)->deallocate((NodeHist*)node, 1);
         throw;
@@ -536,7 +523,7 @@ void FUN_140277bd0(i64 vec, i64 v)
     *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast() += 0x10;
 }
 // _Emplace_reallocate: grow, construct the new element at the insertion point, move the two halves, swap buffers
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
+// vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140277c90
 i64 FUN_140277c90(i64 vec, i64 where, i64 v)
 {
@@ -551,8 +538,8 @@ i64 FUN_140277c90(i64 vec, i64 where, i64 v)
     i64 constructed_last = newvec + off * 0x10 + 0x10;
     i64 constructed_first = constructed_last;
     try {
-        i64 slot = FUN_14027a9b0(newvec + off * 0x10);
-        FUN_14027ba20(al, slot, FUN_14027c1d0(v));
+
+        FUN_14027ba20(al, FUN_14027a9b0(newvec + off * 0x10), (i64)&reinterpret_cast<const PIng&>(std::forward<const PIng&>(*reinterpret_cast<const PIng*>(v))));
         constructed_first = newvec + off * 0x10;
         if (where == *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()) {
             FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec);
@@ -569,7 +556,7 @@ i64 FUN_140277c90(i64 vec, i64 where, i64 v)
     FUN_1402873b0(vec, newvec, newsize, newcap);
     return off * 0x10 + *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst();
 }
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
+// vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140277ee0
 i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
 {
@@ -584,8 +571,8 @@ i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
     i64 constructed_last = newvec + off * 0x30 + 0x30;
     i64 constructed_first = constructed_last;
     try {
-        i64 slot = FUN_14027a990(newvec + off * 0x30);
-        FUN_14027b8e0(al, slot, FUN_14027c200(v));
+
+        FUN_14027b8e0(al, FUN_14027a990(newvec + off * 0x30), (i64)&reinterpret_cast<ItemEntity&>(std::forward<ItemEntity>(*reinterpret_cast<ItemEntity*>(v))));
         constructed_first = newvec + off * 0x30;
         if (where == *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast()) {
             FUN_140289c00(vec, *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VItem*>(vec)->_Mylast(), newvec);
@@ -602,7 +589,7 @@ i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
     FUN_140287190(vec, newvec, newsize, newcap);
     return off * 0x30 + *(i64*)&reinterpret_cast<VItem*>(vec)->_Myfirst();
 }
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
+// vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140278130
 i64 FUN_140278130(i64 vec, i64 where, i64 v)
 {
@@ -617,8 +604,8 @@ i64 FUN_140278130(i64 vec, i64 where, i64 v)
     i64 constructed_last = newvec + off * 8 + 8;
     i64 constructed_first = constructed_last;
     try {
-        i64 slot = FUN_14027a9a0(newvec + off * 8);
-        FUN_14027b980(al, slot, (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
+
+        FUN_14027b980(al, FUN_14027a9a0(newvec + off * 8), (i64)&reinterpret_cast<CString&>(std::forward<CString>(*reinterpret_cast<CString*>(v))));
         constructed_first = newvec + off * 8;
         if (where == *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast()) {
             FUN_140289c60(vec, *(i64*)&reinterpret_cast<VStr*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VStr*>(vec)->_Mylast(), newvec);
@@ -635,7 +622,7 @@ i64 FUN_140278130(i64 vec, i64 where, i64 v)
     FUN_1402872a0(vec, newvec, newsize, newcap);
     return (i64)reinterpret_cast<VStr*>(vec)->_Myfirst() + off * 8;
 }
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
+// vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 // @0x140278370
 i64 FUN_140278370(i64 vec, i64 where, i64 v)
 {
@@ -650,8 +637,8 @@ i64 FUN_140278370(i64 vec, i64 where, i64 v)
     i64 constructed_last = newvec + off * 0x10 + 0x10;
     i64 constructed_first = constructed_last;
     try {
-        i64 slot = FUN_14027a9b0(newvec + off * 0x10);
-        FUN_14027ba70(al, slot, FUN_14027c210(v));
+
+        FUN_14027ba70(al, FUN_14027a9b0(newvec + off * 0x10), (i64)&reinterpret_cast<PIng&>(std::forward<PIng>(*reinterpret_cast<PIng*>(v))));
         constructed_first = newvec + off * 0x10;
         if (where == *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast()) {
             FUN_140289cc0(vec, *(i64*)&reinterpret_cast<VPtred*>(vec)->_Myfirst(), *(i64*)&reinterpret_cast<VIng*>(vec)->_Mylast(), newvec);
@@ -747,3 +734,7 @@ void FUN_1402789b0(i64 al, i64 list, i64 v)
     *(i64*)(head + 8) = node;
     *where = node;
 }
+#include "ms2/placeholder/tptrvalue.h"
+class CUserLimitHistory;
+template TPtredDummy<ATL::CAtlList<MS2Ptr<CUserLimitHistory> > >* TPtrValue<ATL::CAtlList<MS2Ptr<CUserLimitHistory> > >::Allocate(void*);
+// MS2-PIN: ?Allocate@?$TPtrValue@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@CAPEAV?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@@@PEAX@Z 0x140276880

@@ -52,7 +52,6 @@ public:
 };
 
 extern NiFixedString DAT_143ae51d8;                                         // the default target node name
-const char* FUN_142087e50(NiFixedString* pName);                            // NiFixedString to char*
 
 class Unk_TexAnimSvc { public: };
 class NiActorManager;
@@ -215,7 +214,7 @@ bool CTextureAnimationData::FUN_141847e30(Unk_140165cf0* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "target", m_strTarget);
     if (m_strTarget.IsEmpty())
-        m_strTarget = FUN_142087e50(&DAT_143ae51d8);
+        m_strTarget = DAT_143ae51d8.operator const char*();
     for (Unk_140165cf0* pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("texture")); pTexture != 0; pTexture = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pTexture))->NextSibling("texture")))
     {
         m_arrFrames.Add(Unk_TextureFrame());

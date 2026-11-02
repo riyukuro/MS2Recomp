@@ -128,7 +128,7 @@ void CItemDefaultData::Load()
                 if (!spItemData)
                     continue;
                 if (!bBase) {
-                    Unk_ItemDefaultKind eItemSlot = (Unk_ItemDefaultKind)spItemData->FUN_14053eba0()->FUN_14054b400();
+                    Unk_ItemDefaultKind eItemSlot = (Unk_ItemDefaultKind)spItemData->GetModelOrEmpty()->FUN_14054b400();
                     if (eItemSlot != eSlot) {
                         Unk_ItemDefaultLog(GetLogString(), 1, 0x13, L"<{0}> \xc640 <{1}>\xac00 \xac19\xc9c0 \xc54a\xc2b5\xb2c8\xb2e4.", eItemSlot, eSlot);
                         continue;

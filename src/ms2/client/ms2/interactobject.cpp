@@ -139,8 +139,8 @@ public:
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/cwebbrowserservice.h"
 
-// m_ent is the exe's efd::SmartPointer<egf::Entity> (Unk_EntRef in the shared header)
-#define IO_ENT(r) (*reinterpret_cast<efd::SmartPointer<egf::Entity>*>(&(r)))
+
+
 
 class AdditionalCliList { public: int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare); };   // PCBase +0x748
 class Unk_IoPlayer : public Unk_IoPlayerBase
@@ -214,7 +214,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_IoCfg { public: int FUN_1402c4c90(int n); };
 struct Unk_IoCfgHolder { char m_pad_00[8]; Unk_IoCfg m_cfg; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-void* FUN_140cc18a0();
+
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
 // item inventory
@@ -225,8 +225,6 @@ int FUN_14053feb0(int nItemId);
 struct Unk_IoRefOwner;
 
 // entity and property access
-int FUN_1408a2020(Unk_Entity* e, unsigned nHash, int* pOut);
-int FUN_140961880(Unk_Entity* e, unsigned nHash, float* pOut);   // float property
 void FUN_140b27ec0(void* e, unsigned nHash, void* pOut);
 int FUN_1408a2060(Unk_Entity* e, unsigned nHash, efd::utf8string* pOut);
 int FUN_140998250(Unk_Entity* e, unsigned nHash, efd::AssetID* pOut);
@@ -257,14 +255,14 @@ egmAnimation::AnimationService* FUN_141b6f910();
 
 
 // egfPhysX::EntityActorData (a MemObject); the owner is a by-value SmartPointer<Entity> that the ctor releases
-class Unk_PhysPropObj : public efd::MemObject
-{
-public:
-    Unk_PhysPropObj(Unk_EntRef owner);                          // 0x14225f250
+#include <egfPhysX/EntityActorData.h>
 
 
-    void* m_pad[0x98 / 8];
-};
+
+
+
+
+
 
 
 // notices
@@ -358,7 +356,7 @@ int CInteractObject::vfunc_1(Unk_Entity* pEntity, int nState)
 {
     if (pEntity == 0)
         return 0;
-    IO_ENT(m_ent).operator=((egf::Entity*)pEntity);
+    m_ent.operator=((egf::Entity*)pEntity);
     ((egf::Entity*)pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)m_vPos);
     ((egf::Entity*)pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)m_vRot);
     ((egf::Entity*)pEntity)->GetPropertyValue<int>(0xd460e9bc, m_nRowId);
@@ -382,7 +380,7 @@ void CInteractObject::vfunc_2(Unk_InteractMsg*)
 // @0x1413fd6d0
 void CInteractObject::vfunc_3(int nState)
 {
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return;
     if (m_spRow == 0)
         return;
@@ -422,7 +420,7 @@ int CInteractObject::vfunc_4()
 }
 
 // @0x1413fd890
-Unk_EntRef CInteractObject::GetEnt()
+efd::SmartPointer<egf::Entity> CInteractObject::GetEnt()
 {
     return m_ent;
 }
@@ -430,17 +428,17 @@ Unk_EntRef CInteractObject::GetEnt()
 // @0x1413fd8e0
 egf::EntityID CInteractObject::FUN_1413fd8e0()
 {
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return egf::EntityID(0);
-    return IO_ENT(m_ent)->GetEntityID();
+    return m_ent->GetEntityID();
 }
 
 // @0x1413fd960
 unsigned __int64 CInteractObject::FUN_1413fd960()
 {
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return 0;
-    return IO_ENT(m_ent)->GetEntityIDValue();
+    return m_ent->GetEntityIDValue();
 }
 
 // @0x1413fd9b0
@@ -487,13 +485,13 @@ void CInteractObject::ClearStateEffect()
 // @0x1413fdca0
 void CInteractObject::SetVisible(unsigned char bVisible)
 {
-    if (IO_ENT(m_ent).operator egf::Entity*() == 0)
+    if (m_ent.operator egf::Entity*() == 0)
         return;
     m_nVisible = bVisible;
     if (bVisible != 0)
-        FUN_141b71e70(IO_ENT(m_ent)->GetEntityID(), true, 1, false);
+        FUN_141b71e70(m_ent->GetEntityID(), true, 1, false);
     else
-        FUN_141b71e70(IO_ENT(m_ent)->GetEntityID(), false, 1, false);
+        FUN_141b71e70(m_ent->GetEntityID(), false, 1, false);
 }
 
 // @0x1413fdd80
@@ -698,11 +696,11 @@ void CInteractObject::EnableHighlight()
 {
     if (m_bHighlight != 0)
         return;
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return;
     if (vfunc_5() == 8)
         return;
-    reinterpret_cast<MS2SceneGraphService*>(GetSceneGraphService())->FUN_1414f11d0(IO_ENT(m_ent).operator egf::Entity*());
+    reinterpret_cast<MS2SceneGraphService*>(GetSceneGraphService())->MarkEntityDynamic(m_ent.operator egf::Entity*());
     m_bHighlight = 1;
 }
 
@@ -711,12 +709,12 @@ void CInteractObject::DisableDynamicUpdate(int nDelay)
 {
     if (m_bHighlight == 0)
         return;
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return;
     if (vfunc_5() == 8)
         return;
     bool bFlag = false;
-    if (IO_ENT(m_ent).operator->()->GetPropertyValue<bool>(0x2e0ec6f3, bFlag) == 0 && bFlag)
+    if (m_ent.operator->()->GetPropertyValue<bool>(0x2e0ec6f3, bFlag) == 0 && bFlag)
         return;
     if (nDelay != 0)
     {
@@ -724,7 +722,7 @@ void CInteractObject::DisableDynamicUpdate(int nDelay)
     }
     else
     {
-        reinterpret_cast<MS2SceneGraphService*>(GetSceneGraphService())->FUN_1414f1240(IO_ENT(m_ent).operator egf::Entity*());
+        reinterpret_cast<MS2SceneGraphService*>(GetSceneGraphService())->RemoveEntityFromUpdate(m_ent.operator egf::Entity*());
         m_bHighlight = 0;
     }
 }
@@ -740,7 +738,7 @@ CInteractMeshObject::CInteractMeshObject()
     , m_strAssetB()
 {
     m_pActor = 0;
-    m_spProp.FUN_140ae17e0(0);
+    m_spProp = 0;
 }
 
 // @0x1413feb40
@@ -748,13 +746,13 @@ CInteractMeshObject::~CInteractMeshObject()
 {
     FUN_1413ff5f0();
     m_pActor = 0;
-    m_spProp.FUN_140ae17e0(0);
+    m_spProp = 0;
 }
 
 // @0x1413febf0
 int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
 {
-    m_spProp.FUN_140ae17e0(new (efd::MemHint(efd::MemHint::NONE)) Unk_PhysPropObj(pEntity));
+    m_spProp = new (efd::MemHint(efd::MemHint::NONE)) egfPhysX::EntityActorData((egf::Entity*)pEntity);
     if (((egf::Entity*)pEntity)->GetModel()->ContainsModel("MS2InteractMesh"))
     {
         efd::AssetID idA;
@@ -786,7 +784,7 @@ void CInteractMeshObject::vfunc_3(int nState)
     CInteractObject::vfunc_3(nState);
     if (m_spRow == 0)
         return;
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return;
     if (m_nState == 0)
     {
@@ -805,11 +803,11 @@ void CInteractMeshObject::vfunc_3(int nState)
     if (m_nState == 2)
     {
         unsigned char bFlag = 0;
-        FUN_14098c6e0((class Unk_CachedEntity*)((Unk_Entity*)IO_ENT(m_ent).operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
+        FUN_14098c6e0((class Unk_CachedEntity*)((Unk_Entity*)m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
         return;
     }
     unsigned char bFlag = 1;
-    FUN_14098c6e0((class Unk_CachedEntity*)((Unk_Entity*)IO_ENT(m_ent).operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
+    FUN_14098c6e0((class Unk_CachedEntity*)((Unk_Entity*)m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bFlag));
     unsigned bFirst = m_nState == 0;
     CString* pAsset = bFirst != 0 ? &m_strAssetA : &m_strAssetB;
     FUN_1413ff690(*pAsset);
@@ -885,7 +883,7 @@ void CInteractMeshObject::MakeNxBoxController()
             NxShape* pShape = ppShapes[i];
             pShape->setGroup(0);   // exe: NxShape slot 2 [rax+0x10] with edx=0, not setFlag
         }
-        m_pActor->userData = m_spProp.FUN_140ae1920();
+        m_pActor->userData = m_spProp.operator egfPhysX::EntityActorData*();
         m_pActor->setGlobalPosition(vSet);
     }
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a570();
@@ -915,12 +913,12 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     {
         efd::AssetID id;
         id.SetURN((const char*)strAsset);
-        FUN_140de8bd0(IO_ENT(m_ent).operator->(), 0x770e5fc6, &id);
+        FUN_140de8bd0(m_ent.operator->(), 0x770e5fc6, &id);
     }
     else if (m_nAssetType == 2)
     {
         efd::utf8string str(strAsset);
-        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(IO_ENT(m_ent)->GetEntityID(), str, 1.0f, false);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(m_ent->GetEntityID(), str, 1.0f, false);
     }
 }
 
@@ -970,8 +968,8 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
     Unk_IoPlayer* pPlayer = (Unk_IoPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    IO_ENT(m_ent).operator=(reinterpret_cast<MyPC*>(pPlayer)->FUN_141529900());
-    if (IO_ENT(m_ent).operator egf::Entity*() != 0)
+    m_ent.operator=(reinterpret_cast<MyPC*>(pPlayer)->FUN_141529900());
+    if (m_ent.operator egf::Entity*() != 0)
     {
         m_bActive = 1;
         FUN_141276180(s_strUseTelescope, "");
@@ -983,7 +981,7 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
             CStringW strTitle = GetStringCommon(0x666);
             if (*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
                 strTitle = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
-            pHelp->FUN_141907f80(9, strDesc);
+            pHelp->StartCinematic(9, strDesc);
             pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(CStringW(L"NotifyCutSceneCinematicSkip"),
                                            Delegate<void(NotifyObject*)>(this, &CInteractTelescopeObject::OnCutSceneSkip));
@@ -993,17 +991,17 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
         bool bFilter;
         bool bColor;
         float nFilterA, nFilterB, nColA, nColB, nColC;
-        IO_ENT(m_ent).operator->()->GetPropertyValue<bool>(0x4c87bc48, bFilter);
-        FUN_140b27ec0((Unk_Entity*)IO_ENT(m_ent).operator->(), 0x22a89b35, &colA);
-        IO_ENT(m_ent).operator->()->GetPropertyValue<float>(0x65832be6, nFilterA);
-        IO_ENT(m_ent).operator->()->GetPropertyValue<float>(0xf8696656, nFilterB);
+        m_ent.operator->()->GetPropertyValue<bool>(0x4c87bc48, bFilter);
+        FUN_140b27ec0((Unk_Entity*)m_ent.operator->(), 0x22a89b35, &colA);
+        m_ent.operator->()->GetPropertyValue<float>(0x65832be6, nFilterA);
+        m_ent.operator->()->GetPropertyValue<float>(0xf8696656, nFilterB);
         unsigned nFilterColor = ((int)(colA.m_r * 255.0f) & 0xffU) << 16 | 0xff000000 | ((int)(colA.m_g * 255.0f) & 0xffU) << 8 |
                                 ((int)(colA.m_b * 255.0f) & 0xffU);
-        IO_ENT(m_ent).operator->()->GetPropertyValue<bool>(0x554eb57d, bColor);
-        FUN_140b27ec0((Unk_Entity*)IO_ENT(m_ent).operator->(), 0x85eb5e6b, &colB);
-        IO_ENT(m_ent).operator->()->GetPropertyValue<float>(0x2c1b71fe, nColA);
-        IO_ENT(m_ent).operator->()->GetPropertyValue<float>(0xc55896f7, nColB);
-        IO_ENT(m_ent).operator->()->GetPropertyValue<float>(0xc9603b18, nColC);
+        m_ent.operator->()->GetPropertyValue<bool>(0x554eb57d, bColor);
+        FUN_140b27ec0((Unk_Entity*)m_ent.operator->(), 0x85eb5e6b, &colB);
+        m_ent.operator->()->GetPropertyValue<float>(0x2c1b71fe, nColA);
+        m_ent.operator->()->GetPropertyValue<float>(0xc55896f7, nColB);
+        m_ent.operator->()->GetPropertyValue<float>(0xc9603b18, nColC);
         unsigned nColor = ((int)(colB.m_r * 255.0f) & 0xffU) << 16 | 0xff000000 | ((int)(colB.m_g * 255.0f) & 0xffU) << 8 |
                           ((int)(colB.m_b * 255.0f) & 0xffU);
         TSingleton<ApplyEffect>::GetInstance()->SetFogRange(bFilter, nFilterA, nFilterB, nFilterColor);
@@ -1114,7 +1112,7 @@ int CInteractDisplayImage::vfunc_1(Unk_Entity* pEntity, int nState)
     else if (((class Unk_IoSession*)FUN_140166410())->FUN_14036e4c0())
     {
         m_strUrl = "";
-        reinterpret_cast<CWebBrowserService*>(FUN_140cc18a0())->FUN_141b794e0(m_strUrl, (const char*)m_spRow->m_displayUrl.m_strIndirectUrl);
+        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(m_strUrl, (const char*)m_spRow->m_displayUrl.m_strIndirectUrl);
         if (m_strUrl.GetLength() > 0)
             m_pThread = AfxBeginThread(GetURLFromIndirectURL, this, 0, 0, 0, 0);
     }
@@ -1290,7 +1288,7 @@ void CInteractDisplayImage::ApplyRankEntry(TPtrValue<CGameRankingData> spRank)
 void CInteractDisplayImage::FUN_1414017b0(const CString& strFile)
 {
     CStringW strPath = FUN_14016a730(strFile, 0);
-    if (IO_ENT(m_ent).operator egf::Entity*() == 0)
+    if (m_ent.operator egf::Entity*() == 0)
         return;
     NiTexturePtr spTexA(0);
     if (_waccess(strPath, 0) == 0)
@@ -1298,7 +1296,7 @@ void CInteractDisplayImage::FUN_1414017b0(const CString& strFile)
         NiTexturePtr spTex = LoadUgcTexture(strPath, 0x100, false);
         if (spTex == 0)
             return;
-        ((CUgcManager*)FUN_14052d220())->FUN_141888770(IO_ENT(m_ent), spTex);
+        ((CUgcManager*)FUN_14052d220())->FUN_141888770(m_ent, spTex);
     }
 }
 
@@ -1328,9 +1326,9 @@ UINT CInteractDisplayImage::GetURLFromIndirectURL(LPVOID pParam)
 // @0x141401c20
 UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
 {
-    CInteractDisplayImage* pThis = static_cast<CInteractDisplayImage*>(pParam);
     FUN_141b6de20();
     Unk_UtilLogScope scope(CString("CInteractDisplayImage::GetURLFromGameRanking"));
+    CInteractDisplayImage* pThis = static_cast<CInteractDisplayImage*>(pParam);
     if (pThis == 0)
         return 0;
     CString strName = pThis->GetName();
@@ -1339,41 +1337,44 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
     CString strUrl(pThis->m_spRow->m_displayUrl.m_strIndirectUrl);
     CString strTag("rank=");
     int nPos = strUrl.Find(strTag, 0);
-    char chRank = pThis->m_spRow->m_displayUrl.m_strIndirectUrl.GetAt(nPos + strTag.GetLength());
-    if (nImageType == 1)
+    int nRank = pThis->m_spRow->m_displayUrl.m_strIndirectUrl.GetAt(nPos + strTag.GetLength()) - '0';
+    switch (nImageType)
+    {
+    case 1:
         nRankType = 1;
-    else if (nImageType == 2)
+        break;
+    case 2:
         nRankType = 2;
-    else if (nImageType == 3)
+        break;
+    case 3:
         nRankType = 5;
-    else if (nImageType == 4)
+        break;
+    case 4:
         nRankType = 6;
-    else if (nImageType == 5)
+        break;
+    case 5:
         nRankType = 4;
+        break;
+    }
     CGameRankingParam::Key key;
     TSingleton<CGameRankingCli>::GetInstance()->BuildKey(key, nRankType, 0, 0, 0);
-    TPtrValue<CGameRankingData> spRank = TSingleton<CGameRankingCli>::GetInstance()->GetData(key, chRank - '0', 1);
+    TPtrValue<CGameRankingData> spRank = TSingleton<CGameRankingCli>::GetInstance()->GetData(key, nRank, 1);
     if (spRank == 0)
     {
         CGameRankingParam param;
         param.m_key = key;
         TSingleton<CGameRankingCli>::GetInstance()->Request(&param);
         int nTry = 0;
-        do
+        while (nTry++ < 5)
         {
-            if (4 < nTry)
-                break;
             Sleep(1000);
-            TPtrValue<CGameRankingData> spTemp = TSingleton<CGameRankingCli>::GetInstance()->GetData(key, chRank - '0', 0);
-            spRank = spTemp;
-            ++nTry;
-        } while (spRank.get() == 0);
+            spRank = static_cast<const TPtrValue<CGameRankingData>&>(TSingleton<CGameRankingCli>::GetInstance()->GetData(key, nRank, 0));
+            if (spRank.get() != 0)
+                break;
+        }
     }
     if (spRank.get() != 0 && reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance()) != 0)
-    {
-        TPtrValue<CGameRankingData> spCopy(static_cast<const TPtrValue<CGameRankingData>&>(spRank));
-        reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance())->FUN_141bdb0f0(CString(strName), spCopy);
-    }
+        reinterpret_cast<Unk_IoWorld*>(WorldService::GetInstance())->FUN_141bdb0f0(CString(strName), static_cast<const TPtrValue<CGameRankingData>&>(spRank));
     return 0;
 }
 
@@ -1613,7 +1614,7 @@ int CInteractGuildPosterObject::FUN_141402e60()
 // @0x141402eb0
 void CInteractGuildPosterObject::UpdatePoster(unsigned char bShow)
 {
-    if (IO_ENT(m_ent).operator egf::Entity*() == 0)
+    if (m_ent.operator egf::Entity*() == 0)
         return;
     int nPoster = FUN_141402e60();
     unsigned __int64 nSvc = reinterpret_cast<CGuildInfo*>(&reinterpret_cast<Unk_IoPosterHolder*>(TSingleton<CGuildManager>::GetInstance())->m_svc)->FUN_1404ccbd0();
@@ -1623,7 +1624,7 @@ void CInteractGuildPosterObject::UpdatePoster(unsigned char bShow)
     {
         NiTexturePtr spTex = ((class Unk_IoTexMgr*)FUN_14052d220())->GetDefaultTexture();
         if (spTex)
-            ((CUgcManager*)FUN_14052d220())->FUN_141888770(IO_ENT(m_ent), spTex);
+            ((CUgcManager*)FUN_14052d220())->FUN_141888770(m_ent, spTex);
     }
     else
     {
@@ -1634,7 +1635,7 @@ void CInteractGuildPosterObject::UpdatePoster(unsigned char bShow)
 // @0x141403180
 void CInteractGuildPosterObject::FUN_141403180(CStringW strFile)
 {
-    if (IO_ENT(m_ent).operator egf::Entity*() == 0)
+    if (m_ent.operator egf::Entity*() == 0)
         return;
     if (strFile.GetLength() < 1)
         return;
@@ -1644,7 +1645,7 @@ void CInteractGuildPosterObject::FUN_141403180(CStringW strFile)
         NiTexturePtr spTex = LoadUgcTexture(strFile, 0x100, false);
         if (spTex == 0)
             return;
-        ((CUgcManager*)FUN_14052d220())->FUN_141888770(IO_ENT(m_ent), spTex);
+        ((CUgcManager*)FUN_14052d220())->FUN_141888770(m_ent, spTex);
     }
 }
 
@@ -1718,7 +1719,7 @@ int CInteractWatchTowerObject::vfunc_4()
 // @0x1414034e0
 void CInteractWatchTowerObject::vfunc_3(int nState)
 {
-    if (IO_ENT(m_ent).operator==((egf::Entity*)0))
+    if (m_ent.operator==((egf::Entity*)0))
         return;
     if (m_spRow == 0)
         return;

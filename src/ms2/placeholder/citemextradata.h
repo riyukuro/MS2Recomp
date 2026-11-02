@@ -52,14 +52,14 @@ public:
     void SetSlotRgbComponent(int nIndex, const int& nValue, unsigned nSlot);
     int GetCurrentRgbComponent(unsigned nIndex);
     int GetSlotColorId(unsigned nSlot);
-    int FUN_14059a0b0(unsigned nSlot);
+    int GetSlotPaletteId(unsigned nSlot);
     int GetCurrentDelay();
     int* GetSlotRgb(unsigned nSlot);
     void SetPick(int n);
     int GetPick();
     ColorPtr GetSlotColor(unsigned nSlot) const;
     ColorPtr GetCurrentColor();
-    bool FUN_14059a350();
+    bool AdvanceCycle();
     int FUN_14059d130() const;
     int FUN_14059d140() const;
 protected:

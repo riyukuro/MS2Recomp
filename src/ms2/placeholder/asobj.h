@@ -83,44 +83,44 @@ public:
     ASArray(const ASArray& o);                                           // 0x140bbf770 (copy; passed by value to Invoke(.., int, AScript, ASArray))
     virtual ~ASArray();                                                  // 0x1422bbc30
     // push(x): the new length (gfxui/asarray.cpp)
-    unsigned int FUN_1422bbc60(int n);                                   // push an int
-    unsigned int FUN_1422bbcd0(bool b);                                  // push a bool
-    unsigned int FUN_1422bbd40(unsigned int n);                          // push a UInt
+    unsigned int PushInt(int n);                                   // push an int
+    unsigned int PushBool(bool b);                                  // push a bool
+    unsigned int PushUInt(unsigned int n);                          // push a UInt
     unsigned int FUN_1422bbdb0(unsigned long n);                         // push a UInt (unsigned long)
-    unsigned int FUN_1422bbe20(float f);                                 // push a Number
-    unsigned int FUN_1422bbe90(double d);                                // push a Number
+    unsigned int PushFloat(float f);                                 // push a Number
+    unsigned int PushDouble(double d);                                // push a Number
     unsigned int FUN_1422bbf00(const ASObj& obj);                        // push an AS object
     unsigned int FUN_1422bbf00(const AScript& obj);                      // push an AS object (the same callee; ascorelist.cpp)
-    unsigned int FUN_1422bbf70(const char* sz);                          // push a string (uimainplayerinfo empty slot names)
-    unsigned int FUN_1422bbfe0(const wchar_t* sz);                       // push a wide string
-    int FUN_1422bc050(Scaleform::GFx::Value v);                          // push a value (Value::PushBack as an int; v by value)
+    unsigned int PushString(const char* sz);                          // push a string (uimainplayerinfo empty slot names)
+    unsigned int PushWString(const wchar_t* sz);                       // push a wide string
+    int PushValue(Scaleform::GFx::Value v);                          // push a value (Value::PushBack as an int; v by value)
     // unshift(x): the new length
-    unsigned int FUN_1422bc0a0(int n);
-    unsigned int FUN_1422bc110(bool b);
-    unsigned int FUN_1422bc180(unsigned int n);
-    unsigned int FUN_1422bc1f0(unsigned long n);
-    unsigned int FUN_1422bc260(float f);
-    unsigned int FUN_1422bc2d0(double d);
-    unsigned int FUN_1422bc340(const ASObj& obj);
-    unsigned int FUN_1422bc3b0(const char* sz);
-    unsigned int FUN_1422bc420(const wchar_t* sz);
-    unsigned int FUN_1422bc490(Scaleform::GFx::Value v);                 // (v by value: destroyed here)
+    unsigned int UnshiftInt(int n);
+    unsigned int UnshiftBool(bool b);
+    unsigned int UnshiftUInt(unsigned int n);
+    unsigned int UnshiftULong(unsigned long n);
+    unsigned int UnshiftFloat(float f);
+    unsigned int UnshiftDouble(double d);
+    unsigned int UnshiftObj(const ASObj& obj);
+    unsigned int UnshiftString(const char* sz);
+    unsigned int UnshiftWString(const wchar_t* sz);
+    unsigned int UnshiftValue(Scaleform::GFx::Value v);                 // (v by value: destroyed here)
     Scaleform::GFx::Value Pop();                               // pop()
     Scaleform::GFx::Value Shift();                               // shift()
     unsigned int GetLength();                                        // element count ("length")
     void FUN_1422bc630();                                                // remove every element (Value::ClearElements)
-    void FUN_1422bc660(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
+    void Splice(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
     Scaleform::GFx::Value GetElement(unsigned nIndex);                // the element at an index (merat market buy rows)
-    void FUN_1422bc730(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element if the index is in range (uiclosetdialog.cpp)
+    void SetElementIfInRange(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element if the index is in range (uiclosetdialog.cpp)
     // the element at an index, converted
-    void FUN_1422bc780(unsigned nIndex, int& nOut);
-    void FUN_1422bc7f0(unsigned nIndex, bool& bOut);
-    void FUN_1422bc860(unsigned nIndex, unsigned& nOut);                // (astilelist.cpp)
-    void FUN_1422bc8d0(unsigned nIndex, unsigned long& nOut);
-    void FUN_1422bc940(unsigned nIndex, float& fOut);
-    void FUN_1422bc9b0(unsigned nIndex, double& dOut);
+    void GetInt(unsigned nIndex, int& nOut);
+    void GetBool(unsigned nIndex, bool& bOut);
+    void GetUInt(unsigned nIndex, unsigned& nOut);                // (astilelist.cpp)
+    void GetULong(unsigned nIndex, unsigned long& nOut);
+    void GetFloat(unsigned nIndex, float& fOut);
+    void GetDouble(unsigned nIndex, double& dOut);
     void FUN_1422bca20(unsigned nIndex, CString& strOut);
-    void FUN_1422bca90(unsigned nIndex, CStringW& strOut);
+    void GetWString(unsigned nIndex, CStringW& strOut);
     // AScript::Invoke overloads called here (members of ASArray so AScript's overload set stays unchanged)
     Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double a1);              // 0x140e06cc0 Invoke(method, Number)
     Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1);      // 0x140cbe3a0 Invoke(method, wide string)

@@ -41,7 +41,6 @@ class PC   // C3: member view for the former free stand-ins
 public:
     int FUN_141658e60();
 };
-CItemData* FUN_1411dc7f0_1(CEquipItem* pEquip);                     // CEquipItem::FUN_1411dc7f0 seen as the item data
 
 // The cutting interface: slot 2 is pure (0x10 bytes, vftable 0x142ec0578).
 class IEquipmentCutting : public NiRefObject
@@ -89,7 +88,7 @@ void CPriortyCutting::vfunc_2()
         if (!equip) {
             continue;
         }
-        ItemModelData* pModel = FUN_1411dc7f0_1(equip.get())->FUN_14053eba0();
+        ItemModelData* pModel = reinterpret_cast<CItemData*>(equip.get()->FUN_1411dc7f0())->GetModelOrEmpty();
         std::vector<CString>* pNames = pModel->FUN_14054b2c0(nGender);
         std::vector<CString>& names = *pNames;
         std::vector<CString>::iterator itEnd = names.end();

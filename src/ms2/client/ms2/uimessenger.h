@@ -112,19 +112,19 @@ public:
     // ---- non-virtual members (exe order) ----
     void FUN_141a0d880(bool bVisible);                                      // 0x141a0d880 shows the two extra components
     static bool LoadDebugChatCommand();                                            // 0x141a0d930 loads DebugChatCommand.xml
-    static bool FUN_141a0df10();                                            // 0x141a0df10 reloads it when it changed
+    static bool ReloadDebugChatCommands();                                            // 0x141a0df10 reloads it when it changed
     CStringW GetName();                                               // 0x141a0df70 the window name
-    CStringW FUN_141a0dfc0();                                               // 0x141a0dfc0 the default tab name
+    CStringW GetSelectedTabName();                                               // 0x141a0dfc0 the default tab name
     MessengerData::TalkTab* GetCurrentTab();                                // 0x141a0e050 the selected tab
     MessengerData::TalkTab* FindTabByName(const CStringW& strName);         // 0x141a0e0f0 a tab by name
-    int FUN_141a0e1f0(int nIndex);                                          // 0x141a0e1f0 selects a tab by index
-    int FUN_141a0e2a0(const CStringW& strName);                             // 0x141a0e2a0 selects a tab
-    int FUN_141a0e350(const CStringW& strName);                             // 0x141a0e350 removes a tab
-    int FUN_141a0e4d0(MessengerData::TalkTab* pTab);                        // 0x141a0e4d0 adds a tab
+    int SelectTabByIndex(int nIndex);                                          // 0x141a0e1f0 selects a tab by index
+    int SelectTabByName(const CStringW& strName);                             // 0x141a0e2a0 selects a tab
+    int RemoveTabByName(const CStringW& strName);                             // 0x141a0e350 removes a tab
+    int AddTab(MessengerData::TalkTab* pTab);                        // 0x141a0e4d0 adds a tab
     int FUN_141a0e650(MessengerData::TalkTab* pTab);                        // 0x141a0e650 inserts a tab (refreshes the bar)
-    int FUN_141a0e810(const CStringW& strName, int nClose, int nDetach, int nAdditive);   // 0x141a0e810 creates a tab
+    int CreateTab(const CStringW& strName, int nClose, int nDetach, int nAdditive);   // 0x141a0e810 creates a tab
     size_t GetTabs(ATL::CAtlArray<MS2Ptr<MessengerData::TalkTab> >& tabs);   // 0x141a0e900 copies the tabs
-    void FUN_141a0e990();                                                   // 0x141a0e990 selects the default tab
+    void ReselectCurrentTab();                                                   // 0x141a0e990 selects the default tab
     void RenameTab(const CStringW& strOld, const CStringW& strNew);     // 0x141a0e9f0 renames a tab
     void ReplaceFontSize(unsigned nFontSize, CStringW& strHtml);              // 0x141a0ead0 sets the html font size
     void SetBackgroundAlpha(unsigned nAlpha);                                       // 0x141a0ebb0 the background alpha
@@ -269,7 +269,7 @@ public:
     void FUN_141a24490();                                                   // 0x141a24490 closes every window
     void FUN_141a247c0(const CStringW& strText, int nType);                 // 0x141a247c0 a filtered line
     void FUN_141a24890(CItem* pItem, unsigned nCount, int nManyId, int nOneId);   // 0x141a24890 an item gained/lost line
-    void FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta);          // 0x141a24cb0 debug: count change
+    void FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta, int nManyId, int nOneId);          // 0x141a24cb0 debug: count change
     void FUN_141a24e10(CItem* pItem);                                       // 0x141a24e10 debug: removed
     void FUN_141a24ee0(CItem* pItem);                                       // 0x141a24ee0 debug: added
     void FUN_141a24fb0(CStringW strText);                                   // 0x141a24fb0 inserts into the current window

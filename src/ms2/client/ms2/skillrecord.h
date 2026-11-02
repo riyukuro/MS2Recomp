@@ -187,10 +187,10 @@ public:
     bool IsIgnoreOptimalHideRemainEffect();                                   // ... of the remain effect
     void AddDamage(int nType, __int64 nDamage);         // adds one damage (type 8 is kept as 3)
     int FUN_14175acc0();                                    // whether the attack exists
-    __int64 FUN_14175ac30();                                // the total damage
+    __int64 GetTotalDamage();                                // the total damage
     unsigned __int64 FUN_14175aeb0();                       // the damage count
     int FUN_14175ad50();                                    // the attack material (the weapon's, for a player)
-    int FUN_14175aee0(int nIndex, int& nType);              // the type of one damage
+    int GetDamageType(int nIndex, int& nType);              // the type of one damage
 
     unsigned long long m_nTagId;                            // +0x18
     unsigned long long m_nTagSub;                           // +0x20
@@ -223,7 +223,7 @@ public:
     CDotDamageRecord();                                     // 0x14175af90 (the implicit dtor is 0x14175b590)
     virtual int vfunc_1();                                  // 0x14175b070
     int Init(int nOwnerId, int nCasterId, int nEffectLevel, int nType, __int64 nDamage);   // 0x14175aff0
-    int FUN_14175b130();                                    // the type of the first damage
+    int GetFirstType();                                    // the type of the first damage
 
     int m_nEffectLevel;                                     // +0xd8
 };

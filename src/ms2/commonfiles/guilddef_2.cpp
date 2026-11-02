@@ -216,7 +216,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 extern int FUN_140873420(void*,const char*,CStringW*);
-extern int FUN_1401785f0(void*,const char*,std::vector<int>*);
+template <class C> int XmlTokenList(class Unk_140165cf0*, const char*, C&);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 extern int FUN_1408733e0(void*,const char*,CString*);
 int Parse_140219f50(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
@@ -246,7 +246,7 @@ public:
     class Unk_140165cf0* NextSiblingElement();
 };
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-extern void FUN_14028fd90(void*,const char*,const char*,const char*,std::vector<void*>&);
+void FUN_14028fd90(struct Unk_XmlElement*,const char*,const char*,const char*,std::vector<struct Unk_XmlElement*>&);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -404,7 +404,7 @@ bool CGuildXmlData::GuildHouse::FUN_1404d5070(void* node){
     XmlGetAttr((class TiXmlElement*)(node), "theme", *(int*)(&f1c));
     XmlGetAttr((class TiXmlElement*)(node), "fieldID", *(unsigned int*)(&f50));
     XmlGetAttr((class TiXmlElement*)(node), "areaSize", *(int*)(&f24));
-    FUN_1401785f0(node,"facility",&f38);
+    XmlTokenList((class Unk_140165cf0*)node,"facility",f38);
     XmlGetAttr((class TiXmlElement*)(node), "stringKey", *(int*)(&f20));
     XmlGetAttr((class TiXmlElement*)(node), "upgradeCost", *(int*)(&f28));
     XmlGetAttr((class TiXmlElement*)(node), "upgradeReqGuildLevel", *(int*)(&f2c));
@@ -548,7 +548,7 @@ bool CGuildXmlData::LoadGuildNpc(){
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
-    FUN_14028fd90(root,"npc","type","level",nodes);
+    FUN_14028fd90((struct Unk_XmlElement*)root,"npc","type","level",(std::vector<struct Unk_XmlElement*>&)nodes);
     for(size_t index=0;index<nodes.size();++index){
         Unk_PayloadPtr<GuildNpc> value=new GuildNpc;
         if(!value->FUN_1404d5270(nodes[index]))continue;

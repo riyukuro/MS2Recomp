@@ -92,7 +92,7 @@ public:
     int m_24;
     int m_28;                           // +0x28 fish size
 };
-CFishingManager* FUN_140953f20();
+class CFishingManager;
 
 // @0x1400df560, @0x1400df590 (the two static CStrings above)
 
@@ -181,7 +181,7 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onFloatTouchDown") == 0)
     {
-        FUN_140953f20()->SendFishingMode10();
+        TSingleton<CFishingManager>::GetInstance()->SendFishingMode10();
         vfunc_67();
         FUN_141276180(s_143aca738, "");
         return 1;

@@ -17,7 +17,7 @@ public:
  UpperHpBarEntity();~UpperHpBarEntity();
  void FUN_141b4a7d0(const CString&,const int&);const CString& FUN_141b4a820();
  void FUN_141b4a840();void FUN_141b4a8b0(MS2Ptr<ASUIComponent>);
- bool FUN_141b4ab70(const int&);void FUN_141b4ac50(MS2Ptr<Unk_AsBuff>);void FUN_141b4b0d0(MS2Ptr<Unk_AsBuff>);
+ bool DestroyEntity(const int&);void FUN_141b4ac50(MS2Ptr<Unk_AsBuff>);void FUN_141b4b0d0(MS2Ptr<Unk_AsBuff>);
  void FUN_141b4b240(PCBase*,const int&);void FUN_141b4b3f0();void FUN_141b4b500();
  void FUN_141b4b860();void FUN_141b4b950(bool);void FUN_141b4ba40(bool);void FUN_141b4bb20(bool);
  bool GetVisible();const int& FUN_141b4bbc0();const int& FUN_141b4bbe0();

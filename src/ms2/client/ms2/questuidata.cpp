@@ -64,7 +64,7 @@ void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t*
 CStringTable* GetStringTable();                                          // the string table singleton
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);          // a common string by id, "{0}" = strArg
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1413fac10(CStringW strText, CStringW strWord);             // strText with the josa of strWord
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                         // the quest table row (null when none)
@@ -517,7 +517,7 @@ CStringW CQuestUIData::GetCompleteText()
     if (m_strComplete.GetLength() != 0)
         return m_strComplete;
     int nNpcId = pData->m_2ec;
-    CStringW strText = FUN_14052bd00(0x5e7, FUN_1401aa6a0(nNpcId));
+    CStringW strText = FormatStringId<CStringW>(0x5e7, FUN_1401aa6a0(nNpcId));
     return strText;
 }
 MS2_REPLACE_METHOD(0x1416E66F0, CQuestUIData, GetCompleteText, 356, 0x7159BD0D);
@@ -583,7 +583,7 @@ static CStringW FUN_1416e6f10(CQuestUIData* pData, CConditionCommonData* pCond)
     if (pCond->m_code.GetIdCount() < 1)
         return L"";
     int nNpcId = (int)pCond->m_code.GetFirstValue();
-    CStringW strText = FUN_14052bd00(0x5e2, FUN_1401aa6a0(nNpcId));
+    CStringW strText = FormatStringId<CStringW>(0x5e2, FUN_1401aa6a0(nNpcId));
     return strText;
 }
 
@@ -633,7 +633,7 @@ static CStringW FUN_1416e7470(CQuestUIData* pData, CConditionCommonData* pCond)
     if (pCond->m_code.GetIdCount() < 1)
         return L"";
     int nItemId = (int)pCond->m_code.GetFirstValue();
-    CStringW strText = FUN_14052bd00(0x5e6, GetStringTable()->FUN_141811980(1, nItemId));
+    CStringW strText = FormatStringId<CStringW>(0x5e6, GetStringTable()->FUN_141811980(1, nItemId));
     return strText;
 }
 

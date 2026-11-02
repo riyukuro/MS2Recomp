@@ -68,7 +68,7 @@ struct Unk_PickSceneIter
     Unk_PickSceneIter(void* pRoot);
     ~Unk_PickSceneIter();
     NiAVObject* FUN_14098e0d0(bool bDescend);
-    void* m_a[7];
+    void* m_a[6];
 };
 bool FUN_140998dc0(const void* pName, const char* psz);                 // name == psz
 
@@ -236,7 +236,6 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
 }
 
 // @0x141419670
-// MS2-FUNCTIONAL: frame 0x10 larger than the exe (iterator object with an out-of-line dtor); same behaviour
 void FUN_141419670(void* pObject, CAtlArray<NiRenderObject*>* pOut)
 {
     if (pObject == 0)

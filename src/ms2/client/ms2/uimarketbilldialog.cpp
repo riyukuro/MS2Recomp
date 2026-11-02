@@ -48,6 +48,10 @@ static CString s_strSortTypeNamesBuy[] = {"None", "Buy", "PriceLow", "PriceHigh"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/blockformat.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/commonfiles/os.h"
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strJobCode = "jobCode";
@@ -80,26 +84,12 @@ public:
     virtual void vfunc_22();
     virtual void vfunc_23();
     virtual void vfunc_24(bool b);                          // 24 0xc0 re-layout
-    float FUN_1422c1490();                                  // height
-    void FUN_1422c0f20(float fHeight);                      // set the height
 };
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_1418ffba0(MS2Ptr<CItemData> ref);                           // the item is locked
 
-// The purchase block notice (the state manager answers whether buying is blocked right now).
-struct Unk_MbBlockRef;
-void FUN_1401cb250(Unk_MbBlockRef*);
-struct Unk_MbBlockRef
-{
-    void* m_00;
-    void* m_08;
-    ~Unk_MbBlockRef() { FUN_1401cb250(this); }
-};
-MS2_CHECK_SIZE(Unk_MbBlockRef, 0x10);
-class Unk_MbStateMgr { public: Unk_MbBlockRef FUN_140a2f620(int nKind); };
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-void* FUN_1401cb3d0(Unk_MbBlockRef* pRef);
 template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
 void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 
@@ -107,7 +97,7 @@ class Unk_MbUiMgr { public: };
 class Unk_MbKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CBuddyManager* FUN_14097a780();
+class CBuddyManager;
 class Unk_MeratButtonHelper* FUN_1409c1740();   // C3: was FUN_1409c1740
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -116,23 +106,18 @@ public:
     static class WorldService* GetInstance();
 };
 
-const float& FUN_140805fc0(const float& a, const float& b);     // max
-void FUN_1405625e0();                                           // throws: the delegate is empty
 
-CStringW FUN_1418fe5d0(unsigned int nPayType);                  // pay type name
+CStringW FUN_1418fe5d0(int nPayType);                  // pay type name
 CStringW FUN_1418fe6c0(int nPayType, int nFlag);                // pay type name (flag -1 / 0)
-CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
+CStringW FUN_1418fec00(int nType, __int64 nValue, bool);         // money text by pay type
 CStringW FUN_1418fec00(int nType, __int64 nValue, int, int);
 CStringW FUN_1409404f0(__int64 n);
-CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_14052bd00(int nId, const CStringW& strArg);
-CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
 std::pair<int, __int64> FUN_140931680(int& nKey, __int64& nValue);   // folded copy of std::make_pair<int&, __int64&>
 int FUN_1406a6140();                                            // the pay type of the blueprint rows
-void FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >& vecOut);
-void FUN_140930750(const std::vector<std::pair<int, __int64> >& vecIn, std::vector<std::pair<int, __int64> >& vecOut);
+bool FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >* pOut);
+bool FUN_140930750(std::vector<std::pair<int, __int64> >* pIn, std::vector<std::pair<int, __int64> >* pOut);
 
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW strExtra);
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
@@ -148,8 +133,8 @@ bool FUN_140eabae0(const std::pair<int, __int64>* pEntry, CStringW* pstrName, CS
 {
     int nPayType = pEntry->first;
     __int64 nAmount = pEntry->second;
-    *pstrName = FUN_1418fe5d0(nPayType);
-    *pstrAmount = FUN_14052bd00(0x987, FUN_1409404f0(nAmount));
+    *pstrName = FUN_1418fe5d0((int)nPayType);
+    *pstrAmount = FormatStringId<CStringW>(0x987, FUN_1409404f0(nAmount));
     return !pstrName->IsEmpty();
 }
 
@@ -158,7 +143,7 @@ bool FUN_140eabae0(const std::pair<int, __int64>* pEntry, CStringW* pstrName, CS
 bool FUN_140eabc00(CStringW* pstrNames, CStringW* pstrAmounts, __int64 nPoolId)
 {
     std::vector<std::pair<int, __int64> > vecRows;
-    FUN_140930590(nPoolId, vecRows);
+    FUN_140930590(nPoolId, &vecRows);
     size_t nCount = vecRows.size();
     CStringW strNames;
     CStringW strAmounts;
@@ -187,7 +172,7 @@ bool FUN_140eabc00(CStringW* pstrNames, CStringW* pstrAmounts, __int64 nPoolId)
 bool FUN_140eabdc0(CStringW* pstrNames, CStringW* pstrAmounts, const std::vector<std::pair<int, __int64> >& vecIn)
 {
     std::vector<std::pair<int, __int64> > vecRows;
-    FUN_140930750(vecIn, vecRows);
+    FUN_140930750(const_cast<std::vector<std::pair<int, __int64> >*>(&vecIn), &vecRows);
     size_t nCount = vecRows.size();
     CStringW strNames;
     CStringW strAmounts;
@@ -218,7 +203,7 @@ template <>
 bool Delegate<bool(MS2Ptr<TMarketBillDataParam>)>::operator()(MS2Ptr<TMarketBillDataParam> a1) const
 {
     if (!m_pImpl)
-        FUN_1405625e0();
+        ThrowInvalidCall<bool>();
     return m_pImpl->vfunc_2(a1);
 }
 
@@ -228,7 +213,7 @@ bool Delegate<bool(MS2Ptr<TMarketBillDataParam>, const ATL::CAtlMap<ePayType, __
     MS2Ptr<TMarketBillDataParam> a1, const ATL::CAtlMap<ePayType, __int64>& a2) const
 {
     if (!m_pImpl)
-        FUN_1405625e0();
+        ThrowInvalidCall<bool>();
     return m_pImpl->Invoke(a1, a2);
 }
 
@@ -238,7 +223,7 @@ bool Delegate<bool(MS2Ptr<TMarketBillDataParam>, const ATL::CAtlMap<ePayType, __
     MS2Ptr<TMarketBillDataParam> a1, const ATL::CAtlMap<ePayType, __int64>& a2, const CStringW& a3, const CStringW& a4) const
 {
     if (!m_pImpl)
-        FUN_1405625e0();
+        ThrowInvalidCall<bool>();
     return m_pImpl->vfunc_2(a1, a2, a3, a4);
 }
 
@@ -247,7 +232,7 @@ bool Delegate<bool(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>
     Scaleform::GFx::Value* a1, ASData& a2, MS2Ptr<TMarketBillDataParam> a3) const
 {
     if (!m_pImpl)
-        FUN_1405625e0();
+        ThrowInvalidCall<bool>();
     return m_pImpl->vfunc_2(a1, a2, a3);
 }
 
@@ -381,10 +366,10 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         else
         {
             {
-                Unk_MbBlockRef block = ((class Unk_MbStateMgr*)FUN_140a6a830())->FUN_140a2f620(0x26);
-                if (FUN_1401cb3d0(&block))
+                Unk_BlockPtr<Unk_BlockRecord> block = reinterpret_cast<CBlockManager*>(FUN_140a6a830())->FindBlockedAction(0x26);
+                if (block.get())
                 {
-                    FUN_140a2ff20(*(const Unk_BlockPtr<Unk_BlockRecord>*)&block, 0x26, 0);
+                    FUN_140a2ff20(block, 0x26, 0);
                     return 1;
                 }
             }
@@ -491,14 +476,14 @@ void UIMarketBillDialog::FUN_140ea7900()
         if (bAny)
         {
             float fGrowPayback = FUN_140ea8ab0(spPayback, spPaybackText, m_mapRandomPayback);
-            fGrow = FUN_140805fc0(fGrow, fGrowPayback);
+            fGrow = std::max<float>(fGrow, fGrowPayback);
         }
     }
     if ((m_90.get() ? true : false) && fGrow != 0.0f)
     {
-        float fHeight = m_90->FUN_1422c1490();
+        float fHeight = reinterpret_cast<ASDisplayObject*>(m_90.operator->())->GetHeight();
         float fNewHeight = fHeight + fGrow;
-        m_90->FUN_1422c0f20(fNewHeight);
+        reinterpret_cast<ASDisplayObject*>(m_90.operator->())->SetHeightFloat(fNewHeight);
         m_90->vfunc_24(true);
     }
     m_bDirty = false;
@@ -583,8 +568,8 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
         strTotals = FUN_1418fec00(nCurrency, 0, 0);
         ++nLines;
     }
-    CStringW strNameText = FUN_14052bd00(0x998, strNames);
-    CStringW strAmountText = FUN_140632a60(0x999, strAmounts, strTotals);
+    CStringW strNameText = FormatStringId<CStringW>(0x998, strNames);
+    CStringW strAmountText = FormatStringId<CStringW, CStringW>(0x999, strAmounts, strTotals);
     if (nLines > 1)
     {
         int nExtra = nLines - 1;
@@ -619,7 +604,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
     }
     spFeeText->FUN_1422c4f00(strNameText);
     spFee->FUN_1422c4f00(strAmountText);
-    spFeeText->FUN_1422c0420(spFee->FUN_1422c10a0());
+    spFeeText->SetXFloat(spFee->FUN_1422c10a0());
     int nNewHeight = spFee->GetHeightCeil();
     int nDiff = nNewHeight - nOldHeight;
     return (float)nDiff;
@@ -675,7 +660,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
             MS2Ptr<ASBillData> spBill = bills[i];
             if (spBill == 0)
                 continue;
-            rows.FUN_1422bc050(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
+            rows.PushValue(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
         }
         objData.FUN_1409c0e60("noticeKey", L"$s_marketbill_notice_meratmarket_basket");
     }
@@ -687,7 +672,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
             MS2Ptr<ASBillData> spBill = bills[i];
             if (spBill == 0)
                 continue;
-            rows.FUN_1422bc050(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
+            rows.PushValue(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
             int nPayType = spBill->vfunc_4();
             FUN_140ea9770(nPayType, spBill->vfunc_2());
             FUN_140ea9880(nPayType, spBill->vfunc_9());
@@ -706,7 +691,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
             if (!spBill->FUN_140eacf20())
                 ++nCount;
         }
-        CStringW strTotal = FUN_1409e97f0(0xa40, nCount);
+        CStringW strTotal = BlockFormat<unsigned>(0xa40, nCount);
         objData.FUN_1407cbb20("totalText", strTotal);
         CStringW strNotice;
         CStringW strNoticeGift;
@@ -920,7 +905,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
         }
         if (m_spParam->m_nDialogId != 0x4ebc)
         {
-            if (FUN_14097a780()->FUN_140ae5240(strName) == 1)
+            if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5240(strName) == 1)
             {
                 FUN_140d73aa0(GetStringCommonByKey(L"s_cashshop_err_fail_gift_block"), 0, 0, L"");
                 return;

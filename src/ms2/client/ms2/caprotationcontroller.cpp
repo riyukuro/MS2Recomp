@@ -99,7 +99,7 @@ MS2_CHECK_SIZE(Unk_CapPartInfo, 0x88);
 class CEquipItem : public CPtred
 {
 public:
-    Unk_CapItem* FUN_1411dc7f0();                               // the item
+    struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item
     MS2Ptr<CItem> GetItem();                              // the item object holding the model record
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
@@ -210,7 +210,7 @@ int CCapRotationController::vfunc_3()
 {
     if (InitPart() == 0)
         return 0;
-    Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
+    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->FUN_1411dc7f0());
     if (pItem == 0)
         return 0;
     ResetHighlight();
@@ -247,7 +247,7 @@ int CCapRotationController::vfunc_29()
 // @0x140b00960
 void CCapRotationController::vfunc_28()
 {
-    Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
+    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->FUN_1411dc7f0());
     if (pItem != 0)
     {
         if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
@@ -353,7 +353,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         m_spEquipItem->GetItem()->FUN_140527870());
     if (pData == 0)
         return;
-    Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
+    Unk_CapItem* pItem = reinterpret_cast<Unk_CapItem*>(m_spEquipItem->FUN_1411dc7f0());
     if (pItem == 0)
         return;
     if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
@@ -512,7 +512,7 @@ Vector3 CCapRotationController::GetPartEuler()
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
         return DAT_143b01a60;
-    if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
+    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->FUN_14053c620() != 0xd)
         return DAT_143b01a60;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)
@@ -526,7 +526,7 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
     if (spItem == (CEquipItem*)0)
         return;
-    if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
+    if (reinterpret_cast<Unk_CapItem*>(spItem->FUN_1411dc7f0())->FUN_14053c620() != 0xd)
         return;
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)

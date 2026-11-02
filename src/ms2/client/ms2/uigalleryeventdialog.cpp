@@ -22,97 +22,62 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/placeholder/cquestmanagercommon.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/questmanager_1.h"
+#include "ms2/commonfiles/gameevent.h"
+#include "ms2/commonfiles/gamerule.h"
+#include "ms2/commonfiles/itemgift.h"
+#include "ms2/placeholder/questdata.h"
+#include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
 static CString s_jobCode = "jobCode";
 static CString s_sortValue = "sortValue";
 static CString s_tabIndex = "tabIndex";
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
-class Unk_GalleryAS;
-void GallerySet(Scaleform::GFx::Value*, int);
-void GallerySet(Scaleform::GFx::Value*, size_t);
-void GallerySet(Scaleform::GFx::Value*, const Unk_GalleryAS&);
+class AScript;
+void FUN_1422bccb0(Scaleform::GFx::Value*, int);
+void FUN_1422bce00(Scaleform::GFx::Value*, size_t);
+void FUN_1422bce40(Scaleform::GFx::Value*, const AScript&);
 class Unk_GalleryAS
 {
 public:
-    template<class A, class B> Scaleform::GFx::Value Invoke2(const char* method, A a, B b)
-    {
-        ASArgList args;
-        args.FUN_1409b2800(2);
-        GallerySet(args.FUN_1409b1f70(0), a);
-        GallerySet(args.FUN_1409b1f70(1), b);
-        return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
-    }
+    template<class A, class B> Scaleform::GFx::Value Invoke2(const char* method, A a, B b);
     Unk_GalleryAS(int);
     ~Unk_GalleryAS();
     Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1407cb9c0(const char*, int);
     void FUN_1409c0d20(const char*, unsigned int);
     void FUN_1409adc90(const char*, int);
-    void FUN_1407cbb20(const char*, CStringW);
     void FUN_1409eb270(const char*, const Unk_GalleryAS&);
-    Scaleform::GFx::Value FUN_140acd130(const char*, CStringW);
-    Scaleform::GFx::Value FUN_140ba4cc0(const char*, const Unk_GalleryAS&);
-    Scaleform::GFx::Value FUN_1409ba030(const char*, int);
 private:
     void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
 };
 MS2_CHECK_SIZE(Unk_GalleryAS, 0x40);
-class Unk_GalleryCard
+template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<int, int>(const char* method, int a, int b)
 {
-public:
-    void* m_0; void* m_8; void* m_10;
-    int quest;
-};
-MS2_CHECK_OFFSET(Unk_GalleryCard, quest, 0x18);
-class Unk_GalleryCards
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bccb0(args.FUN_1409b1f70(0), a);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), b);
+    return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
+}
+template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<size_t, int>(const char* method, size_t a, int b)
 {
-public:
-    size_t FUN_140412e70() const;
-    const Unk_GalleryPtr<Unk_GalleryCard>& FUN_140410e70(size_t) const;
-private:
-    void* m_0; void* m_8; void* m_10; void* m_18;
-};
-MS2_CHECK_SIZE(Unk_GalleryCards, 0x20);
-class Unk_GalleryRewardRank
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bce00(args.FUN_1409b1f70(0), a);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), b);
+    return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
+}
+template<> inline Scaleform::GFx::Value Unk_GalleryAS::Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>(const char* method, const Unk_GalleryAS& a, const Unk_GalleryAS& b)
 {
-public:
-    virtual void vfunc_0();
-    virtual int vfunc_1();
-};
-class Unk_GalleryReward
-{
-public:
-    void* m_0; void* m_8; void* m_10;
-    void* rank; // polymorphic subobject; accessed through its interface below
-    int id, count;
-};
-MS2_CHECK_OFFSET(Unk_GalleryReward, id, 0x20);
-class Unk_GalleryRewards
-{
-public:
-    size_t FUN_140412e50() const;
-    Unk_GalleryReward& FUN_140410df0(size_t);
-private:
-    void* m_0; void* m_8; void* m_10; void* m_18;
-};
-MS2_CHECK_SIZE(Unk_GalleryRewards, 0x20);
-class Unk_GalleryContext
-{
-public:
-    Unk_GalleryPtr<Unk_GalleryCard> FUN_1403ff3e0(int);
-    void* m_0; void* m_8; void* m_10;
-    int id, pad1c;
-    Unk_GalleryCards cards;
-    Unk_GalleryRewards rewards;
-    int maxOpen, pad64;
-    void* m_68;
-    CStringW illust;
-};
-MS2_CHECK_OFFSET(Unk_GalleryContext, cards, 0x20);
-MS2_CHECK_OFFSET(Unk_GalleryContext, maxOpen, 0x60);
-MS2_CHECK_OFFSET(Unk_GalleryContext, illust, 0x70);
-class Unk_GalleryManager { public: Unk_GalleryPtr<Unk_GalleryContext> FUN_14047cf60(); };
-Unk_GalleryManager* FUN_1401c0d90();
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bce40(args.FUN_1409b1f70(0), reinterpret_cast<const AScript&>(a));
+    FUN_1422bce40(args.FUN_1409b1f70(1), reinterpret_cast<const AScript&>(b));
+    return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(method, args);
+}
+void* FUN_1401c0d90();
+template <> inline bool MS2Ptr<GalleryContext>::operator==(GalleryContext* p) const { return m_p == p; }   // 0x140c19220
+template <> inline MS2Ptr<GalleryContext>::operator GalleryContext*() const { return m_p; }        // 0x140c19260
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_GalleryQuestState
 {
@@ -123,13 +88,10 @@ public:
     int FUN_140746ba0(int, int, bool);
 };
 class Unk_GalleryQuestGlobal { public: void* m_0; void* m_8; Unk_GalleryQuestState state; };
-Unk_GalleryQuestGlobal* FUN_140764020();
-class Unk_GalleryCounters;
+void* FUN_140764020();
 class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault); };
-extern Unk_GalleryCounters g_galleryCounters;
-class Unk_GalleryItem { public: CString FUN_14053fdd0(); };
-Unk_GalleryPtr<Unk_GalleryItem> FUN_14053f870(int);
-WorldService* FUN_1403ed2d0();
+extern GameEventUserValue DAT_143ab2fc0;
+MS2Ptr<CItemData> FUN_14053f870(int);
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -137,134 +99,8 @@ void FUN_1412751f0(const CStringW&, int, int);
 CStringW BlockFormat(int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d432d0(ItemSlotBinder*, int);
-class Unk_GalleryQuestReward
-{
-public:
-    void* m_0; void* m_8; void* m_10;
-    int id, rank, count;
-};
-class Unk_GalleryQuestRewards
-{
-public:
-    size_t FUN_14075ae60();
-    Unk_GalleryQuestReward& FUN_1407591d0(size_t);
-};
-class Unk_GalleryQuestData
-{
-public:
-    void* m_0;
-    void* m_8;
-    void* m_10;
-    void* m_18;
-    void* m_20;
-    void* m_28;
-    void* m_30;
-    void* m_38;
-    void* m_40;
-    void* m_48;
-    void* m_50;
-    void* m_58;
-    void* m_60;
-    void* m_68;
-    void* m_70;
-    void* m_78;
-    void* m_80;
-    void* m_88;
-    void* m_90;
-    void* m_98;
-    void* m_a0;
-    void* m_a8;
-    void* m_b0;
-    void* m_b8;
-    void* m_c0;
-    void* m_c8;
-    void* m_d0;
-    void* m_d8;
-    void* m_e0;
-    void* m_e8;
-    void* m_f0;
-    void* m_f8;
-    void* m_100;
-    void* m_108;
-    void* m_110;
-    void* m_118;
-    void* m_120;
-    void* m_128;
-    void* m_130;
-    void* m_138;
-    void* m_140;
-    void* m_148;
-    void* m_150;
-    void* m_158;
-    void* m_160;
-    void* m_168;
-    void* m_170;
-    void* m_178;
-    void* m_180;
-    void* m_188;
-    void* m_190;
-    void* m_198;
-    void* m_1a0;
-    void* m_1a8;
-    void* m_1b0;
-    void* m_1b8;
-    void* m_1c0;
-    void* m_1c8;
-    void* m_1d0;
-    void* m_1d8;
-    void* m_1e0;
-    void* m_1e8;
-    void* m_1f0;
-    void* m_1f8;
-    void* m_200;
-    void* m_208;
-    void* m_210;
-    void* m_218;
-    void* m_220;
-    void* m_228;
-    void* m_230;
-    void* m_238;
-    void* m_240;
-    void* m_248;
-    void* m_250;
-    void* m_258;
-    void* m_260;
-    void* m_268;
-    void* m_270;
-    void* m_278;
-    void* m_280;
-    void* m_288;
-    void* m_290;
-    Unk_GalleryQuestRewards rewards;
-    // Only the reward-list address and type field are used; intervening storage is opaque.
-    void* m_2a0;
-    void* m_2a8;
-    void* m_2b0;
-    void* m_2b8;
-    void* m_2c0;
-    void* m_2c8;
-    void* m_2d0;
-    void* m_2d8;
-    void* m_2e0;
-    void* m_2e8;
-    void* m_2f0;
-    void* m_2f8;
-    void* m_300;
-    void* m_308;
-    void* m_310;
-    void* m_318;
-    void* m_320;
-    void* m_328;
-    void* m_330;
-    void* m_338;
-    void* m_340;
-    void* m_348;
-    int type;
-};
-MS2_CHECK_OFFSET(Unk_GalleryQuestData, rewards, 0x298);
-MS2_CHECK_OFFSET(Unk_GalleryQuestData, type, 0x350);
-Unk_GalleryPtr<Unk_GalleryQuestData> FUN_14074bc40(int);
-class Unk_GalleryQuestView { public: virtual Unk_GalleryPtr<Unk_GalleryQuestData> vfunc_0(); };
+MS2Ptr<CQuestData> FUN_14074bc40(int);
+class Unk_GalleryQuestView { public: virtual MS2Ptr<CQuestData> vfunc_0(); };
 class Unk_GalleryQuest
 {
 public:
@@ -283,16 +119,9 @@ public:
 };
 class Unk_GalleryPacket { public: void* m_0; void* stream; };
 UIRewardNotify* FUN_140938cd0(int);
-class Unk_GalleryItemInstance {};
-Unk_GalleryPtr<Unk_GalleryItemInstance> FUN_140ebc360(int, int);
-class Unk_GalleryPreview : public ItemPreviewMgr
-{
-public:
-    void FUN_140d40120(Unk_GalleryPtr<Unk_GalleryItemInstance>, int);
-};
-Unk_GalleryPreview* FUN_1409bb9e0();
-class Unk_GalleryAccess { public: bool FUN_14116dcb0(int, int, int); };
-Unk_GalleryAccess* FUN_14025e7c0();
+MS2Ptr<CItem> FUN_140ebc360(int, int);
+class Unk_ItemPreview* FUN_1409bb9e0();
+void* FUN_14025e7c0();
 
 // @0x140c165e0
 UIGalleryEventDialog::UIGalleryEventDialog() : m_binder("UIGalleryEvent_QuestReward")
@@ -327,7 +156,7 @@ MS2_REPLACE_METHOD(0x140C167F0, UIGalleryEventDialog, vfunc_67, 77, 0xD6C3B993);
 void UIGalleryEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
     FUN_140c176f0(context);
     FUN_140c17d20(context);
@@ -345,7 +174,7 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
     UIObject::vfunc_45(out, method, args);
     if ((method == "getTooltipQuest")) {
         int quest = args->FUN_1422b8b10();
-        if (!((CQuestManagerCommon*)&FUN_140764020()->state)->IsQuestActive(quest) && !((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(quest)) return;
+        if (!((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->IsQuestActive(quest) && !((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->FUN_140745590(quest)) return;
         CStringW text = FUN_1416e5660(quest);
         ASTooltip tip(1, 2);
         if (tip.ApplyTextTooltip(text)) {
@@ -356,13 +185,13 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
         int id = args->FUN_1422b8b10();
         int rank = args->FUN_1422b8b10();
         do {
-        void* actor = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
         if (!actor) return;
         ASTooltip tip(actor, 32, 2);
         if (!tip.FUN_1409e1770(id, rank)) return;
         auto item = FUN_14053f870(id);
-        if (!item) return;
-        tip.FUN_1409db870(item);
+        if (item.IsNull()) return;
+        tip.FUN_1409db870(reinterpret_cast<Unk_GalleryPtr<Unk_GalleryItem>&>(item));
         *out = tip.FUN_1422bb870();
         } while (0);
     }
@@ -375,11 +204,11 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
     if (UIDialog::vfunc_28(method, args, count)) return 1;
     if (!_stricmp(method, "onCardOpen")) {
         if (!CheckEventContext()) return 1;
-        auto context = FUN_1401c0d90()->FUN_14047cf60();
-        if ((Unk_GalleryContext*)context) {
+        auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
+        if ((GalleryContext*)context) {
             int dummy = 0;
-            int opened = reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1600, context->id, dummy);
-            if (opened >= context->maxOpen) {
+            int opened = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1600, context->m_eventId, dummy);
+            if (opened >= context->m_60) {
                 FUN_140d73aa0(BlockFormat(3323), 0, 0, CStringW(L""));
                 return 1;
             }
@@ -421,9 +250,9 @@ void UIGalleryEventDialog::vfunc_o178_10(void* p)
 {
     if (!p) { MS2_ASSERT_AT(204, "quest" && 0); return; }
     if (m_30.IsNull()) { MS2_ASSERT_AT(205, "m_ascript" && 0); return; }
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
-    if (reinterpret_cast<Unk_GalleryQuestView*>(&static_cast<Unk_GalleryQuest*>(p)->data)->vfunc_0()->type != 4) return;
+    if (reinterpret_cast<Unk_GalleryQuestView*>(&static_cast<Unk_GalleryQuest*>(p)->data)->vfunc_0()->m_350.m_value != 4) return;
     UpdateQuestState(((CQuest*)static_cast<Unk_GalleryQuest*>(p))->FUN_140bfc580());
     FUN_140c17d20(context);
 }
@@ -436,7 +265,7 @@ void UIGalleryEventDialog::FUN_140c17200(unsigned int type, Unk_GalleryPacket* p
     switch (type) {
     case 7: {
         int index = reinterpret_cast<Unk_GalleryInput*>(&packet->stream)->vfunc_1();
-        reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_1409ba030("openCard", index);
+        m_30->Invoke("openCard", index);
         UpdateOpenCount();
         break;
     }
@@ -447,7 +276,7 @@ void UIGalleryEventDialog::FUN_140c17200(unsigned int type, Unk_GalleryPacket* p
         break;
     }
     case 9: {
-        auto context = FUN_1401c0d90()->FUN_14047cf60();
+        auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
         if (context == 0) return;
         UIRewardNotify* dialog = FUN_140938cd0(20061);
         if (!dialog) return;
@@ -467,77 +296,77 @@ MS2_REPLACE_METHOD(0x140C17200, UIGalleryEventDialog, FUN_140c17200, 851, 0x9227
 // @0x140c17560
 int UIGalleryEventDialog::FUN_140c17560()
 {
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return 0;
     int count = 0;
-    for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
-        auto card = context->cards.FUN_140410e70(i);
+    for (size_t i = 0; i < context->m_cards.GetCount(); ++i) {
+        auto card = context->m_cards[i];
         if (!card) { MS2_ASSERT_AT(515, "pCard" && 0); return 0; }
-        if (((CQuestManagerCommon*)&FUN_140764020()->state)->IsQuestComplete(card->quest)) ++count;
+        if (((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->IsQuestComplete(card->m_id)) ++count;
     }
     return count;
 }
 MS2_REPLACE_METHOD(0x140C17560, UIGalleryEventDialog, FUN_140c17560, 383, 0x8A7AB2B7);
 
 // @0x140c176f0
-void UIGalleryEventDialog::FUN_140c176f0(Unk_GalleryPtr<Unk_GalleryContext> context)
+void UIGalleryEventDialog::FUN_140c176f0(MS2Ptr<GalleryContext> context)
 {
     if (!context) { MS2_ASSERT_AT(269, "pContext" && 0); return; }
     if (m_30.IsNull()) return;
-    reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_140acd130("loadIllust", context->illust);
+    m_30->Invoke("loadIllust", context->m_strTitle);
     int dummy = 0;
-    int received = reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1601, context->id, dummy);
+    int received = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1601, context->m_eventId, dummy);
     if (FUN_140c187e0() == 1 || received == 1) { m_30->Invoke("completed"); return; }
-    for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
-        auto card = context->cards.FUN_140410e70(i);
+    for (size_t i = 0; i < context->m_cards.GetCount(); ++i) {
+        auto card = context->m_cards[i];
         if (!card) { MS2_ASSERT_AT(288, "pCard" && 0); return; }
-        auto quest = FUN_14074bc40(card->quest);
+        auto quest = FUN_14074bc40(card->m_id);
         if (!quest) { MS2_ASSERT_AT(291, "pQuestData" && 0); return; }
-        if (!quest->rewards.FUN_14075ae60()) {
+        if (!quest->m_complete.m_choiceRewards.GetCount()) {
             MS2_ASSERT_AT(292, "pQuestData->m_rewardComplete.essentialItems.GetCount()" && 0);
             return;
         }
-        const auto& item = quest->rewards.FUN_1407591d0(0);
+        const auto& item = ((const ATL::CAtlArray<CQuestData::QuestRewardItem>&)quest->m_complete.m_choiceRewards)[0];
         Unk_GalleryAS cardInfo(2);
-        cardInfo.FUN_1407cb9c0("state", FUN_140c18ab0((int)i));
+        reinterpret_cast<AScript*>(&cardInfo)->FUN_1407cb9c0("state", FUN_140c18ab0((int)i));
         Unk_GalleryAS questInfo(2);
-        questInfo.FUN_1409c0d20("id", card->quest);
-        questInfo.FUN_1407cb9c0("state", FUN_140c18c60((int)i));
-        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("binding", m_binder.BindNewItem(item.id, item.rank, item.count));
-        questInfo.FUN_1407cbb20("desc", FUN_1416e4df0(card->quest));
-        questInfo.FUN_1409c0d20("itemID", item.id);
-        questInfo.FUN_1409adc90("itemRank", item.rank);
-        questInfo.FUN_1407cb9c0("itemCount", item.count);
-        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("iconPath", FUN_140c189d0(item.id));
+        questInfo.FUN_1409c0d20("id", card->m_id);
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cb9c0("state", FUN_140c18c60((int)i));
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("binding", m_binder.BindNewItem(item.m_itemId, item.m_count, item.m_job));
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cbb20("desc", FUN_1416e4df0(card->m_id));
+        questInfo.FUN_1409c0d20("itemID", item.m_itemId);
+        questInfo.FUN_1409adc90("itemRank", item.m_count);
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cb9c0("itemCount", item.m_job);
+        reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("iconPath", FUN_140c189d0(item.m_itemId));
         cardInfo.FUN_1409eb270("questInfo", questInfo);
-        reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_140ba4cc0("addCard", cardInfo);
+        m_30->Invoke("addCard", reinterpret_cast<const AScript&>(cardInfo));
     }
 }
 MS2_REPLACE_METHOD(0x140C176F0, UIGalleryEventDialog, FUN_140c176f0, 1578, 0x076F0802);
 
 // @0x140c17d20
-void UIGalleryEventDialog::FUN_140c17d20(Unk_GalleryPtr<Unk_GalleryContext> context)
+void UIGalleryEventDialog::FUN_140c17d20(MS2Ptr<GalleryContext> context)
 {
     if (!context) { MS2_ASSERT_AT(318, "pContext" && 0); return; }
     if (m_30.IsNull()) { MS2_ASSERT_AT(319, "m_ascript" && 0); return; }
-    if (context->rewards.FUN_140412e50() < 2) { MS2_ASSERT_AT(323, 0); return; }
+    if (context->m_items.GetCount() < 2) { MS2_ASSERT_AT(323, 0); return; }
     int active = FUN_140c187e0();
-    auto& first = context->rewards.FUN_140410df0(0);
-    auto& second = context->rewards.FUN_140410df0(1);
+    auto& first = context->m_items[0];
+    auto& second = context->m_items[1];
     Unk_GalleryAS firstInfo(2);
-    firstInfo.FUN_1409c0d20("id", first.id);
-    firstInfo.FUN_1409adc90("rank", reinterpret_cast<Unk_GalleryRewardRank*>(&first.rank)->vfunc_1());
-    firstInfo.FUN_1407cb9c0("active", active);
-    firstInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, first.id));
-    reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cba60("icon", FUN_140c189d0(first.id));
-    firstInfo.FUN_1409c0d20("itemCount", first.count);
+    firstInfo.FUN_1409c0d20("id", first.m_itemId);
+    firstInfo.FUN_1409adc90("rank", static_cast<ItemAble&>(first).vfunc_o18_1());
+    reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cb9c0("active", active);
+    reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, first.m_itemId));
+    reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cba60("icon", FUN_140c189d0(first.m_itemId));
+    firstInfo.FUN_1409c0d20("itemCount", first.m_count);
     Unk_GalleryAS secondInfo(2);
-    secondInfo.FUN_1409c0d20("id", second.id);
-    secondInfo.FUN_1409adc90("rank", reinterpret_cast<Unk_GalleryRewardRank*>(&second.rank)->vfunc_1());
-    secondInfo.FUN_1407cb9c0("active", active);
-    secondInfo.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, second.id));
-    reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cba60("icon", FUN_140c189d0(second.id));
-    secondInfo.FUN_1409c0d20("itemCount", second.count);
+    secondInfo.FUN_1409c0d20("id", second.m_itemId);
+    secondInfo.FUN_1409adc90("rank", static_cast<ItemAble&>(second).vfunc_o18_1());
+    reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cb9c0("active", active);
+    reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, second.m_itemId));
+    reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cba60("icon", FUN_140c189d0(second.m_itemId));
+    secondInfo.FUN_1409c0d20("itemCount", second.m_count);
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>("setRewardItem", firstInfo, secondInfo);
     UpdateBoardRewardButton();
 }
@@ -546,12 +375,12 @@ MS2_REPLACE_METHOD(0x140C17D20, UIGalleryEventDialog, FUN_140c17d20, 1139, 0x035
 // @0x140c181a0
 void UIGalleryEventDialog::UpdateQuestState(int quest)
 {
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
-    for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
-        auto card = context->cards.FUN_140410e70(i);
+    for (size_t i = 0; i < context->m_cards.GetCount(); ++i) {
+        auto card = context->m_cards[i];
         if (!card) { MS2_ASSERT_AT(362, "pCard" && 0); break; }
-        if (card->quest == quest)
+        if (card->m_id == quest)
             reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<size_t, int>("setQuestState", i, FUN_140c18c60((int)i));
     }
 }
@@ -561,18 +390,18 @@ MS2_REPLACE_METHOD(0x140C181A0, UIGalleryEventDialog, UpdateQuestState, 388, 0xF
 void UIGalleryEventDialog::UpdateOpenCount()
 {
     if (m_30.IsNull()) { MS2_ASSERT_AT(373, "m_ascript" && 0); return; }
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
     int dummy = 0;
-    int opened = reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1600, context->id, dummy);
-    reinterpret_cast<AScript*>(m_30.operator->())->FUN_1409ba0d0("setOpenCount", opened, context->maxOpen);
+    int opened = reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1600, context->m_eventId, dummy);
+    reinterpret_cast<AScript*>(m_30.operator->())->FUN_1409ba0d0("setOpenCount", opened, context->m_60);
 }
 MS2_REPLACE_METHOD(0x140C18330, UIGalleryEventDialog, UpdateOpenCount, 298, 0x6A2711D5);
 
 // @0x140c18460
 void UIGalleryEventDialog::UpdateBoardRewardButton()
 {
-    reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->FUN_1409ba030("enableBoardRewardButton", FUN_140c187e0());
+    m_30->Invoke("enableBoardRewardButton", FUN_140c187e0());
 }
 MS2_REPLACE_METHOD(0x140C18460, UIGalleryEventDialog, UpdateBoardRewardButton, 79, 0x4C57278E);
 
@@ -580,9 +409,9 @@ MS2_REPLACE_METHOD(0x140C18460, UIGalleryEventDialog, UpdateBoardRewardButton, 7
 void UIGalleryEventDialog::SendEventRewardMode7(int index)
 {
     if (!CheckEventContext()) return;
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
-    auto card = context->FUN_1403ff3e0(index);
+    auto card = context->GetCard(index);
     if (!card) { MS2_ASSERT_AT(398, "pCard" && 0); return; }
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(7);
@@ -595,9 +424,9 @@ MS2_REPLACE_METHOD(0x140C184C0, UIGalleryEventDialog, SendEventRewardMode7, 321,
 void UIGalleryEventDialog::SendEventRewardMode8(int index)
 {
     if (!CheckEventContext()) return;
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return;
-    auto card = context->FUN_1403ff3e0(index);
+    auto card = context->GetCard(index);
     if (!card) { MS2_ASSERT_AT(416, "pCard" && 0); return; }
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(8);
@@ -620,14 +449,14 @@ MS2_REPLACE_METHOD(0x140C18760, UIGalleryEventDialog, SendEventRewardMode9, 110,
 // @0x140c187e0
 int UIGalleryEventDialog::FUN_140c187e0()
 {
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return 0;
     int dummy = 0;
-    if (reinterpret_cast<Unk_AttendTable&>(g_galleryCounters).FUN_1409617d0(1601, context->id, dummy)) return 0;
-    for (size_t i = 0; i < context->cards.FUN_140412e70(); ++i) {
-        auto card = context->cards.FUN_140410e70(i);
+    if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(1601, context->m_eventId, dummy)) return 0;
+    for (size_t i = 0; i < context->m_cards.GetCount(); ++i) {
+        auto card = context->m_cards[i];
         if (!card) { MS2_ASSERT_AT(449, "pCard" && 0); return 0; }
-        if (!((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(card->quest)) return 0;
+        if (!((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->FUN_140745590(card->m_id)) return 0;
     }
     return 1;
 }
@@ -638,20 +467,20 @@ CString UIGalleryEventDialog::FUN_140c189d0(int id)
 {
     if (!id) return "";
     auto item = FUN_14053f870(id);
-    if (!item) return "";
-    return ((CItemData*)item.operator->())->GetIconPath();
+    if (item.IsNull()) return "";
+    return item->GetIconPath();
 }
 MS2_REPLACE_METHOD(0x140C189D0, UIGalleryEventDialog, FUN_140c189d0, 211, 0x632BB788);
 
 // @0x140c18ab0
 int UIGalleryEventDialog::FUN_140c18ab0(int index)
 {
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return 0;
-    auto card = context->FUN_1403ff3e0(index);
+    auto card = context->GetCard(index);
     if (!card) { MS2_ASSERT_AT(477, "pCard" && 0); return 0; }
-    if (((CQuestManagerCommon*)&FUN_140764020()->state)->IsQuestActive(card->quest)) return 1;
-    if (((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(card->quest)) return 2;
+    if (((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->IsQuestActive(card->m_id)) return 1;
+    if (((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->FUN_140745590(card->m_id)) return 2;
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C18AB0, UIGalleryEventDialog, FUN_140c18ab0, 416, 0xC5CC6671);
@@ -659,12 +488,12 @@ MS2_REPLACE_METHOD(0x140C18AB0, UIGalleryEventDialog, FUN_140c18ab0, 416, 0xC5CC
 // @0x140c18c60
 int UIGalleryEventDialog::FUN_140c18c60(int index)
 {
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) return 0;
-    auto card = context->FUN_1403ff3e0(index);
+    auto card = context->GetCard(index);
     if (!card) { MS2_ASSERT_AT(495, "pCard" && 0); return 0; }
-    if (((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140745590(card->quest)) return 2;
-    else if (!((CQuestManagerCommon*)&FUN_140764020()->state)->FUN_140746ba0(card->quest, 0, 0)) return 1;
+    if (((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->FUN_140745590(card->m_id)) return 2;
+    else if (!((CQuestManagerCommon*)&((Unk_GalleryQuestGlobal*)FUN_140764020())->state)->FUN_140746ba0(card->m_id, 0, 0)) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C18C60, UIGalleryEventDialog, FUN_140c18c60, 422, 0xC1D54FAC);
@@ -673,17 +502,17 @@ MS2_REPLACE_METHOD(0x140C18C60, UIGalleryEventDialog, FUN_140c18c60, 422, 0xC1D5
 void UIGalleryEventDialog::FUN_140c18e10(int id, int rank)
 {
     if (m_30.IsNull()) return;
-    if (!FUN_14025e7c0()->FUN_14116dcb0(300038, 0, 0)) return;
+    if (!((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(300038, 0, 0)) return;
     auto item = FUN_140ebc360(id, rank);
     if (!item) return;
-    if (FUN_1409bb9e0()->IsHudOn()) FUN_1409bb9e0()->FUN_140d40120(item, 0);
+    if (((ItemPreviewMgr*)FUN_1409bb9e0())->IsHudOn()) ((ItemPreviewMgr*)FUN_1409bb9e0())->OpenPreview(item, 0);
 }
 MS2_REPLACE_METHOD(0x140C18E10, UIGalleryEventDialog, FUN_140c18e10, 239, 0x33B18A12);
 
 // @0x140c18f10
 bool UIGalleryEventDialog::CheckEventContext()
 {
-    auto context = FUN_1401c0d90()->FUN_14047cf60();
+    auto context = ((CGameRule*)FUN_1401c0d90())->GetGallery();
     if (context == 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_galleryevent_invalid_event"), 1, 1);
         return false;

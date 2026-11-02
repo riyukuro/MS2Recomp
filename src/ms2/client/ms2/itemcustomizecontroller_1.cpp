@@ -68,15 +68,13 @@ class CEquipItem : public CPtred
 public:
     int FUN_1411dc0d0();                                        // number of customizable parts
     int FUN_1411dc820();                                        // customize value of the item
-    Unk_ICCItem* FUN_1411dc7f0();                               // the item
+    struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<Unk_CustomizePart> FUN_1411dc950(const CString& strPart);
 };
 
-struct Unk_ICCEntityRef { unsigned __int64 m_id; };
 struct Unk_ICCPlayer : public PC
 {
-    Unk_ICCEntityRef FUN_14123c460();                           // the player's entity
 };
 struct Unk_ICCWorld
 {
@@ -457,7 +455,7 @@ void CItemCustomizeController::UpdateDrag()
     Unk_ICCEntityLoader* pLoader = reinterpret_cast<Unk_ICCEntityLoader*>(FUN_141b6f910());
     if (pLoader == 0)
         return;
-    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_ICCEntityRef&>(pPlayer->FUN_14123c460())));
+    void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(pPlayer->FUN_14123c460());
     if (pScene == 0)
         return;
     void* pCameraManager = ((void*)FUN_1413f9a70());
@@ -552,7 +550,7 @@ void CItemCustomizeController::vfunc_39(int bActive)
         Unk_PickTarget* pTarget = aTargets[i].get();
         if (pTarget == 0)
             continue;
-        if (!m_spEquipItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547170())
+        if (!reinterpret_cast<Unk_ICCItem*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547170())
             pTarget->FUN_1411679d0(fScale, fMode, m_spPicker->m_spMesh.FUN_141412c90());
         else
             pTarget->FUN_1411679d0(fScale, fMode, 0);

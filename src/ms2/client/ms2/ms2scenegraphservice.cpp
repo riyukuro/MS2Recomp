@@ -89,8 +89,6 @@ class Unk_SgRider : public PCBase { };                    // PCBase: the actor t
 struct Unk_SgWorldObjectRef;                                            // map value: intrusive pointer to the object
 Unk_SgRider* FUN_140aac420(Unk_SgWorldObjectRef* pRef);
 class Unk_SgWorldObjects;
-void FUN_140c20a30(Unk_SgWorldObjects* pMap, POSITION* pPos);           // GetNext
-class Unk_SgWorld { public: Unk_SgWorldObjects* FUN_141bd36b0(); };
 
 void* FUN_1413f9b10();   // C3: was FUN_1413f9b10
 unsigned int FUN_140d868f0(char*);   // C3: was FUN_140d868f0
@@ -317,8 +315,8 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
             FUN_1414f1f50(0);
             FUN_1414f1f50(4);
             FUN_1414f1f50(5);
-            Unk_SgWorldObjects* pObjects = reinterpret_cast<Unk_SgWorld*>(WorldService::GetInstance())->FUN_141bd36b0();
-            for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetHeadPosition(); pos != NULL; FUN_140c20a30(pObjects, &pos))
+            Unk_SgWorldObjects* pObjects = (Unk_SgWorldObjects*)WorldService::GetInstance()->FUN_141bd36b0();
+            for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetHeadPosition(); pos != NULL; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetNext(pos))
             {
                 Unk_SgRider* pRider = FUN_140aac420(((struct Unk_SgWorldObjectRef*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos)));
                 if (pRider != NULL)

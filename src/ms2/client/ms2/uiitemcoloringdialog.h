@@ -47,7 +47,7 @@ public:
     void FUN_1419ae790();                                       // play the dye pose of the previewed item
     int FUN_1419ae940();                                        // leave the page (restore the camera)
     void FUN_1419ae9f0();                                       // close (asks first when the basket is not saved)
-    void FUN_1419aeb50();                                       // refresh the save button and the fee
+    void RefreshBasketState();                                       // refresh the save button and the fee
     void FUN_1419aebc0(const __int64* pUid, int nIndex);        // select an item
     void FUN_1419aeea0(unsigned nPalette, unsigned nColor);     // preview a palette colour
     void FUN_1419aef10(int nPalette, int nColor);               // preview a detail colour
@@ -55,7 +55,7 @@ public:
     void FUN_1419af050(int bEnable);                            // enable "m_save"
     void FUN_1419af110(int bEnable);                            // enable "m_reset"
     void SetAddBasketButtonEnabled(int bEnable);                            // enable "m_addBasket"
-    void FUN_1419af290();                                       // "forceClearSelected"
+    void ClearSelected();                                       // "forceClearSelected"
     void FUN_1419af2f0(unsigned nPrice);                        // "setFee"
     void FUN_1419af750();                                       // the dye done effect
     int FUN_1419af840();                                        // the dye was applied
@@ -69,9 +69,9 @@ public:
     void FUN_1419b0700();                                       // send the basket (0x23/0x16)
     int FUN_1419b0b10(ASArray* pRows, int* pTotal);             // the bill rows
     int FUN_1419b0ef0();                                        // open the bill
-    MS2Ptr<CItem> FUN_1419b1440(int nItemId);                   // move the previewed item into the basket
-    MS2Ptr<CItem> FUN_1419b1590(int nItemId);                   // take an item out of the basket
-    __int64 FUN_1419b1710();                                    // the basket price
+    MS2Ptr<CItem> AddCurrentItemToBasket(int nItemId);                   // move the previewed item into the basket
+    MS2Ptr<CItem> RemoveBasketItem(int nItemId);                   // take an item out of the basket
+    __int64 GetTotalPrice();                                    // the basket price
     int FUN_1419b1760(int* pCoupons);                           // the player can pay; coupons used
     bool FUN_1419b1900(int bCoupon);                            // a coupon is owned
     int FUN_1419b1970(int bCoupon);                             // coupons owned

@@ -9,8 +9,8 @@
 #define MS2_CHECK_SIZE(T, n) typedef char T##_size_check[sizeof(T) == (n) ? 1 : -1]
 
 // ---- exe callees ----
-const unsigned char* FUN_1400530c0(const unsigned char* pBuf, int nLen, unsigned int uCode);    // find a start code
-unsigned long long FUN_140053000(const unsigned char* pHeader);                                 // header flags
+__int64 FUN_1400530c0(__int64 pBuf, int nLen, int nCode);       // find a start code (sfr_cri_05c)
+long FUN_140053000(unsigned char* pHeader);                       // header flags (sfr_cri_05c)
 struct Unk_M2vCtx;
 void FUN_1400544e0(Unk_M2vCtx* pCtx);
 void FUN_1400540d0(Unk_M2vCtx* pCtx);
@@ -20,23 +20,22 @@ void M2VVLC_Init();
 void thunk_FUN_140054080();                             // 0x140054200, a jmp to FUN_140054080 (sfr_cri_06a)
 void M2VAPRD_Init();
 void M2VAMC_Init();
-void FUN_14005af30(int nA, unsigned int uError);
-void FUN_14005af70();
-void FUN_14005afd0();
-void FUN_14005b390();
-void FUN_14005b300();
-void FUN_140059030();
-void FUN_14005e5b0();
-void FUN_14005e600();
-void FUN_14005e650();
-void FUN_14005e6c0();
-void FUN_14005b860();
-void LAB_140047420();                                   // code label, not a function start in the symbol map
-void LAB_140047620();
-void LAB_140047730();
-void LAB_140054590();
-void LAB_1400545c0();
-void LAB_1400545d0();
+// the sfr_cri_06 definitions' signatures (the table entries are only stored by address)
+unsigned int FUN_14005af30(__int64 nA, unsigned int uError);
+void FUN_14005af70(__int64 a1, unsigned __int64 a2, unsigned __int64 a3);
+void FUN_14005afd0(__int64 a1, unsigned __int64* a2);
+void FUN_14005b390(__int64 a1, unsigned __int64 a2, void* a3);
+void FUN_14005b300(unsigned __int64 a1, unsigned __int64 a2);
+unsigned int FUN_140059030(unsigned __int64 a1, unsigned __int64 a2);
+void FUN_14005e5b0(__int64 a1, void* a2);
+void FUN_14005e600(__int64 a1, unsigned int* a2);
+void FUN_14005e650(__int64 a1, int* a2, unsigned int* a3, unsigned int* a4);
+void FUN_14005e6c0(__int64 a1, unsigned int* a2, unsigned int* a3);
+void FUN_14005b860(__int64 a1);
+const char* FUN_140047420(void);                        // unit_140046e04
+void FUN_140054590(void* pCtx, int nIndex, unsigned __int64 a3, unsigned __int64 a4, unsigned __int64 a5);
+void FUN_1400545c0(void* pCtx, unsigned __int64 a2, unsigned int a3);
+void FUN_1400545d0(void* pCtx, unsigned __int64* pOut, unsigned int* pCount);
 
 // Decoder parameter block (0x6c bytes; field names invented).
 struct Unk_M2vParams
@@ -128,17 +127,17 @@ int FUN_140047430(const unsigned char* pBuf, int nLen)
     int nRemain;
     int nResult;
 
-    pFound = FUN_1400530c0(pBuf, nLen, 0x40);
+    pFound = (const unsigned char*)FUN_1400530c0((__int64)pBuf, nLen, 0x40);
     if (pFound == 0)
         return 0;
     pFound = pFound + 4;
     nLen = nLen - (int)(pFound - pBuf);
     if (nLen <= 0)
         return 0;
-    pData = FUN_1400530c0(pFound, nLen, 0xffffffff);
+    pData = (const unsigned char*)FUN_1400530c0((__int64)pFound, nLen, -1);
     if (pData == 0)
         return 0;
-    if ((FUN_140053000(pData) & 0x10) == 0)
+    if ((FUN_140053000((unsigned char*)pData) & 0x10) == 0)
         return 0;
     pData = pData + 4;
     nRemain = nLen - (int)(pData - pFound);
@@ -151,16 +150,15 @@ int FUN_140047430(const unsigned char* pBuf, int nLen)
 // @0x1400474d0
 void FUN_1400474d0(void)
 {
-    if (0 < DAT_143ba9db0)
+    int nCount = DAT_143ba9db0;
+    if (0 < nCount)
     {
         Unk_M2vCtx* pCtx = DAT_143ba9db8;
-        unsigned long long uCount = (unsigned long long)((((unsigned int)DAT_143ba9db0 - 1U) >> 2) + 1);
-        do
+        for (int i = 0; i < nCount; i += 4)
         {
             pCtx->m_nState = 1;
             pCtx = pCtx + 1;
-            uCount = uCount - 1;
-        } while (uCount != 0);
+        }
     }
 }
 
@@ -360,21 +358,21 @@ void FUN_140047840(Unk_M2vCtx* pCtx, int nIndex, int nValue)
 void FUN_1400478a0(void)
 {
     DAT_143e64b88 = 1;
-    DAT_143e64b60 = (void*)&LAB_140047420;
+    DAT_143e64b60 = (void*)FUN_140047420;
     DAT_143e64b20 = (void*)FUN_140047430;
     DAT_143e64b80 = (void*)FUN_140047770;
-    DAT_143e64b78 = (void*)&LAB_140047620;
+    DAT_143e64b78 = (void*)FUN_140047620;
     DAT_143e64b58 = (void*)FUN_1400477e0;
     DAT_143e64b50 = (void*)FUN_140047810;
     DAT_143e64b28 = (void*)FUN_140047840;
-    DAT_143e64b90 = (void*)&LAB_140047730;
+    DAT_143e64b90 = (void*)FUN_140047730;
     DAT_143e64b08 = (void*)FUN_14005af70;
     DAT_143e64b68 = (void*)FUN_14005afd0;
     DAT_143e64b10 = (void*)FUN_14005b390;
     DAT_143e64b00 = (void*)FUN_14005b300;
-    DAT_143e64b98 = (void*)&LAB_140054590;
-    DAT_143e64b70 = (void*)&LAB_1400545c0;
-    DAT_143e64b40 = (void*)&LAB_1400545d0;
+    DAT_143e64b98 = (void*)FUN_140054590;
+    DAT_143e64b70 = (void*)FUN_1400545c0;
+    DAT_143e64b40 = (void*)FUN_1400545d0;
     DAT_143e64b48 = (void*)FUN_140059030;
     DAT_143e64ba0 = (void*)FUN_14005e5b0;
     DAT_143e64b18 = (void*)FUN_14005e600;
@@ -403,10 +401,12 @@ void FUN_1400479e0(void)
         DAT_143baa1d0[i] = (int)(dC * 2.017 * 1048576.0);
         nC = nC + 1;
     }
+    int* pEntry = DAT_143bab5d0;
     for (int i = 0; i < 256; ++i)
     {
-        DAT_143bab5d0[i] = i;
-        DAT_143bab1d0[i] = 0;
-        DAT_143bab9d0[i] = 0xff;
+        *pEntry = i;
+        pEntry[-0x100] = 0;
+        pEntry[0x100] = 0xff;
+        ++pEntry;
     }
 }

@@ -114,7 +114,7 @@ public:
     int GetSlot(unsigned nKey, Voice& voice);                 // 0x140d0a100
     int AllocSlot(int nKey, Voice& voice);                  // 0x140d0a1a0
     int AddRemote(int nKey, RemoteVoice& voice);            // 0x140d0a310
-    void MapSlot(int nKey, int nSlot);                      // 0x140d0a380
+    void MapSlot(unsigned nKey, int nSlot);                   // 0x140d0a380
     void RemoveSlot(unsigned nKey);                           // 0x140d0a3e0
     void Mute();                                            // 0x140d0a510
     void Unmute();                                          // 0x140d0a560

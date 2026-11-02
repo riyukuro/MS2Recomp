@@ -58,7 +58,7 @@ static CString s_strMaviewOpen("System_MaviewOpen");                        // @
 class Unk_140acd6e0 : public ASDisplayObject { public:
 };
 class ASDialog : public ASDisplayObject {};
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 class Unk_WbUIMgr { public: float FUN_141adbe70(); };
 class Unk_WbBrowser : public COffscreenWebBrowser { public:                                               // one browser page of the manager
 };
@@ -79,7 +79,6 @@ class Unk_WbConsts { public:
     Unk_WbBool m_8780;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-bool* FUN_140336990(Unk_WbBool* p);
 int FUN_140bb9640(void* pUserData);                                         // the button kind stored with the click handler
 float FUN_14028aed0(float f);
 AScript* FUN_140ba7c60(void* pRef);                                         // the movie root
@@ -100,13 +99,13 @@ UIWebBrowser::UIWebBrowser()
     FUN_141924170(1);
     m_c8 = s_strMaviewOpen;
     m_d0 = s_strMaviewClose;
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
 }
 
 // @0x141b4f470
 UIWebBrowser::~UIWebBrowser()
 {
-    FUN_140939a10()->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
 }
 
 // @0x141b4f620
@@ -132,7 +131,7 @@ void UIWebBrowser::OnLoadInit()
     m_nMinHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_86d0)->Get();
     m_nMaxWidth = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8678)->Get();
     m_nMaxHeight = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8728)->Get();
-    m_bResizable = *FUN_140336990(&((class Unk_WbConsts*)FUN_1401d3200())->m_8780);
+    m_bResizable = *reinterpret_cast<Common::Constants::Value<bool>*>(&((class Unk_WbConsts*)FUN_1401d3200())->m_8780)->Get();
     if (m_nWidth == 0 && m_nHeight == 0)
     {
         m_nWidth = m_nMaxWidth;
@@ -172,7 +171,7 @@ void UIWebBrowser::OnLoadComplete()
         pDlg->GetPosition(&x, &y);
         x = FUN_14028aed0(x);
         y = FUN_14028aed0(y);
-        pDlg->FUN_1422c00f0(x, y);
+        pDlg->SetPositionFloat(x, y);
     }
     if (FUN_140166410()->FUN_14036d570(0x5c) == 0)
     {

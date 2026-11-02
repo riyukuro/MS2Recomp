@@ -16,7 +16,7 @@
 
 // ---- unit-local views of exe objects ----
 
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 
 // The local player's stats: slot 4 = HP.
 class Unk_DmgPlayer : public PCBase
@@ -37,8 +37,9 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/commonfiles/os.h"
 class Unk_DmgCfgInfo { public: char m_pad_00[0xc]; int m_0c; };
-void* FUN_1409a8b10();
+class CGameOption;
 
 int FUN_141277f40();                                                // next UI layer
 
@@ -83,7 +84,7 @@ CString UIDamageEffect::GetTypeName()
 // @0x141910600
 void UIDamageEffect::vfunc_3()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     m_nLowHp = 0;
     UIHeadUpDisplay::vfunc_3();
 }
@@ -93,7 +94,7 @@ void UIDamageEffect::FUN_141910660()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     m_30.operator->()->Invoke("onHide");
     m_nLowHp = 0;
 }
@@ -103,7 +104,7 @@ void UIDamageEffect::FUN_141910700()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
         vfunc_oa0_3(pPlayer->FUN_141670a00(4), pPlayer->FUN_141670a30(4));
@@ -137,8 +138,8 @@ void UIDamageEffect::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     FUN_141910ab0();
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgCfgInfo* pInfo = reinterpret_cast<Unk_DmgCfgInfo*>(reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140e09150());
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    Unk_DmgCfgInfo* pInfo = reinterpret_cast<Unk_DmgCfgInfo*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150());
     static_cast<Unk_DmgScript*>(m_30.operator->())->Invoke("init", m_fLowHpPercent, pInfo->m_0c);
     Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)

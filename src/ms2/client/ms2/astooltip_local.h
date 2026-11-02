@@ -48,8 +48,6 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);   // 0x14016a730 widen (a
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 #include "ms2/placeholder/cstringtable.h"
-CItemDataTable* FUN_140281980_p1();               // 0x140281980 TSingleton<CItemDataTable>::GetInstance (exe copy)
-CStringTable* FUN_1401a9d70_p1();                 // 0x1401a9d70 the string table
 #include <list>
 #include <algorithm>
 #include "ms2/placeholder/setitemtable.h"
@@ -80,7 +78,6 @@ void FUN_14083d2b0(CStringW& str);                // trims the trailing line bre
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 void* FUN_14052d200();                // TSingleton<CItemSocketTable>::GetInstance (exe copy; as part 2)
-SkillDataTableCli* FUN_1401958b0();               // TSingleton<SkillDataTableCli>::GetInstance (exe copy; as part 2)
 #include <cmath>
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/cpetdatatable.h"
@@ -130,8 +127,8 @@ class Unk_140166410* FUN_140166410();                                     // TSi
 CReservedWordTable* FUN_1403b4750();                                  // 0x1403b4750 the reserved word table
 void* FUN_14052d200();                                    // TSingleton<CItemSocketTable>::GetInstance (exe copy)
 void* FUN_1401c0d90();                                           // TSingleton<CGameRule>::GetInstance (exe copy)
-SkillDataTableCli* FUN_1401958b0();                                   // TSingleton<SkillDataTableCli>::GetInstance (exe copy)
-MyPC* FUN_1409613d0(PCBase* p);                                       // efd::DynamicCast<MyPC>(PCBase*)
+class Unk_AkoMyPC;
+template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);
 bool FUN_140633a20(MS2Ptr<CItem> spItem);                             // the item can be traded (itemsocketsystemutil.cpp)
 CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);  // a money text (uicommon.cpp)
 CStringW FUN_14062ae60(int nGemId);                                   // the gemstone option text (itemsocketsystemutil.cpp)
@@ -142,12 +139,10 @@ CStringW FUN_140630e10(int nSpecial);                                 // the spe
 CStringW GetStatCommonText(unsigned nStat);                                    // GetStatCommonText (stat.cpp)
 bool IsStatKindTwo(int nStat);                                        // the stat is shown as a rate (stat.cpp)
 bool FUN_14081dcd0(int nSpecial);                                     // the special stat is shown as a rate (specialability.cpp)
-CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
 
 
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // part 5: the item limit text
 // identical redeclarations of other parts' prototypes (solo builds)
-CStringTable* FUN_1401a9d70_p3();                                     // 0x1401a9d70 the string table (part 3)
 
 CStringW FUN_1409e0900(int n);                                        // part 5
 CStringW FUN_1409e0b40(int nTenths);                                  // part 5
@@ -185,7 +180,7 @@ inline bool operator<(const Unk_SSGHouseKey& a, const Unk_SSGHouseKey& b)
         return a.m_nA < b.m_nA;
     return a.m_nB < b.m_nB;
 }
-extern std::set<Unk_SSGHouseKey> DAT_143ab32d8;
+extern class Unk_ProxyStaticTreeB DAT_143ab32d8;
 // ---- end part 2 ----
 
 // ---- part 3 (0x1409d3010-0x1409d9f30) ----
@@ -197,7 +192,6 @@ class Unk_ItemPlusInfo : public UnlimitedEnchantInfo {};    // CItemStatus::FUN_
 #include "ms2/commonfiles/itemenchantinfo.h"              // CItemEnchantInfo
 #include "ms2/commonfiles/itemoption.h"
 class Unk_ItemEnchantData : public CItemStatus {};   // CItem::FUN_1405278a0's record
-CStringTable* FUN_1401a9d70_p3();                           // 0x1401a9d70 the string table (astooltip.cpp declares the Unk_CommandStrings form)
 CReservedWordTable* FUN_1403b4750();                        // 0x1403b4750 the reserved word table
 ItemGachaBoxTable* FUN_14052d230();                         // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
 int FUN_1409e6fc0(int nKind);                               // part 5: the item kind shown by the tooltip
@@ -208,7 +202,6 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);              // 0x14016a7
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/itemdatatable.h"
 class Unk_140166410* FUN_140166410();                        // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
-CItemDataTable* FUN_140281980_p3();                         // 0x140281980 TSingleton<CItemDataTable>::GetInstance (exe copy)
 bool FUN_140f33250(ASObj& obj, MS2Ptr<ItemColorEx> spColor, MS2Ptr<CItemData> spData, bool bAlt);   // the colour of an item (unit_140f32290.cpp)
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/clientconstants.h"
@@ -219,23 +212,23 @@ bool FUN_140f33250(ASObj& obj, MS2Ptr<ItemColorEx> spColor, MS2Ptr<CItemData> sp
 #include "ms2/commonfiles/itemsocket.h"
 class PCBase;
 void* FUN_1404a1bb0();                              // 0x1404a1bb0 TSingleton<CExpTable>::GetInstance (exe copy)
-ItemDropTable* FUN_1405a1fd0_p3();                          // 0x1405a1fd0 TSingleton<ItemDropTable>::GetInstance (exe copy)
 
 
 
 
 bool FUN_1406a6030(MS2Ptr<CItemData> spData);               // the item data may be registered at the merat market (meratmarketbasketinfo.cpp)
 // The owner ids of the merat market checks (0x20 bytes; uimeratmarketregisterdialog.cpp's Unk_MrdOwner).
-struct Unk_TooltipItemOwner
+struct Unk_BillOwner
 {
-    void FUN_1409aff60();
+    Unk_BillOwner();
     __int64 m_nAccount;
     unsigned m_nType;
     void* m_pCharacter;                                     // the own character id (stored as a pointer-size value)
     __int64 m_n18;
 };
-MS2_CHECK_SIZE(Unk_TooltipItemOwner, 0x20);
-bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_TooltipItemOwner* pOwner);   // the item may be registered (meratmarketbasketinfo.cpp)
+MS2_CHECK_SIZE(Unk_BillOwner, 0x20);
+struct Unk_MeratItemOwner;
+bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner);   // the item may be registered (meratmarketbasketinfo.cpp)
 extern __int64 DAT_143ab2820;                               // the own account id
 extern unsigned DAT_143ab2830;
 extern __int64 DAT_143ab2838;
@@ -257,7 +250,6 @@ bool FUN_140627020(MS2Ptr<CItemGemStoneData> spRow);        // the gemstone is a
 void* FUN_14052d1f0();                   // 0x14052d1f0 TSingleton<CItemExtractionTable>::GetInstance (exe copy)
 bool FUN_140634230(MS2Ptr<CItem> spItem);                   // the item is excluded from repacking (itemsocketsystemutil.cpp)
 
-CStringW FUN_1408116a0(int nStringId, const int& n);        // FormatStringId<int>
 CStringW GetStringCommonByKey(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
 // CItem::FUN_140526470 returns the count of the asked kind (citem.h declares it void).
 struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
@@ -302,7 +294,7 @@ template<> struct Unk_SocketRef<Unk_TooltipBeautyItems> {
 };
 MS2_SOCKETPTR_BOXED(Unk_TooltipBeautyItems)
 Unk_SocketPtr<Unk_TooltipBeautyItems> FUN_1406e5af0(unsigned nShopId);    // the coupon items of a beauty shop (npcshopdata.cpp)
-bool FUN_1405729c0(const Unk_TooltipBeautyItems* pItems);              // the coupon list is empty
+class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); int FUN_1408d1f60(unsigned int, int); unsigned int FUN_1408d2380(void); };   // C3: member view
 // CItemData::FUN_14053c940 / FUN_14053d660 return an int at the call sites (citemdata.h declares them bool).
 struct Unk_ItemDataIntView : CItemData { int FUN_14053c940(int nGender); int FUN_14053d660(); };
 int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
@@ -331,39 +323,13 @@ extern Unk_Inventory g_143ab2a90;                                   // the inven
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);         // a duration text (util.cpp)
 bool FUN_141b48950(MS2Ptr<CItem> spItem);                             // the item has a preview model (uishopdialog.cpp)
 bool FUN_141b488c0(MS2Ptr<CItemData> spData);                         // the item data may be previewed
-// The job system of a player (JobSystemCli; jobsystem.h is not included: it pulls placeholder/skilldata.h, which clashes
-// with the commonfiles SkillData of skilldatatablecli.h). Only the proven slots.
 #include "ms2/commonfiles/jobtable.h"                 // JobData / JobSkillData
 #include "ms2/placeholder/fittingdollpc.h"                // PC::FUN_1409eee00
-// A learnt skill of the job system (JobSkill, guess/jobsystem.h; that header is not included here, see below).
-class Unk_TooltipJobSkillP4 : public CPtred
-{
-public:
-    unsigned FUN_140637cc0();                                         // JobSkill::GetID
-    unsigned m_nId;                                                   // +0x18
-    unsigned short m_nLevel;                                          // +0x1c
-    unsigned char m_1e;
-    bool m_bLearnt;                                                   // +0x1f
-};
-MS2_CHECK_OFFSET(Unk_TooltipJobSkillP4, m_bLearnt, 0x1f);
-// CSkillPointSimulator (skillpointsimulator.h pulls jobsystem.h) / UISkillBookTreeDialog: only the called members.
-class Unk_TooltipSkillSim : public CPtred
-{
-public:
-    MS2Ptr<Unk_TooltipJobSkillP4> FUN_140abc980(unsigned nSkillId);   // CSkillPointSimulator::GetEditSkill
-};
-struct Unk_TooltipSkillTreeDialog
-{
-    MS2Ptr<Unk_TooltipSkillSim> FUN_140ec8ad0();                      // UISkillBookTreeDialog::GetSimulator
-};
 #include "ms2/client/ms2/uiskillbookautodistributedialog.h"
 UISkillBookTreeDialog* FUN_1409eb120(int nId);                        // the skill book tree dialog if it is open
 // The skill tier option manager behind PC::FUN_1409eee00 (fittingdollpc.h forward-declares it for the user unit).
-class Unk_PCSkillTree : public CPtred
-{
-public:
-    unsigned short FUN_14080baf0(unsigned nSkillId);                  // CSkillTierOptionManager::GetSkillLevel
-};
+#include "ms2/client/ms2/skilltieroptionmanager.h"
+class Unk_PCSkillTree : public CSkillTierOptionManager { };
 // The local player's quest state (MyPC::FUN_141523ba0 result; the CQuestManagerCommon sits at +0x10).
 #include "ms2/placeholder/cquestmanagercommon.h"
 struct Unk_TooltipQuestState {};                                       // the CQuestManagerCommon (abstract here)
@@ -383,20 +349,11 @@ CStringW FUN_1416e4df0(int nBookId);                                  // the que
 #include "ms2/commonfiles/commonstruct_wa.h"                 // ItemDropItemLife
 #include <algorithm>
 
-ItemDropTable* FUN_1405a1fd0_p4();                                    // 0x1405a1fd0 TSingleton<ItemDropTable>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                    // the item data of an id (as astooltip.cpp)
 bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType, int nItemType);   // a drop expires (item.cpp)
 CStringW FUN_14183e9c0(CStringW strText, int nRank);                  // colours a text by rank (texttohtml.cpp)
 bool FUN_1409e7930(ItemDropResult& lhs, ItemDropResult& rhs);         // part 5: the display order
 bool FUN_1409e7a40(ItemDropResult& lhs, ItemDropResult& rhs);         // part 5: the pick order
-struct Unk_TooltipJobSystem
-{
-    virtual ~Unk_TooltipJobSystem();                                  // MS2: slot 0
-    virtual MS2Ptr<SkillLevelData> vfunc_1(unsigned nSkillId);        // MS2: slot 1
-    virtual bool vfunc_2(unsigned nSkillId);                          // MS2: slot 2 learnt (or granted by a temporary source)
-    MS2Ptr<JobData> FUN_140639bb0();                                  // JobSystem::GetJobData
-    MS2Ptr<Unk_TooltipJobSkillP4> FUN_1406394d0(unsigned nSkillId);   // JobSystem::FindSkill
-};
 
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);   // part 6: wrap a child AS object
 CStringW FUN_1409e7880();                                             // part 5: the enablePreview text
@@ -458,20 +415,12 @@ bool FUN_1409e7930(ItemDropResult& lhs, ItemDropResult& rhs);
 bool FUN_1409e7a40(ItemDropResult& lhs, ItemDropResult& rhs);
 extern int g_nDebugUI;                                                // 0x143ae0fc0 (uiobject.cpp): debug UI information on
 int FUN_1409e1b80(ASTooltip* pTooltip, int nSkillId, int bFromDialog);
-// JobSkill / JobSystem::FindSkill (jobsystem.h clashes with skilldatatablecli.h here, see part 4).
-class Unk_TooltipJobSkill : public CPtred { public: unsigned m_nId; unsigned short m_nLevel; };   // JobSkill +0x18 / +0x1c
-struct Unk_TooltipJobSystemP5
-{
-    MS2Ptr<Unk_TooltipJobSkill> FUN_1406394d0(unsigned nSkillId);     // JobSystem::FindSkill
-};
 class MyPC;
 
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/itemgachaboxtable.h"
 #include "ms2/commonfiles/timeutil.h"
-SkillDataTableCli* FUN_1401958b0_p5();                                // 0x1401958b0 TSingleton<SkillDataTableCli>::GetInstance (exe copy)
-CStringTable* FUN_1401a9d70_p5();                                     // 0x1401a9d70 the string table
 ItemGachaBoxTable* FUN_14052d230();                                // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
 
 
@@ -487,15 +436,13 @@ float FUN_14028d280(unsigned nTicks);                                 // millise
 void FUN_1409e2ed0(Scaleform::GFx::Value* pOut, ItemAble& item);
 #include "ms2/commonfiles/meratmarketbasketinfo.h"                   // CMeratMarketPremiumProduct
 #include "ms2/commonfiles/jobtable.h"
-JobTable* FUN_1401d7a50_p5();                                         // 0x1401d7a50 TSingleton<JobTable>::GetInstance (exe copy)
 bool FUN_1402226b0(int nJob);                                         // the job code is valid
 void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
-CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
 #include "ms2/commonfiles/featuremanager.h"
 // The no-argument BlockFormat (0x1409eec40, COMDAT in the template range): FMT_VARIADIC_W has no 0-arg form. w534: move to the shared section.
-CStringW BlockFormat(int, const fmt::ArgList&);
-inline CStringW BlockFormat(int nStringId) { return BlockFormat(nStringId, fmt::ArgList()); }
+#include "ms2/placeholder/blockformat.h"
+inline CStringW BlockFormat(int nStringId) { return FUN_14028dee0(nStringId, fmt::ArgList()); }
 
 CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
 const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // part 6: arr[nIndex], nDefault when out of range
@@ -506,7 +453,6 @@ int FUN_14053feb0(int nItemId);                                       // the def
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                    // the item data of an id
 
 
-ItemDropTable* FUN_1405a1fd0_p5();                                    // 0x1405a1fd0 TSingleton<ItemDropTable>::GetInstance
 bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType, int nItemType);   // a drop expires (item.cpp)
 #include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption> (FUN_1409e4950)
 #include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable
@@ -547,8 +493,6 @@ void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapo
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/cxmldata.h"
-CStringW BlockFormat(int, const fmt::ArgList&);
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
 const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // arr[nIndex], nDefault when out of range
 // ---- end part 6 ----
 

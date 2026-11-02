@@ -62,11 +62,10 @@ const NiRTTI GFxMovieBackground::ms_RTTI("GFxMovieBackground", &GFxMovieEventHan
 #endif
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-extern char DAT_143b059e8;                                                  // efd::SmartPointer<efd::ServiceManager> cell
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }   // first member: efd::SmartPointer<efd::ServiceManager>
+#define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae52e0;                                         // material name of the screen quad
 extern char DAT_143a08cd8;                                                  // the reference axis of the camera angle
-ecr::RenderService* FUN_1411d15b0(efd::ServiceManager* pManager);
-efd::ServiceManager* FUN_1401cd190(void* pCell);                            // SmartPointer<ServiceManager>::operator->
 
 // The GFx renderer HAL: slot 67 wraps a D3D surface into a render target.
 class Unk_BgHal
@@ -230,13 +229,35 @@ class MinimapViewport : public NiRefObject
 public:
     MinimapViewport();                                                      // 0x1414856d0
     unsigned InitFromFieldMinimap(int n);
-    bool FUN_141486450(const Vector3& kPos, NiPoint3& kOut, float fScale);   // kOut is 12 bytes: the exe writes +8
+    bool FUN_141486450(const NiPoint3& kPos, NiPoint3& kOut, float fScale);   // kOut is 12 bytes: the exe writes +8
 private:
     char m_pad[0x90 - sizeof(NiRefObject)];
 };
 MS2_CHECK_SIZE(MinimapViewport, 0x90);
 
 // The ref-counted handle objects of vfunc_9 (Scaleform render handles): AddRef/Release are out-of-line library functions.
+// C3: unit-local views of the SDK render classes (render_renderer2d.h clashes with this unit's kernel headers).
+namespace Scaleform { namespace Render {
+class TreeRoot;
+namespace ContextImpl {
+class Entry;
+class RenderNotify;
+class RTHandle
+{
+public:
+    bool   NextCapture(RenderNotify* render);
+    Entry* GetRenderEntry() const;
+private:
+    void* pData;
+};
+}
+class Renderer2D
+{
+public:
+    void Display(TreeRoot* root);
+    ContextImpl::RenderNotify* GetContextNotify() const;
+};
+} }
 class Unk_BgDispHandle;
 class Unk_GFxHandleObj
 {
@@ -261,8 +282,6 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17(Unk_BgTarget* pTarget, bool bFlag);
-    void* FUN_142582270();
-    void FUN_142582230(void* p);
     void Assign(Unk_BgDispHandle& kHandle);                                 // 0x14127cb10
 };
 // The display handle copy of the movie (vfunc_9): a ref-counted pointer, wrapped twice (0x14127c160 <- 0x14127c3d0 <- 0x14127c130).
@@ -283,11 +302,9 @@ class Unk_BgDispHandle : public Unk_BgDispBase
 public:
     Unk_BgDispHandle(const Unk_BgDispHandle& r);                            // 0x14127c130
     ~Unk_BgDispHandle();                                                    // 0x14127c530
-    bool FUN_1425805a0(void* p);
-    void* FUN_142580250();
     void* GetObj();                                                         // 0x14127cc80
 };
-void FUN_14257ec50(Unk_BgDispHandle* p) throw();
+void FUN_14257ec50(Unk_BgDispHandle* p) throw();   // RTHandle::~RTHandle: an explicit dtor call emits ??_G at /Od
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 class Unk_BgWorldMgr : public WorldService { public: NiPoint3 FUN_141bd3dc0(); };   // 3dc0 returns by value (hidden pointer, worldservice.h)
 bool* FUN_1422dad70(void* pThis, void* pOut, char n);   // pOut: caller temp (key-state flags), returned
@@ -315,9 +332,9 @@ Unk_BgDispHandle::Unk_BgDispHandle(const Unk_BgDispHandle& r) : Unk_BgDispBase(r
 // @0x14127c530
 Unk_BgDispHandle::~Unk_BgDispHandle() { FUN_14257ec50(this); }
 // @0x14127cc80
-void* Unk_BgDispHandle::GetObj() { return FUN_142580250(); }
+void* Unk_BgDispHandle::GetObj() { return reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle*>(this)->GetRenderEntry(); }
 // @0x14127cb10
-void Unk_GFxHandleObj::Assign(Unk_BgDispHandle& kHandle) { FUN_142582230(kHandle.GetObj()); }
+void Unk_GFxHandleObj::Assign(Unk_BgDispHandle& kHandle) { reinterpret_cast<Scaleform::Render::Renderer2D*>(this)->Display(static_cast<Scaleform::Render::TreeRoot*>(kHandle.GetObj())); }
 
 // ---- Unk_BgComPtr<T> ----
 // @0x14127c1a0
@@ -374,7 +391,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, float a2, 
 struct Unk_BgServiceCell { char m_spManager; };
 ecr::RenderService* Unk_GetRenderService(char* pCell)
 {
-    return FUN_1411d15b0(FUN_1401cd190(&reinterpret_cast<Unk_BgServiceCell*>(pCell)->m_spManager));
+    return reinterpret_cast<efd::SmartPointer<efd::ServiceManager>*>(&reinterpret_cast<Unk_BgServiceCell*>(pCell)->m_spManager)->operator->()->GetSystemServiceAs<ecr::RenderService>();
 }
 
 // ---- GFxMovieBackground ----
@@ -473,7 +490,7 @@ int GFxMovieBackground::vfunc_7(int x, int y)
     m_60->HandleEvent(kEvent);
     return 1;
 }
-// MS2-FUNCTIONAL: code identical; the else-branch kPos sits at rsp+0x88 (exe 0x84), shifting the later temps by 8
+// Both positions reach the viewport through an implicit NiPoint3(const efd::Point3&) conversion (0x14027dcf0).
 // @0x14127a070
 void GFxMovieBackground::vfunc_8(float fTime)
 {
@@ -500,8 +517,7 @@ void GFxMovieBackground::vfunc_8(float fTime)
             NiPoint3 kScreen;
             if (m_spViewport ? true : false)
             {
-                Vector3 kPos(pPC->vfunc_18());
-                if (m_spViewport->FUN_141486450(kPos, kScreen, 1.0f))
+                if (m_spViewport->FUN_141486450(static_cast<const efd::Point3&>(pPC->vfunc_18()), kScreen, 1.0f))
                     m_spScript->Invoke("updatePos", kScreen.x);
             }
         }
@@ -510,17 +526,14 @@ void GFxMovieBackground::vfunc_8(float fTime)
             NiPoint3 kScreen;
             if (m_spViewport ? true : false)
             {
-                Vector3 kPos(reinterpret_cast<Unk_BgWorldMgr*>(WorldService::GetInstance())->FUN_141bd3dc0());
-                if (m_spViewport->FUN_141486450(kPos, kScreen, 1.0f))
+                if (m_spViewport->FUN_141486450(static_cast<const efd::Point3&>(reinterpret_cast<Unk_BgWorldMgr*>(WorldService::GetInstance())->FUN_141bd3dc0()), kScreen, 1.0f))
                     m_spScript->Invoke("updatePos", kScreen.x);
             }
         }
     }
 }
-// MS2-FUNCTIONAL: code identical; the exe's second argument is Ptr<Unk_GFxUIRenderer2D> (release 0x14127c5c0,
-// operator-> 0x14127c980), but gfxui/gfxmovie.h declares both as Ptr<Unk_GFxHandleObj>
 // @0x14127a3a0
-void GFxMovieBackground::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxHandleObj) spHandle)
+void GFxMovieBackground::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spHandle)
 {
     if (m_spRenderTarget == 0)
         return;
@@ -529,8 +542,8 @@ void GFxMovieBackground::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PT
     {
         spObj->vfunc_17(m_spRenderTarget, true);
         Unk_BgDispHandle kHandle(reinterpret_cast<const Unk_BgDispHandle&>(m_60->GetDisplayHandle()));
-        if (kHandle.FUN_1425805a0(spHandle->FUN_142582270()))
-            spHandle->Assign(kHandle);
+        if (reinterpret_cast<Scaleform::Render::ContextImpl::RTHandle&>(kHandle).NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spHandle.operator->())->GetContextNotify()))
+            reinterpret_cast<Unk_GFxHandleObj*>(spHandle.operator->())->Assign(kHandle);
         spObj->vfunc_17(spTarget, true);
     }
 }

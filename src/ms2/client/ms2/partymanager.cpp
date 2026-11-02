@@ -282,7 +282,7 @@ public:
     void SetExpireAndUpdateTimer(__int64);   // C3: was free SetExpireAndUpdateTimer
 };
 void* FUN_140a8a680(int);
-void* FUN_1403ed2b0();
+class CUIService;
 class UIPartySearchDialog* FUN_1413226d0(int);   // C3: was FUN_1413226d0
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 __time64_t GetServerTime();
@@ -304,7 +304,7 @@ class CInstrumentManager   // C3: member view for the former free stand-ins
 public:
     void CheckPlayState();
 };
-void* FUN_1409a8b10();
+class CGameOption;
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
 {
 public:
@@ -724,8 +724,8 @@ MS2_REPLACE_METHOD(0x14162B740, CPartyManager, ClearLeaderName, 62, 0x4A578BE4);
 // @0x14162b790
 void CPartyManager::CloseDialogs()
 {
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f23);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e45);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f23);
 }
 MS2_REPLACE_METHOD(0x14162B790, CPartyManager, CloseDialogs, 50, 0x88AED988);
 
@@ -965,15 +965,15 @@ void CPartyManager::RemoveMemberAt(int index)
     ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a056c0(member->FUN_141637bb0());
     reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->FUN_141637bb0());
     void* ui = FUN_140a8a680(0x4e45);
-    if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->FUN_141a753d0(member.get());
+    if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->RemoveMemberEntry(member.get());
     ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a056c0(member->user.m_8);
     for (int i = index; i < static_cast<int>(members.GetCount()); ++i)
         members[i]->FUN_141637cd0(i);
-    if ((((CUIService*)(FUN_1403ed2b0()))->FUN_141adc890((eUIClassID)(0x4e8c)))) {
+    if ((TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)(0x4e8c)))) {
         UIPartyDPSDialog* dps = FUN_1416327a0(0x4e8c);
-        if (dps != NULL) dps->FUN_141a7bb70();
+        if (dps != NULL) dps->RemoveMemberIfUnderLimit();
     }
-    if ((((CUIService*)(FUN_1403ed2b0()))->FUN_141adc890((eUIClassID)(0x4f23)))) {
+    if ((TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)(0x4f23)))) {
         UIChaosDPSDialog* dps = FUN_141632700(0x4f23);
         if (dps != NULL) ((class UIChaosDPSDialog*)(class UIChaosDPSDialog*)(dps))->FUN_140e05f80();
     }
@@ -987,7 +987,7 @@ void CPartyManager::OnPartyInvite(CInPacket& packet)
     partyKind = static_cast<CInputStream&>(packet).ReadInt32();
     PC* player = static_cast<PC*>(
         static_cast<WorldService*>(((void*)WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (((struct Unk_PartyOptionPrefix*)&((class Unk_BuddyOptions*)(void*)(FUN_1409a8b10()))->GetSettings())->refuseParty) {
+    if (((struct Unk_PartyOptionPrefix*)&((Unk_BuddyOptions*)TSingleton<CGameOption>::GetInstance())->GetSettings())->refuseParty) {
         SendPartyMode2(0x14);
         return;
     }
@@ -998,7 +998,7 @@ void CPartyManager::OnPartyInvite(CInPacket& packet)
         MS2Ptr<CMsgBoxData> message = FUN_140d73d20(1,
             FormatStringId(0x2b7, partyName), 0, CStringW(key));
         if (message.get() != NULL) {
-            message->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+            message->SetTimer(0x14, 1, GetStringCommon(0x2b8));
             message->FUN_141a02460(1);
             message->FUN_141a02480(1);
             message->FUN_141a024a0(0);
@@ -1024,8 +1024,8 @@ void CPartyManager::OnPartyMemberJoin(CInPacket& packet)
         if (ui->FUN_141924630() != 0) reinterpret_cast<UIPartyDialog*>(ui)->AddMember(member.get());
         else ui->FUN_141924680();
     }
-    if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((void*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150()))))
-        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f23)));
+    if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((void*)((Unk_ChaosSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140e09150()))))
+        (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f23)));
     ((class CBattleRecordManager*)(void*)(((void*)TSingleton<CBattleRecordManager>::GetInstance())))->FUN_140a05670(member->FUN_141637bb0());
     CStringW text = FormatStringId(0x31c, member->user.FUN_1408f19e0());
     FUN_1412751b0(text, 0xe);
@@ -1042,7 +1042,7 @@ void CPartyManager::OnPartyMemberLeave(CInPacket& packet)
         if (disband) {
             ClearParty();
             ClearRecruitmentAndResetSearchUI();
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e45);
             FUN_1412751b0(GetStringCommon(0x31d), 0xe);
         } else {
             int index = GetMemberIndex(id);
@@ -1064,7 +1064,7 @@ void CPartyManager::OnPartyMemberKick(CInPacket& packet)
         if (DAT_143ab2828 == p->FUN_141637bb0()) {
             ClearParty();
             ClearRecruitmentAndResetSearchUI();
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
+            TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e45);
             FUN_1412751b0(GetStringCommon(799), 0xe);
         } else {
             int index = GetMemberIndex(id);
@@ -1083,7 +1083,7 @@ void CPartyManager::FUN_14162d220(CInPacket&)
 {
     ClearParty();
     ClearRecruitmentAndResetSearchUI();
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e45);
     FUN_1412751b0(GetStringCommon(0x321), 0xe);
 }
 MS2_REPLACE_METHOD(0x14162D220, CPartyManager, FUN_14162d220, 123, 0x0016246B);
@@ -1122,7 +1122,7 @@ void CPartyManager::OnPartyInfo(CInPacket& packet)
     if (static_cast<unsigned>(partyId) > 0) {
         ClearParty();
         ClearRecruitmentAndResetSearchUI();
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e45);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e45);
     }
     bool announce = static_cast<CInputStream&>(packet).ReadBool();
     partyId = static_cast<CInputStream&>(packet).ReadInt32();
@@ -1150,12 +1150,12 @@ void CPartyManager::OnPartyInfo(CInPacket& packet)
     if (hasRecruit != 0) recruitment.Read(packet);
     changed = previousRecruit != recruitment.recruitId;
     if (FUN_14162af00() > 1) {
-        (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e45)));
-        if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((void*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())))) (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f23)));
+        (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e45)));
+        if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((void*)((Unk_ChaosSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140e09150())))) (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f23)));
     }
     if (announce && members.GetCount() > 1) FUN_1412751b0(GetStringCommon(0x31b), 0xe);
     if (changed) {
-        if ((((CUIService*)(FUN_1403ed2b0()))->FUN_141adc890((eUIClassID)(0x4eda)))) {
+        if ((TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)(0x4eda)))) {
             void* ui = ((void*)FUN_1413226d0(0x4eda));
             if (ui != NULL) reinterpret_cast<UIPartySearchDialog*>(ui)->FUN_140f8ee00(&recruitment);
         }
@@ -1221,7 +1221,7 @@ void CPartyManager::FUN_14162dfc0(CInPacket& packet)
         if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), flags);
         if (DAT_143ab2828 == p->user.m_8) {
             void* uiParty = FUN_140a8a680(0x4e45);
-            if (uiParty != NULL) reinterpret_cast<UIPartyDialog*>(uiParty)->FUN_141a74ea0();
+            if (uiParty != NULL) reinterpret_cast<UIPartyDialog*>(uiParty)->RefreshAllMembers();
         }
     }
 }
@@ -1240,7 +1240,7 @@ void CPartyManager::FUN_14162e100(CInPacket& packet)
         if (ui != NULL) reinterpret_cast<UIPartyDialog*>(ui)->UpdateMember(p.get(), flags);
         if (DAT_143ab2828 == p->user.m_8) {
             void* uiParty = FUN_140a8a680(0x4e45);
-            if (uiParty != NULL) reinterpret_cast<UIPartyDialog*>(uiParty)->FUN_141a74ea0();
+            if (uiParty != NULL) reinterpret_cast<UIPartyDialog*>(uiParty)->RefreshAllMembers();
         }
     }
 }
@@ -1814,8 +1814,8 @@ void FUN_141632630(const CStringW& input, std::vector<int>& values, const wchar_
 // @0x141632700
 UIChaosDPSDialog* FUN_141632700(int id)
 {
-    if (FUN_1403ed2b0() != NULL) {
-        MS2Ptr<UIObject> object = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if ((void*)TSingleton<CUIService>::GetInstance() != NULL) {
+        MS2Ptr<UIObject> object = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if (object.get() != NULL) return dynamic_cast<UIChaosDPSDialog*>(object.operator->());
     }
     return NULL;
@@ -1824,8 +1824,8 @@ UIChaosDPSDialog* FUN_141632700(int id)
 // @0x1416327a0
 UIPartyDPSDialog* FUN_1416327a0(int id)
 {
-    if (FUN_1403ed2b0() != NULL) {
-        MS2Ptr<UIObject> object = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if ((void*)TSingleton<CUIService>::GetInstance() != NULL) {
+        MS2Ptr<UIObject> object = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if (object.get() != NULL) return dynamic_cast<UIPartyDPSDialog*>(object.operator->());
     }
     return NULL;
@@ -1834,8 +1834,8 @@ UIPartyDPSDialog* FUN_1416327a0(int id)
 // @0x141632840
 UIPartySearchRegisterDialog* FUN_141632840(int id)
 {
-    if (FUN_1403ed2b0() != NULL) {
-        MS2Ptr<UIObject> object = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)id);
+    if ((void*)TSingleton<CUIService>::GetInstance() != NULL) {
+        MS2Ptr<UIObject> object = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if (object.get() != NULL) return dynamic_cast<UIPartySearchRegisterDialog*>(object.operator->());
     }
     return NULL;

@@ -29,20 +29,7 @@ int FUN_140718170(const CString& s);    // string -> int
 CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // "x,y" point attribute (uiPosition).
-inline int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt)
-{
-    CString str;
-    int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
-    if (nRet == 0)
-    {
-        int nPos = 0;
-        CString strToken = str.Tokenize(",", nPos);
-        pt.x = FUN_140718170(strToken);
-        strToken = str.Tokenize(",", nPos);
-        pt.y = FUN_140718170(strToken);
-    }
-    return nRet;
-}
+int XmlValue(Unk_140165cf0* pElem, const char* pszName, CPoint& pt);    // 0x140645190
 
 class JobSkillData : public CPtred
 {

@@ -24,7 +24,7 @@ public:
     virtual ~QuestDataTable();                              // 0x14074c130
 
     // queries used by CQuestManagerCommon (questdata.cpp)
-    int FUN_14074e390(int nGroupId);                        // the group's pick kind (0 none, 1 per-selector, 2 per-day)
+    int GetGroupPickKind(int nGroupId);                        // the group's pick kind (0 none, 1 per-selector, 2 per-day)
     void FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::CAtlArray<unsigned>& out);   // the group's quest pick
     int GetGroupPickCount(int nGroupId);                        // how many quests a group hands out (1 when unknown)
 
@@ -41,7 +41,7 @@ public:
     void GetChapterIds(ATL::CAtlArray<int>& out);                                // chapter ids
     void GetQuestIdsByChapter(int nChapter, ATL::CAtlArray<unsigned>& out);
     void GetAutoStartAndMapQuestIds(int nMapId, ATL::CAtlArray<unsigned>& out);
-    void FUN_14074d140(unsigned short nLevel, int nJob, std::vector<unsigned>& out);
+    void GetQuestIdsBelowLevelForJob(unsigned short nLevel, int nJob, std::vector<unsigned>& out);
     void GetQuestIdsByAlliance(Unk_FameAlliance nAlliance, ATL::CAtlArray<unsigned>& out);
     void FUN_14074d360(unsigned nKey, ATL::CAtlArray<unsigned>& out);
     void GetRemoteAcceptQuestIds(ATL::CAtlArray<unsigned>& out);

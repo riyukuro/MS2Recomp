@@ -184,7 +184,6 @@ CPackFile::CPackFile(std::string path, CPackDecodeFunctor decode, CPackDecodeFun
     Open(path, NULL);
 }
 
-// MS2-FUNCTIONAL: same reads, version dispatch, two inflate passes and entry table; frame layout (0x4c0) and temp slots differ.
 // @0x1406af680
 int CPackFile::Open(std::string path, const char* directory) {
     std::transform(path.begin(), path.end(), path.begin(), tolower);
@@ -312,13 +311,25 @@ int CPackFile::Open(std::string path, const char* directory) {
         for (unsigned int i = 0; i < count; i++) {
             CPackFileHeaderVerBase* entry = NULL;
             if (m_magic == MS2_PACK_MAGIC_V1)
-                entry = new PackFileHeader<CPackFileHeaderVer1>(table + i * sizeof(CPackFileHeaderVer1Data));
+            {
+                char* pTable = table;
+                entry = new PackFileHeader<CPackFileHeaderVer1>(pTable + i * sizeof(CPackFileHeaderVer1Data));
+            }
             else if (m_magic == MS2_PACK_MAGIC_V2)
-                entry = new PackFileHeader<CPackFileHeaderVer2>(table + i * sizeof(CPackFileHeaderVer2Data));
+            {
+                char* pTable = table;
+                entry = new PackFileHeader<CPackFileHeaderVer2>(pTable + i * sizeof(CPackFileHeaderVer2Data));
+            }
             else if (m_magic == MS2_PACK_MAGIC_V3)
-                entry = new PackFileHeader<CPackFileHeaderVer3>(table + i * sizeof(CPackFileHeaderVer3Data));
+            {
+                char* pTable = table;
+                entry = new PackFileHeader<CPackFileHeaderVer3>(pTable + i * sizeof(CPackFileHeaderVer3Data));
+            }
             else if (m_magic == MS2_PACK_MAGIC_V4)
-                entry = new PackFileHeader<CPackFileHeaderVer3>(table + i * sizeof(CPackFileHeaderVer3Data));
+            {
+                char* pTable = table;
+                entry = new PackFileHeader<CPackFileHeaderVer3>(pTable + i * sizeof(CPackFileHeaderVer3Data));
+            }
             if (entry) {
                 unsigned int index = entry->GetIndex();
                 m_headers.insert(std::make_pair(index, entry));
@@ -939,11 +950,11 @@ char* CMS2FileString::Encode(std::string name) {
     return NULL;
 }
 
-#pragma function(wcslen)
-// MS2-FUNCTIONAL: same conversion; the exe calls wcslen through the CRT import, this build calls it directly.
+// The exe calls the imported wcslen through the IAT (see gpumanager.cpp).
+extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);
 // @0x1406be510
 char* CMS2FileString::ToMultiByte(const wchar_t* text) {
-    size_t size = wcslen(text) * 2 + 2;
+    size_t size = __imp_wcslen(text) * 2 + 2;
     char* out = new char[size];
     WideCharToMultiByte(CP_ACP, 0, text, -1, out, (int)size, NULL, NULL);
     return out;
@@ -1010,6 +1021,7 @@ void CPackBuffer::SetSize(size_t size, BOOL zero) {
 }
 
 // Full-executable aliases for existing CPackFile helpers.
+// MS2-PIN: ??$make_pair@AEAIAEAPEAVCPackFileHeaderVerBase@@@std@@YA?AU?$pair@IPEAVCPackFileHeaderVerBase@@@0@AEAIAEAPEAVCPackFileHeaderVerBase@@@Z 0x1406c0cf0
 // MS2-PIN: ?Open@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBD@Z 0x1406af680
 // MS2-PIN: ?FUN_1406af680@Unk_FileArchive@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z 0x1406af680
 // MS2-PIN: ?Read@CPackFile@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAPEAEPEA_K_N@Z 0x1406b0e20

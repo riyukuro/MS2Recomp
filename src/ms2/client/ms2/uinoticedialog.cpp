@@ -12,6 +12,7 @@
 
 #include "uinoticedialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/gfxui/asurlrequest.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -39,14 +40,7 @@ struct Unk_AasSourcePtr                                                     // t
 class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
 {
 public:
-    Unk_AasImage(int nMovieId);                                             // 0x1422e5300
     char m_pad_ascript[0x90 - sizeof(AScript)];
-};
-class Unk_AasSource                                                         // the image source: the page url (0x40 bytes)
-{
-public:
-    Unk_AasSource(CStringW strUrl, int nMovieId);                           // 0x1422e5a70
-    char m_pad_00[0x40];
 };
 class Unk_140acd6e0 : public ASButton                                // the button wrapper
 {
@@ -138,8 +132,8 @@ void UINoticeDialog::OnLoadComplete()
         m_hitArea->SetFocusable(1);
         reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009710), 0, 0);
         reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009740), 0, 0);
-        m_hitArea->FUN_1422c7630(0);
-        vfunc_84(m_hitArea->FUN_1422c76c0() != 0);
+        m_hitArea->SetFocused(0);
+        vfunc_84(m_hitArea->GetFocused() != 0);
     }
     if (m_nHideAt != 0)
         FUN_141009980();
@@ -182,8 +176,8 @@ void UINoticeDialog::vfunc_85()
     if (m_renderTarget == NULL)
         return;
     vfunc_86();
-    m_spImage.AssignRaw(new Unk_AasImage(2));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
+    m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2))));
     m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
     reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->SetBrowserKeyboard(m_nBrowserId, 0);
 }
@@ -203,7 +197,7 @@ void UINoticeDialog::vfunc_86()
 void UINoticeDialog::vfunc_77()
 {
     if (m_hitArea.get())
-        m_hitArea->FUN_1422c7630(1);
+        m_hitArea->SetFocused(1);
 }
 
 // @0x1410093f0

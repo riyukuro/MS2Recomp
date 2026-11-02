@@ -1168,7 +1168,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
         if (notify) {
             MS2Ptr<CFieldMissionReward> reward = ((class CFieldMissionTable*)(void*)(FUN_140d738f0()))->GetReward(m_group);
-            if (reward.operator->() != 0) {
+            if (reward.get() != 0) {
                 switch (reward->m_nType) {
                 case 1: {
                     Unk_QmRewardGrade& grade = reinterpret_cast<Unk_QmGroupReward*>(reward.operator->())->m_reward;
@@ -1591,7 +1591,7 @@ void CQuestManager::FUN_1416cfc70(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>& out, i
 MS2_REPLACE_METHOD(0x1416cfc70, CQuestManager, FUN_1416cfc70, 415, 0x2680E591);
 
 // @0x1416cfe20
-int CQuestManager::FUN_1416cfe20()
+int CQuestManager::CountCompletedDailyMissionQuests()
 {
     int count = 0;
     for (POSITION pos = m_quests50.GetHeadPosition(); pos != 0; m_quests50.GetNext(pos)) {
@@ -1605,10 +1605,10 @@ int CQuestManager::FUN_1416cfe20()
     }
     return count;
 }
-MS2_REPLACE_METHOD(0x1416cfe20, CQuestManager, FUN_1416cfe20, 328, 0x5CA6FBBD);
+MS2_REPLACE_METHOD(0x1416cfe20, CQuestManager, CountCompletedDailyMissionQuests, 328, 0x5CA6FBBD);
 
 // @0x1416cff70
-int CQuestManager::FUN_1416cff70()
+int CQuestManager::CountCompletedLevelGuideQuests()
 {
     int count = 0;
     for (POSITION pos = m_quests50.GetHeadPosition(); pos != 0; m_quests50.GetNext(pos)) {
@@ -1622,7 +1622,7 @@ int CQuestManager::FUN_1416cff70()
     }
     return count;
 }
-MS2_REPLACE_METHOD(0x1416cff70, CQuestManager, FUN_1416cff70, 328, 0x568D72E6);
+MS2_REPLACE_METHOD(0x1416cff70, CQuestManager, CountCompletedLevelGuideQuests, 328, 0x568D72E6);
 
 // @0x1416d00c0
 int CQuestManager::FUN_1416d00c0()
@@ -2084,7 +2084,7 @@ std::pair<unsigned, __int64> CQuestManager::FUN_1416d1e90()
         std::list<unsigned __int64> gone;
         std::set<unsigned __int64>& users = it->second;
         for (std::set<unsigned __int64>::iterator user = users.begin(); user != users.end(); ++user) {
-            const unsigned __int64 userId = *user;
+            const __int64 userId = *user;
             if (userId == player->FUN_141656a80()) {
                 gone.push_back(questId);
                 continue;
@@ -2476,3 +2476,4 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // MS2-PIN: ?SendQuestMode14@CQuestManager@@QEAAXXZ 0x1416d0c10
 // MS2-PIN: ?FUN_141bc2800@Unk_QmWorld@@QEAA?AUUnk_QmFieldHandle@@H@Z 0x141bc2800
 // MS2-PIN: ?FUN_1416d0c10@@YAXPEAVUnk_GmQuestHolder@@@Z 0x1416d0c10
+// MS2-PIN: ??$?0I_J$0A@@?$pair@I_J@std@@QEAA@AEBIAEB_J@Z 0x1416d46a0

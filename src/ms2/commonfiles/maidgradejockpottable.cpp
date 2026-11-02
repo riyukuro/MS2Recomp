@@ -70,7 +70,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 // The item string table (id <-> name).
 class Unk_MaidIngTable;
-unsigned FUN_1405575b0(Unk_MaidIngTable* pTable, int nStringId);
+
 
 unsigned FUN_1407181d0(const CString& strItem);                         // numeric item id of a text, or 0
 
@@ -155,7 +155,7 @@ unsigned MaidIngredient::GetItemId()
 {
     if (itemStringId == 0)
         return itemId;
-    return FUN_1405575b0(reinterpret_cast<Unk_MaidIngTable*>(TSingleton<CItemDataTable>::GetInstance()), itemStringId);
+    return TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)itemStringId);
 }
 MS2_REPLACE_METHOD(0x140684C40, MaidIngredient, GetItemId, 56, 0x2A489CEE);
 

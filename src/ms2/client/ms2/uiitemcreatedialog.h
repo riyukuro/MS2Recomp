@@ -45,11 +45,11 @@ public:
     virtual int vfunc_48() { return 0x4e25; }                   // 48 0x1419baa80 UI type id
     virtual void vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs);   // 49 0x1419b4a00 the item tooltip
 
-    void FUN_1419b4c70();                                       // collect the items of the item table (once)
-    void FUN_1419b4dd0(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_clearInven" click
+    void CollectItemsAndFunctions();                                       // collect the items of the item table (once)
+    void OnClearInven(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_clearInven" click
     void FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu item click
     int FUN_1419b5080();                                        // the item id of the selected list row
-    int FUN_1419b51a0();                                        // the selected rank
+    int GetSelectedItemRank();                                        // the selected rank
     unsigned FUN_1419b5280(int nItemId, unsigned nLevel);       // the enchant level clamp of an item
     void SendRequestItemCreate(CCCreateItemPacket& packet);             // send "create item" (0x15)
     void FUN_1419b53d0(CCCompareItemPacket& packet);            // send "compare item" (0x8f)
@@ -57,7 +57,7 @@ public:
     void FUN_1419b5560(int nItemId, int nRank);                 // the picked item changed
     void FUN_1419b5730(const CString& strGroup, const CStringW& strSearch);   // fill the item list
     void FUN_1419b6350();                                       // build the context menu
-    void FUN_1419b6790();                                       // fill the function list
+    void FillFunctionList();                                       // fill the function list
     MS2Ptr<Unk_IcButton> FUN_140bb4b10(const CString& strName); // child "m_clearInven" (UISwfEntity::GetChild<button>)
     MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // child "m_items" / "m_contextMenu" / "m_function"
     MS2Ptr<Unk_IcCombo> FUN_140c28560(const CString& strName);  // child "m_itemGrade"
@@ -86,19 +86,19 @@ class ItemOptionDebug : public CPtred
 public:
     ItemOptionDebug();                                          // 0x1419b68e0 (implicit dtor 0x1419ba050, ??_G 0x1419ba280)
     float FUN_1419b6940(int nGroup, int nStat);                 // smallest stat rate
-    float FUN_1419b6a90(int nGroup, int nStat);                 // largest stat rate
-    void FUN_1419b6be0(int nGroup, int nStat, Unk_IcRateCounts& counts);
-    __int64 FUN_1419b6d40(int nGroup, int nStat);               // smallest stat value
-    __int64 FUN_1419b6e80(int nGroup, int nStat);               // largest stat value
-    void FUN_1419b6fc0(int nGroup, int nStat, Unk_IcValueCounts& counts);
+    float GetMaxRate(int nGroup, int nStat);                 // largest stat rate
+    void CountRates(int nGroup, int nStat, Unk_IcRateCounts& counts);
+    __int64 GetMinValue(int nGroup, int nStat);               // smallest stat value
+    __int64 GetMaxOptionValue(int nGroup, int nStat);               // largest stat value
+    void CountValues(int nGroup, int nStat, Unk_IcValueCounts& counts);
     float FUN_1419b7120(int nGroup, unsigned nSpecial);         // smallest special rate
-    float FUN_1419b7270(int nGroup, unsigned nSpecial);         // largest special rate
-    void FUN_1419b73c0(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts);
-    float FUN_1419b7520(int nGroup, unsigned nSpecial);         // smallest special value
-    float FUN_1419b7670(int nGroup, unsigned nSpecial);         // largest special value
-    void FUN_1419b77c0(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts);
-    int FUN_1419b7920(int nGroup, int nStat);                   // a stat rate was rolled
-    int FUN_1419b79a0(int nGroup, int nStat);                   // a stat value was rolled
+    float GetMaxSpecialRate(int nGroup, unsigned nSpecial);         // largest special rate
+    void CountSpecialRates(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts);
+    float GetMinSpecialValue(int nGroup, unsigned nSpecial);         // smallest special value
+    float GetMaxSpecialValue(int nGroup, unsigned nSpecial);         // largest special value
+    void CountSpecialValues(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts);
+    int HasRate(int nGroup, int nStat);                   // a stat rate was rolled
+    int HasValue(int nGroup, int nStat);                   // a stat value was rolled
     int FUN_1419b7a10(int nGroup, unsigned nSpecial);           // a special rate was rolled
     int FUN_1419b7a90(int nGroup, unsigned nSpecial);           // a special value was rolled
     TiXmlElement* FUN_1419b7b10(int nGroup, int nStat);     // <rate name min max><output option count/>..

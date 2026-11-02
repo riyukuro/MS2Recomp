@@ -34,6 +34,7 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/asobj.h"
@@ -55,6 +56,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <vector>
+#include "ms2/commonfiles/os.h"
 
 // return types of the getters this unit calls
 class CUIService;
@@ -88,7 +90,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                               // clear
     void FUN_1422dd230(const ASObj& row);                               // append a row
 private:
     void* m_unrecovered_40[9];
@@ -107,7 +108,7 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-void* FUN_1403ed280();                                                  // the effect service
+class CEffectService;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -127,9 +128,8 @@ CStringW FUN_1401aa6a0(int nId);                                        // npc n
 // out-of-unit callees (names describe uses)
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 class Unk_AqInventory { public: char m_pad; };
-class Unk_Inventory;
+class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_AqInventory
-int FUN_140a5f780(Unk_AqInventory* pInv, int nTag, int n);              // item count by tag
 extern int DAT_143abdc30;                                               // the alliance npc shown
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
@@ -180,8 +180,8 @@ CStringW FUN_14016a730(const char* psz, int n);                         // narro
 
 // Small COMDATs of the unit.
 int FUN_140bfc5b0(CQuestManagerCommon* p) { return p->m_selector; }     // @0x140bfc5b0
-extern UIQuestEventDispatcher* DAT_143abdd70;
-UIQuestEventDispatcher* FUN_140bfc4b0() { return DAT_143abdd70; }       // @0x140bfc4b0
+class UIQuestEventDispatcher;
+UIQuestEventDispatcher* FUN_140bfc4b0() { return TSingleton<UIQuestEventDispatcher>::s_instance; }       // @0x140bfc4b0
 
 // @0x140bfa1b0 the order of a repeat kind
 int FUN_140bfa1b0(int nRepeat)
@@ -443,18 +443,14 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
             return;
         spScript = FUN_140856980(DAT_143abdc30, FUN_14016a730(spSeason->m_strLimitNpcScriptTag, 0));
     }
-    if (!spScript.IsNull())
+    if ((spScript.get() ? true : false) && spScript->m_contents.GetCount() > 0)
     {
-        CTalkScript* pScript = spScript.operator->();
-        if (pScript->m_contents.GetCount() != 0)
+        strText = spScript->m_contents.GetAt(0).operator->()->m_text;
+        if (spScript->m_contents.GetAt(0).operator->()->m_voiceId.GetLength() != 0)
         {
-            strText = pScript->m_contents.GetAt(0).operator->()->m_text;
-            if (pScript->m_contents.GetAt(0).operator->()->m_voiceId.GetLength() != 0)
-            {
-                void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
-                if (pActor != 0)
-                    reinterpret_cast<CEffectService*>(FUN_1403ed280())->FUN_1411a4f40(pScript->m_contents.GetAt(0).operator->()->m_voiceId, static_cast<Unk_AqActorView*>(pActor)->GetPos());
-            }
+            void* pActor = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
+            if (pActor != 0)
+                TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(spScript->m_contents.GetAt(0).operator->()->m_voiceId, static_cast<Unk_AqActorView*>(pActor)->GetPos());
         }
     }
     ASObj data(2);
@@ -465,7 +461,6 @@ void UIAllianceQuestDialog::FUN_140bf70f0()
 }
 
 // @0x140bf7630
-// MS2-FUNCTIONAL: the m_list null test and the -> calls bind to the twin MS2Ptr<Unk_AqList> accessors (0x140bfc340/0x140bfc350) the other way round
 void UIAllianceQuestDialog::FUN_140bf7630()
 {
     int nAlliance = FUN_140bf6af0(DAT_143abdc30);
@@ -502,10 +497,9 @@ void UIAllianceQuestDialog::FUN_140bf7630()
         quests.push_back(spData);
     }
     std::sort(quests.begin(), quests.end(), FUN_140bfa2d0);
-    MS2Ptr<Unk_AqList> spList = FUN_140bfa760("m_list");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_AqList> spList = FUN_140bfa760("m_list"))
     {
-        spList->FUN_1422dd1d0();
+        reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
         spList->Invoke("resetRenderer");
         CStringW strRequire = FUN_140bf9bd0();
         if (strRequire.GetLength() != 0)
@@ -669,7 +663,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     int nCost = ((CLua*)FUN_1401c0db0())->CalcFameCompletionTicketCount(spData->m_4c, spData->m_50);
     if (nCost == 0)
         return;
-    int nCount = FUN_140a5f780(&reinterpret_cast<Unk_AqInventory&>(g_143ab2a90), 0xd1, 0);
+    int nCount = g_143ab2a90.FUN_140a5f780(0xd1, 0);
     unsigned nItem = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)0xd1);
     if (nCount < nCost)
     {

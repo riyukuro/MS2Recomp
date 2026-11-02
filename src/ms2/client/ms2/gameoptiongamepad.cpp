@@ -21,24 +21,6 @@
 
 // ---- unit-local placeholders ----
 
-// A checkbox-like AS entity of the option dialog (0x88 bytes).
-class Unk_GpCheck : public CPtred
-{
-public:
-    Unk_GpCheck(const Scaleform::GFx::Value& v, int nId);       // 0x1422ceac0
-private:
-    char m_pad[0x88 - sizeof(CPtred)];
-};
-
-// A slider AS entity of the option dialog (0x88 bytes); the value is a float.
-class Unk_GpSlider : public CPtred
-{
-public:
-    Unk_GpSlider(const Scaleform::GFx::Value& v, int nId);      // 0x1422ce570
-private:
-    char m_pad[0x88 - sizeof(CPtred)];
-};
-
 // The gamepad cursor HUD dialog (UI id 6).
 class Unk_GpHud : public CPtred
 {
@@ -80,15 +62,15 @@ struct Unk_GpDialog
     int m_nId;
     int m_pad2;
     MS2Ptr<AScript> m_root;
-    MS2Ptr<class Unk_GpCheck> FUN_140a57f50(CString name, int nIndex);
-    MS2Ptr<class Unk_GpSlider> FUN_140a58110(CString name, int nIndex);
+    MS2Ptr<class ASCheckBox> FUN_140a57f50(CString name, int nIndex);
+    MS2Ptr<class ASSlider> FUN_140a58110(CString name, int nIndex);
 };
 struct Unk_GpInputView { char m_pad[0x124]; int m_nCursorMode; };
 int FUN_140a58520(void* pInput);                                // MS2InputService::m_nCursorMode
 MS2InputService* FUN_140a58540();                               // TSingleton<MS2InputService>::GetInstance
 
-MS2Ptr<Unk_GpCheck> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v);
-MS2Ptr<Unk_GpSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASCheckBox> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v);
 
 // ---- CGameOptionGamePad ----
 // @0x140a571b0
@@ -130,33 +112,33 @@ MS2_REPLACE_METHOD(0x140A572C0, CGameOptionGamePad, vfunc_5, 23, 0x192A1B0B);
 void CGameOptionGamePad::vfunc_6()
 {
     {
-        MS2Ptr<Unk_GpCheck> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
-        if (static_cast<Unk_GpCheck*>(spUse) != 0)
+        MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
+        if (static_cast<ASCheckBox*>(spUse) != 0)
             reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce090(m_state.m_bUse);
     }
     {
-        MS2Ptr<Unk_GpCheck> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
-        if (static_cast<Unk_GpCheck*>(spSkill) != 0)
+        MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
+        if (static_cast<ASCheckBox*>(spSkill) != 0)
             reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce090(m_state.m_bShowSkillName);
     }
     {
-        MS2Ptr<Unk_GpSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
-        if (static_cast<Unk_GpSlider*>(spStick) != 0)
+        MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
+        if (static_cast<ASSlider*>(spStick) != 0)
             reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce5f0((float)m_state.m_nLStickSensitivity);
     }
     {
-        MS2Ptr<Unk_GpCheck> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
-        if (static_cast<Unk_GpCheck*>(spVibration) != 0)
+        MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
+        if (static_cast<ASCheckBox*>(spVibration) != 0)
             reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce090(m_state.m_bVibration);
     }
     {
-        MS2Ptr<Unk_GpSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
-        if (static_cast<Unk_GpSlider*>(spH) != 0)
+        MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
+        if (static_cast<ASSlider*>(spH) != 0)
             reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce5f0(m_state.m_fSensitivityH * 100.0f);
     }
     {
-        MS2Ptr<Unk_GpSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
-        if (static_cast<Unk_GpSlider*>(spV) != 0)
+        MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
+        if (static_cast<ASSlider*>(spV) != 0)
             reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce5f0(m_state.m_fSensitivityV * 100.0f);
     }
 }
@@ -166,18 +148,18 @@ MS2_REPLACE_METHOD(0x140A572E0, CGameOptionGamePad, vfunc_6, 1098, 0x80A5AEFD);
 void CGameOptionGamePad::vfunc_7()
 {
     {
-        MS2Ptr<Unk_GpCheck> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
-        if (static_cast<Unk_GpCheck*>(spUse) != 0)
+        MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bGamePadUse"), -1);
+        if (static_cast<ASCheckBox*>(spUse) != 0)
             m_state.m_bUse = reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<Unk_GpCheck> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
-        if (static_cast<Unk_GpCheck*>(spSkill) != 0)
+        MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bShowSkillName"), -1);
+        if (static_cast<ASCheckBox*>(spSkill) != 0)
             m_state.m_bShowSkillName = reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<Unk_GpSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
-        if (static_cast<Unk_GpSlider*>(spStick) != 0)
+        MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_gamePadLStickMoveSensitivity"), -1);
+        if (static_cast<ASSlider*>(spStick) != 0)
         {
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xd6))
                 m_state.m_nLStickSensitivity = (int)reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce630();
@@ -186,8 +168,8 @@ void CGameOptionGamePad::vfunc_7()
         }
     }
     {
-        MS2Ptr<Unk_GpCheck> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
-        if (static_cast<Unk_GpCheck*>(spVibration) != 0)
+        MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_bVibration"), -1);
+        if (static_cast<ASCheckBox*>(spVibration) != 0)
         {
             if (CFeatureManager::GetInstance()->FUN_14036d570(0xc3))
                 m_state.m_bVibration = reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce0e0() ? true : false;
@@ -196,8 +178,8 @@ void CGameOptionGamePad::vfunc_7()
         }
     }
     {
-        MS2Ptr<Unk_GpSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
-        if (static_cast<Unk_GpSlider*>(spH) != 0)
+        MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityH"), -1);
+        if (static_cast<ASSlider*>(spH) != 0)
         {
             float fMin = 0.01f;
             float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce630() / 100.0f;
@@ -205,8 +187,8 @@ void CGameOptionGamePad::vfunc_7()
         }
     }
     {
-        MS2Ptr<Unk_GpSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
-        if (static_cast<Unk_GpSlider*>(spV) != 0)
+        MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->FUN_140a58110(CString("m_sensitivityV"), -1);
+        if (static_cast<ASSlider*>(spV) != 0)
         {
             float fMin = 0.01f;
             float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce630() / 100.0f;
@@ -259,47 +241,47 @@ int CGameOptionGamePad::vfunc_14()
 }
 
 // @0x140a57df0
-MS2Ptr<Unk_GpCheck> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASCheckBox> FUN_140a57df0(int nId, const Scaleform::GFx::Value& v)
 {
-    MS2Ptr<Unk_GpCheck> tmp(new Unk_GpCheck(v, nId));
+    MS2Ptr<ASCheckBox> tmp(new ASCheckBox(v, nId));
     return tmp;
 }
 
 // @0x140a57ea0
-MS2Ptr<Unk_GpSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASSlider> FUN_140a57ea0(int nId, const Scaleform::GFx::Value& v)
 {
-    MS2Ptr<Unk_GpSlider> tmp(new Unk_GpSlider(v, nId));
+    MS2Ptr<ASSlider> tmp(new ASSlider(v, nId));
     return tmp;
 }
 
 // @0x140a57f50
-MS2Ptr<Unk_GpCheck> Unk_GpDialog::FUN_140a57f50(CString name, int nIndex)
+MS2Ptr<ASCheckBox> Unk_GpDialog::FUN_140a57f50(CString name, int nIndex)
 {
     if (m_root.IsNull())
-        return MS2Ptr<Unk_GpCheck>(0);
+        return MS2Ptr<ASCheckBox>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
-        MS2Ptr<Unk_GpCheck> check = FUN_140a57df0(m_nId, child);
-        if (static_cast<Unk_GpCheck*>(check) != 0)
+        MS2Ptr<ASCheckBox> check = FUN_140a57df0(m_nId, child);
+        if (static_cast<ASCheckBox*>(check) != 0)
             return check;
     }
-    return MS2Ptr<Unk_GpCheck>(0);
+    return MS2Ptr<ASCheckBox>(0);
 }
 
 // @0x140a58110
-MS2Ptr<Unk_GpSlider> Unk_GpDialog::FUN_140a58110(CString name, int nIndex)
+MS2Ptr<ASSlider> Unk_GpDialog::FUN_140a58110(CString name, int nIndex)
 {
     if (m_root.IsNull())
-        return MS2Ptr<Unk_GpSlider>(0);
+        return MS2Ptr<ASSlider>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
     {
-        MS2Ptr<Unk_GpSlider> slider = FUN_140a57ea0(m_nId, child);
-        if (static_cast<Unk_GpSlider*>(slider) != 0)
+        MS2Ptr<ASSlider> slider = FUN_140a57ea0(m_nId, child);
+        if (static_cast<ASSlider*>(slider) != 0)
             return slider;
     }
-    return MS2Ptr<Unk_GpSlider>(0);
+    return MS2Ptr<ASSlider>(0);
 }
 
 // @0x140a58500

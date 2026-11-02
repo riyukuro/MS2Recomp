@@ -368,7 +368,7 @@ void ASEffectManager::Update()
 void ASEffectManager::SetPosA(int x, int y)
 {
     if (m_80.get() != 0)
-        m_80->FUN_1422bffe0(x, y);
+        m_80->SetPositionInt(x, y);
 }
 MS2_REPLACE_METHOD(0x1409B57B0, ASEffectManager, SetPosA, 83, 0xD504B5F3);
 
@@ -376,7 +376,7 @@ MS2_REPLACE_METHOD(0x1409B57B0, ASEffectManager, SetPosA, 83, 0xD504B5F3);
 void ASEffectManager::SetPosB(int x, int y)
 {
     if (m_90.get() != 0)
-        m_90->FUN_1422bffe0(x, y);
+        m_90->SetPositionInt(x, y);
 }
 MS2_REPLACE_METHOD(0x1409B5810, ASEffectManager, SetPosB, 83, 0xD8F076D3);
 
@@ -519,7 +519,7 @@ void ASEffectManager::Layout(std::list<MS2Ptr<ASEffect> >& list, bool bFilter)
             if (m_b0)
                 y = nRow * -0x2a;
             spEffect->vfunc_3(1);
-            spEffect->FUN_1422bffe0(x, y);
+            spEffect->SetPositionInt(x, y);
             nShown++;
         }
         else

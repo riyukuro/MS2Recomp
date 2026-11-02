@@ -30,7 +30,7 @@ public:
 
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
-void FUN_140177e10(const CString& str, ATL::CAtlArray<DWORD>& arr, const char* pszDelim);  // split to uints
+template <class C> void XmlSplit(const CString&, C&, const char*);  // split to uints
 
 // Effect factory (effectservice): parse one <effect> element / create the runtime effect of a param.
 CEffectParamPtr FUN_1411a04e0(const CString& strOwner, Unk_140165cf0* pNode);
@@ -90,7 +90,7 @@ void CRandomEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
     CString strProb = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("prob"), 0);
-    FUN_140177e10(strProb, m_arrWeights, ", ");
+    XmlSplit(strProb, (ATL::CAtlArray<unsigned int>&)m_arrWeights, ", ");
     for (Unk_140165cf0* pChild = ((Unk_140165cf0*)((Unk_XmlNode*)(Unk_140165cf0*)(pNode))->FirstChild("effect")); pChild; pChild = ((Unk_140165cf0*)((Unk_XmlNode*)(Unk_140165cf0*)(pChild))->NextSibling("effect")))
     {
         CEffectParamPtr spParam = FUN_1411a04e0(m_str20, pChild);

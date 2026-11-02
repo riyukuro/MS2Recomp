@@ -349,9 +349,9 @@
 // MS2-PIN: ??0?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@_K@Z 0x141beff20
 // MS2-PIN: ??0?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@_K@Z 0x141bf0580
 // MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x141bef1c0
-// The two unrecovered trees (Unk_WsTreeA / Unk_WsTreeB, see the driver).
-// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HUUnk_WsTreeAValue@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bf1a50
-// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HUUnk_WsTreeAValue@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bf1aa0
+// m_088's std::list<Entity*> constructor bases, then the two unrecovered trees (Unk_WsTreeA / Unk_WsTreeB, see the driver).
+// MS2-PIN: ??0?$_List_alloc@U?$_List_base_types@PEAVEntity@egf@@V?$allocator@PEAVEntity@egf@@@std@@@std@@@std@@QEAA@XZ 0x141bf1a50
+// MS2-PIN: ??0?$_List_buy@PEAVEntity@egf@@V?$allocator@PEAVEntity@egf@@@std@@@std@@QEAA@XZ 0x141bf1aa0
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@1@@Z 0x141bf1ac0
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@1@@Z 0x141bf1b00
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@1@@Z 0x141bf1b40
@@ -478,7 +478,7 @@ void Unk_WsInst3Bases(const efd::SmartPointer<egf::EntityManager>& spEntityManag
 void Unk_WsInst3Handlers(void* p)
 {
     new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorAddedMessage>(&WorldService::FUN_141bbfb50);
-    new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorRemovedMessage>(&WorldService::FUN_141bbfde0);
+    new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorRemovedMessage>(&WorldService::OnActorRemoved);
     new (p) efd::MessageHandlerImpl<WorldService, efd::AssetLoadResponse>(&WorldService::FUN_141bbf9f0);
     new (p) efd::MessageHandlerImpl<WorldService, egf::EntityLoadResult>(&WorldService::FUN_141bc0a70);
     new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphAddedMessage>(&WorldService::FUN_141bbfe30);
@@ -553,6 +553,7 @@ void Unk_WsInst3Trees()
     WsDriveTree<WsReal::Mapad0>();
     WsDriveTree<Unk_WsTreeA>();
     WsDriveTree<Unk_WsTreeB>();
+    WsReal::List088 list088;
 }
 void Unk_WsInst3Index(const egf::EntityID& id, WsReal::Map1d8& m1d8, WsReal::Map2e8& m2e8, WsReal::Map980& m980,
     WsReal::Map990& m990, WsReal::Mapab0& mab0)
@@ -622,7 +623,16 @@ public:
 private:
     Unk_WsA_PropObj* m_p;
 };
-struct Unk_WsFieldRefRaw { void* p0; void* p1; };
+// The 0x10 bytes of a field ref swapped raw, without touching its refcount (cookie in the exe: a byte buffer local).
+struct Unk_WsFieldRefRaw { char m_raw[0x10]; };
+namespace std {
+template <> inline void swap<Unk_WsFieldRefRaw, void>(Unk_WsFieldRefRaw& a, Unk_WsFieldRefRaw& b) noexcept
+{
+    Unk_WsFieldRefRaw tmp = std::move(a);
+    std::move(a) = std::move(b);
+    std::move(b) = tmp;
+}
+}
 struct Unk_WsVisibleObj;
 void Unk_WsInst3Part1(GameObject* pObj, const Unk_WsA_PropPtr& prop, IWorldServiceCallback* pCallback, Unk_WsVisibleObj* pVisible,
     Unk_WsFieldRefRaw& a, Unk_WsFieldRefRaw& b)

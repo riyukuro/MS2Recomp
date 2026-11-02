@@ -28,7 +28,6 @@ MS2_CHECK_OFFSET(ConditionUserFindContext, m_skills, 0x28);
 class CQuestConditionChecker : public CPtred
 {
 public:
-    CQuestConditionChecker();
     virtual ~CQuestConditionChecker() = default;     // 0x1402a5a60 (no vptr store)
     virtual bool Check(CConditionCommonData*, ConditionContext*) = 0;
 };

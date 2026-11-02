@@ -80,7 +80,7 @@ public:
     virtual void vfunc_14();
     virtual void vfunc_15();
     virtual void vfunc_16();
-    virtual void vfunc_17(const Unk_NiPoint3& kPivot);                  // 17 0x88 sets the orbit pivot
+    virtual void vfunc_17(const NiPoint3& kPivot);                  // 17 0x88 sets the orbit pivot
 };
 
 // The rotation limit of the drag (0x30 bytes, ctor 0x141b49c00, limit 0x141b49d40).
@@ -101,7 +101,6 @@ MS2_CHECK_SIZE(ItemPreviewCommon::CLimitCharRotate, 0x30);
 class Unk_UabClock;
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                        // the scene root of an entity
-const Vector3& FUN_140e69200(NiAVObject* pNode);                // local translation
 // NiAVObject::m_kLocal.m_Translate (+0x74) as an NiPoint3 with its assignment operator.
 struct Unk_UabNodeTranslate
 {
@@ -112,12 +111,11 @@ void FUN_1410a7800(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTr
 Unk_NiPoint3 FUN_14027dcf0(const Vector3& kPt);                 // NiPoint3(const efd::Point3&)
 float FUN_14059d930(float f);                                           // fabs
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_140e68a40(void* pLog, int nLevel, int nLine, const wchar_t* szFmt,
-                   const float* pA, const float* pB, const float* pC);  // formatted log (3 arguments)
+template <class A, class B, class C>
+void Unk_EquipLog(CLogString* log, int level, int category, const wchar_t* format, const A& a, const B& b, const C& c);  // equipment.cpp, 3-argument log
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos);   // rotates about a pivot
 int FUN_141b48430(int nKind);                                           // camera set of a kind
 float FUN_141b48480(int nSet, int nIndex);                              // default angle
-void FUN_1408995b0(Unk_GoModelKey* pKey);                               // Unk_GoModelKey()
 extern Vector3 DAT_143b01a60;                                   // the zero point
 
 // The swf entity the avatar is dragged onto, and its point (the width / height are ints here).
@@ -332,7 +330,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
         FUN_1418bf270(&rz);
         SetVector3(&m_kAngleBase, rx, ry, rz);
         if (((void*)GetLogString()))
-            FUN_140e68a40(((void*)GetLogString()), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", &m_kAngleBase.x, &m_kAngleBase.y, &m_kAngleBase.z);
+            Unk_EquipLog(GetLogString(), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", m_kAngleBase.x, m_kAngleBase.y, m_kAngleBase.z);
         Unk_NiMatrix3 kRot;
         ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&kRot))->MakeIdentity();
         float fRadX = (rx * 3.1415927f) / 180.0f;
@@ -356,7 +354,7 @@ void UIAvatarBase::vfunc_15(float rx, float ry, float rz, int bUpdate)
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
         if (!pNode)
             return;
-        const Vector3& kPos = FUN_140e69200(pNode);
+        const Vector3& kPos = reinterpret_cast<const Vector3&>(pNode->GetTranslate());
         vfunc_13(rx, ry, rz, &m_kPivot, &kPos, bUpdate);
         FUN_1418ba250(&m_kAngle, &m_kAngleBase);
     }
@@ -506,16 +504,14 @@ int UIAvatarBase::vfunc_25()
 MS2_REPLACE_METHOD(0x1418B9310, UIAvatarBase, vfunc_25, 14, 0xD26D6807);
 
 // @0x1418b9330
-Unk_GoModelKey* UIAvatarBase::vfunc_26(Unk_GoModelKey* pKey)
+egf::EntityID UIAvatarBase::vfunc_26()
 {
     GameObject* pObj = vfunc_24();
     if (pObj != 0)
     {
-        pObj->FUN_14123c460(*pKey);
-        return pKey;
+        return pObj->FUN_14123c460();
     }
-    FUN_1408995b0(pKey);
-    return pKey;
+    return egf::EntityID();
 }
 
 // @0x1418b9390
@@ -705,7 +701,7 @@ void UIAvatarBase::FUN_1418b9c10()
             return;
         Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
         FUN_1418ba250(&m_kAngle, &m_kAngleBase);
-        const Vector3& kPos = FUN_140e69200(pNode);
+        const Vector3& kPos = reinterpret_cast<const Vector3&>(pNode->GetTranslate());
         m_kPosBase = kPos;
         if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
             FUN_1418ba4a0(pRot, &kPos, &m_kPivotBase);
@@ -715,7 +711,10 @@ void UIAvatarBase::FUN_1418b9c10()
         {
             UIModelView* pModelView = dynamic_cast<UIModelView*>((UIRenderView*)m_spView);
             if (pModelView)
-                pModelView->vfunc_17(kPos.FUN_14097fd50(m_kPivot));
+            {
+                NiPoint3 kWorldPivot = reinterpret_cast<const efd::Point3&>(kPos) + reinterpret_cast<const efd::Point3&>(m_kPivot);
+                pModelView->vfunc_17(kWorldPivot);
+            }
         }
     }
 }
@@ -739,7 +738,7 @@ void UIAvatarBase::FUN_1418b9e40()
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
         if (!pNode)
             return;
-        m_kPos = FUN_140e69200(pNode);
+        m_kPos = reinterpret_cast<const Vector3&>(pNode->GetTranslate());
         m_kPosBase = m_kPos;
         m_kPivotBase = m_kPos;
         float fBody = 0.0f;
@@ -857,7 +856,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
         if (pNode == 0)
             return;
         Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
-        FUN_1418ba4a0(pRot, &FUN_140e69200(pNode), pOut);
+        FUN_1418ba4a0(pRot, reinterpret_cast<const Vector3*>(&pNode->GetTranslate()), pOut);
     }
 }
 
@@ -1053,7 +1052,7 @@ void UIAvatarPC::FUN_1418bafa0(CItem* pItem, int nEffect)
         AvatarPC* pAvatar = efd::DynamicCast<AvatarPC>(vfunc_24());
         if (pAvatar == 0)
             return;
-        MS2Ptr<ItemColorEx> kRow = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetPaletteColor(nEffect, 0);
+        MS2Ptr<ItemColorEx> kRow = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColor(nEffect, 0);
         if (kRow == 0)
             return;
         FUN_141423cf0(pItem->GetItemUid(), *(struct Unk_UgcExtra const*)&(*kRow), (struct Unk_UgcPlayer*)(pAvatar), 0);
@@ -1310,7 +1309,7 @@ void UIAvatarPC::FUN_1418bc380(CItem* pItem)
     if (m_spCustomize.get())
     {
         m_spCustomize->Unequip(pItem);
-        int nCustomizeId = FUN_141420a30(((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->FUN_14053eba0()->GetGroup(0)->FUN_1405451a0(), pItem, (class AvatarPC*)(pPlayer));
+        int nCustomizeId = FUN_141420a30(((class CItemData*)(class CItemData*)(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840())))->GetModelOrEmpty()->GetGroup(0)->FUN_1405451a0(), pItem, (class AvatarPC*)(pPlayer));
         MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
         if (spData.get())
             m_spCustomize->ApplyItem(MS2Ptr<CItem>(pItem), nCustomizeId);
@@ -1399,7 +1398,7 @@ void UIAvatarPC::FUN_1418bc8c0(int nSkin, int /*nUnused*/)
     Unk_CharEquip kColor0;
     Unk_CharEquip kColor1;
     {
-        MS2Ptr<ItemColorEx> kRow = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetPaletteColor(nSkin, 0);
+        MS2Ptr<ItemColorEx> kRow = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColor(nSkin, 0);
         if (kRow.get())
         {
             kColor0 = FUN_141b6dea0(kRow.operator->()->m_aValues[0]);
@@ -2100,7 +2099,7 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
 {
     ASArray kColors(2);
     int nSelected = 0;
-    Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> kSet = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetPaletteColors(nSkinTable);
+    Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> kSet = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColors(nSkinTable);
     if (kSet.get() != 0)
     {
         size_t nCount = kSet.operator->()->GetCount();
@@ -2115,7 +2114,7 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
             unsigned long nColor = kElem.operator->()->m_n38;
             kObj.FUN_1409c4990("realColor", nColor);
             kObj.FUN_1409c4990("visibleColor", nColor);
-            kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
+            kColors.PushValue(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
         }
     }
     PCBase* pPlayer = ((PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
@@ -2128,7 +2127,7 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
         unsigned long nColor = nColor0;
         kObj.FUN_1409c4990("realColor", nColor);
         kObj.FUN_1409c4990("visibleColor", nColor);
-        kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
+        kColors.PushValue(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
     }
     pObj->FUN_1409adbe0("skinColors", Scaleform::GFx::Value(kColors.FUN_1422bb870()));
     pObj->FUN_1407cb9c0("skinColorSelectedIndex", nSelected);
@@ -2197,7 +2196,6 @@ void FUN_1418bf3c0(float* pAngle)
 
 // ---- the cube item set drop walk ----------------------------------------------------------------------------------
 
-ItemDropTable* FUN_1405a1fd0();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems, ATL::CAtlArray<MS2Ptr<CItemData> >* pOthers);
@@ -2225,7 +2223,7 @@ bool FUN_1418bf500(int nDepth, MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<C
     if (nGroup == 0)
         return false;
     std::vector<ItemDropResult> kDrops;
-    FUN_1405a1fd0()->GetBoxItems(nGroup, kDrops);
+    TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nGroup, kDrops);
     std::vector<ItemDropResult>::iterator it = kDrops.begin();
     ATL::CAtlMap<int, MS2Ptr<CItemData> > kUnused;
     for (; it != kDrops.end(); ++it)

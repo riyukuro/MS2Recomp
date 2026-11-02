@@ -186,6 +186,7 @@ class CNpcShopProductBase;
 class CNpcShopGivePointContextBase : public CPtred {
 public:
     CNpcShopGivePointContextBase() : m_type(0), m_giveItemId(0) {}      // 0x14040fcf0
+    virtual ~CNpcShopGivePointContextBase() {}
     int GetType() { return m_type; }                                    // 0x140413360
     static MS2Ptr<CNpcShopGivePointContextBase> Create(int type, const CStringW& strPath);    // 0x140402150
     static __int64 GetGivePoint(MS2Ptr<CNpcShopGivePointContextBase> spContext,

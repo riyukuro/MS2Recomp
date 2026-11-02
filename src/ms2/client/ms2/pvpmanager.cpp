@@ -48,12 +48,12 @@ void FUN_140d73aa0(CStringW text, int nA, void* pB, CStringW tag);
 
 // The arena table (CIndividualArenaDataTable, the TSingleton instance).
 class Unk_PvpArenaTable;
-extern Unk_PvpArenaTable* DAT_143aaf098;
+class CIndividualArenaDataTable;
 
 // @0x1412818c0
 Unk_PvpArenaTable* FUN_1412818c0()
 {
-    return DAT_143aaf098;
+    return reinterpret_cast<Unk_PvpArenaTable*>(TSingleton<CIndividualArenaDataTable>::s_instance);
 }
 
 // ---- CPVPManager --------------------------------------------------------------------------------------------------

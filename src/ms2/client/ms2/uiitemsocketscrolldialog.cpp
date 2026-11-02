@@ -151,7 +151,9 @@ NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
-MS2DragSlot* FUN_140a50b50(DragSlot* p);
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -274,7 +276,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         FUN_140d73aa0(GetStringCommonByKey(L"s_itemsocket_scroll_error_have_not_scroll"), 0, 0, CStringW(L""));
         return;
     }
-    MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
+    MS2DragSlot* pSrc = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag));
     if (pSrc != 0)
     {
         MS2Ptr<CItem> spTarget = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(class MS2DragSlot*)(pSrc))->GetItemUid());
@@ -387,7 +389,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
         for (size_t i = 0; i < arrRank.GetCount(); i++)
         {
             unsigned nRank = arrRank[i];
-            CStringW strOne = FUN_14183e9c0(GetStringTable()->FUN_141813150(nRank), nRank);
+            CStringW strOne = FUN_14183e9c0(GetStringTable()->GetRankName(nRank), nRank);
             if (i != 0)
                 strRanks.Append(StringFormat<CStringW>(strSep, strOne));
             else

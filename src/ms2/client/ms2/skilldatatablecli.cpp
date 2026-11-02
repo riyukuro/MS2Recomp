@@ -309,12 +309,11 @@ MS2Ptr<AdditionalData> SkillDataTableCli::GetAdditional(unsigned nId)
 }
 MS2_REPLACE_METHOD(0x140aafd60, SkillDataTableCli, GetAdditional, 278, 0xFF6DCA0C);
 
-unsigned short FUN_140175770(unsigned __int64 nKey);    // AdditionalLevelData::GetKeyLevel, viewed with its short level type
 
 // @0x140aafe80
 MS2Ptr<AdditionalLevelData> SkillDataTableCli::GetAdditionalLevel(unsigned __int64 nKey)
 {
-    return FUN_140aafef0((int)AdditionalLevelData::GetKeyID(nKey), FUN_140175770(nKey));
+    return FUN_140aafef0((int)AdditionalLevelData::GetKeyID(nKey), (unsigned short)AdditionalLevelData::GetKeyLevel(nKey));
 }
 MS2_REPLACE_METHOD(0x140aafe80, SkillDataTableCli, GetAdditionalLevel, 100, 0x596DA5D6);
 

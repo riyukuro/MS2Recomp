@@ -64,6 +64,7 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/placeholder/cmeratmarketman.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
@@ -114,7 +115,7 @@ public:
 };
 struct Unk_AdLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
 class Unk_140e45740 : public UIAlignWidgetManager { };
-class GFxManager { public: void FUN_1422b06e0(int nMovieId, int* pnWidth, int* pnHeight); };   // the stage size of a movie
+class GFxManager { public: void GetStageSize(int nMovieId, int* pnWidth, int* pnHeight); };   // the stage size of a movie
 Unk_AltStringMgr* FUN_14025e7a0();
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 UIObject* FUN_140ce8270(int nClass);
@@ -280,7 +281,7 @@ int UIAdPushDialog::vfunc_4()
         if (dlg.get())
         {
             unsigned nWidth = 0, nHeight = 0;
-            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), (int*)&nWidth, (int*)&nHeight);
+            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetStageSize(FUN_1422db730(), (int*)&nWidth, (int*)&nHeight);
             float x = 0.0f, y = 0.0f;
             dlg->GetPosition(&x, &y);
             CStringA strKey("limitedbundle");
@@ -340,10 +341,10 @@ int UIAdPushDialog::vfunc_5()
             XmlGetChildAttr((class TiXmlElement*)(pNode), rKey, "rateX", *(float*)(&rateX));
             XmlGetChildAttr((class TiXmlElement*)(pNode), rKey, "rateY", *(float*)(&rateY));
             unsigned nWidth = 0, nHeight = 0;
-            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(FUN_1422db730(), (int*)&nWidth, (int*)&nHeight);
+            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetStageSize(FUN_1422db730(), (int*)&nWidth, (int*)&nHeight);
             float fX = (float)nWidth * rateX;
             float fY = (float)nHeight * rateY;
-            dlg->FUN_1422c00f0(fX, fY);
+            dlg->SetPositionFloat(fX, fY);
         }
         m_78 = 1;
     }
@@ -445,7 +446,7 @@ void UIAdPushDialog::vfunc_67()
 // @0x140e406c0
 bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, bool bMinimized)
 {
-    if (item == 0 || item->FUN_1406a46e0() != 3)
+    if (item == 0 || reinterpret_cast<CMeratMarketProduct*>(item.operator->())->GetType() != 3)
         return false;
     if (item->m_n124 == 0)
         return false;
@@ -684,7 +685,7 @@ MS2Ptr<ASMovieClip> UIAdPushDialog::AddBadge(MS2Ptr<AScript> value)
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value v = m_30->Invoke("addLimitedBundle", value->FUN_1422bb870());
     MS2Ptr<ASMovieClip> clip(new ASUIComponent(v, 2));   // exe 0x1422c7100, 0x88 bytes
-    if (clip == 0 || clip->FUN_1422ba9a0())
+    if (clip == 0 || clip->IsUndefinedOrNull())
         return MS2Ptr<ASMovieClip>(0);
     return clip;
 }
@@ -839,14 +840,14 @@ void UIAdPushDialog::FixPosition()
         float y = 28.0f;
         FindDirtyPos(&x, &y);
         FindMinimizePos(&x, &y);
-        dlg->FUN_1422c00f0(x, y);
+        dlg->SetPositionFloat(x, y);
     }
     else if (bRetry)
     {
         float x = 0.0f, y = 0.0f;
         dlg->GetPosition(&x, &y);
         if (FindMinimizePos(&x, &y))
-            dlg->FUN_1422c00f0(x, y);
+            dlg->SetPositionFloat(x, y);
     }
 }
 
@@ -884,7 +885,7 @@ void AdPushEntityLimitedBundle::Update(MS2Ptr<Unk_AdMarketItem> item)
     if (m_item->m_nSn != item->m_nSn)
         return;
     SetMarketItem(item);
-    if (item->m_info.FUN_1406a0cc0())
+    if (reinterpret_cast<CMeratMarketPremiumProduct*>(&item->m_info)->IsSoldOut())
         vfunc_3();
 }
 
@@ -1050,7 +1051,7 @@ void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNo
 {
     if (pNode == 0)
         return;
-    if ((m_item.get() ? true : false) && m_item->m_info.FUN_1406a0cc0())
+    if ((m_item.get() ? true : false) && reinterpret_cast<CMeratMarketPremiumProduct*>(&m_item->m_info)->IsSoldOut())
     {
         if (pRoot)
             ((class TiXmlNode*)(class Unk_AdXmlNode*)(pRoot))->RemoveChild((class TiXmlNode*)(pNode));
@@ -1059,10 +1060,10 @@ void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNo
     XmlSetAttr((class TiXmlElement*)(pNode), "marketSN", m_item->m_id.FUN_1409b0470());
     XmlSetAttr((class TiXmlElement*)(pNode), "minimize", m_bMinimized);
     XmlSetAttr((class TiXmlElement*)(pNode), "endTime", *(__int64 const*)&static_cast<__int64&>(m_endTime));
-    __int64 nSaleEnd = m_item->m_info.FUN_1406a1a70(0).Get();
+    __int64 nSaleEnd = reinterpret_cast<CMeratMarketPremiumProduct*>(&m_item->m_info)->GetEndDate(0).Get();
     XmlSetAttr((class TiXmlElement*)(pNode), "saleEndTime", *(__int64 const*)&static_cast<__int64&>(nSaleEnd));
     unsigned nWidth = 0, nHeight = 0;
-    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(2, (int*)&nWidth, (int*)&nHeight);
+    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetStageSize(2, (int*)&nWidth, (int*)&nHeight);
     XmlSetChildAttr((class TiXmlElement*)(pNode), "transform", "rateX_maximize", m_max.x / (float)nWidth, true);
     XmlSetChildAttr((class TiXmlElement*)(pNode), "transform", "rateY_maximize", m_max.y / (float)nHeight, true);
 }
@@ -1076,7 +1077,7 @@ void AdPushEntityLimitedBundle::vfunc_5(Unk_AdXmlNode* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "endTime", m_endTime);
     XmlGetAttr((class TiXmlElement*)(pNode), "saleEndTime", m_saleEndTime);
     unsigned nWidth = 0, nHeight = 0;
-    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b06e0(2, (int*)&nWidth, (int*)&nHeight);
+    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetStageSize(2, (int*)&nWidth, (int*)&nHeight);
     efd::Point2 rate = efd::Point2::ZERO;
     XmlGetChildAttr((class TiXmlElement*)(pNode), "transform", "rateX_maximize", *(float*)(&rate.x));
     XmlGetChildAttr((class TiXmlElement*)(pNode), "transform", "rateY_maximize", *(float*)(&rate.y));

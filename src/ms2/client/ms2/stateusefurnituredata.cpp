@@ -57,26 +57,13 @@ public:
 };
 class CSkillRecord : public Unk_PCBaseComp_b18 {};
 
-// The direction as the buff set returns it; vfunc_22 gets a sliced copy of the
-// return temporary.
-struct Unk_UfDirRet : public efd::Point3
-{
-};
-
 // The buff set of the actor.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
 #include <egmAnimation/AnimationService.h>
 #include <efd/Matrix3.h>
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
-class Unk_UfBuff
-{
-public:
-    bool FUN_141682fe0(int nId);                             // has a buff
-    bool FUN_141683100(int nId);                             // has a buff (kind)
-};
+class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nId); bool FUN_141683100(int nId); };   // C3: view of the real class (unit_141682f80)
 
 CFunctionCubeService* FUN_1409670b0();
-bool FUN_1402a5b40(const CString& a, const char* b);       // CString != C string
 
 // The animation service: the name of the sequence of an actor, the cached actor manager.
 namespace egmAnimation { class AnimationService; }
@@ -107,13 +94,6 @@ void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401f
 
 // The scene graph of an entity and the NiNode helpers the exe calls out of line.
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
-NiTransform* FUN_140a35c30(NiTransform* pDst, const NiTransform& kSrc);   // NiTransform::operator=
-void FUN_140a35bd0(NiTransform* pDst, const NiTransform* pSrc);           // NiTransform assignment
-// NiTransform::operator* (a view of the transform; the result is returned by value).
-struct Unk_UfXform
-{
-    NiTransform FUN_140a33de0(const NiTransform& kOther) const;
-};
 void FUN_140b86230(efd::Point3 const&, NiMatrix3&);   // matrix of euler angles (degrees)
 void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pOut);
 
@@ -128,6 +108,11 @@ template <> MS2Ptr<CFunctionCubeObject>& MS2Ptr<CFunctionCubeObject>::operator=(
 template <> MS2Ptr<FunctionCubeData>::MS2Ptr(const MS2Ptr& o);                  // 0x140ca60f0
 template <> MS2Ptr<FunctionCubeData>::~MS2Ptr();                                // 0x140ca62a0
 template <> FunctionCubeData* MS2Ptr<FunctionCubeData>::operator->() const;     // 0x1409658d0
+
+// A Point3 of a derived type, so vfunc_19 copies kPos twice as the exe does.
+struct Unk_UfDirRet : public efd::Point3
+{
+};
 
 // NiPoint3 with the exe's out-of-line conversion ctor and move assignment.
 struct Unk_CamNiPoint3
@@ -206,10 +191,10 @@ void StateUseFurniture::vfunc_4(StateData* pData)
         bool bAction = !static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8.IsEmpty();
         if (bAction)
             m_pOwner->FUN_14166ef10(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8, 1, 0, false);
-        bool bModel = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, "");
+        bool bModel = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
         if (bModel)
             m_pOwner->FUN_14166dd20((const char*)static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
-        bool bEffect = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0, "");
+        bool bEffect = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0 != "";
         if (bEffect)
         {
             Unk_EffectQuery kQuery;
@@ -225,7 +210,6 @@ void StateUseFurniture::vfunc_4(StateData* pData)
 }
 
 // @0x141283340
-// MS2-FUNCTIONAL: same calls as the exe; stack slots, the vfunc_19 arg copies (exe copies kPos twice) and the scale arg loads differ
 void StateUseFurniture::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -233,7 +217,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         return;
     if (m_n64 != 0)
     {
-        bool bModel = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, "");
+        bool bModel = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
         if (bModel)
         {
             NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>((FUN_141b6f910()))->GetActorManager(m_spCube->FUN_141226eb0());
@@ -263,8 +247,8 @@ void StateUseFurniture::vfunc_3(double fTime)
                 NiTransform kParent;
                 kParent.MakeIdentity();
                 if (static_cast<NiAVObject*>(pChild)->GetParent() != 0)
-                    FUN_140a35c30(&kParent, static_cast<NiAVObject*>(static_cast<NiAVObject*>(pChild)->GetParent())->GetWorldTransform());
-                FUN_140a35bd0(&kXf, &reinterpret_cast<const Unk_UfXform*>(&kParent)->FUN_140a33de0(kXf));
+                    kParent = static_cast<NiAVObject*>(static_cast<NiAVObject*>(pChild)->GetParent())->GetWorldTransform();
+                kXf = kParent * kXf;
                 Vector3 kPos = *reinterpret_cast<const Vector3*>(&kXf.m_Translate);
                 Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
                 Vector3 kDir;
@@ -286,13 +270,13 @@ void StateUseFurniture::vfunc_3(double fTime)
                 Vector3 kCol2;
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, reinterpret_cast<efd::Point3&>(kCol2));
                 kCol2.FUN_140968990();
-                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
-                    kCol1.FUN_14097fc90(-static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y)));
-                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
-                    kCol0.FUN_14097fc90(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)));
-                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
-                    kCol2.FUN_14097fc90(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)));
-                m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
+                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
+                    kCol1.FUN_14097fc90(-static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y));
+                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
+                    kCol0.FUN_14097fc90((0, static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)));
+                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
+                    kCol2.FUN_14097fc90((0, static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)));
+                m_pOwner->vfunc_19(efd::Point3(reinterpret_cast<const Unk_UfDirRet&>(kPos)));
                 m_pOwner->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
             }
         }
@@ -306,15 +290,14 @@ void StateUseFurniture::vfunc_3(double fTime)
 }
 
 // @0x141283d80
-// MS2-FUNCTIONAL: vfunc_22 takes efd::Point3 by value in the exe (16-aligned arg copy at 0x70, ours 0x68)
 void StateUseFurniture::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    Unk_UfBuff* pBuff = (Unk_UfBuff*)pPC->FUN_14166d240();
-    pPC->vfunc_22(efd::Point3(reinterpret_cast<const Unk_UfDirRet&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290()))));
+    Unk_PCMove* pBuff = (Unk_PCMove*)pPC->FUN_14166d240();
+    pPC->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
     if (pBuff->FUN_141683100(0x30d41))
         pPC->FUN_1415248d0(1, 0);
     else if (pBuff->FUN_141683100(0x30d42))
@@ -344,7 +327,7 @@ void StateUseFurniture::vfunc_5(int n)
     if (m_nEffect != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     bool bEffect = (m_spCube.get() != 0 ? true : false) &&
-        FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8, "");
+        static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8 != "";
     if (bEffect)
     {
         Unk_EffectQuery kQuery;

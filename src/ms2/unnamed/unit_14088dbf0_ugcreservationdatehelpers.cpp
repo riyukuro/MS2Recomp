@@ -91,7 +91,6 @@ int FUN_14088de00(MS2Ptr<CItemData> spItemData)
 }
 
 // @0x14088df20
-// MS2-FUNCTIONAL: exe keeps extra 64-bit temps/frame around the (nTotal-nElapsed) product; no source form found
 __int64 FUN_14088df20(unsigned nElapsed, unsigned nTotal, __int64 nValue)
 {
     if (nElapsed == 0)
@@ -99,8 +98,7 @@ __int64 FUN_14088df20(unsigned nElapsed, unsigned nTotal, __int64 nValue)
     if (nElapsed == nTotal)
         return 0;
     nValue *= (unsigned long long)(nTotal - nElapsed);
-    __int64 nDiv = nTotal;
-    nValue /= nDiv;   // signed: the exe divides with cqo/idiv
+    nValue /= nTotal;   // signed: nTotal widens to __int64, so the exe divides with cqo/idiv
     return nValue;
 }
 

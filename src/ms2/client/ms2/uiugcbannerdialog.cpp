@@ -51,6 +51,7 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/blockmanager.h"
 #include "ms2/placeholder/aslabel.h"
 #include <NiRect.h>
 
@@ -93,23 +94,8 @@ template <> template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=<Unk_
 class Unk_WcTitleFinder { public: MS2Ptr<Unk_WcTitle> FUN_140c436d0(const CString&); };
 
 // The purchase block notice (the state manager answers whether the action is blocked right now).
-struct Unk_BnBlockRef;
-void FUN_1401cb250(Unk_BnBlockRef*);
-struct Unk_BnBlockRef
-{
-    void* m_00;
-    void* m_08;
-    ~Unk_BnBlockRef() { FUN_1401cb250(this); }
-};
-MS2_CHECK_SIZE(Unk_BnBlockRef, 0x10);
-class Unk_BnStateMgr
-{
-public:
-    Unk_BnBlockRef FUN_140a2f620(int nKind);
-};
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-void* FUN_1401cb3d0(Unk_BnBlockRef* pRef);
-void FUN_140a2ff20(Unk_BnBlockRef* pRef, int nKind, __int64 n);
+void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& kRef, int nKind, unsigned __int64 n);
 
 class Unk_GalleryAS;
 void GallerySet(Scaleform::GFx::Value*, int);
@@ -455,7 +441,7 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     {
         Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
         AScript root((const Scaleform::GFx::Value&)arg, 2);
-        if (root.FUN_1422ba9a0() == 0)
+        if (root.IsUndefinedOrNull() == 0)
         {
 #ifdef __clang__
             AScript data(root.GetMember("data"), 2);
@@ -463,10 +449,10 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
             AScript data((Scaleform::GFx::Value&)root.GetMember("data"), 2);
 #endif
-            if (data.FUN_1422ba9a0() == 0)
+            if (data.IsUndefinedOrNull() == 0)
             {
                 ASTooltip tip(1, 2);
-                CStringW strText = ((Unk_UgcImageData*)&data)->FUN_1422bb2b0("tooltip");
+                CStringW strText = ((Unk_UgcImageData*)&data)->GetWString("tooltip");
                 if (tip.ApplyTextTooltip(strText) != 0)
                 {
                     tip.SetTooltipAlign(2);
@@ -631,10 +617,10 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
 int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 {
     {
-        Unk_BnBlockRef block = ((class Unk_BnStateMgr*)FUN_140a6a830())->FUN_140a2f620(5);
-        if (FUN_1401cb3d0(&block) != 0)
+        Unk_BlockPtr<Unk_BlockRecord> block = ((class CBlockManager*)FUN_140a6a830())->FindBlockedAction(5);
+        if (block.get() != 0)
         {
-            FUN_140a2ff20(&block, 5, (__int64)static_cast<IMessageListener*>(this));
+            FUN_140a2ff20(block, 5, (unsigned __int64)static_cast<IMessageListener*>(this));
             return 0;
         }
     }
@@ -930,10 +916,10 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             if (pDialog != 0)
             {
                 float fScale = ((Unk_UiScale*)TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
-                m_18c = (int)(data.FUN_1422b8ca0() / fScale);
-                m_190 = (int)(data.FUN_1422b8ca0() / fScale);
-                m_194 = (int)(data.FUN_1422b8ca0() / fScale);
-                m_198 = (int)(data.FUN_1422b8ca0() / fScale);
+                m_18c = (int)(data.PopDouble() / fScale);
+                m_190 = (int)(data.PopDouble() / fScale);
+                m_194 = (int)(data.PopDouble() / fScale);
+                m_198 = (int)(data.PopDouble() / fScale);
                 m_188 = 1;
             }
         }

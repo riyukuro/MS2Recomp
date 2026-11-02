@@ -5,7 +5,7 @@
 // MS2-PIN: ??$max@H@std@@YAAEBHAEBH0@Z 0x140f43be0
 // MS2-PIN: ??1UIFishingBookDialog@@UEAA@XZ 0x140f43c90
 // MS2-PIN: ??_GUIFishingBookDialog@@UEAAPEAXI@Z 0x140f43d30
-// MS2-PIN: ??BUnk_FbListRef@@QEAAPEAVUnk_FbCtl@@XZ 0x140acd9d0
+// MS2-PIN: ??B?$MS2Ptr@VASTileList@@@@QEBAPEAVASTileList@@XZ 0x140acd9d0
 // MS2-PIN: ??B?$MS2Ptr@VASTextField@@@@QEBAPEAVASTextField@@XZ 0x140b9a800
 //
 // File name assumed (the class name; the exe has no assert path for it).
@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
+#include "ms2/placeholder/astilelist.h"
+#include "ms2/placeholder/blockformat.h"
 #include "ms2/commonfiles/masterytable.h"
 #include "ms2/client/ms2/achievemanager.h"
 #include "ms2/commonfiles/titletable.h"
@@ -45,20 +47,14 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of exe objects ----
 
-void FUN_140159b70(long hr);                                    // AtlThrowImpl
 int FUN_141276180(const CString& strName, const CString& strArg);       // play a system sound
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
 CStringW FUN_1401d0160(const wchar_t* szFirst, const CStringW& strSecond);   // szFirst + strSecond
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
-CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);
-CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
-CStringTable* GetStringTable();
+template <class A> CStringW FormatStringId(int nStringId, const A& a);
 
-void FUN_140cdf6d0(void*);
-void FUN_140acd710(void*);
 
-// The list control of the movie.
+// The list control of the movie: slot 24 is not named on ASCoreList.
 class Unk_FbCtl : public ASCoreList
 {
 public:
@@ -71,15 +67,6 @@ public:
     virtual void vfunc_22();
     virtual void vfunc_23();
     virtual void vfunc_24(bool b);
-};
-struct Unk_FbListRef
-{
-    void* m_0;
-    void* m_p;
-    Unk_FbListRef() : m_0(0), m_p(0) {}
-    ~Unk_FbListRef() { FUN_140acd710(this); }
-    operator Unk_FbCtl*();                                      // 0x140acd9d0
-    Unk_FbCtl* FUN_140acd9f0();
 };
 // The mastery table and the objects behind a few switches.
 class Unk_MData* FUN_1409670c0();
@@ -104,10 +91,10 @@ private:
     int m_nGrowBy;
 };
 // The AS invokes of the movie root the exe has one instance of per argument list.
-class Unk_FbAS
+class Unk_GalleryAS
 {
 public:
-    Scaleform::GFx::Value FUN_140c19160(const char* szMethod, unsigned __int64 nIndex, int nValue);   // Invoke(name, index, value)
+    template<class A, class B> Scaleform::GFx::Value Invoke2(const char* method, A a, B b);
 };
 
 void FUN_140f43d70(MS2Ptr<CFish>* pItems, unsigned __int64 nCount);
@@ -137,8 +124,8 @@ void UIFishingBookDialog::OnLoadComplete()
     m_nTab = 0;
     FUN_140f42790(m_nTab);
     FUN_140f41a10();
-    if (Unk_FbListRef spBag = FUN_140ba4b70("m_bag"))
-        spBag.FUN_140acd9f0()->SetSelectedIndex(0);
+    if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_bag"))
+        spBag->SetSelectedIndex(0);
     FUN_141276180(s_strBookOpen, "");
 }
 
@@ -202,7 +189,7 @@ void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         int nNextBase = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Value(1, nGrade + 1);
         int nMax = nNextBase - nBase;
         int nCur = nExp - nBase;
-        strText = FUN_1409e9bc0(0xbeb, nCur, nMax);
+        strText = BlockFormat<unsigned, unsigned>(0xbeb, reinterpret_cast<const unsigned&>(nCur), reinterpret_cast<const unsigned&>(nMax));
     }
     ASTooltip tooltip(1, 2);
     tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
@@ -288,7 +275,7 @@ void UIFishingBookDialog::FUN_140f41e90()
             }
         }
         for (unsigned __int64 j = 0; j < 4; j++)
-            reinterpret_cast<Unk_FbAS*>(m_30.operator->())->FUN_140c19160("setTabNew", j, aNew[j]);
+            reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<size_t, int>("setTabNew", j, aNew[j]);
     }
 }
 
@@ -308,15 +295,15 @@ void UIFishingBookDialog::FUN_140f42100(int nFishId)
         obj.FUN_1407cbb20("fishName", fish->FUN_1403b1650());
         obj.FUN_1407cbb20("fishingExp", fish->m_nIgnoreSpotMastery != 0 ? GetStringCommonByKey(L"s_fishing_all_spot") : FUN_140f432e0(nArea));
         obj.FUN_1409adc90("fishRank", fish->m_nRank);
-        obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, GetStringTable()->FUN_141813150(fish->m_nRank)));
+        obj.FUN_1407cbb20("fishGradeName", FormatStringId<CStringW>(0xbda, TSingleton<CStringTable>::GetInstance()->GetRankName(fish->m_nRank)));
         obj.FUN_1407cbb20("desc", fish->FUN_1403b16b0(FUN_140f43330(fish->m_nId)));
         obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish->m_nId));
         obj.FUN_140f43b40("medal", FUN_140f43540(nFishId));
         if (FUN_140f43330(fish->m_nId) != 0)
         {
-            obj.FUN_1407cbb20("totalCatchCount", FUN_1409e97f0(0xbdb, FUN_140f43610(nFishId)));
-            obj.FUN_1407cbb20("bigSizeCatchCount", FUN_1409e97f0(0xbdb, FUN_140f436f0(nFishId)));
-            obj.FUN_1407cbb20("bestRecord", FUN_1409e97f0(0xbdc, FUN_140f437d0(nFishId)));
+            obj.FUN_1407cbb20("totalCatchCount", BlockFormat<unsigned>(0xbdb, (unsigned)FUN_140f43610(nFishId)));
+            obj.FUN_1407cbb20("bigSizeCatchCount", BlockFormat<unsigned>(0xbdb, (unsigned)FUN_140f436f0(nFishId)));
+            obj.FUN_1407cbb20("bestRecord", BlockFormat<unsigned>(0xbdc, (unsigned)FUN_140f437d0(nFishId)));
         }
     }
     else
@@ -333,9 +320,9 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
     FbIdArray ids;
     FUN_140f42d90(ids);
     qsort(ids.GetData(), ids.GetCount(), 4, (int (*)(const void*, const void*))FUN_140f438b0);
-    if (Unk_FbListRef spBag = FUN_140ba4b70("m_bag"))
+    if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_bag"))
     {
-        spBag.FUN_140acd9f0()->FUN_1422dd1d0();
+        spBag->FUN_1422dd1d0();
         for (unsigned __int64 i = 0; i < 0x14; i++)
         {
             ASObj obj(2);
@@ -360,9 +347,9 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
                 obj.FUN_140f43b40("medal", FUN_140f43540(fish->m_nId));
                 obj.FUN_1407cb9c0("isNew", FUN_140f43380(fish->m_nId));
             }
-            spBag.FUN_140acd9f0()->AddItem(obj);
+            spBag->AddItem(obj);
         }
-        spBag.FUN_140acd9f0()->vfunc_24(true);
+        reinterpret_cast<Unk_FbCtl*>(spBag.operator->())->vfunc_24(true);
     }
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
     {
@@ -546,8 +533,8 @@ int FUN_140f438b0(const int* pA, const int* pB)
     {
         if (fishA->m_nRank == fishB->m_nRank)
         {
-            CStringW strA = GetStringTable()->FUN_141811980(0x1d, nA);
-            CStringW strB = GetStringTable()->FUN_141811980(0x1d, nB);
+            CStringW strA = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nA);
+            CStringW strB = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nB);
             return __imp_wcscmp(strA.GetBuffer(0), strB.GetBuffer(0));
         }
         else
@@ -585,14 +572,14 @@ Unk_FbItemArray::~Unk_FbItemArray() throw()
 MS2Ptr<CFish>& Unk_FbItemArray::FUN_140f43cb0(unsigned __int64 nIndex)
 {
     if (nIndex >= m_nSize)
-        FUN_140159b70(0x80070057);
+        ATL::AtlThrowImpl(0x80070057);
     return m_pData[nIndex];
 }
 
 // @0x140f43cf0
 MS2Ptr<CFish>* FUN_140f43cf0(MS2Ptr<CFish>* p, unsigned int nFlags)
 {
-    FUN_140cdf6d0(p);
+    p->MS2Ptr<CFish>::~MS2Ptr();
     if ((nFlags & 1) != 0)
         operator delete(p, 0x10);
     return p;

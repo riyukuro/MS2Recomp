@@ -61,7 +61,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
         if (!strRec.IsEmpty())
         {
             efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
-            if (FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) != NiActorManager::INVALID_SEQUENCE_ID)
+            if (((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) != NiActorManager::INVALID_SEQUENCE_ID)
                 m_strAnim = kAnim;
         }
     }
@@ -72,7 +72,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
 // MS2-FUNCTIONAL: the exe passes the entity key return slot through a pointer temp (lea rax,[k]; mov [p],rax; mov rdx,[p])
 void StateFallDamage::vfunc_5(int n)
 {
-    FUN_141b6f910()->FUN_1409fad80(m_pOwner->FUN_14123c460(), false);
+    ((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_1409fad80(m_pOwner->FUN_14123c460(), false);
     m_strAnim = "";
     State::vfunc_5(n);
 }

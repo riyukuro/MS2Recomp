@@ -36,7 +36,7 @@ class Unk_BlWorld { };
 bool FUN_1418fe060();
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& str);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // @0x140f004b0

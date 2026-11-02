@@ -15,7 +15,7 @@ bool FUN_14028d470(float a, float b);                   // nearly equal
 float FUN_1409f25a0(float f);                           // sine
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 
 // Interpolation functors (empty; t in [0, 1]). 0 and 3 were emitted here, 1 and 2 elsewhere.
 struct Unk_InterpLinear
@@ -103,7 +103,7 @@ bool TransitionEffect::vfunc_9()
 {
     if (!CEffect::vfunc_9())
         return false;
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     unsigned int nIndex = 0;
     float fT = 0.0f;
     if (FUN_14185f6f0(dNow, &nIndex, &fT))

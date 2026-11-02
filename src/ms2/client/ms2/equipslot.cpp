@@ -61,7 +61,9 @@ CStringW GetStringCommonByKey(const CStringW& strKey);         // string table l
 CStringW GetStringCommon(int nStringId);                  // a string table text
 CString FUN_1405451e0(int nType);                       // the name of an equip slot type
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);               // item link / popup for the item
-void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -151,7 +153,7 @@ int EquipSlot::vfunc_17()
 // @0x14120c320
 int EquipSlot::vfunc_18(void* p)
 {
-    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
@@ -278,7 +280,7 @@ void EquipSlot::vfunc_9()
     if (((Scaleform::GFx::Value*)(void*)(&m_value18))->IsNull() == 0)
     {
         ASObj obj(m_value18, 2);
-        if (obj.FUN_1422ba9a0() == 0)
+        if (obj.IsUndefinedOrNull() == 0)
             obj.FUN_1407cba60("m_strSlotType", FUN_1405451e0(m_nSlot));
     }
 }
@@ -361,7 +363,7 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
     if (FUN_14120d1f0() == 0)
         return 0;
     bool bFlag = (m_nKind == 1 || m_nKind == 2) ? 1 : 0;
-    if (bFlag && pItem->FUN_1405258b0() == 0)
+    if (bFlag && pItem->HasSkin() == 0)
     {
         if (m_nKind == 2)
             FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, 0, CStringW(L""));
@@ -369,7 +371,7 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
             FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(m_nSlot) == false)
+    if (pItem->FUN_140527840()->GetModelOrEmpty()->FUN_14054b450(m_nSlot) == false)
     {
         FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;

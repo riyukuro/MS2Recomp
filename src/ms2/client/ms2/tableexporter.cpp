@@ -124,7 +124,6 @@ CSoundService* FUN_140c9cb10();
 class Unk_SoundMgr : public CSoundEventMgr
 {
 public:
-    void FUN_14177d9b0(const char* pszGroup, Unk_StrVec& rNames);   // event names of a group
 };
 
 typedef std::map<CString, std::set<CString> > Unk_VoiceGroupMap;   // trigger voice group -> sub sound names
@@ -307,7 +306,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 
 // Region spawn tables.
-void* FUN_14031c2a0();
+class DungeonRoomTable;
 void FUN_140320b40(void* pTable, unsigned int nId, Unk_RefArrayB* pOut);
 void FUN_140331af0(Unk_Ref* pRef, void* pRaw);
 Unk_SpawnRegion* FUN_1403347d0(Unk_Ref* pRef);
@@ -331,7 +330,7 @@ void FUN_1406d5360(Unk_Ref* pRef);
 void FUN_140a7cab0(Unk_SpawnMgr* pMgr, Unk_Ref* pOut, int nNpcId);
 bool FUN_1409f90f0(Unk_AvBox *, void *);  // C3: the definition's signature
 Unk_NpcRow* FUN_140965990(Unk_Ref* pRef);
-void FUN_1406d5390(Unk_Ref* pRef);
+class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 void FUN_1407291c0(void* pMgr, Unk_Ref* pOut, CString strModel);
 long long FUN_14052cde0(Unk_Ref* pRef);
@@ -488,7 +487,7 @@ void FUN_141825f60(const CString& strGroup, CSoundDataTable::SoundList& rOut)
         return;
     }
     Unk_StrVec names;
-    reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->FUN_14177d9b0(strGroup, names);
+    reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->GetEventNames(strGroup, reinterpret_cast<std::vector<CString>&>(names));
     int nCount = (int)names.FUN_14028b4c0();
     for (int i = 0; i < nCount; i++) {
         CString& strName = *names.FUN_14027f1c0(i);
@@ -829,7 +828,7 @@ bool FUN_1418226b0(bool bLog)
                             FUN_141826f80(nFieldId, portal, mapPortals);
                         } else if (portal.m_nType == 8) {
                             Unk_RefArrayB regions;
-                            FUN_140320b40(FUN_14031c2a0(), portal.m_nId, &regions);
+                            FUN_140320b40(reinterpret_cast<void*>(TSingleton<DungeonRoomTable>::GetInstance()), portal.m_nId, &regions);
                             for (size_t i = 0; i < regions.m_nSize; i++) {
                                 Unk_Ref ref;
                                 FUN_140331af0(&ref, FUN_14182fc50(&regions, i));
@@ -869,7 +868,7 @@ bool FUN_1418226b0(bool bLog)
                                                 FUN_141826e40(((class CPetData*)(void*)(FUN_14052ceb0(&model)))->GetId(), nFieldId, g_mapPet);
                                             FUN_14052c420(&model);
                                         }
-                                        FUN_1406d5390(&npcRow);
+                                        reinterpret_cast<MS2Ptr<NpcDataCli>*>(&npcRow)->~MS2Ptr<NpcDataCli>();
                                     }
                                     FUN_1406d5330(&entry);
                                 }

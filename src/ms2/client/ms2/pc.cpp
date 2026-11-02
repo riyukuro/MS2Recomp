@@ -247,6 +247,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
+#include "ms2/commonfiles/os.h"
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
 // ---- exe functions and singletons used by the PC TU (other units) ----
@@ -345,10 +346,7 @@ public:
 class Unk_PCBaseBody : public GameObjectController
 {
 public:
-    bool FUN_1412410c0(const efd::Point3& kPos, float fRadius);     // the capsule at kPos overlaps something
 };
-// The animation service singleton (statefall.h declares the global FUN_141b6f910 with a unit-local view type).
-namespace PCAnim { egmAnimation::AnimationService* FUN_141b6f910(); }
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // the scene graph of an entity
 void FUN_141567330(NiAVObject* pRoot, bool b);                      // (the model was loaded)
 extern float DAT_1439f8210;                                         // the hit colour boost (0.7, 0.1, 0.1)
@@ -448,7 +446,7 @@ class Unk_PCPvPMgr
 public:
     void FUN_141280ca0(__int64 nCharId);                            // leave
 };
-Unk_PCPvPMgr* FUN_140f97ef0();
+class CPVPManager;
 // The dialog 0x4e8a (FUN_141531b40): a name at +0x178.
 class Unk_PCDialog4e8a
 {
@@ -553,7 +551,7 @@ public:
     bool m_bShowHpBar;                                              // +0xc
     bool m_bShowPartyHp;                                            // +0xd
 };
-class Unk_PCOptions* FUN_1409a8b10();
+class CGameOption;
 unsigned FUN_140a7d630(Common::Constants::Value<Unk_ConstColor>* pColor); // the colour as ARGB (npcdatacli.cpp)
 // The running skill cast (CSkillRecord, skillrecord.h; its SkillMotionData clashes with jobsystem.h's skilldata.h
 // placeholder here). The smart pointer helpers are the exe's shared copies.
@@ -713,60 +711,60 @@ PC::PC()
     m_f178 = FUN_1401d3200()->OffsetPcDamagenumber.Read();
     m_f17c = FUN_1401d3200()->OffsetPcProfileTag.Read();
     m_spStateMgr.AssignRaw(new CStateManager(this));
-    m_spStateMgr->FUN_1417daeb0(1, new StateIdle(this));
-    m_spStateMgr->FUN_1417daeb0(2, new StateWalk(this));
-    m_spStateMgr->FUN_1417daeb0(3, new StateCrawl(this));
-    m_spStateMgr->FUN_1417daeb0(4, new StateLand(this));
-    m_spStateMgr->FUN_1417daeb0(5, new StateFall(this));
-    m_spStateMgr->FUN_1417daeb0(6, new StateJump(this));
-    m_spStateMgr->FUN_1417daeb0(7, new StateJumpTo(this));
-    m_spStateMgr->FUN_1417daeb0(8, new StateLadder(this));
-    m_spStateMgr->FUN_1417daeb0(9, new StateRope(this));
-    m_spStateMgr->FUN_1417daeb0(0xb, new StateEmotion(this));
-    m_spStateMgr->FUN_1417daeb0(0xc, new StateDead(this));
-    m_spStateMgr->FUN_1417daeb0(0xd, new StateHit(this));
-    m_spStateMgr->FUN_1417daeb0(0xe, new StateWaitingSelect(this));
-    m_spStateMgr->FUN_1417daeb0(0xf, new StateEmotionIdle(this));
-    m_spStateMgr->FUN_1417daeb0(0x10, new StateSkill(this));
-    m_spStateMgr->FUN_1417daeb0(0x12, new StateStun(this));
-    m_spStateMgr->FUN_1417daeb0(0x11, new StateSpawn(this));
-    m_spStateMgr->FUN_1417daeb0(0x14, new StateDash(this));
-    m_spStateMgr->FUN_1417daeb0(0x15, new StatePush(this));
-    m_spStateMgr->FUN_1417daeb0(0x16, new StateTalk(this));
-    m_spStateMgr->FUN_1417daeb0(0x18, new StateRevival(this));
-    m_spStateMgr->FUN_1417daeb0(0x19, new StateInteraction(this));
-    m_spStateMgr->FUN_1417daeb0(0x1a, new StateInteractionNpc(this));
-    m_spStateMgr->FUN_1417daeb0(0x1d, new StateClimb(this));
-    m_spStateMgr->FUN_1417daeb0(0x1e, new StateGlide(this));
-    m_spStateMgr->FUN_1417daeb0(0x1b, new StateSwim(this));
-    m_spStateMgr->FUN_1417daeb0(0x1c, new StateSwimDash(this));
-    m_spStateMgr->FUN_1417daeb0(0x1f, new StateFallDamage(this));
-    m_spStateMgr->FUN_1417daeb0(0x20, new StateHold(this));
-    m_spStateMgr->FUN_1417daeb0(0x21, new StateRide(this));
-    m_spStateMgr->FUN_1417daeb0(0x22, new StateTransform(this));
-    m_spStateMgr->FUN_1417daeb0(0x25, new StateTaxiCall(this));
-    m_spStateMgr->FUN_1417daeb0(0x26, new StateSummon(this));
-    m_spStateMgr->FUN_1417daeb0(0x28, new StatePvPWinLose(this));
-    m_spStateMgr->FUN_1417daeb0(0x29, new StateUseFurniture(this));
-    m_spStateMgr->FUN_1417daeb0(0x2a, new StateCashCall(this));
-    m_spStateMgr->FUN_1417daeb0(0x2b, new StateGrabTarget(this));
-    m_spStateMgr->FUN_1417daeb0(0x2c, new StateRecall(this));
-    m_spStateMgr->FUN_1417daeb0(0x2d, new StateFishing(this));
-    m_spStateMgr->FUN_1417daeb0(0x2f, new StatePlayInstrument(this));
-    m_spStateMgr->FUN_1417daeb0(0x35, new StateTriggerEmotion(this));
-    m_spStateMgr->FUN_1417daeb0(0x46, new StateTriggerFollowNpc(this));
-    m_spStateMgr->FUN_1417daeb0(0x36, new StateHomeConvenient(this));
-    m_spStateMgr->FUN_1417daeb0(0x37, new StateHomemade(this));
-    m_spStateMgr->FUN_1417daeb0(0x39, new StateAutoInteraction(this));
-    m_spStateMgr->FUN_1417daeb0(0x3a, new StateCoupleEmotion(this));
-    m_spStateMgr->FUN_1417daeb0(0x3b, new StateBanner(this));
-    m_spStateMgr->FUN_1417daeb0(0x3c, new StateMicroGameRps(this));
-    m_spStateMgr->FUN_1417daeb0(0x3d, new StateReact(this));
-    m_spStateMgr->FUN_1417daeb0(0x3e, new StateTreeWatering(this));
-    m_spStateMgr->FUN_1417daeb0(0x3f, new StateObserver(this));
-    m_spStateMgr->FUN_1417daeb0(0x40, new StateNurturing(this));
-    m_spStateMgr->FUN_1417daeb0(0x45, new StateMicroGameCoupleDance(this));
-    m_spStateMgr->FUN_1417daeb0(0x47, new StateWeddingEmotion(this));
+    m_spStateMgr->RegisterState(1, new StateIdle(this));
+    m_spStateMgr->RegisterState(2, new StateWalk(this));
+    m_spStateMgr->RegisterState(3, new StateCrawl(this));
+    m_spStateMgr->RegisterState(4, new StateLand(this));
+    m_spStateMgr->RegisterState(5, new StateFall(this));
+    m_spStateMgr->RegisterState(6, new StateJump(this));
+    m_spStateMgr->RegisterState(7, new StateJumpTo(this));
+    m_spStateMgr->RegisterState(8, new StateLadder(this));
+    m_spStateMgr->RegisterState(9, new StateRope(this));
+    m_spStateMgr->RegisterState(0xb, new StateEmotion(this));
+    m_spStateMgr->RegisterState(0xc, new StateDead(this));
+    m_spStateMgr->RegisterState(0xd, new StateHit(this));
+    m_spStateMgr->RegisterState(0xe, new StateWaitingSelect(this));
+    m_spStateMgr->RegisterState(0xf, new StateEmotionIdle(this));
+    m_spStateMgr->RegisterState(0x10, new StateSkill(this));
+    m_spStateMgr->RegisterState(0x12, new StateStun(this));
+    m_spStateMgr->RegisterState(0x11, new StateSpawn(this));
+    m_spStateMgr->RegisterState(0x14, new StateDash(this));
+    m_spStateMgr->RegisterState(0x15, new StatePush(this));
+    m_spStateMgr->RegisterState(0x16, new StateTalk(this));
+    m_spStateMgr->RegisterState(0x18, new StateRevival(this));
+    m_spStateMgr->RegisterState(0x19, new StateInteraction(this));
+    m_spStateMgr->RegisterState(0x1a, new StateInteractionNpc(this));
+    m_spStateMgr->RegisterState(0x1d, new StateClimb(this));
+    m_spStateMgr->RegisterState(0x1e, new StateGlide(this));
+    m_spStateMgr->RegisterState(0x1b, new StateSwim(this));
+    m_spStateMgr->RegisterState(0x1c, new StateSwimDash(this));
+    m_spStateMgr->RegisterState(0x1f, new StateFallDamage(this));
+    m_spStateMgr->RegisterState(0x20, new StateHold(this));
+    m_spStateMgr->RegisterState(0x21, new StateRide(this));
+    m_spStateMgr->RegisterState(0x22, new StateTransform(this));
+    m_spStateMgr->RegisterState(0x25, new StateTaxiCall(this));
+    m_spStateMgr->RegisterState(0x26, new StateSummon(this));
+    m_spStateMgr->RegisterState(0x28, new StatePvPWinLose(this));
+    m_spStateMgr->RegisterState(0x29, new StateUseFurniture(this));
+    m_spStateMgr->RegisterState(0x2a, new StateCashCall(this));
+    m_spStateMgr->RegisterState(0x2b, new StateGrabTarget(this));
+    m_spStateMgr->RegisterState(0x2c, new StateRecall(this));
+    m_spStateMgr->RegisterState(0x2d, new StateFishing(this));
+    m_spStateMgr->RegisterState(0x2f, new StatePlayInstrument(this));
+    m_spStateMgr->RegisterState(0x35, new StateTriggerEmotion(this));
+    m_spStateMgr->RegisterState(0x46, new StateTriggerFollowNpc(this));
+    m_spStateMgr->RegisterState(0x36, new StateHomeConvenient(this));
+    m_spStateMgr->RegisterState(0x37, new StateHomemade(this));
+    m_spStateMgr->RegisterState(0x39, new StateAutoInteraction(this));
+    m_spStateMgr->RegisterState(0x3a, new StateCoupleEmotion(this));
+    m_spStateMgr->RegisterState(0x3b, new StateBanner(this));
+    m_spStateMgr->RegisterState(0x3c, new StateMicroGameRps(this));
+    m_spStateMgr->RegisterState(0x3d, new StateReact(this));
+    m_spStateMgr->RegisterState(0x3e, new StateTreeWatering(this));
+    m_spStateMgr->RegisterState(0x3f, new StateObserver(this));
+    m_spStateMgr->RegisterState(0x40, new StateNurturing(this));
+    m_spStateMgr->RegisterState(0x45, new StateMicroGameCoupleDance(this));
+    m_spStateMgr->RegisterState(0x47, new StateWeddingEmotion(this));
     m_kGemEquip1078.FUN_141668230(this);
     m_spJobFB8.AssignRaw(new JobSystemCli());
     m_spJobFB8->SetOwner(this);
@@ -805,8 +803,8 @@ PC::~PC()
     }
     if (m_spInteractMode.get() != 0)
     {
-        if (((CPvPInfo*)(Unk_PCInteractMode*)(reinterpret_cast<CPvPInfo*>(m_spInteractMode.operator->())))->HasPoint() && FUN_140f97ef0())
-            FUN_140f97ef0()->FUN_141280ca0(FUN_141656a80());
+        if (((CPvPInfo*)(Unk_PCInteractMode*)(reinterpret_cast<CPvPInfo*>(m_spInteractMode.operator->())))->HasPoint() && reinterpret_cast<Unk_PCPvPMgr*>(TSingleton<CPVPManager>::GetInstance()))
+            reinterpret_cast<Unk_PCPvPMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_141280ca0(FUN_141656a80());
         m_spInteractMode = 0;
     }
     if (m_n1060 != 0)
@@ -860,8 +858,8 @@ int PC::vfunc_10()
     {
         efd::AssetID kId((const char*)FUN_14123bbd0(), 0, efd::AssetID::NEVER_CACHE);
         efd::vector<egmAnimation::KFMCache::KFMCacheHandle> kHandles;
-        if (!PCAnim::FUN_141b6f910()->Cache(kId, 0, s_category, kHandles))
-            PCAnim::FUN_141b6f910()->UnCacheHandles(kHandles);
+        if (!FUN_141b6f910()->Cache(kId, 0, s_category, kHandles))
+            FUN_141b6f910()->UnCacheHandles(kHandles);
     }
     return 1;
 }
@@ -968,7 +966,7 @@ void PC::vfunc_33(void* a, void* b)
         if (bReact)
             bReact = !FUN_141660120();
     }
-    if (pRecord->FUN_14175ac30() < 0 || bPush)
+    if (pRecord->GetTotalDamage() < 0 || bPush)
     {
         State* pState = FUN_14166ccb0();
         int bHit = false;
@@ -1019,7 +1017,7 @@ void PC::vfunc_34(void* p)
     GameObject::vfunc_34(p);
     int nOwnerRel = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd19d0(static_cast<CDotDamageRecord*>(p)->m_nOwnerId);
     int nCasterRel = ((class Unk_PCWorld*)WorldService::GetInstance())->FUN_141bd19d0(static_cast<CDotDamageRecord*>(p)->m_nCasterId);
-    if (static_cast<CDotDamageRecord*>(p)->FUN_14175ac30() < 0)
+    if (static_cast<CDotDamageRecord*>(p)->GetTotalDamage() < 0)
     {
         State* pState = FUN_14166ccb0();
         int bNoBuff = 1;
@@ -1092,7 +1090,7 @@ void PC::vfunc_35(void* p)
         if (bReact)
             bReact = !FUN_141660120();
     }
-    if (pRecord->FUN_14175ac30() < 0 || bPush)
+    if (pRecord->GetTotalDamage() < 0 || bPush)
     {
         State* pState = FUN_14166ccb0();
         int bHit = false;
@@ -1266,9 +1264,9 @@ void PC::FUN_141653d10(MS2Ptr<CItem> spItem)
 {
     m_kListD48.Add(spItem);
     MS2SvrPtr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
-    for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
+    for (size_t i = 0; i < spData->GetModelOrEmpty()->FUN_14054b3d0(); i++)
     {
-        const ModelGroup* pGroup = spData->FUN_14053eba0()->GetGroup(i);
+        const ModelGroup* pGroup = spData->GetModelOrEmpty()->GetGroup(i);
         for (size_t j = 0; j < pGroup->FUN_1405450c0(); j++)
         {
             const ModelPart* pPart = pGroup->FUN_140544fe0(j);
@@ -1597,7 +1595,7 @@ MS2Ptr<Unk_PCBaseComp_a68> PC::vfunc_81()
     {
         if (pPlayer->FUN_1415278d0(FUN_141656a80()) == 0)
             return MS2Ptr<Unk_PCBaseComp_a68>(0);
-        if (!reinterpret_cast<Unk_PCOption*>(reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140b123b0())->m_bShowPartyHp)
+        if (!reinterpret_cast<Unk_PCOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowPartyHp)
             return MS2Ptr<Unk_PCBaseComp_a68>(0);
     }
     if (m_spA68 == 0)
@@ -1671,7 +1669,7 @@ MS2Ptr<Unk_PCBaseComp_a88> PC::vfunc_83()
 // @0x141657730
 MS2Ptr<Unk_PCLinkFD8> PC::FUN_141657730()
 {
-    if (FUN_141661970())
+    if (IsRevivalBlocked())
         return MS2Ptr<Unk_PCLinkFD8>(0);
     if (m_spFD8 == 0)
         m_spFD8 = FUN_141993100(m_unk_70);
@@ -1764,7 +1762,7 @@ int PC::vfunc_132(CItem* pItem, int nSlot, bool bForce)
             }
             else if (spData->FUN_14053d340())
             {
-                if (spData->FUN_14053eba0()->FUN_14054b450(5))
+                if (spData->GetModelOrEmpty()->FUN_14054b450(5))
                 {
                     MS2Ptr<CEquipItem> spEquip = FUN_141655c90(5);
                     if (spEquip.get())
@@ -1879,7 +1877,7 @@ MS2_REPLACE_METHOD(0x141658F70, PC, FUN_141658f70, 42, 0xE44E913E);
 unsigned char PC::FUN_141658fa0() { return m_nFF9; }
 
 // @0x141658fc0
-void PC::FUN_141658fc0(const egf::EntityID& kId) { m_entityDB0 = kId; }
+void PC::FUN_141658fc0(egf::EntityID kId) { m_entityDB0 = kId; }
 
 // @0x1416591e0
 void PC::FUN_1416591e0(int nSlot, const NiColor& kColor) { m_colorD98[nSlot] = kColor; }
@@ -2055,7 +2053,7 @@ void PC::FUN_141661840(int nSkillId, short nLevel) {}
 int PC::FUN_141661860() { return m_n1000; }
 
 // @0x141661970
-int PC::FUN_141661970()
+int PC::IsRevivalBlocked()
 {
     if (m_n10ec > 0 || m_n10f0 != 0)
         return 1;
@@ -2808,7 +2806,7 @@ MS2Ptr<Unk_PCBaseComp_a58> PC::vfunc_80()
 {
     if (((Unk_AvModeSvc*)(Unk_PCEquipConfig*)(((class Unk_PCEquipConfig*)FUN_1409f7c90())))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
-    if (!reinterpret_cast<Unk_PCOption*>(reinterpret_cast<CGameOption*>(FUN_1409a8b10())->FUN_140b123b0())->m_bShowHpBar)
+    if (!reinterpret_cast<Unk_PCOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowHpBar)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (Unk_PCLocalPlayer* pPlayer = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
@@ -4090,7 +4088,7 @@ void PC::FUN_14165cac0()
     efd::utf8string kModel;
     egf::EntityID kId = egf::EntityIDFactory::GetNextID();
     egf::EntityPtr spEntity(0);
-    int bBusy = FUN_141661970();
+    int bBusy = IsRevivalBlocked();
     if (bBusy)
         kModel = "MS2TombStoneDark";
     else
@@ -4335,7 +4333,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
         return;
     if (FUN_14166c930() == 0xc)
         return;
-    if (spRecord->FUN_14175ac30() == 0)
+    if (spRecord->GetTotalDamage() == 0)
         return;
     if (FUN_141660120() == true)
         return;
@@ -4588,7 +4586,7 @@ void PC::vfunc_143()
         }
         else if (spItem->FUN_14052a150() == 2)
             aKind2.Add(spItem);
-        else if (spItem->FUN_1405258b0())
+        else if (spItem->HasSkin())
             aOutfit.Add(spItem);
         else
             aWorn.Add(spItem);
@@ -4772,7 +4770,7 @@ void PC::FUN_141656780()
         if (spFace.get())
             spFace->FUN_1411dcd00();
     }
-    NiActorManager* pActor = PCAnim::FUN_141b6f910()->GetActorManager(FUN_14123c460());
+    NiActorManager* pActor = FUN_141b6f910()->GetActorManager(FUN_14123c460());
     if (pActor)
     {
         NiAVObject* pRoot = pActor->GetNIFRoot();

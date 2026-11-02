@@ -532,7 +532,6 @@ bool Equipment::SetEffectInfo::FUN_1411dfcf0(MS2Ptr<SetEffectInfo> spOther)
 }
 
 // @0x1411dfe00
-// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 CEquipment::CEquipment(PC* pPC)
     : m_00(0), m_04(0), m_pPC(pPC), m_slots(10), m_spCutting(0), m_48(0), m_4c(0), m_50(0), m_54(0), m_58(0),
       m_5c(false), m_bOptimize(false), m_5e(false), m_5f(false), m_64(0),
@@ -541,7 +540,7 @@ CEquipment::CEquipment(PC* pPC)
     for (int i = 0; i < 20; i++) {
         MS2Ptr<CEquipmentSlot> spSlot(new CEquipmentSlot);
         spSlot->m_nIndex = i;
-        m_slots.SetAt((Unk_EquipSlotId)spSlot->m_nIndex, spSlot);
+        m_slots.SetAt(reinterpret_cast<Unk_EquipSlotId&>(spSlot->m_nIndex), spSlot);
     }
     m_spCutting = EE_NEW CPriortyCutting(this);
     if (s_meshSuffixes.IsEmpty()) {
@@ -568,7 +567,8 @@ CEquipment::CEquipment(PC* pPC)
     }
     m_spLayerInfo.AssignRaw(new CEquipmentSlotLayerInfo(2));
     ClearAbilities();
-    m_setEffects.assign(3, MS2Ptr<Equipment::SetEffectInfo>(0));
+    MS2Ptr<Equipment::SetEffectInfo> spNone(0);
+    m_setEffects.assign(3, spNone);
 }
 
 // @0x1411e06e0
@@ -1307,7 +1307,7 @@ void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
         else
             AddVIPTag(spItem);
     }
-    for (size_t i = 0; i < spData->FUN_140527840()->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < spData->FUN_140527840()->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
         unsigned nSlot = spData->GetEquipSlot(i);
         int bCovered = 0;
         for (int j = 5; j >= 0; j--) {
@@ -1356,7 +1356,7 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
             AddVIPTag(spItem);
     }
     int nLayer = spData->FUN_14052a170();
-    for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
         unsigned nSlot = spData->GetEquipSlot(i);
         for (int j = 5; j >= 0; j--) {
             MS2Ptr<CEquipItem> spWorn = FUN_1411e1780(nSlot, j);
@@ -1745,7 +1745,7 @@ void CEquipment::FUN_1411e6b50()
     if (!spItem->FUN_1411dc7f0()->FUN_14053d070())
         return;
     Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->GetItem()->FUN_140527870());
-    CharacterDecalData* pDecal = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
+    CharacterDecalData* pDecal = spItem->FUN_1411dc7f0()->GetModelOrEmpty()->FUN_14054b6b0();
     if (pRecord->m_f60 != 0.0f) {
         FUN_14116e3f0(pMesh, pRecord->m_f58, pRecord->m_f5c, pRecord->m_f64, pRecord->m_f60,
             spItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547190(), pDecal->GetTexture(),
@@ -2144,8 +2144,8 @@ int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
     Unk_EquipItemData* pData = spItem->FUN_1411dc7f0();
     if (pData == NULL)
         return 0;
-    for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
-        const ModelGroup* pGroup = pData->FUN_14053eba0()->GetGroup(i);
+    for (size_t i = 0; i < pData->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
+        const ModelGroup* pGroup = pData->GetModelOrEmpty()->GetGroup(i);
         for (int j = 0; j < (int)pGroup->FUN_1405450c0(); j++) {
             const ModelPart* pPart = pGroup->FUN_140544fe0(j);
             if (pPart->name0.Find("_D.nif", 0) != -1)
@@ -2165,9 +2165,9 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
     if (pData == NULL)
         return;
     int nLayer = spData->FUN_14052a170();
-    for (size_t i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420a30(spData->FUN_140527840()->FUN_14053eba0()->GetGroup(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
+        int nSlot = FUN_141420a30(spData->FUN_140527840()->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
             spSlot->m_items[nLayer] = 0;
             spSlot->m_bShown[nLayer] = 0;
@@ -2189,10 +2189,10 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
     if (spItemData == 0)
         return;
     int nLayer = spData->FUN_14052a170();
-    size_t nCount = spItemData->FUN_14053eba0()->FUN_14054b3d0();
+    size_t nCount = spItemData->GetModelOrEmpty()->FUN_14054b3d0();
     for (size_t i = 0; i < nCount; i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420990(spItemData->FUN_14053eba0()->GetGroup(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
+        int nSlot = FUN_141420990(spItemData->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
         if (nSlot == 0)
             continue;
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {

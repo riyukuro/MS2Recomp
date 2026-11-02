@@ -156,7 +156,6 @@ ecr::SceneGraphService* FUN_1413f98b0();
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);            // the entity's flat model
-void FUN_140961880(egf::Entity* pEntity, unsigned nHash, float* pOut);       // get a float property
 void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 void FUN_14098f4d0(NiAVObject* pNode, bool b);
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
@@ -500,7 +499,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                 TransparencyElement* pElement = new (efd::MemHint(efd::MemHint::NONE)) TransparencyElement;
                 m_map30[pEntity] = pElement;
                 float fAlpha = 0.3f;
-                FUN_140961880(pEntity, 0x188f01c1, &fAlpha);
+                pEntity->GetPropertyValue(0x188f01c1, fAlpha);
                 pElement->m_fAlpha = fAlpha;
                 NiNode* pRoot = FUN_1413fa030(pEntity);
                 if (pRoot != 0)

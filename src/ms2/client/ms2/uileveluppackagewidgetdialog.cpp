@@ -56,6 +56,7 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/os.h"
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
 // ---- unit-local views of exe types ----
@@ -104,7 +105,7 @@ class Unk_EwSelf : public PC { };      // the job; the burning key of the player
 
 // listener registries
 UIQuestEventDispatcher* FUN_140bfc4b0();
-UIStatusEventDispatcher* FUN_140aa6d40();
+class UIStatusEventDispatcher;
 
 // quests
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -119,7 +120,7 @@ void FUN_140710590(COutPacket& packet);
 class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
 
 // the burning level-up event values
-void* FUN_140302b00();                                                  // CGameEventValueManager
+class CGameEventValueManager;
 CGameEventValueBurningLevelup* FUN_1403ed080(void* pManager);           // its burning level-up values
 bool FUN_140c0e9f0(const std::vector<ItemEntity>* pItems);              // empty
 
@@ -131,7 +132,7 @@ struct Unk_AttendKey
     int m_nId;
 };
 class Unk_AttendValue;
-class Unk_AttendIter                                        // 24 bytes; ctor 0x140420170, dtor 0x140420290
+class Unk_AttendIter                                        // 16 bytes; ctor 0x140420170, dtor 0x140420290
 {
 public:
     Unk_AttendIter();
@@ -140,9 +141,8 @@ public:
 private:
     void* m_pad_00;
     void* m_pad_08;
-    void* m_pad_10;
 };
-MS2_CHECK_SIZE(Unk_AttendIter, 0x18);
+MS2_CHECK_SIZE(Unk_AttendIter, 0x10);
 class Unk_AttendMap { public: bool FUN_140420bb0(const Unk_AttendKey& key, Unk_AttendIter& it); };
 __int64 GetServerTime();                                    // the server time
 unsigned __int64 FUN_140718370(const CStringW& strValue);   // _wtoi64
@@ -281,7 +281,7 @@ void UIEventWidgetDialog::FUN_140c59210()
         vfunc_67();
         return;
     }
-    static_cast<Unk_EwRoot*>((class AScript*)((FUN_1409ee290(&m_30))))->Invoke("setData", (class AScript const &)(data));
+    static_cast<Unk_EwRoot*>(FUN_1409ee290(&m_30))->Invoke("setData", (class AScript const &)(data));
 }
 MS2_REPLACE_METHOD(0x140C59210, UIEventWidgetDialog, FUN_140c59210, 215, 0x3AAA625C);
 
@@ -329,7 +329,7 @@ int UILevelUpPackageWidgetDialog::vfunc_65()
     if (!UIEventWidgetDialog::vfunc_65())
         return 0;
     FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C595E0, UILevelUpPackageWidgetDialog, vfunc_65, 143, 0x7328784C);
@@ -338,7 +338,7 @@ MS2_REPLACE_METHOD(0x140C595E0, UILevelUpPackageWidgetDialog, vfunc_65, 143, 0x7
 void UILevelUpPackageWidgetDialog::vfunc_67()
 {
     FUN_140bfc4b0()->FUN_141aa8850(static_cast<UIQuestEventListener*>(this));
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIEventWidgetDialog::vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140C59680, UILevelUpPackageWidgetDialog, vfunc_67, 130, 0x45BE8DFA);
@@ -488,7 +488,7 @@ int UIBurningEventWidgetDialog::vfunc_65()
 {
     if (!UIEventWidgetDialog::vfunc_65())
         return 0;
-    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C5A130, UIBurningEventWidgetDialog, vfunc_65, 90, 0xAAA1CD5C);
@@ -496,7 +496,7 @@ MS2_REPLACE_METHOD(0x140C5A130, UIBurningEventWidgetDialog, vfunc_65, 90, 0xAAA1
 // @0x140c5a190
 void UIBurningEventWidgetDialog::vfunc_67()
 {
-    FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIEventWidgetDialog::vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140C5A190, UIBurningEventWidgetDialog, vfunc_67, 77, 0x5FA855AE);
@@ -514,7 +514,7 @@ int UIBurningEventWidgetDialog::vfunc_84()
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
-    FUN_1403ed080(FUN_140302b00())->GetAll(contexts);
+    FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->GetAll(contexts);
     for (std::list<MS2Ptr<BurningLevelupContext> >::const_iterator it = contexts.begin(); it != contexts.end(); ++it) {
         MS2Ptr<BurningLevelupContext> spContext = *it;
         if (spContext == 0)
@@ -543,7 +543,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
-    FUN_1403ed080(FUN_140302b00())->GetAll(contexts);
+    FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->GetAll(contexts);
     MS2Ptr<BurningLevelupContext> spResult(0);
     for (std::list<MS2Ptr<BurningLevelupContext> >::const_iterator it = contexts.begin(); it != contexts.end(); ++it) {
         MS2Ptr<BurningLevelupContext> spContext = *it;
@@ -582,7 +582,7 @@ void UIBurningEventWidgetDialog::vfunc_86()
     void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return;
-    MS2Ptr<BurningLevelupContext> spContext = FUN_1403ed080(FUN_140302b00())->Get(m_190);
+    MS2Ptr<BurningLevelupContext> spContext = FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->Get(m_190);
     if (spContext == 0)
         return;
     if (FUN_140c0e9f0(&spContext->m_rewardItems))

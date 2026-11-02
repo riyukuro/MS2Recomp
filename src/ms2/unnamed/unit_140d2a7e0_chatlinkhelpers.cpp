@@ -109,8 +109,8 @@ CStringA FUN_140719190(int nId);
 CStringA FUN_140719530(unsigned __int64 nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strA);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1409eadb0(int nStringId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 void FUN_14028cf00(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const CStringW& strOpen, const CStringW& strClose);
 void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszDelimiters);
@@ -295,7 +295,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
 {
     CStringW strLink = FUN_140d2e6f0(spItem);
     if (nKind == 1)
-        return FUN_140632a60(0x960, strArgs, strLink);
+        return FormatStringId<CStringW, CStringW>(0x960, strArgs, strLink);
     else if (nKind == 2)
     {
         ATL::CAtlArray<CStringW> fields;
@@ -321,7 +321,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
         return FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_msg_item_open_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
     }
     else if (nKind == 4)
-        return FUN_140632a60(0xc42, strArgs, strLink);
+        return FormatStringId<CStringW, CStringW>(0xc42, strArgs, strLink);
     else if (nKind == 5)
         return FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_item_merge_chat_maxoption"), strArgs, strLink, FUN_140d2bff0(spItem));
     else if (nKind == 6)
@@ -431,7 +431,7 @@ bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW st
 // @0x140d2c2a0
 void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrLinks)
 {
-    if (reinterpret_cast<MS2Ptr<ASUIComponent>&>(spInput)->FUN_1422c76c0() == 0)
+    if (reinterpret_cast<MS2Ptr<ASUIComponent>&>(spInput)->GetFocused() == 0)
         return;
     if (arrLinks.IsEmpty())
         return;
@@ -454,13 +454,13 @@ void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrL
         }
         if (bChanged)
         {
-            reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0bd0(strHtml);
+            reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetHtmlTextW(strHtml);
             spInput->vfunc_24(true);
             CStringW strText = reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText();
             if (strText.IsEmpty())
             {
                 CStringW strEmpty(L"<Font></Font>");
-                reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0bd0(strEmpty);
+                reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetHtmlTextW(strEmpty);
                 spInput->vfunc_24(true);
             }
         }
@@ -681,7 +681,7 @@ CStringW FUN_140d2da30(MS2Ptr<CCashSaleProduct> spProduct)
     unsigned __int64 nLinkId = (unsigned)spProduct->m_n18;
     Unk_ChatLinkKind eKind = CHATLINK_BILL;
     CStringW strLink = StringFormat(L"'event:billDialog,{0},{1},{2},{3},{4}'", nLinkId, eKind, reinterpret_cast<unsigned&>(spProduct->m_data.m_n28), spProduct->m_data.m_n2c, spProduct->m_n1c);
-    return FUN_140d2ef00(CStringW(strLink), CStringW(L"#ffffff"), FUN_14052bd00(0xabf, FUN_141425950(spProduct->m_data.m_n28)));
+    return FUN_140d2ef00(CStringW(strLink), CStringW(L"#ffffff"), FormatStringId<CStringW>(0xabf, FUN_141425950(spProduct->m_data.m_n28)));
 }
 
 // The Merat Market product link (premium and UGC products).
@@ -702,7 +702,7 @@ CStringW FUN_140d2dc70(MS2Ptr<CMeratMarketProduct> spProduct)
     CStringW strLink = Unk_WcStringFormat(L"'event:searchFromMeratmarket,{0},{1},{2},{3},{4},{5},{6}'", strId, eKind, strId, nUgc, L"", nCategory, nItemId);
     int nGrade = nUgc ? spProduct->m_ugc.m_n1f8 : spProduct->m_premium.m_nGrade;
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
-    return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FUN_14052bd00(0xabe, strName));
+    return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FormatStringId<CStringW>(0xabe, strName));
 }
 
 // The item link of an item with an uid (a held item of any container, else the item name only).
@@ -803,7 +803,7 @@ CStringW FUN_140d2ec30(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
     CStringW strLink = Unk_WcStringFormat(L"'event:searchFromMeratmarket,{0},{1},{2},{3},{4},{5}'", nLinkId, eKind, strId, nZero, L"", nCategory);
     ItemGradeKey eGrade = (ItemGradeKey)spProduct->m_nGrade;
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString(eGrade);
-    return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FUN_14052bd00(0xabe, strName));
+    return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FormatStringId<CStringW>(0xabe, strName));
 }
 
 // The anchor markup of a chat link: <a href=...><FONT color=...>[name]</FONT></a>.

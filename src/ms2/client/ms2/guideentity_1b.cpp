@@ -264,7 +264,6 @@ void CGuideManager::Load()
 }
 
 // @0x14138b4d0
-// MS2-FUNCTIONAL: not byte-matched: calls and branches match the exe; the exe frame is 0x60 larger (temporaries in other slots).
 void CGuideManager::LoadFile(const CStringA& strPath)
 {
     TiXmlDocument doc;
@@ -284,16 +283,16 @@ void CGuideManager::LoadFile(const CStringA& strPath)
 
     std::vector<Unk_140165cf0*> events;
     FUN_14028faa0((struct Unk_XmlElement*)(pRoot), "event", "id", *reinterpret_cast<std::vector<struct Unk_XmlElement*>*>(&events));
-    for (unsigned i = 0; i < events.size(); i++)
+    for (size_t i = 0; i < events.size(); i++)
     {
         Unk_140165cf0* pElem = events[i];
         if (pElem == 0)
             continue;
         MS2Ptr<CGuideEntity> spEntity(new CGuideEntity);
-        if (!spEntity->Load(pElem))
-            continue;
         try
         {
+            if (!spEntity->Load(pElem))
+                continue;
             if (m_entities.Lookup(spEntity->m_nId) != 0)
                 throw std::exception("Guide Entity is Duplicated");
             m_entities.SetAt(spEntity->m_nId, spEntity);

@@ -269,8 +269,8 @@ bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bSho
 CStringW GetStringCommon(int nKey);                               // a common string by id
 CStringW GetStringCommonByKey(const CStringW& str);                    // a string by key
 CStringW BlockFormat(int nKey);                                 // a system string by id
-CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str);
-CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
+template <typename A, typename B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
+CStringW FUN_1418fec00(int nType, __int64 nValue, bool);         // money text by pay type
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // system notice
@@ -315,7 +315,7 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSceneId();
 };
-UIShopDialog* FUN_140534780(int nUIType);                       // the shop dialog (refreshes it)
+template <class T> T* Unk_BreakDialog(int nUIType);              // the shop dialog (refreshes it)
 int FUN_1406a50b0(Unk_MeratProductMap& map);                    // meratmarketbasketinfo.cpp: the product count
 // UIMeratMarketCommon (uimeratmarketcommon.cpp): purchase checks.
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
@@ -1424,14 +1424,14 @@ void CMeratMarketMan::FinishPendingPurchases(int bCancel)
                         m_b2d8 = true;
                     if (!strFail.IsEmpty())
                         strFail += L"\n";
-                    strFail += StringFormat(strFailFormat, strName, FUN_1418fec00(spBuy->vfunc_3(), spBuy->vfunc_2(), 0),
+                    strFail += StringFormat(strFailFormat, strName, FUN_1418fec00(spBuy->vfunc_3(), spBuy->vfunc_2(), false),
                                             GetPurchaseErrorText(spBuy->m_nState, spBuy));
                     nFailed++;
                 }
                 else {
                     if (!strOk.IsEmpty())
                         strOk += L"\n";
-                    strOk += StringFormat(strOkFormat, strName, FUN_1418fec00(spBuy->vfunc_3(), spBuy->vfunc_2(), 0));
+                    strOk += StringFormat(strOkFormat, strName, FUN_1418fec00(spBuy->vfunc_3(), spBuy->vfunc_2(), false));
                 }
             }
         }
@@ -1515,7 +1515,7 @@ void CMeratMarketMan::QueuePurchase(MS2Ptr<CPendingBuyBase> spBuy, int nBuyType)
 void CMeratMarketMan::GetShopDialogIfShopBuy()
 {
     if (m_n2a8 == 4)
-        UIShopDialog* pDialog = FUN_140534780(0x4e3b);
+        UIShopDialog* pDialog = Unk_BreakDialog<UIShopDialog>(0x4e3b);
 }
 
 // @0x140d59970
@@ -1705,7 +1705,7 @@ CStringW CMeratMarketMan::GetPurchaseErrorText(int nError, MS2Ptr<CPendingBuyBas
     case 0xb5:
         return GetStringCommonByKey(L"s_meratmarket_error_buy_limit_job");
     case 0xb6:
-        return FUN_140a228f0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_pcBangLevel)->Get(), BlockFormat(0x5a7));
+        return FUN_14028dee0<int, CStringW>(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_pcBangLevel)->Get(), BlockFormat(0x5a7));
     case 0xb7:
         return GetStringCommonByKey(L"s_meratmarket_error_buy_not_pcbang");
     case 0xb8:
@@ -2715,7 +2715,7 @@ void CMeratMarketMan::RefreshAfterBuyFailure(CMeratMarketPacket::BuyPacket& buy,
         if (nError == 0x9d) {
             int nPremiumId = key.m_nPremiumId;
             if (m_n2a8 == 4) {
-                UIShopDialog* pShop = FUN_140534780(0x4e3b);
+                UIShopDialog* pShop = Unk_BreakDialog<UIShopDialog>(0x4e3b);
                 if (pShop != 0)
                     pShop->StartMeratItem(nPremiumId);
             }
@@ -2910,7 +2910,7 @@ void CMeratMarketMan::OnErrorReply(CInPacket& packet)
     }
         break;
     case 0xb6:
-        FUN_1412751f0(FUN_140a228f0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_pcBangLevel)->Get(), BlockFormat(0x5a7)), 1, 1);
+        FUN_1412751f0(FUN_14028dee0<int, CStringW>(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MmConfig*)FUN_1401d3200())->m_pcBangLevel)->Get(), BlockFormat(0x5a7)), 1, 1);
         break;
     case 0xbc:
         break;

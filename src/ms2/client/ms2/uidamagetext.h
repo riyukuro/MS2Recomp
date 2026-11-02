@@ -109,7 +109,7 @@ public:
     float FUN_141913b80(const NiPoint3& kPos);
     int FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId);                  // the number is shown (battle options)
     int FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CString& strNode);    // anchor position of a target
-    int FUN_1419140f0(GameObject* pTarget, int& nIndex, CounterMap& map);
+    int GetCounterIndex(GameObject* pTarget, int& nIndex, CounterMap& map);
     int FUN_1419141a0(GameObject* pTarget);                                            // within the show distance
     int GetTargetKind(GameObject* pTarget);                                             // 0 npc-like, 1 player
     CString GetTargetKindName(int nTargetKind, bool bUser);                                 // "Monster" / "User"

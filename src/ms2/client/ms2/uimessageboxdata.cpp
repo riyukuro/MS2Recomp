@@ -59,9 +59,6 @@ extern CString DAT_143af3e30;
 // The check box / text input controls of the movie ("m_checkbox0", "m_textInput").
 class Unk_MsgDisplay : public ASDisplayObject
 {
-public:
-    int FUN_1422c1530();                                            // height
-    void FUN_1422c0f60(float* pX, float* pY);                       // position
 };
 class Unk_MsgCheck : public ASButton
 {
@@ -86,16 +83,15 @@ void FUN_141415600(const CString& strName);
 int FUN_14151f9c0();                                                // the modaless setting
 class Unk_MsgPopup : public UISwfEntity { };
 class UIMessageBox* FUN_14151fcb0(int);   // C3: was FUN_14151fcb0
-class Unk_MsgColors { public: int FUN_1405569f0(int nColor); };
 
-CFeatureManager* FUN_140166410();
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class Unk_140166410* FUN_140166410();
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 GFxManager* FUN_14025e7a0();
 class Unk_MsgOption { public: int* FUN_1402056b0(); char m_pad[0x58]; };
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-class Unk_MsgPad { public: int FUN_140d8ee40(); };
-Unk_MsgPad* FUN_140a58540();
+class MS2InputService { public: int FUN_140d8ee40() const; };   // C3: member view
+MS2InputService* FUN_140a58540();
 
 class Unk_ClubBuffData : public CPtred
 {
@@ -115,9 +111,6 @@ Unk_ClubBuffTable* FUN_140b1a4e0();
 // The AS array push helpers (an AS array is built from objects and strings), and the int-valued AS object setter.
 class Unk_MsgASArray : public ASArray
 {
-public:
-    void FUN_1422bbf00(const ASObj& obj);                           // push an object
-    void FUN_1422bbf70(const char* szValue);                        // push a string
 };
 class Unk_MsgASObj : public ASObj
 {
@@ -252,14 +245,14 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         obj.FUN_1407cbb20("hyperLinkTitle", m_strLinkTitle);
         obj.FUN_1407cba60("hyperLinkUrl", m_strLinkUrl);
     }
-    if (FUN_140166410()->FUN_14036d710(0x61))
+    if (((CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61))
         obj.FUN_1407cbbe0("rbmerat", true);
     if (!m_values.empty())
     {
         for (std::map<CString, Scaleform::GFx::Value>::iterator it = m_values.begin(); it != m_values.end(); it++)
             obj.FUN_1409adbe0(it->first, it->second);
     }
-    FUN_141a051e0(obj);
+    FillObjByType(obj);
     return 1;
 }
 
@@ -306,7 +299,7 @@ int CMsgBoxData::IsTimerExpired() const
 int CMsgBoxData::FUN_141a04a30()
 {
     if (HasCallback())
-        return FUN_141a014d0(1, &m_movie);
+        return InvokeCallback(1, &m_movie);
 }
 #pragma warning(pop)
 
@@ -373,7 +366,7 @@ void FUN_141a04f80(MS2Ptr<Unk_MsgDisplay> spBox)
         stage.x = (float)spBox->FUN_1422c1500();
         stage.y = (float)spBox->FUN_1422c1530();
         Unk_MsgPoint2& pos = g_messageBoxState.m_pos;
-        spBox->FUN_1422c0f60(&pos.x, &pos.y);
+        spBox->GetPosition(&pos.x, &pos.y);
         g_messageBoxState.m_bSaved = 1;
     }
 }
@@ -430,15 +423,15 @@ void CMsgBoxData::FUN_141a050b0()
 }
 
 // @0x141a051e0
-void CMsgBoxData::FUN_141a051e0(ASObj& obj)
+void CMsgBoxData::FillObjByType(ASObj& obj)
 {
     switch (m_nType)
     {
     case 0x14:
-        FUN_141a05380(obj);
+        FillCharProfileObj(obj);
         break;
     case 0x15:
-        FUN_141a05470(obj);
+        FillGroupObj(obj);
         break;
     case 0x16:
         FUN_141a05540(obj);
@@ -446,18 +439,18 @@ void CMsgBoxData::FUN_141a051e0(ASObj& obj)
     case 0x1b:
     case 0x1c:
     case 0x1f:
-        FUN_141a056f0(obj);
+        WriteAgreement(obj);
         break;
     case 0x1d:
-        FUN_141a05730(obj);
+        WriteRetraction(obj);
         break;
     case 0x20:
     case 0x24:
     case 0x26:
-        FUN_141a05770(obj);
+        FillBuffObj(obj);
         break;
     case 0x1e:
-        FUN_141a058c0(obj);
+        FillUgcNoticeObj(obj);
         break;
     case 0x21:
         FUN_141a05930(obj);
@@ -467,19 +460,19 @@ void CMsgBoxData::FUN_141a051e0(ASObj& obj)
         break;
     case 0x25:
         FUN_141a05f30(obj);
-        FUN_141a05770(obj);
+        FillBuffObj(obj);
         break;
     case 6:
-        FUN_141a06250(obj);
+        FillInputSelectList(obj);
         break;
     case 0xf:
-        FUN_141a063e0(obj);
+        FillTwoLabelObj(obj);
         break;
     }
 }
 
 // @0x141a05380
-void CMsgBoxData::FUN_141a05380(ASObj& obj)
+void CMsgBoxData::FillCharProfileObj(ASObj& obj)
 {
     obj.FUN_1407cbb20("charName", m_strCharName);
     obj.FUN_1407cbb20("charDetail", m_strCharDetail);
@@ -487,7 +480,7 @@ void CMsgBoxData::FUN_141a05380(ASObj& obj)
 }
 
 // @0x141a05470
-void CMsgBoxData::FUN_141a05470(ASObj& obj)
+void CMsgBoxData::FillGroupObj(ASObj& obj)
 {
     CStringW strGroupName = FUN_141a02fd0(0, CStringW());
     int nAlpha = FUN_141a02e50(1, 0);
@@ -505,26 +498,26 @@ void CMsgBoxData::FUN_141a05540(ASObj& obj)
         {
             ASObj row(2);
             row.FUN_1407cbb20(DAT_143af3e28, m_choices.m_list.GetAt(pos));
-            list.FUN_1422bc050(row.FUN_1422bb870());
+            list.PushValue(row.FUN_1422bb870());
         }
         obj.FUN_1409adbe0("dropdownList", list.FUN_1422bb870());
     }
 }
 
 // @0x141a056f0
-void CMsgBoxData::FUN_141a056f0(ASObj& obj)
+void CMsgBoxData::WriteAgreement(ASObj& obj)
 {
     obj.FUN_1407cbbe0("agreement", m_bAgreement);
 }
 
 // @0x141a05730
-void CMsgBoxData::FUN_141a05730(ASObj& obj)
+void CMsgBoxData::WriteRetraction(ASObj& obj)
 {
     obj.FUN_1407cb9c0("retraction", m_nRetraction);
 }
 
 // @0x141a05770
-void CMsgBoxData::FUN_141a05770(ASObj& obj)
+void CMsgBoxData::FillBuffObj(ASObj& obj)
 {
     MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_buff.m_nId, m_buff.m_nLevel);
     if (spAttr.get() != 0)
@@ -536,7 +529,7 @@ void CMsgBoxData::FUN_141a05770(ASObj& obj)
 }
 
 // @0x141a058c0
-void CMsgBoxData::FUN_141a058c0(ASObj& obj)
+void CMsgBoxData::FillUgcNoticeObj(ASObj& obj)
 {
     obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption30.FUN_1402056b0());
     obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption88.FUN_1402056b0());
@@ -545,13 +538,13 @@ void CMsgBoxData::FUN_141a058c0(ASObj& obj)
 // @0x141a05930
 void CMsgBoxData::FUN_141a05930(ASObj& obj)
 {
-    CStringW strEnable = FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_enable");
-    if (FUN_140166410()->FUN_14036d570(0x38) == true)
-        strEnable += FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_enable_repacking");
-    CStringW strDisable = FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_disable");
-    if (FUN_140166410()->FUN_14036d570(0x2e) == true)
-        strDisable += FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_disable_socket");
-    strDisable += FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
+    CStringW strEnable = FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_enable");
+    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x38) == true)
+        strEnable += FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_enable_repacking");
+    CStringW strDisable = FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_disable");
+    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
+        strDisable += FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_disable_socket");
+    strDisable += FUN_14025e7a0()->Localize("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
     CStringW strDesc = StringFormat<CStringW, CStringW>(L"{0}\n\n{1}", strEnable, strDisable);
     obj.FUN_1407cbb20("itemLockConfirmDesc", strDesc);
 }
@@ -603,34 +596,34 @@ void CMsgBoxData::FUN_141a05f30(ASObj& obj)
             row.FUN_1409c48f0("level", nLevel);
             row.FUN_1407cba60("buffIcon", spAttr->GetIcon());
             row.FUN_1407cbb20(DAT_143af3e28, strName);
-            list.FUN_1422bc050(row.FUN_1422bb870());
+            list.PushValue(row.FUN_1422bb870());
         }
     }
     obj.FUN_1409adbe0("dropdownList", list.FUN_1422bb870());
 }
 
 // @0x141a06250
-void CMsgBoxData::FUN_141a06250(ASObj& obj)
+void CMsgBoxData::FillInputSelectList(ASObj& obj)
 {
     if (!m_args.IsEmpty())
         obj.FUN_1407cbb20(DAT_143af3e30, m_args[0]);
     ASArray list(2);
-    ((Unk_MsgASArray&)list).FUN_1422bbf70("$s_gameoption_input_select_keyboard");
-    if (FUN_140166410()->FUN_14036d570(0xb5) == true)
+    ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_keyboard");
+    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
     {
         int nPad = FUN_140a58540()->FUN_140d8ee40();
         if (nPad == 1)
-            ((Unk_MsgASArray&)list).FUN_1422bbf70("$s_gameoption_input_select_xbox");
+            ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_xbox");
         else if (nPad == 2)
-            ((Unk_MsgASArray&)list).FUN_1422bbf70("$s_gameoption_input_select_ps");
+            ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_ps");
         else if (nPad == 3)
-            ((Unk_MsgASArray&)list).FUN_1422bbf70("$s_gameoption_input_select_steam");
+            ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_steam");
     }
     obj.FUN_1409adbe0("inputList", list.FUN_1422bb870());
 }
 
 // @0x141a063e0
-void CMsgBoxData::FUN_141a063e0(ASObj& obj)
+void CMsgBoxData::FillTwoLabelObj(ASObj& obj)
 {
     CStringW strLabel1 = m_args[0];
     CStringW strLabel2 = m_args[1];
@@ -657,7 +650,7 @@ void CMsgBoxDataItem::FUN_141a06630(const CStringW& strName, bool bColor, int nC
     m_strName = strName;
     if (bColor)
     {
-        int nRgb = reinterpret_cast<Unk_MsgColors*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405569f0(nColor);
+        int nRgb = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nColor);
         m_strName = FUN_14183e930(strName, nRgb);
     }
 }
@@ -902,19 +895,19 @@ MS2_REPLACE_METHOD(0x141A04AA0, CMsgBoxData, IsCheckbox0Checked, 374, 0xD9CE5F6D
 MS2_REPLACE_METHOD(0x141A04C20, CMsgBoxData, IsCheckbox1Checked, 374, 0xCBD40F82);
 MS2_REPLACE_METHOD(0x141A04DA0, CMsgBoxData, FUN_141a04da0, 473, 0x68010C21);
 MS2_REPLACE_METHOD(0x141A050B0, CMsgBoxData, FUN_141a050b0, 239, 0xC461D7FD);
-MS2_REPLACE_METHOD(0x141A051E0, CMsgBoxData, FUN_141a051e0, 317, 0x8B701FF3);
-MS2_REPLACE_METHOD(0x141A05380, CMsgBoxData, FUN_141a05380, 223, 0x41624052);
-MS2_REPLACE_METHOD(0x141A05470, CMsgBoxData, FUN_141a05470, 199, 0xC97B9BBC);
+MS2_REPLACE_METHOD(0x141A051E0, CMsgBoxData, FillObjByType, 317, 0x8B701FF3);
+MS2_REPLACE_METHOD(0x141A05380, CMsgBoxData, FillCharProfileObj, 223, 0x41624052);
+MS2_REPLACE_METHOD(0x141A05470, CMsgBoxData, FillGroupObj, 199, 0xC97B9BBC);
 MS2_REPLACE_METHOD(0x141A05540, CMsgBoxData, FUN_141a05540, 415, 0xD1D45854);
-MS2_REPLACE_METHOD(0x141A056F0, CMsgBoxData, FUN_141a056f0, 49, 0x2753803B);
-MS2_REPLACE_METHOD(0x141A05730, CMsgBoxData, FUN_141a05730, 48, 0x4B92E680);
-MS2_REPLACE_METHOD(0x141A05770, CMsgBoxData, FUN_141a05770, 320, 0x04D3E35E);
-MS2_REPLACE_METHOD(0x141A058C0, CMsgBoxData, FUN_141a058c0, 97, 0x9877B99C);
+MS2_REPLACE_METHOD(0x141A056F0, CMsgBoxData, WriteAgreement, 49, 0x2753803B);
+MS2_REPLACE_METHOD(0x141A05730, CMsgBoxData, WriteRetraction, 48, 0x4B92E680);
+MS2_REPLACE_METHOD(0x141A05770, CMsgBoxData, FillBuffObj, 320, 0x04D3E35E);
+MS2_REPLACE_METHOD(0x141A058C0, CMsgBoxData, FillUgcNoticeObj, 97, 0x9877B99C);
 MS2_REPLACE_METHOD(0x141A05930, CMsgBoxData, FUN_141a05930, 653, 0x5806077E);
 MS2_REPLACE_METHOD(0x141A05BD0, CMsgBoxData, FUN_141a05bd0, 849, 0xE5ECF5D2);
 MS2_REPLACE_METHOD(0x141A05F30, CMsgBoxData, FUN_141a05f30, 784, 0x0A52D0DA);
-MS2_REPLACE_METHOD(0x141A06250, CMsgBoxData, FUN_141a06250, 379, 0x767DA9E5);
-MS2_REPLACE_METHOD(0x141A063E0, CMsgBoxData, FUN_141a063e0, 245, 0xCDB086A7);
+MS2_REPLACE_METHOD(0x141A06250, CMsgBoxData, FillInputSelectList, 379, 0x767DA9E5);
+MS2_REPLACE_METHOD(0x141A063E0, CMsgBoxData, FillTwoLabelObj, 245, 0xCDB086A7);
 MS2_REPLACE_METHOD(0x141A07140, CMsgBoxData, GetStringArg, 153, 0x45E471F0);
 MS2_REPLACE_METHOD(0x141A071E0, CMsgBoxData, GetBoolArg, 103, 0xC313FF72);
 MS2_REPLACE_METHOD(0x141A06630, CMsgBoxDataItem, FUN_141a06630, 161, 0x524A9354);

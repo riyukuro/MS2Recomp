@@ -59,7 +59,7 @@ class Unk_MiWorld
 public:
     Unk_MiPlayer* FUN_141bd0cc0();                          // the local player
     MS2Ptr<CPortal> FUN_141bc2800(unsigned nId);
-    struct Unk_PCEntListPtr FUN_141bd0420(unsigned nKey);
+
 };
 Unk_MiActionState* Unk_PlayerActionState(Unk_MiPlayer* pPlayer);
 class Unk_ActionKeyManager   // C3: member view for the former free stand-ins
@@ -84,7 +84,7 @@ void* FUN_140967100();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141b211d0();
+    int IsTalkIntervalElapsed();
     void SendNpcTalkMode0();
 };
 int FUN_140855d10(int);   // C3: was FUN_140855d10
@@ -181,11 +181,11 @@ Unk_NpcNode* Unk_NpcTree::Successor(Unk_NpcNode* p)
 
 
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PCEntList;
-struct Unk_PCEntListPtr                                     // smart pointer to the model list, pc.cpp's view
+struct Unk_WsC_TagPtr                                     // smart pointer to the model list, pc.cpp's view
 {
     void* m_pVt;
     Unk_PCEntList* m_p;
-    ~Unk_PCEntListPtr();                                    // 0x1409f20e0
+    ~Unk_WsC_TagPtr();                                    // 0x1409f20e0
     Unk_PCEntList* operator->() const;                      // 0x1409f2190
 };
 
@@ -315,7 +315,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
     int bHold = 1;
     if (((class CGuideManager*)(void*)(((void*)FUN_1409331e0())))->IsRestricted(2) != 0)
         bTalk = 0;
-    if (((class UITalkManager*)(void*)(FUN_140967100()))->FUN_141b211d0() == 0)
+    if (((class UITalkManager*)(void*)(FUN_140967100()))->IsTalkIntervalElapsed() == 0)
         bTalk = 0;
     if (((class PCBase*)(struct Unk_MiPlayer*)(pPlayer))->FUN_14166c930() == 0x20)
         bHold = 0;
@@ -529,7 +529,7 @@ int CMouseInteractDynamicModel::vfunc_3()
 // @0x140a7a8e0
 void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
-    Unk_PCEntListPtr it = reinterpret_cast<Unk_MiWorld*>(WorldService::GetInstance())->FUN_141bd0420(m_dwModelKey);
+    Unk_WsC_TagPtr it = WorldService::GetInstance()->FUN_141bd0420(m_dwModelKey);
     for (POSITION pos = it->GetHeadPosition(); pos != 0; it->GetNext(pos)) {
         efd::SmartPointer<egf::Entity> ref = it->GetAt(pos);
         NiPoint3 vPos = *reinterpret_cast<NiPoint3*>(&DAT_143b01a60);

@@ -69,6 +69,11 @@ public:
     void FUN_1422c1fe0(unsigned int nEnabled);
 };
 
+class ASCoreList   // C3: member view (ascorelist.h clashes with asdropdownmenu.h)
+{
+public:
+    void FUN_1422dd1d0();                                           // remove every entry
+};
 // The list control of the convenient panel.
 class Unk_HiList : public AScript
 {
@@ -80,7 +85,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd1d0();                                           // clear
     void FUN_1422dd230(const ASObj& row);                           // append a row
 };
 // The convenient panel (balance buttons and the visitors list).
@@ -164,7 +168,6 @@ class Unk_HiMapPtr
 {
 public:
     ~Unk_HiMapPtr();                                                // 0x1408850f0
-    bool FUN_140965240(int n);
 private:
     void* m_pad_00;
     void* m_p;
@@ -187,14 +190,6 @@ struct Unk_HiConstTable
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_bank, 0x66d0);
 MS2_CHECK_OFFSET(Unk_HiConstTable, m_doctor, 0x67e0);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-
-// The UI manager.
-class Unk_HiUiMgr
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
-    void FUN_141adc530(int nId);                                    // show
-};
 
 class UISystemMenuDialog : public UIObject
 {
@@ -227,7 +222,7 @@ void FUN_140710590(COutPacket& packet);
 CString FUN_14016a600(const wchar_t* psz, int n);
 CStringW GetStringCommon(int nId);
 CStringW FUN_1409404f0(__int64 n);
-CStringW FUN_140811740(int nId, const int& a, const int& b);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
 int FUN_1412772f0(__int64 nValue, int bGrouped);
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
@@ -382,7 +377,7 @@ void UIHomeInfoDialog::FUN_1412c5690()
     if (pPc == 0)
         return;
     Unk_HiMapPtr spMap = reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (spMap.FUN_140965240(0) != 0)
+    if (reinterpret_cast<MS2Ptr<class CFieldDataCli>*>(&spMap)->operator==(0))
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
@@ -454,7 +449,7 @@ void UIHomeInfoDialog::FUN_1412c6070()
         {
             int nMax = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3430();
             int nCur = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c33f0();
-            spText->FUN_1422c4cd0(FUN_140811740(0x25, nCur, nMax));
+            spText->FUN_1422c4cd0(FormatStringId<int, int>(0x25, nCur, nMax));
         }
     }
 }
@@ -503,7 +498,7 @@ void UIHomeInfoDialog::FUN_1412c66c0()
             spService->FUN_1410d5930((Unk_CMISTree<0x11e>*)&ids);
             if (MS2Ptr<Unk_HiList> spList = spConv->FUN_140bc7280("m_scrollingList"))
             {
-                spList->FUN_1422dd1d0();
+                reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();   // C3: the real ASCoreList method
                 if (ids.empty())
                 {
                     spConv->vfunc_4(FUN_140930c50());
@@ -872,10 +867,10 @@ unsigned int UIHomeInfoDialog::FUN_1412c8280()
 // @0x1412c8470
 UISystemMenuDialog* FUN_1412c8470()
 {
-    Unk_HiUiMgr* pMgr = reinterpret_cast<Unk_HiUiMgr*>(TSingleton<CUIService>::GetInstance());
+    CUIService* pMgr = TSingleton<CUIService>::GetInstance();
     if (pMgr == 0)
         return 0;
-    MS2Ptr<UIObject> spMenu = pMgr->FUN_141adcea0(FUN_1412c8960());
+    MS2Ptr<UIObject> spMenu = pMgr->FindObject((eUIClassID)FUN_1412c8960());
     if (spMenu.IsNull())
         return 0;
     return dynamic_cast<UISystemMenuDialog*>((UIObject*)spMenu);

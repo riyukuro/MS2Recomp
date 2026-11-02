@@ -84,7 +84,7 @@ UIBillDialog* FUN_140f0a350(int nUiId);
 class Unk_WrUIManager { public: void FUN_141adc530(int nUiId); };   // open a dialog
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_1409404f0(__int64 n);                              // a number with digit grouping
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);  // string table text with one argument
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized string
 
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned long long n);
@@ -321,7 +321,7 @@ void UIWeddingHallReservationDialog::SetTime(__int64 nTime)
 MS2_REPLACE_METHOD(0x140fdc130, UIWeddingHallReservationDialog, SetTime, 28, 0x9BD0B3F6);
 
 // @0x140fdc160
-void UIWeddingHallReservationDialog::SetNight(unsigned char bNight)
+void UIWeddingHallReservationDialog::SetNight(bool bNight)
 {
     m_bNight = bNight;
 }
@@ -347,12 +347,12 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
         GetStringCommonByKey(StringFormat(L"s_wedding_reservation_hall_bill_category_grade_{0}", spHall->m_nGrade)));
     CStringW strDetail =
         CStringTable::GetInstance()->FUN_141811980(3, spHall->FUN_140906e40(FUN_140900f30(m_nTime)));
-    CStringW strPrice = FUN_14052bd00(0x987, FUN_1409404f0(spHall->m_nMerat));
+    CStringW strPrice = FormatStringId<CStringW>(0x987, FUN_1409404f0(spHall->m_nMerat));
     ASArray rows(2);
     ASObj row(2);
     ((class AScript&)(row)).FUN_1407cbb20("detail", strDetail);
     ((class AScript&)(row)).FUN_1407cbb20("strPrice", strPrice);
-    rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+    rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("list", Scaleform::GFx::Value(rows.FUN_1422bb870()));
     spBill->m_18 = static_cast<IMessageListener*>(this);
     spBill->m_30 = 3;
@@ -402,7 +402,7 @@ __int64 UIWeddingHallReservationDialog::GetTime()
 MS2_REPLACE_METHOD(0x140fdca40, UIWeddingHallReservationDialog, GetTime, 18, 0x7817FBF0);
 
 // @0x140fdca60
-unsigned char UIWeddingHallReservationDialog::GetNight()
+bool UIWeddingHallReservationDialog::GetNight()
 {
     return m_bNight;
 }

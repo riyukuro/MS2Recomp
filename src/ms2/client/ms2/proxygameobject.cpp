@@ -12,6 +12,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/questdatatable.h"
 #include "ms2/client/ms2/mypc.h"
+#include "ms2/commonfiles/ugcmapdata.h"
+#include "ms2/client/ms2/npcdatacli.h"
+#include <efd/ISystemService.h>
 #include <egf/FlatModel.h>
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
@@ -43,7 +46,16 @@ class EntityWorldManager   // C3: member view for the former free stand-ins
 public:
     class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
 };
-Unk_ProxyTarget* FUN_140965960(Unk_ProxyHandle18* h);
+class Unk_AkoPortal;
+template <> Unk_AkoPortal* MS2Ptr<Unk_AkoPortal>::operator->() const;
+template <> MS2Ptr<Unk_AkoPortal>& MS2Ptr<Unk_AkoPortal>::operator=(int);
+class Unk_AkoNpcData;
+template <> Unk_AkoNpcData* MS2Ptr<Unk_AkoNpcData>::operator->() const;
+class Unk_NpcData;
+template <> MS2Ptr<Unk_NpcData>& MS2Ptr<Unk_NpcData>::operator=(int);
+template <> MS2Ptr<Unk_NpcData>& MS2Ptr<Unk_NpcData>::operator=(const MS2Ptr<Unk_NpcData>&);
+template <> Unk_NpcData* MS2Ptr<Unk_NpcData>::get() const;
+class Unk_IntTriple { public: void Clear(); int Sum(); };
 
 class Unk_Tbl1403ed2d0 { };                                         // object table
 class Unk_PosObject                                                 // MS2: slot 18 is GetPosition
@@ -59,45 +71,8 @@ public:
 
 
 CStringW FUN_1401aa6a0(int id);
-class Unk_Entry140965990 { };
-Unk_Entry140965990* FUN_140965990(const Unk_ProxyHandle28& h);
-unsigned char FUN_140a7c8d0(Unk_Entry140965990* e);
-
-class Unk_Tbl141bd0cc0 : public MyPC { };
-CStringW* FUN_141656d90(Unk_Tbl141bd0cc0* t);
-
-class Unk_Data1401cc : public CBuddy
-{
-public:
-};
-class Unk_Handle97a
-{
-public:
-    ~Unk_Handle97a();                                               // 0x140979fc0
-    Unk_Data1401cc* FUN_14097a1e0();
-    void* m_pad_00;
-    void* m_pad_08;
-};
-class Unk_Svc97a780 { public: Unk_Handle97a FUN_140ae4880(void* key); };
-
-class Unk_Ptr1401cd040                                              // CComPtrBase<> local
-{
-public:
-    Unk_Ptr1401cd040(void* p);
-    ~Unk_Ptr1401cd040();                                            // 0x1401cd150
-    void* m_p;
-};
+class Unk_Service6100017 : public efd::ISystemService { };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-class Unk_Local1408ad110                                            // 192-byte working struct
-{
-public:
-    Unk_Local1408ad110();                                           // 0x1408ad110
-    ~Unk_Local1408ad110();                                          // 0x14050de70
-    void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
-    void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
-    void* m_80; void* m_88; void* m_90; void* m_98; void* m_a0; void* m_a8; void* m_b0; void* m_b8;
-};
-MS2_CHECK_SIZE(Unk_Local1408ad110, 0xc0);
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 class CAddressTable   // C3: static member view for the former free stand-ins
 {
@@ -105,9 +80,7 @@ public:
     static CStringW FormatChecked(int, int, int, CStringW);
 };
 
-class Unk_Svc6d6e90 { public: Unk_ProxyHandle28 FUN_140a7cab0(int id); };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
-class Unk_Svc7476c0 { public: unsigned char FUN_14074e030(int id); };
 class Unk_Svc764020 { };
 void* FUN_140764020();   // C3: was FUN_140764020
 class CQuestManager   // C3: member view for the former free stand-ins
@@ -126,8 +99,8 @@ public:
 // @0x1416c1cc0
 CProxyGameObject::CProxyGameObject()
 {
-    m_18.FUN_140964ff0(0);
-    m_28.FUN_140a4fe90(0);
+    reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18) = 0;
+    reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28) = 0;
     m_proxyId = 0;
     m_40 = 0;
     m_48 = 0;
@@ -145,7 +118,7 @@ CProxyGameObject::CProxyGameObject()
     m_c8 = 0;
     m_7c = 0;
     m_cc = 0;
-    m_d0.FUN_140267bd0();
+    reinterpret_cast<Unk_IntTriple&>(m_d0).Clear();
     m_a4 = 1;
     m_e0 = 0;
     m_e4 = 0;
@@ -154,8 +127,8 @@ CProxyGameObject::CProxyGameObject()
 // @0x1416c1f00
 CProxyGameObject::~CProxyGameObject()
 {
-    m_18.FUN_140964ff0(0);
-    m_28.FUN_140a4fe90(0);
+    reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18) = 0;
+    reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28) = 0;
 }
 
 // @0x1416c1ff0
@@ -216,12 +189,12 @@ int CProxyGameObject::FUN_1416c2110()
     if (FUN_1416c20d0() == 0) {
         return 0;
     }
-    Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(*(class egf::EntityID const*)(&FUN_140965960(&m_18)->m_key)));
+    Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FUN_1411cf440(*(class egf::EntityID const*)(&reinterpret_cast<Unk_ProxyTarget*>(reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18).operator->())->m_key)));
     if (ent != 0) {
         if (((class egf::FlatModel*)((egf::Entity*)(class Unk_Entity1411cf440*)(ent))->GetModel())->ContainsModel(0x7b35ceec)) {
             return 1;
         }
-        if (FUN_140965960(&m_18)->m_160 == 8) {
+        if (reinterpret_cast<Unk_ProxyTarget*>(reinterpret_cast<MS2Ptr<Unk_AkoPortal>&>(m_18).operator->())->m_160 == 8) {
             return 1;
         }
     }
@@ -316,7 +289,7 @@ CStringW CProxyGameObject::FUN_1416c23b0()
     if (FUN_1416c2090() != 0) {
         {
             CStringW name = FUN_1401aa6a0(m_78);
-            bool found = (!name.IsEmpty() && FUN_140a7c8d0(FUN_140965990(FUN_1416c2220())) != 0);
+            bool found = (!name.IsEmpty() && reinterpret_cast<NpcDataCli*>(reinterpret_cast<const MS2Ptr<Unk_AkoNpcData>&>((const Unk_ProxyHandle28&)FUN_1416c2220()).operator->())->GetNametag() != 0);
             if (found) {
                 return name;
             }
@@ -339,7 +312,7 @@ MS2_REPLACE_METHOD(0x1416C2520, CProxyGameObject, FUN_1416c2520, 66, 0x998DDC8A)
 CStringW CProxyGameObject::FUN_1416c2570()
 {
     if (FUN_1416c1ff0() != 0) {
-        return *FUN_141656d90(((class Unk_Tbl141bd0cc0*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FUN_141bd0cc0()));
+        return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0())->FUN_141656d90();
     }
     return m_60;
 }
@@ -349,22 +322,22 @@ MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, FUN_1416c2570, 133, 0x325768ED
 CStringW CProxyGameObject::FUN_1416c2600()
 {
     if (FUN_1416c1ff0() != 0) {
-        return ((class Unk_Tbl141bd0cc0*)((class WorldService*)(class Unk_Tbl1403ed2d0*)(reinterpret_cast<Unk_Tbl1403ed2d0*>(WorldService::GetInstance())))->FUN_141bd0cc0())->GetHomeAddress();
+        return reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0())->GetHomeAddress();
     } else {
         {
-            Unk_Handle97a h = reinterpret_cast<Unk_Svc97a780*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4880(reinterpret_cast<void*>(m_40));
-            if (((void*)((Unk_BuddyPtr<CBuddy>*)(Unk_Handle97a*)&(h))->get()) != 0) {
-                m_b4 = ((CBuddy*)(Unk_Data1401cc*)(h.FUN_14097a1e0()))->FUN_1401cc3e0();
-                m_c0 = h.FUN_14097a1e0()->FUN_1401cc350();
-                m_b8 = h.FUN_14097a1e0()->FUN_1401cc3a0();
-                m_bc = h.FUN_14097a1e0()->FUN_1401cc3c0();
+            Unk_BuddyPtr<CBuddy> h = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(m_40);
+            if (((void*)h.get()) != 0) {
+                m_b4 = h.operator->()->FUN_1401cc3e0();
+                m_c0 = h.operator->()->FUN_1401cc350();
+                m_b8 = h.operator->()->FUN_1401cc3a0();
+                m_bc = h.operator->()->FUN_1401cc3c0();
             }
         }
         if (m_b4 > 0) {
-            Unk_Ptr1401cd040 ptr(((void*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
-            Unk_Local1408ad110 work;
+            efd::SmartPointer<Unk_Service6100017> ptr(FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+            Unk_UGCGroup work;
             CStringW unused;
-            if (FUN_1408a0d30(m_b8, *(struct Unk_UGCGroup*)(&work), m_b4) != 0) {
+            if (FUN_1408a0d30(m_b8, work, m_b4) != 0) {
                 return CAddressTable::FormatChecked(m_b4, m_b8, m_bc, m_c0);
             }
         } else {
@@ -378,7 +351,7 @@ MS2_REPLACE_METHOD(0x1416C2600, CProxyGameObject, FUN_1416c2600, 775, 0x4AA42C46
 // @0x1416c2920
 void CProxyGameObject::FUN_1416c2920()
 {
-    m_d0.FUN_140267c10();
+    reinterpret_cast<Unk_IntTriple&>(m_d0).Sum();
 }
 MS2_REPLACE_METHOD(0x1416C2920, CProxyGameObject, FUN_1416c2920, 33, 0x5153CC8C);
 
@@ -396,12 +369,12 @@ MS2_REPLACE_METHOD(0x1416C2950, CProxyGameObject, FUN_1416c2950, 54, 0x83FAF988)
 int CProxyGameObject::FUN_1416c2990(int nTemplateId)
 {
     m_78 = nTemplateId;
-    m_28.FUN_140a4fe50(((class Unk_Svc6d6e90*)FUN_1406d6e90())->FUN_140a7cab0(m_78));
-    m_dc = reinterpret_cast<Unk_Svc7476c0*>(TSingleton<QuestDataTable>::GetInstance())->FUN_14074e030(nTemplateId);
+    reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28) = reinterpret_cast<const MS2Ptr<Unk_NpcData>&>((const MS2Ptr<NpcDataCli>&)reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78));
+    m_dc = TSingleton<QuestDataTable>::GetInstance()->HasNpcQuests(nTemplateId);
     m_e0 = TSingleton<CQuestMaskTable>::GetInstance()->HasNpcMaskHere(nTemplateId);
     FUN_1416c2a80();
     int r;
-    if (m_28.FUN_140a4ff10()) {
+    if (reinterpret_cast<MS2Ptr<Unk_NpcData>&>(m_28).get()) {
         r = 1;
     } else {
         r = 0;

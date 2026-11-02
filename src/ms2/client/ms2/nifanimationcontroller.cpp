@@ -18,13 +18,13 @@
 #pragma function(memset, memcpy)
 
 // Unrecovered callees (real types unknown).
-void FUN_14098e870(void* o, int v);
+
 void* FUN_14098de00(void* o, void** it);
 void* FUN_140993f00(void* o);
-unsigned int FUN_14098daf0(void* o);
-void* FUN_1413f98b0();
-void* FUN_141fff400(void* svc, void* ent);   // ecr::SceneGraphService::GetSceneGraphFromEntity
-void FUN_141d24a50(void* o);
+
+#include <ecr/SceneGraphService.h>
+ecr::SceneGraphService* FUN_1413f98b0();
+
 extern char DAT_143afa458;
 
 // @0x1400fa290
@@ -117,7 +117,7 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::
 }
 
 // @0x141544ec0
-void CNifAnimationController::FUN_141544ec0(float time)
+void CNifAnimationController::Update(float time)
 {
     if (m_58 == 1) {
         m_28->Update(time, true);
@@ -139,7 +139,7 @@ efd::Point3 CNifAnimationController::FUN_141545050() { return m_44; }
 void FUN_141545080(int value, void* node)
 {
     for (void* c = ((void*)((class NiObjectNET*)(void*)(node))->GetControllers()); c != 0; c = ((void*)((class NiTimeController*)(void*)(c))->GetNext()))
-        FUN_14098e870(c, value);
+        ((NiTimeController*)c)->SetAnimType((NiTimeController::AnimType)value);
     if (NiObject::IsKindOf((class NiRTTI const*)(&DAT_143afa458), (class NiObject const*)(node))) {
         void* pSwitch = node;   // the exe's static cast to the switch-node type
         void* it = ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiProperty>>*)(void*)(((void*)&((class NiAVObject*)(void*)(pSwitch))->GetPropertyList())))->GetHeadPos();
@@ -151,7 +151,7 @@ void FUN_141545080(int value, void* node)
     }
     if (NiObject::IsKindOf((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(node))) {
         void* pNode = node;     // static cast to NiNode
-        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i) {
+        for (unsigned int i = 0; i < ((NiNode*)pNode)->GetArrayCount(); ++i) {
             void* ch = ((void*)((class NiNode*)(void*)(pNode))->GetAt(i));
             if (ch != 0)
                 FUN_141545080(value, ch);
@@ -168,7 +168,7 @@ void FUN_1415451d0(int value, void* entityId)
     void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*static_cast<const egf::EntityID*>(entityId));
     if (ent == 0)
         return;
-    void* n = FUN_141fff400(sg, ent);
+    void* n = ((ecr::SceneGraphService*)sg)->GetSceneGraphFromEntity((egf::Entity const*)ent);
     if (n == 0)
         return;
     FUN_141545080(value, n);
@@ -183,11 +183,11 @@ void FUN_141545250(void* entityId, int mode)
     void* ent = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(*static_cast<const egf::EntityID*>(entityId));
     if (ent == 0)
         return;
-    void* n = FUN_141fff400(sg, ent);
+    void* n = ((ecr::SceneGraphService*)sg)->GetSceneGraphFromEntity((egf::Entity const*)ent);
     if (n == 0)
         return;
     if (mode != 0)
-        FUN_141d24a50(n);
+        NiTimeController::StartAnimations((NiObjectNET*)n);
     else
         NiTimeController::StopAnimations(static_cast<NiObjectNET*>(n));
 }

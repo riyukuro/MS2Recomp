@@ -172,7 +172,7 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
 class UIWebBrowser* FUN_140c43790(int nId);
 
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 GFxManager* FUN_14025e7a0();
 
 // The 8-byte min/max pair constructed (and unused) by the record builder.
@@ -362,7 +362,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
         if (nSlot == 0)
             nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();
-        if (spItem->FUN_1405258b0() != 0)
+        if (spItem->HasSkin() != 0)
             spInfo->m_mapEquip1.SetAt(nSlot, spItem);
         else
             spInfo->m_mapEquip0.SetAt(nSlot, spItem);
@@ -375,7 +375,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
         MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840()));
         if (spData == 0)
             continue;
-        if (spItem->FUN_1405258b0() != 0)
+        if (spItem->HasSkin() != 0)
             continue;
         if (!spItem->FUN_140528980())
             continue;
@@ -909,7 +909,7 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strValue = StringFormat(L"{0}", (unsigned int)m_spInfo->m_3cc);
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
         FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "value", strValue);
-        spItemLevel->Invoke("changeTooltipText", FUN_14025e7a0()->FUN_1422b0570("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
+        spItemLevel->Invoke("changeTooltipText", FUN_14025e7a0()->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
     }
     if (MS2Ptr<ASLabel> spAttack = GetChild<ASLabel>("m_attackInfo"))
     {
@@ -920,14 +920,14 @@ void UIPCInfoDialog::vfunc_86()
         FUN_140cfee80((*spAttack).FUN_1422bb890(), "value", strValue);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_attackScore"));
+            FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", FUN_14025e7a0()->Localize("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_attackScore");
             tooltip.SetOnDelay(300);
             tooltip.SetOffDelay(5000);
             tooltip.SetTooltipAlign(4);
-            spAttack->FUN_1422c7cd0(tooltip.FUN_1422bb890());
+            spAttack->SetTooltipData(tooltip.FUN_1422bb890());
         }
     }
     if (MS2Ptr<ASLabel> spDefense = GetChild<ASLabel>("m_defenseInfo"))
@@ -939,72 +939,72 @@ void UIPCInfoDialog::vfunc_86()
         FUN_140cfee80((*spDefense).FUN_1422bb890(), "value", strValue);
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_defenseScore"));
+            FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", FUN_14025e7a0()->Localize("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_defenseScore");
             tooltip.SetOnDelay(300);
             tooltip.SetOffDelay(5000);
             tooltip.SetTooltipAlign(4);
-            spDefense->FUN_1422c7cd0(tooltip.FUN_1422bb890());
+            spDefense->SetTooltipData(tooltip.FUN_1422bb890());
         }
     }
     if (MS2Ptr<ASUIComponent> spLabels = GetChild<ASUIComponent>("m_statLabelManager"))
     {
         ASArray aStats(2);
-        aStats.FUN_1422bc050(FUN_141335e00(4, 0, 0));
-        aStats.FUN_1422bc050(FUN_141335e00(7, 0, 1));
-        aStats.FUN_1422bc050(FUN_141335e00(10, 0, 2));
-        aStats.FUN_1422bc050(FUN_141335e00(0, 0, 3));
-        aStats.FUN_1422bc050(FUN_141335e00(1, 0, 4));
-        aStats.FUN_1422bc050(FUN_141335e00(2, 0, 5));
-        aStats.FUN_1422bc050(FUN_141335e00(3, 0, 6));
-        aStats.FUN_1422bc050(FUN_141335e00(0xe, 0, 7));
-        aStats.FUN_1422bc050(FUN_1413369a0(0, 8));
-        aStats.FUN_1422bc050(FUN_141335e00(0x1b, 1, 0));
-        aStats.FUN_1422bc050(FUN_141335e00(0x1d, 1, 1));
-        aStats.FUN_1422bc050(FUN_141335e00(0x17, 1, 2));
-        aStats.FUN_1422bc050(FUN_141335e00(0x18, 1, 3));
-        aStats.FUN_1422bc050(FUN_141335e00(0x1f, 1, 4));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x1a, 1, 5));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x1b, 1, 6));
-        aStats.FUN_1422bc050(FUN_141335e00(0xf, 1, 7));
-        aStats.FUN_1422bc050(FUN_141335e00(0x11, 1, 8));
-        aStats.FUN_1422bc050(FUN_141335e00(0x12, 1, 9));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x18, 1, 10));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x19, 1, 0xb));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x13, 1, 0xc));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x12, 1, 0xd));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x17, 1, 0xe));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x16, 1, 0xf));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x14, 1, 0x10));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x15, 1, 0x11));
-        aStats.FUN_1422bc050(FUN_1413363d0(0xc, 1, 0x12));
-        aStats.FUN_1422bc050(FUN_1413363d0(7, 1, 0x13));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x10, 1, 0x14));
-        aStats.FUN_1422bc050(FUN_1413363d0(0xce, 1, 0x15));
-        aStats.FUN_1422bc050(FUN_141335e00(0xd, 1, 0x16));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x23, 1, 0x17));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x36, 1, 0x18));
-        aStats.FUN_1422bc050(FUN_141335e00(0x14, 2, 0));
-        aStats.FUN_1422bc050(FUN_141335e00(0x19, 2, 1));
-        aStats.FUN_1422bc050(FUN_141335e00(0x1a, 2, 2));
-        aStats.FUN_1422bc050(FUN_141335e00(0x10, 2, 3));
-        aStats.FUN_1422bc050(FUN_141335e00(0x13, 2, 4));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x25, 2, 5));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x26, 2, 6));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x1d, 2, 7));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x1c, 2, 8));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x21, 2, 9));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x20, 2, 10));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x1e, 2, 0xb));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x1f, 2, 0xc));
-        aStats.FUN_1422bc050(FUN_141335e00(0x15, 2, 0xd));
-        aStats.FUN_1422bc050(FUN_1413363d0(0xcc, 2, 0xe));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x22, 2, 0xf));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x24, 2, 0x10));
-        aStats.FUN_1422bc050(FUN_141335e00(5, 2, 0x11));
-        aStats.FUN_1422bc050(FUN_1413363d0(0x37, 2, 0x12));
+        aStats.PushValue(FUN_141335e00(4, 0, 0));
+        aStats.PushValue(FUN_141335e00(7, 0, 1));
+        aStats.PushValue(FUN_141335e00(10, 0, 2));
+        aStats.PushValue(FUN_141335e00(0, 0, 3));
+        aStats.PushValue(FUN_141335e00(1, 0, 4));
+        aStats.PushValue(FUN_141335e00(2, 0, 5));
+        aStats.PushValue(FUN_141335e00(3, 0, 6));
+        aStats.PushValue(FUN_141335e00(0xe, 0, 7));
+        aStats.PushValue(FUN_1413369a0(0, 8));
+        aStats.PushValue(FUN_141335e00(0x1b, 1, 0));
+        aStats.PushValue(FUN_141335e00(0x1d, 1, 1));
+        aStats.PushValue(FUN_141335e00(0x17, 1, 2));
+        aStats.PushValue(FUN_141335e00(0x18, 1, 3));
+        aStats.PushValue(FUN_141335e00(0x1f, 1, 4));
+        aStats.PushValue(FUN_1413363d0(0x1a, 1, 5));
+        aStats.PushValue(FUN_1413363d0(0x1b, 1, 6));
+        aStats.PushValue(FUN_141335e00(0xf, 1, 7));
+        aStats.PushValue(FUN_141335e00(0x11, 1, 8));
+        aStats.PushValue(FUN_141335e00(0x12, 1, 9));
+        aStats.PushValue(FUN_1413363d0(0x18, 1, 10));
+        aStats.PushValue(FUN_1413363d0(0x19, 1, 0xb));
+        aStats.PushValue(FUN_1413363d0(0x13, 1, 0xc));
+        aStats.PushValue(FUN_1413363d0(0x12, 1, 0xd));
+        aStats.PushValue(FUN_1413363d0(0x17, 1, 0xe));
+        aStats.PushValue(FUN_1413363d0(0x16, 1, 0xf));
+        aStats.PushValue(FUN_1413363d0(0x14, 1, 0x10));
+        aStats.PushValue(FUN_1413363d0(0x15, 1, 0x11));
+        aStats.PushValue(FUN_1413363d0(0xc, 1, 0x12));
+        aStats.PushValue(FUN_1413363d0(7, 1, 0x13));
+        aStats.PushValue(FUN_1413363d0(0x10, 1, 0x14));
+        aStats.PushValue(FUN_1413363d0(0xce, 1, 0x15));
+        aStats.PushValue(FUN_141335e00(0xd, 1, 0x16));
+        aStats.PushValue(FUN_1413363d0(0x23, 1, 0x17));
+        aStats.PushValue(FUN_1413363d0(0x36, 1, 0x18));
+        aStats.PushValue(FUN_141335e00(0x14, 2, 0));
+        aStats.PushValue(FUN_141335e00(0x19, 2, 1));
+        aStats.PushValue(FUN_141335e00(0x1a, 2, 2));
+        aStats.PushValue(FUN_141335e00(0x10, 2, 3));
+        aStats.PushValue(FUN_141335e00(0x13, 2, 4));
+        aStats.PushValue(FUN_1413363d0(0x25, 2, 5));
+        aStats.PushValue(FUN_1413363d0(0x26, 2, 6));
+        aStats.PushValue(FUN_1413363d0(0x1d, 2, 7));
+        aStats.PushValue(FUN_1413363d0(0x1c, 2, 8));
+        aStats.PushValue(FUN_1413363d0(0x21, 2, 9));
+        aStats.PushValue(FUN_1413363d0(0x20, 2, 10));
+        aStats.PushValue(FUN_1413363d0(0x1e, 2, 0xb));
+        aStats.PushValue(FUN_1413363d0(0x1f, 2, 0xc));
+        aStats.PushValue(FUN_141335e00(0x15, 2, 0xd));
+        aStats.PushValue(FUN_1413363d0(0xcc, 2, 0xe));
+        aStats.PushValue(FUN_1413363d0(0x22, 2, 0xf));
+        aStats.PushValue(FUN_1413363d0(0x24, 2, 0x10));
+        aStats.PushValue(FUN_141335e00(5, 2, 0x11));
+        aStats.PushValue(FUN_1413363d0(0x37, 2, 0x12));
         spLabels->Invoke(s_strSetData, aStats.FUN_1422bb870());
     }
     vfunc_87();
@@ -1203,13 +1203,13 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
     qsort(aSorted.GetData(), aSorted.GetCount(), 4, FUN_141337900);
     if (MS2Ptr<ASDropdownMenu> spTitle = GetChild<ASDropdownMenu>("m_title"))
     {
-        spTitle->FUN_1422dfc10();
+        spTitle->ClearItems();
         if (m_spInfo->FUN_140dba220() != 0)
         {
             ASObj none(2);
             none.FUN_1407cbb20("label", FUN_141b720b0(0, 0));
             none.FUN_1407cb9c0("id", 0);
-            spTitle->FUN_1422dfc70(none);
+            spTitle->AddItemRow(none);
             int nSelected = 0;
             for (size_t i = 0; i < aSorted.GetCount(); i++)
             {
@@ -1219,7 +1219,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                 ASObj item(2);
                 item.FUN_1407cbb20("label", strLabel);
                 item.FUN_1409c0d20("id", aSorted[i]);
-                spTitle->FUN_1422dfc70(item);
+                spTitle->AddItemRow(item);
                 if (aSorted[i] == (unsigned int)nTitle)
                     nSelected = (int)(i + 1);
             }
@@ -1237,7 +1237,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
         {
             if ((unsigned int)nTitle > 0 && reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance()) != 0)
             {
-                spTitle->FUN_1422dfce0(FUN_141b72150(nTitle, m_spInfo->m_3c4));
+                spTitle->AddItemLabel(FUN_141b72150(nTitle, m_spInfo->m_3c4));
                 reinterpret_cast<ASDropdownMenu*>(spTitle.operator->())->SetSelectedIndex(0);
             }
             ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
@@ -1799,7 +1799,7 @@ void UIPCInfoDialog::FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& str
         tooltip.FUN_1409c0dc0("align", "topLeft");
         tab.FUN_1409adbe0("tooltipData", tooltip.FUN_1422bb870());
     }
-    aTabs.FUN_1422bc050(tab.FUN_1422bb870());
+    aTabs.PushValue(tab.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x141336E40, UIPCInfoDialog, FUN_141336e40, 506, 0x74EC012D);
 
@@ -1818,7 +1818,7 @@ void UIPCInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, v
         return;
     ((Unk_PciAvatarSlots*)m_spAvatar.operator->())->vfunc_28(p1, p2, p3, p4);
     Unk_ModelViewCamera kCamera;
-    kCamera.FUN_141b48530();
+    kCamera.ApplyCharCamera();
     kCamera.m_fMinDistance = 300.0f;
     kCamera.m_fMaxDistance = 150.0f;
     kCamera.m_kTarget += pObj->vfunc_18() + NiPoint3(0.0f, 0.0f, -5.0f);
@@ -1924,12 +1924,12 @@ CStringW FUN_14132ba90(const int& nLayer)
     switch (nLayer)
     {
     case 0:
-        return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_game");
+        return FUN_14025e7a0()->Localize("$s_myInfo_game");
     case 1:
-        return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_skin");
+        return FUN_14025e7a0()->Localize("$s_myInfo_skin");
     case 2:
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e))
-            return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_codi");
+            return FUN_14025e7a0()->Localize("$s_myInfo_codi");
         break;
     }
     return L"";

@@ -114,7 +114,6 @@ public:
 extern NiFixedString DAT_143ae50c8;                         // colour keys of the three colour slots
 extern NiFixedString DAT_143ae50d0;
 extern NiFixedString DAT_143ae50d8;
-const char* FUN_142087e50(const NiFixedString* pFixed);     // NiFixedString -> c string
 bool FUN_141068d50(const NiFixedString& kName, const char* psz);   // operator!=
 void FUN_1410479a0(class NiObjectNET*, class NiFixedString const&, class NiColor const&);   // C3: was FUN_1410479a0
 
@@ -155,8 +154,8 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(FittingDollPC);
 FittingDollPC::FittingDollPC()
 {
     m_spStateMgr.AssignRaw(new CStateManager(this));
-    m_spStateMgr->FUN_1417daeb0(1, new StateIdleFittingDoll(this));
-    m_spStateMgr->FUN_1417daeb0(0x22, new StateTransformDoll(this));
+    m_spStateMgr->RegisterState(1, new StateIdleFittingDoll(this));
+    m_spStateMgr->RegisterState(0x22, new StateTransformDoll(this));
     index = 0;
     unknown12e8 = 0;
     unknown12f0 = 0;
@@ -283,14 +282,13 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
     MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->m_nObjectId);
     if (!spData)
         return 0;
-    CObjectData::FittingDoll& kDoll = spData->m_cube.m_fittingDoll;
-    FUN_141658e40(kDoll.m_nGender);
+    FUN_141658e40(spData->m_cube.m_fittingDoll.m_nGender);
     CString strAnim("urn:gamebryo-animation:");
-    strAnim += kDoll.m_strAsset;
+    strAnim += spData->m_cube.m_fittingDoll.m_strAsset;
     FUN_14123bb80(strAnim);
-    FUN_1416591e0(0, FUN_141b6dea0(kDoll.m_nSkinColor0));
-    FUN_1416591e0(1, FUN_141b6dea0(kDoll.m_nSkinColor2));
-    ATL::CAtlArray<unsigned>& kItems = kDoll.m_defaultItems;
+    m_colorD98[0] = FUN_141b6dea0(spData->m_cube.m_fittingDoll.m_anSkinColor[0]);
+    m_colorD98[1] = FUN_141b6dea0(spData->m_cube.m_fittingDoll.m_anSkinColor[2]);
+    ATL::CAtlArray<unsigned>& kItems = spData->m_cube.m_fittingDoll.m_defaultItems;
     for (size_t i = 0; i < kItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spNew(new CItem());
@@ -376,7 +374,6 @@ void FittingDollPC::vfunc_19(efd::Point3 kPos)
 }
 MS2_REPLACE_METHOD(0x14121c1c0, FittingDollPC, vfunc_19, 98, 0x07749A96);
 
-// MS2-FUNCTIONAL: stack frame / temp scheduling differs from the exe (extra unused temp)
 // @0x14121c230
 // Tint the doll's meshes: the three colour slots, the base and gloss textures swapped by the config.
 void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip* pColor)
@@ -387,11 +384,11 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
     if (((class Unk_FdGfx*)FUN_1409f7c90())->FUN_14109a9d0() == 0)
     {
         if (nSlot == 0)
-            pszKey = FUN_142087e50(&DAT_143ae50c8);
+            pszKey = (const char*)DAT_143ae50c8;
         else if (nSlot == 1)
-            pszKey = FUN_142087e50(&DAT_143ae50d0);
+            pszKey = (const char*)DAT_143ae50d0;
         else
-            pszKey = FUN_142087e50(&DAT_143ae50d8);
+            pszKey = (const char*)DAT_143ae50d8;
     }
     Unk_NodeQueue kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true))
@@ -438,7 +435,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                         }
                     }
                     else
-                        FUN_1410479a0((class NiObjectNET*)(pRender), NiFixedString(pszKey), *reinterpret_cast<const NiColor*>(pColor));
+                        FUN_1410479a0((class NiObjectNET*)(pRender), pszKey, *reinterpret_cast<const NiColor*>(pColor));
                 }
             }
         }
@@ -506,7 +503,7 @@ int FittingDollPC::FUN_14121c910(CItem* pItem)
 {
     if (pItem == 0)
         return 0xc;
-    if (pItem->FUN_1405258b0() != FUN_14121c710())
+    if (pItem->HasSkin() != FUN_14121c710())
         return FUN_14121c710() ? 4 : 3;
     if (::FUN_1405267d0(pItem, ::FUN_141658e60(this)) == 0)
         return ::FUN_141658e60(this) == 0 ? 7 : 8;

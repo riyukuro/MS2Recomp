@@ -104,7 +104,6 @@ public:
 void FUN_141404930(__int64 nUid);
 void FUN_141404ce0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
 void FUN_1414050c0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
-unsigned FUN_140720ca0(void* pArr);                       // GetCount
 MS2Ptr<CItem>* FUN_140c3c720(void* pArr, unsigned nIndex);   // element access
 
 // The pet inventory entry points that are free functions in the exe (the item handle is passed by pointer in rcx).

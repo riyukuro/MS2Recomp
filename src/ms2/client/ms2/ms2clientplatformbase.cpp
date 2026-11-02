@@ -463,11 +463,9 @@ void CClientPlatformBase::vfunc_67()
     }
 }
 
-// MS2-FUNCTIONAL: the exe frame has a /GS cookie (some local of the original is array-typed, not identified among the Nx event/string helpers); same callees and control flow
 // @0x140c76710
 void CClientPlatformBase::vfunc_68()
 {
-    __int64 nId = 0;
     CStringA strSerial = vfunc_75();
     if (strSerial.IsEmpty())
         return;
@@ -475,31 +473,24 @@ void CClientPlatformBase::vfunc_68()
         return;
     Unk_NxEvent kEvent;
     kEvent.m_nType = 4;
-    kEvent.m_strSerial.Set((const char*)strSerial, 3);
+    kEvent.m_strSerial = (const char*)strSerial;
+    __int64 nId = 0;
     CStringA strId = vfunc_77();
-    __int64 nParsed = FUN_140718350(strId);
-    if (nParsed != 0)
+    unsigned __int64 nParsed = FUN_140718350(strId);
+    if (nParsed > 0)
         nId = nParsed;
-    kEvent.m_numId.Set(nId);
+    kEvent.m_numId = nId;
     nId = kEvent.m_numId.GetValue();
     CStringA strSession = vfunc_76();
     if (!strSession.IsEmpty())
-        kEvent.m_strSession.Set((const char*)strSession, 3);
+        kEvent.m_strSession = (const char*)strSession;
     FUN_140c76c70(((void*)GetLogString()), 0xb, 400, L"InitializeNexonAnalytics nexonSn={0} sessionId={1} serviceId={2}", nId,
                   strSession, strSerial);
     Unk_NxNumber kService(DAT_1439f4840);
     Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
-    Unk_NxString kHost("livelog.nexon.com");
-    bool bResult;
-    if (nId != 0) {
-        Unk_NxString kVersion("1.0.0");
-        if (pAnalytics->FUN_14092ce80(&kVersion, &kHost) && pAnalytics->FUN_14092cf80(&kEvent, &kHost, &kService))
-            bResult = true;
-        else
-            bResult = false;
-    } else {
-        bResult = false;
-    }
+    Unk_NxString kHost("livelog.nexon.com", 3);
+    bool bResult = nId != 0 && pAnalytics->FUN_14092ce80("1.0.0", &kHost)
+        && pAnalytics->FUN_14092cf80(&kEvent, &kHost, &kService);
     if (bResult) {
         Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xb, 400, L"Nexon Analytics SDK 의 초기화를 완료했습니다.");
         m_bAnalyticsOn = true;
@@ -612,15 +603,17 @@ Unk_NxNumber::~Unk_NxNumber()
 }
 
 // @0x140c77310
-Unk_NxString::Unk_NxString(const char* psz)
+Unk_NxString& Unk_NxString::operator=(const char* psz)
 {
     FUN_140c777f0(psz, 3);
+    return *this;
 }
 
 // @0x140c77340
-Unk_NxNumber::Unk_NxNumber(__int64 n)
+Unk_NxNumber& Unk_NxNumber::operator=(__int64 n)
 {
     Set(n);
+    return *this;
 }
 
 // @0x140c77090

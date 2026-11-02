@@ -45,36 +45,36 @@ public:
     void AddDouble(double d);                                                   // append a number argument
     void AddInt64(__int64 n);                                                  // append a 64-bit argument
     void AddArgsFrom(ASData* pOther);                                             // append all arguments of another ASData
-    void FUN_1422b8270(const AScript& obj);                                         // append an AS object argument
+    void AddObj(const AScript& obj);                                         // append an AS object argument
     void AddString(const char* sz);                                             // append a string argument
-    void FUN_1422b8310(const wchar_t* sz);                                          // append a wide string argument
+    void AddWString(const wchar_t* sz);                                          // append a wide string argument
     void AddSize(size_t n);                                                   // append a size argument
     void AddValue(const Scaleform::GFx::Value& v);                             // append a value argument
-    void FUN_1422b8420(int* pOut);                                                  // next argument as int
-    void FUN_1422b84a0(bool* pOut);                                                 // next argument as bool
-    void FUN_1422b8520(unsigned int* pOut);                                         // next argument as unsigned
-    void FUN_1422b85a0(unsigned long* pOut);                                        // next argument as unsigned long
-    void FUN_1422b8620(float* pOut);                                                // next argument as float
-    void FUN_1422b86a0(double* pOut);                                               // next argument as double
-    void FUN_1422b8720(__int64* pOut);                                              // next argument as __int64
-    void FUN_1422b87a0(CString& strOut);                                            // next argument as a string
-    void FUN_1422b8860(CStringW& strOut);                                           // next argument as a wide string
-    void FUN_1422b88e0(unsigned __int64* pOut);                                     // next argument as unsigned __int64
-    void FUN_1422b8990(Scaleform::GFx::Value& vOut);                                // next argument
+    void ReadInt(int* pOut);                                                  // next argument as int
+    void ReadBool(bool* pOut);                                                 // next argument as bool
+    void ReadUInt(unsigned int* pOut);                                         // next argument as unsigned
+    void ReadULong(unsigned long* pOut);                                        // next argument as unsigned long
+    void ReadFloat(float* pOut);                                                // next argument as float
+    void ReadDouble(double* pOut);                                               // next argument as double
+    void ReadInt64(__int64* pOut);                                              // next argument as __int64
+    void PopString(CString& strOut);                                            // next argument as a string
+    void PopStringW(CStringW& strOut);                                           // next argument as a wide string
+    void ReadUInt64(unsigned __int64* pOut);                                     // next argument as unsigned __int64
+    void ReadValue(Scaleform::GFx::Value& vOut);                                // next argument
     int FUN_1422b8a10();                                                            // next argument as int (result code)
     bool FUN_1422b8a90();                                                           // next argument as bool
     int FUN_1422b8b10();                                                            // next argument as unsigned (callers use int)
-    unsigned long FUN_1422b8b90();                                                  // next argument as unsigned long
-    float FUN_1422b8c10();                                                          // next argument as float
-    double FUN_1422b8ca0();                                                         // next argument as double
+    unsigned long PopULong();                                                  // next argument as unsigned long
+    float PopFloat();                                                          // next argument as float
+    double PopDouble();                                                         // next argument as double
     CString FUN_1422b8d30();                                                        // next argument as a string ("" if not a string)
     CStringW FUN_1422b8f40();                                                       // next argument as a wide string
-    __int64 FUN_1422b9110();                                                        // next argument as __int64
+    __int64 PopInt64();                                                        // next argument as __int64
     unsigned __int64 PopUInt64();                                               // next argument as unsigned __int64
     Scaleform::GFx::Value FUN_1422b9260();                                          // next argument
     bool FUN_1422b9330();                                                           // no arguments left
     int FUN_1422b9360();                                                            // argument count
-    int FUN_1422b9580(ATL::CAtlList<Scaleform::GFx::Value>& dst);                  // append all arguments to a list (TRUE if any)
+    int AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst);                  // append all arguments to a list (TRUE if any)
     int FUN_1422b9620(const Scaleform::GFx::Value* pArgs, unsigned int nArgs);    // replace the arguments
 
     ATL::CAtlList<Scaleform::GFx::Value> m_args;    // +0x18

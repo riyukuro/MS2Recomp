@@ -60,14 +60,14 @@ public:
 
 // ---- header statics (the exe runs them in this order: two copies of the shared header's names, the handle, the condition) ----
 
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
 static CString s_strSortNamesA[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkillA = "skill";
 static CString s_strStunA = "stun";
 static CString s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkillB = "skill";
 static CString s_strStunB = "stun";
-static Unk_1401cd100 s_pointerB(NULL);
+static Unk_BuddyHandle s_pointerB(NULL);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local views of exe types ----
@@ -97,14 +97,8 @@ class Unk_DebugGuideList : public Unk_DebugGuideCtl
 public:
 };
 class Unk_DebugGuideInput : public Unk_DebugGuideCtl { public: };    // the text
-class Unk_DebugGuideMovie
-{
-public:
-    void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback,
-                       int a3, int a4, int a5, void* a6);
-};
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();
 class Unk_DebugGuideDTPackets
 {
 public:
@@ -116,12 +110,10 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_140651350();
 CString FUN_1411c0aa0(const char* pszPath);
-class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
-void FUN_141a25770(void* pChat, CStringW strText, int n);
+class UIMessengerBrowser { public: void FUN_141a25770(CStringW strText, bool b); };
+UIMessengerBrowser* FUN_140a3ab70(int);
 void FUN_1412751b0(const CStringW& str, int n);
-void FUN_140710590(COutPacket* p);
-CStringW FUN_1406564a0(const wchar_t* pszFormat, const CStringW& a, const CStringW& b, const CStringW& c);
-CStringW FUN_140292a70(const wchar_t* pszFormat, const int& n);
+void FUN_140710590(COutPacket& p);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 // ---- the XML records ----
@@ -275,7 +267,7 @@ void UIDebugGuideDialog::OnLoadInit()
     reinterpret_cast<ASScrollingList*>(m_rightList.operator->())->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectCommand));
     m_executeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnExecute), 0);
     m_multiExecuteButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnMultiExecute), 0);
-    reinterpret_cast<Unk_DebugGuideMovie*>(m_movie.operator->())->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnDoubleClick), 0, 0, 0, 0);
+    reinterpret_cast<ASEventDispatcher*>(m_movie.operator->())->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnDoubleClick), 0, 0, 0, 0);
     FillGroups();
 }
 
@@ -299,7 +291,7 @@ int UIDebugGuideDialog::vfunc_13()
     for (int i = 0; i < 10; i++)
     {
         int nKey = i + 0x3b;
-        if (FUN_14025e7c0()->FUN_14116d9c0(nKey, true, 0) && PrintCommand(i))
+        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d9c0(nKey, true, 0) && PrintCommand(i))
             return 1;
     }
     return 0;
@@ -318,7 +310,7 @@ void UIDebugGuideDialog::OnPacket(CInPacket& iPacket)
             CStringW strCmd = iPacket.ReadUnicodeString();
             CStringW strArg = iPacket.ReadUnicodeString();
             PrintLine(CStringW(strCmd), CStringW(strArg));
-            FUN_1412751b0(FUN_1406564a0(L"{0}님이 {1} {2} 커맨드 실행", strHeader, strCmd, strArg), 20);
+            FUN_1412751b0(StringFormat<CStringW, CStringW, CStringW>(L"{0}님이 {1} {2} 커맨드 실행", strHeader, strCmd, strArg), 20);
         }
     }
 }
@@ -381,7 +373,7 @@ void UIDebugGuideDialog::FillGroups()
 {
     reinterpret_cast<ASCoreList*>(m_leftList.operator->())->FUN_1422dd1d0();
     for (unsigned int i = 0; i < m_groups.size(); i++)
-        reinterpret_cast<ASCoreList*>(m_leftList.operator->())->FUN_1422dd310(m_groups[i].m_strName);
+        reinterpret_cast<ASCoreList*>(m_leftList.operator->())->AddLabelItemW(m_groups[i].m_strName);
     if (!m_groups.empty())
         reinterpret_cast<ASCoreList*>(m_leftList.operator->())->SetSelectedIndex(0);
     m_leftList->vfunc_24(true);
@@ -404,9 +396,9 @@ void UIDebugGuideDialog::FillCommands()
         if (i < 10)
         {
             int nKey = i + 1;
-            strPrefix = FUN_140292a70(L"F{0}] ", nKey);
+            strPrefix = StringFormat<unsigned>(L"F{0}] ", reinterpret_cast<const unsigned&>(nKey));
         }
-        reinterpret_cast<ASCoreList*>(m_rightList.operator->())->FUN_1422dd310(StringFormat<CStringW, CStringW>(L"{0}{1}", strPrefix, rGroup.m_commands[i].m_strName));
+        reinterpret_cast<ASCoreList*>(m_rightList.operator->())->AddLabelItemW(StringFormat<CStringW, CStringW>(L"{0}{1}", strPrefix, rGroup.m_commands[i].m_strName));
     }
     if (!rGroup.m_commands.empty())
         reinterpret_cast<ASCoreList*>(m_rightList.operator->())->SetSelectedIndex(0);
@@ -480,7 +472,7 @@ bool UIDebugGuideDialog::SendCommand(int nIndex)
         else
             pkt.WriteUnicodeString(reinterpret_cast<ASTextInput*>(m_input.operator->())->GetText().Trim());
     }
-    FUN_140710590(&pkt);
+    FUN_140710590(pkt);
     return true;
 }
 
@@ -491,9 +483,9 @@ void UIDebugGuideDialog::PrintLine(CStringW strName, CStringW strArg)
     if (pChat != 0)
     {
         if (strArg.IsEmpty())
-            FUN_141a25770(pChat, CStringW(strName), 0);
+            reinterpret_cast<UIMessengerBrowser*>(pChat)->FUN_141a25770(CStringW(strName), 0);
         else
-            FUN_141a25770(pChat, StringFormat<CStringW, CStringW>(L"{0} {1}", strName, strArg), 0);
+            reinterpret_cast<UIMessengerBrowser*>(pChat)->FUN_141a25770(StringFormat<CStringW, CStringW>(L"{0} {1}", strName, strArg), 0);
     }
 }
 

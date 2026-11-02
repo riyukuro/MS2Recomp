@@ -176,7 +176,7 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
 bool CMS2JavascriptHandler::RequestToken(CefRefPtr<CefV8Value> object, const CefV8ValueList& arguments,
     CefRefPtr<CefV8Value>& retval, CefString& exception)
 {
-    CWebBrowserService::GetInstance()->FUN_141b78be0(CefV8Context::GetCurrentContext(), arguments[0]);
+    CWebBrowserService::GetInstance()->RequestTokenWithCallback(CefV8Context::GetCurrentContext(), arguments[0]);
     return true;
 }
 

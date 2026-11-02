@@ -174,19 +174,19 @@ void UIHairPhysxDialog::FUN_141981060()
         {
             CString str;
             str.Format("%f", kValue.x);
-            sp->FUN_1422e0a60(str);
+            sp->SetTextA(str);
         }
         if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
         {
             CString str;
             str.Format("%f", kValue.y);
-            sp->FUN_1422e0a60(str);
+            sp->SetTextA(str);
         }
         if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
         {
             CString str;
             str.Format("%f", kValue.z);
-            sp->FUN_1422e0a60(str);
+            sp->SetTextA(str);
         }
     }
     FUN_141984360();
@@ -267,7 +267,7 @@ void UIHairPhysxDialog::vfunc_15()
         return;
     m_2c0->FUN_140cd1bf0();
     if (m_2d0)
-        m_2d0->FUN_1418dda30(m_2c0->IsDragging() == 0);
+        m_2d0->SetEnableFlagIfHidden(m_2c0->IsDragging() == 0);
 }
 MS2_REPLACE_METHOD(0x141981BE0, UIHairPhysxDialog, vfunc_15, 166, 0x55D7B316);
 
@@ -292,7 +292,7 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     {
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fSoft = data.FUN_1422b8c10();
+            float fSoft = data.PopFloat();
             FUN_141982480(fSoft);
         }
         return 1;
@@ -301,9 +301,9 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     {
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fX = data.FUN_1422b8c10();
-            float fY = data.FUN_1422b8c10();
-            float fZ = data.FUN_1422b8c10();
+            float fX = data.PopFloat();
+            float fY = data.PopFloat();
+            float fZ = data.PopFloat();
             FUN_141982590(fX, fY, fZ);
         }
         return 1;
@@ -329,9 +329,9 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     {
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fX = data.FUN_1422b8c10();
-            float fY = data.FUN_1422b8c10();
-            float fZ = data.FUN_1422b8c10();
+            float fX = data.PopFloat();
+            float fY = data.PopFloat();
+            float fZ = data.PopFloat();
             FUN_1419826e0(fX, fY, fZ);
         }
         return 1;
@@ -701,10 +701,10 @@ void UIHairPhysxDialog::FUN_141983730()
     }
     if (MS2Ptr<Unk_IbDropdown> sp = GetChild<Unk_IbDropdown>("m_joints"))
     {
-        sp->FUN_1422dfc10();
+        sp->ClearItems();
         for (unsigned j = 0; j < arrJoints.GetCount(); j++)
-            sp->FUN_1422dfce0(FUN_14016a730(arrJoints[j], 0));
-        sp->SetMenuRowCount(Unk_HpxMin(sp->FUN_1422dfb90(), 4u));
+            sp->AddItemLabel(FUN_14016a730(arrJoints[j], 0));
+        sp->SetMenuRowCount(Unk_HpxMin(sp->GetItemCount(), 4u));
         sp->SetSelectedIndex(0);
         sp->vfunc_24(true);
     }
@@ -784,19 +784,19 @@ void UIHairPhysxDialog::FUN_141983f50()
     {
         CString str;
         str.Format("%f", kValue.x);
-        sp->FUN_1422e0a60(str);
+        sp->SetTextA(str);
     }
     if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformY"))
     {
         CString str;
         str.Format("%f", kValue.y);
-        sp->FUN_1422e0a60(str);
+        sp->SetTextA(str);
     }
     if (MS2Ptr<Unk_RankInput> sp = reinterpret_cast<UIGameRankingDialog*>(this)->FUN_140e35bd0("m_transformZ"))
     {
         CString str;
         str.Format("%f", kValue.z);
-        sp->FUN_1422e0a60(str);
+        sp->SetTextA(str);
     }
 }
 MS2_REPLACE_METHOD(0x141983F50, UIHairPhysxDialog, FUN_141983f50, 1023, 0xF0152227);
@@ -822,7 +822,7 @@ void UIHairPhysxDialog::FUN_141984360()
         return;
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_transform"))
     {
-        spText->FUN_1422c4c80("");
+        spText->SetTextA("");
         for (unsigned i = 0; i < pDesc->GetActorCount(); i++)
         {
             NiPhysXD6JointDesc* pJointDesc = NiDynamicCast(NiPhysXD6JointDesc, pDesc->GetActorAt(i));
@@ -839,7 +839,7 @@ void UIHairPhysxDialog::FUN_141984360()
                 CString strLine;
                 strLine.Format("<jointangle name=\"%s\" soft=\"%0.2f\" posz=\"%0.2f\" zero=\"%0.2f\" negz=\"%0.2f\"/>",
                     (const char*)strJoint, fSoft, fX, fY, fZ);
-                spText->FUN_1422c5a50(FUN_14038f6d0(strLine, "\n"));
+                spText->AppendTextA(FUN_14038f6d0(strLine, "\n"));
             }
         }
         if (pModel != 0)
@@ -854,7 +854,7 @@ void UIHairPhysxDialog::FUN_141984360()
                 CString strLine;
                 strLine.Format("<random position=\"%0.2f,%0.2f,%0.2f\" rotation=\"%0.2f,%0.2f,%0.2f\" scale=\"%0.2f\"/>",
                     kPos.x, kPos.y, kPos.z, kRot.x, kRot.y, kRot.z, fScale);
-                spText->FUN_1422c5a50(FUN_14038f6d0(strLine, "\n"));
+                spText->AppendTextA(FUN_14038f6d0(strLine, "\n"));
             }
         }
     }
@@ -963,7 +963,7 @@ void UIHairPhysxDialog::FUN_141984cd0(Unk_HpxModel* pModel, const CString& strJo
 MS2_REPLACE_METHOD(0x141984CD0, UIHairPhysxDialog, FUN_141984cd0, 189, 0x72DECEFB);
 
 // @0x141984da0
-void UIHairPhysxDialog::FUN_141984da0(const NiMatrix3& kRot, NiPoint3& kDeg)
+void UIHairPhysxDialog::FUN_141984da0(const NiMatrix3& kRot, efd::Point3& kDeg)
 {
     kRot.ToEulerAnglesXYZ(kDeg.x, kDeg.y, kDeg.z);
     kDeg.x = kDeg.x * 180.0f / 3.1415927f;

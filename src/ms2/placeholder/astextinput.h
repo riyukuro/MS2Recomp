@@ -25,39 +25,39 @@ public:
 #endif
 
     // "textInput" / "change" listeners
-    void FUN_1422e0840(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // add "textInput"
-    void FUN_1422e08c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove "textInput"
-    void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // add "change"
+    void AddTextInputHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // add "textInput"
+    void RemoveTextInputHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove "textInput"
+    void AddChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // add "change"
     void SetFocusable(int bFocusable);                                 // set "focusable"
-    int FUN_1422e09f0();                                                // "focusable"
-    void FUN_1422e0a60(const CStringA& strText);                        // 0x1422e0a60 set the text (narrow; UIMeratMarketDialog::ClearSearchInput)
-    void FUN_1422e0ab0(const CStringW& strText);                        // set the text
+    int GetFocusable();                                                // "focusable"
+    void SetTextA(const CStringA& strText);                        // 0x1422e0a60 set the text (narrow; UIMeratMarketDialog::ClearSearchInput)
+    void SetTextW(const CStringW& strText);                        // set the text
     CStringW GetText();                                           // the text
-    void FUN_1422e0b80(const CString& strHtml);                         // 0x1422e0b80 set "htmlText" (narrow)
-    void FUN_1422e0bd0(const CStringW& strHtml);                        // 0x1422e0bd0 set "htmlText"
+    void SetHtmlTextA(const CString& strHtml);                         // 0x1422e0b80 set "htmlText" (narrow)
+    void SetHtmlTextW(const CStringW& strHtml);                        // 0x1422e0bd0 set "htmlText"
     CStringW GetHtmlText();                                           // 0x1422e0c20 "htmlText"
     void SetDisplayAsPassword(int bPassword);                                  // set "displayAsPassword"
-    int FUN_1422e0cf0();                                                // "displayAsPassword"
+    int GetDisplayAsPassword();                                                // "displayAsPassword"
     void SetMaxChars(int nMaxChars);                                  // the maximum length ("maxChars", set as a Number)
     int GetMaxChars();                                                // 0x1422e0da0 "maxChars" (uimessenger.cpp)
     void SetEditable(int bEditable);                                  // set "editable"
-    int FUN_1422e0e50();                                                // "editable"
+    int GetEditable();                                                // "editable"
     void SetTabEnabled(int bEnabled);                                   // set "tabEnabled"
-    int FUN_1422e0f10();                                                // "tabEnabled"
-    void FUN_1422e0f80(int nIndex);                                     // set "tabIndex" (as a Boolean: the exe passes nIndex != 0)
-    int FUN_1422e0fd0();                                                // "tabIndex" (read as a Boolean)
+    int GetTabEnabled();                                                // "tabEnabled"
+    void SetTabIndex(int nIndex);                                     // set "tabIndex" (as a Boolean: the exe passes nIndex != 0)
+    int GetTabIndex();                                                // "tabIndex" (read as a Boolean)
     void SetActAsButton(int bActAsButton);                               // set "actAsButton"
-    int FUN_1422e1090();                                                // "actAsButton"
+    int GetActAsButton();                                                // "actAsButton"
     void SetAlwaysShowSelection(int bAlways);                                    // set "alwaysShowSelection"
-    int FUN_1422e1150();                                                // "alwaysShowSelection"
+    int GetAlwaysShowSelection();                                                // "alwaysShowSelection"
     void SetRestrict(const CString& strRestrict);                     // the text field's "restrict"
     CString GetRestrict();                                            // the text field's "restrict"
     int GetLength();                                                // "length"
-    void FUN_1422e1310(const CString& strText);                         // appendText (narrow)
-    void FUN_1422e1370(const CStringW& strText);                        // appendText
-    void FUN_1422e13d0(const CString& strHtml);                         // appendHtml (narrow)
-    void FUN_1422e1430(const CStringW& strHtml);                         // 0x1422e1430 append html ("appendHtml")
+    void AppendTextA(const CString& strText);                         // appendText (narrow)
+    void AppendTextW(const CStringW& strText);                        // appendText
+    void AppendHtmlA(const CString& strHtml);                         // appendHtml (narrow)
+    void AppendHtmlW(const CStringW& strHtml);                         // 0x1422e1430 append html ("appendHtml")
     MS2Ptr<ASTextField> GetTextField();                                // the "textField" child
-    void FUN_1422e1500(int nBegin, int nEnd);                           // 0x1422e1500 focus, validateNow, set the selection
+    void FocusAndSetSelection(int nBegin, int nEnd);                           // 0x1422e1500 focus, validateNow, set the selection
 };
 MS2_CHECK_SIZE(ASTextInput, 0x88);

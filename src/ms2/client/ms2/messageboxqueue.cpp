@@ -205,7 +205,7 @@ int FUN_14151fad0(MS2Ptr<CMsgBoxData> spData)
 {
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0)
-        return pBox->FUN_1419f7ff0(spData);
+        return pBox->ShowMessage(spData);
     return 0;
 }
 MS2_REPLACE(0x14151FAD0, FUN_14151fad0, 128, 0x35EF421F);

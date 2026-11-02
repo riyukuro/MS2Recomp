@@ -14,6 +14,7 @@
 #include <NiRenderTargetGroup.h>
 #include <ecr/RenderSurface.h>
 #include "ms2/placeholder/gfxmovie.h"
+#include "ms2/placeholder/gfxrenderer2d.h"
 #include "ms2/placeholder/nigfxexternalinterfacedelegate.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/asdata.h"
@@ -185,21 +186,18 @@ void GFxMovie::vfunc_8(float fTime)
 }
 MS2_REPLACE_METHOD(0x1422BDA00, GFxMovie, vfunc_8, 386, 0x5DFFD53E);
 
-// MS2-FUNCTIONAL: byte-identical except the argument dtors: the exe's two Ptr<> types (HAL, Renderer2D) have different
-// release COMDATs (0x14127c550 / 0x14127c5c0); gfxmovie.h spells both Unk_GFxHandleObj (GFxMovieBackground overrides the slot).
 // Draw the movie: capture the next frame and display it with the Renderer2D (spRenderer).
 // @0x1422bdb90
-void GFxMovie::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxHandleObj) spRenderer)
+void GFxMovie::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spRenderer)
 {
     Scaleform::GFx::MovieDisplayHandle hDisplay = m_60->GetDisplayHandle();
     if (hDisplay.NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spRenderer.operator->())->GetContextNotify()))
         reinterpret_cast<Scaleform::Render::Renderer2D*>(spRenderer.operator->())->Display(hDisplay);
 }
 
-// MS2-FUNCTIONAL: as vfunc_9 (the two Ptr<> argument types).
 // Capture without drawing.
 // @0x1422bdc50
-void GFxMovie::vfunc_10(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxHandleObj) spRenderer)
+void GFxMovie::vfunc_10(MS2_GFX_PTR(Unk_GFxHandleObj) spHal, MS2_GFX_PTR(Unk_GFxUIRenderer2D) spRenderer)
 {
     Scaleform::GFx::MovieDisplayHandle hDisplay = m_60->GetDisplayHandle();
     hDisplay.NextCapture(reinterpret_cast<Scaleform::Render::Renderer2D*>(spRenderer.operator->())->GetContextNotify());

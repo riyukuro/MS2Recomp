@@ -20,8 +20,8 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_DcRecord@@@@AEAAXXZ 0x140c0e7e0
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_DcRecord@@@@AEAAXPEAX@Z 0x140c0e820
 // MS2-PIN: ?Reference@?$MS2Ptr@VUnk_DcRecord@@@@CAXPEAVUnk_DcRecord@@@Z 0x140c0e7b0
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_DcRewardStep@@@@QEBAPEAVUnk_DcRewardStep@@XZ 0x140c0e5c0
-// MS2-PIN: ?empty@?$vector@UUnk_DcRewardItem@@V?$allocator@UUnk_DcRewardItem@@@std@@@std@@QEBA_NXZ 0x140c0e9f0
+// MS2-PIN: ?get@?$MS2Ptr@VDungeonUnitedWeeklyReward@@@@QEBAPEAVDungeonUnitedWeeklyReward@@XZ 0x140c0e5c0
+// MS2-PIN: ?empty@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEBA_NXZ 0x140c0e9f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidungeoncategory.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uidungeoncategory.h"
@@ -45,6 +45,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include <map>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/dungeonrecordcli.h"
+#include "ms2/commonfiles/rewardcontentstable.h"
+#include "ms2/placeholder/packethandlermanager.h"
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -68,20 +71,11 @@ int FUN_140179060(Unk_DcXmlNode* pNode, const char* szName, Unk_DcGroupType& n);
 bool FUN_14028f710(Unk_DcXmlNode* pNode);                       // the element is enabled (feature/locale filter)
 void FUN_140177db0(const CString& str, ATL::CAtlArray<unsigned short>& out, const char* szDelimiter);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-class Unk_DcXmlLoader : public CFileSystem { };
-Unk_DcXmlLoader* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
-void* FUN_140166440();
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
+class CLogString* GetLogString();
+template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-// The packet manager: handlers are registered per opcode.
-class Unk_DcPacketManager
-{
-public:
-    void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);   // add
-    void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);   // remove
-};
-Unk_DcPacketManager* FUN_140bccd50();
+class Unk_140bccd50* FUN_140bccd50();   // the packet handler manager
 COutputStream& FUN_14070f820(COutputStream& out, bool value);
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value);
 
@@ -110,8 +104,8 @@ public:
     virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75();
     virtual void vfunc_76(); virtual void vfunc_77();
     virtual unsigned short vfunc_78();                          // level
-    int FUN_14152ea50();                                        // job
 };
+class MyPC { public: int FUN_14152ea50(); };   // C3: unit-local view (mypc.h needs CHomePrivilege)
 class Unk_DcPlayerMgr { public: Unk_DcPlayer* FUN_141bd0cc0(); };
 
 // The party / matching state (party leader's level and job while in a party).
@@ -125,13 +119,8 @@ class Unk_DcUIMgr
 {
 public:
     void FUN_141adc530(int nUiId);
-    void FUN_141adc690(int nUiId);
 };
-class Unk_DcBookmarkDlg : public UIDungeonRoomDialog
-{
-public:
-};
-Unk_DcBookmarkDlg* FUN_140961550(int nUiId);
+template <class T> T* Unk_GetUI(int nUiId);
 class UIDungeonSearchSettingDialog : public UIDialog
 {
 public:
@@ -142,7 +131,6 @@ public:
 class Unk_DcRoom : public CPtred
 {
 public:
-    int FUN_14031ddd0();                                        // dungeon id
     int m_nId;                                                  // +0x18
 private:
     unsigned char m_pad_1c[0xe8];
@@ -165,21 +153,6 @@ MS2_CHECK_OFFSET(Unk_DcRoom, m_nMinLevel, 0x104);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_strBanner, 0x148);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_bHidden, 0x1b1);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_nGroupId, 0x1ec);
-class Unk_DcRewardStep : public CPtred
-{
-public:
-    unsigned int m_nNeed;                                       // +0x18 weekly count
-    int m_nRewardId;                                            // +0x1c
-};
-class Unk_DcRoomTable : public DungeonRoomTable
-{
-public:
-    void FUN_140320c30(unsigned short nLevel, int nJob, UIDungeonControlCenter::RoomVec& out);
-    void FUN_140320da0(unsigned short nLevel, int nJob, UIDungeonControlCenter::RoomVec& out);
-    void FUN_140321160(int nGroupType, UIDungeonControlCenter::RoomVec& out);
-    MS2Ptr<Unk_DcRewardStep> FUN_140321bf0(size_t nIndex);
-    MS2Ptr<Unk_DcRewardStep> FUN_140321c90(int nNeed);
-};
 
 // The weekly dungeon mission counters.
 class Unk_DcMission : public CPtred
@@ -199,47 +172,27 @@ public:
     float FUN_140b22640();
 };
 class Unk_DcSession { public: MS2Ptr<Unk_DcRecord> FUN_140d9f2c0(); };
-Unk_DcSession* FUN_140931510();
+class CMyCharacter* FUN_140931510();
 __int64 GetServerTime();
-void* FUN_140166410();
+class Unk_140166410* FUN_140166410();
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
 
-// The reward list of a reward id (meso, exp and the items).
-struct Unk_DcRewardHead { void* m_00; void* m_08; void* m_10; };
-struct Unk_DcRewardSlot { void* m_00; void* m_08; void* m_10; };
-struct Unk_DcRewardItem : public Unk_DcRewardHead, public Unk_DcRewardSlot {};
-MS2_CHECK_SIZE(Unk_DcRewardItem, 0x30);
-class Unk_DcRewardList
-{
-public:
-    Unk_DcRewardList();
-    ~Unk_DcRewardList();
-    __int64 m_nMeso;                                            // +0x00
-    __int64 m_nExp;                                             // +0x08
-    void* m_10;
-    std::vector<Unk_DcRewardItem> m_items;                      // +0x18
-};
-MS2_CHECK_SIZE(Unk_DcRewardList, 0x30);
-class Unk_DcRewardMgr { public: bool FUN_140770e40(int nRewardId, short nLevel, Unk_DcRewardList& out); };
-Unk_DcRewardMgr* FUN_140764030();
+void* FUN_140764030();
 
 // The find component's party search button.
 class Unk_140acd6e0 : public ASMovieClip { public: };
 
 // Strings.
-CStringW FUN_140cbf840(int nGroupType);                         // group type name
+CStringW TranslateEnumDungeonGroup(unsigned int nGroupType);      // group type name
 bool FUN_140e14520(int nGroupType);                             // the group type is listed
 bool FUN_140e146a0();                                           // matching is available
-CString FUN_140513200(const char* szFormat, const unsigned int& n);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 void FUN_140874050(void* pCfg, const char* szName, const CString& str);
 void FUN_140178770(void* pCfg, const char* szName, std::vector<unsigned int>& out);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_140938ae0(CStringW strKey, const int& n);
-CStringW FUN_1409e9890(CStringW strKey, const int& a, const int& b);
 CStringW FUN_1409404f0(__int64 n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
-void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 extern int DAT_143ab2878;                                       // service type (2: party search disabled)
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols-manual.tsv)
@@ -289,11 +242,11 @@ void UIDungeonCategoryTable::Load()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "dungeonCategory.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     Unk_DcXmlNode* pRoot = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(reinterpret_cast<Unk_DcXmlNode*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0) {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_DcXmlNode* pTab = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("dungeonMainTab")); pTab != 0;
@@ -407,8 +360,8 @@ MS2_REPLACE_METHOD(0x140C0AFD0, UIDungeonControlCenter, GetTypeName, 61, 0x134E9
 void UIDungeonControlCenter::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bccd50()->FUN_140da51e0(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
-    FUN_140bccd50()->FUN_140da51e0(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
     m_binder.FUN_140d43990();
 }
 
@@ -416,8 +369,8 @@ void UIDungeonControlCenter::vfunc_67()
 void UIDungeonControlCenter::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140bccd50()->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
-    FUN_140bccd50()->FUN_140da5180(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
+    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
     FUN_1419260d0("m_webGuideButton", 0);
     Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
@@ -488,7 +441,7 @@ int UIDungeonControlCenter::vfunc_53(void* pCfg)
     std::set<unsigned int>::iterator itEnd = ids.end();
     for (std::set<unsigned int>::iterator it = ids.begin(); it != itEnd; ++it) {
         unsigned int nId = *it;
-        str += FUN_140513200("{0},", nId);
+        str += Unk_SocketFormat<unsigned int>("{0},", nId);
     }
     FUN_140874050(pCfg, "dungeon", str);
     return 1;
@@ -503,7 +456,7 @@ int UIDungeonControlCenter::vfunc_54(void* pCfg)
     std::vector<unsigned int> ids;
     FUN_140178770(pCfg, "dungeon", ids);
     for (size_t i = 0; i < ids.size(); i++) {
-        if (reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->GetRoom(ids[i]).get())
+        if (TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(ids[i]).get())
             m_bookmarks.insert(ids[i]);
     }
     return 1;
@@ -526,23 +479,23 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     ASObj obj(2);
     int nWeekly = 0;
     int nWeeklyMax = 0;
-    if (MS2Ptr<Unk_DcMission> pMission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(0x3ee)) {
-        nWeekly = pMission->FUN_140b20750();
-        nWeeklyMax = pMission->FUN_140b20780();
-        obj.FUN_1407cbb20("weekly", FUN_1409e9890(L"s_dungeon_control_center_reward_weekly", nWeekly, nWeeklyMax));
-        int nDaily = pMission->FUN_14031b9d0(GetServerTime());
-        int nDailyMax = pMission->FUN_14031ba10();
-        obj.FUN_1407cbb20("daily", FUN_1409e9890(L"s_dungeon_control_center_reward_daily", nDaily, nDailyMax));
+    if (MS2Ptr<Unk_DcMission> pMission = reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0()->FUN_140b22160(0x3ee)) {
+        nWeekly = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetBonusRewardCountNow();
+        nWeeklyMax = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetMaxCount();
+        obj.FUN_1407cbb20("weekly", FUN_14028dfa0(L"s_dungeon_control_center_reward_weekly", reinterpret_cast<const unsigned&>(nWeekly), reinterpret_cast<const unsigned&>(nWeeklyMax)));
+        int nDaily = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetClearCount(GetServerTime());
+        int nDailyMax = reinterpret_cast<DungeonRecordCli*>(pMission.operator->())->GetSubRewardCount();
+        obj.FUN_1407cbb20("daily", FUN_14028dfa0(L"s_dungeon_control_center_reward_daily", reinterpret_cast<const unsigned&>(nDaily), reinterpret_cast<const unsigned&>(nDailyMax)));
     }
     int nNext = 0;
-    size_t nCount = reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->GetUnitedWeeklyRewardCount();
+    size_t nCount = TSingleton<DungeonRoomTable>::GetInstance()->GetUnitedWeeklyRewardCount();
     for (size_t i = 0; i < nCount; i++) {
-        MS2Ptr<Unk_DcRewardStep> pStep = reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140321bf0(i);
+        MS2Ptr<DungeonUnitedWeeklyReward> pStep = TSingleton<DungeonRoomTable>::GetInstance()->GetUnitedWeeklyReward(i);
         if (pStep == 0)
             continue;
-        bool bReached = (unsigned int)nWeekly >= pStep->m_nNeed;
+        bool bReached = (unsigned int)nWeekly >= pStep->m_rewardCount;
         if (!bReached) {
-            nNext = pStep->m_nNeed;
+            nNext = pStep->m_rewardCount;
             break;
         }
     }
@@ -553,20 +506,20 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     } else {
         int nRemain = nNext - nWeekly;
         obj.FUN_1407cb9c0("complete", 0);
-        obj.FUN_1407cbb20("count", FUN_140938ae0(L"s_dungeon_control_center_require_reward_count", nRemain));
+        obj.FUN_1407cbb20("count", FUN_14028dfa0(L"s_dungeon_control_center_require_reward_count", reinterpret_cast<const unsigned&>(nRemain)));
     }
-    MS2Ptr<Unk_DcRewardStep> pStep = reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140321c90(nNext);
+    MS2Ptr<DungeonUnitedWeeklyReward> pStep = TSingleton<DungeonRoomTable>::GetInstance()->FindUnitedWeeklyReward(nNext);
     if (pStep.get()) {
-        Unk_DcRewardList rewards;
-        FUN_140764030()->FUN_140770e40(pStep->m_nRewardId, pPlayer->vfunc_78(), rewards);
+        RewardContentsTable::Result rewards;
+        static_cast<RewardContentsTable*>(FUN_140764030())->GetReward(pStep->m_rewardID, pPlayer->vfunc_78(), rewards);
         if (!rewards.m_items.empty())
-            obj.FUN_1407cba60("binding", m_binder.FUN_140d43510(static_cast<Unk_DcRewardSlot*>(&rewards.m_items[0])));
+            obj.FUN_1407cba60("binding", m_binder.FUN_140d43510(static_cast<ItemAble*>(&rewards.m_items[0])));
         __int64 nMeso = rewards.m_nMeso;
         __int64 nExp = rewards.m_nExp;
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb9)) {
-            if (FUN_140931510()->FUN_140d9f2c0()->FUN_140b22530()) {
-                nMeso *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640();
-                nExp *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620();
+            if (reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->IsBoostActive()) {
+                nMeso *= reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->GetRateB();
+                nExp *= reinterpret_cast<DungeonRecordManagerCli*>(reinterpret_cast<Unk_DcSession*>(FUN_140931510())->FUN_140d9f2c0().operator->())->GetRateA();
             }
         }
         obj.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
@@ -664,7 +617,7 @@ void UIDungeonControlCenter::OnSetting()
         FUN_140c0dab0(rooms);
         std::set<unsigned int> unused;
         MS2_FOR_EACH(MS2Ptr<Unk_DcRoom> pRoom, rooms)
-            m_bookmarks.insert(pRoom->FUN_14031ddd0());
+            m_bookmarks.insert(reinterpret_cast<DungeonRoom*>(pRoom.operator->())->GetDungeonRoomID());
     }
     UIDungeonSearchSettingDialog* pDialog = FUN_140c0dea0(0x4f86);
     if (pDialog != 0) {
@@ -714,9 +667,9 @@ MS2_REPLACE_METHOD(0x140C0CCC0, UIDungeonControlCenter, SendPartyMode34, 87, 0xD
 // @0x140c0cd20
 void UIDungeonControlCenter::OnBookmark()
 {
-    Unk_DcBookmarkDlg* pDialog = FUN_140961550(0x4ebd);
+    UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
     if (pDialog != 0) {
-        reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ebd);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
         pDialog->FUN_1412b9110();
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
     }
@@ -733,9 +686,9 @@ MS2_REPLACE_METHOD(0x140C0CD80, UIDungeonControlCenter, OnPopupDetail, 32, 0xE11
 // @0x140c0cdb0
 void UIDungeonControlCenter::FUN_140c0cdb0(int nId)
 {
-    Unk_DcBookmarkDlg* pDialog = FUN_140961550(0x4ebd);
+    UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
     if (pDialog != 0) {
-        reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adc690(0x4ebd);
+        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
         pDialog->FUN_1412b8ff0(nId);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
     }
@@ -787,7 +740,7 @@ MS2_REPLACE_METHOD(0x140C0CF20, UIDungeonControlCenter, FUN_140c0cf20, 87, 0xD16
 int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange& range, ASArray& out)
 {
     RoomVec rooms;
-    reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140321160(nGroupType, rooms);
+    TSingleton<DungeonRoomTable>::GetInstance()->GetGroupRooms((DungeonGroupType)nGroupType, reinterpret_cast<std::vector<DungeonRoomPtr>&>(rooms));
     for (size_t i = 0; i < rooms.size(); i++) {
         MS2Ptr<Unk_DcRoom> pRoom = rooms[i];
         if (range.IsValid() && !range.FUN_1407790e0(pRoom->m_nMinLevel))
@@ -813,7 +766,7 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
     RoomVec rooms;
     FUN_140c0d800(rooms);
     for (unsigned int i = 0; i < rooms.size(); i++) {
-        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(rooms[i]->FUN_14031ddd0()))
+        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(reinterpret_cast<DungeonRoom*>(rooms[i].operator->())->GetDungeonRoomID()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;
@@ -839,7 +792,7 @@ void UIDungeonControlCenter::FUN_140c0d620(MS2Ptr<UIDungeonCategory> pCategory, 
             continue;
         ASObj obj(2);
         obj.FUN_1407cb9c0("isRecommend", 0);
-        obj.FUN_1407cbb20("category", FUN_140cbf840(nGroupType));
+        obj.FUN_1407cbb20("category", TranslateEnumDungeonGroup(nGroupType));
         obj.FUN_140c0e050("groupType", nGroupType);
         obj.FUN_1407cbbe0("hasLobby", FUN_140c0dc60(nGroupType) != -1);
         ASArray list(2);
@@ -865,17 +818,17 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
         nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
     } else {
         nLevel = pPlayer->vfunc_78();
-        nJob = pPlayer->FUN_14152ea50();
+        nJob = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152ea50();
     }
     RoomVec rooms;
-    reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320c30(nLevel, nJob, rooms);
+    TSingleton<DungeonRoomTable>::GetInstance()->GetRoomsForLevel(nLevel, nJob, reinterpret_cast<std::vector<DungeonRoomPtr>&>(rooms));
     std::map<DWORD, bool> groups;
     unsigned int nAdded = 0;
     for (unsigned int i = 0; i < rooms.size(); i++) {
         MS2Ptr<Unk_DcRoom> pRoom = rooms[i];
         if (nLevel < pRoom->m_nMinLevel)
             continue;
-        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(pRoom->FUN_14031ddd0()))
+        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(reinterpret_cast<DungeonRoom*>(pRoom.operator->())->GetDungeonRoomID()))
             continue;
         if (pRoom->m_bHidden)
             continue;
@@ -904,12 +857,12 @@ void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
         nJob = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->FUN_14162c1e0();
     } else {
         nLevel = pPlayer->vfunc_78();
-        nJob = pPlayer->FUN_14152ea50();
+        nJob = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152ea50();
     }
     RoomVec rooms;
-    reinterpret_cast<Unk_DcRoomTable*>(TSingleton<DungeonRoomTable>::GetInstance())->FUN_140320da0(nLevel, nJob, rooms);
+    TSingleton<DungeonRoomTable>::GetInstance()->GetMatchRooms(nLevel, nJob, reinterpret_cast<std::vector<DungeonRoomPtr>&>(rooms));
     for (unsigned int i = 0; i < rooms.size(); i++) {
-        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(rooms[i]->FUN_14031ddd0()))
+        if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(reinterpret_cast<DungeonRoom*>(rooms[i].operator->())->GetDungeonRoomID()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;
@@ -950,7 +903,7 @@ void ASObj::FUN_140c0e050(const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
-    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+    m_value.SetMember(szName, data.FUN_1422b9260());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca2310-0x142ca23a0 .text$yd

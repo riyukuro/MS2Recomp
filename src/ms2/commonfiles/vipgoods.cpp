@@ -32,13 +32,13 @@ CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-void FUN_14028fd90(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
-                   std::vector<Unk_140165cf0*>* pOut);
+void FUN_14028fd90(struct Unk_XmlElement* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
+                   std::vector<struct Unk_XmlElement*>& out);
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-int FUN_1406e8ac0(Unk_140165cf0*, const char*, int*);               // saleTag
-int FUN_1406e8a30(Unk_140165cf0*, const char*, int*);               // buyLimitResetType
+enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);               // saleTag
+enum eShopResetType { eShopResetType_None = 0 };               // buyLimitResetType
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>* pOut, const char* pszSep);   // split into numbers
 void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char* pszSep);
@@ -203,10 +203,10 @@ int CVIPTable::LoadGoods()
         spGoods->m_nVipPeriod *= 3600;
         XmlGetAttr((class TiXmlElement*)(pNode), "price", reinterpret_cast<__int64&>(spGoods->m_nPrice));
         XmlGetAttr((class TiXmlElement*)(pNode), "salePrice", reinterpret_cast<__int64&>(spGoods->m_nSalePrice));
-        FUN_1406e8ac0(pNode, "saleTag", &spGoods->m_nSaleTag);
+        XmlValue(pNode, "saleTag", *(eShopSaleTag*)&spGoods->m_nSaleTag);
         XmlValue(pNode, "priceType", spGoods->m_nPriceType);
         XmlGetAttr((class TiXmlElement*)(pNode), "buyLimit", reinterpret_cast<unsigned int&>(reinterpret_cast<unsigned&>(spGoods->m_nBuyLimit)));
-        FUN_1406e8a30(pNode, "buyLimitResetType", &spGoods->m_nBuyLimitResetType);
+        XmlValue(pNode, "buyLimitResetType", *(eShopResetType*)&spGoods->m_nBuyLimitResetType);
         CString strIds;
         XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemID", strIds);
         FUN_140177e10(strIds, &spGoods->m_bonusItemIds, ",");
@@ -297,7 +297,7 @@ int CVIPTable::LoadBenefitEffects()
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028fd90(pRoot, "benefit", "effectID", "effectLevel", &nodes);
+    FUN_14028fd90((struct Unk_XmlElement*)pRoot, "benefit", "effectID", "effectLevel", (std::vector<struct Unk_XmlElement*>&)nodes);
     for (unsigned __int64 i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];

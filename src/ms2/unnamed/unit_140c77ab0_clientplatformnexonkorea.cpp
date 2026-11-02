@@ -216,7 +216,7 @@ MS2_REPLACE_METHOD(0x140C78100, CClientPlatformNexonKorea, vfunc_13, 61, 0xB5418
 void CClientPlatformNexonKorea::vfunc_14()
 {
     CNXMan::CreateInstance();
-    CNXMan::GetInstance()->FUN_14160d820();
+    CNXMan::GetInstance()->Start();
 }
 #ifndef MS2_HOOK_DLL   // hook DLL: the vtable slot binds the exe body, which the compat NexonKorea_ShutdownNX replaces
 // @0x140c78180
@@ -225,14 +225,14 @@ void CClientPlatformNexonKorea::vfunc_14()
 void CClientPlatformNexonKorea::vfunc_15()
 {
     if (CNXMan* pNx = CNXMan::GetInstance())
-        pNx->FUN_14160da80();
+        pNx->Shutdown();
     CNXMan::DestroyInstance();
 }
 #endif
 // @0x140c781b0
 void CClientPlatformNexonKorea::vfunc_16()
 {
-    if (CNXMan::GetInstance()->FUN_14160db80() == 0) {
+    if (CNXMan::GetInstance()->LoginWithPassport() == 0) {
         DAT_143ac2fd0 = 0x450;
         g_143ac2fe0 = FUN_14016a730(CNXMan::GetInstance()->FUN_14160e5a0(), 0);
     }
@@ -330,17 +330,17 @@ void CClientPlatformNexonKorea::vfunc_19(int a1, void* a2, void* a3)
 // @0x140c78a50
 void CClientPlatformNexonKorea::vfunc_20(int a1, int a2)
 {
-    CNXMan::GetInstance()->FUN_14160e410();
+    CNXMan::GetInstance()->UpdateAuthStrings();
     Unk_NxLoginRequest request;
     request.m_nType = a2;
-    request.m_strPassport = CNXMan::GetInstance()->FUN_14160e500();
-    request.m_strSession = CNXMan::GetInstance()->FUN_14160e550();
+    request.m_strPassport = CNXMan::GetInstance()->GetPassportString();
+    request.m_strSession = CNXMan::GetInstance()->GetHardwareIdString();
     request.m_n18 = a1;
     request.m_n1c = FUN_14028ba90();
 #ifndef __clang__
-    TSingleton<CNPSMan>::GetInstance()->FUN_140db9070(CNXMan::GetInstance()->FUN_14160e500());   // temp to CString& (cl extension)
+    TSingleton<CNPSMan>::GetInstance()->FUN_140db9070(CNXMan::GetInstance()->GetPassportString());   // temp to CString& (cl extension)
 #else
-    CString strPassport = CNXMan::GetInstance()->FUN_14160e500();
+    CString strPassport = CNXMan::GetInstance()->GetPassportString();
     TSingleton<CNPSMan>::GetInstance()->FUN_140db9070(strPassport);
 #endif
     request.m_id.FUN_14067c080((const Unk_MachineId*)TSingleton<CMachineIDManager>::GetInstance()->GetID());
@@ -373,7 +373,7 @@ void CClientPlatformNexonKorea::vfunc_30()
 // @0x140c78c80
 void CClientPlatformNexonKorea::vfunc_32(void* a1)
 {
-    CAntiHackManager::GetInstance()->FUN_1409a3410(a1);
+    CAntiHackManager::GetInstance()->FUN_1409a3410((Unk_AntiHackRecord*)a1);
 }
 
 // @0x140c78cb0

@@ -2,14 +2,13 @@
 // MS2-UNIT: ?\nifmodel.cpp
 // MS2-RANGE: 0x141565560-0x141567000 .text$mn
 // MS2-RANGE: 0x1400fa540-0x1400fa560 .text$di
-// MS2-FUNCTIONAL: vfunc_11 (GS cookie from its char[] stand-in locals) and vfunc_13 (the exe's frame is 0x10 larger
-// with every slot 8 higher, and it copies the fourth FUN_1411e99a0 argument through ecx). The node set at +0xf8 is
-// walked through Unk_NifNodeSet's begin 0x141209190 / end 0x141209360, not std::set<NiAVObjectPtr>'s.
+// The node set at +0xf8 is walked through Unk_NifNodeSet's begin 0x141209190 / end 0x141209360, not std::set<NiAVObjectPtr>'s.
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nifmodel.h"
 #include "kfmmodel_actor.h"
 #include "ms2/client/ms2/nifeffectparam.h"
 #include "ms2/client/ms2/equipment.h"  // C3: was a local member view
+#include "ms2/placeholder/citemdata.h"
 #include <NiAVObject.h>
 #include <NiMesh.h>   // C3: ms_RTTI
 #include <efd/Matrix3.h>
@@ -19,9 +18,8 @@
 class Unk_ResourceMgr;
 
 // ---- out-of-unit callees ----
-void* FUN_1405a8ed0(void* sp);   void FUN_14097eb60(void* out, void* p);
-void* FUN_1411dc7a0(void* owner, void* out);   void FUN_1401bfde0(void* p);
-void* FUN_1401c0180(void* p);   int FUN_140527a20(void* p);class CEquipItem : public CPtred   // C3: member view for the former free stand-ins
+void FUN_14097eb60(void* out, void* p);
+int FUN_140527a20(void* p);class CEquipItem : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1411dc190(void*);
@@ -29,14 +27,13 @@ public:
     MS2Ptr<class CItem> GetItem();   // the item
     void AddModel(class CEquipModel*);
 };
-   bool FUN_14053cfd0(void* p);
 void FUN_141200e30(class CEquipModel*, int);   // C3: was FUN_141200e30
-   int FUN_1412033e0(void* self);
+   int FUN_1412033e0(class CEquipModel* self);
 void FUN_14097f710(void* dst, void* src);   char FUN_1409a7f70(void* sp, int n);
 void FUN_141200ca0(class CEquipModel*);   // C3: was FUN_141200ca0
 void FUN_141209360(void* list, void* out);   void FUN_141209190(void* list, void* out);
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
-void* FUN_141b6dea0(void* out, unsigned v);   void* FUN_1414424f0(void* in, void* out, float f);   void FUN_140a0a3a0(void* out, void* in);
+NiColor FUN_141b6dea0(unsigned v);
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
@@ -45,11 +42,11 @@ public:
 void FUN_141b6f000(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f000
 void* FUN_141200820(class CEquipModel*);   // C3: was FUN_141200820
 void* FUN_1412008e0(class CEquipModel*);   // C3: was FUN_1412008e0
-void FUN_1412029d0(void* self, CString* out);   void FUN_141202ea0(void* self, CString* s);
+void FUN_1412029d0(void* self, CString* out);   void FUN_141202ea0(class CEquipModel* self, CString* s);
 int FUN_141422110(void* a, void* b, void* c);void FUN_141ab6e80(class NiAVObject*);   // C3: was FUN_141ab6e80
 float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
-   void FUN_141167840(void* o, const CString& s, float f);
-char FUN_140534e50(void* p);   bool FUN_14053d2b0(void* p);void* FUN_1416561a0(void* p);   int FUN_1411e99a0(void* a, unsigned b, const CString& c, unsigned d, int e);
+   void FUN_141167840(NiAVObject* o, const CString& s, float f);
+char FUN_140534e50(void* p);   void* FUN_1416561a0(void* p);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void* FUN_141201c90(void* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
@@ -112,7 +109,7 @@ class CItem : public CPtred
 public:
     unsigned FUN_140527a20();                             // the item's slot kind
 public:
-    int FUN_1405258b0();   // C3: was free FUN_1405258b0
+    int HasSkin();   // C3: was free HasSkin
 public:
     class Unk_ItemEquipData* FUN_140527840();   // C3: was free FUN_140527840
 public:
@@ -140,7 +137,7 @@ Unk_ResourceMgr*FUN_140a0afd0();                      // the service singleton
 int CNifModel::vfunc_4(CString strPath)
 {
     FUN_141200e30((class CEquipModel*)(this), 1);
-    m_unk_f0 = reinterpret_cast<CNifLoadingService *>(FUN_140a0afd0())->Load(strPath, FUN_1412033e0(this) != 0, 5, 0, 0);
+    m_unk_f0 = reinterpret_cast<CNifLoadingService *>(FUN_140a0afd0())->Load(strPath, FUN_1412033e0((class CEquipModel*)(this)) != 0, 5, 0, 0);
     if (m_unk_f0 == 0)
         return 0;
     m_str38 = strPath;
@@ -200,7 +197,7 @@ int CNifModel::vfunc_9() { return m_nState; }
 // @0x141565ae0
 void CNifModel::vfunc_10()
 {
-    if (FUN_14053cfd0(((class CEquipItem*)(void*)(FUN_1405a8ed0(&m_spOwner)))->FUN_1411dc7f0())) {
+    if (reinterpret_cast<CItemData*>(reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->FUN_1411dc7f0())->FUN_14053cfd0()) {
         Unk_NifNodeSet& nodes = NODESET(this);
         for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
             NiAVObjectPtr sp = *it;
@@ -214,35 +211,23 @@ void CNifModel::vfunc_10()
 // @0x141565cb0
 void CNifModel::vfunc_11()
 {
-    char t48[16];
-    void* ow = FUN_1411dc7a0(FUN_1405a8ed0(&m_spOwner), t48);
-    void* pPartList = ((void*)((class CItem*)(void*)(FUN_1401c0180(ow)))->FUN_140527870());
-    FUN_1401bfde0(t48);
-    if (pPartList != 0) {
-        for (int i = 0; i < 3; ++i) {
-            char v70[16];
-            FUN_141b6dea0(v70, ((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
-            if (i == 1) {
-                char t38[12], t2c[28], v60[16];
-                void* a = FUN_141b6dea0(t38, ((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0));
-                void* b = FUN_1414424f0(a, t2c, 1.3f);
-                FUN_140a0a3a0(v60, b);
-                memcpy(v70, v60, 12);
-            }
-            char end[8], it[8], sp[8];
-            PAIR_BEGIN(this, it, end);
-            while (FUN_140b029f0(it, end) != 0) {
-                FUN_14097eb60(sp, FUN_140b02a60(it));
-                if (MS2_AVPTR(sp).operator NiAVObject*() != 0)
-                    FUN_141b6f000((class NiAVObject*)(MS2_AVPTR(sp).operator NiAVObject*()), i, *(struct Unk_Colc const*)(v70));
-                MS2_AVPTR(sp).~SmartPointer();
-                FUN_140b02a80(it);
-            }
+    void* pPartList = ((void*)static_cast<const MS2Ptr<CItem>&>(reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->GetItem())->FUN_140527870());
+    if (pPartList == 0)
+        return;
+    for (int i = 0; i < 3; ++i) {
+        NiColor kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(i));
+        if (i == 1)
+            kColor = FUN_141b6dea0(((class CItemExtraData*)(void*)(pPartList))->GetCurrentRgbComponent(0)) * 1.3f;
+        Unk_NifNodeSet& nodes = NODESET(this);
+        for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
+            NiAVObjectPtr sp = *it;
+            if (sp)
+                FUN_141b6f000(sp, i, *(struct Unk_Colc const*)(&kColor));
         }
-        void* p = FUN_141200820((class CEquipModel*)(this));
-        if (p != 0)
-            ((Unk_ModelActor*)p)->vfunc_139();
     }
+    void* p = FUN_141200820((class CEquipModel*)(this));
+    if (p != 0)
+        ((Unk_ModelActor*)p)->vfunc_139();
 }
 
 // @0x141565eb0
@@ -253,7 +238,7 @@ void CNifModel::vfunc_12()
     const CString& strName = FUN_1412029d0();
     if (strName.IsEmpty())
         return;
-    FUN_141202ea0(this, (CString*)&strName);
+    FUN_141202ea0((class CEquipModel*)(this), (CString*)&strName);
     if (MS2_NODEPTR(m_spNode).operator==((NiNode*)0) != 0)
         return;
     if (FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &m_unk_f8) != 0) {
@@ -281,21 +266,19 @@ void CNifModel::vfunc_13()
     if (pRootNode == 0) return;
     void* pController = FUN_141200820((class CEquipModel*)(this));
     if (pController == 0) return;
-    MS2Ptr<CItem> spItem = ((class CEquipItem*)(void*)(FUN_1405a8ed0(&m_spOwner)))->GetItem();
+    MS2Ptr<CItem> spItem = reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->GetItem();
     if (!spItem)
         return;
     int nDebugFlag = ((Unk_ModelActor*)pController)->vfunc_48();
-    int nAttrA = FUN_14053d2b0(spItem->FUN_140527840());
-    int nAttrB = spItem->FUN_1405258b0();
-    int nResult = FUN_1411e99a0(FUN_1416561a0(pController), spItem->FUN_140527a20(), FUN_1412029d0(), nAttrB, nAttrA);
+    int nAttrA = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d2b0();
+    int nResult = reinterpret_cast<CEquipment*>(FUN_1416561a0(pController))->FUN_1411e99a0(spItem->FUN_140527a20(), FUN_1412029d0(), spItem->HasSkin(), nAttrA);
     if (nResult != 0) {
         NiNode* pTarget = *(int*)((char*)m_unk_20 + 0x34) != 0
             ? (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, ((class NiActorManager*)(void*)(pRootNode))->GetNIFRoot())
             : (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, ((class NiActorManager*)(void*)(pRootNode))->GetNIFRoot()->GetObjectByName("Bip01 Head"));
         if (pTarget == 0)
             return;
-        nResult = FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &m_unk_f8);
-        if (nResult != 0) {
+        if (FUN_141422110(vfunc_14(), (char*)m_unk_20 + 8, &m_unk_f8) != 0) {
             Unk_NifNodeSet& nodes = NODESET(this);
             for (NodeIt end = nodes.FUN_141209360(), it = nodes.FUN_141209190(); it != end; ++it) {
                 NiAVObjectPtr sp = *it;
@@ -368,7 +351,7 @@ void CNifModel::vfunc_19(double fTime)
 {
     FUN_1411ffee0((class CEquipModel*)(this), fTime);
     if (m_i118 != 0) {
-        ((class CEquipItem*)(void*)(FUN_1405a8ed0(&m_spOwner)))->FUN_1411dc190(this);
+        reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->FUN_1411dc190(this);
         void* p = FUN_141200820((class CEquipModel*)(this));
         if (p != 0)
             ((class CEquipment*)(void*)(FUN_1416561a0(p)))->FUN_1411e75f0();
@@ -430,7 +413,7 @@ void FUN_141566b60(void* self)
 // @0x141566cb0
 void FUN_141566cb0(CNifModel* p)
 {
-    ((class CEquipItem*)(void*)(FUN_1405a8ed0(&p->m_spOwner)))->AddModel((class CEquipModel*)(p));
+    reinterpret_cast<MS2Ptr<CEquipItem>&>(p->m_spOwner)->AddModel((class CEquipModel*)(p));
     FUN_141203db0((class CEquipModel*)(p));
     p->vfunc_6();
     p->m_i118 = 1;

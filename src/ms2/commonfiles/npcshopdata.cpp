@@ -158,15 +158,14 @@ int XmlQuery(class TiXmlElement* pElem, const char* pszName, CString& strOut);  
 int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut);
 int Unk_ReadRank(class Unk_XmlNode* pElem, const char* pszName, int* pOut);       // C3: was FUN_14015f500
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);              // pOut: std::vector<CString>*
-int FUN_1407181d0(const CString& str);
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>& out, const char* pszDelim);
-void FUN_140177de0(const CString& str, ATL::CAtlArray<unsigned>& out, const char* pszDelim);
+unsigned int FUN_1407181d0(const CString& str);   // C3: the definition's unsigned return (packetlogger.cpp)
 void Unk_SplitW(CString& str, ATL::CAtlArray<CStringW>* pOut, const char* pszDelim);   // C3: was FUN_14015f080
 int Parse_14021a030(const CStringW& str);
 int FUN_1407181a0(const CStringW& str);
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
+CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance (0x140166440)
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 #ifdef __clang__
 // clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); use the exe's copy of
@@ -1069,15 +1068,15 @@ int FUN_1406df690()
         CStringW strIds(L"");
         for (unsigned nId : diffIds)
             strIds = StringFormat(L"{0},{1}", strIds, nId);
-        if (CLogString::GetInstance() != 0)
-            Unk_AdditionalLog(CLogString::GetInstance(), 0xb, 0x13, strIds);
+        if (GetLogString() != 0)
+            Unk_AdditionalLog(GetLogString(), 0xb, 0x13, strIds);
         return 0;
     }
     for (Unk_NpcShopMap::iterator it = oldShops.begin(); it != oldShops.end(); ++it)
     {
         Unk_NpcShopMap::iterator other = newShops.find(it->first);
-        if (*other->second.operator->() != *it->second.operator->() && CLogString::GetInstance() != 0)
-            Unk_AdditionalLog(CLogString::GetInstance(), 0xb, 0x13, StringFormat(L"Diff in ShopID : {0}", it->first));
+        if (*other->second.operator->() != *it->second.operator->() && GetLogString() != 0)
+            Unk_AdditionalLog(GetLogString(), 0xb, 0x13, StringFormat(L"Diff in ShopID : {0}", it->first));
     }
     return 0;
 }
@@ -1156,14 +1155,13 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     if (bFailed == 1)
     {
         CStringW strMessage = StringFormat(L"error File: {0}\r\n[{1}]\r\n", strPath, strErrors);
-        reinterpret_cast<Unk_CommonLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, strMessage);
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x2d, strMessage);
         return 0;
     }
     return 1;
 }
 
 // Reads the <item> rows of a shop item table (shop_game.xml, ...) into the shops read before.
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e0bd0
 int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 {
@@ -1219,7 +1217,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                 if (parts.size() > 0)
                     spItem->m_nPaymentItemId = FUN_1407181d0(parts[0]);
                 if (parts.size() > 1)
-                    spItem->m_nPaymentItemSub = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(parts[1]);
+                    spItem->m_nPaymentItemSub = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(parts[1]);
             }
             XmlQuery((class TiXmlElement*)(pItem), "paymentIconTag", spItem->m_strPaymentIconTag);
             XmlGetAttr((class TiXmlElement*)(pItem), "price", spItem->m_nPrice);
@@ -1243,7 +1241,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
                 CString strValue;
                 ATL::CAtlArray<unsigned> parts;
                 XmlGetAttr((class TiXmlElement*)(pItem), "requireAchieve", strValue);
-                FUN_140177e10(strValue, parts, ",");
+                XmlSplit<ATL::CAtlArray<unsigned> >(strValue, parts, ",");
                 if (parts.GetCount() == 2)
                 {
                     spItem->m_nRequireAchieveId = parts[0];
@@ -1252,9 +1250,9 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             }
             {
                 CString strValue;
-                ATL::CAtlArray<unsigned> parts;
+                ATL::CAtlArray<int> parts;
                 XmlGetAttr((class TiXmlElement*)(pItem), "requireChampionshipInfo", strValue);
-                FUN_140177de0(strValue, parts, ",");
+                XmlSplit<ATL::CAtlArray<int> >(strValue, parts, ",");
                 if (parts.GetCount() == 2)
                 {
                     spItem->m_nRequireChampionship = parts[0];
@@ -1305,14 +1303,13 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
     if (bFailed == 1)
     {
         CStringW strMessage = StringFormat(L"error File: {0}\r\n[{1}]\r\n", strPath, strErrors);
-        reinterpret_cast<Unk_CommonLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, strMessage);
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x2d, strMessage);
         return 0;
     }
     return 1;
 }
 
 // Reads shop_specialRandom_new.xml (the "new" items) into the shops read before.
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e1a50
 int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
 {
@@ -1358,13 +1355,14 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
             XmlValue(pItem, "frameType", (eItemFrameType&)spItem->m_nProductType);
             {
                 CStringW strError;
-                spItem->m_spPeriod = FUN_1406e2fb0(pItem, nItemId, nShopId, strPath, strError);
+                MS2SvrPtr<CNpcShopBuyPeriod> spPeriod = FUN_1406e2fb0(pItem, nItemId, nShopId, strPath, strError);
+                spItem->m_spPeriod = spPeriod;
                 if (!strError.IsEmpty())
                 {
 #ifdef __clang__
                     strErrors += FUN_1401d0160(L"\r\n", strError);
 #else
-                    strErrors += L"\r\n" + strError;
+                    strErrors.Append(L"\r\n" + strError);
 #endif
                     bFailed = 1;
                 }
@@ -1378,7 +1376,7 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
     if (bFailed == 1)
     {
         CStringW strMessage = StringFormat(L"error File: {0}\r\n[{1}]\r\n", strPath, strErrors);
-        reinterpret_cast<Unk_CommonLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, strMessage);
+        reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0x2d, strMessage);
         return 0;
     }
     return 1;
@@ -1441,40 +1439,14 @@ MS2Ptr<CNpcShopData> FUN_1406e2550(unsigned nShopId)
 }
 
 // Checks a shop after reading (FALSE: strError says why).
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e2600
 int CNpcShopData::Read(CString& strError, Unk_140165cf0* pElem)
 {
-    if (m_nResetEnable == 0)
+    if (m_nResetEnable != 0)
     {
-        if (m_nMeratItemGroupId > 0 && s_meratGroups.Lookup(m_nMeratItemGroupId) == 0)
+        if (m_nResetListMin < 1 || m_nResetListMin > m_nResetListMax || m_nResetListMax > 200)
         {
-            strError = (const wchar_t*)StringFormat(L"CNpcShopData::Read - error meratItemGroup shopID=({0})", m_nShopId);
-            m_nMeratItemGroupId = 0;
-        }
-        if (pElem)
-        {
-            eShopResetType eResetType = (eShopResetType)0;
-            XmlValue(pElem, "resetType", eResetType);
-            if (eResetType != 0)
-            {
-                strError = (const wchar_t*)StringFormat(
-                    L"CNpcShopData::Read - shopID=({0}) error 'resetEnable' 0 -> 1 (because 'resetType' is not 0)", m_nShopId);
-                return 0;
-            }
-        }
-        if (m_nResetByAccount != 0)
-        {
-            strError = (const wchar_t*)StringFormat(
-                L"CNpcShopData::Read - shopID=({0}) error 'resetEnable' 0 -> 1 (because 'resetByAccount' is 1)", m_nShopId);
-            return 0;
-        }
-    }
-    else
-    {
-        if (m_nResetListMin < 1 || m_nResetListMax < m_nResetListMin || m_nResetListMax > 200)
-        {
-            const int nMax = 200;
+            static const int nMax = 200;
             strError = (const wchar_t*)StringFormat(
                 L"CNpcShopData::Read - error Range (resetListMin, resetListMax) shopID=({0}). resetListMin=({1}), "
                 L"resetListMax=({2}), resetListMax <= {3}",
@@ -1484,7 +1456,7 @@ int CNpcShopData::Read(CString& strError, Unk_140165cf0* pElem)
         if (m_eResetPaymentType == 1)
         {
             MS2Ptr<CItemData> spItem = FUN_14053f870(m_nResetPaymentItemId);
-            if (!spItem)
+            if (spItem == 0)
             {
                 strError = (const wchar_t*)StringFormat(
                     L"CNpcShopData::Read - shopID=({0}) error resetPayment item itemid=({1})", m_nShopId,
@@ -1512,6 +1484,31 @@ int CNpcShopData::Read(CString& strError, Unk_140165cf0* pElem)
             strError = (const wchar_t*)StringFormat(
                 L"CNpcShopData::Read - shopID=({0}) error 'resetType' {1} -> {2} (because 'resetFixedTime' exists)",
                 m_nShopId, m_eResetType, eFixed);
+            return 0;
+        }
+    }
+    else
+    {
+        if (m_nMeratItemGroupId > 0 && s_meratGroups.Lookup(m_nMeratItemGroupId) == 0)
+        {
+            strError = (const wchar_t*)StringFormat(L"CNpcShopData::Read - error meratItemGroup shopID=({0})", m_nShopId);
+            m_nMeratItemGroupId = 0;
+        }
+        if (pElem)
+        {
+            eShopResetType eResetType = (eShopResetType)0;
+            XmlValue(pElem, "resetType", eResetType);
+            if (eResetType != 0)
+            {
+                strError = (const wchar_t*)StringFormat(
+                    L"CNpcShopData::Read - shopID=({0}) error 'resetEnable' 0 -> 1 (because 'resetType' is not 0)", m_nShopId);
+                return 0;
+            }
+        }
+        if (m_nResetByAccount != 0)
+        {
+            strError = (const wchar_t*)StringFormat(
+                L"CNpcShopData::Read - shopID=({0}) error 'resetEnable' 0 -> 1 (because 'resetByAccount' is 1)", m_nShopId);
             return 0;
         }
     }
@@ -1725,7 +1722,6 @@ MS2_REPLACE_METHOD(0x1406E37F0, CBeautyShopItem, FUN_1406e37f0, 258, 0x94AC2552)
 bool FUN_1406e5ba0(int nPrice);
 
 // Checks the price against the item's (FALSE: strError says why).
-// MS2-FUNCTIONAL: written from the decompile; the exe's temporaries differ.
 // @0x1406e3900
 int CBeautyShopItem::FUN_1406e3900(CString& strError)
 {
@@ -1736,20 +1732,23 @@ int CBeautyShopItem::FUN_1406e3900(CString& strError)
         strError = (const wchar_t*)StringFormat(L"CBeautyShopData::Read - error item id ({0})", m_nItemId);
         return 0;
     }
-    __int64 nPrice = spItem->property.FUN_1405480f0(1);
-    if (spItem->FUN_14053cbc0())
+    else
     {
-        float fFactor = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(3, 1);
-        nPrice = (__int64)((float)nPrice * fFactor);
-    }
-    if ((__int64)nShopPrice < nPrice)
-    {
-        ItemGradeKey eGrade = (ItemGradeKey)1;
-        unsigned nPropertyPrice = (unsigned)nPrice;
-        strError = (const wchar_t*)StringFormat(
-            L"CBeautyShopData::Read - error item price. itemid=({0}). propery_price=({1}), shop_price={{2}), grade=({3})",
-            m_nItemId, nPropertyPrice, nShopPrice, eGrade);
-        return 0;
+        __int64 nPrice = spItem->property.FUN_1405480f0(1);
+        if (spItem->FUN_14053cbc0())
+        {
+            float fFactor = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(3, 1);
+            nPrice = (__int64)((float)nPrice * fFactor);
+        }
+        if (nPrice > (__int64)nShopPrice)
+        {
+            ItemGradeKey eGrade = (ItemGradeKey)1;
+            unsigned nPropertyPrice = (unsigned)nPrice;
+            strError = (const wchar_t*)StringFormat(
+                L"CBeautyShopData::Read - error item price. itemid=({0}). propery_price=({1}), shop_price={{2}), grade=({3})",
+                m_nItemId, nPropertyPrice, nShopPrice, eGrade);
+            return 0;
+        }
     }
     if (FUN_1406e5ba0(nShopPrice))
     {
@@ -2031,7 +2030,7 @@ void CBeautyShopData::AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup)
     if (!bAdded)
     {
         __int64 nKey = spGroup->GetKey();
-        static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, L"{0} failed. shopid={1}, itemGroupKey={2}", L"CBeautyShopData::AddShopItemGroup",
+        static_cast<Unk_NpcShopLog*>(GetLogString())->Log(0, 0, 0x2d, L"{0} failed. shopid={1}, itemGroupKey={2}", L"CBeautyShopData::AddShopItemGroup",
                           m_nShopId, nKey);
     }
 }
@@ -2042,7 +2041,7 @@ Unk_BeautyGroupRef CBeautyShopData::GetShopItemGroup()
     Unk_BeautyGroupRef spGroup = m_spGroups->FUN_1406e4170();
     if (spGroup == 0)
     {
-        static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, L"{0} failed. pShopItemGroup is null. There are no products on sale. shopid={1}",
+        static_cast<Unk_NpcShopLog*>(GetLogString())->Log(0, 0, 0x2d, L"{0} failed. pShopItemGroup is null. There are no products on sale. shopid={1}",
                           L"CBeautyShopData::GetShopItemGroup", m_nShopId);
         MS2_ASSERT_AT(0x998, FALSE);
         return Unk_BeautyGroupRef(0);
@@ -2057,7 +2056,7 @@ void CBeautyShopData::GetShopItemGroupList(
     m_spGroups->FUN_1406e4260(out);
     if (out.size() == 0)
     {
-        static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, L"{0} failed. pShopItemGroup is null. There are no products on sale. shopid={1}",
+        static_cast<Unk_NpcShopLog*>(GetLogString())->Log(0, 0, 0x2d, L"{0} failed. pShopItemGroup is null. There are no products on sale. shopid={1}",
                           L"CBeautyShopData::GetShopItemGroupList", m_nShopId);
         MS2_ASSERT_AT(0x9a6, FALSE);
     }
@@ -2126,7 +2125,7 @@ bool FUN_1406e4fa0(Unk_140165cf0* pElem, unsigned nShopId, CBeautyShopItemGroup*
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->m_nItemId);
     if (!spData)
     {
-        static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->LogWarn(0, 0, 0x7c, L"CBeautyShopData BANNED item={0} shop={1}", spItem->m_nItemId, nShopId);
+        static_cast<Unk_NpcShopLog*>(GetLogString())->LogWarn(0, 0, 0x7c, L"CBeautyShopData BANNED item={0} shop={1}", spItem->m_nItemId, nShopId);
         return true;
     }
     int nGender = spData->limit.genderLimit < 2 ? spData->limit.genderLimit : 2;

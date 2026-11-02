@@ -74,7 +74,7 @@ int CGuideConditionDialog::vfunc_3()
         MS2Ptr<ASDisplayObject> spChild = pDlg->GetChild<ASDisplayObject>(m_arrControl[i]);
         if (spChild == 0)
             return 0;
-        if (!spChild->FUN_1422bfca0())
+        if (!spChild->GetVisible())
             return 0;
     }
     if (m_nSubIndex >= 0 && pDlg->vfunc_82() != m_nSubIndex)

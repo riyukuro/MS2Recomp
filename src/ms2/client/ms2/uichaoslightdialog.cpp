@@ -78,7 +78,7 @@
 #include "ms2/client/ms2/effectservice.h"
 class NoticeMessage { public: class GameObject * GetOwner(void); };
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 
 extern char DAT_143ad1588;                                              // RTTI of the effect node (Unk_EffectNode)
 extern char DAT_143af8a10;                                              // RTTI of the texture map controller
@@ -218,37 +218,37 @@ int UIChaosLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onChangeSliderBoost", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            m_spParam->m_fFresnelBoost = data.FUN_1422b8c10();
+            m_spParam->m_fFresnelBoost = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderExponent", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            m_spParam->m_fFresnelExponent = data.FUN_1422b8c10();
+            m_spParam->m_fFresnelExponent = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderDimmer", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            m_spParam->m_fDimmer = data.FUN_1422b8c10();
+            m_spParam->m_fDimmer = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderRed", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            m_spParam->m_fRed = data.FUN_1422b8c10();
+            m_spParam->m_fRed = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderGreen", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            m_spParam->m_fGreen = data.FUN_1422b8c10();
+            m_spParam->m_fGreen = data.PopFloat();
         return 1;
     }
     else if (_stricmp("onChangeSliderBlue", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            m_spParam->m_fBlue = data.FUN_1422b8c10();
+            m_spParam->m_fBlue = data.PopFloat();
         return 1;
     }
     return 0;
@@ -381,7 +381,7 @@ bool ChaosLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTa
     }
     if (s_bApply)
         pUse = &s_defaultParam;
-    m_dStartTime = FUN_14086d260()->FUN_141473280() + pUse->m_fStartDelay;
+    m_dStartTime = TSingleton<CMainSystem>::GetInstance()->FUN_141473280() + pUse->m_fStartDelay;
     m_fDuration = pUse->m_fDuration;
     m_b2c = pUse->m_b30;
     m_param.FUN_141043a30(*pUse);
@@ -396,7 +396,7 @@ void ChaosLightEffect::vfunc_4()
     m_b2e = true;
     MS2_FOR_EACH(NiAVObjectPtr spNode, m_vecObjects)
         FUN_1410423d0(spNode);
-    m_dStartTime2 = FUN_14086d260()->FUN_141473280();
+    m_dStartTime2 = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
 }
 
 // @0x141041ae0
@@ -494,7 +494,7 @@ void ChaosLightEffect::FUN_1410420d0()
 {
     ChaosLightEffectParam kParam;
     kParam.FUN_141043a30(m_param);
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     float fDelta = (float)(dNow - m_dLastTick);
     m_dLastTick = dNow;
     if (m_param.m_nBlinkBoostStart > 0 && (double)m_param.m_nBlinkBoostStart < dNow - m_dStartTime2)

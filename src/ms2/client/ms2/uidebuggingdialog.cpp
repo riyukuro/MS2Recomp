@@ -24,6 +24,10 @@
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <NiRenderObject.h>
+#include <Ni3DRenderView.h>
+#include <efd/ServiceManager.h>
+#include <ecr/PickService.h>
 
 // ---- unit-local views of exe objects ----
 
@@ -73,11 +77,6 @@ class Unk_DbgNpc : public CNpc
 public:
     Unk_DbgNpcDataPtr FUN_141093270();                                  // the npc's data record handle
 };
-class Unk_DbgWorld
-{
-public:
-    void* FUN_141bd36d0();                                              // npc tree
-};
 // The marker effect request: a NoticeMessage (placeholder/effectquery.h), 0x70 bytes. The ctor 0x140a52ef0 fills all of
 // it and SetActor 0x140a53190 writes +0x54 (a 16-byte stand-in was overrun, rt1 stackovf.py); only the name and the type
 // are used here.
@@ -104,22 +103,13 @@ public:
 };
 struct Unk_DbgConfig { char m_pad[0x2e8]; CString m_strMarkerEffect; };   // the client config
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-class Unk_DbgCameraMgr : public CameraMgr
-{
-public:
-    bool FUN_140af0520(const efd::Point2& kScreen, Unk_NiPoint3* pOrigin, Unk_NiPoint3* pDir);   // screen point to ray
-};
 struct Unk_DbgApp : public CWindowService { };         // cursor position
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-struct Unk_DbgView { void* FUN_1409a8a60(); };                          // the view's camera
 class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
-void* FUN_140af2a30(void* pManager);
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
-efd::Point2 FUN_140a0a600(float fX, float fY);
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 PCBase* FUN_140a7b650(void* pEntry);
-void FUN_140a7b860(void* pMap, void** pPos);
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class, symbols-manual rows shared with util.cpp).
 class Unk_NodeQueue
 {
@@ -132,7 +122,6 @@ private:
 };
 typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
-extern char DAT_143afa7d0;                                              // NiRTTI of the mesh class
 void* FUN_140876480(void* pOut, int nCat);
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCat);
 CStringW FUN_14016a730(const char* sz, int n);                          // narrow text -> CStringW
@@ -254,21 +243,21 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
     UISwfEntity::vfunc_33(p, fX, fY);
     if (vfunc_55() != 0)
         return;
-    if (m_bPicking != 0 && m_timer.FUN_140868c00() != 0 && reinterpret_cast<Unk_DbgCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() != 0)
+    if (m_bPicking != 0 && m_timer.FUN_140868c00() != 0 && TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0)
     {
         void* pScene = ((void*)FUN_1413f9850());
         if (pScene == 0)
             return;
-        efd::Point2 kScreen = FUN_140a0a600(fX, fY);
+        efd::Point2 kScreen(fX, fY);
         Unk_NiPoint3 kOrigin(DAT_143b01a60);
         Unk_NiPoint3 kDir(DAT_143b01a60);
-        if (reinterpret_cast<Unk_DbgCameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0520(kScreen, &kOrigin, &kDir))
+        if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kScreen), reinterpret_cast<NiPoint3&>(kOrigin), reinterpret_cast<NiPoint3&>(kDir)))
         {
-            if (void* pSceneData = FUN_140af2a30(((void*)FUN_1413f9850())))
+            if (void* pSceneData = reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<ecr::PickService>())
             {
-                void* pMap = reinterpret_cast<Unk_DbgWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
+                void* pMap = WorldService::GetInstance()->FUN_141bd36d0();
                 bool bFound = false;
-                for (void* pos = ((void*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetHeadPosition()); pos != 0; FUN_140a7b860(pMap, &pos))
+                for (void* pos = ((void*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetHeadPosition()); pos != 0; ((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetNext(reinterpret_cast<POSITION&>(pos)))
                 {
                     if (bFound)
                         break;
@@ -283,9 +272,9 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                     Unk_SceneWalker walker((NiAVObject*)(pRoot));
                     while (void* pNode = walker.Next(true))
                     {
-                        if (void* pMesh = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pNode))))
+                        if (void* pMesh = ((void*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode))))
                         {
-                            void* pView = ((struct Unk_DbgView*)FUN_1413f9a70());
+                            Ni3DRenderView* pView = FUN_1413f9a70();
                             Vector3 kHit;
                             Vector3 kNormal;
                             efd::Point2 kUV;
@@ -293,7 +282,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                             if (((struct Unk_DbgApp*)FUN_140aadf80())->GetCursorClientPos(&kCursor.x, &kCursor.x + 1) == 0)
                                 return;
                             unsigned nTri;
-                            if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, static_cast<Unk_DbgView*>(pView)->FUN_1409a8a60(),
+                            if (m_spPicker.FUN_141286290()->FUN_14147ea50(pMesh, pView->GetCamera(),
                                                                           kCursor.x, kCursor.y, &kHit, &kNormal, &kUV, &nTri, 0))
                             {
                                 m_bPicking = 0;

@@ -51,7 +51,7 @@ CString FUN_14016a5c0(const char* psz, int nCodePage);                      // n
 void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 unsigned char FUN_1401d1320(CCacheData* pCache);                            // file changed since load
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
@@ -157,6 +157,7 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
     Unk_LockGuard guard(m_spData->m_lock);
     if (guard != 0)
     {
+        __assume(0);
     }
     else
     {
@@ -182,12 +183,11 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
             spDesc->m_strEnd = ((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("endTime");
             spDesc->m_strText = FUN_1401bf530(pNode, "text", CStringW(L""));
             spDesc->m_strText.Replace(L"\\n", L"\n");
-            FUN_1403b4750()->FUN_1416fb380(spDesc->m_strText);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spDesc->m_strText);
             m_spData->m_descs.Add(spDesc);
         }
         return 1;
     }
-    // the exe falls off the end here with eax unset (no return statement)
 }
 
 // @0x14144f0a0

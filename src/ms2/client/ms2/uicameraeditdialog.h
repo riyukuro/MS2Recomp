@@ -69,7 +69,7 @@ public:
     virtual int vfunc_65();                                         // 65 0x1418dd860 Open
     virtual void vfunc_67();                                        // 67 0x1418dd8a0 Close
 
-    void FUN_1418dda30(int n);                                      // 0x1418dda30 m_bEnable = n unless vfunc_55()
+    void SetEnableFlagIfHidden(int n);                                      // 0x1418dda30 m_bEnable = n unless vfunc_55()
     int FUN_1418de260();                                            // 0x1418de260 camera locked (not for dialog 0x4ec2)
     unsigned LoadCustomizeCamera();                                       // 0x1418de2b0 load customize.xml; 1 if it has presets
     void FUN_1418de570();                                           // 0x1418de570 zoom-in step
@@ -77,7 +77,7 @@ public:
     void FUN_1418de7b0(const Vector3& vFrom, float fStep);  // 0x1418de7b0 move the camera one step
     void FUN_1418de920();                                           // 0x1418de920 m_1ec = 0
     void FUN_1418de980();                                           // 0x1418de980 turn the actor to the spawn direction
-    GameObject* FUN_1418dea40();                                    // 0x1418dea40 the actor of m_nTargetId, else the local player
+    GameObject* GetTargetObject();                                    // 0x1418dea40 the actor of m_nTargetId, else the local player
     int IsDragging();                                            // 0x1418dead0 m_bDragging
 
     int m_nTargetId;                                                // +0x178

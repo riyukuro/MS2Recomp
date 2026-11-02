@@ -165,7 +165,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Tabl
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(Unk_140165cf0* pElem);                               // the element is usable
 class Unk_LaunchOptions { public: bool FUN_1406af020(void); }; class Unk_1406aeee0 : public Unk_LaunchOptions { };
-Unk_1406aeee0* FUN_1406aeee0();
+class Unk_LaunchOptions* FUN_1406aeee0();
 
 // Clamps v into [lo, hi].
 template <class T> T Clamp(const T& v, T lo, T hi)
@@ -1608,7 +1608,7 @@ MS2_REPLACE_METHOD(0x140322370, DungeonRoomTable, LoadDungeonConfig, 194, 0x9149
 // @0x140322440
 bool DungeonRoomTable::LoadReverseRaidConfig(Unk_140165cf0* pElem)
 {
-    if (FUN_1406aeee0()->FUN_1406af020())
+    if (((Unk_1406aeee0*)FUN_1406aeee0())->FUN_1406af020())
         return true;
     XmlGetAttr((class TiXmlElement *)(pElem), "startDate", m_startDate);
     XmlGetAttr((class TiXmlElement*)(pElem), "periodDays", reinterpret_cast<int&>(m_periodDays));

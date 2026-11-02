@@ -11,6 +11,7 @@
 #include "uiupperhuddialog.h"
 #include "uitencentaas2dialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/gfxui/asurlrequest.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -22,15 +23,9 @@
 class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
 {
 public:
-    Unk_AasImage(int nMovieId);                                             // 0x1422e5300
     char m_pad_ascript[0x90 - sizeof(AScript)];
 };
-class Unk_AasSource                                                         // the image source: the page url (0x40 bytes)
-{
-public:
-    Unk_AasSource(CStringW strUrl, int nMovieId);                           // 0x1422e5a70
-    char m_pad_00[0x40];
-};
+class Unk_AasSource;
 typedef Unk_AasImage Unk_CashImage;
 typedef Unk_AasImagePtr Unk_CashImagePtr;                                   // its smart pointer (uitencentaas2dialog.h)
 struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
@@ -53,7 +48,7 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-CWebBrowserService* FUN_140cc18a0();
+class CWebBrowserService;
 
 class ASDialog : public ASDisplayObject
 {
@@ -67,6 +62,7 @@ Unk_CashImage* FUN_140e99a80(Unk_CashImagePtr* p);                          // o
 Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
 void FUN_1422e5530(Unk_CashImage* pImage, Unk_AasSourcePtr spSource);
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/os.h"
 
 class UITencentCashChargeDialog : public UIWebBrowserBase
 {
@@ -168,9 +164,9 @@ void UITencentCashChargeDialog::OnLoadComplete()
     vfunc_43();
     FUN_140e48e10("m_renderTarget", &m_spTarget);
     int nId = vfunc_88();
-    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, ((class Unk_CashConsts*)FUN_1401d3200())->m_strUrl.FUN_140298f80(), "", nId);
+    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, ((class Unk_CashConsts*)FUN_1401d3200())->m_strUrl.FUN_140298f80(), "", nId);
     vfunc_87(&m_size);
-    FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
+    TSingleton<CWebBrowserService>::GetInstance()->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();
 }
 
@@ -185,8 +181,8 @@ void UITencentCashChargeDialog::vfunc_26()
 // @0x140e9a160
 void UITencentCashChargeDialog::vfunc_85()
 {
-    ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw((class ASLoader*)(new Unk_CashImage(2))));
-    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2)));
+    ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw(new ASLoader(2)));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2))));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(FUN_140e99a80(&m_spImage)->FUN_1422bb890());

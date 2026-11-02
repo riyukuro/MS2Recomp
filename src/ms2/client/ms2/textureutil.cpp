@@ -32,6 +32,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+#include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 extern char DAT_143d6eb58;
@@ -57,7 +59,7 @@ NiRenderTargetGroup* FUN_14127cca0(void* pkScene);          // the scene's rende
    // the renderer wrapper
 PostProcessingService* FUN_1409a8b20();
 CStringW FUN_1401d0080(const CStringW& kA, const CStringW& kB);   // CStringW concatenation
-CStringW FUN_14052bd00(int nStringId, const CStringW& kArg);      // localized string with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);      // localized string with one argument
 void FUN_1412751b0(const CStringW& kText, int nSeconds);    // on-screen notice
 Unk_MessageBoxPtr FUN_14151f820();                          // the message box currently shown
 void* FUN_140534fc0(const Unk_MessageBoxPtr& kBox);
@@ -65,11 +67,10 @@ void* FUN_140534fe0(const Unk_MessageBoxPtr& kBox);
 const CStringW& FUN_141a02ce0(void* pkBoxData);             // message box name
 void FUN_14151f200();                                       // close the current message box
 void FUN_140d73aa0(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
-void* FUN_140d8ee90();                                      // quest/achievement event sink (may be null)
+class CBigDataLogSystem;
 void FUN_140a1f970(void* pkSink, const CStringA& kName, const CStringA& kArg);
 int FUN_1414a5a40(CStringW kPath);                          // create a directory (-1 on failure)
 std::string FUN_14083fa60(const char* pcData, unsigned int uiLength);   // encode a byte string
-void* FUN_1403ed2b0();                                      // display settings
 float FUN_141adbe70(void* pkSettings);                      // UI scale
 
 // A thread-local storage slot (the TLS index lives in the object).
@@ -1052,13 +1053,13 @@ CStringW TakeScreenshotJpg(int bNotify, int nTarget)
     if (hr >= 0)
     {
         s_iScreenshotCounter = s_iScreenshotCounter + 1;
-        CStringW kDone = FUN_14052bd00(0x577, kPath);
+        CStringW kDone = FormatStringId<CStringW>(0x577, kPath);
         MS2_SCREENSHOT_NOTIFY(bNotify, kDone)
-        if (FUN_140d8ee90() != 0)
+        if ((void*)TSingleton<CBigDataLogSystem>::GetInstance() != 0)
         {
             CStringA kArg("");
             CStringA kName("screenshot");
-            FUN_140a1f970(FUN_140d8ee90(), kName, kArg);
+            FUN_140a1f970((void*)TSingleton<CBigDataLogSystem>::GetInstance(), kName, kArg);
         }
         return kPath;
     }
@@ -1125,13 +1126,13 @@ void TakeScreenshotPng(int bNotify)
     if (hr >= 0)
     {
         s_iScreenshotCounter = s_iScreenshotCounter + 1;
-        CStringW kDone = FUN_14052bd00(0x577, kPath);
+        CStringW kDone = FormatStringId<CStringW>(0x577, kPath);
         MS2_SCREENSHOT_NOTIFY(bNotify, kDone)
-        if (FUN_140d8ee90() != 0)
+        if ((void*)TSingleton<CBigDataLogSystem>::GetInstance() != 0)
         {
             CStringA kArg("");
             CStringA kName("screenshot");
-            FUN_140a1f970(FUN_140d8ee90(), kName, kArg);
+            FUN_140a1f970((void*)TSingleton<CBigDataLogSystem>::GetInstance(), kName, kArg);
         }
     }
     else
@@ -1183,7 +1184,7 @@ std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight)
     kRegion.top = iY;
     kRegion.right = iX + iWidth;
     kRegion.bottom = iY + iHeight;
-    float fScale = 1.0f / FUN_141adbe70(FUN_1403ed2b0());
+    float fScale = 1.0f / FUN_141adbe70((void*)TSingleton<CUIService>::GetInstance());
     kRegion.left = (int)((float)kRegion.left * fScale);
     kRegion.top = (int)((float)kRegion.top * fScale);
     kRegion.right = (int)((float)kRegion.right * fScale);

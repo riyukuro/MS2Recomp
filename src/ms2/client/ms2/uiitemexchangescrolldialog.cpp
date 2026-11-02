@@ -58,11 +58,10 @@ private:
 };
 
 // The inventory (global 0x143ab2a90); its count queries take an Unk_InventoryItemKey (id, +8 kind 1 = by item id).
-class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); }; class Unk_IesInventory : public Unk_Inventory {
+class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5d680(__int64); int FUN_140a5f780(int nTypeId, int n); }; class Unk_IesInventory : public Unk_Inventory {
 public:
 
     int FUN_140a5eda0(Unk_InventoryItemKey* pKey);           // how many items match
-    int FUN_140a5f780(int nTypeId, int n);              // how many items of the type
 };
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_IesInventory
@@ -577,7 +576,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         FUN_140cff1b0(spReq->FUN_1422bb870(), CString("m_name"), CStringW(strCount));
         ASObj data(spReq->GetMember("data"), 2);
-        if (!data.FUN_1422ba9a0())
+        if (!data.IsUndefinedOrNull())
         {
             data.FUN_1407cb9c0("itemRequireCount", nBase);
             data.FUN_1407cb9c0("itemCurrentCount", nHave);
@@ -713,13 +712,13 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
     if (m_spExchange == 0)
         return;
     AScript argMake(reinterpret_cast<const Unk_IesParams&>(params).m_pArgs[0], 2);
-    if (argMake.FUN_1422ba9a0())
+    if (argMake.IsUndefinedOrNull())
         return;
     ASArray argList(reinterpret_cast<const Unk_IesParams&>(params).m_pArgs[1], 2);
-    if (argList.FUN_1422ba9a0())
+    if (argList.IsUndefinedOrNull())
         return;
     AScript argSlot(reinterpret_cast<const Unk_IesParams&>(params).m_pArgs[2], 2);
-    if (argSlot.FUN_1422ba9a0())
+    if (argSlot.IsUndefinedOrNull())
         return;
     int nMake = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(argMake.FUN_1422bb870()))->GetInt();
     int nLen = argList.GetLength();
@@ -727,10 +726,10 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
     for (int i = 0; i < nLen; i++)
     {
         ASObj item(reinterpret_cast<Unk_IesArray&>(argList).FUN_1422bc6b0(i), 2);
-        if (item.FUN_1422ba9a0())
+        if (item.IsUndefinedOrNull())
             continue;
         ASObj data(item.GetMember("data"), 2);
-        if (data.FUN_1422ba9a0())
+        if (data.IsUndefinedOrNull())
             continue;
         int nBase = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("itemRequireCount")))->GetInt();
         int nHave = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(data.GetMember("itemCurrentCount")))->GetInt();

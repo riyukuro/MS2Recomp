@@ -15,6 +15,7 @@
 #include "ms2/placeholder/uiobject.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include <efd/utf8string.h>
 #include <efd/Point3.h>
@@ -106,26 +107,13 @@ struct Unk_TcXform
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_TcXform, 0x34);
-struct Unk_TcRequest
-{
-    CString m_strName;                                   // +0
-    int m_nKind;                                         // +8
-    int m_pad_0c;
-    void* m_pSlot10;
-    NiTransform* m_pXform;                               // +0x18
-    char m_pad_20[0x58];
-};
-MS2_CHECK_SIZE(Unk_TcRequest, 0x78);
-void FUN_140a52ef0(Unk_TcRequest* p);                    // construct
-void FUN_1405a89e0(Unk_TcRequest* p);                    // destroy
 
 // The world: the taxi stop entity near a position, its properties.
 class Unk_TcEntity;
-class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, Vector3 kPos, float fRange, int nA, int nB); };
+class Unk_TcWorld { public: Unk_TcEntity* FUN_141bcfd30(unsigned nHash, NiPoint3 kPos, float fRange, int nA, int nB); };
 
 // Point3 helpers (out-of-line in the exe).
 Vector3 FUN_1420834e0(const Vector3& v, const efd::Matrix3& m);   // efd::operator*(Point3, Matrix3)
-void FUN_14097faa0(NiPoint3* pDst, const NiPoint3* pSrc);   // NiPoint3 assignment
 extern Vector3 DAT_143a08ce8;                       // the default direction
 
 void FUN_140710590(COutPacket& packet);
@@ -355,29 +343,20 @@ void StateTaxiCall::FUN_1417fdbc0(int nState, int nAdd)
 }
 
 // @0x1417fdc00
-// MS2-FUNCTIONAL: transliterated from the decompile (effect request / transform stand-ins)
 void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
 {
     Vector3 kPos;
     Vector3 kRot;
     NiTransform xf;
-    PCBase* pPC = FUN_1417b8370();
-    NiPoint3 kOwnerNi = pPC->vfunc_18();
-    Vector3 kOwner = reinterpret_cast<Vector3&>(kOwnerNi);
-    float fRange = *((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->FUN_140298f40()) + 100.0f;
-    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bcfd30(0x85359406, kOwner, fRange, 1, 0);
+    Unk_TcEntity* pStop = reinterpret_cast<Unk_TcWorld*>(WorldService::GetInstance())->FUN_141bcfd30(0x85359406, FUN_1417b8370()->vfunc_18(), *((float*)&((class Unk_IntOptionEntry*)(void*)(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiStationFindDistance))->FUN_140298f40()) + 100.0f, 1, 0);
     if (pStop == 0)
     {
-        NiPoint3 kDirNi = pPC->vfunc_20();
-        kRot = reinterpret_cast<Vector3&>(kDirNi);
+        kRot = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_1417b8370()->vfunc_20()));
         efd::Matrix3 kMat;
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
         Vector3 kDir = FUN_1420834e0(DAT_143a08ce8.FUN_1409f7960(), kMat);
         xf.MakeIdentity();
-        Vector3 kAhead = kDir.FUN_14097fc90(150.0f);
-        NiPoint3 kNowNi = pPC->vfunc_18();
-        Vector3 kSum = reinterpret_cast<Vector3&>(kNowNi).FUN_14097fd50(kAhead);
-        FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
+        xf.m_Translate = FUN_1417b8370()->vfunc_18() + reinterpret_cast<efd::Point3&>(kDir) * 150.0f;
     }
     else
     {
@@ -387,22 +366,17 @@ void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
         kMat.MakeZRotation((kRot.z * 3.1415927f) / 180.0f);
         Vector3 kDir = FUN_1420834e0(DAT_143a08ce8, kMat);
         xf.MakeIdentity();
-        Vector3 kAhead = kDir.FUN_14097fc90(150.0f).FUN_14097fc90(2.0f);
-        Vector3 kSum = kPos.FUN_14097fd50(kAhead);
-        FUN_14097faa0(&xf.m_Translate, reinterpret_cast<const NiPoint3*>(&kSum));
+        xf.m_Translate = reinterpret_cast<efd::Point3&>(kPos) + reinterpret_cast<efd::Point3&>(kDir) * 150.0f * 2.0f;
     }
     float fAngle = ((180.0f - kRot.z) * 3.1415927f) / 180.0f;
     if (!m_bSurprise)
-        fAngle = fAngle - 1.5707964f;
+        fAngle -= 1.5707964f;
     xf.m_Rotate.FromEulerAnglesXYZ(0.0f, 0.0f, fAngle);
-    alignas(8) char requestBuf[sizeof(Unk_TcRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-    Unk_TcRequest& request = *reinterpret_cast<Unk_TcRequest*>(requestBuf);
-    FUN_140a52ef0(&request);
-    request.m_strName = strEffect;
-    request.m_nKind = (FUN_1417b8560() == 0) ? 3 : 1;
-    request.m_pXform = &xf;
-    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&request));
-    FUN_1405a89e0(&request);
+    NoticeMessage msg;
+    msg.m_strName = strEffect;
+    msg.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
+    msg.m_p18 = &xf;
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&msg));
 }
 
 // @0x1417fe260

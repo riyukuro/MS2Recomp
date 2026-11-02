@@ -59,10 +59,9 @@ public:
 };
 
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
  // the profile key of the player
 CString FUN_141028be0(unsigned __int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
@@ -202,7 +201,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         CStringW strTextL;
         if (pResult->m_nSecL > 0)
         {
-            strTextL = FUN_140811740(0x3ff, pResult->m_nMinL, pResult->m_nSecL);
+            strTextL = FormatStringId<int, int>(0x3ff, pResult->m_nMinL, pResult->m_nSecL);
         }
         else
         {
@@ -217,7 +216,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         CStringW strTextR;
         if (pResult->m_nSecR > 0)
         {
-            strTextR = FUN_140811740(0x3ff, pResult->m_nMinR, pResult->m_nSecR);
+            strTextR = FormatStringId<int, int>(0x3ff, pResult->m_nMinR, pResult->m_nSecR);
         }
         else
         {
@@ -240,7 +239,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         if (((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() == pResult->m_nCharIdR)
             nReward = pResult->m_nRewardR;
     }
-    CStringW strReward = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, 0x55d4a86), nReward);
+    CStringW strReward = FormatStringId<CStringW, int>(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, 0x55d4a86), nReward);
     if (nReward == 0)
         strReward = L"";
     m_30->Invoke("setRewardText", strReward);

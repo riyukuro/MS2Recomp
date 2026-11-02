@@ -85,14 +85,6 @@ public:
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp); the factories not defined here belong
 // to the other guide-condition code units.
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
-ClassObject* FUN_1413a6010();
-ClassObject* FUN_1413af980();
-ClassObject* FUN_1413a8900();
-ClassObject* FUN_1413a8370();
-ClassObject* FUN_1413a9320();
-ClassObject* FUN_1413aac80();
-ClassObject* FUN_1413a58e0();
-ClassObject* FUN_1413a9bc0();
 
 // The initialized marker: no storage, so the dynamic initializer is the registration call and nothing else.
 struct Unk_RegMarker {};
@@ -101,42 +93,42 @@ struct Unk_RegMarker {};
 // @0x1400f3420
 static char s_regDialog;
 static Unk_RegMarker s_initDialog =
-    (FUN_140316aa0(&s_regDialog, CStringW(L"CGuideConditionDialog"), FUN_1413a6010), Unk_RegMarker());
+    (FUN_140316aa0(&s_regDialog, CStringW(L"CGuideConditionDialog"), &CGuideConditionDialog::CreateObject), Unk_RegMarker());
 
 // @0x1400f3470
 static char s_regEnterDungeon;
 static Unk_RegMarker s_initEnterDungeon =
-    (FUN_140316aa0(&s_regEnterDungeon, CStringW(L"CGuideConditionEnterDungeon"), FUN_1413af980), Unk_RegMarker());
+    (FUN_140316aa0(&s_regEnterDungeon, CStringW(L"CGuideConditionEnterDungeon"), &CGuideConditionEnterDungeon::CreateObject), Unk_RegMarker());
 
 // @0x1400f34c0
 static char s_regEquipItem;
 static Unk_RegMarker s_initEquipItem =
-    (FUN_140316aa0(&s_regEquipItem, CStringW(L"CGuideConditionEquipItem"), FUN_1413a8900), Unk_RegMarker());
+    (FUN_140316aa0(&s_regEquipItem, CStringW(L"CGuideConditionEquipItem"), &CGuideConditionEquipItem::CreateObject), Unk_RegMarker());
 
 // @0x1400f3510
 static char s_regEquipSkill;
 static Unk_RegMarker s_initEquipSkill =
-    (FUN_140316aa0(&s_regEquipSkill, CStringW(L"CGuideConditionEquipSkill"), FUN_1413a8370), Unk_RegMarker());
+    (FUN_140316aa0(&s_regEquipSkill, CStringW(L"CGuideConditionEquipSkill"), &CGuideConditionEquipSkill::CreateObject), Unk_RegMarker());
 
 // @0x1400f3560
 static char s_regExistItem;
 static Unk_RegMarker s_initExistItem =
-    (FUN_140316aa0(&s_regExistItem, CStringW(L"CGuideConditionExistItem"), FUN_1413a9320), Unk_RegMarker());
+    (FUN_140316aa0(&s_regExistItem, CStringW(L"CGuideConditionExistItem"), &CGuideConditionExistItem::CreateObject), Unk_RegMarker());
 
 // @0x1400f35b0
 static char s_regExistShortcut;
 static Unk_RegMarker s_initExistShortcut =
-    (FUN_140316aa0(&s_regExistShortcut, CStringW(L"CGuideConditionExistShortcut"), FUN_1413aac80), Unk_RegMarker());
+    (FUN_140316aa0(&s_regExistShortcut, CStringW(L"CGuideConditionExistShortcut"), &CGuideConditionExistShortcut::CreateObject), Unk_RegMarker());
 
 // @0x1400f3600
 static char s_regFalse;
 static Unk_RegMarker s_initFalse =
-    (FUN_140316aa0(&s_regFalse, CStringW(L"CGuideConditionFalse"), FUN_1413a58e0), Unk_RegMarker());
+    (FUN_140316aa0(&s_regFalse, CStringW(L"CGuideConditionFalse"), &CGuideConditionFalse::CreateObject), Unk_RegMarker());
 
 // @0x1400f3650
 static char s_regFieldId;
 static Unk_RegMarker s_initFieldId =
-    (FUN_140316aa0(&s_regFieldId, CStringW(L"CGuideConditionFieldId"), FUN_1413a9bc0), Unk_RegMarker());
+    (FUN_140316aa0(&s_regFieldId, CStringW(L"CGuideConditionFieldId"), &CGuideConditionFieldId::CreateObject), Unk_RegMarker());
 #endif
 
 // ---- CGuideConditionPosition ----------------------------------------------------------------------------------------------

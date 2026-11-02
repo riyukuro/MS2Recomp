@@ -87,7 +87,7 @@ void UIHomeSummonDialog::OnLoadComplete()
     static_cast<ASMovieClip*>((ASDisplayObject*)m_180.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), (void*)0);
     FUN_14129a040("m_textInput", m_190);
     reinterpret_cast<ASTextInput*>(m_190.operator->())->SetEditable(1);
-    reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422c7630(1);
+    reinterpret_cast<ASTextInput*>(m_190.operator->())->SetFocused(1);
     FUN_141901390(0, vfunc_48());
 }
 MS2_REPLACE_METHOD(0x141299880, UIHomeSummonDialog, OnLoadComplete, 553, 0x9A682978);
@@ -138,8 +138,8 @@ void UIHomeSummonDialog::Summon()
         return;
     if (strText.GetLength() < 2)
     {
-        reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422e0ab0(L"");
-        reinterpret_cast<ASTextInput*>(m_190.operator->())->FUN_1422e1500(0, 0);
+        reinterpret_cast<ASTextInput*>(m_190.operator->())->SetTextW(L"");
+        reinterpret_cast<ASTextInput*>(m_190.operator->())->FocusAndSetSelection(0, 0);
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);

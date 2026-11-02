@@ -19,6 +19,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/unnamed/unit_1406125d0.h"
+#include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
@@ -35,6 +36,7 @@
 #include "ms2/commonfiles/contentshutdown.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants methods
 class Unk_140166410;
 
 static CString s_strStun = "stun";
@@ -62,12 +64,13 @@ class Unk_LocalPlayer : public PCBase { };
 class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int a, int b);
+extern Unk_Inventory g_143ab2a90;
 void FUN_141275260(int nId, int a, int b);
 Unk_140166410*FUN_140166410();
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
-class Unk_MesoCfg { public: int FUN_140f20b90(); };
-class Unk_Cfg6198 { public: CString FUN_1409f6f30(); };
-class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_Cfg6198 m_6198; };
+class Unk_MesoCfg { public: };
+class Unk_AvTextCfg { public: CString FUN_1409f6f30(); };
+class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_AvTextCfg m_6198; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_Cfg* FUN_1401d3200()
 void FUN_1418fe1c0(const CString& str);
 class Unk_GmKeys : public CInputKeyHandler {};
@@ -226,7 +229,7 @@ void UIBlackMarketDialog::OnLoadComplete()
         FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
     if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0xf4))
     {
-        m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6078.FUN_140f20b90() == 1);
+        m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Common::Constants::Values<__int64>*>(&reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6078)->FUN_140f20b90() == 1);
         m_30->FUN_140bbe640<ASButton>("m_mesoMarketDetailButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton));
         if (m_spDetailButton.get())
             reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::FUN_1418d1430), 0);
@@ -273,7 +276,7 @@ int UIBlackMarketDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (vfunc_55() == 0 && (m_30.get() ? true : false) && FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
+    if (vfunc_55() == 0 && (m_30.get() ? true : false) && FUN_140b632f0()->GetTopEntity(m_e0) == this)
     {
         CString strKey = "";
         if (((class Unk_GmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
@@ -298,7 +301,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     {
         __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
         ASTooltip tip(((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x80, 2);
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
         {
             if (tip.FUN_1409e0d40(spItem.get()))
@@ -317,7 +320,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             MS2Ptr<CItem> spItem = spEntry->m_item;
             FUN_1413490b0(spItem, pRetVal, FUN_1418d0da0(m_spItemSearch.get()), 0x400, 0);
             ASTooltip tip(*pRetVal, 2);
-            if (!tip.FUN_1422ba9a0())
+            if (!tip.IsUndefinedOrNull())
                 tip.FUN_1409db930(MS2Ptr<CItem>(0), spItem);
         }
     }
@@ -330,7 +333,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             if ((strArg == "ItemGUID"))
             {
                 __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+                MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
                 reinterpret_cast<ItemPreviewMgr*>(((class Unk_Hotbar*)FUN_1409bb9e0()))->OpenPreview(spItem, 0);
             }
             else if ((strArg == "MarketSN"))
@@ -353,7 +356,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         if ((strArg == "ItemGUID"))
         {
             __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
             if (spItem.get())
                 FUN_140d2cfc0(spItem);
         }

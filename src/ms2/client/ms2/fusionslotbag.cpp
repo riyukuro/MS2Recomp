@@ -55,8 +55,6 @@ class Unk_FusionUIManager { public: };
 // ItemInfoSlot::SetSlotFn / SetCanFn.
 typedef Delegate<void(ItemInfoSlot&, ASSlot&)> FusionSlotFn;
 typedef Delegate<int(ItemInfoSlot&)> FusionCanFn;
-void FUN_141416650(ItemInfoSlot* pSlot, FusionSlotFn fn);
-void FUN_1414166f0(ItemInfoSlot* pSlot, FusionCanFn fn);
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);      // find an item by uid
 
@@ -124,8 +122,8 @@ DragSlot* FusionSlotBag::vfunc_16(int nIndex)
     UIItemMergeOptionDialog* pDlg = FUN_14123a9b0(0x4e68);
     if (pDlg)
     {
-        FUN_1414166f0(pSlot, FusionCanFn(pDlg, &UIItemMergeOptionDialog::FUN_1419d27e0));
-        FUN_141416650(pSlot, FusionSlotFn(this, &FusionSlotBag::FUN_14123a650));
+        pSlot->SetCanFn(FusionCanFn(pDlg, &UIItemMergeOptionDialog::FUN_1419d27e0));
+        pSlot->SetSlotFn(FusionSlotFn(this, &FusionSlotBag::FUN_14123a650));
     }
     return pSlot;
 }

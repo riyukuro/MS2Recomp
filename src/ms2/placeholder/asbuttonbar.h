@@ -24,7 +24,7 @@ public:
     virtual void vfunc_24(bool bRefresh);                               // 24 0x1422c80c0 validateNow
 #endif
 
-    void FUN_1422e2d50(MS2Ptr<ASDataProvider> spProvider);              // set the data provider (by value: the callee destroys it)
+    void SetDataProviderPtr(MS2Ptr<ASDataProvider> spProvider);              // set the data provider (by value: the callee destroys it)
     void SetDataProvider(const Scaleform::GFx::Value& v);                 // set "dataProvider"
     MS2Ptr<ASDataProvider> GetDataProvider();                             // the data provider (uiclosetdialog.cpp)
     void SetItemRendererName(const CString& strName);                         // set "itemRendererName"
@@ -35,7 +35,7 @@ public:
     void SetAutoSize(const CString& strAutoSize);                     // set "autoSize"
     CString GetAutoSize();                                            // "autoSize"
     void SetButtonWidth(float f);                                        // set "buttonWidth"
-    float FUN_1422e3170();                                              // "buttonWidth"
+    float GetButtonWidth();                                              // "buttonWidth"
     void SetSelectedIndex(int nIndex);                                     // select a button ("selectedIndex")
     int GetSelectedIndex();                                                // the selected button (uiguilddialog.cpp)
     void InvalidateSettings();                                               // invalidateSettings()

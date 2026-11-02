@@ -14,28 +14,10 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
-
-// return types of the getters this unit calls
-class CItemGemPropertyTable;
+#include "ms2/commonfiles/itemgem.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants methods
 
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
-// Gem tables (RTTI names). Only the polymorphic part is declared; the effect-name lookup is an out-of-line member.
-class CGemDataBase { public: virtual ~CGemDataBase(); };
-class CGemCharEffectData : public CGemDataBase { public: CString GetCoupleEffect(int nOwnerGem, int nPartnerGem); };
-class Unk_GemDbPtr { public: ~Unk_GemDbPtr(); CGemDataBase* FUN_1405a9970() const; private: void* m_pad_00; CGemDataBase* m_p; };   // dtor 0x1405a8740
-class Unk_GemEffPtr
-{
-public:
-    Unk_GemEffPtr(CGemCharEffectData* p);               // 0x1405a80c0
-    ~Unk_GemEffPtr();                                   // 0x1405a86b0
-    bool FUN_1405a8d70(int n) const;                    // operator==
-    CGemCharEffectData* FUN_1405a8ef0() const;          // operator->
-private:
-    void* m_pad_00;
-    CGemCharEffectData* m_p;
-};
-class Unk_GemDb { public: Unk_GemDbPtr FUN_1405ac160(int nGemId); };
-CItemGemPropertyTable* FUN_1405a96f0();
 
 // Map flags: the shared map data behind a counted pointer (the world service's copy of m_298).
 class Unk_CeMapData : public CFieldData { };
@@ -58,23 +40,26 @@ struct Unk_CoupleXform
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_CoupleXform, 0x34);
-struct Unk_CeRequest
-{
-    CString m_strName;                                  // +0
-    int m_nOwnerId;                                     // +8
-    int m_pad_0c;
-    void* m_pSlot10;
-    Unk_CoupleXform* m_pXform;                          // +0x18
-    char m_pad_20[0x58];
-};
-MS2_CHECK_SIZE(Unk_CeRequest, 0x78);
+struct Unk_CeRequest;
 class Unk_CeEffectMgr
 {
 public:
     int FUN_1411a49c0(Unk_CeRequest* pRequest);         // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                    // release
 };
-class NoticeMessage { public: NoticeMessage(); ~NoticeMessage(); };   // the request's ctor and dtor
+class NoticeMessage   // the request, with its out-of-line ctor and dtor
+{
+public:
+    NoticeMessage();
+    ~NoticeMessage();
+    CString m_strName;                                  // +0
+    int m_nOwnerId;                                     // +8
+    int m_pad_0c;
+    void* m_pSlot10;
+    Unk_CoupleXform* m_pXform;                          // +0x18
+    char m_pad_20[0x50];
+};
+MS2_CHECK_SIZE(NoticeMessage, 0x70);
 void* FUN_140a332d0(Unk_CoupleXform* p);                // NiTransform default ctor
 void FUN_14097fad0(float* pDst, const Unk_CoupleVec* pSrc);   // NiPoint3 assignment (translate)
 extern Unk_EfdMatrix3 DAT_143a09600;                    // identity rotation
@@ -98,7 +83,6 @@ public:
 };
 unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
 extern Vector3 DAT_143b01a60;              // checked value getter
-void FUN_1402b7560(void* pSlot, const char* pszMessage);
 
 // World service / players.
 class Unk_CeWorld
@@ -107,8 +91,6 @@ public:
     Unk_CeMapPtr FUN_141bd30a0();                       // current map data
 };
 void* FUN_1409613d0(PCBase* p);
-int FUN_141663940(PCBase* p);
-__int64 FUN_141663990(PCBase* p);
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
 class Unk_IntervalTimer   // C3: member view for the former free stand-ins
 {
@@ -132,7 +114,6 @@ CoupleEffectSystem::~CoupleEffectSystem()
 }
 
 // @0x140b0e7a0
-// MS2-FUNCTIONAL: transliterated from the decompile; point copies and frame layout differ
 void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
 {
     if (m_bActive == 0)
@@ -149,21 +130,18 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
         if (pPartner == 0)
             return;
-        if (m_nCoupleType == 0 || m_nCoupleType != FUN_141663940(pPartner))
+        if (m_nCoupleType == 0 || m_nCoupleType != reinterpret_cast<PC*>(pPartner)->GetCoupleType())
             return;
-        if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_141656a80() != FUN_141663990(pPartner))
+        if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_141656a80() != reinterpret_cast<PC*>(pPartner)->FUN_141663990())
             return;
-        NiPoint3 ptPartner = pPartner->vfunc_18();
-        NiPoint3 ptOwner = m_pOwner->vfunc_18();
-        float fDistance = FUN_140966f00(reinterpret_cast<Vector3&>(ptOwner), reinterpret_cast<Vector3&>(ptPartner));
+        float fDistance = FUN_140966f00(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18())), reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())));
         if (!(fDistance > *((float*)&((class Unk_IntOptionEntry*)(struct Unk_CeConstFloat*)(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_maxDistance))->FUN_140298f40())))
         {
             if (m_bInRange != 0)
             {
                 if (m_timer.FUN_140868c00() != 0)
                 {
-                    Unk_CoupleVec ptMid = FUN_140b0f160();
-                    float fMove = FUN_140966f00(reinterpret_cast<Vector3&>(m_posEffect), reinterpret_cast<Vector3&>(ptMid));
+                    float fMove = FUN_140966f00(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const Unk_CoupleVec&>(FUN_140b0f160()))));
                     if (fMove > 50.0f && m_nEffectId != 0)
                         FUN_140b0f3a0(1);
                 }
@@ -247,7 +225,6 @@ void CoupleEffectSystem::FUN_140b0ecd0()
 }
 
 // @0x140b0ed30
-// MS2-FUNCTIONAL: the exe has the request as a plain local (rsp+0x50, ctor/dtor 0x140a52ef0/0x1405a89e0); the char-buffer reference adds pointer loads. Making it a plain local needs a declared-only ctor/dtor plus symbols-manual rows.
 void CoupleEffectSystem::FUN_140b0ed30()
 {
     if (m_nEffectId != 0)
@@ -260,15 +237,12 @@ void CoupleEffectSystem::FUN_140b0ed30()
     Unk_CoupleRot rot;
     reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
     xf.m_rotate = rot;
-    alignas(8) char requestBuf[sizeof(Unk_CeRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-    Unk_CeRequest& request = *reinterpret_cast<Unk_CeRequest*>(requestBuf);
-    reinterpret_cast<NoticeMessage*>(&request)->NoticeMessage::NoticeMessage();
+    NoticeMessage request;
     request.m_strName = FUN_140b0efb0();
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
-    m_nEffectId = reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&request);
+    m_nEffectId = reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_CeRequest*>(&request));
     m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_checkInterval));
-    reinterpret_cast<NoticeMessage*>(&request)->~NoticeMessage();
 }
 
 // @0x140b0eed0
@@ -299,10 +273,10 @@ CString CoupleEffectSystem::FUN_140b0efb0()
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
         return "";
-    Unk_GemEffPtr spEffect(dynamic_cast<CGemCharEffectData*>(reinterpret_cast<Unk_GemDb*>(FUN_1405a96f0())->FUN_1405ac160(m_nGemId).FUN_1405a9970()));
-    if (spEffect.FUN_1405a8d70(0) != 0)
+    MS2Ptr<CGemCharEffectData> spEffect(dynamic_cast<CGemCharEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nGemId).get()));
+    if (spEffect == 0)
         return "";
-    return spEffect.FUN_1405a8ef0()->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60());
+    return spEffect->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->FUN_141658e60(), reinterpret_cast<PC*>(pPartner)->FUN_141658e60());
 }
 
 // @0x140b0f160
@@ -316,8 +290,8 @@ Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
     return Unk_CoupleVec(reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f));
 #else
-    return Unk_CoupleVec(reinterpret_cast<Vector3&>(m_pOwner->vfunc_18())
-                             .FUN_14097fd50(reinterpret_cast<Vector3&>(pPartner->vfunc_18()))
+    return Unk_CoupleVec(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()))
+                             .FUN_14097fd50(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPartner->vfunc_18())))
                              .FUN_140ae9180(2.0f));
 #endif
 }
@@ -364,6 +338,6 @@ void CoupleEffectSystem::FUN_140b0f3a0(int nMode)
 unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot)
 {
     if (pSlot->m_bSet == 0)
-        FUN_1402b7560(pSlot, "constants is not set");
+        reinterpret_cast<Common::Constants::Object*>(pSlot)->Error("constants is not set");
     return &pSlot->m_value;
 }

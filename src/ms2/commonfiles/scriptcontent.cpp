@@ -8,6 +8,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/commonfiles/os.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
@@ -29,11 +30,10 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 int FUN_140768010(int, int);  // C3: the definition's signature
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 size_t FUN_140186260(ATL::CAtlArray<int>& arr);                                     // GetCount
-int* FUN_1401844d0(ATL::CAtlArray<int>& arr, size_t i);                             // GetAt
 Unk_ScriptPtr<Unk_ScriptTalk> FUN_140856820(int nNpcId, int nKind);                 // talk script by npc
 Unk_ScriptPtr<Unk_ScriptTalk> FUN_1408564b0(int nQuestId, int nKind);               // talk script by quest
 
@@ -62,7 +62,7 @@ int CScriptContent::vfunc_2(Unk_ScriptXmlNode* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "text", m_text);
     XmlGetAttr((class TiXmlElement*)(pNode), "voiceID", m_voiceId);
     XmlGetAttr((class TiXmlElement*)(pNode), "illust", m_illust);
-    FUN_1403b4750()->FUN_1416fb380(m_text);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(m_text);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14078CFD0, CScriptContent, vfunc_2, 158, 0x04708005);
@@ -276,7 +276,7 @@ int CCinematicContent::vfunc_2(Unk_ScriptXmlNode* pNode)
         XmlGetAttr((class TiXmlElement*)(pChoice), "text", choice.m_text);
         XmlGetAttr((class TiXmlElement*)(pChoice), "goto", choice.m_goto);
         XmlGetAttr((class TiXmlElement*)(pChoice), "gotoFail", choice.m_gotoFail);
-        FUN_1403b4750()->FUN_1416fb380(choice.m_text);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(choice.m_text);
         spDistractor->m_choices.Add(choice);
     }
     m_distractors = spDistractor;
@@ -310,7 +310,7 @@ void CCinematicContent::vfunc_3(int nId)
                 continue;
             BOOL bAll = TRUE;
             for (size_t j = 0; j < FUN_140186260(ids); j++) {
-                if (FUN_140856820(nId, *FUN_1401844d0(ids, j)).get() != 0) {
+                if (FUN_140856820(nId, ids[j]).get() != 0) {
                     bAll = FALSE;
                     break;
                 }
@@ -343,7 +343,7 @@ void CCinematicContent::vfunc_4(int nId)
                 continue;
             BOOL bAll = TRUE;
             for (size_t j = 0; j < FUN_140186260(ids); j++) {
-                if (FUN_1408564b0(nId, *FUN_1401844d0(ids, j)).get() != 0) {
+                if (FUN_1408564b0(nId, ids[j]).get() != 0) {
                     bAll = FALSE;
                     break;
                 }

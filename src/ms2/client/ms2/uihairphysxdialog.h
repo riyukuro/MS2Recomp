@@ -93,7 +93,7 @@ public:
     int FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxModel** ppRight);   // 0 both, 1 left, 2 right
     void FUN_141984c30(Unk_HpxModel* pModel, const CString& strJoint, float* pSoft);
     void FUN_141984cd0(Unk_HpxModel* pModel, const CString& strJoint, float* pX, float* pY, float* pZ);
-    void FUN_141984da0(const NiMatrix3& kRot, NiPoint3& kDeg);           // euler angles in degrees
+    void FUN_141984da0(const NiMatrix3& kRot, efd::Point3& kDeg);           // euler angles in degrees
     void FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos);            // move the model
     void FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg);            // rotate the model
     void FUN_141985210(Unk_HpxModel* pModel, const NiTransform& kXform);    // apply a whole transform

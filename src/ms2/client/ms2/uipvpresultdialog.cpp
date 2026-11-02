@@ -73,7 +73,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class Unk_PrScript : public AScript { };
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
-CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 const int* FUN_1402fbd20(const int* a, const int* b);               // std::min<int>
 const int* FUN_1404eb7e0(const int* a, const int* b);               // std::max<int>
 int FUN_141654730(PCBase* pPC);                                     // the job
@@ -163,7 +163,7 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
     CStringW strText(L"");
     if (0 < m_180)
     {
-        strText = FUN_14093fa20(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_17c), m_180);
+        strText = FormatStringId<CStringW, int>(0x401, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_17c), m_180);
         m_30->Invoke("setRewardText", strText);
         MS2Ptr<CItemData> spItem = FUN_14053f870(m_17c);
         if ((CItemData*)spItem != 0)

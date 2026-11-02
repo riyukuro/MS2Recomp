@@ -174,7 +174,7 @@ class UIInventoryDialog : public UIDialog
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The shop category table (reload on open).
-CShopCategoryTable* FUN_1406aa4b0();
+class CShopCategoryTable;
 
 // The talk (npc conversation) manager and the network service (npc talk state).
 class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };
@@ -234,7 +234,7 @@ CStringW FUN_14183e9c0(CStringW strName, int nRank);        // the item name in 
 CStringW BlockFormat(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 bool FUN_141b046e0(int nGroup);                            // a valid product group (0..2)
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 extern Unk_Inventory g_143ab2a90;                         // the player's inventory
 CStringW FUN_1418fec90(int nType, __int64 nAmount, int nCost);
 void FUN_1418fffd0(ASObj* pTab, int nGroup, const CStringW& strTitle, const CStringW& strTooltip);
@@ -617,8 +617,8 @@ MS2_REPLACE_METHOD(0x141AF2BE0, UIShopDialog, GetTypeName, 61, 0x14B4119C);
 // @0x141af2c30
 int UIShopDialog::vfunc_65()
 {
-    if (FUN_1406aa4b0())
-        FUN_1406aa4b0()->Reload(0);
+    if (TSingleton<CShopCategoryTable>::GetInstance())
+        TSingleton<CShopCategoryTable>::GetInstance()->Reload(0);
     if (!UIDialog::vfunc_65())
         return 0;
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
@@ -804,7 +804,7 @@ void UIShopDialog::OnLoadComplete()
     {
         Scaleform::GFx::Value value = m_30->Invoke("initShop", strMovie);
         MS2Ptr<AScript> spScript(new AScript(value, 2));
-        if (spScript == 0 || spScript->FUN_1422ba9a0()) {
+        if (spScript == 0 || spScript->IsUndefinedOrNull()) {
             vfunc_67();
             return;
         }
@@ -842,7 +842,7 @@ void UIShopDialog::OnLoadComplete()
                 strTitle = L"$s_shop_title_star";
                 if (bDebug) {
                     CString strKey("$s_shop_title_star");
-                    strTitle = FUN_14025e7a0()->FUN_1422b0570(strKey);
+                    strTitle = FUN_14025e7a0()->Localize(strKey);
                 }
             }
             else if (m_nShopType == 4) {
@@ -1128,8 +1128,8 @@ int UIShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             Scaleform::GFx::Value value = args.FUN_1422b9260();
             AScript obj(value, 2);
             int nItemId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("itemID")))->GetUInt();
-            float fX = args.FUN_1422b8c10();
-            float fY = args.FUN_1422b8c10();
+            float fX = args.PopFloat();
+            float fY = args.PopFloat();
             MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
             if (spData == 0)
                 return 1;
@@ -1205,7 +1205,7 @@ void UIShopDialog::vfunc_80(void* pReply)
         } else {
             FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
             if (MS2Ptr<ASTextInput> spInput = m_spShop->FUN_140bbe880<ASTextInput>("m_inputSearch"))
-                ((class ASTextInput*)(class ASTextInput*)(spInput.operator->()))->FUN_1422e0a60("");
+                ((class ASTextInput*)(class ASTextInput*)(spInput.operator->()))->SetTextA("");
         }
     }
 }
@@ -1282,7 +1282,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     else {
         Scaleform::GFx::Value value = pArgs->FUN_1422b9260();
         AScript obj(value, 2);
-        if (obj.FUN_1422ba9a0())
+        if (obj.IsUndefinedOrNull())
             return;
         int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
         int nType = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("productType")))->GetInt();
@@ -1342,7 +1342,7 @@ int UIShopDialog::vfunc_13()
     if (vfunc_55() == 0 && (m_spShop.get() ? true : false)) {
         if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
             if (MS2Ptr<ASTextInput> spInput = m_spShop->FUN_140bbe880<ASTextInput>("m_inputSearch")) {
-                if (spInput->FUN_1422c76c0() != 0) {
+                if (spInput->GetFocused() != 0) {
                     CStringW strText = spInput->GetText();
                     Search(strText);
                     return 1;
@@ -1488,7 +1488,7 @@ bool UIShopDialog::BillTooltip(Scaleform::GFx::Value* pOut, ASData& args, MS2Ptr
         return false;
     Scaleform::GFx::Value value = args.FUN_1422b9260();
     AScript obj(value, 2);
-    if (obj.FUN_1422ba9a0())
+    if (obj.IsUndefinedOrNull())
         return false;
     int nSerial = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(obj.GetMember("serialID")))->GetInt();
     {
@@ -1906,7 +1906,7 @@ void UIShopDialog::ReadShopError(CInPacket& packet)
     {
         int nLevel = nValue;
         CStringW strText = BlockFormat<unsigned>(0x38, (unsigned&)nLevel);
-        FUN_1403b4750()->ReplaceObjectAndValueWords(strText);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
         FUN_1412751f0(strText, 1, 1);
         break;
     }
@@ -2204,7 +2204,7 @@ void UIShopDialog::RefreshItems(const CStringW& strSearch)
                 if (bFound) {
                     ASSlot slot(2);
                     if (PopulateMerat(slot, spItem, 0))
-                        data.FUN_1422bc050(slot.FUN_1422bb870());
+                        data.PushValue(slot.FUN_1422bb870());
                 }
             }
         }
@@ -2229,7 +2229,7 @@ void UIShopDialog::RefreshItems(const CStringW& strSearch)
                     }
                     if (bFound) {
                         if (PopulateProduct(slot, spProduct, spEvent, pPlayer))
-                            data.FUN_1422bc050(slot.FUN_1422bb870());
+                            data.PushValue(slot.FUN_1422bb870());
                     }
                 }
             }
@@ -2240,7 +2240,7 @@ void UIShopDialog::RefreshItems(const CStringW& strSearch)
             ASSlot slot(2);
             MS2Ptr<CNpcShopProductCli> spProduct = dynamic_cast<CNpcShopProductCli*>((CNpcShopProductBase*)it->second);
             if (PopulateProduct(slot, spProduct, MS2Ptr<CNpcShopGivePointContextBase>(0), pPlayer))
-                data.FUN_1422bc050(slot.FUN_1422bb870());
+                data.PushValue(slot.FUN_1422bb870());
         }
     }
     else if (m_2c2 && m_nGroup == 2) {
@@ -2289,7 +2289,7 @@ void UIShopDialog::FillNewProducts(ASDataProvider& list, const CStringW& strSear
                 }
                 if (bFound) {
                     if (PopulateNewProduct(slot, spProduct, spEvent, pPlayer))
-                        list.FUN_1422bc050(slot.FUN_1422bb870());
+                        list.PushValue(slot.FUN_1422bb870());
                 }
             }
         }
@@ -2310,7 +2310,7 @@ void UIShopDialog::FillNewProducts(ASDataProvider& list, const CStringW& strSear
             }
             if (bFound) {
                 if (PopulateNewProduct(slot, spProduct, spEvent, pPlayer))
-                    list.FUN_1422bc050(slot.FUN_1422bb870());
+                    list.PushValue(slot.FUN_1422bb870());
             }
         }
     }
@@ -2328,7 +2328,7 @@ void UIShopDialog::FillTab(ASDataProvider& tabs, int nGroup, const CStringW& str
         tab.FUN_1407cbbe0("renderReverse", true);
     else
         tab.FUN_1407cbbe0("renderReverse", false);
-    tabs.FUN_1422bc050(tab.FUN_1422bb870());
+    tabs.PushValue(tab.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x141AFD270, UIShopDialog, FillTab, 260, 0x8886D243);
 
@@ -3498,7 +3498,7 @@ void UIShopDialog::Unequip(ASData& args)
     AScript obj(value, 2);
     int nSlot = FUN_1407181d0(strSlot);
     CString strGuid;
-    obj.FUN_1422bac00("itemGUID", strGuid);
+    obj.TryGetString("itemGUID", strGuid);
     unsigned __int64 nUid = FUN_140718350(strGuid);
     if (m_spPreview.get())
         m_spPreview->FUN_140d3fac0(nUid);

@@ -152,8 +152,8 @@ public:
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);   // C3: the real member (0x141bd1530, worldservice.h)
     void* FUN_141bd0cc0();                                  // the local player
-    MS2Ptr<Unk_WsB_Prop> FUN_141bc66b0(const CString& strName);
-    MS2Ptr<Unk_WsB_Notice> FUN_141bc9be0(unsigned nObjectId);
+    MS2Ptr<Unk_WsB_Prop> FindProp(const CString& strName);
+    MS2Ptr<Unk_WsB_Notice> FindProxyObject(unsigned nObjectId);
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -761,7 +761,7 @@ void CUgcDownloadProfile::ProcessResult()
                 continue;
             if (sp->m_strObjectName.GetLength() > 0)
             {
-                CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc66b0(sp->m_strObjectName).get();
+                CInteractObject* pObject = WorldService::GetInstance()->FindProp(sp->m_strObjectName).get();
                 CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
                 if (pImage)
                 {
@@ -793,7 +793,7 @@ void CUgcDownloadProfile::ProcessResult()
                     }
                     if (nObjectId > 0)
                     {
-                        MS2Ptr<Unk_WsB_Notice> spTag = WorldService::GetInstance()->FUN_141bc9be0(nObjectId);
+                        MS2Ptr<Unk_WsB_Notice> spTag = WorldService::GetInstance()->FindProxyObject(nObjectId);
                         if (spTag.get())
                             spTag->m_strProfileImage = strUrl;
                     }
@@ -917,7 +917,7 @@ void CUgcDownloadGuildMark::ProcessResult()
             UIPvPGuildTeamResultDialog* pRank = Unk_GuildFindDialog<UIPvPGuildTeamResultDialog>(0x4ec7);
             if (pRank && pRank->vfunc_55() == 0)
                 pRank->FUN_1413415e0(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
-            CInteractObject* pObject = WorldService::GetInstance()->FUN_141bc66b0(sp->m_strName).get();
+            CInteractObject* pObject = WorldService::GetInstance()->FindProp(sp->m_strName).get();
             CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
             if (pImage)
                 pImage->FUN_1414017b0(m_strPath);

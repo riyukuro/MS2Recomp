@@ -123,10 +123,6 @@ public:
 };
 MS2_CHECK_SIZE(NvidiaGPU, 0xb0);
 
-class Unk_GPUApp { public: double FUN_141473260(); float FUN_141473210(); /* frame rate (w25) */ };
-Unk_GPUApp* FUN_14086d260();
-class Unk_GPULog { public: void FUN_1401ce2b0(const char* text); };
-Unk_GPULog* FUN_140a44830();
 int FUN_140392040(char* buf, size_t size, const char* fmt, ...);
 
 class GPUManager : public TSingleton<GPUManager> {

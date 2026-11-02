@@ -102,6 +102,7 @@ static CString s_strCursorSound("System_Fishing_Cursor_01");
 #include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/commonfiles/ugcbuildvalidator.h"  // C3: Unk_CubePoint
 // MS2-PIN: ??__Es_pointer1401cd100@@YAXXZ 0x1400d09f0
 static CString s_strFailSound("System_Fishing_Fail");
 static CString s_strGreatSuccessSound("System_Fishing_Great_Success");
@@ -127,31 +128,24 @@ struct Unk_FmNames
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The cube map service (efd class id 0x06100017).
-struct Unk_FmInt3
-{
-    Unk_FmInt3();                                           // 0x1408850a0
-    int x, y, z;
-};
 class Cube;
-class Unk_FmCubeMap : public efd::ISystemService
+class CubeMapInformationService : public efd::ISystemService
 {
 public:
-    efd::Point3 FUN_1410b7ba0(efd::Point3 kFrom, efd::Point3 kTo, float fStep, efd::Point3* pOut, int bSnap);
-    efd::Point3 FUN_1410b7a20(efd::Point3 kPos, efd::Point3* pOut);   // the cell position of a point
-    Cube* FUN_1410b8a60(Unk_FmInt3 kCell);                  // the cube at a cell
+    Vector3 FUN_1410b7ba0(Vector3 kFrom, Vector3 kTo, float fStep, Vector3* pOut, int bSnap);
+    Vector3 GetCellPosition(Vector3 kPos, Vector3* pOut);   // the cell position of a point
+    Cube* GetCubeAtCell(Unk_Int3 kCell);                    // the cube at a cell
 };
-struct Unk_FmFramework;
-extern Unk_FmFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 template <> MS2Ptr<Cube>::MS2Ptr(Cube* p);                  // 0x140884fb0
 extern template class MS2Ptr<Cube>;
 
 // Grid helpers.
-int FUN_1408a13d0(efd::Point3 kPos);                        // the grid cell key of a point
-Unk_FmInt3 FUN_1408a1430(efd::Point3 kPos);                 // the grid cell of a point
-Unk_FmInt3 FUN_1408a0400(int nKey);                         // the grid cell of a key
-efd::Point3 FUN_1408a15b0(Unk_FmInt3 kCell, const efd::Point3& kOffset);   // the cell centre
-extern efd::Point3 DAT_143b01a60;                           // the zero point
+int FUN_1408a13d0(NiPoint3 kPos);                           // the grid cell key of a point
+Unk_Int3 FUN_1408a1430(NiPoint3 kPos);                      // the grid cell of a point
+Unk_Int3 FUN_1408a0400(int nKey);                           // the grid cell of a key
+efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, const efd::Point3& kOffset);   // the cell centre
 
 // The local player with the members this unit calls.
 class Unk_FmPC : public MyPC
@@ -213,7 +207,6 @@ int FUN_141472bc0();   // C3: was FUN_141472bc0
 bool FUN_14053f8c0(unsigned int);   // C3: was FUN_14053f8c0
 bool FUN_14053f900(unsigned int);   // C3: was FUN_14053f900
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-class Unk_FmPhysX { public: int FUN_14168a310(const efd::Point3& kFrom, const efd::Point3& kTo, void* pHit, float fLen, __int64 b, int c); };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 void FUN_140ad4440(void* pHit);
 
@@ -328,33 +321,11 @@ float Unk_EaseOut::Evaluate(float t)
 }
 
 // @0x140cd80d0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void Unk_FishLineBody::FUN_140cd80d0()
 {
     if (m_pGuide == 0 || m_pOwner == 0)
         return;
-    if (m_flyTimer.FUN_140868ba0() == 0 && m_flyTimer.FUN_140868c00() == 0)
-    {
-        efd::SmartPointer<Unk_FmCubeMap> spCubeMap = ((class Unk_FmCubeMap*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-        efd::Point3 kHit;
-        efd::Point3 kCell;
-        NiPoint3 kDir = m_pOwner->vfunc_20();
-        NiPoint3 kPos = m_pOwner->vfunc_18();
-        spCubeMap->FUN_1410b7ba0(efd::Point3(kPos.x, kPos.y, kPos.z), efd::Point3(kDir.x, kDir.y, kDir.z), 10.0f,
-            &kHit, 0);
-        spCubeMap->FUN_1410b7a20(kHit, &kCell);
-        NiPoint3 kGuide = m_pGuide->vfunc_3();
-        if (kCell != efd::Point3(kGuide.x, kGuide.y, kGuide.z))
-        {
-            m_flyTimer.FUN_140868750(200);
-            NiPoint3 kFrom = m_pGuide->vfunc_3();
-            m_kTarget = efd::Point3(kFrom.x, kFrom.y, kFrom.z);
-            m_kLanding = kCell;
-            FUN_141276180(s_strCursorSound, "");
-            m_waitTimer.FUN_140868750(1000);
-        }
-    }
-    else
+    if (m_flyTimer.FUN_140868ba0() != 0 || m_flyTimer.FUN_140868c00() != 0)
     {
         Unk_EaseOut ease;
         float fEase = ease.Evaluate(m_flyTimer.FUN_140868940());
@@ -362,17 +333,34 @@ void Unk_FishLineBody::FUN_140cd80d0()
         float fLength = kDelta.Length();
         kDelta.Unitize();
         efd::Point3 kNow = m_kTarget + kDelta * fEase * fLength;
-        NiPoint3 kAt(kNow.x, kNow.y, kNow.z);
+        NiPoint3 kAt = *reinterpret_cast<const NiPoint3*>(&kNow);
         m_pGuide->vfunc_2(kAt);
         if (m_flyTimer.FUN_140868c00() != 0)
         {
             m_flyTimer.FUN_1408687f0();
             FUN_140cd8740(kNow);
             FUN_140cd89c0(kNow);
-            int nCell = FUN_140cd85e0();
-            MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FindCube(nCell);
-            if (cube.get() != 0 && m_pOwner != 0)
+            MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_140cd85e0());
+            if ((cube.get() ? true : false) && m_pOwner != 0)
                 m_pOwner->FUN_1410a4d30(cube.get());
+        }
+    }
+    else
+    {
+        efd::SmartPointer<CubeMapInformationService> spCubeMap = ((class CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+        efd::Point3 kHit;
+        efd::Point3 kCell;
+        spCubeMap->FUN_1410b7ba0(*reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(m_pOwner->vfunc_18())),
+            *reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(m_pOwner->vfunc_20())), 10.0f,
+            reinterpret_cast<Vector3*>(&kHit), 0);
+        spCubeMap->GetCellPosition(reinterpret_cast<Vector3&>(kHit), reinterpret_cast<Vector3*>(&kCell));
+        if (kCell != static_cast<const efd::Point3&>(m_pGuide->vfunc_3()))
+        {
+            m_flyTimer.FUN_140868750(200);
+            m_kTarget = static_cast<const efd::Point3&>(m_pGuide->vfunc_3());
+            m_kLanding = kCell;
+            FUN_141276180(s_strCursorSound, "");
+            m_waitTimer.FUN_140868750(1000);
         }
     }
 }
@@ -387,7 +375,7 @@ MS2_REPLACE_METHOD(0x140CD85B0, Unk_FishLineBody, FUN_140cd85b0, 31, 0x3385E2D8)
 // @0x140cd85e0
 int Unk_FishLineBody::FUN_140cd85e0()
 {
-    return FUN_1408a13d0(FUN_140cd8630());
+    return FUN_1408a13d0(*reinterpret_cast<const NiPoint3*>(&static_cast<const efd::Point3&>(FUN_140cd8630())));
 }
 MS2_REPLACE_METHOD(0x140CD85E0, Unk_FishLineBody, FUN_140cd85e0, 61, 0xB115E804);
 
@@ -396,7 +384,7 @@ MS2_REPLACE_METHOD(0x140CD85E0, Unk_FishLineBody, FUN_140cd85e0, 61, 0xB115E804)
 efd::Point3 Unk_FishLineBody::FUN_140cd8630()
 {
     if (m_pGuide == 0)
-        return DAT_143b01a60;
+        return efd::Point3::ZERO;
     efd::Point3 kPos = m_pGuide->vfunc_3() - efd::Point3(0.0f, 0.0f, 75.0f);
     SnapToCell(kPos);
     return kPos;
@@ -416,7 +404,7 @@ void Unk_FishLineBody::FUN_140cd8740(efd::Point3 kPos)
     kXform.m_fScale = 1.0f;
     NiPoint3 kTranslate(kBelow);
     kXform.m_Translate = static_cast<NiPoint3&&>(kTranslate);
-    MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_1408a13d0(kBelow));
+    MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_1408a13d0(reinterpret_cast<NiPoint3&>(kBelow)));
     if (cube.get() != 0)
     {
         CFishCube* pCube = cube.operator->();
@@ -464,7 +452,7 @@ MS2_REPLACE_METHOD(0x140CD8A90, Unk_FishLineBody, ReleaseGuide, 131, 0xE3D986D7)
 // @0x140cd8b20
 void Unk_FishLineBody::SnapToCell(efd::Point3 kPos)
 {
-    Unk_FmInt3 kCell = FUN_1408a1430(kPos);
+    Unk_Int3 kCell = FUN_1408a1430(reinterpret_cast<NiPoint3&>(kPos));
     kPos.x = (float)kCell.x * 150.0f;
     kPos.y = (float)kCell.y * 150.0f;
     kPos.z = (float)kCell.z * 150.0f;
@@ -506,7 +494,6 @@ MS2_REPLACE_METHOD(0x140CD8F10, Unk_FishRecord, Reset, 66, 0xBD312399);
 __int64 GetServerTime();                                    // now
 
 // @0x140cd8f60
-// MS2-FUNCTIONAL: formatter argument temporaries
 CString Unk_FishRecord::FUN_140cd8f60()
 {
     CMsTime kNow(GetServerTime());
@@ -521,13 +508,10 @@ CString Unk_FishRecord::FUN_140cd8f60()
     strText += FUN_140390ea0(L"\r\nidCount\r\n", 0);
     for (POSITION pos = m_counts.GetStartPosition(); pos != 0; m_counts.GetNext(pos))
     {
-        const unsigned& nId = m_counts.GetKeyAt(pos);
-        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nId);
-        const int& nCount = m_counts.GetValueAt(pos);
-        strText += FUN_140390ea0(StringFormat(L"{0} {1}[{2}]\r\n", m_counts.GetKeyAt(pos), nCount, strName), 0);
+        strText += FUN_140390ea0(StringFormat(L"{0} {1}[{2}]\r\n", m_counts.GetKeyAt(pos), m_counts.GetValueAt(pos),
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, m_counts.GetKeyAt(pos))), 0);
     }
-    int nLength = strText.GetLength();
-    file.Write((const char*)strText, nLength, (DWORD*)0);
+    file.Write((const char*)strText, strText.GetLength(), (DWORD*)0);
     file.Close();
     return strFile;
 }
@@ -565,11 +549,11 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb))
         return;
-    unsigned char nMode = pPacket->ReadUInt8();
+    int nMode = pPacket->ReadUInt8();
     if (nMode == 0)
     {
-        MS2Ptr<CItem> rod = g_143ab2a90.FUN_140a5d680(pPacket->ReadInt64());
-        FUN_140cdce70(rod);
+        __int64 uid = pPacket->ReadInt64();
+        FUN_140cdce70(g_143ab2a90.FUN_140a5d680(uid));
     }
     else if (nMode == 1)
     {
@@ -620,7 +604,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
         if (bSuccess != 0)
         {
             MS2Ptr<CFish> fish = FindFish(nFishId);
-            if (fish == 0)
+            if (fish.IsNull())
             {
                 fish.AssignRaw(new CFish());
                 fish->m_bNew = 1;
@@ -637,12 +621,11 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
         {
             int nItemId = pPacket->ReadInt32();
             unsigned nItemCount = (unsigned short)pPacket->ReadInt16();
-            if (!FUN_14053f8c0(nItemId) && !FUN_14053f900(nItemId))
-            {
-                Unk_FmFishGuide* pGuide = ((class Unk_FmFishGuide*)FUN_140938cd0(0x4e5d));
-                if (pGuide != 0)
-                    ((UIRewardNotify*)pGuide)->FUN_141abf6e0(nItemId, nItemCount);
-            }
+            if (FUN_14053f8c0(nItemId) || FUN_14053f900(nItemId))
+                continue;
+            Unk_FmFishGuide* pGuide = ((class Unk_FmFishGuide*)FUN_140938cd0(0x4e5d));
+            if (pGuide != 0)
+                ((UIRewardNotify*)pGuide)->FUN_141abf6e0(nItemId, nItemCount);
         }
     }
     else if (nMode == 6)
@@ -650,26 +633,26 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
         CStringW strName = pPacket->ReadUnicodeString();
         int nFishId = pPacket->ReadInt32();
         int nCount = pPacket->ReadInt32();
-        CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId);
-        CStringW strNotice = FUN_14028dfa0(CStringW(L"s_fishing_notice_bigfish"), strName, strFish);
-        if (nCount != 0 && 0x31 < DAT_143ab2914)
+        CStringW strNotice = FUN_14028dfa0(CStringW(L"s_fishing_notice_bigfish"), strName,
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId));
+        if (nCount != 0 && DAT_143ab2914 >= 0x32)
             strNotice += FUN_14028dfa0(CStringW(L"s_fishing_notice_bigfish_count"), nCount);
         FUN_1412751b0(strNotice, 0x14);
     }
     else if (nMode == 2)
     {
-        unsigned nError = (unsigned short)pPacket->ReadInt16();
+        int nError = (unsigned short)pPacket->ReadInt16();
         switch (nError)
         {
+        case 5: FUN_141275260(0xbdd, 1, 1); break;
         case 1: FUN_141275260(0xbde, 1, 1); break;
         case 2: FUN_141275260(0xbdf, 1, 1); break;
         case 3: FUN_141275260(0xbe0, 1, 1); break;
         case 4: FUN_141275260(0xbe1, 1, 1); break;
-        case 5: FUN_141275260(0xbdd, 1, 1); break;
+        case 9: FUN_141275260(0xbe2, 1, 1); break;
         case 6: FUN_141275260(0xbe3, 1, 1); break;
         case 7: FUN_141275260(0xbe5, 1, 1); break;
         case 8: FUN_141275260(0xbe6, 1, 1); break;
-        case 9: FUN_141275260(0xbe2, 1, 1); break;
         }
     }
     else if (nMode == 0xb)
@@ -682,7 +665,7 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
             result->Read(*reinterpret_cast<CByteBuffer*>(pPacket));
             results.Add(result);
         }
-        FUN_1412751b0(CStringW(L"----------------------------------------------------"), 0x14);
+        FUN_1412751b0(L"----------------------------------------------------", 0x14);
         for (size_t i = 0; i < results.GetCount(); i++)
         {
             MS2Ptr<CFishSimulteData> result = results[i];
@@ -694,32 +677,31 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     else if (nMode == 3)
     {
         Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (pPC != 0)
+        if (pPC == 0)
+            return;
+        unsigned nMastery = pPC->GetMastery(1);
+        int nFishId = pPacket->ReadInt32();
+        unsigned nExp = pPacket->ReadInt32();
+        int nKind = (unsigned short)pPacket->ReadInt16();
+        unsigned nLevel = (unsigned short)pPacket->ReadInt16();
+        CStringW strNotice;
+        if (nLevel != ((CMasteryTable*)FUN_1409670c0())->MaxGrade(1))
         {
-            unsigned nMastery = pPC->GetMastery(1);
-            int nFishId = pPacket->ReadInt32();
-            unsigned nExp = pPacket->ReadInt32();
-            short nKind = pPacket->ReadInt16();
-            unsigned nLevel = (unsigned short)pPacket->ReadInt16();
-            CStringW strNotice;
-            if (nLevel != ((CMasteryTable*)FUN_1409670c0())->MaxGrade(1))
+            if (nKind == 1)
             {
-                if (nKind == 1)
-                {
-                    strNotice = BlockFormat(0xbe7, nExp);
-                }
-                else if (nKind == 2)
-                {
-                    CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId);
-                    strNotice = FUN_14028dee0(0xbe8, strFish, nExp, nMastery);
-                }
-                else if (nKind == 3)
-                {
-                    CStringW strFish = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId);
-                    strNotice = FUN_14028dee0(0xbe9, strFish, nExp, nMastery);
-                }
-                FUN_1412751b0(strNotice, 0x14);
+                strNotice = BlockFormat(0xbe7, nExp);
             }
+            else if (nKind == 2)
+            {
+                strNotice = FUN_14028dee0(0xbe8, static_cast<const CStringW&>(
+                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId)), nExp, nMastery);
+            }
+            else if (nKind == 3)
+            {
+                strNotice = FUN_14028dee0(0xbe9, static_cast<const CStringW&>(
+                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, nFishId)), nExp, nMastery);
+            }
+            FUN_1412751b0(strNotice, 0x14);
         }
     }
     else if (nMode == 10)
@@ -865,7 +847,7 @@ void CFishingManager::SendFishingMode1()
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int CFishingManager::FUN_140cdb110(efd::Point3 kPos)
 {
-    MS2Ptr<CFishCube> cube = FindCube(FUN_1408a13d0(kPos));
+    MS2Ptr<CFishCube> cube = FindCube(FUN_1408a13d0(reinterpret_cast<NiPoint3&>(kPos)));
     if (cube.IsNull())
         return 0;
     if (cube->m_a == 0)
@@ -911,9 +893,9 @@ int CFishingManager::FUN_140cdb250()
 
 // ---- more unit-local placeholders (the per-frame / spot code) ----
 unsigned int FUN_14092f4e0(int);   // C3: was FUN_14092f4e0
-struct Unk_PCBaseRayHit                                      // the ray hit of pcbase.cpp
+struct Unk_RayCastInfo                                       // physxhelper.h's (it cannot be included here: min/max)
 {
-    Unk_PCBaseRayHit();                                     // 0x140ad4440
+    Unk_RayCastInfo();                                      // 0x140ad4440
     efd::Point3 m_origin;                                   // +0x00
     efd::Point3 m_dir;                                      // +0x0c
     float m_maxDist;                                        // +0x18
@@ -927,7 +909,8 @@ struct Unk_PCBaseRayHit                                      // the ray hit of p
     efd::Point3 m_hitPoint;                                 // +0x4c
     efd::Point3 m_hitNormal;                                // +0x58
 };
-MS2_CHECK_SIZE(Unk_PCBaseRayHit, 0x68);
+MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
+class CPhysXHelper { public: int FUN_14168a310(const Vector3& kFrom, Vector3& kTo, Unk_RayCastInfo* pHit, float fLen, Vector3* b, int c); };
 int FUN_1408a01e0(CStringA kText);                          // the liquid type of a cube name (0x40 = none)
 
 template <class T> bool Common::Constants::Values<T>::Get(ATL::CAtlArray<T>& out)
@@ -944,7 +927,6 @@ template <class T> bool Common::Constants::Values<T>::Get(ATL::CAtlArray<T>& out
 }
 
 // @0x140cdb450
-// MS2-FUNCTIONAL: temporaries
 void CFishingManager::FUN_140cdb450()
 {
     if (m_nBiteEnd != 0 && m_nBiteEnd < FUN_141472bc0())
@@ -952,17 +934,7 @@ void CFishingManager::FUN_140cdb450()
         MS2Ptr<CFishCube> cube(0);
         if (!m_cubes.Lookup(FUN_140cdc950(), cube))
             return;
-        if (m_bGreat == 0)
-        {
-            Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
-            if (pBar != 0)
-                pBar->FUN_1418e1390();
-            COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
-            pkt.Encode1(8);
-            pkt.Encode1(1);
-            FUN_140710590(pkt);
-        }
-        else
+        if (m_bGreat != 0)
         {
             FUN_140cdc9d0(0x78, 0x7b);
             UIFishingFloatDialog* pFloat = Unk_FmGetDialog<UIFishingFloatDialog>((eUIClassID)0x4ee7);
@@ -981,7 +953,7 @@ void CFishingManager::FUN_140cdb450()
                 param.m_str20 = "blue";
                 param.m_str28 = FUN_140cddc70(texts);
                 param.m_nDuration = 5000;
-                pBar->FUN_1418e13c0(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), &param);
+                pBar->RestartCasting(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), &param);
             }
             Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pPC != 0)
@@ -991,6 +963,16 @@ void CFishingManager::FUN_140cdb450()
                 pPC->ShowChatBalloon(FUN_140cddc70(texts));
             }
             ChromaSDK::GetChromaManager()->OnKeySkill(0x493e2, 0);
+        }
+        else
+        {
+            Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
+            if (pBar != 0)
+                pBar->FUN_1418e1390();
+            COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
+            pkt.Encode1(8);
+            pkt.Encode1(1);
+            FUN_140710590(pkt);
         }
         if (m_nReelSound != 0)
             ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/))->FUN_1411a6060(m_nReelSound);
@@ -1009,7 +991,7 @@ void CFishingManager::FUN_140cdb450()
         if (pPC != 0 && reinterpret_cast<AdditionalCliList*>(pPC->FUN_1416749a0())->FUN_140970020(nBuff, 0, 0, 1) == 0)
         {
             MS2Ptr<CItem> bait = g_143ab2a90.FUN_140a5e2e0(m_nBaitId);
-            if (bait.get() != 0 && FUN_140cdbbd0(MS2Ptr<CItem>(bait)) != 0)
+            if ((bait.get() ? true : false) && FUN_140cdbbd0(MS2Ptr<CItem>(bait)) != 0)
                 FUN_14092f4e0(reinterpret_cast<CItemData*>(bait->FUN_140527840())->FUN_14053dc20());
         }
     }
@@ -1179,10 +1161,10 @@ int CFishingManager::FUN_140cdc520()
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    Unk_PCBaseRayHit kHit;
+    Unk_RayCastInfo kHit;
     efd::Point3 kFrom = static_cast<const efd::Point3&>(pPC->vfunc_18()) + efd::Point3(0.0f, 0.0f, 10.0f);
-    efd::Point3 kTo = DAT_143b01a60;
-    if (((class Unk_FmPhysX*)FUN_1409f7ca0())->FUN_14168a310(kFrom, kTo, &kHit, 0.0f, 0, 0) && kHit.m_hitEntity)
+    efd::Point3 kTo = efd::Point3::ZERO;
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310(reinterpret_cast<Vector3&>(kFrom), reinterpret_cast<Vector3&>(kTo), &kHit, 0.0f, 0, 0) && kHit.m_hitEntity)
     {
         efd::utf8string kName("None");
         kHit.m_hitEntity->GetPropertyValue(0x15014205, kName);
@@ -1265,7 +1247,7 @@ void CFishingManager::FUN_140cdc9d0(int nState, int nGuideState)
     if (pGuide != 0 && pGuide->FUN_14166cc80() != nGuideState)
     {
         pGuide->FUN_14166cc40(nGuideState);
-        pGuide->vfunc_22(DAT_143b01a60);
+        pGuide->vfunc_22(efd::Point3::ZERO);
     }
 }
 MS2_REPLACE_METHOD(0x140CDC9D0, CFishingManager, FUN_140cdc9d0, 195, 0x179ED967);
@@ -1379,7 +1361,7 @@ void CFishingManager::FUN_140cdd1f0()
         if (m_bCountdown != 0)
             nDuration = m_nBiteEnd - FUN_141472bc0();
         CStringW strEnd(L"");
-        pBar->FUN_1418e12f0(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), FUN_140cddc70(texts), nDuration, false, true, strEnd);
+        pBar->StartCastingText(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), FUN_140cddc70(texts), nDuration, false, true, strEnd);
     }
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
@@ -1443,52 +1425,53 @@ void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSucce
 }
 
 // @0x140cdd7b0
-// MS2-FUNCTIONAL: temporaries
 int CFishingManager::FUN_140cdd7b0()
 {
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    NiPoint3 kPos = pPC->vfunc_18();
-    efd::Point3 kAt = efd::Point3(kPos.x, kPos.y, kPos.z) - efd::Point3(0.0f, 0.0f, 75.0f);
+    efd::Point3 kAt = static_cast<const efd::Point3&>(pPC->vfunc_18()) - efd::Point3(0.0f, 0.0f, 75.0f);
     NiPoint3 kRot = pPC->vfunc_20();
     efd::Point3 kAhead;
-    kAhead.x = (kAt.x <= 0.0f) ? -75.0f : 75.0f;
-    kAhead.y = (kAt.y <= 0.0f) ? -75.0f : 75.0f;
+    kAhead.x = (kAt.x > 0.0f) ? 75.0f : -75.0f;
+    kAhead.y = (kAt.y > 0.0f) ? 75.0f : -75.0f;
     kAhead.z = 0.0f;
-    Unk_FmInt3 kBase = FUN_1408a1430(kAt + kAhead);
-    efd::SmartPointer<Unk_FmCubeMap> spCubeMap = ((class Unk_FmCubeMap*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
-    float fYaw = kRot.z;
+    Unk_Int3 kBase = FUN_1408a1430(*reinterpret_cast<const NiPoint3*>(&static_cast<const efd::Point3&>(kAt + kAhead)));
+    efd::SmartPointer<CubeMapInformationService> spCubeMap = ((class CubeMapInformationService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
     for (int i = 0; i < 7; i++)
     {
         for (int j = 0; j < 7; j++)
         {
-            int k = j;
-            if ((fYaw <= 45.0f || 135.0f < fYaw) && (fYaw <= 225.0f || 315.0f < fYaw))
-                k = i;
-            if (k == 0 || k == 6)
+            if ((45.0f < kRot.z && kRot.z <= 135.0f) || (225.0f < kRot.z && kRot.z <= 315.0f))
+            {
+                if (j == 0 || j == 6)
+                    continue;
+            }
+            else
+            {
+                if (i == 0 || i == 6)
+                    continue;
+            }
+            if (!((kRot.z <= 315.0f && 45.0f < kRot.z) || j < 3))
                 continue;
-            if (!((fYaw <= 315.0f && 45.0f < fYaw) || j < 3))
+            else if (!(kRot.z <= 45.0f || 135.0f < kRot.z || 3 < i))
                 continue;
-            if (!(fYaw <= 45.0f || 135.0f < fYaw || 3 < i))
+            else if (!(kRot.z <= 135.0f || 225.0f < kRot.z || 3 < j))
                 continue;
-            if (!(fYaw <= 135.0f || 225.0f < fYaw || 3 < j))
+            else if (!(kRot.z <= 225.0f || 315.0f < kRot.z || i < 3))
                 continue;
-            if (!(fYaw <= 225.0f || 315.0f < fYaw || i < 3))
-                continue;
-            Unk_FmInt3 kTop;
+            Unk_CubePoint kTop;
             kTop.x = kBase.x - 3 + i;
             kTop.y = kBase.y - 3 + j;
             kTop.z = kBase.z + 1;
-            if (spCubeMap->FUN_1410b8a60(kTop) != 0)
-                continue;
+            if (spCubeMap->GetCubeAtCell(static_cast<Unk_Int3&>(kTop)) == 0)
             for (int n = 0; n < 3; n++)
             {
-                Unk_FmInt3 kCell;
+                Unk_CubePoint kCell;
                 kCell.x = kBase.x - 3 + i;
                 kCell.y = kBase.y - 3 + j;
                 kCell.z = kBase.z - n;
-                MS2Ptr<Cube> cube(spCubeMap->FUN_1410b8a60(kCell));
+                MS2Ptr<Cube> cube(spCubeMap->GetCubeAtCell(static_cast<Unk_Int3&>(kCell)));
                 if (cube.get() != 0)
                 {
                     if (cube->field44 == 0x40)

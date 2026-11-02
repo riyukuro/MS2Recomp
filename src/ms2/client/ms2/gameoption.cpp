@@ -1160,7 +1160,7 @@ void CGameOptionGraphicDefault::vfunc_6()
     {
         MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
         if (static_cast<Unk_GoInput*>(sp) != 0)
-            sp->FUN_1422e0ab0(StringFormat(L"{0}", m_state2.m_nCustomInput));
+            sp->SetTextW(StringFormat(L"{0}", m_state2.m_nCustomInput));
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showPhysx"), -1);
@@ -1342,7 +1342,7 @@ void CGameOptionGraphicDefault::FUN_14124d080()
     MS2Ptr<Unk_GoCombo> spCombo = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_resolution"), -1);
     if (static_cast<Unk_GoCombo*>(spCombo) != 0)
     {
-        spCombo->FUN_1422dfc10();
+        spCombo->ClearItems();
         int nCurWidth = m_state.m_nWidth;
         int nCurHeight = m_state.m_nHeight;
         Unk_GoGfxDevice* pDevice = ((class Unk_GoGfxDevice*)NiRenderer::GetRenderer());
@@ -1383,7 +1383,7 @@ void CGameOptionGraphicDefault::FUN_14124d080()
                         ASObj row(2);
                         row.FUN_1407cb9c0("modeid", mode.m_nIndex);
                         row.FUN_1407cbb20("label", strLabel);
-                        spCombo->FUN_1422dfc70(row);
+                        spCombo->AddItemRow(row);
                         if (nCurWidth == nWidth && nCurHeight == nHeight)
                         {
                             nSelected = j;

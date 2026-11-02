@@ -417,7 +417,7 @@ public:
     CCachedNifPtr FindCachedNif(CString strPath, int nClass, bool* pbReloaded);    // 0x1415527a0
     CCachedNifPtr CreateCachedNif(CString strPath, int nClass, bool bFlag, bool bReloaded);    // 0x141552920
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);          // 0x141552f90
-    efd::SmartPointer<NiSourceTexture> CreateTexture(CString strPath, NiPixelDataPtr spPixels, int nClass);   // 0x1415534d0
+    efd::SmartPointer<NiTexture> CreateTexture(CString strPath, NiPixelDataPtr spPixels, int nClass);   // 0x1415534d0
     efd::SmartPointer<NiTexture> GetTextureFrom(CString strKey, CString strFile, int nClass);  // 0x141553910
     efd::SmartPointer<NiTexture> FindTexture(CString strPath, const NiTexture::FormatPrefs* pPrefs);   // 0x141553eb0
     void AddTexture(CString strPath, NiSourceTexture* pTexture);   // 0x1415540f0

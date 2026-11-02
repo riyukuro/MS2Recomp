@@ -71,6 +71,9 @@
 #include "ms2/commonfiles/enchantscrolldata.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/equipitem.h"  // C3
+#include "ms2/client/ms2/iteminfoslot.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<T>::Get
 
 // ---- the unit's header statics ----
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -125,42 +128,25 @@ public:
 extern Unk_Inventory g_143ab2a90;
 extern int DAT_143ab2914;
 
-// Backup (equipped) item record.
-class Unk_BackUpItem : public CEquipItem
-{
-public:
-    void FUN_1411dd6d0(CItem* item);
-};
-class Unk_PCItems
-{
-public:
-    MS2Ptr<Unk_BackUpItem> FUN_1411e1580(unsigned __int64 uid);
-};
 class PC   // C3: member view for the former free stand-ins
 {
 public:
     struct Unk_PCEquipSet* FUN_1416561a0();
+    MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);
+    int FUN_141662eb0(CItem* pItem);
 };
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
-class CEquipment { public: float GetAbilityRate(SAType eType); void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer); };   // C3: the real members (0x1411e1110 a special ability rate, 0x1411e1ce0 the worn items in a layer)
+class CEquipment { public: MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nUid); float GetAbilityRate(SAType eType); void CollectShownItemsInLayer(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer); };   // C3: the real members (0x1411e1110 a special ability rate, 0x1411e1ce0 the worn items in a layer)
 
 class Unk_EnPC : public MyPC
 {
 public:
-    MS2Ptr<Unk_BackUpItem> FUN_141655c30(unsigned __int64 uid);
-    int FUN_141662eb0(CItem* item);
 };
 
 class Unk_CinWorld
 {
 public:
     MyPC* FUN_141bd0cc0();
-};
-void* FUN_1403ed2b0();
-class CUIService   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141adc190();
 };
 
 // AS script views.
@@ -177,13 +163,6 @@ class Unk_EnScript : public AScript
 public:
     Scaleform::GFx::Value FUN_1419ca1f0(const char* name, int a, bool b);                   // "initData"
     Scaleform::GFx::Value FUN_1419ca130(const char* name, const AScript& obj, bool b);      // "onModifiedExp"
-    void FUN_1422bac00(const char* name, CString& out);                                    // string member by name
-};
-class Unk_EnArray : public ASArray
-{
-public:
-    void FUN_1422bbf00(const ASObj& obj);                   // push an object
-    void FUN_1422bbfe0(const wchar_t* text);                // push a string
 };
 
 // Inventory window / item slots.
@@ -203,7 +182,6 @@ public:
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24();
     virtual MS2Ptr<CItem> vfunc_25();
-    void FUN_141416740(int nHave, int nCount);
 };
 Unk_EnSlot* FUN_140f6e830(const CString& name);
 void FUN_141415600(const CString& key);
@@ -212,8 +190,8 @@ void FUN_141414e50(const CString& name);
 void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids);
 
 // Client config (global singleton).
-class Unk_1402056b0 { public: int* FUN_1402056b0(); void* m_unknown; };
-class Unk_EnCfgInt { public: unsigned* FUN_1401d7c10(); void* m_unknown; };
+class Unk_1402056b0 { public: void* m_unknown; };
+class Unk_EnCfgInt { public: void* m_unknown; };
 struct Unk_ClientConfig
 {
     char m_pad_0[0x69a0];
@@ -229,16 +207,14 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140478b60();
+    unsigned int GetSaleEnchantRate();
     unsigned int FUN_14047e370(unsigned int);
 };
 
 // Ingredient / string tables.
-class Unk_IngTable { public: CStringW FUN_140556a40(int rank); };
 CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& strArg, const int& nArg);   // StringFormat<CStringW, int>   // member: this=rcx, hidden return=rdx
 // StringFormat<CString, unsigned __int64>: the exe calls this identical COMDAT copy, not the one symbols.tsv names.
 CString FUN_140c4b950(const char* szFormat, const CString& strArg, const unsigned __int64& nArg);
-unsigned FUN_1405569f0(Unk_IngTable* t, int rank);
 CStringW FUN_14183e930(const CStringW& text, unsigned color);
 CStringW FUN_14183e9c0(CStringW text, int rank);
 CStringW FUN_141902320(int a, int b);
@@ -249,7 +225,7 @@ float FUN_14028aed0(float v);
 bool FUN_14028d470(float a, float b);
 __int64 FUN_140632990(__int64 v, float f);
 CStringW GetStatValueText(unsigned key);
-CStringW FUN_14052bd00(int id, const CStringW& arg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1409404f0(__int64 v);
 CStringW FUN_140938ae0(CStringW key, const int& v);
 CStringW FUN_140298ea0(CStringW key);
@@ -262,9 +238,7 @@ unsigned __int64 FUN_140718350(const CString& s);
 
 // Misc singletons.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class Unk_Flags { public: void* m_0; unsigned char FUN_14116d720(); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-unsigned char FUN_14116d720(Unk_Flags* f);
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
 public:
@@ -278,7 +252,7 @@ MS2Ptr<CItemData> FUN_14053f870(int id);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // Scroll table.
-class Unk_EnScroll : public CPtred { public: int FUN_14034d370(); char m_pad[0x1c - 0x18]; int m_1c; };
+class Unk_EnScroll : public CPtred { public: char m_pad[0x1c - 0x18]; int m_1c; };
 class Unk_EnScrollRef
 {
 public:
@@ -295,8 +269,6 @@ class Unk_PreloadServiceC { public: Unk_EnScrollRef FUN_14034e360(unsigned id); 
 class Unk_ItemEnchantData : public CItemStatus
 {
 };
-class Unk_EnOwner { public: __int64 FUN_14052d1c0(); };
-class Unk_ItemOwnerRef { public: Unk_EnOwner* FUN_140635160(); };
 
 // The enchant result option container (RTTI CEnchantOption : CPtred, 0x68).
 class CEnchantOption : public CPtred
@@ -311,6 +283,8 @@ MS2_CHECK_SIZE(CEnchantOption, 0x68);
 
 #include "ms2/placeholder/notifygameeventchanged.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // The message box record (MS2Ptr<CMsgBoxData> members are bound to the exe copies in symbols.tsv).
 class CMsgBoxData : public CPtred
@@ -355,7 +329,7 @@ extern template class MS2Ptr<CItem>;
 extern template class MS2Ptr<CItemData>;
 extern template class MS2Ptr<CMsgBoxData>;
 extern template class MS2Ptr<ASMovieClip>;
-extern template class MS2Ptr<Unk_BackUpItem>;
+extern template class MS2Ptr<CEquipItem>;
 
 static inline CItemData* ItemData(CItem* item)
 {
@@ -370,7 +344,7 @@ MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid)
     Unk_EnPC* pc = static_cast<Unk_EnPC*>(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pc == 0)
         return 0;
-    MS2Ptr<Unk_BackUpItem> equip = pc->FUN_141655c30(uid);
+    MS2Ptr<CEquipItem> equip = reinterpret_cast<PC*>(pc)->FUN_141655c30(uid);
     if (equip.get() != 0)
         return equip->GetItem();
     return 0;
@@ -412,7 +386,7 @@ void UIItemModifyDialogBase::OnLoadComplete()
     if (m_enchantAni == 0) {
         vfunc_67();
     } else {
-        int bShow = FUN_14116d720(((class Unk_Flags*)FUN_14025e7c0()));
+        int bShow = reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode();
         if (MS2Ptr<Unk_EnButton> forceEnchant = m_enchantAni->FUN_140acce30<Unk_EnButton>("m_forceEnchant"))
             forceEnchant->vfunc_3(bShow);
         // The exe clears the flag first, so the compare and count controls
@@ -428,7 +402,7 @@ void UIItemModifyDialogBase::OnLoadComplete()
                 bShow = 0;
             debugCount->vfunc_3(bShow);
         }
-        ((class CUIService*)(void*)(FUN_1403ed2b0()))->FUN_141adc190();
+        TSingleton<CUIService>::GetInstance()->FUN_141adc190();
     }
 }
 
@@ -483,7 +457,7 @@ UIItemEnchantDialog::UIItemEnchantDialog()
 {
     m_mode = 1;
     m_expMode = 1;
-    FUN_1419c6420();
+    ResetState();
 }
 
 // @0x1419bf160
@@ -501,7 +475,7 @@ CString UIItemEnchantDialog::GetTypeName()
 void UIItemEnchantDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_1419c6420();
+    ResetState();
     switch (m_expMode) {
     case 1:
         TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("dialog_open", "enchant_ophelia");
@@ -522,7 +496,7 @@ void UIItemEnchantDialog::OnLoadComplete()
     FUN_1419bfd70();
     ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
-        Delegate<void(NotifyObject*)>(this, &UIItemEnchantDialog::FUN_1419c6380));
+        Delegate<void(NotifyObject*)>(this, &UIItemEnchantDialog::OnEnchantRateEventChanged));
     m_state = 0;
 }
 
@@ -543,14 +517,14 @@ void UIItemEnchantDialog::vfunc_67()
     FUN_141414e50(Unk_SocketFormat("{0}.equip", GetTypeName()));
     FUN_1419c77a0();
     FUN_1419c4050();
-    FUN_1419c6420();
+    ResetState();
     m_debugBtnFillIngredientUnit = 0;
     m_debugBtnFillIngredient = 0;
     m_debugBtnFillFailStack = 0;
     m_debugBtnUseAllFailStack = 0;
     ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyGameEventChanged"),
-        Delegate<void(NotifyObject*)>(this, &UIItemEnchantDialog::FUN_1419c6380));
+        Delegate<void(NotifyObject*)>(this, &UIItemEnchantDialog::OnEnchantRateEventChanged));
 }
 
 // @0x1419bf910
@@ -619,7 +593,7 @@ void UIItemEnchantDialog::vfunc_85(int nType)
         COutPacket pkt(static_cast<int>(SendOp::NpcTalk), 0);
         pkt.Encode1(6);
         pkt.Encode4(id);
-        pkt.Encode4(*((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0.FUN_1402056b0());
+        pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0)->Get());
         pkt.Encode2((short)nType);
         FUN_140710590(pkt);
     } else {
@@ -713,13 +687,13 @@ void UIItemEnchantDialog::FUN_1419c0440(ASData* pData)
     if (FUN_141902660(item) != 0)
         return;
     if (m_expMode == 2) {
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x87) && FUN_1419c89b0(uid) != 0 && FUN_1419c8b80(uid) == 0) {
+        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x87) && FUN_1419c89b0(uid) != 0 && IsItemOwnedByMyPC(uid) == 0) {
             CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_binding_character"), pc->vfunc_77());
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(text), 0, CStringW(L""));
             if (box.get() != 0) {
                 box->Append<__int64>(uid);
                 box->FUN_141a024a0(0);
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::FUN_1419c5d90));
+                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::OnConfirmEnchantMode6MsgBox));
                 FUN_140d73c60(box);
             }
             return;
@@ -799,7 +773,7 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
         int id = ((class UITalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b212f0();
         pkt.Encode1(6);
         pkt.Encode4(id);
-        pkt.Encode4(*((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0.FUN_1402056b0());
+        pkt.Encode4(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_69a0)->Get());
         pkt.Encode2(1);
     } else {
         pkt.Encode1(4);
@@ -820,7 +794,7 @@ void UIItemEnchantDialog::OnComplete()
         FUN_141276180(s_successEffect, "");
         Unk_EnInvDialog* inv = ((class Unk_EnInvDialog*)FUN_140a7b2b0(0x4e40));
         if (inv != 0)
-            inv->FUN_141b1be50();
+            inv->PlayFireworkEffect();
     } else if (m_state == 2) {
         FUN_141276180(s_failEffect, "");
     }
@@ -934,10 +908,10 @@ void UIItemEnchantDialog::FUN_1419c1a40(ATL::CAtlArray<unsigned __int64>& out)
             out.Add(uid);
         }
     }
-    ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > list(10);
+    ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
     reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->CollectShownItemsInLayer(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&list), 0);
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
-        MS2Ptr<Unk_BackUpItem> equip = list.GetAt(pos);
+        MS2Ptr<CEquipItem> equip = list.GetAt(pos);
         if (!equip)
             continue;
         MS2Ptr<CItem> item = equip->GetItem();
@@ -1001,7 +975,7 @@ CString UIItemEnchantDialog::FUN_1419c1e40(CItem* item)
 void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
 {
     FUN_1419c77a0();
-    FUN_1419c6420();
+    ResetState();
     if (m_enchantAni == 0)
         return;
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1040,7 +1014,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
             m_218 = second->FUN_1405276c0();
             m_220 = id1;
         }
-        m_2b4 = (float)(unsigned)((class CGameRule*)(class Unk_GEManagerA*)(((class Unk_GEManagerA*)FUN_1401c0d90())))->FUN_140478b60() / 10000.0f;
+        m_2b4 = (float)(unsigned)((class CGameRule*)(class Unk_GEManagerA*)(((class Unk_GEManagerA*)FUN_1401c0d90())))->GetSaleEnchantRate() / 10000.0f;
         m_2b4 = m_2b4 + reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->GetAbilityRate((SAType)0x41);
     } else if (m_expMode == 2) {
         m_228 = 100.0f;
@@ -1048,14 +1022,14 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
         m_result.m_itemId = pkt.ReadInt32();
         m_result.SetRank((unsigned short)pkt.ReadInt16());
         m_result.m_count = pkt.ReadInt32();
-        m_2b4 = (float)(unsigned)((class CGameRule*)(class Unk_GEManagerA*)(((class Unk_GEManagerA*)FUN_1401c0d90())))->FUN_140478b60() / 10000.0f;
+        m_2b4 = (float)(unsigned)((class CGameRule*)(class Unk_GEManagerA*)(((class Unk_GEManagerA*)FUN_1401c0d90())))->GetSaleEnchantRate() / 10000.0f;
         m_2b4 = m_2b4 + reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->GetAbilityRate((SAType)0x41);
     }
     FUN_1419c81a0();
     FUN_1419bff60();
     FUN_141276180(s_itemChoice, "");
     if (MS2Ptr<ASMovieClip> list = m_enchantAni->FUN_1409b4560("enchantListSelected")) {
-        unsigned char bDebugMode = FUN_14116d720(((class Unk_Flags*)FUN_14025e7c0()));
+        unsigned char bDebugMode = reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode();
         int bDebug = bDebugMode ? 1 : 0;
         m_debugBtnFillIngredientUnit = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredientUnit");
         if (m_debugBtnFillIngredientUnit) {
@@ -1098,12 +1072,12 @@ void UIItemEnchantDialog::FUN_1419c2e30(CItem* item, int prevLevel, CInPacket& p
     int failType = pkt.ReadInt32();
     ASObj obj(2);
     obj.FUN_1407cb9c0("success", 0);
-    obj.FUN_1407cbb20("itemName", FUN_1419c7e20(item));
+    obj.FUN_1407cbb20("itemName", FormatItemName(item));
     obj.FUN_1407cbbe0("diff", prevLevel != m_item->FUN_140526fc0());
-    obj.FUN_1407cbb20("prevLevel", FUN_1419c7ec0(prevLevel, item->FUN_140526bd0()));
-    obj.FUN_1407cbb20("curLevel", FUN_1419c7ec0(m_item->FUN_140526fc0(), item->FUN_140526bd0()));
+    obj.FUN_1407cbb20("prevLevel", FormatLevelText(prevLevel, item->FUN_140526bd0()));
+    obj.FUN_1407cbb20("curLevel", FormatLevelText(m_item->FUN_140526fc0(), item->FUN_140526bd0()));
     obj.FUN_1407cba60("binding", FUN_1419c78a0(m_item.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_bag0));
-    obj.FUN_1407cbb20("failDesc", FUN_1419c7f50(m_item.get(), failType));
+    obj.FUN_1407cbb20("failDesc", FormatFailStackText(m_item.get(), failType));
     obj.FUN_1407cbbe0("protect", !((m_208 == 0) && (m_218 == 0)));
     m_enchantAni->Invoke("setEnchantResult", obj);
     FUN_141276180(s_progress, "");
@@ -1118,10 +1092,10 @@ void UIItemEnchantDialog::FUN_1419c3390(CItem* item, CEnchantOption* stat, int p
         return;
     ASObj obj(2);
     obj.FUN_1407cb9c0("success", 1);
-    obj.FUN_1407cbb20("itemName", FUN_1419c7e20(item));
+    obj.FUN_1407cbb20("itemName", FormatItemName(item));
     obj.FUN_1407cbbe0("diff", prevLevel != m_item->FUN_140526fc0());
-    obj.FUN_1407cbb20("prevLevel", FUN_1419c7ec0(prevLevel, item->FUN_140526bd0()));
-    obj.FUN_1407cbb20("curLevel", FUN_1419c7ec0(m_item->FUN_140526fc0(), item->FUN_140526bd0()));
+    obj.FUN_1407cbb20("prevLevel", FormatLevelText(prevLevel, item->FUN_140526bd0()));
+    obj.FUN_1407cbb20("curLevel", FormatLevelText(m_item->FUN_140526fc0(), item->FUN_140526bd0()));
     obj.FUN_1407cbb20("enchantStat", FUN_1419c65b0(MS2Ptr<CItem>(item), stat));
     obj.FUN_1407cba60("binding", FUN_1419c78a0(m_item.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_bag0));
     m_enchantAni->Invoke("setEnchantResult", obj);
@@ -1161,7 +1135,7 @@ void UIItemEnchantDialog::FUN_1419c3950(CInPacket& pkt)
     m_2bc = 0;
     ASObj obj(2);
     FUN_1419c6cd0(obj, &m_ingredients);
-    FUN_1419c74e0(obj, item.get());
+    SetExpInfo(obj, item.get());
     FUN_1419c7140(obj);
     bool bUp = level > oldLevel ? 1 : 0;
     ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1419ca130("onModifiedExp", obj, bUp);
@@ -1192,7 +1166,7 @@ void UIItemEnchantDialog::FUN_1419c3b90(CInPacket& pkt)
 }
 
 // @0x1419c3e70
-void UIItemEnchantDialog::FUN_1419c3e70(CInPacket& pkt)
+void UIItemEnchantDialog::OnFailStackPacket(CInPacket& pkt)
 {
     if (!m_enchantAni)
         return;
@@ -1226,9 +1200,9 @@ void UIItemEnchantDialog::FUN_1419c4050()
         } else {
             MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pc != 0) {
-                MS2Ptr<Unk_BackUpItem> backup = ((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0())->FUN_1411e1580(m_item->GetItemUid());
+                MS2Ptr<CEquipItem> backup = reinterpret_cast<CEquipment*>(((class Unk_PCItems*)((class PC*)(class MyPC*)(pc))->FUN_1416561a0()))->FUN_1411e1580(m_item->GetItemUid());
                 if (backup.get() != 0) {
-                    backup->FUN_1411dd6d0(m_item.get());
+                    backup->SetItem(m_item.get());
                     backup->FUN_1411dd280();
                 }
             }
@@ -1248,7 +1222,7 @@ void UIItemEnchantDialog::FUN_1419c41b0()
         return;
     unsigned __int64 n = m_bag1.GetCount();
     for (unsigned __int64 i = 0; i < n; i++) {
-        Unk_EnSlot* slot = FUN_1419c8160(m_bag1[i]);
+        Unk_EnSlot* slot = FindSlotByName(m_bag1[i]);
         if (slot == 0)
             continue;
         MS2Ptr<CItem> item = slot->vfunc_25();
@@ -1259,7 +1233,7 @@ void UIItemEnchantDialog::FUN_1419c41b0()
             continue;
         int v = g_143ab2a90.FUN_140a5f780(ItemData(item.operator->())->GetStringTag(), 0);
         int n = count;
-        slot->FUN_141416740(v, n);
+        reinterpret_cast<ItemInfoSlot*>(slot)->SetCountText(v, n);
     }
     FUN_1419bff60();
 }
@@ -1316,8 +1290,8 @@ bool UIItemEnchantDialog::FUN_1419c4a50(int result, const CMsgBoxData& box)
     MS2Ptr<CItemData> data(ItemData(prot));
     if (!data)
         return true;
-    int count = FUN_1419c8830(data->GetItemId());
-    CStringW text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemenchant_protector_use_warn"), FUN_1419c7e20(prot.get()), count);
+    int count = GetProtectorCount(data->GetItemId());
+    CStringW text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemenchant_protector_use_warn"), FormatItemName(prot.get()), count);
     if (MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""))) {
         msg->Append<__int64>(uid);
         msg->Append<int>(1);
@@ -1344,11 +1318,11 @@ bool UIItemEnchantDialog::FUN_1419c4e00(int result, const CMsgBoxData& box)
             if (!prot)
                 return true;
             int rank = item->FUN_140526bd0();
-            int need = FUN_1419c86b0(m_208);
+            int need = GetProtectorRank(m_208);
             if (need > rank) {
-                CStringW rankA = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->FUN_141813150(rank), FUN_1405569f0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), rank));
-                CStringW rankB = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->FUN_141813150(need), FUN_1405569f0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), need));
-                CStringW name = FUN_1419c7e20(prot.get());
+                CStringW rankA = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->GetRankName(rank), TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)rank));
+                CStringW rankB = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->GetRankName(need), TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)need));
+                CStringW name = FormatItemName(prot.get());
                 CStringW text = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_itemenchant_protector_rank_warn"), rankA, rankB, name);
                 MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
                 if (msg.get() != 0) {
@@ -1359,8 +1333,8 @@ bool UIItemEnchantDialog::FUN_1419c4e00(int result, const CMsgBoxData& box)
                     FUN_140d73c60(msg);
                 }
             } else {
-                int count = FUN_1419c8830(m_208);
-                CStringW text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemenchant_protector_use_warn"), FUN_1419c7e20(prot.get()), count);
+                int count = GetProtectorCount(m_208);
+                CStringW text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemenchant_protector_use_warn"), FormatItemName(prot.get()), count);
                 MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
                 if (msg.get() != 0) {
                     msg->Append<__int64>(uid);
@@ -1372,7 +1346,8 @@ bool UIItemEnchantDialog::FUN_1419c4e00(int result, const CMsgBoxData& box)
             }
         }
     } else {
-        MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_itemenchant_protector_dont_use_warn")), 0, CStringW(L""));
+        CStringW text = FUN_140298ea0(CStringW(L"s_itemenchant_protector_dont_use_warn"));
+        MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
         if (msg.get() != 0) {
             msg->Append<__int64>(uid);
             msg->Append<int>(0);
@@ -1402,7 +1377,7 @@ bool UIItemEnchantDialog::FUN_1419c5890(int result, const CMsgBoxData& box)
         MS2Ptr<CItem> sup = g_143ab2a90.FUN_140a5d680(m_220);
         if (sup == 0)
             return true;
-        CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_super_protector_use_warn"), FUN_1419c7e20(sup.get()));
+        CStringW text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_super_protector_use_warn"), FormatItemName(sup.get()));
         MS2Ptr<CMsgBoxData> msg = FUN_140d73d20(1, text, 0, CStringW(L""));
         if (msg.get() != 0) {
             msg->Append<__int64>(uid);
@@ -1429,7 +1404,7 @@ bool UIItemEnchantDialog::FUN_1419c5d20(int result, const CMsgBoxData& box)
 }
 
 // @0x1419c5d90
-bool UIItemEnchantDialog::FUN_1419c5d90(int result, const CMsgBoxData& box)
+bool UIItemEnchantDialog::OnConfirmEnchantMode6MsgBox(int result, const CMsgBoxData& box)
 {
     if (result != 0)
         return true;
@@ -1453,7 +1428,7 @@ bool UIItemEnchantDialog::SendRequestItemEnchantMode2(int result, const CMsgBoxD
 }
 
 // @0x1419c5e90
-bool UIItemEnchantDialog::FUN_1419c5e90(int result, const CMsgBoxData& box)
+bool UIItemEnchantDialog::OnConfirmEnchantMode4MsgBox(int result, const CMsgBoxData& box)
 {
     if (result != 0)
         return true;
@@ -1481,7 +1456,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode17(const Scaleform::GFx::Fun
     if (DAT_143ab2914 < 0x32)
         return;
     CString guid;
-    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1422bac00("m_lastGUID", guid);
+    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->TryGetString("m_lastGUID", guid);
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
@@ -1499,7 +1474,7 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode18(const Scaleform::GFx::Fun
     if (DAT_143ab2914 < 0x32)
         return;
     CString guid;
-    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1422bac00("m_lastGUID", guid);
+    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->TryGetString("m_lastGUID", guid);
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
@@ -1517,7 +1492,7 @@ void UIItemEnchantDialog::FUN_1419c6160(const Scaleform::GFx::FunctionHandler::P
     if (DAT_143ab2914 < 0x32)
         return;
     CString guid;
-    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1422bac00("m_lastGUID", guid);
+    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->TryGetString("m_lastGUID", guid);
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
@@ -1536,7 +1511,7 @@ void UIItemEnchantDialog::FUN_1419c6270(const Scaleform::GFx::FunctionHandler::P
     if (DAT_143ab2914 < 0x32)
         return;
     CString guid;
-    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1422bac00("m_lastGUID", guid);
+    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->TryGetString("m_lastGUID", guid);
     unsigned __int64 uid = FUN_140718350(guid);
     if (uid == 0)
         return;
@@ -1548,7 +1523,7 @@ void UIItemEnchantDialog::FUN_1419c6270(const Scaleform::GFx::FunctionHandler::P
 }
 
 // @0x1419c6380
-void UIItemEnchantDialog::FUN_1419c6380(NotifyObject* pNotify)
+void UIItemEnchantDialog::OnEnchantRateEventChanged(NotifyObject* pNotify)
 {
     NotifyGameEventChanged* ev = dynamic_cast<NotifyGameEventChanged*>(pNotify);
     if (ev != 0) {
@@ -1563,7 +1538,7 @@ void UIItemEnchantDialog::FUN_1419c6380(NotifyObject* pNotify)
 }
 
 // @0x1419c6420
-void UIItemEnchantDialog::FUN_1419c6420()
+void UIItemEnchantDialog::ResetState()
 {
     m_selectedUid = 0;
     m_state = 0;
@@ -1632,14 +1607,14 @@ void UIItemEnchantDialog::FUN_1419c6840(MS2Ptr<CItem> item, CEnchantOption* pOpt
             CStringW afterStat = StringFormat(L"{0}", after);
             obj.FUN_1407cbb20("statName", statName);
             obj.FUN_1407cbb20("afterStat", afterStat);
-            list.FUN_1422bc050(obj.FUN_1422bb870());
+            list.PushValue(obj.FUN_1422bb870());
         }
     }
     dest.FUN_1409eb1d0("options", list);
 }
 
 // @0x1419c6bb0
-void UIItemEnchantDialog::FUN_1419c6bb0(ASObj& dest, CItem* item)
+void UIItemEnchantDialog::WriteEnchantItem(ASObj& dest, CItem* item)
 {
     if (item == 0)
         return;
@@ -1663,7 +1638,7 @@ void UIItemEnchantDialog::FUN_1419c6cd0(ASObj& dest, CIngredientContainer* conta
             int have = g_143ab2a90.FUN_140a5f780(ing->m_b, 0);
             obj.FUN_1407cba60("binding", FUN_1419c78a0(ci, FUN_140c4b950("{0}.ingredient.{1}", GetTypeName(), i), m_bag1));
             obj.FUN_1407cbb20("countText", FUN_1419021b0(have, need));
-            reinterpret_cast<Unk_EnArray&>(list).FUN_1422bbf00(obj);
+            list.FUN_1422bbf00(obj);
             if ((type == 0x60) && (need > have))
                 fee = (__int64)((need - have) * 1000);
         }
@@ -1687,14 +1662,14 @@ void UIItemEnchantDialog::FUN_1419c7140(ASObj& dest)
     }
     ASArray list(2);
     for (unsigned __int64 i = 0; i < m_failStackUids.GetCount(); i++)
-        reinterpret_cast<Unk_EnArray&>(list).FUN_1422bbfe0((LPCWSTR)FUN_141b71910(m_failStackUids[i]));
+        list.PushWString((LPCWSTR)FUN_141b71910(m_failStackUids[i]));
     dest.FUN_1409eb1d0("equipList", list);
 }
 
 // CItem::FUN_140528f90 takes no argument in the exe (citem.h declares an unused int).
 
 // @0x1419c74e0
-void UIItemEnchantDialog::FUN_1419c74e0(ASObj& dest, CItem* item)
+void UIItemEnchantDialog::SetExpInfo(ASObj& dest, CItem* item)
 {
     if (item == 0)
         return;
@@ -1712,7 +1687,7 @@ void UIItemEnchantDialog::FUN_1419c74e0(ASObj& dest, CItem* item)
 }
 
 // @0x1419c7610
-void UIItemEnchantDialog::FUN_1419c7610(ASObj& dest)
+void UIItemEnchantDialog::SetFailStackInfo(ASObj& dest)
 {
     if (FUN_1419c1e00() == 0)
         return;
@@ -1724,7 +1699,7 @@ void UIItemEnchantDialog::FUN_1419c7610(ASObj& dest)
     CItemEnchantInfo* info = item->FUN_1405278a0()->GetEnchant();
     if (info == 0)
         return;
-    int limit = *((struct Unk_ClientConfig*)FUN_1401d3200())->m_9828.FUN_1401d7c10();
+    int limit = *reinterpret_cast<Common::Constants::Value<unsigned>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_9828)->Get();
     int cur = info->FUN_14058ccf0();
     int maxStack = (std::min)(cur, limit);
     ASObj obj(2);
@@ -1756,12 +1731,12 @@ CString UIItemEnchantDialog::FUN_1419c78a0(CItem* item, CString key, CAtlArray<C
 }
 
 // @0x1419c7970
-CStringW UIItemEnchantDialog::FUN_1419c7970(float rate)
+CStringW UIItemEnchantDialog::FormatRateText(float rate)
 {
     int percent = (int)FUN_14028aed0(rate);
     if (percent == 0)
         return GetStringCommon(0x95d);
-    return FUN_14052bd00(0x98e, StringFormat(L"{0}", percent));
+    return FormatStringId<CStringW>(0x98e, StringFormat(L"{0}", percent));
 }
 
 // @0x1419c7a30
@@ -1775,7 +1750,7 @@ void UIItemEnchantDialog::FUN_1419c7a30(unsigned __int64 uid, int mode)
             box->Append<__int64>(uid);
             box->Append<int>(mode);
             box->FUN_141a024a0(0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::FUN_1419c5e90));
+            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::OnConfirmEnchantMode4MsgBox));
             FUN_140d73c60(box);
         }
     } else {
@@ -1805,20 +1780,20 @@ void UIItemEnchantDialog::SendRequestItemEnchantMode4(unsigned __int64 uid, int 
 }
 
 // @0x1419c7e20
-CStringW UIItemEnchantDialog::FUN_1419c7e20(CItem* item)
+CStringW UIItemEnchantDialog::FormatItemName(CItem* item)
 {
     return FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, item->FUN_1405276c0()), item->FUN_140526bd0());
 }
 
 // @0x1419c7ec0
-CStringW UIItemEnchantDialog::FUN_1419c7ec0(int level, int rank)
+CStringW UIItemEnchantDialog::FormatLevelText(int level, int rank)
 {
-    CStringW color = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140556a40(rank);
+    CStringW color = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)rank);
     return FUN_140275590(L"<font color='{0}'>+{1}</font>", color, level);
 }
 
 // @0x1419c7f50
-CStringW UIItemEnchantDialog::FUN_1419c7f50(CItem* item, int count)
+CStringW UIItemEnchantDialog::FormatFailStackText(CItem* item, int count)
 {
     if (item == 0)
         return CStringW(L"");
@@ -1838,13 +1813,13 @@ void UIItemEnchantDialog::UpdateEnchantIngredient(CItem* item)
 {
     ASObj obj(2);
     obj.FUN_1407cbb20("prop", FUN_1419c8ce0(item));
-    FUN_1419c7610(obj);
+    SetFailStackInfo(obj);
     FUN_1419c7140(obj);
     m_enchantAni->Invoke("updateEnchantIngredient", obj);
 }
 
 // @0x1419c8160
-Unk_EnSlot* UIItemEnchantDialog::FUN_1419c8160(const CString& name)
+Unk_EnSlot* UIItemEnchantDialog::FindSlotByName(const CString& name)
 {
     Unk_EnSlot* slot = FUN_140f6e830(name);
     if (slot != 0)
@@ -1874,16 +1849,16 @@ void UIItemEnchantDialog::FUN_1419c81a0()
         FUN_1419c6840(MS2Ptr<CItem>(item), m_option.operator->(), obj);
         switch (m_expMode) {
         case 1:
-            FUN_1419c6bb0(obj, item.get());
+            WriteEnchantItem(obj, item.get());
             FUN_1419c6cd0(obj, &m_ingredients);
             FUN_1419c7140(obj);
-            FUN_1419c7610(obj);
+            SetFailStackInfo(obj);
             break;
         case 2:
-            FUN_1419c6bb0(obj, item.get());
+            WriteEnchantItem(obj, item.get());
             FUN_1419c6cd0(obj, &m_ingredients);
             FUN_1419c7140(obj);
-            FUN_1419c74e0(obj, item.get());
+            SetExpInfo(obj, item.get());
             break;
         }
         m_enchantAni->Invoke("setEnchantInfo", obj);
@@ -1892,30 +1867,30 @@ void UIItemEnchantDialog::FUN_1419c81a0()
 }
 
 // @0x1419c86b0
-int UIItemEnchantDialog::FUN_1419c86b0(int itemId)
+int UIItemEnchantDialog::GetProtectorRank(int itemId)
 {
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (!data)
         return 0;
-    if (FUN_1403b3c40(data->function.name, L"EnchantSuperProtect") != 0) {
+    if (data->function.name == L"EnchantSuperProtect") {
         return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0);
-    } else if (FUN_1403b3c40(data->function.name, L"EnchantScroll") != 0) {
+    } else if (data->function.name == L"EnchantScroll") {
         Unk_EnScrollRef ref = reinterpret_cast<Unk_PreloadServiceC*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
         if (ref.FUN_1419ca720() != 0)
-            return ref.operator->()->FUN_14034d370();
+            return reinterpret_cast<CEnchantScrollData*>(ref.operator->())->GetMaxRank();
     }
     return 0;
 }
 
 // @0x1419c8830
-int UIItemEnchantDialog::FUN_1419c8830(int itemId)
+int UIItemEnchantDialog::GetProtectorCount(int itemId)
 {
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (!data)
         return 0;
-    if (FUN_1403b3c40(data->function.name, L"EnchantSuperProtect") != 0) {
+    if (data->function.name == L"EnchantSuperProtect") {
         return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(1, 0);
-    } else if (FUN_1403b3c40(data->function.name, L"EnchantScroll") != 0) {
+    } else if (data->function.name == L"EnchantScroll") {
         Unk_EnScrollRef ref = reinterpret_cast<Unk_PreloadServiceC*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
         if (ref.FUN_1419ca720() != 0)
             return ref.operator->()->m_1c;
@@ -1929,7 +1904,7 @@ int UIItemEnchantDialog::FUN_1419c89b0(unsigned __int64 uid)
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (!item)
         return 0;
-    if (item->GetRequiredLevel() < *((struct Unk_ClientConfig*)FUN_1401d3200())->m_99e0.FUN_1401d7c10())
+    if (item->GetRequiredLevel() < *reinterpret_cast<Common::Constants::Value<unsigned>*>(&((struct Unk_ClientConfig*)FUN_1401d3200())->m_99e0)->Get())
         return 0;
     int hasCurrency = 0;
     for (unsigned __int64 i = 0; i < m_ingredients.FUN_14026bee0(); i++) {
@@ -1943,14 +1918,14 @@ int UIItemEnchantDialog::FUN_1419c89b0(unsigned __int64 uid)
 }
 
 // @0x1419c8b80
-int UIItemEnchantDialog::FUN_1419c8b80(unsigned __int64 uid)
+int UIItemEnchantDialog::IsItemOwnedByMyPC(unsigned __int64 uid)
 {
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (!item)
         return 0;
     if (item->FUN_140527930() == 0)
         return 0;
-    Unk_EnOwner* owner = item->FUN_140527930()->FUN_140635160();
+    CItemTransfer::CItemBinding* owner = reinterpret_cast<CItemTransfer*>(item->FUN_140527930())->GetBinding();
     if (owner == 0)
         return 0;
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -2011,7 +1986,7 @@ int UIItemEnchantDialog::FUN_1419c9260(CItem* base, CItem* other)
     Unk_EnPC* pc = (Unk_EnPC*)((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return 0;
-    if (pc->FUN_141662eb0(other) == 0)
+    if (reinterpret_cast<PC*>(pc)->FUN_141662eb0(other) == 0)
         return 0;
     if (other->FUN_140528e20())
         return 0;
@@ -2529,39 +2504,39 @@ MS2_REPLACE_METHOD(0x1419C1E40, UIItemEnchantDialog, FUN_1419c1e40, 207, 0x82508
 MS2_REPLACE_METHOD(0x1419C37F0, UIItemEnchantDialog, FUN_1419c37f0, 344, 0x26D73179);
 MS2_REPLACE_METHOD(0x1419C3950, UIItemEnchantDialog, FUN_1419c3950, 558, 0x9A27A1DA);
 MS2_REPLACE_METHOD(0x1419C3B90, UIItemEnchantDialog, FUN_1419c3b90, 723, 0xA88975ED);
-MS2_REPLACE_METHOD(0x1419C3E70, UIItemEnchantDialog, FUN_1419c3e70, 341, 0x8DD13E96);
+MS2_REPLACE_METHOD(0x1419C3E70, UIItemEnchantDialog, OnFailStackPacket, 341, 0x8DD13E96);
 MS2_REPLACE_METHOD(0x1419C3FD0, UIItemEnchantDialog, SendRequestItemEnchantMode1, 119, 0x84095DA5);
 MS2_REPLACE_METHOD(0x1419C4050, UIItemEnchantDialog, FUN_1419c4050, 343, 0x8860A6F7);
 MS2_REPLACE_METHOD(0x1419C41B0, UIItemEnchantDialog, FUN_1419c41b0, 422, 0x5183F1D2);
 MS2_REPLACE_METHOD(0x1419C5D20, UIItemEnchantDialog, FUN_1419c5d20, 98, 0xD143B54F);
-MS2_REPLACE_METHOD(0x1419C5D90, UIItemEnchantDialog, FUN_1419c5d90, 71, 0x14F87C35);
+MS2_REPLACE_METHOD(0x1419C5D90, UIItemEnchantDialog, OnConfirmEnchantMode6MsgBox, 71, 0x14F87C35);
 MS2_REPLACE_METHOD(0x1419C5DE0, UIItemEnchantDialog, SendRequestItemEnchantMode2, 157, 0x54490F9C);
-MS2_REPLACE_METHOD(0x1419C5E90, UIItemEnchantDialog, FUN_1419c5e90, 98, 0x05CFFE46);
+MS2_REPLACE_METHOD(0x1419C5E90, UIItemEnchantDialog, OnConfirmEnchantMode4MsgBox, 98, 0x05CFFE46);
 MS2_REPLACE_METHOD(0x1419C5F00, UIItemEnchantDialog, FUN_1419c5f00, 77, 0x21806692);
 MS2_REPLACE_METHOD(0x1419C5F60, UIItemEnchantDialog, SendRequestItemEnchantMode17, 247, 0x545B198F);
 MS2_REPLACE_METHOD(0x1419C6060, UIItemEnchantDialog, SendRequestItemEnchantMode18, 247, 0x21FF4F46);
 MS2_REPLACE_METHOD(0x1419C6160, UIItemEnchantDialog, FUN_1419c6160, 259, 0x2DAFAFCE);
 MS2_REPLACE_METHOD(0x1419C6270, UIItemEnchantDialog, FUN_1419c6270, 262, 0x7AF130B8);
-MS2_REPLACE_METHOD(0x1419C6380, UIItemEnchantDialog, FUN_1419c6380, 145, 0x2C1DD8AC);
-MS2_REPLACE_METHOD(0x1419C6420, UIItemEnchantDialog, FUN_1419c6420, 391, 0xB7263E85);
+MS2_REPLACE_METHOD(0x1419C6380, UIItemEnchantDialog, OnEnchantRateEventChanged, 145, 0x2C1DD8AC);
+MS2_REPLACE_METHOD(0x1419C6420, UIItemEnchantDialog, ResetState, 391, 0xB7263E85);
 MS2_REPLACE_METHOD(0x1419C65B0, UIItemEnchantDialog, FUN_1419c65b0, 641, 0x925F36DD);
 MS2_REPLACE_METHOD(0x1419C6840, UIItemEnchantDialog, FUN_1419c6840, 865, 0xDA112076);
-MS2_REPLACE_METHOD(0x1419C6BB0, UIItemEnchantDialog, FUN_1419c6bb0, 276, 0xEF182F86);
-MS2_REPLACE_METHOD(0x1419C74E0, UIItemEnchantDialog, FUN_1419c74e0, 291, 0x8EF8E019);
-MS2_REPLACE_METHOD(0x1419C7610, UIItemEnchantDialog, FUN_1419c7610, 391, 0x2B4CFA04);
+MS2_REPLACE_METHOD(0x1419C6BB0, UIItemEnchantDialog, WriteEnchantItem, 276, 0xEF182F86);
+MS2_REPLACE_METHOD(0x1419C74E0, UIItemEnchantDialog, SetExpInfo, 291, 0x8EF8E019);
+MS2_REPLACE_METHOD(0x1419C7610, UIItemEnchantDialog, SetFailStackInfo, 391, 0x2B4CFA04);
 MS2_REPLACE_METHOD(0x1419C77A0, UIItemEnchantDialog, FUN_1419c77a0, 240, 0x55BF1B8B);
 MS2_REPLACE_METHOD(0x1419C78A0, UIItemEnchantDialog, FUN_1419c78a0, 197, 0x9CBFF8DE);
-MS2_REPLACE_METHOD(0x1419C7970, UIItemEnchantDialog, FUN_1419c7970, 185, 0xD43FB7C3);
+MS2_REPLACE_METHOD(0x1419C7970, UIItemEnchantDialog, FormatRateText, 185, 0xD43FB7C3);
 MS2_REPLACE_METHOD(0x1419C7CE0, UIItemEnchantDialog, SendRequestItemEnchantMode4, 312, 0x332989F9);
-MS2_REPLACE_METHOD(0x1419C7E20, UIItemEnchantDialog, FUN_1419c7e20, 144, 0x8DEEC429);
-MS2_REPLACE_METHOD(0x1419C7EC0, UIItemEnchantDialog, FUN_1419c7ec0, 124, 0x8A08E7B7);
+MS2_REPLACE_METHOD(0x1419C7E20, UIItemEnchantDialog, FormatItemName, 144, 0x8DEEC429);
+MS2_REPLACE_METHOD(0x1419C7EC0, UIItemEnchantDialog, FormatLevelText, 124, 0x8A08E7B7);
 MS2_REPLACE_METHOD(0x1419C8020, UIItemEnchantDialog, FUN_1419c8020, 61, 0xED1B3BE4);
 MS2_REPLACE_METHOD(0x1419C8070, UIItemEnchantDialog, UpdateEnchantIngredient, 223, 0x791ACF47);
-MS2_REPLACE_METHOD(0x1419C8160, UIItemEnchantDialog, FUN_1419c8160, 51, 0x5EC3538E);
-MS2_REPLACE_METHOD(0x1419C86B0, UIItemEnchantDialog, FUN_1419c86b0, 373, 0x6160BCC0);
-MS2_REPLACE_METHOD(0x1419C8830, UIItemEnchantDialog, FUN_1419c8830, 371, 0x835F76F0);
+MS2_REPLACE_METHOD(0x1419C8160, UIItemEnchantDialog, FindSlotByName, 51, 0x5EC3538E);
+MS2_REPLACE_METHOD(0x1419C86B0, UIItemEnchantDialog, GetProtectorRank, 373, 0x6160BCC0);
+MS2_REPLACE_METHOD(0x1419C8830, UIItemEnchantDialog, GetProtectorCount, 371, 0x835F76F0);
 MS2_REPLACE_METHOD(0x1419C89B0, UIItemEnchantDialog, FUN_1419c89b0, 453, 0x213F73FA);
-MS2_REPLACE_METHOD(0x1419C8B80, UIItemEnchantDialog, FUN_1419c8b80, 337, 0x6728CD4E);
+MS2_REPLACE_METHOD(0x1419C8B80, UIItemEnchantDialog, IsItemOwnedByMyPC, 337, 0x6728CD4E);
 MS2_REPLACE_METHOD(0x1419C9260, UIItemEnchantDialog, FUN_1419c9260, 307, 0xCED5AB88);
 MS2_REPLACE_METHOD(0x1419C93A0, UIItemEnchantDialog, FUN_1419c93a0, 202, 0x0C6D37D6);
 MS2_REPLACE_METHOD(0x1419C9490, UIItemEnchantDialog, FUN_1419c9490, 154, 0x4FD48B42);

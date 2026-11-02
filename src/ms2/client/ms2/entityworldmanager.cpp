@@ -139,11 +139,11 @@
 #include "ms2/client/ms2/entityworldmanager.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/client/ms2/ms2scenegraphservice.h"   // C3: MS2SceneGraphService::RemoveEntityFromUpdate
+#include "ms2/client/ms2/ms2animationservice.h"   // C3: MS2AnimationService::RemoveUnusedAsset
 
 class Unk_GameClock;
 class Unk_EntityDebugLog;
-void FUN_1401ce2f0(Unk_EntityDebugLog*, const char*, int);
-void FUN_1414f1240(ecr::SceneGraphService*, egf::Entity*);
 class MS2SceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -152,17 +152,17 @@ public:
 bool FUN_1414b3f50(MS2EntityLoaderService*, const egf::BlockIdentification&, unsigned*, int*);
 struct Unk_EntityAppFramework;
 extern Unk_EntityAppFramework DAT_143b059e8;
-efd::ServiceManager* FUN_1401cd040(Unk_EntityAppFramework*);
+class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);   // C3: was efd::ServiceManager*
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 int FUN_1413d6890(HardwareInstancingService*, egf::Entity*);
 void FUN_1413d73a0(HardwareInstancingService*, int);
 void FUN_141473870(const egf::EntityID&);
 CLogString* GetLogString();
-bool FUN_140a33ff0(const efd::Point3*);
+bool Unk_IsFinite(const efd::Point3&);   // C3: was FUN_140a33ff0
 void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
 void FUN_1409457c0(egf::Entity*, egf::PropertyID, const float&);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_140de8bd0(egf::Entity*, egf::PropertyID, const efd::AssetID&);
+void FUN_140de8bd0(egf::Entity*, egf::PropertyID, efd::AssetID*);
 void FUN_140998250(egf::Entity*, egf::PropertyID, efd::AssetID&);
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
@@ -171,9 +171,7 @@ public:
     static class WorldService* GetInstance();
     void FUN_141bbae40(void* p);
 };
-void FUN_1401ce3d0(Unk_EntityDebugLog*, TFunctor<void, EmptyParam>);
 egmAnimation::AnimationService* FUN_141b6f910();
-bool FUN_1414a9a80(egmAnimation::AnimationService*, efd::utf8string);
 
 template<class T> void Unk_WorldLog(CLogString* log, int level, int category,
                                    const wchar_t* format, const T& value) {
@@ -256,8 +254,8 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
     egf::EntityPtr entity = FactoryEntity(modelName, id, true);
     if (entity.data() != nullptr) {
-        if (!FUN_140a33ff0(&position)) position = efd::Point3::ZERO;
-        if (!FUN_140a33ff0(&rotation)) rotation = efd::Point3::ZERO;
+        if (!Unk_IsFinite(position)) position = efd::Point3::ZERO;
+        if (!Unk_IsFinite(rotation)) rotation = efd::Point3::ZERO;
         FUN_140a38a50(entity, 0xfd95ca52, position);
         FUN_140a38a50(entity, 0x68c7c29d, rotation);
         FUN_1409457c0(entity, 0x2d7cad2d, scale);
@@ -272,9 +270,9 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
                 asset = urn;
             }
             if (entity->GetModel()->ContainsModel("Mesh"))
-                FUN_140de8bd0(entity, 0x770e5fc6, asset);
+                FUN_140de8bd0(entity, 0x770e5fc6, &asset);
             else if (entity->GetModel()->ContainsModel("Actor"))
-                FUN_140de8bd0(entity, 0x12383cea, asset);
+                FUN_140de8bd0(entity, 0x12383cea, &asset);
         }
         entities->AddEntity(entity.data(), nullptr);
         worlds[currentMap].createdEntities[id] = entity.data();
@@ -424,7 +422,7 @@ bool FUN_1411cfcc0(void*) { s_entityFreeze = true; return true; }
 // @0x1411cfce0
 void EntityWorldManager::FUN_1411cfce0() {
     ((class CCrashManager*)(class Unk_EntityDebugLog*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2b0("\n--- EntityWorldManager Log---");
-    FUN_1401ce2f0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), "LoadedMapCount %d", FUN_1411cfbe0());
+    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce2f0("LoadedMapCount %d", FUN_1411cfbe0());
 }
 // @0x1411cfd40
 void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, efd::Category) {
@@ -465,7 +463,7 @@ void EntityWorldManager::vfunc_1(int) {
 void EntityWorldManager::vfunc_3(int map) {
     Unk_EntityWorldRecord& world = worlds[reinterpret_cast<const unsigned&>(map)];
     for (auto it = world.createdEntities.begin(); it != world.createdEntities.end(); ++it) {
-        FUN_1414f1240(sceneGraphs, it->second);
+        reinterpret_cast<MS2SceneGraphService*>((ecr::SceneGraphService*)sceneGraphs)->RemoveEntityFromUpdate(it->second);
         sceneGraphs->RemoveSceneGraph(it->second, true);
     }
 }
@@ -495,7 +493,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
     shaders = m_pServiceManager->GetSystemServiceAs<ecr::ShaderService>();
     lights = m_pServiceManager->GetSystemServiceAs<ecr::LightService>();
     animation = m_pServiceManager->GetSystemServiceAs<egmAnimation::AnimationService>();
-    services = FUN_1401cd040(&DAT_143b059e8);
+    services = (efd::ServiceManager*)FUN_1401cd040(&DAT_143b059e8);
     messages->Subscribe(this, s_entityWorldChannel, 0, false);
     messages->Subscribe(this, entities->GetEntityLoadCategory(), 0, false);
     loader->SetMaxEntityLoadThrottle(0xffff);
@@ -505,7 +503,7 @@ efd::AsyncResult EntityWorldManager::OnInit() {
         device->AddResetNotificationFunc(FUN_1411cfc90, this);
         device->AddLostDeviceNotificationFunc(FUN_1411cfcc0, this);
     }
-    FUN_1401ce3d0(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance()), TFunctor<void, EmptyParam>(this, &EntityWorldManager::FUN_1411cfce0));
+    ((class CCrashManager*)(reinterpret_cast<Unk_EntityDebugLog*>(TSingleton<CrashManagerCli>::GetInstance())))->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &EntityWorldManager::FUN_1411cfce0));
     return efd::AsyncResult_Complete;
 }
 // @0x1411d08e0
@@ -532,7 +530,7 @@ efd::UInt32 EntityWorldManager::FUN_1411d0b30() { return entities->GetCount(); }
 void FUN_1411d0b60(void* /*pUnused*/) {
     auto it = TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.begin();
     while (it != TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.end()) {
-        if (FUN_1414a9a80(FUN_141b6f910(), it->GetURN())) {
+        if (reinterpret_cast<MS2AnimationService*>(FUN_141b6f910())->RemoveUnusedAsset(it->GetURN())) {
             it = TSingleton<EntityWorldManager>::GetInstance()->unusedAssets.erase(it);
             continue;
         }

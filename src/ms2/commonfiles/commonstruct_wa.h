@@ -290,14 +290,6 @@ public:
 };
 MS2_CHECK_SIZE(Unk_HistRef, 16);
 
-// Scoped lock helper (ctor 0x1401b4ec0, dtor 0x1401b5120).
-class Unk_HistLock {
-public:
-    Unk_HistLock(CLockCriticalSection&, int);
-    ~Unk_HistLock();
-    void* m_p;
-};
-
 // std::list<Unk_HistRef> (16 bytes)
 class Unk_HistList {
 public:

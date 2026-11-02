@@ -9,13 +9,6 @@
 #include "hook/ms2hook.h"
 #include <atlcoll.h>
 
-// A CAtlArray<CStringW> (data, size, capacity, grow-by; ctor 0x140163270).
-struct Unk_SsParts { void* m_p; unsigned __int64 m_n; unsigned __int64 m_max; int m_nGrow; };
-Unk_SsParts* FUN_140163270(Unk_SsParts* pArr);
-// A CAtlMap<int, int> (ctor 0x140163400 with the ATL defaults: 17 bins, load 0.75/0.25/2.25, block size 10).
-struct Unk_SsMap { char m_data[0x50]; };
-Unk_SsMap* FUN_140163400(Unk_SsMap* pMap, unsigned nBins, float fOptimal, float fLow, float fHigh, unsigned nBlock);
-void FUN_14016a050(Unk_SsMap* pMap, int nKey, int nValue);
 // Splits the string at the delimiters into the array (CStringW::Tokenize loop).
 void FUN_14025a680(CStringW& strSource, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelims);
 
@@ -28,17 +21,14 @@ public:
     void FUN_1408d1e80(int nKey, int nValue);                                   // map insert
 
     CStringW m_strName;             // +0x00
-    Unk_SsParts m_parts;            // +0x08
-    Unk_SsMap m_map;                // +0x28
+    ATL::CAtlArray<CStringW> m_parts;   // +0x08
+    ATL::CAtlMap<unsigned int, int> m_map;  // +0x28
 };
 
 // @0x1408d1c50
-// MS2-FUNCTIONAL: the exe members (CAtlArray, CAtlMap) have destructors, so two more unwind states; behaviour-equivalent
 Unk_SplitStr::Unk_SplitStr(CStringW strName, CStringW strDelims)
     : m_strName(strName)
 {
-    FUN_140163270(&m_parts);
-    FUN_140163400(&m_map, 0x11, 0.75f, 0.25f, 2.25f, 10);
     FUN_1408d1e00(CStringW(strName), CStringW(strDelims));
 }
 
@@ -46,19 +36,19 @@ Unk_SplitStr::Unk_SplitStr(CStringW strName, CStringW strDelims)
 void Unk_SplitStr::FUN_1408d1d80(CStringW strName, CStringW strDelims)
 {
     m_strName = strName;
-    FUN_14025a680(strName, reinterpret_cast<ATL::CAtlArray<CStringW>&>(m_parts), strDelims);
+    FUN_14025a680(strName, m_parts, strDelims);
 }
 
 // @0x1408d1e00
 void Unk_SplitStr::FUN_1408d1e00(CStringW strName, CStringW strDelims)
 {
     m_strName = strName;
-    FUN_14025a680(strName, reinterpret_cast<ATL::CAtlArray<CStringW>&>(m_parts), strDelims);
+    FUN_14025a680(strName, m_parts, strDelims);
 }
 
 // @0x1408d1e80
 void Unk_SplitStr::FUN_1408d1e80(int nKey, int nValue)
 {
-    FUN_14016a050(&m_map, nKey, nValue);
+    m_map.SetAt(nKey, nValue);
 }
 MS2_REPLACE_METHOD(0x1408D1E80, Unk_SplitStr, FUN_1408d1e80, 49, 0x1F2F4EBD);

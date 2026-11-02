@@ -36,13 +36,13 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/ms2.h"
-class Unk_1401cd100 {
+class Unk_BuddyHandle {
 public:
-    Unk_1401cd100(void*);
+    Unk_BuddyHandle(void*);
 private:
     void* m_p;
 };
-MS2_CHECK_SIZE(Unk_1401cd100, 8);
+MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
 
 // @0x1400fb920
 static CString s_physSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -51,7 +51,7 @@ static CString s_physSkill("skill");
 // @0x1400fba10
 static CString s_physStun("stun");
 // @0x1400fba40
-static Unk_1401cd100 s_physNone(NULL);
+static Unk_BuddyHandle s_physNone(NULL);
 // @0x1400fba60
 static Unk_1402a9d70 s_physCondition(17, 0.75f, 0.25f, 2.25f, 10);
 
@@ -235,21 +235,14 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
 }
 #ifndef MS2_HOOK_DLL
 // @0x1416897d0
-// MS2-FUNCTIONAL: static lock EH shape differs from exe
 NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
 {
-    NxActor* pActor = 0;
-    if (DAT_143ae2b30 == 0)
-    {
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310());
-        Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
-        if (pRpg != 0)
-            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
-    }
-    else
+    if (DAT_143ae2b30 != 0)
     {
         static CLockCriticalSection s_lock;     // 0x143ae3968
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310());
+        NxActor* pActor = 0;
+        auto pScene = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
+        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(pScene);
         if (Unk_LockGuard guard = s_lock)
         {
         }
@@ -259,8 +252,18 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
             if (pRpg != 0)
                 pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
         }
+        return pActor;
     }
-    return pActor;
+    else
+    {
+        NxActor* pActor = 0;
+        auto pScene = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
+        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(pScene);
+        Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
+        if (pRpg != 0)
+            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->FUN_14166d220())))->FUN_141240e70();
+        return pActor;
+    }
 }
 #endif
 // @0x141689970
@@ -428,7 +431,7 @@ float CPhysXHelper::FUN_14168a210()
     return 100.0f;
 }
 // @0x14168a230
-int CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask)
+int CPhysXHelper::RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask)
 {
     int nDefaultGroups = 0x389;
     Unk_RayCastInfo kInfo;
@@ -470,10 +473,10 @@ int CPhysXHelper::RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, U
     return 0;
 }
 // @0x14168a450
-int CPhysXHelper::FUN_14168a450(Vector3 ptFrom, float* pDist, float fLen)
+int CPhysXHelper::FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen)
 {
     Unk_RayCastInfo kInfo;
-    kInfo.m_origin = ptFrom;
+    kInfo.m_origin = reinterpret_cast<const Vector3&>(ptFrom);
     kInfo.m_dir = g_143a08cf8.FUN_1409f7960();
     kInfo.m_maxDist = fLen;
     kInfo.m_dir.FUN_140968990();

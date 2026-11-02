@@ -40,7 +40,6 @@ void OnceCallbackTimer::FUN_140ca70d0()
 }
 
 // @0x140ca7100
-// MS2-FUNCTIONAL: operand load order of the wrap test (pNode->start vs it->end) differs
 void OnceCallbackTimer::Update()
 {
     unsigned now = (unsigned)GetTimeMs();
@@ -49,12 +48,11 @@ void OnceCallbackTimer::Update()
     {
         if (now >= it->second.m_end)
         {
-            std::pair<const unsigned, Entry>* pNode = &*it;
-            if (it->second.m_end < pNode->second.m_start && it->second.m_start <= now)
+            if (it->second.m_start > it->second.m_end && now >= it->second.m_start)
             {
                 ++it;
+                continue;
             }
-            else
             {
                 if (!it->second.m_callback.IsNull())
                     it->second.m_callback();

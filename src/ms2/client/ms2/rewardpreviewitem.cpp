@@ -48,7 +48,7 @@ void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szForma
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-int FUN_140c09130(Unk_140165cf0* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
+class Unk_DcXmlNode; int FUN_140c09130(Unk_DcXmlNode* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
 CString FUN_14016a5c0(const char* pszName, int nFlags);                // undecorated class name
 CString FUN_14016a600(const wchar_t* psz, int nFlags);                  // wide -> multibyte
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);
@@ -72,7 +72,7 @@ void RewardPreviewItem::Load(Unk_140165cf0* pElem)
     m_item.vfunc_2(pElem);
     XmlEnumName<RewardPreviewItemTag, ParseRewardPreviewItemTag>(pElem, "itemTag", m_itemTag);
     XmlTokenList(pElem, "reqJobs", m_reqJobs);
-    FUN_140c09130(pElem, "reqLevel", m_reqLevel);
+    FUN_140c09130((Unk_DcXmlNode*)pElem, "reqLevel", m_reqLevel);
 }
 MS2_REPLACE_METHOD(0x140DC2F80, RewardPreviewItem, Load, 145, 0x55730D5E);
 

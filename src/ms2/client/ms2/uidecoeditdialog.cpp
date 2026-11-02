@@ -122,8 +122,8 @@ void UIDecoEditDialog::OnLoadInit()
         }
         if (MS2Ptr<ASScrollingList> spBrushes = FUN_140c02900("m_brushes"))
         {
-            spBrushes->FUN_1422dd2a0("PaintBrush");
-            spBrushes->FUN_1422dd2a0("NoiseBrush");
+            spBrushes->AddLabelItemA("PaintBrush");
+            spBrushes->AddLabelItemA("NoiseBrush");
             spBrushes->vfunc_24(true);
             spBrushes->SetSelectedIndex(0);
         }
@@ -172,27 +172,27 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("OnBrushRadiusChange", szMethod) == 0)
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_14191c1e0(data.FUN_1422b8c10());
+            FUN_14191c1e0(data.PopFloat());
     }
     else if (_stricmp("OnBrushDensityChange", szMethod) == 0)
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_14191c230(data.FUN_1422b8c10());
+            FUN_14191c230(data.PopFloat());
     }
     else if (_stricmp("OnBrushScaleChange", szMethod) == 0)
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            float fX = data.FUN_1422b8c10();
-            float fY = data.FUN_1422b8c10();
+            float fX = data.PopFloat();
+            float fY = data.PopFloat();
             Unk_DeVec2 vScale;
             FUN_14191c280(*vScale.FUN_140a0a600(fX, fY));
         }
     }
     else if (_stricmp("OnBrushRotationChange", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
     {
-        float fX = data.FUN_1422b8c10();
-        float fY = data.FUN_1422b8c10();
+        float fX = data.PopFloat();
+        float fY = data.PopFloat();
         Unk_DeVec2 vRotation;
         FUN_14191c2d0(*vRotation.FUN_140a0a600(fX, fY));
     }

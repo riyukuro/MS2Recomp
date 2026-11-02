@@ -72,7 +72,7 @@ public:
 
 int FUN_14165ef30(PCBase* pPC);                                     // the team / pvp side
 CStringW* FUN_141656be0(PCBase* pPC);                               // the guild name
-int FUN_141661bc0(PCBase* pPC);                                     // the party id
+
 efd::Point3 FUN_141b6e150(const NxVec3& v);                         // NxVec3 -> efd::Point3
 NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3
 float FUN_14059d930(float f);                                       // fabsf
@@ -213,7 +213,6 @@ void CBaseCollision::FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3
 }
 
 // @0x1409fc6c0
-// MS2-FUNCTIONAL: behaviour from the disassembly; temporaries / branch layout not byte-matched yet
 void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
 {
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > kObjects(10);
@@ -238,19 +237,20 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             continue;
         if (spCtx->m_pExclude != NULL)
         {
-            unsigned int nId = pObj->FUN_14123c580();
-            if (spCtx->m_pExclude->Lookup(nId) != NULL)
+            if (spCtx->m_pExclude->Lookup(pObj->FUN_14123c580()) != NULL)
                 continue;
         }
         if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
         {
-            int nId = pObj->FUN_14123c580();
-            if (nId == spCtx->m_pOwner->FUN_14123c580())
+            if (pObj->FUN_14123c580() == spCtx->m_pOwner->FUN_14123c580())
             {
                 if (spCtx->m_bRideToRider != 0)
                 {
                     efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
-                    pFirst = spRidee ? spRidee->GetRider() : pObj;
+                    if (spRidee)
+                        pFirst = spRidee->GetRider();
+                    else
+                        pFirst = pObj;
                 }
                 continue;
             }
@@ -290,18 +290,20 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             }
             if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
             {
-                int nId = pObj->FUN_14123c580();
-                if (nId == spCtx->m_pOwner->FUN_14123c580())
+                if (pObj->FUN_14123c580() == spCtx->m_pOwner->FUN_14123c580())
                 {
                     if (spCtx->m_bRideToRider != 0)
                     {
                         efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
-                        pFirst = spRidee ? spRidee->GetRider() : pObj;
+                        if (spRidee)
+                            pFirst = spRidee->GetRider();
+                        else
+                            pFirst = pObj;
                     }
                     continue;
                 }
             }
-            spCtx->m_arrTargets.Add(efd::SmartPointer<GameObject>(pObj));
+            spCtx->m_arrTargets.Add(pObj);
             kMetrics.SetAt(pObj->FUN_14123c580(), kHit.m_kMetric);
             if (bFacing)
             {
@@ -343,7 +345,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             {
                 if (bSameParty != 0)
                 {
-                    if (FUN_141661bc0(pOwnerPC) == 0 || FUN_141661bc0(pOwnerPC) != FUN_141661bc0(pTargetPC))
+                    if (((PC*)pOwnerPC)->FUN_141661bc0() == 0 || ((PC*)pOwnerPC)->FUN_141661bc0() != ((PC*)pTargetPC)->FUN_141661bc0())
                         continue;
                 }
                 if (bSameGuild != 0)
@@ -352,7 +354,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                         continue;
                 }
             }
-            kFiltered.Add(efd::SmartPointer<GameObject>(pTarget));
+            kFiltered.Add(pTarget);
         }
         if (nMode == 2)
         {
@@ -360,11 +362,17 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             spCtx->m_arrTargets.Copy(kFiltered);
             kFiltered.RemoveAll();
         }
-        else if (nMode == 3 && !kFiltered.IsEmpty())
+        else if (nMode == 3)
         {
-            spCtx->m_arrTargets.RemoveAll();
-            spCtx->m_arrTargets.Copy(kFiltered);
-            kFiltered.RemoveAll();
+            if (!kFiltered.IsEmpty())
+            {
+                spCtx->m_arrTargets.RemoveAll();
+                spCtx->m_arrTargets.Copy(kFiltered);
+                kFiltered.RemoveAll();
+            }
+        }
+        else if (nMode == 4)
+        {
         }
     }
 
@@ -498,7 +506,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
         spCtx->m_arrTargets.Append(kBack);
     }
     if (pFirst != NULL)
-        spCtx->m_arrTargets.InsertAt(0, efd::SmartPointer<GameObject>(pFirst), 1);
+        spCtx->m_arrTargets.InsertAt(0, pFirst, 1);
 }
 
 // @0x1409fe440

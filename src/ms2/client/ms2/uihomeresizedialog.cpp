@@ -41,7 +41,7 @@ public:
 CFeatureManager* FUN_140166410();
 class Unk_HrBlockFlags { public: int FUN_1402c4c90(int nFlag); };       // blocked-action flag set
 struct Unk_HrConfig { char m_pad[8]; Unk_HrBlockFlags m_flags; };
-Unk_HrConfig* FUN_14025e7b0();                                  // global client config
+struct Unk_BanConfig* FUN_14025e7b0();                                  // global client config
 
 class CAchieveManager { public: int IsGradeCleared(unsigned int nWidth, int nLength); };     // trophy requirement check
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
@@ -129,7 +129,7 @@ void UIHomeResizeDialog::FUN_140c2bf70() { vfunc_84(); }
 // @0x140c2bfa0
 void UIHomeResizeDialog::OnShrinkArea()
 {
-    if (reinterpret_cast<CContentShutdown&>(FUN_14025e7b0()->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
+    if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
         if (FUN_140166410()->FUN_14036d570(0xe4)) {
@@ -154,7 +154,7 @@ void UIHomeResizeDialog::OnShrinkArea()
 // @0x140c2c2f0
 void UIHomeResizeDialog::OnShrinkHeight()
 {
-    if (reinterpret_cast<CContentShutdown&>(FUN_14025e7b0()->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
+    if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
         if (FUN_140166410()->FUN_14036d570(0xe4)) {
@@ -274,7 +274,7 @@ void UIHomeResizeDialog::vfunc_84()
     bool bExtend = true;
     if (!FUN_140166410()->FUN_14036d570(0xe4))
         bShrink = false;
-    if (reinterpret_cast<CContentShutdown&>(FUN_14025e7b0()->m_flags).Get((CContentShutdown::Content)(99)) != 0)
+    if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
     ASObj obj(2);
     int nArea;

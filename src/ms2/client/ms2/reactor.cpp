@@ -10,6 +10,7 @@
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@UUnk_Int3@@@std@@V?$_Vector_val@U?$_Simple_types@UUnk_Int3@@@std@@@2@$00@std@@QEBAAEBV?$allocator@UUnk_Int3@@@2@XZ 0x140b7e7a0 ; prop
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@@std@@QEBAAEBV?$allocator@UUnk_Int3@@@2@XZ 0x140b7e7f0 ; unique
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@@std@@QEBAAEBQEAUUnk_Int3@@XZ 0x140b7e880 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCAnimationManager@@@@QEBA_NPEAVCAnimationManager@@@Z 0x140b7c8b0 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: ?GetClassDesc@CReactor@@UEBAPEBVClassInfo@efd@@XZ 0x140b7cc30
 // MS2-PIN: ?TypeCast@CReactor@@UEBA_NIPEAPEAX@Z 0x140b7e4d0
@@ -155,7 +156,7 @@ public:
     char m_pad_48[8];
     int m_nCount;                                               // +0x50
 };
-class Unk_RxGrid { public: Unk_RxCellInfo* FUN_1410b8ab0(Vector3 pt); };   // cell info at a point (CubeMapInformationService::GetCubeAtPoint has no ms2sym row yet)
+class Unk_RxGrid {};
 class Unk_RxGridRef
 {
 public:
@@ -174,9 +175,8 @@ public:
     char m_pad_18[0xc4 - 0x18];
     int m_nKind;                                                // +0xc4
 };
-class Unk_RxPhys;
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-int FUN_14168a450(Unk_RxPhys* p, Vector3* pPos, float* pOut, float fRange);
+class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& pPos, float* pOut, float fRange); };
 Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
 int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
 Unk_Int3 FUN_1408a0400(int nCellId);
@@ -327,22 +327,18 @@ bool CReactor::RemoveEffect(const CString& strEffect)
 // @0x140b791a0
 void CReactor::FUN_140b791a0()
 {
-    if (m_unk_80 != 0)
-    {
-        MS2Ptr<CAnimationManager> spAnim = GetAnimMgr();
-        if (!spAnim.IsNull())
-        {
-            if (reinterpret_cast<Unk_RxAnimSvc*>(FUN_141b6f910()) != 0 && !m_listAnims.IsEmpty())
-            {
-                CString strTemp = FUN_1409a2360(m_listAnims.GetHead(), 0);
-                alignas(8) char strAniBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
-                efd::utf8string& strAni = *reinterpret_cast<efd::utf8string*>(strAniBuf);
-                FUN_1409989e0(&strAni, strTemp);
-                spAnim->FUN_14099e050(strAni, 1.0f, false);
-                FUN_1408a8900(&strAni);
-            }
-        }
-    }
+    if (m_unk_80 == 0)
+        return;
+    MS2Ptr<CAnimationManager> spAnim = GetAnimMgr();
+    if (spAnim == (CAnimationManager*)0)
+        return;
+    egmAnimation::AnimationService* pAnimSvc = FUN_141b6f910();
+    if (pAnimSvc == 0)
+        return;
+    if (m_listAnims.IsEmpty())
+        return;
+    const CString& strHead = m_listAnims.GetHead();
+    spAnim->FUN_14099e050(const_cast<efd::utf8string&>(static_cast<const efd::utf8string&>(efd::utf8string((const char*)FUN_1409a2360(strHead, 0)))), 1.0f, false);
 }
 
 // @0x140b79330
@@ -675,7 +671,7 @@ int FUN_140b7a650(PCBase* pPc)
     }
 
     CString strName = StringFormat("Reactor_{0}", nCellId);
-    if (pWorld->FUN_141bc6eb0(strName).data() != 0)
+    if (pWorld->FindSpawnByName(strName).data() != 0)
         return 1;
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrField;
     pWorld->FUN_141bc2c90(ptCenter, &arrField);
@@ -721,14 +717,14 @@ int FUN_140b7a650(PCBase* pPc)
         efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
         float fHit = 0.0f;
-        if (FUN_14168a450(((class Unk_RxPhys*)FUN_1409f7ca0()), reinterpret_cast<Vector3*>(pSample), &fHit, 50.0f) == 0)
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450(*pSample, &fHit, 50.0f) == 0)
             return 1;
     }
     }
 
     Vector3 ptLow = ptCenter;
     ptLow.z = ptLow.z - 150.0f;
-    Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxGrid*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410b8ab0(ptLow);
+    Unk_RxCellInfo* pInfo = reinterpret_cast<Unk_RxCellInfo*>(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtPoint(ptLow));
     if (pInfo == 0)
         return 1;
     if (pInfo->m_nState != 1)
@@ -845,9 +841,6 @@ Unk_Int3* FUN_140b7c2a0(Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest, void
 
 // @0x140b7c870
 bool FUN_140b7c870(const Unk_GluePair* pIt, void* pOther) { return pIt->first == pOther; }
-
-// @0x140b7c8b0
-bool FUN_140b7c8b0(const Unk_GluePair* pIt, void* pOther) { return pIt->second == pOther; }
 
 // @0x140b7c960
 void* FUN_140b7c960(const Unk_GluePair* p) { return p->second; }

@@ -50,20 +50,7 @@ void FUN_140a2ff20(const BlockPtr& spBlock, int nKind, unsigned __int64 n);   //
 
 extern __int64 DAT_143ab2898;                           // the highest meso a listing may ask
 
-// fmt call glue of the invalid-price message (a float and two int64 arguments; hand written as in
-// uiitemrepackingscrolldialog.cpp)
 typedef __int64 i64;
-struct Unk_MesoFmtArg { const void* m_value; void* m_fn; };
-struct Unk_MesoFmtPack { i64 m_n; const Unk_MesoFmtArg* m_args; };
-Unk_MesoFmtArg* FUN_14027c920(Unk_MesoFmtArg* pOut, float fValue);
-Unk_MesoFmtArg* FUN_14027c940(Unk_MesoFmtArg* pOut, i64 nValue);
-i64* FUN_140274c80(i64* pOut, float* pValue);
-i64* FUN_140274e10(i64* pOut, i64* pValue);
-i64* FUN_140163e80(i64* pSlot);
-i64 FUN_14016d660(i64 a0, i64 a1, i64 a2, i64 a3, i64 a4, i64 a5, i64 a6, i64 a7, i64 a8, i64 a9, i64 a10, i64 a11,
-                  i64 a12, i64 a13, i64 a14);
-Unk_MesoFmtPack* FUN_140163e50(Unk_MesoFmtPack* pOut, i64 nTypes, Unk_MesoFmtArg* pArgs);
-CStringW FUN_14028dfa0(const CStringW& strKey, const Unk_MesoFmtPack& args);
 
 // A notice box with the text of a key.
 #define MESO_NOTICE(key) \
@@ -252,7 +239,7 @@ void CMesoMarketMan::FillOwnRows(ASArray& rows)
         MS2Ptr<CMesoMarketProductCli> sp = m_mapOwn.GetValueAt(pos);
         ASObj row(2);
         sp->FillOwnRow(row);
-        rows.FUN_1422bc050(row.FUN_1422bb890());
+        rows.PushValue(row.FUN_1422bb890());
     }
 }
 
@@ -264,7 +251,7 @@ void CMesoMarketMan::FillMarketRows(ASArray& rows)
         MS2Ptr<CMesoMarketProductCli> sp = m_arrMarket[i];
         ASObj row(2);
         sp->FillMarketRow(row);
-        rows.FUN_1422bc050(row.FUN_1422bb890());
+        rows.PushValue(row.FUN_1422bb890());
     }
 }
 
@@ -456,7 +443,7 @@ void CMesoMarketMan::ShowResultMessage(int nCode)
         TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
         break;
     case 7:
-        TSingleton<CUIService>::GetInstance()->FUN_141add390();
+        TSingleton<CUIService>::GetInstance()->ShowLackMesoMarketTokenAsk();
         break;
     case 8:
         MESO_NOTICE(L"s_mesoMarket_error_maxCountOwnProduct");
@@ -579,27 +566,12 @@ void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr)
 }
 
 // @0x140d70320
-// MS2-FUNCTIONAL: argument packing temporaries are laid out differently
 CStringW FUN_140d70320(CStringW strKey, const float& fRate, const i64& nLow, const i64& nHigh)
 {
-    Unk_MesoFmtArg aArgs[3];
-    Unk_MesoFmtArg t0, t1, t2;
-    aArgs[0] = *FUN_14027c920(&t0, fRate);
-    aArgs[1] = *FUN_14027c940(&t1, nLow);
-    aArgs[2] = *FUN_14027c940(&t2, nHigh);
-    i64 s[12];
-    i64* p[12];
-    for (int i = 0; i < 12; i++)
-        p[i] = FUN_140163e80(&s[i]);
-    i64 tc, tb, ta;
-    i64* pTypeC = FUN_140274e10(&tc, (i64*)&nHigh);
-    i64* pTypeB = FUN_140274e10(&tb, (i64*)&nLow);
-    i64* pTypeA = FUN_140274c80(&ta, (float*)&fRate);
-    i64 nTypes = FUN_14016d660(*pTypeA, *pTypeB, *pTypeC, *p[11], *p[10], *p[9], *p[8], *p[7], *p[6], *p[5], *p[4], *p[3],
-                               *p[2], *p[1], *p[0]);
-    Unk_MesoFmtPack pack;
-    FUN_140163e50(&pack, nTypes, aArgs);
-    return FUN_14028dfa0(strKey, pack);
+    const fmt::internal::ArgArray<3>::Type aArgs = {fmt::internal::MakeValue<fmt::internal::Unk_WcFormatter>(fRate),
+                                                    fmt::internal::MakeValue<fmt::internal::Unk_WcFormatter>(nLow),
+                                                    fmt::internal::MakeValue<fmt::internal::Unk_WcFormatter>(nHigh)};
+    return FUN_14028dfa0(strKey, fmt::ArgList(fmt::internal::wc_make_type(fRate, nLow, nHigh), aArgs));
 }
 
 // @0x140d706c0

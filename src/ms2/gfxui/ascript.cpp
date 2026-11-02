@@ -63,7 +63,7 @@ CString AScript::FUN_1422ba950()
 MS2_REPLACE_METHOD(0x1422BA950, AScript, FUN_1422ba950, 61, 0x74F3E331);
 
 // @0x1422ba9a0
-bool AScript::FUN_1422ba9a0()
+bool AScript::IsUndefinedOrNull()
 {
     if (m_value.IsUndefined())
         return true;
@@ -71,7 +71,7 @@ bool AScript::FUN_1422ba9a0()
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BA9A0, AScript, FUN_1422ba9a0, 72, 0xBA2549F5);
+MS2_REPLACE_METHOD(0x1422BA9A0, AScript, IsUndefinedOrNull, 72, 0xBA2549F5);
 
 // @0x1422ba9f0
 bool AScript::HasMember(const char* szMember)
@@ -91,7 +91,7 @@ Scaleform::GFx::Value AScript::GetMember(const char* szMember)
 MS2_REPLACE_METHOD(0x1422BAA20, AScript, GetMember, 170, 0x765E9129);
 
 // @0x1422baad0
-bool AScript::FUN_1422baad0(const char* szMember, CStringW& strOut)
+bool AScript::TryGetWString(const char* szMember, CStringW& strOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -101,10 +101,10 @@ bool AScript::FUN_1422baad0(const char* szMember, CStringW& strOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAAD0, AScript, FUN_1422baad0, 284, 0xA82C4D84);
+MS2_REPLACE_METHOD(0x1422BAAD0, AScript, TryGetWString, 284, 0xA82C4D84);
 
 // @0x1422bac00
-bool AScript::FUN_1422bac00(const char* szMember, CString& strOut)
+bool AScript::TryGetString(const char* szMember, CString& strOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -114,10 +114,10 @@ bool AScript::FUN_1422bac00(const char* szMember, CString& strOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAC00, AScript, FUN_1422bac00, 373, 0x0DE5285B);
+MS2_REPLACE_METHOD(0x1422BAC00, AScript, TryGetString, 373, 0x0DE5285B);
 
 // @0x1422bad80
-bool AScript::FUN_1422bad80(const char* szMember, unsigned int* pOut)
+bool AScript::TryGetUInt(const char* szMember, unsigned int* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -127,10 +127,10 @@ bool AScript::FUN_1422bad80(const char* szMember, unsigned int* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAD80, AScript, FUN_1422bad80, 137, 0xA0009A9E);
+MS2_REPLACE_METHOD(0x1422BAD80, AScript, TryGetUInt, 137, 0xA0009A9E);
 
 // @0x1422bae10
-bool AScript::FUN_1422bae10(const char* szMember, int* pOut)
+bool AScript::TryGetInt(const char* szMember, int* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -140,10 +140,10 @@ bool AScript::FUN_1422bae10(const char* szMember, int* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAE10, AScript, FUN_1422bae10, 137, 0x49E908C4);
+MS2_REPLACE_METHOD(0x1422BAE10, AScript, TryGetInt, 137, 0x49E908C4);
 
 // @0x1422baea0
-bool AScript::FUN_1422baea0(const char* szMember, float* pOut)
+bool AScript::TryGetFloat(const char* szMember, float* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -153,10 +153,10 @@ bool AScript::FUN_1422baea0(const char* szMember, float* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAEA0, AScript, FUN_1422baea0, 143, 0xA4B08A10);
+MS2_REPLACE_METHOD(0x1422BAEA0, AScript, TryGetFloat, 143, 0xA4B08A10);
 
 // @0x1422baf40
-bool AScript::FUN_1422baf40(const char* szMember, double* pOut)
+bool AScript::TryGetDouble(const char* szMember, double* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -166,10 +166,10 @@ bool AScript::FUN_1422baf40(const char* szMember, double* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAF40, AScript, FUN_1422baf40, 139, 0xE85EDDB9);
+MS2_REPLACE_METHOD(0x1422BAF40, AScript, TryGetDouble, 139, 0xE85EDDB9);
 
 // @0x1422bafe0
-bool AScript::FUN_1422bafe0(const char* szMember, bool* pOut)
+bool AScript::TryGetBool(const char* szMember, bool* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -179,10 +179,10 @@ bool AScript::FUN_1422bafe0(const char* szMember, bool* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BAFE0, AScript, FUN_1422bafe0, 137, 0x5269F125);
+MS2_REPLACE_METHOD(0x1422BAFE0, AScript, TryGetBool, 137, 0x5269F125);
 
 // @0x1422bb070
-bool AScript::FUN_1422bb070(const char* szMember, __int64* pOut)
+bool AScript::TryGetInt64(const char* szMember, __int64* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -197,10 +197,10 @@ bool AScript::FUN_1422bb070(const char* szMember, __int64* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BB070, AScript, FUN_1422bb070, 249, 0x0E7B9106);
+MS2_REPLACE_METHOD(0x1422BB070, AScript, TryGetInt64, 249, 0x0E7B9106);
 
 // @0x1422bb170
-bool AScript::FUN_1422bb170(const char* szMember, unsigned __int64* pOut)
+bool AScript::TryGetUInt64(const char* szMember, unsigned __int64* pOut)
 {
     Scaleform::GFx::Value v;
     if (m_value.GetMember(szMember, &v))
@@ -215,16 +215,16 @@ bool AScript::FUN_1422bb170(const char* szMember, unsigned __int64* pOut)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x1422BB170, AScript, FUN_1422bb170, 301, 0x3A69F21D);
+MS2_REPLACE_METHOD(0x1422BB170, AScript, TryGetUInt64, 301, 0x3A69F21D);
 
 // @0x1422bb2b0
-CStringW AScript::FUN_1422bb2b0(const char* szName)
+CStringW AScript::GetWString(const char* szName)
 {
     CStringW str;
-    FUN_1422baad0(szName, str);
+    TryGetWString(szName, str);
     return str;
 }
-MS2_REPLACE_METHOD(0x1422BB2B0, AScript, FUN_1422bb2b0, 116, 0x91D7A63A);
+MS2_REPLACE_METHOD(0x1422BB2B0, AScript, GetWString, 116, 0x91D7A63A);
 
 // @0x1422bb330
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod)
@@ -318,7 +318,7 @@ MS2_REPLACE_METHOD(0x1422BB890, AScript, FUN_1422bb890, 24, 0x797F65C6);
 // @0x1422bb8b0
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422bd0f0();
     return 0;

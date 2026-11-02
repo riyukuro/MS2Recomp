@@ -10,8 +10,6 @@
 #include "ms2/client/ms2/store.h"
 
 extern void FUN_1408f3d90(void*, __int64, int);
-extern unsigned FUN_140720ca0(void*);
-extern void* FUN_140a69ee0(void*, __int64);
 extern void FUN_1401bffb0(void*, int);
 
 // CStore (store.h), the store table's class: its ctor, dtor, Initialize and Clear sit here, before store.cpp.
@@ -48,9 +46,9 @@ void CStore::Clear()
         ((ATL::CRBTree<unsigned __int64, MS2Ptr<CItem>, ATL::CElementTraits<unsigned __int64>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(void*)(&m_items))->RemoveAll();
         ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(void*)(&m_slots))->RemoveAll();
         FUN_1408f3d90(&m_slots, m_capacity, -1);
-        int count = FUN_140720ca0(&m_slots);
+        int count = reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&m_slots)->GetCount();
         for (int i = 0; i < count; ++i) {
-            FUN_1401bffb0(FUN_140a69ee0(&m_slots, i), 0);
+            FUN_1401bffb0(&(*(ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(void*)(&m_slots))[i], 0);
         }
     }
 }

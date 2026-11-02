@@ -18,7 +18,7 @@ public:
     int FUN_1401cc3e0(); int FUN_1401cc3a0(); int FUN_1401cc5d0(); int FUN_1401cc5f0(); int FUN_1401cc680(); int FUN_1401cc660();
     void FUN_1401cc4b0(int); __int64 FUN_1401cc230(); __int64 FUN_1401cc2f0(); CStringW FUN_1401cc350();
     // Remaining accessors of buddy.cpp (w4s10); the packet reader above is in buddy.cpp too.
-    CString FUN_1401cc0d0(); CStringW FUN_1401cc1c0(); short FUN_1401cc210(); __int64 FUN_1401cc250(); int FUN_1401cc270(); int FUN_1401cc290();
+    CString FUN_1401cc0d0(); CStringW FUN_1401cc1c0(); int FUN_1401cc210(); __int64 FUN_1401cc250(); int FUN_1401cc270(); int FUN_1401cc290();
     int FUN_1401cc2b0(); int FUN_1401cc310(); Unk_UserProxyColor* FUN_1401cc330(); int FUN_1401cc3c0(); int FUN_1401cc400(Vector3*);
     int FUN_1401cc4d0(); int FUN_1401cc4f0(); CStringA* FUN_1401cc530(); CStringW* FUN_1401cc550(); CStringW* FUN_1401cc570(); CStringW* FUN_1401cc590();
     unsigned FUN_1401cc5b0(); void FUN_1401cc6c0(); void FUN_1401cc700(); unsigned FUN_1401cc6a0(); void FUN_1401cc740();
@@ -34,7 +34,7 @@ public:
     CStringW memo;                  // +0x68
     Unk_GuildArray m_70;            // +0x70 0x20-byte array object (ctor 0x1401bfbd0, dtor 0x1401bff10)
     __int64 m_90;                   // +0x90
-    short m_98;                     // +0x98
+    unsigned short m_98;            // +0x98
     int m_9c;                       // +0x9c
     int m_a0;                       // +0xa0 ctor 1
     int m_a4;                       // +0xa4

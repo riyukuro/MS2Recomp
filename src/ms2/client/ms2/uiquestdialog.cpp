@@ -220,14 +220,12 @@ int FUN_14074b030(CQuestData* pData);                           // the quest id
 int FUN_14074b070(CQuestData* pData);                           // the repeat kind
 int FUN_14074b050(CQuestData* pData);                           // the quest type
 int FUN_14074b1c0(CQuestData* pData, int nKind);
-int FUN_1416c6bf0(CQuest* pQuest, int nMapId);
 CStringW FUN_1408116a0(int nId, const int& nArg);
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent
 __int64 FUN_141aa4980(CQuest* pQuest);                          // when the quest was completed
 bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
 CString FUN_141082090(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
-void FUN_140534050(void* pBox, int nValue);                     // the message box argument
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -283,7 +281,6 @@ public:
 class ASDialog : public ASDisplayObject
 {
 public:
-    Scaleform::GFx::Value FUN_140ba26d0(const char* szMethod, int n);
 };
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -301,8 +298,7 @@ Unk_QdGuide* FUN_140961730(int nUIType);
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 class UIQuestGuideDialog;
 UIQuestGuideDialog* FUN_140e888d0(int nUIType);
-void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
-Scaleform::GFx::Value FUN_140f17720(bool b);
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                // the movie of a UI layer
 
 // @0x141a993a0
 UIQuestDialog::UIQuestDialog()
@@ -416,7 +412,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     return 0;
                 Unk_PayloadPtr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
                 if (spQuest.get() != 0)
-                    FUN_1416c6bf0(spQuest.operator->(), bRegist);
+                    spQuest.operator->()->RequestTrackingState(bRegist);
             }
             return 1;
         }
@@ -425,7 +421,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             UIQuestGuideDialog* pGuide = FUN_140e888d0(0x4e43);
             if (pGuide == 0)
                 return 0;
-            ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(FUN_140f17720(((class UIQuestGuideDialog*)(class UIQuestGuideDialog*)(pGuide))->FUN_141aacd70()));
+            FUN_1422bb8b0(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value(((class UIQuestGuideDialog*)(class UIQuestGuideDialog*)(pGuide))->FUN_141aacd70()));
             return 1;
         }
         else if (_stricmp("ShowLimitMessage", szMethod) == 0)
@@ -871,7 +867,7 @@ void UIQuestDialog::ScrollToQuest(int nQuestId)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        int nIndex = pDialog->FUN_140ba26d0("getIndex", nQuestId).GetInt();
+        int nIndex = pDialog->Invoke("getIndex", (unsigned int)nQuestId).GetInt();
         if (nIndex != -1)
             SelectListIndex(nIndex);
     }
@@ -1294,7 +1290,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     unsigned bProgressOnly = 0;
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
-        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->FUN_1422bfca0())
+        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->GetVisible())
             bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     }
     int nAdded = 0;
@@ -1411,7 +1407,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
                 CString strBind;
                 strBind.Format("reward%d", nIndex++);
                 CString strIcon = RewardIconName(rItem.m_itemId, rItem.m_count, rItem.m_job, strBind);
-                items.FUN_1422bbf70((const char*)strIcon);
+                items.PushString((const char*)strIcon);
                 ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(m_opened))->Add(strIcon);
             }
         }
@@ -1422,7 +1418,7 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
         CString strBind;
         strBind.Format("reward%d", nIndex++);
         CString strIcon = RewardIconName(0x1c9c6dd, FUN_14053feb0(0x1c9c6dd), nCoin, strBind);
-        items.FUN_1422bbf70((const char*)strIcon);
+        items.PushString((const char*)strIcon);
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(m_opened))->Add(strIcon);
     }
     reward.FUN_1409adbe0("items", items.FUN_1422bb870());
@@ -1451,7 +1447,7 @@ void UIQuestDialog::AddConditions(int nQuestId, ASObj& rOut)
         }
         cond.FUN_1407cbb20("condition", ConditionText(nQuestId, (int)i));
         cond.FUN_1407cba60("binding", strBind);
-        summary.FUN_1422bc050(cond.FUN_1422bb870());
+        summary.PushValue(cond.FUN_1422bb870());
     }
     rOut.FUN_1409adbe0("summary", summary.FUN_1422bb870());
 }
@@ -1528,16 +1524,16 @@ void UIQuestDialog::AddButtons(Unk_PayloadPtr<CQuest> spQuest, ASObj& rOut)
     if (spData->m_2e == 0)
     {
         if (spQuest->IsActive() != 0)
-            buttons.FUN_1422bbf70("giveup");
+            buttons.PushString("giveup");
     }
     if (spQuest->FUN_1407441f0(nMapId) != 0)
-        buttons.FUN_1422bbf70("gotoNpc");
+        buttons.PushString("gotoNpc");
     if (spQuest->FUN_1407443e0(nMapId) != 0)
-        buttons.FUN_1422bbf70("gotoDungeon");
+        buttons.PushString("gotoDungeon");
     if (spQuest->FUN_140744670(nMapId) != 0)
-        buttons.FUN_1422bbf70("gotoReEntry");
+        buttons.PushString("gotoReEntry");
     if (spQuest->FUN_140d738d0() != 0 || spQuest->FUN_140d738c0() != 0)
-        buttons.FUN_1422bbf70("gotoDispatch");
+        buttons.PushString("gotoDispatch");
     if (((class CQuest*)(class CQuest*)(spQuest.operator->()))->HasMultiUserRoom(nMapId) != 0)
     {
         MS2Ptr<CQuestData> spData2 = spQuest->GetData();
@@ -1546,7 +1542,7 @@ void UIQuestDialog::AddButtons(Unk_PayloadPtr<CQuest> spQuest, ASObj& rOut)
         DungeonRoomPtr spMap = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(spData2->m_30c.m_roomId);
         if (!spMap)
             return;
-        buttons.FUN_1422bbf70(TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(Unk_ClubBuffTypeOf(spMap->m_groupType)) != 0 ? "partyFindCancel" : "partyFind");
+        buttons.PushString(TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(Unk_ClubBuffTypeOf(spMap->m_groupType)) != 0 ? "partyFindCancel" : "partyFind");
     }
     rOut.FUN_1409eb1d0("gotoButton", buttons);
 }
@@ -1616,7 +1612,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
     unsigned bProgressOnly = 0;
     if (MS2Ptr<Unk_QdCheck> spCheck = FUN_140e52670("m_progressOnly"))
     {
-        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->FUN_1422bfca0())
+        if (reinterpret_cast<ASDisplayObject*>(spCheck.operator->())->GetVisible())
             bProgressOnly = reinterpret_cast<ASButton*>(spCheck.operator->())->FUN_1422ce0e0();
     }
     for (size_t i = 0; i < chapters.GetCount(); i++)
@@ -1839,7 +1835,7 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
     {
         if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_quest_giveup_warning"), 0, L""))
         {
-            FUN_140534050(box.operator->(), nQuestId);
+            box.operator->()->Append<unsigned int>(nQuestId);
             box->FUN_141a027c0(Unk_MsgBoxCallback(this, &UIQuestDialog::OnGiveUpConfirm));
             FUN_140d73c60(box);
         }

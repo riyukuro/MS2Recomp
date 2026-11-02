@@ -74,9 +74,8 @@ void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);    // 
 void FUN_14151f200();                                                   // close the current message box
 CString FUN_14016a600(const wchar_t* sz, int n);                        // wide to narrow
 CStringW BlockFormat(int nId);                                          // string table text
-CStringW FUN_14052bd00(int nStringId, const CStringW& arg);             // string table text with one argument
+template <class A> CStringW FormatStringId(int nId, const A& a);             // string table text with one argument
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>* pOut, const char* pszSep);   // split into numbers
-int* FUN_1401844d0(ATL::CAtlArray<int>& arr, unsigned __int64 n);       // GetAt
 
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);              // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
@@ -178,7 +177,7 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     {
         ASObj obj(m_28);
         obj.FUN_1407cba60(s_itemMovie, spData->property.movie);
-        ((class AScript&)(obj)).FUN_1407cbb20("packageName", FUN_14052bd00(0x6ed, spItem->FUN_140527b10()));
+        ((class AScript&)(obj)).FUN_1407cbb20("packageName", FormatStringId<CStringW>(0x6ed, spItem->FUN_140527b10()));
         ((class AScript&)(obj)).FUN_1407cbb20("packageDesc", BlockFormat(0x6ee));
         ((class AScript&)(obj)).FUN_1407cbb20("installName", BlockFormat(0x6ef));
         ((class AScript&)(obj)).FUN_1407cbb20("installDesc", FUN_14028dee0(0x6f0, spPackage->m_strIndoorSizeType));
@@ -245,7 +244,7 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
         return;
     }
-    if (nWidth < *FUN_1401844d0(aSize, 0) || nLength < *FUN_1401844d0(aSize, 2))
+    if (nWidth < aSize[0] || nLength < aSize[2])
     {
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
         return;

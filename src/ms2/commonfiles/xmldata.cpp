@@ -52,7 +52,13 @@ public:
     class TiXmlAttribute const* Next() const;
     char const* Value() const;
 };
-void* FUN_1408782b0(Unk_TiXmlElement* pElement, const char* pszXml, void* pData, int nEncoding);
+enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+class TiXmlParsingData;
+class TiXmlElement   // C3: member view (Parse is virtual slot 2, called directly)
+{
+public:
+    virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0
+};
 
 CStringA FUN_14016a600(const wchar_t* psz, int nLength);                // narrows a wide string
 CStringW FUN_14016a730(const char* psz, int nLength);                   // widens a narrow string
@@ -111,7 +117,7 @@ void CXmlData::FUN_14092c400(const CStringW& strValues)
 
     CStringA strXml = FUN_14016a600(strValues, 0);
     Unk_TiXmlElement xmlElement("xmlData");
-    void* pParsed = FUN_1408782b0(&xmlElement, strXml.GetBuffer(), 0, 0);
+    void* pParsed = (void*)reinterpret_cast<TiXmlElement*>(&xmlElement)->TiXmlElement::Parse(strXml.GetBuffer(), 0, TIXML_ENCODING_UNKNOWN);
     if (pParsed == 0)
         return;
 

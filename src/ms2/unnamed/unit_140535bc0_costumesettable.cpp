@@ -174,7 +174,7 @@ int CostumeSetTable::LoadXml()
     m_cache.AssignRaw(new CCacheData);
     m_cache.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>((class CFileSystem*)((GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(reinterpret_cast<Unk_140165cf0*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -229,7 +229,7 @@ int CostumeSetTable::LoadXml()
                         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
-                    if (((class ItemModelData*)(class ItemModelData*)(item->FUN_14053eba0()))->FUN_14054b400() != nKey)
+                    if (((class ItemModelData*)(class ItemModelData*)(item->GetModelOrEmpty()))->FUN_14054b400() != nKey)
                     {
                         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;

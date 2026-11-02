@@ -224,7 +224,7 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
     ((class AScript&)(row)).FUN_1407cb9c0("death", spInfo->FUN_14050a4d0() != 0);
     row.FUN_1409c1180("exp", spInfo->FUN_14050a600());
     row.FUN_1407cbbe0("isMe", bMine);
-    rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+    rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
 }
 
 // @0x140c1f300

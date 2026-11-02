@@ -122,7 +122,6 @@ class Unk_G9Home
 public:
     void* FUN_1410b9850(int nItemId);
     int FUN_1410b9a50();
-    void* FUN_1410b8ab0(const Vector3& pos);
     int FUN_1410b9950(int nIconType);
 };
 class Unk_AkoHouseSvc { public: static Unk_AkoHouseSvc* GetInstance(); };
@@ -132,66 +131,15 @@ class Unk_G9ItemRec { public: void* m_p[0x38]; int m_n1c0; int m_nValue; };     
 MS2_CHECK_SIZE(Unk_G9ItemRec, 0x1c8);
 
 class Unk_SoundSink* FUN_1409331f0();   // the key binds (C3: was void*)
-void* FUN_1409eed40();                                  // the manufacture book
 void* FUN_1413b1c60(const CStringA& strName);           // the dialog of a name
-// A ref-counted value handle of the dialog trees (assignment 0x1413b40b0, release 0x140d03070).
-class Unk_GcNode;
-class Unk_G9Inner;
-class Unk_G9Val
-{
-public:
-    Unk_G9Val(int nNull);                                   // 0x140d02f80 (another obj)
-    Unk_G9Val(int nIdx, Unk_GcNode& node);                  // 0x140d01be0 (another obj)
-    ~Unk_G9Val() { FUN_140d03070(); }                       // 0x140d03070 (another obj)
-    void FUN_140d03070();
-    Unk_G9Val& FUN_1413b40b0(const Unk_G9Val& rhs);         // operator= (#4 defines it as Unk_GcSmartRef's)
-    void* FUN_140d031f0();
-    Unk_G9Inner* FUN_140d03230();
-    bool FUN_140d03130(int nNull);                          // IsNull
-    void* m_p0; void* m_p1;
-};
-MS2_CHECK_SIZE(Unk_G9Val, 0x10);
-// The leaf value handle of a dialog tree (release 0x140acd6e0).
-class Unk_G9Leaf
-{
-public:
-    ~Unk_G9Leaf() { FUN_140acd6e0(); }                      // 0x140acd6e0 (another obj)
-    void FUN_140acd6e0();
-    bool FUN_140bb6090(int nNull);                          // IsNull
-    void* FUN_140acd9e0();
-    void* m_p0; void* m_p1;
-};
-MS2_CHECK_SIZE(Unk_G9Leaf, 0x10);
-// A dialog tree node: the child lookups by name.
-class Unk_G9Inner
-{
-public:
-    Unk_G9Leaf FUN_140acce30(const CStringA& strName);
-    Unk_G9Val FUN_1413b19d0(const CStringA& strName);      // (#6)
-    Unk_GcNode FUN_1422baa20(const char* pszName);
-    char m_pad[0x18]; int m_n18;
-};
-class Unk_G9TreeList
-{
-public:
-    bool FUN_140ba28d0(int nNull);                          // IsNull
-    Unk_G9Inner* FUN_1409ee290();
-};
-// The dialog side of the tree lookups (the tree list at +0x30).
-class Unk_G9TreeDlg
-{
-public:
-    Unk_G9Val FUN_1413b1a90(const CStringA& strChild);      // (#6)
-    char m_pad[0x30]; Unk_G9TreeList m_list;
-};
 void* FUN_1413b1b20(unsigned nUIId);                    // the chat emoticon dialog
 void* FUN_1413b1bc0(unsigned nUIId);                    // the enchant dialog
 int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut);
 void* FUN_14136f3e0(int nUIId);                    // the dialog of a ui id
 CStringA StringFormat(const char* format);
 
-class Unk_G9U32Arr;
-extern Unk_G9U32Arr DAT_143ab3268;                      // the owned titles
+struct Unk_PtrB;
+extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3268;         // the owned titles
 extern __int64 DAT_143ab2898;                           // the money
 
 Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem);      // builds the condition of a <condition> element

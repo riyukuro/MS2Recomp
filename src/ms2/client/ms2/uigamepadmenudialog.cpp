@@ -104,8 +104,8 @@ MS2_CHECK_SIZE(Unk_GpNode, 0x50);
 class Unk_GpDb : public CGameMenuTable
 {
 };
-extern Unk_GpDb* DAT_143abe318;                         // the menu table
-Unk_GpDb* FUN_140c1d2f0() { return DAT_143abe318; }     // 0x140c1d2f0
+class CGameMenuTable;
+Unk_GpDb* FUN_140c1d2f0() { return reinterpret_cast<Unk_GpDb*>(TSingleton<CGameMenuTable>::s_instance); }     // 0x140c1d2f0
 class ASDialog : public ASDisplayObject {};
 
 class Unk_GpButton : public AScript
@@ -130,7 +130,7 @@ class Unk_SingletonObj* FUN_140939a10();
 
 class CKeyTable { public: CStringW FUN_14142d760(int nBind, int n); };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_GpKeys (calls cast back)
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 class Unk_140166410* FUN_140166410();
 class Unk_14025e7c0 : public CInputKeyHandler {};
@@ -323,7 +323,7 @@ void UIGamePadMenuDialog::FUN_140c1b620()
                     ASObj childObj(2);
                     if (!FUN_140c1c160(spChild->m_nId, &childObj))
                         continue;
-                    children.FUN_1422bc050(childObj.FUN_1422bb870());
+                    children.PushValue(childObj.FUN_1422bb870());
                 }
                 obj.FUN_1409adbe0("child", children.FUN_1422bb870());
                 m_pages.SetAt((int)m_pages.GetCount(), children.GetLength());
@@ -427,7 +427,7 @@ int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
     {
         if (reinterpret_cast<Unk_GpCondRef&>(spMenu->m_isEnabled).FUN_140c1d130() == false && reinterpret_cast<Unk_GpCondRef&>(spMenu->m_isEnabled).FUN_140c1cdc0() == 0)
             return 0;
-        CStringW strTip = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(spMenu->m_strLabel);
+        CStringW strTip = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(spMenu->m_strLabel);
         if (FUN_140c1d2f0()->IsChild(nMenu, (EGameMenuSet)FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
         {
             CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(spMenu->m_nKeyBind, 0);

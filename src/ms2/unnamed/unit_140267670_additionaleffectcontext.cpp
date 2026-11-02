@@ -15,11 +15,12 @@ struct Unk_RefT : Unk_Ref16 { Unk_RefT(); ~Unk_RefT(); };     // ctor 0x14027cb1
 // Another instantiation of the same wrapper (copy ctor 0x14027caa0, dtor 0x14027dfd0); passed by value.
 struct Unk_RefA : Unk_Ref16 { Unk_RefA(const Unk_RefA&); ~Unk_RefA(); };
 
-// Event list owner (size 0x48); ctor 0x14027d780 and dtor live in commonstruct_2.cpp.
-struct Unk_AEList { void* pad[6]; };
+// Event list owner (size 0x48); ctor 0x14027d780 and dtor live in commonstruct_2.cpp. The ctor is implicit: new T() zero-fills.
+struct Unk_List;
+Unk_List* FUN_14027c650(Unk_List* l, int blockSize) noexcept;
+struct Unk_AEList { void* pad[6]; Unk_AEList() { FUN_14027c650((Unk_List*)this, 10); } };
 struct CAdditionalEvent : CPtred {
     Unk_AEList events;
-    CAdditionalEvent();
     virtual ~CAdditionalEvent();
 };
 MS2_CHECK_SIZE(CAdditionalEvent, 0x48);
@@ -84,7 +85,6 @@ AdditionalEffectEventCtx::AdditionalEffectEventCtx(Unk_RefA other)
 AdditionalEffectEventCtx::~AdditionalEffectEventCtx() {}
 
 // @0x140267820
-// MS2-FUNCTIONAL: the exe zero-fills the 0x48-byte allocation inline (rep stosb) before the ctor; no source form found
 void AdditionalEffectEventCtx::Init()
 {
     m_18 = 0;
@@ -102,34 +102,29 @@ void AdditionalEffectEventCtx::Init()
     m_58 = 0;
     m_5c = 0;
     m_60 = 0;
-    CAdditionalEvent* e = new CAdditionalEvent;
-    FUN_14027e9d0(&m_events, e);
+    FUN_14027e9d0(&m_events, new CAdditionalEvent());
 }
 
 // @0x140267960
-// MS2-FUNCTIONAL: same inline zero-fill of the new CAdditionalEvent as Init (rep stosb) is missing
 void AdditionalEffectEventCtx::CopyFrom(Unk_RefA other)
 {
-    if (FUN_14027ece0(&other, 0) == 0) {
-        m_18 = FUN_14027f2e0(&other)->m_18;
-        m_20 = FUN_14027f2e0(&other)->m_20;
-        m_28 = FUN_14027f2e0(&other)->m_28;
-        m_30 = FUN_14027f2e0(&other)->m_30;
-        m_38 = FUN_14027f2e0(&other)->m_38;
-        m_3c = FUN_14027f2e0(&other)->m_3c;
-        m_40 = FUN_14027f2e0(&other)->m_40;
-        m_44 = FUN_14027f2e0(&other)->m_44;
-        m_48 = FUN_14027f2e0(&other)->m_48;
-        m_4c = FUN_14027f2e0(&other)->m_4c;
-        m_50 = FUN_14027f2e0(&other)->m_50;
-        m_54 = FUN_14027f2e0(&other)->m_54;
-        m_58 = FUN_14027f2e0(&other)->m_58;
-        m_5c = FUN_14027f2e0(&other)->m_5c;
-        m_60 = FUN_14027f2e0(&other)->m_60;
-        CAdditionalEvent* e = new CAdditionalEvent;
-        FUN_14027e9d0(&m_events, e);
-        CAdditionalEvent* src = FUN_14027f2f0(&FUN_14027f2e0(&other)->m_events);
-        CAdditionalEvent* dst = FUN_14027f2f0(&m_events);
-        FUN_1402806b0(&dst->events, &src->events);
-    }
+    if (FUN_14027ece0(&other, 0) != 0)
+        return;
+    m_18 = FUN_14027f2e0(&other)->m_18;
+    m_20 = FUN_14027f2e0(&other)->m_20;
+    m_28 = FUN_14027f2e0(&other)->m_28;
+    m_30 = FUN_14027f2e0(&other)->m_30;
+    m_38 = FUN_14027f2e0(&other)->m_38;
+    m_3c = FUN_14027f2e0(&other)->m_3c;
+    m_40 = FUN_14027f2e0(&other)->m_40;
+    m_44 = FUN_14027f2e0(&other)->m_44;
+    m_48 = FUN_14027f2e0(&other)->m_48;
+    m_4c = FUN_14027f2e0(&other)->m_4c;
+    m_50 = FUN_14027f2e0(&other)->m_50;
+    m_54 = FUN_14027f2e0(&other)->m_54;
+    m_58 = FUN_14027f2e0(&other)->m_58;
+    m_5c = FUN_14027f2e0(&other)->m_5c;
+    m_60 = FUN_14027f2e0(&other)->m_60;
+    FUN_14027e9d0(&m_events, new CAdditionalEvent());
+    FUN_1402806b0(&FUN_14027f2f0(&m_events)->events, &FUN_14027f2f0(&FUN_14027f2e0(&other)->m_events)->events);
 }

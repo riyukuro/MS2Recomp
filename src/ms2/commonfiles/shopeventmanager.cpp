@@ -32,13 +32,13 @@
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // The scoped lock of a CLockCriticalSection (the 0x140203610 copy of the ctor, dtor 0x1401b5120).
-struct Unk_ShopEventLock
+struct Unk_PetLock
 {
-    Unk_ShopEventLock(CLockCriticalSection& lock, int acquire);     // 0x140203610
-    ~Unk_ShopEventLock();                                           // 0x1401b5120
+    Unk_PetLock(CLockCriticalSection& lock, int acquire);     // 0x140203610
+    ~Unk_PetLock();                                           // 0x1401b5120
     void* m_p;
 };
-MS2_CHECK_SIZE(Unk_ShopEventLock, 8);
+MS2_CHECK_SIZE(Unk_PetLock, 8);
 
 extern "C" float (__cdecl* __imp_ceilf)(float);
 bool FUN_1406a5040(int nId);                                        // the id is a special (whole) sale id
@@ -116,7 +116,7 @@ CShopEventManager::~CShopEventManager()
 // @0x1407ce240
 bool CShopEventManager::FUN_1407ce240()
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     m_events.RemoveAll();
     return true;
 }
@@ -124,14 +124,14 @@ bool CShopEventManager::FUN_1407ce240()
 // @0x1407ce2a0
 void CShopEventManager::FUN_1407ce2a0(int eventId, MS2Ptr<PreminmMarketSaleEventContext> spContext)
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     m_events.SetAt(eventId, spContext);
 }
 
 // @0x1407ce320
 void CShopEventManager::FUN_1407ce320(int eventId)
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     m_events.RemoveKey(eventId);
 }
 
@@ -150,7 +150,7 @@ MS2Ptr<PreminmMarketSaleEventContext>* FUN_1407ce9a0(MS2Ptr<PreminmMarketSaleEve
 // MS2-FUNCTIONAL: the exe adds each event through a MS2Ptr temporary (0x1407ce9a0, dtor 0x1406a8810)
 void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr, const int& nCurrency)
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     for (POSITION pos = m_events.GetStartPosition(); pos != NULL; m_events.GetNext(pos))
     {
         MS2Ptr<PreminmMarketSaleEventContext> spContext = m_events.GetValueAt(pos);
@@ -164,7 +164,7 @@ void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEve
 // @0x1407ce4b0
 MS2Ptr<PreminmMarketSaleEventContext> CShopEventManager::FUN_1407ce4b0(const int& nEventId)
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     MS2Ptr<PreminmMarketSaleEventContext> spContext(0);
     m_events.Lookup(nEventId, spContext);
     return spContext;
@@ -173,7 +173,7 @@ MS2Ptr<PreminmMarketSaleEventContext> CShopEventManager::FUN_1407ce4b0(const int
 // @0x1407ce560
 bool CShopEventManager::FUN_1407ce560(int nId, int nCurrency)
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     for (POSITION pos = m_events.GetStartPosition(); pos != NULL; m_events.GetNext(pos))
     {
         MS2Ptr<PreminmMarketSaleEventContext> spContext = m_events.GetValueAt(pos);
@@ -188,7 +188,7 @@ bool CShopEventManager::FUN_1407ce560(int nId, int nCurrency)
 // @0x1407ce690
 bool CShopEventManager::FUN_1407ce690(int nId, int nCurrency)
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     for (POSITION pos = m_events.GetStartPosition(); pos != NULL; m_events.GetNext(pos))
     {
         MS2Ptr<PreminmMarketSaleEventContext> spContext = m_events.GetValueAt(pos);
@@ -203,7 +203,7 @@ bool CShopEventManager::FUN_1407ce690(int nId, int nCurrency)
 // @0x1407ce7c0
 bool CShopEventManager::FUN_1407ce7c0()
 {
-    Unk_ShopEventLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arr;
     int nCurrency = 0x186a2;
     TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce380(arr, nCurrency);

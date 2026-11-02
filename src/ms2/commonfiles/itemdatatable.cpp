@@ -644,7 +644,7 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             continue;
         if (!pItem->IsLevelAllowed(nLevel))
             continue;
-        if (!pItem->FUN_14053eba0()->FUN_14054b450(nType))
+        if (!pItem->GetModelOrEmpty()->FUN_14054b450(nType))
             continue;
         if (pItem->IsCashItem())
             continue;

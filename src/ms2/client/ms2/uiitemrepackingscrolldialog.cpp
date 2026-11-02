@@ -103,7 +103,7 @@ public:
     MS2Ptr<Unk_RpRow> FUN_14061d5b0(unsigned nId);              // the row of a scroll id
 };
 Unk_RpTable* FUN_140f64150();
-extern Unk_RpTable* DAT_143aaff58;
+class CItemRePackingScrollTable;
 int FUN_14061d670(MS2Ptr<CItem> spItem, MS2Ptr<Unk_RpRow> spRow);   // validate the item for the scroll (0 = ok)
 
 struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // CItemData: the <function> parameters at +0x2b0
@@ -120,7 +120,7 @@ public:
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
     void FUN_141a01700(int nA, int nB, int nC);
 };
-MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, IMessageListener* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 CStringW FUN_141b71910(__int64 nValue);
@@ -189,7 +189,7 @@ CStringW FUN_140f63810(int nStringId, const unsigned& nA, const int& nB)
 // @0x140f64150
 Unk_RpTable* FUN_140f64150()
 {
-    return DAT_143aaff58;
+    return reinterpret_cast<Unk_RpTable*>(TSingleton<CItemRePackingScrollTable>::s_instance);
 }
 
 // ---- the dialog ----
@@ -249,7 +249,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
     for (unsigned __int64 i = 0; i < spRow->m_ranks.GetCount(); i++)
     {
         unsigned nRank = spRow->m_ranks[i];
-        CStringW strRank = FUN_14183e9c0(GetStringTable()->FUN_141813150(nRank), nRank);
+        CStringW strRank = FUN_14183e9c0(GetStringTable()->GetRankName(nRank), nRank);
         strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
     }
     strRanks.TrimRight(L", ");
@@ -397,7 +397,7 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     UIInventoryDialog* pInven = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInven != 0)
         pInven->FUN_141999e00();
-    if (MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0x11, 0x967, this, CStringW(L"repacking_ok")))
+    if (MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0x11, 0x967, static_cast<IMessageListener*>(this), CStringW(L"repacking_ok")))
     {
         box->FUN_141a01600(nUid);
         box->FUN_141a024a0(0);

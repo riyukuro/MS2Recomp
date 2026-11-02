@@ -78,7 +78,7 @@ struct Unk_UgcItemData : public CItemData
 class CEquipItem : public CPtred
 {
 public:
-    Unk_UgcItemData* FUN_1411dc7f0();                               // the item's data
+    struct Unk_EquipItemData* FUN_1411dc7f0();                               // the item's data
     MS2Ptr<CItem> GetItem();                                  // the item object holding the proxy data
     void FUN_1411dd150();
     void FUN_1411dcd00();
@@ -184,7 +184,7 @@ template <class T, class U>
 void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030 (itemdatastruct.cpp)
 void FUN_140710590(COutPacket& kPacket);
 int FUN_141276180(const CString& strSound, const CString& strArg);
-void FUN_1412750f0(const CStringW& strText, int nCount, int nA, int nB);
+void FUN_1412750f0(class CItem* pItem, int nCount, int nA, int nB);
 void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& str);
 
@@ -322,19 +322,19 @@ float FUN_141422340(Unk_PickTarget* pPart, int nIndex)
     MS2Ptr<CEquipItem> spItem = pPart->FUN_141200a40();
     if (spItem.IsNull())
         return 1.0f;
-    if (spItem->FUN_1411dc7f0()->FUN_14053cfd0())
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053cfd0())
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_afValue[nIndex];
     }
-    if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_f58;
     }
-    if (spItem->FUN_1411dc7f0()->FUN_14053d070())
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053d070())
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
@@ -356,13 +356,13 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
 {
     if (spItem.IsNull())
         return;
-    if (spItem->FUN_1411dc7f0()->FUN_14053cfd0())
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053cfd0())
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             pProxy->m_afValue[nIndex] = fValue < 0.0f ? 0.0f : fValue;
     }
-    if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0 && nIndex == 0)
@@ -422,7 +422,7 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     efd::Matrix3 kRot;
     kRot.FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                             (kEuler.z * 3.1415927f) / 180.0f);
-    if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
+    if (reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053c620() == 0xd)
     {
         Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
@@ -689,8 +689,8 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
         return 0;
     bool bFlag = false;
     if (kExtra.m_nType == FUN_140f02bc0())
-        bFlag = spItem->FUN_1411dc7f0()->FUN_14053d020() == 1;
-    pProxy->SetSlotColor((const ItemColorEx*)&kExtra, bFlag, spItem->FUN_1411dc7f0()->FUN_14053e310(nIndex), nIndex);
+        bFlag = reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053d020() == 1;
+    pProxy->SetSlotColor((const ItemColorEx*)&kExtra, bFlag, reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0())->FUN_14053e310(nIndex), nIndex);
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -735,7 +735,7 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
     MS2Ptr<CEquipItem> spItem = ((PC*)pPlayer)->FUN_141655c30(nUid);
     if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
-    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(spItem->FUN_1411dc7f0());
+    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->InitColorsFromPalette(reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0()));
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -1045,7 +1045,7 @@ CStringW FUN_141425c00(int nCategory)
             if (!strName.IsEmpty())
                 return strName;
             else
-                return ((Unk_UgcItemData*)spData.operator->())->FUN_14053eba0()->GetName();
+                return ((Unk_UgcItemData*)spData.operator->())->GetModelOrEmpty()->GetName();
         }
     }
     return CStringW((const wchar_t*)0);
@@ -1101,7 +1101,7 @@ void FUN_141425fc0(__int64 nUid, int nCount, void* pCallback)
         FUN_141276180(s_strShopItemSell, strEmpty);   // the exe's 0x143adc208 is this static; the data_bss_game blob of that name is never constructed
     }
     if (pCallback != 0)
-        FUN_1412750f0(*(const CStringW*)pCallback, nCount, 0x28b, 0x28a);
+        FUN_1412750f0((class CItem*)pCallback, nCount, 0x28b, 0x28a);
 }
 
 // @0x141427580
@@ -1138,7 +1138,7 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
         return false;
-    Unk_UgcItemData* pData = spItem->FUN_1411dc7f0();
+    Unk_UgcItemData* pData = reinterpret_cast<Unk_UgcItemData*>(spItem->FUN_1411dc7f0());
     if (pData == 0)
         return false;
     if (!pData->HasCubeTextureMesh())

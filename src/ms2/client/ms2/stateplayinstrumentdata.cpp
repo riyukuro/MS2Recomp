@@ -50,7 +50,6 @@ public:
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n64, 0x64);
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern NiRTTI DAT_143afa4d8;                                // RTTI NiNode
 
 // A player seen with the slots after PCBase's last declared one (123): the held item of the player.
 class Unk_PiPC : public PCBase
@@ -92,18 +91,15 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
 
 // The model loader (singleton): loads a nif by path.
-class Unk_PiResourceMgr
+class CNifLoadingService
 {
 public:
-    NiAVObjectPtr FUN_141551ea0(CString strPath, bool bA, int nB, int nC, int nD);   // model load
+    NiAVObjectPtr Load(CString strPath, bool bFlag, int nClass, int nMyRefs, int nOtherRefs);   // model load
 };
-Unk_PiResourceMgr* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strFile);   // dir + "/" + file
-void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
-NiNode* FUN_1409475f0(efd::SmartPointer<NiNode>* p);         // folded copy of operator NiNode*
 
 // The UI root of the client: whether the local player is hidden.
 class Unk_PiUiRoot
@@ -156,8 +152,6 @@ public:
     virtual Vector3 vfunc_18();
 };
 
-static inline Vector3 PiPoint(const NiPoint3& k) { return *reinterpret_cast<const Vector3*>(&k); }
-static inline efd::Point3 PiEfd(const NiPoint3& k) { return efd::Point3(k.x, k.y, k.z); }
 
 // @0x140de0900
 // The owner as an AvatarPC (class id 0x6200044), NULL when it is none.
@@ -238,7 +232,6 @@ StatePlayInstrument::~StatePlayInstrument()
 }
 
 // @0x140dde460
-// MS2-FUNCTIONAL: temporaries and the EH frame differ from the exe
 void StatePlayInstrument::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -252,8 +245,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
     MS2Ptr<CItemData> spItemData = m_spInstrumentData->m_spItem;
     if (spItemData == 0)
         return;
-    int nInstrument = m_spInstrumentData->FUN_140dde200();
-    m_spInstrument = CInstrumentDataTable::GetInstance()->GetInstrument(nInstrument);
+    m_spInstrument = CInstrumentDataTable::GetInstance()->GetInstrument(m_spInstrumentData->FUN_140dde200());
     if (m_spInstrument == 0)
         return;
     if (m_pOwner->vfunc_65() != 0)
@@ -270,28 +262,27 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
             CString strName = FUN_141b6ed00(m_spInstrument->m_strAsset);
             CString strUrn = FUN_140298360("urn:gamebryo-animation:", strName);
             FUN_140de0cb0(&kAsset, efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
-            NiPoint3 kDir = m_pOwner->vfunc_20();
-            NiPoint3 kPos = m_pOwner->vfunc_18();
-            m_spEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce7c0(efd::utf8string(kAsset.GetURN()), efd::utf8string("MS2Actor"),
-                PiEfd(kPos), PiEfd(kDir), 1.0f, 0, 0);
+            m_spEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce7c0("MS2Actor", kAsset.GetURN(),
+                reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18())), reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_20())), 1.0f, 0, 0);
             if ((egf::Entity*)m_spEntity)
             {
                 efd::utf8string kAnim((const char*)FUN_1409a2360(m_spInstrument->m_strAnimationReady, 0));
-                FUN_140ae1240(m_spEntity, 0x3ff293c8, &kAnim);
-                if (FUN_140de0900(m_pOwner) != 0)
+                FUN_140ae1240(m_spEntity.operator->(), 0x3ff293c8, &kAnim);
+                AvatarPC* pAvatar = FUN_140de0900(m_pOwner);
+                if (pAvatar != 0)
                 {
                     bool bHide = false;
-                    FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)m_spEntity), 0xa0b6b179, bHide);
+                    FUN_14098c6e0((class Unk_CachedEntity*)m_spEntity.operator->(), 0xa0b6b179, bHide);
                 }
                 else
                 {
                     m_bB4 = true;
                     bool bShow = true;
-                    FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)m_spEntity), 0xa0b6b179, bShow);
+                    FUN_14098c6e0((class Unk_CachedEntity*)m_spEntity.operator->(), 0xa0b6b179, bShow);
                     if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
                     {
                         bool bHide = false;
-                        FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)m_spEntity), 0xa0b6b179, bHide);
+                        FUN_14098c6e0((class Unk_CachedEntity*)m_spEntity.operator->(), 0xa0b6b179, bHide);
                     }
                 }
             }
@@ -299,15 +290,11 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
         else
         {
             // an effect model: attached under the owner's scene root
-            {
-                CString strEffect("Effect");
-                NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(
-                    FUN_140cc2ba0(strEffect, m_spInstrument->m_strAsset), false, 5, 0, 0);
-                m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, static_cast<NiObject*>(FUN_1409849b0(&spModel))));
-            }
+            m_spEffect = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, static_cast<NiObject*>(((class CNifLoadingService*)FUN_140a0afd0())->Load(
+                FUN_140cc2ba0("Effect", m_spInstrument->m_strAsset), false, 5, 0, 0).operator NiAVObject*())));
             if ((NiNode*)m_spEffect)
             {
-                NiNode* pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_141b6efc0(m_pOwner->FUN_14123c410())));
+                NiNode* pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(m_pOwner->FUN_14123c410())));
                 if (pRoot != 0)
                 {
                     pRoot->AttachChild(m_spEffect, true);
@@ -315,7 +302,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                     m_spEffect->UpdateProperties();
                     m_spEffect->Update(0.0f, true);
                     if (m_nB0 != 0 && ((Unk_PiUiRoot*)FUN_1409f7c90())->FUN_140ddcc90() == 0)
-                        static_cast<NiAVObject*>(m_spEffect)->SetAppCulled(1);
+                        m_spEffect->SetAppCulled(1);
                 }
             }
         }
@@ -339,11 +326,11 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
     if (FUN_1417b8560() != 0)
     {
         ((class Unk_PiCounter*)FUN_140c8dac0())->SetInstrument(m_spInstrumentData->FUN_140dde200(), m_spInstrumentData->m_n28);
-        m_vPos = PiPoint(m_pOwner->vfunc_18());
+        m_vPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18()));
     }
     Unk_EffectQuery kQuery;
     kQuery.m_strName = ((class Unk_PiStrings*)FUN_1401d31f0())->m_str588;
-    kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
+    kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
     TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
     FUN_140de04a0();
@@ -360,7 +347,7 @@ void StatePlayInstrument::vfunc_5(int n)
     m_spInstrument = 0;
     if (m_spEffect)
     {
-        NiNode* pParent = static_cast<NiAVObject*>(FUN_1409475f0(&m_spEffect))->GetParent();
+        NiNode* pParent = static_cast<NiAVObject*>(m_spEffect.operator->())->GetParent();
         if (pParent != 0)
         {
             pParent->DetachChild(m_spEffect);
@@ -378,7 +365,7 @@ void StatePlayInstrument::vfunc_5(int n)
     {
         if (m_bB4)
         {
-            NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, FUN_141b6efc0(m_spEntity)));
+            NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(m_spEntity)));
             if (pNode != 0)
             {
                 NiNode* pParent = static_cast<NiAVObject*>(pNode)->GetParent();
@@ -433,7 +420,7 @@ void StatePlayInstrument::vfunc_3(double fTime)
                 FUN_140a38a50(m_spEntity.operator->(), 0x68c7c29d, &DAT_143b01a60);
                 bool bShow = true;
                 FUN_14098c6e0((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bShow);
-                NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&DAT_143afa4d8, pRoot));
+                NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pRoot));
                 pAvatar->FUN_1409f5560(pNode);
                 m_bB4 = true;
             }
@@ -688,7 +675,7 @@ void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
     m_pOwner->FUN_14166dd20(kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false, false);
     m_strLastAnim = strAnim;
     if (m_spEntity)
-        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(*FUN_1408b76f0(reinterpret_cast<const egf::EntityPtr*>(&m_spEntity)->operator->()), kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(reinterpret_cast<const egf::EntityPtr*>(&m_spEntity)->operator->()->GetEntityID(), kAnim, reinterpret_cast<PC*>(pPC)->FUN_14165eb80(), false);
 }
 
 // @0x140de0c00

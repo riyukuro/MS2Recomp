@@ -8,12 +8,13 @@
 #include "ms2/ms2layout.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/utf8string.h>
 
-struct Unk_CMISStr;                                          // efd::utf8string (0x20)
+typedef std::basic_string<char, std::char_traits<char>, efd::CustomAllocator<char> > Unk_CMISStrBody;   // the internal string
+struct Unk_CMISStr { Unk_CMISStrBody m_body; };              // efd::utf8string (0x20)
 struct Unk_CMISStrView { Unk_CMISStr* m_first; };            // the string's first member, its internal string
 
 void FUN_14114d9b0(Unk_CMISStr* pStr, const char* pSz);      // operator+= (const char*)
-Unk_CMISStr* FUN_1409a1570(Unk_CMISStr* pStr, Unk_CMISStr* pAdd);   // operator+= (const string&)
 
 // @0x14112cd60
 void FUN_14112cd60(Unk_CMISStr* pStr, const char* pSz)
@@ -22,12 +23,9 @@ void FUN_14112cd60(Unk_CMISStr* pStr, const char* pSz)
 }
 
 // @0x14112cd90
-// MS2-FUNCTIONAL: same calls; the exe routes the second argument through rax (mov rax,[home2]; mov rcx,[home1]; mov
-// rdx,rax) where cl loads it straight into rdx. No source form found for that hop (probed plain/const/restrict/volatile
-// pointer and reference params, by-value 8- and 16-byte classes, comma and named-local spellings).
 Unk_CMISStr* FUN_14112cd90(Unk_CMISStr* pStr, Unk_CMISStr* pAdd)
 {
-    FUN_1409a1570(pStr, pAdd);
+    pStr->m_body += pAdd->m_body;
     return pStr;
 }
 

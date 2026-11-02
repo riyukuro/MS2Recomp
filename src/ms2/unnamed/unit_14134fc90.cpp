@@ -76,7 +76,7 @@ public:
 };
 Unk_SoundSink* FUN_1409331f0();
 
-CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // formatted system text
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 int FUN_14053f9c0(int nItemId);
 
 // The notices of this dialog (RTTI names from the exe's dynamic_casts; payload int at +0x18).
@@ -236,11 +236,11 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
                 {
                     int nCount = 0;
                     int nLimit = 0;
-                    ((bool)((class CubeMapInformationService*)(((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit));
+                    ((class CubeMapInformationService*)(((class Unk_DemolishHousing*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410d27c0(((class PC*)(class Unk_DemolishPC*)(pPC))->FUN_141656ad0(), 0, &nCount, &nLimit);
                     MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textField");
                     if (spText.get() != 0)
                     {
-                        CStringW strText = FUN_140811740(0x700, nCount, nLimit);
+                        CStringW strText = FormatStringId<int, int>(0x700, nCount, nLimit);
                         spText->FUN_1422c4f00(strText);
                     }
                 }
@@ -252,7 +252,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textKey");
         if (spText.get() != 0)
         {
-            CStringW strText = reinterpret_cast<Unk_DemolishTable*>((class CKeyTable*)((FUN_1409331f0())))->FUN_14142d760(0x493ed, 0);
+            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->FUN_14142d760(0x493ed, 0);
             spText->FUN_1422c4f00(strText);
         }
     }

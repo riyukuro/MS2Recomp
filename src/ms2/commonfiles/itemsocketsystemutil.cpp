@@ -77,6 +77,9 @@ static CString s_strSortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/itemsocketscrolldata.h"
 #include "ms2/commonfiles/jobtable.h"
+#include "ms2/commonfiles/citemoptiontable.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/client/ms2/skilltieroptionmanager.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -106,22 +109,16 @@ int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f
 int FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<int>&);
 
 // Item accessors (the CItem members are declared in citem.h; the rest are unrecovered members taken as free functions).
-void* FUN_140527840(CItem* pItem);          // the item's data record
-void* FUN_1405279c0(CItem* pItem);          // the item's enhance record (null for none)
-unsigned char FUN_1406211f0(void* pEnhance);
-unsigned char FUN_140528980(CItem* pItem);
-int FUN_140525ca0(CItem* pItem);
-unsigned char FUN_140528e20(CItem* pItem);
 
 // @0x140626aa0
 bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Init(MS2Ptr<CItem> pItem, int nSocketMode, int nUnlockMode)
 {
-    if (pItem == (CItem*)0 || FUN_1405279c0(pItem.get()) == 0)
+    if (pItem == (CItem*)0 || pItem.get()->FUN_1405279c0() == 0)
         return false;
-    m_n18 = ((class CItemData*)(void*)(FUN_140527840(pItem.get())))->GetOriginOrItemId();
+    m_n18 = ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId();
     m_n1C = pItem.get()->FUN_140526bd0();
     m_n20 = pItem.get()->GetItemUid();
-    m_n28 = ((class CItemSocket*)(void*)(FUN_1405279c0(pItem.get())))->GetOpenSlotCount();
+    m_n28 = ((class CItemSocket*)(void*)(pItem.get()->FUN_1405279c0()))->GetOpenSlotCount();
     m_nSocketMode = nSocketMode;
     m_nUnlockMode = nUnlockMode;
     return true;
@@ -134,22 +131,22 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::Matches(MS2Ptr<CItem> pI
         return false;
     if (m_n20 == (unsigned __int64)pItem.get()->GetItemUid())
         return false;
-    if (m_n18 != ((class CItemData*)(void*)(FUN_140527840(pItem.get())))->GetOriginOrItemId() || m_n1C != pItem.get()->FUN_140526bd0())
+    if (m_n18 != ((class CItemData*)(void*)(pItem.get()->FUN_140527840()))->GetOriginOrItemId() || m_n1C != pItem.get()->FUN_140526bd0())
         return false;
-    void* pEnhance = FUN_1405279c0(pItem.get());
+    void* pEnhance = pItem.get()->FUN_1405279c0();
     if (pEnhance == 0 || ((class CItemSocket*)(void*)(pEnhance))->GetMaxSlot() == 0)
         return false;
     if (m_n28 != ((class CItemSocket*)(void*)(pEnhance))->GetOpenSlotCount())
         return false;
-    if (FUN_140528980(pItem.get()) == 0)
+    if (pItem.get()->FUN_140528980() == 0)
         return false;
-    if (FUN_140525ca0(pItem.get()) != 0 && m_nSocketMode == 0)
+    if (pItem.get()->FUN_140525ca0() != 0 && m_nSocketMode == 0)
         return false;
     if (((class CItem*)(class CItem*)(pItem.get()))->FUN_140525db0() != 0 && m_nUnlockMode == 0)
         return false;
-    if (FUN_140528e20(pItem.get()) != 0)
+    if (pItem.get()->FUN_140528e20() != 0)
         return false;
-    if (FUN_1406211f0(pEnhance) != 0)
+    if (reinterpret_cast<CItemSocket*>(pEnhance)->HasLockedGem() != 0)
         return false;
     return true;
 }
@@ -164,17 +161,17 @@ bool CItemSocketSystemUtil::EnableSocketUnlockFunction::InitPair(MS2Ptr<CItem> p
 
 // ---- the gemstone upgrade rows and the socket scroll rules (0x140626f20-0x14062c1xx) ----------------------------
 // The table singleton (TSingleton<CItemGemStoneUpgradeTable>::s_instance).
-extern void* DAT_143aafd18;
+class CItemGemStoneUpgradeTable;
 class Unk_Random;
 class CIngredientContainer;
 CItemGemStoneUpgradeTable* FUN_14062c280();
 int FUN_1406516b0();                                                // the language / region id
 int FUN_140408410(const ATL::CAtlArray<int>& a, const int& nValue);    // the index of a value in an array, else -1
-int FUN_140408410(const ATL::CAtlArray<unsigned int>& a, const unsigned int& nValue);
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140478f60();
+    unsigned int GetSaleGemStoneUpgradeRate();
 };
 void* FUN_1401c0d90();
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -309,10 +306,10 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<CItemSocketScrollData> spScroll)
     if (!FUN_140627930(spData, spScroll))
         return 8;
     unsigned nSlotKind = spData->FUN_14053c620();
-    if (FUN_140408410(spScroll->m_arrSlot, nSlotKind) == -1)
+    if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spScroll->m_arrSlot), reinterpret_cast<const int&>(nSlotKind)) == -1)
         return 5;
     unsigned nRank = spItem->FUN_140526bd0();
-    if (FUN_140408410(spScroll->m_arrRank, nRank) == -1)
+    if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spScroll->m_arrRank), reinterpret_cast<const int&>(nRank)) == -1)
         return 6;
     int nLevel = spData->limit.levelLimit;
     if (spScroll->m_nMaxLv == 0)
@@ -350,7 +347,7 @@ MS2_REPLACE(0x140627930, FUN_140627930, 226, 0xEA957CAF);
 // @0x140627a20
 int FUN_140627a20(unsigned nFlags, unsigned* pOut, unsigned nWanted)
 {
-    unsigned nMin = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140478f60();
+    unsigned nMin = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetSaleGemStoneUpgradeRate();
     unsigned nResult = nMin > nWanted ? nMin : nWanted;
     if ((nFlags & 8) > 0)
         nResult = 0;
@@ -1120,10 +1117,8 @@ void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
 MS2_REPLACE(0x14062A230, FUN_14062a230, 405, 0x1D985FE6);
 
 MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped);   // the inventory item with this uid
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                      // show it
-class Unk_IngTable;
-unsigned FUN_1405575b0(Unk_IngTable*, int);                       // the item's name id
 void FUN_1412752d0(const CStringW& strKey, int nType);           // system notice by string key
 class Unk_ItemEquipData : public CItemData
 {
@@ -1176,7 +1171,7 @@ bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegat
     FUN_1406284f0(nRate, spItem->FUN_140527840()->GetSkinType(), &nFeeItem, &nFeeCount);
     CStringW strMsg;
     int nSocketNo = nTarget + 1;
-    unsigned nFeeName = FUN_1405575b0(((class Unk_IngTable*)TSingleton<CItemDataTable>::GetInstance()), nFeeItem);
+    unsigned nFeeName = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)nFeeItem);
     if (nFeeCount > 0)
         strMsg = FUN_14028dfa0(L"s_itemsocketsystem_msg_ask_gemstone_put_on", nSocketNo,
                                ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nFeeName), nFeeCount);
@@ -1221,11 +1216,6 @@ MS2_REPLACE(0x14062ABB0, SendItemSocketSystem, 443, 0xB6C836FB);
 
 class Unk_ItemEnchantData : public CItemStatus {};
 CStringW GetStringCommonByKey(const CStringW& str);
-class Unk_OptionFactory
-{
-public:
-    MS2Ptr<CItemOption> FUN_1405f4ff0(MS2Ptr<CItemData> spData, int nRank, Unk_Random& kRandom);
-};
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);
@@ -1283,7 +1273,7 @@ CStringW FUN_14062aeb0(int nItemId, int nRank)
     if (spData == (CItemData*)0)
         return CStringW(L"");
     Unk_Random kRandom(0);
-    MS2Ptr<CItemOption> spOption = ((class Unk_OptionFactory*)FUN_140166430())->FUN_1405f4ff0(spData, nRank, kRandom);
+    MS2Ptr<CItemOption> spOption = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f4ff0(spData, nRank, &kRandom);
     return FUN_14062b020(spOption);
 }
 MS2_REPLACE(0x14062AEB0, FUN_14062aeb0, 351, 0x74D6C1BF);
@@ -1316,7 +1306,7 @@ MS2_REPLACE(0x14062B310, FUN_14062b310, 472, 0x9DD26D8D);
 // @0x14062c280
 CItemGemStoneUpgradeTable* FUN_14062c280()
 {
-    return static_cast<CItemGemStoneUpgradeTable*>(DAT_143aafd18);
+    return static_cast<CItemGemStoneUpgradeTable*>(reinterpret_cast<void*>(TSingleton<CItemGemStoneUpgradeTable>::s_instance));
 }
 MS2_REPLACE(0x14062C280, FUN_14062c280, 8, 0x554E67F2);
 
@@ -1581,7 +1571,7 @@ CStringW FUN_1409e0900(int nValue);
 CStringW FUN_1409e0a90(float fValue);
 CStringW FUN_1409e0970(int nStat, int nValue);
 CStringW FUN_1409e0bf0(int nStat, int nValue);
-bool FUN_14080c370(unsigned nTier, unsigned nJob, ATL::CAtlArray<unsigned>& aSa);   // the SA types a tier grants a job
+int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned>* paSa);   // the SA types a tier grants a job
 void FUN_140222be0(ATL::CAtlArray<int>& aJobs);         // the job ids
 unsigned __int64 FUN_140186270(ATL::CAtlArray<unsigned>& a);   // GetCount
 unsigned* FUN_140184510(ATL::CAtlArray<unsigned>& a, unsigned __int64 n);   // operator[]
@@ -1598,10 +1588,6 @@ class PC   // C3: member view for the former free stand-ins
 public:
     int FUN_141654700();
 };
-class Unk_JobTable { };
-int FUN_140644bb0(Unk_JobTable*, int nJob);             // the job's name id
-CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);
 CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData);
@@ -2046,7 +2032,7 @@ void CItemStatus::GenerateOptions(int nItemId, int nRank, int nSeed)
     if (spData == 0)
         return;
     Unk_Random kRandom(nSeed);
-    m_spOption = ((class Unk_OptionFactory*)FUN_140166430())->FUN_1405f4ff0(spData, nRank, kRandom);
+    m_spOption = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f4ff0(spData, nRank, &kRandom);
 }
 MS2_REPLACE_METHOD(0x1406306F0, CItemStatus, GenerateOptions, 280, 0x03F00F7D);
 
@@ -2069,20 +2055,19 @@ void CItemStatus::FUN_140630840()
 MS2_REPLACE_METHOD(0x140630840, CItemStatus, FUN_140630840, 88, 0x4E3181F8);
 
 // @0x1406308a0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 int CItemStatus::CopyGroup4From(MS2Ptr<CItemStatus> spOther)
 {
-    if (spOther == (CItemStatus*)0)
-        return 0;
+    if (spOther.IsNull()) return 0;
     int bChanged = 0;
     for (unsigned i = 0; i < 0x23; ++i)
     {
-        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetStatOption(4, i);
+        int nId = i;
+        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetStatOption(4, nId);
         if (spSource.get() != 0)
         {
             Unk_EnchantPtr<BaseOption> spCopy(new BaseOption());
             spCopy->FUN_140266da0(spSource.get());
-            m_spOption->TrySetStatOption(4, i, spCopy);
+            m_spOption->TrySetStatOption(4, nId, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
                 m_spOption->FUN_1405cb360(spOther->m_spOption->FUN_1405cb380());
             bChanged = 1;
@@ -2090,12 +2075,13 @@ int CItemStatus::CopyGroup4From(MS2Ptr<CItemStatus> spOther)
     }
     for (unsigned i = 0; i < 0xcf; ++i)
     {
-        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetSpecialOption(4, i);
+        int nId = i;
+        Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->GetSpecialOption(4, nId);
         if (spSource.get() != 0)
         {
             Unk_EnchantPtr<BaseOption> spCopy(new BaseOption());
             spCopy->FUN_140266da0(spSource.get());
-            m_spOption->TrySetSpecialOption(4, i, spCopy);
+            m_spOption->TrySetSpecialOption(4, nId, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
                 m_spOption->FUN_1405cb360(spOther->m_spOption->FUN_1405cb380());
             bChanged = 1;
@@ -2150,49 +2136,49 @@ CStringW FUN_140630e10(int nSaType)
 MS2_REPLACE(0x140630E10, FUN_140630e10, 128, 0x6BB2121D);
 
 // @0x140630ea0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
+// One line per job that can use the option, built from its skill list. The job the player
+// is on gets the active form.
 CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
 {
     CStringW strResult;
     Unk_Actor* pActor = ((class Unk_Actor*)((class WorldService*)(class Unk_ObjTable*)(((class Unk_ObjTable*)WorldService::GetInstance())))->FUN_141bd0cc0());
-    if (pActor != 0)
+    if (pActor == 0)
+        return strResult;
+    if (FUN_14081d9e0(nSaType) != 0)
     {
-        if (FUN_14081d9e0(nSaType) != 0)
+        ATL::CAtlArray<int> aJobs;
+        FUN_140222be0(aJobs);
+        for (unsigned i = 0; i < aJobs.GetCount(); i++)
         {
-            ATL::CAtlArray<int> aJobs;
-            FUN_140222be0(aJobs);
-            for (unsigned i = 0; i < aJobs.GetCount(); i++)
+            int nJob = aJobs[i];
+            int bMyJob = ((class PC*)(class Unk_Actor*)(pActor))->FUN_141654700() == nJob;
+            if (pData != 0 && pData->IsJobAllowed(nJob) == 0)
+                continue;
+            ATL::CAtlArray<unsigned> aSa;
+            FUN_14080c370(FUN_14081da20(nSaType), (eJobCode)nJob, &aSa);
+            if (((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)&(aSa))->IsEmpty())
+                continue;
+            CStringW strJob =
+                ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(nJob));
+            CStringW strList;
+            for (unsigned k = 0; k < FUN_140186270(aSa); k++)
             {
-                int nJob = aJobs[i];
-                bool bMyJob = ((class PC*)(class Unk_Actor*)(pActor))->FUN_141654700() == nJob;
-                if (pData == 0 || pData->IsJobAllowed(nJob) != 0)
-                {
-                    ATL::CAtlArray<unsigned> aSa;
-                    FUN_14080c370(FUN_14081da20(nSaType), nJob, aSa);
-                    if (!((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)&(aSa))->IsEmpty())
-                    {
-                        int nJobName = FUN_140644bb0(((class Unk_JobTable*)TSingleton<JobTable>::GetInstance()), nJob);
-                        CStringW strJob = ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(6, nJobName);
-                        CStringW strList;
-                        for (unsigned k = 0; k < FUN_140186270(aSa); k++)
-                        {
-                            unsigned* pSa = FUN_140184510(aSa, k);
-                            strList.Append(StringFormat(L", {0}", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(4, *pSa)));
-                        }
-                        FUN_1406334d0(strList);
-                        if (strResult.IsEmpty())
-                            strResult.Append(FUN_140630e10(nSaType));
-                        CStringW strLine;
-                        if (!strResult.IsEmpty())
-                            strLine.Append(L"\n   -");
-                        unsigned short nTier = nValue;
-                        strLine.Append(FUN_14028dfa0(CStringW(L"s_item_opt_sa_skill_levelup_tier_v"), strJob, strList, nTier));
-                        if (bMyJob)
-                            strLine = FUN_14028dfa0<CStringW>(CStringW(L"s_item_opt_sa_skill_levelup_tier_v_active"), strLine);
-                        strResult.Append(strLine);
-                    }
-                }
+                unsigned* pSa = FUN_140184510(aSa, k);
+                strList.Append(StringFormat(L", {0}", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(4, *pSa)));
             }
+            FUN_1406334d0(strList);
+            if (strResult.IsEmpty())
+                strResult.Append(FUN_140630e10(nSaType));
+            CStringW strLine;
+            if (!strResult.IsEmpty())
+                strLine.Append(L"\n   -");
+            unsigned short nTier = nValue;
+            strLine.Append(
+                FUN_14028dfa0(CStringW(L"s_item_opt_sa_skill_levelup_tier_v"), strJob, strList, nTier));
+            if (bMyJob)
+                strLine =
+                    FUN_14028dfa0<CStringW>(CStringW(L"s_item_opt_sa_skill_levelup_tier_v_active"), strLine);
+            strResult.Append(strLine);
         }
     }
     return strResult;
@@ -2319,7 +2305,7 @@ bool FUN_140633700(MS2Ptr<CItem> spItem)
     if (spItem == (CItem*)0)
         return false;
     Unk_ItemOwnerRef* pTransfer = spItem->FUN_140527930();
-    if (pTransfer != 0 && pTransfer->FUN_140635520() == 0)
+    if (pTransfer != 0 && pTransfer->CanDestroy() == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
@@ -2865,12 +2851,12 @@ void CItemTransfer::FUN_140635300()
 MS2_REPLACE_METHOD(0x140635300, CItemTransfer, FUN_140635300, 15, 0x03EFC008);
 
 // @0x140635320
-void CItemTransfer::FUN_140635320(bool b)
+void CItemTransfer::SetSocketTransferFlag(bool b)
 {
     m_b40 = 1;
     m_b42 = b;
 }
-MS2_REPLACE_METHOD(0x140635320, CItemTransfer, FUN_140635320, 32, 0xB7D9EF8D);
+MS2_REPLACE_METHOD(0x140635320, CItemTransfer, SetSocketTransferFlag, 32, 0xB7D9EF8D);
 
 // The binding owner's name: the actor's own name when the actor is the owner, else the stored name.
 // @0x140635350
@@ -2927,7 +2913,7 @@ int CItemTransfer::IsSellable()
 MS2_REPLACE_METHOD(0x1406354D0, CItemTransfer, IsSellable, 70, 0x2CA2E2B6);
 
 // @0x140635520
-unsigned CItemTransfer::FUN_140635520()
+unsigned CItemTransfer::CanDestroy()
 {
     if (FUN_140635120() != 0)
         return 0;
@@ -2937,7 +2923,7 @@ unsigned CItemTransfer::FUN_140635520()
         return 0;
     return m_nRule & 4;
 }
-MS2_REPLACE_METHOD(0x140635520, CItemTransfer, FUN_140635520, 79, 0x47E3BE8B);
+MS2_REPLACE_METHOD(0x140635520, CItemTransfer, CanDestroy, 79, 0x47E3BE8B);
 
 // @0x140635580
 int CItemTransfer::FUN_140635580()
@@ -3014,7 +3000,7 @@ int CItemTransfer::CanBreak()
         return 0;
     if (FUN_140635870() == 0)
         return 0;
-    if (m_pItem->FUN_1405258b0() != 0)
+    if (m_pItem->HasSkin() != 0)
     {
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3a))
             return 0;

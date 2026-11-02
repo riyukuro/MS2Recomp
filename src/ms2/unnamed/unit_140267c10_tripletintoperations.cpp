@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x140267c10-0x140267e40 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140267c10.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <atlcoll.h>
 #include "ms2/ms2recover.h"
 #include "ms2/ms2layout.h"
 #include "hook/ms2hook.h"
@@ -11,7 +12,6 @@
 // An int array (a CAtlArray<int>-shaped object: data, size, capacity, grow-by).
 struct Unk_IntArr { void* m_p; unsigned __int64 m_n; unsigned __int64 m_max; int m_nGrow; };
 __int64 FUN_140186260(Unk_IntArr* pArr);                    // element count
-int* FUN_1401844d0(Unk_IntArr* pArr, __int64 nIndex);       // element at
 void FUN_1402237c0(struct Unk_LevelArray*);   // C3: was FUN_1402237c0
 void FUN_1401b6710(Unk_IntArr* pArr, __int64 nCount, int nGrowBy);   // set count
 
@@ -54,7 +54,7 @@ void Unk_IntTriple::ReadArray(Unk_IntArr* pArr)
     if (FUN_140186260(pArr) != 3)
         return;
     for (int i = 0; i < 3; ++i) {
-        m_v[i] = *FUN_1401844d0(pArr, i);
+        m_v[i] = (*reinterpret_cast<ATL::CAtlArray<int>*>(pArr))[i];
     }
 }
 
@@ -74,6 +74,6 @@ void Unk_IntTriple::WriteArray(Unk_IntArr* pArr)
     FUN_1402237c0((struct Unk_LevelArray*)(pArr));
     FUN_1401b6710(pArr, 3, -1);
     for (int i = 0; i < 3; ++i) {
-        *FUN_1401844d0(pArr, i) = m_v[i];
+        (*reinterpret_cast<ATL::CAtlArray<int>*>(pArr))[i] = m_v[i];
     }
 }

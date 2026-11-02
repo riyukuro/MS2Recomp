@@ -13,6 +13,15 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/timeutil.h"
+#include "ms2/commonfiles/os.h"
+
+// Scoped lock helper (ctor 0x1401b4ec0, dtor 0x1401b5120).
+class Unk_1401b4ec0 {
+public:
+    Unk_1401b4ec0(CLockCriticalSection&, int);
+    ~Unk_1401b4ec0();
+    void* m_p;
+};
 // The STL/ATL instances behind the unit's views (C3: the calls go to their members).
 typedef std::vector<MS2Ptr<CIngredientInfo>> VIng;
 typedef std::vector<CString> VStr;
@@ -131,8 +140,8 @@ void CIngredientInfo::FUN_14026b410(CInPacket& in) {
 }
 // @0x14026b4b0
 unsigned CIngredientInfo::FUN_14026b4b0() {
-    if (m_b != 0 && FUN_140281980() != 0) {
-        return reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)m_b);
+    if (m_b != 0 && TSingleton<CItemDataTable>::GetInstance() != 0) {
+        return TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)m_b);
     }
     return 0;
 }
@@ -189,7 +198,7 @@ void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
         Unk_StrVec sub;
         FUN_140275080(*parts.FUN_14027f1c0(0), &sub, ":");
         if (reinterpret_cast<VStr&>(sub).size() > 0) ref->m_a = FUN_1407181d0(sub.FUN_14027f1c0(0));
-        if (reinterpret_cast<VStr&>(sub).size() > 1) ref->m_b = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(*sub.FUN_14027f1c0(1));
+        if (reinterpret_cast<VStr&>(sub).size() > 1) ref->m_b = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*sub.FUN_14027f1c0(1));
     }
     ref->m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
     if (ref->m_a != 0) AddIngredient(Unk_IngRef(ref));
@@ -666,7 +675,7 @@ CChangeableHistoryInfo::CChangeableHistoryInfo(int a, int b) : m_lock(), m_48(a)
 CChangeableHistoryInfo::~CChangeableHistoryInfo() { reinterpret_cast<LHist&>(m_list).clear(); }
 // @0x14026fab0
 void CChangeableHistoryInfo::FUN_14026fab0() {
-    Unk_HistLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     int total = 0;
     Unk_It it, saved, t30, t28;
     m_list.FUN_14028a1a0(&it);
@@ -685,7 +694,7 @@ void CChangeableHistoryInfo::FUN_14026fab0() {
 // @0x14026fc00
 int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
     int total = 0;
-    Unk_HistLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (mode == 1) {
         Unk_HistList* list = &m_list;
         Unk_It cur, end;
@@ -713,13 +722,13 @@ void CChangeableHistoryInfo::FUN_14026fda0(Unk_HistRef entry) {
     if (entry == 0) return;
     if ((__int64)m_48 != entry->m_30) return;
     if (!(m_4c == entry->m_3c)) return;
-    Unk_HistLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     m_list.FUN_14028b260(entry);
     m_total = m_total + entry->m_40;
 }
 // @0x14026fea0
 bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
-    Unk_HistLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     Unk_It it, saved, t20, t18;
     m_list.FUN_14028a1a0(&it);
     for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t20)); ++*reinterpret_cast<LHist::iterator*>(&it)) {
@@ -734,7 +743,7 @@ bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
 }
 // @0x14026ffd0
 Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
-    Unk_HistLock lock(m_lock, 1);
+    Unk_1401b4ec0 lock(m_lock, 1);
     if (reinterpret_cast<LHist&>(m_list).size() == 0) return Unk_HistRef(0);
     Unk_HistRef best(*m_list.FUN_14028aef0());
     Unk_It t30, it;

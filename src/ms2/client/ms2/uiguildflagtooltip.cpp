@@ -30,7 +30,7 @@ class Unk_FtWorld
 public:
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);      // an interact object by name
 };
-void* FUN_1403ed290();                                                  // the guild manager (its CGuildInfo sits at +8)
+class CGuildManager;
 
 // The score table of the guild ranking seasons: the entry of a trophy count has a value at +0x18.
 struct Unk_FtSeasonEntry { char m_pad_00[0x18]; int m_nValue; };
@@ -138,7 +138,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
             pEntity->vfunc_3(1);
             if (nImageType == 3)
             {
-                int nScore = reinterpret_cast<CGuildInfo*>((char*)FUN_1403ed290() + 8)->FUN_1404d3180()->FUN_1404c6110(nTrophy);
+                int nScore = reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->FUN_1404d3180()->FUN_1404c6110(nTrophy);
                 static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, nScore);
             }
             else if (nImageType == 4)
@@ -197,7 +197,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
             FUN_140ad0c10(&kScreen, ((class GFxManager*)(class Unk_FtUIScale*)(((class Unk_FtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
             kScreen.x -= pEntity->FUN_1422c1340() * 0.5;
             kScreen.y -= pEntity->GetHeightCeil() * 0.5;
-            pEntity->FUN_1422c00f0(kScreen.x, kScreen.y);
+            pEntity->SetPositionFloat(kScreen.x, kScreen.y);
             return true;
         }
     }

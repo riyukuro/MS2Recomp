@@ -181,7 +181,7 @@ void CTailEffectObject::FUN_140acee90()
     ((class NoticeMessage*)(struct Unk_TeRequest*)(&((Unk_TeRequest&)(kRequest))))->SetActor(m_pOwner->FUN_14123c580());
     FUN_1409fabf0(&((Unk_TeRequest&)(kRequest)).m_spNode, FUN_1409475d0(&spNode));
     int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_TeRequest&)(kRequest))));
-    reinterpret_cast<CEffectService*>((class CEffectService*)((TSingleton<CEffectService>::GetInstance())))->FUN_1411a68f0((unsigned int)(nHandle), m_bVisible);
+    reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0((unsigned int)(nHandle), m_bVisible);
 
     MS2Ptr<TailEffectInfo> spInfo;
     FUN_140ad0d30(spInfo, Unk_BmNewTag(0));
@@ -349,7 +349,7 @@ void CTailEffectObject::FUN_140acfda0()
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        reinterpret_cast<CEffectService*>((class CEffectService*)((TSingleton<CEffectService>::GetInstance())))->FUN_1411a68f0((unsigned int)(spInfo->m_nEffectId), true);
+        reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0((unsigned int)(spInfo->m_nEffectId), true);
     }
 }
 
@@ -365,7 +365,7 @@ void CTailEffectObject::FUN_140acfeb0()
         MS2Ptr<TailEffectInfo> spInfo(*it);
         if (spInfo.IsNull())
             continue;
-        reinterpret_cast<CEffectService*>((class CEffectService*)((TSingleton<CEffectService>::GetInstance())))->FUN_1411a68f0((unsigned int)(spInfo->m_nEffectId), false);
+        reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a68f0((unsigned int)(spInfo->m_nEffectId), false);
     }
 }
 

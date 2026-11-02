@@ -57,7 +57,8 @@ CPCEffectDummy::CPCEffectDummy()
 // @0x1416841f0
 int CPCEffectDummy::Load()
 {
-    return LoadFile(FUN_14071a5b0("Table", "pcEffectDummy.xml"));
+    CString strPath = FUN_14071a5b0("Table", "pcEffectDummy.xml");
+    return LoadFile(strPath);
 }
 
 // @0x141684290
@@ -114,10 +115,12 @@ size_t CPCEffectDummy::GetCount(int nGender)
 // @0x1416845c0
 int CPCEffectDummy::Get(int nGender, unsigned nIndex, CEffectDummy& kOut)
 {
-    size_t nCount = m_dummies[nGender].size();
-    if (nIndex < nCount)
+    if (nIndex < m_dummies[nGender].size())
+    {
         kOut = m_dummies[nGender][nIndex];
-    return nIndex < nCount;
+        return 1;
+    }
+    return 0;
 }
 
 // @0x141684660

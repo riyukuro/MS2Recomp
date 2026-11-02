@@ -76,7 +76,7 @@ MS2_REPLACE_METHOD(0x1401CC0D0, CBuddy, FUN_1401cc0d0, 220, 0xE20574BB);
 CStringW CBuddy::FUN_1401cc1c0() { return name; }
 MS2_REPLACE_METHOD(0x1401CC1C0, CBuddy, FUN_1401cc1c0, 66, 0x28B2A44D);
 // @0x1401cc210
-short CBuddy::FUN_1401cc210() { return m_98; }
+int CBuddy::FUN_1401cc210() { return m_98; }
 MS2_REPLACE_METHOD(0x1401CC210, CBuddy, FUN_1401cc210, 18, 0x0DBE6A62);
 // @0x1401cc230
 __int64 CBuddy::FUN_1401cc230() { return account; }

@@ -52,6 +52,7 @@
 #include "ms2/client/ms2/skilldatatablecli.h"   // C3: SkillDataTableCli::FUN_140aafef0
 #include "ms2/commonfiles/additionalactionadditional.h"   // C3: AdditionalLevelData
 #include "ms2/placeholder/astextinput.h"  // C3: ASTextInput::FUN_1422e0ab0
+#include "ms2/placeholder/citemdata.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -102,11 +103,6 @@ public:
     MS2Ptr<Unk_WpPerk> FUN_140909910(int nId);                  // one perk (null: none)
 };
 
-class Unk_WpItemData : public CPtred
-{
-public:
-    CString FUN_14053fdd0();                                    // the icon path
-};
 class Unk_WpNames : public CStringTable
 {
 public:
@@ -114,11 +110,10 @@ public:
 };
 
 class Unk_WpSkillMgr* FUN_1401958b0();   // TSingleton<SkillDataTableCli>::GetInstance
-MS2Ptr<Unk_WpItemData> FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
-unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
 MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
@@ -126,16 +121,13 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
 CStringW FUN_1416e5350(int nQuestId, int n);                    // quest title
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-bool FUN_140841300(const CStringW& str, const char* sz);        // string equals
 void FUN_1412752d0(const CStringW& strText, int n);                    // notice
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);      // pRetVal = v
 void* FUN_140764020();   // C3: was FUN_140764020
 UIQuestEventDispatcher* FUN_140bfc4b0();
 
-WorldService* FUN_1403ed2d0();
 
 // ---- statics of the unit's header (the quest sort name list, skill, stun, a condition object) ----
 
@@ -172,7 +164,7 @@ bool UIWeddingPage::vfunc_1()
     if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_28->FUN_1422dba00()))->IsNull())
         return false;
     Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->GetMember("m_currentPage");
-    if (FUN_1409b0350(&kPage) != 0)
+    if (kPage.IsNull())
         return false;
     m_pScript = FUN_140acca70(m_28->FUN_1422db730(), kPage);
     return true;
@@ -229,9 +221,9 @@ bool UIWeddingPageMessage::vfunc_1()
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     bool bGroom = pProxy->IsGroom(DAT_143ab2828);
     if (MS2Ptr<Unk_WpInput> spMine = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_myMessage"))
-        reinterpret_cast<ASTextInput*>(spMine.operator->())->FUN_1422e0ab0(pProxy->GetMessageW(bGroom));
+        reinterpret_cast<ASTextInput*>(spMine.operator->())->SetTextW(pProxy->GetMessageW(bGroom));
     if (MS2Ptr<Unk_WpInput> spPartner = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_partnerMessage"))
-        reinterpret_cast<ASTextInput*>(spPartner.operator->())->FUN_1422e0ab0(pProxy->GetMessageW(!bGroom));
+        reinterpret_cast<ASTextInput*>(spPartner.operator->())->SetTextW(pProxy->GetMessageW(!bGroom));
     return true;
 }
 
@@ -323,10 +315,10 @@ bool UIWeddingPageSkill::vfunc_1()
             }
             else if (spPerk->m_nType == 1)
             {
-                MS2Ptr<Unk_WpItemData> spItem = FUN_14053f870((&spPerk->m_grant)->vfunc_0());
+                MS2Ptr<CItemData> spItem = FUN_14053f870((&spPerk->m_grant)->vfunc_0());
                 obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
                 obj.FUN_1407cb9c0("status", 0);
-                obj.FUN_1407cba60("imgPath", spItem->FUN_14053fdd0());
+                obj.FUN_1407cba60("imgPath", spItem->GetIconPath());
             }
             spList->AddItem(obj);
         }
@@ -463,7 +455,7 @@ bool UIWeddingPageMission::vfunc_3(const char* szMethod, const Scaleform::GFx::V
 void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIWeddingPage::vfunc_5(pRetVal, pArgs);
-    void* pScene = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pScene = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pScene == 0)
         return;
     CStringW strName = pArgs->FUN_1422b8f40();
@@ -471,14 +463,14 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (spData.IsNull())
         return;
-    if (FUN_140841300(strName, "exp"))
+    if (strName == "exp")
     {
         ASTooltip tip(2);
         CStringW strTip = FUN_14028dfa0<CStringW>(CStringW(L"s_wedding_dialog_page_wedding_exp_tooltip"), FUN_1409404f0(spData->m_complete.m_weddingExp));
         if (tip.ApplyTextTooltip(strTip) != 0)
         {
             tip.SetTooltipAlign(1);
-            FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+            *pRetVal = tip.FUN_1422bb870();
         }
     }
 }

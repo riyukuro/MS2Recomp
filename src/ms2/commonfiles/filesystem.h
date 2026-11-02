@@ -70,7 +70,7 @@ public:
     bool FUN_140398190();
     bool FUN_1403981b0();
     bool FUN_1403981d0();
-    int FUN_1403979e0(TiXmlDocument* document, BufferPtr buffer);
+    int LoadXmlFromBuffer(TiXmlDocument* document, BufferPtr buffer);
     int LoadXmlFromString(TiXmlDocument* document, const CStringW& xml);
     bool FUN_140398200(std::string path);
     bool FUN_140398640(std::string path, bool checkFile);

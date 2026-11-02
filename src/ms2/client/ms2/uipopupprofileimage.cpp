@@ -15,6 +15,7 @@
 #include <errno.h>
 #include <string.h>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/placeholder/clientconstants.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
 template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::get() const;         // 0x1405a8eb0
@@ -22,10 +23,6 @@ template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::operator->() const; 
 template <> MS2Ptr<Unk_PCBaseComp_aa8>::~MS2Ptr();                               // 0x1405a8980
 class Unk_PopupEntity : public ASGameEntity
 {
-public:
-    Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1422c00f0(float x, float y);
-    void FUN_1422c0290(float cx, float cy);
 };
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
@@ -33,18 +30,6 @@ public:
     Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
     Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
-struct Unk_PopupCfgInt { int* FUN_1402056b0(); void* m_unknown; };
-struct Unk_PopupCfgB60 { void* m_unknown; };
-struct Unk_PopupCfg
-{
-    char m_pad_0000[0xb08];
-    Unk_PopupCfgInt m_b08;
-    char m_pad_0b10[0xb60 - 0xb08 - sizeof(Unk_PopupCfgInt)];
-    Unk_PopupCfgB60 m_b60;
-    char m_pad_0b68[0xcc0 - 0xb60 - sizeof(Unk_PopupCfgB60)];
-    Unk_PopupCfgInt m_cc0;
-};
-class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_PopupUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -53,11 +38,11 @@ public:
     float FUN_1422afec0(int);
 };
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
-float FUN_1412762d0(const NiPoint3& pt);
+struct Unk_Point2;
+float FUN_1412762d0(const Unk_Point2* pt);
 class Unk_PopupActor : public PC
 {
 };
-class Unk_PopupSvc { public: void FUN_1416979e0(__int64 nId); };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -67,26 +52,17 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString st
 CStringW FUN_14016a730(const char* sz, int nFlags);                         // FormatStringId(id) without arguments
 bool FUN_140930110(int nActorId);
 class Unk_PopupUIMgr { public: };
-class Unk_PopupInfoAS : public AScript
-{
-public:
-    Unk_PopupInfoAS(int nMovieId);
-    void FUN_1407cb9c0(const char* szMember, int nValue);
-    void FUN_1407cbb20(const char* szMember, CStringW strValue);
-};
-class Unk_PopupTimerCfg;
-Unk_PopupTimerCfg* FUN_140a36020(Unk_PopupCfgB60*);
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 UIPopupProfileImage* FUN_141a90250(int nUiId);
-int FUN_141a8fc10(Unk_PopupCfgB60* pCfg);
+int FUN_141a8fc10(Common::Constants::Value<MS2Tick>* pCfg);
 
 // @0x141a8f3a0
 UIPopupProfileImage::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
     : TimerEntity(nLayer, clip, nActorId)
 {
     m_a0 = 0;
-    m_64 = FUN_141a8fc10(&((struct Unk_PopupCfg*)FUN_1401d3200())->m_b60);
-    m_54 = (float)*((struct Unk_PopupCfg*)FUN_1401d3200())->m_cc0.FUN_1402056b0();
+    m_64 = FUN_141a8fc10(&FUN_1401d3200()->PassengerProfileImageLifeTime);
+    m_54 = (float)*FUN_1401d3200()->PassengerProfileImageShowRange.Get();
 }
 
 // @0x141a8f450
@@ -124,14 +100,14 @@ void UIPopupProfileImage::Entity::vfunc_5()
         return;
     if (m_38.get() != 0)
     {
-        Unk_PopupInfoAS info(m_18);
+        AScript info(m_18);
         CString strPath = FUN_141028be0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80(), ((Unk_PopupActor*)pPc)->FUN_1416612e0(), 1, CString(""));
         info.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)strPath, 0));
         info.FUN_1407cb9c0("dead", ((Unk_PopupActor*)pPc)->FUN_14166ce30());
         m_38->Invoke("open", info);
-        float fScale = (float)*((struct Unk_PopupCfg*)FUN_1401d3200())->m_b08.FUN_1402056b0();
+        float fScale = (float)*FUN_1401d3200()->PassengerProfileImageSize.Get();
         float fSize = (fScale / 64.0f) * 100.0f;
-        ((Unk_PopupEntity*)m_38.operator->())->FUN_1422c0290(fSize, fSize);
+        ((Unk_PopupEntity*)m_38.operator->())->SetScaleFloat(fSize, fSize);
     }
 }
 
@@ -142,8 +118,8 @@ void UIPopupProfileImage::Entity::vfunc_6(NiPoint3* pPos)
     {
         FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_PopupUIScale*)(((class Unk_PopupUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
-        pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-        ((Unk_PopupEntity*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
+        pPos->y = pPos->y + FUN_1412762d0(reinterpret_cast<const Unk_Point2*>(&static_cast<const NiPoint3&>(vfunc_10())));
+        ((Unk_PopupEntity*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
     }
 }
 
@@ -152,7 +128,7 @@ void UIPopupProfileImage::Entity::vfunc_7()
 {
     PCBase* pPc = efd::DynamicCast<PC, PCBase>((PCBase*)FUN_140f49330());
     if (pPc != 0)
-        reinterpret_cast<Unk_PopupSvc*>(TSingleton<CPopupProfileImageMan>::GetInstance())->FUN_1416979e0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80());
+        TSingleton<CPopupProfileImageMan>::GetInstance()->FUN_1416979e0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80());
     if (m_38.get())
         m_38->Invoke("close");
 }
@@ -213,9 +189,9 @@ void FUN_141a8fbd0(int nActorId)
 }
 
 // @0x141a8fc10
-int FUN_141a8fc10(Unk_PopupCfgB60* pCfg)
+int FUN_141a8fc10(Common::Constants::Value<MS2Tick>* pCfg)
 {
-    return FUN_140a35ca0((struct MS2Tick*)(FUN_140a36020(pCfg)));
+    return FUN_140a35ca0(pCfg->Get());
 }
 
 // @0x141a8fc30

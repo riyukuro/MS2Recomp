@@ -139,7 +139,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 void FUN_140710590(COutPacket& packet);                     // send the packet
-CStringTable* GetStringTable();
 CString Name_14021c050(int nSlotType);                      // slot type -> slot name
 
 extern __int64 DAT_143af25f0;                               // the id of the doll shown
@@ -339,10 +338,10 @@ void UIFittingDollDialog::FUN_141933b00()
     int nItemId = ((class Unk_AkoFittingDoll*)(class FittingDollPC*)(pDoll))->FUN_140967160();
 
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
-        spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, nItemId));
+        spName->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
 
     if (MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_desc"))
-        spDesc->FUN_1422c4cd0(GetStringTable()->GetItemDescription(nItemId, CString("functionDescription")));
+        spDesc->FUN_1422c4cd0(TSingleton<CStringTable>::GetInstance()->GetItemDescription(nItemId, CString("functionDescription")));
 
     if (MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character"))
     {
@@ -367,7 +366,6 @@ void UIFittingDollDialog::FUN_141933b00()
 }
 
 // @0x141934070
-// MS2-FUNCTIONAL: the exe passes the equip flag through an int 1/0 temp read back as a byte
 void UIFittingDollDialog::FUN_141934070()
 {
     PC* pMe = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
@@ -381,7 +379,8 @@ void UIFittingDollDialog::FUN_141934070()
     Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot != 0)
         bOwner = ((class CubeMapInformationService*)(class Unk_FdPlotMgr*)(pMgr))->FUN_1410c8030(pPlot->m_nKeyA, pPlot->m_nKeyB) == ((class PC*)(class PC*)(pMe))->FUN_141656ad0();
-    FUN_14121e670(GetTypeName(), ((class GameObject*)(class PC*)(pMe))->FUN_14123c580(), DAT_143af25f0, pDoll->FUN_14121c710() == 1);
+    bool bEquip = pDoll->FUN_14121c710() == 1;
+    FUN_14121e670(GetTypeName(), ((class GameObject*)(class PC*)(pMe))->FUN_14123c580(), DAT_143af25f0, bEquip);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
@@ -457,7 +456,7 @@ int UIFittingDollDialog::FUN_141934430()
             continue;
         if (nType == 0 && !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c870())
             continue;
-        if (spItem->FUN_1405258b0() != nType)
+        if (spItem->HasSkin() != nType)
             continue;
         int nResult = pDoll->FUN_14121c910(list.GetAt(pos)->GetItem().get());
         if (nResult != 0)

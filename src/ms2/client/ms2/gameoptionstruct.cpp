@@ -114,7 +114,7 @@ CStringW BlockFormat(int nStringId);                              // a string ta
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // equal
-UIUpperHpBar* FUN_14096e340(eUIClassID nId);
+template <class T> T* Unk_AcFindUI(eUIClassID nId);
 UIDamageEffect* FUN_140ac55a0(eUIClassID nId);
 class Unk_GsInputSvc : public CInstrumentManager { };   // reloads the sound settings
 Unk_GsInputSvc* FUN_140c8dac0();
@@ -991,7 +991,7 @@ MS2_REPLACE_METHOD(0x141259C40, CGameOptionStatus, vfunc_7, 4615, 0xD10475C2);
 void CGameOptionStatus::vfunc_10()
 {
     CBaseOption::vfunc_10();
-    UIUpperHpBar* pHpBar = FUN_14096e340((eUIClassID)0x4e3d);
+    UIUpperHpBar* pHpBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d);
     if (pHpBar != 0)
     {
         pHpBar->FUN_141b4ce20(m_state.m_bDisplayMonsterGaugeValue);
@@ -2732,10 +2732,10 @@ void FUN_14125fe20(Unk_SoundState* p)
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(8, FUN_141260110(p, 8));
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(6, FUN_141260110(p, 6));
     TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(10, FUN_141260110(p, 10));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177dc80(p->m_b00);
+    TSingleton<CSoundEventMgr>::GetInstance()->SetAllMute(p->m_b00);
     if (DAT_143af7d40 == 0 && !p->m_b01)
     {
-        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177dc80(1);
+        TSingleton<CSoundEventMgr>::GetInstance()->SetAllMute(1);
         if (FUN_140c8dac0() != 0)
             FUN_140c8dac0()->Mute();
     }
@@ -3493,7 +3493,7 @@ MS2_REPLACE_METHOD(0x141262060, CPersonalInfoAgreement, FUN_141262060, 32, 0xA1B
 // @0x141262090
 void CPersonalInfoAgreement::FUN_141262090()
 {
-    if (WorldService::GetInstance()->FUN_141bcb0a0())
+    if (WorldService::GetInstance()->HasTutorial())
         return;
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
         return;
@@ -3514,7 +3514,7 @@ MS2_REPLACE_METHOD(0x141262090, CPersonalInfoAgreement, FUN_141262090, 229, 0xC7
 // @0x141262180
 void CPersonalInfoAgreement::FUN_141262180()
 {
-    if (WorldService::GetInstance()->FUN_141bcb0a0())
+    if (WorldService::GetInstance()->HasTutorial())
         return;
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
         return;
@@ -3545,7 +3545,7 @@ void CPersonalInfoAgreement::FUN_141262180()
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a024c0();
                 spBox->SetAlign(0);
-                spBox->FUN_141a01690(strPublic, strPassword, strPrivate);
+                spBox->SetButtonLabels(strPublic, strPassword, strPrivate);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262830));
                 FUN_140d73c60(spBox);
             }
@@ -3558,7 +3558,7 @@ MS2_REPLACE_METHOD(0x141262180, CPersonalInfoAgreement, FUN_141262180, 1224, 0x1
 // @0x141262650
 void CPersonalInfoAgreement::FUN_141262650()
 {
-    if (WorldService::GetInstance()->FUN_141bcb0a0())
+    if (WorldService::GetInstance()->HasTutorial())
         return;
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
         return;

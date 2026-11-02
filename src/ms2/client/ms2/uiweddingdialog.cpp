@@ -55,8 +55,8 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bVisible);
-    void FUN_1422e3460(const ASObj& row);                       // add a tab
-    void FUN_1422e31e0(int nIndex);                             // select a tab
+
+
 };
 
 class Unk_McPackets
@@ -365,9 +365,9 @@ void UIWeddingDialog::FUN_140fc8470()
             ASObj row(2);
             row.FUN_1407cba60("page", it->second->vfunc_6());
             row.FUN_1407cbb20("label", it->second->vfunc_7());
-            spTab->FUN_1422e3460(row);
+            reinterpret_cast<ASButtonBar*>(spTab.operator->())->AddItem(row);
         }
-        spTab->FUN_1422e31e0(m_nTab);
+        reinterpret_cast<ASButtonBar*>(spTab.operator->())->SetSelectedIndex(m_nTab);
         spTab->vfunc_24(true);
     }
 }

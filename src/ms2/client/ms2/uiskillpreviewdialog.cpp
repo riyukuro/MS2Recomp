@@ -81,7 +81,7 @@ void UISkillPreviewDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void*
     m_avatar->vfunc_28(p1, p2, p3, p4);
     FUN_140e93e70(m_skill, m_level);
     Unk_ModelViewCamera data;
-    data.FUN_141b48530();
+    data.ApplyCharCamera();
     data.m_fMinDistance = 1000.0f;
     data.m_nStepsDone = 2;
     data.m_nSteps = 5;

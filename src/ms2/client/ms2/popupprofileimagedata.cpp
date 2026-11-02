@@ -37,7 +37,6 @@ public:
     Unk_PpConst m_expireB;                  // +0xc68 extra delay (state 1)
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-void* FUN_140a36020(Unk_PpConst* p);
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 unsigned int FUN_141697bc0(Unk_PpConst* p);  // a configured value
@@ -323,7 +322,7 @@ MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, FUN_1416979e0, 465, 0xF1C
 // @0x141697bc0
 unsigned int FUN_141697bc0(Unk_PpConst* p)
 {
-    return FUN_140a35ca0((struct MS2Tick*)(FUN_140a36020(p)));
+    return FUN_140a35ca0(reinterpret_cast<Common::Constants::Value<MS2Tick>*>(p)->Get());
 }
 
 // @0x141699890

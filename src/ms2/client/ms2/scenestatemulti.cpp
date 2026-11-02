@@ -125,7 +125,7 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // lobbyField.xml reading (as usercommandcli.cpp)
 CString FUN_14071a5b0(const CString&, const CString&);
-struct Unk_LobbyFiles { int FUN_1403974b0(TiXmlDocument&, const char*, int, bool, bool); };
+class CFileSystem { public: int FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };   // C3: unit-local view (def in filesystem)
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -141,7 +141,7 @@ struct Unk_AllocHint
 };
 Unk_AllocHint FUN_140876480(int nCategory);
 class Unk_PCItems;
-void* FUN_1401d7a50();
+class JobTable;
 class Unk_BackUpItem : public CPtred
 {
 };
@@ -204,14 +204,24 @@ public:
 __int64 GetServerTime();
 // ---- the actor search (FUN_14174f0f0) ----
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-class Unk_QueryList { public: void* FUN_140a17e00(); unsigned FUN_140a17ea0(); void* FUN_140a17d70(unsigned); };
+class NiPick
+{
+public:
+    class Record;
+    class Results
+    {
+    public:
+        unsigned int GetSize() const;
+        Record* GetAt(unsigned int i) const;
+    };
+};
+namespace ecr { class PickService { public: class PickRecord { public: const NiPick::Results* GetPickResult() const; }; }; }
 class Unk_QueryResult
 {
 public:
     ~Unk_QueryResult();                                     // 0x140a16120
     void* FUN_140a16c00();
     Unk_QueryResult* FUN_140a16c30();
-    Unk_QueryList* FUN_140a17e00();
     void* m_p0;                                             // +0x00 the exe object is 8 bytes (FUN_140af0850 writes it through the sret slot)
 };
 struct Unk_140ae7ce0 { Unk_140ae7ce0(); float m_0, m_4, m_8, m_c, m_10, m_14, m_18, m_1c, m_20, m_24; };  // Unk_CameraSetting (cameramode.h): 0x28 bytes, 4-aligned; no array, so no /GS cookie
@@ -272,7 +282,7 @@ int LobbyFieldTable::Load()
     CString strPath = FUN_14071a5b0("Table", "lobbyField.xml");
     CCacheData::FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (((struct Unk_LobbyFiles*)GetFileSystem())->FUN_1403974b0(doc, strPath, 0, true, false) != 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
@@ -614,7 +624,7 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
         info.m_nType = 3;
         info.m_nGender = nGender;
         info.m_nJobCode = m_nJobCode;
-        info.m_n30 = reinterpret_cast<JobTable*>(FUN_1401d7a50())->GetSubJob1(m_nJobCode);
+        info.m_n30 = reinterpret_cast<JobTable*>(reinterpret_cast<void*>(TSingleton<JobTable>::GetInstance()))->GetSubJob1(m_nJobCode);
         info.m_b58 = bFlag;
         if (info.FUN_14107c3a0(reinterpret_cast<PC*>(spPC.operator MyPC*())))
             m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->FUN_14123c500();
@@ -664,9 +674,9 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
     if (result.FUN_140a16c00() == 0)
         return 0;
     Unk_FieldMgr* pMgr = ((class Unk_FieldMgr*)WorldService::GetInstance());
-    for (unsigned iRow = 0; iRow < result.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); iRow++)
+    for (unsigned iRow = 0; iRow < reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetSize(); iRow++)
     {
-        Unk_QueryRow* pRow = static_cast<Unk_QueryRow*>(result.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(iRow));
+        Unk_QueryRow* pRow = reinterpret_cast<Unk_QueryRow*>(reinterpret_cast<ecr::PickService::PickRecord*>(result.FUN_140a16c30())->GetPickResult()->GetAt(iRow));
         for (POSITION pos = pMgr->m_actors.GetHeadPosition(); pos != 0; pMgr->m_actors.GetNext(pos))
         {
             Unk_LobbyActor* pActor = pMgr->m_actors.GetValueAt(pos);
@@ -688,7 +698,7 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
 // @0x14174f390
 void CSceneStateMulti::FUN_14174f390(void* pActor, int)
 {
-    WorldService::GetInstance()->FUN_141bd0cf0(pActor);
+    WorldService::GetInstance()->SetMyPC(pActor);
 }
 
 // @0x14174f3c0
@@ -794,7 +804,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         }
     }
     Unk_MessageBoxPtr box = FUN_140d73d20(0, CStringW(text), 0, CStringW(L""));
-    reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->FUN_141a01690(GetStringCommon(0xac1), L"", L"");
+    reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetButtonLabels(GetStringCommon(0xac1), L"", L"");
     reinterpret_cast<CMsgBoxData*>(FUN_140534fe0(box))->SetExtra(L"waitingticketdialog");
     UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
     if (pList != 0)

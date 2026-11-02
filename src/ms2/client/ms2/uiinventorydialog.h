@@ -61,29 +61,29 @@ public:
     int FUN_141999de0();                                        // the tab
     void FUN_141999e00();                                       // refresh everything
     void FUN_141999e20();                                       // reset the tab
-    void FUN_141999e50();                                       // the slots were expanded: play "m_expandEff"
-    int FUN_141999f10();                                        // the bag's scroll position
+    void PlayExpandEffect();                                       // the slots were expanded: play "m_expandEff"
+    int GetScrollPosition();                                        // the bag's scroll position
     void FUN_141999f60();                                       // the side buttons' state
     void FUN_14199a3f0(__int64 nItemUid);                       // refresh the slot of an item
     void FUN_14199a4b0(const Scaleform::GFx::FunctionHandler::Params& params);   // tab changed
     void FUN_14199a620(const Scaleform::GFx::FunctionHandler::Params& params);   // search text changed: the candidates
     void OnClickOpenBank();                                       // open the bank
     void OnClickItemEnchant();                                       // toggle the enchant dialog
-    MS2Ptr<ASButtonBar> FUN_14199aad0();                        // the tab bar
-    int FUN_14199ab20(CString strName);                         // the index of a tab name (-1: none)
-    CStringW FUN_14199abe0();                                   // the search text
+    MS2Ptr<ASButtonBar> GetTabBar();                        // the tab bar
+    int FindTabIndexByName(CString strName);                         // the index of a tab name (-1: none)
+    CStringW GetSearchText();                                   // the search text
     bool FUN_14199ac30(int nResult, const CMsgBoxData& box);    // couple effect: the receiver name was entered
     bool FUN_14199b100(int nResult, const CMsgBoxData& box);    // couple effect: send or ask for the name
-    bool FUN_14199b480(int nResult, const CMsgBoxData& box);    // sort confirmation
+    bool OnSortConfirm(int nResult, const CMsgBoxData& box);    // sort confirmation
     bool FUN_14199b4e0(int nResult, const CMsgBoxData& box);    // rename an item
     void FUN_14199b800(CStringW strText);                       // ask the platform to accept the text, then search
     void FUN_14199ba10();                                       // rebuild the bag
-    void FUN_14199bbb0(int nTab);                               // switch the tab and rebuild the bag
+    void SelectTab(int nTab);                               // switch the tab and rebuild the bag
     void FUN_14199bc00();                                       // the tabs' "new item" marks
     void FUN_14199be00(int nTab);                               // clear the "new" flags of a tab
     void FUN_14199bed0(const __int64& nMesos);                  // the meso amount of the box
     int FUN_14199bfc0();                                        // a trade is running (and the player is alive)
-    void FUN_14199c0d0();                                       // refresh the "m_expand" text
+    void UpdateExpandLabel();                                       // refresh the "m_expand" text
     void SendRequestItemInventory(int nTab, bool bStack);                  // send the sort request
     void FUN_14199c2b0(CStringW strText);                       // scroll to the item matching the text
     void FUN_14199c610(CStringW strSearch, ATL::CAtlList<CStringW>& names);   // the item names of the tab containing the text
@@ -97,7 +97,7 @@ public:
     CStringW FUN_14199d9c0();                                   // the item break button tooltip
     CStringW GetExpandTooltip();                                   // the slot expand tooltip
     CStringW FUN_14199deb0(int bBank);                          // the open bank tooltip
-    void FUN_14199e2a0();                                       // expand the slots (or tell why not)
+    void RequestExpandSlots();                                       // expand the slots (or tell why not)
 
     static int s_nAlignMode;                                    // 0x143af2f60
 

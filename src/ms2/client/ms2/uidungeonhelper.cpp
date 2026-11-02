@@ -89,7 +89,7 @@ public:
 // The reward list of a reward id (meso, exp and the items); same layout as uidungeoncategory.cpp's.
 void* FUN_140764030();   // C3: was FUN_140764030
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
-void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, int nValue);
+void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDisable);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140d013b0(const Scaleform::GFx::Value& root, int n);
 void FUN_140d01340(const Scaleform::GFx::Value& root, unsigned a, int b);
@@ -100,7 +100,7 @@ MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStri
 void FUN_140d73ff0(CStringW);
 void FUN_140710590(COutPacket&);
 bool FUN_140930b40();
-void* FUN_1409670d0();
+class CPartyManager;
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -178,10 +178,10 @@ UIDungeonSearchUnitedReward::UIDungeonSearchUnitedReward()
 // @0x140e12e40
 bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
 {
-    // MS2-FUNCTIONAL: locals and temporaries are ordered differently
     if (root == NULL)
         return false;
     m_root = root;
+    const int nItemOffsetX = 0x58; const int nItemY = 0x66;
     const size_t count = TSingleton<DungeonRoomTable>::GetInstance()->GetUnitedWeeklyRewardCount();
     for (size_t i = 0; i < count; ++i) {
         MS2Ptr<DungeonUnitedWeeklyReward> entry = TSingleton<DungeonRoomTable>::GetInstance()->GetUnitedWeeklyReward(i);
@@ -190,11 +190,11 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
         MS2Ptr<ASMovieClip> item(new ASMovieClip(CString("UIDungeonSearchUnitedRewardItem"), 2));
         if (item == NULL)
             return false;
-        item->FUN_1422bffe0(entry->m_uiPosX + 0x58, 0x66);
+        item->SetPositionInt(entry->m_uiPosX + nItemOffsetX, nItemY);
         MS2Ptr<ASWeeklyRewardItemSlot> slot = item->FUN_140e159f0<ASWeeklyRewardItemSlot>("m_slot");
         if (slot == NULL)
             return false;
-        FUN_140d01670(item->FUN_1422bb890(), "m_check", 1);
+        FUN_140d01670((*item).FUN_1422bb890(), "m_check", true);
         FUN_140cff840((*item).FUN_1422bb890(), "m_bg", entry->m_uiShowBg);
         FUN_140cff4e0((*item).FUN_1422bb890(), "m_rewardCount", FUN_14028dfa0(L"s_dungeonSearch_united_reward_count", entry->m_rewardCount));
         m_root->FUN_1422c6900(Scaleform::GFx::Value((*item).FUN_1422bb890()));
@@ -206,8 +206,8 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
     DH_BIND(m_root->FUN_140beaf20<ASTextField>("m_rewardWeekly", m_weekly), m_weekly, 0x75);
     DH_BIND(m_root->FUN_140bbe640<ASButton>("m_unitedRewardResetButton", m_resetButton), m_resetButton, 0x76);
     FUN_140d013b0(m_weekly->FUN_1422bb890(), 2);
-    MS2Ptr<ASTextField> title = m_root->FUN_1409b4620("rewardWeeklyTitle");
-    if (title.get()) {
+    if (MS2Ptr<ASTextField> title = m_root->FUN_1409b4620("rewardWeeklyTitle"))
+    {
         FUN_140d013b0(title->FUN_1422bb890(), 2);
         FUN_140d01340(title->FUN_1422bb890(), 2, 2);
     }
@@ -215,7 +215,7 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
     return true;
 }
 MS2_REPLACE_METHOD(0x140E12E40, UIDungeonSearchUnitedReward, Init, 3377, 0x93D914EE);
-
+// MS2-FUNCTIONAL: the level argument is reloaded through a second movzx in the exe (movzx ecx,word / movzx r8d,cx); source form not found
 // @0x140e13c00
 void UIDungeonSearchUnitedReward::FUN_140e13c00()
 {
@@ -225,23 +225,23 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
     unsigned nWeekly = 0;
     unsigned nWeeklyMax = 0;
     {
-        MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(0x3ee);
-        if (mission.get()) {
+        if (MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(0x3ee))
+        {
             nWeekly = mission->GetBonusRewardCountNow();
             nWeeklyMax = mission->GetMaxCount();
             m_weekly->FUN_1422c4cd0(FUN_14028dfa0(L"s_dungeonSearch_reward_weekly", nWeekly, nWeeklyMax));
         }
     }
-    if (nWeekly < nWeeklyMax) {
-        MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(0x3ee);
-        if (mission.get()) {
+    if (nWeekly >= nWeeklyMax) {
+        m_daily->vfunc_3(0);
+    } else {
+        if (MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(0x3ee))
+        {
             unsigned nDaily = mission->GetClearCount(GetServerTime());
             unsigned nDailyMax = mission->GetSubRewardCount();
             m_daily->vfunc_3(1);
             m_daily->FUN_1422c4cd0(FUN_14028dfa0(L"s_dungeonSearch_reward_daily", nDaily, nDailyMax));
         }
-    } else {
-        m_daily->vfunc_3(0);
     }
     unsigned nGauge = 0;
     const size_t count = TSingleton<DungeonRoomTable>::GetInstance()->GetUnitedWeeklyRewardCount();
@@ -250,18 +250,18 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         if (entry == NULL)
             continue;
         RewardContentsTable::Result rewards;
-        short nJob = (short)static_cast<PCBase*>(pActor)->vfunc_78();     // slot 78 (+0x270)
+        unsigned short nJob = static_cast<PCBase*>(pActor)->vfunc_78();     // slot 78 (+0x270)
         ((RewardContentsTable*)FUN_140764030())->GetReward(entry->m_rewardID, nJob, rewards);
         if (!rewards.m_items.empty())
             m_slots[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[0])));
         m_slots[i]->FUN_140e12780(rewards.m_nMeso, rewards.m_nExp);
-        const bool bReached = entry->m_rewardCount <= nWeekly;
+        const bool bReached = nWeekly >= entry->m_rewardCount ? 1 : 0;
         if (bReached)
             nGauge = entry->m_uiPosX;
         FUN_140cff840(m_points[i]->FUN_1422bb890(), "m_point", bReached);
         FUN_140cff840(m_points[i]->FUN_1422bb890(), "m_check", bReached);
     }
-    ((class ASDisplayObject*)(class ASMovieClip*)(m_gauge.get()))->FUN_1422c0e50((std::max)(1u, nGauge));
+    ((class ASDisplayObject*)(class ASMovieClip*)(m_gauge.get()))->SetWidthUInt((std::max)(1u, nGauge));
 }
 MS2_REPLACE_METHOD(0x140E13C00, UIDungeonSearchUnitedReward, FUN_140e13c00, 1762, 0x193155DB);
 
@@ -323,7 +323,7 @@ bool FUN_140e146a0()
 {
     if (FUN_140930b40())
         return false;
-    if (((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162ab20() && !((class CPartyManager*)(void*)(FUN_1409670d0()))->IsLocalPlayerLeader())
+    if (((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->FUN_14162ab20() && !((class CPartyManager*)(void*)(reinterpret_cast<void*>(TSingleton<CPartyManager>::GetInstance())))->IsLocalPlayerLeader())
         return false;
     return true;
 }

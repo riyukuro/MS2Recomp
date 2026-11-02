@@ -333,9 +333,9 @@ void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
         if(record.get()) {
             unsigned count=(unsigned)damage->values.GetCount();
             group->RecordAmount(record,2,count);
-            group->RecordAmount(record,0,std::abs(reinterpret_cast<CDamageRecord*>(damage)->FUN_14175ac30()));
+            group->RecordAmount(record,0,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
             CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(damage->target));
-            if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(reinterpret_cast<CDamageRecord*>(damage)->FUN_14175ac30()));
+            if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {
                 case 0: group->RecordAmount(record,3,1); break;
@@ -344,7 +344,7 @@ void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
             }
         }
         CBattleRecordGroup::Ptr victim=group->GetRecord(target);
-        if(victim.get()) group->RecordAmount(victim,1,std::abs(reinterpret_cast<CDamageRecord*>(damage)->FUN_14175ac30()));
+        if(victim.get()) group->RecordAmount(victim,1,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
     }
 }
 MS2_REPLACE_METHOD(0x140a04ef0, CBattleRecordManager, FUN_140a04ef0, 1432, 0x2FA35BAE);

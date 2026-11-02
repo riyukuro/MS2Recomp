@@ -50,12 +50,12 @@ template<> CFieldData* Unk_PayloadPtr<CFieldData>::operator->()const;
 template<> Unk_PayloadPtr<CUGCMapData>::Unk_PayloadPtr(const Unk_PayloadPtr&);
 Unk_PayloadPtr<CFieldData> FUN_140374140(unsigned);
 void* FUN_1401c0d90();
-void FUN_14047ddd0(void*,int,int,__int64);
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_140479720();
-    unsigned int FUN_140479870();
+    unsigned GetUgcMapContractSaleRate();
+    unsigned GetUgcMapExtensionSaleRate();
+    bool FUN_14047ddd0(unsigned id, int value, unsigned __int64 objectId);
 };
 bool FUN_14053f8c0(unsigned);
 bool FUN_14053f940(unsigned);
@@ -163,8 +163,8 @@ bool FUN_1408a06a0(int mapID,int group) {
 }
 MS2_REPLACE(0x1408a06a0, FUN_1408a06a0, 257, 0x22A131A0);
 // @0x1408a07b0
-void FUN_1408a07b0(int mapID,int blockID,__int64 ownerID) {
-    FUN_14047ddd0(FUN_1401c0d90(),mapID,blockID,ownerID);
+bool FUN_1408a07b0(int mapID,int blockID,__int64 ownerID) {
+    return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ddd0(mapID,blockID,ownerID);
 }
 MS2_REPLACE(0x1408a07b0, FUN_1408a07b0, 49, 0x301F651E);
 // @0x1408a07f0
@@ -195,7 +195,7 @@ int FUN_1408a09d0(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].contractPriceItemCode;
             *price=p->groups[group].contractPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140479720();
+                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->GetUgcMapContractSaleRate();
                 nDiscount/=10000;
                 *price=*price-nDiscount;
             }
@@ -215,7 +215,7 @@ int FUN_1408a0b80(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].extensionPriceItemCode;
             *price=p->groups[group].extensionPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140479870();
+                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->GetUgcMapExtensionSaleRate();
                 nDiscount/=10000;
                 *price=*price-nDiscount;
             }
@@ -272,7 +272,7 @@ void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& 
 }
 #endif
 // @0x1408a1360
-int FUN_1408a1360(const NiPoint3& a,const NiPoint3& b) { int x=(int)(a.z/150.0f); int y=(int)(b.z/150.0f); return x==y; }
+int FUN_1408a1360(Vector3 a,Vector3 b) { int x=(int)(a.z/150.0f); int y=(int)(b.z/150.0f); return x==y; }
 MS2_REPLACE(0x1408a1360, FUN_1408a1360, 100, 0x09C21056);
 Unk_Int3 FUN_1408a1430(NiPoint3);
 // @0x1408a13d0
@@ -327,7 +327,7 @@ void FUN_1408a1640(Cube* cube) {
     typeText=typeNames.c_str();
     FUN_140177de0(typeText,&types,",");
     for(size_t i=0;i<types.FUN_140186260();i++) {
-        int type=*types.FUN_1401844d0(i);
+        int type=(*reinterpret_cast<ATL::CAtlArray<int>*>(&types))[i];
         cube->field5c|=FUN_1408a0190(type);
     }
     cube->fieldB4=objCode;

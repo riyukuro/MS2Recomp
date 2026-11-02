@@ -13,11 +13,11 @@
 // MS2-PIN: ??_7CInstrumentManager@@6B?$TSingleton@VCInstrumentManager@@@@@ 0x142e26940
 // MS2-PIN: ??$StringFormat@HHK@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1AEBK@Z 0x140d0bcc0
 // MS2-PIN: ??$?0AEAHAEBH$0A@@?$pair@HH@std@@QEAA@AEAHAEBH@Z 0x140d0b6c0
-// MS2-PIN: ??$?0HH$0A@@?$pair@$$CBIH@std@@QEAA@$$QEAU?$pair@HH@1@@Z 0x140d0b9a0
+// MS2-PIN: ??$?0IH$0A@@?$pair@$$CBIH@std@@QEAA@$$QEAU?$pair@IH@1@@Z 0x140d0b9a0
 // MS2-PIN: ??$?0II$0A@@?$pair@$$CBII@std@@QEAA@$$QEAU?$pair@II@1@@Z 0x140d0ba40
-// MS2-PIN: ??$construct@U?$pair@$$CBIH@std@@U?$pair@HH@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@1@QEAU?$pair@$$CBIH@1@$$QEAU?$pair@HH@1@@Z 0x140d10ea0
+// MS2-PIN: ??$construct@U?$pair@$$CBIH@std@@U?$pair@IH@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@1@QEAU?$pair@$$CBIH@1@$$QEAU?$pair@IH@1@@Z 0x140d10ea0
 // MS2-PIN: ??$construct@U?$pair@$$CBII@std@@U?$pair@II@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@1@QEAU?$pair@$$CBII@1@$$QEAU?$pair@II@1@@Z 0x140d10ef0
-// MS2-PIN: ??$make_pair@AEAHAEAH@std@@YA?AU?$pair@HH@0@AEAH0@Z 0x140d117c0
+// MS2-PIN: ??$make_pair@AEAIAEAH@std@@YA?AU?$pair@IH@0@AEAIAEAH@Z 0x140d117c0
 // MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140d0d020
 // MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140d0cf90
 // MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@V12@@2@AEBI@Z 0x140d19cc0
@@ -1213,7 +1213,7 @@ int CInstrumentManager::AddRemote(int nKey, RemoteVoice& voice)
 }
 
 // @0x140d0a380
-void CInstrumentManager::MapSlot(int nKey, int nSlot)
+void CInstrumentManager::MapSlot(unsigned nKey, int nSlot)
 {
     m_slotIndex.insert(std::make_pair(nKey, nSlot));
     m_midi.StartTimer();
@@ -1396,7 +1396,7 @@ void CInstrumentManager::AddRef()
 {
     m_refs++;
     if (m_refs == 1 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b30 == true)
-        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177dea0(2, 300);
+        TSingleton<CSoundEventMgr>::GetInstance()->StartFadeOut(2, 300);
     UpdateVolume(false);
 }
 
@@ -1410,7 +1410,7 @@ void CInstrumentManager::Release()
         m_refs = m_refs;
     FUN_14125fe20(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
     if (m_refs == 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b30 == true)
-        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ddf0(2, 5000);
+        TSingleton<CSoundEventMgr>::GetInstance()->StartFadeIn(2, 5000);
     UpdateVolume(false);
 }
 

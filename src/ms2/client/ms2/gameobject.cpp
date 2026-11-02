@@ -784,12 +784,19 @@ int GameObject::vfunc_36(CString str, efd::Point3* pOut)
         NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
         if (pRoot)
         {
-            NiAVObject* pObject = pRoot->GetObjectByName(NiFixedString((const char*)str));
-            NiNode* pNode;
-            if (pObject && (pNode = NiDynamicCast(NiNode, pObject)) != 0)
+            NiAVObject* pObject;
             {
-                *pOut = pNode->GetWorldTransform().m_Translate;
-                return 1;
+                NiFixedString kName((const char*)str);
+                pObject = pRoot->GetObjectByName(kName);
+            }
+            if (pObject)
+            {
+                NiNode* pNode = NiDynamicCast(NiNode, pObject);
+                if (pNode)
+                {
+                    *pOut = pNode->GetWorldTransform().m_Translate;
+                    return 1;
+                }
             }
         }
     }

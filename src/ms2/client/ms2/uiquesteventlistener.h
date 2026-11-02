@@ -23,7 +23,7 @@ class ASObj;
 class CInPacket;
 class CQuest;
 class NotifyObject;
-class Unk_RewardEntryPtr;
+class DungeonMissionCli;
 namespace UICommon { class CAlignmentInfo; }
 
 // vftable 0x142fd8790. Each slot walks the listeners and forwards to the matching UIQuestEventListener slot; the
@@ -116,7 +116,7 @@ public:
     void FUN_141aadd10(int* pnWidth, int* pnHeight);            // the dialog size
     bool FUN_141aaddb0(ASObj& obj);                             // the field mission entity
     bool FUN_141aae150(ASObj& obj);                             // the dungeon mission entity
-    CStringW FUN_141aae4f0(Unk_RewardEntryPtr spEntry);         // a dungeon mission goal text
+    CStringW FUN_141aae4f0(MS2Ptr<DungeonMissionCli> spEntry);         // a dungeon mission goal text
     void FUN_141aae5a0();                                       // refresh the recommended quest
     int FUN_141aae6d0();                                        // the recommended next quest id (ignores this)
     int FUN_141aae8d0(int nQuestId, ASObj& obj);                // fill the recommended quest entity

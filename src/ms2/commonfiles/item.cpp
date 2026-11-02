@@ -88,19 +88,14 @@ public:
     void FUN_141885880(MS2Ptr<CItem> spItem);
 };
 class Unk_MusicBookTable;
-extern Unk_MusicBookTable* DAT_143aaf1a8;
 class Unk_EnchantRates : public CItemEnchantUtil { };
-extern Unk_EnchantRates* DAT_143aaf1b0;
 // The pet row table behind DAT_143aaf1c8 (tabcontentspetevolution.cpp declares the same lookup).
 class Unk_PetRowTable : public Unk_SingletonObj { };
 class Unk_NamedSource;
 CStringW FUN_141277a90(Unk_NamedSource* pLook, const CStringW& strFallback);
-extern void* DAT_143aaf1b8;
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-extern void* DAT_143aaf1c0;
-extern Unk_SingletonObj* DAT_143aaf1c8;
-extern Unk_SingletonObj* DAT_143aaf1d8;
+class CUgcManager;
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 
 // @0x14052a020
@@ -856,11 +851,11 @@ int CItem::IsStackable()
 MS2_REPLACE_METHOD(0x1405257F0, CItem, IsStackable, 115, 0xC01347F9);
 
 // @0x1405258b0
-int CItem::FUN_1405258b0()
+int CItem::HasSkin()
 {
     return m_spData->HasSkinType();
 }
-MS2_REPLACE_METHOD(0x1405258B0, CItem, FUN_1405258b0, 44, 0x1E0F1D2F);
+MS2_REPLACE_METHOD(0x1405258B0, CItem, HasSkin, 44, 0x1E0F1D2F);
 
 // @0x1405258f0
 int CItem::FUN_1405258f0()
@@ -1288,7 +1283,7 @@ unsigned CItem::FUN_140527a20()
 {
     if (m_68 != 0 && m_spData->FUN_14053d510())
         return m_68;
-    return m_spData->FUN_14053eba0()->FUN_14054b400();
+    return m_spData->GetModelOrEmpty()->FUN_14054b400();
 }
 MS2_REPLACE_METHOD(0x140527A20, CItem, FUN_140527a20, 104, 0x946235F9);
 
@@ -1379,19 +1374,19 @@ int CItem::IsStoryBook()
 MS2_REPLACE_METHOD(0x140525C00, CItem, IsStoryBook, 87, 0xBF027633);
 
 // @0x140525cf0
-int CItem::FUN_140525cf0()
+int CItem::HasAnyEquipSlotOf()
 {
     if (m_spData.IsNull())
         return 0;
     int nCount = 4;
     for (int i = 0; i < nCount; i++)
     {
-        if (m_spData->FUN_14053eba0()->FUN_14054b450(g_ItemFunctionFlags[i]))
+        if (m_spData->GetModelOrEmpty()->FUN_14054b450(g_ItemFunctionFlags[i]))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140525CF0, CItem, FUN_140525cf0, 171, 0xC6A23014);
+MS2_REPLACE_METHOD(0x140525CF0, CItem, HasAnyEquipSlotOf, 171, 0xC6A23014);
 
 // @0x140525f10
 int CItem::HasCubeTextureMesh()
@@ -1930,37 +1925,37 @@ MS2_REPLACE_METHOD(0x140526670, CItem, FUN_140526670, 273, 0x5F65DE16);
 // @0x14052d1d0
 Unk_MusicBookTable* FUN_14052d1d0()
 {
-    return DAT_143aaf1a8;
+    return reinterpret_cast<Unk_MusicBookTable*>(TSingleton<CInstrumentDataTable>::s_instance);
 }
 
 // @0x14052d1e0
 Unk_EnchantRates* FUN_14052d1e0()
 {
-    return DAT_143aaf1b0;
+    return static_cast<Unk_EnchantRates*>(TSingleton<CItemEnchantUtil>::s_instance);
 }
 
 // @0x14052d1f0
 void* FUN_14052d1f0()
 {
-    return DAT_143aaf1b8;
+    return TSingleton<CItemExtractionTable>::s_instance;
 }
 
 // @0x14052d200
 void* FUN_14052d200()
 {
-    return DAT_143aaf1c0;
+    return TSingleton<CItemSocketTable>::s_instance;
 }
 
 // @0x14052d210
 Unk_PetRowTable* FUN_14052d210()
 {
-    return static_cast<Unk_PetRowTable*>(DAT_143aaf1c8);
+    return reinterpret_cast<Unk_PetRowTable*>(TSingleton<CPetDataTable>::s_instance);
 }
 
 // @0x14052d220
 Unk_UgcRideeMgr* FUN_14052d220()
 {
-    return static_cast<Unk_UgcRideeMgr*>(DAT_143aaf1d8);
+    return reinterpret_cast<Unk_UgcRideeMgr*>(TSingleton<CUgcManager>::s_instance);
 }
 
 // @0x14052d230
@@ -1983,7 +1978,7 @@ unsigned CItem::GetEquipSlot(size_t nIndex)
 {
     if (m_68 != 0 && m_spData->FUN_14053d510())
         return m_68;
-    return m_spData->FUN_14053eba0()->GetGroup(nIndex)->FUN_1405451a0();
+    return m_spData->GetModelOrEmpty()->GetGroup(nIndex)->FUN_1405451a0();
 }
 MS2_REPLACE_METHOD(0x140527A90, CItem, GetEquipSlot, 122, 0x4D291B02);
 

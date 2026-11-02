@@ -5,7 +5,7 @@
 //
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // class is declared in src/ms2/placeholder/asuicomponent.h; its slots 3 and 16-24 are opt-in there
-// (MS2_ASUICOMPONENT_SLOTS). The tail holds the MS2Ptr<ASInteractiveObject> COMDATs of FUN_1422c7630 (ctor(int) 0x1422c8250,
+// (MS2_ASUICOMPONENT_SLOTS). The tail holds the MS2Ptr<ASInteractiveObject> COMDATs of SetFocused (ctor(int) 0x1422c8250,
 // dtor 0x1422c8270, Release 0x1422c8300, ReleaseImpl 0x1422c8340, Reference 0x1422c82e0; ms2ptr_impl.h) and the
 // AScript::FUN_1422c81c0<AScript> child binder.
 #define MS2_ASUICOMPONENT_SLOTS
@@ -63,77 +63,77 @@ void ASUIComponent::vfunc_3(int nVisible)
 MS2_REPLACE_METHOD(0x1422C7260, ASUIComponent, vfunc_3, 32, 0xB50F12CC);
 
 // @0x1422c7290
-void ASUIComponent::FUN_1422c7290(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
+void ASUIComponent::AddShowHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
 {
     FUN_1422c3600("show", cb, false, 0, 0, (void*)nUser);
 }
-MS2_REPLACE_METHOD(0x1422C7290, ASUIComponent, FUN_1422c7290, 113, 0x35FD9F7A);
+MS2_REPLACE_METHOD(0x1422C7290, ASUIComponent, AddShowHandler, 113, 0x35FD9F7A);
 
 // @0x1422c7310
-void ASUIComponent::FUN_1422c7310(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
+void ASUIComponent::AddHideHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
 {
     FUN_1422c3600("hide", cb, false, 0, 0, (void*)nUser);
 }
-MS2_REPLACE_METHOD(0x1422C7310, ASUIComponent, FUN_1422c7310, 113, 0x796AAD8B);
+MS2_REPLACE_METHOD(0x1422C7310, ASUIComponent, AddHideHandler, 113, 0x796AAD8B);
 
 // @0x1422c7390
-void ASUIComponent::FUN_1422c7390(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
+void ASUIComponent::AddKeyFocusChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
 {
     FUN_1422c3600("keyFocusChange", cb, false, 0, 0, (void*)nUser);
 }
-MS2_REPLACE_METHOD(0x1422C7390, ASUIComponent, FUN_1422c7390, 113, 0x35C702F8);
+MS2_REPLACE_METHOD(0x1422C7390, ASUIComponent, AddKeyFocusChangeHandler, 113, 0x35C702F8);
 
 // @0x1422c7410
-void ASUIComponent::FUN_1422c7410(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
+void ASUIComponent::AddDragStartHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
 {
     FUN_1422c3600("dragStart", cb, false, 0, 0, (void*)nUser);
 }
-MS2_REPLACE_METHOD(0x1422C7410, ASUIComponent, FUN_1422c7410, 113, 0x4EA7E277);
+MS2_REPLACE_METHOD(0x1422C7410, ASUIComponent, AddDragStartHandler, 113, 0x4EA7E277);
 
 // @0x1422c7490
-void ASUIComponent::FUN_1422c7490(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
+void ASUIComponent::AddDragEndHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser)
 {
     FUN_1422c3600("dragEnd", cb, false, 0, 0, (void*)nUser);
 }
-MS2_REPLACE_METHOD(0x1422C7490, ASUIComponent, FUN_1422c7490, 113, 0xE2959106);
+MS2_REPLACE_METHOD(0x1422C7490, ASUIComponent, AddDragEndHandler, 113, 0xE2959106);
 
 // @0x1422c7510
-void ASUIComponent::FUN_1422c7510(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
+void ASUIComponent::RemoveKeyFocusChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     FUN_1422c3820("keyFocusChange", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422C7510, ASUIComponent, FUN_1422c7510, 82, 0x12881C1F);
+MS2_REPLACE_METHOD(0x1422C7510, ASUIComponent, RemoveKeyFocusChangeHandler, 82, 0x12881C1F);
 
 // @0x1422c7570
-void ASUIComponent::FUN_1422c7570(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
+void ASUIComponent::RemoveDragStartHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     FUN_1422c3820("dragStart", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422C7570, ASUIComponent, FUN_1422c7570, 82, 0xF16D9061);
+MS2_REPLACE_METHOD(0x1422C7570, ASUIComponent, RemoveDragStartHandler, 82, 0xF16D9061);
 
 // @0x1422c75d0
-void ASUIComponent::FUN_1422c75d0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
+void ASUIComponent::RemoveDragEndHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     FUN_1422c3820("dragEnd", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422C75D0, ASUIComponent, FUN_1422c75d0, 82, 0x0D0252F1);
+MS2_REPLACE_METHOD(0x1422C75D0, ASUIComponent, RemoveDragEndHandler, 82, 0x0D0252F1);
 
 // Sets "focused"; losing it clears the stage focus.
 // @0x1422c7630
-void ASUIComponent::FUN_1422c7630(int n)
+void ASUIComponent::SetFocused(int n)
 {
     FUN_1407cb9c0("focused", n);
     if (n == 0)
         vfunc_5()->FUN_1422cfd30(MS2Ptr<ASInteractiveObject>(0));
 }
-MS2_REPLACE_METHOD(0x1422C7630, ASUIComponent, FUN_1422c7630, 123, 0xE5086F1E);
+MS2_REPLACE_METHOD(0x1422C7630, ASUIComponent, SetFocused, 123, 0xE5086F1E);
 
 // @0x1422c76c0
-int ASUIComponent::FUN_1422c76c0()
+int ASUIComponent::GetFocused()
 {
     return (int)GetMember("focused").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422C76C0, ASUIComponent, FUN_1422c76c0, 92, 0x2D3460C1);
+MS2_REPLACE_METHOD(0x1422C76C0, ASUIComponent, GetFocused, 92, 0x2D3460C1);
 
 // @0x1422c7730
 void ASUIComponent::SetDisplayFocus(int n)
@@ -143,11 +143,11 @@ void ASUIComponent::SetDisplayFocus(int n)
 MS2_REPLACE_METHOD(0x1422C7730, ASUIComponent, SetDisplayFocus, 40, 0x151993AE);
 
 // @0x1422c7760
-int ASUIComponent::FUN_1422c7760()
+int ASUIComponent::GetDisplayFocus()
 {
     return GetMember("displayFocus").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C7760, ASUIComponent, FUN_1422c7760, 91, 0xA1A5AEFB);
+MS2_REPLACE_METHOD(0x1422C7760, ASUIComponent, GetDisplayFocus, 91, 0xA1A5AEFB);
 
 // @0x1422c77d0
 int ASUIComponent::HasFocus()
@@ -164,11 +164,11 @@ void ASUIComponent::SetFocusable(int n)
 MS2_REPLACE_METHOD(0x1422C7840, ASUIComponent, SetFocusable, 60, 0xEF61A8B5);
 
 // @0x1422c7890
-int ASUIComponent::FUN_1422c7890()
+int ASUIComponent::GetFocusable()
 {
     return GetMember("focusable").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C7890, ASUIComponent, FUN_1422c7890, 91, 0xB39B1ABD);
+MS2_REPLACE_METHOD(0x1422C7890, ASUIComponent, GetFocusable, 91, 0xB39B1ABD);
 
 // @0x1422c7900
 int ASUIComponent::GetActualWidth()
@@ -185,52 +185,52 @@ int ASUIComponent::GetActualHeight()
 MS2_REPLACE_METHOD(0x1422C7970, ASUIComponent, GetActualHeight, 92, 0x2DD6524E);
 
 // @0x1422c79e0
-void ASUIComponent::FUN_1422c79e0(int nWidth, int nHeight)
+void ASUIComponent::SetSizeInt(int nWidth, int nHeight)
 {
     FUN_1409ba0d0("setSize", nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x1422C79E0, ASUIComponent, FUN_1422c79e0, 68, 0x81E3E8B6);
+MS2_REPLACE_METHOD(0x1422C79E0, ASUIComponent, SetSizeInt, 68, 0x81E3E8B6);
 
 // @0x1422c7a30
-void ASUIComponent::FUN_1422c7a30(float fWidth, float fHeight)
+void ASUIComponent::SetSizeFloat(float fWidth, float fHeight)
 {
     FUN_140e5bf20("setSize", fWidth, fHeight);
 }
-MS2_REPLACE_METHOD(0x1422C7A30, ASUIComponent, FUN_1422c7a30, 76, 0x01AC4974);
+MS2_REPLACE_METHOD(0x1422C7A30, ASUIComponent, SetSizeFloat, 76, 0x01AC4974);
 
 // @0x1422c7a90
-void ASUIComponent::FUN_1422c7a90(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, long long n)
+void ASUIComponent::SetGetTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, long long n)
 {
     Invoke("setGetTooltipFunction", ASFunction(callback, n, m_nMovieId));
-    FUN_1422c7e20();
+    RegisterTooltip();
 }
-MS2_REPLACE_METHOD(0x1422C7A90, ASUIComponent, FUN_1422c7a90, 159, 0x6F761336);
+MS2_REPLACE_METHOD(0x1422C7A90, ASUIComponent, SetGetTooltipFunction, 159, 0x6F761336);
 
 // Sets the tooltip text: into the existing "_tooltipData" object, or a new { id: text } object as "tooltipData".
 // @0x1422c7b40
-bool ASUIComponent::FUN_1422c7b40(CStringW strTooltip)
+bool ASUIComponent::SetTooltipText(CStringW strTooltip)
 {
     Scaleform::GFx::Value v = GetMember("_tooltipData");
     AScript data(v, 2);
-    if (!data.FUN_1422ba9a0()) {
+    if (!data.IsUndefinedOrNull()) {
         data.FUN_1407cbb20("text", strTooltip);
     } else {
         AScript obj(2);
         obj.FUN_1407cbb20("id", strTooltip);
         FUN_1418adf60("tooltipData", obj);
     }
-    FUN_1422c7e20();
+    RegisterTooltip();
     return true;
 }
-MS2_REPLACE_METHOD(0x1422C7B40, ASUIComponent, FUN_1422c7b40, 384, 0xE2473B4A);
+MS2_REPLACE_METHOD(0x1422C7B40, ASUIComponent, SetTooltipText, 384, 0xE2473B4A);
 
 // @0x1422c7cd0
-void ASUIComponent::FUN_1422c7cd0(const Scaleform::GFx::Value& data)
+void ASUIComponent::SetTooltipData(const Scaleform::GFx::Value& data)
 {
     FUN_1409adbe0("_tooltipData", data);
-    FUN_1422c7e20();
+    RegisterTooltip();
 }
-MS2_REPLACE_METHOD(0x1422C7CD0, ASUIComponent, FUN_1422c7cd0, 81, 0x8BF93F08);
+MS2_REPLACE_METHOD(0x1422C7CD0, ASUIComponent, SetTooltipData, 81, 0x8BF93F08);
 
 // @0x1422c7d30
 void ASUIComponent::SetTooltipOffset(int nX, int nY)
@@ -244,24 +244,24 @@ void ASUIComponent::SetTooltipOffset(int nX, int nY)
 MS2_REPLACE_METHOD(0x1422C7D30, ASUIComponent, SetTooltipOffset, 227, 0x5E5C7A24);
 
 // @0x1422c7e20
-void ASUIComponent::FUN_1422c7e20()
+void ASUIComponent::RegisterTooltip()
 {
     if (m_bTooltip)
         return;
     FUN_1422c6380(FUN_1422bb870(), m_nMovieId);
     m_bTooltip = true;
 }
-MS2_REPLACE_METHOD(0x1422C7E20, ASUIComponent, FUN_1422c7e20, 70, 0x2823471B);
+MS2_REPLACE_METHOD(0x1422C7E20, ASUIComponent, RegisterTooltip, 70, 0x2823471B);
 
 // @0x1422c7e70
-void ASUIComponent::FUN_1422c7e70()
+void ASUIComponent::UnregisterTooltip()
 {
     if (!m_bTooltip)
         return;
     FUN_1422c63f0(FUN_1422bb870(), m_nMovieId);
     m_bTooltip = false;
 }
-MS2_REPLACE_METHOD(0x1422C7E70, ASUIComponent, FUN_1422c7e70, 70, 0x107B6062);
+MS2_REPLACE_METHOD(0x1422C7E70, ASUIComponent, UnregisterTooltip, 70, 0x107B6062);
 
 // @0x1422c7ec0
 void ASUIComponent::vfunc_16()

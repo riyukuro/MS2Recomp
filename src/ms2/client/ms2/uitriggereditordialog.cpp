@@ -963,7 +963,7 @@ void UITriggerEditorDialog::FUN_141b2f510()
     int nY = 0;
     Scaleform::GFx::Value active = m_30->Invoke("getActiveState");
     ASTriggerState state(active, 2);
-    if (!state.FUN_1422ba9a0())
+    if (!state.IsUndefinedOrNull())
     {
         nX = (int)state.FUN_1422c10a0() + 50;
         nY = (int)state.FUN_1422c1110() + 50;

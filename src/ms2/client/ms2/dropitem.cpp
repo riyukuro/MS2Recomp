@@ -800,7 +800,7 @@ int CDropItem::FUN_1411900d0()
 
 // Whether the player at kPos may pick the drop up (in range, off the pickup throttle, owner rules).
 // @0x141190120
-int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
+int CDropItem::FUN_141190120(Vector3 kPos, int nA, int nB)
 {
     if (!s_kPickTimer.FUN_140868c00() && nA)
         return 0;
@@ -814,7 +814,7 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
         return 0;
     if (((class Unk_DropGuideMgr*)FUN_1409331e0())->IsRestricted(7))
         return 0;
-    Vector3 kPlayer(kPos);
+    Vector3 kPlayer(reinterpret_cast<const efd::Point3&>(kPos));
 #ifdef __clang__
     NiPoint3 kSelf = vfunc_18();
     float fDistance = kPlayer.FUN_140965c40(reinterpret_cast<Vector3&>(kSelf)).FUN_140967ac0();

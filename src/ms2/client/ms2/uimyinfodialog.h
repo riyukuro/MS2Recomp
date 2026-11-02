@@ -93,20 +93,20 @@ public:
 
     MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button child lookup
     void FUN_141a5a560();                                       // mark the window dirty (refresh in 100 ms)
-    void FUN_141a5a5c0();                                       // mark dirty and the second refresh flag
+    void MarkDirty();                                       // mark dirty and the second refresh flag
     void FUN_141a5a640(NotifyObject* pNotify);                  // NotifyChangeBuff
     void OnChangeProfile();                                       // OnChangeProfile
     void OnChangeTodayMemo();                                       // OnChangeTodayMemo
-    void FUN_141a5a8d0(int nTitle);                             // OnTitleChange
+    void OnTitleChange(int nTitle);                             // OnTitleChange
     void FUN_141a5a9f0(int nConfig);                            // OnConfig
-    void FUN_141a5aab0(int a, int b, int c, int d);             // OnScreenshot
+    void OnScreenshot(int a, int b, int c, int d);             // OnScreenshot
     void FUN_141a5ab10(int bRefresh, int bStatLists, int bBag);    // rebuild the shown PCInfo from the player
     void FUN_141a5ac90(unsigned short nLevel);                  // the symbol of the level
     void FUN_141a5b080(int nStat);                              // OnAddStatPointRepeat
     void FUN_141a5b6c0();                                       // the remaining time of the codi tab
     void FUN_141a5bed0();                                       // the active codi tab changed
     void FUN_141a5c080();                                       // first read of the active codi tab
-    void FUN_141a5c1a0(NotifyObject* pNotify);                  // NotifyChangeBuff -> period
+    void OnActiveMyCodiTabNotify(NotifyObject* pNotify);                  // NotifyChangeBuff -> period
     void FUN_141a5c220(NotifyObject* pNotify);                  // NotifyActiveMyCodiTab -> active
     void FUN_141a5c2a0(NotifyObject* pNotify);                  // NotifyPcBang
     bool FUN_141a5c3a0();                                       // may the window refresh now

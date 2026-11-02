@@ -13,7 +13,7 @@
 
 // Unrecovered callees (real types unknown).
    // path provider singleton (resource root)
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 CString FUN_14016a5c0(const char* psz, int n);
 struct Unk_SMMgr { Unk_PPSmartC FUN_141552f90(CString name, int flags); };   // texture/resource manager
 Unk_SMMgr* FUN_140a0afd0();
@@ -59,7 +59,7 @@ bool ScreenMaskingRenderStep::vfunc_15(unsigned int a, void* b)
     if (!PostProcessEffect::vfunc_15(a, 0) || m_70 == 0)
         return false;
     CString path;
-    path.Format("%s/Image/ScreenMask/title_make_ch.tga", (const char*)FUN_14086d260()->GetDataPath());
+    path.Format("%s/Image/ScreenMask/title_make_ch.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
     s_screenMaskTexture = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_14016a5c0((const char*)path, 0)), 5);
     void* res = 0;
     res = FUN_140c8f690(FUN_1416b4990(this, "ScreenMasking", (void*)FUN_1416ba620, this, FUN_140c8f680(&m_80), 0, 0, 0, "ScreenMasking", s_screenMaskTexture.Get(), 0, 0));

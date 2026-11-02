@@ -88,8 +88,8 @@ public:
     int FUN_141812c40(int nTable, const CStringW& strName); // the id whose text is strName (-1: none)
     CStringW FUN_141812ec0(int n);
     CStringW FUN_141812f60(int nItemId);                    // the name of an item's string id
-    CStringW FUN_141813060(int nRank, int nItemId);
-    CStringW FUN_141813150(int nRank);                      // "s_word_rank_%02d"
+    CStringW GetItemRankString(int nRank, int nItemId);
+    CStringW GetRankName(int nRank);                      // "s_word_rank_%02d"
     CStringW FUN_141813200(__int64 nItemUid);
     CStringW FUN_141813300(int nTab);                       // an inventory tab name
     CStringW FUN_141813610(int a, int b, int c);
@@ -98,7 +98,7 @@ public:
     void FUN_1418139b0(Unk_140165cf0* pRoot);               // level descriptions
     void FUN_1418139f0(Unk_140165cf0* pRoot);               // skill descriptions
     int FUN_141813c80(CachePtr spCache, CString strParser, CString strParserValue);   // loads a table's files
-    int FUN_141813e70(CachePtr spCache);                    // ... with the "name" attribute
+    int LoadNames(CachePtr spCache);                    // ... with the "name" attribute
     int FUN_141813f10(CachePtr spCache);                    // ... "raceName"
     int FUN_141814310(CachePtr spCache, CString strAttr);   // ... any attribute
     int FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCache);
@@ -109,7 +109,7 @@ public:
     DescPtr FUN_1418154e0(Unk_140165cf0* pNode);            // a description row of the item tags
     DescPtr FUN_141815650(Unk_140165cf0* pNode, ATL::CAtlArray<CString>& rTags);
     DescPtr FUN_1418158b0(Unk_140165cf0* pNode);            // a description row of the skill tags
-    void FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot);
+    void LoadDescEntries(DescMap& rMap, Unk_140165cf0* pRoot);
     void FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot);
 
     static void CheckInit();                                // 0x1418178d0 message box when the tables are not loaded

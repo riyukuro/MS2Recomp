@@ -160,7 +160,9 @@ def acquire_one(quiet=False):
 
 def acquire_all(quiet=False, leave=0):
     """slots in ascending order, blocking: two exclusive holders cannot deadlock, shared takers just see slots busy.
-    leave=N keeps the top N slots free so worker gates are never starved by a merge (at least one slot is always taken).
+    leave=N takes any nslots-N free slots (at least one) so worker gates are never starved by a merge. It polls instead of
+    blocking on a fixed slot: a fullexe build's gate keeps one slot for ~50 min, and a merge parked on that slot with
+    heavy.pending held stopped every gate in the fleet (2026-11-01, 19:00).
     While waiting it holds heavy.pending exclusively, so new single-slot takers wait instead of refilling freed slots
     (multi-slot waiters queue on heavy.pending among themselves)"""
     os.makedirs(DIR, exist_ok=True)
@@ -174,15 +176,34 @@ def acquire_all(quiet=False, leave=0):
         fcntl.flock(pend, fcntl.LOCK_EX)
     fds = []
     try:
-        for i in range(1, max(1, nslots() - leave) + 1):
-            fd = _open(i)
-            try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except OSError:
-                _notice(quiet)
-                quiet = True
-                fcntl.flock(fd, fcntl.LOCK_EX)
-            fds.append(fd)
+        if leave:
+            want, mine = max(1, nslots() - leave), set()
+            while len(fds) < want:
+                for i in range(1, nslots() + 1):
+                    if i in mine or len(fds) >= want:
+                        continue
+                    fd = _open(i)
+                    try:
+                        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    except OSError:
+                        os.close(fd)
+                        continue
+                    fds.append(fd)
+                    mine.add(i)
+                if len(fds) < want:
+                    _notice(quiet)
+                    quiet = True
+                    time.sleep(2)
+        else:
+            for i in range(1, nslots() + 1):
+                fd = _open(i)
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except OSError:
+                    _notice(quiet)
+                    quiet = True
+                    fcntl.flock(fd, fcntl.LOCK_EX)
+                fds.append(fd)
     except BaseException:
         for fd in fds:
             os.close(fd)
@@ -242,7 +263,7 @@ def main(a):
     excl = quiet = client = False
     leave = 0
     while a and a[0] in ("--all", "--all-but", "--quiet", "--client"):
-        if a[0] == "--all-but":      # --all-but N: every slot except the top N (merge: gates keep running)
+        if a[0] == "--all-but":      # --all-but N: all but N slots, whichever are free (merge: gates keep running)
             excl, leave, a = True, int(a[1]), a[1:]
         elif a[0] == "--client":
             client = True

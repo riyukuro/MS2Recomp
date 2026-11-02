@@ -58,7 +58,6 @@ class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 class Unk_IpOutfitView : public CPtred { public: Unk_IpOutfitView(); };
 class Unk_IpOutfit : public CPtred { public: MS2Ptr<Unk_IpOutfitView> FUN_140d3cf00(); };
 class Unk_EquipOutfit : public CPtred { public: Unk_EquipOutfit(); };
-WorldService* FUN_1403ed2d0();
 CStringW GetStringCommon(int nStringId);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
 void FUN_1418bee30(ASObj* pObj, int n);
@@ -233,7 +232,7 @@ void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
     if (spOutfit.get() != 0) spView = spOutfit->FUN_140d3cf00();
     MS2Ptr<ASSlot> spSlot(new ASSlot(2));
     if (spSlot.get() != 0) {
-        void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
         spSlot->FUN_1409c3860(spItem.get(), pPlayer, 0xd01);
     }
     MS2Ptr<ASEquipIcon> spIcon = m_equip->FUN_140e2a090(0x81, spItem, MS2Ptr<AScript>(FUN_1412d6c80(spSlot)), MS2Ptr<Unk_EquipOutfit>(0));
@@ -249,7 +248,7 @@ void UIItemPreviewDialog::FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::P
     if (m_equip == 0) return;
     MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)FUN_1409bb9e0())->GetSourceItem();
     if (spItem == 0) return;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0) return;
     ASTooltip tip(pPlayer, 2, 2);
     tip.FUN_1409e0d40(spItem.get());

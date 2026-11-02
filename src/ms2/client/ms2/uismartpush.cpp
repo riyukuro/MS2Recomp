@@ -69,7 +69,7 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 
 int FUN_1418dd0d0();
 class Unk_SpMgr;
-Unk_SpMgr* FUN_140cea070();
+class Unk_SingletonObj* FUN_140cea070();
 void* FUN_140812670(void* pHandle);
 
 // @0x140fa3b10
@@ -117,7 +117,7 @@ int UISmartPush::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nId = data.FUN_1422b8a10();
-            reinterpret_cast<CSmartPushManager*>((class CSmartPushManager*)((FUN_140cea070())))->FUN_140dd8620(nId);
+            reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd8620(nId);
         }
     }
     return 0;
@@ -134,7 +134,7 @@ void UISmartPush::vfunc_2()
 void UISmartPush::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
-    reinterpret_cast<CSmartPushManager*>((class CSmartPushManager*)((FUN_140cea070())))->FUN_140dd8730();
+    reinterpret_cast<CSmartPushManager*>(FUN_140cea070())->FUN_140dd8730();
 }
 MS2_REPLACE_METHOD(0x140FA3DF0, UISmartPush, vfunc_3, 37, 0xAEF58F5C);
 

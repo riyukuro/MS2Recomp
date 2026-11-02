@@ -100,7 +100,7 @@ CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);

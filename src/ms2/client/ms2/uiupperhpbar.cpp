@@ -109,18 +109,18 @@ MS2_REPLACE_METHOD(0x141B4A840, UpperHpBarEntity, FUN_141b4a840, 98, 0x735A1D01)
 
 // @0x141b4a8b0
 void UpperHpBarEntity::FUN_141b4a8b0(MS2Ptr<ASUIComponent> clip){
- if(clip==0||clip->FUN_1422ba9a0()==true)return;
- m_clip=clip;m_visible=m_clip->FUN_1422bfca0();
- clip->FUN_1422c7290(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UpperHpBarEntity::FUN_141b4bca0),0);
- clip->FUN_1422c7310(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UpperHpBarEntity::FUN_141b4bce0),0);
+ if(clip==0||clip->IsUndefinedOrNull()==true)return;
+ m_clip=clip;m_visible=m_clip->GetVisible();
+ clip->AddShowHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UpperHpBarEntity::FUN_141b4bca0),0);
+ clip->AddHideHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UpperHpBarEntity::FUN_141b4bce0),0);
  m_gauge=clip->FUN_1409b4560("m_gauge");
  for(POSITION pos=m_pending.GetStartPosition();pos;m_pending.GetNext(pos)){FUN_141b4ac50(m_pending.GetValueAt(pos));}m_pending.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x141B4A8B0, UpperHpBarEntity, FUN_141b4a8b0, 686, 0x8A562DEA);
 
 // @0x141b4ab70
-bool UpperHpBarEntity::FUN_141b4ab70(const int& id){if(m_id!=id)return false;m_id=0;m_hp=0;if(m_clip.get())m_clip->Invoke("destroyEntity",FUN_140b62550(id));return true;}
-MS2_REPLACE_METHOD(0x141B4AB70, UpperHpBarEntity, FUN_141b4ab70, 215, 0xE47BB395);
+bool UpperHpBarEntity::DestroyEntity(const int& id){if(m_id!=id)return false;m_id=0;m_hp=0;if(m_clip.get())m_clip->Invoke("destroyEntity",FUN_140b62550(id));return true;}
+MS2_REPLACE_METHOD(0x141B4AB70, UpperHpBarEntity, DestroyEntity, 215, 0xE47BB395);
 
 // @0x141b4ac50
 void UpperHpBarEntity::FUN_141b4ac50(MS2Ptr<Unk_AsBuff> buff){
@@ -286,7 +286,7 @@ void UIUpperHpBar::vfunc_o70_2(const Unk_UpperEvt& evt){
  if(actor==0)return;
  UpperHpBarEntity& entity=FUN_141b4d170(actor);
  int kind=((class GameObject*)(void*)(actor))->FUN_14123c580();
- if(entity.FUN_141b4ab70(kind))m_current=0;
+ if(entity.DestroyEntity(kind))m_current=0;
 }
 MS2_REPLACE_METHOD_VIA(0x141B4C3E0, UIUpperHpBar, UIEntityEventListener, vfunc_o70_2, 203, 0xF66E7D53);
 // @0x141b4c510

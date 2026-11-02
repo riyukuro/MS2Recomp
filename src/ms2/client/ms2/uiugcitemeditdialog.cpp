@@ -173,10 +173,10 @@ MS2_CHECK_OFFSET(Unk_UgcPathConfig, m_strUploadDir, 0xd8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // The inventory (DAT_143ab2a90), seen through the two calls of this unit.
-class Unk_UeInventory
+class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
+class Unk_UeInventory : public Unk_Inventory
 {
 public:
-    unsigned int FUN_140a5f780(int nTab, int nItemId);          // count of an item
     MS2Ptr<CItem> FUN_140a5e040(int nKind);                     // the first voucher of a kind
 };
 extern Unk_UeInventory DAT_143ab2a90;
@@ -188,7 +188,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds);            // the items may be used
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB, const CStringW& strText, Delegate<bool(int, const CMsgBoxData&)> cb);
 bool FUN_140841300(const CStringW& str, const char* psz);       // str == psz
@@ -262,7 +262,7 @@ UIUGCItemEditDialog::UIUGCItemEditDialog()
 // @0x141b3bad0
 UIUGCItemEditDialog::~UIUGCItemEditDialog()
 {
-    FUN_141b3e370();
+    ReleaseAvatars();
     FUN_14187dee0(m_strSlotBindId);
 }
 
@@ -391,7 +391,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (args.FUN_1422b9620(pArgs, nArgs))
         {
             int nIndex = args.FUN_1422b8a10();
-            FUN_141b44b30(nIndex);
+            ShowFilePage(nIndex);
         }
         return 1;
     }
@@ -452,10 +452,10 @@ void UIUGCItemEditDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* 
         m_nModel = 1;
         pAvatar = GetAvatar(m_nModel).get();
     }
-    if (pAvatar == 0)
-        return;
-    pAvatar->vfunc_28(p1, p2, p3, p4);
-    m_spView = pAvatar->GetView();
+    if (pAvatar != 0) {
+        pAvatar->vfunc_28(p1, p2, p3, p4);
+        m_spView = pAvatar->GetView();
+    }
 }
 
 // @0x141b3cca0
@@ -522,7 +522,7 @@ void UIUGCItemEditDialog::vfunc_67()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     ((class CUgcManager*)FUN_14052d220())->OnUploadResult(vfunc_48());
-    FUN_141b3e370();
+    ReleaseAvatars();
     m_nKind = 0;
     m_nRadioMode = 1;
     FUN_14187dee0(m_strSlotBindId);
@@ -610,10 +610,10 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
         AScript data((Scaleform::GFx::Value&)root.GetMember("data"), 2);
 #endif
-        if (!data.FUN_1422ba9a0())
+        if (!data.IsUndefinedOrNull())
         {
             ASTooltip tip(1, 2);
-            CStringW strTip = data.FUN_1422bb2b0("tooltip");
+            CStringW strTip = data.GetWString("tooltip");
             if (tip.ApplyTextTooltip(strTip) != 0)
             {
                 tip.SetTooltipAlign(2);
@@ -662,7 +662,7 @@ int UIUGCItemEditDialog::vfunc_o178_1(void* pAvatar)
         if (m_spItem.get() ? true : false)
         {
             if (((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840())->FUN_14053cbc0())
-                FUN_141b401b0(m_spItem);
+                SetItem(m_spItem);
         }
     }
     FUN_1418ffef0(m_nDirty, 1);
@@ -748,7 +748,7 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
 MS2_REPLACE_METHOD(0x141B3DA90, UIUGCItemEditDialog, FUN_141b3da90, 2259, 0x4C54D003);
 
 // @0x141b3e370
-void UIUGCItemEditDialog::FUN_141b3e370()
+void UIUGCItemEditDialog::ReleaseAvatars()
 {
     size_t nCount = m_avatars.GetCount();
     for (size_t i = 0; i < nCount; i++)
@@ -756,7 +756,7 @@ void UIUGCItemEditDialog::FUN_141b3e370()
     m_spAvatar = 0;
     m_spView = 0;
 }
-MS2_REPLACE_METHOD(0x141B3E370, UIUGCItemEditDialog, FUN_141b3e370, 152, 0xEB455ADF);
+MS2_REPLACE_METHOD(0x141B3E370, UIUGCItemEditDialog, ReleaseAvatars, 152, 0xEB455ADF);
 
 // @0x141b3e410
 void UIUGCItemEditDialog::FUN_141b3e410(MS2Ptr<UIAvatarBase> spAvatar, bool bChanged)
@@ -803,7 +803,7 @@ void UIUGCItemEditDialog::FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
         MS2Ptr<CItemData> spData(((class CItemData*)((class CItem*)(class CItem*)(m_spItem))->FUN_140527840()));
         if (spData == 0)
             return;
-        int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
+        int nSlot = spData->GetModelOrEmpty()->FUN_14054b400();
         if (nSlot != 0 && spData->FUN_14053cbc0())
             fAngle = FUN_141b48480(1, nSlot);
         else if (spData->FUN_14053cb80())
@@ -863,7 +863,7 @@ bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
             return false;
         bool bMyModel = m_nModel == 0 || m_nModel == 2;
         bool bMale = spPC->FUN_1418bc740() == 0;
-        int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
+        int nSlot = spData->GetModelOrEmpty()->FUN_14054b400();
         MS2Ptr<CEquipItem> spEquip = spPC->FUN_1418bd1d0()->FUN_141655c30(m_spItem->GetItemUid());
         if ((spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false))
             nSlot = spEquip->GetItem()->FUN_140526c30();
@@ -934,17 +934,17 @@ void UIUGCItemEditDialog::FUN_141b3f180(MS2Ptr<UIAvatarBase> spAvatar)
     int nKind = spAvatar->GetKind();
     if (nKind == 1)
     {
-        kCamera.FUN_141b48530();
+        kCamera.ApplyCharCamera();
         kCamera.m_kPosition += NiPoint3(-10.0f, 0, 0);
     }
     else if (nKind == 2)
     {
-        kCamera.FUN_141b485d0();
+        kCamera.ApplyCubeCamera();
         kCamera.m_kPosition += NiPoint3(310.0f, 0, 80.0f);
     }
     else if (nKind == 3)
     {
-        kCamera.FUN_141b48670();
+        kCamera.ApplyRideeCamera();
         kCamera.m_kPosition += NiPoint3(225.0f, 0, 80.0f);
     }
     if (pView != 0)
@@ -1094,7 +1094,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
 MS2_REPLACE_METHOD(0x141B3FB60, UIUGCItemEditDialog, FUN_141b3fb60, 1607, 0x0C6112C6);
 
 // @0x141b401b0
-void UIUGCItemEditDialog::FUN_141b401b0(MS2Ptr<CItem> spItem)
+void UIUGCItemEditDialog::SetItem(MS2Ptr<CItem> spItem)
 {
     bool bModelChanged = false;
     FUN_141b3fb60(spItem, &bModelChanged);
@@ -1104,7 +1104,7 @@ void UIUGCItemEditDialog::FUN_141b401b0(MS2Ptr<CItem> spItem)
 void UIUGCItemEditDialog::FUN_141b40220()
 {
     FUN_141b41700(-1);
-    FUN_141b401b0(MS2Ptr<CItem>(0));
+    SetItem(MS2Ptr<CItem>(0));
 }
 MS2_REPLACE_METHOD(0x141B40220, UIUGCItemEditDialog, FUN_141b40220, 71, 0x71650D9C);
 
@@ -1113,7 +1113,7 @@ void UIUGCItemEditDialog::Restart()
 {
     if (m_30 == 0)
         return;
-    FUN_141b401b0(MS2Ptr<CItem>(0));
+    SetItem(MS2Ptr<CItem>(0));
     m_30->Invoke("restart");
 }
 MS2_REPLACE_METHOD(0x141B40270, UIUGCItemEditDialog, Restart, 131, 0x98AA674E);
@@ -1179,7 +1179,7 @@ void UIUGCItemEditDialog::FUN_141b40880(ASObj& obj)
         radio.FUN_1407cbbe0("showRadioSelect", bMine);
         radio.FUN_1407cbbe0("showSkinColorList", bSkin);
         radio.FUN_1407cbbe0("showActionList", bAction);
-        arr.FUN_1422bc050(FUN_1406146a0(radio.FUN_1422bb870()));
+        arr.PushValue(FUN_1406146a0(radio.FUN_1422bb870()));
     }
     obj.FUN_1409adbe0("arrRadio", FUN_1406146a0(arr.FUN_1422bb870()));
     obj.FUN_141b46b90("radioSelectedIndex", 1);
@@ -1188,13 +1188,13 @@ void UIUGCItemEditDialog::FUN_141b40880(ASObj& obj)
 MS2_REPLACE_METHOD(0x141B40880, UIUGCItemEditDialog, FUN_141b40880, 546, 0x0098287F);
 
 // @0x141b40ab0
-void UIUGCItemEditDialog::FUN_141b40ab0(int nKind, int nImage)
+void UIUGCItemEditDialog::SelectKindAndImage(int nKind, int nImage)
 {
     ((class CUgcManager*)FUN_14052d220())->RefreshLocalFiles(nKind);
     FUN_141b40b00(0);
     FUN_141b41700(nImage);
 }
-MS2_REPLACE_METHOD(0x141B40AB0, UIUGCItemEditDialog, FUN_141b40ab0, 66, 0x7B009507);
+MS2_REPLACE_METHOD(0x141B40AB0, UIUGCItemEditDialog, SelectKindAndImage, 66, 0x7B009507);
 
 // @0x141b40b00
 void UIUGCItemEditDialog::FUN_141b40b00(int nPage)
@@ -1222,7 +1222,7 @@ void UIUGCItemEditDialog::FUN_141b40c30()
             if (FUN_141b3f690(obj, m_spEditItem))
             {
                 nSelected = 0;
-                items.FUN_1422bc050(FUN_1406146a0(obj.FUN_1422bb870()));
+                items.PushValue(FUN_1406146a0(obj.FUN_1422bb870()));
             }
         }
         m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()), -1, false);
@@ -1246,7 +1246,7 @@ void UIUGCItemEditDialog::FUN_141b40c30()
                 continue;
             ASObj obj(2);
             if (FUN_141b3f3a0(obj, spDesign))
-                items.FUN_1422bc050(FUN_1406146a0(obj.FUN_1422bb870()));
+                items.PushValue(FUN_1406146a0(obj.FUN_1422bb870()));
         }
         m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()));
     }
@@ -1271,7 +1271,7 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
         tab.FUN_1407cbb20("label", spSort->GetName());
         tab.FUN_1407cb9c0("id", spSort->m_nId);
         tab.FUN_1407cbbe0("sortGender", spSort->m_bSortGender);
-        categories.FUN_1422bc050(FUN_1406146a0(tab.FUN_1422bb870()));
+        categories.PushValue(FUN_1406146a0(tab.FUN_1422bb870()));
     }
     obj.FUN_1409adbe0("dpCategory", FUN_1406146a0(categories.FUN_1422bb870()));
     obj.FUN_1407cb9c0("dpCategorySelectedIndex", 0);
@@ -1297,7 +1297,7 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
         ASObj item(2);
         item.FUN_1407cbb20("label", entry.second);
         item.FUN_141b46af0("gender", nEntry);
-        list.FUN_1422bc050(FUN_1406146a0(item.FUN_1422bb870()));
+        list.PushValue(FUN_1406146a0(item.FUN_1422bb870()));
         if (nEntry == nMyGender)
             nSelected = (int)i;
     }
@@ -1423,7 +1423,7 @@ void UIUGCItemEditDialog::FUN_141b41ef0(MS2Ptr<CItemData> spData)
 {
     int nKind = FUN_141b432f0(spData);
     if (m_nKind != nKind)
-        FUN_141b40ab0(nKind, -1);
+        SelectKindAndImage(nKind, -1);
     m_nKind = nKind;
 }
 
@@ -1495,8 +1495,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
         spViewer->m_icon.m_n50 = spItem.get() != 0 ? spItem->FUN_140526b10() : 0;
         spViewer->m_icon.m_nObjectId = 0;
         spUpload->m_spViewer = spViewer;
-        Unk_GoModelKey key;
-        spViewer->FUN_1418a0150(*reinterpret_cast<egf::EntityID*>(spAvatar->vfunc_26(&key)));
+        spViewer->FUN_1418a0150(spAvatar->vfunc_26());
     }
     else if (nKind == 7)
     {
@@ -1508,8 +1507,7 @@ void UIUGCItemEditDialog::FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar
         spViewer->m_icon.m_n50 = spItem.get() != 0 ? spItem->FUN_140526b10() : 0;
         spViewer->m_icon.m_nObjectId = 0;
         spUpload->m_spViewer = spViewer;
-        Unk_GoModelKey key;
-        spViewer->FUN_1418a3000(*reinterpret_cast<egf::EntityID*>(spAvatar->vfunc_26(&key)));
+        spViewer->FUN_1418a3000(spAvatar->vfunc_26());
     }
 }
 
@@ -1681,7 +1679,7 @@ void UIUGCItemEditDialog::FUN_141b434c0(ASData& args)
     bool bChanged = m_spAvatar.get() != spAvatar.get();
     FUN_141b3e410(spAvatar, bChanged);
     if (m_spItem.get() != 0)
-        FUN_141b401b0(m_spItem);
+        SetItem(m_spItem);
 }
 
 // @0x141b43660
@@ -1762,8 +1760,8 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
         return false;
     }
     CStringW strName = GetItemName();
-    CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker().get();
-    if (pChecker != 0)
+    // the checker only lives for the block
+    if (CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker().get())
     {
         CStringW strMessage;
         if (pChecker->FUN_140225630(strName, strMessage) != 0)
@@ -1817,12 +1815,12 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     MS2Ptr<CMsgBoxData> spBox(0);
     if (bVoucher != 0)
     {
-        spBox = FUN_140d74b20(0, FUN_14052bd00(0x9d3, strPrice), strVoucher, GetStringCommon(0x9cf),
+        spBox = FUN_140d74b20(0, FormatStringId<CStringW>(0x9d3, strPrice), strVoucher, GetStringCommon(0x9cf),
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b45cc0));
     }
     else
     {
-        spBox = FUN_140d748b0(0, FUN_14052bd00(0x9d3, strPrice), GetStringCommon(0x9cf),
+        spBox = FUN_140d748b0(0, FormatStringId<CStringW>(0x9d3, strPrice), GetStringCommon(0x9cf),
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b459d0));
     }
     if (spBox.get() != 0)
@@ -1836,7 +1834,7 @@ void UIUGCItemEditDialog::OnClickAddImage()
     int nRet = ((class CUgcManager*)FUN_14052d220())->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nRet == 0)
         return;
-    FUN_141b40ab0(m_nKind, 0);
+    SelectKindAndImage(m_nKind, 0);
 }
 MS2_REPLACE_METHOD(0x141B44910, UIUGCItemEditDialog, OnClickAddImage, 115, 0x34A6A13A);
 
@@ -1860,7 +1858,7 @@ void UIUGCItemEditDialog::OnClickNewDraw()
 {
     if (((class CUgcManager*)FUN_14052d220())->HasViewerContent() == 0)
         return;
-    FUN_141b40ab0(m_nKind, 0);
+    SelectKindAndImage(m_nKind, 0);
 }
 MS2_REPLACE_METHOD(0x141B44A20, UIUGCItemEditDialog, OnClickNewDraw, 57, 0x77671059);
 
@@ -1879,7 +1877,7 @@ void UIUGCItemEditDialog::FUN_141b44a60(ASData& args)
 MS2_REPLACE_METHOD(0x141B44A60, UIUGCItemEditDialog, FUN_141b44a60, 197, 0x071D5F4A);
 
 // @0x141b44b30
-void UIUGCItemEditDialog::FUN_141b44b30(int nPosition)
+void UIUGCItemEditDialog::ShowFilePage(int nPosition)
 {
     if (nPosition == -1)
         return;
@@ -1888,7 +1886,7 @@ void UIUGCItemEditDialog::FUN_141b44b30(int nPosition)
     int nPos = nPosition;
     FUN_141b40b00(nPos);
 }
-MS2_REPLACE_METHOD(0x141B44B30, UIUGCItemEditDialog, FUN_141b44b30, 77, 0x779D4CE8);
+MS2_REPLACE_METHOD(0x141B44B30, UIUGCItemEditDialog, ShowFilePage, 77, 0x779D4CE8);
 
 // @0x141b44b90
 void UIUGCItemEditDialog::FUN_141b44b90(ASData& args)
@@ -1946,14 +1944,14 @@ void UIUGCItemEditDialog::FUN_141b44e80(const Scaleform::GFx::FunctionHandler::P
     if (m_spEditItem.get() != 0)
         return;
     ASObj obj(params.pArgs[0], 2);
-    if (obj.FUN_1422ba9a0())
+    if (obj.IsUndefinedOrNull())
         return;
     bool bEventSale = false;
-    obj.FUN_1422bafe0("eventSale", bEventSale);
+    obj.TryGetBool("eventSale", &bEventSale);
     if (bEventSale == m_bEventSale)
         return;
     int nItemId = 0;
-    obj.FUN_1422bad80("itemID", nItemId);
+    obj.TryGetUInt("itemID", reinterpret_cast<unsigned int*>(&nItemId));
     if (nItemId == 0)
         return;
     MS2Ptr<CUGCDesignData> spDesign = CUGCDesignTable::GetInstance()->GetData(nItemId);
@@ -1968,7 +1966,7 @@ void UIUGCItemEditDialog::ClearItemName()
     MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputItemName");
     if (spInput == 0)
         return;
-    spInput->FUN_1422e0ab0(L"");
+    spInput->SetTextW(L"");
 }
 MS2_REPLACE_METHOD(0x141B45020, UIUGCItemEditDialog, ClearItemName, 170, 0x7E70A9EB);
 
@@ -2042,7 +2040,7 @@ bool UIUGCItemEditDialog::FUN_141b45980(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
-        FUN_141b40ab0(m_nKind, 0);
+        SelectKindAndImage(m_nKind, 0);
         FUN_141b417e0();
     }
     return true;
@@ -2273,34 +2271,34 @@ float FUN_141b48500(int nPreviewKind)
 MS2_REPLACE_OVERLOAD(0x141B48500, float(int), FUN_141b48500, 30, 0xD23D5A8F);
 
 // @0x141b48530
-void Unk_ModelViewCamera::FUN_141b48530()
+void Unk_ModelViewCamera::ApplyCharCamera()
 {
     m_kTarget = Client::Constants::GetInstance()->UgcshopCharCameraLookat.FUN_141b49fe0();
     m_kPosition = Client::Constants::GetInstance()->UgcshopCharCameraPos.FUN_141b49fe0();
     m_fMaxDistance = Client::Constants::GetInstance()->UgcshopCharCameraMinDistance.Read();
     m_fSpeed = Client::Constants::GetInstance()->UgcshopCharCameraZoomVelocity.Read();
 }
-MS2_REPLACE_METHOD(0x141B48530, Unk_ModelViewCamera, FUN_141b48530, 150, 0xEAAC8B5E);
+MS2_REPLACE_METHOD(0x141B48530, Unk_ModelViewCamera, ApplyCharCamera, 150, 0xEAAC8B5E);
 
 // @0x141b485d0
-void Unk_ModelViewCamera::FUN_141b485d0()
+void Unk_ModelViewCamera::ApplyCubeCamera()
 {
     m_kTarget = Client::Constants::GetInstance()->UgcshopCubeCameraLookat.FUN_141b49fe0();
     m_kPosition = Client::Constants::GetInstance()->UgcshopCubeCameraPos.FUN_141b49fe0();
     m_fMaxDistance = Client::Constants::GetInstance()->UgcshopCubeCameraMinDistance.Read();
     m_fSpeed = Client::Constants::GetInstance()->UgcshopCubeCameraZoomVelocity.Read();
 }
-MS2_REPLACE_METHOD(0x141B485D0, Unk_ModelViewCamera, FUN_141b485d0, 150, 0x63180C1C);
+MS2_REPLACE_METHOD(0x141B485D0, Unk_ModelViewCamera, ApplyCubeCamera, 150, 0x63180C1C);
 
 // @0x141b48670
-void Unk_ModelViewCamera::FUN_141b48670()
+void Unk_ModelViewCamera::ApplyRideeCamera()
 {
     m_kTarget = Client::Constants::GetInstance()->UgcshopRideeCameraLookat.FUN_141b49fe0();
     m_kPosition = Client::Constants::GetInstance()->UgcshopRideeCameraPos.FUN_141b49fe0();
     m_fMaxDistance = Client::Constants::GetInstance()->UgcshopRideeCameraMinDistance.Read();
     m_fSpeed = Client::Constants::GetInstance()->UgcshopRideeCameraZoomVelocity.Read();
 }
-MS2_REPLACE_METHOD(0x141B48670, Unk_ModelViewCamera, FUN_141b48670, 150, 0x275AA056);
+MS2_REPLACE_METHOD(0x141B48670, Unk_ModelViewCamera, ApplyRideeCamera, 150, 0x275AA056);
 
 // @0x141b48710
 bool FUN_141b48710(MS2Ptr<CItemData> spData)

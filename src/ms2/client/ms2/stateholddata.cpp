@@ -271,7 +271,7 @@ void StateHold::vfunc_8(double fTime)
     StateMoveSkill::vfunc_8(fTime);
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kZero = efd::Point3::ZERO;
-    m_pOwner->vfunc_22(efd::Point3(kZero));
+    m_pOwner->vfunc_22(kZero);
     if (pBuff->FUN_141683100(0x493e1))
     {
         MyPC* pPC = FUN_1417b84b0();
@@ -281,8 +281,7 @@ void StateHold::vfunc_8(double fTime)
             return;
         else
         {
-            efd::Point3 kVel = reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pBuff->FUN_141683290()));
-            m_pOwner->vfunc_22(kVel);
+            m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
             FUN_1417ccca0(m_nFallbackState, 0);
         }
     }

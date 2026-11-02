@@ -295,9 +295,9 @@ __int64 FUN_14028d0e0();                            // the current server time
 CStringW FUN_140718600(const CStringW& value);      // copy
 
 // The engine log lock (0x140203610 ctor) the sale item restriction takes.
-struct Unk_EngineLogLock {
-    Unk_EngineLogLock(CLockCriticalSection& cs, int n);
-    ~Unk_EngineLogLock();
+struct Unk_PetLock {
+    Unk_PetLock(CLockCriticalSection& cs, int n);
+    ~Unk_PetLock();
     void* p;
 };
 
@@ -732,7 +732,7 @@ MS2_REPLACE_METHOD(0x140424920, CGameEventValueSaleItemsRestricted, IsActive, 15
 // @0x140424940
 bool CGameEventValueSaleItemsRestricted::IsRestricted(unsigned itemId)
 {
-    Unk_EngineLogLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     if (m_items.IsEmpty())
         return false;
     if (m_items.Lookup(itemId) != NULL)
@@ -743,7 +743,7 @@ MS2_REPLACE_METHOD(0x140424940, CGameEventValueSaleItemsRestricted, IsRestricted
 // @0x1404249f0
 void CGameEventValueSaleItemsRestricted::SetItems(ATL::CAtlArray<unsigned>& items)
 {
-    Unk_EngineLogLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     m_items.RemoveAll();
     m_active = false;
     for (size_t i = 0; i < items.GetCount(); i++) {
@@ -759,7 +759,7 @@ MS2_REPLACE_METHOD(0x1404249F0, CGameEventValueSaleItemsRestricted, SetItems, 22
 // @0x140424ae0
 void CGameEventValueSaleItemsRestricted::Clear()
 {
-    Unk_EngineLogLock lock(m_lock, 1);
+    Unk_PetLock lock(m_lock, 1);
     m_items.RemoveAll();
     m_active = false;
 }

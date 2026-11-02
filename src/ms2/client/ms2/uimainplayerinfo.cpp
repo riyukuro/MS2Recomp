@@ -47,6 +47,11 @@ static Unk_AsTimer s_refreshTimer;                                              
 #include "ms2/client/ms2/uirenderview.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/client/ms2/ms2inputservice.h"
+#include "ms2/commonfiles/jobtable.h"
+#include "ms2/commonfiles/achievedata.h"
+#include "ms2/gfxui/notifyhandler.h"
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                                       // @0x140116510
@@ -106,9 +111,8 @@ public:
     virtual void vfunc_11(void* p);
     virtual void vfunc_12(void* p);
 };
-Unk_MpWnd* FUN_1422c8e90(const CString& strName);                      // the window of that name
-Unk_MpSlotBar* FUN_141763cb0(Unk_MpWnd* pWnd);
-Unk_MpSlotBox* FUN_140c544d0(Unk_MpWnd* pWnd);
+SkillSlotBag* FUN_141763cb0(NotifyContext::BindData* pWnd);
+DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pWnd);
 class SkillSlot* FUN_141761e60(class DragSlot*);   // C3: was FUN_141761e60
 void FUN_1417634a0(const CString& strName);                             // drop the slot bar
 void FUN_1417633f0(const CString& strName, int nCount);                 // create the slot bar
@@ -152,15 +156,15 @@ public:
     void FUN_14142f1c0(int, int, __int64);
     void FUN_141431ae0(int, bool);
     void SendKeyTableMode1(int);
+    int FUN_14142c940(__int64, int);
+    void LoadKeySetting(CString);
+    CStringW FUN_141431820(int);
 };
 class Unk_MpKeyTable
 {
 public:
-    int FUN_14142c940(int nKeyId, int nPriority);
     bool FUN_14142e030(int nSlot, Unk_MpSlotData& data);
     void FUN_14142e8c0(Unk_MpSkillSetPtr sp);
-    void FUN_14142fc10(CString strName);
-    CStringW FUN_141431820(int nKey);
     int FUN_1419f4760();
     char m_pad_00[0x1a0];
     Unk_MpKeyPages m_1a0;                                               // +0x1a0 the pages
@@ -173,13 +177,16 @@ int Unk_MpKeyTable::FUN_1419f4760()
     return m_1a0.FUN_1414370a0();
 }
 
-class Unk_MpKeyInput { public: bool FUN_14116dd30(int nKey, int a2, int a3); };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 struct Unk_MpCfgData { bool m_bExpand; bool m_bShowSkillName; };
 class Unk_MpCfg { public: Unk_MpCfgData* FUN_140a58500(); };
-class Unk_MpPad { public: int FUN_140d8ee40(); };
 class MS2InputService* FUN_140a58540();   // C3: was FUN_140a58540
-class Unk_MpTitles { public: bool FUN_140d9f5d0(int nIndex); CStringW FUN_140d9f600(int nIndex); };
+class CMyCharacter   // C3: member view (cmycharacter.h needs MS2_THIS_FILE via stream.h)
+{
+public:
+    bool FUN_140d9f5d0(int nIndex);
+    CStringW FUN_140d9f600(int nIndex);
+};
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -221,17 +228,7 @@ public:
     Unk_AdvMountRow* m_p;
 };
 #define MP_ROW(p) reinterpret_cast<Unk_MpMountRow*>((p).FUN_1407895d0())
-class Unk_AdvHolder { public: Unk_AdvMountPtr FUN_141707750(); };
-class Unk_AdvHolderRef
-{
-public:
-    Unk_AdvHolderRef(Unk_AdvHolder* p);                                 // 0x140963df0
-    ~Unk_AdvHolderRef();                                                // 0x1409648b0
-    bool operator!=(Unk_AdvHolder* p) const;                            // 0x140ba7bb0
-    Unk_AdvHolder* FUN_140975bc0() const;                               // operator->
-    Unk_AdvHolder* m_p;
-};
-bool FUN_141020b20(const Unk_AdvHolderRef* p, Unk_AdvHolder* pOther);   // == pOther
+class Ridee : public PCBase { public: Unk_AdvMountPtr FUN_141707750(); };   // C3: member view (held through efd::SmartPointer<Ridee>)
 
 // The ridee avatar (UIAvatarRidee, 0xd8; slot 1 binds the event listener, slot 28 forwards the render target).
 struct Unk_MpCamData
@@ -279,7 +276,7 @@ MS2_CHECK_SIZE(UIAvatarRidee, 0xd8);
 #endif
 
 // The ride-off request (0x28 bytes, ctor(int) 0x14031b2a0).
-class Unk_MpRideOff { public: Unk_MpRideOff(int n); char m_pad_00[0x28]; };
+class RideOffActionRidingUI { public: RideOffActionRidingUI(int n); char m_pad_00[0x28]; };   // C3: view (rideonaction.h needs MS2_THIS_FILE)
 
 // The ridee controller of the player ("remove" / "create" messages).
 struct Unk_MpRideeKey { Unk_MpRideeKey(); int m_0, m_4, m_8; };
@@ -312,15 +309,11 @@ class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3
 extern char DAT_143b059e8;
 
 // The actor state of the player.
-class Unk_MpState
+class JobSystem   // C3: member view (jobsystem.h needs MS2_THIS_FILE)
 {
 public:
-    ~Unk_MpState();                                                     // 0x14063e530
-    bool FUN_14063e9f0(int n);
-    void* m_00;                                                         // an MS2Ptr: 16 bytes, m_p at +8
-    void* m_p;
+    JobDataPtr GetJobData();
 };
-class Unk_MpStateHolder { public: Unk_MpState FUN_140639bb0(); };
 class AdditionalCliList   // C3: member view (real class not in this TU)
 {
 public:
@@ -348,17 +341,10 @@ class AdditionalCli   // C3: member view for the former free stand-ins
 {
 public:
     int IsValid();
+    int GetKey();
 };
 
 // The achievement of a progress notice.
-class Unk_MpAchieveRow { public: char m_pad_00[0x50]; int m_50; };
-class Unk_MpAchieveRowPtr
-{
-public:
-    ~Unk_MpAchieveRowPtr();                                             // 0x1401597b0
-    void* m_0;
-    void* m_p;
-};
 class CAchieve   // C3: member view (real class not in this TU)
 {
 public:
@@ -366,15 +352,14 @@ public:
     unsigned int GetId();
     __int64 GetProgress();
     int GetState();
+    MS2Ptr<CAchieveData> GetDataRef();
 };
 class Unk_MpAchieve
 {
 public:
-    Unk_MpAchieveRowPtr FUN_1409398d0();
     char m_pad_00[0x18];
     float m_18;                                                         // +0x18 last notified percentage
 };
-Unk_MpAchieveRow* FUN_140159a80(const Unk_MpAchieveRowPtr& p);
 
 class CItemData;
 class CItem
@@ -394,7 +379,6 @@ public:
 };
 #define MP_ITEM(p) static_cast<CItem*>(p)
 
-bool FUN_140841300(const CStringW& str, const char* sz);
 void FUN_14151f200();
 bool FUN_140930d70();
 int FUN_1418dd0c0();
@@ -405,8 +389,8 @@ bool FUN_14028d470(float a, float b);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 CStringW FUN_140298ea0(CStringW strKey);
 CStringW BlockFormat(int nId);
-void FUN_141276180(const CString& a, const CString& b);
-CStringW FUN_14093b970(unsigned nId);
+int FUN_141276180(const CString& a, const CString& b);
+CStringW FUN_14093b970(int nId);
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nValue);
 extern unsigned int DAT_143af3960;                                      // pending refresh flags of the panel
 
@@ -478,11 +462,11 @@ UIMainPlayerInfo::UIMainPlayerInfo()
       m_nLastTick(0), m_bInfinity(0), m_bSkillMinimize(0), m_bCommonMinimize(0), m_nSlotMode(0), m_nHideMask(0),
       m_ridee(0), m_camera(0)
 {
-    FUN_1419f3740();
+    ResetGauges();
     m_80 = 1;
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::OnShortkeyPageNotify));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::OnSkillSetModeNotify));
 }
 
 // @0x1419ee5d0
@@ -495,8 +479,8 @@ UIMainPlayerInfo::~UIMainPlayerInfo()
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     ((Unk_ItemEventSystem*)(Unk_MpItemEvents*)(((class Unk_MpItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyDebugState", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14b0));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f14e0));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::FUN_1419f1580));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyShortkeyPage", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::OnShortkeyPageNotify));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifySkillSetMode", Delegate<void(NotifyObject*)>(this, &UIMainPlayerInfo::OnSkillSetModeNotify));
 }
 
 // @0x1419eea30
@@ -549,7 +533,7 @@ int UIMainPlayerInfo::vfunc_65()
 void UIMainPlayerInfo::vfunc_67()
 {
     UIBuiltInDialog::vfunc_67();
-    FUN_1417634a0(FUN_1419f31f0());
+    FUN_1417634a0(GetSlotName());
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     ((Unk_ItemEventSystem*)(Unk_MpItemEvents*)(((class Unk_MpItemEvents*)FUN_140a6a840())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     m_effectManager = 0;
@@ -583,7 +567,7 @@ void UIMainPlayerInfo::OnLoadInit()
         m_effectManager->SetUp(true);
         FUN_1419f21b0();
         for (POSITION pos = m_pending.GetStartPosition(); pos != 0; m_pending.GetNext(pos))
-            FUN_1419f0fe0(m_pending.GetValueAt(pos));
+            AddBuffEffect(m_pending.GetValueAt(pos));
         m_pending.RemoveAll();
     }
     FUN_1419f13b0(!((AdditionalCliList*)(Unk_MpStat*)(((Unk_MpStat*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416749a0())))->IsInfinitySP() ? 1 : 0, 1);
@@ -618,7 +602,7 @@ void UIMainPlayerInfo::vfunc_26()
 {
     UIDialog::vfunc_26();
     m_effectManager = 0;
-    FUN_1419f32f0();
+    UnloadRenderTarget();
 }
 
 // @0x1419ef370
@@ -637,7 +621,7 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nType == 0)
         {
             CStringW strCmd = pMsg->FUN_1422b8f40();
-            if (FUN_140841300(strCmd, "remove"))
+            if (strCmd == "remove")
             {
                 if (Unk_MpRideeCtl* pCtl = FUN_1419f3810())
                 {
@@ -657,7 +641,7 @@ int UIMainPlayerInfo::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     pCtl->FUN_1410abb40();
                 }
             }
-            else if (FUN_140841300(strCmd, "create"))
+            else if (strCmd == "create")
             {
                 if (Unk_MpRideeCtl* pCtl = FUN_1419f3810())
                     pCtl->FUN_1410aad50();
@@ -740,7 +724,7 @@ int UIMainPlayerInfo::vfunc_13()
         return 0;
     if (pPc->IsCubeMode1() != 0)
         return 0;
-    if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
+    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x493e1, 0, 0) && reinterpret_cast<Unk_MpWorld*>(WorldService::GetInstance())->FUN_141bdb660(0) != 0)
     {
         FUN_1412751f0(BlockFormat(0x60), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
@@ -772,7 +756,7 @@ void UIMainPlayerInfo::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
 void UIMainPlayerInfo::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_1419f32f0();
+    UnloadRenderTarget();
 }
 
 // @0x1419efce0
@@ -856,28 +840,28 @@ void UIMainPlayerInfo::vfunc_oa0_5(int nCur, int nMax)
 // @0x1419f01f0
 void UIMainPlayerInfo::vfunc_oa0_24(int n)
 {
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         pBar->FUN_141763b00(n);
 }
 
 // @0x1419f0280
 void UIMainPlayerInfo::vfunc_oa0_25(void* p)
 {
-    if (Unk_MpSlotBox* pBox = FUN_140c544d0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBox* pBox = (Unk_MpSlotBox*)FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         pBox->vfunc_11(p);
 }
 
 // @0x1419f0320
 void UIMainPlayerInfo::vfunc_oa0_26(void* p)
 {
-    if (Unk_MpSlotBox* pBox = FUN_140c544d0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBox* pBox = (Unk_MpSlotBox*)FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         pBox->vfunc_12(p);
 }
 
 // @0x1419f03c0
 void UIMainPlayerInfo::vfunc_oa0_27(int a1, int a2)
 {
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         pBar->FUN_141763bd0(a1, a2);
 }
 
@@ -891,7 +875,7 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
         return;
     if (FUN_1419f16b0() == 0)
         return;
-    FUN_1419f32f0();
+    UnloadRenderTarget();
     m_ridee = 0;
     int nMode = 0;
     ASObj obj(2);
@@ -904,22 +888,22 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
     {
         if (bRiding == 0)
             break;
-        Unk_AdvHolderRef holder(((Unk_AdvHolder*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416764a0()));
-        if (FUN_141020b20(&holder, 0))
+        efd::SmartPointer<Ridee> holder(((Ridee*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416764a0()));
+        if (holder == 0)
             break;
-        bool bNoAvatar = MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_68 == 0;
+        bool bNoAvatar = MP_ROW(holder->FUN_141707750())->m_68 == 0;
         if (bNoAvatar)
             break;
         nMode = 1;
-        obj.FUN_1407cb9c0("rideOff", MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_64);
-        obj.FUN_1407cbb20("rideeName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_30));
-        m_ridee.AssignRaw(new UIAvatarRidee(holder.FUN_140975bc0()->FUN_141707750()));
+        obj.FUN_1407cb9c0("rideOff", MP_ROW(holder->FUN_141707750())->m_64);
+        obj.FUN_1407cbb20("rideeName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x31, MP_ROW(holder->FUN_141707750())->m_30));
+        m_ridee.AssignRaw(new UIAvatarRidee(holder->FUN_141707750()));
         m_ridee->vfunc_1(0);
     } while (0);
     if (m_nSlotMode == nMode)
         return;
     m_nSlotMode = nMode;
-    FUN_1419f18f0();
+    SyncSlotMode();
     m_playerInfo->Invoke("onRiding", obj);
     if (m_nSlotMode == 1)
         LoadRenderTarget();
@@ -991,7 +975,7 @@ void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
     {
         int nStep = (float)(int)fPercent - pAchieve->m_18;
         float fStep = nStep;
-        bool bNotify = fStep >= (float)FUN_140159a80(pAchieve->FUN_1409398d0())->m_50 && fPercent >= 1.0f;
+        bool bNotify = fStep >= (float)((CAchieve*)(Unk_MpAchieve*)(pAchieve))->GetDataRef()->m_nNoticePercent && fPercent >= 1.0f;
         if (bNotify)
         {
             pAchieve->m_18 = fPercent;
@@ -1010,27 +994,27 @@ void UIMainPlayerInfo::AppendMessage(const CStringW& strMessage, const CString& 
 }
 
 // @0x1419f0fe0
-void UIMainPlayerInfo::FUN_1419f0fe0(MS2Ptr<Unk_AsBuff> spBuff)
+void UIMainPlayerInfo::AddBuffEffect(MS2Ptr<Unk_AsBuff> spBuff)
 {
     if (m_effectManager.get() != 0)
         m_effectManager->AddEffect(spBuff);
     else
-        m_pending.SetAt(spBuff->FUN_14096d260(), spBuff);
+        m_pending.SetAt(((AdditionalCli*)(Unk_AsBuff*)spBuff.operator->())->GetKey(), spBuff);
     FUN_1419f37f0(5);
 }
 
 // @0x1419f10b0
-void UIMainPlayerInfo::FUN_1419f10b0(MS2Ptr<Unk_AsBuff> spBuff)
+void UIMainPlayerInfo::UpdateBuffEffect(MS2Ptr<Unk_AsBuff> spBuff)
 {
     if (m_effectManager.get() != 0)
         m_effectManager->UpdateEffect(spBuff);
     else
-        m_pending.SetAt(spBuff->FUN_14096d260(), spBuff);
+        m_pending.SetAt(((AdditionalCli*)(Unk_AsBuff*)spBuff.operator->())->GetKey(), spBuff);
     FUN_1419f37f0(5);
 }
 
 // @0x1419f1180
-void UIMainPlayerInfo::FUN_1419f1180(int nBuffId)
+void UIMainPlayerInfo::RemoveBuffEffect(int nBuffId)
 {
     if (m_effectManager.get() != 0)
         m_effectManager->RemoveEffect(nBuffId);
@@ -1048,14 +1032,14 @@ void UIMainPlayerInfo::FUN_1419f1200(int nId, int nLevel)
     FUN_1419f1370(nId);
     MS2Ptr<Unk_AsBuff> spBuff(new AdditionalCustomCli(pPc, FUN_1419f3400(nId), nId, nLevel, 1));
     if ((bool)spBuff.get() && ((class AdditionalCli*)(class Unk_AsBuff*)(spBuff.operator->()))->IsValid())
-        FUN_1419f0fe0(spBuff);
+        AddBuffEffect(spBuff);
     FUN_1419f37f0(5);
 }
 
 // @0x1419f1370
 void UIMainPlayerInfo::FUN_1419f1370(int nId)
 {
-    FUN_1419f1180(FUN_1419f3400(nId));
+    RemoveBuffEffect(FUN_1419f3400(nId));
     FUN_1419f37f0(5);
 }
 
@@ -1084,7 +1068,7 @@ void UIMainPlayerInfo::FUN_1419f14b0(NotifyObject* pNotify)
 }
 
 // @0x1419f14e0
-void UIMainPlayerInfo::FUN_1419f14e0(NotifyObject* pNotify)
+void UIMainPlayerInfo::OnShortkeyPageNotify(NotifyObject* pNotify)
 {
     NotifyShortkeyPage* pPage = dynamic_cast<NotifyShortkeyPage*>(pNotify);
     if (pPage == 0)
@@ -1095,7 +1079,7 @@ void UIMainPlayerInfo::FUN_1419f14e0(NotifyObject* pNotify)
 }
 
 // @0x1419f1580
-void UIMainPlayerInfo::FUN_1419f1580(NotifyObject* pNotify)
+void UIMainPlayerInfo::OnSkillSetModeNotify(NotifyObject* pNotify)
 {
     NotifySkillSetMode* pMode = dynamic_cast<NotifySkillSetMode*>(pNotify);
     if (pMode == 0)
@@ -1108,7 +1092,7 @@ void UIMainPlayerInfo::UpdateName()
 {
     if (m_playerInfo == 0)
         return;
-    m_playerInfo->Invoke("setName", FUN_1419f3420());
+    m_playerInfo->Invoke("setName", GetPlayerNameWithTitles());
 }
 
 // @0x1419f16b0
@@ -1118,11 +1102,11 @@ int UIMainPlayerInfo::FUN_1419f16b0()
     if (pPc == 0)
         return 0;
     int bVisible = 1;
-    Unk_AdvHolderRef holder(((Unk_AdvHolder*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416764a0()));
+    efd::SmartPointer<Ridee> holder(((Ridee*)((PCBase*)(Unk_MpPC*)(pPc))->FUN_1416764a0()));
     int nType = 0;
     if (holder != 0)
     {
-        nType = MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_6c;
+        nType = MP_ROW(holder->FUN_141707750())->m_6c;
         if (nType != 0)
             bVisible = 0;
     }
@@ -1131,7 +1115,7 @@ int UIMainPlayerInfo::FUN_1419f16b0()
         bShow = false;
     if (m_playerInfo.get() != 0)
         m_playerInfo->Invoke("visibleTag", bVisible);
-    FUN_1419f1d10(4, bShow);
+    SetHideReason(4, bShow);
     return bShow;
 }
 
@@ -1143,14 +1127,14 @@ void UIMainPlayerInfo::PlayHit()
 }
 
 // @0x1419f1880
-void UIMainPlayerInfo::FUN_1419f1880(int bBattle)
+void UIMainPlayerInfo::SetBattle(int bBattle)
 {
     if (m_playerInfo.get() != 0)
         m_playerInfo->Invoke("setBattle", bBattle);
 }
 
 // @0x1419f18f0
-void UIMainPlayerInfo::FUN_1419f18f0()
+void UIMainPlayerInfo::SyncSlotMode()
 {
     if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
         spSlot->Invoke("onSlotModeChange", m_nSlotMode);
@@ -1160,8 +1144,8 @@ void UIMainPlayerInfo::FUN_1419f18f0()
 // @0x1419f19c0
 void UIMainPlayerInfo::FUN_1419f19c0()
 {
-    FUN_1417634a0(FUN_1419f31f0());
-    FUN_1417633f0(FUN_1419f31f0(), 0x19);
+    FUN_1417634a0(GetSlotName());
+    FUN_1417633f0(GetSlotName(), 0x19);
     if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
         spSlot->Invoke("updateBindSlot", reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand);
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1174,7 +1158,7 @@ void UIMainPlayerInfo::FUN_1419f19c0()
         if (spSet->m_20 == 0)
         {
             CString strName = Unk_SocketFormat("SkillSet{0}_{1}", spSet->m_18, spSet->m_1c);
-            ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142fc10(strName);
+            ((CKeyTable*)FUN_1409331f0())->LoadKeySetting(strName);
         }
     }
 }
@@ -1186,7 +1170,7 @@ void UIMainPlayerInfo::FUN_1419f1c80()
     for (unsigned i = 0; i < nCount; i++)
     {
         int nKey = i + 500001;
-        if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(nKey, 0, 0))
+        if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(nKey, 0, 0))
         {
             if (Unk_MpSlot* pSlot = FUN_1419f2930(i))
                 ((SkillSlot*)(Unk_MpSlot*)(pSlot))->FUN_14175f200();
@@ -1195,7 +1179,7 @@ void UIMainPlayerInfo::FUN_1419f1c80()
 }
 
 // @0x1419f1d10
-void UIMainPlayerInfo::FUN_1419f1d10(unsigned int nMask, bool bShow)
+void UIMainPlayerInfo::SetHideReason(unsigned int nMask, bool bShow)
 {
     if (!bShow)
         m_nHideMask |= nMask;
@@ -1212,11 +1196,11 @@ void UIMainPlayerInfo::FUN_1419f1da0(int nSlot)
 {
     if (m_30 == 0)
         return;
-    int bShowKey = ((class Unk_MpPad*)FUN_140a58540())->FUN_140d8ee40() == 2 ? 0 : 1;
+    int bShowKey = FUN_140a58540()->FUN_140d8ee40() == 2 ? 0 : 1;
     MP_AS(m_30)->FUN_1409ba0d0("changeSkillSlot", nSlot, bShowKey);
     FUN_1419f1e60();
     FUN_1419f21b0();
-    FUN_1419f18f0();
+    SyncSlotMode();
 }
 
 // @0x1419f1e60
@@ -1226,12 +1210,12 @@ void UIMainPlayerInfo::FUN_1419f1e60()
         return;
     if (reinterpret_cast<Unk_MpCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()->m_bExpand)
     {
-        int nKey1 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142c940(800001, 2);
-        int nKey2 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142c940(800002, 2);
-        int nKey3 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_14142c940(800003, 2);
-        CStringW strKey1 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431820(nKey1).MakeUpper();
-        CStringW strKey2 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431820(nKey2).MakeUpper();
-        CStringW strKey3 = ((class Unk_MpKeyTable*)FUN_1409331f0())->FUN_141431820(nKey3).MakeUpper();
+        int nKey1 = ((CKeyTable*)FUN_1409331f0())->FUN_14142c940(800001, 2);
+        int nKey2 = ((CKeyTable*)FUN_1409331f0())->FUN_14142c940(800002, 2);
+        int nKey3 = ((CKeyTable*)FUN_1409331f0())->FUN_14142c940(800003, 2);
+        CStringW strKey1 = ((CKeyTable*)FUN_1409331f0())->FUN_141431820(nKey1).MakeUpper();
+        CStringW strKey2 = ((CKeyTable*)FUN_1409331f0())->FUN_141431820(nKey2).MakeUpper();
+        CStringW strKey3 = ((CKeyTable*)FUN_1409331f0())->FUN_141431820(nKey3).MakeUpper();
         ASObj obj(2);
         obj.FUN_1407cbb20("modifiedKey1", strKey1);
         obj.FUN_1407cbb20("modifiedKey2", strKey2);
@@ -1280,9 +1264,9 @@ void UIMainPlayerInfo::FUN_1419f22a0(int nKey, int bPress)
     {
         Unk_MpSlot* pSlot = FUN_1419f2930(i);
         if (pSlot != 0)
-            names.FUN_1422bbfe0(((SkillSlot*)(Unk_MpSlot*)(pSlot))->FUN_14175fe60());
+            names.PushWString(((SkillSlot*)(Unk_MpSlot*)(pSlot))->FUN_14175fe60());
         else
-            names.FUN_1422bbf70("");
+            names.PushString("");
     }
     obj.FUN_1409eb1d0("slotNames", names);
     m_30->Invoke("showModifiedKeySelect", obj.FUN_1422bb870());
@@ -1333,7 +1317,7 @@ void UIMainPlayerInfo::FUN_1419f26b0(bool bEnable)
 }
 
 // @0x1419f2720
-void UIMainPlayerInfo::FUN_1419f2720(bool bHideAndSeek)
+void UIMainPlayerInfo::SetHideAndSeekSlotMode(bool bHideAndSeek)
 {
     if (m_playerInfo == 0)
         return;
@@ -1343,7 +1327,7 @@ void UIMainPlayerInfo::FUN_1419f2720(bool bHideAndSeek)
     if (m_nSlotMode == nMode)
         return;
     m_nSlotMode = nMode;
-    FUN_1419f18f0();
+    SyncSlotMode();
     m_playerInfo->Invoke("onHideAndSeek", bHideAndSeek);
 }
 
@@ -1356,7 +1340,7 @@ Unk_MpSlot* UIMainPlayerInfo::FindSlotForItem(CItem* pItem)
     if (pItem->HasCubeTextureMesh() != 0 || pItem->FUN_140526010() != 0)
         nUid = pItem->GetItemUid();
     Unk_MpSlot* pSlot = 0;
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         pSlot = ((Unk_MpSlot*)((SkillSlotBag*)(Unk_MpSlotBar*)(pBar))->FindSlotByItemId(pItem->FUN_1405276c0()));
     if (pSlot == 0)
     {
@@ -1369,7 +1353,7 @@ Unk_MpSlot* UIMainPlayerInfo::FindSlotForItem(CItem* pItem)
 // @0x1419f2930
 Unk_MpSlot* UIMainPlayerInfo::FUN_1419f2930(int nIndex)
 {
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         return ((class Unk_MpSlot*)FUN_141761e60((class DragSlot*)(((Unk_MpWnd*)((DragSlotBag*)(Unk_MpSlotBar*)(pBar))->FUN_1422cd070(nIndex)))));
     return 0;
 }
@@ -1378,7 +1362,7 @@ Unk_MpSlot* UIMainPlayerInfo::FUN_1419f2930(int nIndex)
 int UIMainPlayerInfo::FUN_1419f29c0()
 {
     static int s_order[25] = {4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
     {
         for (unsigned i = 0; i < 0x19; i++)
         {
@@ -1394,7 +1378,7 @@ int UIMainPlayerInfo::FUN_1419f29c0()
 void UIMainPlayerInfo::FUN_1419f2a90()
 {
     static int s_order[25] = {4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
     {
         for (unsigned i = 0; i < 0x19; i++)
         {
@@ -1411,8 +1395,8 @@ int UIMainPlayerInfo::FUN_1419f2b60()
 {
     if (FUN_140930d70())
     {
-        bool bKey = ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0) || ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0) ||
-                    ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0) || ((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0) ? true : false;
+        bool bKey = ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0) || ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0) ||
+                    ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0) || ((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0) ? true : false;
         if (bKey)
         {
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_err_cannot_change_shortkey_page")), 1, 1);
@@ -1420,22 +1404,22 @@ int UIMainPlayerInfo::FUN_1419f2b60()
         }
         return 0;
     }
-    if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0))
+    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940e, 0, 0))
     {
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_141431ae0(0, true);
         return 1;
     }
-    else if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0))
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x4940f, 0, 0))
     {
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_141431ae0(1, true);
         return 1;
     }
-    else if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0))
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49410, 0, 0))
     {
         ((CKeyTable*)(Unk_MpKeyTable*)(((class Unk_MpKeyTable*)FUN_1409331f0())))->FUN_141431ae0(2, true);
         return 1;
     }
-    else if (((class Unk_MpKeyInput*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0))
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49411, 0, 0))
     {
         OnNextPage();
         return 1;
@@ -1484,7 +1468,7 @@ void UIMainPlayerInfo::FUN_1419f2eb0()
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (((Unk_MpStateHolder*)((PC*)(Unk_MpPC*)(pPc))->FUN_1416546d0())->FUN_140639bb0().FUN_14063e9f0(0))
+    if (((JobSystem*)((PC*)(Unk_MpPC*)(pPc))->FUN_1416546d0())->GetJobData() == 0)
         return;
     if (m_playerInfo.get() != 0)
     {
@@ -1494,7 +1478,7 @@ void UIMainPlayerInfo::FUN_1419f2eb0()
         obj.FUN_1409c48f0("level", pPc->vfunc_78());
         obj.FUN_140bd0d90("jobCode", pPc->FUN_141654730());
         obj.FUN_1407cbb20("jobName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pPc->FUN_141654730()));
-        obj.FUN_1407cbb20("name", FUN_1419f3420());
+        obj.FUN_1407cbb20("name", GetPlayerNameWithTitles());
         obj.FUN_1409c1180("curHP", pPc->FUN_141670a00(4));
         obj.FUN_1409c1180("curSP", pPc->FUN_141670a00(7));
         obj.FUN_1409c1180("curEP", pPc->FUN_141670a00(10));
@@ -1508,7 +1492,7 @@ void UIMainPlayerInfo::FUN_1419f2eb0()
 }
 
 // @0x1419f31f0
-CString UIMainPlayerInfo::FUN_1419f31f0()
+CString UIMainPlayerInfo::GetSlotName()
 {
     CString str;
     str.Format("%s.%d", (const char*)m_strSlotName, 0);
@@ -1524,7 +1508,7 @@ void UIMainPlayerInfo::LoadRenderTarget()
 }
 
 // @0x1419f32f0
-void UIMainPlayerInfo::FUN_1419f32f0()
+void UIMainPlayerInfo::UnloadRenderTarget()
 {
     m_camera = 0;
     if (m_playerInfo == 0)
@@ -1538,7 +1522,7 @@ void UIMainPlayerInfo::OnRideOff()
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    ((MyPC*)(Unk_MpPC*)(pPc))->SendRequestRideMode1((RideOffAction*)(Unk_MpRideOff*)(new Unk_MpRideOff(0)));
+    ((MyPC*)(Unk_MpPC*)(pPc))->SendRequestRideMode1((RideOffAction*)(RideOffActionRidingUI*)(new RideOffActionRidingUI(0)));
 }
 
 // @0x1419f3400
@@ -1548,7 +1532,7 @@ int UIMainPlayerInfo::FUN_1419f3400(int nId)
 }
 
 // @0x1419f3420
-CStringW UIMainPlayerInfo::FUN_1419f3420()
+CStringW UIMainPlayerInfo::GetPlayerNameWithTitles()
 {
     Unk_MpPC* pPc = ((Unk_MpPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -1556,8 +1540,8 @@ CStringW UIMainPlayerInfo::FUN_1419f3420()
     CStringW strName = pPc->vfunc_77();
     for (int i = 0; i < 7; i++)
     {
-        if (((class Unk_MpTitles*)FUN_140931510())->FUN_140d9f5d0(i))
-            strName += StringFormat<CStringW>(L" {0}", ((class Unk_MpTitles*)FUN_140931510())->FUN_140d9f600(i));
+        if (FUN_140931510()->FUN_140d9f5d0(i))
+            strName += StringFormat<CStringW>(L" {0}", FUN_140931510()->FUN_140d9f600(i));
     }
     return strName;
 }
@@ -1567,7 +1551,7 @@ void UIMainPlayerInfo::FUN_1419f3590()
 {
     if (DAT_143af3960 == 0)
         return;
-    if (Unk_MpSlotBar* pBar = FUN_141763cb0(FUN_1422c8e90(FUN_1419f31f0())))
+    if (Unk_MpSlotBar* pBar = (Unk_MpSlotBar*)FUN_141763cb0(Unk_NotifyContext::FUN_1422c8e90(GetSlotName())))
         ((SkillSlotBag*)(Unk_MpSlotBar*)(pBar))->FUN_141763640(DAT_143af3960);
     DAT_143af3960 = 0;
 }
@@ -1603,7 +1587,7 @@ bool UIMainPlayerInfo::OnNextPage()
 }
 
 // @0x1419f3740
-void UIMainPlayerInfo::FUN_1419f3740()
+void UIMainPlayerInfo::ResetGauges()
 {
     m_nHP[1] = 0;
     m_nHP[0] = 0;
@@ -1681,23 +1665,23 @@ MS2_REPLACE_METHOD_VIA(0x1419F0B10, UIMainPlayerInfo, UIItemEventListener, vfunc
 MS2_REPLACE_METHOD_VIA(0x1419F0B70, UIMainPlayerInfo, UIItemEventListener, vfunc_33, 43, 0xB8DCC875);
 MS2_REPLACE_METHOD(0x1419F0BB0, UIMainPlayerInfo, FUN_1419f0bb0, 823, 0x9BF67C5F);
 MS2_REPLACE_METHOD(0x1419F0EF0, UIMainPlayerInfo, AppendMessage, 222, 0x263E63E5);
-MS2_REPLACE_METHOD(0x1419F0FE0, UIMainPlayerInfo, FUN_1419f0fe0, 190, 0x7C987E59);
-MS2_REPLACE_METHOD(0x1419F10B0, UIMainPlayerInfo, FUN_1419f10b0, 190, 0xC67F1BD0);
-MS2_REPLACE_METHOD(0x1419F1180, UIMainPlayerInfo, FUN_1419f1180, 108, 0x761E4F33);
+MS2_REPLACE_METHOD(0x1419F0FE0, UIMainPlayerInfo, AddBuffEffect, 190, 0x7C987E59);
+MS2_REPLACE_METHOD(0x1419F10B0, UIMainPlayerInfo, UpdateBuffEffect, 190, 0xC67F1BD0);
+MS2_REPLACE_METHOD(0x1419F1180, UIMainPlayerInfo, RemoveBuffEffect, 108, 0x761E4F33);
 MS2_REPLACE_METHOD(0x1419F1200, UIMainPlayerInfo, FUN_1419f1200, 349, 0x8B1F721E);
 MS2_REPLACE_METHOD(0x1419F1370, UIMainPlayerInfo, FUN_1419f1370, 54, 0x9DB578D2);
 MS2_REPLACE_METHOD(0x1419F13B0, UIMainPlayerInfo, FUN_1419f13b0, 246, 0x5A39A3D8);
 MS2_REPLACE_METHOD(0x1419F14B0, UIMainPlayerInfo, FUN_1419f14b0, 29, 0xD55DF626);
-MS2_REPLACE_METHOD(0x1419F14E0, UIMainPlayerInfo, FUN_1419f14e0, 144, 0x2F1083FC);
-MS2_REPLACE_METHOD(0x1419F1580, UIMainPlayerInfo, FUN_1419f1580, 108, 0x1B831F22);
+MS2_REPLACE_METHOD(0x1419F14E0, UIMainPlayerInfo, OnShortkeyPageNotify, 144, 0x2F1083FC);
+MS2_REPLACE_METHOD(0x1419F1580, UIMainPlayerInfo, OnSkillSetModeNotify, 108, 0x1B831F22);
 MS2_REPLACE_METHOD(0x1419F1600, UIMainPlayerInfo, UpdateName, 157, 0x34C03AC0);
 MS2_REPLACE_METHOD(0x1419F16B0, UIMainPlayerInfo, FUN_1419f16b0, 349, 0xE5B867E5);
 MS2_REPLACE_METHOD(0x1419F1820, UIMainPlayerInfo, PlayHit, 87, 0x667862EF);
-MS2_REPLACE_METHOD(0x1419F1880, UIMainPlayerInfo, FUN_1419f1880, 96, 0xDCB1F1C6);
-MS2_REPLACE_METHOD(0x1419F18F0, UIMainPlayerInfo, FUN_1419f18f0, 198, 0x57B33E07);
+MS2_REPLACE_METHOD(0x1419F1880, UIMainPlayerInfo, SetBattle, 96, 0xDCB1F1C6);
+MS2_REPLACE_METHOD(0x1419F18F0, UIMainPlayerInfo, SyncSlotMode, 198, 0x57B33E07);
 MS2_REPLACE_METHOD(0x1419F19C0, UIMainPlayerInfo, FUN_1419f19c0, 697, 0x9C99E173);
 MS2_REPLACE_METHOD(0x1419F1C80, UIMainPlayerInfo, FUN_1419f1c80, 134, 0x22C63536);
-MS2_REPLACE_METHOD(0x1419F1D10, UIMainPlayerInfo, FUN_1419f1d10, 137, 0x1C97C8F6);
+MS2_REPLACE_METHOD(0x1419F1D10, UIMainPlayerInfo, SetHideReason, 137, 0x1C97C8F6);
 MS2_REPLACE_METHOD(0x1419F1DA0, UIMainPlayerInfo, FUN_1419f1da0, 183, 0x5402C73D);
 MS2_REPLACE_METHOD(0x1419F1E60, UIMainPlayerInfo, FUN_1419f1e60, 827, 0xBBCC7252);
 MS2_REPLACE_METHOD(0x1419F21B0, UIMainPlayerInfo, FUN_1419f21b0, 223, 0x89B31DC3);
@@ -1705,7 +1689,7 @@ MS2_REPLACE_METHOD(0x1419F22A0, UIMainPlayerInfo, FUN_1419f22a0, 581, 0xB96455DF
 MS2_REPLACE_METHOD(0x1419F24F0, UIMainPlayerInfo, FUN_1419f24f0, 96, 0x1555250E);
 MS2_REPLACE_METHOD(0x1419F2560, UIMainPlayerInfo, FUN_1419f2560, 326, 0x786BC2A8);
 MS2_REPLACE_METHOD(0x1419F26B0, UIMainPlayerInfo, FUN_1419f26b0, 97, 0x7B8BEE4A);
-MS2_REPLACE_METHOD(0x1419F2720, UIMainPlayerInfo, FUN_1419f2720, 172, 0x6C5F70FB);
+MS2_REPLACE_METHOD(0x1419F2720, UIMainPlayerInfo, SetHideAndSeekSlotMode, 172, 0x6C5F70FB);
 MS2_REPLACE_METHOD(0x1419F27E0, UIMainPlayerInfo, FindSlotForItem, 319, 0x2FEBCF48);
 MS2_REPLACE_METHOD(0x1419F2930, UIMainPlayerInfo, FUN_1419f2930, 135, 0x3F90CB89);
 MS2_REPLACE_METHOD(0x1419F29C0, UIMainPlayerInfo, FUN_1419f29c0, 202, 0xA12B305E);
@@ -1715,15 +1699,15 @@ MS2_REPLACE_METHOD(0x1419F2D90, UIMainPlayerInfo, FUN_1419f2d90, 115, 0x678D1F9A
 MS2_REPLACE_METHOD(0x1419F2E10, UIMainPlayerInfo, FUN_1419f2e10, 73, 0xD95939D7);
 MS2_REPLACE_METHOD(0x1419F2E60, UIMainPlayerInfo, FUN_1419f2e60, 73, 0xF047AE4F);
 MS2_REPLACE_METHOD(0x1419F2EB0, UIMainPlayerInfo, FUN_1419f2eb0, 821, 0xA5BAA5BC);
-MS2_REPLACE_METHOD(0x1419F31F0, UIMainPlayerInfo, FUN_1419f31f0, 135, 0x5DB83B85);
+MS2_REPLACE_METHOD(0x1419F31F0, UIMainPlayerInfo, GetSlotName, 135, 0x5DB83B85);
 MS2_REPLACE_METHOD(0x1419F3280, UIMainPlayerInfo, LoadRenderTarget, 93, 0x7BA66163);
-MS2_REPLACE_METHOD(0x1419F32F0, UIMainPlayerInfo, FUN_1419f32f0, 114, 0x5EB8B805);
+MS2_REPLACE_METHOD(0x1419F32F0, UIMainPlayerInfo, UnloadRenderTarget, 114, 0x5EB8B805);
 MS2_REPLACE_METHOD(0x1419F3370, UIMainPlayerInfo, OnRideOff, 127, 0x36031C45);
 MS2_REPLACE_METHOD(0x1419F3400, UIMainPlayerInfo, FUN_1419f3400, 19, 0x06877B61);
-MS2_REPLACE_METHOD(0x1419F3420, UIMainPlayerInfo, FUN_1419f3420, 356, 0x96096A55);
+MS2_REPLACE_METHOD(0x1419F3420, UIMainPlayerInfo, GetPlayerNameWithTitles, 356, 0x96096A55);
 MS2_REPLACE_METHOD(0x1419F3590, UIMainPlayerInfo, FUN_1419f3590, 142, 0xCC7D34E8);
 MS2_REPLACE_METHOD(0x1419F3630, UIMainPlayerInfo, OnPrevPage, 130, 0x0A1506CF);
 MS2_REPLACE_METHOD(0x1419F36C0, UIMainPlayerInfo, OnNextPage, 114, 0x49D79FEE);
-MS2_REPLACE_METHOD(0x1419F3740, UIMainPlayerInfo, FUN_1419f3740, 156, 0xD5EE2B40);
+MS2_REPLACE_METHOD(0x1419F3740, UIMainPlayerInfo, ResetGauges, 156, 0xD5EE2B40);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbf3f0-0x142cbf550 .text$yd

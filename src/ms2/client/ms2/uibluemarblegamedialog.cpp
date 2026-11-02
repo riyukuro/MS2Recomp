@@ -506,7 +506,7 @@ void UIBlueMarbleGameDialog::FUN_140f23da0()
         for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != 0; spContext->m_rewards.GetNext(pos)) {
             int nRound = spContext->m_rewards.GetKeyAt(pos);
             bool bReceive = m_nPosition >= nRound * 0x1c && nRound != 0;
-            flags.FUN_1422bbcd0(bReceive);
+            flags.PushBool(bReceive);
         }
     }
     if (m_30.get())

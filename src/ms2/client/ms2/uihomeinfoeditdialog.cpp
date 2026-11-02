@@ -164,12 +164,12 @@ void UIHomeInfoEditDialog::OnLoadComplete()
     if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
     {
         reinterpret_cast<ASTextInput*>(spName.operator->())->SetMaxChars(FUN_140c26920());
-        reinterpret_cast<ASTextInput*>(spName.operator->())->FUN_1422e0ab0(FUN_140c268d0());
+        reinterpret_cast<ASTextInput*>(spName.operator->())->SetTextW(FUN_140c268d0());
     }
     if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
     {
         reinterpret_cast<ASTextInput*>(spNotice.operator->())->SetMaxChars(100);
-        reinterpret_cast<ASTextInput*>(spNotice.operator->())->FUN_1422e0ab0(FUN_140c26850());
+        reinterpret_cast<ASTextInput*>(spNotice.operator->())->SetTextW(FUN_140c26850());
     }
 }
 MS2_REPLACE_METHOD(0x140C26540, UIHomeInfoEditDialog, OnLoadComplete, 548, 0x8AF667C3);

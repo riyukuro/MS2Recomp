@@ -111,14 +111,14 @@ void UIBootyPopup::FUN_1410315f0()
 MS2_REPLACE_METHOD(0x1410315F0, UIBootyPopup, FUN_1410315f0, 106, 0x1FFCB117);
 
 // @0x141031660
-void UIBootyPopup::FUN_141031660(const Vector3& pt)
+void UIBootyPopup::FUN_141031660(Vector3 pt)
 {
     m_68 = pt;
 }
 MS2_REPLACE_METHOD(0x141031660, UIBootyPopup, FUN_141031660, 41, 0xA4605C70);
 
 // @0x141031690
-void UIBootyPopup::FUN_141031690(const egf::EntityID& kId)
+void UIBootyPopup::FUN_141031690(egf::EntityID kId)
 {
     m_80 = kId;
 }
@@ -188,7 +188,7 @@ void UIBootyPopup::FUN_141031890()
             {
                 vfunc_8(1);
                 FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-                pEntity->FUN_1422c00f0(screen.x - (float)(pEntity->FUN_1422c1340() / 2),
+                pEntity->SetPositionFloat(screen.x - (float)(pEntity->FUN_1422c1340() / 2),
                                        (screen.y - (float)pEntity->GetHeightCeil()) - 15.0f);
             }
         }
@@ -233,7 +233,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                     }
                 }
             }
-            reinterpret_cast<Unk_BootyMovie*>((class ASDialog*)((m_30.operator->())))->FUN_140e78470("setText", strName, strDesc);
+            reinterpret_cast<Unk_BootyMovie*>(m_30.operator->())->FUN_140e78470("setText", strName, strDesc);
         }
         m_30.operator->()->Invoke("setShow", bShow);
     }

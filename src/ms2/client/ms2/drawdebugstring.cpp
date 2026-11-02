@@ -6,6 +6,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\drawdebugstring.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 #include <efd/Point3.h>
 
 #include <string>
@@ -13,6 +14,7 @@
 #include <NiRenderer.h>
 #include <efd/StringUtilities.h>
 #include "ms2/placeholder/cdrawdebugstring.h"
+#include "ms2/commonfiles/crashmanager.h"
 #include "ms2/ms2recover.h"
 
 // ---- exe callees ----
@@ -20,8 +22,7 @@ extern const NiColorA DAT_143a09680;                                            
 #define DAT_143b01a60 (*(const NiPoint3*)&efd::Point3::ZERO)          // C3: was extern const NiPoint3 DAT_143b01a60
 NiPoint3* FUN_140194470(NiPoint3* pDst, const NiPoint3* pSrc);                          // NiPoint3 assign
 bool FUN_140552690(const NiPoint3* pA, const NiPoint3* pB);                             // NiPoint3 ==
-void* FUN_140a44830();                                                                  // the debug log singleton
-void FUN_1401ce2f0(void* pLog, const char* pszFormat, const char* pszText);
+class CrashManagerCli;
 CString FUN_14016a5c0(const char* psz, int nCodePage);                                  // narrows a string
 CString FUN_140298360(const char* psz, const CString& str);                             // operator+(const char*, const CString&)
 
@@ -186,7 +187,7 @@ void CDrawDebugString::FUN_14118bf80(const char* pszLabel, unsigned x, unsigned 
 // @0x14118c060
 void CDrawDebugString::FUN_14118c060()
 {
-    FUN_1401ce2f0(FUN_140a44830(), "%s", m_acName);
+    reinterpret_cast<CCrashManager*>(reinterpret_cast<void*>(TSingleton<CrashManagerCli>::GetInstance()))->FUN_1401ce2f0("%s", m_acName);
 }
 
 // @0x14118c0a0

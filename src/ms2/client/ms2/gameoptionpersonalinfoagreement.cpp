@@ -52,6 +52,7 @@ unsigned char* FUN_140a46860(Unk_PiSettings* p);
 class CPersonalInfoAgreement   // gameoptionstruct.cpp's class (the agreement state and the option's +0x1b4 setting)
 {
 public:
+    CPersonalInfoAgreement();                                   // 0x141261cf0
     void FUN_141261d20();
     int FUN_141261d40();
     void FUN_141261da0(const CPersonalInfoAgreement* pSrc);
@@ -61,7 +62,6 @@ public:
     void OpenLink(CString strUrl);
     void FUN_141262090();
 };
-void FUN_141261cf0(Unk_PiAgreeState* p);
 struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // Constants::Common::Value<CString>::Get
 
 // View of the option dialog: an id at +0x28, the AS root at +0x30.
@@ -111,7 +111,7 @@ MS2Ptr<Unk_PiCheck> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0
 CGameOptionPersonalInfoAgreement::CGameOptionPersonalInfoAgreement(int nId, int nType)   // @0x140a45d40
     : CBaseOption(nId, nType)
 {
-    FUN_141261cf0(&m_state);
+    reinterpret_cast<CPersonalInfoAgreement*>(&m_state)->CPersonalInfoAgreement::CPersonalInfoAgreement();   // the m_state ctor
 }
 
 CGameOptionPersonalInfoAgreement::~CGameOptionPersonalInfoAgreement()   // @0x140a45da0

@@ -71,7 +71,7 @@ static CString s_strStun2 = "stun";
 
 class ASDialog : public ASDisplayObject {};
 // "m_inputSearch": the search text input.
-class Unk_DaInput : public ASTextInput { };   // C3: FUN_1422e0920 and the ASUIComponent focus pair are inherited
+class Unk_DaInput : public ASTextInput { };   // C3: AddChangeHandler and the ASUIComponent focus pair are inherited
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
@@ -100,7 +100,7 @@ CStringTable* GetStringTable();
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
-CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
@@ -200,7 +200,7 @@ void UIDynamicActionDialog::OnLoadComplete()
     if (m_30.get() != 0) {
         Unk_DaInput* pInput = m_30->FUN_140bbe940<Unk_DaInput>("m_inputSearch", m_1a0);
         if (pInput != 0)
-            m_1a0->FUN_1422e0920(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDynamicActionDialog::FUN_14192c690));
+            m_1a0->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDynamicActionDialog::FUN_14192c690));
     }
 }
 MS2_REPLACE_METHOD(0x14192B1C0, UIDynamicActionDialog, OnLoadComplete, 369, 0);
@@ -216,7 +216,6 @@ void UIDynamicActionDialog::vfunc_26()
 MS2_REPLACE_METHOD(0x14192B340, UIDynamicActionDialog, vfunc_26, 463, 0);
 
 // @0x14192b520
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 int UIDynamicActionDialog::vfunc_13()
 {
     if (vfunc_55() != 0)
@@ -227,10 +226,10 @@ int UIDynamicActionDialog::vfunc_13()
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (Unk_DaInput*)m_1a0 != 0) {
-                if (m_1a0.operator->()->FUN_1422c76c0() != 0) {
+                if (m_1a0.operator->()->GetFocused() != 0) {
                     SetSearchText(reinterpret_cast<ASTextInput*>(m_1a0.operator->())->GetText());
-                    reinterpret_cast<ASUIComponent*>(pDlg)->FUN_1422c7630(1);
-                    m_1a0.operator->()->FUN_1422c7630(0);
+                    reinterpret_cast<ASUIComponent*>(pDlg)->SetFocused(1);
+                    m_1a0.operator->()->SetFocused(0);
                     return 1;
                 }
             }
@@ -243,7 +242,8 @@ int UIDynamicActionDialog::vfunc_13()
         if (nKey != 0) {
             if (FUN_1409331f0()->IsKeyRebindable(nKey) != 0) {
                 if (FUN_14192deb0(nKey) != 0) {
-                    if (FUN_14192df00(nKey, (unsigned)m_178.m_4) != 0)
+                    unsigned __int64 nAction = (unsigned)m_178.m_4;
+                    if (FUN_14192df00(nKey, nAction) != 0)
                         m_178.Clear();
                 } else {
                     m_178.m_0 = 1;
@@ -257,9 +257,11 @@ int UIDynamicActionDialog::vfunc_13()
                         strOther = GetStringTable()->FUN_1418125b0((unsigned)nOther);
                     }
                     if (FUN_1409331f0()->FUN_141430470(nOther) == 0) {
-                        FUN_140d73aa0(FUN_14052bd00(0x84f, strOther), 1, static_cast<IMessageListener*>(this), CStringW(L""));
-                    } else if (FUN_14192df00(nKey, (unsigned)m_178.m_4) != 0) {
-                        m_178.Clear();
+                        FUN_140d73aa0(FormatStringId<CStringW>(0x84f, strOther), 1, static_cast<IMessageListener*>(this), CStringW(L""));
+                    } else {
+                        unsigned __int64 nAction = (unsigned)m_178.m_4;
+                        if (FUN_14192df00(nKey, nAction) != 0)
+                            m_178.Clear();
                     }
                 }
             } else {
@@ -289,7 +291,7 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
         ASObj stat(2);
         stat.FUN_1407cb9c0("type", 1);
         stat.FUN_1409c0dc0("level", "");
-        stat.FUN_1407cbb20("cooltime", FUN_14192d820(nAction));
+        stat.FUN_1407cbb20("cooltime", GetActionKeywords(nAction));
         tooltip.FUN_1409adbe0("statDescription", stat.FUN_1422bb870());
         tooltip.FUN_1409c0dc0("enablePuton", "");
         if (0 < nPeriod) {
@@ -311,7 +313,6 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
 MS2_REPLACE_METHOD(0x14192BB30, UIDynamicActionDialog, vfunc_49, 908, 0);
 
 // @0x14192bed0
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -347,7 +348,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nAction = data.FUN_1422b8b10();
             if (nAction == 0)
                 return 0;
-            FUN_14192ca10(nAction);
+            PreviewAction(nAction);
         }
     } else if (_stricmp(szMethod, "onFavoriteSort") == 0) {
         ASData data;
@@ -365,7 +366,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) == 0)
             return 0;
-        int nAction = data.FUN_1422b8b10();
+        unsigned nAction = data.FUN_1422b8b10();
         if (nAction == 0)
             return 0;
         std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_190.find(nAction);
@@ -386,7 +387,8 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) == 0)
             return 0;
-        SetSearchText(CStringW(data.FUN_1422b8f40()));
+        CStringW strSearch = data.FUN_1422b8f40();
+        SetSearchText(strSearch);
     }
     return 0;
 }
@@ -477,7 +479,7 @@ UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 }
 
 // @0x14192ca10
-void UIDynamicActionDialog::FUN_14192ca10(int nAction)
+void UIDynamicActionDialog::PreviewAction(int nAction)
 {
     UISkillPreviewDialog* pPreview = FUN_14192e1f0(0x4ec3);
     if (pPreview == 0)
@@ -485,7 +487,7 @@ void UIDynamicActionDialog::FUN_14192ca10(int nAction)
     TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ec3);
     pPreview->FUN_140e93e70(nAction, 0);
 }
-MS2_REPLACE_METHOD(0x14192CA10, UIDynamicActionDialog, FUN_14192ca10, 78, 0);
+MS2_REPLACE_METHOD(0x14192CA10, UIDynamicActionDialog, PreviewAction, 78, 0);
 
 // @0x14192ca70
 void UIDynamicActionDialog::FUN_14192ca70()
@@ -523,7 +525,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
                         break;
                     }
                     std::vector<CStringW> words;
-                    CStringW strKeywords = FUN_14192d820(nId);
+                    CStringW strKeywords = GetActionKeywords(nId);
                     FUN_140988d60(strKeywords, words, L", ");
                     for (CStringW& strWord : words) {
                         if (strWord.Find(m_1b8, 0) != -1) {
@@ -548,7 +550,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
             action.FUN_1407cbbe0("isFavorite", bFavorite);
             actions.FUN_1422bbf00(action);
         }
-        FUN_14192d960(actions);
+        PadEntriesToGrid(actions);
         pDlg->FUN_140bd2cb0("buildActions", actions);
         if (nFocus != 0)
             SetFocusByEmotion(nFocus);
@@ -592,7 +594,7 @@ void UIDynamicActionDialog::FUN_14192d100()
                         break;
                     }
                     std::vector<CStringW> words;
-                    CStringW strKeywords = FUN_14192d820(nId);
+                    CStringW strKeywords = GetActionKeywords(nId);
                     FUN_140988d60(strKeywords, words, L", ");
                     for (CStringW& strWord : words) {
                         if (strWord.Find(m_1b8, 0) != -1) {
@@ -617,7 +619,7 @@ void UIDynamicActionDialog::FUN_14192d100()
             action.FUN_1407cbbe0("isFavorite", bFavorite);
             actions.FUN_1422bbf00(action);
         }
-        FUN_14192d960(actions);
+        PadEntriesToGrid(actions);
         pDlg->FUN_140bd2cb0("buildActions", actions);
         if (nFocus != 0)
             SetFocusByEmotion(nFocus);
@@ -636,7 +638,7 @@ void UIDynamicActionDialog::SetSearchText(CStringW strSearch)
 MS2_REPLACE_METHOD(0x14192D790, UIDynamicActionDialog, SetSearchText, 124, 0);
 
 // @0x14192d820
-CStringW UIDynamicActionDialog::FUN_14192d820(unsigned int nAction)
+CStringW UIDynamicActionDialog::GetActionKeywords(unsigned int nAction)
 {
     MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nAction);
     if (!spData)
@@ -647,10 +649,10 @@ CStringW UIDynamicActionDialog::FUN_14192d820(unsigned int nAction)
     strKeywords.TrimRight();
     return strKeywords;
 }
-MS2_REPLACE_METHOD(0x14192D820, UIDynamicActionDialog, FUN_14192d820, 311, 0);
+MS2_REPLACE_METHOD(0x14192D820, UIDynamicActionDialog, GetActionKeywords, 311, 0);
 
 // @0x14192d960
-void UIDynamicActionDialog::FUN_14192d960(ASArray& arr)
+void UIDynamicActionDialog::PadEntriesToGrid(ASArray& arr)
 {
     int nRounded = (int)(std::ceil((float)arr.GetLength() / 6.0f) * 6.0f);
     int nMissing = (nRounded > 0x18 ? nRounded : 0x18) - arr.GetLength();
@@ -659,10 +661,10 @@ void UIDynamicActionDialog::FUN_14192d960(ASArray& arr)
     for (int i = 0; i < nMissing; i++) {
         Scaleform::GFx::Value kEmpty;
         kEmpty.SetNull();
-        arr.FUN_1422bc050(kEmpty);
+        arr.PushValue(kEmpty);
     }
 }
-MS2_REPLACE_METHOD(0x14192D960, UIDynamicActionDialog, FUN_14192d960, 254, 0);
+MS2_REPLACE_METHOD(0x14192D960, UIDynamicActionDialog, PadEntriesToGrid, 254, 0);
 
 // @0x14192da70
 void UIDynamicActionDialog::FUN_14192da70(int nKey)

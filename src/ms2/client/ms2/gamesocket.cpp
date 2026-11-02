@@ -14,6 +14,15 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+
+// The exe's map GetAt checks the position with ATLENSURE.
+template<> inline ATL::CAtlMap<HANDLE,CSimpleSocket*>::CPair* ATL::CAtlMap<HANDLE,CSimpleSocket*>::GetAt(POSITION pos)
+{
+    ATLENSURE(pos != NULL);
+    CPair* pPair = static_cast<CPair*>(pos);
+    return pPair;
+}
 #pragma comment(lib,"ws2_32.lib")
 // The exe passes a null placement argument to New, not the Create argument.
 template<> inline CSocketThread* Unk_SocketRef<CSocketThread>::Create(void*) { return static_cast<CSocketThread*>(FUN_1401ba820(New(NULL))); }
@@ -33,7 +42,7 @@ inline void Unk_SocketThreadAddRef() { FUN_140298fd0(&g_socketThreads); }
 // @0x14126ce60
 inline void Unk_SocketThreadRelease() { Unk_SocketDecrement(&g_socketThreads); }
 template<class T> T Unk_SocketMin(T a,T b) { return a<b?a:b; }
-void* FUN_140aadf80(); HWND FUN_14209c720(void*);
+void* FUN_140aadf80();
 class CLogString* GetLogString(); void Unk_AdditionalLog(class CLogString*,int,int,const wchar_t*);
 CStringW FUN_14016a730(const char*,int);
 void* FUN_140aa6d30(); extern int g_socketClosing;
@@ -157,7 +166,7 @@ void CGameSocket::vfunc_1(CSimpleSocket*,int error)
                 int result=-1,last=-1; char buffer[1024];
                 for(int i=0;i<50;++i) { Sleep(100); result=recv(m_socket,buffer,0,MSG_PEEK);  /* exe: len 0, flags 2 (peek); a consuming recv ate the server hello and stalled login */ if(result==-1 && (last=WSAGetLastError())==WSAEWOULDBLOCK) continue; break; }
                 if(result==-1) {
-                    if(last==WSAECONNRESET || last==WSAECONNABORTED) { PostMessageA(FUN_14209c720(FUN_140aadf80()),0x46a,0,0); return; }
+                    if(last==WSAECONNRESET || last==WSAECONNABORTED) { PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x46a,0,0); return; }
                     else { ((class Unk_140d86260*)FUN_140d86260())->vfunc_31(m_host,m_port,error); FUN_141266500(error); return; }
                 }
             }
@@ -203,7 +212,7 @@ void CGameSocket::vfunc_3(CSimpleSocket*,int error)
         if(error) throw Exception(error);
         FUN_141267070();
     } catch(Exception& e) {
-        PostMessageA(FUN_14209c720(FUN_140aadf80()),0x466,error,0);
+        PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x466,error,0);
         FUN_141266500(error);
     }
 }
@@ -217,7 +226,7 @@ void CGameSocket::OnClose(CSimpleSocket*,int error)
     if(guard!=0) {} else {
         if(m_disconnect==0 && error!=0 && m_state==Unk_SocketState::Connected) {
             if(g_socketClosing==0 && FUN_140aa6d30()!=0) {
-                FUN_141266500(error); PostMessageA(FUN_14209c720(FUN_140aadf80()),0x465,error,0);
+                FUN_141266500(error); PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x465,error,0);
             }
         } else {
             text=Unk_SocketFormat("m_bDisconnect({0}), nError({1}), m_enState({2})",m_disconnect,error,m_state);
@@ -323,7 +332,7 @@ void CGameSocket::FUN_141265ae0()
         if(TSingleton<CBigDataLogSystem>::GetInstance()) TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(CString("sock_exception"),Unk_SocketFormat("CGameSocket::ProcessPacket {0}",e.GetText()));
         Unk_AdditionalLog(GetLogString(),12,19,FUN_14016a730(Unk_SocketFormat("CGameSocket::ProcessPacket {0}",e.GetText()),0));
     }
-    if(stopped) PostMessageA(FUN_14209c720(FUN_140aadf80()),0x469,0,0);
+    if(stopped) PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(),0x469,0,0);
     else for(POSITION pos=ready.GetHeadPosition();pos;ready.GetNext(pos)) {
         Unk_InPtr packet(ready.GetAt(pos)); FUN_1415396b0(((void*)FUN_140714f90()),packet);
         m_logger->LogReceive((unsigned short)packet->GetType(),*reinterpret_cast<Unk_LogInPacket*>(packet.get()));
@@ -684,7 +693,7 @@ inline void Unk_SocketAddress::InitSockAddr(unsigned short port,unsigned long ad
 
 
 // End of recovered definitions.
-// MS2-FUNCTIONAL: fmt custom formatting omits unused scratch; ATL map GetAt uses the supplied library check.
+// MS2-FUNCTIONAL: fmt custom formatting omits unused scratch.
 // Verified template pins.
 // MS2-PIN: ??$?0$$CCH@ArgType@internal@fmt@@QEAA@AEDH@Z 0x141267880
 // MS2-PIN: ??$Unk_SocketFormat@$$CCHHW4Unk_SocketState@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEDHAEBHAEBW4Unk_SocketState@@@Z 0x141267910

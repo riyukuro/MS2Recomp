@@ -28,14 +28,14 @@
 #include "ms2/client/ms2/soundproperty.h"  // C3: was a local member view
 #include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+#include "ms2/commonfiles/os.h"
 
 // ---- globals ----
 extern int DAT_1439f86ac;                                           // nonzero: net streams are enabled
-extern char DAT_143d6eb58;                                          // class descriptor handed to the lookup FUN_14098d8d0
 
 // ---- helpers living in other units ----
 CLogString* GetLogString();                                        // the log
-void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const char* const& rArg);
+template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T& rArg);   // C3: was FUN_1403a1280
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
 int FUN_1406516c0();                                                // client language (0 Korea, 1 jp, 2 en, 3 cn)
 struct Unk_SoundCfg
@@ -47,7 +47,7 @@ struct Unk_SoundCfg
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CSoundService* FUN_140c9cb10();                                     // the sound service
 void* FUN_140d13c40();                                              // the channel volume manager
-void* FUN_1409a8b10();
+class CGameOption;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
 {
@@ -57,7 +57,7 @@ public:
     class GFxVideo* GetVideo();
 };
 void* FUN_140aadf80();
-void FUN_1422ec700(void* p, void* q);
+class GFxVideo { public: bool FUN_1422ec700(HWND hWnd); };   // C3: view of gfxvideo.h
 class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -67,17 +67,17 @@ public:
     void FUN_14177bf20();
     void SetCategoryMute(int, unsigned int);
     void FUN_14177dc80(unsigned int);
+    void FUN_14177af40(FMOD::EventSystem* pEvents, void* pSystem);
 };
-void FUN_14177af40(void* pMgr, FMOD::EventSystem* pEvents, FMOD::System* pSystem);
 void FUN_14125fe20(struct Unk_SoundState*);   // C3: was FUN_14125fe20
-void* FUN_1403ed280();                                              // the effect manager
+class CEffectService;
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1411a6160();
 };
-void* FUN_1411b1de0();
-void* FUN_14086d260();                                              // the time source
+class SoundPropertyMgr;
+class CMainSystem;
 class NiRenderer   // C3: member view for the former free stand-ins
 {
 public:
@@ -88,20 +88,25 @@ class NiObject   // C3: member view for the former free stand-ins
 public:
     static class NiObject* DynamicCast(class NiRTTI const*, class NiObject const*);
 };
-void FUN_1411d7c70(void* pObj, bool (*pfn)(bool, void*), CSoundService* pOwner);
-void FUN_1411d7c10(void* pObj, bool (*pfn)(void*), CSoundService* pOwner);
-void FUN_1414fe370(void* pObj, bool (*pfn)(bool, void*));
-void FUN_1414fe240(void* pObj, bool (*pfn)(void*));
+class NiDX9Renderer   // C3: unit-local view (Gamebryo NiDX9Renderer)
+{
+public:
+    static const class NiRTTI ms_RTTI;   // C3: was DAT_143d6eb58
+    unsigned int AddResetNotificationFunc(bool (*pfn)(bool, void*), void* pData);
+    unsigned int AddLostDeviceNotificationFunc(bool (*pfn)(void*), void* pData);
+    bool RemoveResetNotificationFunc(bool (*pfn)(bool, void*));
+    bool RemoveLostDeviceNotificationFunc(bool (*pfn)(void*));
+};
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    void SetResearchDialogStatus(CStringA text);
 };
-void FUN_141bdac80(WorldService* pWorld, CStringA strMessage);
 CStringA FUN_14016a600(const wchar_t* pszText, int nCodePage);
 void FUN_1412751b0(const CStringW& rText, int nSeconds);
-void FUN_141b6fc50(const CStringA& rText, const CStringA& rCaption, int nFlags);
+int FUN_141b6fc50(const CStringA& rText, const CStringA& rCaption, int nFlags);
 CStringA FUN_14038f6d0(const CStringA& rDir, const char* pszName);
 void FUN_140399620(CStringA strPattern, CStringA strDirectory, ATL::CAtlArray<CStringA>& rOut, CStringA strExclude, bool bFlag);
 void FUN_140165270(ATL::CAtlArray<CStringA>& rArray, const CStringA& rItem);
@@ -120,15 +125,17 @@ public:
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17();
-    virtual void GetPosition(Vector3* pOut);                // slot 18
+    virtual Vector3 GetPosition();                         // slot 18
 };
 class Unk_CameraManager   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_CameraTargetEntity* FUN_140a38d60();
 };
-// the camera manager's vectors return by value (member: this, hidden return pointer; exe 0x1417b0b1d / 0x1417b0b47)
-class Unk_SndCameras { public: Vector3 FUN_140af0340(); Vector3 FUN_140af0250(); };
+// the camera manager's vectors return by value (member: this, hidden return pointer; exe 0x1417b0b1d / 0x1417b0b47).
+// NiPoint3 : efd::Point3 sliced into the local, hence the rep movsb copy.
+struct Unk_SndNiPoint3 : public Vector3 {};
+class Unk_SndCameras { public: Unk_SndNiPoint3 FUN_140af0340(); Unk_SndNiPoint3 FUN_140af0250(); };
 
 
 // ---- the log with two arguments (in this unit) ----
@@ -255,24 +262,32 @@ void FUN_1417b1750(efd::IDependencyRegistrar* pRegistrar, unsigned uFlags)
     pRegistrar->AddDependency(0x6100002, uFlags);
 }
 
-// the last message of the list (the exe's own *--end() helpers)
+// the last message of the list (the exe's own rbegin() and reverse iterator)
 typedef std::list<CStringW>::iterator Unk_ListIt;
-// @0x1417b4180
-void** FUN_1417b4180(void** pThis, void* pNode)
+struct Unk_SndRevIt
 {
-    *pThis = pNode;
-    return pThis;
+    Unk_SndRevIt(void* pNode);
+    CStringW* FUN_1417b4640();
+    void* m_pNode;
+};
+struct Unk_SndMessageList : public std::list<CStringW>
+{
+    Unk_SndRevIt FUN_1417b71d0() noexcept;
+};
+// @0x1417b4180
+Unk_SndRevIt::Unk_SndRevIt(void* pNode)
+{
+    m_pNode = pNode;
 }
 // @0x1417b71d0
-Unk_ListIt* FUN_1417b71d0(std::list<CStringW>* pList, Unk_ListIt* pOut) noexcept
+Unk_SndRevIt Unk_SndMessageList::FUN_1417b71d0() noexcept
 {
-    FUN_1417b4180((void**)pOut, pList->end()._Ptr);
-    return pOut;
+    return Unk_SndRevIt(end()._Ptr);
 }
 // @0x1417b4640
-CStringW* FUN_1417b4640(Unk_ListIt* pIt)
+CStringW* Unk_SndRevIt::FUN_1417b4640()
 {
-    Unk_ListIt kPrev = *pIt;
+    Unk_ListIt kPrev = *(Unk_ListIt*)this;
     return &*--kPrev;
 }
 
@@ -349,7 +364,7 @@ void FUN_1417ae7c0(FMOD_RESULT nResult)
     {
         CStringA strText(FUN_1417b0e10(nResult));
         const char* pszText = FUN_1417b0e10(nResult);
-        FUN_1403a1280(GetLogString(), 1, 0x13, L"{0}", pszText);
+        Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"{0}", pszText);
     }
 }
 
@@ -363,7 +378,7 @@ void CSoundService::FUN_1417ae840(int nFlag)
     }
     else
     {
-        unsigned int bVolume = *(unsigned char*)((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_140d13c70());
+        unsigned int bVolume = *(unsigned char*)((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140d13c70());
         ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(0, bVolume);
         ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(9, bVolume);
         ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(1, bVolume);
@@ -385,14 +400,14 @@ int CSoundService::FUN_1417ae990()
     {
         if (((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()) != 0)
         {
-            FUN_1422ec700(((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()), ((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef());
+            ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()->FUN_1422ec700(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef());
         }
     }
     if (GetSystem() != 0)
         GetSystem()->setCallback(FUN_1417b14a0);
     if (FUN_1417aea70() != 0)
     {
-        FUN_14177af40(FUN_140d13c40(), GetEventSystem(), GetSystem());
+        ((CSoundEventMgr*)FUN_140d13c40())->FUN_14177af40(GetEventSystem(), GetSystem());
         return 1;
     }
     return 0;
@@ -646,8 +661,8 @@ void FUN_1417af6e0()
 {
     if (FUN_140d13c40() != 0)
         ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->OnLostSoundDevice();
-    if (FUN_1403ed280() != 0)
-        ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6160();
+    if ((void*)TSingleton<CEffectService>::GetInstance() != 0)
+        ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6160();
     if (FUN_140c9cb10() != 0)
         FUN_140c9cb10()->FUN_1417af340();
 }
@@ -903,11 +918,11 @@ efd::SyncResult CSoundService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 // @0x1417b06b0
 efd::AsyncResult CSoundService::OnInit()
 {
-    void* pObj = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    void* pObj = ((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pObj != 0)
     {
-        FUN_1411d7c70(pObj, FUN_1417af740, this);
-        FUN_1411d7c10(pObj, FUN_1417af780, this);
+        ((NiDX9Renderer*)pObj)->AddResetNotificationFunc(FUN_1417af740, this);
+        ((NiDX9Renderer*)pObj)->AddLostDeviceNotificationFunc(FUN_1417af780, this);
     }
     return efd::AsyncResult_Complete;
 }
@@ -915,8 +930,8 @@ efd::AsyncResult CSoundService::OnInit()
 // @0x1417b0730
 efd::AsyncResult CSoundService::OnTick()
 {
-    ((class SoundPropertyMgr*)(void*)(FUN_1411b1de0()))->FUN_141793450();
-    float fDelta = ((class CMainSystem*)(void*)(FUN_14086d260()))->GetLastGameTimeDelta();
+    ((class SoundPropertyMgr*)(void*)((void*)TSingleton<SoundPropertyMgr>::GetInstance()))->FUN_141793450();
+    float fDelta = ((class CMainSystem*)(void*)((void*)TSingleton<CMainSystem>::GetInstance()))->GetLastGameTimeDelta();
     if (s_nReload != 0)
     {
         if (s_nReload == 2)
@@ -925,7 +940,7 @@ efd::AsyncResult CSoundService::OnTick()
             if (FUN_1417ae990() != 0)
             {
                 ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bf20();
-                FUN_14125fe20((struct Unk_SoundState*)(((void*)((class CGameOption*)(void*)(FUN_1409a8b10()))->FUN_140d13c70())));
+                FUN_14125fe20((struct Unk_SoundState*)(((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140d13c70())));
                 ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422afe50();
             }
             s_nReload = 0;
@@ -945,16 +960,15 @@ efd::AsyncResult CSoundService::OnTick()
             delete m_pNetStream;
             m_pNetStream = 0;
         }
-        double dDelta = ((class CMainSystem*)(void*)(FUN_14086d260()))->GetDeltaTime();
-        m_fMessageTimer = m_fMessageTimer + (float)dDelta;
-        if (1.0 < m_fMessageTimer)
+        float fStep = (float)((class CMainSystem*)(void*)((void*)TSingleton<CMainSystem>::GetInstance()))->GetDeltaTime();
+        m_fMessageTimer += fStep;
+        if (1.0f < m_fMessageTimer)
         {
             m_fMessageTimer = 0;
             if (!m_listMessages.empty())
             {
-                Unk_ListIt kEnd;
-                CStringA strMessage = FUN_14016a600(*FUN_1417b4640(FUN_1417b71d0(&m_listMessages, &kEnd)), 0);
-                FUN_141bdac80(WorldService::GetInstance(), CStringA(strMessage));
+                CStringA strMessage = FUN_14016a600(*static_cast<Unk_SndMessageList*>(&m_listMessages)->FUN_1417b71d0().FUN_1417b4640(), 0);
+                WorldService::GetInstance()->SetResearchDialogStatus(CStringA(strMessage));
             }
             for (std::list<CStringW>::iterator it = m_listMessages.begin(); it != m_listMessages.end(); ++it)
                 FUN_1412751b0(*it, 0x14);
@@ -964,36 +978,41 @@ efd::AsyncResult CSoundService::OnTick()
     if (((class CameraMgr*)(void*)(FUN_1409478c0()))->FUN_140a18070() != 0 && ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60()) != 0)
     {
         Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
-        Vector3 kPos;
-        pCam->GetPosition(&kPos);
+        Vector3 kPos = pCam->GetPosition();
         Vector3 kForward = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0340();
         Vector3 kUp = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0250();
         if (GetEventSystem() != 0)
         {
-            FMOD_VECTOR vPos = {kPos.x, kPos.z, kPos.y};
-            FMOD_VECTOR vVel = {0, 0, 0};
-            FMOD_VECTOR vUp = {kUp.x, kUp.z, kUp.y};
-            FMOD_VECTOR vForward = {kForward.x, kForward.z, kForward.y};
-            FMOD::EventSystem* pEvents = GetEventSystem();
-            FMOD_RESULT nResult = pEvents->set3DListenerAttributes(0, &vPos, &vVel, &vUp, &vForward);
+            FMOD_VECTOR vPos;
+            FMOD_VECTOR vVel;
+            FMOD_VECTOR vUp;
+            FMOD_VECTOR vForward;
+            vPos.x = kPos.x;
+            vPos.y = kPos.z;
+            vPos.z = kPos.y;
+            vUp.x = kUp.x;
+            vUp.y = kUp.z;
+            vUp.z = kUp.y;
+            vForward.x = kForward.x;
+            vForward.y = kForward.z;
+            vForward.z = kForward.y;
+            vVel.x = 0;
+            vVel.y = 0;
+            vVel.z = 0;
+            FMOD_RESULT nResult = GetEventSystem()->set3DListenerAttributes(0, &vPos, &vVel, &vUp, &vForward);
             FUN_1417ae7c0(nResult);
-            pEvents = GetEventSystem();
-            nResult = pEvents->update();
+            nResult = GetEventSystem()->update();
             FUN_1417ae7c0(nResult);
         }
         ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bb70(fDelta);
     }
     else if (GetEventSystem() != 0)
     {
-        FMOD::EventSystem* pEvents = GetEventSystem();
-        FMOD_RESULT nResult = pEvents->update();
+        FMOD_RESULT nResult = GetEventSystem()->update();
         FUN_1417ae7c0(nResult);
     }
     if (GetSystem() != 0)
-    {
-        FMOD::System* pSystem = GetSystem();
-        pSystem->update();
-    }
+        GetSystem()->update();
     return efd::AsyncResult_Pending;
 }
 
@@ -1001,13 +1020,13 @@ efd::AsyncResult CSoundService::OnTick()
 efd::AsyncResult CSoundService::OnShutdown()
 {
     FUN_1417af600();
-    void* pObj = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    void* pObj = ((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pObj != 0)
     {
-        FUN_1414fe370(pObj, FUN_1417af740);
-        FUN_1414fe240(pObj, FUN_1417af780);
+        ((NiDX9Renderer*)pObj)->RemoveResetNotificationFunc(FUN_1417af740);
+        ((NiDX9Renderer*)pObj)->RemoveLostDeviceNotificationFunc(FUN_1417af780);
     }
-    ((class CEffectService*)(void*)(FUN_1403ed280()))->FUN_1411a6160();
+    ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6160();
     ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177ba30();
     FUN_1417af340();
     return efd::AsyncResult_Complete;

@@ -97,8 +97,8 @@ public:
     AScript(int nMovieId);                                                                   // 0x1422ba6e0 creates a fresh AS object (asequipicon.cpp)
     AScript(Scaleform::GFx::Value& v, int nMovieId);                                         // 0x1422ba7f0 same body as the const& form (asequipicon.cpp)
     Scaleform::GFx::Value GetMember(const char* szMember);                               // child member by name
-    bool FUN_1422baad0(const char* szMember, CStringW& strOut);                             // read a string member (merat market products; false if missing)
-    bool FUN_1422ba9a0();                                                                    // value is undefined
+    bool TryGetWString(const char* szMember, CStringW& strOut);                             // read a string member (merat market products; false if missing)
+    bool IsUndefinedOrNull();                                                                    // value is undefined
     Scaleform::GFx::Value& FUN_1422bb870();                                                  // m_value
     Scaleform::GFx::Value Invoke(const char* szMethod);                                     // 0x1422bb330
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2);                      // 0x140acd070
@@ -117,7 +117,7 @@ public:
     // overload here: callers passing unsigned to Invoke(method, Value, int) 0x1409b1490 would switch to it.
     Scaleform::GFx::Value FUN_1422e4350(const char* szMethod, Scaleform::GFx::Value a1, unsigned a2);
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, bool a2, Scaleform::GFx::Value a3, Scaleform::GFx::Value a4);   // 0x14131cc10 (inline COMDAT, defined in uimeratmarketregisterdialog.cpp; all by value)
-    bool FUN_1422bac00(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp; false if missing)
+    bool TryGetString(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp; false if missing)
     Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float a1, float a2);          // 0x140e5bf20 (inline COMDAT, defined in uimasteryobjectmark.cpp)
     Scaleform::GFx::Value FUN_140e5bfe0(const char* szMethod, CString a1, float a2, float a3);   // 0x140e5bfe0 (inline COMDAT, defined in uimasteryobjectmark.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, const AScript& a2);      // 0x140e7bcb0 (inline COMDAT, defined in uiquestnavigation.cpp; a1 by value)
@@ -249,7 +249,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2);   // 0x140f17150 (inline COMDAT, defined in uiblackmarketpage.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, const class ASDataProvider& a1);          // 0x140bbeaa0 (inline COMDAT; the provider's value)
     Scaleform::GFx::Value Invoke(const char* szMethod, const ASArray& a1, int a2);               // 0x140e813f0 (inline COMDAT)
-    CStringW FUN_1422bb2b0(const char* szName);                                                 // a member as text (uiblackmarketpage.cpp; ASObj declares the same)
+    CStringW GetWString(const char* szName);                                                 // a member as text (uiblackmarketpage.cpp; ASObj declares the same)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, bool a3, bool a4);   // 0x140f0a6f0 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, long a2);   // 0x140f0a830 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, bool a2, bool a3, Scaleform::GFx::Value a4);   // 0x1419b2be0 (inline COMDAT, defined in uiitemcoloringdialog.cpp; all by value)
@@ -348,13 +348,13 @@ public:
     virtual ~AScript();                                                                      // 0x1422ba860 (m_value.SetNull(); ??_G 0x1409bb9a0)
     CString GetName();                                                                 // the "name" member as text
     CString FUN_1422ba950();                                                                 // the class name "AScript"
-    bool FUN_1422bad80(const char* szMember, unsigned int* pOut);                            // UInt member
-    bool FUN_1422bae10(const char* szMember, int* pOut);                                     // Int member
-    bool FUN_1422baea0(const char* szMember, float* pOut);                                   // Number member as float
-    bool FUN_1422baf40(const char* szMember, double* pOut);                                  // Number member
-    bool FUN_1422bafe0(const char* szMember, bool* pOut);                                    // Boolean member
-    bool FUN_1422bb070(const char* szMember, __int64* pOut);                                 // Int / Number / numeric String member
-    bool FUN_1422bb170(const char* szMember, unsigned __int64* pOut);                        // UInt / Number / numeric String member
+    bool TryGetUInt(const char* szMember, unsigned int* pOut);                            // UInt member
+    bool TryGetInt(const char* szMember, int* pOut);                                     // Int member
+    bool TryGetFloat(const char* szMember, float* pOut);                                   // Number member as float
+    bool TryGetDouble(const char* szMember, double* pOut);                                  // Number member
+    bool TryGetBool(const char* szMember, bool* pOut);                                    // Boolean member
+    bool TryGetInt64(const char* szMember, __int64* pOut);                                 // Int / Number / numeric String member
+    bool TryGetUInt64(const char* szMember, unsigned __int64* pOut);                        // UInt / Number / numeric String member
     CString ToString();                                                                 // toString()
     CString ToLocaleString();                                                                 // toLocaleString()
     int IsPrototypeOf(Scaleform::GFx::Value v);                                              // IsPrototypeOf(v) (v by value: destroyed here)

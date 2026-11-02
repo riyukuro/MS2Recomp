@@ -157,9 +157,9 @@ int UILightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 // @0x141448ec0
 void UILightDialog::FUN_141448ec0(ASData* pData)
 {
-    float fR = pData->FUN_1422b8c10();
-    float fG = pData->FUN_1422b8c10();
-    float fB = pData->FUN_1422b8c10();
+    float fR = pData->PopFloat();
+    float fG = pData->PopFloat();
+    float fB = pData->PopFloat();
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetFogColor(NiColor(fR / 255.0f, fG / 255.0f, fB / 255.0f));
     ecr::SceneGraphService* pService = reinterpret_cast<ecr::SceneGraphService*>(FUN_1409a5700((Unk_AeServiceCell*)&DAT_143b059e8));
@@ -172,8 +172,8 @@ void UILightDialog::FUN_141448ec0(ASData* pData)
 // @0x141448fd0
 void UILightDialog::FUN_141448fd0(ASData* pData)
 {
-    float fSlider1 = pData->FUN_1422b8c10();
-    float fSlider2 = pData->FUN_1422b8c10();
+    float fSlider1 = pData->PopFloat();
+    float fSlider2 = pData->PopFloat();
     float fFogValue = 1.0f;
     float fDensity = 1.0f;
     float fNear = 0.0f;

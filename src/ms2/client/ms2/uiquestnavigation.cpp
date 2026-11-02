@@ -45,8 +45,8 @@ class CLiftableObject : public CPtred
 {
 public:
     CStringA FUN_1414472a0();                                   // the liftable's name
-    int FUN_141447cc0();                                        // its id
-    int FUN_141447ae0();                                        // nonzero: already carried
+    int FUN_141447cc0() const;                                      // its id
+    int GetState() const;                                           // nonzero: already carried
     Vector3 FUN_141447c80();                            // its position
 };
 class Unk_SSGNamedObj : public CLiftableObject {};
@@ -61,8 +61,8 @@ public:
 class Unk_QgNavi : public CQuestNavigator
 {
 };
-extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navigator
-Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
+class CQuestNavigator;
+Unk_QgNavi* FUN_140e7c990() { return reinterpret_cast<Unk_QgNavi*>(TSingleton<CQuestNavigator>::s_instance); }           // 0x140e7c990
 class Unk_QgUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -153,7 +153,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
     {
         pt.FUN_140ad0c10(((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(FUN_141277f40()));
         pt.y += vfunc_8();
-        m_20->FUN_1422c00f0(pt.x, pt.y);
+        m_20->SetPositionFloat(pt.x, pt.y);
         m_20->vfunc_3(1);
     }
     else
@@ -413,7 +413,7 @@ int LiftableNavigationEntity::vfunc_5(const TraceResult* pResult)
     MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return 0;
-    if (!spObj->FUN_141447ae0() == false)
+    if (!spObj->GetState() == false)
         return 0;
     return 1;
 }
@@ -426,7 +426,7 @@ int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
     MS2Ptr<Unk_SSGNamedObj> spObj = reinterpret_cast<Unk_SSGWorld*>(WorldService::GetInstance())->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return 0;
-    if (!spObj->FUN_141447ae0() == false)
+    if (!spObj->GetState() == false)
         return 0;
     return 1;
 }

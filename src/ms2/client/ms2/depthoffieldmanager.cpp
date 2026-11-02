@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x141177ee0-0x141178340 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\depthoffieldmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 #include "depthoffieldmanager.h"
 #include "hook/ms2hook.h"
 #include <NiFixedString.h>
@@ -15,7 +16,7 @@ class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
-void* FUN_1409a8b10();
+class CGameOption;
 class Unk_AeGameOption   // C3: member view for the former free stand-ins
 {
 public:
@@ -65,7 +66,7 @@ CDepthOfFieldManager::~CDepthOfFieldManager()
 void CDepthOfFieldManager::FUN_141177fa0()
 {
     m_10 = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetStep(4));
-    FUN_141178020(FUN_1411782b0(((void*)((class Unk_AeGameOption*)(void*)(FUN_1409a8b10()))->FUN_1409a8ac0())));
+    FUN_141178020(FUN_1411782b0(((void*)((class Unk_AeGameOption*)(void*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance())))->FUN_1409a8ac0())));
 }
 MS2_REPLACE_METHOD(0x141177FA0, CDepthOfFieldManager, FUN_141177fa0, 75, 0xEEBEED69);
 

@@ -93,7 +93,7 @@ void UITimerGaugeDialog::FUN_140edf2b0(){
 MS2_REPLACE_METHOD(0x140EDF2B0, UITimerGaugeDialog, FUN_140edf2b0, 450, 0xF7B3D086);
 
 // @0x140edf480
-void UITimerGaugeDialog::FUN_140edf480(MS2Ptr<ASMovieClip> clip,unsigned int time){if(m_duration==0)return;double ratio=static_cast<double>(time)/static_cast<double>(m_duration);double x=678.0*ratio;clip->FUN_1422c0060(static_cast<unsigned int>(x),0);}
+void UITimerGaugeDialog::FUN_140edf480(MS2Ptr<ASMovieClip> clip,unsigned int time){if(m_duration==0)return;double ratio=static_cast<double>(time)/static_cast<double>(m_duration);double x=678.0*ratio;clip->SetPositionUInt(static_cast<unsigned int>(x),0);}
 MS2_REPLACE_METHOD(0x140EDF480, UITimerGaugeDialog, FUN_140edf480, 163, 0x31FC9BEF);
 
 // @0x140edf530

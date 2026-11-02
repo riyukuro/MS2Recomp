@@ -8,7 +8,6 @@ class Unk_DropList;
 class Unk_DropText;
 class Unk_DropButton;
 class Unk_DropInput;
-class Unk_DropSlot;
 // The owning pointer has a same-type assignment COMDAT in this unit.
 template <class T> class Unk_DropPtr {
 public:
@@ -27,7 +26,7 @@ private:
     void* m_00;
     T* m_p;
 };
-// Intrusive handle whose COMDATs are instantiated in this unit (T = Unk_DropSlot); the template name is unknown.
+// Intrusive handle whose COMDATs are instantiated in this unit (T = ASMDragTarget); the template name is unknown.
 template <class T> class Unk_DropHandle {
 public:
     Unk_DropHandle() : m_p(0) {}
@@ -39,13 +38,13 @@ public:
     T* operator->() const { return m_p; }
 private:
     void AddRef() const { if (m_p) AddRefImpl(0); }
-    static void Reference(T* p) { p->FUN_14015b020(); }
+    static void Reference(T* p) { CPtred::AddRefPtred(p); }
     void AddRefImpl(void*) const { Reference(m_p); }
     void Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
     void ReleaseImpl(void*) {
-        if (m_p->FUN_140159bc0() == 0) {
+        if (CPtred::ReleasePtred(m_p) == 0) {
             Reference(m_p);
-            m_p->FUN_140159ba0();
+            CPtred::DeletePtred(m_p);
         }
     }
     void* m_unused;

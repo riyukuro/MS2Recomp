@@ -8,6 +8,8 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include <atlcoll.h>
+#include <map>
+#include <set>
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/client/ms2/trademanagerex.h"
@@ -27,21 +29,7 @@
         char m_pad[size];                                              \
     };
 
-struct Unk_Be790Map
-{
-    Unk_Be790Map(int n1, float f1, float f2, float f3, int n2);
-    ~Unk_Be790Map();
-    char m_pad[0x48];
-};
-void FUN_14027c6b0(void*, int, float, float, float, int);
-void FUN_14027deb0(void*);
-Unk_Be790Map::Unk_Be790Map(int n1, float f1, float f2, float f3, int n2) { FUN_14027c6b0(this, n1, f1, f2, f3, n2); }
-Unk_Be790Map::~Unk_Be790Map() { FUN_14027deb0(this); }
-
 UNK_STATIC1(Unk_Be790B, FUN_140932870, FUN_140932b40, 0x10)
-UNK_STATIC1(Unk_Be790C, FUN_14063e410, FUN_14063e780, 0x10)
-UNK_STATIC1(Unk_Be790D, FUN_140333290, FUN_140333cb0, 0x10)
-UNK_STATIC1(Unk_Be790F, FUN_140182e30, FUN_140183b40, 0x10)
 UNK_STATIC1(Unk_Be790H, FUN_140dfc480, FUN_140dfc4b0, 0x30)
 
 // 0x143ab2e80 is trademanagerex.h's Unk_TradeItemTable (0x58): the exe's dynamic init / atexit call its own ctor/dtor
@@ -73,9 +61,9 @@ CStringA DAT_143ab2a28;
 extern CStringA DAT_143ab2a28;
 #endif
 #ifndef MS2_HOOK_DLL   // s_map30e0: the exe's object at 0x143ab30e0, which other units reach as DAT_143ab30e0 (the hook DLL binds it)
-Unk_Be790Map DAT_143ab30e0(17, 0.75f, 0.25f, 2.25f, 10);
+ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0(17, 0.75f, 0.25f, 2.25f, 10);
 #else
-extern Unk_Be790Map DAT_143ab30e0;
+extern ATL::CAtlMap<unsigned int, unsigned int> DAT_143ab30e0;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr2a58: the exe's object at 0x143ab2a58, which other units reach as DAT_143ab2a58 (the hook DLL binds it)
 ATL::CAtlArray<Unk_PtrA*> DAT_143ab2a58;
@@ -93,14 +81,14 @@ Unk_Be790B DAT_143ab32e8;
 extern Unk_Be790B DAT_143ab32e8;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj32f8: the exe's object at 0x143ab32f8, which other units reach as DAT_143ab32f8 (the hook DLL binds it)
-Unk_Be790C DAT_143ab32f8;
+std::map<int, long> DAT_143ab32f8;
 #else
-extern Unk_Be790C DAT_143ab32f8;
+extern std::map<int, long> DAT_143ab32f8;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2a30: the exe's object at 0x143ab2a30, which other units reach as DAT_143ab2a30 (the hook DLL binds it)
-Unk_Be790D DAT_143ab2a30;
+std::set<unsigned __int64> DAT_143ab2a30;
 #else
-extern Unk_Be790D DAT_143ab2a30;
+extern std::set<unsigned __int64> DAT_143ab2a30;
 #endif
 #ifndef MS2_HOOK_DLL   // s_wstr2d78: the exe's object at 0x143ab2d78, which other units reach as DAT_143ab2d78 (the hook DLL binds it)
 CStringW DAT_143ab2d78(L"");
@@ -123,9 +111,9 @@ CStringA DAT_143ab2a48;
 extern CStringA DAT_143ab2a48;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj3308: the exe's object at 0x143ab3308, which other units reach as DAT_143ab3308 (the hook DLL binds it)
-Unk_Be790F DAT_143ab3308;
+std::set<unsigned int> DAT_143ab3308;
 #else
-extern Unk_Be790F DAT_143ab3308;
+extern std::set<unsigned int> DAT_143ab3308;
 #endif
 #ifndef MS2_HOOK_DLL   // s_arr32b8: the exe's object at 0x143ab32b8, which other units reach as DAT_143ab32b8 (the hook DLL binds it)
 ATL::CAtlArray<Unk_PtrC*> DAT_143ab32b8;

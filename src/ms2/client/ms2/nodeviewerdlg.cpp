@@ -9,22 +9,23 @@
 #include "hook/ms2hook.h"
 
 // ---- unit-local placeholders ----
+class NiFixedString;
 // The scene-graph node (NiNode-like): the slots used here.
 class Unk_NvNode { public:
     virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6();
     virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11(); virtual void s12(); virtual void s13();
     virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19();
-    virtual void* vfunc_20(const struct Unk_NvName& kName);         // 0xa0 GetObjectByName
+    virtual void* vfunc_20(const NiFixedString& kName);         // 0xa0 GetObjectByName
     virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24(); virtual void s25(); virtual void s26(); virtual void s27();
     virtual void s28(); virtual void s29(); virtual void s30(); virtual void s31(); virtual void s32(); virtual void s33(); virtual void s34();
     virtual void s35();
     virtual void vfunc_36(void* child, int flag);                   // 0x120 AttachChild
     virtual void vfunc_37(void* out, void* child); };               // 0x128 DetachChild
 
-// A NiFixedString-like name (ctor 0x140984450, dtor 0x1409845a0).
-struct Unk_NvName { Unk_NvName(const char* psz); ~Unk_NvName(); void* m_p; };
+// The NiFixedString name (ctor 0x140984450, dtor 0x1409845a0).
+class NiFixedString { public: NiFixedString(const char* psz); ~NiFixedString(); void* m_p; };   // C3: unit-local view
 
-extern char DAT_143afa4d8;                                          // NiNode RTTI cast table
+class NiNode { public: static const class NiRTTI ms_RTTI; };       // C3: unit-local view (the NiNode RTTI)
 class NiObject   // C3: member view for the former free stand-ins
 {
 public:
@@ -72,8 +73,6 @@ class CUIService   // C3: member view for the former free stand-ins
 public:
     void FUN_141aec8f0(bool, class NiAVObject*);
 };
-void FUN_141858d20(CToolTreeNodesDialog* pDlg);
-void FUN_141858b50(CToolTreeNodesDialog* pDlg, void* pNode);
 
 typedef TFunctor<void, ParamList<CString, EmptyParam> > Unk_NvSelectFunctor;
 
@@ -118,10 +117,10 @@ void CNodeViewerDlg::FUN_140c7f0f0()
     void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
     if (pEntity != 0)
     {
-        pRoot = (Unk_NvNode*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
+        pRoot = (Unk_NvNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
         if (pRoot != 0)
         {
-            Unk_NvName kName((const char*)m_strNode);
+            NiFixedString kName((const char*)m_strNode);
             void* pFound = pRoot->vfunc_20(kName);
             if (pFound != 0)
             {
@@ -141,14 +140,14 @@ void CNodeViewerDlg::FUN_140c7f0f0()
                     int* pCat = (int*)FUN_140876480(&catTmp, 0);
                     FUN_1409f76f0(&m_node, new (*pCat) Unk_NvNiNode(0));
                     {
-                        Unk_NvName kNodeName("NodeViewer");
-                        ((class NiObjectNET*)(void*)(FUN_1409475f0(&m_node)))->SetName(*(class NiFixedString const*)&(kNodeName));
+                        NiFixedString kNodeName("NodeViewer");
+                        ((class NiObjectNET*)(void*)(FUN_1409475f0(&m_node)))->SetName(kNodeName);
                     }
                     NiTransform kXf;
                     kXf.MakeIdentity();
                     ((class NiAVObject*)(void*)(FUN_1409475f0(&m_node)))->SetLocalTransform(kXf);
                 }
-                Unk_NvNode* pTarget = (Unk_NvNode*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(pFound)));
+                Unk_NvNode* pTarget = (Unk_NvNode*)((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(pFound)));
                 if (pTarget != 0)
                 {
                     pTarget->vfunc_36(FUN_1409475d0(&m_node), 0);
@@ -226,7 +225,7 @@ void CNodeViewerDlg::FUN_140c7f680()
 {
     ((class CUIService*)(void*)(FUN_1403ed2b0()))->FUN_141aec8f0(false, (class NiAVObject*)(0));
     if (m_pTree != 0)
-        FUN_141858d20(m_pTree);
+        m_pTree->OnClose();
     if (FUN_1409475d0(&m_node) != 0)
     {
         Unk_NvNode* pParent = (Unk_NvNode*)((void*)((class NiAVObject*)(void*)(FUN_1409475f0(&m_node)))->GetParent());
@@ -250,10 +249,10 @@ void CNodeViewerDlg::FUN_140c7f770()
     void* pEntity = ((void*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
     if (pEntity != 0)
     {
-        pNode = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
+        pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<GameObject*>(pEntity)->FUN_14123c410()))));
         if (pNode != 0)
         {
-            FUN_141858b50(m_pTree, pNode);
+            m_pTree->FUN_141858b50((class Unk_TreeNode*)pNode);
             m_pTree->ShowWindow(5);
         }
     }

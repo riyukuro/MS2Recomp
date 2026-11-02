@@ -106,8 +106,8 @@ struct Unk_TaxiIdArray { int* m_data; unsigned __int64 m_count; unsigned __int64
 extern Unk_TaxiIdArray DAT_143ab3078;
 extern Unk_TaxiIdArray DAT_143ab3098;
 extern int DAT_143ab2870;                               // taxi station id (resource id)
-extern Unk_TaxiResTable* DAT_143ab1f30;
-extern Unk_TaxiTimer* DAT_143ab47a0;
+class CTaxiManager;
+class OnceCallbackTimer;
 
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -162,9 +162,9 @@ float FUN_1409f2310(float f) { return FUN_14029cc60(f); }
 // @0x1409f25a0
 float FUN_1409f25a0(float f) { return FUN_14029dba0(f); }
 // @0x1409f24a0
-Unk_TaxiResTable* FUN_1409f24a0() { return DAT_143ab1f30; }
+Unk_TaxiResTable* FUN_1409f24a0() { return reinterpret_cast<Unk_TaxiResTable*>(TSingleton<CTaxiManager>::s_instance); }
 // @0x1409f24b0
-Unk_TaxiTimer* FUN_1409f24b0() { return DAT_143ab47a0; }
+Unk_TaxiTimer* FUN_1409f24b0() { return reinterpret_cast<Unk_TaxiTimer*>(TSingleton<OnceCallbackTimer>::s_instance); }
 // @0x1409f2430
 // The current mode's distance (slot 19; FUN_140b67d10 is the same shape over slot 17).
 float FUN_1409f2430(Unk_CameraManager* cam)
@@ -228,7 +228,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
     if (m_nActive == 0 || m_nDone != 0)
         return;
     {
-        Unk_TaxiEntRef ent;
+        // The loop holds each list entry in a smart pointer.
         Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
         {
@@ -241,12 +241,12 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                     {
                         for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos))
                         {
-                            ent.FUN_1408a7ed0(list->GetAt(pos));
+                            efd::SmartPointer<egf::Entity> ent(reinterpret_cast<const efd::SmartPointer<egf::Entity>&>(list->GetAt(pos)));
                             Unk_CameraSetting setting;
                             if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->GetModeSetting(*(struct Unk_CameraSetting*)(&setting)) != 0)
                             {
                                 Vector3 base;
-                                reinterpret_cast<egf::Entity*>(ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(base));
+                                ent->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(base));
                                 float fDist = FUN_1409f2430(Unk_CameraManager::FUN_1409478c0());
                                 float fYaw = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0c70();
                                 float fPitch = ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af0d30();
@@ -256,13 +256,13 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 Vector3 delta = setting.m_c.FUN_140965c40(Vector3(x, y, z));
                                 setting.m_c = Vector3(x, y, z);
                                 float fTime = delta.FUN_140967ac0() * 0.8f;
-                                float fSec = fTime / 1000.0f;
+
                                 Unk_TaxiCamMove mv;
-                                FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fSec, &setting);
+                                FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fTime / 1000.0f, &setting);
                                 mv.m_nKind = 2;
                                 ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
                                 ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(4, 0);
-                                FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)fTime,
+                                FUN_140ca7230(FUN_1409f24b0(), (unsigned)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
                                     ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
@@ -271,7 +271,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                             {
                                 SendRequestTaxiMode5();
                             }
-                            ent.FUN_1408a8720();
+
                         }
                     }
                 }

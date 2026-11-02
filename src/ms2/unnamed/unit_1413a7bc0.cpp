@@ -16,6 +16,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -38,7 +39,7 @@ public:
 };
 
             // CUIService
-CUIService* FUN_1403ed2b0();
+class CUIService;
 CInputKeyHandler* FUN_14025e7c0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -77,7 +78,7 @@ int CGuideConditionNext::vfunc_3()
         m_nStart = GetTickCountMs2();
     if (GetTickCountMs2() - m_nStart >= (unsigned)m_n20)
         return 1;
-    if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adbb00() != 0)
         return 0;
     if (FUN_14025e7c0()->FUN_14116dcb0(0x493e2, false, 0))
         return 1;

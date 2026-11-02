@@ -75,6 +75,10 @@
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/ugcdef.h"
+#include "ms2/placeholder/cugcmanager.h"     // C3: CUgcManager::ApplyImageToRidee/FUN_141883df0
+#include "ms2/client/ms2/uirenderview.h"    // C3: UIRenderView::GetDirty (0x141ab7660)
+#include <NiControllerManager.h>            // C3: NiControllerManager::SetPaused (0x141c3c0e0)
 
 
 // ---- unit-local views of exe objects ----
@@ -87,7 +91,6 @@ struct Unk_AcKey { unsigned __int64 m_id; };
 struct Unk_AvAnimTarget
 {
     bool FUN_1409fad60();                                   // 0x1409fad60 byte +0xa1
-    void FUN_141c3c0e0(bool b);                             // forwards the flag
     char m_pad_00[0xa1];
     bool m_bA1;                                             // +0xa1
 };
@@ -130,16 +133,7 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
-// UGC ridee build request (CUgcItemRidee, RTTI; ctor 0x14088fd60, dtor 0x14088fde0).
-struct Unk_UgcItemRidee { char m_pad[0x58]; };
-void FUN_14088fd60(Unk_UgcItemRidee* pRidee, CItem* pItem, Unk_GoModelKey& kKey);
-void FUN_14088fde0(Unk_UgcItemRidee* pRidee);
-class Unk_UgcRideeMgr
-{
-public:
-    int FUN_141887040(Unk_UgcItemRidee* pRidee, CString strFile, unsigned __int64 nUgcUid);
-    void FUN_141883df0(MS2Ptr<CItem> spItem, Unk_GoModelKey& kKey);
-};
+class Unk_UgcRideeMgr;
 Unk_UgcRideeMgr* FUN_14052d220();
 CString FUN_1410280d0(int nKind, CString strName);
 
@@ -167,7 +161,6 @@ public:
     virtual void vfunc_10(int nObjectId);                   // 10 tells the view which object it shows
     virtual void vfunc_11();
     virtual void vfunc_12(ATL::CAtlArray<NiNode*>& kNodes, NiNodePtr spRoot);   // 12 hands the nodes to the view
-    int FUN_141ab7660();                                    // the view is still loading
 };
 
 // The settings singleton (FUN_1401d3200): two default-outfit lists and the glide action id.
@@ -218,13 +211,16 @@ public:
 // The mode service (FUN_1409f7c90): one flag read from a global.
 extern int DAT_143ae2b40;
 class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
-extern Unk_AvModeSvc* DAT_143ab50c0;
+class COptimizer;
 // The physics service (singleton behind FUN_1409f7ca0): only the closest ray cast is used here.
-class Unk_AvPhysicsSvc
+class Unk_AvPhysicsSvc;
+// physxhelper.h needs NOMINMAX ahead of windows.h, so the ray cast is named on a local view.
+struct Unk_RayCastInfo;
+class CPhysXHelper
 {
 public:
-    int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, void* pInfo, float fLen,
-                      Vector3* pNormal, int nMask);
+    int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
+                              Vector3* pNormal, int nMask);   // 0x14168a310
 };
 extern Unk_AvPhysicsSvc* DAT_143ab50b8;
 Unk_AvModeSvc* FUN_1409f7c90();
@@ -236,7 +232,6 @@ extern char DAT_143acdb20;                                  // set while the ava
 
 #include "ms2/commonfiles/itemdatatable.h"   // C3: CItemDataTable::GetPaletteColor (0x1405587f0)
 #include "ms2/commonfiles/itemdata.h"        // C3: ItemColorEx
-class Unk_IngTable* FUN_140281980();   // TSingleton<CItemDataTable>::GetInstance (exe copy)
 
 #include "ms2/placeholder/cpetdatatable.h"   // C3: CPetDataTable::Find (0x1407290f0)
 // The pet table (FUN_14052d210).
@@ -250,7 +245,6 @@ class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
 // CString comparisons of the exe.
 char FUN_1401c0090(const CString& a, const CString& b);     // a == b
-bool FUN_1402a5b40(const CString& a, const char* b);        // a != b
 CString FUN_140298360(const char* a, const CString& b);      // a + b
 
 // CSkillRecord (RTTI, 0x1c0) and the skill request it is built from (same request as inventory.cpp's view).
@@ -327,23 +321,14 @@ public:
 
 // PC helpers of the unrecovered pc units, bound by VA.
 class Unk_PCLook;
-unsigned __int64 FUN_141662e90(PC* pPC);
-void FUN_141662d60(PC* pPC, unsigned __int64 n);
-void FUN_141656a50(PC* pPC, unsigned __int64 n);
 #include "ms2/commonfiles/jobsystem.h"   // C3: JobSystem::SetJob (0x140638200)
-void FUN_1416591e0(PC* pPC, int nSlot, const Unk_CharEquip& kEquip);
-float FUN_14166da40(PCBase* pPC);
-void FUN_141661ba0(PC* pPC, int n);
-void FUN_14165cac0(PC* pPC);
-void* FUN_14165f460(PC* pPC);
-void FUN_141270bf0(void* pPC, MS2Ptr<CItem> spItem);
-void FUN_141653d10(PC* pPC, MS2Ptr<CItem> spItem);
+#include "ms2/placeholder/pcgemequip.h"   // C3: PCGemEquip::EquipItem (0x141270bf0)
 void FUN_1417083a0(PCBase* pRider, NiAVObjectPtr spAttach, Unk_RideeInfoPtr kInfo);
 unsigned int FUN_141088660();   // C3: was FUN_141088660
 int FUN_14107c5f0(int, class PC*, class PC*);   // C3: was FUN_14107c5f0
-bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, AvatarPC* pAvatar);
+bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, PC* pAvatar);
 int FUN_14107c2d0(int, unsigned int, unsigned int, class PC*);   // C3: was FUN_14107c2d0
-CString FUN_14107b3d0(unsigned nSex);
+CString FUN_14107b3d0(int nSex);
 Unk_CharEquip FUN_141b6dea0(unsigned nEquipId);
 class CBreakableObject   // C3: member view for the former free stand-ins
 {
@@ -353,7 +338,7 @@ public:
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& kOut, const char* szSep);
+#include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit (0x140177e10)
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 void FUN_141426140(MS2Ptr<CItemUgcMeshContainer>& spMesh);
 
@@ -417,7 +402,7 @@ AvatarPC* FUN_1409f3410(PC* pSource)
     if (pAvatar != 0)
     {
         ((class PC*)(class PC*)(pAvatar))->FUN_141658ed0(((class PC*)(pSource))->FUN_141658f10());
-        FUN_141662d60(pAvatar, FUN_141662e90(pSource));
+        pAvatar->FUN_141662d60(pSource->FUN_141662e90());
         AvatarPC* pSourceAvatar = ((class AvatarPC*)FUN_1405a7e30(pSource));
         if (pSourceAvatar != 0)
             pAvatar->SetType(pSourceAvatar->GetType());
@@ -452,12 +437,8 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     Unk_AvWorld* pWorld = ((class Unk_AvWorld*)WorldService::GetInstance());
     Unk_UserProxy kUser;
     kUser.FUN_1408f1e60();
-    unsigned char nSex;
-    if (nGender == 2)
-        nSex = kUser.m_14;
-    else
-        nSex = (unsigned char)nGender;
-    kUser.m_14 = nSex;
+    int nSex = (nGender != 2) ? (unsigned char)nGender : kUser.m_14;
+    kUser.m_14 = (unsigned char)nSex;
     CString strName = FUN_14107b3d0(nSex);
     Vector3 kDir;
     Vector3 kPos;
@@ -467,50 +448,46 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     spAvatar->SetType(1);
     spAvatar->FUN_14166ed30(false);
     spAvatar->FUN_14123c5a0(FUN_1409f6ee0());
-    FUN_141656a50(spAvatar, kUser.m_8);
+    spAvatar->FUN_141656a50(kUser.m_8);
     spAvatar->FUN_14123bb80(CString(strName));
-    spAvatar->vfunc_19(efd::Point3(kPos.x, kPos.y, kPos.z));
-    spAvatar->vfunc_21(efd::Point3(kDir.x, kDir.y, kDir.z));
+    spAvatar->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
+    spAvatar->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
     spAvatar->vfunc_131(kUser.m_34);
     spAvatar->vfunc_76(kUser.FUN_1408f19e0());
-    ((class PC*)(class PC*)(spAvatar))->FUN_141658e40(nSex);
-    ((JobSystem*)((class PC*)(spAvatar))->FUN_1416546d0())->SetJob(kUser.m_3c, kUser.m_40, kUser.m_34);
-    ((class PCBase*)(class PCBase*)(spAvatar))->AddStateFlags(4);
+    spAvatar->FUN_141658e40(nSex);
+    ((JobSystem*)spAvatar->FUN_1416546d0())->SetJob(kUser.m_3c, kUser.m_40, kUser.m_34);
+    spAvatar->AddStateFlags(4);
     spAvatar->vfunc_59(1, 0, 0, 0);
     Unk_CharEquip aEquip[2];
     aEquip[0] = FUN_141b6dea0(kUser.m_58[0]);
     aEquip[1] = FUN_141b6dea0(kUser.m_58[1]);
-    if (nPreset != 0)
+    if ((unsigned int)nPreset > 0)
     {
-        MS2Ptr<ItemColorEx> kPreset = ((CItemDataTable*)FUN_140281980())->GetPaletteColor(nPreset, 0);
+        MS2Ptr<ItemColorEx> kPreset = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColor(nPreset, 0);
         if (kPreset.get() != 0)
         {
             aEquip[0] = FUN_141b6dea0(kPreset->m_aValues[0]);
             aEquip[1] = FUN_141b6dea0(kPreset->m_aValues[2]);
         }
     }
-    FUN_1416591e0(spAvatar, 0, aEquip[0]);
-    FUN_1416591e0(spAvatar, 1, aEquip[1]);
+    spAvatar->FUN_1416591e0(0, reinterpret_cast<const NiColor&>(aEquip[0]));
+    spAvatar->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(aEquip[1]));
     spAvatar->vfunc_139();
-    Unk_AvTextCfg* pCfg;
-    if (nGender == 0)
-        pCfg = &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgMale;
-    else
-        pCfg = &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgFemale;
+    Unk_AvTextCfg* pCfg = (nGender == 0) ? &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgMale : &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgFemale;
     CString strItems(pCfg->FUN_1409f6f30());
     ATL::CAtlArray<unsigned int> kItemIds;
-    FUN_140177e10(strItems, kItemIds, ", ");
+    XmlSplit(strItems, kItemIds, ", ");
     for (size_t i = 0; i < kItemIds.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(kItemIds[i], 1, 0))
         {
             ((class CItem*)(class CItem*)(spItem.operator->()))->SetObjectId(FUN_1409f6ee0());
-            FUN_141653d10(spAvatar, MS2Ptr<CItem>(spItem));
+            spAvatar->FUN_141653d10(MS2Ptr<CItem>(spItem));
         }
     }
     Vector3 kGround;
-    if (FUN_1409f7ca0()->FUN_14168a310(kPos, kGround, 0, 0.0f, 0, 0) != 0)
+    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(kPos, kGround, 0, 0.0f, 0, 0) != 0)
     {
         kGround.z = kGround.z + 1.0f;
         spAvatar->vfunc_19(efd::Point3(kGround.x, kGround.y, kGround.z));
@@ -553,15 +530,15 @@ void AvatarPC::FUN_1409f41d0(const Unk_CharEquip& kEquip0, const Unk_CharEquip& 
 {
     if (m_pSourcePC != 0)
     {
-        ::FUN_1416591e0(m_pSourcePC, 0, kEquip0);
-        ::FUN_1416591e0(m_pSourcePC, 1, kEquip1);
+        m_pSourcePC->FUN_1416591e0(0, reinterpret_cast<const NiColor&>(kEquip0));
+        m_pSourcePC->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(kEquip1));
         m_pSourcePC->vfunc_139();
         vfunc_139();
     }
     else
     {
-        ::FUN_1416591e0(this, 0, kEquip0);
-        ::FUN_1416591e0(this, 1, kEquip1);
+        FUN_1416591e0(0, reinterpret_cast<const NiColor&>(kEquip0));
+        FUN_1416591e0(1, reinterpret_cast<const NiColor&>(kEquip1));
         vfunc_139();
     }
 }
@@ -582,7 +559,7 @@ void AvatarPC::FUN_1409f43d0(int nSkillId, short nLevel)
 {
     Unk_InventorySkillRequest kReq(nSkillId, nLevel);
     kReq.origin = vfunc_18();
-    kReq.fValue = ::FUN_14166da40(this);
+    kReq.fValue = GetTargetYaw();
     MS2Ptr<CSkillRecord> spSkill(new CSkillRecord());
     if (spSkill->Init(kReq))
     {
@@ -666,7 +643,7 @@ void AvatarPC::FUN_1409f4d80(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || ((class CItemData*)((class CItem*)(spItem.operator->()))->FUN_140527840()) == 0)
         return;
-    FUN_141270bf0(::FUN_14165f460(this), MS2Ptr<CItem>(spItem));
+    reinterpret_cast<PCGemEquip*>(FUN_14165f460())->EquipItem(MS2Ptr<CItem>(spItem));
     int nKind = ((class CItemData*)(((class CItemData*)((class CItem*)(spItem.operator->()))->FUN_140527840())))->FUN_14053e900();
     if (nKind == 5)
         FUN_1409f68e0(MS2Ptr<CItem>(spItem));
@@ -733,7 +710,7 @@ void AvatarPC::vfunc_127(CItem* pItem, int n)
     }
     else
     {
-        ::FUN_141653d10(this, MS2Ptr<CItem>(pItem));
+        FUN_141653d10(MS2Ptr<CItem>(pItem));
     }
 }
 
@@ -887,27 +864,21 @@ void AvatarPC::vfunc_53(float f)
     }
     if (m_b12f9 && (m_spModelView ? true : false))
     {
-        if (m_spModelView->FUN_141ab7660() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(100) != 0)
+        if (reinterpret_cast<UIRenderView*>(m_spModelView.operator->())->GetDirty() == 0 || reinterpret_cast<Unk_IntervalTimer&>(m_unk_1318).Check(100) != 0)
             FUN_1409f5d20();
     }
     FUN_141087790();
 }
 
 // @0x1409f5d20
-// MS2-FUNCTIONAL: collects the equip / external / effect / ridee nodes for the view; CAtlArray grow glue differs
 void AvatarPC::FUN_1409f5d20()
 {
-    bool bTmp = false;
-    if (m_spModelView == 0)
+    if (!m_spModelView)
         return;
     if (FUN_141656750() == 0)
         return;
     bool bEquip = IsEnabled();
-    if (m_spRidee != 0)
-    {
-        if (m_spRidee->GetRow().get() != 0)
-            bTmp = true;
-    }
+    bool bTmp = (m_spRidee ? true : false) && (m_spRidee->GetRow().get() ? true : false);
     if (bTmp)
     {
         int nNoEquip = m_spRidee->GetRow()->m_nHidesEquip;
@@ -925,7 +896,7 @@ void AvatarPC::FUN_1409f5d20()
         for (size_t i = 0; i < nCount; i++)
         {
             efd::SmartPointer<NiActorManager> spMgr = kEquip[i];
-            if (spMgr != 0)
+            if (spMgr)
             {
                 NiNode* pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(spMgr->GetNIFRoot())));
                 FUN_141568d80((class NiAVObject*)(pRoot));
@@ -933,21 +904,21 @@ void AvatarPC::FUN_1409f5d20()
             }
         }
     }
-    if (m_spExternalRoot != 0)
+    if (m_spExternalRoot ? true : false)
     {
-        if (m_spExternalRoot->GetChildCount() != 0)
+        if (m_spExternalRoot->GetChildCount() > 0)
         {
             NiNode* pExternal = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(m_spExternalRoot)));
             FUN_141568d80((class NiAVObject*)(pExternal));
             kNodes.Add(pExternal);
         }
     }
-    if (m_spRidee != 0)
+    if (m_spRidee ? true : false)
     {
         if (m_spRidee->FUN_14123bea0() != 0 && static_cast<PCBase*>(this)->FUN_14166c930() == 0x21)
         {
             NiNodePtr spRideeNode(static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(m_spRidee->FUN_14123c410())))));
-            if (spRideeNode != 0)
+            if (spRideeNode)
             {
                 FUN_141568d80((class NiAVObject*)(spRideeNode));
                 NiNode* pRidee = spRideeNode;
@@ -1090,15 +1061,14 @@ void AvatarPC::FUN_1409f68e0(MS2Ptr<CItem> spItem)
     if (spItem == 0)
         return;
     SetEnabled(false);
-    ::FUN_141661ba0(this, 0);
-    ::FUN_14165cac0(this);
+    FUN_141661ba0(0);
+    FUN_14165cac0();
 }
 
 // @0x1409f6950
-// MS2-FUNCTIONAL: fishing rod equip: starts the fishing state and spawns the guide line object
 void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
 {
-    if (spItem.IsNull())
+    if (spItem == (CItem*)0)
     {
         return;
     }
@@ -1116,15 +1086,14 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
     {
         efd::SmartPointer<CFishingGuideObject> spGuide(new (efd::MemHint(efd::MemHint::NONE)) CFishingGuideObject());
         efd::Point3 kStart;
-        efd::Point3 kRay;
-        efd::Point3 kZero(0.0f, 0.0f, 0.0f);
+        efd::Point3 kUnused;
+        efd::Point3 kRay(0.0f, 0.0f, 0.0f);
         NiPoint3 kDirNow = vfunc_20();
-        efd::Matrix3 kRot;
-        FUN_1409f7320(&kRot);
+        NiMatrix3 kRot;
         kRot.MakeZRotation(kDirNow.z * 3.1415927f / 180.0f);
         kStart = -efd::Point3::UNIT_X * kRot;
         kRay = kStart * 200.0f;
-        if (spGuide->vfunc_124(FUN_141088660(), kRay, vfunc_20(), this) == 0)
+        if (spGuide->vfunc_124(FUN_141088660(), kRay, reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(vfunc_20())), this) == 0)
             return;
         spGuide->vfunc_127();
         ((class Unk_AvWorld*)WorldService::GetInstance())->FUN_141bbb1e0(spGuide, 0, 1);
@@ -1425,7 +1394,7 @@ void AvatarRidee::vfunc_12()
         }
         FUN_1409fa7c0();
     }
-    if (kRow.get() != 0 && (kRow.get() ? true : false) && FUN_1402a5b40(kRow->m_strEffect, "") != 0)
+    if (kRow.get() != 0 && (kRow.get() ? true : false) && kRow->m_strEffect != "")
     {
         NoticeMessage kRequest;   // C3: was Unk_AvEffectRequest
         reinterpret_cast<CString&>(reinterpret_cast<Unk_AvEffectRequest*>(&kRequest)->m_pName) = kRow->m_strEffect;
@@ -1536,27 +1505,18 @@ AvatarRidee::AvatarRidee(Unk_RideePtr spRow)
 // @0x1409fa4f0
 void AvatarRidee::vfunc_59(MS2Ptr<CItem> spItem)
 {
-    if (spItem.get() != 0 && spItem->GetUgcInfo() != 0)
+    if ((spItem.get() ? true : false) && spItem->GetUgcInfo() != 0)
     {
         CString strFile = FUN_1410280d0(7, spItem->GetUgcInfo()->m_strName);
-        if (_access(strFile, 0) == 0)
+        if (_access(strFile, 0) != 0)
         {
-            Unk_AcKey kKey1;
-            Unk_UgcItemRidee kRidee;
-            FUN_14088fd60(&kRidee, spItem.get(), FUN_14123c460(AC_KEY(kKey1)));
-            if (FUN_14052d220()->FUN_141887040(&kRidee, CString(strFile), spItem->GetUgcUid()) == 0)
-            {
-                Unk_AcKey kKey2;
-                Unk_GoModelKey& rKey2 = FUN_14123c460(AC_KEY(kKey2));
-                FUN_14052d220()->FUN_141883df0(MS2Ptr<CItem>(spItem), rKey2);
-            }
-            FUN_14088fde0(&kRidee);
+            reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_141883df0(MS2Ptr<CItem>(spItem), FUN_14123c460());
         }
         else
         {
-            Unk_AcKey kKey3;
-            Unk_GoModelKey& rKey3 = FUN_14123c460(AC_KEY(kKey3));
-            FUN_14052d220()->FUN_141883df0(MS2Ptr<CItem>(spItem), rKey3);
+            CUgcItemRidee kRidee(spItem.get(), FUN_14123c460());
+            if (reinterpret_cast<CUgcManager*>(FUN_14052d220())->ApplyImageToRidee(&kRidee, CString(strFile), spItem->GetUgcUid()) == 0)
+                reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_141883df0(MS2Ptr<CItem>(spItem), FUN_14123c460());
         }
     }
 }
@@ -1634,7 +1594,7 @@ Unk_CharEquip::Unk_CharEquip()
 // @0x1409f7c90
 Unk_AvModeSvc* FUN_1409f7c90()
 {
-    return DAT_143ab50c0;
+    return reinterpret_cast<Unk_AvModeSvc*>(TSingleton<COptimizer>::s_instance);
 }
 
 // @0x1409f7ca0
@@ -1672,7 +1632,7 @@ void Unk_AvSeqCtl::FUN_1409fae00(bool b)
     {
         m_n48 = m_n44;
     }
-    m_spTarget.FUN_140998ef0()->FUN_141c3c0e0(b);
+    reinterpret_cast<NiControllerManager*>(m_spTarget.FUN_140998ef0())->SetPaused(b);
 }
 
 // @0x1409fad80

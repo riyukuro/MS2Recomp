@@ -89,7 +89,7 @@ public:
     void FUN_1419c37f0(unsigned __int64 uid, Unk_EnSlotArgs* slot);                                 // 0x1419c37f0
     void FUN_1419c3950(CInPacket& pkt);                                 // 0x1419c3950
     void FUN_1419c3b90(CInPacket& pkt);                                 // 0x1419c3b90
-    void FUN_1419c3e70(CInPacket& pkt);                                 // 0x1419c3e70
+    void OnFailStackPacket(CInPacket& pkt);                                 // 0x1419c3e70
     void SendRequestItemEnchantMode1();                                                    // 0x1419c3fd0
     void FUN_1419c4050();                                 // 0x1419c4050
     void FUN_1419c41b0();                                 // 0x1419c41b0
@@ -98,39 +98,39 @@ public:
     bool FUN_1419c4e00(int result, const CMsgBoxData& box);                                 // 0x1419c4e00
     bool FUN_1419c5890(int result, const CMsgBoxData& box);                                 // 0x1419c5890
     bool FUN_1419c5d20(int result, const CMsgBoxData& box);                                 // 0x1419c5d20
-    bool FUN_1419c5d90(int result, const CMsgBoxData& box);                                 // 0x1419c5d90
+    bool OnConfirmEnchantMode6MsgBox(int result, const CMsgBoxData& box);                                 // 0x1419c5d90
     bool SendRequestItemEnchantMode2(int result, const CMsgBoxData& box);                                 // 0x1419c5de0
-    bool FUN_1419c5e90(int result, const CMsgBoxData& box);                                 // 0x1419c5e90
+    bool OnConfirmEnchantMode4MsgBox(int result, const CMsgBoxData& box);                                 // 0x1419c5e90
     bool FUN_1419c5f00(int result, const CMsgBoxData& box);                                 // 0x1419c5f00
     void SendRequestItemEnchantMode17(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c5f60
     void SendRequestItemEnchantMode18(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6060
     void FUN_1419c6160(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6160
     void FUN_1419c6270(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6270
-    void FUN_1419c6380(NotifyObject* pNotify);                                 // 0x1419c6380
-    void FUN_1419c6420();                                 // 0x1419c6420
+    void OnEnchantRateEventChanged(NotifyObject* pNotify);                                 // 0x1419c6380
+    void ResetState();                                 // 0x1419c6420
     CStringW FUN_1419c65b0(MS2Ptr<CItem> item, CEnchantOption* pOption);                                 // 0x1419c65b0
     void FUN_1419c6840(MS2Ptr<CItem> item, CEnchantOption* pOption, ASObj& dest);                                 // 0x1419c6840
-    void FUN_1419c6bb0(ASObj& dest, CItem* item);                                 // 0x1419c6bb0
+    void WriteEnchantItem(ASObj& dest, CItem* item);                                 // 0x1419c6bb0
     void FUN_1419c6cd0(ASObj& dest, CIngredientContainer* container);                                 // 0x1419c6cd0
     void FUN_1419c7140(ASObj& dest);                                 // 0x1419c7140
-    void FUN_1419c74e0(ASObj& dest, CItem* item);                                 // 0x1419c74e0
-    void FUN_1419c7610(ASObj& dest);                                 // 0x1419c7610
+    void SetExpInfo(ASObj& dest, CItem* item);                                 // 0x1419c74e0
+    void SetFailStackInfo(ASObj& dest);                                 // 0x1419c7610
     void FUN_1419c77a0();                                 // 0x1419c77a0
     CString FUN_1419c78a0(CItem* item, CString key, ATL::CAtlArray<CString>& names);                                 // 0x1419c78a0
-    CStringW FUN_1419c7970(float rate);                                 // 0x1419c7970
+    CStringW FormatRateText(float rate);                                 // 0x1419c7970
     void FUN_1419c7a30(unsigned __int64 uid, int mode);                                 // 0x1419c7a30
     void SendRequestItemEnchantMode4(unsigned __int64 uid, int mode);                                 // 0x1419c7ce0
-    CStringW FUN_1419c7e20(CItem* item);                                 // 0x1419c7e20
-    CStringW FUN_1419c7ec0(int level, int rank);                                 // 0x1419c7ec0
-    CStringW FUN_1419c7f50(CItem* item, int count);                                 // 0x1419c7f50
+    CStringW FormatItemName(CItem* item);                                 // 0x1419c7e20
+    CStringW FormatLevelText(int level, int rank);                                 // 0x1419c7ec0
+    CStringW FormatFailStackText(CItem* item, int count);                                 // 0x1419c7f50
     CStringW FUN_1419c8020();                                 // 0x1419c8020
     void UpdateEnchantIngredient(CItem* item);                                 // 0x1419c8070
-    Unk_EnSlot* FUN_1419c8160(const CString& name);                                 // 0x1419c8160
+    Unk_EnSlot* FindSlotByName(const CString& name);                                 // 0x1419c8160
     void FUN_1419c81a0();                                 // 0x1419c81a0
-    int FUN_1419c86b0(int itemId);                                 // 0x1419c86b0
-    int FUN_1419c8830(int itemId);                                 // 0x1419c8830
+    int GetProtectorRank(int itemId);                                 // 0x1419c86b0
+    int GetProtectorCount(int itemId);                                 // 0x1419c8830
     int FUN_1419c89b0(unsigned __int64 uid);                                 // 0x1419c89b0
-    int FUN_1419c8b80(unsigned __int64 uid);                                 // 0x1419c8b80
+    int IsItemOwnedByMyPC(unsigned __int64 uid);                                 // 0x1419c8b80
     CStringW FUN_1419c8ce0(CItem* item);                                 // 0x1419c8ce0
     void FUN_1419c90b0(unsigned int itemId, int count, __int64 arg);                                 // 0x1419c90b0
     int FUN_1419c9260(CItem* base, CItem* other);                                 // 0x1419c9260

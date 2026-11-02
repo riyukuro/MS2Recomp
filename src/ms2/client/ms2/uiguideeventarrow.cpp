@@ -33,6 +33,7 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/citem.h"
@@ -56,8 +57,8 @@ static CString s_guideSound("system_guide_tooltip");
 static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static CString s_skill("skill");
 static CString s_stun("stun");
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };
+static Unk_BuddyHandle s_pointer(NULL);
 static ATL::CAtlMap<unsigned int,CString> s_conditions(17,.75f,.25f,2.25f,10);
 class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Vector3&); };
 int FUN_1412755a0();
@@ -66,8 +67,6 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_1422baa20 { public: Scaleform::GFx::Value FUN_1422baa20(const char*); Scaleform::GFx::Value FUN_140acd130(const char*,CStringW); Scaleform::GFx::Value FUN_140ba26d0(const char*,unsigned int);
     Scaleform::GFx::Value FUN_140cbe3a0(const char*,const wchar_t*); Scaleform::GFx::Value FUN_1422bb3c0(); MS2Ptr<AScript> FUN_141311f50(const CString&); };
 class Unk_1422ba7f0 : public AScript { public: Unk_1422ba7f0(const Scaleform::GFx::Value&,int); };
-class Unk_1409b9b40 { public: void FUN_1409b9b40(AScript*); };
-
 // @0x141959330
 UIGuideEvent::UIGuideEvent() : m_sound(0),m_guide(0),m_tip(0),m_lastTip(0),m_tips(10),
     m_strings(17,.75f,.25f,2.25f,10),m_voices(17,.75f,.25f,2.25f,10),m_expiry(0),m_arrows(17,.75f,.25f,2.25f,10) { FUN_14195b970(); }
@@ -78,10 +77,10 @@ void UIGuideEvent::OnLoadComplete() {
     UIObject::OnLoadComplete();
     FUN_14195c230("guideTutorial",m_tutorial);
     FUN_14195c230("guideSummary",m_summary);
-    reinterpret_cast<Unk_1409b9b40*>(&m_hasArrow)->FUN_1409b9b40(new Unk_1422ba7f0(((AScript*)m_30.operator->())->GetMember("hasGuideArrow"),2));
+    m_hasArrow.AssignRaw(new Unk_1422ba7f0(((AScript*)m_30.operator->())->GetMember("hasGuideArrow"),2));
 }
 // @0x1419596e0
-void UIGuideEvent::vfunc_26() { UIObject::vfunc_26(); m_summary=NULL; m_tutorial=NULL; m_hasArrow=NULL; reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init(); }
+void UIGuideEvent::vfunc_26() { UIObject::vfunc_26(); m_summary=NULL; m_tutorial=NULL; m_hasArrow=NULL; m_timer.Init(); }
 // @0x141959750
 void UIGuideEvent::vfunc_43() { if(m_30.get()) m_30->Invoke("alignment"); }
 // @0x1419597b0
@@ -90,12 +89,12 @@ void UIGuideEvent::vfunc_15() {
     for(POSITION p=m_arrows.GetStartPosition(); p; m_arrows.GetNext(p)) {
         MS2Ptr<UIGuideEventArrow> arrow=m_arrows.GetValueAt(p); arrow->vfunc_1(m_30);
     }
-    FUN_14195be30(); FUN_14195bfc0();
+    FUN_14195be30(); CheckSummaryExpiry();
 }
 // @0x1419598e0
 int UIGuideEvent::vfunc_28(const char* method,const Scaleform::GFx::Value* args,unsigned int n) {
     if(UISwfEntity::vfunc_28(method,args,n)) return 1;
-    if(_stricmp("onTextTipClose",method)==0) { FUN_14195b600(0); return 1; }
+    if(_stricmp("onTextTipClose",method)==0) { AdvanceTextTip(0); return 1; }
     return 0;
 }
 // @0x141959960
@@ -108,9 +107,9 @@ void UIGuideEvent::vfunc_3() {
     }
 }
 // @0x141959a20
-int UIGuideEvent::FUN_141959a20() { if(IsTextTipShowing()) { FUN_14195b600(0); return 1; } return 0; }
+int UIGuideEvent::SkipTextTip() { if(IsTextTipShowing()) { AdvanceTextTip(0); return 1; } return 0; }
 // @0x14195a0c0
-void UIGuideEvent::FUN_14195a0c0(unsigned int id) {
+void UIGuideEvent::ReleaseArrow(unsigned int id) {
     MS2Ptr<UIGuideEventArrow> arrow;
     if(!m_arrows.Lookup(id,arrow)) return;
     arrow->FUN_14195dfc0();
@@ -134,13 +133,13 @@ void UIGuideEvent::FUN_14195a1d0(CStringW& input,CStringW& out,int& special) {
     out=input.Mid(2,i-2); input=input.Mid(i+2);special=1;
 }
 // @0x14195b330
-void UIGuideEvent::FUN_14195b330(unsigned int id,unsigned int stringid) {
+void UIGuideEvent::QueueOrShowTextTip(unsigned int id,unsigned int stringid) {
     if(m_30==NULL) return;
     if(IsTextTipShowing()) {
         std::pair<unsigned int,unsigned int> tip(std::make_pair((int&)id,stringid));
         m_tips.AddTail(tip);
     } else {
-        ((AScript*)m_30.operator->())->Invoke("showTextTip",FUN_14195c010(stringid));
+        ((AScript*)m_30.operator->())->Invoke("showTextTip",GetGuideText(stringid));
         m_tip=id; FUN_141276180(s_guideSound,"");
     }
 }
@@ -157,9 +156,9 @@ void UIGuideEvent::HideSummary(int id) {
     m_30->Invoke("hideSummary");ChromaSDK::GetChromaManager()->ResetKeys(1);m_guide=0;m_expiry=0;
 }
 // @0x14195b600
-void UIGuideEvent::FUN_14195b600(int id) {
+void UIGuideEvent::AdvanceTextTip(int id) {
     if(id && m_tip!=id) return; {
-        if(m_tips.GetCount()!=0) { std::pair<unsigned int,unsigned int> v=m_tips.RemoveHead(); if(m_30.get()) m_30->Invoke("removeTextTip"); FUN_14195b330(v.first,v.second); }
+        if(m_tips.GetCount()!=0) { std::pair<unsigned int,unsigned int> v=m_tips.RemoveHead(); if(m_30.get()) m_30->Invoke("removeTextTip"); QueueOrShowTextTip(v.first,v.second); }
         else { if(m_30.get()) m_30->Invoke("hideTextTip");m_tip=0; }
         ChromaSDK::GetChromaManager()->ResetKeys(1);m_lastTip=m_tip;
     }
@@ -173,7 +172,7 @@ int UIGuideEvent::IsTextTipShowing() { if(m_30==NULL) return 0; return ((Scalefo
 // @0x14195b950
 int UIGuideEvent::GetLastTip() { return m_lastTip; }
 // @0x14195bfc0
-void UIGuideEvent::FUN_14195bfc0() { if(!m_expiry) return; if(GetTickCountMs2()>=m_expiry) HideSummary(m_guide); }
+void UIGuideEvent::CheckSummaryExpiry() { if(!m_expiry) return; if(GetTickCountMs2()>=m_expiry) HideSummary(m_guide); }
 
 
 // ---- out-of-unit callees of the recovered (functional) part ----
@@ -181,10 +180,10 @@ typedef Scaleform::GFx::Value GfxValue;
 int FUN_141274f80();
 float FUN_141adbe70(void*);                                         // UI scale
 Vector3* FUN_140ad0c10(Vector3*,float);             // efd::Point3::operator*=
-float FUN_1412762d0(const Vector3&);
+float FUN_1412762d0(const struct Unk_Point2*);
 int FUN_141389500(const CStringW&,int);                             // wide string to int
 bool FUN_1401c0090(const CString&,const CString&);
-void FUN_14025a680(const CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
+void FUN_14025a680(CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 CString FUN_14016a600(const wchar_t*,int);
 CString FUN_14071ae20(const CString&);
 class Unk_XmlNode   // C3: member view for the former free stand-ins
@@ -202,8 +201,6 @@ class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 struct Unk_GuideLog { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-CReservedWordTable* FUN_1403b4750();
-void* FUN_1409a8b10();
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -218,21 +215,8 @@ UIMessageBox* FUN_14151f890();
 class Unk_GuideDO : public AScript {
 public:
     float FUN_1422c10a0(); float FUN_1422c1110(); float FUN_1422c1180();   // x, y, z
-    MS2Ptr<ASDisplayObject> FUN_1413b19d0(const CString&);                    // child by name
     MS2Ptr<ASDisplayObject> FUN_1422e32b0(int);                               // child by index
 };
-static Unk_GuideDO* GuideDO(ASDisplayObject* p) { return reinterpret_cast<Unk_GuideDO*>(p); }
-static Vector3 GuideDOPoint(ASDisplayObject* o)
-{
-    ASDisplayObject* d = (ASDisplayObject*)GuideDO(o);   // C3: ASDisplayObject's getters
-    float z = d->GetZ(); float y = d->FUN_1422c1110(); float x = d->FUN_1422c10a0();
-    return Vector3(x, y, z);
-}
-static MS2Ptr<ASDisplayObject> GuideRoot(UISwfEntity* ui)
-{
-    MS2Ptr<AScript> as = ui->FUN_1422dba00();
-    return MS2Ptr<ASDisplayObject>(dynamic_cast<ASDisplayObject*>((AScript*)as));
-}
 static Unk_1422baa20* GuideAS(const MS2Ptr<AScript>& p) { return reinterpret_cast<Unk_1422baa20*>(p.operator->()); }
 
 // UIs of the dialogs the arrows point at.
@@ -258,32 +242,32 @@ public:
     int FUN_14123c580();
 };
 class Unk_CMISHouseMark* FUN_1410dc020();   // C3: was FUN_1410dc020
-UIPartyDialog* FUN_1413b1c60(const CString&);
+void* FUN_1413b1c60(const CString&);
 class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 class UIUGCCubePaletteDialog* FUN_140ef4a50(int);   // C3: was FUN_140ef4a50
 class Unk_GuideSceneMgr { public: virtual void vfunc_0(); virtual CString vfunc_1(); };
 class UIGameMenuDialog : public UIObject {};
 
 // @0x14195bd90
-void UIGuideEvent::FUN_14195bd90(unsigned int stringId)
+void UIGuideEvent::PlayVoice(unsigned int stringId)
 {
-    CString voice = FUN_14195c0e0(stringId);
+    CString voice = GetGuideVoice(stringId);
     if (voice.GetLength() != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a4f40(CString(voice), (const NiPoint3&)DAT_143b01a60);
 }
 
 // @0x14195c010
-CStringW UIGuideEvent::FUN_14195c010(unsigned int id)
+CStringW UIGuideEvent::GetGuideText(unsigned int id)
 {
     CStringW text;
     if (!m_strings.Lookup(id, text))
         return CStringW(L"");
-    FUN_1403b4750()->FUN_1416fb340(text);
+    TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb340(text);
     return text;
 }
 
 // @0x14195c0e0
-CString UIGuideEvent::FUN_14195c0e0(unsigned int id)
+CString UIGuideEvent::GetGuideVoice(unsigned int id)
 {
     CString voice;
     if (!m_voices.Lookup(id, voice))
@@ -292,7 +276,7 @@ CString UIGuideEvent::FUN_14195c0e0(unsigned int id)
 }
 
 // @0x14195c1a0
-MS2Ptr<AScript> UIGuideEvent::FUN_14195c1a0(const CString& name)
+MS2Ptr<AScript> UIGuideEvent::FindChildScript(const CString& name)
 {
     if (m_30 == NULL)
         return MS2Ptr<AScript>(0);
@@ -302,12 +286,12 @@ MS2Ptr<AScript> UIGuideEvent::FUN_14195c1a0(const CString& name)
 // @0x14195c230
 MS2Ptr<AScript> UIGuideEvent::FUN_14195c230(const CString& name, MS2Ptr<AScript>& out)
 {
-    out = FUN_14195c1a0(name);
+    out = FindChildScript(name);
     return out;
 }
 
 // @0x14195bc50  "name:value" of a [[...]] tag
-void UIGuideEvent::FUN_14195bc50(CStringW tag, CStringW& name, CStringW& value)
+void UIGuideEvent::ParseTagNameValue(CStringW tag, CStringW& name, CStringW& value)
 {
     ATL::CAtlArray<CStringW> parts;
     FUN_14025a680(tag, parts, L":");
@@ -342,7 +326,7 @@ void UIGuideEvent::FUN_14195b970()
         XmlGetAttr((class TiXmlElement*)(node), "voiceID", voice);
         if (!name.IsEmpty()) {
             name.Replace(L"\\n", L"\n");
-            FUN_1403b4750()->FUN_1416fb380(name);
+            TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(name);
             m_strings.SetAt(id, name);
         }
         if (!voice.IsEmpty())
@@ -355,7 +339,7 @@ void UIGuideEvent::FUN_14195be30()
 {
     if (m_30 == NULL)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(300) == 0)
+    if (m_timer.Check(300) == 0)
         return;
     bool bPlaying = m_sound != 0;
     bool bWanted = false;
@@ -375,7 +359,6 @@ void UIGuideEvent::FUN_14195be30()
 }
 
 // @0x141959a60  AddArrow: shared by id, a second add only bumps the use count
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
 {
     MS2Ptr<UIGuideEventArrow> existing;
@@ -396,36 +379,38 @@ void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
     info.FUN_1409c4a30("x", pos.x);
     info.FUN_1409c4a30("y", pos.y);
     info.FUN_1407cb9c0("hide", hide);
-    CStringW text = FUN_14195c010(arrow->m_textId);
-    int special = 0;
-    CStringW part;
-    FUN_14195a1d0(text, part, special);
-    if (special == 0) {
-        info.FUN_1407cbb20("text", part);
-    } else {
-        CStringW name, value;
-        FUN_14195bc50(part, name, value);
-        if (name == L"keyText") {
-            info.FUN_1407cbb20("key", value);
-            ChromaSDK::GetChromaManager()->OnKeyName(value);
-        } else if (name == L"keyAction") {
-            int action = FUN_141389500(value, 0);
-            CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
-            info.FUN_1407cbb20("key", key);
-            ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
-        } else if (name == L"keyActionSub") {
-            int action = FUN_141389500(value, 0);
-            CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
-            info.FUN_1407cbb20("key", key);
-            ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
+    {
+        CStringW text = GetGuideText(arrow->m_textId);
+        int special = 0;
+        CStringW part;
+        FUN_14195a1d0(text, part, special);
+        if (special != 0) {
+            CStringW name, value;
+            ParseTagNameValue(part, name, value);
+            if (name == L"keyText") {
+                info.FUN_1407cbb20("key", value);
+                ChromaSDK::GetChromaManager()->OnKeyName(value);
+            } else if (name == L"keyAction") {
+                int action = FUN_141389500(value, 0);
+                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+                info.FUN_1407cbb20("key", key);
+                ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
+            } else if (name == L"keyActionSub") {
+                int action = FUN_141389500(value, 0);
+                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+                info.FUN_1407cbb20("key", key);
+                ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
+            }
+        } else {
+            info.FUN_1407cbb20("text", part);
         }
     }
     if (m_30.get()) {
-        if (arrow->m_textId == 0) {
-            m_30->Invoke("addArrow", info);
-        } else {
-            FUN_14195bd90(arrow->m_textId);
+        if ((unsigned int)arrow->m_textId > 0) {
+            PlayVoice(arrow->m_textId);
             m_30->Invoke("addTextArrow", info);
+        } else {
+            m_30->Invoke("addArrow", info);
         }
     }
     FUN_14195be30();
@@ -433,101 +418,103 @@ void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
 
 // Adds the [[keyText/keyAction/keyActionSub/...]] tagged parts of a guide text to the text box `box`.
 // @0x14195a520
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEvent::FUN_14195a520(unsigned int guideId, unsigned int stringId, int mode)
 {
-    if (m_30 == NULL || m_tutorial == NULL)
+    if (m_30 == NULL)
+        return;
+    if (m_tutorial == NULL)
         return;
     m_tutorial->Invoke("clearContents");
-    CStringW text = FUN_14195c010(stringId);
+    CStringW text = GetGuideText(stringId);
     while (text.GetLength() != 0) {
         int special = 0;
         CStringW part;
         FUN_14195a1d0(text, part, special);
-        if (special == 0) {
+        if (special != 0) {
+            CStringW name, value;
+            ParseTagNameValue(part, name, value);
+            if (name == L"keyText") {
+                ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", value);
+                ChromaSDK::GetChromaManager()->OnKeyName(value);
+            } else if (name == L"keyDirection") {
+                m_tutorial->Invoke("addDirectionKey");
+            } else if (name == L"keyAction") {
+                int action = FUN_141389500(value, 0);
+                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+                ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", key);
+                ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
+            } else if (name == L"keyActionSub") {
+                int action = FUN_141389500(value, 0);
+                CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+                ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", key);
+                ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
+            }
+        } else {
             ((AScript*)GuideAS(m_tutorial))->Invoke("addText", part);
-            continue;
-        }
-        CStringW name, value;
-        FUN_14195bc50(part, name, value);
-        if (name == L"keyText") {
-            ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", value);
-            ChromaSDK::GetChromaManager()->OnKeyName(value);
-        } else if (name == L"keyDirection") {
-            m_tutorial->Invoke("addDirectionKey");
-        } else if (name == L"keyAction") {
-            int action = FUN_141389500(value, 0);
-            ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", FUN_1409331f0()->FUN_14142d760(action, 0));
-            ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
-        } else if (name == L"keyActionSub") {
-            int action = FUN_141389500(value, 0);
-            ((AScript*)GuideAS(m_tutorial))->Invoke("addKeyButton", FUN_1409331f0()->FUN_14142d760(action, 1));
-            ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
         }
     }
-    FUN_14195bd90(stringId);
-    if (mode == 0) {
+    PlayVoice(stringId);
+    if (mode != 0) {
+        m_30->Invoke("showTutorial");
+    } else {
         m_tutorial->Invoke("alignment");
         GuideAS(m_tutorial)->FUN_140cbe3a0("gotoAndPlayText", L"show");
-    } else {
-        m_30->Invoke("showTutorial");
     }
     m_guide = guideId;
 }
 
 // @0x14195ab40  summary window: keyAction tags become plain text for gamepad users
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 void UIGuideEvent::FUN_14195ab40(unsigned int guideId, unsigned int stringId, int durationMs)
 {
     if (m_30 == NULL || m_summary == NULL)
         return;
     m_summary->Invoke("clearContents");
     ChromaSDK::GetChromaManager()->ResetKeys(1);
-    CStringW text = FUN_14195c010(stringId);
+    CStringW text = GetGuideText(stringId);
     while (text.GetLength() != 0) {
         int special = 0;
         CStringW part;
         FUN_14195a1d0(text, part, special);
-        if (special == 0) {
-            ((AScript*)GuideAS(m_summary))->Invoke("addText", part);
-        } else {
+        if (special != 0) {
             CStringW name, value;
-            FUN_14195bc50(part, name, value);
+            ParseTagNameValue(part, name, value);
             if (name == L"keyText") {
                 ((AScript*)GuideAS(m_summary))->Invoke("addKeyButton", value);
                 ChromaSDK::GetChromaManager()->OnKeyName(value);
             } else if (name == L"icon") {
                 ((AScript*)GuideAS(m_summary))->Invoke("addIcon", value);
             } else if (name == L"keyAction") {
-                if (*((char*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10()))) == 0) {
+                if (*((unsigned char*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
+                    int action = FUN_141389500(value, 0);
+                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
+                    ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
+                } else {
                     int action = FUN_141389500(value, 0);
                     CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
                     ((AScript*)GuideAS(m_summary))->Invoke("addKeyButton", key);
                     ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
-                } else {
+                }
+            } else if (name == L"keyActionSub") {
+                if (*((unsigned char*)FUN_140a58500((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance()))) != 0) {
                     int action = FUN_141389500(value, 0);
                     CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
                     ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
-                }
-            } else if (name == L"keyActionSub") {
-                if (*((char*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10()))) == 0) {
+                } else {
                     int action = FUN_141389500(value, 0);
                     CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
                     ((AScript*)GuideAS(m_summary))->Invoke("addKeyButton", key);
                     ChromaSDK::GetChromaManager()->OnKeySkill(action, 1);
-                } else {
-                    int action = FUN_141389500(value, 0);
-                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
-                    ((AScript*)GuideAS(m_summary))->Invoke("addText", key);
                 }
             }
+        } else {
+            ((AScript*)GuideAS(m_summary))->Invoke("addText", part);
         }
     }
     m_30->Invoke("showSummary");
-    FUN_14195bd90(stringId);
+    PlayVoice(stringId);
     m_guide = guideId;
     m_expiry = 0;
-    if (durationMs != 0)
+    if ((unsigned int)durationMs > 0)
         m_expiry = GetTickCountMs2() + durationMs;
 }
 
@@ -557,7 +544,7 @@ int UIGuideEventArrow::vfunc_2(void* out)
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_pos), *(NiPoint3*)out))
     {
         FUN_140ad0c10((Vector3*)out, FUN_141adbe70(((void*)TSingleton<CUIService>::GetInstance())));
-        ((Vector3*)out)->y += FUN_1412762d0(m_pos);
+        ((Vector3*)out)->y += FUN_1412762d0(reinterpret_cast<const Unk_Point2*>(&m_pos));
         return 1;
     }
     return 0;
@@ -591,17 +578,17 @@ int UIGuideEventArrowDialog::vfunc_2(void* out)
     if (FUN_141960510() == 0)
         return 0;
     switch (m_kind) {
-    case 0:  if (FUN_14195e320(out) == 0) return 0; break;
+    case 0:  if (GetTargetPosition(out) == 0) return 0; break;
     case 1:  if (FUN_14195e3f0(out) == 0) return 0; break;
     case 2: case 3: case 4: case 5:
              if (FUN_14195e6e0(out) == 0) return 0; break;
     case 6:  if (FUN_14195ead0(out) == 0) return 0; break;
     case 7: case 8:
              if (FUN_14195eee0(out) == 0) return 0; break;
-    case 9:  if (FUN_14195f270(out) == 0) return 0; break;
-    case 10: if (FUN_14195f3a0(out) == 0) return 0; break;
-    case 11: if (FUN_14195f530(out) == 0) return 0; break;
-    case 12: if (FUN_14195f5a0(out) == 0) return 0; break;
+    case 9:  if (GetHouseMarkPosition(out) == 0) return 0; break;
+    case 10: if (GetPartyDialogPosition(out) == 0) return 0; break;
+    case 11: if (GetMessengerTargetPosition(out) == 0) return 0; break;
+    case 12: if (GetCubeTypePosition(out) == 0) return 0; break;
     }
     ((Vector3*)out)->FUN_140a4e560(m_pos);
     return 1;
@@ -643,7 +630,6 @@ static int GuideKindOf(const CString& name)
 }
 
 // @0x1419607f0  UI by type id
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 static UIObject* GuideUIById(int id)
 {
     if (((void*)TSingleton<CUIService>::GetInstance()) != 0) {
@@ -654,7 +640,6 @@ static UIObject* GuideUIById(int id)
     return 0;
 }
 // @0x141960870  UI by name
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 static UIObject* GuideUIByName(const CString& name)
 {
     if (((void*)TSingleton<CUIService>::GetInstance()) != 0) {
@@ -666,7 +651,6 @@ static UIObject* GuideUIByName(const CString& name)
 }
 
 // @0x1419608f0  (a second copy of the by-name lookup)
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 static UIObject* GuideUIByName2(const CString& name)
 {
     if (((void*)TSingleton<CUIService>::GetInstance()) != 0) {
@@ -678,7 +662,7 @@ static UIObject* GuideUIByName2(const CString& name)
 }
 
 // @0x14195e320
-int UIGuideEventArrowDialog::FUN_14195e320(void* out)
+int UIGuideEventArrowDialog::GetTargetPosition(void* out)
 {
     *(Vector3*)out = reinterpret_cast<const Vector3&>(DAT_143b01a60);
     UIObject* ui = 0;
@@ -754,7 +738,7 @@ int UIGuideEventArrowDialog::FUN_14195e6e0(void* out)
         if (FUN_14195f600(MS2Ptr<CItem>(items[i]), m_kind) == 0)
             continue;
         int slot = items[i]->FUN_140526b50();
-        int page = ((UIInventoryDialog*)inv)->FUN_141999f10();
+        int page = ((UIInventoryDialog*)inv)->GetScrollPosition();
         int start = page * nCols;
         int end = (page + nRows) * nCols;
         if (start <= slot && slot < end) {
@@ -777,7 +761,7 @@ int UIGuideEventArrowDialog::FUN_14195ead0(void* out)
     Unk_GuideInventory* inv = reinterpret_cast<Unk_GuideInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (inv == 0)
         return 0;
-    MS2Ptr<ASButtonBar> tabs = ((UIInventoryDialog*)inv)->FUN_14199aad0();
+    MS2Ptr<ASButtonBar> tabs = ((UIInventoryDialog*)inv)->GetTabBar();
     if (tabs == 0)
         return 0;
     MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)inv->FUN_1422dba00()));
@@ -785,7 +769,7 @@ int UIGuideEventArrowDialog::FUN_14195ead0(void* out)
         return 0;
     if (m_path.IsEmpty())
         return 0;
-    int index = ((UIInventoryDialog*)inv)->FUN_14199ab20(m_path[0]);
+    int index = ((UIInventoryDialog*)inv)->FindTabIndexByName(m_path[0]);
     if (index == -1)
         return 0;
     *(Vector3*)out = Vector3(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->GetZ());
@@ -836,7 +820,7 @@ int UIGuideEventArrowDialog::FUN_14195eee0(void* out)
 }
 
 // @0x14195f270  house mark
-int UIGuideEventArrowDialog::FUN_14195f270(void* out)
+int UIGuideEventArrowDialog::GetHouseMarkPosition(void* out)
 {
     if (FUN_141274f80() != 0)
         return 0;
@@ -854,9 +838,9 @@ int UIGuideEventArrowDialog::FUN_14195f270(void* out)
 }
 
 // @0x14195f3a0  party camera button
-int UIGuideEventArrowDialog::FUN_14195f3a0(void* out)
+int UIGuideEventArrowDialog::GetPartyDialogPosition(void* out)
 {
-    UIPartyDialog* party = FUN_1413b1c60("PartyDialog");
+    UIPartyDialog* party = (UIPartyDialog*)FUN_1413b1c60("PartyDialog");
     if (party == 0)
         return 0;
     MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)party->FUN_1422dba00()));
@@ -868,7 +852,7 @@ int UIGuideEventArrowDialog::FUN_14195f3a0(void* out)
 }
 
 // @0x14195f530  messenger
-int UIGuideEventArrowDialog::FUN_14195f530(void* out)
+int UIGuideEventArrowDialog::GetMessengerTargetPosition(void* out)
 {
     UIMessengerBrowser* messenger = FUN_140a3ab70(0x4e61);
     if (messenger == 0)
@@ -880,7 +864,7 @@ int UIGuideEventArrowDialog::FUN_14195f530(void* out)
 }
 
 // @0x14195f5a0  cube palette
-int UIGuideEventArrowDialog::FUN_14195f5a0(void* out)
+int UIGuideEventArrowDialog::GetCubeTypePosition(void* out)
 {
     UIUGCCubePaletteDialog* cube = FUN_140ef4a50(0x4f16);
     if (cube == 0)
@@ -901,10 +885,10 @@ int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
     if (m_path.GetCount() != 0) {
         MS2Ptr<ASDisplayObject> cur = ui->FUN_1422dba50();
         for (size_t i = 0; i < m_path.GetCount(); i++) {
-            cur = reinterpret_cast<Unk_GuideDO*>(cur.operator->())->FUN_1413b19d0(m_path[i]);
+            cur = cur->FUN_140e159f0<ASDisplayObject>(m_path[i]);
             if (cur == 0)
                 return 0;
-            if (!cur->FUN_1422bfca0())
+            if (!cur->GetVisible())
                 return 0;
             ((Vector3*)out)->FUN_140a4e560(Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->GetZ()));
             last = cur;
@@ -919,53 +903,47 @@ int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
 class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
 int FUN_14193a010();
 // @0x14195fc40
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrowDialog::FUN_14195fc40(UISwfEntity* ui, void* out)
 {
-    Vector3* pos = (Vector3*)out;
-    MS2Ptr<ASDisplayObject> root = GuideRoot(ui);
-    if (root.IsNull())
+    MS2Ptr<ASDisplayObject> root(dynamic_cast<ASDisplayObject*>((AScript*)ui->FUN_1422dba00()));
+    if (root == 0)
         return 0;
-    *pos = GuideDOPoint(root.operator->());
+    *(Vector3*)out = Vector3(root->FUN_1422c10a0(), root->FUN_1422c1110(), root->GetZ());
     MS2Ptr<ASDisplayObject> last(0);
     if (m_path.GetCount() != 0) {
         MS2Ptr<ASDisplayObject> cur = ui->FUN_1422dba50();
         for (size_t i = 0; i < m_path.GetCount(); i++) {
             MS2Ptr<CGameMenuDef> entry = ((CGameMenuTable*)FUN_140c1d2f0())->FindByName(CString(m_path[i]));
-            if (entry.get() != 0) {
-                int lang = FUN_14193a010();
-                if (((CGameMenuTable*)FUN_140c1d2f0())->IsChild(entry->m_nId, (EGameMenuSet)lang) != 0) {
-                    CString shown = m_path[i];
-                    int lang2 = FUN_14193a010();
-                    int target = ((CGameMenuTable*)FUN_140c1d2f0())->FindTopId(entry->m_nId, (EGameMenuSet)lang2);
-                    MS2Ptr<CGameMenuDef> moved = ((CGameMenuTable*)FUN_140c1d2f0())->Find(target);
-                    if (moved.get() != 0)
-                        shown = moved->m_strName;
-                    GfxValue v = GuideDO(cur.operator->())->FUN_1413127f0("getChildObjectPos", CString(m_path[i]), CString(shown));
-                    const GfxValue* vv = &v;
-                    if (!vv->IsObject())
-                        return 0;
-                    GfxValue vx, vy, vw;
-                    vv->GetMember("x", &vx);
-                    vv->GetMember("y", &vy);
-                    vv->GetMember("width", &vw);
-                    pos->x = (float)((double)pos->x + vx.GetNumber());
-                    pos->y = (float)((double)pos->y + vy.GetNumber());
-                    pos->x = (float)((double)pos->x + vw.GetNumber() / 2.0);
-                    break;
-                }
+            if ((entry.get() ? true : false) && ((CGameMenuTable*)FUN_140c1d2f0())->IsChild(entry->m_nId, (EGameMenuSet)FUN_14193a010()) != 0) {
+                CString shown = m_path[i];
+                int target = ((CGameMenuTable*)FUN_140c1d2f0())->FindTopId(entry->m_nId, (EGameMenuSet)FUN_14193a010());
+                MS2Ptr<CGameMenuDef> moved = ((CGameMenuTable*)FUN_140c1d2f0())->Find(target);
+                if (moved.get() != 0)
+                    shown = moved->m_strName;
+                GfxValue v = reinterpret_cast<Unk_GuideDO*>(cur.operator->())->FUN_1413127f0("getChildObjectPos", CString(shown), CString(m_path[i]));
+                if (!v.IsObject())
+                    return 0;
+                GfxValue vx, vy, vw;
+                v.GetMember("x", &vx);
+                v.GetMember("y", &vy);
+                v.GetMember("width", &vw);
+                ((Vector3*)out)->x += vx.GetNumber();
+                ((Vector3*)out)->y += vy.GetNumber();
+                ((Vector3*)out)->x += vw.GetNumber() / 2.0;
+                break;
+            } else {
+                cur = cur->FUN_140e159f0<ASDisplayObject>(m_path[i]);
+                if (cur == 0)
+                    return 0;
+                if (!cur->GetVisible())
+                    return 0;
+                ((Vector3*)out)->FUN_140a4e560(Vector3(cur->FUN_1422c10a0(), cur->FUN_1422c1110(), cur->GetZ()));
+                last = cur;
             }
-            cur = GuideDO(cur.operator->())->FUN_1413b19d0(m_path[i]);
-            if (cur.IsNull())
-                return 0;
-            if (!cur->FUN_1422bfca0())
-                return 0;
-            pos->FUN_140a4e560(GuideDOPoint(cur.operator->()));
-            last = cur;
         }
     }
     if (last.get() != 0)
-        pos->x += (float)(last->FUN_1422c1340() / 2);
+        ((Vector3*)out)->x += (float)(last->FUN_1422c1340() / 2);
     return 1;
 }
 
@@ -974,7 +952,7 @@ int UIGuideEventArrowDialog::FUN_141960510()
 {
     if (m_scenes.IsEmpty())
         return 1;
-    Unk_GuideSceneMgr* scene = reinterpret_cast<Unk_GuideSceneMgr*>(FUN_140b632f0()->FUN_1422d4980(4));
+    Unk_GuideSceneMgr* scene = reinterpret_cast<Unk_GuideSceneMgr*>(FUN_140b632f0()->GetTopEntity(4));
     if (scene == 0)
         return 0;
     for (unsigned i = 0; i < m_scenes.GetCount(); i++) {
@@ -995,14 +973,14 @@ MS2_REPLACE_METHOD(0x1419597B0, UIGuideEvent, vfunc_15, 284, 0x94941D74);
 MS2_REPLACE_METHOD(0x1419598E0, UIGuideEvent, vfunc_28, 107, 0x13A6DC37);
 MS2_REPLACE_METHOD(0x141959960, UIGuideEvent, vfunc_2, 46, 0x5650486B);
 MS2_REPLACE_METHOD(0x1419599A0, UIGuideEvent, vfunc_3, 108, 0x93DA484D);
-MS2_REPLACE_METHOD(0x141959A20, UIGuideEvent, FUN_141959a20, 49, 0xE566080A);
-MS2_REPLACE_METHOD(0x14195A0C0, UIGuideEvent, FUN_14195a0c0, 264, 0x35F07F85);
+MS2_REPLACE_METHOD(0x141959A20, UIGuideEvent, SkipTextTip, 49, 0xE566080A);
+MS2_REPLACE_METHOD(0x14195A0C0, UIGuideEvent, ReleaseArrow, 264, 0x35F07F85);
 MS2_REPLACE_METHOD(0x14195A1D0, UIGuideEvent, FUN_14195a1d0, 826, 0xE8B5605C);
 MS2_REPLACE_METHOD(0x14195B490, UIGuideEvent, HideTutorial, 156, 0xFFB94B4F);
 MS2_REPLACE_METHOD(0x14195B540, UIGuideEvent, HideSummary, 171, 0x84A11ADD);
-MS2_REPLACE_METHOD(0x14195B600, UIGuideEvent, FUN_14195b600, 342, 0x9E9CF949);
+MS2_REPLACE_METHOD(0x14195B600, UIGuideEvent, AdvanceTextTip, 342, 0x9E9CF949);
 MS2_REPLACE_METHOD(0x14195B760, UIGuideEvent, IsTutorialShowing, 166, 0xB3BB373C);
 MS2_REPLACE_METHOD(0x14195B810, UIGuideEvent, IsSummaryShowing, 166, 0xC1178F37);
 MS2_REPLACE_METHOD(0x14195B8C0, UIGuideEvent, IsTextTipShowing, 136, 0x51C8B7CD);
 MS2_REPLACE_METHOD(0x14195B950, UIGuideEvent, GetLastTip, 14, 0x99EEE733);
-MS2_REPLACE_METHOD(0x14195BFC0, UIGuideEvent, FUN_14195bfc0, 66, 0x7CE6065D);
+MS2_REPLACE_METHOD(0x14195BFC0, UIGuideEvent, CheckSummaryExpiry, 66, 0x7CE6065D);

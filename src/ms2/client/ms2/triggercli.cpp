@@ -73,11 +73,15 @@ struct Unk_TrgObject
     int m_nItemId;                                          // +0xb4
 };
 MS2_CHECK_OFFSET(Unk_TrgObject, m_nItemId, 0xb4);
+class CubeMapInformationService
+{
+public:
+    class Cube* GetCubeByKey(int nKey);
+};
 class Unk_TrgService : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    Unk_TrgObject* FUN_1410b8b00(unsigned nId);
 };
 struct Unk_TrgFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -176,7 +180,7 @@ int TriggerCli::LoadFile(const CString& strPath)
 int TriggerCli::LoadBuffer(CFileSystem::BufferPtr spBuffer)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403979e0(&doc, spBuffer) == 0)
+    if (GetFileSystem()->LoadXmlFromBuffer(&doc, spBuffer) == 0)
         return 0;
     Unk_140165cf0* pRoot = ((class Unk_140165cf0*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -344,7 +348,7 @@ int TriggerCli::CheckObjects(std::vector<CStringW>& rErrors)
     for (size_t i = 0; i < ids.size(); ++i)
     {
         std::pair<CStringW, int>& rId = ids[i];
-        Unk_TrgObject* pObject = spService->FUN_1410b8b00(rId.second);
+        Unk_TrgObject* pObject = reinterpret_cast<Unk_TrgObject*>(reinterpret_cast<CubeMapInformationService*>(spService.operator->())->GetCubeByKey(rId.second));
         if (pObject == 0)
         {
             strMsg = FormatStringId(0xafb, rId.first, GetErrorText(0xd), rId.second);

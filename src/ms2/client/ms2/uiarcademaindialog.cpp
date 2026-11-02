@@ -96,6 +96,8 @@
 #include "ms2/commonfiles/seasondatatable.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/commonfiles/os.h"
+class CGameRankingCli;
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
@@ -148,7 +150,7 @@ int FUN_140bd09c0(void* pUserData);                                         // t
 class Unk_RankArcadeTable* FUN_140e37aa0();   // C3: was FUN_140e37aa0
 
 class Unk_ArcGameRule { public: CGameEventValueArcadeOpen* FUN_1403ecfe0(); };
-Unk_ArcGameRule* FUN_140302b00();
+class CGameEventValueManager;
 
 class Unk_ArcWorld { public: MyPC* FUN_141bd0cc0(); };
 bool FUN_1418fe060();                                                       // the map can be changed
@@ -170,18 +172,19 @@ struct Unk_ArcRankDataView
     void* m_00;
     Unk_RankData* m_p;
 };
-class Unk_ArcRegionSvc { public: int FUN_140791f50(int nWhat); };
 
 // the xml helpers (TinyXML element: 0x90 bytes, ctor 0x14086f2f0, dtor 0x14086f450)
-class Unk_TiXmlElement
+enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
+class TiXmlParsingData;
+class TiXmlElement
 {
 public:
-    Unk_TiXmlElement(const char* pszName);
-    ~Unk_TiXmlElement();
+    TiXmlElement(const char* pszName);
+    virtual ~TiXmlElement();
+    virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0
 private:
-    void* m_unknown[0x90 / sizeof(void*)];
+    void* m_unknown[0x88 / sizeof(void*)];
 };
-void* FUN_1408782b0(Unk_TiXmlElement* pElement, const char* pszXml, void* pData, int nEncoding);   // Parse
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -191,7 +194,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140873420(void* pNode, const char* szName, CStringW* pstrValue);   // wide string attribute
 
-void* FUN_140cc18a0();                                                  // the url service
+class CWebBrowserService;
 void FUN_141b6de20();                                                   // worker thread start-up
 
 // A worker thread's log scope.
@@ -222,7 +225,7 @@ UIArcadeMainDialog::UIArcadeMainDialog()
     m_nRequestTick = 0;
     m_pWorker = 0;
     FUN_141924170(1);
-    FUN_141b794e0(FUN_140cc18a0(), &m_strUrl, "api:/rank/arcade");
+    FUN_141b794e0((void*)TSingleton<CWebBrowserService>::GetInstance(), &m_strUrl, "api:/rank/arcade");
 }
 
 // @0x140ef58d0
@@ -282,14 +285,16 @@ void UIArcadeMainDialog::OnLoadComplete()
     m_games.clear();
     m_games.reserve(games.size());
     int nButton = 0;
-    for (size_t i = 0; i < games.size() && m_games.size() <= 8; i++)
+    for (size_t i = 0; i < games.size(); i++)
     {
+        if (m_games.size() >= 9)
+            break;
         MS2SvrPtr<CArcadeMainData> spGame = games[i];
         if (spGame == (CArcadeMainData*)0)
             continue;
         if (spGame->m_bIsEventArcade == 1)
         {
-            if (FUN_140302b00()->FUN_1403ecfe0()->Get(spGame->m_nId) == (ArcadeOpenContext*)0)
+            if (reinterpret_cast<Unk_ArcGameRule*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ecfe0()->Get(spGame->m_nId) == (ArcadeOpenContext*)0)
                 continue;
         }
         m_games.push_back(spGame);
@@ -306,7 +311,8 @@ void UIArcadeMainDialog::OnLoadComplete()
         m_buttons[i]->FUN_1422c1fe0(0);
         FUN_140cff840((*m_buttons[i]).FUN_1422bb890(), "m_eventBand", 0);
     }
-    if (reinterpret_cast<Unk_ArcRegionSvc*>(TSingleton<CSeasonDataTable>::GetInstance())->FUN_140791f50(4) != m_nRegion)
+    int nRegion = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)4);
+    if (nRegion != m_nRegion)
     {
         COutPacket packet(static_cast<int>(SendOp::PlayArcade), 0);
         packet.Encode4(9);
@@ -487,46 +493,41 @@ void UIArcadeMainDialog::FUN_140ef6dd0()
 // @0x140ef7230
 void UIArcadeMainDialog::FUN_140ef7230()
 {
-    if (m_nSelected >= 0 && m_nSelected < (int)m_games.size())
+    if (!(m_nSelected >= 0 && m_nSelected < (int)m_games.size()))
+        return;
+    MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
+    if (spGame == (CArcadeMainData*)0)
+        return;
+    if (spGame->m_nId <= 0)
+        return;
+    if (spGame->m_nId >= 6)
+        return;
+    if (m_rankView == (ASMovieClip*)0)
+        return;
+    m_rankView->vfunc_3(1);
+    if (m_emptyView.get() != 0)
+        m_emptyView->vfunc_3(0);
+    FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
+    FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x21, spGame->m_nId));
+    for (int i = 0; i < 10; i++)
     {
-        MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
-        if (spGame == (CArcadeMainData*)0)
-            return;
-        if (spGame->m_nId < 1)
-            return;
-        if (spGame->m_nId < 6)
-        {
-            if (m_rankView == (ASMovieClip*)0)
-                return;
-            m_rankView->vfunc_3(1);
-            if (m_emptyView.get() != 0)
-                m_emptyView->vfunc_3(0);
-            FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spGame->m_nId));
-            FUN_140cfee80((*m_rankView).FUN_1422bb890(), "m_gameDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x21, spGame->m_nId));
-            for (int i = 0; i < 10; i++)
-            {
-                int nNo = i + 1;
-                CString strName = FUN_1402bad60("m_rank{0}", &nNo);
-                MS2Ptr<ASMovieClip> spRow = m_rankView->FUN_1409b4560(strName);
-                if (spRow == (ASMovieClip*)0)
-                    continue;
-                int nId1 = spGame->m_nId;
-                FUN_140cfee80((*spRow).FUN_1422bb890(), "m_charName", m_ranks[nId1].m_rows[i].second);
-                int nId2 = spGame->m_nId;
-                FUN_140cfee80((*spRow).FUN_1422bb890(), "m_score", FUN_140763e10(m_ranks[nId2].m_rows[i].first));
-                MS2Ptr<ASMovieClip> spIcon = spRow->FUN_1409b4560("m_rankIcon");
-                if (spIcon.get() != 0)
-                    spIcon->vfunc_14(i + 1);
-            }
-            MS2Ptr<ASMovieClip> spMine = m_rankView->FUN_1409b4560("m_myRank");
-            if (spMine.get() != 0)
-            {
-                int nId3 = spGame->m_nId;
-                FUN_140cfee80((*spMine).FUN_1422bb890(), "m_score", FUN_140763e10(m_scores[nId3]));
-            }
-            m_30.operator->()->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
-        }
+        int nNo = i + 1;
+        CString strName = FUN_1402bad60("m_rank{0}", &nNo);
+        MS2Ptr<ASMovieClip> spRow = m_rankView->FUN_1409b4560(strName);
+        if (spRow == (ASMovieClip*)0)
+            continue;
+        FUN_140cfee80((*spRow).FUN_1422bb890(), "m_charName", m_ranks[+spGame->m_nId].m_rows[i].second);
+        FUN_140cfee80((*spRow).FUN_1422bb890(), "m_score", FUN_140763e10(m_ranks[+spGame->m_nId].m_rows[i].first));
+        MS2Ptr<ASMovieClip> spIcon = spRow->FUN_1409b4560("m_rankIcon");
+        if (spIcon.get() != 0)
+            spIcon->vfunc_14(i + 1);
     }
+    MS2Ptr<ASMovieClip> spMine = m_rankView->FUN_1409b4560("m_myRank");
+    if (spMine.get() != 0)
+    {
+        FUN_140cfee80((*spMine).FUN_1422bb890(), "m_score", FUN_140763e10(m_scores[+spGame->m_nId]));
+    }
+    m_30.operator->()->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
 }
 
 // @0x140ef7ab0
@@ -634,9 +635,9 @@ void UIArcadeMainDialog::FUN_140ef8040(int nArcadeId, RankingList list)
 // @0x140ef80f0
 void UIArcadeMainDialog::FUN_140ef80f0(CStringW strXml)
 {
-    Unk_TiXmlElement root("ms2");
+    TiXmlElement root("ms2");
     CStringA strUtf8 = FUN_140390ea0(strXml, 0);
-    void* pDoc = FUN_1408782b0(&root, strUtf8, 0, 1);
+    void* pDoc = (void*)root.TiXmlElement::Parse(strUtf8, 0, TIXML_ENCODING_UTF8);
     if (pDoc == 0)
         return;
     FUN_140ef7e70();
@@ -721,17 +722,17 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
     if (pDialog == 0)
         return 0;
     Unk_RankKey keys[6];
-    int nRegion = reinterpret_cast<Unk_ArcRegionSvc*>(TSingleton<CSeasonDataTable>::GetInstance())->FUN_140791f50(4);
+    int nRegion = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)4);
     for (int i = 1; i < 6; i++)
-        CGameRankingCli::FUN_140b2e980()->FUN_140b2b870(&keys[i], 10, i, 0, nRegion);
+        reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b870(&keys[i], 10, i, 0, nRegion);
     for (int i = 1; i < 6; i++)
     {
-        Unk_RankPageReq req = CGameRankingCli::FUN_140b2e980()->FUN_140b2add0(keys[i], 1, 1);
+        Unk_RankPageReq req = reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2add0(keys[i], 1, 1);
         if (req.FUN_140b2e0c0(0))
         {
             CGameRankingParam request;
             request.m_key.FUN_140b35820(keys[i]);
-            CGameRankingCli::FUN_140b2e980()->FUN_140b2bf30(&request);
+            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2bf30(&request);
         }
     }
     int nAttempt = 0;
@@ -744,7 +745,7 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
             if (completed.Lookup(i) != 0)
                 continue;
             RankingList rows(Unk_GrNewTag(0));
-            CGameRankingCli::FUN_140b2e980()->FUN_140b2b440(keys[i], 1, *rows.get(), CStringW(L""), 0);
+            reinterpret_cast<CGameRankingCli*>(TSingleton<CGameRankingCli>::GetInstance())->FUN_140b2b440(keys[i], 1, *rows.get(), CStringW(L""), 0);
             if (rows->GetCount() != 0)
                 completed.SetAt(i, rows);
         }

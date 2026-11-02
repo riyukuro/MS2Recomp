@@ -97,7 +97,7 @@ class Unk_IngTable
 public:
     MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId);
 };
-Unk_IngTable* FUN_140281980();
+class CItemDataTable;
 
 
 
@@ -180,7 +180,7 @@ UGCCube::UGCCube(int itemId)                                                    
     : index(0)
 {
     itemData = FUN_14053f870(itemId);
-    ingredient = FUN_140281980()->FUN_1405566e0(itemId);
+    ingredient = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(itemId);
     info.AssignRaw(new CubeItemInfo(itemId, 0, 0, 0));
 }
 
@@ -188,7 +188,7 @@ UGCCube::UGCCube(int itemId, __int64 uid, __int64 count, CUgcItemLook* pLook)   
     : index(0)
 {
     itemData = FUN_14053f870(itemId);
-    ingredient = FUN_140281980()->FUN_1405566e0(itemId);
+    ingredient = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(itemId);
     info.AssignRaw(new CubeItemInfo(itemId, uid, count, pLook));
 }
 
@@ -595,7 +595,7 @@ bool Unk_CubeUsage::FUN_140df13e0(int nItemId)                                  
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return false;
-    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(nItemId);
+    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(nItemId);
     if (spIng && spIng->m_bFree == 0)
         return false;
     if (spData->HasCubeTextureMesh())
@@ -684,7 +684,7 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
             MS2Ptr<CItemData> spData;
             if (mapItems.Lookup(spCube->FUN_140def5a0(), spData))
             {
-                MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->GetItemId());
+                MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(spData->GetItemId());
                 if (spIng && TSingleton<UGCCubeCategoryTable>::GetInstance()->HasAnyField(*reinterpret_cast<const std::vector<unsigned>*>(&spIng->m_ids)))
                     continue;
             }
@@ -793,7 +793,7 @@ void UGCCubePalette::FUN_140df2250()                                            
 {
     mapItems.RemoveAll();
     std::vector<unsigned> vecIds;
-    reinterpret_cast<CItemDataTable*>(FUN_140281980())->LoadItemNameIds(vecIds);
+    reinterpret_cast<CItemDataTable*>(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()))->LoadItemNameIds(vecIds);
     for (size_t i = 0; i < vecIds.size(); ++i)
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(vecIds[i]);
@@ -801,13 +801,12 @@ void UGCCubePalette::FUN_140df2250()                                            
             continue;
         if (!spData->FUN_14053cb80())
             continue;
-        if (FUN_140281980()->FUN_1405566e0(spData->GetItemId()) == 0)
+        if (reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(spData->GetItemId()) == 0)
             continue;
         mapItems.SetAt(spData->GetItemId(), spData);
     }
 }
 
-// MS2-FUNCTIONAL: the exe CAtlArray::Add takes the stock-branch CubePtr temporary by const&; ours copies it by value (shared header)
 void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df23f0
 {
     MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -851,7 +850,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
                 continue;
             if (usage.FUN_140df1680(spStock, pFilter))
             {
-                out.Add(CubePtr(new UGCCube(nItemId, spStock->GetUid(), spStock->GetCount(), spStock->GetLook().get())));
+                out.Add(new UGCCube(nItemId, spStock->GetUid(), spStock->GetCount(), spStock->GetLook().get()));
             }
         }
     }
@@ -874,7 +873,6 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
     }
 }
 
-// MS2-FUNCTIONAL: the exe CAtlArray::Add takes the stock-branch CubePtr temporary by const&; ours copies it by value (shared header)
 void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df2bc0
 {
     MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_CubeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
@@ -894,14 +892,13 @@ void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilte
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbe90(nItemId);
         if (spItem.get() != 0)
         {
-            CubePtr spNew(new UGCCube(nItemId, spItem->GetItemUid(), spItem->FUN_140528910(), spItem->GetUgcLook()));
-            out.Add(spNew);
+            out.Add(new UGCCube(nItemId, spItem->GetItemUid(), spItem->FUN_140528910(), spItem->GetUgcLook()));
             continue;
         }
         MS2Ptr<CUGCMapItem> spStock = DAT_143ab2e50.FUN_140dfc800(nItemId);
         if (spStock.get() != 0)
         {
-            out.Add(CubePtr(new UGCCube(nItemId, spStock->GetUid(), spStock->GetCount(), spStock->GetLook().get())));
+            out.Add(new UGCCube(nItemId, spStock->GetUid(), spStock->GetCount(), spStock->GetLook().get()));
             continue;
         }
         if (!pFilter->flag1)
@@ -924,7 +921,7 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
         if (!spData->install.FUN_140548cd0())
             return true;
     }
-    MS2Ptr<Unk_IngItem> spIng = FUN_140281980()->FUN_1405566e0(spData->GetItemId());
+    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(spData->GetItemId());
     if (spIng == 0)
         return false;
     if (pFilter->FUN_140df0160() != spIng->m_nCategory)

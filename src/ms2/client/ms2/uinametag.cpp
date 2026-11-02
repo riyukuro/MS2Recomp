@@ -19,6 +19,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/socketptr.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/ms2format.h"
 
@@ -173,31 +174,12 @@ public:
     Unk_NtTeamPtr FUN_140967420();
 };
 Unk_NtSeatSub* FUN_14165ca20(PC* pPc);
-AdditionalCliList* FUN_1416749a0(PCBase* pActor);
 CStringW* FUN_141656be0(PC* pPc);                       // guild name
 CStringW FUN_141b720b0(int nTitle, PC* pPc);
-struct Unk_NtMountInfo3 { char m_pad[0x68]; int m_68; };
-class Unk_NtMountInfoPtr
-{
-public:
-    ~Unk_NtMountInfoPtr() { FUN_140788ea0(); }
-    Unk_NtMountInfo3* FUN_1407895c0() const;            // operator->
-    void FUN_140788ea0();                               // release
-    void* m_pad_00;
-    Unk_NtMountInfo3* m_p;
-};
-struct Unk_NtMountInfo { Unk_NtMountInfoPtr FUN_140784970(); };
-class Unk_NtMountPtr
-{
-public:
-    ~Unk_NtMountPtr() { FUN_140788ed0(); }
-    void* FUN_1409f78a0() const;                        // get
-    Unk_NtMountInfo* FUN_1407895d0() const;             // operator->
-    void FUN_140788ed0();                               // release
-    void* m_pad_00;
-    Unk_NtMountInfo* m_p;
-};
-class Unk_NtMountHolder { public: Unk_NtMountPtr FUN_141707750(); };
+class RideeData { public: struct Rider : public CPtred { char m_pad[0x68 - sizeof(CPtred)]; int m_68; }; };
+class CRideeData { public: Unk_SocketPtr<RideeData::Rider> FUN_140784970(); };   // C3: member view
+class Unk_RideeData : public CPtred { };
+class Ridee : public PCBase { public: MS2Ptr<Unk_RideeData> GetData(); };   // C3: member view
 class Unk_NtItemMgr
 {
 public:
@@ -275,7 +257,7 @@ int UINameTag::Entity::FUN_141a5e5d0(Unk_NtPos* pPos)
 int UINameTag::Entity::FUN_141a5e690()
 {
     if (m_38.get())
-        return m_38->FUN_1422bfca0();
+        return m_38->GetVisible();
     return 0;
 }
 
@@ -347,11 +329,11 @@ void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
             m_38->SetAlpha(100.0f);
         else
             m_38->SetAlpha((m_54 - fDist) * 0.05f + 40.0f);
-        if (FUN_14028d470(FUN_1416749a0(pActor)->ComputeAlphaBlending(), 0.0f))
+        if (FUN_14028d470(reinterpret_cast<AdditionalCliList*>(pActor->FUN_1416749a0())->ComputeAlphaBlending(), 0.0f))
             m_38->SetAlpha(0.0f);
         float fY = pPos->y;
         fY += FUN_1412762d0(vfunc_10());
-        m_38->FUN_1422c00f0(pPos->x, fY);
+        m_38->SetPositionFloat(pPos->x, fY);
     }
 }
 
@@ -382,11 +364,11 @@ int UINameTag::Entity::vfunc_8(int n)
     }
     if (FUN_141a60920() == 0)
         return 1;
-    Unk_NtMountHolder* pHolder = ((class Unk_NtMountHolder*)((class PCBase*)(class PCBase*)(pActor))->FUN_1416764a0());
+    Ridee* pHolder = ((class Ridee*)((class PCBase*)(class PCBase*)(pActor))->FUN_1416764a0());
     if (pHolder != 0)
     {
-        Unk_NtMountPtr spMount = pHolder->FUN_141707750();
-        bool bMounted = (spMount.FUN_1409f78a0() ? true : false) && spMount.FUN_1407895d0()->FUN_140784970().FUN_1407895c0()->m_68 != 0;
+        MS2Ptr<Unk_RideeData> spMount = pHolder->GetData();
+        bool bMounted = (spMount.get() ? true : false) && reinterpret_cast<CRideeData*>(spMount.operator->())->FUN_140784970().operator->()->m_68 != 0;
         if (bMounted)
             return 1;
     }

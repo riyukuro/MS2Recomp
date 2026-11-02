@@ -306,7 +306,7 @@ void UISystemMenuDialog::Notify()
     }
     else
     {
-        strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x17, reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd98f0());
+        strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x17, reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->GetFieldChannelGroupId());
     }
     if (!strName.IsEmpty())
     {
@@ -333,7 +333,7 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01700(0x476, 0, 0);
-        spBox->FUN_141a01ca0(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
+        spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_SmConsts*)FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
 }

@@ -59,6 +59,7 @@ FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/placeholder/ms2color.h"
 #include "ms2/client/ms2/memorydepletiondlg.h"
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+#include "ms2/commonfiles/os.h"
 class Unk_AvModeSvc;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 namespace ecr { class RenderService; }
@@ -160,7 +161,6 @@ struct Unk_UtilTransform
 };
 MS2_CHECK_SIZE(Unk_UtilTransform, 0x34);
 int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char* pszDelim, int nMax);
-egf::EntityManager* FUN_1409670f0();
 class EntityWorldManager { public: egf::Entity* FUN_1411cf440(const egf::EntityID& id); };
 ecr::SceneGraphService* FUN_1413f98b0();
 
@@ -497,7 +497,7 @@ MS2_REPLACE(0x141b6eee0, FUN_141b6eee0, 138, 0x7091A733);
 // @0x141b6ef70
 NiAVObject* FUN_141b6ef70(egf::EntityID id)
 {
-    egf::Entity* pEntity = reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf440(id);
+    egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id);
     if (pEntity == NULL)
         return NULL;
     ecr::SceneGraphService* pService = FUN_1413f98b0();
@@ -594,11 +594,10 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
 }
 
 // @0x141b6f440
-// MS2-FUNCTIONAL: exe returns int (BOOL) and leaves the walk loop with break to a shared dtor; callers in other units declare bool
-bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
+int FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
 {
     if (pRoot == NULL)
-        return false;
+        return 0;
     const char* pszKey = NULL;
     if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() == 0) {
         if (nSlot == 0)
@@ -609,15 +608,13 @@ bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
             pszKey = DAT_143ae50d8;
     }
     Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
-    NiObject* pColor;
-    do {
-        NiRenderObject* pRender;
-        do {
-            NiAVObject* pNode = kWalker.Next(true);
-            if (pNode == NULL)
-                return false;
-            pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
-        } while (pRender == NULL || ((class NiMaterial*)(class NiMaterial const*)(((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pRender))->GetActiveMaterial())))->GetName() == DAT_143ae5200);
+    NiAVObject* pNode;
+    while ((pNode = kWalker.Next(true)) != NULL) {
+        NiRenderObject* pRender = (NiRenderObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
+        if (pRender != NULL) {
+        if (((class NiMaterial*)(class NiMaterial const*)(((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pRender))->GetActiveMaterial())))->GetName() == DAT_143ae5200)
+            continue;
+        NiObject* pColor = NULL;
         if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_14109a9d0() != 0) {
             switch (nSlot) {
             case 0: pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae50c8))))); break;
@@ -628,14 +625,18 @@ bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
             NiFixedString kName(pszKey);
             pColor = NiObject::DynamicCast(&NiColorExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)(pRender))->GetExtraData(*(class NiFixedString const*)(&kName)))));
         }
-    } while (pColor == NULL);
-    float fR = ((Unk_UtilColorData*)pColor)->FUN_141b72530();
-    float fG = ((Unk_UtilColorData*)pColor)->FUN_141b72470();
-    float fB = ((Unk_UtilColorData*)pColor)->FUN_141b72460();
-    pOut->x = fR;
-    pOut->y = fG;
-    pOut->z = fB;
-    return true;
+        if (pColor != NULL) {
+            float fR = ((Unk_UtilColorData*)pColor)->FUN_141b72530();
+            float fG = ((Unk_UtilColorData*)pColor)->FUN_141b72470();
+            float fB = ((Unk_UtilColorData*)pColor)->FUN_141b72460();
+            pOut->x = fR;
+            pOut->y = fG;
+            pOut->z = fB;
+            return 1;
+        }
+        }
+    }
+    return 0;
 }
 
 // @0x141b6f700
@@ -1174,7 +1175,7 @@ int FUN_141b712e0()
     MS2Ptr<ASMouseCursor> kHud = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetMouseCursor(6);
     if (kHud.operator==(0))
         return 0;
-    return kHud.operator->()->FUN_1422bfca0() != 0;
+    return kHud.operator->()->GetVisible() != 0;
 }
 
 // ---- curve math ----
@@ -1421,7 +1422,7 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
 // @0x141b71e70
 void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot)
 {
-    egf::EntityPtr kEntity(reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf440(id));
+    egf::EntityPtr kEntity(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(id));
     if (kEntity.operator==((egf::Entity*)0))
         return;
     NiAVObject* pRoot = FUN_141b6efc0(kEntity.operator egf::Entity*());
@@ -1446,7 +1447,7 @@ CStringW FUN_141b72150(int nId, int nValue)
 {
     CStringW kText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x16, nId);
     if (TSingleton<CReservedWordTable>::GetInstance() != NULL)
-        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbda0(kText, nValue);
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceTokensForGender(kText, nValue);
     return kText;
 }
 MS2_REPLACE(0x141b72150, FUN_141b72150, 146, 0x145A9D20);

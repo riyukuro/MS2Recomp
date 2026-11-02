@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CFieldDataCli: client-side CFieldData (fieldData.xml + MapXblock xml: bgm, hdr, fog, camera, shadow, minimap).
 // MS2-UNIT: ?\fielddatacli.cpp
-// MS2-FUNCTIONAL: FUN_140a55df0 (stack slot layout), CMinimap::CMinimap (the exe passes the copied zero vector by slot address, not the ctor return) differ in layout only; behaviour identical
+// MS2-FUNCTIONAL: FUN_140a55df0 (stack slot layout: the exe keeps the two return temps apart, 0x50 and 0x60, around cam) differs in layout only; behaviour identical
 // MS2-RANGE: 0x1400c4040-0x1400c4100 .text$di
 // MS2-RANGE: 0x140a54160-0x140a571b0 .text$mn
 // MS2-PIN: ?get@?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ 0x140a56f90
@@ -19,6 +19,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include <new>
+#include <efd/Point3.h>
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -60,9 +61,9 @@ bool FUN_140552700(const Unk_GVec3&, const Unk_GVec3&);
 class Unk_140166420 : public CFileSystem { };
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
+MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p);
 int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp);
 int FUN_140a56ad0(Unk_140165cf0* node, const char* name, int& out);
-MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p);
 
 // ---- static string table (the first static of header_statics_a.h), 0x1400c4040; atexit thunk 0x142c9f4f0 ----
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -369,14 +370,14 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
         }
         Unk_140165cf0* vis = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("visible"));
         if (vis) {
-            const char* s = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("mypc");
-            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleMyPC = 0; }
-            s = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("otherpc");
-            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleOtherPC = 0; }
-            s = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("portal");
-            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisiblePortal = 0; }
-            s = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("npc");
-            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleNpc = 0; }
+            const char* s1 = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("mypc");
+            if (s1) { if (strcmp(s1, "false") == 0) spMM->m_bVisibleMyPC = 0; }
+            const char* s2 = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("otherpc");
+            if (s2) { if (strcmp(s2, "false") == 0) spMM->m_bVisibleOtherPC = 0; }
+            const char* s3 = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("portal");
+            if (s3) { if (strcmp(s3, "false") == 0) spMM->m_bVisiblePortal = 0; }
+            const char* s4 = ((class TiXmlElement*)(class Unk_140165cf0*)(vis))->Attribute("npc");
+            if (s4) { if (strcmp(s4, "false") == 0) spMM->m_bVisibleNpc = 0; }
         }
         Unk_140165cf0* lim = ((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("limit"));
         if (lim) {
@@ -466,6 +467,15 @@ MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p)
     return self;
 }
 
+// The camera vectors are NiPoint3 in the exe: assigning efd::Point3::ZERO makes an implicit conversion temp (0x14027dcf0).
+class NiPoint3
+{
+public:
+    NiPoint3(const efd::Point3& pt);
+    NiPoint3& operator=(NiPoint3&& pt);
+    float x, y, z;
+};
+
 // @0x140a56c20
 CMinimap::CMinimap()
     : m_rcImage(0, 0, 0, 0), m_rcScreen(0, 0, 0, 0), m_frustum(0)
@@ -476,8 +486,8 @@ CMinimap::CMinimap()
     m_bVisibleNpc = 1;
     m_bLimitScale = 1;
     m_fZoomFactor = 1.0f;
-    m_vecCamPos = Unk_GVec3(*(Unk_GVec3*)&DAT_143b01a60);
-    m_vecCamRot = Unk_GVec3(*(Unk_GVec3*)&DAT_143b01a60);
+    reinterpret_cast<NiPoint3&>(m_vecCamPos) = efd::Point3::ZERO;
+    reinterpret_cast<NiPoint3&>(m_vecCamRot) = efd::Point3::ZERO;
 }
 
 // @0x140a56db0

@@ -181,12 +181,12 @@ void UIItemCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_90->vfunc_24(false);
-    FUN_1419b4c70();
+    CollectItemsAndFunctions();
     if ((Unk_IcButton*)(m_spClearInven = FUN_140bb4b10("m_clearInven"))) {
-        m_spClearInven->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4dd0), 0);
+        m_spClearInven->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::OnClearInven), 0);
     }
     FUN_1419b6350();
-    FUN_1419b6790();
+    FillFunctionList();
 }
 MS2_REPLACE_METHOD(0x1419b3d60, UIItemCreateDialog, OnLoadComplete, 416, 0xA5A1CFB7);
 
@@ -354,7 +354,7 @@ MS2_REPLACE_METHOD(0x1419b4a00, UIItemCreateDialog, vfunc_49, 603, 0xA49C1F61);
 
 // Collect the items of the item table (once) and their function names.
 // @0x1419b4c70
-void UIItemCreateDialog::FUN_1419b4c70()
+void UIItemCreateDialog::CollectItemsAndFunctions()
 {
     if (!m_items.IsEmpty())
         return;
@@ -370,17 +370,17 @@ void UIItemCreateDialog::FUN_1419b4c70()
             m_functions.insert(item->function.name);
     }
 }
-MS2_REPLACE_METHOD(0x1419b4c70, UIItemCreateDialog, FUN_1419b4c70, 336, 0x9B91A89C);
+MS2_REPLACE_METHOD(0x1419b4c70, UIItemCreateDialog, CollectItemsAndFunctions, 336, 0x9B91A89C);
 
 // "m_clearInven": empty the inventory (the "ClearInven" GM command).
 // @0x1419b4dd0
-void UIItemCreateDialog::FUN_1419b4dd0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIItemCreateDialog::OnClearInven(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0)
         return;
     CUserCommandCli::SendCommand(CStringW(L"ClearInven"));
 }
-MS2_REPLACE_METHOD(0x1419b4dd0, UIItemCreateDialog, FUN_1419b4dd0, 90, 0x17D725EF);
+MS2_REPLACE_METHOD(0x1419b4dd0, UIItemCreateDialog, OnClearInven, 90, 0x17D725EF);
 
 // The context menu click: "openDropInfo" opens the drop info of the selected box item.
 // @0x1419b4e30
@@ -390,9 +390,9 @@ void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Pa
         return;
     ASListEvent evt(params);
     ASObj row(evt.FUN_1422e2780(), 2);
-    if (row.FUN_1422ba9a0())
+    if (row.IsUndefinedOrNull())
         return;
-    CStringW strFunc = row.FUN_1422bb2b0("func");
+    CStringW strFunc = row.GetWString("func");
     if (strFunc.IsEmpty())
         return;
     int nItemId = FUN_1419b5080();
@@ -421,7 +421,7 @@ int UIItemCreateDialog::FUN_1419b5080()
     MS2Ptr<ASScrollingList> list = FUN_140c02900("m_items");
     if (!list)
         return 0;
-    CStringW strLabel = list->FUN_1422dd520();
+    CStringW strLabel = list->GetSelectedLabelW();
     if (strLabel.IsEmpty())
         return 0;
     CStringW strId = FUN_14083f330(strLabel, L'[', L']');
@@ -430,7 +430,7 @@ int UIItemCreateDialog::FUN_1419b5080()
 MS2_REPLACE_METHOD(0x1419b5080, UIItemCreateDialog, FUN_1419b5080, 274, 0xAE5E507B);
 
 // @0x1419b51a0
-int UIItemCreateDialog::FUN_1419b51a0()
+int UIItemCreateDialog::GetSelectedItemRank()
 {
     MS2Ptr<Unk_IcCombo> combo = FUN_140c28560("m_itemGrade");
     if (combo == 0)
@@ -439,7 +439,7 @@ int UIItemCreateDialog::FUN_1419b51a0()
     combo->FUN_1419b9990("itemRank", nRank);
     return nRank;
 }
-MS2_REPLACE_METHOD(0x1419b51a0, UIItemCreateDialog, FUN_1419b51a0, 206, 0xF74AB5D1);
+MS2_REPLACE_METHOD(0x1419b51a0, UIItemCreateDialog, GetSelectedItemRank, 206, 0xF74AB5D1);
 
 // The enchant level of a created item: the level above 15, capped by the item's limit.
 // @0x1419b5280
@@ -504,7 +504,7 @@ void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
     if ((CItemData*)item) {
         if (MS2Ptr<Unk_IcInput> input = FUN_140e35bd0("m_periodInput")) {
-            reinterpret_cast<ASTextInput*>(input.operator->())->FUN_1422e0ab0(L"0");
+            reinterpret_cast<ASTextInput*>(input.operator->())->SetTextW(L"0");
             reinterpret_cast<ASTextInput*>(input.operator->())->FUN_1422c1fe0(1);
         }
     }
@@ -590,8 +590,8 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
                 if (item->FUN_14053cb80())
                     list->AddItem(row);
             } else {
-                if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
-                    if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(strGroup)))
+                if (item->GetModelOrEmpty()->FUN_14054b3d0() < 2) {
+                    if (item->GetModelOrEmpty()->FUN_14054b450(FUN_1405451c0(strGroup)))
                         list->AddItem(row);
                 }
             }
@@ -659,7 +659,7 @@ void UIItemCreateDialog::FUN_1419b6350()
                 m_spContextMenu->AddItem(row);
                 nCount++;
             }
-            m_spContextMenu->FUN_1422c79e0(nWidth, m_spContextMenu->GetItemCount() * nRowHeight);
+            m_spContextMenu->SetSizeInt(nWidth, m_spContextMenu->GetItemCount() * nRowHeight);
             m_spContextMenu->vfunc_24(true);
             m_spContextMenu->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4e30), 0);
         } else {
@@ -671,16 +671,16 @@ MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, FUN_1419b6350, 1078, 0x57B2A
 
 // Fill the function list with the item function names.
 // @0x1419b6790
-void UIItemCreateDialog::FUN_1419b6790()
+void UIItemCreateDialog::FillFunctionList()
 {
     if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_function")) {
         list->FUN_1422dd1d0();
         for (std::set<CStringW>::iterator it = m_functions.begin(); it != m_functions.end(); ++it)
-            list->FUN_1422dd310(*it);
+            list->AddLabelItemW(*it);
         list->vfunc_24(true);
     }
 }
-MS2_REPLACE_METHOD(0x1419b6790, UIItemCreateDialog, FUN_1419b6790, 320, 0x45D2CE89);
+MS2_REPLACE_METHOD(0x1419b6790, UIItemCreateDialog, FillFunctionList, 320, 0x45D2CE89);
 
 // ---- ItemOptionDebug ----
 
@@ -711,7 +711,7 @@ float ItemOptionDebug::FUN_1419b6940(int nGroup, int nStat)
 MS2_REPLACE_METHOD(0x1419b6940, ItemOptionDebug, FUN_1419b6940, 320, 0x14B1D644);
 
 // @0x1419b6a90
-float ItemOptionDebug::FUN_1419b6a90(int nGroup, int nStat)
+float ItemOptionDebug::GetMaxRate(int nGroup, int nStat)
 {
     float fMax = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -728,10 +728,10 @@ float ItemOptionDebug::FUN_1419b6a90(int nGroup, int nStat)
     }
     return fMax;
 }
-MS2_REPLACE_METHOD(0x1419b6a90, ItemOptionDebug, FUN_1419b6a90, 320, 0x3CE6722C);
+MS2_REPLACE_METHOD(0x1419b6a90, ItemOptionDebug, GetMaxRate, 320, 0x3CE6722C);
 
 // @0x1419b6be0
-void ItemOptionDebug::FUN_1419b6be0(int nGroup, int nStat, Unk_IcRateCounts& counts)
+void ItemOptionDebug::CountRates(int nGroup, int nStat, Unk_IcRateCounts& counts)
 {
     POSITION pos = m_options.GetHeadPosition();
     while (pos) {
@@ -748,10 +748,10 @@ void ItemOptionDebug::FUN_1419b6be0(int nGroup, int nStat, Unk_IcRateCounts& cou
         counts.SetAt(fKey, n);
     }
 }
-MS2_REPLACE_METHOD(0x1419b6be0, ItemOptionDebug, FUN_1419b6be0, 337, 0x67CFDA31);
+MS2_REPLACE_METHOD(0x1419b6be0, ItemOptionDebug, CountRates, 337, 0x67CFDA31);
 
 // @0x1419b6d40
-__int64 ItemOptionDebug::FUN_1419b6d40(int nGroup, int nStat)
+__int64 ItemOptionDebug::GetMinValue(int nGroup, int nStat)
 {
     __int64 nMin = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -768,10 +768,10 @@ __int64 ItemOptionDebug::FUN_1419b6d40(int nGroup, int nStat)
     }
     return nMin;
 }
-MS2_REPLACE_METHOD(0x1419b6d40, ItemOptionDebug, FUN_1419b6d40, 310, 0x7D620EF9);
+MS2_REPLACE_METHOD(0x1419b6d40, ItemOptionDebug, GetMinValue, 310, 0x7D620EF9);
 
 // @0x1419b6e80
-__int64 ItemOptionDebug::FUN_1419b6e80(int nGroup, int nStat)
+__int64 ItemOptionDebug::GetMaxOptionValue(int nGroup, int nStat)
 {
     __int64 nMax = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -788,10 +788,10 @@ __int64 ItemOptionDebug::FUN_1419b6e80(int nGroup, int nStat)
     }
     return nMax;
 }
-MS2_REPLACE_METHOD(0x1419b6e80, ItemOptionDebug, FUN_1419b6e80, 310, 0x35E99D93);
+MS2_REPLACE_METHOD(0x1419b6e80, ItemOptionDebug, GetMaxOptionValue, 310, 0x35E99D93);
 
 // @0x1419b6fc0
-void ItemOptionDebug::FUN_1419b6fc0(int nGroup, int nStat, Unk_IcValueCounts& counts)
+void ItemOptionDebug::CountValues(int nGroup, int nStat, Unk_IcValueCounts& counts)
 {
     POSITION pos = m_options.GetHeadPosition();
     while (pos) {
@@ -808,7 +808,7 @@ void ItemOptionDebug::FUN_1419b6fc0(int nGroup, int nStat, Unk_IcValueCounts& co
         counts.SetAt(nKey, n);
     }
 }
-MS2_REPLACE_METHOD(0x1419b6fc0, ItemOptionDebug, FUN_1419b6fc0, 336, 0x41AA412B);
+MS2_REPLACE_METHOD(0x1419b6fc0, ItemOptionDebug, CountValues, 336, 0x41AA412B);
 
 // @0x1419b7120
 float ItemOptionDebug::FUN_1419b7120(int nGroup, unsigned nSpecial)
@@ -831,7 +831,7 @@ float ItemOptionDebug::FUN_1419b7120(int nGroup, unsigned nSpecial)
 MS2_REPLACE_METHOD(0x1419b7120, ItemOptionDebug, FUN_1419b7120, 320, 0x391A1A06);
 
 // @0x1419b7270
-float ItemOptionDebug::FUN_1419b7270(int nGroup, unsigned nSpecial)
+float ItemOptionDebug::GetMaxSpecialRate(int nGroup, unsigned nSpecial)
 {
     float fMax = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -848,10 +848,10 @@ float ItemOptionDebug::FUN_1419b7270(int nGroup, unsigned nSpecial)
     }
     return fMax;
 }
-MS2_REPLACE_METHOD(0x1419b7270, ItemOptionDebug, FUN_1419b7270, 320, 0xB0BFC139);
+MS2_REPLACE_METHOD(0x1419b7270, ItemOptionDebug, GetMaxSpecialRate, 320, 0xB0BFC139);
 
 // @0x1419b73c0
-void ItemOptionDebug::FUN_1419b73c0(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts)
+void ItemOptionDebug::CountSpecialRates(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts)
 {
     POSITION pos = m_options.GetHeadPosition();
     while (pos) {
@@ -868,10 +868,10 @@ void ItemOptionDebug::FUN_1419b73c0(int nGroup, unsigned nSpecial, Unk_IcRateCou
         counts.SetAt(fKey, n);
     }
 }
-MS2_REPLACE_METHOD(0x1419b73c0, ItemOptionDebug, FUN_1419b73c0, 337, 0xCFCBE6A2);
+MS2_REPLACE_METHOD(0x1419b73c0, ItemOptionDebug, CountSpecialRates, 337, 0xCFCBE6A2);
 
 // @0x1419b7520
-float ItemOptionDebug::FUN_1419b7520(int nGroup, unsigned nSpecial)
+float ItemOptionDebug::GetMinSpecialValue(int nGroup, unsigned nSpecial)
 {
     float fMin = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -888,10 +888,10 @@ float ItemOptionDebug::FUN_1419b7520(int nGroup, unsigned nSpecial)
     }
     return fMin;
 }
-MS2_REPLACE_METHOD(0x1419b7520, ItemOptionDebug, FUN_1419b7520, 324, 0x1F550F66);
+MS2_REPLACE_METHOD(0x1419b7520, ItemOptionDebug, GetMinSpecialValue, 324, 0x1F550F66);
 
 // @0x1419b7670
-float ItemOptionDebug::FUN_1419b7670(int nGroup, unsigned nSpecial)
+float ItemOptionDebug::GetMaxSpecialValue(int nGroup, unsigned nSpecial)
 {
     float fMax = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -908,10 +908,10 @@ float ItemOptionDebug::FUN_1419b7670(int nGroup, unsigned nSpecial)
     }
     return fMax;
 }
-MS2_REPLACE_METHOD(0x1419b7670, ItemOptionDebug, FUN_1419b7670, 324, 0x8CB4B52A);
+MS2_REPLACE_METHOD(0x1419b7670, ItemOptionDebug, GetMaxSpecialValue, 324, 0x8CB4B52A);
 
 // @0x1419b77c0
-void ItemOptionDebug::FUN_1419b77c0(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts)
+void ItemOptionDebug::CountSpecialValues(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts)
 {
     POSITION pos = m_options.GetHeadPosition();
     while (pos) {
@@ -928,39 +928,39 @@ void ItemOptionDebug::FUN_1419b77c0(int nGroup, unsigned nSpecial, Unk_IcRateCou
         counts.SetAt(fKey, n);
     }
 }
-MS2_REPLACE_METHOD(0x1419b77c0, ItemOptionDebug, FUN_1419b77c0, 341, 0xF5086F46);
+MS2_REPLACE_METHOD(0x1419b77c0, ItemOptionDebug, CountSpecialValues, 341, 0xF5086F46);
 
 // @0x1419b7920
-int ItemOptionDebug::FUN_1419b7920(int nGroup, int nStat)
+int ItemOptionDebug::HasRate(int nGroup, int nStat)
 {
     float fMin = FUN_1419b6940(nGroup, nStat);
-    float fMax = FUN_1419b6a90(nGroup, nStat);
+    float fMax = GetMaxRate(nGroup, nStat);
     if (fMin > 0)
         return 1;
     if (fMax > 0)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419b7920, ItemOptionDebug, FUN_1419b7920, 119, 0x9C50E6E4);
+MS2_REPLACE_METHOD(0x1419b7920, ItemOptionDebug, HasRate, 119, 0x9C50E6E4);
 
 // @0x1419b79a0
-int ItemOptionDebug::FUN_1419b79a0(int nGroup, int nStat)
+int ItemOptionDebug::HasValue(int nGroup, int nStat)
 {
-    __int64 nMin = FUN_1419b6d40(nGroup, nStat);
-    __int64 nMax = FUN_1419b6e80(nGroup, nStat);
+    __int64 nMin = GetMinValue(nGroup, nStat);
+    __int64 nMax = GetMaxOptionValue(nGroup, nStat);
     if (nMin > 0)
         return 1;
     if (nMax > 0)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419b79a0, ItemOptionDebug, FUN_1419b79a0, 103, 0x97CF2668);
+MS2_REPLACE_METHOD(0x1419b79a0, ItemOptionDebug, HasValue, 103, 0x97CF2668);
 
 // @0x1419b7a10
 int ItemOptionDebug::FUN_1419b7a10(int nGroup, unsigned nSpecial)
 {
     float fMin = FUN_1419b7120(nGroup, nSpecial);
-    float fMax = FUN_1419b7270(nGroup, nSpecial);
+    float fMax = GetMaxSpecialRate(nGroup, nSpecial);
     if (fMin > 0)
         return 1;
     if (fMax > 0)
@@ -972,8 +972,8 @@ MS2_REPLACE_METHOD(0x1419b7a10, ItemOptionDebug, FUN_1419b7a10, 119, 0xAD3F06E7)
 // @0x1419b7a90
 int ItemOptionDebug::FUN_1419b7a90(int nGroup, unsigned nSpecial)
 {
-    __int64 nMin = (__int64)FUN_1419b7520(nGroup, nSpecial);
-    __int64 nMax = (__int64)FUN_1419b7670(nGroup, nSpecial);
+    __int64 nMin = (__int64)GetMinSpecialValue(nGroup, nSpecial);
+    __int64 nMax = (__int64)GetMaxSpecialValue(nGroup, nSpecial);
     if (nMin > 0)
         return 1;
     if (nMax > 0)
@@ -987,13 +987,13 @@ MS2_REPLACE_METHOD(0x1419b7a90, ItemOptionDebug, FUN_1419b7a90, 113, 0xAA8D7CF5)
 TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
 {
     float fMinimum = FUN_1419b6940(nGroup, nStat);
-    float fMaximum = FUN_1419b6a90(nGroup, nStat);
+    float fMaximum = GetMaxRate(nGroup, nStat);
     TiXmlElement* pRate = new TiXmlElement("rate");
     XmlSetAttr(pRate, "name", FUN_14016a600(GetStatCommonText(nStat), 0));
     XmlSetAttr(pRate, "minimum", (float)fMinimum);
     XmlSetAttr(pRate, "maximum", (float)fMaximum);
     Unk_IcRateCounts counts(10);
-    FUN_1419b6be0(nGroup, nStat, counts);
+    CountRates(nGroup, nStat, counts);
     if (!counts.IsEmpty()) {
         for (POSITION pos = counts.GetHeadPosition(); pos; counts.GetNext(pos)) {
             float fKey = counts.GetKeyAt(pos);
@@ -1012,14 +1012,14 @@ MS2_REPLACE_METHOD(0x1419b7b10, ItemOptionDebug, FUN_1419b7b10, 737, 0x51695B5A)
 // @0x1419b7e00
 TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
 {
-    int nMinimum = (int)FUN_1419b6d40(nGroup, nStat);
-    int nMaximum = (int)FUN_1419b6e80(nGroup, nStat);
+    int nMinimum = (int)GetMinValue(nGroup, nStat);
+    int nMaximum = (int)GetMaxOptionValue(nGroup, nStat);
     TiXmlElement* pValue = new TiXmlElement("value");
     XmlSetAttr(pValue, "name", FUN_14016a600(GetStatCommonText(nStat), 0));
     XmlSetAttr(pValue, "minimum", (unsigned)nMinimum);
     XmlSetAttr(pValue, "maximum", (unsigned)nMaximum);
     Unk_IcValueCounts counts(10);
-    FUN_1419b6fc0(nGroup, nStat, counts);
+    CountValues(nGroup, nStat, counts);
     if (!counts.IsEmpty()) {
         for (POSITION pos = counts.GetHeadPosition(); pos; counts.GetNext(pos)) {
             int nKey = (int)counts.GetKeyAt(pos);
@@ -1038,13 +1038,13 @@ MS2_REPLACE_METHOD(0x1419b7e00, ItemOptionDebug, FUN_1419b7e00, 726, 0x1DBE3E74)
 TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
 {
     float fMinimum = FUN_1419b7120(nGroup, nSpecial);
-    float fMaximum = FUN_1419b7270(nGroup, nSpecial);
+    float fMaximum = GetMaxSpecialRate(nGroup, nSpecial);
     TiXmlElement* pRate = new TiXmlElement("rate");
     XmlSetAttr(pRate, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
     XmlSetAttr(pRate, "minimum", (float)fMinimum);
     XmlSetAttr(pRate, "maximum", (float)fMaximum);
     Unk_IcRateCounts counts(10);
-    FUN_1419b73c0(nGroup, nSpecial, counts);
+    CountSpecialRates(nGroup, nSpecial, counts);
     if (!counts.IsEmpty()) {
         for (POSITION pos = counts.GetHeadPosition(); pos; counts.GetNext(pos)) {
             float fKey = counts.GetKeyAt(pos);
@@ -1062,14 +1062,14 @@ MS2_REPLACE_METHOD(0x1419b80e0, ItemOptionDebug, FUN_1419b80e0, 737, 0x232FA530)
 // @0x1419b83d0
 TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
 {
-    unsigned nMinimum = (unsigned)FUN_1419b7520(nGroup, nSpecial);
-    unsigned nMaximum = (unsigned)FUN_1419b7670(nGroup, nSpecial);
+    unsigned nMinimum = (unsigned)GetMinSpecialValue(nGroup, nSpecial);
+    unsigned nMaximum = (unsigned)GetMaxSpecialValue(nGroup, nSpecial);
     TiXmlElement* pValue = new TiXmlElement("value");
     XmlSetAttr(pValue, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
     XmlSetAttr(pValue, "minimum", (unsigned)nMinimum);
     XmlSetAttr(pValue, "maximum", (unsigned)nMaximum);
     Unk_IcRateCounts counts(10);
-    FUN_1419b77c0(nGroup, nSpecial, counts);
+    CountSpecialValues(nGroup, nSpecial, counts);
     if (!counts.IsEmpty()) {
         for (POSITION pos = counts.GetHeadPosition(); pos; counts.GetNext(pos)) {
             float fKey = counts.GetKeyAt(pos);
@@ -1124,7 +1124,7 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
         TiXmlElement* pItem = new TiXmlElement("item");
         XmlSetAttr(pItem, "id", (unsigned)nItemId);
         XmlSetAttr(pItem, "name", FUN_14016a600(CStringTable::GetInstance()->FUN_141811980(1, nItemId), 0));
-        XmlSetAttr(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->FUN_141813150(nRank), 0));
+        XmlSetAttr(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->GetRankName(nRank), 0));
         for (unsigned nGroup = 0; nGroup < 3; ++nGroup) {
             int nG = nGroup;
             TiXmlElement* pGroup = new TiXmlElement(strGroups[nGroup]);
@@ -1132,9 +1132,9 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
             TiXmlElement* pSpecial = new TiXmlElement("special");
             for (unsigned nStat = 0; nStat < 0x23; ++nStat) {
                 int nS = nStat;
-                if (debug->FUN_1419b7920(nG, nS))
+                if (debug->HasRate(nG, nS))
                     ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b7b10(nG, nS)));
-                if (debug->FUN_1419b79a0(nG, nS))
+                if (debug->HasValue(nG, nS))
                     ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b7e00(nG, nS)));
             }
             for (unsigned nSpecial = 1; nSpecial < 0xcf; ++nSpecial) {
@@ -1196,9 +1196,9 @@ MS2_REPLACE_METHOD(0x1419b91f0, Unk_ItemOptionSimulator, FUN_1419b91f0, 258, 0x4
 void Unk_IcDataProvider::FUN_1419b9900(int nIndex, const CString& strName, int& nOut)
 {
     ASObj row = FUN_1422df140(nIndex);
-    if (row.FUN_1422ba9a0())
+    if (row.IsUndefinedOrNull())
         return;
-    row.AScript::FUN_1422bae10(strName, &nOut);
+    row.AScript::TryGetInt(strName, &nOut);
 }
 
 // @0x1419b9990

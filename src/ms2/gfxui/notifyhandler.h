@@ -1,5 +1,5 @@
 // notifyhandler.h - NotifyHandler (RTTI .?AVNotifyHandler@@, 0x48 bytes, base Scaleform::GFx::FunctionHandler): a GFx
-// function handler that exposes a table of named C++ callbacks to ActionScript. FUN_1423008f0 creates one AS function
+// function handler that exposes a table of named C++ callbacks to ActionScript. RegisterCallbacks creates one AS function
 // per table entry (Movie::CreateFunction with the callback as user data) and stores it as a member of an AS object;
 // Call() dispatches to the callback in Params::pUserData. Derived handlers (NotifyBinding, NotifyDragSlot,
 // NotifySwfEntity) fill the table in their ctors. vftable 0x14311b2b8 (2 slots: ??_G 0x142300be0, Call 0x142300a00).
@@ -50,7 +50,7 @@ public:
     virtual void Call(const Params& params);                       // 1 0x142300a00
 
     // Defines every callback of the table as a function member of obj (an AS object of movie nMovieId).
-    void FUN_1423008f0(int nMovieId, Scaleform::GFx::Value& obj);  // 0x1423008f0
+    void RegisterCallbacks(int nMovieId, Scaleform::GFx::Value& obj);  // 0x1423008f0
 
 public:
     MS2_LAYOUT_FRIEND;

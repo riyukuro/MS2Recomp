@@ -66,9 +66,9 @@ void FUN_140710590(COutPacket&);
 void FUN_1401fd190(unsigned char* payload, COutputStream& stream);
 void FUN_1401fd250(unsigned char* payload, COutputStream& stream);
 
-struct Unk_GemItemWire
+struct Unk_PayloadItemWire
 {
-    Unk_GemItemWire();                                  // 0x141272280
+    Unk_PayloadItemWire();                              // 0x141272280
     MS2Ptr<CItem> FUN_1401fce40(CInputStream& stream);  // read an item
 };
 
@@ -93,7 +93,7 @@ PCGemEquip::~PCGemEquip()
 void PCGemEquip::ReadFromStream(CInputStream& stream, int nOwner)
 {
     int nCount = stream.ReadUInt8();
-    Unk_GemItemWire kWire;
+    Unk_PayloadItemWire kWire;
     for (int i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = kWire.FUN_1401fce40(stream);
@@ -510,7 +510,7 @@ bool FUN_141271f90(MS2Ptr<CItem> spItem)
 }
 
 // @0x141272280
-Unk_GemItemWire::Unk_GemItemWire()
+Unk_PayloadItemWire::Unk_PayloadItemWire()
 {
 }
 

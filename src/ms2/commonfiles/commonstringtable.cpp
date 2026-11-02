@@ -91,6 +91,7 @@
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/commonfiles/contentshutdown.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -157,9 +158,8 @@ MS2_CHECK_OFFSET(Unk_BanConstTable, m_wideTextMax, 0x9f70);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_dNameMin, 0xa0c0);
 MS2_CHECK_OFFSET(Unk_BanConstTable, m_eNameMax, 0xa1c8);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-int* FUN_1402056b0(Unk_ConstVal* slot);
 // @0x14025a620
-int FUN_14025a620(Unk_ConstVal* slot) { return *FUN_1402056b0(slot); }
+int FUN_14025a620(Unk_ConstVal* slot) { return *reinterpret_cast<Common::Constants::Value<int>*>(slot)->Get(); }
 
 // @0x140223c60
 TextFilterUnit::TextFilterUnit() : m_children(17, 0.75f, 0.25f, 2.25f, 10), m_ch(0), m_nDepth(0), m_bWordEnd(0)
@@ -752,8 +752,8 @@ unsigned CBanTextChecker::ScanLimit(const CStringW& str, CheckerLimit& limit)
 // @0x140225120
 int CBanTextChecker::CheckPetName(const CStringW& str, CStringW& message)
 {
-    int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMin);
-    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMax);
+    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMin)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_nameMax)->Get();
     CheckerOption opt(0x91, true);
     CheckerLimit limit(nMin, nMax, true, false, false, true, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -803,8 +803,8 @@ int CBanTextChecker::CheckMaidName(const CStringW& str, CStringW& message)
 // @0x140225630
 int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 {
-    int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMin);
-    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMax);
+    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMin)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_cNameMax)->Get();
     CheckerOption opt(0xf9, true);
     CheckerLimit limit(nMin, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -813,8 +813,8 @@ int CBanTextChecker::FUN_140225630(const CStringW& str, CStringW& message)
 // @0x140225720
 int CBanTextChecker::CheckGuildName(const CStringW& str, CStringW& message)
 {
-    int nMin = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMin);
-    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMax);
+    int nMin = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMin)->Get();
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_guildNameMax)->Get();
     CheckerOption opt(0xd9, true);
     CheckerLimit limit(nMin, nMax, true, false, false, false, true);
     return CheckTextWithLimit(str, opt, limit, message);
@@ -1000,7 +1000,7 @@ int CBanTextChecker::CheckMarketDescription(const CStringW& str, CStringW& messa
 // @0x140226160
 int CBanTextChecker::CheckMarketProductName(const CStringW& str, CStringW& message)
 {
-    int nMax = *FUN_1402056b0(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_wideTextMax) * 3 + 10;
+    int nMax = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BanConstTable*)FUN_1401d3200())->m_wideTextMax)->Get() * 3 + 10;
     if (str.GetLength() > nMax) return 2;
     return CheckTypes(str, 0xf8, true, message);
 }
@@ -1317,10 +1317,10 @@ CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_14016a730(const char* psz, int n);                                 // narrow -> wide
 extern CStringW DAT_143aacc90;                                                  // the shared empty string
 class Unk_AltStringMgr;   // C3: the GFxManager singleton (calls cast to the GFxManager view)
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 extern Unk_AltStringMgr* DAT_143aaccf8;
-extern void* DAT_143aacd08;
-extern void* DAT_143aacd00;
+class CContentShutdownManager;
+class CInputKeyHandler;
 Unk_AltStringMgr* FUN_14025e7a0();
 void* FUN_14025e7c0();                                                          // the client's text-hook object
 CommonString* FUN_14025e7d0();                                                  // the CommonString singleton
@@ -1413,7 +1413,7 @@ CStringW CommonString::GetWideByKey(const CStringW& strKey)
 // @0x140229940
 CStringW CommonString::FUN_140229940(const CString& strKey)
 {
-    return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570(strKey);
+    return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
 }
 
 // @0x140229990
@@ -1513,13 +1513,13 @@ Unk_AltStringMgr* FUN_14025e7a0()
 // @0x14025e7b0
 Unk_BanConfig* FUN_14025e7b0()
 {
-    return static_cast<Unk_BanConfig*>(DAT_143aacd08);
+    return static_cast<Unk_BanConfig*>(reinterpret_cast<void*>(TSingleton<CContentShutdownManager>::s_instance));
 }
 
 // @0x14025e7c0
 void* FUN_14025e7c0()
 {
-    return DAT_143aacd00;
+    return reinterpret_cast<void*>(TSingleton<CInputKeyHandler>::s_instance);
 }
 
 // @0x14025e7d0

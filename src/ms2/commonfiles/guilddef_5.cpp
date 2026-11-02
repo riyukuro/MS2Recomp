@@ -350,8 +350,8 @@ unsigned __int64 Unk_GetCount_0bf0(const Unk_CountedContainer* container) { retu
 // @0x1404f4540
 // Accessor of the singleton instance at 0x143aaef68; the class is not recovered
 class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143aaef68;
-Unk_SingletonObj* Unk_GetSingleton_4540() { return DAT_143aaef68; }
+class CSeasonDataTable;
+Unk_SingletonObj* Unk_GetSingleton_4540() { return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CSeasonDataTable>::s_instance); }
 MS2_REPLACE(0x1404F4540, Unk_GetSingleton_4540, 8, 0x384AE20B);
 // @0x1404fa010
 // Setter of the flag byte at 0x143aaef5f next to the CGuildXmlData singleton pointer

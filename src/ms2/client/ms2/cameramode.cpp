@@ -83,7 +83,7 @@ public:
 };
 
 int LoadTestCamerValue();                               // reloads the camera xml (returns 0 on failure)
-Unk_CameraTarget* FUN_1413f98d0();
+namespace ecr { class RenderSurface; } ecr::RenderSurface* FUN_1413f98d0();
 bool FUN_14028d470(float a, float b);                   // a == b (within epsilon)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,7 +331,7 @@ Vector3 CCameraMode::FUN_140afdd40(const Vector3& ptEye, const Vector3& ptAt,
     Vector3 up = right.FUN_140a00e10(dir);
     Unk_NiMatrix3 m(dir, up, right);
     Vector3 angles;
-    m.FUN_142085840(angles.x, angles.y, angles.z);
+    ((efd::Matrix3&)m).ToEulerAnglesXYZ(angles.x, angles.y, angles.z);
     angles.x *= -57.2957764f;
     angles.y *= -57.2957764f;
     angles.z *= -57.2957764f;
@@ -363,7 +363,7 @@ Vector3 CCameraMode::FUN_140afdec0(float t, const Vector3& a, const Vector3& b)
     c1.FUN_140968990();
     Vector3 angles;
     Unk_NiMatrix3 m(c0, c1, c2);
-    m.FUN_142085840(angles.x, angles.y, angles.z);
+    ((efd::Matrix3&)m).ToEulerAnglesXYZ(angles.x, angles.y, angles.z);
     angles.x *= -57.2957764f;
     angles.y *= -57.2957764f;
     angles.z *= -57.2957764f;
@@ -443,10 +443,10 @@ void CCameraMode::FUN_140afe4b0()
     efd::SmartPointer<ecr::CameraService> spCamera = g_143b059e8.GetSystemServiceAs<ecr::CameraService>();
     if (spCamera)
     {
-        Unk_CameraTarget* pTarget = FUN_1413f98d0();
+        Unk_CameraTarget* pTarget = (Unk_CameraTarget*)FUN_1413f98d0();
         if (pTarget)
         {
-            ecr::CameraData* pCamera = FUN_14200aae0(spCamera.operator->(), pTarget);
+            ecr::CameraData* pCamera = ((ecr::CameraService*)spCamera.operator->())->GetActiveCamera((ecr::RenderSurface*)pTarget);
             if (pCamera)
             {
                 pCamera->SetZoomFactor(m_70);

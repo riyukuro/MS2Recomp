@@ -29,6 +29,7 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/aslabel.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
@@ -46,25 +47,21 @@
 #include <errno.h>
 #include <string.h>
 #include "ms2/commonfiles/itemdroptable.h"   // C3: TSingleton<> needs the class
+#include "ms2/commonfiles/itemdatatable.h"
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
-class Unk_PetBoxText : public ASDisplayObject { public: void FUN_1422e4b80(const CStringW&); };
-class Unk_PetBoxButton : public ASDisplayObject
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
-};
-class Unk_PetBoxCheck : public ASDisplayObject { public: bool FUN_1422ce0e0(); };
+class Unk_PetBoxText : public ASLabel { };
+class Unk_PetBoxButton : public ASButton { };
+class Unk_PetBoxCheck : public ASButton { };
 // ASMovieClip with the extra child lookups / setters the dialog uses
 class Unk_PetBoxClip : public ASMovieClip
 {
 public:
     MS2Ptr<Unk_PetBoxText> FUN_140c436d0(const CString&);
-    void FUN_1407cba60(const char*, CString);
 };
 // the AS root (m_30) with the check box lookup
 class Unk_PetBoxRoot : public AScript
@@ -113,22 +110,9 @@ public:
     void* m_begin; void* m_end; void* m_cap;
 };
 MS2_CHECK_SIZE(Unk_PetBoxDropVec, 24);
-class Unk_PetBoxIntVec
-{
-public:
-    Unk_PetBoxIntVec();                     // 0x140182ed0
-    ~Unk_PetBoxIntVec();                    // 0x140183b90
-    size_t FUN_140191110() const;
-    int& FUN_140297cb0(size_t);
-    void* m_begin; void* m_end; void* m_cap;
-};
-MS2_CHECK_SIZE(Unk_PetBoxIntVec, 24);
-class Unk_PetBoxDropTable { public: void FUN_1402ea4c0(int, Unk_PetBoxDropVec&); };
 // the item record's attribute table (+0x320) and job table (+0x138)
 class Unk_PetBoxAttr : public CXmlData
 {
-public:
-    Unk_PetBoxIntVec FUN_1409e8620(const CStringW&, const Unk_PetBoxIntVec& = Unk_PetBoxIntVec());
 };
 class Unk_PetBoxData : public CItemData
 {
@@ -266,9 +250,9 @@ void UIItemPetBoxDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
     if (FUN_140bc6d10("m_singleOpenButton", m_singleOpen).get())
-        m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), 0);
+        m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)0);
     if (FUN_140bc6d10("m_multiOpenButton", m_multiOpen).get())
-        m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), 1);
+        m_multiOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)1);
     if (reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_petPreviewSingle", m_previewSingle).get()) {
         if (m_previewSingle->FUN_140bbe640<ASButton>("m_petPreviewClose", m_closeSingle).get())
             m_closeSingle->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::OnClosePreview), 0);
@@ -492,7 +476,6 @@ bool UIItemPetBoxDialog::IsSpecialItem(const ItemEntity& e)
     return false;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e4fd60
 bool UIItemPetBoxDialog::FUN_140e4fd60()
 {
@@ -506,21 +489,21 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
         return false;
     if (data->function.name != L"OpenPetBox")
         return false;
-    Unk_PetBoxIntVec ids = PETBOX_ATTR(data)->FUN_1409e8620(L"unCommonBoxId", Unk_PetBoxIntVec());
+    std::vector<int> ids = PETBOX_ATTR(data)->GetIntArray(L"unCommonBoxId", std::vector<int>());
     Unk_PetBoxDropVec drops;
-    for (size_t i = 0; i < ids.FUN_140191110(); ++i)
-        reinterpret_cast<Unk_PetBoxDropTable*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402ea4c0(ids.FUN_140297cb0(i), drops);
+    for (size_t i = 0; i < ids.size(); ++i)
+        TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(ids[i], reinterpret_cast<std::vector<ItemDropResult>&>(drops));
     Unk_PetBoxDropVec filtered;
     for (size_t i = 0; i < drops.FUN_140314170(); ++i) {
         Unk_PetBoxDrop* d = drops.FUN_140c461b0(i);
         MS2Ptr<CItemData> idata = FUN_14053f870(d->vfunc_0());
         if (idata == 0)
             continue;
-        ItemLimit* jobs = reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138);
-        if (jobs->IsJobRecommended(self->FUN_141654700())) {
-            if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsGenderAllowed(self->FUN_141658e60()) != 0)
-                filtered.FUN_140313cd0(d);
-        }
+        if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
+            continue;
+        if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsGenderAllowed(self->FUN_141658e60()) == 0)
+            continue;
+        filtered.FUN_140313cd0(d);
     }
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     m_special1.clear();
@@ -542,22 +525,23 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
     return true;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e504e0
 void UIItemPetBoxDialog::FUN_140e504e0()
 {
-    if (m_30 == 0 || PETBOX_ITEMS.FUN_140c0e9f0())
+    if (m_30 == 0)
+        return;
+    if (PETBOX_ITEMS.FUN_140c0e9f0())
         return;
     ReleaseSlotBinds();
     if (PETBOX_ITEMS.FUN_14028b470() == 1) {
         MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
-        if (single.get() == 0)
+        if (single == 0)
             return;
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
-        if (slot.get() == 0)
+        if (slot == 0)
             return;
         MS2Ptr<Unk_PetBoxText> name = static_cast<Unk_PetBoxClip*>(single.operator->())->FUN_140c436d0("m_itemName");
-        if (name.get() == 0)
+        if (name == 0)
             return;
         ItemEntity& e = PETBOX_ITEMS.FUN_140be9400(0);
         MS2Ptr<CItem> item(new CItem);
@@ -573,13 +557,14 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         item->FUN_140526c70(e.vfunc_o18_2());
         CString bagKey;
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
-        int count = item->GetCount();
+        unsigned count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_PetBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
         name->FUN_1422e4b80(txt);
         PETBOX_BINDS.FUN_1403b0310(bagKey);
         m_30->Invoke("SetMultiType", false);
+        return;
     } else {
         size_t n = PETBOX_ITEMS.FUN_14028b470();
         size_t cap = 10;
@@ -588,10 +573,10 @@ void UIItemPetBoxDialog::FUN_140e504e0()
             size_t k = i + 1;
             CString nm = StringFormat("m_multi{0}", k);
             MS2Ptr<ASMovieClip> multi = m_resultItem->FUN_1409b4560(nm);
-            if (multi.get() == 0)
+            if (multi == 0)
                 continue;
             MS2Ptr<ASMovieClip> slot = multi->FUN_1409b4560("m_itemSlot");
-            if (slot.get() == 0)
+            if (slot == 0)
                 continue;
             CString bagKey;
             if (i < PETBOX_ITEMS.FUN_14028b470()) {
@@ -600,7 +585,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
                 item->FUN_140526c70(e.vfunc_o18_2());
-                bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), (int)(i + 1));
+                bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 PETBOX_BINDS.FUN_1403b0310(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
@@ -618,7 +603,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
+CString FUN_140c43630(const char* pszFormat, const unsigned __int64& nArg);
 // @0x140e511f0
 void UIItemPetBoxDialog::FUN_140e511f0()
 {
@@ -628,12 +613,44 @@ void UIItemPetBoxDialog::FUN_140e511f0()
     if (PETBOX_ITEMS.FUN_140c0e9f0())
         return;
     if (PETBOX_ITEMS.FUN_14028b470() == 1) {
-        if (!(m_previewSingle == 0)) {
-            MS2Ptr<ASMovieClip> card = m_previewSingle->FUN_1409b4560("m_petCard1");
-            if (card.get() == 0)
-                return;
-            FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(0));
-            MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(0).m_itemId);
+        if (m_previewSingle == 0)
+            return;
+        MS2Ptr<ASMovieClip> card = m_previewSingle->FUN_1409b4560("m_petCard1");
+        if (card == 0)
+            return;
+        FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(0));
+        MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(0).m_itemId);
+        if (idata.get() != 0) {
+            if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
+                UIAvatarPet* av = new UIAvatarPet(idata.get());
+                av->vfunc_1(this);
+                Unk_PetBoxCard c;
+                c.m_avatar.AssignRaw(av);
+                c.m_clip = card;
+                c.m_clip->vfunc_3(1);
+                m_cards.push_back(c);
+            }
+        }
+        m_previewSingle->vfunc_3(1);
+        m_previewSingle->vfunc_12(1);
+        return;
+    } else {
+        if (m_previewMulti == 0)
+            return;
+        MS2Ptr<ASMovieClip> movie = m_previewMulti->FUN_1409b4560("m_petCardMovie");
+        if (movie == 0)
+            return;
+        size_t n = PETBOX_ITEMS.FUN_14028b470();
+        size_t cap = 10;
+        size_t count = (std::min)(cap, n);
+        for (size_t i = 0; i < count; ++i) {
+            size_t k = i + 1;
+            CString nm = FUN_140c43630("m_petCard{0}", k);
+            MS2Ptr<ASMovieClip> card = movie->FUN_1409b4560(nm);
+            if (card == 0)
+                continue;
+            FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(i));
+            MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(i).m_itemId);
             if (idata.get() != 0) {
                 if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
                     UIAvatarPet* av = new UIAvatarPet(idata.get());
@@ -641,43 +658,12 @@ void UIItemPetBoxDialog::FUN_140e511f0()
                     Unk_PetBoxCard c;
                     c.m_avatar.AssignRaw(av);
                     c.m_clip = card;
-                    c.m_clip->vfunc_3(1);
                     m_cards.push_back(c);
                 }
             }
-            m_previewSingle->vfunc_3(1);
-            m_previewSingle->vfunc_12(1);
         }
-    } else {
-        if (!(m_previewMulti == 0)) {
-            MS2Ptr<ASMovieClip> movie = m_previewMulti->FUN_1409b4560("m_petCardMovie");
-            if (movie.get() == 0)
-                return;
-            size_t n = PETBOX_ITEMS.FUN_14028b470();
-            size_t cap = 10;
-            size_t count = (std::min)(cap, n);
-            for (size_t i = 0; i < count; ++i) {
-                size_t k = i + 1;
-                CString nm = StringFormat("m_petCard{0}", k);
-                MS2Ptr<ASMovieClip> card = movie->FUN_1409b4560(nm);
-                if (card.get() == 0)
-                    continue;
-                FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(i));
-                MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(i).m_itemId);
-                if (idata.get() != 0) {
-                    if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
-                        UIAvatarPet* av = new UIAvatarPet(idata.get());
-                        av->vfunc_1(this);
-                        Unk_PetBoxCard c;
-                        c.m_avatar.AssignRaw(av);
-                        c.m_clip = card;
-                        m_cards.push_back(c);
-                    }
-                }
-            }
-            m_previewMulti->vfunc_3(1);
-            m_previewMulti->vfunc_12(1);
-        }
+        m_previewMulti->vfunc_3(1);
+        m_previewMulti->vfunc_12(1);
     }
 }
 
@@ -708,7 +694,7 @@ int UIItemPetBoxDialog::FUN_140e51ca0()
     if (data == 0)
         return -1;
     CString tag = PETBOX_ATTR(data)->GetString(L"itemTag", "");
-    int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
+    int tagId = (int)TSingleton<CItemDataTable>::GetInstance()->GetTagByName(tag);
     if (tagId == 0)
         return -1;
     int have = g_143ab2a90.FUN_140a5f7b0(tagId, 0);
@@ -720,7 +706,6 @@ int UIItemPetBoxDialog::FUN_140e51ca0()
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e51e40
 void UIItemPetBoxDialog::FUN_140e51e40()
 {
@@ -763,7 +748,7 @@ void UIItemPetBoxDialog::FUN_140e52110()
     if (data == 0)
         return;
     CString tag = PETBOX_ATTR(data)->GetString(L"itemTag", "");
-    int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
+    int tagId = (int)TSingleton<CItemDataTable>::GetInstance()->GetTagByName(tag);
     MS2Ptr<CItem> inv = g_143ab2a90.FUN_140a5e040(tagId);
     if (inv == 0)
         return;

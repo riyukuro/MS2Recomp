@@ -569,13 +569,13 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
             CStringW gemStat = FUN_14062b310(MS2Ptr<TSocketGemStoneInfo>(info));
             text = FUN_1406564a0(rowStat, FUN_140627390(gemId), gemName, gemStat);
         }
-        rows.FUN_1422bbfe0(text);
+        rows.PushWString(text);
     }
     unsigned left = socket->GetLockedSlotCount();
     if (left > 0) {
         CStringW lockText = GetStringCommonByKey(L"s_itemsocketsystem_socketunlock_row_socket_lock");
         for (unsigned i = 0; i < left; ++i)
-            rows.FUN_1422bbfe0(lockText);
+            rows.PushWString(lockText);
     }
     data.FUN_1409adbe0("arrSocket", rows.FUN_1422bb870());
     data.FUN_1407cb9c0("unlockSocketIndex", unlockIndex);

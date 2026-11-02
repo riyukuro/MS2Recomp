@@ -1034,7 +1034,7 @@ bool UIItemRemakeScrollDialog::FUN_140f5d460(MS2Ptr<CItemRemakeScrollData> spRow
         for (unsigned __int64 i = 0; i < pRanks->GetCount(); i++)
         {
             unsigned nRank = (*pRanks)[i];
-            CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank), nRank);
+            CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->GetRankName(nRank), nRank);
             if (i != 0)
                 strLimit.Append(StringFormat<CStringW>(strSeparator, strRank));
             else
@@ -1330,7 +1330,7 @@ void UIItemRemakeScrollDialog::FUN_140f5f310(ATL::CAtlArray<int>& aLocked)
     int nValue = 0;
     for (unsigned i = 0; i < arr.GetLength(); i++)
     {
-        arr.FUN_1422bc780(i, nValue);
+        arr.GetInt(i, nValue);
         aLocked.Add(nValue);
     }
 }

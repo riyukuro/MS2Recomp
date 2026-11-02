@@ -55,7 +55,7 @@ public:
     int LoadNpcName();                                // load npcName.xml into m_names
     int FUN_141a6ee60(int nNpcId);                      // select an npc: build the rows
     int FUN_141a6fd90(int nRow);                        // show the scripts of a row in "m_output"
-    int FUN_141a70b90(int nRow);                        // open the talk of a row in the talk window
+    void FUN_141a70b90(int nRow);                       // open the talk of a row in the talk window
     void FUN_141a71050(int nRow);                       // play the animation of a row
     int FUN_141a711b0();                                // the button bar is on its first tab
     efd::SmartPointer<CNpc> FUN_141a71280();            // the npc of the selected npc id in the field (null = none)

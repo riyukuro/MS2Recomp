@@ -877,7 +877,8 @@ void ItemCloset::TabInfo::FUN_1407a8600(CInPacket& in)
     unsigned count = in.ReadInt32();
     m_slots.SetCount(count, -1);
     for (unsigned i = 0; i < count; i = i + 1) {
-        m_slots[i].AssignRaw(new SlotInfo())->FUN_1407a8410(in);
+        SlotInfo* pSlot = m_slots[i].AssignRaw(new SlotInfo()).operator->();
+        pSlot->FUN_1407a8410(in);
     }
 }
 

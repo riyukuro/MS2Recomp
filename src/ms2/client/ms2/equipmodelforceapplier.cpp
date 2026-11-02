@@ -37,6 +37,7 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include "ms2/placeholder/citem.h"
 #include "ms2/client/ms2/equipitem.h"  // C3
+#include "ms2/placeholder/fittingdollpc.h"
 
 extern unsigned char DAT_143afc898;                                        // assertions throw when set
 
@@ -68,13 +69,6 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     class Unk_WsC_GameObj* FUN_141bd1180(int id);   // C3: the real member (0x141bd1180, an object by id)
     static class WorldService* GetInstance();
-};
-class Unk_WindModel;                                                // the object's 0x6200003 interface
-Unk_WindModel* FUN_14099eef0(Unk_WindObj* p);                       // EE_DYNAMIC_CAST-style query
-class PCBase   // C3: member view for the former free stand-ins
-{
-public:
-    int FUN_14166c930();
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 float FUN_1409f2310(float f);                                       // sin
@@ -155,8 +149,6 @@ EquipModelWindApplier::~EquipModelWindApplier()
 }
 
 // @0x141209940
-// MS2-FUNCTIONAL: not byte-matched: the exe frame is 0x10 larger, and the exe computes the gust-phase sine argument in xmm1
-// before moving it to xmm0. Everything else matches.
 void EquipModelWindApplier::OnTick(double fDeltaTime)
 {
     CEquipModel* pModel = GetOwner();
@@ -171,8 +163,8 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (pObj == 0) {
         return;
     }
-    Unk_WindModel* pWindModel = FUN_14099eef0(pObj);
-    if (pWindModel == 0 || ((class PCBase*)(class Unk_WindModel*)(pWindModel))->FUN_14166c930() == 3) {
+    PC* pWindModel = efd::DynamicCast<PC>(reinterpret_cast<GameObject*>(pObj));
+    if (pWindModel == 0 || pWindModel->FUN_14166c930() == 3) {
         return;
     }
 
@@ -183,8 +175,7 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
         m_fElapsed = 0;
     }
     static float s_fStrength = reinterpret_cast<Common::Constants::Value<float>*>(((char*)FUN_1401d3200()) + 0x2ff8)->Read();
-    float fStrength = s_fStrength * (float)fDeltaTime;
-    float fGust = fStrength * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0f * 3.1415927f - 3.1415927f) + 1.0f);
+    float fGust = s_fStrength * (float)fDeltaTime * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0f * 3.1415927f - 3.1415927f) + 1.0f);
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);
 
     Vector3 ptRot = pObj->GetRotation();

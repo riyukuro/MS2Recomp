@@ -194,8 +194,8 @@ public:
     UIBootyPopup();                                               // 0x141031430
     void FUN_1410315c0();                                         // show
     void FUN_1410315f0();                                         // close and release
-    void FUN_141031660(const Vector3& pt);
-    void FUN_141031690(const egf::EntityID& kId);
+    void FUN_141031660(Vector3 pt);
+    void FUN_141031690(egf::EntityID kId);
     void FUN_1410316d0(int nItemId);
     void FUN_141031a60(int bShow);
     char m_pad_18[0x90 - 0x18];

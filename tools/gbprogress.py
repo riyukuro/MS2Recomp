@@ -644,8 +644,9 @@ def _code_match(obj, n, va):
 def _libhint_job(job):
     """library obj: the exe targets (vftables -> their slots, direct callees) of its functions whose code matches
     (exact pairs, the copy pairs assign_copies found, then the hints themselves, to a fixpoint; plus `ext`, the other
-    library objs' hints) name its functions that stay unpaired: (path, [(name, va)] credited functional, {name: va}
-    every target found)"""
+    library objs' hints) name its functions that stay unpaired: (path, [(name, va, ok)], {name: va} every target
+    found). The call or vftable slot binds the name to the VA, so with MS2_GUESS_PROVE=1 ok is the full match (bytes and
+    unwind; the chain verdict and the _ok_pairs users follow as for any pair); unset, a hint is credited functional."""
     path, pairs, win, ext = job
     G["win"] = win
     try:
@@ -678,7 +679,7 @@ def _libhint_job(job):
             if n in paired or va is None or va in used or not _allowed(va):
                 continue
             if va - exe.base in exe.rf or va - exe.base in G["leaf"]:
-                out.append((n, va))
+                out.append((n, va, bool(os.environ.get("MS2_GUESS_PROVE")) and _match(obj, n, va)))
                 todo.append((n, va))
                 paired.add(n)
                 used.add(va)
@@ -713,10 +714,10 @@ def lib_hints(res, paths, windows, j, log=print):
     n = 0
     for k in sorted(got):
         res[k]["hpairs"] = []
-        for nm, va in got[k]:
+        for nm, va, ok in got[k]:
             if va not in taken:
                 taken.add(va)
-                res[k]["hpairs"].append([nm, va, False, "libhint"])
+                res[k]["hpairs"].append([nm, va, ok, "libhint"])
                 n += 1
     log(f"engine: library hint pairs {n}")
 

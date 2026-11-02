@@ -316,22 +316,22 @@ public:
 class Unk_140166410 : public CFeatureManager
 {
 };
-extern Unk_140166410* DAT_143aab388;
+class CFeatureManager;
 // @0x140166410
 inline Unk_140166410* FUN_140166410()
 {
-    return DAT_143aab388;
+    return reinterpret_cast<Unk_140166410*>(TSingleton<CFeatureManager>::s_instance);
 }
 class Unk_140166430
 {
 public:
     void FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo);
 };
-extern Unk_140166430* DAT_143aab4f8;
+class CItemOptionTable;
 // @0x140166430
 inline Unk_140166430* FUN_140166430()
 {
-    return DAT_143aab4f8;
+    return reinterpret_cast<Unk_140166430*>(TSingleton<CItemOptionTable>::s_instance);
 }
 extern CLogString* DAT_143aab390;
 // @0x140166440
@@ -339,11 +339,11 @@ inline CLogString* GetLogString()
 {
     return DAT_143aab390;
 }
-extern CFileSystem* DAT_143aab398;
+class CFileSystem;
 // @0x140166420
 inline CFileSystem* GetFileSystem()
 {
-    return DAT_143aab398;
+    return TSingleton<CFileSystem>::s_instance;
 }
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)

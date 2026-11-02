@@ -64,7 +64,7 @@ class Unk_140a87680 { public: Unk_140a87690* FUN_140a87690(); };
 class ASDialog : public ASDisplayObjectContainer {};
 
 int FUN_140f1ffe0(const int& n, int nMin, int nMax);                // clamp
-CStringW FUN_14052bd00(int nId, const CStringW& str);               // localized text of an id and a string
+template <class A> CStringW FormatStringId(int nId, const A& a);               // localized text of an id and a string
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -231,7 +231,7 @@ void ASScoreBoardGauge::FUN_140f9ca30(int nCur, int nMax, CStringW strTitle)
     if (m_gauge.get() != 0)
         m_gauge->Invoke("setValue", nCur, nMax, true);
     FUN_140cfee80(FUN_1422bb870(), "m_title", strTitle);
-    FUN_140cfee80(FUN_1422bb870(), "m_progressText", FUN_14052bd00(0x98e, StringFormat<int>(L"{0}", nClamped)));
+    FUN_140cfee80(FUN_1422bb870(), "m_progressText", FormatStringId<CStringW>(0x98e, StringFormat<int>(L"{0}", nClamped)));
 }
 MS2_REPLACE_METHOD(0x140F9CA30, ASScoreBoardGauge, FUN_140f9ca30, 548, 0x79062904);
 

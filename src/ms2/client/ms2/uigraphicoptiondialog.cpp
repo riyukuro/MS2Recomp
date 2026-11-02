@@ -141,11 +141,11 @@ void UIGraphicOptionDialog::OnLoadInit()
     UIDialog::OnLoadInit();
     {
         if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow")) {
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x311));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x312));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x313));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x314));
-            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->FUN_1422dfce0(GetStringCommon(0x315));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x311));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x312));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x313));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x314));
+            reinterpret_cast<MS2Ptr<ASDropdownMenu>&>(spShadow)->AddItemLabel(GetStringCommon(0x315));
         }
     }
     if (m_30.get() != 0) {

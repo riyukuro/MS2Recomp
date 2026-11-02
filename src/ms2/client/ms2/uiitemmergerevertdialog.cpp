@@ -65,7 +65,9 @@ extern Unk_Inventory g_143ab2a90;
 class Unk_MrInvenSlot : public InvenSlot
 {
 };
-Unk_MrInvenSlot* FUN_140a50b50(DragSlot* pSlot);        // pSlot->TypeCast(0x6200023), 0 on failure
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 
 // The item price table (global of the lua state, FUN_1401c0db0).
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
@@ -228,7 +230,7 @@ void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDra
 {
     if (m_30 == 0)
         return;
-    Unk_MrInvenSlot* pInven = FUN_140a50b50(pDrag);
+    Unk_MrInvenSlot* pInven = reinterpret_cast<Unk_MrInvenSlot*>(FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
     if (pInven != 0)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(pInven->GetItemUid());

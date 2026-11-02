@@ -166,7 +166,7 @@ void UIDebugTooltip::vfunc_52()
             vfunc_8(1);
         ((class ASDisplayObject*)(class ASDisplayObject*)(pClip.operator->()))->SetAlpha(100.0f);
         reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_1412cc450("setData", m_88, m_98);
-        reinterpret_cast<Unk_TooltipMovie*>((class Unk_CbScript*)((pClip.operator->())))->FUN_140e0a8c0("setAdditional", m_90, 0);
+        reinterpret_cast<Unk_TooltipMovie*>(pClip.operator->())->FUN_140e0a8c0("setAdditional", m_90, 0);
         pClip->Invoke("setFontSize", 0x12);
         pClip->Invoke("setFontColor", 0x3df0fb);
         m_7c = 0;
@@ -215,7 +215,7 @@ void UIDebugTooltip::FUN_14191b140()
             else
                 vfunc_8(1);
             FUN_140ad0c10(&screen, ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->FUN_1422c00f0(screen.x, screen.y);
+            ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y);
         }
     }
     else

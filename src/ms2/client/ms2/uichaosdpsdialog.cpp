@@ -77,7 +77,7 @@ public:
 };
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(const Unk_CommandChat& kChat);
+int FUN_141276f80(Unk_CommandChat* pChat);
 
 // Number parsing, localized strings and ASObj/Value setters of other units.
 double FUN_1407184e0(const CStringW& str);
@@ -262,7 +262,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         Unk_CommandChat kChat;
         kChat.kind = 7;
         kChat.message = strHistory;
-        FUN_141276f80(kChat);
+        FUN_141276f80((Unk_CommandChat*)&kChat);
         return 1;
     }
     else if (_stricmp("onTextToggle", szMethod) == 0)

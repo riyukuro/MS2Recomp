@@ -52,7 +52,6 @@ public:
 
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);
 
-void* FUN_140aa6d30();
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
@@ -66,6 +65,9 @@ public:
     void FUN_140aec8a0(bool bKeep);   // C3: was FUN_140aec8a0
     CCameraMode* FUN_140af24f0();     // C3: was Unk_CameraManager::FUN_140af24f0
 };
+template <class T> class TSingleton;
+template <> class TSingleton<CameraMgr> { public: static CameraMgr* GetInstance(); };         // 0x1409478c0, as in camera.h
+template <> class TSingleton<CStateService> { public: static CStateService* GetInstance(); };  // 0x140aa6d30, as in statemanager.h
 float FUN_1409f2430(Unk_CameraManager* pCam);                   // distance
 void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue);      // field of view
 void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
@@ -155,21 +157,21 @@ void UICameraDialog::vfunc_72()
     if (vfunc_55() != 0)
         return;
     {
-        if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() != 0) {
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
             {
                 CString strName("m_distance");
-                FUN_141032560(strName, FUN_1409f2430(Unk_CameraManager::FUN_1409478c0()));
+                FUN_141032560(strName, FUN_1409f2430(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())));
             }
             {
                 CString strName("m_hAngle");
-                FUN_141032560(strName, FUN_141032d80(Unk_CameraManager::FUN_1409478c0()));
+                FUN_141032560(strName, FUN_141032d80(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())));
             }
             {
                 CString strName("m_vAngle");
-                FUN_141032560(strName, FUN_141032e60(Unk_CameraManager::FUN_1409478c0()));
+                FUN_141032560(strName, FUN_141032e60(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())));
             }
             float fOffset;
-            FUN_141032d40(((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af24f0(), &fOffset, &fOffset);
+            FUN_141032d40(TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0(), &fOffset, &fOffset);
             {
                 CString strName("m_heightOffset");
                 FUN_141032560(strName, fOffset);
@@ -184,7 +186,7 @@ void UICameraDialog::FUN_141032560(const CString& strName, float f)
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>(strName)) {
         CString str;
         str.Format("%.1f", (double)f);
-        spText->FUN_1422c4c80(str);
+        spText->SetTextA(str);
     }
 }
 
@@ -195,7 +197,7 @@ void UICameraDialog::FUN_141032610(const CString& strName, float f)
     if (spInput) {
         CString str;
         str.Format("%.1f", (double)f);
-        spInput->FUN_1422e0a60(str);
+        spInput->SetTextA(str);
         Unk_CdInput* pInput = reinterpret_cast<Unk_CdInput*>(spInput.operator->());
         pInput->vfunc_24(true);
     }
@@ -204,16 +206,16 @@ void UICameraDialog::FUN_141032610(const CString& strName, float f)
 // @0x1410326e0
 void UICameraDialog::FUN_1410326e0(ASData& data)
 {
-    if (((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
         return;
-    float fRaw = data.FUN_1422b8c10();
+    float fRaw = data.PopFloat();
     float fFov = fRaw;
     fFov = FUN_140bf4fd0(fFov);
     if (fFov <= 0.0f)
         fFov = 1.0f;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return;
-    FUN_140ad4ff0(Unk_CameraManager::FUN_1409478c0(), fFov);
+    FUN_140ad4ff0(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance()), fFov);
 }
 
 // @0x141032780
@@ -223,12 +225,12 @@ void UICameraDialog::FUN_141032780(ASData& data)
     MS2Ptr<AScript> spRoot = FUN_1409e7dc0(m_28, vRoot);
     if (((MS2Ptr<AScript>*)(void*)(&spRoot))->IsNull())
         return;
-    if (((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
         return;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return;
-    ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aec8a0(false);
-    FUN_140b6bd30((void*)(Unk_CameraManager::FUN_1409478c0()));
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aec8a0(false);
+    FUN_140b6bd30((void*)(TSingleton<CameraMgr>::GetInstance()));
     FUN_141032bb0(static_cast<ASObj*>(spRoot.get()));
     float fZoom = WorldService::GetInstance()->FUN_141bcfc50();
     static_cast<ASObj*>(spRoot.operator->())->FUN_1409c4a30("fov", fZoom);
@@ -237,8 +239,8 @@ void UICameraDialog::FUN_141032780(ASData& data)
 // @0x1410328d0
 void UICameraDialog::FUN_1410328d0(ASData& data)
 {
-    float fNear = data.FUN_1422b8c10();
-    float fFar = data.FUN_1422b8c10();
+    float fNear = data.PopFloat();
+    float fFar = data.PopFloat();
     NiCamera* pCamera = ((class NiCamera*)FUN_1413f9950());
     if (pCamera != 0) {
         NiFrustum kFrustum = pCamera->GetViewFrustum();
@@ -251,34 +253,34 @@ void UICameraDialog::FUN_1410328d0(ASData& data)
 // @0x141032970
 void UICameraDialog::FUN_141032970(ASData& data)
 {
-    if (((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
         return;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() != 0) {
-        float fMax = data.FUN_1422b8c10();
-        fMax = FUN_141032df0(Unk_CameraManager::FUN_1409478c0()) > fMax ? FUN_141032df0(Unk_CameraManager::FUN_1409478c0()) : fMax;
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
+        float fMax = data.PopFloat();
+        fMax = FUN_141032df0(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())) > fMax ? FUN_141032df0(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())) : fMax;
         CString strName = data.FUN_1422b8d30();
         if (!strName.IsEmpty())
             FUN_141032610(strName, fMax);
-        ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140af9b40(fMax);
-        FUN_141032ed0(Unk_CameraManager::FUN_1409478c0(), fMax);
-        FUN_140b6bd30((void*)(Unk_CameraManager::FUN_1409478c0()));
+        TSingleton<CameraMgr>::GetInstance()->FUN_140af9b40(fMax);
+        FUN_141032ed0(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance()), fMax);
+        FUN_140b6bd30((void*)(TSingleton<CameraMgr>::GetInstance()));
     }
 }
 
 // @0x141032a90
 void UICameraDialog::FUN_141032a90(ASData& data)
 {
-    if (((class CStateService*)(void*)(FUN_140aa6d30()))->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
         return;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() != 0) {
-        float fMin = data.FUN_1422b8c10();
-        fMin = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10() < fMin ? Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10() : fMin;
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
+        float fMin = data.PopFloat();
+        fMin = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10() < fMin ? ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10() : fMin;
         CString strName = data.FUN_1422b8d30();
         if (!strName.IsEmpty())
             FUN_141032610(strName, fMin);
-        FUN_141032f30(Unk_CameraManager::FUN_1409478c0(), fMin);
-        FUN_141032ed0(Unk_CameraManager::FUN_1409478c0(), fMin);
-        FUN_140b6bd30((void*)(Unk_CameraManager::FUN_1409478c0()));
+        FUN_141032f30(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance()), fMin);
+        FUN_141032ed0(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance()), fMin);
+        FUN_140b6bd30((void*)(TSingleton<CameraMgr>::GetInstance()));
     }
 }
 
@@ -290,10 +292,10 @@ int FUN_141032bb0(ASObj* pObj)
     float fMin = 0.0f;
     float fNear = 0.0f;
     float fFar = 0.0f;
-    if (((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140a18070() != 0) {
-            fFov = Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40();
-            fMax = Unk_CameraManager::FUN_1409478c0()->FUN_140b67d10();
-            fMin = FUN_141032df0(Unk_CameraManager::FUN_1409478c0());
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
+            fFov = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140ad4b40();
+            fMax = ((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10();
+            fMin = FUN_141032df0(((Unk_CameraManager*)TSingleton<CameraMgr>::GetInstance()));
             NiCamera* pCamera = ((class NiCamera*)FUN_1413f9950());
             if (pCamera != 0) {
                 const NiFrustum& kFrustum = pCamera->GetViewFrustum();

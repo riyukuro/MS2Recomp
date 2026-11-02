@@ -78,28 +78,28 @@ void ASCoreList::SetItemRendererList(Scaleform::GFx::Value list)
 }
 
 // @0x1422dce60
-void ASCoreList::FUN_1422dce60(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser)
+void ASCoreList::AddListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser)
 {
     FUN_1422c3600("listIndexChange", cb, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422DCE60, ASCoreList, FUN_1422dce60, 113, 0x57168289);
+MS2_REPLACE_METHOD(0x1422DCE60, ASCoreList, AddListIndexChangeHandler, 113, 0x57168289);
 
 // @0x1422dcee0
-void ASCoreList::FUN_1422dcee0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
+void ASCoreList::RemoveListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     FUN_1422c3820("listIndexChange", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422DCEE0, ASCoreList, FUN_1422dcee0, 82, 0x0DA72E52);
+MS2_REPLACE_METHOD(0x1422DCEE0, ASCoreList, RemoveListIndexChangeHandler, 82, 0x0DA72E52);
 
 // @0x1422dcf40
-void ASCoreList::FUN_1422dcf40(int nCount)
+void ASCoreList::SetEmptyItemCount(int nCount)
 {
     ASDataProvider provider(2);
     for (unsigned i = 0; i < (unsigned)nCount; i++)
-        provider.FUN_1422bc050(Scaleform::GFx::Value());
+        provider.PushValue(Scaleform::GFx::Value());
     vfunc_25(provider.FUN_1422bb890());
 }
-MS2_REPLACE_METHOD(0x1422DCF40, ASCoreList, FUN_1422dcf40, 186, 0xEC17C3DB);
+MS2_REPLACE_METHOD(0x1422DCF40, ASCoreList, SetEmptyItemCount, 186, 0xEC17C3DB);
 
 // @0x1422dd000
 void ASCoreList::SetRowCount(unsigned nRows)
@@ -165,14 +165,14 @@ void ASCoreList::AddItem(const ASObj& item)
 MS2_REPLACE_METHOD(0x1422DD230, ASCoreList, AddItem, 93, 0x32872065);
 
 // @0x1422dd2a0
-void ASCoreList::FUN_1422dd2a0(const CString& strLabel)
+void ASCoreList::AddLabelItemA(const CString& strLabel)
 {
-    FUN_1422dd310(FUN_14016a730(strLabel, 0));
+    AddLabelItemW(FUN_14016a730(strLabel, 0));
 }
-MS2_REPLACE_METHOD(0x1422DD2A0, ASCoreList, FUN_1422dd2a0, 97, 0x1403C126);
+MS2_REPLACE_METHOD(0x1422DD2A0, ASCoreList, AddLabelItemA, 97, 0x1403C126);
 
 // @0x1422dd310
-void ASCoreList::FUN_1422dd310(const CStringW& strLabel)
+void ASCoreList::AddLabelItemW(const CStringW& strLabel)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
@@ -181,31 +181,31 @@ void ASCoreList::FUN_1422dd310(const CStringW& strLabel)
         spProvider->FUN_1422bbf00(item);
     }
 }
-MS2_REPLACE_METHOD(0x1422DD310, ASCoreList, FUN_1422dd310, 185, 0x2E2BB395);
+MS2_REPLACE_METHOD(0x1422DD310, ASCoreList, AddLabelItemW, 185, 0x2E2BB395);
 
 // @0x1422dd3d0
-void ASCoreList::FUN_1422dd3d0(const CString& strLabel)
+void ASCoreList::SelectByLabelA(const CString& strLabel)
 {
-    FUN_1422dd440(FUN_14016a730(strLabel, 0));
+    SelectByLabelW(FUN_14016a730(strLabel, 0));
 }
-MS2_REPLACE_METHOD(0x1422DD3D0, ASCoreList, FUN_1422dd3d0, 97, 0xFB42E999);
+MS2_REPLACE_METHOD(0x1422DD3D0, ASCoreList, SelectByLabelA, 97, 0xFB42E999);
 
 // @0x1422dd440
-void ASCoreList::FUN_1422dd440(const CStringW& strLabel)
+void ASCoreList::SelectByLabelW(const CStringW& strLabel)
 {
     FUN_1422ddb40("label", strLabel);
 }
-MS2_REPLACE_METHOD(0x1422DD440, ASCoreList, FUN_1422dd440, 79, 0x7B589F68);
+MS2_REPLACE_METHOD(0x1422DD440, ASCoreList, SelectByLabelW, 79, 0x7B589F68);
 
 // @0x1422dd4a0
-CString ASCoreList::FUN_1422dd4a0()
+CString ASCoreList::GetSelectedLabelA()
 {
-    return FUN_14016a600(FUN_1422dd520(), 0);
+    return FUN_14016a600(GetSelectedLabelW(), 0);
 }
-MS2_REPLACE_METHOD(0x1422DD4A0, ASCoreList, FUN_1422dd4a0, 120, 0xCECA77F3);
+MS2_REPLACE_METHOD(0x1422DD4A0, ASCoreList, GetSelectedLabelA, 120, 0xCECA77F3);
 
 // @0x1422dd520
-CStringW ASCoreList::FUN_1422dd520()
+CStringW ASCoreList::GetSelectedLabelW()
 {
     if (GetSelectedIndex() < 0)
         return L"";
@@ -222,7 +222,7 @@ CStringW ASCoreList::FUN_1422dd520()
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x1422DD520, ASCoreList, FUN_1422dd520, 563, 0x2F910C4C);
+MS2_REPLACE_METHOD(0x1422DD520, ASCoreList, GetSelectedLabelW, 563, 0x2F910C4C);
 
 // @0x1422dd760
 bool ASCoreList::GetSelectedItem(AScript& item)
@@ -241,7 +241,7 @@ bool ASCoreList::GetSelectedItem(AScript& item)
 MS2_REPLACE_METHOD(0x1422DD760, ASCoreList, GetSelectedItem, 270, 0x7C7A42D0);
 
 // @0x1422dd880
-void ASCoreList::FUN_1422dd880(const CString& strMember, int nValue)
+void ASCoreList::SelectByIntMember(const CString& strMember, int nValue)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0) {
@@ -257,7 +257,7 @@ void ASCoreList::FUN_1422dd880(const CString& strMember, int nValue)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422DD880, ASCoreList, FUN_1422dd880, 342, 0x49ECAC2A);
+MS2_REPLACE_METHOD(0x1422DD880, ASCoreList, SelectByIntMember, 342, 0x49ECAC2A);
 
 // @0x1422dd9e0
 void ASCoreList::FUN_1422dd9e0(const CString& strMember, int nValue)
@@ -310,7 +310,7 @@ void ASCoreList::RemoveItemAt(int nIndex)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get() != 0)
-        spProvider->FUN_1422bc660(nIndex, 1);
+        spProvider->Splice(nIndex, 1);
 }
 MS2_REPLACE_METHOD(0x1422DDD50, ASCoreList, RemoveItemAt, 97, 0x39902CE9);
 
@@ -342,18 +342,18 @@ void ASCoreList::FUN_1422dddc0(const CString& strLabel)
 MS2_REPLACE_METHOD(0x1422DDDC0, ASCoreList, FUN_1422dddc0, 555, 0xE915060C);
 
 // @0x1422de000
-void ASCoreList::FUN_1422de000(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser)
+void ASCoreList::AddItemPressHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser)
 {
     FUN_1422c3600("itemPress", cb, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422DE000, ASCoreList, FUN_1422de000, 113, 0x675E77BD);
+MS2_REPLACE_METHOD(0x1422DE000, ASCoreList, AddItemPressHandler, 113, 0x675E77BD);
 
 // @0x1422de080
-void ASCoreList::FUN_1422de080(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
+void ASCoreList::RemoveItemPressHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     FUN_1422c3820("itemPress", cb, false);
 }
-MS2_REPLACE_METHOD(0x1422DE080, ASCoreList, FUN_1422de080, 82, 0xAACC32D8);
+MS2_REPLACE_METHOD(0x1422DE080, ASCoreList, RemoveItemPressHandler, 82, 0xAACC32D8);
 
 // @0x1422de0e0
 void ASCoreList::FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser)

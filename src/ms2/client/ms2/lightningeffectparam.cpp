@@ -58,9 +58,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was F
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CString>& arr);   // split to list
+Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 struct Unk_LightningNiPoint3 : public Vector3 {};
@@ -87,8 +88,6 @@ Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // Elements of the target's point list (CAtlArray operator[] / GetCount instances of another obj).
-Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
-int FUN_140a0afb0(ATL::CAtlArray<Vector3>* pArr);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
 void FUN_1415672e0(NiAVObject*, bool);
@@ -298,7 +297,7 @@ void LightningEffect::vfunc_4()
     static_cast<NiNode*>(reinterpret_cast<CEffectService*>(TSingleton<CEffectService>::GetInstance())->GetLeastLoadedRoot())->AttachChild(static_cast<NiAVObject*>((NiNode*)m_spRoot), true);
     m_spRoot->UpdateEffects();
     m_spRoot->UpdateProperties();
-    m_spRoot->Update((float)FUN_14086d260()->FUN_141473280(), true);
+    m_spRoot->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
     m_b2e = true;
 }
 
@@ -330,7 +329,7 @@ int LightningEffect::vfunc_8(void* p)
 // from the first to the last point of the target's list and the strip mesh (two vertex rows, left / right edge).
 void LightningEffect::Rebuild()
 {
-    int nPoints = FUN_140a0afb0(m_pPoints);
+    int nPoints = (int)m_pPoints->GetCount();
     if (nPoints < 2)
         return;
     Vector3 kFirst = *FUN_140a0af70(m_pPoints, 0);

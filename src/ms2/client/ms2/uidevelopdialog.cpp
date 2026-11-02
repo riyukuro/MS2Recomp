@@ -9,6 +9,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+#define MS2_PTR_MOVE_CONVERT   // the npc row handle is moved into a MS2Ptr<CNpcData> (0x1406cf850)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidevelopdialog.cpp"
 // The exe's memmove_s copy is a plain call (no /Oi expansion): the pragma must precede the inline definitions.
 #include <vcruntime_string.h>
@@ -29,7 +30,11 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
-#include "ms2/placeholder/hardwareinstancingservice.h"
+#include "ms2/client/ms2/hardwareinstancingservice.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/npcdatacli.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/placeholder/ecrcameraservice.h"
 #include "ms2/placeholder/meshinstancing.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
@@ -37,32 +42,19 @@
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local placeholders ----
 
 // The game's effect manager (FUN_1403ed280()).
-CEffectService* FUN_1403ed280();
+class CEffectService;
 
 // The world (reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())).
-class Unk_DevList                       // ATL::CAtlList<efd::SmartPointer<..>> of world objects
-{
-public:
-    Unk_DevList(int nBlock);            // 0x140963ae0
-    ~Unk_DevList();                     // 0x1409647c0
-    void* FUN_140967000();              // head position
-    efd::SmartPointer<efd::IBase>& FUN_140a01110(void* pos);
-    void FUN_1409671f0(void** pPos);    // next
-private:
-    void* m_raw[7];
-};
-class Unk_DevWorld
-{
-public:
-    PCBase* FUN_141bd0cc0();                                            // the local player
-    void* FUN_141bd36d0();                                              // npc tree
-};
-static_assert(sizeof(Unk_DevList) == 0x38 && __alignof(Unk_DevList) == 8, "list");
-int FUN_141274b80(void* pObj);          // object filter (getexp.cpp)
+class Unk_WsC_GameObj : public GameObject { };
+typedef ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > Unk_DevList;
+typedef ATL::CRBMap<unsigned, efd::SmartPointer<CNpc> > Unk_DevNpcMap;  // the world's npc tree
+class Unk_ExpActor;
+int FUN_141274b80(Unk_ExpActor* pObj);  // object filter (getexp.cpp)
 
 
 // The class of the objects FUN_1412937d0 extracts from the world list (a game object).
@@ -71,40 +63,10 @@ struct Unk_DevObj : public efd::IBase
     static const efd::ClassID CLASS_ID = 0x6200011;
 };
 
-// An npc's data record handle (2 pointers); record fields at +0x2d8 / +0x2dc. The npc hands out a Tmp that is copied into
-// the Data handle.
-struct Unk_DevDataTmp
-{
-    ~Unk_DevDataTmp();                                  // 0x1406d5390
-    void* m_a;
-    void* m_b;
-};
-struct Unk_DevData
-{
-    Unk_DevData(const Unk_DevDataTmp& o);               // 0x1406cf850
-    ~Unk_DevData();                                     // 0x14035e5b0
-    bool FUN_1406a9050(int n);
-    char* FUN_14035eb90();                              // the record
-    void* m_a;
-    void* m_b;
-};
-class Unk_DevNpc : public PCBase
-{
-public:
-    Unk_DevDataTmp FUN_141093270();                     // the npc's data record handle
-};
-
 // The npc map iterator and the npc size setters.
-struct Unk_DevExtent { float cx, cy; };
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void FUN_140a7cbe0(void* p);
-void* FUN_140a7b840(void* pMap);
-void* FUN_140a7b8e0(void* pMap, void* pos);
-PCBase* FUN_140a7b650(void* pEntry);
-void FUN_140a7b860(void* pMap, void** pPos);
-Unk_DevExtent* FUN_140a0a600(Unk_DevExtent* pOut, float cx, float cy);
 class Unk_DevBody;
-void FUN_141670d50(PCBase* pNpc, Unk_DevExtent kExtent);
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
@@ -112,7 +74,7 @@ public:
 };
 
 class Unk_DevDebugInfo;
-extern Unk_DevDebugInfo* DAT_143ad03d0;
+class CDebugHelper;
 class CDebugHelper   // C3: member view for the former free stand-ins
 {
 public:
@@ -121,19 +83,14 @@ public:
 
 // The 16-byte handle FUN_1409e7dc0 looks the movie root up with.
 MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);
-void FUN_1409c4a30(AScript* pRoot, const char* szName, float f);
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-efd::ServiceManager* FUN_1413f9850();
-void* FUN_1401cd190(void* p);
+class Unk_ServiceManager* FUN_1413f9850();
 struct Unk_DvCell { char m_00; };                                       // the cell FUN_1412938c0 reads
-ecrPhysX::PropService* FUN_14120a240(efd::ServiceManager* pServices);
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
-unsigned FUN_1413d7eb0(HardwareInstancingService*);
-MeshInstancing* FUN_1413d7ef0(HardwareInstancingService*, int nIndex, bool bOne);
 void FUN_1413f9c40(bool b);
-void* FUN_14086d260();
+class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -181,7 +138,7 @@ CString UIDevelopDialog::GetTypeName()
 // @0x1412938c0
 ecrPhysX::PropService* FUN_1412938c0(Unk_DvCell* pCell)
 {
-    return FUN_14120a240(reinterpret_cast<efd::ServiceManager*>(FUN_1401cd190(&pCell->m_00)));
+    return reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<efd::SmartPointer<efd::ServiceManager>*>(&pCell->m_00)->operator->())->GetSystemServiceAs<ecrPhysX::PropService>();
 }
 
 // @0x141293bf0
@@ -196,7 +153,7 @@ inline efd::Bool ecrPhysX::PropService::GetDebugRender(const efd::utf8string& sc
 // @0x1412938a0
 egmVisualizers::PropertyVisualizationService* FUN_1412938a0()
 {
-    return FUN_1413f9850()->GetSystemServiceAs<egmVisualizers::PropertyVisualizationService>();
+    return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<egmVisualizers::PropertyVisualizationService>();
 }
 
 // @0x141292ca0
@@ -221,7 +178,7 @@ void UIDevelopDialog::OnLoadComplete()
         bPhysXDebug = pProps->GetDebugRender(kName);
     }
     obj.FUN_1407cbbe0("physXDebugRender", bPhysXDebug);
-    obj.FUN_1407cbbe0("enableEffect", FUN_1403ed280()->IsEnabled());
+    obj.FUN_1407cbbe0("enableEffect", TSingleton<CEffectService>::GetInstance()->IsEnabled());
     obj.FUN_1407cbbe0("showInstancing", m_bShowInstancing);
     obj.FUN_1407cbbe0("reloadMagicData", false);
     obj.FUN_1409c4a30("gameSpeed", 1.0f);
@@ -233,7 +190,7 @@ void UIDevelopDialog::OnLoadComplete()
     {
         efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
         if ((HardwareInstancingService*)spInstancing != 0)
-            nInstancing = FUN_1413d7eb0(spInstancing.operator->());
+            nInstancing = spInstancing.operator->()->FUN_1413d7eb0();
         obj.FUN_1407cb9c0("instancingMax", nInstancing);
         obj.FUN_1407cb9c0("instancing", nInstancing);
     }
@@ -307,7 +264,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("OnChangeSliderGameSpeed", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             FUN_141293360(fValue);
         }
         return 1;
@@ -315,7 +272,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("OnChangeSliderDropItemScale", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             FUN_1412932a0(fValue);
         }
         return 1;
@@ -323,7 +280,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("OnChangeSliderCharacterScale", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             FUN_141293390(fValue);
         }
         return 1;
@@ -339,7 +296,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("OnClickApplyDropItemHeight", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             FUN_141293680(fValue);
         }
         return 1;
@@ -347,7 +304,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("OnClickApplyDropItemPeriod", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             FUN_141293730(fValue);
         }
         return 1;
@@ -359,21 +316,19 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 void UIDevelopDialog::OnClickReloadNpcExtent()
 {
     FUN_140a7cbe0(((void*)FUN_1406d6e90()));
-    void* pMap = reinterpret_cast<Unk_DevWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
-    for (void* pos = FUN_140a7b840(pMap); pos != 0; FUN_140a7b860(pMap, &pos))
+    Unk_DevNpcMap* pMap = reinterpret_cast<Unk_DevNpcMap*>(WorldService::GetInstance()->FUN_141bd36d0());
+    for (POSITION pos = pMap->GetHeadPosition(); pos != 0; pMap->GetNext(pos))
     {
-        PCBase* pNpc = FUN_140a7b650(FUN_140a7b8e0(pMap, pos));
+        CNpc* pNpc = pMap->GetValueAt(pos);
         if (pNpc != 0)
         {
-            Unk_DevData kData(static_cast<Unk_DevNpc*>(pNpc)->FUN_141093270());
-            if (kData.FUN_1406a9050(0) != 0)
+            MS2Ptr<CNpcData> kData(pNpc->GetNpcData());
+            if (kData == 0)
                 continue;
-            Unk_DevExtent kSize;
-            FUN_141670d50(pNpc, *FUN_140a0a600(&kSize, *(float*)(kData.FUN_14035eb90() + 0x2d8),
-                                               *(float*)(kData.FUN_14035eb90() + 0x2dc)));
-            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(*(float*)(kData.FUN_14035eb90() + 0x2d8), *(float*)(kData.FUN_14035eb90() + 0x2dc));
+            pNpc->FUN_141670d50(efd::Point2(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight));
+            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->FUN_14166d220())))->FUN_141240520(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight);
             NiPoint3 kPos = pNpc->vfunc_18();
-            kPos.z += *(float*)(kData.FUN_14035eb90() + 0x2dc);
+            kPos.z += kData.operator->()->m_capsule.m_fHeight;
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
         }
     }
@@ -382,7 +337,7 @@ void UIDevelopDialog::OnClickReloadNpcExtent()
 // @0x141293c30
 Unk_DevDebugInfo* FUN_141293c30()
 {
-    return DAT_143ad03d0;
+    return reinterpret_cast<Unk_DevDebugInfo*>(TSingleton<CDebugHelper>::s_instance);
 }
 
 // @0x141292f20
@@ -399,7 +354,7 @@ void UIDevelopDialog::FUN_141292f50(ASData& data)
     if (!spRoot)
         return;
     float fSpeed = 1.0f;
-    FUN_1409c4a30(spRoot.operator->(), "defaultSpeed", 1.0f);
+    reinterpret_cast<ASObj*>(spRoot.operator->())->FUN_1409c4a30("defaultSpeed", 1.0f);
 }
 
 // @0x141293010
@@ -420,7 +375,7 @@ void UIDevelopDialog::FUN_141293010(bool bOn)
 // @0x141293150
 void UIDevelopDialog::FUN_141293150(bool bOn)
 {
-    FUN_1403ed280()->SetEnabled(bOn);
+    TSingleton<CEffectService>::GetInstance()->SetEnabled(bOn);
 }
 
 // @0x141293180
@@ -449,7 +404,7 @@ void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
     m_bOneInstancing = bOn;
     efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if ((HardwareInstancingService*)spInstancing != 0)
-        FUN_1413d7ef0(spInstancing.operator->(), nIndex, m_bOneInstancing);
+        spInstancing.operator->()->FUN_1413d7ef0(nIndex, m_bOneInstancing);
 }
 
 // @0x1412932a0
@@ -457,9 +412,9 @@ void UIDevelopDialog::FUN_1412932a0(float fScale)
 {
     Unk_DevList list(10);
     WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
-    for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
+    for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
-        Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.FUN_140a01110(pos));
+        Unk_DevObj* pObj = efd::DynamicCast<Unk_DevObj>(list.GetAt(pos));
         if (pObj != 0)
             ((class GameObject*)(void*)(pObj))->FUN_14123c280(fScale);
     }
@@ -468,7 +423,7 @@ void UIDevelopDialog::FUN_1412932a0(float fScale)
 // @0x141293360
 void UIDevelopDialog::FUN_141293360(float fSpeed)
 {
-    ((class CMainSystem*)(void*)(FUN_14086d260()))->SetTimeScale(fSpeed);
+    ((class CMainSystem*)(void*)((void*)TSingleton<CMainSystem>::GetInstance()))->SetTimeScale(fSpeed);
 }
 
 // @0x141293390
@@ -488,7 +443,7 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
     efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if ((HardwareInstancingService*)spInstancing != 0)
     {
-        MeshInstancing* pInstancing = FUN_1413d7ef0(spInstancing.operator->(), nIndex, m_bOneInstancing);
+        MeshInstancing* pInstancing = spInstancing.operator->()->FUN_1413d7ef0(nIndex, m_bOneInstancing);
         if (pInstancing != 0)
         {
             int nCount = 0;
@@ -513,7 +468,7 @@ void UIDevelopDialog::FUN_141293680(float fHeight)
     m_fDropItemHeight = fValue;
     Unk_DevList list(10);
     WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
-    for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
+    for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
     }
 }
@@ -525,7 +480,7 @@ void UIDevelopDialog::FUN_141293730(float fPeriod)
     m_fDropItemPeriod = fValue;
     Unk_DevList list(10);
     WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
-    for (void* pos = list.FUN_140967000(); pos != 0; list.FUN_1409671f0(&pos))
+    for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
     }
 }

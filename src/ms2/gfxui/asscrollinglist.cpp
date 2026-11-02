@@ -68,7 +68,7 @@ void ASScrollingList::FUN_1422e1970(int nIndex, ASObj& row)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider == 0)
         return;
-    spProvider->FUN_1422bc730(nIndex, row.FUN_1422bb890());
+    spProvider->SetElementIfInRange(nIndex, row.FUN_1422bb890());
 }
 MS2_REPLACE_METHOD(0x1422E1970, ASScrollingList, FUN_1422e1970, 135, 0x4455B56B);
 

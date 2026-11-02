@@ -270,7 +270,7 @@ public:
     int FUN_14188d8c0(ASObj& obj, CUploadFile* pFile);      // the AS row of a local file
     void ExtractBundledImages();
     int FillUploadSlotRow(ASObj& obj, int nState, CStringW strName, int bSelected);   // the AS row of an upload slot
-    MS2Ptr<CUgcBannerRollingImage> FUN_14188c430();         // a random default rolling image
+    MS2Ptr<CUgcBannerRollingImage> GetRandomRollingImage();         // a random default rolling image
     void ApplyOrDownloadRollingBanner(const CString& strUrl, const std::vector<unsigned int>& banners);   // show (or download) a rolling image
     void FUN_14188cb10(int nType);                          // extract the bundled images of an upload kind
     void FUN_14188d1e0(CAtlArray<MS2Ptr<CUploadFile> >& files);   // re-create the thumbnails

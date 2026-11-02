@@ -30,6 +30,7 @@
 // from the real templates here.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\decoeditservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/os.h"
 #include <atlcoll.h>
 #include <efd/MessageService.h>
 #include <efd/ServiceManager.h>
@@ -69,7 +70,7 @@ public:
     virtual void vfunc_19(Unk_NodePtr spNode, egf::EntityID kId);
 };
 void* FUN_1413f9870();   // C3: was FUN_1413f9870
-void* FUN_14086d260();                                              // the clock
+class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
@@ -528,7 +529,7 @@ void DecoItem::Refresh()
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
     {
-        pRoot->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280(), true);
+        pRoot->Update((float)((class CMainSystem*)(void*)(reinterpret_cast<void*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();

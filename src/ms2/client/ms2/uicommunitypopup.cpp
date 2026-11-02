@@ -17,11 +17,7 @@
 #include "ms2/client/ms2/uiupperhuddialog.h"
 #include "ms2/client/ms2/uiservice.h"
 // This unit includes the shared header statics in a different order.
-class Unk_1402a9d70 {
-public: Unk_1402a9d70(int,float,float,float,int); ~Unk_1402a9d70();
-private: void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48;
-};
-MS2_CHECK_SIZE(Unk_1402a9d70,0x50);
+#include "ms2/placeholder/unk_1402a9d70.h"
 static CString s_skill("skill");
 static CString s_stun("stun");
 static Unk_1402a9d70 s_condition(17,0.75f,0.25f,2.25f,10);
@@ -30,7 +26,7 @@ static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Crea
 class ASGameEntity : public ASDisplayObject {
 public: virtual void vfunc_2(int,int,int);
 };
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 __int64 GetServerTime();
 class UIWebBrowserPopup : public UIWebBrowserBase { };
 class Unk_PopupUIManager { public: };
@@ -126,7 +122,7 @@ void UICommunityPopup::FUN_140bea390(CStringW text, CString url) {
         m_time = GetServerTime();
         if (m_width == 0) FUN_140bea730();
     } else {
-        Unk_PopupPtr<PopupText> pending(Unk_PopupNewTag(0));
+        Unk_PopupPtr<PopupText> pending(Unk_SocketNew(0));
         pending->text = text;
         pending->url = url;
         m_queue.AddTail(pending);
@@ -137,14 +133,14 @@ MS2_REPLACE_METHOD(0x140BEA390, UICommunityPopup, FUN_140bea390, 423, 0xD6A3F5FA
 void UICommunityPopup::FUN_140bea540() {
     if (m_field == NULL) return;
     if (m_width == 0) return;
-    float delta = FUN_14086d260()->GetLastGameTimeDelta();
+    float delta = TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta();
     m_x -= m_speed * delta;
     int x = (int)m_x;
     if (!m_pending) {
         if (x < -m_width) { m_x = 0; x = 0; }
-        m_field->FUN_1422bffe0(x,m_y);
+        m_field->SetPositionInt(x,m_y);
     } else {
-        if (x > -m_field->FUN_1422c1340()) m_field->FUN_1422bffe0(x,m_y);
+        if (x > -m_field->FUN_1422c1340()) m_field->SetPositionInt(x,m_y);
         else FUN_140bea730();
     }
 }
@@ -173,7 +169,7 @@ void UICommunityPopup::FUN_140bea730() {
         CStringW text;
         for (int i=0; i<repeat; ++i) text += m_text;
         m_field->FUN_1422c4f00(text);
-        m_field->FUN_1422c0e20((int)(m_field->GetTextWidth() + 20.0));
+        m_field->SetWidthInt((int)(m_field->GetTextWidth() + 20.0));
         m_x = 275.0f;
         m_pending = false;
         FUN_140bea540();

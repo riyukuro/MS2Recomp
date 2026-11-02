@@ -17,6 +17,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants methods
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -67,12 +68,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
-int FUN_1406e8ac0(Unk_140165cf0* pElem, const char* pszName, int& value);   // "saleTag"
+enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);   // "saleTag"
    // the feature/locale singleton
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-__int64 FUN_1406a6d50(const void* pUgcConfig);              // the default market max price
+__int64 FUN_1406a6d50(Common::Constants::Value<int>& value);   // the default market max price
 
 // Defined below (0x14089fef0): the s_bInit setter the loader calls.
 void FUN_14089fef0(bool bInit);
@@ -106,7 +107,7 @@ bool CUGCDesignData::Parse(Unk_140165cf0* pElem, __int64 nDefaultMarketMaxPrice)
         m_nMarketMaxPrice = nDefaultMarketMaxPrice;
     XmlGetAttr((class TiXmlElement*)(pElem), "dpOrder", m_nDpOrder);
     XmlGetAttr((class TiXmlElement*)(pElem), "category", m_nCategory);
-    FUN_1406e8ac0(pElem, "saleTag", m_nSaleTag);
+    XmlValue(pElem, "saleTag", *(eShopSaleTag*)&m_nSaleTag);
     return true;
 }
 MS2_REPLACE_METHOD(0x14089E270, CUGCDesignData, Parse, 388, 0xC4EB28A7);
@@ -142,7 +143,7 @@ bool CUGCDesignTable::Reload()
         if (pRoot == 0)
             return false;
         __int64 nDefaultMarketMaxPrice =
-            FUN_1406a6d50(reinterpret_cast<const char*>(((class Unk_1401d3200*)FUN_1401d3200())) + 0x4660);
+            FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(reinterpret_cast<char*>(((class Unk_1401d3200*)FUN_1401d3200())) + 0x4660));
         for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("list")); pNode != 0;
              pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("list")))
         {

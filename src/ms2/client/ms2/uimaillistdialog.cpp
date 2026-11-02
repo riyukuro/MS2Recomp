@@ -60,6 +60,7 @@
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/formatstringid.h"
 
 // ---- statics of the unit's headers (two copies of the merat market sort names / key controller block) ----
 
@@ -113,8 +114,8 @@ private:
     Unk_PmA m_infoA;
     Unk_PmB m_infoB;
 };
-class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
-Unk_PopupMenu* FUN_140c30140(int nId);                              // the open popup menu dialog
+class UIPopUpMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
+class Unk_PopupMenu* FUN_140c30140(int nId);                              // the open popup menu dialog
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);     // the "blocked" notice
 
@@ -141,20 +142,18 @@ float FUN_140bf4fd0(float f);                                       // ceil
 void FUN_1414728e0(const CStringA& strKey);                         // drop a registered item tooltip
 void FUN_1414727e0(const CStringA& strKey, MS2Ptr<CItem> spItem, int nCount, int nSlot);   // register an item tooltip
 CStringW FUN_1409404f0(__int64 n);                                  // an amount as text
-CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);       // a price as text
+CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool bIcon);  // a price as text
 int FUN_1403bae00(int nPriceType);                                  // price kind -> pay type
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 CStringTable* GetStringTable();                                      // the string table singleton
 UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open dialog of a UI id
-// FUN_1403ed2d0 (the world) is declared by usermail.h as Unk_MailSession*.
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    static WorldService* GetInstance();
     void* FUN_141bd0cc0();
 };
 __int64 GetServerTime();                                            // the server time
-CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
-FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
 class PCBase;
 
@@ -171,9 +170,6 @@ class Unk_MsInput : public ASTextInput
 // "m_buddys": the buddy name dropdown (an AS component like m_list: slot 24 refreshes it).
 class Unk_MsCombo : public ASScrollingList
 {
-public:
-    void FUN_1422dfc10();                                           // remove every entry
-    void FUN_1422dfce0(const CStringW& strLabel);                   // append an entry
 };
 // The send request (receiver, title, content), written by FUN_1401fc2a0 (three wide strings).
 struct Unk_MailSendInfo
@@ -264,7 +260,7 @@ MS2_REPLACE(0x1419E9360, FUN_1419e9360, 151, 0xE2DAA05F); // FUN_1419e9360
 CStringW FUN_1419e9400(int nPriceType, __int64 nAmount)
 {
     int nPayType = FUN_1403bae00(nPriceType);
-    return FUN_1418fec00(nPayType, nAmount, 0);
+    return FUN_1418fec00(nPayType, nAmount, false);
 }
 MS2_REPLACE(0x1419E9400, FUN_1419e9400, 82, 0xFF1E0FE6); // FUN_1419e9400
 
@@ -784,7 +780,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
         return false;
     Scaleform::GFx::Value vArg = data.FUN_1422b9260();
     ASObj obj(vArg, 2);
-    if (obj.FUN_1422ba9a0())
+    if (obj.IsUndefinedOrNull())
         return false;
     MS2Ptr<TMailAdBillDataParam> spMailParam(dynamic_cast<TMailAdBillDataParam*>(spParam.get()));
     if (spMailParam == 0)
@@ -803,7 +799,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     MS2Ptr<CMailAdItem> spAd = pMail->GetAd(spAdBill->vfunc_5());
     if (spAd == 0)
         return false;
-    PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    PCBase* pPlayer = ((class PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
     ASTooltip tip(pPlayer, 0x20, 2);
     if (tip.FUN_1409e1770(spAd->m_n18, spAd->m_n20) != 0)
         *pRetVal = tip.FUN_1422bb870();
@@ -989,14 +985,14 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 break;
             unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
             CStringW strSender = data.FUN_1422b8f40();
-            float fX = data.FUN_1422b8c10();
-            float fY = data.FUN_1422b8c10();
+            float fX = data.PopFloat();
+            float fY = data.PopFloat();
             CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nMailId);
             if (spMail.IsNull())
                 break;
             if (spMail->FUN_140690370() != 1)
                 break;
-            Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
+            UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
             if (pMenu == 0)
                 break;
             Unk_PopupMenuInfo info(fX, fY, 3, 0x50, 0, "", 0);
@@ -1302,7 +1298,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
         MS2Ptr<ASMailAdBillData> spBill(new ASMailAdBillData());
         spBill->SetIconFromItem(spItemData, spAd->m_n20);
         spBill->SetItemName(GetStringTable()->FUN_141811980(1, spAd->m_n18));
-        spBill->SetSalePrice(FUN_1418fec00(nCurrency, spAd->m_n38, 0), spAd->m_n38);
+        spBill->SetSalePrice(FUN_1418fec00(nCurrency, spAd->m_n38, false), spAd->m_n38);
         spBill->FUN_1409abcd0(nCurrency);
         spBill->FUN_1419eb8f0((int)i);
         bills.Add(spBill);
@@ -1498,7 +1494,7 @@ int UIMailSendDialog::vfunc_74(int nMsg, void* p2, void* p3)
     MS2Ptr<Unk_MsInput> spInput = FUN_140e35bd0("m_receiver");
     if (spInput.IsNull())
         return 0;
-    if (spInput->FUN_1422c76c0() == 0)
+    if (spInput->GetFocused() == 0)
         return 0;
     CStringW strText = spInput->GetText();
     if (FUN_1418fccc0(nMsg, (unsigned __int64)p2, (unsigned __int64)p3, &strText) == 0)
@@ -1576,13 +1572,13 @@ void UIMailSendDialog::FUN_1419ed010()
 {
     if (MS2Ptr<Unk_MsCombo> spCombo = FUN_140c28560("m_buddys"))
     {
-        spCombo->FUN_1422dfc10();
+        reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->ClearItems();
         ATL::CAtlArray<CBuddyManager::Ptr> buddies;
         CBuddyManager::GetInstance()->GetAllBuddies(buddies);
         for (size_t i = 0; i < buddies.GetCount(); i++)
         {
             CBuddyManager::Ptr spBuddy = buddies[i];
-            spCombo->FUN_1422dfce0(spBuddy->FUN_1401cc1c0());
+            reinterpret_cast<ASDropdownMenu*>(spCombo.operator->())->AddItemLabel(spBuddy->FUN_1401cc1c0());
         }
         spCombo->vfunc_24(true);
     }

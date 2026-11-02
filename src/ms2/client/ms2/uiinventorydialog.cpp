@@ -18,96 +18,96 @@
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14199f670 ; unique
 // MS2-PIN: ??$Call@VUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14199f6a0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14199f6e0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1419a59b0 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1419a59b0 ; prop
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1419a59e0 ; prop
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1419a5a10 ; prop
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1419a5a10 ; prop
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@1@$$QEA_N@Z 0x1419a5a60 ; prop
-// MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x1419a5ab0 ; unique
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1419a5b00 ; prop
+// MS2-PIN: ??$?0AEBI$$Z$$V@?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBI@1@V?$tuple@$$V@1@@Z 0x1419a5ab0 ; unique
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1419a5b00 ; prop
 // MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1419a5b50 ; prop
 // MS2-PIN: ??$?0PEAVUIItemBreakDonationDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z$0A@@?$pair@PEAVUIItemBreakDonationDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@QEAA@AEBQEAVUIItemBreakDonationDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x1419a5c70 ; prop
 // MS2-PIN: ??$?0VUIItemBreakDonationDialog@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBQEAVUIItemBreakDonationDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x1419a5cb0 ; prop
-// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1419a5d40 ; prop
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1419a5d40 ; prop
 // MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@1@$$QEA_N@Z 0x1419a5d90 ; prop
-// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1419a5de0 ; unique
-// MS2-PIN: ??$?0HAEAH$0A@@?$pair@HH@std@@QEAA@$$QEAHAEAH@Z 0x1419a5e30 ; unique
-// MS2-PIN: ??$?0HH$0A@@?$pair@$$CBHH@std@@QEAA@$$QEAU?$pair@HH@1@@Z 0x1419a5e80 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@QEAA@AEAV?$tuple@AEBI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1419a5de0 ; unique
+// MS2-PIN: ??$?0W4Unk_InvTab@@AEAI$0A@@?$pair@W4Unk_InvTab@@I@std@@QEAA@$$QEAW4Unk_InvTab@@AEAI@Z 0x1419a5e30 ; unique
+// MS2-PIN: ??$?0W4Unk_InvTab@@I$0A@@?$pair@$$CBHH@std@@QEAA@$$QEAU?$pair@W4Unk_InvTab@@I@1@@Z 0x1419a5e80 ; unique
 // MS2-PIN: ??$?8PEAVUIItemBreakDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIItemBreakDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x1419a5ed0 ; prop
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@?$_Tree@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@@Z 0x1419a5fb0 ; prop
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@?$_Tree@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@@Z 0x1419a5fb0 ; prop
 // MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHH@std@@@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHH@1@@Z 0x1419a5fd0 ; prop
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1419a5ff0 ; unique
-// MS2-PIN: ??$_Buynode@U?$pair@HH@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@$$QEAU?$pair@HH@1@@Z 0x1419a60c0 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1419a5ff0 ; unique
+// MS2-PIN: ??$_Buynode@U?$pair@W4Unk_InvTab@@I@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@$$QEAU?$pair@W4Unk_InvTab@@I@1@@Z 0x1419a60c0 ; unique
 // MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@PEAU01@@Z 0x1419a61e0 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@1@Z 0x1419a6270 ; prop
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@1@Z 0x1419a6270 ; prop
 // MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHH@std@@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@AEAU?$pair@$$CBHH@1@1@Z 0x1419a65d0 ; prop
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@PEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@@Z 0x1419a6930 ; unique
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@PEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@@Z 0x1419a7570 ; prop
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@PEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@@Z 0x1419a6930 ; unique
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@PEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@@Z 0x1419a7570 ; prop
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHH@std@@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHH@1@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@@Z 0x1419a7980 ; prop
 // MS2-PIN: ??$_Kfn@$$CBHH@?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@SAAEBHAEBU?$pair@$$CBHH@1@@Z 0x1419a7da0 ; prop
 // MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@AEBH@Z 0x1419a7e50 ; unique
-// MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x1419a7ef0 ; unique
+// MS2-PIN: ??$_Try_emplace@AEBI$$V@?$map@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@1@AEBI@Z 0x1419a7ef0 ; unique
 // MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@0@AEAPEAU10@@Z 0x1419a8050 ; prop
 // MS2-PIN: ??$addressof@U?$pair@$$CBHH@std@@@std@@YAPEAU?$pair@$$CBHH@0@AEAU10@@Z 0x1419a8070 ; prop
 // MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@0@AEAV10@@Z 0x1419a8090 ; prop
-// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@AEAPEAU31@@Z 0x1419a80a0 ; prop
+// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@1@AEAPEAU31@@Z 0x1419a80a0 ; prop
 // MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@AEAPEAU31@@Z 0x1419a80f0 ; prop
-// MS2-PIN: ??$construct@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1419a8140 ; unique
-// MS2-PIN: ??$construct@U?$pair@$$CBHH@std@@U?$pair@HH@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAU?$pair@$$CBHH@1@$$QEAU?$pair@HH@1@@Z 0x1419a81f0 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1419a8140 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHH@std@@U?$pair@W4Unk_InvTab@@I@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAU?$pair@$$CBHH@1@$$QEAU?$pair@W4Unk_InvTab@@I@1@@Z 0x1419a81f0 ; unique
 // MS2-PIN: ??$destroy@U?$pair@$$CBHH@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAU?$pair@$$CBHH@1@@Z 0x1419a8280 ; prop
-// MS2-PIN: ??$emplace@U?$pair@HH@std@@@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HH@1@@Z 0x1419a8290 ; unique
-// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1419a8300 ; unique
-// MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@0@AEAPEAU10@@Z 0x1419a83a0 ; prop
+// MS2-PIN: ??$emplace@U?$pair@W4Unk_InvTab@@I@std@@@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@W4Unk_InvTab@@I@1@@Z 0x1419a8290 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x1419a8300 ; unique
+// MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@0@AEAPEAU10@@Z 0x1419a83a0 ; prop
 // MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@0@AEAPEAU10@@Z 0x1419a83b0 ; prop
-// MS2-PIN: ??$forward@AEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@YAAEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@0@AEAU10@@Z 0x1419a83c0 ; prop
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@YAAEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@0@AEAU10@@Z 0x1419a83c0 ; prop
 // MS2-PIN: ??$forward@AEAU?$pair@$$CBHH@std@@@std@@YAAEAU?$pair@$$CBHH@0@AEAU10@@Z 0x1419a83d0 ; prop
-// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1419a83e0 ; prop
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1419a83e0 ; prop
 // MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@0@AEAV10@@Z 0x1419a83f0 ; prop
 // MS2-PIN: ??$forward@AEBQ8UIItemBreakDonationDialog@@EAA_NHAEBVCMsgBoxData@@@Z@std@@YAAEBQ8UIItemBreakDonationDialog@@EAA_NHAEBVCMsgBoxData@@@ZAEBQ81@EAA_NH0@Z@Z 0x1419a8410 ; prop
 // MS2-PIN: ??$forward@AEBQEAVUIItemBreakDonationDialog@@@std@@YAAEBQEAVUIItemBreakDonationDialog@@AEBQEAV1@@Z 0x1419a8430 ; prop
 // MS2-PIN: ??$forward@AEBU?$less@H@std@@@std@@YAAEBU?$less@H@0@AEBU10@@Z 0x1419a8440 ; prop
-// MS2-PIN: ??$forward@U?$pair@HH@std@@@std@@YA$$QEAU?$pair@HH@0@AEAU10@@Z 0x1419a8450 ; prop
-// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1419a8460 ; prop
-// MS2-PIN: ??$insert@U?$pair@HH@std@@X@?$map@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HH@1@@Z 0x1419a8480 ; unique
+// MS2-PIN: ??$forward@U?$pair@W4Unk_InvTab@@I@std@@@std@@YA$$QEAU?$pair@W4Unk_InvTab@@I@0@AEAU10@@Z 0x1419a8450 ; prop
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1419a8460 ; prop
+// MS2-PIN: ??$insert@U?$pair@W4Unk_InvTab@@I@std@@X@?$map@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@W4Unk_InvTab@@I@1@@Z 0x1419a8480 ; unique
 // MS2-PIN: ??$make_pair@AEBQEAVUIItemBreakDonationDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVUIItemBreakDonationDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVUIItemBreakDonationDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x1419a8510 ; prop
-// MS2-PIN: ??$make_pair@HAEAH@std@@YA?AU?$pair@HH@0@$$QEAHAEAH@Z 0x1419a8560 ; prop
-// MS2-PIN: ??$try_emplace@$$V@?$map@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x1419a85b0 ; unique
+// MS2-PIN: ??$make_pair@W4Unk_InvTab@@AEAI@std@@YA?AU?$pair@W4Unk_InvTab@@I@0@$$QEAW4Unk_InvTab@@AEAI@Z 0x1419a8560 ; prop
+// MS2-PIN: ??$try_emplace@$$V@?$map@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@_N@1@AEBI@Z 0x1419a85b0 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemBreakDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemBreakDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x1419a8640 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemBreakDonationDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x1419a8690 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x1419a8760 ; prop
-// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x1419a8790 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x1419a8790 ; prop
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x1419a87d0 ; prop
-// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAA@XZ 0x1419a8850 ; prop
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAA@XZ 0x1419a8850 ; prop
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@1@@Z 0x1419a8870 ; prop
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@1@@Z 0x1419a88f0 ; prop
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@1@@Z 0x1419a8990 ; unique
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@QEAA@XZ 0x1419a89d0 ; prop
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@QEAA@XZ 0x1419a89d0 ; prop
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@QEAA@XZ 0x1419a8a00 ; prop
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@QEAA@XZ 0x1419a8a30 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@QEAA@XZ 0x1419a8a30 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@QEAA@XZ 0x1419a8a40 ; prop
-// MS2-PIN: ??0?$map@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA@XZ 0x1419a8a50 ; unique
+// MS2-PIN: ??0?$map@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA@XZ 0x1419a8a50 ; unique
 // MS2-PIN: ??0?$map@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@@std@@QEAA@XZ 0x1419a8a80 ; unique
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA@XZ 0x1419a8b20 ; prop
-// MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAA@XZ 0x1419a8b50 ; prop
+// MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAA@XZ 0x1419a8b50 ; prop
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA@XZ 0x1419a8b80 ; prop
-// MS2-PIN: ??1?$map@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA@XZ 0x1419a8bb0 ; unique
+// MS2-PIN: ??1?$map@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAA@XZ 0x1419a8bb0 ; unique
 // MS2-PIN: ??1?$map@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@@std@@QEAA@XZ 0x1419a8bd0 ; unique
 // MS2-PIN: ??4BreakPreview@ItemBreakCommon@@QEAAAEAV01@AEBV01@@Z 0x1419a8c10 ; unique
 // MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1419a8ca0 ; unique
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1419a8d20 ; unique
-// MS2-PIN: ??A?$map@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAAAEAVBreakPreview@ItemBreakCommon@@AEBH@Z 0x1419a8d60 ; unique
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@XZ 0x1419a8da0 ; unique
+// MS2-PIN: ??A?$map@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@@std@@QEAAAEAVBreakPreview@ItemBreakCommon@@AEBI@Z 0x1419a8d60 ; unique
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@XZ 0x1419a8da0 ; unique
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHH@1@XZ 0x1419a8dc0 ; prop
-// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@1@XZ 0x1419a8de0 ; unique
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@1@XZ 0x1419a8de0 ; unique
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBHH@1@XZ 0x1419a8e00 ; unique
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBHH@1@XZ 0x1419a8e40 ; prop
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x1419a8ed0 ; unique
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a8f40 ; unique
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a8f40 ; unique
 // MS2-PIN: ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1419a8ff0 ; unique
-// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a9080 ; prop
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a9080 ; prop
 // MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a90a0 ; prop
-// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a90c0 ; prop
+// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a90c0 ; prop
 // MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1419a90e0 ; prop
-// MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1419a9100 ; prop
+// MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1419a9100 ; prop
 // MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1419a91d0 ; prop
 // MS2-PIN: ??R?$less@H@std@@QEBA_NAEBH0@Z 0x1419a92a0 ; unique
 // MS2-PIN: ??_EUIItemBreakBase@@WBHI@EAAPEAXI@Z 0x1419a92f4 ; unique
@@ -120,25 +120,25 @@
 // MS2-PIN: ??_GUIItemBreakBase@@UEAAPEAXI@Z 0x1419a9400 ; unique
 // MS2-PIN: ??_GUIItemBreakDialog@@UEAAPEAXI@Z 0x1419a9440 ; unique
 // MS2-PIN: ??_GUIItemBreakDonationDialog@@UEAAPEAXI@Z 0x1419a9480 ; unique
-// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@XZ 0x1419a9530 ; prop
+// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@XZ 0x1419a9530 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@XZ 0x1419a95f0 ; prop
-// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@XZ 0x1419a96b0 ; prop
+// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@XZ 0x1419a96b0 ; prop
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@XZ 0x1419a9790 ; prop
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x1419a9870 ; unique
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@IEBA_NAEBI0@Z 0x1419a9870 ; unique
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x1419a98b0 ; prop
-// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAXXZ 0x1419a98f0 ; prop
+// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAXXZ 0x1419a98f0 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1419a9920 ; prop
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1419a99a0 ; unique
 // MS2-PIN: ?_Erase@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1419a9a90 ; unique
 // MS2-PIN: ?_Extract@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@@Z 0x1419aa0e0 ; unique
-// MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@Z 0x1419aa690 ; prop
+// MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@Z 0x1419aa690 ; prop
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1419aa6c0 ; prop
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@Z 0x1419aa6f0 ; prop
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@@Z 0x1419aa6f0 ; prop
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1419aa720 ; prop
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@XZ 0x1419aa7b0 ; prop
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@XZ 0x1419aa7e0 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x1419aa810 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x1419aa820 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@I@2@XZ 0x1419aa810 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x1419aa820 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x1419aa830 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x1419aa840 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@XZ 0x1419aa870 ; prop
@@ -149,8 +149,8 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@2@XZ 0x1419aa900 ; prop
 // MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@XZ 0x1419aa970 ; prop
 // MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@XZ 0x1419aa9a0 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x1419aa9d0 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HVBreakPreview@ItemBreakCommon@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x1419aa9f0 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEAAAEAU?$less@I@2@XZ 0x1419aa9d0 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IVBreakPreview@ItemBreakCommon@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@@4@$0A@@std@@@std@@QEBAAEBU?$less@I@2@XZ 0x1419aa9f0 ; prop
 // MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x1419aaa10 ; prop
 // MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x1419aaa30 ; prop
 // MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEBAAEBHPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1419aaa80 ; unique
@@ -166,9 +166,9 @@
 // MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@XZ 0x1419ab160 ; unique
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1419ab270 ; unique
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIItemBreakDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ab310 ; unique
-// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@_K@Z 0x1419ab3d0 ; unique
+// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@_K@Z 0x1419ab3d0 ; unique
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x1419ab400 ; prop
-// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@_K@Z 0x1419ab430 ; prop
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIVBreakPreview@ItemBreakCommon@@@std@@PEAX@2@_K@Z 0x1419ab430 ; prop
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x1419ab460 ; prop
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@XZ 0x1419ab4f0 ; unique
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@0@Z 0x1419ab6f0 ; unique
@@ -613,7 +613,7 @@ void UIInventoryDialog::vfunc_15()
         if ((m_19c & 1) != 0)
             FUN_14199bc00();
         if ((m_19c & 2) != 0)
-            FUN_14199c0d0();
+            UpdateExpandLabel();
         if ((m_19c & 4) != 0)
             FUN_14199ba10();
     }
@@ -633,7 +633,7 @@ void UIInventoryDialog::vfunc_62(int nWidth, int nHeight)
         if (nWidth == 0)
             nWidth = nCurWidth;
         if (nCurWidth != nWidth || nCurHeight != nHeight)
-            pDlg->FUN_1422c79e0(nWidth, nHeight);
+            pDlg->SetSizeInt(nWidth, nHeight);
     }
 }
 MS2_REPLACE_METHOD(0x141997620, UIInventoryDialog, vfunc_62, 174, 0);
@@ -737,7 +737,7 @@ void UIInventoryDialog::vfunc_80(void* pRequest)
             }
             else
             {
-                m_1e0->FUN_1422e0bd0(L"");
+                m_1e0->SetHtmlTextW(L"");
                 FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
             }
         }
@@ -758,7 +758,7 @@ void UIInventoryDialog::OnLoadComplete()
     } while (0);
     FUN_141999f60();
     if (m_30->FUN_140bbe940("m_inputSearch", m_1e0).get() != 0)
-        m_1e0->FUN_1422e0920(ParamsDelegate(this, &UIInventoryDialog::FUN_14199a620));
+        m_1e0->AddChangeHandler(ParamsDelegate(this, &UIInventoryDialog::FUN_14199a620));
     FUN_14199ca90();
     m_30->Invoke("initData", FUN_14199d920(m_194), DAT_143af62d0);
     m_19c |= 1;
@@ -801,7 +801,7 @@ int UIInventoryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (strTag == L"expandSlot")
                 {
-                    FUN_14199e2a0();
+                    RequestExpandSlots();
                 }
                 else
                 {
@@ -870,7 +870,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x2a1, 0, CStringW(L""));
                 if (box.get() != 0)
                 {
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::FUN_14199b480));
+                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIInventoryDialog::OnSortConfirm));
                     box->FUN_141a01800(1);
                     box->FUN_141a024a0(0);
                     box->FUN_141a02480(1);
@@ -1006,7 +1006,7 @@ int UIInventoryDialog::vfunc_46()
     if (m_30 == 0)
         return 0;
     if (MS2Ptr<ASButton> spButton = m_30->FUN_140acce30<ASButton>("m_itemBreak"))
-        spButton->FUN_1422c7b40(FUN_14199d9c0());
+        spButton->SetTooltipText(FUN_14199d9c0());
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e))
     {
         if (MS2Ptr<ASButton> spButton = m_30->FUN_140acce30<ASButton>("m_itemSocketAndGem"))
@@ -1055,15 +1055,15 @@ int UIInventoryDialog::vfunc_13()
             }
             if (m_1e0.get() != 0)
             {
-                if (m_1e0->FUN_1422c76c0() != 0)
+                if (m_1e0->GetFocused() != 0)
                 {
                     FUN_14199b800(m_1e0->GetText());
-                    pDlg->FUN_1422c7630(1);
-                    m_1e0->FUN_1422c7630(0);
+                    pDlg->SetFocused(1);
+                    m_1e0->SetFocused(0);
                     return 1;
                 }
                 else
-                    pDlg->FUN_1422c7630(0);
+                    pDlg->SetFocused(0);
             }
         }
     }
@@ -1130,22 +1130,22 @@ void UIInventoryDialog::FUN_141999e20()
 MS2_REPLACE_METHOD(0x141999E20, UIInventoryDialog, FUN_141999e20, 36, 0);
 
 // @0x141999e50
-void UIInventoryDialog::FUN_141999e50()
+void UIInventoryDialog::PlayExpandEffect()
 {
     m_19c = 7;
     if (MS2Ptr<ASMovieClip> spEff = GetChild<ASMovieClip>("m_expandEff"))
         spEff->vfunc_12(1);
 }
-MS2_REPLACE_METHOD(0x141999E50, UIInventoryDialog, FUN_141999e50, 175, 0);
+MS2_REPLACE_METHOD(0x141999E50, UIInventoryDialog, PlayExpandEffect, 175, 0);
 
 // @0x141999f10
-int UIInventoryDialog::FUN_141999f10()
+int UIInventoryDialog::GetScrollPosition()
 {
     if (m_210 == 0)
         return 0;
     return m_210->FUN_1422cf520();
 }
-MS2_REPLACE_METHOD(0x141999F10, UIInventoryDialog, FUN_141999f10, 73, 0);
+MS2_REPLACE_METHOD(0x141999F10, UIInventoryDialog, GetScrollPosition, 73, 0);
 
 // @0x141999f60
 // MS2-FUNCTIONAL: the original reads the dialogs' vfunc_55 without null checks (kept)
@@ -1236,7 +1236,7 @@ void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Par
 {
     if (!m_1e0)
         return;
-    if (m_1e0->FUN_1422c76c0() == 0)
+    if (m_1e0->GetFocused() == 0)
         return;
     CStringW strText = m_1e0->GetText();
     if (strText.IsEmpty())
@@ -1298,14 +1298,14 @@ void UIInventoryDialog::OnClickItemEnchant()
 MS2_REPLACE_METHOD(0x14199AAA0, UIInventoryDialog, OnClickItemEnchant, 32, 0);
 
 // @0x14199aad0
-MS2Ptr<ASButtonBar> UIInventoryDialog::FUN_14199aad0()
+MS2Ptr<ASButtonBar> UIInventoryDialog::GetTabBar()
 {
     return m_1c8;
 }
-MS2_REPLACE_METHOD(0x14199AAD0, UIInventoryDialog, FUN_14199aad0, 67, 0);
+MS2_REPLACE_METHOD(0x14199AAD0, UIInventoryDialog, GetTabBar, 67, 0);
 
 // @0x14199ab20
-int UIInventoryDialog::FUN_14199ab20(CString strName)
+int UIInventoryDialog::FindTabIndexByName(CString strName)
 {
     for (unsigned i = 0; i < m_1f0.GetCount(); ++i)
     {
@@ -1314,14 +1314,14 @@ int UIInventoryDialog::FUN_14199ab20(CString strName)
     }
     return -1;
 }
-MS2_REPLACE_METHOD(0x14199AB20, UIInventoryDialog, FUN_14199ab20, 177, 0);
+MS2_REPLACE_METHOD(0x14199AB20, UIInventoryDialog, FindTabIndexByName, 177, 0);
 
 // @0x14199abe0
-CStringW UIInventoryDialog::FUN_14199abe0()
+CStringW UIInventoryDialog::GetSearchText()
 {
     return m_1d8;
 }
-MS2_REPLACE_METHOD(0x14199ABE0, UIInventoryDialog, FUN_14199abe0, 68, 0);
+MS2_REPLACE_METHOD(0x14199ABE0, UIInventoryDialog, GetSearchText, 68, 0);
 
 // @0x14199ac30
 bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
@@ -1388,13 +1388,13 @@ bool UIInventoryDialog::FUN_14199b100(int nResult, const CMsgBoxData& box)
 MS2_REPLACE_METHOD(0x14199B100, UIInventoryDialog, FUN_14199b100, 883, 0);
 
 // @0x14199b480
-bool UIInventoryDialog::FUN_14199b480(int nResult, const CMsgBoxData& box)
+bool UIInventoryDialog::OnSortConfirm(int nResult, const CMsgBoxData& box)
 {
     bool bStack = nResult == 0 ? 1 : 0;
     SendRequestItemInventory(m_194, bStack);
     return true;
 }
-MS2_REPLACE_METHOD(0x14199B480, UIInventoryDialog, FUN_14199b480, 86, 0);
+MS2_REPLACE_METHOD(0x14199B480, UIInventoryDialog, OnSortConfirm, 86, 0);
 
 // @0x14199b4e0
 bool UIInventoryDialog::FUN_14199b4e0(int nResult, const CMsgBoxData& box)
@@ -1484,13 +1484,13 @@ void UIInventoryDialog::FUN_14199ba10()
 MS2_REPLACE_METHOD(0x14199BA10, UIInventoryDialog, FUN_14199ba10, 395, 0);
 
 // @0x14199bbb0
-void UIInventoryDialog::FUN_14199bbb0(int nTab)
+void UIInventoryDialog::SelectTab(int nTab)
 {
     m_1a0 = m_194;
     m_194 = nTab;
     FUN_14199ba10();
 }
-MS2_REPLACE_METHOD(0x14199BBB0, UIInventoryDialog, FUN_14199bbb0, 65, 0);
+MS2_REPLACE_METHOD(0x14199BBB0, UIInventoryDialog, SelectTab, 65, 0);
 
 // @0x14199bc00
 void UIInventoryDialog::FUN_14199bc00()
@@ -1584,7 +1584,7 @@ void UIInventoryDialog::vfunc_66()
 MS2_REPLACE_METHOD(0x14199C020, UIInventoryDialog, vfunc_66, 158, 0);
 
 // @0x14199c0d0
-void UIInventoryDialog::FUN_14199c0d0()
+void UIInventoryDialog::UpdateExpandLabel()
 {
     unsigned int nUsed = g_143ab2a90.FUN_140a5cf30(m_194);
     unsigned int nTotal = g_143ab2a90.FUN_140a5d050(m_194);
@@ -1595,7 +1595,7 @@ void UIInventoryDialog::FUN_14199c0d0()
     }
     m_19c &= ~2;
 }
-MS2_REPLACE_METHOD(0x14199C0D0, UIInventoryDialog, FUN_14199c0d0, 337, 0);
+MS2_REPLACE_METHOD(0x14199C0D0, UIInventoryDialog, UpdateExpandLabel, 337, 0);
 
 // @0x14199c230
 void UIInventoryDialog::SendRequestItemInventory(int nTab, bool bStack)
@@ -1628,8 +1628,8 @@ void UIInventoryDialog::FUN_14199c2b0(CStringW strText)
             {
                 if (m_1e0.get() != 0)
                 {
-                    m_1e0->FUN_1422c7630(0);
-                    m_1e0->FUN_1422e0bd0(L"");
+                    m_1e0->SetFocused(0);
+                    m_1e0->SetHtmlTextW(L"");
                     m_1e0->vfunc_24(1);
                 }
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0, 0x937, 0, CStringW(L""));
@@ -1673,7 +1673,7 @@ bool UIInventoryDialog::FUN_14199c7b0(int nResult, const CMsgBoxData& box)
     if (pDlg != 0 && m_1e0.get() != 0)
     {
         static_cast<Unk_InvSwfManager*>(FUN_140b632f0())->FUN_1422d4dd0(CString(m_20));
-        m_1e0->FUN_1422c7630(1);
+        m_1e0->SetFocused(1);
     }
     return true;
 }
@@ -1748,7 +1748,7 @@ void UIInventoryDialog::FUN_14199ca90()
             item.FUN_1409adbe0(strTooltipData, Scaleform::GFx::Value(tooltip.FUN_1422bb870()));
             item.FUN_1407cb9c0(strTabIndex, nTab);
         }
-        buttons.FUN_1422bc050(Scaleform::GFx::Value(item.FUN_1422bb870()));
+        buttons.PushValue(Scaleform::GFx::Value(item.FUN_1422bb870()));
         m_1a8.SetAt(nTab, (int)i);
         nIndex++;
     }
@@ -1828,15 +1828,15 @@ CStringW UIInventoryDialog::FUN_14199d9c0()
     {
         if (spButton->FUN_1422c2030() == 1 || (unsigned short)pPc->vfunc_78() >= 0x14)
         {
-            strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_item_break_tooltip");
+            strTooltip = FUN_14025e7a0()->Localize("$s_inventory_item_break_tooltip");
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3a) == true)
-                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_skin"));
+                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->Localize("$s_itembreak_tooltip_skin"));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
-                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_socket"));
+                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->Localize("$s_itembreak_tooltip_socket"));
         }
         else
         {
-            strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_item_break_disable_tooltip");
+            strTooltip = FUN_14025e7a0()->Localize("$s_inventory_item_break_disable_tooltip");
         }
     }
     return strTooltip;
@@ -1846,7 +1846,7 @@ MS2_REPLACE_METHOD(0x14199D9C0, UIInventoryDialog, FUN_14199d9c0, 1030, 0);
 // @0x14199ddd0
 CStringW UIInventoryDialog::GetExpandTooltip()
 {
-    CStringW strFormat = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_slotexpand_tooltip");
+    CStringW strFormat = FUN_14025e7a0()->Localize("$s_inventory_slotexpand_tooltip");
     unsigned nSlots = FUN_140a66510(m_194) + FUN_140a66750(m_194);
     int nStep = 6;
     return StringFormat(strFormat, nStep, nSlots);
@@ -1864,15 +1864,15 @@ CStringW UIInventoryDialog::FUN_14199deb0(int bBank)
     {
         if (bBank == 1)
         {
-            strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_open_bank_tooltip");
+            strTooltip = FUN_14025e7a0()->Localize("$s_inventory_open_bank_tooltip");
         }
         else
         {
-            strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_open_bank_disable_tooltip");
+            strTooltip = FUN_14025e7a0()->Localize("$s_inventory_open_bank_disable_tooltip");
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3c) == true)
-                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_inventory_open_bank_tooltip_pcbang"));
+                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->Localize("$s_inventory_open_bank_tooltip_pcbang"));
             if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x4a) == true)
-                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_inventory_open_bank_tooltip_vip"));
+                strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->Localize("$s_inventory_open_bank_tooltip_vip"));
         }
     }
     return strTooltip;
@@ -1880,14 +1880,14 @@ CStringW UIInventoryDialog::FUN_14199deb0(int bBank)
 MS2_REPLACE_METHOD(0x14199DEB0, UIInventoryDialog, FUN_14199deb0, 991, 0);
 
 // @0x14199e2a0
-void UIInventoryDialog::FUN_14199e2a0()
+void UIInventoryDialog::RequestExpandSlots()
 {
     if (!((class Unk_InvPlatform*)FUN_140d86260())->vfunc_40(g_143ab2a90.FUN_140a5d0f0()))
         reinterpret_cast<Unk_InvUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add1f0();
     else
         g_143ab2a90.SendRequestItemInventory(m_194);
 }
-MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, FUN_14199e2a0, 113, 0);
+MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, RequestExpandSlots, 113, 0);
 
 // ---- UIInviteGroupDialog ---------------------------------------------------------------------------------------------
 
@@ -2127,8 +2127,8 @@ MS2_REPLACE_METHOD(0x1419A0160, UIInviteGroupDialog, SetUserCount, 204, 0);
 void UIInviteGroupDialog::FUN_1419a0240()
 {
     EntryList entries(10);
-    FUN_1419a06d0(entries);
-    FUN_1419a07d0(entries);
+    CollectPartyMembers(entries);
+    CollectGuildMembers(entries);
     AddBuddyEntries(entries);
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_userList"))
     {
@@ -2148,14 +2148,14 @@ void UIInviteGroupDialog::FUN_1419a0240()
         spList->vfunc_24(true);
     }
     if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
-        spInput->FUN_1422e0a60("");
+        spInput->SetTextA("");
     if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
         pDlg->Invoke("updateUserCount");
 }
 MS2_REPLACE_METHOD(0x1419A0240, UIInviteGroupDialog, FUN_1419a0240, 1149, 0);
 
 // @0x1419a06d0
-void UIInviteGroupDialog::FUN_1419a06d0(EntryList& entries)
+void UIInviteGroupDialog::CollectPartyMembers(EntryList& entries)
 {
     ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = TSingleton<CPartyManager>::GetInstance()->GetMembers();
     size_t nCount = members.GetCount();
@@ -2164,16 +2164,16 @@ void UIInviteGroupDialog::FUN_1419a06d0(EntryList& entries)
         CPartyMember* pMember = members[i].get();
         if (pMember != 0)
         {
-            if (FUN_1419a0a10(pMember->user.m_8, entries) != 0)
+            if (IsAlreadyListedOrInGroup(pMember->user.m_8, entries) != 0)
                 continue;
             entries.AddTail(Unk_InvGroupEntry(*pMember));
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419A06D0, UIInviteGroupDialog, FUN_1419a06d0, 243, 0);
+MS2_REPLACE_METHOD(0x1419A06D0, UIInviteGroupDialog, CollectPartyMembers, 243, 0);
 
 // @0x1419a07d0
-void UIInviteGroupDialog::FUN_1419a07d0(EntryList& entries)
+void UIInviteGroupDialog::CollectGuildMembers(EntryList& entries)
 {
     ATL::CAtlArray<MS2Ptr<CGuildMember> > members;
     reinterpret_cast<Unk_InvGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404d0420(&members);
@@ -2183,13 +2183,13 @@ void UIInviteGroupDialog::FUN_1419a07d0(EntryList& entries)
         CGuildMember* pMember = members[i].get();
         if (pMember != 0)
         {
-            if (FUN_1419a0a10(pMember->data.f08, entries) != 0)
+            if (IsAlreadyListedOrInGroup(pMember->data.f08, entries) != 0)
                 continue;
             entries.AddTail(Unk_InvGroupEntry(*pMember));
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419A07D0, UIInviteGroupDialog, FUN_1419a07d0, 268, 0);
+MS2_REPLACE_METHOD(0x1419A07D0, UIInviteGroupDialog, CollectGuildMembers, 268, 0);
 
 // @0x1419a08f0
 void UIInviteGroupDialog::AddBuddyEntries(EntryList& entries)
@@ -2202,7 +2202,7 @@ void UIInviteGroupDialog::AddBuddyEntries(EntryList& entries)
         CBuddy* pBuddy = buddies[i].get();
         if (pBuddy != 0)
         {
-            if (FUN_1419a0a10(pBuddy->FUN_1401cc230(), entries) != 0)
+            if (IsAlreadyListedOrInGroup(pBuddy->FUN_1401cc230(), entries) != 0)
                 continue;
             entries.AddTail(Unk_InvGroupEntry(*pBuddy));
         }
@@ -2211,12 +2211,12 @@ void UIInviteGroupDialog::AddBuddyEntries(EntryList& entries)
 MS2_REPLACE_METHOD(0x1419A08F0, UIInviteGroupDialog, AddBuddyEntries, 268, 0);
 
 // @0x1419a0a10
-int UIInviteGroupDialog::FUN_1419a0a10(__int64 nCharacterId, EntryList& entries)
+int UIInviteGroupDialog::IsAlreadyListedOrInGroup(__int64 nCharacterId, EntryList& entries)
 {
     if (((class Unk_InvChatUI*)FUN_141482e80())->m_pBrowser != 0)
     {
         Unk_InvGroupWindow* pWindow = (Unk_InvGroupWindow*)((UIGroupMessengerBrowser*)((class Unk_InvChatUI*)FUN_141482e80())->m_pBrowser)->FindWindowByGroupId(m_180);
-        if (pWindow != 0 && pWindow->FUN_14194b9d0(nCharacterId))
+        if (pWindow != 0 && pWindow->IsGroupMember(nCharacterId))
             return 1;
     }
     for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos))
@@ -2227,14 +2227,14 @@ int UIInviteGroupDialog::FUN_1419a0a10(__int64 nCharacterId, EntryList& entries)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419A0A10, UIInviteGroupDialog, FUN_1419a0a10, 254, 0);
+MS2_REPLACE_METHOD(0x1419A0A10, UIInviteGroupDialog, IsAlreadyListedOrInGroup, 254, 0);
 
 // @0x1419a0b20
 int UIInviteGroupDialog::FUN_1419a0b20()
 {
     if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
     {
-        if (spInput->FUN_1422c76c0())
+        if (spInput->GetFocused())
             return 1;
     }
     UIMessageBox* pBox = FUN_14151f890();
@@ -2338,7 +2338,7 @@ int UIItemBreakBase::FUN_1419a1660()
     if (m_30 == 0)
         return 0;
     if (MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag"))
-        return spBag->FUN_1422bfca0();
+        return spBag->GetVisible();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1419A1660, UIItemBreakBase, FUN_1419a1660, 214, 0);
@@ -2471,7 +2471,7 @@ void UIItemBreakBase::vfunc_43()
         if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
         {
             int nWidth = pDlg->FUN_1422c1340();
-            pDlg->FUN_1422c00f0(fX - (float)nWidth, fY);
+            pDlg->SetPositionFloat(fX - (float)nWidth, fY);
             return;
         }
     }
@@ -2579,38 +2579,38 @@ void UIItemBreakDialog::OnLoadComplete()
     m_200.clear();
     if (MS2Ptr<ASDropdownMenu> spType = GetChild<ASDropdownMenu>("m_bundleTypeDropdown"))
     {
-        int nIndex = 0;
+        unsigned nIndex = 0;
         ASObj equip(2);
         equip.FUN_1407cb9c0("type", INV_TAB_EQUIP);
-        equip.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_equip"));
-        spType->FUN_1422dfc70(equip);
-        m_200.insert(std::make_pair((int)INV_TAB_EQUIP, nIndex));
+        equip.FUN_1407cbb20("label", FUN_14025e7a0()->Localize("$s_inventory_tab_equip"));
+        spType->AddItemRow(equip);
+        m_200.insert(std::make_pair(INV_TAB_EQUIP, nIndex));
         nIndex++;
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3a))
         {
             ASObj skin(2);
             skin.FUN_1407cb9c0("type", INV_TAB_SKIN);
-            skin.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_skin"));
-            spType->FUN_1422dfc70(skin);
-            m_200.insert(std::make_pair((int)INV_TAB_SKIN, nIndex));
+            skin.FUN_1407cbb20("label", FUN_14025e7a0()->Localize("$s_inventory_tab_skin"));
+            spType->AddItemRow(skin);
+            m_200.insert(std::make_pair(INV_TAB_SKIN, nIndex));
             nIndex++;
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e))
         {
             ASObj gem(2);
             gem.FUN_1407cb9c0("type", INV_TAB_GEM);
-            gem.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_gem"));
-            spType->FUN_1422dfc70(gem);
-            m_200.insert(std::make_pair((int)INV_TAB_GEM, nIndex));
+            gem.FUN_1407cbb20("label", FUN_14025e7a0()->Localize("$s_inventory_tab_gem"));
+            spType->AddItemRow(gem);
+            m_200.insert(std::make_pair(INV_TAB_GEM, nIndex));
             nIndex++;
         }
         ASObj pet(2);
         pet.FUN_1407cb9c0("type", INV_TAB_PET);
-        pet.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_pet"));
-        spType->FUN_1422dfc70(pet);
-        m_200.insert(std::make_pair((int)INV_TAB_PET, nIndex));
+        pet.FUN_1407cbb20("label", FUN_14025e7a0()->Localize("$s_inventory_tab_pet"));
+        spType->AddItemRow(pet);
+        m_200.insert(std::make_pair(INV_TAB_PET, nIndex));
         nIndex++;
-        unsigned nRows = spType->FUN_1422dfb90();
+        unsigned nRows = spType->GetItemCount();
         spType->FUN_1422df5f0(nRows > 1 ? nRows : 1);
         int nSelect = 0;
         std::map<int, int>::iterator it = m_200.find(m_1f8);
@@ -2627,10 +2627,10 @@ void UIItemBreakDialog::OnLoadComplete()
             ASObj rank(2);
             int nRankId = nRank;
             rank.FUN_1407cb9c0("rank", nRank);
-            rank.FUN_1407cbb20("label", StringFormat(L"{0} {1}", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRankId), strOrBelow));
-            spRank->FUN_1422dfc70(rank);
+            rank.FUN_1407cbb20("label", StringFormat(L"{0} {1}", TSingleton<CStringTable>::GetInstance()->GetRankName(nRankId), strOrBelow));
+            spRank->AddItemRow(rank);
         }
-        unsigned nRows = spRank->FUN_1422dfb90();
+        unsigned nRows = spRank->GetItemCount();
         spRank->FUN_1422df5f0(nRows > 1 ? nRows : 1);
         spRank->SetSelectedIndex(m_1fc - 1);
         reinterpret_cast<Unk_IbDropdown*>(spRank.operator->())->vfunc_24(1);
@@ -2713,19 +2713,19 @@ int UIItemBreakDialog::vfunc_46()
     {
         CStringW strDesc = spDesc->GetTextW();
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3a) == true)
-            strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_desc_skin"));
+            strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->Localize("$s_itembreak_desc_skin"));
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
-            strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_desc_socket"));
+            strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->Localize("$s_itembreak_desc_socket"));
         spDesc->FUN_1422c4cd0(strDesc);
     }
     if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
     {
-        CStringW strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_desc");
+        CStringW strTooltip = FUN_14025e7a0()->Localize("$s_itembreak_tooltip_desc");
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3a) == true)
-            strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_skin"));
+            strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->Localize("$s_itembreak_tooltip_skin"));
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
-            strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_socket"));
-        spInfo->FUN_1422c7b40(strTooltip);
+            strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->Localize("$s_itembreak_tooltip_socket"));
+        spInfo->SetTooltipText(strTooltip);
     }
     return 1;
 }
@@ -2754,7 +2754,7 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
             row.FUN_1407cbbe0("toggle", false);
             row.FUN_1407cbb20("text", CStringW(strText));
         }
-        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     data.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.FUN_1422bb870()));
     m_30->Invoke("setResult", data);
@@ -2787,7 +2787,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a026f0(1);
+                    spBox->SetCheckboxMust(1);
                     spBox->FUN_141a024a0(0);
                     spBox->SetCheckbox0(strCheck, 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
@@ -2867,18 +2867,18 @@ void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
     if (!m_30)
         return;
     FUN_1419a4c80();
-    std::map<int, ItemBreakCommon::BreakPreview> previews;
+    std::map<unsigned, ItemBreakCommon::BreakPreview> previews;
     int nCount = pPacket->ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
         ItemBreakCommon::BreakPreview preview;
-        int nItemId = pPacket->ReadInt32();
+        unsigned nItemId = pPacket->ReadInt32();
         preview.FUN_140530920(*reinterpret_cast<Unk_BreakPacket*>(pPacket));
         previews[nItemId] = preview;
     }
     ASDataProvider rows(2);
     ASObj data(2);
-    for (std::map<int, ItemBreakCommon::BreakPreview>::iterator it = previews.begin(); it != previews.end(); ++it)
+    for (std::map<unsigned, ItemBreakCommon::BreakPreview>::iterator it = previews.begin(); it != previews.end(); ++it)
     {
         int nItemId = it->first;
         if (it->second.FUN_1405309d0() == 0)
@@ -2895,7 +2895,7 @@ void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
             row.FUN_1407cbbe0("toggle", false);
             row.FUN_1407cbb20("text", CStringW(strText));
         }
-        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     data.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.FUN_1422bb870()));
     m_30->Invoke("setPreview", data);
@@ -3001,7 +3001,7 @@ MS2_REPLACE_METHOD(0x1419A5030, UIItemBreakDonationDialog, vfunc_85, 15, 0);
 int UIItemBreakDonationDialog::vfunc_46()
 {
     if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
-        spInfo->FUN_1422c7b40(FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_donation_tooltip_desc"));
+        spInfo->SetTooltipText(FUN_14025e7a0()->Localize("$s_itembreak_donation_tooltip_desc"));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419A5050, UIItemBreakDonationDialog, vfunc_46, 256, 0);
@@ -3041,7 +3041,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
                 if (spBox.get() != 0)
                 {
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a026f0(1);
+                    spBox->SetCheckboxMust(1);
                     spBox->FUN_141a024a0(0);
                     spBox->SetCheckbox0(strCheck, 0);
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));

@@ -84,7 +84,7 @@ public:
 
 typedef Delegate<bool(int, const CMsgBoxData&)> HioAnswerDelegate;
 CStringW FUN_140298ea0(CStringW strKey);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
@@ -116,7 +116,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
     {
         if (MS2Ptr<ASDropdownMenu> spCombo = FUN_140c28560<ASDropdownMenu>("m_background"))
         {
-            spCombo.operator->()->FUN_1422dfc10();
+            spCombo.operator->()->ClearItems();
             for (POSITION pos = pBgs->GetHeadPosition(); pos != 0; pBgs->GetNext(pos))
             {
                 MS2Ptr<UgcHomeBgData> spRow = pBgs->GetValueAt(pos);
@@ -124,7 +124,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("label", spRow->m_strName);
-                spCombo.operator->()->FUN_1422dfc70(item);
+                spCombo.operator->()->AddItemRow(item);
             }
             spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nBg));
             Unk_HioCombo* pCombo = reinterpret_cast<Unk_HioCombo*>(spCombo.operator->());
@@ -136,7 +136,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
     {
         if (MS2Ptr<ASDropdownMenu> spCombo = FUN_140c28560<ASDropdownMenu>("m_light"))
         {
-            spCombo.operator->()->FUN_1422dfc10();
+            spCombo.operator->()->ClearItems();
             for (POSITION pos = pLights->GetHeadPosition(); pos != 0; pLights->GetNext(pos))
             {
                 MS2Ptr<UgcHomeLightData> spRow = pLights->GetValueAt(pos);
@@ -144,7 +144,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("label", spRow->m_strName);
-                spCombo.operator->()->FUN_1422dfc70(item);
+                spCombo.operator->()->AddItemRow(item);
             }
             spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nLight));
             Unk_HioCombo* pCombo = reinterpret_cast<Unk_HioCombo*>(spCombo.operator->());
@@ -156,7 +156,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
     {
         if (MS2Ptr<ASDropdownMenu> spCombo = FUN_140c28560<ASDropdownMenu>("m_camera"))
         {
-            spCombo.operator->()->FUN_1422dfc10();
+            spCombo.operator->()->ClearItems();
             for (POSITION pos = pCameras->GetHeadPosition(); pos != 0; pCameras->GetNext(pos))
             {
                 MS2Ptr<UgcHomeCameraData> spRow = pCameras->GetValueAt(pos);
@@ -164,7 +164,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                     continue;
                 ASObj item(2);
                 item.FUN_1407cbb20("label", spRow->m_strName);
-                spCombo.operator->()->FUN_1422dfc70(item);
+                spCombo.operator->()->AddItemRow(item);
             }
             spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nCamera));
             Unk_HioCombo* pCombo = reinterpret_cast<Unk_HioCombo*>(spCombo.operator->());

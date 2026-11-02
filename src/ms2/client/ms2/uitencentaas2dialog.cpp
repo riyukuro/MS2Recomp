@@ -20,6 +20,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cwebbrowserservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include "ms2/commonfiles/os.h"
 
 // ---- exe callees ----
 class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
@@ -52,7 +53,7 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-CWebBrowserService* FUN_140cc18a0();
+class CWebBrowserService;
 
 class ASDialog : public ASDisplayObject
 {
@@ -214,9 +215,9 @@ void UITencentAas2Dialog::OnLoadComplete()
     }
     vfunc_43();
     FUN_140e48e10("m_renderTarget", &m_spTarget);
-    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, m_strPage, "", vfunc_88());
+    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b781e0(m_nBrowserId, m_strPage, "", vfunc_88());
     vfunc_87(&m_size);
-    FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
+    TSingleton<CWebBrowserService>::GetInstance()->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();
 }
 MS2_REPLACE_METHOD(0x140E98CD0, UITencentAas2Dialog, OnLoadComplete, 575, 0x1D3A196F);
@@ -271,8 +272,8 @@ bool UITencentAas2Dialog::vfunc_90(POINT* pPos)
     pPos->y -= ((class ASDisplayObject*)(pDialog))->FUN_1422c1110();
     if (m_spTarget == 0)
         return false;
-    pPos->x -= static_cast<ASDialog*>((class ASDisplayObject*)((static_cast<ASDisplayObject*>(m_spTarget.operator->()))))->FUN_1422c10a0();
-    pPos->y -= static_cast<ASDialog*>((class ASDisplayObject*)((static_cast<ASDisplayObject*>(m_spTarget.operator->()))))->FUN_1422c1110();
+    pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c10a0();
+    pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c1110();
     if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nWidth)->Get()) && pPos->y <= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)FUN_1401d3200())->m_nHeight)->Get()))
     {
         return false;

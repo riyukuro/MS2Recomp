@@ -113,7 +113,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut);
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);
-void FUN_1406363a0(Unk_ScriptXmlNode* pNode, const char* pszName, int* pOut);       // job condition
+enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(class Unk_140165cf0*, const char*, E&);       // job condition
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned FUN_140767ff0();                                                           // random
@@ -137,7 +137,7 @@ public:
     Unk_ScriptXmlNode*& FUN_140164a30(unsigned __int64 n);          // operator[]
     void *m_a, *m_b, *m_c;
 };
-void FUN_14028faa0(Unk_ScriptXmlNode* pParent, const char* pszName, const char* pszAttr, Unk_ElemArray* pOut);
+void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);
 
 void FUN_140857f20(CStringA path);
 void FUN_140858440(CStringA path);
@@ -665,7 +665,7 @@ void FUN_140857f20(CStringA path)
             }
         }
         Unk_ElemArray nodes;
-        FUN_14028faa0(quest, "script", "id", &nodes);
+        FUN_14028faa0((struct Unk_XmlElement*)quest, "script", "id", (std::vector<struct Unk_XmlElement*>&)nodes);
         for (unsigned __int64 i = 0; i < nodes.FUN_14016d900(); i++)
         {
             Unk_ScriptXmlNode* node = nodes.FUN_140164a30(i);
@@ -673,7 +673,7 @@ void FUN_140857f20(CStringA path)
             script->m_questId = questId;
             XmlGetAttr((class TiXmlElement*)(node), "id", script->m_id);
             XmlGetAttr((class TiXmlElement*)(node), "tag", script->m_tag);
-            FUN_1406363a0(node, "jobCondition", &script->m_jobCondition);
+            XmlValue((class Unk_140165cf0*)node, "jobCondition", *(Unk_JobGroupID*)&script->m_jobCondition);
             FUN_140859160(node, script);
             talks->SetAt(script->m_id, script);
         }
@@ -705,7 +705,7 @@ void FUN_140858440(CStringA path)
         {
             TalkArrayPtr talks(Unk_GrNewTag(0));
             Unk_ElemArray scriptNodes;
-            FUN_14028faa0(npc, "script", "id", &scriptNodes);
+            FUN_14028faa0((struct Unk_XmlElement*)npc, "script", "id", (std::vector<struct Unk_XmlElement*>&)scriptNodes);
             for (unsigned __int64 i = 0; i < scriptNodes.FUN_14016d900(); i++)
             {
                 Unk_ScriptXmlNode* node = scriptNodes.FUN_140164a30(i);
@@ -750,7 +750,7 @@ void FUN_140858440(CStringA path)
         for (int k = 0; k < 2; k++)
         {
             Unk_ElemArray nodes;
-            FUN_14028faa0(npc, kinds[k], "id", &nodes);
+            FUN_14028faa0((struct Unk_XmlElement*)npc, kinds[k], "id", (std::vector<struct Unk_XmlElement*>&)nodes);
             if (nodes.FUN_14016d900() != 0)
             {
                 Unk_ScriptXmlNode* node = nodes.FUN_140164a30(0);
@@ -872,7 +872,7 @@ int FUN_140855df0(unsigned nNpcId, TalkPtr script)
 // The button set the talk window shows for a page.
 // @0x140857990
 // MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
-int FUN_140857990(TalkPtr script, unsigned char nFlags, int nNpcId, int nPage)
+int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
 {
     if (!script.get())
         return 0;

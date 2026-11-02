@@ -916,7 +916,7 @@ int FUN_14028e160(CString& strDay)
 }
 
 // Parses a date/time text with a scanf-style format into a CMsTime; false when out of range.
-// MS2-FUNCTIONAL: compiler temp-copy spill layout and EH state count differ
+// sscanf is extern "C", so the second CString temp gets no EH state.
 // @0x14028e280
 int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strText)
 {
@@ -926,7 +926,7 @@ int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strTex
     int nHour = 0;
     int nMinute = 0;
     int nSecond = 0;
-    FUN_14029dd60(CString(strText).GetString(), (LPCSTR)CString(strFormat), &nYear, &nMonth, &nDay, &nHour, &nMinute, &nSecond);
+    sscanf(CString(strText), (LPCSTR)CString(strFormat), &nYear, &nMonth, &nDay, &nHour, &nMinute, &nSecond);
     if (!(nYear < 1900 || nMonth < 1 || nMonth > 12 || nDay < 1 || nDay > 31 || nHour < 0 || nHour > 23 || nMinute < 0
           || nMinute > 59 || nSecond < 0 || nSecond > 59))
     {
@@ -946,7 +946,7 @@ CString FUN_14028e440(const CMsTime& kTime, const CString& strFormat)
 }
 
 // Replaces every "(token)" in the text with its translation; true when anything was found.
-// MS2-FUNCTIONAL: std::string temp/EH layout differs
+// Every exit leaves through the one return at the end.
 // @0x14028e560
 bool FUN_14028e560(std::wstring& strText, int nWhich)
 {
@@ -956,14 +956,14 @@ bool FUN_14028e560(std::wstring& strText, int nWhich)
     {
         size_t nOpen = strText.find(pwszDelim[0], 0);
         if (nOpen == (size_t)-1)
-            return bFound;
+            break;
         size_t nClose = strText.find(pwszDelim[1], nOpen);
         if (nClose == (size_t)-1)
             break;
         std::wstring strToken;
         strToken = strText.substr(nOpen + 1, nClose - nOpen - 1);
         if (strToken.size() == 0)
-            return bFound;
+            break;
         bFound = true;
         std::wstring strTranslated = FUN_140291f90(strToken, nWhich);
         strText.replace(strText.begin() + nOpen, strText.begin() + nClose + 1, strTranslated.c_str(), strTranslated.size());
@@ -1952,7 +1952,7 @@ struct Unk_BindHostPtr
     Unk_BindHostPtr(const wchar_t* pszText);                    // 0x140297620
     Unk_BindHostPtr(const char* pszText);                       // 0x140297590
     Unk_BindHostPtr(const Unk_BindHostPtr& other);              // 0x140297550
-    ~Unk_BindHostPtr() noexcept(false);                         // 0x140297a20
+    ~Unk_BindHostPtr() throw();                                 // 0x140297a20
     Unk_BindHostPtr& operator+=(const Unk_BindHostPtr& other);  // 0x140298560
     void FUN_140299e30();                                       // 0x140299e30
 };
@@ -2183,7 +2183,7 @@ void FUN_1402978a0(void* p)
 }
 
 // @0x140297a20
-Unk_BindHostPtr::~Unk_BindHostPtr() noexcept(false)
+Unk_BindHostPtr::~Unk_BindHostPtr() throw()
 {
     FUN_14029b680((void**)this);
 }

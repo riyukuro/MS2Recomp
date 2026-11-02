@@ -31,10 +31,10 @@ void FUN_140288640(Unk_TVal*, Unk_TNode*); void FUN_1402894e0(Unk_TVal*, Unk_TNo
 Unk_TVal* FUN_14027b570(Unk_TVal*);
 Unk_TIter* FUN_14027d010(Unk_TIter* out, Unk_TNode* node, Unk_TVal* val);
 void FUN_1402876f0(void* tree, Unk_TNode* node);
-i64 FUN_14027c160(i64 v); i64 FUN_14027c1f0(i64 v); i64 FUN_14027c240(void* out, i64 v);
+i64 FUN_14027c160(i64 v) noexcept; i64 FUN_14027c1f0(i64 v); i64 FUN_14027c240(void* out, i64 v);
 Unk_TNode* FUN_140276fe0(void* tree, Unk_TNode* node, i64 val);
 Unk_TIter* FUN_14027cff0(Unk_TIter*);
-Unk_TIter* FUN_14028a130(void* tree, Unk_TIter* out); Unk_TIter* FUN_14028a910(void* tree, Unk_TIter* out);
+Unk_TIter* FUN_14028a130(void* tree, Unk_TIter* out) noexcept; Unk_TIter* FUN_14028a910(void* tree, Unk_TIter* out) noexcept;
 bool FUN_14027ee20(Unk_TIter* a, Unk_TIter* b);
 i64 FUN_1402885e0(void* tree, Unk_TNode* node); i64 FUN_140288610(void* tree, i64 val);
 i64 FUN_140288430(void* tree);

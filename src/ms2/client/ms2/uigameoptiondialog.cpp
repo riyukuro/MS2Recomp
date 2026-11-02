@@ -88,11 +88,11 @@ CString FUN_140651390();                                        // the language 
 void FUN_14151f200();
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_140d73bc0(int nStringId, int nType, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);
 void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -436,7 +436,7 @@ void UIGameOptionDialog::FUN_141943a00()
 // @0x141943a30
 void UIGameOptionDialog::FUN_141943a30()
 {
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x18, CStringW(L""), this, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x18, CStringW(L""), static_cast<IMessageListener*>(this), CStringW(L""));
     if (spBox.get() != 0)
     {
         Scaleform::GFx::Value vTab = ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("getCurrentTabName");
@@ -446,9 +446,9 @@ void UIGameOptionDialog::FUN_141943a30()
         if (m_nTab >= 9 && m_nTab <= 0xd)
             strCategory = GetStringCommonByKey(L"s_gameoption_init_shoutcut");
         CStringW strOk = GetStringCommon(0x848);
-        CStringW strMsg = FUN_140632a60(0x849, strTab, strCategory);
+        CStringW strMsg = FormatStringId<CStringW, CStringW>(0x849, strTab, strCategory);
         CStringW strCancel = GetStringCommon(0x476);
-        spBox->FUN_141a01690(strOk, strMsg, strCancel);
+        spBox->SetButtonLabels(strOk, strMsg, strCancel);
         spBox->SetTitle(GetStringCommon(0x847));
         FUN_140d73c60(spBox);
     }
@@ -468,7 +468,7 @@ void UIGameOptionDialog::FUN_141943d80()
 void UIGameOptionDialog::OnSave()
 {
     if (FUN_141944250() == 0)
-        FUN_140d73bc0(0x84a, 1, this, CStringW(L"OnSave"));
+        FUN_140d73bc0(0x84a, 1, static_cast<IMessageListener*>(this), CStringW(L"OnSave"));
     else
         FUN_141943ec0();
 }
@@ -514,9 +514,9 @@ void UIGameOptionDialog::FUN_141944030(int n)
 void UIGameOptionDialog::OnCloseDialog()
 {
     if (FUN_141944330() == 0)
-        FUN_140d73bc0(0x84b, 1, this, CStringW(L"OnSaveAndCheck"));
+        FUN_140d73bc0(0x84b, 1, static_cast<IMessageListener*>(this), CStringW(L"OnSaveAndCheck"));
     else if (FUN_141944250() == 0)
-        FUN_140d73bc0(0x84a, 1, this, CStringW(L"OnSaveAndCheck"));
+        FUN_140d73bc0(0x84a, 1, static_cast<IMessageListener*>(this), CStringW(L"OnSaveAndCheck"));
     else
         vfunc_67();
 }
@@ -526,7 +526,7 @@ int UIGameOptionDialog::FUN_141944250()
 {
     if (m_bSimple)
         return 1;
-    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>((class CKeyTable*)((FUN_1409331f0())))->FUN_14142cbb0(); ++i)
+    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cbb0(); ++i)
     {
         if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a137)
             continue;
@@ -534,7 +534,7 @@ int UIGameOptionDialog::FUN_141944250()
             continue;
         if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a139)
             continue;
-        if (reinterpret_cast<CKeyTable*>((class CKeyTable*)((FUN_1409331f0())))->FUN_14142cb40((unsigned)i, 0) == 0)
+        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142cb40((unsigned)i, 0) == 0)
             return 0;
     }
     return 1;

@@ -205,7 +205,7 @@ class Unk_HudMaidOwner;
 int FUN_141276180(const CString& strSound, const CString& strArg);
 
 // Misc.
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_HudKeys : public CInputKeyHandler   // FUN_14116d9c0 (key pressed) from the base
 {
 public:
@@ -287,23 +287,21 @@ CString UIUpperHudDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x141353E80, UIUpperHudDialog, GetTypeName, 61, 0xF83C7D54);
 
 // @0x141353ed0
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller; the temp slot order of the movie clip lookups is not reproduced
 void UIUpperHudDialog::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     FUN_140b632f0()->AddToLayer(this, 4);
     do { m_30->FUN_140bc71c0("m_searchDungeon", m_searchDungeon); if (m_searchDungeon == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(85), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bc71c0("m_eventText", m_eventText); if (m_eventText == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(86), __FUNCTION__)); } while (0);
-    do { if (m_eventText->FUN_140beaf20("textField", m_noticeText) == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(89), __FUNCTION__)); } while (0);
+    if (m_eventText->FUN_140beaf20("textField", m_noticeText) == 0)
+        throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(89), __FUNCTION__));
     m_nNoticeY = (int)m_noticeText->FUN_1422c1110();
     m_eventText->FUN_1422c2a70(HudClickDelegate(this, &UIUpperHudDialog::OpenEventBrowser), (void*)0);
     if (FUN_140bc6d10("m_tokenPocketButton", m_tokenPocket))
         m_tokenPocket->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356cd0), 0);
     if (FUN_140bc6d10("m_maidStatusButton", m_maidStatus))
         m_maidStatus->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356d00), 0);
-    m_30->FUN_140bbe640<ASButton>("m_pcBangButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBang));
-    if (m_pcBang == 0)
-        throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(101), __FUNCTION__));
+    do { m_30->FUN_140bbe640<ASButton>("m_pcBangButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBang)); if (m_pcBang == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(101), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bbe640<ASButton>("m_pcBangButtonCn1", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBangCn1)); if (m_pcBangCn1 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(102), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bbe640<ASButton>("m_pcBangButtonCn2", reinterpret_cast<MS2Ptr<ASButton>&>(m_pcBangCn2)); if (m_pcBangCn2 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(103), __FUNCTION__)); } while (0);
     m_pcBang->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
@@ -316,7 +314,7 @@ void UIUpperHudDialog::OnLoadComplete()
     if (FUN_140bc6d10("m_searchButton", m_search))
     {
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2f) == true)
-            m_search->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0570("$s_gamedictionary_tooltip_search"));
+            m_search->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_gamedictionary_tooltip_search"));
         m_search->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356f90), 0);
     }
     if (FUN_14129a040("m_searchInput", m_searchInput))
@@ -351,7 +349,8 @@ void UIUpperHudDialog::OnLoadComplete()
         if (spVersion)
         {
             spVersion->vfunc_4(true);
-            spVersion->FUN_1422c4f00(GetStringCommonByKey(L"s_upper_hud_version"));
+            CStringW strVersion = GetStringCommonByKey(L"s_upper_hud_version");
+            spVersion->FUN_1422c4f00(strVersion);
         }
     }
     {
@@ -362,7 +361,7 @@ void UIUpperHudDialog::OnLoadComplete()
             spVersion->SetMultiline(1);
         }
     }
-    FUN_140cff840(m_maidStatus->FUN_1422bb890(), "badge", 0);
+    FUN_140cff840((*m_maidStatus).FUN_1422bb890(), "badge", 0);
     FUN_140cfee80(FUN_1422dbc00(), "mesoText", FUN_1409404f0(DAT_143ab2898));
     FUN_140cfee80(FUN_1422dbc00(), "maratText", FUN_1409404f0(FUN_140930240()));
     FUN_141358020(1);
@@ -601,12 +600,12 @@ void UIUpperHudDialog::FUN_141356f90(const Scaleform::GFx::FunctionHandler::Para
 // @0x141357050
 void UIUpperHudDialog::FUN_141357050(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (m_searchInput->FUN_1422bfca0())
+    if (m_searchInput->GetVisible())
     {
         if (m_searchInput->FUN_1422c76c0() == 0)
         {
             m_searchInput->vfunc_3(0);
-            reinterpret_cast<ASTextInput*>(m_searchInput.operator->())->FUN_1422e0ab0(L"");
+            reinterpret_cast<ASTextInput*>(m_searchInput.operator->())->SetTextW(L"");
             m_searchInput->vfunc_24(1);
             m_search->FUN_1422c1fe0(true);
         }
@@ -693,7 +692,7 @@ void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
     MS2Ptr<ASTextField> spVersion = GetChild<ASTextField>("m_version");
     if (spVersion == 0)
         return;
-    if (!spVersion->FUN_1422bfca0())
+    if (!spVersion->GetVisible())
         return;
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc9) == true)
     {
@@ -712,8 +711,8 @@ bool UIUpperHudDialog::ToggleVersionText()
     MS2Ptr<ASTextField> spVersion = GetChild<ASTextField>("m_version");
     if (spVersion == 0)
         return false;
-    spVersion->vfunc_4(!spVersion->FUN_1422bfca0());
-    return spVersion->FUN_1422bfca0();
+    spVersion->vfunc_4(!spVersion->GetVisible());
+    return spVersion->GetVisible();
 }
 
 // @0x141357ac0
@@ -824,10 +823,10 @@ void UIUpperHudDialog::FUN_1413581f0()
             m_fNoticePos = 0.0f;
             x = 0;
         }
-        m_noticeText->FUN_1422bffe0(x, m_nNoticeY);
+        m_noticeText->SetPositionInt(x, m_nNoticeY);
     }
     else if (x > -m_noticeText->FUN_1422c1340())
-        m_noticeText->FUN_1422bffe0(x, m_nNoticeY);
+        m_noticeText->SetPositionInt(x, m_nNoticeY);
     else
         FUN_141358490();
 }
@@ -876,7 +875,7 @@ void UIUpperHudDialog::FUN_141358490()
     for (int i = 0; i < nCount; i++)
         strRepeat += m_strNotice;
     m_noticeText->FUN_1422c4f00(strRepeat);
-    m_noticeText->FUN_1422c0e20((int)(m_noticeText->GetTextWidth() + 20.0));
+    m_noticeText->SetWidthInt((int)(m_noticeText->GetTextWidth() + 20.0));
     m_fNoticePos = 470.0f;
     m_bNoticeOnce = false;
     FUN_1413581f0();
@@ -1296,7 +1295,7 @@ void UIVisitorsBookDialog::OnLoadComplete()
         pDialog->GetPosition(&fX, &fY);
         fX = FUN_14028aed0(fX);
         fY = FUN_14028aed0(fY);
-        pDialog->FUN_1422c00f0(fX, fY);
+        pDialog->SetPositionFloat(fX, fY);
     }
     ASDialog* pDialog2 = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog2 != 0)
@@ -1653,7 +1652,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5450, fValue);
         }
         return 1;
@@ -1673,7 +1672,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5458, fValue);
         }
         return 1;
@@ -1693,7 +1692,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5358, fValue);
         }
         return 1;
@@ -1703,7 +1702,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5360, fValue);
         }
         return 1;
@@ -1713,7 +1712,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5370, fValue);
         }
         return 1;
@@ -1723,7 +1722,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5378, fValue);
         }
         return 1;
@@ -1743,7 +1742,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5430, fValue);
         }
         return 1;
@@ -1753,7 +1752,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             SetShaderFloat(DAT_143ae5440, fValue);
         }
         return 1;
@@ -1773,9 +1772,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fRed = data.FUN_1422b8c10();
-            float fGreen = data.FUN_1422b8c10();
-            float fBlue = data.FUN_1422b8c10();
+            float fRed = data.PopFloat();
+            float fGreen = data.PopFloat();
+            float fBlue = data.PopFloat();
             SetGlowColor(fRed, fGreen, fBlue);
         }
         return 1;
@@ -1785,9 +1784,9 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            DAT_1439f824c = data.FUN_1422b8c10();
-            DAT_1439f8250 = data.FUN_1422b8c10();
-            DAT_1439f8254 = data.FUN_1422b8c10();
+            DAT_1439f824c = data.PopFloat();
+            DAT_1439f8250 = data.PopFloat();
+            DAT_1439f8254 = data.PopFloat();
         }
         return 1;
     }
@@ -1806,7 +1805,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fValue = data.FUN_1422b8c10();
+            float fValue = data.PopFloat();
             FUN_14135d660(fValue);
         }
         return 1;
@@ -1816,8 +1815,8 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fNear = data.FUN_1422b8c10();
-            float fFar = data.FUN_1422b8c10();
+            float fNear = data.PopFloat();
+            float fFar = data.PopFloat();
             SetNearFarRange(fNear, fFar);
         }
         return 1;
@@ -1947,10 +1946,10 @@ void UIVisualEffectDialog::FUN_14135d700(bool bOn)
 // @0x14135d730
 void UIVisualEffectDialog::FUN_14135d730(ASData& data)
 {
-    float fNearStart = data.FUN_1422b8c10();
-    float fNearEnd = data.FUN_1422b8c10();
-    float fFarStart = data.FUN_1422b8c10();
-    float fFarEnd = data.FUN_1422b8c10();
+    float fNearStart = data.PopFloat();
+    float fNearEnd = data.PopFloat();
+    float fFarStart = data.PopFloat();
+    float fFarEnd = data.PopFloat();
     float afRange[4] = {fNearStart, fNearEnd, fFarStart, fFarEnd};
     for (int i = 0; i < 3; i++)
         afRange[i + 1] = (std::max)(afRange[i], afRange[i + 1]);
@@ -2264,7 +2263,7 @@ void UIWeaponDummyDialog::vfunc_67()
 CString UIWeaponDummyDialog::FUN_14135e570()
 {
     if (MS2Ptr<ASTextField> spInput = GetChild<ASTextField>("m_inputTargetNode"))
-        return spInput->FUN_1422c4d20();
+        return spInput->GetTextA();
     return FUN_14016a5c0("", 0);
 }
 
@@ -2350,7 +2349,7 @@ void UIWebBrowserBase::FUN_14135ec00(const CString& strUrl, bool bOnce)
     reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(strResolved, (const char*)strUrl);
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
-        reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b786f0(m_nBrowserId, (const char*)strResolved);
+        reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->Navigate(m_nBrowserId, (const char*)strResolved);
     else
         m_strUrl = strResolved;
     if (FUN_141924630() == 0)
@@ -2361,7 +2360,7 @@ void UIWebBrowserBase::FUN_14135ec00(const CString& strUrl, bool bOnce)
 void UIWebBrowserBase::vfunc_84(bool bVisible)
 {
     m_bVisible = bVisible;
-    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78840(m_nBrowserId, m_bVisible);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->ShowBrowser(m_nBrowserId, m_bVisible);
 }
 
 // @0x14135ed80
@@ -2466,12 +2465,12 @@ int UIWebBrowserBase::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float fWidth = data.FUN_1422b8c10();
-            float fHeight = data.FUN_1422b8c10();
+            float fWidth = data.PopFloat();
+            float fHeight = data.PopFloat();
             float fScale = reinterpret_cast<Unk_HudUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbe70();
             m_size.cx = (int)FUN_14028aed0(fWidth / fScale);
             m_size.cy = (int)FUN_14028aed0(fHeight / fScale);
-            reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
+            reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
         }
     }
     else if (_stricmp(szMethod, "onFocusIn") == 0)
@@ -2537,7 +2536,7 @@ void UIWebBrowserBase::vfunc_89(const CString& strUrl)
     if (pDialog != 0)
     {
         vfunc_87(&m_size);
-        reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
+        reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->ResizeBrowser(m_nBrowserId, m_size.cx, m_size.cy);
     }
     vfunc_84(m_bVisible);
 }
@@ -2546,7 +2545,7 @@ void UIWebBrowserBase::vfunc_89(const CString& strUrl)
 void UIWebBrowserBase::FUN_14135f7f0()
 {
     vfunc_84(false);
-    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b784f0(m_nBrowserId);
+    reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->CloseBrowser(m_nBrowserId);
 }
 
 // @0x14135f840

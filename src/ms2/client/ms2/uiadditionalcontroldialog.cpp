@@ -64,7 +64,7 @@ class Unk_AcRow : public ASObj
 {
 };
 
-class GFxManager { public: CStringW FUN_1422b0570(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
+class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 GFxManager* FUN_14025e7a0();
 CStringTable* GetStringTable();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -146,7 +146,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned nId = data.FUN_1422b8b10();
             unsigned nLevel = data.FUN_1422b8b10();
-            float fValue = data.FUN_1422b8ca0();
+            float fValue = data.PopDouble();
             MS2Ptr<AdditionalLevelData> spLevel = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nId, nLevel);
             if (spLevel.get() != 0) {
                 Unk_AcEffectReq req;
@@ -182,9 +182,9 @@ void UIAdditionalControlDialog::FUN_1418b2c20(const Scaleform::GFx::FunctionHand
         return;
     ASListEvent evt(params);
     ASObj row(evt.FUN_1422e2780(), 2);
-    if (row.FUN_1422ba9a0())
+    if (row.IsUndefinedOrNull())
         return;
-    CStringW strFunc = ((Unk_AcRow*)&row)->FUN_1422bb2b0("func");
+    CStringW strFunc = ((Unk_AcRow*)&row)->GetWString("func");
     if (strFunc.IsEmpty())
         return;
     unsigned nId = FUN_1418b3ac0();
@@ -224,13 +224,13 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             int nPassive = 0;
             strLabel.Format(L"[%ld] [Lv.%d] %s", nId, level->GetLevel(), (LPCWSTR)GetStringTable()->FUN_141812290(nId, level->GetLevel(), CString("name")));
             if (level->m_nKeepCondition == 99) {
-                strLabel.Append(FUN_14025e7a0()->FUN_1422b0570("$s_additionaleffect_control_dialog_name_passive"));
+                strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_passive"));
                 nPassive = 1;
             }
             if (level->IsBuff())
-                strLabel.Append(FUN_14025e7a0()->FUN_1422b0570("$s_additionaleffect_control_dialog_name_buff"));
+                strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_buff"));
             else
-                strLabel.Append(FUN_14025e7a0()->FUN_1422b0570("$s_additionaleffect_control_dialog_name_debuff"));
+                strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_debuff"));
             ASObj row(2);
             ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
             row.FUN_1409c0d20("effectCode", nId);
@@ -278,7 +278,7 @@ void UIAdditionalControlDialog::FUN_1418b3620()
                 m_pList->AddItem(row);
                 nAdded++;
             }
-            m_pList->FUN_1422c79e0(nWidth, m_pList->GetItemCount() * nHeight);
+            m_pList->SetSizeInt(nWidth, m_pList->GetItemCount() * nHeight);
             m_pList->vfunc_24(true);
             m_pList->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdditionalControlDialog::FUN_1418b2c20), 0);
         } else {
@@ -293,7 +293,7 @@ unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
     MS2Ptr<ASScrollingList> list = FUN_140c02900("m_effects");
     if (!list)
         return 0;
-    CStringW strLabel = list->FUN_1422dd520();
+    CStringW strLabel = list->GetSelectedLabelW();
     if (strLabel.IsEmpty())
         return 0;
     CStringW strId = FUN_14083f330(strLabel, L'[', L']');

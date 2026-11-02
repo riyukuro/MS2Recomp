@@ -97,7 +97,7 @@ public:
     virtual GameObject* vfunc_23();                         // 23 0x1418b92a0 the object (vfunc_24)
     virtual GameObject* vfunc_24();                         // 24 0x1418b92d0 world lookup of m_nObjectId
     virtual int vfunc_25();                                 // 25 0x1418b9310 m_nObjectId
-    virtual Unk_GoModelKey* vfunc_26(Unk_GoModelKey* pKey);                     // 26 0x1418b9330
+    virtual egf::EntityID vfunc_26();                     // 26 0x1418b9330
     virtual int vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 27 0x1418b9390
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418b9730
     virtual void vfunc_29(int n);                           // 29 0x1418b9b20 m_nState = n

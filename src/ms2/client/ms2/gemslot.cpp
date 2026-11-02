@@ -77,7 +77,9 @@ extern Unk_Inventory g_143ab2a90;
 
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 CString Name_140219b10(int nGemType);                   // the name of a gem type
-void* FUN_140a50b50(DragSlot* pSlot);                   // the item slot behind a drag source
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 class InvenSlot   // C3: member view for the former free stand-ins
 {
 public:
@@ -121,7 +123,7 @@ int GemSlot::vfunc_18(void* p)
             Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pActor == 0)
                 return 0;
-            void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+            void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p)));
             if (pItemSlot != 0)
             {
                 MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
@@ -300,7 +302,7 @@ void GemSlot::vfunc_9()
     if (((Scaleform::GFx::Value*)(void*)(&m_value18))->IsNull() == 0)
     {
         ASObj obj(m_value18, 2);
-        if (obj.FUN_1422ba9a0() == 0)
+        if (obj.IsUndefinedOrNull() == 0)
             obj.FUN_1407cba60("m_strSlotType", Name_140219b10(m_nGemType));
     }
 }

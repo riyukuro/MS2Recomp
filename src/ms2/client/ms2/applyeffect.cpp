@@ -128,12 +128,12 @@ public:
     unsigned int m_uiWidth;                                 // +0x28
 };
 class Unk_AeGameOption;
-extern Unk_AeGameOption* DAT_143ab3da8;                     // the option manager singleton
+class CGameOption;
 class Unk_AeGameOption
 {
 public:
     // @0x1409a8b10
-    static Unk_AeGameOption* FUN_1409a8b10() { return DAT_143ab3da8; }
+    static Unk_AeGameOption* FUN_1409a8b10() { return reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::s_instance); }
     // @0x1409a8ac0
     Unk_AeGraphicOption* FUN_1409a8ac0() { return &m_graphic; }
     unsigned char m_pad0[0x6c];
@@ -183,8 +183,12 @@ class Unk_AeFeatureMgr
 public:
     // @0x1409a8b20
     static Unk_AeFeatureMgr* FUN_1409a8b20() { return DAT_143ab3da0; }
-    void FUN_1416a3920(int nFeature, bool bEnable);
     Unk_AeFeatureState* FUN_1416a3a90(int nFeature);
+};
+class PostProcessingService   // C3: member view
+{
+public:
+    bool SetStepActive(int nFeature, bool bEnable);
     void FUN_1416aa450(int nFeature, bool bFlag);
 };
 
@@ -216,7 +220,7 @@ class Unk_NodeQueue
 public:
     Unk_NodeQueue(NiAVObject* pRoot);                     // 0x14098cb80
     ~Unk_NodeQueue();                                     // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(bool bEnterChildren);
+    NiAVObject* Next(bool bEnterChildren);
     void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
 };
 typedef Unk_NodeQueue Unk_AeSceneIter;   // C3: was a local stand-in for Unk_NodeQueue
@@ -339,13 +343,13 @@ void ApplyEffect::ApplyOuterGlowOption()
 // @0x1409a4f10
 void ApplyEffect::SetFeatureB(bool bEnabled)
 {
-    Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3920(0xb, bEnabled);
+    ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(0xb, bEnabled);
 }
 
 // @0x1409a5100
 void ApplyEffect::SetFeature8(bool bEnabled, bool bUnused)
 {
-    Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3920(8, bEnabled);
+    ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(8, bEnabled);
     float fOne = 1.0f;
     FUN_1409a5770(DAT_143ae5340, &fOne, 1);
 }
@@ -476,9 +480,9 @@ bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
                 FUN_1409a5770(DAT_143ae5370, &pField->m_fSoftParticle3, 1);
                 FUN_1409a5770(DAT_143ae5378, &pField->m_fSoftParticle4, 1);
             }
-            Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3920(3, bEnabled);
+            ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(3, bEnabled);
             bEnabled = (bEnabled && pState->FUN_1409a8f00()) ? 1 : 0;
-            Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416aa450(8, bEnabled);
+            ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa450(8, bEnabled);
         }
     }
     return bEnabled;
@@ -777,7 +781,7 @@ void FUN_1409a5320(NiAVObject* pRoot, float fValueA, float fValueB, const char* 
     }
     Unk_AeSceneIter it((NiAVObject*)(pRoot));
     NiAVObject* pObject;
-    while ((pObject = it.FUN_14098e0d0(true)) != 0) {
+    while ((pObject = it.Next(true)) != 0) {
         NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);
         if (pRenderObject != 0) {
             if (pcName != 0 && !pRenderObject->GetName().Equals(pcName)) {
@@ -801,7 +805,7 @@ void FUN_1409a51d0(void* pOwner, float fValueA, float fValueB, const char* pcNam
     }
     Unk_AeSceneIter it((NiAVObject*)(spRoot));
     NiAVObject* pObject;
-    while ((pObject = it.FUN_14098e0d0(true)) != 0) {
+    while ((pObject = it.Next(true)) != 0) {
         NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);
         if (pRenderObject != 0) {
             if (pcName != 0 && !pRenderObject->GetName().Equals(pcName)) {

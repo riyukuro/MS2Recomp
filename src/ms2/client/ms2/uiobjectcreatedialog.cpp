@@ -208,9 +208,9 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp("OnMove", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
     {
         Vector3 kPoint;
-        kPoint.x = data.FUN_1422b8c10();
-        kPoint.y = data.FUN_1422b8c10();
-        kPoint.z = data.FUN_1422b8c10();
+        kPoint.x = data.PopFloat();
+        kPoint.y = data.PopFloat();
+        kPoint.z = data.PopFloat();
         COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
         packet.Encode1(2);
         packet.WriteVector3Short(kPoint);

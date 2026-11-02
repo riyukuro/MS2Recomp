@@ -125,14 +125,16 @@ class Unk_MiScript : public AScript
 {
 };
 
-void* FUN_140a50b50(void* pDragSource);
+namespace NotifyContext { class BindData; }
+class MS2DragSlot;
+MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
 CString FUN_140be2000(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW BlockFormat(int nId);                                  // string table text by id
 CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);       // formatted text
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 void FUN_140d73aa0(CStringW strText, int nType, void* pData, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
@@ -176,7 +178,8 @@ public:
 };
 class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
    // string of (id, symbol)
-class Unk_MiScore { public: int FUN_140267c10(); };              // the trophy points
+class Unk_IntTriple { public: int Sum(); };
+class Unk_MiScore : public Unk_IntTriple {};                     // the trophy points
 class Unk_MiTrophy { public: Unk_MiScore* FUN_140938ad0(); };
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 unsigned __int64 FUN_140837770(int nId, unsigned nCount);
@@ -222,7 +225,6 @@ int UIMyInfoDialog::vfunc_oa0_1()
 }
 
 // @0x141a58310
-// MS2-FUNCTIONAL: delegate temporaries
 int UIMyInfoDialog::vfunc_65()
 {
     if (UIPCInfoDialog::vfunc_65() == 0)
@@ -236,8 +238,11 @@ int UIMyInfoDialog::vfunc_65()
     m_spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        pAvatar->FUN_1418bd1d0()->FUN_1410885b0(true);
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c1a0));
+    {
+        AvatarPC* pObj = pAvatar->FUN_1418bd1d0();
+        pObj->FUN_1410885b0(true);
+    }
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::OnActiveMyCodiTabNotify));
     return 1;
 }
 
@@ -394,7 +399,7 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nTitle = kData.FUN_1422b8b10();
-            FUN_141a5a8d0(nTitle);
+            OnTitleChange(nTitle);
         }
     }
     else if (_stricmp("onSymbolClick", szMethod) == 0)
@@ -409,7 +414,7 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             int b = kData.FUN_1422b8a10();
             int c = kData.FUN_1422b8a10();
             int d = kData.FUN_1422b8a10();
-            FUN_141a5aab0(a, b, c, d);
+            OnScreenshot(a, b, c, d);
         }
     }
     else if (_stricmp(szMethod, "onWedding") == 0)
@@ -611,7 +616,7 @@ void UIMyInfoDialog::vfunc_33(int nClass, int n)
 // @0x141a5a320
 void UIMyInfoDialog::vfunc_dl_3(void* p)
 {
-    void* pSlot = FUN_140a50b50(p);
+    void* pSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(p));
     if (pSlot != 0)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(static_cast<InvenSlot*>(pSlot)->GetItemUid());
@@ -624,7 +629,7 @@ void UIMyInfoDialog::vfunc_dl_3(void* p)
                 if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetType() == 7)
                     strKind = "gem";
                 else
-                    strKind = Name_14021c050(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400());
+                    strKind = Name_14021c050(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b400());
                 pDialog->Invoke("onDragStart", CString(strKind));
             }
         }
@@ -649,7 +654,7 @@ void UIMyInfoDialog::FUN_141a5a560()
 }
 
 // @0x141a5a5c0
-void UIMyInfoDialog::FUN_141a5a5c0()
+void UIMyInfoDialog::MarkDirty()
 {
     if (vfunc_55() != 0)
         return;
@@ -700,7 +705,7 @@ void UIMyInfoDialog::OnChangeTodayMemo()
 }
 
 // @0x141a5a8d0
-void UIMyInfoDialog::FUN_141a5a8d0(int nTitle)
+void UIMyInfoDialog::OnTitleChange(int nTitle)
 {
     if ((m_spInfo == 0))
         return;
@@ -736,7 +741,7 @@ void UIMyInfoDialog::FUN_141a5a9f0(int nConfig)
 }
 
 // @0x141a5aab0
-void UIMyInfoDialog::FUN_141a5aab0(int a, int b, int c, int d)
+void UIMyInfoDialog::OnScreenshot(int a, int b, int c, int d)
 {
     m_290.SetImage(a, b, c, d);
     m_290.BeginImage();
@@ -789,7 +794,7 @@ void UIMyInfoDialog::vfunc_104(int nTrophy)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    m_30->Invoke("setTrophy", ((class Unk_MiTrophy*)FUN_1406c7600())->FUN_140938ad0()->FUN_140267c10());
+    m_30->Invoke("setTrophy", ((class Unk_MiTrophy*)FUN_1406c7600())->FUN_140938ad0()->Sum());
 }
 
 // @0x141a5af10
@@ -1025,7 +1030,7 @@ void UIMyInfoDialog::FUN_141a5c080()
 }
 
 // @0x141a5c1a0
-void UIMyInfoDialog::FUN_141a5c1a0(NotifyObject* pNotify)
+void UIMyInfoDialog::OnActiveMyCodiTabNotify(NotifyObject* pNotify)
 {
     if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
@@ -1195,26 +1200,26 @@ void UIMyInfoDialog::vfunc_87()
 }
 
 // @0x141a5d0c0
-// MS2-FUNCTIONAL: vector temporaries
 void UIMyInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
-    if (vfunc_55() != 0 || m_30 == 0 || (m_spAvatar == 0))
+    if (vfunc_55() != 0 || m_30 == 0)
         return;
-    if (p2.get() != 0 && p3 != 0)
-    {
-        GameObject* pObj = m_spAvatar->vfunc_24();
-        if (pObj == 0)
-            return;
-        m_spAvatar->vfunc_28(p1, p2, p3, p4);
-        Unk_ModelViewCamera kCamera;
-        kCamera.FUN_141b48530();
-        kCamera.m_fMinDistance = 300.0f;
-        kCamera.m_fMaxDistance = 150.0f;
-        kCamera.m_kTarget += pObj->vfunc_18() + NiPoint3(0.0f, 0.0f, -5.0f);
-        kCamera.m_kPosition += kCamera.m_kTarget + NiPoint3(-30.0f, 0.0f, 0.0f);
-        kCamera.m_nSteps = 5;
-        m_spAvatar->GetView()->vfunc_13(kCamera);
-    }
+    if (m_spAvatar == 0)
+        return;
+    if (p2.get() == 0 || p3 == 0)
+        return;
+    GameObject* pObj = m_spAvatar->vfunc_24();
+    if (pObj == 0)
+        return;
+    m_spAvatar->vfunc_28(p1, p2, p3, p4);
+    Unk_ModelViewCamera kCamera;
+    kCamera.ApplyCharCamera();
+    kCamera.m_fMinDistance = 300.0f;
+    kCamera.m_fMaxDistance = 150.0f;
+    kCamera.m_kTarget += pObj->vfunc_18() + NiPoint3(0.0f, 0.0f, -5.0f);
+    kCamera.m_kPosition += kCamera.m_kTarget + NiPoint3(-30.0f, 0.0f, 0.0f);
+    kCamera.m_nSteps = 5;
+    m_spAvatar->GetView()->vfunc_13(kCamera);
 }
 
 // @0x141a5d3e0

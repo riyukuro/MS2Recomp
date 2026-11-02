@@ -245,7 +245,7 @@ CStringW CMentoringManager::FUN_140b71780()
         int nCount = pDialog->FUN_1418f1c20();
         for (int i = 0; i < nCount; i = i + 1)
         {
-            UICharacterListDialog::CharPtr spCharacter = pDialog->FUN_1418f0730(i);
+            UICharacterListDialog::CharPtr spCharacter = pDialog->GetCharacterAt(i);
             if (spCharacter.get() ? true : false)
             {
                 if (spCharacter->FUN_1418e9cb0() == m_n28)
@@ -265,7 +265,7 @@ CStringW CMentoringManager::FUN_140b718b0()
         int nCount = pDialog->FUN_1418f1c20();
         for (int i = 0; i < nCount; i = i + 1)
         {
-            UICharacterListDialog::CharPtr spCharacter = pDialog->FUN_1418f0730(i);
+            UICharacterListDialog::CharPtr spCharacter = pDialog->GetCharacterAt(i);
             if (spCharacter.get() ? true : false)
             {
                 if (spCharacter->FUN_1418e9cb0() == m_n30)

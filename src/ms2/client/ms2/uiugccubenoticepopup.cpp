@@ -172,7 +172,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
             {
                 vfunc_8(1);
                 ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-                spEntity->FUN_1422c00f0(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->GetHeightCeil()) - 15.0f);
+                spEntity->SetPositionFloat(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->GetHeightCeil()) - 15.0f);
             }
         }
         else

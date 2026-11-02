@@ -51,7 +51,7 @@ public:
     int GetSuppressed() const;
     void ApplyModeToPlayer(PCBase* pPC);
     void AddSuppressor(const egf::EntityID& kId);
-    void RemoveSuppressor(const egf::EntityID& kId);
+    void RemoveSuppressor(egf::EntityID kId);
     int IsUpdateEnabled() const;
     void FUN_14161d130(bool bForce);
     void ApplyModeToAllPlayers(int nFlags);

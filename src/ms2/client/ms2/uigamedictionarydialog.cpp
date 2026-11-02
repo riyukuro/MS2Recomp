@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "uigamedictionarydialog.h"
+#include "uidailymissiondialog.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
@@ -31,6 +32,7 @@
 #include "ms2/commonfiles/npcdata.h"
 #include "ms2/commonfiles/fieldmetatable.h"
 #include "ms2/placeholder/gamedictionarymanager.h"
+#include "ms2/placeholder/unk_blocklist.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -87,35 +89,12 @@ public:
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
-// The request (search box) objects.
-class Unk_DictRequest
-{
-public:
-    Unk_DictRequest(int nId);                               // 0x1401baa00
-    Unk_DictRequest(const void* pSource);                   // 0x1401baaa0
-    ~Unk_DictRequest();                                     // 0x1401baaf0
-    void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    unsigned char FUN_1401bab90(CString strName, void* pOut);
-private:
-    void* m_pad[5];                                         // ctor 0x1401baa00 writes +0x18 / +0x1c / +0x20
-};
-struct Unk_DictRequestValue
-{
-    Unk_DictRequestValue();                                 // 0x1401ba840
-    ~Unk_DictRequestValue();                                // 0x1401ba940
-    void* m_pad_00;                                         // ctor 0x1401ba840: strings at +0 / +8 / +0x10
-    CStringW m_text;                                        // +0x08
-    void* m_pad_10;
-    int m_code;                                             // +0x18
-    int m_pad_1c;
-};
 
 // Input state, the movie manager, the player and the text hooks.
 class Unk_DictInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
-WorldService* FUN_1403ed2d0();
-CReservedWordTable* FUN_1403b4750();
+class CReservedWordTable;
 CStringW GetStringCommon(int nStringId);                      // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);             // common string by key
 CStringW BlockFormat(int nStringId);
@@ -219,12 +198,12 @@ void UIGameDictionaryDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_140f452e0();
     if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0ab0(m_180);
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetTextW(m_180);
     if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
         reinterpret_cast<MS2Ptr<ASButtonBar>&>(spTab)->SetSelectedIndex(m_178);
     if (m_17c != 0)
     {
-        if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
+        if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items"))
         {
             if (spItems->GetDataProvider()->GetLength() > 0)
             {
@@ -284,7 +263,7 @@ int UIGameDictionaryDialog::vfunc_13()
             return 0;
         if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
         {
-            if (((class ASUIComponent*)(class Unk_DictInput*)(spInput.operator->()))->FUN_1422c76c0() != 0)
+            if (((class ASUIComponent*)(class Unk_DictInput*)(spInput.operator->()))->GetFocused() != 0)
                 FUN_140f46c90(reinterpret_cast<ASTextInput*>(spInput.operator->())->GetText());
         }
         return 1;
@@ -301,13 +280,13 @@ void UIGameDictionaryDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
 // @0x140f45180
 void UIGameDictionaryDialog::vfunc_80(void* pRequest)
 {
-    Unk_DictRequest request(pRequest);
-    Unk_DictRequestValue value;
-    if (request.FUN_1401bab90("m_inputSearch", &value) == 1)
+    Unk_BlockList request(*reinterpret_cast<CInPacket*>(pRequest));
+    Unk_BlockEntry value;
+    if (request.Find("m_inputSearch", value) == 1)
     {
-        if (value.m_code == 0)
+        if (value.m_nFlags == 0)
         {
-            m_180 = value.m_text;
+            m_180 = value.m_strName;
             FUN_140f45870();
         }
         else
@@ -376,7 +355,7 @@ void UIGameDictionaryDialog::FUN_140f452e0()
 // @0x140f45870
 void UIGameDictionaryDialog::FUN_140f45870()
 {
-    MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items");
     if (spItems.IsNull())
         return;
     spItems->FUN_1422dd1d0();
@@ -435,8 +414,8 @@ void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
         FUN_140f45870();
         return;
     }
-    Unk_DictRequest request(0x4f0b);
-    request.FUN_1401bac80("m_inputSearch", CStringW(strSearch), 0);
+    Unk_BlockList request(0x4f0b);
+    request.Add("m_inputSearch", CStringW(strSearch), false);
     int nResult = ((class Unk_DictPlatform*)FUN_140d86260())->vfunc_37(&request);
     if (nResult == 1)
     {
@@ -455,7 +434,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
     m_17c = bSelectFirst;
     m_180 = strSearch;
     if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
-        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->FUN_1422e0ab0(m_180);
+        reinterpret_cast<MS2Ptr<ASTextInput>&>(spInput)->SetTextW(m_180);
     if (vfunc_55() == 0)
     {
         if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
@@ -467,7 +446,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         }
         if (m_17c != 0)
         {
-            if (MS2Ptr<ASScrollingList> spItems = FUN_140c02900("m_items"))
+            if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items"))
             {
                 if (spItems->GetDataProvider()->GetLength() > 0)
                 {
@@ -482,7 +461,6 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
 }
 
 // @0x140f45c20
-// MS2-FUNCTIONAL: large detail-page function: frame layout and temporary order differ
 void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName, int nGrade)
 {
     for (std::list<Entry>::iterator it = m_188.begin(); it != m_188.end(); ++it)
@@ -502,7 +480,8 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                 {
                 case 1:
                 {
-                    CNpcData* pNpc = FUN_1406cd330(entry.m_id).get();
+                    CNpcData* pNpc;
+                    CNpcData* pDead = pNpc = FUN_1406cd330(entry.m_id).get();
                     if (pNpc != 0)
                     {
                         unsigned nField = 0;
@@ -515,7 +494,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         else
                             strMaps = StringFormat<unsigned int>(L"$map:{0}$", nField);
                         CStringW strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
-                        FUN_1403b4750()->FUN_1416fbf20(strContent);
+                        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.FUN_1407cbb20("content", CStringW(strContent));
                         detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
@@ -524,12 +503,11 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                     break;
                 case 2:
                 {
-                    CNpcData* pNpc = FUN_1406cd330(entry.m_id).get();
+                    CNpcData* pNpc;
+                    CNpcData* pDead = pNpc = FUN_1406cd330(entry.m_id).get();
                     if (pNpc != 0)
                     {
-                        int aGradeNames[8] = { 0x573, 0xaf, 0xb0, 0xb1, 0xb3, 0xb5, 0xb4, 0xb2 };
-                        char aUnused[4];
-                        memset(aUnused, 0, sizeof(aUnused));
+                        int aGradeNames[9] = { 0x573, 0xaf, 0xb0, 0xb1, 0xb3, 0xb5, 0xb4, 0xb2 };
                         unsigned short nLevel = pNpc->GetLevel();
                         CStringW strMini;
                         if (entry.m_invisibleLevel != 0)
@@ -548,13 +526,12 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             for (POSITION pos = fields.GetHeadPosition(); pos != 0; fields.GetNext(pos))
                             {
                                 unsigned nFieldId = fields.GetAt(pos);
-                                if (nFieldId != (unsigned)entry.m_id)
-                                {
-                                    if (strMaps.IsEmpty())
-                                        strMaps = StringFormat<unsigned int>(L"$map:{0}$", nFieldId);
-                                    else
-                                        strMaps = FUN_1401d0080(strMaps, StringFormat<unsigned int>(L", $map:{0}$", nFieldId));
-                                }
+                                if (nFieldId == (unsigned)entry.m_id)
+                                    continue;
+                                if (strMaps.IsEmpty())
+                                    strMaps = StringFormat<unsigned int>(L"$map:{0}$", nFieldId);
+                                else
+                                    strMaps = FUN_1401d0080(strMaps, StringFormat<unsigned int>(L", $map:{0}$", nFieldId));
                             }
                         }
                         if (pNpc->m_nClass == 4)
@@ -562,9 +539,8 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             CMsTime time;
                             if (CFieldMetaTable::GetInstance()->FUN_1406fc620(entry.m_id, time) != 0)
                             {
-                                int nMinute = time.GetMinute();
-                                CStringW strClock = FUN_140f48210(time.GetHour(), nMinute);
-                                CStringW strGuarantee = GetStringCommonByKey(CStringW(L"s_spawnnpc_guarantee"));
+                                CStringW strClock = FUN_140f48210(time.GetHour(), time.GetMinute());
+                                CStringW strGuarantee = GetStringCommonByKey(L"s_spawnnpc_guarantee");
                                 strMaps += L" ";
                                 strMaps += StringFormat<CStringW>(strGuarantee, strClock);
                             }
@@ -574,7 +550,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, GetStringCommon(0x573));
                         else
                             strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, strMaps);
-                        FUN_1403b4750()->FUN_1416fbf20(strContent);
+                        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fbf20(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
                         detail.FUN_1407cbb20("content", CStringW(strContent));
                         detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
@@ -584,12 +560,11 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                 case 3:
                 {
                     MS2Ptr<CItem> spItem(new CItem);
-                    bool bValid = spItem.get() != 0;
-                    if (bValid)
+                    if (spItem.get() ? true : false)
                     {
                         if (spItem->FUN_14052b130(entry.m_id, entry.m_levelOrGrade, 0) != 0)
                         {
-                            void* pOwner = FUN_1403ed2d0()->FUN_141bd0cc0();
+                            void* pOwner = WorldService::GetInstance()->FUN_141bd0cc0();
                             if (pOwner != 0)
                             {
                                 ASTooltip tip(pOwner, 0x800, 2);

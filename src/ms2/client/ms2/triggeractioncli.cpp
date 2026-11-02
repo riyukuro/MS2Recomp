@@ -88,7 +88,9 @@
 #include "ms2/placeholder/cmainsystem.h"  // C3: was a local member view
 #include "ms2/client/ms2/triggerservice.h"  // C3: was a local member view
 #include "ms2/placeholder/uitalkmanager.h"  // C3: was a local member view
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/propertycache.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 class UIMinimapDialog;
 class Unk_CachedEntity;
@@ -126,8 +128,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 void XmlSetAttr(class TiXmlElement*, const char*, const CStringW&);   // SetAttribute(string)
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 
-CStringA FUN_14052ea30(const char* pszFmt, const unsigned& nArg);  // StringFormat<unsigned>("arg{0}", n)
-CStringA FUN_1401d9af0(const char* pszFmt, const __int64* pnArg);
 CStringW FUN_1401d0160(const wchar_t* pszLeft, const CStringW& strRight);   // operator+
 bool FUN_14034eee0(const CStringW& a, const wchar_t* pszB) throw(); // case-insensitive equal
 
@@ -222,7 +222,7 @@ void TriggerActionCli::vfunc_2(void* pNode)
     for (unsigned i = 0; i < nArgs; i++)
     {
         CStringW str;
-        if (XmlGetAttr((class TiXmlElement*)(pNode), FUN_14052ea30("arg{0}", i + 1), str) == 0)
+        if (XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<unsigned>("arg{0}", i + 1), str) == 0)
             m_args.SetAtGrow(i, str);
     }
 }
@@ -341,7 +341,7 @@ void TriggerConditionCli::vfunc_2(void* pNode)
     for (unsigned i = 0; i < nArgs; i++)
     {
         CStringW str;
-        if (XmlGetAttr((class TiXmlElement*)(pNode), FUN_14052ea30("arg{0}", i + 1), str) == 0)
+        if (XmlGetAttr((class TiXmlElement*)(pNode), StringFormat<unsigned>("arg{0}", i + 1), str) == 0)
             m_args.SetAtGrow(i, str);
     }
 }
@@ -519,7 +519,7 @@ UIMinimapDialog * FUN_140c9b540(int);  // C3: the definition's signature
 class UIMinimapDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141a39d40(int, int);
+    void SetTriggerVisible(int, int);
 };
 
 // debug trigger display (FUN_140c9b540(0x4e29))
@@ -703,7 +703,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         }
         void* pUi = FUN_140c9b540(0x4e29);
         if (pUi != 0)
-            ((class UIMinimapDialog*)(void*)(pUi))->FUN_141a39d40(m_nId, bShow);
+            ((class UIMinimapDialog*)(void*)(pUi))->SetTriggerVisible(m_nId, bShow);
     }
 }
 
@@ -726,7 +726,7 @@ void TriggerObjectActor::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     }
     void* pUi = FUN_140c9b540(0x4e29);
     if (pUi != 0)
-        ((class UIMinimapDialog*)(void*)(pUi))->FUN_141a39d40(m_nId, bOn);
+        ((class UIMinimapDialog*)(void*)(pUi))->SetTriggerVisible(m_nId, bOn);
 }
 
 // ---- TriggerObjectRope ----
@@ -853,7 +853,7 @@ void TriggerObjectCamera::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     if (bOn == 0 && bSkipFx)
         return;
     ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->FUN_1418631c0();
-    ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->FUN_1418631f0(m_nId, bOn);
+    ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->QueueCameraStep(m_nId, bOn);
 }
 
 // @0x140de7e00
@@ -1015,24 +1015,16 @@ void* FUN_140947490(void* pOut, unsigned nId, void* pValue, int nType);
 int FUN_140998240();
 
 // @0x140de8a40
-// MS2-FUNCTIONAL: mirrors a changed AssetID property into the entity's property cache; map/iterator types are opaque
+// Unk_CachedEntity::CachePropertyValue<efd::AssetID> as a free function: saves the old AssetID once per caching session.
 void FUN_140de8a40(egf::Entity* pEntity, unsigned nId, void* pValue)
 {
-    char* pRaw = (char*)pEntity;
-    if (*(unsigned char*)(pRaw + 0xc8) != 0)
+    if (((Unk_CachedEntity*)pEntity)->m_bCaching)
     {
-        char aIt0[8];
-        char aIt1[8];
-        void* pEnd = FUN_1409481f0(pRaw + 0xd0, aIt0);
-        void* pFind = FUN_140948250(pRaw + 0xd0, aIt1, &nId);
-        if (FUN_140947540(pFind, pEnd))
+        if (((Unk_CachedEntity*)pEntity)->m_mapCache.find(nId) == ((Unk_CachedEntity*)pEntity)->m_mapCache.end())
         {
             efd::AssetID kCur;
             static_cast<Unk_EntityAccess*>(pEntity)->GetPropertyValueUnsafe(nId, &kCur, FUN_140998240());
-            efd::AssetID* pCopy = FUN_140de8c90((efd::AssetID*)operator new(0x30), &kCur);
-            char aEntry[0x18];
-            FUN_140947490(aEntry, nId, pCopy, FUN_140998240());
-            memcpy(FUN_140947580(pRaw + 0xd0, &nId), aEntry, 0x18);
+            ((Unk_CachedEntity*)pEntity)->m_mapCache[nId] = Unk_PropertyCacheEntry(nId, ::new efd::AssetID(kCur), FUN_140998240());
         }
     }
 }
@@ -1317,7 +1309,7 @@ void TriggerStateCli::SaveArgs(void* pElem, const ATL::CAtlArray<CStringW>& rArg
     for (size_t i = 0; i < rArgs.GetCount(); i++)
     {
         __int64 n = i + 1;
-        CStringA strKey = FUN_1401d9af0("arg{0}", &n);
+        CStringA strKey = StringFormat<unsigned __int64>("arg{0}", reinterpret_cast<const unsigned __int64&>(n));
         XmlSetAttr((class TiXmlElement*)(pElem), strKey, rArgs.GetAt(i));
     }
 }

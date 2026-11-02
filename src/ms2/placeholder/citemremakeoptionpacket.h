@@ -29,7 +29,7 @@ MS2_CHECK_SIZE(Unk_LockOpt, 8);
 // The option list of a remake record: a vector of (kind, value) pairs, 0x18 bytes (unit_140267390.cpp defines the same
 // struct; ctor 0x14027d690, dtor 0x14027e3f0).
 struct Unk_RemakeOptionList50 {
-    Unk_RemakeOptionList50();                                       // 0x14027d690
+    Unk_RemakeOptionList50() throw();                               // 0x14027d690
     ~Unk_RemakeOptionList50();                                      // 0x14027e3f0
     Unk_RemakeOptionList50& operator=(const Unk_RemakeOptionList50& o); // 0x14027eb30
     void FUN_140b9b410(const Unk_LockOpt& opt);                     // append

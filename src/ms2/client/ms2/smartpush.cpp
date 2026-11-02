@@ -211,16 +211,15 @@ extern Unk_SpCountMap DAT_143ab3150;
 unsigned char FUN_140450290(Unk_SpCountMap* pMap, int nId, int* pnCount);  // Lookup
 
 // The bag.
-class Unk_SpInventory
+class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
+class Unk_SpInventory : public Unk_Inventory
 {
 public:
     MS2Ptr<CItem> FUN_140a5e2e0(int nItemId);                          // the item in the bag
     unsigned FUN_140a5f180(int nItemId, int nRarity);                  // owned count of the item
-    unsigned FUN_140a5f780(int nTag, int nRarity);                     // owned count of the item group
     void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& out);
     unsigned FUN_140a635f0(CItem* pItem);                              // use the item
 };
-class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_SpInventory
 extern __int64 DAT_143ab2898;                                           // the money
 
@@ -251,7 +250,7 @@ void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n)
 void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str)
 {
     ASData data;
-    data.FUN_1422b8310(str);
+    data.AddWString(str);
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
 void Unk_SetBoxInt64(CMsgBoxData* pBox, const char* szName, __int64 n)

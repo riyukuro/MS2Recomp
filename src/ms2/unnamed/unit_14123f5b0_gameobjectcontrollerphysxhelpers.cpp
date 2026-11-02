@@ -351,7 +351,6 @@ int GameObjectController::FUN_1412407a0()
 MS2_REPLACE_METHOD(0x1412407A0, GameObjectController, FUN_1412407a0, 60, 0x6E54CF7F);
 
 // @0x1412407f0
-// MS2-FUNCTIONAL: frame 0xa8 vs 0xb8, lift-path temporaries ordered differently
 efd::Point3 GameObjectController::FUN_1412407f0(float fDelta, int bMove)
 {
     if (m_bJumping != 0)
@@ -363,11 +362,12 @@ efd::Point3 GameObjectController::FUN_1412407f0(float fDelta, int bMove)
         kStep.z = m_fJumpHeight - fPrevHeight;
         return kStep;
     }
-    if (m_bLift != 0)
+    else if (m_bLift != 0)
     {
         m_fLiftTime += fDelta;
+        float fLiftHeight = m_fLiftBase;
         float fRatio = 1.0f - (m_fLiftDuration - m_fLiftTime) / m_fLiftDuration;
-        float fLiftHeight = m_fLiftBase - 4.0f * m_fLiftPeak * fRatio * (fRatio - 1.0f);
+        fLiftHeight -= 4.0f * m_fLiftPeak * fRatio * (fRatio - 1.0f);
         if (m_bLiftFalling == 0 && fLiftHeight < m_fLiftHeight)
         {
             m_bLiftFalling = 1;
@@ -379,13 +379,13 @@ efd::Point3 GameObjectController::FUN_1412407f0(float fDelta, int bMove)
         kStep.z = FUN_14028d3a0(fLiftHeight - m_fLiftHeight);
         m_fLiftHeight = fLiftHeight;
         return kStep;
-    }
-    efd::Point3 kStep = efd::Point3::ZERO;
-    if (bMove != 0)
-        kStep = m_kVelocity * fDelta;
-    kStep.z = FUN_141240c40(false) * ((float)FUN_141240ef0() / 1000.0f) * fDelta
-        + 0.5f * FUN_141240c40(false) * fDelta * fDelta;
-    return kStep;
+    } else {
+        efd::Point3 kStep = efd::Point3::ZERO;
+        if (bMove != 0) kStep = m_kVelocity * fDelta;
+        float fFallSpeed = FUN_141240c40(false) * ((float)FUN_141240ef0() / 1000.0f);
+        float fFall = fFallSpeed * fDelta;
+        kStep.z = fFall + 0.5f * FUN_141240c40(false) * fDelta * fDelta;
+        return kStep; }
 }
 MS2_REPLACE_METHOD(0x1412407F0, GameObjectController, FUN_1412407f0, 1081, 0x6B9BE4CF);
 
@@ -535,7 +535,7 @@ float GameObjectController::FUN_141241090()
 MS2_REPLACE_METHOD(0x141241090, GameObjectController, FUN_141241090, 35, 0xD028E8E5);
 
 // @0x1412410c0
-bool GameObjectController::FUN_1412410c0(efd::Point3 kPos, float fOffset)
+bool GameObjectController::FUN_1412410c0(const efd::Point3& kPos, float fOffset)
 {
     ((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a540(0);
     NxVec3 kNxPos;

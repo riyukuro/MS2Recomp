@@ -98,6 +98,7 @@
 #include <NiRenderTargetGroup.h>
 #include <NiShaderFactory.h>
 #include <NiShaderLibrary.h>
+#include <NiD3DXEffectShaderLibrary.h>
 #include <NiDepthStencilBuffer.h>
 #include <NiMaterialLibrary.h>
 #include <NiViewRenderClick.h>
@@ -154,7 +155,7 @@
 #include "ms2/placeholder/cgameoption.h"
 
 extern NiFixedString DAT_143ae53e0;                         // "gakNormalSampleOffsets" (global shader constant name)
-void FUN_1411781e0(const NiFixedString& kName, const NiPoint2* pkValues, int nCount);   // set a global shader constant array
+void FUN_1411781e0(void* pkName, void* pkValues, int nCount);   // set a global shader constant array (C3: the definition's signature; NiFixedString&, NiPoint2*)
 extern NiFixedString DAT_143ae53e8;                         // "gakSampleOffsets"
 extern NiFixedString DAT_143ae53f0;                         // "gakSampleWeights"
 
@@ -210,7 +211,7 @@ const NiRTTI AntiAliasRenderStep::ms_RTTI("AntiAliasRenderStep", &NiRenderStep::
 AntiAliasRenderStep::AntiAliasRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("AntiAliasRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x14169d9a0
@@ -249,7 +250,7 @@ bool AntiAliasRenderStep::FUN_14169dbb0(NiRenderClick* pkClick, void* pvData)
     akOffsets[5] = NiPoint2(fX, 0.0f);
     akOffsets[6] = NiPoint2(0.0f, -fY);
     akOffsets[7] = NiPoint2(0.0f, fY);
-    FUN_1411781e0(DAT_143ae53e0, akOffsets, 8);
+    FUN_1411781e0(&DAT_143ae53e0, akOffsets, 8);
     return true;
 }
 
@@ -271,7 +272,7 @@ const NiRTTI BloomRenderStep::ms_RTTI("BloomRenderStep", &PostProcessEffect::ms_
 BloomRenderStep::BloomRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b), m_a8(0), m_b0(0)
 {
     NiFixedString name("BloomRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x14169df70
@@ -415,7 +416,7 @@ bool FUN_14169ec70(NiRenderClick* pkClick, void* pvData)
 // @0x14169ede0
 void FUN_14169ede0(const NiPoint2* akOffsets, const Unk_ShaderColor* akWeights)
 {
-    FUN_1411781e0(DAT_143ae53e8, akOffsets, 16);
+    FUN_1411781e0(&DAT_143ae53e8, (void*)akOffsets, 16);
     if (akWeights != 0)
         FUN_14135db70(DAT_143ae53f0, akWeights, 16);
 }
@@ -485,7 +486,7 @@ ColorPerspectiveRenderStep::ColorPerspectiveRenderStep(unsigned __int64 a, unsig
     : ReloadablePostProcess(a, "ColorPerspective", 1, b), m_b8(0)
 {
     NiFixedString name("ColorPerspectiveRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x14169f460
@@ -531,7 +532,7 @@ DepthOfFieldRenderStep::DepthOfFieldRenderStep(unsigned __int64 a, unsigned int 
     : PostProcessEffect(a, b), m_a0(0), m_a8(0), m_b0(0), m_b8(0)
 {
     NiFixedString name("DepthOfFieldRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x14169fe10
@@ -663,14 +664,14 @@ int FadeInOutRenderStep::ms_iFadeInTime = DAT_1439f8240;
 FadeInOutRenderStep::FadeInOutRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("FadeInOutRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a0ab0
 FadeInOutRenderStep::~FadeInOutRenderStep()
 {
     NiFixedString name("FadeInOutRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a0b20
@@ -760,7 +761,7 @@ unsigned int FadeInRenderStep::ms_uiStartTime;
 FadeInRenderStep::FadeInRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("FadeInRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a1090
@@ -820,7 +821,7 @@ const NiRTTI GaussianBlurRenderStep::ms_RTTI("GaussianBlurRenderStep", &NiDefaul
 GaussianBlurRenderStep::GaussianBlurRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b), m_a0(0)
 {
     NiFixedString name("GaussianBlurRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a1450
@@ -898,7 +899,7 @@ const NiRTTI HeatShimmerRenderStep::ms_RTTI("HeatShimmerRenderStep", &NiDefaultC
 HeatShimmerRenderStep::HeatShimmerRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("HeatShimmerRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a1a10
@@ -940,7 +941,7 @@ const NiRTTI MonochromeRenderStep::ms_RTTI("MonochromeRenderStep", &NiDefaultCli
 MonochromeRenderStep::MonochromeRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("MonochromeRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a1cd0
@@ -983,7 +984,7 @@ const NiRTTI OuterBlurRenderStep::ms_RTTI("OuterBlurRenderStep", &NiDefaultClick
 OuterBlurRenderStep::OuterBlurRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("OuterBlurRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a24c0
@@ -1010,7 +1011,7 @@ const NiRTTI OverdrawRenderStep::ms_RTTI("OverdrawRenderStep", &ReloadablePostPr
 OverdrawRenderStep::OverdrawRenderStep(unsigned __int64 a, unsigned int b) : ReloadablePostProcess(a, "OverdrawColorize", 0, b)
 {
     NiFixedString name("OverdrawRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a2640
@@ -1041,8 +1042,6 @@ MS2_REPLACE_METHOD(0x1416a2690, OverdrawRenderStep, vfunc_23, 351, 0xA9CC357A);
 const NiRTTI* OverdrawRenderStep::GetRTTI() const { return &ms_RTTI; }
 
 // ---- PostProcessEffect / ReloadablePostProcess
-
-void FUN_1427b7820(NiShaderLibrary* pkLibrary, void** ppvOut, const char* pcName);   // NiD3DXEffect library: load the named effect
 
 // @0x1400fc500
 const NiRTTI PostProcessEffect::ms_RTTI("PostProcessEffect", &NiDefaultClickRenderStep::ms_RTTI);
@@ -1118,7 +1117,7 @@ void ReloadablePostProcess::vfunc_21()
     while (strcmp(pkLibrary->GetName(), "NiD3DXEffectShaderLib") != 0)
         pkLibrary = pkFactory->GetNextLibrary();
     NiShaderLibrary* pkEffectLibrary = pkLibrary;
-    FUN_1427b7820(pkEffectLibrary, &m_b0, m_a0);
+    static_cast<NiD3DXEffectShaderLibrary*>(pkEffectLibrary)->MS2UnloadD3DXEffect((const char**)&m_b0, m_a0);
     if (m_b0 != 0)
         pkEffectLibrary->LoadShader(static_cast<const char*>(m_b0));   // exe: slot 9 [rax+0x48], not SetShaderLibraryDesc
     if (!vfunc_23())
@@ -1168,7 +1167,7 @@ NiTexturingProperty* MotionBlurRenderStep::ms_pkTexProp;
 MotionBlurRenderStep::MotionBlurRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("MotionBlurRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416a1fb0
@@ -1236,12 +1235,10 @@ class Unk_DevCaps   // C3: member view for the former free stand-ins
 public:
     void SetEnabled(bool);
 };
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 NiViewRenderClick* FUN_1413f99a0();                         // the main scene click
-void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);     // AddDependency<ecr::RenderService> (0x07002001)
-void FUN_1411ab740(efd::IDependencyRegistrar* pRegistrar, int nFlags);     // AddDependency<MS2 service 0x06100001>
+struct Unk_EsAppService { static const efd::ClassID CLASS_ID = 0x06100001; };   // C3: the MS2 service AddDependency<> is instantiated on (effectservice.cpp)
 
-// The graphics options block (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()); only the plane-reflection flag is known.
+// The graphics options block (reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())); only the plane-reflection flag is known.
 class Unk_PPGraphicsOptions
 {
 public:
@@ -1255,29 +1252,25 @@ public:
     bool m_bReflection;         // +0x1f
 };
 MS2_CHECK_OFFSET(Unk_PPGraphicsOptions, m_bReflection, 0x1f);
-class Unk_PPOptions
-{
-public:
-    Unk_PPGraphicsOptions* FUN_1409a8ac0();
-};
+class Unk_AeGraphicOption;
+class Unk_AeGameOption { public: Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
+class Unk_AeFeatureState { public: bool FUN_1409a8f00() const; };   // C3: unit-local view (def in applyeffect)
+class Unk_HudMotionBlur { public: void SetMode(int nMode); };   // C3: unit-local view of the folded int setter (0x14135e060)
+void FUN_141178000(void* pMgr, double dDelta);   // C3: the definition's signature (CDepthOfFieldManager::FUN_141178000)
 class Unk_PPSecondView;
 class Unk_PPPostEffectMgr : public ApplyEffect
 {
 public:
-    Unk_PPSecondView* FUN_1409a5160();
-    void FUN_1409a3b60(bool bBeforeReset);      // device reset notification
 };
 class WorldService   // C3: unit-local view of the callback set
 {
 public:
+    static WorldService* GetInstance();
     void FUN_141bbae40(void* p);
 };
-WorldService* FUN_1403ed2d0();
-// The game clock (FUN_14086d260()).
-CMainSystem* FUN_14086d260();
 // The keyboard state (FUN_14025e7c0()).
-CInputKeyHandler* FUN_14025e7c0();
-// The post-effect manager's second scene view (reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->FUN_1409a5160()).
+void* FUN_14025e7c0();
+// The post-effect manager's second scene view (reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->GetSoftParticles()).
 class Unk_PPSecondView
 {
 public:
@@ -1300,7 +1293,6 @@ public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
 extern NiFixedString DAT_143ae53f8;                                         // the view-projection constant name
-void FUN_1427e7520(Ni2DBuffer::RendererData* pkData);                       // NiDX92DBufferData: release the render-target references
 extern const efd::Matrix3 DAT_143a09600;                                    // the texture effect's rotation
 extern NiFixedString DAT_143ae52c0;                                         // post-process material names
 extern NiFixedString DAT_143ae52c8;
@@ -1637,7 +1629,7 @@ void PostProcessingService::FUN_1416a4240(const ecr::SceneGraphRemovedMessage* p
 void PostProcessingService::FUN_1416a4350(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel)
 {
     egf::Entity* pEntity = pMessage->GetEntity();
-    if (FUN_1408a9bd0(pEntity)->ContainsModel(0xddb91342))
+    if (pEntity->GetModel()->ContainsModel(0xddb91342))
     {
         bool bEnable;
         pEntity->GetPropertyValue(0x2683e9ec, bEnable);
@@ -1650,12 +1642,12 @@ void PostProcessingService::FUN_1416a4350(const egf::EntityChangeMessage* pMessa
 void PostProcessingService::FUN_1416a43e0(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel)
 {
     egf::Entity* pEntity = pMessage->GetEntity();
-    if (pEntity != 0 && reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20()
-        && FUN_1408a9bd0(pEntity)->ContainsModel(0xddb91342))
+    if (pEntity != 0 && reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b0b20()
+        && pEntity->GetModel()->ContainsModel(0xddb91342))
     {
         bool bEnable;
         pEntity->GetPropertyValue(0x2683e9ec, bEnable);
-        FUN_1416aa450(7, bEnable && reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20());
+        FUN_1416aa450(7, bEnable && reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b0b20());
     }
 }
 
@@ -1666,7 +1658,7 @@ void PostProcessingService::FUN_1416a44d0(const egf::EntityChangeMessage* pMessa
     egf::Entity* pEntity = pMessage->GetEntity();
     if (pEntity == 0)
         return;
-    if (FUN_1408a9bd0(pEntity)->ContainsModel(0xddb91342))
+    if (pEntity->GetModel()->ContainsModel(0xddb91342))
     {
         FUN_1416aa450(7, false);
         m_spReflection = 0;
@@ -1734,9 +1726,9 @@ MS2_REPLACE_METHOD(0x1416a4790, PostProcessingService, IsOverdrawActive, 100, 0x
 // @0x1416a4800
 efd::SyncResult PostProcessingService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
-    FUN_1411ab770(pRegistrar, 1);
+    pRegistrar->AddDependency<ecr::RenderService>(1);
     pRegistrar->AddDependency<egf::FlatModelManager>(1);
-    FUN_1411ab740(pRegistrar, 1);
+    pRegistrar->AddDependency<Unk_EsAppService>(1);
     pRegistrar->AddDependency<Unk_PPEffectServiceDep>(1);
     return efd::SyncResult_Success;
 }
@@ -1750,7 +1742,7 @@ efd::AsyncResult PostProcessingService::OnInit()
     pFlatModelManager->RegisterBuiltinModelFactory("PlaneReflectionSetting", 0xddb91342, CreatePlaneReflectionSetting, 0);
     efd::MessageService* pkMessageService = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
     pkMessageService->Subscribe(this, DAT_143ae4c20, 0, false);
-    FUN_1403ed2d0()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
 
     if (FUN_1416a69a0())
         FUN_1416a36f0(true);
@@ -1804,7 +1796,7 @@ efd::AsyncResult PostProcessingService::OnInit()
     if (pkRenderer != 0)
         pkRenderer->AddResetNotificationFunc(FUN_1416abce0, this);
 
-    FUN_1416aa450(6, reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b30());
+    FUN_1416aa450(6, reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b0b30());
     FUN_1416aa450(7, false);
     FUN_1416aa450(8, true);
     FUN_1416aa450(10, true);
@@ -1815,7 +1807,7 @@ efd::AsyncResult PostProcessingService::OnInit()
         m_spDoF = NiNew CDepthOfFieldManager();
         m_spDoF->FUN_141177fa0();
     }
-    reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->SetSoftParticlesEnabled(reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b1d40());
+    reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->SetSoftParticlesEnabled(reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b1d40());
     return efd::AsyncResult_Complete;
 }
 
@@ -1823,17 +1815,17 @@ efd::AsyncResult PostProcessingService::OnInit()
 efd::AsyncResult PostProcessingService::OnTick()
 {
     if (m_spSetting)
-        m_spSetting->ApplyShaderConstants(FUN_14086d260()->GetLastGameTimeDelta());
+        m_spSetting->ApplyShaderConstants(TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta());
     FUN_1416a6fc0();
     ProcessQueuedStepEvents();
     if (m_spTextureEffect)
     {
         m_spTextureEffect->SetModelProjectionMatrix(DAT_143a09600);
         m_spTextureEffect->SetModelProjectionTranslation(efd::Point3::ZERO);
-        m_spTextureEffect->Update((float)FUN_14086d260()->FUN_141473280());
+        m_spTextureEffect->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
     }
     if (m_spDoF)
-        m_spDoF->FUN_141178000(FUN_14086d260()->GetLastGameTimeDelta());
+        FUN_141178000(m_spDoF.operator->(), TSingleton<CMainSystem>::GetInstance()->GetLastGameTimeDelta());
     return efd::AsyncResult_Pending;
 }
 
@@ -2020,7 +2012,7 @@ void PostProcessingService::FUN_1416a6fc0()
         NiInputSystem* pkInputSystem = pkInput->GetInputSystem();
         if (pkInputSystem != 0)
         {
-            if (FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0) && FUN_14025e7c0()->FUN_14116d9c0(0x1f, true, 0))
+            if (static_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0) && static_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d9c0(0x1f, true, 0))
                 ToggleOverdraw();
         }
     }
@@ -2037,7 +2029,7 @@ void PostProcessingService::FUN_1416aade0(NiRenderTargetGroup* pkTarget)
     {
         Ni2DBuffer::RendererData* pkData = pkBuffer->GetRendererData();
         if (pkData != 0)
-            FUN_1427e7520(pkData);
+            reinterpret_cast<NiDX9Direct3DBufferData*>(pkData)->PurgeBufferData();
     }
 }
 MS2_REPLACE_METHOD(0x1416aade0, PostProcessingService, FUN_1416aade0, 96, 0x6CEB88E6);
@@ -2066,7 +2058,7 @@ void PostProcessingService::FUN_1416ac3b0(NiRenderTargetGroup* pkTarget)
     Unk_PPPostEffectMgr* pkMgr = reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance());
     if (pkMgr == 0)
         return;
-    Unk_PPSecondView* pkView = pkMgr->FUN_1409a5160();
+    Unk_PPSecondView* pkView = reinterpret_cast<Unk_PPSecondView*>(pkMgr->GetSoftParticles());
     if (pkView == 0)
         return;
     NiViewRenderClick* pkSecondClick = pkView->GetClick();
@@ -2342,7 +2334,7 @@ void PostProcessingService::LinkEffects()
                 continue;
             if (spFirst == 0)
                 spFirst = kStep.second;
-            if (!kStep.second->FUN_1409a8f00())
+            if (!reinterpret_cast<Unk_AeFeatureState*>(kStep.second.operator->())->FUN_1409a8f00())
             {
                 if (!FUN_1416ac060(kStep.second))
                     continue;
@@ -2370,7 +2362,7 @@ void PostProcessingService::LinkEffects()
                 spFirst = kStep.second;
             if (spFirstFade == 0)
                 spFirstFade = kStep.second;
-            if (!kStep.second->FUN_1409a8f00())
+            if (!reinterpret_cast<Unk_AeFeatureState*>(kStep.second.operator->())->FUN_1409a8f00())
             {
                 if (!kStep.second->vfunc_15(m_nFormat, m_aspTextures))
                     continue;
@@ -2514,7 +2506,7 @@ void PostProcessingService::FUN_1416a7050()
 
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(8);
     m_aspTextures[1] = NiRenderedTexture::Create(uiWidth, uiHeight, pkRenderer, kPrefs, 0x100);
-    FUN_141773ed0(reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->FUN_1409a5160());
+    FUN_141773ed0(reinterpret_cast<Unk_PPSecondView*>(reinterpret_cast<Unk_PPPostEffectMgr*>(TSingleton<ApplyEffect>::GetInstance())->GetSoftParticles()));
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(2);
     m_aspTextures[2] = NiRenderedTexture::Create(uiWidth, uiHeight, pkRenderer, kPrefs, 0x100);
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(0xd);
@@ -2692,7 +2684,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a8140()
             if (!spMaterial)
                 return 0;
             MS2VelocityMaterialSwapProcessor* pkProcessor = NiNew MS2VelocityMaterialSwapProcessor(spMaterial, 0xffffffff);
-            pkProcessor->FUN_14135e060(1);
+            reinterpret_cast<Unk_HudMotionBlur*>(pkProcessor)->SetMode(1);
             pkClick->SetProcessor(pkProcessor);
             pkClick->SetPreProcessingCallbackFunc(FUN_1416ac240, this);
             pkClick->SetPostProcessingCallbackFunc(FUN_1416ac2e0, this);
@@ -2723,7 +2715,6 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a97b0()
 }
 MS2_REPLACE_METHOD(0x1416a97b0, PostProcessingService, FUN_1416a97b0, 729, 0xCC1298A7);
 
-extern NiColorA DAT_143a09680;          // efd::ColorA::BLACK (0,0,0,1)
 
 // @0x1416a9a90
 // The overdraw accumulation click: renders the main view with the overdraw processor into texture 9.
@@ -2744,7 +2735,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a9a90()
         spClick->AppendRenderView(FUN_1413f9a70());
         MS2OverdrawProcessor* pkProcessor = NiNew MS2OverdrawProcessor;
         spClick->SetProcessor(pkProcessor);
-        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, &DAT_143a09680);
+        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, (void*)&efd::ColorA::BLACK);
         spClick->SetPostProcessingCallbackFunc(FUN_1416ac1e0, 0);
         return spClick;
     }
@@ -2769,7 +2760,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a9e20()
         spClick->AppendRenderView(FUN_1413f9a70());
         efd::SmartPointer<MS2OutlinePreProcessor> spProcessor = NiNew MS2OutlinePreProcessor;
         spClick->SetProcessor(spProcessor);
-        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, &DAT_143a09680);
+        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, (void*)&efd::ColorA::BLACK);
         spClick->SetPostProcessingCallbackFunc(FUN_1416ac1e0, 0);
         return spClick;
     }
@@ -2839,7 +2830,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a92e0()
         pkProcessor->SetUseMS2List(0);
         pkProcessor->DisableOutlineColor();
         spClick->SetProcessor(pkProcessor);
-        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, &DAT_143a09680);
+        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, (void*)&efd::ColorA::BLACK);
         spClick->SetPostProcessingCallbackFunc(FUN_1416ac1e0, 0);
         return spClick;
     }
@@ -2874,7 +2865,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a8600()
         spClick->SetRenderTargetGroup(spTarget);
         spClick->SetClearAllBuffers(true);
         spClick->AppendRenderView(FUN_1413f9a70());
-        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, &DAT_143a09680);
+        spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, (void*)&efd::ColorA::BLACK);
         spClick->SetPostProcessingCallbackFunc(FUN_1416ac1e0, 0);
         NiMaterialPtr spSkinned = NiMaterialLibrary::CreateMaterial(DAT_143ae5220);
         if (!spSkinned)
@@ -2912,7 +2903,7 @@ void PostProcessingService::FUN_1416aa950()
     if (!m_spTextureEffect)
         return;
     m_spTextureEffect->DetachAllAffectedNodes();
-    if (!reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20())
+    if (!reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b0b20())
         return;
     if (m_spReflection)
         pkView->SetMirrorPoints((const NiPoint3&)m_spReflection->FUN_1416b0e20(),
@@ -2962,7 +2953,7 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
 {
     if (bBeforeReset)
     {
-        if (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20())
+        if (reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b0b20())
             FUN_1416aa450(7, false);
         NiRenderer::GetRenderer()->EndUsingRenderTargetGroup();
         ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
@@ -2995,7 +2986,7 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
             {
                 Ni2DBuffer::RendererData* pkData = pkBuffer->GetRendererData();
                 if (pkData != 0)
-                    FUN_1427e7520(pkData);
+                    reinterpret_cast<NiDX9Direct3DBufferData*>(pkData)->PurgeBufferData();
                 m_spTarget190 = 0;
             }
         }
@@ -3004,7 +2995,7 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
     {
         FUN_1416a3bb0();
         FUN_1416a7570();
-        if (reinterpret_cast<Unk_PPOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0()->FUN_1416b0b20())
+        if (reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->FUN_1409a8ac0())->FUN_1416b0b20())
             FUN_1416aa450(7, true);
         FUN_1416ab960();
         LinkEffects();
@@ -3032,7 +3023,7 @@ efd::SmartPointer<NiViewRenderClick> setupRenderClick(NiDefaultClickRenderStep* 
             if (spClick)
             {
                 spClick->SetName(pcName);
-                spClick->SetBackgroundColor((const efd::ColorA&)DAT_143a09680);
+                spClick->SetBackgroundColor(efd::ColorA::BLACK);
                 spClick->SetClearColorBuffers(false);
                 spClick->AppendRenderView(spView);
                 spClick->SetPreProcessingCallbackFunc(pfnCallback, pvCallbackData);

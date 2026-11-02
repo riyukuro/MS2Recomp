@@ -46,8 +46,8 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 int FUN_1412755a0();
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
-CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);   // string-table text with two arguments
-CStringW FUN_14052bd00(int nId, const CStringW& a);                 // string-table text with one argument
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);   // string-table text with two arguments
+template <class A> CStringW FormatStringId(int nId, const A& a);                 // string-table text with one argument
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -56,27 +56,10 @@ extern __int64 DAT_143ab28a0;                                       // current e
 extern __int64 DAT_143ab28a8;                                       // rest exp
 extern unsigned int DAT_143af62d4;                                  // base height of the bar
 
-// The mount row of the player (opaque table row): +0x6c is nonzero while riding.
-struct Unk_ExpMountRow { char m_pad_00[0x6c]; int m_6c; };
-class Unk_ExpMountPtr
-{
-public:
-    ~Unk_ExpMountPtr();                                             // 0x140788ed0
-    Unk_ExpMountRow* FUN_1407895d0() const;                         // operator->
-    void* m_pad_00;
-    Unk_ExpMountRow* m_p;
-};
-class Unk_ExpHolder { public: Unk_ExpMountPtr FUN_141707750(); };
-class Unk_ExpHolderRef                                              // 8-byte reference to the holder
-{
-public:
-    Unk_ExpHolderRef(Unk_ExpHolder* p);                             // 0x140963df0
-    ~Unk_ExpHolderRef();                                            // 0x1409648b0
-    bool operator!=(Unk_ExpHolder* p) const;                        // 0x140ba7bb0
-    Unk_ExpHolder* FUN_140975bc0() const;                           // operator->
-    Unk_ExpHolder* m_p;
-};
 class Unk_ExpActor : public PC { };
+// The riding row of the player (opaque table row): +0x6c is nonzero while riding.
+class Unk_RideeData : public CPtred { public: char m_pad[0x6c - sizeof(CPtred)]; int m_nSeats; };
+class Ridee : public PCBase { public: MS2Ptr<Unk_RideeData> GetData(); };   // C3: member view
 class Unk_ExpWorld { };
 
 // The bar clip: ASGameEntity declares only slots 0..5; slot 25 is "validateNow".
@@ -144,7 +127,7 @@ void UIExpBar::FUN_141932080(const unsigned int& nFlags)
     float fRest = (float)(nRest * 100) / (float)nMax;
     CStringW strText;
     if ((nFlags & 1) != 0)
-        strText = FUN_14052bd00(0x98e, StringFormat(L"{0:.2f}", fCur));
+        strText = FormatStringId<CStringW>(0x98e, StringFormat(L"{0:.2f}", fCur));
     static_cast<Unk_ExpEntity*>(m_30.operator->())->FUN_141932fd0("setExp", fCur, fRest, CStringW(strText), nFlags);
 }
 
@@ -157,15 +140,15 @@ __int64 UIExpBar::FUN_1419322a0()
     return DAT_143ab28a0;
 }
 
-// MS2-FUNCTIONAL: the exe widens the level through an extra movzx before the call.
+// The level return is passed inline, which gives the exe its extra movzx.
 // @0x1419322e0
 __int64 UIExpBar::FUN_1419322e0()
 {
     Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    unsigned short nLevel = pPlayer->vfunc_78();
-    return ((class CExpTable*)FUN_1404a1bb0())->GetNextExp(nLevel);
+
+    return ((class CExpTable*)FUN_1404a1bb0())->GetNextExp(pPlayer->vfunc_78());
 }
 
 // @0x141932340
@@ -191,10 +174,10 @@ void UIExpBar::FUN_141932430()
     Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_ExpHolderRef spHolder(reinterpret_cast<Unk_ExpHolder*>(pPlayer->FUN_1416764a0()));
-    if (spHolder != 0)
+    efd::SmartPointer<Ridee> spHolder(reinterpret_cast<Ridee*>(pPlayer->FUN_1416764a0()));
+    if (spHolder != (Ridee*)0)
     {
-        bool bMounted = spHolder.FUN_140975bc0()->FUN_141707750().FUN_1407895d0()->m_6c != 0 ? 1 : 0;
+        bool bMounted = spHolder->GetData()->m_nSeats != 0 ? 1 : 0;
         if (bMounted)
             nVisible = 0;
     }
@@ -231,7 +214,7 @@ void UIExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
     if ((strMethod == "getExp"))
     {
         CStringW strText;
-        strText = FUN_140632a60(0x769, FUN_1409404f0(FUN_1419322a0()), FUN_1409404f0(FUN_1419322e0()));
+        strText = FormatStringId<CStringW, CStringW>(0x769, FUN_1409404f0(FUN_1419322a0()), FUN_1409404f0(FUN_1419322e0()));
         if (0 < DAT_143ab28a8)
         {
             Unk_ExpActor* pPlayer = ((class Unk_ExpActor*)((class WorldService*)(class Unk_ExpWorld*)(reinterpret_cast<Unk_ExpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());

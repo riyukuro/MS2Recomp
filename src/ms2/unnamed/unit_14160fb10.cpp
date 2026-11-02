@@ -12,6 +12,24 @@
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include "ms2/client/ms2/equipment.h"
+#include "ms2/commonfiles/os.h"   // C3: TSingleton
+#include "ms2/placeholder/nipoint3.h"   // C3: Unk_NiPoint3 / Unk_NiMatrix3 (the basis temporaries)
+#include <efd/MemoryDefines.h>
+#include <NiNode.h>
+#include <NiMesh.h>
+#include <NiFixedString.h>
+#include <NiCommonSemantics.h>
+#include <NiColor.h>
+#include <NiPoint2.h>
+#include <NiPoint3.h>
+#include <NiBound.h>
+#include <NiTransform.h>
+#include <NiAlphaProperty.h>
+#include <NiVertexColorProperty.h>
+#include <NiFogProperty.h>
+#include <NiZBufferProperty.h>
+#include <NiTexturingProperty.h>
+#include <NiMaterialProperty.h>
 
 // return types of the getters this unit calls
 class Unk_ResourceMgr;
@@ -25,15 +43,6 @@ class Unk_ShadowOwner { public:                                    // m_pOwner (
     virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19(); virtual void s20();
     virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24();
     virtual int vfunc_25(); };                                      // 0xc8
-class Unk_ShadowNode { public:                                      // NiNode-like parent
-    virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6();
-    virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11(); virtual void s12(); virtual void s13();
-    virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19(); virtual void s20();
-    virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24(); virtual void s25(); virtual void s26(); virtual void s27();
-    virtual void s28(); virtual void s29(); virtual void s30(); virtual void s31(); virtual void s32(); virtual void s33(); virtual void s34();
-    virtual void s35();
-    virtual void vfunc_36(void* child, int flag);                   // 0x120 AttachChild
-    virtual void vfunc_37(void* out, void* child); };               // 0x128 DetachChild
 class Unk_ShadowModel { public:                                     // object reachable from a mesh element (+0x70)
     virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6();
     virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11(); virtual void s12(); virtual void s13();
@@ -46,12 +55,9 @@ class Unk_ShadowIter { public:                                      // elements 
     virtual void s28(); virtual void s29(); virtual void s30(); virtual void s31();
     virtual void vfunc_32(char flag); };                            // +0x100 (0x141610573 call [rax+0x100])
 
-struct Unk_NodePtr { Unk_NodePtr(void* p); ~Unk_NodePtr(); void* m_p; };   // ctor 0x1409f7170, dtor 0x1409f74b0 (smart pointer to the shadow NiNode)
-MS2_CHECK_SIZE(Unk_NodePtr, 8);
-
 class CMesh {                                                       // base mesh, ctor 0x14147af80 / dtor 0x14147b330 (unrecovered)
 public:
-    CMesh(void* a, void* b, int c, int d, int e, char f);
+    CMesh(bool bNormals, bool bColors, unsigned int nUVSets, unsigned int nMaxVerts, unsigned int nMaxTris, unsigned char ucFlags);
     virtual ~CMesh();
     virtual void vfunc_1();                                         // 0x141d16bf0
     static void operator delete(void*, size_t);                     // efd::MemObject::operator delete 0x14208a8f0
@@ -62,6 +68,9 @@ public:
     void SetVertexCount(unsigned int);   // C3: was free FUN_14147b8b0
 public:
     void SetTriangleCount(unsigned int);   // C3: was free FUN_14147b9c0
+    bool SetQuad(unsigned int i, unsigned short a, unsigned short b, unsigned short c, unsigned short d);   // C3: was free FUN_14147b6d0
+    void* Lock(const NiFixedString& kSemantic, unsigned int uiIndex, unsigned char ucLockMask);         // C3: was free FUN_14147b7f0
+    void Unlock(const NiFixedString& kSemantic, unsigned int uiIndex, unsigned char ucLockMask);        // C3: was free FUN_14147b850
 };
 MS2_CHECK_SIZE(CMesh, 0x30);
 
@@ -79,7 +88,7 @@ public:
     bool m_bVisible;       // +0x35
     float m_fZOffset;      // +0x38
     Unk_ShadowOwner* m_pOwner;   // +0x40
-    Unk_NodePtr m_node;    // +0x48
+    efd::SmartPointer<NiNode> m_node;    // +0x48
     int m_lodHi;           // +0x50
     int m_lodLo;           // +0x54
 };
@@ -87,13 +96,16 @@ MS2_CHECK_SIZE(CObjectShadow, 0x58);
 MS2_CHECK_OFFSET(CObjectShadow, m_pOwner, 0x40);
 MS2_CHECK_OFFSET(CObjectShadow, m_node, 0x48);
 
-struct Unk_Pt3c { float x, y, z; Unk_Pt3c(float, float, float); Unk_Pt3c& operator=(const Unk_Pt3c&); };   // NiPoint3(x,y,z) 0x14097f250, operator= 0x14097faa0
-struct Unk_Pt2c { float u, v; Unk_Pt2c(float, float); };                                                    // NiPoint2(u,v) 0x140a0a4c0
-struct Unk_Colc { float r, g, b; Unk_Colc(float, float, float); };                                         // NiColor(r,g,b) 0x140a56db0
-struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };                                      // NiPoint3(const efd::Point3&) 0x14027dcf0
+struct Unk_Colc { float r, g, b; };   // the colour parameter of FUN_1416113a0 (an NiColor at the call)
+class Unk_WsC_GameObj : public GameObject {};   // WorldService's game object results
+class CNifLoadingService   // C3: member view (was free FUN_141552f90)
+{
+public:
+    efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);
+};
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------------------
 extern float DAT_1439f81fc; extern float DAT_1439f8200; extern float DAT_1439f81f4; extern float DAT_1439f81f8; extern float DAT_1439f8204;
-extern int DAT_1439f8208;   extern int DAT_143ae2960;   extern char DAT_143a08cd8;   extern char DAT_143afa608;
+extern int DAT_1439f8208;   extern int DAT_143ae2960;   extern char DAT_143a08cd8;
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset);
 void FUN_141610490();
 void FUN_1416105c0(CObjectShadow* self);
@@ -105,7 +117,7 @@ void* FUN_1413f9870();class MS2LightService   // C3: member view for the former 
 public:
     void UpdateLightShadows();
 };
-void* FUN_140ae1c00();class CGraphicOptionTable   // C3: member view for the former free stand-ins
+class CGraphicOptionTable   // C3: member view for the former free stand-ins
 {
 public:
     int GetShadowOption(int);
@@ -115,119 +127,55 @@ class WorldService   // C3: member view for the former free stand-ins
 public:
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     static class WorldService* GetInstance();
+    void FUN_141bd30f0(char);
 };
-   void FUN_141bd30f0(void* p, bool b);
-void* FUN_1403ed280();class CEffectService   // C3: member view for the former free stand-ins
+class CEffectService
 {
 public:
     class NiNode* GetLeastLoadedRoot();
 };
-void* FUN_140967000(void* list);   void* FUN_140a01110(void* list, void* pos);
-void* FUN_1409658c0(void* elem);   void FUN_1409671f0(void* list, void** pos);
-void* FUN_1409475f0(Unk_NodePtr* p);   void* FUN_1409475d0(Unk_NodePtr* p);   void FUN_1409f76f0(Unk_NodePtr* p, void* node);
-   void FUN_1405a85c0(void* p);
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
-void FUN_140a0b300(void* node, char b);               // set app-culled
 void FUN_140a0b330(void* obj, bool b, short flags);
-void* FUN_140a332d0(void* xform);   void* FUN_140a00e10(const void* a, void* out, const void* b);class Vector3   // C3: member view for the former free stand-ins
-{
-public:
-    float FUN_140968990();
-};
-void* FUN_140a0a480(void* out, const void* a, const void* b, const void* c);   // basis -> matrix
-void* FUN_14086d260();class CMainSystem   // C3: member view for the former free stand-ins
+void* FUN_140a00e10(const void* a, void* out, const void* b);class CMainSystem   // C3: member view for the former free stand-ins
 {
 public:
     double FUN_141473280();
 };
-class NiMaterialProperty   // C3: member view for the former free stand-ins
-{
-public:
-    void SetAlpha(float);
-    void SetAmbientColor(class NiColor const&);
-    void SetDiffuseColor(class NiColor const&);
-    void SetEmittance(class NiColor const&);
-};
 namespace egf { class Entity; }   // C3: FUN_141b6efc0 takes the real egf::Entity*
 NiAVObject* FUN_141b6efc0(egf::Entity* p);void FUN_141567540(class NiAVObject*, bool);   // C3: was FUN_141567540
-   void FUN_140885680(void* list, void** pos);
-void* FUN_1405a8ed0(void* elem);class CEquipItem   // C3: member view for the former free stand-ins
+class CEquipItem   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1411dc0d0();
+    void GetModels(CAtlArray<MS2Ptr<CEquipModel> >& arr);   // C3: was free FUN_1411dcc80
 };
-   void FUN_1411dcc80(void* p, CAtlArray<MS2Ptr<CEquipModel> >* arr);
-unsigned __int64 FUN_141168120(CAtlArray<MS2Ptr<CEquipModel> >* arr);   void* FUN_1411f9020(CAtlArray<MS2Ptr<CEquipModel> >* arr, unsigned __int64 i);
-void* FUN_140b02a50(void* p);void* FUN_141200ab0(class CEquipModel*);   // C3: was FUN_141200ab0
+void* FUN_141200ab0(class CEquipModel*);   // C3: was FUN_141200ab0
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class Unk_FsOptimizer   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140ddcc90();
 };
-class NiCommonSemantics   // C3: member view for the former free stand-ins
-{
-public:
-    static class NiFixedString const& POSITION();
-    static class NiFixedString const& TEXCOORD();
-};
-void* FUN_14147b7f0(CObjectShadow* self, void* semantic, int a, char b);   // lock vertex stream, returns data
-void FUN_14147b850(CObjectShadow* self, void* semantic, int a, char b);    // unlock
-void FUN_14147b6d0(CObjectShadow* self, short a, short b, short c, short d, short e);   // set up index buffer
-void FUN_140984450(void* name, const char* s);   void FUN_1409845a0(void* name);   // NiFixedString ctor / dtor
-void FUN_141552f90(void* mgr, void* outTex, CString path, int b); // load texture
-void* FUN_14097fbf0(void* texPtr);   void FUN_14097f4a0(void* texPtr);
-class NiTexturingProperty   // C3: member view for the former free stand-ins
-{
-public:
-    void SetBaseTexture(class NiTexture*);
-};
-void* FUN_141d1d470(void* mem);                                     // NiTexturingProperty ctor
-void* FUN_14097f0b0(void* mem);                                     // NiAlphaProperty ctor
-void FUN_140a0a0d0(void* smart, void* p);   void* FUN_140a0abd0(void* smart);   void* FUN_140a0ab60(void* smart);   void FUN_140a0a6b0(void* smart);
-void FUN_140980560(void* alpha, char b);
-void* FUN_14097f2d0(void* mem);                                     // NiVertexColorProperty ctor
-void FUN_140980f20(void* p, int v);   void FUN_140980e60(void* p, int v);
-void* FUN_141d24d60(void* mem);                                     // NiMaterialProperty ctor
-void FUN_1410b1f20(void* smart, void* p);   void* FUN_1410b2250(void* smart);   void* FUN_1410b2230(void* smart);   void FUN_1410b1fa0(void* smart);
-void* FUN_140a0a3d0(void* mem);   void FUN_1409a9b90(void* fog, char b);                  // NiFogProperty
-void* FUN_14097f330(void* mem);   void FUN_14097eda0(void* smart, void* p);   void* FUN_14097fc50(void* smart);   void* FUN_14097fc00(void* smart);   void FUN_14097f4d0(void* smart);   void FUN_140981100(void* z, char b);   // NiZBufferProperty
-void FUN_14097f1b0(void* bound);class NiMesh   // C3: member view for the former free stand-ins
-{
-public:
-    void SetModelBound(class NiBound const&);
-};
-void* FUN_141d19760(void* mem, int n);                              // NiNode ctor
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-void* FUN_140876480(void* out, int cat);   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
-void FUN_14098e930(void* mat, char b);
-struct Unk_ShList { Unk_ShList(int blockSize); ~Unk_ShList(); void* m_a; void* m_b; void* m_c; void* m_d; void* m_e; void* m_f; };   // ctor 0x140963ae0 (writes up to +0x28), dtor 0x1409647c0 (0x30)
-struct Unk_ShList2 { Unk_ShList2(int blockSize); ~Unk_ShList2(); void* m_a; void* m_b; void* m_c; void* m_d; void* m_e; void* m_f; };            // ctor 0x140884ed0, dtor 0x1408850d0 (0x30)
-struct Unk_ShadowXform { float r0, r1, r2, r3, r4, r5, r6, r7, r8; float tx, ty, tz; float scale; };   // NiTransform (0x34)
 struct Unk_ShadowPt3 { private: float x, y, z; };   // FUN_140a00e10 cross-product result slot
-struct Unk_ShadowMat3 { float r0, r1, r2, r3, r4, r5, r6, r7, r8; };
-
-#define MS2_SHADOW_NEW(dst, size, ctorcall) \
-    { int catTmp; int* cat = (int*)FUN_140876480(&catTmp, 0); void* mem = FUN_14208a860(size, *cat); \
-      if (mem == 0) dst = 0; else dst = ctorcall; }
 
 // @0x14160fb10
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo)
-    : CMesh(0, 0, 1, 4, 2, 0x12), m_node(0)
+    : CMesh(false, false, 1, 4, 2, 0x12), m_node(0)
 {
     FUN_1416106e0(this, owner, lodHi, lodLo, DAT_1439f81fc, DAT_1439f8200);
 }
 
 // @0x14160fbd0
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo, float radius)
-    : CMesh(0, 0, 1, 4, 2, 0x12), m_node(0)
+    : CMesh(false, false, 1, 4, 2, 0x12), m_node(0)
 {
     FUN_1416106e0(this, owner, lodHi, lodLo, radius, DAT_1439f8200);
 }
 
 // @0x14160fc90
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo, float radius, float zOffset)
-    : CMesh(0, 0, 1, 4, 2, 0x12), m_node(0)
+    : CMesh(false, false, 1, 4, 2, 0x12), m_node(0)
 {
     FUN_1416106e0(this, owner, lodHi, lodLo, radius, zOffset);
 }
@@ -235,11 +183,9 @@ CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo, float radius, fl
 // @0x14160fd50
 CObjectShadow::~CObjectShadow()
 {
-    Unk_ShadowNode* node = (Unk_ShadowNode*)((void*)((class NiAVObject*)(void*)(FUN_1409475f0(&m_node)))->GetParent());
+    NiNode* node = m_node->GetParent();
     if (node != 0) {
-        void* out;
-        node->vfunc_37(&out, FUN_1409475d0(&m_node));
-        FUN_1405a85c0(&out);
+        node->DetachChild(m_node);
     }
 }
 
@@ -266,38 +212,35 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
     if (self->m_bVisible != 0 && active != 0) {
         float one = 1.0f;
         float fade;
-        Unk_ShadowXform xf;
-        Unk_ShadowMat3 t48;
+        NiTransform xf;
         Unk_ShadowPt3 t98, t8c;
-        FUN_140a332d0(&xf);
-        Unk_NiPt3 p120(pos);
-        *(Unk_Pt3c*)&xf.tx = *(Unk_Pt3c*)&p120;
-        xf.tz = xf.tz + self->m_fZOffset;
-        Unk_NiPt3 p110(&DAT_143a08cd8);
-        Unk_NiPt3 p148(FUN_140a00e10(dir, &t98, &p110));
-        ((class Vector3*)(void*)(&p148))->FUN_140968990();
-        Unk_NiPt3 p130(FUN_140a00e10(&p148, &t8c, dir));
-        ((class Vector3*)(void*)(&p130))->FUN_140968990();
-        Unk_NiPt3 p100(dir);
-        *(Unk_ShadowMat3*)&xf = *(Unk_ShadowMat3*)FUN_140a0a480(&t48, &p130, &p148, &p100);
+        xf.m_Translate = NiPoint3(*(const efd::Point3*)pos);
+        xf.m_Translate.z = xf.m_Translate.z + self->m_fZOffset;
+        Unk_NiPoint3 p110(*(const Vector3*)&DAT_143a08cd8);
+        Unk_NiPoint3 p148(*(const Vector3*)FUN_140a00e10(dir, &t98, &p110));
+        ((Vector3*)&p148)->FUN_140968990();
+        Unk_NiPoint3 p130(*(const Vector3*)FUN_140a00e10(&p148, &t8c, dir));
+        ((Vector3*)&p130)->FUN_140968990();
+        Unk_NiPoint3 p100(*(const Vector3*)dir);
+        *(Unk_NiMatrix3*)&xf.m_Rotate = Unk_NiMatrix3(p130, p148, p100);
         if (DAT_1439f81f4 < 0.001f) {
             fade = DAT_1439f81f8;
         } else {
             fade = one - efd::Clamp(dt / DAT_1439f81f4, 0.0f, 1.0f) * (one - DAT_1439f81f8);
         }
         float scale = fade;
-        xf.scale = scale;
-        ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->SetLocalFromWorldTransform(*(class NiTransform const*)(&xf));
-        ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->Update((float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280(), true);
-        void* prop = ((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa608), (class NiObject const*)(((void*)((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->GetProperty(3)))));   // material property
+        xf.m_fScale = scale;
+        self->m_node->SetLocalFromWorldTransform(xf);
+        self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
+        NiMaterialProperty* prop = (NiMaterialProperty*)NiObject::DynamicCast(&NiMaterialProperty::ms_RTTI, self->GetMesh()->GetProperty(3));
         if (prop != 0) {
             float alpha = DAT_1439f8204 * scale;
-            ((class NiMaterialProperty*)(void*)(prop))->SetAlpha(alpha);
-            ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->UpdateProperties();
+            prop->SetAlpha(alpha);
+            self->GetMesh()->UpdateProperties();
         }
-        FUN_140a0b300(FUN_1409475f0(&self->m_node), 0);
+        self->m_node->SetAppCulled(false);
     } else {
-        FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
+        self->m_node->SetAppCulled(true);
     }
     if (force || self->m_bDirty != 0) {
         void* h = FUN_141b6efc0(reinterpret_cast<GameObject*>(self->m_pOwner)->FUN_14123c410());
@@ -307,19 +250,19 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         }
         void* o = efd::DynamicCast<PC, GameObject>(reinterpret_cast<GameObject*>(self->m_pOwner));
         if (o != 0) {
-            void* pos2;
-            Unk_ShList2 list(10);
-            reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(o)->FUN_1416561a0())->CollectShownItems(*reinterpret_cast<ATL::CAtlList<MS2Ptr<CEquipItem> >*>(&list));
-            for (pos2 = ((void*)((ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*)(void*)(&list))->GetHeadPosition()); pos2 != 0; FUN_140885680(&list, &pos2)) {
-                void* elem = ((void*)&((ATL::CAtlList<MS2Ptr<CEquipItem>, ATL::CElementTraits<MS2Ptr<CEquipItem>>>*)(void*)(&list))->GetAt((struct __POSITION*)(pos2)));
-                if (((class CEquipItem*)(void*)(FUN_1405a8ed0(elem)))->FUN_1411dc0d0() != 0) {
+            POSITION pos2;
+            ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
+            reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(o)->FUN_1416561a0())->CollectShownItems(list);
+            for (pos2 = list.GetHeadPosition(); pos2 != 0; list.GetNext(pos2)) {
+                MS2Ptr<CEquipItem>& elem = list.GetAt(pos2);
+                if (elem->FUN_1411dc0d0() != 0) {
                     CAtlArray<MS2Ptr<CEquipModel> > arr;
-                    FUN_1411dcc80(FUN_1405a8ed0(elem), &arr);
+                    elem->GetModels(arr);
                     unsigned i;
-                    for (i = 0; i < FUN_141168120(&arr); ++i) {
-                        void* e = FUN_1411f9020(&arr, i);
-                        if (*(int*)((char*)FUN_141200ab0((class CEquipModel*)(FUN_140b02a50(e))) + 0x20) == 0) {
-                            Unk_ShadowModel* model = (Unk_ShadowModel*)FUN_140b02a50(e);
+                    for (i = 0; i < arr.GetCount(); ++i) {
+                        MS2Ptr<CEquipModel>& e = arr[i];
+                        if (*(int*)((char*)FUN_141200ab0(e.operator->()) + 0x20) == 0) {
+                            Unk_ShadowModel* model = (Unk_ShadowModel*)e.operator->();
                             FUN_141567540((class NiAVObject*)(model->vfunc_14()), self->m_bShown);
                         }
                     }
@@ -354,16 +297,16 @@ void FUN_141610490()
 {
     int need;
     int level;
-    void* pos;
+    POSITION pos;
     level = FUN_140ae1c10();
     ((class MS2LightService*)(void*)(FUN_1413f9870()))->UpdateLightShadows();
-    need = ((class CGraphicOptionTable*)(void*)(FUN_140ae1c00()))->GetShadowOption(5);
-    FUN_141bd30f0(((void*)WorldService::GetInstance()), level >= need);
-    Unk_ShList list(10);
-    WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), 0);
-    for (pos = FUN_140967000(&list); pos != 0; FUN_1409671f0(&list, &pos)) {
-        void* pEntry = FUN_140a01110(&list, pos);
-        Unk_ShadowIter* it = (Unk_ShadowIter*)FUN_1409658c0(pEntry);
+    need = TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5);
+    WorldService::GetInstance()->FUN_141bd30f0(level >= need);
+    ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > list(10);
+    WorldService::GetInstance()->FUN_141bd2db0(&list, 0);
+    for (pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
+        efd::SmartPointer<Unk_WsC_GameObj>& entry = list.GetAt(pos);
+        Unk_ShadowIter* it = (Unk_ShadowIter*)entry.operator->();
         it->vfunc_32(1);
     }
 }
@@ -411,98 +354,77 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     self->m_bFlag31 = true;
     radius = radius / 2.0f;
 
-    Unk_Pt3c* verts = (Unk_Pt3c*)FUN_14147b7f0(self, ((void*)&NiCommonSemantics::POSITION()), 0, 2);   // 4 x NiPoint3
+    NiPoint3* verts = (NiPoint3*)self->Lock(NiCommonSemantics::POSITION(), 0, 2);   // 4 x NiPoint3
     if (verts != 0) {
-        verts[0] = Unk_Pt3c(-radius, -radius, 0.0f);
-        verts[1] = Unk_Pt3c(radius, -radius, 0.0f);
-        verts[2] = Unk_Pt3c(radius, radius, 0.0f);
-        verts[3] = Unk_Pt3c(-radius, radius, 0.0f);
-        FUN_14147b850(self, ((void*)&NiCommonSemantics::POSITION()), 0, 2);
+        verts[0] = NiPoint3(-radius, -radius, 0.0f);
+        verts[1] = NiPoint3(radius, -radius, 0.0f);
+        verts[2] = NiPoint3(radius, radius, 0.0f);
+        verts[3] = NiPoint3(-radius, radius, 0.0f);
+        self->Unlock(NiCommonSemantics::POSITION(), 0, 2);
     }
-    Unk_Pt2c* uv = (Unk_Pt2c*)FUN_14147b7f0(self, ((void*)&NiCommonSemantics::TEXCOORD()), 0, 2);   // 4 x NiPoint2
+    NiPoint2* uv = (NiPoint2*)self->Lock(NiCommonSemantics::TEXCOORD(), 0, 2);   // 4 x NiPoint2
     if (uv != 0) {
-        uv[0] = Unk_Pt2c(0.0f, 0.0f);
-        uv[1] = Unk_Pt2c(0.0f, 1.0f);
-        uv[2] = Unk_Pt2c(1.0f, 1.0f);
-        uv[3] = Unk_Pt2c(1.0f, 0.0f);
-        FUN_14147b850(self, ((void*)&NiCommonSemantics::TEXCOORD()), 0, 2);
+        uv[0] = NiPoint2(0.0f, 0.0f);
+        uv[1] = NiPoint2(0.0f, 1.0f);
+        uv[2] = NiPoint2(1.0f, 1.0f);
+        uv[3] = NiPoint2(1.0f, 0.0f);
+        self->Unlock(NiCommonSemantics::TEXCOORD(), 0, 2);
     }
-    FUN_14147b6d0(self, 0, 0, 1, 2, 3);
+    self->SetQuad(0, 0, 1, 2, 3);
 
-    void* name[1];
-    FUN_140984450(name, "Character Shadow");
-    ((class NiObjectNET*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->SetName(*(class NiFixedString const*)(name));
-    FUN_1409845a0(name);
+    {
+        NiFixedString name("Character Shadow");
+        self->GetMesh()->SetName(name);
+    }
 
-    void* tex[1];
-    FUN_141552f90(((void*)FUN_140a0afd0()), tex, *(CString*)((char*)((void*)FUN_1401d31f0()) + 0xf0), 1);
-    void* texProp;
-    MS2_SHADOW_NEW(texProp, 0x58, FUN_141d1d470(mem));
-    ((class NiTexturingProperty*)(void*)(texProp))->SetBaseTexture((class NiTexture*)(FUN_14097fbf0(tex)));
-    ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->AttachProperty((class NiProperty*)(texProp));
+    efd::SmartPointer<NiTexture> tex = ((CNifLoadingService*)FUN_140a0afd0())->GetTexture(*(CString*)((char*)((void*)FUN_1401d31f0()) + 0xf0), 1);
+    NiTexturingProperty* texProp = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
+    texProp->SetBaseTexture(tex);
+    self->GetMesh()->AttachProperty(texProp);
 
-    void* alpha;
-    void* alphaPtr[1];
-    MS2_SHADOW_NEW(alpha, 0x38, FUN_14097f0b0(mem));
-    FUN_140a0a0d0(alphaPtr, alpha);
-    FUN_140980560(FUN_140a0abd0(alphaPtr), 1);
-    ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->AttachProperty((class NiProperty*)(FUN_140a0ab60(alphaPtr)));
+    efd::SmartPointer<NiAlphaProperty> alphaPtr = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
+    alphaPtr->SetAlphaBlending(true);
+    self->GetMesh()->AttachProperty(alphaPtr);
 
-    void* vcol;
-    MS2_SHADOW_NEW(vcol, 0x38, FUN_14097f2d0(mem));
-    FUN_140980f20(vcol, 0);
-    FUN_140980e60(vcol, 0);
-    ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->AttachProperty((class NiProperty*)(vcol));
+    NiVertexColorProperty* vcol = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
+    vcol->SetSourceMode(NiVertexColorProperty::SOURCE_IGNORE);
+    vcol->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
+    self->GetMesh()->AttachProperty(vcol);
 
-    void* mat;
-    void* matPtr[1];
-    MS2_SHADOW_NEW(mat, 0x78, FUN_141d24d60(mem));
-    FUN_1410b1f20(matPtr, mat);
-    ((class NiMaterialProperty*)(void*)(FUN_1410b2250(matPtr)))->SetDiffuseColor((class NiColor const&)(const Unk_Colc&)Unk_Colc(0.0f, 0.0f, 0.0f));
-    ((class NiMaterialProperty*)(void*)(FUN_1410b2250(matPtr)))->SetAmbientColor((class NiColor const&)(const Unk_Colc&)Unk_Colc(0.0f, 0.0f, 0.0f));
-    FUN_1416113a0(FUN_1410b2250(matPtr), Unk_Colc(0.0f, 0.0f, 0.0f));
-    ((class NiMaterialProperty*)(void*)(FUN_1410b2250(matPtr)))->SetEmittance((class NiColor const&)(const Unk_Colc&)Unk_Colc(1.0f, 1.0f, 1.0f));
-    ((class NiMaterialProperty*)(void*)(FUN_1410b2250(matPtr)))->SetAlpha(DAT_1439f8204);
-    ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->AttachProperty((class NiProperty*)(FUN_1410b2230(matPtr)));
+    efd::SmartPointer<NiMaterialProperty> matPtr = new (efd::MemHint(efd::MemHint::NONE)) NiMaterialProperty;
+    matPtr->SetDiffuseColor(NiColor(0.0f, 0.0f, 0.0f));
+    matPtr->SetAmbientColor(NiColor(0.0f, 0.0f, 0.0f));
+    FUN_1416113a0(matPtr.operator->(), (const Unk_Colc&)(const NiColor&)NiColor(0.0f, 0.0f, 0.0f));
+    matPtr->SetEmittance(NiColor(1.0f, 1.0f, 1.0f));
+    matPtr->SetAlpha(DAT_1439f8204);
+    self->GetMesh()->AttachProperty(matPtr);
 
-    void* fog;
-    MS2_SHADOW_NEW(fog, 0x48, FUN_140a0a3d0(mem));
-    FUN_1409a9b90(fog, 0);
-    ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->AttachProperty((class NiProperty*)(fog));
+    NiFogProperty* fog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
+    fog->SetFog(false);
+    self->GetMesh()->AttachProperty(fog);
 
-    void* zbuf;
-    void* zPtr[1];
-    MS2_SHADOW_NEW(zbuf, 0x38, FUN_14097f330(mem));
-    FUN_14097eda0(zPtr, zbuf);
-    FUN_140981100(FUN_14097fc50(zPtr), 0);
-    ((class NiAVObject*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->AttachProperty((class NiProperty*)(FUN_14097fc00(zPtr)));
+    efd::SmartPointer<NiZBufferProperty> zPtr = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
+    zPtr->SetZBufferWrite(false);
+    self->GetMesh()->AttachProperty(zPtr);
 
-    ((class CMesh*)(class CObjectShadow*)(self))->SetVertexCount(4);
-    ((class CMesh*)(class CObjectShadow*)(self))->SetTriangleCount(6);
-    void* bound[2];
-    FUN_14097f1b0(bound);
-    Unk_Pt3c origin(0.0f, 0.0f, 0.0f);
-    ((class NiBound*)(void*)(bound))->SetCenterAndRadius(*(class NiPoint3 const*)(&origin), radius);
-    ((class NiMesh*)(void*)(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh())))->SetModelBound(*(class NiBound const*)(bound));
+    self->SetVertexCount(4);
+    self->SetTriangleCount(6);
+    NiBound bound;
+    NiPoint3 origin(0.0f, 0.0f, 0.0f);
+    bound.SetCenterAndRadius(origin, radius);
+    ((NiMesh*)self->GetMesh())->SetModelBound(bound);
 
-    void* node;
-    MS2_SHADOW_NEW(node, 0x130, FUN_141d19760(mem, 0));
-    FUN_1409f76f0(&self->m_node, node);
-    Unk_ShadowNode* root = (Unk_ShadowNode*)FUN_1409475f0(&self->m_node);
-    root->vfunc_36(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh()), 0);
-    FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
+    self->m_node = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0);
+    self->m_node->AttachChild(self->GetMesh(), false);
+    self->m_node->SetAppCulled(true);
     self->m_bDirty = true;
-    Unk_ShadowNode* scene = (Unk_ShadowNode*)((void*)((class CEffectService*)(void*)(FUN_1403ed280()))->GetLeastLoadedRoot());
-    scene->vfunc_36(FUN_1409475d0(&self->m_node), 1);
-    ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->UpdateEffects();
-    ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->UpdateProperties();
-    float now = (float)((class CMainSystem*)(void*)(FUN_14086d260()))->FUN_141473280();
-    ((class NiAVObject*)(void*)(FUN_1409475f0(&self->m_node)))->Update(now, true);
-    FUN_141611370(((void*)((class CMesh*)(class CObjectShadow*)(self))->GetMesh()), 0);
-    FUN_14097f4d0(zPtr);
-    FUN_1410b1fa0(matPtr);
-    FUN_140a0a6b0(alphaPtr);
-    FUN_14097f4a0(tex);
+    NiNode* scene = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
+    scene->AttachChild(self->m_node, true);
+    self->m_node->UpdateEffects();
+    self->m_node->UpdateProperties();
+    float now = (float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
+    self->m_node->Update(now, true);
+    FUN_141611370(((void*)self->GetMesh()), 0);
 }
 
 // @0x1416112d0 (scalar deleting destructor: emitted from the vftable)
@@ -517,5 +439,5 @@ void FUN_141611370(void* obj, bool flag) { FUN_141611330(obj, flag); }
 void FUN_1416113a0(void* mat, const Unk_Colc& color)
 {
     *(Unk_Colc*)((char*)mat + 0x4c) = color;
-    FUN_14098e930(mat, 1);
+    ((NiMaterialProperty*)mat)->SetChanged(true);
 }

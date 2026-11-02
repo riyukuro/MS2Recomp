@@ -337,10 +337,10 @@ int UIBeautyShopDevDialog::vfunc_13()
         {
             if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
             {
-                if (spInput->FUN_1422c76c0())
+                if (spInput->GetFocused())
                     vfunc_84(m_1a0, 0, spInput->GetText());
                 else
-                    spInput->FUN_1422c7630(1);
+                    spInput->SetFocused(1);
             }
         }
         return 1;
@@ -368,7 +368,7 @@ void UIBeautyShopDevDialog::vfunc_15()
         {
             MS2Ptr<CItemData> spData = FUN_14053f870(m_1a4);
             if (!spData->IsAvatarColorItem())
-                nSlot = spData->FUN_14053eba0()->FUN_14054b400();
+                nSlot = spData->GetModelOrEmpty()->FUN_14054b400();
         }
         if (nSlot != 0)
         {
@@ -388,7 +388,7 @@ void UIBeautyShopDevDialog::vfunc_15()
         }
     }
     if (m_298)
-        reinterpret_cast<UICameraEditDialog*>(m_298)->FUN_1418dda30(m_288->IsDragging() == 0);
+        reinterpret_cast<UICameraEditDialog*>(m_298)->SetEnableFlagIfHidden(m_288->IsDragging() == 0);
     if (m_19c == 0 && pPc->FUN_14166cc80() != 0x50)
     {
         m_19c = 1;
@@ -684,7 +684,6 @@ bool UIBeautyShopDevDialog::FUN_14191e9e0(int nResult, const CMsgBoxData& data)
 
 // Build the item list of a tab ("buildItems"), filtered by the search text; bKeepList only reselects the worn item.
 // @0x14191ea20
-// MS2-FUNCTIONAL: the motion-name range-for walks std::vector with a raw pointer here, a checked iterator class in the exe
 void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& strSearch)
 {
     int nSelected = -1;
@@ -730,7 +729,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
             ASObj row(2);
             row.FUN_1407cbb20("field", CStringW(strName));
             row.FUN_1407cbb20("code", CStringW(strCode));
-            aItems.FUN_1422bc050(row.FUN_1422bb870());
+            aItems.PushValue(row.FUN_1422bb870());
         }
         break;
     }
@@ -759,8 +758,11 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
                 spSet->vfunc_3(aAll);
                 CString strKey = FUN_14016a600(strSearch, 0);
                 strKey.MakeLower();
-                for (CString strName : aAll)
+                std::vector<CString>& rAll = aAll;
+                std::vector<CString>::const_iterator itEnd = rAll.end();
+                for (std::vector<CString>::const_iterator it = rAll.begin(); it != itEnd; ++it)
                 {
+                    CString strName = *it;
                     CString strLower(strName);
                     strLower.MakeLower();
                     if (strLower.Find(strKey, 0) != -1)
@@ -773,7 +775,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
                 ASObj row(2);
                 row.FUN_1407cbb20("code", StringFormat(L"{0}", i));
                 row.FUN_1407cbb20("field", FUN_14016a730(m_2a0[i], 0));
-                aItems.FUN_1422bc050(row.FUN_1422bb870());
+                aItems.PushValue(row.FUN_1422bb870());
             }
         }
         break;
@@ -1021,7 +1023,7 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
         ASTooltip tip(pPc, 0x20, 2);
         if (tip.FUN_1409e0d40(spItem.get()))
             row.FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
-        aRows.FUN_1422bc050(row.FUN_1422bb870());
+        aRows.PushValue(row.FUN_1422bb870());
     }
     if (bBuild)
         m_30->Invoke("buildEquipItems", Scaleform::GFx::Value(aRows.FUN_1422bb870()), -1L);

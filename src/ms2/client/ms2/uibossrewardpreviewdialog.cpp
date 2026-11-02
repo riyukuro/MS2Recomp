@@ -23,6 +23,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/rewardpreviewitem.h"   // C3: CRewardPreviewTable::GetBoss, RewardPreviewInfo::GetValid
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
@@ -40,44 +41,8 @@ public:
 
 // The game context (FUN_1403ed2d0): its FUN_141bd0cc0 returns the local player.
 
-// A reward entry: an id holder (a vftable object, slot 1 = the item id) and the count.
-class Unk_BrmIdHolder
-{
-public:
-    virtual int vfunc_0();
-    virtual int vfunc_1();
-};
-class Unk_BrmEntry : public CPtred
-{
-public:
-    Unk_BrmIdHolder m_id;                               // +0x18
-    int m_nCount;                                       // +0x20
-};
-// The list of the reward entries of a reward row (CAtlList-like, block size 10).
-class Unk_BrmList
-{
-public:
-    Unk_BrmList(int nBlockSize);                        // 0x140dc5a60
-    ~Unk_BrmList();                                     // 0x140dc5fd0
-    POSITION FUN_140dc6f30();                           // head
-    Unk_BrmEntry* FUN_140dc6dc0(POSITION pos);          // the entry at pos
-    void FUN_140dc7030(POSITION* pPos);                 // next
-private:
-    void* m_pad[6];                                     // a CAtlList: the ctor zeroes +0..+0x20, block size at +0x28
-};
-// A reward row of the boss reward table.
-class Unk_BrmReward : public CPtred
-{
-public:
-    void FUN_140dc3950(void* pPlayer, Unk_BrmList& list);   // collect the reward entries for the player
-};
-// The boss reward table (DAT_143ac48f8).
-class Unk_SingletonObj
-{
-public:
-    MS2Ptr<Unk_BrmReward> FUN_140dc3c70(int nNpcId);
-};
-extern Unk_SingletonObj* DAT_143ac48f8;
+// The boss reward table (TSingleton<CRewardPreviewTable>::s_instance; rewardpreviewitem.h).
+class Unk_SingletonObj;
 
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CStringW FUN_1401aa6a0(int nId);                        // npc name
@@ -193,16 +158,16 @@ void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(m_nNpcId);
+    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(m_nNpcId);
     if (spReward == 0)
         return;
-    Unk_BrmList list(10);
-    spReward->FUN_140dc3950(pPlayer, list);
-    for (POSITION pos = list.FUN_140dc6f30(); pos != 0; list.FUN_140dc7030(&pos))
+    ATL::CAtlList<ItemEntity> list(10);
+    spReward->GetValid((PC*)pPlayer, list);
+    for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
-        Unk_BrmEntry* pEntry = list.FUN_140dc6dc0(pos);
+        ItemEntity* pEntry = &list.GetAt(pos);
         MS2Ptr<CItem> spItem(new CItem());
-        if (spItem->FUN_14052b130(pEntry->m_nCount, (&pEntry->m_id)->vfunc_1(), 0) != 0)
+        if (spItem->FUN_14052b130(pEntry->m_itemId, pEntry->vfunc_o18_1(), 0) != 0)
             m_items.Add(spItem);
     }
 }
@@ -262,7 +227,7 @@ int UIBossRewardPreviewDialog::FUN_140f25ad0(int nNpcId)
         return 0;
     if (spNpc->m_nClass != 4 && spNpc->m_nClass != 6)
         return 0;
-    MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(nNpcId);
+    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(nNpcId);
     if (spReward == 0)
         return 0;
     m_nNpcId = nNpcId;
@@ -289,7 +254,7 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
             m_spTitle->FUN_1422c4cd0(FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
         }
     }
-    MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(m_nNpcId);
+    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(m_nNpcId);
     if (spReward == 0)
         return;
     if (m_spExp.get() != 0)
@@ -322,7 +287,7 @@ UIBossRewardPreviewDialog::SlotBag* FUN_140f260d0(NotifyContext::BindData* p)
 // @0x140f26650
 Unk_SingletonObj* FUN_140f26650()
 {
-    return DAT_143ac48f8;
+    return (Unk_SingletonObj*)TSingleton<CRewardPreviewTable>::s_instance;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca9020-0x142ca90d0 .text$yd

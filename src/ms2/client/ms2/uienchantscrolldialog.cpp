@@ -25,6 +25,8 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/formatstringid.h"
+#include "ms2/placeholder/blockformat.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
@@ -52,39 +54,29 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- unit-local views of exe objects ----
 
 // The inventory (global 0x143ab2a90): item handle by uid.
-class Unk_EsInventory { public: MS2Ptr<CItem> FUN_140a5d680(unsigned __int64 uid); };
-class Unk_Inventory;
-extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_EsInventory
+class Unk_Inventory { public: MS2Ptr<CItem> FUN_140a5d680(__int64 uid); };
+extern Unk_Inventory g_143ab2a90;   // the real global (0x143ab2a90)
 
 // The enchant data of an item (CItem::FUN_1405278a0).
-class Unk_EsEnchantData
+class CItemStatus
 {
 public:
-    int FUN_14062ffb0(unsigned key, int a, int b);
-    float FUN_1406303e0(unsigned key);
+    int GetStatValue(unsigned nType, int nWhich, int nSub);
+    float GetEnchantRatio(unsigned nType);
 };
-
-// The AS root object of the movie: only the call by name is used here.
-class Unk_EsAS : public AScript { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& rArg); };
 
 class Unk_EsUiMgr { public:  void FUN_141adc530(int uiId); };
 
-class Unk_EsIngTable { public: CStringW FUN_140556a40(int nId); };
 CReservedWordTable* FUN_1403b4750();
-class Unk_EsInvDialog { public: void FUN_141999e00(); };
-class UIInventoryDialog;
-template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_EsInvDialog* FUN_1405344f0 (calls cast back)
+class UIInventoryDialog { public: void FUN_141999e00(); };
+template<class T> T* Unk_BreakDialog(int);
 
 CStringW GetStatValueText(unsigned nKey);                                           // option name template
 __int64 FUN_140632990(__int64 nBase, float fExtra);                                 // the option value
 CStringW FUN_14183e9c0(CStringW strText, int nRank);                                // rank-coloured text
-CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
-CStringW FUN_1409e9bc0(int nId, const unsigned& nA, const unsigned& nB);
-CStringW FUN_1409eadb0(int nId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);                   // psz + str
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 void FUN_14151f200();
 unsigned __int64 FUN_140718370(const CStringW& str);
 void FUN_140710590(COutPacket& packet);
@@ -92,13 +84,6 @@ void FUN_141275260(int nId, int a, int b);                                      
 int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW strTag);
-class Unk_EsMsgBox : public CMsgBoxData
-{
-public:
-    void FUN_141a01600(__int64 nUid);
-    void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
-    void FUN_141a01700(int nA, int nB, int nC);
-};
 void FUN_140cd73b0(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);   // set the slot item
 void FUN_140cd74a0(const CString& strName);                                                // clear the slot
 
@@ -179,7 +164,7 @@ int UIEnchantScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             unsigned __int64 nItemUid = FUN_140718370(data.FUN_1422b8f40());
-            MS2Ptr<CItem> spItem = reinterpret_cast<Unk_EsInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+            MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
             if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0) {
                 COutPacket packet(static_cast<int>(SendOp::EnchantScroll), 0);
                 packet.Encode1(2);
@@ -204,7 +189,7 @@ int UIEnchantScrollDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
         int nResult = pMsg->FUN_1422b8a10();
         CStringW strTag = pMsg->FUN_1422b8f40();
-        if (nResult == 0 && FUN_1403b3c40(strTag, L"enchant_ok") != 0) {
+        if (nResult == 0 && strTag == L"enchant_ok") {
             vfunc_67();
             return 1;
         }
@@ -245,8 +230,8 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
 {
     m_nItemUid = packet.ReadInt64();
     int nType = (unsigned short)packet.ReadInt16();
-    MS2Ptr<CItem> spScroll = reinterpret_cast<Unk_EsInventory&>(g_143ab2a90).FUN_140a5d680(m_nScrollUid);
-    MS2Ptr<CItem> spItem = reinterpret_cast<Unk_EsInventory&>(g_143ab2a90).FUN_140a5d680(m_nItemUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
     if ((((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) ? true : false) && (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)) {
         FUN_140cd74a0(GetTypeName());
         FUN_140cd73b0(GetTypeName(), m_nScrollUid, spItem);
@@ -260,24 +245,24 @@ void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
         switch (nType) {
         case 1:
         case 2:
-            data.FUN_1407cbb20("prop", FUN_1409e9bc0(0xb70, m_nFailRate, 100 - m_nFailRate));
+            data.FUN_1407cbb20("prop", BlockFormat(0xb70, m_nFailRate, 100 - m_nFailRate));
             data.FUN_1407cbb20("resultItemName", FUN_140f3d320(m_nTargetLevel, spItem, 0, 0));
             if (spItem->FUN_140526fc0() != m_nTargetLevel)
                 FUN_140f3d5b0(spItem, data, packet);
             break;
         case 5:
-            data.FUN_1407cbb20("prop", FUN_1409e9bc0(0xb70, m_nFailRate, 100 - m_nFailRate));
+            data.FUN_1407cbb20("prop", BlockFormat(0xb70, m_nFailRate, 100 - m_nFailRate));
             data.FUN_1407cbb20("resultItemName", FUN_140f3d320(spItem->FUN_140526fc0(), spItem, 0, 1));
             break;
         case 3: {
-            CStringW strRank = reinterpret_cast<Unk_EsIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140556a40(spItem->FUN_140526bd0());
-            CStringW strName = FUN_1409eadb0(0xb6e, strRank, FUN_140f3e390(), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
+            CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
+            CStringW strName = BlockFormat(0xb6e, strRank, FUN_140f3e390(), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
             data.FUN_1407cbb20("resultItemName", strName);
             FUN_140f3db20(spItem, data, packet);
             break;
         }
         }
-        static_cast<Unk_EsAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_140ba4cc0("setData", data);
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("setData", data);
     }
 }
 
@@ -287,20 +272,20 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
     int nResult = (unsigned short)packet.ReadInt16();
     if (nResult == 0) {
         unsigned __int64 nItemUid = packet.ReadInt64();
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_EsInventory&>(g_143ab2a90).FUN_140a5d680(nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem.IsNull())
             return;
         spItem->FUN_140524eb0(packet);
-        Unk_EsInvDialog* pInventory = reinterpret_cast<Unk_EsInvDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
+        UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
         if (pInventory != 0)
             pInventory->FUN_141999e00();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x11, 0xb71, static_cast<IMessageListener*>(this), L"enchant_ok");
         if (spBox.get()) {
             // The box methods live on the derived box; the downcast is offset 0 (no code).
-            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a01600(nItemUid);
-            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a024a0(0);
-            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a01700(0x475, 0, 0);
+            spBox.operator->()->FUN_141a01600(nItemUid);
+            spBox.operator->()->FUN_141a024a0(0);
+            spBox.operator->()->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox.operator->()->FUN_141a01700(0x475, 0, 0);
             FUN_140d73c60(spBox);
         }
     }
@@ -325,7 +310,7 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
 {
     FUN_140cd74a0(GetTypeName());
     FUN_140cd73b0(GetTypeName(), m_nScrollUid, MS2Ptr<CItem>(0));
-    MS2Ptr<CItem> spScroll = reinterpret_cast<Unk_EsInventory&>(g_143ab2a90).FUN_140a5d680(m_nScrollUid);
+    MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nScrollUid);
     if ((((MS2Ptr<AScript>*)(void*)(&m_30))->get() ? true : false) && (((void*)((MS2Ptr<CItem>*)(void*)(&spScroll))->get()) ? true : false)) {
         CStringW strLevel;
         CStringW strTypes;
@@ -336,7 +321,7 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
             strLevel = StringFormat(L"{0}~{1}", m_nLevelMin, m_nLevelMax);
         for (size_t i = 0; i < m_ranks.GetCount(); i++) {
             unsigned nRank = m_ranks[i];
-            CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141813150(nRank), nRank);
+            CStringW strRank = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->GetRankName(nRank), nRank);
             strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
         }
         strRanks.TrimRight(L", ");
@@ -349,9 +334,9 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
         data.FUN_1407cba60("bindID", GetTypeName());
         data.FUN_1407cb9c0("ready", 0);
         data.FUN_1407cbb20("desc", FUN_140f3e550(spScroll));
-        data.FUN_1407cbb20("limit", FUN_1409eadb0(0xb6d, strLevel, strRanks, strTypes));
+        data.FUN_1407cbb20("limit", BlockFormat(0xb6d, strLevel, strRanks, strTypes));
         data.FUN_1407cbb20("failDesc", FUN_140f3e730());
-        static_cast<Unk_EsAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_140ba4cc0("setData", data);
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("setData", data);
     }
 }
 
@@ -376,7 +361,7 @@ void UIEnchantScrollDialog::FUN_140f3d210()
 // @0x140f3d320
 CStringW UIEnchantScrollDialog::FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, int bStable, int bRandom)
 {
-    CStringW strRank = reinterpret_cast<Unk_EsIngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140556a40(spItem->FUN_140526bd0());
+    CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
     CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
     if (bStable)
         strName += FUN_1401d0160(L" ", GetStringCommon(0xb6f));
@@ -404,8 +389,8 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
             continue;
         if (spOpt->HasValue()) {
             ASObj obj(2);
-            __int64 nBase = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_14062ffb0(nKey, 0, 0);
-            float fExtra = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_1406303e0(nKey);
+            __int64 nBase = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetStatValue(nKey, 0, 0);
+            float fExtra = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchantRatio(nKey);
             float fRate = spOpt->FUN_140266e10();
             __int64 nBefore = FUN_140632990(nBase, fExtra);
             __int64 nAfter = FUN_140632990(nBase, fExtra + fRate);
@@ -416,7 +401,7 @@ void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CI
             obj.FUN_1407cbb20("statName", strName);
             obj.FUN_1407cbb20("prevStat", strBefore);
             obj.FUN_1407cbb20("afterStat", strAfter);
-            list.FUN_1422bc050(obj.FUN_1422bb870());
+            list.PushValue(obj.FUN_1422bb870());
         }
     }
     rData.FUN_1409eb1d0("options", list);
@@ -458,8 +443,8 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
         if (spLow->HasValue()) {
             if (spHigh->HasValue()) {
                 ASObj obj(2);
-                __int64 nBase = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_14062ffb0(nKey, 0, 0);
-                float fExtra = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_1406303e0(nKey);
+                __int64 nBase = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetStatValue(nKey, 0, 0);
+                float fExtra = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchantRatio(nKey);
                 float fRateLow = spLow->FUN_140266e10();
                 float fRateHigh = spHigh->FUN_140266e10();
                 __int64 nBefore = FUN_140632990(nBase, fExtra);
@@ -472,7 +457,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
                 obj.FUN_1407cbb20("statName", strName);
                 obj.FUN_1407cbb20("prevStat", strBefore);
                 obj.FUN_1407cbb20("afterStat", strAfter);
-                list.FUN_1422bc050(obj.FUN_1422bb870());
+                list.PushValue(obj.FUN_1422bb870());
             }
         }
     }
@@ -490,7 +475,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e390()
     case 3:
         return StringFormat(L"{0}~{1}", m_nRandomMin, m_nRandomMax);
     case 5: {
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_EsInventory&>(g_143ab2a90).FUN_140a5d680(m_nItemUid);
+        MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(m_nItemUid);
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
             return StringFormat(L"{0}", spItem->FUN_140526fc0());
     }
@@ -516,7 +501,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e550(MS2Ptr<CItem> spItem)
         nId = 0xb6b;
         break;
     }
-    CStringW strDesc = FUN_140632a60(nId, spItem->FUN_140528160(), FUN_140f3e390());
+    CStringW strDesc = FormatStringId(nId, spItem->FUN_140528160(), FUN_140f3e390());
     if (m_bDisableBreak)
         strDesc += GetStringCommonByKey(L"s_enchantscroll_desc_disable_break");
     FUN_1403b4750()->FUN_1416fb340(strDesc);

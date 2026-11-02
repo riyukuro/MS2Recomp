@@ -19,6 +19,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 static CString s_clickSound("System_PinkBeans_Arcade_Click_01");
 
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
@@ -33,7 +34,7 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 
 // Singleton at 0x1401d3200 (a huge manager); two members at +0xc768 / +0xc7c0 give the screen origin.
 class Unk_14025a620 { public: int FUN_14025a620(); void* m_unknown; };
-class Unk_1402056b0 { public: int* FUN_1402056b0(); void* m_unknown; };
+class Unk_1402056b0 { public: void* m_unknown; };
 class Unk_1401d3200
 {
 public:
@@ -989,10 +990,10 @@ void UIMicroGameCoupleDance::UpdatePosition() {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity == NULL) return;
     int nX = ((class Unk_1401d3200*)FUN_1401d3200())->m_c768.FUN_14025a620();
-    int nY = *((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0.FUN_1402056b0() - 0x32;
+    int nY = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0)->Get() - 0x32;
     int nWidth = (int)(pEntity->FUN_1422c1500() * 0.5f + nX);
     int nHeight = (int)(pEntity->FUN_1422c1530() * 0.5f + nY);
-    pEntity->FUN_1422bffe0(nWidth, nHeight);
+    pEntity->SetPositionInt(nWidth, nHeight);
 }
 MS2_REPLACE_METHOD(0x140E648D0, UIMicroGameCoupleDance, UpdatePosition, 305, 0x58D9DEB6);
 // @0x140e64a10

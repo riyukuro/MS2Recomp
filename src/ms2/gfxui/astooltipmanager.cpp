@@ -39,7 +39,7 @@ MS2_REPLACE_METHOD(0x1422C61D0, ASTooltipManager, FUN_1422c61d0, 92, 0x03ECCAA6)
 // @0x1422c6240
 MS2Ptr<ASTooltipManager> FUN_1422c6240(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(nMovieId);
     if (pMovie != 0)
         return MS2Ptr<ASTooltipManager>(new ASTooltipManager(pMovie->FUN_1422bd120("scaleform.ms2.manager.TooltipManager"), nMovieId));
     return MS2Ptr<ASTooltipManager>(0);

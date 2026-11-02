@@ -80,8 +80,8 @@ class Unk_QmWorld;
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143ab0d58;
-extern Unk_SingletonObj* DAT_143ab0d60;
+class CQuestManager;
+class RewardContentsTable;
 
 // The quest state of the local player: slot 23 of the interface at +0x10 tells whether a mask is satisfied.
 class Unk_QmChecker
@@ -104,13 +104,13 @@ struct Unk_QmPlayerState
 // @0x140764020
 void* FUN_140764020()
 {
-    return DAT_143ab0d58;
+    return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CQuestManager>::s_instance);
 }
 
 // @0x140764030
 void* FUN_140764030()
 {
-    return DAT_143ab0d60;
+    return reinterpret_cast<Unk_SingletonObj*>(TSingleton<RewardContentsTable>::s_instance);
 }
 
 // Header statics (the shared list of header_statics_a.h with the random generator in front of the second name table).
@@ -527,7 +527,7 @@ int FUN_140765520(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
 
 // The fame table's getter (the exe types it Unk_EmoNpcTable).
 class Unk_EmoNpcTable;
-extern Unk_EmoNpcTable* DAT_143aaeb10;
+class CFameTable;
 Unk_EmoNpcTable* FUN_140764010();
 static inline CFameTable* FameTable()
 {
@@ -1186,7 +1186,7 @@ MS2_REPLACE(0x1407638e0, FUN_1407638e0, 428, 0x4CF69B83);
 // @0x140764010
 Unk_EmoNpcTable* FUN_140764010()
 {
-    return DAT_143aaeb10;
+    return reinterpret_cast<Unk_EmoNpcTable*>(TSingleton<CFameTable>::s_instance);
 }
 
 // @0x140764480

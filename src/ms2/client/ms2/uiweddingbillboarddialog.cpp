@@ -40,6 +40,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -62,7 +63,7 @@ public:
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
-void* FUN_1409eed90();                                          // the singleton of the own character
+class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -170,7 +171,7 @@ int UIWeddingBillboardDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             unsigned __int64 nSN = FUN_140718370(data.FUN_1422b8f40());
-            ((class WeddingManager*)(void*)(FUN_1409eed90()))->SendInvitation(nSN);
+            TSingleton<WeddingManager>::GetInstance()->SendInvitation(nSN);
         }
     }
     else if (_stricmp(szMethod, "onPrev") == 0)

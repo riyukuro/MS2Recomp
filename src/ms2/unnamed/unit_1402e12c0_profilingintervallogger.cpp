@@ -131,16 +131,15 @@ void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszForm
 // @0x1402e12c0
 void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
 {
-    bool bHasMessage = !m_strMessage.IsEmpty();
+    bool bEmpty = m_strMessage.IsEmpty();
     unsigned nNow = GetTickCountMs2();
     if (m_nFirstTick == 0)
         m_nFirstTick = nNow;
     int nDeltaLast = (int)(nNow - m_nLastTick);
     int nDeltaFirst = (int)(nNow - m_nFirstTick);
-    if (bHasMessage) {
+    if (!bEmpty) {
         m_nCount++;
-        void* pLog = ((void*)GetLogString());
-        FUN_1402e1600((i64)pLog, 0, 0, 1, L"[{0}_{1}:{2} {3}/{4}]",
+        FUN_1402e1600((i64)GetLogString(), 0, 0, 1, L"[{0}_{1}:{2} {3}/{4}]",
                       &m_strLabel, &m_nCount, &m_strMessage, &nDeltaLast, &nDeltaFirst);
     }
     m_nLastTick = nNow;

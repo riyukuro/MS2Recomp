@@ -38,6 +38,7 @@
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/jobsystemcli.h"
+#include "ms2/placeholder/iclientplatform.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -85,55 +86,6 @@ template <typename A, typename B> CStringW FUN_14028dee0(int nId, const A& a, co
 // The string table singleton: FUN_141811980(table, id).
 
 // The platform host (singleton 0x140d86260): slots 40/41 test whether a cost can be paid, 43 raises a notice.
-class Unk_RevNet
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1();
-    virtual void vfunc_2();
-    virtual void vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8();
-    virtual void vfunc_9();
-    virtual void vfunc_10();
-    virtual void vfunc_11();
-    virtual void vfunc_12();
-    virtual void vfunc_13();
-    virtual void vfunc_14();
-    virtual void vfunc_15();
-    virtual void vfunc_16();
-    virtual void vfunc_17();
-    virtual void vfunc_18();
-    virtual void vfunc_19();
-    virtual void vfunc_20();
-    virtual void vfunc_21();
-    virtual void vfunc_22();
-    virtual void vfunc_23();
-    virtual void vfunc_24();
-    virtual void vfunc_25();
-    virtual void vfunc_26();
-    virtual void vfunc_27();
-    virtual void vfunc_28();
-    virtual void vfunc_29();
-    virtual void vfunc_30();
-    virtual void vfunc_31();
-    virtual void vfunc_32();
-    virtual void vfunc_33();
-    virtual void vfunc_34();
-    virtual void vfunc_35();
-    virtual void vfunc_36();
-    virtual void vfunc_37();
-    virtual void vfunc_38();
-    virtual void vfunc_39();
-    virtual bool vfunc_40(__int64 nCost);
-    virtual bool vfunc_41(__int64 nCost);
-    virtual void vfunc_42();
-    virtual void vfunc_43(int nA, int nB, int nC);
-};
-Unk_RevNet* FUN_140d86260();
 
 
 extern Unk_Inventory g_143ab2a90;                       // the player's inventory
@@ -241,7 +193,7 @@ void UIRevivalDialog::OnLoadComplete()
     m_178 = -1;
     FUN_141abb420();
     FUN_141abae20();
-    FUN_140d86260()->vfunc_43(0xe, 0, 1000);
+    GetClientPlatform()->vfunc_43(0xe, 0, 1000);
 }
 
 // @0x141aba8c0
@@ -392,7 +344,7 @@ void UIRevivalDialog::FUN_141abae20()
         }
         else
         {
-            if (pPc->FUN_141661970() != 0)
+            if (pPc->IsRevivalBlocked() != 0)
             {
                 if (m_1b4 == 2)
                     strMsg = GetStringCommonByKey(L"s_msg_die_repeat_meso");
@@ -426,7 +378,7 @@ void UIRevivalDialog::FUN_141abae20()
         }
         if (m_30.get() != 0)
         {
-            static_cast<Unk_CbScript*>(m_30.operator->())->FUN_140e0a8c0("setData", strMsg, pPc->FUN_141661970());
+            static_cast<Unk_CbScript*>(m_30.operator->())->FUN_140e0a8c0("setData", strMsg, pPc->IsRevivalBlocked());
         }
     }
 }
@@ -462,7 +414,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01700(0x476, 0, 0);
-            spBox->FUN_141a01ca0(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
+            spBox->SetTimer(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_RevConsts*>(FUN_1401d3200())->m_cfe0)->Get(), 1, GetStringCommon(0x2b8));
             FUN_140d73c60(spBox);
         }
     }
@@ -685,10 +637,10 @@ bool UIRevivalDialog::FUN_141abcb10(__int64 nCost)
 {
     if (FUN_141abc740() != 0)
     {
-        if (FUN_140d86260()->vfunc_41(nCost) != 0)
+        if (GetClientPlatform()->vfunc_41(nCost) != 0)
             return true;
     }
-    return FUN_140d86260()->vfunc_40(nCost);
+    return GetClientPlatform()->vfunc_40(nCost);
 }
 
 // @0x141abcb90

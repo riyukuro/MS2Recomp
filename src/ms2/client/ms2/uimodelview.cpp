@@ -155,35 +155,35 @@ void UIModelView::vfunc_7(float fX, float fY, float fZ)
 }
 
 // @0x140e66fa0
-// MS2-FUNCTIONAL: in the exe only the new position (a local NiPoint3 without a ctor) is computed inside the if;
-// SetTranslate(kNew) and Update run after it unconditionally (0x140e67131), so when the camera is already past the
-// limit the exe moves it to an uninitialised stack point. Here the camera is left in place instead.
 void UIModelView::vfunc_8(float fDist)
 {
     if (m_nZoomState != 0)
         m_nZoomState = 0;
+    const NiPoint3& rTranslate = m_spCamera->GetTranslate();
+    const NiPoint3& rPosition = m_kCamera.m_kPosition;
     fDist = (std::min)(m_kCamera.m_fMinDistance, fDist);   // sic: the exe takes min here (0x1409ffe80), not max
-    if ((m_kCamera.m_kPosition - m_spCamera->GetTranslate()).Length() < fDist)
+    if ((rPosition - rTranslate).Length() < fDist)
     {
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
-        m_spCamera->SetTranslate(NiPoint3(m_kCamera.m_kPosition + kDir * fDist));
+        NiPoint3 kNew = rPosition + kDir * fDist;
+        m_spCamera->SetTranslate(kNew);
         m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
 }
 
 // @0x140e67140
-// MS2-FUNCTIONAL: in the exe only the new position (a local NiPoint3 without a ctor) is computed inside the if;
-// SetTranslate(kNew) and Update run after it unconditionally (0x140e67131), so when the camera is already past the
-// limit the exe moves it to an uninitialised stack point. Here the camera is left in place instead.
 void UIModelView::vfunc_9(float fDist)
 {
     if (m_nZoomState != 0)
         m_nZoomState = 0;
+    const NiPoint3& rTranslate = m_spCamera->GetTranslate();
+    const NiPoint3& rPosition = m_kCamera.m_kPosition;
     fDist = (std::max)(m_kCamera.m_fMaxDistance, fDist);   // sic: the exe takes max here (0x140805fc0), not min
-    if (fDist < (m_kCamera.m_kPosition - m_spCamera->GetTranslate()).Length())
+    if ((rPosition - rTranslate).Length() > fDist)
     {
         NiPoint3 kDir = -m_spCamera->GetWorldDirection();
-        m_spCamera->SetTranslate(NiPoint3(m_kCamera.m_kPosition + kDir * fDist));
+        NiPoint3 kNew = rPosition + kDir * fDist;
+        m_spCamera->SetTranslate(kNew);
         m_spCamera->Update((float)((class CMainSystem*)(class Unk_UmvClock*)(((class Unk_UmvClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
     }
 }

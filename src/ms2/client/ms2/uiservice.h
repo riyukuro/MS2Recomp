@@ -128,8 +128,8 @@ public:
     void FUN_141ada6f0(int nScene);                 // 0x141ada6f0
     void FUN_141adad20(int nScene);                 // 0x141adad20
     void FUN_141add1f0();                           // 0x141add1f0
-    void FUN_141add210();                           // 0x141add210 "not enough merat" confirm box
-    void FUN_141add390();                           // 0x141add390 "not enough meso market token" confirm box
+    void ShowLackMeratAsk();                           // 0x141add210 "not enough merat" confirm box
+    void ShowLackMesoMarketTokenAsk();                           // 0x141add390 "not enough meso market token" confirm box
     void FUN_141add520(CStringW strText, CStringW strArg);   // 0x141add520 market confirm box with one argument
     void FUN_141aec8f0(bool bOn, NiAVObject* pRoot);   // 0x141aec8f0 debug visualization click on / off
     void FUN_141aebed0();                           // 0x141aebed0 register the camera dialog and the callbacks
@@ -140,10 +140,10 @@ public:
     void FUN_141adb2a0(int nScene);                 // 0x141adb2a0 show it again (argument unused)
     void FUN_141adbbb0();                           // 0x141adbbb0
     int CloseAllDialogs();                            // 0x141adcd40 close the dialogs that can be closed
-    int FUN_141aec1f0(MS2Ptr<UIDialog> spDlg);      // 0x141aec1f0 dialog may be closed in bulk
+    int IsDialogClosable(MS2Ptr<UIDialog> spDlg);      // 0x141aec1f0 dialog may be closed in bulk
     void FUN_141adb4c0(int bOn);                    // 0x141adb4c0 enable / disable every hot key slot
     void FUN_141adb7b0(int bOn);                    // 0x141adb7b0
-    void FUN_141adbb40();                           // 0x141adbb40 step the cursor mode 0..3
+    void CycleCursor();                           // 0x141adbb40 step the cursor mode 0..3
     void FUN_141adbd60(int n);                      // 0x141adbd60
     int FUN_141adbd80();                           // 0x141adbd80
     void FUN_141adbdc0(int n);                      // 0x141adbdc0
@@ -173,13 +173,13 @@ public:
     // ---- generated member decls ----
     void FUN_141adc050();                                                   // 0x141adc050 close the closable dialogs
     void FUN_141aec8c0(int nMode);                                          // 0x141aec8c0
-    void FUN_141ad9350();                                              // 0x141ad9350
+    void ClearAllUI();                                              // 0x141ad9350
     void FUN_141ad93b0();                                              // 0x141ad93b0 check / rewrite version.xml
     void FUN_141ad9650();                                              // 0x141ad9650 field background movie
     void LoadStageBackground(char nStage);                                   // 0x141ad9980
     void LoadBackground(CStringA strBg);                                // 0x141ad9a60
     void FUN_141ad9b30();                                              // 0x141ad9b30
-    bool FUN_141ad9b60();                                              // 0x141ad9b60
+    bool AddMovieDamage();                                              // 0x141ad9b60
     void FUN_141ad9c10();                                              // 0x141ad9c10
     void FUN_141ad9c40(MS2Ptr<CGemBase> spGem);                        // 0x141ad9c40 damage overlay: gem effect on
     void FUN_141ad9d00(MS2Ptr<CGemBase> spGem);                        // 0x141ad9d00 damage overlay: gem effect off
@@ -200,7 +200,7 @@ public:
     void FUN_141adba40();                                              // 0x141adba40
     int FUN_141adbb00();                                               // 0x141adbb00
     void FUN_141adbfb0(void* p);                                       // 0x141adbfb0 vfunc_79 on every floating dialog
-    void FUN_141add6e0(int nMode);                                     // 0x141add6e0 set the mode (deferred while m_b120)
+    void SetMode(int nMode);                                     // 0x141add6e0 set the mode (deferred while m_b120)
     int FUN_141add730();                                               // 0x141add730
     bool FUN_141add880(int nResult, const class CMsgBoxData& box);     // 0x141add880
     bool FUN_141add940(int nResult, const class CMsgBoxData& box);     // 0x141add940

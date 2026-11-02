@@ -10,22 +10,14 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+#include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/uiservice.h"
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
 class Unk_ScpWorld;                         // the cinematic presentation the scene switches to
-class Unk_ScpSceneCtl;                      // the UI scene controller (FUN_1403ed2b0)
 class Unk_ScpSceneMgr;                      // the UI scene manager (FUN_1408e57f0)
 
-Unk_ScpSceneCtl* FUN_1403ed2b0();
-class CUIService   // C3: member view for the former free stand-ins
-{
-public:
-    void FUN_141ad9e50(int);
-    void FUN_141ada610(int);
-    void FUN_141ada6f0(int);
-    void FUN_141adad20(int);
-};
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -62,8 +54,8 @@ void UISceneGameCinematicPlay::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(false);
-    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141ad9e50(m_6c);
-    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141ada6f0(m_6c);
+    TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(m_6c);
+    TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(m_6c);
     FUN_1422e7950();
 }
 
@@ -72,8 +64,8 @@ void UISceneGameCinematicPlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(true);
-    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141ada610(m_6c);
-    ((class CUIService*)(class Unk_ScpSceneCtl*)(FUN_1403ed2b0()))->FUN_141adad20(m_6c);
+    TSingleton<CUIService>::GetInstance()->FUN_141ada610(m_6c);
+    TSingleton<CUIService>::GetInstance()->FUN_141adad20(m_6c);
     FUN_1422e7950();
 }
 

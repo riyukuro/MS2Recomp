@@ -558,7 +558,7 @@ void AdditionalCli::FUN_14096d430()
         {
             UIMainPlayerInfo* pInfo = FUN_140931900(20063);
             if (pInfo)
-                pInfo->FUN_1419f10b0(MS2Ptr<Unk_AsBuff>(reinterpret_cast<Unk_AsBuff*>(this)));
+                pInfo->UpdateBuffEffect(MS2Ptr<Unk_AsBuff>(reinterpret_cast<Unk_AsBuff*>(this)));
         }
         else if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
         {

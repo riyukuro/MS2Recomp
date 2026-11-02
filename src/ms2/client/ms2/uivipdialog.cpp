@@ -6,6 +6,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uivipdialog.cpp"    // assumed
+#define MS2_ASUICOMPONENT_SLOTS   // ASTileList::vfunc_24 (validateNow)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "uivipdialog.h"
@@ -38,19 +39,7 @@ static CString s_sndCashBuy = "cash_Buy";
 
 // ---- unit-local views of exe objects ----
 
-// The list control of the movie (the AS list with clear / append).
-class Unk_VdList : public AScript
-{
-public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
-    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bRefresh);
-};
-template <> MS2Ptr<Unk_VdList> UISwfEntity::GetChild<Unk_VdList>(const CString&);    // 0x140ba4b70
+template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString&);    // 0x140ba4b70
 
 // The message box with its sound slot (the record is a CMsgBoxData).
 class Unk_VdMsgBox : public CMsgBoxData { public: void FUN_141a01c30(const CString&); };
@@ -303,7 +292,7 @@ void UIVIPDialog::FUN_140fb8d10()
     spTime->GetPosition(&fX, &fY);
     fX = fX + (float)((spTime->FUN_1422c1340() - nTextWidth) - 0x1e);
     if (MS2Ptr<ASMovieClip> spIcon = GetChild<ASMovieClip>("m_timerIcon"))
-        spIcon->FUN_1422c00f0(fX, fY);
+        spIcon->SetPositionFloat(fX, fY);
 }
 
 // @0x140fb9150
@@ -314,7 +303,7 @@ void UIVIPDialog::FUN_140fb9150()
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<Unk_VdList> spList = GetChild<Unk_VdList>("m_benefitItemList");
+    MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_benefitItemList");
     if (spList == 0)
         return;
     spList->Invoke("resetRenderer");

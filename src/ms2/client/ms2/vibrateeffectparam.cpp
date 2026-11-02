@@ -15,6 +15,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/ms2inputservice.h"
 #include "ms2/placeholder/cgameoption.h"
+#include "ms2/client/ms2/camera.h"
 
 // Game TinyXML element and its float attribute helper (commonfiles\tinyxmlhelper.cpp).
 class Unk_140165cf0;
@@ -30,37 +31,6 @@ public:
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
-
-// The camera shake of the camera service (camera.cpp): constructed here, started through the camera manager.
-class CVibrateCameraEffect
-{
-public:
-    CVibrateCameraEffect(double dStart, double dEnd, float fFreq, float fAmp, float fDamping, double dDampingStart,
-                         int nFlag);                            // 0x140ae9450
-    char m_unk[0x58];
-};
-MS2_CHECK_SIZE(CVibrateCameraEffect, 0x58);
-
-// Reference holder handed to the camera manager (callee-destroyed; 0x1417f5820 sets it up from the effect).
-struct Unk_CamEffectRef
-{
-    void* m_unk[4];
-};
-Unk_CamEffectRef FUN_1417f5820(CVibrateCameraEffect* pEffect);
-
-// Camera manager (singleton 0x1409478c0).
-class CameraMgr
-{
-public:
-    int FUN_140aed0f0();                                        // camera effects enabled
-    int FUN_140a18070();                                        // camera ready
-};
-class Unk_CameraManager
-{
-public:
-    void FUN_140af0de0(const Unk_CamEffectRef& kRef);                 // queue the camera effect (consumes pRef)
-};
-CameraMgr* FUN_1409478c0();
 
 // Feature switches (commonfiles\featuremanager.cpp) and game options (gamepad vibration flag).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -155,12 +125,12 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
         pEffect->m_dStartTime = TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280() + pParam->m_fStartDelay;
         pEffect->m_fDuration = pParam->m_fDuration;
         pEffect->m_b2c = pParam->m_b30;
-        if (FUN_1409478c0()->FUN_140a18070())
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070())
         {
             CVibrateCameraEffect* pCamera = new CVibrateCameraEffect(pEffect->m_dStartTime,
                 pEffect->m_dStartTime + pEffect->m_fDuration, pParam->m_fFreq, pParam->m_fAmp, pParam->m_fDamping,
                 pEffect->m_dStartTime + pParam->m_fDampingTime, 1);
-            ((Unk_CameraManager*)FUN_1409478c0())->FUN_140af0de0(FUN_1417f5820(pCamera));
+            TSingleton<CameraMgr>::GetInstance()->AddEffect(MS2Ptr<CCameraEffect>(pCamera));
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
         {
@@ -175,16 +145,16 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
 // @0x141b72bd0
 bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
-    if (!FUN_1409478c0()->FUN_140aed0f0())
+    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140aed0f0())
         return false;
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const CVibrateEffectParam* pVibrate = static_cast<const CVibrateEffectParam*>(pParam);
-    if (FUN_1409478c0()->FUN_140a18070())
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070())
     {
         CVibrateCameraEffect* pCamera = new CVibrateCameraEffect(m_dStartTime, m_dStartTime + m_fDuration,
             pVibrate->m_fFreq, pVibrate->m_fAmp, pVibrate->m_fDamping, m_dStartTime + pVibrate->m_fDampingTime, 1);
-        ((Unk_CameraManager*)FUN_1409478c0())->FUN_140af0de0(FUN_1417f5820(pCamera));
+        TSingleton<CameraMgr>::GetInstance()->AddEffect(MS2Ptr<CCameraEffect>(pCamera));
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
     {

@@ -408,7 +408,7 @@ void EntityInstancing::FUN_1411c68d0() {
 }
 MS2_REPLACE_METHOD(0x1411c68d0, EntityInstancing, FUN_1411c68d0, 376, 0xCD9A901E);
 // @0x1411c6a50
-bool EntityInstancing::FUN_1411c6a50(const egf::EntityID& id) {
+bool EntityInstancing::FUN_1411c6a50(egf::EntityID id) {
     std::list<egf::EntityID>::iterator it = std::find(hidden.begin(), hidden.end(), id);
     return it != hidden.end();
 }

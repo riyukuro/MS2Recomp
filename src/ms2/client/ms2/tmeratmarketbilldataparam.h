@@ -5,6 +5,8 @@
 #pragma once
 #include "ms2/client/ms2/tmarketbilldataparam.h"
 
+class CMeratMarketProduct;      // commonfiles/meratmarketbasketinfo.h
+
 class TMeratMarketBillDataParam : public TMarketBillDataParam
 {
 public:
@@ -18,8 +20,8 @@ public:
     bool m_bGift;                                                   // +0xe0
     int m_nSourceKind;                                              // +0xe4 where the purchase starts (1 = the limited offer dialog)
     MS2Ptr<CPtred> m_spE8;                                          // +0xe8
-    MS2Ptr<CPtred> m_spF8;                                          // +0xf8
-    MS2Ptr<CPtred> m_sp108;                                         // +0x108
+    MS2Ptr<CMeratMarketProduct> m_spF8;                             // +0xf8 (MS2Ptr<CMeratMarketProduct>::get at 0x140ebded0)
+    MS2Ptr<CMeratMarketProduct> m_sp108;                            // +0x108
 };
 MS2_CHECK_SIZE(TMeratMarketBillDataParam, 0x118);
 MS2_CHECK_OFFSET(TMeratMarketBillDataParam, m_bGift, 0xe0);

@@ -188,7 +188,7 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                                                 data->m_initialEulerAngles.z * -0.017453292f);
                     efd::Point3 translation = data->m_initialTranslation / 100.0f;
                     NxMat34 pose(NX_IDENTITY_MATRIX);
-                    NiPhysXTypes::NiTransformToNxMat34(rotation, translation, pose);
+                    NiPhysXTypes::NiTransformToNxMat34(rotation, (NiPoint3&)translation, pose);
                     bool cube = false;
                     entity->GetPropertyValue(0x38141815, cube);
                     if (cube) {

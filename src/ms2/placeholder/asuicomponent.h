@@ -18,41 +18,41 @@ public:
     // the ASDisplayObject slot the inherited symbol would name (asgaugecontrol.cpp's vftable).
     virtual void vfunc_4(bool b);                                   // 0x1422c7230 (overrides ASDisplayObject::vfunc_4)
     // Registers a (callback, id) pair on the component (Delegate passed by value: the callee destroys it).
-    void FUN_1422c7a90(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, long long n);
+    void SetGetTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> callback, long long n);
     // The component's size, measured from its ActionScript object (the exe folds these three with ASDialog's and
     // ASGameEntity's copies; screenmask.cpp calls them on an ASUIComponent).
     // width: ASDisplayObject::FUN_1422c1500 (inherited)
     int FUN_1422c1530();                                            // 0x1422c1530 height
-    void FUN_1422c79e0(int nWidth, int nHeight);                    // 0x1422c79e0 resize
+    void SetSizeInt(int nWidth, int nHeight);                    // 0x1422c79e0 resize
     // mouse / focus members (uinoticedialog.cpp: the hit area of the notice dialog)
     void SetFocusable(int n);                                      // 0x1422c7840
-    void FUN_1422c7630(int n);                                      // 0x1422c7630 focus
-    int FUN_1422c76c0();                                            // 0x1422c76c0
+    void SetFocused(int n);                                      // 0x1422c7630 focus
+    int GetFocused();                                            // 0x1422c76c0
     void FUN_1422de700(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de700 mouse over listener
     void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de780 mouse out listener
     void FUN_1422de960(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // 0x1422de960 remove the mouse out listener (uiclosetdialog.cpp)
-    bool FUN_1422c7b40(CStringW strTooltip);                        // 0x1422c7b40 set the tooltip text (by value: the callee destroys it)
+    bool SetTooltipText(CStringW strTooltip);                        // 0x1422c7b40 set the tooltip text (by value: the callee destroys it)
     void SetTooltipOffset(int nWidth, int n2);                         // 0x1422c7d30 (uidungeonroomdialog: sub tab 3 gets 300, 0)
 
     // ---- recovered with ?\asuicomponent.cpp (src/ms2/gfxui/asuicomponent.cpp, 0x1422c70b0-0x1422c8390) ----
-    void FUN_1422c7290(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "show" listener
-    void FUN_1422c7310(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "hide" listener
-    void FUN_1422c7390(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "keyFocusChange" listener
-    void FUN_1422c7410(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "dragStart" listener
-    void FUN_1422c7490(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "dragEnd" listener
-    void FUN_1422c7510(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "keyFocusChange" listener
-    void FUN_1422c7570(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "dragStart" listener
-    void FUN_1422c75d0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "dragEnd" listener
+    void AddShowHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "show" listener
+    void AddHideHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "hide" listener
+    void AddKeyFocusChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "keyFocusChange" listener
+    void AddDragStartHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "dragStart" listener
+    void AddDragEndHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser);   // add a "dragEnd" listener
+    void RemoveKeyFocusChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "keyFocusChange" listener
+    void RemoveDragStartHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "dragStart" listener
+    void RemoveDragEndHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // remove the "dragEnd" listener
     void SetDisplayFocus(int n);                                      // set "displayFocus"
-    int FUN_1422c7760();                                            // "displayFocus"
+    int GetDisplayFocus();                                            // "displayFocus"
     int HasFocus();                                            // "hasFocus"
-    int FUN_1422c7890();                                            // "focusable"
+    int GetFocusable();                                            // "focusable"
     int GetActualWidth();                                            // "actualWidth"
     int GetActualHeight();                                            // "actualHeight"
-    void FUN_1422c7a30(float fWidth, float fHeight);                // setSize (float)
-    void FUN_1422c7cd0(const Scaleform::GFx::Value& data);          // set "_tooltipData"
-    void FUN_1422c7e20();                                           // register the tooltip (m_bTooltip; FUN_1422c6380)
-    void FUN_1422c7e70();                                           // unregister the tooltip (FUN_1422c63f0)
+    void SetSizeFloat(float fWidth, float fHeight);                // setSize (float)
+    void SetTooltipData(const Scaleform::GFx::Value& data);          // set "_tooltipData"
+    void RegisterTooltip();                                           // register the tooltip (m_bTooltip; FUN_1422c6380)
+    void UnregisterTooltip();                                           // unregister the tooltip (FUN_1422c63f0)
     void FUN_1422c8120(bool bShow);                                 // dispatch a "show" / "hide" ASEvent
 
     // Slots 3 and 16-24. Opt-in (define MS2_ASUICOMPONENT_SLOTS before including): many units derive local classes
@@ -72,6 +72,6 @@ public:
 #endif
 
 private:
-    bool m_bTooltip;                                                // +0x80 the tooltip is registered (FUN_1422c7e20/7e70)
+    bool m_bTooltip;                                                // +0x80 the tooltip is registered (RegisterTooltip/7e70)
 };
 MS2_CHECK_SIZE(ASUIComponent, 0x88);

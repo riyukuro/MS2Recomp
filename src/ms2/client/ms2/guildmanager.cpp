@@ -244,7 +244,7 @@ void CGuildManager::FUN_1413b5e80()
         if (UIGameMenuDialog* dialog = FUN_140938b90(0x4e28))
             dialog->FUN_1419381c0();
         if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
-            dialog->FUN_141973a70();
+            dialog->UpdateAttendBackground();
         m_nextRefreshTime = GetServerTime();
     }
 }
@@ -1242,7 +1242,7 @@ void CGuildManager::SetTargetGuildAndNotify(Unk_GuildTarget* target)
     m_targetGuildName = guildName;
     FUN_140d73aa0(GetStringCommon(0x3c8), 0, 0, CStringW(L""));
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
-        dialog->FUN_14196cf80();
+        dialog->UpdateBelongGuildText();
 }
 MS2_REPLACE_METHOD(0x1413BC250, CGuildManager, SetTargetGuildAndNotify, 314, 0xDB1C9312);
 
@@ -1621,7 +1621,7 @@ void CGuildManager::FUN_1413bdbb0(CInPacket& packet)
     } else {
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FormatStringId<CStringW, CStringW>(0x38c, m_invite->f30, m_invite->f20), 0, CStringW(s_strGuildInvite));
         if (box.get()) {
-            box->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+            box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
             box->FUN_141a02460(1);
             box->FUN_141a02480(1);
             box->FUN_141a024a0(0);
@@ -2127,7 +2127,7 @@ void CGuildManager::OnPacketMemberContribution(CInPacket& packet)
         if (UIGameMenuDialog* dialog = FUN_140938b90(0x4e28))
             dialog->FUN_1419381c0();
         if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
-            dialog->FUN_141973a70();
+            dialog->UpdateAttendBackground();
     }
 }
 MS2_REPLACE_METHOD(0x1413C0D30, CGuildManager, OnPacketMemberContribution, 311, 0xDE9C2BFB);
@@ -2221,7 +2221,7 @@ void CGuildManager::OnPacketGuildRenamed(CInPacket& packet)
     SetGuildName(guildName);
     FUN_1412751b0(FormatStringId<CStringW>(0x3b4, guildName), 0xd);
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
-        dialog->FUN_141974190(guildName);
+        dialog->SetGuildName(guildName);
     PC* pc = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pc != 0)
         pc->vfunc_129(guildName);
@@ -2258,7 +2258,7 @@ void CGuildManager::FUN_1413c1960(CInPacket& packet)
         return;
     current->FUN_1404c70f0(grade.grade, grade.name, grade.permissions);
     if (UIGuildDialog* dialog = ((class UIGuildDialog*)FUN_14136f480(0x4e4f)))
-        dialog->FUN_141973fd0(index);
+        dialog->RefreshMembersOfGrade(index);
     MS2Ptr<CGuildMember> me = FUN_1404cf9f0(FUN_1413c7c20());
     if (me.get() != 0 && me->fb4 == index)
         FUN_1412751b0(FormatStringId<CStringW>(0x3a7, FUN_1413c7c20()), 0xd);
@@ -2415,7 +2415,7 @@ void CGuildManager::FUN_1413c28e0(CInPacket& packet)
             CStringW text = GetStringCommon(0x3c1);
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, text, 0, CStringW(s_strGuildArenaJoin));
             if (box.get()) {
-                box->FUN_141a01ca0(0x1e, 1, GetStringCommon(0x2b8));
+                box->SetTimer(0x1e, 1, GetStringCommon(0x2b8));
                 box->FUN_141a02460(1);
                 box->FUN_141a02480(1);
                 box->FUN_141a024a0(0);
@@ -2700,7 +2700,7 @@ void CGuildManager::FUN_1413c45e0(CInPacket& packet)
         return;
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_guild_notify_vsGame_open"), 1)) {
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::SendGuildMode120));
-        box->FUN_141a01ca0(0x1e, 1, GetStringCommon(0x2b8));
+        box->SetTimer(0x1e, 1, GetStringCommon(0x2b8));
         box->FUN_141a02460(1);
         box->FUN_141a02480(1);
         box->FUN_141a024a0(0);
@@ -3156,9 +3156,9 @@ CStringW CGuildManager::FUN_1413c7c20()
 MS2_REPLACE_METHOD(0x1413C7C20, CGuildManager, FUN_1413c7c20, 129, 0x9BBE6FF2);
 
 // Adds members read from the packet (under the guild lock).
-// MS2-FUNCTIONAL: the member handed to CGuildInfo::vfunc_0 is built from the raw pointer (the original copies the
-// MS2Ptr by value), and the new member's pointer is the 16-byte payload pointer in the original (frame 0x10
-// smaller here); same calls in the same order.
+// The new member is held in the 16-byte payload pointer, and CGuildInfo::vfunc_0 takes a by-value copy of it.
+//
+//
 // @0x1413c7900
 void CGuildManager::FUN_1413c7900(CInPacket& packet)
 {
@@ -3168,9 +3168,9 @@ void CGuildManager::FUN_1413c7900(CInPacket& packet)
     } else {
         int count = packet.ReadUInt8();
         for (int i = 0; i < count; i++) {
-            MS2Ptr<CGuildMember> member(new CGuildMember());
+            Unk_PayloadPtr<CGuildMember> member(new CGuildMember());
             member->FUN_1404cb450(&packet);
-            vfunc_0(Unk_PayloadPtr<CGuildMember>(member.get()));
+            vfunc_0(member);
             reinterpret_cast<COptimizer*>(FUN_1409f7c90())->AddPreloadPlayer(member->data.f08);
         }
     }

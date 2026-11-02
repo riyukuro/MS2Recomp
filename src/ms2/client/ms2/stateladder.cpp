@@ -26,12 +26,12 @@
 bool FUN_140998dc0(const NiFixedString& kStr, const char* psz);                           // string compare
 bool FUN_14028d470(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
-bool FUN_1412410c0(Unk_PCBaseBody* pBody, const efd::Point3& kPos, float fHeight);                // blocked test of the body
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_141240730();
     class GameObjectControllerHitReport* FUN_141240f20();
+    bool FUN_1412410c0(const efd::Point3& kPos, float fOffset);
 };
 class GameObjectControllerHitReport   // C3: member view for the former free stand-ins
 {
@@ -64,7 +64,6 @@ public:
     int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-int FUN_140961880(egf::Entity* pEntity, unsigned int nHash, float* pOut);                 // property read (float)
 void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
 extern efd::Point3 DAT_143a08cf8;                                                          // the up axis
 
@@ -90,7 +89,7 @@ public:
 class Unk_PCMove { public: bool FUN_141682fe0(int); bool FUN_141683100(int);  public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
 class Unk_LadderMove : public Unk_PCMove {
 public:
-
+class Unk_PCMove { public: bool FUN_141682fe0(int); bool FUN_141683100(int); };
 
 };
 
@@ -174,7 +173,7 @@ void StateLadder::vfunc_4(StateData* pData)
         float fDist;
         reinterpret_cast<egf::Entity*>(pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kBase));
         reinterpret_cast<egf::Entity*>(pLadder)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kRot));
-        FUN_140961880(pLadder, 0xf8b99313, &fDist);
+        pLadder->GetPropertyValue(0xf8b99313, fDist);
         kRot.z = kRot.z + 180.0f;
         FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));
         pPC->FUN_14166d970(kRot);
@@ -234,7 +233,7 @@ void StateLadder::vfunc_3(double fTime)
     }
     if (m_n10 == 0x2a)
     {
-        NiPoint3 kVel = m_pOwner->FUN_14123c360();
+        efd::Point3 kVel = m_pOwner->FUN_14123c360();
         if (kVel.y > 0.0f)
             m_n10 = 0x2b;
         else if (kVel.y < 0.0f)
@@ -253,12 +252,12 @@ void StateLadder::vfunc_8(double fTime)
     if (m_timerPos.FUN_140868c00() != 0)
         kDir = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683290()));
     reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
-    if (pMove->FUN_141683100(0x493e1) || m_n28 != 0)
+    if (((class Unk_PCMove*)(pMove))->FUN_141683100(0x493e1) || m_n28 != 0)
     {
         m_n28 = 0;
         reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683290())));
-        if (m_pOwner->FUN_1416749c0() && !pMove->FUN_141682fe0(0x30d43) && !pMove->FUN_141682fe0(0x30d44)
-            && pMove->FUN_141682fe0(0x30d41))
+        if (m_pOwner->FUN_1416749c0() && !((class Unk_PCMove*)(pMove))->FUN_141682fe0(0x30d43) && !((class Unk_PCMove*)(pMove))->FUN_141682fe0(0x30d44)
+            && ((class Unk_PCMove*)(pMove))->FUN_141682fe0(0x30d41))
             reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0, 0);
     }
@@ -409,7 +408,7 @@ float StateLadder::FUN_1417d8c00()
                     {
                         efd::Point3 kAt = kTop;                     // unused copy (the exe makes it)
                         efd::Point2 kSize = m_pOwner->FUN_141671390();
-                        if (FUN_1412410c0(m_pOwner->FUN_14166d220(), kTop, kSize.y * 0.5f) == 0)
+                        if (reinterpret_cast<GameObjectController*>(m_pOwner->FUN_14166d220())->FUN_1412410c0(kTop, kSize.y * 0.5f) == 0)
                         {
                             efd::Point3 kMid = kPos;
                             kMid.z = kTop.z;

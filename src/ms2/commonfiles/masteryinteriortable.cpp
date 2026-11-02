@@ -44,8 +44,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-void FUN_140177e10(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);         // split into unsigneds
-void FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<unsigned>& rOut);                // list attribute
+template <class C> void XmlSplit(const CString&, C&, const char*);         // split into unsigneds
+template <class C> int XmlTokenList(Unk_140165cf0*, const char*, C&);                // list attribute
 void FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>& rOut);                     // list attribute
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -134,7 +134,7 @@ bool CMasteryInteriorTable::LoadMastery()
         ATL::CAtlArray<unsigned> ids;
         ATL::CAtlArray<int> ranks;
         ATL::CAtlArray<int> counts;
-        FUN_140178670(pRow, "rewardJobItemID", ids);
+        XmlTokenList(pRow, "rewardJobItemID", ids);
         FUN_140178570(pRow, "rewardJobItemRank", ranks);
         FUN_140178570(pRow, "rewardJobItemCount", counts);
         if (ids.GetCount() != ranks.GetCount())
@@ -201,7 +201,7 @@ bool CMasteryInteriorTable::LoadArea()
         XmlGetAttr((class TiXmlElement*)(pRow), "price", spInfo->m_nPrice);
         CStringA strValue = Unk_ReadString((class Unk_XmlNode*)(pRow), "value", CStringA(""));
         ATL::CAtlArray<unsigned> sizes;
-        FUN_140177e10(strValue, sizes, ",");
+        XmlSplit(strValue, sizes, ",");
         if (sizes.GetCount() != 2)
         {
             spInfo->m_nWidth = 0;

@@ -60,31 +60,31 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141a774d0 "buy_scroll" box answer
 
     void UpdateMember(CPartyMember* pMember, int nFlags);      // "updateMember"
-    void FUN_141a74ea0();                                       // update every member (flags 0x180)
+    void RefreshAllMembers();                                       // update every member (flags 0x180)
     void FUN_141a74f50(CPartyMember* pOld, CPartyMember* pNew); // "changeChief"
     int AddMember(CPartyMember* pMember);                   // "addMember"
-    int FUN_141a753d0(CPartyMember* pMember);                   // "removeMember"
+    int RemoveMemberEntry(CPartyMember* pMember);                   // "removeMember"
     int FUN_141a75490(__int64 nCharId, float* pPos);            // "getCameraButtonPos" (adds it to pPos)
     int FUN_141a75680(float* pPos);                             // the first other member's camera button
-    int FUN_141a75840();                                        // "isCanObserveMode"
+    int IsObserveModeAvailable();                                        // "isCanObserveMode"
     void FUN_141a759b0();                                       // refresh the vote panel
     void SetDeadline(unsigned int nDeadline);                 // m_deadline = n
-    void FUN_141a75a20();                                       // "arrangeBottomButton"
-    bool FUN_141a77600(int nResult, const CMsgBoxData& box);    // create club box answer
+    void ArrangeBottomButton();                                       // "arrangeBottomButton"
+    bool OnCreateClubMsgBox(int nResult, const CMsgBoxData& box);    // create club box answer
     bool SendDungeonReward(int nResult, const CMsgBoxData& box);    // give up box answer
     void FUN_141a77760(float x, float y, __int64 nCharId);      // the slot popup menu
     void FUN_141a77980(CInPacket& packet);                      // party packet (0x53)
     void FUN_141a77a40(CInPacket& packet);                      // packet 0x100
     void FUN_141a77ab0(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_enterDungeon"
     void FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_createClub"
-    void FUN_141a77dd0(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_giveUpDungeon"
+    void OnGiveUpDungeonClick(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_giveUpDungeon"
     bool FUN_141a77eb0();                                       // the recall checks
-    void FUN_141a783d0(__int64 nItemUid);                       // use the recall scroll
+    void StartRecallState(__int64 nItemUid);                       // use the recall scroll
     int FUN_141a784b0(ASObj& obj, CPartyMember* pMember, unsigned int nFlags);    // fill the member object
     void FUN_141a792b0();                                       // refresh everything, "initMembers"
-    void FUN_141a794e0();                                       // m_enterDungeon state
+    void UpdateEnterDungeonButton();                                       // m_enterDungeon state
     void UpdateDungeonName();                                       // dungeon name
-    void FUN_141a796b0();                                       // m_recall state
+    void UpdateRecallButton();                                       // m_recall state
     void UpdateCreateClubButton();                                       // m_createClub state
     void UpdateGiveUpDungeonButton();                                       // m_giveUpDungeon state
 
@@ -121,7 +121,7 @@ public:
     int FUN_141a7b1a0(ASObj& obj, CPartyMember* pMember, unsigned int nRank);    // fill one meter row
     void OnTextToggle();                                       // title bar and sort direction
     void FUN_141a7b540();                                       // rebuild the ranking
-    void FUN_141a7bb70();                                       // "RemoveMember"
+    void RemoveMemberIfUnderLimit();                                       // "RemoveMember"
 
     MS2_LAYOUT_FRIEND;
     Unk_IntervalTimer m_tick;                                   // +0x178
@@ -255,35 +255,35 @@ public:
     virtual void vfunc_ugc_1(void* pId, CString strImage);      // UIUGCEventListener 1 0x141a7e1a0
     // ---- non-virtual members (sorted by address) ----
     bool FUN_141a7e020(int nButton, const CMsgBoxData& data);   // report confirm
-    bool FUN_141a7e0a0(int nButton, const CMsgBoxData& data);   // party vote kick confirm
-    bool FUN_141a7e100(int nButton, const CMsgBoxData& data);   // wedding propose confirm
+    bool OnVoteKickMsgBox(int nButton, const CMsgBoxData& data);   // party vote kick confirm
+    bool OnProposeMsgBox(int nButton, const CMsgBoxData& data);   // wedding propose confirm
     void PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu
     void FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu (fitting / npc)
     void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType);
     void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir);
     void PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CPartyMember* pMember);         // PopUpMenuFromPartyMember
     void PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, CGuildMember* pMember);         // PopUpMenuFromGuildMember
-    void FUN_141a7f890(const Unk_PopupMenuInfo& info, Unk_PmUserEntry* pEntry, const CStringW& strText, int nType);
+    void OpenForUserEntry(const Unk_PopupMenuInfo& info, Unk_PmUserEntry* pEntry, const CStringW& strText, int nType);
     void FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId);
     void FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId);
     void FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Ptr<CUgcRegistBanner> spBanner);
     void PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMember* pMember);          // PopUpMenuFromClubMember
-    void FUN_141a805f0(const Unk_PopupMenuInfo& info, void* pAccount, unsigned __int64 nCharId, const CStringW& strName, const CStringW& strText, int nType);
-    void FUN_141a80670(const Unk_PopupMenuInfo& info);
-    void FUN_141a80770();                                       // close
+    void OpenForCharacter(const Unk_PopupMenuInfo& info, void* pAccount, unsigned __int64 nCharId, const CStringW& strName, const CStringW& strText, int nType);
+    void OpenFromPopupInfo(const Unk_PopupMenuInfo& info);
+    void ClosePopup();                                       // close
     int FUN_141a80880();                                        // m_100 (closed)
     __int64 FUN_141a808a0();                                    // m_a8
-    CString FUN_141a808c0();                                    // the request key (m_88)
-    void FUN_141a80910();                                       // copy the own guild
+    CString GetInfoString();                                    // the request key (m_88)
+    void CopyOwnGuild();                                       // copy the own guild
     void SetGuildInfo(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
     void FUN_141a80a50(CInPacket& packet);                      // packet 0x53
-    void FUN_141a80af0(const Unk_PopupMenuInfo& info);          // take the request
+    void ApplyMenuInfo(const Unk_PopupMenuInfo& info);          // take the request
     void FUN_141a80c40();                                       // register the menu handlers
     int Open(const Unk_PmTarget& target, int nFlags, int nType);   // Open
     int OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir);   // OpenFromCharName
-    void FUN_141a82dd0();                                       // reset
-    int FUN_141a82ed0(GameObject* pObject, NiPoint3& out, float fDir);
-    int FUN_141a82f30(const NiPoint3& pos, NiPoint3& out, float fDir);
+    void ResetState();                                       // reset
+    int CalcMenuPositionForObject(GameObject* pObject, NiPoint3& out, float fDir);
+    int CalcMenuPosition(const NiPoint3& pos, NiPoint3& out, float fDir);
     void SetProfileImage(const CString& strImage);
     int FUN_141a83080(GameObject* pObject);                     // target kind
     void FUN_141a832e0(GameObject* pObject, CStringW& strName);
@@ -293,20 +293,20 @@ public:
     void FUN_141a83ed0(int nQuery, int nKind);
     void FUN_141a84130(int nQuery, int nKind);
     void FUN_141a842f0();
-    void FUN_141a84320(ASArray& menu);
+    void BuildMenuItemArray(ASArray& menu);
     void AddPopupMenu(Unk_PmMenuId nMenuId);                   // AddPopupMenu (the id is an enum: custom-formatted in its log)
     void FUN_141a84520(int nType, int bOnline, __int64 nCharId);
     void FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, int bOnline);
     void FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy);
     void FUN_141a84860(int nType, MyPC* pMe, CBuddy* pBuddy);
     void FUN_141a848d0(int nType, int bOnline, __int64 nCharId);
-    void FUN_141a84940(int nType, int bOnline);
+    void AddReportMenu(int nType, int bOnline);
     void FUN_141a84980(int nType, int bOnline);
     void FUN_141a849c0(int nType, __int64 nCharId);
     void FUN_141a84a10(int nType, __int64 nCharId);
-    void FUN_141a84a60(int nType);
+    void AddRequestPetMenu(int nType);
     void FUN_141a84a90(int nType);
-    void FUN_141a84ac0(int nType, __int64 nCharId);
+    void AddRequestCubeMenu(int nType, __int64 nCharId);
     void FUN_141a84b10(int nType);
     void FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName);
     void FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId);
@@ -316,28 +316,28 @@ public:
     void FUN_141a84da0();
     void SendCharacterInfo();
     void FUN_141a84f60();
-    void FUN_141a84f90();
-    void FUN_141a85010();
-    void FUN_141a85120();
-    void FUN_141a85230();
+    void InviteToParty();
+    void ConfirmExpelPartyMember();
+    void ConfirmChangePartyChief();
+    void ShowVoteKickConfirm();
     void FUN_141a853a0();
     void FUN_141a853c0();
     void FUN_141a85410();
     void FUN_141a85460();
     void FUN_141a854b0();
-    void FUN_141a85500();
+    void EditBuddyMemo();
     void FUN_141a85680();
     void FUN_141a85760();
     void FUN_141a86920();
     void FUN_141a86970();
-    void FUN_141a86a50();
+    void SendRequestHome();
     void SendRequestPet();
     void FUN_141a86b80();
     void SendRequestCube();
     void OpenCoupleActionDialog();
-    void FUN_141a86d20();
-    void FUN_141a86db0();
-    void FUN_141a86e40();
+    void RequestHomeActionMode1();
+    void RequestHomeActionMode3();
+    void RequestHomeActionMode2();
     void FUN_141a86ed0();
     void FUN_141a86f50();
     void FUN_141a87100();

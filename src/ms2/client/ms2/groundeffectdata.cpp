@@ -71,29 +71,22 @@ extern int DAT_1439ed00c;   // ground effect cache enabled
 
 // The scene object of an owner and the unrecovered object queries used by PlayEffects.
 typedef egf::EntityID Unk_ModelKey;   // model key (8 bytes)
-typedef egf::EntityID Unk_ModelKeyCopy;
 
 class Unk_GroundOwner : public PCBase
 {
 public:
-    void* FUN_14123c460(Unk_ModelKey* pKeyOut);         // fills the 16-byte model key
 };
-class Unk_ObjectRef
-{
-public:
-    Unk_ObjectRef(GameObject* pObject);         // 0x140a000f0 stores the pointer and adds a reference
-    int FUN_141b71120();
-private:
-    GameObject* m_p;
-};
+typedef efd::SmartPointer<Unk_WsC_GameObj> Unk_ObjectRef;   // 0x140a000f0 stores the pointer and adds a reference
+template <> efd::SmartPointer<Unk_WsC_GameObj>::SmartPointer(Unk_WsC_GameObj* pObject);
+template <> efd::SmartPointer<Unk_WsC_GameObj>::~SmartPointer();
+unsigned FUN_141b71120(Unk_ObjectRef kRef);
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class COptimizer   // C3: member view for the former free stand-ins
 {
 public:
     int IsUpdateEnabled() const;
 };
-void* FUN_1408b6b20(Unk_ModelKeyCopy* pDst, const Unk_ModelKey* pSrc);
-void* FUN_141b6ef70(void* pKey);
+NiAVObject* FUN_141b6ef70(egf::EntityID id);
 class CEffectService   // C3: member view for the former free stand-ins
 {
 public:
@@ -279,7 +272,6 @@ MS2_REPLACE_METHOD(0x1413771F0, CGroundEffectDataManager, GetEffectFiles, 548, 0
 #endif
 
 // @0x141377420
-// MS2-FUNCTIONAL: frame has 0x70 bytes of unreferenced locals the source cannot reproduce; calls and control flow match
 void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strAction)
 {
     PCBase* pPc;
@@ -289,19 +281,17 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     CString strGround = static_cast<Unk_GroundOwner*>(pObject)->FUN_141671480();
     if (strGround.IsEmpty())
         return;
-    Unk_ModelKey kModel;
-    static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c460(&kModel);
+    Unk_ModelKey kModel = static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c460();
     if (static_cast<Unk_GroundOwner*>(pObject)->FUN_14123c660() != 0)
         return;
     if (((class COptimizer*)(void*)(((void*)FUN_1409f7c90())))->IsUpdateEnabled() == 0)
     {
-        if (Unk_ObjectRef(pObject).FUN_141b71120() == 0)
+        if (FUN_141b71120((Unk_WsC_GameObj*)pObject) == 0)
             return;
     }
     ATL::CAtlArray<CString> files;
     GetEffectFiles(CString(strGround), CString(strAction), &files);
-    Unk_ModelKeyCopy kCopy;
-    void* pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(FUN_1408b6b20(&kCopy, &kModel)))));
+    void* pNode = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(kModel))));
     if (pNode != 0)
     {
         Unk_EffectQuery query;

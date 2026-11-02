@@ -61,7 +61,7 @@ public:
 class UIRealEstateDialog { public: void FUN_141ab4000(int, int); }; class Unk_AptContractDialog : public UIRealEstateDialog {};
 Unk_AptContractDialog* FUN_140961690(int nUiId);                // GetDialog
 
-UIUGCEventDispatcher* FUN_140bc09f0();
+class UIUGCEventDispatcher;
 
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);   // the apartment group row
 CStringW FUN_140979570(int nMap);                               // the map name
@@ -125,14 +125,14 @@ void UIApartmentDialog::OnLoadComplete()
     ((class ASButton*)(m_contract))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d60), 0);
     vfunc_47(0);
     FUN_1418b6580();
-    FUN_140bc09f0()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x1418b62f0
 void UIApartmentDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140bc09f0()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
     m_broker = 0;
     m_contract = 0;
     m_door0 = 0;

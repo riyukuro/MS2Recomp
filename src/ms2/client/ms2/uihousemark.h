@@ -3,6 +3,8 @@
 // name assumed). Unk_ names are invented from local uses.
 #pragma once
 
+#include "ms2/placeholder/intervaltimer.h"
+
 #include <afx.h>
 #include <deque>
 #include <map>
@@ -33,14 +35,7 @@ MS2_CHECK_OFFSET(Unk_HouseMarkInfo, m_pos, 0x1c);
 MS2_CHECK_OFFSET(Unk_HouseMarkInfo, m_b30, 0x30);
 
 // The update interval timer (ctor 0x140517b00).
-struct Unk_HouseMarkTimer
-{
-    Unk_HouseMarkTimer();
-    int FUN_140268870(int nInterval);   // nonzero once the interval elapsed
-    unsigned m_nTick;
-    unsigned m_nExtra;
-};
-MS2_CHECK_SIZE(Unk_HouseMarkTimer, 8);
+typedef Unk_IntervalTimer Unk_HouseMarkTimer;
 
 class UIHouseMarkEntity : public CPtred
 {

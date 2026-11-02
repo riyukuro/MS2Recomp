@@ -8,29 +8,19 @@
 #include "ms2/client/ms2/cubespawnobject.h"     // Unk_EntRef, Unk_Entity (forward)
 
 class NxActor;
-class Unk_VibParams;
 
-// Counted reference to the vibration parameters (a zone row), an MS2Ptr: 16 bytes, m_p at +8 (the copy ctor 0x1409f71b0 and
-// the dtor 0x140975740 write 16); operator-> 0x140975bd0 (members declared in the .cpp).
-struct Unk_VibParamRef
-{
-    Unk_VibParamRef(const Unk_VibParamRef& o);              // 0x1409f71b0
-    ~Unk_VibParamRef();                                     // 0x140975740
-    Unk_VibParams* FUN_140975bd0() const;                   // operator->
-    void* m_00;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_VibParamRef, 16);
+template <class T> class MS2Ptr;
+class CSkillRecord;                         // the skill that hit the entity (skillrecord.h)
 
 class CEntityVibrator : public CPtred
 {
 public:
     CEntityVibrator(Unk_Entity* pEntity);                                                       // 0x1411cb290
-    CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CString strModel, unsigned char nMode);   // 0x1411cb390
+    CEntityVibrator(Unk_Entity* pEntity, MS2Ptr<CSkillRecord> params, CString strModel, unsigned char nMode);   // 0x1411cb390
     virtual ~CEntityVibrator();                                                                 // 0x1411cb9f0
 
     int FUN_1411cba60();                        // per-frame update: 1 while running, 0 when finished
-    void MakePhysxActor(Unk_VibParamRef params);  // 0x1411cc570
+    void MakePhysxActor(MS2Ptr<CSkillRecord> params);  // 0x1411cc570
     void ReleaseActor();                       // release the physics actor
     void FUN_1411cd0c0();                       // copy the actor's pose back to the entity
     void FUN_1411cd3b0();                       // stop: restore the rest pose and remove the actor

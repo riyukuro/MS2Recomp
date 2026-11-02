@@ -38,6 +38,7 @@
 #include "ms2/placeholder/ascorelist.h"
 
 #include "uiitemoptioncreatedialog.h"
+#include "uidailymissiondialog.h"
 
 #include <functional>
 #include <utility>
@@ -88,10 +89,8 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dfc10();                                   // remove all rows
     int FUN_1422dfb90();                                    // row count
     void FUN_1422dfc70(const ASObj& row);                   // append a row
-    void FUN_1422df5f0(unsigned nRows);                     // visible rows
 };
 class Unk_CoupleInput : public AScript
 {
@@ -258,14 +257,14 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
 void UIItemOptionCreateDialog::FUN_1412d33b0()
 {
     if (MS2Ptr<Unk_PsCombo> combo = FUN_140c28560("m_itemGrade")) {
-        combo->FUN_1422dfc10();
+        reinterpret_cast<ASDropdownMenu*>(combo.operator->())->ClearItems();
         MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
         if (item == 0)
             return;
         int nSelected = 0;
         if (item->GetRank() != 0) {
             ASObj row(2);
-            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(item->GetRank()));
+            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
             row.FUN_1409adc90("itemRank", item->GetRank());
             combo->FUN_1422dfc70(row);
             nSelected = 0;
@@ -274,7 +273,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
             for (int nRank = 1; nRank < 7; ++nRank) {
                 int nItemRank = nRank;
                 ASObj row(2);
-                row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141813150(nItemRank));
+                row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nItemRank));
                 row.FUN_1407cb9c0("itemRank", nRank);
                 if (nItemRank == m_nRank)
                     nSelected = combo->FUN_1422dfb90();
@@ -287,7 +286,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
             nRows = nCount;
         else
             nRows = 1;
-        combo->FUN_1422df5f0(nRows);
+        reinterpret_cast<ASDropdownMenu*>(combo.operator->())->FUN_1422df5f0(nRows);
         reinterpret_cast<ASDropdownMenu*>(combo.operator->())->SetSelectedIndex(nSelected);
         combo->vfunc_24(true);
     }
@@ -391,7 +390,7 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
 // @0x1412d3c10
 void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStringW& strSearch)
 {
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items");
     if (!list)
         return;
     list->FUN_1422dd1d0();
@@ -439,8 +438,8 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
                 if (item->FUN_14053cb80())
                     list->AddItem(row);
             } else {
-                if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
-                    if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(const_cast<CStringA&>(strGroup))))
+                if (item->GetModelOrEmpty()->FUN_14054b3d0() < 2) {
+                    if (item->GetModelOrEmpty()->FUN_14054b450(FUN_1405451c0(const_cast<CStringA&>(strGroup))))
                         list->AddItem(row);
                 }
             }

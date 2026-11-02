@@ -47,6 +47,9 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/client/ms2/ugcmapitem.h"
+#include "ms2/placeholder/cugcgetcosttable.h"
 
 // ---- header statics (the shared list of the merat market units) ----
 #ifndef MS2_HOOK_DLL
@@ -77,16 +80,6 @@ class Unk_MrdMarket : public CMeratMarketMan
 };
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 
-// The 16-byte product key as the AS side writes it ("P<n>" / "U<n>").
-struct Unk_MrdOid
-{
-    void FUN_1409c1640(CStringW strOid);            // parse
-    CStringW FUN_1409b0470() const;                 // the AS form
-    int m_nPremiumId;
-    __int64 m_nUgcId;
-};
-MS2_CHECK_SIZE(Unk_MrdOid, 0x10);
-
 // The constants singleton: the register-fee block.
 struct Unk_MrdConfig { void* m_p; };
 struct Unk_MrdValueInt { void* m_p; };
@@ -94,18 +87,18 @@ struct Unk_MrdValueI64 { void* m_p; };
 struct Unk_MrdValueMoney { void* m_p; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_MrdConfig* FUN_1401d3200()
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
-__int64 FUN_1406a6d50(Unk_MrdValueMoney* pValue);   // the limit
+__int64 FUN_1406a6d50(Common::Constants::Value<int>& value);   // the limit
 
 // The owner of the items (account and character ids of the player; 0x20 bytes).
-struct Unk_MrdOwner
+struct Unk_BillOwner
 {
-    void FUN_1409aff60();
+    Unk_BillOwner();
     __int64 m_nAccount;
     unsigned m_nType;
     void* m_pCharacter;                                 // the own character id (stored as a pointer-size value)
     __int64 m_n18;
 };
-MS2_CHECK_SIZE(Unk_MrdOwner, 0x20);
+MS2_CHECK_SIZE(Unk_BillOwner, 0x20);
 extern __int64 DAT_143ab2820;
 extern unsigned DAT_143ab2830;
 extern __int64 DAT_143ab2838;
@@ -126,16 +119,7 @@ CFeatureManager* FUN_140166410();
 
 // The inventories (globals).
 extern Unk_Inventory g_143ab2a90;
-class Unk_MrdStockItem : public CPtred
-{
-};
-class Unk_MrdCubeStock
-{
-public:
-    MS2Ptr<Unk_MrdStockItem> FUN_140dfc8f0(unsigned __int64 nUid);          // by uid
-    void FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >& out); // the stock as items
-};
-extern Unk_MrdCubeStock DAT_143ab2e50;
+extern Unk_CubeStock DAT_143ab2e50;
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_140633d50(MS2Ptr<CItem> spItem);           // the item can be traded
@@ -157,9 +141,9 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_14086d060(int nId, const __int64& nArg);
+template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1409404f0(__int64 nValue);
-CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_14016a730(const char* sz, int n);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);
@@ -181,18 +165,7 @@ class Unk_MrdUiMgr { public: };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The "fee changed" notice answer / purchase block notice.
-struct Unk_MrdBlockRef;
-void FUN_1401cb250(Unk_MrdBlockRef*);
-struct Unk_MrdBlockRef
-{
-    void* m_00;
-    void* m_08;
-    ~Unk_MrdBlockRef() { FUN_1401cb250(this); }
-};
-MS2_CHECK_SIZE(Unk_MrdBlockRef, 0x10);
-class Unk_MrdBlockMgr { public: Unk_MrdBlockRef FUN_140a2f620(int nKind); };
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
-void* FUN_1401cb3d0(Unk_MrdBlockRef* pRef);
 template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
 void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 
@@ -207,17 +180,6 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
 
 // The royalty list (charge info) and the singleton that fills it.
-struct Unk_MrdPaybackList
-{
-    Unk_MrdPaybackList(int nBlockSize) { FUN_140898ff0(nBlockSize); }
-    ~Unk_MrdPaybackList() { FUN_1408996f0(); }
-    void FUN_140898ff0(int nBlockSize);
-    void FUN_1408996f0();
-    bool FUN_140ec3b20();
-    void* m_p[7];
-};
-MS2_CHECK_SIZE(Unk_MrdPaybackList, 0x38);
-class Unk_MrdPayback { public: void FUN_1408981a0(Unk_MrdPaybackList* pList); };
 class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
 CStringW FUN_140ebd9d0(int a, int b);
 
@@ -306,9 +268,9 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         return;
     if (_stricmp("m_btnRoyaltyInfo", strName) == 0)
     {
-        Unk_MrdPaybackList list(10);
-        ((class Unk_MrdPayback*)FUN_140ec3940())->FUN_1408981a0(&list);
-        if (list.FUN_140ec3b20() != 0)
+        CUgcGetCostTable::CostMap list(10);
+        reinterpret_cast<CUgcGetCostTable*>(FUN_140ec3940())->GetTable(list);
+        if (list.IsEmpty() != 0)
             return;
         CStringW strCharge = FUN_140ebd9d0(0, 0);
         ASTooltip tip(1, 2);
@@ -355,11 +317,11 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
     FUN_14131ac80(0, MS2Ptr<CItem>(0), 1);
     ASObj objData(2);
     objData.FUN_1407cbb20("saleDay", BlockFormat<int>(0xa39, nSaleDay));
-    objData.FUN_1407cbb20("ad", FUN_14086d060(0xa3a, nAdFee));
+    objData.FUN_1407cbb20("ad", FormatStringId(0xa3a, nAdFee));
     objData.FUN_1407cbb20("royalty", GetStringCommon(0xa3b));
     objData.FUN_1407cbbe0("onlyShowEnableDesigns", m_bOnlyEnabled);
-    unsigned __int64 nMinPrice = FUN_1406a6d50(MrdMinPriceValue());
-    unsigned __int64 nMaxPrice = FUN_1406a6d50(MrdMaxPriceValue());
+    unsigned __int64 nMinPrice = FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(MrdMinPriceValue()));
+    unsigned __int64 nMaxPrice = FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(MrdMaxPriceValue()));
     objData.FUN_1409c0d20("defaultSaleDay", nSaleDay);
     objData.FUN_1409c0d20("defaultMinPrice", (unsigned int)nMinPrice);
     objData.FUN_1409c0d20("defaultMaxPrice", (unsigned int)nMaxPrice);
@@ -439,7 +401,7 @@ int UIMeratMarketRegisterDialog::vfunc_13()
         return 1;
     if (vfunc_55() == 1 || m_30 == 0)
         return 0;
-    if (FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
+    if (FUN_140b632f0()->GetTopEntity(m_e0) == this)
     {
         CString strKey("");
         if (((class Unk_MrdKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0) != 0)
@@ -506,11 +468,11 @@ void UIMeratMarketRegisterDialog::FUN_141318aa0(MS2Ptr<CMeratMarketProduct> spPr
 void UIMeratMarketRegisterDialog::FUN_141318cc0()
 {
     if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag1"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->FUN_1422e0ab0(L"");
+        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetTextW(L"");
     if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag2"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->FUN_1422e0ab0(L"");
+        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetTextW(L"");
     if (MS2Ptr<Unk_MrdInput> spTag = FUN_140e35bd0("m_inputTag3"))
-        reinterpret_cast<ASTextInput*>(spTag.operator->())->FUN_1422e0ab0(L"");
+        reinterpret_cast<ASTextInput*>(spTag.operator->())->SetTextW(L"");
 }
 
 // @0x141318ef0
@@ -575,7 +537,7 @@ bool UIMeratMarketRegisterDialog::FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> 
             spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
             if (spItem == 0)
             {
-                MS2Ptr<Unk_MrdStockItem> spMapItem = DAT_143ab2e50.FUN_140dfc8f0(nItemUid);
+                MS2Ptr<CUGCMapItem> spMapItem = DAT_143ab2e50.FUN_140dfc8f0(nItemUid);
                 return spMapItem.get() != 0;
             }
         }
@@ -612,7 +574,7 @@ bool UIMeratMarketRegisterDialog::FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> 
             spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
             if (spItem == 0)
             {
-                MS2Ptr<Unk_MrdStockItem> spMapItem = DAT_143ab2e50.FUN_140dfc8f0(nItemUid);
+                MS2Ptr<CUGCMapItem> spMapItem = DAT_143ab2e50.FUN_140dfc8f0(nItemUid);
                 return spMapItem.get() != 0;
             }
         }
@@ -657,8 +619,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
     Unk_MrdMarket* pMarket = ((class Unk_MrdMarket*)FUN_140939a00());
     if (pMarket == 0)
         return;
-    Unk_MrdOwner owner;
-    owner.FUN_1409aff60();
+    Unk_BillOwner owner;
     owner.m_nAccount = DAT_143ab2820;
     owner.m_nType = DAT_143ab2830;
     owner.m_pCharacter = (void*)DAT_143ab2838;
@@ -774,7 +735,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a100(Unk_MeratProductKey key)
     if (spData->FUN_14053cd10())
         strWarning = L"$s_meratmarket_text_register_notice_warning_music_score";
     slot.FUN_1407cbb20("warningMsg", CStringW(strWarning));
-    slot.FUN_1407cbb20("productOID", reinterpret_cast<const Unk_MrdOid*>(&spProduct->m_key)->FUN_1409b0470());
+    slot.FUN_1407cbb20("productOID", spProduct->m_key.FUN_1409b0470());
     slot.FUN_1409c1180("salePrice", pUgc->m_n50);
     slot.FUN_1407cbb20("itemName", spProduct->GetName());
     MS2Ptr<CItem> spShown = FUN_140ebc070(spProduct.get());
@@ -911,8 +872,8 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
 {
     int nKind = 0x21;
     {
-        Unk_MrdBlockRef block = ((class Unk_MrdBlockMgr*)FUN_140a6a830())->FUN_140a2f620(nKind);
-        if (FUN_1401cb3d0(&block) != 0)
+        BlockPtr block = reinterpret_cast<CBlockManager*>(FUN_140a6a830())->FindBlockedAction(nKind);
+        if (block.get() != 0)
         {
             FUN_140a2ff20(*(const Unk_BlockPtr<Unk_BlockRecord>*)&block, nKind, 0);
             return false;
@@ -945,7 +906,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
 // @0x14131b420
 CStringW UIMeratMarketRegisterDialog::FormatPriceRangeText(__int64 nMin, __int64 nMax)
 {
-    return FUN_140632a60(0xa3c, FUN_1409404f0(nMin), FUN_1409404f0(nMax));
+    return FormatStringId(0xa3c, FUN_1409404f0(nMin), FUN_1409404f0(nMax));
 }
 
 // Put the fee texts into obj.
@@ -981,10 +942,10 @@ void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
 {
     Scaleform::GFx::Value value = data.FUN_1422b9260();
     ASObj obj(value, 2);
-    if (obj.FUN_1422ba9a0())
+    if (obj.IsUndefinedOrNull())
         return;
     CString strGuid;
-    obj.FUN_1422bac00("itemGUID", strGuid);
+    obj.TryGetString("itemGUID", strGuid);
     int nIndex = data.FUN_1422b8a10();
     unsigned int nSaleDay = data.FUN_1422b8b10();
     CStringW strName = data.FUN_1422b8f40();
@@ -1041,17 +1002,17 @@ void UIMeratMarketRegisterDialog::FUN_14131c010(ASData& data)
 {
     Scaleform::GFx::Value value = data.FUN_1422b9260();
     ASObj obj(value, 2);
-    if (obj.FUN_1422ba9a0())
+    if (obj.IsUndefinedOrNull())
         return;
     CString strOid;
-    obj.FUN_1422bac00("productOID", strOid);
+    obj.TryGetString("productOID", strOid);
     int nIndex = data.FUN_1422b8a10();
     unsigned int nSaleDay = data.FUN_1422b8b10();
     CStringW strName = data.FUN_1422b8f40();
     CStringW strDescription = data.FUN_1422b8f40();
     bool bAdvertise = data.FUN_1422b8a90();
     Unk_MeratProductKey key;
-    reinterpret_cast<Unk_MrdOid*>(&key)->FUN_1409c1640(FUN_14016a730(strOid, 0));
+    key.FUN_1409c1640(FUN_14016a730(strOid, 0));
     if (!FUN_14131ae60(bAdvertise, false, 0))
         return;
     if (!FUN_14131b0e0(strDescription, strName))

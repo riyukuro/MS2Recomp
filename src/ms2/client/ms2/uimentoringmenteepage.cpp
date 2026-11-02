@@ -17,6 +17,7 @@
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#include "ms2/commonfiles/os.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -41,14 +42,14 @@ public:
 };
 class MentoringDataTable { public: unsigned int GetMaxMenteeDailyRewardCoin(); };   // C3: view of the real class
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
-extern Unk_MentorInfo* DAT_143abb6d8;
+class CMentoringManager;
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class UIInviteMentoringDialog { public: void FUN_140c2f040(); };   // C3: view of the real class
 UIInviteMentoringDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
-CPartyManager* FUN_1409670d0();
+class CPartyManager;
 // The popup-menu request (0x80 bytes), built by the ctor at 0x140c302f0 and released by the dtor at 0x140c304c0.
 class Unk_PopupMenuInfo
 {
@@ -81,7 +82,7 @@ CStringW FUN_14052b9d0(CStringW strFormat, const CStringW& a, const CStringW& b)
 // @0x140c70240
 static Unk_MentorInfo* FUN_140c70240()
 {
-    return DAT_143abb6d8;
+    return reinterpret_cast<Unk_MentorInfo*>(TSingleton<CMentoringManager>::s_instance);
 }
 
 // @0x140c6e790
@@ -108,7 +109,7 @@ MS2_REPLACE_METHOD(0x140C6E860, ASMentoringMenteePage, OnInit, 515, 0x4AC55F75);
 void ASMentoringMenteePage::Refresh()
 {
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
-    int nMentee = reinterpret_cast<CMentoringManager*>((class CMentoringManager*)((FUN_140c70240())))->FUN_140b71650();
+    int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
     ((class ASTextField*)(m_coin))->FUN_1422c4cd0(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
 }
@@ -157,15 +158,15 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1409670d0()->SendPartyMode1(data.FUN_1422b8f40());
+            TSingleton<CPartyManager>::GetInstance()->SendPartyMode1(data.FUN_1422b8f40());
     }
     else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            float x = data.FUN_1422b8c10();
-            float y = data.FUN_1422b8c10();
+            float x = data.PopFloat();
+            float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);

@@ -435,7 +435,7 @@ void FUN_140d00a70(const Scaleform::GFx::Value& target, const Scaleform::GFx::Va
     float fLeft = b.FUN_1422c10a0();
     float fX = fLeft + (float)b.FUN_1422c1340() + (float)nGap;
     float fY = b.FUN_1422c1110();
-    a.FUN_1422c00f0(fX, fY);
+    a.SetPositionFloat(fX, fY);
 }
 
 // @0x140d00b80
@@ -447,7 +447,7 @@ void FUN_140d00b80(const Scaleform::GFx::Value& root, CString strName, int n)
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return;
-    ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c0e20(n);
+    ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->SetWidthInt(n);
 }
 
 // @0x140d00c80
@@ -459,7 +459,7 @@ void FUN_140d00c80(const Scaleform::GFx::Value& root, CString strName, int n)
     MS2Ptr<ASMovieClip> spClip = node.FUN_140bc7450(strName);
     if (spClip == 0)
         return;
-    ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c0ec0(n);
+    ((class ASDisplayObject*)(class ASMovieClip*)(spClip.operator->()))->SetHeightInt(n);
 }
 
 // @0x140d00d80
@@ -592,7 +592,7 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovi
 // @0x140d01530
 Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
+    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(nMovieId);
     if (pMovie != 0)
         return Unk_TextFieldExPtr(reinterpret_cast<Unk_TextFieldEx*>(new ASTextFieldEx(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId)));
     return Unk_TextFieldExPtr(0);
@@ -615,11 +615,11 @@ void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDis
 // @0x140d01780
 void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(2);
+    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(2);
     if (pMovie != 0)
     {
         MS2Ptr<AScript> sp(new AScript(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2));
-        if (sp->FUN_1422ba9a0())
+        if (sp->IsUndefinedOrNull())
             return;
         ((Unk_BannerClip*)sp.operator->())->FUN_140ba9570("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);
     }
@@ -641,7 +641,7 @@ MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName)
     if (strName.IsEmpty() == true)
         return MS2Ptr<AScript>(0);
     MS2Ptr<AScript> sp(new AScript(spObj.operator->()->GetMember(strName), 2));
-    if (sp == 0 || sp->FUN_1422ba9a0() == true)
+    if (sp == 0 || sp->IsUndefinedOrNull() == true)
         return MS2Ptr<AScript>(0);
     return sp;
 }

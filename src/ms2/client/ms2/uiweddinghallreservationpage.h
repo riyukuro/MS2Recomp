@@ -17,7 +17,7 @@ struct Unk_WeddingTicketView
     __int64 m_unk00[4];             // +0x00
     int m_nHallId;                  // +0x20
     int m_nSlot;                    // +0x24
-    unsigned char m_bPrivate;       // +0x28
+    bool m_bPrivate;                // +0x28
     unsigned char m_pad29[7];       // +0x29
     __int64 m_unk30;                // +0x30
     __int64 m_nOwnerId;             // +0x38

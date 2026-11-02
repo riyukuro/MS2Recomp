@@ -16,6 +16,9 @@
 #include <exception>
 
 #include "ms2/unnamed/unit_1413a9df0.h"
+#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -161,7 +164,6 @@ public:
     virtual void Unk_Slot53();
     virtual void Unk_Slot54();
     virtual int vfunc_55();
-    Unk_G9Val FUN_1422dba50();                          // the root value of the dialog's tree
 };
 // The page smart pointer of the mentoring pane (dtor 0x140e60460 releases it).
 template<class T> class Unk_MentorPtr
@@ -180,16 +182,6 @@ public:
 };
 
 template<class T> T* Unk_GaGetUIByName(const CStringA& strName);         // the dialog of a name
-class ASDisplayObject   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_1422bfca0();
-};
-class ASButton   // C3: member view for the former free stand-ins
-{
-public:
-    bool FUN_1422ce0e0();
-};
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
 struct Unk_G9Span { int m_n[7]; int m_nDays; };
 struct tm* FUN_1413a52a0(__int64 const*);   // C3: was FUN_1413a52a0
@@ -786,22 +778,22 @@ int CGuideConditionButtonSelected::vfunc_3()
     if (pDlg->vfunc_55() != 0)
         return 0;
     if (m_children.GetCount() != 0) {
-        Unk_G9Val root = pDlg->FUN_1422dba50();
-        if (root.FUN_140d031f0()) {
+        MS2Ptr<ASDisplayObject> root = reinterpret_cast<UISwfEntity*>(pDlg)->FUN_1422dba50();
+        if (root.get()) {
             for (size_t i = 0; i < m_children.GetCount(); ++i) {
                 BOOL bLast = i == m_children.GetCount() - 1;
                 if (bLast) {
-                    Unk_G9Leaf leaf = root.FUN_140d03230()->FUN_140acce30(m_children[i]);
-                    if (leaf.FUN_140bb6090(0))
+                    MS2Ptr<ASButton> leaf = root->FUN_140acce30<ASButton>(m_children[i]);
+                    if (leaf == 0)
                         return 0;
-                    if (!((class ASDisplayObject*)(void*)(leaf.FUN_140acd9e0()))->FUN_1422bfca0())
+                    if (!leaf->GetVisible())
                         return 0;
-                    return ((class ASButton*)(void*)(leaf.FUN_140acd9e0()))->FUN_1422ce0e0();
+                    return leaf->FUN_1422ce0e0();
                 } else {
-                    root.FUN_1413b40b0(root.FUN_140d03230()->FUN_1413b19d0(m_children[i]));
-                    if (root.FUN_140d03130(0))
+                    root = root->FUN_140e159f0<ASDisplayObject>(m_children[i]);
+                    if (root == 0)
                         return 0;
-                    if (!((class ASDisplayObject*)(void*)(root.FUN_140d03230()))->FUN_1422bfca0())
+                    if (!root->GetVisible())
                         return 0;
                 }
             }
@@ -865,10 +857,10 @@ int CGuideConditionContract::vfunc_3()
         pDlg = Unk_GaGetUIByName<UIDialog>(m_strDialog);
     if (!pDlg)
         return 0;
-    Unk_G9Val val = static_cast<Unk_G9TreeDlg*>(pDlg)->FUN_1413b1a90(m_strChild);
-    if (val.FUN_140d03130(0))
+    MS2Ptr<ASDisplayObject> val = static_cast<UISwfEntity*>(pDlg)->GetChild<ASDisplayObject>(m_strChild);
+    if (val == 0)
         return 0;
-    if (!((class ASDisplayObject*)(void*)(val.FUN_140d03230()))->FUN_1422bfca0())
+    if (!val->GetVisible())
         return 0;
     const __int64& nLeft = pRec->m_nExpire - GetServerTime();
     Unk_G9Span* pInfo = ((struct Unk_G9Span*)FUN_1413a52a0(&nLeft));

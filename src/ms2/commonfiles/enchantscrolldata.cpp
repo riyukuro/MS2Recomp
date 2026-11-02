@@ -24,6 +24,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/os.h"
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -49,7 +50,7 @@ void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 Unk_EnchantItemPtr FUN_14053f870(int nItemId);
-void* FUN_140302b10();
+class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
 public:
@@ -176,9 +177,9 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
         return 0;
     m_nMaxLv = scroll->m_nMaxLv;
     XmlGetAttr((class TiXmlElement*)(pElem), "requireMeso", m_nMeso);
-    if (((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1810(1, 0) != 1.0f)
+    if (TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(1, 0) != 1.0f)
     {
-        m_nMeso *= ((class CGloabalFactor*)(void*)(FUN_140302b10()))->FUN_1404c1810(1, 0);
+        m_nMeso *= TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(1, 0);
         m_nMeso = ((m_nMeso + 50) / 100) * 100;
     }
     for (unsigned __int64 i = 1; i <= 5; i++)

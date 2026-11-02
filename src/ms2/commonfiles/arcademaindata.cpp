@@ -53,9 +53,9 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // The client string tables (singleton at 0x143aac298): FUN_141811980(table, id) is the string of id in table.
 class Unk_1401a9d70 : public CStringTable { };
-extern Unk_1401a9d70* DAT_143aac298;
+class CStringTable;
 // @0x1401a9d70
-inline Unk_1401a9d70* GetStringTable() { return DAT_143aac298; }
+inline Unk_1401a9d70* GetStringTable() { return reinterpret_cast<Unk_1401a9d70*>(TSingleton<CStringTable>::s_instance); }
 
 // @0x1401aa6a0
 // The npc's display name: "<title> <name>", or the name alone when the npc has no title (string tables 0x13 and 2).

@@ -128,7 +128,7 @@ void UIInteriorPreviewDialog::OnLoadComplete()
     {
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog != 0)
-            pDialog->FUN_1422c00f0(m_180, m_184);
+            pDialog->SetPositionFloat(m_180, m_184);
         m_17c = 0;
     }
     FUN_140f4d110();
@@ -191,7 +191,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
                     ((class AScript&)(objItem)).FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
                     objItem.FUN_1407cba60((const char*)s_strBinding, strKey);
                     FUN_141415450(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
-                    arrItems.FUN_1422bc050(objItem.FUN_1422bb870());
+                    arrItems.PushValue(objItem.FUN_1422bb870());
                     m_188.Add(strKey);
                     seen.AddTail(nCubeItemId);
                 }

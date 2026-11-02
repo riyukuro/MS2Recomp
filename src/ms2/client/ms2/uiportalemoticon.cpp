@@ -172,7 +172,7 @@ void UIPortalEmoticon::FUN_140f9bf70()
             if (spEntity.get() != 0)
             {
                 ptScreen.FUN_140ad0c10(((class GFxManager*)(class Unk_PeScale*)(((class Unk_PeScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28));
-                spEntity->FUN_1422c00f0(ptScreen.x, ptScreen.y);
+                spEntity->SetPositionFloat(ptScreen.x, ptScreen.y);
             }
         }
         vfunc_8(1);

@@ -729,11 +729,11 @@ void Unk_NexonAnalytics::FUN_14092cbf0()
 }
 
 // @0x14092ce80
-bool Unk_NexonAnalytics::FUN_14092ce80(const Unk_NxString* pVersion, const Unk_NxString* pHost)
+bool Unk_NexonAnalytics::FUN_14092ce80(const Unk_NxString& kVersion, const Unk_NxString* pHost)
 {
     if (!FUN_14092edf0((HMODULE*)this))
         return false;
-    return ((PFN_NxaPresetString)s_pfn_presetNxLogVersion)(pVersion)
+    return ((PFN_NxaPresetString)s_pfn_presetNxLogVersion)(&kVersion)
         && ((PFN_NxaPresetString)s_pfn_presetLogServerAddress)(pHost);
 }
 

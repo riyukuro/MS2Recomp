@@ -6,7 +6,7 @@
 #include <atlstr.h>
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"       // MS2Ptr<T>
-#include "ms2/placeholder/unk_nodeptr.h"
+#include <efd/SmartPointer.h>
 #include "ms2/placeholder/nipoint3.h"
 
 class Unk_ExpActor;
@@ -37,7 +37,7 @@ public:
     unsigned int m_hEffect;                          // +0x24 effect-manager handle, 0 = none
     int m_pad_28;
     int m_pad_2c;
-    Unk_NodePtr m_spNode;                   // +0x30 the orb's NiNode
+    efd::SmartPointer<NiNode> m_spNode;                   // +0x30 the orb's NiNode
     Vector3 m_ptPos;                // +0x38 current position
     float m_fElapsed;                       // +0x44
     Unk_NiMatrix3 m_rot;                    // +0x48 orientation

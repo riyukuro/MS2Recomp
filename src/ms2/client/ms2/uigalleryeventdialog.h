@@ -38,6 +38,7 @@ public:
 };
 MS2_CHECK_SIZE(UIQuestEventListener, 8);
 class Unk_GalleryPacket;
+class GalleryContext;
 class UIGalleryEventDialog : public UIDialog, public UIQuestEventListener
 {
 public:
@@ -53,8 +54,8 @@ public:
     virtual void vfunc_o178_10(void*);
     void FUN_140c17200(unsigned int, Unk_GalleryPacket*);
     int FUN_140c17560();
-    void FUN_140c176f0(Unk_GalleryPtr<Unk_GalleryContext>);
-    void FUN_140c17d20(Unk_GalleryPtr<Unk_GalleryContext>);
+    void FUN_140c176f0(MS2Ptr<GalleryContext>);
+    void FUN_140c17d20(MS2Ptr<GalleryContext>);
     void UpdateQuestState(int);
     void UpdateOpenCount();
     void UpdateBoardRewardButton();

@@ -2,6 +2,7 @@
 #pragma once
 #include <afx.h>
 #include <atlcoll.h>
+#include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cptred.h"
 #include "os.h"
 #include "commonstringtable.h"   // TextFilterUnit
@@ -59,14 +60,12 @@ public:
     __int64 version; Map words; TextFilterUnit filter;
 };
 MS2_CHECK_SIZE(CBannedWordFilter,0xc8);
-class Unk_BanLock { public: Unk_BanLock(); ~Unk_BanLock(); private: void* vf; CRITICAL_SECTION section; };
-class Unk_BanGuard { public: Unk_BanGuard(Unk_BanLock&); ~Unk_BanGuard(); operator int(); private: void* p; };
 class CDynamicBanWordManager : public TSingleton<CDynamicBanWordManager> {
 public:
     typedef Unk_BanPtr<CBannedWordFilter> Ptr;
     CDynamicBanWordManager(); virtual ~CDynamicBanWordManager() = default;
     void SetCurrent(const Ptr&); Ptr GetCurrent(); void SetNext(const Ptr&); Ptr GetNext();
     __int64 GetCurrentVersion(); int FUN_14034a230(const CStringW&,CStringW&); void FUN_14034a2c0(Unk_BanReader&);
-    Unk_BanLock lock; Ptr current,next;
+    CLockCriticalSection lock; Ptr current,next;
 };
 MS2_CHECK_SIZE(CDynamicBanWordManager,0x58);

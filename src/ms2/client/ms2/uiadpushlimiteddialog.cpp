@@ -36,6 +36,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmeratmarketman.h"
+#include "ms2/commonfiles/meratmarketbasketinfo.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -50,18 +51,9 @@ static CString s_strTabIndex = "tabIndex";
 // ---- unit-local views of exe objects ----
 
 // The movie root of the dialog (RTTI .?AVASDialog@@; the exe's dynamic_cast target and the type of UIDialog::m_90).
-class ASDialog : public ASDisplayObjectContainer
+// C3: an ASWindow (an ASGameEntity, an ASUIComponent); the calls are the inherited members.
+class ASDialog : public ASUIComponent
 {
-public:
-    void FUN_1422c0f60(float* pX, float* pY);               // read the position
-    int FUN_1422c1530();                                    // height
-    float FUN_1422c10a0();                                  // x
-    float FUN_1422c1110();                                  // y
-    void FUN_1422e5dd0();                                   // end of the move
-    int FUN_1422c7900();                                    // content width
-    int FUN_1422c7970();                                    // content height
-private:
-    void* m_unrecovered_80;
 };
 MS2_CHECK_SIZE(ASDialog, 0x88);
 
@@ -86,32 +78,6 @@ struct Unk_MeratOid
     __int64 m_nUgcId;                                       // +0x08
 };
 
-// The record's info block (this = item + 0x30; Unk_AdItemInfo of unit_140e3efd0.h has only the other members).
-class Unk_LpInfo
-{
-public:
-    bool FUN_1406a0fe0();                                   // the offer has a banner
-    CStringW FUN_1406a00e0();                               // the offer's title text
-    unsigned __int64 FUN_1406a1be0(int n);                  // a price (0 = free)
-};
-
-// A product's sub item (the entries of the record's list at +0x238); only the id at +0xa8 is read.
-class Unk_LpSub : public CPtred
-{
-public:
-    char m_pad_18[0xa8 - 0x18];
-    int m_nId;                                              // +0xa8
-};
-
-// The record's list of sub items (this = item + 0x238), iterated by position.
-class Unk_LpList
-{
-public:
-    void* FUN_1406aa470();                                  // first position (NULL when empty)
-    MS2Ptr<Unk_LpSub>& FUN_1406aa910(void* pos);            // the element at a position
-    void FUN_1406aa5b0(void*& pos);                         // advance
-};
-
 // The world singleton: the product lookup and the pending buy list.
 class Unk_LpWorld : public CMeratMarketMan
 {
@@ -122,11 +88,6 @@ public:
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
 UIAdPushDialog* FUN_140d61c00(int nClass);
 CAdBannerManagerCli* GetAdBannerManagerCli();
-class CMeratMarketProduct   // C3: member view for the former free stand-ins
-{
-public:
-    __int64 GetSalePrice();
-};
 void FUN_1409bc4f0(ASMeratMarketProductBase* pProduct, MS2Ptr<ShopBannerInfo> spBanner);   // set the banner (the banner is the Unk_MeratBanner of the AS side)
 struct Unk_TdXY { float x, y; };                                            // efd::Point2 (POD copy)
 extern Unk_TdXY DAT_143b02320;                                              // efd::Point2::ZERO
@@ -136,8 +97,6 @@ void FUN_140ebf610(const CStringA& strMethod, MS2Ptr<Unk_AdMarketItem> spItem, M
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrIds);                            // check the sub items are available
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // the bill dialog's buy
 bool FUN_140ebe990(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);    // the bill dialog's tooltip
-bool FUN_140acd940(const MS2Ptr<ASUIComponent>* p, int n);                  // MS2Ptr == 0 (the copy this dialog's badge test calls)
-AdPushEntityLimitedBundle* FUN_140e04ce0(const MS2Ptr<AdPushEntityLimitedBundle>* p);   // MS2Ptr get (this unit's copy)
 
 // ---- UIAdPushLimitedDialog ----
 
@@ -181,7 +140,7 @@ void UIAdPushLimitedDialog::OnLoadComplete()
             MS2Ptr<Unk_AdMarketItem> spItem = m_spOwner->m_item;
             product.vfunc_1(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spItem), 0);
             product.FUN_1407cbbe0("minimize", bMinimize);
-            CStringW strTitle = reinterpret_cast<Unk_LpInfo*>(&spItem->m_info)->FUN_1406a00e0();
+            CStringW strTitle = reinterpret_cast<CMeratMarketPremiumProduct*>(&spItem->m_info)->GetName();
             if (strTitle.IsEmpty())
             {
                 if (((class CMeratMarketProduct*)(class Unk_AdMarketItem*)(spItem.operator->()))->GetSalePrice() == 0)
@@ -225,7 +184,7 @@ void UIAdPushLimitedDialog::vfunc_77()
         if (m_90)
         {
             Unk_TdXY pos = DAT_143b02320;
-            m_90->FUN_1422c0f60(&pos.x, &pos.y);
+            m_90->GetPosition(&pos.x, &pos.y);
             if (m_spOwner)
                 m_spOwner->SetMaximizePos(pos.x, pos.y);
         }
@@ -250,7 +209,7 @@ void UIAdPushLimitedDialog::vfunc_67()
         }
         float x = 0;
         float y = 0;
-        m_90->FUN_1422c0f60(&x, &y);
+        m_90->GetPosition(&x, &y);
         m_spOwner->SetMaximizePos(x, y);
     }
     UIDialog::vfunc_67();
@@ -310,7 +269,7 @@ int UIAdPushLimitedDialog::vfunc_54(void* pCfg)
     if (m_spOwner.get() != 0)
     {
         NiPoint2* pPos = m_spOwner->GetMaximizePos();
-        m_90->FUN_1422c00f0(pPos->x, pPos->y);
+        m_90->SetPositionFloat(pPos->x, pPos->y);
     }
     return 1;
 }
@@ -369,7 +328,7 @@ void UIAdPushLimitedDialog::vfunc_43()
         int bCheck = m_60 == 0 && m_78 != 0 && vfunc_52() != 0;
         if (bCheck)
         {
-            if (!((float)pDlg->FUN_1422c1500() >= pDlg->FUN_1422c10a0() && (float)pDlg->FUN_1422c1530() >= pDlg->FUN_1422c1110()
+            if (!((float)pDlg->FUN_1422c1500() >= pDlg->FUN_1422c10a0() && (float)static_cast<ASDisplayObject*>(pDlg)->FUN_1422c1530() >= pDlg->FUN_1422c1110()
                   && pDlg->FUN_1422c10a0() >= 0.0f && pDlg->FUN_1422c1110() >= 0.0f))
                 bOutside = true;
         }
@@ -379,7 +338,7 @@ void UIAdPushLimitedDialog::vfunc_43()
             return;
         if (bOutside)
         {
-            if (m_78 == 0 && (FUN_140e04ce0(&m_spOwner) ? true : false) && FUN_140acd940((const MS2Ptr<ASUIComponent>*)&m_spOwner->m_badge, 0))
+            if (m_78 == 0 && (m_spOwner.operator AdPushEntityLimitedBundle*() ? true : false) && *(const MS2Ptr<ASUIComponent>*)&m_spOwner->m_badge == 0)
             {
                 int n50 = m_spOwner->m_n50;
                 int n4c = m_spOwner->m_n4c;
@@ -395,10 +354,10 @@ void UIAdPushLimitedDialog::vfunc_43()
                     if (n50 > 2)
                     {
                         int nHalf = n4c / 2 % 2;
-                        int nW = (int)((double)m_90->FUN_1422c7900() * 0.5);
+                        int nW = (int)((double)m_90->GetActualWidth() * 0.5);
                         x = nHalf == 0 ? -nW : nW;
                     }
-                    int nH = (int)((double)m_90->FUN_1422c7970() * 0.5);
+                    int nH = (int)((double)m_90->GetActualHeight() * 0.5);
                     int y = nOdd == 0 ? -nH : nH;
                     m_90->vfunc_2(0, x, y);
                 }
@@ -421,7 +380,7 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
     m_bBannerEmpty = false;
     if (m_spOwner->m_item.get() != 0)
     {
-        Unk_LpInfo* pInfo = reinterpret_cast<Unk_LpInfo*>(&m_spOwner->m_item.operator->()->m_info);
+        CMeratMarketPremiumProduct* pInfo = reinterpret_cast<CMeratMarketPremiumProduct*>(&m_spOwner->m_item.operator->()->m_info);
         if (pInfo->FUN_1406a0fe0())
         {
             CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pInfo + 0xa0));
@@ -481,16 +440,16 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
         spItem = ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d578d0(oid);
     AScript* pBuyBtn = out.FUN_140ec2a90();
     int nPriceKind = FUN_140ebf520(spItem, pBuyBtn);
-    if (*(pInfo + 0x108) != 0 && reinterpret_cast<Unk_LpInfo*>(pInfo)->FUN_1406a1be0(0) == 0)
+    if (*(pInfo + 0x108) != 0 && reinterpret_cast<CMeratMarketPremiumProduct*>(pInfo)->GetPriceOf(0) == 0)
     {
         ATL::CAtlArray<unsigned int> ids;
-        Unk_LpList* pList = reinterpret_cast<Unk_LpList*>(pInfo + 0x208);
-        for (void* pos = pList->FUN_1406aa470(); pos != 0; pList->FUN_1406aa5b0(pos))
+        ATL::CRBMap<int, MS2Ptr<CDBPremiumProduct> >* pList = reinterpret_cast<ATL::CRBMap<int, MS2Ptr<CDBPremiumProduct> >*>(pInfo + 0x208);
+        for (POSITION pos = pList->GetHeadPosition(); pos != 0; pList->GetNext(pos))
         {
-            MS2Ptr<Unk_LpSub> spSub = pList->FUN_1406aa910(pos);
-            if (spSub == 0 || spSub->m_nId == 0)
+            MS2Ptr<CDBPremiumProduct> spSub = pList->GetValueAt(pos);
+            if (spSub == 0 || spSub->m_nItemId == 0)
                 continue;
-            ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(ids))->Add(spSub->m_nId);
+            ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)&static_cast<class ATL::CAtlArray<unsigned int, class ATL::CElementTraits<unsigned int>>&>(ids))->Add(spSub->m_nItemId);
         }
         if (!FUN_140ebcc20(reinterpret_cast<ATL::CAtlArray<int>&>(ids)))
             return;

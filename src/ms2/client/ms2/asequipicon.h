@@ -18,6 +18,7 @@
 
 // The market basket entry held by ASMeratMarketEquipData (a CPtred-derived game object; the real type is not recovered).
 class Unk_MeratEquipEntry;
+class CMeratMarketProduct;
 
 class ASEquipIcon : public AScript
 {
@@ -61,7 +62,7 @@ public:
 
     void FUN_1409b97c0(MS2Ptr<Unk_MeratEquipEntry> p);                      // m_40 = p
     void FUN_1409b9810(void* p);                                            // m_50 = p
-    MS2Ptr<Unk_MeratEquipEntry> FUN_1409b9830();                            // m_40
+    MS2Ptr<CMeratMarketProduct> FUN_1409b9830();                            // m_40
     void* FUN_1409b9880();                                                  // m_50
 
 private:

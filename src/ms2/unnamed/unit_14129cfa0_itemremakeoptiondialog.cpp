@@ -588,7 +588,7 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
         return;
     const Scaleform::GFx::Value arg = pData->FUN_1422b9260();
     ASObj result(arg, 2);
-    if (result.FUN_1422ba9a0())
+    if (result.IsUndefinedOrNull())
         return;
     bool bEnable = false;
     if (m_optionCount <= 1) {

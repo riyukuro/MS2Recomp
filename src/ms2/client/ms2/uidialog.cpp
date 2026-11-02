@@ -136,7 +136,7 @@ int FUN_140bb9640(void* p);                                         // delegate 
 void FUN_140d01960(CString strKey);                                 // open the web guide page
 float FUN_141276490(float fWidth, float fHeight);                   // UI scale
 struct Unk_Info140e09150 { __int64 m_pad_00; float m_fValue; };
-void* FUN_1409a8b10();
+class CGameOption;
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
 {
 public:
@@ -312,7 +312,7 @@ int UIDialog::vfunc_53(void* pCfg)
                 XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", pDialog->GetHeightCeil(), 1);
             }
             if (vfunc_52()) {
-                float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue);
+                float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance())))->FUN_140e09150())->m_fValue);
                 XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateX", x / ((float)DAT_143af62d4 * fScale), 1);
                 XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateY", y / ((float)DAT_143af62d8 * fScale), 1);
             }
@@ -343,7 +343,7 @@ int UIDialog::vfunc_54(void* pCfg)
                 XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateX", *(float*)(&fRateX));
                 XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", "rateY", *(float*)(&fRateY));
                 if (fRateX >= 0.0f || fRateY >= 0.0f) {
-                    float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_fValue);
+                    float fScale = FUN_141276490((float)DAT_143af62d4, ((struct Unk_Info140e09150*)((class Unk_ChaosSettings*)(void*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance())))->FUN_140e09150())->m_fValue);
                     float fWidth = (float)DAT_143af62d4 * fScale;
                     float fHeight = (float)DAT_143af62d8 * fScale;
                     x = fRateX * fWidth;
@@ -351,7 +351,7 @@ int UIDialog::vfunc_54(void* pCfg)
                 }
                 if (fRateX > 1.0f || fRateY > 1.0f)
                     m_60 = 1;
-                pDialog->FUN_1422c00f0(x, y);
+                pDialog->SetPositionFloat(x, y);
                 if (!m_7c)
                     vfunc_62(nWidth, nHeight);
             }
@@ -541,7 +541,7 @@ void UIDialog::vfunc_62(int nWidth, int nHeight)
     if (pDialog) {
         int nCurHeight = pDialog->GetHeightCeil();
         int nCurWidth = pDialog->FUN_1422c1340();
-        reinterpret_cast<ASUIComponent*>(pDialog)->FUN_1422c79e0((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
+        reinterpret_cast<ASUIComponent*>(pDialog)->SetSizeInt((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
         pDialog->vfunc_24(true);
     }
 }
@@ -667,7 +667,7 @@ MS2_REPLACE_METHOD(0x141925030, UIDialog, vfunc_72, 6, 0xA9AF6E37);
 // @0x141925040
 int UIDialog::vfunc_73()
 {
-    if (FUN_141383a70(GetTypeName()) || (WorldService::GetInstance()->FUN_141bcb0a0() && !FUN_141926960())) {
+    if (FUN_141383a70(GetTypeName()) || (WorldService::GetInstance()->HasTutorial() && !FUN_141926960())) {
         FUN_141275260(0x88b, 1, 1);
         return 0;
     }
@@ -751,7 +751,7 @@ void UIDialog::vfunc_18()
             float fRateY = y / (float)nHeight;
             float fX = (float)pDialog->FUN_1422c1500() * fRateX;
             float fY = (float)pDialog->FUN_1422c1530() * fRateY;
-            pDialog->FUN_1422c00f0(fX, fY);
+            pDialog->SetPositionFloat(fX, fY);
             if (bOpening) {
                 m_d8.x = fX;
                 m_d8.y = fY;
@@ -778,7 +778,7 @@ bool UIDialog::vfunc_17()
             ((class GFxManager*)FUN_14025e7a0())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
-            pDialog->FUN_1422c00f0((float)pDialog->FUN_1422c1500() * fRateX, (float)pDialog->FUN_1422c1530() * fRateY);
+            pDialog->SetPositionFloat((float)pDialog->FUN_1422c1500() * fRateX, (float)pDialog->FUN_1422c1530() * fRateY);
         }
     }
     return true;
@@ -810,7 +810,7 @@ MS2_REPLACE_METHOD(0x141925690, UIDialog, vfunc_77, 137, 0xF21573C6);
 // @0x141925720
 void UIDialog::vfunc_78()
 {
-    FUN_140b632f0()->FUN_1422d48f0(this, m_e0);
+    FUN_140b632f0()->BringToFront(this, m_e0);
     if (m_164) {
         POSITION pos = s_openDialogs.Find((Unk_UIType)vfunc_48());
         if (pos)

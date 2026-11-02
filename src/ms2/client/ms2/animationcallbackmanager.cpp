@@ -86,7 +86,7 @@ extern int DAT_143ae2b30;                   // 1: actor-manager callbacks are ro
 NiActorManager* FUN_1413f9b70(const egf::EntityID& kId);                            // AnimationService::GetActorManager
 bool FUN_14028d470(float fValue, float fCompare);                                   // float equality
 CLogString* GetLogString();
-void FUN_142095bc0(efd::AssetLocatorService* pService, const efd::utf8string& kUrn, efd::utf8string& kOut);
+
 template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                              const T& first, const U& second);      // filesystem.cpp 0x1403a1310
 
@@ -358,7 +358,7 @@ void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb)
                 efd::utf8string kResult("Unknown");
                 {
                     efd::utf8string kUrn(Unk_AssetUrnText(&kAsset));
-                    FUN_142095bc0(pLocator, kUrn, kResult);
+                    pLocator->FindAssetRelPath(kUrn, kResult);
                 }
                 const char* pszResult = kResult.c_str();
                 const char* pszKey = (const char*)kText;

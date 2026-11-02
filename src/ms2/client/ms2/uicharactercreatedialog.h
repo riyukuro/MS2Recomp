@@ -58,12 +58,12 @@ public:
     virtual int vfunc_2(void* p, float fValue, int nIndex);     // 0x1418e34c0
     virtual int vfunc_3(void* p, float fValue);                 // 0x1418e36b0
 
-    void FUN_1418e3910();                                       // popdown
+    void Popdown();                                       // popdown
     void FUN_1418e3980(CInPacket* pPacket);                     // the CreateCharacter answer
     int FUN_1418e3f50(const CStringW& strName);                 // send the create request
     void GetItemTabAndCategory(CItemData* pData, int* pnCategory, int* pnTab);
     int FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItemData> spData);
-    int FUN_1418e4600(int nTab, int nCategory, int nItemId);
+    int SelectItemById(int nTab, int nCategory, int nItemId);
     int FUN_1418e46c0(int nTab);                                // tab -> equip slot kind
     void FUN_1418e4750();                                       // reset the loaded flags and the item map
     void FUN_1418e47e0(int nTab, int nCategory);                // collect the list rows

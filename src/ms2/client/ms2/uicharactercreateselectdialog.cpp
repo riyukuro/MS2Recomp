@@ -134,7 +134,7 @@ void UICharacterCreateSelectDialog::OnLoadComplete()
             row.FUN_1407cb9c0("jobCode", spJob.operator->()->m_nJobCode);
             row.FUN_1407cbbe0("enabled", spJob.operator->()->m_bEnabled);
             row.FUN_1407cbbe0("event", spJob.operator->()->m_bEvent);
-            tabs.FUN_1422bc050(row.FUN_1422bb870());
+            tabs.PushValue(row.FUN_1422bb870());
         }
         root.FUN_1409adbe0("arrTab", tabs.FUN_1422bb870());
         root.FUN_1407cb9c0("selectedTabIndex", nSelectedTab);

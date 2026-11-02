@@ -134,7 +134,7 @@ private:
 
 extern bool DAT_143aac548;                      // watcher disabled
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)
-extern Unk_SingletonObj* DAT_143aac5c0;
+class CommonResource;
 extern Unk_SingletonObj1* DAT_143aac5c8;
 CLogString* GetLogString();
 unsigned long GetTickCountMs();   // C3: was FUN_1408693e0
@@ -143,7 +143,7 @@ CString FUN_1401d2b10(const CString&, const CString&);
 #endif
 Unk_SingletonObj* FUN_1401d31f0();
 Unk_SingletonObj1* FUN_1401d3200();
-void FUN_1402b7240(Unk_SingletonObj1*);
+namespace Common { class Constants { public: void Reload(); }; }
 class CLua   // C3: member view for the former free stand-ins
 {
 public:
@@ -372,7 +372,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
                 else
                     pInfo = 0;
             }
-            FUN_1402b7240(FUN_1401d3200());
+            ((Common::Constants*)FUN_1401d3200())->Reload();
             ((class CLua*)(class Unk_MailService*)(((class Unk_MailService*)FUN_1401c0db0())))->Update();
             ((class CommonResource*)(class Unk_SingletonObj*)(FUN_1401d31f0()))->CheckReload();
         }
@@ -470,7 +470,7 @@ CDirWatcher* FUN_1401d31e0()
 // @0x1401d31f0
 Unk_SingletonObj* FUN_1401d31f0()
 {
-    return DAT_143aac5c0;
+    return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CommonResource>::s_instance);
 }
 
 // @0x1401d3200

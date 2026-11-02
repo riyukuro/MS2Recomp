@@ -68,10 +68,10 @@ MS2_CHECK_SIZE(Unk_UserProxyPtr<CPlatformProxy>, 0x10);
 Unk_UserProxyPtr<CPlatformProxy> FUN_1408e7250();
 
 // Distinct lock constructor overloads, verified at the annotated exe addresses.
-class Unk_UserProxyWriteLock {
+class Unk_PetLock {
 public:
-  Unk_UserProxyWriteLock(CLockCriticalSection &, int);
-  ~Unk_UserProxyWriteLock();
+  Unk_PetLock(CLockCriticalSection &, int);
+  ~Unk_PetLock();
 
 private:
   void *m_p;
@@ -84,7 +84,7 @@ public:
 private:
   void *m_p;
 };
-MS2_CHECK_SIZE(Unk_UserProxyWriteLock, 8);
+MS2_CHECK_SIZE(Unk_PetLock, 8);
 MS2_CHECK_SIZE(Unk_UserProxyConstLock, 8);
 class Unk_UserProxyColor {
 public:

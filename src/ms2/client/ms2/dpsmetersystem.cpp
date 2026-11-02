@@ -1148,8 +1148,8 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
         fRate = fRate + fRate * ((class PC*)(class PCBase*)(pMe))->FUN_1416628b0(5, spBuff->FUN_14096d2a0());
         m_spRecord->m_attack.m_dRate += fRate;
     }
-    __int64 nDamage = abs(spRecord->FUN_14175ac30());
-    int nGrade = spRecord->FUN_14175b130();
+    __int64 nDamage = abs(spRecord->GetTotalDamage());
+    int nGrade = spRecord->GetFirstType();
     unsigned short nLevel = spBuff->FUN_14096d810()->GetLevel();
     unsigned nEffectId = spBuff->FUN_14096d810()->GetID();
     AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 1, spBuff->FUN_14096d810()->m_dotDamage.m_eElement,

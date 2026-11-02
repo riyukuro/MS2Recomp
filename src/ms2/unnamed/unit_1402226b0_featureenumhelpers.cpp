@@ -242,7 +242,7 @@ bool FUN_140222e10(int n)
 }
 
 // @0x140222f50
-int FUN_140222f50()
+unsigned __int64 FUN_140222f50()
 {
     return 0xc;
 }

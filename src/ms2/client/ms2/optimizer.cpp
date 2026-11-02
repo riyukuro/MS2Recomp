@@ -622,7 +622,7 @@ void COptimizer::AddSuppressor(const egf::EntityID& kId)
 }
 
 // @0x14161d070
-void COptimizer::RemoveSuppressor(const egf::EntityID& kId)
+void COptimizer::RemoveSuppressor(egf::EntityID kId)
 {
     if (!m_suppress.empty())
     {

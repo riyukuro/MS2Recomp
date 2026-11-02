@@ -376,34 +376,33 @@ CollisionPtr CSkillCollisionManager::Get(__int64 nHandle)
 }
 
 // @0x141755cd0
-// MS2-FUNCTIONAL: temporary Unk_NiPt3 copies are laid out differently
+// MS2-FUNCTIONAL: the exe's vfunc_3 takes NiPoint3 by value, converted implicitly from efd::Point3 arguments; needs the cbasecollision.h retype (70 dependents)
 void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSkill, const Unk_SkPoint* pPos,
     const Unk_SkPoint* pDir)
 {
-    if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) == 0)
+    if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
+    {
+        if (DAT_143ae95e1 == 0)
+            return;
+    }
+    else
     {
         if ((efd::DynamicCast<PC, PCBase>(pActor) != 0 || ((void*)FUN_141468360((struct Unk_MagicEntity*)(pActor))) != 0) && DAT_143ae95e0 == 0)
             return;
-    }
-    else if (DAT_143ae95e1 == 0)
-    {
-        return;
     }
     Unk_ColInfo* pInfo = &spSkill->m_col;
     if (pInfo == 0)
         return;
     CollisionPtr spShape = TSingleton<CSkillCollisionManager>::GetInstance()->CreateFromInfo(pInfo, 0.0f);
-    if (!(spShape == 0))
-    {
-        CBaseCollision* pShape = spShape.get();
-        Unk_NiPt3 kDir(pDir);
-        Vector3 ptDir = *(Vector3*)&kDir;
-        Unk_NiPt3 kPos(pPos);
-        Vector3 ptPos = *(Vector3*)&kPos;
-        pShape->vfunc_3(ptPos, ptDir, 1.0f);
-        spShape->m_n58 = GetTickCountMs2();
-        TSingleton<CSkillCollisionManager>::GetInstance()->Add(spShape);
-    }
+    if (spShape == 0)
+        return;
+    Unk_NiPt3 kDir(pDir);
+    Vector3 ptDir = *(Vector3*)&kDir;
+    Unk_NiPt3 kPos(pPos);
+    Vector3 ptPos = *(Vector3*)&kPos;
+    spShape->vfunc_3(ptPos, ptDir, 1.0f);
+    spShape->m_n58 = GetTickCountMs2();
+    TSingleton<CSkillCollisionManager>::GetInstance()->Add(spShape);
 }
 
 // An unreferenced identity function (11 bytes, `mov [rsp+8], rcx; mov rax, [rsp+8]; ret`) sits in front of the CRT

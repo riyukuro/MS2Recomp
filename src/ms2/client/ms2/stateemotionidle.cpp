@@ -38,7 +38,9 @@
 #include "stateemotionidle.h"
 
 #include "ms2/client/ms2/pcbase.h"
-#include "ms2/placeholder/mypc.h"
+#include "ms2/client/ms2/mypc.h"   // C3: the real MyPC (FUN_141523bc0 returns CSkillSystem*)
+#include "ms2/placeholder/cnpc.h"   // C3: CNpc::FUN_141093510
+#include "ms2/placeholder/chomeprivilege.h"   // MyPC::m_spHomePrivilege needs the CPtred base
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/ms2recover.h"
@@ -102,7 +104,6 @@ public:
 // Buff container of an actor.
 // The knock-back direction (a POD with a declared ctor, so the return temp is not a /GS buffer).
 struct Unk_SeiPoint { float x, y, z; Unk_SeiPoint(); };
-short FUN_141093510(PCBase* p);                          // CNpc animation key (+0xde8); cnpc.h returns unsigned short
 class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // Config constants singleton (FUN_1401d3200): the idle delay at +0xa00 and the idle-emotion chance at +0x29c8.
@@ -124,7 +125,6 @@ typedef efd::utf8string Unk_AnimName;   // 0x20 bytes (ctor 0x1409989e0, dtor 0x
 class Unk_FNAnimSvc { public: };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-const char* FUN_142087e50(const void* pFixed);
 
 // Casts of the actor class ids.
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
@@ -135,16 +135,19 @@ public:
 };
 
 // MyPC / PCBase non-virtual helpers (free-function form: `this` is the first argument).
-bool FUN_1415248d0(MyPC* p, int n1, int n2);
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it into an arg slot)
 class Unk_SeiSlots
 {
 public:
 #define MS2_SEI_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
     virtual void vfunc_##d(); virtual void vfunc_##e();
-    MS2_SEI_SLOTS(0, 1, 2, 3, 4) MS2_SEI_SLOTS(5, 6, 7, 8, 9) MS2_SEI_SLOTS(10, 11, 12, 13, 14) MS2_SEI_SLOTS(15, 16, 17, 18, 19)
+    MS2_SEI_SLOTS(0, 1, 2, 3, 4) MS2_SEI_SLOTS(5, 6, 7, 8, 9) MS2_SEI_SLOTS(10, 11, 12, 13, 14)
 #undef MS2_SEI_SLOTS
-    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();                                         // 18 0x14166bbe0
+    virtual void vfunc_19();
+    virtual efd::Point3 vfunc_20();                                         // 20 0x14166bc50
+    virtual void vfunc_21();
     virtual void vfunc_22(Unk_SeiPoint kPos);                               // 22
 #define MS2_SEI_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
     virtual void vfunc_##d(); virtual void vfunc_##e();
@@ -154,9 +157,7 @@ public:
 #undef MS2_SEI_SLOTS
     virtual bool vfunc_68(Unk_SeiPoint kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
-int FUN_14152c280(MyPC* p, RideOffAction* pAction);
 
-void* FUN_1401958b0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -167,7 +168,6 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 unsigned FUN_140767ff0();
-CStringA& FUN_140164930(ATL::CAtlArray<CStringA>&, size_t i);           // GetAt
 
 // ---- StateEmotionData ----
 
@@ -227,7 +227,7 @@ void StateEmotion::vfunc_4(StateData* pData)
     }
     else
     {
-        MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(FUN_1401958b0())->GetSkillData(m_spData2->m_nEmotion);
+        MS2Ptr<SkillData> spRow = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(m_spData2->m_nEmotion);
         if (spRow == 0)
             return;
         if (reinterpret_cast<SkillData*>(spRow.operator->())->GetMainType() != 0xe)
@@ -282,11 +282,11 @@ void StateEmotion::vfunc_8(double fTime)
     }
     else if (pBuff->FUN_141683100(0x30d41))
     {
-        FUN_1415248d0(pPC, 1, 0);
+        pPC->FUN_1415248d0(1, 0);
     }
     else if (pBuff->FUN_141683100(0x30d42))
     {
-        FUN_1415248d0(pPC, 2, 0);
+        pPC->FUN_1415248d0(2, 0);
     }
     else if (reinterpret_cast<PCBase*>(pPC)->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
     {
@@ -414,7 +414,7 @@ void StateTriggerEmotion::vfunc_4(StateData* pData)
     }
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount() != 0)
     {
-        efd::utf8string kName(FUN_140164930(m_aEmotions, 0));
+        efd::utf8string kName(m_aEmotions[0]);
         static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, m_spData2->m_bLoop, false);
     }
     m_nStart = GetTickCountMs2();
@@ -447,7 +447,7 @@ void StateTriggerEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
         {
             if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_aEmotions))->GetCount() != 0)
             {
-                efd::utf8string kName(FUN_140164930(m_aEmotions, 0));
+                efd::utf8string kName(m_aEmotions[0]);
                 static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
             }
         }
@@ -461,7 +461,7 @@ void StateTriggerEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
         }
         else
         {
-            efd::utf8string kName(FUN_140164930(m_aEmotions, m_nIndex));
+            efd::utf8string kName(m_aEmotions[m_nIndex]);
             static_cast<PCBase*>(m_pOwner)->FUN_14166dd20(kName, 1.0f, false, false);
         }
     }
@@ -525,8 +525,6 @@ void StateTriggerFollowNpc::vfunc_4(StateData* pData)
 }
 
 // @0x1417c4c90
-// MS2-FUNCTIONAL: the animation-name lookup skips the actor-manager smart pointer's AddRef/Release pair; the
-// slot 19/21 by-value point copies are written as plain by-value calls.
 void StateTriggerFollowNpc::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -541,9 +539,10 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
     }
     else
     {
-        m_pOwner->vfunc_19(pNpc->vfunc_18());
-        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d970(pNpc->vfunc_20());
-        short nAnim = FUN_141093510(pNpc);
+        m_pOwner->vfunc_19(reinterpret_cast<Unk_SeiSlots*>(pNpc)->vfunc_18());
+        efd::Point3 kRot = reinterpret_cast<Unk_SeiSlots*>(pNpc)->vfunc_20();
+        reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d970(kRot);
+        short nAnim = reinterpret_cast<CNpc*>(pNpc)->FUN_141093510();
         if (nAnim != 0 && m_nAnim != nAnim)
         {
             m_nAnim = nAnim;
@@ -554,15 +553,12 @@ void StateTriggerFollowNpc::vfunc_3(double fTime)
             }
             else
             {
-                Unk_GoModelKey kKey;
-                Unk_GoModelKey& rKey = pActor->FUN_14123c460(kKey);
-                NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_FNAnimSvc*>(FUN_141b6f910()))->GetActorManager(reinterpret_cast<const egf::EntityID&>(static_cast<const Unk_GoModelKey&>(rKey)));
-                if (pMgr != 0)
+                NiPointer<NiActorManager> spMgr = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<Unk_FNAnimSvc*>(FUN_141b6f910()))->GetActorManager(pActor->FUN_14123c460());
+                if (spMgr)
                 {
-                    int nSeq = (int)m_nAnim;
-                    void* pSeq = ((void*)(static_cast<NiActorManager*>(pMgr)->GetSequenceData(nSeq)));
+                    NiSequenceData* pSeq = spMgr->GetSequenceData(m_nAnim);
                     if (pSeq != 0)
-                        strAnim = FUN_142087e50((char*)pSeq + 0x10);
+                        strAnim = (const char*)pSeq->GetName();
                 }
             }
             if (!strAnim.IsEmpty())
@@ -677,7 +673,7 @@ void StateEmotionIdle::vfunc_4(StateData* pData)
     }
     else
     {
-        MS2Ptr<SkillData> spRow = reinterpret_cast<SkillDataTable*>(FUN_1401958b0())->GetSkillData(m_spData2->m_nEmotion);
+        MS2Ptr<SkillData> spRow = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillData(m_spData2->m_nEmotion);
         if (spRow == 0 || reinterpret_cast<SkillData*>(spRow.operator->())->GetMainType() != 0xe)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -754,17 +750,17 @@ void StateEmotionIdle::vfunc_8(double fTime)
                 {
                     spAction->m_n2c = 0xc13e30c8;
                 }
-                FUN_14152c280(pPC, spAction);
+                pPC->SendRequestRideMode1(spAction);
             }
             else
             {
-                FUN_1415248d0(pPC, 1, 0);
+                pPC->FUN_1415248d0(1, 0);
             }
         }
     }
     else if (pPC != 0 && pBuff->FUN_141683100(0x30d42))
     {
-        FUN_1415248d0(pPC, 2, 0);
+        pPC->FUN_1415248d0(2, 0);
     }
     else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
     {

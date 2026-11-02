@@ -65,8 +65,8 @@ class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
 CStringW GetStringCommonByKey(const CStringW& rKey);
 void FUN_1412751f0(const CStringW& rText, int nA, int nB);
 void FUN_141275260(int nId, int nA, int nB);
-void FUN_140d73bc0(int nId, int nA, IMessageListener* pListener, CStringW strExtra);
-void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strExtra);
+void FUN_140d73bc0(int nId, int nA, void* pListener, CStringW strExtra);
+void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strExtra);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_1409e97f0(int nId, const int& rArg);

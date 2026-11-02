@@ -19,6 +19,7 @@
 #include <NiPoint2.h>
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc940
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -30,11 +31,10 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 
 // The client's world service and the local player (worldservice.h spells the player as void*).
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);   // C3: was FUN_140a7b810
-bool FUN_14034eee0(const CStringW& str, const wchar_t* psz) throw();           // operator!=
 
 // The ui manager (FUN_1403ed2b0) and the dialogue singleton.
 class Unk_AtUIMgr { public: };           // FUN_1403ed2b0's return type
-Unk_AtUIMgr* FUN_1403ed2b0();
+class CUIService;
 void* FUN_140967100();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
@@ -46,7 +46,7 @@ public:
 // The key hint table (FUN_1409331f0) and the options flag behind FUN_1409a8b10.
 class CKeyTable { public: CStringW FUN_14142d760(int nAction, int nPriority); };   // ckeytable.h's key table (its FUN_1409331f0 decl is aliased)
 class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
-void* FUN_1409a8b10();
+class CGameOption;
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 int FUN_141277f40();   // C3: was FUN_141277f40
 
@@ -74,7 +74,7 @@ public:
     const struct Vector3& GetValue() const;
 };
 void FUN_140d00fb0(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
-float FUN_1408f2120(const float& v, float fLo, float fHi);             // clamp
+template <class T> T ClampProxyValue(const T& x, T lo, T hi);   // C3: userproxy.cpp
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -183,7 +183,7 @@ int UIActionTooltip::FUN_1418b1950()
 // @0x1418b1990
 CStringW UIActionTooltip::FUN_1418b1990()
 {
-    int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10()))) ? 2 : 0;
+    int nFlag = *((unsigned char const*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))) ? 2 : 0;
     int nId = FUN_1418b1950();
     return reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142d760(nId, nFlag);
 }
@@ -203,7 +203,7 @@ void UIActionTooltip::FUN_1418b1ab0()
     if (m_30.get() != 0)
     {
         ActionKeyObject* pAction = FUN_1418b1900();
-        if (pAction != 0 && FUN_14034eee0(pAction->vfunc_6(), L""))
+        if (pAction != 0 && pAction->vfunc_6() != L"")
         {
             m_pAction = pAction;
             m_strTitle = pAction->vfunc_7();
@@ -244,17 +244,17 @@ void UIActionTooltip::FUN_1418b1ef0()
             int nY = FUN_14025a620((class Unk_ConstVal*)&((class Unk_AtConstants*)FUN_1401d3200())->m_c7c0);
             int nCenterX = (int)((float)spEntity->ASDisplayObject::FUN_1422c1500() * 0.5f + (float)nX);
             int nCenterY = (int)((float)spEntity->ASDisplayObject::FUN_1422c1530() * 0.5f + (float)nY);
-            spEntity->FUN_1422bffe0(nCenterX, nCenterY);
+            spEntity->SetPositionInt(nCenterX, nCenterY);
         }
         else
         {
             efd::Point2 kScreen;
             FUN_140d00fb0(*((struct Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
             int nWidth = spEntity->ASDisplayObject::FUN_1422c1500();
-            float fX = FUN_1408f2120(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
+            float fX = ClampProxyValue<float>(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
             int nHeight = spEntity->ASDisplayObject::FUN_1422c1530();
-            float fY = FUN_1408f2120(kScreen.y, 0, (float)(nHeight - spEntity->GetHeightCeil()));
-            spEntity->FUN_1422c00f0(fX, fY);
+            float fY = ClampProxyValue<float>(kScreen.y, 0, (float)(nHeight - spEntity->GetHeightCeil()));
+            spEntity->SetPositionFloat(fX, fY);
         }
     }
 }
@@ -273,7 +273,7 @@ int UIActionTooltip::FUN_1418b2140()
     case 0x16:
         return ((class UITalkManager*)(void*)(FUN_140967100()))->GetTalking();
     case 0x10:
-        return reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e56) == 0;
+        return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e56) == 0;
     case 4:
     case 0x11:
     case 0x12:
@@ -284,9 +284,9 @@ int UIActionTooltip::FUN_1418b2140()
         return pMyPC->FUN_14166c930() == 0x19;
     }
     case 0xe:
-        return reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e77) == 0;
+        return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e77) == 0;
     case 0x13:
-        return reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4ebd) == 0;
+        return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4ebd) == 0;
     case 0x1a:
     {
         MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());

@@ -41,7 +41,7 @@ CString FUN_14038f6d0(const CString& strA, const char* pszB);   // string concat
 CString FUN_14071ae20(const CString& strFile);                  // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
 class Unk_SmTextMgr;
-void FUN_1416fb380(Unk_SmTextMgr* pMgr, CStringW* pStr);        // post-process a loaded text
+
 extern CLockCriticalSection g_cacheLock;                        // 0x143aac550
 extern int DAT_1439ed00c;
 unsigned char FUN_1401d1320(CCacheData* p);                     // file changed since load
@@ -100,9 +100,9 @@ void LoadSystemMailContent()
         XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
         XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
         XmlGetAttr((class TiXmlElement*)(pNode), "content", spMail->m_strContent);
-        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSender);
-        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSubject);
-        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strContent);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSender);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSubject);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strContent);
         if (Unk_LockGuard guard = g_cacheLock)
         {
         }
@@ -126,9 +126,9 @@ void FUN_140851c40(Unk_140165cf0* pRoot)
         XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
         XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
         XmlGetAttr((class TiXmlElement*)(pNode), "content", spMail->m_strContent);
-        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSender);
-        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strSubject);
-        FUN_1416fb380(reinterpret_cast<Unk_SmTextMgr*>(TSingleton<CReservedWordTable>::GetInstance()), &spMail->m_strContent);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSender);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strSubject);
+        TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb380(spMail->m_strContent);
         if (Unk_LockGuard guard = g_cacheLock)
         {
         }

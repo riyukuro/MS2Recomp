@@ -195,13 +195,13 @@ Unk_Ref16* FUN_14027cc30(Unk_Ref16*, Unk_Ref16*);
 void FUN_14027b6f0(i64 al, i64 where, i64 src) { ::new((void*)where) i64(*(i64*)FUN_14027c140(src)); }
 // @0x14027b740
 void FUN_14027b740(i64 al, i64 where, i64 src) { ::new((void*)where) i64(*(i64*)FUN_14027c150(src)); }
-// MS2-FUNCTIONAL: pair<const unsigned,int> piecewise construct; the exe is one new-expression calling the pair ctor 0x140274bb0 with by-value tuple temporaries (frame slots differ; 0x140274bb0 is a free function in commonstruct_wc)
+// pair<const unsigned,int> piecewise construct: the empty tuple temporary and the key slot; 0x140274bb0 is a free function in commonstruct_wc.
 // @0x14027b790
 void FUN_14027b790(i64 al, i64 where, i64 a2, i64 b2, i64 c2)
 {
     Unk_P8* mem = (Unk_P8*)operator new(8, (void*)where);
-    Unk_Q8 first, second;
-    Unk_Q8* p28 = &first;
+    struct { } first; Unk_Q8 second;
+    Unk_Q8* p28 = (Unk_Q8*)&first;
     Unk_Q8* p30 = &second;
     FUN_140274bb0(mem, *(char*)(i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
                   (i64)FUN_140163dc0(p28, (Unk_Q8*)(i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)c2))));
@@ -328,25 +328,25 @@ i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
 }
 
 // fmt::internal::MakeValue<BasicFormatter<wchar_t>>(const int&): the generic ostream-formatted argument (type 0xa)
-struct Unk_FmtVal { i64 w0, w1; int type; };
-struct Unk_Str16 { i64 w0, w1; };
+struct Unk_FmtVal : fmt::internal::Value { int type; };
+struct Unk_Str16 { private: i64 w0, w1; };
 Unk_Str16* FUN_140182090(Unk_Str16*, const std::wstring&);
 // @0x14027bff0
-// MS2-FUNCTIONAL: uses the standard wostringstream/wstring; the exe calls its own out-of-line stream ctor/dtor and str() instances
+// fmt: an int writes the argument directly; the disabled path formats through a wide stream.
 void FUN_14027bff0(i64 ctx, i64* out, int* value)
 {
     Unk_FmtVal v;
     Unk_FmtVal* pv = &v;
-    if (0 == 1) {
+    if (!(0 == 1)) {
+        v.int_value = *value;
+        v.type = 1;
+    } else {
         std::wostringstream oss;
         oss << *value;
         std::wstring text = oss.str();
         Unk_Str16 packed;
         *(Unk_Str16*)pv = *FUN_140182090(&packed, text);
         v.type = 10;
-    } else {
-        *(int*)pv = *value;
-        v.type = 1;
     }
     *out = (i64)reinterpret_cast<fmt::BasicFormatter<wchar_t>*>(ctx)->format(*(const wchar_t**)out, *(const fmt::internal::Arg*)&v);
 }
@@ -688,8 +688,8 @@ struct CAdditionalEvent : CPtred {
     virtual ~CAdditionalEvent() = default;
 };
 // @0x14027d780
-CAdditionalEvent::CAdditionalEvent() { FUN_14027c650(&events, 10); }
-void Unk_AnchorAdditionalEvent(CAdditionalEvent* p) { p->CAdditionalEvent::~CAdditionalEvent(); }
+inline CAdditionalEvent::CAdditionalEvent() { FUN_14027c650(&events, 10); }  // inline: unit_140267670's new T() emits the implicit copy
+void Unk_AnchorAdditionalEvent(CAdditionalEvent* p) { p->CAdditionalEvent::~CAdditionalEvent(); new (p) CAdditionalEvent; }
 
 // @0x14027d7d0
 CIngredientInfo::CIngredientInfo(int a, int b, int c) : m_a(a), m_b(c), m_c(b) {}

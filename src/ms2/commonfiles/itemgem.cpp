@@ -73,6 +73,8 @@ static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                       
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/equipment.h"
+#include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<T>::Get/Read
+#include "ms2/commonfiles/os.h"
 
 // The actor components behind PCBase slots 82 / 85 (see pcbase.h): the name tag and chat balloon entities.
 class Unk_PCBaseComp_a78 : public CPtred {};
@@ -82,7 +84,6 @@ class Unk_PCBaseComp_aa8 : public CPtred {};
 class Unk_IdleChance
 {
 public:
-    unsigned FUN_140536a30();                                       // 0x140536a30
     char m_pad[0x58];
 };
 struct Unk_BannerCfg
@@ -129,7 +130,7 @@ public:
     int FUN_1411a49c0(Unk_EffectQuery* pQuery);                     // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                                // release
 };
-Unk_RideeEffects* FUN_1403ed280();                                  // 0x1403ed280
+class CEffectService;
 
 // The actor's equipment (FUN_14165f460 hands it out as a void*): the gem items' worn-item calls.
 CString FUN_1405a7e80(int nValue);                                  // 0x1405a7e80
@@ -236,16 +237,16 @@ CGemTransparency::CGemTransparency(int nType, int nGemId) : CGemBase(nType, nGem
         m_aHidden[i] = 0;
     if (s_mapGemSlots.GetCount() == 0)
     {
-        s_mapGemSlots.SetAt(Unk_GemSlot_0, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot0.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_1, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot1.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_2, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot2.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_3, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot3.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_4, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot4.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_5, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot5.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_6, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot6.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_7, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot7.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_8, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot8.FUN_140536a30());
-        s_mapGemSlots.SetAt(Unk_GemSlot_9, ((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot9.FUN_140536a30());
+        s_mapGemSlots.SetAt(Unk_GemSlot_0, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot0)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_1, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot1)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_2, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot2)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_3, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot3)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_4, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot4)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_5, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot5)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_6, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot6)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_7, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot7)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_8, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot8)->Read());
+        s_mapGemSlots.SetAt(Unk_GemSlot_9, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_BannerCfg*)FUN_1401d3200())->m_slot9)->Read());
     }
 }
 
@@ -817,7 +818,7 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     query.m_strName = spData->GetEffectByGender(((class PC*)(class PCBase*)(pPC))->FUN_141658e60());
     query.m_nObject = 0;
     query.SetActor(pPC->FUN_14123c580());
-    unsigned int nHandle = FUN_1403ed280()->FUN_1411a49c0(&query);
+    unsigned int nHandle = reinterpret_cast<Unk_RideeEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&query);
     if (nHandle > 0)
         m_listEffects.AddTail(nHandle);
     ((class PC*)(class PC*)(pPC))->FUN_1416636e0(spItem, m_nDataId);
@@ -836,7 +837,7 @@ int CGemCharEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
     for (POSITION pos = m_listEffects.GetHeadPosition(); pos != 0; m_listEffects.GetNext(pos))
     {
         int nHandle = m_listEffects.GetAt(pos);
-        FUN_1403ed280()->FUN_1411a6060(nHandle);
+        reinterpret_cast<Unk_RideeEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
     }
     m_listEffects.RemoveAll();
     ((class PC*)(class PC*)(pPC))->ClearCouple();
@@ -1115,10 +1116,10 @@ void CItemGem::SetGem(MS2Ptr<CGemBase> spGem)
 MS2_REPLACE_METHOD(0x1405AA540, CItemGem, SetGem, 61, 0x63D19A2E);
 
 // @0x1405a96f0
-extern void* DAT_143aafd08;                                         // the gem table singleton (unit_14149fd50.cpp)
+class CItemGemPropertyTable;
 Unk_GemTable* FUN_1405a96f0()
 {
-    return (Unk_GemTable*)DAT_143aafd08;
+    return (Unk_GemTable*)reinterpret_cast<void*>(TSingleton<CItemGemPropertyTable>::s_instance);
 }
 
 // memmove_s 0x1405abbe0 closes the obj's COMDAT tail.

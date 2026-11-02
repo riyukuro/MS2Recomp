@@ -72,6 +72,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include <algorithm>
 #include <errno.h>
 #include <string.h>
+#include "ms2/commonfiles/os.h"
 class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out); };   // bind a child
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
@@ -264,8 +265,8 @@ void UIItemLulluBoxDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
         if (data == 0)
             return;
         CString tag = LULLUBOX_ATTR(data)->GetString(L"boxItemTag", "");
-        unsigned boxId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(tag);
-        unsigned boxItem = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)boxId);
+        unsigned boxId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(tag);
+        unsigned boxItem = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)boxId);
         CStringW keyName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_boxItemId);
         CStringW boxName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, boxItem);
         if ((which == "m_singleOpenButton")) {
@@ -353,7 +354,7 @@ bool UIItemLulluBoxDialog::FUN_140e9c2a0(int result, const CMsgBoxData&)
 {
     if (result == 0) {
         if (m_autoPay.get() ? true : false) {
-            if (m_autoPay->FUN_1422bfca0() == true)
+            if (m_autoPay->GetVisible() == true)
                 m_autoPay->FUN_1422ce090(1);
         }
         FUN_140e9ece0();
@@ -441,18 +442,18 @@ void UIItemLulluBoxDialog::FUN_140e9cde0(int count)
     MS2Ptr<ASMovieClip> bag = GetChild<ASMovieClip>("m_previewItemBag");
     if (bag == 0)
         return;
-    bag->FUN_1422c0ec0(h);
+    bag->SetHeightInt(h);
     float y = bag->FUN_1422c1110() + (float)bag->GetHeightCeil() + 6.0f;
-    m_skipEffect->FUN_1422c05a0(y);
-    m_autoPay->FUN_1422c05a0(y);
+    m_skipEffect->SetYFloat(y);
+    m_autoPay->SetYFloat(y);
     float y2 = m_skipEffect->FUN_1422c1110() + (float)m_skipEffect->GetHeightCeil() + 10.0f;
-    m_singleOpen->FUN_1422c05a0(y2);
-    m_multiOpen->FUN_1422c05a0(y2);
+    m_singleOpen->SetYFloat(y2);
+    m_multiOpen->SetYFloat(y2);
     FUN_140d00c80(FUN_1422dbb40(), "m_boxBG", h + 0x10d);
     if (tall)
-        bag->FUN_1422c0420(bag->FUN_1422c10a0() - 6.0f);
+        bag->SetXFloat(bag->FUN_1422c10a0() - 6.0f);
     if (rows > 2)
-        FUN_1422dba50()->FUN_1422c05a0(FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x8c));
+        FUN_1422dba50()->SetYFloat(FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x8c));
 }
 
 // @0x140e9d1e0
@@ -607,8 +608,8 @@ int UIItemLulluBoxDialog::FUN_140e9e8f0()
     CString keyTag = LULLUBOX_ATTR(data)->GetString(L"keyItemTag", "");
     CString boxTag = LULLUBOX_ATTR(data)->GetString(L"boxItemTag", "");
     int price = LULLUBOX_ATTR(data)->GetInt(L"boxPrice", 0);
-    int keyId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(keyTag);
-    int boxId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(boxTag);
+    int keyId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(keyTag);
+    int boxId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(boxTag);
     int need = 1;
     if (m_multi)
         need = 10;
@@ -650,8 +651,8 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
         if (data == 0)
             return;
         CString keyTag = LULLUBOX_ATTR(data)->GetString(L"keyItemTag", "");
-        unsigned keyId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(keyTag);
-        int keyItem = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)keyId);
+        unsigned keyId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(keyTag);
+        int keyItem = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)keyId);
         FUN_140e9f870(L"key", keyItem);
         return;
     } else if (r == 2) {
@@ -659,12 +660,12 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
         if (data == 0)
             return;
         CString keyTag = LULLUBOX_ATTR(data)->GetString(L"keyItemTag", "");
-        unsigned keyId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(keyTag);
-        unsigned keyItem = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)keyId);
+        unsigned keyId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(keyTag);
+        unsigned keyItem = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)keyId);
         CString boxTag = LULLUBOX_ATTR(data)->GetString(L"boxItemTag", "");
         int price = LULLUBOX_ATTR(data)->GetInt(L"boxPrice", 0);
-        unsigned boxId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(boxTag);
-        unsigned boxItem = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagItemId((ItemTagKey)boxId);
+        unsigned boxId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(boxTag);
+        unsigned boxItem = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)boxId);
         int have = g_143ab2a90.FUN_140a5f7b0(boxId, 0);
         int need = 1;
         if (m_multi)
@@ -709,7 +710,7 @@ void UIItemLulluBoxDialog::FUN_140e9f540()
         return;
     }
     if (m_simple == false) {
-        if (m_autoPay->FUN_1422bfca0()) {
+        if (m_autoPay->GetVisible()) {
             if (m_autoPay->FUN_1422ce0e0())
                 mode += "autoPay";
         }
@@ -718,7 +719,7 @@ void UIItemLulluBoxDialog::FUN_140e9f540()
     if (data == 0)
         return;
     CString keyTag = LULLUBOX_ATTR(data)->GetString(L"keyItemTag", "");
-    int keyId = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTagByName(keyTag);
+    int keyId = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(keyTag);
     MS2Ptr<CItem> inv = g_143ab2a90.FUN_140a5e040(keyId);
     if (inv == 0)
         return;

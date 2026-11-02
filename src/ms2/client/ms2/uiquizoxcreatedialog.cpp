@@ -83,7 +83,7 @@ void UIQuizOXCreateDialog::OnLoadComplete()
     if (spCombo == 0)
         return;
     {
-        spCombo->FUN_1422dfc10();
+        spCombo->ClearItems();
         std::vector<int>& range = m_fees;
         std::vector<int>::const_iterator itEnd = range.end();
         for (std::vector<int>::const_iterator it = range.begin(); it != itEnd; ++it) {
@@ -91,13 +91,13 @@ void UIQuizOXCreateDialog::OnLoadComplete()
             ASObj obj(2);
             obj.FUN_1407cbb20("label", FUN_140763e10(nFee));
             obj.FUN_1407cb9c0("data", nFee);
-            spCombo->FUN_1422dfc70(obj);
+            spCombo->AddItemRow(obj);
         }
         spCombo->SetSelectedIndex(0);
         reinterpret_cast<Unk_QoCombo*>(spCombo.operator->())->vfunc_24(true);
         MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textHostFee");
         if (((void*)spText.get()) != 0) {
-            spText->FUN_1422e0ab0(FUN_140763e10(m_fees[0]));
+            spText->SetTextW(FUN_140763e10(m_fees[0]));
         }
     }
 }

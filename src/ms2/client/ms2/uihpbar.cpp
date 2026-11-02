@@ -10,8 +10,10 @@
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/socketptr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/cpet.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
@@ -26,7 +28,6 @@ public:
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(const CString& strLabel);     // 15 gotoAndPlay(label)
-    void FUN_1422c0e20(int nWidth);
 };
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -36,7 +37,6 @@ class Unk_HpClip : public ASGameEntity
 public:
     Scaleform::GFx::Value FUN_141994b30(const char* szMethod, unsigned int a1, unsigned int a2, int a3);               // "setArrow"
     Scaleform::GFx::Value FUN_141994c00(const char* szMethod, __int64 a1, __int64 a2, unsigned short a3, int a4);    // "open"
-    void FUN_1422c0290(float cx, float cy);
 };
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
@@ -60,8 +60,7 @@ public:
 };
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
-CString FUN_1402bb1c0(const char* szFormat, const int& n);                  // StringFormat<int>
-const int& FUN_1404eb7e0(const int& a, const int& b);                       // max
+extern template CString StringFormat<int>(const char*, const int&);
 float FUN_140bf4fd0(float f);                                               // ceilf
 bool FUN_140930110(int nActorId);
 class Unk_HpNpc : public PCBase
@@ -71,40 +70,20 @@ public:
 class Unk_HpPet : public CPet { };
 struct Unk_HpSeatPos : Unk_GVec3 {};                                    // the returned seat position (copied out through Unk_GVec3)
 class Unk_HpSeat { public: Unk_HpSeatPos FUN_140adf8e0(); };
-struct Unk_HpMountInfo3 { char m_pad[0x68]; int m_68; };
-class Unk_HpMountInfoPtr
-{
-public:
-    ~Unk_HpMountInfoPtr() { FUN_140788ea0(); }
-    Unk_HpMountInfo3* FUN_1407895c0() const;            // operator->
-    void FUN_140788ea0();                               // release
-    void* m_pad_00;
-    Unk_HpMountInfo3* m_p;
-};
-struct Unk_HpMountInfo { Unk_HpMountInfoPtr FUN_140784970(); };
-class Unk_HpMountPtr
-{
-public:
-    ~Unk_HpMountPtr() { FUN_140788ed0(); }
-    void* FUN_1409f78a0() const;                        // get
-    Unk_HpMountInfo* FUN_1407895d0() const;             // operator->
-    void FUN_140788ed0();                               // release
-    void* m_pad_00;
-    Unk_HpMountInfo* m_p;
-};
-class Unk_HpMountHolder { public: Unk_HpMountPtr FUN_141707750(); };
+class RideeData { public: struct Rider : public CPtred { char m_pad[0x68 - sizeof(CPtred)]; int m_68; }; };
+class CRideeData { public: Unk_SocketPtr<RideeData::Rider> FUN_140784970(); };   // C3: member view
+class Unk_RideeData : public CPtred { };
+class Ridee : public PCBase { public: MS2Ptr<Unk_RideeData> GetData(); };   // C3: member view
 // An actor (pc, npc, pet) with the non-virtual accessors this unit calls.
+class MyPC { public: int FUN_1415278d0(void* p); };   // C3: member view (mypc.h needs CHomePrivilege)
 class Unk_HpActor : public PC
 {
 public:
-    class Unk_HpSeat* FUN_14165ca20();
-    int FUN_1415278d0(__int64 nId);
 };
 struct Unk_HpCfgData { char m_pad[0xa]; bool m_a; char m_b; bool m_c; char m_d; bool m_e; };
 class Unk_HpWorld;
-Unk_HpPet* FUN_1409ffc60(PCBase* pActor);               // the actor as a pet
 class Unk_HpUIMgr { public: };
-UIHpBar* FUN_141742c80(int nUiId);
+template <class T> T* Unk_SSGGetDialog(int nUiId);
 template <> bool MS2Ptr<ASGameEntity>::operator!() const;                   // 0x140ede6c0
 UITombStoneBar* FUN_141994a90(int nUiId);
 UISlimeEventBar* FUN_1419949f0(int nUiId);
@@ -178,7 +157,7 @@ void UIHpBar::Entity::vfunc_6(NiPoint3* pPos)
                 if (0 < m_64)
                     m_68.FUN_140868750(m_64);
                 float fRate = (float)m_a0 / (float)m_a8;
-                ((Unk_HpMovie*)render.operator->())->FUN_1422c0e20((int)(fRate * (float)m_c0));
+                ((Unk_HpMovie*)render.operator->())->SetWidthInt((int)(fRate * (float)m_c0));
                 m_bc = 0;
             }
             if (FUN_141992580() != 0)
@@ -193,7 +172,7 @@ void UIHpBar::Entity::vfunc_6(NiPoint3* pPos)
             FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-            ((Unk_HpClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y);
+            ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
         }
     }
 }
@@ -218,7 +197,7 @@ int UIHpBar::Entity::vfunc_8(int n)
     int nDead = pActor->FUN_14166ce30();
     if (nDead != 0)
         return 1;
-    Unk_HpPet* pPet = FUN_1409ffc60(pActor);
+    Unk_HpPet* pPet = reinterpret_cast<Unk_HpPet*>(efd::DynamicCast<CPet, PCBase>(pActor));
     if (pPet != 0 && pPet->GetKind() != 0)
         return 1;
     Unk_HpActor* pPc = reinterpret_cast<Unk_HpActor*>(efd::DynamicCast<PC, PCBase>(pActor));
@@ -227,11 +206,11 @@ int UIHpBar::Entity::vfunc_8(int n)
         Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pLocal != 0 && pLocal->vfunc_122(pPc) == 1 && pPc->FUN_141674bc0() != 0)
             return 1;
-        Unk_HpMountHolder* pHolder = reinterpret_cast<Unk_HpMountHolder*>(pActor->FUN_1416764a0());
+        Ridee* pHolder = reinterpret_cast<Ridee*>(pActor->FUN_1416764a0());
         if (pHolder != 0)
         {
-            Unk_HpMountPtr spMount = pHolder->FUN_141707750();
-            bool bMounted = (bool)spMount.FUN_1409f78a0() && spMount.FUN_1407895d0()->FUN_140784970().FUN_1407895c0()->m_68 != 0;
+            MS2Ptr<Unk_RideeData> spMount = pHolder->GetData();
+            bool bMounted = (bool)spMount.get() && reinterpret_cast<CRideeData*>(spMount.operator->())->FUN_140784970().operator->()->m_68 != 0;
             if (bMounted)
                 return 1;
         }
@@ -331,7 +310,7 @@ void UIHpBar::Entity::FUN_141992230(__int64 nCur, __int64 nMax)
 // @0x1419923b0
 void UIHpBar::Entity::FUN_1419923b0()
 {
-    ((Unk_HpClip*)m_38.operator->())->FUN_1422c0290(100.0f, 100.0f);
+    ((Unk_HpClip*)m_38.operator->())->SetScaleFloat(100.0f, 100.0f);
 }
 
 // @0x1419923f0
@@ -359,7 +338,7 @@ int UIHpBar::Entity::FUN_1419923f0()
         {
             if (pLocal->vfunc_122(pPc) != 0)
                 return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_e;
-            if (pLocal->FUN_1415278d0(pPc->FUN_141656a80()) == 0)
+            if (reinterpret_cast<MyPC*>(pLocal)->FUN_1415278d0((void*)pPc->FUN_141656a80()) == 0)
                 return 0;
             return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_c;
         }
@@ -454,7 +433,7 @@ void UIHpBar::OnLoadComplete()
 // @0x141992920
 MS2Ptr<UIHpBar::Entity> FUN_141992920(int nActorId)
 {
-    UIHpBar* pBar = FUN_141742c80(0x4e36);
+    UIHpBar* pBar = Unk_SSGGetDialog<UIHpBar>(0x4e36);
     if (pBar != 0)
     {
         MS2Ptr<UIHpBar::Entity> pEntity(pBar->FUN_141993d30(nActorId));
@@ -468,7 +447,7 @@ MS2Ptr<UIHpBar::Entity> FUN_141992920(int nActorId)
 // @0x1419929f0
 void FUN_1419929f0(int nActorId)
 {
-    UIHpBar* pBar = FUN_141742c80(0x4e36);
+    UIHpBar* pBar = Unk_SSGGetDialog<UIHpBar>(0x4e36);
     if (pBar)
         pBar->FUN_140f49c00(nActorId);
 }
@@ -502,7 +481,7 @@ void UITombStoneBar::Entity::vfunc_6(NiPoint3* pPos)
     FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
     pPos->y = pPos->y + vfunc_9();
     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-    ((Unk_HpClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y - 35.0f);
+    ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y - 35.0f);
 }
 
 // @0x141992c30
@@ -518,7 +497,7 @@ int UITombStoneBar::Entity::vfunc_8(int n)
     Unk_HpActor* pLocal = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pLocal != 0 && pLocal->vfunc_122(pPc) != 0)
         return 1;
-    if (pPc->FUN_141661970() != 0 || pPc->FUN_14165ca20() == 0)
+    if (pPc->IsRevivalBlocked() != 0 || pPc->FUN_14165ca20() == 0)
         return 1;
     if (m_60 == 0 && m_68.FUN_140868ba0() == 0)
         return 1;
@@ -533,7 +512,7 @@ NiPoint3 UITombStoneBar::Entity::vfunc_10()
     PC* pPc = dynamic_cast<PC*>(FUN_140f49330());
     if (pPc != 0)
     {
-        Unk_HpSeat* pSeat = ((Unk_HpActor*)pPc)->FUN_14165ca20();
+        Unk_HpSeat* pSeat = reinterpret_cast<Unk_HpSeat*>(((Unk_HpActor*)pPc)->FUN_14165ca20());
         if (pSeat != 0)
         {
             NiPoint3 base = UIHudEntity::Entity::vfunc_10();
@@ -565,11 +544,11 @@ void UITombStoneBar::Entity::FUN_141992ea0(int nHit, int nMax)
         const int nStages = 5;
         int nMaxHits = m_cc;
         int nOne = 1;
-        float fStep = 5.0f / (float)FUN_1404eb7e0(nOne, nMaxHits);
+        float fStep = 5.0f / (float)std::max<int>(nOne, nMaxHits);
         int nStage = (int)FUN_140bf4fd0(fStep * (float)m_c8);
         if (nStage >= nStages)
             return;
-        CString strLabel = FUN_1402bb1c0("hit{0}", nStage);
+        CString strLabel = StringFormat("hit{0}", nStage);
         m_38.operator->()->FUN_1422bb870().GotoAndPlay(strLabel);
     }
 }
@@ -640,7 +619,7 @@ void UISlimeEventBar::Entity::vfunc_6(NiPoint3* pPos)
         FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-        ((Unk_HpClip*)m_38.operator->())->FUN_1422c00f0(pPos->x, pPos->y - 35.0f);
+        ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y - 35.0f);
     }
 }
 

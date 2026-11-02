@@ -295,7 +295,7 @@ int CItemLockManager::FUN_140613430(MS2Ptr<CItem> item)
 void CMsgBoxData::FUN_140613810(const char* szName, const wchar_t* szText)
 {
     ASData data;
-    data.FUN_1422b8310(szText);
+    data.AddWString(szText);
     m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
 

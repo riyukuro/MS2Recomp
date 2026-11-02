@@ -42,10 +42,10 @@ public:
     CItemBinding* GetBinding();                      // the binding
     int GetType();
     bool FUN_1406351b0();
-    void FUN_140635320(bool);
+    void SetSocketTransferFlag(bool);
     void GetBindingOwnerName(class PCBase* pPc, CStringW* pName);   // the binding owner name
     int IsSellable();
-    unsigned FUN_140635520();
+    unsigned CanDestroy();
     int FUN_140635580();
     unsigned FUN_140635590();
     int HasTradeCountLeft();
@@ -153,7 +153,7 @@ public:
   int FUN_140528f90();
   CStringW FUN_140528160();               // 0x140528160 item name
   int GetCount();                    // 0x140526c50 count
-  int FUN_1405258b0();                    // 0x1405258b0 nonzero: no sell confirm by price (uimessagebox.cpp)
+  int HasSkin();                    // 0x1405258b0 nonzero: no sell confirm by price (uimessagebox.cpp)
   __int64 GetSellPrice();                // 0x140527670 unit sell price (uimessagebox.cpp)
   void SetObjectId(int);                // 0x140526b30 set the owner object id (uibeautyshopstyledialog.cpp)
   void SetCreationTime(__int64);            // 0x140528ab0 set the creation time (saved beauty styles)
@@ -275,7 +275,7 @@ public:
   CStringW FUN_14052a4f0();
   int FUN_14052a580(void*);
   bool FUN_140528980();                   // w98
-  int FUN_140525cf0();                   // w98
+  int HasAnyEquipSlotOf();                   // w98
   int FUN_140526060(void*);              // w98
   int FUN_140525f60();
   int FUN_140525fc0();

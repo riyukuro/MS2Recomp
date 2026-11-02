@@ -50,12 +50,7 @@ class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 // The learned steps (global 0x143ab31a0), the inventory (0x143ab2a90) and the meso (0x143ab2898).
 class Unk_MmLearned { public: void* FUN_140167ca0(int nStep); };
 extern Unk_MmLearned DAT_143ab31a0;
-class Unk_MmInventory
-{
-public:
-    int FUN_140a5f780(int nKind, int n);                    // count of an item class
-};
-extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_MmInventory
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 extern __int64 DAT_143ab2898;
 
 class Unk_MmQuests { };
@@ -165,7 +160,7 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
             Unk_IngRef spCost = spRow->m_ingredients.FUN_14026bdc0(i);
             if (spCost->m_b != 0)
             {
-                if (reinterpret_cast<Unk_MmInventory&>(g_143ab2a90).FUN_140a5f780(spCost->m_b, 0) < spCost->m_c)
+                if (g_143ab2a90.FUN_140a5f780(spCost->m_b, 0) < spCost->m_c)
                     return (Unk_MasteryResult)4;
             }
             else

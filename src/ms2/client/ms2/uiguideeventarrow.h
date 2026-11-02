@@ -5,6 +5,7 @@
 #include "ms2/placeholder/uiobject.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 // The arrow is a reference-counted data object, not a window (RTTI base CPtred). m_34 is its own use count (several
 // AddArrow calls share one arrow; the CPtred count is the MS2Ptr's).
@@ -32,15 +33,15 @@ public:
     // ~UIGuideEventArrowDialog 0x1419609c0 is implicit
     virtual int vfunc_2(void*);                                     // 2 0x14195e0e0
     void SetKindFromName(CString);                                    // kind from its name
-    int FUN_14195e320(void*);                                       // kind 0: UI by id / name
+    int GetTargetPosition(void*);                                       // kind 0: UI by id / name
     int FUN_14195e3f0(void*);                                       // 1 skill slot of MainPlayerInfo
     int FUN_14195e6e0(void*);                                       // 2..5 inventory item
     int FUN_14195ead0(void*);                                       // 6 inventory tab
     int FUN_14195eee0(void*);                                       // 7, 8 minimap marker
-    int FUN_14195f270(void*);                                       // 9 house mark
-    int FUN_14195f3a0(void*);                                       // 10 party camera
-    int FUN_14195f530(void*);                                       // 11 messenger
-    int FUN_14195f5a0(void*);                                       // 12 cube palette
+    int GetHouseMarkPosition(void*);                                       // 9 house mark
+    int GetPartyDialogPosition(void*);                                       // 10 party camera
+    int GetMessengerTargetPosition(void*);                                       // 11 messenger
+    int GetCubeTypePosition(void*);                                       // 12 cube palette
     int FUN_14195f600(MS2Ptr<CItem>,int);                     // item matches the kind
     unsigned FUN_14195f7b0(int);                                    // object id of kind 7 / 8
     int FUN_14195f870(UISwfEntity*,void*);                          // position from the element path
@@ -55,10 +56,6 @@ public:
     int m_param;                                                    // +0x94
 };
 MS2_CHECK_SIZE(UIGuideEventArrowDialog,0x98);
-class Unk_140517b00 {
-public: Unk_140517b00(); void FUN_140268840(); int FUN_140268870(int);
-private: int m_0; int m_4;
-};
 class UIGuideEvent : public UIObject {
 public:
     UIGuideEvent();
@@ -72,28 +69,28 @@ public:
     virtual void vfunc_3();
     // @0x14195cd90
     virtual int vfunc_48() { return 0x4e53; }
-    int FUN_141959a20();
+    int SkipTextTip();
     void FUN_141959a60(MS2Ptr<UIGuideEventArrow>);                  // AddArrow
-    void FUN_14195a0c0(unsigned int);
+    void ReleaseArrow(unsigned int);
     void FUN_14195a520(unsigned int,unsigned int,int);              // ShowTutorial
     void FUN_14195ab40(unsigned int,unsigned int,int);              // ShowSummary
-    void FUN_14195bc50(CStringW,CStringW&,CStringW&);               // split "[[name:value]]"
-    void FUN_14195bd90(unsigned int);                               // play the voice of a string
-    MS2Ptr<AScript> FUN_14195c1a0(const CString&);
+    void ParseTagNameValue(CStringW,CStringW&,CStringW&);               // split "[[name:value]]"
+    void PlayVoice(unsigned int);                               // play the voice of a string
+    MS2Ptr<AScript> FindChildScript(const CString&);
     void FUN_14195a1d0(CStringW&,CStringW&,int&);
-    void FUN_14195b330(unsigned int,unsigned int);
+    void QueueOrShowTextTip(unsigned int,unsigned int);
     void HideTutorial(int);
     void HideSummary(int);
-    void FUN_14195b600(int);
+    void AdvanceTextTip(int);
     int IsTutorialShowing();
     int IsSummaryShowing();
     int IsTextTipShowing();
     int GetLastTip();
     void FUN_14195b970();
     void FUN_14195be30();
-    void FUN_14195bfc0();
-    CStringW FUN_14195c010(unsigned int);
-    CString FUN_14195c0e0(unsigned int);
+    void CheckSummaryExpiry();
+    CStringW GetGuideText(unsigned int);
+    CString GetGuideVoice(unsigned int);
     MS2Ptr<AScript> FUN_14195c230(const CString&,MS2Ptr<AScript>&);
 private:
     MS2_LAYOUT_FRIEND;
@@ -109,7 +106,7 @@ private:
     unsigned int m_expiry;
     ATL::CAtlMap<unsigned int,MS2Ptr<UIGuideEventArrow>> m_arrows;
     MS2Ptr<AScript> m_hasArrow;
-    Unk_140517b00 m_timer;
+    Unk_IntervalTimer m_timer;
 };
 MS2_CHECK_SIZE(UIGuideEvent,0x1c0);
 MS2_CHECK_OFFSET(UIGuideEvent,m_tips,0x78);

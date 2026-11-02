@@ -107,23 +107,23 @@ public:
     // ---- non-virtual members, sorted by address ----
     void FUN_1419f0bb0(Unk_MpAchieve* pAchieve);
     void AppendMessage(const CStringW& strMessage, const CString& strType);
-    void FUN_1419f0fe0(MS2Ptr<Unk_AsBuff> spBuff);
-    void FUN_1419f10b0(MS2Ptr<Unk_AsBuff> spBuff);
-    void FUN_1419f1180(int nBuffId);
+    void AddBuffEffect(MS2Ptr<Unk_AsBuff> spBuff);
+    void UpdateBuffEffect(MS2Ptr<Unk_AsBuff> spBuff);
+    void RemoveBuffEffect(int nBuffId);
     void FUN_1419f1200(int nId, int nLevel);
     void FUN_1419f1370(int nId);
     void FUN_1419f13b0(int bInfinity, int bForce);
     void FUN_1419f14b0(NotifyObject* pNotify);
-    void FUN_1419f14e0(NotifyObject* pNotify);
-    void FUN_1419f1580(NotifyObject* pNotify);
+    void OnShortkeyPageNotify(NotifyObject* pNotify);
+    void OnSkillSetModeNotify(NotifyObject* pNotify);
     void UpdateName();
     int FUN_1419f16b0();
     void PlayHit();
-    void FUN_1419f1880(int bBattle);
-    void FUN_1419f18f0();
+    void SetBattle(int bBattle);
+    void SyncSlotMode();
     void FUN_1419f19c0();
     void FUN_1419f1c80();
-    void FUN_1419f1d10(unsigned int nMask, bool bShow);
+    void SetHideReason(unsigned int nMask, bool bShow);
     void FUN_1419f1da0(int nSlot);
     void FUN_1419f1e60();
     void FUN_1419f21b0();
@@ -131,7 +131,7 @@ public:
     void FUN_1419f24f0(int nPage);
     void FUN_1419f2560(bool bForce);
     void FUN_1419f26b0(bool bEnable);
-    void FUN_1419f2720(bool bHideAndSeek);
+    void SetHideAndSeekSlotMode(bool bHideAndSeek);
     Unk_MpSlot* FindSlotForItem(CItem* pItem);
     Unk_MpSlot* FUN_1419f2930(int nIndex);
     int FUN_1419f29c0();
@@ -141,16 +141,16 @@ public:
     void FUN_1419f2e10(CItem* pItem);
     void FUN_1419f2e60(CItem* pItem);
     void FUN_1419f2eb0();
-    CString FUN_1419f31f0();
+    CString GetSlotName();
     void LoadRenderTarget();
-    void FUN_1419f32f0();
+    void UnloadRenderTarget();
     void OnRideOff();
     int FUN_1419f3400(int nId);
-    CStringW FUN_1419f3420();
+    CStringW GetPlayerNameWithTitles();
     void FUN_1419f3590();
     bool OnPrevPage();
     bool OnNextPage();
-    void FUN_1419f3740();
+    void ResetGauges();
 
 private:
     MS2_LAYOUT_FRIEND;

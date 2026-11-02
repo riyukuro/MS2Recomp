@@ -28,6 +28,9 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/client/ms2/questmanager_1.h"
+#include "ms2/placeholder/questdata.h"
 
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
@@ -38,42 +41,23 @@ class Unk_AttendTable
 {
 public:
     int FUN_1409617d0(int nKind, unsigned nId, const int& nDefault);
-    CStringW FUN_140c6d980(int nStringId, int nEventId, const CStringW& strDefault);
 };
-extern Unk_AttendTable g_attendTable;                   // 0x143ab2fc0
-extern Unk_AttendTable g_stampTable;                    // 0x143ab3010
+class Unk_LtaTable { public: CStringW FUN_140c6d980(int nStringId, int nEventId, const CStringW& strDefault); };
+extern GameEventUserValue DAT_143ab2fc0;
+extern GameEventUserValue DAT_143ab3010;
 
 // The world manager (singleton accessor 0x1403ed2d0).
 class Unk_StampUIMgr { public: void FUN_141adc530(int nClass); };
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 
-// A quest as handed to the listener: the CQuestCommon base sits at +0x18 (after CPtred).
-class Unk_StampQuestData
-{
-public:
-    char m_pad[0x350];
-    int type;
-};
-MS2_CHECK_OFFSET(Unk_StampQuestData, type, 0x350);
-class Unk_StampQuestView { public: virtual Unk_GalleryPtr<Unk_StampQuestData> vfunc_0(); };
-class Unk_StampQuest
-{
-public:
-    int FUN_140bfc580();
-    int FUN_1407476d0();
-    void* m_0; void* m_8; void* m_10;
-    void* data;                                          // polymorphic subobject
-};
-MS2_CHECK_OFFSET(Unk_StampQuest, data, 0x18);
-
-CGameRule* FUN_1401c0d90();
+void* FUN_1401c0d90();
 void* FUN_140764020();   // C3: was FUN_140764020
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1416e5660(int);
 CStringW FUN_1416e4df0(int);
 CStringW GetStringCommonByKey(const CStringW&);
-void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
-int FUN_1402bacf0(ATL::CAtlArray<int>&, const int&);
+void FUN_1401d9a30(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }
 CString FUN_14016a600(const wchar_t*, int);
 MS2Ptr<CItemData> FUN_14053f870(int);
 
@@ -83,7 +67,7 @@ MS2Ptr<CItemData> FUN_14053f870(int);
 UIStampEventDialog::UIStampEventDialog()
 {
     FUN_141924170(1);
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIStampEventDialog::FUN_140ed7f90));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIStampEventDialog::FUN_140ed7f90));
 }
 
 // @0x140ed7610
@@ -114,7 +98,7 @@ MS2_REPLACE_METHOD(0x140ED7730, UIStampEventDialog, vfunc_67, 77, 0x039209C9);
 void UIStampEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     FUN_140ed81a0(spContext);
     FUN_140ed8590(spContext);
@@ -181,11 +165,11 @@ MS2_REPLACE_METHOD(0x140ED7BB0, UIStampEventDialog, vfunc_28, 300, 0xBCEE9D23);
 void UIStampEventDialog::vfunc_o178_10(void* pQuest)
 {
     if (m_30.IsNull()) return;
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
-    if (reinterpret_cast<Unk_StampQuestView*>(&static_cast<Unk_StampQuest*>(pQuest)->data)->vfunc_0()->type != 2) return;
-    if (static_cast<Unk_StampQuest*>(pQuest)->FUN_1407476d0() != 2) return;
-    FUN_140ed8c20(static_cast<Unk_StampQuest*>(pQuest)->FUN_140bfc580());
+    if (reinterpret_cast<CQuest*>(pQuest)->GetData()->m_350.m_value != 2) return;
+    if (reinterpret_cast<CQuest*>(pQuest)->GetState() != 2) return;
+    FUN_140ed8c20(reinterpret_cast<CQuest*>(pQuest)->FUN_140bfc580());
     FUN_140ed8c70();
     FUN_140ed8590(spContext);
 }
@@ -195,7 +179,7 @@ MS2_REPLACE_METHOD_VIA(0x140ED7CF0, UIStampEventDialog, UIQuestEventListener, vf
 void UIStampEventDialog::FUN_140ed7ea0()
 {
     if (m_30.IsNull()) return;
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     FUN_140ed8590(spContext);
     FUN_140ed89f0(spContext);
@@ -205,8 +189,8 @@ MS2_REPLACE_METHOD(0x140ED7EA0, UIStampEventDialog, FUN_140ed7ea0, 223, 0xB0ED89
 // @0x140ed7f90
 void UIStampEventDialog::FUN_140ed7f90(NotifyObject*)
 {
-    if (WorldService::GetInstance()->FUN_141bcb0a0()) return;
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    if (WorldService::GetInstance()->HasTutorial()) return;
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext == 0) return;
     if (spContext->m_98 == 0) return;
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f33)));
@@ -216,7 +200,7 @@ MS2_REPLACE_METHOD(0x140ED7F90, UIStampEventDialog, FUN_140ed7f90, 167, 0xF65B92
 // @0x140ed8040
 int UIStampEventDialog::FUN_140ed8040()
 {
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return 0;
     int nCount = 0;
     for (size_t i = 0; i < spContext->m_rewards.GetCount(); ++i) {
@@ -310,7 +294,7 @@ MS2_REPLACE_METHOD(0x140ED8C20, UIStampEventDialog, FUN_140ed8c20, 70, 0x63E446D
 // @0x140ed8c70
 void UIStampEventDialog::FUN_140ed8c70()
 {
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     int nDone = 0;
     int nTotal = spContext->m_stamps.GetCount();
@@ -327,7 +311,7 @@ MS2_REPLACE_METHOD(0x140ED8C70, UIStampEventDialog, FUN_140ed8c70, 475, 0x07A666
 // @0x140ed8e60
 void UIStampEventDialog::SendEventRewardMode0(int nCount, int nSpecial)
 {
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return;
     if (FUN_140ed9180(nCount, nSpecial) != 1) return;
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
@@ -351,11 +335,11 @@ MS2_REPLACE_METHOD(0x140ED8F50, UIStampEventDialog, SendEventRewardMode1, 91, 0x
 // @0x140ed8fc0
 int UIStampEventDialog::FUN_140ed8fc0()
 {
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return 0;
     Unk_AttendTable* pTable = 0;
-    if (spContext->m_b9c) pTable = &g_attendTable;
-    else pTable = &g_stampTable;
+    if (spContext->m_b9c) pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab2fc0);
+    else pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab3010);
     int nDefault = 0;
     if (pTable->FUN_1409617d0(0x4b0, spContext->m_eventId, nDefault) != 0) return 0;
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
@@ -369,19 +353,19 @@ MS2_REPLACE_METHOD(0x140ED8FC0, UIStampEventDialog, FUN_140ed8fc0, 442, 0xBA274B
 // @0x140ed9180
 int UIStampEventDialog::FUN_140ed9180(int nCount, int nSpecial)
 {
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return 0;
     Unk_AttendTable* pTable = 0;
-    if (spContext->m_b9c) pTable = &g_attendTable;
-    else pTable = &g_stampTable;
+    if (spContext->m_b9c) pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab2fc0);
+    else pTable = reinterpret_cast<Unk_AttendTable*>(&DAT_143ab3010);
     int nKey;
     if (nSpecial) nKey = 0x4b2;
     else nKey = 0x4b1;
     int nStringId = nKey;
-    CStringW strList = pTable->FUN_140c6d980(nStringId, spContext->m_eventId, (const wchar_t*)0);
+    CStringW strList = reinterpret_cast<Unk_LtaTable*>(pTable)->FUN_140c6d980(nStringId, spContext->m_eventId, (const wchar_t*)0);
     ATL::CAtlArray<int> counts;
     FUN_1401d9a30(strList, counts, L",");
-    if (FUN_1402bacf0(counts, nCount) != -1) return 2;
+    if (Common::FindElement<int>(counts, nCount) != -1) return 2;
     int nStamped = 0;
     for (size_t i = 0; i < spContext->m_stamps.GetCount(); ++i) {
         MS2Ptr<StampEventContext::Stamp> spStamp = spContext->m_stamps[i];
@@ -407,7 +391,7 @@ MS2_REPLACE_METHOD(0x140ED9480, UIStampEventDialog, FUN_140ed9480, 211, 0x4478F5
 // @0x140ed9560
 CString UIStampEventDialog::FUN_140ed9560()
 {
-    MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
+    MS2Ptr<StampEventContext> spContext = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
     if (spContext.IsNull()) return "";
     return FUN_14016a600(spContext->m_strTitle, 0);
 }

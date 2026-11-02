@@ -99,7 +99,6 @@ public:
 // The local player.
 class Unk_HmPc : public MyPC {
 public:
-    void FUN_14152feb0(int nMode, int nFlag);                           // enter the craft mode
 };
 class Unk_HmWorld;
 class WorldService   // C3: member view for the former free stand-ins
@@ -230,7 +229,7 @@ public:
 
 bool FUN_141902580(bool bMessage);
 bool FUN_1419025f0(bool bMessage);
-bool FUN_140930c50();
+unsigned char FUN_140930c50();
 int FUN_1418fd280();
 void FUN_141275260(int nId, int a, int b);
 void FUN_14151f200();
@@ -254,7 +253,7 @@ UIHomeMenuDialog::UIHomeMenuDialog() : m_bFreeCamera(0)
     m_88 = 1;
     FUN_1422dc3b0(1);
     FUN_141925e70(0, 1);
-    reinterpret_cast<CImageHttpClient*>(&m_screenshot)->SetMode(0);
+    m_screenshot.SetMode(0);
 }
 
 // @0x140c29230
@@ -718,7 +717,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps a dead movzx of the screenshot flag before the call
 CStringW UIHomeMenuDialog::FUN_140c2b080()
 {
-    return TakeScreenshotJpg(((int)reinterpret_cast<CImageHttpClient*>(&m_screenshot)->BeginImage(), 0), 1);
+    return TakeScreenshotJpg(((int)m_screenshot.BeginImage(), 0), 1);
 }
 
 // @0x140c2b0e0

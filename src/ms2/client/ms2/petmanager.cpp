@@ -139,7 +139,7 @@ int FUN_1412773a0(int);   // C3: was FUN_1412773a0
 
 // The record behind DAT_143abf720 (its +0x28 is the uid of the item that cannot be taken out of the bag).
 struct Unk_PmFixedItem { __int64 m_pad_0[5]; __int64 m_nUid; };
-extern Unk_PmFixedItem* DAT_143abf720;
+class CInstrumentManager;
 // @0x140c8dab0
 __int64 FUN_140c8dab0(Unk_PmFixedItem* pRec)
 {
@@ -148,7 +148,7 @@ __int64 FUN_140c8dab0(Unk_PmFixedItem* pRec)
 // @0x140c8dac0
 Unk_PmFixedItem* FUN_140c8dac0()
 {
-    return DAT_143abf720;
+    return reinterpret_cast<Unk_PmFixedItem*>(TSingleton<CInstrumentManager>::s_instance);
 }
 
 // ---- CPetInventory ----------------------------------------------------------------------------------------------
@@ -191,22 +191,26 @@ int CPetInventory::AddItem(CItem* pItem)
     if (m_items.Lookup(pItem->GetItemUid()) != 0)
         return 0x11;
     int nSlot = pItem->FUN_140526b50();
-    if (nSlot == -1)
-    {
-        nSlot = FindEmptySlot();
-        if (nSlot == -1)
-            return 0xd;
-        pItem->FUN_140526b70(nSlot);
-    }
-    else
+    if (nSlot != -1)
     {
         int nCount = (int)m_slots.GetCount();
-        if (nSlot < 0 || nCount <= nSlot)
+        if (nSlot < 0 || nSlot >= nCount)
             return 0x1d;
         if (m_slots[nSlot].get() != 0)
             return 0x11;
     }
-    m_items.SetAt(pItem->GetItemUid(), ItemPtr(pItem));
+    else
+    {
+        int nEmpty = FindEmptySlot();
+        if (nEmpty == -1)
+            return 0xd;
+        nSlot = nEmpty;
+        pItem->FUN_140526b70(nSlot);
+    }
+    {
+        ItemPtr spItem(pItem);
+        m_items.SetAt(pItem->GetItemUid(), spItem);
+    }
     m_slots[nSlot].AssignRaw(pItem);
     return 0;
 }

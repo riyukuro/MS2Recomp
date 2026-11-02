@@ -604,9 +604,9 @@ void WeddingManager::OnPropose(CInPacket& packet)
     CStringW name = packet.ReadUnicodeString();
     m_strTarget = name;
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_from"), name);
-    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, (void*)0, CStringW(L""));
     if (box.get()) {
-        box->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+        box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box->FUN_141a024a0(0);
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeAnswer));
         box->FUN_140b76940(FUN_141b71910(id));
@@ -642,7 +642,7 @@ void WeddingManager::ShowStep()
         if (name.IsEmpty())
             name = m_strPartner;
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_enter_nickname"), name);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0xe, message, 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0xe, message, (void*)0, CStringW(L""));
         if (box.get()) {
             {
                 CStringW blank(L"");
@@ -664,7 +664,7 @@ void WeddingManager::ShowLastStep()
         if (name.IsEmpty())
             name = m_strPartner;
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_enter_nickname_confirm_final"), name);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnLastStepAnswer));
             FUN_140d73c60(box);
@@ -688,7 +688,7 @@ void WeddingManager::ShowStepResult(int result)
         default:
             return;
         }
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, (void*)0, CStringW(L""));
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnActingAnswer));
             box->Append<unsigned>(result);
@@ -706,9 +706,9 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
     {
         PlayEmotion(1);
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_to"), m_strTarget);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
         if (box.get()) {
-            box->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+            box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
             box->FUN_141a01800(4);
             box->FUN_141a024a0(0);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnProposeSentAnswer));
@@ -798,7 +798,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
     }
     CStringW message = FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_error"));
     {
-        MS2Ptr<CMsgBoxData> retry = FUN_140d73d20(0, message, 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> retry = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
         if (retry.get()) {
             retry->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnStepNext));
             FUN_140d73c60(retry);

@@ -322,13 +322,6 @@ int UIItemSocketSystemDialog::vfunc_48()
 
 // Exe-only helpers of the vector<ItemSocketSystemPageBase*> resize/buy/memmove_s instances (the exe's STL differs from the
 // 14.16 headers, so these have no header COMDAT to pair with); written out by hand.
-struct Unk_IssPageVec
-{
-    ItemSocketSystemPageBase** first;
-    ItemSocketSystemPageBase** last;
-    ItemSocketSystemPageBase** end;
-};
-
 struct Unk_FillTag {};
 
 // @0x140f6a6b0
@@ -354,20 +347,8 @@ void FUN_140f6a5b0(ItemSocketSystemPageBase** pFirst, ItemSocketSystemPageBase**
     FUN_140f6a560(pFirst, pLast, &pVal, FUN_140f6a6b0(pFirst, pVal));
 }
 
-// @0x140f6b2c0
-// MS2-FUNCTIONAL: hand-written stand-in for the exe STL/CRT helper (not byte-checked)
-bool FUN_140f6b2c0(Unk_IssPageVec* pVec, size_t nCount)
-{
-    pVec->first = 0;
-    pVec->last = 0;
-    pVec->end = 0;
-    if (nCount == 0)
-        return false;
-    pVec->first = std::allocator<ItemSocketSystemPageBase*>().allocate(nCount);
-    pVec->last = pVec->first;
-    pVec->end = pVec->first + nCount;
-    return true;
-}
+// @0x140f6b2c0 - nothing in this unit calls vector::_Buy, the explicit instantiation emits the exe's copy.
+template bool std::vector<ItemSocketSystemPageBase*>::_Buy(size_t);
 
 // @0x140f6c560
 // memmove_s (the CRT header inline, _VALIDATE_RETURN_ERRCODE form).

@@ -442,7 +442,7 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
-        spBox->FUN_141a01690(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
+        spBox->SetButtonLabels(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
         spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
         FUN_140d73c60(spBox);
@@ -475,7 +475,7 @@ void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
-        spBox->FUN_141a01690(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
+        spBox->SetButtonLabels(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
         spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
         FUN_140d73c60(spBox);

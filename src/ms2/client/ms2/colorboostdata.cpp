@@ -155,8 +155,8 @@ int UIColorBoostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            g_1439f7024 = data.FUN_1422b8c10();
-            g_1439f7028 = data.FUN_1422b8c10();
+            g_1439f7024 = data.PopFloat();
+            g_1439f7028 = data.PopFloat();
         }
         return 1;
     }
@@ -165,8 +165,8 @@ int UIColorBoostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            g_1439f702c = data.FUN_1422b8c10();
-            g_1439f7030 = data.FUN_1422b8c10();
+            g_1439f702c = data.PopFloat();
+            g_1439f7030 = data.PopFloat();
         }
         return 1;
     }
@@ -174,7 +174,7 @@ int UIColorBoostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            g_1439f7034 = data.FUN_1422b8c10();
+            g_1439f7034 = data.PopFloat();
         return 1;
     }
     return 0;

@@ -102,7 +102,7 @@ public:
     struct Unk_QnTracking* FUN_140c9b8b0();
 };
 class Unk_RankLeaguePlayer { public: };
-int FUN_140791f50(Unk_RankLeaguePlayer* p, int n);
+
 class Unk_RankTable { public: };
 struct Unk_RankEntry { char m_pad[0x28]; int m_rating; };
 class CRankingArenaDataTable   // C3: member view for the former free stand-ins
@@ -206,7 +206,7 @@ CString DAT_143ac4880("guildBattle_MatchingSuccess");
 // The rank table (global 0x143ab0e50).
 class Unk_RankTable;
 Unk_RankTable* FUN_140dc19b0();
-extern Unk_RankTable* DAT_143ab0e50;
+class CRankingArenaDataTable;
 
 // @0x140dc1390; the destructor 0x140dc1500 only runs ~CPtred
 RankDuelStatisticalData::RankDuelStatisticalData() : m_key(0), m_value1c(0), m_value20(0), m_flag24(false) {}
@@ -260,12 +260,12 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, strText, pDialog, DAT_143ac4878);
                 if (box.get())
                 {
-                    box->FUN_141a01ca0(0xf, 1, GetStringCommon(0x2b8));
+                    box->SetTimer(0xf, 1, GetStringCommon(0x2b8));
                     box->FUN_141a02460(1);
                     box->FUN_141a02480(1);
                     box->FUN_141a024a0(0);
                     box->FUN_141a024c0();
-                    box->FUN_141a01690(GetStringCommonByKey(L"s_rank_duel_immediately_join"), L"", L"");
+                    box->SetButtonLabels(GetStringCommonByKey(L"s_rank_duel_immediately_join"), L"", L"");
                     FUN_140d73c60(box);
                 }
             }
@@ -325,7 +325,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strText, pDialog, DAT_143ac4890);
             if (box.get())
             {
-                box->FUN_141a01ca0(0xf, 1, GetStringCommon(0x2b8));
+                box->SetTimer(0xf, 1, GetStringCommon(0x2b8));
                 box->FUN_141a02460(1);
                 box->FUN_141a02480(1);
                 box->FUN_141a024a0(0);
@@ -436,7 +436,7 @@ void CPvpRankDuelComponent::Reset()
 // @0x140dbf110
 void CPvpRankDuelComponent::RefreshLeague()
 {
-    int nLeague = FUN_140791f50(reinterpret_cast<Unk_RankLeaguePlayer*>(TSingleton<CSeasonDataTable>::GetInstance()), 1);
+    int nLeague = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)1);
     if (m_league != nLeague)
     {
         m_league = nLeague;
@@ -464,7 +464,7 @@ bool CPvpRankDuelComponent::RequestCancelMatch()
 // @0x140dc19b0
 Unk_RankTable* FUN_140dc19b0()
 {
-    return DAT_143ab0e50;
+    return reinterpret_cast<Unk_RankTable*>(TSingleton<CRankingArenaDataTable>::s_instance);
 }
 
 // @0x140dbf260

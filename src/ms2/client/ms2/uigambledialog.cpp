@@ -32,8 +32,6 @@ public:
 class Unk_GbItems
 {
 public:
-    size_t FUN_140720ca0() const;                                // GetCount
-    MS2Ptr<CItem>& FUN_140a69ee0(size_t i);                      // checked GetAt
 private:
     void* m_data; size_t m_count; size_t m_max; size_t m_grow;
 };
@@ -165,11 +163,11 @@ int UIGambleDialog::FUN_141935710()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
         Unk_GbReward* pReward = ((class Unk_GbTalk*)Unk_AkoCutscene::GetInstance())->FUN_141082d60();
-        if (pReward->m_items.FUN_140720ca0() <= 0)
+        if (reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount() <= 0)
             return 0;
-        reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("m_resultItemCount", pReward->m_items.FUN_140720ca0());
-        for (unsigned i = 0; i < pReward->m_items.FUN_140720ca0(); i++) {
-            MS2Ptr<CItem> spItem = pReward->m_items.FUN_140a69ee0(i);
+        reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("m_resultItemCount", reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount());
+        for (unsigned i = 0; i < reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount(); i++) {
+            MS2Ptr<CItem> spItem = reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >&>(pReward->m_items)[i];
             if (spItem.IsNull())
                 continue;
             CString strBind;

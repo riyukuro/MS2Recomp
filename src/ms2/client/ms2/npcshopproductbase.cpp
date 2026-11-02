@@ -305,7 +305,6 @@ int CNpcShopProductCli::IsSoldOut()
 }
 
 // @0x140db70a0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
 {
     if (m_c8.get() != 0)
@@ -317,93 +316,94 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
             CMsTime& tmEnd = m_c8->m_tmEnd;
             if (!m_c8->HasSchedule())
             {
-                if (!(tmStart > CMsTime(0)))
+                if (tmStart > 0 || tmEnd > 0)
                 {
-                    if (!(tmEnd > CMsTime(0)))
-                        return false;
+                    if (tmStart > tmNow)
+                    {
+                        if (tmEnd == 0)
+                        {
+                            strError = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_from_start"), FUN_14083bdc0(tmStart, true, CStringW(L"/"), CStringW(L":")));
+                        }
+                        else
+                        {
+                            strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period"), FUN_14083bdc0(tmStart, true, CStringW(L"/"), CStringW(L":")), FUN_14083bdc0(tmEnd, true, CStringW(L"/"), CStringW(L":")));
+                        }
+                    }
+                    else
+                    {
+                        strError = GetStringCommonByKey(L"s_err_invalid_item_cannot_buy_by_period");
+                    }
                 }
-                if (!(tmStart > tmNow))
-                {
-                    strError = GetStringCommonByKey(L"s_err_invalid_item_cannot_buy_by_period");
-                }
-                else if (!(tmEnd == CMsTime(0)))
-                {
-                    CStringW strEndText = FUN_14083bdc0(tmEnd, true, CStringW(L"/"), CStringW(L":"));
-                    CStringW strStartText = FUN_14083bdc0(tmStart, true, CStringW(L"/"), CStringW(L":"));
-                    strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period"), strStartText, strEndText);
-                }
-                else
-                {
-                    CStringW strStartText = FUN_14083bdc0(tmStart, true, CStringW(L"/"), CStringW(L":"));
-                    strError = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_from_start"), strStartText);
-                }
-                return false;
-            }
-            CStringW strDate;
-            bool bHasDate = true;
-            if (!(tmStart > CMsTime(0)))
-            {
-                if (!(tmEnd > CMsTime(0)))
-                    bHasDate = false;
-            }
-            if (bHasDate)
-            {
-                if (tmStart > CMsTime(0) && tmEnd > CMsTime(0))
-                {
-                    strDate = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date"), FUN_14083bab0(tmStart, CStringW(L"/")), FUN_14083bab0(tmEnd, CStringW(L"/")));
-                }
-                else if (!(tmStart > CMsTime(0)))
-                {
-                    strDate = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date_to_end"), FUN_14083bab0(tmEnd, CStringW(L"/")));
-                }
-                else
-                {
-                    strDate = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date_from_start"), FUN_14083bab0(tmStart, CStringW(L"/")));
-                }
-            }
-            CStringW strDays;
-            for (std::set<int>::iterator it = m_c8->m_setDays.begin(); it != m_c8->m_setDays.end(); ++it)
-            {
-                int nDay = *it;
-                if (strDays.IsEmpty())
-                    strDays.Append(FUN_140b8f230(nDay));
-                else
-                    strDays.Append(StringFormat<CStringW>(L", {0}", FUN_140b8f230(nDay)));
-            }
-            if (m_c8->m_aPartTimes.IsEmpty())
-            {
-                if (strDate.IsEmpty())
-                    strError = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_day"), strDays);
-                else
-                    strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_date"), strDays, strDate);
             }
             else
             {
-                CStringW strParts;
-                size_t nCount = m_c8->m_aPartTimes.GetCount();
-                CStringW strFormat = GetStringCommonByKey(L"s_err_cannot_buy_period_fmt_part_time");
-                for (size_t i = 0; i < nCount; i++)
+                CStringW strDate;
+                if (tmStart > 0 || tmEnd > 0)
                 {
-                    Unk_DayTimeRange& pair = m_c8->m_aPartTimes[i];
-                    int nToA = pair.m_end.GetMinute();
-                    int nToB = pair.m_end.GetHour();
-                    int nFromA = pair.m_start.GetMinute();
-                    int nFromB = pair.m_start.GetHour();
-                    CStringW strOne = FUN_14086cc00(strFormat, nFromB, nFromA, nToB, nToA);
-                    if (strParts.IsEmpty())
-                        strParts.Append(strOne);
+                    if (tmStart > 0 && tmEnd > 0)
+                    {
+                        CStringW strStartText = FUN_14083bab0(CMsTime(tmStart), CStringW(L"/"));
+                        CStringW strEndText = FUN_14083bab0(CMsTime(tmEnd), CStringW(L"/"));
+                        strDate = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date"), strStartText, strEndText);
+                    }
+                    else if (tmStart > 0)
+                    {
+                        CStringW strStartText = FUN_14083bab0(CMsTime(tmStart), CStringW(L"/"));
+                        strDate = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date_from_start"), strStartText);
+                    }
                     else
-                        strParts.Append(StringFormat<CStringW>(L", {0}", strOne));
+                    {
+                        CStringW strEndText = FUN_14083bab0(CMsTime(tmEnd), CStringW(L"/"));
+                        strDate = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_fmt_date_to_end"), strEndText);
+                    }
                 }
-                if (strDate.IsEmpty())
-                    strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_parttime"), strDays, strParts);
+                std::set<int>& setDays = m_c8->m_setDays;
+                std::set<int>::iterator it = setDays.begin();
+                CStringW strDays;
+                for (; it != setDays.end(); ++it)
+                {
+                    int nDay = *it;
+                    if (!strDays.IsEmpty())
+                        strDays.Append(StringFormat<CStringW>(L", {0}", FUN_140b8f230(nDay)));
+                    else
+                        strDays.Append(FUN_140b8f230(nDay));
+                }
+                if (m_c8->m_aPartTimes.IsEmpty() == true)
+                {
+                    if (!strDate.IsEmpty())
+                        strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_date"), strDays, strDate);
+                    else
+                        strError = FUN_14028dfa0<CStringW>(CStringW(L"s_err_cannot_buy_period_day"), strDays);
+                }
                 else
-                    strError = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_parttime_and_date"), strDays, strParts, strDate);
+                {
+                    CStringW strParts;
+                    CAtlArray<Unk_DayTimeRange>& aPartTimes = m_c8->m_aPartTimes;
+                    size_t nCount = aPartTimes.GetCount();
+                    const CStringW& strFormat = GetStringCommonByKey(L"s_err_cannot_buy_period_fmt_part_time");
+                    for (size_t i = 0; i < nCount; i++)
+                    {
+                        Unk_DayTimeRange& pair = aPartTimes[i];
+                        int nToA = pair.m_end.GetMinute();
+                        int nToB = pair.m_end.GetHour();
+                        int nFromA = pair.m_start.GetMinute();
+                        int nFromB = pair.m_start.GetHour();
+                        CStringW strOne = FUN_14086cc00(strFormat, nFromB, nFromA, nToB, nToA);
+                        if (!strParts.IsEmpty())
+                            strParts.Append(StringFormat<CStringW>(L", {0}", strOne));
+                        else
+                            strParts.Append(strOne);
+                    }
+                    if (!strDate.IsEmpty())
+                        strError = FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_parttime_and_date"), strDays, strParts, strDate);
+                    else
+                        strError = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_err_cannot_buy_period_day_and_parttime"), strDays, strParts);
+                }
             }
             return false;
         }
     }
-    if (m_d8.m_p != 0)
+    if (m_d8)
     {
         CMsTime tmNow(GetServerTime());
         if (!m_d8.operator->()->IsNotExpired(tmNow))

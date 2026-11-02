@@ -54,8 +54,8 @@ public:
 
     void FUN_141b56c30(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b56c30 the boss icon tooltip
     int FUN_141b57410();                                                    // 0x141b57410 the field to show
-    void FUN_141b57580(CInPacket* pPacket);                                 // 0x141b57580 packet 0x84 mode 0: the tiles
-    void FUN_141b57620(CInPacket* pPacket);                                 // 0x141b57620 packet 0x84 mode 1: additional infos
+    void OnIconPacket(CInPacket* pPacket);                                 // 0x141b57580 packet 0x84 mode 0: the tiles
+    void OnAdditionalInfoPacket(CInPacket* pPacket);                                 // 0x141b57620 packet 0x84 mode 1: additional infos
     void FUN_141b57660();                                                   // 0x141b57660 select the pending field
     void ApplyPendingSearch();                                                   // 0x141b57740 apply the pending search text
     void FUN_141b57870();                                                   // 0x141b57870 build the tiles of the world
@@ -75,9 +75,9 @@ public:
     void FUN_141b5a290();                                                   // 0x141b5a290 dungeon icons
     void FUN_141b5a550(int nFieldId);                                       // 0x141b5a550 take the taxi
     void FUN_141b5aa70(int nFieldId);                                       // 0x141b5aa70 take the cash taxi
-    bool FUN_141b5ad60(int nButton, const CMsgBoxData& data);               // 0x141b5ad60 the taxi fare prompt
-    bool FUN_141b5ae00(int nButton, const CMsgBoxData& data);               // 0x141b5ae00 the merat air taxi prompt
-    bool FUN_141b5aec0(int nButton, const CMsgBoxData& data);               // 0x141b5aec0 the cash taxi prompt
+    bool OnTaxiMesoConfirm(int nButton, const CMsgBoxData& data);               // 0x141b5ad60 the taxi fare prompt
+    bool OnTaxiMeratConfirm(int nButton, const CMsgBoxData& data);               // 0x141b5ae00 the merat air taxi prompt
+    bool OnPkFieldTaxiConfirm(int nButton, const CMsgBoxData& data);               // 0x141b5aec0 the cash taxi prompt
     void FUN_141b5af80(int n);                                              // 0x141b5af80 (TaxiStationAction)
     bool FUN_141b5afe0(int nFieldId);                                       // 0x141b5afe0 move by portal (packet 0x54)
     void FUN_141b5b190();                                                   // 0x141b5b190 flush the queued tiles
@@ -116,7 +116,7 @@ public:
     void FUN_141b60e90(int nFieldId, MyPC* pPlayer);                        // 0x141b60e90 the cash taxi prompt
     void FUN_141b614c0(MyPC* pPlayer);                                      // 0x141b614c0 the cash taxi prompts (vip, meso, advanced ticket)
     void FUN_141b61ff0(int nFieldId);                                       // 0x141b61ff0 select a tile
-    bool FUN_141b5af30(int nButton, const CMsgBoxData& data);               // 0x141b5af30 the mission attack prompt
+    bool OnMissionAttackConfirm(int nButton, const CMsgBoxData& data);               // 0x141b5af30 the mission attack prompt
 
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 movie clip child lookup (a UIDialog member)
     MS2Ptr<ASUIComponent> FUN_140c02990(const CString& strName);            // 0x140c02990 GetChild<ASUIComponent> (template COMDAT of another unit)

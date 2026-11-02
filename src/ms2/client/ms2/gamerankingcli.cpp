@@ -57,7 +57,7 @@ private:
 class Unk_GrUIManager { public: };
                 // the guild id
 class Unk_GrGuildManager { public: int FUN_1413b6160(); char m_pad[8]; CGuildInfo m_8; };
-CStringW FUN_140811740(int nId, const int& n0, const int& n1);              // a string table text with two numbers
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);    // date + time text
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);                   // narrows a string
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // profile image path
@@ -176,7 +176,7 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             m_date = FormatTime(p->m_time);
             int nSecond = p->m_38 % 60;
             int nMinute = p->m_38 / 60;
-            m_time = FUN_140811740(0x97e, nMinute, nSecond);
+            m_time = FormatStringId<int, int>(0x97e, nMinute, nSecond);
             for (int i = 0; i < 10; i++)
                 m_members[i] = p->m_members[i];
         }
@@ -244,7 +244,7 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             m_date = FormatTime(p->m_time);
             int nSecond = p->m_50 % 60;
             int nMinute = p->m_50 / 60;
-            m_time = FUN_140811740(0x97e, nMinute, nSecond);
+            m_time = FormatStringId<int, int>(0x97e, nMinute, nSecond);
             m_image = p->m_40;
             FUN_141028be0(p->m_30, FUN_14016a600(p->m_40, 0), 1, CString(""));
             m_members[0].m_name = p->m_38;
@@ -269,7 +269,7 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             m_point = p->m_48;
             int nSecond = p->m_4c % 60;
             int nMinute = p->m_4c / 60;
-            m_time = FUN_140811740(0x97e, nMinute, nSecond);
+            m_time = FormatStringId<int, int>(0x97e, nMinute, nSecond);
             m_name = p->m_name;
             m_image = p->m_30;
             FUN_141028be0(p->m_id, FUN_14016a600(p->m_30, 0), 1, CString(""));

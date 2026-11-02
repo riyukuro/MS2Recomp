@@ -2,7 +2,6 @@
 // spawned at every point of the area, the re-spawn of the culled ones, the collision shapes) and the std::list / ATL::CAtlList
 // glue over its Vector3 points. The unit name is a guess (queue row ?\regionskillobject.cpp).
 // MS2-UNIT: ?\regionskillobject.cpp
-// MS2-FUNCTIONAL: CRegionSkillObject::Init (Init) is behaviour-equivalent; the frame temp layout of the collision-shape loops is not reproduced
 // MS2-RANGE: 0x1416f57c0-0x1416f8f46 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEAUUnk_StreamPoint@@AEAI$0A@@?$pair@UUnk_StreamPoint@@I@std@@QEAA@AEAUUnk_StreamPoint@@AEAI@Z 0x1416f7a10 ; unique
@@ -22,6 +21,7 @@
 #include "ms2/client/ms2/effectskipmgr.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/placeholder/coptimizer.h"   // C3: COptimizer::FUN_14161ce60
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -39,7 +39,6 @@ class Unk_RsWorld : public WorldService
 public:
 };
 // The local session (0x1409f7c90): zero when the id is a local player.
-class Unk_RsSession { public: int FUN_14161ce60(int nId); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 
@@ -54,7 +53,6 @@ public:
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The effect culler (0x14119f490): is this effect visible at a transform? (the data pointer is passed by value)
-class Unk_RsCuller { public: int FUN_1411b8870(CEffectDataPtr spData, int nOwnerType, NiTransform* pXform); };
 
 // The skill collision manager singleton (0x141469a90).
 CSkillCollisionManager* FUN_141469a90();
@@ -67,7 +65,7 @@ struct Unk_RsNiPoint3 : public Vector3
 {
     Unk_RsNiPoint3(const Vector3& pt);                  // 0x14027dcf0
 };
-void FUN_14097faa0(NiPoint3* pDst, const Unk_RsNiPoint3* pSrc); // NiPoint3::operator=
+void FUN_14097faa0(NiPoint3* pDst, const Unk_RsNiPoint3& kSrc); // NiPoint3::operator=
 struct Unk_RsRot : public Vector3 { Unk_RsRot(float x, float y, float z); };   // 0x14097f250
 
 // The skill source of a skill level, as the collision manager takes it (0x140932d90).
@@ -110,7 +108,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
     int nEffect2;
     int nEffect;
     m_nOwnerType = reinterpret_cast<Unk_RsWorld*>(WorldService::GetInstance())->FUN_141bd19d0(m_nOwnerId);
-    m_bLocal = (((class Unk_RsSession*)FUN_1409f7c90())->FUN_14161ce60(m_nOwnerId) == 0);
+    m_bLocal = (reinterpret_cast<COptimizer*>(FUN_1409f7c90())->FUN_14161ce60(m_nOwnerId) == 0);
     if (!m_pAttr->m_strEffect.IsEmpty())
     {
         m_spEffect = TSingleton<EffectDataManager>::GetInstance()->FUN_14119f870(m_pAttr->m_strEffect);
@@ -120,8 +118,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             {
                 NiTransform xf;
                 xf.MakeIdentity();
-                Unk_RsNiPoint3 niPt(m_points[i]);
-                FUN_14097faa0(&xf.m_Translate, &niPt);
+                FUN_14097faa0(&xf.m_Translate, m_points[i]);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEffect;
@@ -155,8 +152,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             {
                 NiTransform xf;
                 xf.MakeIdentity();
-                Unk_RsNiPoint3 niPt(m_points[i]);
-                FUN_14097faa0(&xf.m_Translate, &niPt);
+                FUN_14097faa0(&xf.m_Translate, m_points[i]);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEndEffect;
@@ -192,8 +188,9 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                 Unk_RsNiPoint3 niPt(m_points[i]);
                 Unk_RsRot rot(m_fRotX, 0.0f, m_fRotY);
                 spShape = FUN_141469a90()->Create(FUN_140932d90(&m_spSkill), 0, 0, pActor, 0.0f);
-                spShape->vfunc_3(niPt, rot, 1.0f);
-                m_collisions.AddTail(FUN_141469a90()->Add(spShape));
+                spShape->vfunc_3(static_cast<Vector3&>(niPt), static_cast<Vector3&>(rot), 1.0f);
+                __int64 nHandle = FUN_141469a90()->Add(spShape);
+                m_collisions.AddTail(nHandle);
             }
         }
         else
@@ -206,8 +203,9 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                     Unk_RsNiPoint3 niPt(m_points[i]);
                     Unk_RsRot rot(m_fRotX, 0.0f, m_fRotY);
                     spShape = FUN_141469a90()->Create(FUN_140932d90(&m_spSkill), 0, 0, 0, 0.0f);
-                    spShape->vfunc_3(niPt, rot, 1.0f);
-                    m_collisions.AddTail(FUN_141469a90()->Add(spShape));
+                    spShape->vfunc_3(static_cast<Vector3&>(niPt), static_cast<Vector3&>(rot), 1.0f);
+                    __int64 nHandle = FUN_141469a90()->Add(spShape);
+                    m_collisions.AddTail(nHandle);
                 }
             }
         }
@@ -252,7 +250,7 @@ void CRegionSkillObject::FUN_1416f6900()
             NiTransform xf;
             xf.MakeIdentity();
             Unk_RsNiPoint3 niPt(m_points[i]);
-            FUN_14097faa0(&xf.m_Translate, &niPt);
+            FUN_14097faa0(&xf.m_Translate, niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -285,7 +283,7 @@ void CRegionSkillObject::FUN_1416f6b90()
             NiTransform xf;
             xf.MakeIdentity();
             Unk_RsNiPoint3 niPt(m_points[i]);
-            FUN_14097faa0(&xf.m_Translate, &niPt);
+            FUN_14097faa0(&xf.m_Translate, niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -331,10 +329,10 @@ void CRegionSkillObject::FUN_1416f6f50()
                 NiTransform xf;
                 xf.MakeIdentity();
                 Unk_RsNiPoint3 niPt(pt);
-                FUN_14097faa0(&xf.m_Translate, &niPt);
+                FUN_14097faa0(&xf.m_Translate, niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 bool bAlways = m_pAttr->m_bAlways;
-                if (reinterpret_cast<Unk_RsCuller*>(TSingleton<EffectSkipMgr>::GetInstance())->FUN_1411b8870(m_spEffect, m_nOwnerType, &xf) == 0 && (m_bLocal != 0 || bAlways))
+                if (TSingleton<EffectSkipMgr>::GetInstance()->ShouldSkipByView(m_spEffect, m_nOwnerType, reinterpret_cast<Unk_SkipEffect*>(&xf)) == 0 && (m_bLocal != 0 || bAlways))
                 {
                     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                     ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEffect;
@@ -374,9 +372,9 @@ void CRegionSkillObject::FUN_1416f6f50()
             NiTransform xf;
             xf.MakeIdentity();
             Unk_RsNiPoint3 niPt(pt);
-            FUN_14097faa0(&xf.m_Translate, &niPt);
+            FUN_14097faa0(&xf.m_Translate, niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
-            if (reinterpret_cast<Unk_RsCuller*>(TSingleton<EffectSkipMgr>::GetInstance())->FUN_1411b8870(m_spEffect2, m_nOwnerType, &xf) == 0 && m_bLocal != 0)
+            if (TSingleton<EffectSkipMgr>::GetInstance()->ShouldSkipByView(m_spEffect2, m_nOwnerType, reinterpret_cast<Unk_SkipEffect*>(&xf)) == 0 && m_bLocal != 0)
             {
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEndEffect;
@@ -434,7 +432,7 @@ void CRegionSkillObject::FUN_1416f7790()
                 NiTransform xf;
                 xf.MakeIdentity();
                 Unk_RsNiPoint3 niPt(m_points[i]);
-                FUN_14097faa0(&xf.m_Translate, &niPt);
+                FUN_14097faa0(&xf.m_Translate, niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));

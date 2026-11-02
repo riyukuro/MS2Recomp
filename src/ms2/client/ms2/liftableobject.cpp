@@ -63,9 +63,8 @@ template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service61000
 template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
-Vector3 FUN_1408a1430(Vector3 pt);
-struct Unk_Int3;
-int FUN_1408a03c0(const Unk_Int3& pt);   // C3: the real signature (ugcmapdata_1)
+Unk_Int3 FUN_1408a1430(Vector3 pt);
+int FUN_1408a03c0(Unk_Int3 pt);
 
 // The "lift state changed" notice posted through the notify manager.
 
@@ -177,45 +176,40 @@ int CLiftableObject::Init(Unk_Entity* pEntity, bool bFixed, int nKind)
 }
 
 // @0x141447410
-// MS2-FUNCTIONAL: written from the decompile; the callbacks' temporaries are not matched
 void CLiftableObject::BindEntity(Unk_Entity* pEntity)
 {
     m_ent.FUN_1408b6ec0(pEntity);
-    if (m_ent.FUN_1408b70b0(0) == 0)
+    if (m_ent.FUN_1408b70b0(0) != 0)
+        return;
+    if (m_bFixed == 0)
     {
-        if (m_bFixed == 0)
-        {
-            efd::utf8string name;
-            efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetDataFileID(), name);
-            m_strName = name.c_str();
-            FUN_1401d3700(m_strName);
-        }
-        float fRange = 150.0f;
-        if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<float>(0xf39fa2a1, fRange) == 0)
-            m_fRange = fRange;
-        reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue(0xd89e9b12, m_b108);
-        reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vC4));
-        reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_v10c));
-        if (m_bFixed == 0)
-        {
-            reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<unsigned int>(0x2e687f77, (unsigned int&)(m_nA8));
-        }
-        else
-        {
-            Vector3 pt;
-            reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
-            efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
-            Vector3 cell = FUN_1408a1430(pt);
-            int nKey = FUN_1408a03c0(reinterpret_cast<const Unk_Int3&>(cell));
-            Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(nKey);
-            if (pCube != 0)
-                m_nA8 = pCube->FUN_1408b4f20();
-        }
-        UpdateConditions();
-        void* pNotice = ::operator new(0x20);
-        NotifyObject* pBuilt = pNotice ? new (pNotice) NotifyAddLiftable(this) : 0;
-        NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(pBuilt));
+        efd::utf8string name;
+        efd::ParseHelper<efd::ID128>::ToString(((egf::Entity*)(class Unk_Entity*)(m_ent.FUN_1408a9280()))->GetDataFileID(), name);
+        m_strName = name.c_str();
+        FUN_1401d3700(m_strName);
     }
+    float fRange = 150.0f;
+    if (reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<float>(0xf39fa2a1, fRange) == 0)
+        m_fRange = fRange;
+    reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue(0xd89e9b12, m_b108);
+    reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(m_vC4));
+    reinterpret_cast<egf::Entity*>(m_ent.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(m_v10c));
+    if (m_bFixed == 0)
+    {
+        reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<unsigned int>(0x2e687f77, (unsigned int&)(m_nA8));
+    }
+    else
+    {
+        Vector3 pt;
+        reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
+        efd::SmartPointer<Unk_Service6100017> spSvc(FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
+        Unk_Int3 cell = FUN_1408a1430(pt);
+        Unk_LiftCube* pCube = (Unk_LiftCube*)reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->GetCubeByKey(FUN_1408a03c0(cell));
+        if (pCube != 0)
+            m_nA8 = pCube->FUN_1408b4f20();
+    }
+    UpdateConditions();
+    NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyAddLiftable(this)));
 }
 
 // @0x1414477f0
@@ -339,9 +333,9 @@ int CLiftableObject::FUN_141447cc0() const
 }
 
 // @0x141447ce0
-void CLiftableObject::FUN_141447ce0()
+Unk_Entity* CLiftableObject::FUN_141447ce0()
 {
-    m_ent.FUN_1408a9090();
+    return m_ent.FUN_1408a9090();
 }
 
 // @0x141447d10

@@ -172,7 +172,7 @@ int FUN_142054a70(lua_State* L, int index, void** ptr, swig_type_info* type, int
 
 // SWIG_Lua_GetModule: the module list the first loaded wrapper stored in the registry, or null.
 // @0x142054b60
-static swig_module_info* SWIG_Lua_GetModule(lua_State* L)
+static __declspec(noinline) swig_module_info* SWIG_Lua_GetModule(lua_State* L)
 {
     swig_module_info* module = 0;
     lua_pushstring(L, "swig_runtime_data_type_pointer4");
@@ -185,7 +185,7 @@ static swig_module_info* SWIG_Lua_GetModule(lua_State* L)
 
 // SWIG_Lua_typename: a SWIG userdata's C type string, else Lua's name for the value's type.
 // @0x142054bd0
-static const char* SWIG_Lua_typename(lua_State* L, int tp)
+static __declspec(noinline) const char* SWIG_Lua_typename(lua_State* L, int tp)
 {
     if (lua_isuserdata(L, tp))
     {
@@ -215,9 +215,9 @@ static __forceinline int SWIG_TypeNameComp(const char* f1, const char* l1, const
 // SWIG_TypeEquiv: whether `name` equals one of the '|'-separated alternatives in `str`.
 static __forceinline int SWIG_TypeEquiv(const char* str, const char* name)
 {
+    int equiv = 0;
     const char* nameEnd = name + strlen(name);
     const char* cur = str;
-    int equiv = 0;
     while (!equiv && *cur)
     {
         const char* first = cur;
@@ -230,51 +230,74 @@ static __forceinline int SWIG_TypeEquiv(const char* str, const char* name)
     return equiv;
 }
 
-// SWIG_TypeQueryModule: the type named `name` in the module ring [start, end): a binary search of each module's
-// mangled-name-sorted table first, then a scan of the human-readable type strings.
-// @0x142055320
-static swig_type_info* SWIG_TypeQueryModule(swig_module_info* start, swig_module_info* end, const char* name)
+// SWIG_MangledTypeQueryModule: a binary search of each module's mangled-name-sorted table in the ring [start, end).
+static __forceinline swig_type_info* SWIG_MangledTypeQueryModule(swig_module_info* start, swig_module_info* end, const char* name)
 {
     swig_module_info* iter = start;
     do
     {
         if (iter->size)
         {
-            size_t lo = 0, hi = iter->size - 1;
+            size_t l = 0;
+            size_t r = iter->size - 1;
             do
             {
-                size_t mid = (lo + hi) >> 1;
-                const char* iname = iter->types[mid]->name;
-                if (!iname)
-                    break;
-                int cmp = strcmp(name, iname);
-                if (cmp == 0)
-                    return iter->types[mid];
-                if (cmp < 0)
+                size_t i = (l + r) >> 1;
+                const char* iname = iter->types[i]->name;
+                if (iname)
                 {
-                    if (!mid)
-                        break;
-                    hi = mid - 1;
+                    int compare = strcmp(name, iname);
+                    if (compare == 0)
+                    {
+                        return iter->types[i];
+                    }
+                    else if (compare < 0)
+                    {
+                        if (i)
+                            r = i - 1;
+                        else
+                            break;
+                    }
+                    else if (compare > 0)
+                    {
+                        l = i + 1;
+                    }
                 }
                 else
                 {
-                    lo = mid + 1;
+                    break;
                 }
-            } while (lo <= hi);
+            } while (l <= r);
         }
         iter = iter->next;
     } while (iter != end);
+    return 0;
+}
 
-    iter = start;
-    do
+// SWIG_TypeQueryModule: the type named `name` in the module ring [start, end): the mangled-name search first, then a
+// scan of the human-readable type strings.
+// @0x142055320
+static swig_type_info* SWIG_TypeQueryModule(swig_module_info* start, swig_module_info* end, const char* name)
+{
+    swig_type_info* ret = SWIG_MangledTypeQueryModule(start, end, name);
+    if (ret)
     {
-        for (size_t i = 0; i < iter->size; ++i)
+        return ret;
+    }
+    else
+    {
+        swig_module_info* iter = start;
+        do
         {
-            if (iter->types[i]->str && SWIG_TypeEquiv(iter->types[i]->str, name))
-                return iter->types[i];
-        }
-        iter = iter->next;
-    } while (iter != end);
+            size_t i = 0;
+            for (; i < iter->size; ++i)
+            {
+                if (iter->types[i]->str && SWIG_TypeEquiv(iter->types[i]->str, name))
+                    return iter->types[i];
+            }
+            iter = iter->next;
+        } while (iter != end);
+    }
     return 0;
 }
 
@@ -372,7 +395,7 @@ static bool IntepretAttachNifUserData(lua_State* L, int pos, efd::utf8string& va
         return false;
     }
     const char* text = lua_tolstring(L, -1, 0);
-    value = text ? efd::utf8string(text) : efd::utf8string::NullString();
+    value = text ? text : efd::utf8string::NullString();
     lua_settop(L, -3);
     return true;
 }

@@ -51,7 +51,9 @@
 #include <NiIntegerExtraData.h>
 #include <NiSourceTexture.h>
 #include <efd/AssetID.h>
+#include "ms2/commonfiles/crashmanager.h"
 #include <egf/Entity.h>  // C3: egf::Entity::GetPropertyValue<bool>
+#include "ms2/commonfiles/os.h"
 
 // This scene traversal helper owns a 0x30-byte ATL list. Its constructor
 // (14098cb80), traversal (14098e0d0), and destructor (14098cf00) are external.
@@ -65,17 +67,19 @@ private:
 };
 MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
 
+class CNifLoadingService {
+public:
+    NiAVObjectPtr Load(CString, bool, int, int, int);
+};
 class Unk_CubeResourceService {
 public:
-    NiPointer<NiAVObject> FUN_141551ea0(CString, int, int, int, int);
     NiPointer<NiSourceTexture> FUN_141553eb0(CString, const void*);
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 extern NiFixedString DAT_143ae50a0;
 float FUN_140a38cd0(float);
 struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };   // NiPoint3(const efd::Point3&) 0x14027dcf0
-void* FUN_140a44830();
-void FUN_1401ce2f0(void*, const char*, const char*);
+class CrashManagerCli;
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
 NiPointer<NiAVObject> FUN_141423480(NiPointer<NiAVObject>, const CString&);
@@ -96,7 +100,7 @@ public:
 public:
     void FUN_141bbb7f0(class GameObject*, int);   // C3: was free FUN_141bbb7f0
 };
-void* FUN_1409670f0();
+class EntityWorldManager;
 class EntityWorldManager   // C3: member view (entityworldmanager.h pulls headers this unit cannot take)
 {
 public:
@@ -146,7 +150,7 @@ MS2_REPLACE_METHOD(0x1410afbc0, CNifCubeGuide, vfunc_1, 65, 0x6D059F2B);
 // @0x1410afc10
 int CNifCubeGuide::FUN_1410afc10(CString assetName) {
     asset = assetName;
-    node = NiDynamicCast(NiNode, (NiAVObject*)((class Unk_CubeResourceService*)FUN_140a0afd0())->FUN_141551ea0(assetName, 0, 5, 0, 0));
+    node = NiDynamicCast(NiNode, (NiAVObject*)((class CNifLoadingService*)FUN_140a0afd0())->Load(assetName, 0, 5, 0, 0));
     if (node != NULL)
         return 1;
     return 0;
@@ -225,7 +229,7 @@ void CNifCubeGuide::vfunc_10(NiNode* parent, int) {
 // @0x1410b0460
 void CNifCubeGuide::vfunc_11() {
     if (node == NULL) {
-        FUN_1401ce2f0(FUN_140a44830(), "CNifCubeGuide NULL Node Error. Asset Name : %s", (const char*)asset);
+        reinterpret_cast<CCrashManager*>((void*)TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("CNifCubeGuide NULL Node Error. Asset Name : %s", (const char*)asset);
     } else {
         NiNode* parent = node->GetParent();
         if (parent != NULL) parent->DetachChild(node);
@@ -329,10 +333,10 @@ CKfmCubeGuide::~CKfmCubeGuide() { entity = NULL; parent = NULL; }
 int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     bool isActor = false;
     efd::AssetID id;
-    if (!reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf0b0(efd::utf8string((const char*)assetName), id, isActor)) return 0;
+    if (!TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf0b0(efd::utf8string((const char*)assetName), id, isActor)) return 0;
     efd::utf8string model("MS2MeshNoPhysX");
     if (isActor) model = "MS2Actor";
-    entity = static_cast<Unk_CubeEntityService*>(FUN_1409670f0())->FUN_1411ce7c0(
+    entity = static_cast<Unk_CubeEntityService*>((void*)TSingleton<EntityWorldManager>::GetInstance())->FUN_1411ce7c0(
         model, id.GetURN(), DAT_143b01a60, DAT_143b01a60, 1.0f, 0, 1);
     if (entity != NULL) return 1;
     return 0;
@@ -434,7 +438,7 @@ void CKfmCubeGuide::vfunc_10(NiNode* node, int) {
 }
 MS2_REPLACE_METHOD(0x1410b1de0, CKfmCubeGuide, vfunc_10, 145, 0xBA55F349);
 // @0x1410b1e80
-void CKfmCubeGuide::vfunc_11() { reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf570(entity.data()); parent = NULL; }
+void CKfmCubeGuide::vfunc_11() { TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(entity.data()); parent = NULL; }
 MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 
 class Unk_CubeDisplayMap {

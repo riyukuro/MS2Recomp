@@ -13,8 +13,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
-void FUN_140178670(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<int>& arr);
-void FUN_140645110(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<unsigned short>& arr);
+template <class C> int XmlTokenList(Unk_140165cf0*, const char*, C&);
+
 const CStringA& FUN_14082efb0(UnlimitedEnchantInfo::OptionKey nStat);       // the xml name of a stat
 CStringA const & FUN_14081d380(int);  // C3: the definition's signature
 class CLogString* GetLogString();
@@ -36,8 +36,8 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.PartCount is NULL");
         return false;
     }
-    FUN_140178670(pElem, "additionalEffectID", m_effectIds);
-    FUN_140645110(pElem, "additionalEffectLevel", m_effectLevels);
+    XmlTokenList(pElem, "additionalEffectID", (ATL::CAtlArray<unsigned int>&)m_effectIds);
+    XmlTokenList(pElem, "additionalEffectLevel", m_effectLevels);
     if (m_effectIds.GetCount() != m_effectLevels.GetCount())
     {
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"\uac12\uc774 0 \uc785\ub2c8\ub2e4.additionalEffect Count Error!");

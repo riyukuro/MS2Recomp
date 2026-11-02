@@ -264,7 +264,7 @@ public:
     bool FUN_141674ef0(const CEffectDummy& kDummy);         // 0x141674ef0 attach an effect node per the dummy
     MS2Ptr<CStateManager> GetStateMgr();                  // 0x141678750 copy of m_spStateMgr (w17)
     void FUN_141676310(int n);                              // 0x141676310 empty
-    bool FUN_141679220(const char* szName);                 // 0x141679220 FUN_141679270 found a sequence
+    bool HasAnimSequence(const char* szName);                 // 0x141679220 FUN_141679270 found a sequence
     int FUN_1416765b0();                                    // 0x1416765b0 the ridee has a free seat
     void FUN_141676060(NiPoint3 kPos);                      // 0x141676060 set +0xc10 (forwarded to the ridee)
     void FUN_14166ebf0(PCBase* pOther);                     // 0x14166ebf0 copy pOther's +0xae0 entity position

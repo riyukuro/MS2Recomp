@@ -76,7 +76,6 @@ CStringW GetStringCommon(int nId);                         // string table text 
 int FUN_14028d260(float fSeconds);                       // seconds -> ms
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString* FUN_140298f80(Common::Constants::Value<CString>* pValue);   // Value<CString>::Get as a free function
-unsigned FUN_140ac2250(Common::Constants::Value<unsigned int>* pValue);   // Value<uint>::Read as a free function
 
 // The doctor NPC script (1 = a script page shown by the NPC dialog service).
 class Unk_HcNpcScript : public CPtred
@@ -160,11 +159,11 @@ int StateHomeConvenient::GetDuration()
     {
     case 1:
     case 2:
-        return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration);
+        return static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration.Read();
     case 3:
-        return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallDuration);
+        return static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallDuration.Read();
     }
-    return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration);
+    return static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration.Read();
 }
 
 // @0x140ddd7c0

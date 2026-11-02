@@ -160,9 +160,9 @@ NiFragmentMaterial::ReturnCode MS2OuterGlowCharacterMaterial::GenerateShaderDesc
     {
         NiStandardVertexProgramDescriptor* pkVertexDesc =
             (NiStandardVertexProgramDescriptor*)pkRenderPasses[0].m_pkVertexDesc;
+        pkVertexDesc->m_kIdentifier = "NiStandardVertexProgramDescriptor";
         NiStandardPixelProgramDescriptor* pkPixelDesc =
             (NiStandardPixelProgramDescriptor*)pkRenderPasses[0].m_pkPixelDesc;
-        pkVertexDesc->m_kIdentifier = "NiStandardVertexProgramDescriptor";
         pkPixelDesc->m_kIdentifier = "NiStandardPixelProgramDescriptor";
 
         // APPLYMODE set: a world view vector in both stages

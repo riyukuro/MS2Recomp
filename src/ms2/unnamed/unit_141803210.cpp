@@ -55,6 +55,8 @@
 #endif
 #define SF_SYSALLOC_DEFAULT_CLASS SysAllocMalloc     // ??_FSystem builds the MH heap's SysAllocMalloc singleton
 #define MS2_THIS_FILE ""
+#include <string.h>
+#pragma function(memset)                // the exe's CComCriticalSection ctor (0x141803660) zeroes m_sec through a memset call
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include <winsock2.h>
@@ -67,6 +69,11 @@
 #include "ms2/scaleform/kernel/heappt/sf_sysallocwinapi.h"
 #include "ms2/scaleform/include/render/render_matrix2x4.h"
 #include "ms2/scaleform/include/render/render_matrix4x4.h"
+// The exe's Matrix2x4<float>::_sqrt calls the ucrtbase import (call [__imp_sqrtf]), not a static sqrtf.
+extern "C" float (__cdecl* __imp_sqrtf)(float);
+namespace Scaleform { namespace Render {
+template <> inline float Matrix2x4<float>::_sqrt(float v) { return __imp_sqrtf(v); }
+} }
 #include <atlimage.h>
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -276,7 +283,6 @@ LONG Unk_CrashDumper::Write(EXCEPTION_POINTERS* pException)
 // at +0x7018 that nothing reads); engine-patches/ carries that change (m_iLargeAllocBytes).
 // MS2-PIN: ??0?$SmallObjectAllocator@VExternalMemAllocator@efd@@@efd@@QEAA@_K@Z 0x141803420
 // MS2-PIN: ??0CComCriticalSection@ATL@@QEAA@XZ 0x141803660
-// MS2-FUNCTIONAL ??0CComCriticalSection@ATL@@QEAA@XZ: the exe's copy zeroes m_sec through a memset call; the stock ATL ctor inlines it (rep stosb), same effect
 // MS2-PIN: ??_G?$SmallObjectAllocator@VExternalMemAllocator@efd@@@efd@@UEAAPEAXI@Z 0x1418067f0
 // MS2-PIN: ?Allocate@?$SmallObjectAllocator@VExternalMemAllocator@efd@@@efd@@UEAAPEAXAEA_K0VMemHint@2@W4MemEventType@2@PEBDH3@Z 0x141806b60
 // MS2-PIN: ?Allocate@ExternalMemAllocator@efd@@UEAAPEAXAEA_K0VMemHint@2@W4MemEventType@2@PEBDH3@Z 0x141806d10
@@ -305,3 +311,4 @@ LONG Unk_CrashDumper::Write(EXCEPTION_POINTERS* pException)
 // MS2-PIN: ??1?$SmartPointer@VNiSPWorkflow@@@efd@@QEAA@XZ 0x141803f20
 // MS2-PIN: ??_E?$SmartPointer@VNiSPWorkflow@@@efd@@QEAAPEAXI@Z 0x141805540
 // MS2-PIN: ?DecRefCount@NiSPWorkflow@@QEAAXXZ 0x141807120
+#pragma intrinsic(memset)               // the template rows compiled at the end of the unit (Matrix3x4/4x4 Clear) keep rep stosb

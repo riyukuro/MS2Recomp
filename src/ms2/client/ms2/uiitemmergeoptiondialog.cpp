@@ -166,6 +166,7 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/client/ms2/equipment.h"
 #include "ms2/client/ms2/uitalkcinematic.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- unit-local views of exe objects ----
 
@@ -196,7 +197,7 @@ public:
     void FUN_1419caeb0(UIItemEventListener* pListener);     // unregister
 };
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
-CUIService* FUN_1403ed2b0();
+class CUIService;
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 bool FUN_14028d470(float f, float fEps);                    // nearly zero
 
@@ -215,9 +216,8 @@ UITalkManager* FUN_140967100();
 class Unk_MergePlayerCfg { public: char m_pad_00[0x69f8]; Common::Constants::Value<int> m_talk; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The inventory (g_143ab2a90) with the variant return type of the tag count.
+// The inventory.
 extern Unk_Inventory g_143ab2a90;
-unsigned FUN_140a5f780_1(Unk_Inventory* pInv, int nTag, int nRarity);   // the count of the items with a tag
 extern __int64 DAT_143ab2898;                               // the player's meso
 extern int DAT_143ab2914;                                   // the player's level
 
@@ -410,7 +410,7 @@ void UIItemMergeOptionDialog::OnLoadComplete()
     ShowMergePrice(MS2Ptr<CItem>(0));
     if (m_30.get() != 0)
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_useDebug", ((class Unk_MergeFeature*)FUN_14025e7c0())->IsDebugMode());
-    FUN_1403ed2b0()->FUN_141adc190();
+    TSingleton<CUIService>::GetInstance()->FUN_141adc190();
     RequestInfo();
 }
 
@@ -492,7 +492,7 @@ void UIItemMergeOptionDialog::vfunc_43()
                         return;
                     float fScale = (float)(dY / fHeight + pDialog->GetXScale());
                     int nOffset = (int)((float)pDialog->GetHeightCeil() * fScale / 100.0f);
-                    pDialog->FUN_1422c0290(fScale, fScale);
+                    pDialog->SetScaleFloat(fScale, fScale);
                     pDialog->vfunc_2(5, nX, nY - nOffset);
                 }
             }
@@ -672,7 +672,7 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
             continue;
         unsigned nHave = 0;
         if (ref->m_b != 0)
-            nHave = FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0);
+            nHave = g_143ab2a90.FUN_140a5f780(ref->m_b, 0);
         else
             nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
         CStringW strKey(L"s_item_merge_option_material_count_enable");
@@ -1063,7 +1063,7 @@ int UIItemMergeOptionDialog::CheckMerge()
         Unk_IngRef ref = m_spProxy->m_ingredients.FUN_14026bdc0(i);
         if (ref->m_b != 0)
         {
-            if ((int)FUN_140a5f780_1(&g_143ab2a90, ref->m_b, 0) < ref->m_c)
+            if (g_143ab2a90.FUN_140a5f780(ref->m_b, 0) < ref->m_c)
                 return 1;
         }
         else

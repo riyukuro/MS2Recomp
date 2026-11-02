@@ -53,6 +53,7 @@
 #include "ms2/placeholder/unk_blocklist.h"
 #include "ms2/client/ms2/jobsystemcli.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/commonfiles/os.h"
 
 // ---- header statics (dynamic initializers 0x1400e1660..0x1400e17d0; the same group as uiskillbookautodistributedialog.cpp) ----
 #ifndef MS2_HOOK_DLL
@@ -80,7 +81,7 @@ public:
 };
 
   // the job level
-JobTable* FUN_1401d7a50();
+class JobTable;
 
 // The hot key label of the movie and the tab buttons.
 class Unk_140acd6e0 : public ASButton {};
@@ -687,7 +688,7 @@ void UISkillCompactControlDialog::FUN_140fa1400()
 {
     MyPC* pPlayer = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
-        pPlayer->FUN_141523bc0()->FUN_141767d90(&m_lstConfig);
+        pPlayer->FUN_141523bc0()->SetCompactConfigs(&m_lstConfig);
 }
 
 // The exe's out-of-line IsNull COMDAT of the list pointer (0x140fa3060, shared by ICF).
@@ -745,7 +746,7 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
         ASArray arrSkills(2);
         std::set<unsigned> setLearned;
         std::set<unsigned> setOther;
-        int nJobLevel = FUN_1401d7a50()->GetJobRank(pPlayer->FUN_141654730());
+        int nJobLevel = TSingleton<JobTable>::GetInstance()->GetJobRank(pPlayer->FUN_141654730());
         for (POSITION pos = spSkills->GetHeadPosition(); pos != 0; spSkills->GetNext(pos))
         {
             Unk_CcSkillPtr spSkill = spSkills->GetAt(pos);
@@ -821,7 +822,7 @@ void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
     {
         CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
         spHotKey->FUN_1422cdfb0(strKey);
-        spHotKey->FUN_1422c7630(0);
+        spHotKey->SetFocused(0);
         if (nKey > 0x91)
             FUN_140d01340(spHotKey->FUN_1422ce400()->FUN_1422bb890(), 1, 2);
         else

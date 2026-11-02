@@ -112,10 +112,10 @@ void FUN_141275260(int nId, int a, int b);                          // pop the s
 void FUN_140710590(COutPacket& pkt);                                // send
 extern __int64 DAT_143ab2898;                                       // the player's mesos
 
-typedef MS2Ptr<CItem> (*Unk_TfGetItemFn)(void* pItems, int nIndex);
+typedef MS2Ptr<CItem> (*Unk_TfGetItemFn)(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
 void FUN_14141f970(const CString& strBag);                          // unbind a bag
-void FUN_14141f770(const CString& strBag, int nCount, void* pItems, Unk_TfGetItemFn pfn, int nIcon, int nFlags);
-MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);
+void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlArray<MS2Ptr<CItem> >& items, Unk_TfGetItemFn pfn, int nIcon, int nFlags);
+MS2Ptr<CItem> FUN_141420330(const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nIndex);
 void FUN_141415600(const CString& strSlot);                         // unbind a slot
 void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // localized text
@@ -246,7 +246,6 @@ void UIItemEnchantTransformDialog::FUN_140c3d420()
     }
 }
 
-// MS2-FUNCTIONAL: the GetCount call and the bound-array argument take different registers in the exe (rcx / rdx-r8), no source form found
 // @0x140c3d5a0
 void UIItemEnchantTransformDialog::FUN_140c3d5a0()
 {
@@ -263,8 +262,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
     }
     FUN_14141f970(m_strTargetBag);
     Unk_TfGetItemFn pfnGetItem = FUN_141420330;
-    ATL::CAtlArray<MS2Ptr<CItem> >* pItems = &m_targets;
-    FUN_14141f770(m_strTargetBag, (int)m_targets.GetCount(), pItems, pfnGetItem, 0x415, 8);
+    FUN_14141f770(m_strTargetBag, (unsigned)m_targets.GetCount(), m_targets, pfnGetItem, 0x415, 8);
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_targetItems");
     if (board == 0)
         return;

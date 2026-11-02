@@ -151,7 +151,6 @@ public:
     int FUN_1422b9ea0();
 };
 unsigned FUN_140a35ca0(MS2Tick* p);
-MS2Tick* FUN_140a36020(const void* pValue);                                 // Value<MS2Tick>::Get
 CString* FUN_140298f80(const void* pValue);                                 // Value<CString>::Get
 class GameObjectController   // C3: member view for the former free stand-ins
 {
@@ -232,10 +231,10 @@ CPet::CPet()
     m_nTargetId = 0;
     if (m_spStateMgr.get() != 0)
     {
-        m_spStateMgr->FUN_1417daeb0(1, new StateIdlePet(this));
-        m_spStateMgr->FUN_1417daeb0(0x30, new StateSummonRevive(this));
-        m_spStateMgr->FUN_1417daeb0(0x31, new StateSummonExpire(this));
-        m_spStateMgr->FUN_1417daeb0(0x32, new StateSummonItemPick(this));
+        m_spStateMgr->RegisterState(1, new StateIdlePet(this));
+        m_spStateMgr->RegisterState(0x30, new StateSummonRevive(this));
+        m_spStateMgr->RegisterState(0x31, new StateSummonExpire(this));
+        m_spStateMgr->RegisterState(0x32, new StateSummonItemPick(this));
     }
     m_timer1030.FUN_140868750(1000);
 }
@@ -704,7 +703,7 @@ void CPet::FUN_140b11320(float fTime)
     m_nIdleMs += (int)FUN_14028d260(fTime);
     if (spBalloon->FUN_140f48d40() != 0)
     {
-        if ((unsigned)m_nIdleMs >= FUN_140a35ca0(FUN_140a36020(&Client::Constants::GetInstance()->MonologueShowTime)))
+        if ((unsigned)m_nIdleMs >= FUN_140a35ca0(Client::Constants::GetInstance()->MonologueShowTime.Get()))
         {
             spBalloon->vfunc_3();
             m_nTargetId = 0;

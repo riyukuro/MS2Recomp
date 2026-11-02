@@ -40,11 +40,11 @@ int* FUN_1404eb7e0(int* pA, int* pB);                      // 0x1404eb7e0 the la
 class Unk_WkAnimSvc
 {
 public:
-    unsigned FUN_140b7f6a0(const egf::EntityID& kId);
     efd::utf8string FUN_141206030(const egf::EntityID& kId);
 };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
+int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // C3: the real free function (def in statebannerdata)
 
 // The replay / spectator mode flag, the key-binding config and the controller input readings.
 class Unk_WkPlayback { public: bool FUN_1406af100(); };
@@ -53,7 +53,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
 class Unk_WkOption { public: char m_pad[0xc]; int m_n0c; };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
-void* FUN_1409a8b10();
+class CGameOption;
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
@@ -240,7 +240,7 @@ void StateWalk::vfunc_8(double fTime)
         if (nStick > 0)
         {
             int nOld = m_n10;
-            if (nStick <= ((class Unk_WkOption*)FUN_140a58500((class Unk_GpSettings*)(FUN_1409a8b10())))->m_n0c)
+            if (nStick <= ((class Unk_WkOption*)FUN_140a58500((class Unk_GpSettings*)(reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))))->m_n0c)
                 m_n10 = 0x19;
             else
                 m_n10 = 0x18;
@@ -355,7 +355,7 @@ void StateWalk::vfunc_9(double fTime)
     if (m_n10 == 0x17)
         nKey = 0x1f;
     bool bChanged = !(m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2 && m_n50 == 0);
-    unsigned nSeq = reinterpret_cast<Unk_WkAnimSvc*>(FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
     if (!m_pOwner->FUN_14166de90(nKey, nSeq) || bChanged)
     {
         Unk_Vec4 kSpeed = *(Unk_Vec4*)m_pOwner->FUN_141671920();

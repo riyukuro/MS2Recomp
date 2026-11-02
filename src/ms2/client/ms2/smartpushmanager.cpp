@@ -10,7 +10,7 @@
 
 // The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
 #include <vcruntime_string.h>
-#pragma function(memcpy)
+#pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <errno.h>
 #include <string.h>
@@ -162,3 +162,6 @@ void CSmartPushManager::FUN_140dd87d0()
             pUi->FUN_140fa3e20(push);
     }
 }
+
+// The map templates are generated here and keep the exe's inline memset; only the CRT memcpy_s above calls it.
+#pragma intrinsic(memset)

@@ -110,7 +110,7 @@ int UIGameModeSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("OnEndPopdown", szMethod) == 0)
     {
-        reinterpret_cast<CStateService*>((class CStateService*)((FUN_140aa6d30())))->FUN_1417e25a0((int)(0x6200009));
+        reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e25a0((int)(0x6200009));
         return 1;
     }
     return 0;

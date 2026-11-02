@@ -133,7 +133,7 @@ int FUN_140ad02f0(int nValue, int nLimit);                          // upper cla
 bool FUN_14028d470(float a, float b);                               // nearly equal
 const int& FUN_1404eb7e0(const int& a, const int& b);               // max
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
-CMainSystem* FUN_14086d260();
+class CMainSystem;
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d0f0(void* pHandle);                                 // handle -> object
 void FUN_14097fad0(NiPoint3* pDst, const Vector3* pSrc);    // NiPoint3 assignment
@@ -179,7 +179,7 @@ class Unk_EffectMgr
 {
 public:
     void* FUN_1411a6b10();                          // scene root
-    unsigned FUN_1411a88c0();                       // quality level (1..3)
+
     char m_pad_08[0x128];
     int m_nTrailMode;                               // +0x128
 };
@@ -318,10 +318,10 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         return false;
 
     unsigned nSampling = pSwoosh->m_nSampling;
-    unsigned nLevel = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a88c0();
+    unsigned nLevel = (unsigned)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0();
     if (FUN_141820fa0(reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())) != 0)
     {
-        float fFps = FUN_14086d260()->GetFps();
+        float fFps = TSingleton<CMainSystem>::GetInstance()->GetFps();
         int nPenalty = 0;
         switch (m_unk_18)
         {
@@ -517,7 +517,7 @@ void CSwooshEffect::vfunc_4()
         static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
-        reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)FUN_14086d260()->FUN_141473280(), true);
+        reinterpret_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)TSingleton<CMainSystem>::GetInstance()->FUN_141473280(), true);
         {
             NiFixedString kName((const char*)m_strNode1);
             m_spTrail1 = static_cast<NiNode*>(((void*)(NiObject::DynamicCast(&NiNode::ms_RTTI, (const NiObject*)(void*)(static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->GetObjectByName(kName))))));
@@ -579,7 +579,7 @@ int CSwooshEffect::vfunc_8(void* p)
 // drops the oldest control point once enough are kept.
 void CSwooshEffect::UpdateTrail()
 {
-    double dNow = FUN_14086d260()->FUN_141473280();
+    double dNow = TSingleton<CMainSystem>::GetInstance()->FUN_141473280();
     double dElapsed = dNow - m_dLastSample;
     if (dElapsed >= (double)m_fInterval)
     {

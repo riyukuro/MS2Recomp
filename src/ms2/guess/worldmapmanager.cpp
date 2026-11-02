@@ -1160,7 +1160,7 @@ void WorldMapManager::BuildNpcRewardPreview(int npc, ASObj* script)
                 item.FUN_1409adc90(s_strItemGrade, static_cast<ItemAble&>(entity).vfunc_o18_1());
                 item.FUN_1407cbbe0(s_strItemSkin, spItem->HasSkinType());
                 item.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spItem->GetIconPath(), 0));
-                array.FUN_1422bc050(item.FUN_1422bb870());
+                array.PushValue(item.FUN_1422bb870());
             }
         }
     }

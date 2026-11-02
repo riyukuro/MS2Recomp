@@ -866,10 +866,10 @@ int ConditionUserFindContext::FUN_1402a90e0()
     return 0x11f;
 }
 
-// @0x1402aa160
-CQuestConditionChecker::CQuestConditionChecker()
-{
-}
+// CQuestConditionChecker's constructor (0x1402aa160) is implicit: the derived constructor value-initializes it.
+
+
+
 
 // @0x1402a6b80
 int CQuestConditionCheckerUserFind::HasHandler(const CString& strKey)
@@ -879,8 +879,8 @@ int CQuestConditionCheckerUserFind::HasHandler(const CString& strKey)
 MS2_REPLACE_METHOD(0x1402a6b80, CQuestConditionCheckerUserFind, HasHandler, 74, 0xD35CC63A);
 
 // @0x1402a9100
-// MS2-FUNCTIONAL: the exe value-initializes the base (zeroes 0x18 bytes before the base ctor) = an implicit, non-user-provided base ctor; needs a questcondition.h change (shared header)
-CQuestConditionCheckerUserFind::CQuestConditionCheckerUserFind()
+// The base is value-initialized, so its 0x18 bytes are zeroed before the base ctor runs.
+CQuestConditionCheckerUserFind::CQuestConditionCheckerUserFind() : CQuestConditionChecker()
 {
     m_handlers["jobId"] = DelegateLib::MakeDelegate(this, &CQuestConditionCheckerUserFind::CheckJobId);
     m_handlers["level"] = DelegateLib::MakeDelegate(this, &CQuestConditionCheckerUserFind::CheckLevel);

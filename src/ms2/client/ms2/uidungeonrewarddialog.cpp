@@ -38,6 +38,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/client/ms2/uirenderview.h"
+#include "ms2/commonfiles/os.h"
 #ifndef MS2_HOOK_DLL   // s_winSound: the exe's object at 0x143ac5988, which other units reach as DAT_143ac5988 (the hook DLL binds it)
 CString DAT_143ac5988="BattleField_Win";
 #else
@@ -243,18 +244,17 @@ private:
     void* m_180; void* m_188; void* m_190; void* m_198;
 };
 MS2_CHECK_SIZE(CItem, 0x1a0);
- CPartyManager* FUN_1409670d0();
-class Unk_RewardRoomMgr;
+class CPartyManager;
 // @0x140e26600
 template<> inline MS2Ptr<DungeonRoom>& MS2Ptr<DungeonRoom>::operator=(int) { Release(); return *this; }
-Unk_RewardRoomMgr* FUN_14031c2a0();
+class DungeonRoomTable;
 class Unk_RewardSound { };
 int FUN_141276180(const CString& strSound, const CString& strArg);   // C3: this was the sound name
 extern Unk_RewardSound g_unkRewardSound; // 0x143ac5988
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1409eb450(int);
-CStringW FUN_140811740(int,const int&,const int&);
+template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_140e14d70(unsigned int);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff1b0(const Scaleform::GFx::Value&,CString,CStringW);
@@ -427,7 +427,7 @@ void UIDungeonRewardDialog::OnCloseButton(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140E22740, UIDungeonRewardDialog, OnCloseButton, 57, 0x917EAC9F);
 
 // @0x140e22780
-void UIDungeonRewardDialog::OnPartyLeaveButton(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; if(!m_party)return;FUN_1409670d0()->SendPartyMode3();SendDungeonReward(); }
+void UIDungeonRewardDialog::OnPartyLeaveButton(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; if(!m_party)return;TSingleton<CPartyManager>::GetInstance()->SendPartyMode3();SendDungeonReward(); }
 MS2_REPLACE_METHOD(0x140E22780, UIDungeonRewardDialog, OnPartyLeaveButton, 88, 0x89DB46B2);
 
 // @0x140e227e0
@@ -456,11 +456,11 @@ void UIDungeonRewardDialog::FUN_140e24060() {
   if(1.0f<ratio)ratio=1.0f;
   int width=(int)(294.0f*ratio);
   MS2Ptr<ASMovieClip> mask=gauge->FUN_1409b4560("m_mask");
-  if(mask) mask->FUN_1422c0e20(width);
+  if(mask) mask->SetWidthInt(width);
   MS2Ptr<ASMovieClip> eff=gauge->FUN_1409b4560("m_eff");
   if(eff) {
    float base=(float)width;
-   eff->FUN_1422c0420((base+mask->FUN_1422c10a0())-10.0f);
+   eff->SetXFloat((base+mask->FUN_1422c10a0())-10.0f);
   }
  }
  MS2Ptr<ASMovieClip> movie=m_1a0->FUN_1409b4560("m_rankMovie");
@@ -512,8 +512,8 @@ void UIDungeonRewardDialog::FUN_140e24c50(bool show) {
  MS2Ptr<ASMovieClip> reward=FUN_140ba7930("m_rewardAni");
  MS2Ptr<ASMovieClip> rank=FUN_140ba7930("m_rankAni");
  if(avatar==0||reward==0||rank==0)return;
- if(show) {rank->vfunc_4(true);avatar->FUN_1422bffe0(484,242);reward->FUN_1422bffe0(896,242);rank->FUN_1422bffe0(1516,242);}
- else {rank->vfunc_4(false);avatar->FUN_1422bffe0(714,242);reward->FUN_1422bffe0(1126,242);}
+ if(show) {rank->vfunc_4(true);avatar->SetPositionInt(484,242);reward->SetPositionInt(896,242);rank->SetPositionInt(1516,242);}
+ else {rank->vfunc_4(false);avatar->SetPositionInt(714,242);reward->SetPositionInt(1126,242);}
 }
 MS2_REPLACE_METHOD(0x140E24C50, UIDungeonRewardDialog, FUN_140e24c50, 547, 0x1EAF7A1A);
 
@@ -576,7 +576,7 @@ void UIDungeonRewardDialog::FUN_140e22210(CInPacket& packet) {
  m_type=1; m_tip.Empty();
  m_win=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_0();
  int roomId=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
- m_room=((DungeonRoomTable*)FUN_14031c2a0())->GetRoom(roomId);
+ m_room=TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(roomId);
  m_party=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_0();
  m_278=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
  m_294=reinterpret_cast<Unk_RewardStream*>(&packet.m_stream)->vfunc_3();
@@ -632,7 +632,7 @@ void UIDungeonRewardDialog::FUN_140e22d70() {
   {
    if(MS2Ptr<ASMovieClip> timeMovie=m_190->FUN_1409b4560("m_timeMovie")) {
     int sec=m_278%60; int min=m_278/60;
-    FUN_140cfee80((*timeMovie).FUN_1422bb890(),"textField",FUN_140811740(0x97e,min,sec));
+    FUN_140cfee80((*timeMovie).FUN_1422bb890(),"textField",FormatStringId<int, int>(0x97e,min,sec));
    }
   }
   {
@@ -761,7 +761,7 @@ void UIDungeonRewardDialog::FUN_140e25dc0(size_t count) {
  for(size_t i=m_labels.FUN_140bd0940();i<count;i++) {
   MS2Ptr<ASMovieClip> label(new ASMovieClip(name,2));
   m_1a0->FUN_1422c6900((*label).FUN_1422bb890());
-  label->FUN_1422bffe0(0,(int)i*step+top);
+  label->SetPositionInt(0,(int)i*step+top);
   m_labels.FUN_140bd0800(label);
  }
 }

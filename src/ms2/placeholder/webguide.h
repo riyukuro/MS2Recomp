@@ -15,7 +15,6 @@ class WebGuide : public CPtred
 {
 public:
     WebGuide();                                             // 0x141b81ac0
-    virtual ~WebGuide();                                    // 0x141b82110
     CString GetKey() const;                                 // 0x141b81b20 the dialog name
     void LoadXml(Unk_140165cf0* pNode);                     // 0x141b81b70
 
