@@ -92,6 +92,7 @@
 // MS2-PIN: ?_Unchecked_end@?$_Tree@V?$_Tmap_traits@IV?$vector@IV?$allocator@I@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@2@XZ 0x140760e60 ; prop
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@SAPEAU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@2@AEAU32@@Z 0x140761970 ; prop
 // MS2-PINS-END tplpin
+// MS2-PIN: ?FUN_14075b430@Unk_QuestIdsPtrView@@QEBAPEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@XZ 0x14075b430 ; mt7: the Copy source accessor; byte-identical to the MS2Ptr operator-> copies, so the name-order guess gave it to MS2Ptr<CFieldData>
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\questdata.cpp"
 #include <algorithm>
 #include "ms2/placeholder/ms2stdafx.h"
@@ -1398,7 +1399,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
             }
             spNavigation->m_targets.Add(spTarget);
         }
-        if (spNavigation.get() != 0)
+        if ((NavigationData*)spNavigation != 0)
             m_navigation.SetAt(nIndex, spNavigation);
     }
     Unk_140165cf0* pStart = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("start"));
@@ -2223,7 +2224,19 @@ int QuestDataTable::GetGroupPickCount(int nGroupId)
 }
 
 // The Copy source goes through 0x14075b430, an identical-code copy of the Unk_BmBoxPtr operator-> at 0x140356870.
-struct Unk_QuestIdsPtrView { ATL::CAtlArray<unsigned>* FUN_14075b430() const; };
+struct Unk_QuestIdsPtrView
+{
+    void* m_reserved;
+    ATL::CAtlArray<unsigned>* m_p;   // +0x8
+    ATL::CAtlArray<unsigned>* FUN_14075b430() const;
+};
+
+// @0x14075b430
+// mt7: defined here (was declared only) so the copy gets its committed name instead of a look-alike guess
+ATL::CAtlArray<unsigned>* Unk_QuestIdsPtrView::FUN_14075b430() const
+{
+    return m_p;
+}
 
 // @0x14074e6c0
 void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::CAtlArray<unsigned>& out)

@@ -8,31 +8,16 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/logstring.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 #include <stdarg.h>
 #include <string>
 
-typedef __int64 i64;
-typedef unsigned __int64 u64;
-
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
-
-// fmt slot helpers (16-byte argument record + 8-byte bound slot)
-struct Unk_LogArg { i64 m_w0, m_w1; };
-MS2_CHECK_SIZE(Unk_LogArg, 0x10);
-struct Unk_LogArgMade : Unk_LogArg {};             // fmt::internal::MakeValue<...> (sliced to its Value base)
-Unk_LogArgMade FUN_140163740(const CString& str);  // boxes a string argument
-Unk_LogArgMade FUN_140163790(int nValue);          // boxes an int argument
-u64* FUN_140163e80(u64* pSlot);                    // empty argument slot
-u64* FUN_1401cee00(u64* pSlot, const void* pValue); // slot bound to a string
-u64* FUN_14015e5d0(u64* pSlot, const void* pValue); // slot bound to an int
-u64 FUN_14016d660(u64 a, u64 b, u64 c, u64 d, u64 e, u64 f, u64 g, u64 h, u64 i, u64 j, u64 k, u64 l, u64 m, u64 n, u64 o); // joins all fifteen argument-type slots
-u64 FUN_140163e50(void* pOut, u64 kJoined, Unk_LogArg* pFirst);
-void FUN_140653690(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszFormat, u64 kArgs);
 
 // The interval logger.
 class Unk_PerfLogCallback { public: virtual void vfunc_0(); };
@@ -43,7 +28,7 @@ public:
     CString m_strMessage;    // +0x38
     unsigned m_nLastTick;    // +0x40
     unsigned m_nFirstTick;   // +0x44
-    int m_nCount;            // +0x48
+    unsigned m_nCount;       // +0x48
     Unk_PerfLogCallback* m_pCallback;   // +0x50
 
     void FUN_1402e12c0(const char* pszFormat, ...);
@@ -62,42 +47,16 @@ MS2_CHECK_OFFSET(Unk_PerfLog, m_pCallback, 0x50);
 // The two tick deltas are unsigned long arguments: their fmt instances live in this range, ArgType<unsigned long> 0x1402e15d0,
 // make_type<unsigned long> 0x1402e1a00, the wchar_t MakeValue(unsigned long) 0x1402e1a20 and the char MakeValue::type(unsigned long)
 // 0x1402e1a50 (make_type always uses the char MakeValue). The Value entries are the wide instances, as this is a wide format call.
-typedef fmt::internal::MakeValue< fmt::BasicFormatter<wchar_t> > Unk_LogMakeValue;
 
-// @0x1402e1600
-// MS2-FUNCTIONAL: fmt argument-packing template glue; the Value[5] array matches, but the exe keeps the bound/empty ArgType slots as separate temporaries (no array indexing).
-void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszFormat,
-                   const CString* pStr0, const int* pInt1, const CString* pStr2,
-                   const unsigned long* pInt3, const unsigned long* pInt4)
+// @0x1402e1600 (the unit's five-argument log call: an FMT_VARIADIC wrapper over CLogString::LogInfo).
+template <class A, class B, class C, class D, class E>
+inline void Unk_PerfLogInfo(CLogString* log, unsigned __int64 a, unsigned __int64 c, int category, const wchar_t* format,
+    const A& v0, const B& v1, const C& v2, const D& v3, const E& v4)
 {
-    Unk_LogArg aArgs[5] = { FUN_140163740(*pStr0), FUN_140163790(*pInt1), FUN_140163740(*pStr2),
-                            reinterpret_cast<const Unk_LogArg&>(static_cast<const fmt::internal::Value&>(Unk_LogMakeValue(*pInt3))),
-                            reinterpret_cast<const Unk_LogArg&>(static_cast<const fmt::internal::Value&>(Unk_LogMakeValue(*pInt4))) };
-
-    u64 aSlot[5];
-    u64 aInit[10];
-    u64* pInit0 = FUN_140163e80(&aInit[0]);
-    u64* pInit1 = FUN_140163e80(&aInit[1]);
-    u64* pInit2 = FUN_140163e80(&aInit[2]);
-    u64* pInit3 = FUN_140163e80(&aInit[3]);
-    u64* pInit4 = FUN_140163e80(&aInit[4]);
-    u64* pInit5 = FUN_140163e80(&aInit[5]);
-    u64* pInit6 = FUN_140163e80(&aInit[6]);
-    u64* pInit7 = FUN_140163e80(&aInit[7]);
-    u64* pInit8 = FUN_140163e80(&aInit[8]);
-    u64* pInit9 = FUN_140163e80(&aInit[9]);
-    fmt::internal::ArgType t4(*pInt4);
-    u64* pBound4 = &t4.type;
-    fmt::internal::ArgType t3(*pInt3);
-    u64* pBound3 = &t3.type;
-    u64* pBound2 = FUN_1401cee00(&aSlot[2], pStr2);
-    u64* pBound1 = FUN_14015e5d0(&aSlot[1], pInt1);
-    u64* pBound0 = FUN_1401cee00(&aSlot[0], pStr0);
-    u64 kJoined = FUN_14016d660(*pBound0, *pBound1, *pBound2, *pBound3, *pBound4,
-                                *pInit9, *pInit8, *pInit7, *pInit6, *pInit5, *pInit4, *pInit3, *pInit2, *pInit1, *pInit0);
-    char aOut[24];
-    u64 kArgs = FUN_140163e50(aOut, kJoined, aArgs);
-    FUN_140653690(pLog, a, c, nCategory, pszFormat, kArgs);
+    const fmt::internal::ArgArray<5>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v0),
+        fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v1), fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v2),
+        fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v3), fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v4)};
+    log->LogInfo(a, c, category, format, fmt::ArgList(fmt::internal::make_type(v0, v1, v2, v3, v4), args));
 }
 
 // @0x1402e12c0
@@ -111,8 +70,8 @@ void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
     unsigned long nDeltaFirst = nNow - m_nFirstTick;
     if (!bEmpty) {
         m_nCount++;
-        FUN_1402e1600((i64)GetLogString(), 0, 0, 1, L"[{0}_{1}:{2} {3}/{4}]",
-                      &m_strLabel, &m_nCount, &m_strMessage, &nDeltaLast, &nDeltaFirst);
+        Unk_PerfLogInfo(GetLogString(), 0, 0, 1, L"[{0}_{1}:{2} {3}/{4}]",
+                        m_strLabel, m_nCount, m_strMessage, nDeltaLast, nDeltaFirst);
     }
     m_nLastTick = nNow;
 

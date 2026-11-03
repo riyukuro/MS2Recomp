@@ -92,16 +92,16 @@ struct Unk_IEEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // A client constant holding a string (0x58 bytes each).
-class Unk_IEConstStr
+class Unk_AvTextCfg
 {
 public:
-    CString FUN_1409f6f30();                    // copy of the string
+    operator CString();                        // 0x1409f6f30 copy of the string
     char m_data[0x58];
 };
 struct Unk_IEConstants
 {
     char m_pad_0[0xcc50];
-    Unk_IEConstStr m_cc50;                      // +0xcc50 the item edit guide
+    Unk_AvTextCfg m_cc50;                       // +0xcc50 the item edit guide
 };
 MS2_CHECK_OFFSET(Unk_IEConstants, m_cc50, 0xcc50);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -236,7 +236,6 @@ void UIItemEditDialog::vfunc_67()
 }
 
 // @0x1419bca20
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -251,7 +250,7 @@ void UIItemEditDialog::OnLoadComplete()
     m_1a8 = (Unk_BSCamera*)FUN_140cd47b0((eUIClassID)0x4ef2);
     if (m_30.get())
     {
-        CString strGuide = ((struct Unk_IEConstants*)FUN_1401d3200())->m_cc50.FUN_1409f6f30();
+        CString strGuide = ((struct Unk_IEConstants*)FUN_1401d3200())->m_cc50;
         m_30->Invoke("initData", strGuide);
     }
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeActiveMyCodiTab",

@@ -832,7 +832,6 @@ bool StateCoupleEmotion::IsRequester()
 
 // Finds the spot for the pair: the owner node is moved onto the peer node by rotating the placement through
 // 360 one-degree steps until neither end is blocked.
-// MS2-FUNCTIONAL: the matrix / transform chain is written from the call sequence, not from original expressions.
 // @0x140b82230
 bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, float* pfYaw)
 {
@@ -904,7 +903,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         float fLen = ((struct Vector3*)&static_cast<class NiPoint3 const&>(kDir))->FUN_140968990();
         if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a230(ptOwner, kHit, kDir, fLen, 0) != 0)
             continue;
-        efd::Point3 kAngles;
+        NiPoint3 kAngles;
         if (kParentXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
             FUN_140ad0c10(&kAngles, -57.2957763671875f);   // 0xc2652ee0
         *pfYaw = kAngles.z;

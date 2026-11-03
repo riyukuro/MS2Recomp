@@ -167,7 +167,7 @@ public:
 class Unk_AvTextCfg
 {
 public:
-    CString FUN_1409f6f30();                                // 0x1409f6f30 copy of the string
+    operator CString();                                     // 0x1409f6f30 copy of the string
     CString* FUN_140298f80();                               // the string
     char m_pad_00[0x60];
 };
@@ -431,7 +431,7 @@ AvatarPC* FUN_1409f3570(unsigned nType)
 }
 
 // @0x1409f3650
-// MS2-FUNCTIONAL: the preview avatar factory (user proxy, default outfit, ground probe); order of the temporaries differs
+// The preview avatar factory (user proxy, default outfit, ground probe).
 AvatarPC* FUN_1409f3650(int nGender, int nPreset)
 {
     Unk_AvWorld* pWorld = ((class Unk_AvWorld*)WorldService::GetInstance());
@@ -474,7 +474,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     spAvatar->FUN_1416591e0(1, reinterpret_cast<const NiColor&>(aEquip[1]));
     spAvatar->vfunc_139();
     Unk_AvTextCfg* pCfg = (nGender == 0) ? &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgMale : &((class Unk_AvGlobals*)FUN_1401d3200())->m_cfgFemale;
-    CString strItems(pCfg->FUN_1409f6f30());
+    CString strItems(*pCfg);
     ATL::CAtlArray<unsigned int> kItemIds;
     XmlSplit(strItems, kItemIds, ", ");
     for (size_t i = 0; i < kItemIds.GetCount(); i++)
@@ -490,7 +490,7 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
     if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(kPos, kGround, 0, 0.0f, 0, 0) != 0)
     {
         kGround.z = kGround.z + 1.0f;
-        spAvatar->vfunc_19(efd::Point3(kGround.x, kGround.y, kGround.z));
+        spAvatar->vfunc_19(reinterpret_cast<const efd::Point3&>(kGround));
     }
     pWorld->FUN_141bbb1e0(spAvatar, 0, 1);
     return spAvatar;
@@ -1134,7 +1134,7 @@ unsigned int FUN_1409f6ee0()
 }
 
 // @0x1409f6f30
-CString Unk_AvTextCfg::FUN_1409f6f30()
+Unk_AvTextCfg::operator CString()
 {
     return *FUN_140298f80();
 }

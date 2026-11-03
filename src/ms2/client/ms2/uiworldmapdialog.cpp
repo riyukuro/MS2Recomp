@@ -1367,15 +1367,25 @@ void UIWorldMapDialog::FUN_141b5a290()
 }
 MS2_REPLACE_METHOD(0x141B5A290, UIWorldMapDialog, FUN_141b5a290, 698, 0xF358CB3C);
 
+// WorldService::FUN_141bcfd30 as the exe calls it: the position is a Vector3 by value (copied from the NiPoint3).
+class Unk_AkoWsPointView
+{
+public:
+    egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
+};
+
 // @0x141b5a550
-// MS2-FUNCTIONAL: take the taxi (frame layout of the temporaries; the station list loop)
 void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
 {
     MyPC* pPlayer = static_cast<MyPC*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
-    if (pPlayer == 0 || pPlayer->IsDead() != 0 || pPlayer->GetCurStateId() == 0x25 || pPlayer->GetCurStateId() == 0x2a)
+    if (pPlayer == 0)
+        return;
+    if (pPlayer->IsDead() != 0)
+        return;
+    if (pPlayer->GetCurStateId() == 0x25 || pPlayer->GetCurStateId() == 0x2a)
         return;
     const float& fRange = *TSingleton<Client::Constants>::GetInstance()->TaxiStationFindDistance.Get();
-    if (TSingleton<WorldService>::GetInstance()->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(), fRange, 1, 0) == 0)
+    if (reinterpret_cast<Unk_AkoWsPointView*>(TSingleton<WorldService>::GetInstance())->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(), fRange, 1, 0) == 0)
     {
         FUN_140d73bc0(0x89, 0, 0, CStringW(L""));
         return;
@@ -1397,33 +1407,30 @@ void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
         return;
     }
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e42);
-    if (pPlayer->FUN_1416764d0() == 0)
-    {
-        if (pPlayer->FUN_141527160(0x25) != 0)
-        {
-            NiPoint3 kRot = pPlayer->vfunc_20();
-            Unk_WsC_TagPtr stations = TSingleton<WorldService>::GetInstance()->FUN_141bd0420(0x85359406);
-            if (stations.FUN_1409f2170() != 0)
-            {
-                for (POSITION pos = stations.FUN_1409f2190()->GetHeadPosition(); pos != NULL; stations.FUN_1409f2190()->GetNext(pos))
-                {
-                    efd::SmartPointer<egf::Entity> spStation = stations.FUN_1409f2190()->GetAt(pos);
-                    efd::Point3 kStationRot;
-                    spStation->GetPropertyValue(0x68c7c29d, kStationRot);
-                    kStationRot.z += 180.0f;
-                    FUN_140291bc0((struct Unk_CommonVec3*)(&kStationRot));
-                    kRot = NiPoint3(kStationRot.x, kStationRot.y, kStationRot.z);
-                }
-            }
-            pPlayer->SetRotationAndTargetYaw(efd::Point3(kRot.x, kRot.y, kRot.z));
-            pPlayer->vfunc_59(0x25, new StateTaxiCallData(nFieldId), 0, 0);
-        }
-    }
-    else
+    if (pPlayer->FUN_1416764d0() != 0)
     {
         MS2Ptr<RideOffActionTaxi> spAction(new RideOffActionTaxi(0));
         spAction->m_n28 = nFieldId;
-        pPlayer->SendRequestRideMode1(spAction.operator->());
+        pPlayer->SendRequestRideMode1(spAction);
+    }
+    else
+    {
+        if (pPlayer->FUN_141527160(0x25) == 0)
+            return;
+        NiPoint3 kRot = pPlayer->vfunc_20();
+        Unk_WsC_TagPtr stations = TSingleton<WorldService>::GetInstance()->FUN_141bd0420(0x85359406);
+        if (stations.FUN_1409f2170() != 0)
+        {
+            for (POSITION pos = stations.FUN_1409f2190()->GetHeadPosition(); pos != NULL; stations.FUN_1409f2190()->GetNext(pos))
+            {
+                efd::SmartPointer<egf::Entity> spStation = stations.FUN_1409f2190()->GetAt(pos);
+                spStation->GetPropertyValue(0x68c7c29d, reinterpret_cast<efd::Point3&>(kRot));
+                kRot.z += 180.0f;
+                FUN_140291bc0((struct Unk_CommonVec3*)(&kRot));
+            }
+        }
+        pPlayer->SetRotationAndTargetYaw(reinterpret_cast<const efd::Point3&>(kRot));
+        pPlayer->vfunc_59(0x25, new StateTaxiCallData(nFieldId), 0, 0);
     }
 }
 

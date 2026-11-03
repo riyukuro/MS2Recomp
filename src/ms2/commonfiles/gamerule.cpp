@@ -2976,3 +2976,4 @@ std::pair<int, int>* FUN_14047fff0(std::pair<int, int>* pThis, int& a, int& b)
     return pThis;
 }
 // MS2-PIN: ??$?0AEAIAEAK$0A@@?$pair@HH@std@@QEAA@AEAIAEAK@Z 0x140480d30
+// MS2-PIN: ??$?0U_Exact_args_t@std@@AEBW4Unk_DungeonGroupType@@$$V$0A@@?$tuple@AEBW4Unk_DungeonGroupType@@@std@@QEAA@U_Exact_args_t@1@AEBW4Unk_DungeonGroupType@@@Z 0x140481750 ; mt7: byte-identical COMDAT fold (was the look-alike guess); the tuple<const Unk_DungeonGroupType&> ctor 0x140481280 calls it

@@ -106,8 +106,6 @@ public:
     MS2Ptr<ASTextInput> FUN_140e35bd0(const CString& strName);             // 0x140e35bd0
     MS2Ptr<ASTextArea> FUN_140c26f60(const CString& strName);              // 0x140c26f60
     MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);             // 0x140c02870
-    MS2Ptr<ASDropdownMenu> FUN_140c28560(const CString& strName);          // 0x140c28560
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);             // 0x140ba7930
 
     // ---- non-virtual members (exe order) ----
     void FUN_141a0d880(bool bVisible);                                      // 0x141a0d880 shows the two extra components

@@ -1,0 +1,3 @@
+13c
+#define EE_MS2_VEC_UTF8_DTOR_CALL  // MS2: see ParseHelper.inl vector<utf8string>::~vector (replaces a blank line: keeps __LINE__)
+.

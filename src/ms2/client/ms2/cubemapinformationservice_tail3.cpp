@@ -184,6 +184,11 @@ template void std::_Tree<Unk_CMISPropTraits>::_Destroy_if_node(_Nodeptr);
 // sfr36: the exe also has this slice's _Freenode0 (0x141142050, called from the prop _Buynode's unwind funclet)
 template void std::_Tree_comp_alloc<Unk_CMISPropTraits>::_Freenode0(_Nodeptr);
 
+// 0x141135180: _Construct of the unit_14111eb90 map<unsigned, Unk_MC<32> > (caller 0x14111f5f0); same stand-in value
+template <int N> struct Unk_MC { int v[N + 1]; };
+template void std::_Tree_comp_alloc<std::_Tmap_traits<unsigned, Unk_MC<32>, std::less<unsigned>,
+                                                      std::allocator<std::pair<const unsigned, Unk_MC<32> > >, false> >::_Construct();
+
 void Unk_CMISDriveTail3()
 {
     int nKey = 0;
@@ -308,3 +313,5 @@ void Unk_CMISDriveTail3()
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@2@XZ 0x141142830 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@@std@@@2@XZ 0x141142ad0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@JV?$SmartPointer@VEntity@egf@@@efd@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@2@@Z 0x141135c80 ; mt7: the int-key entity map body (calls the int destroy 0x14111a380), which the long-key one folds onto (its _Insert_at 0x1410ea400 / _Insert_nohint 0x141108380 call it)
+// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@JV?$SmartPointer@VEntity@egf@@@efd@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@2@XZ 0x141130450 ; gp1: by its caller
+// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IU?$Unk_MC@$0CA@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_MC@$0CA@@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x141135180 ; gp1: by the caller 0x14111f5f0

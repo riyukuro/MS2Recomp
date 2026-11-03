@@ -70,20 +70,21 @@ template <class T> struct MergePoolRecord
 };
 
 // ATL::CAtlMap<MergeNormalOption, CItemMergeOptionVariation> (0x48 bytes). A node is {key, value, next, hash}: the
-// value sits at node + 8.
+// value sits at node + 8. A view for the Lookup helper only: CItemMergeOptionProxy holds the CAtlMap itself, whose
+// throw() ctor its own ctor calls.
 class Unk_MergeNormalMap : public ATL::CAtlMap<MergeNormalOption, CItemMergeOptionVariation>
 {
 public:
-    __forceinline Unk_MergeNormalMap() {}           // inlined into CItemMergeOptionProxy's ctor (no copy of its own in the exe)
+    __forceinline Unk_MergeNormalMap() {}           // no copy of its own in the exe
     void* Lookup(const int& key);                   // 0x1419d7660 (the node, or 0)
 };
 MS2_CHECK_SIZE(Unk_MergeNormalMap, 0x48);
 
-// ATL::CAtlMap<MergeSpecialOption, CItemMergeOptionVariation> (0x48 bytes).
+// ATL::CAtlMap<MergeSpecialOption, CItemMergeOptionVariation> (0x48 bytes). A view for Lookup, as above.
 class Unk_MergeSpecialMap : public ATL::CAtlMap<MergeSpecialOption, CItemMergeOptionVariation>
 {
 public:
-    __forceinline Unk_MergeSpecialMap() {}          // inlined into CItemMergeOptionProxy's ctor
+    __forceinline Unk_MergeSpecialMap() {}          // no copy of its own in the exe
     void* Lookup(const int& key);                   // 0x1419d7620 (the node, or 0)
 };
 MS2_CHECK_SIZE(Unk_MergeSpecialMap, 0x48);
@@ -131,8 +132,8 @@ public:
     __int64 m_nMeso;                                // +0x18 the price
     CIngredientContainer m_ingredients;             // +0x20 the needed ingredients
     ATL::CAtlArray<int> m_values;                   // +0x50
-    Unk_MergeNormalMap m_normal;                    // +0x70 normal stat ranges
-    Unk_MergeSpecialMap m_special;                  // +0xb8 special ability ranges
+    ATL::CAtlMap<MergeNormalOption, CItemMergeOptionVariation> m_normal;    // +0x70 normal stat ranges
+    ATL::CAtlMap<MergeSpecialOption, CItemMergeOptionVariation> m_special;  // +0xb8 special ability ranges
 };
 MS2_CHECK_SIZE(CItemMergeOptionProxy, 0x100);
 MS2_CHECK_OFFSET(CItemMergeOptionProxy, m_nMeso, 0x18);

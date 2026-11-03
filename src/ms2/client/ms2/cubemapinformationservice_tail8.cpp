@@ -89,6 +89,7 @@ void Unk_CMISDriveTail8()
     { Unk_CMISMapKindByte m; Unk_CMISDriveMap(m, Unk_CMISKindB_None); Unk_CMISDriveIndexRv8(m); }
     { Unk_CMISMapIntInt m; Unk_CMISDriveMapOps(m, nKey); }
     { Unk_CubeOwners m; }                                                                       // ugcmapdata's owner table
+    { std::_Tree_val<std::_Tree_simple_types<std::pair<const __int64, Unk_PayloadPtr<CubeOwner> > > > t; (void)t; } // mt7: actionkeyobject's owner-id table (its _Compressed_pair ctor 0x1410d7340 calls 0x141121af0)
     { Unk_CMISIntSet s; Unk_CMISDriveSet(s, nKey); { int n = nKey; s.insert(std::move(n)); } (void)s.equal_range(nKey); s.erase(nKey); (void)s.key_comp(); }
     { Unk_CMISPairSet s; Unk_CMISDriveSet(s, std::pair<int, int>(0, 0)); }
     { Unk_CMISStdPairSet s; Unk_CMISDriveSet(s, std::pair<int, int>(0, 0)); }

@@ -65,15 +65,12 @@ void FUN_140291e40(CStringW strName, char bOn, void* pszTag);
 class Unk_LaunchOptions { public: void FUN_1406af150(); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 
-// The enum customization of the log formatter for the feature id (the exe copy keeps a stack cookie and scratch locals).
-// MS2-FUNCTIONAL: integer conversion and formatter cursor update match the enum path.
+// The enum customization of the log formatter for the feature id: fmt's generic format_arg (fmt/format.h), the same
+// body as the eUIClassID copy in uiservice.
+// MS2-PIN: ??$format_arg@_WW4Unk_FeatureId@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_FeatureId@@@Z 0x14036e930
+namespace fmt {
 // @0x14036e930
-void format_arg(fmt::BasicFormatter<wchar_t>& formatter, const wchar_t*& cursor, const Unk_FeatureId& value)
-{
-    fmt::internal::Arg arg;
-    arg.int_value = static_cast<int>(value);
-    arg.type = fmt::internal::Arg::INT;
-    cursor = formatter.format(cursor, arg);
+template void format_arg<wchar_t, Unk_FeatureId>(BasicFormatter<wchar_t>& formatter, const wchar_t*& format, const Unk_FeatureId& value);
 }
 
 // The unit's one-argument log calls (FMT_VARIADIC wrappers over CLogString::FUN_1406530d0 / FUN_1406536f0).

@@ -13,7 +13,7 @@
 class Unk_SingletonObj1;
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_AvTextCfg { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> FUN_1409f6f30(void); }; class Unk_GmGuideCfg : public Unk_AvTextCfg {
+class Unk_AvTextCfg { public: operator CString(); }; class Unk_GmGuideCfg : public Unk_AvTextCfg {
 public:
 
 };
@@ -71,11 +71,10 @@ void UIIGuideMovieDialog::vfunc_69()
 MS2_REPLACE_METHOD(0x1412C3C20, UIIGuideMovieDialog, vfunc_69, 83, 0x2124D088);
 
 // @0x1412c3c80
-// MS2-FUNCTIONAL: the exe copies the returned path through an extra CString temp that the source form elides
 void UIIGuideMovieDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    CString strMovie = reinterpret_cast<Unk_GmConfig*>(FUN_1401d3200())->m_guide.FUN_1409f6f30();
+    CString strMovie = reinterpret_cast<Unk_GmConfig*>(FUN_1401d3200())->m_guide;
     m_30->Invoke("initData", strMovie);
 }
 MS2_REPLACE_METHOD(0x1412C3C80, UIIGuideMovieDialog, OnLoadComplete, 204, 0x1460A601);

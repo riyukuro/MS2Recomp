@@ -152,6 +152,7 @@
 // MS2-PIN: ??1?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA@XZ 0x141125c90 ; prop
 // MS2-PIN: ??1?$vector@H@efd@@QEAA@XZ 0x141125cb0 ; prop
 // MS2-PINS-END tplpin
+// MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VSetItemEffectInfo@@@@@std@@QEAA@XZ 0x141125ad0 ; mt7: unfolded copy (exe caller: unrecovered SaleStateData pair ??_G 0x14112d420); the Cube copy is 0x141125970
 // tplpin --simulate (w560) after the value types were corrected, hand-applied; these override the block above
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x1411239f0
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@HU?$less@H@std@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a50

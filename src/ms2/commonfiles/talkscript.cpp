@@ -876,17 +876,16 @@ int FUN_140855df0(unsigned nNpcId, TalkPtr script)
 
 // The button set the talk window shows for a page.
 // @0x140857990
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
 {
-    if (!script.get())
+    if (script.IsNull())
         return 0;
     if (nPage >= (int)script->m_contents.GetCount())
         return 0;
     if (script->m_contents[nPage]->vfunc_1() != 0)
         return 0;
     CCinematicContent* content = static_cast<CCinematicContent*>(script->m_contents[nPage].get());
-    bool isLast = nPage == (int)script->m_contents.GetCount() - 1;
+    int isLast = nPage == (int)script->m_contents.GetCount() - 1;
     if (isLast)
         isLast = script->m_gotoConditionTalkIds.GetCount() == 0;
     if ((nFlags & 8) != 0)
@@ -897,7 +896,7 @@ int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
     if (!npc)
         return 0;
     int hasBit = (npc->GetNpcTypeGroup() != 3 && (nFlags & 1) != 0) ? 1 : 0;
-    if (content->m_distractors.get() && content->m_distractors->FUN_14078d3d0() != 0 && hasBit == 0)
+    if ((content->m_distractors.get() ? true : false) && content->m_distractors->FUN_14078d3d0() != 0 && hasBit == 0)
     {
         if (script->Is88())
             return 0x13;
@@ -907,9 +906,9 @@ int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
         return 4;
     if ((nFlags & 1) != 0)
         return npc->GetNpcTypeGroup();
-    if (FUN_140855cd0(nFlags) != 0)
+    else if (FUN_140855cd0(nFlags) != 0)
         return 3;
-    if ((nFlags & 4) != 0)
+    else if ((nFlags & 4) != 0)
     {
         if (script->m_id >= 300)
             return 7;
@@ -917,7 +916,7 @@ int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
             return 6;
         return 8;
     }
-    if ((nFlags & 0x10) != 0)
+    else if ((nFlags & 0x10) != 0)
         return 3;
     return 0;
 }

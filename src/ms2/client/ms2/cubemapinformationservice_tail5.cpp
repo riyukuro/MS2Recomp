@@ -39,6 +39,19 @@ template <class M> void Unk_CMISDriveMapRv3(M& m, const typename M::key_type& k)
 }
 
 
+// unit_14112ab60's stand-in key of its 23rd map family (its iterator-- 0x14112bff0 calls this slice's _Max 0x141148330)
+template <int N> struct Unk_DkKey { int v[N + 1]; bool operator<(const Unk_DkKey& o) const { return v[0] < o.v[0]; } };
+
+// mt7: the tree helpers of two families this slice holds the only copy of: the long-key cube map's _Lrotate
+// (0x141147c80, called by 0x1410ef500 / 0x14113f850) and the Unk_DkKey<23> map's _Max (0x141148330)
+void Unk_CMISDriveTreeHelpersTail5()
+{
+    std::_Tree_val<std::_Tree_simple_types<std::pair<const long, MS2Ptr<Cube> > > > t;
+    t._Lrotate(t._Myhead);
+    (void)std::_Tree_val<std::_Tree_simple_types<std::pair<const Unk_DkKey<23>, int> > >::_Max(nullptr);
+}
+
+
 void Unk_CMISDriveTail5()
 {
     int nKey = 0;

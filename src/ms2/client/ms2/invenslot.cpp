@@ -237,7 +237,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
 int FUN_1412773a0(int);   // C3: was FUN_1412773a0
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
 CString FUN_140719210(long v);                            // "%ld"
-void FUN_140614800(Scaleform::GFx::Value v);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 CStringW FUN_1413fa9b0(const CStringW& str);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -489,7 +488,11 @@ void FUN_141404930(__int64 nUid)
 }
 MS2_REPLACE(0x141404930, FUN_141404930, 128, 0xBA442799);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
+// The skill lookup as the exe calls it here: a row of a SkillData-derived type that the converting MS2Ptr ctor
+// (folded with the move ctor, 0x1407f4f80) takes, as in asitemslot.
+class Unk_SlotSkillRowEx : public SkillData {};
+MS2Ptr<Unk_SlotSkillRowEx> FUN_140639210(int nSkillId);
+
 // @0x1414049c0
 // Append the cooldown key (group, skill) of a skill that shows its cooldown.
 void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
@@ -501,7 +504,7 @@ void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
         return;
     int nId = nSkillId;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spSkill(std::move(JobSystem::GetSkillData(nId)));
+    MS2Ptr<SkillData> spSkill(FUN_140639210(nId));
     if (!spSkill)
         return;
     MS2Ptr<SkillLevelData> spLevel(0);
@@ -511,11 +514,10 @@ void FUN_1414049c0(ATL::CAtlArray<CString>* pArr, int nSkillId)
         spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nId);
     if (!spLevel)
         return;
-    if (spSkill->m_condition.m_nUseCoolDownShowUI != 0)
-    {
-        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(pArr))->Add(FUN_140719210(spSkill->m_nCooldownGroupID));
-        ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(pArr))->Add(FUN_140719210(nSkillId));
-    }
+    if (spSkill->m_condition.m_nUseCoolDownShowUI == 0)
+        return;
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(pArr))->Add(FUN_140719210(spSkill->m_nCooldownGroupID));
+    ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(pArr))->Add(FUN_140719210(nId));
 }
 MS2_REPLACE(0x1414049C0, FUN_1414049c0, 670, 0x0CFBAC74);
 
@@ -537,7 +539,6 @@ float FUN_141404c90(int nSkillId)
 }
 MS2_REPLACE(0x141404C90, FUN_141404c90, 72, 0x788CDE18);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x141404ce0
 // A cooldown started: start the slot's cooldown animation when the key is the skill's.
 bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* pValue)
@@ -548,47 +549,44 @@ bool FUN_141404ce0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
     if (pPc == 0)
         return false;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spSkill(std::move(JobSystem::GetSkillData(nSkillId)));
+    MS2Ptr<SkillData> spSkill(FUN_140639210(nSkillId));
     if (!spSkill)
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
-    if (pPc->FUN_1416764d0() == 0)
-        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
-    else
+    if (pPc->FUN_1416764d0() != 0)
         spLevel = spSkill->FUN_1407e90a0(1);
+    else
+        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
     if (!spLevel)
         return false;
     if (spSkill->m_condition.m_nUseCoolDownShowUI == 0)
         return false;
     int nGroup = FUN_141404c70(nKey);
-    if (nGroup == 0 || nGroup != (int)spSkill->GetCooldownGroupId())
+    if ((nGroup != 0 && nGroup == (int)spSkill->GetCooldownGroupId()) || (nKey != 0 && nKey == spSkill->GetCooldownKey()))
     {
-        if (nKey == 0 || nKey != spSkill->GetCooldownKey())
-            return false;
-    }
-    if (pValue->IsObject())
-    {
-        float fRemain = 0;
-        float fTotal = 0;
-        int nByItem = 0;
-        pPc->FUN_141523bc0()->FUN_141766230(nSkillId, &fRemain, &fTotal, &nByItem, 1);
-        if (0.0f < fRemain)
+        if (pValue->IsObject())
         {
-            AScript script(*pValue, 2);
-            float fCool;
-            if (nByItem == 0)
-                fCool = spLevel->FUN_140804660();
-            else
-                fCool = fTotal;
-            FUN_140614800(script.FUN_140e5bf20(s_strOnCooldownStart, fRemain, fCool));
-            return true;
+            float fRemain = 0;
+            float fTotal = 0;
+            int nByItem = 0;
+            pPc->FUN_141523bc0()->FUN_141766230(nSkillId, &fRemain, &fTotal, &nByItem, 1);
+            if (0.0f < fRemain)
+            {
+                AScript script(*pValue, 2);
+                float fCool;
+                if (nByItem != 0)
+                    fCool = fTotal;
+                else
+                    fCool = spLevel->FUN_140804660();
+                script.FUN_140e5bf20(s_strOnCooldownStart, fRemain, fCool);
+                return true;
+            }
         }
     }
     return false;
 }
 MS2_REPLACE(0x141404CE0, FUN_141404ce0, 982, 0x8E91ECC5);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x1414050c0
 // A cooldown ended: stop the slot's cooldown animation.
 bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* pValue)
@@ -599,32 +597,30 @@ bool FUN_1414050c0(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Value* p
     if (pPc == 0)
         return false;
     ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0());
-    MS2Ptr<SkillData> spSkill(std::move(JobSystem::GetSkillData(nSkillId)));
+    MS2Ptr<SkillData> spSkill(FUN_140639210(nSkillId));
     if (!spSkill)
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
-    if (pPc->FUN_1416764d0() == 0)
-        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
-    else
+    if (pPc->FUN_1416764d0() != 0)
         spLevel = spSkill->FUN_1407e90a0(1);
+    else
+        spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->FUN_1416546d0())->vfunc_1(nSkillId);
     if (!spLevel)
         return false;
     if (CFeatureManager::GetInstance()->FUN_14036d570(0xca) == false && spSkill->m_condition.m_nUseCoolDownShowUI == 0)
         return false;
     int nGroup = FUN_141404c70(nKey);
-    if (nGroup == 0 || nGroup != (int)spSkill->GetCooldownGroupId())
+    if ((nGroup != 0 && nGroup == (int)spSkill->GetCooldownGroupId()) || (nKey != 0 && nKey == spSkill->GetCooldownKey()))
     {
-        if (nKey == 0 || nKey != spSkill->GetCooldownKey())
-            return false;
-    }
-    if (pValue->IsObject())
-    {
-        float fRemain = pPc->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
-        if (fRemain <= 0.0f)
+        if (pValue->IsObject())
         {
-            AScript script(*pValue, 2);
-            FUN_140614800(script.Invoke(s_strOnCooldownEnd));
-            return true;
+            float fRemain = pPc->FUN_141523bc0()->FUN_141765fe0(nSkillId, 1);
+            if (fRemain <= 0.0f)
+            {
+                AScript script(*pValue, 2);
+                script.Invoke(s_strOnCooldownEnd);
+                return true;
+            }
         }
     }
     return false;

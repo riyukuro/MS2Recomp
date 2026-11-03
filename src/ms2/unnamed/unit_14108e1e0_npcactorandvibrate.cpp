@@ -207,9 +207,9 @@ class MyPC { public: void FUN_14152e240(unsigned n); int FUN_14152e280(unsigned 
 struct Unk_WsC_NpcAnim;
 // The world service: the spawn animation of a spawn id (worldservice.h).
 class WorldService { public: static WorldService* GetInstance(); void FUN_141bc7f10(egf::EntityID kId); int FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out); public:
-    void FUN_141bc7d40(const unsigned __int64& key);
+    void FUN_141bc7d40(egf::EntityID key);
     void AddCombatBgmTracker(egf::EntityID key);
-    void FUN_141bc7fe0(const unsigned __int64& key);
+    void FUN_141bc7fe0(egf::EntityID key);
     void FUN_141bc8e00();
     void* FUN_141bd0cc0();                                          // the local player
     int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
@@ -294,6 +294,15 @@ class Unk_Svc764020;
 void* FUN_140764020();
 // The object vfunc_26 places at the actor every frame (as in gameobject.cpp).
 class Unk_GoAttachment
+{
+public:
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
+};
+// CBoxCollision's placement slot (vfunc 3) seen with the NiPoint3 by-value parameters the exe call site uses.
+class Unk_BoxCollisionPlace
 {
 public:
     virtual void vfunc_0();
@@ -2175,9 +2184,9 @@ void CNpc::vfunc_125(int bShow)
 
 // Places the collision boxes: the model-bound boxes at their named nodes, the free boxes at the actor, and the corpse
 // attachment at the actor turned by the corpse rotation of the dead animation.
-// MS2-FUNCTIONAL: the exe builds the box position and direction by implicit Point3 -> NiPoint3 conversions into by-value
-// NiPoint3 slots. CBoxCollision::vfunc_3 takes Vector3, whose Point3 ctor is explicit (nipoint3.h is off limits), and only a
-// stand-in view of the box gives 0 diff, so the row stays functional until the collision family takes NiPoint3.
+// The free boxes are placed through Unk_BoxCollisionPlace: the exe passes the position and direction as Point3 values
+// converted implicitly into by-value NiPoint3 slots, and CBoxCollision::vfunc_3 takes Vector3, whose Point3 ctor is
+// explicit (nipoint3.h is off limits).
 // @0x141095bd0
 void CNpc::vfunc_50()
 {
@@ -2196,8 +2205,9 @@ void CNpc::vfunc_50()
         MS2Ptr<CBoxCollision> spBox = m_arrE88[i];
         if (spBox == 0)
             continue;
-        spBox->vfunc_3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108))),
-            reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(static_cast<const efd::Point3&>(vfunc_20()))), FUN_14123c260());
+        reinterpret_cast<Unk_BoxCollisionPlace*>(spBox.operator->())->vfunc_3(
+            static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108),
+            static_cast<const efd::Point3&>(vfunc_20()), FUN_14123c260());
     }
     if (IsDead() != 0 && GetNpcData()->GetCorpseHitAble() != 0) {
         Unk_GoAttachment* pAttachment = vfunc_26();
@@ -2365,73 +2375,73 @@ void CNpc::FUN_141099ab0()
     }
 }
 
-// MS2-FUNCTIONAL: the exe passes the entity id by value through a hidden pointer to FUN_141bc7d40 and FUN_141bc7fe0, and
-// worldservice.h declares both with a const reference. Same blocker as vfunc_10.
 // @0x1410952f0
 void CNpc::vfunc_53(float fTime)
 {
     PCBase::vfunc_53(fTime);
     float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     if (FUN_141092ff0() && m_unk_15c == 0 && m_spNpcData.get() != 0) {
-        if (m_spNpcData->m_fBossSoundDistance < m_unk_c4) {
-            if (m_spNpcData->m_fBossSoundEndDistance <= m_unk_c4)
-                WorldService::GetInstance()->FUN_141bc7fe0(reinterpret_cast<const unsigned __int64&>(static_cast<const egf::EntityID&>(FUN_14123c460())));
-        } else {
-            WorldService::GetInstance()->FUN_141bc7d40(reinterpret_cast<const unsigned __int64&>(static_cast<const egf::EntityID&>(FUN_14123c460())));
-        }
+        if (m_unk_c4 <= m_spNpcData->m_fBossSoundDistance)
+            WorldService::GetInstance()->FUN_141bc7d40(FUN_14123c460());
+        else if (m_unk_c4 >= m_spNpcData->m_fBossSoundEndDistance)
+            WorldService::GetInstance()->FUN_141bc7fe0(FUN_14123c460());
     }
     if (m_pD60 == NULL) {
-        if (!reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->IsMoving()) {
-            vfunc_19(vfunc_18() + m_posD40 * fTime);
-        } else {
+        if (reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->IsMoving()) {
             efd::Point3 kPos;
             float fYaw = GetTargetYaw();
             reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->FUN_14160bf90(fTime, reinterpret_cast<Vector3*>(&kPos), &fYaw);
             vfunc_19(kPos);
             SetTargetYaw(fYaw);
+        } else {
+            efd::Point3 kNewPos = vfunc_18() + m_posD40 * fTime;
+            vfunc_19(kNewPos);
         }
     }
     FUN_141099170(fTime);
     FUN_141097a30();
     FUN_141099370(fTime);
-    if (m_cE40 != 0 && 1000 < (unsigned int)(GetTickCountMs2() - m_nE14)) {
+    if ((unsigned char)m_cE40 != 0 && 1000 < (unsigned int)(GetTickCountMs2() - m_nE14)) {
         m_nE14 = GetTickCountMs2();
         m_nE10 = 1;
     }
     if (m_nE10 != 0)
         FUN_141093c80();
-    if (m_spA78.get() == 0) {
-        if (reinterpret_cast<char&>(FUN_1401d3200()->m_unk8) != 0) {
-            if ((m_spA78 = FUN_141a60da0(m_unk_70)).get() != 0) {
+    if (m_spA78.get() != 0) {
+        if (vfunc_116() != 2) {
+            PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
+            if (pPlayer != NULL) {
+                if (vfunc_122(pPlayer) != 0) {
+                    if (m_timerEE8.FUN_140868c00() != 0 && static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->())->FUN_141a5e690() != 0) {
+                        static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->())->FUN_140f48dc0(0);
+                        m_timerEE8.FUN_1408687f0();
+                    } else if (IsDead() != 0) {
+                        m_spA78->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&Client::Constants::GetInstance()->NameTagColorDead)));
+                    } else {
+                        m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());
+                    }
+                } else {
+                    unsigned int nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&Client::Constants::GetInstance()->NameTagColorFriendly));
+                    CPet* pPet = EE_DYNAMIC_CAST(CPet, this);
+                    if (pPet != NULL) {
+                        PC* pOwner = static_cast<PC*>(FUN_141094f60());
+                        if (pOwner != NULL) {
+                            MS2Ptr<CItem> spItem = pOwner->FUN_141663450();
+                            if (((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL && ((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL)
+                                nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)((CItem*)spItem)->GetRarity());
+                        }
+                    }
+                    m_spA78->FUN_141a5e500(nColor);
+                }
+            }
+        }
+    } else {
+        if (reinterpret_cast<unsigned char&>(FUN_1401d3200()->m_unk8) != 0) {
+            Unk_PCBaseComp_a78* pTag = (m_spA78 = FUN_141a60da0(m_unk_70)).get();
+            if (pTag != 0) {
                 m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
                 m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());
                 m_spA78->vfunc_2();
-            }
-        }
-    } else if (vfunc_116() != 2) {
-        PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
-        if (pPlayer != NULL) {
-            if (vfunc_122(pPlayer) == 0) {
-                unsigned int nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&Client::Constants::GetInstance()->NameTagColorFriendly));
-                if (EE_DYNAMIC_CAST(CPet, this) != NULL) {
-                    PC* pOwner = static_cast<PC*>(FUN_141094f60());
-                    if (pOwner != NULL) {
-                        MS2Ptr<CItem> spItem = pOwner->FUN_141663450();
-                        if (((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL && ((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL)
-                            nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)((CItem*)spItem)->GetRarity());
-                    }
-                }
-                m_spA78->FUN_141a5e500(nColor);
-            } else {
-                Unk_PCBaseComp_a78* pTag = static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->());
-                if (m_timerEE8.FUN_140868c00() != 0 && pTag->FUN_141a5e690() != 0) {
-                    static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->())->FUN_140f48dc0(0);
-                    m_timerEE8.FUN_1408687f0();
-                } else if (IsDead() == 0) {
-                    m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());
-                } else {
-                    m_spA78->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&Client::Constants::GetInstance()->NameTagColorDead)));
-                }
             }
         }
     }

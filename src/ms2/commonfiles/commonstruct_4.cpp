@@ -302,3 +302,7 @@ __int64 FUN_140289b00(__int64 vec, __int64 first, __int64 last, __int64 dest, __
 {
     return FUN_140289b00(reinterpret_cast<void*>(vec), first, last, dest);
 }
+// vector<MS2Ptr<CPtred>>'s _Buy 0x140286b50, _Destroy 0x1402876b0, _Tidy 0x1402899b0 and clear 0x14028a690
+// call _Getal 0x1402883f0 and _Mylast 0x140288be0.
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEAAAEAV?$allocator@V?$MS2Ptr@VCPtred@@@@@2@XZ 0x1402883f0
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPtred@@@@XZ 0x140288be0

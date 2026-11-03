@@ -16,6 +16,10 @@ class NiPoint3;
 float FUN_141486d30(const Unk_Rect4& rc);   // GetHeight
 float FUN_141486d90(const Unk_Rect4& rc);   // GetWidth
 
+// CMinimap::m_vecCamRot read as a trivially copyable point: the exe copies it with rep movsb, with no copy ctor. The
+// members are private so /GS does not treat a local of it as a buffer.
+class Unk_MvRot3 { friend class MinimapViewport; float x, y, z; };
+
 // efd::Point3's unary minus hands its result back through the hidden pointer in rdx, so it cannot be reached as a free
 // function the way Dot / Unitize can; it is declared on a unit-local view of the 12-byte point instead (the view adds no
 // data, so Unk_GVec3 and Unk_MvPoint3 are the same object).
@@ -49,7 +53,7 @@ public:
     void FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& kAxisX, const Unk_GVec3& kAxisY,
                        const Unk_GVec3& kAxisZ);                                    // 0x141485a50
     // Extracts the three axes of the rotation matrix (in degrees) and unitizes them.
-    void FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ);   // 0x141486a20
+    void FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ);   // 0x141486a20
     void ResetScale();                                                           // 0x1414863e0 (m_fScale = 1)
     // Projects a world position onto the minimap with the current zoom.
     bool FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut);                     // 0x141486410

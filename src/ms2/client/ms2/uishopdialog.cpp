@@ -2153,6 +2153,15 @@ inline ATL::CAtlArray<MS2Ptr<CNpcShopProductBase> >& FUN_141b0a1e0(NpcShopTabInf
 // Shuffles a product list (the random-order shops; 0x141b06ec0).
 // The exe swaps the two smart pointers bitwise (refcount-neutral): std::swap over a 16-byte trivially copyable view.
 struct Unk_ShopPtrBits { unsigned char m_bytes[sizeof(MS2Ptr<CNpcShopProductBase>)]; };
+// The exe's swap of this view calls std::move on each assigned-to side as well (0x141b09060).
+namespace std {
+template <> inline void swap<Unk_ShopPtrBits, void>(Unk_ShopPtrBits& _Left, Unk_ShopPtrBits& _Right) noexcept
+{
+    Unk_ShopPtrBits _Tmp = std::move(_Left);
+    std::move(_Left) = std::move(_Right);
+    std::move(_Right) = _Tmp;
+}
+}
 inline void FUN_141b06ec0(ATL::CAtlArray<MS2Ptr<CNpcShopProductBase> >& list)
 {
     int nCount = (int)list.GetCount();
@@ -2752,7 +2761,7 @@ void UIShopDialog::AddPreviewIcon(MS2Ptr<CItem> spItem)
         }
     }
     int nEquipSlot = nSlot;
-    if (nSlot == 0)
+    if (nEquipSlot == 0)
         nEquipSlot = FUN_140ec1950(spItem);
     MS2Ptr<ASEquipIcon> spIcon = m_spEquip->FUN_140e2a090(nEquipSlot, spItem, MS2Ptr<AScript>((ASSlot*)spSlot), MS2Ptr<Unk_EquipOutfit>(0));
     if (spIcon.get()) {

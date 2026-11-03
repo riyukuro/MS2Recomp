@@ -1698,3 +1698,7 @@ DungeonBossRankingType ParseBossRankingType(const CString& str)
     return (DungeonBossRankingType)0;
 }
 MS2_REPLACE_OVERLOAD(0x1403227F0, DungeonBossRankingType(const CString&), ParseBossRankingType, 186, 0x7F3276EF);
+// vector<short>'s _Change_array 0x140338220 and _Tidy 0x14033fce0 call _Orphan_all 0x14033e9a0;
+// vector<MS2Ptr<DungeonRoundData>>'s 0x140338660 and 0x140340020 call 0x14033ea20.
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@FV?$allocator@F@std@@@std@@@std@@QEAAXXZ 0x14033e9a0
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VDungeonRoundData@@@@V?$allocator@V?$MS2Ptr@VDungeonRoundData@@@@@std@@@std@@@std@@QEAAXXZ 0x14033ea20

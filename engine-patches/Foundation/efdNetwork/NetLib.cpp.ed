@@ -1,0 +1,3 @@
+28c
+namespace std { template<> __forceinline efd::string& efd::string::assign(const char* const _Ptr, const size_type _Count) { auto& _My_data = this->_Get_data(); if (_Count <= _My_data._Myres) { char* const _Old_ptr = _My_data._Myptr(); _My_data._Mysize = _Count; traits_type::move(_Old_ptr, _Ptr, _Count); traits_type::assign(_Old_ptr[_Count], char()); return (*this); } return (_Reallocate_for(_Count, [](char* const _New_ptr, const size_type _Count, const char* const _Ptr) { traits_type::copy(_New_ptr, _Ptr, _Count); traits_type::assign(_New_ptr[_Count], char()); }, _Ptr)); } }  // MS2: the exe inlines assign(const char*, size_t) here (Listen); replaces a blank line: keeps __LINE__
+.

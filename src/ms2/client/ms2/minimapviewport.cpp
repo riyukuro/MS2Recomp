@@ -39,9 +39,6 @@ MinimapViewport::MinimapViewport()
     ResetScale();
 }
 
-// MS2-FUNCTIONAL: exe copies m_vecCamRot twice with rep movsb (local + by-value arg: a trivially copyable point,
-//   NiPoint3/efd::Point3) while Unk_GVec3 (fielddatacli.h) declares a copy ctor 0x14027dcf0 -> 2 extra calls and a
-//   different local slot order; needs the camera-vector type recovery in fielddatacli.h
 // @0x141485770
 unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
 {
@@ -56,10 +53,10 @@ unsigned MinimapViewport::InitFromFieldMinimap(int nScale)
             m_rcImage = spMinimap->m_rcImage;
             m_rcScreen = spMinimap->m_rcScreen;
 
-            Unk_GVec3 kAxisX(0.0f, 0.0f, 0.0f);
             Unk_GVec3 kAxisY(0.0f, 0.0f, 0.0f);
             Unk_GVec3 kAxisZ(0.0f, 0.0f, 0.0f);
-            Unk_GVec3 kRot = spMinimap->m_vecCamRot;
+            Unk_GVec3 kAxisX(0.0f, 0.0f, 0.0f);
+            Unk_MvRot3 kRot = reinterpret_cast<const Unk_MvRot3&>(spMinimap->m_vecCamRot);
             FUN_141486a20(kRot, kAxisX, kAxisY, kAxisZ);
             FUN_141485a50(spMinimap->m_vecCamPos, kAxisX, kAxisY, kAxisZ);
 
@@ -198,7 +195,7 @@ bool MinimapViewport::FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY,
 }
 
 // @0x141486a20
-void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ)
+void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ)
 {
     if (FUN_140a38cd0(kRot.z) < 1e-05f)
     {

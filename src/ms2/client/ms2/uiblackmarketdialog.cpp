@@ -69,7 +69,7 @@ void FUN_141275260(int nId, int a, int b);
 Unk_140166410*FUN_140166410();
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 class Unk_MesoCfg { public: };
-class Unk_AvTextCfg { public: CString FUN_1409f6f30(); };
+class Unk_AvTextCfg { public: operator CString(); };
 class Unk_Cfg { public: char m_pad[0x6078]; Unk_MesoCfg m_6078; char m_pad2[0x6198 - 0x6078 - 1]; Unk_AvTextCfg m_6198; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was Unk_Cfg* FUN_1401d3200()
 void FUN_1418fe1c0(const CString& str);
@@ -477,7 +477,7 @@ void UIBlackMarketDialog::FUN_1418d1430(const Scaleform::GFx::FunctionHandler::P
 {
     if (!FUN_1418d0da0(m_spMesoSearchSingle.get()) && !FUN_1418d0da0(m_spMesoRegister.get()))
         return;
-    const CString& strUrl = reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6198.FUN_1409f6f30();
+    const CString& strUrl = reinterpret_cast<Unk_Cfg*>(FUN_1401d3200())->m_6198.operator CString();
     if (strUrl.IsEmpty() == true)
         return;
     FUN_1418fe1c0(strUrl);

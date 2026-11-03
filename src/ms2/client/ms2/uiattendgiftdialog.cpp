@@ -45,6 +45,8 @@
 #include "ms2/placeholder/cadbannermanagercli.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 #include "ms2/placeholder/cinputkeyhandler.h"   // C3: CInputKeyHandler::FUN_14116dcb0
+#include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/wcformat.h"
 
 static CString s_marketSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
@@ -89,8 +91,6 @@ private:
     void* m_180; void* m_188; void* m_190; void* m_198;
 };
 MS2_CHECK_SIZE(CItem,0x1a0);
-// A 16-byte date/time value returned by the event (its string form comes from FUN_140b8e910 / FUN_14083bab0).
-class Unk_AttendDate { public: Unk_AttendDate(); void* m_a; void* m_b; };
 // One reward entry of an event; the slot data lives in an embedded object at +0x18 with its own vftable.
 class Unk_AttendItem { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
 class Unk_AttendReward : public CPtred { public: Unk_AttendItem m_item; };
@@ -125,13 +125,10 @@ public:
 class Unk_140ce3510 : public GameEventAttendGiftCli { public:   // C3: the rest are GameEventAttendGiftCli members
     int FUN_1402e1d00();
     Unk_AttendPtr<Unk_AttendReward> FUN_140ce3710(unsigned);
-    Unk_AttendDate FUN_140ce3aa0();
-    Unk_AttendDate FUN_140ce3ae0();
+    CMsTime FUN_140ce3aa0();
+    CMsTime FUN_140ce3ae0();
 };
 class Unk_140acd6e0 : public ASButton { public:
-    void FUN_1422cdf20(bool);
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,void*);
-    void FUN_1422c1fe0(unsigned);
 };
 // The scrolling list at +0x178: slots 24/25 take the visibility and the slot array.
 class Unk_140bfc2e0 : public ASDisplayObject { public:
@@ -147,7 +144,6 @@ class ASSlot : public ASObj { public:
     ASSlot(const Scaleform::GFx::Value&,int);
     virtual ~ASSlot();
     int FUN_1409c4510(int,int,int);
-    bool FUN_1422ba9a0();
     int GetItemID();
     int GetItemGrade();
 };
@@ -159,7 +155,8 @@ private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
     void* m_pad_38; void* m_pad_40; void* m_pad_48;
 };
-extern Unk_AttendTable g_attendTable;       // 0x143ab2fc0
+class GameEventUserValue;
+extern GameEventUserValue DAT_143ab2fc0;    // the event user values
 extern Unk_AttendTable g_attendItems;       // 0x143ab2a90
 class Unk_AttendUIMgr { public:
     virtual void p0();virtual void p1();virtual void p2();virtual void p3();virtual void p4();virtual void p5();virtual void p6();virtual void p7();
@@ -171,22 +168,15 @@ class Unk_AttendUIMgr { public:
     virtual void vfunc_43(int,int,int);
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
-class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; void FUN_141a01800(int n);
+class CMsgBoxData { public: bool IsCheckbox0Checked(); template<class T> void Append(T); __int64 FUN_141a02f10(int,__int64) const; void FUN_141a01800(int n);
     void SetCheckbox0(CStringW,bool); void SetCheckbox0Enabled(bool); void SetCallback(Delegate<bool(int,const CMsgBoxData&)>); };
-class Unk_AttendMsgBox { public:
-    void FUN_1405340b0(__int64);
-};
-MS2Ptr<Unk_AttendMsgBox> FUN_140d73f20(CStringW,int);
-void FUN_140d73c60(MS2Ptr<Unk_AttendMsgBox>);
+MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW,int);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
-CStringW FUN_140938ae0(CStringW,const int&);
-CStringW FUN_1409eaa20(CStringW,const CStringW&,const CStringW&,const CStringW&);
-CStringW FUN_140f09c60(CStringW,const int&,const __int64&);
-CStringW FUN_140b8e910(const Unk_AttendDate&);
-CStringW FUN_14083bab0(const Unk_AttendDate&,CStringW);
-CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
-CStringW FUN_1405c2690(CStringW,const CStringW&);
+template <class A, class B> CStringW LocalizedMentorFormat(CStringW, const A&, const B&);   // 0x140f09c60 for <unsigned, __int64>
+CStringW FUN_140b8e910(const CMsTime&);
+CStringW FUN_14083bab0(const CMsTime&,CStringW);
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AttendCursor : public ItemPreviewMgr { };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
@@ -439,7 +429,7 @@ void UIAttendGiftDialog::OnLoadComplete()
     m_pay->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cf30),0);
     m_usePoint->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102d4b0),0);
     bool nDefault=false;
-    if(g_attendTable.FUN_140482280(100,nDefault)) {
+    if(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140482280(100,nDefault)) {
         COutPacket packet(static_cast<int>(SendOp::Attendance),0); packet.Encode1(2); FUN_140710590(packet);
     }
     RefreshAll();
@@ -477,14 +467,14 @@ void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Pa
                 MS2Ptr<CItem> found=g_attendItems.FUN_140a5e2e0(m_selected->FUN_140ce3900());
                 if(found.get()!=0) couponUid=found->GetItemUid();
             }
-            CStringW text=FUN_140f09c60(strKey,remain,m_selected->FUN_140ce38e0());
-            MS2Ptr<Unk_AttendMsgBox> box=FUN_140d73f20(text,0x19);
+            CStringW text=LocalizedMentorFormat(strKey,*(const unsigned*)&remain,m_selected->FUN_140ce38e0());
+            MS2Ptr<CMsgBoxData> box=FUN_140d73f20(text,0x19);
             if(box.get()!=0) {
-                reinterpret_cast<CMsgBoxData*>(box.operator->())->FUN_141a01800(1);
-                reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCheckbox0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
-                reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCheckbox0Enabled(couponUid!=0);
-                reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::OnAttendanceMsgBox));
-                box->FUN_1405340b0(couponUid);
+                box->FUN_141a01800(1);
+                box->SetCheckbox0(GetStringCommonByKey(L"s_attendGift_payAttend_coupon"),couponUid!=0);
+                box->SetCheckbox0Enabled(couponUid!=0);
+                box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&UIAttendGiftDialog::OnAttendanceMsgBox));
+                box->Append<__int64>(couponUid);
                 FUN_140d73c60(box);
             }
         }
@@ -497,7 +487,7 @@ bool UIAttendGiftDialog::OnAttendanceMsgBox(int result,const CMsgBoxData& data)
 {
     if(result==0) {
         __int64 id=0;
-        if(data.FUN_141a04aa0()) id=data.FUN_141a02f10(0,0);
+        if(const_cast<CMsgBoxData&>(data).IsCheckbox0Checked()) id=data.FUN_141a02f10(0,0);
         COutPacket packet(static_cast<int>(SendOp::Attendance),0);
         packet.Encode1(4);
         packet.Encode4(m_selected->FUN_1402e1d00());
@@ -522,7 +512,7 @@ void UIAttendGiftDialog::FUN_14102d6e0()
             CStringW strFrom=FUN_140b8e910(events[i]->FUN_140ce3aa0());
             CStringW strTo=FUN_140b8e910(events[i]->FUN_140ce3ae0());
             m_buttons[i]->vfunc_3(1);
-            m_buttons[i]->FUN_1422cdfb0(FUN_1409eaa20(L"s_attendGift_title_name",strFrom,strTo,events[i]->GetTitleWithPoints()));
+            m_buttons[i]->FUN_1422cdfb0(FUN_14028dfa0<CStringW,CStringW,CStringW>(L"s_attendGift_title_name",strFrom,strTo,events[i]->GetTitleWithPoints()));
             m_buttons[i]->FUN_1422ce090(events[i]==m_selected.get());
         }
     }
@@ -580,9 +570,9 @@ void UIAttendGiftDialog::FUN_14102da40()
     CStringW strPeriod;
     if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->HasTime(m_selected->FUN_1402e1d00())) {
         int nItemId=m_selected->FUN_140ce3980();
-        strPeriod=FUN_1405c2690(L"s_attend_gift_item_require",TSingleton<CStringTable>::GetInstance()->FUN_141811980(1,nItemId));
+        strPeriod=FUN_14028dfa0<CStringW>(L"s_attend_gift_item_require",TSingleton<CStringTable>::GetInstance()->FUN_141811980(1,nItemId));
     } else {
-        strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",FUN_14083bab0(m_selected->FUN_140ce3aa0(),L"/"),FUN_14083bab0(m_selected->FUN_140ce3ae0(),L"/"));
+        strPeriod=FUN_14028dfa0<CStringW,CStringW>(L"s_attendGift_event_period",FUN_14083bab0(m_selected->FUN_140ce3aa0(),L"/"),FUN_14083bab0(m_selected->FUN_140ce3ae0(),L"/"));
     }
     FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
     m_detail->vfunc_4(!m_selected->GetDesc().IsEmpty());
@@ -616,9 +606,9 @@ void UIAttendGiftDialog::FUN_14102e6a0()
     if(m_selected->FUN_140ce3a80()==0) {
     FUN_140cff840(FUN_1422dbb40(),"m_footerText",0);
     int nDefault=0;
-    int points=g_attendTable.FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
+    int points=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
     m_usePoint->vfunc_4(true);
-    m_usePoint->FUN_1422cdfb0(FUN_140938ae0(L"s_attendGift_usePoint_button",points));
+    m_usePoint->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",*(const unsigned*)&points));
     m_usePoint->FUN_1422c1fe0((unsigned int)points>0);
     }
 }
@@ -644,7 +634,7 @@ void UIAttendGiftDialog::FUN_14102f180(ASData& data)
     if(!reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dcb0(0x49406,0,0)) return;
     Scaleform::GFx::Value args=data.PopValue();
     ASSlot slot(args,FUN_1422db730());
-    if(slot.FUN_1422ba9a0()) return;
+    if(slot.IsUndefinedOrNull()) return;
     int a=slot.GetItemID();
     int b=slot.GetItemGrade();
     MS2Ptr<CItem> item=FUN_140ebc360(a,b);

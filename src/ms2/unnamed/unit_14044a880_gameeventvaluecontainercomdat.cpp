@@ -275,6 +275,7 @@
 // MS2-PIN: ?Lookup@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAPEAVCPair@12@I@Z 0x140450610
 // MS2-PIN: ?Lookup@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEBAPEBVCPair@12@I@Z 0x140450610
 // MS2-PIN: ?RemoveAll@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXXZ 0x140456c50
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAA_NI@Z 0x140457c30 ; mt7: byte-identical to the uint/bool RemoveKey copies, so the name-order guess lost it
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gameeventvalue.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>

@@ -9,3 +9,6 @@
 61c
     const NiUInt32 uiIndex, const float fScale)
 .
+13c
+#define EE_MS2_NIFS_ASSIGN_FORCE  // MS2: see NiFixedString.inl operator= (replaces a blank line: keeps __LINE__)
+.

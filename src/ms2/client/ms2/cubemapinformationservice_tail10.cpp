@@ -307,6 +307,9 @@ void Unk_CMISDriveTail10()
     { Unk_CMISOwnerById m; (void)m.equal_range(0); }
     { int a = nKey, b = nKey, c = nKey; const char* d = ""; Unk_CMISLog3(0, 0, 0, L"", a, b, c); Unk_CMISLog4(0, 0, 0, L"", a, b, c, d); }
     { int a = nKey, b = nKey; std::pair<int, int> pr = std::make_pair(a, b); (void)pr; }
+    // the long-key maps' insert results (tail2 callers 0x141108380 / 0x1411137c0 / 0x14110e500 / 0x141115350)
+    { std::map<long, egf::EntityPtr>::iterator it; std::pair<std::map<long, egf::EntityPtr>::iterator, bool> a(it, false), b(std::move(it), false); (void)a; (void)b; }
+    { std::map<long, MS2Ptr<Cube> >::iterator it; std::pair<std::map<long, MS2Ptr<Cube> >::iterator, bool> a(std::move(it), false); (void)a; }
     { ATL::CAtlArray<Unk_CMISElem388*> a; ATL::CAtlArray<Unk_CMISElem3a8*> b; ATL::CAtlArray<Unk_CMISElem458*> c; }
 }
 // MS2-PIN: ??$?0V?$tuple@AEBW4Unk_CMISKindB@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBW4Unk_CMISKindB@@H@std@@QEAA@AEAV?$tuple@AEBW4Unk_CMISKindB@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1410db2e0 ; sfr36: exe const& KindB/int pair ctor 0x1410d9a90 calls it
@@ -326,3 +329,6 @@ void Unk_CMISDriveTail10()
 // MS2-PIN: ??$?0AEBU?$pair@HH@std@@$$Z$$V@?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBU?$pair@HH@std@@@1@V?$tuple@$$V@1@@Z 0x1410d9850 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ??$?0AEAH@?$_Tuple_val@AEBH@std@@QEAA@AEAH@Z 0x1410d9b80 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ??$?0U_Exact_args_t@std@@AEAH$$V$0A@@?$tuple@AEBH@std@@QEAA@U_Exact_args_t@1@AEAH@Z 0x1410d9d40 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1410d7c20 ; gp1: long-key map insert result, by the tail2 callers
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1410da090 ; gp1: long-key map insert result, by the tail2 callers
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1410da720 ; gp1: long-key map insert result, by the tail2 callers

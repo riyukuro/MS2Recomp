@@ -1,3 +1,10 @@
+41a
+#if defined(EE_MS2_ALR_DTOR_FORCE)
+    // MS2: the exe's ~EntityFactoryRequest (0x142171100) inlines this implicit dtor where cl 19.16 tail-calls it;
+    // the units that emit it define EE_MS2_ALR_DTOR_FORCE (engine/units-gb.json)
+    __forceinline virtual ~AssetLoadRequest() = default;
+#endif
+.
 32a
 #endif
 .

@@ -73,6 +73,8 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@XZ 0x141a8e9c0 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@PEAVUnk_GoPickHit@@@std@@@2@$00@std@@QEAAAEAV?$_List_val@U?$_List_simple_types@PEAVUnk_GoPickHit@@@std@@@2@XZ 0x141a8e9d0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cc13a0 ; mt7: exe emits the header statics' atexit thunks after the function-local ones
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cc13c0 ; mt7: as above
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipartydialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/header_statics_a.h"

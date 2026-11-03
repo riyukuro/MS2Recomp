@@ -9,3 +9,8 @@ protected:  // MS2: v2525
 
     bool GetStudioFlag() const { return m_studioFlag0x68; }  // MS2
 .
+48a
+#if defined(EE_MS2_ALR_DTOR_FORCE)   // MS2: see efd/AssetLoadRequest.h
+    __forceinline virtual ~FlatModelFactoryRequest() = default;
+#endif
+.

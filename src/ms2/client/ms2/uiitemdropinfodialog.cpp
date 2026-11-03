@@ -125,11 +125,10 @@ template <> void MS2Ptr<Unk_DropEntry>::ReleaseImpl(void*) {
 template <> void MS2Ptr<Unk_DropEntry>::Release() { if (m_p) { ReleaseImpl((Unk_DropRef*)(Unk_DropEntry*)0); m_p = 0; } }
 // @0x1402fee10
 template <> MS2Ptr<Unk_DropEntry>::~MS2Ptr() { Release(); }
-class Unk_1405a1fd0 { public: void FUN_1402eab20(int, std::vector<MS2Ptr<Unk_DropEntry>>&); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 class ASObj : public AScript {
 public: ASObj(int); virtual ~ASObj();
-    void FUN_1409c5bd0(Unk_DropEntry*);
+    bool FUN_1409c5bd0(ItemDropResult*);
 };
 class ASArray : public AScript {
 public: int PushValue(Scaleform::GFx::Value);
@@ -247,7 +246,7 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
     if (data == NULL) return;
     if (m_box == 0) return;
     std::vector<MS2Ptr<Unk_DropEntry>> entries;
-    reinterpret_cast<Unk_1405a1fd0*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402eab20(m_box, entries);
+    TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(m_box, reinterpret_cast<std::vector<MS2Ptr<ItemDropResult>>&>(entries));
     ASDataProvider array(2);
     for (auto& entry : entries) {
         MS2Ptr<CItemData> info = FUN_14053f870(entry->vfunc_0());
@@ -255,7 +254,7 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
         MS2Ptr<CItem> item(new CItem);
         if (!item->FUN_14052b130(entry->vfunc_0(),entry->vfunc_1(),0)) continue;
         ASObj obj(2);
-        obj.FUN_1409c5bd0(entry.get());
+        obj.FUN_1409c5bd0(reinterpret_cast<ItemDropResult*>(entry.get()));
         obj.FUN_1407cb9c0(s_itemCount,0);
         {
             CStringW range;

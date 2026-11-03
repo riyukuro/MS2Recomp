@@ -1484,7 +1484,7 @@ void UIMeratMarketDialog::ApplyBanners(Unk_AdBannerArray& banners)
         if (spInfo == 0)
             continue;
         spInfo->FUN_141347c30(reinterpret_cast<const Unk_AdBannerPtr&>(spBanner), nType, CStringA(""));
-        m_banner.FUN_141347ed0(MS2Ptr<ShopBannerInfo>(spInfo.get()));
+        m_banner.FUN_141347ed0(MS2Ptr<ShopBannerInfo>((MeratMarketShopBannerInfo*)spInfo));
     }
     if (FUN_1422dc430() != 0) {
         if (GetTabCount(0) != 0)
@@ -2197,6 +2197,13 @@ Unk_MpRideePtr::Unk_MpRideePtr(const Unk_MpRideePtr& other)
 Unk_MpRideePtr::Unk_MpRideePtr(int)
 {
     m_p = 0;
+}
+
+// mt7: MS2Ptr<UIAvatarRidee>'s AddRef COMDAT (0x1413163f0, the body Unk_MpRideePtr::AddRef is bound to); only the
+// MS2Ptr ctor from the raw pointer reaches it
+void Unk_MmDriveRideeAddRef(UIAvatarRidee* p)
+{
+    MS2Ptr<UIAvatarRidee> sp(p);
 }
 
 // @0x141314120
@@ -7255,3 +7262,4 @@ void Unk_MmDialog::FUN_141310970()
 // MS2-PIN: ?FUN_14130ce70@Unk_MmDialog@@QEAAX_N@Z 0x14130ce70
 // MS2-PIN: ?FUN_14130d390@Unk_MmDialog@@QEAAXHHHH_N@Z 0x14130d390
 // MS2-PIN: ?FUN_141310970@Unk_MmDialog@@QEAAXXZ 0x141310970
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUIAvatarRidee@@@@AEBAXXZ 0x1413163f0 ; mt7: byte-identical COMDAT fold (was the look-alike guess); Unk_MpRideePtr::AddRef is bound to the same body

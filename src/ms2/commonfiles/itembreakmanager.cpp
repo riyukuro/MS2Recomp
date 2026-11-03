@@ -35,6 +35,7 @@
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/placeholder/cpetmanager.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/item.h"   // C3: CItemBreakIngredientTable::GetBreakItem
 static const CString s_breakSort[]={"None","Buy","PriceLow","PriceHigh","Create","ChartOrder","BuyTotal","EnumEnd"};
 static const CString s_breakShopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 static UICommon::CMyPCKeyInputController s_breakKeys;
@@ -91,17 +92,18 @@ public:
     Unk_BreakItemPtr FUN_140524250();
     // C3: GetCount, GetRequiredLevel, FUN_140527840, FUN_1405279c0, FUN_140528bd0 are CItem's (cast at the call)
 };
+class CIngredientInfo;
 class Unk_BreakIngredient { public: void* p0; void* p8; void* p10; int p18,id; unsigned count; };
 class Unk_BreakIngredients {
-public: size_t FUN_14028b500() const; bool FUN_14028a8c0() const; MS2Ptr<Unk_BreakIngredient>& FUN_14027f1f0(size_t);
+public: MS2Ptr<CIngredientInfo>& FUN_14027f1f0(size_t);   // C3: size/empty are std::vector<MS2Ptr<CIngredientInfo>>'s
 private: void* p0; void* p8; void* p10;
 };
-class CIngredientContainer {
+class CIngredientContainer : public CPtred {
 public:
-    CIngredientContainer(); ~CIngredientContainer();
-    size_t FUN_14026bee0(); bool FUN_14026bf40(); MS2Ptr<Unk_BreakIngredient> FUN_14026bdc0(size_t);
+    CIngredientContainer(); virtual ~CIngredientContainer();
+    size_t FUN_14026bee0(); bool FUN_14026bf40(); MS2Ptr<CIngredientInfo> FUN_14026bdc0(size_t);
     const Unk_BreakIngredients& FUN_14026c230() const; void FUN_14026c250(CIngredientContainer*);
-    void* p0; void* p8; void* p10; Unk_BreakIngredients ingredients;
+    Unk_BreakIngredients ingredients;
 };
 MS2_CHECK_SIZE(CIngredientContainer,0x30);
 class Unk_BreakRecipe : public CLua { };
@@ -113,10 +115,10 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_BreakSelected : public CPetManager { };
 class Unk_BreakRules { public: };
 class CItemLockManager { public: int FUN_140613160(CItem* pItem); };   // C3: unit-local view (unit_1406125d0.h)
-class Unk_BreakRecipes { public: MS2Ptr<CIngredientContainer> FUN_14052e650(int); };
 class CItemBreakIngredientTable;
 class CItemLockManager;
 class CPetManager;
+class Unk_BreakRecipes;
 inline Unk_BreakRecipes* FUN_140535300() { return reinterpret_cast<Unk_BreakRecipes*>(TSingleton<CItemBreakIngredientTable>::s_instance); }
 inline Unk_BreakRules* FUN_140535310() { return reinterpret_cast<Unk_BreakRules*>(TSingleton<CItemLockManager>::s_instance); }
 inline Unk_BreakSelected* FUN_140535320() { return reinterpret_cast<Unk_BreakSelected*>(TSingleton<CPetManager>::s_instance); }
@@ -129,7 +131,7 @@ class UIItemBreakBase : public UIDialog { public: void FUN_1419a1430(); void FUN
 class UIItemBreakDialog : public UIItemBreakBase {
 public:
     virtual void vfunc_84(Unk_BreakPacket&); virtual void vfunc_85(bool,int); virtual int vfunc_86();
-    void ResetBreak(); void FUN_1419a44d0(Unk_BreakPacket&);
+    void ResetBreak(); void FUN_1419a44d0(class CInPacket*);
     int FUN_1405352d0() { return field188; }
     static int Id() { return 0x4e8d; }
     void* p178; void* p180; int field188;
@@ -190,7 +192,7 @@ CStringW FUN_140719630(int); CStringW FUN_1407196b0(long); CStringW FUN_140719a8
 class CMsgBoxData {
 public:
     int FUN_141a02e50(int,int) const; __int64 FUN_141a02f10(int,__int64) const; CStringW FUN_141a02d50() const;
-    void FUN_141a01d30(int,const CStringW&,unsigned,int,int);
+    void SetInput(int,const CStringW&,unsigned,int,int);
     void SetCallback(Delegate<bool(int,const CMsgBoxData&)>);
     void FUN_141a01600(__int64); void FUN_141a01ee0(Unk_BreakItemPtr,const CStringW&,int,int,int,int,int); void SetButtonLabelIds(int,int,int);
     template<class T> void Append(T value);
@@ -331,12 +333,12 @@ void FUN_140530c90(MS2Ptr<Unk_BreakTemplate> item,int grade,int enhance,CIngredi
         CIngredientContainer extra; FUN_140628390(grade,category,level,&extra);
         if(!extra.FUN_14026bf40()) {
             int percent=((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakRefundPercent();
-            for(size_t i=0;i<extra.FUN_14026bee0();++i) { MS2Ptr<Unk_BreakIngredient> p=extra.FUN_14026bdc0(i); if(p==0) continue;
-                unsigned amount=(p->count*percent)/100<1?1:(p->count*percent)/100; if(percent==0) amount=0; p->count=amount*enhance;
+            for(size_t i=0;i<extra.FUN_14026bee0();++i) { MS2Ptr<CIngredientInfo> p=extra.FUN_14026bdc0(i); if(p==0) continue;
+                unsigned amount=(reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count*percent)/100<1?1:(reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count*percent)/100; if(percent==0) amount=0; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=amount*enhance;
             }
-            for(size_t i=0;i<output.ingredients.FUN_14028b500();++i) for(size_t j=0;j<extra.FUN_14026bee0();++j) {
-                MS2Ptr<Unk_BreakIngredient> p=extra.FUN_14026bdc0(j); if(p==0) continue;
-                if(output.ingredients.FUN_14027f1f0(i)->id==p->id) { output.ingredients.FUN_14027f1f0(i)->count+=p->count; p->count=0; }
+            for(size_t i=0;i<reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(output.ingredients).size();++i) for(size_t j=0;j<extra.FUN_14026bee0();++j) {
+                MS2Ptr<CIngredientInfo> p=extra.FUN_14026bdc0(j); if(p==0) continue;
+                if(reinterpret_cast<Unk_BreakIngredient*>(output.ingredients.FUN_14027f1f0(i).operator->())->id==reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->id) { reinterpret_cast<Unk_BreakIngredient*>(output.ingredients.FUN_14027f1f0(i).operator->())->count+=reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=0; }
             }
             output.FUN_14026c250(&extra);
         }
@@ -379,11 +381,11 @@ MS2_REPLACE_METHOD(0x1405316D0, CItemBreakManager, FUN_1405316d0, 373, 0x7942969
 // @0x140531850
 bool CItemBreakManager::FUN_140531850(ItemPtr item) {
     if(item==0) return false; if(!item->HasSkin()) return true;
-    MS2Ptr<CIngredientContainer> p=FUN_140535300()->FUN_14052e650(item->FUN_1405276c0());
-    if(p.get()) { const Unk_BreakIngredients& list=p->FUN_14026c230(); if(!list.FUN_14028a8c0()) return true; }
+    MS2SvrPtr<CIngredientContainer> p=reinterpret_cast<CItemBreakIngredientTable*>(FUN_140535300())->GetBreakItem(item->FUN_1405276c0());
+    if(p.get()) { const Unk_BreakIngredients& list=p->FUN_14026c230(); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(list).empty()) return true; }
     int level=((CItemData*)item->FUN_140527840())->GetSkinType(); if(level) {
         unsigned short category=((unsigned short)item->GetRequiredLevel()); int grade=item->GetRarity(); __int64 value=item->GetSellPrice(); CIngredientContainer result;
-        ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,result); if(!result.ingredients.FUN_14028a8c0()) return true;
+        ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,result); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(result.ingredients).empty()) return true;
     } return false;
 }
 MS2_REPLACE_METHOD(0x140531850, CItemBreakManager, FUN_140531850, 571, 0xE5EDB101);
@@ -475,7 +477,7 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
         else if(result==5) FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_empty"),1,1); else Unk_BreakMessage(0x8f8,1,1,result);
         UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p && p->FUN_1405352d0()) p->ResetBreak(); FUN_140532220();
     } else if(mode==5) {
-        UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p) p->FUN_1419a44d0(packet);
+        UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p) p->FUN_1419a44d0(reinterpret_cast<CInPacket*>(&packet));
     } else if(mode==6) {
         UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); unsigned count=(&packet.input)->vfunc_3();
         for(unsigned i=0;i<count;++i) { int index=(&packet.input)->vfunc_2(); unsigned __int64 id=(&packet.input)->vfunc_4(); int amount=(&packet.input)->vfunc_3();
@@ -537,7 +539,7 @@ void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
     if(item->IsStackable()!=0 && ((unsigned)item->GetCount())>1) {
         if(Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
             unsigned count=((unsigned)item->GetCount()); CStringW text; text.Format(L"%d",count);
-            box->FUN_141a01d30(1,text,count,0,0);
+            box->SetInput(1,text,count,0,0);
             box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnDismantleCountMsgBox));
             box->Append(arg); box->Append(item->GetItemUid()); box->Append((int)count); FUN_140d73c60(box);
         }

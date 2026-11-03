@@ -31,6 +31,7 @@
 #include "ms2/placeholder/cgamerule.h"
 #include "ms2/placeholder/cshopeventmanager.h"
 #include "ms2/placeholder/cshutdownevent.h"
+#include "ms2/placeholder/dungeonroomshutdowncontext.h"
 #include "ms2/placeholder/gameeventuservaluenametable.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/guildmanager.h"
@@ -263,6 +264,21 @@ template class MS2Ptr<TimeRunEventContext::QuestContext>;
 template class MS2Ptr<DungeonExtraRewardCountCtx>;
 template class MS2Ptr<SaleCube>;
 template class MS2Ptr<BonusGameBlueMarbleSlot>;
+
+// The context pointers the GameEvent subclasses assign (operator=(int), copy assignment, AssignRaw); their callers in
+// gameevent.cpp and CGameRule bind these copies (0x1403e7260-0x1403e8060).
+template class MS2Ptr<ArcadeOpenContext>;
+template class MS2Ptr<BingoContext>;
+template class MS2Ptr<BlueMarbleEventContext>;
+template class MS2Ptr<CollectItemGroupContext>;
+template class MS2Ptr<DungeonBonusRewardCtx>;
+template class MS2Ptr<DungeonRoomShutdownContext>;
+template class MS2Ptr<FestivalContext>;
+template class MS2Ptr<FieldEffectContext>;
+template class MS2Ptr<ItemBoxEventContext>;
+template class MS2Ptr<LongTermAttendGiftContext>;
+template class MS2Ptr<QuestAdditionalRewardContext>;
+template class MS2Ptr<TimeRunEventContext>;
 
 // More smart pointer element types (brute force; the exe keeps only the ones its bodies use). Not exe code.
 template class MS2Ptr<BurningLevelupContext>;

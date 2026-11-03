@@ -100,9 +100,9 @@ i64 FUN_14027b250(i64 first, i64 last, i64 dest, i64 al)
 void FUN_140277870(i64, i64);
 void FUN_1402769e0(i64*, i64, Unk_StlTag);
 void FUN_140276a10(i64*, i64, Unk_StlTag);
-i64 FUN_140276a40(i64, i64, Unk_StlTag);
+void FUN_140276a40(i64, i64, Unk_StlTag);
 void FUN_140276920(i64, i64); void FUN_140276960(i64, i64);
-i64 FUN_140276aa0(i64, i64, i64, Unk_StlTag); i64 FUN_140276d40(i64, i64, i64, Unk_StlTag);
+void FUN_140276aa0(i64, i64, i64, Unk_StlTag); void FUN_140276d40(i64, i64, i64, Unk_StlTag);
 i64 FUN_140278710(i64); i64 FUN_140278750(i64);
 
 // @0x14027b320
@@ -160,20 +160,20 @@ void FUN_14027b5a0(i64* p, i64 n) { Unk_StlTag t; FUN_1402769e0(p, n, t); }
 // @0x14027b5d0
 void FUN_14027b5d0(i64* p, i64 n) { Unk_StlTag t; FUN_140276a10(p, n, t); }
 // @0x14027b600
-i64 FUN_14027b600(i64 p, i64 n) { Unk_StlTag t; return FUN_140276a40(p, n, t); }
+i64 FUN_14027b600(i64 p, i64 n) { Unk_StlTag t; return reinterpret_cast<i64 (*)(i64, i64, Unk_StlTag)>(&FUN_140276a40)(p, n, t); }
 // @0x14027b630
 i64 FUN_14027b630(i64 a, i64 b, i64 c)
 {
     Unk_StlTag t;
     FUN_140276920((i64)&b, (i64)&c);
-    return FUN_140276aa0(a, FUN_140278710(b), FUN_140278710(c), t);
+    return reinterpret_cast<i64 (*)(i64, i64, i64, Unk_StlTag)>(&FUN_140276aa0)(a, FUN_140278710(b), FUN_140278710(c), t);
 }
 // @0x14027b690
 i64 FUN_14027b690(i64 a, i64 b, i64 c)
 {
     Unk_StlTag t;
     FUN_140276960((i64)&b, (i64)&c);
-    return FUN_140276d40(a, FUN_140278750(b), FUN_140278750(c), t);
+    return reinterpret_cast<i64 (*)(i64, i64, i64, Unk_StlTag)>(&FUN_140276d40)(a, FUN_140278750(b), FUN_140278750(c), t);
 }
 
 // ---- element construct/destroy helpers (std::allocator_traits<>::construct/destroy of the element types) ----
@@ -185,7 +185,7 @@ i64 FUN_14027c190(i64); i64 FUN_14027c1d0(i64); i64 FUN_14027c210(i64); i64 FUN_
 i64 FUN_14027c230(i64); i64 FUN_14027c1f0(i64);
 
 Unk_Q8* FUN_14027d650(Unk_Q8*, Unk_Q8*);
-void FUN_140274bb0(void*, char, i64, i64);
+i64 FUN_140274bb0(i64, Unk_StlTag, i64, i64);
 Unk_Ref16* FUN_14027c980(Unk_Ref16*, Unk_Ref16*);
 Unk_Ref16* FUN_14027ccb0(Unk_Ref16*, Unk_Ref16*);
 Unk_Ref16* FUN_14027c9b0(Unk_Ref16*, Unk_Ref16*);
@@ -203,7 +203,7 @@ void FUN_14027b790(i64 al, i64 where, i64 a2, i64 b2, i64 c2)
     struct { } first; Unk_Q8 second;
     Unk_Q8* p28 = (Unk_Q8*)&first;
     Unk_Q8* p30 = &second;
-    FUN_140274bb0(mem, *(char*)(i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
+    reinterpret_cast<void (*)(void*, char, i64, i64)>(&FUN_140274bb0)(mem, *(char*)(i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
                   (i64)FUN_140163dc0(p28, (Unk_Q8*)(i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)c2))));
 }
 // @0x14027b840
@@ -297,29 +297,28 @@ void FUN_14027be20(i64 vec, i64 val)
 }
 
 // _Tree::emplace_hint(where, piecewise_construct, tuple<K&&>, tuple<>)
-i64 FUN_140277000(i64, i64, i64, i64); void FUN_140278d90(i64, i64, i64, i64, i64);
+i64 FUN_140277000(i64, i64, i64, i64); struct Unk_TIter; struct Unk_TNode; Unk_TIter* FUN_140278d90(void*, Unk_TIter*, Unk_TIter, i64, Unk_TNode*);
 // @0x14027be90
 i64 FUN_14027be90(i64 tree, i64 out, i64 where, i64 piecewise, i64 keytuple, i64 valtuple)
 {
     i64 node = FUN_140277000(tree, (i64)&std::forward<const std::piecewise_construct_t&>(*(const std::piecewise_construct_t*)piecewise), FUN_14027c230(keytuple), (i64)&reinterpret_cast<std::tuple<>&>(std::forward<std::tuple<>>(*(std::tuple<>*)valtuple)));
-    FUN_140278d90(tree, out, where, node + 0x1c, node);
+    reinterpret_cast<void (*)(i64, i64, i64, i64, i64)>(&FUN_140278d90)(tree, out, where, node + 0x1c, node);
     return out;
 }
 
 // std::find_if over a vector<Unk_IngRef> with a by-value predicate argument
-void FUN_1402769a0(i64, i64); i64 FUN_140278760(i64*); void FUN_14027a740(i64, i64*);
-bool FUN_14026b560(int*, Unk_Ref16*);
+void FUN_1402769a0(i64, i64); void FUN_140278760(i64); void FUN_14027a740(i64, i64*);
 // @0x14027bf30
 i64* FUN_14027bf30(i64* out, i64 first, i64 last, int key)
 {
     FUN_1402769a0((i64)&first, (i64)&last);
-    i64 f = FUN_140278760(&first);
-    i64 l = FUN_140278760(&last);
+    i64 f = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&first);
+    i64 l = reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&last);
     for (; f != l; f += 0x10) {
         Unk_Ref16 slot;
         Unk_Ref16* tmp = &slot;
         Unk_Ref16* copy = FUN_14027c9b0(tmp, (Unk_Ref16*)f);
-        if (FUN_14026b560(&key, copy))
+        if (reinterpret_cast<bool (*)(int*, Unk_Ref16*)>(&FUN_14026b560)(&key, copy))
             break;
     }
     FUN_14027a740((i64)&first, &f);
@@ -394,14 +393,14 @@ i64 FUN_14027c240(i64 a, i64 b) { FUN_140274c00(a, FUN_14027c1f0(b)); return a; 
 i64 FUN_14027c270(i64* p) { return FUN_14027c1f0(*p); }
 
 // vector<Unk_IngRef>::insert(where, first, last)
-void FUN_140279de0(i64, i64, i64, i64, Unk_StlTag);__int64 FUN_140288770(__int64, __int64, __int64);   // C3: was FUN_140288770
+struct Unk_E16; void FUN_140279de0(void*, Unk_E16*, i64, i64);__int64 FUN_140288770(__int64, __int64, __int64);   // C3: was FUN_140288770
 // @0x14027c290
 i64 FUN_14027c290(i64 self, i64 out, i64 where, i64 first, i64 last)
 {
     Unk_StlTag t;
     FUN_1402769a0((i64)&first, (i64)&last);
     i64 idx = (where - *(i64*)(i64)&reinterpret_cast<VPtred*>(self)->_Myfirst()) >> 4;
-    FUN_140279de0(self, where, FUN_140278760(&first), FUN_140278760(&last), t);
+    reinterpret_cast<void (*)(i64, i64, i64, i64, Unk_StlTag)>(&FUN_140279de0)(self, where, reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&first), reinterpret_cast<i64 (*)(i64*)>(&FUN_140278760)(&last), t);
     FUN_140288770(self, out, idx);
     return out;
 }
@@ -433,9 +432,9 @@ i64 FUN_14027c420(i64 it, i64 n) { FUN_14027b5a0(&it, n); return it; }
 i64 FUN_14027c450(i64 it, i64 n) { FUN_14027b5d0(&it, n); return it; }
 // @0x14027c480
 i64* FUN_14027c480(i64* out, i64 it, i64 n) { FUN_14027b600((i64)&it, n); *out = it; return out; }
-void FUN_14027a770(i64, i64, i64);
+struct Unk_TIterBool; Unk_TIterBool* FUN_14027a770(void*, Unk_TIterBool*, i64);
 // @0x14027c4c0
-i64 FUN_14027c4c0(i64 a, i64 b, i64 c) { FUN_14027a770(a, b, c); return b; }
+i64 FUN_14027c4c0(i64 a, i64 b, i64 c) { reinterpret_cast<void (*)(i64, i64, i64)>(&FUN_14027a770)(a, b, c); return b; }
 // @0x14027c500
 u64 FUN_14027c500(i64) { return 13; }
 
@@ -825,7 +824,7 @@ void FUN_14027e1b0(Unk_HistList* t) noexcept { reinterpret_cast<LHist*>(t)->_Fre
 // @0x14027e1e0
 void FUN_14027e1e0(Unk_HistList* t) { FUN_14027e1b0(t); }
 // @0x14027e3a0
-Unk_HistList::~Unk_HistList() { FUN_140289650(this); FUN_14027e1e0(this); }
+Unk_HistList::~Unk_HistList() { reinterpret_cast<LHist*>(this)->_Tidy(); FUN_14027e1e0(this); }
 // @0x14027e230
 void FUN_14027e230(Unk_RewardMap* t) noexcept { FUN_140287dc0(t, *(i64*)&reinterpret_cast<MapII*>(t)->_Get_data()); }
 // @0x14027e200

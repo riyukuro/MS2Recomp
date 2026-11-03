@@ -40,8 +40,15 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Foundation | 12,023 | 11,909 (99.1%) | 86 (0.7%) | 99.8% |
 | Imports | 782 | 744 (95.1%) | 1 (0.1%) | 95.3% |
 | **Total** | **248,791** | 245,821 (98.8%) | 2,345 (0.9%) | 99.7% |
+| *Not done, but not missing:* | | | | |
+| Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
+| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 93 | | | |
+| Exception-handling helpers of done functions, identical in the rebuild | 5 | | | |
+| Built from our source with identical bytes, not yet tied to this address | 2 | | | |
+| Rebuilt identically, but no unit's address range covers it | 1 | | | |
+| *Not done, still to write* | 195 | | | |
 
-Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild.
+Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 625 functions that are neither matched nor equivalent. Counting the 430 that are not missing, 99.9% is done.
 <!-- progress:end -->
 
 ## Layout

@@ -15,6 +15,8 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/blackmarketitemoption.h"
+#include "ms2/placeholder/specialnpcinfo.h"
 
 // The exe's MS2Ptr<Unk_WsK_Rank> reaches its CPtred through a helper (a down-adjust by -0x18 with a null test), not the
 // inline upcast of ms2ptr_impl.h.
@@ -69,10 +71,10 @@ struct Unk_WsF1 { unsigned char raw[16]; };
 struct Unk_WsF2 { unsigned char raw[16]; };
 struct Unk_WsF3 { unsigned char raw[16]; };
 // 16-byte vector elements with a destructor (the exe's _Tidy of these vectors sits here; their other members are elsewhere).
-struct Unk_WsN0 { void* p0; void* p1; ~Unk_WsN0() {} };
 struct Unk_WsN1 { void* p0; void* p1; ~Unk_WsN1() {} };
 struct Unk_WsN2 { void* p0; void* p1; ~Unk_WsN2() {} };
-template class std::vector<Unk_WsN0>;
+// WorldMapManager's special npc list (LoadSpecialNpcs 0x141b971a0 calls push_back 0x141bb94d0 and size 0x141bb95c0).
+template class std::vector<Unk_BmBoxPtr<SpecialNPCInfo> >;
 template class std::vector<Unk_WsN1>;
 template class std::vector<Unk_WsN2>;
 struct Unk_WsN3 { void* p0; void* p1; ~Unk_WsN3() {} };

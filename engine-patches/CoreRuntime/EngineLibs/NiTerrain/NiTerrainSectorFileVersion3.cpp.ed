@@ -1,0 +1,3 @@
+13c
+#define EE_MS2_STR_APPEND_CSTR_CALL  // MS2: see utf8string.inl std::string::append(const char*) (replaces a blank line: keeps __LINE__)
+.

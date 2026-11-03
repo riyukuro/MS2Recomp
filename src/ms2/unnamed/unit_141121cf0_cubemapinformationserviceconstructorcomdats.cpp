@@ -370,6 +370,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) std::tuple<const Unk_CMISKindA&>(std::move(*(std::tuple<const Unk_CMISKindA&>*)p));
     new (p) std::tuple<const int&>(std::move(*(std::tuple<const int&>*)p));
     new (p) std::tuple<const __int64&>(std::move(*(std::tuple<const __int64&>*)p));
+    new (p) std::tuple<const long&>(std::move(*(std::tuple<const long&>*)p));     // 0x141122cc0: the long-key form (caller 0x1410e11e0)
     new (p) std::_Vector_iterator<std::_Vector_val<std::_Simple_types<egf::EntityID> > >((egf::EntityID*)0, (const std::_Container_base0*)0);
     new (p) std::_Vector_iterator<std::_Vector_val<std::_Simple_types<egf::EntityPtr> > >((egf::EntityPtr*)0, (const std::_Container_base0*)0);
     new (p) std::_Vector_val<std::_Simple_types<egf::EntityID> >;
@@ -377,3 +378,5 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) std::_Vector_val<std::_Simple_types<egf::EntityPtr> >;
 }
 #endif
+// MS2-PIN: ??0?$tuple@AEBH@std@@QEAA@$$QEAV01@@Z 0x141122c80 ; gp1: by the caller 0x141234350
+// MS2-PIN: ??0?$tuple@AEBJ@std@@QEAA@$$QEAV01@@Z 0x141122cc0 ; gp1: by the caller 0x1410e11e0

@@ -716,7 +716,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
         int nSpecial = options[i].second;
         if (nNormal != -1)
         {
-            if (void* pNode = m_spProxy->m_normal.Lookup(nNormal))
+            if (void* pNode = static_cast<Unk_MergeNormalMap&>(m_spProxy->m_normal).Lookup(nNormal))
             {
                 CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
                 CStringW strText;
@@ -744,7 +744,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
         {
             if (nSpecial != 0)
             {
-                if (void* pNode = m_spProxy->m_special.Lookup(nSpecial))
+                if (void* pNode = static_cast<Unk_MergeSpecialMap&>(m_spProxy->m_special).Lookup(nSpecial))
                 {
                     CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
                     CStringW strText;
