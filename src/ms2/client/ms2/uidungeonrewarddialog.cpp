@@ -437,8 +437,6 @@ int UIDungeonRewardDialog::vfunc_o178_1(void* avatar) { if(!avatar)return 0;Load
 MS2_REPLACE_METHOD_VIA(0x140E227E0, UIDungeonRewardDialog, IUIAvatarEventListener, vfunc_o178_1, 55, 0x208A69DD);
 
 // @0x140e24060
-// MS2-FUNCTIONAL: the code is identical but the frame is 0x10 larger; the exe packs the two score shorts at
-// 0x28/0x2a with the rank at 0x2c, ours leaves a gap after the first short.
 void UIDungeonRewardDialog::FUN_140e24060() {
  if(m_1a0==0)return;
  Unk_RewardMissionPtr mission=((class Unk_RewardMissions*)FUN_140931510())->FUN_140d9f4e0();
@@ -501,9 +499,7 @@ void UIDungeonRewardDialog::FUN_140e24060() {
   Unk_RewardEntryPtr entry=entries.FUN_140c9eb50(i);
   if(entry==0)continue;
   name->SetTextW(entry->GetName());
-  short a=entry->GetMaxScore();   // signed: the exe formats with StringFormat<short,short> (0x140b1f230)
-  short b=entry->GetScore();
-  score->SetTextW(StringFormat(L"{0}/{1}",b,a));
+  score->SetTextW(StringFormat(L"{0}/{1}",entry->GetScore(),entry->GetMaxScore()));   // StringFormat<short,short> (0x140b1f230)
  }
 }
 MS2_REPLACE_METHOD(0x140E24060, UIDungeonRewardDialog, FUN_140e24060, 3047, 0x98D9CB8A);

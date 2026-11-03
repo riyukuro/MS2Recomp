@@ -49,7 +49,13 @@ public:
     virtual void vfunc_12();                                                                            // 12
     virtual int vfunc_13();                                                                             // 13 returns 0
     virtual int vfunc_14();                                                                             // 14 returns 0
+#if defined(MS2_UISWFENTITY_VF15_RET)
+    // A unit whose override returns this (the exe's UIGambleDialog::vfunc_15 does) defines this
+    // switch; the slot, the layout and the vftable are the same, and the base body stays empty.
+    virtual UISwfEntity* vfunc_15();                                                                    // 15
+#else
     virtual void vfunc_15();                                                                            // 15
+#endif
     virtual void vfunc_16();                                                                            // 16
     virtual bool vfunc_17();                                                                            // 17 returns true
     virtual void vfunc_18();                                                                            // 18 FUN_1422dc450(); vfunc_15()

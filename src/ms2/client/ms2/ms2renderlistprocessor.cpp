@@ -380,7 +380,6 @@ void MS2RenderListProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
 }
 MS2_REPLACE_METHOD(0x1414DC0D0, MS2RenderListProcessor, PreRenderProcessList, 3423, 0x32C81A0B);
 
-// MS2-FUNCTIONAL: code identical; the GetValueColor3 return temp sits at rsp+0x88 (exe +0x84), frame 0xa8 vs 0x98.
 // @0x1414dce40
 void MS2RenderListProcessor::RenderOutlines(NiVisibleArray& kList, NiRenderer* pkRenderer)
 {
@@ -394,8 +393,7 @@ void MS2RenderListProcessor::RenderOutlines(NiVisibleArray& kList, NiRenderer* p
             NiColorExtraData* pkColor = NiDynamicCast(NiColorExtraData, pkObject->GetExtraData(DAT_143ae5128));
             if (pkColor)
                 kSavedColor = pkColor->GetValueColor3();
-            NiColor kBlack(NiColor::BLACK);
-            FUN_1410479a0(pkObject, DAT_143ae5128, kBlack);
+            FUN_1410479a0(pkObject, DAT_143ae5128, NiColor::BLACK);
         }
 
         NiMaterial* pkOriginal = pkObject->GetActiveMaterialInstance()->GetMaterial();

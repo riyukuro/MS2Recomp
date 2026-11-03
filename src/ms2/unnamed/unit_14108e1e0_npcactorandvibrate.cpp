@@ -165,7 +165,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 {
 };
 
-class COptimizer { public: void AddSuppressor(const egf::EntityID& kId); void RemoveSuppressor(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
+class COptimizer { public: void AddSuppressor(egf::EntityID kId); void RemoveSuppressor(egf::EntityID kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
 class Unk_AvModeSvc { public: int FUN_1409f7ea0(); };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class CEmotionTable { public: void LoadTextures(unsigned int nId, CString strDir); };   // preload the npc's effects
@@ -208,7 +208,7 @@ struct Unk_WsC_NpcAnim;
 // The world service: the spawn animation of a spawn id (worldservice.h).
 class WorldService { public: static WorldService* GetInstance(); void FUN_141bc7f10(egf::EntityID kId); int FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out); public:
     void FUN_141bc7d40(const unsigned __int64& key);
-    void AddCombatBgmTracker(const unsigned __int64& key);
+    void AddCombatBgmTracker(egf::EntityID key);
     void FUN_141bc7fe0(const unsigned __int64& key);
     void FUN_141bc8e00();
     void* FUN_141bd0cc0();                                          // the local player
@@ -521,7 +521,6 @@ CNpc::~CNpc()
     FUN_141095140();
 }
 
-// MS2-FUNCTIONAL: the exe passes egf::EntityID by value to AddCombatBgmTracker and AddSuppressor (the spilled return slot)
 // @0x14108f0a0
 int CNpc::vfunc_10()
 {
@@ -533,7 +532,7 @@ int CNpc::vfunc_10()
             if (pCamera != NULL)
                 pCamera->FUN_140a38550(FUN_14123c580());
         }
-        WorldService::GetInstance()->AddCombatBgmTracker(reinterpret_cast<const unsigned __int64&>(static_cast<const egf::EntityID&>(FUN_14123c460())));
+        WorldService::GetInstance()->AddCombatBgmTracker(FUN_14123c460());
         ((class COptimizer*)FUN_1409f7c90())->AddSuppressor(FUN_14123c460());
         if ((m_spNpcData->m_nClass == 3 || m_spNpcData->m_nClass == 4) && vfunc_116() == 0)
             ((class COptimizer*)FUN_1409f7c90())->FUN_14109ac50(0);
@@ -560,18 +559,19 @@ int CNpc::vfunc_10()
         }
         FUN_1410947e0();
     }
-    Unk_PCBaseComp_a88* pEmoticon = static_cast<Unk_PCBaseComp_a88*>(vfunc_83().get());
+    Unk_PCBaseComp_a88* pEmoticon;
+    Unk_PCBaseComp_a88* pDead = pEmoticon = static_cast<Unk_PCBaseComp_a88*>(vfunc_83().get());   // dead copy, as in the exe
     if (pEmoticon != NULL) {
-        if (m_spNpcData->m_strIcon.IsEmpty()) {
-            if (0 < m_spNpcData->GetKind()) {
+        if (!m_spNpcData->m_strIcon.IsEmpty()) {
+            if (m_spNpcData->m_strIcon != "empty") {
                 pEmoticon->FUN_140f49470();
                 pEmoticon->FUN_14192f8b0(0);
+                pEmoticon->FUN_14192f8d0(m_spNpcData->m_strIcon);
                 pEmoticon->vfunc_2();
             }
-        } else if (m_spNpcData->m_strIcon != "empty") {
+        } else if (0 < m_spNpcData->GetKind()) {
             pEmoticon->FUN_140f49470();
             pEmoticon->FUN_14192f8b0(0);
-            pEmoticon->FUN_14192f8d0(m_spNpcData->m_strIcon);
             pEmoticon->vfunc_2();
         }
         FUN_141093c80();

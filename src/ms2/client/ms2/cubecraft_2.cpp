@@ -1287,7 +1287,6 @@ void Unk_PCCubeCraft::FUN_1410ac540()
 }
 
 // @0x1410aded0
-// MS2-FUNCTIONAL: behaviour-equivalent; frame layout / local order and temporaries differ from the exe
 void Unk_PCCubeCraft::FUN_1410aded0()
 {
     PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1302,7 +1301,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
     else
         kPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_20()));
     nCell = m_svc->FUN_1410ba5f0(kGrid, kPos);
-    float fHeight = m_svc->FUN_1410ba440(nCell);
+    kPos.z = m_svc->FUN_1410ba440(nCell);
     CubeItemInfo kInfo(*m_spItem.operator->());
     if (!spCube)
     {
@@ -1310,7 +1309,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         packet.Encode1(0xb);
         packet.Encode4(FUN_1408a03c0(kGrid));
         kInfo.FUN_1408b39c0(packet);
-        packet.WriteFloat(fHeight);
+        packet.WriteFloat(kPos.z);
         packet.Encode1((unsigned char)nCell);
         FUN_140710590(packet);
     }
@@ -1321,7 +1320,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         packet.Encode1(0x10);
         packet.Encode4(FUN_1408a03c0(kGrid));
         kInfo.FUN_1408b39c0(packet);
-        packet.WriteFloat(fHeight);
+        packet.WriteFloat(kPos.z);
         packet.Encode1((unsigned char)nCell);
         FUN_140710590(packet);
     }

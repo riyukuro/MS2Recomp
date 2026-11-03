@@ -1,0 +1,3 @@
+13c
+#define EE_MS2_UTF8_ASSIGN_CALL  // MS2: see utf8string.inl (replaces a blank line: keeps __LINE__)
+.

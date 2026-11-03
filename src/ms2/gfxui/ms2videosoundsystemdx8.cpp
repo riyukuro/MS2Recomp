@@ -2,15 +2,15 @@
 // DirectSound video sound system, and its sound stream MS2VideoSoundDX8.
 // MS2-UNIT: ?\ms2videosoundsystemdx8.cpp
 // MS2-RANGE: 0x1422fe810-0x142300880 .text$mn
+// MS2-FLAGS: oiintrin
 //
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). A copy of
 // the Scaleform SDK sample Video_VideoSoundSystemDX8.cpp (work/scaleform/4.3, same code in the 4.1 SDKs) with the game's
 // changes: the system creates its own DirectSound device on a game window (Impl::Init(HWND)), can re-initialize and
 // restore a lost primary buffer (FUN_1422fea10), and the sound thread first calls a game hook (DAT_143b15f88). The video
 // library was built with GFX_ENABLE_SOUND: CreateOutput ends with SetVolume(pChannel->GetVolume()).
-
 #include "ms2/placeholder/ms2stdafx.h"
-
+#pragma intrinsic(memcpy, memset, strcmp, strlen)
 #include <cmath>
 #include <process.h>
 #include <mmsystem.h>
@@ -612,4 +612,3 @@ UInt32 MS2VideoSoundDX8::GetSoundData(UInt32 nch, float* sample[], UInt32 nsmpl)
 // MS2-PIN: ?log10@@YAMM@Z 0x142300860
 // MS2-PIN: ??C?$Ptr@VSoundChannel@Sound@Scaleform@@@Scaleform@@QEBAPEAVSoundChannel@Sound@1@XZ 0x1423000e0
 // MS2-PIN: ?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z 0x142300840
-// MS2-FUNCTIONAL ?log10@@YAMM@Z: CRT header inline; it calls log10f directly here, through the ucrtbase IAT in the exe

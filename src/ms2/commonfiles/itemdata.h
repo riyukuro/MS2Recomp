@@ -224,7 +224,7 @@ class ItemModelData : public CCacheData
 {
 public:
     ItemModelData();                // 0x14054ae00
-    virtual ~ItemModelData();       // 0x140540e20
+    // Implicit virtual destructor: 0x140540e20 (no vftable store).
     static unsigned FUN_14054aec0(unsigned nId);    // nId / 100000
     void FUN_14054aee0(int n);      // m_nUnk28 = n
     void FUN_14054af00(Unk_140165cf0* pElem);       // XML read

@@ -49,3 +49,6 @@
 extern char DAT_143afc8d0;
 
 .
+13c
+#define EE_MS2_MATRIX3_MUL_FORCE  // MS2: exe inlines m_Rotate*kActorRot in GetTransforms (replaces a blank line: keeps __LINE__)
+.

@@ -83,8 +83,6 @@
 // The exe passes the address of a temporary NiFixedString (an MSVC extension) to the SSAO step ctor.
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
 #endif
-// MS2-FUNCTIONAL ?ErrorMessage@_com_error@@QEBAPEBDXZ: comdef.h inline (via the PCH); the exe copy (0x1416b0810) calls
-//   strlen out of line (0x14280f01e) where our /Oi build inlines it, and #pragma function(strlen) after the PCH can't reach it
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\postprocessing\\postprocessingservice.cpp"
 #ifndef NOMINMAX
 #define NOMINMAX                                                            // PhysX (via entityworldmanager.h)
@@ -129,6 +127,8 @@
 #include <ecrInput/InputService.h>
 #include <efd/ILogger.h>
 #include <efd/LoggerMacros.h>
+// PhysX Nx.h (above) turns intrinsic strlen back on; _com_error::ErrorMessage 0x1416b0810 calls it out of line.
+#pragma function(strlen)
 #include <comdef.h>
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/unk_1402a9d70.h"

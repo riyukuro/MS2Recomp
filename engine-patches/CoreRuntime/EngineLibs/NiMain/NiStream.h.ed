@@ -4,3 +4,6 @@
 193c
     unsigned int GetIDFromGroup(NiObjectGroup* pkGroup) const; const char* MS2GetFileName() const; const char* MS2GetStudioPath() const { return m_acStudioPath0x8; } // MS2: used by NiTextKeyExtraData::LoadBinary
 .
+36a
+    friend class MS2AnimationService; // MS2: ReloadFemaleKF/ReloadMaleKF write m_acStudioPath0x8
+.

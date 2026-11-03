@@ -663,8 +663,8 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The part anchors of an entity (the 16 byte handle of gameobject.cpp's Unk_GoAnchorPtr; names invented, bound by VA).
 struct Unk_MagicAnchor { char m_pad00[0xb4]; NxBox m_kPose; };   // box pose at +0xb4
-struct Unk_UtilFloat3;
-Vector3 FUN_141b6e150(const Unk_UtilFloat3* pFloat3);       // the anchor position as a Point3
+efd::Point3 FUN_141b6e150(const NxVec3& v);                 // NxVec3 -> efd::Point3
+float FUN_140966f00(NiPoint3 a, efd::Point3 b);             // distance (gameobject.cpp signature)
 
 // @0x14145d5d0
 int CMagic::FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
@@ -738,7 +738,7 @@ void CMagic::FUN_14145d9d0()
 MS2_REPLACE_METHOD(0x14145D9D0, CMagic, FUN_14145d9d0, 1010, 0x7394C1D9);
 
 // @0x14145ddd0
-void CMagic::FUN_14145ddd0(const Vector3& ptStart)
+void CMagic::FUN_14145ddd0(Vector3 ptStart)
 {
     m_ptStart = ptStart;
     m_ptLast = m_ptStart;
@@ -1026,7 +1026,6 @@ void CMagic::FUN_14145ec50(unsigned nNow)
 MS2_REPLACE_METHOD(0x14145EC50, CMagic, FUN_14145ec50, 2316, 0x13251CBB);
 
 // @0x14145f570
-// MS2-FUNCTIONAL: one temp slot: the exe passes m_ptCurrent to FUN_14145ddd0 as a 16-aligned by-value point (0x300), ours is the Vector3 temp at 0x2fc
 void CMagic::FUN_14145f570(unsigned nNow)
 {
     typedef std::pair<CString, int> FxPair;
@@ -1142,7 +1141,7 @@ void CMagic::FUN_14145f570(unsigned nNow)
         if (spModel.get() != NULL) {
             Unk_MagicEntity* pCaster = reinterpret_cast<Unk_MagicEntity*>(WorldService::GetInstance()->FindObjectById(pLinked->m_nCasterId));
             if (pCaster != NULL) {
-                spModel->GetMagic()->FUN_14145ddd0(Vector3(m_ptCurrent));
+                spModel->GetMagic()->FUN_14145ddd0(m_ptCurrent);
                 pLinked->m_nStartTick = nNow;
             }
         }
@@ -2422,7 +2421,6 @@ void CMagic::FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow)
 MS2_REPLACE_METHOD(0x141466DA0, CMagic, FUN_141466da0, 848, 0x980F5959);
 
 // @0x141467100
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CMagic::FUN_141467100(Unk_MagicEntity* pEntity, Vector3* pOut)
 {
     const Unk_MagicSkillRow* pRow = reinterpret_cast<const Unk_MagicSkillRow*>(reinterpret_cast<SkillTargetRecord*>(m_spSkill.operator->())->GetAttackData());
@@ -2439,21 +2437,21 @@ int CMagic::FUN_141467100(Unk_MagicEntity* pEntity, Vector3* pOut)
     if (m_data.FUN_14145c180())
         fMaxZ = fMaxZ + m_data.m_ptControlEnd.z;
     float fNearest = FLT_MAX;
-    Vector3 ptNearest = DAT_143b01a60;
+    NiPoint3 ptNearest(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
     for (unsigned i = 0; i < reinterpret_cast<ATL::CAtlArray<Unk_GoAnchorPtr>*>(&kParts)->GetCount(); ++i) {   // C3: the exe folds GetCount onto the anchor array's copy
         MS2Ptr<CBoxCollision> spAnchor = kParts[i];
-        if (!(spAnchor == 0)) {
-            Vector3 ptAnchor = FUN_141b6e150(reinterpret_cast<const Unk_UtilFloat3*>(&reinterpret_cast<Unk_MagicAnchor*>(spAnchor.operator->())->m_kPose.GetCenter()));
-            if (fMaxZ < ptAnchor.z)
-                ptAnchor.z = fMaxZ;
-            float fDist = FUN_140966f00(m_ptCurrent, ptAnchor);
-            if (fDist < fNearest) {
-                ptNearest = ptAnchor;
-                fNearest = fDist;
-            }
+        if (spAnchor == 0)
+            continue;
+        NiPoint3 ptAnchor(FUN_141b6e150(reinterpret_cast<Unk_MagicAnchor*>(spAnchor.operator->())->m_kPose.GetCenter()));
+        if (ptAnchor.z > fMaxZ)
+            ptAnchor.z = fMaxZ;
+        float fDist = FUN_140966f00(reinterpret_cast<const NiPoint3&>(m_ptCurrent), ptAnchor);
+        if (fNearest > fDist) {
+            fNearest = fDist;
+            ptNearest = ptAnchor;
         }
     }
-    *pOut = ptNearest;
+    *pOut = reinterpret_cast<const Vector3&>(ptNearest);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141467100, CMagic, FUN_141467100, 788, 0x479E08E3);

@@ -1,8 +1,10 @@
 // Nexon Messenger stream utility bodies; the stream and codec layouts are being recovered in nmstream.h.
 // MS2-UNIT: unit_14156a020
 // MS2-RANGE: 0x14156a020-0x14156f7e0 .text$mn
+// MS2-FLAGS: oiintrin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#pragma intrinsic(memcpy, memset, strcmp, strlen)
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmencoder.h"
@@ -506,35 +508,33 @@ wchar_t* CNMSimpleStreamDecoder::ReadWStringBuf(wchar_t* pBuffer, unsigned int c
     return pBuffer;
 }
 
-// MS2-FUNCTIONAL 0x14156b8e0: converts decoder-owned wide storage using the stream code page.
 // @0x14156b8e0
 char* CNMSimpleStreamDecoder::ReadString()
 {
     wchar_t* wide = ReadWString();
-    if (!wide)
-        return nullptr;
-    const int length = static_cast<int>(wcslen(wide));
-    if (m_pAnsi) HeapFree(GetProcessHeap(), 0, m_pAnsi);
-    m_pAnsi = static_cast<char*>(HeapAlloc(GetProcessHeap(), 0, static_cast<SIZE_T>(length) * 2 + 2));
-    if (m_pAnsi) {
+    if (wide) {
+        const unsigned int length = static_cast<unsigned int>(wcslen(wide));
+        if (m_pAnsi) HeapFree(GetProcessHeap(), 0, m_pAnsi);
+        m_pAnsi = static_cast<char*>(HeapAlloc(GetProcessHeap(), 0, length * 2 + 2));
         WideCharToMultiByte(FUN_1415fa0c0(m_pStream), 0, wide, -1, m_pAnsi, length * 2 + 2, nullptr, nullptr);
         m_pAnsi[length * 2 + 1] = 0;
+        return m_pAnsi;
     }
-    return m_pAnsi;
+    return nullptr;
 }
 
-// MS2-FUNCTIONAL 0x14156ba00: converts a wide string to the caller's buffer and bounds its terminator.
 // @0x14156ba00
 char* CNMSimpleStreamDecoder::ReadStringBuf(char* pBuffer, int capacity)
 {
     wchar_t* wide = ReadWString();
-    if (!wide)
-        return nullptr;
-    const int length = static_cast<int>(wcslen(wide));
-    const int outputSize = capacity == 0 ? length * 2 + 1 : capacity;
-    WideCharToMultiByte(FUN_1415fa0c0(m_pStream), 0, wide, -1, pBuffer, outputSize, nullptr, nullptr);
-    pBuffer[capacity == 0 ? length : capacity - 1] = 0;
-    return pBuffer;
+    if (wide) {
+        const unsigned int length = static_cast<unsigned int>(wcslen(wide));
+        WideCharToMultiByte(FUN_1415fa0c0(m_pStream), 0, wide, -1, pBuffer,
+                            capacity == 0 ? length * 2 + 1 : capacity, nullptr, nullptr);
+        pBuffer[capacity == 0 ? length : capacity - 1] = 0;
+        return pBuffer;
+    }
+    return nullptr;
 }
 
 // @0x14156baf0
@@ -1426,9 +1426,8 @@ unsigned int CNMFriendList::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNM
 // @0x14156f6f0
 unsigned int CNMFriendList::Decode(CNMSerializableDecoder*d,CNMStream*s){CNMFriendInfo info;const unsigned int n=d->ReadU32();m_10.clear();for(unsigned int i=0;i<n;++i){info.DecodeFramed(s);m_10.push_back(info);}return static_cast<unsigned int>(FUN_1415fb750(d));}
 
-// MS2-FUNCTIONAL 0x14156ad40: appends the counted UTF-16 string bytes to the stream.
 // @0x14156ad40
-void FUN_14156ad40(long long* stream,const wchar_t* text){if(*stream==0)return;const unsigned int n=text?static_cast<unsigned int>(wcslen(text)):0;FUN_14156a850(stream,n);if(!n)return;long long* const inner=reinterpret_cast<long long*>(*stream);if(!FUN_14156a640(inner,static_cast<int>(n*2)))return;memcpy(reinterpret_cast<unsigned char*>(*inner)+*reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(inner)+0x14),text,n*2);*reinterpret_cast<int*>(reinterpret_cast<char*>(inner)+0x14)+=n*2;*reinterpret_cast<int*>(reinterpret_cast<char*>(inner)+0x0c)+=n*2;}
+void FUN_14156ad40(long long* stream,const wchar_t* text){if(*stream!=0){const unsigned int n=static_cast<unsigned int>(text?wcslen(text):0);FUN_14156a850(stream,n);if(n>0){if(FUN_14156a640(reinterpret_cast<long long*>(*stream),static_cast<int>(n*2))){memcpy(*reinterpret_cast<unsigned char**>(*stream)+*reinterpret_cast<unsigned int*>(reinterpret_cast<char*>(*stream)+0x14),text,n*2);*reinterpret_cast<int*>(reinterpret_cast<char*>(*stream)+0x14)+=n*2;*reinterpret_cast<int*>(reinterpret_cast<char*>(*stream)+0x0c)+=n*2;}}}}
 
 // MS2-FUNCTIONAL 0x14156ae30: converts the current code-page string to UTF-16 before appending it.
 // @0x14156ae30

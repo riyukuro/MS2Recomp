@@ -145,6 +145,15 @@ void Unk_CMISDriveColumnMapTail3()
     m.erase(m.begin());
 }
 
+// mt7: the long-key entity map (its _Insert_at 0x1410ea400 / _Insert_nohint 0x141108380 call this slice's
+// _Destroy_if_node 0x141135c80, the int-key body it folds onto)
+void Unk_CMISDriveEntityMapLTail3()
+{
+    efd::map<long, egf::EntityPtr> m;
+    const long k = 0;
+    (void)m.try_emplace(k);
+}
+
 typedef std::map<unsigned int, MS2SvrPtr<CUGCMapSetItemInfo> > Unk_CMISMapSetItem;
 typedef efd::vector<NiTransform> Unk_CMISXformVec2;
 typedef efd::vector<Cube*> Unk_CMISCubePtrVec;
@@ -298,3 +307,4 @@ void Unk_CMISDriveTail3()
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@$0A@@std@@@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@2@XZ 0x141142470 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@std@@@2@XZ 0x141142830 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@@std@@@2@XZ 0x141142ad0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@JV?$SmartPointer@VEntity@egf@@@efd@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@2@@Z 0x141135c80 ; mt7: the int-key entity map body (calls the int destroy 0x14111a380), which the long-key one folds onto (its _Insert_at 0x1410ea400 / _Insert_nohint 0x141108380 call it)

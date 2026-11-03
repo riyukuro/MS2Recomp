@@ -1,0 +1,15 @@
+40a
+#endif
+.
+39a
+    // MS2: some exe services' ms_ClassInfo initializers inline this SetupClassInfo (with
+    // IBase's), where cl 14.16 tail-calls it; those units define
+    // EE_MS2_ISYSTEMSERVICE_SCI_FORCEINLINE (engine/units-gb.json).
+#if defined(EE_MS2_ISYSTEMSERVICE_SCI_FORCEINLINE)
+#define SetupClassInfo __forceinline SetupClassInfo
+    EE_BEGIN_DECLARE_INTERFACE(ISystemService, efd::kCLASSID_ISystemService);
+#undef SetupClassInfo
+        EE_INCLUDE_INTERFACE(efd::IBase);
+    EE_END_DECLARE_INTERFACE();
+#else
+.

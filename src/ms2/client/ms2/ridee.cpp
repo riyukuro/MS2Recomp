@@ -1293,7 +1293,6 @@ void Ridee::FUN_1417082c0()
 MS2_REPLACE_METHOD(0x1417082c0, Ridee, FUN_1417082c0, 210, 0xF313323A);
 
 // @0x1417083a0
-// MS2-FUNCTIONAL: same calls and frame; left: the exe loads m_fX/m_fZ into xmm0 and moves them to xmm2 before the scale call
 void Ridee::FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, MS2Ptr<Unk_RideeModel> spModel)
 {
     if (!pRider || spSeat == 0 || spModel == 0)
@@ -1328,8 +1327,8 @@ void Ridee::FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, 
         kRotate.GetCol(2, kZ);
         kZ.Unitize();
         kPos = kPos + kY * -spModel->m_fY;
-        kPos = kPos + kX * spModel->m_fX;
-        kPos = kPos + kZ * spModel->m_fZ;
+        kPos = kPos + kX * (0, spModel->m_fX);
+        kPos = kPos + kZ * (0, spModel->m_fZ);
         pRider->vfunc_19(kPos);
         pRider->vfunc_21(kAngles);
     }

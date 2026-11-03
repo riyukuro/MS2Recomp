@@ -1,14 +1,14 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CRI Middleware UTF table reader (statically linked vendor code):
 // table open/parse, big-endian header readers, value printer and value comparison. Names are invented from use.
 // MS2-UNIT: unit_140046e04
+// MS2-TOOLSET: vc9
 // MS2-RANGE: 0x140046e04-0x140047430 .text$mn
 #define MS2_THIS_FILE ""
-#include "ms2/placeholder/ms2stdafx.h"
-#include "ms2/ms2recover.h"
-#include "ms2/ms2layout.h"
-#include "hook/ms2hook.h"
-
-#pragma optimize("gsy", on)                                       // statically linked CRI library: built with /O2, not /Od
+#include <stdlib.h>
+#include <string.h>
+#pragma function(memset, memcpy, strcmp)
+#pragma optimize("s", on)
+#define MS2_CHECK_SIZE(T, n) typedef char T##_size_check[sizeof(T) == (n) ? 1 : -1]
 
 // ---- unit-local types and unrecovered callees ----------------------------------------------------------------------------
 struct Unk_CriUtfColumn                                         // 0x30 bytes
@@ -24,8 +24,8 @@ MS2_CHECK_SIZE(Unk_CriUtfColumn, 0x30);
 
 struct Unk_CriUtfHeader                                         // big-endian header decoded by FUN_1400471c8
 {
-    unsigned char b0;
-    unsigned char b1;
+    char b0;
+    char b1;
     unsigned short w2;
     unsigned d4;
     unsigned d8;
@@ -100,14 +100,15 @@ int FUN_140038e24(int level, const char* code, int err);
 unsigned FUN_14003afb0(Unk_CriUtfTable* table, const unsigned char* src, Unk_CriUtfColumn* column);
 int FUN_140ccaae0(const char* fmt, ...);
 unsigned FUN_140047158(unsigned type);
-unsigned long long FUN_140047170(const unsigned char* src, unsigned* out);
-unsigned long long FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out);
+unsigned FUN_140047170(const unsigned char* src, unsigned* out);
+unsigned FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out);
 
 // @0x140046e04
-// MS2-FUNCTIONAL: exe uses r12-r15 for the column loop; register allocation differs
+// MS2-FUNCTIONAL: exe keeps head[] in the table home slot, reloads data from its stack slot and m_columns after the inner loop; register allocation differs
 Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, Unk_CriUtfColumn* columns, void* p5,
                                const unsigned char* data, unsigned size, const Unk_CriUtfInit* init, unsigned flags)
 {
+    unsigned head[2];
     DAT_143ba9d50 = "\nCRI UTF Retriever/PCx64 Ver.1.00.02 Build:Jan 13 2012 19:02:05\n";
     memset(table, 0, sizeof(Unk_CriUtfTable));
     table->m_p0b0 = p5;
@@ -115,74 +116,59 @@ Unk_CriUtfTable* FUN_140046e04(Unk_CriUtfTable* table, void* ctx, void* unused, 
     table->m_init = *init;
     table->self = &table->m_init;
     table->m_flags = flags;
-    unsigned head[2];
-    unsigned n = (unsigned)FUN_140047170(data, head);
+    unsigned n = FUN_140047170(data, head);
     data = data + n;
-    const char* err;
-    if (head[0] == 0x40555446)
+    if (head[0] != 0x40555446)
     {
-        if ((unsigned long long)head[1] + 8 <= (unsigned long long)size)
+        FUN_140038ddc(0, "E06100301:Invalid IFF header (mismatched four_cc).");
+        return 0;
+    }
+    if ((unsigned long long)head[1] + 8 > (unsigned long long)size)
+    {
+        FUN_140038ddc(0, "E06100311:Size error.");
+        return 0;
+    }
+    table->m_size = head[1];
+    table->m_base = (unsigned char*)data;
+    Unk_CriUtfHeader hdr;
+    n = FUN_1400471c8(data, &hdr);
+    unsigned char* base = table->m_base;
+    table->m_p40 = base + hdr.d8;
+    data = data + n;
+    table->m_p38 = base + hdr.d4;
+    table->m_p48 = base + hdr.w2;
+    table->m_columns = columns;
+    table->m_columnCount = hdr.w10;
+    table->m_p50 = base + hdr.dc + hdr.d4;
+    table->m_w5a = hdr.w12;
+    table->m_d5c = hdr.d14;
+    if (columns == 0)
+    {
+        FUN_140038e24(0, "E06100302", -3);
+        return 0;
+    }
+    for (unsigned i = 0; i < table->m_columnCount; ++i)
+    {
+        n = FUN_14003afb0(table, data, &table->m_columns[i]);
+        data = data + n;
+        unsigned sum = 0;
+        Unk_CriUtfColumn* c = table->m_columns;
+        for (unsigned j = 0; j < i; ++j, ++c)
         {
-            table->m_size = head[1];
-            table->m_base = (unsigned char*)data;
-            Unk_CriUtfHeader hdr;
-            n = (unsigned)FUN_1400471c8(data, &hdr);
-            unsigned char* base = table->m_base;
-            table->m_p40 = base + hdr.d8;
-            data = data + n;
-            table->m_p38 = base + hdr.d4;
-            table->m_p48 = base + hdr.w2;
-            table->m_columns = columns;
-            table->m_columnCount = hdr.w10;
-            table->m_p50 = base + hdr.dc + hdr.d4;
-            table->m_w5a = hdr.w12;
-            table->m_d5c = hdr.d14;
-            if (columns == 0)
-            {
-                FUN_140038e24(0, "E06100302", -3);
-                return 0;
-            }
-            unsigned i = 0;
-            if (hdr.w10 != 0)
-            {
-                do
-                {
-                    n = FUN_14003afb0(table, data, &table->m_columns[i]);
-                    data = data + n;
-                    unsigned short off = 0;
-                    unsigned sum = 0;
-                    Unk_CriUtfColumn* c = table->m_columns;
-                    for (unsigned j = i; j != 0; --j)
-                    {
-                        if (c->flag != 0)
-                            sum += FUN_140047158(c->type);
-                        off = (unsigned short)sum;
-                        ++c;
-                    }
-                    table->m_columns[i].rowOffset = off;
-                    ++i;
-                } while (i < table->m_columnCount);
-            }
-            for (int k = 0; k < 4; ++k)
-            {
-                table->m_slots[k].key = 0xffffffff;
-                table->m_slots[k].value = 0;
-            }
-            return table;
+            if (c->flag != 0)
+                sum += FUN_140047158(c->type);
         }
-        err = "E06100311:Size error.";
+        table->m_columns[i].rowOffset = (unsigned short)sum;
     }
-    else
+    for (int k = 0; k < 4; ++k)
     {
-        err = "E06100301:Invalid IFF header (mismatched four_cc).";
+        table->m_slots[k].key = 0xffffffff;
+        table->m_slots[k].value = 0;
     }
-    FUN_140038ddc(0, err);
-    return 0;
+    return table;
 }
-MS2_REPLACE(0x140046E04, FUN_140046e04, 522, 0x63083CD2);
 
 // @0x14004702c
-// MS2-FUNCTIONAL: exe calls (no tail jmp) and merges the shared tails
 void FUN_14004702c(int type, const Unk_CriUtfValue* value)
 {
     switch (type)
@@ -232,43 +218,37 @@ void FUN_14004702c(int type, const Unk_CriUtfValue* value)
         break;
     }
 }
-MS2_REPLACE(0x14004702C, FUN_14004702c, 300, 0x313247D8);
 
 // @0x140047158
-unsigned FUN_140047158(unsigned type)
+__declspec(noinline) inline unsigned FUN_140047158(unsigned type)
 {
     if ((int)type >= 13)
         return 0;
     return DAT_143a48708[type];
 }
-MS2_REPLACE(0x140047158, FUN_140047158, 21, 0x04F653E9);
 
 // @0x140047170
-// MS2-FUNCTIONAL: mov r9,rcx scheduling differs
-unsigned long long FUN_140047170(const unsigned char* src, unsigned* out)
+unsigned FUN_140047170(const unsigned char* src, unsigned* out)
 {
     out[0] = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | src[3];
     out[1] = (src[4] << 24) | (src[5] << 16) | (src[6] << 8) | src[7];
     return 8;
 }
-MS2_REPLACE(0x140047170, FUN_140047170, 86, 0x18D39423);
 
 // @0x1400471c8
-// MS2-FUNCTIONAL: load order of two byte pairs differs
-unsigned long long FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out)
+unsigned FUN_1400471c8(const unsigned char* src, Unk_CriUtfHeader* out)
 {
-    out->b0 = src[0];
-    out->b1 = src[1];
-    out->w2 = (unsigned short)((src[2] << 8) | src[3]);
+    out->b0 = ((const char*)src)[0];
+    out->b1 = ((const char*)src)[1];
+    out->w2 = (unsigned short)((unsigned short)src[2] << 8) | src[3];
     out->d4 = (src[4] << 24) | (src[5] << 16) | (src[6] << 8) | src[7];
     out->d8 = (src[8] << 24) | (src[9] << 16) | (src[10] << 8) | src[11];
     out->dc = (src[12] << 24) | (src[13] << 16) | (src[14] << 8) | src[15];
-    out->w10 = (unsigned short)((src[16] << 8) | src[17]);
-    out->w12 = (unsigned short)((src[18] << 8) | src[19]);
+    out->w10 = (unsigned short)((unsigned short)src[16] << 8) | src[17];
+    out->w12 = (unsigned short)((unsigned short)src[18] << 8) | src[19];
     out->d14 = (src[20] << 24) | (src[21] << 16) | (src[22] << 8) | src[23];
     return 0x18;
 }
-MS2_REPLACE(0x1400471C8, FUN_1400471c8, 239, 0x8F0C5B9A);
 
 // @0x1400472c0
 unsigned FUN_1400472c0(const unsigned char* base, unsigned size)
@@ -277,11 +257,9 @@ unsigned FUN_1400472c0(const unsigned char* base, unsigned size)
         return 0;
     return (base[0x18] << 8) | base[0x19];
 }
-MS2_REPLACE(0x1400472C0, FUN_1400472c0, 22, 0x9CFAFF47);
 
 // @0x14004730c
-// MS2-FUNCTIONAL: exe keeps a call frame for strcmp; case tree/signedness differs
-unsigned long long FUN_14004730c(const Unk_CriUtfValue* a, const Unk_CriUtfValue* b)
+int FUN_14004730c(const Unk_CriUtfValue* a, const Unk_CriUtfValue* b)
 {
     unsigned char t = a->type;
     if (t != b->type)
@@ -367,4 +345,3 @@ const char* FUN_140047420(void)
 }
 
 // ---- hooks ----
-MS2_REPLACE(0x14004730C, FUN_14004730c, 261, 0x1F479B7F);

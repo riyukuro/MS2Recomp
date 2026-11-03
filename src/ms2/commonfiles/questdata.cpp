@@ -2384,40 +2384,33 @@ public:
     bool IsDisableValidate();
 };
 
-// Looks up (or creates) the quest id list under the key and appends the quest id to it.
-template <class TMap, class TKey>
-static void AddToIds(TMap& map, const TKey& key, unsigned nQuestId)
-{
-    QuestDataTable::IdsPtr spIds(0);
-    if (!map.Lookup(key, spIds))
-    {
-        spIds = Unk_BmNewTag(0);
-        map.SetAt(key, spIds);
-    }
-    spIds->Add(nQuestId);
-}
-
-// MS2-FUNCTIONAL: builds every quest index from m_quests; MSVC folds the repeated lookup-or-create blocks differently
 // @0x14074f160
 void QuestDataTable::FUN_14074f160()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    std::map<unsigned, MS2Ptr<CQuestData> >::iterator it = quests.begin();
-    for (; it != quests.end(); ++it)
+    // Looks up (or creates) the quest id list under the key and appends the quest id to it.
+#define QUEST_ADD_ID(map, key) \
+        { \
+            QuestDataTable::IdsPtr spIds(0); \
+            if (!(map).Lookup((key), spIds)) \
+            { \
+                spIds = Unk_BmNewTag(0); \
+                (map).SetAt((key), spIds); \
+            } \
+            spIds->Add(FUN_14074b030(spData.operator->())); \
+        }
+    for (std::map<unsigned, MS2Ptr<CQuestData> >::iterator it = m_quests.begin(); it != m_quests.end(); ++it)
     {
-        std::pair<const unsigned, MS2Ptr<CQuestData> >& entry = *it;
-        MS2Ptr<CQuestData> spData = entry.second;
-        unsigned nId = FUN_14074b030(spData.operator->());
+        MS2Ptr<CQuestData> spData = it->second;
         if (spData->m_33)
-            m_360.push_back(nId);
-        AddToIds(m_chapter, spData->m_28, nId);
+            m_360.push_back(FUN_14074b030(spData.operator->()));
+        QUEST_ADD_ID(m_chapter, spData->m_28)
         if (FUN_14074b050(spData.operator->()) != 4 && spData->m_2d && !spData->m_30)
-            m_128.Add(nId);
+            m_128.Add(FUN_14074b030(spData.operator->()));
         if (FUN_14074b050(spData.operator->()) == 9)
-            AddToIds(m_318, spData->m_4c, nId);
+            QUEST_ADD_ID(m_318, spData->m_4c)
         if (spData->m_require.m_groupId != 0)
-            AddToIds(m_390, spData->m_require.m_groupId, nId);
+            QUEST_ADD_ID(m_390, spData->m_require.m_groupId)
 
         size_t nConditions = spData->m_conditions.GetCount();
         for (size_t i = 0; i < nConditions; i++)
@@ -2427,33 +2420,43 @@ void QuestDataTable::FUN_14074f160()
             {
                 int nKey = (int)spCond->m_target.GetFirstValue();
                 if (m_420.find(nKey) == m_420.end())
-                    m_420.insert(std::make_pair(nKey, nId));
+                    m_420.insert(std::make_pair(nKey, (unsigned)FUN_14074b030(spData.operator->())));
             }
             else if (spCond->m_nType == 3 || spCond->m_nType == 0xad)
             {
-                int nIdx = spCond->m_nType != 3;
+                int nIdx = spCond->m_nType == 3 ? 0 : 1;
                 ATL::CAtlArray<unsigned> ids;
                 FUN_140177e10(*spCond->m_code.GetText(), ids, ",");
                 for (size_t j = 0; j < ids.GetCount(); j++)
-                    AddToIds(m_148[nIdx], ids[j], nId);
+                {
+                    unsigned nKey = ids[j];
+                    QUEST_ADD_ID(m_148[nIdx], nKey)
+                }
             }
         }
 
-        int nKeyA = spData->m_2e8;
-        int nKeyB = spData->m_2ec;
+        unsigned nId = FUN_14074b030(spData.operator->());
+        unsigned nKeyA = spData->m_2e8;
+        unsigned nKeyB = spData->m_2ec;
         m_430[nKeyA].push_back(nId);
         if (nKeyA != nKeyB)
             m_430[nKeyB].push_back(nId);
 
         if (FUN_14074b050(spData.operator->()) == 4)
         {
-            if (spData->m_fields.GetCount() != 0)
-                AddToIds(m_1f8, spData->m_fields[0], nId);
+            if (spData->m_fields.GetCount() > 0)
+            {
+                unsigned nKey = spData->m_fields[0];
+                QUEST_ADD_ID(m_1f8, nKey)
+            }
         }
         else if (FUN_14074b050(spData.operator->()) == 8)
         {
-            if (spData->m_fields.GetCount() != 0)
-                AddToIds(m_240, spData->m_fields[0], nId);
+            if (spData->m_fields.GetCount() > 0)
+            {
+                unsigned nKey = spData->m_fields[0];
+                QUEST_ADD_ID(m_240, nKey)
+            }
         }
 
         if (spData->m_320.m_0 == 1)
@@ -2491,6 +2494,7 @@ void QuestDataTable::FUN_14074f160()
         }
     }
     SortQuestChains();
+#undef QUEST_ADD_ID
 }
 MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, FUN_14074f160, 3448, 0xCBA25530);
 

@@ -1,0 +1,16 @@
+49a
+#endif
+.
+47a
+    // MS2: the exe's ms_ClassInfo initializer tail-calls an out-of-line SetupClassInfo
+    // (0x14200c6e0), where cl 14.16 inlines it; the unit defines EE_MS2_SCI_NOINLINE
+    // (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(CameraService, efd::kCLASSID_CameraService);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(efd::ISystemService);
+        EE_INCLUDE_CLASS(ecr::IRenderServiceDelegate);
+    EE_END_DECLARE_CLASS();
+#else
+.

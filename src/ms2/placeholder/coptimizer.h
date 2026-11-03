@@ -50,7 +50,7 @@ public:
     void SetSuppressed(int nSuppressed);
     int GetSuppressed() const;
     void ApplyModeToPlayer(PCBase* pPC);
-    void AddSuppressor(const egf::EntityID& kId);
+    void AddSuppressor(egf::EntityID kId);
     void RemoveSuppressor(egf::EntityID kId);
     int IsUpdateEnabled() const;
     void FUN_14161d130(bool bForce);

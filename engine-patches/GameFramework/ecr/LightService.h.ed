@@ -11,3 +11,19 @@ extern EE_ECR_ENTRY void (*g_pfnLightAdded)(const egf::EntityID& entityID);
         efd::Category targetChannel);
 
 .
+58a
+#endif
+.
+56a
+    // MS2: the exe's ms_ClassInfo initializer tail-calls an out-of-line SetupClassInfo
+    // (0x14202a2f0), where cl 14.16 inlines it; the unit defines EE_MS2_SCI_NOINLINE
+    // (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(LightService, efd::kCLASSID_LightService);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(efd::ISystemService);
+        EE_INCLUDE_CLASS(ecr::IRenderServiceDelegate);
+    EE_END_DECLARE_CLASS();
+#else
+.

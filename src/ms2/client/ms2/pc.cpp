@@ -3997,7 +3997,6 @@ int PC::FUN_14165b500(int nKind)
     return 0;
 }
 
-// MS2-FUNCTIONAL: one register hop differs (the exe loads this straight into rcx for FUN_141658e60)
 // @0x141658150
 bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary)
 {
@@ -4041,7 +4040,7 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
             {
                 CEquipModel* pModel = aModels[i].get();
                 ModelPart* pPart = ((struct ModelPart*)FUN_141200ab0(pModel));
-                std::vector<ModelNameEntry>& kList = pPart->entries[(unsigned int)FUN_141658e60()];
+                std::vector<ModelNameEntry>& kList = *(pPart->entries + (unsigned int)FUN_141658e60());
                 std::vector<ModelNameEntry>::const_iterator it;
                 for (it = kList.begin(); it != kList.end(); ++it)
                 {

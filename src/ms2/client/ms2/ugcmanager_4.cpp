@@ -1605,7 +1605,7 @@ MS2_REPLACE_METHOD(0x141883860, CUgcManager, FUN_141883860, 1409, 0x1FFDD70D);
 
 // @0x141883df0
 // Downloads the UGC look of an item (and its icon) unless the url is empty.
-void CUgcManager::FUN_141883df0(MS2Ptr<CItem> spItem, const egf::EntityID& id)
+void CUgcManager::FUN_141883df0(MS2Ptr<CItem> spItem, egf::EntityID id)
 {
     if (spItem == 0)
         return;

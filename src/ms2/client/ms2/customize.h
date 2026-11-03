@@ -21,7 +21,6 @@ class PC;
 class CEquipItem;
 class CItemCustomizeController;
 class IItemCustomizeEventListener;
-class Unk_BSPartHandle;     // the NiPointer<CItemCustomizeController> FUN_140cd1a30 returns (each caller views it locally)
 
 class Customize : public CPtred, public UIItemEventListener
 {
@@ -163,7 +162,7 @@ public:
     int FUN_140cd17e0();                        // the previewed item id
     MS2Ptr<CItem> FUN_140cd1890();              // the previewed item (uiitemcoloringdialog.cpp)
     __int64 FUN_140cd1980();                    // the uid of the item being dyed
-    Unk_BSPartHandle FUN_140cd1a30();           // the part being edited
+    NiPointer<CItemCustomizeController> FUN_140cd1a30();           // the part being edited
     unsigned GetEditFlags();                   // what the item can customize (EditItems::GetFlags)
     IItemCustomizeEventListener* GetListener();   // the listener
     void FUN_140cd1bf0();                       // per frame

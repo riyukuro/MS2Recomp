@@ -708,7 +708,6 @@ MeshInstancing* HardwareInstancingService::FUN_1413d4b40(egf::Entity* pEntity, i
 MS2_REPLACE_METHOD(0x1413D4B40, HardwareInstancingService, FUN_1413d4b40, 1171, 0x0684388E);
 
 // @0x1413d4fe0
-// MS2-FUNCTIONAL: the exe loads the needed count into ecx before the capacity compare (cmp ecx,eax); same test
 int HardwareInstancingService::FUN_1413d4fe0(EntityInstancing* pInstancing, egf::Entity* pEntity)
 {
     if (pInstancing == NULL || pEntity == NULL)
@@ -720,8 +719,7 @@ int HardwareInstancingService::FUN_1413d4fe0(EntityInstancing* pInstancing, egf:
     if (((class Unk_CMISGlue*)(class COptimizer*)(((class COptimizer*)FUN_1409f7c90())))->Global() != 0)
     {
         int nCount = pInstancing->FUN_1413ebb30();
-        unsigned nNeeded = nCount + 1;
-        if (nNeeded > pInstancing->FUN_1413ebb90())
+        if (nCount + 1 > pInstancing->FUN_1413ebb90())
             pInstancing->FUN_1411c6ae0(nCount * 2);
     }
     if (pInstancing->FUN_1411c58d0(pEntity) != 0)

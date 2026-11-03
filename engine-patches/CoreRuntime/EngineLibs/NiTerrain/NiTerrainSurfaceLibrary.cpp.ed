@@ -1,3 +1,6 @@
+273c
+            if (kAssetID.compare(pkPackage->GetAssetID()) == 0) // MS2: exe inlines this compare (the TU calls operator==(const char*, utf8string) out of line elsewhere)
+.
 156c
     if (!FindPackageByAsset(kReference.GetAssetID()) && !IsPackageLoading(kReference.GetAssetID())) RequestLoadPackage(kReference); // MS2: RegisterReference_Internal(kReference, NULL), inlined
 .

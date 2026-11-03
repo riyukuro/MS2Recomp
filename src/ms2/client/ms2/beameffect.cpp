@@ -176,7 +176,7 @@
 bool FUN_14028d470(float a, float b);                               // nearly equal
 bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-const Unk_NiMatrix3& FUN_1409478e0(void* pNode);                    // world rotate
+const NiTransform& FUN_1409478e0(void* pNode);                      // NiAVObject::GetWorldTransform
 void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
@@ -515,7 +515,7 @@ void CBeamEffect::UpdateMesh()
 }
 
 // @0x140a08c60
-// MS2-FUNCTIONAL: frame and temporaries differ from the exe.
+// The pointCurve mid point goes through NiPoint3(const efd::Point3&) (0x14027dcf0) as in the exe.
 // Samples a Catmull-Rom curve (m_nQuality samples per segment) through five control points built from the end points
 // of the target's point list and the third control point from the param's BeamInfo (pass-through point for a
 // pointCurve, direction / length rates relative to the node's rotation for a directionCurve).
@@ -544,7 +544,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Unk_NiMatrix3 kRot;
         reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
             (-kEulerNi.z * 3.1415927f) / 180.0f);
-        Vector3 kMid = kStart.FUN_14097fd50(kRot.FUN_140a00720(pInfo->m_kPassThroughPoint));
+        Vector3 kMid(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(kStart.FUN_14097fd50(kRot.FUN_140a00720(pInfo->m_kPassThroughPoint)))));
         efd::vector<Vector3> kControl;
         kControl.push_back(kStart);
         kControl.push_back(kStart);
@@ -570,9 +570,9 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         float fLength = kDelta.FUN_140968990();
         Vector3 kEuler;
-        FUN_140a0b1f0(FUN_1409478e0(m_spTarget.operator->()), &kEuler);
-        Vector3 kAxisA;
-        Vector3 kAxisB;
+        const NiTransform& kWorld = FUN_1409478e0(m_spTarget.operator->());
+        FUN_140a0b1f0(reinterpret_cast<const Unk_NiMatrix3&>(kWorld.m_Rotate), &kEuler);
+        Vector3 kAxisA, kAxisB;
         FUN_140a01250(kEuler, &kAxisA, &kAxisB);
         kAxisA.FUN_140968990();
         Vector3 kBend = kAxisA.FUN_14097fd50(kDelta.FUN_14097fc90(pInfo->m_fDirectionRate));

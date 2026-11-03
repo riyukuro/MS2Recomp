@@ -25,6 +25,7 @@ TOOLSET_DIRECTIVE = re.compile(r"^[ \t]*//[ \t]*MS2-TOOLSET:[ \t]*([A-Za-z0-9_]+
 # game options a profile option replaces (same cl switch family)
 _FAMILY = [(re.compile(r"^/O[dx12]$"), re.compile(r"^/O[dx12]$")),
            (re.compile(r"^/Ob\d$"), re.compile(r"^/Ob\d$")),
+           (re.compile(r"^/Oi-?$"), re.compile(r"^/Oi-?$")),
            (re.compile(r"^/GR-?$"), re.compile(r"^/GR-?$")),
            (re.compile(r"^/EH"), re.compile(r"^/EH")),
            (re.compile(r"^/fp:"), re.compile(r"^/fp:")),
@@ -33,17 +34,51 @@ _cache = None
 _tcache = None
 
 
+def listing(txt, var):
+    """the quoted items of the cmake command `set(<var> ...)` in `txt` ([] if there is none), read up to that set's own
+    closing ')' the way cmake reads its arguments: quoted strings (escape sequences such as \\" decoded), `#` line
+    comments, nested parentheses. An empty or one-line list never runs into the next set( and a ')' or quote in a
+    comment counts for nothing. Unquoted items, ${} references and ';' lists inside an item are not read
+    (cmake/ms2-unit-profiles.cmake quotes every flag)."""
+    m = re.search(r"^[ \t]*set\(" + re.escape(var) + r"(?=[\s)#])", txt, re.M)
+    if not m:
+        return []
+    items, depth, i, n = [], 0, m.end(), len(txt)
+    while i < n:
+        c = txt[i]
+        if c == '"':
+            j = i + 1
+            while j < n and txt[j] != '"':
+                j += 2 if txt[j] == "\\" else 1
+            if j >= n:
+                break
+            if j > i + 1:
+                items.append(re.sub(r"\\(.)", lambda e: {"n": "\n", "t": "\t", "r": "\r"}.get(e.group(1), e.group(1)),
+                                    txt[i + 1:j], flags=re.S))
+            i = j + 1
+            continue
+        if c == "#":
+            i = txt.find("\n", i)
+            if i < 0:
+                break
+        elif c == "(":
+            depth += 1
+        elif c == ")":
+            if not depth:
+                return items
+            depth -= 1
+        i += 1
+    raise ValueError("%s: set(%s ...) has no closing ')'" % (CMAKE, var))
+
+
 def profiles():
     """{name: (options, definitions)} from cmake/ms2-unit-profiles.cmake"""
     global _cache
     if _cache is None:
         txt = open(CMAKE).read()
         names = re.search(r"set\(MS2_UNIT_PROFILES ([^)]*)\)", txt).group(1).split()
-
-        def listing(var):
-            m = re.search(r"set\(" + var + r"\n(.*?)\n\)", txt, re.S)
-            return re.findall(r'"([^"]+)"', m.group(1)) if m else []
-        _cache = {n: (listing("MS2_PROFILE_%s_OPTIONS" % n), listing("MS2_PROFILE_%s_DEFINITIONS" % n)) for n in names}
+        _cache = {n: (listing(txt, "MS2_PROFILE_%s_OPTIONS" % n), listing(txt, "MS2_PROFILE_%s_DEFINITIONS" % n))
+                  for n in names}
     return _cache
 
 
@@ -81,11 +116,7 @@ def toolsets():
     if _tcache is None:
         txt = open(CMAKE).read()
         names = re.search(r"set\(MS2_UNIT_TOOLSETS ([^)]*)\)", txt).group(1).split()
-
-        def listing(var):
-            m = re.search(r"set\(" + var + r"\n(.*?)\n\)", txt, re.S)
-            return re.findall(r'"([^"]+)"', m.group(1)) if m else []
-        _tcache = {n: listing("MS2_TOOLSET_%s_OPTIONS" % n) for n in names}
+        _tcache = {n: listing(txt, "MS2_TOOLSET_%s_OPTIONS" % n) for n in names}
     return _tcache
 
 

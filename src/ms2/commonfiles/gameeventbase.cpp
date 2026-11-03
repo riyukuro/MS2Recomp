@@ -585,11 +585,7 @@ Unk_PartyBits::Unk_PartyBits()
     Fill(false);
 }
 
-// @0x1402e4cf0
-// MS2-FUNCTIONAL: the exe destructor stores no vftable pointer (the original GameEvent is probably __declspec(novtable)); gameevent.h is shared
-GameEvent::~GameEvent()
-{
-}
+// GameEvent::~GameEvent (COMDAT 0x1402e4cf0) is implicit.
 
 // @0x1402e5510
 #pragma warning(push)

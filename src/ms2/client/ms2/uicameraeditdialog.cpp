@@ -57,6 +57,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicameraeditdialog.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/itemcustomizecontroller_1.h"
 
 #include <algorithm>
 #include <math.h>
@@ -1113,6 +1114,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/cequipitem.h"
 #include "ms2/placeholder/characterdecaldata.h"
 #include "ms2/placeholder/itemcustom.h"
+#include "ms2/placeholder/iclientplatform.h"
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/client/ms2/uimessagebox.h"
@@ -1184,43 +1186,6 @@ public:
 int FUN_140222b30(int nGender, int n);
 
 // The item customize controller's extra members and the part it edits.
-class CItemCustomizeController   // C3: member view for the former free stand-ins
-{
-public:
-    int GetEquipItemValue();
-};
-struct Unk_BSPartRange
-{
-    float fMax;
-    float fMin;
-    int bReverse;                               // the slider runs max -> min
-};
-class Unk_BSPartObj
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(int nIndex, float fSize);
-    virtual void vfunc_9(int nIndex);
-    virtual void vfunc_10(float fValue);
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
-    virtual int vfunc_17();
-    virtual float vfunc_18();
-    virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
-    virtual float vfunc_22(int nIndex);
-    virtual void vfunc_23();
-    virtual const Unk_BSPartRange* vfunc_24(int nIndex);
-    virtual void vfunc_25(); virtual void vfunc_26();
-    virtual int vfunc_27();
-};
-class Unk_BSPartHandle
-{
-public:
-    ~Unk_BSPartHandle();                        // 0x140cd4cf0
-    Unk_BSPartObj* FUN_140cd5210();             // get
-    Unk_BSPartObj* operator->() { return FUN_140cd5240(); }
-    Unk_BSPartObj* FUN_140cd5240();             // operator->
-    void* m_p;
-};
 
 // The server packet that answers the create request (kind, text).
 struct Unk_CcSPDE
@@ -1238,14 +1203,13 @@ public:
     class Create : public CPtred
     {
     public:
-        Create() : m_nGender(0), m_nJob(1), m_nElapsed(0) { memset(&m_nColor0, 0, 8); }    // 0x1418e7d80
+        Create() : m_nGender(0), m_nJob(1), m_nElapsed(0) { memset(m_anColor, 0, sizeof(m_anColor)); }    // 0x1418e7d80
         // ~Create: implicit (0x1418e7f00 = the members and CPtred::~CPtred; ??_G 0x1418e8090)
         void FUN_1401f9f20(COutPacket& packet);                     // serialise
         char m_nGender;                                             // +0x18
         int m_nJob;                                                 // +0x1c
         CStringW m_strName;                                         // +0x20
-        int m_nColor0;                                              // +0x28
-        int m_nColor1;                                              // +0x2c
+        int m_anColor[2];                                           // +0x28
         CByteBuffer m_items;                                        // +0x30 count, then (id, rarity, proxy data) per worn item
         int m_nElapsed;                                             // +0x70 seconds spent on the page
     };
@@ -1573,14 +1537,14 @@ int UICharacterCreateDialog::vfunc_2(void* p, float fValue, int nIndex)
     {
         if (m_spCustomize->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
-            const Unk_BSPartRange* pRange = ((Unk_BSPartObj*)p)->vfunc_24(nIndex);
-            if (pRange->bReverse)
+            const Unk_CustomizeRange* pRange = ((CItemCustomizeController*)p)->vfunc_24(nIndex);
+            if (pRange->m_n08)
             {
-                float fMax = pRange->fMax;
+                float fMax = pRange->m_fMax;
                 fValue = fMax - fValue;
-                fValue = fValue + pRange->fMin;
+                fValue = fValue + pRange->m_fMin;
             }
-            nIndex = ((Unk_BSPartObj*)p)->vfunc_27() - nIndex - 1 < 0 ? 0 : ((Unk_BSPartObj*)p)->vfunc_27() - nIndex - 1;
+            nIndex = ((CItemCustomizeController*)p)->vfunc_27() - nIndex - 1 < 0 ? 0 : ((CItemCustomizeController*)p)->vfunc_27() - nIndex - 1;
             m_30->Invoke("changeCustomSize", fValue, nIndex);  // the flash list runs the other way
         }
     }
@@ -1729,28 +1693,27 @@ int UICharacterCreateDialog::FUN_1418e3f50(const CStringW& strName)
     kCreate.m_nGender = (char)pPc->FUN_141658e60();
     kCreate.m_nJob = pPc->FUN_141654700();
     kCreate.m_strName = strName;
-    kCreate.m_nColor0 = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(0));
-    kCreate.m_nColor1 = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(1));
+    kCreate.m_anColor[0] = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(0));
+    kCreate.m_anColor[1] = FUN_141b6df90((struct Unk_UtilFloat3 const*)&pPc->FUN_141659220(1));
     ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
     reinterpret_cast<CEquipment*>(pPc->FUN_1416561a0())->CollectShownItems(aEquips);
-    kCreate.m_items.WriteUInt8((unsigned char)aEquips.GetCount());
-    POSITION pos = aEquips.GetHeadPosition();
-    while (pos != 0)
+    int nCount = (int)aEquips.GetCount();
+    kCreate.m_items.WriteUInt8((unsigned char)nCount);
+    for (POSITION pos = aEquips.GetHeadPosition(); pos != 0; aEquips.GetNext(pos))
     {
         MS2Ptr<CItem> spItem = aEquips.GetAt(pos)->GetItem();
         kCreate.m_items.WriteInt32(spItem->FUN_1405276c0());
         kCreate.m_items.WriteUInt8((unsigned char)spItem->FUN_140526c30());
         Unk_CcProxy* pProxy = reinterpret_cast<Unk_CcProxy*>(spItem->FUN_140527870());
-        pProxy->vfunc_5(&kCreate.m_items);
-        aEquips.GetNext(pos);
+        pProxy->vfunc_5(&static_cast<COutputStream&>(kCreate.m_items));
     }
     kCreate.m_nElapsed = (int)m_dElapsed;
     COutPacket kPacket(static_cast<int>(SendOp::CharacterManagement), 0);
     kPacket.WriteUInt8(1);
     kCreate.FUN_1401f9f20(kPacket);
     FUN_140710590(kPacket);
-    void* pPlatform = FUN_140d86260();
-    ((void(__fastcall*)(void*, int, const char*))(*(void***)pPlatform)[22])(pPlatform, 0x387, "CreateCharacter");
+    IClientPlatform* pPlatform = (IClientPlatform*)FUN_140d86260();
+    pPlatform->vfunc_22(0x387, "CreateCharacter");
     m_nState = 3;
     return 1;
 }
@@ -2063,7 +2026,7 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
         return;
     if (spData == 0)
         return;
-    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    CItemCustomizeController* pPart = m_spCustomize->FUN_140cd1a30();
     if (pPart == 0)
         return;
     unsigned nFlags = ((class Customize*)(class Customize*)(m_spCustomize))->GetEditFlags();
@@ -2078,11 +2041,11 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
             {
                 for (int i = nSizes - 1; i >= 0; i--)
                 {
-                    const Unk_BSPartRange* pRange = pPart->vfunc_24(i);
+                    const Unk_CustomizeRange* pRange = pPart->vfunc_24(i);
                     float fCur = pPart->vfunc_22(i);
-                    float fMin = pRange->fMin;
-                    float fMax = pRange->fMax;
-                    if (pRange->bReverse)
+                    float fMin = pRange->m_fMin;
+                    float fMax = pRange->m_fMax;
+                    if (pRange->m_n08)
                     {
                         fCur = fMax - fCur;
                         fCur = fCur + fMin;
@@ -2381,7 +2344,7 @@ void UICharacterCreateDialog::FUN_1418e7040(int nPos)
 {
     if (m_spCustomize == 0)
         return;
-    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    CItemCustomizeController* pPart = m_spCustomize->FUN_140cd1a30();
     if (pPart == 0)
         return;
     pPart->vfunc_9(nPos);
@@ -2394,15 +2357,15 @@ void UICharacterCreateDialog::FUN_1418e7110(int nIndex, float fSize)
 {
     if (m_spCustomize == 0)
         return;
-    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    CItemCustomizeController* pPart = m_spCustomize->FUN_140cd1a30();
     if (pPart == 0)
         return;
-    const Unk_BSPartRange* pRange = pPart->vfunc_24(nIndex);
-    if (pRange->bReverse)
+    const Unk_CustomizeRange* pRange = pPart->vfunc_24(nIndex);
+    if (pRange->m_n08)
     {
-        float fMax = pRange->fMax;
+        float fMax = pRange->m_fMax;
         fSize = fMax - fSize;
-        fSize = fSize + pRange->fMin;
+        fSize = fSize + pRange->m_fMin;
     }
     pPart->vfunc_8(nIndex, fSize);
     m_nCurItemId = m_spCustomize->FUN_140cd17e0();
@@ -2414,7 +2377,7 @@ void UICharacterCreateDialog::FUN_1418e7260(float fDegree)
 {
     if (m_spCustomize == 0)
         return;
-    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    CItemCustomizeController* pPart = m_spCustomize->FUN_140cd1a30();
     if (pPart == 0)
         return;
     pPart->vfunc_10(fDegree);

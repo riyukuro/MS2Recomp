@@ -11,6 +11,7 @@
 // MS2-RANGE: 0x142cf60e0-0x142d12978 .rdata
 // MS2-RANGE: 0x142d34e50-0x142d3f098 .rdata
 // MS2-RANGE: 0x142d568c0-0x142d57808 .rdata
+// MS2-RANGE: 0x142db1d84-0x142db1d88 .rdata
 // MS2-RANGE: 0x142dbac18-0x142dbf440 .rdata
 // MS2-RANGE: 0x142dfc138-0x142dfc139 .rdata
 // MS2-RANGE: 0x142e0346c-0x142e03470 .rdata
@@ -172,6 +173,7 @@ alignas(16) Sd_142d568c0 DAT_142d568c0 = {
         0x7d, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00,
     },
 };
+extern const unsigned int DAT_142db1d84 = 0x100u;              // 0x142db1d84 (after-image texture size)
 // 0x142dbac18
 alignas(8) Sd_142dbac18 DAT_142dbac18 = {
     {

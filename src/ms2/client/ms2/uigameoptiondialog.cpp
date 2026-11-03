@@ -128,25 +128,25 @@ UIGameOptionDialog::UIGameOptionDialog()
 {
     FUN_141924170(1);
     int nOrder = 1;
-    m_mapPages.SetAt(1, MS2Ptr<CBaseOption>(new CGameOptionCamera(1, nOrder++)));
-    m_mapPages.SetAt(2, MS2Ptr<CBaseOption>(new CGameOptionInterface(2, nOrder++)));
-    m_mapPages.SetAt(3, MS2Ptr<CBaseOption>(new CGameOptionStatus(3, nOrder++)));
-    m_mapPages.SetAt(4, MS2Ptr<CBaseOption>(new CGameOptionBattle(4, nOrder++)));
-    m_mapPages.SetAt(5, MS2Ptr<CBaseOption>(new CGameOptionCommunity(5, nOrder++)));
-    m_mapPages.SetAt(6, MS2Ptr<CBaseOption>(new CGameOptionGraphicDefault(6, nOrder++)));
-    m_mapPages.SetAt(7, MS2Ptr<CBaseOption>(new CGameOptionSoundDefault(7, nOrder++)));
+    m_mapPages.SetAt(1, new CGameOptionCamera(1, nOrder++));
+    m_mapPages.SetAt(2, new CGameOptionInterface(2, nOrder++));
+    m_mapPages.SetAt(3, new CGameOptionStatus(3, nOrder++));
+    m_mapPages.SetAt(4, new CGameOptionBattle(4, nOrder++));
+    m_mapPages.SetAt(5, new CGameOptionCommunity(5, nOrder++));
+    m_mapPages.SetAt(6, new CGameOptionGraphicDefault(6, nOrder++));
+    m_mapPages.SetAt(7, new CGameOptionSoundDefault(7, nOrder++));
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
-        m_mapPages.SetAt(8, MS2Ptr<CBaseOption>(new CGameOptionGamePad(8, nOrder++)));
-    m_mapPages.SetAt(9, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(9, nOrder++)));
-    m_mapPages.SetAt(10, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(10, nOrder++)));
-    m_mapPages.SetAt(11, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(11, nOrder++)));
+        m_mapPages.SetAt(8, new CGameOptionGamePad(8, nOrder++));
+    m_mapPages.SetAt(9, new CGameOptionInputDefault(9, nOrder++));
+    m_mapPages.SetAt(10, new CGameOptionInputDefault(10, nOrder++));
+    m_mapPages.SetAt(11, new CGameOptionInputDefault(11, nOrder++));
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
-        m_mapPages.SetAt(12, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(12, nOrder++)));
-    m_mapPages.SetAt(13, MS2Ptr<CBaseOption>(new CGameOptionInputDefault(13, nOrder++)));
-    m_mapPages.SetAt(14, MS2Ptr<CBaseOption>(new CGameOptionLanguage(14, nOrder++)));
-    m_mapPages.SetAt(16, MS2Ptr<CBaseOption>(new CGameOptionAccount(16, nOrder++)));
+        m_mapPages.SetAt(12, new CGameOptionInputDefault(12, nOrder++));
+    m_mapPages.SetAt(13, new CGameOptionInputDefault(13, nOrder++));
+    m_mapPages.SetAt(14, new CGameOptionLanguage(14, nOrder++));
+    m_mapPages.SetAt(16, new CGameOptionAccount(16, nOrder++));
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x117) == 1)
-        m_mapPages.SetAt(15, MS2Ptr<CBaseOption>(new CGameOptionPersonalInfoAgreement(15, nOrder++)));
+        m_mapPages.SetAt(15, new CGameOptionPersonalInfoAgreement(15, nOrder++));
 }
 
 // @0x141942810

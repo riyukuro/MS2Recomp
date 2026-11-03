@@ -299,7 +299,6 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
     return 1;
 }
 
-// MS2-FUNCTIONAL: the limit sum adds nA into nCount (add ecx,edx) in the exe; every spelling tried adds nCount into nA
 // @0x140b040a0
 int CCashCallManager::FUN_140b040a0(int nCount)
 {
@@ -339,8 +338,7 @@ int CCashCallManager::FUN_140b040a0(int nCount)
     int nLimit = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bd30a0()->vfunc_2();
     if (nLimit > 0)
     {
-        int nA = ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2bc0();
-        if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2b30() + (nA + nCount) > nLimit)
+        if (((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2bc0() + (nCount + ((class Unk_CcWorld*)WorldService::GetInstance())->FUN_141bc2b30()) > nLimit)
         {
             FUN_140d73bc0(0xb5f, 0, 0, CStringW(L""));
             return 0;

@@ -752,15 +752,15 @@ private:
     void* m_data[0xc];
 };
 MS2_CHECK_SIZE(TiXmlDeclaration, 0x68);
-class Unk_TiXmlComment
+class TiXmlComment   // C3: member view (the inline ctor's COMDAT is emitted by blindmanager.cpp)
 {
 public:
-    explicit Unk_TiXmlComment(const char* pszValue);            // 0x140a27ec0
-    ~Unk_TiXmlComment();                                        // 0x1408724d0
+    TiXmlComment(const char* pszValue);                         // 0x140a27ec0
+    virtual ~TiXmlComment();                                    // 0x1408724d0
 private:
-    void* m_data[0xa];
+    void* m_data[0x9];
 };
-MS2_CHECK_SIZE(Unk_TiXmlComment, 0x50);
+MS2_CHECK_SIZE(TiXmlComment, 0x50);
 Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);             // the root element
 class TiXmlNode   // C3: member view for the former free stand-in FUN_14086e000
 {
@@ -813,7 +813,7 @@ void MS2::PrepareShaderCache()
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
 #endif
         // the comment is a temporary whose address is passed (MSVC extension: & of an rvalue)
-        ((class TiXmlNode*)(void*)(&kNewDoc))->InsertEndChild(*(class TiXmlNode const*)&Unk_TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
+        ((class TiXmlNode*)(void*)(&kNewDoc))->InsertEndChild(*(class TiXmlNode const*)&TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
             "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0)));
 #ifdef __clang__
 #pragma clang diagnostic pop
@@ -1519,7 +1519,7 @@ struct Unk_PlatformErrorTable
     Unk_PlatformErrorTable();                                   // 0x140c79890
     ~Unk_PlatformErrorTable();                                  // 0x140c79b50
     CStringW FUN_140c7a360(const int& nIndex);                  // the error text of an index
-    char m_pad[0x48];
+    void* m_pad[9];
 };
 MS2_CHECK_SIZE(Unk_PlatformErrorTable, 0x48);
 
@@ -1531,7 +1531,7 @@ public:
     ~Unk_TextFormat();                                          // 0x141025530
     Unk_TextFormat& FUN_14083ff40(const wchar_t* pszArg);
     Unk_TextFormat& FUN_140840530(CStringW strArg);
-    CStringW GetStr() const;                             // the formatted text
+    operator CStringW() const;                           // the formatted text (0x1408405d0)
     // @0x141492ba0 (COMDAT)
     Unk_TextFormat& Arg(int nArg) { return FUN_140840530(FUN_140719630(nArg)); }
 private:
@@ -1588,8 +1588,11 @@ CReactorDataTable::CReactorDataTable()
 CGameApp::CGameApp() : CWinApp(NULL), m_nExitCode(0), m_profiler(CString("Loading"))
 {
 }
+// The build and revision numbers InitInstance logs; the exe passes them by address (0x142f1a41c / 0x142f1a484).
+static const unsigned kClientVersion = 2525;
+static const unsigned kClientRevision = 106302;
+
 // @0x14148f360
-// MS2-FUNCTIONAL: written from the decomp in one pass (stack slot order and temporaries not aligned)
 BOOL CGameApp::InitInstance()
 {
     FUN_14092f2c0(1);
@@ -1599,9 +1602,9 @@ BOOL CGameApp::InitInstance()
     if (!FUN_140d86270())
     {
         if (FUN_1406c34c0() != 0)
-            FUN_141b6fcf0(g_143ac2fe0, CStringW(L""), 0);
+            FUN_141b6fcf0(g_143ac2fe0, L"", 0);
         else
-            FUN_141b6fcf0(kErrors.FUN_140c7a360(1), CStringW(L""), 0);
+            FUN_141b6fcf0(kErrors.FUN_140c7a360(1), L"", 0);
         return FALSE;
     }
     FUN_141b6de20();
@@ -1628,7 +1631,7 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_28();
     if (DAT_143ac2fd4 != 0 && FUN_1406c34b0() == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(11).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(11), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CrashManagerCli>::CreateInstance();
@@ -1636,8 +1639,8 @@ BOOL CGameApp::InitInstance()
     Unk_UtilLogScope kLogScope(CString("CGameApp::InitInstance"));
     if (FUN_1406c34b0() == 1 && DAT_143ac2fd4 != 0)
         TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2b0(CW2A(g_143ac2fe8));
-    TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2b0(StringFormat("ver '{0}', '{1}'", 2525u, 106302u));
-    char szCurrentDirectory[MAX_PATH];
+    TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2b0(StringFormat("ver '{0}', '{1}'", kClientVersion, kClientRevision));
+    char szCurrentDirectory[0x100];
     GetCurrentDirectoryA(0x100, szCurrentDirectory);
     FILE* pRevisions = fopen("revisions.txt", "r");
     if (pRevisions)
@@ -1673,12 +1676,12 @@ BOOL CGameApp::InitInstance()
         if (DAT_143ac2fd4 != 0)
         {
             GetClientPlatform()->vfunc_23(0x396, (const char*)CW2A(g_143ac2fe8));
-            FUN_141b6fcf0(g_143ac2fe8, CStringW(L""), 0);
+            FUN_141b6fcf0(g_143ac2fe8, L"", 0);
             return FALSE;
         }
         if (DAT_143ac2fd0 != 0)
         {
-            FUN_141b6fcf0(g_143ac2fe0, CStringW(L""), 0);
+            FUN_141b6fcf0(g_143ac2fe0, L"", 0);
             return FALSE;
         }
         GetClientPlatform()->vfunc_22(0x262, "AuthInit");
@@ -1686,13 +1689,13 @@ BOOL CGameApp::InitInstance()
         if (nAuth != 1)
         {
             if (nAuth == 3)
-                FUN_141b6fcf0(g_143ac2fe0, CStringW(L""), 0);
+                FUN_141b6fcf0(g_143ac2fe0, L"", 0);
             return FALSE;
         }
         GetClientPlatform()->vfunc_16();
         if (DAT_143ac2fd0 != 0)
         {
-            FUN_141b6fcf0(g_143ac2fe0, CStringW(L""), 0);
+            FUN_141b6fcf0(g_143ac2fe0, L"", 0);
             return FALSE;
         }
         GetClientPlatform()->vfunc_22(0x276, "AuthSuccess");
@@ -1720,7 +1723,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CFileSystem>::CreateInstance();
     if (TSingleton<CFileSystem>::GetInstance()->FUN_140396770(g_nIgnorePack > 0, g_nIgnorePack) == 0)
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x29).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x29), L"", 0);
         return FALSE;
     }
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403981d0())
@@ -1745,7 +1748,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CFeatureManager>::CreateInstance();
     if (!TSingleton<CFeatureManager>::GetInstance()->Init())
     {
-        FUN_141b6fc50(CString("Cant find feature File"), CString(""), 0);
+        FUN_141b6fc50("Cant find feature File", "", 0);
         return FALSE;
     }
     Unk_SingletonCreator<Client::Constants>::CreateInstance();
@@ -1892,7 +1895,7 @@ BOOL CGameApp::InitInstance()
     if (!TSingleton<CLuaClient>::GetInstance()->vfunc_1())
     {
         AfxMessageBox("error lua function");
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x33).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x33), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CContentShutdownManager>::CreateInstance();
@@ -1936,33 +1939,33 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CTailEffectDataTable>::CreateInstance()->Reload();
     if (!TSingleton<CDirWatcher>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x34).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x34), L"", 0);
         return FALSE;
     }
     if (((class COptimizer*)FUN_1409f7c90())->FUN_1409f7ea0() != 0)
     {
         if (!TSingleton<CItemLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
         {
-            FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x35).GetStr(), CStringW(L""), 0);
+            FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x35), L"", 0);
             return FALSE;
         }
     }
     Unk_SingletonCreator<CUgcDownloadDown>::CreateInstance();
     if (!TSingleton<CUgcDownloadDown>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CUgcDownloadLoad>::CreateInstance();
     if (!TSingleton<CUgcDownloadLoad>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x36), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CAsyncImageLoader>::CreateInstance();
     if (!TSingleton<CAsyncImageLoader>::GetInstance()->Start(0, 0, 0, 0, 0))
     {
-        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x37).GetStr(), CStringW(L""), 0);
+        FUN_141b6fcf0(Unk_TextFormat(kErrors.FUN_140c7a360(0)).Arg(0x37), L"", 0);
         return FALSE;
     }
     Unk_SingletonCreator<CBigDataLogSystem>::CreateInstance();

@@ -1,6 +1,23 @@
+281c
+        size_t numReqs = m_sequences.size();  // MS2: size_t count (exe 64-bit compare)
+.
+229d
+219d
+215d
+209a
+                // MS2: the exe logs this at line 218 (its source had three more lines
+                // above this point); these comments stand in for them, and the blank
+                // lines below are dropped so the later __LINE__ values do not move.
+.
+201c
+                size_t numSeqs = pKFRequest->m_sequenceIDs.size();  // MS2: size_t count (exe 64-bit compare)
+.
 198a
             // MS2: label the stream with the KFM's file name (NiTextKeyExtraData::LoadBinary reads <dir><label>.xml)
             char acKFMPath[NI_MAX_PATH];
             sprintf(acKFMPath, "%s", pRequest->GetAssetPath().c_str());
             _splitpath(acKFMPath, NULL, NULL, const_cast<char*>(stream.MS2GetStudioPath()), NULL);
+.
+185c
+    size_t numReqs = pResponseData->m_sequences.size();  // MS2: size_t count (exe 64-bit compare)
 .

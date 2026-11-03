@@ -35,7 +35,7 @@ public:
     CAchieve();                         // 0x140158180
     virtual ~CAchieve();                // 0x1401582b0
 
-    int Init(int nId, int nGrade, int nState, int nUnused);  // 0x140158350
+    int Init(int nId, int nGrade, int nState);  // 0x140158350
     BOOL IsStarted();                   // 0x140158630
     int GetData30();                    // 0x140158670
     BOOL HasNextGrade();                // 0x1401586c0

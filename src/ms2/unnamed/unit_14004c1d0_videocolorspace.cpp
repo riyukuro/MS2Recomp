@@ -443,6 +443,6 @@ void FUN_14004d1c0(Unk_YuvTables64* pTab)
         pTab->m_y[i].m_lo = (unsigned __int64)dY << 0x30;
         pTab->m_y[i].m_hi = (unsigned __int64)dY << 0x20;
         pTab->m_cb[i] = (unsigned __int64)dCb << 0x28;
-        pTab->m_cr[i] = (unsigned __int64)dCr << 0x38;
+        pTab->m_cr[i] = (unsigned __int64)(unsigned int)dCr << 0x38;
     }
 }

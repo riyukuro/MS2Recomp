@@ -30,12 +30,12 @@ bool NiD3DXEffectShaderLibrary::MS2UnloadD3DXEffect(const char** ppcFile,
     NiTListIterator kPos = m_kD3DXEffectFileList.GetHeadPos();
     while (kPos)
     {
-        if (strcmp(m_kD3DXEffectFileList.Get(kPos)->GetName(), *ppcFile) == 0)
+        NiTListIterator kCurrent = kPos;
+        if (strcmp(m_kD3DXEffectFileList.GetNext(kPos)->GetName(), *ppcFile) == 0)
         {
-            m_kD3DXEffectFileList.RemovePos(kPos);
+            m_kD3DXEffectFileList.RemovePos(kCurrent);
             break;
         }
-        kPos = m_kD3DXEffectFileList.GetNextPos(kPos);
     }
 
     NiD3DXEffectFactory::GetInstance(true)->RemoveD3DXEffectFileFromMap(*ppcFile);

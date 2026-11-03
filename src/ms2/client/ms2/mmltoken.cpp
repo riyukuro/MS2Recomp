@@ -42,7 +42,6 @@ void MMLParser::SetFixedTempo(bool b)
     m_bFixedTempo = b;
 }
 
-// MS2-FUNCTIONAL: Parse is op-identical, but several locals sit in different frame slots (EH state at rsp+0x238 vs ours 0x230), left for the permuter
 // @0x140d7e780
 void MMLParser::Parse()
 {
@@ -297,10 +296,10 @@ void MMLParser::Parse()
                     continue;
                 nPos = nPos + 1;
                 int nSecond = 0;
-                nUsed = ParseNumber(pText + nPos, &nSecond);
-                if (nUsed == 0)
+                int nUsedSecond = ParseNumber(pText + nPos, &nSecond);
+                if (nUsedSecond == 0)
                     continue;
-                nPos = nPos + nUsed;
+                nPos = nPos + nUsedSecond;
                 MS2Ptr<MMLToken> spToken(new MMLToken());
                 spToken->m_nType = 2;
                 spToken->m_dTime = 0;
@@ -320,10 +319,10 @@ void MMLParser::Parse()
                     continue;
                 nPos = nPos + 1;
                 int nSecond = 0;
-                nUsed = ParseNumber(pText + nPos, &nSecond);
-                if (nUsed == 0)
+                int nUsedSecond = ParseNumber(pText + nPos, &nSecond);
+                if (nUsedSecond == 0)
                     continue;
-                nPos = nPos + nUsed;
+                nPos = nPos + nUsedSecond;
                 MS2Ptr<MMLToken> spToken(new MMLToken());
                 spToken->m_nType = 4;
                 spToken->m_dTime = 0;

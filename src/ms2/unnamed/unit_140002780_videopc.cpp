@@ -3,7 +3,7 @@
 // Src/Video/Video_VideoPC.cpp): the ctor, ApplySystemSettings(VideoPlayer*) (decoder threads / affinity / priority on the
 // CRI player) and the scalar deleting dtor. The library is built without RTTI, so the vftable 0x1431b4b10 has no COL.
 // MS2-UNIT: unit_140002780
-// MS2-TOOLSET: vc11
+// MS2-TOOLSET: vc9v
 // MS2-FLAGS: scaleform
 // MS2-RANGE: 0x140002780-0x140002930 .text$mn
 #define MS2_THIS_FILE ""
@@ -11,11 +11,11 @@
 #include "../scaleform/include/video/video_videopc.h"
 #include "../scaleform/include/video/video_videoplayerimpl.h"
 
-// Statically linked Scaleform Video library: built like the sfr_video units (VS2012 toolset, the scaleform /O2 flags).
+// Statically linked Scaleform Video library: built like the sfr_video units (the VS2008 SP1 cl with the vc11 options,
+// MS2-TOOLSET: vc9v; cl 17.00 gives a different AffinityMask loop and register assignment). Keep it C++03.
 
 namespace Scaleform { namespace GFx { namespace Video {
 
-// MS2-FUNCTIONAL: vc11 /O2 strength-reduces the AffinityMask loop differently (the exe keeps a counted index)
 // @0x140002780
 VideoPC::VideoPC(const VideoVMSupport& vmSupport, Thread::ThreadPriority decodingThreadsPriority,
                  int decodingThreadsNumber, UInt32* affinityMask) : Video(vmSupport, decodingThreadsPriority)
@@ -27,7 +27,6 @@ VideoPC::VideoPC(const VideoVMSupport& vmSupport, Thread::ThreadPriority decodin
     }
 }
 
-// MS2-FUNCTIONAL: rbx/rdi register assignment swapped
 // @0x140002850
 void VideoPC::ApplySystemSettings(VideoPlayer* pvideoPlayer)
 {

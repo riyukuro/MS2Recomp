@@ -60,6 +60,21 @@ FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/client/ms2/memorydepletiondlg.h"
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include "ms2/commonfiles/os.h"
+#include <direct.h>
+// The exe links _mkdir statically (0x1420b1a80): redeclare it without dllimport
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winconsistent-dllimport"
+#else
+#pragma warning(push)
+#pragma warning(disable : 4273)  // inconsistent dll linkage: intended
+#endif
+extern "C" int __cdecl _mkdir(const char* _Path);
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#else
+#pragma warning(pop)
+#endif
 class Unk_AvModeSvc;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 namespace ecr { class RenderService; }
@@ -893,22 +908,20 @@ CStringA FUN_14016a5c0(const char* psz, int n);
 CStringA FUN_14038f6d0(const CStringA& kLeft, const char* pszRight);
 
 // @0x141b70290
-// MS2-FUNCTIONAL: exe statically links _mkdir (call 0x1420b1a80), build imports it
 void FUN_141b70290()
 {
     CStringA kPath;
     kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)((struct Unk_UtilConfig*)FUN_1401d31f0())->m_kRoot, 0), (LPCSTR)FUN_1412755f0());
-    if (!efd::File::DefaultDirectoryExistsFunc((LPCSTR)kPath))
+    if (!efd::File::DirectoryExists((LPCSTR)kPath))
         _mkdir((LPCSTR)kPath);
 }
 
 // @0x141b70390
-// MS2-FUNCTIONAL: exe statically links _mkdir (call 0x1420b1a80), build imports it
 void FUN_141b70390()
 {
     CStringA kPath;
     kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)((struct Unk_UtilConfig*)FUN_1401d31f0())->m_kRoot, 0), (LPCSTR)FUN_141275640());
-    if (!efd::File::DefaultDirectoryExistsFunc((LPCSTR)kPath))
+    if (!efd::File::DirectoryExists((LPCSTR)kPath))
         _mkdir((LPCSTR)kPath);
 }
 

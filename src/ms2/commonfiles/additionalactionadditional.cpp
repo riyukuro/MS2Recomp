@@ -4,6 +4,7 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-RANGE: 0x14016fda0-0x140195470 .text$mn
 // MS2-RANGE: 0x1400b2330-0x1400b4220 .text$di
+// MS2-FLAGS: oiintrin
 // MS2-PIN: ??__Es_gosNames@@YAXXZ 0x1400b2330
 // MS2-PIN: ??__Es_gosSubStateNames@@YAXXZ 0x1400b2cf0
 // name-table rows (make_pair / pair constructor / forward per name length), paired from the initializers' calls
@@ -337,13 +338,10 @@
 // ~Unk_RangeShape: ~Unk_RangeProperty 0x140184170 calls it (the 0x1407a4f20 unit's copies call it too)
 // MS2-PIN: ??1Unk_RangeShape@@QEAA@XZ 0x140184190
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\additionalactionadditional.cpp"
-#include <vcruntime_string.h>
-#include <corecrt_wstring.h>
-// wmemcpy 0x140191540 and _WChar_traits<wchar_t>::length 0x140190180 call the CRT (the pragma needs the declarations
-// first). The exe's length is `call [__imp_wcslen]`: the static-CRT headers here have no dllimport (functional).
-#pragma function(memcpy, wcslen)
+// wmemcpy 0x140191540 calls memcpy and _WChar_traits<wchar_t>::length 0x140190180 the imported wcslen (`call
+// [__imp_wcslen]`, kept by the oiintrin profile's /Oi-); the STL string copies (0x140189340) inline memcpy.
 #include "ms2/placeholder/ms2stdafx.h"
-#pragma intrinsic(memcpy)   // the STL string copies (0x140189340) inline it again
+#pragma intrinsic(memcpy, memset, strcmp, strlen)
 #include <sstream>
 #include "additionalactionadditional.h"
 #include "ms2/commonfiles/logstring.h"
@@ -1563,7 +1561,7 @@ unsigned __int64 AdditionalLevelData::GetKeyID(unsigned __int64 nKey)
 }
 
 // @0x140175770
-unsigned __int64 AdditionalLevelData::GetKeyLevel(unsigned __int64 nKey)
+unsigned short AdditionalLevelData::GetKeyLevel(unsigned __int64 nKey)
 {
     return nKey % 100;
 }

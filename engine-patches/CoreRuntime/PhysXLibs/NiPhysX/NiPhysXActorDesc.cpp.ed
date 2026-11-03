@@ -229,3 +229,6 @@ extern char DAT_143afc898;
 29c
 #include <PhysXLoader.h> // MS2: NxGetCookingLib (CreateActor re-cooks scaled collision meshes)
 .
+13c
+#define EE_MS2_NIFS_ASSIGN_FORCE  // MS2: see NiFixedString.inl operator= (replaces a blank line: keeps __LINE__)
+.

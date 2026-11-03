@@ -5910,7 +5910,7 @@ CMsTime UIMeratMarketDialog::GetOpenTime()
 }
 
 // @0x14130bee0
-void UIMeratMarketDialog::SetOpenTime(const CMsTime& time)
+void UIMeratMarketDialog::SetOpenTime(CMsTime time)
 {
     m_openTime = time;
 }

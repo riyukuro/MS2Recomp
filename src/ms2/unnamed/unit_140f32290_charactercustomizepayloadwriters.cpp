@@ -46,15 +46,6 @@ class Unk_CustomizeView : public Customize
 };
 
 // The part handle (an efd::SmartPointer<CItemCustomizeController>, 8 bytes).
-class Unk_BSPartHandle
-{
-public:
-    ~Unk_BSPartHandle();                                        // 0x140cd4cf0
-    CItemCustomizeController* operator->() { return FUN_140cd5240(); }
-    CItemCustomizeController* FUN_140cd5240();                  // operator->
-    bool operator==(CItemCustomizeController* p) const { return m_p == p; }     // 0x140f34450
-    CItemCustomizeController* m_p;
-};
 
 // The worn item / colour helpers of the avatar units.
 MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, void* pPc);                 // the worn item of the kind
@@ -195,7 +186,7 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
         return;
     if (spData == 0)
         return;
-    Unk_BSPartHandle part = spCustomize->FUN_140cd1a30();
+    NiPointer<CItemCustomizeController> part = spCustomize->FUN_140cd1a30();
     if (part == 0)
         return;
     *pnFlags = ((class Customize*)(class Customize*)(spCustomize.get()))->GetEditFlags();

@@ -1525,69 +1525,69 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_eventTags.set(nTag, true);
     }
 
-    Unk_140165cf0* pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("model"));
-    if (pChild)
+    Unk_140165cf0* pModel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("model"));
+    if (pModel)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "kfm", m_model.m_strKfm);
-        XmlGetAttr((class TiXmlElement*)(pChild), "scale", reinterpret_cast<float&>(m_model.m_fScale));
-        XmlGetAttr((class TiXmlElement*)(pChild), "anispeed", reinterpret_cast<float&>(m_model.m_fAniSpeed));
-        XmlGetAttr((class TiXmlElement*)(pChild), "spawnAlphaAnimation", reinterpret_cast<int&>(m_model.m_nSpawnAlphaAnimation));
-        FUN_140874670(pChild, "offset", m_model.m_vOffset);
-        XmlGetAttr((class TiXmlElement*)(pChild), "shadowScale", reinterpret_cast<float&>(m_fShadowScale));
-        XmlGetAttr((class TiXmlElement*)(pChild), "rotationSpeed", reinterpret_cast<float&>(m_fRotationSpeed));
-        XmlGetAttr((class TiXmlElement*)(pChild), "walkSpeed", reinterpret_cast<float&>(m_fWalkSpeed));
-        XmlGetAttr((class TiXmlElement*)(pChild), "runSpeed", reinterpret_cast<float&>(m_fRunSpeed));
+        XmlGetAttr((class TiXmlElement*)(pModel), "kfm", m_model.m_strKfm);
+        XmlGetAttr((class TiXmlElement*)(pModel), "scale", reinterpret_cast<float&>(m_model.m_fScale));
+        XmlGetAttr((class TiXmlElement*)(pModel), "anispeed", reinterpret_cast<float&>(m_model.m_fAniSpeed));
+        XmlGetAttr((class TiXmlElement*)(pModel), "spawnAlphaAnimation", reinterpret_cast<int&>(m_model.m_nSpawnAlphaAnimation));
+        FUN_140874670(pModel, "offset", m_model.m_vOffset);
+        XmlGetAttr((class TiXmlElement*)(pModel), "shadowScale", reinterpret_cast<float&>(m_fShadowScale));
+        XmlGetAttr((class TiXmlElement*)(pModel), "rotationSpeed", reinterpret_cast<float&>(m_fRotationSpeed));
+        XmlGetAttr((class TiXmlElement*)(pModel), "walkSpeed", reinterpret_cast<float&>(m_fWalkSpeed));
+        XmlGetAttr((class TiXmlElement*)(pModel), "runSpeed", reinterpret_cast<float&>(m_fRunSpeed));
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("stat"));
-    if (pChild)
+    Unk_140165cf0* pStat = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("stat"));
+    if (pStat)
     {
         for (int i = 0; i < 0x23; ++i)
         {
             CString strName = FUN_14082efb0(i);
             if (!strName.IsEmpty())
-                XmlGetAttr((class TiXmlElement*)(pChild), strName, reinterpret_cast<__int64&>(m_stat.m_aBase[i]));
+                XmlGetAttr((class TiXmlElement*)(pStat), strName, reinterpret_cast<__int64&>(m_stat.m_aBase[i]));
         }
         if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb2))
         {
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleStatRate_2", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseTap_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseDef_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseDef));
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseSpaRate_2", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleStatRate_2", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseTap_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseDef_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseDef));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseSpaRate_2", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
         }
         else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb1))
         {
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleStatRate_1", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseTap_1", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseDef_1", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseDef));
-            XmlGetAttr((class TiXmlElement*)(pChild), "scaleBaseSpaRate_1", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleStatRate_1", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseTap_1", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseDef_1", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseDef));
+            XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseSpaRate_1", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
         }
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("distance"));
-    if (pChild)
+    Unk_140165cf0* pDistance = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("distance"));
+    if (pDistance)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "avoid", reinterpret_cast<float&>(m_distance.m_a));
-        XmlGetAttr((class TiXmlElement*)(pChild), "sight", reinterpret_cast<float&>(m_distance.m_b));
-        XmlGetAttr((class TiXmlElement*)(pChild), "sightHeightUP", reinterpret_cast<float&>(m_distance.m_c));
-        XmlGetAttr((class TiXmlElement*)(pChild), "sightHeightDown", reinterpret_cast<float&>(m_distance.m_d));
-        XmlGetAttr((class TiXmlElement*)(pChild), "customLastSightRadius", reinterpret_cast<float&>(m_distance.m_e));
-        XmlGetAttr((class TiXmlElement*)(pChild), "customLastSightHeightUp", reinterpret_cast<float&>(m_distance.m_f));
-        XmlGetAttr((class TiXmlElement*)(pChild), "customLastSightHeightDown", reinterpret_cast<float&>(m_distance.m_g));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "avoid", reinterpret_cast<float&>(m_distance.m_a));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "sight", reinterpret_cast<float&>(m_distance.m_b));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "sightHeightUP", reinterpret_cast<float&>(m_distance.m_c));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "sightHeightDown", reinterpret_cast<float&>(m_distance.m_d));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "customLastSightRadius", reinterpret_cast<float&>(m_distance.m_e));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "customLastSightHeightUp", reinterpret_cast<float&>(m_distance.m_f));
+        XmlGetAttr((class TiXmlElement*)(pDistance), "customLastSightHeightDown", reinterpret_cast<float&>(m_distance.m_g));
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
-    if (pChild)
+    Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
+    if (pSkill)
     {
-        FUN_140178770(pChild, "ids", m_skill.m_aIds);
-        FUN_1403759c0(pChild, "levels", reinterpret_cast<std::vector<short>&>(m_skill.m_aLevels));
-        FUN_140178770(pChild, "probs", m_skill.m_aProbs);
+        FUN_140178770(pSkill, "ids", m_skill.m_aIds);
+        FUN_1403759c0(pSkill, "levels", reinterpret_cast<std::vector<short>&>(m_skill.m_aLevels));
+        FUN_140178770(pSkill, "probs", m_skill.m_aProbs);
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect"));
-    if (pChild)
+    Unk_140165cf0* pAdditionalEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect"));
+    if (pAdditionalEffect)
     {
-        CString strCodes = Unk_ReadString((class Unk_XmlNode*)(pChild), "codes", CString(""));
+        CString strCodes = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "codes", CString(""));
         FUN_140177e10(strCodes, m_effect.m_aCodes, ",");
-        CString strLevels = Unk_ReadString((class Unk_XmlNode*)(pChild), "levels", CString(""));
+        CString strLevels = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "levels", CString(""));
         FUN_140177db0(strLevels, m_effect.m_aLevels, ",");
-        CString strGroup = Unk_ReadString((class Unk_XmlNode*)(pChild), "group", CString(""));
+        CString strGroup = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "group", CString(""));
         std::vector<CString> groups;
         FUN_1402c8940(strGroup, groups, ":");
         for (size_t i = 0; i < groups.size(); ++i)
@@ -1599,35 +1599,35 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             std::pair<int, int> group(pair[0], pair[1]);
             m_effect.m_aGroups.push_back(group);
         }
-        CString strRewardCodes = Unk_ReadString((class Unk_XmlNode*)(pChild), "rewardCodes", CString(""));
+        CString strRewardCodes = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "rewardCodes", CString(""));
         FUN_140177e10(strRewardCodes, m_effect.m_aRewardCodes, ",");
-        CString strRewardLevels = Unk_ReadString((class Unk_XmlNode*)(pChild), "rewardLevels", CString(""));
+        CString strRewardLevels = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "rewardLevels", CString(""));
         FUN_140177db0(strRewardLevels, m_effect.m_aRewardLevels, ",");
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("interact"));
-    if (pChild)
+    Unk_140165cf0* pInteract = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("interact"));
+    if (pInteract)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "interactFunction", m_interact.m_strFunction);
-        XmlGetAttr((class TiXmlElement*)(pChild), "interactCastingAnimation", m_interact.m_strCastingAnimation);
-        XmlGetAttr((class TiXmlElement*)(pChild), "interactCastingTime", m_interact.m_nCastingTime);
-        XmlGetAttr((class TiXmlElement*)(pChild), "interactCoolTime", m_interact.m_nCoolTime);
-        XmlGetAttr((class TiXmlElement*)(pChild), "interactIsShowCastingBar", reinterpret_cast<bool&>(m_interact.m_bShowCastingBar));
+        XmlGetAttr((class TiXmlElement*)(pInteract), "interactFunction", m_interact.m_strFunction);
+        XmlGetAttr((class TiXmlElement*)(pInteract), "interactCastingAnimation", m_interact.m_strCastingAnimation);
+        XmlGetAttr((class TiXmlElement*)(pInteract), "interactCastingTime", m_interact.m_nCastingTime);
+        XmlGetAttr((class TiXmlElement*)(pInteract), "interactCoolTime", m_interact.m_nCoolTime);
+        XmlGetAttr((class TiXmlElement*)(pInteract), "interactIsShowCastingBar", reinterpret_cast<bool&>(m_interact.m_bShowCastingBar));
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("collision"));
-    if (pChild)
+    Unk_140165cf0* pCollision = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("collision"));
+    if (pCollision)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "shape", m_collision.m_strShape);
-        XmlGetAttr((class TiXmlElement*)(pChild), "width", reinterpret_cast<float&>(m_collision.m_fWidth));
-        XmlGetAttr((class TiXmlElement*)(pChild), "depth", reinterpret_cast<float&>(m_collision.m_fDepth));
-        XmlGetAttr((class TiXmlElement*)(pChild), "height", reinterpret_cast<float&>(m_collision.m_fHeight));
-        XmlGetAttr((class TiXmlElement*)(pChild), "widthOffset", reinterpret_cast<int&>(m_collision.m_nWidthOffset));
-        XmlGetAttr((class TiXmlElement*)(pChild), "depthOffset", reinterpret_cast<int&>(m_collision.m_nDepthOffset));
-        XmlGetAttr((class TiXmlElement*)(pChild), "heightOffset", reinterpret_cast<int&>(m_collision.m_nHeightOffset));
+        XmlGetAttr((class TiXmlElement*)(pCollision), "shape", m_collision.m_strShape);
+        XmlGetAttr((class TiXmlElement*)(pCollision), "width", reinterpret_cast<float&>(m_collision.m_fWidth));
+        XmlGetAttr((class TiXmlElement*)(pCollision), "depth", reinterpret_cast<float&>(m_collision.m_fDepth));
+        XmlGetAttr((class TiXmlElement*)(pCollision), "height", reinterpret_cast<float&>(m_collision.m_fHeight));
+        XmlGetAttr((class TiXmlElement*)(pCollision), "widthOffset", reinterpret_cast<int&>(m_collision.m_nWidthOffset));
+        XmlGetAttr((class TiXmlElement*)(pCollision), "depthOffset", reinterpret_cast<int&>(m_collision.m_nDepthOffset));
+        XmlGetAttr((class TiXmlElement*)(pCollision), "heightOffset", reinterpret_cast<int&>(m_collision.m_nHeightOffset));
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeCollisions"));
-    if (pChild)
+    Unk_140165cf0* pNodeCollisions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeCollisions"));
+    if (pNodeCollisions)
     {
-        for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->FirstChild("collision")))
+        for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNodeCollisions))->FirstChild("collision")))
         {
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             XmlGetAttr((class TiXmlElement*)(pNode), "targetNode", spNode->m_strTargetNode);
@@ -1636,10 +1636,10 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_aNodeCollision.Add(spNode);
         }
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeServerCollisions"));
-    if (pChild)
+    Unk_140165cf0* pNodeServerCollisions = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("nodeServerCollisions"));
+    if (pNodeServerCollisions)
     {
-        for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->FirstChild("collision")))
+        for (Unk_140165cf0* pNode : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNodeServerCollisions))->FirstChild("collision")))
         {
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             FUN_140874670(pNode, "volume", spNode->m_vVolume);
@@ -1647,45 +1647,45 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_aNodeServerCollision.Add(spNode);
         }
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("capsule"));
-    if (pChild)
+    Unk_140165cf0* pCapsule = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("capsule"));
+    if (pCapsule)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "radius", reinterpret_cast<float&>(m_capsule.m_fRadius));
-        XmlGetAttr((class TiXmlElement*)(pChild), "height", reinterpret_cast<float&>(m_capsule.m_fHeight));
-        XmlGetAttr((class TiXmlElement*)(pChild), "ignore", reinterpret_cast<int&>(m_capsule.m_nIgnore));
+        XmlGetAttr((class TiXmlElement*)(pCapsule), "radius", reinterpret_cast<float&>(m_capsule.m_fRadius));
+        XmlGetAttr((class TiXmlElement*)(pCapsule), "height", reinterpret_cast<float&>(m_capsule.m_fHeight));
+        XmlGetAttr((class TiXmlElement*)(pCapsule), "ignore", reinterpret_cast<int&>(m_capsule.m_nIgnore));
         if (m_capsule.m_fRadius <= 0.0f || m_capsule.m_fHeight <= 0.0f)
         {
             int nId = GetId();
             FUN_1406a6d70(GetLogString(), 0, 0, 0x16, L"NpcID={0}, Capsule.radius, Capsule.height는 0보다 커야합니다.", nId);
         }
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dead"));
-    if (pChild)
+    Unk_140165cf0* pDead = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dead"));
+    if (pDead)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "time", reinterpret_cast<float&>(m_dead.m_fTime));
-        FUN_1401788f0(pChild, "defaultaction", m_dead.m_aDefaultAction);
-        FUN_1401788f0(pChild, "upaction", m_dead.m_aUpAction);
-        XmlGetAttr((class TiXmlElement*)(pChild), "revival", m_dead.m_nRevival);
-        XmlGetAttr((class TiXmlElement*)(pChild), "count", reinterpret_cast<int&>(m_dead.m_nCount));
-        XmlGetAttr((class TiXmlElement*)(pChild), "lifeTime", reinterpret_cast<float&>(m_dead.m_fLifeTime));
-        XmlGetAttr((class TiXmlElement*)(pChild), "extendRoomTime", reinterpret_cast<unsigned long&>(m_dead.m_nExtendRoomTime));
+        XmlGetAttr((class TiXmlElement*)(pDead), "time", reinterpret_cast<float&>(m_dead.m_fTime));
+        FUN_1401788f0(pDead, "defaultaction", m_dead.m_aDefaultAction);
+        FUN_1401788f0(pDead, "upaction", m_dead.m_aUpAction);
+        XmlGetAttr((class TiXmlElement*)(pDead), "revival", m_dead.m_nRevival);
+        XmlGetAttr((class TiXmlElement*)(pDead), "count", reinterpret_cast<int&>(m_dead.m_nCount));
+        XmlGetAttr((class TiXmlElement*)(pDead), "lifeTime", reinterpret_cast<float&>(m_dead.m_fLifeTime));
+        XmlGetAttr((class TiXmlElement*)(pDead), "extendRoomTime", reinterpret_cast<unsigned long&>(m_dead.m_nExtendRoomTime));
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
-    if (pChild)
+    Unk_140165cf0* pPush = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("push"));
+    if (pPush)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "back", reinterpret_cast<float&>(m_push.m_fBack));
-        XmlGetAttr((class TiXmlElement*)(pChild), "up", reinterpret_cast<float&>(m_push.m_fUp));
-        XmlGetAttr((class TiXmlElement*)(pChild), "knockback", reinterpret_cast<float&>(m_push.m_fKnockback));
+        XmlGetAttr((class TiXmlElement*)(pPush), "back", reinterpret_cast<float&>(m_push.m_fBack));
+        XmlGetAttr((class TiXmlElement*)(pPush), "up", reinterpret_cast<float&>(m_push.m_fUp));
+        XmlGetAttr((class TiXmlElement*)(pPush), "knockback", reinterpret_cast<float&>(m_push.m_fKnockback));
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("normal"));
-    if (pChild != 0)
+    Unk_140165cf0* pNormal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("normal"));
+    if (pNormal != 0)
     {
-        CString strAction = Unk_ReadString((class Unk_XmlNode*)(pChild), "action", CString(""));
-        CString strProb = Unk_ReadString((class Unk_XmlNode*)(pChild), "prob", CString(""));
+        CString strAction = Unk_ReadString((class Unk_XmlNode*)(pNormal), "action", CString(""));
+        CString strProb = Unk_ReadString((class Unk_XmlNode*)(pNormal), "prob", CString(""));
         ATL::CAtlArray<CString> actions;
-        ATL::CAtlArray<unsigned> probs;
+        ATL::CAtlArray<int> probs;
         Unk_SplitA(const_cast<CStringA&>(strAction), (ATL::CAtlArray<CStringA>*)&(actions), ",");
-        FUN_140177e10(strProb, probs, ",");
+        FUN_140177e10(strProb, reinterpret_cast<ATL::CAtlArray<unsigned>&>(probs), ",");
         if (probs.GetCount() < actions.GetCount())
         {
             int nId = GetId();
@@ -1693,8 +1693,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             probs.SetCount(actions.GetCount(), -1);
         }
         for (unsigned i = 0; i < actions.GetCount(); ++i)
-            m_normal.m_aActions.Add(std::make_pair(CStringA(FUN_14016a5c0(actions[i], 0)), (int)probs[i]));
-        if (XmlGetAttr((class TiXmlElement*)(pChild), "movearea", reinterpret_cast<int&>(m_normal.m_nMoveArea)) != 0)
+            m_normal.m_aActions.Add(std::make_pair(CStringA(FUN_14016a5c0(actions[i], 0)), static_cast<int&&>(probs[i])));
+        if (XmlGetAttr((class TiXmlElement*)(pNormal), "movearea", reinterpret_cast<int&>(m_normal.m_nMoveArea)) != 0)
             m_normal.m_nMoveArea = 200;
     }
     else
@@ -1703,31 +1703,31 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         m_normal.m_aActions.Add(std::make_pair("Idle_A", nProb));
         m_normal.m_nMoveArea = 200;
     }
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dropiteminfo"));
-    if (pChild)
+    Unk_140165cf0* pDropItemInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dropiteminfo"));
+    if (pDropItemInfo)
     {
-        FUN_140178770(pChild, "globalDropBoxId", m_drop.m_aGlobalDropBoxId);
-        FUN_140178770(pChild, "globalDeadDropBoxId", m_drop.m_aGlobalDeadDropBoxId);
-        FUN_140178770(pChild, "individualDropBoxId", m_drop.m_aIndividualDropBoxId);
-        FUN_140178770(pChild, "globalHitDropBoxId", m_drop.m_aGlobalHitDropBoxId);
-        FUN_140178770(pChild, "individualHitDropBoxId", m_drop.m_aIndividualHitDropBoxId);
-        XmlGetAttr((class TiXmlElement*)(pChild), "dropHeight", reinterpret_cast<float&>(m_drop.m_fDropHeight));
-        XmlGetAttr((class TiXmlElement*)(pChild), "dropDistanceBase", reinterpret_cast<float&>(m_drop.m_fDropDistanceBase));
-        XmlGetAttr((class TiXmlElement*)(pChild), "dropDistanceRandom", reinterpret_cast<int&>(m_drop.m_nDropDistanceRandom));
-        XmlGetAttr((class TiXmlElement*)(pChild), "fireVelocity", reinterpret_cast<float&>(m_drop.m_fFireVelocity));
+        FUN_140178770(pDropItemInfo, "globalDropBoxId", m_drop.m_aGlobalDropBoxId);
+        FUN_140178770(pDropItemInfo, "globalDeadDropBoxId", m_drop.m_aGlobalDeadDropBoxId);
+        FUN_140178770(pDropItemInfo, "individualDropBoxId", m_drop.m_aIndividualDropBoxId);
+        FUN_140178770(pDropItemInfo, "globalHitDropBoxId", m_drop.m_aGlobalHitDropBoxId);
+        FUN_140178770(pDropItemInfo, "individualHitDropBoxId", m_drop.m_aIndividualHitDropBoxId);
+        XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropHeight", reinterpret_cast<float&>(m_drop.m_fDropHeight));
+        XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropDistanceBase", reinterpret_cast<float&>(m_drop.m_fDropDistanceBase));
+        XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropDistanceRandom", reinterpret_cast<int&>(m_drop.m_nDropDistanceRandom));
+        XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "fireVelocity", reinterpret_cast<float&>(m_drop.m_fFireVelocity));
     }
     Unk_140165cf0* pLookAt = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("lookattarget"));
-    pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("corpse"));
-    if (pChild)
+    Unk_140165cf0* pCorpse = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("corpse"));
+    if (pCorpse)
     {
-        XmlGetAttr((class TiXmlElement*)(pChild), "width", reinterpret_cast<float&>(m_corpse.m_shape.m_fWidth));
-        XmlGetAttr((class TiXmlElement*)(pChild), "height", reinterpret_cast<float&>(m_corpse.m_shape.m_fHeight));
-        XmlGetAttr((class TiXmlElement*)(pChild), "depth", reinterpret_cast<float&>(m_corpse.m_shape.m_fDepth));
-        XmlGetAttr((class TiXmlElement*)(pChild), "added", reinterpret_cast<float&>(m_corpse.m_fAdded));
-        XmlGetAttr((class TiXmlElement*)(pChild), "offsetNametag", reinterpret_cast<float&>(m_corpse.m_fOffsetNametag));
-        XmlGetAttr((class TiXmlElement*)(pChild), "hitAble", reinterpret_cast<int&>(m_corpse.m_nHitAble));
-        FUN_140178570(pChild, "rotation", m_corpse.m_aRotation);
-        XmlGetAttr((class TiXmlElement*)(pChild), "corpseEffect", m_corpse.m_strCorpseEffect);
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "width", reinterpret_cast<float&>(m_corpse.m_shape.m_fWidth));
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "height", reinterpret_cast<float&>(m_corpse.m_shape.m_fHeight));
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "depth", reinterpret_cast<float&>(m_corpse.m_shape.m_fDepth));
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "added", reinterpret_cast<float&>(m_corpse.m_fAdded));
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "offsetNametag", reinterpret_cast<float&>(m_corpse.m_fOffsetNametag));
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "hitAble", reinterpret_cast<int&>(m_corpse.m_nHitAble));
+        FUN_140178570(pCorpse, "rotation", m_corpse.m_aRotation);
+        XmlGetAttr((class TiXmlElement*)(pCorpse), "corpseEffect", m_corpse.m_strCorpseEffect);
     }
     return true;
 }

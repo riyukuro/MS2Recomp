@@ -403,7 +403,7 @@ public:
     bool FUN_141bc7b20(const unsigned __int64& key); // 0x141bc7b20 (merge3: is `key` present in m_1d8; was mis-recovered as erase(iterator))
     void FUN_141bc7b80(int force); // 0x141bc7b80
     void FUN_141bc7d40(const unsigned __int64& key); // 0x141bc7d40
-    void AddCombatBgmTracker(const unsigned __int64& key); // 0x141bc7ec0
+    void AddCombatBgmTracker(egf::EntityID key); // 0x141bc7ec0
     void FUN_141bc7f10(egf::EntityID key); // 0x141bc7f10 (by value at both exe sites)
     void FUN_141bc7fe0(const unsigned __int64& key); // 0x141bc7fe0
     int FUN_141bc80c0(int channel); // 0x141bc80c0

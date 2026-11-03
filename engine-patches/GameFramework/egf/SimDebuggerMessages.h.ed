@@ -1,0 +1,15 @@
+36a
+#endif
+.
+32a
+    // MS2: the exe keeps DebugNoteBase::SetupClassInfo out of line (0x1421c1c50) and the
+    // ms_ClassInfo initializers of the DebugNote messages tail-call it, where cl 14.16 inlines
+    // it; the unit defines EE_MS2_SCI_NOINLINE (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(DebugNoteBase, efd::kMSGID_DebugNoteBase);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(efd::IMessage);
+    EE_END_DECLARE_CLASS();
+#else
+.

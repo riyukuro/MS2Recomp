@@ -1,0 +1,12 @@
+74c
+template <class T, class TAlloc> EE_MS2_NITARRAY_SETSIZE_INLINE
+.
+15a
+// MS2: the exe inlines SetSize into the NiTArray ctor in some TUs and calls it in others; the TUs that inline it
+// define the switch (engine/units-gb.json)
+#if defined(EE_MS2_NITARRAY_SETSIZE_FORCE)
+#define EE_MS2_NITARRAY_SETSIZE_INLINE __forceinline
+#else
+#define EE_MS2_NITARRAY_SETSIZE_INLINE inline
+#endif
+.

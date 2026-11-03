@@ -1,0 +1,3 @@
+131c
+        virtual void LoadKFMTool(NiKFMTool* pKFMTool, const KFMFactoryRequest* pRequest);  // MS2: virtual (exe ResponseData vftable slot 9)
+.

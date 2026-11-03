@@ -1405,6 +1405,71 @@ def assign_subblocks(res, paths, windows, j, log=print):
 
 
 # ---------------------------------------------------------------------------------------------------------------
+# initializer target check (2026-11-02 cinit1). The copy/block/sub-block passes place a ??__E<X> by its bytes with
+# relocations masked, so a 12-byte header-static initializer pairs with any other `lea rcx,<x>; jmp <y>`: an efd
+# kCAT_* (`lea rcx,<its dtor>; jmp atexit`) on a NiAnimationSDM object's (`lea rcx,<.data object>; jmp
+# ??0NiAnimationSDM`), one SDM's on another's. Such a placement is dropped (its slot and name stay open for the dipair
+# and dislot passes, which verify every target) when a relocation contradicts it: a symbol the obj defines as code
+# resolves outside .text or one it defines as data inside it, or an external function some unit pairs exactly (else
+# the symbol tables name) resolves to another VA. And a stock TU and its v2525 twin are one TU (see credit): the dislot
+# pass does not place an initializer again that one of the two placed already (RenderService's key loaders, in its
+# exe group at 0x1401295a0, were credited a second time at another TU's 0x140125970).
+INITCHECK = os.environ.get("MS2_GB_INITCHECK", "1") == "1"      # 0: the old placements, for A/B runs
+INIT_MOVED = ("copy", "block", "subblock")
+
+
+def _init_clash(o, e, va, known, text):
+    if not _match(o, e, va):
+        return False
+    for s, t in dict(bm.LAST_TARGETS).items():
+        if s == e:
+            continue
+        in_text = any(lo <= t < hi for lo, hi in text)
+        i = o.by_name.get(s)
+        if i is not None and o.syms[i][2] > 0:
+            if bool(o.sec(o.syms[i][2])["chars"] & 0x20) != in_text:
+                return True
+            continue
+        vas = known.get(s) or ({bm.SYMBOLS[s]} if s in bm.SYMBOLS else set())
+        if t not in vas and any(lo <= v < hi for v in vas for lo, hi in text):
+            return True
+    return False
+
+
+def _initcheck_job(job):
+    paths, todo, known = job
+    exe = G["exe"]
+    text = [(exe.base + s.VirtualAddress, exe.base + s.VirtualAddress + s.Misc_VirtualSize)
+            for s in exe.pe.sections if s.Name.rstrip(b"\0") == b".text"]
+    objs, bad = {}, []
+    for k, n, va in todo:
+        if k not in objs:
+            objs[k] = bm.Obj(paths[k])
+        if _init_clash(objs[k], n, va, known, text):
+            bad.append((k, n, va))
+    return bad
+
+
+def check_init_targets(res, paths, log=print):
+    """drop the copy/block/sub-block placements of initializers whose relocation targets contradict them"""
+    known = {}
+    for k, c in res.items():
+        for n, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", []):
+            if ok and not n.startswith(("??__E", "??__F")):
+                known.setdefault(n, set()).add(va)
+    todo = [(k, n, va) for k, c in sorted(res.items()) if k in paths
+            for n, va, ok, how in c.get("xpairs", []) + c.get("bpairs", [])
+            if ok and how in INIT_MOVED and n.startswith("??__E")]
+    with Pool(1, initializer=_init) as p:
+        bad = {tuple(b) for b in p.apply(_initcheck_job, ((paths, todo, known),))}
+    for k, c in res.items():
+        for f in ("xpairs", "bpairs"):
+            if f in c:
+                c[f] = [x for x in c[f] if (k, x[0], x[1]) not in bad]
+    log(f"engine: initializer target check dropped {len(bad)} of {len(todo)} placements")
+
+
+# ---------------------------------------------------------------------------------------------------------------
 # header-static equivalence rule (2026-10-22 gb15). NiAnimationKeyMacros.h's NiRegisterAnimationStream(Key) defines a
 # namespace-scope `static int Keyregisterloaderreturn = Key::RegisterLoader();` in every TU that includes a key header:
 # each includer emits a 20-byte .text$di initializer (sub rsp,28 / call Key::RegisterLoader / mov [rip+int],eax / add
@@ -1728,7 +1793,7 @@ def _dislot_check(o, e, va, known, dnames, text):
 
 
 def _dislot_job(job):
-    paths, tmpl, todo, known, near, placed = job
+    paths, tmpl, todo, known, near, placed, twin = job
     exe = G["exe"]
     text = [(exe.base + s.VirtualAddress, exe.base + s.VirtualAddress + s.Misc_VirtualSize)
             for s in exe.pe.sections if s.Name.rstrip(b"\0") == b".text"]
@@ -1761,7 +1826,7 @@ def _dislot_job(job):
             if len(data) != n or any(keep[x] and data[x] != img[x] for x in range(n)):
                 continue
             a = _dislot_check(o, e, va, known, dnames, text)
-            if a is None or (not a and (k, e) in placed):
+            if a is None or (not a and (u if twin else k, e) in placed):
                 continue
             d = min((abs(v - va) for v in near.get(u, ())), default=1 << 40)
             if a or d <= DISLOT_NEAR:
@@ -1772,7 +1837,7 @@ def _dislot_job(job):
         best = [h for h in hits if h[:2] == hits[0][:2]]
         if len({h[2] for h in best}) == 1:
             out.append((va, best[0][3], best[0][4]))
-            placed.add((best[0][3], best[0][4]))
+            placed.add((best[0][2] if twin else best[0][3], best[0][4]))
     return out
 
 
@@ -1790,7 +1855,7 @@ def assign_dislots(res, paths, log=print):
             if ok:
                 taken.add(va)
                 if not in_game(va):
-                    placed.add((k, n))
+                    placed.add((c["unit"].lower() if INITCHECK else k, n))
                 known.setdefault(n, set()).add(va)
                 near.setdefault(c["unit"].lower(), []).append(va)
     tmpl, sizes = [], set()
@@ -1817,7 +1882,7 @@ def assign_dislots(res, paths, log=print):
             if di_lo <= va <= di_hi and n in sizes and va not in taken and not in_game(va):
                 todo.append((va, n))
     with Pool(1, initializer=_init) as p:
-        out = p.apply(_dislot_job, ((paths, tmpl, todo, known, near, placed),))
+        out = p.apply(_dislot_job, ((paths, tmpl, todo, known, near, placed, INITCHECK),))
     for va, k, e in out:
         res[k].setdefault("bpairs", []).append([e, va, True, "dislot"])
     log(f"engine: verified initializer slots {len(out)} of {len(todo)} open in 0x{di_lo:x}-0x{di_hi:x}")
@@ -1903,6 +1968,8 @@ def _run(cache, j, filters, log):
         lib_hints(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         assign_blocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         assign_subblocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
+        if INITCHECK:
+            check_init_targets(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         header_statics(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         assign_dipairs(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)
         assign_dislots(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, log)

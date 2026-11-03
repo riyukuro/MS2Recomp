@@ -390,7 +390,7 @@ public:
     void OnBlindTarget(NotifyObject* pNotify);                      // 0x14130ba70
     void OnUgcDownloadComplete(NotifyObject* pNotify);              // 0x14130bba0
     CMsTime GetOpenTime();                                          // 0x14130bea0
-    void SetOpenTime(const CMsTime& time);                          // 0x14130bee0
+    void SetOpenTime(CMsTime time);                                 // 0x14130bee0
     void BuildItemList(int nKind);                                  // 0x14130c670
     void UpdateNotice(const CStringW& strNotice);                   // 0x14130c5b0
     void RefreshLimitedTab(bool bSkip);                             // 0x14130ce70

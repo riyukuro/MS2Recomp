@@ -169,8 +169,8 @@ public:
     Unk_MdName m_name;                                                      // +0x28
     __int64 m_nId;                                                          // +0x30
     unsigned char m_pad_38[0x24];
-    unsigned short m_time[2];                                               // +0x5c
-    unsigned char m_pad_60[8];
+    unsigned short m_nLevel;                                                // +0x5c
+    unsigned char m_pad_5e[0xa];
     int m_nJob;                                                             // +0x68
 };
 class Unk_MdNameC { };   // the other name box (an Unk_GuildMemberData view)
@@ -183,8 +183,8 @@ public:
     unsigned char m_pad_30[4];
     int m_nClass;                                                           // +0x34
     unsigned char m_pad_38[4];
-    unsigned short m_time[2];                                               // +0x3c
-    unsigned char m_pad_40[0x118];
+    unsigned short m_nLevel;                                                // +0x3c
+    unsigned char m_pad_3e[0x11a];
     int m_nState;                                                           // +0x158
 };
 class Unk_MdSrcD
@@ -194,8 +194,8 @@ public:
     Unk_MdName m_name;                                                      // +0x18
     __int64 m_nId;                                                          // +0x20
     unsigned char m_pad_28[0x24];
-    unsigned short m_time[2];                                               // +0x4c
-    unsigned char m_pad_50[8];
+    unsigned short m_nLevel;                                                // +0x4c
+    unsigned char m_pad_4e[0xa];
     int m_nJob;                                                             // +0x58
 };
   // text by kind and id
@@ -910,7 +910,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
-    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_time[0], TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
 // @0x141483830
@@ -920,7 +920,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca980(), 1, "");
     m_strName = reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca890();
-    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_time[0], TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.m_nClass)));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.m_nClass)));
 }
 
 // @0x141483af0
@@ -930,7 +930,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
     m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
-    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_time[0], TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
+    m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
 // @0x141483d80

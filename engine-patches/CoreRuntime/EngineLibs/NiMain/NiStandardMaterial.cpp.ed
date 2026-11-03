@@ -39,6 +39,9 @@
     }
 
 .
+5669c
+    kOutTexCoordType = "float4";  // MS2: the exe outputs float4 texture coordinates
+.
 5104c
         pkFogNode->GetInputResourceByVariableName("ViewPosition")); NiMaterialResource* pkFogBias = AddOutputGlobal(kContext.m_spUniforms, "gakFogBias", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT); kContext.m_spConfigurator->AddBinding(pkFogBias, pkFogNode->GetInputResourceByVariableName("FogBias"));  // MS2: v2525
 

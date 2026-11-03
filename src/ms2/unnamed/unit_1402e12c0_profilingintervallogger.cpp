@@ -59,50 +59,20 @@ MS2_CHECK_OFFSET(Unk_PerfLog, m_nFirstTick, 0x44);
 MS2_CHECK_OFFSET(Unk_PerfLog, m_nCount, 0x48);
 MS2_CHECK_OFFSET(Unk_PerfLog, m_pCallback, 0x50);
 
-u64 FUN_1402e1a50(int nValue);
-
-// fmt::internal::MakeValue<unsigned long> boxed-argument ctor (the 8-byte branch is unreachable on LLP64).
-struct Unk_LogArgValue : Unk_LogArg {
-    Unk_LogArgValue(unsigned nValue);
-};
-MS2_CHECK_SIZE(Unk_LogArgValue, 0x10);
-
-// @0x1402e1a20
-Unk_LogArgValue::Unk_LogArgValue(unsigned nValue)
-{
-    if (sizeof(long) == sizeof(int))
-        *(int*)&m_w0 = nValue;
-    else
-        m_w0 = (unsigned long long)nValue;
-}
-
-// @0x1402e1a00
-u64 FUN_1402e1a00(const int* pValue)
-{
-    return FUN_1402e1a50(*pValue);
-}
-
-// @0x1402e1a50
-u64 FUN_1402e1a50(int)
-{
-    return 2;
-}
-
-// @0x1402e15d0 - slot bound to an int argument
-u64* FUN_1402e15d0(u64* pSlot, const int* pValue)
-{
-    *pSlot = FUN_1402e1a00(pValue);
-    return pSlot;
-}
+// The two tick deltas are unsigned long arguments: their fmt instances live in this range, ArgType<unsigned long> 0x1402e15d0,
+// make_type<unsigned long> 0x1402e1a00, the wchar_t MakeValue(unsigned long) 0x1402e1a20 and the char MakeValue::type(unsigned long)
+// 0x1402e1a50 (make_type always uses the char MakeValue). The Value entries are the wide instances, as this is a wide format call.
+typedef fmt::internal::MakeValue< fmt::BasicFormatter<wchar_t> > Unk_LogMakeValue;
 
 // @0x1402e1600
 // MS2-FUNCTIONAL: fmt argument-packing template glue; the Value[5] array matches, but the exe keeps the bound/empty ArgType slots as separate temporaries (no array indexing).
 void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszFormat,
                    const CString* pStr0, const int* pInt1, const CString* pStr2,
-                   const int* pInt3, const int* pInt4)
+                   const unsigned long* pInt3, const unsigned long* pInt4)
 {
     Unk_LogArg aArgs[5] = { FUN_140163740(*pStr0), FUN_140163790(*pInt1), FUN_140163740(*pStr2),
-                            Unk_LogArgValue(*pInt3), Unk_LogArgValue(*pInt4) };
+                            reinterpret_cast<const Unk_LogArg&>(static_cast<const fmt::internal::Value&>(Unk_LogMakeValue(*pInt3))),
+                            reinterpret_cast<const Unk_LogArg&>(static_cast<const fmt::internal::Value&>(Unk_LogMakeValue(*pInt4))) };
 
     u64 aSlot[5];
     u64 aInit[10];
@@ -116,8 +86,10 @@ void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszForm
     u64* pInit7 = FUN_140163e80(&aInit[7]);
     u64* pInit8 = FUN_140163e80(&aInit[8]);
     u64* pInit9 = FUN_140163e80(&aInit[9]);
-    u64* pBound4 = FUN_1402e15d0(&aSlot[4], pInt4);
-    u64* pBound3 = FUN_1402e15d0(&aSlot[3], pInt3);
+    fmt::internal::ArgType t4(*pInt4);
+    u64* pBound4 = &t4.type;
+    fmt::internal::ArgType t3(*pInt3);
+    u64* pBound3 = &t3.type;
     u64* pBound2 = FUN_1401cee00(&aSlot[2], pStr2);
     u64* pBound1 = FUN_14015e5d0(&aSlot[1], pInt1);
     u64* pBound0 = FUN_1401cee00(&aSlot[0], pStr0);
@@ -135,8 +107,8 @@ void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
     unsigned nNow = GetTickCountMs2();
     if (m_nFirstTick == 0)
         m_nFirstTick = nNow;
-    int nDeltaLast = (int)(nNow - m_nLastTick);
-    int nDeltaFirst = (int)(nNow - m_nFirstTick);
+    unsigned long nDeltaLast = nNow - m_nLastTick;
+    unsigned long nDeltaFirst = nNow - m_nFirstTick;
     if (!bEmpty) {
         m_nCount++;
         FUN_1402e1600((i64)GetLogString(), 0, 0, 1, L"[{0}_{1}:{2} {3}/{4}]",

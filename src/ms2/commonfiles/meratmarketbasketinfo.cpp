@@ -97,7 +97,7 @@ CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);    // T
 bool FUN_1406a4fe0(int nId);
 bool FUN_1406a5010(int nId);
 int FUN_140718170(const CString& strValue);                                 // a number or an enum name
-HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pData, DWORD nSize, DWORD* pWritten);  // writes the data
+HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pData, DWORD nSize, DWORD* pWritten) throw();  // writes the data (CAtlFile::Write, throw())
 class CGameEventValueStarShop   // C3: member view for the former free stand-ins
 {
 public:
@@ -2275,7 +2275,7 @@ int FUN_1406a4b50(TiXmlDocument* pDoc, CAtlList<int>* pList)
 MS2_REPLACE(0x1406A4B50, FUN_1406a4b50, 194, 0xA9FC5A5F);
 
 // Writes a layout document as the upsert of a dbo.tb_game_variable row.
-// MS2-FUNCTIONAL: the CString / printer temporaries are laid out differently (1 byte longer)
+// No EH nop after StringFormat: nothing after it can throw (CAtlFile::Write and the CString accessors are throw()).
 // @0x1406a4c20
 int FUN_1406a4c20(TiXmlDocument* pDoc, const CStringA& strName, const CStringA& strDesc, ATL::CAtlFile* pFile)
 {

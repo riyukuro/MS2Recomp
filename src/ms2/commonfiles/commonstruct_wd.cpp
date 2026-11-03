@@ -179,76 +179,63 @@ Unk_TIter* FUN_140278d90(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, U
     *out = *(Unk_TIter*)FUN_1402799d0(tree, &r, leftish, FUN_14027c160(val), newnode);
     return out;
 }
+// @0x1402799d0
+// std::_Tree<map<int,int>>::_Insert_nohint(bool leftish, _Valty&& val, _Nodeptr newnode) (VS2017 15.8 shape: _Multi branch kept, try/catch(...) frees newnode)
+Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 val, Unk_TNode* newnode)
+{
+    Unk_TVal* h = (Unk_TVal*)&reinterpret_cast<TreeII*>(tree)->_Get_data();
+    try {
+        Unk_TNode* wherenode = h->head;
+        Unk_TNode* trynode = wherenode->parent;
+        bool addleft = true;
+        while (!trynode->isnil) {
+            wherenode = trynode;
+            if (leftish)
+                addleft = !WD_LT(WD_KEY(trynode), WD_KFN());
+            else
+                addleft = WD_LT(WD_KFN(), WD_KEY(trynode));
+            trynode = addleft ? trynode->left : trynode->right;
+        }
+        if (TreeII::_Multi) {
+            bool yes = true;
+            Unk_TIter t;
+            FUN_140274d10(out, (Unk_TIter*)FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), &yes);
+            return out;
+        } else {
+            Unk_TIter where, b;
+            FUN_14027d010(&where, wherenode, FUN_14027b570(h));
+            if (!addleft)
+                ;
+            else if (FUN_14027ee20(&where, FUN_14028a130(tree, &b))) {
+                bool yes = true;
+                Unk_TIter t;
+                FUN_140274d10(out, (Unk_TIter*)FUN_140278a30(tree, &t, true, wherenode, FUN_14027c160(val), newnode), &yes);
+                return out;
+            } else
+                --*reinterpret_cast<MapII::iterator*>(&where);
+            if (WD_LT(WD_KEY(where.node), WD_KFN())) {
+                bool yes = true;
+                Unk_TIter t;
+                FUN_140274d10(out, (Unk_TIter*)FUN_140278a30(tree, &t, addleft, wherenode, FUN_14027c160(val), newnode), &yes);
+                return out;
+            } else {
+                FUN_1402876f0(tree, newnode);
+                bool no = false;
+                FUN_140274b10(out, &where, &no);
+                return out;
+            }
+        }
+    } catch (...) {
+        FUN_1402876f0(tree, newnode);
+        throw;
+    }
+}
 #undef WD_KEY
 #undef WD_KFN
 #undef WD_LT
 #undef WD_INSERT_AT
 #undef WD_PREV
 #undef WD_CIT
-// @0x1402799d0
-// MS2-FUNCTIONAL: exe keeps the STL's _TRY_BEGIN/_CATCH_ALL(_Destroy_if_not_nil(newnode)) frame (EH -2 slot, return jumps through the try end); a real try/catch here spills every local differently, so the guard is left out
-// std::_Tree<map<int,int>>::_Insert_nohint(bool leftish, _Valty&& val, _Nodeptr newnode); 1036 bytes (Ghidra's 1024 is truncated)
-Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 val, Unk_TNode* newnode)
-{
-    Unk_TVal* h = (Unk_TVal*)&reinterpret_cast<TreeII*>(tree)->_Get_data();
-    Unk_TNode* where = h->head;
-    Unk_TNode* trynode = where->parent;
-    bool addleft = true;
-    while (!trynode->isnil) {
-        where = trynode;
-        if (leftish) {
-            i64 kv = FUN_140288610(tree, val);
-            i64 kt = FUN_1402885e0(tree, trynode);
-            bool lt = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(kt), *(const int*)(kv));
-            addleft = !lt;
-        } else {
-            i64 kt = FUN_1402885e0(tree, trynode);
-            i64 kv = FUN_140288610(tree, val);
-            bool lt = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(kv), *(const int*)(kt));
-            addleft = lt;
-        }
-        trynode = addleft ? trynode->left : trynode->right;
-    }
-    if (0) {
-        bool yes = true;
-        Unk_TIter t;
-        i64 r = FUN_140278a30(tree, &t, addleft, where, FUN_14027c160(val), newnode);
-        FUN_140274d10(out, (Unk_TIter*)r, &yes);
-        return out;
-    } else {
-        Unk_TIter res;
-        FUN_14027d010(&res, where, FUN_14027b570(h));
-        if (!addleft)
-            ;
-        else {
-            Unk_TIter b;
-            bool atbegin = FUN_14027ee20(&res, FUN_14028a130(tree, &b));
-            if (atbegin) {
-                bool yes = true;
-                Unk_TIter t;
-                i64 r = FUN_140278a30(tree, &t, 1, where, FUN_14027c160(val), newnode);
-                FUN_140274d10(out, (Unk_TIter*)r, &yes);
-                return out;
-            } else
-                --*reinterpret_cast<MapII::iterator*>(&res);
-        }
-        i64 kv = FUN_140288610(tree, val);
-        i64 kw = FUN_1402885e0(tree, res.node);
-        bool lt = reinterpret_cast<TreeII*>(tree)->_Getcomp()(*(const int*)(kw), *(const int*)(kv));
-        if (lt) {
-            bool yes = true;
-            Unk_TIter t;
-            i64 r = FUN_140278a30(tree, &t, addleft, where, FUN_14027c160(val), newnode);
-            FUN_140274d10(out, (Unk_TIter*)r, &yes);
-            return out;
-        } else {
-            FUN_1402876f0(tree, newnode);
-            bool no = false;
-            FUN_140274b10(out, &res, &no);
-            return out;
-        }
-    }
-}
 // @0x140279de0
 // std::vector<16-byte smart pointer>::_Insert_range(const_iterator where, _Iter first, _Iter last, forward_iterator_tag) (VS2017 15.8 shape, try/catch(...) cleanup as in the exe)
 void FUN_140279de0(void* vec, Unk_E16* where, i64 first, i64 last)

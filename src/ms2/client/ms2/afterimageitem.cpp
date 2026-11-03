@@ -682,8 +682,9 @@ bool CAfterImageEffectManager::SelectNext()
     return false;
 }
 
+extern const unsigned int DAT_142db1d84;   // 0x100: after-image texture size
+
 // @0x140982460
-// MS2-FUNCTIONAL: the exe reads the 0x100 texture size from an rdata global (0x142db1d84) that has no symbol mapping; behaviour equivalent
 NiDynamicTexturePtr CAfterImageEffectManager::GetTexture()
 {
     if (m_setTextures.empty())
@@ -692,7 +693,7 @@ NiDynamicTexturePtr CAfterImageEffectManager::GetTexture()
         kPrefs.m_ePixelLayout = NiTexture::FormatPrefs::TRUE_COLOR_32;
         kPrefs.m_eAlphaFmt = NiTexture::FormatPrefs::SMOOTH;
         kPrefs.m_eMipMapped = NiTexture::FormatPrefs::NO;
-        return NiDynamicTexturePtr(NiDynamicTexture::Create(0x100, 0x100, kPrefs, false));
+        return NiDynamicTexturePtr(NiDynamicTexture::Create(DAT_142db1d84, DAT_142db1d84, kPrefs, false));
     }
     NiDynamicTexturePtr spTexture = *m_setTextures.begin();
     m_setTextures.erase(m_setTextures.begin());

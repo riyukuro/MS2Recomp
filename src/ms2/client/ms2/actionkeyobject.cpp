@@ -3,6 +3,7 @@
 // MS2-UNIT: ?\actionkeyobject.cpp
 // MS2-RANGE: 0x140951c70-0x14096b300 .text$mn
 // MS2-RANGE: 0x1400bf670-0x1400bf7b0 .text$di
+// MS2-FLAGS: oiintrin
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VUnk_WsB_Lift@@@@0AEAV?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x140961ac0 ; unique
 // MS2-PIN: ??$destroy@V?$MS2Ptr@VUnk_WsB_Lift@@@@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@1@QEAV?$MS2Ptr@VUnk_WsB_Lift@@@@@Z 0x140963750 ; unique
@@ -102,7 +103,6 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCFunctionCubeObject@@@@AEAAXPEAX@Z 0x14096a120
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCFieldDataCli@@@@AEAAXPEAX@Z 0x14096a300
 // MS2-PIN: memmove_s 0x140954e40
-// MS2-FUNCTIONAL: <cmath> sqrt(float): the exe imports sqrtf from the CRT DLL (indirect call); this build links it statically
 // MS2-PIN: ?sqrt@@YAMM@Z 0x14096b1c0
 // MS2-PIN: ??1?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@XZ 0x140964aa0
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VUnk_WsB_Lift@@@@V?$allocator@V?$MS2Ptr@VUnk_WsB_Lift@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VUnk_WsB_Lift@@@@XZ 0x140969a80
@@ -123,6 +123,7 @@
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\actionkeyobject.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
+#pragma intrinsic(memcpy, memset, strcmp, strlen)
 
 // ---- header statics (.text$di): a shared header's sort names and condition keys, then egf's kENTITY_INVALID --------
 // @0x1400bf670

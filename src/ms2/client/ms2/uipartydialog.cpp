@@ -3582,6 +3582,7 @@ void FUN_1413fb630(egf::Entity* pEntity, efd::vector<unsigned __int64>& meshes);
 struct Unk_PdCursor
 {
     Unk_PdCursor(float fX, float fY, float fZ) : m_pt(fX, fY, fZ) {}
+    bool operator()(GameObject* pA, GameObject* pB) const;               // the sort predicate: nearer to the cursor first
     efd::Point3 m_pt;
 };
 float FUN_140966f00(Unk_PdCursor kA, NiPoint3 kB);                      // the distance
@@ -3630,17 +3631,32 @@ void FUN_141a8a990(CSceneStateBase* pState, float x, float y);
 void FUN_141a8a730();
 bool FUN_141a8b910();
 
+// @0x141a8e3f0
+bool Unk_PdCursor::operator()(GameObject* pA, GameObject* pB) const
+{
+    if (pA == 0 || pB == 0)
+        return false;
+    NiPoint3 kScreenA;
+    NiPoint3 kScreenB;
+    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pA->vfunc_18(), kScreenA))
+        return false;
+    if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pB->vfunc_18(), kScreenB))
+        return false;
+    return FUN_140966f00(*this, kScreenA) < FUN_140966f00(*this, kScreenB);
+}
+
 // @0x141a8a010
-// MS2-FUNCTIONAL: the exe passes the cursor (Unk_PdCursor, ctor 0x141a8e170) as a prvalue copied straight into the sort predicate; here it is a named local captured by the lambda (closure ctor call)
 void FUN_141a8a010(float x, float y)
 {
-    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance()) == 0)
-        return;
-    if (FUN_14025e7a0() == 0)
+    if (((class Unk_PdApp*)TSingleton<CUIService>::GetInstance()) == 0 || FUN_14025e7a0() == 0)
         return;
     if (!FUN_141a8b910())
         return;
-    if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+    if (FUN_14025e7a0()->FUN_1422aeed0(2) != 0)
+    {
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UISwfEntity mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    else
     {
         if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
             return;
@@ -3656,31 +3672,28 @@ void FUN_141a8a010(float x, float y)
             Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick.FUN_140a16c30()->GetPickResult()->GetAt(i));
             if (pHit == 0)
                 continue;
-            void* pMesh = ((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject());
-            GameObject* pObject = WorldService::GetInstance()->FUN_141bd1050(pMesh);
-            if (pObject == 0)
-                hits.push_back(pHit);
-            else if (std::find(objects.begin(), objects.end(), pObject) == objects.end())
+            GameObject* pObject = WorldService::GetInstance()->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()));
+            if (pObject != 0)
+            {
+                if (objects.end() != std::find(objects.begin(), objects.end(), pObject))
+                    continue;
                 objects.push_back(pObject);
+                continue;
+            }
+            hits.push_back(pHit);
         }
-        Unk_PdCursor kCursor(x, y, 0);
-        std::sort(objects.begin(), objects.end(), [kCursor](GameObject* pA, GameObject* pB) -> bool {
-            if (pA == 0 || pB == 0)
-                return false;
-            NiPoint3 kScreenA;
-            NiPoint3 kScreenB;
-            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pA->vfunc_18(), kScreenA))
-                return false;
-            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(pB->vfunc_18(), kScreenB))
-                return false;
-            return FUN_140966f00(kCursor, kScreenA) < FUN_140966f00(kCursor, kScreenB);
-        });
-        for (std::vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+        std::sort(objects.begin(), objects.end(), Unk_PdCursor(x, y, 0));
+        std::vector<GameObject*>& rObjects = objects;
+        std::vector<GameObject*>::const_iterator itEnd = rObjects.end();
+        for (std::vector<GameObject*>::const_iterator it = rObjects.begin(); it != itEnd; ++it)
         {
-            if (FUN_141a8ab90(*it, x, y))
+            GameObject* pObject = *it;
+            if (FUN_141a8ab90(pObject, x, y))
                 return;
         }
-        for (std::list<Unk_GoPickHit*>::iterator it = hits.begin(); it != hits.end(); ++it)
+        std::list<Unk_GoPickHit*>& rHits = hits;
+        std::list<Unk_GoPickHit*>::const_iterator itHitsEnd = rHits.end();
+        for (std::list<Unk_GoPickHit*>::const_iterator it = rHits.begin(); it != itHitsEnd; ++it)
         {
             Unk_GoPickHit* pHit = *it;
             if (pHit == 0)
@@ -3694,20 +3707,14 @@ void FUN_141a8a010(float x, float y)
         {
             Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick.FUN_140a16c30()->GetPickResult()->GetAt(i));
             GameObject* pObject = 0;
-            NiAVObject* pNode = static_cast<NiAVObject*>(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject()));
-            egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(pNode);
+            egf::Entity* pEntity = GetSceneGraphService()->GetEntityFromSceneGraphNode(static_cast<NiAVObject*>(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
             int nId = 0;
             if (FUN_140ae11a0(pEntity, 0x85b708e6, &nId) == 0)
                 pObject = WorldService::GetInstance()->FindObjectById(nId);
             if (pObject != 0 && FUN_141a8ab90(pObject, x, y))
                 return;
         }
-        efd::SmartPointer<CSceneStateBase> spState = TSingleton<CStateService>::GetInstance()->GetCurrent();
-        FUN_141a8a990(spState, x, y);
-    }
-    else
-    {
-        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UISwfEntity mouseX[{0}] mouseY[{1}]", x, y);
+        FUN_141a8a990(static_cast<const efd::SmartPointer<CSceneStateBase>&>(TSingleton<CStateService>::GetInstance()->GetCurrent()), x, y);
     }
     FUN_141a8a730();
 }

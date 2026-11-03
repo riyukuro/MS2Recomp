@@ -403,7 +403,7 @@ luaopen_debug	1423a7330	func
 ?FromString@AttachNifData@ecr@@UEAA_NAEBVutf8string@efd@@@Z	14202dca0	func
 ??0AttachNifData@ecr@@QEAA@AEBV01@@Z	142032910	func
 ?ReadFlagsFromAttribute@ecrInput@@YA_NPEAVTiXmlElement@efd@@PEBDAEBV?$map@Vutf8string@efd@@IU?$less@Vutf8string@efd@@@std@@@3@AEAI@Z	1420403b0	func
-?LoadKFMTool@ResponseData@KFMFactory@egmAnimation@@QEAAXPEAVNiKFMTool@@PEBVKFMFactoryRequest@3@@Z	142274c90	func
+?LoadKFMTool@ResponseData@KFMFactory@egmAnimation@@UEAAXPEAVNiKFMTool@@PEBVKFMFactoryRequest@3@@Z	142274c90	func
 ?ToLuaObject@?$LuaTraits@VPoint4@efd@@@bapiLua@@SAHPEAUlua_State@@AEBVPoint4@efd@@@Z	14221cab0	func
 _wrap_AttachedNifAsset_GetNifAsset	142055f50	func
 _wrap_AttachedNifAsset_NifAsset_get	142057cc0	func
@@ -445,14 +445,17 @@ SWIG_TypeQueryModule	14205a8e0	alias	attachednifasset_luawrap
 ??__E?ms_ClassInfo@CameraService@ecr@@2VClassInfo@efd@@B@@YAXXZ	140128b30	alias	__cameraservice.cpp
 ??__E?ms_ClassInfo@PickService@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012a010	alias	__pickservice.cpp
 ??__E?ms_ClassInfo@LightService@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012a620	alias	__lightservice
-??__E?ms_ClassInfo@NIFFactory@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012b710	alias	__niffactory
 ??__ENiAnimationSDMObject@@YAXXZ	14012c4c0	alias	__propservice
 ??__E?ms_ClassInfo@Win32PlatformService@efd@@2VClassInfo@2@B@@YAXXZ	14012cf40	alias	__win32platformservice.cpp
 ??__E?ms_ClassInfo@AssetLoadResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012d510	alias	__assetloadresponse.cpp
-??__E?ms_ClassInfo@AssetLocatorResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012da80	alias	__assetlocatorresponse.cpp
-??__E?ms_ClassInfo@FlatModelFactoryResponse@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f090	alias	__flatmodelfactoryresponse.cpp
-??__E?ms_ClassInfo@FlatModelFactoryRequest@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f100	alias	__flatmodelfactoryrequest.cpp
-??__E?ms_ClassInfo@GenericAssetLoadResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012f760	alias	__genericassetloadresponse.cpp
+??__E?ms_ClassInfo@AssetLoadRequest@efd@@2VClassInfo@2@B@@YAXXZ	14012da80	alias	__assetloadrequest.cpp
+??__E?ms_ClassInfo@GenericAssetLoadResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012db80	alias	__genericassetloadresponse.cpp
+??__E?ms_ClassInfo@EntityFactoryResponse@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f090	alias	__entityfactoryresponse.cpp
+??__E?ms_ClassInfo@EntityFactoryRequest@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f100	alias	__entityfactoryrequest.cpp
+??__E?ms_ClassInfo@FlatModelFactoryResponse@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f1a0	alias	__flatmodelfactoryresponse.cpp
+??__E?ms_ClassInfo@FlatModelFactoryRequest@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f5e0	alias	__flatmodelfactoryrequest.cpp
+??__E?ms_ClassInfo@WorldFactoryResponse@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f760	alias	__worldfactoryresponse.cpp
+??__E?ms_ClassInfo@WorldFactoryRequest@egf@@2VClassInfo@efd@@B@@YAXXZ	14012faa0	alias	__worldfactoryrequest.cpp
 ??__EInvalidEntity@egfLua@@YAXXZ	1401305f0	alias	__luadatastream.cpp
 ??__EInvalidEntity@egfLua@@YAXXZ	140130610	alias	__luaresumecoroutinetask
 ??__EInvalidEntity@egfLua@@YAXXZ	140130720	alias	__luaresumeentitycreatetask.cpp
@@ -481,7 +484,6 @@ SWIG_TypeQueryModule	14205a8e0	alias	attachednifasset_luawrap
 ?SetDebugTriangleGeometry@NiPhysXScene@@IEAAXPEBVNxDebugRenderable@@@Z	141f06dc0	alias	__niphysxscene.cpp
 ?UpdateSceneGraph@NiPhysXAccumPoseBufferDest@@UEAAXMAEBVNiTransform@@M_N@Z	141f18db0	alias	__niphysxaccumposebufferdest.cpp
 ?Execute@NiPhysXPSSimulatorInitialKernel@@UEAAXAEAVNiSPWorkload@@@Z	141f3ce10	alias	__niphysxpssimulatorinitialkernel.cpp
-?lower_bound@?$_Tree@V?$_Tmap_traits@UCellID@NiTerrainSector@@PEAVCellSnapshot@NiTerrainDataSnapshot@@U?$less@UCellID@NiTerrainSector@@@std@@V?$CustomAllocator@U?$pair@$$CBUCellID@NiTerrainSector@@PEAVCellSnapshot@NiTerrainDataSnapshot@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUCellID@NiTerrainSector@@PEAVCellSnapshot@NiTerrainDataSnapshot@@@std@@@std@@@std@@@2@AEBUCellID@NiTerrainSector@@@Z	141f51620	alias	__niterraindatasnapshot.cpp
 ??$_Insert_nohint@AEBVutf8string@efd@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@Vutf8string@efd@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@Vutf8string@efd@@@std@@@std@@@std@@_N@1@_NAEBVutf8string@efd@@U_Not_a_node_tag@1@@Z	141f8b9d0	alias	__niterrainsurfacepackagefileversion0.cpp
 memcpy_s	141fb6940	alias	__niterrainsectorfileversion5.cpp
 ??$_Insert_nohint@Vutf8string@efd@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@Vutf8string@efd@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@Vutf8string@efd@@@std@@@std@@@std@@_N@1@_N$$QEAVutf8string@efd@@U_Not_a_node_tag@1@@Z	141fb7270	alias	__niterrainsectorfileversion5.cpp
@@ -515,6 +517,52 @@ XML_ErrorString	1423b24b0	alias	__xmlparse.c
 ?SetTargetAnimationByName@egmAnimationBindings@@YAXVEntityID@egf@@PEBD@Z	1428d5af0	alias	__egmanimationbindings.cpp
 ??__E?ms_ClassInfo@PhysXPropMessage@ecrPhysX@@2VClassInfo@efd@@B@@YAXXZ	14012c830	func
 ??__E?ms_ClassInfo@NiPhysXSceneAdded@ecrPhysX@@2VClassInfo@efd@@B@@YAXXZ	14012c840	func
+# ClassInfo initializers (cinit1 2026-11-02): each exe init passes its own ms_ClassInfo, whose entry 0 (or, zero-filled, the AddClass of the setup it jumps to) names the class. Without a row the byte-identical inits (89 of 14 bytes, 2 of 109 in CoreRuntimeMessages) were paired by distance to the obj's code (copy/block/dislot passes), which crossed them (Attachment*/SceneGraph*/Mouse*/InputStick, Print/NetDestination, WhiteboxService). Inits ours emit in another form (109 vs the exe's 14-byte jmp) pair functional at the owner's VA. The old gb19 NIFFactory alias row named NIFFactoryResponse's init 0x14012b710; NIFFactory's is 0x14012b730.
+??__E?ms_ClassInfo@SceneGraphService@ecr@@2VClassInfo@efd@@B@@YAXXZ	140128390	func
+??__E?ms_ClassInfo@AttachmentBrokenMessage@ecr@@2VClassInfo@efd@@B@@YAXXZ	140128f20	func
+??__E?ms_ClassInfo@AttachmentMadeMessage@ecr@@2VClassInfo@efd@@B@@YAXXZ	140128f90	func
+??__E?ms_ClassInfo@SceneGraphMessage@ecr@@2VClassInfo@efd@@B@@YAXXZ	140129080	func
+??__E?ms_ClassInfo@SceneGraphsUpdatedMessage@ecr@@2VClassInfo@efd@@B@@YAXXZ	140129100	func
+??__E?ms_ClassInfo@RenderService@ecr@@2VClassInfo@efd@@B@@YAXXZ	1401294d0	func
+??__E?ms_ClassInfo@NIFFactoryResponse@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012b710	func
+??__E?ms_ClassInfo@NIFFactory@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012b730	func
+??__E?ms_ClassInfo@InputActionMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012b950	func
+??__E?ms_ClassInfo@KeyDownMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012ba90	func
+??__E?ms_ClassInfo@KeyUpMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012baa0	func
+??__E?ms_ClassInfo@MouseDownMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012bab0	func
+??__E?ms_ClassInfo@MouseMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012bac0	func
+??__E?ms_ClassInfo@MouseMoveMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012bad0	func
+??__E?ms_ClassInfo@MouseUpMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012bae0	func
+??__E?ms_ClassInfo@InputStickMessage@ecrInput@@2VClassInfo@efd@@B@@YAXXZ	14012baf0	func
+??__E?ms_ClassInfo@AssetLocatorService@efd@@2VClassInfo@2@B@@YAXXZ	14012cc40	func
+??__E?ms_ClassInfo@DebugOutDestination@efd@@2VClassInfo@2@B@@YAXXZ	14012d690	func
+??__E?ms_ClassInfo@AssetCacheResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012d750	func
+??__E?ms_ClassInfo@StreamMessage@efd@@2VClassInfo@2@B@@YAXXZ	14012da90	func
+??__E?ms_ClassInfo@PrintDestination@efd@@2VClassInfo@2@B@@YAXXZ	14012dbd0	func
+??__E?ms_ClassInfo@EntityChangeMessage@egf@@2VClassInfo@efd@@B@@YAXXZ	14012e820	func
+??__E?ms_ClassInfo@EventMessage@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f4a0	func
+??__E?ms_ClassInfo@ScriptFactoryRequest@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f600	func
+??__E?ms_ClassInfo@DebugNoteBase@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa20	func
+??__E?ms_ClassInfo@DebugNoteCollectionPropertyChanged@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa30	func
+??__E?ms_ClassInfo@DebugNoteEntityCreated@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa40	func
+??__E?ms_ClassInfo@DebugNoteEntityDestroyed@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa50	func
+??__E?ms_ClassInfo@DebugNoteEvent@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa60	func
+??__E?ms_ClassInfo@DebugNoteFlatModelDefined@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa70	func
+??__E?ms_ClassInfo@DebugNotePropertyChanged@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa80	func
+??__E?ms_ClassInfo@DebugNoteSessionStarted@egf@@2VClassInfo@efd@@B@@YAXXZ	14012fa90	func
+??__E?ms_ClassInfo@KFMFactoryRequest@egmAnimation@@2VClassInfo@efd@@B@@YAXXZ	140131ba0	func
+??__E?ms_ClassInfo@KFMFactoryResponse@egmAnimation@@2VClassInfo@efd@@B@@YAXXZ	140131c90	func
+??__E?ms_ClassInfo@PhysXWhiteboxService@egmPhysXWhitebox@@2VClassInfo@efd@@B@@YAXXZ	1401355c0	func
+??__E?ms_ClassInfo@NetDestination@efd@@2VClassInfo@2@B@@YAXXZ	140156c80	func
+??__E?ms_ClassInfo@ChannelManagerService@efd@@2VClassInfo@2@B@@YAXXZ	140157160	func
+??__E?ms_ClassInfo@NetworkStatus@efd@@2VClassInfo@2@B@@YAXXZ	140157530	func
+??__E?ms_ClassInfo@NetErrorMessage@efd@@2VClassInfo@2@B@@YAXXZ	140157540	func
+??__E?ms_ClassInfo@ScriptFactoryResponse@egf@@2VClassInfo@efd@@B@@YAXXZ	1401577a0	func
+??__E?ms_ClassInfo@WhiteboxService@egmWhitebox@@2VClassInfo@efd@@B@@YAXXZ	140157820	func
+??__E?ms_ClassInfo@INetService@efd@@2VClassInfo@2@B@@YAXXZ	140157fb0	func
+??__E?ms_ClassInfo@ServiceDiscoveryRequest@efd@@2VClassInfo@2@B@@YAXXZ	140158080	func
+# KFMCacheResponse's 109-byte init (the exe's is a 14-byte jmp) has one byte-identical exe copy, SceneGraphCacheResponse's 0x14012ad50, so the unique-search pass overrides a func row: an alias row credits it at its owner's VA
+??__E?ms_ClassInfo@KFMCacheResponse@egmAnimation@@2VClassInfo@efd@@B@@YAXXZ	1401320c0	alias	__kfmcacheresponse.cpp
 # the CRT fmodf import thunk (gb p5h 2026-10-29): engine objs call fmodf directly; symbols.tsv binds the name to the game TUs' inline header copy 0x14029d430
 fmodf	14280f08a	func
 # engine COMDAT copies the exe engine code calls (gb p5h 2026-10-29): NiTerrainSectorSelector map<uint,int>/map<uint,uint> and NiShadowManager SmartPointer<NiShadowClickGenerator>; symbols.tsv binds these names to the game TUs' copies
@@ -544,3 +592,26 @@ _vswprintf_c_l	1402e1150	func
 ?append@?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@QEAAAEAV12@QEBD@Z	14114d9b0	func
 # NiDataStream::LoadBinary (p5j 2026-10-31): functional in merge 46 by name/search pairing; merge 47's engine recompile (utf8string.inl, 1279 TUs) left 0x141e0d400 unpaired (stub) with ?LoadBinary@NiDataStream@@ still defined in the obj; no table row named it
 ?LoadBinary@NiDataStream@@UEAAXAEAVNiStream@@@Z	141e0d400	func
+# egf::Entity CachePropertyValue/SetPropertyValue<T> twins (mt6 2026-11-02): name/search pairing swapped each signed/unsigned pair; bound by the exe's kTypeID constant (0xF0000003 SInt8=char ... 0xF000000A UInt64)
+??$CachePropertyValue@D@Entity@egf@@IEAAXIAEBD@Z	1421c8b00	func
+??$SetPropertyValue@D@Entity@egf@@QEAA?AW4PropertyResult@1@IAEBD@Z	1421ced50	func
+??$CachePropertyValue@E@Entity@egf@@IEAAXIAEBE@Z	1421c8dd0	func
+??$SetPropertyValue@E@Entity@egf@@QEAA?AW4PropertyResult@1@IAEBE@Z	1421ceea0	func
+??$CachePropertyValue@F@Entity@egf@@IEAAXIAEBF@Z	1421c90a0	func
+??$SetPropertyValue@F@Entity@egf@@QEAA?AW4PropertyResult@1@IAEBF@Z	1421ceff0	func
+??$CachePropertyValue@G@Entity@egf@@IEAAXIAEBG@Z	1421c9370	func
+??$SetPropertyValue@G@Entity@egf@@QEAA?AW4PropertyResult@1@IAEBG@Z	1421cf150	func
+??$CachePropertyValue@_J@Entity@egf@@IEAAXIAEB_J@Z	1421cb3f0	func
+??$SetPropertyValue@_J@Entity@egf@@QEAA?AW4PropertyResult@1@IAEB_J@Z	1421cfca0	func
+??$CachePropertyValue@_K@Entity@egf@@IEAAXIAEB_K@Z	1421cb6c0	func
+??$SetPropertyValue@_K@Entity@egf@@QEAA?AW4PropertyResult@1@IAEB_K@Z	1421cfe00	func
+# NiSkinningKernelImpl<1,0,4,...> Execute twins in NiSkinningKernelPN16 (ug9 2026-11-02): the unsigned char (E) and short (F) index variants have identical first .pdata chunks, so first-chunk pairing swapped each pair and the chained tails left them functional; bound by bytematch --chain (each name matches one VA only)
+?Execute@?$NiSkinningKernelImpl@$00$0A@$03EMVFloat16@efd@@$03V12@$03@@QEAAXAEAVNiSPWorkload@@@Z	141e59de0	func
+?Execute@?$NiSkinningKernelImpl@$00$0A@$03FMVFloat16@efd@@$03V12@$03@@QEAAXAEAVNiSPWorkload@@@Z	141e5c9c0	func
+?Execute@?$NiSkinningKernelImpl@$00$0A@$03EVFloat16@efd@@V12@$03M$02@@QEAAXAEAVNiSPWorkload@@@Z	141e5a930	func
+?Execute@?$NiSkinningKernelImpl@$00$0A@$03FVFloat16@efd@@V12@$03M$02@@QEAAXAEAVNiSPWorkload@@@Z	141e5d510	func
+?Execute@?$NiSkinningKernelImpl@$00$0A@$03EMVFloat16@efd@@$03M$02@@QEAAXAEAVNiSPWorkload@@@Z	141e59400	func
+?Execute@?$NiSkinningKernelImpl@$00$0A@$03FMVFloat16@efd@@$03M$02@@QEAAXAEAVNiSPWorkload@@@Z	141e5bfe0	func
+# expat xmltok (mt12, 11-02): the big2/little2 prologTok twins differ only in byte order; shape pairing swapped them
+little2_prologTok	1423bd750	func
+big2_prologTok	1423bf1f0	func

@@ -487,7 +487,7 @@ bool FUN_140de8e30(const efd::utf8string& str, const char* psz);          // == 
 struct Unk_Utf8StringBody { std::string m_string; };
 int FUN_140de9280(const std::string& s, const char* psz);
 bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
-efd::AssetID* FUN_140de8c90(efd::AssetID* pDst, const efd::AssetID* pSrc);
+
 void FUN_140de9160(std::string& s, size_t n);
 void FUN_140de91c0(std::string& s) noexcept;
 void FUN_140de91f0(std::string& s);
@@ -1036,13 +1036,13 @@ void FUN_140de8bd0(egf::Entity* pEntity, unsigned nId, efd::AssetID* pValue)
     static_cast<Unk_EntityAccess*>(pEntity)->SetPropertyValueUnsafe(nId, pValue, FUN_140998240());
 }
 
-// @0x140de8c90
-// MS2-FUNCTIONAL: AssetID copy constructor as the exe compiled it (copy the urn, drop a trailing ':')
-efd::AssetID* FUN_140de8c90(efd::AssetID* pDst, const efd::AssetID* pSrc)
-{
-    ::new (pDst) efd::AssetID(*pSrc);
-    return pDst;
-}
+// 0x140de8c90 is efd::AssetID's copy constructor (AssetID.inl), emitted here for the ::new efd::AssetID(kCur) in
+// FUN_140de8a40 above.
+//
+//
+//
+//
+//
 
 // ---- TriggerStateCli ----
 

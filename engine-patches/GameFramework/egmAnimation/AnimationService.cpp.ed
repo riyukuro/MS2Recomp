@@ -1,3 +1,14 @@
+1745,1746c
+        }   // else we should be still loading and we will remove once loaded
+.
+1741@39s "AssetData->m_c" "C"
+1741@37s "s" ""
+1739c
+        decltype(&*spAssetData->m_cacheHandle) pCacheHandle = spAssetData->m_cacheHandle;
+        if (pCacheHandle && spAssetData->m_state == AssetData::ADS_Ready)
+.
+1600@40s "" " == NULL"
+1600@8s "!" ""
 1389c
 #line 1412  // MS2: 4 more MS2 lines above
 .

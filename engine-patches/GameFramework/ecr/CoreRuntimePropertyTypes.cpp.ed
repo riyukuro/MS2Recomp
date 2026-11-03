@@ -1,0 +1,3 @@
+17c
+namespace std { template<> inline bool operator==(const pair<const efd::utf8string, ecr::AttachNifData>& _Left, const pair<const efd::utf8string, ecr::AttachNifData>& _Right) { return _Left.first.compare(_Right.first) == 0 && _Left.second == _Right.second; } }  // MS2: the exe inlines the key == (utf8string::compare) in the AttachNifData map compare though the TU calls it out of line elsewhere (EE_MS2_UTF8_EQ_CALL); replaces a blank line: keeps __LINE__
+.

@@ -94,14 +94,6 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // CItemData
 __int64 FUN_14028d0e0();                                            // a new uid
 extern Vector3 DAT_143b01a60;                               // efd::Point3::ZERO
 
-// The part handle FUN_140cd1a30 returns (the callers declare their own view of it).
-
-class Unk_BSPartHandle : public NiPointer<CItemCustomizeController>
-{
-public:
-    Unk_BSPartHandle(const NiPointer<CItemCustomizeController>& sp) : NiPointer<CItemCustomizeController>(sp) {}
-};
-
 // @0x140ccac60 a copy of the item that keeps its +0x24 variant
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem)
 {
@@ -1637,15 +1629,14 @@ __int64 Customize::FUN_140cd1980()
 MS2_REPLACE_METHOD(0x140CD1980, Customize, FUN_140cd1980, 167, 0x316B7350);
 
 // @0x140cd1a30
-// MS2-FUNCTIONAL: returns the callers' Unk_BSPartHandle view of NiPointer<CItemCustomizeController> (its copy ctor)
-Unk_BSPartHandle Customize::FUN_140cd1a30()
+NiPointer<CItemCustomizeController> Customize::FUN_140cd1a30()
 {
     if (m_spEquipment == 0)
-        return Unk_BSPartHandle(NiPointer<CItemCustomizeController>(0));
+        return NiPointer<CItemCustomizeController>(0);
     MS2Ptr<EditItems> spEdit = m_spEquipment->GetEditItems();
     if (spEdit == 0)
-        return Unk_BSPartHandle(NiPointer<CItemCustomizeController>(0));
-    return Unk_BSPartHandle(spEdit->GetController());
+        return NiPointer<CItemCustomizeController>(0);
+    return spEdit->GetController();
 }
 
 // @0x140cd1b20

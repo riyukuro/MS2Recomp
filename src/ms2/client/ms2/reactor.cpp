@@ -186,11 +186,11 @@ class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc t
 class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
 class Unk_RxNpcData : public CPtred { public:  };
 class Unk_RxNpc : public CPtred { public:  };
-static const int DAT_142de2684 = -2060086266;   // rdata constant copied from 0x142de2684
-static const int DAT_142de2698 = -939926171;   // rdata constant copied from 0x142de2698
-static const int DAT_142de265c = 19716277;   // rdata constant copied from 0x142de265c
-static const int DAT_142de2674 = 52914141;   // rdata constant copied from 0x142de2674
-static const int DAT_142de269c = -743420155;   // rdata constant copied from 0x142de269c
+static const unsigned DAT_142de2684 = (unsigned)-2060086266;   // rdata constant copied from 0x142de2684
+static const unsigned DAT_142de2698 = (unsigned)-939926171;   // rdata constant copied from 0x142de2698
+static const unsigned DAT_142de265c = (unsigned)19716277;   // rdata constant copied from 0x142de265c
+static const unsigned DAT_142de2674 = (unsigned)52914141;   // rdata constant copied from 0x142de2674
+static const unsigned DAT_142de269c = (unsigned)-743420155;   // rdata constant copied from 0x142de269c
 
 // Reactor state information handed to the UI (0x30 bytes).
 struct Unk_ReactorInfo
@@ -613,7 +613,7 @@ int FUN_140b7a5e0(PCBase* pPc)
 }
 
 // @0x140b7a650
-// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions, constants and vector lifetimes); the stand-in actor/raycast helper types and the exe's by-reference point locals keep the frame different.
+// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions, constants and vector lifetimes); the instruction sequence now matches the exe, but some locals sit in other frame slots (15 bytes longer).
 int FUN_140b7a650(PCBase* pPc)
 {
     if (pPc == 0)
@@ -623,15 +623,14 @@ int FUN_140b7a650(PCBase* pPc)
         return 1;
     if (pWorld->FUN_141bd30a0() == (CFieldDataCli*)0)
         return 1;
-    bool bBlocked = true;
-    if (!FUN_140930b10() && FUN_140930b70())
-    {
-        MS2Ptr<CFieldDataCli> spInfo = pWorld->FUN_141bd30a0();
-        if (reinterpret_cast<Unk_RxMapInfo*>(spInfo.operator->())->m_nKind != 1)
-            bBlocked = false;
-    }
+    // the temp MS2Ptr of the last operand is destroyed under the exe's [rsp+0x60] flag
+    bool bBlocked = FUN_140930b10() || !FUN_140930b70()
+        || reinterpret_cast<Unk_RxMapInfo*>(pWorld->FUN_141bd30a0().operator->())->m_nKind == 1;
     if (bBlocked)
         return 1;
+
+
+
 
     efd::SmartPointer<Unk_Service6100017> grid(FUN_1401cd040(&DAT_143b059e8));
     if (grid.operator Unk_Service6100017*() == 0)
@@ -639,11 +638,12 @@ int FUN_140b7a650(PCBase* pPc)
         MS2_ASSERT_AT(0x21e, 0);
         return 1;
     }
+    const float fNear = 230.0f;   // folded into the compares; the exe still stores it
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
     pWorld->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
-    Vector3 ptPc(posPc.x, posPc.y, posPc.z);
-    Unk_Int3 cellOfPc = FUN_1408a14c0(ptPc);
+    Unk_Int3 cellOfPc;
+    cellOfPc = FUN_1408a14c0(*reinterpret_cast<Vector3*>(&posPc));   // the exe's sret temp is copied in
     int nCellId = FUN_1408a03c0(cellOfPc);
     Unk_Int3 cell = FUN_1408a0400(nCellId);
     Vector3 ptCenter;
@@ -652,56 +652,56 @@ int FUN_140b7a650(PCBase* pPc)
     for (size_t i = 0; i < arrNear.GetCount(); ++i)
     {
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
-        if (!spObj.IsNull())
-        {
-            Vector3 pt = ((CInteractObject*)(Unk_RxActorView*)(reinterpret_cast<Unk_RxActorView*>(spObj.get())))->GetPos();
-            if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f)
-                return 1;
-        }
+        if (spObj.IsNull())
+            continue;
+        float fDist = ((CInteractObject*)(Unk_RxActorView*)(reinterpret_cast<Unk_RxActorView*>(spObj.get())))->GetPos().FUN_140965c40(ptCenter).FUN_140967ac0();
+
+        if (fDist < fNear)
+            return 1;
     }
 
     CString strName = StringFormat("Reactor_{0}", nCellId);
-    if (pWorld->FindSpawnByName(strName).data() != 0)
-        return 1;
+    void* pSpawn = pWorld->FindSpawnByName(strName).data();
+    if (pSpawn != 0) return 1;
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrField;
     pWorld->FUN_141bc2c90(ptCenter, &arrField);
-    if (!arrField.IsEmpty())
+    if (arrField.GetCount() > 0)
         return 1;
 
     ATL::CRBMap<unsigned, Unk_WsV148>* pActors = pWorld->FUN_141bd36d0();
     for (POSITION pos = pActors->GetHeadPosition(); pos != 0; pActors->GetNext(pos))
     {
         MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
-        if (!spActor.IsNull())
-        {
-            if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->GetCurStateId() == 2)
-                continue;
-            bool bNotNpcKind = ((CNpcData*)(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData()).operator->())->GetFriendly() != 2;
-            if (!bNotNpcKind)
-            {
-                if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() == 0)
-                {
-                    Vector3 pt;
-                    NiPoint3 posActor = ((GameObject*)spActor.get())->vfunc_18();
-                    Unk_Int3 cellOfActor = FUN_1408a14c0(Vector3(posActor.x, posActor.y, posActor.z));
-                    int nActorCell = FUN_1408a03c0(cellOfActor);
-                    FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
-                    if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f)
-                        return 1;
-                }
-            }
-        }
-    }
-    if (reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeByKey(nCellId) != 0)
-        return 1;
+        if (spActor == 0)
+            continue;
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->GetCurStateId() == 2)
+            continue;
+        bool bNotNpcKind = ((CNpcData*)(reinterpret_cast<CNpc*>(spActor.operator->())->GetNpcData()).operator->())->GetFriendly() != 2;
+        if (bNotNpcKind)
+            continue;
+        if (((class PCBase*)(class PCBase*)((PCBase*)spActor.get()))->FUN_1416769d0() != 0)
+            continue;
+        Vector3 pt;
+        // the exe copies the vfunc_18 result straight into the by-value arg
+        Unk_Int3 cellOfActor;
+        cellOfActor = FUN_1408a14c0(reinterpret_cast<Vector3&&>(static_cast<NiPoint3&&>(((GameObject*)spActor.get())->vfunc_18())));
+        int nActorCell = FUN_1408a03c0(cellOfActor);
+        FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
+        float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
+        if (fDist < fNear)
+            return 1;
 
-    {
+    }
+    bool bCube = reinterpret_cast<CubeMapInformationService*>(grid.operator->())->GetCubeByKey(nCellId) != 0 ? true : false;
+    if (bCube) return 1;
+
+    { const Vector3& c = ptCenter; const float fStep = 75.0f;   // the exe reads ptCenter through a ref and stores the step
     std::vector<efd::Point3> samples;   // the exe's glue is vector<efd::Point3> (itemdatastruct's _Umove_if_noexcept etc.)
-    samples.push_back(efd::Point3(ptCenter.x, ptCenter.y, ptCenter.z));
-    samples.push_back(efd::Point3(ptCenter.x + 75.0f, ptCenter.y, ptCenter.z));
-    samples.push_back(efd::Point3(ptCenter.x - 75.0f, ptCenter.y, ptCenter.z));
-    samples.push_back(efd::Point3(ptCenter.x, ptCenter.y + 75.0f, ptCenter.z));
-    samples.push_back(efd::Point3(ptCenter.x, ptCenter.y - 75.0f, ptCenter.z));
+    samples.push_back(efd::Point3(c.x, c.y, c.z));
+    samples.push_back(efd::Point3(c.x + fStep, c.y, c.z));
+    samples.push_back(efd::Point3(c.x - fStep, c.y, c.z));
+    samples.push_back(efd::Point3(c.x, c.y + fStep, c.z));
+    samples.push_back(efd::Point3(c.x, c.y - fStep, c.z));
     for (size_t i = 0; i < samples.size(); ++i)
     {
         efd::Point3* pSample = &samples[i];
@@ -751,8 +751,8 @@ int FUN_140b7a650(PCBase* pPc)
     arrIds.push_back(DAT_142de269c);
     for (size_t i = 0; i < arrIds.size(); ++i)
     {
-        if (pWorld->FUN_141bcfd30(arrIds[i], ptCenter, 230.0f, 0, 0) != 0)
-            return 1;
+        Vector3 pos = ptCenter; egf::Entity* pEnt = pWorld->FUN_141bcfd30(arrIds[i], pos, 230.0f, 0, 0);
+        if (pEnt != 0) return 1;
     }
     }
     return 0;

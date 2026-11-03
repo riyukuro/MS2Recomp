@@ -230,7 +230,7 @@ template <class A, class B, class C> inline void Unk_SoundLog(CLogString* log, i
                                                    fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(c)};
     log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a, b, c), args));
 }
-
+struct Unk_SeRangeSlots { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(Unk_SmPoint3 ptPos, Unk_SmPoint3 ptDir, float fScale); };   // CTwoCircleCollision::vfunc_3 takes the points by value
 template <class A, class B, class C, class D> inline void Unk_SoundLog(CLogString* log, int level, int category,
                                                                          const wchar_t* format, const A& a, const B& b,
                                                                          const C& c, const D& d)
@@ -755,7 +755,7 @@ void CSoundEvent::SetPosition(const Vector3& vPos)
     FMOD_VECTOR kPos = {vPos.x, vPos.z, vPos.y};
     m_pEvent->set3DAttributes(&kPos, 0, 0);
     if (m_pRange != 0)
-        m_pRange->vfunc_3(Unk_SmPoint3(vPos), Unk_SmPoint3(0.0f, 0.0f, 0.0f), 1.0f);
+        reinterpret_cast<Unk_SeRangeSlots*>(m_pRange)->vfunc_3(vPos, Unk_SmPoint3(0.0f, 0.0f, 0.0f), 1.0f);
 }
 
 // @0x14177aac0

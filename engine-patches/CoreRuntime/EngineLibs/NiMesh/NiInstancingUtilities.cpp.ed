@@ -8,3 +8,9 @@
 664,665c
         NiUInt32 uiStride = pkDataStream->GetStride();  // MS2: the exe multiplies after LockRegion
 .
+578c
+        static_cast<Ms2IUStream*>(pkNewDataStream)->Regions().AddInline(kPlaceHolderRegion);
+.
+22c
+/* MS2: the exe inlines AddRegion with NiTSet::Add, Realloc and NiTNewInterface::Allocate into the placeholder-region loop of CreateDuplicateIndexDataStream */ struct Ms2IURegionSet : public NiTObjectSet<NiDataStream::Region> { __forceinline void AddInline(const NiDataStream::Region& kRegion) { if (m_uiUsed == m_uiAlloced) { unsigned int uiNewSize = m_uiAlloced > 0 ? (2 * m_uiAlloced) : 1; if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) { NiDataStream::Region* pNewBase; unsigned int i; if (uiNewSize > 0) { pNewBase = NiNew NiDataStream::Region[uiNewSize]; for (i = 0; i < m_uiUsed; i++) pNewBase[i] = m_pBase[i]; } else { pNewBase = NULL; } NiTNewInterface<NiDataStream::Region>::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize; } } m_pBase[m_uiUsed++] = kRegion; } }; struct Ms2IUStream : public NiDataStream { Ms2IURegionSet& Regions() { return static_cast<Ms2IURegionSet&>(m_kRegions); } };
+.

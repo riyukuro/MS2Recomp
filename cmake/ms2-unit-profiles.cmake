@@ -11,6 +11,12 @@
 #   gamebryo    MS2 code built inside the game's Gamebryo-flagged projects (the MS2 material classes and node library at
 #               0x14274d700-0x142778550, gb14): the engine's release switches (data/engine/units-gb.json flags 0) /O2 /GR-;
 #               /EHsc /fp:fast /GS /Gy are the game's already.
+#   oiintrin    game code (/Od) whose exe calls a CRT function through the IAT (`call [__imp_wcslen]`, __imp_sqrtf,
+#               __imp_log10f) in header inline code: cl 19.16 /Oi treats wcslen, sqrtf, log10f, strcmp, abs... as
+#               intrinsics and drops their dllimport (an inline expansion or a direct call). /Oi- keeps the import; the
+#               unit re-enables the intrinsics the game code does expand with `#pragma intrinsic(memcpy, memset, strcmp,
+#               strlen)` after its stdafx include (after the CRT declarations). Like any profiled unit it is compiled
+#               without the game PCH (tools/progress.py; the cmake build has none).
 
 set(MS2_PROFILE_scaleform_OPTIONS
     "/Ox"
@@ -29,6 +35,11 @@ set(MS2_PROFILE_scaleform_DEFINITIONS
     "_CRT_SECURE_NO_WARNINGS"
     "GFX_USE_VIDEO"
 )
+# tools/ms2flags.py reads each set( to its own ')' as cmake does, but only the quoted items: quote every flag.
+set(MS2_PROFILE_oiintrin_OPTIONS
+    "/Oi-"
+)
+set(MS2_PROFILE_oiintrin_DEFINITIONS "")
 set(MS2_PROFILE_gamebryo_OPTIONS
     "/O2"
     "/Ob2"
@@ -36,7 +47,7 @@ set(MS2_PROFILE_gamebryo_OPTIONS
 )
 set(MS2_PROFILE_gamebryo_DEFINITIONS
 )
-set(MS2_UNIT_PROFILES scaleform gamebryo)
+set(MS2_UNIT_PROFILES scaleform gamebryo oiintrin)
 
 # Toolsets a src/ms2 unit can select with `// MS2-TOOLSET: <toolset>` (default: the project's cl 19.16 and the game flags).
 #   vc9   cl 15.00.30729 (VS2008 SP1 x64; tools/msvc9/cl, installed by tools/fetch-vc9.sh) for code the exe links from a

@@ -1,0 +1,3 @@
+19c
+namespace egmVisualizers { typedef efd::map<efd::utf8string, efd::UInt32>::_Mybase MS2SourceTree; } EE_MS2_EQRANGE(egmVisualizers::MS2SourceTree) /* MS2: see utf8string.inl */
+.

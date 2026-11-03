@@ -527,11 +527,11 @@ public:
     void FUN_141bbb7f0(class GameObject*, int);
     static class WorldService* GetInstance();
 };
-class EffectSkipMgr   // C3: member view for the former free stand-ins
-{
-public:
-    int IsOutOfView(struct Unk_SkipCheck*) const;
-};
+#include "ms2/client/ms2/effectskipmgr.h"
+
+
+
+
 void FUN_141567a10(class NiAVObject*);   // C3: was FUN_141567a10
 void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
 void FUN_141851f90(void* pNode, float fTime);                       // seek the node's animations
@@ -564,17 +564,17 @@ inline void FUN_141550050(void* pNode, const char* pszPath)
     NiGetStudioShaderContext().AddNifPath(static_cast<NiAVObject*>(pNode), pszPath);
 }
 
-// Query passed to the culler (ctor 0x1411b8570: kind 9, default position).
-struct Unk_NifCullQuery
-{
-    int m_nMode;                    // +0x00
-    int m_nKind;                    // +0x04
-    float m_aPos[4];                // +0x08
-    float m_fViewDistance;          // +0x18
-    char m_pad_1c[4];
-};
-MS2_CHECK_SIZE(Unk_NifCullQuery, 0x20);
-void FUN_1411b8570(Unk_NifCullQuery* pQuery);
+
+
+
+
+
+
+
+
+
+
+
 
 // Scene nodes of the effect system (see swoosheffectparam.cpp / lighteffectparam.cpp).
 class Unk_EffectNode : public NiNode
@@ -670,13 +670,13 @@ CNifEffect::~CNifEffect()
     vfunc_7();
 }
 
-// MS2-FUNCTIONAL: big function: codegen (temporaries / branch layout) not byte-identical to the exe
+
 // @0x1415496f0
 // Builds the nif instance: an EffectNode root holding the loaded model (and the kfm effect object / bird movement),
 // placed by the param's transform composed with the target's, and hung on the node selected by the attach type.
 bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
-    Unk_NifTarget* pT = reinterpret_cast<Unk_NifTarget*>(pTarget);
+
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     m_spParam.AssignRaw(static_cast<CNifEffectParam*>(const_cast<CEffectParam*>(pParam)));
@@ -687,19 +687,19 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     if (m_unk_18 != 1 && m_spParam->m_nOtherReferCount == -1)
         return false;
 
-    NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(m_spParam->m_bUseLighting, m_spParam->m_bUseShadow);
+    NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(m_spParam->m_bUseLighting, m_spParam->m_bUseShadow);
     spRoot->SetName("Effect Root");
     MS2_NODEPTR(m_spRoot).operator=((NiNode*)(spRoot));
     m_fStartTime = (float)((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetTimestamp();
 
     if (!m_spParam->m_strEffectObjectKfm.IsEmpty())
     {
-        CEffectObject* pObject = new (efd::MemHint(efd::MemHint::NONE)) CEffectObject;
-        m_spEffectObject = pObject;
-        CString strKfm(m_spParam->m_strEffectObjectKfm);
-        int nOwner = ((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetActor();
-        m_spEffectObject->FUN_140a53880(nOwner, strKfm, m_spParam->m_fScale);
-        ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bbb1e0(m_spEffectObject.operator->(), 0, 1);
+        m_spEffectObject = new (efd::MemHint(efd::MemHint::NONE)) CEffectObject;
+
+
+        m_spEffectObject->FUN_140a53880(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetActor(), m_spParam->m_strEffectObjectKfm, m_spParam->m_fScale);
+
+        ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bbb1e0((CEffectObject*)m_spEffectObject, 0, 1);
     }
 
     if (m_spParam->m_strLerpType.CompareNoCase("bird") == 0)
@@ -709,20 +709,20 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         spBird->SetMinLength(m_spParam->m_fMinLength);
         spBird->FUN_141207fb0(m_spParam->m_fStep);
         spBird->SetVelocity(m_spParam->m_fVelocity);
-        ((class EffectNode*)(void*)(spRoot))->SetMovement((class INodeMovement*)(spBird.get()));
+        spRoot->SetMovement((class INodeMovement*)(spBird.get()));
     }
 
-    m_kXform.m_Translate = NiPoint3(m_spParam->m_ptTranslate.x, m_spParam->m_ptTranslate.y, m_spParam->m_ptTranslate.z);
-    float fRadZ = (m_spParam->m_ptRotation.z * 3.1415927f) / 180.0f;
-    float fRadY = (m_spParam->m_ptRotation.y * 3.1415927f) / 180.0f;
-    m_kXform.m_Rotate.FromEulerAnglesXYZ((m_spParam->m_ptRotation.x * 3.1415927f) / 180.0f, fRadY, fRadZ);
+    NiPoint3 kTranslate(reinterpret_cast<const efd::Point3&>(m_spParam->m_ptTranslate));
+    m_kXform.m_Translate = kTranslate;
+
+    m_kXform.m_Rotate.FromEulerAnglesXYZ((m_spParam->m_ptRotation.x * 3.1415927f) / 180.0f, (m_spParam->m_ptRotation.y * 3.1415927f) / 180.0f, (m_spParam->m_ptRotation.z * 3.1415927f) / 180.0f);
     m_kXform.m_fScale = m_spParam->m_fScale;
-    if (pT->m_pPre != 0)
-        m_kXform = *pT->m_pPre * m_kXform;
-    if (pT->m_pPost != 0)
-        m_kXform = m_kXform * *pT->m_pPost;
+    if (reinterpret_cast<Unk_NifTarget*>(pTarget)->m_pPre != 0)
+        m_kXform = *reinterpret_cast<Unk_NifTarget*>(pTarget)->m_pPre * m_kXform;
+    if (reinterpret_cast<Unk_NifTarget*>(pTarget)->m_pPost != 0)
+        m_kXform = m_kXform * *reinterpret_cast<Unk_NifTarget*>(pTarget)->m_pPost;
     spRoot->SetLocalTransform(m_kXform);
-    ((class EffectNode*)(void*)(spRoot))->SetOnGround(m_spParam->m_bOnGround);
+    spRoot->SetOnGround(m_spParam->m_bOnGround);
 
     switch (m_spParam->m_nAttachType)
     {
@@ -745,7 +745,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
     if (MS2_NODEPTR(m_spTarget).operator==((NiNode*)0))
         return false;
 
-    FUN_141550050(MS2_NODEPTR(m_spRoot).operator NiNode*(), m_spParam->m_strFilePath);
+    FUN_141550050((EffectNode*)(spRoot), m_spParam->m_strFilePath);
     if (FUN_14028d470(m_fDuration, 0.0f))
     {
         if (m_spParam->m_bBipedLoop)
@@ -764,34 +764,34 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         static_cast<NiAVObject*>(MS2_NODEPTR(m_spRoot).operator->())->Update(fNow, false);
     FUN_140a0b2a0((class NiAVObject*)(MS2_NODEPTR(m_spRoot).operator NiNode*()));
 
-    Unk_NifCullQuery kQuery;
-    FUN_1411b8570(&kQuery);
-    kQuery.m_nMode = 1;
-    kQuery.m_nKind = m_unk_18;
+    Unk_SkipCheck kQuery;
+
+    kQuery.m_nRow = 1;
+    kQuery.m_nCaster = m_unk_18;
     kQuery.m_fViewDistance = m_spParam->m_fViewDistance;
-    vfunc_8(kQuery.m_aPos);
-    if (!pT->m_bNoCull && !m_spParam->m_bOffSkip)
+    vfunc_8(&kQuery.m_pos);
+    if (!reinterpret_cast<Unk_NifTarget*>(pTarget)->m_bNoCull && !m_spParam->m_bOffSkip)
     {
-        if (((class EffectSkipMgr*)(void*)(((void*)TSingleton<EffectSkipMgr>::GetInstance())))->IsOutOfView((struct Unk_SkipCheck*)(&kQuery)) != 0)
+        if (((class EffectSkipMgr*)(void*)(((void*)TSingleton<EffectSkipMgr>::GetInstance())))->IsOutOfView(&kQuery) != 0)
             return false;
     }
     if (0 < m_spParam->m_nLodSkipLevel)
     {
-        if ((int)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0() < m_spParam->m_nLodSkipLevel)
+        if (m_spParam->m_nLodSkipLevel > (int)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0())
             return false;
     }
 
-    if (!m_spEffectObject || !m_spParam->m_strFilePath.IsEmpty())
+    if (m_spEffectObject == (CEffectObject*)0 || !m_spParam->m_strFilePath.IsEmpty())
     {
         int nMyRefer = (m_unk_18 == 1) * m_spParam->m_nMyReferCount;
         int nOtherRefer = (m_unk_18 != 1) * m_spParam->m_nOtherReferCount;
-        CString strDir("Effect");
-        Unk_NodePtr kLoaded = FUN_14154d0d0(FUN_140cc2ba0(strDir, m_spParam->m_strFilePath), nMyRefer, nOtherRefer);
-        static_cast<NiNode*>(MS2_NODEPTR(m_spRoot).operator NiNode*())->AttachChild(static_cast<NiAVObject*>(MS2_NODEPTR(kLoaded).operator NiNode*()), false);
-        if (pT->m_bTagLod)
+
+        Unk_NodePtr kLoaded = FUN_14154d0d0(FUN_140cc2ba0("Effect", m_spParam->m_strFilePath), nMyRefer, nOtherRefer);
+        spRoot->AttachChild(static_cast<NiAVObject*>(MS2_NODEPTR(kLoaded).operator NiNode*()), false);
+        if (reinterpret_cast<Unk_NifTarget*>(pTarget)->m_bTagLod)
         {
-            NiAVObject* pLoaded = static_cast<NiAVObject*>(MS2_NODEPTR(kLoaded).operator->());
-            NiStringExtraData* pTag = static_cast<NiStringExtraData*>(((void*)NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((void*)((class NiObjectNET*)(void*)(pLoaded))->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))))));
+
+            NiStringExtraData* pTag = static_cast<NiStringExtraData*>(((void*)NiObject::DynamicCast(&NiStringExtraData::ms_RTTI, (class NiObject const*)(((void*)static_cast<NiAVObject*>(MS2_NODEPTR(kLoaded).operator->())->GetExtraData(*(class NiFixedString const*)(&DAT_143ae51b8)))))));
             if (pTag == 0)
             {
                 pTag = new (efd::MemHint(efd::MemHint::NONE)) NiStringExtraData(*(NiFixedString*)&DAT_143ae50e8);
@@ -801,7 +801,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
             {
                 efd::utf8string strTag(pTag->GetValue().operator const char*());
                 strTag += reinterpret_cast<const NiFixedString&>(DAT_143ae50e8).operator const char*();
-                pTag->SetValue(NiFixedString(strTag.c_str()));
+                NiFixedString kValue(strTag.c_str()); pTag->SetValue(kValue);
             }
         }
         FUN_141773a90(((void*)((class ApplyEffect*)(void*)(((void*)TSingleton<ApplyEffect>::GetInstance())))->GetSoftParticles()), MS2_NODEPTR(kLoaded).operator NiNode*());
@@ -1183,56 +1183,56 @@ void CNifEffect::FUN_14154c580()
 }
 MS2_REPLACE_METHOD(0x14154C580, CNifEffect, FUN_14154c580, 611, 0x338E1372);
 
-// MS2-FUNCTIONAL: diagnostic only: builds the same log text with the exe's string-format helpers
+
 // @0x14154c7f0
 // Logs the "LOD level" line with a description of the target node / equipped item.
 void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
 {
     CString strWhere;
     Unk_NifPCPtr spPC(FUN_14099eef0(((class NoticeMessage*)(class Unk_EffectTarget*)(pTarget))->GetOwner()));
-    if (FUN_140aac420(&spPC) != 0 && MS2_NODEPTR(m_spTarget).operator NiNode*() != 0)
+    if ((FUN_140aac420(&spPC) ? true : false) && (MS2_NODEPTR(m_spTarget).operator NiNode*() ? true : false))
     {
-        Unk_NodePtr kTarget(m_spTarget.m_p);
+        Unk_NodePtr kTarget(m_spTarget);
         MS2Ptr<CEquipItem> spEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2610(static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator NiNode*()), 0, 6, false);
-        if (spEquip.get() == 0)
+        if (spEquip.get())
         {
-            if ((m_spModel).operator NiAVObject*() == 0)
-            {
-                CString strParent;
-                if (((void*)((class NiAVObject*)(void*)(MS2_NODEPTR(kTarget).operator->()))->GetParent()) == 0)
-                    strParent = "empty";
-                else
-                    strParent = (static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*();
-                CString strNode((static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*());
-                strWhere = FUN_140741200("targetNode:{0}, parent:{1}", strNode, strParent);
-            }
-            else
-            {
-                NiAVObjectPtr spModel = m_spModel;
-                MS2Ptr<CEquipItem> spModelEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2610((spModel).operator NiAVObject*(), 0, 6, false);
-                if (spModelEquip.get() == 0)
-                {
-                    CString strNode(((spModel).operator->())->GetName().operator const char*());
-                    strWhere = FUN_140536a50("targetNode:{0} in character", strNode);
-                }
-                else
-                {
-                    unsigned nItemId = ((class CEquipItem*)(class CEquipItem*)(spModelEquip.get()))->FUN_1411dc820();
-                    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-                    strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(((spModel).operator->())->GetName().operator const char*()), nItemId, CString((const wchar_t*)strName));
-                }
-            }
+            unsigned nItemId = spEquip->FUN_1411dc820();
+            strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString((static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*()), nItemId, CString((const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId)));
         }
         else
         {
-            unsigned nItemId = ((class CEquipItem*)(class CEquipItem*)(spEquip.get()))->FUN_1411dc820();
-            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-            strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString((static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*()), nItemId, CString((const wchar_t*)strName));
+            if ((m_spModel).operator NiAVObject*())
+            {
+                NiAVObjectPtr spModel = m_spModel;
+                MS2Ptr<CEquipItem> spModelEquip = ((class Unk_NifEquipSet*)((class PC*)(class GameObject*)(FUN_140aac440(&spPC)))->FUN_1416561a0())->FUN_1411e2610((spModel).operator NiAVObject*(), 0, 6, false);
+                if (spModelEquip.get())
+                {
+                    unsigned nItemId = spModelEquip->FUN_1411dc820();
+                    strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(((spModel).operator->())->GetName().operator const char*()), nItemId, CString((const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId)));
+                }
+                else
+                {
+                    strWhere = FUN_140536a50("targetNode:{0} in character", CString(((spModel).operator->())->GetName().operator const char*()));
+                }
+            }
+            else
+            {
+                CString strParent;
+                if (((void*)((class NiAVObject*)(void*)(MS2_NODEPTR(kTarget).operator->()))->GetParent()))
+                    strParent = (static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*();
+                else
+                    strParent = "empty";
+                strWhere = FUN_140741200("targetNode:{0}, parent:{1}", CString((static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*()), strParent);
+            }
         }
     }
     if (GetLogString() != 0)
         Unk_NifLog3(GetLogString(), 0xc, 0x133, L"LOD level [{0}] [{1}] [{2}]", m_nLodLevel, m_spParam->m_strFilePath, strWhere);
 }
+
+
+
+
 MS2_REPLACE_METHOD(0x14154C7F0, CNifEffect, FUN_14154c7f0, 1827, 0x12B3C2BF);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
@@ -1539,13 +1539,12 @@ void CNiStreamLoadThread::Dequeue(CString strPath)
 }
 MS2_REPLACE_METHOD(0x1415512C0, CNiStreamLoadThread, Pause, 18, 0x79DC8588);
 
-// MS2-FUNCTIONAL: big function: codegen (temporaries / branch layout) not byte-identical to the exe
+// MS2-FUNCTIONAL: ops identical, frame slots differ (exe keeps nSize at +0x98 beside the c_str temp, ours puts it lowest)
 // @0x1415513e0
 NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
 {
     FUN_14028e7c0(strPath);
-    // the exe's NiStream is 0x5d0 bytes (this tree's header: 0x4c8): its ctor and Load write past a header-sized block
-    NiStream* pStream = ::new (efd::MemObject::operator new(0x5d0, EE_MEMHINT_NONE)) NiStream;
+    NiStream* pStream = EE_NEW NiStream;
     pStream->SetTexturePalette(m_spPalette);
     std::string strDir;
     void* pBuf;
@@ -1556,26 +1555,29 @@ NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
         if (!pStream->Load(static_cast<char*>(pBuf), nSize))
         {
             delete pStream;
-            const char* pszPath = strDir.c_str();
-            FUN_1403a1280(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", pszPath);
+            pStream = 0;
+            FUN_1403a1280(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strDir.c_str());
             return 0;
         }
         NiFree(pBuf);
     }
     NiStream* pFound = 0;
-    if (pStream != 0 && FUN_14155d950(pStream) != 0)
+    if (pStream != 0 && FUN_14155d950(pStream) > 0)
     {
-        if (bKeep == 0)
-            return pStream;
-        if (Unk_LockGuard kGuard = m_kDoneLock)
+        if (bKeep)
         {
-            __assume(0);
+            if (Unk_LockGuard kGuard = m_kDoneLock)
+            {
+                __assume(0);
+            }
+            else if (!m_mapDone.Lookup(strPath, pFound))
+            {
+                m_mapDone.SetAt(strPath, pStream);
+                return pStream;
+            }
         }
-        else if (!m_mapDone.Lookup(strPath, pFound))
-        {
-            m_mapDone.SetAt(strPath, pStream);
+        else
             return pStream;
-        }
     }
     delete pStream;
     return pFound;
@@ -1887,143 +1889,143 @@ void CNifLoadingService::RefreshTextures()
 }
 MS2_REPLACE_METHOD(0x141556410, CNifLoadingService, RefreshTextures, 496, 0xD8D4D918);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
+
 // @0x1415543e0
 void CNifLoadingService::Sweep()
 {
-    if (DAT_143ae1f20 != 1)
+    if (DAT_143ae1f20 == 1)
+        return;
+    float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
+    if (reinterpret_cast<Unk_IntervalTimer&>(m_kSweepTimer).Check(60000) == 0)
+        return;
+    m_kNifCount.nNotCache = 0;
+    m_kNifCount.nForceKeep = 0;
+    m_kNifCount.nMySkill = 0;
+    m_kNifCount.nOtherSkill = 0;
+    m_kNifCount.nNPC = 0;
+    m_kNifCount.nDependTime = 0;
+    if (Unk_LockGuard kGuard = DAT_143ae1f28)
     {
-        float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
-        if (reinterpret_cast<Unk_IntervalTimer&>(m_kSweepTimer).Check(60000) != 0)
+        __assume(0);
+    }
+    else
+    {
+        POSITION pos = m_mapNif.GetHeadPosition();
+        while (pos != 0)
         {
-            m_kNifCount.nNotCache = 0;
-            m_kNifCount.nForceKeep = 0;
-            m_kNifCount.nMySkill = 0;
-            m_kNifCount.nOtherSkill = 0;
-            m_kNifCount.nNPC = 0;
-            m_kNifCount.nDependTime = 0;
-            if (Unk_LockGuard kGuard = DAT_143ae1f28)
+            POSITION posCur = pos;
+            m_mapNif.GetNext(pos);
+            CCachedNifPtr& spEntry = m_mapNif.GetValueAt(posCur);
+            if ((spEntry->m_spData).operator NiAVObject*() == 0)
             {
-                __assume(0);
+                m_mapNif.RemoveAt(posCur);
+                continue;
             }
-            else
+            PoolMap::iterator it;
+            bool bExpired = false;
+            switch (spEntry->m_nClass)
             {
-                POSITION pos = m_mapNif.GetHeadPosition();
-                while (pos != 0)
-                {
-                    POSITION posCur = pos;
-                    m_mapNif.GetNext(pos);
-                    ATL::CRBMap<CString, CCachedNifPtr>::CPair* pPair = m_mapNif.GetAt(posCur);
-                    CCachedNif* pEntry = pPair->m_value;
-                    if ((pEntry->m_spData).operator NiAVObject*() == 0)
-                    {
-                        m_mapNif.RemoveAt(posCur);
-                    }
-                    else
-                    {
-                        bool bExpired = false;
-                        switch (pPair->m_value->m_nClass)
-                        {
-                        case 0:
-                            bExpired = true;
-                            ++m_kNifCount.nNotCache;
-                            break;
-                        case 1:
-                            ++m_kNifCount.nForceKeep;
-                            break;
-                        case 2:
-                            ++m_kNifCount.nMySkill;
-                            break;
-                        case 3:
-                            ++m_kNifCount.nOtherSkill;
-                            bExpired = pPair->m_value->m_dLastUse + m_dLifetime < (double)fNow;
-                            break;
-                        case 4:
-                            ++m_kNifCount.nNPC;
-                            bExpired = pPair->m_value->m_dLastUse + m_dLifetime < (double)fNow;
-                            break;
-                        case 5:
-                            ++m_kNifCount.nDependTime;
-                            bExpired = pPair->m_value->m_dLastUse + m_dLifetime < (double)fNow;
-                            break;
-                        }
-                        unsigned nRefs = ((class NiRefObject*)(class NiRefObject*)((pPair->m_value->m_spData).operator->()))->GetRefCount();
-                        if (nRefs < 2 && bExpired)
-                        {
-                            const CString& strKey = m_mapNif.GetKeyAt(posCur);
-                            PoolMap::iterator itMy = m_mapMyPool.find(strKey);
-                            if (itMy != m_mapMyPool.end())
-                                m_mapMyPool.erase(itMy);
-                            PoolMap::iterator itOther = m_mapOtherPool.find(strKey);
-                            if (itOther != m_mapOtherPool.end())
-                                m_mapOtherPool.erase(itOther);
-                            m_mapNif.RemoveAt(posCur);
-                        }
-                    }
-                }
+            case 0:
+                bExpired = true;
+                ++m_kNifCount.nNotCache;
+                break;
+            case 1:
+                ++m_kNifCount.nForceKeep;
+                break;
+            case 2:
+                ++m_kNifCount.nMySkill;
+                break;
+            case 3:
+                ++m_kNifCount.nOtherSkill;
+                bExpired = spEntry->m_dLastUse + m_dLifetime < (double)fNow;
+                break;
+            case 4:
+                ++m_kNifCount.nNPC;
+                bExpired = spEntry->m_dLastUse + m_dLifetime < (double)fNow;
+                break;
+            case 5:
+                ++m_kNifCount.nDependTime;
+                bExpired = spEntry->m_dLastUse + m_dLifetime < (double)fNow;
+                break;
             }
-            m_kTexCount.nNotCache = 0;
-            m_kTexCount.nForceKeep = 0;
-            m_kTexCount.nMySkill = 0;
-            m_kTexCount.nOtherSkill = 0;
-            m_kTexCount.nNPC = 0;
-            m_kTexCount.nDependTime = 0;
-            if (Unk_LockGuard kTexGuard = DAT_143ae1f58)
+            if (((class NiRefObject*)((spEntry->m_spData).operator->()))->GetRefCount() <= 1 && bExpired)
             {
-                __assume(0);
+                ATL::CRBMap<CString, CCachedNifPtr>::CPair* pPair = m_mapNif.GetAt(posCur);
+                it = m_mapMyPool.find(pPair->m_key);
+                if (it != m_mapMyPool.end())
+                    m_mapMyPool.erase(it);
+                it = m_mapOtherPool.find(pPair->m_key);
+                if (it != m_mapOtherPool.end())
+                    m_mapOtherPool.erase(it);
+                m_mapNif.RemoveAt(posCur);
             }
-            else
-            {
-                POSITION pos = m_mapTex.GetHeadPosition();
-                while (pos != 0)
-                {
-                    POSITION posCur = pos;
-                    m_mapTex.GetNext(pos);
-                    ATL::CRBMap<Unk_NifTexKey, CCachedTexturePtr>::CPair* pPair = m_mapTex.GetAt(posCur);
-                    if (FUN_14097fbf0(&pPair->m_value->m_spData) == 0)
-                    {
-                        m_mapTex.RemoveAt(posCur);
-                    }
-                    else
-                    {
-                        int nRefs = ((class NiRefObject*)(class NiRefObject*)(FUN_140a5acb0(&pPair->m_value->m_spData)))->GetRefCount();
-                        if (nRefs > 1)
-                            pPair->m_value->m_dLastUse = (double)fNow;
-                        bool bExpired = false;
-                        switch (pPair->m_value->m_nClass)
-                        {
-                        case 0:
-                            ++m_kTexCount.nNotCache;
-                            bExpired = true;
-                            break;
-                        case 1:
-                            ++m_kTexCount.nForceKeep;
-                            break;
-                        case 2:
-                            ++m_kTexCount.nMySkill;
-                            break;
-                        case 3:
-                            ++m_kTexCount.nOtherSkill;
-                            bExpired = pPair->m_value->m_dLastUse + m_dLifetime < (double)fNow;
-                            break;
-                        case 4:
-                            ++m_kTexCount.nNPC;
-                            bExpired = pPair->m_value->m_dLastUse + m_dLifetime < (double)fNow;
-                            break;
-                        case 5:
-                            ++m_kTexCount.nDependTime;
-                            bExpired = pPair->m_value->m_dLastUse + m_dLifetime < (double)fNow;
-                            break;
-                        }
-                        if (bExpired && nRefs < 2)
-                            m_mapTex.RemoveAt(posCur);
-                    }
-                }
-            }
-            RefreshTextures();
         }
     }
+    m_kTexCount.nNotCache = 0;
+    m_kTexCount.nForceKeep = 0;
+    m_kTexCount.nMySkill = 0;
+    m_kTexCount.nOtherSkill = 0;
+    m_kTexCount.nNPC = 0;
+    m_kTexCount.nDependTime = 0;
+    if (Unk_LockGuard kTexGuard = DAT_143ae1f58)
+    {
+        __assume(0);
+    }
+    else
+    {
+        POSITION pos = m_mapTex.GetHeadPosition();
+        while (pos != 0)
+        {
+            POSITION posCur = pos;
+            m_mapTex.GetNext(pos);
+            CCachedTexturePtr& spCached = m_mapTex.GetValueAt(posCur);
+            if (FUN_14097fbf0(&spCached->m_spData) == 0)
+            {
+                m_mapTex.RemoveAt(posCur);
+                continue;
+            }
+            int nRefs = ((class NiRefObject*)(FUN_140a5acb0(&spCached->m_spData)))->GetRefCount();
+            if (nRefs > 1)
+                spCached->m_dLastUse = (double)fNow;
+            bool bExpired = false;
+            switch (spCached->m_nClass)
+            {
+            case 0:
+                ++m_kTexCount.nNotCache;
+                bExpired = true;
+                break;
+            case 1:
+                ++m_kTexCount.nForceKeep;
+                break;
+            case 2:
+                ++m_kTexCount.nMySkill;
+                break;
+            case 3:
+                ++m_kTexCount.nOtherSkill;
+                bExpired = spCached->m_dLastUse + m_dLifetime < (double)fNow;
+                break;
+            case 4:
+                ++m_kTexCount.nNPC;
+                bExpired = spCached->m_dLastUse + m_dLifetime < (double)fNow;
+                break;
+            case 5:
+                ++m_kTexCount.nDependTime;
+                bExpired = spCached->m_dLastUse + m_dLifetime < (double)fNow;
+                break;
+            }
+            if (bExpired && nRefs <= 1)
+                m_mapTex.RemoveAt(posCur);
+        }
+    }
+    RefreshTextures();
 }
+
+
+
+
+
+
+
 MS2_REPLACE_METHOD(0x1415543E0, CNifLoadingService, Sweep, 2239, 0x928FF2A6);
 
 // @0x141555600

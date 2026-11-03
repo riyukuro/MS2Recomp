@@ -1,5 +1,6 @@
-110@63s "" ")"
-110@48s "" "(NiMemHint"
+110c
+    NiRenderedTexture* pkThis = NiNew NiRenderedTexture;  // MS2: no texture hint (exe 0x141d61be0)
+.
 59c
     NiRenderedTexture* pkThis = NiNew NiRenderedTexture;  // MS2: no texture hint (exe 0x141d61a80)
 .

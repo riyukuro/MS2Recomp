@@ -19,11 +19,17 @@ void Entity::ClearPropertyCache()
     m_mapKeyedCache.clear();
 }
 .
+1323c
+    if ((EE_MS2_RawCmp(i_strMixinModelName.raw(), efd::utf8string::NullString().raw()) != 0) && // MS2: exe inlines the compare
+.
 102c
 {   ClearPropertyCache();   // MS2
 .
 77c
     , m_iterationCount(0), m_bCaching(false)   // MS2: line-neutral (also the ~Entity brace line): the exe keeps the SDK __LINE__s
+.
+35c
+template<class S> static __forceinline int EE_MS2_RawCmp(const S& a, const S& b) { return std::_Traits_compare<typename S::traits_type>(a._Get_data()._Myptr(), a._Get_data()._Mysize, b._Get_data()._Myptr(), b._Get_data()._Mysize); } // MS2: exe inlines the mixin-name != in AddPendingBehavior (replaces a blank line: keeps __LINE__)
 .
 15a
 

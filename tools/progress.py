@@ -1014,6 +1014,76 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                     used.add(va)
         finally:
             bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = False
+    # 2e'. MS2_ICF_FOLD_EARLY=1: step 2e's lenient fold, offered before the look-alike guess. A name whose only
+    # difference is a callee the table binds to a byte-identical twin (a per-TU COMDAT copy) folds onto its single hit
+    # and is exact instead of a functional guess (soundproperty 0x141794300). It counts only where the table ties the
+    # name to v, else the name stays a guess (an unguarded early 2e credited 4 copies to the wrong name): (a) n's row is
+    # absent, v or outside the unit's ranges and (b) no other VA of the unit is n's (row, pin, a paired caller's target:
+    # uiplayinstrumentdialog 0x141013ce0, guideentity_5 0x14139f310); (c) v is n's row or a paired caller's target (being
+    # v's only claimant is not enough: the exe call graph put 6 such folds on another name, talkscript 0x14085e120,
+    # npcshopdata 0x1406f0370); unless v is n's row, no other name has a committed row at v and step 2c guesses at most
+    # one name there; (d) step 2c guesses n at v as well and 2d pairs nobody there (2c spreads a same-body family over
+    # its copies, the fold stacks it on one: tail8 0x1411200d0, tail4 0x141145440); (e) not 3+ names folding onto a
+    # body of 16 bytes or less (guideentity_1b 0x141395c00: 27 names). Guessing units under the committed table only
+    # (as 2d); the guess stays behind the fold, and step 2e below runs as before.
+    early = {}
+    early_row = set()           # early folds onto their own committed row: exempt from the other-row and 2c rejects
+    if (os.environ.get("MS2_ICF_FOLD_EARLY") and u.guess and _table_path == bm.SYMBOLS_TSV
+            and not os.environ.get("MS2_NO_OWN_COPY") and not os.environ.get("MS2_NO_ICF_FOLD")):
+        bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = True
+        try:
+            taken = set(known.values()) | set(folds.values())
+            for name in sorted(hits0):
+                if name in known or name in folds:
+                    continue
+                cv = [va for va in hits0[name] if va not in taken and va in implied.get(name, (va,)) and trial(name, va)]
+                if len(cv) == 1:
+                    early[name] = cv[0]
+            if early:
+                tg = {n: refs(n, va) for n, va in {**folds, **early}.items()}
+                while early:
+                    both = {**folds, **early}
+                    drop = set()
+                    byva_f = {}
+                    for n, va in both.items():
+                        byva_f.setdefault(va, []).append(n)
+                    for va, ns in byva_f.items():
+                        seen_t = {}
+                        for n in ns:
+                            for t, v in tg[n].items():
+                                seen_t.setdefault(v, set()).add(t)
+                        if all(len(x) == 1 for x in seen_t.values()):
+                            continue
+                        for n in ns:
+                            if n in early and not all((known.get(t) or both.get(t) or bm.HARVEST.get(t)
+                                                       or bm.SYMBOLS.get(t)) == v for t, v in tg[n].items()):
+                                drop.add(n)
+                    if not drop:
+                        break
+                    for n in drop:
+                        del early[n]
+        finally:
+            bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = False
+        stack = {}
+        for n, va in early.items():
+            stack[va] = stack.get(va, 0) + 1
+        for n, va in list(early.items()):
+            row = bm.SYMBOLS.get(n)
+            mine = {w for w in (row, u.pins.get(n), *implied.get(n, ())) if w is not None and u.in_range(w)}
+            if (mine - {va} or not (row == va or va in implied.get(n, ()))
+                    or stack[va] >= 3 and len(obj.function(si_of[n])[0]) <= 16):
+                del early[n]
+            elif row == va:
+                early_row.add(n)
+        if len(early_row) < len(early):
+            vas = {va for n, va in early.items() if n not in early_row}
+            rowed = {}
+            for m, w in bm.SYMBOLS.items():
+                if w in vas:
+                    rowed.setdefault(w, set()).add(m)
+            for n, va in list(early.items()):
+                if n not in early_row and rowed.get(va, set()) - {n}:
+                    del early[n]
     # 2c. look-alike GUESS (opt-in: `// MS2-GUESS-LOOKALIKES` in the unit, or MS2_GUESS_LOOKALIKES=1): byte-identical
     # groups that nothing above could pair (no reloc evidence, M != N, or callee symbols the global table disagrees
     # about). The bytes AND unwind data are identical and every relocation target is consistent (a pair known from
@@ -1136,6 +1206,58 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                     known[n] = v
                     how[n] = "auto-proof"
                     guessed.pop(n, None)
+    # 2e' (d): the early folds that step 2c guessed on the same VA and 2d left free (they stay in `guessed`: a fold
+    # that does not match in step 3 leaves its guess, and step 2e sees the same names and VAs as without the switch);
+    # a VA where 2c guesses 2 or more names keeps only the folds onto their own row
+    if early:
+        taken = set(known.values())
+        gat = {}
+        for g in guessed.values():
+            gat[g] = gat.get(g, 0) + 1
+        folds.update({n: va for n, va in early.items() if guessed.get(n) == va and va not in taken
+                      and (n in early_row or gat[va] < 2)})
+    # 2e. ICF folds whose name the committed table binds to another unit's byte-identical copy: the fold step's strict
+    # trial rejects them and the own-copy pass needs order_ok and a unique claimant, so the VA was a gate stub while the
+    # merge's first pass (no row) folds it (sfr_as3_10 0x142478480: the ??_G of RefCountBase<Filter,2> and of
+    # RefCountBaseStatImpl<RefCountImpl,2> fold onto one body, rows at sfr_render_02c's copies). Under the own-copy
+    # leniency, for VAs nothing above paired or guessed only (stubs stay stubs elsewhere: no other result changes).
+    if not os.environ.get("MS2_NO_OWN_COPY") and not os.environ.get("MS2_NO_ICF_FOLD"):
+        bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = True
+        try:
+            taken = set(known.values()) | set(folds.values()) | set(guessed.values())
+            new = {}
+            for name in sorted(hits0):
+                if name in known or name in folds or name in guessed:
+                    continue
+                cv = [va for va in hits0[name] if va not in taken and va in implied.get(name, (va,)) and trial(name, va)]
+                if len(cv) == 1:
+                    new[name] = cv[0]
+            if new:
+                tg = {n: refs(n, va) for n, va in {**folds, **new}.items()}
+                while new:
+                    both = {**folds, **new}
+                    drop = set()
+                    byva_f = {}
+                    for n, va in both.items():
+                        byva_f.setdefault(va, []).append(n)
+                    for va, ns in byva_f.items():
+                        seen_t = {}
+                        for n in ns:
+                            for t, v in tg[n].items():
+                                seen_t.setdefault(v, set()).add(t)
+                        if all(len(x) == 1 for x in seen_t.values()):
+                            continue
+                        for n in ns:
+                            if n in new and not all((known.get(t) or both.get(t) or bm.HARVEST.get(t)
+                                                     or bm.SYMBOLS.get(t)) == v for t, v in tg[n].items()):
+                                drop.add(n)
+                    if not drop:
+                        break
+                    for n in drop:
+                        del new[n]
+                folds.update(new)
+        finally:
+            bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = False
     # 3. match everything paired (harvests the symbol map)
     bm.CHAIN = CHAIN
     funclets = {}
@@ -1454,7 +1576,7 @@ def main():
         if u.rel in failed or not os.path.exists(u.obj):
             cache[u.rel] = {"key": None, "failed": True, "res": None}
             continue
-        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g2" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "") + ("p" if os.environ.get("MS2_GUESS_PROVE") else "")]
+        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g2" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "") + ("p" if os.environ.get("MS2_GUESS_PROVE") else "") + ("e" if os.environ.get("MS2_ICF_FOLD_EARLY") else "")]
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: persistent tree, match results also keyed by their inputs
             key.append(mergekey.game_stamp())
             key.append(mergekey.rows_stamp(u.obj, manual_tsv))

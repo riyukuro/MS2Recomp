@@ -1801,11 +1801,10 @@ void CameraMgr::FUN_140aeb950(CLocalTargetCameraMode* pMode)
 }
 
 // @0x140aec0e0
-// MS2-FUNCTIONAL: the frame is 8 bytes off.
 void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
 {
     CString strPath;
-    strPath.Format("%s/%08d.xml", (const char*)FUN_14071a5b0("Camera", "Map"), nMapId);
+    strPath.Format("%s/%08d.xml", (const char*)static_cast<const CString&>(FUN_14071a5b0("Camera", "Map")), nMapId);
     TiXmlDocument doc;
     if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return;
@@ -1816,7 +1815,7 @@ void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("localTargetCamera"); pElem;
          pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("localTargetCamera")))
     {
-        int nId = 0;
+        DWORD nId = 0;
         XmlGetAttr((class TiXmlElement*)(pElem), "id", *(unsigned int*)(&nId));
         if (!nId)
             continue;
@@ -1840,7 +1839,8 @@ void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
             FUN_140874670(pElem, "rotation", &setup.m_setting.m_18);
             XmlGetAttr((class TiXmlElement*)(pElem), "targetDistance", setup.m_38);
             FUN_140874670(pElem, "offsetPosition", &setup.m_40);
-            m_setups[nId].push_back(setup);
+            std::vector<Unk_CameraSetup>& setups = m_setups[nId];
+            setups.push_back(setup);
         }
     }
 }

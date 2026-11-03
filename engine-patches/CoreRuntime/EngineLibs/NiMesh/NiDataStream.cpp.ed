@@ -1,0 +1,6 @@
+521c
+        static_cast<EE_MS2_DSESet&>(m_kElements).MS2AddElement(eFormat);
+.
+23c
+struct EE_MS2_DSESet : public NiDataStreamElementSet { __forceinline void MS2Realloc(unsigned int uiNewSize) { if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) { NiDataStreamElement* pNewBase; unsigned int i; if (uiNewSize > 0) { pNewBase = NiTNewInterface<NiDataStreamElement>::Allocate(uiNewSize); for (i = 0; i < m_uiUsed; i++) { pNewBase[i] = m_pBase[i]; } } else { pNewBase = NULL; } NiTNewInterface<NiDataStreamElement>::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize; } } __forceinline unsigned int MS2Add(const NiDataStreamElement& element) { if (m_uiUsed == m_uiAlloced) { MS2Realloc(m_uiAlloced > 0 ? (2 * m_uiAlloced) : 1); } m_pBase[m_uiUsed++] = element; return m_uiUsed - 1; } __forceinline void MS2AddElement(NiDataStreamElement::Format eFormat) { NiDataStreamElement kElement; kElement.SetFormat(eFormat); kElement.SetOffset(m_uiStride); m_uiStride = (NiUInt32)(m_uiStride + NiDataStreamElement::SizeOfFormat(eFormat)); MS2Add(kElement); } };
+.

@@ -43,6 +43,8 @@ def game_stamp():
         files, es = _common()
         files += [os.path.join(ROOT, "tools", "progress.py")]
         env = "".join(f"{k}={os.environ.get(k, '')};" for k in ("MS2_NO_ICF_FOLD", "MS2_NO_MULTICOPY", "MS2_GUESS_LOOKALIKES", "MS2_GUESS_PROVE"))
+        # listed only when set, so the stamp of a merge without it stays as it was
+        env += "".join(f"{k}={os.environ[k]};" for k in ("MS2_ICF_FOLD_EARLY",) if os.environ.get(k))
         _memo["game"] = _hash(files, es + env)
     return _memo["game"]
 

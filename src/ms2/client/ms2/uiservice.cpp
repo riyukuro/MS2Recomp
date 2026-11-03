@@ -709,18 +709,18 @@ public:
 };
 MS2_CHECK_SIZE(NotifyOpenDialogByScene, 0x20);
 
-static void AddOpenId(Unk_UisList& list, int nId)
-{
-    list.AddTail((eUIClassID)nId);
-}
+
+
+
+
+
 
 // @0x141ad9e50
-// MS2-FUNCTIONAL: per-call id temporaries and notify holder layout differ
 void CUIService::FUN_141ad9e50(int nScene)
 {
     int nOpen = 0;
-    if (!((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->Lookup(nScene, nOpen) || nOpen != 0)
-        return;
+    if (!((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->Lookup(nScene, nOpen))
+        return; if (nOpen != 0) return;
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(nScene, 1);
     if (nScene == 0x620001d) {
         FUN_141adbd60(0);
@@ -729,63 +729,63 @@ void CUIService::FUN_141ad9e50(int nScene)
         PCBase* pPlayer = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
         if (!pPlayer)
             return;
-        AddOpenId(m_listOpen, 0x4e29);
-        bool bTab2 = ((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(2) == 1;
+        m_listOpen.AddTail((eUIClassID)0x4e29);
+        bool bTab2 = false; if (((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(2) == 1) bTab2 = true;
         if (!((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(3))
-            AddOpenId(m_listOpen, 0x4ed8);
-        AddOpenId(m_listOpen, 0x4e61);
-        AddOpenId(m_listOpen, 0x4e43);
-        AddOpenId(m_listOpen, 0x4e5e);
-        AddOpenId(m_listOpen, 0x4e93);
-        AddOpenId(m_listOpen, 0x4edd);
-        AddOpenId(m_listOpen, 0x4ea1);
+            m_listOpen.AddTail((eUIClassID)0x4ed8);
+        m_listOpen.AddTail((eUIClassID)0x4e61);
+        m_listOpen.AddTail((eUIClassID)0x4e43);
+        m_listOpen.AddTail((eUIClassID)0x4e5e);
+        m_listOpen.AddTail((eUIClassID)0x4e93);
+        m_listOpen.AddTail((eUIClassID)0x4edd);
+        m_listOpen.AddTail((eUIClassID)0x4ea1);
         if (!bTab2) {
-            AddOpenId(m_listOpen, 0x4e28);
-            AddOpenId(m_listOpen, 0x4e5f);
+            m_listOpen.AddTail((eUIClassID)0x4e28);
+            m_listOpen.AddTail((eUIClassID)0x4e5f);
         }
         if (!reinterpret_cast<Unk_StringOptionEntry*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80().IsEmpty())
-            AddOpenId(m_listOpen, 0x4ee9);
-        if (static_cast<char*>(((void*)((class Unk_AeGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_1409a8ac0()))[0x14] != 0)   // flag byte at +0x14 (0x141ada11b)
-            AddOpenId(m_listOpen, 0x4e7d);
+            m_listOpen.AddTail((eUIClassID)0x4ee9);
+        if (*(static_cast<unsigned char*>(((void*)((class Unk_AeGameOption*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_1409a8ac0())) + 0x14) != 0)   // flag byte at +0x14 (0x141ada11b)
+            m_listOpen.AddTail((eUIClassID)0x4e7d);
         if (Unk_TimerPlayer::Get() != 0)
             ((class RoomTimerManager*)(void*)(Unk_TimerPlayer::Get()))->Show();
         if (((class MyPC*)(void*)(pPlayer))->FUN_141527280())
-            AddOpenId(m_listOpen, 0x4e45);
+            m_listOpen.AddTail((eUIClassID)0x4e45);
         if (FUN_14125bb90((struct Unk_InterfaceState const*)(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150()))))
-            AddOpenId(m_listOpen, 0x4edf);
+            m_listOpen.AddTail((eUIClassID)0x4edf);
         if (FUN_14125bbe0((struct Unk_InterfaceState const*)(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150())))) {
             if (((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->IsInParty())
-                AddOpenId(m_listOpen, 0x4f23);
+                m_listOpen.AddTail((eUIClassID)0x4f23);
         }
         if (((class CUserEventManager*)(void*)(((void*)TSingleton<CUserEventManager>::GetInstance())))->HasDTReward((unsigned short)pPlayer->vfunc_78()) != 0)
-            AddOpenId(m_listOpen, 0x4f01);
+            m_listOpen.AddTail((eUIClassID)0x4f01);
         if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_1404795e0() != 0)
-            AddOpenId(m_listOpen, 0x4f00);
+            m_listOpen.AddTail((eUIClassID)0x4f00);
         if (FUN_1418fd280() != 0) {
-            AddOpenId(m_listOpen, 0x4f7d);
+            m_listOpen.AddTail((eUIClassID)0x4f7d);
             if (((class CubeMapInformationService*)(void*)(((class Unk_UisPlayerInfo*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3600(3))
-                AddOpenId(m_listOpen, 0x4f7e);
+                m_listOpen.AddTail((eUIClassID)0x4f7e);
             else if (!bTab2)
-                AddOpenId(m_listOpen, 0x4f28);
+                m_listOpen.AddTail((eUIClassID)0x4f28);
         }
         if (((class WorldService*)(void*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bcb1a0()) {
-            AddOpenId(m_listOpen, 0x4f7c);
+            m_listOpen.AddTail((eUIClassID)0x4f7c);
             if (bTab2)
-                AddOpenId(m_listOpen, 0x4f7f);
+                m_listOpen.AddTail((eUIClassID)0x4f7f);
         }
         if (((class WorldService*)(void*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bcb150())
-            AddOpenId(m_listOpen, 0x4f36);
+            m_listOpen.AddTail((eUIClassID)0x4f36);
         void* pObj = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetSnowman().get();
         if (pObj != 0)
-            AddOpenId(m_listOpen, 0x4f5d);
-        AddOpenId(m_listOpen, eUI_4f34);
+            m_listOpen.AddTail((eUIClassID)0x4f5d);
+        m_listOpen.AddTail((eUIClassID)eUI_4f34);
         UIEventWidgetDialog::FUN_140c59350();
         if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(0xdd) && !bTab2)
-            AddOpenId(m_listOpen, 0x4f75);
-        NotifyOpenDialogByScene* pNotify = new NotifyOpenDialogByScene(0x620001d);
-        ((NotifySystem*)(void*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(pNotify));
+            m_listOpen.AddTail((eUIClassID)0x4f75);
+        ((NotifySystem*)(void*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyOpenDialogByScene(nScene)));
+
     } else if (nScene == 0x620001f) {
-        AddOpenId(m_listOpen, eUI_4ef2);
+        m_listOpen.AddTail((eUIClassID)eUI_4ef2);
         if (FUN_1418fd280() != 0) {
             void* pDlg = ((void*)FUN_140ef49b0(0x4f7c));
             if (pDlg)
@@ -3098,7 +3098,6 @@ void FUN_141aeec90()
 }
 
 // ---- UI render step / debug visualization click ----
-NiDebugVisualizationClick* FUN_141e2ede0(void* pMem, unsigned char uiMask);
 struct Unk_UisRenderer { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual NiRenderTargetGroup* vfunc_4(); };   // MS2: slot 4
 
 // @0x141aee8d0
@@ -3109,7 +3108,6 @@ void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep)
 }
 
 // @0x141adf250
-// MS2-FUNCTIONAL: exe is new (hint) NiDebugVisualizationClick(0xf); that needs a symbols-manual row for ??0NiDebugVisualizationClick@@QEAA@E@Z -> 0x141e2ede0
 void CUIService::FUN_141adf250()
 {
     ecr::RenderSurface* pScene = ((ecr::RenderService*)m_pWorldSvc30)->GetActiveRenderSurface();
@@ -3125,15 +3123,14 @@ void CUIService::FUN_141adf250()
     }
     FUN_141aee8d0(pFrame, (NiDefaultClickRenderStep*)*reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38));
 
-    void* mem = efd::MemObject::operator new(0x178, efd::MemHint(efd::MemHint::NONE));
-    m_spDebugClick = mem ? FUN_141e2ede0(mem, 0xf) : 0;   // MS2: the engine ctor has no symbol row
+    m_spDebugClick = new (efd::MemHint(efd::MemHint::NONE)) NiDebugVisualizationClick(0xf);
     {
         NiFixedString kName("DebugGeometryClick");
         m_spDebugClick->SetName(kName);
     }
-    ((NiDebugVisualizationClick*)m_spDebugClick)->ClearRoots();
-    ((NiDebugVisualizationClick*)m_spDebugClick)->SetCamera((NiCamera*)FUN_1413f9950());
-    ((NiDebugVisualizationClick*)m_spDebugClick)->SetClearAllBuffers(false);
+    m_spDebugClick->ClearRoots();
+    m_spDebugClick->SetCamera((NiCamera*)FUN_1413f9950());
+    m_spDebugClick->SetClearAllBuffers(false);
     m_spDebugClick->ProcessScene();
     if ((NiDefaultClickRenderStep*)*reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38) != 0)
         reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38)->operator->()->AppendRenderClick(m_spDebugClick);

@@ -1,3 +1,6 @@
+6210@27s "" "MS2"
+6210@26s "" ")"
+6210@8s "" "static_cast<EE_MS2_DSESet&>("
 5777c
             *pResult = vector1 * XMVectorReciprocal(vector2);
 .
@@ -34,6 +37,10 @@
 3984@16s "" "(const char*)"
 3983@16s "" "(const char*)"
 3982@16s "" "(const char*)"
+3417@34s "" "::ms_RTTI"
+3417@20s "" "&"
+3416@43s "" "AmbientLight*) EE_MS2_"
+3416@41s "" "("
 3397@16s "" "(const char*)"
 3396@16s "" "(const char*)"
 3353@16s "" "(const char*)"
@@ -120,6 +127,12 @@
             (const char*)GetName());
 .
 1395@12s "" "(const char*)"
+1311c
+        static_cast<EE_MS2_DSESet&>(dataStreamElements).MS2AddElement(format);
+.
+1306c
+            static_cast<EE_MS2_DSESet&>(dataStreamElements).MS2AddElement(format);
+.
 1215@20s "" "(const char*)"
 1214@20s "" "(const char*)"
 1192@20s "" "(const char*)"
@@ -153,4 +166,10 @@
 .
 260c
             (const char*)GetName(),
+.
+47c
+struct EE_MS2_DSESet : public NiDataStreamElementSet { __forceinline void MS2Realloc(unsigned int uiNewSize) { if (uiNewSize < m_uiUsed) uiNewSize = m_uiUsed; if (uiNewSize != m_uiAlloced) { NiDataStreamElement* pNewBase; unsigned int i; if (uiNewSize > 0) { pNewBase = NiTNewInterface<NiDataStreamElement>::Allocate(uiNewSize); for (i = 0; i < m_uiUsed; i++) { pNewBase[i] = m_pBase[i]; } } else { pNewBase = NULL; } NiTNewInterface<NiDataStreamElement>::Deallocate(m_pBase); m_pBase = pNewBase; m_uiAlloced = uiNewSize; } } __forceinline unsigned int MS2Add(const NiDataStreamElement& element) { if (m_uiUsed == m_uiAlloced) { MS2Realloc(m_uiAlloced > 0 ? (2 * m_uiAlloced) : 1); } m_pBase[m_uiUsed++] = element; return m_uiUsed - 1; } __forceinline void MS2AddElement(NiDataStreamElement::Format eFormat) { NiDataStreamElement kElement; kElement.SetFormat(eFormat); kElement.SetOffset(m_uiStride); m_uiStride = (NiUInt32)(m_uiStride + NiDataStreamElement::SizeOfFormat(eFormat)); MS2Add(kElement); } }; static __forceinline bool EE_MS2_IsKindOf(const NiObject* pkObject, const NiRTTI* pkRTTI) { const NiRTTI* pkTmp = pkObject->GetRTTI(); while (pkTmp) { if (pkTmp == pkRTTI) return true; pkTmp = pkTmp->GetBaseRTTI(); } return false; } static __forceinline NiObject* EE_MS2_DynamicCast(const NiRTTI* pkRTTI, const NiObject* pkObject) { if (!pkObject) return NULL; return (EE_MS2_IsKindOf(pkObject, pkRTTI) ? (NiObject*) pkObject : 0); }
+.
+13c
+#define EE_MS2_DSE_ADDELEMENT_CALL
 .

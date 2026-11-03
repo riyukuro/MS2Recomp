@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x141935200-0x141935f20 .text$mn
 // MS2-PIN: ??1UIGambleDialog@@UEAA@XZ 0x141935d40
 // MS2-PIN: ??_GUIGambleDialog@@UEAAPEAXI@Z 0x141935db0
+#define MS2_UISWFENTITY_VF15_RET
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigambledialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uigambledialog.h"
@@ -118,8 +119,7 @@ void UIGambleDialog::vfunc_43()
 }
 
 // @0x1419354d0
-// MS2-FUNCTIONAL: the exe returns this (the base slot is void in the shared header)
-void UIGambleDialog::vfunc_15() {}
+UISwfEntity* UIGambleDialog::vfunc_15() { return this; }
 
 // @0x1419354f0
 void UIGambleDialog::vfunc_79(void* pPacket)

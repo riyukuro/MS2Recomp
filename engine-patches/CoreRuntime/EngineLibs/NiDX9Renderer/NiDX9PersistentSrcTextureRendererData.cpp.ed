@@ -1,0 +1,4 @@
+13,14c
+#define _CRT_MEMCPY_S_INLINE static __forceinline  // MS2: exe inlines memcpy_s in LoadBinary (replaces a blank line)
+#define EE_MS2_MEMCPY_FORCE  // MS2: see StringUtilities_Win32.inl Memcpy (replaces a blank line: keeps __LINE__)
+.

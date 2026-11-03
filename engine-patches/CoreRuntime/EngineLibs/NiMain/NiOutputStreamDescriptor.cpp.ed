@@ -1,0 +1,19 @@
+175c
+    // MS2: v2525 compiles operator== inline here
+    if (m_kName != kDescriptor.m_kName ||
+        m_uiMaxVertexCount != kDescriptor.m_uiMaxVertexCount ||
+        m_ePrimType != kDescriptor.m_ePrimType ||
+        m_kVertexFormat.GetSize() != kDescriptor.m_kVertexFormat.GetSize())
+    {
+        return true;
+    }
+
+    unsigned int uiCount = m_kVertexFormat.GetSize();
+    for (unsigned int i = 0; i < uiCount; i++)
+    {
+        if (m_kVertexFormat[i] != kDescriptor.m_kVertexFormat[i])
+            return true;
+    }
+
+    return false;
+.

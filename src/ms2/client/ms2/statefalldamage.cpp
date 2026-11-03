@@ -69,7 +69,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
 }
 
 // @0x1417c7f30
-// MS2-FUNCTIONAL: the exe passes the entity key return slot through a pointer temp (lea rax,[k]; mov [p],rax; mov rdx,[p])
+// FUN_1409fad80 takes the id by value: the returned key is built in the arg temp, passed through a pointer temp.
 void StateFallDamage::vfunc_5(int n)
 {
     ((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_1409fad80(m_pOwner->FUN_14123c460(), false);

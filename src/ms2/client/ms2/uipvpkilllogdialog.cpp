@@ -32,7 +32,7 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-bool FUN_14025cd60(const CStringW& strA, const CStringW& strB); // names are equal
+bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw(); // names are equal
 template <class A> CStringW FormatStringId(int nId, const A& a);       // string table text with one name
 int FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
 void FUN_1412751b0(const CStringW& strMsg, int nType);
@@ -94,7 +94,6 @@ void UIPvPKillLogDialog::vfunc_79(void* p)
 }
 
 // @0x141342880
-// MS2-FUNCTIONAL: the exe binds three of the four vfunc_77 results without the extra temp copy (source form not found)
 void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
 {
     if (m_30.IsNull())

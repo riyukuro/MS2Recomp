@@ -16,21 +16,21 @@
 // MS2-PIN: ?_Orphan_range@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@AEBAXPEAV?$SmartPointer@VEntity@egf@@@efd@@0@Z 0x1411492e0 ; probe
 // MS2-PIN: ?_Orphan_range@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@AEBAXPEAVEntityID@egf@@0@Z 0x1411492f0 ; probe
 // MS2-PIN: ?_Orphan_range@?$vector@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@AEBAXPEAUUnk_CMISElem52@@0@Z 0x141149300 ; probe
-// MS2-PIN: ?Release@?$MS2Ptr@VAutomaticCreateCubeInfo@@@@AEAAXXZ 0x141149320 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VCFunctionCubeObject@@@@AEAAXXZ 0x141149360 ; order
+// MS2-PIN: ?Release@?$MS2Ptr@VFittingDollData@@@@AEAAXXZ 0x141149320 ; mt11: called by the FittingDollData dtor 0x141123760
+// MS2-PIN: ?Release@?$MS2SvrPtr@VSalesInfo@@@@AEAAXXZ 0x141149360 ; mt11: called by the SalesInfo dtor 0x141123790
 // MS2-PIN: ?Release@?$MS2Ptr@VCube@@@@AEAAXXZ 0x1411493a0 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VFittingDollData@@@@AEAAXXZ 0x1411493e0 ; order
-// MS2-PIN: ?Release@?$MS2Ptr@VSalesInfo@@@@AEAAXXZ 0x141149460 ; order
+// MS2-PIN: ?Release@?$MS2Ptr@VAutomaticCreateCubeInfo@@@@AEAAXXZ 0x1411493e0 ; mt11: called by the ACCI dtor 0x1411237f0
+// MS2-PIN: ?Release@?$MS2Ptr@VUICubeUGCHead@@@@AEAAXXZ 0x141149460 ; mt11: called by the UICubeUGCHead dtor 0x141123850
 // MS2-PIN: ?Release@?$MS2Ptr@VUIHouseMarkEntity@@@@AEAAXXZ 0x1411494a0 ; order
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAHV?$CustomAllocator@H@efd@@@std@@QEAAPEAHXZ 0x1411494e0 ; probe
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141149500 ; probe
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAV?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@QEAAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141149520 ; probe
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAVEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAAPEAVEntityID@egf@@XZ 0x141149540 ; probe
 // MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAUUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@QEAAPEAUUnk_CMISElem52@@XZ 0x141149560 ; probe
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VAutomaticCreateCubeInfo@@@@AEAAXPEAX@Z 0x141149580 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCFunctionCubeObject@@@@AEAAXPEAX@Z 0x1411495d0 ; order
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VFittingDollData@@@@AEAAXPEAX@Z 0x141149580 ; mt11: called by Release 0x141149320
+// MS2-PIN: ?ReleaseImpl@?$MS2SvrPtr@VSalesInfo@@@@AEAAXPEAX@Z 0x1411495d0 ; mt11: called by Release 0x141149360
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCube@@@@AEAAXPEAX@Z 0x141149620 ; order
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VFittingDollData@@@@AEAAXPEAX@Z 0x141149670 ; order
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VAutomaticCreateCubeInfo@@@@AEAAXPEAX@Z 0x141149670 ; mt11: called by Release 0x1411493e0
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VSaleStateData@@@@AEAAXPEAX@Z 0x1411496c0 ; order
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUIHouseMarkEntity@@@@AEAAXPEAX@Z 0x141149760 ; order
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_Int3@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHUUnk_Int3@@@std@@PEAX@2@XZ 0x1411497d0 ; order
@@ -500,7 +500,7 @@
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEBAAEBQEAUUnk_CMISElem52@@XZ 0x141148e90 ; w151 family
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEBAAEBQEAUUnk_CMISElem52@@XZ 0x141149010 ; w151 family
 // MS2-PIN: ?Release@?$MS2Ptr@VSaleStateData@@@@AEAAXXZ 0x141149420 ; w151 family
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VSalesInfo@@@@AEAAXPEAX@Z 0x141149710 ; w151 family
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUICubeUGCHead@@@@AEAAXPEAX@Z 0x141149710 ; mt11: called by Release 0x141149460
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@@std@@@std@@PEAX@2@XZ 0x1411498f0 ; w151 family
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_CMISKindA@@H@std@@PEAX@2@XZ 0x141149a50 ; w151 family
 // MS2-PIN: ?_Rmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@HH@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@HH@std@@PEAX@2@XZ 0x141149a90 ; w151 family
@@ -667,6 +667,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
+#include "ms2/placeholder/ms2svrptr.h"
 #include "hook/ms2hook.h"
 
 // la1: the column map efd::map<long, MS2Ptr<Cube>> (operator[] 0x141128350, erase(where) 0x141156050); its copies in this
@@ -732,6 +733,7 @@ void Unk_CMISDriveTail()
     { Unk_CMISKindVec v; Unk_CMISDriveVector(v, Unk_CMISKindC_None); }
     { std::vector<Cube*> v; Cube* p = 0; Unk_CMISDriveVector(v, p); v.push_back(static_cast<Cube*&&>(p)); }   // cube lists filled by push_back
     { MS2Ptr<UIHouseMarkEntity> p; }
+    { MS2SvrPtr<SalesInfo> p; }
     { efd::utf8string s; (void)s.find_last_of("/", 0); }
     { std::string s; s.append("x"); }
     { efd::string s; s.append("x"); }

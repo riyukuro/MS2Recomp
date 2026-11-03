@@ -1,3 +1,6 @@
+35c
+namespace efd { typedef efd::map<efd::utf8string, efd::SmartPointer<efd::INetLib>(*)()>::_Mybase MS2NetLibFactoryTree; } EE_MS2_EQRANGE(efd::MS2NetLibFactoryTree) /* MS2: see utf8string.inl */
+.
 17a
 #endif
 .

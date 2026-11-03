@@ -37,7 +37,6 @@ public:
     void* m_p6;
 };
 Unk_ContA* FUN_141117200(const Unk_ContA& o);
-void* FUN_141145120(const Unk_ContA& o);
 void FUN_141135960(Unk_ContA* pThis, void* pFirst);
 void** FUN_141149110(const Unk_ContA& o);
 void** FUN_141148f90(const Unk_ContA& o);
@@ -49,7 +48,7 @@ Unk_ContA& Unk_ContA::Assign(const Unk_ContA& o)
     {
         if (0)
             FUN_14114c3a0(this);
-        FUN_141135960(this, FUN_141145120(o));
+        FUN_141135960(this, (void*)&reinterpret_cast<const Unk_CMISEntVec&>(o)._Getal());
         reinterpret_cast<Unk_CMISEntVec*>(this)->assign((egf::EntityPtr*)*FUN_141148f90(o), (egf::EntityPtr*)*FUN_141149110(o));
     }
     return *this;

@@ -1,0 +1,3 @@
+23c
+template <> unsigned int NiTArray<NiPick::Record*, NiTMallocInterface<NiPick::Record*> >::SetAtGrow(unsigned int, NiPick::Record* const&);  // MS2: out of line in the exe (0x141cb7640)
+.

@@ -4,3 +4,18 @@
 670c
 __forceinline bool efd::ParseHelper<efd::AssetID>::FromString( // MS2: the exe inlines this into every SetByString (no out-of-line copy)
 .
+13a
+// MS2: std::vector<utf8string, CustomAllocator<utf8string>>::~vector 0x14168e1a0 (game /Od copy): the exe calls it
+// out of line from Logger::GetLevelMaskByName (tokens); that TU defines the switch (engine/units-gb.json). It goes
+// here because the FromString bodies below are the first to instantiate the dtor
+#if defined(EE_MS2_VEC_UTF8_DTOR_CALL)
+namespace std
+{
+template<> inline __declspec(noinline)
+vector<efd::utf8string, efd::CustomAllocator<efd::utf8string> >::~vector() noexcept
+{
+    _Tidy();
+}
+}
+#endif
+.

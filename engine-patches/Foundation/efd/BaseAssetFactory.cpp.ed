@@ -1,0 +1,3 @@
+70c
+            if (pExistingRequest->GetAssetPath().raw().compare(pRequest->GetAssetPath().raw()) == 0) // MS2: exe inlines the compare
+.

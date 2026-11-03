@@ -1,0 +1,15 @@
+39a
+#endif
+.
+38a
+    // MS2: the exe keeps StreamMessage::SetupClassInfo out of line (0x1420c7d60) and
+    // NetworkStatus's ms_ClassInfo initializer tail-calls it, where cl 14.16 inlines it;
+    // that unit defines EE_MS2_SCI_NOINLINE (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(StreamMessage, efd::kCLASSID_StreamMessage);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(IMessage);
+    EE_END_DECLARE_CLASS();
+#else
+.

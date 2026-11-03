@@ -319,7 +319,7 @@ void CAchieveManager::Reload()
     {
         MS2Ptr<CAchieveData> pData = aData[i];
         MS2Ptr<CAchieve> pAchieve(new CAchieve);
-        if (pAchieve->Init(pData->m_nId, pData->m_nFirstGrade, 2, 0) != 0)
+        if (pAchieve->Init(pData->m_nId, pData->m_nFirstGrade, 2) != 0)
             m_map.SetAt(pData->m_nId, pAchieve);
     }
 }
@@ -507,7 +507,7 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
             int nId = rBuf.ReadInt32();
             int nGrade = rBuf.ReadInt32();
             MS2Ptr<CAchieve> pAchieve(new CAchieve);
-            if (pAchieve->Init(nId, nGrade, 0, 0) != 0)
+            if (pAchieve->Init(nId, nGrade, 0) != 0)
             {
                 pAchieve->Decode(rBuf);
                 m_map.SetAt(nId, pAchieve);

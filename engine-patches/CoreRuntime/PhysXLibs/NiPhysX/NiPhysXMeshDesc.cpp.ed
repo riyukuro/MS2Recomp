@@ -13,6 +13,9 @@
 350a
     m_pkTriangleMesh = 0;  // MS2: the mesh is not cached on the descriptor
 .
+329c
+        MS2SDKLock::Wait(pkManager);
+.
 287,292c
         // MS2: the cooked data is kept whatever bKeepData says.
         EE_UNUSED_ARG(bKeepData);
@@ -21,48 +24,56 @@
         if (m_kMeshName == "he_n_box_e02_ym")  // MS2: a leftover debug hook on one mesh name
             m_kMeshName = m_kMeshName;
 .
-247,248c
-    if (!bMS2ValidPlatform)
-.
-243,245c
+249a
         switch (NiSystemDesc::GetSystemDesc().GetPlatformID())
         {
-            case NiSystemDesc::NI_WIN32: bMS2ValidPlatform = GetBit(COOKED_FOR_WIN32_MASK); break;
-            case NiSystemDesc::NI_PS3: bMS2ValidPlatform = GetBit(COOKED_FOR_PS3_MASK); break;
-            case NiSystemDesc::NI_XENON: bMS2ValidPlatform = GetBit(COOKED_FOR_XENON_MASK); break;
+            case NiSystemDesc::NI_WIN32: if (!GetBit(COOKED_FOR_WIN32_MASK)) goto ms2TriBadPlatform; break;
+            case NiSystemDesc::NI_PS3: if (!GetBit(COOKED_FOR_PS3_MASK)) goto ms2TriBadPlatform; break;
+            case NiSystemDesc::NI_XENON: if (!GetBit(COOKED_FOR_XENON_MASK)) goto ms2TriBadPlatform; break;
             default: break;
         }
+    }
+    if (false)  // MS2: reached by goto from the platform switch
+    { ms2TriBadPlatform:
 .
-241c
-    // MS2: no early return for an already-created mesh (it is never cached, see the end).
-    // MS2: IsValidPlatform() expanded inline (exe 0x141f0ae20/0x141f0b240; ToClothDesc still calls it).
-    bool bMS2ValidPlatform = true;
+248c
     if (bCheckPlatform && (GetBit(COOKED_FOR_WIN32_MASK) || GetBit(COOKED_FOR_PS3_MASK) ||
         GetBit(COOKED_FOR_XENON_MASK)))
 .
+241,246c
+    // MS2: no early return for an already-created mesh (it is never cached, see the end).
+    // MS2: IsValidPlatform() expanded inline (exe 0x141f0ae20/0x141f0b240; ToClothDesc still calls it).
+.
 230a
     m_pkConvexMesh = 0;  // MS2: the mesh is not cached on the descriptor
+.
+209c
+        MS2SDKLock::Wait(pkManager);
 .
 167,172c
         // MS2: the cooked data is kept whatever bKeepData says.
         EE_UNUSED_ARG(bKeepData);
 .
-127,128c
-    if (!bMS2ValidPlatform)
-.
-123,125c
+129a
         switch (NiSystemDesc::GetSystemDesc().GetPlatformID())
         {
-            case NiSystemDesc::NI_WIN32: bMS2ValidPlatform = GetBit(COOKED_FOR_WIN32_MASK); break;
-            case NiSystemDesc::NI_PS3: bMS2ValidPlatform = GetBit(COOKED_FOR_PS3_MASK); break;
-            case NiSystemDesc::NI_XENON: bMS2ValidPlatform = GetBit(COOKED_FOR_XENON_MASK); break;
+            case NiSystemDesc::NI_WIN32: if (!GetBit(COOKED_FOR_WIN32_MASK)) goto ms2ConvexBadPlatform; break;
+            case NiSystemDesc::NI_PS3: if (!GetBit(COOKED_FOR_PS3_MASK)) goto ms2ConvexBadPlatform; break;
+            case NiSystemDesc::NI_XENON: if (!GetBit(COOKED_FOR_XENON_MASK)) goto ms2ConvexBadPlatform; break;
             default: break;
         }
+    }
+    if (false)  // MS2: reached by goto from the platform switch
+    { ms2ConvexBadPlatform:
 .
-121c
-    // MS2: no early return for an already-created mesh (it is never cached, see the end).
-    // MS2: IsValidPlatform() expanded inline (exe 0x141f0ae20/0x141f0b240; ToClothDesc still calls it).
-    bool bMS2ValidPlatform = true;
+128c
     if (bCheckPlatform && (GetBit(COOKED_FOR_WIN32_MASK) || GetBit(COOKED_FOR_PS3_MASK) ||
         GetBit(COOKED_FOR_XENON_MASK)))
+.
+121,126c
+    // MS2: no early return for an already-created mesh (it is never cached, see the end).
+    // MS2: IsValidPlatform() expanded inline (exe 0x141f0ae20/0x141f0b240; ToClothDesc still calls it).
+.
+22c
+struct MS2SDKLock : efdPhysX::PhysXSDKManager { static __forceinline void Wait(efdPhysX::PhysXSDKManager* p) { static_cast<MS2SDKLock*>(p)->m_sdkCritSect.Lock(); } };  // MS2: exe inlines the file-path WaitSDKLock in ToConvexDesc/ToTriMeshDesc (replaces a blank line)
 .

@@ -5,6 +5,6 @@
                     uiNumVertices = pkMesh->GetVertexCount(uiSubmesh); pkRenderer->MS2AddDrawStats(uiNumVertices, uiMS2InstancedPrimitives ? uiMS2InstancedPrimitives : uiPrimitiveCount);   // MS2: game 0x1427e01c0
 .
 254c
-                    pkMesh->GetPrimitiveCountFromElementCount(uiElementCount); NiUInt32 uiMS2InstancedPrimitives = pkMesh->GetInstanced() ? NiInstancingUtilities::GetVisibleInstanceCount(pkMesh) * uiPrimitiveCount : 0;   // MS2: game 0x1427e01c0 counts instanced primitives
+                    pkMesh->GetPrimitiveCountFromElementCount(uiElementCount); NiUInt32 uiMS2InstancedPrimitives = 0; if (pkMesh->GetInstanced()) uiMS2InstancedPrimitives = NiInstancingUtilities::GetVisibleInstanceCount(pkMesh) * uiPrimitiveCount;   // MS2: game 0x1427e01c0 counts instanced primitives
 .
 206@16s "" "(const char*)"

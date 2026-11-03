@@ -612,7 +612,7 @@ void COptimizer::ApplyModeToPlayer(PCBase* pPC)
 }
 
 // @0x14161d010
-void COptimizer::AddSuppressor(const egf::EntityID& kId)
+void COptimizer::AddSuppressor(egf::EntityID kId)
 {
     if (m_suppress.empty())
     {

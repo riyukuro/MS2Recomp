@@ -1,0 +1,6 @@
+170c
+            MS2ToRotation(kLastAccumInv.GetRotate(), kRefRot);
+.
+18c
+static __forceinline void MS2ToRotation(const NiQuaternion& q, NiMatrix3& rot) { float tx = 2.0f*q.GetX(), ty = 2.0f*q.GetY(), tz = 2.0f*q.GetZ(), twx = tx*q.GetW(), twy = ty*q.GetW(), twz = tz*q.GetW(), txx = tx*q.GetX(), txy = ty*q.GetX(), txz = tz*q.GetX(), tyy = ty*q.GetY(), tyz = tz*q.GetY(), tzz = tz*q.GetZ(); rot.SetCol(0, 1.0f-(tyy+tzz), txy+twz, txz-twy); rot.SetCol(1, txy-twz, 1.0f-(txx+tzz), tyz+twx); rot.SetCol(2, txz+twy, tyz-twx, 1.0f-(txx+tyy)); }  // MS2: exe inlines ToRotation in UpdateSceneGraph (replaces a blank line)
+.

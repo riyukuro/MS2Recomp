@@ -14,6 +14,11 @@
 #include <time.h>
 #include <string>
 #include "hook/ms2hook.h"
+// The game's TinyXML node classes. Its TiXmlDocument is renamed here: filesystem.h brings the placeholder
+// document (tixmldocument.h), which this unit uses for the file itself.
+#define TiXmlDocument TiXmlDocument_TinyXml
+#include "ms2/commonfiles/tinyxml.h"
+#undef TiXmlDocument
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -29,12 +34,6 @@ CString FUN_14016a5c0(const char* psz, int n);                          // path 
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
 __int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
-    void SetValue(char const*);
-};
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void FUN_1408740a0(void* pElem, const char* pszName, const CStringW* pstrValue);   // SetAttribute(name, string)
 void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
@@ -43,9 +42,6 @@ __int64 FUN_140190260();                                                // the d
 __int64 GetServerTime();                                                // the server time
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const unsigned __int64& nArg);   // "{0}" formatter
-void* FUN_14086e9c0(void* pNode, int nType);                            // TiXmlNode::TiXmlNode
-extern char DAT_142d9c138;                                              // the TiXmlComment vftable
-// (was DAT_142dfc138, RTTI data, not a vftable: InsertEndChild's virtual Clone ran through garbage)
 
 // The game's TinyXML (bare global names, not efd::), as far as this unit builds it.
 class Unk_TiXmlElement
@@ -66,15 +62,6 @@ private:
     void* m_data[0xd];
 };
 MS2_CHECK_SIZE(Unk_TiXmlDeclaration, 0x68);
-class Unk_TiXmlComment
-{
-public:
-    explicit Unk_TiXmlComment(const char* pszValue);            // 0x140a27ec0
-    ~Unk_TiXmlComment();                                        // 0x1408724d0
-private:
-    void* m_data[0xa];
-};
-MS2_CHECK_SIZE(Unk_TiXmlComment, 0x50);
 
 // @0x140a24e90
 BlindManager::BlindManager()
@@ -147,7 +134,7 @@ void BlindManager::Save()
     TiXmlDocument document;
     Unk_TiXmlDeclaration declaration("1.0", "utf-8", "");
     ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(*(class TiXmlNode const*)(&declaration)));
-    ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(*(class TiXmlNode const*)(&static_cast<const Unk_TiXmlComment&>(Unk_TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
+    ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(*(class TiXmlNode const*)(&static_cast<const TiXmlComment&>(TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
             "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0))))));
     Unk_TiXmlElement root("ms2");
     for (int nType = 0; nType < 6; nType++)
@@ -212,14 +199,7 @@ bool BlindManager::IsBlockedId(int nType, unsigned __int64 nId)
     return IsBlocked(nType, FUN_1406c6bd0(L"{0}", nId));
 }
 
-// @0x140a27ec0
-// MS2-FUNCTIONAL: the exe's ctor has unwind info (the TiXmlNode base is destroyed on exceptions); the vftable is bound as a data symbol (the comment node class is not recovered)
-Unk_TiXmlComment::Unk_TiXmlComment(const char* pszValue)
-{
-    FUN_14086e9c0(this, 2);
-    *reinterpret_cast<void**>(this) = &DAT_142d9c138;
-    ((class TiXmlNode*)(void*)(this))->SetValue(pszValue);
-}
+// 0x140a27ec0: TiXmlComment(const char*), tinyxml.h's inline ctor, emitted here by Save.
 
 // Anchor for the UCRT header-inline memmove_s COMDAT of this range (0x140a29f80), which the exe's other users reach.
 void Unk_BlindAnchor(void* pDst, const void* pSrc)

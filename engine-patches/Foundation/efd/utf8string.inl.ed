@@ -15,6 +15,10 @@ template<> struct less<efd::utf8string>
     }
 };
 }
+#endif
+// MS2: EE_MS2_UTF8_EQRANGE gives a TU the specializations below without the out-of-line less<utf8string>, whose
+// calls would land in every other map<utf8string, ..> lookup of the TU (VisualizerVisibilityTracker, ChannelManagerService).
+#if defined(EE_MS2_LESS_UTF8_CALL) || defined(EE_MS2_UTF8_EQRANGE)
 // MS2: the exe's map<utf8string, ..>::_Insert_nohint inlines the key compare in the descent loop but calls
 // less<utf8string> out of line for the final uniqueness test (the old cl's per-site inliner). No flag reproduces
 // that, so TUs that need it specialize _Insert_nohint per map type with EE_MS2_INSERT_NOHINT(tree, valty, nodety)
@@ -126,6 +130,9 @@ EE_MS2_UTF8_EQ_INLINE bool operator==(
 461c
 EE_MS2_UTF8_APPEND_INLINE utf8string& utf8string::append(const char* src_sz)
 .
+260c
+EE_MS2_UTF8_ASSIGN_CSTR_INLINE utf8string& utf8string::operator=(const char* rhs_sz)
+.
 243@0s "inline" "EE_MS2_UTF8_ASSIGN_INLINE"
 73c
 EE_MS2_UTF8_CHAR_CTOR_INLINE utf8string::utf8string(const char* src_sz)
@@ -156,6 +163,12 @@ EE_MS2_UTF8_CHAR_CTOR_INLINE utf8string::utf8string(const char* src_sz)
 #define EE_MS2_UTF8_CHAR_CTOR_INLINE inline __declspec(noinline)
 #else
 #define EE_MS2_UTF8_CHAR_CTOR_INLINE inline
+#endif
+// MS2: operator=(const char*) 0x140ae18f0
+#if defined(EE_MS2_UTF8_ASSIGN_CSTR_CALL)
+#define EE_MS2_UTF8_ASSIGN_CSTR_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_UTF8_ASSIGN_CSTR_INLINE inline
 #endif
 
 .

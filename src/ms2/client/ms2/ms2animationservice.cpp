@@ -117,16 +117,6 @@ private:
 MS2_CHECK_SIZE(Unk_ShList, 0x30);
 // GameObject view: 0x14123c460 returns the actor entity id by value (written through the hidden return pointer).
 
-// The game's NiStream (the engine's plus a 0x104 byte label buffer at +8; 0x5d0 bytes; ctor 0x141d44620, dtor 0x141d451c0).
-class Unk_KFStream
-{
-public:
-    Unk_KFStream();                             // 0x141d44620
-    ~Unk_KFStream();                            // 0x141d451c0
-    void* m_pVtbl;
-    char m_acLabel[0x5c8];
-};
-MS2_CHECK_SIZE(Unk_KFStream, 0x5d0);
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -287,10 +277,10 @@ void MS2AnimationService::ReloadFemaleKF()
                 {
                     unsigned int uiID = pIDs[i];
                     NiFixedString kFile = pTool->GetFullKFFilename(uiID);
-                    Unk_KFStream kStream;
-                    FUN_1403b0860(kStream.m_acLabel, "female");
-                    if (reinterpret_cast<NiStream*>(&kStream)->NiStream::Load(kFile))
-                        pActor->ReloadKFFile(*reinterpret_cast<NiStream*>(&kStream));
+                    NiStream kStream;
+                    FUN_1403b0860(kStream.m_acStudioPath0x8, "female");
+                    if (kStream.Load(kFile))
+                        pActor->ReloadKFFile(kStream);
                 }
                 if (pIDs != 0)
                     EE_FREE(pIDs);
@@ -330,10 +320,10 @@ void MS2AnimationService::ReloadMaleKF()
                 {
                     unsigned int uiID = pIDs[i];
                     NiFixedString kFile = pTool->GetFullKFFilename(uiID);
-                    Unk_KFStream kStream;
-                    FUN_1403b0860(kStream.m_acLabel, "male");
-                    if (reinterpret_cast<NiStream*>(&kStream)->NiStream::Load(kFile))
-                        pActor->ReloadKFFile(*reinterpret_cast<NiStream*>(&kStream));
+                    NiStream kStream;
+                    FUN_1403b0860(kStream.m_acStudioPath0x8, "male");
+                    if (kStream.Load(kFile))
+                        pActor->ReloadKFFile(kStream);
                 }
                 if (pIDs != 0)
                     EE_FREE(pIDs);

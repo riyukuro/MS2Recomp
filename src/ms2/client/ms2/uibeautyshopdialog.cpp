@@ -77,6 +77,7 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x1418cca00 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uibeautyshopdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/itemcustomizecontroller_1.h"
 #include "uibeautyshopdialog.h"
 static CString s_strCustomize = "Customize";
 static CString s_strDefault = "Default";
@@ -453,11 +454,6 @@ void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<Unk_140acd6e0>*
 bool FUN_14166c930();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_140f327a0(MS2Ptr<CItemData> spData, int nColor, ASObj& obj, int n);
-class CItemCustomizeController   // C3: member view for the former free stand-ins
-{
-public:
-    int GetEquipItemValue();
-};
 int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, unsigned nFlags, int nMode, bool bColor); // the item id of a part
 
 
@@ -482,42 +478,14 @@ bool FUN_140f02b10(Unk_BSPricePtr spPrice, short nLevel);
 UIBillDialog* FUN_140f0a350(int nId);
 
 // The customize value range the part returns (vfunc_24): m_n08 set means the slider runs inverted.
-struct Unk_BSPartRange
-{
-    float m_fMax;   // +0x00
-    float m_fMin;   // +0x04
-    int m_n08;      // +0x08
-};
 
 // The part of the character the customize controller edits.
-class Unk_BSPartObj
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(int nIndex, float fSize);
-    virtual void vfunc_9(int nIndex);
-    virtual void vfunc_10(float fValue);
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18();
-    virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual const Unk_BSPartRange* vfunc_24(int nIndex);
-    virtual void vfunc_25(); virtual void vfunc_26();
-    virtual int vfunc_27();
-};
 
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);                 // Value = f
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                   // Value = n
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
 
 // The customize controller's part handle (8 bytes).
-class Unk_BSPartHandle
-{
-public:
-    ~Unk_BSPartHandle();                        // 0x140cd4cf0
-    Unk_BSPartObj* FUN_140cd5210();             // get
-    Unk_BSPartObj* operator->() { return FUN_140cd5240(); }
-    Unk_BSPartObj* FUN_140cd5240();             // operator->
-    void* m_p;
-};
 
 // ---- UIBeautyShopDialog ----
 
@@ -697,7 +665,6 @@ int UIBeautyShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 
 // The AS calls of the page.
 // @0x1418c4550
-// MS2-FUNCTIONAL: one dead load of this before FUN_1418c76d0 in the exe, source form unknown
 int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
@@ -715,6 +682,7 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 m_278 = m_198.GetAt(nIndex);
             else
                 m_278 = CreatePriceRow(nItemId);
+            if (m_290 == 0) {} // empty if: the exe keeps only the this load (member and constant are a guess)
             FUN_1418c76d0(nItemId);
             FUN_1418c7ab0();
         }
@@ -1009,7 +977,7 @@ int UIBeautyShopDialog::vfunc_2(void* p, float fValue, int nIndex)
         if (m_1b8->FUN_140cd17e0() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
         {
             FUN_1418c7400(0);
-            const Unk_BSPartRange* pRange = static_cast<Unk_BSPartObj*>(p)->vfunc_24(nIndex);
+            const Unk_CustomizeRange* pRange = static_cast<CItemCustomizeController*>(p)->vfunc_24(nIndex);
             if (pRange->m_n08)
             {
                 float fMax = pRange->m_fMax;
@@ -1017,10 +985,10 @@ int UIBeautyShopDialog::vfunc_2(void* p, float fValue, int nIndex)
                 fValue = fValue + pRange->m_fMin;
             }
             int nSel;
-            if (static_cast<Unk_BSPartObj*>(p)->vfunc_27() - nIndex - 1 < 0)
+            if (static_cast<CItemCustomizeController*>(p)->vfunc_27() - nIndex - 1 < 0)
                 nSel = 0;
             else
-                nSel = static_cast<Unk_BSPartObj*>(p)->vfunc_27() - nIndex - 1;
+                nSel = static_cast<CItemCustomizeController*>(p)->vfunc_27() - nIndex - 1;
             nIndex = nSel;
             m_30->Invoke("changeCustomSize", fValue, nIndex);
         }
@@ -1384,9 +1352,9 @@ void UIBeautyShopDialog::FUN_1418c7830(int nPos)
 {
     if (m_1b8 == 0)
         return;
-    Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
-    if (part.FUN_140cd5210())
-        part.FUN_140cd5240()->vfunc_9(nPos);
+    NiPointer<CItemCustomizeController> part = m_1b8->FUN_140cd1a30();
+    if ((CItemCustomizeController*)part)
+        part->vfunc_9(nPos);
 }
 
 // @0x1418c78d0
@@ -1394,17 +1362,17 @@ void UIBeautyShopDialog::SetPartSize(int nIndex, float fSize)
 {
     if (m_1b8 == 0)
         return;
-    Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
-    if (part.FUN_140cd5210())
+    NiPointer<CItemCustomizeController> part = m_1b8->FUN_140cd1a30();
+    if ((CItemCustomizeController*)part)
     {
-        const Unk_BSPartRange* pRange = part.FUN_140cd5240()->vfunc_24(nIndex);
+        const Unk_CustomizeRange* pRange = part->vfunc_24(nIndex);
         if (pRange->m_n08)
         {
             float fMax = pRange->m_fMax;
             fSize = fMax - fSize;
             fSize = fSize + pRange->m_fMin;
         }
-        part.FUN_140cd5240()->vfunc_8(nIndex, fSize);
+        part->vfunc_8(nIndex, fSize);
     }
 }
 
@@ -1413,9 +1381,9 @@ void UIBeautyShopDialog::FUN_1418c79f0(float fDegree)
 {
     if (m_1b8 == 0)
         return;
-    Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
-    if (part.FUN_140cd5210())
-        part.FUN_140cd5240()->vfunc_10(fDegree);
+    NiPointer<CItemCustomizeController> part = m_1b8->FUN_140cd1a30();
+    if ((CItemCustomizeController*)part)
+        part->vfunc_10(fDegree);
 }
 
 // @0x1418c7aa0

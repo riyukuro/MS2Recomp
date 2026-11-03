@@ -1,0 +1,3 @@
+87c
+#elif defined(EE_COMPILE_VC90) && 0  // MS2: exe build had no VC90 define (suffix "R")
+.

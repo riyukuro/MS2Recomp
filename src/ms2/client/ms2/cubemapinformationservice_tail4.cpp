@@ -109,15 +109,7 @@ void Unk_CMISDriveTail4()
     { std::string s; s.append("x"); }
 }
 
-// The identity accessor unit_1411267c0's copy ctor calls by address (_Get_first 0x141143890 returns its argument).
-class Unk_ContA;
-
-// MS2-FUNCTIONAL: the exe forwards through the folded _Get_first instance
-// @0x141145120
-void* FUN_141145120(const Unk_ContA& o)
-{
-    return (void*)&o;
-}
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBV?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@XZ 0x141145120 ; unit_1411267c0's copy assignment calls the const _Getal of its entity vector
 // MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVCube@@V?$CustomAllocator@PEAVCube@@@efd@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@PEAVCube@@@std@@@2@XZ 0x141142f90 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVCube@@V?$CustomAllocator@PEAVCube@@@efd@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVCube@@@std@@@2@XZ 0x141142fb0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@VNiTransform@@V?$CustomAllocator@VNiTransform@@@efd@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@VNiTransform@@@std@@@2@XZ 0x141143010 ; sfk: byte-identical COMDAT fold (was the look-alike guess)

@@ -4,9 +4,6 @@
 // MS2-RANGE: 0x1406c3230-0x1406c3700 .text$mn
 // MS2-PIN: ?IsEmpty@?$CAtlArray@EV?$CElementTraits@E@ATL@@@ATL@@QEBA_NXZ 0x1406c3680
 // MS2-PIN: ?IsEmpty@?$CAtlArray@DV?$CElementTraits@D@ATL@@@ATL@@QEBA_NXZ 0x1406c36c0
-// MS2-FUNCTIONAL 0x1406c36c0: not ATL's inline IsEmpty (the 66 other CAtlArray::IsEmpty copies read m_nSize): the exe body is
-// GetCount() == 0 (call 0x140204ee0), likely an unrecovered wrapper class's IsEmpty; bound to CAtlArray<char>::IsEmpty here
-// MS2-FUNCTIONAL 0x1406c3680: the same GetCount() == 0 wrapper body for the unsigned char array
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>
@@ -16,7 +13,12 @@
 #include "ms2/commonfiles/serverpacketdef.h"
 
 // 0x1406c35b0 / 0x1406c35f0 (operator[]) and 0x1406c3680 / 0x1406c36c0 (IsEmpty<unsigned char> / IsEmpty<char>) are the
-// CAtlArray<char> template members instantiated below. MS2-FUNCTIONAL: the IsEmpty copies call GetCount<char>, which the exe folded into 0x140204ee0.
+// CAtlArray<char> template members instantiated below. The IsEmpty copies call GetCount, which the exe folded into 0x140204ee0.
+// The exe's IsEmpty copies for these two arrays test GetCount() rather than m_nSize (the other CAtlArray copies read
+// the member), so they are declared as explicit specializations here.
+template <> inline bool ATL::CAtlArray<char>::IsEmpty() const throw() { return GetCount() == 0; }
+template <> inline bool ATL::CAtlArray<unsigned char>::IsEmpty() const throw() { return GetCount() == 0; }
+
 // @0x1406c3630
 const unsigned char* FUN_1406c3630(const ATL::CAtlArray<char>& a)
 {

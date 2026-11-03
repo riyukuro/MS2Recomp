@@ -113,7 +113,7 @@ public:
     {
         m_98.Copy(o.m_98);
     }
-    virtual ~GameEvent();                       // slot 0 (body 0x1402e4cf0)
+    // Implicit virtual destructor: slot 0, 0x1402e4cf0 (no vftable store).
     virtual CStringW GetTypeName();                 // event name (0x1401f8450: GameEventSale inherits it)
     virtual void vfunc_2() = 0;                 // parse the CString at +0x68
     virtual void vfunc_3(Unk_GEOut* out);       // 0x1402e2190: out->WriteInt(m_id)

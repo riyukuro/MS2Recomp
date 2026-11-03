@@ -1,0 +1,15 @@
+44a
+#endif
+.
+40a
+    // MS2: the exe's ms_ClassInfo initializer tail-calls an out-of-line SetupClassInfo
+    // (0x1422ab9a0), where cl 14.16 inlines it; the unit defines EE_MS2_SCI_NOINLINE
+    // (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(PhysXWhiteboxService, efd::kCLASSID_PhysXWhiteboxService);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(egmWhitebox::WhiteboxService);
+    EE_END_DECLARE_CLASS();
+#else
+.

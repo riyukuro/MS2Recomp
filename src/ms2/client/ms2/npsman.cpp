@@ -17,8 +17,8 @@ extern "C" __declspec(dllimport) void __cdecl OpenSurveyWindowA(const char* pszU
 extern "C" void (__cdecl* __imp_AddSurveyParameterA)(const char* pszName, const char* pszValue);
 
 // ---- unit-local colour types (names invented) ----
-struct Unk_NpColor3 { float r, g, b; Unk_NpColor3(); Unk_NpColor3(const Unk_NpColor3& kRhs) : r(kRhs.r), g(kRhs.g), b(kRhs.b) {} };   // ctor 0x1409f72f0
-struct Unk_NpColor4 { float r, g, b, a; Unk_NpColor4(); Unk_NpColor4(const Unk_NpColor4& kRhs) : r(kRhs.r), g(kRhs.g), b(kRhs.b), a(kRhs.a) {} };   // ctor 0x14097f220
+struct Unk_NpColor3 { float r, g, b; Unk_NpColor3(); };   // ctor 0x1409f72f0
+struct Unk_NpColor4 { float r, g, b, a; Unk_NpColor4(); };   // ctor 0x14097f220
 
 // ---- exe callees ----
 CStringA FUN_1401d9af0(const char* pszFmt, const __int64* pnArg);
@@ -136,7 +136,8 @@ TSingleton<CNPSMan>::~TSingleton()
 }
 
 // @0x140db9270
-// MS2-FUNCTIONAL: the function-local default's thread-safe init (_Init_thread_header guard, EH frame) differs
+// MS2-FUNCTIONAL: the exe evaluates the stack args (&kColor.b, &kColor.g) into temps before the CStringA conversion;
+// ours calls the conversion first (named pointer locals get it to 2 lines, but store through rax twice)
 Unk_NpColor3 FUN_140db9270(CStringA& strText)
 {
     static Unk_NpColor3 kDefault = FUN_140a56db0(1.0f, 0.0f, 1.0f);
@@ -144,13 +145,14 @@ Unk_NpColor3 FUN_140db9270(CStringA& strText)
         return kDefault;
     Unk_NpColor3 kColor;
     int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f", &kColor.r, &kColor.g, &kColor.b);
-    if (nParsed == 3)
-        return kColor;
-    return Unk_NpColor3();
+    if (nParsed != 3)
+        return Unk_NpColor3();
+    return kColor;
 }
 
 // @0x140db93e0
-// MS2-FUNCTIONAL: the function-local default's thread-safe init (_Init_thread_header guard, EH frame) differs
+// MS2-FUNCTIONAL: the exe evaluates the stack args (&kColor.a, &kColor.b, &kColor.g) into temps before the CStringA
+// conversion; ours calls the conversion first (as FUN_140db9270)
 Unk_NpColor4 FUN_140db93e0(CStringA& strText)
 {
     static Unk_NpColor4 kDefault = FUN_14097f1d0(1.0f, 0.0f, 1.0f, 1.0f);
@@ -158,9 +160,9 @@ Unk_NpColor4 FUN_140db93e0(CStringA& strText)
         return kDefault;
     Unk_NpColor4 kColor;
     int nParsed = FUN_140db9ca0((const char*)strText, 0x80, "%f, %f, %f, %f", &kColor.r, &kColor.g, &kColor.b, &kColor.a);
-    if (nParsed == 4)
-        return kColor;
-    return Unk_NpColor4();
+    if (nParsed != 4)
+        return Unk_NpColor4();
+    return kColor;
 }
 
 // @0x140db9570

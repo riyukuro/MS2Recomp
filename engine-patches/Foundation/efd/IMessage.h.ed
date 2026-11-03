@@ -1,0 +1,15 @@
+236a
+#endif
+.
+235a
+    // MS2: the exe keeps DirectedMessage::SetupClassInfo out of line (0x1420b1430) and
+    // NetErrorMessage's ms_ClassInfo initializer tail-calls it after inlining NetMessage's,
+    // where cl 14.16 inlines it; that unit defines EE_MS2_SCI_NOINLINE (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(DirectedMessage, kCLASSID_DirectedMessage);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(IMessage);
+    EE_END_DECLARE_CLASS();
+#else
+.

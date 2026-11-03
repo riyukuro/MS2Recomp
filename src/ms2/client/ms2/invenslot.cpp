@@ -955,7 +955,6 @@ int InvenSlot::vfunc_13()
 }
 MS2_REPLACE_METHOD(0x141405F20, InvenSlot, vfunc_13, 2856, 0x77317826);
 
-// MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x141406a60
 int InvenSlot::vfunc_14()
 {
@@ -1011,8 +1010,8 @@ int InvenSlot::vfunc_14()
         MS2Ptr<CItem> spCur = g_143ab2a90.FUN_140a5d680(GetItemUid());
         if (spCur.get() != 0)
             FUN_141405a60(spCur.get(), 0);
-        break;
     }
+        break;
     case 7:
         if (spItem->FUN_140527840()->FUN_14053e460())
         {
@@ -1080,7 +1079,7 @@ int InvenSlot::vfunc_14()
         break;
     }
     case 12:
-        if (((void*)FUN_140938c30(0x2711)) != 0)
+        if (UIMyInfoDialog* pInfo = FUN_140938c30(0x2711))
             FUN_141271960(spItem, -1, 0);
         break;
     case 13:
@@ -1089,19 +1088,19 @@ int InvenSlot::vfunc_14()
         if (pPlay != 0)
         {
             CStringW strError;
-            if (spItem->FUN_140527840()->FUN_14053cd10() == false)
-                strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_instrument"));
-            else if (spItem->FUN_140525730() == false)
+            if (spItem->FUN_140527840()->FUN_14053cd10())
             {
-                if (spItem->FUN_140527340() < 1)
-                    strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_none_count"));
+                if (spItem->FUN_140525730())
+                    strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_instrument_empty_custom"));
+                else if (spItem->FUN_140527340() < 1)
+                    strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_none_count"));
                 else if (pPlay->FUN_14100c8f0() == false)
-                    strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_now"));
+                    strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_now"));
                 else if (spItem->FUN_140528980() == false)
-                    strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_invaild_item"));
+                    strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_invaild_item"));
             }
             else
-                strError = GetStringCommonByKey(CStringW(L"s_item_err_cannot_play_instrument_empty_custom"));
+                strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_instrument"));
             if (strError.IsEmpty())
                 pPlay->FUN_14100c910(spItem);
             else
@@ -1112,12 +1111,13 @@ int InvenSlot::vfunc_14()
     case 14:
     {
         unsigned nFree = ((class CPetManager*)FUN_140535320())->GetInventory()->FindEmptySlot();
-        if (nFree == -1 && spItem->GetSlotMax() < 2)
+        if (nFree == -1 && spItem->GetSlotMax() <= 1)
         {
             FUN_141275260(0xf2, 1, 1);
             return 0;
         }
-        CPetInventory::MoveItemToPetInventory(spItem, 0);
+        else
+            CPetInventory::MoveItemToPetInventory(spItem, 0);
         break;
     }
     case 15:
@@ -1138,10 +1138,10 @@ int InvenSlot::vfunc_14()
         if (pRevert != 0)
         {
             int nError = pRevert->FUN_140e4d330(spItem.get());
-            if (nError == 0)
-                pRevert->FUN_140e4c7d0(spItem.get());
-            else
+            if (nError != 0)
                 pRevert->FUN_140e4d010(nError);
+            else
+                pRevert->FUN_140e4c7d0(spItem.get());
         }
         break;
     }

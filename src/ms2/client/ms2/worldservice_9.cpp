@@ -23,11 +23,17 @@ size_t FUN_141c2eee0(const efd::utf8string* s)
     return reinterpret_cast<const Unk_Utf8StringView*>(s)->m_string.size();
 }
 
-// MS2-FUNCTIONAL: this wrapper returns its pointer argument unchanged.
+// pointer_traits<pair<const EntityID, SmartPointer<CEntityHider>>*>::pointer_to: forwards to std::addressof (0x141becb80)
+// over the map value type of the WorldService hider map (+0x990).
+namespace egf { class EntityID; }
+namespace efd { template <class T> class SmartPointer; }
+class CEntityHider;
+typedef std::pair<const egf::EntityID, efd::SmartPointer<CEntityHider> > Unk_HiderMapValue;
+
 // @0x141c2e9f0
 void* FUN_141c2e9f0(void* value)
 {
-    return value;
+    return std::addressof(*static_cast<Unk_HiderMapValue*>(value));
 }
 
 // MS2-PIN: ?reserve@?$vector@V?$MS2Ptr@VMS2ActorUpdater@@@@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@QEAAX_K@Z 0x141c2ecb0

@@ -30,7 +30,7 @@
 // MS2-PIN: ??1?$MessageSubclassHandler@VCubeMapInformationService@@VEntityChangeMessage@egf@@V23@@efd@@UEAA@XZ 0x141123700 ; prop
 // MS2-PIN: ??1?$MessageWrapper@VEntityChangeMessage@egf@@$0CADN@@efd@@UEAA@XZ 0x141123720 ; prop
 // MS2-PIN: ??1?$MessageWrapperSubclassHandler@VCubeMapInformationService@@VEntityChangeMessage@egf@@V23@$0CADN@@efd@@UEAA@XZ 0x141123740 ; prop
-// MS2-PIN: ??1?$MS2Ptr@VFittingDollData@@@@QEAA@XZ 0x141123790 ; prop
+// MS2-PIN: ??1?$MS2SvrPtr@VSalesInfo@@@@QEAA@XZ 0x141123790 ; mt11: Release 0x141149360 (leaf 0x14112fc00); callers FUN_1410bbf20 (MS2SvrPtr<SalesInfo> spInfo) and pair dtor 0x141125990
 // MS2-PIN: ??1?$Unk_PayloadPtr@VNoticeCubeInfo@@@@QEAA@XZ 0x141123820 ; prop
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123930 ; unique
 // MS2-PIN: ??1?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@HPEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@$00@std@@QEAA@XZ 0x141123c70 ; unique
@@ -233,7 +233,7 @@
 // MS2-PIN: ??1?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@@efd@@QEAA@XZ 0x141125c70
 // MS2-PIN: ??1?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA@XZ 0x141125c90
 // MS2-PIN: ??1?$MessageWrapper@VEntityChangeMessage@egf@@$0CADN@@efd@@UEAA@XZ 0x141123720
-// MS2-PIN: ??1?$MS2Ptr@VFittingDollData@@@@QEAA@XZ 0x141123790
+// MS2-PIN: ??1?$MS2Ptr@VFittingDollData@@@@QEAA@XZ 0x141123760 ; mt11: Release 0x141149320 (leaf 0x14112fbe0); callers FUN_1410bc3d0/FUN_1410cb4c0 and pair dtor 0x141125970
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@VEntityID@egf@@@efd@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@VEntityID@egf@@@efd@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a30
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHW4Unk_CMISKindA@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123a70
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHH@std@@@efd@@$0A@@std@@@std@@QEAA@XZ 0x141124050
@@ -345,6 +345,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/cubemapinformationservice_tail.h"
+#include "ms2/placeholder/ms2svrptr.h"
 #include <NiTransform.h>
 #include "ms2/client/ms2/interactobject.h"
 #include <efd/IMessage.h>
@@ -455,6 +456,7 @@ void Unk_CMISDriveTail15(void* p)
     Unk_CMISDestroy((MS2Ptr<FittingDollData>*)p);
     Unk_CMISDestroy((MS2Ptr<SaleStateData>*)p);
     Unk_CMISDestroy((MS2Ptr<SalesInfo>*)p);
+    Unk_CMISDestroy((MS2SvrPtr<SalesInfo>*)p);
     Unk_CMISDestroy((MS2Ptr<UICubeUGCHead>*)p);
     Unk_CMISDestroy((MS2Ptr<UIHouseMarkEntity>*)p);
     Unk_CMISDestroy((Unk_PayloadPtr<NoticeCubeInfo>*)p);
@@ -480,7 +482,7 @@ void Unk_CMISDriveTail15(void* p)
 }
 
 // second tplpin --simulate pass (w560) after the prop table / int table types were corrected
-// MS2-PIN: ??1?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@XZ 0x141123760
+// MS2-PIN: ??1?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@XZ 0x1411237f0 ; mt11: Release 0x1411493e0 (leaf 0x14112fc40); callers ExportUGCMap and ??_G 0x14112cf60
 // MS2-PIN: ??1?$_Compressed_pair@U?$less@VEntityID@egf@@@std@@V?$_Compressed_pair@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@VUnk_InteractPropPtr@@@std@@PEAX@std@@@efd@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_InteractPropPtr@@@std@@@std@@@std@@$00@2@$00@std@@QEAA@XZ 0x141123b70
 // MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@QEAA@XZ 0x141125990
 // MS2-PIN: ??1?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@QEAA@XZ 0x1411259b0
@@ -506,21 +508,15 @@ void Unk_CMISDriveTail15(void* p)
 // MS2-PIN: ??1SalesInfo@@UEAA@XZ 0x141125fe0
 
 // Full-exe compatibility names for container and smart-pointer destructors emitted above.
-// MS2-PIN: ??1?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@XZ 0x1411237f0
+// MS2-PIN: ??1?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@XZ 0x1411237f0 ; mt11: was CFunctionCubeObject, whose dtors are 0x1409648f0/0x14122db20
 // MS2-PIN: ??1?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125970
 // MS2-PIN: ??1?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@QEAA@XZ 0x1411259d0
 // MS2-PIN: ??1?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125b30
 // MS2-PIN: ??1?$pair@$$CB_JV?$MS2Ptr@VCube@@@@@std@@QEAA@XZ 0x141125b50
 
-// The two out-of-line destructors cubemapinformationservice_tail14 calls by address (its node-record deleting dtors).
-// MS2-FUNCTIONAL: the exe's ??1MS2Ptr<CFunctionCubeObject> / ??1pair<const int,MS2Ptr<Cube>> COMDATs; here a FUN_ name
+// The out-of-line destructor cubemapinformationservice_tail14 calls by address (its node-record deleting dtors).
+// MS2-FUNCTIONAL: the exe's ??1pair<const int,MS2Ptr<Cube>> COMDAT; here a FUN_ name
 // so the call resolves without depending on which instantiation the compiler keeps
-// @0x1411237f0
-void FUN_1411237f0(void* p) noexcept
-{
-    Unk_CMISDestroy((MS2Ptr<CFunctionCubeObject>*)p);
-}
-
 // @0x141125970
 void FUN_141125970(void* p)
 {

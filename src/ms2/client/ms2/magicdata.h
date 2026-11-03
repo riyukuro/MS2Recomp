@@ -143,7 +143,7 @@ public:
     int FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
         Vector3 ptStart, unsigned n530, unsigned n534, unsigned n53c);   // 0x14145d5d0
     void FUN_14145d9d0();                                           // 0x14145d9d0 flight time and the random landing point
-    void FUN_14145ddd0(const Vector3& ptStart);             // 0x14145ddd0 restart from a new start point
+    void FUN_14145ddd0(Vector3 ptStart);                    // 0x14145ddd0 restart from a new start point
     void FUN_14145de80();                                           // 0x14145de80 per-frame state machine
     void FUN_14145e960(unsigned nNow);                              // 0x14145e960 spawn the main effect
     void FUN_141460640(unsigned nNow);                              // 0x141460640 release every spawned effect (nNow unused)

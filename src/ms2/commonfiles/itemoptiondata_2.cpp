@@ -169,7 +169,7 @@
 // MS2-PIN: ?size@?$vector@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@I@std@@V?$allocator@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@I@std@@@2@@std@@QEBA_KXZ 0x1405f4050 ; prop
 // MS2-PINS-END tplpin
 // Functional glue: the pair<int,int>(int&,int&) ctor forwards through exe COMDATs (e6670/180c20) shaped differently from
-// ours, and pow<int,int> differs by the 14.16 <cmath> form; both are pinned to their exe copies.
+// ours; pow<int,int> (0x1405e6d60) is pinned to its exe copy.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemoptiondata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <ppl.h>
@@ -197,7 +197,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-
+#pragma function(pow)   // not the /Oi intrinsic: pow<int,int> converts _Right first and swaps through a spill slot
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an item id
@@ -336,7 +336,6 @@ ItemOptionValueRef::ItemOptionValueRef(unsigned nSpecial) : ItemOptionValue(nSpe
 }
 
 // @0x1405ce670
-// MS2-FUNCTIONAL: in the 0x1c sums the exe spills FUN_1405d0dd0's result to an extra int temp before the add (frame 0x10 larger); not reproduced
 int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
 {
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
@@ -404,11 +403,17 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
         if (m_nLuaIndex == 1 || m_nLuaIndex == 2)
             return FUN_1405d0c10(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080(), false);
         else if (m_nLuaIndex == 4)
-            return FUN_1405d0c10(1, nStat, nLevel, nRank, spItem->FUN_14053f080(), false)
-                + FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080());
+        {
+            int nBase = FUN_1405d0c10(1, nStat, nLevel, nRank, spItem->FUN_14053f080(), false);
+            int nAdd = FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080());
+            return nBase + nAdd;
+        }
         else if (m_nLuaIndex == 5)
-            return FUN_1405d0c10(2, nStat, nLevel, nRank, spItem->FUN_14053f080(), false)
-                + FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080());
+        {
+            int nBase = FUN_1405d0c10(2, nStat, nLevel, nRank, spItem->FUN_14053f080(), false);
+            int nAdd = FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080());
+            return nBase + nAdd;
+        }
         break;
     }
     MS2_ASSERT_AT(0xd2, 0);

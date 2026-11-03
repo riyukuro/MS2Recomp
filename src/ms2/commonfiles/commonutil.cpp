@@ -2043,7 +2043,7 @@ Unk_BstrBlock::Unk_BstrBlock(void* pArg)
 {
     m_unk08 = NULL;
     m_nRefs = 1;
-    m_pData = SysAllocString((BSTR)pArg);   // 0x14274c0f0 is an import thunk
+    m_pData = _com_util::ConvertStringToBSTR((const char*)pArg);   // 0x14274c0f0 (comsuppw.lib)
 }
 
 // @0x140297430

@@ -1,103 +1,110 @@
 81,82c
-            if (!m_akPoses[m_aucIndices[1]].isFinite())
+            if (m_akPoses[m_aucIndices[1]].isFinite())
+            {
+                m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[1]]);
+            }
+            else
             {
 #line 149 // MS2 __LINE__
                 EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors !m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[1]])"));
                 if (DAT_143afc8e8)
                     throw 13;
-            }
-            else
-            {
-                m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[1]]);
+#line 156 // MS2 __LINE__
             }
 .
 70c
             {
-                if (!kPose.isFinite())
+                if (kPose.isFinite())
+                {
+                    m_pkTarget->moveGlobalPose(kPose);
+                }
+                else
                 {
 #line 128 // MS2 __LINE__
                     EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->moveGlobalPose(kPose)"));
                     if (DAT_143afc8e8)
                         throw 13;
-                }
-                else
-                {
-                    m_pkTarget->moveGlobalPose(kPose);
+#line 135 // MS2 __LINE__
                 }
             }
 .
 68c
             {
-                if (!kPose.isFinite())
+                if (kPose.isFinite())
+                {
+                    m_pkTarget->setGlobalPose(kPose);
+                }
+                else
                 {
 #line 116 // MS2 __LINE__
                     EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->setGlobalPose(kPose)"));
                     if (DAT_143afc8e8)
                         throw 13;
-                }
-                else
-                {
-                    m_pkTarget->setGlobalPose(kPose);
+#line 123 // MS2 __LINE__
                 }
             }
 .
 61c
             {
-                if (!m_akPoses[m_aucIndices[0]].isFinite())
+                if (m_akPoses[m_aucIndices[0]].isFinite())
+                {
+                    m_pkTarget->moveGlobalPose(m_akPoses[m_aucIndices[0]]);
+                }
+                else
                 {
 #line 99 // MS2 __LINE__
                     EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->moveGlobalPose(m_akPoses[m_aucIndices[0]])"));
                     if (DAT_143afc8e8)
                         throw 13;
-                }
-                else
-                {
-                    m_pkTarget->moveGlobalPose(m_akPoses[m_aucIndices[0]]);
+#line 106 // MS2 __LINE__
                 }
             }
 .
 59c
             {
-                if (!m_akPoses[m_aucIndices[0]].isFinite())
+                if (m_akPoses[m_aucIndices[0]].isFinite())
+                {
+                    m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[0]]);
+                }
+                else
                 {
 #line 87 // MS2 __LINE__
                     EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[0]])"));
                     if (DAT_143afc8e8)
                         throw 13;
-                }
-                else
-                {
-                    m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[0]]);
+#line 94 // MS2 __LINE__
                 }
             }
 .
 54c
             {
-                if (!m_akPoses[m_aucIndices[1]].isFinite())
+                if (m_akPoses[m_aucIndices[1]].isFinite())
+                {
+                    m_pkTarget->moveGlobalPose(m_akPoses[m_aucIndices[1]]);
+                }
+                else
                 {
 #line 72 // MS2 __LINE__
                     EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->moveGlobalPose(m_akPoses[m_aucIndices[1]])"));
                     if (DAT_143afc8e8)
                         throw 13;
-                }
-                else
-                {
-                    m_pkTarget->moveGlobalPose(m_akPoses[m_aucIndices[1]]);
+#line 79 // MS2 __LINE__
                 }
             }
 .
 52c
             {
-                if (!m_akPoses[m_aucIndices[1]].isFinite())
+                if (m_akPoses[m_aucIndices[1]].isFinite())
+                {
+                    m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[1]]);
+                }
+                else
                 {
 #line 60 // MS2 __LINE__
                     EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXDynamicSrc::UpdateToActors m_pkTarget->readBodyFlag(NX_BF_KINEMATIC) m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[1]])"));
                     if (DAT_143afc8e8)
                         throw 13;
-                }
-                else
-                {
-                    m_pkTarget->setGlobalPose(m_akPoses[m_aucIndices[1]]);
+#line 67 // MS2 __LINE__
                 }
             }
 .

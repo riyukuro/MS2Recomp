@@ -52,3 +52,6 @@ extern char DAT_143b08a3c; // MS2: the game's "assertions throw" switch (exe 0x1
 extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&); // MS2: the game's scene name decorator (exe 0x143b05980)
 
 .
+13c
+#define EE_MS2_UTF8_ASSIGN_CALL  // MS2: see utf8string.inl (replaces a blank line: keeps __LINE__)
+.

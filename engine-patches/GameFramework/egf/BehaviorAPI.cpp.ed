@@ -1,0 +1,3 @@
+34c
+template <> bool efd::DataDrivenEnum<efd::UInt32>::FindEnumValue(const efd::utf8string& i_name, efd::UInt32& o_value);  // MS2: out of line in the exe (0x1420e62a0)
+.

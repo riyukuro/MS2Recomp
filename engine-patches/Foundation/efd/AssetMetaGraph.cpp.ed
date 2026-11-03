@@ -1,5 +1,12 @@
+685@53s "ngth" ""
+685@51s "l" "siz"
+679@53s "ngth" ""
+679@51s "l" "siz"
 597a
 #line 608 // MS2 __LINE__ (linefix)
+.
+332c
+    if (set.empty() || other.empty())
 .
 87@26s ">" " != "
 65a

@@ -19,5 +19,6 @@
 156@29s "ror" "ning"
 156@27s "E" "Wa"
 148@16s "" "(const char*)"
-147@29s "ror" "ning"
-147@27s "E" "Wa"
+147c
+            NiD3DRenderer::Warning("Failed to find texture %s", // MS2: the exe has no trailing \n here
+.

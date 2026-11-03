@@ -153,8 +153,8 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
 }
 
 // @0x1411679d0
-// MS2-FUNCTIONAL: same instructions, but the loop locals sit in other slots (the exe keeps the node set in an unnamed temp)
 // Highlights (fMode != 0) or un-highlights the meshes of the part; pNode narrows the highlight to one mesh.
+// The skip-tag test reads the extra data of the root, not of each walked node (as in the exe).
 void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
 {
     if (this == 0)
@@ -184,7 +184,7 @@ void Unk_PickTarget::FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode)
         Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
         NiAVObject* pCur;
         while ((pCur = kWalker.Next(true)) != 0) {
-            NiStringExtraData* pTag = NiDynamicCast(NiStringExtraData, pCur->GetExtraData(DAT_143ae51b8));
+            NiStringExtraData* pTag = NiDynamicCast(NiStringExtraData, pRoot->GetExtraData(DAT_143ae51b8));
             if (pTag != 0 && pTag->GetValue().ContainsNoCase((const char*)DAT_143ae50e8))
                 continue;
             NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pCur);

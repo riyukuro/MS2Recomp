@@ -4880,3 +4880,5 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbfeb0-0x142cc01c0 .text$yd
+// MS2-PIN: ??8?$MS2Ptr@VUnk_MsgEmotionKeywords@@@@QEBA_NPEAVUnk_MsgEmotionKeywords@@@Z 0x141a1bd00
+// MS2-PIN: ??8?$MS2Ptr@VTalkTab@MessengerData@@@@QEBA_NPEAVTalkTab@MessengerData@@@Z 0x141a1bcc0

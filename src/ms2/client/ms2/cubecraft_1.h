@@ -147,8 +147,8 @@ MS2_CHECK_OFFSET(CConstructionGuideObject, m_spBirdHead, 0xdf0);
 class Unk_FishLine
 {
 public:
+    Unk_FishLine();                                         // 0x140cd7d80
     ~Unk_FishLine();                                        // 0x140cd7e40
-    void FUN_140cd7d80();                                   // ctor
     void FUN_140cd7eb0(int nHandle, NiPoint3 kPos);         // start
     void FUN_140cd8080();                                   // stop
     void FUN_140cd80d0();                                   // update

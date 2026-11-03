@@ -1301,87 +1301,92 @@ int Parse_14021b6c0(const CStringW& value) { return Parse_14021af40(FUN_14016a60
 // @0x14021b7c0
 int Parse_14021b7c0(const CStringW& value) { return Parse_14021b730(FUN_14016a600(static_cast<const wchar_t*>(value),false)); }
 // inferred: 0x14021d780 indexes 75 fixed 16-byte records, name pointer +0/code +8.
-static std::pair<const char*, int> lookupTable[75]; // 0x143aac760
+// The exe's older cl initialised this table dynamically (one make_pair call per entry, built in place). cl 19.16
+// constant-initialises it instead and drops the make_pair instances, so the first entry's make_pair is declared as a
+// non-constexpr explicit specialization (same mangled name and body as the STL template); one non-constant entry makes
+// cl initialise the whole table dynamically, as the exe does.
+template<> inline std::pair<const char*, int> std::make_pair<const char (&)[9], int>(const char (&_Val1)[9], int&& _Val2)
+{
+    return std::pair<const char*, int>(std::forward<const char (&)[9]>(_Val1), std::forward<int>(_Val2));
+}
 // @0x1400b4920
-static struct Unk_LookupTableInit {
-    Unk_LookupTableInit() {
-        ::new (&lookupTable[0]) std::pair<const char*, int>(std::make_pair("WorldMap", 1));
-        ::new (&lookupTable[1]) std::pair<const char*, int>(std::make_pair("Mail", 2));
-        ::new (&lookupTable[2]) std::pair<const char*, int>(std::make_pair("Commuty", 3));
-        ::new (&lookupTable[3]) std::pair<const char*, int>(std::make_pair("Guild", 4));
-        ::new (&lookupTable[4]) std::pair<const char*, int>(std::make_pair("LevelUp", 5));
-        ::new (&lookupTable[5]) std::pair<const char*, int>(std::make_pair("Arcade", 6));
-        ::new (&lookupTable[6]) std::pair<const char*, int>(std::make_pair("Option", 7));
-        ::new (&lookupTable[7]) std::pair<const char*, int>(std::make_pair("Character", 8));
-        ::new (&lookupTable[8]) std::pair<const char*, int>(std::make_pair("Inventory", 9));
-        ::new (&lookupTable[9]) std::pair<const char*, int>(std::make_pair("Skill", 10));
-        ::new (&lookupTable[10]) std::pair<const char*, int>(std::make_pair("Quest", 11));
-        ::new (&lookupTable[11]) std::pair<const char*, int>(std::make_pair("Achieve", 12));
-        ::new (&lookupTable[12]) std::pair<const char*, int>(std::make_pair("DungeonSearch", 13));
-        ::new (&lookupTable[13]) std::pair<const char*, int>(std::make_pair("Maview", 14));
-        ::new (&lookupTable[14]) std::pair<const char*, int>(std::make_pair("MeratMarket", 15));
-        ::new (&lookupTable[15]) std::pair<const char*, int>(std::make_pair("CashShop", 16));
-        ::new (&lookupTable[16]) std::pair<const char*, int>(std::make_pair("Beauty", 17));
-        ::new (&lookupTable[17]) std::pair<const char*, int>(std::make_pair("BlackMarket", 18));
-        ::new (&lookupTable[18]) std::pair<const char*, int>(std::make_pair("IndividualBattle", 19));
-        ::new (&lookupTable[19]) std::pair<const char*, int>(std::make_pair("CharacterAbility", 20));
-        ::new (&lookupTable[20]) std::pair<const char*, int>(std::make_pair("Design", 21));
-        ::new (&lookupTable[21]) std::pair<const char*, int>(std::make_pair("Home", 22));
-        ::new (&lookupTable[22]) std::pair<const char*, int>(std::make_pair("VIP", 23));
-        ::new (&lookupTable[23]) std::pair<const char*, int>(std::make_pair("Mastery", 24));
-        ::new (&lookupTable[24]) std::pair<const char*, int>(std::make_pair("PartySearch", 25));
-        ::new (&lookupTable[25]) std::pair<const char*, int>(std::make_pair("LearningQuest", 26));
-        ::new (&lookupTable[26]) std::pair<const char*, int>(std::make_pair("CompactKey", 27));
-        ::new (&lookupTable[27]) std::pair<const char*, int>(std::make_pair("Dictionary", 28));
-        ::new (&lookupTable[28]) std::pair<const char*, int>(std::make_pair("Ranking", 29));
-        ::new (&lookupTable[29]) std::pair<const char*, int>(std::make_pair("BeautyHair", 30));
-        ::new (&lookupTable[30]) std::pair<const char*, int>(std::make_pair("BeautyItem", 31));
-        ::new (&lookupTable[31]) std::pair<const char*, int>(std::make_pair("BeautySkin", 32));
-        ::new (&lookupTable[32]) std::pair<const char*, int>(std::make_pair("Club", 33));
-        ::new (&lookupTable[33]) std::pair<const char*, int>(std::make_pair("EpicRestart", 34));
-        ::new (&lookupTable[34]) std::pair<const char*, int>(std::make_pair("LevelUpPackage", 35));
-        ::new (&lookupTable[35]) std::pair<const char*, int>(std::make_pair("AdventureBar", 36));
-        ::new (&lookupTable[36]) std::pair<const char*, int>(std::make_pair("StampEvent", 37));
-        ::new (&lookupTable[37]) std::pair<const char*, int>(std::make_pair("AttendGift", 38));
-        ::new (&lookupTable[38]) std::pair<const char*, int>(std::make_pair("Pet", 39));
-        ::new (&lookupTable[39]) std::pair<const char*, int>(std::make_pair("LiveBroadCast", 40));
-        ::new (&lookupTable[40]) std::pair<const char*, int>(std::make_pair("TimeRunEvent", 41));
-        ::new (&lookupTable[41]) std::pair<const char*, int>(std::make_pair("Mentoring", 42));
-        ::new (&lookupTable[42]) std::pair<const char*, int>(std::make_pair("DailyMission", 43));
-        ::new (&lookupTable[43]) std::pair<const char*, int>(std::make_pair("FamePointBoard", 44));
-        ::new (&lookupTable[44]) std::pair<const char*, int>(std::make_pair("GalleryEvent", 45));
-        ::new (&lookupTable[45]) std::pair<const char*, int>(std::make_pair("SkyFortress", 46));
-        ::new (&lookupTable[46]) std::pair<const char*, int>(std::make_pair("Rps", 47));
-        ::new (&lookupTable[47]) std::pair<const char*, int>(std::make_pair("CharacterSelect", 48));
-        ::new (&lookupTable[48]) std::pair<const char*, int>(std::make_pair("GameExit", 49));
-        ::new (&lookupTable[49]) std::pair<const char*, int>(std::make_pair("SurvivalMap", 50));
-        ::new (&lookupTable[50]) std::pair<const char*, int>(std::make_pair("AdventureLevel", 51));
-        ::new (&lookupTable[51]) std::pair<const char*, int>(std::make_pair("WorldChampion", 52));
-        ::new (&lookupTable[52]) std::pair<const char*, int>(std::make_pair("CashAttend", 53));
-        ::new (&lookupTable[53]) std::pair<const char*, int>(std::make_pair("ChangeJob", 54));
-        ::new (&lookupTable[54]) std::pair<const char*, int>(std::make_pair("Lapenshard", 55));
-        ::new (&lookupTable[55]) std::pair<const char*, int>(std::make_pair("MushkingRoyal", 56));
-        ::new (&lookupTable[56]) std::pair<const char*, int>(std::make_pair("CoupleDanceEvent", 57));
-        ::new (&lookupTable[57]) std::pair<const char*, int>(std::make_pair("MeratCharge", 58));
-        ::new (&lookupTable[58]) std::pair<const char*, int>(std::make_pair("PssbShop", 59));
-        ::new (&lookupTable[59]) std::pair<const char*, int>(std::make_pair("CollectItemGroupEvent", 60));
-        ::new (&lookupTable[60]) std::pair<const char*, int>(std::make_pair("BingoEvent", 61));
-        ::new (&lookupTable[61]) std::pair<const char*, int>(std::make_pair("Payback", 62));
-        ::new (&lookupTable[62]) std::pair<const char*, int>(std::make_pair("Wedding", 63));
-        ::new (&lookupTable[63]) std::pair<const char*, int>(std::make_pair("LongTermAttendGift", 64));
-        ::new (&lookupTable[64]) std::pair<const char*, int>(std::make_pair("MarketGroup", 1000));
-        ::new (&lookupTable[65]) std::pair<const char*, int>(std::make_pair("CharacterGroup", 1001));
-        ::new (&lookupTable[66]) std::pair<const char*, int>(std::make_pair("ContentsGroup", 1002));
-        ::new (&lookupTable[67]) std::pair<const char*, int>(std::make_pair("GameGroup", 1003));
-        ::new (&lookupTable[68]) std::pair<const char*, int>(std::make_pair("CommunityGroup", 1004));
-        ::new (&lookupTable[69]) std::pair<const char*, int>(std::make_pair("GamePad_SystemGroup", 2000));
-        ::new (&lookupTable[70]) std::pair<const char*, int>(std::make_pair("GamePad_CharacterGroup", 2001));
-        ::new (&lookupTable[71]) std::pair<const char*, int>(std::make_pair("GamePad_ContentsGroup", 2002));
-        ::new (&lookupTable[72]) std::pair<const char*, int>(std::make_pair("GamePad_GameGroup", 2003));
-        ::new (&lookupTable[73]) std::pair<const char*, int>(std::make_pair("GamePad_CommunityGroup", 2004));
-        ::new (&lookupTable[74]) std::pair<const char*, int>(std::make_pair("GamePad_MarketGroup", 2005));
-    }
-} s_lookupTableInit;
+static std::pair<const char*, int> lookupTable[75] = { // 0x143aac760
+    std::make_pair("WorldMap", 1),
+    std::make_pair("Mail", 2),
+    std::make_pair("Commuty", 3),
+    std::make_pair("Guild", 4),
+    std::make_pair("LevelUp", 5),
+    std::make_pair("Arcade", 6),
+    std::make_pair("Option", 7),
+    std::make_pair("Character", 8),
+    std::make_pair("Inventory", 9),
+    std::make_pair("Skill", 10),
+    std::make_pair("Quest", 11),
+    std::make_pair("Achieve", 12),
+    std::make_pair("DungeonSearch", 13),
+    std::make_pair("Maview", 14),
+    std::make_pair("MeratMarket", 15),
+    std::make_pair("CashShop", 16),
+    std::make_pair("Beauty", 17),
+    std::make_pair("BlackMarket", 18),
+    std::make_pair("IndividualBattle", 19),
+    std::make_pair("CharacterAbility", 20),
+    std::make_pair("Design", 21),
+    std::make_pair("Home", 22),
+    std::make_pair("VIP", 23),
+    std::make_pair("Mastery", 24),
+    std::make_pair("PartySearch", 25),
+    std::make_pair("LearningQuest", 26),
+    std::make_pair("CompactKey", 27),
+    std::make_pair("Dictionary", 28),
+    std::make_pair("Ranking", 29),
+    std::make_pair("BeautyHair", 30),
+    std::make_pair("BeautyItem", 31),
+    std::make_pair("BeautySkin", 32),
+    std::make_pair("Club", 33),
+    std::make_pair("EpicRestart", 34),
+    std::make_pair("LevelUpPackage", 35),
+    std::make_pair("AdventureBar", 36),
+    std::make_pair("StampEvent", 37),
+    std::make_pair("AttendGift", 38),
+    std::make_pair("Pet", 39),
+    std::make_pair("LiveBroadCast", 40),
+    std::make_pair("TimeRunEvent", 41),
+    std::make_pair("Mentoring", 42),
+    std::make_pair("DailyMission", 43),
+    std::make_pair("FamePointBoard", 44),
+    std::make_pair("GalleryEvent", 45),
+    std::make_pair("SkyFortress", 46),
+    std::make_pair("Rps", 47),
+    std::make_pair("CharacterSelect", 48),
+    std::make_pair("GameExit", 49),
+    std::make_pair("SurvivalMap", 50),
+    std::make_pair("AdventureLevel", 51),
+    std::make_pair("WorldChampion", 52),
+    std::make_pair("CashAttend", 53),
+    std::make_pair("ChangeJob", 54),
+    std::make_pair("Lapenshard", 55),
+    std::make_pair("MushkingRoyal", 56),
+    std::make_pair("CoupleDanceEvent", 57),
+    std::make_pair("MeratCharge", 58),
+    std::make_pair("PssbShop", 59),
+    std::make_pair("CollectItemGroupEvent", 60),
+    std::make_pair("BingoEvent", 61),
+    std::make_pair("Payback", 62),
+    std::make_pair("Wedding", 63),
+    std::make_pair("LongTermAttendGift", 64),
+    std::make_pair("MarketGroup", 1000),
+    std::make_pair("CharacterGroup", 1001),
+    std::make_pair("ContentsGroup", 1002),
+    std::make_pair("GameGroup", 1003),
+    std::make_pair("CommunityGroup", 1004),
+    std::make_pair("GamePad_SystemGroup", 2000),
+    std::make_pair("GamePad_CharacterGroup", 2001),
+    std::make_pair("GamePad_ContentsGroup", 2002),
+    std::make_pair("GamePad_GameGroup", 2003),
+    std::make_pair("GamePad_CommunityGroup", 2004),
+    std::make_pair("GamePad_MarketGroup", 2005),
+};
 int Lookup(const CStringA& value, const std::pair<const char*, int> (&table)[75]) {
     for (int index = 0; index < _countof(table); ++index) {
         if (value == table[index].first) return table[index].second;

@@ -15,7 +15,7 @@ CString FUN_14038f6d0(const CString& str, const char* psz);                // 0x
 
 // The animation service: resolves an animation name to a sequence id (-2 when the model has none).
 class Unk_FallAnimSvc { public: int FUN_140999490(const egf::EntityID& kId, const efd::utf8string& strName);
-    void FUN_1409fad80(const egf::EntityID& kId, bool bFlag); };
+    void FUN_1409fad80(egf::EntityID kId, bool bFlag); };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();   // 0x141b6f910 (util.cpp); the calls cast to the view above
 

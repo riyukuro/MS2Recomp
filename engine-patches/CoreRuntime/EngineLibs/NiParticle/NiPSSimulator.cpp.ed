@@ -1,0 +1,15 @@
+155c
+            static_cast<Ms2PSTask*>((NiSPTask*)spTask)->AddInputMS2(&m_kDummyStream);
+.
+149c
+            static_cast<Ms2PSTask*>((NiSPTask*)spTask)->AddOutputMS2(&m_kDummyStream);
+.
+141c
+            static_cast<Ms2PSTask*>((NiSPTask*)spTask)->AddOutputMS2(pkStream);
+.
+120c
+            static_cast<Ms2PSTask*>((NiSPTask*)spTask)->AddInputMS2(pkStream);
+.
+41c
+struct Ms2PSTask : public NiSPTask { __forceinline void AddInputMS2(NiSPStream* p) { unsigned int (SPStreamPrimitivePtrSet::*pfnAdd)(NiSPStream* const&) = &SPStreamPrimitivePtrSet::Add; NiSPStream* pkArg = p; LockStreams(); (m_kInputStreams.*pfnAdd)(pkArg); p->AddInput(this); SetIsCached(false); NiSPDataStream* pkSource = p->GetDataSource(); if (pkSource) pkSource->EnableReadFlag(); UnlockStreams(); } __forceinline void AddOutputMS2(NiSPStream* p) { unsigned int (SPStreamPrimitivePtrSet::*pfnAdd)(NiSPStream* const&) = &SPStreamPrimitivePtrSet::Add; NiSPStream* pkArg = p; LockStreams(); (m_kOutputStreams.*pfnAdd)(pkArg); p->AddOutput(this); SetIsCached(false); NiSPDataStream* pkSource = p->GetDataSource(); if (pkSource) pkSource->EnableWriteFlag(); UnlockStreams(); } };
+.

@@ -1,0 +1,3 @@
+13c
+#define EE_MS2_BINSAVE_COUNT_LOCAL  // MS2: see efd/BinaryLoadSave.h (replaces a blank line: keeps __LINE__)
+.

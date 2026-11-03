@@ -1,3 +1,10 @@
 1115@70s "" "  // MS2: v2525"
 1115@68s "" ", 0x800"
 1115@54s "" "Excluding"
+788@57s "" "::ms_RTTI"
+788@51s "" "&"
+788@39s "" "Node*) EE_MS2_"
+788@37s "" "("
+24c
+static __forceinline bool EE_MS2_IsKindOf(const NiObject* pkObject, const NiRTTI* pkRTTI) { const NiRTTI* pkTmp = pkObject->GetRTTI(); while (pkTmp) { if (pkTmp == pkRTTI) return true; pkTmp = pkTmp->GetBaseRTTI(); } return false; } static __forceinline NiObject* EE_MS2_DynamicCast(const NiRTTI* pkRTTI, const NiObject* pkObject) { if (!pkObject) return NULL; return (EE_MS2_IsKindOf(pkObject, pkRTTI) ? (NiObject*) pkObject : 0); }  // MS2: exe inlines NiDynamicCast(NiNode, m_pkAccumRoot) in Init (replaces a blank line: keeps __LINE__)
+.

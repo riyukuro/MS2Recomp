@@ -1,0 +1,6 @@
+85c
+    if (EE_MS2_RawCmp(pMessage->GetURN().raw(), m_requestID.GetURN().raw()) != 0) // MS2: exe inlines the compare
+.
+32c
+template<class S> static __forceinline int EE_MS2_RawCmp(const S& a, const S& b) { return std::_Traits_compare<typename S::traits_type>(a._Get_data()._Myptr(), a._Get_data()._Mysize, b._Get_data()._Myptr(), b._Get_data()._Mysize); } // MS2: exe inlines the URN compare in HandleAssetLoadMsg (replaces a blank line: keeps __LINE__)
+.

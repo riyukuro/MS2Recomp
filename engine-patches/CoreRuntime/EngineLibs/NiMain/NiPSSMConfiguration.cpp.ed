@@ -1,0 +1,6 @@
+13c
+#define _CRT_MEMCPY_S_INLINE static __forceinline  // MS2: exe inlines memcpy_s in the NiMemcpy of the packed distances (replaces a blank line)
+.
+10c
+#define EE_MS2_MEMCPY_FORCE  // MS2: see StringUtilities_Win32.inl Memcpy (replaces an empty comment line: keeps __LINE__)
+.

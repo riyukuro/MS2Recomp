@@ -4,7 +4,10 @@
 // MS2-UNIT: unit_14083f3d0
 // MS2-RANGE: 0x14083f3d0-0x140841580 .text$mn
 // MS2-RANGE: 0x142c9c430-0x142c9c445 .text$yd
+// MS2-FLAGS: oiintrin
 #define MS2_THIS_FILE ""
+// The <xlocale> specializations _Maklocstr<wchar_t> 0x140840d40 and _Maklocwcs 0x140841440 call strlen and the imported
+// wcslen (/Oi-), while the template _Maklocstr<char> 0x140840c80 takes the end-of-file state (the pragma below).
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/textformat.h"
 #include <malloc.h>
@@ -14,13 +17,12 @@
 #include <iomanip>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#pragma intrinsic(memcpy, memset, strcmp, strlen)                       // strlen inline in FUN_14083f560
 
 void FUN_1401d3700(CStringA& str);                                      // MakeLower
 void FUN_14025fab0(CStringW& str);                                      // MakeLower
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // wide -> narrow
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
-// The exe calls the imported wcslen (`call [__imp_wcslen]`); the headers declare it without dllimport.
-extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);
 
 #ifdef __clang__
 // clang emits an unavailable MFC CopyChars DLL import for CString's operator+; bind the exe's copies.
@@ -211,7 +213,7 @@ Unk_TextFormat& Unk_TextFormat::FUN_14083ff40(const wchar_t* pszArg)
         if (nFind + nTagLen == nEnd)
         {
             m_str = MS2_CONCAT(MS2_CONCAT(m_str.Left(nFind), pszArg), m_str.Mid(nEnd + 1));
-            nStart += (int)__imp_wcslen(pszArg);
+            nStart += (int)wcslen(pszArg);
         }
         else if (m_str[nFind + nTagLen] == L':')
         {
@@ -251,9 +253,6 @@ CStringW Unk_TextFormat::GetStr() const
 }
 MS2_REPLACE_METHOD(0x1408405D0, Unk_TextFormat, GetStr, 62, 0xB9C4D915);
 
-// The <xlocale> helpers call strlen/wcslen as functions in the exe (imported wcslen); this build expands them
-// inline, so they stay functional (pinned).
+// The <xlocale> helpers call strlen/wcslen as functions in the exe (imported wcslen; pinned).
 // MS2-PIN: ??$_Maklocstr@_W@std@@YAPEA_WPEBDPEA_WAEBU_Cvtvec@@@Z 0x140840d40
-// MS2-FUNCTIONAL ??$_Maklocstr@_W@std@@YAPEA_WPEBDPEA_WAEBU_Cvtvec@@@Z: STL header code; strlen inlined as an intrinsic here, a call in the exe
 // MS2-PIN: ?_Maklocwcs@std@@YAPEA_WPEB_W@Z 0x140841440
-// MS2-FUNCTIONAL ?_Maklocwcs@std@@YAPEA_WPEB_W@Z: STL header code; wcslen inlined as an intrinsic here, an IAT call in the exe

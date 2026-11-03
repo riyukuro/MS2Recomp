@@ -183,7 +183,7 @@ public:
     void SendUGCMode12(CString strPath);                    // a wedding profile image was uploaded
     void SendUGCMode0();                                   // the upload failed
     void FUN_141883860(CString strPath);                    // the upload is done: download it for the viewers
-    void FUN_141883df0(MS2Ptr<CItem> spItem, const egf::EntityID& id);  // download the UGC look of an item
+    void FUN_141883df0(MS2Ptr<CItem> spItem, egf::EntityID id);  // download the UGC look of an item
     int FUN_1418841f0(CUgcItemLook* pLook, MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);   // download the icon of a look
     void FUN_141884300(MS2Ptr<CItem> spItem, int nObjectId);           // download the look of an equipped item
     void FUN_1418845a0(CubeItemInfo* pInfo, egf::EntityID id);         // download the look of a placed cube

@@ -1,3 +1,6 @@
 168@16s "" "(const char*)"
 159@16s "" "(const char*)"
 148@16s "" "(const char*)"
+147c
+            NiRenderer::Error("Failed to find texture %s", // MS2: the exe has no trailing \n here
+.

@@ -1423,8 +1423,11 @@ int CHomemadeCubeObject::vfunc_17()
 // ---- Breeding ----
 
 // The entity manager (creates / removes the pet entity) and the animation table row of a pet.
-class Unk_FcEntMgr;
-Unk_EntRef* FUN_1411cec80(Unk_FcEntMgr* pMgr, Unk_EntRef* pOut, Unk_FcAnimName* pClass, egf::EntityID kId, bool bMaster);   // EntityWorldManager::FUN_1411cec80
+class Unk_FcEntMgr   // EntityWorldManager view
+{
+public:
+    Unk_EntRef FUN_1411cec80(const efd::utf8string& kClass, egf::EntityID kId, bool bMaster);   // create an entity
+};
 unsigned char FUN_140de8e30(Unk_FcAnimName* pName, const char* psz);                         // names are equal
 
 // @0x14122e000
@@ -1482,7 +1485,8 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
     MS2Ptr<CMasteryReceipe> kItem = reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->Find(pRow->m_n170);
     if (kItem.get() != 0)
         m_spData->m_n104 = reinterpret_cast<Unk_FcMasteryRow*>(kItem.operator->())->m_nLevel;
-    if (static_cast<CubeMapInformationService*>(FUN_1409670e0())->GetCubeByKey(m_nArg) != 0)
+    Cube* pCube = static_cast<CubeMapInformationService*>(FUN_1409670e0())->GetCubeByKey(m_nArg);
+    if (pCube != 0)
     {
         CString strAsset;
         strAsset.Format("urn:gamebryo-animation:%s", (const char*)reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_strName);
@@ -1492,12 +1496,8 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
             kAsset = kName;
         }
         egf::EntityID kId = egf::EntityIDFactory::GetNextID();
-        {
-            efd::utf8string kClass("GameObject");
-            Unk_EntRef kTmp(0);
-            m_entPet = *FUN_1411cec80(reinterpret_cast<Unk_FcEntMgr*>(TSingleton<EntityWorldManager>::GetInstance()), &kTmp, reinterpret_cast<Unk_FcAnimName*>(&kClass), kId, true);
-        }
-        if (m_entPet.FUN_1408a9090() != 0)
+        Unk_Entity* pPet = (m_entPet = reinterpret_cast<Unk_FcEntMgr*>(TSingleton<EntityWorldManager>::GetInstance())->FUN_1411cec80("GameObject", kId, true)).FUN_1408a9090();
+        if (pPet != 0)
         {
             Vector3 vPos = DAT_143b01a60;
             Vector3 vRot = DAT_143b01a60;
@@ -1505,11 +1505,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
             reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(vRot));
             vPos = vPos.FUN_14097fd50(reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_vOffset);
             FUN_140de8bd0(reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280()), 0x12383cea, &kAsset);
-            CString strIdle = FUN_1409a2360("Idle_A", 0);
-            {
-                efd::utf8string kIdle(strIdle);
-                reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::utf8string>(0x3ff293c8, kIdle);
-            }
+            reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::utf8string>(0x3ff293c8, efd::utf8string((LPCSTR)FUN_1409a2360("Idle_A", 0)));
             reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::Point3>(0xfd95ca52, (const efd::Point3&)(vPos));
             reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::Point3>(0x68c7c29d, (const efd::Point3&)(vRot));
             FUN_1409457c0(m_entPet.FUN_1408a9280(), 0x2d7cad2d, &reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_pFx);

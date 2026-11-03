@@ -6,6 +6,7 @@
 // MS2-RANGE: 0x14015b490-0x14016da90 .text$mn
 // MS2-RANGE: 0x1400b21d0-0x1400b2330 .text$di
 // MS2-RANGE: 0x142c99fc0-0x142c9a080 .text$yd
+// MS2-FLAGS: oiintrin
 // MS2-PIN: ??_7CAchieveData@@6B?$CValidData@VCAchieveData@@@@@ 0x142ce68d0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__Es_lock@@YAXXZ 0x1400b2250 ; prop
@@ -281,9 +282,9 @@
 // MS2-PIN: ??0?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@H@Z 0x140163770
 // MS2-PIN: ??0?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@I@Z 0x140163790
 // MS2-PIN: ?Init@?$CW2AEX@$0IA@@ATL@@AEAAXPEB_WI@Z 0x140167410
-// MS2-FUNCTIONAL ?Init@?$CW2AEX@$0IA@@ATL@@AEAAXPEB_WI@Z: ATL's own atlconv.h template; the toolchain ATL build differs from the exe's (539 vs 462 bytes, 8 vs 9 callees in the WideCharToMultiByte retry path), no unit source to change
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\achievedata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#pragma intrinsic(memcpy, memset, strcmp, strlen)
 #include "achievedata.h"
 #include "filesystem.h"
 #include "logstring.h"

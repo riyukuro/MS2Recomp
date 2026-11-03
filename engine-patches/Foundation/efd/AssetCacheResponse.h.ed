@@ -1,0 +1,15 @@
+36a
+#endif
+.
+35a
+    // MS2: the exe keeps AssetCacheResponse::SetupClassInfo out of line (0x1420b7510) and
+    // KFMCacheResponse's ms_ClassInfo initializer tail-calls it, where cl 14.16 inlines it;
+    // that unit defines EE_MS2_SCI_NOINLINE (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(AssetCacheResponse, efd::kMSGID_AssetCacheResponse);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(efd::IMessage);
+    EE_END_DECLARE_CLASS();
+#else
+.

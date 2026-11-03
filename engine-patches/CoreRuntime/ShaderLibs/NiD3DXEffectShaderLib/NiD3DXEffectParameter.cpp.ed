@@ -1,0 +1,6 @@
+2537c
+                    NiAmbientLight* pkLight = (NiAmbientLight*) EE_MS2_DynamicCast(&NiAmbientLight::ms_RTTI,
+.
+45c
+static __forceinline bool EE_MS2_IsKindOf(const NiObject* pkObject, const NiRTTI* pkRTTI) { const NiRTTI* pkTmp = pkObject->GetRTTI(); while (pkTmp) { if (pkTmp == pkRTTI) return true; pkTmp = pkTmp->GetBaseRTTI(); } return false; } static __forceinline NiObject* EE_MS2_DynamicCast(const NiRTTI* pkRTTI, const NiObject* pkObject) { if (!pkObject) return NULL; return (EE_MS2_IsKindOf(pkObject, pkRTTI) ? (NiObject*) pkObject : 0); }
+.

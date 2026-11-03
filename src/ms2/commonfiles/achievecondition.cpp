@@ -74,7 +74,7 @@ CAchieve::~CAchieve()
     m_mapValue.RemoveAll();
 }
 // @0x140158350
-int CAchieve::Init(int nId, int nGrade, int nState, int nUnused)
+int CAchieve::Init(int nId, int nGrade, int nState)
 {
     m_nId = nId;
     m_pData = GetAchieveData(nId);

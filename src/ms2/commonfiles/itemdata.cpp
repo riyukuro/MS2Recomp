@@ -2239,11 +2239,7 @@ ItemLimit::~ItemLimit()
 {
 }
 
-// MS2-FUNCTIONAL: the exe dtor has no vftable store (an implicit dtor), but the ctor lives in itemdatastruct.cpp, so an implicit dtor would not be emitted here; the member dtors run in the same order
-// @0x140540e20
-ItemModelData::~ItemModelData()
-{
-}
+// ItemModelData::~ItemModelData (COMDAT 0x140540e20) is implicit.
 
 // @0x140540eb0
 ItemProperty::~ItemProperty()

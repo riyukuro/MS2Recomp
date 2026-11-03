@@ -65,10 +65,6 @@ float FUN_141260110(Unk_SoundState*, int);                   // the volume of a 
 // The game clock (?\unit_14086d260.cpp).
 class CMainSystem;
 
-// The category allocator (efd::MemObject::operator new, expanded at the call site).
-void* FUN_140876480(void* pkOut, int nCategory);            // returns the mem category
-void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
-
 // ---- CSoundMusicEffectParam ----
 
 // @0x14178fd20
@@ -115,16 +111,7 @@ bool CSoundMusicEffectParam::vfunc_2()
 // @0x14178ff60
 CEffectPtr CSoundMusicEffectParam::vfunc_6()
 {
-    int catTmp;
-    int* cat = (int*)FUN_140876480(&catTmp, 0);
-    void* mem = FUN_14208a860(0x40, *cat);
-    CSoundMusicEffect* pObj;
-    // MS2-FUNCTIONAL: the exe's site is a bare `mov rcx,mem; call ??0CSoundMusicEffect`, i.e. its build inlined
-    // efd::MemObject's in-place operator new (a `return p;`) away; cl 19.16 under the harness' /Ob0 keeps the
-    // ??2@YAPEAX_KPEAX@Z call (151 vs 150 bytes). The exe also frames the CEffectPtr return with an unwind handler
-    // (UNWIND_INFO.flags 2, EH state -2 at [rsp+0x48]) where this build emits none. Behaviour identical.
-    if (mem == 0) pObj = 0; else pObj = ::new (mem) CSoundMusicEffect;
-    return CEffectPtr(pObj);
+    return CEffectPtr(new (efd::MemHint(efd::MemHint::NONE)) CSoundMusicEffect);
 }
 
 // ---- CSoundMusicEffect ----

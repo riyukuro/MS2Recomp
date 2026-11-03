@@ -5068,9 +5068,10 @@ void WorldService::FUN_141bc7d40(const unsigned __int64& key)
 MS2_REPLACE_METHOD(0x141BC7D40, WorldService, FUN_141bc7d40, 376, 0xE15DD160);
 
 // @0x141bc7ec0
-void WorldService::AddCombatBgmTracker(const unsigned __int64& key)
+void WorldService::AddCombatBgmTracker(egf::EntityID key)
 {
-    m_900.insert(std::make_pair(key, 0));
+    // The id is passed by value (CNpc::vfunc_10 copies it into a temp); the map key is its 64-bit value.
+    m_900.insert(std::make_pair(reinterpret_cast<unsigned __int64&>(key), 0));
 }
 MS2_REPLACE_METHOD(0x141BC7EC0, WorldService, AddCombatBgmTracker, 72, 0xAE733939);
 

@@ -1,0 +1,15 @@
+41a
+#endif
+.
+40a
+    // MS2: the exe keeps AssetLoadResponse::SetupClassInfo out of line (0x142036080) and the
+    // ms_ClassInfo initializers of the response messages tail-call it, where cl 14.16 inlines
+    // it; those units define EE_MS2_SCI_NOINLINE (engine/units-gb.json).
+#if defined(EE_MS2_SCI_NOINLINE)
+#define SetupClassInfo __declspec(noinline) SetupClassInfo
+    EE_BEGIN_DECLARE_CLASS(AssetLoadResponse, kMSGID_AssetLoadResponse);
+#undef SetupClassInfo
+        EE_INCLUDE_CLASS(IMessage);
+    EE_END_DECLARE_CLASS();
+#else
+.
