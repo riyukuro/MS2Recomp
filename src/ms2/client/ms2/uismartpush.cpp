@@ -14,6 +14,7 @@
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/client/ms2/smartpushtable.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -70,7 +71,6 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 int FUN_1418dd0d0();
 class Unk_SpMgr;
 class Unk_SingletonObj* FUN_140cea070();
-void* FUN_140812670(void* pHandle);
 
 // @0x140fa3b10
 UISmartPush::UISmartPush()
@@ -150,7 +150,7 @@ int UISmartPush::FUN_140fa3e20(CSmartPush* pPush)
     ASObj obj(2);
     ((class AScript&)(obj)).FUN_1407cb9c0("id", pPush->m_nId);
     ((class AScript&)(obj)).FUN_1407cbb20("text", pPush->vfunc_7());
-    ((class AScript&)(obj)).FUN_1407cbb20("icon", *(CStringW*)((char*)FUN_140812670(&pPush->m_pData) + 0x60));
+    ((class AScript&)(obj)).FUN_1407cbb20("icon", reinterpret_cast<MS2SvrPtr<CSmartPushData>&>(pPush->m_pData)->m_strImgPath);
     obj.FUN_1407cbbe0("isToggle", pPush->vfunc_11());
     obj.FUN_1407cbbe0("active", pPush->m_nState == 2);
     obj.FUN_1407cbbe0("isSmallActiveIcon", pPush->vfunc_12());

@@ -62,7 +62,6 @@ public:
     void FUN_141a713a0();                               // spawn the preview npc
     void FUN_141a717c0();                               // remove the preview npc
     int FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut);   // collect a quest talk and the talks it jumps to
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // bind a list child of the movie
     MS2Ptr<Unk_NpTab> FUN_140c02870(const CString& strName);    // bind a tab strip child of the movie
 
 private:

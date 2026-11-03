@@ -61,7 +61,6 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);   //
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
 void FUN_1401d9a30(const CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
-CStringTable* GetStringTable();                                          // the string table singleton
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -185,7 +184,7 @@ void FUN_1416e4590(CString strPath)
     TiXmlDocument doc;
     if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -348,7 +347,7 @@ void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out)
 // @0x1416e5900
 CStringW FUN_1416e5900(int nQuestId, bool bLevel)
 {
-    CStringW strType = GetStringTable()->FUN_141811980(0x50, nQuestId);
+    CStringW strType = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x50, nQuestId);
     if (strType.GetLength() == 0)
     {
         switch (FUN_14074bc90(nQuestId))
@@ -609,7 +608,7 @@ static CStringW FUN_1416e71a0(CQuestUIData* pData, CConditionCommonData* pCond)
     int nId = (int)pCond->m_code.GetFirstValue();
     if (nId == 0)
         return L"";
-    return GetStringTable()->FUN_141811980(0xb, nId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, nId);
 }
 
 // type 37: the map to reach (with the josa of the name)
@@ -621,8 +620,8 @@ static CStringW FUN_1416e7270(CQuestUIData* pData, CConditionCommonData* pCond)
     int nMapId = (int)pCond->m_code.GetFirstValue();
     CStringW strText;
     CStringW strFormat = GetStringCommon(0x5e5);
-    CStringW strJosa = FUN_1413fac10(strFormat, GetStringTable()->FUN_141811980(3, nMapId));
-    strText = StringFormat<CStringW>(strJosa, GetStringTable()->FUN_141811980(3, nMapId));
+    CStringW strJosa = FUN_1413fac10(strFormat, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId));
+    strText = StringFormat<CStringW>(strJosa, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId));
     return strText;
 }
 
@@ -633,7 +632,7 @@ static CStringW FUN_1416e7470(CQuestUIData* pData, CConditionCommonData* pCond)
     if (pCond->m_code.GetIdCount() < 1)
         return L"";
     int nItemId = (int)pCond->m_code.GetFirstValue();
-    CStringW strText = FormatStringId<CStringW>(0x5e6, GetStringTable()->FUN_141811980(1, nItemId));
+    CStringW strText = FormatStringId<CStringW>(0x5e6, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     return strText;
 }
 
@@ -649,9 +648,9 @@ static CStringW FUN_1416e7570(CQuestUIData* pData, CConditionCommonData* pCond)
     int nItemId = (int)pCond->m_code.GetFirstValue();
     CStringW strFormat;
     CStringW strBase = GetStringCommon(0x5e9);
-    strFormat = FUN_1413fac10(strBase, GetStringTable()->FUN_141811980(1, nItemId));
-    strFormat = FUN_1413fac10(strFormat, GetStringTable()->FUN_141811980(0xc, nNpcId));
-    CStringW strText = StringFormat(strFormat, GetStringTable()->FUN_141811980(1, nItemId), GetStringTable()->FUN_141811980(0xc, nNpcId));
+    strFormat = FUN_1413fac10(strBase, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+    strFormat = FUN_1413fac10(strFormat, TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xc, nNpcId));
+    CStringW strText = StringFormat(strFormat, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xc, nNpcId));
     return strText;
 }
 
@@ -691,7 +690,7 @@ void FUN_1416e7c00(CString strPath)
     TiXmlDocument doc;
     if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);

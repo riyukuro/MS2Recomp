@@ -253,7 +253,6 @@ public:
     ~Unk_EnScrollRef();
     Unk_EnScroll* operator->() const { return m_p; }
     Unk_EnScroll* get() const { return m_p; }
-    Unk_EnScroll* FUN_1419ca720() const;   // MS2Ptr<T>::get, folded with MS2Ptr<CEnchantOption>::operator->
     void* m_00;                            // an MS2Ptr: 16 bytes, m_p at +8
     Unk_EnScroll* m_p;
 };
@@ -279,6 +278,8 @@ MS2_CHECK_SIZE(CEnchantOption, 0x68);
 #include "ms2/placeholder/citem.h"
 #include "ms2/commonfiles/os.h"
 #include "ms2/client/ms2/uiservice.h"
+
+template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);   // 0x140ba7930, owned by unit_140ba6b20
 
 // The message box record (MS2Ptr<CMsgBoxData> members are bound to the exe copies in symbols.tsv).
 class CMsgBoxData : public CPtred
@@ -376,7 +377,7 @@ void UIItemModifyDialogBase::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     vfunc_84();
-    m_enchantAni = FUN_140ba7930("m_enchantAni");
+    m_enchantAni = GetChild<ASMovieClip>("m_enchantAni");
     if (m_enchantAni == 0) {
         vfunc_67();
     } else {
@@ -1870,7 +1871,7 @@ int UIItemEnchantDialog::GetProtectorRank(int itemId)
         return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0);
     } else if (data->function.name == L"EnchantScroll") {
         Unk_EnScrollRef ref = reinterpret_cast<Unk_PreloadServiceC*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
-        if (ref.FUN_1419ca720() != 0)
+        if (reinterpret_cast<MS2Ptr<CEnchantOption>&>(ref).operator->() != 0)
             return reinterpret_cast<CEnchantScrollData*>(ref.operator->())->GetMaxRank();
     }
     return 0;
@@ -1886,7 +1887,7 @@ int UIItemEnchantDialog::GetProtectorCount(int itemId)
         return reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(1, 0);
     } else if (data->function.name == L"EnchantScroll") {
         Unk_EnScrollRef ref = reinterpret_cast<Unk_PreloadServiceC*>(TSingleton<CEnchantScrollTable>::GetInstance())->FUN_14034e360(reinterpret_cast<Unk_CommandArgs*>(&data->function.parameter)->FUN_1408d1f60(0, 0));
-        if (ref.FUN_1419ca720() != 0)
+        if (reinterpret_cast<MS2Ptr<CEnchantOption>&>(ref).operator->() != 0)
             return ref.operator->()->m_1c;
     }
     return 0;

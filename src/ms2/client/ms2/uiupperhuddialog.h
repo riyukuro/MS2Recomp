@@ -11,6 +11,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/uidialogeventlistener.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class NiFixedString;
 class ASMovieClip;
@@ -19,7 +20,7 @@ class ASData;
 class NotifyObject;
 class Unk_HudButton;
 class Unk_HudInput;
-class Unk_HudText;
+class ASTextField;
 class CMsTime;
 class UIPcBangDialog;
 class Unk_UISwfEntity_25;
@@ -43,18 +44,6 @@ struct Unk_HudStreamPoint
     Unk_HudXyz FUN_140ae9180(float f) const;                        // operator/(float)
     float x, y, z;
 };
-
-// An 8-byte millisecond poll timer (ctor 0x140517b00, "interval elapsed" test 0x140268870 re-arms).
-class Unk_HudTimer
-{
-public:
-    Unk_HudTimer();                             // 0x140517b00
-    int FUN_140268870(int nInterval);           // true once the interval elapsed
-private:
-    unsigned m_nInterval;
-    unsigned m_nLastTick;
-};
-MS2_CHECK_SIZE(Unk_HudTimer, 8);
 
 class UIUpperHudDialog : public UIHeadUpDisplay, public UIStatusEventListener
 {
@@ -133,8 +122,8 @@ private:
     MS2Ptr<Unk_HudInput> m_searchInput;         // +0x148 "m_searchInput"
     MS2Ptr<ASMovieClip> m_searchDungeon;        // +0x158 "m_searchDungeon"
     MS2Ptr<ASMovieClip> m_eventText;            // +0x168 "m_eventText" (notice ticker clip)
-    MS2Ptr<Unk_HudText> m_noticeText;           // +0x178 its "textField"
-    Unk_HudTimer m_timer;                       // +0x188 clock poll
+    MS2Ptr<ASTextField> m_noticeText;           // +0x178 its "textField"
+    Unk_IntervalTimer m_timer;                  // +0x188 clock poll
     int m_nHotTime;                             // +0x190 last hot time shown
     CStringW m_strNotice;                       // +0x198 ticker text
     bool m_bNoticeOnce;                         // +0x1a0 ticker text was set from outside

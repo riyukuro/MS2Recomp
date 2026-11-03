@@ -11,7 +11,6 @@
 
 class NiCloningProcess;
 
-const NiTransform& FUN_1409478e0(NiAVObject* pObject);      // 0x1409478e0: GetWorldTransform
 void FUN_14097fad0(float* pDst, const float* pSrc);         // 0x14097fad0: NiPoint3 assignment
 
 // 0x138 bytes. vftable 0x142f60d20 (overrides slots 0 ddtor, 2 GetRTTI, 3 CreateClone, 32 UpdateWorldData). The exe's

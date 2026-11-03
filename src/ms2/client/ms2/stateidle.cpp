@@ -37,7 +37,6 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/bonerotateinterpolator.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 #include "ms2/client/ms2/uihudentity.h"   // C3: UIHudEntity::Entity::FUN_140f48d40
@@ -804,7 +803,7 @@ void StateIdlePet::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     if (m_nTired == 0)
     {
-        reinterpret_cast<Unk_IntervalTimer&>(m_timerVoiceA).Init();
+        m_timerVoiceA.Init();
         m_nTired = 1;
     }
 }
@@ -911,9 +910,9 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
     PCBase* pPet = ((class CPet*)(class PCBase*)(pNpc))->FUN_140b10360();
     if (pPet != 0)
     {
-        if (reinterpret_cast<Unk_IntervalTimer&>(m_timerVoiceA).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalA)->Get()) != 0)
+        if (m_timerVoiceA.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalA)->Get()) != 0)
             FUN_1417d0540(0x5a);
-        if (reinterpret_cast<Unk_IntervalTimer&>(m_timerVoiceB).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB)->Get()) != 0)
+        if (m_timerVoiceB.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)FUN_1401d3200())->m_intervalB)->Get()) != 0)
         {
             int nPetId = FUN_140b11e90((struct Unk_PetFoodBook*)&reinterpret_cast<Unk_SiPetData*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo())->m_book, pPet);
             if (nPetId != 0)

@@ -92,7 +92,6 @@
 #include "ms2/placeholder/cusermaidmanager.h"
 #include <atlcoll.h>
 #include "ms2/placeholder/wcformat.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/asbutton.h"  // C3: AScript::FUN_140bbe640<ASButton>
@@ -147,10 +146,6 @@ public:
     virtual void vfunc_24(bool bFocus);                                          // 24 set the focus
 };
 
-class Unk_HudText : public ASTextField
-{
-public:
-};
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
@@ -194,7 +189,7 @@ class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class Unk_HudRenderOpt;
 class Unk_HudSound;
 class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); };   // C3: unit-local view (def in applyeffect)
-class Unk_HudConfig { public: unsigned char* FUN_140a58500(); Unk_HudSound* FUN_140d13c70(); };
+struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: free function (was Unk_HudConfig::FUN_140a58500)
 void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was FUN_14125f670
                            // controller on
 __int64 GetServerTime();                                                        // the server time
@@ -316,7 +311,7 @@ void UIUpperHudDialog::OnLoadComplete()
             m_gamePadOn->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::OnGamePadOnClick), 0);
         if (FUN_140bc6d10("m_gamePadOff", m_gamePadOff))
             m_gamePadOff->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::OnGamePadOffClick), 0);
-        SetGamePadMode(*reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500());
+        SetGamePadMode(*reinterpret_cast<unsigned char*>(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))));
     }
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc9) == true)
     {
@@ -438,7 +433,7 @@ MS2_REPLACE_METHOD(0x141356680, UIUpperHudDialog, vfunc_13, 346, 0x1DB0987E);
 // @0x1413567f0
 void UIUpperHudDialog::vfunc_15()
 {
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000))
+    if (m_timer.Check(1000))
     {
         FUN_141357b30();
         FUN_141357d90(0);
@@ -539,13 +534,13 @@ void UIUpperHudDialog::FUN_141356e20(const Scaleform::GFx::FunctionHandler::Para
 // @0x141356e50
 void UIUpperHudDialog::OnGamePadOnClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_14125f670((struct Unk_GpState*)(reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()), false, false);
+    FUN_14125f670(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), false, false);
 }
 
 // @0x141356e90
 void UIUpperHudDialog::OnGamePadOffClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_14125f670((struct Unk_GpState*)(reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140a58500()), true, true);
+    FUN_14125f670(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), true, true);
 }
 
 // @0x141356ed0
@@ -1088,7 +1083,7 @@ int UIVideoContents::vfunc_52(const CString& strPath, float fVolume)
     {
         if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
         {
-            Unk_HudSound* pSound = reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
+            Unk_HudSound* pSound = reinterpret_cast<Unk_HudSound*>(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
             if (pSound != 0)
             {
                 float fSound;
@@ -1161,7 +1156,7 @@ void UIVideoContents::FUN_14135afa0(int bMute)
     if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
     {
         float fSound = 1.0f;
-        Unk_HudSound* pSound = reinterpret_cast<Unk_HudConfig*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70();
+        Unk_HudSound* pSound = reinterpret_cast<Unk_HudSound*>(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
         if (pSound != 0)
             fSound = ((struct Unk_SoundState*)(class Unk_HudSound*)(pSound))->FUN_1412602e0();
         float fVolume;

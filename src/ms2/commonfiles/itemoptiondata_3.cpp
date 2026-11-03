@@ -114,7 +114,7 @@ void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* p
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
+const CString& GetStatName(unsigned nStat);             // the xml name of a stat (stat.cpp)
 const CString& FUN_14081d380(int nStat);                // the xml name of a special stat
 unsigned FUN_140767ff0();                               // random number
 bool FUN_14053fc90(int nItemId);                        // the item is in the first remake stone class
@@ -728,7 +728,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                 {
                     int nKey = kStats.GetKeyAt(pos);
                     int nValue = kStats.GetValueAt(pos)->GetValue();
-                    CString strName = FUN_14082efb0(nKey);
+                    CString strName = GetStatName(nKey);
                     auto it = mapCounts.find(strName);
                     if (it == mapCounts.end())
                         mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
@@ -756,7 +756,7 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
                         continue;
                     int nKey = kStats.GetKeyAt(pos);
                     int nValue = spBase->GetValue();
-                    CString strName = FUN_14082efb0(nKey);
+                    CString strName = GetStatName(nKey);
                     auto it = mapCounts.find(strName);
                     if (it == mapCounts.end())
                         mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
@@ -820,15 +820,15 @@ void CItemOptionTable::FUN_1405f78f0()
     {
         Unk_OptionNameListPtr spList;
         spList = Unk_SocketNew(0);
-        spList->AddTail(FUN_14082efb0(0x17));
-        spList->AddTail(FUN_14082efb0(0x18));
-        spList->AddTail(FUN_14082efb0(0));
-        spList->AddTail(FUN_14082efb0(2));
-        spList->AddTail(FUN_14082efb0(3));
-        spList->AddTail(FUN_14082efb0(1));
-        spList->AddTail(FUN_14082efb0(0xf));
-        spList->AddTail(FUN_14082efb0(0xd));
-        spList->AddTail(FUN_14082efb0(0x1f));
+        spList->AddTail(GetStatName(0x17));
+        spList->AddTail(GetStatName(0x18));
+        spList->AddTail(GetStatName(0));
+        spList->AddTail(GetStatName(2));
+        spList->AddTail(GetStatName(3));
+        spList->AddTail(GetStatName(1));
+        spList->AddTail(GetStatName(0xf));
+        spList->AddTail(GetStatName(0xd));
+        spList->AddTail(GetStatName(0x1f));
         spList->AddTail(FUN_14081d380(0x1b));
         spList->AddTail(FUN_14081d380(0x1a));
         spList->AddTail(FUN_14081d380(9));
@@ -836,15 +836,15 @@ void CItemOptionTable::FUN_1405f78f0()
         spList->AddTail(FUN_14081d380(0xc));
         spList->AddTail(FUN_14081d380(0x23));
         m_names.RemoveAll();
-        m_names.SetAt(FUN_14082efb0(0x17), spList);
-        m_names.SetAt(FUN_14082efb0(0x18), spList);
-        m_names.SetAt(FUN_14082efb0(0), spList);
-        m_names.SetAt(FUN_14082efb0(2), spList);
-        m_names.SetAt(FUN_14082efb0(3), spList);
-        m_names.SetAt(FUN_14082efb0(1), spList);
-        m_names.SetAt(FUN_14082efb0(0xf), spList);
-        m_names.SetAt(FUN_14082efb0(0xd), spList);
-        m_names.SetAt(FUN_14082efb0(0x1f), spList);
+        m_names.SetAt(GetStatName(0x17), spList);
+        m_names.SetAt(GetStatName(0x18), spList);
+        m_names.SetAt(GetStatName(0), spList);
+        m_names.SetAt(GetStatName(2), spList);
+        m_names.SetAt(GetStatName(3), spList);
+        m_names.SetAt(GetStatName(1), spList);
+        m_names.SetAt(GetStatName(0xf), spList);
+        m_names.SetAt(GetStatName(0xd), spList);
+        m_names.SetAt(GetStatName(0x1f), spList);
         m_names.SetAt(FUN_14081d380(0x1b), spList);
         m_names.SetAt(FUN_14081d380(0x1a), spList);
         m_names.SetAt(FUN_14081d380(9), spList);

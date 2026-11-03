@@ -7,6 +7,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
+#include <xmemory>
 
 // Tree node header (_Left, _Parent, _Right, _Color, _Isnil) followed by the value at +0x20.
 struct Unk_TreeNode
@@ -20,7 +21,6 @@ struct Unk_TreeNode
 };
 MS2_CHECK_SIZE(Unk_TreeNode, 0x28);
 
-extern void FUN_14015fc80(void*, size_t);
 extern void* FUN_14029b840(void*);
 extern void** FUN_14029c010(void*);
 extern void FUN_1415da590(void*, void*);
@@ -450,151 +450,151 @@ void FUN_1416093e0(void* a) noexcept
 // @0x141609460
 void FUN_141609460(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x30);
+    std::_Deallocate<16, 0>(p, n * 0x30);
 }
 
 // @0x141609490
 void FUN_141609490(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x30);
+    std::_Deallocate<16, 0>(p, n * 0x30);
 }
 
 // @0x1416094c0
 void FUN_1416094c0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x10);
+    std::_Deallocate<16, 0>(p, n * 0x10);
 }
 
 // @0x1416094f0
 void FUN_1416094f0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x18);
+    std::_Deallocate<16, 0>(p, n * 0x18);
 }
 
 // @0x141609520
 void FUN_141609520(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x58);
+    std::_Deallocate<16, 0>(p, n * 0x58);
 }
 
 // @0x141609550
 void FUN_141609550(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x30);
+    std::_Deallocate<16, 0>(p, n * 0x30);
 }
 
 // @0x141609580
 void FUN_141609580(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x98);
+    std::_Deallocate<16, 0>(p, n * 0x98);
 }
 
 // @0x1416095b0
 void FUN_1416095b0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x220);
+    std::_Deallocate<16, 0>(p, n * 0x220);
 }
 
 // @0x1416095e0
 void FUN_1416095e0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x128);
+    std::_Deallocate<16, 0>(p, n * 0x128);
 }
 
 // @0x141609610
 void FUN_141609610(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x118);
+    std::_Deallocate<16, 0>(p, n * 0x118);
 }
 
 // @0x141609640
 void FUN_141609640(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0xe0);
+    std::_Deallocate<16, 0>(p, n * 0xe0);
 }
 
 // @0x141609670
 void FUN_141609670(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x580);
+    std::_Deallocate<16, 0>(p, n * 0x580);
 }
 
 // @0x1416096a0
 void FUN_1416096a0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x18);
+    std::_Deallocate<16, 0>(p, n * 0x18);
 }
 
 // @0x1416096d0
 void FUN_1416096d0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x14a8);
+    std::_Deallocate<16, 0>(p, n * 0x14a8);
 }
 
 // @0x141609700
 void FUN_141609700(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x18);
+    std::_Deallocate<16, 0>(p, n * 0x18);
 }
 
 // @0x141609730
 void FUN_141609730(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x190);
+    std::_Deallocate<16, 0>(p, n * 0x190);
 }
 
 // @0x141609760
 void FUN_141609760(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0xb8);
+    std::_Deallocate<16, 0>(p, n * 0xb8);
 }
 
 // @0x141609790
 void FUN_141609790(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x58);
+    std::_Deallocate<16, 0>(p, n * 0x58);
 }
 
 // @0x1416097c0
 void FUN_1416097c0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x68);
+    std::_Deallocate<16, 0>(p, n * 0x68);
 }
 
 // @0x1416097f0
 void FUN_1416097f0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0xae8);
+    std::_Deallocate<16, 0>(p, n * 0xae8);
 }
 
 // @0x141609820
 void FUN_141609820(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0xec8);
+    std::_Deallocate<16, 0>(p, n * 0xec8);
 }
 
 // @0x141609850
 void FUN_141609850(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0xc8);
+    std::_Deallocate<16, 0>(p, n * 0xc8);
 }
 
 // @0x141609880
 void FUN_141609880(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0xf8);
+    std::_Deallocate<16, 0>(p, n * 0xf8);
 }
 
 // @0x1416098b0
 void FUN_1416098b0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x490);
+    std::_Deallocate<16, 0>(p, n * 0x490);
 }
 
 // @0x1416098e0
 void FUN_1416098e0(void* alloc, void* p, size_t n)
 {
-    FUN_14015fc80(p, n * 0x20);
+    std::_Deallocate<16, 0>(p, n * 0x20);
 }
 
 // @0x141609910

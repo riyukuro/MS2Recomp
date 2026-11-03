@@ -7,7 +7,6 @@
 #include <vector>
 #include <egf/EntityID.h>
 #include "ms2/commonfiles/os.h"
-#include "ms2/placeholder/mctimer.h"
 #include "ms2/placeholder/intervaltimer.h"
 class PC;
 class PCBase;

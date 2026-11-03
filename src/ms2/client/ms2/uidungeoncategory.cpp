@@ -48,6 +48,7 @@
 #include "ms2/client/ms2/dungeonrecordcli.h"
 #include "ms2/commonfiles/rewardcontentstable.h"
 #include "ms2/placeholder/packethandlermanager.h"
+#include "ms2/placeholder/xmlattr.h"  // C3: XmlSplit was FUN_140177db0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -69,7 +70,6 @@ void FUN_1408731e0(Unk_DcXmlNode* pNode, const char* szName, int& n);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140179060(Unk_DcXmlNode* pNode, const char* szName, Unk_DcGroupType& n);   // enum attribute
 bool FUN_14028f710(struct Unk_XmlElement* pNode);               // the element is enabled (feature/locale filter)
-void FUN_140177db0(const CString& str, ATL::CAtlArray<unsigned short>& out, const char* szDelimiter);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();
@@ -188,7 +188,8 @@ bool FUN_140e14520(int nGroupType);                             // the group typ
 bool FUN_140e146a0();                                           // matching is available
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 void XmlSetAttr(class TiXmlElement*, const char*, const CString&);   // C3: was FUN_140874050
-void FUN_140178770(void* pCfg, const char* szName, std::vector<unsigned int>& out);
+class Unk_140165cf0;
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>)
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -229,7 +230,7 @@ int FUN_140c09130(Unk_DcXmlNode* pNode, const char* szName, Unk_DcLevelRange& ra
     int nResult = XmlGetAttr((class TiXmlElement*)(pNode), szName, str);
     if (nResult == 0) {
         ATL::CAtlArray<unsigned short> values;
-        FUN_140177db0(str, values, "-");
+        XmlSplit(str, values, "-");
         if (values.GetCount() != 2)
             return 2;
         range.FUN_14075bc80(values[0], values[1]);
@@ -454,7 +455,7 @@ int UIDungeonControlCenter::vfunc_54(void* pCfg)
     UIDialog::vfunc_54(pCfg);
     m_bookmarks.clear();
     std::vector<unsigned int> ids;
-    FUN_140178770(pCfg, "dungeon", ids);
+    XmlTokenList(static_cast<Unk_140165cf0*>(pCfg), "dungeon", ids);
     for (size_t i = 0; i < ids.size(); i++) {
         if (TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(ids[i]).get())
             m_bookmarks.insert(ids[i]);

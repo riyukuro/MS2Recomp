@@ -24,7 +24,6 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 bool FUN_14028d470(float a, float b);               // nearly equal
@@ -179,8 +178,8 @@ void CBossTargetCamera::vfunc_8(double fTime)
         Vector3 ptInput = ptMove;
         float fRate = 15.0f;
         float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-        float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                   FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+        float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                   efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
         float fScale = fStep * fMax;
         m_50 = m_50 + ptInput.y * fScale;
         if (m_50 > m_data.m_detachDistance)

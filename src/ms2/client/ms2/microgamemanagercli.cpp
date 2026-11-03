@@ -95,8 +95,8 @@ CStringW FUN_140b887d0(__int64 nActorId, int nWhy);                 // statemicr
 CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy);
 UIRewardNotify* FUN_140938cd0(int nUiType);
 
-bool FUN_140bac700(int nButton, const class Unk_CMsgBoxData& data);           // the rps waiting box result
-bool FUN_140bacda0(int nButton, const class Unk_CMsgBoxData& data);           // the couple dance waiting box result
+bool FUN_140bac700(int nButton, const CMsgBoxData& data);           // the rps waiting box result
+bool FUN_140bacda0(int nButton, const CMsgBoxData& data);           // the couple dance waiting box result
 
 // ---- the singleton ----
 
@@ -248,7 +248,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             }
             spBox->SetExtra(s_strRpsWaiting);
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
-            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bac700)));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140bac700));
             spBox->FUN_141a024a0(0);
             spBox->SetButtonLabelIds(0x476, 0, 0);
             FUN_140d73c60(spBox);
@@ -517,7 +517,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             }
             spBox->SetExtra(s_strCoupleDanceWaiting);
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)FUN_1401d3200())->m_boxSeconds)), 1, GetStringCommon(0x2b8));
-            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(reinterpret_cast<bool (*)(int, const CMsgBoxData&)>(FUN_140bacda0)));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140bacda0));
             spBox->FUN_141a024a0(0);
             spBox->SetButtonLabelIds(0x476, 0, 0);
             FUN_140d73c60(spBox);

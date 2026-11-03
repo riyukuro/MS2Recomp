@@ -68,7 +68,7 @@ public:
     void* m_begin; void* m_end; void* m_cap;
 };
 MS2_CHECK_SIZE(Unk_StrVec, 24);
-void FUN_140275080(CString& str, Unk_StrVec* pOut, const char* pszDelim);   // splits into a std::vector<CString>
+void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // splits into a std::vector<CString>
 
 // The maps whose movie has already played (playOneTime).
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
@@ -173,7 +173,7 @@ int CLoadingImageTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

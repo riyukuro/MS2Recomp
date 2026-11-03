@@ -41,7 +41,6 @@ public:
 
     void FUN_140fc3300(CInPacket& packet);                              // the list packet (0x12a)
     void FUN_140fc3680();                                               // show the current page
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);           // 0x140c02900 bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

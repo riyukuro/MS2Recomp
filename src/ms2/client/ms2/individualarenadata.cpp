@@ -33,7 +33,6 @@ CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-void* FUN_140164930(void*, unsigned __int64);                               // element address
 int FUN_140768010(int nRange, int nBase);                                   // random number in [nBase, nBase + nRange)
 
 // An array of strings that can hand out a random element (the weakest-typed caller of the tail function below).
@@ -166,5 +165,5 @@ CString Unk_IaNames::FUN_14051c870()
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount() == 0)
         return "";
     int nIndex = FUN_140768010((int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount(), 0);
-    return *(CString*)FUN_140164930(&m_names, nIndex);
+    return (*((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names)))[nIndex];
 }

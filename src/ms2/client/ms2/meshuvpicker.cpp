@@ -5,7 +5,7 @@
 // MS2-PIN: ??A?$CAtlArray@PEAVNiRenderObject@@V?$CElementTraits@PEAVNiRenderObject@@@ATL@@@ATL@@QEAAAEAPEAVNiRenderObject@@_K@Z 0x141480830 ; unique
 // MS2-PIN: ??1?$SmartPointer@VNiDynamicEffectState@@@efd@@QEAA@XZ 0x141480240
 // MS2-PIN: ??4?$SmartPointer@VNiMaterial@@@efd@@QEAAAEAV01@PEAVNiMaterial@@@Z 0x1414802a0
-// MS2-PIN: ??_FUnk_PPSmartA@@QEAAXXZ 0x141480480
+// MS2-PIN: ??_F?$SmartPointer@VNiRenderedTexture@@@efd@@QEAAXXZ 0x141480480
 // MS2-PIN: ??B?$SmartPointer@VNiRenderTargetGroup@@@efd@@QEBAPEAVNiRenderTargetGroup@@XZ 0x141480470
 // MS2-PIN: ??_GCMeshUVPicker@@UEAAPEAXI@Z 0x1414804a0
 // MS2-PIN: ?BeginOffScreenFrame@NiRenderer@@QEAA_NXZ 0x141480500
@@ -43,8 +43,8 @@
 NiRenderer* GetNiRenderer();                                    // NiRenderer::GetRenderer
 void* FUN_141d61a80(unsigned uiWidth, unsigned uiHeight, NiRenderer* pRenderer, NiTexture::FormatPrefs* pPrefs,
                     unsigned short usFlags);                    // NiRenderedTexture::Create
-NiRenderedTexture* FUN_14127c9b0(Unk_PPSmartA* pSmart);         // the pointer held by the smart pointer
-void* FUN_140c8f680(Unk_PPSmartA* pSmart);                      // the same pointer as a truth value
+// efd::SmartPointer<NiRenderedTexture>::operator-> 0x14127c9b0: the pointer held by the smart pointer
+// efd::SmartPointer<NiRenderedTexture>::operator NiRenderedTexture* 0x140c8f680: the same pointer as a truth value
 
 extern unsigned DAT_1439f7cb4;                                  // picker width (pixels)
 extern unsigned DAT_1439f7cb8;                                  // picker height (pixels)
@@ -77,7 +77,7 @@ CMeshUVPicker::CMeshUVPicker()
 {
     for (unsigned i = 0; i < 3; i++)
     {
-        m_50[i].Assign(0);
+        m_50[i] = 0;
         m_68[i] = NULL;
         m_80[i] = NULL;
     }
@@ -260,8 +260,8 @@ bool CMeshUVPicker::CreateResources()
     kPrefs.m_ePixelLayout = (NiTexture::FormatPrefs::PixelLayout)12;
     for (int i = 0; i < 3; i++)
     {
-        m_50[i].Assign(FUN_141d61a80(DAT_1439f7cb4, DAT_1439f7cb8, pRenderer, &kPrefs, 0x100));
-        if (FUN_140c8f680(&m_50[i]) == 0)
+        m_50[i] = (NiRenderedTexture*)FUN_141d61a80(DAT_1439f7cb4, DAT_1439f7cb8, pRenderer, &kPrefs, 0x100);
+        if ((NiRenderedTexture*)m_50[i] == 0)
         {
             ReleaseResources();
             return false;
@@ -276,11 +276,11 @@ bool CMeshUVPicker::CreateResources()
     }
     for (int i = 0; i < 3; i++)
     {
-        NiRenderedTexture* pTexture = FUN_14127c9b0(&m_50[i]);
+        NiRenderedTexture* pTexture = m_50[i].operator->();
         m_38->AttachBuffer(pTexture->GetBuffer(), i);
     }
 
-    NiDepthStencilBuffer* pDepth = NiDepthStencilBuffer::CreateCompatible(FUN_14127c9b0(&m_50[0])->GetBuffer(), pRenderer);
+    NiDepthStencilBuffer* pDepth = NiDepthStencilBuffer::CreateCompatible(m_50[0].operator->()->GetBuffer(), pRenderer);
     if (pDepth == NULL)
     {
         ReleaseResources();
@@ -288,7 +288,7 @@ bool CMeshUVPicker::CreateResources()
     }
     m_38->AttachDepthStencilBuffer(pDepth);
 
-    m_40 = NiRenderTargetGroup::Create(FUN_14127c9b0(&m_50[2])->GetBuffer(), pRenderer, true, true);
+    m_40 = NiRenderTargetGroup::Create(m_50[2].operator->()->GetBuffer(), pRenderer, true, true);
     if (!m_40)
     {
         ReleaseResources();
@@ -297,7 +297,7 @@ bool CMeshUVPicker::CreateResources()
 
     for (int i = 0; i < 3; i++)
     {
-        NiDX9TextureData* pData = (NiDX9TextureData*)FUN_14127c9b0(&m_50[i])->GetRendererData();
+        NiDX9TextureData* pData = (NiDX9TextureData*)m_50[i].operator->()->GetRendererData();
         m_68[i] = (IDirect3DTexture9*)pData->GetD3DTexture();
         D3DSURFACE_DESC kDesc;
         m_68[i]->GetLevelDesc(0, &kDesc);
@@ -339,7 +339,7 @@ void CMeshUVPicker::ReleaseResources()
             m_80[i]->Release();
         m_68[i] = NULL;
         m_80[i] = NULL;
-        m_50[i].Assign(0);
+        m_50[i] = 0;
     }
     if (m_48 != NULL)
     {
@@ -366,7 +366,7 @@ bool CMeshUVPicker::OnRendererReset(bool bBeforeReset)
     {
         for (int i = 0; i < 3; i++)
         {
-            NiDX9TextureData* pData = (NiDX9TextureData*)FUN_14127c9b0(&m_50[i])->GetRendererData();
+            NiDX9TextureData* pData = (NiDX9TextureData*)m_50[i].operator->()->GetRendererData();
             m_68[i] = (IDirect3DTexture9*)pData->GetD3DTexture();
         }
     }
@@ -386,7 +386,7 @@ bool CMeshUVPicker::FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel)
     kRect.right = kRect.left + 1;
     kRect.bottom = kRect.top + 1;
 
-    NiDX9TextureData* pData = (NiDX9TextureData*)FUN_14127c9b0(&m_50[nTarget])->GetRendererData();
+    NiDX9TextureData* pData = (NiDX9TextureData*)m_50[nTarget].operator->()->GetRendererData();
     m_68[nTarget] = (IDirect3DTexture9*)pData->GetD3DTexture();
 
     D3DSURFACE_DESC kDesc;

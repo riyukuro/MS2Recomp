@@ -43,6 +43,7 @@ struct Unk_PickTargetView : public Unk_PickTarget {};   // layout-identical view
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/windowservice.h"
 #include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/worldservice.h"
 
@@ -59,9 +60,6 @@ public:
     float FUN_141422340(int nIndex);                            // customize value nIndex of the part
 };
 void FUN_1414225d0(MS2Ptr<Unk_CustomizeMesh> spMesh, int nIndex, float fValue);   // stores value nIndex
-
-struct Unk_ICCItemData : public ItemModelHead { };               // item data struct: no per-mesh highlight
-struct Unk_ICCItem { Unk_ICCItemData* FUN_14053ec70(); };       // item -> item data struct
 
 class CEquipItem : public CPtred
 {
@@ -550,7 +548,7 @@ void CItemCustomizeController::vfunc_39(int bActive)
         Unk_PickTarget* pTarget = aTargets[i].get();
         if (pTarget == 0)
             continue;
-        if (!reinterpret_cast<Unk_ICCItem*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547170())
+        if (!reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->FUN_14053ec70()->FUN_140547170())
             pTarget->FUN_1411679d0(fScale, fMode, m_spPicker->m_spMesh.FUN_141412c90());
         else
             pTarget->FUN_1411679d0(fScale, fMode, 0);

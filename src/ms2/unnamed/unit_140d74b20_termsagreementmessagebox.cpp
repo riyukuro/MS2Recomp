@@ -70,7 +70,6 @@ public:
 class CReservedWordTable;
 CStringW GetStringCommon(int nId);
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);
-CStringW& FUN_140159a00(ATL::CAtlArray<CStringW>& arr, size_t i);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
 
 extern Unk_BitSet11 g_143ac2fb8;
@@ -115,7 +114,7 @@ int FUN_140d74e80(CStringW& tag)
         return 0;
     if (g_1439f5a0c != 8)
         FUN_140d74e50(g_1439f5a0c);
-    return FUN_140159a00(parts, 1).Find(L"true", 0) != -1;
+    return parts[1].Find(L"true", 0) != -1;
 }
 
 // @0x140d74f70
@@ -127,7 +126,7 @@ int FUN_140d74f70(CStringW& tag)
     FUN_14025a680(tag, parts, L",");
     if (((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>, class ATL::CElementTraits<class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>>>&>(parts))->GetCount() < 3)
         return 0;
-    return FUN_140159a00(parts, 2).Find(L"true", 0) != -1;
+    return parts[2].Find(L"true", 0) != -1;
 }
 
 // @0x140d75040

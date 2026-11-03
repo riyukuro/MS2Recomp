@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point2.h>
 #include <efd/Point3.h>
+#include <NiColor.h>
 #include <atlcoll.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -109,10 +110,10 @@ CStringA FUN_140db99f0(const Unk_DbEfdPt3& kVec)
 }
 
 // @0x140db9aa0
-CStringA FUN_140db9aa0(const Unk_DbFloat4& kVec)
+CStringA FUN_140db9aa0(NiColorA kColor)
 {
     CStringA kText;
-    kText.Format("%f, %f, %f, %f", (double)kVec.x, (double)kVec.y, (double)kVec.z, (double)kVec.w);
+    kText.Format("%f, %f, %f, %f", (double)kColor.r, (double)kColor.g, (double)kColor.b, (double)kColor.a);
     return kText;
 }
 

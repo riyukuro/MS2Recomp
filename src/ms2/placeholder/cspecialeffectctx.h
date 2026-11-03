@@ -7,10 +7,11 @@
 #include <afx.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/cxmldata.h"
 
 // The attribute bag the ctx points at (block of Table/ attributes). The int getter is the one in itemdatastruct.cpp
-// (0x14054c530); the float getter is specialeffectfunctionmanager.cpp's FUN_1408276a0. Both look the name up in the
-// string map at +0x18.
+// (0x14054c530); the float getter is CXmlData::FUN_1408276a0 (specialeffectfunctionmanager.cpp). Both look the name up
+// in the string map at +0x18.
 class Unk_SEAttrMap
 {
 public:
@@ -22,7 +23,6 @@ class Unk_SEParam
 {
 public:
     int FUN_14054c530(const CStringW& strName, int* pnDefault);        // 0x14054c530
-    float FUN_1408276a0(const CStringW& strName, float* pfDefault);   // 0x1408276a0
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -60,7 +60,7 @@ public:
     // @0x140827740
     int GetInt(CStringW strName, int* pnDefault) { return m_pParam.FUN_140194790()->FUN_14054c530(strName, pnDefault); }
     // @0x1408277a0
-    float GetFloat(CStringW strName, float* pfDefault) { return m_pParam.FUN_140194790()->FUN_1408276a0(strName, pfDefault); }
+    float GetFloat(CStringW strName, float* pfDefault) { return reinterpret_cast<CXmlData*>(m_pParam.FUN_140194790())->FUN_1408276a0(strName, pfDefault); }
 };
 MS2_CHECK_SIZE(CSpecialEffectCtx, 0x38);
 MS2_CHECK_OFFSET(CSpecialEffectCtx, m_nKind, 0x18);

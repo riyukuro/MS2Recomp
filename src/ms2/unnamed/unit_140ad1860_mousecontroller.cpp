@@ -23,6 +23,7 @@
 #include "ms2/client/ms2/targetlookcentercameramode.h"
 #include "ms2/client/ms2/physxhelper.h"
 #include <NiAVObject.h>
+#include <NiPoint3.h>
 #include <ecr/SceneGraphService.h>
 #include <egf/Entity.h>
 #include <egf/FlatModel.h>
@@ -44,7 +45,6 @@
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/entityworldmanager.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
@@ -249,7 +249,6 @@ private:
     Unk_McPickResult* m_p;
 };
 
-void FUN_140194470(Unk_Vec3* pDst, const Unk_Vec3* pSrc);       // NiPoint3 assignment
 
 // An efd::Point3 local (its default ctor 0x1402bd040 is not Vector3's 0x1405522f0).
 struct Unk_McPoint3 : Vector3
@@ -257,12 +256,6 @@ struct Unk_McPoint3 : Vector3
     Unk_McPoint3();
 };
 
-// A NiPoint3 built from an efd::Point3 (0x14027dcf0).
-struct Unk_McNiPt3
-{
-    Unk_McNiPt3(const Vector3& src);
-    float x, y, z;
-};
 
 // Math helpers.
 bool FUN_14028d470(float a, float b);                           // approx equal
@@ -304,17 +297,10 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The physics helper (singleton) and the camera manager's mode holder.
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-struct Unk_McModeRef
-{
-    long long FUN_1409f2180() const;                            // non-null test
-    CCameraMode* FUN_1409f21a0() const;                         // operator->
-    void* m_pad_00;
-    CCameraMode* m_p;
-};
 struct Unk_McCameraView                                         // the part of the camera manager used here
 {
     char m_pad_00[0x118];
-    Unk_McModeRef m_mode;                                       // +0x118 current camera mode
+    MS2Ptr<CCameraMode> m_mode;                                 // +0x118 current camera mode
 };
 MS2_CHECK_OFFSET(Unk_McCameraView, m_mode, 0x118);
 
@@ -427,7 +413,7 @@ void CMouseController::FUN_140ad1f30(int nOldAction, int nNewAction)
     }
     else if (nOldAction == 0x1d || nOldAction == 8)
     {
-        reinterpret_cast<Unk_IntervalTimer&>(m_tmMove).Init();
+        m_tmMove.Init();
         m_vMove = FUN_140ad3260(m_vDown);
     }
     else if (nNewAction == 0x1d || nNewAction == 8)
@@ -589,7 +575,7 @@ void CMouseController::FUN_140ad2660(int nX, int nY)
     if (reinterpret_cast<PC*>(pPc)->GetCubeMode() == 1)
         return;
     m_nMode = 3;
-    reinterpret_cast<Unk_IntervalTimer&>(m_tmHold).Init();
+    m_tmHold.Init();
 }
 MS2_REPLACE_METHOD(0x140AD2660, CMouseController, FUN_140ad2660, 97, 0xBF848A36);
 
@@ -598,7 +584,7 @@ void CMouseController::FUN_140ad26d0(int nX, int nY)
 {
     if (m_nMode != 3)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tmHold).Check(100) == 0)
+    if (m_tmHold.Check(100) == 0)
         return;
     if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0)
     {
@@ -641,7 +627,7 @@ void CMouseController::FUN_140ad2830()
     default:
         return;
     }
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tmMove).Check(100) == 0)
+    if (m_tmMove.Check(100) == 0)
         return;
     Unk_RayCastInfo info;
     info.m_origin = pPc->vfunc_18().FUN_14097fd50(Vector3(0.0f, 0.0f, 75.0f));
@@ -690,8 +676,8 @@ int CMouseController::FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint)
         return 0;
     Vector3 vPos = pPc->vfunc_18();
     Unk_MouseRay ray;
-    FUN_140194470(&ray.vOrigin, reinterpret_cast<const Unk_Vec3*>(&vOrigin));
-    FUN_140194470(&ray.vEnd, reinterpret_cast<const Unk_Vec3*>(&vDir));
+    *reinterpret_cast<efd::Point3*>(&ray.vOrigin) = *reinterpret_cast<const efd::Point3*>(&vOrigin);
+    *reinterpret_cast<efd::Point3*>(&ray.vEnd) = *reinterpret_cast<const efd::Point3*>(&vDir);
     for (unsigned long long i = 0; i < m_arrInteract.GetCount(); i++)
     {
         MS2Ptr<CMouseInteract> sp = m_arrInteract[(size_t)i];
@@ -713,7 +699,7 @@ void CMouseController::FUN_140ad2d80()
 {
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe2))
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tmPick).Check(100) != 0)
+    if (m_tmPick.Check(100) != 0)
     {
         float fX, fY;
         if (reinterpret_cast<Unk_McApp*>(((class Unk_McApp*)FUN_140aadf80()))->GetCursorClientPos(&fX, &fY) != 0 && FUN_140ad3dd0((int)fX, (int)fY) != 0)
@@ -857,15 +843,15 @@ int CMouseController::FUN_140ad3550(int nX, int nY, Vector3* pOut)
     if (!((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->ScreenToRay((class NiPoint2 const&)(const Unk_Point2&)Unk_Point2((float)nX, (float)nY), *(class NiPoint3*)(&vOrigin), *(class NiPoint3*)(&vDir)))
         return 0;
     Unk_MouseRay ray;
-    FUN_140194470(&ray.vOrigin, reinterpret_cast<const Unk_Vec3*>(&vOrigin));
-    FUN_140194470(&ray.vEnd, reinterpret_cast<const Unk_Vec3*>(&vDir));
+    *reinterpret_cast<efd::Point3*>(&ray.vOrigin) = *reinterpret_cast<const efd::Point3*>(&vOrigin);
+    *reinterpret_cast<efd::Point3*>(&ray.vEnd) = *reinterpret_cast<const efd::Point3*>(&vDir);
     for (unsigned long long i = 0; i < m_arrInteract.GetCount(); i++)
     {
         MS2Ptr<CMouseInteract> sp = m_arrInteract[(size_t)i];
         if (sp->vfunc_2(&ray) != 0)
         {
             m_spCurrent = sp;
-            FUN_140194470(reinterpret_cast<Unk_Vec3*>(pOut), &ray.vPick);
+            *reinterpret_cast<efd::Point3*>(pOut) = *reinterpret_cast<const efd::Point3*>(&ray.vPick);
             return 1;
         }
     }
@@ -882,7 +868,7 @@ Vector3 CMouseController::FUN_140ad3740(int nX, int nY)
     if (reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult() == 0)
         return DAT_143b01a60;
     int bSpecialMap = FUN_140ad4140(reinterpret_cast<Unk_McWorld*>(WorldService::GetInstance())->FUN_141bd3060());
-    Unk_McNiPt3 vUnused(DAT_143b01a60);                 // built and never read in the exe
+    NiPoint3 vUnused(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));                 // built and never read in the exe
     for (unsigned i = 0; i < reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetSize(); i++)
     {
         NiPick::Record* pHit = reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetAt(i);
@@ -1086,8 +1072,8 @@ Unk_RayCastInfo::Unk_RayCastInfo()
 // @0x140ad4b40
 float Unk_CameraManager::FUN_140ad4b40()
 {
-    if (reinterpret_cast<Unk_McCameraView*>(this)->m_mode.FUN_1409f2180() != 0)
-        return reinterpret_cast<Unk_McCameraView*>(this)->m_mode.FUN_1409f21a0()->FUN_140ad4b30();
+    if (reinterpret_cast<Unk_McCameraView*>(this)->m_mode.get() != 0)
+        return reinterpret_cast<Unk_McCameraView*>(this)->m_mode.operator->()->FUN_140ad4b30();
     return 0.0f;
 }
 MS2_REPLACE_METHOD(0x140AD4B40, Unk_CameraManager, FUN_140ad4b40, 70, 0x8A6FD2BB);
@@ -1148,9 +1134,9 @@ RECT Unk_McApp::FUN_140ad4c30()
 // @0x140ad4ff0
 void FUN_140ad4ff0(Unk_CameraManager* pCam, float fValue)
 {
-    if (reinterpret_cast<Unk_McCameraView*>(pCam)->m_mode.FUN_1409f2180() != 0)
+    if (reinterpret_cast<Unk_McCameraView*>(pCam)->m_mode.get() != 0)
     {
-        CCameraMode* pMode = reinterpret_cast<Unk_McCameraView*>(pCam)->m_mode.FUN_1409f21a0();
+        CCameraMode* pMode = reinterpret_cast<Unk_McCameraView*>(pCam)->m_mode.operator->();
         pMode->vfunc_11(fValue);
     }
 }

@@ -10,7 +10,7 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/nipoint3.h"
-#include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/client/ms2/mouseinteract.h"
 #include <egf/EntityID.h>
 
@@ -66,9 +66,9 @@ public:
     Vector3 m_vDir;                                 // +0x24
     float m_fLastDist;                                      // +0x30
     float m_fAccumDist;                                     // +0x34
-    Unk_McTimer m_tmMove;                                   // +0x38
-    Unk_McTimer m_tmHold;                                   // +0x40
-    Unk_McTimer m_tmPick;                                   // +0x48
+    Unk_IntervalTimer m_tmMove;                             // +0x38
+    Unk_IntervalTimer m_tmHold;                             // +0x40
+    Unk_IntervalTimer m_tmPick;                             // +0x48
     MS2Ptr<CMouseInteract> m_spCurrent;                     // +0x50
     ATL::CAtlArray<MS2Ptr<CMouseInteract> > m_arrInteract;  // +0x60
     int m_nIgnoreRelease;                                   // +0x80

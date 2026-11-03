@@ -15,6 +15,6 @@ public:
 
     static const NiRTTI ms_RTTI;                                   // 0x143ae5090
 
-    Unk_PPSmartA m_a0;
+    efd::SmartPointer<NiRenderedTexture> m_a0;
 };
 MS2_CHECK_SIZE(WorldFadeOutRenderStep, 0xa8);

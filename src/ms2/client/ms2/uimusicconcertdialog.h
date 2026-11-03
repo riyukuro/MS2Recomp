@@ -11,7 +11,7 @@
 
 class ASMovieClip;
 class ASTextField;
-class Unk_MusicButton;
+class ASButton;
 
 class UIMusicConcertDialog : public UIDialog
 {
@@ -39,13 +39,12 @@ public:
     bool SendPlayInstrumentMode11(int nResult, const class CMsgBoxData& box);   // confirm register: packet 0x74 / 0xb
     bool SendPlayInstrumentMode12(int nResult, const class CMsgBoxData& box);   // confirm unregister: packet 0x74 / 0xc
 
-    MS2Ptr<Unk_MusicButton> FUN_140bb4b10(const CString& strName);      // 0x140bb4b10 bind a button child
 
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASMovieClip> m_clips[6];                             // +0x178 "m_actionButton1..6"
-    MS2Ptr<Unk_MusicButton> m_buttons[6];                       // +0x1d8 "m_button" of each clip
-    MS2Ptr<Unk_MusicButton> m_foldButton;                       // +0x238 "m_foldButton"
+    MS2Ptr<ASButton> m_buttons[6];                       // +0x1d8 "m_button" of each clip
+    MS2Ptr<ASButton> m_foldButton;                       // +0x238 "m_foldButton"
     MS2Ptr<ASTextField> m_topText;                              // +0x248 "m_topText"
     bool m_bFolded;                                             // +0x258
 };

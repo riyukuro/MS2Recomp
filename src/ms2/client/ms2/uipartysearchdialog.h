@@ -9,7 +9,7 @@
 
 class ASObj;
 class ASArray;
-class Unk_PsdInput;
+class ASTextInput;
 
 class UIPartySearchDialog : public UIDialog
 {
@@ -28,7 +28,6 @@ public:
     virtual void vfunc_79(void* pEvent);                        // 79 0x140f8c6b0 key event: F5 refresh
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f8cc10 join answers
 
-    MS2Ptr<Unk_PsdInput> FUN_140e35bd0(const CString& strName);  // find a child control by name (exe member)
     void FUN_140f8dde0();                                     // clear the search text and the condition text
     void FUN_140f8ded0();                                       // m_178 = 0
     int FUN_140f8def0(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list);   // send the list page + notice

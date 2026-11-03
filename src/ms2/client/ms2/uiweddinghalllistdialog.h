@@ -32,7 +32,6 @@ public:
 
     void FUN_140fd90f0(bool b);                                    // 0x140fd90f0 mark the lists for a refresh
     void FUN_140fd9110();                                       // 0x140fd9110 fill the open and the progress list
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);   // bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

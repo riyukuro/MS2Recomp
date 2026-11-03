@@ -396,12 +396,8 @@ public:
     void FUN_141313460(const char* szName, int n);                         // 0x141313460
 };
 
-// The child lookup of an AS container by name (a COMDAT of this unit; the symbol table names its class Unk_1422baa20).
-class Unk_1422baa20 : public AScript
-{
-public:
-    MS2Ptr<AScript> FUN_141311f50(const CString& strName);                  // 0x141311f50
-};
+// The child lookup of an AS container by name (0x141311f50, a COMDAT of this unit).
+template <> MS2Ptr<AScript> AScript::FUN_141311f50<AScript>(const CString& strName);
 
 // The notification objects with the members this unit reads (the classes live in notifychangebuff.h / ugcmanager.h).
 class Unk_BlindTargetNotify : public NotifyBlindTarget
@@ -5510,7 +5506,7 @@ MS2Ptr<AScript> UIMeratMarketDialog::GetPage(int nTab)
         return MS2Ptr<AScript>(0);
     CStringA strName = TabName(nTab);
     strName.Append("Page");
-    return !strName.IsEmpty() ? static_cast<Unk_1422baa20*>(static_cast<AScript*>(m_spLayerPage.operator->()))->FUN_141311f50(strName)
+    return !strName.IsEmpty() ? static_cast<AScript*>(m_spLayerPage.operator->())->FUN_141311f50<AScript>(strName)
                               : MS2Ptr<AScript>(0);
 }
 
@@ -6861,7 +6857,8 @@ MS2Ptr<T> UIMeratMarketDialog::FUN_141311ec0(const CString& strName)
 }
 
 // @0x141311f50
-MS2Ptr<AScript> Unk_1422baa20::FUN_141311f50(const CString& strName)
+template <>
+MS2Ptr<AScript> AScript::FUN_141311f50<AScript>(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())

@@ -62,6 +62,10 @@
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/formatstringid.h"
 
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- statics of the unit's headers (two copies of the merat market sort names / key controller block) ----
 
 static CString s_strSortTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
@@ -163,9 +167,6 @@ class Unk_MlWedding { public: void FUN_141b873c0(Unk_MailPtr<CMailInfo> spMail, 
 // ---- UIMailSendDialog's views ----
 
 // "m_receiver" / "m_title": the text inputs (the receiver one gets the name candidates).
-class Unk_MsInput : public ASTextInput
-{
-};
 // "m_buddys": the buddy name dropdown (an AS component like m_list: slot 24 refreshes it).
 class Unk_MsCombo : public ASScrollingList
 {
@@ -1209,7 +1210,7 @@ void UIMailListDialog::FUN_1419e5190()
 {
     __int64 nOpen = FUN_1419e6c30();
     int nSelect = -1;
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlList<CUserMail::MailPtr> mails(10);
@@ -1490,7 +1491,7 @@ int UIMailSendDialog::vfunc_74(int nMsg, void* p2, void* p3)
         return 0;
     if (vfunc_55() != 0)
         return 0;
-    MS2Ptr<Unk_MsInput> spInput = FUN_140e35bd0("m_receiver");
+    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_receiver");
     if (spInput.IsNull())
         return 0;
     if (spInput->GetFocused() == 0)
@@ -1631,7 +1632,7 @@ MS2_REPLACE_METHOD(0x1419ed1c0, UIMailSendDialog, OnSend, 577, 0x7046C796); // O
 // @0x1419ed410
 void UIMailSendDialog::FUN_1419ed410(CStringW& strReceiver)
 {
-    if (MS2Ptr<Unk_MsInput> spInput = FUN_140e35bd0("m_receiver"))
+    if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_receiver"))
         strReceiver = spInput->GetText();
 }
 MS2_REPLACE_METHOD(0x1419ed410, UIMailSendDialog, FUN_1419ed410, 201, 0xDBD71167); // FUN_1419ed410
@@ -1640,7 +1641,7 @@ MS2_REPLACE_METHOD(0x1419ed410, UIMailSendDialog, FUN_1419ed410, 201, 0xDBD71167
 void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
 {
     {
-        if (MS2Ptr<Unk_MsInput> spInput = FUN_140e35bd0("m_title"))
+        if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_title"))
         {
             if (MS2Ptr<ASTextField> spField = spInput->FUN_1409b4620("textField"))
                 strTitle = spField->GetTextW();

@@ -65,7 +65,7 @@ def _obj_symbols(path):
     else:
         nsec, = struct.unpack_from("<H", d, 2)
         symoff, nsyms = struct.unpack_from("<II", d, 8)
-        sechdr, recsz, sfmt = 20 + struct.unpack_from("<H", d, 16)[0], 18, "<h"
+        sechdr, recsz, sfmt = 20 + struct.unpack_from("<H", d, 16)[0], 18, "<H"   # unsigned: cl numbers sections up to 0xFEFF
     chars = [struct.unpack_from("<I", d, sechdr + 40 * i + 36)[0] for i in range(nsec)]
     sel = {}
     stroff = symoff + nsyms * recsz
@@ -77,6 +77,8 @@ def _obj_symbols(path):
         nm = d[o:o + 8]
         value, = struct.unpack_from("<I", d, o + 8)
         secnum, = struct.unpack_from(sfmt, d, o + 12)
+        if sfmt == "<H" and secnum >= 0xFF00:                 # IMAGE_SYM_DEBUG / ABSOLUTE (-2, -1)
+            secnum -= 0x10000
         sclass, naux = d[o + recsz - 2], d[o + recsz - 1]
         if sclass == 3 and naux and value == 0 and 0 < secnum <= nsec:
             num, s = struct.unpack_from("<HB", d, o + recsz + 12)

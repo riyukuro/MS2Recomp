@@ -83,6 +83,10 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);              
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- unit-local views of exe objects ----
 
 // The movie root of the dialog (UIDialog::m_90); slot 24 shows / hides it.
@@ -118,9 +122,6 @@ class Unk_IcInput : public Unk_IcControl
 {
 };
 class Unk_IcCheck : public ASCheckBox
-{
-};
-class Unk_IcButton : public ASButton
 {
 };
 
@@ -196,7 +197,7 @@ void UIItemCreateDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     m_90->vfunc_24(false);
     CollectItemsAndFunctions();
-    if ((Unk_IcButton*)(m_spClearInven = FUN_140bb4b10("m_clearInven"))) {
+    if ((ASButton*)(m_spClearInven = GetChild<ASButton>("m_clearInven"))) {
         m_spClearInven->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::OnClearInven), 0);
     }
     FUN_1419b6350();
@@ -432,7 +433,7 @@ MS2_REPLACE_METHOD(0x1419b4e30, UIItemCreateDialog, FUN_1419b4e30, 584, 0x6CAD08
 // @0x1419b5080
 int UIItemCreateDialog::FUN_1419b5080()
 {
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_items");
     if (!list)
         return 0;
     CStringW strLabel = list->GetSelectedLabelW();
@@ -533,7 +534,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     PC* pPC = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_items");
     if (list == 0)
         return;
     MS2Ptr<Unk_IcCheck> checkJob = FUN_140e52670("m_checkJob");
@@ -653,7 +654,7 @@ MS2_REPLACE_METHOD(0x1419b5730, UIItemCreateDialog, FUN_1419b5730, 3090, 0xA1CFB
 // @0x1419b6350
 void UIItemCreateDialog::FUN_1419b6350()
 {
-    m_spContextMenu = FUN_140c02900("m_contextMenu");
+    m_spContextMenu = GetChild<ASScrollingList>("m_contextMenu");
     if ((ASScrollingList*)m_spContextMenu) {
         int bShow = !GetFileSystem()->FUN_140398190();
         m_spContextMenu->vfunc_3(bShow);
@@ -687,7 +688,7 @@ MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, FUN_1419b6350, 1078, 0x57B2A
 // @0x1419b6790
 void UIItemCreateDialog::FillFunctionList()
 {
-    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_function")) {
+    if (MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_function")) {
         list->FUN_1422dd1d0();
         for (std::set<CStringW>::iterator it = m_functions.begin(); it != m_functions.end(); ++it)
             list->AddLabelItemW(*it);

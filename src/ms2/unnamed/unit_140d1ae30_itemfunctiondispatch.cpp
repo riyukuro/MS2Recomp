@@ -533,11 +533,10 @@ int UseItem(MS2Ptr<CItem> spItem, int bConfirmed)
 }
 
 // Use an item of an inventory slot once its cooldown is over.
-class Unk_IuSlot : public InvenSlot { };        // the cooldown left of the slot item's skill
 // @0x140d1c3a0
-int UseSlotItem(Unk_IuSlot* pSlot, MS2Ptr<CItem> spItem)
+int InvenSlot::FUN_140d1c3a0(MS2Ptr<CItem> spItem)
 {
-    if (pSlot->FUN_141409060() > 0.0f)
+    if (FUN_141409060() > 0.0f)
     {
         FUN_140d73bc0(0x55, 0, 0, L"");
         return 0;

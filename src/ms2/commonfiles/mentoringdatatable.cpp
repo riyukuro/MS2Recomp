@@ -28,7 +28,7 @@ public:
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
-short FUN_140315da0(const short& nValue, short nMin, short nMax);      // clamp
+template <class T> T Clamp(const T&, T, T);   // C3: was FUN_140315da0
 
 static int LoadRewardCoins(Unk_140165cf0* pParent, const char* pszName, std::vector<unsigned int>* pOut);
 
@@ -89,7 +89,7 @@ unsigned int MentoringDataTable::GetAttendRewardCoin(short nDay)
 {
     if (m_attendRewardCoins.empty())
         return 0;
-    short nIndex = FUN_140315da0(nDay, 0, (short)(m_attendRewardCoins.size() - 1));
+    short nIndex = Clamp<short>(nDay, 0, (short)(m_attendRewardCoins.size() - 1));
     return m_attendRewardCoins[nIndex];
 }
 

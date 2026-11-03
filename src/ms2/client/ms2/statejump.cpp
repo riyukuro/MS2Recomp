@@ -142,7 +142,7 @@ void StateJump::vfunc_4(StateData* pData)
     Unk_JpBody* pBody = JpBody(m_pOwner);
     pBody->FUN_141240730();
     pBody->FUN_141240610(fA, m_vDir, fSpeed);
-    reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->Init();
+    m_tick.Init();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
@@ -377,7 +377,7 @@ bool StateJump::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 // @0x1417d65d0
 bool StateJump::FUN_1417d65d0()
 {
-    if (reinterpret_cast<Unk_IntervalTimer*>(&m_tick)->GetLast() + m_n80 < GetTickCountMs2())
+    if (m_tick.GetLast() + m_n80 < GetTickCountMs2())
         return true;
     return false;
 }

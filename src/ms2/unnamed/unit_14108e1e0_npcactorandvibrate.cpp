@@ -385,8 +385,8 @@ class CameraMgr { public: int FUN_140af7e30(); CCameraMode* FUN_140af2520(); }; 
 class GameObjectController { public: void FUN_14123fd30(unsigned int nFlags); public:
     void FUN_14123fbf0(unsigned short);   // C3: was free FUN_14123fbf0
 };
-class Unk_UpperActor;
-class UIUpperHpBar { public: void FUN_141b4c510(Unk_UpperActor* pNpc, int nTargetId); };
+class PCBase;
+class UIUpperHpBar { public: void FUN_141b4c510(PCBase* pNpc, int nTargetId); };
 template<class T> T* Unk_AcFindUI(eUIClassID nClass);
 extern int g_upperTargetId;                                         // 0x143ab2864
 
@@ -585,7 +585,7 @@ int CNpc::vfunc_10()
     }
     UIUpperHpBar* pUpper;
     if (m_spNpcData->HasPropertyTag(4) == true && (pUpper = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d)) != NULL && IsDead() == 0)
-        pUpper->FUN_141b4c510(reinterpret_cast<Unk_UpperActor*>(this), g_upperTargetId);
+        pUpper->FUN_141b4c510(reinterpret_cast<PCBase*>(this), g_upperTargetId);
     return 1;
 }
 

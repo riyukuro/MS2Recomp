@@ -15,6 +15,7 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
+#include <ecr/RenderSurface.h>
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // ---- unit-local placeholders ----
@@ -73,12 +74,10 @@ struct Unk_HomeFrustum
 class Unk_NiCamera
 {
 public:
-    Unk_HomeFrustum* FUN_1409a8de0();                   // +0x128
 };
 class Unk_SceneCamera
 {
 public:
-    Unk_NiCamera* FUN_140af7df0();
 };
 class Unk_SceneRoot
 {
@@ -98,7 +97,6 @@ public:
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
 bool FUN_14028d470(float a, float b);               // a == b (within epsilon)
@@ -280,8 +278,8 @@ void CHomeCameraMode::vfunc_8(double fTime)
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                       FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                       efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
             float fZoom = ptInput.x * fScale;
             float fYaw = ptInput.y * fScale;
@@ -576,7 +574,7 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
     Unk_SceneCamera* pSceneCamera = FUN_1413f9890()->FUN_140af7da0();
     if (pSceneCamera)
     {
-        Unk_NiCamera* pCamera = pSceneCamera->FUN_140af7df0();
+        Unk_NiCamera* pCamera = (Unk_NiCamera*)reinterpret_cast<ecr::RenderSurface*>(pSceneCamera)->GetCamera();
         if (pCamera)
         {
             Unk_NiMatrix3 kRot;
@@ -593,7 +591,7 @@ BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             kRot.FUN_140a01190(0, kDir);
             kRot.FUN_140a01190(1, kUp);
             kRot.FUN_140a01190(2, kRight);
-            Unk_HomeFrustum* pFrustum = pCamera->FUN_1409a8de0();
+            Unk_HomeFrustum* pFrustum = (Unk_HomeFrustum*)&reinterpret_cast<NiCamera*>(pCamera)->GetViewFrustum();
             float fNear = pFrustum->m_10;
             float fFov = FUN_140ad4b30();
             float fAspect = (pFrustum->m_4 - pFrustum->m_0) / (pFrustum->m_8 - pFrustum->m_c);

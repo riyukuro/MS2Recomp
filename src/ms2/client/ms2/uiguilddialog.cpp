@@ -115,6 +115,8 @@
 #include "ms2/commonfiles/contentshutdown.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/placeholder/formatstringid.h"
+
+template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870, owned by uiinventorydialog
 class Unk_140165cf0;
 enum TiXmlEncoding { TIXML_ENCODING_UNKNOWN, TIXML_ENCODING_UTF8, TIXML_ENCODING_LEGACY };
 class TiXmlParsingData;
@@ -375,7 +377,7 @@ void UIGuildDialog::OnLoadComplete()
         FUN_141974ce0();
         if (CGuildManager::GetInstance()->FUN_1413b6160())
         {
-            if (MS2Ptr<ASButtonBar> spCategory = FUN_140c02870("m_category"))
+            if (MS2Ptr<ASButtonBar> spCategory = GetChild<ASButtonBar>("m_category"))
             {
                 spCategory->SetFocused(1);
                 spCategory->SetSelectedIndex(m_nTab);
@@ -416,7 +418,7 @@ MS2_REPLACE_METHOD(0x141961e40, UIGuildDialog, vfunc_54, 115, 0x59B31712);
 // @0x141961ec0
 int UIGuildDialog::vfunc_53(void* pCfg)
 {
-    if (MS2Ptr<ASButtonBar> spCategory = FUN_140c02870("m_category"))
+    if (MS2Ptr<ASButtonBar> spCategory = GetChild<ASButtonBar>("m_category"))
         m_nTab = spCategory->GetSelectedIndex();
     if (m_memberPage.get())
     {

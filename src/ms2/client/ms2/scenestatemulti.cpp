@@ -96,11 +96,7 @@ public:
     int GetServerId();
 };
 void* FUN_14136f520(int);   // C3: was FUN_14136f520
-class Unk_CharSelectDialog : public UICharacterListDialog
-{
-public:
-};
-Unk_CharSelectDialog* FUN_140b72de0(int nId);
+template <class T> T* Unk_MMDialog(int nId);   // C3: was FUN_140b72de0 (<UICharacterListDialog>, mentoringmanager.cpp)
 extern int DAT_1439f4a78;
 extern int DAT_143ab285c;
 extern int DAT_143ab2860;
@@ -472,7 +468,7 @@ void CSceneStateMulti::OnUpdate(double fTime)
             }
             else if (m_nMode == 1 && DAT_143ab2860 == 3)
             {
-                Unk_CharSelectDialog* pSelect = FUN_140b72de0(0x4ef1);
+                UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
                 if (pSelect != 0 && pSelect->FUN_1422dc2d0() != 0)
                     pSelect->FUN_1418f13f0();
             }
@@ -520,7 +516,7 @@ void CSceneStateMulti::vfunc_1(int)
     }
     else if (m_nMode == 1)
     {
-        Unk_CharSelectDialog* pSelect = FUN_140b72de0(0x4ef1);
+        UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
         if (pSelect)
             pSelect->FUN_1418f1cb0();
         if (DAT_143ab285c != 0 && DAT_143ab2860 != 3)
@@ -709,7 +705,7 @@ int CSceneStateMulti::vfunc_15()
 unsigned int CSceneStateMulti::GetSelectMapForSelectedJob()
 {
     int nJobCode = 0;
-    Unk_CharSelectDialog* pSelect = FUN_140b72de0(0x4ef1);
+    UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
     if (pSelect)
         nJobCode = pSelect->FUN_1418f1b90();
     return m_lobbyField.GetSelectMap(nJobCode);
@@ -901,7 +897,7 @@ void CSceneStateMulti::OnEventReward(CInPacket& packet)
     unsigned char cKind = packet.ReadUInt8();
     if (cKind == 0x10)
     {
-        Unk_CharSelectDialog* pSelect = FUN_140b72de0(0x4ef1);
+        UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
         if (pSelect != 0)
             pSelect->FUN_1418ed6b0(packet);
     }

@@ -315,7 +315,7 @@ public:
 };
 __int64 GetServerTime();                                // the server time
 bool FUN_1407183f0(const CStringW& str);
-int FUN_140408410(ATL::CAtlArray<unsigned>* arr, const unsigned* value);    // the index of value, -1 if missing
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_140274fc0(const CStringW& str, ATL::CAtlArray<unsigned>* out, const wchar_t* sep);
 
 // The global table of the attend gift values keyed by (kind, id) (0x143ab2fc0; uilongtermattendgiftdialog.cpp has
@@ -2112,7 +2112,7 @@ BOOL CGameRule::FUN_14047c530(unsigned value)
     Unk_1401b4ec0 lock(m_8, 1);
     if (m_b30 == 0)
         return FALSE;
-    if (FUN_140408410(&m_b30->m_58, &value) != -1)
+    if (Unk_ArrayFind<unsigned>(m_b30->m_58, value) != -1)
         return FALSE;
     return TRUE;
 }

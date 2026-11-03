@@ -135,13 +135,9 @@ int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
 
-// The homemade cube seen through the data copy this unit inlines (its COMDAT sits at 0x140ca6580).
-class Unk_HmCube : public CHomemadeCubeObject
-{
-public:
-    // @0x140ca6580
-    MS2Ptr<FunctionCubeData> FUN_140ca6580() { return m_spData; }
-};
+// The homemade cube's data row, by value (a COMDAT at 0x140ca6580).
+// @0x140ca6580
+MS2Ptr<FunctionCubeData> CHomemadeCubeObject::FUN_140ca6580() { return m_spData; }
 
 // ---- StateHomemade ----
 
@@ -339,9 +335,9 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
             continue;
         if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->GetPosition()) == 0)
             continue;
-        if (!static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580())
+        if (!static_cast<CHomemadeCubeObject*>(spCube.get())->FUN_140ca6580())
             continue;
-        int nKind = static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580()->m_n100;
+        int nKind = static_cast<CHomemadeCubeObject*>(spCube.get())->FUN_140ca6580()->m_n100;
         if (((Unk_HmGatherMgr*)FUN_1409670c0())->LimitState(nKind) == 3)
             continue;
         return 1;

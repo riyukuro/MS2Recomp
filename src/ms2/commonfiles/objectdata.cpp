@@ -46,12 +46,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
-void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszSep);          // split into numbers
 void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>& rOut, const wchar_t* pszSep);
-void FUN_140177e40(const CString& str, ATL::CAtlArray<float>& rOut, const wchar_t* pszSep);
-int FUN_140178670(Unk_140165cf0*, const char*, ATL::CAtlArray<unsigned>&);                      // list attribute
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_140178670 (CAtlArray<unsigned>)
 unsigned FUN_14028c0d0(const char* psz);                                // a colour value of a "#rrggbb" style string
-void FUN_140194470(efd::Point3* pDst, const efd::Point3& kSrc);         // efd::Point3 assignment
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 class Unk_140165cf0;
 extern int DAT_1439ed00c;                                               // row cache enabled
@@ -193,7 +190,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         XmlGetAttr((class TiXmlElement*)(pFunc), "SecondPhysics", spData->m_cube.m_anPhysics[2]);
         ATL::CAtlArray<int> autoStates;
         CString strAuto = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFunc))->Attribute("AutoStateChange"), 0);
-        FUN_140177de0(strAuto, autoStates, L"-");
+        XmlSplit(strAuto, autoStates, "-");   // C3: was FUN_140177de0
         if (autoStates.GetCount() == 2)
         {
             spData->m_cube.m_autoState.m_nStateA = autoStates[0];
@@ -275,14 +272,14 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             spData->m_cube.m_firstAnimation.m_strBone = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstPCBone"), 0);
             CString strTranslation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstPCTranslation"), 0);
             ATL::CAtlArray<float> translation;
-            FUN_140177e40(strTranslation, translation, L",");
+            XmlSplit(strTranslation, translation, ",");   // C3: was FUN_140177e40
             if (translation.GetCount() == 3)
-                FUN_140194470(&spData->m_cube.m_firstAnimation.m_vTranslation, efd::Point3(translation[0], translation[1], translation[2]));
+                *reinterpret_cast<efd::Point3*>(&spData->m_cube.m_firstAnimation.m_vTranslation) = efd::Point3(translation[0], translation[1], translation[2]);
             CString strRotation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFirst))->Attribute("firstPCRotation"), 0);
             ATL::CAtlArray<float> rotation;
-            FUN_140177e40(strRotation, rotation, L",");
+            XmlSplit(strRotation, rotation, ",");
             if (rotation.GetCount() == 3)
-                FUN_140194470(&spData->m_cube.m_firstAnimation.m_vRotation, efd::Point3(rotation[0], rotation[1], rotation[2]));
+                *reinterpret_cast<efd::Point3*>(&spData->m_cube.m_firstAnimation.m_vRotation) = efd::Point3(rotation[0], rotation[1], rotation[2]);
             XmlGetAttr((class TiXmlElement*)(pFirst), "firstEmotionID", spData->m_cube.m_firstAnimation.m_strEmotionId);
             XmlGetAttr((class TiXmlElement*)(pFirst), "firstEffectStart", spData->m_cube.m_firstAnimation.m_strEffectStart);
             XmlGetAttr((class TiXmlElement*)(pFirst), "firstEffectEnd", spData->m_cube.m_firstAnimation.m_strEffectEnd);
@@ -326,7 +323,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
         if (pNurturing != 0)
         {
             ATL::CAtlArray<unsigned> list;
-            if (FUN_140178670(pNurturing, "pluralNpcID", list) == 0)
+            if (XmlTokenList(pNurturing, "pluralNpcID", list) == 0)
             {
                 for (unsigned i = 0; i < list.GetCount(); i++)
                 {
@@ -337,7 +334,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 list.RemoveAll();
             }
             XmlGetAttr((class TiXmlElement*)(pNurturing), "nurturingQuestTag", spData->m_cube.m_nurturing.m_strQuestTag);
-            if (FUN_140178670(pNurturing, "rewardItemByFeeding", list) == 0)
+            if (XmlTokenList(pNurturing, "rewardItemByFeeding", list) == 0)
             {
                 if (list.GetCount() == 3)
                 {
@@ -347,7 +344,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 }
                 list.RemoveAll();
             }
-            if (FUN_140178670(pNurturing, "rewardItem", list) == 0)
+            if (XmlTokenList(pNurturing, "rewardItem", list) == 0)
             {
                 if (list.GetCount() == 3)
                 {
@@ -357,7 +354,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 }
                 list.RemoveAll();
             }
-            if (FUN_140178670(pNurturing, "requiredGrowth", list) == 0)
+            if (XmlTokenList(pNurturing, "requiredGrowth", list) == 0)
             {
                 for (unsigned i = 0; i < list.GetCount(); i++)
                 {
@@ -367,7 +364,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
                 }
                 list.RemoveAll();
             }
-            if (FUN_140178670(pNurturing, "rewardItemByGrowth", list) == 0 && list.GetCount() >= 3)
+            if (XmlTokenList(pNurturing, "rewardItemByGrowth", list) == 0 && list.GetCount() >= 3)
             {
                 short nStage = 1;
                 for (unsigned i = 0; i < list.GetCount(); i += 3)

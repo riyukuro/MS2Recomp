@@ -21,6 +21,9 @@
 #include <efd/ISystemService.h>
 #include <efd/ServiceManager.h>
 #include "ms2/placeholder/tixmldocument.h"
+#define TiXmlDocument TiXmlDocument_TinyXml
+#include "ms2/commonfiles/tinyxml.h"
+#undef TiXmlDocument
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -36,15 +39,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 // ---- unit-local views of exe objects ----
 
 // tinyxml writer / reader helpers (the same ones the other trigger units use)
-// TiXmlElement / TiXmlDeclaration (the class names reuse the existing symbol rows of these tinyxml ctors and dtors).
-struct Unk_MdXmlElement { Unk_MdXmlElement(const char* szName); ~Unk_MdXmlElement(); void* m_pad[0x90 / 8]; };   // 0x14086f2f0 / 0x14086f450
-struct Unk_MdXmlDeclaration { Unk_MdXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone); ~Unk_MdXmlDeclaration(); void* m_pad[0x70 / 8]; };   // 0x1408704d0 / 0x14081ad20
-class TiXmlNode   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlNode* InsertEndChild(class TiXmlNode const&);
-};
-bool FUN_1408710c0(void*, const char*);                     // SaveFile
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);   // FirstChildElement of the document
 int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& rOut);   // string attribute, 0 = found
 void FUN_1401d3700(CString& s);
@@ -298,23 +292,22 @@ void TriggerCli::SaveFile(const CString& strPath)
 {
     TiXmlDocument doc;
     SaveDocument(&doc);
-    FUN_1408710c0(&doc, (const char*)strPath);
+    doc.SaveFile((const char*)strPath);
 }
 
 // @0x14119a8c0
-// MS2-FUNCTIONAL: code identical; the three XML locals sit in the reverse stack-slot order (declaration lowest in the exe)
 void TriggerCli::SaveDocument(TiXmlDocument* pDoc)
 {
-    Unk_MdXmlDeclaration decl("1.0", "utf-8", "");
-    ((void*)((class TiXmlNode*)(void*)(pDoc))->InsertEndChild(*(class TiXmlNode const*)(&decl)));
-    Unk_MdXmlElement elRoot("ms2");
+    TiXmlDeclaration decl("1.0", "utf-8", "");
+    ((void*)((class TiXmlNode*)(void*)(pDoc))->InsertEndChild(decl));
+    TiXmlElement elRoot("ms2");
     for (size_t i = 0; i < m_states.GetCount(); ++i)
     {
-        Unk_MdXmlElement elState("state");
+        TiXmlElement elState("state");
         m_states[i]->Save(&elState);
-        ((void*)((class TiXmlNode*)(void*)(&elRoot))->InsertEndChild(*(class TiXmlNode const*)(&elState)));
+        ((void*)((class TiXmlNode*)(void*)(&elRoot))->InsertEndChild(elState));
     }
-    ((void*)((class TiXmlNode*)(void*)(pDoc))->InsertEndChild(*(class TiXmlNode const*)(&elRoot)));
+    ((void*)((class TiXmlNode*)(void*)(pDoc))->InsertEndChild(elRoot));
 }
 
 // @0x14119aa10

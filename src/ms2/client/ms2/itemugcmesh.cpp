@@ -583,11 +583,11 @@ struct Unk_UgcLook
 };
 
 // @0x141423760
-int FUN_141423760(Unk_UgcLook* pLook, Unk_UgcPlayer* pPlayer)
+int FUN_141423760(const ItemColorEx& kLook, PC* pPlayer)
 {
     if (pPlayer == 0)
     {
-        pPlayer = (Unk_UgcPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
+        pPlayer = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
     }
@@ -595,12 +595,12 @@ int FUN_141423760(Unk_UgcLook* pLook, Unk_UgcPlayer* pPlayer)
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
         Unk_UgcColor kColor;
-        FUN_141b6dea0(&kColor, pLook->m_aColor[i]);
-        ((PC*)pPlayer)->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
-        FUN_141b6f220(FUN_141b6efc0(((PC*)pPlayer)->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
+        FUN_141b6dea0(&kColor, reinterpret_cast<const Unk_UgcLook&>(kLook).m_aColor[i]);
+        pPlayer->FUN_1416591e0((int)i, *(const NiColor*)&kColor);
+        FUN_141b6f220(FUN_141b6efc0(pPlayer->FUN_14123c410()), i == 0 ? 0 : 2, *(const Unk_Colc*)&kColor);
     }
     Unk_UgcAvatarService* pService = (Unk_UgcAvatarService*)FUN_140a6a840();
-    pService->Refresh(((PC*)pPlayer)->FUN_141658e60());
+    pService->Refresh(pPlayer->FUN_141658e60());
     return 1;
 }
 

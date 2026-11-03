@@ -14,6 +14,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/effectservice.h"
@@ -36,7 +37,6 @@ class Unk_BirthdaySound
 public:
 };
 
-CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
 void* FUN_140967100();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
@@ -113,7 +113,7 @@ void UIBirthdayCardDialog::FUN_140bb9960()
             {
                 CMsTime time(FUN_140bb9ba0(pActor));
                 int nMonth;
-                m_30->Invoke("setBirthDay", FUN_1402bad60("{0:02d}", &(nMonth = time.GetMonth())));
+                m_30->Invoke("setBirthDay", Unk_SocketFormat<int>("{0:02d}", (nMonth = time.GetMonth())));
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143abd4f8), CString(""), 1, 0, 1.0f, 0);
             }
         }

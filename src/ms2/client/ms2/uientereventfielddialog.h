@@ -10,21 +10,10 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class NotifyObject;
 class CMsgBoxData;
-
-// A millisecond throttle (ctor 0x140517b00; two dwords at an odd 4-byte offset).
-class Unk_EnterTick {
-public:
-    Unk_EnterTick();                        // 0x140517b00
-    int FUN_140268870(unsigned ms);         // true once the interval elapsed
-    void FUN_140268840();                   // reset
-private:
-    unsigned m_a;
-    unsigned m_b;
-};
-MS2_CHECK_SIZE(Unk_EnterTick, 8);
 
 class UIEnterEventFieldDialog : public UIDialog
 {
@@ -48,7 +37,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     int m_nFieldId;                                             // +0x178 the event field id
-    Unk_EnterTick m_tick;                                       // +0x17c
+    Unk_IntervalTimer m_tick;                                   // +0x17c
 };
 MS2_CHECK_SIZE(UIEnterEventFieldDialog, 0x188);
 MS2_CHECK_OFFSET(UIEnterEventFieldDialog, m_nFieldId, 0x178);

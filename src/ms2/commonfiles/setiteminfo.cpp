@@ -28,8 +28,8 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_1403d7960(void* pLogger, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& arg0,
-                   const unsigned& arg1);
+class Unk_CommonLog;
+template <class A, class B> void Unk_BurningLevelupLog(class Unk_CommonLog*, int, int, const wchar_t*, const A&, const B&);   // C3: was FUN_1403d7960
 
 // @0x1407ad240
 SetItemInfo::SetItemInfo() : m_nId(0), m_bShowEffect(false), m_bDisableTooltip(false)
@@ -124,7 +124,7 @@ int SetItemInfo::AddOptionPart(MS2Ptr<SetItemOptionPart> spPart)
     if (spPart->GetCount() < 1)
     {
         unsigned nCount = spPart->GetCount();
-        FUN_1403d7960(GetLogString(), 1, 0x13,
+        Unk_BurningLevelupLog<unsigned, unsigned>(reinterpret_cast<Unk_CommonLog*>(GetLogString()), 1, 0x13,
                       L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] PartCount Error!, optionID = {1}, PartCount = {2}",
                       m_nId, nCount);
         return 0;

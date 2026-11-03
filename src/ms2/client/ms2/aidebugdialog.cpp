@@ -29,7 +29,7 @@ class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_14
 // ---- unit-local views of callees emitted in other units ----
 
 __int64 GetServerTime();                                // server time
-CStringW FUN_1408767c0(void* pszUtf8);                  // utf8 -> wide
+CStringW XmlWide(const char* pszUtf8);                   // utf8 -> wide
 CString FUN_1401d4330(const wchar_t* psz, int nFlag);   // wide -> narrow
 CStringW FUN_14025a640(const CStringW& str);            // copy
 CFileSystem* GetFileSystem();                           // the file system singleton
@@ -256,7 +256,7 @@ int AiDebugDialog::LoadXml()
     CFileSystem::BufferPtr spBuffer = GetFileSystem()->FUN_140397bc0(strPath, 0, 0);
     if (spBuffer.IsNull())
         return 0;
-    CStringW strXml = FUN_1408767c0(spBuffer->GetBuffer());
+    CStringW strXml = XmlWide((const char*)spBuffer->GetBuffer());
     std::vector<CStringW> arrLines;
     FUN_140988d60(strXml, arrLines, L"\n");
     CStringW strText;

@@ -3,11 +3,11 @@
 // MS2-RANGE: 0x14150cd00-0x1415154d0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$forward@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVNiTexturingProperty@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVNiTexturingProperty@@@std@@@std@@@0@AEAV10@@Z 0x141510f80 ; unique
-// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@VUnk_PPSmartC@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@VUnk_PPSmartC@@@std@@@std@@@std@@@0@AEAV10@@Z 0x141510f90 ; unique
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@V?$SmartPointer@VNiTexture@@@efd@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@V?$SmartPointer@VNiTexture@@@efd@@@std@@@std@@@std@@@0@AEAV10@@Z 0x141510f90 ; unique
 // MS2-PIN: ??$forward@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVNiTexturingProperty@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVNiTexturingProperty@@@std@@@std@@@0@AEAV10@@Z 0x141511010 ; unique
-// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@VUnk_PPSmartC@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@VUnk_PPSmartC@@@std@@@std@@@std@@@0@AEAV10@@Z 0x141511020 ; unique
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@V?$SmartPointer@VNiTexture@@@efd@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@V?$SmartPointer@VNiTexture@@@efd@@@std@@@std@@@std@@@0@AEAV10@@Z 0x141511020 ; unique
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVNiTexturingProperty@@@std@@@std@@@std@@QEBAAEBQEAVNiTexturingProperty@@XZ 0x141511ae0 ; prop
-// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@VUnk_PPSmartC@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBUUnk_TexSizeKey@@VUnk_PPSmartC@@@1@XZ 0x141511b00 ; unique
+// MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUUnk_TexSizeKey@@V?$SmartPointer@VNiTexture@@@efd@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBUUnk_TexSizeKey@@V?$SmartPointer@VNiTexture@@@efd@@@1@XZ 0x141511b00 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@PEBVNiMaterial@@@std@@V?$_Vector_val@U?$_Simple_types@PEBVNiMaterial@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEBVNiMaterial@@@std@@@2@XZ 0x1415138e0 ; unique
 // MS2-PINS-END tplpin
 #include "ms2/placeholder/ms2stdafx.h"
@@ -81,10 +81,10 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
         NiTexturingProperty::Map* pBase = (*it)->GetBaseMap();
         Unk_TexSlot saved;
         if (pBase != NULL) {
-            saved.m_spTexture.Assign(pBase->GetTexture());
+            saved.m_spTexture = pBase->GetTexture();
             saved.m_nFilterMode = pBase->GetFilterMode();
         } else {
-            saved.m_spTexture.Assign(0);
+            saved.m_spTexture = 0;
             saved.m_nFilterMode = 0;
         }
         savedMaps.push_back(saved);
@@ -112,8 +112,8 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
     int idx = 0;
     for (std::set<NiTexturingProperty*>::iterator it = props.begin(); it != props.end(); ++it) {
         Unk_TexSlot& saved = savedMaps[idx++];
-        if (saved.m_spTexture.Get()) {
-            (*it)->SetBaseTexture(static_cast<NiTexture*>(saved.m_spTexture.Get()));
+        if ((NiTexture*)saved.m_spTexture) {
+            (*it)->SetBaseTexture(static_cast<NiTexture*>(saved.m_spTexture));
             (*it)->SetBaseFilterMode(NiTexturingProperty::FilterMode(saved.m_nFilterMode));
         }
     }
@@ -148,7 +148,7 @@ NiTexture* MS2TextureDensityProcessor::FUN_14150d3a0(int nWidth, int nHeight)
     key.m_nHeight = nHeight;
     Unk_DensityTextureMap::iterator it = m_textures.find(key);
     if (it != m_textures.end())
-        return static_cast<NiTexture*>(it->second.Get());
+        return static_cast<NiTexture*>(it->second);
 
     NiPointer<NiPixelData> spPixels = NiNew NiPixelData(nWidth * 3, nHeight * 3, NiPixelFormat::ARGB8888, 0, 1);
     unsigned nLevels = spPixels->GetNumMipmapLevels();
@@ -166,7 +166,7 @@ NiTexture* MS2TextureDensityProcessor::FUN_14150d3a0(int nWidth, int nHeight)
     prefs.m_ePixelLayout = NiTexture::FormatPrefs::TRUE_COLOR_32;
     prefs.m_eMipMapped = NiTexture::FormatPrefs::YES;
     prefs.m_eAlphaFmt = NiTexture::FormatPrefs::NONE;
-    m_textures[key].Assign(NiSourceTexture::Create(spPixels, prefs, true));
+    m_textures[key] = NiSourceTexture::Create(spPixels, prefs, true);
     return FUN_14150d3a0(nWidth, nHeight);
 }
 

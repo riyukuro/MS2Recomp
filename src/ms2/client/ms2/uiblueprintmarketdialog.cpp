@@ -92,7 +92,7 @@ static CStringA s_strTabIndex = "tabIndex";
 // ---- out-of-unit callees (UIMeratMarketCommon and the services; the same views as uimeratmarketdialog.cpp) ----
 MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, const int& nKind, __int64 nId);   // find a product
 MS2Ptr<CItem> FUN_140ebc070(CMeratMarketProduct* pProduct);                 // the item shown for a product
-void FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
+int FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
 bool FUN_140ebb920(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct);     // the product row
 void FUN_140ec0700(ASObj* pData, int nPremium);                             // the common initData members
 void FUN_140ec1340(ASData& data);                                           // report a product

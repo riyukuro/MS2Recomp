@@ -45,7 +45,7 @@ class Unk_HsInfo : public CPtred { };
 CTriggerService* FUN_140ad4b90();
 static const unsigned s_nCameraModel = 0x65338ec3;           // the FlatModel the camera triggers show (0x142e91444)
 
-CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
@@ -121,7 +121,7 @@ void UIWatchAGameDialog::OnLoadComplete()
     for (int i = 0; i < 4; i++)
     {
         int nIndex = i + 1;
-        CString strName = FUN_1402bad60("m_actionButton{0}", &nIndex);
+        CString strName = Unk_SocketFormat<int>("m_actionButton{0}", nIndex);
         m_clips[i] = GetChild<ASMovieClip>(strName);
         if (m_clips[i] == 0)
             continue;

@@ -117,7 +117,7 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);    /
 CString FUN_140651390();                                                        // the language suffix of a text table
 CString FUN_14071ae20(const CString& strFile);                                  // path of a string table file
 __int64 GetServerTime();                                                       // the server time
-CStringA FUN_140536a50(const char* pszFormat, const CStringA& str);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 
 // @0x140790bd0
 CSeasonData::CSeasonData()
@@ -362,10 +362,10 @@ void CSeasonDataTable::Callback2()
 int CSeasonDataTable::Load()
 {
     for (auto entry : m_typeNames) {
-        CStringA strFile = FUN_140536a50("SeasonData_{0}.xml", entry.second);
+        CStringA strFile = Unk_SocketFormat<CString>("SeasonData_{0}.xml", entry.second);
         CStringA strPath = FUN_14071a5b0("Table", strFile);
         if (!ReadData(entry.first, strPath)) {
-            Log(FUN_140536a50("CSeasonDataTable read failed - {0}", entry.second));
+            Log(Unk_SocketFormat<CString>("CSeasonDataTable read failed - {0}", entry.second));
             return 0;
         }
     }

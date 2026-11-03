@@ -106,7 +106,6 @@ public:
  void FUN_140e24c50(bool);
  CStringW FUN_140e25840(int);
  void BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void FUN_140e25dc0(size_t);
- MS2Ptr<ASMovieClip> FUN_140ba7930(const CString&);
 private:
  MS2_LAYOUT_FRIEND;
  MS2Ptr<ASMovieClip> m_180,m_190,m_1a0,m_1b0;

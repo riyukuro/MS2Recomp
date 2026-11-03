@@ -57,7 +57,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 // Out-of-unit callees.
 class JobTable;
-CStringTable* GetStringTable();                          // the string table singleton
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
@@ -215,8 +214,8 @@ unsigned JobData::GetCharacterBGM()
 // @0x140643f30
 CStringW JobData::GetName()
 {
-    if (GetStringTable() != 0)
-        return GetStringTable()->FUN_141811980(6, m_jobGroupID);
+    if (TSingleton<CStringTable>::GetInstance() != 0)
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, m_jobGroupID);
     return L"";
 }
 
@@ -314,7 +313,7 @@ int JobTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

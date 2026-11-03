@@ -20,6 +20,8 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include "ms2/client/ms2/camera.h"
+#include <ecr/RenderService.h>   // C3: GetActiveRenderSurface / GetCamera
+#include <ecr/RenderSurface.h>
 
 extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
 
@@ -41,9 +43,8 @@ public:
 
 class Unk_LocalPlayer
 {
-public:
-    Unk_BuffContainer* FUN_14166d240();             // +0x6d8
 };
+class PCBase { public: void* FUN_14166d240(); };   // C3: member view (pcbase.h, +0x6d8)
 
 // The camera option row held by the game context (+0x154 rotation, +0x23c distance).
 struct Unk_CameraOption
@@ -89,27 +90,8 @@ struct Unk_ClientConfig
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The scene camera (FUN_1413f9890()->FUN_140af7da0()->FUN_140af7df0()) and its frustum.
-struct Unk_Frustum
-{
-    float m_0, m_4, m_8, m_c, m_10;                 // left, right, top, bottom, near
-};
-class Unk_NiCamera
-{
-public:
-    Unk_Frustum* FUN_1409a8de0();                   // +0x128
-};
-class Unk_SceneCamera
-{
-public:
-    Unk_NiCamera* FUN_140af7df0();
-};
-class Unk_SceneRoot
-{
-public:
-    Unk_SceneCamera* FUN_140af7da0();               // m_48
-};
-Unk_SceneRoot* FUN_1413f9890();
+// The scene camera (FUN_1413f9890()->GetActiveRenderSurface()->GetCamera()) and its frustum.
+ecr::RenderService* FUN_1413f9890();   // C3: the render service (was Unk_SceneRoot*)
 
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
@@ -122,7 +104,6 @@ public:
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
@@ -288,8 +269,8 @@ void CTargetCameraMode::vfunc_8(double fTime)
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                       FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                       efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
             float fZoom = ptInput.x * fScale;
             float fYaw = ptInput.y * fScale;
@@ -348,9 +329,9 @@ void CTargetCameraMode::vfunc_9()
     else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.y = 1.0f;
     Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300008))
+    if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
-    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300009))
+    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->FUN_141682fe0(300009))
         ptMove.x = -1.0f;
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x14, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 + 5.0f, m_64 + 5.0f);
@@ -737,10 +718,10 @@ MS2_REPLACE_METHOD(0x14183ce10, CTargetCameraMode, FUN_14183ce10, 168, 0x8A69984
 // @0x14183cec0
 BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
 {
-    Unk_SceneCamera* pSceneCamera = FUN_1413f9890()->FUN_140af7da0();
+    ecr::RenderSurface* pSceneCamera = FUN_1413f9890()->GetActiveRenderSurface();
     if (pSceneCamera)
     {
-        Unk_NiCamera* pCamera = pSceneCamera->FUN_140af7df0();
+        NiCamera* pCamera = pSceneCamera->GetCamera();
         if (pCamera)
         {
             Unk_NiMatrix3 kRot;
@@ -757,10 +738,10 @@ BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             kRot.FUN_140a01190(0, kDir);
             kRot.FUN_140a01190(1, kUp);
             kRot.FUN_140a01190(2, kRight);
-            Unk_Frustum* pFrustum = pCamera->FUN_1409a8de0();
-            float fNear = pFrustum->m_10;
+            const NiFrustum* pFrustum = &pCamera->GetViewFrustum();
+            float fNear = pFrustum->m_fNear;
             float fFov = FUN_140ad4b30();
-            float fAspect = (pFrustum->m_4 - pFrustum->m_0) / (pFrustum->m_8 - pFrustum->m_c);
+            float fAspect = (pFrustum->m_fRight - pFrustum->m_fLeft) / (pFrustum->m_fTop - pFrustum->m_fBottom);
             float fTan = __imp_tanf(fFov * 3.14159265f / 180.0f);
             float fTanAspect = fTan * fAspect;
             Vector3 aptCorner[9];

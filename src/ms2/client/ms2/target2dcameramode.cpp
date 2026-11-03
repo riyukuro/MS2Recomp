@@ -17,13 +17,14 @@
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 #include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/worldservice.h"   // C3: WorldService::GetInstance was the free FUN_1403ed2d0
 
 // ---- unit-local placeholders ----
 
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
 
 class Unk_BuffContainer;
 // C3: the movement controller (Unk_PCMove, unit_141682f80) behind FUN_14166d240
@@ -33,19 +34,11 @@ public:
     bool FUN_141682fe0(int nKey);
 };
 
-class Unk_LocalPlayer
+class PCBase { public: void* FUN_14166d240(); };   // C3: the exe's PCBase::FUN_14166d240 (+0x6d8)
+class Unk_LocalPlayer : public PCBase
 {
-public:
-    Unk_BuffContainer* FUN_14166d240();             // +0x6d8
 };
 
-// The game context (FUN_1403ed2d0).
-class Unk_GameContext
-{
-public:
-    Unk_LocalPlayer* FUN_141bd0cc0();
-};
-Unk_GameContext* FUN_1403ed2d0();
 
 // A float table value of the client configuration (FUN_1401d3200).
 struct Unk_ConfigFloat
@@ -65,7 +58,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 
@@ -167,8 +159,8 @@ void CTarget2DCameraMode::vfunc_8(double fTime)
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                       FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                       efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
             float fZoom = ptInput.x * fScale;
             float fYaw = ptInput.y * fScale;
@@ -216,22 +208,22 @@ MS2_REPLACE_METHOD(0x141837B30, CTarget2DCameraMode, vfunc_8, 2881, 0xDC1B36B3);
 void CTarget2DCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    if (FUN_14025e7c0()->FUN_14116d950(5, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(5, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.z = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(6, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(6, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.z = -1.0f;
-    if (FUN_14025e7c0()->FUN_14116d950(7, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(7, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.y = -1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(8, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         ptMove.y = 1.0f;
-    Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300008))
         ptMove.x = 1.0f;
     else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300009))
         ptMove.x = -1.0f;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x14, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x14, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 + 5.0f, m_64 + 5.0f);
-    else if (FUN_14025e7c0()->FUN_14116d9c0(0x15, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x15, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
         vfunc_18(m_60 - 5.0f, m_64 - 5.0f);
     Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
 }

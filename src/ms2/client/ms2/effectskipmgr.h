@@ -7,21 +7,13 @@
 #include <string>
 #include <vector>
 #include <xmmintrin.h>
+#include <efd/Point3.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/commonfiles/os.h"
 
 class Unk_SkipActorPos { float m_x, m_y, m_z; };                      // the actor's position
-class Unk_SkipDelta { public: float FUN_140968990() const; private: float m_x, m_y, m_z; };    // difference of two positions, FUN_140968990 = length
-
-// A 12 byte point (the exe copies it from the zero point DAT_143b01a60).
-struct Unk_SkipPoint
-{
-    float x, y, z;
-    Unk_SkipPoint& operator=(const Unk_SkipPoint&);                    // 0x140194470
-    Unk_SkipDelta FUN_140965c40(const Unk_SkipActorPos& other) const;  // this - other
-};
 
 // One skip query: which distance row to use and the effect position. Built by 0x1411b8570.
 struct Unk_SkipCheck
@@ -29,7 +21,7 @@ struct Unk_SkipCheck
     Unk_SkipCheck();                // 0x1411b8570
     int m_nRow;                     // +0x00 distance table row (the effect kind)
     int m_nCaster;                  // +0x04 distance table column (the caster kind), 0 = never skip
-    Unk_SkipPoint m_pos;            // +0x08
+    efd::Point3 m_pos;              // +0x08
     int m_n14;                      // +0x14 nonzero together with row 1 means "never skip"
     float m_fViewDistance;          // +0x18 per-effect override, -1 = use the table
 };

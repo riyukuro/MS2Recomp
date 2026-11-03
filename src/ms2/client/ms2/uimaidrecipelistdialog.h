@@ -32,7 +32,6 @@ public:
     void FUN_1412dac40();                                   // fill the list with the recipes of the book
     void FUN_1412db660(int nBook, float fX, float fY);      // open on a recipe book at a screen position
     void FUN_1412db6c0();                                   // move to the position and rebuild the list
-    template <class T> MS2Ptr<T> FUN_140c02900(const CString& strName);     // bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

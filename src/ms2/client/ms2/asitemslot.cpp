@@ -671,14 +671,7 @@ public:
 MS2_CHECK_OFFSET(Unk_SlotIconSource, m_strIcon, 0xc0);
 
 // Item helpers.
-class Unk_SlotModelHead : public ItemModelHead                                         // ItemModelHead (itemdata.h)
-{
-};
-class Unk_ItemEquipData : public CItemData                      // CItem::FUN_140527840's record (item.cpp)
-{
-public:
-    Unk_SlotModelHead* FUN_14053ec70();                         // the model head (CItemData declares it void)
-};
+class Unk_ItemEquipData : public CItemData {};              // CItem::FUN_140527840's record (item.cpp)
 class CItemExtraData   // C3: member view (real class not in this TU)
 {
 public:

@@ -5,10 +5,10 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_14071a5b0.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>
+#include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-CStringA FUN_140513200(const char* fmt, const unsigned int& v);   // "{0:03d}.xml" style formatter
 CStringA FUN_140188f50(const char* s, int n);
 CStringA FUN_14071a5b0(const CStringA& dir, const CStringA& file);
 CStringA FUN_14071a520(const CStringA& s);
@@ -62,7 +62,7 @@ CStringA GetItemPresetPath(const CStringA& dir, const CStringA& name)
 // @0x14071a940
 CStringA GetItemModelPath(unsigned int id)
 {
-    CStringA r = FUN_14071a5b0("ItemModel", FUN_140513200("{0:03d}.xml", id));
+    CStringA r = FUN_14071a5b0("ItemModel", Unk_SocketFormat("{0:03d}.xml", id));
     return r;
 }
 

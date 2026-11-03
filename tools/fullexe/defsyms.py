@@ -11,13 +11,14 @@ def defined(path):
         if s1 == 0 and s2 == 0xFFFF:
             symoff, nsym = struct.unpack_from("<II", h, 48); sz, fmt = 20, "<i"
         else:
-            symoff, nsym = struct.unpack_from("<II", h, 8); sz, fmt = 18, "<h"
+            symoff, nsym = struct.unpack_from("<II", h, 8); sz, fmt = 18, "<H"  # unsigned: up to 0xFEFF
         f.seek(symoff); tab = f.read(nsym * sz)
         strsz, = struct.unpack("<I", f.read(4)); strs = f.read(max(0, strsz - 4))
     i = 0
     while i < nsym:
         o = i * sz
         sec, = struct.unpack_from(fmt, tab, o + 12)
+        if fmt == "<H" and sec >= 0xFF00: sec -= 0x10000  # IMAGE_SYM_DEBUG / ABSOLUTE (-2, -1)
         scl, naux = tab[o + sz - 2], tab[o + sz - 1]
         if sec > 0 and scl == 2:
             if tab[o:o + 4] == b"\0\0\0\0":

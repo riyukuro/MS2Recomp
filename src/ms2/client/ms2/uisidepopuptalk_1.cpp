@@ -41,7 +41,6 @@ struct Unk_SptNpcNotice
 
 int FUN_140768010(int nMax, int nMin);                      // a random number in [nMin, nMax)
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
-bool FUN_140184310(const CString& str, const char* sz);     // CString == const char*
 int FUN_141276180(const CString& strName, const CString& strGroup);   // play a system sound
 __int64 FUN_140718320(const CStringW& str);                 // parse a number text
 unsigned __int64 FUN_140718370(const CStringW& str);        // parse an unsigned 64-bit number text
@@ -290,7 +289,7 @@ MS2_REPLACE_METHOD(0x140E87EC0, UISidePopupTalk, FUN_140e87ec0, 138, 0x3BC35300)
 void UISidePopupTalk::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
     UIHeadUpDisplay::vfunc_45(pRetVal, strMethod, pArgs);
-    if (FUN_140184310(strMethod, "getExpireDuration"))
+    if (strMethod == "getExpireDuration")
     {
         __int64 nExpire = FUN_140718320(pArgs->FUN_1422b8f40());
         __int64 nNow = GetServerTime();

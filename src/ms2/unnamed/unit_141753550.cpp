@@ -52,7 +52,6 @@ public:
 };
 int FUN_140ad02f0(int a, int b);                        // combine
 unsigned int FUN_141568f60(class NiAVObject*);   // C3: was FUN_141568f60
-efd::MemHint FUN_140876480(int cat);                    // memory category hint (returned through a hidden slot)
 class NiMaterialProperty   // C3: member view for the former free stand-ins
 {
 public:
@@ -136,7 +135,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
 // @0x141753990   factory: EE_NEW(category) ShadowCullingProcess
 ShadowCullingProcess* FUN_141753990()
 {
-    return new (FUN_140876480(0)) ShadowCullingProcess();
+    return new (efd::MemHint(efd::MemHint::NONE)) ShadowCullingProcess();
 }
 
 // @0x141753a00

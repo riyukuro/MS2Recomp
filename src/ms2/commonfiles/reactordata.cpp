@@ -65,8 +65,9 @@ int FUN_140197350(Unk_140165cf0*, const char*, int nDefault);           // int a
 unsigned int FUN_140197390(Unk_140165cf0 *, char const *, unsigned int);  // C3: the definition's signature
 float FUN_1401973d0(Unk_140165cf0*, const char*, float fDefault);
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);
-int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>& rOut);   // list attribute
-void FUN_140178270(const CStringA& str, std::vector<int>& rOut, const char* pszSep);   // split into ints
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
+template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140178270 (std::vector<int>)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 Unk_140165cf0 * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
 int FUN_140768010(int, int);                                              // random index in [0, count)
@@ -171,13 +172,13 @@ ReactorData::~ReactorData()
 bool ReactorData::Load(Unk_140165cf0* pNode)
 {
     XmlGetAttr((class TiXmlElement*)(pNode), "id", m_nId);
-    FUN_1401788f0(pNode, "createAnimation", m_createAnims);
-    FUN_1401788f0(pNode, "reactAnimation", m_reactAnims);
+    XmlTokenList(pNode, "createAnimation", m_createAnims);
+    XmlTokenList(pNode, "reactAnimation", m_reactAnims);
     m_nReactTimeMSec = FUN_140197350(pNode, "reactTimeMSec", 15000);
     m_fReactDistance = FUN_1401973d0(pNode, "reactDistance", 0);
     std::vector<int> stateIds;
     CStringA strStates = Unk_ReadString((class Unk_XmlNode*)(pNode), "reactorStateList", CStringA(""));
-    FUN_140178270(strStates, stateIds, ", []");
+    XmlSplit(strStates, stateIds, ", []");
     m_strConnectedEffect = Unk_ReadString((class Unk_XmlNode*)(pNode), "connectedEffect", CStringA(""));
     m_nGameEventId = FUN_140197390(pNode, "gameEventId", 0);
     for (std::vector<int>::iterator it = stateIds.begin(); it != stateIds.end(); ++it)

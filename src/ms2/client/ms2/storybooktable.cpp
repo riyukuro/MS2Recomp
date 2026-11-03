@@ -49,7 +49,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // 
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 CString FUN_14028d1f0(const char* pszText);                 // "" when null
-CString FUN_140536a50(const char* pszFormat, const CString& strArg0);       // fmt::format("..{0}", arg)
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
@@ -131,7 +131,7 @@ void CStoryBookTable::Load()
                 Unk_SplitA(const_cast<CStringA&>(strImage), (ATL::CAtlArray<CStringA>*)&(arrPath), "/");
                 if (arrPath.GetCount() != 2)
                     continue;
-                CString strDir = FUN_140536a50("StoryBook/{0}", arrPath[0]);
+                CString strDir = Unk_SocketFormat<CString>("StoryBook/{0}", arrPath[0]);
                 spPage->m_strImage = FUN_140cc2ad0(strDir, arrPath[1]);
             }
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spPage->m_strText);

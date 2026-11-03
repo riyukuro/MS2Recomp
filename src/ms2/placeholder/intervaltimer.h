@@ -1,7 +1,6 @@
 // intervaltimer.h - PLACEHOLDER for the game's 8-byte tick interval timer (real name unknown). NOT an original header.
 // ctor 0x140517b00, Init 0x140268840 (arm: remember the tick), Check 0x140268870 (nonzero at most once per interval,
-// re-arms). unit_140268010.cpp (the owner of Init/Check) and a few older units keep unit-local copies of the class
-// (Unk_140517b00, Unk_AdTick, Unk_HlTimer, ...); new units include this one.
+// re-arms). unit_140268010.cpp (the owner of Init/Check) keeps a unit-local copy (Unk_HlTimer); the rest include this.
 #pragma once
 
 #include "ms2/ms2layout.h"

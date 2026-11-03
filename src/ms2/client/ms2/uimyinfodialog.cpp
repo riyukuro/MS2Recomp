@@ -64,6 +64,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
 // ---- unit-local stand-ins for the unrecovered callee types ----
 
 class ASDialog : public ASMovieClip                             // the movie root
@@ -1153,7 +1155,7 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
             }
         }
     }
-    if (MS2Ptr<ASButton> spReset = FUN_140bb4b10("m_resetStatPoint"))
+    if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_resetStatPoint"))
         spReset->FUN_1422c1fe0(nUsed > 0 ? 1 : 0);
     if (MS2Ptr<ASMovieClip> spRemain = GetChild<ASMovieClip>("m_remainPoint"))
     {

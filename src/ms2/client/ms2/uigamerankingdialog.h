@@ -267,8 +267,6 @@ public:
     void FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, int nType);                           // party member tooltip
     bool FUN_140e359e0(int nBtn, const CMsgBoxData& data);                                         // move-home confirm result
 
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);                                     // bind a list child
-    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);                                      // bind a tab child
     MS2Ptr<Unk_RankInput> FUN_140e35bd0(const CString& strName);                                  // find the search input
 
 private:

@@ -41,7 +41,7 @@ extern char DAT_142f6301c[];                        // "," the field separator o
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CLogString* GetLogString();
-void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
+template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
 int FUN_1406516b0();                                // the server kind
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_140188f50(const char* psz, int n);
@@ -91,7 +91,7 @@ void CSoapClient::FUN_14176fe30(CString strError)
 {
     m_strError = strError;
     const char* pszError = strError;
-    FUN_1403a1280(GetLogString(), 1, 0x13, L"[E] soap : {0}", pszError);
+    Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"[E] soap : {0}", pszError);
 }
 
 // Sends the upload and its image (the blueprint case) of the current UGC manager upload, file by file.

@@ -38,6 +38,7 @@ class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);   // 0x140a53190
     void* m_storage[14];
 };
 
@@ -156,7 +157,7 @@ void StateDead::vfunc_4(StateData* pData)
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
             ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strReviveEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
-            ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+            ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         }
         else
@@ -164,7 +165,7 @@ void StateDead::vfunc_4(StateData* pData)
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
             ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strDeathEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
-            ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+            ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
         }
         if (reinterpret_cast<PC*>(FUN_1417b84b0())->IsRevivalBlocked() != 0)
@@ -241,7 +242,7 @@ void StateDeadNPC::vfunc_4(StateData* pData)
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
-        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
     reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_14123fbf0(5);

@@ -36,6 +36,8 @@
 #include "ms2/commonfiles/specialeffectfunctionmanager.h"
 #include "ms2/commonfiles/maidgradejockpottable.h"
 #include "ms2/placeholder/cmanufacturemanager.h"
+#include "ms2/placeholder/ms2propertyvisualizationservice.h"
+#include "ms2/placeholder/coptimizer.h"
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
 #include "ms2/placeholder/cusermaidmanager.h"
 #include "ms2/placeholder/termtagmanagercli.h"
@@ -407,7 +409,7 @@ Unk_SingletonObj80* FUN_1414a5880();
 Unk_SingletonObj* FUN_1414a5890();
 class Unk_MiscThis {
 public:
-    unsigned long long FUN_1414a55e0(); unsigned long long FUN_1414a55f0(); unsigned long long FUN_1414a5600(); void* FUN_1414a5640(); int* FUN_1414a5650(); int* FUN_1414a5660(); const char* FUN_1414a5680(); int FUN_1414a5a30();
+    unsigned long long FUN_1414a55e0(); unsigned long long FUN_1414a55f0(); unsigned long long FUN_1414a5600(); void* FUN_1414a5640(); int* FUN_1414a5650(); int* FUN_1414a5660();
 };
 // ---- misc externs ---------------------------------------------------------------------------------------------------------
 extern char DAT_143ae0130; extern int DAT_143a01f90; extern int DAT_143a284b0; extern char* DAT_143afa980; extern int DAT_143ae2b48;
@@ -1842,7 +1844,7 @@ int* Unk_MiscThis::FUN_1414a5660() { return &DAT_143a284b0; }
 int FUN_1414a5670(Unk_ShutdownValue30* pThis) { return pThis->m_value; }
 MS2_REPLACE(0x1414A5670, FUN_1414a5670, 14, 0x828204CF);
 // @0x1414a5680
-const char* Unk_MiscThis::FUN_1414a5680() { return "MS2PropertyVisualizationService"; }
+const char* MS2PropertyVisualizationService::GetDisplayName() const { return "MS2PropertyVisualizationService"; }
 // @0x1414a5690
 int FUN_1414a5690(CFileSystem* pThis) { return pThis->archiveMode; }
 MS2_REPLACE(0x1414A5690, FUN_1414a5690, 17, 0x05FDCC0A);
@@ -1975,7 +1977,7 @@ MS2_REPLACE(0x1414A59F0, FUN_1414a59f0, 31, 0x4A3FA102);
 void FUN_1414a5a10(char* pThis) { reinterpret_cast<efd::AtomicRefCount*>(pThis + 0x18)->operator++(); }
 MS2_REPLACE(0x1414A5A10, FUN_1414a5a10, 31, 0x09A43922);
 // @0x1414a5a30
-int Unk_MiscThis::FUN_1414a5a30() { return DAT_143ae2b48; }
+int COptimizer::FUN_1414a5a30() { return DAT_143ae2b48; }
 // @0x1414a5a40
 int FUN_1414a5a40(CStringW sPath) { return _wmkdir(sPath); }
 // @0x1414a5a80

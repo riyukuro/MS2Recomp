@@ -45,6 +45,8 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/commonfiles/fieldmetatable.h"
 #include "ms2/client/ms2/worldservice.h"
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -398,7 +400,7 @@ void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
         FUN_141a6b8f0();
     FUN_140841420(strFilter);
     strFilter.Remove(L' ');
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_npcList");
+    MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_npcList");
     if (list == 0)
         return;
     bool bEmpty = strFilter.IsEmpty();

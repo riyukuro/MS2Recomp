@@ -44,12 +44,6 @@ static CString s_strWillUpdatePos = "WillUpdatePos";
 class Unk_ItemEquipData : public CItemData {};
 // CEquipItem::FUN_1411dc7f0's record is the item's CItemData too.
 struct Unk_EquipItemData : public CItemData {};
-// CItemData::FUN_14053ec70 returns the <customize> block of the model data (citemdata.h declares it void).
-class Unk_CustomizeItemData : public CItemData
-{
-public:
-    ItemModelHead* FUN_14053ec70();
-};
 
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -305,16 +299,16 @@ unsigned Customize::EditItems::GetFlags()
     unsigned nFlags = 0;
     if (m_spData == 0)
         return nFlags;
-    if (static_cast<Unk_CustomizeItemData*>(m_spData.operator->())->FUN_14053ec70()->FUN_140547130()) {
+    if (m_spData.operator->()->FUN_14053ec70()->FUN_140547130()) {
         CItemMorphController* pMorph = NiDynamicCast(CItemMorphController, m_spController);
         if (pMorph)
             nFlags |= 2;
         else
             nFlags |= 1;
     }
-    if (static_cast<Unk_CustomizeItemData*>(m_spData.operator->())->FUN_14053ec70()->FUN_140547150())
+    if (m_spData.operator->()->FUN_14053ec70()->FUN_140547150())
         nFlags |= 4;
-    if (static_cast<Unk_CustomizeItemData*>(m_spData.operator->())->FUN_14053ec70()->FUN_140547170())
+    if (m_spData.operator->()->FUN_14053ec70()->FUN_140547170())
         nFlags |= 8;
     return nFlags;
 }
@@ -1561,7 +1555,7 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
     CItemData* pData = static_cast<CItemData*>(spCap->FUN_1411dc7f0());
     if (pData == 0)
         return;
-    if (!static_cast<Unk_CustomizeItemData*>(pData)->FUN_14053ec70()->FUN_1405471b0())
+    if (!pData->FUN_14053ec70()->FUN_1405471b0())
         return;
     CCapExtraData* pExtra = static_cast<CCapExtraData*>(static_cast<CPtred*>(spCap->GetItem()->FUN_140527870()));
     if (pExtra == 0)

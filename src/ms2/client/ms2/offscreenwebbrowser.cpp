@@ -78,7 +78,7 @@ CStringW XmlWide(const char* pszUtf8);          // UTF-8 -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);     // wide -> multi-byte
 int FUN_1407181d0(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
 int FUN_141349e30(const CStringA& strKind);     // banner link kind
-UIAttendGiftDialog* FUN_140c053e0(int nUIClassID);             // the dialog of a class id (FindDTDialog<UIAttendGiftDialog>)
+template <class T> T* FindDTDialog(int nId);                   // the dialog of a class id (<UIAttendGiftDialog> 0x140c053e0)
 UIMeratMarketDialog* FUN_140bfed50(int nUIClassID);            // the dialog of a class id
 UIWebBrowser* FUN_140c43790(int nUIClassID);    // the dialog of a class id
 
@@ -829,7 +829,7 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
         } else if (strUI == "attend") {
             CStringA strDay(message->GetArgumentList()->GetString(1).c_str());
             int nDay = FUN_1407181d0(strDay);
-            UIAttendGiftDialog* pDialog = FUN_140c053e0(0x4eb8);
+            UIAttendGiftDialog* pDialog = FindDTDialog<UIAttendGiftDialog>(0x4eb8);
             if (pDialog != NULL) {
                 if (nDay != 0) {
                     pDialog->SetEventId(nDay);

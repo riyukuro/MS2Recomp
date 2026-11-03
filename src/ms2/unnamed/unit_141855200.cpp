@@ -14,7 +14,6 @@ struct Unk_EffectDummyRecord
 };
 
 bool FUN_141855250(const Unk_EffectDummyRecord&, const Unk_EffectDummyRecord&);
-extern bool FUN_1401c0090(const CString&, const CString&);
 
 // @0x141855200
 bool FUN_141855200(const Unk_EffectDummyRecord& a, const Unk_EffectDummyRecord& b)
@@ -25,7 +24,7 @@ bool FUN_141855200(const Unk_EffectDummyRecord& a, const Unk_EffectDummyRecord& 
 // @0x141855250
 bool FUN_141855250(const Unk_EffectDummyRecord& a, const Unk_EffectDummyRecord& b)
 {
-    return a.m_effect.operator==(b.m_effect) & FUN_1401c0090(a.m_recordName, b.m_recordName) &
+    return a.m_effect.operator==(b.m_effect) & (a.m_recordName == b.m_recordName) &
            (a.m_recordValue == b.m_recordValue);
 }
 

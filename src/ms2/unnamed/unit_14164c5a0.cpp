@@ -110,12 +110,14 @@ struct Unk_MeshSource {
     virtual Unk_MeshData* GetMesh();         // slot 40
 };
 
+class NxTriangleMeshShape;
+
 struct Unk_Tri16 { unsigned short v[3]; };
 struct Unk_Tri32 { unsigned v[3]; };
 
 class cPhysXTriangleMeshWrapper : public iFaceVertexMesh {
 public:
-    cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* axisMap, float scale);
+    cPhysXTriangleMeshWrapper(const NxTriangleMeshShape& source, const cCoordinateMapping& mapping, float scale);
     virtual unsigned __int64 vfunc_1();
     virtual unsigned __int64 vfunc_2();
     virtual int vfunc_3(int tri, int k);
@@ -131,11 +133,11 @@ public:
 MS2_CHECK_SIZE(cPhysXTriangleMeshWrapper, 0x40);
 
 // @0x14164c5a0
-cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* axisMap, float scale) {
-    NxMat34 xf = src->GetXform();
+cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(const NxTriangleMeshShape& source, const cCoordinateMapping& mapping, float scale) {
+    NxMat34 xf = ((Unk_MeshSource*)&source)->GetXform();
     *reinterpret_cast<NxMat33*>(&xf) *= scale;
     *reinterpret_cast<NxVec3*>(&xf.j0) *= scale;
-    Unk_MeshData* mesh = src->GetMesh();
+    Unk_MeshData* mesh = ((Unk_MeshSource*)&source)->GetMesh();
     NxTriangleMeshDesc d;
     mesh->Fill(&d);
     verts.reserve((unsigned)(d.nVerts * 3));
@@ -154,7 +156,7 @@ cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* a
         p += d.vStride;
     }
     for (i = 0; i != d.nVerts; ++i)
-        ((class cCoordinateMapping*)(int*)(axisMap))->applyTo(&verts[(__int64)(i * 3)]);
+        ((cCoordinateMapping*)&mapping)->applyTo(&verts[(__int64)(i * 3)]);
     tris.reserve((unsigned)(d.nTris * 3));
     p = d.tris;
     if ((d.flags & 2) != 0) {

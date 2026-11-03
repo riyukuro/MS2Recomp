@@ -45,6 +45,7 @@ void* FUN_1423b1080(Unk_MachineIDLocal* pLocal)
 // the Windows volume and a weighted sum of the two make the 16-byte hardware id at +0x18; the 16-byte support id at +8
 // is a GUID kept in HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CxSupportId (made and stored on first use), or
 // the hardware id when the key cannot be opened.
+// MS2-FUNCTIONAL: /O2 body, the exe's register and frame layout are not reproduced yet.
 // @0x1423b10a0
 void FUN_1423b10a0(Unk_MachineIDLocal* pLocal)
 {
@@ -225,7 +226,8 @@ BOOL CALLBACK FUN_1423ae840(HWND hWnd, LPARAM lParam)
     GetWindowTextA(hWnd, reinterpret_cast<char*>(text), 0x200);
     for (int i = 0; i < pTable->m_count; ++i)
     {
-        if (text[0] != 0 && _mbsicmp(s_pcBangProcess, reinterpret_cast<const unsigned char*>(pTable->m_exe[i])) == 0
+        if (pTable->m_title != NULL && text[0] != 0
+            && _mbsicmp(s_pcBangProcess, reinterpret_cast<const unsigned char*>(pTable->m_exe[i])) == 0
             && _mbsstr(text, reinterpret_cast<const unsigned char*>(pTable->m_title[i])) != NULL)
         {
             s_pcBangCode = pTable->m_code[i];
@@ -242,6 +244,7 @@ BOOL CALLBACK FUN_1423ae840(HWND hWnd, LPARAM lParam)
 }
 
 // The PC-bang code of this computer: the code of the first known cafe program with a matching window, 0 if none.
+// MS2-FUNCTIONAL: /O2 body, the exe inlines the window walk differently; the frame is not reproduced yet.
 // @0x1423ae960
 unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal)
 {

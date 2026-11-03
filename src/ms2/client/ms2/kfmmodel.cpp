@@ -92,7 +92,7 @@ int FUN_14123c580(void* p);
 void* FUN_141200850(CEquipModel* p);
 
 // ---- out-of-unit callees ----
-void* FUN_1405a8ed0(void* sp);   void FUN_1405a85c0(void* sp);   void* FUN_1409849b0(void* sp);
+void FUN_1405a85c0(void* sp);   void* FUN_1409849b0(void* sp);
 void* GetItem(void* owner, void* out);   void* FUN_14052cd70(void* p);
 int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);class CItemData   // C3: member view for the former free stand-ins
 {
@@ -144,7 +144,6 @@ void FUN_141422b30(struct Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes
 void FUN_1409f76f0(void* p, void* node);   void FUN_1409fabf0(void* p, void* v);
 
 bool FUN_1401c0090(const CString& a, const CString& b);
-void FUN_140194470(void* dst, const void* src);
 bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* v);
@@ -347,7 +346,7 @@ int CKfmModel::vfunc_4(CString strPath)
         return 1;
     ApplyAnimNames();
     if (FUN_1411cf2d0(reinterpret_cast<egf::EntityManager*>(TSingleton<EntityWorldManager>::GetInstance()), m_spEntity.operator egf::Entity*(), 0) != 0)
-        ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->AddModel(this);
+        (reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->AddModel(this);
     return 1;
 }
 
@@ -464,7 +463,7 @@ void CKfmModel::vfunc_10()
     m_nUpdateHR = (vfunc_9() == 0);
     if (m_nUpdateHR != 0)
         return;
-    if (((class CItemData*)(void*)(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dc7f0()))->FUN_14053cfd0()) {
+    if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->FUN_1411dc7f0()))->FUN_14053cfd0()) {
         {
             CString s("HR:0");
             FUN_141167840((NiAVObject*)vfunc_14(), s, FUN_141422340((struct Unk_PickTarget*)(this), 0));
@@ -495,7 +494,7 @@ void CKfmModel::vfunc_11()
     m_nUpdateTransform = (vfunc_9() == 0);
     if (m_nUpdateTransform != 0)
         return;
-    void* pPartList = ((void*)((class CItem*)(void*)(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem().operator->()))->FUN_140527870());
+    void* pPartList = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->FUN_140527870());
     if (pPartList == 0)
         return;
     for (int i = 0; i < 3; ++i) {
@@ -565,7 +564,7 @@ void CKfmModel::vfunc_13()
     Unk_ModelActor* pActor = (Unk_ModelActor*)FUN_141200820((class CEquipModel*)(this));
     if (pActor == 0)
         return;
-    MS2Ptr<CItem> spItem = ((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem();
+    MS2Ptr<CItem> spItem = (reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem();
     if (spItem.operator!() != 0)
         return;
     int nResult = reinterpret_cast<CEquipment*>(((class PC*)(void*)(pActor))->FUN_1416561a0())->FUN_1411e99a0(spItem->FUN_140527a20(),
@@ -766,19 +765,14 @@ void CKfmModel::vfunc_28(void* pPos, void* pMatrix3, float fScale)
     vfunc_29(pPos, &x, fScale);
 }
 
-// NiPoint3(const efd::Point3&), NiPoint3::operator= and NiMatrix3(const efd::Matrix3&) as the exe calls them
-struct Unk_KfmPoint3 { float x, y, z; };
+// NiMatrix3(const efd::Matrix3&) as the exe calls it
 struct Unk_KfmMatrix3 { float m00, m01, m02, m10, m11, m12, m20, m21, m22; };
-void FUN_14027dcf0(Unk_KfmPoint3* p, const void* pPoint);
-void FUN_14097faa0(NiPoint3* p, const Unk_KfmPoint3* pSrc);
 
 // @0x14143fd30
 void CKfmModel::vfunc_30(void* pPos, void* pRot, float fScale)
 {
     NiTransform kXf;
-    Unk_KfmPoint3 kPos;
-    FUN_14027dcf0(&kPos, pPos);
-    FUN_14097faa0(&kXf.m_Translate, &kPos);
+    kXf.m_Translate = *reinterpret_cast<const efd::Point3*>(pPos);
     Unk_KfmMatrix3 kRot;
     reinterpret_cast<Unk_NiMatrix3*>(&kRot)->Unk_NiMatrix3::Unk_NiMatrix3(*(const Unk_EfdMatrix3*)pRot);
     kXf.m_Rotate = *(NiMatrix3*)&kRot;
@@ -958,8 +952,8 @@ void CKfmModel::ApplyAnimNames()
 void CKfmModel::FUN_141440bc0()
 {
     if (CFG->m_bPhysics == 0) return;
-    if (((class CItemData*)(void*)(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->FUN_1411dc7f0()))->FUN_14053cfd0()) {
-        void* pData = ((void*)((class CItem*)(void*)(((CEquipItem*)FUN_1405a8ed0(&m_spOwner))->GetItem().operator->()))->FUN_140527870());
+    if (((class CItemData*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->FUN_1411dc7f0()))->FUN_14053cfd0()) {
+        void* pData = ((void*)((class CItem*)(void*)((reinterpret_cast<const MS2Ptr<CEquipItem>&>(m_spOwner).operator->())->GetItem().operator->()))->FUN_140527870());
         if (pData != 0) {
             float fScale = ((float*)((char*)pData + 0x58))[0];
             efd::Point3 kPos = ((efd::Point3*)((char*)pData + 0x60))[CFG->m_nIndex];

@@ -9,15 +9,10 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "radialblureffectparam.h"
 #include <NiFixedString.h>
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// Post-processing service (singleton 0x1409a8b20): enable step by id.
-class Unk_PostProcessSvc
-{
-public:
-    void FUN_1416a3920(int nId, bool bOn);
-};
 class Unk_AeFeatureMgr   // C3: static member view for the former free stand-ins
 {
 public:
@@ -55,7 +50,7 @@ RadialBlurEffect::RadialBlurEffect(int nId, const CPostEffectParam* pParam)
 void RadialBlurEffect::vfunc_1()
 {
     CScreenEffectBase::vfunc_1();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(9, true);
+    ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(9, true);
 }
 MS2_REPLACE_METHOD(0x1416ec280, RadialBlurEffect, vfunc_1, 45, 0x57C7625C);
 
@@ -63,7 +58,7 @@ MS2_REPLACE_METHOD(0x1416ec280, RadialBlurEffect, vfunc_1, 45, 0x57C7625C);
 void RadialBlurEffect::vfunc_4()
 {
     CScreenEffectBase::vfunc_4();
-    ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3920(9, false);
+    ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(9, false);
 }
 MS2_REPLACE_METHOD(0x1416ec2c0, RadialBlurEffect, vfunc_4, 45, 0x829D7CCC);
 

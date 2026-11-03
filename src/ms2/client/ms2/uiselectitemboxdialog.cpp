@@ -178,7 +178,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
             list.PushValue(ASObj(2).FUN_1422bb890());
             continue;
         }
-        CString strBind = m_binder.FUN_140d43510(reinterpret_cast<Unk_PetBoxDropVec&>(m_rewards).FUN_140c461b0(i));
+        CString strBind = m_binder.FUN_140d43510(static_cast<ItemAble*>(&m_rewards[i]));
         if (!strBind.IsEmpty()) {
             ASObj entry(2);
             entry.FUN_1407cba60("bindID", strBind);
@@ -288,7 +288,7 @@ void UISelectItemBoxDialog::FUN_140f9a700()
             if (nIdx >= m_rewards.size())
                 continue;
             ((Unk_SibSlot*)m_selectedSlots[i])->vfunc_3(true);
-            ((Unk_SibSlot*)m_selectedSlots[i])->Invoke("setData", m_binderSel.FUN_140d43510(reinterpret_cast<Unk_PetBoxDropVec&>(m_rewards).FUN_140c461b0(nIdx)));
+            ((Unk_SibSlot*)m_selectedSlots[i])->Invoke("setData", m_binderSel.FUN_140d43510(static_cast<ItemAble*>(&m_rewards[nIdx])));
         }
     }
     reinterpret_cast<ASMovieClip*>(m_okButton.operator->())->FUN_1422c1fe0(selected.GetCount() == m_nSelectCount);

@@ -30,6 +30,8 @@
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- out-of-unit callees (names describe uses) ----
@@ -55,7 +57,6 @@ Unk_PnScriptPtr FUN_1408564b0(int nQuestId, int n);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
-class Unk_PnButton : public ASButton { public: };
 class Unk_PnRoot : public AScript {};
 class Unk_PnActor { public: void vfunc_4(int, int, int); };
 UIFameContentsNotify* FUN_140e77d80(int nType);
@@ -294,7 +295,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         spScript->SetTextHTMLW(strText);
     }
     BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.GetCount() - 1);
-    if (MS2Ptr<Unk_PnButton> spEnd = FUN_140bb4b10("m_end"))
+    if (MS2Ptr<ASButton> spEnd = GetChild<ASButton>("m_end"))
     {
         if (!bLast)
         {
@@ -305,7 +306,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         else
             spEnd->vfunc_3(0);
     }
-    if (MS2Ptr<Unk_PnButton> spNext = FUN_140bb4b10("m_next"))
+    if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_next"))
     {
         CStringW strKey(L"s_field_quest_talk_next");
         if (bLast)

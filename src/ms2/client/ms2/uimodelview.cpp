@@ -61,13 +61,6 @@ public:
 #define DAT_143b01a60 (*(efd::Point3*)&efd::Point3::ZERO)          // C3: was extern efd::Point3 DAT_143b01a60
 float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
 NiPoint3& FUN_14097faa0(NiPoint3* pDst, NiPoint3&& kSrc);       // NiPoint3 move assignment (out of line in the exe)
-// The exe's NiPoint3 copies and assignments are out-of-line calls; this view of a NiPoint3 member declares them.
-struct Unk_MvPoint3
-{
-    float x, y, z;
-    Unk_MvPoint3(const efd::Point3& pt);                        // 0x14027dcf0
-    Unk_MvPoint3& operator=(Unk_MvPoint3&& pt);                 // 0x14097faa0
-};
 NiPoint3& FUN_14097fad0(NiPoint3* pDst, const NiPoint3& kSrc);  // NiPoint3 copy assignment (out of line in the exe)
 extern efd::Point3 DAT_143a08cf8;                                // (0, 0, 1)
 class CLogString* GetLogString();
@@ -255,9 +248,9 @@ int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
     fMax = fMax < fDist ? fMax : fDist;
     NiPoint3 kDir = -m_spCamera->GetWorldDirection();
     m_nZoomState = 0;
-    reinterpret_cast<Unk_MvPoint3&>(m_kZoomStart) = DAT_143b01a60;
-    reinterpret_cast<Unk_MvPoint3&>(m_kNearPosition) = kTarget + kDir * fMin;
-    reinterpret_cast<Unk_MvPoint3&>(m_kFarPosition) = kTarget + kDir * fMax;
+    m_kZoomStart = DAT_143b01a60;
+    m_kNearPosition = static_cast<const efd::Point3&>(kTarget + kDir * fMin);
+    m_kFarPosition = static_cast<const efd::Point3&>(kTarget + kDir * fMax);
     m_kCamera.m_fMinDistance = fMin;
     m_kCamera.m_fMaxDistance = fMax;
     m_kCamera.m_nSteps = m_kCamera.m_nSteps < 1 ? 1 : m_kCamera.m_nSteps;
@@ -279,9 +272,9 @@ void UIModelView::vfunc_17(const NiPoint3& kPivot)
 {
     if (m_spCamera == 0)
         return;
-    reinterpret_cast<Unk_MvPoint3&>(m_kRotation) = DAT_143b01a60;
+    m_kRotation = DAT_143b01a60;
     const NiPoint3& kTranslate = m_spCamera->GetTranslate();
-    reinterpret_cast<Unk_MvPoint3&>(m_kBackupTranslate) = kTranslate;
+    m_kBackupTranslate = static_cast<const efd::Point3&>(kTranslate);
     FUN_14097fad0(&m_kBackupCenter, kPivot);
     FUN_14097faa0(&m_kBackupUp, m_spCamera->GetWorldUpVector());
     FUN_140e68a40(GetLogString(), 0xc, 0x13, L"UIModelView::m_backupTranslate: {0}, {1}, {2}",

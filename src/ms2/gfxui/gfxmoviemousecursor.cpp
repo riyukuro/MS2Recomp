@@ -15,7 +15,7 @@
 
 #include "hook/ms2hook.h"
 
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS object in an ASUIComponent
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS object in an ASUIComponent
 
 // @0x1422f2600
 GFxMovieMouseCursor::GFxMovieMouseCursor()
@@ -72,7 +72,7 @@ void GFxMovieMouseCursor::vfunc_4(void* pMovie, const char* szEvent, const Scale
         if (nArgs > 1) {
             Scaleform::GFx::Value vRoot(pArgs[0]);
             Scaleform::GFx::Value vCursor(pArgs[1]);
-            m_90 = FUN_140acca70(m_18, vRoot);
+            m_90 = Unk_ASCreate<ASUIComponent>(m_18, vRoot);
             MS2Ptr<ASMouseCursor> spCursor = FUN_1422f2f30(m_18, vCursor);
             if (spCursor)
                 FUN_1422be560(spCursor);

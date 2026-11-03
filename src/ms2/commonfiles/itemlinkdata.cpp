@@ -29,7 +29,7 @@
 // ---- out-of-unit callees ----
 void FUN_14028cf00(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const CStringW& strOpen, const CStringW& strClose);   // splits by the delimiters
 CString FUN_14016a600(const wchar_t* sz, int n);                                // wide to narrow
-void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char* pszSep);   // numbers of a "," list
+void ParseInt64List(CString& str, ATL::CAtlArray<__int64>& rOut, const char* pszSep);   // numbers of a "," list
 CString FUN_1407194b0(__int64 n);                                               // number to string
 
 // the per-type parsers (defined below)
@@ -92,7 +92,7 @@ void FUN_1405bd720(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData
         if (strTag.IsEmpty())
             continue;
         ATL::CAtlArray<__int64> arrValues;
-        FUN_1402a5010(strTag, &arrValues, ",");
+        ParseInt64List(strTag, arrValues, ",");
         if (arrValues.GetCount() > 3)
         {
             int nType = (int)arrValues[2];

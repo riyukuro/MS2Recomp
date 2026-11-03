@@ -202,7 +202,7 @@ __int64 FUN_140288770(__int64 self, __int64 out, __int64 idx) noexcept
 }
 
 // vector<__int64>::_Tidy, written over the exe's accessor instances (view structs; the callees auto-bind).
-__int64 FUN_1402875b0(__int64, __int64, __int64);     // _Destroy
+void FUN_1402875b0(__int64, __int64, __int64);        // _Destroy
 struct Unk_CsI64Vec {
     void FUN_140289670();
 };

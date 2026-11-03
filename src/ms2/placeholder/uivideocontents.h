@@ -43,8 +43,7 @@ public:
     void FUN_1422e9910(int nX, int nY);             // setScale(x, y)
     void FUN_1422e9960(unsigned nX, unsigned nY);   // setScale(x, y) (unsigned)
     void FUN_1422e99b0(float fX, float fY);         // setScale(x, y)
-    // width: ASDisplayObject::FUN_1422c1500 (inherited)
-    int FUN_1422c1530();                // ASDisplayObject: height
+    // width / height: ASDisplayObject::FUN_1422c1500 / FUN_1422c1530 (inherited)
 };
 MS2_CHECK_SIZE(Unk_ASVideoPlayer, 0x80);
 

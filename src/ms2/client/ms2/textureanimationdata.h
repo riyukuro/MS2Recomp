@@ -17,7 +17,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC (texture handle)
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture> (texture handle)
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/client/ms2/layer.h"
 #include "ms2/client/ms2/itempickinghelper.h"       // Unk_PickMeshPtr (scene node pointer)
@@ -56,8 +56,8 @@ public:
     bool FUN_141847e30(Unk_140165cf0* pNode);                   // parse "target" and the <texture> list; false when empty
     int FUN_141847fe0(const CString& strDir);                   // all frames loaded
     void FUN_141848080(const CString& strDir, int nFlags);      // load all frames
-    Unk_PPSmartC FUN_141848110(unsigned int nFrame, const CString& strDir);   // base texture of a frame
-    Unk_PPSmartC FUN_141848200(unsigned int nFrame, const CString& strDir);   // control texture of a frame
+    efd::SmartPointer<NiTexture> FUN_141848110(unsigned int nFrame, const CString& strDir);   // base texture of a frame
+    efd::SmartPointer<NiTexture> FUN_141848200(unsigned int nFrame, const CString& strDir);   // control texture of a frame
 
 public:
     CString m_strTarget;                                        // +0x18 "target" (node name; default "Scene Root"-style first face part)
@@ -78,8 +78,8 @@ public:
     void FUN_141848650();                                       // stop: remove the layer, reset the clock
     bool FUN_141848740(int nElapsed);                           // advance the clock; false when finished
     void FUN_141848890(unsigned int nFrame);                    // show a frame
-    Unk_PPSmartC FUN_141848bb0(unsigned int nFrame);            // cached base texture of a frame
-    Unk_PPSmartC FUN_141848dc0(unsigned int nFrame);            // cached control texture of a frame
+    efd::SmartPointer<NiTexture> FUN_141848bb0(unsigned int nFrame);            // cached base texture of a frame
+    efd::SmartPointer<NiTexture> FUN_141848dc0(unsigned int nFrame);            // cached control texture of a frame
     NiAVObject* FUN_141849060(const CString& strName);          // find the target node of the owner
     unsigned int FUN_141849150();                               // frame count
     void FUN_141849190();                                       // load every frame's textures
@@ -88,8 +88,8 @@ public:
 public:
     PCBase* m_pOwner;                                           // +0x18
     MS2Ptr<CTextureAnimationData> m_spData;                     // +0x20
-    std::vector<Unk_PPSmartC> m_vecBase;                        // +0x30 base texture per frame (lazy)
-    std::vector<Unk_PPSmartC> m_vecMap;                         // +0x48 control texture per frame (lazy)
+    std::vector<efd::SmartPointer<NiTexture>> m_vecBase;                        // +0x30 base texture per frame (lazy)
+    std::vector<efd::SmartPointer<NiTexture>> m_vecMap;                         // +0x48 control texture per frame (lazy)
     CString m_strDir;                                           // +0x60 texture directory
     int m_nFrame;                                               // +0x68 shown frame (-1: none)
     int m_nState;                                               // +0x6c 0 idle, 1 loading, 2 playing
@@ -131,8 +131,8 @@ public:
     void FUN_14184b170(void* pMap);                             // replace the map texture
 
 public:
-    Unk_PPSmartC m_spBase;                                      // +0x18 base texture
-    Unk_PPSmartC m_spMap;                                       // +0x20 map texture (shader map 0)
+    efd::SmartPointer<NiTexture> m_spBase;                                      // +0x18 base texture
+    efd::SmartPointer<NiTexture> m_spMap;                                       // +0x20 map texture (shader map 0)
     NiPointer<NiTexturingProperty> m_spTexturing;               // +0x28
 };
 MS2_CHECK_SIZE(TextureLayer, 0x30);

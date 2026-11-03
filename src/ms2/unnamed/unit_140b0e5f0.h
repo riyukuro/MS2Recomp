@@ -7,17 +7,9 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/timer.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class PCBase;
-
-// 8-byte millisecond poll timer (the "elapsed since last hit" helper: ctor 0x140517b00, test 0x140268870).
-struct Unk_CoupleTick
-{
-    Unk_CoupleTick();                       // 0x140517b00
-    unsigned m_nInterval;                   // +0
-    unsigned m_nLastTick;                   // +4
-};
-MS2_CHECK_SIZE(Unk_CoupleTick, 8);
 
 // NiPoint3 built from an efd::Point3 (0x14027dcf0).
 struct Vector3;
@@ -56,7 +48,7 @@ public:
     int m_pad_24;
     Timer m_timer;                                          // +0x28
     unsigned m_nEffectId;                                      // +0x60 handle of the spawned effect
-    Unk_CoupleTick m_tick;                                  // +0x64
+    Unk_IntervalTimer m_tick;                               // +0x64
     Unk_CoupleVec m_posEffect;                              // +0x6c
     PCBase* m_pOwner;                                       // +0x78
     int m_bLinked;                                          // +0x80

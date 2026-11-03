@@ -47,7 +47,7 @@ public:
 private:
     int m_70;                                                       // +0x70 the previous target map
     int m_74;                                                       // +0x74 the current target map
-    Unk_PPSmartA m_78;                                              // +0x78 the background texture (NiRenderedTexture smart pointer)
+    efd::SmartPointer<NiRenderedTexture> m_78;                                              // +0x78 the background texture (NiRenderedTexture smart pointer)
 };
 MS2_CHECK_SIZE(UILoadingProgress, 0x80);
 

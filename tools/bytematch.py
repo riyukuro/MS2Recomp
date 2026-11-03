@@ -163,7 +163,7 @@ class Obj:
             nsec, = struct.unpack_from("<H", d, 2)
             symoff, nsym = struct.unpack_from("<II", d, 8)
             opt, = struct.unpack_from("<H", d, 16)
-            sechdr, symsz, secnum_fmt = 20 + opt, 18, "<h"
+            sechdr, symsz, secnum_fmt = 20 + opt, 18, "<H"   # unsigned: cl numbers sections up to 0xFEFF
         strtab = symoff + nsym * symsz
         self.sections = []
         for i in range(nsec):
@@ -197,6 +197,8 @@ class Obj:
                 name = raw.rstrip(b"\0").decode("latin1")
             value, = struct.unpack_from("<I", d, o + 8)
             secnum, = struct.unpack_from(secnum_fmt, d, o + 12)
+            if secnum_fmt == "<H" and secnum >= 0xFF00:        # IMAGE_SYM_DEBUG / ABSOLUTE (-2, -1)
+                secnum -= 0x10000
             typ, sclass, naux = struct.unpack_from("<HBB", d, o + symsz - 4)
             self.syms[i] = (name, value, secnum, typ, sclass)
             if sclass == 3 and naux and value == 0 and 0 < secnum <= nsec and name == self.sections[secnum - 1]["name"]:

@@ -26,7 +26,6 @@
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
             // non-null while the local player is in the world
-class Unk_WorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -179,7 +178,7 @@ void UIBootyPopup::FUN_141031890()
     if (m_7c != 0)
     {
         Vector3 screen;
-        if (reinterpret_cast<Unk_WorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_68, screen))
+        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_68), reinterpret_cast<NiPoint3&>(screen)))
         {
             MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (pEntity.get())

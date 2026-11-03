@@ -32,7 +32,6 @@ public:
     virtual int vfunc_48() { return 0x4ed0; }                           // 48 0x141320530 UI type id
 
     MS2Ptr<Unk_ObjectCreateInput> FUN_140e35bd0(const CString& strName);    // bind a text input child of the movie
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);     // bind a list child of the movie
     void FUN_14131ff70();                                               // refill m_objects from the search text
 };
 MS2_CHECK_SIZE(UIObjectCreateDialog, 0x178);

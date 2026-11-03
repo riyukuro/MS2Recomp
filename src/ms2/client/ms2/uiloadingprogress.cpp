@@ -38,7 +38,7 @@ class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
 class Unk_LpMovie { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 class Unk_LpTexture;
-Unk_LpTexture* FUN_14127c9b0(Unk_PPSmartA* p);                      // smart pointer -> texture
+// efd::SmartPointer<NiRenderedTexture>::operator-> 0x14127c9b0: smart pointer -> texture
 class NiDX9Renderer   // C3: member view for the former free stand-ins
 {
 public:
@@ -52,7 +52,6 @@ public:
     struct IDirect3DBaseTexture9* GetD3DTexture() const;
 };
 int FUN_141277f50();                                                // next UI layer
-WorldService* FUN_1403ed2d0();
 int FUN_1419e0b70(WorldService* pWorld);
 extern int DAT_143af62d4, DAT_143af62d8, DAT_143ab2874;
 extern char DAT_143d6eb58;
@@ -63,15 +62,15 @@ UILoadingProgress::UILoadingProgress()
 {
     m_2c = 0x29;
     m_28 = FUN_141277f50();
-    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
+    WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
 }
 
 // @0x1419df960
 UILoadingProgress::~UILoadingProgress()
 {
-    if (FUN_1403ed2d0() != 0)
+    if (WorldService::GetInstance() != 0)
     {
-        FUN_1403ed2d0()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
+        WorldService::GetInstance()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
     }
 }
 
@@ -88,7 +87,7 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
     m_74 = nMap;
     FUN_14025e7c0()->SetModifier1(1);
     int bShowGuide = 0;
-    Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
         bShowGuide = (unsigned int)(*reinterpret_cast<unsigned short (**)(void*)>(*reinterpret_cast<char**>(pPlayer) + 0x270))(pPlayer)
@@ -178,7 +177,7 @@ void UILoadingProgress::vfunc_2(int nMap, CString strMessage)
 // @0x1419e0280
 void UILoadingProgress::vfunc_16()
 {
-    m_78.Assign(0);
+    m_78 = 0;
 }
 MS2_REPLACE_METHOD(0x1419E0280, UILoadingProgress, vfunc_16, 33, 0xBC0CEDA6);
 
@@ -219,14 +218,14 @@ void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3
         return;
     if (p3 == 0)
         return;
-    if (FUN_140c8f680(&m_78) == 0)
+    if ((NiRenderedTexture*)m_78 == 0)
         return;
     Unk_UISwfEntity_25* pTarget = p2.operator->();
     void* pChild = (*reinterpret_cast<void* (**)(void*, void*)>(*reinterpret_cast<char**>(pTarget) + 0xc0))(pTarget, p3);
     if (pChild != 0)
     {
         FUN_1419e07a0();
-        void* pTex = ((void*)((class NiTexture*)(void*)(FUN_14127c9b0(&m_78)))->GetRendererData());
+        void* pTex = ((void*)((class NiTexture*)(void*)(m_78.operator->()))->GetRendererData());
         if (pTex != 0)
             FUN_14272b7f0(pChild, ((void*)((class NiDX9TextureData*)(void*)(pTex))->GetD3DTexture()));
     }
@@ -250,7 +249,7 @@ int UILoadingProgress::FUN_1419e04f0()
     {
         return m_74;
     }
-    return FUN_1403ed2d0()->FUN_141bd3060();
+    return WorldService::GetInstance()->FUN_141bd3060();
 }
 
 // @0x1419e0550
@@ -271,7 +270,7 @@ bool UILoadingProgress::vfunc_52()
 // @0x1419e0600
 int UILoadingProgress::FUN_1419e0600()
 {
-    return FUN_1419e0b70(FUN_1403ed2d0());
+    return FUN_1419e0b70(WorldService::GetInstance());
 }
 
 // @0x1419e0630
@@ -304,9 +303,9 @@ CString UILoadingProgress::FUN_1419e0710()
 // @0x1419e07a0
 void UILoadingProgress::FUN_1419e07a0()
 {
-    if (FUN_1403ed2d0()->FUN_141bcfc10() == 0)
+    if (WorldService::GetInstance()->FUN_141bcfc10() == 0)
         return;
-    if (FUN_140c8f680(&m_78) == 0)
+    if ((NiRenderedTexture*)m_78 == 0)
         return;
     NiRenderer* pRenderer = ((class NiRenderer*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pRenderer == 0)
@@ -318,7 +317,7 @@ void UILoadingProgress::FUN_1419e07a0()
         void* pBack = ((void*)GetScreenshotBuffer(1));
         if (pBack != 0)
         {
-            Unk_LpTexture* pSrc = FUN_14127c9b0(&m_78);
+            Unk_LpTexture* pSrc = (Unk_LpTexture*)m_78.operator->();
             // Copy(src, dest, srcRect, destRect, filter)
             (*reinterpret_cast<bool (**)(NiRenderer*, void*, void*, void*, void*, int)>(*reinterpret_cast<char**>(pRenderer) + 0x1b0))(
                 pRenderer, pBack, (*reinterpret_cast<void* (**)(void*)>(*reinterpret_cast<char**>(pSrc) + 0xa0))(pSrc), 0, 0, 2);
@@ -331,7 +330,7 @@ void UILoadingProgress::FUN_1419e08b0(int nWidth, int nHeight)
 {
     Unk_PPFmt fmt;
     fmt.b = 3;
-    m_78.Assign(FUN_141d61a80(nWidth, nHeight, static_cast<NiRenderer*>(((void*)NiRenderer::GetRenderer())), &fmt, 0x100));
+    m_78 = (NiRenderedTexture*)FUN_141d61a80(nWidth, nHeight, static_cast<NiRenderer*>(((void*)NiRenderer::GetRenderer())), &fmt, 0x100);
 }
 
 // @0x1419e0920

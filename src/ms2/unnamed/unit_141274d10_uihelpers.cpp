@@ -815,13 +815,12 @@ MS2_REPLACE(0x141276880, FUN_141276880, 246, 0x4A32C7FC);
 // ---- filters ----------------------------------------------------------------------------------------------------------
 class UITalkCinematic : public UISwfEntity { };
 UITalkCinematic* FUN_140a7b2b0(int nId) noexcept;
-bool FUN_1401647e0(const CString&, const CString&) noexcept;
 
 // @0x141276980
 int FUN_141276980()
 {
     UITalkCinematic* pHolder = FUN_140a7b2b0(0x4e40);
-    bool bMatch = pHolder != 0 && FUN_1401647e0(pHolder->FUN_1422db6e0(), s_strEmpty);
+    bool bMatch = pHolder != 0 && pHolder->FUN_1422db6e0() != s_strEmpty;
     if (bMatch)
         return 0;
     return 1;

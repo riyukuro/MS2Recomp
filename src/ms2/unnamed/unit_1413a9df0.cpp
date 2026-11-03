@@ -626,7 +626,7 @@ int CGuideConditionInteractObject::vfunc_3()
     float fDist = pPC->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
     if (fDist > m_fDistance)
         return FUN_1413a55a0(0);
-    if (Unk_GcState28(reinterpret_cast<char*>(pObj)) != m_nState)
+    if (pObj->FUN_1413b5600() != m_nState)
         return FUN_1413a55a0(0);
     return FUN_1413a55a0(1);
 }

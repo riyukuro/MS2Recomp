@@ -35,7 +35,6 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 class Unk_DiLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);       // FirstChildElement of the document
 extern int DAT_1439ed00c;                                                     // the table cache is enabled
 
 // The id -> row cache and its lock (the exe constructs them in .text$di, the map first).
@@ -67,7 +66,7 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
     TiXmlDocument doc;
     if (((class Unk_DiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return MS2Ptr<CDropItemData>(0);
-    Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

@@ -48,11 +48,6 @@ struct Unk_SpawnXform
 };
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
 #include <NiTransform.h>
-struct Unk_SpawnNiPoint3 : public Vector3
-{
-    Unk_SpawnNiPoint3(const NiPoint3& pt);                          // 0x14027dcf0
-};
-void FUN_14097faa0(float* pDst, const Unk_SpawnNiPoint3* pSrc);  // NiPoint3::operator=
 
 // @0x1417f6050
 StateSpawn::StateSpawn(PCBase* pOwner) : State(pOwner)
@@ -121,8 +116,8 @@ void StateSpawn::vfunc_3(double fTime)
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             ((efd::Matrix3*)(struct Unk_SpawnRot*)(&xf.m_rotate))->MakeIdentity();
             xf.m_fScale = 1.0f;
-            Unk_SpawnNiPoint3 niPt(m_pOwner->vfunc_18());
-            FUN_14097faa0(xf.m_translate, &niPt);
+            NiPoint3 niPt(static_cast<const efd::Point3&>(m_pOwner->vfunc_18()));
+            reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<NiPoint3&&>(niPt);
             NoticeMessage request;
             request.m_strName = reinterpret_cast<Unk_SpawnEntry*>(reinterpret_cast<CNpc*>(((Unk_SpawnMount*)pMount))->GetNpcData().operator->())->m_strEffect;
             request.m_nObject = 0;

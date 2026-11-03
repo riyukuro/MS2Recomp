@@ -87,7 +87,6 @@ public:
 CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
 CString FUN_1412755b0();
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
-bool FUN_140870fc0(TiXmlDocument* pDoc, const char* pszFile, int nEncoding);
 class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -378,7 +377,7 @@ void COptimizer::LoadOptimization()
         bool bLoaded;
         {
             CString strFile("Optimization.xml");
-            bLoaded = FUN_140870fc0(&doc, FUN_140cc2a00(FUN_1412755b0(), strFile), 0);
+            bLoaded = doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755b0(), strFile), 0);
         }
         if (bLoaded)
         {

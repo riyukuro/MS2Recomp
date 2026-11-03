@@ -60,14 +60,13 @@ public:
 class Unk_QmGameEventRef {
 public:
     ~Unk_QmGameEventRef();                      // 0x1403e5510
-    bool IsNull() const;                        // 0x1403e84c0
-    Unk_QmGameEvent* Get() const;               // 0x1403e8cd0
 private:
     void* m_0;
     void* m_p;
 };
 class Unk_GmEvtKey;
-extern Unk_GmEvtKey DAT_143ab2fc0;
+class GameEventUserValue;
+extern GameEventUserValue DAT_143ab2fc0;
 class Unk_QmGameEventMgr {
 public:
     Unk_QmGameEventRef FUN_14047ca40(const Unk_GmEvtKey& key);
@@ -215,14 +214,14 @@ void CEventMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
     if (m_78 == 2) {
-        Unk_QmGameEventRef ref = reinterpret_cast<Unk_QmGameEventMgr*>(FUN_1401c0d90())->FUN_14047ca40(DAT_143ab2fc0);
-        if (ref.IsNull()) return;
-        int n = ref.Get()->GetStampFlag(FUN_140bfc580());
+        Unk_QmGameEventRef ref = reinterpret_cast<Unk_QmGameEventMgr*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<const Unk_GmEvtKey&>(DAT_143ab2fc0));
+        if (reinterpret_cast<MS2Ptr<StampEventContext>&>(ref).IsNull()) return;
+        int n = reinterpret_cast<MS2Ptr<StampEventContext>&>(ref)->GetStampFlag(FUN_140bfc580());
         if (n == -1) return;
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
         if (notify != 0) {
             CStringW text = FUN_14028dfa0<CStringW>(L"s_stampevent_quest_complete", FUN_1416e4df0(FUN_140bfc580()));
-            notify->FUN_141ac1730(text, n != 0, ref.Get()->m_tag);
+            notify->FUN_141ac1730(text, n != 0, static_cast<Unk_QmGameEvent*>(reinterpret_cast<MS2Ptr<StampEventContext>&>(ref).operator->())->m_tag);
         }
     }
 }

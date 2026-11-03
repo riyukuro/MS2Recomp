@@ -31,13 +31,11 @@
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
 #include "ms2/placeholder/wcformat.h"
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
 // ---- unit-local views of unrecovered callees -----------------------------------------------------------------------
 
 // The confirm button of the bill ("m_buy").
-class Unk_UcbButton : public ASButton
-{
-public:
-};
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern Unk_Inventory g_143ab2a90;
@@ -91,7 +89,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
     CStringW strDesc;
     if (s_cost.m_bPreview != 0)
     {
-        MS2Ptr<Unk_UcbButton> spBuy = FUN_140bb4b10("m_buy");
+        MS2Ptr<ASButton> spBuy = GetChild<ASButton>("m_buy");
         if (spBuy.get() != 0)
             spBuy->FUN_1422cdfb0(L"$s_common_confirm");
         MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title");

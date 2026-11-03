@@ -110,6 +110,7 @@
 #include <set>
 #include "uicommon.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<int>::Get was Unk_UcCfgInt::FUN_1402056b0
 #include "ms2/client/ms2/fielddatacli.h"   // CFieldDataCli (WorldService::FUN_141bd30a0)
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/client/ms2/partymanager.h"
@@ -1191,25 +1192,22 @@ class Unk_UcItemPtr
 {
 public:
     ~Unk_UcItemPtr();                                               // 0x1401b50d0
-    bool FUN_1401b5240(int n);
     void* m_pad_00; void* m_p;
 };
 MS2_CHECK_OFFSET(Unk_UcItemData, m_strType, 0x290);
 MS2_CHECK_OFFSET(Unk_UcItemData, m_args, 0x2b0);
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
-bool FUN_14034eee0(const CStringW& a, const wchar_t* pszB);
 CString FUN_14016a600(const wchar_t* psz, int n);
-bool FUN_1401647e0(const CString& a, const CString& b) noexcept;
 
 // @0x1418ffba0
-int FUN_1418ffba0(Unk_UcItemPtr item)
+int FUN_1418ffba0(MS2Ptr<CItemData> item)
 {
-    if (item.FUN_1401b5240(0) != 0)
+    if (item.operator==(0) != 0)
         return 0;
     MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    if (FUN_14034eee0(reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_strType, L"UGCMapPackage"))
+    if (reinterpret_cast<Unk_UcItemData*>(item.operator->())->m_strType != L"UGCMapPackage")
         return 0;
     Unk_UcPCInfo* pInfo = ((class Unk_UcPCInfo*)((class MyPC*)(class MyPC*)(pPC))->FUN_141523c50());
     if (pInfo == 0)
@@ -1217,9 +1215,9 @@ int FUN_1418ffba0(Unk_UcItemPtr item)
     Unk_UGCGroup sal;
     if (FUN_1408a0d30(1, sal, pInfo->m_nField1c) != 0)
     {
-        CString strPackage = FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_UcItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_args.FUN_1408d21c0(0, L""), 0);
+        CString strPackage = FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_UcItemData*>(item.operator->())->m_args.FUN_1408d21c0(0, L""), 0);
         UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
-        if ((CUGCMapPackageData*)spPackage != 0 && FUN_1401647e0(spPackage->m_strIndoorSizeType, sal.indoorSizeType))
+        if ((CUGCMapPackageData*)spPackage != 0 && spPackage->m_strIndoorSizeType != sal.indoorSizeType)
         {
             return 1;
         }
@@ -1267,7 +1265,7 @@ void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, con
 MS2_REPLACE(0x1418fff20, FUN_1418fff20, 162, 0x243A22D7);
 
 // ---- the client configuration (singleton behind 0x1401d3200): only the entries this unit reads ----
-struct Unk_UcCfgInt { int* FUN_1402056b0(); char m_pad[0x58 - 0]; };
+typedef Common::Constants::Value<int> Unk_UcCfgInt;
 struct Unk_UcCfgStr { CString& FUN_140298f80(); char m_pad[0x60 - 0]; };
 struct Unk_UcCfg
 {
@@ -1314,31 +1312,31 @@ bool FUN_141900510(int nCurrency, __int64* pnAmount, __int64* pnCap)
     {
     case 4:
         *pnAmount = DAT_143ab28b0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5338.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5338.Get();
         return true;
     case 5:
         *pnAmount = DAT_143ab28b8;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5390.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5390.Get();
         return true;
     case 6:
         *pnAmount = DAT_143ab28c0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_53e8.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_53e8.Get();
         return true;
     case 7:
         *pnAmount = DAT_143ab28c8;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5440.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5440.Get();
         return true;
     case 0xc:
         *pnAmount = DAT_143ab28d0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5498.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5498.Get();
         return true;
     case 0xd:
         *pnAmount = DAT_143ab28d8;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_54f0.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_54f0.Get();
         return true;
     case 0xe:
         *pnAmount = DAT_143ab28e0;
-        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5548.FUN_1402056b0();
+        *pnCap = *((struct Unk_UcCfg*)FUN_1401d3200())->m_5548.Get();
         return true;
     case 0xf:
         *pnAmount = DAT_143ab28e8;
@@ -1442,7 +1440,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
         UIDialog* pDlg = ((class UIDialog*)FUN_140ff7030(0x4e87));
         if (pDlg != 0)
         {
-            int nWanted = *((struct Unk_UcCfg*)FUN_1401d3200())->m_d358.FUN_1402056b0();
+            int nWanted = *((struct Unk_UcCfg*)FUN_1401d3200())->m_d358.Get();
             ((class UICartoonDialog*)(class UIDialog*)(pDlg))->OpenBook(nWanted, 0x22, 0);
         }
         return false;
@@ -1457,7 +1455,7 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
     UIDialog* pDlg = ((class UIDialog*)FUN_140ff7030(0x4e87));
     if (pDlg != 0)
     {
-        int nWanted = *((struct Unk_UcCfg*)FUN_1401d3200())->m_d358.FUN_1402056b0();
+        int nWanted = *((struct Unk_UcCfg*)FUN_1401d3200())->m_d358.Get();
         if (pDlg->vfunc_55() == 0)
         {
             if (((class UICartoonDialog*)(class UIDialog*)(pDlg))->GetBookId() == nWanted)
@@ -1871,7 +1869,7 @@ extern Unk_CubeStock DAT_143ab2e50;
 int FUN_141901d20(int nItemId, __int64 nUid, __int64 nRank)   // nRank is 64-bit in the exe (r8, not r8d)
 {
     Unk_UcItemPtr item = FUN_14053f870(nItemId);
-    if (item.FUN_1401b5240(0) != 0)
+    if (reinterpret_cast<MS2Ptr<CItemData>&>(item).operator==(0) != 0)
         return 0;
     if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasMaidId())
     {
@@ -1902,7 +1900,7 @@ MS2_REPLACE(0x141901d20, FUN_141901d20, 573, 0xA2CDF026);
 int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
 {
     Unk_UcItemPtr item = FUN_14053f870(nItemId);
-    if (item.FUN_1401b5240(0) != 0)
+    if (reinterpret_cast<MS2Ptr<CItemData>&>(item).operator==(0) != 0)
         return 0;
     int nMode = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650();
     if (reinterpret_cast<const MS2Ptr<CItemData>&>(item)->HasMaidId())

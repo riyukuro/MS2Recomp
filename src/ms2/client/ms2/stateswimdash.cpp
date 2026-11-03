@@ -52,8 +52,8 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The input / skill tables of the dash check.
-CInputKeyHandler* FUN_14025e7c0();
-class CKeyTable { public: int FUN_14142c0c0(int); }; class Unk_SwimSkillTbl : public CKeyTable { };
+void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
+class CKeyTable { public: int IsSkillKeyDown(int); }; class Unk_SwimSkillTbl : public CKeyTable { };
 class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_SwimSkillTbl (calls cast back)
 
 // The owner's vtable up to slot 68: slots 22 and 68 take their point by value (the exe passes a pointer to a copy).
@@ -198,11 +198,11 @@ void StateSwimDash::vfunc_10(float a, float b, float c, float d, int e)
 // @0x1417fbe00
 int StateSwimDash::vfunc_36()
 {
-    if (FUN_14025e7c0()->FUN_14116dcb0(0x49401, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49401, false, 0))
         return 1;
     if (m_spData.get() != 0)
     {
-        return reinterpret_cast<Unk_SwimSkillTbl*>(FUN_1409331f0())->FUN_14142c0c0(m_spData->m_nSkill);
+        return reinterpret_cast<Unk_SwimSkillTbl*>(FUN_1409331f0())->IsSkillKeyDown(m_spData->m_nSkill);
     }
     return 0;
 }

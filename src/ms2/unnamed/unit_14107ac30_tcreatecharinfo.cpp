@@ -95,7 +95,6 @@ extern NiFixedString DAT_143ae53a0;
 // The world service accessors this unit uses.
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_MarkerMap;
 void FUN_1401cd100(void* pId, __int64 nId);
-Vector3* FUN_14097f250(void* p, float x, float y, float z);
 class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
@@ -123,12 +122,6 @@ void FUN_14107b2d0();
 void FUN_14097fad0(Unk_Color3* pDst, const Unk_Color3* pSrc);
 void FUN_14107cad0(NiFixedString* pName, void* pData, int n);
 bool FUN_14107cb00(NiFixedString* pName, void* pData, int n);
-
-class Unk_ColorTemp
-{
-private:
-    int m_0, m_4, m_8, m_c, m_10, m_14, m_18;
-};
 
 // scene graph walker (0x30 bytes, unrecovered class; softparticlesmanager.cpp and ms2outlinepreprocessor.cpp declare
 // the same view): the CAtlList of nodes still to visit, whose head (m_p0) sits at +0
@@ -527,7 +520,6 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
 }
 
 // @0x14107c5f0
-// MS2-FUNCTIONAL: frame/temporary layout of the Point3 copies differs
 int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
 {
     int nId = nSlot;
@@ -536,11 +528,9 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
         pDst->FUN_14123c5a0(nId);
         pDst->FUN_141656a50(pSrc->FUN_141656a80());
         pDst->FUN_14123bb80(pSrc->FUN_14123bbd0());
-        NiPoint3 kPos = pSrc->vfunc_18();
-        pDst->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
-        Unk_ColorTemp kTmp;
-        Vector3 kRot = *FUN_14097f250(&kTmp, 0.0f, 0.0f, 90.0f);
-        pDst->vfunc_21(reinterpret_cast<efd::Point3&>(kRot));
+        pDst->vfunc_19(*(const efd::Point3*)&static_cast<const NiPoint3&>(pSrc->vfunc_18()));
+        efd::Point3 kRot = *(const efd::Point3*)&static_cast<const NiPoint3&>(NiPoint3(0.0f, 0.0f, 90.0f));
+        pDst->vfunc_21(kRot);
         pDst->vfunc_131((short)pSrc->vfunc_78());
         pDst->vfunc_76(CStringW(L""));
         pDst->FUN_141658e40(((class PC*)(class PC*)(pSrc))->FUN_141658e60());

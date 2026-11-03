@@ -34,6 +34,7 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -125,7 +126,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         unsigned nInputEnchantLevel = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "inputEnchantLevel", nInputEnchantLevel);
         CString strSlot;
-        FUN_1408733e0(pNode, "inputSlot", strSlot);
+        XmlGetAttr((class TiXmlElement*)(pNode), "inputSlot", strSlot);
         ATL::CAtlArray<unsigned> arrSlot;
         XmlSplitImpl(strSlot, arrSlot, ",");
         if (arrSlot.IsEmpty())
@@ -134,7 +135,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
             return 0;
         }
         CString strItemId;
-        FUN_1408733e0(pNode, "inputItemId", strItemId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "inputItemId", strItemId);
         ATL::CAtlArray<unsigned> arrItemId;
         XmlSplitImpl(strItemId, arrItemId, ",");
         if (arrItemId.IsEmpty())
@@ -151,7 +152,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
                 m_mapLimit.SetAt(nItemId, nInputEnchantLevel);
         }
         CEnchantTransformDataPtr spData(new CEnchantTransformData);
-        FUN_1408732e0(pNode, "needMeso", spData->m_nNeedMeso);
+        XmlGetAttr((class TiXmlElement*)(pNode), "needMeso", spData->m_nNeedMeso);
         unsigned nOutput1Id = 0;
         unsigned nOutput1Rank = 0;
         unsigned nOutput1Count = 0;

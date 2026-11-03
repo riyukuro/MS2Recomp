@@ -93,7 +93,7 @@ class Unk_140165cf0;
 struct Unk_XmlPoint { Unk_XmlPoint(const efd::Point3& kIn); float x, y, z; };   // 0x14027dcf0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
-void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
+void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
 void FUN_140874ad0(void* pElem, const char* pszName, const Unk_XmlPoint& kValue);
 float FUN_14028aed0(float f);                           // round
 
@@ -149,7 +149,7 @@ void ItemCustom::FUN_140266aa0(Unk_140165cf0* pElem)
 void ItemCustom::FUN_140266b10(void* pElem) const
 {
     if (name.GetLength() > 0)
-        FUN_140874050(pElem, "icon", name);
+        XmlSetAttr((class TiXmlElement*)(pElem), "icon", name);
     FUN_140874ad0(pElem, "position", unknown18);
     FUN_140874ad0(pElem, "rotation", unknown24);
 }

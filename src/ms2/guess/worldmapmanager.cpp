@@ -218,7 +218,7 @@ int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int XmlQuery(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_140873ad0
 int FUN_140d01040(CString& strAlign);                                       // text alignment from its name
-void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& out, const char* pszSep);   // split a list of ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 const Unk_FieldIdListPtr& FUN_141b695b0(Unk_FieldIdListMap* pMap, POSITION pos);  // CAtlMap::GetValueAt (uiworldmapdialog.cpp)
@@ -486,7 +486,7 @@ int WorldMapManager::LoadWorldMapFiles()
             if (spTile->m_78.GetLength() != 0)
             {
                 ATL::CAtlArray<int> worlds;
-                FUN_140177de0(spTile->m_78, worlds, ",");
+                XmlSplit(spTile->m_78, worlds, ",");
                 for (size_t j = 0; j < worlds.GetCount(); j++)
                     customWorlds[worlds[j]].push_back(spTile);
             }

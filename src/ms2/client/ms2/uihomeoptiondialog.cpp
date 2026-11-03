@@ -75,7 +75,6 @@ void FUN_140710590(COutPacket& packet);
 void FUN_14151f200();
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
-int* FUN_1404eb7e0(int* pnA, int* pnB);                             // the larger of two ints
 
 
 // @0x140fa9c90
@@ -250,7 +249,7 @@ void UIHomeOptionDialog::FUN_140fa9a50(int nRow, int nValue)
     SendRequestCubeMode42(nRow, 0 < nValue);
     int nLevel = nValue - 1;
     int nZero = 0;
-    SendRequestCubeMode43(nRow, *FUN_1404eb7e0(&nZero, &nLevel));
+    SendRequestCubeMode43(nRow, (std::max)(nZero, nLevel));
 }
 MS2_REPLACE_METHOD(0x140FA9A50, UIHomeOptionDialog, FUN_140fa9a50, 112, 0x83221714);
 

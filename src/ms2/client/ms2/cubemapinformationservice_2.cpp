@@ -26,7 +26,7 @@
 extern Unk_Inventory g_143ab2a90;
 #include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class PCBase;
-class Unk_CubeCraftCore;
+class Unk_PCCubeCraft { public: int GetMode(); };   // C3: cubecraft_2.cpp
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -40,7 +40,6 @@ class MyPC   // C3: member view for the former free stand-ins
 public:
     class Unk_PCCubeCraft* GetActiveCubeCraft();
 };
-int FUN_1410a8a90(Unk_CubeCraftCore*);
 // WorldService singleton viewed through its +0x298 current-field handle getter (0x141bd30a0).
 MS2Ptr<CItemData> FUN_14053f870(int);
 class UIUGCCubePaletteDialog;
@@ -214,9 +213,9 @@ MS2_REPLACE_METHOD(0x1410B5E70, CubeHolderManager, FUN_1410b5e70, 54, 0x2F3817D5
 int CubeHolderManager::FUN_1410b5eb0() {
     PCBase* pc=((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if(pc==0) return 0;
-    Unk_CubeCraftCore* craft=((class Unk_CubeCraftCore*)((class MyPC*)(class PCBase*)(pc))->GetActiveCubeCraft());
+    Unk_PCCubeCraft* craft=((class MyPC*)(class PCBase*)(pc))->GetActiveCubeCraft();
     if(craft==0) return 0;
-    return FUN_1410a8a90(craft);
+    return craft->GetMode();
 }
 MS2_REPLACE_METHOD(0x1410B5EB0, CubeHolderManager, FUN_1410b5eb0, 81, 0x1BD6028B);
 // @0x1410b5f10

@@ -29,7 +29,6 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local placeholders ----
 
@@ -548,7 +547,7 @@ void StateIdleSpawnObject::vfunc_3(double fTime)
     CubeSpawnObject* pCube = FUN_140ac21e0();
     if (pCube)
     {
-        if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(60000))
+        if (m_timer.Check(60000))
         {
             switch (m_n10)
             {

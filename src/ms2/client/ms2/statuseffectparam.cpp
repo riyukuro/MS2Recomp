@@ -34,8 +34,6 @@ bool FUN_14028d470(float a, float b);                               // nearly eq
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void FUN_1409f76f0(void* pSelf, void* pNew);                        // SmartPointer<NiNode>::Reset(pNew)
-void* FUN_1409475f0(efd::SmartPointer<NiNode>* p);                  // const get
-void FUN_140194470(void* pDst, const void* pSrc);                   // copy a point
 
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class).
 class Unk_NodeQueue
@@ -223,7 +221,7 @@ MS2_REPLACE_METHOD(0x141801720, CStatusEffect, vfunc_7, 392, 0x6DE30B28);
 // @0x1418018b0
 int CStatusEffect::vfunc_8(void* pOut)
 {
-    FUN_140194470(pOut, ((void const*)&((class NiAVObject*)(void*)(FUN_1409475f0(&m_spNode)))->GetWorldTranslate()));
+    *reinterpret_cast<efd::Point3*>(pOut) = static_cast<const efd::Point3&>(((class NiAVObject*)(void*)(m_spNode.operator->()))->GetWorldTranslate());
     return 1;
 }
 MS2_REPLACE_METHOD(0x1418018b0, CStatusEffect, vfunc_8, 62, 0xCE06636C);

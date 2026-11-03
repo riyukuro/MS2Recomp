@@ -50,7 +50,7 @@ class Unk_140168650 { public: Unk_140168650* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString);
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);   // split to uints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -146,10 +146,10 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
         XmlGetAttr((class TiXmlElement*)(pNode), "group", *(unsigned int*)&static_cast<int&>(data->m_nGroup));
         ATL::CAtlArray<unsigned int> arrItemId;
         CString strItemId = FUN_14015f710(pNode, "itemID", CString(""));
-        FUN_140177e10(strItemId, arrItemId, ",");
+        XmlSplit(strItemId, arrItemId, ",");
         ATL::CAtlArray<unsigned int> arrItemCount;
         CString strItemCount = FUN_14015f710(pNode, "itemCount", CString(""));
-        FUN_140177e10(strItemCount, arrItemCount, ",");
+        XmlSplit(strItemCount, arrItemCount, ",");
         if (arrItemId.GetCount() != arrItemCount.GetCount())
         {
             Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"UGCMapSetItem group = {0}, itemID.size() != itemCount.size()", reinterpret_cast<const unsigned&>(data->m_nGroup));

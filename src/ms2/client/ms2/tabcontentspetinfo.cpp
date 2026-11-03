@@ -182,7 +182,8 @@ public:
     virtual void vfunc_84();
     virtual MS2Ptr<CItem> vfunc_85();                                   // 85 0x2a8 the shown pet item
 };
-Unk_PetDialog* FUN_140b99ba0(int nId);
+class UIPetSystemDialog;
+template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0 (<UIPetSystemDialog>)
 
 // Client configuration: the pet class that may be levelled sits at +0x84c0, the name length limit at +0x9d08.
 class Unk_PetUIntSlot { public: };
@@ -241,9 +242,7 @@ public:
 void* FUN_140d86260();   // C3: was FUN_140d86260
 
 // Bag registry (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 void FUN_140dbc420(const CString& strBag);                                    // release the inventory bag
 void FUN_140dbc370(const CString& strBag, int nSlots);                      // fill the inventory bag
 namespace NotifyContext { class BindData; }
@@ -256,17 +255,11 @@ public:
 };
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp).
-struct Unk_PetBoxVector
-{
-    Unk_PetBoxVector();
-    float x, y, z;
-    Unk_PetBoxVector& operator+=(const Unk_PetBoxVector&);            // 0x140a4e560
-};
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();                                             // 0x140cb13b0
     void FUN_141b48670();
-    Unk_PetBoxVector eye, target;
+    NiPoint3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
@@ -278,7 +271,7 @@ public:
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_PetBoxVector vfunc_18();
+    virtual NiPoint3 vfunc_18();
 };
 class Unk_PetBoxCamera
 {
@@ -337,7 +330,7 @@ MS2Ptr<CItem> FUN_140cbd900(int nPet)
 {
     if (nPet != 0)
     {
-        Unk_PetDialog* pDlg = FUN_140b99ba0(0x4f38);
+        Unk_PetDialog* pDlg = reinterpret_cast<Unk_PetDialog*>(Unk_PetGetDialog<UIPetSystemDialog>(0x4f38));
         if (pDlg != 0)
             return pDlg->vfunc_85();
     }
@@ -456,18 +449,18 @@ void FUN_140cbcb90(const CString& strBag, int nCount, int nPet)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strBag, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strBag, pBag);
     }
 }
 
 // @0x140cbcc50
 void FUN_140cbcc50(const CString& strBag)
 {
-    TabContentsPetInfo::EquipSlotBag* pBag = FUN_140cbde60(FUN_1422c8e90(strBag));
+    TabContentsPetInfo::EquipSlotBag* pBag = FUN_140cbde60(Unk_NotifyContext::FUN_1422c8e90(strBag));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strBag);
+        Unk_NotifyContext::FUN_1422c8f70(strBag);
     }
 }
 

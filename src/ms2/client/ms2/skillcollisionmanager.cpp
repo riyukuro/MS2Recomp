@@ -14,6 +14,7 @@
 
 #include "ms2/client/ms2/frustumcollision.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <NiPoint3.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -59,7 +60,6 @@ public:
 MS2_CHECK_OFFSET(Unk_ClubSkillAttr, m_col, 0x340);
 
 struct Unk_SkPoint { float x, y, z; };
-struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };      // 0x14027dcf0
 
 // Shapes whose classes live in unrecovered units: only the constructor and the touched fields.
 class CBoxCollision : public CBaseCollision
@@ -396,9 +396,9 @@ void CSkillCollisionManager::Show(PCBase* pActor, MS2Ptr<Unk_ClubSkillAttr> spSk
     CollisionPtr spShape = TSingleton<CSkillCollisionManager>::GetInstance()->CreateFromInfo(pInfo, 0.0f);
     if (spShape == 0)
         return;
-    Unk_NiPt3 kDir(pDir);
+    NiPoint3 kDir(*reinterpret_cast<const efd::Point3*>(pDir));
     Vector3 ptDir = *(Vector3*)&kDir;
-    Unk_NiPt3 kPos(pPos);
+    NiPoint3 kPos(*reinterpret_cast<const efd::Point3*>(pPos));
     Vector3 ptPos = *(Vector3*)&kPos;
     spShape->vfunc_3(ptPos, ptDir, 1.0f);
     spShape->m_n58 = GetTickCountMs2();

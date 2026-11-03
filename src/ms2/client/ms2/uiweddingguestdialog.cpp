@@ -105,7 +105,7 @@ unsigned int FUN_140900f00();                                            // max 
 // takes eax as is).
 #include "ms2/placeholder/wcformat.h"
 Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (T = ASUIComponent)
 class UITalkCinematic* FUN_140a7b2b0(int);   // C3: was FUN_140a7b2b0
 
 
@@ -414,7 +414,7 @@ bool UIWeddingGuestPage::vfunc_1()
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->GetMember("m_currentPage");
     if (kPage.IsNull() != 0)
         return false;
-    m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
+    m_pScript = Unk_ASCreate<ASUIComponent>(m_pDialog->FUN_1422db730(), kPage);
     return true;
 }
 

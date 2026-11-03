@@ -4,6 +4,7 @@
 // MS2-PIN: ??_GCToolCameraMode@@UEAAPEAXI@Z 0x141853b60
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\toolcameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 
 #include "toolcameramode.h"
 
@@ -112,7 +113,7 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     Vector3 ptPos = p->vfunc_18();
     vfunc_3(ptPos);
     Unk_EfdMatrix3 kRot;
-    kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
+    reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
     Vector3 ptAxis;
     FUN_140a01190(&kRot, 0, &ptAxis);
     ptAxis.FUN_140968990();
@@ -174,7 +175,7 @@ void CToolCameraMode::vfunc_8(double fTime)
         Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
-        kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();

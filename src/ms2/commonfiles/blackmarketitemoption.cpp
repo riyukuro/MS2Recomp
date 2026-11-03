@@ -151,7 +151,7 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId); // random ro
 int FindStatByName(const CStringA& strName);                        // stat name -> id (-1 when none)
 unsigned int FUN_14081d260(CStringA const&);                         // special option name -> id
 CStringW FUN_140630e10(int nId);                                    // special option text
-CStringW FUN_14082f000(int nId);                                    // stat text
+CStringW GetStatCommonText(unsigned nId);                           // stat text
 unsigned FUN_140630d00(Unk_ItemEnchantData* pEnchant);
 void FUN_140159b70(long hr);                                        // AtlThrow
 
@@ -1106,7 +1106,7 @@ void CBlackMarketTable::Load()
                             else
                             {
                                 stat->m_nKind = 0;
-                                strText = FUN_14082f000(nStat);
+                                strText = GetStatCommonText(nStat);
                             }
                             stat->m_nId = nStat;
                             stat->m_strName = strText;

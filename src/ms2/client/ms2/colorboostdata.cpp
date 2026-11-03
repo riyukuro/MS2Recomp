@@ -4,6 +4,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\colorboostdata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "colorboostdata.h"
+#include <efd/EEMath.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asdata.h"
@@ -13,7 +14,6 @@
 
 // ---- out-of-unit callees and the slider values (statics defined elsewhere) ----
                 // the application time
-float FUN_140a0fde0(float a, float b);                              // min
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                        // the actor's scene graph
 void FUN_141b6fae0(NiAVObject* pRoot, float fValue);                // set the colour scale of a scene graph
 extern float g_1439f7024, g_1439f7028, g_1439f702c, g_1439f7030, g_1439f7034;
@@ -60,7 +60,7 @@ bool CColorBoostData::FUN_14109b770(float* pfScale, int nIndex)
         if (!m_b08)
         {
             float fTarget = *pfScale + m_f10;
-            fTarget = FUN_140a0fde0(fTarget, 1.0f + (1.0f + (float)nIndex * m_f18) * m_f10);
+            fTarget = efd::Min<float>(fTarget, 1.0f + (1.0f + (float)nIndex * m_f18) * m_f10);
             m_f1c = fTarget - *pfScale;
             m_b08 = true;
         }

@@ -34,7 +34,7 @@ void UIModalDialog::vfunc_8(int nVisible) {
     if (dialog) {
         vfunc_47(nVisible == 0);
         dialog->vfunc_3(nVisible);
-        dialog->FUN_1407cbbe0("visible", nVisible == 1);
+        ((AScript*)dialog)->FUN_1407cbbe0("visible", nVisible == 1);
         if (m_178 && m_c4 != 0) {
             const char* name;
             if (nVisible != 0) name = "startOpen";

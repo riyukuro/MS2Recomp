@@ -34,12 +34,10 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // The world service: only the local player accessor is used here.
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CStringTable* GetStringTable();
 int FUN_140f02bc0();                                            // the hair palette id
 CStringW FUN_141b71990(unsigned nValue);
 
 // The item an equipped slot shows; the model block of an item row.
-ItemModelHead* FUN_14053ec70(CItemData* pData);                 // &model.head
 // The customize controller reports the item it edits (a CItem handle).
 class Unk_CustomizeView : public Customize
 {
@@ -109,7 +107,7 @@ int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spItem, MS2Ptr<Customize> spCust
         }
         else
         {
-            if (FUN_14053ec70(spItem)->FUN_140547190())
+            if (((CItemData*)spItem)->FUN_14053ec70()->FUN_140547190())
                 FUN_140f328a0(MS2Ptr<Customize>(spCustomize), obj, n);
         }
     }
@@ -132,11 +130,11 @@ void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool bMovie)
     if (spData == 0)
         return;
     int nId = spData->GetItemId();
-    CStringW strName = GetStringTable()->FUN_141811980(1, nId);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId);
     ((class AScript&)(obj)).FUN_1407cbb20("itemname", CStringW(strName));
     ((class AScript&)(obj)).FUN_1407cbb20("itemid", FUN_141b71990(nId));
     obj.FUN_1407cba60("iconpath", spData->GetIconPath());
-    obj.FUN_1407cbbe0("editable", FUN_14053ec70(spData)->FUN_1405471d0());
+    obj.FUN_1407cbbe0("editable", ((CItemData*)spData)->FUN_14053ec70()->FUN_1405471d0());
     bool bSkinBg = spData->GetModelOrEmpty()->FUN_14054b400() == 2 || spData->GetModelOrEmpty()->FUN_14054b400() == 3;
     obj.FUN_1407cbbe0("isSkinBg", bSkinBg);
     obj.FUN_1407cbbe0("isHideSlot", spData->IsAvatarColorItem());
@@ -451,7 +449,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
     bool bBuild;
     bool bLockFeature;
     bool bF8;
-    int bDetail = FUN_14053ec70(spData)->FUN_140547190();
+    int bDetail = ((CItemData*)spData)->FUN_14053ec70()->FUN_140547190();
     int bColor2 = spData->GetModelOrEmpty()->FUN_14054b400() != 3;
     ASArray kColors(2);
     int nSelected = -1;

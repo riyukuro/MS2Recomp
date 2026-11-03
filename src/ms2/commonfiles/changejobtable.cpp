@@ -27,8 +27,7 @@ public:
 
 // Out-of-unit callees.
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-CStringTable* GetStringTable();                          // the string table singleton
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
+int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 
 // Common::Constants::Value<T>::Get, header-inline in the original (the Value<unsigned> instance 0x1401d7c10 is in this unit's
 // COMDAT tail).
@@ -72,7 +71,7 @@ void CChangeJobTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("subjob")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("subjob")))
@@ -91,15 +90,15 @@ void CChangeJobTable::Load()
         spData->m_nStartQuestId = nValue;
         XmlGetAttr((class TiXmlElement*)(pNode), "endquestid", reinterpret_cast<int&>(nValue));
         spData->m_nEndQuestId = nValue;
-        spData->m_strJobName = GetStringTable()->FUN_141811980(6, spData->m_nChangeSubJobCode);
-        FUN_140873ad0(pNode, "movie", spData->m_strMovie);
+        spData->m_strJobName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spData->m_nChangeSubJobCode);
+        XmlQuery((class TiXmlElement*)(pNode), "movie", spData->m_strMovie);
         int nStringId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "desc", reinterpret_cast<int&>(nStringId));
-        spData->m_strDesc = GetStringTable()->FUN_141811980(0x4f, nStringId);
+        spData->m_strDesc = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4f, nStringId);
         XmlGetAttr((class TiXmlElement*)(pNode), "skilldesc1", reinterpret_cast<int&>(nStringId));
-        spData->m_strSkillDesc1 = GetStringTable()->FUN_141811980(0x4f, nStringId);
+        spData->m_strSkillDesc1 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4f, nStringId);
         XmlGetAttr((class TiXmlElement*)(pNode), "skilldesc2", reinterpret_cast<int&>(nStringId));
-        spData->m_strSkillDesc2 = GetStringTable()->FUN_141811980(0x4f, nStringId);
+        spData->m_strSkillDesc2 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4f, nStringId);
         ATL::CAtlArray<CString> tokens1;
         CString strSkills1;
         XmlGetAttr((class TiXmlElement*)(pNode), "skillID1", strSkills1);

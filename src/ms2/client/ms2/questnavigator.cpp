@@ -18,6 +18,7 @@
 
 #include "ms2/placeholder/cquestnavigator.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/ms2svrptr.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/uidialog.h"
@@ -94,6 +95,7 @@ float FUN_140966f00(NiPoint3 a, Vector3 b);
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 // riding data (rows of the ride table)
+class CRideeData;
 struct Unk_QnRideRow { char m_pad_00[0x6c]; int m_6c; };
 class Unk_QnRideRef
 {
@@ -101,7 +103,6 @@ public:
     Unk_QnRideRef(int nRideId);                                     // 0x1407844b0
     ~Unk_QnRideRef();                                               // 0x140788ed0
     bool FUN_140c9b760() const { return m_p == 0; }                 // 0x140c9b760
-    void* FUN_1407895d0();                                          // the table
     void* m_0;
     void* m_p;
 };
@@ -492,7 +493,7 @@ bool CQuestNavigator::FUN_140c9af60()
         Unk_QnRideRef ride(pPC->FUN_141676410());
         if (ride.FUN_140c9b760())
             return false;
-        return ((Unk_QnRideTable*)ride.FUN_1407895d0())->FUN_140784970().FUN_1407895c0()->m_6c != 0;
+        return ((Unk_QnRideTable*)reinterpret_cast<MS2SvrPtr<CRideeData>&>(ride).operator->())->FUN_140784970().FUN_1407895c0()->m_6c != 0;
     }
     return pPC->FUN_14123c660() == 0;
 }

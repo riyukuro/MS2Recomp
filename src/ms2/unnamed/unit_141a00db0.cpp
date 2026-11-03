@@ -556,7 +556,7 @@ MS2_REPLACE_METHOD(0x141A02E10, CMsgBoxData, FUN_141a02e10, 47, 0x2509F554);
 // @0x141a02e50
 int CMsgBoxData::FUN_141a02e50(int nIndex, int nDefault) const
 {
-    FUN_140be25f0(nIndex, nDefault);
+    GetArg<int>(nIndex, nDefault);
     return nDefault;
 }
 MS2_REPLACE_METHOD(0x141A02E50, CMsgBoxData, FUN_141a02e50, 46, 0x49ECCABD);

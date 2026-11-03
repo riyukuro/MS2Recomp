@@ -13,10 +13,10 @@
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc5d0
 
 void FUN_140930150(int);
-void* FUN_1403ed2d0();
 class WorldService   // C3: unit-local view of the callback set
 {
 public:
+    static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
     void FUN_141bbae40(void* p);
     void FUN_141bbae80(void* p);
     int FUN_141bbbe40(int mapId, int arg2, int arg3);
@@ -58,16 +58,16 @@ void CSceneStateModeSelect::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
-    ((WorldService*)FUN_1403ed2d0())->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
     FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
-    ((WorldService*)FUN_1403ed2d0())->FUN_141bbbe40(0x3e9, 1, 0);
+    WorldService::GetInstance()->FUN_141bbbe40(0x3e9, 1, 0);
 }
 
 // @0x140aae160
 void CSceneStateModeSelect::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
-    ((WorldService*)FUN_1403ed2d0())->FUN_141bbae80((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae80((IWorldServiceCallback*)this);
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f6e);
 }
 

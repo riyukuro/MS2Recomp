@@ -100,7 +100,6 @@ public:
 };
 
 class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
-CStringTable* GetStringTable();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 int FUN_1418fd280();
 bool FUN_1409301c0();
@@ -300,7 +299,7 @@ void UIUGCHousingPointDialog::RefreshList()
         CStringW strCount;
         strCount.Format(L"%d/%d", nCount, nMax);
         ASObj item(2);
-        item.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(0x32, nCategory));
+        item.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nCategory));
         item.FUN_1407cbb20("count", strCount);
         item.FUN_1407cbb20("point", strPoint);
         item.FUN_1407cbbe0("active", nCount >= nMax);

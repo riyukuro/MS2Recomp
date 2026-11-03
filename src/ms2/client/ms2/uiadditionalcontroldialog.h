@@ -30,7 +30,6 @@ public:
                                                                         // 28 0x1418b2860
     virtual int vfunc_48() { return 0x4e8f; }                           // 48 0x1418b5400 UI type id
 
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);           // bind a list child of the movie
     void FUN_1418b2c20(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu click
     void FUN_1418b2e80(const CString& strGroup, const CStringW& strSearch);      // refill "m_effects"
     void FUN_1418b3620();                                               // fill "m_contextMenu"

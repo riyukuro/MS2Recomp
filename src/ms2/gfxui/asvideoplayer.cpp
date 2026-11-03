@@ -126,7 +126,7 @@ MS2_REPLACE_METHOD(0x1422E9710, Unk_ASVideoPlayer, FUN_1422e9710, 91, 0x47E6A167
 // @0x1422e9780
 void Unk_ASVideoPlayer::FUN_1422e9780(int bLoop)
 {
-    FUN_1409ba030("setLoop", bLoop);
+    Invoke("setLoop", bLoop);
 }
 MS2_REPLACE_METHOD(0x1422E9780, Unk_ASVideoPlayer, FUN_1422e9780, 55, 0x5B74F970);
 

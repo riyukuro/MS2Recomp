@@ -96,7 +96,6 @@ CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);    // T
 bool FUN_1406a4fe0(int nId);
 bool FUN_1406a5010(int nId);
 int FUN_140718170(const CString& strValue);                                 // a number or an enum name
-HRESULT FUN_140299dc0(ATL::CAtlFile* pFile, const void* pData, DWORD nSize, DWORD* pWritten) throw();  // writes the data (CAtlFile::Write, throw())
 class CGameEventValueStarShop   // C3: member view for the former free stand-ins
 {
 public:
@@ -2286,7 +2285,7 @@ int FUN_1406a4c20(TiXmlDocument* pDoc, const CStringA& strName, const CStringA& 
     int nUse = 1;
     CStringA strQuery = StringFormat((const char*)strFormat, strName, nGroup, strName, strValue, strDesc, nUse,
                                      strName, nGroup, strName, strValue, strDesc, nUse);
-    FUN_140299dc0(pFile, (const char*)strQuery, strQuery.GetLength(), 0);
+    pFile->Write((const char*)strQuery, strQuery.GetLength());
     return 1;
 }
 MS2_REPLACE(0x1406A4C20, FUN_1406a4c20, 455, 0x916239EE);

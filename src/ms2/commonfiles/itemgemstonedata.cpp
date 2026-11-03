@@ -20,6 +20,7 @@
 #include <typeinfo>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/itemdatatable.h"   // C3: CItemDataTable::GetTagByName was FUN_140557640
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -54,7 +55,7 @@ public:
 };
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_140719210(long n);                                           // number text
-void FUN_140275080(CString&, Unk_StrVec*, const char*);                  // split at a separator
+void FUN_140275080(CString&, void*, const char*);                        // split at a separator (C3: the exe's void* signature)
 void FUN_140177f30(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);   // split into numbers
 
 // The three-argument log call of this unit (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
@@ -149,7 +150,7 @@ int CItemGemStoneUpgradeTable::Load()
             if (next.get() != 0 && nTransfer != next->limit.transferType)
             {
                 unsigned nNextId = next->GetItemId();
-                Unk_GemLog(CLogString::GetInstance(), 2, 0x13,
+                Unk_GemLog(GetLogString(), 2, 0x13,
                            L"젬스톤 거래타입(귀속,거래불가 등)이 같지않습니다(itemID: {0}, nextItemID: {1}). itemProperty transferType을 확인해 주세요. [{2}]",
                            nItemId, nNextId, strPath);
             }
@@ -175,7 +176,7 @@ int CItemGemStoneUpgradeTable::Load()
                         if (tokens.FUN_14028b4c0() > 0)
                             nId = FUN_1407181d0(*tokens.FUN_14027f1c0(0));
                         if (tokens.FUN_14028b4c0() > 1)
-                            nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
+                            nTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(*tokens.FUN_14027f1c0(1));
                     }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_GemIngredientTag(info.operator->(), nTag);
@@ -213,7 +214,7 @@ int CItemGemStoneUpgradeTable::Load()
         }
         if ((data->m_nMask & 8) > 0 && data->m_nMask != 8)
         {
-            Unk_GemLog(CLogString::GetInstance(), 2, 0x13, L"equipPart itemID: {0}, equipPart:{1}, [{2}]", nItemId, strParts, strPath);
+            Unk_GemLog(GetLogString(), 2, 0x13, L"equipPart itemID: {0}, equipPart:{1}, [{2}]", nItemId, strParts, strPath);
             return 0;
         }
         if (Unk_LockGuard guard = m_lock)

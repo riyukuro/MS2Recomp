@@ -126,6 +126,7 @@ extern __int64 DAT_143ab2898;                                       // wallet: m
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/addresstable.h"   // C3: CAddressTable::FormatChecked
 
 template <int N> struct Unk_CMISTree;                              // the visitor id tree (a std::set<__int64>)
 class CubeMapInformationService : public efd::ISystemService   // C3: member view (the real header brings dynamic initializers)
@@ -215,7 +216,6 @@ template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
 int FUN_1412772f0(__int64 nValue, int bGrouped);
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
-CStringW FUN_1409796e0(int a, int b, int c, CStringW strName);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
@@ -580,7 +580,7 @@ CStringW UIHomeInfoDialog::FUN_1412c7140()
         int nB = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3100();
         int nC = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3000();
         CStringW strName = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
-        return FUN_1409796e0(nA, nB, nC, strName);
+        return CAddressTable::FormatChecked(nA, nB, nC, strName);
     }
     return strAddress;
 }

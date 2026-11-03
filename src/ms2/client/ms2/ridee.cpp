@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/commonfiles/timeutil.h"
 #include "ridee.h"
+#include "ms2/client/ms2/effectdummy.h"   // C3: std::vector<CEffectDummy> (the part list)
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <io.h>
@@ -328,7 +329,6 @@ public:
 class Unk_RideeEntity
 {
 public:
-    void FUN_1408a20a0(unsigned int uiPropId, bool* pOut);          // bool property
     
 };
 class Unk_RideeEntityMgr
@@ -533,8 +533,8 @@ int Ridee::vfunc_10()
 void Ridee::vfunc_12()
 {
     PCBase::vfunc_12();
-    for (size_t i = 0; i < m_spData->m_parts.FUN_14078cd60(); i++)
-        FUN_141674ef0(m_spData->m_parts.FUN_140789540(i));
+    for (size_t i = 0; i < reinterpret_cast<std::vector<CEffectDummy>&>(m_spData->m_parts).size(); i++)
+        FUN_141674ef0(reinterpret_cast<std::vector<CEffectDummy>&>(m_spData->m_parts)[i]);
 
     if (NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(FUN_14123c410())))
     {
@@ -1008,7 +1008,7 @@ void Ridee::FUN_141706650(bool bForce)
             {
                 bool bRideable = false;
                 unsigned short nKind = 0;
-                pEntity->FUN_1408a20a0(0xecfdd742, &bRideable);
+                reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<bool>(0xecfdd742, bRideable);   // C3: was Unk_RideeEntity::FUN_1408a20a0
                 reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<unsigned short>(0xada5c5d2, nKind);
                 if (bRideable && (nKind == 9 || nKind == 8))
                 {

@@ -49,7 +49,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
@@ -97,8 +97,8 @@ int CEnchantScrollData::Read(Unk_140165cf0* pElem)
     CString strRank;
     XmlGetAttr((class TiXmlElement*)(pElem), "slot", strSlot);
     XmlGetAttr((class TiXmlElement*)(pElem), "rank", strRank);
-    FUN_140177e10(strSlot, m_slots, ",");
-    FUN_140177e10(strRank, m_ranks, ",");
+    XmlSplit(strSlot, m_slots, ",");
+    XmlSplit(strRank, m_ranks, ",");
     return 1;
 }
 

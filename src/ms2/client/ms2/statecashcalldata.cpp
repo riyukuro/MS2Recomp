@@ -45,7 +45,6 @@ CString FUN_1405a7e80(int n);                            // number -> text
 int FUN_140718170(const CString& str);                   // text -> number
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14028d260(float f);                              // seconds -> ms
-bool FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommon(int nId);                         // string table text by id
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -302,7 +301,7 @@ void StateCashCall::OnCastEnd(double fTime)
     {
         SpawnEffect(strEffect);
         int nWait = 0xc80;
-        if (FUN_1401c0090(strEffect, ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a0))
+        if (strEffect == ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a0)
             nWait = 1000;
         SetPhase(0x6c, nWait);
     }

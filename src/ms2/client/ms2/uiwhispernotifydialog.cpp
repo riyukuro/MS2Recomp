@@ -102,7 +102,7 @@ CStringW FUN_140719a80(unsigned __int64 nUid);                  // the item guid
 CStringW FUN_1416e5900(int nItemId, bool bBold);                // the item name text
 void FUN_1412751b0(const CStringW& strText, int nKind);         // shows the text as a notice
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CString FUN_140513200(const char* szFormat, const int& nArg);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 
 // The item manager: its data source (at +0x10) hands out item data records by id.
 class Unk_WhisperItemSource
@@ -327,7 +327,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     }
     if (nMode == 1)
         strText += strExtra;
-    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addSystemWhisper", FUN_140513200("{0}", pInfo->m_nId),
+    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addSystemWhisper", Unk_SocketFormat<unsigned int>("{0}", reinterpret_cast<const unsigned int&>(pInfo->m_nId)),
                                                                       sender->m_strPortrait, CStringW(strText));
     m_systemTimes.SetAt(pInfo->m_nId, GetTickCountMs2());
     // CMsTime, not CTime: the exe formats the hour/minute in the server time zone (ctor 0x1406c47a0,

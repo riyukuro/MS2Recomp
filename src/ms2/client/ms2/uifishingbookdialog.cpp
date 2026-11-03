@@ -72,7 +72,7 @@ class Unk_MData* FUN_1409670c0();
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 class Unk_ItemSlotTable* FUN_140933210();   // C3: was FUN_140933210
 unsigned FUN_140931450(CString strName);
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
 const unsigned& FUN_1402cf010(const unsigned& a, const unsigned& b);
 
 // The array of the player's fish records (an exe CAtlArray look-alike; ctor / dtor / GetAt / GetCount are in this unit).
@@ -426,7 +426,7 @@ CStringW UIFishingBookDialog::FUN_140f432e0(int nTitleId)
 // @0x140f43330
 int UIFishingBookDialog::FUN_140f43330(int nFishId)
 {
-    if (FUN_14025e7c0()->IsDebugMode() != 0)
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode() != 0)
         return 1;
     return TSingleton<CFishingManager>::GetInstance()->FUN_140cdc380(nFishId);
 }

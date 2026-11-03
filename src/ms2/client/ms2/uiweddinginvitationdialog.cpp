@@ -78,7 +78,6 @@ public:
 };
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
-CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 __int64 FUN_140900da0();                                        // the price of one invitation
 UITalkCinematic* FUN_140a7b2b0(int nId);                           // a dialog's position record
@@ -168,7 +167,7 @@ void UIWeddingInvitationDialog::OnLoadComplete()
     obj.FUN_1407cbb20("invitation", GetStringCommonByKey(L"s_wedding_invitation_message"));
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
     obj.FUN_1407cbb20("bride", CStringW(pTicket->m_strBride));
-    obj.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
+    obj.FUN_1407cbb20("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,
         TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(pTicket->m_nPackageId, pTicket->m_nHallId, FUN_140900f30(pTicket->m_nTime))));
     obj.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(pTicket->m_nTime)));
     m_30->Invoke("setData", obj);

@@ -17,16 +17,13 @@
 #include "ms2/client/ms2/worldservice.h"
 
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
-WorldService* FUN_1403ed2d0();
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);           // item template data by id
 int FUN_141275a10(CItem* pItem);                         // the usable state of an item (1 locked, 2 disabled, 3 condition)
 CStringW FUN_14016a730(const char* sz, int nCodePage);   // multi-byte to wide
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UGCItemSlot);
 
@@ -108,7 +105,7 @@ int UGCItemSlot::vfunc_0(void* p)
 {
     if (m_spItem == 0)
         return 0;
-    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
+    ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
@@ -135,16 +132,16 @@ void FUN_14187de00(const CString& strName, MS2Ptr<CItem> spItem)
 {
     UGCItemSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) UGCItemSlot(strName, spItem);
     if (pSlot)
-        FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
 }
 MS2_REPLACE(0x14187de00, FUN_14187de00, 213, 0x341DE3D3);
 
 // @0x14187dee0
 void FUN_14187dee0(const CString& strName)
 {
-    UGCItemSlot* pSlot = efd::DynamicCast<UGCItemSlot>(FUN_1422c8e90(strName));
+    UGCItemSlot* pSlot = efd::DynamicCast<UGCItemSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot)
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
 }
 MS2_REPLACE(0x14187dee0, FUN_14187dee0, 55, 0xE2F5333B);
 

@@ -11,6 +11,7 @@
 #include <egf/Entity.h>
 #include <egf/EntityManager.h>
 #include <efd/Point3.h>
+#include <efd/EEMath.h>   // C3: efd::Sqrt was FUN_140968970
 #include <math.h>
 
 // The exe calls these three CRT functions through its IAT (`call [__imp_x]`); see gpumanager.cpp for the idiom.
@@ -70,7 +71,6 @@ const NiRTTI* CMapMetaManager::GetRTTI() const { return &ms_RTTI; }
 // ---- ballistic arc solver (not part of CMapMetaManager; sits in this unit's range) ----
 float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                           // distance in the xy plane
 bool FUN_14028d470(float a, float b);                                        // nearly equal
-float FUN_140968970(float v);                                                // sqrt
 efd::Point3 FUN_141192780(efd::Point3 from, efd::Point3 to, bool flatten);   // direction from -> to
 
 // Launch solution for a projectile of the given speed under gravity: the low-angle arc from origin to target.
@@ -107,7 +107,7 @@ void Unk_ArcSolution::FUN_141479ed0(efd::Point3 origin, efd::Point3 target, floa
         speed = speed * 1.16f;
         FUN_141479ed0(origin, target, speed, gravity);
     } else {
-        float tangent = speedSq * ((-distance - FUN_140968970(discriminant)) / (gravity * distSq));
+        float tangent = speedSq * ((-distance - efd::Sqrt(discriminant)) / (gravity * distSq));
         float angle = __imp_atanf(tangent);
         m_speed = speed;
         m_direction = FUN_141192780(origin, target, true);

@@ -253,6 +253,7 @@
 #include "ms2/commonfiles/timeutil.h"   // C3: GetServerTime
 #include "ms2/client/ms2/uinametag.h"   // C3: UINameTag::Entity
 #include "ms2/client/ms2/uihpbar.h"   // C3: UITombStoneBar::Entity
+class NoticeMessage { public: void SetActor(int nActor); };   // C3: unit-local view (0x140a53190; was Unk_EffectTarget::FUN_140a53190)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 
@@ -460,7 +461,7 @@ public:
     unsigned char unknown0[0x178];
     CStringW m_str178;
 };
-Unk_PCDialog4e8a* FUN_141531b40(int nId);
+class UIObserveDialog;
 extern "C" int DAT_143ae2b38;                                       // the model-cache reset switch (nifmodel.h)
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 // The KFM model of an equipped item (CEquipItem::FUN_1411dcbb0).
@@ -495,15 +496,12 @@ class Unk_PCEquipConfig
 };
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 // The dialogs 0x4e96 / 0x4ec4 (FUN_141531c80 / FUN_141531be0): the hp of a party member changed.
-class Unk_PCDialog4e96 : public UIPvPObserverDialog { };
 class UIPvPGuildTeamDialog   // C3: member view (real class not in this TU)
 {
 public:
     void FUN_14133afb0(unsigned __int64, __int64, __int64);
 };
-class Unk_PCDialog4ec4 { public:  };
-Unk_PCDialog4e96* FUN_141531c80(int nId);
-Unk_PCDialog4ec4* FUN_141531be0(int nId);
+template <class T> T* MyPCDialog(int nId);   // C3: was FUN_141531c80
 // MS2Ptr<Unk_RideeData> (not CPtred-derived here; ridee.cpp/pcbase.cpp do the same): instantiated by other objs.
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0
 template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
@@ -796,7 +794,7 @@ PC::~PC()
         ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_n1060);
         m_n1060 = 0;
     }
-    if (Unk_PCDialog4e8a* pDialog = FUN_141531b40(0x4e8a))
+    if (Unk_PCDialog4e8a* pDialog = reinterpret_cast<Unk_PCDialog4e8a*>(MyPCDialog<UIObserveDialog>(0x4e8a)))
     {
         if (PC::vfunc_77().GetLength() > 0 && pDialog->FUN_141667f70() == PC::vfunc_77())
         {
@@ -1531,10 +1529,10 @@ void PC::vfunc_74(__int64 nCur, __int64 nMax)
     PCBase::vfunc_74(nCur, nMax);
     if (FUN_14165ef30())
     {
-        if (Unk_PCDialog4e96* pParty = FUN_141531c80(0x4e96))
+        if (UIPvPObserverDialog* pParty = MyPCDialog<UIPvPObserverDialog>(0x4e96))
             pParty->FUN_141a92b10(FUN_141656a80(), nCur, nMax);
-        if (Unk_PCDialog4ec4* pRaid = FUN_141531be0(0x4ec4))
-            ((UIPvPGuildTeamDialog*)(Unk_PCDialog4ec4*)(pRaid))->FUN_14133afb0(FUN_141656a80(), nCur, nMax);
+        if (UIPvPGuildTeamDialog* pRaid = MyPCDialog<UIPvPGuildTeamDialog>(0x4ec4))
+            pRaid->FUN_14133afb0(FUN_141656a80(), nCur, nMax);
     }
 }
 
@@ -3448,7 +3446,7 @@ void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
         Unk_EffectTarget kTarget;
         kTarget.m_strName = ((struct Unk_PCConfig*)FUN_1401d31f0())->m_strInvincibleEffect;
         kTarget.m_nKind = 0;
-        kTarget.FUN_140a53190(FUN_14123c580());
+        reinterpret_cast<NoticeMessage&>(kTarget).SetActor(FUN_14123c580());
         m_n1060 = ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(kTarget);
     }
     else

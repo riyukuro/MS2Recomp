@@ -33,7 +33,6 @@ public:
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
-CStringTable* GetStringTable();
 void FUN_1412751b0(const CStringW& strMsg, int nType);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -87,7 +86,7 @@ void UIChapterBook::OnLoadComplete()
         if (spBook.get() != 0)
         {
             static_cast<Unk_CbScript*>(m_30.operator->())->FUN_140e0a8c0("setPrologue",
-                GetStringTable()->FUN_141811980(0x39, m_nPrologue), 5000);
+                TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x39, m_nPrologue), 5000);
         }
     }
     else if (m_nEpilogue != 0)
@@ -95,11 +94,11 @@ void UIChapterBook::OnLoadComplete()
         CChapterBookTable::DataPtr spBook = CChapterBookTable::GetInstance()->Get(m_nEpilogue);
         if (spBook.get() != 0)
         {
-            CStringW strEpilogue = GetStringTable()->FUN_141811980(0x3a, m_nEpilogue);
+            CStringW strEpilogue = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3a, m_nEpilogue);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strEpilogue);
             ASObj obj(2);
             ((class AScript&)(obj)).FUN_1407cb9c0("id", spBook->m_nId);
-            ((class AScript&)(obj)).FUN_1407cbb20("chapter", GetStringTable()->FUN_141811980(0x39, m_nEpilogue));
+            ((class AScript&)(obj)).FUN_1407cbb20("chapter", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x39, m_nEpilogue));
             ((class AScript&)(obj)).FUN_1407cbb20("epilogue", CStringW(strEpilogue));
             for (unsigned __int64 i = 0; i < spBook->m_rewards.GetCount(); i++)
             {
@@ -111,7 +110,7 @@ void UIChapterBook::OnLoadComplete()
                         continue;
                     ASObj objReward(2);
                     objReward.FUN_1407cba60("icon", spItem->GetIconPath());
-                    ((class AScript&)(objReward)).FUN_1407cbb20("name", GetStringTable()->FUN_141811980(1, reward.m_item.m_itemId));
+                    ((class AScript&)(objReward)).FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reward.m_item.m_itemId));
                     objReward.FUN_1409c0d20("count", reward.m_item.m_count);
                     obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }

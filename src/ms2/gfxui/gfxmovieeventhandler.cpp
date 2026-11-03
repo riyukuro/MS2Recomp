@@ -22,7 +22,7 @@
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-void* FUN_14127bf80(void* pFramework);                          // its render service (null if none)
+ecr::RenderService* Unk_GetRenderService(char* pCell);           // its render service (null if none); gfxmoviebackground.cpp
 
 // Windows virtual key -> Scaleform key code for the keys outside the A-Z/F1-F15/0-9/numpad ranges (the SDK's
 // Platform_XInput.h KeyCodeMap without VK_SNAPSHOT; 0x143a290e0).
@@ -308,7 +308,7 @@ MS2_REPLACE_METHOD(0x1422D9C30, GFxMovieEventHandler, vfunc_15, 366, 0x9B20B1D1)
 // @0x1422d9db0
 void GFxMovieEventHandler::vfunc_16()
 {
-    void* pService = FUN_14127bf80(&DAT_143b059e8);
+    void* pService = Unk_GetRenderService(&DAT_143b059e8);
     if (pService != 0)
     {
         NiRenderTargetGroup* pTarget = ((ecr::RenderService*)pService)->GetActiveRenderSurface()->GetRenderTargetGroup();

@@ -61,7 +61,7 @@ public:
 int FUN_141276180(const CString& strTarget, const CString& strValue);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg0, const CStringA& strArg1);
-void FUN_1403a1280(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg0);
+template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280 (T = const char*)
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned __int64& nArg0,
                    const CStringA& strArg1, const CStringA& strArg2);
@@ -457,11 +457,11 @@ void CClientPlatformBase::vfunc_67()
     Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
     if (FUN_14092ca70(reinterpret_cast<HMODULE*>(pAnalytics), pAnalytics->GetModuleName()) == 1) {
         const char* pszModule = pAnalytics->GetModuleName();
-        FUN_1403a1280(((void*)GetLogString()), 0xb, 400, L"{0} 파일을 정상적으로 로드했습니다.", pszModule);
+        Unk_FileLog<const char*>(GetLogString(), 0xb, 400, L"{0} 파일을 정상적으로 로드했습니다.", pszModule);
         m_bAnalyticsLoaded = true;
     } else {
         const char* pszModule = pAnalytics->GetModuleName();
-        FUN_1403a1280(((void*)GetLogString()), 1, 400, L"{0} 파일을 로드하지 못했습니다.", pszModule);
+        Unk_FileLog<const char*>(GetLogString(), 1, 400, L"{0} 파일을 로드하지 못했습니다.", pszModule);
     }
 }
 
@@ -516,7 +516,7 @@ void CClientPlatformBase::vfunc_70()
         Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
         pAnalytics->FUN_14092cbf0();
         const char* pszModule = pAnalytics->GetModuleName();
-        FUN_1403a1280(((void*)GetLogString()), 0xb, 400, L"{0} 파일을 정상적으로 언로드했습니다.", pszModule);
+        Unk_FileLog<const char*>(GetLogString(), 0xb, 400, L"{0} 파일을 정상적으로 언로드했습니다.", pszModule);
     }
 }
 

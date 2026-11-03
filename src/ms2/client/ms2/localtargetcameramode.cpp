@@ -9,6 +9,7 @@
 // MS2-PIN: ??C?$MS2Ptr@VCCameraMode@@@@QEBAPEAVCCameraMode@@XZ 0x1409f21a0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\localtargetcameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 
 #include "localtargetcameramode.h"
 
@@ -256,7 +257,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 t = 1.0f;
                 m_d8.m_rot = m_108.m_setting.m_18;
                 Unk_NiMatrix3 kRot;
-                kRot.FUN_142083d40(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f,
+                reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f,
                                    m_108.m_setting.m_18.z * -0.0174532924f);
                 Vector3 ptDir;
                 kRot.FUN_140a01190(0, ptDir);
@@ -281,7 +282,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
                 m_50 = m_108.m_38 * t + (1.0f - t) * m_18c;
                 m_d8.m_rot = CCameraMode::FUN_140afdec0(t, m_194, m_108.m_setting.m_18);
                 Unk_NiMatrix3 kRot;
-                kRot.FUN_142083d40(m_d8.m_rot.x * -0.0174532924f, m_d8.m_rot.y * -0.0174532924f,
+                reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_d8.m_rot.x * -0.0174532924f, m_d8.m_rot.y * -0.0174532924f,
                                    m_d8.m_rot.z * -0.0174532924f);
                 Vector3 ptDir;
                 kRot.FUN_140a01190(0, ptDir);
@@ -313,7 +314,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         }
         m_d8.m_rot = m_108.m_setting.m_18;
         Unk_NiMatrix3 kRot;
-        kRot.FUN_142083d40(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f, m_108.m_setting.m_18.z * -0.0174532924f);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(m_108.m_setting.m_18.x * -0.0174532924f, m_108.m_setting.m_18.y * -0.0174532924f, m_108.m_setting.m_18.z * -0.0174532924f);
         Vector3 ptDir;
         kRot.FUN_140a01190(0, ptDir);
         ptCenter = ptCenter.FUN_14097fd50(m_108.m_40);

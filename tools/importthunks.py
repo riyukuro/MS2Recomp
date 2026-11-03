@@ -66,7 +66,7 @@ def coff_externals(read, size=None):
         sz, secfmt = 20, "<i"
     else:
         symoff, nsym = struct.unpack_from("<II", h, 8)
-        sz, secfmt = 18, "<h"
+        sz, secfmt = 18, "<H"         # unsigned: cl numbers sections up to 0xFEFF
     tab = read(symoff, nsym * sz)
     strsz, = struct.unpack("<I", read(symoff + nsym * sz, 4) or b"\0\0\0\0")
     strs = read(symoff + nsym * sz + 4, max(0, strsz - 4))
@@ -75,6 +75,8 @@ def coff_externals(read, size=None):
         o = i * sz
         val, = struct.unpack_from("<I", tab, o + 8)
         sec, = struct.unpack_from(secfmt, tab, o + 12)
+        if secfmt == "<H" and sec >= 0xFF00:             # IMAGE_SYM_DEBUG / ABSOLUTE (-2, -1)
+            sec -= 0x10000
         scl, naux = tab[o + sz - 2], tab[o + sz - 1]
         if scl == 2 and (sec != 0 or val == 0):             # IMAGE_SYM_CLASS_EXTERNAL: defined, or undefined (not common)
             if tab[o:o + 4] == b"\0\0\0\0":

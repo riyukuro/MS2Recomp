@@ -20,7 +20,7 @@
 #pragma intrinsic(memcpy, memset, strcmp, strlen)                       // strlen inline in FUN_14083f560
 
 void FUN_1401d3700(CStringA& str);                                      // MakeLower
-void FUN_14025fab0(CStringW& str);                                      // MakeLower
+bool FUN_14025fab0(CStringW& str);                                      // MakeLower
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // wide -> narrow
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
 

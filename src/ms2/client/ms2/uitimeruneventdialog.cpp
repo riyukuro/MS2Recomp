@@ -29,7 +29,6 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/commonfiles/gameeventuservalue.h"
@@ -242,7 +241,7 @@ void UITimeRunEventDialog::vfunc_o178_10(void* pQuest)
 void UITimeRunEventDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000)) {
+    if (m_tick.Check(1000)) {
         MS2Ptr<TimeRunEventContext> spContext = static_cast<CGameRule*>(FUN_1401c0d90())->GetTimeRunEvent();
         if (spContext.IsNull()) {
             vfunc_67();

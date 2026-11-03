@@ -6,7 +6,7 @@
 
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/ccpetinfopacket.h"
-#include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/client/ms2/uitamingbar.h"
 
 // A row of the pet table (FUN_14052d210()->FUN_1407290f0(nPetId)); only the proven field is named.
@@ -73,7 +73,7 @@ public:
     MS2Ptr<Unk_PetRow> m_spRow;                             // +0xf48
     CCPetInfoPacket::Info m_info;                           // +0xf58
     Timer m_timer1030;                                      // +0x1030 (armed 1000 ms)
-    Unk_McTimer m_tm1068;                                   // +0x1068
+    Unk_IntervalTimer m_tm1068;                             // +0x1068
     int m_nKind;                                            // +0x1070
     unsigned __int64 m_nTamingPoint;                        // +0x1078
     unsigned short m_nGrade;                                // +0x1080
@@ -83,7 +83,7 @@ public:
     MS2Ptr<UITamingBar::Entity> m_spBar;                    // +0x1090
     int m_nTargetId;                                        // +0x10a0
     int m_nIdleMs;                                          // +0x10a4
-    Unk_McTimer m_tm10a8;                                   // +0x10a8
+    Unk_IntervalTimer m_tm10a8;                             // +0x10a8
 };
 MS2_CHECK_SIZE(CPet, 0x10b0);
 MS2_CHECK_OFFSET(CPet, m_spRow, 0xf48);

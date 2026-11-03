@@ -22,12 +22,10 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern float g_143aef240;                   // remembered camera distance (vfunc_24)
 
 // The game context (FUN_1403ed2d0).
-WorldService* FUN_1403ed2d0();
 
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
@@ -154,8 +152,8 @@ void CTargetLookCenterCameraMode::vfunc_8(double fTime)
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                       FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                       efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
             float fZoom = ptInput.x * fScale;
             float fYaw = ptInput.y * fScale;
@@ -221,7 +219,7 @@ void CTargetLookCenterCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
         m_50 = m_54;
         if (m_bc && g_143aef240 != 0.0f)
             m_50 = g_143aef240;
-        m_b4 = FUN_1403ed2d0()->FUN_141bd4120();
+        m_b4 = WorldService::GetInstance()->FUN_141bd4120();
         m_68 = m_48;
         m_6c = FUN_14183ce10(m_58, m_50, m_54, m_4c * 180.0f / 3.14159265f, 90.0f);
         m_78 = pTarget->vfunc_17();

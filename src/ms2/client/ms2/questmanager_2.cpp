@@ -103,6 +103,7 @@
 #include "ms2/commonfiles/chapterbooktable.h"
 #include "ms2/commonfiles/contentshutdown.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <NiPoint3.h>
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/fittingdollpc.h"
@@ -117,6 +118,7 @@
 #include "ms2/commonfiles/questdatatable.h"
 #include "ms2/client/ms2/uisidepopuptalk.h"
 #include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/commonfiles/scriptptr.h"           // C3: Unk_ScriptPtr<CTalkScript>
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/effectservice.h"
@@ -125,7 +127,6 @@
 #include "ms2/commonfiles/questmasktable.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/formatstringid.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/commonfiles/fieldmissiontable.h"  // C3: was a local member view
 #include "ms2/placeholder/gfxservice.h"  // C3: was a local member view
@@ -156,10 +157,7 @@ static CString s_progressSound = "quest_progress";
 // External services use declarations until their classes are recovered.
 class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 // The npc talk manager.
-class Unk_QmTalkManager : public UITalkManager {
-public:
-    int FUN_141b213f0(class Unk_QmTalkScriptPtr script, int npcId, int mode, int n);   // open the talk
-};
+class Unk_QmTalkManager : public UITalkManager {};
 class Unk_AkoCutscene   // C3: static member view for the former free stand-ins
 {
 public:
@@ -177,8 +175,10 @@ public:
 };
 class Unk_QmGroupTable;
 Unk_QmGroupTable* FUN_140d738f0();
-int FUN_140408410(const ATL::CAtlArray<unsigned>*, const int&);
-int FUN_140931210(int);
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
+enum Unk_SlotKey : int;
+unsigned FUN_140931210(Unk_SlotKey);   // C3: was int(int)
+#define FUN_140931210(x) ((int)FUN_140931210((Unk_SlotKey)(x)))
 class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -256,7 +256,6 @@ bool FUN_1407640c0(CQuestData*);
 // Field object handle filled by WorldService::FUN_141bc2800 (16 bytes, Unk_WsP16 layout).
 class Unk_QmFieldObject {
 public:
-    Vector3 FUN_14169d2f0() const;
     char m_pad_00[0x38];
     float m_rotX, m_rotY, m_rotZ;               // +0x38 euler angles in degrees
 };
@@ -270,8 +269,9 @@ class Unk_QmClientConfig { public: void* m_0; CContentShutdown m_shutdown; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int stringId, int, int);
 class Unk_QmNpcTable { public:  };
-class Unk_QmQuestFilter { public: int FUN_141261b90(unsigned questId); };
-class Unk_QmOptions { public: Unk_QmQuestFilter* FUN_140c9b8b0(); };
+int FUN_141261b90(struct Unk_GsEtc* pFilter, int questId);   // C3: free function (was Unk_QmQuestFilter::FUN_141261b90)
+class Unk_QnState { public: struct Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (was Unk_QmOptions)
+class CPortal { public: Vector3 FUN_14169d2f0(); };   // C3: member view (portal.h)
 CStringW FUN_140763550(int questId, int state);     // one tooltip line of a quest
 PCBase* FUN_140aac420(Unk_WsV118* user);              // the user's object (CComPtrBase::operator T*)
 // CRBTree<unsigned, Unk_WsV118> members belong to other objects (0x140c20a10, 0x14112e170, 0x14112e2b0).
@@ -284,19 +284,8 @@ int FUN_1407474d0(const ATL::CAtlArray<int>* values, const int* value);   // ind
 void FUN_140d73bc0(int id, int a, void* b, CStringW text);
 void FUN_140d73aa0(CStringW text, int type, void* data, CStringW tag);
 class Unk_IngTable;
-class Unk_QmTalkScript;
-// Boxed talk-script handle (16 bytes), as used by cubespawnobject.cpp.
-class Unk_QmTalkScriptPtr {
-public:
-    Unk_QmTalkScriptPtr(const Unk_QmTalkScriptPtr& o);  // 0x140859bc0
-    ~Unk_QmTalkScriptPtr();                             // 0x14078f140
-    bool IsNull() const;                                // 0x14085a420
-    Unk_QmTalkScript* FUN_14078f3a0() const;            // get
-private:
-    void* m_0;
-    Unk_QmTalkScript* m_p;
-};
-Unk_QmTalkScriptPtr FUN_1408564b0(int questId, int n);
+class CTalkScript;
+Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int questId, int n);   // the quest's talk script (id, n)
 int FUN_14074b0e0(CQuestData* data, int value, int n);
 int IsConditionTypeCounted(int nType);
 extern Unk_Inventory g_143ab2a90;
@@ -311,25 +300,19 @@ public:
 };
 class UIQuestDialog : public UIDialog {};
 class UIWorldMapDialog : public UIDialog { public: void FUN_141b5be10(); };
-UIQuestGuideDialog* FUN_140e888d0(int uiType);                          // GetDialog<UIQuestGuideDialog>
-UIQuestDialog* FUN_14131f1e0(int uiType);                               // GetDialog<UIQuestDialog>
-UIWorldMapDialog* FUN_140961730(int uiType);                            // Unk_GetUI<UIWorldMapDialog>
+template <class T> T* Unk_SptGetUI(int nId);   // C3: was FUN_140e888d0
+template <class T> T* GetDialog(int nId);   // C3: was FUN_14131f1e0
+template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_140961730
 UIRewardNotify* FUN_140938cd0(int uiType);                              // GetDialog<UIRewardNotify>
-class Unk_QmSidePopupTalk : public UISidePopupTalk { };
-Unk_QmSidePopupTalk* FUN_1413868b0(int uiType);
+template <class T> T* Unk_GaGetUI(int nId);   // C3: was FUN_1413868b0
 CString Name_14021a6b0(int alliance);                                    // the alliance's string key
 CStringW FUN_14016a730(const char* text, int codePage);
 extern int DAT_143abdf50;
 // The quest portal effect (?\questmanager.cpp case 0x12): NiTransform and the effect request.
-struct Unk_QmNiPoint3 {
-    Unk_QmNiPoint3(const Vector3& pt);                         // 0x14027dcf0 NiPoint3(const efd::Point3&)
-    Unk_QmNiPoint3& FUN_14097faa0(const Unk_QmNiPoint3& o);             // NiPoint3::operator=
-    float x, y, z;
-};
 struct Unk_QmXform {
     Unk_QmXform();                                                      // 0x140a332d0 NiTransform()
     Unk_EfdMatrix3 m_rotate;
-    Unk_QmNiPoint3 m_translate;
+    NiPoint3 m_translate;
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_QmXform, 0x34);
@@ -439,7 +422,7 @@ MS2_REPLACE_METHOD_VIA(0x1416c9810, CQuestManager, CQuestManagerCommon, vfunc_o1
 // @0x1416c9850
 int CQuestManager::vfunc_o10_2(int id)
 {
-    return FUN_140408410(&m_pinnedQuests, id) != -1;
+    return Unk_ArrayFind<unsigned>(m_pinnedQuests, reinterpret_cast<const unsigned&>(id)) != -1;
 }
 MS2_REPLACE_METHOD_VIA(0x1416c9850, CQuestManager, CQuestManagerCommon, vfunc_o10_2, 69, 0x2B0D9F09);
 
@@ -698,7 +681,7 @@ MS2_REPLACE_METHOD_VIA(0x1416ca400, CQuestManager, UIItemEventListener, vfunc_33
 // @0x1416ca440
 void CQuestManager::UpdateQuests()
 {
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_counter198).Check(1000)) {
+    if (m_counter198.Check(1000)) {
         FUN_1416d3010();
         FUN_1416d3430();
         for (POSITION pos = m_quests20.GetHeadPosition(); pos != 0; m_quests20.GetNext(pos)) {
@@ -1132,7 +1115,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         DAT_143abdf50 = 7;
     } else if (mode == 0x1a) {
         m_group = packet.ReadInt32();
-        UIWorldMapDialog* worldMap = FUN_140961730(0x4e42);
+        UIWorldMapDialog* worldMap = Unk_GetUI<UIWorldMapDialog>(0x4e42);
         if (worldMap) worldMap->FUN_141b5be10();
         UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
         if (notify) {
@@ -1154,7 +1137,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
         Unk_QmFieldHandle target = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_targetObject);
         if (target.IsNull()) return;
         Unk_QmXform xform;
-        xform.m_translate.FUN_14097faa0(target->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
+        xform.m_translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((CPortal*)(void*)target.operator->())->FUN_14169d2f0().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
         ((efd::Matrix3*)(Unk_EfdMatrix3*)&(xform.m_rotate))->FromEulerAnglesXYZ((target->m_rotX * 3.1415927f) / 180.0f, (target->m_rotY * 3.1415927f) / 180.0f, (target->m_rotZ * 3.1415927f) / 180.0f);
         xform.m_fScale = 1.0f;
         NoticeMessage request;
@@ -1184,7 +1167,7 @@ void CQuestManager::OnQuest(CInPacket& packet)
     } else if (mode == 0x22 || mode == 0x23) {
         int alliance = static_cast<unsigned short>(packet.ReadInt16());
         ((CUIService*)(Unk_QmUIManager*)(reinterpret_cast<Unk_QmUIManager*>(TSingleton<CUIService>::GetInstance())))->CloseDialog((eUIClassID)(0x4f50));
-        Unk_QmSidePopupTalk* popup = FUN_1413868b0(0x4f57);
+        UISidePopupTalk* popup = Unk_GaGetUI<UISidePopupTalk>(0x4f57);
         if (popup) {
             CStringW format(mode == 0x22 ? L"s_quest_alliance_accept_all_{0}" : L"s_quest_alliance_complete_all_{0}");
             MS2Ptr<SidePopupTalkParam> param(new SidePopupTalkParam);
@@ -1371,7 +1354,7 @@ int CQuestManager::HasTalkScriptForNpc(int npcId)
     for (size_t i = 0; i < quests.GetCount(); i++) {
         Unk_PayloadPtr<CQuest> quest = quests[i];
         if (quest->GetData()->m_2e8 == npcId) {
-            Unk_QmTalkScript* script = FUN_1408564b0(quest->FUN_140bfc580(), 200).FUN_14078f3a0();
+            CTalkScript* script = FUN_1408564b0(quest->FUN_140bfc580(), 200).get();
             if (script != 0) return 1;
         }
     }
@@ -1537,7 +1520,7 @@ MS2_REPLACE_METHOD(0x1416cf980, CQuestManager, FUN_1416cf980, 642, 0xE6BF41EF);
 // @0x1416cfc10
 int CQuestManager::IsQuestPinned(int id)
 {
-    return FUN_140408410(&m_pinnedQuests, id) != -1;
+    return Unk_ArrayFind<unsigned>(m_pinnedQuests, reinterpret_cast<const unsigned&>(id)) != -1;
 }
 MS2_REPLACE_METHOD(0x1416cfc10, CQuestManager, IsQuestPinned, 69, 0x04E4AE45);
 
@@ -1681,7 +1664,7 @@ Vector3 CQuestManager::GetTargetObjectPosition()
 {
     Unk_QmFieldHandle target = reinterpret_cast<Unk_QmWorld*>(WorldService::GetInstance())->FUN_141bc2800(m_targetObject);
     if (target.IsNull()) return DAT_143b01a60;
-    return target->FUN_14169d2f0();
+    return ((CPortal*)(void*)target.operator->())->FUN_14169d2f0();
 }
 MS2_REPLACE_METHOD(0x1416d0690, CQuestManager, GetTargetObjectPosition, 158, 0x580CD80D);
 
@@ -1896,7 +1879,7 @@ int CQuestManager::FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all)
     int best = 0;
     for (unsigned questId : *quests) {
         int questState = 4;
-        if (all == 0 && reinterpret_cast<Unk_QmOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->FUN_141261b90(questId) == 0) continue;
+        if (all == 0 && FUN_141261b90((struct Unk_GsEtc*)reinterpret_cast<Unk_QnState*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0(), questId) == 0) continue;
         int score = FUN_1416d1100(npcId, questId, &questState);
         if (score > best) {
             best = score;
@@ -2274,9 +2257,9 @@ int CQuestManager::FUN_1416d3510()
         if (data->m_320.m_4 != 0 && data->m_320.m_4 != mapId) continue;
         if (data->m_320.m_4 == 62000000 && FUN_1418fd280() == 0) continue;
         if (vfunc_1(FUN_14074b030(data.operator->()), 0) == 0) continue;
-        Unk_QmTalkScriptPtr script = FUN_1408564b0(FUN_14074b030(data.operator->()), 100);
+        Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_14074b030(data.operator->()), 100);
         if (script.IsNull()) continue;
-        ((class Unk_QmTalkManager*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(script, data->m_2e8, 4, 0);
+        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
         return 1;
     }
     return 0;
@@ -2286,11 +2269,11 @@ MS2_REPLACE_METHOD(0x1416d3510, CQuestManager, FUN_1416d3510, 668, 0x62D747D2);
 // @0x1416d37c0
 void CQuestManager::FUN_1416d37c0()
 {
-    UIQuestGuideDialog* guide = FUN_140e888d0(0x4e43);
+    UIQuestGuideDialog* guide = Unk_SptGetUI<UIQuestGuideDialog>(0x4e43);
     if (guide && guide->FUN_141924630()) guide->FUN_141aacf20();
-    UIQuestDialog* questDialog = FUN_14131f1e0(0x4e3e);
+    UIQuestDialog* questDialog = GetDialog<UIQuestDialog>(0x4e3e);
     if (questDialog && questDialog->FUN_141924630()) questDialog->vfunc_67();
-    UIWorldMapDialog* worldMap = FUN_140961730(0x4e42);
+    UIWorldMapDialog* worldMap = Unk_GetUI<UIWorldMapDialog>(0x4e42);
     if (worldMap && worldMap->FUN_141924630()) worldMap->vfunc_67();
     UIPopupNpcTalkDialog* talk = Unk_QmFindDialog<UIPopupNpcTalkDialog>(0x4f4d);
     if (talk) talk->FUN_140e77300();
@@ -2311,7 +2294,7 @@ void CQuestManager::FUN_1416d38a0(int type, int state, int skipGrouped)
         if (FUN_14074b070(data.operator->()) != state) continue;
         if (skipGrouped != 0 && data->m_require.m_groupId != 0) continue;
         if (quest->GetTrackingState() != 0) {
-            UIQuestGuideDialog* guide = FUN_140e888d0(0x4e43);
+            UIQuestGuideDialog* guide = Unk_SptGetUI<UIQuestGuideDialog>(0x4e43);
             if (guide) guide->FUN_141aacef0(quest->FUN_140bfc580());
         }
         m_quests20.RemoveAt(cur);
@@ -2335,7 +2318,7 @@ int CQuestManager::FUN_1416d3af0(const ATL::CAtlArray<unsigned>& itemIds)
         MS2Ptr<CEquipItem> equip = equips.GetAt(pos);
         MS2Ptr<CItem> item = equip->GetItem();
         if (item->FUN_140529620()) continue;
-        if (FUN_140408410(&itemIds, item->FUN_1405276c0()) == -1) continue;
+        if (Unk_ArrayFind<unsigned>(itemIds, item->FUN_1405276c0()) == -1) continue;
         if (found.find(item->FUN_1405276c0()) != found.end()) continue;
         found.insert(item->FUN_1405276c0());
         count++;

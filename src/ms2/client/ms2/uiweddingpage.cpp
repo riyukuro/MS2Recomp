@@ -68,44 +68,11 @@ class Unk_WpInput : public ASDisplayObject
 {
 };
 
-// The embedded item (+0x50) of an item grant row: its virtual slots give the item id / its count.
-class Unk_WpGrant
-{
-public:
-    virtual int vfunc_0();                                      // the item id
-    virtual int vfunc_1();                                      // the count
-};
-
-// A wedding grade perk (WeddingTable's skill map): a skill (type 0) or an item (type 1) unlocked by a grade.
-class Unk_WpPerk : public CPtred
-{
-public:
-
-    int m_pad_18;
-    int m_nType;                                                // +0x1c 0 = skill, 1 = item
-    int m_nGrade;                                               // +0x20 the grade that unlocks it
-    int m_pad_24;
-    int m_nSkillId;                                             // +0x28
-    float m_pad_2c;
-    char m_pad_30[0x20];
-    Unk_WpGrant m_grant;                                        // +0x50
-    Unk_WpGrant* GetGrant() { return &m_grant; }                // reached through a pointer so the calls stay virtual
-};
-MS2_CHECK_OFFSET(Unk_WpPerk, m_nType, 0x1c);
-MS2_CHECK_OFFSET(Unk_WpPerk, m_grant, 0x50);
-
-class Unk_WpPerkTable
-{
-public:
-    std::map<int, MS2Ptr<Unk_WpPerk> >& FUN_140909a80();        // the perk map
-    MS2Ptr<Unk_WpPerk> FUN_140909910(int nId);                  // one perk (null: none)
-};
-
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
 
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (T = ASUIComponent)
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
@@ -157,7 +124,7 @@ bool UIWeddingPage::vfunc_1()
     Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->GetMember("m_currentPage");
     if (kPage.IsNull())
         return false;
-    m_pScript = FUN_140acca70(m_28->FUN_1422db730(), kPage);
+    m_pScript = Unk_ASCreate<ASUIComponent>(m_28->FUN_1422db730(), kPage);
     return true;
 }
 
@@ -283,31 +250,31 @@ bool UIWeddingPageSkill::vfunc_1()
     if (MS2Ptr<ASScrollingList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
-        std::map<int, MS2Ptr<Unk_WpPerk> >& perks = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909a80();
-        std::map<int, MS2Ptr<Unk_WpPerk> >::iterator it = perks.begin();
-        std::map<int, MS2Ptr<Unk_WpPerk> >::iterator itEnd = perks.end();
+        std::map<int, MS2Ptr<WeddingSkillData> >& perks = TSingleton<WeddingTable>::GetInstance()->GetSkills();
+        std::map<int, MS2Ptr<WeddingSkillData> >::iterator it = perks.begin();
+        std::map<int, MS2Ptr<WeddingSkillData> >::iterator itEnd = perks.end();
         for (; it != itEnd; ++it)
         {
-            MS2Ptr<Unk_WpPerk> spPerk(it->second);
+            MS2Ptr<WeddingSkillData> spPerk(it->second);
             ASObj obj(2);
             obj.FUN_1407cb9c0("id", it->first);
             obj.FUN_140fe95a0("type", spPerk->m_nType);
-            obj.FUN_1407cbb20("level", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nGrade));
-            obj.FUN_1407cbbe0("activate", nGrade >= spPerk->m_nGrade);
+            obj.FUN_1407cbb20("level", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nRequireGrade));
+            obj.FUN_1407cbbe0("activate", nGrade >= spPerk->m_nRequireGrade);
             if (spPerk->m_nType == 0)
             {
-                unsigned short nSkillLevel = std::max<unsigned short>(reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetLevel(nGrade), 1);
-                MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+                unsigned short nSkillLevel = std::max<unsigned short>(spPerk->GetLevel(nGrade), 1);
+                MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nAdditionalEffectId, nSkillLevel);
                 if (spSkill == 0)
                     continue;
-                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
-                obj.FUN_1409c4a30("status", reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetValue(nGrade));
+                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141812290(spPerk->m_nAdditionalEffectId, nSkillLevel, CString("name")));
+                obj.FUN_1409c4a30("status", spPerk->GetValue(nGrade));
                 obj.FUN_1407cba60("imgPath", spSkill->GetIcon());
             }
             else if (spPerk->m_nType == 1)
             {
-                MS2Ptr<CItemData> spItem = FUN_14053f870((&spPerk->m_grant)->vfunc_0());
-                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
+                MS2Ptr<CItemData> spItem = FUN_14053f870(static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0());
+                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0()));
                 obj.FUN_1407cb9c0("status", 0);
                 obj.FUN_1407cba60("imgPath", spItem->GetIconPath());
             }
@@ -339,12 +306,12 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nId = data.PopInt();
-            MS2Ptr<Unk_WpPerk> spPerk = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909910(nId);
+            MS2Ptr<WeddingSkillData> spPerk = TSingleton<WeddingTable>::GetInstance()->FindSkill(nId);
             if (spPerk == 0)
                 return true;
             if (spPerk->m_nType != 1)
                 return true;
-            if (g_143ab2a90.FUN_140a5e2e0((&spPerk->m_grant)->vfunc_0()).get() != 0)
+            if (g_143ab2a90.FUN_140a5e2e0(static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0()).get() != 0)
             {
                 {
                     CStringW strMsg(L"s_wedding_dialog_page_skill_exist");
@@ -366,14 +333,14 @@ bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Val
 void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     int nId = pArgs->PopInt();
-    MS2Ptr<Unk_WpPerk> spPerk = reinterpret_cast<Unk_WpPerkTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909910(nId);
+    MS2Ptr<WeddingSkillData> spPerk = TSingleton<WeddingTable>::GetInstance()->FindSkill(nId);
     if (spPerk == 0)
         return;
     int nGrade = FUN_141b89950(TSingleton<WeddingManager>::GetInstance());
     if (spPerk->m_nType == 0)
     {
-        unsigned short nSkillLevel = std::max<unsigned short>(reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetLevel(nGrade), 1);
-        MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+        unsigned short nSkillLevel = std::max<unsigned short>(spPerk->GetLevel(nGrade), 1);
+        MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nAdditionalEffectId, nSkillLevel);
         if (spSkill.get() != 0)
         {
             ASTooltip tip(*pRetVal, 2);
@@ -383,7 +350,7 @@ void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     else if (spPerk->m_nType == 1)
     {
         ASTooltip tip(*pRetVal, 2);
-        tip.FUN_1409e1770((&spPerk->m_grant)->vfunc_0(), (&spPerk->m_grant)->vfunc_1());
+        tip.FUN_1409e1770(static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0(), static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_1());
     }
 }
 

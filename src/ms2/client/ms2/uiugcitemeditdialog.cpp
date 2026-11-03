@@ -173,7 +173,7 @@ class CommonString* FUN_14025e7d0();       // C3: the CommonString singleton
 // The inventory (DAT_143ab2a90), seen through the two calls of this unit.
 class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); MS2Ptr<CItem> FUN_140a5e040(int nKind); };   // C3: member view (inventory.h)
 extern Unk_Inventory g_143ab2a90;
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 UGCItemSlot* FUN_141b46a20(const CString& strName);
 
 // The content switches (singleton 0x140166410).
@@ -2188,7 +2188,7 @@ MS2_REPLACE_METHOD(0x141B463B0, UIUGCItemEditDialog, SetEditItem, 63, 0xAF7C5FDE
 // @0x141b46a20
 UGCItemSlot* FUN_141b46a20(const CString& strName)
 {
-    return efd::DynamicCast<UGCItemSlot>(FUN_1422c8e90(strName));
+    return efd::DynamicCast<UGCItemSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
 }
 
 // @0x141b46a40

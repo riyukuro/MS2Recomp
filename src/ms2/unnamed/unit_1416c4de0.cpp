@@ -51,7 +51,6 @@ int LoadTestCamerValue();                           // reloads the camera xml (r
 
 float FUN_14059d930(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 float FUN_141b6fdb0(float t, int nType);            // easing
@@ -118,8 +117,8 @@ void CPVPCameraMode::vfunc_8(double fTime)
         Vector3 ptInput = ptMove;
         float fRate = 15.0f;
         float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-        float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                   FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+        float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                   efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
         float fScale = fStep * fMax;
         m_50 = m_50 + ptInput.y * fScale;
         if (m_50 > m_120)
@@ -142,7 +141,7 @@ void CPVPCameraMode::vfunc_39(double fTime)
     if (m_f0)
     {
         Unk_NiPoint3 ptDelta(m_d8.m_pos.FUN_140965c40(m_c0.m_pos));
-        float fDist = ptDelta.FUN_140967ac0();
+        float fDist = reinterpret_cast<const Vector3&>(ptDelta).FUN_140967ac0();
         float fBlend = 0.0f;
         if (m_fc)
         {

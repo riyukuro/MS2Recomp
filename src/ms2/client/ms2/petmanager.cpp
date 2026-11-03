@@ -48,6 +48,7 @@ class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);   // 0x140a53190
     void* m_storage[14];
 };
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
@@ -71,8 +72,7 @@ public:
 };
 class Unk_PmInventoryDialog { public:  };
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_PmInventoryDialog* FUN_1405344f0 (calls cast back)
-class Unk_PmPetDialog : public UIPetSystemDialog { };
-Unk_PmPetDialog* FUN_140b99ba0(int nId);
+template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0
 
 // The local player or another player object (a PC). FUN_141663400 clears / sets the worn pet item, FUN_141663450 reads it.
 class Unk_PCBaseComp_a78 : public CPtred {};
@@ -785,7 +785,7 @@ void CPetManager::OnPetInfo(CInPacket& in)
                 return;
             m_info.identity.name = spItem->FUN_140527b10();
         }
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(1);
     }
@@ -836,7 +836,7 @@ void CPetManager::OnPetUnsummoned(CInPacket& in)
         Unk_PmGameMenu* pMenu = ((class Unk_PmGameMenu*)FUN_140938b90(0x4e28));
         if (pMenu != 0)
             ((UIGameMenuDialog*)(Unk_PmGameMenu*)(pMenu))->InitPetInfo(0, 0, 0);
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(2);
         FUN_141275260(0xc0c, 1, 1);
@@ -888,7 +888,7 @@ void CPetManager::OnPetRenamed(CInPacket& in)
         m_info.identity.FUN_1401ff0f0(identity);
         spItem->FUN_140528b00(m_info.identity.name);
         ((class CPetManager*)FUN_140535320())->GetInfo()->identity.extra = identity.extra;
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(0xd);
     }
@@ -930,7 +930,7 @@ void CPetManager::FUN_140c8a4b0(CInPacket& in)
         spItem->FUN_140528b60(nValue);
         if (pPlayer->FUN_1416769f0() == nUid)
             m_info.identity.id = nValue;
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(6);
     }
@@ -950,7 +950,7 @@ void CPetManager::FUN_140c8a640(CInPacket& in)
         if (spItem == 0)
             return;
         spItem->FUN_140528bb0(nLevel);
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(8);
     }
@@ -971,7 +971,7 @@ void CPetManager::FUN_140c8a7a0(CInPacket& in)
     spItem->FUN_140524eb0(in);
     if (pPlayer == ((Unk_PmPlayer*)((WorldService*)(Unk_PmWorld*)(reinterpret_cast<Unk_PmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog != 0)
             pDialog->FUN_140e74640(7);
     }
@@ -994,7 +994,7 @@ void CPetManager::OnPetLevelUp(CInPacket& in)
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PmConfig*)FUN_1401d31f0())->m_strLevelUpEffect;
                 ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pPet));
-                ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(pPet->FUN_14123c580());
+                ((NoticeMessage&)(kTarget)).SetActor(pPet->FUN_14123c580());
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
             }
         }
@@ -1006,7 +1006,7 @@ void CPetManager::OnPetLevelUp(CInPacket& in)
             spItem->FUN_140528bf0(nLevel);
             if (pPlayer->FUN_1416769f0() == nUid)
                 m_info.identity.level = nLevel;
-            Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+            UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
             if (pDialog != 0)
                 pDialog->FUN_140e74640(9);
         }
@@ -1020,7 +1020,7 @@ void CPetManager::FUN_140c8ab80(CInPacket& in)
     if (pPlayer == 0)
         return;
     pPlayer->FUN_141663a70(nExp);
-    Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+    UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
     if (pDialog != 0)
         pDialog->FUN_140e74640(0xc);
     FUN_141276180(s_strGemUpgradeSound, "");

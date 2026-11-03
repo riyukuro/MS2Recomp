@@ -209,7 +209,7 @@ void GFxMovieMain::vfunc_5(bool bShow)
 {
     MS2Ptr<ASMovieClipLoader> spLoader = FUN_1422be4c0();
     if (spLoader.get())
-        spLoader->FUN_1409ba030("setVisibleStep", bShow ? 3 : 0);
+        spLoader->Invoke("setVisibleStep", bShow ? 3 : 0);
 }
 MS2_REPLACE_METHOD(0x1422EFFA0, GFxMovieMain, vfunc_5, 141, 0x82538CCC);
 

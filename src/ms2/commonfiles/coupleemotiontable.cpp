@@ -114,13 +114,13 @@ int CCoupleEmotionTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("coupleEmotion"); pElem != 0;
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("coupleEmotion")); pElem != 0;
          pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("coupleEmotion")))
     {
         MS2Ptr<CCoupleEmotionData> spData(new CCoupleEmotionData);

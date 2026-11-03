@@ -14,7 +14,7 @@ public:
 
     static const NiRTTI ms_RTTI;                                // 0x143ae5078
 
-    Unk_PPSmartC m_b8;      // shader
-    Unk_PPSmartA m_c0;
+    efd::SmartPointer<NiTexture> m_b8;      // shader
+    efd::SmartPointer<NiRenderedTexture> m_c0;
 };
 MS2_CHECK_SIZE(SSAORenderStep, 0xc8);

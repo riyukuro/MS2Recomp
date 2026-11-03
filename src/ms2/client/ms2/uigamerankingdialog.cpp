@@ -109,6 +109,10 @@
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/commonfiles/gameeventcontext.h"
+
+template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870, owned by uiinventorydialog
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
@@ -278,7 +282,7 @@ void UIGameRankingDialog::OnLoadComplete()
     FUN_140e2e540();
     FUN_140e2e620();
     FUN_1419260d0(CString("m_webGuideButton"), 0);
-    m_items = FUN_140c02900("m_items");
+    m_items = GetChild<ASScrollingList>("m_items");
     FUN_140e31140();
     FUN_140e33e20();
 }
@@ -744,7 +748,7 @@ void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
 // @0x140e31140
 void UIGameRankingDialog::FUN_140e31140()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_mainCategory"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_mainCategory"))
     {
         spList->FUN_1422dd1d0();
         ASObj root(2);
@@ -786,7 +790,7 @@ void UIGameRankingDialog::FUN_140e31140()
 void UIGameRankingDialog::FUN_140e31510(Unk_RankCatPtr spCategory)
 {
     ASDataProvider aTabs(2);
-    MS2Ptr<ASButtonBar> spTab = FUN_140c02870("m_tab");
+    MS2Ptr<ASButtonBar> spTab = GetChild<ASButtonBar>("m_tab");
     if (!spTab)
         return;
     spTab->SetSelectedIndex(-1);
@@ -1096,7 +1100,7 @@ CStringW UIGameRankingDialog::FUN_140e33ae0(Unk_RankCatPtr spCategory, MS2Ptr<CS
 // @0x140e33e20
 void UIGameRankingDialog::FUN_140e33e20()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_mainCategory"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_mainCategory"))
     {
         int nIndex = 0;
         for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos), nIndex++)

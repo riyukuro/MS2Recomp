@@ -66,7 +66,7 @@ class Unk_BannerActor : public PCBase
 {
 };
 bool FUN_140930110(int nActorId);
-UIBanner* FUN_1409614b0(int nUiId);                                         // the ui object of that id
+template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_1409614b0
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // Value = b
@@ -266,7 +266,7 @@ MS2_REPLACE_METHOD(0x140ba8b80, UIBanner, FUN_140ba8b80, 352, 0x1E3BCB61);
 // @0x140ba8cf0
 MS2Ptr<UIBanner::Entity> FUN_140ba8cf0(int nActorId)
 {
-    UIBanner* pBanner = FUN_1409614b0(0x4e30);
+    UIBanner* pBanner = Unk_GetUI<UIBanner>(0x4e30);
     if (pBanner == 0)
         return MS2Ptr<UIBanner::Entity>(0);
     return MS2Ptr<UIBanner::Entity>(pBanner->FUN_140ba8f90(nActorId));
@@ -276,7 +276,7 @@ MS2_REPLACE(0x140ba8cf0, FUN_140ba8cf0, 122, 0x80FEF9E4);
 // @0x140ba8d70
 void FUN_140ba8d70(int nActorId)
 {
-    UIBanner* pBanner = FUN_1409614b0(0x4e30);
+    UIBanner* pBanner = Unk_GetUI<UIBanner>(0x4e30);
     if (pBanner == 0)
         return;
     pBanner->FUN_140f49c00(nActorId);

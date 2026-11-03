@@ -90,7 +90,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "swoosheffectparam.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
 #include <algorithm>
 #include <new>
 #include <vector>
@@ -131,7 +131,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int FUN_140ad02f0(int nValue, int nLimit);                          // upper clamp
 bool FUN_14028d470(float a, float b);                               // nearly equal
-const int& FUN_1404eb7e0(const int& a, const int& b);               // max
 unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
 class CMainSystem;
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
@@ -166,7 +165,7 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 class Unk_ResourceMgr : public CNifLoadingService
 {
 public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);                    // texture load
+    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                    // texture load
     void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
 extern Unk_ResourceMgr* DAT_143ab5bc8;
@@ -331,7 +330,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
                 nPenalty = 2;
             else if (fFps <= 60.0f)
                 nPenalty = 1;
-            nLevel = FUN_1404eb7e0(0, nLevel - nPenalty);
+            nLevel = (std::max<int>)(0, nLevel - nPenalty);
         }
             break;
         }
@@ -438,7 +437,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseFilterMode((NiTexturingProperty::FilterMode)(0));
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetApplyMode((NiTexturingProperty::ApplyMode)(1));
         static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseClampMode((NiTexturingProperty::ClampMode)(0));
-        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>(FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5).Get())));
+        static_cast<NiTexturingProperty*>(spTexture.operator->())->SetBaseTexture(reinterpret_cast<NiTexture*>(static_cast<void*>((NiTexture*)FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5))));
         static_cast<NiAVObject*>(m_spMesh->GetMesh())->AttachProperty(spTexture);
 
         NiVertexColorProperty* spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;

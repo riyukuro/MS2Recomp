@@ -61,7 +61,7 @@ class Unk_NpcFileSystem : public CFileSystem
 {
 };
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);
-CStringA FUN_140513200(const char* szFormat, const int& n);       // StringFormat<int>: the identical-code copy Load calls
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 
 // The default effect dummy table (reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())): CommonEffectDummy, its row count and row getter.
 class Unk_NpcEffectDummies
@@ -305,7 +305,7 @@ void NpcDataTableCli::IndexAllRegions()
 // @0x140a7cd70
 void NpcDataTableCli::Load(int nFile)
 {
-    CStringA strPath = FUN_14071a5b0("NpcData", FUN_140513200("{0:03d}.xml", nFile));
+    CStringA strPath = FUN_14071a5b0("NpcData", Unk_SocketFormat<unsigned int>("{0:03d}.xml", reinterpret_cast<const unsigned int&>(nFile)));
     TiXmlDocument doc;
     if (((class Unk_NpcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {

@@ -207,6 +207,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
+
+class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 #pragma intrinsic(memset, memcpy)                                       // template code below expands them inline again
 
@@ -548,14 +550,14 @@ void CLogDialog::OnLvnGetdispinfoList(NMHDR* pNMHDR, LRESULT* pResult)
 // @0x141451410
 ClientLogManager::ClientLogManager() : m_bQuiet(false), m_itPending(m_logs.end())
 {
-    TSingleton<CLogString>::GetInstance()->AddCallback(
+    GetLogString()->AddCallback(
         Delegate<void(CLogStringCtx*)>(this, &ClientLogManager::OnLogString));
 }
 
 // @0x141451500
 ClientLogManager::~ClientLogManager()
 {
-    TSingleton<CLogString>::GetInstance()->RemoveCallback(
+    GetLogString()->RemoveCallback(
         Delegate<void(CLogStringCtx*)>(this, &ClientLogManager::OnLogString));
 }
 
@@ -611,7 +613,7 @@ void ClientLogManager::Flush()
         if (!m_bQuiet)
         {
             MS2Ptr<LogDialogCtx> spCtx = *m_itPending;
-            if (spCtx->m_nLevel <= TSingleton<CLogString>::GetInstance()->GetFileLevel() && spCtx->m_nLevel <= 2)
+            if (spCtx->m_nLevel <= GetLogString()->GetFileLevel() && spCtx->m_nLevel <= 2)
                 FUN_1412751b0(spCtx->m_strTextW, 0x14);
         }
     }

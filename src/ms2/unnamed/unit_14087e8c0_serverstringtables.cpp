@@ -32,13 +32,13 @@ class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-void FUN_14054c030(void*, int, int, const wchar_t*, const CStringA&, const CStringA&);   // logger with two arguments
+template <class T, class U>
+void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030; logger with two arguments
 CStringA FUN_14071ae20(const CStringA& strFile);                        // the full path of a table file
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW FUN_1401bf530(Unk_140165cf0*, const char* pszName, CStringW strDefault);   // string attribute with default
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // narrows a string
 CString FUN_14016a5c0(const char* psz, int nCodePage);                  // narrows a string (the RTTI name in CheckInit)
-bool FUN_140841300(const CStringW& str, const char* psz);               // string equals
 
 
 bool CServerStringGroup::s_bInit;
@@ -78,7 +78,7 @@ bool CServerStringGroup::Load()
         strName.Replace(L"\\n", L"\n");
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strName);
         if (m_mapFile.Lookup(strId) != 0)
-            FUN_14054c030(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", strPath, FUN_1401d4330(strId, 0));
+            Unk_ItemDataLog<CStringA, CStringA>(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", strPath, FUN_1401d4330(strId, 0));
         m_mapFile.SetAt(strId, strName);
     }
     SetInit(true);
@@ -94,7 +94,7 @@ CStringW CServerStringGroup::GetString(const CStringW& strKey)
         m_mapFile.RemoveAll();
         Load();
     }
-    bool bMarked = FUN_140841300(strKey.Left(1), "$") && FUN_140841300(strKey.Right(1), "$");
+    bool bMarked = strKey.Left(1) == "$" && strKey.Right(1) == "$";
     if (bMarked)
     {
         CStringW strName(strKey);

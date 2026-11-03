@@ -44,7 +44,7 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 bool FUN_14028d470(float a, float b);                                       // approximately equal
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern const int DAT_1439f4a10;                                             // the option slots per row (4)
@@ -152,7 +152,7 @@ bool UnlimitedEnchantTable::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), "slot", reinterpret_cast<int&>(nSlot));
         XmlGetAttr((class TiXmlElement*)(pNode), "grade", strGrade);
         ATL::CAtlArray<int> grades;
-        FUN_140177de0(strGrade, grades, "-");
+        XmlSplit(strGrade, grades, "-");
         int nFirst = 0;
         int nLast = 0;
         if (grades.GetCount() == 1)

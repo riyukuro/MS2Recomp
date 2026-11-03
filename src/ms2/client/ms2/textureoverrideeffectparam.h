@@ -8,7 +8,7 @@
 #include <efd/StdContainers.h>
 #include "ms2/client/ms2/niavobjectnodealloc.h"
 #include "ms2/client/ms2/effectparam.h"
-#include "ms2/placeholder/postprocesseffect.h"   // Unk_PPSmartC (texture handle)
+#include "ms2/placeholder/postprocesseffect.h"   // efd::SmartPointer<NiTexture> (texture handle)
 
 // TextureLayer (NiObject-based Layer, 0x30 bytes) is owned by ?\textureanimationdata.cpp.
 #include "ms2/client/ms2/textureanimationdata.h"
@@ -44,7 +44,7 @@ public:
 public:
     efd::vector<NiAVObjectPtr> m_vecNodes;                      // +0x30 owner's nodes (GameObject slot 44)
     ATL::CAtlArray<TextureLayerPtr> m_arrLayers;                // +0x48
-    Unk_PPSmartC m_spTexture;                                   // +0x68
+    efd::SmartPointer<NiTexture> m_spTexture;                                   // +0x68
 };
 MS2_CHECK_SIZE(TextureOverrideEffect, 0x70);
 MS2_CHECK_OFFSET(TextureOverrideEffect, m_vecNodes, 0x30);

@@ -62,7 +62,6 @@ public:
     void FUN_141a6b800();                               // log + preload every npc
     void FUN_141a6b8f0();                               // build m_entries
     void FUN_141a6be40(CStringW& strFilter);        // refill "m_npcList"
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);     // bind a list child of the movie
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -16,6 +16,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/commonfiles/scriptptr.h"           // C3: Unk_ScriptPtr<CTalkScript>
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 
@@ -39,22 +40,9 @@ int FUN_140bd09c0(void* pButton);                                       // which
 CFeatureManager* FUN_140166410();
 
 // The npc talk machinery, as in mypc.cpp.
-class Unk_MyPCTalkScript;
-struct Unk_MyPCTalkScriptPtr
-{
-    Unk_MyPCTalkScriptPtr(Unk_MyPCTalkScript* p);           // 0x140859c20
-    Unk_MyPCTalkScriptPtr(const Unk_MyPCTalkScriptPtr& o);  // (passed by value, built in place)
-    ~Unk_MyPCTalkScriptPtr();                               // 0x14078f140
-    Unk_MyPCTalkScript* FUN_14078f3a0() const;              // get
-    void* m_00;
-    Unk_MyPCTalkScript* m_p;
-};
-Unk_MyPCTalkScriptPtr FUN_140856820(int nNpcId, int nKind);
-class Unk_MyPCSurvival : public UITalkManager
-{
-public:
-    int FUN_141b213f0(Unk_MyPCTalkScriptPtr spScript, int nNpcId, int nMode, int n);
-};
+class CTalkScript;
+Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nKind);   // the talk script of the npc with the kind
+class Unk_MyPCSurvival : public UITalkManager {};
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
 public:
@@ -151,9 +139,9 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
     }
     if (nNpcId > 0)
     {
-        if (Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x69a0)->Get()).FUN_14078f3a0())
+        if (CTalkScript* pScript = FUN_140856820(nNpcId, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x69a0)->Get()).get())
         {
-            ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(Unk_MyPCTalkScriptPtr(pScript), nNpcId, 2, 0);
+            ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpcId, 2, 0);
             ((class Unk_MyPCSurvival*)Unk_AkoCutscene::GetInstance())->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));
         }
     }

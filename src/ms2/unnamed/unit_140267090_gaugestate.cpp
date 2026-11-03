@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x140267090-0x140267390 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <limits>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -34,7 +35,6 @@ public:
     float m_fAmount;                                            // +0x20
 };
 
-float FUN_14028aaf0();                                          // 0x14028aaf0 returns 0x34000000 (2^-23)
 bool FUN_14027ec30(Unk_GaugeRef* pRef);
 void FUN_14027e0f0(void* pRef) noexcept;
 Unk_GaugeRef::~Unk_GaugeRef() { FUN_14027e0f0(this); }
@@ -57,7 +57,7 @@ MS2_REPLACE_METHOD(0x1402670E0, Unk_Gauge, HasCount, 45, 0xBA8CAF98);
 // @0x140267120
 bool Unk_Gauge::HasAmount()
 {
-    return FUN_14028aaf0() < m_fAmount;
+    return std::numeric_limits<float>::epsilon() < m_fAmount;
 }
 MS2_REPLACE_METHOD(0x140267120, Unk_Gauge, HasAmount, 53, 0x635252AB);
 

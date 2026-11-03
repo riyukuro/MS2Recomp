@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x141856e00-0x1418589b0 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\toolsmoothcameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <algorithm>
 
 #include "toolsmoothcameramode.h"
 
@@ -14,6 +15,8 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
+#include <NiPoint3.h>
 
 // The shared eight-byte null-handle wrapper; constructor forwards to its pointer setter.
 class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
@@ -69,20 +72,16 @@ class Unk_GameContext
 {
 public:
     Unk_CameraOptionPtr FUN_141bd30a0();            // copy of +0x298
-    Unk_CameraTargetEntity* FUN_141bd1050(__int64 nObjectId);
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);   // C3: was Unk_GameContext::FUN_141bd1050
 };
 
 // The picked-object list returned by the camera manager's pick (FUN_140af0850).
-class Unk_PickEntry
-{
-public:
-    __int64 FUN_140a17cb0();                        // object id
-};
+class Unk_PickEntry;
 class NiPick
 {
 public:
@@ -94,6 +93,7 @@ public:
         Record* GetAt(unsigned int i) const;
     };
 };
+class NiPick::Record { public: class NiAVObject* GetAVObject(); };   // C3: was Unk_PickEntry::FUN_140a17cb0
 namespace ecr { class PickService { public: class PickRecord { public: const NiPick::Results* GetPickResult() const; }; }; }
 class Unk_PickList : public ecr::PickService::PickRecord {};
 class Unk_PickListPtr
@@ -119,19 +119,9 @@ int LoadTestCamerValue();                                // reloads the camera x
 
 float FUN_14059d930(float f);                       // fabs
 bool FUN_14028d470(float a, float b);               // nearly equal
-const float& FUN_1409ffe80(const float& a, const float& b);   // std::min
-const float& FUN_140805fc0(const float& a, const float& b);   // std::max
 void FUN_1412751f0(const CStringW& str, int a, int b);     // chat/debug log line
 #include "ms2/ms2format.h"
 
-// efd::Point3 with the default constructor 0x1405522f0 (another obj).
-struct Unk_EfdPoint3
-{
-    Unk_EfdPoint3();
-    float FUN_140968990();                          // Unitize
-    float x, y, z;
-};
-float FUN_140a00f20(const Unk_EfdPoint3& a, const Unk_EfdPoint3& b);   // Dot
 void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);   // GetCol
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
@@ -237,9 +227,9 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
             else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x4a, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xc, true, 0))
                 m_160 = m_160 - 0.05f;
             float fMax = 3.0f;
-            m_160 = FUN_1409ffe80(m_160, fMax);
+            m_160 = (std::min)(m_160, fMax);
             float fMin = 0.05f;
-            m_160 = FUN_140805fc0(m_160, fMin);
+            m_160 = (std::max)(m_160, fMin);
             if (fOld != m_160)
                 FUN_1412751f0(StringFormat<float>(L"move accelerate rate:{0}", m_160), 1, 1);
         }
@@ -275,7 +265,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         Vector3 ptAngle = m_c0.m_rot;
         ptAngle = ptAngle.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
-        kRot.FUN_142083d40(ptAngle.x, ptAngle.y, ptAngle.z);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptAngle.x, ptAngle.y, ptAngle.z);
         Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();
@@ -343,16 +333,16 @@ void CToolSmoothCameraMode::vfunc_39(double fTime)
         Unk_NiMatrix3 kCur;
         Unk_NiPoint3 ptCur(m_c0.m_rot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f));
         Unk_NiPoint3 ptWant(m_d8.m_rot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f));
-        kCur.FUN_142083d40(ptCur.x, ptCur.y, ptCur.z);
+        reinterpret_cast<efd::Matrix3*>(&kCur)->FromEulerAnglesXYZ(ptCur.x, ptCur.y, ptCur.z);
         Unk_NiMatrix3 kWant;
-        kWant.FUN_142083d40(ptWant.x, ptWant.y, ptWant.z);
-        Unk_EfdPoint3 ptColCur;
-        Unk_EfdPoint3 ptColWant;
+        reinterpret_cast<efd::Matrix3*>(&kWant)->FromEulerAnglesXYZ(ptWant.x, ptWant.y, ptWant.z);
+        NiPoint3 ptColCur;
+        NiPoint3 ptColWant;
         FUN_1418588c0(&kCur, 0, &ptColCur.x);
         FUN_1418588c0(&kWant, 0, &ptColWant.x);
-        ptColCur.FUN_140968990();
-        ptColWant.FUN_140968990();
-        float fDot = FUN_140a00f20(ptColCur, ptColWant);
+        ptColCur.Unitize();
+        ptColWant.Unitize();
+        float fDot = ptColCur.Dot(ptColWant);
         float fBlend = FUN_14059d930(fDot) * (float)fTime * 8.0f;
         if (fBlend >= 1.0f)
             m_c0.m_rot = m_d8.m_rot;
@@ -385,7 +375,7 @@ void CToolSmoothCameraMode::vfunc_30()
     for (unsigned int i = 0; i < pList.FUN_140a16c30()->GetPickResult()->GetSize(); ++i)
     {
         Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList.FUN_140a16c30()->GetPickResult()->GetAt(i));
-        Unk_CameraTargetEntity* pObject = pContext->FUN_141bd1050(pEntry->FUN_140a17cb0());
+        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(reinterpret_cast<WorldService*>(pContext)->FUN_141bd1050(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
         Unk_RpgActor* pActor = FUN_1409ffd30(pObject);
         if (pActor)
         {

@@ -27,7 +27,6 @@ public:
 class Unk_CashShopUIMgr { public: };
 void* FUN_140aadf80();                                              // the screen
 void FUN_140ad4c30(void* pScreen, RECT* pRect);                     // the screen rect
-void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);
 
 IMPLEMENT_DYNAMIC(CCashChargeDialog, CDialogEx)
 
@@ -106,7 +105,7 @@ void CCashChargeDialog::CenterOnScreen()
 // @0x140b04de0
 void CCashChargeDialog::DoDataExchange(CDataExchange* pDX)
 {
-    FUN_14098a440(this, pDX);
+    CDialogEx::DoDataExchange(pDX);
     DDX_Control(pDX, 0x4d4, m_explorer);
 }
 

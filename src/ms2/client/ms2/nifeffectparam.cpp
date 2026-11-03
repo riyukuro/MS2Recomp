@@ -236,8 +236,12 @@
 class Unk_140165cf0
 {
 public:
-    Unk_140165cf0* FUN_140165cf0(const char* pszName);              // FirstChildElement(name)
-    Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement(name)
+};
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);                     // FirstChildElement(name)
+    class Unk_XmlNode* NextSibling(char const*);                    // NextSiblingElement(name)
 };
 int XmlGetAttr(class TiXmlElement*, char const*, CString&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
@@ -370,14 +374,14 @@ void CNifEffectParam::vfunc_1(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "offFadeOut", m_bOffFadeOut);
     XmlGetAttr((class TiXmlElement*)(pNode), "myReferCount", m_nMyReferCount);
     XmlGetAttr((class TiXmlElement*)(pNode), "otherReferCount", m_nOtherReferCount);
-    Unk_140165cf0* pTransform = pNode->FUN_140165cf0("transform");
+    Unk_140165cf0* pTransform = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("transform");
     if (pTransform != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pTransform), "translate", *(efd::Point3*)&m_ptTranslate);
         XmlGetAttr((class TiXmlElement*)(pTransform), "rotation", *(efd::Point3*)&m_ptRotation);
         XmlGetAttr((class TiXmlElement*)(pTransform), "scale", m_fScale);
     }
-    Unk_140165cf0* pAttach = pNode->FUN_140165cf0("attachInfo");
+    Unk_140165cf0* pAttach = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("attachInfo");
     if (pAttach != 0)
     {
         FUN_14154e0e0(pAttach, "attachType", m_nAttachType);
@@ -391,21 +395,21 @@ void CNifEffectParam::vfunc_1(Unk_140165cf0* pNode)
         if (bAttachToNode)
             m_nAttachType = 1;
     }
-    Unk_140165cf0* pUpdate = pNode->FUN_140165cf0("update");
+    Unk_140165cf0* pUpdate = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("update");
     if (pUpdate != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pUpdate), "translate", bUpdateTranslate);
         XmlGetAttr((class TiXmlElement*)(pUpdate), "rotation", bUpdateRotation);
         XmlGetAttr((class TiXmlElement*)(pUpdate), "scale", bUpdateScale);
     }
-    Unk_140165cf0* pApply = pNode->FUN_140165cf0("applyNodeTransform");
+    Unk_140165cf0* pApply = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("applyNodeTransform");
     if (pApply != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pApply), "translate", bApplyTranslate);
         XmlGetAttr((class TiXmlElement*)(pApply), "rotation", bApplyRotation);
         XmlGetAttr((class TiXmlElement*)(pApply), "scale", bApplyScale);
     }
-    Unk_140165cf0* pLerp = pNode->FUN_140165cf0("lerp");
+    Unk_140165cf0* pLerp = (Unk_140165cf0*)((Unk_XmlNode*)pNode)->FirstChild("lerp");
     if (pLerp != 0)
     {
         XmlGetAttr((class TiXmlElement*)(pLerp), "type", m_strLerpType);
@@ -505,8 +509,10 @@ public:
     class GameObject* GetOwner();                                    // 0x140a533b0
     unsigned __int64 GetValue38();                                   // 0x140a53440: the target's attach object
 };
+void FUN_141207fb0(struct Unk_HoldTarget*, float);   // C3: was CBirdMovement::FUN_141207fb0 (equipmodel.cpp)
 bool FUN_14028d470(float a, float b);                               // nearly equal
-efd::ServiceManager* FUN_1413f9850();
+class Unk_ServiceManager* FUN_1413f9850();   // C3: was efd::ServiceManager*
+#define FUN_1413f9850() ((efd::ServiceManager*)FUN_1413f9850())
 
 // Unk_NodePtr is the exe's NiNodePtr (efd::SmartPointer<NiNode>); calls through this view reach its real operators.
 #define MS2_NODEPTR(sp) reinterpret_cast<NiNodePtr&>(sp)
@@ -627,8 +633,8 @@ public:
 struct Unk_NifEquipView { Unk_NodePtr FUN_1411dd700(); };          // the item's model node (CEquipItem member: this=rcx, hidden return=rdx)
 
 // Strings of the log lines.
-CString FUN_140741200(const char* pszFormat, const CString& strA, const CString& strB);
-CString FUN_140536a50(const char* pszFormat, const CString& strA);
+template <class A, class B> CString Unk_SocketFormat(const char* szFormat, const A& a, const B& b);   // C3: was FUN_140741200
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 CLogString* GetLogString();                                         // the game log, or 0
 
 // 3-argument fmt log helper (log, level, category, "format", a, b, c).
@@ -706,7 +712,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         MS2Ptr<CBirdMovement> spBird(new CBirdMovement);
         spBird->SetMaxLength(m_spParam->m_fMaxLength);
         spBird->SetMinLength(m_spParam->m_fMinLength);
-        spBird->FUN_141207fb0(m_spParam->m_fStep);
+        FUN_141207fb0((struct Unk_HoldTarget*)spBird.operator->(), m_spParam->m_fStep);
         spBird->SetVelocity(m_spParam->m_fVelocity);
         spRoot->SetMovement((class INodeMovement*)(spBird.get()));
     }
@@ -1211,7 +1217,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
                 }
                 else
                 {
-                    strWhere = FUN_140536a50("targetNode:{0} in character", CString(((spModel).operator->())->GetName().operator const char*()));
+                    strWhere = Unk_SocketFormat<CString>("targetNode:{0} in character", CString(((spModel).operator->())->GetName().operator const char*()));
                 }
             }
             else
@@ -1221,7 +1227,7 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
                     strParent = (static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*();
                 else
                     strParent = "empty";
-                strWhere = FUN_140741200("targetNode:{0}, parent:{1}", CString((static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*()), strParent);
+                strWhere = Unk_SocketFormat<CString, CString>("targetNode:{0}, parent:{1}", CString((static_cast<NiAVObject*>(MS2_NODEPTR(kTarget).operator->()))->GetName().operator const char*()), strParent);
             }
         }
     }
@@ -1325,15 +1331,8 @@ MS2_REPLACE_METHOD(0x14154D410, CNifEffect, FUN_14154d410, 1108, 0x1CF9A73C);
 // ============================================================================================================
 // CNiStreamLoadThread / CNifLoadingService (0x1415509b0-0x141556920)
 // ============================================================================================================
-class Unk_NifFileMgr : public CFileSystem
-{
-public:
-    // Reads a file of the data tree into a buffer (freed by the caller); pstrDir receives its directory.
-    int FUN_1403972f0(const char* pszPath, void** ppBuf, int* pnSize, std::string* pstrDir);
-};
-class Unk_NifGate { public: bool FUN_1406af080(); };                 // the loader should read on the caller's thread
+class Unk_LaunchOptions { public: bool IsPreloadNoThread(); };       // the loader should read on the caller's thread
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
-void FUN_140659080(Unk_140659080& kStartup, unsigned nError);        // record the start-up error
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_14028e7c0(CString& strPath);                                // normalize a path in place
 // NiStream accessors of the exe's layout: the header's inline NiStream::GetSearchPath/GetObjectCount/GetObjectAt read the
@@ -1370,7 +1369,7 @@ NiObject* FUN_14155d900(NiStream* pStream, unsigned nIndex)
         return reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_kTopObjects.GetAt(nIndex);
     return NULL;
 }
-void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
+template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280 (T = const char*)
 
 CNiStreamLoadThread* TSingleton<CNiStreamLoadThread>::s_instance = 0;
 inline TSingleton<CNiStreamLoadThread>::TSingleton() { s_instance = static_cast<CNiStreamLoadThread*>(this); }
@@ -1411,7 +1410,7 @@ unsigned CNiStreamLoadThread::vfunc_1(void* pParam, Unk_140659080& kStartup)
     m_hStop = CreateEventA(0, 0, 0, 0);
     if (m_hStop == 0)
     {
-        FUN_140659080(kStartup, 0x80004005);
+        kStartup.Fail((int)0x80004005);
         return 0xffffffff;
     }
     kStartup.FUN_1401d42d0();
@@ -1469,7 +1468,7 @@ void CNiStreamLoadThread::Enqueue(CString strPath)
         }
         else
         {
-            if (((class Unk_NifGate*)FUN_1406aeee0())->FUN_1406af080())
+            if (FUN_1406aeee0()->IsPreloadNoThread())
             {
                 Load(CString(strPath), 1);
                 return;
@@ -1538,7 +1537,6 @@ void CNiStreamLoadThread::Dequeue(CString strPath)
 }
 MS2_REPLACE_METHOD(0x1415512C0, CNiStreamLoadThread, Pause, 18, 0x79DC8588);
 
-// MS2-FUNCTIONAL: ops identical, frame slots differ (exe keeps nSize at +0x98 beside the c_str temp, ours puts it lowest)
 // @0x1415513e0
 NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
 {
@@ -1547,15 +1545,15 @@ NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
     pStream->SetTexturePalette(m_spPalette);
     std::string strDir;
     void* pBuf;
-    int nSize;
-    if (((class Unk_NifFileMgr*)GetFileSystem())->FUN_1403972f0(strPath, &pBuf, &nSize, &strDir))
+    unsigned __int64 nSize;
+    if (GetFileSystem()->FUN_1403972f0(strPath, &pBuf, &nSize, &strDir))
     {
         FUN_14155d9a0(pStream)->SetReferencePath(strDir.c_str());
-        if (!pStream->Load(static_cast<char*>(pBuf), nSize))
+        if (!pStream->Load(static_cast<char*>(pBuf), (int)nSize))
         {
             delete pStream;
             pStream = 0;
-            FUN_1403a1280(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strDir.c_str());
+            Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strDir.c_str());
             return 0;
         }
         NiFree(pBuf);
@@ -1588,13 +1586,13 @@ MS2_REPLACE_METHOD(0x1415513E0, CNiStreamLoadThread, Load, 1055, 0xC7CEE07E);
 // ============================================================================================================
 #include "ms2/commonfiles/crashmanager.h"
 #include "ms2/placeholder/crashmanagercli.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/coptimizer.h"
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
     char const* Attribute(char const*) const;
+    char const* Attribute(char const*, int*) const;
 };
 
 extern int DAT_143ae1f20;                                           // the render device is lost
@@ -1647,7 +1645,7 @@ CNifLoadingService::CNifLoadingService() : m_mapNif(10), m_mapTex(10), m_dLifeti
     m_kTexCount.nNPC = 0;
     m_kTexCount.nDependTime = 0;
     m_bRefreshTextures = 0;
-    reinterpret_cast<Unk_IntervalTimer&>(m_kSweepTimer).Init();
+    m_kSweepTimer.Init();
 }
 #endif
 
@@ -1892,7 +1890,7 @@ void CNifLoadingService::Sweep()
     if (DAT_143ae1f20 == 1)
         return;
     float fNow = (float)TSingleton<CMainSystem>::GetInstance()/*C3:TSingleton<CMainSystem>::GetInstance*/->FUN_141473280();
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_kSweepTimer).Check(60000) == 0)
+    if (m_kSweepTimer.Check(60000) == 0)
         return;
     m_kNifCount.nNotCache = 0;
     m_kNifCount.nForceKeep = 0;
@@ -2185,6 +2183,9 @@ void CNifLoadingService::DumpTextures()
 }
 MS2_REPLACE_METHOD(0x141554F60, CNifLoadingService, DumpTextures, 1653, 0x971C8348);
 
+struct Unk_VtmCaches { unsigned FUN_14151e770(); unsigned FUN_14151e790(); };   // C3: the cache counts
+#define FUN_14151e770() ((Unk_VtmCaches*)this)->FUN_14151e770()
+#define FUN_14151e790() ((Unk_VtmCaches*)this)->FUN_14151e790()
 // @0x141556610
 void CNifLoadingService::LogCounts()
 {
@@ -2223,7 +2224,6 @@ extern char DAT_142f2d1d8;
 extern char DAT_142f2d1e8;
 extern NiFixedString DAT_143ae5178;                                          // the weight key
 Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc);                 // root element
-const char* FUN_14086f500(Unk_140165cf0* pNode, const char* pszName, unsigned* pnOut);   // int attribute, 0 when absent
 void FUN_141047ac0(class NiObjectNET*, class NiFixedString const&, float);   // C3: was FUN_141047ac0
 void FUN_1415672e0(NiAVObject* pNode, bool bFlag);                  // prepare a loaded nif
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
@@ -2263,9 +2263,9 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
         TiXmlDocument kDoc;
         m_mapWeightDoc[strXml].FUN_140870cf0(kDoc);
         pDoc = &m_mapWeightDoc[strXml];
-        if (((class Unk_NifFileMgr*)GetFileSystem())->FUN_1403987d0(std::string(strXml)) == 0)
+        if (GetFileSystem()->FUN_1403987d0(std::string(strXml)) == 0)
             return;
-        if (((class Unk_NifFileMgr*)GetFileSystem())->FUN_1403974b0(pDoc, strXml, 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(pDoc, strXml, 0, true, false) == 0)
             return;
     }
     else
@@ -2275,23 +2275,23 @@ void CNifLoadingService::ApplyWeights(CString strNifPath, NiAVObject* pkRoot)
     Unk_140165cf0* pElement = DocRootElement(pDoc);
     if (pElement == 0)
         return;
-    Unk_140165cf0* pList = pElement->FUN_140165cf0(&DAT_142f2d1c8);
+    Unk_140165cf0* pList = (Unk_140165cf0*)((Unk_XmlNode*)pElement)->FirstChild(&DAT_142f2d1c8);
     if (pList == 0)
         return;
-    Unk_140165cf0* pItem = pList->FUN_140165cf0(&DAT_142f2d1d0);
+    Unk_140165cf0* pItem = (Unk_140165cf0*)((Unk_XmlNode*)pList)->FirstChild(&DAT_142f2d1d0);
     while (pItem != 0)
     {
         const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pItem))->Attribute(&DAT_142f2d1d8);
         if (pszName != 0)
         {
             unsigned nWeight = 0;
-            if (FUN_14086f500(pItem, "weight", &nWeight) != 0)
+            if (((class TiXmlElement*)(class Unk_140165cf0*)(pItem))->Attribute("weight", (int*)&nWeight) != 0)
             {
                 NiFixedString kName(pszName);
                 SetWeights(pRoot->GetObjectByName(kName), (int)nWeight);
             }
         }
-        pItem = pItem->FUN_140168650(&DAT_142f2d1e8);
+        pItem = (Unk_140165cf0*)((Unk_XmlNode*)pItem)->NextSibling(&DAT_142f2d1e8);
     }
 }
 MS2_REPLACE_METHOD(0x141555F50, CNifLoadingService, ApplyWeights, 967, 0x6D7EAF52);
@@ -2704,15 +2704,6 @@ void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData)
 // ---- the typed entry points other units declare for CNifLoadingService's texture cache ----
 // asyncimageloader / worldservice_1 / ugcviewerequip / ms2scenegraphservice / textureanimationdata reach these
 // members through local stand-in classes; each entry point forwards to the recovered member.
-// The texture handle of postprocesseffect.h (that header's data externs clash with this unit's).
-class Unk_PPSmartC {
-public:
-    Unk_PPSmartC(void* p = 0);      // 0x14097ed60
-    Unk_PPSmartC(const Unk_PPSmartC& rhs);
-    ~Unk_PPSmartC();                // 0x14097f4a0
-private:
-    void* m_p;
-};
 class Unk_UgcTextureCache
 {
 public:
@@ -2728,7 +2719,7 @@ public:
 class Unk_TexAnimResMgr
 {
 public:
-    Unk_PPSmartC FUN_141553eb0(CString strPath, void* pkSelf);
+    efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, void* pkSelf);
 };
 
 // MS2-FUNCTIONAL: forwards to CNifLoadingService::CreateTexture
@@ -2750,11 +2741,11 @@ efd::SmartPointer<NiTexture> Unk_SgNifLoader::FUN_141553eb0(CString strPath, NiT
 }
 
 // MS2-FUNCTIONAL: forwards to CNifLoadingService::FindTexture
-Unk_PPSmartC Unk_TexAnimResMgr::FUN_141553eb0(CString strPath, void* pkSelf)
+efd::SmartPointer<NiTexture> Unk_TexAnimResMgr::FUN_141553eb0(CString strPath, void* pkSelf)
 {
     efd::SmartPointer<NiTexture> spTexture =
         ((CNifLoadingService*)this)->FindTexture(strPath, (const NiTexture::FormatPrefs*)pkSelf);
-    return Unk_PPSmartC(spTexture.data());
+    return efd::SmartPointer<NiTexture>(spTexture.data());
 }
 
 // MS2-FUNCTIONAL: forwards to CNifLoadingService::AddTexture

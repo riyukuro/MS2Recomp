@@ -12,6 +12,7 @@
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/unnamed/unit_140b0e5f0.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class StateJumpData;
 
@@ -46,7 +47,7 @@ public:
     efd::Point3 m_v64;                                      // +0x64
     int m_aSub[4];                                          // +0x70 Jump, Jump2, JumpSpecial, JumpSpecial2 sub ids
     int m_n80;                                              // +0x80 the minimum flight time (ms)
-    Unk_CoupleTick m_tick;                                  // +0x84 the jump start tick
+    Unk_IntervalTimer m_tick;                               // +0x84 the jump start tick
     MS2Ptr<StateJumpData> m_spJump;                         // +0x90
 };
 MS2_CHECK_SIZE(StateJump, 0xa0);

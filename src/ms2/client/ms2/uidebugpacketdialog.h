@@ -15,7 +15,7 @@
 
 class ASMovieClip;
 class ASTextField;
-class Unk_DpButton;
+class ASButton;
 class Unk_DpInput;
 class ASDropdownMenu;
 class Unk_DpCheck;
@@ -50,14 +50,13 @@ public:
     void OnDoubleClick(const Scaleform::GFx::FunctionHandler::Params& rParams);     // 0x141291440
     bool FUN_141291470();                                       // 0x141291470 read the fixed packet and arm the loop
     bool FUN_141291850();                                       // 0x141291850 read the random mode and arm it
-    MS2Ptr<Unk_DpButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 bind a button child (a UIDialog member)
     MS2Ptr<Unk_DpInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input child lookup
     MS2Ptr<Unk_DpCheck> FUN_140e52670(const CString& strName);      // 0x140e52670 check box child lookup
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_DpButton> m_178;                                 // +0x178 (never bound)
-    MS2Ptr<Unk_DpButton> m_execute;                             // +0x188 "m_execute"
+    MS2Ptr<ASButton> m_178;                                 // +0x178 (never bound)
+    MS2Ptr<ASButton> m_execute;                             // +0x188 "m_execute"
     MS2Ptr<Unk_DpInput> m_id;                                   // +0x198 "m_id"
     MS2Ptr<Unk_DpInput> m_loopCount;                            // +0x1a8 "m_loopCount"
     MS2Ptr<Unk_DpInput> m_loopDelay;                            // +0x1b8 "m_loopDelay"
@@ -69,7 +68,7 @@ private:
     int m_nDelay;                                               // +0x2b4
     unsigned int m_nNext;                                       // +0x2b8 time of the next send
     int m_nId;                                                  // +0x2bc packet id
-    MS2Ptr<Unk_DpButton> m_executeRandom;                       // +0x2c0 "m_executeRandom"
+    MS2Ptr<ASButton> m_executeRandom;                       // +0x2c0 "m_executeRandom"
     MS2Ptr<Unk_DpInput> m_randomStart;                          // +0x2d0 "m_randomStart"
     MS2Ptr<Unk_DpInput> m_randomEnd;                            // +0x2e0 "m_randomEnd"
     MS2Ptr<Unk_DpInput> m_randomLoopCount;                      // +0x2f0 "m_randomLoopCount"
@@ -77,8 +76,8 @@ private:
     MS2Ptr<Unk_DpInput> m_randomLoopLength;                     // +0x310 "m_randomLoopLength"
     MS2Ptr<ASTextField> m_randomRemain;                         // +0x320 "m_randomRemain"
     MS2Ptr<Unk_DpCheck> m_ignoreAdminPacket;                    // +0x330 "m_ignoreAdminPacket"
-    MS2Ptr<Unk_DpButton> m_usePacketCount;                      // +0x340 "m_usePacketCount"
-    MS2Ptr<Unk_DpButton> m_usePostClose;                        // +0x350 "m_usePostClose"
+    MS2Ptr<ASButton> m_usePacketCount;                      // +0x340 "m_usePacketCount"
+    MS2Ptr<ASButton> m_usePostClose;                        // +0x350 "m_usePostClose"
     Unk_DpRange m_range;                                        // +0x360 random packet ids
     int m_nRandomRemain;                                        // +0x368
     int m_nRandomLength;                                        // +0x36c

@@ -13,8 +13,6 @@ class Unk_DevCaps   // C3: member view for the former free stand-ins
 public:
     void SetEnabled(bool);
 };
-NiPoint3* FUN_140194470(NiPoint3* pkDst, const NiPoint3* pkSrc);   // NiPoint3 copy (a different COMDAT than NiPoint3::operator=)
-extern char DAT_143d6eb58;                          // MS2Renderer::ms_RTTI
 
 // MS2Renderer carries the render-state matrices as inherited NiDX9Renderer members; the game code writes them directly.
 struct Unk_RendererMatrices : public NiDX9Renderer {
@@ -41,7 +39,7 @@ void CMirrored3DRenderView::SetCameraData(const NiRect<float>& kViewport)
 {
     Ni3DRenderView::SetCameraData(kViewport);
 
-    NiDX9Renderer* pkRenderer = (NiDX9Renderer*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143d6eb58), (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
+    NiDX9Renderer* pkRenderer = (NiDX9Renderer*)((void*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, (class NiObject const*)(((void*)NiRenderer::GetRenderer()))));
     if (pkRenderer != NULL)
     {
         D3DXMATRIX kView(pkRenderer->GetD3DView());
@@ -87,8 +85,8 @@ void CMirrored3DRenderView::SetCameraData(const NiRect<float>& kViewport)
 // @0x141487200
 void CMirrored3DRenderView::SetMirrorPoints(const NiPoint3& kPoint, const NiPoint3& kNormal)
 {
-    FUN_140194470(&m_kPlanePoint, &kPoint);
-    FUN_140194470(&m_kPlaneNormal, &kNormal);
+    *reinterpret_cast<efd::Point3*>(&m_kPlanePoint) = *reinterpret_cast<const efd::Point3*>(&kPoint);
+    *reinterpret_cast<efd::Point3*>(&m_kPlaneNormal) = *reinterpret_cast<const efd::Point3*>(&kNormal);
 }
 
 // @0x1414872a0 ~CMirrored3DRenderView is implicit (mirrored3drenderview.h).

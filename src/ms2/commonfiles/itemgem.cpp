@@ -42,7 +42,7 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCItemGem@@@@AEBAXPEAX@Z 0x1405aafe0
 // MS2-PIN: ??C?$MS2Ptr@VCItem@@@@QEBAPEAVCItem@@XZ 0x1405a8f50
 // MS2-PIN: ??1?$SmartPointer@VNiAVObject@@@efd@@QEAA@XZ 0x1405a85c0
-// MS2-PIN: ?IsNull@?$MS2Ptr@UUnk_GemPetRow@@@@QEBA_NXZ 0x1405a8d40
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCPetData@@@@QEBA_NXZ 0x1405a8d40
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCGemEffectData@@@@AEAAXPEAX@Z 0x1405ab820
 // MS2-PIN: ?Reference@?$MS2Ptr@VCGemEffectData@@@@CAXPEAVCGemEffectData@@@Z 0x1405aab60
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemgem.cpp"
@@ -108,18 +108,10 @@ struct Unk_GemItemDataFlags
 };
 
 
-// The pet table (FUN_14052d210) and its row.
-struct Unk_GemPetRow
-{
-};
-class Unk_GemPetTable
-{
-public:
-    MS2Ptr<Unk_GemPetRow> FUN_1407290f0(int nPetId);                // 0x1407290f0
-};
+// The pet table (FUN_14052d210) and its row (cpetdatatable.h).
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
-template <> MS2Ptr<Unk_GemPetRow>::~MS2Ptr();                       // 0x14052c420
-template <> Unk_GemPetRow* MS2Ptr<Unk_GemPetRow>::operator->() const;   // 0x14052ceb0
+template <> MS2Ptr<CPetData>::~MS2Ptr();                            // 0x14052c420
+template <> CPetData* MS2Ptr<CPetData>::operator->() const;         // 0x14052ceb0
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // 0x14053f870
 
 // The UI manager (TSingleton<CUIService>::GetInstance): a gem that shows an effect of its own registers with it.
@@ -903,10 +895,10 @@ MS2_REPLACE_METHOD(0x1405A6BD0, CGemPetSkin, vfunc_3, 58, 0xB7D8DF08);
 // @0x1405a6c10
 CString CGemPetSkin::vfunc_10()
 {
-    MS2Ptr<Unk_GemPetRow> spPet = ((class Unk_GemPetTable*)FUN_14052d210())->FUN_1407290f0(m_nPetId);
+    MS2Ptr<CPetData> spPet = ((class CPetDataTable*)FUN_14052d210())->Find(m_nPetId);
     if (spPet.IsNull())
         return "";
-    unsigned int nItemId = reinterpret_cast<CPetData*>(spPet.operator->())->GetItemId(1);
+    unsigned int nItemId = spPet->GetItemId(1);
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem.IsNull())
         return "";

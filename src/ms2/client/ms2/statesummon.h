@@ -13,8 +13,9 @@
 #include "ms2/placeholder/state.h"                  // State / StateData
 #include "ms2/placeholder/icastingeventlistener.h"  // the casting-bar listener StateSummon/GoToHome/Recall implement
 #include "ms2/placeholder/timer.h"                  // Timer (StateSummonRevive)
-#include "ms2/client/ms2/statemanager.h"            // Unk_140517b00 (the 8-byte poll timer of the pet states)
+#include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/statedata.h"               // StateSummonData / StateRecallData
+#include "ms2/placeholder/intervaltimer.h"
 
 class NiActorManager;
 class NiControllerSequence;
@@ -92,8 +93,8 @@ public:
 
     int m_n40;                                                                          // +0x40 playing a pet motion (0 = free)
     int m_n44;                                                                          // +0x44 the idle timer is armed
-    Unk_140517b00 m_t48;                                                                // +0x48 idle motion timer
-    Unk_140517b00 m_t50;                                                                // +0x50 skill motion timer
+    Unk_IntervalTimer m_t48;                                                            // +0x48 idle motion timer
+    Unk_IntervalTimer m_t50;                                                            // +0x50 skill motion timer
 };
 MS2_CHECK_SIZE(StateSummonIdle, 0x58);
 
@@ -124,7 +125,7 @@ public:
     void vfunc_4(StateData* pData);                                                     // 0x1417f98c0
     void vfunc_5(int n);                                                                // 0x1417f99c0
 
-    Unk_140517b00 m_t40;                                                                // +0x40
+    Unk_IntervalTimer m_t40;                                                            // +0x40
 };
 MS2_CHECK_SIZE(StateSummonExpire, 0x48);
 

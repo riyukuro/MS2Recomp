@@ -24,6 +24,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/camera.h"
 #include <efd/ServiceManager.h>
+#include <NiPoint3.h>
 #undef MS2_STATICS_A_BEFORE_CONDITION
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
@@ -32,8 +33,6 @@ class Unk_HudActor : public PCBase
 public:
     float FUN_140f4a450();          // distance used by Entity::vfunc_8
 };
-// 12-byte screen point with the out-of-line default ctor 0x1405522f0.
-struct Unk_HudPoint3 { Unk_HudPoint3(); float x, y, z; };
 class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera)
@@ -377,8 +376,8 @@ void UIHudEntity::vfunc_15()
             continue;
         if (spEntity->FUN_140f48d40() == 0)
             continue;
-        Unk_HudPoint3 ptScreen;
-        if (!reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(spEntity->vfunc_10(), reinterpret_cast<NiPoint3&>(ptScreen)))
+        NiPoint3 ptScreen;
+        if (!reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(spEntity->vfunc_10(), ptScreen))
         {
             if (spEntity->FUN_140f48e60() == 0)
             {
@@ -400,7 +399,7 @@ void UIHudEntity::vfunc_15()
             spEntity->FUN_140f48e80(0);
         if (spEntity->FUN_140f48d60() != 0)
             spEntity->vfunc_5();
-        spEntity->vfunc_6((NiPoint3*)&ptScreen);
+        spEntity->vfunc_6(&ptScreen);
     }
 }
 

@@ -139,15 +139,14 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
-class Unk_GmMovie : public UICutSceneMovie { };
-Unk_GmMovie* FUN_14138fd50(unsigned nUIId);                         // the cut scene movie dialog
+UICutSceneMovie* FUN_14138fd50(int nUIId);                         // the cut scene movie dialog
 class Unk_GmPane : public UISwfEntity { };
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 class GFxSceneService { public: int GetSceneId(); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 struct Unk_GmApp { char m_pad[0x48]; void* m_pActiveWnd; };
 struct Unk_MdState* FUN_141482e80();   // C3: was FUN_141482e80
 struct Unk_GmPlayerFlags { unsigned char m_a; unsigned char m_b; unsigned char m_nMode; };
-void* FUN_1409a8b10();
+class CGameOption;   // C3: FUN_1409a8b10 is TSingleton<CGameOption>::GetInstance
 class Unk_ChaosSettings   // C3: member view for the former free stand-ins
 {
 public:
@@ -269,7 +268,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
     TiXmlDocument doc;
     if (((class Unk_GmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 1, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CStringA>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
@@ -379,7 +378,7 @@ void CGuideManager::UpdateEntities()
             }
         }
     }
-    unsigned nMode = ((struct Unk_GmPlayerFlags*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_nMode;
+    unsigned nMode = ((struct Unk_GmPlayerFlags*)((class Unk_ChaosSettings*)(void*)(TSingleton<class CGameOption>::GetInstance()))->FUN_140e09150())->m_nMode;
     std::list<MS2Ptr<CGuideEntity> >::iterator it = m_listQueued.begin();
     while (it != m_listQueued.end())
     {
@@ -624,7 +623,7 @@ void CGuideManager::TestEntity(int nMode, int nId)
     }
     unsigned nFailed = 0;
     int nOk = 0;
-    unsigned nPlayerMode = ((struct Unk_GmPlayerFlags*)((class Unk_ChaosSettings*)(void*)(FUN_1409a8b10()))->FUN_140e09150())->m_nMode;
+    unsigned nPlayerMode = ((struct Unk_GmPlayerFlags*)((class Unk_ChaosSettings*)(void*)(TSingleton<class CGameOption>::GetInstance()))->FUN_140e09150())->m_nMode;
     bool bOpen = false;
     if (nMode == 0)
     {
@@ -1089,13 +1088,13 @@ void CGuideManager::vfunc_oa0_7(int nMode, CStringW)
 }
 
 // @0x14138fd50
-Unk_GmMovie* FUN_14138fd50(unsigned nUIId)
+UICutSceneMovie* FUN_14138fd50(int nUIId)
 {
     if (CUIService::GetInstance() != 0)
     {
         MS2Ptr<UIObject> ref = CUIService::GetInstance()->FindObject((eUIClassID)nUIId);
         if (ref.get() != 0)
-            return reinterpret_cast<Unk_GmMovie*>(dynamic_cast<UICutSceneMovie*>(ref.operator UIObject*()));
+            return dynamic_cast<UICutSceneMovie*>(ref.operator UIObject*());
     }
     return 0;
 }

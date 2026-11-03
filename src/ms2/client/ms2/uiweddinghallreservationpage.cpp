@@ -23,8 +23,7 @@ public:
     class WeddingHallTicket const& GetTicket();
 };
 void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, bool bPrivate, ASObj* pData);   // fills the page data object
-unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);                 // Value::IsNull
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -55,9 +54,9 @@ bool UIWeddingHallReservationPage::vfunc_1()
     if (((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_pDialog->FUN_1422dba00()))->IsNull())
         return false;
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->GetMember("m_currentPage");
-    if (FUN_1409b0350(&kPage) != 0)
+    if (kPage.IsNull())
         return false;
-    m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
+    m_pScript = Unk_ASCreate<ASUIComponent>(m_pDialog->FUN_1422db730(), kPage);
     return true;
 }
 

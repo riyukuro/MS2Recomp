@@ -85,6 +85,7 @@
 #include "mypc.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cskillsettable.h"   // C3: CSkillSet (CSkillSystem::GetSkillSet)
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -230,7 +231,6 @@ typedef efd::SmartPointer<Unk_Service6100017> Unk_MyPCSvcPtr;
 template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* p);
 template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();
 template <> efd::SmartPointer<Unk_Service6100017>::operator Unk_Service6100017*() const;
-void* FUN_140b12380(class Unk_WsC_GameObj* pItem);
 class Unk_ClientSettings { public: class Unk_CameraOption* FUN_140af7de0(); };
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -3360,7 +3360,6 @@ class UISceneEntity : public UISwfEntity { public: UISceneEntity* FUN_1422e7a70(
 class UISceneGameBeautyShop : public UISceneEntity { public: void FUN_141ac8e90(); };
 class GFxSceneService { public: UISceneEntity* GetScene(); };
 class CUserMail { public: static __int64 FUN_1408e57f0(); };
-class Unk_MyPCSkillSet : public CPtred {};
 // The taxi call state payload (state 0x25; ?\statetaxicalldata.cpp, 0x20).
 class StateTaxiCallData : public StateData
 {
@@ -3388,7 +3387,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
     MS2Ptr<Unk_PCBaseComp_b18> spCast = FUN_141676930();
     if (FUN_1416764a0() != 0)
     {
-        MS2Ptr<Unk_MyPCSkillSet> spSet = FUN_141523bc0()->GetSkillSet();
+        MS2Ptr<CSkillSet> spSet = FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
             int nSkillId = FUN_1416764a0()->GetData()->m_nSkillId;
@@ -4789,7 +4788,7 @@ void MyPC::FUN_141530db0()
                 continue;
             if (pDrop->GetOwnerObjId() == FUN_14123c580())
                 continue;
-            if (FUN_141261340((Unk_GsAutoLoot*)reinterpret_cast<Unk_MyPCAdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20(), reinterpret_cast<CItem*>(FUN_140b12380(reinterpret_cast<Unk_WsC_GameObj*>(pDrop))), pDrop->GetDropKind() == 0x3ed))
+            if (FUN_141261340((Unk_GsAutoLoot*)reinterpret_cast<Unk_MyPCAdvCfg*>(TSingleton<CGameOption>::GetInstance())->FUN_141533e20(), reinterpret_cast<CDropItem*>(pDrop)->FUN_140b12380(), pDrop->GetDropKind() == 0x3ed))
             {
                 pDrop->FUN_141192840(1);
                 pDrop->FUN_141190900(0);

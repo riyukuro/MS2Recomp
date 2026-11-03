@@ -48,7 +48,7 @@ class Unk_MmTable : public CMasteryTable
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 
 // The learned steps (global 0x143ab31a0), the inventory (0x143ab2a90) and the meso (0x143ab2898).
-class Unk_MmLearned { public: void* FUN_140167ca0(int nStep); };
+class Unk_MmLearned { };
 extern Unk_MmLearned DAT_143ab31a0;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 extern __int64 DAT_143ab2898;
@@ -99,7 +99,7 @@ int CMasteryManager::CountClaimableRewardLevels(int nType)
         if (nExp < nNeed)
             break;
         int nStep = ((class Unk_MmTable*)FUN_1409670c0())->MakeID(nType, nLevel);
-        if (DAT_143ab31a0.FUN_140167ca0(nStep) != 0)
+        if (reinterpret_cast<ATL::CAtlMap<unsigned int, int>&>(DAT_143ab31a0).Lookup(nStep) != 0)
             continue;
         if (HasRewards(nType, nLevel) == 0)
             continue;

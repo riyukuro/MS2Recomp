@@ -27,7 +27,6 @@ static CString s_strSortTypeNamesN[] = {"None", "Buy", "Like", "PriceLow", "Pric
 static CString s_strSortTypeNamesExN[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143ac5508
 
 // The exe's second formatter (0x1402bf9a0); the POST header block is built with its 3-string instantiation.
-CString FUN_140513200(const char* szFormat, const unsigned int& nArg);
 
 // @0x140dfbc70: the "{0}{1}{2}" instantiation the POST header block is built with. It must be declared before its first
 // use (RequestPost), otherwise the call site instantiates the generic wrapper first.
@@ -216,7 +215,7 @@ int CUgcHttpClient::RequestPost(const char* pszUrl)
     }
     const char* pszContentType = "Content-Type: application/octet-stream\r\n";
     const char* pszConnection = "Connection: close\r\n";
-    CString strLength = FUN_140513200("Content-Length: {0}\r\n", m_buffer.GetLength());
+    CString strLength = Unk_SocketFormat<unsigned int>("Content-Length: {0}\r\n", m_buffer.GetLength());
     CString strHeaders = Unk_SocketFormat("{0}{1}{2}", pszContentType, strLength, pszConnection);
     const char* aszAccept[2] = {"*/*", 0};
     try {

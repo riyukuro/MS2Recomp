@@ -80,7 +80,7 @@ bool StanceData::Load(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "hitCountAdditinoalID", m_nHitCountAdditionalID);
     XmlTokenList(pNode, "damageSkillIDs", m_damageSkillIDs);
     XmlTokenList(pNode, "finishStanceSkillIDs", m_finishStanceSkillIDs);
-    for (Unk_140165cf0* pLevel = pNode->FUN_140165cf0("level"); pLevel != 0; pLevel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pLevel))->NextSibling("level")))
+    for (Unk_140165cf0* pLevel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("level")); pLevel != 0; pLevel = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pLevel))->NextSibling("level")))
     {
         MS2Ptr<StanceLevelData> spLevel(new StanceLevelData);
         if (spLevel->Load(pLevel) == 0)
@@ -148,13 +148,13 @@ bool StanceTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
     {
         DataPtr spData(new StanceData);
         if (spData->Load(pNode) == 0)

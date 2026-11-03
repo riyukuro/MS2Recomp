@@ -23,6 +23,7 @@
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VCItemData@@@@@ATL@@SAXPEAV?$MS2Ptr@VCItemData@@@@0_K@Z 0x1418c1d90
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiavatarbase.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 #include "uiavatarbase.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -336,7 +337,7 @@ void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot,
         float fRadX = (rx * 3.1415927f) / 180.0f;
         float fRadY = (ry * 3.1415927f) / 180.0f;
         float fRadZ = (rz * 3.1415927f) / 180.0f;
-        kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(fRadX, fRadY, fRadZ);
         FUN_1418c1dd0(pNode, &kRot, *pPivot, *pPos);
         if (bUpdate)
             pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
@@ -442,7 +443,7 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
     float fRadX = x > 0.0f ? (x * 3.1415927f) / 180.0f : 0.0f;
     float fRadY = y > 0.0f ? (y * 3.1415927f) / 180.0f : 0.0f;
     float fRadZ = z > 0.0f ? (z * 3.1415927f) / 180.0f : 0.0f;
-    kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
+    reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(fRadX, fRadY, fRadZ);
     ((class NiAVObject*)(class NiAVObject*)(pNode))->SetRotate(*(class NiMatrix3 const*)(&kRot));
     if (bUpdate)
         pNode->Update((float)((class CMainSystem*)(class Unk_UabClock*)(((class Unk_UabClock*)TSingleton<CMainSystem>::GetInstance())))->FUN_141473280(), true);
@@ -754,7 +755,7 @@ void UIAvatarBase::FUN_1418b9e40()
         m_kPivot = Vector3(0.0f, 0.0f, fHeight);
         NiPoint3 kAngle = pObj->vfunc_20();
         Unk_NiMatrix3* pRot = ((struct Unk_NiMatrix3*)&((class NiAVObject*)(class NiAVObject*)(pNode))->GetRotate());
-        pRot->FUN_142085840(static_cast<efd::Point3&>(kAngle).x, static_cast<efd::Point3&>(kAngle).y, static_cast<efd::Point3&>(kAngle).z);
+        reinterpret_cast<const efd::Matrix3*>(pRot)->ToEulerAnglesXYZ(static_cast<efd::Point3&>(kAngle).x, static_cast<efd::Point3&>(kAngle).y, static_cast<efd::Point3&>(kAngle).z);
         kAngle.x = (kAngle.x * 180.0f) / 3.1415927f;
         kAngle.y = (kAngle.y * 180.0f) / 3.1415927f;
         kAngle.z = (kAngle.z * 180.0f) / 3.1415927f;

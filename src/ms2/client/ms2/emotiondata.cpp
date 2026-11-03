@@ -64,8 +64,8 @@ CEmotionData::~CEmotionData()
 // @0x1411bccd0
 bool CEmotionData::Load(Unk_140165cf0* pNode)
 {
-    FUN_1408733e0(pNode, "name", m_strName);
-    FUN_1408733e0(pNode, "faceName", m_strFaceName);
+    XmlGetAttr((class TiXmlElement*)(pNode), "name", m_strName);
+    XmlGetAttr((class TiXmlElement*)(pNode), "faceName", m_strFaceName);
     XmlGetAttr((class TiXmlElement*)(pNode), "equiphide", m_bEquipHide);
     XmlGetAttr((class TiXmlElement*)(pNode), "isTool", m_bTool);
     XmlGetChildAttr((class TiXmlElement *)(pNode), "anim", "name", m_anims[0]);
@@ -98,7 +98,7 @@ bool CEmotionData::Load(Unk_140165cf0* pNode)
     {
         m_effects.Add();
         CString& strFile = m_effects.GetAt(m_effects.GetCount() - 1);
-        FUN_1408733e0(pEffect, "file", strFile);
+        XmlGetAttr((class TiXmlElement*)(pEffect), "file", strFile);
     }
     return true;
 }
@@ -367,8 +367,8 @@ MS2Ptr<CEmotionGroup> CEmotionTable::ReadEmotionGroup(unsigned int nId)
     {
         CString strName;
         CString strItemCode;
-        FUN_1408733e0(pImport, "name", strName);
-        FUN_1408733e0(pImport, "itemCode", strItemCode);
+        XmlGetAttr((class TiXmlElement*)(pImport), "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pImport), "itemCode", strItemCode);
         MS2Ptr<CEmotionGroup> spCommon = GetCommonGroup(strName);
         if (spCommon == NULL)
         {

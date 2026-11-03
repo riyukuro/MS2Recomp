@@ -92,19 +92,19 @@ bool CIgnoreFile::ParseFile(std::string strPath, int nMode)
         Unk_FileLog(GetLogString(), 2, 0x13, L"[IgnoreFile] {0} \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4.\r\n", pszFile);
         return false;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AdditionalLog(GetLogString(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\r\n");
         return false;
     }
-    for (Unk_140165cf0* pExcept = pRoot->FUN_140165cf0("except"); pExcept != 0; pExcept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->NextSibling("except")))
+    for (Unk_140165cf0* pExcept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("except")); pExcept != 0; pExcept = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->NextSibling("except")))
     {
         std::string strEntry;
         const char* pszTag = ((class TiXmlElement*)(class Unk_140165cf0*)(pExcept))->Attribute("tag");
         if (pszTag != 0 && atoi(pszTag) <= nMode)
             continue;
-        for (Unk_140165cf0* pDir = pExcept->FUN_140165cf0("directory"); pDir != 0; pDir = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDir))->NextSibling("directory")))
+        for (Unk_140165cf0* pDir = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->FirstChild("directory")); pDir != 0; pDir = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDir))->NextSibling("directory")))
         {
             const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pDir))->Attribute("name");
             if (pszName != 0)
@@ -122,7 +122,7 @@ bool CIgnoreFile::ParseFile(std::string strPath, int nMode)
                 m_setDirs.insert(strEntry);
             }
         }
-        for (Unk_140165cf0* pFile = pExcept->FUN_140165cf0("file"); pFile != 0; pFile = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFile))->NextSibling("file")))
+        for (Unk_140165cf0* pFile = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pExcept))->FirstChild("file")); pFile != 0; pFile = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pFile))->NextSibling("file")))
         {
             const char* pszName = ((class TiXmlElement*)(class Unk_140165cf0*)(pFile))->Attribute("name");
             if (pszName != 0)

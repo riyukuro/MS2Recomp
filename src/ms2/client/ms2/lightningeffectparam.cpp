@@ -20,7 +20,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "lightningeffectparam.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
 #include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
 #include <efd/MemoryDefines.h>
 #include <NiNode.h>

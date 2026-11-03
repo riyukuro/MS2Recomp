@@ -61,15 +61,13 @@ static MS2Ptr<SkillMotionData> s_spMotion(new SkillMotionData);
 // Unrecovered helpers.
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned long);   // C3: was FUN_140873dc0
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);          // SetAttribute(name, int)
-void FUN_140873ce0(void* pElem, const char* pszName, unsigned nValue);     // SetAttribute(name, unsigned)
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned short);   // C3: was FUN_140873c60
-void FUN_1408740a0(void* pElem, const char* pszName, const CStringW& strValue); // SetAttribute(name, wide string)
-void* FUN_14086e000(void* pParent, const void* pChild);                    // InsertEndChild
+void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);   // C3: was FUN_1408740a0
+class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);        // int attribute with a default
 float FUN_1401973d0(Unk_140165cf0* pElem, const char* pszName, float fDefault);    // float attribute with a default
-bool FUN_1401647e0(const CString&, const CString&);                        // the strings differ
-bool FUN_1401c0090(const CString&, const CString&);                        // the strings are the same
 float FUN_14028d280(unsigned uMilliseconds);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void FUN_14015f0b0(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);  // split into strings
@@ -206,17 +204,17 @@ void Unk_SkillSensor::SaveElement(void* pParent, CString strName)
     if (m_nSensorSplashStartDelay != kDefault.m_nSensorSplashStartDelay)
         XmlSetAttr((class TiXmlElement*)(&elem), "sensorSplashStartDelay", (unsigned long)m_nSensorSplashStartDelay);
     if (m_nSensorForceInvokeByInterval != kDefault.m_nSensorForceInvokeByInterval)
-        FUN_140873ca0(&elem, "sensorForceInvokeByInterval", m_nSensorForceInvokeByInterval);
+        XmlSetAttr((class TiXmlElement*)(&elem), "sensorForceInvokeByInterval", (int)m_nSensorForceInvokeByInterval);
     if (m_nTargetHasBuffID != kDefault.m_nTargetHasBuffID)
-        FUN_140873ce0(&elem, "targetHasBuffID", m_nTargetHasBuffID);
+        XmlSetAttr((class TiXmlElement*)(&elem), "targetHasBuffID", (unsigned int)m_nTargetHasBuffID);
     if (m_nTargetHasBuffOverlapCount != kDefault.m_nTargetHasBuffOverlapCount)
-        FUN_140873ce0(&elem, "targetHasBuffOverlapCount", m_nTargetHasBuffOverlapCount);
+        XmlSetAttr((class TiXmlElement*)(&elem), "targetHasBuffOverlapCount", (unsigned int)m_nTargetHasBuffOverlapCount);
     if (m_nTargetHasNotBuffID != kDefault.m_nTargetHasNotBuffID)
-        FUN_140873ce0(&elem, "targetHasNotBuffID", m_nTargetHasNotBuffID);
+        XmlSetAttr((class TiXmlElement*)(&elem), "targetHasNotBuffID", (unsigned int)m_nTargetHasNotBuffID);
     if (m_nTargetHasBuffOwner != kDefault.m_nTargetHasBuffOwner)
-        FUN_140873ca0(&elem, "targetHasBuffOwner", m_nTargetHasBuffOwner);
+        XmlSetAttr((class TiXmlElement*)(&elem), "targetHasBuffOwner", (int)m_nTargetHasBuffOwner);
     if (elem.HasAttributes())
-        FUN_14086e000(pParent, &elem);
+        ((TiXmlNode*)(pParent))->InsertEndChild(*(const TiXmlNode*)&elem);
 }
 
 // 0x80-byte record constructed at 0x140801790 (no caller in the unit; two float triples and a trailing CString).
@@ -377,10 +375,10 @@ bool SkillGlideData::FUN_140802640(const SkillGlideData& o)
     if (m_fVerticalVibrateFrequency != o.m_fVerticalVibrateFrequency) return 1;
     if (m_fGlideVerticalAccelerateLimit != o.m_fGlideVerticalAccelerateLimit) return 1;
     if (m_fGlideHorizontalAccelerateLimit != o.m_fGlideHorizontalAccelerateLimit) return 1;
-    if (FUN_1401647e0(m_strEffectRun, o.m_strEffectRun)) return 1;
-    if (FUN_1401647e0(m_strEffectIdle, o.m_strEffectIdle)) return 1;
-    if (FUN_1401647e0(m_strAniIdle, o.m_strAniIdle)) return 1;
-    if (FUN_1401647e0(m_strAniRun, o.m_strAniRun)) return 1;
+    if (m_strEffectRun != o.m_strEffectRun) return 1;
+    if (m_strEffectIdle != o.m_strEffectIdle) return 1;
+    if (m_strAniIdle != o.m_strAniIdle) return 1;
+    if (m_strAniRun != o.m_strAniRun) return 1;
     if (m_bOnGroundDisable != o.m_bOnGroundDisable)
         return 1;
     return 0;
@@ -672,12 +670,12 @@ int Unk_SkillBlock150::Save(void* pParent)
     if (m_eEnable == 0)
         return 1;
     Unk_TiXmlElement elem("magicControl");
-    FUN_140873ca0(&elem, "enable", m_eEnable);
+    XmlSetAttr((class TiXmlElement*)(&elem), "enable", (int)m_eEnable);
     XmlSetAttr((class TiXmlElement*)(&elem), "moveSpeed", m_fMoveSpeed);
     XmlSetAttr((class TiXmlElement*)(&elem), "duration", m_fDuration);
     if (m_fMaxDistance != 0.0f)
         XmlSetAttr((class TiXmlElement*)(&elem), "maxDistance", m_fMaxDistance);
-    FUN_14086e000(pParent, &elem);
+    ((TiXmlNode*)(pParent))->InsertEndChild(*(const TiXmlNode*)&elem);
     return 1;
 }
 
@@ -734,7 +732,7 @@ SkillMotionData* SkillLevelData::FUN_140803e30(CString strSequence)
 {
     for (SkillMotionData* pMotion : m_vMotion)
     {
-        if (FUN_1401c0090(pMotion->m_strSequenceName, strSequence))
+        if (pMotion->m_strSequenceName == strSequence)
             return pMotion;
     }
     return 0;
@@ -966,19 +964,19 @@ int SkillLevelData::FUN_140804ae0(void* pParent)
     Unk_TiXmlElement elem("level");
     XmlSetAttr((class TiXmlElement*)(&elem), "value", m_nLevel);
     if (!m_strStringParam.IsEmpty())
-        FUN_1408740a0(&elem, "value", m_strStringParam);
+        XmlSetAttr((class TiXmlElement*)(&elem), "value", m_strStringParam);
     {
         Unk_TiXmlElement detect("detectProperty");
         m_detect.FUN_140800570(&detect);
         if (detect.HasAttributes())
-            FUN_14086e000(&elem, &detect);
+            ((TiXmlNode*)(&elem))->InsertEndChild(*(const TiXmlNode*)&detect);
     }
     for (SkillMotionData* pMotion : m_vMotion)
     {
         if (!pMotion->FUN_140808240(&elem))
             return 0;
     }
-    FUN_14086e000(pParent, &elem);
+    ((TiXmlNode*)(pParent))->InsertEndChild(*(const TiXmlNode*)&elem);
     return 1;
 }
 
@@ -1028,14 +1026,14 @@ SkillMotionData::SkillMotionData()
 // @0x140807620
 bool SkillMotionData::FUN_140807620(const SkillMotionData& o)
 {
-    if (FUN_1401647e0(m_strSequenceName, o.m_strSequenceName)) return 1;
+    if (m_strSequenceName != o.m_strSequenceName) return 1;
     if (m_fSequenceSpeed != o.m_fSequenceSpeed) return 1;
-    if (FUN_1401647e0(m_strMotionEffect, o.m_strMotionEffect)) return 1;
-    if (FUN_1401647e0(m_strSplashInvokeEffect, o.m_strSplashInvokeEffect)) return 1;
-    if (FUN_1401647e0(m_strLoopEffect, o.m_strLoopEffect)) return 1;
-    if (FUN_1401647e0(m_strEndEffect, o.m_strEndEffect)) return 1;
-    if (FUN_1401647e0(m_strSplashEndEffect, o.m_strSplashEndEffect)) return 1;
-    if (FUN_1401647e0(m_strWeaponSequenceName, o.m_strWeaponSequenceName)) return 1;
+    if (m_strMotionEffect != o.m_strMotionEffect) return 1;
+    if (m_strSplashInvokeEffect != o.m_strSplashInvokeEffect) return 1;
+    if (m_strLoopEffect != o.m_strLoopEffect) return 1;
+    if (m_strEndEffect != o.m_strEndEffect) return 1;
+    if (m_strSplashEndEffect != o.m_strSplashEndEffect) return 1;
+    if (m_strWeaponSequenceName != o.m_strWeaponSequenceName) return 1;
     if (m_mapTagEffects.GetCount() != o.m_mapTagEffects.GetCount()) return 1;
     for (POSITION pos = m_mapTagEffects.GetHeadPosition(); pos != 0; m_mapTagEffects.GetNext(pos))
     {
@@ -1043,11 +1041,11 @@ bool SkillMotionData::FUN_140807620(const SkillMotionData& o)
         CString strValue = m_mapTagEffects.GetValueAt(pos);
         CString strOther;
         if (!o.m_mapTagEffects.Lookup(strKey, strOther)) return 1;
-        if (FUN_1401647e0(strValue, strOther)) return 1;
+        if (strValue != strOther) return 1;
     }
-    if (FUN_1401647e0(m_strLoopKeepEffect, o.m_strLoopKeepEffect)) return 1;
-    if (FUN_1401647e0(m_strLoopEndEffect, o.m_strLoopEndEffect)) return 1;
-    if (FUN_1401647e0(m_strSplashDurationCastEffect, o.m_strSplashDurationCastEffect)) return 1;
+    if (m_strLoopKeepEffect != o.m_strLoopKeepEffect) return 1;
+    if (m_strLoopEndEffect != o.m_strLoopEndEffect) return 1;
+    if (m_strSplashDurationCastEffect != o.m_strSplashDurationCastEffect) return 1;
     if (m_bA0 != o.m_bA0) return 1;
     if (m_bSplashCastEffectStartDelay != o.m_bSplashCastEffectStartDelay) return 1;
     if (m_nSplashLifeTick != o.m_nSplashLifeTick) return 1;
@@ -1065,7 +1063,7 @@ bool SkillMotionData::FUN_140807620(const SkillMotionData& o)
     if (m_fPushCylinderOuter != o.m_fPushCylinderOuter) return 1;
     if (m_fPushCylinderInner != o.m_fPushCylinderInner) return 1;
     if (m_fPushCylinderHeight != o.m_fPushCylinderHeight) return 1;
-    if (FUN_1401647e0(m_strSelfInputCombo, o.m_strSelfInputCombo)) return 1;
+    if (m_strSelfInputCombo != o.m_strSelfInputCombo) return 1;
     if (m_bDoesPlayIdleOnSkillEnd != o.m_bDoesPlayIdleOnSkillEnd) return 1;
     if (m_nFaceTarget != o.m_nFaceTarget) return 1;
     if (m_nStartNoneBlendDelay != o.m_nStartNoneBlendDelay) return 1;
@@ -1091,7 +1089,7 @@ SkillAttackData* SkillMotionData::FUN_140807e80(const CString& strPoint)
 {
     for (SkillAttackData* pAttack : m_vAttack)
     {
-        if (FUN_1401c0090(pAttack->m_strPoint, strPoint))
+        if (pAttack->m_strPoint == strPoint)
             return pAttack;
     }
     return 0;
@@ -1104,7 +1102,7 @@ SkillAttackData* SkillMotionData::FUN_140807f20(const CString& strPoint)
     {
         if (!pAttack->HasPause())
             continue;
-        if (FUN_1401c0090(pAttack->m_strPoint, strPoint))
+        if (pAttack->m_strPoint == strPoint)
             return pAttack;
     }
     return 0;
@@ -1153,7 +1151,7 @@ int SkillMotionData::FUN_140808240(void* pParent)
             return 0;
     }
     if (elem.HasAttributes() || elem.HasContent())
-        FUN_14086e000(pParent, &elem);
+        ((TiXmlNode*)(pParent))->InsertEndChild(*(const TiXmlNode*)&elem);
     return 1;
 }
 

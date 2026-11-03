@@ -4,6 +4,7 @@
 // MS2-PIN: ??_GCEditCameraMode@@UEAAPEAXI@Z 0x1411990f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\editcameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 
 #include "ms2/placeholder/freecameramode.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -70,7 +71,6 @@ void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
 bool FUN_14028d470(float a, float b);                       // nearly equal
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,8 +106,8 @@ void CEditCameraMode::vfunc_8(double fTime)
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
             float fAbsZ = FUN_140a38cd0(ptInput.z);
-            float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);
+            float fMaxYZ = efd::Max<float>(FUN_140a38cd0(ptInput.y), fAbsZ);
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x), fMaxYZ);
             float fScale = fStep * fMax;
             float fRotX = ptInput.y * fScale;
             float fRotY = ptInput.z * fScale;
@@ -129,7 +129,7 @@ void CEditCameraMode::vfunc_8(double fTime)
         Vector3 ptRot = FUN_140af8260();
         ptRot = ptRot.FUN_14097fc90(3.14159274f).FUN_140ae9180(180.0f);
         Unk_EfdMatrix3 kRot;
-        kRot.FUN_142083d40(ptRot.x, ptRot.y, ptRot.z);
+        reinterpret_cast<efd::Matrix3*>(&kRot)->FromEulerAnglesXYZ(ptRot.x, ptRot.y, ptRot.z);
         Vector3 ptRight;
         FUN_140a01190(&kRot, 0, &ptRight);
         ptRight.FUN_140968990();

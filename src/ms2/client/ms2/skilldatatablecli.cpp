@@ -18,6 +18,8 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+
+class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -111,28 +113,28 @@ void SkillDataTableCli::PreloadSkill(unsigned nSkillId, unsigned short nLevel, i
                 if (pMotion != 0)
                 {
                     if (!FUN_1411a4800(pMotion->m_strMotionEffect, nPriority))
-                        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                        Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                           L"Skill PreLoad Effect Failed (motionEffect) ID:{0}", spSkill->GetId());
                     if (!FUN_1411a4800(pMotion->m_strSplashInvokeEffect, nPriority))
-                        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                        Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                           L"Skill PreLoad Effect Failed (splashInvokeEffect) ID:{0}", spSkill->GetId());
                     if (!FUN_1411a4800(pMotion->m_strLoopEffect, nPriority))
-                        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                        Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                           L"Skill PreLoad Effect Failed (loopEffect) ID:{0}", spSkill->GetId());
                     if (!FUN_1411a4800(pMotion->m_strEndEffect, nPriority))
-                        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                        Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                           L"Skill PreLoad Effect Failed (loopEffect) ID:{0}", spSkill->GetId());
                     if (!FUN_1411a4800(pMotion->m_strSplashEndEffect, nPriority))
-                        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                        Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                           L"Skill PreLoad Effect Failed (splashEndEffect) ID:{0}", spSkill->GetId());
                     if (!FUN_1411a4800(pMotion->m_strSplashDurationCastEffect, nPriority))
-                        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                        Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                           L"Skill PreLoad Effect Failed (splashDurationCastEffect) ID:{0}", spSkill->GetId());
                     for (POSITION pos = pMotion->m_mapTagEffects.GetHeadPosition(); pos != NULL;
                          pMotion->m_mapTagEffects.GetNext(pos))
                     {
                         if (!FUN_1411a4800(pMotion->m_mapTagEffects.GetValueAt(pos), nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (tag2Effects) ID:{0} Tag:{1}", spSkill->GetId(),
                                               pMotion->m_mapTagEffects.GetValueAt(pos));
                     }
@@ -141,23 +143,23 @@ void SkillDataTableCli::PreloadSkill(unsigned nSkillId, unsigned short nLevel, i
                         const SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
                         const SkillArrow& arrow = pAttack->m_arrow;
                         if (!FUN_1411a4800(arrow.m_strEffect, nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (arrow.effect) ID:{0}", spSkill->GetId());
                         if (!FUN_1411a4800(arrow.m_strEffectRemain, nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (arrow.effectRemain) ID:{0}", spSkill->GetId());
                         if (!FUN_1411a4800(arrow.m_strEffectDestroy, nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (arrow.effectDestroy) ID:{0}", spSkill->GetId());
                         if (!FUN_1411a4800(arrow.m_strTargetKeepEffect, nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (arrow.targetKeepEffect) ID:{0}", spSkill->GetId());
                         const SkillDamage& damage = pAttack->m_damage;
                         if (!FUN_1411a4800(damage.m_strEffectHit, nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (damage.effectHit) ID:{0}", spSkill->GetId());
                         if (!FUN_1411a4800(damage.m_strEffectRemain, nPriority))
-                            Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x134,
+                            Unk_SkillTableLog(GetLogString(), 2, 0x134,
                                               L"Skill PreLoad Effect Failed (damage.effectRemain) ID:{0}", spSkill->GetId());
                         for (unsigned i = 0; i < pAttack->m_vSkill.size(); i++)
                         {
@@ -195,19 +197,19 @@ void SkillDataTableCli::PreloadAdditional(unsigned nId, unsigned short nLevel, i
     if (spLevel == 0)
         return;
     if (!FUN_1411a4800(spLevel->m_motion.m_strStartEffect, nPriority))
-        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+        Unk_SkillTableLog(GetLogString(), 2, 0x13,
                           L"AdditionalEffect Failed PreLoad startEffect: ID:{0} Level:{1} {2}", nId, nLevel,
                           spLevel->m_motion.m_strStartEffect);
     if (!FUN_1411a4800(spLevel->m_motion.m_strKeepEffect, nPriority))
-        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+        Unk_SkillTableLog(GetLogString(), 2, 0x13,
                           L"AdditionalEffect Failed PreLoad keepEffect: ID:{0} Level:{1} {2}", nId, nLevel,
                           spLevel->m_motion.m_strKeepEffect);
     if (!FUN_1411a4800(spLevel->m_motion.m_strStopEffect, nPriority))
-        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+        Unk_SkillTableLog(GetLogString(), 2, 0x13,
                           L"AdditionalEffect Failed PreLoad stopEffect: ID:{0} Level:{1} {2}", nId, nLevel,
                           spLevel->m_motion.m_strStopEffect);
     if (!FUN_1411a4800(spLevel->m_motion.m_strInvokeEffect, nPriority))
-        Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+        Unk_SkillTableLog(GetLogString(), 2, 0x13,
                           L"AdditionalEffect Failed PreLoad invokeEffect: ID:{0} Level:{1} {2}", nId, nLevel,
                           spLevel->m_motion.m_strInvokeEffect);
     for (const MS2Ptr<AdditionalActionSkill>& spSkill : spLevel->m_vSkill)
@@ -237,7 +239,7 @@ bool SkillDataTableCli::CheckAdditionalChain(MS2Ptr<SkillLevelData> spLevel, uns
         return true;
     if (nDepth == 0)
         return false;
-    Unk_SkillTableLog(TSingleton<CLogString>::GetInstance(), 0xc, 0x13, L"LevelData = {0}, {1}, {2}",
+    Unk_SkillTableLog(GetLogString(), 0xc, 0x13, L"LevelData = {0}, {1}, {2}",
                       spLevel->FUN_140803dc0(), spLevel->GetLevel(), nDepth);
     for (const MS2Ptr<SkillActionAdditional>& spAdditional : spLevel->m_vAdditional)
     {

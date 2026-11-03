@@ -91,7 +91,6 @@ public:
     // UIEntityEventListener (+0x200)
     virtual void vfunc_el5(MS2Ptr<CProxyGameObject> spActor, int n);   //  5 0x141a5a1e0
 
-    MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button child lookup
     void FUN_141a5a560();                                       // mark the window dirty (refresh in 100 ms)
     void MarkDirty();                                       // mark dirty and the second refresh flag
     void FUN_141a5a640(NotifyObject* pNotify);                  // NotifyChangeBuff

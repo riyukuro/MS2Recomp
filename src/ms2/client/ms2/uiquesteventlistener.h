@@ -17,6 +17,7 @@
 #include "ms2/client/ms2/uigalleryeventdialog.h"     // UIQuestEventListener (13 slots)
 #include "ms2/client/ms2/uisnowmaneventdialog.h"     // SnowmanPtr<>
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class ASData;
 class ASObj;
@@ -48,17 +49,6 @@ private:
     ATL::CAtlArray<UIQuestEventListener*> m_listeners;      // +0x08
 };
 MS2_CHECK_SIZE(UIQuestEventDispatcher, 0x28);
-
-// An 8-byte millisecond poll timer (ctor 0x140517b00, "interval elapsed" test 0x140268870).
-class Unk_DTTick
-{
-public:
-    Unk_DTTick();
-    int FUN_140268870(unsigned nInterval);
-private:
-    unsigned __int64 m_tick;
-};
-MS2_CHECK_SIZE(Unk_DTTick, 8);
 
 class UIQuestGuideDialog : public UIDialog, public UIQuestEventListener
 {
@@ -131,7 +121,7 @@ private:
     int m_bRecommendDirty;                                      // +0x1c4
     int m_bMissionToggle;                                       // +0x1c8 "onFieldMissionToggle"
     ATL::CAtlMap<__int64, int> m_pageIndex;                     // +0x1d0 "m_pageIndex" per character id
-    Unk_DTTick m_navigationTick;                                // +0x218
+    Unk_IntervalTimer m_navigationTick;                         // +0x218
     MS2Ptr<AScript> m_navigation;                               // +0x220 AS "updateNavigation"
     SnowmanPtr<UICommon::CAlignmentInfo> m_alignment;           // +0x230
     int m_nRecommendQuest;                                      // +0x240

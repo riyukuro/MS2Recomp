@@ -69,14 +69,13 @@ public:
     void FUN_1422ce240(const Unk_ClickDelegate& cb, void* pUser);   // click callback
 };
 
-class Unk_SbShopDialog : public UIShopDialog { };   // UIShopDialog: its current tab
 
 CString FUN_14016a600(const wchar_t* psz, int n);                // wide -> narrow
 CString FUN_14102a0b0(int nType, const CString& strName, const CString& strUrl, CString strKey);   // banner image path
 void FUN_1418fe1c0(const CString& strUrl);                       // open a url
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CNetworkService* FUN_140714f90();
-Unk_SbShopDialog* FUN_140534780(int nUIType);
+template <class T> T* Unk_BreakDialog(int nId);   // C3: was FUN_140534780
 CStringW GetStringCommon(int nId);                                 // string table lookup
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
 int FUN_141276180(const CString& strSound, const CString& strArg);
@@ -474,7 +473,7 @@ int FUN_1413499b0(int nTab)
 {
     if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
         return 0;
-    Unk_SbShopDialog* pDlg = FUN_140534780(0x4e3b);
+    UIShopDialog* pDlg = Unk_BreakDialog<UIShopDialog>(0x4e3b);
     if (pDlg != 0)
     {
         int bOpen = 1;

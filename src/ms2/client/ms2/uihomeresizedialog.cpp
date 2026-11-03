@@ -51,7 +51,7 @@ class Unk_HrWorld;
 class Unk_HrPc;
 
 int FUN_1418dd100();
-CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
+CStringW FUN_1418fec00(int nType, __int64 nValue, bool);         // money text by pay type
 CStringW FUN_14093bad0(int nWidth, int nLength, CStringW strDefault);   // the trophy requirement text (empty: none)
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
@@ -184,7 +184,7 @@ void UIHomeResizeDialog::OnExtensionArea()
         FUN_141275260(0xcaa, 1, 1);
         return;
     }
-    CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, 0);
+    CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, false);
     CStringW strTrophy = FUN_14093bad0(spNext->m_nWidth, spNext->m_nLength, CStringW(L""));
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_area_trophy_messagebox"), nArea, spNext->m_nArea, strTrophy, strPrice);
     if (strTrophy.IsEmpty() || ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(spNext->m_nWidth, spNext->m_nLength) != 0)
@@ -206,7 +206,7 @@ void UIHomeResizeDialog::OnExtensionHeight()
         FUN_141275260(0xcab, 1, 1);
         return;
     }
-    CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, 0);
+    CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, false);
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_height_messagebox"), nHeight, spNext->m_nHeight, strPrice);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {

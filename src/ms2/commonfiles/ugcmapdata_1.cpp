@@ -77,7 +77,6 @@ public:
 Unk_Service6100017 * FUN_1401cd040(Unk_EntityAppFramework *);  // C3: the definition's signature
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
 MS2Ptr<CItemData> FUN_14053f870(int);
-void FUN_140194470(void*,const void*);
 void FUN_1402237c0(Unk_LevelArray *);  // C3: the definition's signature
 class PCBase   // C3: member view for the former free stand-ins
 {
@@ -139,7 +138,7 @@ void FUN_1408a0480(Cube* cube) {
         cube->field68=item->install.wall;
         cube->field6c=item->install.generatePhysX;
         cube->field70=item->install.cubeProp;
-        FUN_140194470(&cube->offset,&item->install.physXdimension);
+        *reinterpret_cast<efd::Point3*>(&cube->offset) = *reinterpret_cast<const efd::Point3*>(&item->install.physXdimension);
         cube->textA0=item->install.mapAttribute;
         cube->fieldAc=item->install.space;
         cube->fieldB0=item->install.animatable;

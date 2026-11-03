@@ -278,8 +278,8 @@ AutomaticCreateCubeInfo::AutomaticCreateCubeInfo()
 // @0x141123290
 SaleStateData::SaleStateData() : m_nState(0), m_p(0) {}
 
-// @0x1411232e0
-SalesInfo::SalesInfo() {}
+// 0x1411232e0 is SalesInfo's implicit ctor (emitted through Unk_CMISTreeAnchor below).
+// MS2-PIN: ??0SalesInfo@@QEAA@XZ 0x1411232e0
 
 #ifndef MS2_HOOK_DLL
 // ---- vectors named by their constructor wrappers ----------------------------------------------------------------------------
@@ -312,6 +312,7 @@ typedef std::pair<const unsigned, std::set<int> > Unk_CMISBucketPair;
 
 void Unk_CMISTreeAnchor(void* p)
 {
+    new (p) SalesInfo;
     new (p) Unk_CMISTree<4097>;
     new (p) Unk_CMISTree<285>;
     new (p) Unk_CMISTree<275>;

@@ -38,7 +38,6 @@ public:
     void FUN_1412d3c10(const CString& strGroup, const CStringW& strSearch);    // fill the item list (group / search filter)
     MS2Ptr<Unk_PsCombo> FUN_140c28560(const CString& strName);          // child "m_itemGrade"
     MS2Ptr<Unk_CoupleInput> FUN_140e35bd0(const CString& strName);      // child "m_searchInput"
-    MS2Ptr<ASUIComponent> FUN_140c02990(const CString& strName);        // child "m_optionSheet" / "m_optionResult"
 
 protected:
     MS2_LAYOUT_FRIEND;

@@ -32,8 +32,13 @@ class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
-                   const unsigned& second);
+template <class T1, class T2> void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const T1& first,
+                   const T2& second);
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -111,7 +116,7 @@ bool CPetData::Load(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "tamingGroupID", m_nTamingGroupId);
     XmlGetAttr((class TiXmlElement*)(pNode), "enablePetExtraction", m_bEnablePetExtraction);
     XmlGetAttr((class TiXmlElement*)(pNode), "itemIDs", m_nItemIds);
-    Unk_SplitA(const_cast<CStringA&>(Unk_ReadString((class Unk_XmlNode*)(pNode), "tamingAiPresets", CString(""))), (ATL::CAtlArray<CStringA>*)(&m_tamingAiPresets), ",");
+    Unk_SplitA(const_cast<CStringA&>(static_cast<const CStringA&>(Unk_ReadString((class Unk_XmlNode*)(pNode), "tamingAiPresets", CString("")))), (ATL::CAtlArray<CStringA>*)(&m_tamingAiPresets), ",");
     unsigned int nSkillId = 0;
     unsigned short nSkillLevel = 0;
     XmlGetAttr((class TiXmlElement*)(pNode), "passiveSkillId", nSkillId);
@@ -178,7 +183,7 @@ bool CPetDataTable::LoadProperties()
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -199,7 +204,7 @@ bool CPetDataTable::LoadProperties()
         if (!spPet->Load(pNode))
         {
             unsigned int nId = spPet->GetId();
-            FUN_1401e0850(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}][petID={1}] loading Failed!",
+            FUN_1401e0850<CString, unsigned>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}][petID={1}] loading Failed!",
                           strPath, nId);
             continue;
         }

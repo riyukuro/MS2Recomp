@@ -83,7 +83,8 @@ public:
 };
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view
 
-class Unk_NametagTitles { public: int FUN_140408410(const unsigned int* pCode); };   // the owned titles
+class Unk_NametagTitles {};   // the owned titles
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 extern Unk_NametagTitles DAT_143ab3268;
 class Unk_IntTriple { public: int Sum(); };
 class Unk_NametagScore : public Unk_IntTriple {};    // the trophy points
@@ -248,7 +249,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         case NAMETAG_CONDITION_TROPHY_POINT:
             return FUN_1406c7600()->FUN_140938ad0()->Sum() >= 1000;
         case NAMETAG_CONDITION_TITLE:
-            return DAT_143ab3268.FUN_140408410(&spData->m_nCode) != -1;
+            return Unk_ArrayFind<unsigned>(reinterpret_cast<const ATL::CAtlArray<unsigned>&>(DAT_143ab3268), reinterpret_cast<const unsigned&>(spData->m_nCode)) != -1;
         case NAMETAG_CONDITION_ENCHANT:
         {
             int nA;

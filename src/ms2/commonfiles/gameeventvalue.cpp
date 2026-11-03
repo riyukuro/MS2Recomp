@@ -286,6 +286,12 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 void FUN_140274fc0(const CStringW& text, ATL::CAtlArray<unsigned>& ids, const wchar_t* delims);  // split into ids
@@ -555,7 +561,7 @@ void CGameEventValueMasteryReward::Load(unsigned long eventId, int type, const C
     if (m_events.find(eventId) != m_events.end())
         return;
     Rates rates;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("v"); pNode != NULL; pNode = pNode->FUN_140168650("v")) {
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("v")); pNode != NULL; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("v"))) {
         unsigned long fieldId = FUN_140197390(pNode, "fieldID", 0);
         int rate = FUN_140197390(pNode, "rate", 0);
         if (fieldId == 0 || rate == 0)

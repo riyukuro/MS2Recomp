@@ -60,10 +60,9 @@ bool FUN_1404f06a0(Unk_It* a, Unk_It* b) { return !FUN_1404f03e0(a, b); }
 bool FUN_1404f06e0(Unk_It* a, Unk_It* b) { return !FUN_1404f0420(a, b); }
 
 // ATL::CAtlArray::operator[] with the E_INVALIDARG bounds check
-void FUN_140159b70(long);
 struct Unk_E16 { i64 a, b; };
 struct Unk_Arr16 { Unk_E16* data; u64 size; };
 // @0x1404f0720
-Unk_E16* FUN_1404f0720(Unk_Arr16* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E16* FUN_1404f0720(Unk_Arr16* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }
 // @0x1404f0760
-Unk_E16* FUN_1404f0760(Unk_Arr16* t, u64 i) { if (i >= t->size) FUN_140159b70(0x80070057); return &t->data[i]; }
+Unk_E16* FUN_1404f0760(Unk_Arr16* t, u64 i) { if (i >= t->size) ATL::AtlThrowImpl(0x80070057); return &t->data[i]; }

@@ -85,6 +85,7 @@ class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); }; 
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asslider.h"
+#include "ms2/client/ms2/uigameoptiondialog.h"
 #include "ms2/placeholder/asdropdownmenu.h"
 #include "ms2/placeholder/astextinput.h"
 #include "ms2/ms2format.h"
@@ -123,7 +124,6 @@ class Unk_GoSlider : public ASSlider { };
 
 // View of UIGameOptionDialog: the child lookups by name (getTabChild).
 class Unk_GoCombo;
-class Unk_GoInput;
 class Unk_GoDialog
 {
 public:
@@ -132,8 +132,7 @@ public:
     MS2Ptr<Unk_GoRadio> FUN_140a46480(CString name, int nIndex);
     MS2Ptr<Unk_GoCombo> FUN_140cfcf10(CString name, int nIndex);
     MS2Ptr<ASTextField> FUN_14124e120(CString name, int nIndex);
-    MS2Ptr<Unk_GoInput> FUN_14124e2e0(CString name, int nIndex);
-    MS2Ptr<ASUIComponent> FUN_14124ff50(int nIndex);
+    MS2Ptr<ASTextInput> FUN_14124e2e0(CString name, int nIndex);
 
     char m_pad[0x28];
     int m_nId;                                                      // +0x28 the option id
@@ -776,11 +775,11 @@ int CGameOptionCommunity::vfunc_14()
 
 // More option-dialog controls: a combo box and a text input (0x88 bytes).
 class Unk_GoCombo : public ASDropdownMenu { };   // the option dialog's combo box (a view)
-class Unk_GoInput : public ASTextInput { };      // its text input (a view)
 
 // The lookups of the dialog view by child name (more instances of the getTabChild template); the first three live in this unit.
 MS2Ptr<ASTextField> FUN_1409b41a0(int nId, const Scaleform::GFx::Value& v);
-MS2Ptr<Unk_GoInput> FUN_140bbe1d0(int nId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_BpCreate(int nMovieId, const Scaleform::GFx::Value& v);
+template <> MS2Ptr<ASTextInput> Unk_BpCreate<ASTextInput>(int nMovieId, const Scaleform::GFx::Value& v);   // 0x140bbe1d0, owned by uiblueprintmarketdialog
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
 int FUN_1407181a0(const CStringW& str);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);    // notice
@@ -791,14 +790,15 @@ CStringW FormatStringId(int nId, const fmt::ArgList& args);   // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 
 // @0x14124ff50
-MS2Ptr<ASUIComponent> Unk_GoDialog::FUN_14124ff50(int nIndex)
+MS2Ptr<ASUIComponent> UIGameOptionDialog::FUN_14124ff50(int nIndex)
 {
-    if (m_root.IsNull())
+    // the AS root (+0x30) and id (+0x28) through the Unk_GoDialog view
+    if (reinterpret_cast<Unk_GoDialog*>(this)->m_root.IsNull())
         return MS2Ptr<ASUIComponent>(0);
-    Scaleform::GFx::Value comp = m_root->Invoke("getTabComponent", nIndex);
+    Scaleform::GFx::Value comp = reinterpret_cast<Unk_GoDialog*>(this)->m_root->Invoke("getTabComponent", nIndex);
     if (comp.IsDisplayObject())
     {
-        MS2Ptr<ASUIComponent> sp = Unk_ASCreate<ASUIComponent>(m_nId, comp);
+        MS2Ptr<ASUIComponent> sp = Unk_ASCreate<ASUIComponent>(reinterpret_cast<Unk_GoDialog*>(this)->m_nId, comp);
         if (static_cast<ASUIComponent*>(sp) != 0)
             return sp;
     }
@@ -821,18 +821,18 @@ MS2Ptr<ASTextField> Unk_GoDialog::FUN_14124e120(CString name, int nIndex)
 }
 
 // @0x14124e2e0
-MS2Ptr<Unk_GoInput> Unk_GoDialog::FUN_14124e2e0(CString name, int nIndex)
+MS2Ptr<ASTextInput> Unk_GoDialog::FUN_14124e2e0(CString name, int nIndex)
 {
     if (m_root.IsNull())
-        return MS2Ptr<Unk_GoInput>(0);
+        return MS2Ptr<ASTextInput>(0);
     Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
     if (child.IsDisplayObject())
     {
-        MS2Ptr<Unk_GoInput> sp = FUN_140bbe1d0(m_nId, child);
-        if (static_cast<Unk_GoInput*>(sp) != 0)
+        MS2Ptr<ASTextInput> sp = Unk_BpCreate<ASTextInput>(m_nId, child);
+        if (static_cast<ASTextInput*>(sp) != 0)
             return sp;
     }
-    return MS2Ptr<Unk_GoInput>(0);
+    return MS2Ptr<ASTextInput>(0);
 }
 
 // The device name holder (DAT_143ad5158): the adapter's name at +0x18.
@@ -1153,8 +1153,8 @@ void CGameOptionGraphicDefault::vfunc_6()
             sp->FUN_1422ce090(m_state2.m_bShowCustom);
     }
     {
-        MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
-        if (static_cast<Unk_GoInput*>(sp) != 0)
+        MS2Ptr<ASTextInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
+        if (static_cast<ASTextInput*>(sp) != 0)
             sp->SetTextW(StringFormat(L"{0}", m_state2.m_nCustomInput));
     }
     {
@@ -1169,7 +1169,7 @@ void CGameOptionGraphicDefault::vfunc_6()
 void CGameOptionGraphicDefault::vfunc_7()
 {
     {
-        MS2Ptr<ASUIComponent> spComp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124ff50(m_nType);
+        MS2Ptr<ASUIComponent> spComp = GetOptionDialog()->FUN_14124ff50(m_nType);
         if (static_cast<ASUIComponent*>(spComp) != 0)
         {
             int nRes = spComp->Invoke("getResolution").GetInt();
@@ -1276,8 +1276,8 @@ void CGameOptionGraphicDefault::vfunc_7()
             m_state2.m_bShowCustom = sp->FUN_1422ce0e0() ? true : false;
     }
     {
-        MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
-        if (static_cast<Unk_GoInput*>(sp) != 0)
+        MS2Ptr<ASTextInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
+        if (static_cast<ASTextInput*>(sp) != 0)
         {
             CStringW strInput = sp->GetText();
             m_state2.m_nCustomInput = FUN_1407181a0(strInput);

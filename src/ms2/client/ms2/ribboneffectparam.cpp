@@ -17,7 +17,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ribboneffectparam.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
 #include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
 #include <errno.h>
 #include <new>
@@ -64,9 +64,8 @@ CString FUN_140188f50(const char* psz, int n);                      // null-safe
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
-// The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its efd::Point3 local.
-struct Unk_RbNiPoint3 : Vector3 {};
-class Unk_RbCameraMgr { public: Unk_RbNiPoint3 FUN_140af0250(); };
+// The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its Vector3 local.
+class CameraMgr { public: NiPoint3 FUN_140af0250(); };
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 const Vector3& FUN_140947900(void* pNode);                  // world translate
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
@@ -101,7 +100,7 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 class Unk_ResourceMgr : public CNifLoadingService
 {
 public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);                    // texture load
+    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                    // texture load
     void FUN_1415525d0(CString strPath, int nA, int nB);                        // preload
 };
 Unk_ResourceMgr* FUN_140a0afd0();
@@ -277,7 +276,7 @@ bool CRibbonEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         spTexture->SetBaseFilterMode((NiTexturingProperty::FilterMode)0);
         spTexture->SetApplyMode((NiTexturingProperty::ApplyMode)1);
         spTexture->SetBaseClampMode((NiTexturingProperty::ClampMode)0);
-        ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5).Get()));
+        ((class NiTexturingProperty*)(class NiTexturingProperty*)(spTexture.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pRibbon->m_strTexturePath)), 5)));
         ((class NiAVObject*)(class NiAVObject*)(m_spMesh->GetMesh()))->AttachProperty(spTexture);
 
         NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -390,7 +389,7 @@ void CRibbonEffect::UpdateMesh()
                 kCurve.push_back(FUN_140a0adf0((*m_pPoints)[i], (*m_pPoints)[i + 1], (*m_pPoints)[i + 2], (*m_pPoints)[i + 3], fT));
             }
         }
-        Vector3 kCamera = ((Unk_RbCameraMgr*)Unk_CameraManager::FUN_1409478c0())->FUN_140af0250();
+        Vector3 kCamera = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(((CameraMgr*)Unk_CameraManager::FUN_1409478c0())->FUN_140af0250()));
         efd::vector<Vector3> kMinus;
         efd::vector<Vector3> kPlus;
         for (unsigned i = 0; i < kCurve.size(); ++i)

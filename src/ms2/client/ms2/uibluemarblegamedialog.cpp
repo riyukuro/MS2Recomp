@@ -48,7 +48,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // The debug key state (singleton).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
 
 // The UI service / scene manager singletons (the scene calls of the dialog's open and close).
 class Unk_BmSceneCtl;
@@ -64,7 +64,6 @@ void FUN_141901470(int n, int nType);                               // UIObject:
 
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringTable* GetStringTable();
 extern Unk_Inventory g_143ab2a90;                                   // the player inventory
 
 #include "ms2/commonfiles/commonutil.h"
@@ -199,7 +198,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             m_nConsumeItemId = BM_PKT->ReadInt32();
             m_nConsumeItemCount = BM_PKT->ReadInt32();
             FUN_140cfee80((*m_30).FUN_1422bb890(), "m_warning",
-                          FUN_140f24320("$s_bluemarble_warning", GetStringTable()->FUN_141811980(1, m_nConsumeItemId),
+                          FUN_140f24320("$s_bluemarble_warning", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_nConsumeItemId),
                                         m_nConsumeItemCount));
             FUN_140f227a0(*BM_PKT);
             FUN_140f22bb0(m_nPosition);
@@ -207,7 +206,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             FUN_140f23ca0();
             FUN_140f23940();
             m_30->Invoke("moveImmediately", m_nPosition);
-            m_30->Invoke("enableDebugDice", FUN_14025e7c0()->IsDebugMode());
+            m_30->Invoke("enableDebugDice", ((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode());
             vfunc_8(1);
             m_bIdle = 1;
         } else if (nKind == 2) {
@@ -443,7 +442,7 @@ void UIBlueMarbleGameDialog::FUN_140f23590(int nItemId, int nRarity, int nCount)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData.get()) {
         CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_bluemarble_get_item"),
-                                            GetStringTable()->FUN_141811980(1, nItemId));
+                                            TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         m_30->Invoke("onRewardNotify", CStringW(strMessage),
                      FUN_14016a730(spData->GetIconPath(), 0), spData->GetRank(), nCount);
     }

@@ -13,8 +13,6 @@
 
 // ---- unit-local views of callees emitted in other units ----
 
-CRect* FUN_140517a60(CRect* pRect);                     // 0x140517a60 CRect::CRect()
-LPRECT FUN_14098a2a0(CRect* pRect);                     // 0x14098a2a0 CRect::operator LPRECT
 
 // @0x141853bc0
 int CToolColorListBox::FUN_141853bc0(int nIndex)
@@ -266,7 +264,7 @@ void CToolColorListBox::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
             CRect rcFocus(lpDrawItemStruct->rcItem);
             for (int i = 0; i < nPad; i++)
             {
-                pDC->DrawFocusRect(FUN_14098a2a0(&rcFocus));
+                pDC->DrawFocusRect((LPRECT)rcFocus);
                 rcFocus.DeflateRect(1, 1);
             }
         }
@@ -279,10 +277,9 @@ void CToolColorListBox::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
     if (m_nItemHeight == 0)
     {
         CPaintDC dc(this);
-        RECT rc;
-        FUN_140517a60((CRect*)&rc);
+        CRect rc;
         dc.DrawText("M", -1, &rc, DT_CALCRECT);
-        lpMeasureItemStruct->itemHeight = ((class CRect*)(class CRect const*)((CRect*)&rc))->Height() + 6;
+        lpMeasureItemStruct->itemHeight = rc.Height() + 6;
     }
     else
     {

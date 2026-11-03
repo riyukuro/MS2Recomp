@@ -14,13 +14,13 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
-int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, class efd::Point3&);   // C3: was FUN_140874670
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
-void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
-void* FUN_14086e000(void* pParent, const void* pChild);                         // InsertEndChild
+void XmlSetAttr(class TiXmlElement*, char const*, CStringA const&);   // C3: was FUN_140874050
+class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& addThis); };   // C3: member view (was FUN_14086e000)
 CString FUN_14028ef00(efd::Point3 kPoint);                                      // point -> "x, y, z"
 void TrimCommas(CString& str);                                                  // 0x140552c60
 
@@ -66,7 +66,7 @@ bool Unk_RangeShape::FUN_1408002b0(const Unk_RangeShape& o)
 // @0x1408003b0
 void Unk_RangeShape::Load(Unk_140165cf0* pElem)
 {
-    FUN_1408733e0(pElem, "rangeType", m_str);
+    XmlGetAttr((class TiXmlElement*)(pElem), "rangeType", m_str);
     if (m_str == "box")
         m_nType = 1;
     else if (m_str == "cylinder")
@@ -89,7 +89,7 @@ void Unk_RangeShape::FUN_140800570(void* pElem)
 {
     static Unk_RangeShape kDefault;
     if (m_str != kDefault.m_str)
-        FUN_140874050(pElem, "rangeType", m_str);
+        XmlSetAttr((class TiXmlElement*)(pElem), "rangeType", m_str);
     if (kDefault.m_f10 != m_f10)
         XmlSetAttr((class TiXmlElement*)(pElem), "distance", m_f10);
     if (kDefault.m_f14 != m_f14)
@@ -99,9 +99,9 @@ void Unk_RangeShape::FUN_140800570(void* pElem)
     if (kDefault.m_f1c != m_f1c)
         XmlSetAttr((class TiXmlElement*)(pElem), "endWidth", m_f1c);
     if (m_pt20 != kDefault.m_pt20)
-        FUN_140874050(pElem, "rangeAdd", FUN_14028ef00(m_pt20));
+        XmlSetAttr((class TiXmlElement*)(pElem), "rangeAdd", FUN_14028ef00(m_pt20));
     if (m_pt2c != kDefault.m_pt2c)
-        FUN_140874050(pElem, "rangeOffset", FUN_14028ef00(m_pt2c));
+        XmlSetAttr((class TiXmlElement*)(pElem), "rangeOffset", FUN_14028ef00(m_pt2c));
     if (kDefault.m_f38 != m_f38)
         XmlSetAttr((class TiXmlElement*)(pElem), "rangeZRotateDegree", m_f38);
 }
@@ -222,9 +222,9 @@ void Unk_RangeProperty::SaveElement(void* pParent, CString strName)
             }
             TrimCommas(strRanks);
             if (!strRanks.IsEmpty())
-                FUN_140874050(&elem, "applyTargetIgnoreNpcRanks", strRanks);
+                XmlSetAttr((class TiXmlElement*)(&elem), "applyTargetIgnoreNpcRanks", strRanks);
         }
-        FUN_14086e000(pParent, &elem);
+        ((TiXmlNode*)(pParent))->InsertEndChild(*(const TiXmlNode*)&elem);
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

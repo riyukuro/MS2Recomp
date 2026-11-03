@@ -15,6 +15,7 @@
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/commonfiles/dungeonroom.h"   // C3: DungeonRoomTable::GetRoom
+#include "ms2/placeholder/uiworldmap.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -23,15 +24,6 @@
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 void* FUN_140764020();                                                  // the quest manager
 
-
-// An entry that can be gated by a dungeon room and a quest (the tail of this unit's range).
-struct Unk_WfGate
-{
-    char m_pad[0x70];
-    int m_nRoomId;                                                      // +0x70
-    int m_nQuestId;                                                     // +0x74
-    int FUN_141b94b90();                                                // the gate is open
-};
 
 // ---- CWireframeManager ----
 
@@ -121,11 +113,12 @@ const void* CWireframeManager::vfunc_2()
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // @0x141b94b90
-int Unk_WfGate::FUN_141b94b90()
+// A world map tile gated by a dungeon room (+0x70) and a quest (+0x74): shown unless either is closed.
+int UIWorldMap::MapTile::FUN_141b94b90()
 {
-    if (m_nRoomId != 0)
+    if (m_70 != 0)
     {
-        DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_nRoomId);
+        DungeonRoomPtr room = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(m_70);
         if (room.get() ? true : false)
         {
             if (!room->m_limitDayOfWeeks.FUN_140b91330())
@@ -136,9 +129,9 @@ int Unk_WfGate::FUN_141b94b90()
             }
         }
     }
-    if (m_nQuestId != 0)
+    if (m_74 != 0)
     {
-        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_140745590(m_nQuestId) == 0)
+        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_140745590(m_74) == 0)
             return 0;
     }
     return 1;

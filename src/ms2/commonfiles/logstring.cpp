@@ -56,11 +56,17 @@ private:
     int m_result;
 };
 MS2_CHECK_SIZE(Unk_140659080,0x30);
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
+class Unk_140165cf0;
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+    class Unk_XmlNode* NextSibling(char const*);
+};
 CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
 CString FUN_1406513d0(CString);
 CStringW FUN_14016a730(const char*,int);
-void FUN_14025fab0(CStringW&);
+bool FUN_14025fab0(CStringW&);
 
 
 // The logging callback specialization uses the shared Delegate layout and virtual interface.
@@ -300,9 +306,9 @@ bool CLogString::ReadLogPathFromSettings()
     TiXmlDocument doc;
     bool bFailed=!doc.FUN_140870fc0(ATL::CA2AEX<128>(FUN_1406513d0("setting.xml")),0) ? TRUE : FALSE;
     if(bFailed && !doc.FUN_140870fc0("setting.xml",0)) return false;
-    Unk_140165cf0* root=reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* root=((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if(!root) return false;
-    Unk_140165cf0* node=root->FUN_140165cf0("logpath");
+    Unk_140165cf0* node=((class Unk_140165cf0*)((class Unk_XmlNode*)(root))->FirstChild("logpath"));
     if(!node) return false;
     CStringW path=FUN_1401bf530(node,"logpath",L"");
     if(path.IsEmpty()) return false;

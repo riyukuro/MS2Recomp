@@ -38,8 +38,8 @@ class Unk_140165cf0 : public Unk_XmlNode {};   // FirstChildElement
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
-void FUN_14054c030(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
-                   const CString& second);
+template <class T, class U>
+void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
@@ -127,7 +127,7 @@ bool LoginBgBgmTable::Load()
         unsigned nParams = bgmParams.size();
         if (nIds > nParams)
         {
-            FUN_14054c030(GetLogString(), 2, 0x13,
+            Unk_ItemDataLog<CString, CString>(GetLogString(), 2, 0x13,
                           L"[<ms2> loginBgBgm.xml bgmID count != bgmParam count. clientPropertyBgDay : {0}]",
                           strPath, strBgDay);
             for (unsigned n = 0; n < nIds - nParams; n++)
@@ -145,7 +145,7 @@ bool LoginBgBgmTable::Load()
             unsigned nMonth = *it;
             if (nMonth > 12)
             {
-                FUN_14054c030(GetLogString(), 2, 0x13, L"[<ms2> loginBgBgm.xml month > 12. clientPropertyBgDay : {0}]",
+                Unk_ItemDataLog<CString, CString>(GetLogString(), 2, 0x13, L"[<ms2> loginBgBgm.xml month > 12. clientPropertyBgDay : {0}]",
                               strPath, strBgDay);
                 continue;
             }

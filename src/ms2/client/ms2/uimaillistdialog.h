@@ -25,7 +25,7 @@ class Unk_MlButton;
 class Unk_MlCheckBox;
 class ASScrollingList;
 class Unk_MlTab;
-class Unk_MsInput;
+class ASTextInput;
 class Unk_MsCombo;
 template <class T> class Unk_MailPtr;
 
@@ -102,7 +102,6 @@ public:
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
     MS2Ptr<Unk_MlButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 list
     MS2Ptr<Unk_MlTab> FUN_140c02870(const CString& strName);        // 0x140c02870 tab strip
     MS2Ptr<Unk_MlCheckBox> FUN_140e52670(const CString& strName);   // 0x140e52670 check box
 
@@ -152,7 +151,6 @@ public:
     void FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& names);   // buddies and guild members by character id
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
-    MS2Ptr<Unk_MsInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input
     MS2Ptr<Unk_MsCombo> FUN_140c28560(const CString& strName);      // 0x140c28560 dropdown
 
 private:

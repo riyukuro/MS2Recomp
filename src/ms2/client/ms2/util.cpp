@@ -159,18 +159,11 @@ public:
 float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey);   // text key time (-FLT_MAX if unknown)
 bool FUN_14028d470(float fA, float fB);                             // float equality
 
-// NiPoint3 with the out-of-line conversion / move-assign of the exe.
-struct Unk_UtilNiPoint3
-{
-    Unk_UtilNiPoint3(const Vector3& pt);                    // 0x14027dcf0
-    Unk_UtilNiPoint3& operator=(Unk_UtilNiPoint3&& pt);             // 0x14097faa0
-    float x, y, z;
-};
 // NiTransform layout: rotation, translation, scale.
 struct Unk_UtilTransform
 {
     Unk_NiMatrix3 m_kRotate;                                        // +0x00
-    Unk_UtilNiPoint3 m_kTranslate;                                  // +0x24
+    NiPoint3 m_kTranslate;                                          // +0x24
     float m_fScale;                                                 // +0x30
 };
 MS2_CHECK_SIZE(Unk_UtilTransform, 0x34);
@@ -841,7 +834,7 @@ bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
     Vector3 vTranslation;
     if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vTranslation)) != 0)
         return false;
-    pOut->m_kTranslate = vTranslation;
+    pOut->m_kTranslate = reinterpret_cast<const efd::Point3&>(vTranslation);
     Vector3 vEuler;
     if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(vEuler)) != 0)
         return false;

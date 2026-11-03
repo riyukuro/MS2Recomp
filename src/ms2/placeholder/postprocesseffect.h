@@ -26,30 +26,10 @@ class NiRenderTargetGroup;
 MS2_CHECK_SIZE(NiFixedString, 8);
 MS2_CHECK_SIZE(NiString, 8);
 
-// Smart-pointer-like helper objects (8 bytes) used as render-step members; real template types unknown.
-class Unk_PPSmartA {
-public:
-    Unk_PPSmartA(void* p = 0);      // 0x14127c2a0 (default arg: arrays get a ctor closure)
-    ~Unk_PPSmartA();                // 0x14127c650
-    void Assign(void* p);           // 0x14127c7f0
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_PPSmartA, 8);
-
-class Unk_PPSmartC {
-public:
-    Unk_PPSmartC(void* p = 0);      // 0x14097ed60 (default argument: std::map<K, Unk_PPSmartC> value-initialises with 0)
-    Unk_PPSmartC(const Unk_PPSmartC& rhs);   // declared only so MSVC passes it by invisible reference (the exe does); never called
-    ~Unk_PPSmartC();                // 0x14097f4a0
-    void Assign(void* p);           // 0x14097f9b0
-    void* Get();                    // 0x14097fbf0
-    Unk_PPSmartC& operator=(const Unk_PPSmartC& rhs);   // 0x140a5ab40
-    bool operator!=(void* p) const;                     // 0x141849f40 (textureanimationdata.cpp)
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_PPSmartC, 8);
+// The render steps' texture members are efd::SmartPointer<NiRenderedTexture> (ctor 0x14127c2a0, dtor 0x14127c650,
+// operator=(T*) 0x14127c7f0) and efd::SmartPointer<NiTexture> (ctor 0x14097ed60, dtor 0x14097f4a0, operator=(T*) 0x14097f9b0,
+// operator T* 0x14097fbf0, operator= 0x140a5ab40).
+class NiTexture;
 
 MS2_CHECK_SIZE(NiDefaultClickRenderStep, 0x70);     // exe: ctor 0x141474910, dtor 0x141474dd0; 13 vftable slots
 

@@ -144,7 +144,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "beameffect.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
 #include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
 #include "ms2/client/ms2/camera.h"                  // CameraMgr
 #include "ms2/client/ms2/nifeffectparam.h"          // CNifLoadingService
@@ -418,13 +418,6 @@ MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
 
 // CameraMgr::FUN_140af0250 returns the NiPoint3 that UpdateMesh slices into its efd::Point3 local.
 struct Unk_BmNiPoint3 : Vector3 {};
-// A locked vertex position as UpdateMesh writes it: NiPoint3 built from an efd::Point3, then assigned.
-struct Unk_BmPoint3
-{
-    float x, y, z;
-    Unk_BmPoint3(const void* efdPoint);                             // 0x14027dcf0 (converting)
-    Unk_BmPoint3& operator=(const Unk_BmPoint3& pt);                // 0x14097faa0
-};
 
 // @0x140a081d0
 // Picks a random texture of the param, builds the curve and rewrites the strip: two vertex rows (left / right edge of
@@ -460,14 +453,14 @@ void CBeamEffect::UpdateMesh()
     }
 
     unsigned short nCount = (unsigned short)kLeft.size();
-    Unk_BmPoint3* pPos = (Unk_BmPoint3*)m_spMesh->Lock(NiCommonSemantics::POSITION(), 0, 2);
+    NiPoint3* pPos = (NiPoint3*)m_spMesh->Lock(NiCommonSemantics::POSITION(), 0, 2);
     NiColorA* pCol = (NiColorA*)m_spMesh->Lock(NiCommonSemantics::COLOR(), 0, 2);
     for (int i = 0; i < (int)nCount; ++i)
     {
         NiColorA kWhite(1.0f, 1.0f, 1.0f, 1.0f);
-        pPos[i] = &kLeft[i];   // implicit NiPoint3(const efd::Point3&) temp
+        pPos[i] = reinterpret_cast<const efd::Point3&>(kLeft[i]);   // NiPoint3(const efd::Point3&) temp, then move-assigned
         pCol[i] = kWhite;
-        pPos[i + nCount] = &kRight[i];
+        pPos[i + nCount] = reinterpret_cast<const efd::Point3&>(kRight[i]);
         pCol[i + nCount] = kWhite;
     }
     m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);

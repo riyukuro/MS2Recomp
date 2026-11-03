@@ -135,7 +135,7 @@ public:
     void FUN_14199bc00();                                 // refresh
     bool FUN_14199b4e0(int nResult, const CMsgBoxData& box);   // the destroy box answer
 };
-UIInventoryDialog* FUN_1405344f0(int nId);
+template <class T> T* Unk_BreakDialog(int nId);   // C3: was FUN_1405344f0
 class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -155,14 +155,6 @@ public:
 };
 
 
-// The item break manager (FUN_1409c4b20).
-class Unk_IsBreakMgr : public CItemBreakManager
-{
-public:
-    int FUN_140531270(MS2Ptr<CItem> spItem);              // the item can be broken
-    int FUN_140532de0(MS2Ptr<CItem> spItem, int nSlot);   // add the item
-    int FUN_140533340(MS2Ptr<CItem> spItem);              // replace the item
-};
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 
 // The item lock manager (FUN_140535310).
@@ -208,7 +200,7 @@ CStringW GetStringCommon(int nStringId);                    // string table text
 CStringW FUN_140298ea0(CStringW strKey);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
-void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d73bc0(int nId, int nType, void* p, CStringW strTag);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
@@ -233,9 +225,7 @@ PetSlot* FUN_140dbc0d0(DragSlot* p);
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // The use-item paths (vfunc_13).
 class Unk_PCCubeCraft
@@ -256,8 +246,6 @@ public:
     __int64 FUN_140c8dab0();                              // the uid of the score being played
 };
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
-class Unk_IsInstrumentDialog;
-Unk_IsInstrumentDialog* FUN_140d0c0e0(int nId);
 struct Unk_IsAccountFlags
 {
     void* m_0;
@@ -275,7 +263,7 @@ int FUN_141769320(MS2Ptr<CItemData> spData);              // the skill of an emo
 int FUN_14092fac0(int, int, __int64, int);   // C3: was FUN_14092fac0
 class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag);   // put the gem item on (packet 0x47)
-UIPlayInstrumentDialog* FUN_140d0c040(int nId);
+template <class T> T* Unk_ImGetDialog(int nId);   // C3: was FUN_140d0c040
 template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d274e0/FUN_140d27300
 UIBlackMarketDialog* FUN_140a22f10(int nId);
 static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint);
@@ -323,7 +311,6 @@ class UIShopDialog : public UIDialog
 public:
     bool CanSellItem(MS2Ptr<CItem> spItem);               // the shop buys the item
 };
-UIShopDialog* FUN_140534780(int nId);
 static int FUN_14140e3f0(MS2Ptr<CItem> spItem);
 static __int64 FUN_14140fa00(int nIndex, int nTab);
 
@@ -602,7 +589,7 @@ void FUN_141405440(MS2Ptr<CItem> spItem)
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 0xcd2, 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
+        UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
         if (pDlg != 0 && pDlg->FUN_141924630() != 0)
         {
             CStringW strDefault(L"");
@@ -853,15 +840,15 @@ int InvenSlot::vfunc_13()
         if (spItem->FUN_140525730())
         {
             TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4eed);
-            Unk_IsInstrumentDialog* pDialog = FUN_140d0c0e0(0x4eed);
+            UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
             if (pDialog != 0)
-                reinterpret_cast<UIWriteMusicDialog*>(pDialog)->BeginWriteWithItem(spItem);
+                pDialog->BeginWriteWithItem(spItem);
         }
         else if (spItem->FUN_140525790())
         {
-            Unk_IsInstrumentDialog* pDialog = FUN_140d0c0e0(0x4eed);
+            UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
             if (pDialog != 0)
-                reinterpret_cast<UIWriteMusicDialog*>(pDialog)->FUN_140fef8f0(spItem);
+                pDialog->FUN_140fef8f0(spItem);
         }
     }
     else if (spItem->FUN_140527840()->HasFunction() == true)
@@ -925,7 +912,7 @@ int InvenSlot::vfunc_14()
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(GetItemUid());
     if (!spItem)
         return 0;
-    UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInventory != 0)
     {
         spItem->FUN_1405268d0(0);
@@ -1018,8 +1005,8 @@ int InvenSlot::vfunc_14()
     }
     case 8:
     case 9:
-        if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532ab0() != 0)
-            ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532de0(spItem, -1);
+        if (((CItemBreakManager*)FUN_1409c4b20())->FUN_140532ab0() != 0)
+            ((CItemBreakManager*)FUN_1409c4b20())->TryAddItem(spItem, -1);
         break;
     case 10:
         if (((CItemLockManager*)FUN_140535310())->FUN_140612d60() != 0)
@@ -1048,7 +1035,7 @@ int InvenSlot::vfunc_14()
         break;
     case 13:
     {
-        UIPlayInstrumentDialog* pPlay = FUN_140d0c040(0x4eec);
+        UIPlayInstrumentDialog* pPlay = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pPlay != 0)
         {
             CStringW strError;
@@ -1197,7 +1184,7 @@ int InvenSlot::vfunc_18(void* p)
         int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, spItem->GetCount());
         if (nSlot == -1)
         {
-            FUN_140961010(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
+            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
             FUN_141276180(s_strSystemNoticeErrorWarningBag, "");
             return static_cast<DragSlot*>(p)->vfunc_10();
         }
@@ -1257,12 +1244,12 @@ int InvenSlot::vfunc_18(void* p)
     {
         MS2Ptr<CItem> spOld = pBreak->vfunc_25();
         MS2Ptr<CItem> spMine = g_143ab2a90.FUN_140a5d680(m_nItemUid);
-        if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140531270(spOld) != 0)
+        if (((CItemBreakManager*)FUN_1409c4b20())->CanBreakItem(spOld) != 0)
         {
-            if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140531270(spMine) != 0)
-                ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140532de0(spMine, spOld->FUN_140526b50());
+            if (((CItemBreakManager*)FUN_1409c4b20())->CanBreakItem(spMine) != 0)
+                ((CItemBreakManager*)FUN_1409c4b20())->TryAddItem(spMine, spOld->FUN_140526b50());
             else
-                ((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140533340(spOld);
+                ((CItemBreakManager*)FUN_1409c4b20())->RequestRemoveItem(spOld);
         }
     }
     else if (ItemLockSlot* pLock = efd::DynamicCast<ItemLockSlot>(static_cast<DragSlot*>(p)))
@@ -1340,7 +1327,7 @@ int InvenSlot::vfunc_21()
     {
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
-        UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+        UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
         if (pInventory != 0)
             pInventory->FUN_14199bc00();
     }
@@ -2004,7 +1991,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
     }
     else if (nDialog == 0x4e8d || nDialog == 0x4e8e)
     {
-        if (((class Unk_IsBreakMgr*)FUN_1409c4b20())->FUN_140531270(spItem) != 0)
+        if (((CItemBreakManager*)FUN_1409c4b20())->CanBreakItem(spItem) != 0)
             return 8;
         return bHint ? 0 : 8;
     }
@@ -2151,7 +2138,7 @@ MS2_REPLACE(0x14140DEA0, FUN_14140dea0, 1340, 0x1497075E);
 static int FUN_14140e3f0(MS2Ptr<CItem> spItem)
 {
     {
-        MS2Ptr<UIShopDialog> spShop(FUN_140534780(0x4e3b));
+        MS2Ptr<UIShopDialog> spShop(Unk_BreakDialog<UIShopDialog>(0x4e3b));
         if (spShop.get() != 0)
         {
             if (spShop->CanSellItem(spItem) == false)
@@ -2173,7 +2160,7 @@ InventorySlotBag* FUN_14140eca0(const CString& strName, int nTab, int nCount)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
     return pBag;
 }
@@ -2183,11 +2170,11 @@ MS2_REPLACE(0x14140ECA0, FUN_14140eca0, 186, 0x331442C2);
 // Destroy the slot bag registered under the name.
 void FUN_14140ed60(const CString& strName)
 {
-    InventorySlotBag* pBag = efd::DynamicCast<InventorySlotBag>(FUN_1422c8e90(strName));
+    InventorySlotBag* pBag = efd::DynamicCast<InventorySlotBag>(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 MS2_REPLACE(0x14140ED60, FUN_14140ed60, 65, 0xE9E644AD);
@@ -2210,7 +2197,7 @@ InventorySlotBag::~InventorySlotBag()
 // @0x14140efe0
 int InventorySlotBag::vfunc_il1()
 {
-    UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg == 0 || pDlg->vfunc_55() != 0)
         return 0;
     return 1;
@@ -2234,7 +2221,7 @@ MS2_REPLACE_METHOD_VIA(0x14140F030, InventorySlotBag, UIUGCEventListener, vfunc_
 // @0x14140f140
 void InventorySlotBag::vfunc_2(void* p)
 {
-    UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg != 0)
         ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(2);
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)
@@ -2252,7 +2239,7 @@ MS2_REPLACE_METHOD_VIA(0x14140F140, InventorySlotBag, UIItemEventListener, vfunc
 // @0x14140f200
 void InventorySlotBag::vfunc_3(void* p, bool b)
 {
-    UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg != 0)
         ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(2);
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)
@@ -2282,7 +2269,7 @@ MS2_REPLACE_METHOD_VIA(0x14140F2A0, InventorySlotBag, UIItemEventListener, vfunc
 // @0x14140f340
 void InventorySlotBag::vfunc_5(void* p, int n)
 {
-    UIInventoryDialog* pDlg = FUN_1405344f0(0x4e2d);
+    UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg != 0)
         ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(1);
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)

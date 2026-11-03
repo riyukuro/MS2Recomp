@@ -32,6 +32,8 @@
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/placeholder/questdata.h"
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
@@ -243,7 +245,7 @@ MS2_REPLACE_METHOD(0x140ED81A0, UIStampEventDialog, FUN_140ed81a0, 994, 0x3AF285
 // @0x140ed8590
 void UIStampEventDialog::FUN_140ed8590(MS2Ptr<StampEventContext> spContext)
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_reward")) {
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_reward")) {
         spList->FUN_1422dd1d0();
         CString strTag = FUN_140ed9560();
         for (size_t i = 0; i < spContext->m_rewards.GetCount(); ++i) {

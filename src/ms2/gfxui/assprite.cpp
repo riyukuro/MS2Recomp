@@ -59,7 +59,7 @@ MS2_REPLACE_METHOD(0x1422E5D20, ASSprite, FUN_1422e5d20, 91, 0xD750AEA7);
 // @0x1422e5d90
 void ASSprite::FUN_1422e5d90(int bLockCenter)
 {
-    FUN_1409ba030("startDrag", bLockCenter);
+    Invoke("startDrag", bLockCenter);
 }
 MS2_REPLACE_METHOD(0x1422E5D90, ASSprite, FUN_1422e5d90, 55, 0x35433689);
 

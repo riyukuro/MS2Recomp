@@ -60,7 +60,7 @@ public:
 };
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);               // find an item by uid
-CStringW FUN_1419021b0(int a, int b);                   // format "a/b"
+CStringW FUN_1419021b0(unsigned a, unsigned b);                   // format "a/b"
 CStringW GetStringCommon(int id);                         // string table lookup
 CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_140d2d150(int nItemId, int nAmount);           // show the item's popup menu

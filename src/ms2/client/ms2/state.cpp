@@ -203,7 +203,6 @@ class Unk_LaunchOptions { public: bool FUN_1406af100(); };     // replay / spect
 Unk_LaunchOptions* FUN_1406aeee0();
 class Unk_TOEntity;
 class CTrafficOptimizer { public: unsigned FUN_14087d2f0(Unk_TOEntity* entity); };
-CTrafficOptimizer* FUN_140cea080();
 
 // The field service (FUN_1403ed2d0).
 class Unk_WsB_Marker;
@@ -319,7 +318,6 @@ float FUN_14059d930(float f);                                         // fabs
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 #include "ms2/placeholder/cpet.h"
 class CBreakableObject { public: efd::Point3 GetPtVelocity(); };     // ground normal
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -417,7 +415,7 @@ int StatePcGuideObjectController::FUN_1417b7490()
     unsigned nTotal = FUN_1417b7540();
     if (nTotal == 0)
         return 0;
-    unsigned nLimit = FUN_140cea080()->FUN_14087d2f0(reinterpret_cast<Unk_TOEntity*>(m_pOwner));
+    unsigned nLimit = TSingleton<CTrafficOptimizer>::GetInstance()->FUN_14087d2f0(reinterpret_cast<Unk_TOEntity*>(m_pOwner));
     if (nTotal < nLimit)
         return 0;
     return 1;
@@ -1789,7 +1787,7 @@ void StateDash::vfunc_4(StateData* pData)
     m_dir = m_pOwner->GetForwardDirection();
     m_pOwner->FUN_141671960(20.0f);
     ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
-    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
+    m_tick.Init();
     NoticeMessage kEffect;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kEffect)).m_strName = FUN_1401d31f0()->m_strDashEffect;
     ((Unk_ExpTarget&)(kEffect)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(m_pOwner));

@@ -27,6 +27,8 @@
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
 #include "ms2/placeholder/wcformat.h"
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
 // The header statics of the including TU: the sort type names and the skill / stun marks.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
@@ -38,10 +40,6 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> McClickDe
 typedef Delegate<bool(int, const CMsgBoxData&)> McBoxDelegate;
 
 // The action / fold button.
-class Unk_MusicButton : public ASButton
-{
-public:
-};
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
@@ -108,12 +106,12 @@ void UIMusicConcertDialog::OnLoadComplete()
         m_clips[i] = GetChild<ASMovieClip>(strName);
         if (m_clips[i] == 0)
             continue;
-        m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_MusicButton>("m_button");
+        m_buttons[i] = m_clips[i]->FUN_140acce30<ASButton>("m_button");
         if (m_buttons[i] == 0)
             continue;
         m_buttons[i]->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a0d0), FUN_140bb9630(i));
     }
-    m_foldButton = FUN_140bb4b10("m_foldButton");
+    m_foldButton = GetChild<ASButton>("m_foldButton");
     m_foldButton->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a1b0), 0);
     m_topText = GetChild<ASTextField>("m_topText");
     {

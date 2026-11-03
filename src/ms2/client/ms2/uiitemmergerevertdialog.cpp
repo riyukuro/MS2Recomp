@@ -82,7 +82,7 @@ void FUN_140d42b70(ItemScrollSlot* pSlot, Unk_MrDropFn fn);        // SetDropFn 
 void FUN_140d42bc0(ItemScrollSlot* pSlot, Unk_MrRemoveFn fn);      // SetRemoveFn
 
 void FUN_140710590(COutPacket&);                                    // send
-__int64 FUN_140718370(const CStringW& str);                         // the uid in the text
+unsigned __int64 FUN_140718370(const CStringW& str);                         // the uid in the text
 class CItemStatus   // C3: member view for the former free stand-ins
 {
 public:

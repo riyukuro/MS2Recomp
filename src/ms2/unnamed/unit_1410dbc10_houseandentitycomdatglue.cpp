@@ -25,6 +25,7 @@
 #include "ms2/unnamed/unit_14134fc90.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/propertycache.h"
+#include "ms2/client/ms2/cubemapinformationservice_tail.h"
 
 // ---- unrecovered helpers ----
 
@@ -43,12 +44,6 @@ public:
     static const efd::ClassID CLASS_ID = 0x06100017;
 };
 
-class SalesInfo : public CPtred                         // house sale marker record (0x38, ctor 0x1411232e0)
-{
-public:
-    SalesInfo();
-    virtual ~SalesInfo();
-};
 
 struct Unk_CMISDemolishUI;
 class Unk_CMISHouseMark;
@@ -119,14 +114,8 @@ egf::PropertyResult Unk_SetPropertyIntAnchor(egf::Entity* p, egf::PropertyID id,
 { return p->SetPropertyValue<int>(id, n); }
 
 // @0x1410dc3b0   house sale marker record factory
-// MS2-FUNCTIONAL 0x1410dc3b0: the exe is a value-initializing `new SalesInfo()` (memset 0x38, then the implicit ctor 0x1411232e0 under
-//   the new-expression's EH frame); here SalesInfo's ctor is user-provided (defined out of line by unit_141121cf0), so value-init
-//   would skip the memset - written as operator new + memset + placement new instead.
+// The exe value-initializes: memset 0x38, then SalesInfo's implicit ctor (0x1411232e0).
 void* FUN_1410dc3b0(void* pTag)
 {
-    SalesInfo* p = (SalesInfo*)operator new(0x38);
-    if (p == 0)
-        return 0;
-    memset(p, 0, 0x38);
-    return new (p) SalesInfo();
+    return new SalesInfo();
 }

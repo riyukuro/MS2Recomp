@@ -33,13 +33,6 @@ class Unk_EquipOutfit : public CPtred
 public:
     void FUN_140cd3750(ATL::CAtlMap<int, MS2Ptr<CItem> >& mapItems);       // fills slot -> item
 };
-class Unk_EquipItemPtr
-{
-public:
-    Unk_EquipItemPtr(const Unk_EquipItemPtr& o) : m_00(o.m_00), m_08(o.m_08) { if (m_08) CPtred::AddRefPtred(static_cast<CPtred*>(m_08)); }   // 0x1403bb3b0
-    ~Unk_EquipItemPtr();                                                    // 0x1401b50d0
-    void* m_00; void* m_08;
-};
 
 // @0x140e29f60
 UIEquipIconContainer::UIEquipIconContainer()
@@ -137,9 +130,9 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a740(int nSlot)
 
 MS2_REPLACE_METHOD(0x140E2A740, UIEquipIconContainer, FUN_140e2a740, 145, 0xCB8B754A);
 // @0x140e2a7e0
-int UIEquipIconContainer::FUN_140e2a7e0(Unk_EquipItemPtr pItem)
+int UIEquipIconContainer::FUN_140e2a7e0(MS2Ptr<CItemData> pItem)
 {
-    if (!reinterpret_cast<Unk_ItemEquipData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(pItem).operator->())->FUN_14053d510())
+    if (!reinterpret_cast<Unk_ItemEquipData*>(pItem.operator->())->FUN_14053d510())
         return 0;
     MS2Ptr<ASEquipIcon> pA = FUN_140e2a740(4);
     MS2Ptr<ASEquipIcon> pB = FUN_140e2a740(5);
@@ -152,7 +145,6 @@ int UIEquipIconContainer::FUN_140e2a7e0(Unk_EquipItemPtr pItem)
     return (m_70 == 4) ? 5 : 4;
 }
 
-// no MS2_REPLACE_METHOD: FUN_140e2a7e0 is overloaded (MS2Ptr<CItemData> spelling in uimeratmarketdialog), the hook macro cannot take &Class::Method
 // @0x140e2a990
 MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a990(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc)
 {

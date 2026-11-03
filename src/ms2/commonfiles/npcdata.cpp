@@ -79,6 +79,7 @@
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit, XmlTokenList
 
 #include <stdlib.h>
+#include <NiPoint3.h>
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -108,16 +109,12 @@ static CStringA s_sortNames8[] = {"None", "Buy", "PriceLow", "PriceHigh", "Creat
 static CStringA s_sortNames7[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // Unrecovered helpers.
-void FUN_140873ca0(void* pElem, const char* pszName, int nValue);               // SetAttribute(name, int)
-void FUN_140874050(void* pElem, const char* pszName, const CStringA& strValue); // SetAttribute(name, string)
-struct Unk_NpcPoint3
-{
-    Unk_NpcPoint3(const Vector3& pt);   // 0x14027dcf0
-    float x, y, z;
-};
-void FUN_140874ad0(void* pElem, const char* pszName, const Unk_NpcPoint3& vValue);      // SetAttribute(name, "x, y, z")
-void* FUN_14086e000(void* pParent, const void* pChild);                         // InsertEndChild
-Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0* pParent);                           // first child element
+void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
+void XmlSetAttr(class TiXmlElement*, char const*, CStringA const&);   // C3: was FUN_140874050
+void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0
+class TiXmlNode { public: TiXmlNode* InsertEndChild(const TiXmlNode& kChild); };   // C3: member view (was free FUN_14086e000)
+struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement* pParent);          // first child element (commonutil.cpp)
+#define FUN_14028f8d0(p) ((Unk_140165cf0*)FUN_14028f8d0((struct Unk_XmlElement*)(p)))
 bool FUN_14028d470(float a, float b);                                           // approx equal
 
 class Unk_TiXmlElement
@@ -142,16 +139,19 @@ void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
     {
         Unk_TiXmlElement elem("model");
         if (m_strKfm != "")
-            FUN_140874050(&elem, "kfm", m_strKfm);
+            XmlSetAttr((class TiXmlElement*)(&elem), "kfm", m_strKfm);
         if (m_fScale != 1.0f)
             reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("scale", m_fScale);
         if (m_fAniSpeed != 1.0f)
             reinterpret_cast<TiXmlElement*>(&elem)->SetDoubleAttribute("anispeed", m_fAniSpeed);
         if (m_nSpawnAlphaAnimation != 1)
-            FUN_140873ca0(&elem, "spawnAlphaAnimation", m_nSpawnAlphaAnimation);
+            XmlSetAttr((class TiXmlElement*)(&elem), "spawnAlphaAnimation", (int)m_nSpawnAlphaAnimation);
         if (m_vOffset.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))
-            FUN_140874ad0(&elem, "offset", m_vOffset);
-        FUN_14086e000(pParent, &elem);
+        {
+            NiPoint3 kOffset(reinterpret_cast<const efd::Point3&>(m_vOffset));
+            XmlSetAttr((class TiXmlElement*)(&elem), "offset", kOffset);
+        }
+        ((TiXmlNode*)pParent)->InsertEndChild(*(const TiXmlNode*)&elem);
     }
 }
 
@@ -980,15 +980,15 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);
-bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);
-void* FUN_140166410();
-bool FUN_1401647e0(const CString&, const CString&);
+class Unk_140166410* FUN_140166410();   // C3: was void*
+#define FUN_140166410() ((void*)FUN_140166410())
 float FUN_14028d2e0();
 CStringW FUN_140298ea0(CStringW strKey);
 
 // The weight table of the black market's rarity roll, reused for the region spawn weights (0x143aac4c8).
-CLua* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was CLua*
+#define FUN_1401c0db0() ((CLua*)FUN_1401c0db0())
 
 class Unk_NpcTableCli;   // the NpcDataTableCli singleton (0x1406d6e90 returns it)
 
@@ -1114,7 +1114,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
         for (unsigned i = 0; i < m_aResult.GetCount(); i++)
         {
             MS2Ptr<CRegionSpawnResult> pResult = m_aResult[i];
-            if (FUN_14025cd60(pResult->m_strTag, strTags) && pResult->m_nMaxDifficulty == nMaxDifficulty &&
+            if (pResult->m_strTag == strTags && pResult->m_nMaxDifficulty == nMaxDifficulty &&
                 pResult->m_nMinDifficulty == nMinDifficulty)
                 return pResult;
         }
@@ -1401,11 +1401,12 @@ MS2_REPLACE(0x1406CEFB0, Unk_ParsePropertyTag, 1023, 0x6D7FA8CF);
 bool FUN_1403d8350(Unk_140165cf0* pElem, const char* pszName, int& nOut);               // npc class reader
 unsigned FUN_14021c7c0(const CString& str);                                             // the id of a string key
 int Parse_14021bc30(const CStringA& strName);                                           // event tag by name
-const CString& FUN_14082efb0(int nStat);                                                // xml name of the nStat-th stat
+const CString& GetStatName(unsigned nStat);                                             // xml name of the nStat-th stat
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);
-int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>&);
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
+template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
 int FUN_1403759c0(Unk_140165cf0*, const char*, std::vector<short>&);
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 CString FUN_14016a5c0(const char* psz, int n);
@@ -1418,7 +1419,8 @@ class Unk_BossNotifyMgr : public GameDictionaryManager
 public:
     Unk_BossNotifyHandle FUN_1403b7c40(int nMode, int nNpcId);
 };
-Unk_BossNotifyMgr* FUN_140541580();
+class Unk_PcBangTable* FUN_140541580();   // C3: was Unk_BossNotifyMgr*
+#define FUN_140541580() ((Unk_BossNotifyMgr*)FUN_140541580())
 
 // @0x1406cfaa0
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut)
@@ -1539,7 +1541,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     {
         for (int i = 0; i < 0x23; ++i)
         {
-            CString strName = FUN_14082efb0(i);
+            CString strName = GetStatName(i);
             if (!strName.IsEmpty())
                 XmlGetAttr((class TiXmlElement*)(pStat), strName, reinterpret_cast<__int64&>(m_stat.m_aBase[i]));
         }
@@ -1659,8 +1661,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     if (pDead)
     {
         XmlGetAttr((class TiXmlElement*)(pDead), "time", reinterpret_cast<float&>(m_dead.m_fTime));
-        FUN_1401788f0(pDead, "defaultaction", m_dead.m_aDefaultAction);
-        FUN_1401788f0(pDead, "upaction", m_dead.m_aUpAction);
+        XmlTokenList(pDead, "defaultaction", m_dead.m_aDefaultAction);
+        XmlTokenList(pDead, "upaction", m_dead.m_aUpAction);
         XmlGetAttr((class TiXmlElement*)(pDead), "revival", m_dead.m_nRevival);
         XmlGetAttr((class TiXmlElement*)(pDead), "count", reinterpret_cast<int&>(m_dead.m_nCount));
         XmlGetAttr((class TiXmlElement*)(pDead), "lifeTime", reinterpret_cast<float&>(m_dead.m_fLifeTime));

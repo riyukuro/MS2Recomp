@@ -25,7 +25,7 @@
 extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 
 // The pet system singleton (0x140535320): the uid of the item the pet currently uses.
-CPetManager* FUN_140535320();
+class Unk_BreakSelected* FUN_140535320();   // C3: the CPetManager (calls cast back)
 
 // Registry of named bags/slots (GFx bind data).
 class Unk_NotifyContext   // C3: static member view for the former free stand-ins
@@ -243,7 +243,7 @@ int PetConsumeSlot::IsUnavailable()
         return 1;
     if (((CItem*)spItem)->FUN_140528ca0() == 1)
         return 1;
-    if (FUN_140535320()->GetSummonUid() == (__int64)m_nItemUid)
+    if (reinterpret_cast<CPetManager*>(FUN_140535320())->GetSummonUid() == (__int64)m_nItemUid)
         return 1;
     return 0;
 }

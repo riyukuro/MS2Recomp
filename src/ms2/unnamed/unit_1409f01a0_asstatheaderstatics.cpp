@@ -20,7 +20,7 @@ static Unk_BuddyHandle s_pointer2(NULL);
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 
 void* FUN_1422bb8b0(int nMovieId);                                     // the movie of a UI layer
-CStringW FUN_14082f000(int nStat);                                     // stat display text
+CStringW GetStatCommonText(unsigned nStat);                            // stat display text
 CStringW GetStringCommon(int nId);                                       // string table text
 template <class A, class B> CStringW BlockFormat(int nId, const A& a, const B& b);
 
@@ -48,7 +48,7 @@ ASStat::ASStat(int nType) : ASObj(nType)
 // @0x1409f04f0
 void ASStat::AddCompare(int nStat, __int64 nValue)
 {
-    CStringW strName = FUN_14082f000(nStat);
+    CStringW strName = GetStatCommonText(nStat);
     ASObj row(2);
     row.FUN_1407cbb20("statName", strName);
     row.FUN_1409c1180("statValue", nValue);
@@ -59,7 +59,7 @@ MS2_REPLACE_METHOD(0x1409F04F0, ASStat, AddCompare, 206, 0x89FDD721);
 // @0x1409f05d0
 void ASStat::AddStat(int nStat, unsigned nValue, unsigned nStrengthen, int bEssential)
 {
-    CStringW strName = FUN_14082f000(nStat);
+    CStringW strName = GetStatCommonText(nStat);
     ASObj row(2);
     row.FUN_1407cbb20("statName", strName);
     row.FUN_1409c0d20("statValue", nValue);

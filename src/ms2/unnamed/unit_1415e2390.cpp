@@ -12,7 +12,6 @@
 
 struct Unk_VDtorElem { virtual void ScalarDelete(unsigned int flags) = 0; };
 
-extern void* FUN_140159860(unsigned __int64 n, void* p);
 extern void FUN_1415f9a90(void* p, const char* value);
 extern void FUN_1415f9b80(void* p, const char* value);
 extern void FUN_1415f93d0(void* p, unsigned int flags);
@@ -548,7 +547,7 @@ ptrdiff_t FUN_1415e3fe0(void* first, void* last)
 // @0x1415e23e0
 void FUN_1415e23e0(void*, void* p, void* pVal)
 {
-    void* pObject = FUN_140159860(0x10, p);
+    void* pObject = operator new(0x10, p);
     FUN_1415ce470(pObject, FUN_1415e4ea0(pVal));
 }
 
@@ -591,7 +590,7 @@ extern void* FUN_1415e4f60(void* p);
 extern void FUN_1415e89f0(void* self, void* other);
 void FUN_1415e25c0(void*, Unk_StlElem<0x58>* p, Unk_StlElem<0x58>* pVal)
 {
-    void* pObject = FUN_140159860(0x58, p);
+    void* pObject = operator new(0x58, p);
     FUN_1415e89f0(pObject, FUN_1415e4f60(pVal));
 }
 
@@ -803,7 +802,7 @@ extern void* FUN_1415e4c90(void* p);
 extern void FUN_1415e9e20(void* self, void* other);
 void FUN_1415e2f20(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 {
-    void* pObject = FUN_140159860(0x190, p);
+    void* pObject = operator new(0x190, p);
     FUN_1415e9e20(pObject, FUN_1415e4c90(pVal));
 }
 
@@ -811,7 +810,7 @@ void FUN_1415e2f20(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 extern void* FUN_1415e4df0(void* p);
 void FUN_1415e2f70(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 {
-    void* pObject = FUN_140159860(0x190, p);
+    void* pObject = operator new(0x190, p);
     FUN_1415e9e20(pObject, FUN_1415e4df0(pVal));
 }
 
@@ -820,7 +819,7 @@ extern void* FUN_1415e5010(void* p);
 extern void FUN_1415e9d20(void* self, void* other);
 void FUN_1415e2fc0(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 {
-    void* pObject = FUN_140159860(0x190, p);
+    void* pObject = operator new(0x190, p);
     FUN_1415e9d20(pObject, FUN_1415e5010(pVal));
 }
 
@@ -842,7 +841,7 @@ void FUN_1415e3060(void*, Unk_StlElem<0xb8>* p, Unk_StlElem<0xb8>* pVal)
 extern void FUN_141574aa0(void* self, void* other);
 void FUN_1415e30b0(void*, Unk_StlElem<0xb8>* p, Unk_StlElem<0xb8>* pVal)
 {
-    void* pObject = FUN_140159860(0xb8, p);
+    void* pObject = operator new(0xb8, p);
     FUN_141574aa0(pObject, FUN_1415e4d50(pVal));
 }
 
@@ -886,7 +885,7 @@ extern void* FUN_1415e5040(void* p);
 extern void FUN_1415ea260(void* self, void* other);
 void FUN_1415e3290(void*, Unk_StlElem<0x68>* p, Unk_StlElem<0x68>* pVal)
 {
-    void* pObject = FUN_140159860(0x68, p);
+    void* pObject = operator new(0x68, p);
     FUN_1415ea260(pObject, FUN_1415e5040(pVal));
 }
 
@@ -909,7 +908,7 @@ extern void* FUN_1415e5050(void* p);
 extern void FUN_1415ea400(void* self, void* other);
 void FUN_1415e3380(void*, Unk_StlElem<0xae8>* p, Unk_StlElem<0xae8>* pVal)
 {
-    void* pObject = FUN_140159860(0xae8, p);
+    void* pObject = operator new(0xae8, p);
     FUN_1415ea400(pObject, FUN_1415e5050(pVal));
 }
 
@@ -939,7 +938,7 @@ extern void* FUN_1415e4ce0(void* p);
 extern void FUN_1415eaf30(void* self, void* other);
 void FUN_1415e34c0(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 {
-    void* pObject = FUN_140159860(0xc8, p);
+    void* pObject = operator new(0xc8, p);
     FUN_1415eaf30(pObject, FUN_1415e4ce0(pVal));
 }
 
@@ -947,7 +946,7 @@ void FUN_1415e34c0(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 extern void* FUN_1415e4e50(void* p);
 void FUN_1415e3510(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 {
-    void* pObject = FUN_140159860(0xc8, p);
+    void* pObject = operator new(0xc8, p);
     FUN_1415eaf30(pObject, FUN_1415e4e50(pVal));
 }
 
@@ -956,7 +955,7 @@ extern void* FUN_1415e5070(void* p);
 extern void FUN_1415eaeb0(void* self, void* other);
 void FUN_1415e3560(void*, Unk_StlElem<0x20>* p, Unk_StlElem<0x20>* pVal)
 {
-    void* pObject = FUN_140159860(0xc8, p);
+    void* pObject = operator new(0xc8, p);
     FUN_1415eaeb0(pObject, FUN_1415e5070(pVal));
 }
 

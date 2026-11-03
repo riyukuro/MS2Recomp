@@ -88,7 +88,6 @@ CString FUN_14016a5c0(const char* pszPath, int nFlags);             // path conv
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);          // wide -> narrow
 void FUN_140d73aa0(CStringW strText, int nType, void* pOwner, CStringW strTag);   // show a message box
-CUIService* FUN_1403ed2b0();
 
 class Unk_MeApp { public: void FUN_141489ff0(NiColorA kColor); };   // the app's clear colour (the exe passes a copy; MS2::SetBackgroundColor's const& can't)
 void* FUN_140aae430();   // C3: was FUN_140aae430
@@ -103,7 +102,6 @@ void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
 void CameraMgrMoveTo(CameraMgr* pCamera, Vector3 ptPos);    // set the camera position
 
 // entity iteration, properties and the instancing service
-EntityWorldManager* FUN_1409670f0();
 void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);   // write a bool property
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
@@ -380,8 +378,6 @@ void UIMinimapEditDialog::FUN_141a53100()
 }
 
 // @0x141a53750
-// MS2-FUNCTIONAL: the camera vectors are implicit-conversion temporaries in the exe (packed 12 bytes apart); that needs a converting
-// Unk_GVec3 ctor in fielddatacli.h (68 dependents), and the named locals here sit 4 bytes higher. Same code otherwise.
 void UIMinimapEditDialog::FUN_141a53750()
 {
     MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
@@ -395,10 +391,8 @@ void UIMinimapEditDialog::FUN_141a53750()
             ecr::CameraData* pCamera = FUN_1413f9910()->GetActiveCamera(pSurface);
             if (pCamera != NULL && CameraMgr::GetInstance()->FUN_140a18070() != 0)
             {
-                Unk_GVec3 vecCamPos(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
-                m_spMinimap->m_vecCamPos = vecCamPos;
-                Unk_GVec3 vecCamRot(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290())));
-                m_spMinimap->m_vecCamRot = vecCamRot;
+                reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10()));
+                reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamRot) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290()));
                 m_spMinimap->m_frustum = reinterpret_cast<const Unk_Frustum&>(pCamera->GetCamera()->GetViewFrustum());
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();
                 m_spMinimap->m_strImageName = m_strImageName;
@@ -462,8 +456,8 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
             }
         }
         egf::Entity* pEntity = NULL;
-        Unk_WorldEntityMap::iterator iter = FUN_1409670f0()->FUN_1411ce4c0();
-        while (FUN_1409670f0()->FUN_1411ce510(iter, pEntity))
+        Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce4c0();
+        while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce510(iter, pEntity))
         {
             bool bVisible = false;
             bool bInstanced = false;
@@ -502,7 +496,7 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
         GameObject* pObject = reinterpret_cast<GameObject*>(WorldService::GetInstance()->FindObjectByEntityId(m_hidden.GetAt(pos)));
         if (pObject != NULL)
             pObject->vfunc_23(bShow);
-        egf::Entity* pEntity = FUN_1409670f0()->FUN_1411cf440(m_hidden.GetAt(pos));
+        egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_hidden.GetAt(pos));
         if (pEntity != NULL)
         {
             bool bVisible = bShow == 0 ? true : false;
@@ -510,9 +504,9 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
         }
     }
     if (bShow != 0)
-        FUN_1403ed2b0()->FUN_141ad9b30();
+        TSingleton<CUIService>::GetInstance()->FUN_141ad9b30();
     else
-        FUN_1403ed2b0()->FUN_141ad9650();
+        TSingleton<CUIService>::GetInstance()->FUN_141ad9650();
 }
 
 // @0x141a545a0

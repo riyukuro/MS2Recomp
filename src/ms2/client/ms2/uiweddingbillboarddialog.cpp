@@ -42,6 +42,8 @@
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/commonfiles/os.h"
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- unit-local views of exe objects ----
 
 // The SWF dialog object handed around by the UI library (the exe's dynamic_cast target).
@@ -70,11 +72,9 @@ public:
     void SendInvitation(unsigned __int64);
 };
 unsigned __int64 FUN_140718370(const CStringW& text);                // text -> number
-bool FUN_140164830(const CStringW& a, const CStringW& b);       // names are equal
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
 CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
-CStringTable* GetStringTable();
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 // ---- WeddingHallTicket's copies (weddinghallticket.h: first instantiated here) ----
@@ -266,15 +266,15 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
     if (pPlayer == 0)
         return;
     CStringW strMyName = pPlayer->vfunc_77();
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (int i = nFirst; i < nEnd; ++i)
         {
             unsigned __int64 nSN = m_tickets[i].first;
             const WeddingHallTicket& ticket = m_tickets[i].second;
-            if (ticket.m_bPublic == 0 && FUN_140164830(ticket.m_strBride, strMyName) &&
-                FUN_140164830(ticket.m_strGroom, strMyName))
+            if (ticket.m_bPublic == 0 && ticket.m_strBride != strMyName &&
+                ticket.m_strGroom != strMyName)
                 continue;
             unsigned int nHallText = WeddingTable::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId,
                                                                                 FUN_140900f30(ticket.m_nTime));
@@ -283,7 +283,7 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
             row.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(ticket.m_nTime)));
             row.FUN_1407cbb20("groomName", ticket.m_strGroom);
             row.FUN_1407cbb20("brideName", ticket.m_strBride);
-            row.FUN_1407cbb20("weddingHall", GetStringTable()->FUN_141811980(3, nHallText));
+            row.FUN_1407cbb20("weddingHall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nHallText));
             spList->AddItem(row);
             bEmpty = false;
         }

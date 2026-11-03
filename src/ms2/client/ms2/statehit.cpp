@@ -11,6 +11,7 @@
 #include <efd/Point3.h>
 #include <efd/utf8string.h>
 #include <egf/EntityID.h>
+#include <egmAnimation/AnimationService.h>
 
 #include "statehit.h"
 
@@ -158,8 +159,8 @@ void StateHit::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID
     if (eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
     {
         Unk_FallAnimSvc* pSvc = ((class Unk_FallAnimSvc*)FUN_1410a68d0());
-        int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Damg_C");
-        int nFly = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Jump_FlyDamg_A");
+        int nDamg = ((egmAnimation::AnimationService*)pSvc)->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), "Damg_C");
+        int nFly = ((egmAnimation::AnimationService*)pSvc)->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), "Jump_FlyDamg_A");
         if ((FUN_14028d470(m_fA4, 0) && FUN_14028d470(m_f9c, 0)) || (int)eSequenceID == nDamg)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -304,7 +305,7 @@ void StateHitNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenc
     if (eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
     {
         Unk_FallAnimSvc* pSvc = ((class Unk_FallAnimSvc*)FUN_1410a68d0());
-        int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Damg_C");
+        int nDamg = ((egmAnimation::AnimationService*)pSvc)->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), "Damg_C");
         if ((FUN_14028d470(m_f4c, 0) && FUN_14028d470(m_f44, 0)) || (int)eSequenceID == nDamg)
             m_pOwner->vfunc_59(1, 0, 0, 0);
         else

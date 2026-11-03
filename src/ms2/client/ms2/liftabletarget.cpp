@@ -9,6 +9,7 @@
 #include "hook/ms2hook.h"
 #include <atlcoll.h>
 #include <efd/utf8string.h>
+#include <NiPoint3.h>
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/cconditioncommon.h"
 #include "ms2/placeholder/mypc.h"
@@ -19,11 +20,6 @@
 #include "ms2/client/ms2/worldservice.h"
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
-
-// The target's position converts through NiPoint3(const efd::Point3&) (0x14027dcf0) and is move-assigned (0x14097faa0).
-struct Unk_LtPoint3 { float x, y, z; Unk_LtPoint3& operator=(const Unk_LtPoint3&); };
-void FUN_14027dcf0(Unk_LtPoint3* p, const Vector3& pt);
-void FUN_14097faa0(Unk_LtPoint3* p, Unk_LtPoint3* pSrc);
 
 // The quest manager: its condition interface sits at +0x10, a quest's own interface at +0x18.
 class Unk_LtQuestData : public CPtred
@@ -147,9 +143,7 @@ void CLiftableTarget::CreateEffect()
     if (m_nFx != 0)
         return;
     NiTransform xform;
-    Unk_LtPoint3 kPos;
-    FUN_14027dcf0(&kPos, m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
-    FUN_14097faa0(reinterpret_cast<Unk_LtPoint3*>(&xform.m_Translate), &kPos);
+    xform.m_Translate = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f))));
     xform.m_Rotate.FromEulerAnglesXYZ(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
     xform.m_fScale = 1.0f;
     NoticeMessage req;

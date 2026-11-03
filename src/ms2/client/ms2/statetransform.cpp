@@ -31,7 +31,7 @@ public:
     static class WorldService* GetInstance();
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_14028d260(float fSeconds);                         // seconds -> milliseconds
+__int64 FUN_14028d260(float fSeconds);                     // seconds -> milliseconds
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
 struct Unk_TfString
@@ -125,7 +125,7 @@ void StateTransformDoll::vfunc_4(StateData* pData)
 {
     const char* pszEffect = "CH/Common/Eff_FittingDoll.xml";
     int nNow = GetTickCountMs2();
-    m_nEndTime = nNow + FUN_14028d260(1.0f);
+    m_nEndTime = nNow + (int)FUN_14028d260(1.0f);
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
     query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));

@@ -126,7 +126,7 @@ def coff_externals(path):
         if s1 == 0 and s2 == 0xFFFF:
             symoff, nsym = struct.unpack_from("<II", h, 48); sz, fmt = 20, "<i"
         else:
-            symoff, nsym = struct.unpack_from("<II", h, 8); sz, fmt = 18, "<h"
+            symoff, nsym = struct.unpack_from("<II", h, 8); sz, fmt = 18, "<H"  # unsigned: up to 0xFEFF
         f.seek(symoff); tab = f.read(nsym * sz)
         strsz, = struct.unpack("<I", f.read(4) or b"\4\0\0\0"); strs = f.read(max(0, strsz - 4))
     i = 0
@@ -134,6 +134,8 @@ def coff_externals(path):
         o = i * sz
         value, = struct.unpack_from("<I", tab, o + 8)
         sec, = struct.unpack_from(fmt, tab, o + 12)
+        if fmt == "<H" and sec >= 0xFF00:                # IMAGE_SYM_DEBUG / ABSOLUTE (-2, -1)
+            sec -= 0x10000
         scl, naux = tab[o + sz - 2], tab[o + sz - 1]
         if scl == 2 and (sec != 0 or value == 0):
             if tab[o:o + 4] == b"\0\0\0\0":

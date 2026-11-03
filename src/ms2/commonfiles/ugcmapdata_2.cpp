@@ -200,8 +200,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
-void FUN_1401782a0(const CString&,std::vector<unsigned>&,const char*);
-void FUN_140178270(const CString&,std::vector<int>&,const char*);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_1401782a0 (std::vector<unsigned>), FUN_140178270 (std::vector<int>)
 
 // Pure local cache/lock initialization. Cache readers and loader are not hooked:
 // the exe keeps its own mutable cache and the loader constructs RTTI-bearing objects.
@@ -266,13 +265,13 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         int blockCode=0; XmlGetAttr((class TiXmlElement*)(node), "blockCode", *(int*)(&blockCode));
         std::vector<unsigned> npcs;
         CString npcText=Unk_ReadString((class Unk_XmlNode*)(node), "privilegeNPC", CString(""));
-        FUN_1401782a0(npcText,npcs,",");
+        XmlSplit(npcText,npcs,",");
         std::vector<int> portals;
         CString portalText=Unk_ReadString((class Unk_XmlNode*)(node), "privilegePortal", CString(""));
-        FUN_140178270(portalText,portals,",");
+        XmlSplit(portalText,portals,",");
         std::vector<int> interact;
         CString interactText=Unk_ReadString((class Unk_XmlNode*)(node), "privilegeInteract", CString(""));
-        FUN_140178270(interactText,interact,",");
+        XmlSplit(interactText,interact,",");
         int maidCount=0; XmlGetAttr((class TiXmlElement*)(node), "maidCount", *(int*)(&maidCount));
         int triggerCount=0; XmlGetAttr((class TiXmlElement*)(node), "triggerCount", *(int*)(&triggerCount));
         int installNpcCount=0; XmlGetAttr((class TiXmlElement*)(node), "installNpcCount", *(int*)(&installNpcCount));

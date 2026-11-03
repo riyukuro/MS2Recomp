@@ -37,7 +37,7 @@ const NiRTTI GFxMovieDamage::ms_RTTI("GFxMovieDamage", &GFxMovieEventHandler::ms
 // A second "skill"/"stun" pair and null handle after the condition (another included header).
 static CString s_strSkill2 = "skill";                                               // 0x143abb140
 static CString s_strStun2 = "stun";                                                 // 0x143abb138
-static Unk_Handle1401cd100 s_dat_143abb130(0);                                      // @0x1400c8410
+static Unk_BuddyHandle s_dat_143abb130(0);                                          // @0x1400c8410
 #endif
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----

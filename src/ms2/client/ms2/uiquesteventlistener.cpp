@@ -59,7 +59,6 @@
 #include <algorithm>
 #include <vector>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/packethandlermanager.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
@@ -125,9 +124,8 @@ class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
 
 class UIQuestDialog : public UIDialog { public: void FocusQuest(int nQuestId); };
-UIQuestDialog* FUN_14131f1e0(int nUIType);                                  // GetDialog<UIQuestDialog>
-class Unk_140961730 : public UIWorldMapDialog { };
-Unk_140961730* FUN_140961730(int nUIType);
+template <class T> T* GetDialog(int nId);   // C3: was FUN_14131f1e0
+template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_140961730
 
 __int64 FUN_141aa4980(CQuest* pQuest);                                      // when the quest becomes available
 CStringW FUN_1416e5210(int nQuestId, CStringW strKey);
@@ -156,7 +154,7 @@ public:
     bool FUN_14036d570(int);
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);      // index or -1
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 int Unk_ClubBuffTypeOf(int n);
 class CPartyManager   // C3: member view for the former free stand-ins
 {
@@ -448,7 +446,7 @@ void UIQuestGuideDialog::vfunc_15()
         FUN_141aaba00();
     }
     if (m_navigation.get() ? true : false) {
-        if (reinterpret_cast<Unk_IntervalTimer&>(m_navigationTick).Check(0xf0))
+        if (m_navigationTick.Check(0xf0))
             m_navigation->InvokeSelf();
     }
 }
@@ -505,7 +503,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 if (!((class CQuestManager*)FUN_140764020())->vfunc_1(nQuestId, 0))
                     return 0;
             }
-            if (UIQuestDialog* pDialog = FUN_14131f1e0(0x4e3e))
+            if (UIQuestDialog* pDialog = GetDialog<UIQuestDialog>(0x4e3e))
                 pDialog->FocusQuest(nQuestId);
         }
     } else if (_stricmp(szMethod, "onMoveField") == 0) {
@@ -522,7 +520,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
     } else if (_stricmp(szMethod, "onLinkFieldMission") == 0) {
         if (FUN_140931510()->GetStage() == 0) {
-            if (Unk_140961730* pDialog = FUN_140961730(0x4e42))
+            if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
                 pDialog->FUN_141b5c230();
         }
     } else if (_stricmp(szMethod, "onFieldMissionToggle") == 0) {
@@ -942,7 +940,7 @@ bool UIQuestGuideDialog::FUN_141aace20(int nQuestId)
     if (!spData)
         return false;
     unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
-    if (FUN_140408410(&spData->m_fields, &nMapId) == -1)
+    if (Unk_ArrayFind<unsigned>(spData->m_fields, nMapId) == -1)
         return false;
     return true;
 }

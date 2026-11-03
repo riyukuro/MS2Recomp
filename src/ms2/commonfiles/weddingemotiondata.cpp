@@ -31,8 +31,8 @@ public:
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 // The unit's two-argument log call (FMT_VARIADIC instantiation, ?\characterability.cpp).
-void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
-                   const unsigned& second);
+template <class T1, class T2> void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const T1& first,
+                   const T2& second);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
@@ -74,14 +74,14 @@ int WeddingEmotionTable::Load()
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::set<unsigned> codes;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("weddingEmotion"); pNode != 0;
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("weddingEmotion")); pNode != 0;
          pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("weddingEmotion")))
     {
         MS2Ptr<WeddingEmotionData> spData(new WeddingEmotionData);
@@ -90,7 +90,7 @@ int WeddingEmotionTable::Load()
             continue;
         if (codes.find(nCode) != codes.end())
         {
-            FUN_1401e0850(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0} id : {1}]", strPath, nCode);
+            FUN_1401e0850<CString, unsigned>(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0} id : {1}]", strPath, nCode);
             return 0;
         }
         CString strAnim = Unk_ReadString((class Unk_XmlNode*)(pNode), "anim", CString(""));

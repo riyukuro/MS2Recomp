@@ -62,10 +62,11 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/commonfiles/commonstringtable.h"
 
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
+
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
 // The search text input of the window.
-class Unk_PsdInput : public ASTextInput {};
 
 // A proxy of another character (what the world service hands out for a character id).
 class CProxyGameObject : public CPtred
@@ -668,7 +669,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x140f8dde0
 void UIPartySearchDialog::FUN_140f8dde0()
 {
-    if (MS2Ptr<Unk_PsdInput> input = FUN_140e35bd0("m_inputSearch"))
+    if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_inputSearch"))
         input->SetTextW(L"");
     if (m_180.get())
         m_180->text.Empty();

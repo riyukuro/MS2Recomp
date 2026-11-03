@@ -40,6 +40,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 #include "ms2/commonfiles/os.h"
 class Unk_DmgCfgInfo { public: char m_pad_00[0xc]; int m_0c; };
 class CGameOption;
+class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };   // C3: CGameOption viewed as in partymanager.cpp
 
 int FUN_141277f40();                                                // next UI layer
 
@@ -139,7 +140,7 @@ void UIDamageEffect::OnLoadComplete()
     UIObject::OnLoadComplete();
     FUN_141910ab0();
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    Unk_DmgCfgInfo* pInfo = reinterpret_cast<Unk_DmgCfgInfo*>(TSingleton<CGameOption>::GetInstance()->FUN_140e09150());
+    Unk_DmgCfgInfo* pInfo = reinterpret_cast<Unk_DmgCfgInfo*>(((Unk_ChaosSettings*)TSingleton<CGameOption>::GetInstance())->FUN_140e09150());
     static_cast<Unk_DmgScript*>(m_30.operator->())->Invoke("init", m_fLowHpPercent, pInfo->m_0c);
     Unk_DmgPlayer* pPlayer = ((Unk_DmgPlayer*)((WorldService*)(reinterpret_cast<Unk_DmgWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)

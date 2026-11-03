@@ -108,7 +108,6 @@ public:
     virtual void vfunc_23();
     virtual void vfunc_24(bool bEnable);                        // 24
 };
-class Unk_UgcpText : public ASTextField {};
 // An element of the data provider: reads an item as an AS object.
 class Unk_UgcpArray : public ASDataProvider
 {
@@ -268,8 +267,8 @@ static void FUN_140fb19c0(Unk_UgcpCombo* pCombo, const CString& strName, CString
 // @0x140fb0a70
 void UIUGCPortalDialog::OnApply()
 {
-    MS2Ptr<Unk_UgcpText> spName;
-    FUN_140e48d80<Unk_UgcpText>("m_textName", &spName);
+    MS2Ptr<ASTextField> spName;
+    FUN_140e48d80<ASTextField>("m_textName", &spName);
     CStringW strName = spName.operator->()->GetTextW();
     for (size_t i = 0; i < m_198.size(); i++)
     {

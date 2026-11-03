@@ -50,7 +50,7 @@ template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B
 template <class A> CStringW FormatStringId(int nId, const A& a);                 // string-table text with one argument
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bccb0(Scaleform::GFx::Value* pValue, unsigned int n);
+void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 extern __int64 DAT_143ab28a0;                                       // current exp
 extern __int64 DAT_143ab28a8;                                       // rest exp

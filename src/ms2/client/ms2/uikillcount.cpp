@@ -15,7 +15,8 @@
 // ---- unit-local views of exe objects ----
 
 // The settings singleton: the minimum shown kill count at +0xc1e0.
-class Unk_KcInt { public: int FUN_14025a620(); };
+class Unk_KcInt { };
+int FUN_14025a620(class Unk_ConstVal*);   // Constants::Value<int> read
 class Unk_KcGlobals
 {
 public:
@@ -62,7 +63,7 @@ UIKillCount::UIKillCount()
     m_nShown = 0;
     m_nMinShow = 0;
     m_58 = 0;
-    m_nMinShow = ((class Unk_KcGlobals*)FUN_1401d3200())->m_c1e0.FUN_14025a620();
+    m_nMinShow = FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_KcGlobals*)FUN_1401d3200())->m_c1e0));
     m_2c = 0x14;
 }
 

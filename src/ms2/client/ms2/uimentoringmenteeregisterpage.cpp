@@ -48,9 +48,8 @@ public:
 };
 class Unk_MentorWorldV { public: Unk_MentorActorV* FUN_141bd0cc0(); };
 // The event schedule (singleton chain 0x140302b00 -> 0x14041d160): start/end of the registration period.
-class Unk_MentorIdArray;
-class Unk_MentorSchedule : public CGameEventValueMentoring { public: void FUN_140424ed0(Unk_MentorIdArray& ids); };
-class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
+class Unk_RuMentoring : public CGameEventValueMentoring { };   // C3: viewed as in uimentoringmentorpage.cpp
+class Unk_RuManager { public: Unk_RuMentoring* GetMentoring(); };
 class CGameEventValueManager;
 
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
@@ -127,8 +126,8 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
     {
         Unk_MentorActorV* pActor = ((Unk_MentorActorV*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pActor == 0) return 1;
-        CMsTime tStart(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetBeginTime());
-        CMsTime tEnd(reinterpret_cast<Unk_MentorScheduleHolder*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_14041d160()->GetEndTime());
+        CMsTime tStart(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetBeginTime());
+        CMsTime tEnd(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetEndTime());
         int nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay;
         nEndDay = tEnd.GetDay();
         nEndMonth = tEnd.GetMonth();

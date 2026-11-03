@@ -278,7 +278,6 @@ public:
 void AddMinutes(class CMsTime&, int);   // C3: was FUN_14086a880
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // C3: was FUN_140408410
 
-void FUN_140159b70(unsigned nHr);
 
 // ---- tiny in-unit helpers ---------------------------------------------------------------------------------------------
 
@@ -370,7 +369,7 @@ struct Unk_HlArr { __int64 m_pData; unsigned __int64 m_nSize; };
 P FUN_140c24ea0(__int64* pArr, unsigned __int64 n)
 {
     if (!(n < ((Unk_HlArr*)pArr)->m_nSize))
-        FUN_140159b70(0x80070057);
+        ATL::AtlThrowImpl(0x80070057);
     return (P)(n * 0x10 + *pArr);
 }
 

@@ -47,6 +47,7 @@ static int s_nNameTagMode;                                      // 0x143af45f0
 #include "ms2/commonfiles/pvpinfo.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 #undef MS2_STATICS_A_BEFORE_CONDITION
@@ -104,23 +105,11 @@ bool FUN_14028d470(float a, float b);                                       // a
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 bool FUN_1417ddbf0(const efd::ClassInfo* pInfo, int nId);           // statemanager.cpp: exact-class check (entry 0 only)
 
-// The camera option row held by the game context (+0x1e0: far fade enabled).
-struct Unk_NtCamOption { char m_pad_000[0x1e0]; int m_1e0; };
-class Unk_NtCamPtr
-{
-public:
-    ~Unk_NtCamPtr() { FUN_140885ab0(); }                // 0x1408850f0 (another obj)
-    Unk_NtCamOption* FUN_140885340() const;             // operator->
-    void FUN_140885ab0();                               // release
-    void* m_pad_00;
-    Unk_NtCamOption* m_p;
-};
 struct Unk_NtSymbolRec { char m_pad_00[0x18]; CStringW m_18; CStringW m_20; };
 class Unk_NtWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                            // the local player
-    Unk_NtCamPtr FUN_141bd30a0();
 };
 class Unk_NtUIMgr { public: };
 bool FUN_140930110(int nActorId);
@@ -321,7 +310,7 @@ void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
         FUN_140ad0c10(pPos, ((class GFxManager*)(class Unk_NtUIScale*)(((class Unk_NtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18));
         pPos->y += vfunc_9();
         float fDist = FUN_140f48e20();
-        bool bNear = !(700.0f < fDist) || reinterpret_cast<Unk_NtWorld*>(WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_1e0 != 0;
+        bool bNear = !(700.0f < fDist) || WorldService::GetInstance()->FUN_141bd30a0()->m_nGlobalNameTag != 0;
         if (bNear)
             m_38->SetAlpha(100.0f);
         else

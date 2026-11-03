@@ -67,7 +67,6 @@
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/uidteventdialog.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // return types of the getters this unit calls
 class CUserEventManager;
@@ -188,8 +187,6 @@ public:
     char const* Value() const;
 };
 class TiXmlElement* XmlChild(class TiXmlElement*, char const*, bool);   // C3: was FUN_140872ec0
-bool FUN_140870fc0(TiXmlDocument* pDoc, const char* szFile, int n);     // LoadFile
-void FUN_140870cf0(TiXmlDocument* pDst, TiXmlDocument* pSrc);           // copy
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
@@ -256,7 +253,7 @@ void UIAdPushDialog::vfunc_72()
         return;
     if (FUN_1418ffe80(m_nShowState, 1))
         FixPosition();
-    if (!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000))
+    if (!m_tick.Check(1000))
         return;
     POSITION pos = m_entities.GetHeadPosition();
     while (pos)
@@ -326,7 +323,7 @@ int UIAdPushDialog::vfunc_5()
 {
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlLoaded))->Clear();
     m_78 = 0;
-    if (FUN_140870fc0(&m_xmlLoaded, GetStatePath(), 0))
+    if (m_xmlLoaded.FUN_140870fc0(GetStatePath(), 0))
     {
         Unk_AdXmlNode* pNode = ((class Unk_AdXmlNode*)((class Unk_XmlNode*)(void*)(&m_xmlLoaded))->FirstChild(CStringA(GetTypeName())));
         if (!pNode)
@@ -350,11 +347,11 @@ int UIAdPushDialog::vfunc_5()
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlSave)))
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->Clear();
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlSave))->LinkEndChild((class TiXmlNode*)new TiXmlElement(GetTypeName()));
-    FUN_140870fc0(&m_xmlAccountLoaded, GetAccountStatePath(), 0);
+    m_xmlAccountLoaded.FUN_140870fc0(GetAccountStatePath(), 0);
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlAccountSave)))
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlAccountSave))->Clear();
     if (((class Unk_AdXmlNode*)DocRootElement(&m_xmlAccountLoaded)))
-        FUN_140870cf0(&m_xmlAccountSave, &m_xmlAccountLoaded);
+        m_xmlAccountSave.FUN_140870cf0(m_xmlAccountLoaded);
     else
         ((class TiXmlNode*)(class TiXmlDocument*)(&m_xmlAccountSave))->LinkEndChild((class TiXmlNode*)new TiXmlElement(GetTypeName()));
     return 1;
@@ -380,7 +377,7 @@ void UIAdPushDialog::vfunc_26()
     m_pending.RemoveAll();
     m_sns.clear();
     m_limitedBundle = 0;
-    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
+    m_tick.Init();
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyCompleteMyPC));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
 }

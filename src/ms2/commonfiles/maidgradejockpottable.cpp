@@ -67,7 +67,7 @@ struct Unk_MaidRule
     Unk_MaidLimitSlot m_limit;
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-void FUN_140177e10(const CString& str, ATL::CAtlArray<int>& arr, const char* pszDelim);   // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 // The item string table (id <-> name).
 class Unk_MaidIngTable;
 
@@ -319,13 +319,13 @@ int CMaidRecipeGroupTable::Load()
         int nGroupId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "GroupID", reinterpret_cast<int&>(nGroupId));
         CStringA strRecipeIds;
-        ATL::CAtlArray<int> recipeIds;
+        ATL::CAtlArray<unsigned> recipeIds;
         XmlGetAttr((class TiXmlElement*)(pNode), "RecipeIDs", strRecipeIds);
-        FUN_140177e10(strRecipeIds, recipeIds, ",");
+        XmlSplit(strRecipeIds, recipeIds, ",");
         CStringA strLevels;
-        ATL::CAtlArray<int> levels;
+        ATL::CAtlArray<unsigned> levels;
         XmlGetAttr((class TiXmlElement*)(pNode), "RequireLevels", strLevels);
-        FUN_140177e10(strLevels, levels, ",");
+        XmlSplit(strLevels, levels, ",");
         if (recipeIds.GetCount() != levels.GetCount())
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[RecipeID count mismatch requirelevel count {0}]", strPath);

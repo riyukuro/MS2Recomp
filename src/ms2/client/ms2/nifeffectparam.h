@@ -25,7 +25,7 @@
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/tixmldocument.h"
-#include "ms2/unnamed/unit_140ad1860.h"           // Unk_McTimer
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/client/ms2/lighteffectparam.h"        // Unk_LightUpdateBits (bitset<3>)
 #include "ms2/placeholder/ascript.h"                // MS2Ptr<T>
@@ -448,7 +448,7 @@ public:
     PoolMap m_mapOtherPool;                                     // +0xb8 clone rings of other players' effects
     int m_bShutdown;                                            // +0xc8
     int m_bRefreshTextures;                                     // +0xcc
-    Unk_McTimer m_kSweepTimer;                                  // +0xd0
+    Unk_IntervalTimer m_kSweepTimer;                            // +0xd0
     Unk_NifCounts m_kNifCount;                                         // +0xd8 per cache class
     Unk_NifCounts m_kTexCount;                                         // +0xf0 per cache class
 };

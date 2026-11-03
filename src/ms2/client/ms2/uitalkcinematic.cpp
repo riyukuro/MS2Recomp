@@ -856,7 +856,12 @@ class CEquipItem : public CPtred   // C3: member view for the former free stand-
 public:
     struct Unk_EquipItemData* FUN_1411dc7f0();
 };
-  void* FUN_14053ec70(void* p);class ItemModelHead   // C3: member view for the former free stand-ins
+class CItemData   // C3: member view
+{
+public:
+    struct ItemModelHead* FUN_14053ec70();
+};
+struct ItemModelHead   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_1405471d0();
@@ -1896,7 +1901,7 @@ int UITalkManager::FUN_141b218b0(Unk_TcNpc* pNpc)
             if ((CEquipItem*)kEquip != 0)
             {
                 if (((void*)kEquip->FUN_1411dc7f0()) != 0
-                    && ((class ItemModelHead*)(void*)(FUN_14053ec70(((void*)kEquip->FUN_1411dc7f0()))))->FUN_1405471d0() != 0)
+                    && ((class CItemData*)(void*)(kEquip->FUN_1411dc7f0()))->FUN_14053ec70()->FUN_1405471d0() != 0)
                     return 0;
                 else if (((class PCGemEquip*)(void*)(((PC*)pPC)->FUN_14165f460()))->FUN_1412706f0(0) != 0)
                     nNotice = 0x83;

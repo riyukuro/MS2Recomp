@@ -544,7 +544,6 @@ class Unk_MeratEquipEntry;
 template <> MS2Ptr<Unk_MeratEquipEntry>& MS2Ptr<Unk_MeratEquipEntry>::operator=(const MS2Ptr<Unk_MeratEquipEntry>& o);
 bool FUN_1406a5930();
 
-__int64 FUN_140869440();                // the server time (commonstruct_wa.h)
 
 // The buy callback of the merat market bill dialog: one buy request per bill row, answered by the server.
 // @0x140ebded0
@@ -561,7 +560,7 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
     if (pParam->m_spF8.get() != 0)
     {
         MS2Ptr<CMeratMarketProduct> spProduct = pParam->m_spF8;
-        CMsTime tNow(FUN_140869440());
+        CMsTime tNow(GetServerTime());
         __int64 nRemain = spProduct->m_premium.m_time188.Get() - tNow.Get();
         if (nRemain < 0)
             nRemain = 0;

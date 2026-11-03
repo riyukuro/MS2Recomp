@@ -63,10 +63,10 @@ bool CSpecialEffectFunctionManager::Execute(CSpecialEffectCtx* pCtx)
 MS2_REPLACE_METHOD(0x140827970, CSpecialEffectFunctionManager, Execute, 167, 0x59DCB6FE);
 
 // @0x1408276a0
-float Unk_SEParam::FUN_1408276a0(const CStringW& strName, float* pfDefault)
+float CXmlData::FUN_1408276a0(const CStringW& strName, float* pfDefault)
 {
     CStringW strValue;
-    if (!m_attrs.FUN_1403ef5f0(strName, strValue))
+    if (!reinterpret_cast<Unk_SEAttrMap*>(m_unknown18)->FUN_1403ef5f0(strName, strValue))
         return *pfDefault;
     return FUN_140718480(strValue);
 }

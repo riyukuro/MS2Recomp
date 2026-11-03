@@ -65,7 +65,7 @@ int FUN_1412755a0();
 int FUN_141276180(const CString&,const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_1422baa20 { public: Scaleform::GFx::Value FUN_1422baa20(const char*); Scaleform::GFx::Value FUN_140acd130(const char*,CStringW); Scaleform::GFx::Value FUN_140ba26d0(const char*,unsigned int);
-    Scaleform::GFx::Value FUN_140cbe3a0(const char*,const wchar_t*); Scaleform::GFx::Value FUN_1422bb3c0(); MS2Ptr<AScript> FUN_141311f50(const CString&); };
+    Scaleform::GFx::Value FUN_140cbe3a0(const char*,const wchar_t*); Scaleform::GFx::Value FUN_1422bb3c0(); };
 class Unk_1422ba7f0 : public AScript { public: Unk_1422ba7f0(const Scaleform::GFx::Value&,int); };
 // @0x141959330
 UIGuideEvent::UIGuideEvent() : m_sound(0),m_guide(0),m_tip(0),m_lastTip(0),m_tips(10),
@@ -280,7 +280,7 @@ MS2Ptr<AScript> UIGuideEvent::FindChildScript(const CString& name)
 {
     if (m_30 == NULL)
         return MS2Ptr<AScript>(0);
-    return GuideAS(m_30)->FUN_141311f50(name);
+    return ((AScript*)GuideAS(m_30))->FUN_141311f50<AScript>(name);
 }
 
 // @0x14195c230

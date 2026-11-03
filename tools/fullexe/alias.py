@@ -137,7 +137,7 @@ def refs(obj):
                 nsec, symoff, nsym = struct.unpack_from("<III", b, 44); sz, fmt, sec0 = 20, "<i", 56
             else:
                 nsec, = struct.unpack_from("<H", b, 2); symoff, nsym, opt = struct.unpack_from("<IIH", b, 8)
-                sz, fmt, sec0 = 18, "<h", 20 + opt
+                sz, fmt, sec0 = 18, "<H", 20 + opt  # unsigned: up to 0xFEFF
             strs = symoff + nsym * sz
 
             def name(o):
@@ -150,6 +150,7 @@ def refs(obj):
             while i < nsym:
                 o = symoff + i * sz
                 sec, = struct.unpack_from(fmt, b, o + 12)
+                if fmt == "<H" and sec >= 0xFF00: sec -= 0x10000  # IMAGE_SYM_DEBUG / ABSOLUTE (-2, -1)
                 if sec > 0 and b[o + sz - 2] == 2:
                     defs[name(o)] = sec
                 i += 1 + b[o + sz - 1]

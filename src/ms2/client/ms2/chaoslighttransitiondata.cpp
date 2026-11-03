@@ -237,7 +237,7 @@ ChaosLightEffectLayer::ChaosLightEffectLayer(NiMesh* pMesh, void* pTexture, cons
     : Layer(pParam != 0 ? pParam->m_nLayer : 0xffffffff), m_spMesh(0), m_spTexture(0), m_bActive(false)
 {
     m_spMesh = pMesh;
-    m_spTexture.Assign(pTexture);
+    m_spTexture = (NiTexture*)pTexture;
     if (pParam != 0)
     {
         m_pMaterial = FUN_141046540(pMesh);
@@ -261,7 +261,7 @@ ChaosLightEffectLayer::ChaosLightEffectLayer(NiMesh* pMesh, void* pTexture, cons
             {
                 ChaosLightEffectLayerManager* pManager = WorldService::GetInstance()->GetChaosLightEffectLayerManager();
                 if (((__int64)pManager->FUN_1410469c0()) != (__int64)pMap->GetTexture())
-                    m_spTexture.Assign(pMap->GetTexture());
+                    m_spTexture = pMap->GetTexture();
             }
         }
     }
@@ -295,7 +295,7 @@ void ChaosLightEffectLayer::vfunc_19()
     if (pProp != 0)
     {
         NiTexturingProperty::Map* pMap = NiNew NiTexturingProperty::Map;
-        pMap->SetTexture((NiTexture*)m_spTexture.Get());
+        pMap->SetTexture((NiTexture*)m_spTexture);
         static_cast<NiTexturingProperty*>(pProp)->SetGlowMap(pMap);
     }
     m_spMesh->ApplyAndSetActiveMaterial(m_pMaterial, 0xffffffff);
@@ -317,13 +317,13 @@ ChaosLightEffectLayerManager::ChaosLightEffectLayerManager()
 {
     NiPointer<NiPixelData> spPixels(NiNew NiPixelData(1, 1, DAT_1439fb040, 1, 1));
     *(efd::ColorA_UInt8*)reinterpret_cast<ChaosPixelRef&>(spPixels)->operator()(0, 0, 0, 0) = efd::ColorA_UInt8(255, 255, 255, 255);
-    m_spTexture.Assign(NiSourceTexture::Create((NiPixelData*)spPixels, *(NiTexture::FormatPrefs*)&DAT_1439fc800, true));
+    m_spTexture = NiSourceTexture::Create((NiPixelData*)spPixels, *(NiTexture::FormatPrefs*)&DAT_1439fc800, true);
 }
 
 // @0x1410469c0
 void* ChaosLightEffectLayerManager::FUN_1410469c0()
 {
-    return m_spTexture.Get();
+    return (NiTexture*)m_spTexture;
 }
 
 // @0x1410469f0

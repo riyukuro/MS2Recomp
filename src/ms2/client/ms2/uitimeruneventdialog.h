@@ -5,10 +5,11 @@
 // Unnamed helpers and members use invented names.
 #pragma once
 #include "ms2/client/ms2/uidialog.h"
-#include "ms2/client/ms2/uiquesteventlistener.h"        // UIQuestEventListener (13 slots), Unk_DTTick
+#include "ms2/client/ms2/uiquesteventlistener.h"        // UIQuestEventListener (13 slots)
 #include "ms2/placeholder/itemslotbinder.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/gameevent.h"                  // TimeRunEventContext
+#include "ms2/placeholder/intervaltimer.h"
 
 class ASTextField;
 class Unk_TrList;
@@ -43,7 +44,7 @@ private:
     MS2_LAYOUT_FRIEND;
     ItemSlotBinder m_missionBinder;                                         // +0x180 "<name>_mission"
     ItemSlotBinder m_mapBinder;                                             // +0x1c0 "<name>_map"
-    Unk_DTTick m_tick;                                                      // +0x200 1 s refresh timer
+    Unk_IntervalTimer m_tick;                                               // +0x200 1 s refresh timer
 public:
     int FUN_140ee3290();                                    // 0x140ee3290 a reward is waiting (bound by the game menu table; ignores this)
     int FUN_140ee45c0();                                    // 0x140ee45c0 number of claimable steps (the game menu badge; ignores this)

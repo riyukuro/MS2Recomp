@@ -85,8 +85,13 @@ class Unk_SmWorld : public WorldService
 public:
 };
 
-// The cube service (the home rules).
-CubeMapInformationService* FUN_1409670e0();
+// The cube service (the home rules), viewed as in actionkeyobject.cpp: its singleton slot (0x143ab3908) is
+// TSingleton<CubeMapInformationService>::s_instance, defined by cubemapinformationservice_3.cpp.
+class Unk_AkoHouseSvc
+{
+public:
+    static Unk_AkoHouseSvc* GetInstance() { return reinterpret_cast<Unk_AkoHouseSvc*>(TSingleton<CubeMapInformationService>::s_instance); }
+};
 
 extern int DAT_143ab2884;                                   // the dungeon room id
 extern int DAT_143ab0248;                                   // client country
@@ -351,16 +356,16 @@ void UISystemMenuDialog::FUN_141b13b30()
     MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (FUN_1409670e0()->FUN_1410c3600(2))
+    if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(2))
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
         spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
-    else if (FUN_1409670e0()->FUN_1410c3600(1))
+    else if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1))
     {
-        if (FUN_1409670e0()->FUN_1410d5530())
+        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530())
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
@@ -373,9 +378,9 @@ void UISystemMenuDialog::FUN_141b13b30()
             pPc->SendRequestMoveFieldMode3();
         }
     }
-    else if (FUN_1409670e0()->FUN_1410c3600(3))
+    else if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3))
     {
-        if (FUN_1409670e0()->FUN_1410d5530())
+        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530())
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
@@ -473,11 +478,11 @@ CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
     switch (nMapType)
     {
     case 3:
-        if (FUN_1409670e0()->FUN_1410c3600(1))
+        if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1))
             return GetStringCommon(0xabb);
-        else if (FUN_1409670e0()->FUN_1410c3600(3))
+        else if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3))
             return GetStringCommon(0xabc);
-        else if (FUN_1409670e0()->FUN_1410c3600(2))
+        else if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(2))
             return GetStringCommon(0xabd);
         return GetStringCommon(0xaaf);
     case 5:

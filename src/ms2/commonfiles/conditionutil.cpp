@@ -46,8 +46,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 CString FUN_14015f710(Unk_ConditionXml* pNode, const char* pszName, CString strDefault);   // string with default
 CLogString* GetLogString();                                                                // the log singleton
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);           // split into ints
-void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>), FUN_1401782a0 (std::vector<unsigned>)
 void Unk_ParseExtra(CString strBody, CConditionDict* pDict);                                // "k=v,k=v" into a dictionary
 int FUN_140718170(const CString& str);
 int FUN_1407181d0(const CString& str);
@@ -146,7 +145,7 @@ int CConditionParam::Parse(CString strText)
         if (strItem.Find("-", 0) != -1)
         {
             ATL::CAtlArray<int> pair;
-            FUN_140177de0(strItem, pair, "-");
+            XmlSplit(strItem, pair, "-");
             if (pair.GetCount() != 2)
                 continue;
             Unk_FieldTimeSpan span;
@@ -157,7 +156,7 @@ int CConditionParam::Parse(CString strText)
         else if (strItem.Find(":", 0) != -1)
         {
             ATL::CAtlArray<int> pair;
-            FUN_140177de0(strItem, pair, ":");
+            XmlSplit(strItem, pair, ":");
             if (pair.GetCount() != 2)
                 continue;
             m_nMin = pair[0];
@@ -920,7 +919,7 @@ MS2_REPLACE_METHOD(0x1402a9540, CQuestConditionCheckerUserFind, CheckJobId, 75, 
 bool CQuestConditionCheckerUserFind::CheckLevel(const CString& strValue, ConditionUserFindContext* pContext)
 {
     ATL::CAtlArray<int> range;
-    FUN_140177de0(strValue, range, " ");
+    XmlSplit(strValue, range, " ");
     if (range.GetCount() != 2)
     {
         MS2_ASSERT_AT(0x5c, 0);
@@ -944,7 +943,7 @@ MS2_REPLACE_METHOD(0x1402a96b0, CQuestConditionCheckerUserFind, CheckGender, 86,
 bool CQuestConditionCheckerUserFind::CheckEquipItemsAnd(const CString& strValue, ConditionUserFindContext* pContext)
 {
     std::vector<unsigned int> ids;
-    FUN_1401782a0(strValue, ids, " ");
+    XmlSplit(strValue, ids, " ");
     std::vector<unsigned int>& rIds = ids;
     std::vector<unsigned int>::const_iterator itEnd = rIds.end();
     for (std::vector<unsigned int>::const_iterator it = rIds.begin(); it != itEnd; ++it)
@@ -960,7 +959,7 @@ bool CQuestConditionCheckerUserFind::CheckEquipItemsAnd(const CString& strValue,
 bool CQuestConditionCheckerUserFind::CheckEquipItemsOr(const CString& strValue, ConditionUserFindContext* pContext)
 {
     std::vector<unsigned int> ids;
-    FUN_1401782a0(strValue, ids, " ");
+    XmlSplit(strValue, ids, " ");
     std::vector<unsigned int>& rIds = ids;
     std::vector<unsigned int>::const_iterator itEnd = rIds.end();
     for (std::vector<unsigned int>::const_iterator it = rIds.begin(); it != itEnd; ++it)

@@ -103,9 +103,7 @@ public:
     virtual void vfunc_98(const CStringW& strName, const CString& strWindow);   // 98 0x141a165c0 moves a tab to a window
 
     // ---- child lookups (UISwfEntity::GetChild<T> COMDATs, ICF'd with other classes' copies) ----
-    MS2Ptr<ASTextInput> FUN_140e35bd0(const CString& strName);             // 0x140e35bd0
     MS2Ptr<ASTextArea> FUN_140c26f60(const CString& strName);              // 0x140c26f60
-    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);             // 0x140c02870
 
     // ---- non-virtual members (exe order) ----
     void FUN_141a0d880(bool bVisible);                                      // 0x141a0d880 shows the two extra components

@@ -15,7 +15,7 @@
 #include "hook/ms2hook.h"
 
 // Out-of-unit callees.
-efd::ServiceManager* FUN_1413f9850();                                       // the game's service manager
+class Unk_ServiceManager* FUN_1413f9850();                                       // the game's service manager
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 
 // @0x1408690a0
@@ -83,7 +83,7 @@ void Timer::FUN_140868880()
 __int64 Timer::FUN_1408688e0()
 {
     if (m_pClock == 0)
-        m_pClock = FUN_1413f9850()->GetClock(0xe001001b);
+        m_pClock = ((efd::ServiceManager*)FUN_1413f9850())->GetClock(0xe001001b);
     return (__int64)(m_pClock->GetCurrentTime() * 1000.0);
 }
 

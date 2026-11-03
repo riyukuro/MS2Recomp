@@ -213,7 +213,7 @@ public:
     float FUN_1404c1730(unsigned int, int);
     float FUN_1404c17a0(unsigned int, int);
 };
-int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pValue);
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0
 int FUN_1407474d0(const ATL::CAtlArray<int>* pArr, const int* pValue);
 int FUN_140747460(const ATL::CAtlArray<int>* pArr, const int* pValue);
@@ -337,7 +337,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
         ATL::CAtlArray<unsigned> picked;
         QuestDataTable::GetInstance()->FUN_14074e6c0(data->m_require.m_groupId, m_selector, nSeed, picked);
         unsigned nId = FUN_14074b030(data.operator->());
-        if (FUN_140408410(&picked, &nId) == -1)
+        if (Unk_ArrayFind<unsigned>(picked, nId) == -1)
             return 0;
     }
     if (data->m_require.m_dayOfWeek.GetCount() > 0)
@@ -1751,7 +1751,7 @@ int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
         MS2Ptr<CQuestData> b = FUN_14074bc40(nQuestB);
         if (a.IsNull() || b.IsNull())
             return 0;
-        if (FUN_140408410(&b->m_require.m_quest, &nQuestA) == -1)
+        if (Unk_ArrayFind<unsigned>(b->m_require.m_quest, nQuestA) == -1)
             return 0;
         if (b->m_2e8 != a->m_2ec)
             return 0;
@@ -2338,7 +2338,7 @@ void QuestDataTable::CollectChainQuestIds(int nChain, IdsPtr spIds, MS2Ptr<CQues
     if (spData->m_28 != nChain)
         return;
     int nQuestId = FUN_14074b030(spData.operator->());
-    if (FUN_140408410(spIds.operator->(), (const unsigned*)&nQuestId) != -1)
+    if (Unk_ArrayFind<unsigned>(*spIds.operator->(), reinterpret_cast<const unsigned&>(nQuestId)) != -1)
         return;
     spIds.get()->Add(FUN_14074b030(spData.operator->()));
     for (size_t i = 0; i < spData->m_require.m_followingQuests.GetCount(); ++i)
@@ -2586,7 +2586,7 @@ void QuestDataTable::FUN_1407503f0()
             {
                 MS2Ptr<CQuestData> spOther = itOther->second;
                 unsigned nId = FUN_14074b030(spData.operator->());
-                if (FUN_140408410(&spOther->m_require.m_requiredBy, &nId) == -1)
+                if (Unk_ArrayFind<unsigned>(spOther->m_require.m_requiredBy, nId) == -1)
                 {
                     spOther->m_require.m_requiredBy.Add(FUN_14074b030(spData.operator->()));
                     spOther->m_require.m_followingQuests.Add(FUN_14074b030(spData.operator->()));
@@ -2600,7 +2600,7 @@ void QuestDataTable::FUN_1407503f0()
             {
                 MS2Ptr<CQuestData> spOther = itOther->second;
                 unsigned nId = FUN_14074b030(spData.operator->());
-                if (FUN_140408410(&spOther->m_require.m_selectableBy, &nId) == -1)
+                if (Unk_ArrayFind<unsigned>(spOther->m_require.m_selectableBy, nId) == -1)
                 {
                     spOther->m_require.m_selectableBy.Add(FUN_14074b030(spData.operator->()));
                     spOther->m_require.m_followingQuests.Add(FUN_14074b030(spData.operator->()));

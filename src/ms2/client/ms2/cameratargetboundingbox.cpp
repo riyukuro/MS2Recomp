@@ -15,10 +15,10 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <efd/EEMath.h>   // C3: efd::Sqrt was FUN_140968970
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
-float FUN_140968970(float f);                                                       // sqrtf
 
 class NxBounds3   // C3: member view for the former free stand-ins
 {
@@ -239,7 +239,7 @@ Unk_Point2 Unk_Point2::FUN_140affce0(float f) const
 // @0x140affe70
 float Unk_Point2::FUN_140affe70() const
 {
-    return FUN_140968970(x * x + y * y);
+    return efd::Sqrt(x * x + y * y);
 }
 
 // @0x140affeb0

@@ -35,9 +35,9 @@ bool SSAORenderStep::vfunc_15(unsigned int a, void* b)
     FUN_14169f6d0(&m_c0, &((void**)b)[1]);
     {
         NiFixedString file((const char*)TSingleton<CommonResource>::GetInstance()->m_strVectorNoiseDDS);
-        m_b8.Assign(NiSourceTexture::Create(file, *reinterpret_cast<NiTexture::FormatPrefs*>(&DAT_1439fc800), false, false, true));
+        m_b8 = NiSourceTexture::Create(file, *reinterpret_cast<NiTexture::FormatPrefs*>(&DAT_1439fc800), false, false, true);
     }
-    if (m_b8.Get() == 0) {
+    if ((NiTexture*)m_b8 == 0) {
         vfunc_16();
         return false;
     }
@@ -52,7 +52,7 @@ bool SSAORenderStep::vfunc_15(unsigned int a, void* b)
 void SSAORenderStep::vfunc_16()
 {
     PostProcessEffect::vfunc_16();
-    m_b8.Assign(0);
+    m_b8 = 0;
 }
 
 // @0x1416baaf0
@@ -65,7 +65,7 @@ bool SSAORenderStep::vfunc_23()
     }
     if (p != 0)
         RemoveRenderClick((NiRenderClick*)p);
-    p = FUN_140c8f690(FUN_1416b4990(this, "CalculateOcclusion", 0, 0, FUN_140c8f680(&m_80), 0, 3, 0, (const char*)m_a0, FUN_140c8f680(&m_c0), m_b8.Get(), 0));
+    p = FUN_140c8f690(FUN_1416b4990(this, "CalculateOcclusion", 0, 0, FUN_140c8f680(&m_80), 0, 3, 0, (const char*)m_a0, FUN_140c8f680(&m_c0), (NiTexture*)m_b8, 0));
     if (p == 0)
         return false;
     return true;

@@ -18,7 +18,6 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 #include "ms2/placeholder/fittingdollpc.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 class MyPC { public: class Unk_PCCubeCraft * GetActiveCubeCraft(void); };
 // return types of the getters this unit calls
 class Unk_SoundSink;
@@ -137,7 +136,7 @@ void UIHouseDemolishDialog::vfunc_26()
     m_bShown = false;
     m_bRefreshed = false;
     m_nDirty = 0;
-    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
+    m_tick.Init();
     FUN_140939a10()->UnregisterNotify(L"NotifyChangeGameOptionInput", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeGameOptionInput));
     FUN_140939a10()->UnregisterNotify(L"NotifyChangeUIBuildingCount", Delegate<void(NotifyObject*)>(this, &UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount));
 }
@@ -179,7 +178,7 @@ void UIHouseDemolishDialog::vfunc_15()
         return;
     if (m_nDirty == 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(300) != 0)
+    if (m_tick.Check(300) != 0)
     {
         Refresh(&m_nDirty);
         m_nDirty = 0;

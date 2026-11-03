@@ -318,12 +318,13 @@ void FUN_1423772f0(CppKeyGroupPart* sub, void* rng, const CppNameValuePairs* par
 }
 
 // HMAC<SHA1>::StaticAlgorithmName: "HMAC(" + SHA1::StaticAlgorithmName() + ")"
-// MS2-FUNCTIONAL: same string building; the /GS cookie differs (our string temporaries are not GS buffers)
+// MS2-FUNCTIONAL: same string building; the exe constructs "HMAC(" with an out-of-line ctor call, so its EH state for the string starts at the first throwing call, ours right away
 // @0x1423798d0
 std::string* FUN_1423798d0(std::string* out)
 {
-    CppTempString head("HMAC(");
-    return new (out) std::string(std::move(std::move(head.s) + "SHA-1") + ")");
+    CppTempString head;
+    std::string& h = *FUN_1401d2620(&head.s, "HMAC(");
+    return new (out) std::string(std::move(std::move(h) + "SHA-1") + ")");
 }
 
 extern int DAT_143b10184;   // CryptoPP cached CPU feature value (cache line size)
@@ -335,9 +336,40 @@ int FUN_142353790()
 }
 
 // std::ws<char>(std::istream&): the STL's own instantiation (skip leading whitespace; used by Crypto++ Integer text parsing)
-// MS2-FUNCTIONAL: inlined STL stream code calls dllimported msvcp140 functions, so the instantiation cannot byte-match
+// The library's STL is newer than 14.16's <istream>: it skips the sentry at end of file and sets the state outside it.
+// MS2-FUNCTIONAL: the exe calls ctype<char>::is through the msvcp140 import and keeps the facet in r14; ours inlines is()
 // MS2-PIN: ??$ws@DU?$char_traits@D@std@@@std@@YAAEAV?$basic_istream@DU?$char_traits@D@std@@@0@AEAV10@@Z 0x14235a130
-template std::istream& std::ws<char, std::char_traits<char> >(std::istream&);
+template <>
+inline std::istream& std::ws<char, std::char_traits<char> >(std::istream& _Istr)
+{
+    bool (std::ios_base::*pfnEof)() const = &std::ios_base::eof;
+    const std::ios_base& _Base = _Istr;
+    if (!(_Base.*pfnEof)())
+    {
+        std::ios_base::iostate _State = std::ios_base::goodbit;
+        const std::istream::sentry _Ok(_Istr, true);
+        if (_Ok)
+        {
+            const std::ctype<char>& _Ctype_fac = std::use_facet<std::ctype<char> >(_Istr.getloc());
+            _TRY_IO_BEGIN
+            for (std::char_traits<char>::int_type _Meta = _Istr.rdbuf()->sgetc();; _Meta = _Istr.rdbuf()->snextc())
+            {
+                if (std::char_traits<char>::eq_int_type(std::char_traits<char>::eof(), _Meta))
+                {
+                    _State |= std::ios_base::eofbit;
+                    break;
+                }
+                else if (!_Ctype_fac.is(std::ctype_base::space, std::char_traits<char>::to_char_type(_Meta)))
+                {
+                    break;
+                }
+            }
+            _CATCH_IO_(_Istr)
+        }
+        _Istr.setstate(_State);
+    }
+    return _Istr;
+}
 
 namespace CryptoPP
 {

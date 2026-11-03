@@ -27,11 +27,11 @@ CharacterDecalData::CharacterDecalData()
 // @0x1401e4090
 void CharacterDecalData::FUN_1401e4090(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pDecal = pElem->FUN_140165cf0("decal");
+    Unk_140165cf0* pDecal = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("decal"));
     if (pDecal != 0)
     {
-        FUN_1408733e0(pDecal, "texture", unknown18);
-        for (Unk_140165cf0* pCustom = pDecal->FUN_140165cf0("custom"); pCustom != 0;
+        XmlGetAttr((class TiXmlElement*)(pDecal), "texture", unknown18);
+        for (Unk_140165cf0* pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pDecal))->FirstChild("custom")); pCustom != 0;
              pCustom = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
         {
             MS2Ptr<ItemCustom> spCustom(new ItemCustom);

@@ -41,6 +41,8 @@ template<> void MS2Ptr<CClubCli>::Release();
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 #include "ms2/commonfiles/contentshutdown.h"
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
 
 // The message box record (MS2Ptr<CMsgBoxData> members are bound to the exe copies in symbols.tsv).
@@ -331,7 +333,7 @@ void UIClubDialog::FUN_140e0bfd0()
     Unk_SocketPtr<Unk_ClubCliMap> spMap = FUN_140e0d900()->FUN_140b14e40();
     if (spMap != 0) {
         {
-            if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_category")) {
+            if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_category")) {
                 spList->SetSelectedIndex(-1);
                 spList->FUN_1422dd1d0();
                 ASDataProvider rows(2);

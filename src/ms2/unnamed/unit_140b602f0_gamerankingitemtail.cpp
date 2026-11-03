@@ -48,7 +48,6 @@ template void MS2Ptr<GameRankingItem::UserPvp>::ReleaseImpl(void*);
 template void MS2Ptr<GameRankingItem::UserTrophy>::ReleaseImpl(void*);
 template void MS2Ptr<GameRankingItem::WorldChampion>::ReleaseImpl(void*);
 
-int FUN_1408a2060(egf::Entity* pEntity, unsigned nProperty, efd::utf8string* pOut);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
@@ -56,7 +55,7 @@ class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 CString FUN_140b60bf0(egf::Entity* pEntity)
 {
     efd::utf8string str;
-    FUN_1408a2060(pEntity, 0xdd2ac78a, &str);
+    pEntity->GetPropertyValue<efd::utf8string>(0xdd2ac78a, str);
     return CString(str.c_str());
 }
 

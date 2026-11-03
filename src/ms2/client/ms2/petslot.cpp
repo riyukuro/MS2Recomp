@@ -63,13 +63,9 @@ public:
 
           // 0: the compare view is off
 
-bool FUN_140534e50(MS2Ptr<CItem>* pItem);                 // the item is expired / unusable
 
 // A dialog of the dialog registry.
-class Unk_PsPetDialog : public UIPetSystemDialog
-{
-};
-Unk_PsPetDialog* FUN_140b99ba0(int nId);
+template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0
 class Unk_PsPane : public UIItemAutoUseOptionDialog
 {
 };
@@ -311,7 +307,7 @@ int PetSlot::vfunc_0(void* p)
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(m_nPetItemUid);
-    if (FUN_140534e50(&spItem))
+    if (spItem.operator!())
         return 0;
     MS2Ptr<CItem> spWorn = pPlayer->FUN_14152e2f0(spItem);
     if (spWorn.get() ? true : false)
@@ -448,7 +444,7 @@ PetSlotBag::~PetSlotBag()
 // @0x140dbc5c0
 int PetSlotBag::vfunc_il1()
 {
-    Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);
+    UIPetSystemDialog* pDlg = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
     if (pDlg != 0 && pDlg->vfunc_55() == 0)
         return 1;
     return 0;
@@ -463,7 +459,7 @@ void PetSlotBag::vfunc_il6(void* p)
         pPetSlot->SetPetItemUid(static_cast<CItem*>(p)->GetItemUid());
         pPetSlot->vfunc_10();
     }
-    Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);
+    UIPetSystemDialog* pDlg = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
     if (pDlg != 0)
         pDlg->FUN_140e74640(3);
 }
@@ -474,7 +470,7 @@ void PetSlotBag::vfunc_il7(void* p)
     DragSlot* pSlot = FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50());
     if (pSlot != 0)
         pSlot->vfunc_11();
-    Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);
+    UIPetSystemDialog* pDlg = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
     if (pDlg != 0)
         pDlg->FUN_140e74640(4);
 }
@@ -488,7 +484,7 @@ void PetSlotBag::vfunc_il8(void* p)
         pPetSlot->SetPetItemUid(static_cast<CItem*>(p)->GetItemUid());
         pPetSlot->vfunc_10();
     }
-    Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);
+    UIPetSystemDialog* pDlg = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
     if (pDlg != 0)
         pDlg->FUN_140e74640(5);
 }

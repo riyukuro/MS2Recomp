@@ -18,7 +18,7 @@ class Unk_140166430;
 class CItemOptionTable { public: int GetDisplayOrder(Unk_SocketSpecialStat nKey) const; };   // C3: member view (citemoptiontable.h)
 Unk_140166430* FUN_140166430();
 int FUN_14081d480(int nStat);                   // the display key of a stat
-const CString& FUN_14082efb0(int nStat);        // the xml name of a stat
+const CString& GetStatName(unsigned nStat);        // C3: was FUN_14082efb0 (the xml name of a stat)
 const CString& FUN_14081d380(int nStat);        // the xml name of a special stat
 int FUN_14081d830(int nStat);
 extern Unk_SpecialAbilityMap g_kSpecialAbilityMap;  // specialability.cpp
@@ -160,7 +160,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         int nKey=0;
         if (spOption->HasValue()) nKey=FUN_14081d480(nStat);
         unsigned nOrder=reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetDisplayOrder((Unk_SocketSpecialStat)nKey);
-        kOut.SetAt(nOrder,FUN_14082efb0(nStat));
+        kOut.SetAt(nOrder,GetStatName((unsigned)nStat));
     }
     for (POSITION pos=m_aSpecial[nGroup].GetStartPosition();pos;m_aSpecial[nGroup].GetNext(pos)) {
         Unk_SocketSpecialStat eStat=m_aSpecial[nGroup].GetKeyAt(pos);

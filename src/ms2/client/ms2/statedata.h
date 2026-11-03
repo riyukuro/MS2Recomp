@@ -11,7 +11,8 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/timer.h"
-#include "ms2/client/ms2/statemanager.h"     // StateMoveSkill, Unk_140517b00
+#include "ms2/client/ms2/statemanager.h"     // StateMoveSkill
+#include "ms2/placeholder/intervaltimer.h"
 
 // ---- StateData payloads ----
 
@@ -353,7 +354,7 @@ public:
     efd::Point3 m_posLast;                                      // +0x44
     efd::Point3 m_dir;                                          // +0x50
     Timer m_timerStop;                                          // +0x60
-    Unk_140517b00 m_tick;                                       // +0x98
+    Unk_IntervalTimer m_tick;                                   // +0x98
 };
 MS2_CHECK_SIZE(StateDash, 0xa0);
 MS2_CHECK_OFFSET(StateDash, m_timerStop, 0x60);

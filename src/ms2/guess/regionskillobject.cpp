@@ -61,13 +61,6 @@ extern bool DAT_143ae95e0;
 extern bool DAT_143ae95e1;
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-// efd::Point3 / NiPoint3 helpers called out of line.
-struct Unk_RsNiPoint3 : public Vector3
-{
-    Unk_RsNiPoint3(const Vector3& pt);                  // 0x14027dcf0
-};
-void FUN_14097faa0(NiPoint3* pDst, const Unk_RsNiPoint3& kSrc); // NiPoint3::operator=
-struct Unk_RsRot : public Vector3 { Unk_RsRot(float x, float y, float z); };   // 0x14097f250
 
 // The skill source of a skill level, as the collision manager takes it (0x140932d90).
 class Unk_SkillSrc;
@@ -119,7 +112,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             {
                 NiTransform xf;
                 xf.MakeIdentity();
-                FUN_14097faa0(&xf.m_Translate, m_points[i]);
+                xf.m_Translate = reinterpret_cast<const efd::Point3&>(m_points[i]);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEffect;
@@ -153,7 +146,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             {
                 NiTransform xf;
                 xf.MakeIdentity();
-                FUN_14097faa0(&xf.m_Translate, m_points[i]);
+                xf.m_Translate = reinterpret_cast<const efd::Point3&>(m_points[i]);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 NoticeMessage kTarget;   // C3: was Unk_EffectTarget
                 ((Unk_EffectTarget&)(kTarget)).m_strName = m_pAttr->m_strEndEffect;
@@ -186,10 +179,10 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             CSkillCollisionManager::CollisionPtr spShape;
             for (unsigned i = 0; i < m_points.GetCount(); i++)
             {
-                Unk_RsNiPoint3 niPt(m_points[i]);
-                Unk_RsRot rot(m_fRotX, 0.0f, m_fRotY);
+                NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
+                NiPoint3 rot(m_fRotX, 0.0f, m_fRotY);
                 spShape = FUN_141469a90()->Create(FUN_140932d90(&m_spSkill), 0, 0, pActor, 0.0f);
-                spShape->vfunc_3(static_cast<Vector3&>(niPt), static_cast<Vector3&>(rot), 1.0f);
+                spShape->vfunc_3(reinterpret_cast<Vector3&>(niPt), reinterpret_cast<Vector3&>(rot), 1.0f);
                 __int64 nHandle = FUN_141469a90()->Add(spShape);
                 m_collisions.AddTail(nHandle);
             }
@@ -201,10 +194,10 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
                 CSkillCollisionManager::CollisionPtr spShape;
                 for (unsigned i = 0; i < m_points.GetCount(); i++)
                 {
-                    Unk_RsNiPoint3 niPt(m_points[i]);
-                    Unk_RsRot rot(m_fRotX, 0.0f, m_fRotY);
+                    NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
+                    NiPoint3 rot(m_fRotX, 0.0f, m_fRotY);
                     spShape = FUN_141469a90()->Create(FUN_140932d90(&m_spSkill), 0, 0, 0, 0.0f);
-                    spShape->vfunc_3(static_cast<Vector3&>(niPt), static_cast<Vector3&>(rot), 1.0f);
+                    spShape->vfunc_3(reinterpret_cast<Vector3&>(niPt), reinterpret_cast<Vector3&>(rot), 1.0f);
                     __int64 nHandle = FUN_141469a90()->Add(spShape);
                     m_collisions.AddTail(nHandle);
                 }
@@ -250,8 +243,8 @@ void CRegionSkillObject::FUN_1416f6900()
         {
             NiTransform xf;
             xf.MakeIdentity();
-            Unk_RsNiPoint3 niPt(m_points[i]);
-            FUN_14097faa0(&xf.m_Translate, niPt);
+            NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
+            xf.m_Translate = static_cast<NiPoint3&&>(niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -283,8 +276,8 @@ void CRegionSkillObject::FUN_1416f6b90()
         {
             NiTransform xf;
             xf.MakeIdentity();
-            Unk_RsNiPoint3 niPt(m_points[i]);
-            FUN_14097faa0(&xf.m_Translate, niPt);
+            NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
+            xf.m_Translate = static_cast<NiPoint3&&>(niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -329,8 +322,8 @@ void CRegionSkillObject::FUN_1416f6f50()
                 Vector3 pt = it->first;
                 NiTransform xf;
                 xf.MakeIdentity();
-                Unk_RsNiPoint3 niPt(pt);
-                FUN_14097faa0(&xf.m_Translate, niPt);
+                NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(pt));
+                xf.m_Translate = static_cast<NiPoint3&&>(niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 bool bAlways = m_pAttr->m_bAlways;
                 if (TSingleton<EffectSkipMgr>::GetInstance()->ShouldSkipByView(m_spEffect, m_nOwnerType, reinterpret_cast<Unk_SkipEffect*>(&xf)) == 0 && (m_bLocal != 0 || bAlways))
@@ -372,8 +365,8 @@ void CRegionSkillObject::FUN_1416f6f50()
             Vector3 pt = m_waiting.GetAt(pos);
             NiTransform xf;
             xf.MakeIdentity();
-            Unk_RsNiPoint3 niPt(pt);
-            FUN_14097faa0(&xf.m_Translate, niPt);
+            NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(pt));
+            xf.m_Translate = static_cast<NiPoint3&&>(niPt);
             xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
             if (TSingleton<EffectSkipMgr>::GetInstance()->ShouldSkipByView(m_spEffect2, m_nOwnerType, reinterpret_cast<Unk_SkipEffect*>(&xf)) == 0 && m_bLocal != 0)
             {
@@ -432,8 +425,8 @@ void CRegionSkillObject::FUN_1416f7790()
             {
                 NiTransform xf;
                 xf.MakeIdentity();
-                Unk_RsNiPoint3 niPt(m_points[i]);
-                FUN_14097faa0(&xf.m_Translate, niPt);
+                NiPoint3 niPt(reinterpret_cast<const efd::Point3&>(m_points[i]));
+                xf.m_Translate = static_cast<NiPoint3&&>(niPt);
                 xf.m_Rotate.FromEulerAnglesXYZ(m_fRotX, 0.0f, (-m_fRotY * 3.1415927f) / 180.0f);
                 ((Unk_EffectTarget&)(kTarget)).m_pXform = &xf;
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));

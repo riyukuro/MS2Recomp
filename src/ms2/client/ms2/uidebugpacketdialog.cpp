@@ -26,6 +26,8 @@
 #include "ms2/placeholder/citemmergeoptionproxy.h"
 #include "ms2/commonfiles/timeutil.h"
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
 // The header statics of this unit: the label key of the combo rows, then the game header's sort names and "skill".
 static CString s_strLabel = "label";
 static CString s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -40,7 +42,6 @@ public:
     virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
 };
-class Unk_DpButton : public ASButton { };                  // click FUN_1422ce240, toggle FUN_1422c2a70
 class Unk_DpInput : public Unk_DpControl { public: };         // the text
 class Unk_DpCheck : public Unk_DpControl { };
 // The "m_param<n>" movie clip: the child lookups by name.
@@ -89,7 +90,7 @@ void UIDebugPacketDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     m_movie = FUN_1409b40c0(m_28, (*m_30).FUN_1422bb890());
-    m_execute = FUN_140bb4b10("m_execute");
+    m_execute = GetChild<ASButton>("m_execute");
     m_id = FUN_140e35bd0("m_id");
     m_loopCount = FUN_140e35bd0("m_loopCount");
     m_loopDelay = FUN_140e35bd0("m_loopDelay");
@@ -132,7 +133,7 @@ void UIDebugPacketDialog::OnLoadInit()
         }
         m_type[i]->SetSelectedIndex(0);
     }
-    m_executeRandom = FUN_140bb4b10("m_executeRandom");
+    m_executeRandom = GetChild<ASButton>("m_executeRandom");
     m_randomStart = FUN_140e35bd0("m_randomStart");
     m_randomEnd = FUN_140e35bd0("m_randomEnd");
     m_randomLoopCount = FUN_140e35bd0("m_randomLoopCount");
@@ -140,8 +141,8 @@ void UIDebugPacketDialog::OnLoadInit()
     m_randomLoopLength = FUN_140e35bd0("m_randomLoopLength");
     m_randomRemain = GetChild<ASTextField>("m_randomRemain");
     m_ignoreAdminPacket = FUN_140e52670("m_ignoreAdminPacket");
-    m_usePacketCount = FUN_140bb4b10("m_usePacketCount");
-    m_usePostClose = FUN_140bb4b10("m_usePostClose");
+    m_usePacketCount = GetChild<ASButton>("m_usePacketCount");
+    m_usePostClose = GetChild<ASButton>("m_usePostClose");
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_close");
     m_execute->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecute), 0);

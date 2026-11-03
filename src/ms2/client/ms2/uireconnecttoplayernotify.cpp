@@ -12,7 +12,6 @@
 
 // The reconnection manager singleton (the global is typed Unk_SingletonObj* in the symbol table).
 class Unk_SingletonObj;
-extern Unk_SingletonObj* DAT_143ab8aa0;
 CReconnectionManagerCli* FUN_140e800e0();
 
 // @0x140e7fd50
@@ -85,7 +84,7 @@ void UIReconnectTopLayerNotify::FUN_140e80030()
 // @0x140e800e0
 CReconnectionManagerCli* FUN_140e800e0()
 {
-    return (CReconnectionManagerCli*)DAT_143ab8aa0;
+    return TSingleton<CReconnectionManagerCli>::s_instance;
 }
 
 // The CRT's memmove_s (static inline in corecrt_memcpy_s.h) sits in this unit's range; referencing it instantiates it.

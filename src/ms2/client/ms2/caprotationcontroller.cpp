@@ -29,6 +29,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\caprotationcontroller.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 #include <efd/Point3.h>
 #include "caprotationcontroller.h"
 #include "ms2/placeholder/citem.h"
@@ -66,14 +67,7 @@ struct Unk_GVec3 : public Vector3
     Unk_GVec3();                                                // 0x1405522f0
 };
 
-// The item data of the equipped cap (?\itemdatastruct.cpp); only the flags this unit reads.
-struct Unk_CapItemData : public ItemModelHead
-{
-};
-struct Unk_CapItem : public CItemData
-{
-    Unk_CapItemData* FUN_14053ec70();                           // item -> its data
-};
+struct Unk_CapItem : public CItemData {};                       // the equipped cap's item data
 
 // The model record of the cap item (CItem::FUN_140527870); only the three fields this unit writes.
 struct Unk_CapModelData
@@ -126,7 +120,8 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
 struct Unk_CapCursor : public CWindowService { };   // cursor position in pixels
-Unk_CapCursor* FUN_140aadf80();
+void* FUN_140aadf80();   // C3: was Unk_CapCursor*
+#define FUN_140aadf80() ((Unk_CapCursor*)FUN_140aadf80())
 
 struct Unk_CapCamera : public CameraMgr
 {
@@ -138,11 +133,12 @@ float Unk_Acos(float fCos);                                     // acos
 void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
 char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
                    float fRadius, Vector3* pHit);       // ray / sphere hit
-void FUN_141422950(const NiTransform& kXf, Vector3* pEuler);   // transform -> euler angles (degrees)
+void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler);   // rotation -> euler angles (degrees)
 void FUN_14097fad0(NiPoint3* pDst, const NiPoint3* pSrc);       // NiPoint3 assignment
 // efd::Matrix3::Inverse() (0x1420845e0): a member that returns the matrix by value.
 struct Unk_CapMatrix : public Unk_EfdMatrix3 { Unk_EfdMatrix3 FUN_1420845e0() const; };
-const Vector3& FUN_140947900(NiAVObject* pNode);        // world translate
+// C3: world translate = NiAVObject::GetWorldTranslate (0x140947900)
+#define FUN_140947900(p) ((const Vector3&)(p)->GetWorldTranslate())
 
 // Depth-first walker over a scene graph (0x30 bytes; unrecovered class). Next(bDescend) yields the next NiAVObject.
 class Unk_NodeQueue
@@ -206,7 +202,7 @@ int CCapRotationController::vfunc_3()
     if (pItem == 0)
         return 0;
     ResetHighlight();
-    Unk_CapItemData* pData = pItem->FUN_14053ec70();
+    ItemModelHead* pData = pItem->FUN_14053ec70();
     m_bUseButton1 = 1;
     m_bUseButton2 = pData->FUN_140547150();
     m_bEnabled = pData->FUN_140547130();
@@ -316,7 +312,7 @@ void CCapRotationController::vfunc_31()
                 kQuat.ToRotation(*(efd::Matrix3*)&kRot);
                 kRot = kRot.FUN_140a33480(m_kInitRot);
                 Vector3 kEuler;
-                kRot.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
+                reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
                 kEuler.x = WrapAngle((kEuler.x * 180.0f) / 3.1415927f, m_kMinEuler.x, m_kMaxEuler.x);
                 kEuler.y = WrapAngle((kEuler.y * 180.0f) / 3.1415927f, m_kMinEuler.y, m_kMaxEuler.y);
                 kEuler.z = m_kCurEuler.z;
@@ -380,7 +376,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
                 NiTransform kWorld = *((class NiTransform*)&((class NiAVObject*)(spNode.operator->()))->GetLocalTransform());
                 pData->m_fScale = kWorld.m_fScale;
                 pData->m_aOffset[0] = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
-                FUN_141422950(kWorld, &pData->m_aEuler[0]);
+                FUN_141422950(kWorld.m_Rotate, &pData->m_aEuler[0]);
                 m_spPart->FUN_141200160(pData->m_aOffset[0]);
                 m_spPart->FUN_141200100(pData->m_aEuler[0]);
             }
@@ -493,7 +489,7 @@ void CCapRotationController::ResetHighlight()
 Vector3 CCapRotationController::UpdateRotationMatrix()
 {
     Vector3 kEuler = GetPartEuler();
-    m_kInitRot.FUN_142083d40((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
+    reinterpret_cast<efd::Matrix3*>(&m_kInitRot)->FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                              (kEuler.z * 3.1415927f) / 180.0f);
     return kEuler;
 }
@@ -526,8 +522,8 @@ void CCapRotationController::SetPartEuler(Vector3 kEuler)
     Vector3 kCur = pData->m_aEuler[0];
     Unk_NiMatrix3 kNew;
     Unk_NiMatrix3 kOld;
-    kNew.FUN_142083d40((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f, (kEuler.z * 3.1415927f) / 180.0f);
-    kOld.FUN_142083d40((kCur.x * 3.1415927f) / 180.0f, (kCur.y * 3.1415927f) / 180.0f, (kCur.z * 3.1415927f) / 180.0f);
+    reinterpret_cast<efd::Matrix3*>(&kNew)->FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f, (kEuler.z * 3.1415927f) / 180.0f);
+    reinterpret_cast<efd::Matrix3*>(&kOld)->FromEulerAnglesXYZ((kCur.x * 3.1415927f) / 180.0f, (kCur.y * 3.1415927f) / 180.0f, (kCur.z * 3.1415927f) / 180.0f);
     NiTransform kDelta;
     kDelta.MakeIdentity();
     Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_CapMatrix&>(kOld).FUN_1420845e0().FUN_140a33480(kNew));

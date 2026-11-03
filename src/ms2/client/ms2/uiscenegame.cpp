@@ -249,6 +249,7 @@ public:
     void FUN_1408e48f0();
     static __int64 FUN_1408e57f0();   // the scene-service global
 };
+extern CUserMail g_143ab2ee0;   // C3: was extern char DAT_143ab2ee0 (as scenestategame.cpp)
 // @0x141ac7650
 int UISceneGame::vfunc_13()
 {
@@ -585,7 +586,7 @@ void UISceneGameBeautyShop::FUN_141ac87b0()
     Unk_CameraFlyBy param;
     param.m_nKind = 1;
     param.m_fDuration = 0.8f;
-    param.m_from.m_0 = FUN_1409478c0()->FUN_140ad4b40();
+    param.m_from.m_0 = ((Unk_CameraManager*)FUN_1409478c0())->FUN_140ad4b40();
     param.m_from.m_4 = FUN_1409478c0()->FUN_140af7f00();
     param.m_from.m_8 = FUN_1409478c0()->FUN_140af7ea0();
     param.m_from.m_c = FUN_1409478c0()->FUN_140a17e10();
@@ -606,7 +607,7 @@ void UISceneGameBeautyShop::FUN_141ac8900()
         Unk_CameraFlyBy param;
         param.m_nKind = 1;
         param.m_fDuration = 1.0f;
-        param.m_from.m_0 = FUN_1409478c0()->FUN_140ad4b40();
+        param.m_from.m_0 = ((Unk_CameraManager*)FUN_1409478c0())->FUN_140ad4b40();
         param.m_from.m_4 = FUN_1409478c0()->FUN_140af7f00();
         param.m_from.m_8 = FUN_1409478c0()->FUN_140af7ea0();
         param.m_from.m_c = FUN_1409478c0()->FUN_140a17e10();
@@ -979,11 +980,10 @@ public:
     int LoadCharacterOption();
 };
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
-void FUN_14125f670(char* p, char a, int b);
+void FUN_14125f670(struct Unk_GpState*, bool, bool);   // C3: was (char*, char, int)
 void* FUN_140c58ac0(class Unk_KsInputState*);   // C3: was FUN_140c58ac0
-void FUN_14125bd20(char* p, char a);
+void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was (char*, char)
 UIMassiveEvent* FUN_140e01890(int nId);
-extern char DAT_143ab2ee0;
 void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_141275260(int nId, int a, int b);
@@ -1112,8 +1112,8 @@ void UISceneGamePlay::vfunc_11()
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
     FUN_141b70290();
     ((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->LoadCharacterOption();
-    FUN_14125f670(((char*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), *((char*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), 0);
-    FUN_14125bd20(((char*)FUN_140c58ac0((class Unk_KsInputState*)((void*)TSingleton<CGameOption>::GetInstance()))), *((char*)FUN_140c58ac0((class Unk_KsInputState*)((void*)TSingleton<CGameOption>::GetInstance()))));
+    FUN_14125f670(FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())), *((bool*)FUN_140a58500((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), false);
+    FUN_14125bd20(((struct Unk_InterfaceFlag*)FUN_140c58ac0((class Unk_KsInputState*)((void*)TSingleton<CGameOption>::GetInstance()))), *((bool*)FUN_140c58ac0((class Unk_KsInputState*)((void*)TSingleton<CGameOption>::GetInstance()))));
 }
 MS2_REPLACE_METHOD(0x141aca1a0, UISceneGamePlay, vfunc_11, 189, 0x2CECF6E0);
 
@@ -1151,7 +1151,7 @@ void UISceneGamePlay::vfunc_15()
     else ((class ItemPreviewMgr*)FUN_1409bb9e0())->SetHudMode(0);
     if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x2a, 0, 0) != 0 || ((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x36, 0, 0) != 0) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(1);
     else ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(0);
-    ((class CUserMail*)(void*)(&DAT_143ab2ee0))->FUN_1408e48f0();
+    (&g_143ab2ee0)->FUN_1408e48f0();
 }
 MS2_REPLACE_METHOD(0x141aca3b0, UISceneGamePlay, vfunc_15, 199, 0x6836B94F);
 
@@ -1680,7 +1680,7 @@ int FUN_141acc6c0(int nSceneId)
 
 class Unk_GsEntMgr;
 class Unk_HwService : public HardwareInstancingService { };     // the framework's hardware instancing service
-class Unk_GsApp2 { public: void FUN_141489ff0(NiColorA kValue); };   // the app's clear colour
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::SetBackgroundColor (the app's clear colour)
 class EntityWorldManager;
 void FUN_14098c6e0(class Unk_CachedEntity* pEntity, unsigned int nHash, const bool& bValue);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
@@ -1762,7 +1762,7 @@ void UISceneGameScreenShot::vfunc_49(int n)
     FUN_1413f9c40(true);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9650();
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbca0(1);
-    ((class Unk_GsApp2*)FUN_140aae430())->FUN_141489ff0(efd::ColorA::BLACK);
+    ((class MS2*)FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
     ShowCursor(FALSE);
     FUN_1422e7950();
 }

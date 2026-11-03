@@ -86,12 +86,10 @@ class Unk_ItemEnchantData : public CItemStatus {};
 
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
-CStringTable* GetStringTable();                              // TSingleton<CStringTable>::GetInstance
-unsigned FUN_1405575b0(Unk_IngTable*, int);                 // the lock item of an item
-const CString& FUN_14082efb0(int nStat);                    // the xml name of a stat
+const CString& GetStatName(unsigned nStat);                 // the xml name of a stat
 const CString& FUN_14081d380(int nSpecial);                 // the xml name of a special stat
 int FindStatByName(const CStringA& strName);                // stat name -> id (-1 when none)
-int FUN_14081d260(const CStringA& strName);                 // special option name -> id (0 when none)
+unsigned FUN_14081d260(const CStringA& strName);            // special option name -> id (0 when none; C3: the exe returns unsigned)
 bool IsStatKindTwo(int nStat);                              // the stat value is a percent
 bool FUN_14081dcd0(int nSaType);                            // the SA value is a percent
 CStringW FUN_140631600(int nStat, BaseOption* pBase);       // the text of a stat option
@@ -333,7 +331,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
                 return 3;
             if (bExclusive)
             {
-                CString strName(FUN_14082efb0(nStat));
+                CString strName(GetStatName(nStat));
                 bool bFound = ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
@@ -732,7 +730,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
         for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
-            names.SetAt(nRow++, FUN_14082efb0(nStat));
+            names.SetAt(nRow++, GetStatName(nStat));
         }
         for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
@@ -875,7 +873,7 @@ bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
         for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
-            names.SetAt(nRow++, FUN_14082efb0(nStat));
+            names.SetAt(nRow++, GetStatName(nStat));
         }
         for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
@@ -922,13 +920,13 @@ CStringW FUN_140619760(int nItemId, unsigned nLevel)
     int nRank;
     if (nItemId == 0)
         return CStringW(L"");
-    unsigned nLockId = FUN_1405575b0(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), nItemId);
+    unsigned nLockId = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)nItemId);
     nRank = nLevel;
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa5))
         nRank = nLevel;
     if (nRank == 0)
         nRank = FUN_14053feb0(nLockId);
-    return FUN_14183e9c0(GetStringTable()->FUN_141811980(1, nLockId), nRank);
+    return FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nLockId), nRank);
 }
 
 // @0x1406198a0

@@ -10,7 +10,7 @@
 // MS2-RANGE: 0x140bac2f0-0x140bad0a0 .text$mn
 //
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_CoupleDanceEvent@@@@QEBAPEAVUnk_CoupleDanceEvent@@XZ 0x140bacf70 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCoupleDanceContext@@@@QEBAPEAVCoupleDanceContext@@XZ 0x140bacf70 ; unique
 // MS2-PINS-END
 //
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
@@ -30,6 +30,7 @@ static CStringW s_strBannerClose(L"bannerClose");
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/buddymanager.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameeventvalue.h"     // C3: CGameEventValueCoupleDance::Get
 #include "ms2/client/ms2/worldservice.h"
 class GameObject { public: int FUN_14123c580(void); };
 // ---- unit-local placeholders (unrecovered singletons / helpers; promote to src/ms2/placeholder/ when shared) ----
@@ -43,6 +44,7 @@ class PCBase   // C3: member view for 0x14166c930
 public:
     int GetCurStateId();                                    // 0x14166c930 current state id
     __int64 FUN_141656a80();                                // the character id
+    State* FUN_14166ccb0();                                 // current state
 };
 class Unk_141bd0cc0
 {
@@ -108,7 +110,6 @@ public:
     virtual void vfunc_58();
     virtual void vfunc_59(int a1, int a2, int a3, int a4);          // 59: switch to a microgame state
     int FUN_14123c580();                                            // the actor kind / team
-    State* FUN_14166ccb0();                                         // current state
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b883c0();
@@ -126,33 +127,19 @@ public:
     class PCBase* GetDancePC();
 };
 
+// The current microgame event (0x140302b00 -> +0xae0 -> a copy under a lock).
+// @0x140bacf70
+template <> inline CoupleDanceContext* MS2Ptr<CoupleDanceContext>::get() const { return m_p; }
+
 // Message boxes (CMsgBoxData): the button index lives at +0x18 of the timer struct.
 struct Unk_MsgBoxTimer { int m_nSec; int m_nMs; int m_nShowFormat; void* m_strFormat; int m_nButton; int m_nArmed; };
-class CMsgBoxData { public: struct Unk_MsgBoxTimer const & GetTimer(void) const; void FUN_141a024a0(int); void SetExtra(class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> const &); }; class Unk_CMsgBoxData : public CMsgBoxData {
-public:
-
-
-
-};
-MS2Ptr<Unk_CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
-void FUN_140d73c60(MS2Ptr<Unk_CMsgBoxData> box);
+class CMsgBoxData { public: struct Unk_MsgBoxTimer const & GetTimer(void) const; void FUN_141a024a0(int); void SetExtra(class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> const &); };
+MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 void FUN_141275260(int nStringId, int a, int b);
 void FUN_1412752d0(const CStringW& str, int n);
-
-// The current microgame event (0x140302b00 -> +0xae0 -> a copy under a lock): its id is at +0x18.
-class Unk_CoupleDanceEvent
-{
-public:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
-    int m_id;                                                       // +0x18
-};
-MS2_CHECK_OFFSET(Unk_CoupleDanceEvent, m_id, 0x18);
-// @0x140bacf70
-template <> Unk_CoupleDanceEvent* MS2Ptr<Unk_CoupleDanceEvent>::get() const { return m_p; }
-class Unk_CoupleEventHolder { public: MS2Ptr<Unk_CoupleDanceEvent> FUN_140428700(); };
-class Unk_140302b00 { public: Unk_CoupleEventHolder* FUN_1403ed140(); };
 
 // The buddy manager (blocked users).
 class CBuddyManager;
@@ -184,7 +171,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     {
         // We cannot challenge ourselves.
         CStringW strMessage = BlockFormat(0xd0c);
-        MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(strMessage, 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMessage, 1);
         box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
@@ -224,7 +211,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
 }
 
 // @0x140bac700
-bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
+bool FUN_140bac700(int nResult, const CMsgBoxData& box)
 {
     if (box.GetTimer().m_nButton != 0)
         return true;
@@ -236,7 +223,7 @@ bool FUN_140bac700(int nResult, const Unk_CMsgBoxData& box)
     }
     if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() != 0x3c)
         return true;
-    State* pState = pPlayer->FUN_14166ccb0();
+    State* pState = reinterpret_cast<PCBase*>(pPlayer)->FUN_14166ccb0();
     if (!pState)
     {
         MS2_ASSERT_AT(0x69, 0);
@@ -276,13 +263,13 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     if (((class GameObject*)(pPlayer))->FUN_14123c580() == ((class GameObject*)(pTarget))->FUN_14123c580())
     {
         // We cannot dance with ourselves.
-        MS2Ptr<Unk_CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_close"), 1);
         box->SetExtra(s_strBannerClose);
         box->FUN_141a024a0(0);
         FUN_140d73c60(box);
         return;
     }
-    MS2Ptr<Unk_CoupleDanceEvent> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
     {
         FUN_1412752d0(L"s_microgame_couple_dance_end_event", 1);
@@ -312,13 +299,13 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     }
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0xe);
-    packet.Encode4(pEvent->m_id);
+    packet.Encode4(pEvent->m_eventId);
     packet.Encode8(reinterpret_cast<PCBase*>(pTarget)->FUN_141656a80());
     FUN_140710590(packet);
 }
 
 // @0x140bacda0
-bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
+bool FUN_140bacda0(int nResult, const CMsgBoxData& box)
 {
     if (box.GetTimer().m_nButton != 0)
         return true;
@@ -330,7 +317,7 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
     }
     if (reinterpret_cast<PCBase*>(pPlayer)->GetCurStateId() != 0x45)
         return true;
-    State* pState = pPlayer->FUN_14166ccb0();
+    State* pState = reinterpret_cast<PCBase*>(pPlayer)->FUN_14166ccb0();
     if (!pState)
     {
         MS2_ASSERT_AT(0xda, 0);
@@ -340,9 +327,9 @@ bool FUN_140bacda0(int nResult, const Unk_CMsgBoxData& box)
     if (!pTarget)
         return true;
     int nEventId = 0;
-    MS2Ptr<Unk_CoupleDanceEvent> pEvent = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent.get())
-        nEventId = pEvent->m_id;
+        nEventId = pEvent->m_eventId;
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(0x13);
     packet.Encode4(nEventId);

@@ -13,6 +13,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class NotifyObject;
 class ASMovieClip;
@@ -21,16 +22,6 @@ class UIAdPushLimitedDialog;
 class AdPushEntityBase;
 class Unk_AdMarketItem;
 class Unk_AdXmlNode;
-
-// A 64-bit millisecond tick throttle (UIDialog::vfunc_72 asks it whether 1000 ms passed).
-class Unk_AdTick {
-public:
-    Unk_AdTick();                           // 0x140517b00
-    int FUN_140268870(unsigned ms);
-    void FUN_140268840();                   // reset
-private:
-    unsigned __int64 m_tick;
-};
 
 // The limited-time bundle entry (entity kind 1). Its vftable follows the base: 1 Show, 2 Close(bool), 3 Remove, 4 Save,
 // 5 Load, 6 GetName, 7 IsAccount, 8 Tooltip, 9 Tick, 10 IsFloating, 11 Maximize.
@@ -190,7 +181,7 @@ private:
     TiXmlDocument m_xmlAccountSave;                            // +0x350
     int m_nFlags;                                               // +0x3c0
     int m_nShowState;                                           // +0x3c4
-    Unk_AdTick m_tick;                                          // +0x3c8
+    Unk_IntervalTimer m_tick;                                   // +0x3c8
     MS2Ptr<ASDialog> m_limitedBundle;                           // +0x3d0
     std::set<int> m_sns;                                          // +0x3e0
 };

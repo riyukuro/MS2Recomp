@@ -40,7 +40,7 @@
 // MS2-PIN: ??__EDAT_143aea1d8@@YAXXZ 0x140101440 ; unique
 // MS2-PIN: ??__EDAT_143aea1e0@@YAXXZ 0x140101470 ; unique
 // MS2-PIN: ??__Es_strSortTypeNames4@@YAXXZ 0x1401014a0 ; unique
-// MS2-PIN: ??8?$MS2Ptr@VUnk_MyPCSkillSet@@@@QEBA_NPEAVUnk_MyPCSkillSet@@@Z 0x1417624d0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCSkillSet@@@@QEBA_NPEAVCSkillSet@@@Z 0x1417624d0 ; unique
 // MS2-PIN: ?GetClassDesc@SkillSlot@@UEBAPEBVClassInfo@efd@@XZ 0x141762740 ; unique
 // MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEAX@Z 0x141763350 ; unique
 // MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEBX@Z 0x1417633a0 ; unique
@@ -124,7 +124,7 @@ extern bool DAT_143ae9750;                                // the debug switch "S
 #include "ms2/commonfiles/timeutil.h"
 
 // The quick slot manager (0x1409331f0): the saved entries, the key bindings and the page.
-class Unk_MyPCSkillSet;
+class CSkillSet;
 class Unk_PCBaseComp_b18;
 class Unk_SsHeldWeapon;
 // C3: unit-local view of CKeyTable (the quick slot manager; members as in ckeytable.h, which is not included so
@@ -150,7 +150,7 @@ class Unk_SsHud   // C3: the rest are CKeyTable's (cast at the call)
 {
 public:
     int FUN_140a700b0();                                  // the current page
-    void FUN_14142e8c0(MS2Ptr<Unk_MyPCSkillSet> spSet);   // save the skill set
+    void FUN_14142e8c0(MS2Ptr<CSkillSet> spSet);   // save the skill set
 };
 
 class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
@@ -211,8 +211,6 @@ public:
     Unk_SsItemPtr(void* pData);                           // 0x1401bf970
     Unk_SsItemPtr(const Unk_SsItemPtr& o);               // never called; keeps by-value args constructed in place
     ~Unk_SsItemPtr();                                     // 0x1401b50d0
-    bool FUN_1402ffd90() const;                           // is it null
-    void* FUN_140203c60() const;                          // the raw pointer
 private:
     void* m_pad;
     void* m_p;
@@ -220,18 +218,6 @@ private:
 Unk_SsItemPtr FUN_14053f870(int nItemId);                 // the item data record of an item id
 int FUN_141769320(Unk_SsItemPtr kPtr);                    // the skill id of the item
 
-// The skill set of a ridee (see CSkillSystem::GetSkillSet).
-class Unk_MyPCSkillSet : public CPtred
-{
-public:
-    unsigned m_nId;                                       // +0x18
-    int m_nIndex;                                         // +0x1c
-    int m_nKind;                                          // +0x20 (0: the skill set of the quick slots)
-    unsigned char m_pad0[0x28 - 0x24];
-    std::vector<unsigned> m_vSkills;                      // +0x28
-    unsigned char m_pad1[0x88 - 0x28 - sizeof(std::vector<unsigned>)];
-    std::vector<unsigned> m_vItems;                       // +0x88
-};
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -1156,7 +1142,7 @@ CStringW SkillSlot::FUN_14175fe60()
 int SkillSlot::FUN_141760190()
 {
     Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
-    if (spData.FUN_140203c60())
+    if (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator CItemData*())
         return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->IsPetItem();
     return 0;
 }
@@ -1180,7 +1166,7 @@ unsigned SkillSlot::FUN_141760220(int n)
     else
     {
         Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
-        if (spData.FUN_1402ffd90())
+        if (reinterpret_cast<MS2Ptr<CItemData>&>(spData).IsNull())
             return 0;
         if (!(reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->FUN_14053c7c0())
             return 0;
@@ -1257,7 +1243,7 @@ CString SkillSlot::GetIconName()
     else
     {
         Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
-        if (spData.FUN_140203c60())
+        if (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator CItemData*())
             return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->GetIconPath();
     }
     return CString("");
@@ -1344,7 +1330,7 @@ int SkillSlot::FUN_141760c00()
         if (spItem.operator!())
         {
             Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
-            if (spData.FUN_140203c60() && (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->GetStringTag() == 0xd9)
+            if (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator CItemData*() && (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->GetStringTag() == 0xd9)
                 return 0;
             return 1;
         }
@@ -1477,7 +1463,7 @@ int SkillSlot::FUN_141761530(MS2Ptr<SkillData>* pOut)
 int SkillSlot::FUN_141761900()
 {
     Unk_SsItemPtr spData = FUN_14053f870(m_nItemId);
-    if (spData.FUN_1402ffd90())
+    if (reinterpret_cast<MS2Ptr<CItemData>&>(spData).IsNull())
         return 0;
     return (reinterpret_cast<const MS2Ptr<CItemData>&>(spData).operator->())->HasFunction();
 }
@@ -1504,13 +1490,13 @@ int SkillSlot::FUN_141761a10()
     PC* pPc = static_cast<PC*>(((Unk_SsPc*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPc == 0)
         return 0;
-    MS2Ptr<Unk_MyPCSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet();
+    MS2Ptr<CSkillSet> spSet = static_cast<MyPC*>(pPc)->FUN_141523bc0()->GetSkillSet();
     if (spSet.IsNull())
         return 0;
-    std::vector<unsigned>& vItems = spSet->m_vItems;
+    std::vector<unsigned>& vItems = spSet->m_arrItemIds;
     if (std::find(vItems.begin(), vItems.end(), reinterpret_cast<const unsigned&>(m_nItemId)) != vItems.end())
         return 1;
-    std::vector<unsigned>& vSkills = spSet->m_vSkills;
+    std::vector<unsigned>& vSkills = spSet->m_arrSkillIds;
     if (std::find(vSkills.begin(), vSkills.end(), reinterpret_cast<const unsigned&>(m_nSkillId)) != vSkills.end())
         return 1;
     return 0;
@@ -2329,7 +2315,6 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_SsEffectData, m_f290, 0x290);
 class Unk_SsSkillTableCli { public: MS2Ptr<Unk_SsEffectData> FUN_140aafef0(int nEffectId, unsigned short nLevel); };  // SkillDataTableCli
-class Unk_SsSkillSetTable { public: MS2Ptr<Unk_MyPCSkillSet> FUN_140809840(int nSetId); };
 
 // the lapenshard skill table of a job
 class Unk_SsLapenRow : public CPtred
@@ -2350,7 +2335,6 @@ private:
     void* m_p1;
 };
 
-// The skill set of a ridee (CSkillSet): +0x18 id, +0x1c index, +0x20 kind (0: the skill set of the quick slots).
 
 // @0x1417664e0
 void CSkillSystem::FUN_1417664e0(unsigned nStart, int nSkillId, float fCool, float fCombo, int bCombo)
@@ -2672,13 +2656,13 @@ void CSkillSystem::FUN_141767f80(int nSkillSetId)
 {
     if (nSkillSetId == 0)
         return;
-    if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nKind == 0)
+    if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nSlotLock == 0)
     {
-        CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
+        CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nVersion);
         ((CKeyTable*)FUN_1409331f0())->SaveKeySetting(strName);
     }
     m_lstSkillSets.push_back(*(const unsigned*)&nSkillSetId);
-    m_spSkillSet = reinterpret_cast<Unk_SsSkillSetTable*>(TSingleton<CSkillSetTable>::GetInstance())->FUN_140809840(nSkillSetId);
+    m_spSkillSet = TSingleton<CSkillSetTable>::GetInstance()->GetSkillSet(nSkillSetId);
 }
 
 // @0x141768100
@@ -2686,9 +2670,9 @@ void CSkillSystem::FUN_141768100(int nSkillSetId)
 {
     if (nSkillSetId == 0)
         return;
-    if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nKind == 0 && m_spSkillSet->m_nId == nSkillSetId)
+    if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nSlotLock == 0 && m_spSkillSet->m_nId == nSkillSetId)
     {
-        CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
+        CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nVersion);
         ((CKeyTable*)FUN_1409331f0())->SaveKeySetting(strName);
     }
     for (std::list<unsigned>::iterator it = m_lstSkillSets.begin(), itEnd = m_lstSkillSets.end(); it != itEnd; ++it)
@@ -2704,12 +2688,12 @@ void CSkillSystem::FUN_141768100(int nSkillSetId)
     else
     {
         unsigned nId = m_lstSkillSets.back();
-        m_spSkillSet = reinterpret_cast<Unk_SsSkillSetTable*>(TSingleton<CSkillSetTable>::GetInstance())->FUN_140809840(nId);
+        m_spSkillSet = TSingleton<CSkillSetTable>::GetInstance()->GetSkillSet(nId);
     }
 }
 
 // @0x141768380
-MS2Ptr<Unk_MyPCSkillSet> CSkillSystem::GetSkillSet()
+MS2Ptr<CSkillSet> CSkillSystem::GetSkillSet()
 {
     return m_spSkillSet;
 }
@@ -2722,9 +2706,9 @@ void CSkillSystem::FUN_1417683d0()
     else
     {
         ((class Unk_SsHud*)FUN_1409331f0())->FUN_14142e8c0(m_spSkillSet);
-        if (m_spSkillSet->m_nKind == 0)
+        if (m_spSkillSet->m_nSlotLock == 0)
         {
-            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
+            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nVersion);
             ((CKeyTable*)FUN_1409331f0())->LoadKeySetting(strName);
         }
     }

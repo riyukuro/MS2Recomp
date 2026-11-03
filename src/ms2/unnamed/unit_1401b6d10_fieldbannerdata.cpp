@@ -65,7 +65,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 __int64 GetServerTime();                                                  // current time
 
 // The broken-down time (0x30 bytes, unit_14088dbf0) built by FUN_14088dfa0(out, time, hourOffset): hour at +0xc.
@@ -162,7 +162,7 @@ void CFieldBannerData::InitHourly()
 int CFieldBannerData::ParsePrice(CStringA strPrice)
 {
     ATL::CAtlArray<int> values;
-    FUN_140177de0(strPrice, values, ",");
+    XmlSplit(strPrice, values, ",");
     int n = (int)values.GetCount();
     if (n != 24)
         return 0;

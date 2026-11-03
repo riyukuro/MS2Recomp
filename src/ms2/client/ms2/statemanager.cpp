@@ -931,11 +931,6 @@ struct Unk_VibEffectReq
     void* m_pad_20[10];
 };
 MS2_CHECK_SIZE(Unk_VibEffectReq, 0x70);
-// NiPoint3(const efd::Point3&) 0x14027dcf0; the owner's position comes back as an efd::Point3.
-struct Unk_SMNiPt3 : public NiPoint3
-{
-    Unk_SMNiPt3(const NiPoint3& kPt);
-};
 
 // @0x1417dfc70
 StateRegen::StateRegen(PCBase* pOwner) : State(pOwner)
@@ -1022,7 +1017,7 @@ void StateRegen::vfunc_9(double fTime)
             NiTransform kXform;
             kXform.m_Rotate.MakeIdentity();
             kXform.m_fScale = 1.0f;
-            Unk_SMNiPt3 kPos(m_pOwner->vfunc_18());
+            NiPoint3 kPos(static_cast<const efd::Point3&>(m_pOwner->vfunc_18()));
             kXform.m_Translate = kPos;
             NoticeMessage req;   // C3: was Unk_VibEffectReq
             ((Unk_VibEffectReq&)(req)).m_name = reinterpret_cast<Unk_SMNpcTpl*>(reinterpret_cast<CNpc*>(pNpc)->GetNpcData().operator->())->m_str550;

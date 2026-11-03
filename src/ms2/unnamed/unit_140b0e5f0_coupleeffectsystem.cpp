@@ -70,11 +70,6 @@ unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
 // World service / players.
 void* FUN_1409613d0(PCBase* p);
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
-class Unk_IntervalTimer   // C3: member view for the former free stand-ins
-{
-public:
-    int Check(unsigned int);
-};
 
 // @0x140b0e5f0
 CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName,
@@ -103,7 +98,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         return;
     if (!FUN_140b0ef20())
         return;
-    if (((class Unk_IntervalTimer*)(struct Unk_CoupleTick*)(&m_tick))->Check(1000) != 0)
+    if (m_tick.Check(1000) != 0)
     {
         PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
         if (pPartner == 0)

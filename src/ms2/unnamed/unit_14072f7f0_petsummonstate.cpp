@@ -26,7 +26,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_14053f8c0(unsigned nItemId);
 bool FUN_14053f900(unsigned nItemId);
 bool FUN_14053f940(unsigned nItemId);
-int FUN_14053f990_1(int nId);
+int FUN_14053f990(int nId);
 int FUN_14072f890(int nState);
 
 // @0x14072f7f0
@@ -90,7 +90,7 @@ int FUN_14072fa70(Unk_SlotValueTable* pTable, int nItemId, int nLevel)
     case 4:
         if (FUN_14053f8c0(nItemId)) return pTable->m_0;
         if (FUN_14053f940(nItemId)) return pTable->m_4;
-        if (FUN_14053f990_1(nItemId)) return pTable->m_c;
+        if (FUN_14053f990(nItemId)) return pTable->m_c;
         return pTable->m_8;
     case 1:
         if (pTable->m_24 > nLevel) return 0;

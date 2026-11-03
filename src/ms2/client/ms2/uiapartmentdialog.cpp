@@ -59,8 +59,8 @@ public:
     void FUN_141adc530(int nUiId);                              // close
 };
 
-class UIRealEstateDialog { public: void FUN_141ab4000(int, int); }; class Unk_AptContractDialog : public UIRealEstateDialog {};
-Unk_AptContractDialog* FUN_140961690(int nUiId);                // GetDialog
+class UIRealEstateDialog { public: void FUN_141ab4000(int, int); };
+template <class T> T* Unk_GetUI(int nUiId);   // C3: was FUN_140961690 (<UIRealEstateDialog>, actionkeyobject.cpp)
 
 class UIUGCEventDispatcher;
 
@@ -287,9 +287,9 @@ void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Par
 {
     if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e76))))
         return;
-    Unk_AptContractDialog* pDialog = FUN_140961690(0x4e76);
+    UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDialog != 0)
-        ((class UIRealEstateDialog*)(pDialog))->FUN_141ab4000(m_nGroup, (int)(WorldService::GetInstance()->FUN_141bd3060()));
+        pDialog->FUN_141ab4000(m_nGroup, (int)(WorldService::GetInstance()->FUN_141bd3060()));
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e76)));
 }
 

@@ -32,7 +32,6 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw(); // names are equal
 template <class A> CStringW FormatStringId(int nId, const A& a);       // string table text with one name
 int FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
 void FUN_1412751b0(const CStringW& strMsg, int nType);
@@ -110,7 +109,7 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
     obj.FUN_1407cbb20("targetName", strTarget);
     obj.FUN_1407cbb20("myName", pMe->vfunc_77());
     m_30->Invoke("addKill", Scaleform::GFx::Value(obj.FUN_1422bb870()));
-    if (FUN_14025cd60(strAttacker, pMe->vfunc_77()))
+    if (strAttacker == pMe->vfunc_77())
     {
         FUN_141276180(s_strBattleFieldKill, "");
         if (!strTarget.IsEmpty())
@@ -120,7 +119,7 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
             FUN_1412751b0(strMsg, 0x14);
         }
     }
-    if (FUN_14025cd60(strTarget, pMe->vfunc_77()))
+    if (strTarget == pMe->vfunc_77())
     {
         if (!strAttacker.IsEmpty())
         {
@@ -129,7 +128,7 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
             FUN_1412751b0(strMsg, 0x14);
         }
     }
-    bool bInvolved = FUN_14025cd60(strAttacker, pMe->vfunc_77()) || FUN_14025cd60(strTarget, pMe->vfunc_77());
+    bool bInvolved = strAttacker == pMe->vfunc_77() || strTarget == pMe->vfunc_77();
     if (bInvolved)
         FUN_141276180(s_strSystemKillPlayer, "");
 }

@@ -46,7 +46,7 @@ public:
     Unk_NodeQueue(NiAVObject* pkRoot);              // 0x14098cb80
     ~Unk_NodeQueue();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
-    void FUN_14098d6d0(NiNode* pNode);              // queue the children of a node
+    void AddChildren(NiNode* pNode);              // queue the children of a node
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
@@ -219,7 +219,7 @@ void FUN_141567330(NiAVObject* pRoot, bool bShadow)
         }
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
         if (pNode)
-            kWalker.FUN_14098d6d0(pNode);
+            kWalker.AddChildren(pNode);
     }
 }
 MS2_REPLACE(0x141567330, FUN_141567330, 513, 0x2F0822AD);
@@ -388,7 +388,7 @@ void FUN_141567b60(NiAVObject* pRoot)
             FUN_141569620(pObject, spFog);
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
         if (pNode)
-            kWalker.FUN_14098d6d0(pNode);
+            kWalker.AddChildren(pNode);
     }
     Unk_SceneWalker kParts((NiAVObject*)(pRoot));
     NiAVObject* pPart;
@@ -439,7 +439,7 @@ void FUN_1415681c0(NiAVObject* pRoot)
         }
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
         if (pNode)
-            kWalker.FUN_14098d6d0(pNode);
+            kWalker.AddChildren(pNode);
     }
 }
 MS2_REPLACE(0x1415681C0, FUN_1415681c0, 220, 0x21181327);
@@ -532,7 +532,7 @@ void FUN_141568650(NiAVObject* pRoot, CStringA strFrom, CStringA strTo)
             }
             NiNode* pNode = NiDynamicCast(NiNode, pObject);
             if (pNode)
-                kWalker.FUN_14098d6d0(pNode);
+                kWalker.AddChildren(pNode);
         }
     }
 }

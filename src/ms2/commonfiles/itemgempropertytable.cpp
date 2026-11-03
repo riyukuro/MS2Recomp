@@ -43,7 +43,7 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
+int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
 class Unk_1403ed280;                                                    // the effect service
@@ -137,11 +137,11 @@ bool CGemTombStoneData::TModelAttr::FUN_1405ac3b0(Unk_140165cf0* pElem, const CS
     const CString& strIdle = StringFormat(strFmt, strPrefix, "idleEffect");
     const CString& strDmg = StringFormat(strFmt, strPrefix, "dmgEffect");
     const CString& strRevive = StringFormat(strFmt, strPrefix, "reviveEffect");
-    FUN_140873ad0(pElem, strKfm, m_strKfm);
-    FUN_140873ad0(pElem, strRegen, m_strRegenEffect);
-    FUN_140873ad0(pElem, strIdle, m_strIdleEffect);
-    FUN_140873ad0(pElem, strDmg, m_strDmgEffect);
-    FUN_140873ad0(pElem, strRevive, m_strReviveEffect);
+    XmlQuery((class TiXmlElement*)(pElem), strKfm, m_strKfm);
+    XmlQuery((class TiXmlElement*)(pElem), strRegen, m_strRegenEffect);
+    XmlQuery((class TiXmlElement*)(pElem), strIdle, m_strIdleEffect);
+    XmlQuery((class TiXmlElement*)(pElem), strDmg, m_strDmgEffect);
+    XmlQuery((class TiXmlElement*)(pElem), strRevive, m_strReviveEffect);
     return true;
 }
 
@@ -183,10 +183,10 @@ bool CGemTombStoneData::vfunc_1(Unk_140165cf0* pElem)
 // @0x1405ac860
 bool CGemSwimData::vfunc_1(Unk_140165cf0* pElem)
 {
-    FUN_140873ad0(pElem, "kf", m_strKf);
-    FUN_140873ad0(pElem, "idleEffect", m_strIdleEffect);
-    FUN_140873ad0(pElem, "runEffect", m_strRunEffect);
-    FUN_140873ad0(pElem, "dashEffect", m_strDashEffect);
+    XmlQuery((class TiXmlElement*)(pElem), "kf", m_strKf);
+    XmlQuery((class TiXmlElement*)(pElem), "idleEffect", m_strIdleEffect);
+    XmlQuery((class TiXmlElement*)(pElem), "runEffect", m_strRunEffect);
+    XmlQuery((class TiXmlElement*)(pElem), "dashEffect", m_strDashEffect);
     return true;
 }
 
@@ -236,11 +236,11 @@ CGemCharEffectData::CGemCharEffectData()
 // @0x1405acb20
 bool CGemCharEffectData::vfunc_1(Unk_140165cf0* pElem)
 {
-    FUN_140873ad0(pElem, "EffectMale", m_strMale);
-    FUN_140873ad0(pElem, "EffectFemale", m_strFemale);
-    FUN_140873ad0(pElem, "EffectCouple_Diff", m_strCoupleDiff);
-    FUN_140873ad0(pElem, "EffectCouple_Same_M", m_strCoupleSameM);
-    FUN_140873ad0(pElem, "EffectCouple_Same_F", m_strCoupleSameF);
+    XmlQuery((class TiXmlElement*)(pElem), "EffectMale", m_strMale);
+    XmlQuery((class TiXmlElement*)(pElem), "EffectFemale", m_strFemale);
+    XmlQuery((class TiXmlElement*)(pElem), "EffectCouple_Diff", m_strCoupleDiff);
+    XmlQuery((class TiXmlElement*)(pElem), "EffectCouple_Same_M", m_strCoupleSameM);
+    XmlQuery((class TiXmlElement*)(pElem), "EffectCouple_Same_F", m_strCoupleSameF);
     return true;
 }
 
@@ -267,7 +267,7 @@ CString CGemCharEffectData::GetCoupleEffect(int nOwnerGem, int nPartnerGem)
 // @0x1405acd40
 bool CGemEffectData::vfunc_1(Unk_140165cf0* pElem)
 {
-    FUN_140873ad0(pElem, "Effect", m_strEffect);
+    XmlQuery((class TiXmlElement*)(pElem), "Effect", m_strEffect);
     return true;
 }
 
@@ -313,14 +313,14 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
         return false;
     }
     const CString& strId = "id";
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild(strTag)); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling(strTag)))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;

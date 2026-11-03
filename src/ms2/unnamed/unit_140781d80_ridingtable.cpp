@@ -84,10 +84,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 CString FUN_140188f50(const char*, int);
-void FUN_140177e40(CString& str, ATL::CAtlArray<float>& rOut, const char* pszSep);   // split into floats
-const CString& FUN_14082efb0(int nStat);                                  // xml name of the nStat-th stat
-bool FUN_1401c0090(const CString&, const CString&);
-bool FUN_1401647e0(const CString&, const CString&);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e40 (CAtlArray<float>)
+const CString& GetStatName(unsigned nStat);                               // xml name of the nStat-th stat
 
 // Common base of the riding table sections: one pure virtual (vftable 0x142d8a8d8).
 class IDataCheck
@@ -349,25 +347,25 @@ bool RideeData::Rider::FUN_140781ef0(const Rider& o)
 {
     if (m_nPassengerId != o.m_nPassengerId)
         return 1;
-    if (FUN_1401647e0(m_strRideBone, o.m_strRideBone))
+    if (m_strRideBone != o.m_strRideBone)
         return 1;
     if (m_vTranslation != o.m_vTranslation)
         return 1;
     if (m_vRotation != o.m_vRotation)
         return 1;
-    if (FUN_1401647e0(m_strAniPC, o.m_strAniPC))
+    if (m_strAniPC != o.m_strAniPC)
         return 1;
-    if (FUN_1401647e0(m_strAniPCIdle, o.m_strAniPCIdle))
+    if (m_strAniPCIdle != o.m_strAniPCIdle)
         return 1;
-    if (FUN_1401647e0(m_strAniPCRun, o.m_strAniPCRun))
+    if (m_strAniPCRun != o.m_strAniPCRun)
         return 1;
-    if (FUN_1401647e0(m_strAniPCJump, o.m_strAniPCJump))
+    if (m_strAniPCJump != o.m_strAniPCJump)
         return 1;
-    if (FUN_1401647e0(m_strAniPCSPIdle, o.m_strAniPCSPIdle))
+    if (m_strAniPCSPIdle != o.m_strAniPCSPIdle)
         return 1;
-    if (FUN_1401647e0(m_strAniPCSPRun, o.m_strAniPCSPRun))
+    if (m_strAniPCSPRun != o.m_strAniPCSPRun)
         return 1;
-    if (FUN_1401647e0(m_strAniPCSPJump, o.m_strAniPCSPJump))
+    if (m_strAniPCSPJump != o.m_strAniPCSPJump)
         return 1;
     if (m_fNameTagOffsetY != o.m_fNameTagOffsetY)
         return 1;
@@ -392,12 +390,12 @@ void RideeData::Rider::FUN_140782110(Unk_140165cf0* pNode)
     m_strRideBone = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rideBone"), 0);
     CString strTranslation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rideTranslation"), 0);
     ATL::CAtlArray<float> translation;
-    FUN_140177e40(strTranslation, translation, ",");
+    XmlSplit(strTranslation, translation, ",");
     if (translation.GetCount() == 3)
         m_vTranslation = efd::Point3(translation[0], translation[1], translation[2]);
     CString strRotation = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rideRotation"), 0);
     ATL::CAtlArray<float> rotation;
-    FUN_140177e40(strRotation, rotation, ",");
+    XmlSplit(strRotation, rotation, ",");
     if (rotation.GetCount() == 3)
         m_vRotation = efd::Point3(rotation[0], rotation[1], rotation[2]);
     CString strAni = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("rideAniPC"), 0);
@@ -477,11 +475,11 @@ bool RideeData::Basic::FUN_140782b10(const Basic& o)
         return 1;
     if (m_nType != o.m_nType)
         return 1;
-    if (FUN_1401647e0(m_strKfm, o.m_strKfm))
+    if (m_strKfm != o.m_strKfm)
         return 1;
-    if (FUN_1401647e0(m_strKfm2, o.m_strKfm2))
+    if (m_strKfm2 != o.m_strKfm2)
         return 1;
-    if (FUN_1401647e0(m_strNif, o.m_strNif))
+    if (m_strNif != o.m_strNif)
         return 1;
     if (m_fScale != o.m_fScale)
         return 1;
@@ -509,9 +507,9 @@ bool RideeData::Basic::FUN_140782b10(const Basic& o)
         return 1;
     if (m_nEnableSwim != o.m_nEnableSwim)
         return 1;
-    if (FUN_1401647e0(m_strIdleXMotion, o.m_strIdleXMotion))
+    if (m_strIdleXMotion != o.m_strIdleXMotion)
         return 1;
-    if (FUN_1401647e0(m_strRunXMotion, o.m_strRunXMotion))
+    if (m_strRunXMotion != o.m_strRunXMotion)
         return 1;
     if (m_nRunXConsumeEp != o.m_nRunXConsumeEp)
         return 1;
@@ -523,19 +521,19 @@ bool RideeData::Basic::FUN_140782b10(const Basic& o)
         return 1;
     if (m_nDisableHideOnBush != o.m_nDisableHideOnBush)
         return 1;
-    if (FUN_1401647e0(m_strPressXEffectIdle, o.m_strPressXEffectIdle))
+    if (m_strPressXEffectIdle != o.m_strPressXEffectIdle)
         return 1;
-    if (FUN_1401647e0(m_strPressXEffectRun, o.m_strPressXEffectRun))
+    if (m_strPressXEffectRun != o.m_strPressXEffectRun)
         return 1;
-    if (FUN_1401647e0(m_strA0, o.m_strA0))
+    if (m_strA0 != o.m_strA0)
         return 1;
-    if (FUN_1401647e0(m_strPressXEffectIdleNonstop, o.m_strPressXEffectIdleNonstop))
+    if (m_strPressXEffectIdleNonstop != o.m_strPressXEffectIdleNonstop)
         return 1;
-    if (FUN_1401647e0(m_strPressXEffectRunNonstop, o.m_strPressXEffectRunNonstop))
+    if (m_strPressXEffectRunNonstop != o.m_strPressXEffectRunNonstop)
         return 1;
-    if (FUN_1401647e0(m_strLoopEffect, o.m_strLoopEffect))
+    if (m_strLoopEffect != o.m_strLoopEffect)
         return 1;
-    if (FUN_1401647e0(m_strRideOffBySkillEffect, o.m_strRideOffBySkillEffect))
+    if (m_strRideOffBySkillEffect != o.m_strRideOffBySkillEffect)
         return 1;
     if ((*m_spRider).FUN_140781ef0(*o.m_spRider))
         return 1;
@@ -725,7 +723,7 @@ int RideeData::FaceCamera::FUN_140783b00(Unk_140165cf0* pRoot)
     {
         CString strLookAt = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("lookAtPosition"), 0);
         ATL::CAtlArray<float> lookAt;
-        FUN_140177e40(strLookAt, lookAt, ",");
+        XmlSplit(strLookAt, lookAt, ",");
         if (lookAt.GetCount() != 3)
             return 0;
         m_vLookAtPosition = efd::Point3(lookAt[0], lookAt[1], lookAt[2]);
@@ -733,7 +731,7 @@ int RideeData::FaceCamera::FUN_140783b00(Unk_140165cf0* pRoot)
     {
         CString strCamera = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("cameraPosition"), 0);
         ATL::CAtlArray<float> camera;
-        FUN_140177e40(strCamera, camera, ",");
+        XmlSplit(strCamera, camera, ",");
         if (camera.GetCount() != 3)
             return 0;
         m_vCameraPosition = efd::Point3(camera[0], camera[1], camera[2]);
@@ -781,7 +779,7 @@ int RideeData::Stat::FUN_140783e60(Unk_140165cf0* pRoot)
         return 1;
     for (int i = 0; i < 0x23; i++)
     {
-        CString strName = FUN_14082efb0(i);
+        CString strName = GetStatName(i);
         XmlGetAttr((class TiXmlElement*)(pNode), strName, m_values[i]);
     }
     return 1;
@@ -1027,7 +1025,7 @@ void LoadRidingEffectDummy(CRideeDataPtr spData)
             for (unsigned __int64 i = 0; i < spData->m_effectDummies.size(); i++)
             {
                 CEffectDummy* pExisting = &spData->m_effectDummies[i];
-                if (FUN_1401c0090(pExisting->GetName(), strName))
+                if (pExisting->GetName() == strName)
                 {
                     pExisting->Parse(pDummy);
                     bFound = true;

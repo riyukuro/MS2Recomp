@@ -61,25 +61,6 @@ public:
 };
 
 
-// The polymorphic reward entries of a drop table, and a view of m_rewards (a std::vector<ItemDropResult>) for the
-// element read the exe shares with another vector instance (0x140c461b0).
-class Unk_PetBoxDrop
-{
-public:
-    virtual unsigned vfunc_0();
-    virtual int vfunc_1();
-    virtual unsigned vfunc_2();
-};
-class Unk_PetBoxDropVec
-{
-public:
-    size_t FUN_140314170();
-    Unk_PetBoxDrop* FUN_140c461b0(size_t);
-    void FUN_140313cd0(Unk_PetBoxDrop*);
-    void* m_begin; void* m_end; void* m_cap;
-};
-MS2_CHECK_SIZE(Unk_PetBoxDropVec, 24);
-
 class UISelectItemBoxDialog : public UIDialog
 {
 public:

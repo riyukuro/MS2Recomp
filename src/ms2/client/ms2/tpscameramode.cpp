@@ -86,7 +86,6 @@ namespace egf { class Entity; }
 NiAVObject* FUN_141b6efc0(egf::Entity* p);
 
 float FUN_140a38cd0(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 int FUN_140ae8540();                                // reloads the camera xml (returns 0 on failure)

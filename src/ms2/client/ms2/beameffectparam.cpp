@@ -37,7 +37,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 float FUN_1401973d0(Unk_140165cf0* pNode, const char* pszName, float fDefault);
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
-int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CString>& arr);   // split to list
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
+template <> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
 
 // @0x140a0c300
 CBeamEffectParam::CBeamEffectParam()
@@ -87,7 +88,7 @@ static int FUN_140a0c900(Unk_140165cf0* pNode, const char* pszName, int& nOut)
 void CBeamEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1401788f0(pNode, "texturePath", m_arrTexturePath);
+    XmlTokenList(pNode, "texturePath", m_arrTexturePath);
     if (m_arrTexturePath.IsEmpty())
         return;
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);

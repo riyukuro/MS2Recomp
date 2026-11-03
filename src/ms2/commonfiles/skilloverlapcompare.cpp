@@ -98,7 +98,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
 int FUN_1406cfaa0(Unk_140165cf0* pElem, const char* pszName, std::vector<CString>& rOut);   // npcdata.cpp: list attribute
-const CString& FUN_14082efb0(int nStat);                // xml name of the nStat-th stat
+const CString& GetStatName(unsigned nStat);             // xml name of the nStat-th stat (stat.cpp)
 int FindStatByName(const CStringA& strName);            // stat name -> id (-1 when none)
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
@@ -225,7 +225,7 @@ int Unk_CompareStat::FUN_1407e5e70(Unk_140165cf0* pElem)
 {
     for (unsigned i = 0; i < 35; i++)
     {
-        CString strName = FUN_14082efb0(i);
+        CString strName = GetStatName(i);
         if (XmlGetAttr((class TiXmlElement*)(pElem), strName, reinterpret_cast<float&>(m_f0)) == 0)
             m_n4 = FindStatByName(strName);
     }
@@ -1280,7 +1280,7 @@ void SkillDataTable::LoadSkillFile(CString strPath)
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     for (Unk_140165cf0* pSkill : ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("skill")))
@@ -1386,7 +1386,7 @@ void SkillDataTable::LoadGlideData()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

@@ -39,7 +39,6 @@ public:
     virtual MS2Ptr<ASMovieClip> vfunc_86();                     // 0x1412a4070 returns a copy of m_enchantAni (unit_14129cfa0)
     int FUN_1419beef0(unsigned __int64 uid);                   // 0x1419beef0 (really a base member: UIItemRemakeOptionDialog calls it too)
     MS2Ptr<CItem> FUN_1419bef70(unsigned __int64 uid);          // 0x1419bef70
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // 0x140ba7930 bind a movie clip child (a UIDialog member: this+0x30)
 protected:
     MS2_LAYOUT_FRIEND;
     int m_mode;                                                 // +0x178

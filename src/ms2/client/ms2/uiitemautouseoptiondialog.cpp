@@ -146,13 +146,13 @@ public:
 };
 
 // The drop-down child of the movie.
-class Unk_AuCombo : public ASDropdownMenu { };   // C3: the real class (asdropdownmenu.h)
+
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 
 // The dialog's child lookups.
 class Unk_AuEntity : public UIDialog
 {
 public:
-    MS2Ptr<Unk_AuCombo> FUN_140c28560(const CString& strName);   // exe: no callee dtor, by reference
 };
 
 // The status listener registry.
@@ -540,7 +540,7 @@ void UIItemAutoUseOptionDialog::OnLoadComplete()
     {
         int nNumber = i + 1;
         CString strName = Unk_SocketFormat("m_dropdownItem{0}", reinterpret_cast<const unsigned&>(nNumber));
-        FUN_140f50230(((Unk_AuEntity*)this)->FUN_140c28560(strName).get(), i);
+        FUN_140f50230(((Unk_AuEntity*)this)->GetChild<ASDropdownMenu>(strName).get(), i);
     }
     FUN_140f50190();
 }
@@ -672,7 +672,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50090(int nState, int nIndex)
 {
     int nNumber = nIndex + 1;
     CString strName = Unk_SocketFormat("m_dropdownItem{0}", nNumber);
-    MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(strName);
+    MS2Ptr<ASDropdownMenu> spCombo = ((Unk_AuEntity*)this)->GetChild<ASDropdownMenu>(strName);
     if (spCombo)
     {
         if (nState == 0)
@@ -702,7 +702,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
 {
     if (pCombo == 0)
         return;
-    ((Unk_AuCombo*)pCombo)->ClearItems();
+    ((ASDropdownMenu*)pCombo)->ClearItems();
     for (unsigned i = 0; i < m_thresholds.GetCount(); i++)
     {
         int nCond = m_thresholds[i];
@@ -711,22 +711,22 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
             ASObj entry(2);
             entry.FUN_1409c0d20("condition", nCond);
             entry.FUN_1407cbb20("label", GetStringCommon(0x576));
-            ((Unk_AuCombo*)pCombo)->AddItemRow(entry);
+            ((ASDropdownMenu*)pCombo)->AddItemRow(entry);
         }
         else
         {
             ASObj entry(2);
             entry.FUN_1409c0d20("condition", nCond);
             entry.FUN_1407cbb20("label", BlockFormat<unsigned>(0xc09, reinterpret_cast<const unsigned&>(nCond)));
-            ((Unk_AuCombo*)pCombo)->AddItemRow(entry);
+            ((ASDropdownMenu*)pCombo)->AddItemRow(entry);
         }
     }
-    ((Unk_AuCombo*)pCombo)->vfunc_24(true);
+    ((ASDropdownMenu*)pCombo)->vfunc_24(true);
     Unk_PetOption opt;
     if (((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(nIndex, opt))
-        ((Unk_AuCombo*)pCombo)->SetSelectedIndex(opt.type);
+        ((ASDropdownMenu*)pCombo)->SetSelectedIndex(opt.type);
     else
-        ((Unk_AuCombo*)pCombo)->SetSelectedIndex(DAT_1439ed004 - 1);
+        ((ASDropdownMenu*)pCombo)->SetSelectedIndex(DAT_1439ed004 - 1);
 }
 
 // @0x140f50480
@@ -747,7 +747,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
     {
         int nNumber = i + 1;
         CString strName = Unk_SocketFormat("m_dropdownItem{0}", reinterpret_cast<const unsigned&>(nNumber));
-        MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(strName);
+        MS2Ptr<ASDropdownMenu> spCombo = ((Unk_AuEntity*)this)->GetChild<ASDropdownMenu>(strName);
         if (spCombo)
         {
             int nIdx = i;

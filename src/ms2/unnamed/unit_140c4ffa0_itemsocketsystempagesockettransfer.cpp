@@ -77,7 +77,7 @@ class ASItemBag   // C3: member view for the former free stand-ins
 public:
     void FUN_1422cf860();
 };
-NotifyContext::BindData* FUN_1422c8e90(const CString& name);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 class Unk_TrDebug;
 void* FUN_14025e7c0();
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -125,10 +125,9 @@ public:
 };
 }
 MS2_CHECK_SIZE(CCItemSocketSystemPacket::ForceFillIngredient, 0x20);
-struct Unk_SockMsgIIL;
 void FUN_140629340(Unk_SockUidPair&, COutputStream&);
 void FUN_1406295b0(Unk_SockItemPair&, CInPacket&);
-void FUN_140629de0(struct Unk_SockMsgIIL&, class COutputStream&);   // C3: was FUN_140629de0
+void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream&);
 
 // @0x140c4ffa0
 ItemSocketSystemPageSocketTransfer::ItemSocketSystemPageSocketTransfer()
@@ -698,7 +697,7 @@ void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scalef
     fill.m_nUid = m_source->GetItemUid();
     COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
-    FUN_140629de0(*(struct Unk_SockMsgIIL*)&static_cast<class CCItemSocketSystemPacket::ForceFillIngredient&>(fill), out);
+    FUN_140629de0(fill, out);
     FUN_140710590(out);
 }
 
@@ -783,13 +782,13 @@ ItemSlotBag* FUN_140c54520(NotifyContext::BindData* p)
 // @0x140c54570
 DragSlotBag* FUN_140c54570(const CString& name)
 {
-    return FUN_140c544d0(FUN_1422c8e90(name));
+    return FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(name));
 }
 
 // @0x140c54590
 ItemSlotBag* FUN_140c54590(const CString& name)
 {
-    return FUN_140c54520(FUN_1422c8e90(name));
+    return FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(name));
 }
 
 // Hooks (functions that build no callback delegates and read no unit statics).

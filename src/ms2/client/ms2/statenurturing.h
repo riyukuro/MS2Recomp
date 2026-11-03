@@ -10,7 +10,7 @@
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/icastingeventlistener.h"
 #include "ms2/placeholder/ascript.h"       // MS2Ptr<T>
-#include "ms2/unnamed/unit_140ad1860.h"    // Unk_McTimer
+#include "ms2/placeholder/intervaltimer.h"
 
 class CNurturingCubeObject;
 class CubeSpawnObject;
@@ -79,7 +79,7 @@ public:
 
     CubeSpawnObject* FUN_140ac21e0();                       // the owner as a CubeSpawnObject
 
-    Unk_McTimer m_timer;                                    // +0x40
+    Unk_IntervalTimer m_timer;                              // +0x40
 };
 MS2_CHECK_SIZE(StateIdleSpawnObject, 0x48);
 MS2_CHECK_OFFSET(StateIdleSpawnObject, m_timer, 0x40);

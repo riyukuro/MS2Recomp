@@ -40,18 +40,17 @@ int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(Unk_140165cf0*, const char*, E&);               // saleTag
 enum eShopResetType { eShopResetType_None = 0 };               // buyLimitResetType
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned>* pOut, const char* pszSep);   // split into numbers
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>), FUN_140177de0 (CAtlArray<int>)
 void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char* pszSep);
 unsigned char FUN_1401d1320(CCacheData*);
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 CStringW FUN_140b8ec90(const CMsTime& time);                               // date text
-CStringW FUN_1418fec00(int nType, __int64 nValue, int);        // money text by pay type
+CStringW FUN_1418fec00(int nType, __int64 nValue, bool);        // money text by pay type
 CStringW FUN_1418fef90(int nType, __int64 nValue);
 
 // The skill table (TSingleton<SkillDataTableCli>::GetInstance): finds the skill of a VIP effect.
 
-void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
 CVIPTable* TSingleton<CVIPTable>::s_instance;
@@ -82,13 +81,13 @@ CStringW CVIPGoods::GetPriceText(int bShort)
     {
         if (bShort != 0)
             return FUN_1418fef90(3, m_nSalePrice);
-        return FUN_1418fec00(3, m_nSalePrice, 0);
+        return FUN_1418fec00(3, m_nSalePrice, false);
     }
     else if (m_nPriceType == 1)
     {
         if (bShort != 0)
             return FUN_1418fef90(9, m_nSalePrice);
-        return FUN_1418fec00(9, m_nSalePrice, 0);
+        return FUN_1418fec00(9, m_nSalePrice, false);
     }
     return CStringW(L"");
 }
@@ -209,11 +208,11 @@ int CVIPTable::LoadGoods()
         XmlValue(pNode, "buyLimitResetType", *(eShopResetType*)&spGoods->m_nBuyLimitResetType);
         CString strIds;
         XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemID", strIds);
-        FUN_140177e10(strIds, &spGoods->m_bonusItemIds, ",");
+        XmlSplit(strIds, spGoods->m_bonusItemIds, ",");
         CString strRanks;
         XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemRank", strRanks);
         ATL::CAtlArray<int> ranks;
-        FUN_140177de0(strRanks, ranks, ",");
+        XmlSplit(strRanks, ranks, ",");
         for (unsigned n = 0; n < ranks.GetCount(); n++)
         {
             Unk_VipItemRank rank = static_cast<Unk_VipItemRank>(ranks[n]);
@@ -226,7 +225,7 @@ int CVIPTable::LoadGoods()
         }
         CString strCounts;
         XmlGetAttr((class TiXmlElement*)(pNode), "bonusItemCount", strCounts);
-        FUN_140177e10(strCounts, &spGoods->m_bonusItemCounts, ",");
+        XmlSplit(strCounts, spGoods->m_bonusItemCounts, ",");
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemCounts.GetCount())
         {
             Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);

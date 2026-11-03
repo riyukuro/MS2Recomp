@@ -21,6 +21,7 @@
 #include "ms2/commonfiles/citemoptiontable.h"
 #include "ms2/commonfiles/filesystem.h"
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
+class CLogString* GetLogString();   // C3: was CLogString::GetInstance
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
@@ -102,10 +103,10 @@ void CUserConditionEventData::Load()
     CString strPath = FUN_14071a5b0("Table", "userConditionEvent.xml");
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        Unk_UceLog(CLogString::GetInstance(), 1, 0x13, MS2_UCE_XML_ERR, "userConditionEvent.xml");
+        Unk_UceLog(GetLogString(), 1, 0x13, MS2_UCE_XML_ERR, "userConditionEvent.xml");
         return;
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("event")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("event")))

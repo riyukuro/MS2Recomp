@@ -122,15 +122,15 @@ extern NiFixedString DAT_143ae50a0;                               // extra data 
 
 inline const Vector3& SP(const efd::Point3& p) { return *(const Vector3*)&p; }
 
-class Unk_CubeSceneIterator {
+class Unk_NodeQueue {
 public:
-    Unk_CubeSceneIterator(NiAVObject* pRoot);
-    ~Unk_CubeSceneIterator();
-    NiAVObject* FUN_14098e0d0(bool descend);
+    Unk_NodeQueue(NiAVObject* pRoot);
+    ~Unk_NodeQueue();
+    NiAVObject* Next(bool descend);                 // 0x14098e0d0
 private:
     ATL::CAtlList<NiAVObject*> pending;
 };
-MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 class CNifLoadingService {
 public:
     NiAVObjectPtr Load(CString, bool, int, int, int);
@@ -142,7 +142,7 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 void FUN_140a0b1f0(struct Unk_NiMatrix3 const&, struct Vector3*);   // C3: was FUN_140a0b1f0
 void FUN_140b86230(const efd::Point3&, NiMatrix3&);
 NiAVObject* FUN_141b6efc0(egf::Entity*);
-void FUN_14098c6e0(egf::Entity*, unsigned, const bool&);
+void FUN_14098c6e0(class Unk_CachedEntity*, unsigned, const bool&);   // C3: was egf::Entity*
 
 void FUN_1410a77c0(void** pDst, void* pValue);
 void FUN_1410a7800(NiAVObject*, float, float, float);
@@ -263,7 +263,6 @@ private:
 class Unk_GuideRecord : public CPtred
 {
 public:
-    void FUN_1408356f0(void* pStream);                          // read from a stream
     int m_nType;                                                // +0x18
     int m_nObjId;                                               // +0x1c
     efd::Point3 m_pos20;
@@ -279,6 +278,8 @@ public:
     int m_nac;
 };
 MS2Ptr<Unk_GuideRecord> FUN_140835450(int nType);
+class Unk_StateArg22 : public CPtred { public: void FUN_1408356f0(class CInPacket& packet); };   // C3: member view (statemanager.h) for the record read
+class Unk_FishLineBody { public: void Destroy(); void FUN_140cd80d0(); };   // C3: member view (fishingmanager.cpp) of the fishing line
 
 class Unk_GuideWorld
 {
@@ -305,7 +306,6 @@ public:
 class Unk_GuideCamera : public CameraMgr
 {
 public:
-    CGuideObject* FUN_140a38d60();
 };
 
 
@@ -491,7 +491,7 @@ void CGuideObject::vfunc_128()
     MyPC* pHost = (MyPC*)efd::DynamicCast<Unk_AkoMyPC>(FUN_1410a1310());
     if (pHost)
     {
-        if (reinterpret_cast<Unk_GuideCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a38d60() == this)
+        if ((CGuideObject*)(void*)((Unk_CameraManager*)(reinterpret_cast<Unk_GuideCamera*>(TSingleton<CameraMgr>::GetInstance())))->FUN_140a38d60() == this)
             pHost->FUN_14152a700(this);
     }
 }
@@ -508,7 +508,7 @@ void CGuideObject::vfunc_129(void* pStream)
     {
         int nType = (&((Unk_CcRecordStream*)pStream)->m_reader)->ReadU8();
         MS2Ptr<Unk_GuideRecord> spRec = FUN_140835450(nType);
-        spRec->FUN_1408356f0(pStream);
+        ((Unk_StateArg22*)spRec.operator->())->FUN_1408356f0(*(CInPacket*)pStream);
         vfunc_114(spRec.get());
     }
 }
@@ -582,8 +582,8 @@ int CConstructionGuideObject::FUN_1410a1ee0(int nOwnerId, efd::Point3 kPos, efd:
         Vector3 kAt = reinterpret_cast<const Vector3&>(kPos);
         m_spBirdHead->FUN_1418ce8c0(kAt);
     }
-    Unk_CubeSceneIterator iterator(m_spModel.operator->());
-    while (NiAVObject* pObject = iterator.FUN_14098e0d0(true))
+    Unk_NodeQueue iterator(m_spModel.operator->());
+    while (NiAVObject* pObject = iterator.Next(true))
     {
         NiRenderObject* pNet = NiDynamicCast(NiRenderObject, pObject);
         if (pNet != 0)
@@ -1037,7 +1037,7 @@ void CFishingGuideObject::vfunc_128()
     if (pOwner != 0)
         ((class PC*)(class PCBase*)(pOwner))->SetGuide(efd::SmartPointer<CGuideObject>((CGuideObject*)0), 1);
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : 0, 0x6200004))
-        m_fishLine.FUN_140cd8080();
+        ((Unk_FishLineBody*)&m_fishLine)->Destroy();
     if (m_nEffectA != 0)
     {
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectA);
@@ -1073,7 +1073,7 @@ int CFishingGuideObject::vfunc_11()
     if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_nEffectA, 0);
     bool bShow = false;
-    FUN_14098c6e0(FUN_14123c410(), 0xa0b6b179, bShow);
+    FUN_14098c6e0((class Unk_CachedEntity*)FUN_14123c410(), 0xa0b6b179, bShow);
     vfunc_109(0);
     FUN_1410a59f0();
     return 1;
@@ -1104,7 +1104,7 @@ void CFishingGuideObject::FUN_1410a4cb0()
         bool bShow = true;
         if (((class Unk_FsOptimizer*)(void*)(((void*)FUN_1409f7c90())))->FUN_140ddcc90() == 0 && m_unk_40 != 0)
             bShow = false;
-        FUN_14098c6e0(FUN_14123c410(), 0xa0b6b179, bShow);
+        FUN_14098c6e0((class Unk_CachedEntity*)FUN_14123c410(), 0xa0b6b179, bShow);
         m_nShown = 1;
     }
 }
@@ -1162,7 +1162,7 @@ void CFishingGuideObject::vfunc_24(int)
                 if (m_unk_80 != 0)
                 {
                     bool bShow = false;
-                    FUN_14098c6e0((egf::Entity*)m_unk_80, 0xa0b6b179, bShow);
+                    FUN_14098c6e0((class Unk_CachedEntity*)(egf::Entity*)m_unk_80, 0xa0b6b179, bShow);
                 }
                 if (m_nEffectA != 0)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_nEffectA, m_unk_40 == 0 ? true : false);
@@ -1174,7 +1174,7 @@ void CFishingGuideObject::vfunc_24(int)
                 if (m_unk_b0 == 0)
                 {
                     bool bShow = true;
-                    FUN_14098c6e0((egf::Entity*)m_unk_80, 0xa0b6b179, bShow);
+                    FUN_14098c6e0((class Unk_CachedEntity*)(egf::Entity*)m_unk_80, 0xa0b6b179, bShow);
                 }
                 if (m_nEffectA != 0)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_nEffectA, 1);
@@ -1192,7 +1192,7 @@ void CFishingGuideObject::vfunc_53(float f)
     FUN_1410a5690();
     PCBase* pOwner = FUN_1410a1310();
     if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200004))
-        m_fishLine.FUN_140cd80d0();
+        ((Unk_FishLineBody*)&m_fishLine)->FUN_140cd80d0();
     if (m_spBirdHead.get())
     {
         m_spBirdHead->vfunc_15();

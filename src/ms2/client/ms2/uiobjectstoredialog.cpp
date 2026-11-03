@@ -47,8 +47,8 @@ class DragSlotBag   // C3: member view for the former free stand-ins
 public:
     void FUN_1422cca90();
 };
-void FUN_14180b230(CString* pBagId);                                    // drop the bag bound to the id
-void FUN_14180b170(CString* pBagId, int nSlot, int nSize);              // create the bag (StoreSlotBag)
+void FUN_14180b230(const CString& strBagId);                                    // drop the bag bound to the id
+void FUN_14180b170(const CString& strBagId, int nSlot, int nSize);              // create the bag (StoreSlotBag)
 int FUN_1408b6200(int nItemType);                                       // the slot count of an item type's bank
 
 // The object store state (global 0x143ab2d80): the sort button sends packet 0x18 / 8.
@@ -63,7 +63,6 @@ struct Unk_PickXY { float x, y; };                                      // dialo
 extern Unk_PickXY DAT_143b02320;                                        // zero offset
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, Unk_PickXY offRight);
 
-CStringTable* GetStringTable();
 void FUN_140710590(COutPacket& packet);
 void FUN_141901390(int nRelease, int nUiType);
 
@@ -156,7 +155,7 @@ void UIObjectStoreDialog::vfunc_67()
     packet.WriteUnicodeStringA(m_190);
     FUN_140710590(packet);
     ((class UIStatusEventDispatcher*)TSingleton<UIStatusEventDispatcher>::GetInstance())->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_14180b230(&m_180);
+    FUN_14180b230(m_180);
     UIDialog::vfunc_67();
     m_80 = 1;
     m_190 = "";
@@ -186,7 +185,7 @@ void UIObjectStoreDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.get() != 0) {
         FUN_141a72f80(0);
-        CStringW strName = GetStringTable()->FUN_141811980(1, m_198);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_198);
         CStringW strNum = FUN_140719a00(DAT_143ab28f8);
         int nSlots = 0;
         {
@@ -199,7 +198,7 @@ void UIObjectStoreDialog::OnLoadComplete()
             }
         }
         m_30->Invoke("initData", m_180, strNum, strName,
-                     GetStringTable()->GetItemDescription(m_198, CString("functionDescription")), 1, nSlots);
+                     TSingleton<CStringTable>::GetInstance()->GetItemDescription(m_198, CString("functionDescription")), 1, nSlots);
     }
 }
 
@@ -255,8 +254,8 @@ void UIObjectStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 void UIObjectStoreDialog::FUN_141a72f80(int bBind)
 {
     int nSlots = FUN_1408b6200(m_198);
-    FUN_14180b230(&m_180);
-    FUN_14180b170(&m_180, 0, nSlots);
+    FUN_14180b230(m_180);
+    FUN_14180b170(m_180, 0, nSlots);
     if (bBind != 0) {
         if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
             spBag->FUN_1407cba60("bagId", m_180);

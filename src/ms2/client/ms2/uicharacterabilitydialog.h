@@ -16,7 +16,6 @@
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/abilitytable.h"
 #include "ms2/placeholder/ascript.h"
-#include "ms2/placeholder/mctimer.h"
 #include "ms2/placeholder/intervaltimer.h"
 
 class NotifyObject;

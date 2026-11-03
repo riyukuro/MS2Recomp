@@ -271,7 +271,8 @@ public:
     bool m_1c;
 };
 
-class Unk_IdList { public: int FUN_140408410(const int& nId); };
+class Unk_IdList {};
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_QuickSlots { };
 int FUN_14035a870(Unk_QuickSlots* pSlots, int nSlot, unsigned nValue);
 Unk_EmoNpcTable* FUN_140764010();
@@ -922,28 +923,28 @@ void FUN_140930f20()
 }
 
 // @0x140930fe0
-void FUN_140930fe0(Unk_Notice* pNotice)
+void FUN_140930fe0(CInPacket& packet)
 {
-    int nKind = (&pNotice->m_sub)->vfunc_1();
+    int nKind = (&reinterpret_cast<Unk_Notice*>(&packet)->m_sub)->vfunc_1();
     switch (nKind)
     {
     case 0:
     {
-        int nList = (&pNotice->m_sub)->vfunc_1();
+        int nList = (&reinterpret_cast<Unk_Notice*>(&packet)->m_sub)->vfunc_1();
         if (nList == 0)
-            ((GameEventUserValue&)DAT_143ab2fc0).Read(*(CInPacket*)pNotice);
+            ((GameEventUserValue&)DAT_143ab2fc0).Read(packet);
         else if (nList == 1)
-            ((GameEventUserValue&)DAT_143ab3010).Read(*(CInPacket*)pNotice);
+            ((GameEventUserValue&)DAT_143ab3010).Read(packet);
         break;
     }
     case 1:
     {
-        int nList = (&pNotice->m_sub)->vfunc_1();
+        int nList = (&reinterpret_cast<Unk_Notice*>(&packet)->m_sub)->vfunc_1();
         MS2Ptr<Unk_NoticeTarget> spTarget;
         if (nList == 0)
-            spTarget = DAT_143ab2fc0.FUN_14041f850(pNotice);
+            spTarget = DAT_143ab2fc0.FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
         else if (nList == 1)
-            spTarget = DAT_143ab3010.FUN_14041f850(pNotice);
+            spTarget = DAT_143ab3010.FUN_14041f850(reinterpret_cast<Unk_Notice*>(&packet));
         if (spTarget.get() != 0)
         {
             ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(((GameEventVariable*)spTarget.operator->())->GetType(), (class GameEventVariable*)(spTarget.get()));
@@ -1019,7 +1020,7 @@ unsigned FUN_140931450(CString strName)
     int nSlot = ((CTitleTable*)FUN_140933210())->FindTitleId(strName);
     if (nSlot == 0)
         return 0;
-    return DAT_143ab3268.FUN_140408410(nSlot) != -1;
+    return Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3268), nSlot) != -1;
 }
 
 // Not in the hook DLL: the DLL's function-local static would be a second, DLL-constructed character state; DLL callers

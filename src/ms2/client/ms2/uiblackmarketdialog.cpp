@@ -78,7 +78,6 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* FUN_140b632f0();
 __int64 FUN_141b71960(const char* sz);
 unsigned __int64 FUN_140718350(const CString& str);
-void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 class Unk_Hotbar { public: int FUN_140d40670(); };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);
@@ -307,7 +306,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             if (tip.FUN_1409e0d40(spItem.get()))
             {
                 tip.FUN_1409db7b0(spItem);
-                FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+                *pRetVal = tip.FUN_1422bb870();
             }
         }
     }

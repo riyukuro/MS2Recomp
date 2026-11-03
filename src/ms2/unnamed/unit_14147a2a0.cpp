@@ -9,6 +9,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_14147a2a0.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#include <efd/EEMath.h>   // C3: efd::Sqrt was FUN_140968970
 #include <math.h>
 // The statically linked CRT math calls go through the exe's IAT.
 extern "C" float (__cdecl* __imp_cosf)(float);
@@ -23,7 +24,6 @@ extern "C" float (__cdecl* __imp_tanf)(float);
 // ---- exe callees ----
 Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bFlag);  // direction of the pair (flag 1)
 float FUN_141403f20(Vector3 kA, Vector3 kB);                // horizontal distance (z cleared on the copies)
-float FUN_140968970(float fValue);                                          // sqrtf wrapper
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 Vector3* FUN_14097faa0(Vector3* pDst, const Unk_NiPoint3& src);    // NiPoint3 assignment
 Vector3* FUN_14097fad0(Vector3* pDst, const Unk_NiPoint3* pSrc);    // NiPoint3 assignment
@@ -79,7 +79,7 @@ void Unk_Parabola::FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, f
     }
     else
     {
-        m_fSpeed = fRange * FUN_140968970(fValue);
+        m_fSpeed = fRange * efd::Sqrt(fValue);
         m_fTime = fRange / (m_fCos * m_fSpeed);
     }
 }
@@ -143,7 +143,7 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
     float fDisc = fB * fB - fA * fC;
     if (fDisc < 0.0f)
         return false;
-    float fRoot = FUN_140968970(fDisc);
+    float fRoot = efd::Sqrt(fDisc);
     float fInvA = 1.0f / fA;
     float afT[2];
     afT[0] = (-fB - fRoot) * fInvA;
@@ -179,11 +179,11 @@ char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
         Unk_NiPoint3 kNormal(kCenter.FUN_140965c40(reinterpret_cast<const Vector3&>(kNear)));
         reinterpret_cast<Vector3&>(kNormal).FUN_140968990();
         FUN_14097faa0(pHit, reinterpret_cast<const Vector3&>(kNear).FUN_14097fd50(
-            reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(FUN_140968970(fPerp) - fRadius)));
+            reinterpret_cast<const Vector3&>(kNormal).FUN_14097fc90(efd::Sqrt(fPerp) - fRadius)));
     }
     else
     {
-        float fHalf = FUN_140968970(fRR - fPerp);
+        float fHalf = efd::Sqrt(fRR - fPerp);
         float fT = 0.0f;
         if (fSqr > fRR)
             fT = fProj - fHalf;
@@ -217,7 +217,7 @@ bool FUN_14147ad10(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
 void FUN_14147ae30(float fUnused0, float fUnused1, float fRadius, float* pX, float* pY, void* pRandom)
 {
     float fAngle = FUN_1407680d0((class Unk_Random*)(pRandom)) * 6.2831855f;
-    float fDist = fRadius * FUN_140968970(FUN_1407680d0((class Unk_Random*)(pRandom)));
+    float fDist = fRadius * efd::Sqrt(FUN_1407680d0((class Unk_Random*)(pRandom)));
     FUN_140e69330(fAngle, pY, pX);
     *pX = *pX * fDist;
     *pY = *pY * fDist;

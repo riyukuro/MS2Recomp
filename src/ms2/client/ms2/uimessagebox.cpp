@@ -205,7 +205,7 @@ bool FUN_1407183f0(const CStringW& str);                        // "1", "o" or "
 __time64_t GetServerTime();
 
 class Unk_MessageBoxSound { public: virtual void vfunc_0(); virtual void vfunc_1(int nUiId); };
-UIBannerAdvertisingDialog* FUN_141876420(int nId);
+template <class T> T* Unk_UgcGetDialog(int nId);   // C3: was FUN_141876420
 MS2Ptr<ASDialog> FUN_140e43fe0(int nMovieId, const Scaleform::GFx::Value& v);
 
 UICashShopDialog* FUN_140b04f80(int nId);
@@ -254,12 +254,11 @@ class Unk_MessageBoxFilters { public: MS2Ptr<Unk_MessageBoxFilter> FUN_140229a50
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 class Unk_MessageBoxNameDialog : public UICharacterListDialog { public: };
 template <class T> T* Unk_MMDialog(int nId);          // mentoringmanager.cpp
-class Unk_MessageBoxTradeDialog : public UITradeDialogEx { };
-Unk_MessageBoxTradeDialog* FUN_14140e820(int nId);
+template <class T> T* Unk_InvGetDialogById(int nId);   // C3: was FUN_14140e820
 void FUN_141404930(__int64 nUid);
 void FUN_141425fc0(__int64, int, void*);   // C3: was FUN_141425fc0
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pOut);
-void FUN_140961010(int nId, int nA, int nB, const CStringW& strArg);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 int FUN_141276a30(const CStringW& strName, CStringW& strError);  // validate a character name
 bool RequestCoupleEmotion(__int64, int);   // C3: was FUN_140b845a0
 int UseItem(MS2Ptr<CItem> spItem, int n);
@@ -299,13 +298,6 @@ struct Unk_MessageBoxXform
 MS2_CHECK_SIZE(Unk_MessageBoxXform, 0x34);
 
 #include <NiTransform.h>
-// The NiPoint3 converted from the player's position (NiPoint3(const efd::Point3&) at 0x14027dcf0).
-struct Unk_MessageBoxPos
-{
-    Unk_MessageBoxPos(const NiPoint3& src);
-    float x, y, z;
-};
-void FUN_14097faa0(Unk_MessageBoxPt3* pDst, const Unk_MessageBoxPos& src);   // NiPoint3::operator=
 extern Unk_EfdMatrix3 DAT_143a09600;                  // identity rotation
 class CItemDataTable;
 
@@ -376,10 +368,8 @@ extern Unk_Inventory g_143ab2a90;
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
 class TabContentsPetCompose : public PetSystemTabContents { public: void FUN_140cb48a0(int bUsePoint); };
 class TabContentsPetRemakeOption : public PetSystemTabContents { public: void FUN_140b95280(int bUsePoint); };
-class Unk_MessageBoxPetDialog : public UIPetSystemDialog { };
-Unk_MessageBoxPetDialog* FUN_140b99ba0(int nId);
-class Unk_MessageBoxTrainingDialog : public UIItemPetTrainingDialog { };
-Unk_MessageBoxTrainingDialog* FUN_140d276c0(int nId);
+template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0
+template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d276c0
 
 // @0x141a00840
 template <> inline bool Delegate<bool(int, const CMsgBoxData&)>::operator==(const Delegate& o) const
@@ -768,7 +758,7 @@ void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
     {
         if (m_data->GetExtra() == s_143af3ba8)
         {
-            UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
+            UIBannerAdvertisingDialog* pBanner = Unk_UgcGetDialog<UIBannerAdvertisingDialog>(0x4eca);
             if (pBanner)
                 pBanner->FUN_141031260();
         }
@@ -796,7 +786,7 @@ void UIMessageBox::FUN_1419f9110()
     {
         if (m_data->GetExtra() == s_143af3ba8)
         {
-            UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
+            UIBannerAdvertisingDialog* pBanner = Unk_UgcGetDialog<UIBannerAdvertisingDialog>(0x4eca);
             if (pBanner)
                 pBanner->FUN_1410312d0();
         }
@@ -1389,7 +1379,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
             Unk_MessageBoxXform xf;
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             xf.m_fScale = 1.0f;
-            FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
+            reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
             reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
             xf.m_rotate = rot;
@@ -1423,7 +1413,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
             Unk_MessageBoxXform xf;
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             xf.m_fScale = 1.0f;
-            FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
+            reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
             reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
             xf.m_rotate = rot;
@@ -1458,7 +1448,7 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
             Unk_MessageBoxXform xf;
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             xf.m_fScale = 1.0f;
-            FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
+            reinterpret_cast<NiPoint3&>(xf.m_translate) = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
             reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(DAT_143a09600);
             xf.m_rotate = rot;
@@ -1723,7 +1713,7 @@ int UIMessageBox::FUN_1419fd260(int nButton)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        Unk_MessageBoxPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog)
         {
             if (pDialog->vfunc_55())
@@ -1754,7 +1744,7 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        Unk_MessageBoxPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog)
         {
             if (pDialog->vfunc_55())
@@ -1785,7 +1775,7 @@ int UIMessageBox::HandleTrainingBindPetButton(int nButton)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        Unk_MessageBoxTrainingDialog* pDialog = FUN_140d276c0(0x4f12);
+        UIItemPetTrainingDialog* pDialog = GetItemUseDialog<UIItemPetTrainingDialog>(0x4f12);
         if (pDialog)
         {
             if (pDialog->vfunc_55())
@@ -1812,7 +1802,7 @@ int UIMessageBox::FUN_1419fd830(int nButton)
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        Unk_MessageBoxPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* pDialog = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (pDialog)
         {
             if (pDialog->vfunc_55())
@@ -1981,7 +1971,7 @@ int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
         int nResult = g_143ab2a90.FUN_140a612b0(nSlot, spItem, nCount);
         if (nResult == -1)
         {
-            FUN_140961010(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nSlot));
+            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nSlot));
             {
                 CString strEmpty("");
                 FUN_141276180(s_warning, strEmpty);
@@ -2074,7 +2064,7 @@ int UIMessageBox::FUN_1419fe900(int nButton, int nCount)
             return 1;
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e83) == 0)
         {
-            Unk_MessageBoxTradeDialog* pDialog = FUN_14140e820(0x4e83);
+            UITradeDialogEx* pDialog = Unk_InvGetDialogById<UITradeDialogEx>(0x4e83);
             if (pDialog)
             {
                 int nSlot = 0;

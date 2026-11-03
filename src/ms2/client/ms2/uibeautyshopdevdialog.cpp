@@ -65,6 +65,7 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include <algorithm>
 #include <vector>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
+class NoticeMessage { public: void SetActor(int nActor); };   // C3: unit-local view (0x140a53190; was Unk_EffectTarget::FUN_140a53190)
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 
@@ -79,7 +80,6 @@ public:
 class Unk_ItemEquipData : public CItemData {};
 // The table data of an equipped item (CEquipItem::FUN_1411dc7f0).
 struct Unk_EquipItemData : CItemData {};
-ItemModelHead* FUN_14053ec70(CItemData* pData);         // the <customize> block
 
 
 // The current field (the page refreshes its camera through it).
@@ -153,7 +153,6 @@ public:
 
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-CStringTable* GetStringTable();
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 // Message boxes and strings.
@@ -716,7 +715,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
                 nSelected = (int)i;
             if (bKeepList != 0)
                 continue;
-            CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
             CStringW strCode = FUN_141b71990(nItemId);
             int bMatch = 1;
             if (!strSearch.IsEmpty())
@@ -948,7 +947,7 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
     Unk_EffectTarget target;
     target.m_strName = ((class CommonResource*)FUN_1401d31f0())->m_strCustomizingFinish;
     target.m_nKind = 1;
-    target.FUN_140a53190(pPc->FUN_14123c580());
+    reinterpret_cast<NoticeMessage&>(target).SetActor(pPc->FUN_14123c580());
     CEffectService::GetInstance()->FUN_1411a4a00(target);
     FUN_14191fc40(0);
     FUN_14191ff70();
@@ -1016,7 +1015,7 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
         int nItemId = pData->GetItemId();
         ASObj row(2);
         row.FUN_1407cbb20("guid", FUN_141b71910(spItem->GetItemUid()));
-        CStringW strName = GetStringTable()->FUN_141811980(1, nItemId);
+        CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
         row.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
         row.FUN_1407cbb20("itemname", CStringW(strName));
         row.FUN_1407cba60("iconPath", spItem->FUN_140528590());
@@ -1151,7 +1150,7 @@ void UIBeautyShopDevDialog::OnClickAdd()
     spItem->FUN_1411dca30(6, aNames);
     if (aNames.IsEmpty())
         return;
-    if (!FUN_14053ec70(spData.operator->())->FUN_1405471b0())
+    if (!spData.operator->()->FUN_14053ec70()->FUN_1405471b0())
         return;
     int nModel = spData->GetItemPreset();
     MS2Ptr<CEquipModel> spModel = spItem->FindModelByName(aNames[0]);
@@ -1160,7 +1159,7 @@ void UIBeautyShopDevDialog::OnClickAdd()
         CItemDataTable::ModelPtr spModelData = TSingleton<CItemDataTable>::GetInstance()->GetModel(nModel);
         if (spModelData.get())
         {
-            if (!FUN_14053ec70(spData.operator->())->FUN_140547360())
+            if (!spData.operator->()->FUN_14053ec70()->FUN_140547360())
                 spModelData->FUN_14054b670()->handle.AssignRaw(new MsTransform);
             spModelData->FUN_14054b670()->handle->position =
                 reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->FUN_141200130()));
@@ -1194,7 +1193,7 @@ void UIBeautyShopDevDialog::FUN_141921190(int nItemId)
     if (spData == 0)
         return;
     int bEnable = 0;
-    if (m_1a0 == 6 && FUN_14053ec70(spData.operator->())->FUN_1405471b0())
+    if (m_1a0 == 6 && spData.operator->()->FUN_14053ec70()->FUN_1405471b0())
         bEnable = 1;
     if (MS2Ptr<ASButton> spNew = GetChild<ASButton>("m_new"))
         spNew->FUN_1422c1fe0(bEnable);

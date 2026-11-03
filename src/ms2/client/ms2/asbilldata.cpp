@@ -44,7 +44,7 @@ static CStringA s_strTabIndex = "tabIndex";
 // ---- exe functions called here ----
 
 CString FUN_1407194b0(__int64 n);                               // a number as text (unit_1407186f0)
-CString FUN_140719190(unsigned int n);                          // an unsigned number as text
+CString FUN_140719190(int n);                                   // an unsigned number as text
 __int64 FUN_1407182f0(const CString& s);                        // text -> __int64
 int FUN_140718170(const CString& s);                            // text -> int
 CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);   // a money text (uicommon.cpp)

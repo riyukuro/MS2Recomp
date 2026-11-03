@@ -36,7 +36,6 @@ public:
 }
 
 void* FUN_140aae430();
-void FUN_140159b70(long hr);                                    // AtlThrow
 
 // @0x140cca840
 void FUN_140cca840(int nType);
@@ -117,7 +116,7 @@ void FUN_140cca840(int nType)
         FUN_140cca9d0();
         break;
     case 6:
-        FUN_140159b70(0x8007000e);
+        ATL::AtlThrowImpl(0x8007000e);
         break;
     case 7:
         RaiseException(0x7b, 1, 0, 0);

@@ -98,13 +98,13 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 unsigned short FUN_14074bd10(int);  // C3: the definition's signature
 class Unk_140acd6e0 : public ASMovieClip { public:
 };
-int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const int* pn);           // index of the value (-1 when absent)
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
 typedef MS2Ptr<CLearningQuestData> LqPtr;
 typedef ATL::CAtlArray<LqPtr> LqArray;
-int FUN_1402bacf0(ATL::CAtlArray<int>& rArr, const int& n);                 // index of the value (-1 when absent)
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0; index of the value (-1 when absent)
 static int FUN_140ea3980(const void* pA, const void* pB);
 
 // @0x140ea0850
@@ -475,7 +475,7 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
         MS2Ptr<CQuestData> spQuest = FUN_14074bc40(spItem->m_nReqQuest);
         if (!spQuest)
             continue;
-        if (FUN_1402bacf0(chapters, spQuest->m_28) == -1)
+        if (Common::FindElement<int>(chapters, spQuest->m_28) == -1)
         {
             chapters.Add(spQuest->m_28);
             firstOfChapter.SetAt(spQuest->m_28, spItem->m_nId);
@@ -501,7 +501,7 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
         ASArray children(2);
         unsigned nFirst = 0;
         firstOfChapter.Lookup(nChapter, nFirst);
-        int nType = FUN_140408410(&quests, &m_194) != -1 ? 1 : 2;
+        int nType = Unk_ArrayFind<unsigned>(quests, reinterpret_cast<const unsigned&>(m_194)) != -1 ? 1 : 2;
         unsigned nNew = 1;
         m_310.Lookup(nFirst, nNew);
         m_310.SetAt(nFirst, 0);

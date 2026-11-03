@@ -22,7 +22,7 @@
 
 #pragma comment(lib, "shlwapi.lib")
 
-MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS object in an ASUIComponent
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS object in an ASUIComponent
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);           // *pValue = v (v by value)
 
 // @0x1422f0900
@@ -88,7 +88,7 @@ void GFxMovieTooltip::vfunc_4(void* pMovie, const char* szEvent, const Scaleform
             Scaleform::GFx::Value vRoot(pArgs[0]);
             FUN_1422be140();
             FUN_1422be2a0();
-            m_90 = FUN_140acca70(m_18, vRoot);
+            m_90 = Unk_ASCreate<ASUIComponent>(m_18, vRoot);
         }
     }
     else if (_stricmp("Tooltip", szEvent) == 0 && nArgs > 1)

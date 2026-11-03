@@ -14,7 +14,6 @@
 #include <string.h>
 #include "ms2/placeholder/cgameoption.h"   // C3: TSingleton<> needs the class
 #include "ms2/client/ms2/worldservice.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 
 // ---- unit-local views of exe objects ----
 
@@ -101,7 +100,7 @@ void UIIndividualDPSDialog::vfunc_67()
 void UIIndividualDPSDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
+    m_tick.Init();
     PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
@@ -151,7 +150,7 @@ void UIIndividualDPSDialog::vfunc_72()
     {
         if (m_30.IsNull())
             return;
-        if (!reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(100))
+        if (!m_tick.Check(100))
             return;
         PCBase* pPC = ((class PCBase*)((class WorldService*)(class Unk_IndWorld*)(reinterpret_cast<Unk_IndWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)

@@ -24,7 +24,7 @@ public:
     void FUN_141a02860(void* p);
     void SetExtra(const CStringW& str);
     void SetMsg(const CStringW& str);
-    void FUN_141a027c0(Unk_MsgBoxCallback cb);
+    void SetCallback(Unk_MsgBoxCallback cb);
     void FUN_141a01800(int n);
     void SetTitle(const CStringW& str);
     void SetCheckbox0(CStringW str, bool b);
@@ -135,7 +135,7 @@ Unk_MsgBoxPtr FUN_140d74090(Unk_MsgBoxCallback cb, CStringW text)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(1));
     box->SetMsg(GetStringCommonByKey(text));
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     FUN_14151f150(box);
     return box;
 }
@@ -145,7 +145,7 @@ Unk_MsgBoxPtr FUN_140d74230(Unk_MsgBoxCallback cb, CStringW text)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(1));
     box->SetMsg(text);
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     FUN_14151f150(box);
     return box;
 }
@@ -155,7 +155,7 @@ Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->SetMsg(text);
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     FUN_14151f150(box);
     return box;
 }
@@ -165,7 +165,7 @@ Unk_MsgBoxPtr FUN_140d74500(CStringW text, int nType, Unk_MsgBoxCallback cb)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->SetMsg(text);
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     return box;
 }
 
@@ -206,7 +206,7 @@ Unk_MsgBoxPtr FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB
     box->SetTitle(strA);
     box->SetCheckbox0(GetStringCommon(0x9d0), 1);
     box->SetAgreement(g_143ac2fb8.FUN_140d75090(nBit).FUN_140d750f0());
-    box->FUN_141a027c0(cb);
+    box->SetCallback(cb);
     FUN_140d73c60(box);
     return box;
 }

@@ -30,7 +30,6 @@
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW FormatStringId(int nId, const fmt::ArgList& args);             // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
-CStringTable* GetStringTable();                                          // the string table singleton
 int FUN_1406516a0();                                                    // client language
 int FUN_1406516b0();                                                    // the language / region id
 int FUN_1406516d0(int nLanguage);                                       // the digit-group size of a language
@@ -292,8 +291,8 @@ MS2_REPLACE(0x140B8FC70, FUN_140b8fc70, 590, 0xCF168768);
 CStringW FUN_140b8fed0(int nId)
 {
     if (FUN_1406516b0() == 2)
-        return GetStringTable()->FUN_141811980(0x3e, nId);
-    return GetStringTable()->FUN_141811980(1, nId);
+        return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3e, nId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId);
 }
 MS2_REPLACE(0x140B8FED0, FUN_140b8fed0, 128, 0x5835A829);
 

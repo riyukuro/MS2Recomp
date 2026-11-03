@@ -42,7 +42,6 @@ public:
     class RankingArenaData* GetGradeOfRating(int);
 };
 
-class Unk_FtWorldToScreen { public: bool FUN_140af0700(const Vector3& world, Vector3& out); };
 class Unk_FtUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -189,7 +188,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
     Vector3 kWorld = pObject->GetPos();
     kWorld.z += 150.0f;
     Vector3 kScreen;
-    if (reinterpret_cast<Unk_FtWorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(kWorld, kScreen))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(kWorld), reinterpret_cast<NiPoint3&>(kScreen)))
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())

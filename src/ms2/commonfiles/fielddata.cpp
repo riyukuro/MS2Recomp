@@ -306,7 +306,6 @@ struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was F
 void FUN_14028fd90(struct Unk_XmlElement*,const char*,const char*,const char*,std::vector<struct Unk_XmlElement*>&);
 CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
 CString FUN_14071a5b0(const CString&,const CString&);
-bool FUN_1401c0090(const CString&,const CString&);
 void FUN_14025a680(CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -317,8 +316,7 @@ int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d
 
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-int FUN_140178670(Unk_140165cf0*,const char*,ATL::CAtlArray<int>&);
-int FUN_140178770(Unk_140165cf0*,const char*,std::vector<unsigned>&);
+template <class C> int XmlTokenList(Unk_140165cf0* pElem, const char* pszName, C& out);   // C3: was FUN_140178770 (std::vector<unsigned>), FUN_140178670 (CAtlArray<unsigned>)
 bool FUN_14028d470(float,float);
 template <class T> T XmlConvert(const CString&);
 class CLogString* GetLogString();
@@ -627,7 +625,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374270(CString xblock)
     if (Unk_LockGuard guard=s_fieldLock) {} else {
         for (POSITION pos=s_fields.GetStartPosition();pos;s_fields.GetNext(pos)) {
             MS2Ptr<CFieldData> field=s_fields.GetValueAt(pos);
-            if (FUN_1401c0090(field->m_strXBlock,xblock)) return field;
+            if (field->m_strXBlock == xblock) return field;
         }
     }
     return MS2Ptr<CFieldData>(nullptr);
@@ -706,12 +704,12 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         XmlGetAttr((class TiXmlElement*)(property), "minimapPing", m_bMinimapPing);
         XmlGetAttr((class TiXmlElement*)(property), "popupMenu", m_bPopupMenu);
         XmlGetAttr((class TiXmlElement*)(property), "gemSystem", m_bGemSystem);
-        ATL::CAtlArray<int> disabled;
-        FUN_140178670(property,"skillUseDisable",disabled);
+        ATL::CAtlArray<unsigned> disabled;
+        XmlTokenList(property,"skillUseDisable",disabled);
         for (unsigned i=0;i<disabled.GetCount();++i) {
             m_nSkillUseDisableMask |= 1 << disabled[i];
         }
-        FUN_140178770(property,"enteranceBuffIDs",m_enteranceBuffIds);
+        XmlTokenList(property,"enteranceBuffIDs",m_enteranceBuffIds);
         FUN_1403759c0(property,"enteranceBuffLevels",m_enteranceBuffLevels);
         if (m_enteranceBuffIds.size()!=m_enteranceBuffLevels.size()) {
             reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0,0,14,L"Field Load - invalid enterance buff count");
@@ -726,7 +724,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
     if (drop) {
         XmlGetAttr((class TiXmlElement*)(drop), "maplevel", m_nMapLevel);
         XmlGetAttr((class TiXmlElement*)(drop), "dropRank", m_nDropRank);
-        FUN_140178770(drop,"globalDropBoxID",m_globalDropBoxIds);
+        XmlTokenList(drop,"globalDropBoxID",m_globalDropBoxIds);
     }
     if (m_nRevivalReturnId==0) m_nRevivalReturnId=m_nFieldID;
     Unk_140165cf0* split=((class Unk_140165cf0*)((class Unk_XmlNode*)(node))->FirstChild("split"));

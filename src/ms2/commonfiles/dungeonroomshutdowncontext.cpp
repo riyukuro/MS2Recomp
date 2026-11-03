@@ -26,7 +26,8 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Out-of-unit helpers.
-int FUN_140179060(Unk_140165cf0* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // enum attribute by name
+template <class E> int XmlValueByName(Unk_140165cf0* pElem, const char* pszName, E& eOut);   // enum attribute by name
+template <> int XmlValueByName(Unk_140165cf0* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // 0x140179060 (defined in additionalactionadditional.cpp)
 class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -76,7 +77,7 @@ void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
          pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonGroup")))
     {
         Unk_DungeonGroupType eType = Unk_DungeonGroupType_None;
-        FUN_140179060(pNode, "type", eType);
+        XmlValueByName(pNode, "type", eType);
         if (eType != 0)
             m_groups.insert(eType);
     }

@@ -7,6 +7,7 @@
 // assumed.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\rpgcameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3
 
 #include "rpgcameramode.h"
 
@@ -51,7 +52,7 @@ extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern const float g_142f5c218;
 
 // The input state (FUN_14025e7c0).
-CInputKeyHandler* FUN_14025e7c0();
+void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
 
 class Unk_PCMove   // C3: member view (real class not in this TU)
 {
@@ -81,15 +82,11 @@ class CameraMgr   // C3: member view (real class not in this TU)
 public:
     void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);   // set the camera target
 };
-class Unk_GameContext
-{
-public:
-    Unk_CameraTargetEntity* FUN_141bd1050(__int64 nObjectId);
-};
 class WorldService   // C3: static member view for the former free stand-ins
 {
 public:
     static class WorldService* GetInstance();
+    class Unk_WsC_GameObj* FUN_141bd1050(void* mesh);   // C3: was Unk_GameContext::FUN_141bd1050
 };
 
 // A float table value of the client configuration (FUN_1401d3200).
@@ -108,11 +105,7 @@ struct Unk_ClientConfig
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 // The picked-object list returned by the camera manager's pick (FUN_140af0850).
-class Unk_PickEntry
-{
-public:
-    __int64 FUN_140a17cb0();                        // object id
-};
+class Unk_PickEntry;
 class NiPick
 {
 public:
@@ -124,6 +117,7 @@ public:
         Record* GetAt(unsigned int i) const;
     };
 };
+class NiPick::Record { public: class NiAVObject* GetAVObject(); };   // C3: was Unk_PickEntry::FUN_140a17cb0
 namespace ecr { class PickService { public: class PickRecord { public: const NiPick::Results* GetPickResult() const; }; }; }
 class Unk_PickList : public ecr::PickService::PickRecord {};
 class Unk_PickListPtr
@@ -151,7 +145,6 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 float FUN_14029d220(float f);                       // fabs
 float FUN_140a38cd0(float f);                       // fabs
 float FUN_14059d930(float f);                       // fabs
-float FUN_140a0fda0(float a, float b);              // max
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 
@@ -181,10 +174,10 @@ void CRPGCameraMode::vfunc_9()
         else if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->FUN_141682fe0(300009))
             ptMove.x = -1.0f;
     }
-    if (FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
     {
         int nX, nY, nZ;
-        if (FUN_14025e7c0()->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
         {
             if (abs(nY) > abs(nX))
                 ptMove.x = (float)nY * -0.05f;
@@ -192,9 +185,9 @@ void CRPGCameraMode::vfunc_9()
                 ptMove.y = (float)nX * 0.1f;
         }
     }
-    if (FUN_14025e7c0()->FUN_14116d950(0x33, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x33, false, 0))
         ptMove.y = 1.0f;
-    else if (FUN_14025e7c0()->FUN_14116d950(0x34, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x34, false, 0))
         ptMove.y = -1.0f;
     Unk_CameraManager::FUN_1409478c0()->FUN_140a38d90(ptMove);
 }
@@ -278,8 +271,8 @@ void CRPGCameraMode::vfunc_8(double fTime)
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
             float fStep = efd::Clamp((float)fTime, 0.0f, 1.0f / fRate);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x),
-                                       FUN_140a0fda0(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
+            float fMax = efd::Max<float>(FUN_140a38cd0(ptInput.x),
+                                       efd::Max<float>(FUN_140a38cd0(ptInput.y), FUN_140a38cd0(ptInput.z)));
             float fScale = fStep * fMax;
             float fZoom = ptInput.x * fScale;
             float fYaw = ptInput.y * fScale;
@@ -363,11 +356,11 @@ void CRPGCameraMode::vfunc_30()
     Unk_PickListPtr pList = Unk_CameraManager::FUN_1409478c0()->FUN_140af0850(fX, fY, true, true, false, NULL);
     if (!pList.FUN_140a16c00())
         return;
-    Unk_GameContext* pContext = ((class Unk_GameContext*)WorldService::GetInstance());
+    WorldService* pContext = WorldService::GetInstance();
     for (unsigned int i = 0; i < pList.FUN_140a16c30()->GetPickResult()->GetSize(); ++i)
     {
         Unk_PickEntry* pEntry = reinterpret_cast<Unk_PickEntry*>(pList.FUN_140a16c30()->GetPickResult()->GetAt(i));
-        Unk_CameraTargetEntity* pObject = pContext->FUN_141bd1050(pEntry->FUN_140a17cb0());
+        Unk_CameraTargetEntity* pObject = reinterpret_cast<Unk_CameraTargetEntity*>(pContext->FUN_141bd1050(reinterpret_cast<NiPick::Record*>(pEntry)->GetAVObject()));
         Unk_RpgActor* pActor = FUN_1409ffd30(pObject);
         if (pActor)
         {
@@ -454,7 +447,7 @@ Vector3 CRPGCameraMode::FUN_14170b320(Vector3 ptPos)
     float fZ;
     float fY;
     float fX;
-    kRot.FUN_142085840(fX, fY, fZ);
+    reinterpret_cast<const efd::Matrix3*>(&kRot)->ToEulerAnglesXYZ(fX, fY, fZ);
     return Vector3(-fX, -fY, -fZ).FUN_14097fc90(180.0f).FUN_140ae9180(3.14159265f);
 }
 MS2_REPLACE_METHOD(0x14170b320, CRPGCameraMode, FUN_14170b320, 416, 0xAAC9EF95);

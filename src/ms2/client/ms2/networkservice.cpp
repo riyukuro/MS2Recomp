@@ -382,7 +382,7 @@ void* FUN_14280ef5e(void*,long,void*,void*,int);
 void FUN_14038bb30(const char*,const char*,std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
 int FUN_14053fd90(void*);int FUN_140a612b0(void*,int,Unk_SocketPtr<CItem>,int);extern char DAT_143ab2a90;
-void FUN_140961010(int,int,int,const CStringW&);int FUN_141276180(const CString&,const CString&);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 class Unk_NetworkEquipment { public: Unk_SocketPtr<CItem> FUN_141270140(int); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
@@ -505,7 +505,7 @@ BOOL CNetworkService::SendRetrieveFurnishingItem(CItem* item) {
     if(!IsFutureTime(item->FUN_140528a90())) return false;
     int type=FUN_14053fd90(((void*)((class CItem*)(class CItem*)(item))->FUN_140527840()));
     int slot=FUN_140a612b0(&DAT_143ab2a90,type,Unk_SocketPtr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
-    if(slot==-1) { FUN_140961010(0x44,1,1,TSingleton<CStringTable>::GetInstance()->FUN_141813300(type));CString param("");FUN_141276180(s_warningBag,param); }
+    if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->FUN_141813300(type));CString param("");FUN_141276180(s_warningBag,param); }
     else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
     return slot!=-1;
 }

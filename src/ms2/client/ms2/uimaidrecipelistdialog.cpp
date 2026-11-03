@@ -53,6 +53,8 @@
 #include "ms2/commonfiles/timeutil.h"  // C3: GetTickCountMs2
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -234,7 +236,7 @@ void UIMaidRecipeListDialog::FUN_1412dac40()
     if (!spInfo)
         return;
     FUN_140cfee80(FUN_1422dbc00(), CString("m_txtTitle"), FormatStringId<CStringW>(0x7c7, spInfo->specialty));
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900<ASScrollingList>("m_scrollList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_scrollList"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < spBook->GetCount(); i++)

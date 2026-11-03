@@ -20,7 +20,6 @@ int FUN_141277f40();                                                // next UI l
 int FUN_140707660(int nKind);
 int FUN_140707710(int nKind);
 efd::Point3 FUN_1408a15b0(Unk_UgcCell cell, efd::Point3& ptOrigin);   // the world point of a cell
-class Unk_WorldToScreen { public: bool FUN_140af0700(const NiPoint3& world, Vector3& out); };
 class Unk_UIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -164,7 +163,7 @@ void UICubeUGCHead::FUN_141906b60()
     efd::Point3 ptOrigin = efd::Point3::ZERO;
     NiPoint3 world = FUN_1408a15b0(m_68, ptOrigin);
     Vector3 screen;
-    if (reinterpret_cast<Unk_WorldToScreen*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(world, screen) != 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(world, reinterpret_cast<NiPoint3&>(screen)) != 0)
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())

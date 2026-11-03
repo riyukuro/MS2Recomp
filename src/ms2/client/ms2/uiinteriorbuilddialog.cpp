@@ -55,7 +55,6 @@ class Unk_ItemEquipData : public CItemData { };                         // CItem
 extern Unk_Inventory g_143ab2a90;                                       // the own inventory
 extern __int64 DAT_143ab2820;                                           // the own home owner id
                      // the current map id
-void* FUN_1403ed2b0();                                                  // the ui manager
 
 // The own home record (the cube map information service's accessors).
 class Unk_IbHome : public CubeMapInformationService
@@ -75,7 +74,7 @@ void FUN_14151f200();                                                   // close
 CString FUN_14016a600(const wchar_t* sz, int n);                        // wide to narrow
 CStringW BlockFormat(int nId);                                          // string table text
 template <class A> CStringW FormatStringId(int nId, const A& a);             // string table text with one argument
-void FUN_140177de0(const CString& str, ATL::CAtlArray<int>* pOut, const char* pszSep);   // split into numbers
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);              // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
@@ -104,7 +103,7 @@ void UIInteriorBuildDialog::FUN_140f4b4c0(__int64 nItemUid)
     if (vfunc_55() == 0)
         return;
     m_178 = nItemUid;
-    (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ee8)));
+    (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4ee8)));
 }
 
 // @0x140f4b520
@@ -238,7 +237,7 @@ void UIInteriorBuildDialog::OnUseItem()
     unsigned char nWidth = ((unsigned char)((class CubeMapInformationService*)(((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3470());
     unsigned char nLength = ((unsigned char)((class CubeMapInformationService*)(((class Unk_IbHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c34b0());
     ATL::CAtlArray<int> aSize;
-    FUN_140177de0(spPackage->m_strIndoorSizeType, &aSize, "x");
+    XmlSplit(spPackage->m_strIndoorSizeType, aSize, "x");
     if (((ATL::CAtlArray<int, ATL::CElementTraits<int>>*)&static_cast<class ATL::CAtlArray<int, class ATL::CElementTraits<int>>&>(aSize))->GetCount() < 3)
     {
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));

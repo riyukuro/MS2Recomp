@@ -32,12 +32,12 @@ bool OutlineRenderStep::vfunc_15(unsigned int a, void* b)
     unsigned int h = q->GetHeight(0);
     Unk_PPFmt fmt;
     fmt.v = a;
-    m_b8.Assign(FUN_141d61a80(w, h, p, &fmt, 0x100));
+    m_b8 = (NiRenderedTexture*)FUN_141d61a80(w, h, p, &fmt, 0x100);
     if (FUN_140c8f680(&m_b8) == 0) {
         vfunc_16();
         return false;
     }
-    m_c0.Assign(FUN_141d61a80(w, h, p, &fmt, 0x100));
+    m_c0 = (NiRenderedTexture*)FUN_141d61a80(w, h, p, &fmt, 0x100);
     if (FUN_140c8f680(&m_c0) == 0) {
         vfunc_16();
         return false;
@@ -70,8 +70,8 @@ bool OutlineRenderStep::vfunc_23()
 void OutlineRenderStep::vfunc_16()
 {
     PostProcessEffect::vfunc_16();
-    m_b8.Assign(0);
-    m_c0.Assign(0);
+    m_b8 = 0;
+    m_c0 = 0;
 }
 
 // @0x1416269c0 ~OutlineRenderStep and @0x141626a00 ~ReloadablePostProcess are implicit (the exe ones have no vptr store).

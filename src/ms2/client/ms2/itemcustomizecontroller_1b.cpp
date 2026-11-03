@@ -32,11 +32,7 @@
 // ---- out-of-unit callees ----
 
 // The item data the controller type is chosen from (commonfiles\itemdata.cpp).
-struct Unk_FactoryItemFlags : public ItemModelHead { };          // the item data has a cap rotation
-struct Unk_FactoryItem : public CItemData
-{
-    Unk_FactoryItemFlags* FUN_14053ec70();
-};
+struct Unk_FactoryItem : public CItemData {};
 
 // The equipped item a controller edits (CPtred, held in MS2Ptr; ?\equipitem.cpp). Only the members this unit calls.
 class CEquipItem : public CPtred
@@ -75,12 +71,13 @@ extern ControllerPtr s_spCurrent;                                    // the exe'
 #endif
 #include "ms2/placeholder/header_statics_a.h"
 
+class IItemCustomizeEventListener;
 void FUN_1414140e0(ControllerPtr spController);
 void FUN_141414250(bool bOn);
 
 // @0x1414131e0
 // Creates, initializes and registers the controller for one equipped item (NULL when the item can't be customized).
-ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, Unk_FactoryPlayer* pPlayer, Unk_ItemCustomizeListener* pListener)
+ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, PC* pPlayer, IItemCustomizeEventListener* pListener)
 {
     if (spItem.IsNull())
         return ControllerPtr(0);
@@ -180,7 +177,7 @@ ControllerPtr FUN_1414131e0(MS2Ptr<CEquipItem> spItem, Unk_FactoryPlayer* pPlaye
             spController = 0;
         if (spController)
         {
-            spController->SetListener(pListener);
+            spController->SetListener(reinterpret_cast<Unk_ItemCustomizeListener*>(pListener));
             FUN_1414140e0(ControllerPtr(spController));
         }
     }

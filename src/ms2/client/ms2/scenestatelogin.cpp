@@ -18,10 +18,10 @@
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
 void FUN_140930150(int);
-void* FUN_1403ed2d0();
 class WorldService   // C3: unit-local view of the callback set
 {
 public:
+    static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
     void FUN_141bbae40(void* p);
     void FUN_141bbae80(void* p);
 };
@@ -30,7 +30,7 @@ void* FUN_140aae430();
 void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern int DAT_1439f4a78;
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_140353fc0(void*, int, int, const wchar_t*, const int&);
+template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_140353fc0
 bool FUN_141902530(int, const CMsgBoxData&);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
@@ -85,17 +85,17 @@ void CSceneStateLogin::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
-    ((WorldService*)FUN_1403ed2d0())->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
     FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     DAT_1439f4a78 = -1;
-    FUN_141bbbe40(FUN_1403ed2d0(), 1, 1, 0);
+    FUN_141bbbe40(WorldService::GetInstance(), 1, 1, 0);
 }
 
 // @0x14174c170
 void CSceneStateLogin::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
-    ((WorldService*)FUN_1403ed2d0())->FUN_141bbae80((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae80((IWorldServiceCallback*)this);
 }
 
 // @0x14174c1d0
@@ -123,7 +123,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         }
         else
         {
-            FUN_140353fc0(((void*)GetLogString()), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
+            Unk_ShopLog<int>(GetLogString(), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
             FUN_140d74390(BlockFormat<int>(0x20e, 0), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
             FUN_140d86260()->vfunc_58(0x20e, 0);
         }

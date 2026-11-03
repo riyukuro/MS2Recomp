@@ -119,14 +119,14 @@ public:
     int FUN_140ce3960();
     int FUN_140ce3980();
     bool FUN_140ce3a80();
+    CMsTime FUN_140ce3aa0();
+    CMsTime FUN_140ce3ae0();
     CStringW GetTitleWithPoints();
     CStringA GetDesc();
 };
 class Unk_140ce3510 : public GameEventAttendGiftCli { public:   // C3: the rest are GameEventAttendGiftCli members
     int FUN_1402e1d00();
     Unk_AttendPtr<Unk_AttendReward> FUN_140ce3710(unsigned);
-    CMsTime FUN_140ce3aa0();
-    CMsTime FUN_140ce3ae0();
 };
 class Unk_140acd6e0 : public ASButton { public:
 };

@@ -151,12 +151,10 @@ BGTransparencyMgr* TSingleton<BGTransparencyMgr>::s_instance;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae5188;                             // render group (float extra data) key
-WorldService* FUN_1403ed2d0();                                  // world service singleton
 void * FUN_1413f98f0(void);  // C3: the definition's signature
 ecr::SceneGraphService* FUN_1413f98b0();
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
-egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);            // the entity's flat model
 void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 extern char DAT_143d69198;                                      // NiRTTI of the material class the fade supports
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -206,7 +204,7 @@ BGTransparencyMgr::~BGTransparencyMgr() {}
 // @0x140a0cee0
 bool BGTransparencyMgr::Init()
 {
-    FUN_1403ed2d0()->FUN_141bbae40((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
     m_map30.clear();
     m_map40.clear();
     m_timer.FUN_140868750(300);
@@ -220,7 +218,7 @@ void BGTransparencyMgr::Shutdown()
 {
     m_spSceneGraph = 0;
     m_spService = 0;
-    FUN_1403ed2d0()->FUN_141bbae80((IWorldServiceCallback*)this);
+    WorldService::GetInstance()->FUN_141bbae80((IWorldServiceCallback*)this);
 }
 
 // @0x140a0d000
@@ -308,7 +306,7 @@ bool BGTransparencyMgr::IsTarget(egf::Entity* pEntity)
         if ((*it)->FUN_14123c410() == pTarget)
             return false;
     }
-    if (FUN_1408a9bd0(pTarget) != 0 && FUN_1408a9bd0(pTarget)->ContainsModel(0x2ea80520))
+    if (pTarget->GetModel() != 0 && pTarget->GetModel()->ContainsModel(0x2ea80520))
     {
         bool bValue = false;
         pTarget->GetPropertyValue(0x9004569a, bValue);
@@ -382,7 +380,7 @@ void BGTransparencyMgr::vfunc_1()
     std::set<Unk_BGTRegion> kVisible;
     Unk_BGTEntitySet kHit;
     Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
-    FUN_1403ed2d0()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
+    WorldService::GetInstance()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
     for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
     {
         if ((*it)->FUN_14123c660() == 0 || (*it)->GetClassID() == 0x6200004)
@@ -419,7 +417,7 @@ void BGTransparencyMgr::vfunc_1()
                         if (bAdded && itRegion->m_nGroup > 0)
                         {
                             std::set<egf::EntityID> kGroup;
-                            FUN_1403ed2d0()->FUN_141bc7aa0(itRegion->m_nGroup,
+                            WorldService::GetInstance()->FUN_141bc7aa0(itRegion->m_nGroup,
                                 reinterpret_cast<std::set<unsigned __int64>&>(kGroup));
                             std::set<egf::EntityID>& rGroup = kGroup;
                             for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
@@ -455,7 +453,7 @@ void BGTransparencyMgr::vfunc_1()
                         if (bAdded && itRegion->m_nGroup > 0)
                         {
                             std::set<egf::EntityID> kGroup;
-                            FUN_1403ed2d0()->FUN_141bc7aa0(itRegion->m_nGroup,
+                            WorldService::GetInstance()->FUN_141bc7aa0(itRegion->m_nGroup,
                                 reinterpret_cast<std::set<unsigned __int64>&>(kGroup));
                             std::set<egf::EntityID>& rGroup = kGroup;
                             for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)

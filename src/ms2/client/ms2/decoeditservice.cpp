@@ -78,7 +78,7 @@ public:
     double FUN_141473280();
 };
 class Unk_DecoAnimObj;
-struct Unk_DecoAnimHandle { Unk_DecoAnimObj* FUN_140998e90(); char m_pad[0x40]; };
+struct Unk_DecoAnimHandle { char m_pad[0x40]; };
 struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
 // The animation service (animationmanager.cpp); play by name is its member.
 class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& entityID, const efd::utf8string& sequenceName, float fBlend, bool bForce); };
@@ -136,7 +136,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 void XmlSetAttr(class TiXmlElement*, const char*, const CString&);   // C3: was FUN_140874050
 int XmlGetAttr(class TiXmlElement*, class NiTransform&);   // C3: was FUN_140874730
 void XmlSetAttr(class TiXmlElement*, class NiTransform const&);   // C3: was FUN_140874b10
-bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
 
 // ---- cursor ray ----
 // (Unk_DecoPoint3, the efd::Point3 of the ray, is in decoeditservice.h)
@@ -293,7 +292,7 @@ void DecoEditService::SaveXml()
                 spLayer->SaveXml(static_cast<Unk_TiXmlElement*>(pElement));
         }
     }
-    FUN_1408710c0(&doc, GetXmlPath());
+    doc.SaveFile(GetXmlPath());
 }
 
 // @0x14116fef0
@@ -900,7 +899,7 @@ bool Unk_DecoAnimSvc::FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fS
     if (!FUN_1409991a0(kId, &pRec))
         return false;
     pRec->m_nSeq = nSeq;
-    Unk_DecoAnimObj* pObj = pRec->m_hnd.FUN_140998e90();
+    Unk_DecoAnimObj* pObj = (Unk_DecoAnimObj*)reinterpret_cast<efd::SmartPointer<NiActorManager>&>(pRec->m_hnd).operator NiActorManager*();
     if (pObj == 0)
         return false;
     return reinterpret_cast<NiActorManager*>(pObj)->SetTargetAnimation(nSeq, fSpeed, bLoop);

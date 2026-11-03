@@ -32,6 +32,7 @@ class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);   // 0x140a53190
     void* m_storage[14];
 };
 
@@ -63,7 +64,6 @@ class Unk_SoundParam
 public:
     Unk_SoundParam();                                               // 0x140a52ef0
     ~Unk_SoundParam();                                              // 0x1405a89e0
-    void FUN_140a53190(int n);
     CString m_name;
     int m_08;
     int m_0c;
@@ -242,7 +242,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
     else if (nSound == 2)
         ((Unk_SoundParam&)(param)).m_name = "ETC/Fishing/Sound_Fish_Action_Blue.xml";
     ((Unk_SoundParam&)(param)).m_08 = 1;
-    ((Unk_SoundParam&)(param)).FUN_140a53190(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->FUN_14123c580());
+    ((NoticeMessage&)(param)).SetActor(((class GameObject*)(class Unk_SoundMgr*)(pOwner))->FUN_14123c580());
     m_180[nSound] = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(((Unk_SoundParam&)(param))));
 }
 

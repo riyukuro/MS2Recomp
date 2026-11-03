@@ -8,6 +8,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/cubecraft_1.h"     // StateLocalController
+#include "ms2/placeholder/intervaltimer.h"
 
 class NxActor;
 class RideeInterpolator;    // ?\rideeinterpolator.cpp
@@ -210,7 +211,7 @@ public:
     MS2Ptr<Unk_RideeData> m_spData;                         // +0xdd0
     int m_nDE0;                                             // +0xde0 the rider is above the water line
     NxActor* m_pBox;                                        // +0xde8 kinematic PhysX box
-    Unk_140517b00 m_timerDF0;                               // +0xdf0
+    Unk_IntervalTimer m_timerDF0;                           // +0xdf0
     bool m_bDF8;                                            // +0xdf8 force the next state record
 };
 MS2_CHECK_SIZE(Ridee, 0xe00);

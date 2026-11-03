@@ -51,7 +51,6 @@ struct Unk_AuConfig                                              // the account 
 MS2_CHECK_SIZE(Unk_AuConfig, 0x4608);
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 int FUN_1408b6200(int nType);
-unsigned char FUN_140361ab0(void* pMap, int nKey, int* pValue);
 struct Unk_SsMap;
 int FUN_14052a7e0(MS2Ptr<CItem> a, MS2Ptr<CItem> b);
 void FUN_140710590(COutPacket& packet);
@@ -71,7 +70,7 @@ CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x140
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW FUN_140763e10(int nValue);
 template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
-void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 void FUN_140720e50(void* pDest, void* pSrc, unsigned __int64 nCount);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 Unk_SSGDlg4e47* FUN_140de48d0(int nId);
@@ -416,7 +415,7 @@ int CStore::CanMerge()
         nMax = pData->property.slotMax;
         if ((unsigned)((CItem*)pItem)->GetCount() < nMax) {
             int nOther;
-            if (FUN_140361ab0(&seen, ((CItem*)pItem)->FUN_1405276c0(), &nOther)) {
+            if (reinterpret_cast<ATL::CAtlMap<unsigned int, int>&>(seen).Lookup(((CItem*)pItem)->FUN_1405276c0(), nOther)) {
                 return 1;
             } else {
                 ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(struct Unk_SsMap*)(reinterpret_cast<Unk_SsMap*>(&seen)))->SetAt(((CItem*)pItem)->FUN_1405276c0(), i);
@@ -910,7 +909,7 @@ void CStore::OnError(CInPacket* pPacket)
         FUN_141275260(0x2b2, 1, 1);
         break;
     case 0x14:
-        FUN_140961010(0x2b3, 1, 1, FUN_140763e10(2000000000));
+        Unk_AkoMessage<CStringW>(0x2b3, 1, 1, FUN_140763e10(2000000000));
         break;
     case 0x15:
         FUN_141275260(0xa5e, 1, 1);

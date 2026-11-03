@@ -742,11 +742,11 @@ void Unk_CMISDriveTail()
 // unit_14112cd60's operator+=(const char*) on an efd::utf8string's narrow storage.
 struct Unk_CMISStr;
 
-// MS2-FUNCTIONAL: append inline instead of through 0x1409a2d60 (basic_string<char, CustomAllocator>::append(sz, n))
+// The exe's out-of-line append(const char*): append(sz, n) with the length converted
 // @0x14114d9b0
 void FUN_14114d9b0(Unk_CMISStr* pStr, const char* pSz)
 {
-    reinterpret_cast<std::basic_string<char, std::char_traits<char>, efd::CustomAllocator<char> >*>(pStr)->append(pSz);
+    reinterpret_cast<std::basic_string<char, std::char_traits<char>, efd::CustomAllocator<char> >*>(pStr)->append(pSz, std::_Convert_size<size_t>(std::char_traits<char>::length(pSz)));
 }
 // MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@@Z 0x141156050 ; la1: efd::map<long,MS2Ptr<Cube>> column-map copy (CustomAllocator chain of operator[] 0x141128350)
 // MS2-PIN: ?FUN_14114d9b0@@YAXPEAUUnk_CMISStr@@PEBD@Z 0x14114d9b0 ; gp1: by its exe callers

@@ -1646,8 +1646,7 @@ void CMagic::FUN_141463960()
         if (pCaster != NULL) {
             Vector3 ptEnd(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
             if (FUN_141467100(pCaster, &ptEnd) == 0) {
-                Vector3 kTmp(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent()))));
-                FUN_14097faa0(reinterpret_cast<Unk_NiPoint3*>(&ptEnd), reinterpret_cast<const Unk_NiPoint3&>(kTmp));
+                reinterpret_cast<NiPoint3&>(ptEnd) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent())));
             }
             FUN_1410a7400(&kPoints, &ptEnd);
         }
@@ -1674,8 +1673,7 @@ void CMagic::FUN_141463960()
         if (pCaster != NULL) {
             Vector3 ptEnd(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
             if (FUN_141467100(pCaster, &ptEnd) == 0) {
-                Vector3 kTmp(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent()))));
-                FUN_14097faa0(reinterpret_cast<Unk_NiPoint3*>(&ptEnd), reinterpret_cast<const Unk_NiPoint3&>(kTmp));
+                reinterpret_cast<NiPoint3&>(ptEnd) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pCaster->vf18_GetPosition().FUN_14097fd50(pCaster->vf37_GetExtent())));
             }
             FUN_1410a7400(&kPoints, &ptEnd);
         }

@@ -7,12 +7,14 @@
 // MS2-PIN: ??_GMinimapViewport@@UEAAPEAXI@Z 0x141486cd0
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include <efd/Matrix3.h>   // C3: efd::Matrix3::FromEulerAnglesXYZ
 
 #include "minimapviewport.h"
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include <efd/EEMath.h>   // C3: efd::Max was FUN_140a0fda0
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 // The world service (0x1403ed2d0); the client field data it hands out (0x141bd30a0).
@@ -24,7 +26,6 @@ public:
 // efd::Point3 and efd::Matrix3 helpers (all out of line in the exe).
 float FUN_140a00f20(const Unk_GVec3& kA, const Unk_GVec3& kB);   // efd::Point3::Dot
 float FUN_140a38cd0(float fValue);                               // efd::Abs
-float FUN_140a0fda0(float fA, float fB);                         // the larger of the two floats
 void FUN_1409f72e0(Unk_MvMatrix3& kMatrix);                      // efd::Matrix3::Matrix3()
 
 static const float k_fPi = 3.1415927f;   // the exe multiplies by pi, then divides by 180
@@ -165,7 +166,7 @@ bool MinimapViewport::FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, floa
 // @0x141486550
 bool MinimapViewport::FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY, float& fZ)
 {
-    float fEps = FUN_140a0fda0(1e-05f, 0.0f);
+    float fEps = efd::Max<float>(1e-05f, 0.0f);
     Unk_Rect4 kRect(0.0f, 1.0f, 1.0f, 0.0f);
 
     float fW = kPos.x * m_afMatrix[3][0] + kPos.y * m_afMatrix[3][1] + kPos.z * m_afMatrix[3][2] + m_afMatrix[3][3];
@@ -201,7 +202,7 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec
     {
         Unk_MvMatrix3 kMatrix;
         FUN_1409f72e0(kMatrix);
-        kMatrix.FUN_142083d40(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
+        reinterpret_cast<efd::Matrix3*>(&kMatrix)->FromEulerAnglesXYZ(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
         kMatrix.FUN_140a01190(0, kAxisY);
         kMatrix.FUN_140a01190(1, kAxisZ);
         kMatrix.FUN_140a01190(2, kAxisX);
@@ -213,14 +214,12 @@ void MinimapViewport::FUN_141486a20(Unk_MvRot3 kRot, Unk_GVec3& kAxisX, Unk_GVec
     {
         Unk_MvMatrix3 kMatrix;
         FUN_1409f72e0(kMatrix);
-        kMatrix.FUN_142083d40(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
+        reinterpret_cast<efd::Matrix3*>(&kMatrix)->FromEulerAnglesXYZ(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
         kMatrix.FUN_140a01190(0, kAxisY);
         kMatrix.FUN_140a01190(1, kAxisZ);
         kMatrix.FUN_140a01190(2, kAxisX);
-        // kAxisZ = -kAxisZ; kAxisX = -kAxisX; (efd::Point3::operator- hands its result back through the hidden pointer
-        // in rdx, so it is a member call; the view adds no data)
-        ((Unk_MvPoint3&)kAxisZ).FUN_140194470(((Unk_MvPoint3&)kAxisZ).FUN_1409f7960());
-        ((Unk_MvPoint3&)kAxisX).FUN_140194470(((Unk_MvPoint3&)kAxisX).FUN_1409f7960());
+        reinterpret_cast<efd::Point3&>(kAxisZ) = -reinterpret_cast<const efd::Point3&>(kAxisZ);
+        reinterpret_cast<efd::Point3&>(kAxisX) = -reinterpret_cast<const efd::Point3&>(kAxisX);
         ((struct Vector3*)&(kAxisY))->FUN_140968990();
         ((struct Vector3*)&(kAxisZ))->FUN_140968990();
         ((struct Vector3*)&(kAxisX))->FUN_140968990();

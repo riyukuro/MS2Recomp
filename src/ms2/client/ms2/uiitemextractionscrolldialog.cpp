@@ -74,12 +74,10 @@ public:
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 UIItemExtractionScrollDialog::SlotBag* FUN_140e4b840(NotifyContext::BindData* p);
 
-UIItemExtractionScrollDialog* FUN_140d27300(int nUiId);     // the open dialog with this UI id
+template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d27300
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
@@ -136,7 +134,7 @@ int UIItemExtractionScrollDialog::Slot::vfunc_18(void* p)
     void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
-        UIItemExtractionScrollDialog* pDlg = FUN_140d27300(0x4f49);
+        UIItemExtractionScrollDialog* pDlg = GetItemUseDialog<UIItemExtractionScrollDialog>(0x4f49);
         if (pDlg != 0)
             pDlg->FUN_140e4a920(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
     }
@@ -181,18 +179,18 @@ void FUN_140e49b80(const CString& strName, const ATL::CAtlArray<MS2Ptr<CItem> >&
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10((int)items.GetCount());
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140e49c50 destroy the registered bag
 void FUN_140e49c50(const CString& strName)
 {
-    UIItemExtractionScrollDialog::SlotBag* pBag = FUN_140e4b840(FUN_1422c8e90(strName));
+    UIItemExtractionScrollDialog::SlotBag* pBag = FUN_140e4b840(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

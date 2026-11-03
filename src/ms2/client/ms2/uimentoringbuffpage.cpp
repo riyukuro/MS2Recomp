@@ -12,7 +12,6 @@
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
-CStringTable* GetStringTable();
 void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 CStringW GetStringCommonByKey(const CStringW& str);
 
@@ -21,7 +20,6 @@ UIMentoringBuffPage::UIMentoringBuffPage(UIMentoringDialog* p) : UIMentoringPage
 // @0x140c6e3e0
 UIMentoringBuffPage::~UIMentoringBuffPage() {}
 
-CString FUN_140c43630(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat<unsigned __int64> copy
 
 // @0x140c6e410
 int UIMentoringBuffPage::vfunc_1()
@@ -29,7 +27,7 @@ int UIMentoringBuffPage::vfunc_1()
     if (UIMentoringPage::vfunc_1() == 0)
         return 0;
     int nBuffId = 0x55d4d2d;
-    CStringW strDesc = GetStringTable()->FUN_141812290(nBuffId, 1, CString("tooltipDescription"));
+    CStringW strDesc = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nBuffId, 1, CString("tooltipDescription"));
     ATL::CAtlArray<CStringW> lines;
     FUN_14025a680(strDesc, lines, L"\n");
     for (size_t i = 0; i < 7; i++)
@@ -37,7 +35,7 @@ int UIMentoringBuffPage::vfunc_1()
         CStringW strLine;
         if (i < lines.GetCount())
             strLine = lines[i];
-        if (MS2Ptr<ASTextField> text = m_script->FUN_1409b4620(FUN_140c43630("m_benefitDesc{0}", i)))
+        if (MS2Ptr<ASTextField> text = m_script->FUN_1409b4620(Unk_SocketFormat<unsigned __int64>("m_benefitDesc{0}", i)))
             text->SetTextW(strLine);
     }
     return 1;

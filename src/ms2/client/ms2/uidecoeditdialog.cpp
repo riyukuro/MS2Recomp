@@ -24,6 +24,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 
 // ---- unit-local views of exe objects ----
 
@@ -101,7 +103,7 @@ void UIDecoEditDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
     if (pDialog)
     {
-        if (MS2Ptr<ASScrollingList> spLayers = FUN_140c02900("m_layers"))
+        if (MS2Ptr<ASScrollingList> spLayers = GetChild<ASScrollingList>("m_layers"))
         {
             ATL::CAtlArray<MS2Ptr<DecoLayer> > aLayers;
             BrushService()->CollectLayers(aLayers);
@@ -119,7 +121,7 @@ void UIDecoEditDialog::OnLoadInit()
             spLayers->vfunc_24(true);
             spLayers->SetSelectedIndex(0);
         }
-        if (MS2Ptr<ASScrollingList> spBrushes = FUN_140c02900("m_brushes"))
+        if (MS2Ptr<ASScrollingList> spBrushes = GetChild<ASScrollingList>("m_brushes"))
         {
             spBrushes->AddLabelItemA("PaintBrush");
             spBrushes->AddLabelItemA("NoiseBrush");

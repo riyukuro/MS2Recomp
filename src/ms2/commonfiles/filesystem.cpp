@@ -252,7 +252,6 @@ extern unsigned char** DAT_143aaeaf8;
 extern std::string g_strLocaleDir2, g_strLocaleDir;
 extern int DAT_143ab0560;
 bool FUN_140870d70(TiXmlDocument*, const void*, unsigned, int);
-bool FUN_140870fc0(TiXmlDocument*, const char*, int);
 class Unk_FileIgnoreList;
 Unk_FileIgnoreList* FUN_1403a9410();
 __time64_t FUN_1403a9480(CFileBuffer*);
@@ -395,10 +394,10 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
     if (FUN_140398190() && !FUN_14039f3b0(CString(path))) {
         unsigned loaded = 0;
         if (FUN_14039bf70()) {
-            loaded = FUN_140870fc0(document, FUN_14016a5c0(path, 0), encoding);
+            loaded = document->FUN_140870fc0(FUN_14016a5c0(path, 0), encoding);
             if (loaded == 0) {
                 std::string alternate = FUN_14039b810(std::string(path));
-                loaded = FUN_140870fc0(document, FUN_14016a5c0(alternate.c_str(), 0), encoding);
+                loaded = document->FUN_140870fc0(FUN_14016a5c0(alternate.c_str(), 0), encoding);
             }
         }
         if (loaded == 0 && !localOnly) {
@@ -417,8 +416,8 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
     } else {
         if (FUN_140398640(std::string(path), true)) return 0;
         std::string alternate = FUN_14039b810(std::string(path));
-        if (!FUN_140870fc0(document, FUN_14016a5c0(alternate.c_str(), 0), encoding)) {
-            if (!FUN_140870fc0(document, FUN_14016a5c0(path, 0), encoding)) {
+        if (!document->FUN_140870fc0(FUN_14016a5c0(alternate.c_str(), 0), encoding)) {
+            if (!document->FUN_140870fc0(FUN_14016a5c0(path, 0), encoding)) {
                 if (warn) {
                     CString text(path == nullptr ? "" : path);
                     Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);

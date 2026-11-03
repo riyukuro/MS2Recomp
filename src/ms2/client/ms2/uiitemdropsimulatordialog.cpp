@@ -29,7 +29,6 @@ static CString s_sortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 
             // loads every table
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
-extern CStringTable* GetStringTable();                              // FUN_1401a9d70
 
 // @0x14192a2e0
 UIItemDropSimulatorDialog::UIItemDropSimulatorDialog()
@@ -118,7 +117,7 @@ void UIItemDropSimulatorDialog::FUN_14192a9a0(CStringW strText)
 // @0x14192aa50
 CStringW UIItemDropSimulatorDialog::FUN_14192aa50(int nId)
 {
-    return GetStringTable()->GetRankName(nId);
+    return TSingleton<CStringTable>::GetInstance()->GetRankName(nId);
 }
 
 // @0x14192ab00

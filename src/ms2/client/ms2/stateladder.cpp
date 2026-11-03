@@ -23,7 +23,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-bool FUN_140998dc0(const NiFixedString& kStr, const char* psz);                           // string compare
 bool FUN_14028d470(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
 class GameObjectController   // C3: member view for the former free stand-ins
@@ -314,12 +313,12 @@ void StateLadder::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequence
 {
     if (m_pOwner->FUN_14166de90(0xd, eSequenceID) || m_pOwner->FUN_14166de90(0xe, eSequenceID))
     {
-        if (FUN_140998dc0(kTextKey, "begin") != 0)
+        if (kTextKey == "begin")
             m_timerUp.FUN_140868750((int)(200.0f / m_pOwner->FUN_1416713c0()));
     }
     else if (m_pOwner->FUN_14166de90(8, eSequenceID) || m_pOwner->FUN_14166de90(9, eSequenceID))
     {
-        if (FUN_140998dc0(kTextKey, "begin") != 0)
+        if (kTextKey == "begin")
             m_timerDown.FUN_140868750((int)(200.0f / m_pOwner->FUN_1416713c0()));
     }
 }

@@ -231,8 +231,8 @@ class CFileSystem   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
+    int LoadXmlFromString(class TiXmlDocument*, const CStringW&);   // C3: was FUN_140397ab0
 };
-extern int FUN_140397ab0(void*,TiXmlDocument*,const CStringW&);
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -451,7 +451,7 @@ bool CGuildXmlData::GuildRaidReward::FUN_1404d54e0(void* node){
     XmlGetAttr((class TiXmlElement*)(node), "rewardItems", path);
     if(0<path.GetLength()){
         TiXmlDocument doc;
-        if(!FUN_140397ab0(GetFileSystem(),&doc,path)){
+        if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFromString(&doc,path)){
             Unk_ShopLog<int>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[GuildRaidReward raidPoint : {0}",f18);return false;
         }
         void* root=FUN_140345b40(&doc);

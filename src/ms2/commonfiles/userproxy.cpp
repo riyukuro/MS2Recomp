@@ -74,6 +74,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/gameeventuservalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/client/ms2/uitriggereditordialog.h"
 class Unk_IntTriple   // C3: the real class behind Unk_UserProxyColor (member view)
 {
 public:
@@ -2607,18 +2608,18 @@ void Unk_UserProxyBits::Trim() {
 }
 
 // @0x1408f4c40
-CStringW Unk_UserProxyTriggerText::GetText() {
-  if (m_10 == 0)
+CStringW UITriggerEditorDialog::Message::FUN_1408f4c40() {
+  if (m_nKind == 0)
     return L"\0";
-  switch (m_10) {
+  switch (m_nKind) {
   case 1:
     return L"";
   case 2:
-    return FUN_14028dfa0<CStringW>(L"s_user_trigger_label_action", m_0);
+    return FUN_14028dfa0<CStringW>(L"s_user_trigger_label_action", m_strCategory);
   case 3:
-    return FUN_14028dfa0<CStringW>(L"s_user_trigger_label_condition", m_0);
+    return FUN_14028dfa0<CStringW>(L"s_user_trigger_label_condition", m_strCategory);
   case 4:
-    return m_8;
+    return m_strText;
   default:
     return L"";
   }

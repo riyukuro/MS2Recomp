@@ -43,12 +43,7 @@ struct Unk_MakeupPreset
     float m_fX;                                                 // +0x18
     float m_fY;                                                 // +0x1c
 };
-// the item -> <customize> block of the item model.
-struct Unk_MakeupItem : public CItemData
-{
-    ItemModelHead* FUN_14053ec70();                             // item -> item data struct
-};
-struct Unk_EquipItemData : public Unk_MakeupItem {};
+struct Unk_EquipItemData : public CItemData {};
 
 class CEquipItem : public CPtred
 {

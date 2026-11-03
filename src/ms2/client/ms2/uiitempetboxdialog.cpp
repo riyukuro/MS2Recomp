@@ -70,42 +70,10 @@ class CMsgBoxData : public CPtred
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
-// the obtained items (std::vector<ItemEntity>) and the "binding" strings (std::vector<CString>) with the exe helpers
-class Unk_PetBoxItems : public Unk_ItemVec
-{
-public:
-    ItemEntity& FUN_140be9400(size_t);
-    void FUN_140c47b00(size_t);
-    bool FUN_140c0e9f0();
-};
-class Unk_PetBoxStrVec : public Unk_StrVec
-{
-public:
-    void FUN_140905dd0();
-    void FUN_1403b0310(const CString&);
-};
-#define PETBOX_ITEMS static_cast<Unk_PetBoxItems&>(m_result)
+// the obtained items (std::vector<ItemEntity>) and the "binding" strings (std::vector<CString>)
+#define PETBOX_ITEMS reinterpret_cast<std::vector<ItemEntity>&>(m_result)
 #define PETBOX_ATTR(p) reinterpret_cast<Unk_PetBoxAttr*>(reinterpret_cast<char*>((p).operator->()) + 0x320)
-#define PETBOX_BINDS static_cast<Unk_PetBoxStrVec&>(m_slotBinds)
-// the drop list of a common box: polymorphic entries (item id, rank, count)
-class Unk_PetBoxDrop
-{
-public:
-    virtual unsigned vfunc_0();
-    virtual int vfunc_1();
-    virtual unsigned vfunc_2();
-};
-class Unk_PetBoxDropVec
-{
-public:
-    Unk_PetBoxDropVec();                    // 0x1405a1910
-    ~Unk_PetBoxDropVec();                   // 0x1405a1a40
-    size_t FUN_140314170();
-    Unk_PetBoxDrop* FUN_140c461b0(size_t);
-    void FUN_140313cd0(Unk_PetBoxDrop*);
-    void* m_begin; void* m_end; void* m_cap;
-};
-MS2_CHECK_SIZE(Unk_PetBoxDropVec, 24);
+#define PETBOX_BINDS reinterpret_cast<std::vector<CString>&>(m_slotBinds)
 // the item record's attribute table (+0x320) and job table (+0x138)
 class Unk_PetBoxAttr : public CXmlData
 {
@@ -119,17 +87,10 @@ class Unk_PetBoxUIMgr { public: void FUN_141adc530(int); };
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory g_143ab2a90;
 // avatar of a pet (0xc8 bytes, RTTI UIAvatarPet : UIAvatarBase), rendered into an AS clip
-struct Unk_PetBoxVector
-{
-    Unk_PetBoxVector();
-    float x, y, z;
-    Unk_PetBoxVector& operator+=(const Unk_PetBoxVector&);
-};
-MS2_CHECK_SIZE(Unk_PetBoxVector, 12);
 struct Unk_PetBoxCameraData
 {
     Unk_PetBoxCameraData();
-    Unk_PetBoxVector eye, target;
+    NiPoint3 eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
@@ -141,7 +102,7 @@ public:
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Unk_PetBoxVector vfunc_18();
+    virtual NiPoint3 vfunc_18();
 };
 class Unk_PetBoxCamera
 {
@@ -273,26 +234,26 @@ void UIItemPetBoxDialog::vfunc_79(void* p)
         m_sent = false;
         unsigned reset = PETBOX_PKT->ReadUInt8();
         if (reset == 1) {
-            PETBOX_ITEMS.FUN_14028a590();
+            PETBOX_ITEMS.clear();
             m_special2.clear();
             bool hasSpecial = false;
             int n = PETBOX_PKT->ReadInt32();
-            PETBOX_ITEMS.FUN_140c47b00(n);
+            PETBOX_ITEMS.resize(n);
             for (int i = 0; i < n; ++i) {
-                PETBOX_ITEMS.FUN_140be9400(i).m_itemId = PETBOX_PKT->ReadInt32();
-                PETBOX_ITEMS.FUN_140be9400(i).m_count = PETBOX_PKT->ReadInt32();
-                PETBOX_ITEMS.FUN_140be9400(i).SetRank(PETBOX_PKT->ReadInt32());
+                PETBOX_ITEMS[i].m_itemId = PETBOX_PKT->ReadInt32();
+                PETBOX_ITEMS[i].m_count = PETBOX_PKT->ReadInt32();
+                PETBOX_ITEMS[i].SetRank(PETBOX_PKT->ReadInt32());
                 bool special = PETBOX_PKT->ReadBool();
                 if (special)
-                    m_special2.insert(PETBOX_ITEMS.FUN_140be9400(i));
-                if (IsSpecialItem(PETBOX_ITEMS.FUN_140be9400(i)) == true)
+                    m_special2.insert(PETBOX_ITEMS[i]);
+                if (IsSpecialItem(PETBOX_ITEMS[i]) == true)
                     hasSpecial = true;
             }
             FUN_140e504e0();
             FUN_140e511f0();
             m_itemBox->vfunc_13("result");
             FUN_141276180(s_sndOpen, "");
-            if (PETBOX_ITEMS.FUN_14028b470() > 1)
+            if (PETBOX_ITEMS.size() > 1)
                 FUN_141276180(s_snd10, "");
             MS2Ptr<ASMovieClip> fw = m_itemBox->FUN_1409b4560("m_fireworkEffect");
             if (fw.get()) {
@@ -415,9 +376,9 @@ void UIItemPetBoxDialog::ClearCards()
 // @0x140e4f9e0
 void UIItemPetBoxDialog::ReleaseSlotBinds()
 {
-    for (size_t i = 0; i < PETBOX_BINDS.FUN_14028b4c0(); ++i)
+    for (size_t i = 0; i < PETBOX_BINDS.size(); ++i)
         FUN_14141f970(*m_slotBinds.FUN_14027f1c0(i));
-    PETBOX_BINDS.FUN_140905dd0();
+    PETBOX_BINDS.clear();
 }
 
 // @0x140e4fa60
@@ -485,31 +446,31 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
     if (data->function.name != L"OpenPetBox")
         return false;
     std::vector<int> ids = PETBOX_ATTR(data)->GetIntArray(L"unCommonBoxId", std::vector<int>());
-    Unk_PetBoxDropVec drops;
+    std::vector<ItemDropResult> drops;
     for (size_t i = 0; i < ids.size(); ++i)
-        TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(ids[i], reinterpret_cast<std::vector<ItemDropResult>&>(drops));
-    Unk_PetBoxDropVec filtered;
-    for (size_t i = 0; i < drops.FUN_140314170(); ++i) {
-        Unk_PetBoxDrop* d = drops.FUN_140c461b0(i);
-        MS2Ptr<CItemData> idata = FUN_14053f870(d->vfunc_0());
+        TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(ids[i], drops);
+    std::vector<ItemDropResult> filtered;
+    for (size_t i = 0; i < drops.size(); ++i) {
+        ItemDropResult* d = &drops[i];
+        MS2Ptr<CItemData> idata = FUN_14053f870(d->vfunc_o18_0());
         if (idata == 0)
             continue;
         if (!reinterpret_cast<ItemLimit*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->IsJobRecommended(self->FUN_141654700()))
             continue;
         if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsGenderAllowed(self->FUN_141658e60()) == 0)
             continue;
-        filtered.FUN_140313cd0(d);
+        filtered.push_back(*d);
     }
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     m_special1.clear();
-    for (size_t i = 0; i < filtered.FUN_140314170(); ++i) {
-        Unk_PetBoxDrop* d = filtered.FUN_140c461b0(i);
+    for (size_t i = 0; i < filtered.size(); ++i) {
+        ItemDropResult* d = &filtered[i];
         MS2Ptr<CItem> item(new CItem);
-        if (item->FUN_14052b130(d->vfunc_0(), d->vfunc_1(), 0) != 0) {
-            item->SetCountClamped(d->vfunc_2());
+        if (item->FUN_14052b130(d->vfunc_o18_0(), d->vfunc_o18_1(), 0) != 0) {
+            item->SetCountClamped(d->vfunc_o18_2());
             items.Add(item);
         }
-        m_special1.insert(ItemEntity(d->vfunc_0(), d->vfunc_1(), d->vfunc_2(), false, false, false, false));
+        m_special1.insert(ItemEntity(d->vfunc_o18_0(), d->vfunc_o18_1(), d->vfunc_o18_2(), false, false, false, false));
     }
     FUN_14141f970(m_bagId);
     MS2Ptr<CItem> (*getter)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
@@ -525,10 +486,10 @@ void UIItemPetBoxDialog::FUN_140e504e0()
 {
     if (m_30 == 0)
         return;
-    if (PETBOX_ITEMS.FUN_140c0e9f0())
+    if (PETBOX_ITEMS.empty())
         return;
     ReleaseSlotBinds();
-    if (PETBOX_ITEMS.FUN_14028b470() == 1) {
+    if (PETBOX_ITEMS.size() == 1) {
         MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
         if (single == 0)
             return;
@@ -538,7 +499,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         MS2Ptr<ASLabel> name = single->FUN_140c436d0<ASLabel>("m_itemName");
         if (name == 0)
             return;
-        ItemEntity& e = PETBOX_ITEMS.FUN_140be9400(0);
+        ItemEntity& e = PETBOX_ITEMS[0];
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
             return;
@@ -557,11 +518,11 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_PetBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
         name->FUN_1422e4b80(txt);
-        PETBOX_BINDS.FUN_1403b0310(bagKey);
+        PETBOX_BINDS.push_back(bagKey);
         m_30->Invoke("SetMultiType", false);
         return;
     } else {
-        size_t n = PETBOX_ITEMS.FUN_14028b470();
+        size_t n = PETBOX_ITEMS.size();
         size_t cap = 10;
         size_t count = (std::min)(cap, n);
         for (size_t i = 0; i < count; ++i) {
@@ -574,15 +535,15 @@ void UIItemPetBoxDialog::FUN_140e504e0()
             if (slot == 0)
                 continue;
             CString bagKey;
-            if (i < PETBOX_ITEMS.FUN_14028b470()) {
-                ItemEntity& e = PETBOX_ITEMS.FUN_140be9400(i);
+            if (i < PETBOX_ITEMS.size()) {
+                ItemEntity& e = PETBOX_ITEMS[i];
                 MS2Ptr<CItem> item(new CItem);
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
                 item->SetCountClamped(e.vfunc_o18_2());
                 bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
-                PETBOX_BINDS.FUN_1403b0310(bagKey);
+                PETBOX_BINDS.push_back(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
                 if (unc.get()) {
                     if (IsSpecialItem(e) == true) {
@@ -604,16 +565,16 @@ void UIItemPetBoxDialog::FUN_140e511f0()
     if (m_30 == 0)
         return;
     ClearCards();
-    if (PETBOX_ITEMS.FUN_140c0e9f0())
+    if (PETBOX_ITEMS.empty())
         return;
-    if (PETBOX_ITEMS.FUN_14028b470() == 1) {
+    if (PETBOX_ITEMS.size() == 1) {
         if (m_previewSingle == 0)
             return;
         MS2Ptr<ASMovieClip> card = m_previewSingle->FUN_1409b4560("m_petCard1");
         if (card == 0)
             return;
-        FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(0));
-        MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(0).m_itemId);
+        FUN_140e519b0(card, PETBOX_ITEMS[0]);
+        MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS[0].m_itemId);
         if (idata.get() != 0) {
             if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
                 UIAvatarPet* av = new UIAvatarPet(idata.get());
@@ -634,7 +595,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
         MS2Ptr<ASMovieClip> movie = m_previewMulti->FUN_1409b4560("m_petCardMovie");
         if (movie == 0)
             return;
-        size_t n = PETBOX_ITEMS.FUN_14028b470();
+        size_t n = PETBOX_ITEMS.size();
         size_t cap = 10;
         size_t count = (std::min)(cap, n);
         for (size_t i = 0; i < count; ++i) {
@@ -643,8 +604,8 @@ void UIItemPetBoxDialog::FUN_140e511f0()
             MS2Ptr<ASMovieClip> card = movie->FUN_1409b4560(nm);
             if (card == 0)
                 continue;
-            FUN_140e519b0(card, PETBOX_ITEMS.FUN_140be9400(i));
-            MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS.FUN_140be9400(i).m_itemId);
+            FUN_140e519b0(card, PETBOX_ITEMS[i]);
+            MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS[i].m_itemId);
             if (idata.get() != 0) {
                 if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
                     UIAvatarPet* av = new UIAvatarPet(idata.get());

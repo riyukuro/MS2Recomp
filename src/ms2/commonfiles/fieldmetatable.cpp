@@ -98,10 +98,10 @@ CString FUN_14016a5c0(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
-int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 __int64 MakeTime(int nYear, int nMonth, int nDay, int nHour, int nMinute, int nSecond);        // server-time value
 __int64 GetServerTime();                                    // the current server time
-int FUN_140408410(ATL::CAtlArray<unsigned>* pArray, const unsigned* pValue);   // index of the value, -1 when absent
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 
 // The npc record the table checks existence of.
 class Unk_NpcRecord : public CPtred {};
@@ -217,8 +217,8 @@ void CFieldMetaTable::LoadFieldMetaData()
             {
                 CString strStart;
                 CString strEnd;
-                FUN_1408733e0(pField, "startTime", strStart);
-                FUN_1408733e0(pField, "endTime", strEnd);
+                XmlGetAttr((class TiXmlElement*)(pField), "startTime", strStart);
+                XmlGetAttr((class TiXmlElement*)(pField), "endTime", strEnd);
                 __int64 nStart = 0;
                 __int64 nEnd = 0;
                 if (!FUN_1406fc8a0(CString(strStart), &nStart))
@@ -434,7 +434,7 @@ void CFieldMetaTable::FUN_1406fb2a0(unsigned nId, ATL::CAtlArray<unsigned>& out)
         for (POSITION pos = pFields.get()->GetHeadPosition(); pos != 0; pFields.get()->GetNext(pos))
         {
             unsigned nField = pFields.get()->GetAt(pos);
-            if (FUN_140408410(&out, &nField) != -1)
+            if (Unk_ArrayFind<unsigned>(out, nField) != -1)
                 continue;
             if (!FUN_1406fbb50(nId, nField))
                 continue;

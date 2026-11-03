@@ -29,7 +29,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
-void FUN_140177de0(CString&, ATL::CAtlArray<int>&, const char* delimiter);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 Unk_Int3* FUN_1408a85a0(Unk_Int3*, int, int, int);
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -74,7 +74,7 @@ static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
 {
     {
     ATL::CAtlArray<int> parts;
-    FUN_140177de0(text, parts, ",");
+    XmlSplit(text, parts, ",");
     if (parts.GetCount() == 3)
     {
         out->x = parts[0];

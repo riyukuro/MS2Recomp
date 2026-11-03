@@ -33,11 +33,11 @@ class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_ExpUiScale (calls cast
 int FUN_1412755a0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
-CString FUN_140513200(const char* szFormat, const unsigned int& n); // "{0}" substitution
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // 0x140513200 for T = unsigned int
 void FUN_1412751b0(const CStringW& strText, int nKind);             // chat/system message
 CStringW GetStringCommon(int nStringId);                              // string table text by id
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nValue);   // set an int member of a clip
-UIEventIntroduce* FUN_140dbf520(int nUiId);                         // a UI by its type id
+template <class T> T* Unk_RankDialog(int nId);                      // a UI by its type id (0x140dbf520 for UIEventIntroduce; defined in pvprankduelcomponent.cpp)
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
 static CString s_strFail("massive_fail");                            // 0x143af3aa8
@@ -151,7 +151,7 @@ void UIMassiveEvent::FUN_1419f5c80()
     switch (m_nType)
     {
     case 1:
-        FUN_141276180(FUN_140513200("Count0{0}", m_nRemain), "");
+        FUN_141276180(Unk_SocketFormat<unsigned int>("Count0{0}", m_nRemain), "");
         FUN_141276180("Count_NumEffect", "");
         break;
     case 2:
@@ -233,7 +233,7 @@ void UIMassiveEvent::FUN_1419f60a0(CInPacket* pPacket)
     int nGoal = pPacket->ReadInt32();
     if (0 < nGoal)
     {
-        UIEventIntroduce* pUI = FUN_140dbf520(0x4f06);
+        UIEventIntroduce* pUI = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pUI == 0)
             return;
         if (bFinal)

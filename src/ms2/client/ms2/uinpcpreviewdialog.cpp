@@ -47,6 +47,8 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 #include "ms2/placeholder/asbuttonbar.h"
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -236,7 +238,7 @@ void UINpcPreviewDialog::vfunc_15()
     if (names.size() == 0)
         return;
     m_bPending = 0;
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list")) {
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_list")) {
         spList->FUN_1422dd1d0();
         for (std::vector<CString>::iterator it = names.begin(); it != names.end(); ++it) {
             Unk_NpRow row;
@@ -271,7 +273,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
             found.SetAt(nId, strName);
         }
     }
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_npcList")) {
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_npcList")) {
         spList->SetSelectedIndex(-1);
         spList->FUN_1422dd1d0();
         for (POSITION pos = found.GetStartPosition(); pos != 0; found.GetNext(pos)) {
@@ -313,7 +315,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
 {
     m_rows.RemoveAll();
     m_nNpcId = nNpcId;
-    MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_list");
+    MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_list");
     if (spList.IsNull())
         return 0;
     MS2Ptr<CNpcData> spData = FUN_1406cd330(nNpcId);
@@ -392,7 +394,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                 }
             }
         }
-        if (MS2Ptr<ASScrollingList> spList2 = FUN_140c02900("m_list")) {
+        if (MS2Ptr<ASScrollingList> spList2 = GetChild<ASScrollingList>("m_list")) {
             spList2->FUN_1422dd1d0();
             for (size_t i = 0; i < m_rows.GetCount(); i++)
                 spList2->AddLabelItemW(m_rows[i].m_text);

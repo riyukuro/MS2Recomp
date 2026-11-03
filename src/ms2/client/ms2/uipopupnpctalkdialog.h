@@ -14,7 +14,7 @@
 class NotifyObject;
 class Unk_PnTalkScript;
 class ASTextField;
-class Unk_PnButton;
+class ASButton;
 
 // A 16-byte talk script handle (quest id -> script): default ctor 0x140859c50, operator= 0x14085a3b0, null test
 // 0x14085a420, operator-> 0x14085a610, dtor 0x14078f140.
@@ -55,7 +55,6 @@ public:
     void FUN_140e77300();                                       // 0x140e77300
     int FUN_140e77330();                                        // 0x140e77330 show the current line; 0 no quest, 1 shown, 2 past the end
     int FUN_140e77b80(int nQuest);                              // 0x140e77b80 quest is startable on this map
-    MS2Ptr<Unk_PnButton> FUN_140bb4b10(const CString& strName); // 0x140bb4b10 bind a button child
 
 private:
     MS2_LAYOUT_FRIEND;

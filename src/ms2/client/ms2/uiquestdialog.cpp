@@ -107,6 +107,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/cquestnavigationmap.h"
 #include "ms2/placeholder/packethandlermanager.h"
+
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CString s_strChapterClose("QuestChapter_Close");
 static CString s_strChapterOpen("QuestChapter_Open");
@@ -288,10 +290,10 @@ public:
 class Unk_QdPane : public UIDialog { public: };
 class Unk_QdGuide : public UIWorldMapDialog { public: int IsFloating(); };
 class Unk_QdMap : public UIMinimapDialog { public: int IsFloating(); };
-Unk_QdGuide* FUN_140961730(int nUIType);
+template <class T> T* Unk_GetUI(int nUiId);   // C3: was FUN_140961730 (<UIWorldMapDialog>, actionkeyobject.cpp)
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
 class UIQuestGuideDialog;
-UIQuestGuideDialog* FUN_140e888d0(int nUIType);
+template <class T> T* Unk_SptGetUI(int nId);   // C3: was FUN_140e888d0
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                // the movie of a UI layer
 
 // @0x141a993a0
@@ -412,7 +414,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         }
         else if (_stricmp("CanAdd", szMethod) == 0)
         {
-            UIQuestGuideDialog* pGuide = FUN_140e888d0(0x4e43);
+            UIQuestGuideDialog* pGuide = Unk_SptGetUI<UIQuestGuideDialog>(0x4e43);
             if (pGuide == 0)
                 return 0;
             FUN_1422bb8b0(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value(((class UIQuestGuideDialog*)(class UIQuestGuideDialog*)(pGuide))->FUN_141aacd70()));
@@ -455,7 +457,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_20 = dataSetting.PopBool();
                 reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_21 = dataSetting.PopBool();
                 reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->FUN_140c9b8b0()->m_22 = dataSetting.PopBool();
-                Unk_QdGuide* pGuide = FUN_140961730(0x4e42);
+                Unk_QdGuide* pGuide = static_cast<Unk_QdGuide*>(Unk_GetUI<UIWorldMapDialog>(0x4e42));
                 if (pGuide != 0 && pGuide->FUN_141924630() != 0)
                     pGuide->FUN_141b5bd30();
                 Unk_QdMap* pMap = ((class Unk_QdMap*)FUN_140c9b540(0x4e29));
@@ -673,7 +675,7 @@ void UIQuestDialog::RefreshEpisodes()
     Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
     {
         spList->FUN_1422dd1d0();
         CAtlArray<int> ids;
@@ -696,7 +698,7 @@ void UIQuestDialog::RefreshEpisodes()
 // @0x141a9b0e0
 void UIQuestDialog::RefreshList()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
     {
         spList->FUN_1422dd1d0();
         ASObj root(2);
@@ -757,7 +759,7 @@ MS2Ptr<Unk_QdChapterText> FUN_1416e7f30(int nChapter);
 // @0x141a9b6e0
 void UIQuestDialog::RefreshCompleted()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
     {
         spList->FUN_1422dd1d0();
         ASObj root(2);
@@ -829,7 +831,7 @@ void UIQuestDialog::SelectQuest(int nQuestId)
 // @0x141a9bff0
 void UIQuestDialog::FocusQuest(int nQuestId)
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
     {
         m_188 = nQuestId;
         FocusQuestTab(nQuestId);
@@ -847,7 +849,7 @@ void UIQuestDialog::FocusQuest(int nQuestId)
 // @0x141a9c0e0
 void UIQuestDialog::SelectListIndex(int nIndex)
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
     {
         spList->SetSelectedIndex(nIndex);
         spList->vfunc_24(true);
@@ -962,7 +964,7 @@ int UIQuestDialog::GetSubTabFilter()
 // @0x141a9c880
 int UIQuestDialog::GetQuestListIndex()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_questList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_questList"))
     {
         int nIndex = spList->GetSelectedIndex();
         return nIndex == -1 ? 0 : nIndex;

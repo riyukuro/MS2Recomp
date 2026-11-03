@@ -310,8 +310,7 @@ __int64 FUN_1402882f0(__int64 vec);                             // _Getal
 // vector<__int64>::_Destroy(first, last): forwards to the no-op range destroy of the trivially destructible elements.
 // MS2-FUNCTIONAL: the exe returns whatever the callee left in rax; the callers ignore it
 // @0x1402875b0
-__int64 FUN_1402875b0(__int64 vec, __int64 first, __int64 last)
+void FUN_1402875b0(__int64 vec, __int64 first, __int64 last)
 {
     FUN_140277470(first, last, FUN_1402882f0(vec));
-    return last;
 }

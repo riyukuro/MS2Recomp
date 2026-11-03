@@ -10,20 +10,10 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class NotifyObject;
 class ASTextField;
-
-// A throttle with a 64-bit millisecond tick (ctor 0x140517b00).
-class Unk_DemolishTick {
-public:
-    Unk_DemolishTick();                     // 0x140517b00
-    int FUN_140268870(unsigned ms);         // true once the interval elapsed
-    void FUN_140268840();                   // reset
-private:
-    unsigned __int64 m_tick;
-};
-MS2_CHECK_SIZE(Unk_DemolishTick, 8);
 
 class UIHouseDemolishDialog : public UIDialog
 {
@@ -51,7 +41,7 @@ private:
     bool m_bShown;                                              // +0x178
     bool m_bRefreshed;                                          // +0x179 Refresh ran once
     unsigned m_nDirty;                                          // +0x17c pending Refresh flags
-    Unk_DemolishTick m_tick;                                    // +0x180
+    Unk_IntervalTimer m_tick;                                   // +0x180
 };
 MS2_CHECK_SIZE(UIHouseDemolishDialog, 0x188);
 MS2_CHECK_OFFSET(UIHouseDemolishDialog, m_bShown, 0x178);

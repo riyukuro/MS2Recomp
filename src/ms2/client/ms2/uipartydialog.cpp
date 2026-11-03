@@ -241,7 +241,7 @@ class Unk_PdNametagFlags { public: char m_00[0x30]; bool m_30; };       // m_30:
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
 class Unk_PdKeyState;                                                   // the input state; +8 is the lock set (FUN_1402c4c90)
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-int FUN_1402c4c90(void* pLocks, int nLock);
+#include "ms2/commonfiles/contentshutdown.h"   // C3: CContentShutdown::Get (was FUN_1402c4c90)
 bool FUN_140930b10();
 bool FUN_140930b40();
 CMyCharacter* FUN_140931510();
@@ -268,7 +268,7 @@ int FUN_141637c40(CPartyMember* pMember);                               // the m
 double FUN_1407184e0(const CStringW& str);                              // parse a number
 void FUN_141b70810(unsigned nMs, CStringW& strOut);                     // elapsed time text
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
-void FUN_141276f80(const Unk_CommandChat& kChat);                            // post a chat record
+int FUN_141276f80(Unk_CommandChat* pChat);                            // post a chat record
 class Unk_PdMainSystem : public CMainSystem { public: };   // CMainSystem: draw count, fps
 extern const wchar_t DAT_142fd11d4[];                                   // L","
 extern const char DAT_142fd1144[];                                      // "x"
@@ -277,8 +277,11 @@ extern const char DAT_142fd116c[];                                      // "y"
 // AScript members this unit calls that the shared header does not declare (same this / return ABI).
 struct Unk_PdScript : AScript
 {
-    Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);   // Invoke(method, number) (uichaosdpsdialog.cpp)
     using AScript::m_value;
+};
+struct Unk_ChaosAS : AScript   // C3: member view (uichaosdpsdialog.cpp)
+{
+    Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);   // Invoke(method, number)
 };
 
 // ASObj member setters through an ASData argument (one COMDAT per value type in this unit).
@@ -895,7 +898,7 @@ void UIPartyDialog::OnGiveUpDungeonClick(const Scaleform::GFx::FunctionHandler::
 // @0x141a77eb0
 bool UIPartyDialog::FUN_141a77eb0()
 {
-    if (FUN_1402c4c90(((char*)FUN_14025e7b0()) + 8, 0x1a) != 0)
+    if (((CContentShutdown*)(((char*)FUN_14025e7b0()) + 8))->Get((CContentShutdown::Content)0x1a) != 0)
     {
         FUN_140d73bc0(0x2f7, 0, 0, CStringW(L""));
         return false;
@@ -1272,7 +1275,7 @@ void UIPartyDPSDialog::FUN_141a7b540()
     if (spLast.get() != 0)
     {
         double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
-        static_cast<Unk_PdScript*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
+        static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
     {
@@ -1365,7 +1368,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         Unk_CommandChat kChat;
         kChat.kind = 7;
         kChat.message = strHistory;
-        FUN_141276f80(kChat);
+        FUN_141276f80(&kChat);
         return 1;
     }
     else if (_stricmp("onTextToggle", szMethod) == 0)
@@ -1488,8 +1491,8 @@ static UICommon::CMyPCKeyInputController s_pePopupKeyInput;            // 0x1401
 // through reinterpret_cast<PCBase*>(m_68), and the distance getter through this view.
 struct Unk_PeOwner : Unk_PopupOwner
 {
-    float FUN_140f4a450();                                                  // GameObject: distance to the camera
 };
+class Unk_HudActor { public: float FUN_140f4a450(); };   // C3: member view (was Unk_PeOwner::FUN_140f4a450), the distance to the camera
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the entity's scene graph
 egmAnimation::AnimationService* FUN_141b6f910();
 const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);                     // world translate of a node
@@ -1544,12 +1547,8 @@ void UIPopupEntity::OnLoadComplete()
     UIObject::OnLoadComplete();
 }
 
-class Unk_PmCamera
-{
-public:
-    bool FUN_140af0700(const Unk_PopupPos& kWorld, NiPoint3& kScreen);   // CameraMgr::FUN_140af0700, fed vfunc_60's result
-    float FUN_141032df0(); float FUN_140b67d10(); float FUN_1409f2430();
-};
+float FUN_141032df0(void*);   // C3: was Unk_PmCamera::FUN_141032df0
+float FUN_1409f2430(class Unk_CameraManager*);   // C3: was Unk_PmCamera::FUN_1409f2430
 
 // @0x141a7cdf0
 void UIPopupEntity::vfunc_15()
@@ -1562,7 +1561,7 @@ void UIPopupEntity::vfunc_15()
         return;
     }
     NiPoint3 kScreen;
-    if (reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(vfunc_60(), kScreen))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(static_cast<const Unk_PopupPos&>(vfunc_60())), kScreen))
     {
         if (m_88 != 0)
             vfunc_52();
@@ -1679,7 +1678,7 @@ void UIPopupEntity::FUN_141a7d300()
 float UIPopupEntity::vfunc_61()
 {
     if (m_68 != 0)
-        return static_cast<Unk_PeOwner*>(m_68)->FUN_140f4a450();
+        return reinterpret_cast<Unk_HudActor*>(static_cast<Unk_PeOwner*>(m_68))->FUN_140f4a450();
     return 1e9f;
 }
 
@@ -2807,10 +2806,10 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
 // @0x141a83db0
 float UIPopUpMenu::FUN_141a83db0()
 {
-    float fNear = reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_141032df0();
-    float fFar = reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10();
+    float fNear = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());
+    float fFar = reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance())->FUN_140b67d10();
     float fDepth = fFar - fNear;
-    float fHeight = reinterpret_cast<Unk_PmCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_1409f2430();
+    float fHeight = FUN_1409f2430(reinterpret_cast<Unk_CameraManager*>(TSingleton<CameraMgr>::GetInstance()));
     float fOffset = 0;
     if (fDepth != 0.0f)
     {
@@ -3559,7 +3558,8 @@ public:
     ecr::PickService::PickRecord* m_p;
 };
 class Unk_PpScene;
-Unk_PpScene* FUN_1408e57f0();                                           // the ui scene manager
+#include "ms2/commonfiles/usermail.h"   // C3: CUserMail::FUN_1408e57f0 (was a free FUN_1408e57f0)
+#define FUN_1408e57f0() ((Unk_PpScene*)CUserMail::FUN_1408e57f0())   // the ui scene manager
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:

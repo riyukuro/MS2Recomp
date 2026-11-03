@@ -141,6 +141,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cwebbrowserservice.h"
 #include "ms2/placeholder/asslider.h"
+
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -301,7 +303,6 @@ public:
     class TiXmlNode* FirstChild();
     class TiXmlNode* InsertEndChild(class TiXmlNode const&);
 };
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);                // SaveFile
 
 // A TinyXML node through its vtable (slot 11: ToText).
 class Unk_WmXmlNode
@@ -410,7 +411,7 @@ void UIWriteMusicDialog::OnLoadComplete()
         if (strUrl.IsEmpty())
             m_30->Invoke("hideWebPageButton");
         m_spPlayLine = GetChild<ASMovieClip>("m_playLine");
-        MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560("m_rollType");
+        MS2Ptr<ASDropdownMenu> spRollType = GetChild<ASDropdownMenu>("m_rollType");
         if (spRollType)
         {
             spRollType->AddItemLabel(GetStringCommonByKey(L"s_writemusic_playline_show_per_time"));
@@ -1271,7 +1272,7 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
             }
         }
         ((void*)((class TiXmlNode*)(void*)(&doc))->InsertEndChild(*(class TiXmlNode const*)(&root)));
-        FUN_1408710c0(&doc, strFile);
+        doc.SaveFile(strFile);
         SetMusicScoreDirty(false);
 }
 
@@ -1516,7 +1517,7 @@ void UIWriteMusicDialog::SetItem(MS2Ptr<CItem> spItem)
 // @0x140ff4550
 bool UIWriteMusicDialog::FUN_140ff4550()
 {
-    MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560("m_rollType");
+    MS2Ptr<ASDropdownMenu> spRollType = GetChild<ASDropdownMenu>("m_rollType");
     if (spRollType)
     {
         if (spRollType->GetSelectedIndex() == 0)

@@ -108,7 +108,8 @@ int FindStatByName(const CString& strName);         // normal option id by name 
 enum SAType { SAType_None = 0 }; SAType FUN_14081d2f0(const CString& strName);          // special option id by name (0: none)
 int GetStatValueType(int nNormal);
 int FUN_14081dd50(int nSpecial);
-void FUN_1403d7960(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nA, const unsigned& nB);
+class Unk_CommonLog;
+template <class A, class B> void Unk_BurningLevelupLog(class Unk_CommonLog*, int, int, const wchar_t*, const A&, const B&);   // C3: was FUN_1403d7960
 
 // Two-argument log call with the packed category (template instance 0x1405c2380).
 // @0x1405c2380
@@ -122,7 +123,6 @@ inline void Unk_MergeLog(CLogString* log, unsigned __int64 a, unsigned __int64 b
 }
 
 // Option text helpers of the item tooltip (string table lookups and highlight).
-CStringTable* GetStringTable();                                        // FUN_1401a9d70
 class Unk_FeatureSet;
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -135,7 +135,7 @@ CStringW FUN_140631830(int, int, CItemData *);  // C3: the definition's signatur
 template <class A> CStringW FormatStringId(int nId, const A& a);             // the highlighted text
 bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
 bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
-int FUN_140408410(const ATL::CAtlArray<unsigned>& arr, const unsigned& nValue);   // the index of a value, -1 when absent
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange);
 class Unk_GameEventIntRange   // C3: member view for the former free stand-ins
 {
@@ -328,7 +328,7 @@ bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
             if (nPrev >= nMax)
             {
                 (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemmergeoptiontable.cpp", 0xcf), 0));
-                FUN_1403d7960(GetLogString(), 1, 0x13, L"ItemMergeError {0} {1}", nPrev, nMax);
+                Unk_BurningLevelupLog<unsigned, unsigned>(reinterpret_cast<Unk_CommonLog*>(GetLogString()), 1, 0x13, L"ItemMergeError {0} {1}", nPrev, nMax);
             }
             spStep->m_range.Set(nPrev + 1, nMax);
             aSteps.Add(spStep);
@@ -421,7 +421,7 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
             DataPtr spData(new CItemMergeOptionData);
             if (!spData->Load(pSlot))
             {
-                Unk_MergeLog(CLogString::GetInstance(), 0, 0, 0x72, L"Invalid Item merge option [ID:{0}, Part:{1}]", nItemType, spData->m_nId);
+                Unk_MergeLog(GetLogString(), 0, 0, 0x72, L"Invalid Item merge option [ID:{0}, Part:{1}]", nItemType, spData->m_nId);
                 continue;
             }
             m_data.insert(std::make_pair(std::pair<int, int>(nItemType, spData->m_nId), spData));
@@ -444,7 +444,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId,
     int nPart = spItem->GetEquipSubtype();
     if (spData->m_aPartLimit.GetCount() != 0)
     {
-        if (FUN_140408410(spData->m_aPartLimit, nPart) == -1)
+        if (Unk_ArrayFind<unsigned>(spData->m_aPartLimit, nPart) == -1)
             return DataPtr(0);
     }
     unsigned short nItemLevel = (unsigned short)spItem->limit.levelLimit;
@@ -622,7 +622,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
         int nMergeId = spOption->FUN_1405cb380();
         CStringW strTag;
         if (((class CInputKeyHandler*)(class Unk_FeatureSet*)((Unk_FeatureSet *)(((class Unk_FeatureSet*)FUN_14025e7c0()))))->IsDebugMode() && nMergeId != 0)
-            strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
+            strTag = StringFormat(L"[{0}]", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nMergeId));
         Unk_EnchantMap& rNormal = spOption->GetStatMap(4);
         Unk_SocketSpecialMap& rSpecial = spOption->GetSpecialMap(4);
         for (POSITION pos = rNormal.GetStartPosition(); pos != 0; rNormal.GetNext(pos))

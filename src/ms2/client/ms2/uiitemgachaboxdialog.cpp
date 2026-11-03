@@ -82,11 +82,6 @@ public:
 };
 // The drop entries (commonfiles\itemdroptable.h).
 typedef ItemDropResult Unk_GachaDrop;
-class Unk_GachaItems : public Unk_ItemVec
-{
-public:
-    bool FUN_140c0e9f0();
-};
 #define GACHA_ITEMS reinterpret_cast<std::vector<ItemEntity>&>(m_result)
 #define GACHA_BINDS reinterpret_cast<std::vector<CString>&>(m_slotBinds)
 #define GACHA_BAGS reinterpret_cast<std::vector<CString>&>(m_bagIds)
@@ -558,7 +553,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
 {
     if (m_30 == 0)
         return;
-    if (static_cast<Unk_GachaItems&>(m_result).FUN_140c0e9f0())
+    if (GACHA_ITEMS.empty())
         return;
     FUN_140c43010();
     int gachaId = 0;

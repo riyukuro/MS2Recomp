@@ -392,6 +392,10 @@ CommonString* FUN_14025e7d0();   // the CommonString instance
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/packethandlermanager.h"
 #include <direct.h>
+
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
+
+template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870, owned by uiinventorydialog
 // The exe links _mkdir statically (0x1420b1a80): redeclare it without dllimport
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -774,9 +778,9 @@ int UIMessenger::vfunc_84()
 // @0x141a09e90
 void UIMessenger::OnLoadComplete()
 {
-    m_textInput = FUN_140e35bd0("m_textInput");
+    m_textInput = GetChild<ASTextInput>("m_textInput");
     m_textOutput = FUN_140c26f60("m_textOutput");
-    m_buttonBar = FUN_140c02870("m_buttonBar");
+    m_buttonBar = GetChild<ASButtonBar>("m_buttonBar");
     m_subject = GetChild<ASDropdownMenu>("m_subject");
     m_chatEmoticonPreview = GetChild<ASMovieClip>("m_chatEmoticonPreview");
     m_textInput->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMessenger::FUN_141a0e940));

@@ -114,7 +114,7 @@ int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, int& rOut);
 int FUN_140873220(Unk_ScriptXmlNode* pNode, const char* pszName, unsigned& rOut);
 int FUN_140873420(Unk_ScriptXmlNode* pNode, const char* pszName, CStringW& rOut);
 enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(class Unk_140165cf0*, const char*, E&);       // job condition
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned FUN_140767ff0();                                                           // random
 CFileSystem* GetFileSystem();
@@ -710,7 +710,7 @@ void FUN_140858440(CStringA path)
                 {
                     CStringA gotoIds = Unk_ReadString((class Unk_XmlNode*)(node), "gotoConditionTalkID", "");
                     if (gotoIds.GetLength() != 0)
-                        FUN_140177de0(gotoIds, script->m_gotoConditionTalkIds, ",");
+                        XmlSplit(gotoIds, script->m_gotoConditionTalkIds, ",");
                 }
                 FUN_140859160(node, script);
                 if (script->m_randomPick == 1 && script->m_contents.GetCount() == 0)

@@ -53,8 +53,8 @@ public:
 class Unk_RmOption { public:  };
 
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-void FUN_14098a440(CDialogEx* pDlg, CDataExchange* pDX);            // 0x14098a440 CDialogEx::DoDataExchange
-Unk_RmRenderService* FUN_1413f9890();
+namespace ecr { class RenderService; }
+ecr::RenderService* FUN_1413f9890();
 
 // @0x140c9cb10
 CSoundService* FUN_140c9cb10() { return TSingleton<CSoundService>::s_instance; }
@@ -106,7 +106,7 @@ int RecodeMgr::IsRecording()
 int RecodeMgr::FUN_140c9bb60()
 {
     StopRecording();
-    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0(FUN_1413f9890()));
+    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0((Unk_RmRenderService*)FUN_1413f9890()));
     if (pContext != 0)
     {
         FUN_140c9be00();
@@ -129,7 +129,7 @@ int RecodeMgr::FUN_140c9bb60()
 int RecodeMgr::StopRecording()
 {
     m_bRecording = 0;
-    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0(FUN_1413f9890()));
+    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0((Unk_RmRenderService*)FUN_1413f9890()));
     if (pContext != 0)
         pContext->ReleaseRecodeSurface();
     return 1;
@@ -139,7 +139,7 @@ int RecodeMgr::StopRecording()
 int RecodeMgr::FUN_140c9bc70(CString strText)
 {
     StopRecording();
-    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0(FUN_1413f9890()));
+    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0((Unk_RmRenderService*)FUN_1413f9890()));
     if (pContext != 0)
     {
         FUN_140c9be00();
@@ -272,7 +272,7 @@ void CResearchAndDevelopmentDialog::SetRecordStatusText(CString strText)
 // @0x140c9c5a0
 void CResearchAndDevelopmentDialog::DoDataExchange(CDataExchange* pDX)
 {
-    FUN_14098a440(this, pDX);
+    CDialogEx::DoDataExchange(pDX);
     DDX_Text(pDX, 0x4e4, m_strUrl);
     DDX_Control(pDX, 0x4e7, m_sldVolume);
     DDX_Text(pDX, 0x4e8, m_strVolume);

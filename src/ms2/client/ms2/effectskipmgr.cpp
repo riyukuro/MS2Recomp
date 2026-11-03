@@ -67,9 +67,6 @@ int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);
 
-// The 12 byte zero point.
-extern Unk_SkipPoint DAT_143b01a60;
-
 // The view-distance probe (the host, its local actor).
 class Unk_SkipHost { public: };
 class Unk_SkipActor
@@ -89,7 +86,7 @@ class Unk_SkipEffect
 {
 public:
     char m_pad_00[0x24];            // NiMatrix3 m_Rotate
-    Unk_SkipPoint m_pos;            // +0x24 m_Translate
+    efd::Point3 m_pos;              // +0x24 m_Translate
     float m_fScale;                 // +0x30
 };
 MS2_CHECK_SIZE(Unk_SkipEffect, 0x34);
@@ -101,7 +98,7 @@ public:
     char m_pad_00[0x18];
     int m_nKind;                    // +0x18
     char m_pad_1c[8];
-    Unk_SkipPoint m_pos;            // +0x24
+    efd::Point3 m_pos;              // +0x24
     char m_pad_30;
     bool m_bIgnore;                 // +0x31
     char m_pad_32[0x7a];
@@ -123,7 +120,7 @@ Unk_SkipRow::Unk_SkipRow()
 }
 
 // @0x1411b8570
-Unk_SkipCheck::Unk_SkipCheck() : m_nRow(0), m_nCaster(9), m_pos(DAT_143b01a60), m_n14(0), m_fViewDistance(-1.0f)
+Unk_SkipCheck::Unk_SkipCheck() : m_nRow(0), m_nCaster(9), m_pos(efd::Point3::ZERO), m_n14(0), m_fViewDistance(-1.0f)
 {
 }
 
@@ -147,8 +144,8 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
         return 0;
     Unk_SkipActorPos pos;
     pActor->GetPosition(&pos);
-    Unk_SkipDelta delta = pCheck->m_pos.FUN_140965c40(pos);
-    float fDist = reinterpret_cast<Vector3*>(&delta)->FUN_140968990();
+    Vector3 delta = reinterpret_cast<const Vector3&>(pCheck->m_pos).FUN_140965c40(reinterpret_cast<const Vector3&>(pos));
+    float fDist = delta.FUN_140968990();
     float fView = pCheck->m_fViewDistance;
     if (FUN_14028d470(fView, -1.0f))
         fView = *FUN_140552770(const_cast<std::vector<float>*>(&m_rows[pCheck->m_nRow].m_dist), pCheck->m_nCaster);

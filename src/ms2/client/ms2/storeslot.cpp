@@ -105,7 +105,7 @@ class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 CStringW GetStringCommon(int nStringId);                    // a string table text
 template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
-void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
@@ -264,7 +264,7 @@ int StoreSlot::vfunc_14()
         int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
         if (nSlot == -1)
         {
-            FUN_140961010(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
+            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
             FUN_141276180(s_strSystemNoticeErrorWarningBag, "");
             return 0;
         }

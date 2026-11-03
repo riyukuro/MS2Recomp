@@ -45,7 +45,7 @@ AttendGiftDataGroup::AttendGiftDataGroup()
 // @0x1401adef0
 bool AttendGiftDataGroup::Load(Unk_140165cf0* pNode, const CString& strContext)
 {
-    for (Unk_140165cf0* pElem = pNode->FUN_140165cf0("v"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("v")))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("v")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("v")))
     {
         Unk_AttendPtr<ItemGift> spGift(new ItemGift());
         spGift->vfunc_2(pElem);
@@ -66,7 +66,7 @@ bool AttendGiftData::Load(Unk_140165cf0* pNode)
     XmlGetAttr((class TiXmlElement*)(pNode), "giftID", m_nGiftId);
     CString strContext;
     strContext.Format("giftID=%u", m_nGiftId);
-    for (Unk_140165cf0* pElem = pNode->FUN_140165cf0("group"); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("group")))
+    for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->FirstChild("group")); pElem != 0; pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->NextSibling("group")))
     {
         AttendGiftDataGroupPtr spGroup(new AttendGiftDataGroup());
         if (!spGroup->Load(pElem, strContext))
@@ -108,7 +108,7 @@ bool AttendGiftDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
     std::vector<Unk_140165cf0*> nodes;

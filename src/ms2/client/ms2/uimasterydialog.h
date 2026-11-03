@@ -125,7 +125,6 @@ public:
     static int FUN_140eb9160(const void* pA, const void* pB);  // 0x140eb9160
 
     MS2Ptr<Unk_MLevelCtrl> FUN_140c02990(const CString& strName);   // child lookup
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);
     MS2Ptr<Unk_MSubTab> FUN_140c02870(const CString& strName);
     MS2Ptr<Unk_MGroup> FindControl(const CString& strName);
 

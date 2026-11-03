@@ -129,7 +129,6 @@ public:
     class Unk_WsC_GameObj* FindObjectByEntityId(egf::EntityID id);   // C3: the real member (0x141bd0fa0)
 };
 
-unsigned FUN_1408a2010();                       // property type id of bool
 
 // The property cache of a client entity (egf::Entity subclass: +0xc8 caching enabled, +0xd0 map property id -> entry).
 // Same view as bosstargetcamera.cpp.
@@ -454,8 +453,8 @@ static void FUN_14098c360(Unk_CachedEntity* pEntity, unsigned nId, const bool& b
         if (pEntity->m_d0.FUN_140948250(nId).FUN_140947540(pEntity->m_d0.FUN_1409481f0()))
         {
             bool bOld;
-            pEntity->GetPropertyValueUnsafe(nId, &bOld, FUN_1408a2010());
-            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, new bool(bOld), FUN_1408a2010());
+            pEntity->GetPropertyValueUnsafe(nId, &bOld, efd::GetClassIDFromType<bool>());
+            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, new bool(bOld), efd::GetClassIDFromType<bool>());
         }
     }
 }
@@ -464,7 +463,7 @@ static void FUN_14098c360(Unk_CachedEntity* pEntity, unsigned nId, const bool& b
 void FUN_14098c6e0(Unk_CachedEntity* pEntity, unsigned nId, const bool& bValue)
 {
     FUN_14098c360(pEntity, nId, bValue);
-    pEntity->SetPropertyValueUnsafe(nId, (void*)&bValue, FUN_1408a2010());
+    pEntity->SetPropertyValueUnsafe(nId, (void*)&bValue, efd::GetClassIDFromType<bool>());
 }
 
 // @0x14098c540

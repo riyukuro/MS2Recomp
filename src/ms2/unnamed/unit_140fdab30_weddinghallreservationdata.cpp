@@ -31,7 +31,6 @@ struct Unk_WdUgcPaths
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
-CStringTable* GetStringTable();                                              // the string table singleton
 bool FUN_140900f30(__int64 nTime);                                          // the time is at night (before 6 / after 17)
 CStringW FUN_140b8e850(const CMsTime& kTime);                               // the date text
 CStringW FUN_1409404f0(__int64 nMerat);                                     // the price text
@@ -70,7 +69,7 @@ void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, bool bPublic, ASO
     kBride.FUN_1407cbb20("name", pProxy->m_bride.m_strName);
     kBride.FUN_1407cba60("iconPath", FUN_140fdab30(&pProxy->m_bride));
     pData->FUN_1409eb270("bride", kBride);
-    pData->FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
+    pData->FUN_1407cbb20("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,
         WeddingTable::GetInstance()->FUN_140908d50(spPackage->m_nId, spHall->m_nId, FUN_140900f30(nTime))));
     pData->FUN_1407cbb20("date", FUN_140b8e850(CMsTime(nTime)));
     pData->FUN_1407cbbe0("isPublic", bPublic);

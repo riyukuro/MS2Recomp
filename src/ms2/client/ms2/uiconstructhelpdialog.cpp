@@ -2,8 +2,6 @@
 // MS2-UNIT: ?\uiconstructhelpdialog.cpp
 // MS2-RANGE: 0x141905eb0-0x141906490 .text$mn
 // MS2-PIN: ??_GUIConstructHelpDialog@@UEAAPEAXI@Z 0x141906440
-// MS2-PIN: ??0Unk_ChTree@@QEAA@XZ 0x140333290
-// MS2-PIN: ??1Unk_ChTree@@QEAA@XZ 0x140333cb0
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiconstructhelpdialog.cpp"    // assumed
@@ -32,21 +30,12 @@ struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 
-// The tree the home map information service collects the visitors into (24 bytes).
-struct Unk_ChTree
-{
-    Unk_ChTree();                                               // 0x140333290
-    ~Unk_ChTree();                                              // 0x140333cb0
-    bool FUN_1404bd700();                                       // is empty
-    void* m_pad_00[3];
-};
-
 // The home (cube map information) service.
 class CubeMapInformationService { public: bool FUN_1410c35c0(); };
 class Unk_HoService : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    void FUN_1410d5930(Unk_ChTree* pOut);                       // collect the visitors
+    void FUN_1410d5930(std::set<unsigned __int64>* pOut);       // collect the visitors
 };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
@@ -140,9 +129,9 @@ void UIConstructHelpDialog::vfunc_43()
     {
         if (WorldService::GetInstance()->FUN_141bcb1a0() && FUN_1418fd280() != 0)
         {
-            Unk_ChTree kVisitors;
+            std::set<unsigned __int64> kVisitors;
             reinterpret_cast<Unk_HoService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(spService).operator->())->FUN_1410d5930(&kVisitors);
-            if (kVisitors.FUN_1404bd700() != 0)
+            if (kVisitors.empty() != 0)
                 pEntity->vfunc_2(6, 0, 0x21);
             else
                 pEntity->vfunc_2(6, -300, 0);

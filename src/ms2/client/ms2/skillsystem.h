@@ -16,7 +16,7 @@ class CSkillRecord;
 class CSkillCompactControlConfig;
 class SkillData;
 class SkillLevelData;
-class Unk_MyPCSkillSet;
+class CSkillSet;
 struct Unk_InventorySkillRequest;
 class Unk_PCBaseComp_b18;
 
@@ -73,7 +73,7 @@ public:
     MS2Ptr<CSkillRecord> FUN_141765570(Unk_InventorySkillRequest& kReq);   // build the record of a request
     void FUN_141767f80(int nSkillId);                       // add a temporary skill
     void FUN_1417683d0();                                   // refresh the skill slots
-    MS2Ptr<Unk_MyPCSkillSet> GetSkillSet();               // the temporary (ridee) skill set, if any
+    MS2Ptr<CSkillSet> GetSkillSet();               // the temporary (ridee) skill set, if any
     void FUN_141768100(int nSkillId);                       // remove a temporary skill
     MS2Ptr<CSkillRecord> FUN_141764e30(Unk_InventorySkillRequest& kReq);   // cast a request
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141764e30(Unk_InventorySkillRequest* pReq);   // the same, the record as the casting skill (vfunc_104)
@@ -150,7 +150,7 @@ public:
     MS2Ptr<CSkillCompactControlConfig> m_spCompact;         // +0x128
     unsigned m_nLapenTick;                                  // +0x138
     int m_nLapenDirty;                                      // +0x13c (1)
-    MS2Ptr<Unk_MyPCSkillSet> m_spSkillSet;                  // +0x140
+    MS2Ptr<CSkillSet> m_spSkillSet;                  // +0x140
     std::list<unsigned> m_lstSkillSets;                         // +0x150
     ATL::CAtlMap<unsigned, int> m_mapUses;                  // +0x160 uses by recharge id
     ATL::CAtlMap<unsigned, unsigned> m_mapRechargeTick;       // +0x1a8

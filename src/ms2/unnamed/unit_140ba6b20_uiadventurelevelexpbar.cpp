@@ -81,6 +81,7 @@ public:
     void* m_pad_00;
     Unk_AdvMountRow* m_p;
 };
+class Ridee;
 class Unk_AdvHolder { public: Unk_AdvMountPtr FUN_141707750(); };
 class Unk_AdvHolderRef                                              // 8-byte reference to the holder
 {
@@ -88,7 +89,6 @@ public:
     Unk_AdvHolderRef(Unk_AdvHolder* p);                             // 0x140963df0
     ~Unk_AdvHolderRef();                                            // 0x1409648b0
     bool operator!=(Unk_AdvHolder* p) const;                        // 0x140ba7bb0
-    Unk_AdvHolder* FUN_140975bc0() const;                           // operator->
     Unk_AdvHolder* m_p;
 };
 class Unk_AdvActor : public PC { };
@@ -206,7 +206,7 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
     Unk_AdvHolderRef spHolder(reinterpret_cast<Unk_AdvHolder*>(pPlayer->FUN_1416764a0()));
     if (spHolder != 0)
     {
-        bool bMounted = spHolder.FUN_140975bc0()->FUN_141707750().FUN_1407895d0()->m_6c != 0 ? 1 : 0;
+        bool bMounted = reinterpret_cast<Unk_AdvHolder*>(reinterpret_cast<efd::SmartPointer<Ridee>&>(spHolder).operator->())->FUN_141707750().FUN_1407895d0()->m_6c != 0 ? 1 : 0;
         if (bMounted)
             nVisible = 0;
     }

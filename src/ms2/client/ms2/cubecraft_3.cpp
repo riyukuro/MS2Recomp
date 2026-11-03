@@ -45,6 +45,7 @@
 #include <atlcoll.h>
 #include <io.h>
 #include <NiRenderObject.h>
+#include <NiPoint3.h>
 #include <NiAlphaProperty.h>
 #include <NiMaterialProperty.h>
 #include <NiZBufferProperty.h>
@@ -75,7 +76,6 @@ public:
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 extern NiFixedString DAT_143ae50a0;
 float FUN_140a38cd0(float);
-struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };   // NiPoint3(const efd::Point3&) 0x14027dcf0
 class CrashManagerCli;
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
@@ -113,7 +113,11 @@ public:
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_1409457c0(egf::Entity*, unsigned, const float&);
+class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
+{
+public:
+    template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
+};
 
 // @0x1410af930
 CCubeGuideWrapper::CCubeGuideWrapper() {}
@@ -154,8 +158,8 @@ int CNifCubeGuide::FUN_1410afc10(CString assetName) {
 MS2_REPLACE_METHOD(0x1410afc10, CNifCubeGuide, FUN_1410afc10, 315, 0xC8D83785);
 // @0x1410afd60
 void CNifCubeGuide::vfunc_2(const NiPoint3& position) {
-    Unk_NiPt3 kPos(&position);
-    node->SetTranslate(reinterpret_cast<const NiPoint3&>(kPos));
+    NiPoint3 kPos(static_cast<const efd::Point3&>(position));
+    node->SetTranslate(kPos);
 }
 MS2_REPLACE_METHOD(0x1410afd60, CNifCubeGuide, vfunc_2, 64, 0xDF1C7335);
 // @0x1410afdb0
@@ -424,7 +428,7 @@ MS2_REPLACE_METHOD(0x1410b1ce0, CKfmCubeGuide, vfunc_6, 81, 0x4D8BA781);
 int CKfmCubeGuide::vfunc_7() { bool hidden; entity.operator->()->GetPropertyValue(0xa0b6b179, hidden); return hidden ? false : true; }
 MS2_REPLACE_METHOD(0x1410b1d40, CKfmCubeGuide, vfunc_7, 75, 0xED65222D);
 // @0x1410b1da0
-void CKfmCubeGuide::vfunc_9(float scale) { FUN_1409457c0(entity.operator->(), 0x2d7cad2d, scale); }
+void CKfmCubeGuide::vfunc_9(float scale) { static_cast<Unk_CachedEntity*>(entity.operator->())->SetPropertyValue<float>(0x2d7cad2d, scale); }
 MS2_REPLACE_METHOD(0x1410b1da0, CKfmCubeGuide, vfunc_9, 55, 0x6A503D0B);
 // @0x1410b1de0
 void CKfmCubeGuide::vfunc_10(NiNode* node, int) {
@@ -437,14 +441,10 @@ MS2_REPLACE_METHOD(0x1410b1de0, CKfmCubeGuide, vfunc_10, 145, 0xBA55F349);
 void CKfmCubeGuide::vfunc_11() { TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf570(entity.data()); parent = NULL; }
 MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 
-class Unk_CubeDisplayMap {
-public:
-    bool FUN_1410b4ba0(const int&, int&);
-};
 class Unk_CubeDisplayLookup {
 public:
     int FUN_1410b24b0(unsigned, unsigned);
-    Unk_CubeDisplayMap m_map;               // +0x00
+    efd::map<int, int> m_map;               // +0x00
 };
 class Unk_CubeHeightIndex   // C3: member view for the former free stand-ins
 {
@@ -455,7 +455,7 @@ public:
 int Unk_CubeDisplayLookup::FUN_1410b24b0(unsigned a, unsigned b) {
     int value = INT_MIN;
     int key = Unk_CubeHeightIndex::Key(a, b);
-    m_map.FUN_1410b4ba0(key, value);
+    m_map.find(key, value);
     return value;
 }
 MS2_REPLACE_METHOD(0x1410b24b0, Unk_CubeDisplayLookup, FUN_1410b24b0, 75, 0x218D804F);

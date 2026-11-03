@@ -96,13 +96,6 @@ Unk_VibInt3 FUN_1408a1430(Vector3 pt);                      // point -> cube cel
 class Unk_VibCubeSub : public Unk_CubeHeightIndex { };
 CubeMapInformationService* GetCubeMapService();   // C3: was FUN_1410b27c0
 
-// Point with the cross product (0x14109adc0).
-struct Unk_VibPt : Vector3
-{
-    Unk_VibPt() {}
-    Unk_VibPt(const Vector3& p) : Vector3(p) {}
-    Vector3 FUN_14109adc0(const Vector3& v) const;
-};
 // 3x3 matrix with column setters.
 struct Unk_VibMat : Unk_NiMatrix3
 {
@@ -385,11 +378,11 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
     float fTime = efd::Sqrt((1.0f * 0.1f * 2.0f) / fFall);
     Unk_VibMat basis;
     ((efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis))->MakeIdentity();
-    Unk_VibPt ptDir = m_48.FUN_140965c40(m_70);
+    Vector3 ptDir = m_48.FUN_140965c40(m_70);
     ptDir.FUN_140968990();
-    Unk_VibPt ptSide = ptDir.FUN_14109adc0(g_143a08cf8);
-    Vector3 ptNeg = ptSide.FUN_14109adc0(g_143a08cf8).FUN_1409f7960();
-    basis.FUN_14109aa30(0, ptSide);
+    efd::Point3 ptSide = reinterpret_cast<const efd::Point3&>(ptDir).UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8));
+    Vector3 ptNeg = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(ptSide.UnitCross(reinterpret_cast<const efd::Point3&>(g_143a08cf8)))).FUN_1409f7960();
+    basis.FUN_14109aa30(0, reinterpret_cast<const Vector3&>(ptSide));
     basis.FUN_14109aa30(1, ptNeg);
     basis.FUN_14109aa30(2, g_143a08cf8);
     Unk_VibMat comb = reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(*(efd::Matrix3*)(struct Unk_NiMatrix3*)(&basis) * *(efd::Matrix3*)(struct Unk_NiMatrix3*)(&rot)));

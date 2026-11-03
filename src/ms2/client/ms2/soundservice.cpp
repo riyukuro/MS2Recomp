@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <atlcoll.h>
 #include <efd/ServiceManager.h>
+#include <NiPoint3.h>
 #include "soundservice.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/nipoint3.h"
@@ -46,7 +47,6 @@ struct Unk_SoundCfg
 };
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CSoundService* FUN_140c9cb10();                                     // the sound service
-void* FUN_140d13c40();                                              // the channel volume manager
 class CGameOption;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -69,6 +69,7 @@ public:
     void SetAllMute(unsigned int);
     void FUN_14177af40(FMOD::EventSystem* pEvents, void* pSystem);
 };
+template <> class TSingleton<CSoundEventMgr> { public: static CSoundEventMgr* GetInstance(); };   // 0x140d13c40, as in soundeventmgr.h (C3: was FUN_140d13c40)
 void FUN_14125fe20(struct Unk_SoundState*);   // C3: was FUN_14125fe20
 class CEffectService;
 class CEffectService   // C3: member view for the former free stand-ins
@@ -115,6 +116,8 @@ class CameraMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140a18070();
+    NiPoint3 FUN_140af0250();                                       // camera world direction
+    NiPoint3 FUN_140af0340();                                       // camera world up vector
 };
 class Unk_AudioCam
 {
@@ -133,8 +136,6 @@ public:
 };
 // the camera manager's vectors return by value (member: this, hidden return pointer; exe 0x1417b0b1d / 0x1417b0b47).
 // NiPoint3 : efd::Point3 sliced into the local, hence the rep movsb copy.
-struct Unk_SndNiPoint3 : public Vector3 {};
-class Unk_SndCameras { public: Unk_SndNiPoint3 FUN_140af0340(); Unk_SndNiPoint3 FUN_140af0250(); };
 
 
 // ---- the log with two arguments (in this unit) ----
@@ -373,22 +374,22 @@ void CSoundService::FUN_1417ae840(int nFlag)
 {
     if (nFlag != 0)
     {
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetAllMute(1);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetAllMute(1);
     }
     else
     {
         unsigned int bVolume = *(unsigned char*)((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140d13c70());
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(0, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(9, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(1, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(2, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(3, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(4, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(7, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(5, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(8, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(6, bVolume);
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->SetCategoryMute(10, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(0, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(9, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(1, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(2, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(3, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(4, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(7, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(5, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(8, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(6, bVolume);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->SetCategoryMute(10, bVolume);
     }
 }
 
@@ -406,7 +407,7 @@ int CSoundService::FUN_1417ae990()
         GetSystem()->setCallback(FUN_1417b14a0);
     if (FUN_1417aea70() != 0)
     {
-        ((CSoundEventMgr*)FUN_140d13c40())->FUN_14177af40(GetEventSystem(), GetSystem());
+        ((CSoundEventMgr*)TSingleton<CSoundEventMgr>::GetInstance())->FUN_14177af40(GetEventSystem(), GetSystem());
         return 1;
     }
     return 0;
@@ -658,8 +659,8 @@ void CSoundService::FUN_1417af600()
 // @0x1417af6e0
 void FUN_1417af6e0()
 {
-    if (FUN_140d13c40() != 0)
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->OnLostSoundDevice();
+    if (TSingleton<CSoundEventMgr>::GetInstance() != 0)
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->OnLostSoundDevice();
     if ((void*)TSingleton<CEffectService>::GetInstance() != 0)
         ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6160();
     if (FUN_140c9cb10() != 0)
@@ -938,7 +939,7 @@ efd::AsyncResult CSoundService::OnTick()
             FUN_1417aeb40();
             if (FUN_1417ae990() != 0)
             {
-                ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bf20();
+                ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177bf20();
                 FUN_14125fe20((struct Unk_SoundState*)(((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140d13c70())));
                 ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422afe50();
             }
@@ -978,8 +979,8 @@ efd::AsyncResult CSoundService::OnTick()
     {
         Unk_AudioCam* pCam = ((class Unk_AudioCam*)((class Unk_CameraManager*)(void*)(FUN_1409478c0()))->FUN_140a38d60());
         Vector3 kPos = pCam->GetPosition();
-        Vector3 kForward = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0340();
-        Vector3 kUp = static_cast<Unk_SndCameras*>(FUN_1409478c0())->FUN_140af0250();
+        Vector3 kForward = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0340()));
+        Vector3 kUp = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CameraMgr*>(FUN_1409478c0())->FUN_140af0250()));
         if (GetEventSystem() != 0)
         {
             FMOD_VECTOR vPos;
@@ -1003,7 +1004,7 @@ efd::AsyncResult CSoundService::OnTick()
             nResult = GetEventSystem()->update();
             FUN_1417ae7c0(nResult);
         }
-        ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177bb70(fDelta);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177bb70(fDelta);
     }
     else if (GetEventSystem() != 0)
     {
@@ -1026,7 +1027,7 @@ efd::AsyncResult CSoundService::OnShutdown()
         ((NiDX9Renderer*)pObj)->RemoveLostDeviceNotificationFunc(FUN_1417af780);
     }
     ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6160();
-    ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177ba30();
+    ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177ba30();
     FUN_1417af340();
     return efd::AsyncResult_Complete;
 }

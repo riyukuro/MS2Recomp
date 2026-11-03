@@ -42,7 +42,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int FUN_14021bdc0(CString& str);                                         // enum value of a slot name
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 
 // The item record the table classifies (the same record FUN_14053f870 returns elsewhere).
 class Unk_BankItemSlot;
@@ -125,7 +125,7 @@ CBankData::~CBankData()
 void CBankData::SetSlots(CStringA strList)
 {
     ATL::CAtlArray<int> ids;
-    FUN_140177de0(strList, ids, ",");
+    XmlSplit(strList, ids, ",");
     int nMax = CBankTable::GetInstance()->GetMaxId();
     for (unsigned i = 0; i < ids.GetCount(); i++)
     {

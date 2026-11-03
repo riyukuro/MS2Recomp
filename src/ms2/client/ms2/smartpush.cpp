@@ -161,7 +161,7 @@ class Unk_SpInstrument : public CInstrumentManager
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 class UIAutoFishingDialog : public UISystemShopDialog { };
 UIAutoFishingDialog* FUN_140cdee10(eUIClassID nId);                    // GetDialog<UIAutoFishingDialog>
-UIPlayInstrumentDialog* FUN_140d0c040(eUIClassID nId);                 // GetDialog<UIPlayInstrumentDialog>
+template <class T> T* Unk_ImGetDialog(int nId);   // C3: was FUN_140d0c040
 
 // The mastery recipe table (FUN_1409670c0).
 class Unk_SpRecipe : public CPtred
@@ -720,7 +720,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
         if (((class Unk_SpInstrument*)FUN_140c8dac0())->IsPerforming() && !((class Unk_SpInstrument*)FUN_140c8dac0())->IsRemote())
         {
             UIAutoFishingDialog* pAuto = FUN_140cdee10((eUIClassID)0x4f07);
-            UIPlayInstrumentDialog* pPlay = FUN_140d0c040((eUIClassID)0x4eec);
+            UIPlayInstrumentDialog* pPlay = Unk_ImGetDialog<UIPlayInstrumentDialog>((eUIClassID)0x4eec);
             if (pPlay != 0 && pAuto != 0 && pAuto->FUN_141924630() == 0 && pPlay->GetAutoPlay() != 0)
             {
                 pAuto->SetMode(5);
@@ -1308,21 +1308,13 @@ int CSmartPushAutoFunctionCubeObject::vfunc_13()
     return FUN_1409670b0()->FUN_141232430(vfunc_14(), reinterpret_cast<PC*>(pMy)->FUN_141656ad0());
 }
 
-// The homemade cube seen through the data copy (statehomemade.cpp owns the COMDAT at 0x140ca6580).
-class Unk_HmCube : public CHomemadeCubeObject
-{
-public:
-    // @0x140ca6580
-    MS2Ptr<FunctionCubeData> FUN_140ca6580() { return m_spData; }
-};
-
 // @0x140dd41b0
 int CSmartPushAutoFunctionCubeObject::vfunc_14()
 {
     CHomemadeCubeObject* pCube = FUN_140dd4230();
     if (pCube == 0)
         return 0;
-    return static_cast<Unk_HmCube*>(pCube)->FUN_140ca6580()->m_n100;
+    return pCube->FUN_140ca6580()->m_n100;
 }
 
 // @0x140dd4230

@@ -90,7 +90,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    void FUN_1422dd230(const ASObj& row);                               // append a row
 private:
     void* m_unrecovered_40[9];
 };
@@ -511,7 +510,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             row.FUN_1407cb9c0("enabled", 0);
             row.FUN_1409c0e60("buttonStr", L"");
             row.FUN_1407cbb20("complete", strRequire);
-            spList->FUN_1422dd230(row);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);   // C3: was Unk_AqList::FUN_1422dd230
             spList->vfunc_24(true);
             return;
         }
@@ -589,7 +588,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
             }
             row.FUN_1407cb9c0("enabled", bEnabled);
             row.FUN_1407cbb20("buttonStr", strButton);
-            spList->FUN_1422dd230(row);
+            reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);   // C3: was Unk_AqList::FUN_1422dd230
         }
         spList->vfunc_24(true);
     }

@@ -2,7 +2,8 @@
 // Unnamed helpers and members use invented names. Sibling of uichaosdpsdialog.h.
 #pragma once
 #include "ms2/placeholder/uidialog.h"
-#include "ms2/client/ms2/uichaosdpsdialog.h"            // Unk_ChaosTick (the 100 ms poll timer)
+#include "ms2/client/ms2/uichaosdpsdialog.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class UIIndividualDPSDialog : public UIDialog
 {
@@ -21,7 +22,7 @@ public:
     void FUN_140f4ade0();                                                   // 0x140f4ade0 meter text and elapsed time
 
     int m_unk_178;                                                          // +0x178 (untouched by the ctor)
-    Unk_ChaosTick m_tick;                                                   // +0x17c
+    Unk_IntervalTimer m_tick;                                               // +0x17c
     int m_nGroup;                                                           // +0x184 battle record group
     int m_nMode;                                                            // +0x188 value kind shown (0..8)
 };

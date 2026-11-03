@@ -70,6 +70,8 @@ static UICommon::CMyPCKeyInputController s_keyInputController;                  
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
+template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);   // 0x140c02990, template COMDAT of another unit
+
 // ---- unit-local views of exe objects ----
 
 // The item table the list is filled from.
@@ -318,7 +320,7 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
     MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
     if (item == 0)
         return;
-    MS2Ptr<ASUIComponent> sheet = FUN_140c02990("m_optionSheet");
+    MS2Ptr<ASUIComponent> sheet = GetChild<ASUIComponent>("m_optionSheet");
     if (sheet == 0)
         return;
     sheet->Invoke("resetTable");
@@ -362,7 +364,7 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
     MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
     if (item == 0)
         return;
-    MS2Ptr<ASUIComponent> result = FUN_140c02990("m_optionResult");
+    MS2Ptr<ASUIComponent> result = GetChild<ASUIComponent>("m_optionResult");
     if (result == 0)
         return;
     MS2Ptr<ItemOptionConstant> constant = ((class CItemOptionTable*)FUN_140166430())->FindConstantOption(item->FUN_14053efd0(), m_nRank);

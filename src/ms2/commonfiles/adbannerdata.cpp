@@ -174,14 +174,14 @@ void CAdBannerManager::FUN_14016dfd0(Unk_AbOut* pOut)
 }
 
 // @0x14016e060
-void CAdBannerManager::FUN_14016e060(Unk_AbIn* pIn)
+void FUN_14016e060(CAdBannerManager& manager, CInputStream& stream)
 {
-    FUN_14016df70();
-    int nCount = pIn->vfunc_2();
+    manager.FUN_14016df70();
+    int nCount = reinterpret_cast<Unk_AbIn&>(stream).vfunc_2();
     for (int i = 0; i < nCount; i++) {
         Unk_AdbPtr banner(new AdBannerData());
-        banner.get()->Read(pIn);
-        m_banners.Add(banner);
+        banner.get()->Read(reinterpret_cast<Unk_AbIn*>(&stream));
+        manager.m_banners.Add(banner);
     }
 }
 

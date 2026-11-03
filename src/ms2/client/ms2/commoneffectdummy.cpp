@@ -16,7 +16,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // retur
 class Unk_140166420 : public CFileSystem { };
 CString FUN_14016a5c0(const char* psz, int n);
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_1403a1280(void*, int, int, const wchar_t*, const char**);
+template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CommonEffectDummy::s_bInit;
@@ -65,7 +65,7 @@ bool CommonEffectDummy::LoadFile(const char* path)
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
-        FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", &path);
+        Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", path);
         return false;
     }
     m_pGroup = new EffectDummyGroup;

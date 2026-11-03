@@ -9,7 +9,8 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/timer.h"
-#include "ms2/client/ms2/statemanager.h"   // Unk_140517b00 (8-byte poll timer)
+#include "ms2/client/ms2/statemanager.h"   // StateData
+#include "ms2/placeholder/intervaltimer.h"
 
 class NiActorManager;
 class NiControllerSequence;
@@ -99,8 +100,8 @@ public:
 
     int m_nVoiced;                                          // +0x40 a voice was said in this sub state
     int m_nTired;                                           // +0x44 the first-enter timers were armed
-    Unk_140517b00 m_timerVoiceA;                             // +0x48
-    Unk_140517b00 m_timerVoiceB;                             // +0x50
+    Unk_IntervalTimer m_timerVoiceA;                         // +0x48
+    Unk_IntervalTimer m_timerVoiceB;                         // +0x50
 };
 MS2_CHECK_SIZE(StateIdlePet, 0x58);
 

@@ -128,11 +128,9 @@ public:
     int m_nCount;                                           // +0x3c
     ATL::CAtlList<MS2Ptr<Unk_BasketNode> > m_children;      // +0x40
 };
-// The receiver of the basket items.
+// The receiver of the basket items (a CAtlMap<CStringA, int>: item -> count).
 class Unk_BasketSink
 {
-public:
-    void FUN_1406ad840(const char* pszItem, int nCount);
 };
 void FUN_14028c700(const CStringA& strText, ATL::CAtlArray<CStringA>& arrOut, const char* pszSep);
 
@@ -155,7 +153,6 @@ MS2_CHECK_SIZE(Unk_PetLock, 8);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_1406a5390(int nItemId);
 bool FUN_1406a5800();
-bool FUN_140164830(const CStringW& a, const CStringW& b);
 
 // The music record of a CItem as CUgcItemMusicNote::FUN_140893bb0 reads it.
 struct Unk_MusicSrcView
@@ -1945,7 +1942,7 @@ int CUgcMarketSchCond::FUN_140894a10(const CUgcMarketSchCond* pOther) const
         return 0;
     if (pOther->m_n20 != m_n20)
         return 0;
-    if (FUN_140164830(pOther->m_str28, m_str28))
+    if (pOther->m_str28 != m_str28)
         return 0;
     if (pOther->FUN_140894840() > pOther->FUN_140894840())
         return 0;
@@ -2416,27 +2413,18 @@ void RideeItemInfo::Read(CInPacket& packet)
 }
 
 
-// A string with a one byte flag (no RTTI).
-struct Unk_StrFlag
-{
-    void Write(COutputStream& stream) const;
-    void Read(CInputStream& stream);
-    CStringW m_str;                                         // +0x00
-    int m_nFlag;                                            // +0x08
-};
-
 // @0x1408974e0
-void Unk_StrFlag::Write(COutputStream& stream) const
+void ReserveBannerInfo::Write(COutputStream& stream) const
 {
-    stream.WriteUnicodeString(m_str);
-    stream.WriteUInt8((unsigned char)m_nFlag);
+    stream.WriteUnicodeString(m_strName);
+    stream.WriteUInt8((unsigned char)m_nState);
 }
 
 // @0x140897540
-void Unk_StrFlag::Read(CInputStream& stream)
+void ReserveBannerInfo::Read(CInputStream& stream)
 {
-    m_str = stream.ReadUnicodeString();
-    m_nFlag = stream.ReadUInt8();
+    m_strName = stream.ReadUnicodeString();
+    m_nState = stream.ReadUInt8();
 }
 
 void FUN_140274fc0(CStringW& str, ATL::CAtlArray<unsigned>& out, const wchar_t* pszSep);
@@ -2835,7 +2823,7 @@ void FUN_1408988c0(MS2Ptr<Unk_BasketNode> spNode, Unk_BasketSink& sink)
     size_t nItems = items.GetCount();
     for (size_t i = 0; i < nItems; i++)
     {
-        sink.FUN_1406ad840(items[i], spNode->m_nCount);
+        reinterpret_cast<ATL::CAtlMap<CStringA, int, ATL::CStringElementTraits<CStringA>, ATL::CElementTraits<int> >&>(sink).SetAt(items[i], spNode->m_nCount);
     }
 }
 

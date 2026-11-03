@@ -4,7 +4,7 @@
 // Owning unit: ?\ms2texturedensityprocessor.cpp (0x14150cd00-0x1415154d0, dir client\ms2). Field names inferred.
 #pragma once
 #include "ms2/ms2layout.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture>
 #include <map>
 #include <NiShaderSortProcessor.h>
 #include <NiMaterial.h>
@@ -20,14 +20,14 @@ struct Unk_TexSizeKey
 // A saved texture slot (smart pointer + filter mode) per distinct texturing property.
 struct Unk_TexSlot
 {
-    Unk_PPSmartC m_spTexture;
+    efd::SmartPointer<NiTexture> m_spTexture;
     unsigned m_nFilterMode;
     Unk_TexSlot();                                          // 0x1415116d0
     Unk_TexSlot(const Unk_TexSlot& rhs);                    // 0x141511690
     Unk_TexSlot(Unk_TexSlot&& rhs);                         // 0x141511650 (same body)
 };
 
-typedef std::map<Unk_TexSizeKey, Unk_PPSmartC> Unk_DensityTextureMap;
+typedef std::map<Unk_TexSizeKey, efd::SmartPointer<NiTexture>> Unk_DensityTextureMap;
 
 class MS2TextureDensityProcessor : public NiShaderSortProcessor
 {

@@ -25,7 +25,6 @@ static CStringW s_strRecallConfirm(L"recallscrollconfirm");
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/worldservice.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -184,7 +183,7 @@ void UIRecallScrollNotifyDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (FUN_1422dc2d0() == 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000) != 0) {
+    if (m_tick.Check(1000) != 0) {
         CMsTime now(GetServerTime());
         int nActive = 0;
         for (int i = 0; i < 3; i++) {

@@ -11,7 +11,6 @@
 #include "ms2/placeholder/cptred.h"
 
 class Unk_EquipOutfit;      // the outfit the icons were built from (a CPtred; lists its items)
-class Unk_EquipItemPtr;     // an item handle (callee-destroyed when passed by value)
 
 class UIEquipIconContainer : public CPtred
 {
@@ -24,8 +23,7 @@ public:
     void UnEquipAll();                                               // remove every icon
     void FUN_140e2a6e0(int nVisible);                                   // show / hide the clip
     MS2Ptr<ASEquipIcon> FUN_140e2a740(int nSlot);                       // the slot's icon (0: none)
-    int FUN_140e2a7e0(Unk_EquipItemPtr pItem);                          // the hand slot (4 / 5) a weapon goes to
-    int FUN_140e2a7e0(MS2Ptr<CItemData> spData);                        // 0x140e2a7e0 the same, the item handle spelled as it is (uimeratmarketdialog.cpp)
+    int FUN_140e2a7e0(MS2Ptr<CItemData> spData);                        // 0x140e2a7e0 the hand slot (4 / 5) a weapon goes to
     ATL::CAtlMap<int, MS2Ptr<ASEquipIcon> >* GetIconMap() { return &m_28; }   // 0x1413157e0 (inline; uimeratmarketdialog.cpp)
     MS2Ptr<ASEquipIcon> FUN_140e2a990(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);                         // create the slot's icon
     MS2Ptr<ASEquipIcon> FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIcon, int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);   // change the slot's icon

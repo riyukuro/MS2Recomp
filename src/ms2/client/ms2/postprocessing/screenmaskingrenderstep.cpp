@@ -15,7 +15,7 @@
    // path provider singleton (resource root)
 class CMainSystem;
 CString FUN_14016a5c0(const char* psz, int n);
-struct Unk_SMMgr { Unk_PPSmartC FUN_141552f90(CString name, int flags); };   // texture/resource manager
+struct Unk_SMMgr { efd::SmartPointer<NiTexture> FUN_141552f90(CString name, int flags); };   // texture/resource manager
 Unk_SMMgr* FUN_140a0afd0();
 void* FUN_140c8f880(void* p);
 void* FUN_140c8f670(void* p);
@@ -36,7 +36,7 @@ bool FUN_1416ba620(void* a, void* b);
 static NiTexturingProperty* s_pkScreenMaskProp;
 
 // @0x1400fc9e0
-static Unk_PPSmartC s_screenMaskTexture(0);
+static efd::SmartPointer<NiTexture> s_screenMaskTexture(0);
 
 // @0x1400fca10
 const NiRTTI ScreenMaskingRenderStep::ms_RTTI("ScreenMaskingRenderStep", &NiDefaultClickRenderStep::ms_RTTI);
@@ -62,14 +62,14 @@ bool ScreenMaskingRenderStep::vfunc_15(unsigned int a, void* b)
     path.Format("%s/Image/ScreenMask/title_make_ch.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
     s_screenMaskTexture = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_14016a5c0((const char*)path, 0)), 5);
     void* res = 0;
-    res = FUN_140c8f690(FUN_1416b4990(this, "ScreenMasking", (void*)FUN_1416ba620, this, FUN_140c8f680(&m_80), 0, 0, 0, "ScreenMasking", s_screenMaskTexture.Get(), 0, 0));
+    res = FUN_140c8f690(FUN_1416b4990(this, "ScreenMasking", (void*)FUN_1416ba620, this, FUN_140c8f680(&m_80), 0, 0, 0, "ScreenMasking", (NiTexture*)s_screenMaskTexture, 0, 0));
     if (res == 0) {
         vfunc_16();
         return false;
     }
     NiScreenFillingRenderView* obj = ((class NiScreenFillingRenderView*)NiRenderView::DynamicCast((class NiRTTI const*)((void*)&NiScreenFillingRenderViewImpl::ms_RTTI), (class NiRenderView const*)(FUN_140c8f670(((void*)&((NiTPointerListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiRenderView>>*)(void*)(FUN_140c8f880(res)))->GetHead())))));
     s_pkScreenMaskProp = (NiTexturingProperty*)((void*)((class NiAVObject*)(void*)(&obj->GetScreenFillingQuad()))->GetProperty(8));
-    NiTexturingProperty::ShaderMap* sm = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap((NiTexture*)s_screenMaskTexture.Get(), 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);
+    NiTexturingProperty::ShaderMap* sm = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap((NiTexture*)s_screenMaskTexture, 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);
     s_pkScreenMaskProp->SetShaderMap(0, sm);
     return true;
 }
@@ -78,7 +78,7 @@ bool ScreenMaskingRenderStep::vfunc_15(unsigned int a, void* b)
 void ScreenMaskingRenderStep::vfunc_16()
 {
     PostProcessEffect::vfunc_16();
-    s_screenMaskTexture.Assign(0);
+    s_screenMaskTexture = 0;
 }
 
 // @0x1416ba600
@@ -87,16 +87,16 @@ bool FUN_1416ba600(void* a, void* b) { return true; }
 // @0x1416ba620
 bool FUN_1416ba620(void* a, void* b) { return true; }
 
-void FUN_1416ba640(Unk_PPSmartC tex);
+void FUN_1416ba640(efd::SmartPointer<NiTexture> tex);
 #ifndef MS2_HOOK_DLL
 // @0x1416ba640
-void FUN_1416ba640(Unk_PPSmartC tex)
+void FUN_1416ba640(efd::SmartPointer<NiTexture> tex)
 {
     if (s_pkScreenMaskProp != 0) {
         void* r = ((void*)((class PostProcessingService*)(void*)(((void*)Unk_AeFeatureMgr::FUN_1409a8b20())))->GetStep(8));
         if (r != 0) {
             s_screenMaskTexture = tex;
-            NiTexturingProperty::ShaderMap* sm = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap((NiTexture*)s_screenMaskTexture.Get(), 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);
+            NiTexturingProperty::ShaderMap* sm = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap((NiTexture*)s_screenMaskTexture, 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);
             s_pkScreenMaskProp->SetShaderMap(0, sm);
         }
     }

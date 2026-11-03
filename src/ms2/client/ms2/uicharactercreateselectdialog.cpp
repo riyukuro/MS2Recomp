@@ -58,11 +58,9 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140873ad0(Unk_140165cf0* pElem, const char* pszName, CString& strOut);
 int FUN_140873b30(Unk_140165cf0* pElem, const char* pszName, CStringW& strOut);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-bool FUN_14025cd60(const CStringW& a, const CStringW& b);               // equal
 int FUN_1406516b0();                                                    // current language id
 int FUN_140768010(int, int);   // C3: was FUN_140768010
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
-CStringTable* GetStringTable();
 extern NiPoint3 DAT_143b01a60;                                          // the zero point
 MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -303,7 +301,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabledByName(strFeature))
                 continue;
             CStringW strMax = ((class CFeatureManager*)FUN_140166410())->SelectHigherLevelFeatureName(strBest, strFeature);
-            if (FUN_14025cd60(strMax, strFeature))
+            if (strMax == strFeature)
             {
                 pSelected = pRow;
                 strBest = strFeature;
@@ -324,13 +322,13 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             if (spJob == 0)
                 continue;
             spJob.operator->()->m_nJobCode = nJobCode;
-            spJob.operator->()->m_strName = GetStringTable()->FUN_141811980(
+            spJob.operator->()->m_strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(
                 6, JobTable::GetInstance()->GetSubJob1(nJobCode));
             FUN_140873ad0(pRow, "movie", spJob.operator->()->m_strMovie);
             int nDescKey = 0;
             XmlGetAttr((class TiXmlElement*)(pRow), "descKey", reinterpret_cast<int&>(nDescKey));
             if (nDescKey != 0)
-                spJob.operator->()->m_strDesc = GetStringTable()->FUN_141811980(0x1c, nDescKey);
+                spJob.operator->()->m_strDesc = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1c, nDescKey);
             mapJobs.SetAt(nJobCode, spJob);
         }
     }

@@ -49,8 +49,7 @@ public:
 class Unk_AkoPortal;
 template <> Unk_AkoPortal* MS2Ptr<Unk_AkoPortal>::operator->() const;
 template <> MS2Ptr<Unk_AkoPortal>& MS2Ptr<Unk_AkoPortal>::operator=(int);
-class Unk_AkoNpcData;
-template <> Unk_AkoNpcData* MS2Ptr<Unk_AkoNpcData>::operator->() const;
+template <> NpcDataCli* MS2Ptr<NpcDataCli>::operator->() const;
 class Unk_NpcData;
 template <> MS2Ptr<Unk_NpcData>& MS2Ptr<Unk_NpcData>::operator=(int);
 template <> MS2Ptr<Unk_NpcData>& MS2Ptr<Unk_NpcData>::operator=(const MS2Ptr<Unk_NpcData>&);
@@ -289,7 +288,7 @@ CStringW CProxyGameObject::FUN_1416c23b0()
     if (FUN_1416c2090() != 0) {
         {
             CStringW name = FUN_1401aa6a0(m_78);
-            bool found = (!name.IsEmpty() && reinterpret_cast<NpcDataCli*>(reinterpret_cast<const MS2Ptr<Unk_AkoNpcData>&>((const Unk_ProxyHandle28&)FUN_1416c2220()).operator->())->GetNametag() != 0);
+            bool found = (!name.IsEmpty() && reinterpret_cast<const MS2Ptr<NpcDataCli>&>((const Unk_ProxyHandle28&)FUN_1416c2220())->GetNametag() != 0);
             if (found) {
                 return name;
             }

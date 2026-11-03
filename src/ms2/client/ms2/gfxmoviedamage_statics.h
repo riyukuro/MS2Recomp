@@ -3,6 +3,6 @@
 // reactor_statics.h).
 #pragma once
 
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100 (C3: was Unk_Handle1401cd100)
 
-static Unk_Handle1401cd100 s_dat_143abb128(0);                                       // @0x1400c8340
+static Unk_BuddyHandle s_dat_143abb128(0);                                           // @0x1400c8340

@@ -1547,9 +1547,9 @@ int CItemData::GetItemPreset()
 }
 
 // @0x14053ec70
-void CItemData::FUN_14053ec70()
+ItemModelHead* CItemData::FUN_14053ec70()
 {
-    GetModelOrEmpty()->FUN_14054b690();
+    return GetModelOrEmpty()->FUN_14054b690();
 }
 
 // @0x14053eca0

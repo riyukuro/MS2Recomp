@@ -41,14 +41,14 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);  // 0x143abf6d
 // ---- out-of-unit types and functions ----
 extern bool DAT_143ab2947;
 extern bool DAT_143ab2966;
-bool FUN_1407105c0(COutPacket& packet, int nKind, int nParam);
+bool FUN_1407105c0(COutPacket* pPacket, int nKind, int nParam);
 int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_1412751b0(const CStringW& strText, int nKind);
 CStringW FUN_1409404f0(__int64 nValue);
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int nStringId);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-void FUN_1409304d0(__int64 nValue, int a, int b, int c);
+void FUN_1409304d0(__int64 nValue, __int64 a, __int64 b, __int64 c);
 void FUN_140930af0(__int64 nValue);
 class UIStatusEventDispatcher   // C3: member view for the former free stand-ins
 {
@@ -372,7 +372,7 @@ bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int n
     COutPacket packet(static_cast<int>(SendOp::NexonArena), 0);
     packet.WriteUInt8(nKind);
     packet.WriteBool(bOn);
-    return FUN_1407105c0(packet, nKind, nParam);
+    return FUN_1407105c0(&packet, nKind, nParam);
 }
 
 // @0x140c7e460 the open dialog of the given ui class id as a Tencent report dialog

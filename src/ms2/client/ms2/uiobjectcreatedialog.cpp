@@ -30,6 +30,8 @@
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // The statics of header_statics_a.h (included twice by the original) around the unit's own copy of the sort names.
@@ -175,7 +177,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             int nIndex = data.PopInt();
             if (CInteractObjectData::Get(nIndex).IsNull())
                 return 0;
-            if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_position"))
+            if (MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_position"))
             {
                 list->FUN_1422dd1d0();
                 ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
@@ -218,7 +220,7 @@ void UIObjectCreateDialog::FUN_14131ff70()
     CStringW strSearch;
     if (MS2Ptr<Unk_ObjectCreateInput> input = FUN_140e35bd0("m_search"))
         strSearch = reinterpret_cast<ASTextInput*>(input.operator->())->GetText();
-    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_objects"))
+    if (MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_objects"))
     {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<MS2Ptr<CInteractObjectData> > aData;

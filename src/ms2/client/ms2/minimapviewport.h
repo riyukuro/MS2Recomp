@@ -20,16 +20,6 @@ float FUN_141486d90(const Unk_Rect4& rc);   // GetWidth
 // members are private so /GS does not treat a local of it as a buffer.
 class Unk_MvRot3 { friend class MinimapViewport; float x, y, z; };
 
-// efd::Point3's unary minus hands its result back through the hidden pointer in rdx, so it cannot be reached as a free
-// function the way Dot / Unitize can; it is declared on a unit-local view of the 12-byte point instead (the view adds no
-// data, so Unk_GVec3 and Unk_MvPoint3 are the same object).
-struct Unk_MvPoint3 : Unk_GVec3
-{
-    Unk_MvPoint3 FUN_1409f7960() const;                         // 0x1409f7960 efd::Point3::operator- (unary)
-    Unk_MvPoint3& FUN_140194470(Unk_MvPoint3&& kOther);         // 0x140194470 NiPoint3::operator=(NiPoint3&&)
-};
-MS2_CHECK_SIZE(Unk_MvPoint3, 12);
-
 // efd::Matrix3 / NiMatrix3 (0x24), the rotation the view matrix is built from. Its default ctor is the exe's
 // 0x1409f72e0, called explicitly (see the .cpp), so the view itself declares none.
 struct Unk_MvMatrix3

@@ -22,6 +22,8 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/commonfiles/os.h"
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- unit-local placeholders (unrecovered helpers) ----
 
 class ASDialog : public AScript { };
@@ -55,8 +57,8 @@ public:
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat&);
 
-const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
-CStringW FUN_14082f000(int nStat);                      // the display name of a stat
+const CString& GetStatName(unsigned nStat);             // the xml name of a stat
+CStringW GetStatCommonText(unsigned nStat);             // the display name of a stat
 template <class A> CStringW FormatStringId(int nId, const A& a);    // string table text with one argument
 extern int DAT_143ab2914;                               // the character level
 
@@ -140,7 +142,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             if (pActor != 0)
             {
                 CString strCommand;
-                strCommand.Format("/SetMaxStat %s %f", (const char*)FUN_14082efb0(nStat), (double)fValue);
+                strCommand.Format("/SetMaxStat %s %f", (const char*)GetStatName(nStat), (double)fValue);
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 chat.message = (const char*)strCommand;
@@ -174,7 +176,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             if (pActor != 0)
             {
                 CString strCommand;
-                strCommand.Format("/ResetMaxStat %s", (const char*)FUN_14082efb0(nStat));
+                strCommand.Format("/ResetMaxStat %s", (const char*)GetStatName(nStat));
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 chat.message = (const char*)strCommand;
@@ -291,7 +293,7 @@ void UIStatControlDialog::vfunc_il23(void* pItem)
 // @0x14134f150
 void UIStatControlDialog::FUN_14134f150()
 {
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_stats");
+    MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_stats");
     if (!list)
         return;
     list->FUN_1422dd1d0();
@@ -355,7 +357,7 @@ void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat,
         strBonus.Format(L"-");
     }
     CStringW strLabel;
-    strLabel.Format(L"[ %s ] [ %s ]", (const wchar_t*)FUN_14082f000(nStat), (const wchar_t*)strValue);
+    strLabel.Format(L"[ %s ] [ %s ]", (const wchar_t*)GetStatCommonText(nStat), (const wchar_t*)strValue);
     row.FUN_1407cbb20("label", CStringW(strLabel));
     row.FUN_1409c0d20("statIdx", nStat);
     list->AddItem(row);

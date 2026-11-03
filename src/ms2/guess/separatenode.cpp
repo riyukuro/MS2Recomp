@@ -57,7 +57,7 @@ void Unk_SeparateNode::UpdateWorldData()
 {
     m_kWorld.MakeIdentity();
     if (m_pkParent != 0) {
-        NiTransform kParent = FUN_1409478e0(m_pkParent);
+        NiTransform kParent = m_pkParent->GetWorldTransform();
         if (m_kBits[0]) {
             FUN_14097fad0(&m_kWorld.m_Translate.x, &kParent.m_Translate.x);
         }

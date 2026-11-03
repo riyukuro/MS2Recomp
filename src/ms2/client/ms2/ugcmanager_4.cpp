@@ -89,7 +89,7 @@ void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
 class Unk_InventoryStateManager* FUN_140a6a830();   // C3: was FUN_140a6a830
 
 // The event log: "upload_exception" reports.
-CString FUN_140741200(const char* szFormat, const CString& a1, const CString& a2);   // "{0} {1}" formatter
+template <class A, class B> CString Unk_SocketFormat(const char* szFormat, const A& a, const B& b);   // C3: was FUN_140741200
 
 // UGC paths.
 CStringW FUN_141026b20(const CStringW& strTitle);           // the thumbnail dir of a file title
@@ -188,10 +188,7 @@ public:
     void FUN_1418ed4e0(unsigned __int64 nId, CString str);
     void FUN_1418ed5a0(unsigned __int64 nId, CString str);
 };
-class Unk_CharSelectDialog : public UICharacterListDialog
-{
-};
-Unk_CharSelectDialog* FUN_140b72de0(int nId);
+template <class T> T* Unk_MMDialog(int nId);   // C3: was FUN_140b72de0 (<UICharacterListDialog>, mentoringmanager.cpp)
 
 // The download paths of the uploaded kinds 0xc9 / 0xd1.
 CString FUN_141027880(const CString& strPath);
@@ -357,7 +354,8 @@ class Unk_UgcBlueprintDialog : public UIDialog
 public:
     void FUN_140c36b40(CItem* pItem);
 };
-Unk_UgcBlueprintDialog* FUN_140d27260(int nId);
+class UIItemBlueprintCreateDialog;
+template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d27260 (<UIItemBlueprintCreateDialog>)
 
 // The UGC events (vfunc_1: a character's profile image changed).
 class Unk_UgcEventHub
@@ -1279,7 +1277,7 @@ void CUgcManager::FUN_141882450(MS2Ptr<CUgcUploadCtrl> spCtrl)
             s_bReport = false;
             if (TSingleton<CBigDataLogSystem>::GetInstance())
             {
-                CString strMessage = FUN_140741200("prevCtrl {0}, nextCtrl {1}", strPrev, strNext);
+                CString strMessage = Unk_SocketFormat<CString, CString>("prevCtrl {0}, nextCtrl {1}", strPrev, strNext);
                 TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("upload_exception", strMessage);
             }
         }
@@ -1415,7 +1413,7 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
             }
             else
             {
-                Unk_CharSelectDialog* pDialog = FUN_140b72de0(0x4ef1);
+                UICharacterListDialog* pDialog = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
                 if (pDialog != 0)
                     pDialog->FUN_1418ed4e0(spCurrent->m_user.m_characterId, strPath);
                 FUN_1418823f0();
@@ -3615,7 +3613,7 @@ void CUgcManager::FUN_14188e200(CInPacket& packet)
         int nState = TSingleton<CStateService>::GetInstance()->FUN_1417e2610();
         if (nState == 0x620000d)
         {
-            Unk_CharSelectDialog* pDialog = FUN_140b72de0(0x4ef1);
+            UICharacterListDialog* pDialog = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
             if (pDialog != 0)
             {
                 pDialog->FUN_1418ed5a0(characterId, strUrl);
@@ -3692,7 +3690,7 @@ void CUgcManager::FUN_14188e930(CInPacket& packet)
     if (pItem == 0)
         return;
     pItem->SetUgcLook(&look);
-    Unk_UgcBlueprintDialog* pDialog = FUN_140d27260(0x4f7b);
+    Unk_UgcBlueprintDialog* pDialog = reinterpret_cast<Unk_UgcBlueprintDialog*>(GetItemUseDialog<UIItemBlueprintCreateDialog>(0x4f7b));
     if (pDialog != 0 && pDialog->vfunc_55() == 0)
         pDialog->FUN_140c36b40(pItem);
 }

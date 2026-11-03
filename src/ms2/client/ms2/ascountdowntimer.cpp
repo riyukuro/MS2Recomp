@@ -5,11 +5,11 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ascountdowntimer.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
 
 // ---- out-of-unit callees ----
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CString FUN_140513200(const char* szFormat, const unsigned int& n); // "{0}" substitution
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a sound
 void FUN_140cffde0(const Scaleform::GFx::Value& root, CString strName, int nValue);  // set an int member of a clip
 
@@ -92,7 +92,7 @@ void ASCountDownTimer::PlaySound()
     switch (m_nType)
     {
     case 1:
-        FUN_141276180(FUN_140513200("Count0{0}", m_nRemain), "");
+        FUN_141276180(Unk_SocketFormat<unsigned int>("Count0{0}", m_nRemain), "");
         FUN_141276180("Count_NumEffect", "");
         break;
     case 2:

@@ -51,7 +51,6 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 void FUN_1402928e0(const CStringW& str, ATL::CAtlArray<float>& arr, const wchar_t* pszDelim);
-unsigned char FUN_1401c0090(const CString&, const CString&);
 int FUN_141995eb0();
 __int64 GetServerTime();
 
@@ -170,7 +169,7 @@ MS2_REPLACE_METHOD(0x1419954B0, UIIntroMovie, vfunc_15, 496, 0x174AE2F8);
 // @0x1419956b0
 void UIIntroMovie::vfunc_30(const CString& a1, const CString& a2, const CString& a3)
 {
-    if ((a3 == "error") && FUN_1401c0090(a1, m_strPath)) {
+    if ((a3 == "error") && a1 == m_strPath) {
         ((class Unk_IntroWindow*)FUN_140aadf80())->ShowGameWindow();
         FUN_141995e70(FUN_141995eb0());
         return;
@@ -206,7 +205,7 @@ void UIIntroMovie::LoadIntroMovie()
     CString strPath = FUN_14071a5b0("Table", "introMovie.xml");
     TiXmlDocument doc;
     if (((class Unk_IntroFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0) return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0) {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;

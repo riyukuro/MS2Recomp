@@ -216,13 +216,6 @@ public:
 };
 MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 
-// The camera manager: the direction the camera looks along.
-class Unk_BgCamera : public CameraMgr
-{
-public:
-    Vector3 FUN_140af0340();
-};
-
 // The minimap viewport: projects a world position to the background (returns false when it is off screen).
 class MinimapViewport : public NiRefObject
 {
@@ -494,15 +487,15 @@ int GFxMovieBackground::vfunc_7(int x, int y)
 void GFxMovieBackground::vfunc_8(float fTime)
 {
     GFxMovie::vfunc_8(fTime);
-    if (static_cast<Unk_BgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return;
     if (m_spScript.IsNull())
         return;
     if (m_n98 == 0)
         return;
-    Vector3 kDir = static_cast<Unk_BgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0340();
-    kDir.FUN_140968990();
-    float fDot = kDir.FUN_140a00f20(*(const Vector3*)&DAT_143a08cd8);
+    NiPoint3 kDir = TSingleton<CameraMgr>::GetInstance()->FUN_140af0340();
+    reinterpret_cast<Vector3&>(kDir).FUN_140968990();
+    float fDot = reinterpret_cast<Vector3&>(kDir).FUN_140a00f20(*(const Vector3*)&DAT_143a08cd8);
     if (m_nCameraFlag != 0)
     {
         float fAngle = CCapRotationController::SafeAcos(fDot);

@@ -113,7 +113,6 @@ public:
     void FUN_140ff59a0();                                                   // 0x140ff59a0 unlock the roll controls
     CStringW FUN_140ff5be0(int nPitch, int nTab, unsigned long nColor);     // 0x140ff5be0 the note tooltip
 
-    MS2Ptr<ASDropdownMenu> FUN_140c28560(const CString& strName);           // 0x140c28560 bind the dropdown child
 
 private:
     MS2_LAYOUT_FRIEND;

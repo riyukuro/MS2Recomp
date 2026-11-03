@@ -35,6 +35,7 @@
 #include "ms2/commonfiles/questdatatable.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/client/ms2/questmanager_1.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/client/ms2/uiquesteventlistener.h"
@@ -118,9 +119,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 void FUN_140710590(COutPacket& packet);
 class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
 
-// the burning level-up event values
-class CGameEventValueManager;
-CGameEventValueBurningLevelup* FUN_1403ed080(void* pManager);           // its burning level-up values
 
 // the event tables (0x143ab2fc0): (kind, event id) -> value; the key / iterator / map / entry views are those of the attend table
 struct Unk_AttendKey
@@ -512,7 +510,7 @@ int UIBurningEventWidgetDialog::vfunc_84()
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
-    FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->GetAll(contexts);
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(contexts);
     for (std::list<MS2Ptr<BurningLevelupContext> >::const_iterator it = contexts.begin(); it != contexts.end(); ++it) {
         MS2Ptr<BurningLevelupContext> spContext = *it;
         if (spContext == 0)
@@ -541,7 +539,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
     if (!pSelf)
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
-    FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->GetAll(contexts);
+    reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(contexts);
     MS2Ptr<BurningLevelupContext> spResult(0);
     for (std::list<MS2Ptr<BurningLevelupContext> >::const_iterator it = contexts.begin(); it != contexts.end(); ++it) {
         MS2Ptr<BurningLevelupContext> spContext = *it;
@@ -580,7 +578,7 @@ void UIBurningEventWidgetDialog::vfunc_86()
     void* pSelf = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (!pSelf)
         return;
-    MS2Ptr<BurningLevelupContext> spContext = FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->Get(m_190);
+    MS2Ptr<BurningLevelupContext> spContext = reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->Get(m_190);
     if (spContext == 0)
         return;
     if (spContext->m_rewardItems.empty())

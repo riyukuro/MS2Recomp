@@ -247,7 +247,8 @@ bool FUN_140ebb1e0(const Scaleform::GFx::Value* v);                // Value::IsI
 unsigned int FUN_140889fd0(const void* p);                          // the map key hash
 // ---- housing / furniture / scroll tables ----
 class Unk_QuestTable* FUN_140933200();   // C3: was FUN_140933200
-class Unk_MHouseSet { public: int FUN_1402bacf0(const int* p); };
+class Unk_MHouseSet { };
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0; index of the value (-1 when absent)
 extern Unk_MHouseSet DAT_143ab32b8;
 class Unk_MHouseRec : public CPtred { public: char m_pad[8]; unsigned short m_nLevel; };    // m_nLevel +0x20
 typedef ATL::CAtlMap<unsigned int, MS2Ptr<Unk_MHouseRec> > Unk_MHouseMap;
@@ -269,6 +270,8 @@ typedef ATL::CAtlArray<MS2Ptr<ItemHousing> > Unk_MFurnArray;
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_1416561a0
 #include "ms2/placeholder/asbuttonbar.h"  // C3: ASButtonBar::FUN_1422e3400
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 
 typedef ATL::CAtlArray<MS2Ptr<CEnchantScrollRecipe> > Unk_MScrollArray;
 class CLua   // C3: member view (luautil.h)
@@ -284,10 +287,10 @@ __int64 FUN_1404820b0(unsigned n, float f);
 CStringW FUN_14183e9c0(CStringW str, int nRank);
 CStringW FUN_140298ea0(CStringW strKey);
 int FUN_140930e10();
-CString FUN_140c43630(const char* szFmt, const unsigned __int64& n);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140c43630
 class UIMessengerBrowser* FUN_140a3ab70(int);   // C3: was FUN_140a3ab70
 class UIMessengerBrowser { public: void FUN_141a25770(CStringW strText, bool bHistory); };   // C3: member view (uimessenger.h)
-class Unk_MMap { public: void FUN_140361ab0(unsigned int nId, int* pOut); };
+class Unk_MMap { };
 extern Unk_MMap DAT_143ab31a0;
 extern __int64 DAT_143ab2898;
 extern unsigned short DAT_143ab291c;
@@ -784,7 +787,7 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
         return;
     unsigned int nMastery = reinterpret_cast<PC*>(pPc)->GetMastery(nType);
     if (bKeep) {
-        if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_objectList")) {
+        if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
             Unk_MRecArray recs;
             FUN_1409670c0()->Receipes(nType, recs);
             int nCount = (int)recs.GetCount();
@@ -817,7 +820,7 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
         }
     } else {
         FUN_140eb0540();
-        if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_objectList")) {
+        if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
             spList->FUN_1422dd1d0();
             static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
             spList->FUN_1407cb9c0("rowHeight", 0x4c);
@@ -867,7 +870,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
                 CStringW strCnt = FUN_1419021b0(nHave, nNeed);
                 ASObj req(2);
                 req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
-                page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
+                page.FUN_1409eb270(Unk_SocketFormat<unsigned __int64>("require{0}", i), req);
             }
             m_30->Invoke("refreshPage", page);
         }
@@ -882,7 +885,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
             for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
                 ItemEntity& rew = spRec->m_rewards[i];
                 int nRank = CalcAdjustedItemCount(spRec->m_nType, spRec->m_nRequireMastery, &rew);
-                page.FUN_1407cba60(FUN_140c43630("binding{0}", i), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), nRank));
+                page.FUN_1407cba60(Unk_SocketFormat<unsigned __int64>("binding{0}", i), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), nRank));
             }
             int bEnough = 1;
             for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
@@ -902,7 +905,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
                 ASObj req(2);
                 req.FUN_1407cba60("binding", m_require.BindNewItem(nItem, nItemRank, nCount));
                 req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
-                page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
+                page.FUN_1409eb270(Unk_SocketFormat<unsigned __int64>("require{0}", i), req);
             }
             int bState = HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec));
             page.FUN_1407cb9c0("id", nId);
@@ -957,7 +960,7 @@ void UIMasteryDialog::FUN_140eb24a0()
             row.FUN_1407cb9c0("id", nLevel);
             row.FUN_1409c0d20("level", nSum);
             row.FUN_1407cbb20("levelStr", FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), nLevel));
-            int bInactive = DAT_143ab32b8.FUN_1402bacf0(&nLevel) != -1;
+            int bInactive = Common::FindElement<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab32b8), nLevel) != -1;
             CString strState;
             if (bInactive)
                 strState = "inactive";
@@ -992,7 +995,7 @@ void UIMasteryDialog::FUN_140eb2d10()
         return;
     FUN_140eb0540();
     unsigned short nCur = DAT_143ab291c;
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_objectList")) {
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
         spList->FUN_1422dd1d0();
         static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_housing");
         spList->FUN_1407cb9c0("rowHeight", 0x39);
@@ -1073,7 +1076,7 @@ void UIMasteryDialog::FUN_140eb3460()
         if (MS2Ptr<Unk_MToggle> spT2 = spCtrl->FUN_140e28bc0("m_grade02"))
             spT2->vfunc_3(nG2);
     }
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_objectList")) {
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
         spList->FUN_1422dd1d0();
         static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
         spList->FUN_1407cb9c0("rowHeight", 0x4c);
@@ -1130,7 +1133,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     page.FUN_1407cba60("binding0", m_reward.BindNewItem(res.m_itemId, res.vfunc_o18_1(), res.m_count));
     for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
         ItemEntity& rew = spRec->m_rewards[i];
-        page.FUN_1407cba60(FUN_140c43630("binding{0}", i + 1), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), rew.m_count));
+        page.FUN_1407cba60(Unk_SocketFormat<unsigned __int64>("binding{0}", i + 1), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), rew.m_count));
     }
     int bEnough = 1;
     for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
@@ -1150,7 +1153,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
         ASObj req(2);
         req.FUN_1407cba60("binding", m_require.BindNewItem(ref->m_a, nRank, ref->m_c));
         req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
-        page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
+        page.FUN_1409eb270(Unk_SocketFormat<unsigned __int64>("require{0}", i), req);
     }
     int bWarn = 1;
     int nSlot = GetSelectedMagicScrollSlot();
@@ -1359,7 +1362,7 @@ void UIMasteryDialog::FUN_140eb5450(int nIndex)
         break;
     }
     m_nSelected = nIndex;
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_objectList"))
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList"))
         m_268[FUN_140eb86b0()] = spList->GetSelectedIndex();
 }
 
@@ -1508,7 +1511,7 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
     obj.FUN_1409c0d20("level", nNeed);
     obj.FUN_1407cbb20("levelStr", FUN_1409670c0()->GradeName(nType, nIndex));
     int nFlag = 0;
-    DAT_143ab31a0.FUN_140361ab0(nId, &nFlag);
+    reinterpret_cast<ATL::CAtlMap<unsigned int, int>&>(DAT_143ab31a0).Lookup(nId, nFlag);
     CString strState;
     if (nFlag != 0 || ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->HasRewards(nType, nIndex) == 0)
         strState = "inactive";
@@ -1912,7 +1915,7 @@ int UIMasteryDialog::FUN_140eb8ac0()
 // @0x140eb8b20
 void UIMasteryDialog::FUN_140eb8b20()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_objectList")) {
+    if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
         m_304 = 1;
         int nSlot = FUN_140eb86b0();
         spList->SetSelectedIndex(-1);

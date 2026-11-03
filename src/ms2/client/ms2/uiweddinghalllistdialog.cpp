@@ -28,6 +28,8 @@
 #include "ms2/placeholder/weddingtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // The hall tables: package -> hall -> string id of the hall name (day / night).
@@ -38,7 +40,6 @@ unsigned __int64 FUN_140718370(const CStringW& str);                // string to
 __int64 GetServerTime();                                            // the current time
 bool FUN_140900f30(__int64 nTime);                                  // the time is at night
 CStringW FUN_141b71910(unsigned __int64 n);                         // the number as text
-CStringTable* GetStringTable();
 
 // @0x140fd8df0
 UIWeddingHallListDialog::UIWeddingHallListDialog()
@@ -123,8 +124,8 @@ void UIWeddingHallListDialog::FUN_140fd9110()
 {
     std::map<unsigned __int64, WeddingHallTicket> halls;
     TSingleton<WeddingManager>::GetInstance()->CollectTickets(halls);
-    MS2Ptr<ASScrollingList> pOpenList = FUN_140c02900("m_openList");
-    MS2Ptr<ASScrollingList> pProgressList = FUN_140c02900("m_progressList");
+    MS2Ptr<ASScrollingList> pOpenList = GetChild<ASScrollingList>("m_openList");
+    MS2Ptr<ASScrollingList> pProgressList = GetChild<ASScrollingList>("m_progressList");
     if (pOpenList.IsNull() || pProgressList.IsNull()) {
         vfunc_67();
         return;
@@ -145,7 +146,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
         ASObj row(2);
         ((class AScript&)(row)).FUN_1407cbb20("name", strName);
-        ((class AScript&)(row)).FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->FUN_140906e40(FUN_140900f30(ticket.m_nTime)))));
+        ((class AScript&)(row)).FUN_1407cbb20("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->FUN_140906e40(FUN_140900f30(ticket.m_nTime)))));
         ((class AScript&)(row)).FUN_1407cbb20("weddingSN", FUN_141b71910(it->first));
         if (ticket.m_nTime > nNow)
             pOpenList->AddItem(row);

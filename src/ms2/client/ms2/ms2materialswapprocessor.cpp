@@ -16,9 +16,9 @@
 #include <NiRenderer.h>
 #include <efd/FixedString.h>
 #include <efd/MemHint.h>
+#include "ms2/client/ms2/material/ms2materials.h"   // C3: MS2StandardMaterial::ms_RTTI
 
 // ---- out-of-unit callees ----
-struct Unk_MaterialTable;                                                   // DAT_143d69198
 // A material-table entry; only its state word (+0x540) is read here. Its exe accessor (0x1427542f0) lies in the
 // statically linked runtime range that the hook DLL does not map, so it is expressed inline instead.
 struct Unk_MaterialEntry
@@ -27,7 +27,6 @@ struct Unk_MaterialEntry
     unsigned m_nState;
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
-extern Unk_MaterialTable DAT_143d69198;
 extern int DAT_143ae2b34;
 extern NiFixedString DAT_143ae51b0;                                         // extra-data key
 extern bool DAT_143ae0ac0;
@@ -149,7 +148,7 @@ int FUN_1414cfef0(NiRenderObject* pObj)
             return 0;
     }
     const NiMaterial* pMaterial = pObj->GetActiveMaterial();
-    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pMaterial));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pMaterial));
     if (pEntry != 0 && pEntry->IsActive())
         return 0;
     return 1;
@@ -175,7 +174,7 @@ int FUN_1414d0040(NiRenderObject* pObj)
 {
     if (FUN_14098dfc0(pObj))
         return 0;
-    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pObj->GetActiveMaterial()));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pObj->GetActiveMaterial()));
     if (pEntry != 0 && pEntry->IsActive())
         return 0;
     return 1;
@@ -186,7 +185,7 @@ int FUN_1414d00b0(NiRenderObject* pObj)
 {
     if (FUN_14098dfc0(pObj))
         return 0;
-    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pObj->GetActiveMaterial()));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pObj->GetActiveMaterial()));
     if (pEntry != 0 && pEntry->IsActive())
         return 1;
     return 0;

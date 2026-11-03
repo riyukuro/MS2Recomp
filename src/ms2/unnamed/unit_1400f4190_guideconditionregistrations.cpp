@@ -11,7 +11,6 @@
 
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp): the by-value name is consumed
 // and destroyed by the callee. The factories below are defined by the TU's own code unit.
-void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 ClassObject* FUN_1413ad950();
 
 // The initialized marker: no storage, so the dynamic initializer is the registration call and nothing else.
@@ -21,45 +20,45 @@ struct Unk_RegMarker {};
 // @0x1400f4190
 static char s_regRealEstateExpireDays;
 static Unk_RegMarker s_initRealEstateExpireDays =
-    (FUN_140316aa0(&s_regRealEstateExpireDays, CStringW(L"CGuideConditionRealEstateExpireDays"), CGuideConditionRealEstateExpireDays::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regRealEstateExpireDays)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionRealEstateExpireDays"), CGuideConditionRealEstateExpireDays::CreateObject), Unk_RegMarker());
 
 // @0x1400f41e0
 static char s_regReturnPortal;
 static Unk_RegMarker s_initReturnPortal =
-    (FUN_140316aa0(&s_regReturnPortal, CStringW(L"CGuideConditionReturnPortal"), CGuideConditionReturnPortal::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regReturnPortal)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionReturnPortal"), CGuideConditionReturnPortal::CreateObject), Unk_RegMarker());
 
 // @0x1400f4230
 static char s_regSelectItemEnchant;
 static Unk_RegMarker s_initSelectItemEnchant =
-    (FUN_140316aa0(&s_regSelectItemEnchant, CStringW(L"CGuideConditionSelectItemEnchant"), CGuideConditionSelectItemEnchant::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regSelectItemEnchant)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionSelectItemEnchant"), CGuideConditionSelectItemEnchant::CreateObject), Unk_RegMarker());
 
 // @0x1400f4280
 static char s_regServerTime;
 static Unk_RegMarker s_initServerTime =
-    (FUN_140316aa0(&s_regServerTime, CStringW(L"CGuideConditionServerTime"), CGuideConditionServerTime::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regServerTime)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionServerTime"), CGuideConditionServerTime::CreateObject), Unk_RegMarker());
 
 // @0x1400f42d0
 static char s_regState;
 static Unk_RegMarker s_initState =
-    (FUN_140316aa0(&s_regState, CStringW(L"CGuideConditionState"), CGuideConditionState::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regState)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionState"), CGuideConditionState::CreateObject), Unk_RegMarker());
 
 // @0x1400f4320
 static char s_regSubJobCode;
 static Unk_RegMarker s_initSubJobCode =
-    (FUN_140316aa0(&s_regSubJobCode, CStringW(L"CGuideConditionSubJobCode"), FUN_1413ad950), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regSubJobCode)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionSubJobCode"), FUN_1413ad950), Unk_RegMarker());
 
 // @0x1400f4370
 static char s_regSummonPet;
 static Unk_RegMarker s_initSummonPet =
-    (FUN_140316aa0(&s_regSummonPet, CStringW(L"CGuideConditionSummonPet"), CGuideConditionSummonPet::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regSummonPet)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionSummonPet"), CGuideConditionSummonPet::CreateObject), Unk_RegMarker());
 
 // @0x1400f43c0
 static char s_regTimeout;
 static Unk_RegMarker s_initTimeout =
-    (FUN_140316aa0(&s_regTimeout, CStringW(L"CGuideConditionTimeout"), CGuideConditionTimeout::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regTimeout)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionTimeout"), CGuideConditionTimeout::CreateObject), Unk_RegMarker());
 
 // @0x1400f4410
 static char s_regTitle;
 static Unk_RegMarker s_initTitle =
-    (FUN_140316aa0(&s_regTitle, CStringW(L"CGuideConditionTitle"), CGuideConditionTitle::CreateObject), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regTitle)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionTitle"), CGuideConditionTitle::CreateObject), Unk_RegMarker());
 #endif

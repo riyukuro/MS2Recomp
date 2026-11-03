@@ -22,7 +22,7 @@ class NoticeMessage { public: class GameObject * GetOwner(void); };
 class Unk_ResourceMgr
 {
 public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);
+    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 
@@ -139,7 +139,7 @@ void TextureOverrideEffect::FUN_14184bbb0(NiAVObjectPtr spNode)
         if (!pTexturing)
             continue;
         TextureLayer* pLayer = new (efd::MemHint(efd::MemHint::NONE))
-            TextureLayer(2, pTexturing, m_spTexture.Get(), NULL);
+            TextureLayer(2, pTexturing, (NiTexture*)m_spTexture, NULL);
         WorldService::GetInstance()->GetTextureLayerManager()->AddLayer(pLayer);
         m_arrLayers.Add(pLayer);
     }

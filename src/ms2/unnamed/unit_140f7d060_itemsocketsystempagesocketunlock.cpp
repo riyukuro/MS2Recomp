@@ -210,7 +210,7 @@ void FUN_140628f60(Unk_SockUidList&, const __int64&, const std::vector<__int64>&
 void FUN_140629140(Unk_SockItemMsg&, CInPacket&);
 void FUN_140629c50(struct Unk_SockMsgI64&, class COutputStream&);   // C3: was FUN_140629c50
 void FUN_140629d60(struct Unk_SockMsgF&, class CInPacket&);   // C3: was FUN_140629d60
-void FUN_140629de0(struct Unk_SockMsgIIL&, class COutputStream&);   // C3: was FUN_140629de0
+void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream&);
 
 // @0x140f83bb0
 ASListEvent::~ASListEvent() {}
@@ -999,7 +999,7 @@ void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16(const Scalefor
     fill.m_nUid = m_selected->GetItemUid();
     COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
-    FUN_140629de0(*(struct Unk_SockMsgIIL*)&static_cast<class CCItemSocketSystemPacket::ForceFillIngredient&>(fill), out);
+    FUN_140629de0(fill, out);
     FUN_140710590(out);
 }
 

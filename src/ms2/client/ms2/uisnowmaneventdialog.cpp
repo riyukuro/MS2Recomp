@@ -47,7 +47,6 @@ void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
 class ASDialog : public AScript {
 public:
-    int FUN_1422c1530();
     int FUN_1422e6270();
     int FUN_1422e6310();
 };
@@ -240,7 +239,7 @@ int UISnowmanEventDialog::vfunc_53(void* cfg)
         ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if ((m_alignInfo.get() ? true : false) && dialog) {
             float x = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1500();
-            float y = (float)dialog->FUN_1422c1530();
+            float y = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1530();
             m_alignInfo->FUN_141901880(m_30, (float)dialog->FUN_1422e6310(), (float)dialog->FUN_1422e6270(), x, y);
             m_alignInfo->FUN_1419015e0(cfg);
         }

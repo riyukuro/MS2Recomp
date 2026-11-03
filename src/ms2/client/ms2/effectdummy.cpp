@@ -25,7 +25,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-bool FUN_1401c0090(const CString& a, const CString& b);     // CString equality
 
 // @0x140a50d40
 CEffectDummy::CEffectDummy()
@@ -55,7 +54,7 @@ CEffectDummy& CEffectDummy::operator=(const CEffectDummy& o)
 // @0x140a50f50
 bool CEffectDummy::operator==(const CEffectDummy& o) const
 {
-    return FUN_1401c0090(m_strName, o.m_strName) & FUN_1401c0090(m_strParentNode, o.m_strParentNode) &
+    return (m_strName == o.m_strName) & (m_strParentNode == o.m_strParentNode) &
            (m_fScale == o.m_fScale) & (m_vTranslate == o.m_vTranslate) & (m_vRotation == o.m_vRotation) &
            (m_bApplyWorldTransform == o.m_bApplyWorldTransform) & (m_bApplyLocalScale == o.m_bApplyLocalScale);
 }
@@ -181,7 +180,7 @@ MS2SvrPtr<CEffectDummy> EffectDummyGroup::FUN_140a515f0(const CString& name)
 {
     for (std::vector<DummyPtr>::iterator it = m_dummies.begin(); it != m_dummies.end(); ++it)
     {
-        if (FUN_1401c0090((*it)->GetName(), name))
+        if ((*it)->GetName() == name)
             return *it;
     }
     return DummyPtr(0);

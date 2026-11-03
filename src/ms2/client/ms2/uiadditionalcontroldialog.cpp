@@ -42,6 +42,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 
+template <> MS2Ptr<ASScrollingList> UISwfEntity::GetChild<ASScrollingList>(const CString& strName);   // 0x140c02900, owned by uiinventorydialog
+
 // ---- the statics of the shared header (two sort-name tables, "skill", "stun", the null handle, the condition object) ----
 static CString s_sortNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_sortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -66,7 +68,6 @@ class Unk_AcRow : public ASObj
 
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 GFxManager* FUN_14025e7a0();
-CStringTable* GetStringTable();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
 int FUN_140718200(CStringW* text);                                                 // text to number
@@ -202,7 +203,7 @@ void UIAdditionalControlDialog::FUN_1418b2c20(const Scaleform::GFx::FunctionHand
 // @0x1418b2e80
 void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CStringW& strSearch)
 {
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_effects");
+    MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_effects");
     if (!list)
         return;
     list->FUN_1422dd1d0();
@@ -222,7 +223,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             CStringW strLabel;
             CStringW strUnused;
             int nPassive = 0;
-            strLabel.Format(L"[%ld] [Lv.%d] %s", nId, level->GetLevel(), (LPCWSTR)GetStringTable()->FUN_141812290(nId, level->GetLevel(), CString("name")));
+            strLabel.Format(L"[%ld] [Lv.%d] %s", nId, level->GetLevel(), (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141812290(nId, level->GetLevel(), CString("name")));
             if (level->m_nKeepCondition == 99) {
                 strLabel.Append(FUN_14025e7a0()->Localize("$s_additionaleffect_control_dialog_name_passive"));
                 nPassive = 1;
@@ -258,7 +259,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
 // @0x1418b3620
 void UIAdditionalControlDialog::FUN_1418b3620()
 {
-    if (m_pList = FUN_140c02900("m_contextMenu")) {
+    if (m_pList = GetChild<ASScrollingList>("m_contextMenu")) {
         int bShow = !GetFileSystem()->FUN_140398190();
         m_pList->vfunc_3(bShow);
         if (bShow) {
@@ -290,7 +291,7 @@ void UIAdditionalControlDialog::FUN_1418b3620()
 // @0x1418b3ac0
 unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
 {
-    MS2Ptr<ASScrollingList> list = FUN_140c02900("m_effects");
+    MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_effects");
     if (!list)
         return 0;
     CStringW strLabel = list->GetSelectedLabelW();

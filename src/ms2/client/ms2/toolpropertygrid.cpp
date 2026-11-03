@@ -21,7 +21,6 @@
 
 int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char* pszDelim, int nMax);   // split
 int FUN_140518af0(const CRect* pRect);                  // CRect::Height
-LPRECT FUN_14098a2a0(CRect* pRect);                     // CRect::operator LPRECT
 
 // ---- CPropSliderCtrl ----
 
@@ -145,8 +144,8 @@ void CMS2VectorProperty::OnDrawValue(CDC* pDC, CRect rect)
     rcOld.left++;
     COLORREF clr = GetColor();
     CBrush brush(clr);
-    ((class CDC*)(class CDC*)(pDC))->FillRect(FUN_14098a2a0(&rcOld), &brush);
-    pDC->Draw3dRect(FUN_14098a2a0(&rcOld), 0, 0);
+    ((class CDC*)(class CDC*)(pDC))->FillRect((LPRECT)rcOld, &brush);
+    pDC->Draw3dRect((LPRECT)rcOld, 0, 0);
 }
 
 // @0x141855eb0

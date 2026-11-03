@@ -388,8 +388,8 @@ static CString s_skill("skill");
 // @0x1400e9d60
 static CString s_stun("stun");
 // @0x1400e9d90
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+static Unk_BuddyHandle s_pointer(NULL);
 // @0x1400e9db0
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static egf::EntityID s_nullId(0);
@@ -1152,7 +1152,8 @@ struct Unk_FcHmInfo
     int m_nItemId;                                                  // +0x100
 };
 struct Unk_FcMasteryTable;   // CMasteryTable (masterytable.h)
-Unk_FcMasteryTable* FUN_1409670c0();
+class Unk_MData* FUN_1409670c0();
+#define FUN_1409670c0() ((Unk_FcMasteryTable*)FUN_1409670c0())   // C3: was Unk_FcMasteryTable* FUN_1409670c0()
 
 // @0x141235220
 Unk_FcHmInfo* FUN_141235220(Unk_FcSp24* p)
@@ -1438,7 +1439,11 @@ struct Unk_FcAnimRow
 MS2_CHECK_OFFSET(Unk_FcAnimRow, m_vOffset, 0x64);
 MS2Ptr<CNpcData> FUN_1406cd330(int nId);                            // find the row
 void FUN_140de8bd0(egf::Entity* pEntity, unsigned uHash, efd::AssetID* pAsset);
-void FUN_1409457c0(Unk_Entity* pEntity, unsigned uHash, void* p);
+class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
+{
+public:
+    template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
+};
 void FUN_14098c6e0(Unk_Entity* pEntity, unsigned uHash, unsigned char* pb);
 CStringA FUN_1409a2360(const char* psz, int nFlag);
 
@@ -1500,7 +1505,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
             reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::utf8string>(0x3ff293c8, efd::utf8string((LPCSTR)FUN_1409a2360("Idle_A", 0)));
             reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::Point3>(0xfd95ca52, (const efd::Point3&)(vPos));
             reinterpret_cast<egf::Entity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<efd::Point3>(0x68c7c29d, (const efd::Point3&)(vRot));
-            FUN_1409457c0(m_entPet.FUN_1408a9280(), 0x2d7cad2d, &reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_pFx);
+            reinterpret_cast<Unk_CachedEntity*>(m_entPet.FUN_1408a9280())->SetPropertyValue<float>(0x2d7cad2d, *reinterpret_cast<const float*>(&reinterpret_cast<Unk_FcAnimRow*>(kAnim.operator->())->m_pFx));
             unsigned char bFlag = 0;
             FUN_14098c6e0(m_entPet.FUN_1408a9280(), 0xa0b6b179, &bFlag);
             TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0((egf::Entity*)m_entPet.FUN_1408a9090(), 0);
@@ -1747,7 +1752,7 @@ extern int DAT_1439f706c;                                           // object id
 int IsNotRecentDayChange(__int64 nTime);
 class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); };
 CStringW FUN_1401aa6a0(int nId);                                    // item / pet name
-extern char DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
 void* FUN_1401c0d90();
 class Unk_IntOptionEntry   // C3: member view for the former free stand-ins
 {
@@ -1949,7 +1954,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             ShowNoticeOnce(FUN_14028dfa0<CStringW>(CStringW(L"s_error_nurturing_invalid_eat"), FUN_1401aa6a0(FUN_14122c410())));
             return 0;
         }
-        int nOk = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5f780(0x79, 0);
+        int nOk = (&g_143ab2a90)->FUN_140a5f780(0x79, 0);
         if (nOk == 0)
         {
             FUN_14122c7b0(1);
@@ -2238,14 +2243,6 @@ CFunctionCubeObject* FUN_141225470(int nKind)
 #include <egf/Entity.h>
 #include <egf/EntityChangeMessage.h>
 
-// Service plumbing the OnPreInit / OnInit / OnShutdown bodies call (same helpers as CTriggerService).
-class Unk_FcNetSvc
-{
-public:
-    virtual ~Unk_FcNetSvc();
-    virtual unsigned long AddRef();
-    virtual unsigned long Release();
-};
 // the entity change channel is efd::kCAT_LocalMessage, the IMessage.h static the exe keeps for this TU at 0x143ad4348
 
 // Entity, state and UI helpers used by the packet dispatcher.
@@ -2342,11 +2339,11 @@ efd::Category Unk_FcAnimSvc::GetCatAnim()
 efd::AsyncResult CFunctionCubeService::OnInit()
 {
     efd::MessageServicePtr pMessages = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
-    ATL::CComPtr<Unk_FcNetSvc> pNet(reinterpret_cast<Unk_FcNetSvc*>(m_pServiceManager->GetSystemServiceAs<egf::EntityManager>()));
+    egf::EntityManagerPtr pEntityManager = m_pServiceManager->GetSystemServiceAs<egf::EntityManager>();
     m_catGlobal = pMessages->GetGloballyUniqueCategory();
     pMessages->Subscribe(this, efd::kCAT_LocalMessage, 0, false);
     pMessages->Subscribe(this, m_catGlobal, 0, false);
-    pMessages->Subscribe(this, reinterpret_cast<egf::EntityManager*>(pNet.operator->())->GetEntityLoadCategory(), 0, false);
+    pMessages->Subscribe(this, pEntityManager->GetEntityLoadCategory(), 0, false);
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
     pMessages->Subscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0, false);
     return efd::AsyncResult_Complete;
@@ -2365,10 +2362,10 @@ efd::AsyncResult CFunctionCubeService::OnTick()
 efd::AsyncResult CFunctionCubeService::OnShutdown()
 {
     efd::MessageServicePtr pMessages = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
-    ATL::CComPtr<Unk_FcNetSvc> pNet(reinterpret_cast<Unk_FcNetSvc*>(m_pServiceManager->GetSystemServiceAs<egf::EntityManager>()));
+    egf::EntityManagerPtr pEntityManager = m_pServiceManager->GetSystemServiceAs<egf::EntityManager>();
     pMessages->Unsubscribe(this, efd::kCAT_LocalMessage, 0);
     pMessages->Unsubscribe(this, m_catGlobal, 0);
-    pMessages->Unsubscribe(this, reinterpret_cast<egf::EntityManager*>(pNet.operator->())->GetEntityLoadCategory(), 0);
+    pMessages->Unsubscribe(this, pEntityManager->GetEntityLoadCategory(), 0);
     pMessages->Unsubscribe(this, s_catAnimationChannel, 0);
     pMessages->Unsubscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0);
     FUN_141231be0();

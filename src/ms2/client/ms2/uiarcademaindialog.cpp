@@ -127,7 +127,6 @@ class Unk_140acd6e0 : public ASButton
 {
 public:
     void FUN_1422ce240(const ArcClickDelegate& onClick, void* pUserData);   // click callback
-    void FUN_1422c1fe0(unsigned bEnabled);                                  // enable / disable
 };
 
 // The ranking view movie clip (the enter button is one of its children).
@@ -141,7 +140,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CStringW FUN_140763e10(int nScore);                                         // the score as text
 CStringW FUN_14016a730(const char* sz, int n);                              // narrow to wide
 CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // wide to utf8
-CString FUN_1402bad60(const char* szFormat, const int* pn);                 // format one int
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, unsigned bOn);
 void* FUN_140bb9630(int n);                                                 // the callback data of a button index
@@ -512,7 +511,7 @@ void UIArcadeMainDialog::FUN_140ef7230()
     for (int i = 0; i < 10; i++)
     {
         int nNo = i + 1;
-        CString strName = FUN_1402bad60("m_rank{0}", &nNo);
+        CString strName = Unk_SocketFormat<int>("m_rank{0}", nNo);
         MS2Ptr<ASMovieClip> spRow = m_rankView->FUN_1409b4560(strName);
         if (spRow == (ASMovieClip*)0)
             continue;

@@ -42,7 +42,6 @@ class Unk_GmWorld
 public:
 };
 
-CItemTransfer* FUN_140527930(CItem* pItem);
 
 class Unk_WsPtred298 : public CPtred
 {
@@ -452,8 +451,8 @@ bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
         return false;
     }
     if (nFlag == 0
-        && FUN_140527930(spItem.operator->())->HasBindingRule() != 0
-        && FUN_140527930(spItem.operator->())->HasBinding() == 0)
+        && ((CItemTransfer*)spItem->FUN_140527930())->HasBindingRule() != 0
+        && ((CItemTransfer*)spItem->FUN_140527930())->HasBinding() == 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);

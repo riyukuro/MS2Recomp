@@ -140,7 +140,6 @@ struct Unk_Block12
     char m_b[12];
 };
 void FUN_1409a10d0(void* pDst, const void* pSrc);
-void FUN_140194470(void* pDst, const void* pSrc);
 
 class Unk_Row3c
 {
@@ -150,7 +149,7 @@ public:
     {
         FUN_1409a10d0(&m_base, &o.m_base);
         m_block = o.m_block;
-        FUN_140194470(&m_pos, &o.m_pos);
+        *reinterpret_cast<efd::Point3*>(&m_pos) = *reinterpret_cast<const efd::Point3*>(&o.m_pos);
         return *this;
     }
     char m_base[0x20];

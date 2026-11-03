@@ -41,7 +41,6 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
-CStringTable* GetStringTable();                              // the string table singleton
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 CStringW GetStringCommon(int nStringId);                      // string table text by id
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -169,7 +168,7 @@ CStringW CFishData::FUN_1403b1600() const
 // @0x1403b1650
 CStringW CFishData::FUN_1403b1650() const
 {
-    return GetStringTable()->FUN_141811980(0x1d, m_nId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, m_nId);
 }
 
 // @0x1403b16b0
@@ -189,9 +188,9 @@ CStringW CFishData::FUN_1403b16b0(int bDetail) const
             str += GetStringCommonByKey(L"s_fishing_fish_habitat_unknown");
     }
     if (bDetail != 0)
-        str += GetStringTable()->FUN_141811980(0x1f, m_nId);
+        str += TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1f, m_nId);
     else
-        str += GetStringTable()->FUN_141811980(0x1e, m_nId);
+        str += TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1e, m_nId);
     ((CReservedWordTable*)CFishingTable::GetTextFilter())->ReplaceBoldWords(str);
     return str;
 }

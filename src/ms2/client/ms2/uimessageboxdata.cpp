@@ -33,7 +33,9 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
+#include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<int>::Get was Unk_MsgOption::FUN_1402056b0
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
+#include "ms2/commonfiles/clubcommon.h"   // C3: CClubDataTable::FUN_140211990
 
 // 0x141a07950 is MS2Ptr<CItem>::operator=(int) (Release; return *this), the `= NULL` of ~CMsgBoxData; it lands in
 // this unit's range, so the instance is emitted here.
@@ -73,7 +75,7 @@ unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
 
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
-CString FUN_140513200(const char* szFormat, const unsigned int& nArg);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam);
@@ -85,24 +87,13 @@ class UIMessageBox* FUN_14151fcb0(int);   // C3: was FUN_14151fcb0
 class Unk_140166410* FUN_140166410();
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 GFxManager* FUN_14025e7a0();
-class Unk_MsgOption { public: int* FUN_1402056b0(); char m_pad[0x58]; };
+typedef Common::Constants::Value<int> Unk_MsgOption;
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 class MS2InputService { public: int FUN_140d8ee40() const; };   // C3: member view
 MS2InputService* FUN_140a58540();
 
-class Unk_ClubBuffData : public CPtred
-{
-public:
-    int m_pad_18; int m_pad_1c; int m_pad_20; int m_pad_24;
-    int m_nBuffId;                                                  // +0x28
-    int m_nLevel;                                                   // +0x2c
-};
-class Unk_ClubBuffTable
-{
-public:
-    void FUN_140211990(ATL::CAtlArray<MS2Ptr<Unk_ClubBuffData>>& out);
-};
+class Unk_ClubBuffTable;
 Unk_ClubBuffTable* FUN_140b1a4e0();
 
 
@@ -529,8 +520,8 @@ void CMsgBoxData::FillBuffObj(ASObj& obj)
 // @0x141a058c0
 void CMsgBoxData::FillUgcNoticeObj(ASObj& obj)
 {
-    obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption30.FUN_1402056b0());
-    obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption88.FUN_1402056b0());
+    obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption30.Get());
+    obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)FUN_1401d3200())->m_dfOption88.Get());
 }
 
 // @0x141a05930
@@ -562,7 +553,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
             strBind.Format("MsgBoxRequieData_%d_%d", m_nId, i);
             ItemInfoSlot::CreateParam param;
             param.m_spItem = spItem;
-            param.m_strCount = FUN_140513200("{0}", items[i].m_count);
+            param.m_strCount = Unk_SocketFormat<unsigned>("{0}", items[i].m_count);
             FUN_141415600(strBind);
             FUN_141415560(strBind, &param);
             ASObj entry(2);
@@ -578,14 +569,14 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
 // @0x141a05f30
 void CMsgBoxData::FUN_141a05f30(ASObj& obj)
 {
-    ATL::CAtlArray<MS2Ptr<Unk_ClubBuffData>> buffs;
-    FUN_140b1a4e0()->FUN_140211990(buffs);
+    ATL::CAtlArray<CClubDataTable::BuffPtr> buffs;
+    reinterpret_cast<CClubDataTable*>(FUN_140b1a4e0())->FUN_140211990(buffs);
     ASArray list(2);
     for (size_t i = 0; i < buffs.GetCount(); i++)
     {
         ASObj row(2);
-        unsigned int nBuffId = buffs[i]->m_nBuffId;
-        unsigned short nLevel = buffs[i]->m_nLevel;
+        unsigned int nBuffId = buffs[i]->m_effectId;
+        unsigned short nLevel = buffs[i]->m_effectLevel;
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nBuffId, nLevel, CString("name"));
         MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nBuffId, nLevel);
         if (spAttr.get() != 0)

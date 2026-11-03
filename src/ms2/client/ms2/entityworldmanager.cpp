@@ -157,7 +157,11 @@ class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was
 CLogString* GetLogString();
 bool Unk_IsFinite(const efd::Point3&);   // C3: was FUN_140a33ff0
 void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
-void FUN_1409457c0(egf::Entity*, egf::PropertyID, const float&);
+class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
+{
+public:
+    template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
+};
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 void FUN_140de8bd0(egf::Entity*, egf::PropertyID, efd::AssetID*);
 void FUN_140998250(egf::Entity*, egf::PropertyID, efd::AssetID&);
@@ -255,7 +259,7 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
         if (!Unk_IsFinite(rotation)) rotation = efd::Point3::ZERO;
         FUN_140a38a50(entity, 0xfd95ca52, position);
         FUN_140a38a50(entity, 0x68c7c29d, rotation);
-        FUN_1409457c0(entity, 0x2d7cad2d, scale);
+        static_cast<Unk_CachedEntity*>((egf::Entity*)entity)->SetPropertyValue<float>(0x2d7cad2d, scale);
         bool enable = enabled == 0 ? true : false;
         FUN_14098c6e0((class Unk_CachedEntity*)((egf::Entity*)entity), 0x2a7fd9f4, enable);
         bool show = visible != 0 ? true : false;

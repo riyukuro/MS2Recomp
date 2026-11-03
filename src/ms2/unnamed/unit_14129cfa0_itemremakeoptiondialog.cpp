@@ -152,7 +152,8 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, c
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow);
 class Unk_PetDialog : public UIDialog { public: };
-Unk_PetDialog* FUN_140b99ba0(int nId);
+class UIPetSystemDialog;
+template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0 (<UIPetSystemDialog>)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The item event hub as the game's FUN_140a6a840 singleton accessor sees it (the same object as UIItemEventDispatcher).
@@ -261,7 +262,7 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
     reinterpret_cast<Unk_ItemEventSystem*>(FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameEventChanged"),
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
-    Unk_PetDialog* pane = FUN_140b99ba0(0x4f38);
+    Unk_PetDialog* pane = reinterpret_cast<Unk_PetDialog*>(Unk_PetGetDialog<UIPetSystemDialog>(0x4f38));
     if (pane != 0) {
         if (pane->FUN_141924630() != 0)
             pane->vfunc_67();

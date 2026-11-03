@@ -17,6 +17,7 @@
 
 class Unk_140165cf0;                // game TinyXML element (declared where the loaders are)
 class ItemModelData;                // itemdata.h
+struct ItemModelHead;               // itemdata.h
 class CItemExtraData;               // citemextradata.h
 
 // The blocks of an item row. Their constructors, XML readers/writers and comparisons live in
@@ -455,7 +456,7 @@ public:
     void LoadModel();    // 0x14053eb20
     ItemModelData* GetModelOrEmpty();    // 0x14053eba0
     int GetItemPreset();    // 0x14053ec50
-    void FUN_14053ec70();    // 0x14053ec70
+    ItemModelHead* FUN_14053ec70();    // 0x14053ec70 the <customize> block of the model data
     CString GetMaterialSoundName();    // 0x14053eca0
     bool FUN_14053ecf0();    // 0x14053ecf0 always true
     void FUN_14053ed00();    // 0x14053ed00

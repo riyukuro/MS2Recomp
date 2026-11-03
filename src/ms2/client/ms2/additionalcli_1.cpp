@@ -38,6 +38,7 @@ class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);   // 0x140a53190
     void* m_storage[14];
 };
 
@@ -341,7 +342,7 @@ void AdditionalCli::PlayKeepEffect()
         return;
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strKeepEffect;
-    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+    ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
     ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
     ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
     ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
@@ -361,7 +362,7 @@ void AdditionalCli::FUN_14096c8e0()
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = it->second;
-        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
         ((Unk_EffectTarget&)(kTarget)).FUN_140a531b0(m_nCasterId);
@@ -397,7 +398,7 @@ void AdditionalCli::FUN_14096ca80()
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = it->second;
-        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
@@ -419,7 +420,7 @@ void AdditionalCli::FUN_14096ccc0(int nCount)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = it->second;
-        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
         ((Unk_EffectTarget&)(kTarget)).FUN_140a531b0(m_nCasterId);
@@ -451,7 +452,7 @@ void AdditionalCli::PlayInvokeEffect()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strInvokeEffect;
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
-        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).FUN_140a531b0(m_nCasterId);
         CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -640,7 +641,7 @@ void AdditionalCli::PlayStartEffect()
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strStartEffect;
         ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
-        ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+        ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
         ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nCasterId);
         ((Unk_EffectTarget&)(kTarget)).FUN_140a531b0(m_nCasterId);
         CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));
@@ -657,7 +658,7 @@ void AdditionalCli::PlayStopEffect(int nCaster)
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = m_spLevel->m_motion.m_strStopEffect;
     ((Unk_EffectTarget&)(kTarget)).m_b31 = m_spLevel->m_motion.m_bIgnoreOptimalHideStartEffect;
-    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(m_pOwner->FUN_14123c580());
+    ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->FUN_14123c580());
     ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd19d0(nCaster);
     ((Unk_EffectTarget&)(kTarget)).FUN_140a531b0(nCaster);
     CEffectService::GetInstance()->FUN_1411a4a00(((Unk_EffectTarget&)(kTarget)));

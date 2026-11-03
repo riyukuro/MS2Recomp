@@ -21,7 +21,7 @@ class CMainSystem;
 class Unk_ResourceMgr
 {
 public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);
+    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 
@@ -40,7 +40,7 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);         // validated global shader constant
-void FUN_1416ba640(Unk_PPSmartC spTexture);                                     // swap the live step's mask texture
+void FUN_1416ba640(efd::SmartPointer<NiTexture> spTexture);                                     // swap the live step's mask texture
 extern NiFixedString DAT_143ae5340;                                             // mask blend constant name
 
 // @0x140dca0b0

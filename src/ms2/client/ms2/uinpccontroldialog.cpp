@@ -90,7 +90,6 @@ class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // C3: was
 CStringW FUN_1401aa6a0(int nNpc);                  // the name text of an npc id
 
 // Formatters instantiated by other units.
-bool FUN_1401647e0(const CString& a, const CString& b);     // differs
 
 // The key of a command group: str == psz.
 
@@ -101,7 +100,6 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
 void FUN_141632630(const CStringW& str, std::vector<int>& out, const wchar_t* szDelim);   // split into numbers
 
-CStringTable* GetStringTable();
 
 void FUN_140988d60(CStringW& str, std::vector<CStringW>& out, const wchar_t* szDelim);    // split a text
 __int64 FUN_140718320(const CStringW& str);
@@ -218,7 +216,7 @@ void UINpcControlDialog::vfunc_79(void* p)
             __int64 nCap = static_cast<CInPacket*>(p)->ReadInt64();
             __int64 nHp = static_cast<CInPacket*>(p)->ReadInt64();
             __int64 nMhp = static_cast<CInPacket*>(p)->ReadInt64();
-            if (FUN_1401647e0(m_strCurrent, strNode))
+            if (m_strCurrent != strNode)
                 m_strPrev = m_strCurrent;
             m_strCurrent = strNode;
             CStringW strInfo = StringFormat(L"{0}\n\nCurrent : {1}\nPrev : {2}\nTarget : {3}\n", strAction, m_strCurrent, m_strPrev, strTarget);
@@ -487,7 +485,7 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
             const Unk_CtlSkill* pSkill = &it->second;
             CStringW strLabel;
             strLabel.Format(L"[%d] [Lv. %d] [%s]", pSkill->nId, pSkill->nLevel,
-                            (const wchar_t*)GetStringTable()->FUN_141811980(4, pSkill->nId));
+                            (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, pSkill->nId));
             ASObj itemSkill(2);
             itemSkill.FUN_1407cbb20("label", strLabel);
             itemSkill.FUN_1407cb9c0("commandId", nCommand);

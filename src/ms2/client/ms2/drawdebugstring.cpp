@@ -20,7 +20,6 @@
 // ---- exe callees ----
 extern const NiColorA DAT_143a09680;                                                    // black
 #define DAT_143b01a60 (*(const NiPoint3*)&efd::Point3::ZERO)          // C3: was extern const NiPoint3 DAT_143b01a60
-NiPoint3* FUN_140194470(NiPoint3* pDst, const NiPoint3* pSrc);                          // NiPoint3 assign
 bool FUN_140552690(const NiPoint3* pA, const NiPoint3* pB);                             // NiPoint3 ==
 class CrashManagerCli;
 CString FUN_14016a5c0(const char* psz, int nCodePage);                                  // narrows a string
@@ -34,7 +33,7 @@ CDrawDebugString::CDrawDebugString(const char* pcName, NiColorA kColor) : NiVisu
     m_pShadow = NiNew NiVisualTrackerBase::ScreenText(0x20, &m_kScreenTextures, (const efd::ColorA&)DAT_143a09680);    // implicit NiColorA(const efd::ColorA&) temp
     m_pShadow->SetTextOrigin(1, 1);
     m_nValue = 0;
-    FUN_140194470(&m_kPoint, &DAT_143b01a60);
+    *reinterpret_cast<efd::Point3*>(&m_kPoint) = *reinterpret_cast<const efd::Point3*>(&DAT_143b01a60);
 }
 
 // @0x14118b670
@@ -149,7 +148,7 @@ void CDrawDebugString::FUN_14118bdc0(const NiPoint3& kValue, bool bForce)
     {
         if (FUN_140552690(&m_kPoint, &kValue) && !bForce)
             return;
-        FUN_140194470(&m_kPoint, &kValue);
+        *reinterpret_cast<efd::Point3*>(&m_kPoint) = *reinterpret_cast<const efd::Point3*>(&kValue);
         efd::Sprintf(m_acName, 0xff, "%s %.2f %.2f %.2f", (const char*)m_strLabel, (double)kValue.x, (double)kValue.y, (double)kValue.z);
         FUN_14118c0d0();
     }

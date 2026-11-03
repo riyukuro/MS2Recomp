@@ -127,8 +127,8 @@ public:
     void FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag);                                  // 0x1409fad80
     void FUN_1409fad80(egf::EntityID kId, bool bFlag);                                         // 0x1409fad80 (same function; by-value id view)
     bool FUN_1409991a0(const Unk_GoModelKey& id, Unk_AvAnimRec** ppRec);
-    void FUN_1409a1fc0(const Unk_GoModelKey& id, const efd::utf8string& kName, float fBlend, bool b);   // play
 };
+class Unk_AnimSvc { public: bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& kName, float fBlend, bool b); };   // C3: play (animationmanager.cpp's view; was Unk_AcAnimSvc::FUN_1409a1fc0)
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
@@ -168,10 +168,10 @@ class Unk_AvTextCfg
 {
 public:
     operator CString();                                     // 0x1409f6f30 copy of the string
-    CString* FUN_140298f80();                               // the string
     char m_pad_00[0x60];
 };
 MS2_CHECK_SIZE(Unk_AvTextCfg, 0x60);
+class Unk_StringOptionEntry { public: CString& FUN_140298f80(); };   // C3: member view (the string; was Unk_AvTextCfg::FUN_140298f80)
 class Unk_AvGlobals
 {
 public:
@@ -344,18 +344,7 @@ void FUN_141426140(MS2Ptr<CItemUgcMeshContainer>& spMesh);
 Unk_RideePtr FUN_1407844b0(int nRideeId);                   // the ridee table row of an id
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 
-// The notify context of the UGC download callback (0x38 bytes; consumed by the next unit's FUN_1409faff0).
-struct Unk_UgcDownloadInfo
-{
-    Unk_UgcDownloadInfo(int nKind);                         // 0x1409faf60
-    int m_nKind;                                            // +0x00
-    CString m_str08;
-    CString m_str10;
-    CString m_str18;
-    CString m_str20;
-    bool m_b28;
-    CString m_str30;
-};
+#include "ms2/placeholder/cbannerurlgetter.h"   // C3: the ctor 0x1409faf60
 
 
 // ---- class info and header statics (one group per class; the exe runs them in this order) ----
@@ -1135,7 +1124,7 @@ unsigned int FUN_1409f6ee0()
 // @0x1409f6f30
 Unk_AvTextCfg::operator CString()
 {
-    return *FUN_140298f80();
+    return ((Unk_StringOptionEntry*)this)->FUN_140298f80();
 }
 
 // ---- AvatarPet ----------------------------------------------------------------------------------------------------
@@ -1237,7 +1226,7 @@ void AvatarPet::vfunc_12()
     if (m_unk_80 != 0)
     {
         Unk_AcKey kId;
-        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((const egf::EntityID&)FUN_14123c460(AC_KEY(kId)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
     FUN_1409f9010();
     FUN_1409f8e10();
@@ -1405,7 +1394,7 @@ void AvatarRidee::vfunc_12()
     {
         reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409fad80(FUN_14123c460(), false);
         Unk_AcKey kKey2;
-        reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kKey2)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
+        reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((const egf::EntityID&)FUN_14123c460(AC_KEY(kKey2)), efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)), 1.0f, true);
     }
 }
 
@@ -1569,8 +1558,8 @@ bool AvatarRidee::FUN_1409faac0()
 }
 
 // @0x1409faf60
-Unk_UgcDownloadInfo::Unk_UgcDownloadInfo(int nKind)
-    : m_nKind(nKind), m_b28(false)
+CBannerUrlGetter::CBannerUrlGetter(int nKind)
+    : m_nKind(nKind), m_bReady(false)
 {
 }
 

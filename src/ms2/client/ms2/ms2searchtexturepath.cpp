@@ -35,11 +35,11 @@ MS2_REPLACE_METHOD(0x1415080D0, MS2SearchTexturePath, Reset, 36, 0xABE92DA7);
 // @0x141508100
 bool MS2SearchTexturePath::GetNextSearchPath(char* pcPath, unsigned int uiStringLen)
 {
-    if (reinterpret_cast<CFileSystem*>(FUN_140166420())->FUN_140398190()) {
+    if (GetFileSystem()->FUN_140398190()) {
         if (!m_bQueried) {
             m_bQueried = true;
             FUN_141508220(pcPath);
-            return reinterpret_cast<CFileSystem*>(FUN_140166420())->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
+            return GetFileSystem()->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
         }
     } else {
         return NiTextureSearchPath::GetNextSearchPath(pcPath, uiStringLen);

@@ -58,7 +58,6 @@ class Unk_PgtrItemData : public CItemData { };       // the icon name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 CStringW FUN_140298ea0(CStringW strKey);                            // the string table text
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // case-insensitive equal
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
@@ -214,11 +213,11 @@ void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
     FUN_141342190();
     __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
     Unk_PgtrGuild* pOwn = FUN_1413420e0(nOwnGuild, true);
-    if (FUN_1403b3c40(pOwn->m_strResult, L"win"))
+    if (pOwn->m_strResult == L"win")
         m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_lose", pOwn->m_strName);
-    if (FUN_1403b3c40(pOwn->m_strResult, L"lose"))
+    if (pOwn->m_strResult == L"lose")
         m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_win", pOwn->m_strName);
-    if (FUN_1403b3c40(pOwn->m_strResult, L"draw"))
+    if (pOwn->m_strResult == L"draw")
         m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_draw", pOwn->m_strName);
     if (FUN_141924630())
         FUN_1413418a0();

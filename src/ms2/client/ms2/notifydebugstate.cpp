@@ -68,7 +68,7 @@ public:
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();   // C3: the NotifySystem (calls cast back)
 UIMainPlayerInfo* FUN_140931900(int nUiId);
 __int64 GetServerTime();                        // server time
 int FUN_141472bc0();                            // tick count
@@ -154,7 +154,7 @@ void CMyCharacter::FUN_140d9f1c0(CInPacket& packet)
 void CMyCharacter::OnTitlesPacket(CInPacket& packet)
 {
     m_titles.Decode(packet);
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDebugState));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyDebugState));
 }
 
 // @0x140d9f2c0
@@ -251,7 +251,7 @@ void CMyCharacter::OnDungeonEnterStatePacket(CInPacket& packet)
         unsigned nState = packet.ReadUInt8();
         m_states[nKey] = nState;
     }
-    FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyDungeonEnterState));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyDungeonEnterState));
 }
 
 // @0x140d9f880

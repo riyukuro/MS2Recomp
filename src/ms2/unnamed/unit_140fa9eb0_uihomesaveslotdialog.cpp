@@ -13,17 +13,17 @@
 // MS2-PIN: ??$Call@VUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140faca80 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIHomeSaveSlotDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140fac9e0
-// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUnk_HomeSlot@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_HomeSlot@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac790
+// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUGCMapBlueprintInfo@@@@V?$CElementTraits@V?$MS2Ptr@VUGCMapBlueprintInfo@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac790
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VUnk_BlueprintSlot@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_BlueprintSlot@@@@@ATL@@@ATL@@QEBA_KXZ 0x140fac7a0
-// MS2-PIN: ?Release@?$MS2Ptr@VUnk_HomeSlot@@@@AEAAXXZ 0x140fac8c0
+// MS2-PIN: ?Release@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEAAXXZ 0x140fac8c0
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEAAXXZ 0x140fac900
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_HomeSlot@@@@AEAAXPEAX@Z 0x140fac940
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEAAXPEAX@Z 0x140fac940
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEAAXPEAX@Z 0x140fac990
-// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_HomeSlot@@@@CAXPEAVUnk_HomeSlot@@@Z 0x140fac820
+// MS2-PIN: ?Reference@?$MS2Ptr@VUGCMapBlueprintInfo@@@@CAXPEAVUGCMapBlueprintInfo@@@Z 0x140fac820
 // MS2-PIN: ?Reference@?$MS2Ptr@VUnk_BlueprintSlot@@@@CAXPEAVUnk_BlueprintSlot@@@Z 0x140fac840
-// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_HomeSlot@@@@AEBAXXZ 0x140fac7c0
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEBAXXZ 0x140fac7c0
 // MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEBAXXZ 0x140fac7f0
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_HomeSlot@@@@AEBAXPEAX@Z 0x140fac860
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUGCMapBlueprintInfo@@@@AEBAXPEAX@Z 0x140fac860
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_BlueprintSlot@@@@AEBAXPEAX@Z 0x140fac890
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -61,16 +61,17 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
 extern int DAT_143ab2914;
 
-// One saved slot: id, name and the time it was saved (0 = empty).
-class Unk_HomeSlot : public CPtred {
+// One saved slot: id, name and the time it was saved (0 = empty). The ugcdef.h class, declared here as
+// scenestategame.cpp does (the header's includes would add header statics to this unit).
+class UGCMapBlueprintInfo : public CPtred
+{
 public:
-    int m_nId;                                                      // +0x18
-    CString m_strName;                                              // +0x20
-    __int64 m_nTime;                                                // +0x28
+    UGCMapBlueprintInfo();
+    int m_nId;                                              // +0x18
+    CString m_strName;                                      // +0x20
+    __int64 m_nTime;                                        // +0x28
 };
-MS2_CHECK_OFFSET(Unk_HomeSlot, m_nId, 0x18);
-MS2_CHECK_OFFSET(Unk_HomeSlot, m_strName, 0x20);
-MS2_CHECK_OFFSET(Unk_HomeSlot, m_nTime, 0x28);
+MS2_CHECK_SIZE(UGCMapBlueprintInfo, 0x30);
 
 // The slot of the blueprint list (the same fields, a separate type in the exe).
 class Unk_BlueprintSlot : public CPtred {
@@ -86,7 +87,7 @@ MS2_CHECK_OFFSET(Unk_BlueprintSlot, m_nTime, 0x28);
 class Unk_Service6100017 : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* FUN_1410d4660();         // the home slots (+0x388)
+    ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* FUN_1410d4660();         // the home slots (+0x388)
     ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* FUN_1410d4920();    // the blueprint slots (+0x3a8)
 };
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
@@ -239,7 +240,7 @@ void UIHomeSaveSlotDialog::FUN_140faa2d0()
     }
     else
     {
-        ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* pSlots = spService->FUN_1410d4660();
+        ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = spService->FUN_1410d4660();
         for (size_t i = 0; i < 5; ++i)
         {
             CString strName;
@@ -294,10 +295,10 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
     int nSlot = data.FUN_141a02e50(0, 0);
     CStringW strName = data.FUN_141a02d50();
     strName.Trim(L",");
-    ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* pSlots = spService->FUN_1410d4660();
+    ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* pSlots = spService->FUN_1410d4660();
     for (size_t i = 0; i < pSlots->GetCount(); ++i)
     {
-        MS2Ptr<Unk_HomeSlot> spSlot = (*pSlots)[i];
+        MS2Ptr<UGCMapBlueprintInfo> spSlot = (*pSlots)[i];
         if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
             if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))

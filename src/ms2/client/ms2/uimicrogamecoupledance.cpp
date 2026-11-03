@@ -18,6 +18,7 @@
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameeventvalue.h"     // C3: CGameEventValueCoupleDance::Get
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 static CString s_clickSound("System_PinkBeans_Arcade_Click_01");
@@ -848,20 +849,6 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
 
 // Unit-local event and state declarations; descriptive names are invented.
-class Unk_CoupleDanceEvent {
-public:
-    void* m_00; void* m_08; void* m_10;
-    int m_id; int m_1c;
-    void* m_20; void* m_28; void* m_30; void* m_38;
-    void* m_40; void* m_48; void* m_50; void* m_58;
-    void* m_60; void* m_68; void* m_70; void* m_78;
-    std::vector<void*> m_dances;
-};
-MS2_CHECK_OFFSET(Unk_CoupleDanceEvent, m_id, 0x18);
-MS2_CHECK_OFFSET(Unk_CoupleDanceEvent, m_dances, 0x80);
-MS2_CHECK_SIZE(Unk_CoupleDanceEvent, 0x98);
-class Unk_CoupleEventHolder { public: MS2Ptr<Unk_CoupleDanceEvent> FUN_140428700(); };
-class Unk_140302b00 { public: Unk_CoupleEventHolder* FUN_1403ed140(); };
 class State { public: virtual ~State(); };
 class StateMicroGameCoupleDance : public State {
 public:
@@ -941,7 +928,7 @@ void UIMicroGameCoupleDance::Show(int mode, int time) {
 MS2_REPLACE_METHOD(0x140E641D0, UIMicroGameCoupleDance, Show, 142, 0xDACF8A45);
 // @0x140e64270
 void UIMicroGameCoupleDance::FUN_140e64270() {
-    MS2Ptr<Unk_CoupleDanceEvent> event = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> event = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (event == NULL) return;
     std::vector<int> dances(event->m_dances.size());
     for (size_t i = 0; i < event->m_dances.size(); ++i) dances.push_back(static_cast<const int&>((int)i));
@@ -992,7 +979,7 @@ void UIMicroGameCoupleDance::UpdatePosition() {
     int nX = ((class Unk_1401d3200*)FUN_1401d3200())->m_c768.FUN_14025a620();
     int nY = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_1401d3200*)FUN_1401d3200())->m_c7c0)->Get() - 0x32;
     int nWidth = (int)(pEntity->FUN_1422c1500() * 0.5f + nX);
-    int nHeight = (int)(pEntity->FUN_1422c1530() * 0.5f + nY);
+    int nHeight = (int)(((ASDisplayObject*)pEntity.operator->())->FUN_1422c1530() * 0.5f + nY);
     pEntity->SetPositionInt(nWidth, nHeight);
 }
 MS2_REPLACE_METHOD(0x140E648D0, UIMicroGameCoupleDance, UpdatePosition, 305, 0x58D9DEB6);
@@ -1024,7 +1011,7 @@ MS2_REPLACE_METHOD(0x140E64A90, UIMicroGameCoupleDance, SendPlayArcade, 349, 0xA
 // @0x140e64c00
 void UIMicroGameCoupleDance::FUN_140e64c00() {
     if (m_30 == NULL) return;
-    MS2Ptr<Unk_CoupleDanceEvent> event = reinterpret_cast<Unk_140302b00*>(TSingleton<CGameEventValueManager>::GetInstance())->FUN_1403ed140()->FUN_140428700();
+    MS2Ptr<CoupleDanceContext> event = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (event == NULL) return;
     if (m_selected < 0 || m_selected >= (int)event->m_dances.size()) {
         m_selected = m_dances[FUN_140768010((int)m_dances.size(),0)];
@@ -1037,7 +1024,7 @@ void UIMicroGameCoupleDance::FUN_140e64c00() {
     if (!dance) { MS2_ASSERT_AT(0x12d, 0); return; }
     COutPacket packet(static_cast<int>(SendOp::Microgame),0);
     packet.Encode2(0x15);
-    packet.Encode4(event->m_id);
+    packet.Encode4(event->m_eventId);
     packet.Encode1((unsigned char)dance->FUN_140e65850());
     packet.Encode2((short)m_selected);
     FUN_140710590(packet);

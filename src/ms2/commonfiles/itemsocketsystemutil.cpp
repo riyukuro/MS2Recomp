@@ -165,7 +165,6 @@ class Unk_Random;
 class CIngredientContainer;
 CItemGemStoneUpgradeTable* FUN_14062c280();
 int FUN_1406516b0();                                                // the language / region id
-int FUN_140408410(const ATL::CAtlArray<int>& a, const int& nValue);    // the index of a value in an array, else -1
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);
 class CGameRule   // C3: member view for the former free stand-ins
 {
@@ -842,14 +841,18 @@ struct Unk_SockMsgGem : Unk_SockMsg
     int m_nB30;
     bool m_bB34;
 };
-struct Unk_SockMsgIIL
+namespace CCItemSocketSystemPacket {
+// the debug fill-ingredient request (a view; the pages units declare its ctor / vdtor)
+class ForceFillIngredient
 {
+public:
     void* m_pVtbl;
     int m_nB8;                              // +8 (a byte on the wire)
     int m_nC;
     __int64 m_n10;
     int m_n18;
 };
+}
 struct Unk_SockItemMsg
 {
     bool m_bValid;                          // +0
@@ -1059,7 +1062,7 @@ void FUN_140629d60(Unk_SockMsgF& v, CInPacket& in)
 MS2_REPLACE(0x140629D60, FUN_140629d60, 121, 0x3D3788D8);
 
 // @0x140629de0
-void FUN_140629de0(Unk_SockMsgIIL& v, COutputStream& out)
+void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient& v, COutputStream& out)
 {
     out.WriteUInt8(v.m_nB8);
     out.WriteInt32(v.m_nC);
@@ -1069,7 +1072,7 @@ void FUN_140629de0(Unk_SockMsgIIL& v, COutputStream& out)
 MS2_REPLACE(0x140629DE0, FUN_140629de0, 117, 0x8AFB7A3C);
 
 // @0x140629e60
-void FUN_140629e60(Unk_SockMsgIIL& v, CInPacket& in)
+void FUN_140629e60(CCItemSocketSystemPacket::ForceFillIngredient& v, CInPacket& in)
 {
     v.m_nB8 = in.ReadUInt8();
     v.m_nC = in.ReadInt32();

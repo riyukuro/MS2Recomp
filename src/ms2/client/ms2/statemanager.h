@@ -162,16 +162,6 @@ MS2_CHECK_OFFSET(CStateManager, m_pos, 0x88);
 
 // ---- the actor states ----
 
-// 8-byte millisecond poll timer (ctor 0x140517b00, arm 0x140268840, "interval elapsed" test 0x140268870 re-arms).
-class Unk_140517b00
-{
-public:
-    Unk_140517b00();
-    void FUN_140268840();
-    int FUN_140268870(int nInterval);
-    unsigned m_nInterval;
-    unsigned m_nLastTick;
-};
 // StateSkillData stand-in (id +0x18, level +0x1c). The exe's class is StateSkillData (RTTI .?AVStateSkillData@@).
 class Unk_SMSkillData : public StateData
 {

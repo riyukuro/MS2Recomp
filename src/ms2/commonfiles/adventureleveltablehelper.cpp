@@ -151,7 +151,7 @@ class Unk_140165cf0 : public Unk_XmlNode { };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-bool FUN_14028f710(Unk_140165cf0*);
+bool FUN_14028f710(struct Unk_XmlElement*);   // C3: param was Unk_140165cf0*
 
 int FUN_1408731a0(Unk_140165cf0*, const char*, unsigned short*);
 int FUN_1408731e0(Unk_140165cf0*, const char*, int*);
@@ -423,7 +423,7 @@ bool CAdventureLevelTable::LoadReward()
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("reward")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("reward")))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nLevel = FUN_140197310(pNode, "level", 0);
         CAdventureLevelReward row;
@@ -454,7 +454,7 @@ bool CAdventureLevelTable::LoadAbility()
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("ability")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("ability")))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CAdventureLevelAbility row;
         row.m_nEffectId = FUN_140197390(pNode, "additionalEffectId", 0);
@@ -487,7 +487,7 @@ bool CAdventureLevelTable::LoadMission()
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("mission")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("mission")))
     {
-        if (!FUN_14028f710(pNode))
+        if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         unsigned nId = FUN_140197390(pNode, "missionId", 0);
         CAdventureLevelMission row;

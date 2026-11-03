@@ -312,11 +312,10 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
         break;
     }
     }
-    // Unk_SkipPoint is effectskipmgr's view of the NiPoint3 it is copied from.
     if (pTarget->m_spObject)
-        kCheck.m_pos = reinterpret_cast<const Unk_SkipPoint&>(pTarget->m_spObject->GetTranslate());
+        kCheck.m_pos = static_cast<const efd::Point3&>(pTarget->m_spObject->GetTranslate());
     else if (pTarget->m_pXform)
-        kCheck.m_pos = reinterpret_cast<const Unk_SkipPoint&>(pTarget->m_pXform->m_Translate);
+        kCheck.m_pos = static_cast<const efd::Point3&>(pTarget->m_pXform->m_Translate);
     switch (pParam->m_nType)
     {
     case kEffectSoundEvent:
@@ -338,7 +337,7 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
     NiPoint3 kPos;
     if (spEffect->vfunc_8(&kPos) != 0)
     {
-        kCheck.m_pos = reinterpret_cast<const Unk_SkipPoint&>(kPos);
+        kCheck.m_pos = static_cast<const efd::Point3&>(kPos);
         if (!pParam->m_bOffSkip && TSingleton<EffectSkipMgr>::GetInstance()->IsOutOfView(&kCheck))
         {
             spEffect->vfunc_7();
@@ -1065,7 +1064,7 @@ CSoundService* FUN_140c9cb10();                                // the sound serv
 namespace FMOD { class EventGroup; }
 
 void* FUN_1413f9950();   // C3: was FUN_1413f9950
-void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg0, const CString& strArg1);
+template <class A, class B> void Unk_SkillTableLog(class CLogString*, int, int, const wchar_t*, const A&, const B&);   // C3: was FUN_140ab1290
 void Unk_140657820();                                           // invalid call of an empty Delegate
 // @0x1411b0e30
 template <> inline void Delegate<void(unsigned int, CString, bool)>::operator()(unsigned int nId, CString strName, bool b) const
@@ -1074,14 +1073,6 @@ template <> inline void Delegate<void(unsigned int, CString, bool)>::operator()(
         Unk_140657820();
     m_pImpl->vfunc_2(nId, strName, b);
 }
-// The copy constructor / move assignment COMDATs NiPoint3 values go through here (0x14027dcf0 / 0x14097faa0).
-struct Unk_EsPoint3
-{
-    float x, y, z;
-    Unk_EsPoint3(const NiPoint3& k);                            // 0x14027dcf0
-    Unk_EsPoint3& operator=(Unk_EsPoint3&& o);                  // 0x14097faa0
-};
-MS2_CHECK_SIZE(Unk_EsPoint3, 0xc);
 // CooltimeManager (placeholder/cooltimemanager.h), viewed through the call made here. Its singleton slot (0x143ab6718)
 // is the one TSingleton<CooltimeManager>::s_instance every CooltimeManager user shares (a TSingleton<CCooltimeManager>
 // of its own would be a second copy).
@@ -1312,7 +1303,7 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
         return 0;
     pSkip->AddCount(kTarget.m_strName);
     if (((void*)GetLogString()) != 0)
-        FUN_140ab1290(((void*)GetLogString()), 0xc, 0x133, L"InsertEffect OID[{0}] Name[{1}]", nId, kTarget.m_strName);
+        Unk_SkillTableLog<unsigned, CString>(GetLogString(), 0xc, 0x133, L"InsertEffect OID[{0}] Name[{1}]", nId, kTarget.m_strName);
     FUN_1411ab010(kTarget.m_strName);
     if (!reinterpret_cast<Delegate<void(unsigned int, CString, bool)>&>(reinterpret_cast<NoticeMessage&>(kTarget).GetCallback()).IsNull())
         reinterpret_cast<Delegate<void(unsigned int, CString, bool)>&>(reinterpret_cast<NoticeMessage&>(kTarget).GetCallback())(nId, kTarget.m_strName, true);
@@ -1328,7 +1319,7 @@ unsigned CEffectService::FUN_1411a4f40(CString strName, const NiPoint3& kPos)
     NiTransform kXform;
     kXform.m_fScale = 1.0f;
     kXform.MakeIdentity();
-    reinterpret_cast<Unk_EsPoint3&>(kXform.m_Translate) = kPos;
+    kXform.m_Translate = static_cast<const efd::Point3&>(kPos);
     unsigned nId = FUN_1411a5110("ms2sound/sound/voice", strName, "", 0, &kXform, 1.0f, 0);
     return nId;
 }
@@ -1345,7 +1336,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
         Unk_SkipCheck kCheck;
         kCheck.m_nRow = 2;
         kCheck.m_nCaster = nKind;
-        kCheck.m_pos = reinterpret_cast<const Unk_SkipPoint&>(pXform->m_Translate);
+        kCheck.m_pos = static_cast<const efd::Point3&>(pXform->m_Translate);
         if (TSingleton<EffectSkipMgr>::GetInstance()->IsOutOfView(&kCheck))
             return 0;
     }
@@ -1375,7 +1366,7 @@ unsigned CEffectService::FUN_1411a5580(int nA, int nB, int nKind, const NiPoint3
         NiTransform kXform;
         kXform.m_fScale = 1.0f;
         kXform.m_Rotate.MakeIdentity();
-        reinterpret_cast<Unk_EsPoint3&>(kXform.m_Translate) = kPos;
+        kXform.m_Translate = static_cast<const efd::Point3&>(kPos);
         CString strName;
         strName.Format("%08d", nHit);
         return FUN_1411a5110("ms2sound/sound/attack/hit", strName, "", nKind, &kXform, fVolume, 0);
@@ -1400,7 +1391,7 @@ unsigned CEffectService::FUN_1411a5770(int nId, GameObject* pActor)
             NiTransform kXform;
             kXform.m_fScale = 1.0f;
             kXform.MakeIdentity();
-            reinterpret_cast<Unk_EsPoint3&>(kXform.m_Translate) = pActor->vfunc_18();
+            kXform.m_Translate = static_cast<const efd::Point3&>(pActor->vfunc_18());
             return FUN_1411a5110(kVoice.m_strGroup, strName, "", nKind, &kXform, 1.0f, ((class PCBase*)(class GameObject*)(pActor))->FUN_140976780());
         }
     }
@@ -1451,7 +1442,7 @@ unsigned CEffectService::FUN_1411a5d80(const CString& strName)
             NiTransform kXform;
             kXform.MakeIdentity();
             kXform.m_fScale = 1.0f;
-            reinterpret_cast<Unk_EsPoint3&>(kXform.m_Translate) = pPlayer->vfunc_18();
+            kXform.m_Translate = static_cast<const efd::Point3&>(pPlayer->vfunc_18());
             return FUN_1411a5110("MS2Sound/Sound/Voice/ko", "1", strSound, 1, &kXform, 1.0f, 0);
         }
     }
@@ -2330,7 +2321,7 @@ efd::AsyncResult CEffectService::OnTick()
                 itEffect = pGroup->RemoveEffect(itEffect);
                 if (((void*)GetLogString()) != 0) {
                     unsigned nId = pGroup->FUN_1411b1ed0();
-                    FUN_140ab1290(((void*)GetLogString()), 0xc, 0x133, L"Remove Effect OID[{0}] [{1}]", nId, spEffect->GetName());
+                    Unk_SkillTableLog<unsigned, CString>(GetLogString(), 0xc, 0x133, L"Remove Effect OID[{0}] [{1}]", nId, spEffect->GetName());
                 }
             } else {
                 if (spEffect->vfunc_12() == 3) {

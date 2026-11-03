@@ -80,7 +80,7 @@ class Unk_QuestDebugMap : public ATL::CAtlMap<CString, CString, ATL::CStringElem
 void FUN_140761f00(const CStringW&, int);
 extern template CStringW StringFormat<CStringW, unsigned int>(const wchar_t*, const CStringW&, const unsigned int&);
 extern template CStringW StringFormat<unsigned int>(const wchar_t*, const unsigned int&);
-CString FUN_140513200(const char*, const unsigned int&);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_14016a730(const char*, int);
 void FUN_1412751b0(const CStringW&, int);
@@ -291,7 +291,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             if (quest.IsNull()) continue;
             CString require;
             for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
-                require += FUN_140513200("{0} ", quest->m_require.m_quest[i]);
+                require += Unk_SocketFormat<unsigned>("{0} ", quest->m_require.m_quest[i]);
             }
             CString name = StringFormat<CString>("\"{0}\"", FUN_14016a600(FUN_1416e4df0(id), 0));
             CString state;

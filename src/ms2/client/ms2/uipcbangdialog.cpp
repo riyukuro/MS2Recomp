@@ -83,7 +83,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
 void FUN_140710590(COutPacket& packet);                         // send
 void ReadBits(Unk_PartyBits& bits, CInputStream& in);           // 0x14031c1f0 (bitset.inl stream helper)
-CString FUN_140513200(const char* szFormat, const unsigned& n); // StringFormat<unsigned>
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
@@ -326,7 +326,7 @@ void UIPcBangDialog::OnPacketPlayed(CInPacket& packet)
     ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyPcBang()));
     if (nIndex >= m_playBonus.GetCount())
         return;
-    FUN_141276180(FUN_140513200(s_strGiftSound, nIndex), "");
+    FUN_141276180(Unk_SocketFormat<unsigned>(s_strGiftSound, nIndex), "");
 }
 MS2_REPLACE_METHOD(0x1413244D0, UIPcBangDialog, OnPacketPlayed, 463, 0xC1B82850);
 

@@ -226,7 +226,6 @@ class Unk_GmApp : public WorldService
 public:
     PC* FUN_141bd0cc0();                                                // the local player
     MS2Ptr<Unk_GmFieldInfo> FUN_141bd30a0();
-    Unk_GmField* FUN_141bd3620();
 };
 class Unk_GmTable
 {
@@ -260,11 +259,11 @@ class Unk_GpCondRef   // C3: member view (real class not in this TU)
 {
 public:
     bool FUN_140c1d130() const;
+    int FUN_140c1cdc0();
 };
 class Unk_GmMenuRange
 {
 public:
-    int FUN_140c1cdc0() const;
     char m_pad[0x8];
 };
 class Unk_GmAction { public: void FUN_14098d150();  char m_pad[0x8]; };
@@ -555,8 +554,9 @@ public:
 class Unk_GmItemEvents { public:   };
 class Unk_GmDtPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 class Unk_GmDtEvents;
-class Unk_GmMentorStatus { public: int FUN_140424de0(); };
-class Unk_GmMentorConfig { public: Unk_GmMentorStatus* FUN_14041d160(); };
+class Unk_GmMentorConfig { public:  };
+class Unk_RuManager { public: class Unk_RuMentoring* GetMentoring(); };   // C3: member view (was FUN_14041d160)
+class CGameEventValueMentoring { public: int GetId(); };   // C3: the real member (local view, was FUN_140424de0)
 class Unk_GmEventHolder { public: MS2Ptr<Unk_GmDanceEvent> FUN_140428700(); };
 class CKeyTable { public: CStringW GetActionKeyName(int nId, int n); };   // C3: the real CKeyTable member (local view)   // member (this=rcx, hidden return=rdx)
 class Unk_GmShieldUIScale;
@@ -566,12 +566,13 @@ class Unk_GmUtilHolder;
 
 extern __int64 DAT_143ab2820;
 extern int DAT_143ab2900;
-extern Unk_Inventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
 extern CUserMail g_143ab2ee0;
 extern Unk_GmEvtKey DAT_143ab2fc0;
 extern Unk_GmQuestRec DAT_143ab3010;
 extern Unk_GmEvtKey DAT_143ab3308;
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
+#define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)   // C3: was DAT_143b059e8
 
 // ---- exe functions: singletons and registries ----
 
@@ -587,7 +588,8 @@ class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
 void* FUN_140764020();   // C3: was FUN_140764020
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
+#define FUN_140939a10() ((NotifySystem*)FUN_140939a10())   // C3: was NotifySystem* FUN_140939a10()
 class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
 class Unk_InventoryListener* FUN_140a6a840();   // C3: was FUN_140a6a840
 UIQuestEventDispatcher* FUN_140bfc4b0();
@@ -637,8 +639,6 @@ class CQuest   // C3: member view for the former free stand-ins
 public:
     int FUN_140bfc580();
 };
-int FUN_140424de0(Unk_GmMentorStatus*);
-Unk_GmMentorStatus* FUN_14041d160(Unk_GmMentorConfig*);
 class CAchieveManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -697,8 +697,8 @@ public:
     int SendRequestPet();
 };
 class CStatPointManager { public: int GetRemaining(); };   // C3: the real member (local view, was FUN_140caa1a0)
-class Unk_GmStatRef { public: ~Unk_GmStatRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
-class Unk_GmStatOwner { public: Unk_GmStatRef FUN_140c25130(); };
+class Unk_HlRef { public: ~Unk_HlRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
+class Unk_HlPc { public: Unk_HlRef FUN_140c25130(); };
 
 // ---- exe functions: dialogs ----
 
@@ -787,7 +787,7 @@ bool FUN_14193fba0(Unk_GmNodeRef*);
 bool FUN_14193fbd0(Unk_GmTargetRef*);
 bool FUN_14193fc00(Unk_GmMenuRef*, void* p);
 int FUN_14193f100(const ATL::CAtlArray<EMenuKey>& arr, const EMenuKey& nValue);
-void FUN_141ab7200(Unk_GmSlot*, TPtr<Unk_UISwfEntity_25>, void*);
+int FUN_141ab7200(class UIRenderView*, TPtr<Unk_UISwfEntity_25>, void*);
 class UIRenderView* FUN_141a90540(int, int, class GameObject*, float);   // C3: was FUN_141a90540
 
 // ---- exe functions: grid / map service ----
@@ -829,7 +829,7 @@ int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140298ea0(CStringW strKey);
-CString FUN_140536a50(const char* szFormat, const CString& a1);
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141275260(int, int, int);
@@ -1005,12 +1005,12 @@ int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 // MS2-FUNCTIONAL: stack slots only (the exe puts ref below pField; frame 0x10 smaller)
 void UIGameMenuDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
-    Unk_GmField* pField = reinterpret_cast<Unk_GmApp*>(WorldService::GetInstance())->FUN_141bd3620();
+    Unk_GmField* pField = (Unk_GmField*)WorldService::GetInstance()->FUN_141bd3620();
     if (pField != NULL) {
         MS2Ptr<Unk_GmSlot> ref(((class Unk_GmSlot*)FUN_141a90540(p2->vfunc_5().x, p2->vfunc_5().y, (class GameObject*)(pField), 0.9f)));
         if (ref.get() == 0)
             return;
-        FUN_141ab7200(ref.operator->(), TPtr<Unk_UISwfEntity_25>(p2), p3);
+        FUN_141ab7200((UIRenderView*)ref.operator->(), TPtr<Unk_UISwfEntity_25>(p2), p3);
         pField->vfunc_147(ref.get());
     }
 }
@@ -1185,7 +1185,7 @@ void UIGameMenuDialog::vfunc_oa0_29()
     if (pPc == NULL)
         return;
     int bHas = 0;
-    bool bLeft = (unsigned)reinterpret_cast<CStatPointManager*>(reinterpret_cast<Unk_GmStatOwner*>(pPc)->FUN_140c25130().FUN_140c24af0())->GetRemaining() > 0;
+    bool bLeft = (unsigned)reinterpret_cast<CStatPointManager*>(reinterpret_cast<Unk_HlPc*>(pPc)->FUN_140c25130().FUN_140c24af0())->GetRemaining() > 0;
     if (bLeft)
         bHas = 1;
     SetMenuNotifyUp(8, bHas);
@@ -1395,7 +1395,7 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         return;
     int nCount = 0;
     if (nId == 0x4e2d) {
-        nCount = DAT_143ab2a90.FUN_140a616e0();
+        nCount = g_143ab2a90.FUN_140a616e0();
     } else if (nId == 0x4e49) {
         nCount = g_143ab2ee0.FUN_1408e34e0();
     } else if (nId == 0x4e4d) {
@@ -1714,7 +1714,7 @@ int UIGameMenuDialog::FUN_14193a7b0(int nId, ASObj* pObj)
     {
         Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->Find(nId);
         if (ref.get()) {
-            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_period))->FUN_140c1d130() && ((Unk_GmMenuEntry*)ref.operator->())->m_period.FUN_140c1cdc0() == 0)
+            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_period))->FUN_140c1d130() && ((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_period))->FUN_140c1cdc0() == 0)
                 return 0;
             CStringW strTip = static_cast<GFxManager*>(((void*)FUN_14025e7a0()))->Localize(((Unk_GmMenuEntry*)ref.operator->())->m_strCaption);
             if (IsChildMenu(nId) != 0 && ((Unk_GmMenuEntry*)ref.operator->())->m_58 != 0) {
@@ -1780,7 +1780,7 @@ CString UIGameMenuDialog::GetMenuName(int nId)
         Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->FindByUiId(nId);
         if (ref.get() != 0) {
             CString strName(((Unk_GmMenuEntry*)ref.operator->())->m_strName);
-            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1d130() && ((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod.FUN_140c1cdc0() != 0)
+            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1d130() && ((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1cdc0() != 0)
                 strName += "_event";
             return strName;
         }
@@ -1795,7 +1795,7 @@ CString UIGameMenuDialog::FUN_14193afc0(int nId)
         Unk_GmMenuRef ref = ((class Unk_GmMenuTable*)FUN_140c1d2f0())->Find(nId);
         if (ref.get() != 0) {
             CString strName(((Unk_GmMenuEntry*)ref.operator->())->m_strName);
-            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1d130() && ((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod.FUN_140c1cdc0() != 0)
+            if (!((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1d130() && ((Unk_GpCondRef*)(Unk_GmMenuRange*)&(((Unk_GmMenuEntry*)ref.operator->())->m_eventPeriod))->FUN_140c1cdc0() != 0)
                 strName += "_event";
             return strName;
         }
@@ -1840,7 +1840,7 @@ void UIGameMenuDialog::FUN_14193b360()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<int> arrQuests;
-    FUN_1416d0920(((class Unk_GmQuestHolder*)FUN_140764020()), &arrQuests);
+    ((class CQuestManager*)(class Unk_GmQuestHolder*)(((class Unk_GmQuestHolder*)FUN_140764020())))->FUN_1416d0920(reinterpret_cast<ATL::CAtlArray<unsigned>&>(arrQuests));
     int bNew = 0;
     for (size_t i = 0; i < arrQuests.GetCount(); ++i) {
         if (FUN_14074bc90(arrQuests[i]) == 0) {
@@ -1848,7 +1848,7 @@ void UIGameMenuDialog::FUN_14193b360()
             break;
         }
     }
-    m_30->FUN_14184af30("setQuest", arrQuests.GetCount() != 0, bNew);
+    m_30->Invoke("setQuest", arrQuests.GetCount() != 0, bNew);
 }
 
 // @0x14193b4a0
@@ -2131,7 +2131,7 @@ void UIGameMenuDialog::FUN_14193c930()
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
-    if (FUN_140424de0(FUN_14041d160(reinterpret_cast<Unk_GmMentorConfig*>(TSingleton<CGameEventValueManager>::GetInstance()))) == 0) {
+    if (reinterpret_cast<CGameEventValueMentoring*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->GetId() == 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_season"), 1, 1);
         return;
     }
@@ -2394,7 +2394,7 @@ void UIGameMenuDialog::FUN_14193daf0(bool bEvent)
     CString strName = FUN_14193afc0(nKey);
     MS2Ptr<Unk_GmItem> spItem = FindMenuItem(strName);
     if (spItem == NULL) {
-        strName = FUN_140536a50("{0}_event", strName);
+        strName = Unk_SocketFormat<CString>("{0}_event", strName);
         spItem = FindMenuItem(strName);
     }
     if (spItem == NULL)

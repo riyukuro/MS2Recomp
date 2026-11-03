@@ -21,24 +21,13 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/uiugceventlistener.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class ASMovieClip;
 class CInPacket;
 class COutPacket;
 class CMsgBoxData;
 class Unk_ClButton;
-
-// The interval check of the delete-reply poll (0x140517b00 ctor, 0x140268870 "the interval elapsed").
-class Unk_ClTimer
-{
-public:
-    Unk_ClTimer();                                          // 0x140517b00
-    int FUN_140268870(int nInterval);                       // true once the interval elapsed
-private:
-    unsigned m_nInterval;
-    unsigned m_nLastTick;
-};
-MS2_CHECK_SIZE(Unk_ClTimer, 8);
 
 class UICharacterListDialog : public UIDialog, public UIUGCEventListener
 {
@@ -210,5 +199,5 @@ public:
     unsigned char m_221;                                    // +0x221
     int m_224;                                              // +0x224
     MS2Ptr<CMsgBoxData> m_228;                              // +0x228
-    Unk_ClTimer m_238;                                      // +0x238 delete reply poll
+    Unk_IntervalTimer m_238;                                // +0x238 delete reply poll
 };

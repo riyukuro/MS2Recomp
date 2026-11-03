@@ -77,7 +77,7 @@ public:
     NiRenderTargetGroupPtr m_38;
     NiRenderTargetGroupPtr m_40;
     IDirect3DDevice9* m_48;
-    Unk_PPSmartA m_50[3];                       // the three float render targets (efd::SmartPointer<NiRenderedTexture>)
+    efd::SmartPointer<NiRenderedTexture> m_50[3];                       // the three float render targets (efd::SmartPointer<NiRenderedTexture>)
     IDirect3DTexture9* m_68[3];
     IDirect3DTexture9* m_80[3];
 };

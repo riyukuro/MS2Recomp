@@ -294,14 +294,13 @@ int CItemExtraData::FUN_140599970(const CItemExtraData* pOther)
 }
 MS2_REPLACE_METHOD(0x140599970, CItemExtraData, FUN_140599970, 300, 0xF1923389);
 
-ItemModelHead* FUN_14053ec70(CItemData* pData);
 
 // @0x140599ab0
 void CItemExtraData::InitColorsFromPalette(CItemData* pData)
 {
     if (pData == 0 || pData->FUN_14053e260() == 0)
         return;
-    for (unsigned i = 0; i < (unsigned)FUN_14053ec70(pData)->FUN_140547330(); i++)
+    for (unsigned i = 0; i < (unsigned)pData->FUN_14053ec70()->FUN_140547330(); i++)
     {
         MS2Ptr<ItemColorEx> spColor = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorOrRandom(pData->FUN_14053e260(), pData->FUN_14053e2b0(i));
         if (spColor.get() != 0)
@@ -616,8 +615,8 @@ void CHairExtraData::vfunc_4(CItemData* pData)
     m_bUseScale = 1;
     m_bUsePt2 = 1;
     m_bUsePt1 = 1;
-    m_bUseScale = FUN_14053ec70(pData)->FUN_140547130();
-    m_bUsePt1 = FUN_14053ec70(pData)->FUN_140547170();
+    m_bUseScale = pData->FUN_14053ec70()->FUN_140547130();
+    m_bUsePt1 = pData->FUN_14053ec70()->FUN_140547170();
     m_bUsePt2 = m_bUsePt1;
 }
 MS2_REPLACE_METHOD(0x14059AAA0, CHairExtraData, vfunc_4, 619, 0x92D8C0B2);

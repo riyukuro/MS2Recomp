@@ -122,6 +122,12 @@
 #include "ms2/placeholder/commandchat.h"
 #include "ms2/commonfiles/questmasktable.h"
 #include "ms2/placeholder/formatstringid.h"
+
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName);   // 0x140e35bd0, owned by uiinventorydialog
+
+template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);   // 0x140ba7930, owned by unit_140ba6b20
+
+template <> MS2Ptr<ASUIComponent> UISwfEntity::GetChild<ASUIComponent>(const CString& strName);   // 0x140c02990, template COMDAT of another unit
 #pragma intrinsic(memcpy, memset)   // the inline memcpy_s above calls them; the bodies below inline them
 
 // ---- unit-local views (names invented) --------------------------------------------------------------------------------
@@ -337,7 +343,7 @@ int UIWorldMapDialog::vfunc_13()
                     return 0;
             }
             {
-                if (MS2Ptr<ASTextInput> spInput = FUN_140e35bd0("m_fieldSearch"))
+                if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_fieldSearch"))
                 {
                     if (spInput->GetFocused() != 0)
                     {
@@ -430,7 +436,7 @@ void UIWorldMapDialog::vfunc_80(void* p)
         else
         {
             FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
-            if (MS2Ptr<ASTextInput> spInput = FUN_140e35bd0("m_fieldSearch"))
+            if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_fieldSearch"))
                 spInput->SetTextA("");
         }
     }
@@ -644,7 +650,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             bool bSelect = data.PopBool();
             FUN_141b60c40(nKey, bSelect);
             FUN_141b61ff0(nKey);
-            if (MS2Ptr<ASTextInput> spSearch = FUN_140e35bd0("m_fieldSearch"))
+            if (MS2Ptr<ASTextInput> spSearch = GetChild<ASTextInput>("m_fieldSearch"))
                 spSearch->SetTextA("");
             if (m_214 != 0 && ((class CQuestManager*)FUN_140764020())->FUN_1416d0e60(nKey) != 0)
                 FUN_141b62fc0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldMapDialog::OnMissionAttackConfirm),
@@ -923,7 +929,7 @@ void UIWorldMapDialog::ApplyPendingSearch()
 {
     if (m_strSearch.GetLength() == 0)
         return;
-    if (MS2Ptr<ASTextInput> spInput = FUN_140e35bd0("m_fieldSearch"))
+    if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_fieldSearch"))
         spInput->SetTextW(m_strSearch);
     FUN_141b60d40(m_strSearch);
     m_strSearch.Empty();
@@ -1687,7 +1693,7 @@ void UIWorldMapDialog::FUN_141b5be10()
     obj.FUN_1407cbbe0("next", FUN_14037c510(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
     obj.FUN_1407cb9c0("enable", nEnable);
     FUN_141b5c2b0(nRound, &obj);
-    if (MS2Ptr<ASUIComponent> spPanel = FUN_140c02990("m_fieldMission"))
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_fieldMission"))
         spPanel->Invoke("setData", obj);
     if (m_210 != 0)
         m_30->Invoke("setFieldMissionMode", 1);
@@ -1808,7 +1814,7 @@ void UIWorldMapDialog::FUN_141b5cc40(int nRound)
     obj.FUN_1407cbbe0("prev", FUN_14037c450(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
     obj.FUN_1407cbbe0("next", FUN_14037c510(((class CFieldMissionTable*)FUN_140d738f0()), nRound) != 0);
     FUN_141b5c2b0(nRound, &obj);
-    if (MS2Ptr<ASUIComponent> spPanel = FUN_140c02990("m_fieldMission"))
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_fieldMission"))
         spPanel->Invoke("setData", obj);
 }
 MS2_REPLACE_METHOD(0x141B5CC40, UIWorldMapDialog, FUN_141b5cc40, 602, 0xF031AAB0);
@@ -2334,7 +2340,7 @@ void UIWorldMapDialog::FUN_141b605e0(CStringW strName)
     }
     else
     {
-        if (MS2Ptr<ASMovieClip> spMode = FUN_140ba7930("m_skyFortressMode"))
+        if (MS2Ptr<ASMovieClip> spMode = GetChild<ASMovieClip>("m_skyFortressMode"))
         {
             if (MS2Ptr<ASButton> spToggle = spMode->FUN_140acce30<ASButton>("m_toggle"))
             {
@@ -2360,7 +2366,7 @@ MS2_REPLACE_METHOD(0x141B60B40, UIWorldMapDialog, FUN_141b60b40, 236, 0xEBE314AD
 // @0x141b60c40
 void UIWorldMapDialog::FUN_141b60c40(int nFieldId, bool bFlag)
 {
-    MS2Ptr<ASUIComponent> spInfo = FUN_140c02990("m_searchInfo");
+    MS2Ptr<ASUIComponent> spInfo = GetChild<ASUIComponent>("m_searchInfo");
     if (!spInfo)
         return;
     ASObj obj(2);
@@ -2372,7 +2378,7 @@ MS2_REPLACE_METHOD(0x141B60C40, UIWorldMapDialog, FUN_141b60c40, 242, 0xFA03563C
 // @0x141b60d40
 void UIWorldMapDialog::FUN_141b60d40(CStringW strName)
 {
-    MS2Ptr<ASUIComponent> spInfo = FUN_140c02990("m_searchInfo");
+    MS2Ptr<ASUIComponent> spInfo = GetChild<ASUIComponent>("m_searchInfo");
     if (!spInfo)
         return;
     ASObj obj(2);

@@ -15,6 +15,9 @@
 #include <atlcoll.h>
 
 #include "ms2/placeholder/cguidecondition.h"
+#undef min
+#undef max
+#include "ms2/client/ms2/interactobject.h"   // C3: CInteractObject::FUN_1413b5600
 
 
 struct Unk_GcElem16 { void* m_p0; void* m_p1; };
@@ -25,9 +28,9 @@ size_t Unk_GcAnchorArray(ATL::CAtlArray<Unk_GcElem16>& arr, const Unk_GcElem16& 
 }
 
 // @0x1413b5600
-int Unk_GcState28(char* p)
+int CInteractObject::FUN_1413b5600()
 {
-    return *reinterpret_cast<int*>(p + 0x28);
+    return m_nState;
 }
 
 // @0x1413b5610

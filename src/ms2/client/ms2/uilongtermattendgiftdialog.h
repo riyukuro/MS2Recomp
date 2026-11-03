@@ -50,7 +50,6 @@ public:
     int FUN_140c6d570();                                                   // table int 0xa8e (this event)
     CStringW GetClaimedDays();                                              // table string 0xa8c (claimed days)
 
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);              // bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

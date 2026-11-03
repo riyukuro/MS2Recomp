@@ -26,10 +26,9 @@
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 
 // ---- record classes held by MS2Ptr (RTTI names; only the CPtred base matters here) --------------------------------------
-class SalesInfo : public CPtred                         // house sale marker record (0x38, ctor 0x1411232e0)
+class SalesInfo : public CPtred                         // house sale marker record (0x38, implicit ctor 0x1411232e0)
 {
 public:
-    SalesInfo();
     virtual ~SalesInfo() = default;                     // 0x141125fe0 (no vptr store)
     int m_nA;                                           // +0x18 (not set by the ctor)
     efd::Point3 m_pos;                                  // +0x1c

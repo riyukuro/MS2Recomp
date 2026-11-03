@@ -74,12 +74,6 @@ public:
     static float FUN_140a53fa0(class NiControllerSequence*);
 };
 
-// The data row of a furniture cube (an inline copy of the exe at 0x140ca6580 in the homemade unit).
-class Unk_HmCube : public CFunctionCubeObject
-{
-public:
-    MS2Ptr<FunctionCubeData> FUN_140ca6580();
-};
 
 // The use request of one cube (id + count), serialized by FUN_1401fc610.
 struct Unk_UfUseInfo
@@ -188,17 +182,17 @@ void StateUseFurniture::vfunc_4(StateData* pData)
     }
     if (m_spCube.get())
     {
-        bool bAction = !static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8.IsEmpty();
+        bool bAction = !static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8.IsEmpty();
         if (bAction)
-            m_pOwner->FUN_14166ef10(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8, 1, 0, false);
-        bool bModel = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
+            m_pOwner->FUN_14166ef10(static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8, 1, 0, false);
+        bool bModel = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
         if (bModel)
-            m_pOwner->PlayAnimation((const char*)static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
-        bool bEffect = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0 != "";
+            m_pOwner->PlayAnimation((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
+        bool bEffect = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0 != "";
         if (bEffect)
         {
             Unk_EffectQuery kQuery;
-            kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
+            kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
             kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
             kQuery.SetActor(m_pOwner->FUN_14123c580());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
@@ -217,7 +211,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         return;
     if (m_n64 != 0)
     {
-        bool bModel = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
+        bool bModel = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
         if (bModel)
         {
             NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>((FUN_141b6f910()))->GetActorManager(m_spCube->GetEntityId());
@@ -233,14 +227,14 @@ void StateUseFurniture::vfunc_3(double fTime)
             }
         }
     }
-    int nType = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_n90;
+    int nType = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_n90;
     if (nType != 0)
     {
         Unk_EntRef kEnt = m_spCube->GetEnt();
         NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.FUN_1408a9090()))));
         if (pNode)
         {
-            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
+            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
             if (pChild)
             {
                 NiTransform kXf = static_cast<NiAVObject*>(pChild)->GetLocalTransform();
@@ -253,9 +247,9 @@ void StateUseFurniture::vfunc_3(double fTime)
                 Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
                 Vector3 kDir;
                 Vector3 kEuler = DAT_143b01a60;
-                kEuler = Vector3(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.x,
-                    static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.y,
-                    static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.z);
+                kEuler = Vector3(static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.x,
+                    static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.y,
+                    static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.z);
                 Unk_NiMatrix3 kAdd;
                 FUN_140b86230(reinterpret_cast<efd::Point3 const &>(kEuler), reinterpret_cast<NiMatrix3 &>(kAdd));
                 Unk_NiMatrix3 kProd(kRot.FUN_140a33480(kAdd));
@@ -271,11 +265,11 @@ void StateUseFurniture::vfunc_3(double fTime)
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, reinterpret_cast<efd::Point3&>(kCol2));
                 kCol2.FUN_140968990();
                 reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
-                    kCol1.FUN_14097fc90(-static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y));
+                    kCol1.FUN_14097fc90(-static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y));
                 reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
-                    kCol0.FUN_14097fc90((0, static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)));
+                    kCol0.FUN_14097fc90((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)));
                 reinterpret_cast<Unk_CamNiPoint3&>(kPos) = kPos.FUN_14097fd50(
-                    kCol2.FUN_14097fc90((0, static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)));
+                    kCol2.FUN_14097fc90((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)));
                 m_pOwner->vfunc_19(efd::Point3(reinterpret_cast<const Unk_UfDirRet&>(kPos)));
                 m_pOwner->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
             }
@@ -283,7 +277,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         else
         {
             NiPoint3 kPos = m_pOwner->vfunc_18();
-            kPos.z = kPos.z - static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_vA0.z;
+            kPos.z = kPos.z - static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_vA0.z;
             m_pOwner->vfunc_59(1, 0, 0, 0);
         }
     }
@@ -327,11 +321,11 @@ void StateUseFurniture::vfunc_5(int n)
     if (m_nEffect != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     bool bEffect = (m_spCube.get() != 0 ? true : false) &&
-        static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8 != "";
+        static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8 != "";
     if (bEffect)
     {
         Unk_EffectQuery kQuery;
-        kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
+        kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
         kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
         kQuery.SetActor(m_pOwner->FUN_14123c580());
         TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
@@ -369,13 +363,13 @@ void StateUseFurniture::AnimActivated(NiActorManager* pkManager, unsigned int eS
 {
     if (m_spCube == 0)
         return;
-    bool bNone = (static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580() == 0);
+    bool bNone = (static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580() == 0);
     if (bNone)
         return;
     if (m_n64 == 0)
     {
         efd::utf8string kName = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationNameFromId(m_pOwner->FUN_14123c460(), eSequenceID);
-        if (UfEqual((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
+        if (UfEqual((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
             m_n64 = 1;
     }
 }

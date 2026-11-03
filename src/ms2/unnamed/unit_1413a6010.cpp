@@ -27,7 +27,7 @@ class Unk_Restrictions;
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
-UIDialog* FUN_141386950(const CStringA* pName);             // the dialog of a name
+template <class T> T* Unk_GaGetUIByName(const CStringA& strName);   // the dialog of a name
 int ReadValueList(class Unk_140165cf0 *, char const *, class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>> &);
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments
 
@@ -63,7 +63,7 @@ int CGuideConditionDialog::vfunc_3()
     if (m_nDialogID != 0)
         pDlg = FUN_140c300a0(m_nDialogID);
     if (pDlg == 0)
-        pDlg = FUN_141386950(&m_strDialog);
+        pDlg = Unk_GaGetUIByName<UIDialog>(m_strDialog);
     if (pDlg == 0)
         return 0;
     unsigned nOpen = pDlg->vfunc_55() == 0;

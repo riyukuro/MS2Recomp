@@ -33,7 +33,6 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/placeholder/cstringtable.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // ---- unit-local views of exe types ----
 
@@ -102,7 +101,7 @@ void UIEnterEventFieldDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIEnterEventFieldDialog::OnNotifyGameStart));
-    reinterpret_cast<Unk_IntervalTimer&>(m_tick).Init();
+    m_tick.Init();
     UpdateVisible();
 }
 MS2_REPLACE_METHOD(0x140F3FC80, UIEnterEventFieldDialog, OnLoadComplete, 255, 0x60BA1C25);
@@ -140,7 +139,7 @@ void UIEnterEventFieldDialog::vfunc_43()
         int nInside = (m_60 == 0 && m_78 != 0 && vfunc_52() != 0) ? 1 : 0;
         if (nInside != 0)
         {
-            if ((float)pDialog->FUN_1422c1500() < pDialog->FUN_1422c10a0() || (float)pDialog->FUN_1422c1530() < pDialog->FUN_1422c1110()
+            if ((float)pDialog->FUN_1422c1500() < pDialog->FUN_1422c10a0() || (float)static_cast<ASDisplayObject*>(pDialog)->FUN_1422c1530() < pDialog->FUN_1422c1110()
                 || pDialog->FUN_1422c10a0() < 0.0f || pDialog->FUN_1422c1110() < 0.0f)
                 bMove = true;
         }
@@ -183,7 +182,7 @@ void UIEnterEventFieldDialog::vfunc_72()
         return;
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tick).Check(1000) == 0)
+    if (m_tick.Check(1000) == 0)
         return;
     UpdateVisible();
 }

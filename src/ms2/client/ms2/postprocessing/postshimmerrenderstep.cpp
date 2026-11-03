@@ -30,7 +30,7 @@ class CMainSystem;
 class Unk_ResourceMgr
 {
 public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);
+    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);
 };
 Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_14016a5c0(const char* psz, int n);          // path normalise
@@ -56,7 +56,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
 bool FUN_140c900e0(const NiFixedString& kName, const efd::Point2* pk, int n);
 int FUN_140c902f0(const efd::Point2& k);               // both components finite
-void FUN_140c8f490(Unk_PPSmartC spTexture);             // swap the shimmer texture of the live step
+void FUN_140c8f490(efd::SmartPointer<NiTexture> spTexture);             // swap the shimmer texture of the live step
 
 
 extern NiFixedString DAT_143ae5438;                     // shimmer blend constant name
@@ -66,7 +66,7 @@ extern NiFixedString DAT_143ae5448;                     // shimmer uv-move const
 static NiTexturingProperty* s_pkShimmerProp;
 
 // @0x1400cf2b0
-static Unk_PPSmartC s_shimmerTexture(0);
+static efd::SmartPointer<NiTexture> s_shimmerTexture(0);
 
 // @0x1400cf2e0
 const NiRTTI PostShimmerRenderStep::ms_RTTI("PostShimmerRenderStep", &NiDefaultClickRenderStep::ms_RTTI);
@@ -105,7 +105,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
     strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
     s_shimmerTexture = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
     NiViewRenderClick* pkClick = (NiViewRenderClick*)FUN_140c8f690(FUN_1416b4990(this, "PostShimmer", 0, this,
-        FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", s_shimmerTexture.Get(), 0, 0));
+        FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", (NiTexture*)s_shimmerTexture, 0, 0));
     if (pkClick == 0)
     {
         vfunc_16();
@@ -114,7 +114,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
     NiScreenFillingRenderView* pkView = NiDynamicCast(NiScreenFillingRenderViewImpl, pkClick->GetRenderViews().GetHead());
     s_pkShimmerProp = (NiTexturingProperty*)pkView->GetScreenFillingQuad().GetProperty(NiProperty::TEXTURING);
     NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(
-        (NiTexture*)s_shimmerTexture.Get(), 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);
+        (NiTexture*)s_shimmerTexture, 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);
     s_pkShimmerProp->SetShaderMap(0, pkMap);
     return true;
 }
@@ -122,7 +122,7 @@ MS2_REPLACE_METHOD(0x140c8f090, PostShimmerRenderStep, vfunc_15, 1014, 0xBACEC7B
 
 #ifndef MS2_HOOK_DLL
 // @0x140c8f490
-void FUN_140c8f490(Unk_PPSmartC spTexture)
+void FUN_140c8f490(efd::SmartPointer<NiTexture> spTexture)
 {
     if (s_pkShimmerProp != 0)
     {
@@ -131,7 +131,7 @@ void FUN_140c8f490(Unk_PPSmartC spTexture)
         {
             s_shimmerTexture = spTexture;
             NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(
-                (NiTexture*)s_shimmerTexture.Get(), 0, (NiTexturingProperty::ClampMode)0,
+                (NiTexture*)s_shimmerTexture, 0, (NiTexturingProperty::ClampMode)0,
                 (NiTexturingProperty::FilterMode)0, 0);
             s_pkShimmerProp->SetShaderMap(0, pkMap);
         }
@@ -143,7 +143,7 @@ void FUN_140c8f490(Unk_PPSmartC spTexture)
 void PostShimmerRenderStep::vfunc_16()
 {
     PostProcessEffect::vfunc_16();
-    s_shimmerTexture.Assign(0);
+    s_shimmerTexture = 0;
 }
 MS2_REPLACE_METHOD(0x140c8f5a0, PostShimmerRenderStep, vfunc_16, 38, 0xD507FABE);
 

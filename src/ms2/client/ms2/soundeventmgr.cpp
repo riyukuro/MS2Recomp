@@ -186,14 +186,8 @@ CString FUN_1409a2470(const char* pszUtf8, int nCodePage);          // UTF-8 to 
 CSoundService* FUN_140c9cb10();                                     // the sound service                                   // normalises a sound path
 // The application object: the sound switch byte and the session.
 int FUN_141260470(Unk_SoundFlag* pFlag);
-struct Unk_SmPoint3 : public Vector3
-{
-    Unk_SmPoint3(float fX, float fY, float fZ);                     // 0x14097f250
-    Unk_SmPoint3(const Vector3& pt);                        // 0x14027dcf0
-};
 void FUN_140a0b2a0(NiAVObject* pObj);                               // detach from the parent
 bool FUN_14028d470(float a, float b);                               // nearly equal
-void FUN_140194470(void* pDst, const Vector3& vSrc);        // NiPoint3 assignment
 // Effect manager (singleton 0x1403ed280): scene root.
 // Sound property / voice pitch table.
 // The 2-int pitch record (pitch, FMOD pitch units) of a voice event.
@@ -205,7 +199,6 @@ struct Unk_SoundPitch
 };
 MS2_CHECK_SIZE(Unk_SoundPitch, 8);
 class SoundPropertyMgr { public: int FindPitch(int nObjectId, Unk_SoundPitch* pPitchOut); };
-SoundPropertyMgr* FUN_1411b1de0();
 // Cooltime table of the local player.
 class CCooltimeManager : public CooltimeManager { public: static CCooltimeManager* GetInstance(); };
 // The unit's log calls (FMT_VARIADIC wrappers over CLogString::FUN_1406530d0): one COMDAT per argument list.
@@ -230,7 +223,7 @@ template <class A, class B, class C> inline void Unk_SoundLog(CLogString* log, i
                                                    fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(c)};
     log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a, b, c), args));
 }
-struct Unk_SeRangeSlots { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(Unk_SmPoint3 ptPos, Unk_SmPoint3 ptDir, float fScale); };   // CTwoCircleCollision::vfunc_3 takes the points by value
+struct Unk_SeRangeSlots { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale); };   // CTwoCircleCollision::vfunc_3 takes the points by value
 template <class A, class B, class C, class D> inline void Unk_SoundLog(CLogString* log, int level, int category,
                                                                          const wchar_t* format, const A& a, const B& b,
                                                                          const C& c, const D& d)
@@ -490,7 +483,7 @@ bool CSoundEventEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
         {
             Unk_SoundPitch kPitch;
             if (reinterpret_cast<NoticeMessage*>(pTarget)->GetObjectCode() != 0 && strGroup.Find("ms2sound/sound/voice", 0) != -1)
-                FUN_1411b1de0()->FindPitch(reinterpret_cast<NoticeMessage*>(pTarget)->GetObjectCode(), &kPitch);
+                TSingleton<SoundPropertyMgr>::GetInstance()->FindPitch(reinterpret_cast<NoticeMessage*>(pTarget)->GetObjectCode(), &kPitch);
             spSound = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177b3d0(pGroup, strEvent, kPitch.m_fPitch, kPitch.m_nUnits);
         }
     }
@@ -668,7 +661,7 @@ void CSoundEventEffect::vfunc_7()
 // @0x1417776b0
 int CSoundEventEffect::vfunc_8(void* p)
 {
-    FUN_140194470(p, reinterpret_cast<const Vector3&>(reinterpret_cast<NiAVObject*>(m_spRoot.operator->())->GetWorldTranslate()));
+    *reinterpret_cast<efd::Point3*>(p) = static_cast<const efd::Point3&>(reinterpret_cast<NiAVObject*>(m_spRoot.operator->())->GetWorldTranslate());
     return 1;
 }
 
@@ -755,7 +748,7 @@ void CSoundEvent::SetPosition(const Vector3& vPos)
     FMOD_VECTOR kPos = {vPos.x, vPos.z, vPos.y};
     m_pEvent->set3DAttributes(&kPos, 0, 0);
     if (m_pRange != 0)
-        reinterpret_cast<Unk_SeRangeSlots*>(m_pRange)->vfunc_3(vPos, Unk_SmPoint3(0.0f, 0.0f, 0.0f), 1.0f);
+        reinterpret_cast<Unk_SeRangeSlots*>(m_pRange)->vfunc_3(reinterpret_cast<const efd::Point3&>(vPos), NiPoint3(0.0f, 0.0f, 0.0f), 1.0f);
 }
 
 // @0x14177aac0
@@ -885,7 +878,7 @@ const char* FUN_141788f10(FMOD_RESULT nResult)
 // Out-of-unit callees of the manager.
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
+template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280 (T = const char*)
 
 // The category names of the designer project (index = event category slot).
 static const char* s_apszCategory[11] = {"effect", "environment", "bgm", "UISound", "npcVoice", "SystemVoice",
@@ -976,7 +969,6 @@ MS2Ptr<CSoundEvent> CSoundEventMgr::FUN_14177b3d0(FMOD::EventGroup* pGroup, cons
     return MS2Ptr<CSoundEvent>(new CSoundEvent(pEvent, CString(pszName)));
 }
 
-void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);  // the one-string log COMDAT the exe calls here
 
 // @0x14177b6a0
 MS2Ptr<CSoundEvent> CSoundEventMgr::FUN_14177b6a0(const char* pszName)
@@ -1004,7 +996,7 @@ MS2Ptr<CSoundEvent> CSoundEventMgr::FUN_14177b6a0(const char* pszName)
         return MS2Ptr<CSoundEvent>(0);
     }
     if (GetLogString() != 0)
-        FUN_1403a1280(GetLogString(), 0xc, 0x12f, L"SoundID {0}", pszName);
+        Unk_FileLog<const char*>(GetLogString(), 0xc, 0x12f, L"SoundID {0}", pszName);
     return MS2Ptr<CSoundEvent>(new CSoundEvent(pEvent, CString(pszName)));
 }
 
@@ -1517,7 +1509,7 @@ void CSoundEventMgr::RemoveEnvironmentSound(Unk_EntityPtr spEntity)
             efd::utf8string strEvent;
             static_cast<egf::Entity*>(it->first)->GetPropertyValue<efd::utf8string>(0xed530c5f, strEvent);
             const char* pszEvent = strEvent.c_str();
-            FUN_1403a1280(GetLogString(), 0xc, 0x12f, L"Remove Environment Sound [{0}]", pszEvent);
+            Unk_FileLog<const char*>(GetLogString(), 0xc, 0x12f, L"Remove Environment Sound [{0}]", pszEvent);
             if (it->second.get())
                 it->second->StopOrReset(0);
             m_mapEnvSounds.erase(it);

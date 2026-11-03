@@ -43,7 +43,6 @@
 class Unk_140acd6e0 : public ASButton
 {
 public:
-    void FUN_1422c1fe0(unsigned int bEnabled);          // enable / disable
 };
 
 // The AS function object calling back into C++ (ctor 0x1422c8430, dtor 0x1422c85b0).

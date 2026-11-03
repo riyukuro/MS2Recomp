@@ -42,7 +42,6 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/inventory.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
 #include "ms2/client/ms2/uihudentity.h"
@@ -87,8 +86,8 @@ class CDropItem   // C3: member view for the former free stand-ins
 public:
     void FUN_141190900(int);
     void FUN_141191330(int);
+    class CItem* FUN_140b12380();                // the dropped item
 };
-void* FUN_140b12380(class Unk_WsC_GameObj*);   // C3: was FUN_140b12380
 
 // The actor registry the pet state queries by entity id.
 namespace egmAnimation { class AnimationService; }
@@ -607,7 +606,7 @@ void StateSummonIdle::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     if (m_n44 == 0)
     {
-        reinterpret_cast<Unk_IntervalTimer&>(m_t48).Init();
+        m_t48.Init();
         m_n44 = 1;
     }
 }
@@ -719,10 +718,10 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
     void* pManager = ((void*)((class CPet*)(class PCBase*)(pPet))->FUN_140b10360());
     if (pManager != 0)
     {
-        if (reinterpret_cast<Unk_IntervalTimer&>(pState->m_t48).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7de0)->Get()) != 0)
+        if (pState->m_t48.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7de0)->Get()) != 0)
             FUN_1417f94a0(pState, 0x5a);
 
-        if (reinterpret_cast<Unk_IntervalTimer&>(pState->m_t50).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e90)->Get()) != 0)
+        if (pState->m_t50.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e90)->Get()) != 0)
         {
             int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo()) + 0x68), (class PCBase*)(pManager));
             if (nIndex != 0)
@@ -861,7 +860,7 @@ StateSummonExpire::StateSummonExpire(PCBase* pOwner) : State(pOwner) {}
 void StateSummonExpire::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    reinterpret_cast<Unk_IntervalTimer&>(m_t40) = Unk_IntervalTimer();
+    m_t40 = Unk_IntervalTimer();
 }
 
 // @0x1417f9900
@@ -876,7 +875,7 @@ void StateSummonExpire::vfunc_3(double fTime)
     MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<CPet*>(pPet)->GetRow();
     if (spRow == 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_t40).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e38)->Get()) != 0)
+    if (m_t40.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e38)->Get()) != 0)
         ((class CPet*)(class PCBase*)(pPet))->FUN_140b114e0(0x5b);
 }
 
@@ -909,7 +908,7 @@ void StateSummonItemPick::vfunc_3(double fTime)
         void* pField = ((void*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a50((class Unk_WsC_GameObj*)(pPet)));
         if (pField == 0)
             return;
-        void* pDrop = FUN_140b12380((class Unk_WsC_GameObj*)(pField));
+        void* pDrop = ((class CDropItem*)(void*)(pField))->FUN_140b12380();
         if (pDrop == 0)
             return;
         ((class CDropItem*)(void*)(pField))->FUN_141191330(reinterpret_cast<GameObject*>(pPet)->FUN_14123c580());

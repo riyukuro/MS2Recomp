@@ -18,6 +18,7 @@
 
 #include <new>
 #include <egf/Entity.h>
+#include <egmAnimation/AnimationService.h>
 
 #include "statefall.h"
 
@@ -120,7 +121,7 @@ void StateFall::vfunc_4(StateData* pData)
             if (!strRec.IsEmpty())
             {
                 efd::utf8string kAnim((const char*)(strRec + m_strAnim.c_str()));
-                if (((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) !=
+                if (FUN_141b6f910()->GetAnimationIdFromName(m_pOwner->FUN_14123c460(), kAnim) !=
                     NiActorManager::INVALID_SEQUENCE_ID)
                     m_strAnim = kAnim;
             }

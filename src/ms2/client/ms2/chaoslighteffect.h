@@ -15,7 +15,7 @@
 #include <NiMaterial.h>
 #include "ms2/client/ms2/transitioneffectparam.h"
 #include "ms2/client/ms2/layer.h"
-#include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC (texture handle)
+#include "ms2/placeholder/postprocesseffect.h"      // efd::SmartPointer<NiTexture> (texture handle)
 
 class ChaosLightEffectLayer;
 
@@ -114,7 +114,7 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     efd::SmartPointer<NiMesh> m_spMesh;     // +0x18
-    Unk_PPSmartC m_spTexture;               // +0x20 glow texture
+    efd::SmartPointer<NiTexture> m_spTexture;               // +0x20 glow texture
     NiMaterial* m_pMaterial;                // +0x28 the chaos material matching the mesh's current material (or null)
     ChaosLightEffectParam m_param;          // +0x30
     bool m_bActive;                         // +0xd0
@@ -136,7 +136,7 @@ public:
     void* FUN_1410469c0();                                      // 0x1410469c0 the shared white texture
 public:
     MS2_LAYOUT_FRIEND;
-    Unk_PPSmartC m_spTexture;       // +0x20
+    efd::SmartPointer<NiTexture> m_spTexture;       // +0x20
 };
 MS2_CHECK_SIZE(ChaosLightEffectLayerManager, 0x28);
 MS2_CHECK_OFFSET(ChaosLightEffectLayerManager, m_spTexture, 0x20);

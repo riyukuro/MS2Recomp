@@ -139,13 +139,13 @@ CStringW GetStringCommon(int nStringId);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // notice
 void FUN_1412752d0(const CStringW& strKey, int nType);          // notice by string key
 // StringFormat instances of the neighbouring units (key by value in the exe, arguments by reference).
-CStringW FUN_140e63450(CStringW strKey, const unsigned& nA, const unsigned& nB, const unsigned& nC);
+template <class A, class B, class C> CStringW LocalizedMentorFormat(CStringW, const A&, const B&, const C&);   // C3: was FUN_140e63450
 CStringW FUN_14183e9c0(CStringW strText, int nRank);          // rank text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140b191a0(CStringW strText, int nType, SsMsgBoxFn fn, __int64 nUid);    // yes / no box
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
 void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem> spItem);
 void FUN_140d42630(const CString& strName);
@@ -309,7 +309,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
             unsigned nMax = pSocket->GetMaxSlot();
             unsigned nShown = nMax < m_nCount ? nMax : m_nCount;
             unsigned nOpen = pSocket->GetOpenSlotCount();
-            strResult = FUN_140e63450(CStringW(L"s_itemsocket_scroll_result"), nShown, nOpen, nMax);
+            strResult = LocalizedMentorFormat<unsigned, unsigned, unsigned>(CStringW(L"s_itemsocket_scroll_result"), nShown, nOpen, nMax);
         }
         ASObj obj(2);
         ((class AScript&)(obj)).FUN_1407cbb20("itemName", CStringW(strName));
@@ -351,7 +351,7 @@ void UIItemSocketScrollDialog::SetHasItem(int bHasItem)
 // @0x140f65ab0
 ItemScrollSlot* UIItemSocketScrollDialog::FUN_140f65ab0(CString strName)
 {
-    ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(strName));
+    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pSlot != 0)
         return pSlot;
     return 0;
@@ -484,7 +484,7 @@ void UIItemSocketScrollDialog::OnClickAction()
         if (pSocket->GetMaxSlot() < nCount)
         {
             unsigned nMax = pSocket->GetMaxSlot();
-            MS2Ptr<CMsgBoxData> box = FUN_140b191a0(FUN_140e63450(CStringW(L"s_itemsocket_scroll_ask_continue_socket_unlock"), nCount, nMax, nMax),
+            MS2Ptr<CMsgBoxData> box = FUN_140b191a0(LocalizedMentorFormat<unsigned, unsigned, unsigned>(CStringW(L"s_itemsocket_scroll_ask_continue_socket_unlock"), nCount, nMax, nMax),
                                                     1, SsMsgBoxFn(this, &UIItemSocketScrollDialog::FUN_140f65a40), nTargetUid);
             return;
         }

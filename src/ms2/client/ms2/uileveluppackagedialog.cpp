@@ -69,7 +69,7 @@ void FUN_141415600(const CString& strBindID);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 
 // quests: the ids of the package quests come from the game rule table
-CGameRule* FUN_1401c0d90();
+void* FUN_1401c0d90();
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                           // the quest id
@@ -80,24 +80,6 @@ void FUN_140710590(COutPacket& packet);
 
 // the item and its drop box
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-class Unk_PetBoxDrop
-{
-public:
-    virtual unsigned vfunc_0();
-    virtual int vfunc_1();
-    virtual unsigned vfunc_2();
-};
-class Unk_PetBoxDropVec
-{
-public:
-    Unk_PetBoxDropVec();                    // 0x1405a1910
-    ~Unk_PetBoxDropVec();                   // 0x1405a1a40
-    size_t FUN_140314170();
-    Unk_PetBoxDrop* FUN_140c461b0(size_t);
-    void* m_begin; void* m_end; void* m_cap;
-};
-MS2_CHECK_SIZE(Unk_PetBoxDropVec, 24);
-class Unk_PetBoxDropTable { public: void FUN_1402ea4c0(int, Unk_PetBoxDropVec&); };
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -199,7 +181,7 @@ void UILevelUpPackageDialog::vfunc_o178_10(void* pQuestRaw)
 int UILevelUpPackageDialog::FUN_140ea4b70()
 {
     ATL::CAtlArray<unsigned> ids;
-    FUN_1401c0d90()->FUN_14047c870(ids);
+    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
     if (ids.GetCount() == 0)
         return 0;
     BOOL bAllIdle = TRUE;
@@ -221,7 +203,7 @@ void UILevelUpPackageDialog::FUN_140ea4d00()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<unsigned> ids;
-    FUN_1401c0d90()->FUN_14047c870(ids);
+    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = FUN_14074bc40(ids[i]);
         if (spData == 0)
@@ -249,13 +231,13 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
         if (nArgs < 1)
             return;
         int nBoxId = spItem->function.parameter.FUN_1408d1fd0(nArgs - 1, 0);
-        Unk_PetBoxDropVec drops;
-        reinterpret_cast<Unk_PetBoxDropTable*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402ea4c0(nBoxId, drops);
+        std::vector<ItemDropResult> drops;
+        TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nBoxId, drops);
         ASObj obj(2);
-        obj.FUN_140e846b0("count", drops.FUN_140314170());
+        obj.FUN_140e846b0("count", drops.size());
         obj.FUN_1407cbb20("text", FUN_14028dfa0<unsigned short>(CStringW(L"s_quest_scroll_package_title"), reinterpret_cast<const unsigned short&>(nLevel)));
-        for (unsigned __int64 i = 0; i < drops.FUN_140314170(); i++) {
-            CString strSlot = m_1a8.FUN_140d43510(drops.FUN_140c461b0(i));
+        for (unsigned __int64 i = 0; i < drops.size(); i++) {
+            CString strSlot = m_1a8.FUN_140d43510(static_cast<ItemAble*>(&drops[i]));
             obj.FUN_1407cba60(StringFormat<unsigned __int64>("slot{0}", i), strSlot);
         }
         m_30->Invoke("setRewardSlot", obj);
@@ -353,7 +335,7 @@ unsigned UILevelUpPackageDialog::FUN_140ea5b50(unsigned short nLevel)
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
-    FUN_1401c0d90()->FUN_14047c870(ids);
+    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = FUN_14074bc40(ids[i]);
         unsigned short nQuestLevel = LgQuestLevel(spData.get());
@@ -375,7 +357,7 @@ unsigned short UILevelUpPackageDialog::FUN_140ea5d10()
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
-    FUN_1401c0d90()->FUN_14047c870(ids);
+    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
     unsigned short nPlayerLevel = pPlayer->vfunc_78();
     unsigned short nBest = 0;
     for (size_t i = 0; i < ids.GetCount(); i++) {

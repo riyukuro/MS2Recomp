@@ -8,6 +8,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <atlcoll.h>
+#include "ms2/placeholder/citemdata.h"
 
 // Splits the string at the delimiters into the array (CStringW::Tokenize loop).
 void FUN_14025a680(CStringW& strSource, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelims);
@@ -17,7 +18,6 @@ class Unk_SplitStr
 public:
     Unk_SplitStr(CStringW strName, CStringW strDelims);                         // 0x1408d1c50
     void FUN_1408d1d80(CStringW strName, CStringW strDelims);                   // sets the name and splits it
-    void FUN_1408d1e00(CStringW strName, CStringW strDelims);                   // the same body as 0x1408d1d80
     void FUN_1408d1e80(int nKey, int nValue);                                   // map insert
 
     CStringW m_strName;             // +0x00
@@ -29,7 +29,7 @@ public:
 Unk_SplitStr::Unk_SplitStr(CStringW strName, CStringW strDelims)
     : m_strName(strName)
 {
-    FUN_1408d1e00(CStringW(strName), CStringW(strDelims));
+    reinterpret_cast<ItemFunctionArgs*>(this)->FUN_1408d1e00(CStringW(strName), CStringW(strDelims));
 }
 
 // @0x1408d1d80
@@ -40,10 +40,10 @@ void Unk_SplitStr::FUN_1408d1d80(CStringW strName, CStringW strDelims)
 }
 
 // @0x1408d1e00
-void Unk_SplitStr::FUN_1408d1e00(CStringW strName, CStringW strDelims)
+void ItemFunctionArgs::FUN_1408d1e00(CStringW strName, CStringW strDelims)    // the same body as 0x1408d1d80
 {
-    m_strName = strName;
-    FUN_14025a680(strName, m_parts, strDelims);
+    text = strName;
+    FUN_14025a680(strName, args, strDelims);
 }
 
 // @0x1408d1e80

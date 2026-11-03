@@ -29,7 +29,7 @@ class CInPacket;
 class CMsgBoxData;
 class ItemInfoSlot;
 class ASMovieClip;
-class Unk_MergeButton;
+class ASButton;
 
 class UIItemMergeOptionDialog : public UIDialog, public UIStatusEventListener, public UIItemEventListener
 {
@@ -96,7 +96,6 @@ private:
     void ShowMissingItem(int nItemId);                          // 0x1419d2ca0
     void SetPhase(int nPhase);                                  // 0x1419d2db0
     int GetPhase();                                             // 0x1419d2dd0
-    MS2Ptr<Unk_MergeButton> FUN_140bb4b10(const CString& strName);   // a button child by name
 
     unsigned __int64 m_188;                                     // +0x188
     ATL::CAtlArray<void*> m_items190;                           // +0x190 the uids of the material items

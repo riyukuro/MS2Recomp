@@ -50,7 +50,7 @@ public:
     MS2Ptr<CStatPointManager> FUN_140c25130();          // the stat point manager
 };
 class PC { public: int FUN_141654700(); int FUN_141654730(); };   // C3: member views
-class UIGameMenuDialog { public: int FUN_141938a00(CStringA strMenu); };
+class UIGameMenuDialog { public: int IsMenuExpanded(CStringA strMenu); };   // C3: was FUN_141938a00
 class UIItemEnchantDialog { public: unsigned __int64 GetSelectedUid(); };
 __int64 GetServerTime();
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
@@ -520,7 +520,7 @@ int CGuideConditionMenuExpand::vfunc_3()
     void* pMenu = ((void*)FUN_140938b90(0x4e28));
     if (pMenu != 0)
     {
-        int nExpanded = reinterpret_cast<UIGameMenuDialog*>(pMenu)->FUN_141938a00(m_strMenuName);
+        int nExpanded = reinterpret_cast<UIGameMenuDialog*>(pMenu)->IsMenuExpanded(m_strMenuName);
         return FUN_1413a55a0(nExpanded);
     }
     return 0;

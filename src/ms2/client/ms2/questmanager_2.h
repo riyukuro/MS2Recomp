@@ -10,12 +10,10 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/uiitemeventlistener.h"
 #include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/placeholder/intervaltimer.h"
 class CInPacket;
 class NotifyObject;
 class PCBase;
-// Original counter constructor 0x140517b00; zeroes both 32-bit fields.
-struct Unk_QuestCounter { Unk_QuestCounter(); int FUN_140268870(int interval); int first, second; };
-MS2_CHECK_SIZE(Unk_QuestCounter, 8);
 class CItem;
 template <class T> class MS2Ptr;
 // A quest an item starts or advances (ctor 0x1416dbb20; the 0x1416ce860 list, ranked by 0x1416ce6a0).
@@ -194,7 +192,7 @@ public:
     int m_targetObject;        // +18c
     int m_field190;
     unsigned m_requestTick;    // +194
-    Unk_QuestCounter m_counter198;
+    Unk_IntervalTimer m_counter198;
     ATL::CAtlArray<unsigned> m_pinnedQuests; // +1a0
     ATL::CAtlMap<int, int> m_dailyCounts; // +1c0
     ATL::CAtlMap<int, int> m_weeklyCounts; // +208

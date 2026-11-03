@@ -74,7 +74,7 @@ void FUN_1401fb9a0(unsigned char* payload, COutputStream& stream);
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
 // Registry of named bags/slots (GFx bind data).
-void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
+#include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // The equip request payload of the equip packet 0x16.
 struct Unk_EquipReq
@@ -101,8 +101,6 @@ EquipSlot* FUN_14120d560(NotifyContext::BindData* p);
 EquipSlotBag* FUN_14120e140(NotifyContext::BindData* p);
 void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
 void FUN_14120d8e0(const CString& strName);
-NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
-void FUN_1422c8f70(const CString& strName);
 void FUN_1422cc9e0(DragSlotBag* pBag);
 
 // @0x14120c0e0
@@ -409,18 +407,18 @@ void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int n
     {
         int nCount = pBag->FUN_14120e090();
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x14120d8e0
 void FUN_14120d8e0(const CString& strName)
 {
-    EquipSlotBag* pBag = FUN_14120e140(FUN_1422c8e90(strName));
+    EquipSlotBag* pBag = FUN_14120e140(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (pBag)
     {
         FUN_1422cc9e0(pBag);
-        FUN_1422c8f70(strName);
+        Unk_NotifyContext::FUN_1422c8f70(strName);
     }
 }
 

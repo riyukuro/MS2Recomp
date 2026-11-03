@@ -148,7 +148,7 @@ class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
 class Unk_TrigTalkUI : public UISidePopupTalk { };
 template <class T> T* Unk_GaGetUI(int nId);
-class Unk_GmMovie* FUN_14138fd50(unsigned int);   // C3: was FUN_14138fd50
+class UICutSceneMovie* FUN_14138fd50(int);
 void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
 
 // The pvp observer popup (id 0x4e96) takes one of two record blocks read from the packet.

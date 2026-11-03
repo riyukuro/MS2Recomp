@@ -72,7 +72,6 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // The command string table (singleton).
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string by key
 CStringW GetStringCommon(int nId);                                    // string by id
-bool FUN_140164830(const CStringW& a, const CStringW& b);           // a != b
 float FUN_14028d280(unsigned uMilliseconds);                        // ms -> seconds
 
 // The clock and tick count.
@@ -270,7 +269,7 @@ void CPortal::FUN_14169bd40()
             }
             CStringW strTime;
             strTime.Format(L"%02d:%02d", nSeconds / 60, nSeconds % 60);
-            if (FUN_140164830(m_strTime, strTime))
+            if (m_strTime != strTime)
             {
                 strText = strTime;
                 m_strTime = strTime;

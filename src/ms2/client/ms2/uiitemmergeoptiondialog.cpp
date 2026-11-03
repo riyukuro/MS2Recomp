@@ -168,10 +168,11 @@
 #include "ms2/client/ms2/uitalkcinematic.h"
 #include "ms2/commonfiles/os.h"
 
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10, owned by uiinventorydialog
+
 // ---- unit-local views of exe objects ----
 
 // The dialog's movie children: a clip with child lookups and a button with a text.
-class Unk_MergeButton : public ASButton { public: };
 class Unk_MergeClip : public ASMovieClip { };
 // The AS root of the dialog (m_30), the children of the clip and the helpers the dialog calls on them.
 class Unk_MergeDialogAS : public AScript
@@ -791,7 +792,7 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
 // @0x1419d0d90
 void UIItemMergeOptionDialog::ShowMergePrice(MS2Ptr<CItem> spItem)
 {
-    if (MS2Ptr<Unk_MergeButton> spButton = FUN_140bb4b10("m_merge"))
+    if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_merge"))
         spButton->FUN_1422cdfb0(FUN_14028dfa0(CStringW(L"s_item_merge_option_consume_meso"), FUN_1409404f0(m_spProxy->m_nMeso)));
 }
 

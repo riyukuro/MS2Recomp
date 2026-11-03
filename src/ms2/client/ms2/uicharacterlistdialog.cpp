@@ -102,7 +102,6 @@ static CStringW s_strChangeInvalidCharName(L"changeInvalidCharName");
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<int> 0x1408116a0, BlockFormat<unsigned> 0x1409e97f0
 #include "ms2/placeholder/ichromamanager.h"  // C3: ChromaSDK::GetChromaManager
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker::FUN_140225210
 #include "ms2/commonfiles/gameeventuservalue.h"   // C3: GameEventUserValue
 #include <set>
@@ -296,7 +295,7 @@ public:
 // The burning level-up events (an event of the game event manager: id, texts and the two reward lists).
 class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
 struct Unk_ClRewardEntry { char m_pad[0x18]; Unk_ClRewardRef m_ref; };
-struct Unk_ClRewardList { char m_p[0x10]; unsigned __int64 FUN_1404110e0(); Unk_ClRewardEntry* FUN_1403e8aa0(); };   // FUN_1404110e0: the count at +8 (a qword: the exe tests rax)
+struct Unk_ClRewardList { char m_p[0x10]; Unk_ClRewardEntry* FUN_1403e8aa0(); };   // an MS2Ptr<ItemEntity> (get() tested)
 struct Unk_ClRewardList2 { char m_p[0x1c]; };   // std::vector<ItemEntity> at +0
 class Unk_ClBurnEvent : public CPtred
 {
@@ -698,7 +697,7 @@ void UICharacterListDialog::vfunc_15()
 // @0x1418eb0a0
 void UICharacterListDialog::vfunc_72()
 {
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_238).Check(500) == 0)
+    if (m_238.Check(500) == 0)
         return;
     std::shared_ptr<DeleteReply> spReply = std::atomic_load(&s_reply);
     if (spReply != nullptr)
@@ -2074,7 +2073,7 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
         __int64 nDone = DAT_143ab2fc0.GetValue<__int64>(0x7d1, (*it)->m_18, nZero);
         if (nDone != 0)
             continue;
-        if ((*it)->m_8c > 0 && (*it)->m_90.FUN_1404110e0())
+        if ((*it)->m_8c > 0 && reinterpret_cast<MS2Ptr<ItemEntity>&>((*it)->m_90).get())
         {
             __int64 nZero2 = 0;
             __int64 nDone2 = DAT_143ab2fc0.GetValue<__int64>(0x7d4, (*it)->m_18, nZero2);
@@ -2189,7 +2188,7 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
 {
     MS2Ptr<CMsgBoxDataItem> spFirst(0);
     MS2Ptr<CMsgBoxDataItem> spSecond(0);
-    if (spEvent->m_90.FUN_1404110e0())
+    if (reinterpret_cast<MS2Ptr<ItemEntity>&>(spEvent->m_90).get())
     {
         spFirst.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);

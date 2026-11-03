@@ -123,16 +123,12 @@ private:
 };
 
 // Players and objects of the field.
-class Unk_UgcEquipItem : public CEquipItem
-{
-};
 class Unk_SSGDropItem : public CDropItem
 {
 };
 class Unk_UgcPlayer : public PC
 {
 public:
-    MS2Ptr<Unk_UgcEquipItem> FUN_141655c30(__int64 nItemUid);   // a worn item by uid
 };
 class Unk_WsB_Prop : public CInteractObject
 {
@@ -489,7 +485,7 @@ void CUgcDownloadEquip::ProcessResult()
             Unk_UgcPlayer* pPlayer = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd1290(sp->m_nObjectId));
             if (pPlayer == NULL)
                 continue;
-            MS2Ptr<Unk_UgcEquipItem> spEquip = pPlayer->FUN_141655c30(sp->m_itemUid);
+            MS2Ptr<CEquipItem> spEquip = pPlayer->GetEquipByUid(sp->m_itemUid);
             if (spEquip == 0)
                 continue;
             spEquip->SetUgcPending(1);

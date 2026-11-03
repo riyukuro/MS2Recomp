@@ -87,7 +87,6 @@
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/formatstringid.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 #include "ms2/commonfiles/os.h"
 #include "ms2/commonfiles/hideandseek.h"   // C3: HideAndSeek::Info
 #include "ms2/ms2format.h"
@@ -1180,8 +1179,8 @@ void UIMinimapDialog::vfunc_26()
     FUN_141a3fd20();
     m_460 = 0;
     m_468 = 0;
-    reinterpret_cast<Unk_IntervalTimer&>(m_timer46c).Init();
-    reinterpret_cast<Unk_IntervalTimer&>(m_timer474).Init();
+    m_timer46c.Init();
+    m_timer474.Init();
     m_47c = 1;
 }
 MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 707, 0xEB99CE5C);
@@ -1192,7 +1191,7 @@ void UIMinimapDialog::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30 == 0 || vfunc_64() == 1 || !m_1fc)
         return;
-    if (!reinterpret_cast<Unk_IntervalTimer&>(m_timer474).Check(60))
+    if (!m_timer474.Check(60))
         return;
     FUN_141a402b0(m_player);
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos)) {
@@ -1224,7 +1223,7 @@ MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 916, 0x744426E4);
 void UIMinimapDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer46c).Check(1000)) {
+    if (m_timer46c.Check(1000)) {
         const std::pair<unsigned, __int64>& target = ((class CQuestManager*)FUN_140764020())->FUN_1416d1e90();
         m_468 = target.first;
         m_460 = target.second;

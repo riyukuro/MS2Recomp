@@ -43,15 +43,15 @@ public:
 
 class Unk_140166420 : public CFileSystem { };
 class CFileSystem * GetFileSystem(void);
-void* FUN_140166440();
-void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
+class CLogString* GetLogString();   // C3: was FUN_140166440
+template <class T> void Unk_AchieveLog(class CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T& arg);   // C3: was FUN_14015eb90
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 class Unk_DcXmlNode; int FUN_140c09130(Unk_DcXmlNode* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
 CString FUN_14016a5c0(const char* pszName, int nFlags);                // undecorated class name
 CString FUN_14016a600(const wchar_t* psz, int nFlags);                  // wide -> multibyte
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 
 // ---- .text$mn ----
@@ -320,7 +320,7 @@ bool CRewardPreviewTable::ValidateBoss()
         }
     }
     for (POSITION pos = errors.GetStartPosition(); pos != 0; errors.GetNext(pos))
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"{0}", errors.GetValueAt(pos));
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"{0}", errors.GetValueAt(pos));
     return true;
 }
 MS2_REPLACE_METHOD(0x140DC3DF0, CRewardPreviewTable, ValidateBoss, 1508, 0xA129A80A);
@@ -377,7 +377,7 @@ bool CRewardPreviewTable::ValidateDungeon()
         }
     }
     for (POSITION pos = errors.GetStartPosition(); pos != 0; errors.GetNext(pos))
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"{0}", errors.GetValueAt(pos));
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"{0}", errors.GetValueAt(pos));
     return true;
 }
 MS2_REPLACE_METHOD(0x140DC43E0, CRewardPreviewTable, ValidateDungeon, 1528, 0x41EE26E0);
@@ -392,7 +392,7 @@ bool CRewardPreviewTable::LoadBoss()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))
@@ -418,7 +418,7 @@ bool CRewardPreviewTable::LoadDungeon()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \uD615\uC2DD\uC774 \uC798\uBABB \uB418\uC5C8\uC2B5\uB2C8\uB2E4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0 *)((class Unk_XmlNode*)(pRoot))->FirstChild("preview")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("preview")))

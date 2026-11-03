@@ -76,7 +76,6 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-void FUN_140194470(NiPoint3* pDst, NiPoint3* pSrc);         // NiPoint3 assignment
 bool FUN_141568c20(NiRenderObject* pObject);
 bool FUN_141568c90(NiRenderObject* pObject);
 bool FUN_141567260(class NiAVObject*);   // C3: was FUN_141567260
@@ -100,7 +99,7 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
     Unk_ShActor* pActor = ((class Unk_ShActor*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     efd::Point3 kPlayerPos = DAT_143b01a60;
     if (pActor != 0)
-        FUN_140194470(static_cast<NiPoint3*>(&kPlayerPos), const_cast<NiPoint3*>(&static_cast<const NiPoint3&>(pActor->GetPosition())));
+        kPlayerPos = static_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pActor->GetPosition()));
     for (unsigned int ui = 0; ui < pkInput->GetCount(); ui++)
     {
         NiRenderObject* pkObject = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui));

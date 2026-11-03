@@ -13,7 +13,8 @@
 #include "ms2/placeholder/uibuiltindialog.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/asdisplayobject.h"
-#include "ms2/client/ms2/uiquesteventlistener.h"       // Unk_DTTick
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class UIRecallScrollNotifyDialog : public UIBuiltInDialog
 {
@@ -43,7 +44,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_DTTick m_tick;                                      // +0x178 1 s timer
+    Unk_IntervalTimer m_tick;                               // +0x178 1 s timer
     CMsTime m_times[3];                                     // +0x180 expiry of each popup (0 = none)
     CStringW m_names[3];                                    // +0x1b0 sender name
     int m_fields[3];                                        // +0x1c8 field id

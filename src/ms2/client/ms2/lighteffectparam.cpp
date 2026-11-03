@@ -59,7 +59,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140874670(Unk_140165cf0* pNode, const char* pszName, Vector3& kOut);
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);   // split to uints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
 
 Unk_LightUpdateBits* FUN_140314670(Unk_LightUpdateBits* pBits, unsigned nPos, bool bValue);    // set one bit
@@ -111,10 +111,15 @@ MS2_CHECK_OFFSET(Unk_LightTarget, m_pPreData, 0x18);
 // The entity: property setters by hash.
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
+class Unk_CachedEntity : public egf::Entity   // as propertycache.h declares it
+{
+public:
+    template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
+};
+
 class Unk_Entity
 {
 public:
-    void FUN_1409457c0(unsigned nProp, const float* pValue);
     void FUN_140b27f00(unsigned nProp, const Unk_LightColor& rValue);
     void FUN_140a38a50(unsigned nProp, const Vector3& rValue);
 };
@@ -197,7 +202,7 @@ CLightEffectParam::CLightEffectParam()
 // (written out at each use in the exe).
 #define LIGHT_PARSE_COLOR(dst, pNode, pszName, str, arr)                                        \
     CString str = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute(pszName), 0);                              \
-    FUN_140177e10(str, arr, ",");                                                               \
+    XmlSplit(str, arr, ",");                                                               \
     dst = arr.GetCount() < 3 ? Unk_LightColor(1.0f, 1.0f, 1.0f)                                 \
         : Unk_LightColor((float)arr[0] / 255.0f, (float)arr[1] / 255.0f, (float)arr[2] / 255.0f)
 
@@ -362,18 +367,18 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     bool bFalse = false;
     FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x2a7fd9f4, bFalse);
     float fFifty = 50.0f;
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x9109875b, &fFifty);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x9109875b, fFifty);
     bool bTrue = true;
     FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0xef627d53, bTrue);
     bool bFalse2 = false;
     FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x78e546ab, bFalse2);
     reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0x2d8cf386, pLightParam->m_clrDiffuse);
     reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0xc3f0329e, pLightParam->m_clrSpecular);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x18f5d90e, &pLightParam->m_fDimmer);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x4871503b, &pLightParam->m_fRange);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x4dcec447, &pLightParam->m_fAttConstant);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x8cd1ae89, &pLightParam->m_fAttLinear);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x9f7d1fa7, &pLightParam->m_fAttQuadratic);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x18f5d90e, pLightParam->m_fDimmer);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x4871503b, pLightParam->m_fRange);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x4dcec447, pLightParam->m_fAttConstant);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x8cd1ae89, pLightParam->m_fAttLinear);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x9f7d1fa7, pLightParam->m_fAttQuadratic);
     Vector3 ptWorld = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
     reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140a38a50(0xfd95ca52, ptWorld);
     TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity), 0);
@@ -438,9 +443,9 @@ void CLightEffect::vfunc_13(TransitionData* pFromBase, TransitionData* pToBase, 
     reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0x2d8cf386, pFrom->m_clrDiffuse + fT * (pTo->m_clrDiffuse - pFrom->m_clrDiffuse));
     reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0xc3f0329e, pFrom->m_clrSpecular + fT * (pTo->m_clrSpecular - pFrom->m_clrSpecular));
     float fDimmer = pFrom->m_fDimmer + fT * (pTo->m_fDimmer - pFrom->m_fDimmer);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x18f5d90e, &fDimmer);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x18f5d90e, fDimmer);
     float fRange = pFrom->m_fRange + fT * (pTo->m_fRange - pFrom->m_fRange);
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x4871503b, &fRange);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x4871503b, fRange);
 }
 MS2_REPLACE_METHOD(0x14144AE60, CLightEffect, vfunc_13, 495, 0x7A080091);
 
@@ -448,7 +453,7 @@ MS2_REPLACE_METHOD(0x14144AE60, CLightEffect, vfunc_13, 495, 0x7A080091);
 void CLightEffect::vfunc_10(bool bVisible)
 {
     float fDimmer = bVisible ? m_fDimmer : 0.0f;
-    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x18f5d90e, &fDimmer);
+    static_cast<Unk_CachedEntity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->SetPropertyValue<float>(0x18f5d90e, fDimmer);
 }
 MS2_REPLACE_METHOD(0x14144B060, CLightEffect, vfunc_10, 101, 0xB6B47526);
 

@@ -50,6 +50,7 @@
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/commonfiles/itemdata.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/itemcustom.h"
 #include "ms2/placeholder/physxpropservice.h"
 #include "ms2/placeholder/ecrcameraservice.h"
@@ -70,8 +71,8 @@ extern Vector3 DAT_143a08cd8;   // reference axis
 
 // ---- out-of-unit callees ----
 
-// Item table data -> its <customize> block.
-struct Unk_EquipItemData { ItemModelHead* FUN_14053ec70(); };
+// CEquipItem::FUN_1411dc7f0's record (as customize.cpp)
+struct Unk_EquipItemData : public CItemData {};
 
 class CItemExtraData   // C3: member view for the former free stand-ins
 {

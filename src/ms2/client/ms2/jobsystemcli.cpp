@@ -18,22 +18,13 @@
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/placeholder/cskillsettable.h"   // C3: CSkillSet (CSkillSystem::GetSkillSet)
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 
 // ---- unit-local views of exe types ----
 
 class Unk_JscSkillRow : public CPtred { public:  };
 
-class CSkillSet   // C3: member view (real class not in this TU)
-{
-public:
-    int HasSkill(int nSkillId, unsigned short nLevel);
-    unsigned short GetSkillLevel(int);
-};
-class Unk_MyPCSkillSet : public CPtred   // C3: CSkillSystem::GetSkillSet's pointee (skillsystem.h)
-{
-public:
-};
 class CSkillTierOptionManager   // C3: member view (real class not in this TU)
 {
 public:
@@ -68,10 +59,10 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_MyPCSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
+        MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
-            unsigned short nLevel = ((CSkillSet*)(spSet).operator->())->GetSkillLevel(nSkillId);
+            unsigned short nLevel = spSet->GetSkillLevel(nSkillId);
             if (nLevel != 0)
                 return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(nSkillId, nLevel);
         }
@@ -96,10 +87,10 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_MyPCSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
+        MS2Ptr<CSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
-            if (reinterpret_cast<CSkillSet*>(spSet.operator->())->HasSkill(nSkillId, 0) != 0)
+            if (spSet->HasSkill(nSkillId, 0) != 0)
                 return true;
         }
         if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)

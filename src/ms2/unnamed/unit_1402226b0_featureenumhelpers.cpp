@@ -38,14 +38,6 @@ struct Unk_LevelArray
     void FUN_1401854f0(int nLevel);                     // Add
 };
 
-// A handle to a state record (0x10 bytes; unrecovered class, passed by value so the callee runs its destructor): +8 holds the record.
-struct Unk_StateHandle
-{
-    void* m_pad_00;
-    void* m_pRecord;                                    // +0x08
-    ~Unk_StateHandle();                                 // 0x1401b50d0
-    bool FUN_1401b5240(void* pCmp) const;               // the record equals pCmp
-};
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -204,19 +196,21 @@ bool FUN_140222c60(unsigned n)
     }
 }
 
+template<> MS2Ptr<CItemData>::~MS2Ptr();               // 0x1401b50d0 (out of line; the local CItemData view is not a CPtred)
+
 // @0x140222ce0
-// The state code of a record (0 none, 8, 1 work pending, 2, 4, else 0xf).
-unsigned FUN_140222ce0(Unk_StateHandle h)
+// The state code of an item (0 none, 8 skin, 1 work pending, 2, 4, else 0xf); the Ptr is by value, so the callee destroys it.
+int FUN_140222ce0(MS2Ptr<CItemData> h)
 {
-    if (h.FUN_1401b5240(0))
+    if (h.operator==(0))
         return 0;
-    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->HasSkinType())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(h.operator->())))->HasSkinType())
         return 8;
-    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->FUN_14053d2f0())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(h.operator->())))->FUN_14053d2f0())
         return 1;
-    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->FUN_14053d600())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(h.operator->())))->FUN_14053d600())
         return 2;
-    if (((class CItemData*)(void*)(reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CItemData>&>(h).operator->())))->FUN_14053d5c0())
+    if (((class CItemData*)(void*)(reinterpret_cast<void*>(h.operator->())))->FUN_14053d5c0())
         return 4;
     return 0xf;
 }

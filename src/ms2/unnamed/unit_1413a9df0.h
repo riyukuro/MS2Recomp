@@ -99,8 +99,7 @@ class CFieldDataCli;
 
 // An object reference found in the world.
 class Unk_WsB_Prop;
-class CInteractObject { public: Vector3 GetPos(); };
-int Unk_GcState28(char* pObj);                           // the interact state
+class CInteractObject { public: Vector3 GetPos(); int FUN_1413b5600(); };
 
 class WorldService   // C3: member view
 {

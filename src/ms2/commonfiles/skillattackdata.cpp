@@ -28,10 +28,9 @@ void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
-void FUN_140874050(void* pElem, const char* pszName, const CString& strValue); // SetAttribute(name, string)
+void XmlSetAttr(class TiXmlElement*, char const*, CStringA const&);   // C3: was FUN_140874050
 efd::Point3 FUN_14028f060(CString str);                                    // "x, y, z" -> point
 CString FUN_14028ef00(efd::Point3 kPoint);                                 // point -> "x, y, z"
-void FUN_140194470(efd::Point3* pDst, const efd::Point3& kSrc);            // efd::Point3 assignment
 bool FUN_14028d470(float a, float b);                                      // nearly equal
 class CFieldData   // C3: member view for the former free stand-ins
 {
@@ -110,8 +109,8 @@ int SkillArrow::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pArrow), "bounceCount", reinterpret_cast<int&>(m_nBounceCount));
     XmlGetAttr((class TiXmlElement*)(pArrow), "bounceRadius", reinterpret_cast<float&>(m_fBounceRadius));
     XmlGetAttr((class TiXmlElement*)(pArrow), "bounceOverlap", reinterpret_cast<int&>(m_nBounceOverlap));
-    FUN_140194470(&m_collision, FUN_14028f060(Unk_ReadString((class Unk_XmlNode*)(pArrow), "collision", CString(""))));
-    FUN_140194470(&m_collisionAdd, FUN_14028f060(Unk_ReadString((class Unk_XmlNode*)(pArrow), "collisionAdd", CString(""))));
+    *reinterpret_cast<efd::Point3*>(&m_collision) = FUN_14028f060(Unk_ReadString((class Unk_XmlNode*)(pArrow), "collision", CString("")));
+    *reinterpret_cast<efd::Point3*>(&m_collisionAdd) = FUN_14028f060(Unk_ReadString((class Unk_XmlNode*)(pArrow), "collisionAdd", CString("")));
     m_strEffect = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effect", CString(""));
     m_strEffectRemain = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effectRemain", CString(""));
     m_strEffectDestroy = Unk_ReadString((class Unk_XmlNode*)(pArrow), "effectDestroy", CString(""));
@@ -146,21 +145,21 @@ void SkillArrow::Save(void* pParent)
         if (m_nBounceOverlap != kDefault.m_nBounceOverlap)
             XmlSetAttr(&elem, "bounceOverlap", (int)m_nBounceOverlap);
         if (m_collision != kDefault.m_collision)
-            FUN_140874050(&elem, "collision", FUN_14028ef00(m_collision));
+            XmlSetAttr((class TiXmlElement*)(&elem), "collision", FUN_14028ef00(m_collision));
         if (m_collisionAdd != kDefault.m_collisionAdd)
-            FUN_140874050(&elem, "collisionAdd", FUN_14028ef00(m_collisionAdd));
+            XmlSetAttr((class TiXmlElement*)(&elem), "collisionAdd", FUN_14028ef00(m_collisionAdd));
         if (m_strEffect != kDefault.m_strEffect)
-            FUN_140874050(&elem, "effect", m_strEffect);
+            XmlSetAttr((class TiXmlElement*)(&elem), "effect", m_strEffect);
         if (m_strEffectRemain != kDefault.m_strEffectRemain)
-            FUN_140874050(&elem, "effectRemain", m_strEffectRemain);
+            XmlSetAttr((class TiXmlElement*)(&elem), "effectRemain", m_strEffectRemain);
         if (m_strEffectDestroy != kDefault.m_strEffectDestroy)
-            FUN_140874050(&elem, "effectDestroy", m_strEffectDestroy);
+            XmlSetAttr((class TiXmlElement*)(&elem), "effectDestroy", m_strEffectDestroy);
         if (m_strTargetKeepEffect != kDefault.m_strTargetKeepEffect)
-            FUN_140874050(&elem, "targetKeepEffect", m_strTargetKeepEffect);
+            XmlSetAttr((class TiXmlElement*)(&elem), "targetKeepEffect", m_strTargetKeepEffect);
         if (m_nRayType != kDefault.m_nRayType)
             XmlSetAttr(&elem, "rayType", (int)m_nRayType);
         if (!m_strEffectInvoke.IsEmpty())
-            FUN_140874050(&elem, "effectInvoke", m_strEffectInvoke);
+            XmlSetAttr((class TiXmlElement*)(&elem), "effectInvoke", m_strEffectInvoke);
         static_cast<TiXmlNode*>(pParent)->InsertEndChild(elem);
     }
 }
@@ -315,9 +314,9 @@ void SkillDamage::Save(void* pParent)
         if (m_nValue != kDefault.m_nValue)
             XmlSetAttr(&elem, "value", m_nValue);
         if (m_strEffectRemain != kDefault.m_strEffectRemain)
-            FUN_140874050(&elem, "effectRemain", m_strEffectRemain);
+            XmlSetAttr((class TiXmlElement*)(&elem), "effectRemain", m_strEffectRemain);
         if (m_strEffectHit != kDefault.m_strEffectHit)
-            FUN_140874050(&elem, "effectHit", m_strEffectHit);
+            XmlSetAttr((class TiXmlElement*)(&elem), "effectHit", m_strEffectHit);
         if (m_bIgnoreOptimalHideDamageHitEffect != kDefault.m_bIgnoreOptimalHideDamageHitEffect)
             XmlSetAttr(&elem, "IgnoreOptimalHideDamageHitEffect", m_bIgnoreOptimalHideDamageHitEffect);
         if (m_bIgnoreOptimalHideDamageRemainEffect != kDefault.m_bIgnoreOptimalHideDamageRemainEffect)
@@ -353,7 +352,7 @@ void SkillDamage::Save(void* pParent)
         if (m_nPushPriorityHitImmune != kDefault.m_nPushPriorityHitImmune)
             XmlSetAttr(&elem, "pushPriorityHitImmune", (int)m_nPushPriorityHitImmune);
         if (m_strPushAnimation != kDefault.m_strPushAnimation)
-            FUN_140874050(&elem, "pushAnimation", m_strPushAnimation);
+            XmlSetAttr((class TiXmlElement*)(&elem), "pushAnimation", m_strPushAnimation);
         if (m_nAttackMaterial != kDefault.m_nAttackMaterial)
             XmlSetAttr(&elem, "attackMaterial", (int)m_nAttackMaterial);
         if (m_eStateHitIgnore != kDefault.m_eStateHitIgnore)
@@ -631,7 +630,7 @@ int SkillAttackData::Save(void* pParent)
     {
         TiXmlElement elem("attack");
         if (m_strPoint != kDefault.m_strPoint)
-            FUN_140874050(&elem, "point", m_strPoint);
+            XmlSetAttr((class TiXmlElement*)(&elem), "point", m_strPoint);
         if (m_nPointGroupID != kDefault.m_nPointGroupID)
             XmlSetAttr(&elem, "pointGroupID", (unsigned int)m_nPointGroupID);
         if (m_nTargetCount != kDefault.m_nTargetCount)
@@ -657,7 +656,7 @@ int SkillAttackData::Save(void* pParent)
         if (m_nReleaseObjectWeaponOnHit != kDefault.m_nReleaseObjectWeaponOnHit)
             XmlSetAttr(&elem, "releaseObjectWeaponOnHit", (int)m_nReleaseObjectWeaponOnHit);
         if (m_strCompulsionType != kDefault.m_strCompulsionType)
-            FUN_140874050(&elem, "compulsionType", m_strCompulsionType);
+            XmlSetAttr((class TiXmlElement*)(&elem), "compulsionType", m_strCompulsionType);
         if (m_eGrabTargetType != kDefault.m_eGrabTargetType)
             XmlSetAttr(&elem, "grabTargetType", (unsigned int)m_eGrabTargetType);
         m_pause.Save(&elem);

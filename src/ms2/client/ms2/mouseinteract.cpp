@@ -48,7 +48,6 @@ struct Unk_MiActionState;
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
        // npc name (member: this=rcx, hidden return=rdx)
-void FUN_140194470(Unk_Vec3* pDst, const Unk_Vec3* pSrc);
 bool FUN_14147ad10(struct Vector3 const&, struct Vector3 const&, struct Vector3 const&, float);   // C3: was FUN_14147ad10
 bool FUN_14028d470(float a, float b);
 #define DAT_143b01a60 (*(char*)&efd::Point3::ZERO)          // C3: was extern char DAT_143b01a60
@@ -250,7 +249,7 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
 {
     PCBase* pNpc = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (pNpc != 0) {
-        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18())));
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18()));
         if (pNpc->vfunc_117() != 0) {
             pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
         } else {
@@ -268,7 +267,7 @@ int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
 {
     PCBase* pNpc = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (pNpc != 0) {
-        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18())));
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18()));
         if (pNpc->vfunc_117() != 0)
             m_nAction = 6;
         else
@@ -356,7 +355,7 @@ int CMouseInteractPortal::vfunc_1(Unk_MouseRay* pRay)
     MS2Ptr<CPortal> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.IsNull())
         return false;
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&(const Vector3&)hit->FUN_14169d2f0()));
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_14169d2f0());
     if (hit->FUN_14169d280() == 0)
         pRay->strCursor = hit->FUN_14169c3b0();
     else
@@ -369,7 +368,7 @@ int CMouseInteractPortal::vfunc_2(Unk_MouseRay* pRay)
     MS2Ptr<CPortal> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.IsNull())
         return false;
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&(const Vector3&)hit->FUN_14169d2f0()));
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_14169d2f0());
     m_nPortalId = hit->FUN_14169d280();
     return true;
 }
@@ -428,7 +427,7 @@ int CMouseInteractObject::vfunc_1(Unk_MouseRay* pRay)
     MS2Ptr<CInteractObject> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.IsNull())
         return false;
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&(const Vector3&)hit->GetPos()));
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->GetPos());
     pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_object"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, hit->GetRowId()));
     return true;
 }
@@ -438,7 +437,7 @@ int CMouseInteractObject::vfunc_2(Unk_MouseRay* pRay)
     MS2Ptr<CInteractObject> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.IsNull())
         return false;
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&(const Vector3&)hit->GetPos()));
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->GetPos());
     switch (hit->vfunc_5()) {
     case 8:
         m_nAction = 0x18;
@@ -618,7 +617,7 @@ int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
     PCBase* pPlayer = reinterpret_cast<PCBase*>(((Unk_MiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()));
     if (pPlayer == 0)
         return false;
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
+    *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18()));
     return true;
 }
 // @0x140a7ad30
@@ -640,7 +639,7 @@ int CMouseInteractWeaponObject::vfunc_1(Unk_MouseRay* pRay)
     MS2Ptr<Cube> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.get()) {
         pRay->strCursor = GetStringCommon(0x63c);
-        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&(const Vector3&)hit->FUN_1408b5370()));
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_1408b5370());
         return true;
     }
     return false;
@@ -651,7 +650,7 @@ int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
     MS2Ptr<Cube> hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
     if (hit.get()) {
         m_qwObjectId = hit->field18;
-        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&(const Vector3&)hit->FUN_1408b5370()));
+        *reinterpret_cast<efd::Point3*>(&pRay->vPick) = *reinterpret_cast<const efd::Point3*>(&(const Vector3&)hit->FUN_1408b5370());
         return true;
     }
     return false;

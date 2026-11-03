@@ -10,11 +10,11 @@
 #include "ms2/commonfiles/stream.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/timeutil.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // Out-of-unit helpers.
-unsigned __int64 FUN_140869440();       // the server time
 CStringW FUN_140719900(CStringW value); // normalises a user value string (commonutil)
 
 // ---- GameEventVariable::Key ----
@@ -119,7 +119,7 @@ void GameEventUserValue::Merge(const VariableMap& variables) { CopyVariables(m_v
 // @0x14041f5d0
 void GameEventUserValue::ExpireAll()
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     for (POSITION pos = m_variables.GetHeadPosition(); pos != NULL; m_variables.GetNext(pos))
     {
         VariablePtr pVar = m_variables.GetValueAt(pos);
@@ -173,7 +173,7 @@ bool GameEventUserValue::Has(int type, unsigned int id) { return Get(type, id).g
 // @0x14041fa70
 void GameEventUserValue::Reset(int type, unsigned int id)
 {
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     Set(type, id, CStringW(L""), now);
 }
 
@@ -200,7 +200,7 @@ GameEventUserValue::VariablePtr GameEventUserValue::Get(int type, unsigned int i
     VariableMap::CPair* pair = m_variables.Lookup(key);
     if (pair == NULL)
         return VariablePtr(0);
-    CMsTime now(FUN_140869440());
+    CMsTime now(GetServerTime());
     if (pair->m_value->m_time <= now)
         return VariablePtr(0);
     return pair->m_value;

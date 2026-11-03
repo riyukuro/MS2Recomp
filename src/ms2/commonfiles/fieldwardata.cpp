@@ -31,6 +31,12 @@ void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector
 bool FieldWarDataTable::s_bInit;
 #endif
 
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
+
 // @0x1403820e0
 FieldWarData::FieldWarData()
     : m_fieldWarID(0), m_fieldWarGroupID(0), m_pickWeight(1), m_fieldID(0), m_rewardID(0), m_uiFieldID(0),
@@ -135,7 +141,7 @@ bool FieldWarDataTable::Load()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return false;
     std::vector<Unk_140165cf0*> nodes;

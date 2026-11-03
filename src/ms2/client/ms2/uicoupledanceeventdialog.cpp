@@ -176,7 +176,7 @@ void FUN_14151f200();
 // The game menu dialog found by UI type (0x140938b90).
 UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 
-void FUN_140178270(const CString& str, std::vector<int>& out, const char* szDelim);     // split into ints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140178270 (std::vector<int>)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -338,7 +338,7 @@ void UICoupleDanceEventDialog::FUN_140bfd5e0()
         return;
     CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
-    FUN_140178270(strStates, states, ",");
+    XmlSplit(strStates, states, ",");
     ASObj root(2);
     root.FUN_1407cbbe0("isOpenBanner", m_178);
     ASArray items(2);
@@ -394,7 +394,7 @@ void UICoupleDanceEventDialog::FUN_140bfdc00()
         return;
     CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
-    FUN_140178270(strStates, states, ",");
+    XmlSplit(strStates, states, ",");
     m_1c0 = 0;
     ASArray unused(2);
     for (size_t i = 0; i < pEvent->m_dailyItems.size(); i++) {
@@ -446,7 +446,7 @@ void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
         return;
     CString strStates = g_gameEventUserValue.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
-    FUN_140178270(strStates, states, ",");
+    XmlSplit(strStates, states, ",");
     if (nStep >= (int)states.size())
         return;
     if (states[nStep] != 1 && states[nStep] != 2)

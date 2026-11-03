@@ -18,7 +18,7 @@
 
 class Unk_ItemOwnerRef : public CItemTransfer {};
 __int64 GetServerTime();                        // the current server time
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                 // the rank of an item
 bool FUN_140635b90(unsigned nFlags, unsigned nFlag);
 template<class Map> void CopyEnchantMap(Map& to, const Map& from);   // itemoptiondata.cpp

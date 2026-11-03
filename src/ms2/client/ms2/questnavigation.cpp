@@ -37,6 +37,7 @@
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
 
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
@@ -393,7 +394,7 @@ int CQuestNavigationMap::InitTraceTable()
                         if (maps.GetCount() == 0 && bUseNavi && !bHasTag)
                         {
                             unsigned nQuestId = FUN_14074b030(spQuest.operator->());
-                            Unk_QnLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+                            Unk_QnLog(GetLogString(), 2, 0x13,
                                       L"QuestNavigationMap InitTraceTable Zero Count NpcID:{0} QuestID:{1}",
                                       spCond->m_code.m_ids[i], nQuestId);
                         }
@@ -410,7 +411,7 @@ int CQuestNavigationMap::InitTraceTable()
                         if (maps.GetCount() == 0 && bUseNavi && !bHasTag)
                         {
                             unsigned nQuestId = FUN_14074b030(spQuest.operator->());
-                            Unk_QnLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+                            Unk_QnLog(GetLogString(), 2, 0x13,
                                       L"QuestNavigationMap InitTraceTable Zero Count Interact ObjectID:{0} QuestID:{1}",
                                       spCond->m_code.m_ids[i], nQuestId);
                         }
@@ -425,7 +426,7 @@ int CQuestNavigationMap::InitTraceTable()
                             TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb120((unsigned)spCond->m_code.m_ids[i], maps);
                         spTarget->AddMaps(2, (unsigned)spCond->m_code.m_ids[i], maps);
                         if (maps.GetCount() == 0 && bUseNavi && !bHasTag)
-                            Unk_QnLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
+                            Unk_QnLog(GetLogString(), 2, 0x13,
                                       L"QuestNavigationMap InitTraceTable Zero Count liftable {0}",
                                       spCond->m_code.m_ids[i]);
                     }

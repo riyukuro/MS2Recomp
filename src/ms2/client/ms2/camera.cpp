@@ -144,11 +144,8 @@ public:
     efd::ServiceManager* m_pServiceManager;                             // +0x08
 };
 // The game object of a picked mesh.
-class Unk_CameraPickObject
-{
-public:
-    GameObject* FUN_140a38a00();                                        // the npc (or null)
-};
+class Unk_CameraPickObject;
+class Unk_CameraTargetEntity* FUN_140a38a00(class Unk_BossObject*);   // the npc (or null); C3: free function (was Unk_CameraPickObject::FUN_140a38a00)
 // The pick record holder (ecr::PickService::PickRecord, reference counted).
 class Unk_GoPickHit;
 class Unk_GoPickListPtr
@@ -1088,7 +1085,7 @@ void CameraMgr::FUN_140aeb1a0()
         {
             Unk_GoPickHit* pHit = reinterpret_cast<Unk_GoPickHit*>(spPick.FUN_140a16c30()->GetPickResult()->GetAt(i));
             Unk_CameraPickObject* pObject = ((class Unk_CameraPickObject*)((class WorldService*)(class Unk_GameContext*)(pContext))->FUN_141bd1050(((void*)((NiPick::Record*)(class Unk_GoPickHit*)(pHit))->GetAVObject())));
-            pNpc = pObject->FUN_140a38a00();
+            pNpc = reinterpret_cast<GameObject*>(FUN_140a38a00(reinterpret_cast<Unk_BossObject*>(pObject)));
             if (pNpc)
                 break;
         }

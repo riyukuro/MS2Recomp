@@ -91,10 +91,7 @@ public:
 };
 
 // The house contract dialog (UI 0x4e76).
-class Unk_UgcContractDialog : public UIRealEstateDialog
-{
-};
-Unk_UgcContractDialog* FUN_140961690(int nId);
+template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_140961690
 
 
 // The client constants (0x58-byte value cells).
@@ -514,7 +511,7 @@ void UIHouseMarkEntity::FUN_14198c410()
 {
     if (m_nIconType == 0 && FUN_1406516b0() == 1)
     {
-        Unk_UgcContractDialog* pDlg = FUN_140961690(0x4e76);
+        UIRealEstateDialog* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
         if (pDlg != NULL && pDlg->FUN_141924630() == 0)
         {
             MS2Ptr<CMsgBoxData> box = FUN_140d74500(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
@@ -534,7 +531,7 @@ MS2_REPLACE_METHOD(0x14198C410, UIHouseMarkEntity, FUN_14198c410, 389, 0xBFBB506
 // @0x14198c5a0
 void UIHouseMarkEntity::FUN_14198c5a0()
 {
-    Unk_UgcContractDialog* pDlg = FUN_140961690(0x4e76);
+    UIRealEstateDialog* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDlg != NULL && pDlg->FUN_141924630() == 0)
         pDlg->FUN_141ab4000(m_nId, WorldService::GetInstance()->FUN_141bd3060());
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));

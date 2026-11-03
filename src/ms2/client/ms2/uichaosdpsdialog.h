@@ -5,19 +5,9 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/cpartymember.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class ASObj;
-
-// 8-byte millisecond poll timer (ctor 0x140517b00, arm 0x140268840, "interval elapsed" test 0x140268870 re-arms).
-struct Unk_ChaosTick
-{
-    Unk_ChaosTick();                        // 0x140517b00
-    void FUN_140268840();                   // arm (m_nLastTick = now)
-    int FUN_140268870(unsigned nInterval);  // true once the interval elapsed
-    unsigned m_nInterval;                   // +0
-    unsigned m_nLastTick;                   // +4
-};
-MS2_CHECK_SIZE(Unk_ChaosTick, 8);
 
 class UIChaosDPSDialog : public UIDialog
 {
@@ -37,7 +27,7 @@ public:
     void FUN_140e05950();                                                   // 0x140e05950 rebuild the ranking
     void FUN_140e05f80();                                                   // 0x140e05f80 RemoveMember
 
-    Unk_ChaosTick m_tick;                                                   // +0x178
+    Unk_IntervalTimer m_tick;                                               // +0x178
     std::vector<MS2Ptr<CPartyMember> > m_members;                           // +0x180 the ranking
     int m_nGroup;                                                           // +0x198 battle record group
     int m_nMode;                                                            // +0x19c value kind shown

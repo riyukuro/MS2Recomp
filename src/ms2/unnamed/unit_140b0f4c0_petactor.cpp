@@ -50,7 +50,6 @@
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
@@ -164,13 +163,14 @@ class CDropItem   // C3: member view for the former free stand-ins
 public:
     void FUN_141190900(int);
     void FUN_141191330(int);
+    class CItem* FUN_140b12380();
 };
 PCBase* FUN_1409613d0(GameObject* p);
 
 // The field object of an actor keeps an item pointer at +0x1a0.
 struct Unk_PetFieldObj { char m_pad_00[0x1a0]; MS2Ptr<CItem> m_spItem; };
 // @0x140b12380
-inline void* FUN_140b12380(Unk_WsC_GameObj* pField) { return reinterpret_cast<Unk_PetFieldObj*>(pField)->m_spItem.get(); }
+inline CItem* CDropItem::FUN_140b12380() { return reinterpret_cast<Unk_PetFieldObj*>(this)->m_spItem.get(); }
 
 // @0x140b120b0 the efd cast of a world object to a player
 inline PCBase* FUN_140b120b0(GameObject* p)
@@ -472,14 +472,14 @@ void CPet::FUN_140b10400()
         return;
     if (m_spRow == 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tm1068).Check(100) == 0)
+    if (m_tm1068.Check(100) == 0)
         return;
     if (vfunc_65() == 0)
         return;
     Unk_WsC_GameObj* pField = WorldService::GetInstance()->FUN_141bd1a50(static_cast<Unk_WsC_GameObj*>(static_cast<GameObject*>(this)));
     if (pField == 0)
         return;
-    void* pItem = FUN_140b12380(pField);
+    void* pItem = reinterpret_cast<CDropItem*>(pField)->FUN_140b12380();
     if (pItem == 0)
         return;
     ((class CDropItem*)(class Unk_WsC_GameObj*)(pField))->FUN_141191330(FUN_14123c580());
@@ -675,7 +675,7 @@ int CPet::FUN_140b11180()
         return 0;
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_PetConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(3)) == 1)
         return 0;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_tm10a8).Check(1000) != 0)
+    if (m_tm10a8.Check(1000) != 0)
     {
         int nItemId = FUN_140b11c20(&FUN_140c8b450(reinterpret_cast<Unk_PetSkillSvc*>(((class Unk_PetSkillSvc*)FUN_140535320())))->m_book, pOwner);
         if (nItemId == 0)

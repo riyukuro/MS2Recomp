@@ -118,9 +118,6 @@ public:
     void FUN_141b61ff0(int nFieldId);                                       // 0x141b61ff0 select a tile
     bool OnMissionAttackConfirm(int nButton, const CMsgBoxData& data);               // 0x141b5af30 the mission attack prompt
 
-    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 movie clip child lookup (a UIDialog member)
-    MS2Ptr<ASUIComponent> FUN_140c02990(const CString& strName);            // 0x140c02990 GetChild<ASUIComponent> (template COMDAT of another unit)
-    MS2Ptr<ASTextInput> FUN_140e35bd0(const CString& strName);              // 0x140e35bd0 text input child lookup (UIDialog template COMDAT)
 
     int FUN_141b69340() { return m_nWorld; }                                // 0x141b69340
     int FUN_141b69690() { return m_nField; }                                // 0x141b69690

@@ -20,6 +20,7 @@
 #include <io.h>
 #include <efd/utf8string.h>
 #include <egf/EntityID.h>
+#include <egmAnimation/AnimationService.h>
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/ugcdef.h"
@@ -95,7 +96,7 @@ void AvatarCube::vfunc_12()
     {
         efd::utf8string kIdle((const char*)FUN_1409a2360("Idle_A", 0));
         Unk_AcKey kId1;
-        if (reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_140999490(FUN_14123c460(AC_KEY(kId1)), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
+        if (FUN_141b6f910()->GetAnimationIdFromName(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId1))), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
             Unk_AcKey kId2;
             reinterpret_cast<Unk_AcAnimSvc*>(FUN_141b6f910())->FUN_1409a1fc0((class egf::EntityID const &)(reinterpret_cast<const egf::EntityID&>(FUN_14123c460(AC_KEY(kId2)))), kIdle, 1.0f, true);

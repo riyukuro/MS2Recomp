@@ -39,6 +39,5 @@ public:
     int FUN_140ed9180(int nCount, int nSpecial);                    // reward state: 0 locked, 1 claimable, 2 claimed
     CString FUN_140ed9480(int nItemId);                             // item icon name
     CString FUN_140ed9560();                                        // the event tag
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);    // bind a list child
 };
 MS2_CHECK_SIZE(UIStampEventDialog, 0x180);

@@ -179,7 +179,6 @@ public:
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
 };
 class Unk_140165cf0* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);        // SaveFile
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -272,7 +271,7 @@ int UIDialog::vfunc_4()
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
-    return FUN_1408710c0(&m_e8, FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"));
+    return m_e8.SaveFile(FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"));
 }
 MS2_REPLACE_METHOD(0x1419237c0, UIDialog, vfunc_4, 673, 0x49894032);
 

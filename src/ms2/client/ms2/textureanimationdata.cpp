@@ -40,12 +40,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 class Unk_TexAnimResMgr
 {
 public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);                // load (cached) with the given flags
-    Unk_PPSmartC FUN_141553eb0(CString strPath, void* pDefault);            // look up a loaded texture
+    efd::SmartPointer<NiTexture> FUN_141552f90(CString strPath, int nFlags);                // load (cached) with the given flags
+    efd::SmartPointer<NiTexture> FUN_141553eb0(CString strPath, void* pDefault);            // look up a loaded texture
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
-CString FUN_140536a50(const char* pszFormat, const CString& strArg);        // StringFormat<CString>
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140536a50
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 class Unk_XmlNode   // C3: member view for the former free stand-ins
 {
@@ -103,11 +103,11 @@ MS2_REPLACE_METHOD(0x1418475D0, Unk_TextureFrame, FUN_1418475d0, 253, 0xED2DC14D
 // @0x1418476e0
 bool Unk_TextureFrame::FUN_1418476e0(const CString& strDir)
 {
-    if (((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141553eb0(FUN_141847960(strDir), 0).Get() == 0)
+    if ((NiTexture*)((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141553eb0(FUN_141847960(strDir), 0) == 0)
         return false;
     if (!m_strControl.IsEmpty())
     {
-        if (((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141553eb0(FUN_141847a60(strDir), 0).Get() == 0)
+        if ((NiTexture*)((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141553eb0(FUN_141847a60(strDir), 0) == 0)
             return false;
     }
     return true;
@@ -130,7 +130,7 @@ CString Unk_TextureFrame::FUN_141847960(const CString& strDir)
         return m_strFile;
     if (!strDir.IsEmpty())
     {
-        CString strPath = FUN_140536a50(m_strFile, strDir);
+        CString strPath = Unk_SocketFormat<CString>(m_strFile, strDir);
         return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", strPath);
     }
     return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", m_strFile);
@@ -146,7 +146,7 @@ CString Unk_TextureFrame::FUN_141847a60(const CString& strDir)
         return m_strControl;
     if (!strDir.IsEmpty())
     {
-        CString strPath = FUN_140536a50(m_strControl, strDir);
+        CString strPath = Unk_SocketFormat<CString>(m_strControl, strDir);
         return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", strPath);
     }
     return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", m_strControl);
@@ -256,19 +256,19 @@ void CTextureAnimationData::FUN_141848080(const CString& strDir, int nFlags)
 MS2_REPLACE_METHOD(0x141848080, CTextureAnimationData, FUN_141848080, 129, 0x0D841F1C);
 
 // @0x141848110
-Unk_PPSmartC CTextureAnimationData::FUN_141848110(unsigned int nFrame, const CString& strDir)
+efd::SmartPointer<NiTexture> CTextureAnimationData::FUN_141848110(unsigned int nFrame, const CString& strDir)
 {
     if (nFrame >= m_arrFrames.GetCount())
-        return Unk_PPSmartC(0);
+        return efd::SmartPointer<NiTexture>(0);
     return ((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141552f90(m_arrFrames[nFrame].FUN_141847960(strDir), 5);
 }
 MS2_REPLACE_METHOD(0x141848110, CTextureAnimationData, FUN_141848110, 227, 0x8EEC6057);
 
 // @0x141848200
-Unk_PPSmartC CTextureAnimationData::FUN_141848200(unsigned int nFrame, const CString& strDir)
+efd::SmartPointer<NiTexture> CTextureAnimationData::FUN_141848200(unsigned int nFrame, const CString& strDir)
 {
     if (nFrame >= m_arrFrames.GetCount())
-        return Unk_PPSmartC(0);
+        return efd::SmartPointer<NiTexture>(0);
     return ((class Unk_TexAnimResMgr*)FUN_140a0afd0())->FUN_141552f90(m_arrFrames[nFrame].FUN_141847a60(strDir), 5);
 }
 MS2_REPLACE_METHOD(0x141848200, CTextureAnimationData, FUN_141848200, 227, 0xF1FD1EE7);
@@ -374,18 +374,18 @@ void CTextureAnimation::FUN_141848890(unsigned int nFrame)
         if (pTexturing == 0)
             return;
         m_nFrame = nFrame;
-        Unk_PPSmartC spBase = FUN_141848bb0(m_nFrame);
-        Unk_PPSmartC spMap = FUN_141848dc0(m_nFrame);
-        m_spLayer = new (efd::MemHint(efd::MemHint::NONE)) TextureLayer(1, pTexturing, spBase.Get(), spMap.Get());
+        efd::SmartPointer<NiTexture> spBase = FUN_141848bb0(m_nFrame);
+        efd::SmartPointer<NiTexture> spMap = FUN_141848dc0(m_nFrame);
+        m_spLayer = new (efd::MemHint(efd::MemHint::NONE)) TextureLayer(1, pTexturing, (NiTexture*)spBase, (NiTexture*)spMap);
         WorldService::GetInstance()->GetTextureLayerManager()->AddLayer(m_spLayer);
     }
     else
     {
         m_nFrame = nFrame;
-        Unk_PPSmartC spBase = FUN_141848bb0(m_nFrame);
-        Unk_PPSmartC spMap = FUN_141848dc0(m_nFrame);
-        m_spLayer->FUN_14184b140(spBase.Get());
-        m_spLayer->FUN_14184b170(spMap.Get());
+        efd::SmartPointer<NiTexture> spBase = FUN_141848bb0(m_nFrame);
+        efd::SmartPointer<NiTexture> spMap = FUN_141848dc0(m_nFrame);
+        m_spLayer->FUN_14184b140((NiTexture*)spBase);
+        m_spLayer->FUN_14184b170((NiTexture*)spMap);
         WorldService::GetInstance()->GetTextureLayerManager()->Refresh(m_spLayer);
     }
     m_spNode->UpdateProperties();
@@ -393,10 +393,10 @@ void CTextureAnimation::FUN_141848890(unsigned int nFrame)
 MS2_REPLACE_METHOD(0x141848890, CTextureAnimation, FUN_141848890, 787, 0x840C4DB0);
 
 // @0x141848bb0
-Unk_PPSmartC CTextureAnimation::FUN_141848bb0(unsigned int nFrame)
+efd::SmartPointer<NiTexture> CTextureAnimation::FUN_141848bb0(unsigned int nFrame)
 {
     if (nFrame >= m_spData->m_arrFrames.GetCount())
-        return Unk_PPSmartC(0);
+        return efd::SmartPointer<NiTexture>(0);
     if (m_vecBase.size() > 0)
     {
         if (m_vecBase[nFrame] != 0)
@@ -404,7 +404,7 @@ Unk_PPSmartC CTextureAnimation::FUN_141848bb0(unsigned int nFrame)
     }
     if (m_vecBase.empty())
     {
-        Unk_PPSmartC kNull(0);
+        efd::SmartPointer<NiTexture> kNull(0);
         m_vecBase.resize(m_spData->m_arrFrames.GetCount(), kNull);
     }
     m_vecBase[nFrame] = m_spData->FUN_141848110(nFrame, m_strDir);
@@ -412,12 +412,12 @@ Unk_PPSmartC CTextureAnimation::FUN_141848bb0(unsigned int nFrame)
 }
 
 // @0x141848dc0
-Unk_PPSmartC CTextureAnimation::FUN_141848dc0(unsigned int nFrame)
+efd::SmartPointer<NiTexture> CTextureAnimation::FUN_141848dc0(unsigned int nFrame)
 {
     if (nFrame >= m_spData->m_arrFrames.GetCount())
-        return Unk_PPSmartC(0);
+        return efd::SmartPointer<NiTexture>(0);
     if (!m_spData->m_arrFrames.GetAt(nFrame).FUN_141847bb0())
-        return Unk_PPSmartC(0);
+        return efd::SmartPointer<NiTexture>(0);
     if (m_vecMap.size() > 0)
     {
         if (m_vecMap[nFrame] != 0)
@@ -425,7 +425,7 @@ Unk_PPSmartC CTextureAnimation::FUN_141848dc0(unsigned int nFrame)
     }
     if (m_vecMap.empty())
     {
-        Unk_PPSmartC kNull(0);
+        efd::SmartPointer<NiTexture> kNull(0);
         m_vecMap.resize(m_spData->m_arrFrames.GetCount(), kNull);
     }
     m_vecMap[nFrame] = m_spData->FUN_141848200(nFrame, m_strDir);
@@ -483,11 +483,8 @@ inline bool Unk_PickMeshPtr::operator==(NiAVObject* p) const
     return m_p == p;
 }
 
-// @0x141849f40
-bool Unk_PPSmartC::operator!=(void* p) const
-{
-    return m_p != p;
-}
+// @0x141849f40 efd::SmartPointer<NiTexture>::operator!=(NiTexture*): this unit's copy of the header inline
+// (the m_vecBase / m_vecMap != 0 tests above).
 
 // @0x141849de0
 Unk_TextureFrame::~Unk_TextureFrame()
@@ -568,8 +565,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, int 
 TextureLayer::TextureLayer(int nKind, NiProperty* pTexturing, void* pBase, void* pMap)
     : Layer(nKind), m_spBase(0), m_spMap(0), m_spTexturing(0)
 {
-    m_spBase.Assign(pBase);
-    m_spMap.Assign(pMap);
+    m_spBase = (NiTexture*)pBase;
+    m_spMap = (NiTexture*)pMap;
     m_spTexturing = (NiTexturingProperty*)pTexturing;
 }
 
@@ -583,24 +580,24 @@ MS2_REPLACE_METHOD(0x14184B110, TextureLayer, vfunc_18, 31, 0xD587040A);
 // @0x14184b140
 void TextureLayer::FUN_14184b140(void* pBase)
 {
-    m_spBase.Assign(pBase);
+    m_spBase = (NiTexture*)pBase;
 }
 MS2_REPLACE_METHOD(0x14184B140, TextureLayer, FUN_14184b140, 41, 0x082EE532);
 
 // @0x14184b170
 void TextureLayer::FUN_14184b170(void* pMap)
 {
-    m_spMap.Assign(pMap);
+    m_spMap = (NiTexture*)pMap;
 }
 MS2_REPLACE_METHOD(0x14184B170, TextureLayer, FUN_14184b170, 41, 0x7AF71C4A);
 
 // @0x14184b1a0
 void TextureLayer::vfunc_19()
 {
-    m_spTexturing->SetBaseTexture((NiTexture*)m_spBase.Get());
+    m_spTexturing->SetBaseTexture((NiTexture*)m_spBase);
     NiTexturingProperty::Map* pMap = m_spTexturing->GetShaderMap(0);
     if (pMap != 0)
-        pMap->SetTexture((NiTexture*)m_spMap.Get());
+        pMap->SetTexture((NiTexture*)m_spMap);
 }
 MS2_REPLACE_METHOD(0x14184B1A0, TextureLayer, vfunc_19, 136, 0x814EF167);
 

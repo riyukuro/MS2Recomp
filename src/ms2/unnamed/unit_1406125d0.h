@@ -14,6 +14,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/client/ms2/uiservice.h"   // C3: CUIService::FindObject was Unk_LockUIManager::FUN_141adcea0
 
 class CItemLockManager;
 class UIItemLockDialog;
@@ -23,12 +24,6 @@ enum Unk_LockResult : int {};
 enum Unk_LockMode : int { LOCKMODE_LOCK = 0, LOCKMODE_UNLOCK = 1 };
 
 // Free functions of the exe, bound by their FUN_<va> names.
-class Unk_LockUIManager
-{
-public:
-    MS2Ptr<UIObject> FUN_141adcea0(int nId);
-};
-Unk_LockUIManager* FUN_1403ed2b0();
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 int FUN_140534480(const ATL::CAtlArray<unsigned __int64>& aIds, const unsigned __int64& nId);
 bool FUN_140634120(MS2Ptr<CItem> item, int* pReason);
@@ -41,9 +36,9 @@ CStringW GetStringCommonByKey(const CStringW& str);
 
 template <class T> T* Unk_LockDialog(int nId)
 {
-    if (FUN_1403ed2b0())
+    if (TSingleton<CUIService>::GetInstance())
     {
-        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get())
             return dynamic_cast<T*>((UIObject*)p);
     }

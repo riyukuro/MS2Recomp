@@ -38,6 +38,7 @@
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/placeholder/uiugceventlistener.h"
 #include "ms2/placeholder/uibuddyeventlistener.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 namespace egf { class Entity; }
 class ASMovieClip;
@@ -49,19 +50,6 @@ class CInteractObject;
 class CNpcData;
 class NpcDataCli;
 class PCBase;
-
-// The refresh interval timer (8 bytes, 4-aligned: the dialog embeds two at +0x46c / +0x474). Ctor 0x140517b00,
-// Reset 0x140268840, Check 0x140268870 (same shape as Unk_140517b00 in statemanager.h).
-class Unk_MmRefreshTimer
-{
-public:
-    Unk_MmRefreshTimer();                                       // 0x140517b00
-    void FUN_140268840();                                       // reset
-    int FUN_140268870(int nInterval);                           // elapsed check
-    unsigned m_nInterval;
-    unsigned m_nLastTick;
-};
-MS2_CHECK_SIZE(Unk_MmRefreshTimer, 8);
 
 // ---- markers ----
 
@@ -408,8 +396,8 @@ public:
     HomeMap m_homes;                                            // +0x418
     unsigned __int64 m_460;                                     // +0x460
     int m_468;                                                  // +0x468
-    Unk_MmRefreshTimer m_timer46c;                              // +0x46c
-    Unk_MmRefreshTimer m_timer474;                              // +0x474
+    Unk_IntervalTimer m_timer46c;                               // +0x46c
+    Unk_IntervalTimer m_timer474;                               // +0x474
     int m_47c;                                                  // +0x47c
     SnowmanPtr<UICommon::CAlignmentInfo> m_alignment;           // +0x480
 };

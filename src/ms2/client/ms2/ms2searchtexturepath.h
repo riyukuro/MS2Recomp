@@ -36,7 +36,6 @@ public:
     bool FUN_140398190();
     bool FUN_14039a160(const char* referencePath, const char* filePath, char* pcPath, unsigned int len);
 };
-Unk_STPResMgr* FUN_140166420();
 
 class MS2SearchTexturePath : public NiTextureSearchPath {
 public:

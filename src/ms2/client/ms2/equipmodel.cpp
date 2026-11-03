@@ -64,6 +64,7 @@
 // 0x141209360, neq 0x140b029f0, deref 0x140b02a60, inc 0x140b02a80).
 #include "ms2/placeholder/ms2stdafx.h"
 #include <efd/Point3.h>
+#include <NiPoint3.h>
 #include "equipmodel.h"
 #include <efd/Matrix3.h>
 #include <NiTransform.h>
@@ -156,9 +157,9 @@ bool FUN_14053d2b0();
 bool FUN_14053d2f0();
 bool FUN_14053d510();
 bool FUN_14053e370();
+struct ItemModelHead* FUN_14053ec70();
 };
-void* FUN_14053ec70(void* p);
-class ItemModelHead   // C3: member view for the former free stand-ins
+struct ItemModelHead   // C3: member view for the former free stand-ins
 {
 public:
 bool FUN_1405471b0();
@@ -212,7 +213,6 @@ class Vector3 // C3: member view for the former free stand-ins
 public:
 float FUN_140968990();
 };
-void* FUN_140194470(void* dst, const void* src);
 
 void* FUN_141068d50p(void* a, const char* psz);
 // game
@@ -283,7 +283,6 @@ struct Unk_EntityPoints
 MS2_CHECK_OFFSET(Unk_EntityPoints, m_aPos78, 0x78);
 
 // One element (0x38 bytes) of the part's attach list.
-struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };   // NiPoint3(const efd::Point3&) 0x14027dcf0
 
 struct Unk_PartAttach
 {
@@ -596,8 +595,8 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
         efd::Point3 kRot = *(const efd::Point3*)e->m_afRot * 3.1415927f / 180.0f;
         kMat.FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
         reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetBaseRotate(*(const NiMatrix3*)&kMat);
-        Unk_NiPt3 kPos(e->m_afPos);
-        reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetBasePosition(*(NiPoint3*)&kPos);
+        NiPoint3 kPos(*reinterpret_cast<const efd::Point3*>(e->m_afPos));
+        reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetBasePosition(kPos);
         if (e->m_bFollow) {
             void* pRoot = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(((void*)((class NiActorManager*)(void*)(FUN_1412008e0(self)))->GetNIFRoot()))));
             reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetFollowNode((NiAVObject*)pRoot);
@@ -726,7 +725,7 @@ void FUN_141200ca0(CEquipModel* self)
         self->vfunc_12();
     if (((void*)reinterpret_cast<MS2Ptr<CEquipItem>*>(&self->m_spOwner)->operator CEquipItem*()) ? true : false) {
         if (((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()) != 0) {
-            if (((class ItemModelHead*)(void*)(FUN_14053ec70(((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0()))))->FUN_1405471b0()) {
+            if (((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dc7f0())))->FUN_14053ec70()->FUN_1405471b0()) {
                 ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dce60(s_strWillUpdatePos);
                 ((class CEquipItem*)(void*)(OWNER(self)))->FUN_1411dd280();
             }
@@ -826,7 +825,7 @@ void FUN_1412014f0(CEquipModel* self, void* pPt)
     if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->FUN_1411dc7f0())))->FUN_14053cfd0() != 0) {
         Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
         if (p != 0)
-            FUN_140194470(p->m_aPos + pInfo->m_nSlot, pPt);
+            *reinterpret_cast<efd::Point3*>(p->m_aPos + pInfo->m_nSlot) = *reinterpret_cast<const efd::Point3*>(pPt);
     }
 }
 
@@ -843,7 +842,7 @@ void FUN_141201620(CEquipModel* self, void* pPt)
     if (pInfo->m_n24 != 0 && ((class CItemData*)(void*)(((void*)((class CEquipItem*)(void*)(spOwn.operator->()))->FUN_1411dc7f0())))->FUN_14053cfd0() != 0) {
         Unk_EntityPoints* p = (Unk_EntityPoints*)((void*)((class CItem*)(void*)(EQUIP(spOwn)->GetItem().operator->()))->FUN_140527870());
         if (p != 0)
-            FUN_140194470(p->m_aPos78 + pInfo->m_nSlot, pPt);
+            *reinterpret_cast<efd::Point3*>(p->m_aPos78 + pInfo->m_nSlot) = *reinterpret_cast<const efd::Point3*>(pPt);
     }
 }
 
@@ -1052,12 +1051,12 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float
         (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(pRot));
     else
         (*reinterpret_cast<NiTransform*>(&kXf) = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(pRoot))->GetLocalTransform())));
-    FUN_140194470(pTrans, &kXf.m_Translate);
+    *reinterpret_cast<efd::Point3*>(pTrans) = *reinterpret_cast<const efd::Point3*>(&kXf.m_Translate);
     NiTransform kWorld = ((class NiAVObject*)(void*)(pAttach))->GetWorldTransform();
     if (((void*)((class NiAVObject*)(void*)(pRoot))->GetParent()) != 0)
         (kWorld = *reinterpret_cast<const NiTransform*>(((void*)&((class NiAVObject*)(void*)(((void*)((class NiAVObject*)(void*)(pRoot))->GetParent())))->GetWorldTransform())));
     kXf = kWorld * ((class NiAVObject*)(void*)(pRoot))->GetLocalTransform();
-    FUN_140194470(pPos, &kXf.m_Translate);
+    *reinterpret_cast<efd::Point3*>(pPos) = *reinterpret_cast<const efd::Point3*>(&kXf.m_Translate);
     *(efd::Point3*)pLocal = *pPos - kWorld.m_Translate;
     ((class Vector3*)(void*)(pLocal))->FUN_140968990();
     kXf.m_Rotate.ToEulerAnglesXYZ(pEuler->x, pEuler->y, pEuler->z);

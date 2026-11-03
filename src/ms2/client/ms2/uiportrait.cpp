@@ -42,7 +42,6 @@ class PostProcessingService   // C3: member view for the former free stand-ins
 public:
     void FUN_1416aac60(class NiAVObject*);
 };
-extern efd::Point3 DAT_143a08cf8;                               // (0, 0, 1)
 
 static float GetCurrentTime();                                  // 0x141a90fe0 (name invented)
 static NiPoint3 GetHeadPosition(NiAVObject* pRoot);             // 0x141a91000 (name invented)
@@ -69,7 +68,7 @@ void UIPortrait::vfunc_2()
             NiPoint3 kTarget = GetHeadPosition(FUN_141b6efc0(pPlayer->FUN_14123c410())) + NiPoint3(0.0f, 0.0f, 25.0f);
             m_spCamera->SetTranslate(kTarget + pPlayer->GetForwardDirection() * 130.0f);
             m_spCamera->Update(GetCurrentTime(), true);
-            m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);
+            m_spCamera->LookAtWorldPoint(kTarget, efd::Point3::UNIT_Z);
             m_spCamera->Update(GetCurrentTime(), true);
             FUN_14107b050(*(struct Vector3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
         }

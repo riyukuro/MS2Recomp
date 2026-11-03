@@ -38,12 +38,14 @@ void Unk_CommonPrice::ClearAmount()
 }
 MS2_REPLACE_METHOD(0x140269D10, Unk_CommonPrice, ClearAmount, 19, 0x8111F705);
 
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
+
 // @0x140269d30
 bool Unk_CommonPrice::LoadXml(Unk_140165cf0* pNode)
 {
     CStringA strType;
-    FUN_1408733e0(pNode, "type", strType);
-    FUN_1408732e0(pNode, "amount", m_amount);
+    XmlGetAttr((class TiXmlElement*)(pNode), "type", strType);
+    XmlGetAttr((class TiXmlElement*)(pNode), "amount", m_amount);
     if ((strType == "meso"))
     {
         m_type = 0;

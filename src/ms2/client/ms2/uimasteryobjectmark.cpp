@@ -42,12 +42,6 @@ class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 class Unk_McPc : public PC
 {
 };
-class Unk_HmCube
-{
-public:
-    MS2Ptr<FunctionCubeData> FUN_140ca6580();                   // the cube's table row
-};
-class Unk_QgCamera { public: bool FUN_140af0700(const Vector3& ptWorld, Vector3& rptScreen); };
 class Unk_QgUIScale;
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 class GFxManager   // C3: member view for the former free stand-ins
@@ -77,7 +71,6 @@ struct Unk_AuConfig
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CStringW GetStringCommonByKey(const CStringW& str);                    // the localized text of a string key
-CStringTable* GetStringTable();                                  // the string table
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 // The local player's vtable as the slots used here (vfunc_18 returns the position as the engine point type).
@@ -273,7 +266,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
             Vector3 ptScreen;
             Vector3 ptWorld = pGather->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
             float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
-            if (!reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
+            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)) || 1000.0f < fDist)
             {
                 spContext->m_spEntity->vfunc_3(0);
             }
@@ -342,7 +335,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             Vector3 ptWorld = spHome->GetPosition().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
             float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->GetPosition()).FUN_140967ac0();
             int nRiding = static_cast<Unk_McPc*>(pPC)->GetCubeMode() != 0;
-            if (!reinterpret_cast<Unk_QgCamera*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
+            if (!TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)) || 1000.0f < fDist || nRiding != 0)
             {
                 spContext->m_spEntity->vfunc_3(0);
                 if (spContext->m_nShown != 0)
@@ -394,7 +387,7 @@ void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
 int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext)
 {
     int nChanged = FUN_140e5b720(pObject->GetRow()->m_gathering.m_nReceipeId, pContext);
-    CStringW strName = GetStringTable()->FUN_141811980(0xb, pObject->GetRowId());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
     if (pContext->m_strObjName != strName)
     {
         pContext->m_strObjName = strName;
@@ -406,8 +399,8 @@ int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* 
 // @0x140e5b620
 int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext* pContext)
 {
-    int nChanged = FUN_140e5b720(reinterpret_cast<Unk_HmCube*>(pCube)->FUN_140ca6580()->m_n100, pContext);
-    CStringW strName = GetStringTable()->FUN_141811980(1, pCube->FUN_141226cd0());
+    int nChanged = FUN_140e5b720(static_cast<CHomemadeCubeObject*>(pCube)->FUN_140ca6580()->m_n100, pContext);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_141226cd0());
     if (pContext->m_strObjName != strName)
     {
         pContext->m_strObjName = strName;

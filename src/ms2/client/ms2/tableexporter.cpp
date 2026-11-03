@@ -281,7 +281,8 @@ CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDe
 Unk_140165cf0* FUN_140345b40(TiXmlDocument* pDoc);                      // root element
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_14028f710(Unk_XmlElement *);  // C3: the definition's signature
-void FUN_14015eb90(void* pLogger, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
+class CLogString;
+template <class T> void Unk_AchieveLog(CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 class CLogString* GetLogString();   // C3: was FUN_140166440
 CString FUN_1409a2360(const char* psz, int n);                          // text conversion
                        // language directory name (member: this=rcx, hidden return=rdx)
@@ -900,7 +901,7 @@ bool FUN_1418226b0(bool bLog)
         return false;
     Unk_140165cf0* pGameRoot = FUN_140165cf0(&docGame, "ms2");
     if (pGameRoot == NULL) {
-        FUN_14015eb90(((void*)GetLogString()), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strGameEvent);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strGameEvent);
         return false;
     }
     for (Unk_140165cf0* pEvent = FUN_140165cf0(pGameRoot, "gameEvent"); pEvent != NULL; pEvent = ((class Unk_140165cf0*)((class Unk_XmlNode*)(class Unk_140165cf0*)(pEvent))->NextSibling("gameEvent"))) {

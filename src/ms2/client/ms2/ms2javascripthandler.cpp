@@ -54,7 +54,7 @@ class CGuildInfo   // C3: member view for the former free stand-ins
 public:
     __int64 FUN_1404ccbd0();
 };
-int FUN_140408410(const ATL::CAtlArray<int>& array, const int& nValue);     // index of nValue, -1 if absent
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class CBigDataLogSystem;
 template<> CBigDataLogSystem* TSingleton<CBigDataLogSystem>::GetInstance();
 class CBigDataLogSystem { public: void SendLog(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &); };
@@ -210,7 +210,7 @@ bool CMS2JavascriptHandler::IsVisitedField(CefRefPtr<CefV8Value> object, const C
     CefRefPtr<CefV8Value> field = arguments[0];
     CefString csField = field->GetStringValue();
     int nField = (int)_wtoi64(csField.c_str());
-    bool bVisited = (FUN_140408410(DAT_143ab3078, nField) >= 0) ? 1 : 0;
+    bool bVisited = (Unk_ArrayFind<int>(DAT_143ab3078, nField) >= 0) ? 1 : 0;
     retval = CefV8Value::CreateBool(bVisited);
     return true;
 }

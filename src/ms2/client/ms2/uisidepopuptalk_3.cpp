@@ -24,6 +24,12 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
+class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
+{
+public:
+    class Unk_XmlNode* FirstChild(char const*);
+};
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -220,7 +226,7 @@ void CSidePopupTalkTable::Init()
     TiXmlDocument doc;
     if (TSingleton<CFileSystem>::GetInstance()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
@@ -229,7 +235,7 @@ void CSidePopupTalkTable::Init()
     {
         Unk_140165cf0* pElem = nodes[i];
         CStringA strType;
-        FUN_1408733e0(pElem, "eventType", strType);
+        XmlGetAttr((class TiXmlElement*)(pElem), "eventType", strType);
         CStringW strClass = StringFormat(L"CSidePopupCondition{0}", strType);
         MS2Ptr<CSidePopupCondition> spCond(static_cast<CSidePopupCondition*>(FUN_1401f7f50(strClass)));
         if (spCond.get())
@@ -238,12 +244,12 @@ void CSidePopupTalkTable::Init()
             MS2Ptr<PopupData> spData(new PopupData);
             spData->m_spParam.AssignRaw(new SidePopupTalkParam);
             XmlEnumName<int, Parse_14021abf0>(pElem, "uiType", spData->m_spParam->m_nKind);
-            FUN_1408733e0(pElem, "usm", spData->m_spParam->m_strName);
-            FUN_1408733e0(pElem, "illust", spData->m_spParam->m_strIcon);
+            XmlGetAttr((class TiXmlElement*)(pElem), "usm", spData->m_spParam->m_strName);
+            XmlGetAttr((class TiXmlElement*)(pElem), "illust", spData->m_spParam->m_strIcon);
             XmlTokenList(pElem, "script", spData->m_spParam->m_script);
-            FUN_1408732a0(pElem, "duration", spData->m_spParam->m_nNpcId);
-            FUN_1408733e0(pElem, "voice", spData->m_spParam->m_strSound);
-            FUN_1408733e0(pElem, "sound", spData->m_spParam->m_strScript);
+            XmlGetAttr((class TiXmlElement*)(pElem), "duration", reinterpret_cast<unsigned long&>(spData->m_spParam->m_nNpcId));
+            XmlGetAttr((class TiXmlElement*)(pElem), "voice", spData->m_spParam->m_strSound);
+            XmlGetAttr((class TiXmlElement*)(pElem), "sound", spData->m_spParam->m_strScript);
             spData->m_spCond = spCond;
             XmlGetAttr((class TiXmlElement*)(pElem), "map", spData->m_nMapId);
             PopupMap::key_type key = std::make_pair(spCond->m_eKind, spCond->m_nId);
