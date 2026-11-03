@@ -62,7 +62,7 @@ static Unk_BuddyHandle s_pointer(NULL);
 static ATL::CAtlMap<unsigned int,CString> s_conditions(17,.75f,.25f,2.25f,10);
 class Unk_1403ed280 { public: void FUN_1411a6060(int); int FUN_1411a49c0(NoticeMessage*); void FUN_1411a4f40(CString,const Vector3&); };
 int FUN_1412755a0();
-void FUN_141276180(const CString&,const CString&);
+int FUN_141276180(const CString&,const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_1422baa20 { public: Scaleform::GFx::Value FUN_1422baa20(const char*); Scaleform::GFx::Value FUN_140acd130(const char*,CStringW); Scaleform::GFx::Value FUN_140ba26d0(const char*,unsigned int);
     Scaleform::GFx::Value FUN_140cbe3a0(const char*,const wchar_t*); Scaleform::GFx::Value FUN_1422bb3c0(); MS2Ptr<AScript> FUN_141311f50(const CString&); };

@@ -197,6 +197,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/filesystem.h"
+#include "ms2/commonfiles/itemdefaultdata.h"
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };  // C3: the scoped lock (0x1401b4ec0 / 0x1401b5120, matched in commonfiles/banktable.cpp)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -262,9 +263,6 @@ static int LoadXml(TiXmlDocument& doc, const char* pszPath);
 
 // The market sort-key names (the header statics this unit includes; names are invented).
 static CString s_strSortTypeNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
-// The default item table's per-kind maps: CItemDefaultData::ms_aMaps (0x143aafa40), which ?\itemdefaultdata.cpp
-// defines and constructs; this name is mapped to it by address (a definition here would be a second copy).
-extern ATL::CAtlMap<int, int, ATL::CDefaultElementTraits<int> > g_itemDefaultSlotMaps[2];
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CItemDataTable::s_bInit;
@@ -1618,17 +1616,15 @@ static int LoadXml(TiXmlDocument& doc, const char* pszPath)
 // MS2-RANGE: 0x142c9ae90-0x142c9aee0 .text$yd
 
 #ifndef MS2_HOOK_DLL   // the hook DLL leaves this teardown to the exe (as when it was unit_14057a380)
-// ---- the exe's static-teardown function of the item default tables (CItemDefaultData::ms_aMaps and its sibling) ----
-extern char g_itemDefaultSiblingStatic[0x50];                    // 0x143aaf9f0; owned by ?\itemdefaultdata.cpp
-void FUN_14058a830(void* pThis);
+// ---- the exe's static-teardown function of the item default tables (CItemDefaultData::ms_aMaps and ms_mapJobItems) ----
 
 // @0x140583ea0
 void FUN_140583ea0()
 {
     for (int i = 0; i < 2; i++) {
-        g_itemDefaultSlotMaps[i].RemoveAll();
+        CItemDefaultData::ms_aMaps[i].RemoveAll();
     }
-    FUN_14058a830(g_itemDefaultSiblingStatic);
+    CItemDefaultData::ms_mapJobItems.RemoveAll();
 }
 #endif
 

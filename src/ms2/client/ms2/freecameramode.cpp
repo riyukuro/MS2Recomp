@@ -15,7 +15,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include <efd/Matrix3.h>
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
-class CFieldDataCli;   // C3: the real class (fielddatacli.h), MS2Ptr<CFieldDataCli>::get
+#include "ms2/client/ms2/fielddatacli.h"   // C3: MS2Ptr<CFieldDataCli>, the option row
 
 // ---- unit-local placeholders ----
 
@@ -29,28 +29,11 @@ struct Unk_FreeCamOption
     float m_1f4;
 };
 
-// Smart pointer to it (pointer at +8).
-class Unk_FreeCamOptionPtr
-{
-public:
-    ~Unk_FreeCamOptionPtr() { FUN_140885ab0(); }    // 0x1408850f0 (another obj)
-    Unk_FreeCamOption* FUN_140885340() const;       // operator->
-    void FUN_140885ab0();                           // release
-
-    void* m_pad_00;
-    Unk_FreeCamOption* m_p;
-};
-
-// The world service (FUN_1403ed2d0).
-class Unk_FreeCamContext
-{
-public:
-    Unk_FreeCamOptionPtr FUN_141bd30a0();           // copy of +0x298
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();   // copy of +0x298 (worldservice.h)
     static class WorldService* GetInstance();
 };
 
@@ -140,11 +123,11 @@ void CFreeCameraMode::vfunc_8(double fTime)
     {
         if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x22, true, 0))
         {
-            Unk_CameraTargetEntity* pActor = ((class Unk_CameraTargetEntity*)((class WorldService*)(class Unk_FreeCamContext*)(((class Unk_FreeCamContext*)WorldService::GetInstance())))->FUN_141bd0cc0());
+            Unk_CameraTargetEntity* pActor = ((class Unk_CameraTargetEntity*)WorldService::GetInstance()->FUN_141bd0cc0());
             if (pActor != 0)
             {
-                Unk_FreeCamOptionPtr spOption = ((class Unk_FreeCamContext*)WorldService::GetInstance())->FUN_141bd30a0();
-                if (reinterpret_cast<Unk_FreeCamOption*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spOption).get()) != 0)
+                MS2Ptr<CFieldDataCli> spOption = WorldService::GetInstance()->FUN_141bd30a0();
+                if (reinterpret_cast<Unk_FreeCamOption*>(spOption.get()) != 0)
                 {
                     TiXmlDocument doc;
                     if (!doc.FUN_140870fc0("./data/xml/camera/customize.xml", 0))
@@ -158,7 +141,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
                         float fDist = ptDir.FUN_140968990();
                         TiXmlElement* pCamera = new TiXmlElement("camera");
                         ((void*)((class TiXmlNode*)(void*)(pMs2))->LinkEndChild((class TiXmlNode*)(pCamera)));
-                        XmlSetAttr((class TiXmlElement*)(pCamera), "fov", spOption.FUN_140885340()->m_1f4);
+                        XmlSetAttr((class TiXmlElement*)(pCamera), "fov", reinterpret_cast<Unk_FreeCamOption*>(spOption.operator->())->m_1f4);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "distance", fDist);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomIn", 50);
                         XmlSetAttr((class TiXmlElement*)(pCamera), "zoomOut", 150);

@@ -17,15 +17,6 @@
 
 class CInPacket;
 
-// The reward items (std::vector<ItemEntity>, 24 bytes) with the exe helpers this dialog calls.
-class Unk_DarkStreamItems : public Unk_ItemVec
-{
-public:
-    void FUN_1403fb160(const ItemEntity&);             // push_back
-    ItemEntity& FUN_140be9400(size_t nIndex);           // element access
-};
-MS2_CHECK_SIZE(Unk_DarkStreamItems, 24);
-
 class UIDarkStreamResultDialog : public UIDialog
 {
 public:
@@ -50,7 +41,7 @@ private:
     int m_nValue4;                  // +0x188
     bool m_bPending;                // +0x18c the result arrived before the movie loaded
     bool m_bMode;                   // +0x18d
-    Unk_DarkStreamItems m_items;    // +0x190 the reward items
+    std::vector<ItemEntity> m_items;    // +0x190 the reward items
     CString m_strBagId;             // +0x1a8 name of the item bag shown by the swf
     CString m_strRankingUrl;        // +0x1b0 "maview:/rank/darkstream"
 };

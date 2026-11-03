@@ -32,6 +32,7 @@
 #include "ms2/client/ms2/uigamemenudialog.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/astilelist.h"
+#include "ms2/placeholder/wcformat.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -71,7 +72,6 @@ __int64 GetServerTime();                                        // the server ti
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
@@ -283,7 +283,7 @@ void UIVIPDialog::FUN_140fb8d10()
         if (strRemain.IsEmpty())
             strRemain = GetStringCommonByKey(L"s_vip_dialog_remain_time_hour");
         else
-            strRemain = FUN_1405c2690(L"s_vip_dialog_remain_time", strRemain);
+            strRemain = FUN_14028dfa0<CStringW>(L"s_vip_dialog_remain_time", strRemain);
         spTime->SetTextHTMLW(strRemain);
     }
     unsigned nTextWidth = spTime->GetTextWidth();

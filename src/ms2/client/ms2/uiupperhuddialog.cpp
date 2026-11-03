@@ -1208,7 +1208,6 @@ class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
-CString FUN_1401d9af0(const char* pszFormat, const __int64& a1);               // StringFormat, one narrow argument
 
 class Unk_HudUrlCfg { public: CString& FUN_140298f80(); };
 class Unk_HudClientData
@@ -1275,7 +1274,7 @@ void UIVisitorsBookDialog::OnLoadComplete()
     }
     vfunc_84(true);
     __int64 nOwnerId = ((class CubeMapInformationService*)(class Unk_HudHome*)(((class Unk_HudHome*)Unk_AkoHouseSvc::GetInstance())))->FUN_1410c3180();
-    CString strUrl = FUN_1401d9af0(FUN_14135bb70(&((class Unk_HudClientData*)FUN_1401d3200())->m_url), nOwnerId);
+    CString strUrl = StringFormat<unsigned __int64>(FUN_14135bb70(&((class Unk_HudClientData*)FUN_1401d3200())->m_url), reinterpret_cast<const unsigned __int64&>(nOwnerId));
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c)) {}   // empty body in the exe (movzx, no branch)
     reinterpret_cast<Unk_HudBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b794e0(m_strUrl, strUrl);
 }

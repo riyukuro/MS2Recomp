@@ -625,7 +625,7 @@ MS2PhysXAllocator* MS2::GetPhysXAllocator()
 }
 MS2_REPLACE_METHOD(0x141489FD0, MS2, GetPhysXAllocator, 15, 0x5AEB0F79);
 // @0x141489ff0
-void MS2::SetBackgroundColor(const NiColorA& kColor)
+void MS2::SetBackgroundColor(NiColorA kColor)
 {
     ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
     if (pSurface) {

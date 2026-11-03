@@ -195,7 +195,6 @@ void FUN_141275260(int nMsgId, int a1, int a2);
 CStringW GetStringCommonByKey(const CStringW& str);                            // localized string
 CStringW FUN_140298ea0(CStringW str);
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
-CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 int FUN_141276f80(struct Unk_CommandChat*);   // C3: was FUN_141276f80
@@ -731,7 +730,7 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
         return;
     FUN_141415600(m_strResult);
     FUN_141415450(m_strResult, ItemPtr(preview), 0, 0, 0x10800);
-    obj.FUN_1407cbb20(FUN_14038f6d0(s_itemName, "2"), reinterpret_cast<CItem*>(preview.operator->())->FUN_140528160());
+    obj.FUN_1407cbb20(s_itemName + "2", reinterpret_cast<CItem*>(preview.operator->())->FUN_140528160());
     slot->Invoke("setData", CString(m_strResult));
 }
 

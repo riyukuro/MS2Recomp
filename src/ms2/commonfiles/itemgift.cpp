@@ -13,6 +13,9 @@ class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 struct Unk_GiftItem : public CItemData { };
 MS2Ptr<CItemData> FUN_14053f870(int);
 #include "ms2/ms2format.h"
+#include "ms2/commonfiles/os.h"
+class COutputStream;
+COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value);  // C3: the definition's signature
 int FUN_14053feb0(int);  // C3: the definition's signature
 enum { ItemRank_Unknown=0 };
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -42,10 +45,10 @@ ItemGiftPcBang::ItemGiftPcBang() : m_giftId(0) {}
 void ItemGiftPcBang::vfunc_4(void* xml) { ItemEntity::vfunc_2(xml);XmlGetAttr((class TiXmlElement*)(xml), "giftID", m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3B70, ItemGiftPcBang, vfunc_4, 63, 0x2610ADE3);
 // @0x1405b3bc0
-void ItemGiftPcBang::vfunc_5(Unk_GiftOutput& out) { FUN_14026b030(out);out.FUN_14070f9a0(m_giftId); }
+void ItemGiftPcBang::vfunc_5(Unk_GiftOutput& out) { FUN_14026b030(out);FUN_14070f9a0(reinterpret_cast<COutputStream&>(out), m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3BC0, ItemGiftPcBang, vfunc_5, 52, 0x19D5B21B);
 // @0x1405b3c00
-void ItemGiftPcBang::vfunc_6(Unk_GiftInput& in) { FUN_14026b100(in);in.FUN_14070f480(m_giftId); }
+void ItemGiftPcBang::vfunc_6(Unk_GiftInput& in) { FUN_14026b100(in);reinterpret_cast<Unk_OSInput&>(in).Read6(m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3C00, ItemGiftPcBang, vfunc_6, 56, 0x5310BBA1);
 // @0x1405b3c40
 PlayBonusItemGift::PlayBonusItemGift() : m_systemMailId(0) {}

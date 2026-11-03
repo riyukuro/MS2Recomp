@@ -43,7 +43,6 @@ CStringW GetStringCommon(int nStringId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
 void FUN_141415600(const CString& strBindID);                       // release the item bound to the name
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringTable* GetStringTable();
 
 // ---- header statics ----
 static CString s_strBinding("binding");                             // @0x1400dfba0
@@ -198,7 +197,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
             }
         }
         if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_itemName"))
-            spName->SetTextW(GetStringTable()->FUN_141811980(1, m_178));
+            spName->SetTextW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_178));
         if (MS2Ptr<ASTextField> spSize = GetChild<ASTextField>("m_cubeSize"))
         {
             CStringW strSize = StringFormat(L"{0} {1}", GetStringCommon(0x56c), spPackage->m_strIndoorSizeType);

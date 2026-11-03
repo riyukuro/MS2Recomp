@@ -57,23 +57,20 @@
 
 // This scene traversal helper owns a 0x30-byte ATL list. Its constructor
 // (14098cb80), traversal (14098e0d0), and destructor (14098cf00) are external.
-class Unk_CubeSceneIterator {
+class Unk_NodeQueue {
 public:
-    Unk_CubeSceneIterator(NiAVObject*);
-    ~Unk_CubeSceneIterator();
-    NiAVObject* FUN_14098e0d0(bool descend);
+    Unk_NodeQueue(NiAVObject*);
+    ~Unk_NodeQueue();
+    NiAVObject* Next(bool descend);   // C3: was FUN_14098e0d0
 private:
     ATL::CAtlList<NiAVObject*> pending;
 };
-MS2_CHECK_SIZE(Unk_CubeSceneIterator, 0x30);
+MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
 class CNifLoadingService {
 public:
     NiAVObjectPtr Load(CString, bool, int, int, int);
-};
-class Unk_CubeResourceService {
-public:
-    NiPointer<NiSourceTexture> FUN_141553eb0(CString, const void*);
+    NiPointer<NiTexture> FindTexture(CString, const NiTexture::FormatPrefs*);   // C3: was Unk_CubeResourceService::FUN_141553eb0
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 extern NiFixedString DAT_143ae50a0;
@@ -83,10 +80,10 @@ class CrashManagerCli;
 MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_1410280d0(int, CString);
 NiPointer<NiAVObject> FUN_141423480(NiPointer<NiAVObject>, const CString&);
-int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiSourceTexture>);
+int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiTexture>);
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 // CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
-void FUN_1418845a0(void*, CubeItemInfo*, egf::EntityID id);
+class CUgcManager { public: void FUN_1418845a0(CubeItemInfo*, egf::EntityID id); };   // C3: member view
 FittingDollPC* FUN_14121b590(int, int, int);
 void FUN_140a0b1f0(const NiMatrix3&, NiPoint3&);
 void FUN_140b86230(const NiPoint3&, NiMatrix3&);
@@ -108,7 +105,6 @@ public:
     void FUN_1411cf570(egf::Entity*);
 };
 struct Vector3 { float x, y, z; };
-extern const Vector3 DAT_143b01a60;     // efd::Point3::ZERO
 class Unk_CubeEntityService {
 public:
     efd::SmartPointer<egf::Entity> FUN_1411ce7c0(efd::utf8string, efd::utf8string,
@@ -174,8 +170,8 @@ MS2_REPLACE_METHOD(0x1410afe40, CNifCubeGuide, vfunc_5, 68, 0x708C3DEF);
 // No hook: engine inline constructors produce DLL-local RTTI objects.
 // @0x1410afe90
 void CNifCubeGuide::vfunc_8(float alpha) {
-    Unk_CubeSceneIterator iterator(node);
-    while (NiAVObject* object = iterator.FUN_14098e0d0(true)) {
+    Unk_NodeQueue iterator(node);
+    while (NiAVObject* object = iterator.Next(true)) {
         NiRenderObject* mesh = NiDynamicCast(NiRenderObject, object);
         if (mesh != NULL) {
             NiPointer<NiAlphaProperty> blend = NiDynamicCast(NiAlphaProperty, mesh->GetProperty(0));
@@ -213,8 +209,8 @@ MS2_REPLACE_METHOD(0x1410b0280, CNifCubeGuide, vfunc_9, 51, 0x7BBA15A8);
 // @0x1410b02c0
 void CNifCubeGuide::vfunc_10(NiNode* parent, int) {
     parent->AttachChild(node, true);
-    Unk_CubeSceneIterator iterator(node);
-    while (NiAVObject* object = iterator.FUN_14098e0d0(true)) {
+    Unk_NodeQueue iterator(node);
+    while (NiAVObject* object = iterator.Next(true)) {
         NiRenderObject* mesh = NiDynamicCast(NiRenderObject, object);
         if (mesh != NULL) {
             NiIntegerExtraData* data = NiDynamicCast(NiIntegerExtraData, mesh->GetExtraData(DAT_143ae50a0));
@@ -258,9 +254,9 @@ int CNifCubeGuide::FUN_1410b0680() {
     if (textureName.GetLength() == 0) return 0;
     CString path = FUN_1410280d0(2, item->look->m_strUrl);
     if (_access(path, 4) != 0) return 1;
-    NiPointer<NiSourceTexture> texture = ((class Unk_CubeResourceService*)FUN_140a0afd0())->FUN_141553eb0(path, NULL);
+    NiPointer<NiTexture> texture = ((class CNifLoadingService*)FUN_140a0afd0())->FindTexture(path, NULL);
     if (texture == NULL) {
-        FUN_1418845a0(((void*)FUN_14052d220()), item.get(), 0);
+        reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_1418845a0(item.get(), 0);
         return 1;
     }
     NiPointer<NiAVObject> target = FUN_141423480(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
@@ -337,7 +333,7 @@ int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     efd::utf8string model("MS2MeshNoPhysX");
     if (isActor) model = "MS2Actor";
     entity = static_cast<Unk_CubeEntityService*>((void*)TSingleton<EntityWorldManager>::GetInstance())->FUN_1411ce7c0(
-        model, id.GetURN(), DAT_143b01a60, DAT_143b01a60, 1.0f, 0, 1);
+        model, id.GetURN(), reinterpret_cast<const Vector3&>(efd::Point3::ZERO), reinterpret_cast<const Vector3&>(efd::Point3::ZERO), 1.0f, 0, 1);
     if (entity != NULL) return 1;
     return 0;
 }
@@ -358,8 +354,8 @@ void CKfmCubeGuide::vfunc_1() {
         if (root) {
             rootReady = 1;
             if (pendingAlpha != 0) vfunc_8(alpha);
-            Unk_CubeSceneIterator iterator(root);
-            while (NiAVObject* object = iterator.FUN_14098e0d0(true)) {
+            Unk_NodeQueue iterator(root);
+            while (NiAVObject* object = iterator.Next(true)) {
                 NiRenderObject* mesh = NiDynamicCast(NiRenderObject, object);
                 if (mesh != NULL) {
                     NiIntegerExtraData* data = NiDynamicCast(NiIntegerExtraData, mesh->GetExtraData(DAT_143ae50a0));
@@ -399,8 +395,8 @@ MS2_REPLACE_METHOD(0x1410b1820, CKfmCubeGuide, vfunc_5, 155, 0xFB41EE8F);
 void CKfmCubeGuide::vfunc_8(float value) {
     NiPointer<NiNode> root = NiDynamicCast(NiNode, FUN_141b6efc0(entity.data()));
     if (root) {
-        Unk_CubeSceneIterator iterator(root);
-        while (NiAVObject* object = iterator.FUN_14098e0d0(true)) {
+        Unk_NodeQueue iterator(root);
+        while (NiAVObject* object = iterator.Next(true)) {
             NiRenderObject* mesh = NiDynamicCast(NiRenderObject, object);
             if (mesh != NULL) {
                 if (mesh != NULL) {

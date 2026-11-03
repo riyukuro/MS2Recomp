@@ -17,8 +17,8 @@
 class Unk_SdRadio;
 class ASButton;
 class ASScrollingList;
-class Unk_SdRow;
-class Unk_SdCheck;
+class ASItemRendererBase;
+class ASCheckBox;
 
 class UIDungeonSearchSelectDialog : public UIModalDialog
 {
@@ -47,8 +47,8 @@ private:
     MS2Ptr<ASMovieClip> m_page;                                 // +0x190 "m_customPage"
     MS2Ptr<ASButton> m_okButton;                                // +0x1a0 "m_okButton"
     MS2Ptr<ASScrollingList> m_list;                                  // +0x1b0 "m_customList"
-    std::vector<MS2Ptr<Unk_SdRow> > m_rows;                     // +0x1c0 "m_listItem1".."m_listItem11"
-    std::vector<MS2Ptr<Unk_SdCheck> > m_checks;                 // +0x1d8 the rows' "m_checkBox"
+    std::vector<MS2Ptr<ASItemRendererBase> > m_rows;                     // +0x1c0 "m_listItem1".."m_listItem11"
+    std::vector<MS2Ptr<ASCheckBox> > m_checks;                 // +0x1d8 the rows' "m_checkBox"
     std::vector<unsigned> m_roomOfRow;                          // +0x1f0 row -> index into m_rooms
     int m_nPage;                                                // +0x208 1 = custom dungeon page
     std::vector<DungeonRoomPtr> m_rooms;                        // +0x210 the group's dungeon rooms

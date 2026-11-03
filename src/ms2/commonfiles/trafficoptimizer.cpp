@@ -97,11 +97,11 @@ MS2_REPLACE_METHOD(0x14087D5F0, CTrafficOptimizer, GetTraffic, 57, 0xDAAB5227);
 
 // @0x14087d630
 int CTrafficOptimizer::FUN_14087d630(unsigned id) {
-    Unk_TOField* field = FUN_140374140(id).operator->();
+    CFieldData* field = CFieldData::FUN_140374140(id).operator->();
     if (field == 0) {
         return 0;
     }
-    if (reinterpret_cast<CFieldData*>(field)->FUN_140375270()) {
+    if (field->FUN_140375270()) {
         return 1;
     }
     return 0;

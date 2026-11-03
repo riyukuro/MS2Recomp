@@ -105,7 +105,6 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 class Unk_UgcUiMgr { public: void FUN_141adc530(int nId); };
-CameraMgr* FUN_1409478c0();
 // The update list of the entity app (its count and item i; slot 1 of an item is its per-frame update).
 class Unk_UgcUpdatable { public: virtual void vfunc_0(); virtual void vfunc_1(float fTime); };
 Unk_ServiceManager*FUN_1413f9850();                           // the game's service manager
@@ -251,7 +250,7 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
     m_bCameraMode = bCameraMode;
     if (m_bCameraMode)
     {
-        FUN_1409478c0()->FUN_140947980(6);
+        TSingleton<CameraMgr>::GetInstance()->FUN_140947980(6);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3e)));
     }
     else

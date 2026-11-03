@@ -99,7 +99,6 @@ extern CMemoryDepletionDlg DAT_143af7e00;
 CStringA FUN_14028dc80(int nStringId);                              // UI string table (ANSI)
 CStringW GetStringCommon(int nStringId);                              // UI string table (wide)
 int FUN_141b6fcf0(const CStringW& kText, const CStringW& kTitle, unsigned nFlags);   // message box + quit prompt
-CStringW FUN_14061ad70(const CStringW& kPath, const wchar_t* pszTail);
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);        // ANSI -> wide conversion
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);       // wide -> ANSI conversion
 int FUN_141b72310(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);   // BrowseForFolder callback
@@ -436,7 +435,7 @@ CStringW FUN_141b6e990(const CStringW& kStartPath)
     bi.lParam = (LPARAM)szPath;
     LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
     if (SHGetPathFromIDListW(pidl, szPath)) {
-        return FUN_14061ad70(CStringW(szPath), L"\\");
+        return CStringW(szPath) + L"\\";
     } else {
         return kStartPath;
     }
@@ -905,7 +904,6 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CStringA FUN_14016a5c0(const char* psz, int n);
-CStringA FUN_14038f6d0(const CStringA& kLeft, const char* pszRight);
 
 // @0x141b70290
 void FUN_141b70290()
@@ -932,7 +930,7 @@ void FUN_141b70490(const CStringA& kBase)
     CStringA kPath(kBase);
     HANDLE hFind;
     WIN32_FIND_DATAA kFound;
-    hFind = FindFirstFileA((LPCSTR)FUN_14038f6d0(kPath, "*.*"), &kFound);
+    hFind = FindFirstFileA((LPCSTR)(kPath + "*.*"), &kFound);
     if (hFind != INVALID_HANDLE_VALUE) {
         while (nMore != 0) {
             char szDrive[3];

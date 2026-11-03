@@ -86,7 +86,6 @@ void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, efd::Point3 
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
 CString FUN_14016a5c0(const char* pszPath, int nFlags);             // path conversion
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);   // concatenation
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);          // wide -> narrow
 void FUN_140d73aa0(CStringW strText, int nType, void* pOwner, CStringW strTag);   // show a message box
 CUIService* FUN_1403ed2b0();
@@ -537,7 +536,7 @@ void UIMinimapEditDialog::OnScreenShot()
         const struct tm* pTm = FUN_141a51ec0(&tNow);
         CStringW strName;
         strName.Format(L"\\%d%02d%02d_%02d%02d%02d.png", pTm->tm_year + 1900, pTm->tm_mon + 1, pTm->tm_mday, pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
-        CStringW strPath = FUN_1401d0080(strDirectory, strName);
+        CStringW strPath = strDirectory + strName;
         ecr::RenderService* pRegistry = Unk_GetRenderService(&DAT_143b059e8);
         if (pRegistry != NULL)
         {

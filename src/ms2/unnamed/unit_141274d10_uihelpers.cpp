@@ -536,9 +536,9 @@ unsigned FUN_141275bd0(void*)
 MS2_REPLACE(0x141275bd0, FUN_141275bd0, 33, 0x3752B9CB);
 
 // @0x141275c00
-void FUN_141275c00(int nValue)
+unsigned FUN_141275c00(int nValue)
 {
-    TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nValue);
+    return TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nValue);
 }
 MS2_REPLACE(0x141275c00, FUN_141275c00, 30, 0x3CCFEEBB);
 
@@ -770,7 +770,6 @@ public:
     void FUN_1422e4720();
 };
 CStringW FUN_14183e930(const CStringW&, unsigned nColor);
-CStringW FUN_14061ad70(const CStringW&, const wchar_t*);
 
 // @0x141276700
 void FUN_141276700(MS2Ptr<Unk_GdTextArea> console)
@@ -809,7 +808,7 @@ void FUN_141276880(MS2Ptr<Unk_GdTextArea> console, int nColor, const wchar_t* ps
     va_start(args, pszFormat);
     str.FormatV(pszFormat, args);
     va_end(args);
-    reinterpret_cast<ASTextInput*>(console.operator->())->AppendHtmlW(FUN_14183e930(FUN_14061ad70(str, L"\n"), nColor));
+    reinterpret_cast<ASTextInput*>(console.operator->())->AppendHtmlW(FUN_14183e930(str + L"\n", nColor));
 }
 MS2_REPLACE(0x141276880, FUN_141276880, 246, 0x4A32C7FC);
 

@@ -124,7 +124,6 @@ class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, const CStringW& strText);
-CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -184,7 +183,7 @@ void UIItemSocketSystemDialog::OnLoadComplete()
                 std::pair<int, CStringW>& tab = tabs[i];
                 const int& nTabId = tab.first;
                 const CStringW& strName = tab.second;
-                FUN_1418fff20(&array, nTabId, FUN_1401d0080(strLabel, strName), FUN_1401d0080(strTip, strName));
+                FUN_1418fff20(&array, nTabId, strLabel + strName, strTip + strName);
                 if (nTabId == m_nTab)
                     nSelected = i;
             }

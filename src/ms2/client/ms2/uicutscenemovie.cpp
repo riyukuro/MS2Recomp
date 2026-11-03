@@ -58,7 +58,7 @@ CKeyTable* FUN_1409331f0();
 class Unk_1419e04b0 : public UILoadingProgress { };
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 // "GfxError:{0} {1}({2}) function:{3}"-style formatter (probably a variadic template taking const T&...).
-CString FUN_140c05020(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
+#include "ms2/ms2format.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +133,7 @@ void UICutSceneMovie::OnLoadComplete()
     do {
         m_30->FUN_140bbe640("m_exit", m_pExit);
         if (m_pExit == NULL)
-            throw new GfxExceptionSwfLoad(FUN_140c05020("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
+            throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                         MS2_THIS_FILE, MS2_LINE(118), __FUNCTION__));
     } while (0);
     if (!m_bIntroStory)

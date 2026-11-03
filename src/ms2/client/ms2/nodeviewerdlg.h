@@ -4,6 +4,7 @@
 #pragma once
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/tfunctor_small.h"
+#include <NiNode.h>
 
 // The tree dialog (unrecovered CToolTreeNodesDialog, 0x228 bytes, ctor 0x1418589d0).
 class CToolTreeNodesDialog : public CDialog
@@ -14,10 +15,6 @@ public:
     afx_msg void OnClose();                                         // 0x141858d20
     char m_pad_tree[0x228 - sizeof(CDialog)];
 };
-
-// Smart pointer to the marker NiNode (ctor 0x1409f7170, dtor 0x1409f74b0).
-struct Unk_NodePtr { Unk_NodePtr(void* p); ~Unk_NodePtr(); void* m_p; };
-MS2_CHECK_SIZE(Unk_NodePtr, 8);
 
 class CNodeViewerDlg : public CDialog
 {
@@ -40,6 +37,6 @@ public:
     CToolTreeNodesDialog* m_pTree;                                  // +0x130
     CString m_strNode;                                              // +0x138
     CString m_strInput;                                             // +0x140 (DDX edit 0x4e2)
-    Unk_NodePtr m_node;                                             // +0x148
+    NiNodePtr m_node;                                               // +0x148 the marker node
 };
 MS2_CHECK_SIZE(CNodeViewerDlg, 0x150);

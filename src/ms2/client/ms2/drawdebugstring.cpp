@@ -24,15 +24,8 @@ NiPoint3* FUN_140194470(NiPoint3* pDst, const NiPoint3* pSrc);                  
 bool FUN_140552690(const NiPoint3* pA, const NiPoint3* pB);                             // NiPoint3 ==
 class CrashManagerCli;
 CString FUN_14016a5c0(const char* psz, int nCodePage);                                  // narrows a string
-CString FUN_140298360(const char* psz, const CString& str);                             // operator+(const char*, const CString&)
 
-#ifdef __clang__
-// Bind the exe's operator+(char, const CString&); clang would import an unavailable MFC CopyChars.
-CString FUN_14118c310(char ch, const CString& str);
-inline CString Unk_DbgPrepend(char ch, const CString& str) { return FUN_14118c310(ch, str); }
-#else
 inline CString Unk_DbgPrepend(char ch, const CString& str) { return ch + str; }
-#endif
 
 // @0x14118b420
 CDrawDebugString::CDrawDebugString(const char* pcName, NiColorA kColor) : NiVisualTrackerBase(NiRect<float>(0, 5.0f, 400.0f, 0), false, pcName)
@@ -216,7 +209,7 @@ std::string CDrawDebugString::FUN_14118c120(unsigned nValue)
         ++nDigits;
         if (i - 1 != 0 && nDigits == 3)
         {
-            strOut = FUN_140298360(",", strOut);
+            strOut = "," + strOut;
             nDigits = 0;
         }
     }

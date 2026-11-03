@@ -123,7 +123,6 @@ void FUN_140ae1240(egf::Entity* pEntity, unsigned nProp, const efd::utf8string* 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);             // the scene root of an entity
 CString FUN_1409a2360(const char* psz, int n);               // text conversion
 CString FUN_141b6ed00(const CString& str);                   // normalised copy of a model name
-CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + str
 __int64 FUN_14028d0e0();                                     // the current time
 
 // The owner's position slot (vfunc_18) seen as returning the Vector3 placeholder.
@@ -259,7 +258,7 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
             egf::EntityIDFactory::GetNextID();
             efd::AssetID kAsset;
             CString strName = FUN_141b6ed00(m_spInstrument->m_strAsset);
-            CString strUrn = FUN_140298360("urn:gamebryo-animation:", strName);
+            CString strUrn = "urn:gamebryo-animation:" + strName;
             FUN_140de0cb0(&kAsset, efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
             m_spEntity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce7c0("MS2Actor", kAsset.GetURN(),
                 reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_18())), reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(m_pOwner->vfunc_20())), 1.0f, 0, 0);

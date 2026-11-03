@@ -1,12 +1,11 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Outline render-list pre-processor (NiShaderSortProcessor subclass).
 // MS2-UNIT: ?\ms2outlinepreprocessor.cpp
 // MS2-RANGE: 0x1414d3120-0x1414d4e20 .text$mn
-// MS2-FUNCTIONAL: the ctor differs only in stack slots (the exe keeps the zero-extended loop index at +0x40 and the
-// colour return at +0x48; ours swaps them).
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2outlinepreprocessor.h"
 #include "ms2materialswapprocessor.h"
 #include <atlcoll.h>
+#include "ms2/placeholder/ms2color.h"
 #include <NiRenderObject.h>
 #include <NiMaterial.h>
 #include <NiAVObject.h>
@@ -39,8 +38,7 @@ public:
     static class NiMaterial* CreateMaterial(class NiFixedString const&);
 };
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
-   Unk_Colc FUN_1408a85e0(unsigned c);bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
-void FUN_1402c2870(void* arr);   void FUN_1402bf0f0(void* arr, void* src);
+bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_14098dfc0(class NiAVObject*);   // C3: was FUN_14098dfc0
 bool FUN_141568c90(class NiRenderObject*);   // C3: was FUN_141568c90
 unsigned int FUN_141568dc0(class NiAVObject*);   // C3: was FUN_141568dc0
@@ -86,10 +84,10 @@ MS2OutlinePreProcessor::MS2OutlinePreProcessor()
     float col[10];
     FUN_1414d4110((char*)((void*)FUN_1401d3200()) + 0xb460, arr);
     for (unsigned i = 0; i < 3 && i < arr.GetCount(); ++i) {
-        Unk_Colc c = FUN_1408a85e0(Unk_ColorValue(*(struct Unk_ConstColor const*)(&arr[i])));
-        col[idx++] = c.x;
-        col[idx++] = c.y;
-        col[idx++] = c.z;
+        MS2Color c(Unk_ColorValue(*(struct Unk_ConstColor const*)(&arr[i])));
+        col[idx++] = c.r;
+        col[idx++] = c.g;
+        col[idx++] = c.b;
     }
     float scale = reinterpret_cast<Common::Constants::Value<float>*>((char*)((void*)FUN_1401d3200()) + 0xb4d0)->Read();
     for (unsigned j = 0; j < 9; ++j)
@@ -271,8 +269,8 @@ struct Unk_1414d4110 {
 bool FUN_1414d4110(void* cfg, CAtlArray<COLORREF>& arr)
 {
     if (((Unk_1414d4110*)cfg)->m_a) {
-        FUN_1402c2870(&arr);
-        FUN_1402bf0f0(&arr, (char*)cfg + 0x50);
+        reinterpret_cast<CAtlArray<Unk_ConstColor>&>(arr).RemoveAll();
+        reinterpret_cast<CAtlArray<Unk_ConstColor>&>(arr).Append(*(const CAtlArray<Unk_ConstColor>*)((char*)cfg + 0x50));
         return true;
     }
     if (!reinterpret_cast<Common::Constants::Object*>(cfg)->HasKey())

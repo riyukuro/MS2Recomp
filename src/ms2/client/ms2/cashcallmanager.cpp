@@ -37,19 +37,10 @@ void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); bool IsRegionJP(); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CGameRule* FUN_1401c0d90();
-// A 16-byte item handle.
-struct Unk_CcHandle
-{
-    void* m_p0;
-    void* m_p8;
-    ~Unk_CcHandle() { reinterpret_cast<MS2Ptr<class CItem>*>(this)->~MS2Ptr(); }
-};
-class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); };
-class Unk_Inventory { public: int FUN_140a5f7b0(int nTag, int nRarity); };   // C3: member view (inventory.h)
-extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_CcInventory
-void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
-__int64 FUN_14052cd70(Unk_CcHandle* p);
+void* FUN_1401c0d90();   // C3: returns the game rule
+class CItem;
+class Unk_Inventory { public: int FUN_140a5f7b0(int nTag, int nRarity); MS2Ptr<CItem> FUN_140a5e040(int nSlot); };   // C3: member view (inventory.h)
+extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
 class CItem : public CPtred   // C3: member view for the former free stand-ins
 {
 public:
@@ -57,7 +48,7 @@ public:
 };
 __int64 FUN_140930240();
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-unsigned char FUN_140930b10();
+bool FUN_140930b10();
 extern int DAT_1439f4a7c;
 
 // @0x140b03040
@@ -97,14 +88,14 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     }
     else if (bOwned)
     {
-        if (FUN_1401c0d90()->IsFreeAirTaxiActive() == 0)
+        if (((CGameRule*)FUN_1401c0d90())->IsFreeAirTaxiActive() == 0)
         {
-            Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(10);
-            if (reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator==(0))
-                FUN_140692c90(&hItem, reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb));
-            if (FUN_14052cd70(&hItem) != 0)
+            MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(10);
+            if (hItem.operator==(0))
+                hItem = g_143ab2a90.FUN_140a5e040(0xb);
+            if (hItem.get() != 0)
             {
-                nItemUid = reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator->()->GetItemUid();
+                nItemUid = hItem.operator->()->GetItemUid();
                 nKind = 2;
             }
         }
@@ -121,10 +112,10 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         int nHave = g_143ab2a90.FUN_140a5f7b0(0xb, 0);
         if (nHave >= nNeed)
         {
-            Unk_CcHandle hItem = reinterpret_cast<Unk_CcInventory&>(g_143ab2a90).FUN_140a5e040(0xb);
-            if (reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator==(0))
+            MS2Ptr<CItem> hItem = g_143ab2a90.FUN_140a5e040(0xb);
+            if (hItem.operator==(0))
                 return 0;
-            nItemUid = reinterpret_cast<MS2Ptr<CItem>*>(&hItem)->operator->()->GetItemUid();
+            nItemUid = hItem.operator->()->GetItemUid();
             nKind = 2;
         }
         else

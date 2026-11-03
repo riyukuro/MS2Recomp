@@ -408,11 +408,7 @@ extern "C" int __cdecl _mkdir(const char* _Path);
 #endif
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
-// The exe's out-of-line CStringW operator+ copies (the clang hook build cannot compile ATL's: MFC CopyChars import).
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);         // CStringW + CStringW
-CStringW FUN_1401d0160(const wchar_t* pszA, const CStringW& strB);          // const wchar_t* + CStringW
 int FUN_141a1cae0(TUserCommandInfo* pInfo);                                // folded getter: returns pInfo->chatType (+0x20)
-CStringW FUN_14061ad70(const CStringW& strA, const wchar_t* pszB);          // CStringW + const wchar_t*
 
 using namespace MessengerData;
 
@@ -1186,16 +1182,9 @@ void UIMessenger::FUN_141a0ec30(const CStringW& strText)
         return;
     CStringW strSpace(L" ");
     CStringW strHtml = m_textInput->GetHtmlText();
-#ifdef __clang__
-    // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-    if (FUN_141a14ce0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace), m_textInput->GetMaxChars()))
-    {
-        m_textInput->SetHtmlTextW(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace));
-#else
     if (FUN_141a14ce0(strHtml + strText + strSpace, m_textInput->GetMaxChars()))
     {
         m_textInput->SetHtmlTextW(strHtml + strText + strSpace);
-#endif
         m_textInput->vfunc_24(1);
         int nLength = m_textInput->GetText().GetLength();
         if (0 < nLength)
@@ -1492,12 +1481,7 @@ void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
     } while (0);
     if (strPrefix.IsEmpty())
         FUN_141a146d0(nType);
-#ifdef __clang__
-    // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-    strLine = FUN_1401d0080(strPrefix, strLine);
-#else
     strLine = strPrefix + strLine;
-#endif
     FUN_141a0f1d0(strLine, strLine, 0);
 }
 
@@ -1545,12 +1529,7 @@ bool UIMessenger::FUN_141a11c60(const CStringW& strCommand, CStringW strText, in
     {
         nType = FUN_141a1cae0(spInfo.operator->());
         if (!spInfo->function.IsEmpty())
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-            strText.Replace(strCommand, FUN_1401d0160(L"/", spInfo->function));
-#else
             strText.Replace(strCommand, L"/" + spInfo->function);
-#endif
     }
     *pType = nType;
     if (nType == 0x1b || nType == 10 || nType == 0x15)
@@ -4438,12 +4417,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
         if (bLinks)
         {
             strMsg = strHtml;
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-            CStringW strPart = FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(strCommand, L" "), strClub), L" ");
-#else
             CStringW strPart = strCommand + L" " + strClub + L" ";
-#endif
             if (!FUN_141a14c40(strMsg, strPart))
                 return 0;
         }
@@ -4466,12 +4440,7 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
         if (bLinks)
         {
             strMsg = strHtml;
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-            CStringW strPart = FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(strCommand, L" "), strTarget), L" ");
-#else
             CStringW strPart = strCommand + L" " + strTarget + L" ";
-#endif
             if (!FUN_141a14c40(strMsg, strPart))
                 return 0;
         }

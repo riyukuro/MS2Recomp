@@ -72,7 +72,6 @@ unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker);     // a 
 
 // The UGC managers behind the item.cpp singleton FUN_14052d220 (only the "is the server a test server" query is used).
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
-CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
 CString FUN_1410280d0(int nKind, CString strName);                         // the local file of a ugc content kind
 
 // The music book table of item.cpp (the title of a music book lives at +0x28).
@@ -1115,7 +1114,7 @@ CStringW Unk_CharUploadSNs::ToString() const
 {
     CStringW strSerials;
     for (size_t i = 0; i < m_serials.GetCount(); ++i)
-        strSerials += FUN_1406c6bd0(L"{0} ", m_serials[i]);
+        strSerials += StringFormat<unsigned __int64>(L"{0} ", reinterpret_cast<const unsigned __int64&>(m_serials[i]));
     CStringW strResult;
     strResult = StringFormat<CStringW, CStringW>(L"m_charName={0}, m_uploadSN={1}", m_strCharName, strSerials);
     return strResult;

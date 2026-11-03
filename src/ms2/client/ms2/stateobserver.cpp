@@ -121,7 +121,6 @@ Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPC);             // the actor's actio
 void FUN_141274f50();
 class Unk_SingletonObj;
 Unk_SingletonObj*FUN_140939a10();
-CameraMgr* FUN_1409478c0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class MyPC   // C3: member view for the former free stand-ins
@@ -130,7 +129,6 @@ public:
     void FUN_14152e0c0();
 };
 void FUN_140710590(COutPacket& packet);                     // send
-bool FUN_14025cd60(const CStringW& a, const CStringW& b);   // equal names
 // The NiPoint3 the owner hands out and the efd::Point3 it takes are the same three floats as Vector3 (read through reinterpret_cast).
 
 // @0x140ac4f90
@@ -494,7 +492,7 @@ void StateObserver::FUN_140ac4c00()
     if (pObject == 0)
         return;
     const int nCameraId = 100;
-    FUN_1409478c0()->FUN_140aecbb0(nCameraId, pObject->FUN_14123c580(), true);
+    TSingleton<CameraMgr>::GetInstance()->FUN_140aecbb0(nCameraId, pObject->FUN_14123c580(), true);
     m_nPending = 0;
 }
 
@@ -537,7 +535,7 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
         return;
     if ((__int64)spVictim->FUN_1416c22f0() != m_spObserve->m_nTarget)
         return;
-    if (FUN_14025cd60(strVictim, strKiller))
+    if (strVictim == strKiller)
     {
         ObserveOther();
         return;

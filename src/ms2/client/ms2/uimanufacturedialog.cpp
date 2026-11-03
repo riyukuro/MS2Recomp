@@ -82,26 +82,11 @@ class ASDialog : public ASDisplayObjectContainer
 {
 public:
     virtual void vfunc_2(int, int, int);                        // place the movie
-    int FUN_1422c13b0();                                        // width
 };
 
-// The maid record (CMaid) behind a maid npc: only the fields used here.
-class Unk_UmMaid : public CPtred
-{
-public:
-    char m_pad_18[0x34 - 0x18];
-    int m_34;                                                   // +0x34 the maid (npc table key)
-    char m_pad_38[0x50 - 0x38];
-    int m_50;                                                   // +0x50 the affinity experience
-    int m_54;                                                   // +0x54 the affinity grade
-    char m_pad_58[0x60 - 0x58];
-    int m_60;                                                   // +0x60
-};
-MS2_CHECK_OFFSET(Unk_UmMaid, m_34, 0x34);
-MS2_CHECK_OFFSET(Unk_UmMaid, m_60, 0x60);
 
-// The maid npc (CNpc): the maid record.
-class Unk_MfNpc { public: MS2Ptr<Unk_UmMaid> FUN_141093800(); };
+// The maid npc: the maid record (placeholder/cnpc.h).
+class CNpc { public: MS2Ptr<CMaid> FUN_141093800(); };
 
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 // The local player (only its stats).
@@ -217,17 +202,16 @@ FMT_VARIADIC_W(CStringW, BlockFormat, int)
 CStringW GetStringCommon(int nStringId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& strArg0, const CStringW& strArg1);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
     // the experience of one affinity grade
-CGameRule* FUN_1401c0d90();
+void* FUN_1401c0d90();
 __int64 GetServerTime();                                        // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix);
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
@@ -240,12 +224,13 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
 void FUN_141415600(const CString& strKey);
 void FUN_14151f200();
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, int n);
+int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* p);
 UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by UI id
 
 // The player's inventory (owned counts) and the account id.
-class Unk_MfCubeService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nAccountId, int nMeso, int* pnCode); };
+// The cube map service (cubemapinformationservice_3.h; its include adds egf::kENTITY_INVALID's dynamic initializer).
+class CubeMapInformationService : public efd::ISystemService { public: int FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount); };
+class Unk_MfCubeService : public CubeMapInformationService { };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -278,7 +263,6 @@ public:
 class Unk_UmList : public Unk_UmCtl
 {
 public:
-    void FUN_1422dd230(const ASObj& row);                       // append a row
 };
 
 // ---- the Invoke wrappers this unit owns (inline COMDATs) ----
@@ -395,7 +379,7 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+    if (FUN_1418fc760(szMethod, (void*)pArgs, nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnClose", szMethod) == 0)
     {
@@ -476,7 +460,7 @@ void UIManufactureDialog::vfunc_43()
         int nY = pRef->GetIllustGlobalX() - 0x14;
         if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0() - 2);
+            pDialog->vfunc_2(5, nY, nX - pDialog->GetHeightCeil() - 2);
             return;
         }
     }
@@ -496,7 +480,7 @@ int UIManufactureDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         ATL::CAtlArray<CStringW> kArr;
         FUN_14151f200();
-        if (nResult == 0 && FUN_1403b3c40(strTag, L"OnCancel"))
+        if (nResult == 0 && strTag == L"OnCancel")
         {
             FUN_1412e69a0();
             return 1;
@@ -538,7 +522,7 @@ void UIManufactureDialog::vfunc_72()
     {
         int nLeft = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
         int nCurrency = 3;
-        if (FUN_140166410()->FUN_14036d710(0x102))
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
             nCurrency = 10;
         m_30->Invoke("setItemMeratLabel", FormatStringId<CStringW>(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
         int nTotal = FUN_1412dd760((struct Unk_MdMaidItem*)(spItem.operator->()));
@@ -569,13 +553,13 @@ void UIManufactureDialog::FUN_1412e34c0()
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    Unk_UmValuePtr<Unk_UmDescRow> spDesc = reinterpret_cast<Unk_UmDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid->m_34);
+    Unk_UmValuePtr<Unk_UmDescRow> spDesc = reinterpret_cast<Unk_UmDescTable*>(TSingleton<CMaidDescTable>::GetInstance())->FUN_14067f780(spMaid->m_nMaidId);
     if (spDesc.IsNull())
         return;
     CStringW strName = FormatStringId<CStringW>(0x7af, spDesc->m_10);
@@ -586,13 +570,13 @@ void UIManufactureDialog::FUN_1412e34c0()
         strMood = GetStringCommon(0x7a0);
     else
         strMood = GetStringCommon(0x7a1);
-    CStringW strGrade = FormatStringId<CStringW, int>(0x7b0, strMood, spMaid->m_54);
-    int nNeed = TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid->m_54);
+    CStringW strGrade = FormatStringId<CStringW, int>(0x7b0, strMood, spMaid->m_nOrder);
+    int nNeed = TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid->m_nOrder);
     int nOne = 1;
     int nMax = std::max<int>(nOne, nNeed);
-    CStringW strExp = FUN_14028dee0(0x7b1, spMaid->m_50, spMaid->m_60, nMax);
+    CStringW strExp = FUN_14028dee0(0x7b1, spMaid->m_nMood, spMaid->m_nExp, nMax);
     if (reinterpret_cast<CMaid*>(spMaid.operator->())->IsAffinityLevelAtMax() != 0)
-        strExp = BlockFormat<int>(0x7b2, spMaid->m_50);
+        strExp = BlockFormat<int>(0x7b2, spMaid->m_nMood);
     m_30->FUN_1412e80d0("setTitle", CStringW(strName), CStringW(strGrade), CStringW(strExp));
 }
 
@@ -601,13 +585,13 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    Unk_UmBookPtr spBook = ((class Unk_UmBookTable*)FUN_1412db940())->FUN_140685da0(spMaid->m_34);
+    Unk_UmBookPtr spBook = ((class Unk_UmBookTable*)FUN_1412db940())->FUN_140685da0(spMaid->m_nMaidId);
     if (spBook == 0)
         return;
     if (MS2Ptr<Unk_UmList> spList = FUN_140c02900<Unk_UmList>("m_scrollList"))
@@ -631,11 +615,11 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                 else
                     row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->m_level));
                 m_mapRecipes.SetAt((int)i, spRef->m_id);
-                int bAvailable = spRef->m_level <= spMaid->m_54;
+                int bAvailable = spRef->m_level <= spMaid->m_nOrder;
                 if (bAvailable != 0)
                     nFirst = (int)i;
                 row.FUN_1407cb9c0("available", bAvailable);
-                spList->FUN_1422dd230(row);
+                reinterpret_cast<ASCoreList*>(spList.get())->AddItem(row);
                 int nItemId = spRecipe->m_50;
                 int nRarity = spRecipe->m_58;
                 int nAmount = spRecipe->m_54;
@@ -695,7 +679,7 @@ void UIManufactureDialog::FUN_1412e4240()
             ATL::CTimeSpan span = tReady - tNow;
             int nLeft = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
             int nCurrency = 3;
-            if (FUN_140166410()->FUN_14036d710(0x102))
+            if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
                 nCurrency = 10;
             m_30->Invoke("setItemMeratLabel", FormatStringId<CStringW>(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
             if (tReady > tNow)
@@ -720,10 +704,10 @@ void UIManufactureDialog::FUN_1412e48a0()
     Unk_UmPC* pPlayer = ((Unk_UmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nRecipeId = 0;
@@ -733,14 +717,14 @@ void UIManufactureDialog::FUN_1412e48a0()
     if (spRecipe.get() != 0)
     {
         int nGrade = 0;
-        if (((class CMaidRecipeGroupTable*)FUN_1412db940())->GetRequireLevel(spMaid->m_34, nRecipeId, nGrade) == 0)
+        if (((class CMaidRecipeGroupTable*)FUN_1412db940())->GetRequireLevel(spMaid->m_nMaidId, nRecipeId, nGrade) == 0)
             return;
         int bAvailable = 1;
-        if (nGrade > spMaid->m_54)
+        if (nGrade > spMaid->m_nOrder)
             bAvailable = 0;
         if (m_nState != 0)
             bAvailable = 0;
-        unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3e), spRecipe->m_2c);
+        unsigned nMeso = ((CGameRule*)FUN_1401c0d90())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3e), spRecipe->m_2c);
         CStringW strGrade = BlockFormat<int>(0x7aa, nGrade);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->m_50);
         ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade()]);
@@ -772,7 +756,7 @@ void UIManufactureDialog::FUN_1412e48a0()
             if (spData == 0)
                 continue;
             int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->m_nRarity : FUN_14053feb0(nIngItem);
-            unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIngredient->m_nCount);
+            unsigned nNeeded = ((CGameRule*)FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->GetAbilityRate((SAType)0x3f), spIngredient->m_nCount);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
@@ -832,14 +816,14 @@ void UIManufactureDialog::FUN_1412e5c90()
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     FUN_1412e48a0();
-    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(0, pNpc);
+    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(0, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
@@ -848,10 +832,10 @@ void UIManufactureDialog::FUN_1412e5c90()
 // @0x1412e5dd0
 void UIManufactureDialog::FUN_1412e5dd0(int nRow)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nRecipeId = 0;
@@ -861,7 +845,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
     CManufactureManager::GetInstance()->SendRequest4(m_nManufactureId, nRecipeId, &nResult);
     if (nResult != 1)
     {
-        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
@@ -871,10 +855,10 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
 // @0x1412e5f70
 void UIManufactureDialog::FUN_1412e5f70(int nRow)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nRecipeId = 0;
@@ -884,7 +868,7 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
     CManufactureManager::GetInstance()->SendRequest5(m_nManufactureId, nRecipeId, &nResult);
     if (nResult != 1)
     {
-        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
@@ -894,13 +878,13 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
 // @0x1412e6110
 void UIManufactureDialog::FUN_1412e6110(int nResult)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
@@ -914,17 +898,17 @@ void UIManufactureDialog::FUN_1412e6110(int nResult)
 // @0x1412e6250
 void UIManufactureDialog::OnRecieve()
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nResult;
     CManufactureManager::GetInstance()->SendRequest6(m_nManufactureId, &nResult);
     if (FUN_1412e7170(nResult) == 0)
     {
-        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
@@ -941,7 +925,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     CMsTime tNow(GetServerTime());
     ATL::CTimeSpan span = tReady - tNow;
     __int64 nCost = ((class CLua*)FUN_1401c0db0())->CalcManufactureCompleteByMerat(span.GetTotalSeconds());
-    if (FUN_140166410()->FUN_14036d710(0x102))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x102))
     {
         if (!FUN_140d86260()->vfunc_41(nCost) && !FUN_140d86260()->vfunc_40(nCost))
         {
@@ -957,17 +941,17 @@ void UIManufactureDialog::OnRecieveByMerat()
             return;
         }
     }
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nResult;
     CManufactureManager::GetInstance()->SendRequest7(m_nManufactureId, &nResult);
     if (FUN_1412e7170(nResult) == 0)
     {
-        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
@@ -977,17 +961,17 @@ void UIManufactureDialog::OnRecieveByMerat()
 // @0x1412e66f0
 void UIManufactureDialog::OnRecieveJackpot()
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nResult;
     CManufactureManager::GetInstance()->SendRequest9(m_nManufactureId, &nResult);
     if (FUN_1412e7170(nResult) == 0)
     {
-        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
@@ -997,13 +981,13 @@ void UIManufactureDialog::OnRecieveJackpot()
 // @0x1412e6850
 void UIManufactureDialog::FUN_1412e6850(int nResult)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
@@ -1017,17 +1001,17 @@ void UIManufactureDialog::FUN_1412e6850(int nResult)
 // @0x1412e69a0
 void UIManufactureDialog::FUN_1412e69a0()
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     int nResult;
     CManufactureManager::GetInstance()->SendRequest10(m_nManufactureId, &nResult);
     if (nResult != 4)
     {
-        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+        CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
             pTalk->FUN_141b1a8e0(strText, "", "");
@@ -1037,13 +1021,13 @@ void UIManufactureDialog::FUN_1412e69a0()
 // @0x1412e6af0
 void UIManufactureDialog::FUN_1412e6af0(int nResult)
 {
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
+    CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
         pTalk->FUN_141b1a8e0(strText, "", "");
@@ -1059,10 +1043,10 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
 {
     if (m_30.IsNull())
         return;
-    Unk_MfNpc* pNpc = reinterpret_cast<Unk_MfNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
+    CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
     MS2Ptr<CItem> spItem(new CItem());
@@ -1086,7 +1070,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
             if (nBonus != 0)
             {
                 if (nMerat != 0)
-                    strBonus = FUN_140656190(L"{0} {1}", BlockFormat<int>(0x7c2, nBonus), BlockFormat<int>(0x7c3, spMaid->m_54));
+                    strBonus = StringFormat(L"{0} {1}", BlockFormat<int>(0x7c2, nBonus), BlockFormat<int>(0x7c3, spMaid->m_nOrder));
                 else
                     strBonus = BlockFormat<int>(0x7c2, nBonus);
             }

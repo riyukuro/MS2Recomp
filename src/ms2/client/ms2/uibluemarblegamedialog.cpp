@@ -71,9 +71,6 @@ extern Unk_Inventory g_143ab2a90;                                   // the playe
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args);
-CStringW FUN_140938ae0(CStringW strKey, const int& n);              // localized text with one number
-CStringW FUN_14062b4f0(CStringW strKey, const int* pn);             // localized text with one number (pointer form)
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
 CStringW Name_140218290(int n);                                     // number text
 CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // multibyte to wide
@@ -255,7 +252,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
         } else if (nKind == 6) {
             int nResult = BM_PKT->ReadUInt8();
             if (nResult == 1) {
-                CStringW strText = FUN_140938ae0(CStringW(L"s_bluemarble_result_consume_fail"), m_nConsumeItemId);
+                CStringW strText = FUN_14028dfa0<unsigned>(CStringW(L"s_bluemarble_result_consume_fail"), reinterpret_cast<const unsigned&>(m_nConsumeItemId));
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
                 FUN_1412751f0(strText, 1, 1);
             } else if (nResult == 4) {
@@ -344,8 +341,8 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
             }
         } else if (nKind != 0) {
             CStringW strKind = Name_140218290(nKind);
-            CStringW strAction = FUN_14062b4f0(FUN_1401e8510(L"s_bluemarble_action_{0}", strKind), &nArg);
-            CStringW strTooltip = FUN_140298ea0(FUN_1401e8510(L"s_bluemarble_action_tooltip_{0}", strKind));
+            CStringW strAction = FUN_14028dfa0<int>(StringFormat<CStringW>(L"s_bluemarble_action_{0}", strKind), nArg);
+            CStringW strTooltip = FUN_140298ea0(StringFormat<CStringW>(L"s_bluemarble_action_tooltip_{0}", strKind));
             row.FUN_1407cbb20("action", strKind);
             row.FUN_1407cbb20("actionStr", strAction);
             row.FUN_1407cbb20("tooltipStr", strTooltip);
@@ -380,7 +377,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 if (nRound == 0)
                     strRound = GetStringCommonByKey(L"s_bluemarble_reward_default");
                 else
-                    strRound = FUN_14062b4f0(CStringW(L"s_bluemarble_reward_repeat"), &nRound);
+                    strRound = FUN_14028dfa0<int>(CStringW(L"s_bluemarble_reward_repeat"), nRound);
                 row.FUN_1407cbb20("round", strRound);
                 rewards.PushObj(row);
             }
@@ -421,7 +418,7 @@ void UIBlueMarbleGameDialog::FUN_140f23200(int nAction, int nArg, int nPrevPosit
         m_30->Invoke("onActionNotifyParadise", nArg);
         break;
     default:
-        strMessage = FUN_14062b4f0(FUN_1401e8510(L"s_bluemarble_action_{0}", Name_140218290(nAction)), &nArg);
+        strMessage = FUN_14028dfa0<int>(StringFormat<CStringW>(L"s_bluemarble_action_{0}", Name_140218290(nAction)), nArg);
         if (strMessage.GetLength() > 0)
             m_30->Invoke("onActionNotify", CStringW(strMessage));
         break;
@@ -472,7 +469,7 @@ void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
 // @0x140f23940
 void UIBlueMarbleGameDialog::FUN_140f23940()
 {
-    CStringW strText = m_nFreeDice > 0 ? FUN_14062b4f0(CStringW(L"s_bluemarble_free_dice"), &m_nFreeDice)
+    CStringW strText = m_nFreeDice > 0 ? FUN_14028dfa0<int>(CStringW(L"s_bluemarble_free_dice"), m_nFreeDice)
                                        : GetStringCommonByKey(L"s_bluemarble_dice");
     if (m_30.get())
         m_30->Invoke("updateDiceButton", CStringW(strText), m_nFreeDice);
@@ -483,7 +480,7 @@ void UIBlueMarbleGameDialog::FUN_140f23b90()
 {
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_coinCount")) {
         int nCoins = g_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
-        CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_coin_count"), &nCoins);
+        CStringW strText = FUN_14028dfa0<int>(CStringW(L"s_bluemarble_coin_count"), nCoins);
         spText->SetTextW(strText);
     }
 }
@@ -493,7 +490,7 @@ void UIBlueMarbleGameDialog::FUN_140f23ca0()
 {
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_finishCount")) {
         int nFinish = m_nPosition / 0x1c;
-        CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_finish_count"), &nFinish);
+        CStringW strText = FUN_14028dfa0<int>(CStringW(L"s_bluemarble_finish_count"), nFinish);
         spText->SetTextW(strText);
     }
 }

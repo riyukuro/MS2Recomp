@@ -20,19 +20,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-
-// A game event (T of the pointer GameEventManagerCli::FindEvent returns; name unknown).
-class Unk_GameEvent : public CPtred
-{
-};
-
-// client\ms2\gameeventmanagercli.cpp (instance pointer 0x143aab380).
-class GameEventManagerCli : public TSingleton<GameEventManagerCli>
-{
-public:
-    bool IsEventClosed(CStringW strName);           // 0x140cead80
-    MS2Ptr<Unk_GameEvent> FindEvent(int nId);       // 0x140ceacd0
-};
+#include "ms2/commonfiles/gameevent.h"
+#include "ms2/placeholder/gameeventmanagercli.h"
 
 int FUN_140718200(const CStringW& value);           // _wtoi (packetlogger.cpp)
 
@@ -286,10 +275,10 @@ BOOL CAchieve::CheckRequire()
         switch (nType)
         {
         case 1:
-            if (GameEventManagerCli::GetInstance()->IsEventClosed(m_pData->m_aRequire[i]))
+            if (GameEventManagerCli::GetInstance()->IsEnabled(m_pData->m_aRequire[i]))
                 return FALSE;
         case 2:
-            if (GameEventManagerCli::GetInstance()->FindEvent(FUN_140718200(m_pData->m_aRequire[i])) != NULL)
+            if (GameEventManagerCli::GetInstance()->Find(FUN_140718200(m_pData->m_aRequire[i])) != NULL)
                 return FALSE;
             break;
         }

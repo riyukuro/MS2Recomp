@@ -126,11 +126,10 @@ class Unk_MiScript : public AScript
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
-CString FUN_140be2000(const char* szFormat, const char* a1, const char* a2, const int& a3, const char* a4);
+template <class A, class B, class C, class D> CString StringFormat(const char* szFormat, const A& a, const B& b, const C& c, const D& d);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW BlockFormat(int nId);                                  // string table text by id
-CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);       // formatted text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
+template <class T1> CStringW FUN_14028dfa0(CStringW strKey, const T1& a1);
 void FUN_140d73aa0(CStringW strText, int nType, void* pData, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -314,7 +313,7 @@ void UIMyInfoDialog::OnLoadComplete()
     {
         m_30->FUN_140bbe640<ASButton>("m_closet", m_280);
         if (m_280 == 0)
-            throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(171), "UIMyInfoDialog::OnLoadComplete"));
+            throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(171), "UIMyInfoDialog::OnLoadComplete"));
     } while (0);
     if (m_280.get() != 0)
     {
@@ -940,7 +939,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
             int nSeconds = kSpan.GetSeconds();
             if (nDays > 0)
             {
-                strRemain = FUN_14062b4f0(CStringW(L"s_item_word_d"), &nDays);
+                strRemain = FUN_14028dfa0(CStringW(L"s_item_word_d"), nDays);
                 if (nHours == 0 && nMinutes == 0)
                     m_274 = (int)FUN_14028d260((float)nSeconds);
                 else
@@ -948,12 +947,12 @@ void UIMyInfoDialog::FUN_141a5b6c0()
             }
             else if (nHours > 0)
             {
-                strRemain = FUN_14062b4f0(CStringW(L"s_item_word_h"), &nHours);
+                strRemain = FUN_14028dfa0(CStringW(L"s_item_word_h"), nHours);
                 m_274 = nMinutes > 0 ? (int)FUN_14028d260((float)MinutesToSeconds(nMinutes)) : (int)FUN_14028d260((float)nSeconds);
             }
             else if (nMinutes > 0)
             {
-                strRemain = FUN_14062b4f0(CStringW(L"s_item_word_m"), &nMinutes);
+                strRemain = FUN_14028dfa0(CStringW(L"s_item_word_m"), nMinutes);
                 m_274 = (int)FUN_14028d260((float)nSeconds);
             }
             else
@@ -961,7 +960,7 @@ void UIMyInfoDialog::FUN_141a5b6c0()
                 strRemain = GetStringCommonByKey(L"s_item_word_s_shortly");
                 m_274 = (int)FUN_14028d260((float)nSeconds);
             }
-            strPeriod = FUN_1405c2690(CStringW(L"s_char_info_codi_tab_period_fmt"), strRemain);
+            strPeriod = FUN_14028dfa0(CStringW(L"s_char_info_codi_tab_period_fmt"), strRemain);
             if (m_274 == 0)
                 m_274 = 1000;
         }

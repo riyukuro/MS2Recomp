@@ -204,12 +204,8 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 CStringW BlockFormat(int nStrId);                                   // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStrId);
-CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned int& n0);
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
-CStringW FUN_1412e7c20(int nStrId, const CStringW& a0, const int& a1);   // FormatStringId<CStringW, int>
-CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a0, const CStringW& a1);
-CStringW FUN_140763a90(const wchar_t* szFormat, const CStringW& a0, const int& a1, const CStringW& a2);
-CString FUN_140298360(const char* szPrefix, const CString& str);
+template <class A, class B> CStringW FUN_14028dee0(int nStrId, const A& a0, const B& a1);   // FormatStringId
 void FUN_141275260(int nStrId, int a, int b);                       // system message by string id
 void FUN_1412751f0(const CStringW& strText, int a, int b);
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
@@ -657,7 +653,7 @@ public:
     bool FUN_141532fa0(int n);
     void* m_pad_00; void* m_pad_08;
 };
-CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
+template <class A> CStringW BlockFormat(int nId, const A& a);
 class Unk_UcUiMgr : public CUIService
 {
 };
@@ -755,11 +751,11 @@ void FUN_1418fe280(const CString& strUrl)
     CString strParams(strUrl);
     if (strcmp("chrome.exe", PathFindFileNameA(szExe)) == 0)
     {
-        strParams = FUN_140298360(" --new-window ", strUrl);
+        strParams = " --new-window " + strUrl;
     }
     else if (strcmp("firefox.exe", PathFindFileNameA(szExe)) == 0)
     {
-        strParams = FUN_140298360(" -new-window ", strUrl);
+        strParams = " -new-window " + strUrl;
     }
     ShellExecuteA(0, "open", szExe, strParams, "", SW_SHOW);
 }
@@ -846,7 +842,7 @@ CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId)
         *pnVSpace = -6;
         break;
     case 2:
-        strIcon = FUN_140292a70(L"export_common_icon_item_{0}", nItemId);
+        strIcon = StringFormat<unsigned>(L"export_common_icon_item_{0}", nItemId);
         *pnVSpace = -6;
         break;
     case 3:
@@ -929,7 +925,7 @@ MS2_REPLACE(0x1418fe870, FUN_1418fe870, 830, 0x0E450D78);
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg)
 {
     if (nCurrency == 2)
-        return FUN_1412e7c20(0x989, FUN_1409404f0(nAmount), nArg);
+        return FUN_14028dee0<CStringW, unsigned>(0x989, FUN_1409404f0(nAmount), reinterpret_cast<const unsigned&>(nArg));
     int nVSpace = 0;
     CStringW strIcon = FUN_1418fe870(nCurrency, &nVSpace, 0);
     if (!strIcon.IsEmpty())
@@ -964,7 +960,7 @@ MS2_REPLACE(0x1418fee40, FUN_1418fee40, 188, 0x140A38A2);
 // @0x1418fef10
 CStringW FUN_1418fef10(int nArg, __int64 nAmount)
 {
-    return FUN_1412e7c20(0x989, FUN_1409404f0(nAmount), nArg);
+    return FUN_14028dee0<CStringW, unsigned>(0x989, FUN_1409404f0(nAmount), reinterpret_cast<const unsigned&>(nArg));
 }
 MS2_REPLACE(0x1418fef10, FUN_1418fef10, 122, 0x4DA4F573);
 
@@ -1091,7 +1087,7 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
         break;
     case 2:
     {
-        CStringW strText = FUN_1409e97f0(0x38, reinterpret_cast<const unsigned&>(nItemId));
+        CStringW strText = BlockFormat<unsigned>(0x38, reinterpret_cast<const unsigned&>(nItemId));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
         FUN_1412751f0(strText, 1, 1);
         break;
@@ -1375,7 +1371,7 @@ CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline)
         if (nCap == 0)
         {
             strFormat += L"<img src='{0}' vspace='{1}'/> {2}";
-            return FUN_140763a90(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount));
+            return StringFormat<CStringW, int, CStringW>(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount));
         }
         strFormat += L"<img src='{0}' vspace='{1}'/> {2} / {3}";
         return StringFormat(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
@@ -1386,7 +1382,7 @@ CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline)
         return StringFormat<CStringW>(strFormat, FUN_1409404f0(nAmount));
     }
     strFormat += L"{0} / {1}";
-    return FUN_140656190(strFormat, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
+    return StringFormat<CStringW, CStringW>(strFormat, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
 }
 MS2_REPLACE(0x141900120, FUN_141900120, 1002, 0xC3DC0860);
 

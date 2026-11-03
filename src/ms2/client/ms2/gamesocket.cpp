@@ -406,7 +406,7 @@ void CGameSocket::FUN_1412672d0()
     m_sequence=0; m_out->Reset();
     if(((void*)FUN_140e800e0())) {
         void* settings=((void*)((class CReconnectionManagerCli*)(void*)(((void*)FUN_140e800e0())))->GetOptions()); BOOL enabled=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(0)==1 ? TRUE : FALSE;
-        if(enabled) { int value=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(1); m_out->FUN_140209340(value); }
+        if(enabled) { int value=((class ReconnectionOptions*)(void*)(settings))->FUN_140aadf90(1); m_out->SetLimit(value); }
         m_out->SetCaptureEnabled(enabled);
     }
 }

@@ -62,7 +62,6 @@ bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // case-inse
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
@@ -182,7 +181,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
     m_bSound = true;
     m_bSwap = m_bOwnA;
     m_guildA.m_strTime = FormatStringId<int, int>(0x3ff, m_guildA.m_nMin, m_guildA.m_nSec);
-    m_guildB.m_strTime = FUN_1401ceea0(L"{0}", m_guildB.m_nMin);
+    m_guildB.m_strTime = StringFormat<int>(L"{0}", reinterpret_cast<const int&>(m_guildB.m_nMin));
     if (m_guildB.m_nSec > 0)
     {
         m_guildB.m_strTime = FormatStringId<int, int>(0x3ff, m_guildB.m_nMin, m_guildB.m_nSec);

@@ -103,6 +103,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/client/ms2/uimessageboxdata.h"  // C3: CMsgBoxData
 
 // ---- unit-local placeholders (unrecovered classes / helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -154,11 +155,10 @@ public:
 };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 
-// The search state of the party / solo mode (FUN_1409670d0).
+// The search state of the party / solo mode (TSingleton<CPartyManager>::GetInstance).
 class Unk_DsSearchState
 {
 };
-void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -295,8 +295,7 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);
 CStringW TranslateEnumDungeonGroup(unsigned nDungeonKind);
 CStringW FUN_140298ea0(CStringW);
 void FUN_1412751b0(const CStringW& text, int flags);
-class Unk_DsMsgBox : public CPtred {};
-MS2Ptr<Unk_DsMsgBox> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
+MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_140d73ff0(CStringW);
 
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType);
@@ -468,7 +467,7 @@ MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, SendPartyMode32, 128, 0x4EC
 // @0x140e19770
 void UIDungeonSearchPage::FUN_140e19770()
 {
-    bool bSearching = ((class CPartyManager*)(void*)(FUN_1409670d0()))->IsMatchSearching(1);
+    bool bSearching = TSingleton<CPartyManager>::GetInstance()->IsMatchSearching(1);
     FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressIcon", bSearching);
     FUN_140cff840((*m_movie).FUN_1422bb890(), "m_progressBg", bSearching);
     m_findButton->vfunc_4(!bSearching);
@@ -493,9 +492,9 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
         return;
     short nLevelMin = 0;
     int nLevelMax = 0;
-    if (((class CPartyManager*)(void*)(FUN_1409670d0()))->IsInParty()) {
-        nLevelMin = ((class CPartyManager*)(void*)(FUN_1409670d0()))->GetMinMemberLevel();
-        nLevelMax = ((class CPartyManager*)(void*)(FUN_1409670d0()))->FUN_14162c1e0();
+    if (TSingleton<CPartyManager>::GetInstance()->IsInParty()) {
+        nLevelMin = TSingleton<CPartyManager>::GetInstance()->GetMinMemberLevel();
+        nLevelMax = TSingleton<CPartyManager>::GetInstance()->FUN_14162c1e0();
     } else {
         nLevelMin = pActor->vfunc_78();
         nLevelMax = ((class MyPC*)(void*)(pActor))->FUN_14152ea50();
@@ -503,7 +502,7 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
     Unk_DsRoomVec rooms;
     TSingleton<DungeonRoomTable>::GetInstance()->GetMatchRooms(nLevelMin, nLevelMax, reinterpret_cast<std::vector<DungeonRoomPtr>&>(rooms));
     for (unsigned i = 0; i < rooms.size(); ++i) {
-        if (!((class CPartyManager*)(void*)(FUN_1409670d0()))->CanEnterDungeonRoom(reinterpret_cast<DungeonRoom*>(rooms[i].operator->())->GetDungeonRoomID()))
+        if (!TSingleton<CPartyManager>::GetInstance()->CanEnterDungeonRoom(reinterpret_cast<DungeonRoom*>(rooms[i].operator->())->GetDungeonRoomID()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;

@@ -310,7 +310,6 @@ class Unk_PCBaseComp_b18 : public RideeItemInfo
 
 CStringW FUN_14016a730(const char* psz, int nCodePage);      // multi-byte to wide
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);   // wide to multi-byte
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 // Hidden (reported) content.
 class Unk_MeratBlindManager* FUN_1409c1730();   // C3: was FUN_1409c1730
 
@@ -1341,11 +1340,7 @@ void CUgcManager::FUN_1418826a0(int nResult)
         {
             CStringW strTitle = GetStringCommon(0x446);
             CStringW strTime = FUN_140a2fcd0((__int64)blocked->m_38, blocked->expiry);
-#ifdef __clang__
-            FUN_1412751b0(FUN_1401d0080(strTitle, strTime), 0x14); // exe operator+; clang would import MFC CopyChars
-#else
             FUN_1412751b0(strTitle + strTime, 0x14);
-#endif
         }
     }
 }
@@ -3122,13 +3117,7 @@ void CUgcManager::FUN_14188b4e0()
         CreateDirectoryW(FUN_14016a730(".\\Custom\\Download\\MeratMarket\\Limited", 0), NULL);
     }
     CStringW strConvert = FUN_14016a730(".\\Custom\\Convert", 0);
-#ifdef __clang__
-    // clang: CStringW operator+ would import MFC CopyChars; append instead
-    CStringW strFind(strConvert);
-    strFind += L"\\.dds";
-#else
     CStringW strFind = strConvert + L"\\.dds";
-#endif
     WIN32_FIND_DATAW fd;
     HANDLE hFind = FindFirstFileW(strFind, &fd);
     do

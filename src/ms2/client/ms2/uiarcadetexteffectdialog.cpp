@@ -19,7 +19,7 @@
 #include "hook/ms2hook.h"
 
 // The localisation helper of commonfiles (a string key plus one int argument): looks the key up and formats it.
-CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // @0x140ba7d90
 UIArcadeTextEffectDialog::UIArcadeTextEffectDialog()
@@ -67,7 +67,7 @@ void UIArcadeTextEffectDialog::FUN_140ba7fe0(int nMode, CInPacket& packet)
             if (nCount <= 0)
                 m_strText = L"";
             else
-                m_strText = FUN_14062b4f0(CStringW(L"s_arcade_text_effect_consecutive_win"), &nCount);
+                m_strText = FUN_14028dfa0<int>(CStringW(L"s_arcade_text_effect_consecutive_win"), nCount);
         }
         if (UIDialog::FUN_141924630())
             FUN_140ba8160();

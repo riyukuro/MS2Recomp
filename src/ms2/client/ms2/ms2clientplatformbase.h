@@ -183,7 +183,6 @@ public:
     Unk_NexonAnalytics() : m_p(0) {}                            // @0x140c77070
     ~Unk_NexonAnalytics();                                      // @0x140c77260 -> 0x14092cbf0
     const char* GetModuleName() const;                          // @0x140c778f0 "NexonAnalytics64.dll"
-    bool FUN_14092ca70(const char* pszModule);
     bool FUN_14092d1f0(int nCode, const CStringA& strLog);
     bool FUN_14092d280(int nCode, const CStringA& strLog);
     bool FUN_14092ce80(const Unk_NxString& kVersion, const Unk_NxString* pHost);

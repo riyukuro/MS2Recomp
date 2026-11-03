@@ -59,7 +59,7 @@ public:
     CString GetDataPath();                                        // m_strDataPath (+0xa8)
     void SetStickyKeysDisabled(bool bDisable);                              // sticky-keys hotkey off (saves the flags) / restore
     static void DestroyEntity(egf::Entity* pEntity);                // drops the entity's scene-graph override and destroys it
-    static void DestroyEntityById(egf::EntityID id);                    // same for an entity id
+    static void DestroyEntityById(const egf::EntityID& id);                  // same for an entity id
     static int FUN_1414738f0(int nIndex);                           // s_143add400[nIndex] (8 entries)
     void SetMainThreadId(DWORD dwThreadId);                           // +0xb0
     bool IsMainThread();                                           // called on the main thread

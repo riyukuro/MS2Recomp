@@ -127,7 +127,7 @@ void FUN_141a5d0a0(int bUse);                               // the tutorial weap
 class TiXmlElement { public: const char* Attribute(const char* pszName) const; };   // C3: member view
 class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszName) const; const TiXmlElement* NextSiblingElement(const char* pszName) const; };   // C3: member view
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
-int FUN_140e8ecb0(Unk_140165cf0* pElem, const char* pszName, int& nOut);   // the side popup ui type
+int Parse_14021abf0(const CStringA& strName);   // the side popup ui type (commonenum.cpp)
 unsigned FUN_141389420(const CStringA& strName, unsigned nDefault);      // the limit kind of a name
 CGuideControllerType FUN_14021ade0(const CStringA& strName);
 MS2Ptr<CGuideCondition> FUN_1413a52c0(Unk_140165cf0* pElem);              // the condition of a <condition> element
@@ -1347,7 +1347,7 @@ void CGuideActionSideNpcTalk::vfunc_2(Unk_140165cf0* pElem)
     CGuideAction::vfunc_2(pElem);
     m_uiType = 0;
     m_duration = 3000;
-    FUN_140e8ecb0(pElem, "uiType", m_uiType);
+    XmlEnumName<int, Parse_14021abf0>(pElem, "uiType", m_uiType);
     XmlGetAttr((class TiXmlElement*)(pElem), "usm", m_usm);
     XmlGetAttr((class TiXmlElement*)(pElem), "scriptID", m_scriptID);
     XmlGetAttr((class TiXmlElement*)(pElem), "illust", m_illust);

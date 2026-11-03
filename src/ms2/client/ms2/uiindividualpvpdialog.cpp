@@ -100,7 +100,7 @@ void* FUN_140bb9630(int n);                                     // int -> delega
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
 #include "ms2/ms2format.h"
 CStringW GetStringCommon(int nStringId);                          // string table text
-CStringW FUN_1408116a0(int nStringId, const int& nArg);         // the same, one int argument
+template <class A> CStringW BlockFormat(int nId, const A& a);
 void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);   // notice
 unsigned int MsToMinutes(unsigned int nMilliSeconds);           // to minutes
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
@@ -304,7 +304,7 @@ void UIIndividualPvPDialog::FUN_1412cb240()
             continue;
         int nMinutes = MsToMinutes(count.second);
         int nMax = 10;
-        CStringW strText = FUN_1408116a0(0x426, nMinutes);
+        CStringW strText = BlockFormat<int>(0x426, nMinutes);
         if (count.second == 0)
             strText = GetStringCommon(0x425);
         else if (nMinutes > nMax)

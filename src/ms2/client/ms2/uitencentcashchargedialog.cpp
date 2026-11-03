@@ -57,8 +57,6 @@ public:
 
 void FUN_141901470(int n, int nTypeId);
 bool FUN_141900a90(class UIDialog*);   // C3: was FUN_141900a90
-void* FUN_140e999d0(Unk_CashImagePtr* p, int nNull);                        // p = NULL
-Unk_CashImage* FUN_140e99a80(Unk_CashImagePtr* p);                          // operator->
 Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
 void FUN_1422e5530(Unk_CashImage* pImage, Unk_AasSourcePtr spSource);
 #include "ms2/ms2format.h"
@@ -105,7 +103,7 @@ UITencentCashChargeDialog::UITencentCashChargeDialog()
     m_84 = 1;
     m_e0 = 0;
     m_spTarget = 0;
-    FUN_140e999d0(&m_spImage, 0);
+    *((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)) = 0;
 }
 
 // @0x140e99c70
@@ -175,7 +173,7 @@ void UITencentCashChargeDialog::vfunc_26()
 {
     UIWebBrowserBase::vfunc_26();
     m_spTarget = 0;
-    FUN_140e999d0(&m_spImage, 0);
+    *((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)) = 0;
 }
 
 // @0x140e9a160
@@ -185,7 +183,7 @@ void UITencentCashChargeDialog::vfunc_85()
     FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(reinterpret_cast<Unk_AasSource*>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)FUN_1401d3200())->m_nHeight)->Get()), 2))));
     if (m_spTarget.get() != 0)
     {
-        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(FUN_140e99a80(&m_spImage)->FUN_1422bb890());
+        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());
     }
 }
 
@@ -194,7 +192,7 @@ void UITencentCashChargeDialog::vfunc_86()
 {
     if ((m_spTarget.get() ? true : false) && (((class Unk_AasImage*)((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->get()) ? true : false))
     {
-        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6b70(FUN_140e99a80(&m_spImage)->FUN_1422bb890());
+        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6b70((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());
     }
 }
 

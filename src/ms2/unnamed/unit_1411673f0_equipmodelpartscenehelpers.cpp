@@ -58,7 +58,7 @@ extern NiFixedString DAT_143ae51b8;     // name of the extra data that tags a no
 extern NiFixedString DAT_143ae50e8;     // substring of that tag that excludes the node from the highlight
 
 void FUN_1411dcc80(CEquipItem* pItem, CAtlArray<MS2Ptr<Unk_PickTarget> >& aParts);   // the item's model parts
-int FUN_1405451c0(const CString* pName);                        // equip slot of a part name
+int FUN_1405451c0(CString& strName);   // equip slot of a part name (C3: the definition's signature)
 void FUN_1414d37a0(void*, int);   // C3: was FUN_1414d37a0
 void FUN_1414d3930(void*);   // C3: was FUN_1414d3930
 
@@ -207,7 +207,7 @@ NiAVObject* FUN_141167cf0(const CString& strName)
     if (pPlayer == 0)
         return 0;
     {
-        MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655e10(FUN_1405451c0(&strName));
+        MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655e10(FUN_1405451c0(const_cast<CString&>(strName)));
         if (spItem.get() != 0) {
             CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
             FUN_1411dcc80(spItem.operator->(), aParts);

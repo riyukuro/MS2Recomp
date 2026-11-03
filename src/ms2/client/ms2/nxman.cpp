@@ -63,8 +63,6 @@ public:
     virtual void vfunc_22(int nId, const char* pszFormat, int nValue);
 };
 void* FUN_140d86260();   // C3: was FUN_140d86260
-void  FUN_140c79890(void* p);
-void  FUN_140c79b50(void* p);
 
 CStringA FUN_14016a600(const wchar_t* psz, int n = 0);      // wide -> narrow
 CStringW FUN_14016a730(const char* psz, int n = 0);         // narrow -> wide
@@ -73,19 +71,10 @@ CStringA FUN_140188f50(const char* psz, int n = 0);
 CString& FUN_140164930(CAtlArray<CString>& rArray, unsigned __int64 nIndex);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 #include "ms2/ms2format.h"
-CString  FUN_140540050(const char* pszFmt, const CString& rArg);
 CStringW StringFormat(const wchar_t* psz, const fmt::ArgList& args);
 void*    FUN_1402da110(void* p1, void* p2, void* p3);
 void     FUN_1416a0e70(void);
 
-// The platform error table (0x48 bytes: RawString, one CAtlMap): index -> localized wide string. Its ctor/dtor live at 0x140c79890/0x140c79b50;
-// the index lookup is the exe function at 0x140c7a360.
-struct Unk_PlatformErrorTable
-{
-    void* m_pad[9];
-    Unk_PlatformErrorTable() { FUN_140c79890(this); }
-    ~Unk_PlatformErrorTable() { FUN_140c79b50(this); }
-};
 
 // Stage settings read from .\anysetting.ini / the platform helpers.
 extern int DAT_143ac2fd0;                                   // platform error code
@@ -120,18 +109,18 @@ CNXMan::~CNXMan()
 // @0x14160d820
 unsigned CNXMan::Start()
 {
-    Unk_PlatformErrorTable kErrors;
+    RawString kErrors;
     if (LoadAnySetting() == 0)
     {
         DAT_143ac2fd0 = 0x44d;
-        g_143ac2fe0 = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)2);
+        g_143ac2fe0 = kErrors.Get((ERawString)2);
         return 0;
     }
     FUN_1415cb420(FUN_1415fa260());
     if (FUN_1415c4540(FUN_1415fa1b0(), m_0c, m_10, 0, 0) == 0)
     {
         DAT_143ac2fd0 = 0x44e;
-        g_143ac2fe0 = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)2);
+        g_143ac2fe0 = kErrors.Get((ERawString)2);
         return 0;
     }
     unsigned uResult = 1;
@@ -139,7 +128,7 @@ unsigned CNXMan::Start()
     {
         uResult = 0;
         DAT_143ac2fd0 = 0x44f;
-        g_143ac2fe0 = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)2);
+        g_143ac2fe0 = kErrors.Get((ERawString)2);
     }
     FUN_1415ca030("MapleStory2", (LPCSTR)m_str18, (LPCSTR)g_strSid);
     return uResult;
@@ -402,7 +391,7 @@ CString CNXMan::GetDefaultUgcUrl()
 {
     CString strHost("");
     strHost = "ugc.game.maplestory2.nexon.com";
-    return FUN_140540050("http://{0}/UGCWeb/pvex.aspx", strHost);
+    return StringFormat<CString>("http://{0}/UGCWeb/pvex.aspx", strHost);
 }
 
 // @0x14160ebf0
@@ -425,33 +414,33 @@ int FUN_14160ecd0(void* p)
 // @0x14160ed00
 CStringW FUN_14160ed00(int nErrorCode)
 {
-    Unk_PlatformErrorTable kErrors;
+    RawString kErrors;
     CStringW strResult(L"");
     switch (nErrorCode)
     {
-    case 0x4e22: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x5); break;
-    case 0x4e23: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x6); break;
-    case 0x4e27: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x7); break;
-    case 0x4e28: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x8); break;
-    case 0x4e2a: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x9); break;
-    case 0x4e2e: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x17); break;
-    case 0x4e39: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xa); break;
-    case 0x4e3a: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xb); break;
-    case 0x4e3c: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xc); break;
-    case 0x4e3f: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xd); break;
-    case 0x4e44: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xe); break;
-    case 0x4e4f: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0xf); break;
-    case 0x4e54: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x10); break;
-    case 0x4e5a: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x11); break;
-    case 0x4e5d: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x12); break;
-    case 0x4e5f: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x13); break;
-    case 0x4e64: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x14); break;
-    case 0x4e65: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x15); break;
-    case 0x4e32: strResult = reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x16); break;
+    case 0x4e22: strResult = kErrors.Get((ERawString)0x5); break;
+    case 0x4e23: strResult = kErrors.Get((ERawString)0x6); break;
+    case 0x4e27: strResult = kErrors.Get((ERawString)0x7); break;
+    case 0x4e28: strResult = kErrors.Get((ERawString)0x8); break;
+    case 0x4e2a: strResult = kErrors.Get((ERawString)0x9); break;
+    case 0x4e2e: strResult = kErrors.Get((ERawString)0x17); break;
+    case 0x4e39: strResult = kErrors.Get((ERawString)0xa); break;
+    case 0x4e3a: strResult = kErrors.Get((ERawString)0xb); break;
+    case 0x4e3c: strResult = kErrors.Get((ERawString)0xc); break;
+    case 0x4e3f: strResult = kErrors.Get((ERawString)0xd); break;
+    case 0x4e44: strResult = kErrors.Get((ERawString)0xe); break;
+    case 0x4e4f: strResult = kErrors.Get((ERawString)0xf); break;
+    case 0x4e54: strResult = kErrors.Get((ERawString)0x10); break;
+    case 0x4e5a: strResult = kErrors.Get((ERawString)0x11); break;
+    case 0x4e5d: strResult = kErrors.Get((ERawString)0x12); break;
+    case 0x4e5f: strResult = kErrors.Get((ERawString)0x13); break;
+    case 0x4e64: strResult = kErrors.Get((ERawString)0x14); break;
+    case 0x4e65: strResult = kErrors.Get((ERawString)0x15); break;
+    case 0x4e32: strResult = kErrors.Get((ERawString)0x16); break;
     }
     if (strResult.IsEmpty())
     {
-        strResult = FUN_14160f680(reinterpret_cast<RawString*>(&kErrors)->Get((ERawString)0x18), &nErrorCode);
+        strResult = FUN_14160f680(kErrors.Get((ERawString)0x18), &nErrorCode);
     }
     return strResult;
 }

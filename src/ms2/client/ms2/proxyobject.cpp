@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "entityworldmanager.h"
 
 // The ClassInfo initializer is the first dynamic initializer of the object, ahead of the shared header statics.
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CProxyObject);
@@ -43,27 +44,16 @@ public:
     int FUN_141bbb1e0(class GameObject*, int, unsigned int);
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
+    void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // unregister an object
 };
-void FUN_141bbb7f0(WorldService* pWorld, GameObject* pObject, int bImmediate);                    // unregister an object
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141567760(NiAVObject* pRoot);
 void FUN_141567330(NiAVObject* pRoot, bool bShadow);
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-const char* FUN_14099ad40(efd::AssetID* pAsset);
+const char* Unk_AssetUrnText(const efd::AssetID* pAsset);   // animationcallbackmanager.cpp
 extern int DAT_1439f825c;                                           // the running id of the proxies (counts down)
 
-class Unk_PxEntMgr;
-Unk_PxEntMgr* FUN_1409670f0();
-struct Unk_PxEntIter { void* m_pNode; };   // one node pointer: the exe reserves 8 bytes for it
-void FUN_1411ce5a0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter);
-bool FUN_1411ce5f0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter, egf::Entity** ppOut);
-class EntityWorldManager   // C3: member view for the former free stand-ins
-{
-public:
-    class egf::Entity* FUN_1411cf440(class egf::EntityID const&);
-};
-int FUN_140998250(egf::Entity* pEntity, unsigned nProperty, efd::AssetID* pOut);   // 0 = read
 
 class Unk_PxServiceMgr;
 struct Unk_PxApp
@@ -165,7 +155,7 @@ int CProxyObject::FUN_1416c2e70(efd::AssetID asset, efd::Point3 kPos, efd::Point
     m_str88 = "DropItemNIF";
     vfunc_19(kPos);
     vfunc_21(kRot);
-    FUN_14123bb80(CString(FUN_14099ad40(&asset)));
+    FUN_14123bb80(CString(Unk_AssetUrnText(&asset)));
     --DAT_1439f825c;
     FUN_14123c5a0(DAT_1439f825c);
     if (fRadius != 0.0f)
@@ -216,10 +206,9 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
         void* pService = FUN_140998330(((class Unk_PxServiceMgr*)((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->FUN_140af8310()));
         if (pService == 0)
             return;
-        Unk_PxEntIter iter;
-        FUN_1411ce5a0(FUN_1409670f0(), &iter);
+        Unk_WorldEntityMap::iterator iter = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5a0();
         egf::Entity* pEntity;
-        while (FUN_1411ce5f0(FUN_1409670f0(), &iter, &pEntity))
+        while (TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce5f0(iter, pEntity))
         {
             egf::FlatModel* pModel = ((class egf::FlatModel*)((egf::Entity*)(class egf::Entity*)(pEntity))->GetModel());
             if (!pModel->ContainsModel(0xbd4f8e8e) && !pModel->ContainsModel(0x48ccc02d) && pModel->ContainsModel(0x9eca2f69))
@@ -231,7 +220,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
                 float fRadius = 0.0f;
                 pEntity->GetPropertyValue(0xa12005f8, fRadius);
                 efd::AssetID asset;
-                if (FUN_140998250(pEntity, 0x74bd51ee, &asset) == 0)
+                if (pEntity->GetPropertyValue<efd::AssetID>(0x74bd51ee, asset) == 0)
                 {
                     efd::SmartPointer<CProxyObject> spProxy = FUN_1416c31c0(asset, kPos, kRot, fRadius);
                     if (spProxy)
@@ -248,7 +237,7 @@ void Unk_ProxyMgr::FUN_1416c3670()
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos))
     {
         efd::SmartPointer<GameObject> spProxy(m_proxies.GetValueAt(pos));
-        FUN_141bbb7f0(WorldService::GetInstance(), spProxy, 0);
+        WorldService::GetInstance()->FUN_141bbb7f0(spProxy, 0);
     }
     m_proxies.RemoveAll();
 }
@@ -272,7 +261,7 @@ efd::SmartPointer<egf::Entity> Unk_ProxyMgr::FUN_1416c37e0(efd::SmartPointer<egf
         CProxyObject* pProxy = m_proxies.GetValueAt(pos);
         if (pProxy->FUN_14123c460() == *((class egf::EntityID const*)&((egf::Entity*)(class egf::Entity*)(spEntity))->GetEntityID()))
         {
-            efd::SmartPointer<egf::Entity> spFound(((class EntityWorldManager*)(class Unk_PxEntMgr*)(FUN_1409670f0()))->FUN_1411cf440(m_proxies.GetKeyAt(pos)));
+            efd::SmartPointer<egf::Entity> spFound(TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_proxies.GetKeyAt(pos)));
             return spFound;
         }
     }

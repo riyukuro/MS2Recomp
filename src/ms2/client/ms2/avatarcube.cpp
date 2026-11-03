@@ -49,10 +49,6 @@ CString FUN_1409a2360(const char* psz, int n);
 // The UGC cube manager (singleton behind FUN_14052d220).
 class Unk_UgcCubeMgr : public CUgcManager
 {
-public:
-    // Starts loading the cube from the cached file strFile; 0 on success.
-    // Requests the cube download; spItem by value (callee-destroyed).
-    void FUN_141883df0(MS2Ptr<CItem> spItem, egf::EntityID id);
 };
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 CString FUN_1410280d0(int nKind, CString strName);

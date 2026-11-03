@@ -133,12 +133,6 @@ inline float FUN_1411f0e30(float fValue, float fRate)
     return (float)((double)fValue * (double)fRate + 0.000001);
 }
 
-#ifdef __clang__
-// clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); use the exe's copy of
-// operator+(const CString&, const CString&).
-CString FUN_1401d2b10(const CString& strA, const CString& strB);
-#endif
-
 // The mesh name suffixes the ctor fills once.
 ATL::CAtlList<CString> s_meshSuffixes(10); // shared with equipmodel.cpp
 
@@ -1940,11 +1934,7 @@ int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
-#ifdef __clang__
-            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
-#else
             strMesh = strName + s_meshSuffixes.GetNext(pos);
-#endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh &&
                 ((class NiAVObject*)(class NiAVObject*)(spReplace->m_spMesh.operator->()))->GetParent() == NULL)
@@ -1962,11 +1952,7 @@ int CEquipment::FUN_1411e9760(int nSlot, const CString& strName)
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
-#ifdef __clang__
-            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
-#else
             strMesh = strName + s_meshSuffixes.GetNext(pos);
-#endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh &&
                 ((class NiAVObject*)(class NiAVObject*)(spReplace->m_spMesh.operator->()))->GetParent() != NULL)
@@ -2287,11 +2273,7 @@ int CEquipment::FUN_1411e9fa0(int nSlot, const CString& strName, int nType, int 
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
-#ifdef __clang__
-            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
-#else
             strMesh = strName + s_meshSuffixes.GetNext(pos);
-#endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace) && (bool)spReplace->m_spNode && (bool)spReplace->m_spMesh)
                 spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
@@ -2524,11 +2506,7 @@ int CEquipment::FUN_1411e99a0(int nSlot, const CString& strName, int nType, int 
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
-#ifdef __clang__
-            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
-#else
             strMesh = strName + s_meshSuffixes.GetNext(pos);
-#endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace)) {
                 if (spReplace->m_spNode && spReplace->m_spMesh)

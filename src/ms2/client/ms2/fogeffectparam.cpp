@@ -40,7 +40,7 @@ public:
 // TinyXML attribute helpers (commonfiles\tinyxmlhelper.cpp) and string helpers (commonfiles).
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 CString FUN_140188f50(const char* psz, int n);                                          // null-safe CString
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>& arr, const char* pszDelim);  // split to uints
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // split to uints
 bool FUN_14028d470(float a, float b);                                                   // nearly equal
 
 // Game clock (commonfiles singleton 0x14086d260): current time in seconds.
@@ -71,7 +71,7 @@ void CFogEffectParam::vfunc_1(Unk_140165cf0* pNode)
     {
         ATL::CAtlArray<unsigned int> arrColor;
         CString strColor = FUN_140188f50(((class TiXmlElement*)(class Unk_140165cf0*)(pFog))->Attribute("color"), 0);
-        FUN_140177e10(strColor, arrColor, ",");
+        XmlSplit(strColor, arrColor, ",");
         m_dwColor = arrColor.GetCount() < 3 ? 0xffffffff
                                              : MS2_D3DCOLOR_XRGB(arrColor[0], arrColor[1], arrColor[2]);
         XmlGetAttr((class TiXmlElement*)(pFog), "near", m_fNear);

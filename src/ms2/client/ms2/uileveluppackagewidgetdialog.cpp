@@ -65,7 +65,6 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class Unk_EwRoot : public AScript { public:
     Scaleform::GFx::Value FUN_140ba4cc0(const char*, const ASObj&);
 };
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 
 // The widget's movie root as an ASDialog (RTTI .?AVASDialog@@).
 class ASDialog : public ASDisplayObjectContainer {
@@ -111,7 +110,7 @@ class UIStatusEventDispatcher;
 void* FUN_140764020();   // C3: was FUN_140764020
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                   // the quest id
-int FUN_140748050(void* pItem, int nJob);                               // the reward item suits the job
+int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);                               // the reward item suits the job
 #define EwQuestLevel(pData) ((unsigned short)(pData)->m_conditions[0]->m_target.GetFirstValue())
 
 // strings and packets
@@ -122,7 +121,6 @@ class Unk_LgUIMgr { public: void FUN_141adc530(int nUiId); };
 // the burning level-up event values
 class CGameEventValueManager;
 CGameEventValueBurningLevelup* FUN_1403ed080(void* pManager);           // its burning level-up values
-bool FUN_140c0e9f0(const std::vector<ItemEntity>* pItems);              // empty
 
 // the event tables (0x143ab2fc0): (kind, event id) -> value; the key / iterator / map / entry views are those of the attend table
 struct Unk_AttendKey
@@ -281,7 +279,7 @@ void UIEventWidgetDialog::FUN_140c59210()
         vfunc_67();
         return;
     }
-    static_cast<Unk_EwRoot*>(FUN_1409ee290(&m_30))->Invoke("setData", (class AScript const &)(data));
+    static_cast<Unk_EwRoot*>(m_30.operator->())->Invoke("setData", (class AScript const &)(data));
 }
 MS2_REPLACE_METHOD(0x140C59210, UIEventWidgetDialog, FUN_140c59210, 215, 0x3AAA625C);
 
@@ -519,7 +517,7 @@ int UIBurningEventWidgetDialog::vfunc_84()
         MS2Ptr<BurningLevelupContext> spContext = *it;
         if (spContext == 0)
             continue;
-        if (FUN_140c0e9f0(&spContext->m_rewardItems))
+        if (spContext->m_rewardItems.empty())
             continue;
         __int64 nDefaultDT = 0;
         __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
@@ -549,7 +547,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
         MS2Ptr<BurningLevelupContext> spContext = *it;
         if (spContext == 0)
             continue;
-        if (FUN_140c0e9f0(&spContext->m_rewardItems)) {
+        if (spContext->m_rewardItems.empty()) {
             spContext = *it;
             continue;
         }
@@ -585,7 +583,7 @@ void UIBurningEventWidgetDialog::vfunc_86()
     MS2Ptr<BurningLevelupContext> spContext = FUN_1403ed080((void*)TSingleton<CGameEventValueManager>::GetInstance())->Get(m_190);
     if (spContext == 0)
         return;
-    if (FUN_140c0e9f0(&spContext->m_rewardItems))
+    if (spContext->m_rewardItems.empty())
         return;
     __int64 nDefault = 0;
     __int64 nValue = g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault);

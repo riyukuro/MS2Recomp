@@ -25,6 +25,7 @@
 #include "ms2/client/ms2/uigamemenudialog.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read6..Read9
 
 // ---- unit-local stand-ins ----
 
@@ -71,10 +72,6 @@ CStringW FUN_140b8e9a0(const CMsTime& t);
 void FUN_140d73ff0(CStringW text);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb);
-CInputStream& FUN_14070f480(CInputStream& in, int& n);
-CInputStream& FUN_14070f4c0(CInputStream& in, __int64& n);
-CInputStream& FUN_14070f500(CInputStream& in, unsigned __int64& n);
-CInputStream& FUN_14070f540(CInputStream& in, float& f);
 extern unsigned __int64 DAT_143ab2828;
 
 // Methods of the commonfiles units (their link symbols are not in the committed table), bound by VA: this first.
@@ -472,15 +469,15 @@ void DungeonRecordManagerCli::OnAddReward(CInPacket& packet)
 // @0x140b220a0
 void DungeonRecordManagerCli::OnBoostState(CInPacket& packet)
 {
-    FUN_14070f500(packet, m_90);
-    FUN_14070f4c0(packet, m_98);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read8(m_90);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read7(m_98);
 }
 
 // @0x140b22100
 void DungeonRecordManagerCli::OnRates(CInPacket& packet)
 {
-    FUN_14070f540(packet, m_a0);
-    FUN_14070f540(packet, m_a4);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read9(m_a0);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read9(m_a4);
 }
 
 // @0x140b22160
@@ -698,8 +695,8 @@ CInputStream& FUN_140b22ea0(CInputStream& in, ATL::CAtlMap<unsigned, DungeonRank
     for (int i = 0; i < nCount; ++i)
     {
         DungeonRankRewardPtr spReward;
-        int nKey;
-        FUN_140b22fe0(FUN_14070f480(in, nKey), spReward);
+        unsigned nKey;
+        FUN_140b22fe0(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(nKey)), spReward);
         map.SetAt(nKey, spReward);
     }
     return in;
@@ -712,8 +709,8 @@ CInputStream& FUN_140b22f40(CInputStream& in, ATL::CRBMap<unsigned, DungeonRecor
     for (int i = 0; i < nCount; ++i)
     {
         DungeonRecordCliPtr spRecord;
-        int nKey;
-        FUN_140b23070(FUN_14070f480(in, nKey), spRecord);
+        unsigned nKey;
+        FUN_140b23070(reinterpret_cast<CInputStream&>(reinterpret_cast<Unk_OSInput&>(in).Read6(nKey)), spRecord);
         map.SetAt(nKey, spRecord);
     }
     return in;

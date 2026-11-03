@@ -148,9 +148,6 @@ public:
     bool RemoveChild(class TiXmlNode*);
 };
 CString FUN_140188f50(const char* psz, int n);
-CString FUN_14038f6d0(const CString& str, const char* psz);     // str + psz
-CString FUN_1401d2b10(const CString& a, const CString& b);      // a + b
-CString FUN_140298360(const char* psz, const CString& str);               // psz + str
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);
 
@@ -464,7 +461,7 @@ void FUN_141825f60(const CString& strGroup, CSoundDataTable::SoundList& rOut)
             MS2_ASSERT_AT(0x3f1, 0);
             return;
         }
-        CString strPath = FUN_1401d2b10(FUN_14038f6d0(strGroup, "/"), strName);
+        CString strPath = strGroup + "/" + strName;
         CSoundDataEntry entry;
         entry.nType = 0;
         entry.strName = strPath;
@@ -839,7 +836,7 @@ bool FUN_1418226b0(bool bLog)
                             if (pFluid == NULL)
                                 mapFluid.SetAt(nFieldId, strMapAttribute);
                             else if (pFluid->m_value.Find(strMapAttribute, 0) == -1)
-                                pFluid->m_value += FUN_140298360(",", strMapAttribute);
+                                pFluid->m_value += "," + strMapAttribute;
                         }
                     }
                 }

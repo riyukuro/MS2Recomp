@@ -12,7 +12,6 @@ struct Unk_MCPPtr { Unk_MCPPtr(MS2MeshCullingProcess* p); ~Unk_MCPPtr(); MS2Mesh
 void* FUN_140d96650(void* list);
 void** FUN_140d96660(void* list, void** it);
 unsigned int FUN_140d96630(NiAVObject* obj);
-struct Unk_AVCull { void Cull(NiCullingProcess* p); };    // NiAVObject::Cull (0x141d14dd0)
 
 #ifdef __clang__
 // MS2: clang folds the RTTI initializer into a constant ADDR64 against an exe global, which the DLL post-link check
@@ -101,7 +100,7 @@ void MS2MeshCullingProcess::Process(const NiCamera* pkCamera, NiTPointerList<NiA
         while (it != 0) {
             NiAVObject* obj = *(NiAVObject**)FUN_140d96660(pkSceneList, &it);
             if (obj != 0 && (FUN_140d96630(obj) & 2) == 0)
-                ((Unk_AVCull*)obj)->Cull(this);
+                obj->Cull(*this);
         }
     }
     if (pkVisibleSet != 0)

@@ -11,18 +11,18 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/commonfiles/logstring.h"   // C3: CLogString::FUN_1406530d0
 #include "hook/ms2hook.h"
 
-// Logger singleton: Log(category, level, format, args...) forwards to 0x1406530d0 with a packed fmt::ArgList.
+// Logger singleton: Log(category, level, format, args...) forwards to CLogString::FUN_1406530d0 with a packed fmt::ArgList.
 class Unk_TimeLogger {
 public:
-    void Log(int category, int level, const wchar_t* format, const fmt::ArgList& args);   // 0x1406530d0
 #define MS2_LOG_WRAP(n) \
     template <FMT_GEN(n, FMT_MAKE_TEMPLATE_ARG)> \
     inline void Log(int category, int level, const wchar_t* format, FMT_GEN(n, FMT_MAKE_ARG)) \
     { \
         const fmt::internal::ArgArray<n>::Type array = {FMT_GEN(n, FMT_MAKE_REF_wchar_t)}; \
-        Log(category, level, format, fmt::ArgList(fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
+        reinterpret_cast<CLogString*>(this)->FUN_1406530d0(category, level, format, fmt::ArgList(fmt::internal::make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
     }
     MS2_LOG_WRAP(2)
     MS2_LOG_WRAP(3)

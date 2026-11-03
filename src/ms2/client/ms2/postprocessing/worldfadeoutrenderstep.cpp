@@ -162,14 +162,14 @@ NiFixedString DAT_143ae5150;
 WorldFadeOutRenderStep::WorldFadeOutRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b), m_a0(0)
 {
     NiFixedString name("WorldFadeOutRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416bada0
 WorldFadeOutRenderStep::~WorldFadeOutRenderStep()
 {
     NiFixedString name("FadeOutRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416bae20

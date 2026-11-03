@@ -44,6 +44,9 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/client/ms2/uidailymissiondialog.h"   // UIDailyMissionDialog::FUN_140c02900
+#include <algorithm>
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -158,7 +161,7 @@ private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
     Unk_LtaMap m_18;                        // +0x18
 };
-extern Unk_LtaTable g_ltaTable;             // 0x143ab2fc0
+extern GameEventUserValue DAT_143ab2fc0;    // read through the Unk_LtaTable view
 
 // The wallet / account object (0x140d86260 singleton): only two slots are used here.
 class Unk_LtaWallet
@@ -212,9 +215,9 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 
 class Unk_LtaPlayerMgr : public WorldService { };
 
-CFeatureManager* FUN_140166410();
+class Unk_140166410* FUN_140166410();
 
-NotifySystem* FUN_140939a10();
+class Unk_SingletonObj* FUN_140939a10();
 
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
@@ -222,10 +225,9 @@ void FUN_140d73cd0();
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_14086bd40(CMsTime a, CMsTime b);
-const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
 CString FUN_14016a600(const wchar_t*, int);             // narrow copy of a wide string
 void FUN_1401d9a30(const CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
-int FUN_1402bacf0(ATL::CAtlArray<int>&, const unsigned int&);
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }
 void FUN_140710590(COutPacket&);
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);
@@ -292,7 +294,7 @@ UILongTermAttendGiftDialog::UILongTermAttendGiftDialog()
 {
     FUN_141924170(1);
     FUN_141926980(false);
-    FUN_140939a10()->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode27));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode27));
 }
 
 // @0x140c6b450
@@ -460,7 +462,7 @@ bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBo
 bool UILongTermAttendGiftDialog::FUN_140c6bd40(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        if (!FUN_140166410()->FUN_14036d570(0xc2)) {
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xc2)) {
             FUN_140d73cd0();
             return true;
         }
@@ -512,7 +514,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
 {
     if (m_30.IsNull())
         return;
-    if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_reward")) {
+    if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_reward")) {
         list->FUN_1422dd1d0();
         CString strFrame = FUN_140c6d470();
         for (size_t i = 0; i < m_178->m_rewards.FUN_140412e80(); ++i) {
@@ -608,7 +610,7 @@ int UILongTermAttendGiftDialog::GetDayState(unsigned int nDay)
     CStringW strDays = GetClaimedDays();
     ATL::CAtlArray<int> claimed;
     FUN_1401d9a30(strDays, claimed, L",");
-    if (FUN_1402bacf0(claimed, nDay) != -1)
+    if (Common::FindElement<int>(claimed, *(const int*)&nDay) != -1)
         return 2;
     if (nDay <= nCur)
     {
@@ -623,7 +625,7 @@ int UILongTermAttendGiftDialog::GetMissedDayCount()
     unsigned int nCur = FUN_140c6d570();
     int nDays = FUN_14086bd40(CMsTime(m_178->m_start), CMsTime(GetServerTime())) + 1;
     int nMax = 0x50;
-    unsigned int nLimit = *(const unsigned int*)FUN_1402fbd20(&nMax, &nDays);
+    unsigned int nLimit = *(const unsigned int*)&std::min<int>(nMax, nDays);
     if (nCur < nLimit)
         nLimit = nLimit - nCur;
     else
@@ -679,20 +681,20 @@ CString UILongTermAttendGiftDialog::FUN_140c6d470()
 int UILongTermAttendGiftDialog::FUN_140c6d520()
 {
     int nDefault = 0;
-    return g_ltaTable.FUN_140c6d8d0(0xa8d, m_178->m_id, nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8d, m_178->m_id, nDefault);
 }
 
 // @0x140c6d570
 int UILongTermAttendGiftDialog::FUN_140c6d570()
 {
     int nDefault = 0;
-    return g_ltaTable.FUN_140c6d8d0(0xa8e, m_178->m_id, nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8e, m_178->m_id, nDefault);
 }
 
 // @0x140c6d5c0
 CStringW UILongTermAttendGiftDialog::GetClaimedDays()
 {
-    return g_ltaTable.FUN_140c6d980(0xa8c, m_178->m_id, (const wchar_t*)0);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0xa8c, m_178->m_id, (const wchar_t*)0);
 }
 
 MS2_REPLACE_METHOD(0x140C6B4A0, UILongTermAttendGiftDialog, GetTypeName, 61, 0xE157B792);

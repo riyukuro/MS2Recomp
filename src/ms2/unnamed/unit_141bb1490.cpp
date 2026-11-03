@@ -10,13 +10,14 @@
 #include "ms2/ms2layout.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/uiworldmap.h"   // C3: the factories' record types
 
 // The runtime's refcount-1 helper, the four types' pooled allocator+constructor and their release helpers (other units).
 class CPtred* FUN_1401ba820(class CPtred*);   // C3: was FUN_1401ba820
-void* FUN_141b9d8e0(void* pTag);
-void* FUN_141b9d950(void* pTag);
-void* FUN_141b9d9c0(void* pTag);
-void* FUN_141b9da20(void* pTag);
+UIWorldMap::AddtionalInfo* FUN_141b9d8e0(void* pTag);   // C3: returns the record
+UIWorldMap::FieldSearchInfo* FUN_141b9d950(void* pTag);   // C3: returns the record
+UIWorldMap::IconInfo* FUN_141b9d9c0(void* pTag);   // C3: returns the record
+UIWorldMap::MapTile* FUN_141b9da20(void* pTag);   // C3: returns the record
 void  FUN_141b6c060(void* pThis);
 void  FUN_141b6c0a0(void* pThis);
 void  FUN_141b6c0e0(void* pThis);

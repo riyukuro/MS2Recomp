@@ -16,6 +16,7 @@
 
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/mypc.h"
+#include "ms2/commonfiles/pvpinfo.h"   // C3: CPvPInfo::m_nTeam
 #include "ms2/client/ms2/statedata.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/chomeprivilege.h"
@@ -54,22 +55,6 @@ public:
     MyPC* FUN_141bd0cc0();                               // the local player
 };
 
-// The player's team-info proxy (see statepvpwinlose.cpp): +0x1c holds the revive animation id.
-struct Unk_DeadTeam
-{
-    char m_pad_00[0x1c];
-    int m_nValue;                                        // +0x1c
-};
-class Unk_DeadTeamPtr
-{
-public:
-    ~Unk_DeadTeamPtr() { FUN_140964aa0(); }
-    Unk_DeadTeam* FUN_140965970() const;                 // operator->
-    void FUN_140964aa0();                                // release
-    void* m_pad_00;
-    Unk_DeadTeam* m_p;
-};
-class Unk_DeadPC { public: Unk_DeadTeamPtr FUN_140967420(); };   // the player's team-info proxy
 
 // The constants tables: the revive animation id slot at +0xd248 of the first, two effect names at +0x278 of the second.
 struct Unk_DeadConstVal { char m_pad[0x58]; };
@@ -129,7 +114,7 @@ void StateDead::vfunc_4(StateData* pData)
         if (reinterpret_cast<PC*>(pPC)->FUN_14165ef30() != 0)
         {
             bRevive = true;
-            nAnimId = ((Unk_DeadPC*)pPC)->FUN_140967420().FUN_140965970()->m_nValue;
+            nAnimId = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPC)->FUN_140967420().operator->())->m_nTeam;
         }
         else
         {

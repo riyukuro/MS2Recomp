@@ -241,9 +241,6 @@ bool FUN_140d2aa60(CStringW& strHtml);                              // the input
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
 void FUN_140d2c2a0(MS2Ptr<Unk_RankInput> spInput, ATL::CAtlArray<CStringW>& arrHistory);   // the input history keys
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
-#ifdef __clang__
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);  // operator+
-#endif
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
@@ -1326,12 +1323,7 @@ void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_RankInput> spInput, const CStrin
     unsigned int nTotal = strHtml.GetLength() + strSpace.GetLength() + strText.GetLength();
     if (nTotal >= 0x800)
         return;
-#ifdef __clang__
-    // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
-    spInput->SetHtmlTextW(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace));
-#else
     spInput->SetHtmlTextW(strHtml + strText + strSpace);
-#endif
     spInput->vfunc_24(1);
     int nLength = spInput->GetText().GetLength();
     if (bSelectEnd && nLength > 0)

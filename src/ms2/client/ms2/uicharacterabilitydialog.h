@@ -17,6 +17,7 @@
 #include "ms2/placeholder/abilitytable.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class NotifyObject;
 class UIMsg;
@@ -51,7 +52,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    Unk_McTimer m_timer;                                // +0x178 1 s tick
+    Unk_IntervalTimer m_timer;                                // +0x178 1 s tick
     int m_bBuilt;                                       // +0x180 the table was sent
     int m_pad_184;
 };

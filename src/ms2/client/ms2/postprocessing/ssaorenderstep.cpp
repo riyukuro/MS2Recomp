@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ssaorenderstep.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commonresource.h"
 #include <NiSourceTexture.h>
 
 // @0x1400fca40
@@ -17,7 +18,7 @@ SSAORenderStep::SSAORenderStep(unsigned __int64 a, const NiFixedString& name, un
 {
     NiString buf((size_t)0x100);
     buf.Format("%sRenderStep", (const char*)name);
-    FUN_140c8f950(this, NiFixedString((const char*)buf));
+    SetName(NiFixedString((const char*)buf));
     m_a0 = name;
 }
 
@@ -33,7 +34,7 @@ bool SSAORenderStep::vfunc_15(unsigned int a, void* b)
         return false;
     FUN_14169f6d0(&m_c0, &((void**)b)[1]);
     {
-        NiFixedString file((const char*)*(CSimpleStringT<char, 1>*)((char*)FUN_1401d31f0() + 0xf8));
+        NiFixedString file((const char*)TSingleton<CommonResource>::GetInstance()->m_strVectorNoiseDDS);
         m_b8.Assign(NiSourceTexture::Create(file, *reinterpret_cast<NiTexture::FormatPrefs*>(&DAT_1439fc800), false, false, true));
     }
     if (m_b8.Get() == 0) {
@@ -60,10 +61,10 @@ bool SSAORenderStep::vfunc_23()
     void* p;
     {
         NiFixedString click("CalculateOcclusion");
-        p = FUN_1409a8d30(this, &click);
+        p = GetRenderClickByName(click);
     }
     if (p != 0)
-        FUN_14169fbf0(this, p);
+        RemoveRenderClick((NiRenderClick*)p);
     p = FUN_140c8f690(FUN_1416b4990(this, "CalculateOcclusion", 0, 0, FUN_140c8f680(&m_80), 0, 3, 0, (const char*)m_a0, FUN_140c8f680(&m_c0), m_b8.Get(), 0));
     if (p == 0)
         return false;

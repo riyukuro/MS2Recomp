@@ -318,6 +318,7 @@ static CString s_chartNames[]={"None","Buy","PriceLow","PriceHigh","Create","Cha
 #include "ms2/commonfiles/questdatatable.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/placeholder/cinteractobjectdata.h"
+#include "ms2/commonfiles/itemdatatable.h"
 extern bool DAT_1439f7068;
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 class WorldService   // C3: member view for the former free stand-ins
@@ -557,11 +558,6 @@ class EffectDataManager   // C3: member view for the former free stand-ins
 public:
     void LoadEffectFiles();
 };
-void* FUN_140281980();class CItemDataTable   // C3: member view for the former free stand-ins
-{
-public:
-    void LoadAllItemData();
-};
 void CFilePreload::FUN_141210e10(bool notify) {
     CStopWatch watch("PreloadDataStep1");
     if(stopped==0) CInteractObjectData::LoadAll();
@@ -705,7 +701,7 @@ UINT CFilePreload::FUN_141211b80(void* context) {
         if(self->stopped==0) ((class EffectDataManager*)(class Unk_PreloadServiceD*)(((class Unk_PreloadServiceD*)TSingleton<EffectDataManager>::GetInstance())))->LoadEffectFiles();
         if(self->stopped==0) {
             self->FUN_141210e10(false);
-            ((class CItemDataTable*)(void*)(FUN_140281980()))->LoadAllItemData();
+            TSingleton<CItemDataTable>::GetInstance()->LoadAllItemData();
             if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->Rebuild();
             self->FUN_141210f00(false);
         }

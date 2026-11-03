@@ -319,7 +319,6 @@ bool FUN_1413fa2e0(egf::Entity* pEntity);
 Unk_InstancingScale FUN_1413fa320(egf::Entity* pEntity);
 void FUN_1413fa1b0(egf::Entity* pEntity);
 bool FUN_140a56f50(struct Unk_Vec3Cli const*, struct Unk_Vec3Cli const*);   // C3: was FUN_140a56f50
-extern NiRTTI DAT_143afbef0;                                        // the hardware skinning modifier type
 extern efd::AssetID DAT_143a0acf8;                                  // the null asset
 
 // ---- static initializers (.text$di, in this order) ----
@@ -1088,7 +1087,7 @@ bool HardwareInstancingService::FUN_1413d6c70(egf::Entity* pEntity)
         for (; it != itEnd; ++it)
         {
             NiMesh* pMesh = *it;
-            NiMeshModifier* pModifier = pMesh->GetModifierByType(&DAT_143afbef0);
+            NiMeshModifier* pModifier = pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI);
             if (pModifier != NULL && !((class NiSkinningMeshModifier*)(class NiMeshModifier*)(pModifier))->GetSoftwareSkinned())
                 return true;
         }

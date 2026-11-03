@@ -24,18 +24,15 @@ public:
     enum AnimType { APP_TIME, APP_INIT };
     void SetAnimType(AnimType eType);
 };
-template <class T> class NiTPointerList;
-namespace efd { template <class T> class SmartPointer; }
-class NiProperty;
+#include <NiTPointerList.h>
+#include <NiRefObject.h>
+class NiProperty : public NiRefObject {};   // C3: view (real base NiObject); SmartPointer needs it complete
 class NiDynamicEffect;
 class NiObject   // C3: member view for the former free stand-ins
 {
 public:
     static bool IsKindOf(class NiRTTI const*, class NiObject const*);
 };
-void* FUN_14098ddb0(void* pList);                   // list begin position
-void* FUN_14098de00(void* pList, void** ppPos);     // slot at position, advances it
-void* FUN_140993f00(void* pSlot);                   // slot -> property
 class NiNode   // C3: member view for the former free stand-ins
 {
 public:
@@ -55,10 +52,6 @@ class NiAlphaController
 public:
     static const class NiRTTI ms_RTTI;
 };
-void* FUN_1413fc1f0(void* pArr);                    // array begin position
-bool FUN_141546cb0(void* pList);
-bool FUN_141546c80(void* pArr);
-void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
 
 // Controller interface with the two virtual slots used here (the slots in between are unrecovered).
 struct Unk_CtrlIface
@@ -151,10 +144,10 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
     {
         void* pObj = pRoot;
         void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
-        void* pPos = FUN_14098ddb0(pList);
-        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
+        void* pPos = ((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetHeadPos();
+        while (pList != 0 && !((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->IsEmpty() && pPos != 0)
         {
-            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            void* pProp = (NiProperty*)((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetNext(pPos);
             if (pProp != 0)
                 FUN_141852690(pProp, pArg);
         }
@@ -168,10 +161,10 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
             FUN_141852690(pChild, pArg);
         }
         void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
-        void* pIter = FUN_1413fc1f0(pArr);
-        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
+        void* pIter = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetHeadPos();
+        while (pArr != 0 && !((NiTPointerList<NiDynamicEffect*>*)pArr)->IsEmpty() && pIter != 0)
         {
-            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            void* pChild = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetNext(pIter);
             if (pChild != 0)
                 FUN_141852690(pChild, pArg);
         }
@@ -193,10 +186,10 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
     {
         void* pObj = pRoot;
         void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
-        void* pPos = FUN_14098ddb0(pList);
-        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
+        void* pPos = ((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetHeadPos();
+        while (pList != 0 && !((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->IsEmpty() && pPos != 0)
         {
-            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            void* pProp = (NiProperty*)((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetNext(pPos);
             if (pProp != 0)
                 FUN_141852290(pProp, pArg);
         }
@@ -210,10 +203,10 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
             FUN_141852290(pChild, pArg);
         }
         void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
-        void* pIter = FUN_1413fc1f0(pArr);
-        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
+        void* pIter = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetHeadPos();
+        while (pArr != 0 && !((NiTPointerList<NiDynamicEffect*>*)pArr)->IsEmpty() && pIter != 0)
         {
-            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            void* pChild = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetNext(pIter);
             if (pChild != 0)
                 FUN_141852290(pChild, pArg);
         }
@@ -235,10 +228,10 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
     {
         void* pObj = pRoot;
         void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
-        void* pPos = FUN_14098ddb0(pList);
-        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
+        void* pPos = ((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetHeadPos();
+        while (pList != 0 && !((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->IsEmpty() && pPos != 0)
         {
-            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            void* pProp = (NiProperty*)((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetNext(pPos);
             if (pProp != 0)
                 FUN_141852490(pProp, pArg);
         }
@@ -252,10 +245,10 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
             FUN_141852490(pChild, pArg);
         }
         void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
-        void* pIter = FUN_1413fc1f0(pArr);
-        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
+        void* pIter = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetHeadPos();
+        while (pArr != 0 && !((NiTPointerList<NiDynamicEffect*>*)pArr)->IsEmpty() && pIter != 0)
         {
-            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            void* pChild = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetNext(pIter);
             if (pChild != 0)
                 FUN_141852490(pChild, pArg);
         }
@@ -277,10 +270,10 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
     {
         void* pObj = pRoot;
         void* pList = (void*)&reinterpret_cast<NiAVObject*>(pObj)->GetPropertyList();
-        void* pPos = FUN_14098ddb0(pList);
-        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
+        void* pPos = ((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetHeadPos();
+        while (pList != 0 && !((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->IsEmpty() && pPos != 0)
         {
-            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            void* pProp = (NiProperty*)((NiTPointerList<efd::SmartPointer<NiProperty> >*)pList)->GetNext(pPos);
             if (pProp != 0)
                 FUN_141852690(pProp, pArg);
         }
@@ -294,10 +287,10 @@ void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
             FUN_141852690(pChild, pArg);
         }
         void* pArr = (void*)&reinterpret_cast<NiNode*>(pNode)->GetEffectList();
-        void* pIter = FUN_1413fc1f0(pArr);
-        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
+        void* pIter = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetHeadPos();
+        while (pArr != 0 && !((NiTPointerList<NiDynamicEffect*>*)pArr)->IsEmpty() && pIter != 0)
         {
-            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            void* pChild = ((NiTPointerList<NiDynamicEffect*>*)pArr)->GetNext(pIter);
             if (pChild != 0)
                 FUN_141852690(pChild, pArg);
         }

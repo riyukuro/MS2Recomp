@@ -18,21 +18,8 @@
 #include "ms2/client/ms2/invenslot.h"
 #include "ms2/client/ms2/trademanagerex.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
+#include "ms2/client/ms2/effectservice.h"
 
-// Item template data (itemdata.cpp): the pickup/drop sound name.
-CItemData* FUN_140527840(CItem* pItem);                 // CItem::GetItemData
-
-// Sound player (effectservice.cpp): FUN_1403ed280 is its singleton getter.
-class CEffectService
-{
-public:
-    unsigned int FUN_1411a5110(CString strDir, CString strName, CString strSub, int a4, class NiTransform* a5, float fVolume, int a7);
-};
-class Unk_SoundPlayer;
-Unk_SoundPlayer* FUN_1403ed280();
-
-// Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
-WorldService* FUN_1403ed2d0();
 
 // The inventory slot (invenslot.cpp) a trade slot can be dropped on: id 0x6200023.
 class Unk_InvenSlot : public InvenSlot
@@ -119,7 +106,7 @@ int TradeSlot::vfunc_0(void* p)
 {
     bool bMine = IsMine();
     int nFlags = bMine ? 0x80 : 0x1000;
-    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), nFlags, 2);
+    ASTooltip tip(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0(), nFlags, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         if (IsMine())
@@ -155,7 +142,7 @@ int TradeSlot::vfunc_8(void* p)
     if (m_spItem == 0)
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(m_spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x1c81f))
+    if (slot.FUN_1409c3860(m_spItem.get(), TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0(), 0x1c81f))
     {
         if (!IsMine())
             slot.DisableDrag();
@@ -184,9 +171,9 @@ void TradeSlot::FUN_14185e370(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() ? true : false)
     {
-        if (FUN_140527840(spItem.operator->()))
+        if (spItem.operator->()->FUN_140527840())
         {
-            reinterpret_cast<CEffectService*>((int)((class CEffectService*)((FUN_1403ed280())))->FUN_1411a5110(CString("ms2sound/sound/item"), FUN_140527840(spItem.operator->())->GetMaterialSoundName(), CString(""), 0, (class NiTransform *)(0), 1.0f, 0));
+            TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), reinterpret_cast<CItemData*>(spItem.operator->()->FUN_140527840())->GetMaterialSoundName(), CString(""), 0, (class NiTransform *)(0), 1.0f, 0);
         }
     }
 }

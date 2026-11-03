@@ -38,6 +38,7 @@
 // MS2-PIN: ??0?$MS2Ptr@UReward@LongTermAttendGiftContext@@@@QEAA@AEBV0@@Z 0x1403e1e50 ; prop
 // MS2-PIN: ??0SAHotTimeEventContext@@QEAA@XZ 0x1403e4540 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@@Z 0x1403e0c70 ; merge 54's pair: 10 of the unit's one-instruction functions are byte-identical here, the row is at uiinventorydialog's copy 0x1419a8250
 // MS2-PIN: ??__Es_sortNames7@@YAXXZ 0x1400b8360
 // MS2-PIN: ??__Es_skill@@YAXXZ 0x1400b8420
 // MS2-PIN: ??__Es_stun@@YAXXZ 0x1400b8450

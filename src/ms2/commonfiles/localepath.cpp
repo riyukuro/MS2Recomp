@@ -28,12 +28,7 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_140165270(ATL::CAtlArray<CString>&, CString&);              // Add
-void* FUN_140164930(ATL::CAtlArray<CString>&, unsigned __int64);     // GetAt
-void FUN_1402be480(CString&, const char*);
-CString FUN_140298360(const char*, const CString&);
 CString FUN_140188f50(const char*, int);
-bool FUN_1401c0090(const CString&, const CString&) noexcept;
 class Unk_14025e7c0 { };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class CInputKeyHandler { public: bool IsDebugMode(void); };
@@ -41,8 +36,8 @@ class CInputKeyHandler { public: bool IsDebugMode(void); };
 extern int DAT_1439f4840;
 extern _locale_t DAT_143aad168;
 extern int DAT_143ab0560;
-extern CString DAT_143ab0568;
-extern CString DAT_143ab0588;
+extern std::string g_strLocaleDir2;
+extern std::string g_strLocaleDir;
 
 CString FUN_140651c00(int nLanguage);                 // language enum -> "KR"/"JP"/...
 int FUN_140651920(CString strCode);                   // language code -> enum
@@ -93,7 +88,7 @@ int CLocaleLanguageData::HasLanguageCode(CString strCode)
     int nCount = (int)m_languages.GetCount();
     for (int i = 0; i < nCount; ++i)
     {
-        CString s = *(CString*)FUN_140164930(m_languages, i);
+        CString s = m_languages[i];
         if (s.CompareNoCase(strCode) == 0)
         {
             result = 1;
@@ -108,7 +103,7 @@ int CLocaleLanguageData::GetDefaultLanguage()
 {
     if (m_languages.GetCount() <= 0)
         return 0;
-    CString s = *(CString*)FUN_140164930(m_languages, 0);
+    CString s = m_languages[0];
     return FUN_140651920(s);
 }
 
@@ -118,7 +113,7 @@ void CLocaleLanguageData::GetLanguages(ATL::CAtlArray<int, ATL::CDefaultElementT
     out.RemoveAll();
     for (unsigned __int64 i = 0; i < m_languages.GetCount(); ++i)
     {
-        CString s = *(CString*)FUN_140164930(m_languages, i);
+        CString s = m_languages[i];
         int e = FUN_140651920(s);
         out.Add(e);
     }
@@ -130,8 +125,8 @@ void CLocaleLanguageData::GetLanguageCodes(ATL::CAtlArray<CString>& out)
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(out))->RemoveAll();
     for (unsigned __int64 i = 0; i < m_languages.GetCount(); ++i)
     {
-        CString s = FUN_1406504c0(*(CString*)FUN_140164930(m_languages, i));
-        FUN_140165270(out, s);
+        CString s = FUN_1406504c0(m_languages[i]);
+        out.Add(s);
     }
 }
 
@@ -268,41 +263,41 @@ void FUN_140650b30(int n)
 void FUN_140650b50(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1401c0090(FUN_1406522f0(FUN_1406516c0()), strCode)) return;
-    if (FUN_1401c0090(strCode, FUN_1406522f0(0))) FUN_140650b30(0);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(1))) FUN_140650b30(1);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(2))) FUN_140650b30(2);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(3))) FUN_140650b30(3);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(4))) FUN_140650b30(4);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(5))) FUN_140650b30(5);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(6))) FUN_140650b30(6);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(7))) FUN_140650b30(7);
+    if (FUN_1406522f0(FUN_1406516c0()) == strCode) return;
+    if (strCode == FUN_1406522f0(0)) FUN_140650b30(0);
+    else if (strCode == FUN_1406522f0(1)) FUN_140650b30(1);
+    else if (strCode == FUN_1406522f0(2)) FUN_140650b30(2);
+    else if (strCode == FUN_1406522f0(3)) FUN_140650b30(3);
+    else if (strCode == FUN_1406522f0(4)) FUN_140650b30(4);
+    else if (strCode == FUN_1406522f0(5)) FUN_140650b30(5);
+    else if (strCode == FUN_1406522f0(6)) FUN_140650b30(6);
+    else if (strCode == FUN_1406522f0(7)) FUN_140650b30(7);
 }
 
 // @0x140650e70
 void FUN_140650e70(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1401c0090(FUN_140651350(), strCode)) return;
-    if (FUN_1401c0090(strCode, FUN_1406522f0(0))) FUN_1406507a0(0);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(1))) FUN_1406507a0(1);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(2))) FUN_1406507a0(2);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(3))) FUN_1406507a0(3);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(4))) FUN_1406507a0(4);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(5))) FUN_1406507a0(5);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(6))) FUN_1406507a0(6);
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(7))) FUN_1406507a0(7);
+    if (FUN_140651350() == strCode) return;
+    if (strCode == FUN_1406522f0(0)) FUN_1406507a0(0);
+    else if (strCode == FUN_1406522f0(1)) FUN_1406507a0(1);
+    else if (strCode == FUN_1406522f0(2)) FUN_1406507a0(2);
+    else if (strCode == FUN_1406522f0(3)) FUN_1406507a0(3);
+    else if (strCode == FUN_1406522f0(4)) FUN_1406507a0(4);
+    else if (strCode == FUN_1406522f0(5)) FUN_1406507a0(5);
+    else if (strCode == FUN_1406522f0(6)) FUN_1406507a0(6);
+    else if (strCode == FUN_1406522f0(7)) FUN_1406507a0(7);
 }
 
 // @0x140651190
 void FUN_140651190(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1401c0090(FUN_140651390(), strCode)) return;
-    if (FUN_1401c0090(strCode, FUN_140652330(0))) FUN_1406509e0(0);
-    else if (FUN_1401c0090(strCode, FUN_140652330(1))) FUN_1406509e0(1);
-    else if (FUN_1401c0090(strCode, FUN_140652330(2))) FUN_1406509e0(2);
-    else if (FUN_1401c0090(strCode, FUN_140652330(3))) FUN_1406509e0(3);
+    if (FUN_140651390() == strCode) return;
+    if (strCode == FUN_140652330(0)) FUN_1406509e0(0);
+    else if (strCode == FUN_140652330(1)) FUN_1406509e0(1);
+    else if (strCode == FUN_140652330(2)) FUN_1406509e0(2);
+    else if (strCode == FUN_140652330(3)) FUN_1406509e0(3);
 }
 
 // @0x140651350
@@ -320,8 +315,8 @@ CString FUN_140651390()
 // @0x1406513d0
 CString FUN_1406513d0(CString strFile)
 {
-    CString strPath = FUN_140298360("./ServerConfig/", strFile);
-    CString strSuffix = FUN_140298360("_", FUN_140188f50(DAT_143ab0258, 0));
+    CString strPath = "./ServerConfig/" + strFile;
+    CString strSuffix = "_" + FUN_140188f50(DAT_143ab0258, 0);
     strPath.Insert(strPath.Find(".xml", 0), strSuffix);
     return strPath;
 }
@@ -587,14 +582,14 @@ void FUN_1406507a0(int n)
     FUN_140650ac0(n);
     switch (n)
     {
-    case 1: FUN_1402be480(DAT_143ab0568, "jp/"); DAT_143aad168 = _create_locale(4, "japanese"); break;
-    case 2: FUN_1402be480(DAT_143ab0568, "en/"); DAT_143aad168 = _create_locale(4, "english"); break;
-    case 3: FUN_1402be480(DAT_143ab0568, "cn/"); DAT_143aad168 = _create_locale(4, "chinese"); break;
-    case 4: FUN_1402be480(DAT_143ab0568, "fr/"); DAT_143aad168 = _create_locale(4, "french"); break;
-    case 5: FUN_1402be480(DAT_143ab0568, "de/"); DAT_143aad168 = _create_locale(4, "german"); break;
-    case 6: FUN_1402be480(DAT_143ab0568, "pt/"); DAT_143aad168 = _create_locale(4, "portuguese"); break;
-    case 7: FUN_1402be480(DAT_143ab0568, "es/"); DAT_143aad168 = _create_locale(4, "spanish"); break;
-    default: FUN_1402be480(DAT_143ab0568, "kr/"); DAT_143aad168 = _create_locale(4, "korean");
+    case 1: g_strLocaleDir2 = "jp/"; DAT_143aad168 = _create_locale(4, "japanese"); break;
+    case 2: g_strLocaleDir2 = "en/"; DAT_143aad168 = _create_locale(4, "english"); break;
+    case 3: g_strLocaleDir2 = "cn/"; DAT_143aad168 = _create_locale(4, "chinese"); break;
+    case 4: g_strLocaleDir2 = "fr/"; DAT_143aad168 = _create_locale(4, "french"); break;
+    case 5: g_strLocaleDir2 = "de/"; DAT_143aad168 = _create_locale(4, "german"); break;
+    case 6: g_strLocaleDir2 = "pt/"; DAT_143aad168 = _create_locale(4, "portuguese"); break;
+    case 7: g_strLocaleDir2 = "es/"; DAT_143aad168 = _create_locale(4, "spanish"); break;
+    default: g_strLocaleDir2 = "kr/"; DAT_143aad168 = _create_locale(4, "korean");
     }
 }
 
@@ -606,10 +601,10 @@ void FUN_1406509e0(int n)
     DAT_143ab0560 = n;
     switch (n)
     {
-    case 1: FUN_1402be480(DAT_143ab0588, "jp/"); break;
-    case 2: FUN_1402be480(DAT_143ab0588, "na/"); break;
-    case 3: FUN_1402be480(DAT_143ab0588, "cn/"); break;
-    default: FUN_1402be480(DAT_143ab0588, "kr/");
+    case 1: g_strLocaleDir = "jp/"; break;
+    case 2: g_strLocaleDir = "na/"; break;
+    case 3: g_strLocaleDir = "cn/"; break;
+    default: g_strLocaleDir = "kr/";
     }
 }
 

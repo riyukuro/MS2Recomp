@@ -44,7 +44,6 @@ class Unk_140acd6e0 : public ASButton
 {
 public:
     void FUN_1422c1fe0(unsigned int bEnabled);          // enable / disable
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // click handler
 };
 
 // The AS function object calling back into C++ (ctor 0x1422c8430, dtor 0x1422c85b0).
@@ -103,22 +102,17 @@ struct Unk_IesParams                                                      // Sca
 void FUN_140cff1b0(Scaleform::GFx::Value& v, CString strName, CStringW strText);   // set the text of a child field
 void FUN_141415600(const CString& strKey);                          // release the item bound to the key
 void FUN_141415560(const CString& strKey, ItemInfoSlot::CreateParam* pParam);      // bind an item slot
-CString FUN_140c43630(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat<unsigned __int64> copy
-CString FUN_1402bad60(const char* pszFormat, const int* pnArg);   // StringFormat<int> copy
 void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem);  // create the drag slot
 void FUN_140b6c890(const CString& strName);                         // drop the drag slot
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
 int FUN_140ad0d60(int a, int b, int nMax);                          // clamp
-CStringW FUN_140938ae0(CStringW strKey, const int* pValue);
-CStringW FUN_14062b4f0(CStringW strKey, const int* pValue);
 CStringW FUN_1409404f0(__int64 nMeso);                              // meso text
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 void FUN_1412751f0(const CStringW& strText, int a, int b);          // show a notice
 void FUN_140710590(COutPacket& packet);                             // send
 void FUN_140202470(unsigned char* pRecord, COutputStream& out);     // encode an ExchangeRequest
 void FUN_140202580(unsigned char* pRecord, COutputStream& out);     // encode a ForceFillIngredient
-bool FUN_140534e50(MS2Ptr<CItem>* pItem);                           // the item is expired / unusable
 int FUN_1422db730();
 
 using ATL::CAtlArray;
@@ -289,7 +283,7 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
     {
         int nBase = pRef->m_nCount;
         int nCount = nMul * nBase;
-        param.m_strCount = FUN_1402bad60("{0}", &nCount);
+        param.m_strCount = Unk_SocketFormat("{0}", nCount);
         strText = spItem->FUN_140528160();
         if (spCur.get() != 0)
         {
@@ -319,8 +313,8 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(pRef->m_nId);
         if (spData.get() != 0)
-            slot.FUN_1407cbb20("level", FUN_140938ae0(CStringW(L"s_itemslot_exchange_level"),
-                                                      reinterpret_cast<const int*>(reinterpret_cast<char*>(spData.operator->()) + 0x138)));
+            slot.FUN_1407cbb20("level", FUN_14028dfa0(CStringW(L"s_itemslot_exchange_level"),
+                                                      *reinterpret_cast<const unsigned*>(reinterpret_cast<char*>(spData.operator->()) + 0x138)));
     }
     slot.FUN_1407cba60("binding", CString(strBind));
     slot.FUN_1407cbb20("name", CStringW(strText));
@@ -368,7 +362,7 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
     {
         int nBase = pIng->m_c;
         int nCount = nBase * nMul;
-        param.m_strCount = FUN_1402bad60("{0}", &nCount);
+        param.m_strCount = Unk_SocketFormat("{0}", nCount);
         strText = spItem->FUN_140528160();
         spItem->SetCountClamped(nCount);
     }
@@ -500,10 +494,10 @@ void UIItemExchangeScrollDialog::FUN_140f52ca0(CInPacket* pPacket)
     CIngredientContainer* pContainer = m_spIngredients.operator CIngredientContainer*();
     ((class CIngredientContainer*)(class CIngredientContainer*)(pContainer))->Read(*(class CInPacket*)(pPacket));
     MS2Ptr<CItem> spScroll = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5d680(uidScroll);
-    if (FUN_140534e50(&spScroll))
+    if (!spScroll)
         return;
     MS2Ptr<CItem> spTarget = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FUN_140a5d680(uidTarget);
-    if (FUN_140534e50(&spTarget))
+    if (!spTarget)
         return;
     if (m_spExchange == 0)
         return;
@@ -516,7 +510,7 @@ void UIItemExchangeScrollDialog::FUN_140f52ca0(CInPacket* pPacket)
     FUN_140f514c0(&spInfo->m_requireEquip, CString("recipe"), obj, 0xc, nCount, MS2Ptr<CItem>(spTarget));
     FUN_140f514c0(&spInfo->m_exchange, CString("exchange"), obj, 6, nCount, MS2Ptr<CItem>(spTarget));
     for (unsigned __int64 i = 0; i < pContainer->FUN_14026bee0(); i++)
-        FUN_140f51e90(pContainer->FUN_14026bdc0(i).FUN_14027f250(), FUN_140c43630("require{0}", i + 1), obj, 1, 1);
+        FUN_140f51e90(pContainer->FUN_14026bdc0(i).FUN_14027f250(), Unk_SocketFormat("require{0}", i + 1), obj, 1, 1);
     m_30->Invoke("setData", obj);
     if (m_spOk.get() != 0)
         m_spOk->FUN_1422c1fe0(FUN_140f524d0(nCount));
@@ -545,7 +539,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
     int nMake = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spScroll->Invoke("getMakeCount")))->GetInt();
     for (unsigned __int64 i = 0; i < pRequire->FUN_14026bee0(); i++)
     {
-        MS2Ptr<ASMovieClip> spReq = spScroll->FUN_1409b4560(FUN_140c43630("m_require{0}", i + 1));
+        MS2Ptr<ASMovieClip> spReq = spScroll->FUN_1409b4560(Unk_SocketFormat("m_require{0}", i + 1));
         // the exe null-tests spScroll here, not spReq
         if (spScroll == 0)
             continue;
@@ -638,7 +632,7 @@ void UIItemExchangeScrollDialog::FUN_140f53bb0(ASObj& obj, CExchangeItemInfo* pI
     FUN_140f514c0(&pInfo->m_receipe, CString("recipe"), obj, 0x11, nDefault, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 2, nDefault, MS2Ptr<CItem>(0));
     for (unsigned __int64 i = 0; i < pInfo->m_require.FUN_14026bee0(); i++)
-        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).FUN_14027f250(), FUN_140c43630("require{0}", i + 1), obj, 1, nDefault);
+        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).FUN_14027f250(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
     obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
     obj.FUN_1407cb9c0("itemMaxCount", nMax);
     obj.FUN_1407cb9c0("itemMinCount", nMin);
@@ -667,7 +661,7 @@ void UIItemExchangeScrollDialog::FUN_140f54120(ASObj& obj, CExchangeItemInfo* pI
     CStringW strNotify = FUN_14028dfa0<CStringW>(CStringW(L"s_itemslot_exchange_upgrade_notify"),
                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pInfo->m_requireEquip.m_nId));
     ((class CReservedWordTable*)(void*)(((void*)TSingleton<CReservedWordTable>::GetInstance())))->ReplaceObjectAndValueWords(strNotify);
-    obj.FUN_1407cbb20("warning", FUN_14062b4f0(CStringW(L"s_itemslot_exchange_upgrade_warning"), &pInfo->m_nMaxGrade));
+    obj.FUN_1407cbb20("warning", FUN_14028dfa0(CStringW(L"s_itemslot_exchange_upgrade_warning"), pInfo->m_nMaxGrade));
     obj.FUN_1407cbb20("notify", CStringW(strNotify));
 }
 
@@ -684,7 +678,7 @@ void UIItemExchangeScrollDialog::FUN_140f544d0(ASObj& obj, CExchangeItemInfo* pI
     FUN_140f514c0(&pInfo->m_receipe, CString("recipe"), obj, 0x11, nDefault, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 2, nDefault, MS2Ptr<CItem>(0));
     for (unsigned __int64 i = 0; i < pInfo->m_require.FUN_14026bee0(); i++)
-        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).FUN_14027f250(), FUN_140c43630("require{0}", i + 1), obj, 1, nDefault);
+        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).FUN_14027f250(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
     obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
     obj.FUN_1407cb9c0("itemMaxCount", nMax);
     obj.FUN_1407cb9c0("itemMinCount", nMin);

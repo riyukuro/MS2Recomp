@@ -31,16 +31,13 @@
 #include "ms2/client/ms2/uihpbar.h"
 #include "ms2/client/ms2/emotiondata.h"
 #include "ms2/commonfiles/talkscript.h"
+#include "ms2/client/ms2/effectdummy.h"   // C3: std::vector<CEffectDummy> (the npc row part list)
+#include <vector>
 
 // ---- unit-local placeholders ----
 
 // A part of the npc row's model part list (+0x588).
-class Unk_NpcPartList
-{
-public:
-    size_t FUN_14078cd60();                                         // count
-    const CEffectDummy& FUN_140789540(size_t i);                    // GetAt
-};
+class Unk_NpcPartList { char m_pad[0x18]; };                        // C3: a std::vector<CEffectDummy> (read through a cast)
 
 // Npc table row (NpcData xml). Only the members this unit reads.
 class Unk_NpcData : public CPtred
@@ -206,7 +203,7 @@ CubeSpawnObject::CubeSpawnObject()
 CubeSpawnObject::~CubeSpawnObject()
 {
     m_spNpc = 0;
-    m_entity = 0;
+    reinterpret_cast<egf::EntityPtr&>(m_entity) = (egf::Entity*)0;
     if (m_spFx.get())
     {
         FUN_141993750(FUN_14123c580());
@@ -220,7 +217,7 @@ int CubeSpawnObject::vfunc_124(int nNpcId, Unk_EntRef ent, int nGaugeA, int nGau
     m_spNpc = ((class Unk_NpcTable*)FUN_1406d6e90())->FUN_140a7cab0(nNpcId);
     if (m_spNpc == NULL)
         return 0;
-    m_entity = ent;
+    reinterpret_cast<egf::EntityPtr&>(m_entity) = reinterpret_cast<egf::EntityPtr&>(ent);
     m_nGaugeA = nGaugeA;
     m_nGaugeB = nGaugeB;
     m_strOwner = strOwner;
@@ -350,12 +347,12 @@ MS2_REPLACE_METHOD(0x140a4f690, CubeSpawnObject, FUN_140a4f690, 112, 0x1E480BE2)
 void CubeSpawnObject::vfunc_9(void* p)
 {
     PCBase::vfunc_9(p);
-    if ((m_entity.FUN_1408a9090() ? true : false) && (m_spNpc.get() ? true : false))
+    if (((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity) ? true : false) && (m_spNpc.get() ? true : false))
     {
         efd::Point3 kPos = efd::Point3::ZERO;
         efd::Point3 kDir = efd::Point3::ZERO;
-        reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
-        reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9280())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kDir));
+        reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPos));
+        reinterpret_cast<egf::EntityPtr&>(m_entity).operator->()->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(kDir));
         kPos = kPos + m_spNpc->m_offset;
         vfunc_19(kPos);
         vfunc_21(kDir);
@@ -376,8 +373,8 @@ MS2_REPLACE_METHOD(0x140a4f710, CubeSpawnObject, vfunc_9, 718, 0x44CD5478);
 void CubeSpawnObject::vfunc_12()
 {
     PCBase::vfunc_12();
-    for (size_t i = 0; i < m_spNpc->m_parts.FUN_14078cd60(); i++)
-        FUN_141674ef0(m_spNpc->m_parts.FUN_140789540(i));
+    for (size_t i = 0; i < reinterpret_cast<std::vector<CEffectDummy>&>(m_spNpc->m_parts).size(); i++)
+        FUN_141674ef0(reinterpret_cast<std::vector<CEffectDummy>&>(m_spNpc->m_parts)[i]);
     vfunc_59(1, NULL, 0xa8, 0);
 }
 MS2_REPLACE_METHOD(0x140a4f9f0, CubeSpawnObject, vfunc_12, 182, 0x080792C4);

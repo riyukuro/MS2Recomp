@@ -24,6 +24,7 @@
 #include <NiMesh.h>
 #include <NiFixedString.h>
 #include <NiFloatExtraData.h>
+#include "ms2/client/ms2/material/ms2materials.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -51,14 +52,12 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
 
 // A material-table entry; only its state word (+0x540) is read here. Its exe accessor (0x1427542f0) lies in the
 // statically linked runtime range that the hook DLL does not map, so it is expressed inline instead.
-struct Unk_MaterialTable;                                           // DAT_143d69198
 struct Unk_MaterialEntry
 {
     char m_pad[0x540];
     unsigned m_nState;
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
-extern Unk_MaterialTable DAT_143d69198;
 extern NiFixedString DAT_143ae5130;                                 // extra-data keys
 extern NiFixedString DAT_143ae5138;
 extern unsigned DAT_1439f8244;                                      // blink interval (ms)
@@ -239,7 +238,7 @@ void CStatusEffect::FUN_141801900(void* pUnused)
         NiMesh* pMesh = (NiMesh*)((void*)(NiObject::DynamicCast(&NiMesh::ms_RTTI, (const NiObject*)(void*)(pObj))));
         if (pMesh)
         {
-            Unk_MaterialEntry* pEntry = ((Unk_MaterialEntry*)(NiMaterial::DynamicCast((const NiRTTI*)(Unk_MaterialTable*)(&DAT_143d69198), ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>(pMesh)->GetActiveMaterial())))));
+            Unk_MaterialEntry* pEntry = ((Unk_MaterialEntry*)(NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>(pMesh)->GetActiveMaterial())))));
             if (pEntry && pEntry->IsActive())
             {
                 float fB = m_bFlag ? 0.7f : 0.0f;

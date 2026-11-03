@@ -115,19 +115,18 @@ public:
     virtual void vfunc_140();
     virtual unsigned vfunc_141();
 };
+class CFieldDataCli;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
+    static WorldService* GetInstance();
     void* FUN_141bd0cc0();
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
 };
 
 // A learned skill: its record and flags (the skill book hands out MS2Ptr<Unk_SkillObj>).
 class Unk_SkillRec { public: char m_pad_00[0xa8]; int m_pad_a8; unsigned char m_pad_ac; bool m_bBlocked; };
-class Unk_SkillObj : public CPtred
-{
-public:
-    unsigned char FUN_140804450();
-};
+class Unk_SkillObj : public CPtred { };
 class Unk_SkillBook
 {
 public:
@@ -226,6 +225,8 @@ static CString s_143ab3490[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/commonfiles/gameentitycommon.h"
+#include "ms2/client/ms2/fielddatacli.h"
 
 // return types of the getters this unit calls
 class Unk_EmoNpcTable;
@@ -234,7 +235,7 @@ class Unk_EmoNpcTable;
 
 typedef std::vector<std::pair<int, __int64> > Unk_PayList;           // (currency kind, amount) pairs
 
-class Unk_SkillRow : public CPtred { public: unsigned char FUN_1407e9de0(); };
+class Unk_SkillRow : public CPtred { };
 class Unk_SkillTable { public: MS2Ptr<Unk_SkillRow> FUN_1407ee1d0(int nSkillId); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -244,7 +245,6 @@ void FUN_141275260(int nStringId, int nA, int nB);
 class Unk_PartyRef : public CPtred { };
 class Unk_PartyHolder { public: MS2Ptr<Unk_PartyRef> FUN_141768380(); };
 class Unk_FieldRef : public CPtred { };
-unsigned FUN_1403bb210(int nKind, int nMode);
 int IsNotRecentDayChange(__int64 nTime);
 bool FUN_14086ab70(CMsTime tmOld, CMsTime tmNew, int nBaseHour);
 __int64 GetServerTime();
@@ -298,7 +298,7 @@ extern ATL::CAtlArray<unsigned> DAT_143ab32b8;
 
 class Unk_UiManager { public: };
 
-void FUN_141276180(const CString& strSound, const CString& strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 
 // ---- functions --------------------------------------------------------------------------------------------------------
 
@@ -328,7 +328,7 @@ unsigned FUN_14092f4e0(int nSkillId)
 {
     if (g_143ab2a90.FUN_140a62d30(nSkillId) != 0)
         return 1;
-    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc != 0)
     {
         Unk_SkillBook* pBook = reinterpret_cast<Unk_SkillBook*>(reinterpret_cast<PC*>(pPc)->FUN_1416546d0());
@@ -339,7 +339,7 @@ unsigned FUN_14092f4e0(int nSkillId)
             {
                 if (reinterpret_cast<Unk_SkillRec*>(reinterpret_cast<SkillLevelData*>(spSkill.operator->())->GetSkill())->m_bBlocked)
                     return 0;
-                return FUN_141525480(pPc, nSkillId, spSkill->FUN_140804450());
+                return FUN_141525480(pPc, nSkillId, reinterpret_cast<SkillLevelData*>(spSkill.operator->())->FUN_140804450());
             }
             return FUN_141525480(pPc, nSkillId, 1);
         }
@@ -384,7 +384,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
         MS2Ptr<Unk_SkillRow> spRow = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
         if (spRow.IsNull())
             return 0;
-        if (spRow->FUN_1407e9de0())
+        if (reinterpret_cast<SkillData*>(spRow.operator->())->FUN_1407e9de0())
         {
             FUN_141275260(0x9a7, 1, 1);
             return 0;
@@ -441,7 +441,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
         MS2Ptr<Unk_SkillRow> spRow = reinterpret_cast<Unk_SkillTable*>(TSingleton<SkillDataTableCli>::GetInstance())->FUN_1407ee1d0(nSkillId);
         if (spRow.IsNull())
             return 0;
-        if (spRow->FUN_1407e9de0())
+        if (reinterpret_cast<SkillData*>(spRow.operator->())->FUN_1407e9de0())
         {
             FUN_141275260(0x9a7, 1, 1);
             return 0;
@@ -746,7 +746,7 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
         {
             if (FUN_140930200(i) == true)
                 continue;
-            unsigned nBits = FUN_1403bb210(i, 0);
+            unsigned nBits = FUN_1403bb210(i, false);
             if ((nBits & nMask) == 0)
                 continue;
             if ((*pWallet)[i] >= nRemain)
@@ -877,7 +877,7 @@ unsigned char FUN_140930d20(__int64 nId)
 // @0x140930d70
 bool FUN_140930d70()
 {
-    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     bool bResult = ((class Unk_PartyHolder*)((class MyPC*)(class Unk_MyPc*)(pPc))->FUN_141523bc0())->FUN_141768380().get() != 0;
@@ -889,7 +889,7 @@ int FUN_140931890(ATL::CAtlArray<unsigned>* pArray, unsigned short* pValue);
 // @0x140930e10
 int FUN_140930e10()
 {
-    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return 0;
     int nCount = 0;
@@ -987,12 +987,12 @@ bool FUN_1409312f0()
         return false;
     if (FUN_140930b10())
         return false;
-    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
     if (((class PCBase*)(class Unk_MyPc*)(pPc))->IsDead())
         return false;
-    MS2Ptr<Unk_FieldRef> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField.IsNull())
         return false;
     return true;
@@ -1001,7 +1001,7 @@ bool FUN_1409312f0()
 // @0x1409313b0
 unsigned FUN_1409313b0()
 {
-    Unk_MyPc* pPc = ((class Unk_MyPc*)((class WorldService*)(class Unk_MailSession*)(FUN_1403ed2d0()))->FUN_141bd0cc0());
+    Unk_MyPc* pPc = ((class Unk_MyPc*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return 0xffffffff;
     unsigned short nLevel = (unsigned short)pPc->vfunc_78();

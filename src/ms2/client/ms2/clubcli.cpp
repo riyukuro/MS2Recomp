@@ -37,6 +37,7 @@
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/uiclubdialog.h"
+#include "ms2/client/ms2/uimessageboxdata.h"  // C3: CMsgBoxData
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -79,41 +80,10 @@ static Unk_1402a9d70 s_unk1402a9d70_0(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders ----
 
-// The message box record (0x2a0 bytes; the MS2Ptr<CMsgBoxData> members are the exe copies bound through symbols.tsv).
-struct Unk_MsgParam
-{
-    __int64 m_nValue;
-};
-// A CAtlArray-like vector of parameters (data, count, ...).
-struct Unk_MsgParamArray
-{
-    Unk_MsgParam* m_pData;
-    size_t m_nSize;
-    size_t m_nMaxSize;
-    int m_nGrowBy;
-};
-Unk_MsgParam& FUN_140164970(Unk_MsgParamArray& arr, size_t nIndex);   // element (throws E_INVALIDARG past the end)
-__int64 FUN_140718370(Unk_MsgParam& param);                           // value
-
-class CMsgBoxData : public CPtred
-{
-public:
-    CMsgBoxData(int nType);
-    void SetMsg(const CStringW& strText);
-    void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
-    void FUN_141a024a0(int n);
-    bool FUN_140b19130(unsigned nIndex, __int64& nValue) const;    // the nIndex-th stored value (this unit)
-
-    char m_pad_18[0x228 - 0x18];
-    Unk_MsgParamArray m_values;                                    // +0x228
-    char m_pad_248[0x2a0 - 0x248];
-};
-MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
+unsigned __int64 FUN_140718370(const CStringW& str);                 // value
 extern template class MS2Ptr<CMsgBoxData>;
 typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 
-void FUN_141a01ca0(CMsgBoxData* pBox, int a, int b, const CStringW& str);
-void FUN_1405340b0(CMsgBoxData* pBox, __int64 n);
 void FUN_14151f150(Unk_MsgBoxPtr box);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
 Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
@@ -173,7 +143,6 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // String helpers (string table lookups with arguments) and the chat/notice output.
 CStringW GetStringCommon(int nId);
 #include "ms2/placeholder/formatstringid.h"
-CStringW FUN_1409eadb0(int nId, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW BlockFormat(int nId);
 #include "ms2/placeholder/blockformat.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
@@ -292,7 +261,7 @@ void CClubCli::FUN_140b12d70(CInPacket& packet)
         UIClubDialog* pDialog = FUN_140b19090(0x4f25);
         if (pDialog != 0)
             pDialog->RefreshData();
-        FUN_1412751b0(FUN_1409eadb0(0x352, strActor, member.m_info.GetName(), FUN_14020f1a0()), 0xf);
+        FUN_1412751b0(BlockFormat<CStringW, CStringW, CStringW>(0x352, strActor, member.m_info.GetName(), FUN_14020f1a0()), 0xf);
     }
 }
 
@@ -1097,7 +1066,7 @@ void CClubClientManager::FUN_140b166d0(CInPacket& packet)
         Unk_MsgBoxPtr box = FUN_140b191a0(
             FormatStringId<CStringW, CStringW>(0x345, spClub->GetLeaderName(), spClub->FUN_14020f1a0()), 1,
             Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18390), spClub->FUN_14020f0c0());
-        FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
+        box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box.operator->()->FUN_141a024a0(false);
         FUN_140d73c60(box);
     }
@@ -1161,10 +1130,10 @@ void CClubClientManager::FUN_140b16d20(CInPacket& packet)
     Unk_MsgBoxPtr box = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
     if (box.get() != 0)
     {
-        FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
+        box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box.operator->()->FUN_141a024a0(false);
         box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
-        FUN_1405340b0(box.operator->(), spInvite->m_inviteId);
+        box->Append<__int64>(spInvite->m_inviteId);
         FUN_140d73c60(box);
     }
 }
@@ -1580,9 +1549,9 @@ UIClubDialog* FUN_140b19090(int nUiId)
 // @0x140b19130
 bool CMsgBoxData::FUN_140b19130(unsigned nIndex, __int64& nValue) const
 {
-    if (!(nIndex < ((ATL::CAtlArray<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>, ATL::CElementTraits<ATL::CStringT<wchar_t, StrTraitMFC_DLL<wchar_t, ATL::ChTraitsCRT<wchar_t>>>>>*)&(m_values))->GetCount()))
+    if (!(nIndex < m_args.GetCount()))
         return false;
-    nValue = FUN_140718370(FUN_140164970(const_cast<Unk_MsgParamArray&>(m_values), nIndex));
+    nValue = FUN_140718370(m_args[nIndex]);
     return true;
 }
 
@@ -1592,7 +1561,7 @@ Unk_MsgBoxPtr FUN_140b191a0(CStringW strText, int nType, Delegate<bool(int, cons
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->SetMsg(strText);
     box->SetCallback(cb);
-    FUN_1405340b0(box.operator->(), nUid);
+    box->Append<__int64>(nUid);
     FUN_14151f150(box);
     return box;
 }

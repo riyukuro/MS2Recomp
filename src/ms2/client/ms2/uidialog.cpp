@@ -189,7 +189,6 @@ void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool); 
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
-CString FUN_14038f6d0(const CString& str, const char* szExt);       // str + ext
 CString FUN_1412755f0();                                            // the UI settings directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strPath);    // path join
 
@@ -273,7 +272,7 @@ int UIDialog::vfunc_4()
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
-    return FUN_1408710c0(&m_e8, FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")));
+    return FUN_1408710c0(&m_e8, FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"));
 }
 MS2_REPLACE_METHOD(0x1419237c0, UIDialog, vfunc_4, 673, 0x49894032);
 
@@ -284,7 +283,7 @@ int UIDialog::vfunc_5()
         return 0;
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     vfunc_83();
-    if (m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")), 0)) {
+    if (m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"), 0)) {
         void* pNode = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&m_e8))->FirstChild(GetTypeName()));
         if (!pNode)
             return 0;

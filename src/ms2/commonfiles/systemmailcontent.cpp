@@ -36,8 +36,6 @@ typedef ATL::CAtlMap<unsigned int, CSystemMailContent::Ptr> Unk_SystemMailMap;
 // ---- unrecovered helpers ----
 
 CString FUN_140651390();                                        // the language directory
-CString FUN_140298360(const char* pszName, const CString& strDir);   // locale file name
-CString FUN_14038f6d0(const CString& strA, const char* pszB);   // string concatenation
 CString FUN_14071ae20(const CString& strFile);                  // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
 class Unk_SmTextMgr;
@@ -79,7 +77,7 @@ void LoadSystemMailContent();
 void LoadSystemMailContent()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071ae20(FUN_14038f6d0(FUN_140298360("systemMailContent", FUN_140651390()), ".xml"));
+    CString strPath = FUN_14071ae20("systemMailContent" + FUN_140651390() + ".xml");
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         strPath = FUN_14071ae20("systemMailContent.xml");

@@ -42,6 +42,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/client/ms2/equipment.h"
+#include "ms2/ms2format.h"
 
 // The header statics of the original TU (the same set as the other pages of the family).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -89,7 +90,6 @@ struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); 
 struct Unk_TrFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 v);
-CStringW FUN_1406564a0(const wchar_t* pszFormat, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_140627390(unsigned id);
 CStringW FUN_14062ae60(int itemId);
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> info);
@@ -421,10 +421,11 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
     FUN_1406284a0(level, flag, &itemId, &price);
     CIngredientContainer cost;
     ((class CIngredientContainer*)(class CIngredientContainer*)(&cost))->FUN_14026bd10(itemId, price);
-    Unk_IngVec* entries = cost.FUN_14026c230();
-    size_t count = entries->FUN_14028b500();
+    const std::vector<MS2Ptr<CIngredientInfo> >* entries =
+        reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >*>(cost.FUN_14026c230());
+    size_t count = entries->size();
     for (size_t i = 0; i < count; ++i) {
-        Unk_IngRef ingredient(*entries->FUN_14028a0f0(i));
+        MS2Ptr<CIngredientInfo> ingredient(entries->at(i));
         if (ingredient == 0)
             continue;
         int have = g_143ab2a90.FUN_140a5f180(ingredient->m_a, 0);
@@ -567,7 +568,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c52f10(MS2Ptr<CItem> item, ASObj
             int gemId = info->GetGemId();
             CStringW gemName = FUN_14062ae60(gemId);
             CStringW gemStat = FUN_14062b310(MS2Ptr<TSocketGemStoneInfo>(info));
-            text = FUN_1406564a0(rowStat, FUN_140627390(gemId), gemName, gemStat);
+            text = StringFormat<CStringW, CStringW, CStringW>(rowStat, FUN_140627390(gemId), gemName, gemStat);
         }
         rows.PushWString(text);
     }

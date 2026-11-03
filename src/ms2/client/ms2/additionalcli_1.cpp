@@ -30,6 +30,9 @@
 #include "ms2/placeholder/stancetable.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/ms2recover.h"
+
+CLogString* GetLogString();   // the game log (0x140166440)
+
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -143,7 +146,7 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
 {
     if (pOwner == 0)
     {
-        Unk_AcLog(TSingleton<CLogString>::GetInstance(), 0, 0, 0x134,
+        Unk_AcLog(GetLogString(), 0, 0, 0x134,
                   L"CAdditionalEffect::DecodeModifyPacket pcBase NULL AdditionalEffect ID : {0}, Level{1}", m_nId,
                   m_nLevel);
         return;
@@ -159,7 +162,7 @@ void AdditionalCli::FUN_14096bf40(PCBase* pOwner, unsigned nFlags, const Unk_Add
         if (spLevel == 0)
         {
             // The exe's state record holds the id / level as unsigned / unsigned short (one log instantiation).
-            Unk_AcLog(TSingleton<CLogString>::GetInstance(), 0, 0, 0x134,
+            Unk_AcLog(GetLogString(), 0, 0, 0x134,
                       L"CAdditionalEffect::DecodeModifyPacket NotFound AdditionalEffect ID : {0}, Level{1}",
                       reinterpret_cast<const unsigned&>(state.m_n8),
                       reinterpret_cast<const unsigned short&>(state.m_nC));

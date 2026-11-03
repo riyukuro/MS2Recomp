@@ -15,6 +15,7 @@
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
@@ -33,8 +34,6 @@ public:
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 CStringTable* GetStringTable();
-CStringW FUN_14062b4f0(CStringW strKey, const int* pn);         // localized text with one number (pointer form)
-CString FUN_1401d9af0(const char* szFormat, unsigned __int64* pArg);   // StringFormat "reward{0}"
 void FUN_1412751b0(const CStringW& strMsg, int nType);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -114,7 +113,7 @@ void UIChapterBook::OnLoadComplete()
                     objReward.FUN_1407cba60("icon", spItem->GetIconPath());
                     ((class AScript&)(objReward)).FUN_1407cbb20("name", GetStringTable()->FUN_141811980(1, reward.m_item.m_itemId));
                     objReward.FUN_1409c0d20("count", reward.m_item.m_count);
-                    obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
+                    obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
                 else if (reward.m_nType == 3)
                 {
@@ -123,15 +122,15 @@ void UIChapterBook::OnLoadComplete()
                     CStringW strKey(L"s_chapterbook_skill_point");
                     if (reward.m_nKind == 2)
                         strKey = L"s_achieve_reward_skill_point_sub_1";
-                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14062b4f0(strKey, &reward.m_nValue));
-                    obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
+                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14028dfa0<int>(strKey, reinterpret_cast<const int&>(reward.m_nValue)));
+                    obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
                 else if (reward.m_nType == 2)
                 {
                     ASObj objReward(2);
                     objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->m_strStatIcon);
-                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14062b4f0(CStringW(L"s_chapterbook_stat_point"), &reward.m_nValue));
-                    obj.FUN_1409eb270(FUN_1401d9af0("reward{0}", &i), objReward);
+                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14028dfa0<int>(CStringW(L"s_chapterbook_stat_point"), reinterpret_cast<const int&>(reward.m_nValue)));
+                    obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
             }
             m_30->Invoke("setEpilogue", obj);
@@ -167,12 +166,12 @@ int UIChapterBook::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     CStringW strKey(L"s_reward_notify_skill_point");
                     if (reward.m_nKind == 2)
                         strKey = L"s_reward_notify_skill_point_sub_1";
-                    FUN_1412751b0(FUN_14062b4f0(strKey, &reward.m_nValue), 0x14);
+                    FUN_1412751b0(FUN_14028dfa0<int>(strKey, reinterpret_cast<const int&>(reward.m_nValue)), 0x14);
                 }
                 break;
                 case 2:
                     pNotify->FUN_141ac1b50(reward.m_nValue);
-                    FUN_1412751b0(FUN_14062b4f0(CStringW(L"s_reward_notify_stat_point"), &reward.m_nValue), 0x14);
+                    FUN_1412751b0(FUN_14028dfa0<int>(CStringW(L"s_reward_notify_stat_point"), reinterpret_cast<const int&>(reward.m_nValue)), 0x14);
                     break;
                 case 1:
                     pNotify->FUN_141abf6e0(reward.m_item.m_itemId, reward.m_item.vfunc_o18_1());

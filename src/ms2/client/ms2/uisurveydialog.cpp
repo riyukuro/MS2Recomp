@@ -24,11 +24,8 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 extern __int64 DAT_143ab2828;                                       // the own character id
 CStringW GetStringCommon(int nStringId);                              // string table text
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_1409eadb0(int nStringId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
+template <class A, class B, class C> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c);
 template <class A> CStringW FormatStringId(int nId, const A& a);         // string table text with one argument
-CStringW FUN_1401d0160(const wchar_t* sz, const CStringW& str);    // sz + str
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* sz);     // str + sz
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 void FUN_1412751b0(const CStringW& strText, int nColor);            // print to the chat
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_140710590(COutPacket& packet);
@@ -59,7 +56,7 @@ void UISurveyDialog::OnLoadComplete()
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
     CStringW strKind = GetStringCommon(m_188 != 0 ? 0xc8d : 0xc8e);
-    FUN_140cff1b0(FUN_1422dbb40(), "m_textSurvey", FUN_1401d0080(FUN_14061ad70(FUN_1401d0160(L"[", strKind), L"] "), m_190));
+    FUN_140cff1b0(FUN_1422dbb40(), "m_textSurvey", L"[" + strKind + L"] " + m_190);
     for (size_t i = 0; i < m_198.GetCount(); i++)
         m_30->Invoke("addItem", m_198[i]);
     m_30->Invoke("initDatas");
@@ -162,7 +159,7 @@ void UISurveyDialog::FUN_140eda530(CInPacket& packet)
     for (int i = 0; i < nCount; i++)
     {
         CStringW strAnswer = packet.ReadUnicodeString();
-        FUN_1412751b0(FUN_1401d0160(L"- ", strAnswer), 0x14);
+        FUN_1412751b0(L"- " + strAnswer, 0x14);
     }
     FUN_1412751b0(GetStringCommon(0xc92), 0x14);
 }
@@ -175,7 +172,7 @@ void UISurveyDialog::FUN_140eda790(CInPacket& packet)
     CStringW strB = packet.ReadUnicodeString();
     bool bKindB = packet.ReadUInt8() == 1;
     CStringW strKind = GetStringCommon(bKindA ? 0xc8d : 0xc8e);
-    FUN_1412751b0(FUN_1409eadb0(bKindB ? 0xc95 : 0xc96, strKind, strA, strB), 0x14);
+    FUN_1412751b0(BlockFormat<CStringW, CStringW, CStringW>(bKindB ? 0xc95 : 0xc96, strKind, strA, strB), 0x14);
 }
 
 // @0x140eda980
@@ -227,7 +224,7 @@ void UISurveyDialog::FUN_140edad50(CInPacket& packet)
         if (bKind)
         {
             for (int j = 0; j < (int)nVotes; j++)
-                strLine += FUN_1401d0160(L" ", packet.ReadUnicodeString());
+                strLine += L" " + packet.ReadUnicodeString();
         }
         FUN_1412751b0(strLine, 0x14);
     }

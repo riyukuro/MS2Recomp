@@ -76,6 +76,7 @@ static ATL::CAtlMap<Unk_GemSlot, unsigned> s_mapGemSlots;                       
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<T>::Get/Read
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/client/ms2/effectservice.h"   // C3: CEffectService::FUN_1411a49c0/FUN_1411a6060
 
 // The actor components behind PCBase slots 82 / 85 (see pcbase.h): the name tag and chat balloon entities.
 class Unk_PCBaseComp_a78 : public CPtred {};
@@ -123,14 +124,6 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // 0x14053f8
 
 // The UI manager (TSingleton<CUIService>::GetInstance): a gem that shows an effect of its own registers with it.
 
-// The effect manager (FUN_1403ed280).
-class Unk_RideeEffects
-{
-public:
-    int FUN_1411a49c0(Unk_EffectQuery* pQuery);                     // spawn, returns the handle
-    void FUN_1411a6060(int nHandle);                                // release
-};
-class CEffectService;
 
 // The actor's equipment (FUN_14165f460 hands it out as a void*): the gem items' worn-item calls.
 CString FUN_1405a7e80(int nValue);                                  // 0x1405a7e80
@@ -818,7 +811,7 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     query.m_strName = spData->GetEffectByGender(((class PC*)(class PCBase*)(pPC))->FUN_141658e60());
     query.m_nObject = 0;
     query.SetActor(pPC->FUN_14123c580());
-    unsigned int nHandle = reinterpret_cast<Unk_RideeEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(&query);
+    unsigned int nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&query));
     if (nHandle > 0)
         m_listEffects.AddTail(nHandle);
     ((class PC*)(class PC*)(pPC))->FUN_1416636e0(spItem, m_nDataId);
@@ -837,7 +830,7 @@ int CGemCharEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
     for (POSITION pos = m_listEffects.GetHeadPosition(); pos != 0; m_listEffects.GetNext(pos))
     {
         int nHandle = m_listEffects.GetAt(pos);
-        reinterpret_cast<Unk_RideeEffects*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(nHandle);
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nHandle);
     }
     m_listEffects.RemoveAll();
     ((class PC*)(class PC*)(pPC))->ClearCouple();

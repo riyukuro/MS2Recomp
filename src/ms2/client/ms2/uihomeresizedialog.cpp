@@ -53,7 +53,6 @@ class Unk_HrPc;
 int FUN_1418dd100();
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);         // money text by pay type
 CStringW FUN_14093bad0(int nWidth, int nLength, CStringW strDefault);   // the trophy requirement text (empty: none)
-CStringW FUN_14062b4f0(CStringW strKey, const int* pnValue);   // string table text with one number
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
@@ -278,9 +277,9 @@ void UIHomeResizeDialog::vfunc_84()
         bShrink = false;
     ASObj obj(2);
     int nArea;
-    ((class AScript&)(obj)).FUN_1407cbb20("extensionArea", FUN_14062b4f0(CStringW(L"s_home_info_area"), &(nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
+    ((class AScript&)(obj)).FUN_1407cbb20("extensionArea", FUN_14028dfa0<int>(CStringW(L"s_home_info_area"), (nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
     int nHeight;
-    ((class AScript&)(obj)).FUN_1407cbb20("extensionHeight", FUN_14062b4f0(CStringW(L"s_home_info_height"), &(nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
+    ((class AScript&)(obj)).FUN_1407cbb20("extensionHeight", FUN_14028dfa0<int>(CStringW(L"s_home_info_height"), (nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
     obj.FUN_1407cbbe0("shrinkEnable", bShrink);
     obj.FUN_1407cbbe0("extensionEnable", bExtend);
     dialog->FUN_140acd1f0("buildInteriorExtension", obj);

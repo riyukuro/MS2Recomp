@@ -112,7 +112,6 @@ class Unk_NcNode { public: Unk_NcNode* FUN_140165cf0(const char* szTag); Unk_NcN
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140399100(CString strPattern, CString strDir, CAtlArray<CString>& output, CString strExclude, bool bLocalOnly);
-CString FUN_14038f6d0(const CString&, const char*);
 CStringW FUN_1401bf530(Unk_140165cf0* pNode, const char* szAttr, CStringW strDefault);
 
 // @0x141a6c140
@@ -311,7 +310,7 @@ void UINpcCreateDialog::ReadNpcFromFile()
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcFromFile");
     m_files.clear();
     CAtlArray<CString> files;
-    FUN_140399100(CString(".xml"), FUN_14038f6d0(CString("./Data/Xml/"), "NpcData/"), files, CString(""), false);
+    FUN_140399100(CString(".xml"), CString("./Data/Xml/") + "NpcData/", files, CString(""), false);
     for (unsigned __int64 i = 0; i < files.GetCount(); i++) {
         CString strFile = files[i];
         TiXmlDocument doc;

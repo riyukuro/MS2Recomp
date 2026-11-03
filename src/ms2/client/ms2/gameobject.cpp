@@ -112,6 +112,7 @@ public:
     int FUN_140ddcc90();
 };
 
+class Unk_HudActor { public: float FUN_140f4a450(); };   // C3: member view (0x140f4a450)
 class Unk_GoAnimSvc
 {
 public:
@@ -131,7 +132,9 @@ struct Unk_GoCamEvent
 
 // Anchor handles collected by vfunc_27 (16-byte smart handle over the array element).
 struct Unk_GoFloat3 { float x, y, z; };
-class Unk_GoAnchorPose { public: const Unk_GoFloat3* FUN_140a01180(); };
+class NxVec3;
+class NxBox { public: const NxVec3& GetCenter() const; };   // C3: member view (0x140a01180)
+class Unk_GoAnchorPose { };
 class Unk_GoAnchor
 {
 public:
@@ -167,9 +170,8 @@ void* FUN_1413f98f0();   // C3: was FUN_1413f98f0
 // The shadow mesh (efd::SmartPointer at +0x58; the real class is CObjectShadow : CMesh, unit_14160fb10).
 class CObjectShadow : public NiRefObject
 {
-public:
-    void FUN_14160feb0(int n, const NiPoint3& kPos, const efd::Point3& kUp, float f, bool b);
 };
+void FUN_14160feb0(CObjectShadow* self, int n, const void* pPos, const void* pUp, float f, bool b);   // C3: the real free signature
 
 // Scene graph walk (same iterator as cubecraft_1.cpp).
 void FUN_14160fe10(CObjectShadow* self, bool v);
@@ -625,7 +627,7 @@ int GameObject::vfunc_29(GameObject* pTarget, efd::Point3* pOut)
         Unk_GoAnchorPtr spAnchor(kAnchors[i]);
         if (spAnchor.FUN_140a00660(0))
             continue;
-        NiPoint3 kPt(FUN_141b6e150(spAnchor.FUN_140ae1940()->m_kPose.FUN_140a01180()));
+        NiPoint3 kPt(FUN_141b6e150(reinterpret_cast<const Unk_GoFloat3*>(&reinterpret_cast<NxBox*>(&spAnchor.FUN_140ae1940()->m_kPose)->GetCenter())));
         float fDist = FUN_140966f00(pTarget->vfunc_18(), kPt);
         if (fMin > fDist)
         {
@@ -670,7 +672,7 @@ MS2_REPLACE_METHOD(0x14123cb20, GameObject, FUN_14123cb20, 91, 0xF9AE430E);
 void GameObject::vfunc_32(bool b)
 {
     if (m_spShadow)
-        m_spShadow->FUN_14160feb0(1, vfunc_18(), efd::Point3::UNIT_Z, 0.0f, b);
+        FUN_14160feb0(m_spShadow.operator->(), 1, &static_cast<const NiPoint3&>(vfunc_18()), &efd::Point3::UNIT_Z, 0.0f, b);
 }
 MS2_REPLACE_METHOD(0x14123cb90, GameObject, vfunc_32, 129, 0x9697C5E7);
 
@@ -1136,7 +1138,7 @@ void GameObject::vfunc_54(float f)
     switch (nMode)
     {
     case 0:
-        fDuration = FUN_140f4a450();
+        fDuration = reinterpret_cast<Unk_HudActor*>(this)->FUN_140f4a450();
         break;
     case 1:
         fDuration = FUN_14123ee40();

@@ -209,7 +209,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
 CStringW FUN_1409eb450(int n);
 CStringW FUN_14183e930(const CStringW& strName, unsigned nRarity);
-int FUN_141275c00(int nRarity);
+unsigned FUN_141275c00(int nRarity);
 void FUN_1412752d0(const CStringW& strKey, int nType);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);   // enable the root's input
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* szSep, int nMax);

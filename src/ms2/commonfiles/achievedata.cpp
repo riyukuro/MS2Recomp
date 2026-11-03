@@ -298,21 +298,27 @@
 #include <vector>
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/citemoptiontable.h"   // C3: CItemOptionTable::FUN_1405f5e90
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---------------------------------------------------------------------------------------------------------------
 // Unrecovered helpers (externs bound by VA).
 // ---------------------------------------------------------------------------------------------------------------
+class TiXmlElement;
+class TiXmlNode   // C3: member view (tinyxml.h clashes with the placeholder TiXmlDocument)
+{
+public:
+    const TiXmlElement* FirstChildElement(const char* pszName) const;
+    const TiXmlElement* NextSiblingElement(const char* pszName) const;
+};
 class Unk_XmlNode
 {
 public:
     // @0x140165cf0
-    Unk_XmlNode* FirstChild(const char* pszName) { return FUN_14086e8d0(pszName); }
+    Unk_XmlNode* FirstChild(const char* pszName) { return (Unk_XmlNode*)reinterpret_cast<TiXmlNode*>(this)->FirstChildElement(pszName); }
     // @0x140168650
-    Unk_XmlNode* NextSibling(const char* pszName) { return FUN_14086e7e0(pszName); }
-    Unk_XmlNode* FUN_14086e8d0(const char* pszName);
-    Unk_XmlNode* FUN_14086e7e0(const char* pszName);
+    Unk_XmlNode* NextSibling(const char* pszName) { return (Unk_XmlNode*)reinterpret_cast<TiXmlNode*>(this)->NextSiblingElement(pszName); }
 };
 class Unk_140166410 : public CFeatureManager
 {
@@ -325,8 +331,6 @@ inline Unk_140166410* FUN_140166410()
 }
 class Unk_140166430
 {
-public:
-    void FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo);
 };
 class CItemOptionTable;
 // @0x140166430
@@ -334,11 +338,10 @@ inline Unk_140166430* FUN_140166430()
 {
     return reinterpret_cast<Unk_140166430*>(TSingleton<CItemOptionTable>::s_instance);
 }
-extern CLogString* DAT_143aab390;
 // @0x140166440
 inline CLogString* GetLogString()
 {
-    return DAT_143aab390;
+    return TSingleton<CLogString>::s_instance;
 }
 class CFileSystem;
 // @0x140166420
@@ -959,7 +962,7 @@ void CAchieveData::Load(CString strPath)
                 {
                     CString strId;
                     strId.Format("AchieveID=%u", pData->m_nId);
-                    FUN_140166430()->FUN_1405f5e90(pGrade->m_reward.m_nCode, pGrade->m_reward.m_nRank,
+                    reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f5e90(pGrade->m_reward.m_nCode, pGrade->m_reward.m_nRank,
                                                    CString("CAchieveGradeData first Achieve.xml"), CString(strId));
                 }
                 else if (pGrade->m_reward.m_nType == 3)

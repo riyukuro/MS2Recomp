@@ -144,16 +144,16 @@ void XmlSetAttr(TiXmlElement* pElem, const char* pszName, unsigned nValue);   //
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, float fValue);      // set a float attribute
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const CStringA& value);   // set a string attribute
 
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);          // the item row (NULL: no such item)
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);            // the item row (NULL: no such item)
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
 bool FUN_14053ff30(int nItemId, int nRank);                 // the item has the rank
-int FUN_1405451c0(const CString& strGroup);                 // the item group index of a group name
+int FUN_1405451c0(CString& strGroup);                       // the item group index of a group name
 int FUN_140718200(const CStringW& strText);      // text to number
-CStringW FUN_1407196b0(int n);                              // number to text
+CStringW FUN_1407196b0(long n);                             // number to text
 CStringW FUN_14083f330(const CStringW& strText, wchar_t chBegin, wchar_t chEnd);  // the text between two characters
 void FUN_140841420(CStringW& str);                          // lower case
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& tokens, const wchar_t* szSeparator);   // split
-void FUN_14083d890(CStringW strText);                       // copy to the clipboard
+bool FUN_14083d890(CStringW strText);                       // copy to the clipboard
 void FUN_1412751b0(const CStringW& strText, int nType);     // system notice
 CStringW GetStatCommonText(unsigned nStat);                          // text of a stat
 CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
@@ -605,7 +605,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
                     list->AddItem(row);
             } else {
                 if (item->GetModelOrEmpty()->FUN_14054b3d0() < 2) {
-                    if (item->GetModelOrEmpty()->FUN_14054b450(FUN_1405451c0(strGroup)))
+                    if (item->GetModelOrEmpty()->FUN_14054b450(FUN_1405451c0(const_cast<CString&>(strGroup))))
                         list->AddItem(row);
                 }
             }

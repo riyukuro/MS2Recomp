@@ -36,9 +36,7 @@ public:
 };
 Vector3* FUN_140ad0c10(Vector3* pt, float f);       // efd::Point3::operator*=
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
-CStringTable* GetStringTable();                                     // the string tables
 CStringW GetStringCommon(int nId);                                    // string table entry
-CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);    // psz + str
 void FUN_141b706a0(unsigned int, unsigned int*, unsigned int*, unsigned int*);   // C3: was FUN_141b706a0
 
 // Rows of the item table, the item's linked effect row and the skill attribute (only the fields read here).
@@ -210,7 +208,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
         m_7c = bShow;
         if (bShow != 0)
         {
-            CStringW strName = GetStringTable()->FUN_141811980(1, m_88);
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_88);
             CStringW strDesc(L"");
             MS2Ptr<CItemData> spItem = FUN_14053f870(m_88);
             if (spItem.get() != 0)
@@ -220,7 +218,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                 {
                     int nSkillId = spEffect->m_nSkillId;
                     unsigned short nSkillLevel = spEffect->m_nSkillLevel;
-                    strDesc = GetStringTable()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
+                    strDesc = TSingleton<CStringTable>::GetInstance()->FUN_141812290(nSkillId, nSkillLevel, CString("tooltipDescription"));
                     MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nSkillId, nSkillLevel);
                     if (spAttr.get() != 0)
                     {
@@ -229,7 +227,7 @@ void UIBootyPopup::FUN_141031a60(int bShow)
                         int nB = 0;
                         FUN_141b706a0(spAttr->m_nDurationTick, (unsigned int*)(&nA), (unsigned int*)(&nC), (unsigned int*)(&nB));
                         CStringW strLine = StringFormat<int>(GetStringCommon(0x9a8), nA);
-                        strDesc += FUN_1401d0160(L"\n", strLine);
+                        strDesc += L"\n" + strLine;
                     }
                 }
             }

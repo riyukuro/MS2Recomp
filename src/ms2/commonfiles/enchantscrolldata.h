@@ -46,13 +46,6 @@ MS2_CHECK_OFFSET(CEnchantScrollData, m_ranks, 0x58);
 MS2_CHECK_OFFSET(CEnchantScrollData, m_map, 0x78);
 
 // Item data record looked up by id (the pieces this unit reads; the rest is unrecovered).
-class Unk_EnchantFuncParams
-{
-public:
-    int FUN_1408d1f60(unsigned nIndex, int nDefault);   // GetInt
-    unsigned FUN_1408d2380();                           // GetCount
-};
-
 class Unk_EnchantItemData
 {
 public:
@@ -63,22 +56,10 @@ public:
     void* m_pad_298;
     void* m_pad_2a0;
     void* m_pad_2a8;
-    Unk_EnchantFuncParams m_params;         // +0x2b0
+    char m_params;                          // +0x2b0 the function params (Unk_CommandArgs)
 };
 MS2_CHECK_OFFSET(Unk_EnchantItemData, m_strFunction, 0x290);
 MS2_CHECK_OFFSET(Unk_EnchantItemData, m_params, 0x2b0);
-
-class Unk_EnchantItemPtr
-{
-public:
-    ~Unk_EnchantItemPtr();                  // 0x1401b50d0
-    bool FUN_1402ffd90() const;             // is null
-private:
-    MS2_LAYOUT_FRIEND;
-    void* m_unknown;
-    Unk_EnchantItemData* m_pObject;
-};
-MS2_CHECK_SIZE(Unk_EnchantItemPtr, 0x10);
 
 // One <recipe> row, 0xb8 bytes (CPtred base).
 class CEnchantScrollRecipe : public CPtred

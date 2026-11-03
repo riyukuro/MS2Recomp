@@ -28,6 +28,19 @@ struct Unk_MachineID
 };
 MS2_CHECK_SIZE(Unk_MachineID, 0x10);
 
+// The 40-byte working buffer BuildID passes to the id helpers (unit_1423ae840_cxsupportid.cpp).
+struct Unk_MachineIDLocal
+{
+    Unk_MachineIDLocal();                               // 0x1423ae7f0
+    ~Unk_MachineIDLocal();                              // 0x1423ae800
+    unsigned char m_data[0x28];
+};
+MS2_CHECK_SIZE(Unk_MachineIDLocal, 0x28);
+
+void FUN_1423b10a0(Unk_MachineIDLocal* pLocal);         // fills the hardware and support ids
+void* FUN_1423b1080(Unk_MachineIDLocal* pLocal);        // the id buffer inside the working object
+unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal); // the PC-bang code, 0 if none
+
 class CMachineIDManager : public TSingleton<CMachineIDManager>
 {
 public:

@@ -24,7 +24,7 @@ using Scaleform::GFx::Video::VideoVMSupportAll;
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
 GFxManager* FUN_14025e7a0();
 
-Scaleform::Render::TextureManager* FUN_1422cf0f0();   // the GFx renderer's texture manager
+void* FUN_1422cf0f0();   // the GFx renderer's texture manager
 
 // ---- GFxVideo -----------------------------------------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ int GFxVideo::FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader)
 {
     Scaleform::UInt32 affinityMask[3] = {0xffffffff, 0xffffffff, 0xffffffff};
     m_spVideo = *new VideoPC(VideoVMSupportAll(), m_eDecodePriority, 3, affinityMask);
-    m_spVideo->SetTextureManager(FUN_1422cf0f0());
+    m_spVideo->SetTextureManager((Scaleform::Render::TextureManager*)FUN_1422cf0f0());
     m_spSoundSystem = *new MS2VideoSoundSystemDX8(hWnd, Scaleform::Memory::GetGlobalHeap());
     if (m_spSoundSystem->FUN_1422fe9e0())
         m_spVideo->SetSoundSystem(m_spSoundSystem);

@@ -10,6 +10,7 @@ class UIHighlightGameMenu : public UIDialog
 {
 public:
     bool IsActive();                                   // 0x140c22ce0 returns the byte at +0x1e8
+    void FUN_140c244b0(int* pPos, bool bSet);          // 0x140c244b0 set a socket bit (client/ms2/uihighlightgamemenu.h)
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_178[0x1f0 - 0x178];

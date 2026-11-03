@@ -1133,6 +1133,7 @@ pin names no function	client/ms2/camera.cpp: MS2-PIN ??0Unk_CamNiPoint3@@QEAA@AE
 pin names no function	client/ms2/camera.cpp: MS2-PIN ??4Unk_CamNiPoint3@@QEAAAEAU0@$$QEAU0@@Z: no such function in the obj
 pin names no function	client/ms2/camera.cpp: MS2-PIN ??4Unk_CamPoint3@@QEAAAEAU0@AEBVNiPoint3@@@Z: no such function in the obj
 pin names no function	client/ms2/charactermeshmerger.cpp: MS2-PIN ??$addressof@$$CBV?$_Vector_val@U?$_Simple_types@UUnk_StreamElementDesc@@@std@@@std@@@std@@YAPEBV?$_Vector_val@U?$_Simple_types@UUnk_StreamElementDesc@@@std@@@0@AEBV10@@Z: no such function in the obj
+pin names no function	client/ms2/cubecraft_3.cpp: MS2-PIN ??8?$SmartPointer@VNiSourceTexture@@@efd@@QEBA_NPEAVNiSourceTexture@@@Z: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??0Unk_CMISIntList@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??0Unk_CMISPt3@@QEAA@AEBUUnk_StreamPoint@@@Z: no such function in the obj
 pin names no function	client/ms2/cubemapinformationservice_3.cpp: MS2-PIN ??1Unk_CMISIntList@@QEAA@XZ: no such function in the obj
@@ -1340,13 +1341,6 @@ pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?get@?$MS2
 pin names no function	client/ms2/tabcontentspetevolution.cpp: MS2-PIN ?get@?$MS2Ptr@VUnk_PetItemBag@@@@QEBAPEAVUnk_PetItemBag@@XZ: no such function in the obj
 pin names no function	client/ms2/taileffectobject.cpp: MS2-PIN ??0Unk_TeRequest@@QEAA@XZ: no such function in the obj
 pin names no function	client/ms2/taileffectobject.cpp: MS2-PIN ??1Unk_TeRequest@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??0Unk_TuConverterNew@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??0Unk_TuMemHint@@QEAA@H@Z: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??0Unk_TuReaderNew@@QEAA@XZ: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??2Unk_TuConverterNew@@SAPEAX_KUUnk_TuMemHint@@@Z: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??2Unk_TuReaderNew@@SAPEAX_KUUnk_TuMemHint@@@Z: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??3Unk_TuConverterNew@@SAXPEAXUUnk_TuMemHint@@@Z: no such function in the obj
-pin names no function	client/ms2/textureutil.cpp: MS2-PIN ??3Unk_TuReaderNew@@SAXPEAXUUnk_TuMemHint@@@Z: no such function in the obj
 pin names no function	client/ms2/textureutil.cpp: MS2-PIN ?FUN_14184dad0@@YAXPEAXUUnk_CtiUV@@PEAUUnk_CtiPixel@@H@Z: no such function in the obj
 pin names no function	client/ms2/textureutil.cpp: MS2-PIN ?FUN_141850100@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z: no such function in the obj
 pin names no function	client/ms2/textureutil.cpp: MS2-PIN ?FUN_141850100@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH_N@Z: no such function in the obj

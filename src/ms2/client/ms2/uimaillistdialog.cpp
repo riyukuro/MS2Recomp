@@ -125,7 +125,7 @@ extern int DAT_143af37b0;                                           // the mail 
 extern int DAT_143af37b4;                                           // a mail was removed
 extern __int64 DAT_143af37b8;                                       // the mail to open
 
-UIMailSendDialog* FUN_141742fb0(int nUiType);                       // the open send dialog
+template <class T> T* Unk_SSGGetDialog(int nId);                     // scenestategame.cpp (0x141742fb0 for the send dialog)
 CStringW FUN_141b71910(__int64 n);                                  // number -> text
 unsigned __int64 FUN_140718370(const CStringW& text);               // text -> number
 CStringW FUN_14016a730(const char* psz, int n);                     // multibyte -> wide
@@ -145,7 +145,6 @@ CStringW FUN_1409404f0(__int64 n);                                  // an amount
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool bIcon);  // a price as text
 int FUN_1403bae00(int nPriceType);                                  // price kind -> pay type
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
-CStringTable* GetStringTable();                                      // the string table singleton
 UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open dialog of a UI id
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -177,8 +176,8 @@ struct Unk_MailSendInfo
     CStringW m_strReceiver;
     CStringW m_strTitle;
     CStringW m_strContent;
-    void FUN_1401fc2a0(COutPacket& packet);
 };
+void FUN_1401fc2a0(unsigned char* payload, COutputStream& stream);   // unit_1401f9eb0.h
 // CommonString as the send dialog calls it: the ban word checker.
 CommonString* FUN_14025e7d0();                                     // TSingleton<CommonString>::GetInstance
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
@@ -215,7 +214,7 @@ __int64 FUN_1419e9160(CMailInfo* pMail)
     if (pMail->FUN_140690db0() != 0 && pMail->FUN_140690dd0() == 0)
         nTotal = nTotal + pMail->FUN_140690db0();
     Unk_CommonPriceRecord rec;
-    if (pMail->FUN_140690fa0(0, 0, &rec) == true)
+    if (pMail->FindBenefit(0, 0, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
     return nTotal;
 }
@@ -229,13 +228,13 @@ __int64 FUN_1419e9200(CMailInfo* pMail)
     if (pMail->FUN_140690e40() != 0 && pMail->FUN_140690e60() == 0)
         nTotal = nTotal + pMail->FUN_140690e40();
     Unk_CommonPriceRecord rec;
-    if (pMail->FUN_140690fa0(2, 0, &rec) == true)
+    if (pMail->FindBenefit(2, 0, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
-    if (pMail->FUN_140690fa0(2, 1, &rec) == true)
+    if (pMail->FindBenefit(2, 1, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
-    if (pMail->FUN_140690fa0(2, 2, &rec) == true)
+    if (pMail->FindBenefit(2, 2, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
-    if (pMail->FUN_140690fa0(2, 3, &rec) == true)
+    if (pMail->FindBenefit(2, 3, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
     return nTotal;
 }
@@ -249,7 +248,7 @@ __int64 FUN_1419e9360(CMailInfo* pMail)
     if (pMail->FUN_140690ed0() != 0 && pMail->FUN_140690ef0() == 0)
         nTotal = nTotal + pMail->FUN_140690ed0();
     Unk_CommonPriceRecord rec;
-    if (pMail->FUN_140690fa0(8, 0, &rec) == true)
+    if (pMail->FindBenefit(8, 0, reinterpret_cast<Unk_MailBenefit*>(&rec)) == true)
         nTotal = nTotal + rec.GetAvailableAmount();
     return nTotal;
 }
@@ -269,7 +268,7 @@ MS2_REPLACE(0x1419E9400, FUN_1419e9400, 82, 0xFF1E0FE6); // FUN_1419e9400
 void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
 {
     Unk_MailBenefitList& list = pMail->FUN_1419ea9a0();
-    int nCount = list.FUN_14026a4b0();
+    int nCount = reinterpret_cast<Unk_CommonPriceRecordList&>(list).GetCount();
     if (0 < nCount)
     {
         ATL::CAtlArray<Unk_MailBenefit>& benefits = list.m_array;
@@ -283,7 +282,7 @@ void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
                 continue;
             if (benefit.m_nSub != 0)
                 continue;
-            __int64 nAmount = benefit.FUN_14026a1f0();
+            __int64 nAmount = reinterpret_cast<Unk_CommonPriceRecord&>(benefit).GetAvailableAmount();
             if (nAmount == 0)
                 continue;
             CStringW strPrice = FUN_1419e9400(benefit.m_nType, nAmount);
@@ -417,7 +416,7 @@ void UIMailListDialog::vfunc_15()
         DAT_143af37b4 = 0;
         FUN_141275260(0x22a, 1, 1);
     }
-    if (m_bRefresh && reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000) != 0)
+    if (m_bRefresh && m_timer.Check(1000) != 0)
         SendMailMode0();
 }
 MS2_REPLACE_METHOD(0x1419E4DE0, UIMailListDialog, vfunc_15, 252, 0x4FCFDE97); // UIMailListDialog::vfunc_15
@@ -468,7 +467,7 @@ MS2_REPLACE_METHOD(0x1419E50B0, UIMailListDialog, FUN_1419e50b0, 154, 0x92C96AA2
 void UIMailListDialog::FUN_1419e5150()
 {
     m_bRefresh = true;
-    reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init();
+    m_timer.Init();
 }
 MS2_REPLACE_METHOD(0x1419E5150, UIMailListDialog, FUN_1419e5150, 45, 0xA826AB8A); // FUN_1419e5150
 
@@ -594,7 +593,7 @@ void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
     CMailInfo* pMail = g_143ab2ee0.FindMailById(nMailId).get();
     if (pMail == 0)
         return;
-    UIMailSendDialog* pSend = FUN_141742fb0(0x4e4a);
+    UIMailSendDialog* pSend = Unk_SSGGetDialog<UIMailSendDialog>(0x4e4a);
     if (pSend != 0)
         pSend->FUN_1419ecbb0(pMail);
     CUIService::GetInstance()->ToggleDialog((eUIClassID)0x4e4a);
@@ -1297,7 +1296,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
             continue;
         MS2Ptr<ASMailAdBillData> spBill(new ASMailAdBillData());
         spBill->SetIconFromItem(spItemData, spAd->m_n20);
-        spBill->SetItemName(GetStringTable()->FUN_141811980(1, spAd->m_n18));
+        spBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spAd->m_n18));
         spBill->SetSalePrice(FUN_1418fec00(nCurrency, spAd->m_n38, false), spAd->m_n38);
         spBill->FUN_1409abcd0(nCurrency);
         spBill->FUN_1419eb8f0((int)i);
@@ -1624,7 +1623,7 @@ void UIMailSendDialog::OnSend()
     }
     COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(1);
-    info.FUN_1401fc2a0(packet);
+    FUN_1401fc2a0(reinterpret_cast<unsigned char*>(&info), packet);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1419ed1c0, UIMailSendDialog, OnSend, 577, 0x7046C796); // OnSend

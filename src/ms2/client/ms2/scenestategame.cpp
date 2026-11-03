@@ -308,7 +308,7 @@ CString FUN_14016a600(const wchar_t*, int);
 // <CStringW, CStringW> and <int, int> instances belong to ?\vipgoods.cpp and ?\astooltip.cpp.
 CStringW FUN_14028dfa0(const CStringW& sFormat, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
-CStringW FUN_1408116a0(int, const int&);
+template <class A> CStringW BlockFormat(int nId, const A& a);
 class UIObject* FUN_141540270(int);   // C3: was FUN_141540270
 void FUN_1419e0050(void*, const CStringW&);
 int FUN_141b6fcf0(const CStringW&, const CStringW&, unsigned int);
@@ -912,7 +912,7 @@ class UIAutoReviveCountDownDialog : public UIDialog { public: void FUN_141284d70
 class UIGlobalPortalDialog : public UIDialog { public: void FUN_1412c3020(CInPacket& packet); };
 class UIQuizDialog : public UIDialog { public: void FUN_14129a930(CInPacket& packet); };
 class UIIndividualPvPDialog : public UIDialog { public: void FUN_1412cacc0(); void FUN_1412cb220(); void FUN_1412cb240(); };
-void FUN_141276180(const CString& strA, const CString& strB);   // play a sound event
+int FUN_141276180(const CString& strA, const CString& strB);    // play a sound event
 class DungeonRecordManagerCli   // C3: member view (real class not in this TU)
 {
 public:
@@ -1383,11 +1383,11 @@ void CSceneStateGame::OnUpdate(double fTime)
             m_reconnectTimer.FUN_1408687f0();
             m_nRetry = 6;
             if (DAT_143b03490)
-                DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(FUN_1408116a0(0x20f, 7), 0)));
+                DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(BlockFormat<int>(0x20f, 7), 0)));
             FUN_140d86260()->vfunc_58(0x20f, 7);
             {
                 CStringW title(L"MS2");
-                FUN_141b6fcf0(FUN_1408116a0(0x20f, 7), title, 0);
+                FUN_141b6fcf0(BlockFormat<int>(0x20f, 7), title, 0);
             }
             TerminateProcess(GetCurrentProcess(), 2);
         }
@@ -2108,7 +2108,7 @@ void CSceneStateGame::OnServerEnter(CInPacket& packet)
         DAT_1439f4a80 = DAT_1439f4a7c < 1 ? 1 : DAT_1439f4a7c;
     if (nChannel != 0 && FUN_14092f640() != 0 && FUN_14092f640() != nChannel)
     {
-        CStringW strMsg = FUN_1408116a0(0x2d7, nChannel);
+        CStringW strMsg = BlockFormat<int>(0x2d7, nChannel);
         FUN_1412751b0(strMsg, 0x14);
     }
     if (nChannel != 0)
@@ -2832,7 +2832,7 @@ MS2_REPLACE_METHOD(0x141715BD0, CSceneStateGame, FUN_141715bd0, 1564, 0x3F30BB71
 // ---- inventory updates (0x21) --------------------------------------------------------------------------------------
 class Unk_ItemEquipData : public CItemData { };            // CItem::FUN_140527840's record (item.cpp)
 void FUN_1414047c0(MS2Ptr<CItemData> spData);
-CStringW FUN_140a22c00(int nStringId, const CStringW& a, const unsigned short& b);   // FormatStringId<CStringW, unsigned short>
+template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
 extern CString DAT_143ae7978;                               // sound event of the codi slot error
 
 // @0x141713fb0
@@ -3038,7 +3038,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
         {
             int nItemId = packet.ReadInt32();
             unsigned short nCount = packet.ReadInt16();
-            FUN_140d73aa0(FUN_140a22c00(0x941, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), nCount), 0, 0, L"");
+            FUN_140d73aa0(FUN_14028dee0<CStringW, unsigned short>(0x941, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), nCount), 0, 0, L"");
             break;
         }
         case 0x29:
@@ -3052,7 +3052,7 @@ void CSceneStateGame::OnItemInventory(CInPacket& packet)
             FUN_140d73bc0(0xd7, 0, 0, L"");
             break;
         default:
-            FUN_140d73aa0(FUN_1408116a0(0xcd, nError), 0, 0, L"");
+            FUN_140d73aa0(BlockFormat<int>(0xcd, nError), 0, 0, L"");
             break;
         }
     }
@@ -5414,7 +5414,6 @@ void CSceneStateGame::FUN_14173f810(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x14173f810, CSceneStateGame, FUN_14173f810, 60, 0xDC170DA8);
 void FUN_140274970(struct Unk_CwObj*);   // C3: was FUN_140274970
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* pszSuffix);
 
 // @0x14173f860
 void CSceneStateGame::FUN_14173f860(CInPacket& packet)
@@ -5435,7 +5434,7 @@ void CSceneStateGame::FUN_14173f860(CInPacket& packet)
         }
         else if (strFile.Right(4) != L".txt")
         {
-            strFile = FUN_14061ad70(strFile, L".txt");
+            strFile = strFile + L".txt";
         }
         HANDLE hFile = CreateFileW(strFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (hFile == INVALID_HANDLE_VALUE)
@@ -6079,12 +6078,9 @@ void FUN_140a33240(Unk_SSGRot* pDst, const Unk_EfdMatrix3* pSrc);   // NiMatrix3
 extern Unk_EfdMatrix3 DAT_143a09600;                        // identity rotation
 
 // ---- 0x63: interact objects of the field (create / update / remove, use results) --------------------------------
-MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);          // the interact table row
+#include "ms2/placeholder/cinteractobjectdata.h"
 CString FUN_1409a2360(const char* psz, int nFlag);           // a copy of the string
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn);   // set an asset id from its urn
-#ifdef __clang__
-CString FUN_140298360(const char* pszLeft, const CString& strRight);   // ATL::operator+(const char*, const CString&)
-#endif
 extern ATL::CAtlArray<int> DAT_143ab3128;                    // templates whose first use was announced
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // index of v (-1 if absent)
 extern CString DAT_143ae79e0;                                // the first use sound event
@@ -6375,7 +6371,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
         bool bFlag = packet.ReadBool();
         efd::utf8string strUrnA(FUN_1409a2360(strAssetA, 0));
         efd::utf8string strUrnB(FUN_1409a2360(strAssetB, 0));
-        MS2Ptr<CInteractObjectData> spData = FUN_14051f670(nRowId);
+        MS2Ptr<CInteractObjectData> spData = CInteractObjectData::Get(nRowId);
         if (spData.get() != 0)
         {
             MS2Ptr<CInteractObject> spObj(0);
@@ -6410,12 +6406,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
                         efd::AssetID asset;
                         if (!strAnim.IsEmpty())
                         {
-#ifdef __clang__
-                            // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+.
-                            strAnim = FUN_140298360("urn:gamebryo-animation:", strAnim);
-#else
                             strAnim = "urn:gamebryo-animation:" + strAnim;
-#endif
                             FUN_140de0cb0(&asset, efd::utf8string(FUN_1409a2360(strAnim, 0)));
                             spEntity->SetPropertyValue(0x12383cea, asset);
                             spEntity->SetPropertyValue(0x3ff293c8, strUrnA);
@@ -7325,12 +7316,7 @@ void CSceneStateGame::OnFieldPortal(CInPacket& packet)
         spPortal->m_str190 = str190;
         spPortal->m_str198 = str198;
         if (!strModel.IsEmpty())
-#ifdef __clang__
-            // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+.
-            spPortal->m_strModel = FUN_140298360("urn:gamebryo-scenegraph:", strModel);
-#else
             spPortal->m_strModel = "urn:gamebryo-scenegraph:" + strModel;
-#endif
         if (nMapType != 0)
             spPortal->m_nMapType = nMapType;
         ((Unk_SSGWorld*)WorldService::GetInstance())->FUN_141bc1720(spPortal);
@@ -7618,7 +7604,7 @@ void CSceneStateGame::OnJob(CInPacket& packet)
             case 18:
             {
                 int nValue = packet.ReadInt32();
-                strMsg = FUN_1408116a0(0x80, nValue);
+                strMsg = BlockFormat<int>(0x80, nValue);
                 FUN_140d73aa0(strMsg, 0, 0, CStringW(L""));
                 break;
             }

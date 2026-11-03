@@ -68,7 +68,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 // Unrecovered helpers.
 int ReadSlotAttr(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // banktable.h: slot name attribute
-void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);   // split into strings
+void Unk_CoupleEmotionSplit(CString& strText, std::vector<CString>& out, const char* pszSep);   // C3: was FUN_1402c8940
 int FUN_14021bdc0(CString& strName);    // slot name -> slot type
 CString Name_14021c050(int nType);      // slot type -> slot name
 CString FUN_14016a5c0(const char* psz, int n);
@@ -84,10 +84,9 @@ void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FU
 void XmlSetAttr(class TiXmlElement*, char const*, const CString&);   // C3: was FUN_140874050
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);   // C3: was FUN_1408740a0
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
-void FUN_140874ad0(void* pElem, const char* pszName, const efd::Point3& kValue);    // SetAttribute(name, "x, y, z")
+void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0
 int XmlGetAttr(class TiXmlElement*, char const*, class NiPoint3&);   // C3: was FUN_1408746f0
-int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& kOut);    // Point3 attribute (drop effect)
-CString FUN_140298360(const char* psz, const CString& str);                              // ATL operator+(const char*, const CString&) (commonutil.cpp)
+int XmlGetAttr(class TiXmlElement*, char const*, efd::Point3&);   // C3: was FUN_140874670
 __int64 ParseInt64(const CString& str);                                    // 0x1402a4fe0
 CString FUN_1401d4330(const wchar_t* pszWide, int nCodePage);              // wide to ansi
 CString FUN_140188f50(const char* psz, int nCodePage);                     // string from an attribute value
@@ -244,11 +243,11 @@ void ItemDropEffect::Load(Unk_140165cf0* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "bias", reinterpret_cast<float&>(unknown1c));
     XmlGetAttr((class TiXmlElement*)(pElem), "shadowscale", reinterpret_cast<float&>(shadowScale));
     XmlGetAttr((class TiXmlElement*)(pElem), "shadowbias", reinterpret_cast<float&>(shadowBias));
-    FUN_140874670(pElem, "dropani", dropAni);
+    XmlGetAttr((class TiXmlElement*)(pElem), "dropani", dropAni);
     XmlGetAttr((class TiXmlElement*)(pElem), "dropanispeed", reinterpret_cast<float&>(dropAniSpeed));
-    FUN_140874670(pElem, "beani", beAni);
+    XmlGetAttr((class TiXmlElement*)(pElem), "beani", beAni);
     XmlGetAttr((class TiXmlElement*)(pElem), "beanispeed", reinterpret_cast<float&>(beAniSpeed));
-    FUN_140874670(pElem, "getani", getAni);
+    XmlGetAttr((class TiXmlElement*)(pElem), "getani", getAni);
     XmlGetAttr((class TiXmlElement*)(pElem), "getanispeed", reinterpret_cast<float&>(getAniSpeed));
     XmlGetAttr((class TiXmlElement*)(pElem), "bounceheight", reinterpret_cast<float&>(bounceHeight));
     XmlGetAttr((class TiXmlElement*)(pElem), "bounceperiod", reinterpret_cast<float&>(bouncePeriod));
@@ -300,7 +299,7 @@ int ModelPart::Load(Unk_140165cf0* pElem)
     {
         isNif = 0;
         if (name0.Find("urn:gamebryo-animation:") == -1)
-            name0 = FUN_140298360("urn:gamebryo-animation:", name0);
+            name0 = "urn:gamebryo-animation:" + name0;
     }
     XmlGetAttr((class TiXmlElement*)(pElem), "pony", reinterpret_cast<int&>(pony));
     XmlGetAttr((class TiXmlElement*)(pElem), "zalign", zalign);
@@ -407,7 +406,7 @@ int ModelPart::Load(Unk_140165cf0* pElem)
     if (pPhysX != 0)
     {
         CString strAction = Unk_ReadString((class Unk_XmlNode*)(pPhysX), "action", "");
-        FUN_1402c8940(strAction, names, ", ");
+        Unk_CoupleEmotionSplit(strAction, names, ", ");
     }
     return 1;
 }
@@ -914,9 +913,9 @@ void MsTransform::LoadXml(Unk_140165cf0* pElem)
 void MsTransform::SaveXml(void* pElem)
 {
     if (position != efd::Point3::ZERO)
-        FUN_140874ad0(pElem, "position", position);
+        XmlSetAttr((class TiXmlElement*)(pElem), "position", position);
     if (rotation != efd::Point3::ZERO)
-        FUN_140874ad0(pElem, "rotation", rotation);
+        XmlSetAttr((class TiXmlElement*)(pElem), "rotation", rotation);
     if (scale != 1.0f)
         XmlSetAttr((class TiXmlElement*)(pElem), "scale", scale);
 }
@@ -1734,6 +1733,8 @@ unsigned short ItemAdditionalEffect::FUN_140549e20()
 }
 
 // ---- ItemFunction -------------------------------------------------------------------------------------------------------
+CLogString* GetLogString();   // 0x140166440
+
 // The unit's two-argument log call (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class T, class U>
 inline void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first,
@@ -1768,7 +1769,7 @@ int ItemFunction::Load(Unk_140165cf0* pElem)
         else
             parameter.FUN_1408d1e00(name2, L",");
         if (FUN_14054a350() == 0)
-            Unk_ItemDataLog(CLogString::GetInstance(), 1, 0x13, L"xml 형식이 잘못 되었습니다ItemFunction!! [{0}] [{1}]",
+            Unk_ItemDataLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다ItemFunction!! [{0}] [{1}]",
                             FUN_1401d4330(name, 0), FUN_1401d4330(name2, 0));
     }
     return 1;
@@ -1854,9 +1855,6 @@ int ItemFunction::FUN_14054a460()
 
 // ---- ItemMusicScore -----------------------------------------------------------------------------------------------------
 // The music book table (item.cpp; the title of a book lives at +0x28).
-class Unk_MusicBookInfo : public CPtred { public: char m_pad18[0x10]; CString m_str28; CStringW FUN_14072c480(); };
-class Unk_MusicBookTable { public: MS2Ptr<Unk_MusicBookInfo> FUN_14072cc10(unsigned); };
-Unk_MusicBookTable* FUN_14052d1d0();
 
 // @0x14054a720
 ItemMusicScore::ItemMusicScore()
@@ -1967,10 +1965,10 @@ int ItemMusicScore::FUN_14054ad00()
 // @0x14054ad20
 CStringW ItemMusicScore::FUN_14054ad20()
 {
-    MS2Ptr<Unk_MusicBookInfo> spInfo = FUN_14052d1d0()->FUN_14072cc10(recommendCategoryId);
+    MS2Ptr<CInstrumentCategoryData> spInfo = TSingleton<CInstrumentDataTable>::GetInstance()->GetCategory(recommendCategoryId);
     if (spInfo == 0)
         return L"";
-    return reinterpret_cast<MS2Ptr<CInstrumentCategoryData>&>(spInfo)->GetName();
+    return spInfo->GetName();
 }
 
 // @0x14054ade0

@@ -12,28 +12,12 @@
 #include "statepvpwinlose.h"
 
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/fittingdollpc.h"   // C3: PC::FUN_140967420
+#include "ms2/commonfiles/pvpinfo.h"   // C3: CPvPInfo::m_nTeam
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
-
-// The player's team-info proxy (PC method 0x140967420; uinametag.cpp reads the team id at +0x18 of the same entry,
-// this state reads the value at +0x1c). The proxy's operator-> is 0x140965970, its release 0x140964aa0.
-struct Unk_PvPTeam
-{
-    char m_pad_00[0x1c];
-    int m_nValue;                                           // +0x1c
-};
-class Unk_PvPTeamPtr
-{
-public:
-    ~Unk_PvPTeamPtr() { FUN_140964aa0(); }
-    Unk_PvPTeam* FUN_140965970() const;                     // operator->
-    void FUN_140964aa0();                                   // release
-    void* m_pad_00;
-    Unk_PvPTeam* m_p;
-};
-struct Unk_PwlTeamOwner { Unk_PvPTeamPtr FUN_140967420(); }; // 0x140967420 the player's team-info proxy
 
 // Build the animation name of slot nSlot for the value nId, looked up in the owner's +0xd00 name table.
  // 0x141679170
@@ -57,7 +41,7 @@ void StatePvPWinLose::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        nId = reinterpret_cast<Unk_PwlTeamOwner*>(pPC)->FUN_140967420().FUN_140965970()->m_nValue;
+        nId = reinterpret_cast<CPvPInfo*>(reinterpret_cast<PC*>(pPC)->FUN_140967420().operator->())->m_nTeam;
     }
     if (m_n10 == 0x73)
     {

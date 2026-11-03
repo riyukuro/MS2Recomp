@@ -89,7 +89,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-    int FUN_1422dfb90();                                    // row count
 };
 class Unk_CoupleInput : public AScript
 {
@@ -99,8 +98,8 @@ public:
 MS2Ptr<CItemData> FUN_14053f870(int);          // the item row (NULL: no such item)
 class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
 int FUN_1405451c0(CStringA&);                 // the item group index of a group name
-const CString& FUN_14082efb0(int nStat);                    // text of a stat
-CStringW FUN_14082f000(int nStat);                          // text of a stat (wide)
+const CString& GetStatName(unsigned nStat);                 // the xml name of a stat (stat.cpp)
+CStringW GetStatCommonText(unsigned nStat);                 // GetStatCommonText (stat.cpp)
 CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value*, unsigned int);
@@ -275,11 +274,11 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
                 row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nItemRank));
                 row.FUN_1407cb9c0("itemRank", nRank);
                 if (nItemRank == m_nRank)
-                    nSelected = combo->FUN_1422dfb90();
+                    nSelected = reinterpret_cast<ASDropdownMenu*>(combo.operator->())->GetItemCount();
                 reinterpret_cast<ASDropdownMenu*>(combo.operator->())->AddItemRow(row);
             }
         }
-        unsigned nCount = combo->FUN_1422dfb90();
+        unsigned nCount = reinterpret_cast<ASDropdownMenu*>(combo.operator->())->GetItemCount();
         unsigned nRows;
         if (nCount > 1)
             nRows = nCount;
@@ -296,9 +295,9 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
 static void FUN_1412d4400(ASObj& obj, int nStat)
 {
     if (nStat == 0x1b || nStat == 0x1c) {
-        obj.FUN_1407cba60("label", FUN_14082efb0(nStat));
+        obj.FUN_1407cba60("label", GetStatName(nStat));
     } else {
-        obj.FUN_1407cbb20("label", FUN_14082f000(nStat));
+        obj.FUN_1407cbb20("label", GetStatCommonText(nStat));
     }
     obj.FUN_1409c0dc0("type", "stat");
     obj.FUN_1412d49a0("index", nStat);

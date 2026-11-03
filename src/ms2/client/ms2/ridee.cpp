@@ -358,7 +358,6 @@ void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);  // euler angle
 void FUN_140a0b1f0(const NiMatrix3& kRotate, efd::Point3& out); // rotation to euler angles (degrees)
 void FUN_1401d3700(CString& str);
 CString FUN_140188f50(const char* psz, int n);
-CString FUN_140298360(const char* pszPrefix, const CString& str);
 void FUN_14098c6e0(void* pEntity, unsigned int uiPropId, const bool& b);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the scene root of an entity
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
@@ -476,11 +475,11 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
     if (strAnim.IsEmpty())
     {
         m_str88 = "MS2PropCollide";
-        FUN_14123bb80(FUN_140298360("urn:gamebryo-scenegraph:", strModel));
+        FUN_14123bb80("urn:gamebryo-scenegraph:" + strModel);
     }
     else
     {
-        FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", strAnim));
+        FUN_14123bb80("urn:gamebryo-animation:" + strAnim);
     }
     return 1;
 }

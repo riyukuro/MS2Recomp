@@ -50,7 +50,7 @@ public:
     CStringW FUN_141a02d50() const;                                     // the input text
     void SetExtra(const CStringW& strTag);                         // tag
     void FUN_141a01800(int n);
-    void FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned nMax, int a4, int a5);   // input box setup
+    void SetInput(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // input box setup (0x141a01d30)
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);     // result callback
     void SetBuff(int nBuffId, short nLevel, CStringW strName);         // club buff description
 };
@@ -188,7 +188,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         {
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(10, 0x361, 0, CStringW(L""));
             if (box.get() != 0) {
-                box->FUN_141a01d30(2, L"", 0x18, 0, 0);
+                box->SetInput(2, L"", 0x18, 0, 0);
                 box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bcd0));
                 FUN_140d73c60(box);
             }
@@ -229,7 +229,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         int nCost = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)FUN_1401d3200())->m_nameChange)->Get();
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028dfa0<int, int>(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
-            box->FUN_141a01d30(2, L"", nCost, 0, 0);
+            box->SetInput(2, L"", nCost, 0, 0);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bef0));
             FUN_140d73c60(box);
         }

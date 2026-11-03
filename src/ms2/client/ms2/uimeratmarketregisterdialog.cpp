@@ -136,7 +136,7 @@ bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
 void FUN_1418ffef0(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 bool FUN_1418ff110(int nType, __int64 nValue, bool b);          // the player can pay
-CStringW FUN_1418fec00(int nType, __int64 nValue, int n);       // money text by pay type
+CStringW FUN_1418fec00(int nType, __int64 nValue, bool b);       // money text by pay type
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
@@ -153,10 +153,9 @@ class CMsgBoxData : public CPtred
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int nType, const CStringW& strTitle, const CStringW& strBody, Delegate<bool(int, const CMsgBoxData&)> cb);
 int FUN_141276180(const CString& strName, const CString& strValue);
-void FUN_14141f970(CString& str);
-void FUN_14141f770(CString& strOut, unsigned int nSlots, const UIMeratMarketRegisterDialog::ItemArray& arrItems,
-                   MS2Ptr<CItem> (*pfnGet)(const UIMeratMarketRegisterDialog::ItemArray&, int), int a, int b);
-MS2Ptr<CItem> FUN_141420330(const UIMeratMarketRegisterDialog::ItemArray& arrItems, int nIndex);
+void FUN_14141f970(const CString& str);
+void FUN_14141f770(const CString& strOut, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGet)(void*, int), int a, int b);
+MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);
 int FUN_1406516a0();
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -181,7 +180,7 @@ UISwfEntityManager* FUN_140b632f0();
 
 // The royalty list (charge info) and the singleton that fills it.
 class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
-CStringW FUN_140ebd9d0(int a, int b);
+CStringW FUN_140ebd9d0(bool a, __int64 b);
 
 // The slot bag of the movie.
 DragSlotBag* FUN_140c54520(NotifyContext::BindData* pBind);
@@ -272,7 +271,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         reinterpret_cast<CUgcGetCostTable*>(FUN_140ec3940())->GetTable(list);
         if (list.IsEmpty() != 0)
             return;
-        CStringW strCharge = FUN_140ebd9d0(0, 0);
+        CStringW strCharge = FUN_140ebd9d0(false, 0);
         ASTooltip tip(1, 2);
         int nOk = tip.ApplyTextTooltip(FUN_14028dfa0<CStringW>(CStringW(L"s_meratmarket_tooltip_charge"), strCharge));
         if (nOk != 0)
@@ -771,7 +770,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a880(CString& strItems, unsigned int 
     m_items.RemoveAll();
     m_mapUgc.RemoveAll();
     FUN_141319920(m_items);
-    MS2Ptr<CItem> (*pfnGet)(const ItemArray&, int) = FUN_141420330;
+    MS2Ptr<CItem> (*pfnGet)(void*, int) = FUN_141420330;
     FUN_14141f970(strItems);
     size_t nCount = m_items.GetCount();
     unsigned int nSlots = nRows * nColumns;
@@ -786,7 +785,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a880(CString& strItems, unsigned int 
             ++nLines;
         nCount = nCols * nLines;
     }
-    FUN_14141f770(strItems, (unsigned int)nCount, m_items, pfnGet, 0x1d15, 0);
+    FUN_14141f770(strItems, (int)nCount, &m_items, pfnGet, 0x1d15, 0);
     m_30->Invoke("buildUGCItems", strItems);
     return true;
 }
@@ -918,8 +917,8 @@ void UIMeratMarketRegisterDialog::FUN_14131b4e0(ASObj& obj, bool bAddBase)
     if (m_spSelected.get() != 0)
     {
         __int64 nTotal = FUN_14131ac80(bAddBase, m_spSelected, FUN_1418ffe80(m_nFlags, 1));
-        strFee = FUN_1418fec00(3, m_nFee, 0);
-        strTotalFee = FUN_1418fec00(3, nTotal, 0);
+        strFee = FUN_1418fec00(3, m_nFee, false);
+        strTotalFee = FUN_1418fec00(3, nTotal, false);
     }
     else
     {

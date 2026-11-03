@@ -63,40 +63,6 @@ static UICommon::CMyPCKeyInputController s_keyInput;                            
 
 // ---- unit-local views of exe types (names assumed; layouts only as far as this unit reads them) ----
 
-// A vector<unsigned> of the exe (0x18 bytes). Size and operator[] are the shared COMDATs.
-class Unk_IngIdVec
-{
-public:
-    size_t FUN_140191110() const;                       // size
-    unsigned& FUN_140297cb0(size_t n);                  // operator[]
-private:
-    void* m_first;
-    void* m_last;
-    void* m_end;
-};
-MS2_CHECK_SIZE(Unk_IngIdVec, 0x18);
-
-// The ingredient row of an item (ugcbuildvalidator.cpp reads the m_bFree flag too).
-class Unk_IngItem : public CPtred
-{
-public:
-    __int64 m_nValue;               // +0x18
-    Unk_IngIdVec m_ids;             // +0x20 the tags of the cube
-    int m_nCategory;                // +0x38 the box the cube is listed in (100: the plain list)
-    int m_nOrder;                   // +0x3c
-    int m_nTier;                    // +0x40
-    int m_nBoxId;                   // +0x44
-    int m_nBoxArg;                  // +0x48
-    short m_nPad4c;
-    unsigned char m_bFree;          // +0x4e
-};
-MS2_CHECK_OFFSET(Unk_IngItem, m_bFree, 0x4e);
-
-class Unk_IngTable
-{
-public:
-    MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId);
-};
 class CItemDataTable;
 
 
@@ -180,7 +146,7 @@ UGCCube::UGCCube(int itemId)                                                    
     : index(0)
 {
     itemData = FUN_14053f870(itemId);
-    ingredient = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(itemId);
+    ingredient = TSingleton<CItemDataTable>::GetInstance()->GetHousing(itemId);
     info.AssignRaw(new CubeItemInfo(itemId, 0, 0, 0));
 }
 
@@ -188,7 +154,7 @@ UGCCube::UGCCube(int itemId, __int64 uid, __int64 count, CUgcItemLook* pLook)   
     : index(0)
 {
     itemData = FUN_14053f870(itemId);
-    ingredient = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(itemId);
+    ingredient = TSingleton<CItemDataTable>::GetInstance()->GetHousing(itemId);
     info.AssignRaw(new CubeItemInfo(itemId, uid, count, pLook));
 }
 
@@ -218,7 +184,7 @@ bool UGCCube::FUN_140def4f0()                                                   
         return false;
     if (itemData->HasMaidId() && FUN_140defe70() > 0)
         return false;
-    if (ingredient && ingredient->m_bFree == 0)
+    if (ingredient && ingredient->hasPrice == 0)
         return false;
     return true;
 }
@@ -238,14 +204,14 @@ __int64 UGCCube::FUN_140def5f0()                                                
 __int64 UGCCube::FUN_140def620()                                                               // @0x140def620
 {
     if (ingredient.get() != 0)
-        return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047bc50((Unk_SaleHousingKey)ingredient->m_nCategory, ingredient->m_nTier, ingredient->m_nValue);
+        return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047bc50((Unk_SaleHousingKey)ingredient->filter, ingredient->priceCount, ingredient->price);
     return 0;
 }
 
 __int64 UGCCube::FUN_140def6c0()                                                               // @0x140def6c0
 {
     if (ingredient.get() != 0)
-        return ingredient->m_nValue;
+        return ingredient->price;
     return 0;
 }
 
@@ -298,21 +264,21 @@ __int64 UGCCube::FUN_140defba0()                                                
 int UGCCube::FUN_140defc30()                                                                   // @0x140defc30
 {
     if (ingredient.get() != 0)
-        return ingredient->m_nOrder;
+        return ingredient->categoryIndex;
     return 10000;
 }
 
 int UGCCube::FUN_140defc80()                                                                   // @0x140defc80
 {
     if (ingredient.get() != 0)
-        return ingredient->m_nCategory;
+        return ingredient->filter;
     return 100;
 }
 
 int UGCCube::FUN_140defcd0()                                                                   // @0x140defcd0
 {
     if (ingredient.get() != 0)
-        return ingredient->m_nTier;
+        return ingredient->priceCount;
     return 1;
 }
 
@@ -328,10 +294,10 @@ bool UGCCube::FUN_140defdd0(int nId)                                            
 {
     if (ingredient == 0)
         return false;
-    Unk_IngIdVec& ids = ingredient->m_ids;
-    for (size_t i = 0; i < ids.FUN_140191110(); ++i)
+    std::vector<unsigned>& ids = ingredient->categoryTag;
+    for (size_t i = 0; i < ids.size(); ++i)
     {
-        if (ids.FUN_140297cb0(i) == nId)
+        if (ids[i] == nId)
             return true;
     }
     return false;
@@ -595,8 +561,8 @@ bool Unk_CubeUsage::FUN_140df13e0(int nItemId)                                  
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return false;
-    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(nItemId);
-    if (spIng && spIng->m_bFree == 0)
+    MS2Ptr<ItemHousing> spIng = TSingleton<CItemDataTable>::GetInstance()->GetHousing(nItemId);
+    if (spIng && spIng->hasPrice == 0)
         return false;
     if (spData->HasCubeTextureMesh())
         return false;
@@ -684,8 +650,8 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
             MS2Ptr<CItemData> spData;
             if (mapItems.Lookup(spCube->FUN_140def5a0(), spData))
             {
-                MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(spData->GetItemId());
-                if (spIng && TSingleton<UGCCubeCategoryTable>::GetInstance()->HasAnyField(*reinterpret_cast<const std::vector<unsigned>*>(&spIng->m_ids)))
+                MS2Ptr<ItemHousing> spIng = TSingleton<CItemDataTable>::GetInstance()->GetHousing(spData->GetItemId());
+                if (spIng && TSingleton<UGCCubeCategoryTable>::GetInstance()->HasAnyField(spIng->categoryTag))
                     continue;
             }
         }
@@ -793,7 +759,7 @@ void UGCCubePalette::FUN_140df2250()                                            
 {
     mapItems.RemoveAll();
     std::vector<unsigned> vecIds;
-    reinterpret_cast<CItemDataTable*>(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()))->LoadItemNameIds(vecIds);
+    TSingleton<CItemDataTable>::GetInstance()->LoadItemNameIds(vecIds);
     for (size_t i = 0; i < vecIds.size(); ++i)
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(vecIds[i]);
@@ -801,7 +767,7 @@ void UGCCubePalette::FUN_140df2250()                                            
             continue;
         if (!spData->FUN_14053cb80())
             continue;
-        if (reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(spData->GetItemId()) == 0)
+        if (TSingleton<CItemDataTable>::GetInstance()->GetHousing(spData->GetItemId()) == 0)
             continue;
         mapItems.SetAt(spData->GetItemId(), spData);
     }
@@ -921,17 +887,17 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
         if (!spData->install.FUN_140548cd0())
             return true;
     }
-    MS2Ptr<Unk_IngItem> spIng = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405566e0(spData->GetItemId());
+    MS2Ptr<ItemHousing> spIng = TSingleton<CItemDataTable>::GetInstance()->GetHousing(spData->GetItemId());
     if (spIng == 0)
         return false;
-    if (pFilter->FUN_140df0160() != spIng->m_nCategory)
+    if (pFilter->FUN_140df0160() != spIng->filter)
     {
         if (pFilter->FUN_140df00f0())
             return false;
         return true;
     }
-    int nBoxId = spIng->m_nBoxId;
-    int nBoxArg = spIng->m_nBoxArg;
+    int nBoxId = spIng->trophyID;
+    int nBoxArg = spIng->trophyLevel;
     if (reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsGradeCleared(nBoxId, nBoxArg) == 0)
     {
         MS2Ptr<CAchieve> spBox = reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->Find(nBoxId);

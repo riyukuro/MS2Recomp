@@ -167,7 +167,6 @@ CString FUN_14028d1f0(const char* psz);                                 // CStri
 CString FUN_140188f50(const char* psz, int nCodePage);
 CString FUN_14016a5c0(const char* psz, int n);                          // narrows a string (the RTTI name in CheckInit)
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // Table/<file>
-CString FUN_140298360(const char* a, const CString& b);                 // a + b
 void FUN_1401d3700(CString& str);                                       // lower-cases in place
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
 unsigned FUN_140767ff0();                                               // random number
@@ -176,7 +175,6 @@ class Unk_SpWorld { public: GameObject* FUN_141bd0cc0(); };
 class Unk_SpOptions { public: int FUN_141260470(); };
 class Unk_SpConfig { public: Unk_SpOptions* FUN_1411b1f30(); };
 
-CString FUN_14038f6d0(const CString& str, const char* psz);
 int FUN_141793500(CString strEvent);
 
 // The job codes of the "Job<n>" attributes of a trigger voice (index 0 unused).
@@ -285,9 +283,9 @@ CString SystemSoundProperty::GetCategory(int nGender)
     if (m_bByGender)
     {
         if (nGender == 0)
-            return FUN_14038f6d0(m_strGroup, "/Male");
+            return m_strGroup + "/Male";
         if (nGender == 1)
-            return FUN_14038f6d0(m_strGroup, "/Female");
+            return m_strGroup + "/Female";
     }
     return CString(m_strGroup);
 }
@@ -657,7 +655,7 @@ SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strNa
         return SystemPtr(0);
     CString strKey(strArg);
     if (!strArg.IsEmpty())
-        strKey += FUN_140298360("_", strName);
+        strKey += "_" + strName;
     else
         strKey = strName;
     if (strKey.IsEmpty())

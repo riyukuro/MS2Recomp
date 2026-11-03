@@ -37,6 +37,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
+#include "ms2/commonfiles/meratproductkey.h"   // C3: the product key of CMeratMarketMan::FUN_140d578d0
+#include <efd/Point2.h>   // C3: efd::Point2::ZERO
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -78,11 +80,9 @@ struct Unk_MeratOid
     __int64 m_nUgcId;                                       // +0x08
 };
 
-// The world singleton: the product lookup and the pending buy list.
+// The world singleton: the pending buy list.
 class Unk_LpWorld : public CMeratMarketMan
 {
-public:
-    MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(Unk_MeratOid oid);               // the record of a product id
 };
 
 class Unk_SingletonObj* FUN_140939a00();   // C3: was FUN_140939a00
@@ -90,10 +90,9 @@ UIAdPushDialog* FUN_140d61c00(int nClass);
 CAdBannerManagerCli* GetAdBannerManagerCli();
 void FUN_1409bc4f0(ASMeratMarketProductBase* pProduct, MS2Ptr<ShopBannerInfo> spBanner);   // set the banner (the banner is the Unk_MeratBanner of the AS side)
 struct Unk_TdXY { float x, y; };                                            // efd::Point2 (POD copy)
-extern Unk_TdXY DAT_143b02320;                                              // efd::Point2::ZERO
 int FUN_14069c3e0(int nType);                                               // currency type -> payment flag
-int FUN_140ebf520(MS2Ptr<Unk_AdMarketItem> spItem, AScript* pBuyBtn);       // the price kind of a click
-void FUN_140ebf610(const CStringA& strMethod, MS2Ptr<Unk_AdMarketItem> spItem, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPriceKind);   // open the bill dialog
+int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spItem, AScript* pBuyBtn);       // the price kind of a click
+void FUN_140ebf610(const CStringA& strMethod, MS2Ptr<CMeratMarketProduct> spItem, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPriceKind);   // open the bill dialog
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrIds);                            // check the sub items are available
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // the bill dialog's buy
 bool FUN_140ebe990(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);    // the bill dialog's tooltip
@@ -183,7 +182,7 @@ void UIAdPushLimitedDialog::vfunc_77()
         m_70 = 0;
         if (m_90)
         {
-            Unk_TdXY pos = DAT_143b02320;
+            Unk_TdXY pos = *reinterpret_cast<const Unk_TdXY*>(&efd::Point2::ZERO);
             m_90->GetPosition(&pos.x, &pos.y);
             if (m_spOwner)
                 m_spOwner->SetMaximizePos(pos.x, pos.y);
@@ -437,9 +436,9 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     spProduct->GetProductOID(&oid);
     unsigned char* pInfo = (unsigned char*)&spItem->m_info;
     if (*reinterpret_cast<int*>(pInfo + 0x18) != oid.m_nPremiumId)
-        spItem = ((class Unk_LpWorld*)FUN_140939a00())->FUN_140d578d0(oid);
+        reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem) = ((class CMeratMarketMan*)FUN_140939a00())->FUN_140d578d0(reinterpret_cast<Unk_MeratProductKey&>(oid));
     AScript* pBuyBtn = out.FUN_140ec2a90();
-    int nPriceKind = FUN_140ebf520(spItem, pBuyBtn);
+    int nPriceKind = FUN_140ebf520(reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem), pBuyBtn);
     if (*(pInfo + 0x108) != 0 && reinterpret_cast<CMeratMarketPremiumProduct*>(pInfo)->GetPriceOf(0) == 0)
     {
         ATL::CAtlArray<unsigned int> ids;
@@ -457,7 +456,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
         MS2Ptr<CMeratMarketBuy> spBuy(new CMeratMarketBuy());
         if (spBuy == 0 || spBuy->m_spPacket == 0)
             return;
-        spBuy->FUN_140d60a80(spItem, nBuyType, FUN_14069c3e0(nPriceKind), 1);
+        spBuy->FUN_140d60a80(reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem), nBuyType, FUN_14069c3e0(nPriceKind), 1);
         spBuy->FUN_140d60d60(0, 1);
         ((class Unk_LpWorld*)FUN_140939a00())->QueuePurchase(MS2Ptr<CPendingBuyBase>(spBuy.get()), true);
         ((class Unk_LpWorld*)FUN_140939a00())->StartPendingPurchases(nBuyType);
@@ -465,7 +464,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     else
     {
         MS2Ptr<TMeratMarketBillDataParam> spParam = FUN_140e04070(strMethod, 3, 1);
-        FUN_140ebf610(strMethod, spItem, spParam, nPriceKind);
+        FUN_140ebf610(strMethod, reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spItem), spParam, nPriceKind);
     }
 }
 

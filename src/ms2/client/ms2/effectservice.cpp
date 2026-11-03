@@ -1066,8 +1066,6 @@ namespace FMOD { class EventGroup; }
 
 void* FUN_1413f9950();   // C3: was FUN_1413f9950
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg0, const CString& strArg1);
-CString FUN_140298360(const char* psz, const CString& str);     // ATL operator+(const char*, const CString&)
-CString FUN_14038f6d0(const CString& str, const char* psz);     // ATL operator+(const CString&, const char*)
 void Unk_140657820();                                           // invalid call of an empty Delegate
 // @0x1411b0e30
 template <> inline void Delegate<void(unsigned int, CString, bool)>::operator()(unsigned int nId, CString strName, bool b) const
@@ -1295,7 +1293,7 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
         // not loaded yet: queue the request until its resources are ready
         reinterpret_cast<NoticeMessage&>(kTarget).Stamp();
         MS2Ptr<PendingEffect> spPending(new PendingEffect(nId));
-        spPending.operator->()->Init(reinterpret_cast<MS2Ptr<Unk_PeEffectSet>&>(spData), reinterpret_cast<const Unk_PeTarget&>(kTarget));
+        spPending.operator->()->Init(reinterpret_cast<MS2Ptr<Unk_PeEffectSet>&>(spData), reinterpret_cast<const NoticeMessage&>(kTarget));
         m_listPending.push_back(spPending);
         return nId;
     }
@@ -2491,7 +2489,7 @@ CString CEffectService::FUN_1411aad50()
     CString strOut("");
     for (size_t i = 0; i < m_a190.GetCount(); i++) {
         const CString& strName = m_a190[i];
-        strOut += FUN_14038f6d0(FUN_140298360("[", strName), "]");
+        strOut += "[" + strName + "]";
         strOut += "\n";
     }
     return strOut;
@@ -2504,7 +2502,7 @@ CString CEffectService::FUN_1411aaeb0()
     CString strOut("");
     for (size_t i = 0; i < m_a1b0.GetCount(); i++) {
         const CString& strName = m_a1b0[i];
-        strOut += FUN_14038f6d0(FUN_140298360("[", strName), "]");
+        strOut += "[" + strName + "]";
         strOut += "\n";
     }
     return strOut;

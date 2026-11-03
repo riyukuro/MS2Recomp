@@ -48,6 +48,7 @@
 #include "ms2/placeholder/formatstringid.h"      // C3: FormatStringId<...>
 #include "ms2/placeholder/wcformat.h"            // C3: FUN_14028dfa0<...>
 #include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: CGameEventValueManager::GetCoupleDance
+#include "ms2/client/ms2/uiemoticon.h"              // C3: UIEmoticon::Entity (the slot 83 component)
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -86,8 +87,6 @@ public:
     virtual void vfunc_1();
     virtual void vfunc_2();                              // show
     virtual void vfunc_3();                              // reset
-    void FUN_14192f8b0(int nMode);                       // 0x14192f8b0
-    void FUN_14192f8d0(const CString& strEffect);        // 0x14192f8d0
 };
 
 // The UI manager.
@@ -136,7 +135,6 @@ public:
 MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_nMinScore, 0x30);
 MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_aDances, 0x80);
 class Unk_MgEventHolder { public: MS2Ptr<Unk_MgDanceEvent> FUN_140428700(); };
-class Unk_MgGameService* FUN_140302b00();
 
 // Actor helpers (the bodies are in the earlier objs).
 class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
@@ -515,11 +513,11 @@ void StateMicroGameRps::FUN_140b87ad0()
     MS2Ptr<Unk_PCBaseComp_a88> spPartnerShow = pPartner->vfunc_83();
     if (spShow == 0 || spPartnerShow == 0)
         return;
-    spShow->FUN_14192f8b0(3);
-    spShow->FUN_14192f8d0(strEffect);
+    reinterpret_cast<UIEmoticon::Entity*>(spShow.get())->FUN_14192f8b0(3);
+    reinterpret_cast<UIEmoticon::Entity*>(spShow.get())->FUN_14192f8d0(strEffect);
     spShow->vfunc_2();
-    spPartnerShow->FUN_14192f8b0(3);
-    spPartnerShow->FUN_14192f8d0(strPartnerEffect);
+    reinterpret_cast<UIEmoticon::Entity*>(spPartnerShow.get())->FUN_14192f8b0(3);
+    reinterpret_cast<UIEmoticon::Entity*>(spPartnerShow.get())->FUN_14192f8d0(strPartnerEffect);
     spPartnerShow->vfunc_2();
 }
 
@@ -871,7 +869,7 @@ void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
         return;
     }
     FUN_140b8b020(aStages);
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -911,7 +909,7 @@ void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -999,7 +997,7 @@ void StateMicroGameCoupleDance::FUN_140b89ed0(double)
 // @0x140b89f90
 bool StateMicroGameCoupleDance::FUN_140b89f90()
 {
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         MS2_ASSERT_AT(0x2f1, 0);
@@ -1014,7 +1012,7 @@ void StateMicroGameCoupleDance::FUN_140b8a060()
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1076,7 +1074,7 @@ void StateMicroGameCoupleDance::FUN_140b8a290()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1109,7 +1107,7 @@ void StateMicroGameCoupleDance::FUN_140b8a5f0()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1146,7 +1144,7 @@ void StateMicroGameCoupleDance::FUN_140b8a910()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
@@ -1183,7 +1181,7 @@ void StateMicroGameCoupleDance::FUN_140b8acc0()
         pRider->vfunc_59(1, 0, 0, 0);
         return;
     }
-    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(reinterpret_cast<CGameEventValueManager*>(FUN_140302b00())->GetCoupleDance())->FUN_140428700();
+    MS2Ptr<Unk_MgDanceEvent> spEvent = reinterpret_cast<Unk_MgEventHolder*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);

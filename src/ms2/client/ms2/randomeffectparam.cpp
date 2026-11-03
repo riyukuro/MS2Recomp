@@ -15,6 +15,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/tinyxml.h"  // C3: was a local member view
+#include "ms2/client/ms2/effectservice.h"
 
 // Game TinyXML element: FirstChildElement / NextSiblingElement by name.
 class Unk_XmlNode   // C3: member view (real class not in this TU)
@@ -44,13 +45,6 @@ class Unk_GameLog
 public:
 };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-
-// Game context (singleton 0x1403ed280): random seed source.
-class CEffectService { public: unsigned int GetTick(void); }; class Unk_GameCtx : public CEffectService {
-public:
-
-};
-Unk_GameCtx* FUN_1403ed280();
 
 // @0x1416f5250
 bool Unk_WeightedPicker::Build()
@@ -172,7 +166,7 @@ bool CRandomEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
         }
         if (!kPicker.Build())
             return false;
-        int nSeed = FUN_1403ed280()->GetTick();
+        int nSeed = TSingleton<CEffectService>::GetInstance()->GetTick();
         Unk_Random kRandom(nSeed);
         nIndex = *kPicker.Pick(kRandom);
     }

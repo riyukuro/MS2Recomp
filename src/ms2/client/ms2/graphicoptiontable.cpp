@@ -24,11 +24,15 @@ public:
     Unk_140165cf0* FUN_140168650(const char* pszName);              // NextSiblingElement
 };
 CLogString* GetLogString();
-void FUN_14036e770(CLogString* log, int level, int category, const wchar_t* format, const CStringW& arg);
+template <class T> void Unk_FeatureLog(CLogString* log, int level, int category, const wchar_t* format, const T& arg);   // C3: was FUN_14036e770
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
-void* FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pnValue);           // int attribute
+class TiXmlElement   // C3: member view for the former FUN_14086f500 stand-in
+{
+public:
+    const char* Attribute(const char* name, int* i) const;
+};
 
 // @0x141375cb0
 CGraphicOptionTable::CGraphicOptionTable()
@@ -59,7 +63,7 @@ void CGraphicOptionTable::Load()
                 for (unsigned int i = 1; i <= 5; i++)
                 {
                     strKey.Format("option%d", i);
-                    FUN_14086f500(pOption, strKey, &nValue);
+                    ((class TiXmlElement*)(pOption))->Attribute(strKey, &nValue);
                     if ((strName == "multisample"))
                     {
                         m_multisample[i - 1] = nValue;
@@ -79,7 +83,7 @@ void CGraphicOptionTable::Load()
                 for (unsigned int i = 1; i <= 5; i++)
                 {
                     strKey.Format("option%d", i);
-                    FUN_14086f500(pShadow, strKey, &nValue);
+                    ((class TiXmlElement*)(pShadow))->Attribute(strKey, &nValue);
                     if (nValue == 1 && bSet1 == 0)
                     {
                         m_mapShadow1.SetAt(strName, i - 1);
@@ -95,13 +99,13 @@ void CGraphicOptionTable::Load()
         }
         else
         {
-            FUN_14036e770(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
+            Unk_FeatureLog<CStringW>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
                           FUN_14016a730(FUN_14071a5b0("Table", "graphicOption.xml"), 0));
         }
     }
     else
     {
-        FUN_14036e770(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
+        Unk_FeatureLog<CStringW>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
                       FUN_14016a730(FUN_14071a5b0("Table", "graphicOption.xml"), 0));
     }
 }

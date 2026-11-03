@@ -50,7 +50,6 @@ static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 int FUN_141276180(const CString& strName, const CString& strArg);       // play a system sound
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
-CStringW FUN_1401d0160(const wchar_t* szFirst, const CStringW& strSecond);   // szFirst + strSecond
 template <class A> CStringW FormatStringId(int nStringId, const A& a);
 
 
@@ -230,7 +229,7 @@ void UIFishingBookDialog::FUN_140f41a10()
     CStringW strTitle = (nTitle == 0) ? GetStringCommonByKey(L"s_fishing_none_title") : FUN_141b720b0(nTitle, 0);
     CStringW strGrade = FUN_140f432e0(nGrade);
     if (nGrade == reinterpret_cast<CMasteryTable*>(FUN_1409670c0())->MaxGrade(1))
-        strGrade += FUN_1401d0160(L" ", GetStringCommonByKey(L"s_fishing_mastery_gauge_level_max"));
+        strGrade += L" " + GetStringCommonByKey(L"s_fishing_mastery_gauge_level_max");
     ASObj obj(2);
     obj.FUN_1409c0d20("fisherTitleID", nTitle);
     obj.FUN_1407cbb20("fisherTitle", CStringW(strTitle));

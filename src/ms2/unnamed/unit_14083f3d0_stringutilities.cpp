@@ -24,18 +24,7 @@ void FUN_14025fab0(CStringW& str);                                      // MakeL
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // wide -> narrow
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
 
-#ifdef __clang__
-// clang emits an unavailable MFC CopyChars DLL import for CString's operator+; bind the exe's copies.
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);
-CStringW FUN_1401d0080(const CStringW& str1, const CStringW& str2);
-CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);
-inline CStringW Unk_Concat(const CStringW& str, const wchar_t* psz) { return FUN_14061ad70(str, psz); }
-inline CStringW Unk_Concat(const CStringW& str1, const CStringW& str2) { return FUN_1401d0080(str1, str2); }
-inline CStringW Unk_Concat(const wchar_t* psz, const CStringW& str) { return FUN_1401d0160(psz, str); }
-#define MS2_CONCAT(a, b) Unk_Concat(a, b)
-#else
 #define MS2_CONCAT(a, b) ((a) + (b))
-#endif
 
 // Lower-cases a wide string (header inline; COMDAT at 0x140841420).
 inline void FUN_140841420(CStringW& str)

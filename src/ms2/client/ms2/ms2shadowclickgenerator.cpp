@@ -65,6 +65,9 @@
 #include <NiRenderer.h>
 #include <NiCullingProcess.h>
 #include <NiTerrainCullingProcess.h>
+#include <ecr/RenderService.h>
+#include <ecr/RenderSurface.h>
+#include "ms2/client/ms2/effectservice.h"   // C3: EffectNode::ms_RTTI
 
 // ---- RTTI ----
 #ifdef __clang__
@@ -91,7 +94,6 @@ const NiRTTI MS2ShadowVisitor::ms_RTTI("MS2ShadowVisitor", MS2_VIS_BASE);
 // ---- out-of-unit data and helpers ----
 extern char DAT_143ae51a8;      // NiFixedString: extra-data name that marks a shadow caster
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
-extern char DAT_143ad1588;      // NiRTTI of the model node class (mode at +0x17c, flag byte at +0x131)
 extern int DAT_143ae2b44;       // model-node culling enabled
 class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
@@ -151,23 +153,7 @@ void MS2ExcludeFromShadows(NiAVObject* pkObject)
     }
 }
 
-// The scene root (0x143ab...): holder of the scene camera; both getters are inline COMDATs of other objs.
-class Unk_SceneCameraHolder
-{
-public:
-    NiCamera* FUN_140af7df0();
-};
-class Unk_SceneRoot
-{
-public:
-    static Unk_SceneRoot* FUN_1413f9890();
-    Unk_SceneCameraHolder* FUN_140af7da0();
-    NiCamera* GetSceneCamera()
-    {
-        Unk_SceneCameraHolder* pHolder = FUN_140af7da0();
-        return pHolder ? pHolder->FUN_140af7df0() : 0;
-    }
-};
+ecr::RenderService* FUN_1413f9890();                                    // the render service
 
 // The camera manager's current mode accepts shadow-follow cameras? (inline of ?\actioncameramode.cpp's obj)
 class CameraMgr   // C3: member view for the former free stand-ins
@@ -625,10 +611,10 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
     Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
     NiPoint3 kCameraPos(MS2_SC_POINT(efd::Point3,
         pTarget->vfunc_18().FUN_140965c40(MS2_SC_POINT(Vector3, pkDirLight->GetWorldDirection() * 10000.0f))));
-    Unk_SceneCameraHolder* pHolder = Unk_SceneRoot::FUN_1413f9890()->FUN_140af7da0();
+    ecr::RenderSurface* pHolder = FUN_1413f9890()->GetActiveRenderSurface();
     if (pHolder)
     {
-        NiCamera* pkSceneCamera = pHolder->FUN_140af7df0();
+        NiCamera* pkSceneCamera = pHolder->GetCamera();
         if (pkSceneCamera)
         {
             NiPoint3 kViewDir = pkSceneCamera->GetWorldDirection();
@@ -687,10 +673,10 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
 // @0x14150a420
 void MS2ShadowClickGenerator::UpdateCullPlanes()
 {
-    Unk_SceneCameraHolder* pHolder = Unk_SceneRoot::FUN_1413f9890()->FUN_140af7da0();
+    ecr::RenderSurface* pHolder = FUN_1413f9890()->GetActiveRenderSurface();
     if (pHolder == 0)
         return;
-    NiCamera* pkCamera = pHolder->FUN_140af7df0();
+    NiCamera* pkCamera = pHolder->GetCamera();
     if (pkCamera == 0)
         return;
     m_kCullPlanes.Set(pkCamera->GetViewFrustum(), pkCamera->GetWorldTransform());
@@ -931,7 +917,7 @@ void MS2ShadowVisitor::AdditiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkOb
     {
         Unk_ShadowModelNode* pkModel;
         if (((class COptimizer*)FUN_1409f7c90())->IsModelCullingOn() &&
-            (pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast((const NiRTTI*)&DAT_143ad1588, pkNode)) != 0 &&
+            (pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast(&EffectNode::ms_RTTI, pkNode)) != 0 &&
             pkModel->FUN_1410444a0() == 1 && !pkModel->FUN_14144e250())
             return;
 

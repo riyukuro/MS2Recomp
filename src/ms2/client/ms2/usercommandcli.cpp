@@ -126,10 +126,6 @@ static Unk_CommandStatics s_tableb(17,.75f,.25f,2.25f,10);
 // External, non-RTTI command and XML helper types; scalar layout follows callers.
 int FUN_141276f80(Unk_CommandChat*);
 CString FUN_14071a5b0(const CString&,const CString&);
-// ATL::operator+ (the exe copies; clang lacks the MFC CopyChars import)
-CStringW FUN_14061ad70(const CStringW&,const wchar_t*);
-CStringW FUN_1401d0080(const CStringW&,const CStringW&);
-CString FUN_14038f6d0(const CString&,const wchar_t*);
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 class CFileSystem { public: int FUN_1403974b0(TiXmlDocument*,const char*,int,bool,bool); };   // C3: member view
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
@@ -734,7 +730,7 @@ CStringW CUserCommandCli::Tooltip() {
     if(bBuild) {
         tooltip=L"";
         const CStringW& key=CStringW(L"s_chattooltip_fmt");
-        const CStringW& format=FUN_14061ad70(key,L"_{0}");
+        const CStringW& format=key + L"_{0}";
         for(POSITION p=ordered.GetHeadPosition();p;ordered.GetNext(p)) {
             MS2Ptr<TUserCommandInfo> info=ordered.GetValueAt(p);
             if(info==0 || info->suffix.IsEmpty()) continue;
@@ -1325,8 +1321,8 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
     CStringW query=args.FUN_1408d21c0(0,L"");
     CStringW extra1=args.FUN_1408d21c0(1,L"");
     CStringW extra2=args.FUN_1408d21c0(2,L"");
-    if(!extra1.IsEmpty()) query=FUN_1401d0080(FUN_14061ad70(query,L" "),extra1);
-    if(!extra2.IsEmpty()) query=FUN_1401d0080(FUN_14061ad70(query,L" "),extra2);
+    if(!extra1.IsEmpty()) query=query + L" " + extra1;
+    if(!extra2.IsEmpty()) query=query + L" " + extra2;
     std::vector<MS2Ptr<CFieldData> > list;
     CFieldData::FUN_140374090(list);
     std::vector<MS2Ptr<CFieldData> >* range=&list;
@@ -1591,7 +1587,7 @@ int CUserCommandCli::TraceQuest(Unk_CommandArgs&) {
             MS2Ptr<CQuestData> q = FUN_14074bc40(list->GetKeyAt(pos));
             if (q.IsNull())
                 continue;
-            names[((Unk_g2_Row*)q.operator->())->m_50] += static_cast<const CString&>(FUN_14038f6d0(static_cast<const CString&>(FUN_14136f6f0(((Unk_g2_Row*)q.operator->())->m_4c)),L" "));
+            names[((Unk_g2_Row*)q.operator->())->m_50] += static_cast<const CString&>(FUN_14136f6f0(((Unk_g2_Row*)q.operator->())->m_4c)) + " ";
             int* c1 = &counts[((Unk_g2_Row*)q.operator->())->m_4c];
             *c1 = *c1 + 1;
             int* c2 = &alliances[((Unk_g2_Row*)q.operator->())->m_50];
@@ -2066,7 +2062,7 @@ int CUserCommandCli::ShowHelp(Unk_CommandArgs&) {
     if(bRebuild) {
         text=L"";
         const CStringW& key=L"s_usercommand_fmt";
-        const CStringW& format=FUN_14061ad70(key,L"_{0}");
+        const CStringW& format=key + L"_{0}";
         for(POSITION p=ordered.GetHeadPosition();p;ordered.GetNext(p)) {
             MS2Ptr<TUserCommandInfo> info=ordered.GetValueAt(p);
             if(info==0 || info->suffix.IsEmpty()) continue;

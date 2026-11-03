@@ -16,16 +16,16 @@
 #include <efd/EEMath.h>   // C3: efd::Clamp was FUN_140a17940
 
 // The shared eight-byte null-handle wrapper; constructor forwards to its pointer setter.
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-MS2_CHECK_SIZE(Unk_1401cd100, 8);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+MS2_CHECK_SIZE(Unk_BuddyHandle, 8);
 static CString s_skill1("skill");
 static CString s_stun1("stun");
-static Unk_1401cd100 s_pointer1(NULL);
+static Unk_BuddyHandle s_pointer1(NULL);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortNames1[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 static CString s_skill2("skill");
 static CString s_stun2("stun");
-static Unk_1401cd100 s_pointer2(NULL);
+static Unk_BuddyHandle s_pointer2(NULL);
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_sortNames2[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
 
@@ -122,7 +122,7 @@ bool FUN_14028d470(float a, float b);               // nearly equal
 const float& FUN_1409ffe80(const float& a, const float& b);   // std::min
 const float& FUN_140805fc0(const float& a, const float& b);   // std::max
 void FUN_1412751f0(const CStringW& str, int a, int b);     // chat/debug log line
-CStringW FUN_1406329c0(const wchar_t* pszFormat, float* pfArg);   // "{0}" substitution (another obj)
+#include "ms2/ms2format.h"
 
 // efd::Point3 with the default constructor 0x1405522f0 (another obj).
 struct Unk_EfdPoint3
@@ -241,7 +241,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
             float fMin = 0.05f;
             m_160 = FUN_140805fc0(m_160, fMin);
             if (fOld != m_160)
-                FUN_1412751f0(FUN_1406329c0(L"move accelerate rate:{0}", &m_160), 1, 1);
+                FUN_1412751f0(StringFormat<float>(L"move accelerate rate:{0}", m_160), 1, 1);
         }
     }
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();

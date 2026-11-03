@@ -25,6 +25,7 @@
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/client/ms2/usercommandcli.h"   // C3: Unk_CommandArgs, the item function params
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -49,7 +50,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
-Unk_EnchantItemPtr FUN_14053f870(int nItemId);
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
@@ -164,14 +165,14 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
     int nItemId = m_scroll.vfunc_o18_0();
     if (nItemId == 0)
         return 0;
-    Unk_EnchantItemPtr item = FUN_14053f870(nItemId);
-    if (item.FUN_1402ffd90())
+    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
+    if (item.IsNull())
         return 0;
     if (reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_strFunction != L"EnchantScroll")
         return 0;
-    if (reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params.FUN_1408d2380() == 0)
+    if (reinterpret_cast<Unk_CommandArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d2380() == 0)
         return 0;
-    m_nScrollId = reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params.FUN_1408d1f60(0, 0);
+    m_nScrollId = reinterpret_cast<Unk_CommandArgs&>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->())->m_params).FUN_1408d1f60(0, 0);
     CEnchantScrollTable::ScrollPtr scroll = CEnchantScrollTable::GetInstance()->FindScroll(m_nScrollId);
     if (scroll.IsNull())
         return 0;
@@ -205,8 +206,8 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
 // @0x14034dbe0
 CString CEnchantScrollRecipe::GetRewardName()
 {
-    Unk_EnchantItemPtr item = FUN_14053f870(m_scroll.vfunc_o18_0());
-    if (item.FUN_1402ffd90())
+    MS2Ptr<CItemData> item = FUN_14053f870(m_scroll.vfunc_o18_0());
+    if (item.IsNull())
         return CString("");
     return reinterpret_cast<CItemData*>(reinterpret_cast<Unk_EnchantItemData*>(reinterpret_cast<const MS2Ptr<CItemData>&>(item).operator->()))->GetIconPath();
 }

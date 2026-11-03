@@ -14,14 +14,19 @@
 
 class Unk_TreeNode;
 class NiAVObject;
+class NiRTTI;
+class NiObject   // C3: member view
+{
+public:
+    static NiObject* DynamicCast(const NiRTTI* pRTTI, const NiObject* pObject);
+};
 class NiNode   // C3: member view
 {
 public:
+    static const NiRTTI ms_RTTI;
     unsigned int GetArrayCount() const;
     NiAVObject* GetAt(unsigned int i) const;
 };
-class Unk_NodeManager { public: Unk_TreeNode* FUN_14098d8d0(Unk_TreeNode* pEntry); };   // the node of an entry (NULL: gone)
-extern int DAT_143afa4d8;                                       // the global node manager
 class NiObjectNET   // C3: member view for the former free stand-ins
 {
 public:
@@ -117,13 +122,13 @@ void CToolTreeNodesDialog::FUN_141858c00(HTREEITEM hParent, Unk_TreeNode* pNode)
 {
     for (unsigned i = 0; i < reinterpret_cast<NiNode*>(pNode)->GetArrayCount(); ++i) {
         Unk_TreeNode* pEntry = reinterpret_cast<Unk_TreeNode*>(reinterpret_cast<NiNode*>(pNode)->GetAt(i));
-        if (((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry) != 0) {
+        if (reinterpret_cast<Unk_TreeNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, reinterpret_cast<NiObject*>(pEntry))) != 0) {
             TVINSERTSTRUCT tvis;
             tvis.hParent = hParent;
             tvis.hInsertAfter = TVI_LAST;
             tvis.item.mask = TVIF_TEXT;
             tvis.item.pszText = (LPSTR)((class NiObjectNET*)(class Unk_TreeNode*)(pEntry))->GetName().operator const char*();
-            FUN_141858c00(m_treeNodes.InsertItem(&tvis), ((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry));
+            FUN_141858c00(m_treeNodes.InsertItem(&tvis), reinterpret_cast<Unk_TreeNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, reinterpret_cast<NiObject*>(pEntry))));
         }
     }
 }

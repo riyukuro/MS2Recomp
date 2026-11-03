@@ -209,17 +209,17 @@ void HideAndSeek::LoadHideAndSeek()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
         return;
-    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("field"); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("field")))
+    for (Unk_XmlNode* pNode = pRoot->FirstChild("field"); pNode != 0; pNode = pNode->NextSibling("field"))
     {
         if (FUN_14028f710((struct Unk_XmlElement*)(pNode)) == 0)
             continue;
         unsigned nMapCode = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "mapCode", nMapCode);
         std::vector<int> objects;
-        CString strObjects(((class TiXmlElement*)(class Unk_140165cf0*)(pNode))->Attribute("ridingObject"));
+        CString strObjects(((class TiXmlElement*)(pNode))->Attribute("ridingObject"));
         FUN_1401783d0(&strObjects, &objects, ",");
         if (Unk_LockGuard guard = s_lock) {} else
         {

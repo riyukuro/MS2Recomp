@@ -84,29 +84,8 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int, int, int);
 void FUN_1412751f0(const CStringW&, int, int);
 
-// The text filter (banned words) of the invited name.
-class Unk_TextFilter { public: };
-class Unk_TextFilterPtr {
-public:
-    ~Unk_TextFilterPtr();                                        // 0x14025c670
-    Unk_TextFilter* FUN_14025cea0() const;
-    void* m_00; void* m_08;
-};
-class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 
-// The buddy list entry of a character (see buddymanager.cpp).
-class Unk_GuildBuddyRef {
-public:
-    ~Unk_GuildBuddyRef();                                   // 0x140979fc0
-    void* FUN_14097a170();                                  // get()
-    CBuddy* FUN_14097a1e0();                                // operator->
-private:
-    void* m_00;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_GuildBuddyRef, 0x10);
-class Unk_GuildBuddyMgr { public: Unk_GuildBuddyRef FUN_140ae4950(const CStringW& name); };
 class UICommunityQueryDialog : public UIDialog {};
 UICommunityQueryDialog* FUN_140ae5a30(int);
 
@@ -334,11 +313,11 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nChar = 0;
-            Unk_GuildBuddyRef buddy = reinterpret_cast<Unk_GuildBuddyMgr*>(TSingleton<CBuddyManager>::GetInstance())->FUN_140ae4950(strName);
-            if (buddy.FUN_14097a170() != 0)
+            CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByName(strName);
+            if (buddy.get() != 0)
             {
-                nChar = buddy.FUN_14097a1e0()->FUN_1401cc2f0();
-                if (buddy.FUN_14097a1e0()->FUN_1401cc5d0() != 0)
+                nChar = buddy.operator->()->FUN_1401cc2f0();
+                if (buddy.operator->()->FUN_1401cc5d0() != 0)
                 {
                     FUN_140d73bc0(0x623, 0, 0, CStringW(L""));
                     return 1;
@@ -468,10 +447,10 @@ void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& str
         FUN_141275260(0x2f7, 1, 1);
         return;
     }
-    if (Unk_TextFilter* pFilter = ((class Unk_TextFilterMgr*)FUN_14025e7d0())->FUN_140229a50().FUN_14025cea0())
+    if (CBanTextChecker* pFilter = FUN_14025e7d0()->GetChecker().operator CBanTextChecker*())
     {
         CStringW strBad;
-        if (reinterpret_cast<CBanTextChecker*>(pFilter)->FUN_140225210(strName, strBad, 0) != 0)
+        if (pFilter->FUN_140225210(strName, strBad, 0) != 0)
         {
             FUN_1412751f0(strBad, 1, 1);
             return;

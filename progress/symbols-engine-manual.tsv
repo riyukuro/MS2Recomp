@@ -630,3 +630,10 @@ big2_prologTok	1423bf1f0	func
 ??$BinaryStreamSave@E@efd@@YA_NAEAVBinaryStream@0@PEBEI@Z	142802650	func
 ??$NiStreamSaveBinary@E@@YA_NAEAVBinaryStream@efd@@AEAE@Z	141c319f0	func
 ??_E?$SmartPointer@VNiPhysXProp@@@efd@@QEAAPEAXI@Z	141f00330	func
+??1?$SmartPointer@VNiCodeBlock@@@efd@@QEAA@XZ	141d99fa0	func
+??1?$SmartPointer@VNiShaderDesc@@@efd@@QEAA@XZ	141d82980	func
+??$NiStreamSaveBinary@E@@YA_NAEAVBinaryStream@efd@@AEAE@Z	141d555c0	alias	nistreamoutsettings
+??$BinaryStreamSave@E@efd@@YA_NAEAVBinaryStream@0@PEBEI@Z	14285a4d0	alias	nistreamoutsettings
+??$BinaryStreamSave@E@efd@@YA_NAEAVBinaryStream@0@PEBEI@Z	141fda890	alias	niphysxscenedesc
+??$_Reallocate_grow_by@V<lambda_319d5e083f45f90dcdce5dce53cbb275>@@D@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@_KV<lambda_319d5e083f45f90dcdce5dce53cbb275>@@D@Z	142390cc0	alias	hrtimer
+??$_Reallocate_grow_by@V<lambda_65e615be2a453ca0576c979606f46740>@@PEBD_K@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@_KV<lambda_65e615be2a453ca0576c979606f46740>@@PEBD_K@Z	142390e20	alias	hrtimer

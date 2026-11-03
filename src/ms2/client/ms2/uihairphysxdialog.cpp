@@ -52,9 +52,8 @@
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 
 class Unk_HudSlider;
-class Unk_IbDropdown;
 template <> MS2Ptr<Unk_HudSlider> UISwfEntity::GetChild<Unk_HudSlider>(const CString& strName);
-template <> MS2Ptr<Unk_IbDropdown> UISwfEntity::GetChild<Unk_IbDropdown>(const CString& strName);
+template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);
 template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName);   // owned by uibingoeventdialog (0x140bb4cf0)
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
@@ -65,7 +64,6 @@ class Unk_HpxRadio : public ASButton
 };
 class Unk_HudSlider : public ASSlider {};
 class Unk_RankInput : public ASTextInput {};
-class Unk_IbDropdown : public ASDropdownMenu {};                    // "m_joints"
 
 // The exe's NiPhysXPropDesc keeps its joint array at +0x30 (the engine header has another layout); the same view as
 // equipmodelforceapplier.cpp's, whose accessors were first emitted there.
@@ -123,7 +121,6 @@ class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);       // narrow a wide string
 CStringW FUN_14016a730(const char* psz, int nCodePage);         // widen a narrow string
 
-CString FUN_14038f6d0(const CString& str, const char* psz);     // ATL::operator+ (the exe copy; clang lacks the MFC CopyChars import)
 
 template <class T> inline T Unk_HpxMin(T a, T b) { return a < b ? a : b; }
 
@@ -662,7 +659,7 @@ MS2_REPLACE_METHOD(0x1419834A0, UIHairPhysxDialog, FUN_1419834a0, 344, 0xEAC2138
 // MS2-FUNCTIONAL: CString returned by value from inside the scope of the combo handle
 CString UIHairPhysxDialog::FUN_141983600()
 {
-    if (MS2Ptr<Unk_IbDropdown> sp = GetChild<Unk_IbDropdown>("m_joints"))
+    if (MS2Ptr<ASDropdownMenu> sp = GetChild<ASDropdownMenu>("m_joints"))
         return FUN_14016a600(sp->FUN_1422dfe00(), 0);
     return CString("");
 }
@@ -699,7 +696,7 @@ void UIHairPhysxDialog::FUN_141983730()
             arrJoints.Add(strName);
         }
     }
-    if (MS2Ptr<Unk_IbDropdown> sp = GetChild<Unk_IbDropdown>("m_joints"))
+    if (MS2Ptr<ASDropdownMenu> sp = GetChild<ASDropdownMenu>("m_joints"))
     {
         sp->ClearItems();
         for (unsigned j = 0; j < arrJoints.GetCount(); j++)
@@ -839,7 +836,7 @@ void UIHairPhysxDialog::FUN_141984360()
                 CString strLine;
                 strLine.Format("<jointangle name=\"%s\" soft=\"%0.2f\" posz=\"%0.2f\" zero=\"%0.2f\" negz=\"%0.2f\"/>",
                     (const char*)strJoint, fSoft, fX, fY, fZ);
-                spText->AppendTextA(FUN_14038f6d0(strLine, "\n"));
+                spText->AppendTextA(strLine + "\n");
             }
         }
         if (pModel != 0)
@@ -854,7 +851,7 @@ void UIHairPhysxDialog::FUN_141984360()
                 CString strLine;
                 strLine.Format("<random position=\"%0.2f,%0.2f,%0.2f\" rotation=\"%0.2f,%0.2f,%0.2f\" scale=\"%0.2f\"/>",
                     kPos.x, kPos.y, kPos.z, kRot.x, kRot.y, kRot.z, fScale);
-                spText->AppendTextA(FUN_14038f6d0(strLine, "\n"));
+                spText->AppendTextA(strLine + "\n");
             }
         }
     }

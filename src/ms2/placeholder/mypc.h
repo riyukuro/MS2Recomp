@@ -16,6 +16,9 @@ template <class T> class Unk_BmPtr;               // blackmarketitemoption.h
 class MyPC : public PCBase
 {
 public:
+    // The real class id (client mypc.h EE_DECLARE_CLASS1): without it efd::DynamicCast<MyPC> tests PCBase's 0x06200013
+    // and its COMDAT, when the linker keeps this view's copy, accepts every PC as the local player.
+    static const efd::ClassID CLASS_ID = 0x06200004;
     MyPC();                                                 // 0x141520680
     int vfunc_116() override;                               // declared only so the class is concrete
     void StartObserving(PCBase* pTarget);                    // observe pTarget (guild battle, uipvpguildteamdialog)
@@ -38,10 +41,13 @@ public:
     int FUN_1416595d0();                                    // PC member: the cube craft mode (actionkeyobject.cpp)
     class Unk_MyPCEmotion* FUN_14165f100();                 // PC member: the playing emotion (stateemotionidle.cpp)
     class Unk_PCCubeCraft* GetActiveCubeCraft();                 // the cube craft (housing build) controller (scenestategame 0x69)
+    bool FUN_1415302e0(int nItemId);                        // the cube item is locked (housing level, achievement)
     int FUN_141659690();                                    // PC member
     class UserUGCMapInfo* FUN_141523c50();                  // the owned house (UGC map) info, MS2Ptr at +0x1618
     void FUN_141524880(Unk_BmPtr<UserUGCMapInfo> spInfo);   // set it
     int HasNoHome();
+    int FUN_141527ed0();                                    // 0x141527ed0 (uirealestatedialog.cpp)
+    CStringW GetHomeName();                                 // 0x141528330 the house name
     int FUN_141527160(int nNext);                           // 0x141527160
     int FUN_14152e950();                                    // 0x14152e950
     void SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd);   // 0x141529c80 password portal move

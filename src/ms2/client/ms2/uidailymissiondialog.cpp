@@ -26,6 +26,7 @@
 #include "ms2/placeholder/packethandlermanager.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/questdata.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -85,8 +86,6 @@ struct Unk_DmActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-class Unk_DmSceneMgr;
-Unk_DmSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -98,14 +97,13 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                       // the quest id
 CStringW FUN_1416e5350(int nQuestId, int nIndex);                           // the description text of a quest
 __int64 FUN_140761ba0(int nQuestId, int nReward);                           // the experience reward
 CStringW FUN_140763e10(int nValue);                                         // the text of a mission point
 CStringW FUN_1409404f0(__int64 n);                                          // number with thousands separators
-CStringW FUN_14062b4f0(CStringW strKey, const int& n);                      // localized text with one number
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CString FUN_14021a8b0(int n);                                               // int to text
 void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // the warning bar
@@ -285,7 +283,7 @@ void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
 {
     if (WorldService::GetInstance()->HasTutorial())
         return;
-    if (((class GFxSceneService*)(class Unk_DmSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
         return;
     if (!FUN_140bffff0())
         return;
@@ -390,7 +388,7 @@ void UIDailyMissionDialog::FUN_140c00500()
         {
             ASObj row(2);
             if (FUN_140c012d0(row, FUN_14074b030(spData.operator->())) != 0)
-                FUN_1409ee290(&m_30)->Invoke("addLevelGuide", row);
+                m_30->Invoke("addLevelGuide", row);
         }
     }
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
@@ -398,7 +396,7 @@ void UIDailyMissionDialog::FUN_140c00500()
         return;
     int nCur = FUN_140c01f50();
     int nMax = FUN_140c020d0();
-    FUN_1409ee290(&m_30)->Invoke("setPC", nCur);
+    m_30->Invoke("setPC", nCur);
     if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_missionPoint"))
     {
         {
@@ -444,7 +442,7 @@ void UIDailyMissionDialog::FUN_140c00c10(CQuest* pQuest)
         return;
     ASObj row(2);
     FUN_140c01040(row, pQuest);
-    FUN_1409ee290(&m_30)->Invoke("updateQuest", row);
+    m_30->Invoke("updateQuest", row);
 }
 
 // Refresh the clear / satisfied counts and the point gauge.
@@ -457,14 +455,14 @@ void UIDailyMissionDialog::FUN_140c00cd0()
         int nGroup = (int)i;
         clear.PushInt(FUN_140c01b50(nGroup));
     }
-    FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshClearCount", clear);
+    m_30->FUN_140bd2cb0("refreshClearCount", clear);
     ASArray satisfied(2);
     for (size_t i = 0; i < 6; i++)
     {
         int nGroup = (int)i;
         satisfied.PushInt(FUN_140c01d30(nGroup));
     }
-    FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
+    m_30->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
     if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_missionPoint"))
     {
         {
@@ -529,7 +527,7 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
         return 0;
     int nLevel = (int)spData->m_conditions[0]->m_nGoal;
     CStringW strLevel;
-    strLevel = FUN_14062b4f0(CStringW(L"s_daily_mission_mission_point"), nLevel);
+    strLevel = FUN_14028dfa0<int>(CStringW(L"s_daily_mission_mission_point"), nLevel);
     rRow.FUN_1409c0d20("id", FUN_14074b030(spData.operator->()));
     rRow.FUN_1407cba60("state", strState);
     ((class AScript&)(rRow)).FUN_1407cb9c0("level", nLevel);
@@ -695,7 +693,7 @@ MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<ASButtonBar>(0);
-    return FUN_1409ee290(&m_30)->FUN_140be23c0<ASButtonBar>(strName);
+    return m_30->FUN_140be23c0<ASButtonBar>(strName);
 }
 
 // @0x140c02900
@@ -703,7 +701,7 @@ MS2Ptr<ASScrollingList> UIDailyMissionDialog::FUN_140c02900(const CString& strNa
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<ASScrollingList>(0);
-    return FUN_1409ee290(&m_30)->FUN_140bc7280<ASScrollingList>(strName);
+    return m_30->FUN_140bc7280<ASScrollingList>(strName);
 }
 
 // @0x140c02990
@@ -711,7 +709,7 @@ MS2Ptr<Unk_DmGuideBar> UIDailyMissionDialog::FUN_140c02990(const CString& strNam
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<Unk_DmGuideBar>(0);
-    return FUN_1409ee290(&m_30)->FUN_140accfb0<Unk_DmGuideBar>(strName);
+    return m_30->FUN_140accfb0<Unk_DmGuideBar>(strName);
 }
 
 // The default slot of the quest event listener (shared by every listener without an override).

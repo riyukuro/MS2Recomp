@@ -76,6 +76,7 @@
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/gamedictionarymanager.h"
+#include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit, XmlTokenList
 
 #include <stdlib.h>
 class Unk_140165cf0;
@@ -1403,13 +1404,8 @@ int Parse_14021bc30(const CStringA& strName);                                   
 const CString& FUN_14082efb0(int nStat);                                                // xml name of the nStat-th stat
 void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
-void FUN_140177db0(const CString& str, ATL::CAtlArray<unsigned short>& out, const char* szDelimiter);
 void FUN_1402c8940(const CString& str, std::vector<CString>& vec, const char* pszDelim);
-void FUN_140178270(const CStringA& str, std::vector<int>& rOut, const char* pszSep);
 int FUN_1401788f0(Unk_140165cf0*, const char*, ATL::CAtlArray<CStringA>&);
-int FUN_140178570(Unk_140165cf0*, const char*, ATL::CAtlArray<int>&);
-int FUN_140178770(Unk_140165cf0*, const char*, std::vector<unsigned>&);
 int FUN_1403759c0(Unk_140165cf0*, const char*, std::vector<short>&);
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, Vector3& ptOut);
 CString FUN_14016a5c0(const char* psz, int n);
@@ -1576,33 +1572,33 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     Unk_140165cf0* pSkill = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("skill"));
     if (pSkill)
     {
-        FUN_140178770(pSkill, "ids", m_skill.m_aIds);
+        XmlTokenList(pSkill, "ids", m_skill.m_aIds);
         FUN_1403759c0(pSkill, "levels", reinterpret_cast<std::vector<short>&>(m_skill.m_aLevels));
-        FUN_140178770(pSkill, "probs", m_skill.m_aProbs);
+        XmlTokenList(pSkill, "probs", m_skill.m_aProbs);
     }
     Unk_140165cf0* pAdditionalEffect = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect"));
     if (pAdditionalEffect)
     {
         CString strCodes = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "codes", CString(""));
-        FUN_140177e10(strCodes, m_effect.m_aCodes, ",");
+        XmlSplit(strCodes, m_effect.m_aCodes, ",");
         CString strLevels = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "levels", CString(""));
-        FUN_140177db0(strLevels, m_effect.m_aLevels, ",");
+        XmlSplit(strLevels, m_effect.m_aLevels, ",");
         CString strGroup = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "group", CString(""));
         std::vector<CString> groups;
         FUN_1402c8940(strGroup, groups, ":");
         for (size_t i = 0; i < groups.size(); ++i)
         {
             std::vector<int> pair;
-            FUN_140178270(groups[i], pair, ",");
+            XmlSplit(groups[i], pair, ",");
             if (pair.size() != 2)
                 continue;
             std::pair<int, int> group(pair[0], pair[1]);
             m_effect.m_aGroups.push_back(group);
         }
         CString strRewardCodes = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "rewardCodes", CString(""));
-        FUN_140177e10(strRewardCodes, m_effect.m_aRewardCodes, ",");
+        XmlSplit(strRewardCodes, m_effect.m_aRewardCodes, ",");
         CString strRewardLevels = Unk_ReadString((class Unk_XmlNode*)(pAdditionalEffect), "rewardLevels", CString(""));
-        FUN_140177db0(strRewardLevels, m_effect.m_aRewardLevels, ",");
+        XmlSplit(strRewardLevels, m_effect.m_aRewardLevels, ",");
     }
     Unk_140165cf0* pInteract = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("interact"));
     if (pInteract)
@@ -1685,7 +1681,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         ATL::CAtlArray<CString> actions;
         ATL::CAtlArray<int> probs;
         Unk_SplitA(const_cast<CStringA&>(strAction), (ATL::CAtlArray<CStringA>*)&(actions), ",");
-        FUN_140177e10(strProb, reinterpret_cast<ATL::CAtlArray<unsigned>&>(probs), ",");
+        XmlSplit(strProb, reinterpret_cast<ATL::CAtlArray<unsigned>&>(probs), ",");
         if (probs.GetCount() < actions.GetCount())
         {
             int nId = GetId();
@@ -1706,11 +1702,11 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     Unk_140165cf0* pDropItemInfo = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("dropiteminfo"));
     if (pDropItemInfo)
     {
-        FUN_140178770(pDropItemInfo, "globalDropBoxId", m_drop.m_aGlobalDropBoxId);
-        FUN_140178770(pDropItemInfo, "globalDeadDropBoxId", m_drop.m_aGlobalDeadDropBoxId);
-        FUN_140178770(pDropItemInfo, "individualDropBoxId", m_drop.m_aIndividualDropBoxId);
-        FUN_140178770(pDropItemInfo, "globalHitDropBoxId", m_drop.m_aGlobalHitDropBoxId);
-        FUN_140178770(pDropItemInfo, "individualHitDropBoxId", m_drop.m_aIndividualHitDropBoxId);
+        XmlTokenList(pDropItemInfo, "globalDropBoxId", m_drop.m_aGlobalDropBoxId);
+        XmlTokenList(pDropItemInfo, "globalDeadDropBoxId", m_drop.m_aGlobalDeadDropBoxId);
+        XmlTokenList(pDropItemInfo, "individualDropBoxId", m_drop.m_aIndividualDropBoxId);
+        XmlTokenList(pDropItemInfo, "globalHitDropBoxId", m_drop.m_aGlobalHitDropBoxId);
+        XmlTokenList(pDropItemInfo, "individualHitDropBoxId", m_drop.m_aIndividualHitDropBoxId);
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropHeight", reinterpret_cast<float&>(m_drop.m_fDropHeight));
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropDistanceBase", reinterpret_cast<float&>(m_drop.m_fDropDistanceBase));
         XmlGetAttr((class TiXmlElement*)(pDropItemInfo), "dropDistanceRandom", reinterpret_cast<int&>(m_drop.m_nDropDistanceRandom));
@@ -1726,7 +1722,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pCorpse), "added", reinterpret_cast<float&>(m_corpse.m_fAdded));
         XmlGetAttr((class TiXmlElement*)(pCorpse), "offsetNametag", reinterpret_cast<float&>(m_corpse.m_fOffsetNametag));
         XmlGetAttr((class TiXmlElement*)(pCorpse), "hitAble", reinterpret_cast<int&>(m_corpse.m_nHitAble));
-        FUN_140178570(pCorpse, "rotation", m_corpse.m_aRotation);
+        XmlTokenList(pCorpse, "rotation", m_corpse.m_aRotation);
         XmlGetAttr((class TiXmlElement*)(pCorpse), "corpseEffect", m_corpse.m_strCorpseEffect);
     }
     return true;

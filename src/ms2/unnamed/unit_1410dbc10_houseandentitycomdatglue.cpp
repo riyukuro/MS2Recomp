@@ -24,19 +24,10 @@
 #include "ms2/client/ms2/uihousemark.h"
 #include "ms2/unnamed/unit_14134fc90.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/propertycache.h"
 
 // ---- unrecovered helpers ----
 
-// The property cache of the client's entities: a map keyed by property id (+0xd0) that is only kept when the flag at +0xc8 is set.
-unsigned FUN_1408a1ff0();                                                       // class id of int
-// Private members keep these non-POD, so /GS does not treat the out-param locals as buffers (the exe has no cookie).
-class Unk_PropIt { void* p; };
-class Unk_PropRec { unsigned __int64 a, b, c; };
-void* FUN_1409481f0(void* tbl, Unk_PropIt* out);                                      // end()
-void* FUN_140948250(void* tbl, Unk_PropIt* out, unsigned* pId);                       // find(id)
-bool FUN_140947540(void* a, void* b);                                           // iterator ==
-Unk_PropRec* FUN_140947580(void* tbl, unsigned* pId);                                // operator[](id)
-Unk_PropRec* FUN_140947490(Unk_PropRec* out, unsigned id, void* p, unsigned nType);          // property record (0x18)
 void* FUN_140876480(void* out, int nCategory);                                  // memory category helper, returns the category
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);                // category allocation
 
@@ -66,12 +57,10 @@ class Unk_CMISHouseMark;
 void FUN_1410dbc10(egf::Entity* e, unsigned id, const int* pVal)
 {
     if (*((unsigned char*)e + 0xc8)) {
-        Unk_PropIt itEnd, itFind;
-        if (FUN_140947540(FUN_140948250((char*)e + 0xd0, &itFind, &id), FUN_1409481f0((char*)e + 0xd0, &itEnd))) {
+        if (((Unk_CachedEntity*)e)->m_mapCache.find(id) == ((Unk_CachedEntity*)e)->m_mapCache.end()) {
             int nValue;
-            ((Unk_EntityPropertyAccess*)e)->GetPropertyValueUnsafe(id, &nValue, FUN_1408a1ff0());
-            Unk_PropRec rec;
-            *FUN_140947580((char*)e + 0xd0, &id) = *FUN_140947490(&rec, id, new int(nValue), FUN_1408a1ff0());
+            ((Unk_EntityPropertyAccess*)e)->GetPropertyValueUnsafe(id, &nValue, efd::GetClassIDFromType<int>());
+            ((Unk_CachedEntity*)e)->m_mapCache[id] = Unk_PropertyCacheEntry(id, new int(nValue), efd::GetClassIDFromType<int>());
         }
     }
 }
@@ -124,7 +113,7 @@ template void efd::RegisterMessageWrapperFactory<egf::EntityChangeMessage, 0x203
 template <> inline __declspec(noinline) egf::PropertyResult egf::Entity::SetPropertyValue<int>(egf::PropertyID propID, const int& data)
 {
     FUN_1410dbc10(this, propID, &data);
-    return SetPropertyValueUnsafe(propID, &data, FUN_1408a1ff0());
+    return SetPropertyValueUnsafe(propID, &data, efd::GetClassIDFromType<int>());
 }
 egf::PropertyResult Unk_SetPropertyIntAnchor(egf::Entity* p, egf::PropertyID id, const int& n)
 { return p->SetPropertyValue<int>(id, n); }

@@ -125,7 +125,6 @@ public:
     static class WorldService* GetInstance();
 };
 void FUN_1401d3700(CString& kStr);                                      // lower-cases in place
-int FUN_1403b0860(char* pcBuffer, const char* pcFormat, ...);           // sprintf
 class MS2SceneGraphService { public: bool RemoveUnusedCacheAssetData(efd::utf8string physicalID); };   // C3: member view
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -278,7 +277,7 @@ void MS2AnimationService::ReloadFemaleKF()
                     unsigned int uiID = pIDs[i];
                     NiFixedString kFile = pTool->GetFullKFFilename(uiID);
                     NiStream kStream;
-                    FUN_1403b0860(kStream.m_acStudioPath0x8, "female");
+                    sprintf(kStream.m_acStudioPath0x8, "female");
                     if (kStream.Load(kFile))
                         pActor->ReloadKFFile(kStream);
                 }
@@ -321,7 +320,7 @@ void MS2AnimationService::ReloadMaleKF()
                     unsigned int uiID = pIDs[i];
                     NiFixedString kFile = pTool->GetFullKFFilename(uiID);
                     NiStream kStream;
-                    FUN_1403b0860(kStream.m_acStudioPath0x8, "male");
+                    sprintf(kStream.m_acStudioPath0x8, "male");
                     if (kStream.Load(kFile))
                         pActor->ReloadKFFile(kStream);
                 }

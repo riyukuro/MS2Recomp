@@ -72,7 +72,6 @@ public:
 };
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_140719210(long n);                                           // number text
-CString FUN_1401d2b10(const CString& a, const CString& b);               // a + b
 void FUN_140275080(CString&, void*, const char*);                        // split at a separator
 template <class T> void XmlSplitImpl(const CString& str, ATL::CAtlArray<T>& arr, const char* pszDelim);   // C3: was FUN_140177f30
 unsigned FUN_140482050(unsigned nAmount, unsigned nScale);               // scaled money amount
@@ -247,8 +246,8 @@ int CItemLapenshardTable::Load()
         for (unsigned i = 0; i < 4; i++)
         {
             CString strNumber = FUN_140719210(i + 1);
-            CString strIngredientAttr = FUN_1401d2b10(strIngredient, strNumber);
-            CString strCountAttr = FUN_1401d2b10(strCount, strNumber);
+            CString strIngredientAttr = strIngredient + strNumber;
+            CString strCountAttr = strCount + strNumber;
             CStringA strValue;
             unsigned nAmount = 0;
             if (XmlGetAttr((class TiXmlElement*)(pNode), strIngredientAttr, strValue) == 0)

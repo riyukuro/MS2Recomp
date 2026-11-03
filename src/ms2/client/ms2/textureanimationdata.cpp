@@ -17,6 +17,7 @@
 #include "textureanimationdata.h"
 
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/client/ms2/pcbase.h"
@@ -24,6 +25,9 @@
 #include "ms2/client/ms2/filepreload_1.h"
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include <NiActorManager.h>
+#include <NiRenderObject.h>
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/mypc.h"
 #include <efd/MemoryDefines.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -41,7 +45,6 @@ public:
 };
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
-CString FUN_140540050(const char* pszFormat, const CString& strArg);        // StringFormat with one string
 CString FUN_140536a50(const char* pszFormat, const CString& strArg);        // StringFormat<CString>
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 class Unk_XmlNode   // C3: member view for the former free stand-ins
@@ -59,9 +62,7 @@ namespace egf { class EntityID; }
 namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // C3: view of the real class (AnimationService.h clashes with this unit's Ni stand-ins)
 egmAnimation::AnimationService* FUN_141b6f910();
 NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName);             // child node by name
-extern const NiRTTI Unk_RenderObjectRTTI;                                   // 0x143afa7d0
 class MyPC;
-MyPC* FUN_140a53610(GameObject* pObject);                                   // efd::DynamicCast<MyPC>
 
 class WorldService;
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
@@ -130,9 +131,9 @@ CString Unk_TextureFrame::FUN_141847960(const CString& strDir)
     if (!strDir.IsEmpty())
     {
         CString strPath = FUN_140536a50(m_strFile, strDir);
-        return FUN_140540050("./Data/Resource/Model/Textures/{0}", strPath);
+        return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", strPath);
     }
-    return FUN_140540050("./Data/Resource/Model/Textures/{0}", m_strFile);
+    return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", m_strFile);
 }
 MS2_REPLACE_METHOD(0x141847960, Unk_TextureFrame, FUN_141847960, 248, 0x1E15214E);
 
@@ -146,9 +147,9 @@ CString Unk_TextureFrame::FUN_141847a60(const CString& strDir)
     if (!strDir.IsEmpty())
     {
         CString strPath = FUN_140536a50(m_strControl, strDir);
-        return FUN_140540050("./Data/Resource/Model/Textures/{0}", strPath);
+        return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", strPath);
     }
-    return FUN_140540050("./Data/Resource/Model/Textures/{0}", m_strControl);
+    return StringFormat<CString>("./Data/Resource/Model/Textures/{0}", m_strControl);
 }
 MS2_REPLACE_METHOD(0x141847A60, Unk_TextureFrame, FUN_141847a60, 328, 0x6F047299);
 
@@ -296,7 +297,7 @@ void CTextureAnimation::FUN_1418484a0(MS2Ptr<CTextureAnimationData> spData, cons
         return;
     int bQueue = 1;
     int nLoaded = 0;
-    if (FUN_140a53610(m_pOwner) != 0)
+    if (efd::DynamicCast<MyPC>(m_pOwner) != 0)
         bQueue = 0;
     else
     {
@@ -443,10 +444,10 @@ NiAVObject* CTextureAnimation::FUN_141849060(const CString& strName)
     if (pRoot == 0)
         return 0;
     if (_stricmp((const char*)strName, "Scene Root") == 0)
-        return (NiAVObject*)NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)(pRoot));
+        return (NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pRoot));
     NiObject* pNode = FUN_14107c930(pRoot, &strName);
     if (pNode != 0)
-        return (NiAVObject*)NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)(pNode));
+        return (NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode));
     return 0;
 }
 

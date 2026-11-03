@@ -97,18 +97,7 @@ struct Unk_InventoryAccount
 MS2_CHECK_SIZE(Unk_InventoryAccount, 0xa9d);
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 
-// The character map iterator (the constructor makes it come back through a hidden pointer).
-struct Unk_SsCharIter { Unk_SsCharIter(); void* node; };
-MS2_CHECK_SIZE(Unk_SsCharIter, 8);
-class Unk_InventoryCharacters
-{
-public:
-    Unk_SsCharIter FUN_140341f40();                       // end
-    Unk_SsCharIter FUN_1404c0270(const unsigned __int64& id);      // find
-};
-extern Unk_InventoryCharacters DAT_143ab2a30;
-bool FUN_1403344a0(const Unk_SsCharIter&, const Unk_SsCharIter&);
-bool FUN_140334210(const Unk_SsCharIter&, const Unk_SsCharIter&);
+extern std::set<unsigned __int64> DAT_143ab2a30;        // ids of the characters of the account
 
 bool FUN_1406344b0(MS2Ptr<CItem> spItem, const __int64* pCharacter, ItemUtilTransfer::TOutBindingParam* pOut);
 
@@ -462,7 +451,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
             if (nOwner > 0)
             {
                 int nKind = param.kind;
-                if (FUN_1403344a0(DAT_143ab2a30.FUN_1404c0270(nOwner), DAT_143ab2a30.FUN_140341f40()))
+                if (DAT_143ab2a30.find(nOwner) != DAT_143ab2a30.end())
                 {
                     if (nKind == 1)
                         FUN_140d73bc0(0xfc, 0, 0, CStringW(L""));
@@ -488,7 +477,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     unsigned __int64 nPrice = spItem->FUN_14052a480();
     if (strMsg.IsEmpty() == true && nPrice != 0 && nPrice != DAT_143ab2828)
     {
-        if (FUN_140334210(DAT_143ab2a30.FUN_1404c0270(nPrice), DAT_143ab2a30.FUN_140341f40()))
+        if (DAT_143ab2a30.find(nPrice) == DAT_143ab2a30.end())
             strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_item_err_cannot_drop_if_moveDisable"), spItem->FUN_14052a4f0());
     }
     if (!strMsg.IsEmpty())

@@ -4,7 +4,6 @@
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/placeholder/citemdata.h"
 
-class Unk_IngItem;      // ingredient table row (the unit that owns the table defines it)
 
 struct Unk_CubePaletteFilter {
     Unk_CubePaletteFilter(); // 140df0030
@@ -55,7 +54,7 @@ public:
         void FUN_140df0010(int nIndex);
         int index;
         MS2Ptr<CItemData> itemData;
-        MS2Ptr<Unk_IngItem> ingredient;
+        MS2Ptr<ItemHousing> ingredient;
         MS2Ptr<CubeItemInfo> info;
     };
     typedef MS2Ptr<UGCCube> CubePtr;

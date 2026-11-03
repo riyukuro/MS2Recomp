@@ -58,7 +58,6 @@ public:
     Scaleform::GFx::Value FUN_140f919d0(const char* szMethod, bool a1, bool a2, int a3, CStringW a4, CStringW a5);
 };
 
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
@@ -205,7 +204,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         }
         else
         {
-            strTextL = FUN_1401ceea0(L"{0}", pResult->m_nMinL);
+            strTextL = StringFormat<int>(L"{0}", reinterpret_cast<const int&>(pResult->m_nMinL));
             if (pResult->m_nSecL < 0)
                 strTextL += BlockFormat<int>(0x400, pResult->m_nSecL);
         }
@@ -220,7 +219,7 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         }
         else
         {
-            strTextR = FUN_1401ceea0(L"{0}", pResult->m_nMinR);
+            strTextR = StringFormat<int>(L"{0}", reinterpret_cast<const int&>(pResult->m_nMinR));
             if (pResult->m_nSecR < 0)
                 strTextR += BlockFormat<int>(0x400, pResult->m_nSecR);
         }

@@ -54,7 +54,6 @@ class CGuildInfo   // C3: member view for the former free stand-ins
 public:
     __int64 FUN_1404ccbd0();
 };
-CStringW& FUN_141656be0(PCBase* pPC);                   // PC member: the guild name
 int FUN_140408410(const ATL::CAtlArray<int>& array, const int& nValue);     // index of nValue, -1 if absent
 class CBigDataLogSystem;
 template<> CBigDataLogSystem* TSingleton<CBigDataLogSystem>::GetInstance();
@@ -165,7 +164,7 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
         CStringA strGuild;
         strGuild.Format("%lld", ((class CGuildInfo*)(void*)((char*)((void*)TSingleton<CGuildManager>::GetInstance()) + 8))->FUN_1404ccbd0());
         CefString csGuild((const char*)strGuild);
-        CefString csGuildName((const wchar_t*)FUN_141656be0(pPC));
+        CefString csGuildName((const wchar_t*)reinterpret_cast<PC*>(pPC)->FUN_141656be0());
         retval->SetValue("guild_sn", CefV8Value::CreateString(csGuild), V8_PROPERTY_ATTRIBUTE_READONLY);
         retval->SetValue("guild_name", CefV8Value::CreateString(csGuildName), V8_PROPERTY_ATTRIBUTE_READONLY);
     }

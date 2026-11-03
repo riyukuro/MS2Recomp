@@ -22,6 +22,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/pvpmanager.h"
+#include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::OpenDialog
 #include "ms2/commonfiles/os.h"
 
@@ -61,24 +62,18 @@ public:
     __int64 m_nRank;                    // +0x20
 };
 
-class Unk_PvPRankTable                                              // the ranking list (at +8 of the service)
-{
-public:
-    int FUN_141017f40(__int64 nCharId);                             // the rank of a character
-    Unk_PvPRankEntry* FUN_141017fb0(int nRank);                     // the row of a rank
-};
+class Unk_PvPRankTable { };                                         // the ranking list (at +8 of the service; Unk_PvpTimer)
 
 class Unk_PvPRankService                                            // the game-mode service
 {
 public:
-    int FUN_1413437e0(__int64 nCharId) { return m_table.FUN_141017f40(nCharId); }          // 0x1413437e0
-    Unk_PvPRankEntry* FUN_141343810(int nRank) { return m_table.FUN_141017fb0(nRank); }    // 0x141343810
+    int FUN_1413437e0(__int64 nCharId) { return reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017f40(nCharId); }          // 0x1413437e0
+    Unk_PvPRankEntry* FUN_141343810(int nRank) { return (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017fb0(nRank); }    // 0x141343810
 private:
     void* m_pad_00;
     Unk_PvPRankTable m_table;
 };
 
-int FUN_141654730(PCBase* pPC);                                     // the job
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 class CUIService;
 void FUN_14151f200();
@@ -149,7 +144,7 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
         ((class AScript*)(pObj))->FUN_1407cbb20("charName", pEntry->m_strName);
         ((class AScript*)(pObj))->FUN_1407cb9c0("score", pEntry->m_nScore);
         if (pPC != 0)
-            pObj->FUN_140bd0d90("job", FUN_141654730(pPC));
+            pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pPC)->FUN_141654730());
     }
     return true;
 }

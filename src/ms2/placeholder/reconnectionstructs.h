@@ -14,7 +14,7 @@ class ReconnectionOptions : public CPtred {
 public:
     ReconnectionOptions();                                  // 0x1402083b0
     virtual ~ReconnectionOptions();
-    ReconnectionOptions* FUN_140208460(const ReconnectionOptions* src);   // copies the 0x2c payload bytes at +0x18
+    ReconnectionOptions& FUN_140208460(const ReconnectionOptions& src);   // copies the 0x2c payload bytes at +0x18
     void FUN_140208500(CInputStream& in);                   // 11 x Decode4
     int FUN_140aadf90(int index);                           // inline COMDAT: bounds-asserts 0..10, returns m_values[index]
     int m_values[11];                                       // +0x18 (0x2c payload bytes); an array, so a local is a /GS buffer as in the exe
@@ -27,7 +27,7 @@ public:
     ReconnectionContext();                                  // 0x140208560
     virtual ~ReconnectionContext();
     void FUN_1402085c0();                                   // reset
-    void FUN_140208610(COutPacket& packet);
+    void FUN_140208610(COutputStream& out) const;
     int m_18; CString m_20; int m_28;
 };
 MS2_CHECK_SIZE(ReconnectionContext, 0x30);

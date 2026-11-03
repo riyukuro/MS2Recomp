@@ -70,7 +70,6 @@ private: void* m_0;Unk_RewardMission* m_p;
 };
 class Unk_RewardMissions { public: Unk_RewardMissionPtr FUN_140d9f4e0(); };
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
-CString FUN_140e1c880(const char*,const char*,const char*,const int&,const char*);
 
 class Unk_RewardOtherDialog : public UIDialog {
 public: bool FUN_140e26860();
@@ -320,9 +319,9 @@ void UIDungeonRewardDialog::OnLoadComplete() {
  m_1a0=rank->FUN_1409b4560("m_rankInfo");
  if(MS2Ptr<ASMovieClip> buttons=FUN_140ba7930("m_buttonArea")) {
  do { buttons->FUN_140bbe640("m_closeButton",m_1c0);
- if(m_1c0==0) throw new GfxExceptionSwfLoad(FUN_140e1c880("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,116,__FUNCTION__)); } while(0);
+ if(m_1c0==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,116,__FUNCTION__)); } while(0);
  do { buttons->FUN_140bbe640("m_partyLeaveButton",m_1d0);
- if(m_1d0==0) throw new GfxExceptionSwfLoad(FUN_140e1c880("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,117,__FUNCTION__)); } while(0);
+ if(m_1d0==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,117,__FUNCTION__)); } while(0);
  m_1c0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDungeonRewardDialog::OnCloseButton),0);
  if((m_room.get()?true:false)&&m_room->m_isLeaveAfterCloseReward)m_1c0->FUN_1422cdfb0(L"$s_dungeonReward_leave");
  m_1d0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIDungeonRewardDialog::OnPartyLeaveButton),0);

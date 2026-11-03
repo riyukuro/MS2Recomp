@@ -18,14 +18,14 @@ class COutputStream;
 // The packet writer / reader primitives (second flavours of the int / int64 / wide string helpers).
 COutputStream & FUN_14070f960(COutputStream &, long);  // C3: the definition's signature
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
-void FUN_14070fae0(Unk_AbOut* pOut, CStringW* pStr);
+COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
 class Unk_OSInput   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_OSInput& Read5(long&);
     class Unk_OSInput& Read8(unsigned __int64&);
+    class Unk_OSInput& Read11(CStringW&);
 };
-void FUN_14070f5f0(Unk_AbIn* pIn, CStringW* pStr);
 
 // ---- the pointer to a boxed banner (CPtred header 0x18 bytes before the pointee) ----
 
@@ -89,11 +89,11 @@ AdBannerData::AdBannerData()
 void AdBannerData::Write(Unk_AbOut* pOut)
 {
     FUN_14070f960(*(COutputStream *)pOut, m_nType);
-    FUN_14070fae0(pOut, &m_strTypeName);
-    FUN_14070fae0(pOut, &m_strName);
-    FUN_14070fae0(pOut, &m_str30);
-    FUN_14070fae0(pOut, &m_str38);
-    FUN_14070fae0(pOut, &m_str40);
+    FUN_14070fae0(*(COutputStream *)pOut, m_strTypeName);
+    FUN_14070fae0(*(COutputStream *)pOut, m_strName);
+    FUN_14070fae0(*(COutputStream *)pOut, m_str30);
+    FUN_14070fae0(*(COutputStream *)pOut, m_str38);
+    FUN_14070fae0(*(COutputStream *)pOut, m_str40);
     FUN_14070f960(*(COutputStream *)pOut, m_nSlot);
     FUN_14070fa20(*(COutputStream *)pOut, m_nBegin);
     FUN_14070fa20(*(COutputStream *)pOut, m_nEnd);
@@ -104,11 +104,11 @@ void AdBannerData::Read(Unk_AbIn* pIn)
 {
     int nSlot = -1;
     ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read5(*(long*)(&m_nType));
-    FUN_14070f5f0(pIn, &m_strTypeName);
-    FUN_14070f5f0(pIn, &m_strName);
-    FUN_14070f5f0(pIn, &m_str30);
-    FUN_14070f5f0(pIn, &m_str38);
-    FUN_14070f5f0(pIn, &m_str40);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read11(m_strTypeName);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read11(m_strName);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read11(m_str30);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read11(m_str38);
+    ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read11(m_str40);
     ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read5(*(long*)(&nSlot));
     ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read8(*(unsigned __int64*)(&m_nBegin));
     ((class Unk_OSInput*)(class Unk_AbIn*)(pIn))->Read8(*(unsigned __int64*)(&m_nEnd));

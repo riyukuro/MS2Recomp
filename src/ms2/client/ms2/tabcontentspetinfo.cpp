@@ -221,7 +221,6 @@ CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);        // the s
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 CStringW FUN_1409e34e0(MS2Ptr<CItem> item);                             // the item's option text
-CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 CStringTable* GetStringTable();
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 void FUN_140710590(COutPacket& packet);                                 // send
@@ -904,7 +903,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         ASObj obj(2);
         obj.FUN_1409c0dc0("buffName", "$s_petsetting_auto_revive");
         obj.FUN_1409c0dc0("buttonTooltip", "$s_petsetting_tooltip_revive");
-        obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_Tombstone.png"));
+        obj.FUN_1407cba60(s_iconPath, strDir + "pet_Buff_Tombstone.png");
         list->AddItem(obj);
     }
     {
@@ -916,7 +915,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         }
         obj.FUN_1409c0dc0("buffName", "$s_petsetting_auto_itemuse");
         obj.FUN_1409c0dc0("buffTooltip", "$s_petsetting_auto_itemuse_desc");
-        obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_AutoPotion.png"));
+        obj.FUN_1407cba60(s_iconPath, strDir + "pet_Buff_AutoPotion.png");
         list->AddItem(obj);
     }
     {
@@ -928,7 +927,7 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<ASScrollingList> list)
         }
         obj.FUN_1409c0dc0("buffName", "$s_petsetting_auto_itempick");
         obj.FUN_1409c0dc0("buffTooltip", "$s_petsetting_auto_itempick_desc");
-        obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_ItemGet.png"));
+        obj.FUN_1407cba60(s_iconPath, strDir + "pet_Buff_ItemGet.png");
         list->AddItem(obj);
     }
     for (POSITION pos = reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_skills).GetStartPosition(); pos != 0; reinterpret_cast<ATL::CAtlMap<unsigned, unsigned short>&>(row->m_skills).GetNext(pos))

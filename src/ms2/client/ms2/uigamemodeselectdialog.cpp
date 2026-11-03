@@ -36,10 +36,10 @@ public:
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: the canonical return type (was Unk_GmGlobals*)
 
-int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
+int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* pDialog);
 class CStateService { public: int FUN_1417e25a0(int nEvent); };
-class Unk_GmSceneMgr;
-Unk_GmSceneMgr* FUN_140aa6d30();
+template <class T> class TSingleton;
+template <> class TSingleton<CStateService> { public: static CStateService* GetInstance(); };
 void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow);
 
 // @0x140c19f20
@@ -106,11 +106,11 @@ int UIGameModeSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
+    if (FUN_1418fc760(szMethod, (void*)(pArgs), nArgs, (void*)(this)) != 0)
         return 1;
     if (_stricmp("OnEndPopdown", szMethod) == 0)
     {
-        reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e25a0((int)(0x6200009));
+        TSingleton<CStateService>::GetInstance()->FUN_1417e25a0((int)(0x6200009));
         return 1;
     }
     return 0;

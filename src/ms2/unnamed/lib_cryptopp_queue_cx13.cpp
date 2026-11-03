@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <cstring>
 
-extern void* FUN_142308b70(std::size_t size);
+namespace CryptoPP { void* UnalignedAllocate(std::size_t size); }
 
 // MS2-FUNCTIONAL: reproduces the source object's six-word state and deep-copies its optional byte buffer; the exe uses memcpy_s and carries its invalid-parameter path.
 // @0x142351e00
@@ -19,7 +19,7 @@ std::uint64_t* FUN_142351e00(std::uint64_t* destination, const std::uint64_t* so
     destination[0] = source[0];
     const std::size_t size = static_cast<std::size_t>(source[2]);
     destination[2] = size;
-    auto* bytes = size ? static_cast<std::uint8_t*>(FUN_142308b70(size)) : nullptr;
+    auto* bytes = size ? static_cast<std::uint8_t*>(CryptoPP::UnalignedAllocate(size)) : nullptr;
     destination[3] = reinterpret_cast<std::uintptr_t>(bytes);
     if (size)
     {

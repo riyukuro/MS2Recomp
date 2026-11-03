@@ -13,11 +13,13 @@
 #include <string.h>
 #include <time.h>
 #include <string>
+#include <limits>
 #include "hook/ms2hook.h"
 // The game's TinyXML node classes. Its TiXmlDocument is renamed here: filesystem.h brings the placeholder
 // document (tixmldocument.h), which this unit uses for the file itself.
 #define TiXmlDocument TiXmlDocument_TinyXml
 #include "ms2/commonfiles/tinyxml.h"
+#include "ms2/ms2format.h"
 #undef TiXmlDocument
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
@@ -35,33 +37,11 @@ int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
 __int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
-void FUN_1408740a0(void* pElem, const char* pszName, const CStringW* pstrValue);   // SetAttribute(name, string)
+void XmlSetAttr(class TiXmlElement*, char const*, CStringW const&);   // C3: was FUN_1408740a0
 void XmlSetAttr(class TiXmlElement*, char const*, __int64 const&);   // C3: was FUN_140873eb0
-bool FUN_1408710c0(void* pDoc, const char* pszPath);                    // SaveFile
-__int64 FUN_140190260();                                                // the default block duration end
 __int64 GetServerTime();                                                // the server time
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const unsigned __int64& nArg);   // "{0}" formatter
 
-// The game's TinyXML (bare global names, not efd::), as far as this unit builds it.
-class Unk_TiXmlElement
-{
-public:
-    Unk_TiXmlElement(const char* pszName);                      // 0x14086f2f0
-    ~Unk_TiXmlElement();                                        // 0x14086f450
-private:
-    void* m_data[0x12];
-};
-MS2_CHECK_SIZE(Unk_TiXmlElement, 0x90);
-class Unk_TiXmlDeclaration
-{
-public:
-    Unk_TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // 0x1408704d0
-    ~Unk_TiXmlDeclaration();                                    // 0x14081ad20
-private:
-    void* m_data[0xd];
-};
-MS2_CHECK_SIZE(Unk_TiXmlDeclaration, 0x68);
 
 // @0x140a24e90
 BlindManager::BlindManager()
@@ -106,8 +86,8 @@ void BlindManager::Load()
     TiXmlDocument document;
     if (GetFileSystem()->FUN_1403974b0(&document, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&document)->FUN_140165cf0("ms2");
-    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("blind")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
+    Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&document)->FirstChild("ms2");
+    for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)(pRoot->FirstChild("blind"))); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
     {
         int nType = FUN_140197350(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));
@@ -132,26 +112,26 @@ void BlindManager::Load()
 void BlindManager::Save()
 {
     TiXmlDocument document;
-    Unk_TiXmlDeclaration declaration("1.0", "utf-8", "");
-    ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(*(class TiXmlNode const*)(&declaration)));
+    TiXmlDeclaration declaration("1.0", "utf-8", "");
+    ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(declaration));
     ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(*(class TiXmlNode const*)(&static_cast<const TiXmlComment&>(TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
             "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0))))));
-    Unk_TiXmlElement root("ms2");
+    TiXmlElement root("ms2");
     for (int nType = 0; nType < 6; nType++)
     {
         BlindList* pList = m_lists[nType];
         for (BlindList::iterator it = pList->begin(); it != pList->end(); ++it)
         {
-            Unk_TiXmlElement element("blind");
-            XmlSetAttr((class TiXmlElement*)(&element), "type", nType);
-            FUN_1408740a0(&element, "target", &it->second.m_name);
-            XmlSetAttr((class TiXmlElement*)(&element), "time", *(__int64 const*)(&it->second.m_expire));
-            ((void*)((class TiXmlNode*)(void*)(&root))->InsertEndChild(*(class TiXmlNode const*)(&element)));
+            TiXmlElement element("blind");
+            XmlSetAttr(&element, "type", nType);
+            XmlSetAttr(&element, "target", it->second.m_name);
+            XmlSetAttr(&element, "time", *(__int64 const*)(&it->second.m_expire));
+            ((void*)((class TiXmlNode*)(void*)(&root))->InsertEndChild(element));
         }
     }
-    ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(*(class TiXmlNode const*)(&root)));
+    ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(root));
     CString strPath = FUN_140cc2a00(FUN_141275640(), "BlindList.xml");
-    FUN_1408710c0(&document, FUN_14016a5c0(strPath, 0));
+    document.SaveFile(FUN_14016a5c0(strPath, 0));
 }
 
 // @0x140a25730
@@ -164,7 +144,7 @@ bool BlindManager::Block(int nType, CStringW strKey)
     entry.m_name = strKey;
     __time64_t nNow;
     _time64(&nNow);
-    entry.m_expire = FUN_140190260();
+    entry.m_expire = (std::numeric_limits<__int64>::max)();
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
         entry.m_expire = nNow + 0x15180;
     (*pList)[strKey] = entry;
@@ -190,13 +170,13 @@ bool BlindManager::IsBlocked(int nType, CStringW strKey)
 // @0x140a25950
 bool BlindManager::BlockId(int nType, unsigned __int64 nId)
 {
-    return Block(nType, FUN_1406c6bd0(L"{0}", nId));
+    return Block(nType, StringFormat<unsigned __int64>(L"{0}", nId));
 }
 
 // @0x140a259b0
 bool BlindManager::IsBlockedId(int nType, unsigned __int64 nId)
 {
-    return IsBlocked(nType, FUN_1406c6bd0(L"{0}", nId));
+    return IsBlocked(nType, StringFormat<unsigned __int64>(L"{0}", nId));
 }
 
 // 0x140a27ec0: TiXmlComment(const char*), tinyxml.h's inline ctor, emitted here by Save.

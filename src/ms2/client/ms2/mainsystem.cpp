@@ -123,10 +123,6 @@ void FUN_141610410(int nFrameLimit);
 class Unk_MsSceneGraph { public: void FUN_1414f1ef0(egf::EntityID entityID); };
 __int64 FUN_14028d260(float fTime);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
-#ifdef __clang__
-CString FUN_14038f6d0(const CString& str1, const char* psz2);      // the exe's ATL::operator+ copies (the hook build
-CString FUN_1401d2b10(const CString& str1, const CString& str2);   // would import MFC CopyChars)
-#endif
 ecr::SceneGraphService* GetSceneGraphService();
 void* FUN_1413f9810();
 
@@ -445,7 +441,7 @@ void CMainSystem::DestroyEntity(egf::Entity* pEntity)
 }
 
 // @0x141473870
-void CMainSystem::DestroyEntityById(egf::EntityID id)
+void CMainSystem::DestroyEntityById(const egf::EntityID& id)
 {
     ((Unk_MsSceneGraph*)GetSceneGraphService())->FUN_1414f1ef0(id);
     ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(id);
@@ -499,11 +495,7 @@ CStringW CMainSystem::GetCpuInfoString()
             memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
     }
     CString strBrand(CPUBrandString);
-#ifdef __clang__
-    return FUN_14016a730(FUN_1401d2b10(FUN_14038f6d0(strVendor, " / "), strBrand), 0);
-#else
     return FUN_14016a730(strVendor + " / " + strBrand, 0);
-#endif
 }
 
 // @0x141473c20

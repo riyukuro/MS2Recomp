@@ -56,9 +56,10 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
 CString FUN_140651390();                                                    // the locale name of the client
 CStringW FUN_14016a730(const char* psz, int nCodePage);
-bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw();     // the strings are equal (no unwind state for the caller's temp)
-bool FUN_140164830(const CStringW& strA, const CStringW& strB);
-CStringW FUN_140875470(Unk_140165cf0* pElem);                               // the <feature> row as text
+int XmlGetAttr(class TiXmlElement*, char const*, int&);
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);
+CStringW XmlNodeInfo(class TiXmlElement* pElem);                            // the <feature> row as text
+CLogString* GetLogString();                                                 // the game log (0x140166440)
 int Parse_140219a50(const CString& strType);                                // the server type name -> id
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);   // split
 void FUN_140291e40(CStringW strName, char bOn, void* pszTag);
@@ -687,7 +688,7 @@ bool CFeatureTable::Init()
     m_map.SetAt(L"PersonalInfoAgreement", n279);
     if (m_map.GetCount() != 0x117)
     {
-        Unk_AdditionalLog(CLogString::GetInstance(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4" L"CFeatureTable::Init : can't find featureName.");
+        Unk_AdditionalLog(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4" L"CFeatureTable::Init : can't find featureName.");
         return false;
     }
     return true;
@@ -762,7 +763,7 @@ bool CFeatureManager::LoadFeatureSetting()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pSetting = pRoot->FUN_140165cf0("setting"); pSetting != 0;
@@ -771,8 +772,8 @@ bool CFeatureManager::LoadFeatureSetting()
         CString strUnused;
         CString strType;
         int nLevel;
-        FUN_1408733e0(pSetting, "type", strType);
-        FUN_1408731e0(pSetting, FUN_14016a5c0(FUN_140651390(), 0), nLevel);
+        XmlGetAttr((class TiXmlElement*)(pSetting), "type", strType);
+        XmlGetAttr((class TiXmlElement*)(pSetting), FUN_14016a5c0(FUN_140651390(), 0), nLevel);
         if (strType.CompareNoCase(m_strLocale) == 0)
         {
             m_nLevel = nLevel;
@@ -792,7 +793,7 @@ bool CFeatureManager::LoadFeature()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        Unk_AchieveLog<CString>(CLogString::GetInstance(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pFeature = pRoot->FUN_140165cf0("feature"); pFeature != 0;
@@ -800,8 +801,8 @@ bool CFeatureManager::LoadFeature()
     {
         CStringW strName;
         int nLevel = 0;
-        FUN_140873420(pFeature, "name", strName);
-        FUN_1408731e0(pFeature, FUN_14016a5c0(FUN_140651390(), 0), nLevel);
+        XmlGetAttr((class TiXmlElement*)(pFeature), "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pFeature), FUN_14016a5c0(FUN_140651390(), 0), nLevel);
         if (nLevel == 0)
             continue;
         m_nameLevels.SetAt(strName, nLevel);
@@ -836,7 +837,7 @@ bool CFeatureManager::IsFeatureEnabledByName(const CStringW& strName)
     int nLevel = 0;
     if (m_nameLevels.Lookup(strName, nLevel))
         return nLevel <= m_nLevel;
-    Unk_FeatureLog(CLogString::GetInstance(), 1, 0x13, L"Feature Unknown Feature Name: {0}", strName);
+    Unk_FeatureLog(GetLogString(), 1, 0x13, L"Feature Unknown Feature Name: {0}", strName);
     return false;
 }
 
@@ -851,7 +852,7 @@ bool CFeatureManager::FUN_14036d570(int nFeature)
     int nLevel = 0;
     if (m_idLevels.Lookup(*reinterpret_cast<const Unk_FeatureId*>(&nFeature), nLevel))
         return nLevel <= m_nLevel;
-    Unk_FeatureLogId(CLogString::GetInstance(), 1, 0x13, L"Feature Unknown Feature Name: {0}",
+    Unk_FeatureLogId(GetLogString(), 1, 0x13, L"Feature Unknown Feature Name: {0}",
                      *reinterpret_cast<const Unk_FeatureId*>(&nFeature));
     MS2_ASSERT_AT(0xb3, 0);
     return false;
@@ -1011,7 +1012,7 @@ int CFeatureManager::FUN_14036de00()
 CStringW CFeatureManager::SelectHigherLevelFeatureName(const CStringW& strA, const CStringW& strB)
 {
     CheckInit();
-    if (FUN_14025cd60(strA, strB))
+    if (strA == strB)
         return strA;
     int nLevelA = 0;
     int nLevelB = 0;
@@ -1031,11 +1032,11 @@ CStringW CFeatureManager::SelectHigherLevelFeatureName(const CStringW& strA, con
 CStringW CFeatureManager::FUN_14036dfa0(const CStringW& strA, const CStringW& strB)
 {
     CheckInit();
-    if (FUN_14025cd60(strA, strB))
+    if (strA == strB)
         return strA;
-    if (FUN_14025cd60(GetLocaleNameW(), strA))
+    if (GetLocaleNameW() == strA)
         return strA;
-    else if (FUN_14025cd60(GetLocaleNameW(), strB))
+    else if (GetLocaleNameW() == strB)
         return strB;
     if (strA.IsEmpty())
         return strA;
@@ -1054,30 +1055,30 @@ Unk_140165cf0* CFeatureManager::FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* 
         return pB;
     CStringW strFeatureA;
     CStringW strFeatureB;
-    FUN_140873420(pA, "feature", strFeatureA);
-    FUN_140873420(pB, "feature", strFeatureB);
-    if (FUN_140164830(strFeatureA, strFeatureB))
+    XmlGetAttr((class TiXmlElement*)(pA), "feature", strFeatureA);
+    XmlGetAttr((class TiXmlElement*)(pB), "feature", strFeatureB);
+    if (strFeatureA != strFeatureB)
     {
         CStringW strBest = SelectHigherLevelFeatureName(strFeatureA, strFeatureB);
-        if (FUN_14025cd60(strBest, strFeatureA))
+        if (strBest == strFeatureA)
             return pA;
         else
             return pB;
     }
     CStringW strLocaleA;
     CStringW strLocaleB;
-    FUN_140873420(pA, "locale", strLocaleA);
-    FUN_140873420(pB, "locale", strLocaleB);
-    if (FUN_140164830(strLocaleA, strLocaleB))
+    XmlGetAttr((class TiXmlElement*)(pA), "locale", strLocaleA);
+    XmlGetAttr((class TiXmlElement*)(pB), "locale", strLocaleB);
+    if (strLocaleA != strLocaleB)
     {
         CStringW strBest = FUN_14036dfa0(strLocaleA, strLocaleB);
-        if (FUN_14025cd60(strBest, strLocaleA))
+        if (strBest == strLocaleA)
             return pA;
         else
             return pB;
     }
-    CStringW strRow = FUN_140875470(pA);
-    Unk_FeatureLog2(CLogString::GetInstance(), 0, 0, 0x13, L"Feature and Locale is Same : {0}", strRow);
+    CStringW strRow = XmlNodeInfo((class TiXmlElement*)(pA));
+    Unk_FeatureLog2(GetLogString(), 0, 0, 0x13, L"Feature and Locale is Same : {0}", strRow);
     return pA;
 }
 

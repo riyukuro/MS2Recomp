@@ -73,6 +73,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/placeholder/xmlattr.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -108,7 +109,6 @@ CString FUN_14016a5c0(const char* psz, int n);
 long FUN_140298fd0(long* plValue);                              // interlocked increment
 float FUN_140768090();                                          // random float in [0, 1]
 __int64 GetServerTime();                                        // current server time
-CString FUN_140298360(const char* pszPrefix, const CString& str);
 
 class Unk_StringMgr : public CommonString                                             // localized string table
 {
@@ -156,10 +156,11 @@ public:
 };
 
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void* FUN_140166410();
+class Unk_140166410* FUN_140166410();                          // TSingleton<CFeatureManager>::GetInstance (exe copy)
 
 struct Unk_XmlElement;                                          // XML element node
-CStringW FUN_1401bf530(Unk_XmlElement* pElem, const char* pszName, CStringW strDefault);
+class Unk_140165cf0;
+CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
 CString FUN_14015f710(Unk_XmlElement* pElem, const char* pszName, CString strDefault);
 bool FUN_1401647e0(const CString& strLeft, const CString& strRight);
 Unk_XmlElement* FUN_140165cf0(Unk_XmlElement* pParent, const char* pszName);       // first child
@@ -977,9 +978,9 @@ void FUN_14028e7c0(CString& strPath)
     FUN_1401d3700(strPath);
     CString strHead = strPath.Left(4);
     if ((strHead == "data"))
-        strPath = FUN_140298360("./", strPath);
+        strPath = "./" + strPath;
     else if ((strHead == "/data"))
-        strPath = FUN_140298360(".", strPath);
+        strPath = "." + strPath;
     strPath.Replace('\\', '/');
 }
 
@@ -1031,7 +1032,7 @@ void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Un
 // @0x14028f650
 bool FUN_14028f650(Unk_XmlElement* pElem)
 {
-    CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
+    CStringW strFeature = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
     {
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
@@ -1045,10 +1046,10 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 bool FUN_14028f710(Unk_XmlElement* pElem)
 {
     CString strLocale = Unk_ReadString((class Unk_XmlNode*)(pElem), "locale", CString(""));
-    bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
+    bool bMatch = !strLocale.IsEmpty() && strLocale != reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
     if (bMatch)
         return false;
-    CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
+    CStringW strFeature = FUN_1401bf530(reinterpret_cast<Unk_140165cf0*>(pElem), "feature", CStringW(L""));
     if (!strFeature.IsEmpty())
     {
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
@@ -1068,7 +1069,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
         CString strLocale;
         XmlGetAttr((class TiXmlElement*)(pElem), "feature", strFeature);
         XmlGetAttr((class TiXmlElement*)(pElem), "locale", strLocale);
-        bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
+        bool bLocale = !strLocale.IsEmpty() && strLocale != reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLocaleName();
         if (bLocale)
             continue;
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
@@ -1084,7 +1085,7 @@ void FUN_14028bfb0(CString strCaption, CString strFormat, unsigned int nCode, CS
 {
     CString strText;
     strText.Format((const char*)strFormat, nCode);
-    strText += FUN_140298360(" ", strSuffix);
+    strText += " " + strSuffix;
     MessageBoxA(0, strText, strCaption, MB_ICONERROR);
 }
 
@@ -1125,13 +1126,7 @@ void FUN_14028ea70(const char* pszName, const char* pszFormat, ...)
         mapFile.SetAt(strName, strFile);
     }
     ATL::CAtlFile file;
-#ifdef __clang__
-    CString strPath(".\\log\\"); // clang would import MFC CopyChars for operator+
-    strPath.Append(strFile);
-    file.Create(strPath, GENERIC_WRITE, 3, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0, 0);
-#else
     file.Create(".\\log\\" + strFile, GENERIC_WRITE, 3, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0, 0);
-#endif
     file.Seek(0, FILE_END);
     ATL::CStringT<char, ATL::StrTraitATL<char, ATL::ChTraitsCRT<char> > > strWrite(strLine);
     file.Write(strWrite.GetString(), strWrite.GetLength(), (DWORD*)0);
@@ -1170,7 +1165,6 @@ CStringW FUN_14028efb0(const Unk_CommonVec3* pVec)
 }
 
 extern const Unk_CommonVec3 g_vCommonZero;                      // 0x143b01a60
-void FUN_1401780b0(const CString& strText, CAtlArray<float>& arrOut, const char* pszDelim);
 void FUN_1402928e0(const CStringW& strText, CAtlArray<float>& arrOut, const wchar_t* pszDelim);
 
 // Parses "x,y,z"; anything else gives the zero vector.
@@ -1179,7 +1173,7 @@ Unk_CommonVec3 FUN_14028f060(CString strText)
 {
     Unk_CommonVec3 vResult = g_vCommonZero;
     CAtlArray<float> arrParts;
-    FUN_1401780b0(strText, arrParts, ",");
+    XmlSplitImpl<float>(strText, arrParts, ",");
     if (arrParts.GetCount() != 3)
         return vResult;
     vResult.x = arrParts[0];
@@ -2148,13 +2142,7 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         CStringW strKey2;
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr1, strKey1);
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr2, strKey2);
-#ifdef __clang__
-        CStringW strKey(strKey1); // clang would import MFC CopyChars for operator+
-        strKey.Append(L"_");
-        strKey.Append(strKey2);
-#else
         CStringW strKey = (const wchar_t*)FUN_140297d20((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)FUN_1402982e0(strKey1, "_")) + strKey2;
-#endif
         if (mapByKey.find(strKey) != mapByKey.end())
         {
             Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<Unk_140165cf0 *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<Unk_140165cf0 *>(pElem))));

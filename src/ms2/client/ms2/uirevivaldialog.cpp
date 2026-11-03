@@ -148,7 +148,6 @@ CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140cd7d20();                                       // the dungeon name
-CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);   // ATL::operator+(const wchar_t*, const CStringW&)
 void FUN_141275260(int nId, int a, int b);                      // system message by string id
 void FUN_1412751f0(const CStringW& str, int a, int b);          // system message
 __int64 FUN_140632990(__int64 nValue, float fRate);
@@ -373,7 +372,7 @@ void UIRevivalDialog::FUN_141abae20()
             {
                 CFieldDataCli* pTo = spField.operator->();
                 CStringW strTo = FormatStringId<CStringW>(0x27d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pTo->m_nRevivalReturnId));
-                strMsg += FUN_1401d0160(L"\n", strTo);
+                strMsg += L"\n" + strTo;
             }
         }
         if (m_30.get() != 0)

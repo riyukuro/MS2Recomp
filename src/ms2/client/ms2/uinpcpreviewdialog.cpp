@@ -86,8 +86,6 @@ class Unk_NpWorld : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();                            // the local player
-    int FUN_141bd0dd0(efd::Point3* pPos, efd::Point3* pDir);    // a spawn position in front of the camera
-    ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* FUN_141bd36d0();   // the npc tree
 };
 int FUN_141274aa0(GameObject* pObj);                    // the actor filter of the collection above
 CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
@@ -95,12 +93,11 @@ CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj);
 // The ui text service (singleton): the text of a "$s_..." key.
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
-CStringTable* GetStringTable();
 CStringW FUN_1401aa6a0(unsigned nNpc);                  // the name text of an npc id
 
 // The talk window.
-class Unk_NpTalkMgr { public: unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };
-Unk_NpTalkMgr* FUN_140967100();
+class UITalkManager { public: unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };   // uitalkmanager.h clashes with this unit's CCinematicContent
+class Unk_AkoCutscene { public: static Unk_AkoCutscene* GetInstance(); };   // the talk manager getter (calls cast back)
 
 // Talk scripts.
 typedef Unk_ScriptPtr<CTalkScript> TalkPtr;
@@ -111,12 +108,9 @@ TalkPtr FUN_140856820(int nNpcId, int nTalkId);
 TalkPtr FUN_140856af0(int nNpcId, int nTalkId);
 TalkPtr FUN_140856c50(int nNpcId, int nKind);
 TalkPtr FUN_1408564b0(int nQuestId, int nTalkId);
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
-size_t FUN_140186260(ATL::CAtlArray<int>& arr);                                     // GetCount
-int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& n);                          // Find (-1 = absent)
+namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }   // -1 = absent
 
 // Text helpers and formatters instantiated by other units.
-CStringW FUN_1406c6bd0(const wchar_t* szFormat, const unsigned __int64& n);
 CStringW FUN_1416e4df0(int n);
 CStringW GetStringCommon(int nKey);
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string
@@ -129,11 +123,14 @@ unsigned* FUN_1416e1e70(std::vector<unsigned>* pVec);           // end
 class CReservedWordTable;
 class Unk_NpPathCfg;
 CString FUN_14071ae20(const CString& str);              // the path of a data file
-class Unk_NpXml : public CFileSystem { };
-Unk_NpXml* FUN_140166420();
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);   // string attribute with default
-class Unk_NpPhys { public: int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, efd::Point3* pNormal, int nMask); };
-Unk_NpPhys* FUN_1409f7ca0();
+struct Unk_RayCastInfo;
+class CPhysXHelper   // physxhelper.h needs NOMINMAX, which this unit's headers do not set
+{
+public:
+    int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nMask);
+};
+class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // the physics service getter (calls cast back)
 int FUN_1404ad1f0(void* pMap, unsigned nKey, CStringW* pValue);     // CAtlMap::SetAt of the filter result
 extern int DAT_143ab2914;                               // the ui level: below 0x32 the panel does not react
 
@@ -295,9 +292,9 @@ int UINpcPreviewDialog::LoadNpcName()
 {
     CString strPath = FUN_14071ae20("npcName.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
         return 0;
     for (Unk_140165cf0* pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pNode != 0; pNode = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pNode))->NextSibling("key"))) {
@@ -328,7 +325,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
         spName->SetTextW(FUN_1401aa6a0(nNpcId));
     if (MS2Ptr<ASTextField> spKind = GetChild<ASTextField>("m_kind"))
-        spKind->SetTextW(GetStringTable()->FUN_141811980(10, nNpcId));
+        spKind->SetTextW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, nNpcId));
     if (MS2Ptr<ASTextField> spIllust = GetChild<ASTextField>("m_illust"))
     {
     }
@@ -376,7 +373,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     rowTalk.m_kind = 3;
                     rowTalk.m_c = spTalk->m_id;
                     CStringW strTalk = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npcpreview_dialog_msg_cinematic_talk2");
-                    rowTalk.m_text = FUN_1406c6bd0(strTalk, i);
+                    rowTalk.m_text = StringFormat(strTalk, i);
                     m_rows.Add(rowTalk);
                 }
             }
@@ -390,7 +387,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     rowMono.m_kind = 5;
                     rowMono.m_c = spTalk->m_id;
                     CStringW strMono = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npcpreview_dialog_msg_monologue");
-                    rowMono.m_text = FUN_1406c6bd0(strMono, i);
+                    rowMono.m_text = StringFormat(strMono, i);
                     m_rows.Add(rowMono);
                 }
             }
@@ -419,13 +416,13 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
         Unk_FieldIdList ids(10);
         TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb520(m_nNpcId, ids);
         for (POSITION pos = ids.GetHeadPosition(); pos != 0; ids.GetNext(pos))
-            spOut->AppendTextW(GetStringTable()->FUN_141811980(3, ids.GetAt(pos)));
+            spOut->AppendTextW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, ids.GetAt(pos)));
     } else if (row.m_kind == 2) {
         int nQuestId = row.m_a;
         ATL::CAtlArray<int> talkIds;
         FUN_141a708e0(nQuestId, row.m_b != 0 ? 100 : 300, talkIds);
         CStringW strOut;
-        for (size_t i = 0; i < FUN_140186260(talkIds); i++) {
+        for (size_t i = 0; i < talkIds.GetCount(); i++) {
             TalkPtr spTalk = FUN_1408564b0(nQuestId, talkIds[i]);
             if (spTalk.IsNull())
                 continue;
@@ -498,9 +495,9 @@ int UINpcPreviewDialog::FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<
             if (pCine->m_distractors.get() != 0) {
                 for (size_t j = 0; j < pCine->m_distractors->FUN_14078d3a0(); j++) {
                     ATL::CAtlArray<int> ids;
-                    FUN_140177de0(pCine->m_distractors->m_choices.GetAt(j).m_goto, ids, ",");
-                    for (size_t k = 0; k < FUN_140186260(ids); k++) {
-                        if (FUN_1402bacf0(rOut, ids[k]) != -1)
+                    XmlSplit(pCine->m_distractors->m_choices.GetAt(j).m_goto, ids, ",");
+                    for (size_t k = 0; k < ids.GetCount(); k++) {
+                        if (Common::FindElement<int>(rOut, ids[k]) != -1)
                             continue;
                         if (ids.GetAt(k) != spTalk->m_id)
                             FUN_141a708e0(nQuestId, ids.GetAt(k), rOut);
@@ -520,13 +517,13 @@ void UINpcPreviewDialog::FUN_141a70b90(int nRow)
     Unk_NpRow row = m_rows.GetAt(nRow);
     if (row.m_kind == 2) {
         CTalkScript* pTalk = FUN_1408564b0(row.m_a, row.m_b != 0 ? 100 : 300).get();
-        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), row.m_b, 4, 0);
+        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), row.m_b, 4, 0);
     } else if (row.m_kind == 4) {
         CTalkScript* pTalk = FUN_140856c50(m_nNpcId, row.m_c).get();
-        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 8, 0);
+        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 8, 0);
     } else if (row.m_kind == 3) {
         CTalkScript* pTalk = FUN_140856820(m_nNpcId, row.m_c).get();
-        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 2, 0);
+        reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 2, 0);
     } else if (row.m_kind == 5) {
         TalkPtr spTalk = FUN_140856af0(m_nNpcId, row.m_c);
         if (spTalk.IsNull())
@@ -573,7 +570,7 @@ int UINpcPreviewDialog::FUN_141a711b0()
 efd::SmartPointer<CNpc> UINpcPreviewDialog::FUN_141a71280()
 {
     efd::SmartPointer<CNpc> spNone(0);
-    ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* pNpcs = reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd36d0();
+    ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* pNpcs = reinterpret_cast<ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >*>(reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd36d0());
     for (POSITION pos = pNpcs->GetHeadPosition(); pos != 0; pNpcs->GetNext(pos)) {
         efd::SmartPointer<CNpc> spNpc = pNpcs->GetValueAt(pos);
         if (spNpc->FUN_141092fa0() == m_nNpcId)
@@ -591,7 +588,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
     if (pPlayer != 0) {
         kPos = pPlayer->vfunc_18();
         kDir = pPlayer->vfunc_20();
-    } else if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd0dd0(&kPos, &kDir) == 0) {
+    } else if (reinterpret_cast<Unk_NpWorld*>(WorldService::GetInstance())->FUN_141bd0dd0(reinterpret_cast<Vector3*>(&kPos), reinterpret_cast<Vector3*>(&kDir)) == 0) {
         return;
     }
     efd::SmartPointer<CNpc> spNpc = EE_NEW CNpc;
@@ -602,7 +599,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
         return;
     kPos.z += 100.0f;
     efd::Point3 kHit;
-    if (FUN_1409f7ca0()->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) == 0)
+    if (reinterpret_cast<CPhysXHelper*>(FUN_1409f7ca0())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kPos), reinterpret_cast<Vector3&>(kHit), 0, 0.0f, 0, 0) == 0)
         return;
     kHit.z += 1.0f;
     spNpc->vfunc_19(kHit);

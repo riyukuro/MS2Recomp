@@ -103,7 +103,8 @@ CStringW FUN_14093b9c0(int nAchieveId, int nGrade);
 CStringW FUN_141425950(unsigned int);                        // the item's name
 CStringW FUN_140763e10(int nId);
 CStringW FUN_140631720(int nId, int nValue, bool bTwo);     // a stat's "name +value" text
-CStringW FUN_140631830(int nId, int nValue, int nMode);     // a special stat's text
+class CItemData;
+CStringW FUN_140631830(int nId, int nValue, CItemData* pData);     // a special stat's text (C3: the definition's signature)
 bool IsStatKindTwo(int nId);                                // IsStatKindTwo
 CStringA FUN_140719190(int nId);
 CStringA FUN_140719530(unsigned __int64 nId);
@@ -111,9 +112,9 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStringId);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 template <class A> CStringW FormatStringId(int nId, const A& a);
-CStringW FUN_1409eadb0(int nStringId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
+template <class A, class B, class C> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c);
 void FUN_14028cf00(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const CStringW& strOpen, const CStringW& strClose);
-void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszDelimiters);
+void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszDelimiters);
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
 unsigned __int64 FUN_140718370(const CStringW& str);
@@ -299,7 +300,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
     else if (nKind == 2)
     {
         ATL::CAtlArray<CStringW> fields;
-        FUN_14025a680(strArgs, fields, L":");
+        FUN_14025a680(const_cast<CStringW&>(strArgs), fields, L":");
         CStringW strFirst;
         CStringW strSecond;
         if (!fields.IsEmpty())
@@ -308,12 +309,12 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
             if (fields.GetCount() > 1)
                 strSecond = fields.GetAt(1);
         }
-        return FUN_1409eadb0(0x962, strFirst, strLink, FUN_140d2b8f0(spItem, strSecond));
+        return BlockFormat<CStringW, CStringW, CStringW>(0x962, strFirst, strLink, FUN_140d2b8f0(spItem, strSecond));
     }
     else if (nKind == 3)
     {
         ATL::CAtlArray<CStringW> fields;
-        FUN_14025a680(strArgs, fields, L":");
+        FUN_14025a680(const_cast<CStringW&>(strArgs), fields, L":");
         if (fields.GetCount() != 2)
             return CStringW(L"");
         CStringW& strName = fields[0];
@@ -327,7 +328,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
     else if (nKind == 6)
     {
         ATL::CAtlArray<CStringW> fields;
-        FUN_14025a680(strArgs, fields, L":");
+        FUN_14025a680(const_cast<CStringW&>(strArgs), fields, L":");
         if (fields.GetCount() != 2)
             return CStringW(L"");
         CStringW& strName = fields[0];
@@ -352,7 +353,7 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
         if (!strFilter.IsEmpty())
         {
             ATL::CAtlArray<CStringW> entries;
-            FUN_14025a680(strFilter, entries, L"|");
+            FUN_14025a680(const_cast<CStringW&>(strFilter), entries, L"|");
             size_t nEntries = entries.GetCount();
             for (size_t i = 0; i < nEntries; ++i)
             {

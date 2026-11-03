@@ -72,8 +72,6 @@ public:
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
 
 CString FUN_14016a5c0(const char* psz, int n);
-CStringW FUN_1401d0160(const wchar_t* szLeft, const CStringW& strRight);
-CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
 CStringW FUN_14183e930(const CStringW& str, int nColor);
 CString FUN_140513200(const char* szFormat, const unsigned int& nArg);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -163,8 +161,8 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         obj.FUN_1407cb9c0("time", m_timer.m_nSec);
         if (m_timer.m_nShowFormat != 0)
         {
-            CStringW strTail = FUN_1401d0160(L"\n", StringFormat<int>(m_timer.m_strFormat, m_timer.m_nSec));
-            obj.FUN_1407cbb20("msg", FUN_1401d0080(m_strMsg, strTail));
+            CStringW strTail = L"\n" + StringFormat<int>(m_timer.m_strFormat, m_timer.m_nSec);
+            obj.FUN_1407cbb20("msg", m_strMsg + strTail);
         }
     }
     if ((m_nFlags & 2) != 0)

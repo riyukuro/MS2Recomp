@@ -161,7 +161,7 @@ class Unk_MdPlayers { public: };
 
 // Source records of the chat entries (partial layouts: only what the entry builders read).
 class Unk_MdName { };   // a name box (an Unk_UserProxy view)
-class Unk_MdSrcA : public CBuddy { public: const CString& FUN_1401cc530();};
+class Unk_MdSrcA : public CBuddy { };
 class Unk_MdSrcB
 {
 public:
@@ -203,7 +203,7 @@ class Unk_MdClassTable { public: };
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // the local file of an image
 struct Unk_MdTime { unsigned short m_nTime; unsigned short m_pad; };
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_140a228f0(int chSep, const void* pTime, const CStringW& strText);   // same, for the other source
+template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
 
 struct Unk_MdEntry
 {
@@ -897,10 +897,10 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
 {
     m_nKind = src.FUN_1401cc680();
     m_nId = src.FUN_1401cc230();
-    m_strImage = (const char*)FUN_141028be0(m_nId, src.FUN_1401cc530(), 1, "");
+    m_strImage = (const char*)FUN_141028be0(m_nId, *src.FUN_1401cc530(), 1, "");
     m_strName = src.FUN_1401cc1c0();
     int nTime = src.FUN_1401cc210();
-    m_strInfo = FUN_140a228f0(0x20, &nTime, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.FUN_1401cc290())));
+    m_strInfo = FUN_14028dee0<int, CStringW>(0x20, reinterpret_cast<const int&>(nTime), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.FUN_1401cc290())));
 }
 
 // @0x141483580

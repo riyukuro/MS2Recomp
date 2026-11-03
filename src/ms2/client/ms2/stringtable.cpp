@@ -94,7 +94,6 @@ static UICommon::CMyPCKeyInputController s_keyController;
 // ---- the quest kinds ----------------------------------------------------------------------------------------------
 
 // Services of the exe, bound by their FUN_<va> names.
-CStringTable* GetStringTable();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
@@ -258,8 +257,8 @@ void CStoryQuest::FUN_140d73960()
     {
         if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d)
         {
-            CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
-            CStringW strText = StringFormat<CStringW>((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
+            CStringW strWho = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x47, m_data->m_2f0.m_c);
+            CStringW strText = StringFormat<CStringW>((const wchar_t*)strWho, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_data->m_2f0.m_4));
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
@@ -897,7 +896,7 @@ CStringW CStringTable::FUN_141812f60(int nItemId)
     int nStringId = spItem->GetEquipSubtype();
     if (nStringId == 0)
         return GetStringCommon(0);
-    return GetStringTable()->FUN_141811980(8, nStringId);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, nStringId);
 }
 
 // @0x141813060

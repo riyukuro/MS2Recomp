@@ -179,6 +179,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/uimeratmarketweapontype.h"
 #include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/commonfiles/itembreakmanager.h"
 
 // ---- statics, in the exe's initializer order (.text$di) ----
 // The ASItemSlot TU.
@@ -717,11 +718,6 @@ class Unk_SlotLapenTable : public CItemLapenshardTable
 {
 };
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
-class Unk_SlotBreakManager
-{
-public:
-    int FUN_140531aa0(MS2Ptr<CItem> spItem);
-};
 class CItemLockManager   // C3: unit-local view (def in unit_1406125d0)
 {
 public:
@@ -745,7 +741,7 @@ public:
 MS2_CHECK_OFFSET(Unk_SlotInventoryDialog, m_nMode, 0x1a4);
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_SlotInventoryDialog* FUN_1405344f0 (calls cast back)
-class CItemBreakManager;
+class Unk_SlotBreakManager;
 Unk_SlotBreakManager* FUN_1409c4b20();
 Unk_SlotLapenTable* FUN_1409c4b30();
 
@@ -1228,7 +1224,7 @@ void ASSlot::FUN_1409c34e0(CItem* pItem)
             return;
         case 1:
         case 2:
-            if (FUN_1409c4b20()->FUN_140531aa0(MS2Ptr<CItem>(pItem)) == 0)
+            if (reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->CanAddItem(MS2Ptr<CItem>(pItem)) == 0)
                 SetItemSeal(1);
             break;
         case 3:
@@ -1814,8 +1810,7 @@ CStringW FUN_1418fec00(int nCurrency, __int64 nAmount, bool bArg);
 CStringW FUN_1409e3050(const CStringW& strKey, int n1, int n2);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_140763e10(int value);
-CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
-FMT_VARIADIC_W(CStringW, BlockFormat, int)
+#include "ms2/placeholder/blockformat.h"
 CString FUN_1407194b0(__int64 v);
 CString FUN_140719530(unsigned __int64 v);
 void FUN_141b70f90(const CMsTime& kTime, const CStringW& kFormat, CStringW& kOut);

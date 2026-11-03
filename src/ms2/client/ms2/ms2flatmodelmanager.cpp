@@ -11,13 +11,13 @@
 #include <efd/AssetFactoryManager.h>
 #include <efd/AssetLocatorService.h>
 #include <efd/utf8string.h>
+#include "ms2/placeholder/ecrcameraservice.h"   // C3: Unk_ServiceManager::GetSystemServiceAs
 
 typedef unsigned long long u64;
 
 // ---- out-of-unit callees ----
 void* FUN_14214a770(void* sched, int behaviorType);
-efd::AssetLocatorService* FUN_140998330(void* sm);   // GetSystemServiceAs<AssetLocatorService>
-void* FUN_1401cd130(void* a, void* b);
+class Unk_BuddyHandleBase { public: Unk_BuddyHandleBase(void* h); void* handle; };    // ctor 0x1401cd130 (buddy.cpp)
 void FUN_140159b70(long hr);
 void FUN_14015b310(void* p, u64 sz);
 
@@ -69,7 +69,7 @@ efd::AsyncResult MS2FlatModelManager::OnInit()
             afm->RegisterAssetFactory(m_callback, (efd::IAssetFactory*)m_pFlatModelFactory);
         }
     }
-    efd::AssetLocatorService* locator = FUN_140998330(m_pServiceManager);
+    efd::AssetLocatorService* locator = ((Unk_ServiceManager*)m_pServiceManager)->GetSystemServiceAs<efd::AssetLocatorService>();
     if (locator) {
         if (!m_asset_lookup_in_progress) {
             if (sched)
@@ -194,7 +194,7 @@ bool FUN_140d86e00(long long* a, long long* b) { return *a == *b; }
 // @0x140d86e40
 bool FUN_140d86e40(void* a, void* b) { return !FUN_140d86e00((long long*)a, (long long*)b); }
 // @0x140d86da0
-void* FUN_140d86da0(void* a, void* b) { FUN_1401cd130(a, b); return a; }
+void* FUN_140d86da0(void* a, void* b) { ((Unk_BuddyHandleBase*)a)->Unk_BuddyHandleBase::Unk_BuddyHandleBase(b); return a; }
 // @0x140d86df0
 void FUN_140d86df0(void* p) {}
 // @0x140d873f0

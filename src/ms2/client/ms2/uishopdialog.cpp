@@ -210,7 +210,6 @@ void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);    // enable the shop m
 bool FUN_1406a5930();                                       // the star point event is running
 unsigned __int64 FUN_140718350(const CString& s);           // _atoi64
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
-CStringTable* GetStringTable();
 CLogString* GetLogString();
 
 // The unit's two-argument log call (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
@@ -364,7 +363,6 @@ public:
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the shown modal message box
 int FUN_140ec1950(MS2Ptr<CItem> spItem);                            // the equip slot of an item
 MS2Ptr<CItem> FUN_141b05180(MS2Ptr<CNpcShopMeratItemCli> spItem);   // the preview item of a merat item
-int FUN_140e2a7e0(UIEquipIconContainer* pContainer, MS2Ptr<CItemData> spData);   // UIEquipIconContainer: the hand slot (4 / 5) of a weapon (the handle by value)
 
 extern __int64 DAT_143ab2898;                                       // the meso of the player
 
@@ -474,7 +472,7 @@ class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class ASFunction : public AScript
 {
 public:
-    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, CItem* pUser, int nMovieId);
+    ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, __int64 nUser, int nMovieId);
     virtual ~ASFunction();
 private:
     void* m_40;
@@ -835,7 +833,7 @@ void UIShopDialog::OnLoadComplete()
         data.FUN_1407cba60("strGender", strGender);
     data.FUN_1407cbbe0("checkEnableItems", reinterpret_cast<bool&>(m_bCheckEnableItems));
     {
-        CStringW strTitle = GetStringTable()->FUN_141811980(0x53, m_nShopId);
+        CStringW strTitle = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x53, m_nShopId);
         bool bDebug = ((CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode();
         if (strTitle.IsEmpty()) {
             if (m_nShopType == 2) {
@@ -1271,7 +1269,7 @@ void UIShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     }
     else if (strName == "m_coinInfo") {
         int nCoin = FUN_14052d230()->GetCoinItemIdByShopId(m_nShopId);
-        CStringW strText = GetStringTable()->FUN_141811980(1, nCoin);
+        CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCoin);
         int nBox = FUN_14052d230()->GetRandomBoxIdByCoinItem(nCoin);
         GachaBoxDataPtr spBox = FUN_14052d230()->GetBox(nBox);
         if (spBox == 0)
@@ -1767,7 +1765,7 @@ void UIShopDialog::ReadResetResult(CInPacket& packet)
         unsigned nCount = packet.ReadInt32();
         if (nItemId > 0 && nCount > 0)
         {
-            CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_shop_reset_refund_item"), GetStringTable()->FUN_141811980(1, nItemId), (unsigned&)nCount);
+            CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_shop_reset_refund_item"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), (unsigned&)nCount);
             if (!strText.IsEmpty())
                 FUN_1412751f0(strText, 1, 1);
         }
@@ -1847,7 +1845,7 @@ void UIShopDialog::ReadPurchaseResult(CInPacket& packet)
     if (bGuildStorage)
     {
         CStringW strText;
-        CStringW strName = FUN_14183e9c0(GetStringTable()->FUN_141811980(1, nItemId), nRank);
+        CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), nRank);
         if (nCount > 1)
             strText = FUN_14028dfa0<CStringW, int>(CStringW(L"s_msg_take_item_count_to_guild_storage"), strName, nCount);
         else
@@ -2757,7 +2755,7 @@ void UIShopDialog::AddPreviewIcon(MS2Ptr<CItem> spItem)
     int nSlot = spItem->FUN_140526c30();
     if (((CItemData*)spData ? true : false) && spData->FUN_14053d2f0()) {
         int nHand = 0;
-        nHand = FUN_140e2a7e0(m_spEquip.operator->(), spData);
+        nHand = m_spEquip->FUN_140e2a7e0(spData);
         if (nHand != 0) {
             nSlot = nHand;
             spItem->FUN_140526c10(nHand);
@@ -2898,7 +2896,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
         }
         data.FUN_1407cbb20("itemCount", strCount);
         data.FUN_1407cbb20("remain", strRemain);
-        unsigned nColor = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTextColor((ItemGradeKey)spItem->GetRarity());
+        unsigned nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)spItem->GetRarity());
         CStringW strLabel = FUN_14183e930(spItem->FUN_140527b10(), nColor);
         data.FUN_1407cbb20("label", strLabel);
         __int64 nSalePrice = spProduct->FUN_140db8180();
@@ -2946,7 +2944,7 @@ int UIShopDialog::PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spPro
                 if (spNpc == 0)
                     return 0;
                 CStringW strText = FUN_14028dfa0<CStringW, int>(CStringW(L"s_shop_require_guild_npc_level"),
-                                                 GetStringTable()->FUN_141811980(0x3f, spNpc->f30), nLevel);
+                                                 TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3f, spNpc->f30), nLevel);
                 data.FUN_1407cbb20("m_requireGuildNpc", strText);
             }
         }
@@ -2998,7 +2996,7 @@ int UIShopDialog::PopulateMerat(ASSlot& data, MS2Ptr<CNpcShopMeratItemCli> spIte
         int nCount = ((class CItemData*)(class Unk_ItemEquipData*)(reinterpret_cast<Unk_ItemEquipData*>(spData.operator->())))->FUN_14053c7c0() ? spPremium->GetB0(0) : 0;
         data.FUN_1407cb9c0("itemCount", nCount);
         data.SetItemGrade(nRarity);
-        unsigned nColor = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTextColor((ItemGradeKey)nRarity);
+        unsigned nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nRarity);
         CStringW strLabel = FUN_14183e930(spPremium->GetName(), nColor);
         data.FUN_1407cbb20("label", strLabel);
         __int64 nSalePrice = spPremium->GetSalePriceOf(0);
@@ -3055,8 +3053,8 @@ int UIShopDialog::PopulateNewProduct(ASSlot& data, MS2Ptr<CNpcShopProductNewCli>
     if (data.FUN_1409c4510(nItemId, nRarity, 1) != 0) {
         data.FUN_1407cb9c0("serialID", spProduct->FUN_140db5e70());
         data.FUN_1409c0e60("itemCount", L"");
-        unsigned nColor = reinterpret_cast<CItemDataTable*>(FUN_140281980())->GetTextColor((ItemGradeKey)nRarity);
-        CStringW strLabel = FUN_14183e930(GetStringTable()->FUN_141811980(1, nItemId), nColor);
+        unsigned nColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColor((ItemGradeKey)nRarity);
+        CStringW strLabel = FUN_14183e930(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), nColor);
         data.FUN_1407cbb20("label", strLabel);
         static_cast<Unk_ShopRowObj&>(static_cast<ASObj&>(data)).FUN_141b07000("productType", spProduct->FUN_140db5ee0());
         data.FUN_140fbd930("saleTag", spProduct->vfunc_2());
@@ -3247,7 +3245,7 @@ CStringW UIShopDialog::GetTalk(int nShop, bool bWelcome)
     unsigned nTextId = ((class CGameEventValueNpcShopTalk*)(void*)(TSingleton<CGameEventValueManager>::GetInstance()->GetNpcShopTalk()))->Get(nShop);
     CStringW strText;
     if (nTextId > 0)
-        strText = GetStringTable()->FUN_141811980(0x40, nTextId);
+        strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x40, nTextId);
     else if (bWelcome == 1)
         strText = GetStringCommonByKey(L"s_shop_npc_talk_welcome");
     return strText;
@@ -3650,7 +3648,7 @@ bool FUN_141b04c30(CNpcShopProductCli* pProduct, bool bNotify)
         return false;
     unsigned nExp = TSingleton<CGuildManager>::GetInstance()->GetScore();
     int nLevel = TSingleton<CGuildManager>::GetInstance()->FUN_1404d3180()->FUN_1404c6110(nExp);
-    CStringW strRank = GetStringTable()->FUN_141811980(0x2d, nRank);
+    CStringW strRank = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2d, nRank);
     if (nLevel < nRank) {
         if (bNotify) {
             CStringW strMsg = FormatStringId<CStringW>(0x5d, strRank);

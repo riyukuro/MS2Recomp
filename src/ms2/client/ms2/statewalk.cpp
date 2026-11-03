@@ -34,7 +34,6 @@ float FUN_14059d930(float f);                              // 0x14059d930 fabs
 __int64 FUN_14028d260(float f);                                // 0x14028d260 round to ms
 class Unk_CubeSelection;
         // the cube selection is in the craft mode
-int* FUN_1404eb7e0(int* pA, int* pB);                      // 0x1404eb7e0 the larger of two ints
 
 // The animation service: the sequence id of the model / the model's animation name by the entity id.
 class Unk_WkAnimSvc
@@ -236,7 +235,7 @@ void StateWalk::vfunc_8(double fTime)
     {
         int nY = abs(FUN_140a58540()->GetLeftStickYPercent());
         int nX = abs(FUN_140a58540()->GetLeftStickXPercent());
-        int nStick = *FUN_1404eb7e0(&nX, &nY);
+        int nStick = (std::max)(nX, nY);
         if (nStick > 0)
         {
             int nOld = m_n10;

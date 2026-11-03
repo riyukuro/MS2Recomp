@@ -185,7 +185,7 @@ int BlackMarketPageMesoSearch::vfunc_4(const char* szMethod, const Scaleform::GF
         CStringW strMsg = FUN_14028dfa0(CStringW(L"s_mesoMarket_ask_buy_text"), FUN_1409404f0(spProduct->m_n20), FUN_1409404f0(spProduct->m_n28));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoSearch::SendMesoMarketMode8), strMsg);
         if (spBox)
-            spBox->FUN_1405340b0(nId);
+            spBox->Append<__int64>(nId);
     }
     return 1;
 }
@@ -510,7 +510,7 @@ int BlackMarketPageMesoRegister::vfunc_4(const char* szMethod, const Scaleform::
         CStringW strMsg = FUN_14028dfa0(strKey, FUN_1409404f0(spProduct->m_n20));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::SendMesoMarketMode6), strMsg);
         if (spBox)
-            spBox->FUN_1405340b0(nId);
+            spBox->Append<__int64>(nId);
     }
     return 1;
 }

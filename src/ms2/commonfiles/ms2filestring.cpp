@@ -163,8 +163,8 @@
 #include "ms2/ms2recover.h"
 
 extern int g_nLocaleMode;                  // 2: resolve paths through the mode/locale folders first
-extern std::string g_strLocaleFolder;      // locale resource folder (string files)
-extern std::string g_strDefaultFolder;     // default resource folder
+extern std::string g_strLocaleDir2;        // locale resource folder (string files)
+extern std::string g_strLocaleDir;         // default resource folder
 
 // @0x1406af2f0
 CPackFile::CPackFile() : m_remaining(0), m_magic(MS2_PACK_MAGIC_V1), m_elapsed(0) {
@@ -586,14 +586,14 @@ std::string CPackFile::GetModePath(std::string path) {
     std::string result;
     size_t pos = path.find_last_of('/');
     if (pos != std::string::npos) {
-        result = path.substr(0, pos + 1) + g_strDefaultFolder;
-        std::string locale(g_strLocaleFolder);
+        result = path.substr(0, pos + 1) + g_strLocaleDir;
+        std::string locale(g_strLocaleDir2);
         std::transform(locale.begin(), locale.end(), locale.begin(), tolower);
         result.append(locale);
         result += path.substr(pos + 1, path.size());
     } else {
-        result = g_strDefaultFolder;
-        std::string locale(g_strLocaleFolder);
+        result = g_strLocaleDir;
+        std::string locale(g_strLocaleDir2);
         std::transform(locale.begin(), locale.end(), locale.begin(), tolower);
         result.append(locale);
         result += path;
@@ -608,23 +608,23 @@ std::string CPackFile::GetLocalePath(std::string path, bool stringFile) {
     if (pos != std::string::npos) {
         bool fallback = true;
         if (stringFile) {
-            result = path.substr(0, pos + 1) + g_strLocaleFolder;
+            result = path.substr(0, pos + 1) + g_strLocaleDir2;
             result += path.substr(pos + 1, path.size());
             fallback = m_index.GetIndex(result) == 0;
         }
         if (fallback) {
-            result = path.substr(0, pos + 1) + g_strDefaultFolder;
+            result = path.substr(0, pos + 1) + g_strLocaleDir;
             result += path.substr(pos + 1, path.size());
         }
     } else {
         bool fallback = true;
         if (stringFile) {
-            result = g_strLocaleFolder;
+            result = g_strLocaleDir2;
             result += path;
             fallback = m_index.GetIndex(result) == 0;
         }
         if (fallback) {
-            result = g_strDefaultFolder;
+            result = g_strLocaleDir;
             result += path;
         }
     }

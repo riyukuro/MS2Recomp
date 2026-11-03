@@ -41,8 +41,6 @@ public:
 // Packet reader of StringIdInterfaceBase (kind/id/arguments or the plain text).
 void FUN_14084f390(StringIdInterfaceBase* pThis, CInPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text of a key
-size_t FUN_14015a000(ATL::CAtlArray<CStringW>& arr);                    // GetCount
-CStringW& FUN_14025e580(ATL::CAtlArray<CStringW>& arr, size_t i);       // operator[]
 
 // Builds the text of a "{0} {1}" format with arguments.
 class Unk_TextFormat { public: class Unk_TextFormat & FUN_140840530(class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>>); }; class Unk_StringArgFormatter : public Unk_TextFormat {
@@ -119,8 +117,8 @@ CStringW StringIdInterface::FUN_141024e60()
             MS2_ASSERT_AT(0x25, 0);
         }
         Unk_StringArgFormatter formatter(strFormat);
-        for (size_t i = 0; i < FUN_14015a000(arguments); i++)
-            ((class Unk_TextFormat&)(formatter)).FUN_140840530(FUN_14025e580(arguments, i));
+        for (size_t i = 0; i < arguments.GetCount(); i++)
+            ((class Unk_TextFormat&)(formatter)).FUN_140840530(arguments[i]);
         CStringW strResult = formatter;
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
         return strResult;

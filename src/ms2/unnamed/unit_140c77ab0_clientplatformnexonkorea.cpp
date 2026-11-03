@@ -84,7 +84,6 @@ unsigned FUN_14028ba90();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // StringFormat<CString> (the fmt "{0}" wrapper, itemdata.cpp's COMDAT). Called by address name: progress/symbols.tsv binds
 // the StringFormat<CString> name to the look-alike 0x140536a50 (Unk_SocketFormat<CString>, which calls 0x1402bf9a0).
-CString FUN_140540050(const char* pszFormat, const CString& strArg);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // show it
 // CNXMan::FUN_14160dac0 / FUN_14160e5f0 as this TU's callers see them: int results (nxman.h declares bool), and dac0
@@ -418,7 +417,7 @@ MS2_REPLACE_METHOD(0x140C78E50, CClientPlatformNexonKorea, vfunc_76, 61, 0x8C272
 // @0x140c78ea0
 CStringA CClientPlatformNexonKorea::vfunc_77()
 {
-    return FUN_140540050("{0}", g_strNexonSn);
+    return StringFormat<CString>("{0}", g_strNexonSn);
 }
 MS2_REPLACE_METHOD(0x140C78EA0, CClientPlatformNexonKorea, vfunc_77, 67, 0x513DB67F);
 

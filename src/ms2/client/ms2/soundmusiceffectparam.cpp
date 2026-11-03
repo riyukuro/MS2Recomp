@@ -51,15 +51,13 @@ CSoundService* FUN_140c9cb10();
 class CSoundEventMgr
 {
 public:
-    int FUN_14177c100(int nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
-    int FUN_14177c420(int nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
+    int FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
+    int FUN_14177c420(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
     float FUN_14177c9e0();                                      // the music volume
     void FUN_14177ca30(float fVolume);                          // set the music volume
     int FUN_14177ddd0(void* pUnused, int nUnused1, int nUnused2);   // the reverb string attribute
 };
 CSoundEventMgr* FUN_140d13c40();
-// The application object: the sound volume switch.
-class Unk_SmApp { public: char* FUN_140d13c70(); };
 struct Unk_SoundState;
 float FUN_141260110(Unk_SoundState*, int);                   // the volume of a channel
 // The game clock (?\unit_14086d260.cpp).
@@ -126,7 +124,7 @@ CSoundMusicEffect::CSoundMusicEffect() : m_f30(1.0f), m_f38(0.0f)
 // @0x141790060
 CSoundMusicEffect::~CSoundMusicEffect()
 {
-    FUN_140d13c40()->FUN_14177ca30(FUN_141260110(reinterpret_cast<Unk_SoundState *>(reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()), 2));
+    FUN_140d13c40()->FUN_14177ca30(FUN_141260110(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2));
 }
 
 // Starts the music: the cue, the parameter, the reverb string, then the volume fade plan (the music volume is read
@@ -149,7 +147,7 @@ bool CSoundMusicEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (pMusic->m_fVolume <= 0.0f || pMusic->m_fDuration == 0.0f)
         return false;
     float fOld = FUN_140d13c40()->FUN_14177c9e0();
-    float fNew = FUN_141260110(reinterpret_cast<Unk_SoundState *>(reinterpret_cast<Unk_SmApp*>(TSingleton<CGameOption>::GetInstance())->FUN_140d13c70()), 2) * pMusic->m_fVolume;
+    float fNew = FUN_141260110(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2) * pMusic->m_fVolume;
     fDelta = fNew - fOld;
     m_f38 = fDelta;
     m_f30 = fNew;

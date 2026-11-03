@@ -166,11 +166,6 @@ void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDe
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszText);
 CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance (0x140166440)
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
-#ifdef __clang__
-// clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); use the exe's copy of
-// operator+(const wchar_t*, const CStringW&).
-CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);
-#endif
 
 // The unit's log calls (FMT_VARIADIC-style wrappers over CLogString::FUN_1406535b0).
 class Unk_NpcShopLog : public CLogString
@@ -1274,11 +1269,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
             spItem->m_spPeriod = spPeriod;
             if (!strError.IsEmpty())
             {
-#ifdef __clang__
-                strErrors += FUN_1401d0160(L"\r\n", strError);
-#else
                 strErrors.Append(L"\r\n" + strError);
-#endif
                 bFailed = 1;
             }
             Unk_ShopLifeRef spLife = FUN_1406e3310(pItem);
@@ -1358,11 +1349,7 @@ int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
                 spItem->m_spPeriod = spPeriod;
                 if (!strError.IsEmpty())
                 {
-#ifdef __clang__
-                    strErrors += FUN_1401d0160(L"\r\n", strError);
-#else
                     strErrors.Append(L"\r\n" + strError);
-#endif
                     bFailed = 1;
                 }
                 spItem->m_strName = Unk_ReadString((class Unk_XmlNode*)(pItem), "category", CString(""));

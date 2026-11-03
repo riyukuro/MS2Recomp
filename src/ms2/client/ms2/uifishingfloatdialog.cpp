@@ -131,7 +131,7 @@ void UIFishingFloatDialog::OnLoadComplete()
     if (m_30.get())
     {
         int nKeyType = FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bUse ? 2 : 0;
-        m_30.operator->()->Invoke("setKeyText", reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x493e2, nKeyType));
+        m_30.operator->()->Invoke("setKeyText", TSingleton<CKeyTable>::GetInstance()->GetActionKeyName(0x493e2, nKeyType));
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
     }

@@ -72,15 +72,14 @@ public:
 class Unk_CustomizeColorTable : public CItemDataTable
 {
 public:
-    MS2Ptr<ItemColorEx> FUN_1405587f0(int nPalette, int nIndex);
 };
 MS2Ptr<ItemColorEx> FUN_140f022f0(int nPalette, unsigned nIndex);   // a colour of a palette (uibeautyshopstyledialog.cpp)
 int FUN_140f02bc0();                                                // the hair palette id
 
 // The avatar colour / equip helpers (unit_14142xxxx).
-void FUN_140f014b0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, Unk_PCEquipSet* pSet);     // the worn items
+void FUN_140f014b0(ATL::CAtlList<MS2Ptr<CEquipItem> >* out, Unk_PCEquipSet* pSet);     // the worn items
 int FUN_141420f10(class CItemData*, class AvatarPC*);   // C3: was FUN_141420f10
-MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, PC* pPc);              // the worn item of a slot
+MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, class AvatarPC* pPc);              // the worn item of a slot
 int FUN_141421690(CItem* pItem);                                    // the item is a real (owned) one
 int FUN_141423650(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_141423650
 int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
@@ -92,7 +91,7 @@ int FUN_141424760(MS2Ptr<CItem> spItem, int* pnColor, int nSlot, PC* pPc);
 NiPointer<CItemCustomizeController> FUN_1414131e0(MS2Ptr<CEquipItem> spEquip, PC* pPc, IItemCustomizeEventListener* pListener);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // CItemData of an item id
 __int64 FUN_14028d0e0();                                            // a new uid
-extern Vector3 DAT_143b01a60;                               // efd::Point3::ZERO
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // @0x140ccac60 a copy of the item that keeps its +0x24 variant
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem)
@@ -201,7 +200,7 @@ inline void FUN_140cd4190(PC* pPc)
     if (pPc == 0)
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    FUN_140f014b0(lstEquips, pPc->FUN_1416561a0());
+    FUN_140f014b0(&lstEquips, pPc->FUN_1416561a0());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -849,7 +848,7 @@ int Customize::CloneItems::GetAdded(ItemMap& out)
     if (pPc == 0)
         return 0;
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    FUN_140f014b0(lstEquips, pPc->FUN_1416561a0());
+    FUN_140f014b0(&lstEquips, pPc->FUN_1416561a0());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -1097,7 +1096,7 @@ int Customize::CloneItems::Init()
     m_mapSlots.RemoveAll();
     SaveColors();
     ATL::CAtlList<MS2Ptr<CEquipItem> > lstEquips;
-    FUN_140f014b0(lstEquips, pPc->FUN_1416561a0());
+    FUN_140f014b0(&lstEquips, pPc->FUN_1416561a0());
     for (POSITION pos = lstEquips.GetHeadPosition(); pos != 0; lstEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem> spEquip = lstEquips.GetAt(pos);
         if (spEquip == 0)
@@ -1350,7 +1349,7 @@ void Customize::Equipment::UnequipId(int nItemId)
     if (pPc == 0)
         return;
     int nSlot = FUN_141420f10((CItemData*)spData, (class AvatarPC*)(pPc));
-    MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, pPc);
+    MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, reinterpret_cast<AvatarPC*>(pPc));
     if (spEquip == 0)
         return;
     MS2Ptr<CItem> spItem = spEquip->GetItem();
@@ -2073,7 +2072,7 @@ void Customize::FUN_140cd3480(int bApply, int nPalette)
     if (bApply != 0) {
         if (nPalette == 0)
             return;
-        MS2Ptr<ItemColorEx> spColor = ((class Unk_CustomizeColorTable*)TSingleton<CItemDataTable>::GetInstance())->FUN_1405587f0(nPalette, 0);
+        MS2Ptr<ItemColorEx> spColor = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColor(nPalette, 0);
         if (spColor.get()) {
             ItemMap items;
             m_spEquipment->GetCloneItems()->GetAdded(items);

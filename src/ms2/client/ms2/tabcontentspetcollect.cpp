@@ -105,7 +105,6 @@ class Unk_BreakSelected : public CPetManager { };
 Unk_PetRowTable* FUN_14052d210();
 Unk_BreakSelected* FUN_140535320();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringTable* GetStringTable();
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14183e9c0(CStringW str, int n);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                 // the npc table row of an id
@@ -125,7 +124,6 @@ Unk_PcFieldTable* FUN_140cb17d0();
 
 // The event value manager's battle pet spawn table.
 class Unk_PcBattleSpawn : public CGameEventValueBattlePetSpawn { };
-CGameEventValueManager* FUN_140302b00();
 
 // Camera of the pet preview (see uiitempetboxdialog.cpp): the position and target are built from an efd::Point3.
 struct Unk_PetBoxVector
@@ -247,7 +245,7 @@ void TabContentsPetCollect::FUN_140cac8a0()
             if (spInfo == 0)
                 continue;
             ASObj objTab(2);
-            CStringW strName = GetStringTable()->FUN_141811980(0x41, it->first);
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x41, it->first);
             objTab.FUN_1407cbb20("tabName", strName);
             objTab.FUN_1407cb9c0("groupId", it->first);
             arrTabs.PushValue(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
@@ -339,7 +337,7 @@ void TabContentsPetCollect::FUN_140cad2b0(int nGroup)
     std::stable_sort(vecPets.begin(), vecPets.end());
     ASObj objData(2);
     objData.FUN_1407cb9c0("groupId", nGroup);
-    CStringW strName = GetStringTable()->FUN_141811980(0x41, it->first);
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x41, it->first);
     objData.FUN_1407cbb20("name", strName);
     ASArray arrPets(2);
     for (size_t i = 0; i < vecPets.size(); i++)
@@ -393,13 +391,13 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         if (nShown == 0)
             nShown = 1;
         CStringW strTip = FUN_14183e9c0(FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_pet_name"),
-            GetStringTable()->FUN_141811980(0x3b, spPet->GetId())), nShown);
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3b, spPet->GetId())), nShown);
         if (spPet->m_nType == 1)
             strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_battle_pet");
         else if (spPet->m_nType == 0)
             strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_default_pet");
         if (0 < nGrade)
-            strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->GetRankName(nGrade));
+            strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), TSingleton<CStringTable>::GetInstance()->GetRankName(nGrade));
         strTip += FUN_14028dfa0<unsigned int>(CStringW(L"s_pet_collect_pet_tooltip_limit_level"), spData->limit.levelLimit);
         {
             CStringW strPlace;
@@ -422,7 +420,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                     continue;
                 if (!strPlace.IsEmpty())
                     strPlace += ", ";
-                strPlace += GetStringTable()->FUN_141811980(3, *pField);
+                strPlace += TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, *pField);
             }
             if (0 < strPlace.GetLength())
                 strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_capture_place"), strPlace);
@@ -430,7 +428,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         {
             CStringW strPlace;
             ATL::CAtlArray<unsigned> arrFields;
-            reinterpret_cast<Unk_PcBattleSpawn*>(FUN_140302b00()->GetBattlePetSpawn())->GetFields(nPet, arrFields);
+            reinterpret_cast<Unk_PcBattleSpawn*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBattlePetSpawn())->GetFields(nPet, arrFields);
             for (size_t i = 0; i < arrFields.GetCount(); i++)
             {
                 const unsigned* pField = &arrFields[i];
@@ -448,7 +446,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                     continue;
                 if (!strPlace.IsEmpty())
                     strPlace += ", ";
-                strPlace += GetStringTable()->FUN_141811980(3, *pField);
+                strPlace += TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, *pField);
             }
             if (0 < strPlace.GetLength())
                 strTip += FUN_14028dfa0<CStringW>(CStringW(L"s_pet_collect_pet_tooltip_event_capture_place"), strPlace);

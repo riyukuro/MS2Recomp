@@ -85,26 +85,9 @@ public:
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 
-// The repacking scroll's row: level range, kind (0 item, 1 pet), the allowed ranks and the limiting item types.
-class Unk_RpRow : public CPtred
-{
-public:
-    char m_pad_18[4];
-    int m_nKind;                                                // +0x1c
-    unsigned short m_nLevelMin;                                 // +0x20
-    unsigned short m_nLevelMax;                                 // +0x22
-    char m_pad_24[4];
-    ATL::CAtlArray<unsigned int> m_limits;                      // +0x28
-    ATL::CAtlArray<unsigned int> m_ranks;                       // +0x48
-};
-class Unk_RpTable
-{
-public:
-    MS2Ptr<Unk_RpRow> FUN_14061d5b0(unsigned nId);              // the row of a scroll id
-};
+class Unk_RpTable;
 Unk_RpTable* FUN_140f64150();
 class CItemRePackingScrollTable;
-int FUN_14061d670(MS2Ptr<CItem> spItem, MS2Ptr<Unk_RpRow> spRow);   // validate the item for the scroll (0 = ok)
 
 struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // CItemData: the <function> parameters at +0x2b0
 extern CStringTable* GetStringTable();
@@ -236,30 +219,30 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
         return;
     if (MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title"))
         spTitle->SetTextW(static_cast<CItem*>(spScroll)->FUN_140527b10());
-    MS2Ptr<Unk_RpRow> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
+    MS2Ptr<CItemRePackingScrollData> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
     if (spRow == 0)
         return;
     CStringW strLevel;
     CStringW strLimit;
     CStringW strRanks;
-    if (spRow->m_nLevelMin == spRow->m_nLevelMax)
-        strLevel = StringFormat(L"{0}", spRow->m_nLevelMin);
+    if (spRow->m_nMinLv == spRow->m_nMaxLv)
+        strLevel = StringFormat(L"{0}", spRow->m_nMinLv);
     else
-        strLevel = StringFormat(L"{0}~{1}", spRow->m_nLevelMin, spRow->m_nLevelMax);
-    for (unsigned __int64 i = 0; i < spRow->m_ranks.GetCount(); i++)
+        strLevel = StringFormat(L"{0}~{1}", spRow->m_nMinLv, spRow->m_nMaxLv);
+    for (unsigned __int64 i = 0; i < spRow->m_arrRank.GetCount(); i++)
     {
-        unsigned nRank = spRow->m_ranks[i];
+        unsigned nRank = spRow->m_arrRank[i];
         CStringW strRank = FUN_14183e9c0(GetStringTable()->GetRankName(nRank), nRank);
         strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
     }
     strRanks.TrimRight(L", ");
     CStringW strDesc;
-    switch (spRow->m_nKind)
+    switch (spRow->m_nPet)
     {
     case 0:
         strDesc = L"s_item_repacking_item_limit_desc";
-        for (unsigned __int64 i = 0; i < spRow->m_limits.GetCount(); i++)
-            strLimit.AppendFormat(L"%s, ", (LPCWSTR)GetStringTable()->FUN_141811980(8, spRow->m_limits[i]));
+        for (unsigned __int64 i = 0; i < spRow->m_arrSlot.GetCount(); i++)
+            strLimit.AppendFormat(L"%s, ", (LPCWSTR)GetStringTable()->FUN_141811980(8, spRow->m_arrSlot[i]));
         strLimit.TrimRight(L", ");
         break;
     case 1:
@@ -486,12 +469,12 @@ bool UIItemRePackingScrollDialog::FUN_140f629b0(MS2Ptr<CItem> spItem)
 }
 
 // @0x140f62a90
-MS2Ptr<Unk_RpRow> UIItemRePackingScrollDialog::FUN_140f62a90(MS2Ptr<CItemData> spData)
+MS2Ptr<CItemRePackingScrollData> UIItemRePackingScrollDialog::FUN_140f62a90(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
-        return MS2Ptr<Unk_RpRow>(0);
+        return MS2Ptr<CItemRePackingScrollData>(0);
     unsigned nId = reinterpret_cast<Unk_RpItemData*>(spData.operator->())->m_args.FUN_1408d1f60(0, 0);
-    MS2Ptr<Unk_RpRow> spRow = FUN_140f64150()->FUN_14061d5b0(nId);
+    MS2Ptr<CItemRePackingScrollData> spRow = reinterpret_cast<CItemRePackingScrollTable*>(FUN_140f64150())->GetData(nId);
     return spRow;
 }
 
@@ -518,8 +501,8 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         MS2Ptr<CItem> spScroll = g_143ab2a90.FUN_140a5d680(m_nOwner);
         if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
             return;
-        MS2Ptr<Unk_RpRow> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
-        int nError = FUN_14061d670(spItem, spRow);
+        MS2Ptr<CItemRePackingScrollData> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
+        int nError = CItemRePackingScrollTable::Check(spItem, spRow);
         if (nError != 0)
         {
             FUN_140f62710(nError);

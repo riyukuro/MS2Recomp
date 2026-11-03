@@ -6,6 +6,9 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/client/ms2/cubespawnobject.h"     // Unk_EntRef, Unk_Entity (forward)
+#include <efd/SmartPointer.h>
+
+namespace egf { class Entity; }
 
 class NxActor;
 
@@ -32,7 +35,7 @@ public:
     void FUN_1411cdd90();                       // cancel the fall
     void FUN_1411cddc0(CString strModel, unsigned char nMode);   // swap the model and set the mode
 
-    Unk_EntRef m_entity;                        // +0x18
+    efd::SmartPointer<egf::Entity> m_entity;    // +0x18
     float m_20;                                 // frequency
     float m_24;                                 // amplitude
     float m_28;                                 // amplitude floor (0..1)

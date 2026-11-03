@@ -171,6 +171,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/creservedwordtable.h"
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
@@ -207,7 +208,6 @@ public:
 class Unk_CashButton : public ASMovieClip {};                       // "m_btnNext" / "m_btnPrev"
 
 
-CStringTable* GetStringTable();                                        // FUN_1401a9d70
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
@@ -223,9 +223,8 @@ UIMarketBillDialog* FUN_140b09580(int uiId);                        // the open 
 
 class Unk_CashMsgBox : public CMsgBoxData { public: };
 
-class Unk_CashInventoryTabs { };
 class Unk_Inventory { public: bool FUN_140a5cdc0(unsigned category); };   // C3: member view (inventory.h)
-extern Unk_CashInventoryTabs DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;                                     // the inventory
 extern int DAT_1439f4a84;
 extern int DAT_1439f4a88;
 extern __int64 DAT_143ab2840;
@@ -234,7 +233,7 @@ extern char DAT_143ab2943;
 
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int nStringId, int a, int b);                    // a notice
-int FUN_1407181d0(const CString& str);                              // text to number
+unsigned FUN_1407181d0(const CString& str);                              // text to number
 int FUN_1407181a0(const CStringW& str);
 int FUN_140718200(const CStringW& str);
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASMovieClip>* pOut);   // bind a child of the root
@@ -258,9 +257,6 @@ int FUN_1415c3b50(const char* szUrl, char* szOut, int a, int b, int nLen);
 void* FUN_140aadf80();
 void* FUN_140c7fa70(size_t nSize);                                  // operator new of CCashUnlockDialog
 
-CString FUN_1402bb1c0(const char* szFormat, const int& n);          // StringFormat<int>
-CString FUN_140513200(const char* szFormat, const __int64& n);      // StringFormat<__int64>
-CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);      // StringFormat<int> (wide)
 CStringW FUN_140763e10(int nAmount);                                // the amount with separators
 CStringW FUN_1409404f0(__int64 nPrice);
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool b);
@@ -277,7 +273,6 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CSt
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                                  // show
 void FUN_140d2cd80(MS2Ptr<CCashSaleProduct> spProduct);                          // the link of a product
-void FUN_1416fb340(void* pLog, const CStringW& strText);
 class CReservedWordTable;
 CommonString* FUN_14025e7d0();
 
@@ -811,7 +806,7 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsi
             continue;
         MS2Ptr<ASCashShopBillData> spBill(new ASCashShopBillData());
         spBill->SetIconFromItem(spItem, spProduct->m_data.m_n2c);
-        spBill->SetItemName(GetStringTable()->FUN_141811980(1, spProduct->m_data.m_n28));
+        spBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spProduct->m_data.m_n28));
         spBill->SetSalePrice(FUN_1418fec00(nZero, spProduct->m_n1c, 0), spProduct->m_n1c);
         spBill->SetEnableGift(spProduct->m_data.m_n4c == 1);
         spBill->FUN_1409abcd0(nZero);
@@ -835,7 +830,7 @@ void UICashShopDialog::FUN_141035e40()
     if (MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10("m_btnPrev"))
         spPrev->FUN_1422c1fe0(m_nCategory > 1);
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
-        spPage->SetTextW(FUN_1401ceea0(L"{0}", m_nCategory));
+        spPage->SetTextW(StringFormat(L"{0}", m_nCategory));
 }
 
 // @0x1410360c0
@@ -863,8 +858,8 @@ void UICashShopDialog::FUN_1410360c0()
         if (!spItem)
             continue;
         MS2Ptr<AScript> spRow(new AScript(2));
-        spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", *reinterpret_cast<__int64*>(&spProduct->m_data.m_n18)));
-        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_data.m_n28));
+        spRow->FUN_1407cba60("productSN", Unk_SocketFormat("{0}", *reinterpret_cast<unsigned*>(&spProduct->m_data.m_n18)));
+        spRow->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spProduct->m_data.m_n28));
         spRow->FUN_1407cba60("iconPath", spItem->GetIconPath());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_data.m_n38);
         __int64 nPrice = spProduct->m_data.m_n30;
@@ -892,7 +887,7 @@ void UICashShopDialog::FUN_1410360c0()
         size_t nCapacity = 6;
         if (nPageKey == 1)
             nCapacity = 5;
-        if (MS2Ptr<ASUIComponent> spEmpty = FUN_14103a700(FUN_1402bb1c0("empty{0}", nPageKey)))
+        if (MS2Ptr<ASUIComponent> spEmpty = FUN_14103a700(StringFormat("empty{0}", nPageKey)))
             spEmpty->vfunc_4(spSlots->GetCount() == 0);
         size_t nAdded = 0;
         for (POSITION posSlot = spSlots->GetHeadPosition(); posSlot != 0; spSlots->GetNext(posSlot)) {
@@ -925,8 +920,8 @@ void UICashShopDialog::FUN_141036ca0()
         if (!spItem)
             continue;
         MS2Ptr<ASObj> spRow(new ASObj(2));
-        spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", *reinterpret_cast<__int64*>(&spProduct->m_data.m_n18)));
-        spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_data.m_n28));
+        spRow->FUN_1407cba60("productSN", Unk_SocketFormat("{0}", *reinterpret_cast<unsigned*>(&spProduct->m_data.m_n18)));
+        spRow->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spProduct->m_data.m_n28));
         spRow->FUN_1407cba60("iconPath", spItem->GetIconPath());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_data.m_n38);
         __int64 nPrice = spProduct->m_data.m_n30;
@@ -1028,7 +1023,7 @@ bool UICashShopDialog::FUN_141037cd0(int nItemId, int* pnReason, int* pnTab)
             *pnTab = FUN_1402912d0(pArgs->FUN_1408d21c0(1, CStringW(L"")));
         if (*pnTab == -1) {
         }
-        else if (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5cdc0(*pnTab) != 0) {
+        else if (g_143ab2a90.FUN_140a5cdc0(*pnTab) != 0) {
             *pnReason = 0xa5b;
             return false;
         }
@@ -1109,7 +1104,7 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
         if (!FUN_141037cd0(spProduct->m_data.m_n28, &nReason, &nTab)) {
             CStringW strText;
             if (nTab > -1)
-                strText = FormatStringId<CStringW>(nReason, GetStringTable()->FUN_141813300(nTab));
+                strText = FormatStringId<CStringW>(nReason, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
             else
                 strText = GetStringCommon(nReason);
             {
@@ -1202,7 +1197,7 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
         }
     }
     CStringW strText = FormatStringId<CStringW>(0xa67, strRecipient);
-    FUN_1416fb340((void*)TSingleton<CReservedWordTable>::GetInstance(), strText);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
         if (spBox.get() != 0) {

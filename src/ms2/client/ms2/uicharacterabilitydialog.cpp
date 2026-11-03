@@ -122,8 +122,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
 void FUN_140710590(COutPacket& packet);
 
-AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
-void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);
+void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
@@ -334,7 +333,7 @@ int CCharacterAbilityManager::FUN_140f2a210()
 UICharacterAbilityDialog::UICharacterAbilityDialog()
 {
     FUN_141924170(1);
-    reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init();
+    m_timer.Init();
     m_bBuilt = 0;
 }
 
@@ -371,7 +370,7 @@ void UICharacterAbilityDialog::vfunc_72()
         return;
     if (m_bBuilt == 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000) == 0)
+    if (m_timer.Check(1000) == 0)
         return;
     FUN_140f2b850();
 }
@@ -540,7 +539,7 @@ void UICharacterAbilityDialog::FUN_140f2b0f0()
 void UICharacterAbilityDialog::FUN_140f2b110(MS2Ptr<Unk_CaAbilityRow> ref)
 {
     if (m_30.get())
-        FUN_1409ee290(&m_30)->Invoke("LearnAbility", ref->m_nCategory, ref->m_nSkillId);
+        m_30->Invoke("LearnAbility", ref->m_nCategory, ref->m_nSkillId);
     FUN_140f2b760();
 }
 
@@ -556,7 +555,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
     for (POSITION pos = cats.GetHeadPosition(); pos != NULL; cats.GetNext(pos))
     {
         MS2Ptr<Unk_CaCategoryRow> cat = cats.GetAt(pos);
-        FUN_1409ee290(&m_30)->FUN_140f2c690("buildCategory", cat->m_nId, CStringW(cat->m_strName));
+        m_30->FUN_140f2c690("buildCategory", cat->m_nId, CStringW(cat->m_strName));
         ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >& abilities = reinterpret_cast<ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >&>(cat->m_abilities);
         if (abilities.IsEmpty())
             continue;
@@ -582,7 +581,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
             item.FUN_1407cbbe0("newAbility", false);
             arr.PushObj(item);
         }
-        FUN_1409ee290(&m_30)->FUN_140f2c5d0("buildAbility", cat->m_nId, arr);
+        m_30->FUN_140f2c5d0("buildAbility", cat->m_nId, arr);
     }
     FUN_140f2b760();
     FUN_140f2b850();
@@ -597,7 +596,7 @@ void UICharacterAbilityDialog::FUN_140f2b760()
     unsigned nTotal = FUN_140f2d240()->FUN_140f29e40();
     int nRemain = FUN_140f2d240()->FUN_140f29e00();
     CStringW strText = BlockFormat<unsigned, unsigned>(0xc5a, reinterpret_cast<const unsigned&>(nRemain), nTotal);
-    FUN_1409ee290(&m_30)->Invoke("SetPointInfoText", CStringW(strText));
+    m_30->Invoke("SetPointInfoText", CStringW(strText));
 }
 
 // @0x140f2b850
@@ -614,7 +613,7 @@ void UICharacterAbilityDialog::FUN_140f2b850()
         strRemain = FormatTimeSpan(remain, true, true, remain.GetDays() == 0, remain.GetHours() == 0);
     }
     int nIntermediate = FUN_140f2d240()->FUN_140f2a210();
-    FUN_1409ee290(&m_30)->Invoke("SetRemainCoolButton", bCooling, CStringW(strRemain), nIntermediate);
+    m_30->Invoke("SetRemainCoolButton", bCooling, CStringW(strRemain), nIntermediate);
 }
 
 // @0x140f2ba20
@@ -652,7 +651,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
         }
     }
     CStringW strText = FUN_140f2c170(0xc60, FUN_1416e4df0(nQuest), reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_58, strUnlock, FUN_1416e7fb0(reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_28));
-    FUN_1409ee290(&m_30)->Invoke("SetDisabledText", CStringW(strText));
+    m_30->Invoke("SetDisabledText", CStringW(strText));
 }
 
 // @0x140f2bee0

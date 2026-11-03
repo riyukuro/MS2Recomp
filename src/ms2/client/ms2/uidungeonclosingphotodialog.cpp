@@ -36,12 +36,14 @@
 #include "ms2/client/ms2/uimassiveevent.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/client/ms2/uimodelview.h"
+#include "ms2/commonfiles/serverpacketdef.h"
 static CString s_winSound = "BattleField_Win";
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
 enum Unk_ClosingJob { Unk_ClosingJob_None };
 class Unk_ClosingThing : public PCGemEquip { };
-class PC { public: class Unk_MyPCEquip* FUN_14165f460(); };   // C3: unit-local view (def in pc); the gem equipment
+class PC { public: class Unk_MyPCEquip* FUN_14165f460(); int FUN_141654730(); };   // C3: unit-local view (def in pc); the gem equipment
 struct Unk_ClosingVector
 {
     Unk_ClosingVector();
@@ -49,15 +51,14 @@ struct Unk_ClosingVector
     Unk_ClosingVector& operator+=(const Unk_ClosingVector&);
 };
 MS2_CHECK_SIZE(Unk_ClosingVector, 12);
-struct Unk_ClosingCameraData
+struct Unk_PetBoxCameraData
 {
-    Unk_ClosingCameraData();
-    void FUN_141b48530();
+    Unk_PetBoxCameraData();
     Unk_ClosingVector eye, target;
     float f18, f1c, f20;
     int n24, n28, n2c;
 };
-MS2_CHECK_SIZE(Unk_ClosingCameraData, 0x30);
+MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
 class Unk_ClosingActor
 {
 public:
@@ -80,7 +81,6 @@ public:
     virtual void vfunc_16();
     virtual void vfunc_17();
     virtual Unk_ClosingVector vfunc_18();
-    Unk_ClosingJob FUN_141654730();
     void FUN_140e11d00();
     // 76 and 77 are the name setter (by value: the callee destroys it) and getter
     virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
@@ -118,7 +118,7 @@ public:
     virtual void vfunc_10();
     virtual void vfunc_11();
     virtual void vfunc_12(int);
-    virtual void vfunc_13(const Unk_ClosingCameraData&);
+    virtual void vfunc_13(const Unk_PetBoxCameraData&);
 };
 class UIAvatarBase
 {
@@ -156,13 +156,13 @@ public:
     virtual void vfunc_26();
     virtual int vfunc_27(const char*, const Scaleform::GFx::Value*, unsigned int);
     virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
-    void FUN_1418bc790(int, int);
-    Unk_ClosingActor* FUN_1418bd1d0();
 };
 class UIAvatarPC : public Unk_ClosingAvatar
 {
 public:
-    UIAvatarPC(void*, bool);
+    UIAvatarPC(PC*, bool);
+    void FUN_1418bc790(int, int);
+    class AvatarPC* FUN_1418bd1d0();
 private:
     void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48; void* m_50; void* m_58;
     void* m_60; void* m_68; void* m_70; void* m_78; void* m_80; void* m_88; void* m_90; void* m_98; void* m_a0;
@@ -200,7 +200,7 @@ void FUN_140cffca0(const Scaleform::GFx::Value&, CString, CString);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW GetStringCommon(int);
 void FUN_141275260(int, int, int);
-void FUN_140961010(int, int, int, const CStringW&);
+template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 int FUN_141276180(const CString&, const CString&);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_140718170(const CString&);
@@ -301,8 +301,8 @@ void UIDungeonClosingPhotoDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp,
     if (!actor)
         return;
     m_entries[idx].m_avatar->vfunc_28(a, tp, b, c);
-    Unk_ClosingCameraData data;
-    data.FUN_141b48530();
+    Unk_PetBoxCameraData data;
+    reinterpret_cast<Unk_ModelViewCamera*>(&data)->ApplyCharCamera();
     data.f1c = 300.0f;
     data.target += actor->vfunc_18();
     data.eye += data.target;
@@ -333,7 +333,7 @@ void UIDungeonClosingPhotoDialog::vfunc_79(void* p)
     if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x61) {
         unsigned pos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         Unk_BuddyResponse r;
-        r.FUN_1407a3cc0(*static_cast<Unk_BuddyInput*>(p));
+        reinterpret_cast<Unk_SPDB*>(&r)->FUN_1407a3cc0(*reinterpret_cast<Unk_SPDReader*>(p));
         static_cast<CInPacket*>(p)->SetOffset(pos);
         FUN_140e10800(r.result, r.name);
     }
@@ -411,9 +411,9 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             Unk_ClosingPlayer* player = reinterpret_cast<Unk_ClosingPlayer*>(WorldService::GetInstance()->FUN_141bd1530(uid));
             if (player == 0)
                 continue;
-            UIAvatarPC* av = new UIAvatarPC(player, false);
-            av->FUN_1418bd1d0()->vfunc_76(player->vfunc_77());
-            av->FUN_1418bd1d0()->FUN_140e11d00();
+            UIAvatarPC* av = new UIAvatarPC(reinterpret_cast<PC*>(player), false);
+            reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0())->vfunc_76(player->vfunc_77());
+            reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0())->FUN_140e11d00();
             reinterpret_cast<ClonePC*>(av->FUN_1418bd1d0())->FUN_1410885b0(true);
             reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->FUN_1418bd1d0())->FUN_14165f460())->FUN_141270610();
             av->vfunc_1(this);
@@ -475,7 +475,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0f790()
         UIAvatarPC* av = m_entries[i].m_avatar;
         if (!av)
             continue;
-        Unk_ClosingActor* actor = av->FUN_1418bd1d0();
+        Unk_ClosingActor* actor = reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0());
         if (!actor)
             continue;
         MS2Ptr<ASMovieClip> info = m_entries[i].m_clip->FUN_1409b4560("m_characterInfo");
@@ -484,7 +484,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0f790()
         MS2Ptr<ASMovieClip> charInfo = info->FUN_1409b4560("m_charInfo");
         if (charInfo.get()) {
             FUN_140cfee80((*charInfo).FUN_1422bb890(), "m_charName", actor->vfunc_77());
-            Unk_ClosingJob job = actor->FUN_141654730();
+            Unk_ClosingJob job = (Unk_ClosingJob)reinterpret_cast<PC*>(actor)->FUN_141654730();
             CString jobStr = StringFormat("_{0}", job);
             FUN_140cffca0((*charInfo).FUN_1422bb890(), "m_jobMovie", jobStr);
         }
@@ -617,7 +617,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
         UIAvatarPC* av = e->m_avatar.get();
         if (!av)
             return;
-        Unk_ClosingActor* actor = av->FUN_1418bd1d0();
+        Unk_ClosingActor* actor = reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0());
         if (!actor)
             return;
         if (e->m_clip == 0)
@@ -642,23 +642,23 @@ void UIDungeonClosingPhotoDialog::FUN_140e10800(int result, CStringW name)
     CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByName(name);
     if (buddy.get()) {
         if (buddy->FUN_1401cc5d0() == 1) {
-            FUN_140961010(0x61a, 1, 1, name);
+            Unk_AkoMessage<CStringW>(0x61a, 1, 1, name);
             return;
         } else if (buddy->FUN_1401cc5b0() == 1) {
-            FUN_140961010(0x619, 1, 1, name);
+            Unk_AkoMessage<CStringW>(0x619, 1, 1, name);
             return;
         }
     } else {
         switch (result) {
         case 1: FUN_141275260(0x614, 1, 1); break;
-        case 2: FUN_140961010(0x622, 1, 1, name); break;
-        case 3: FUN_140961010(0x621, 1, 1, name); break;
-        case 4: FUN_140961010(0x617, 1, 1, name); break;
-        case 5: FUN_140961010(0x61c, 1, 1, name); break;
-        case 6: FUN_140961010(0x61b, 1, 1, name); break;
-        case 7: FUN_140961010(0x61d, 1, 1, name); break;
-        case 8: FUN_140961010(0x61e, 1, 1, name); break;
-        case 9: FUN_140961010(0x602, 1, 1, name); break;
+        case 2: Unk_AkoMessage<CStringW>(0x622, 1, 1, name); break;
+        case 3: Unk_AkoMessage<CStringW>(0x621, 1, 1, name); break;
+        case 4: Unk_AkoMessage<CStringW>(0x617, 1, 1, name); break;
+        case 5: Unk_AkoMessage<CStringW>(0x61c, 1, 1, name); break;
+        case 6: Unk_AkoMessage<CStringW>(0x61b, 1, 1, name); break;
+        case 7: Unk_AkoMessage<CStringW>(0x61d, 1, 1, name); break;
+        case 8: Unk_AkoMessage<CStringW>(0x61e, 1, 1, name); break;
+        case 9: Unk_AkoMessage<CStringW>(0x602, 1, 1, name); break;
         default: FUN_141275260(0x613, 1, 1); break;
         }
     }

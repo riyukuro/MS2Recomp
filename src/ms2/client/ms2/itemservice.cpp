@@ -76,7 +76,6 @@ class Unk_IsModel : public CEquipModel
 {
 public:
     PC* FUN_141200820();                                            // the owner PC (0 when none)
-    MS2Ptr<CEquipItem> FUN_141200a40() const;                       // the equip item of the model
 };
 #define IsModel(p) static_cast<Unk_IsModel*>(static_cast<CEquipModel*>(p))
 int FUN_141565a20(CNifModel* pModel, CString strPath, NiAVObjectPtr spRoot);   // attach an already loaded root
@@ -283,7 +282,7 @@ void CItemService::OnPhysXPropCreated(const ecrPhysX::PhysXPropMessage* pMsg, ef
     if (m_mapModels.Lookup(id.GetValue(), spModel))
     {
         spModel->vfunc_33();
-        reinterpret_cast<CEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
+        reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
         PC* pPC = IsModel(spModel.get())->FUN_141200820();
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c00();
@@ -298,9 +297,9 @@ void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, ef
     MS2Ptr<CKfmModel> spModel(0);
     if (m_mapModels.Lookup(id.GetValue(), spModel))
     {
-        IsModel(spModel.get())->FUN_141200a40()->ReleaseLinkedItems();
+        reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->ReleaseLinkedItems();
         spModel->vfunc_34();
-        reinterpret_cast<CEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
+        reinterpret_cast<CEquipItem*>(static_cast<CEquipModel*>(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
         PC* pPC = IsModel(spModel.get())->FUN_141200820();
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c10();

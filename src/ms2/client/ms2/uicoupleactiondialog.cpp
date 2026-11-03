@@ -163,7 +163,6 @@ class Unk_CoupleInputState : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
-CStringTable* GetStringTable();
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 
@@ -459,7 +458,7 @@ void UICoupleActionDialog::FUN_140bed2d0()
                 continue;
             bool bFound = false;
             do {
-                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
+                CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nId);
                 CStringW& rName = strName;
                 if (rName.Find(m_1a8, 0) != -1) {
                     bFound = true;
@@ -522,7 +521,7 @@ void UICoupleActionDialog::FUN_140bed8a0()
                 continue;
             bool bFound = false;
             do {
-                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
+                CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nId);
                 CStringW& rName = strName;
                 if (rName.Find(m_1a8, 0) != -1) {
                     bFound = true;
@@ -616,7 +615,7 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
     } else if (nKey == 0x7e) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
-            int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
+            int nLast = spList->GetDataProvider()->GetLength() - 1;
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
@@ -627,7 +626,7 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
     } else if (nKey == 0x7c) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
-            int nLast = spList->FUN_1422dcd80()->GetLength() - 1;
+            int nLast = spList->GetDataProvider()->GetLength() - 1;
             reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02f0(nLast, nIndex + 1));
         }
     }
@@ -637,16 +636,16 @@ MS2_REPLACE_METHOD(0x140BEE150, UICoupleActionDialog, FUN_140bee150, 1067, 0x98B
 // @0x140bee590
 int UICoupleActionDialog::FUN_140bee590(int nKey)
 {
-    return FUN_1409331f0()->GetKeyAction(nKey) == 0;
+    return TSingleton<CKeyTable>::GetInstance()->GetKeyAction(nKey) == 0;
 }
 MS2_REPLACE_METHOD(0x140BEE590, UICoupleActionDialog, FUN_140bee590, 62, 0xC01866C2);
 
 // @0x140bee5e0
 int UICoupleActionDialog::FUN_140bee5e0(int nKey, unsigned __int64 nEmotion)
 {
-    if (FUN_1409331f0()->SetKeyBindingAndSync(nKey, 2, nEmotion, 0, 0) != 0) {
+    if (TSingleton<CKeyTable>::GetInstance()->SetKeyBindingAndSync(nKey, 2, nEmotion, 0, 0) != 0) {
         FUN_140becef0();
-        FUN_1409331f0()->FUN_14142a8b0(nEmotion);
+        TSingleton<CKeyTable>::GetInstance()->FUN_14142a8b0(nEmotion);
         return 1;
     }
     return 0;

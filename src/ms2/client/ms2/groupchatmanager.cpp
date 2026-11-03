@@ -123,23 +123,8 @@ public:
     virtual void vfunc_76();
     virtual CStringW vfunc_77();
 };
-// The camera option row of the game context (flags tested by FUN_140375660) and its smart pointer (pointer at +8).
+// The flags of the field data row (tested by FUN_140375660).
 class CFieldData { public: int FUN_140375660(unsigned nFlags); };   // C3: member view (fielddata.h)
-struct Unk_CameraOption : public CFieldData {
-};
-class Unk_CameraOptionPtr {
-public:
-    ~Unk_CameraOptionPtr();                          // 0x1408850f0
-    Unk_CameraOption* FUN_140885340() const;         // operator->
-private:
-    void* m_00;
-    Unk_CameraOption* m_p;
-};
-// The game context (FUN_1403ed2d0).
-class Unk_ChatGame {
-public:
-    Unk_CameraOptionPtr FUN_141bd30a0();             // copy of +0x298
-};
 // The chat window controller (+0x50 of the UI root FUN_141482e80).
 class Unk_ChatUI {
 public:
@@ -581,7 +566,7 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
             return;
         }
     }
-    int nRestricted = ((class Unk_ChatGame*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
+    int nRestricted = ((CFieldData*)(void*)WorldService::GetInstance()->FUN_141bd30a0().operator->())->FUN_140375660(0x100);
     if (nRestricted != 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);

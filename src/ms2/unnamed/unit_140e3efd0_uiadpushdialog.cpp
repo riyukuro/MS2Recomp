@@ -66,6 +66,7 @@
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/uidteventdialog.h"
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 
 // return types of the getters this unit calls
@@ -118,7 +119,7 @@ class Unk_140e45740 : public UIAlignWidgetManager { };
 class GFxManager { public: void GetStageSize(int nMovieId, int* pnWidth, int* pnHeight); };   // the stage size of a movie
 Unk_AltStringMgr* FUN_14025e7a0();
 class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
-UIObject* FUN_140ce8270(int nClass);
+template <class T> T* FindCliDialog(int id);   // gameeventcli.cpp
 int FUN_1422dc430(UIObject* p);
 Unk_140e45740* FUN_140e45740();
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
@@ -127,11 +128,9 @@ void FUN_1418ffef0(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 __int64 GetServerTime();
 CStringA FUN_1412755f0();
 CStringA FUN_141275640();
-CString FUN_14038f6d0(const CString&, const char*);
 CStringA FUN_140cc2a00(const CStringA& strRoot, const CStringA& strFile);   // path join
 bool FUN_140e45240(const CStringW& s, const char* c);
 extern Unk_140e45740* DAT_143ac5d88;
-bool FUN_1406c4cc0(const CMsTime& a, const CMsTime& b);
 CStringA FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item);
 class ASWindow   // C3: member view for the former free stand-ins
 {
@@ -308,7 +307,7 @@ int UIAdPushDialog::vfunc_4()
                 CMsTime saleEnd(nSaleEnd);
                 if (nSaleEnd == 0)
                     continue;
-                if (FUN_1406c4cc0(saleEnd, now))
+                if (saleEnd <= now)
                     ((class TiXmlNode*)(class Unk_AdXmlNode*)(pAccount))->RemoveChild((class TiXmlNode*)(pCur));
             }
         }
@@ -659,7 +658,7 @@ Unk_AdXmlNode* UIAdPushDialog::FindByName(Unk_AdXmlNode* pRoot, const CStringA& 
 // @0x140e41520
 CStringA UIAdPushDialog::GetStatePath()
 {
-    return FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml"));
+    return FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml");
 }
 
 // @0x140e41610
@@ -775,7 +774,7 @@ bool UIAdPushDialog::FindMinimizePos(float* pX, float* pY)
 {
     if (m_limitedBundle == 0)
         return false;
-    UIObject* pObj = FUN_140ce8270(0x4f01);
+    UIObject* pObj = FindCliDialog<UIDTEventDialog>(0x4f01);
     if (pObj)
     {
         bool bLoaded = (pObj->FUN_1422dc430() != 0 && (pObj->FUN_1422dba00().get() ? true : false)) ? 1 : 0;

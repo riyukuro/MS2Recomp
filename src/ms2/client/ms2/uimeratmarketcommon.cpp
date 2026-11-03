@@ -808,7 +808,6 @@ class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
 CStringW FUN_14093b9c0(int nAchieve, int nGrade);
 class Unk_140166410* FUN_140166410();
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);
-CStringW FUN_14061ad70(const CStringW& strKey, const wchar_t* szSuffix);
 class PC   // C3: member view for the former free stand-ins
 {
 public:
@@ -945,14 +944,14 @@ CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey)
     if (nMin > 0 && nMax > 0)
     {
         if (nMin == nMax)
-            strResult = FUN_14028dfa0<unsigned short>(FUN_14061ad70(strKey, L"level_only"), nMin);
+            strResult = FUN_14028dfa0<unsigned short>(strKey + L"level_only", nMin);
         else
-            strResult = FUN_14028dfa0(FUN_14061ad70(strKey, L"level_range"), nMin, nMax);
+            strResult = FUN_14028dfa0(strKey + L"level_range", nMin, nMax);
     }
     else if (nMin > 0)
-        strResult = FUN_14028dfa0<unsigned short>(FUN_14061ad70(strKey, L"level_min"), nMin);
+        strResult = FUN_14028dfa0<unsigned short>(strKey + L"level_min", nMin);
     else
-        strResult = FUN_14028dfa0<unsigned short>(FUN_14061ad70(strKey, L"level_max"), nMax);
+        strResult = FUN_14028dfa0<unsigned short>(strKey + L"level_max", nMax);
     return strResult;
 }
 

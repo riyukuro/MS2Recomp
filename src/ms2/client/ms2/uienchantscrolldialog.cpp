@@ -67,7 +67,6 @@ public:
 
 class Unk_EsUiMgr { public:  void FUN_141adc530(int uiId); };
 
-CReservedWordTable* FUN_1403b4750();
 class UIInventoryDialog { public: void FUN_141999e00(); };
 template<class T> T* Unk_BreakDialog(int);
 
@@ -76,7 +75,6 @@ __int64 FUN_140632990(__int64 nBase, float fExtra);                             
 CStringW FUN_14183e9c0(CStringW strText, int nRank);                                // rank-coloured text
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
-CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);                   // psz + str
 void FUN_14151f200();
 unsigned __int64 FUN_140718370(const CStringW& str);
 void FUN_140710590(COutPacket& packet);
@@ -364,9 +362,9 @@ CStringW UIEnchantScrollDialog::FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, 
     CStringW strRank = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->GetRarity());
     CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
     if (bStable)
-        strName += FUN_1401d0160(L" ", GetStringCommon(0xb6f));
+        strName += L" " + GetStringCommon(0xb6f);
     else if (bRandom)
-        strName += FUN_1401d0160(L" ", GetStringCommonByKey(L"s_enchantscroll_stable"));
+        strName += L" " + GetStringCommonByKey(L"s_enchantscroll_stable");
     return strName;
 }
 
@@ -504,7 +502,7 @@ CStringW UIEnchantScrollDialog::FUN_140f3e550(MS2Ptr<CItem> spItem)
     CStringW strDesc = FormatStringId(nId, spItem->FUN_140528160(), FUN_140f3e390());
     if (m_bDisableBreak)
         strDesc += GetStringCommonByKey(L"s_enchantscroll_desc_disable_break");
-    FUN_1403b4750()->ReplaceValueWords(strDesc);
+    TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strDesc);
     return strDesc;
 }
 

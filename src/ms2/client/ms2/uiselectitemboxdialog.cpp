@@ -37,8 +37,8 @@
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_dat_143acbc50(0);                                       // @0x1400e1640
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); void* m_p; };     // ctor 0x1401cd100 (C3: the name other units use)
+static Unk_BuddyHandle s_dat_143acbc50(NULL);                                       // @0x1400e1640
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"

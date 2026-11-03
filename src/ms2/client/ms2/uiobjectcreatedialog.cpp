@@ -87,23 +87,16 @@ template <> Unk_ObjectCreateInput* MS2Ptr<Unk_ObjectCreateInput>::operator->() c
 class Unk_14025e7c0 : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-// The world manager (singleton): the local player and the interact objects of the field.
-class Unk_ObjectCreateWorld
-{
-public:
-    MyPC* FUN_141bd0cc0();
-    void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& aObjects);     // every interact object of the field
-};
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    void FUN_141bc5f10(void* pOut);   // every interact object of the field (copied into *pOut)
     static class WorldService* GetInstance();
 };
 
-MS2Ptr<CInteractObjectData> FUN_14051f670(int nIndex);                              // a row by index
-int FUN_1407181d0(const CString& str);                                              // text to number
-void FUN_14020af60_ref(COutPacket* pPacket, const Vector3& pt);             // FUN_14020af60: encode a point
+unsigned int FUN_1407181d0(const CString& str);                                     // text to number
+void FUN_14020af60(COutPacket* pPacket, const Vector3* pt);                 // encode a point
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -169,8 +162,8 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             packet.WriteUnicodeStringA(str3);
             packet.WriteUnicodeStringA(str4);
             packet.Encode4(nCount);
-            FUN_14020af60_ref(&packet, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
-            FUN_14020af60_ref(&packet, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_20())));
+            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
+            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_20())));
             FUN_140710590(packet);
         }
         return 1;
@@ -180,13 +173,13 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nIndex = data.PopInt();
-            if (FUN_14051f670(nIndex).IsNull())
+            if (CInteractObjectData::Get(nIndex).IsNull())
                 return 0;
             if (MS2Ptr<ASScrollingList> list = FUN_140c02900("m_position"))
             {
                 list->FUN_1422dd1d0();
                 ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-                ((class Unk_ObjectCreateWorld*)WorldService::GetInstance())->FUN_141bc5f10(aObjects);
+                WorldService::GetInstance()->FUN_141bc5f10(&aObjects);
                 for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
                     MS2Ptr<CInteractObject> obj = aObjects[i];

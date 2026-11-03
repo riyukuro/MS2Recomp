@@ -32,7 +32,6 @@
 
 // Unit-local declarations, pending recovery of the quest data and AS wrapper units.
 class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
-CString FUN_140bc6280(const char*, const char*, const char*, const int&, const char*);
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
 class Unk_QuestDebugAccess : public CInputKeyHandler {};
@@ -79,15 +78,12 @@ void* FUN_140764020();   // C3: was FUN_140764020
 class Unk_QuestDebugDesc { };
 class Unk_QuestDebugMap : public ATL::CAtlMap<CString, CString, ATL::CStringElementTraitsI<CString>> {};
 void FUN_140761f00(const CStringW&, int);
-CStringW FUN_140ba7890(const wchar_t*, const __int64&);
 extern template CStringW StringFormat<CStringW, unsigned int>(const wchar_t*, const CStringW&, const unsigned int&);
 extern template CStringW StringFormat<unsigned int>(const wchar_t*, const unsigned int&);
 CString FUN_140513200(const char*, const unsigned int&);
-CString FUN_140540050(const char*, const CString&);
 CString FUN_14016a600(const wchar_t*, int);
 CStringW FUN_14016a730(const char*, int);
 void FUN_1412751b0(const CStringW&, int);
-CString FUN_14086c880(const char*, const int&, const int&, const int&);
 __int64 GetServerTime();
 class Unk_QuestDebugMap;
 CStringW FUN_141a97770(Unk_QuestDebugMap*);
@@ -141,7 +137,7 @@ void UIQuestDebugDialog::OnLoadComplete()
     do {
     m_30->FUN_140bc7340("m_quests", m_quests);
     if (m_quests == 0) {
-            throw new GfxExceptionSwfLoad(FUN_140bc6280("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(40), __FUNCTION__));
+            throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(40), __FUNCTION__));
     }
     } while (0);
     m_refresh = 0;
@@ -195,8 +191,8 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
                 CStringW mesoLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_meso");
                 CStringW statLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_stat_point");
                 CStringW skillLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_skill_point");
-                text += FUN_140ba7890(expLabel, FUN_140761ba0(id, 1));
-                text += FUN_140ba7890(mesoLabel, FUN_140761cc0(id, 1));
+                text += StringFormat<__int64>(expLabel, FUN_140761ba0(id, 1));
+                text += StringFormat<__int64>(mesoLabel, FUN_140761cc0(id, 1));
                 if (quest->m_require.m_quest.GetCount()) {
                     text += L"\nPreceding Quest\n";
                     for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
@@ -285,7 +281,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
         int second = now.GetSecond();
         int minute = now.GetMinute();
         int hour = now.GetHour();
-        CString fileName = FUN_14086c880(".\\log\\client\\quest_export_{0:02d}{1:02d}{2:02d}.csv", hour, minute, second);
+        CString fileName = StringFormat<int, int, int>(".\\log\\client\\quest_export_{0:02d}{1:02d}{2:02d}.csv", hour, minute, second);
         ATL::CAtlFile file;
         file.Create(fileName, 0x40000000, 3, 2, 0x80, NULL, NULL);
         CString csv("id,name,require,locking,standardlevel,requirelevel,feature,beginnpc,completenpc\n");
@@ -297,7 +293,7 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
             for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
                 require += FUN_140513200("{0} ", quest->m_require.m_quest[i]);
             }
-            CString name = FUN_140540050("\"{0}\"", FUN_14016a600(FUN_1416e4df0(id), 0));
+            CString name = StringFormat<CString>("\"{0}\"", FUN_14016a600(FUN_1416e4df0(id), 0));
             CString state;
             if (quest->m_30) state = "locking";
             else {

@@ -37,6 +37,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/worldservice.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
+#include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit<CAtlArray<int>> (was FUN_140177de0)
 class Unk_Service6100017;   // C3: efd::SmartPointer<Unk_Service6100017>::operator->
 struct Unk_EntityAppFramework;
 struct Unk_LevelArray;
@@ -44,11 +45,7 @@ class Unk_Service6100017;
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 // Earlier objects own these shared bodies.
-template<> Unk_PayloadPtr<CFieldData>::~Unk_PayloadPtr();
-template<> bool Unk_PayloadPtr<CFieldData>::operator==(CFieldData*)const;
-template<> CFieldData* Unk_PayloadPtr<CFieldData>::operator->()const;
 template<> Unk_PayloadPtr<CUGCMapData>::Unk_PayloadPtr(const Unk_PayloadPtr&);
-Unk_PayloadPtr<CFieldData> FUN_140374140(unsigned);
 void* FUN_1401c0d90();
 class CGameRule   // C3: member view for the former free stand-ins
 {
@@ -169,7 +166,7 @@ bool FUN_1408a07b0(int mapID,int blockID,__int64 ownerID) {
 MS2_REPLACE(0x1408a07b0, FUN_1408a07b0, 49, 0x301F651E);
 // @0x1408a07f0
 bool FUN_1408a07f0(unsigned mapID) {
-    Unk_PayloadPtr<CFieldData> p=FUN_140374140(mapID);
+    MS2Ptr<CFieldData> p=CFieldData::FUN_140374140(mapID);
     if(p==0) return false;
     return p->m_nMassiveEventField==1;
 }
@@ -325,8 +322,8 @@ void FUN_1408a1640(Cube* cube) {
     FUN_1402237c0((Unk_LevelArray *)&types);
     entity->GetPropertyValue(0x6b780e9d,typeNames);
     typeText=typeNames.c_str();
-    FUN_140177de0(typeText,&types,",");
-    for(size_t i=0;i<types.FUN_140186260();i++) {
+    XmlSplit(typeText,*reinterpret_cast<ATL::CAtlArray<int>*>(&types),",");
+    for(size_t i=0;i<reinterpret_cast<ATL::CAtlArray<int>*>(&types)->GetCount();i++) {
         int type=(*reinterpret_cast<ATL::CAtlArray<int>*>(&types))[i];
         cube->field5c|=FUN_1408a0190(type);
     }

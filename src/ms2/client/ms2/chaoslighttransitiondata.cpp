@@ -41,6 +41,7 @@
 #include <NiFloatExtraData.h>
 #include <NiFixedString.h>
 #include <NiMaterialInstance.h>
+#include "ms2/client/ms2/material/ms2materials.h"   // C3: MS2StandardMaterial::ms_RTTI
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
@@ -81,9 +82,7 @@ struct ChaosPixelRef
     NiPixelData* operator->() const { return m_p; }
 };
 
-struct Unk_MaterialTable;                                               // DAT_143d69198
 struct Unk_MaterialEntry;
-extern Unk_MaterialTable DAT_143d69198;
 class Unk_CubeKind   // C3: member view for the former free stand-ins
 {
 public:
@@ -185,7 +184,7 @@ CEffectPtr ChaosLightEffectParam::vfunc_6()
 // The chaos material (by kind: 1 normal, 2 skin, 3 hair) that matches the mesh's current material, or null.
 NiMaterial* FUN_141046540(NiMesh* pMesh)
 {
-    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial()));
+    Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial()));
     if (pEntry == 0)
         return 0;
     int anKinds[3] = { 1, 2, 3 };

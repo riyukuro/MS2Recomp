@@ -12,6 +12,8 @@
 #include "ms2/placeholder/ecrcameraservice.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/camera.h"
+#include <egf/ScriptContext.h>
 
 // ---- unit-local placeholders ----
 
@@ -128,7 +130,7 @@ MS2_REPLACE_METHOD(0x140afd630, CCameraMode, vfunc_5, 50, 0x7C24943E);
 // @0x140afd670
 void CCameraMode::vfunc_6(int n)
 {
-    Unk_UpperActor* pActor = reinterpret_cast<Unk_UpperActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60())));
+    Unk_UpperActor* pActor = reinterpret_cast<Unk_UpperActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60())));
     if (pActor)
         pActor->FUN_1416781a0(vfunc_1());
     Unk_CameraList* pList = Unk_CameraListOwner::FUN_140afe770();
@@ -414,7 +416,7 @@ void CCameraMode::vfunc_33()
 Vector3 CCameraMode::vfunc_35()
 {
     Vector3 pt(0.0f, 0.0f, 0.0f);
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     if (pTarget)
     {
         pt = pTarget->vfunc_17();
@@ -440,7 +442,7 @@ MS2_REPLACE_METHOD(0x140afe410, CCameraMode, vfunc_36, 147, 0x12A9C619);
 // @0x140afe4b0
 void CCameraMode::FUN_140afe4b0()
 {
-    efd::SmartPointer<ecr::CameraService> spCamera = g_143b059e8.GetSystemServiceAs<ecr::CameraService>();
+    efd::SmartPointer<ecr::CameraService> spCamera = reinterpret_cast<Unk_AppFramework&>(egf::g_bapiContext).GetSystemServiceAs<ecr::CameraService>();
     if (spCamera)
     {
         Unk_CameraTarget* pTarget = (Unk_CameraTarget*)FUN_1413f98d0();

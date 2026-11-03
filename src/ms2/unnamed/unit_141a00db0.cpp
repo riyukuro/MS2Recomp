@@ -18,10 +18,9 @@ CStringW GetStringCommon(int nStringId);                              // a commo
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CString FUN_141a06ff0(int nSound);                                  // the sound event name (uimessageboxdata.cpp)
 void FUN_141415600(const CString& strName);                         // drops an item slot bind id
-CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str); // a string by id formatted with two arguments
+template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b); // a string by id formatted with two arguments
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
 CStringW FUN_14016a730(const char* psz, int nCodePage);
-CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
 
 // @0x141a00db0
 CMsgBoxData::CMsgBoxData(int nType)
@@ -283,7 +282,7 @@ MS2_REPLACE_METHOD(0x141A02220, CMsgBoxData, SetSecondItem, 119, 0x62468448);
 void CMsgBoxData::FUN_141a022a0(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode)
 {
     m_strCharName = strName;
-    m_strCharDetail = FUN_140a228f0(0xaa0, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
+    m_strCharDetail = FUN_14028dee0<int, CStringW>(0xaa0, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
     m_strProfile = FUN_14016a730(FUN_141028be0(nCharId, strCode, 1, ""), 0);
 }
 MS2_REPLACE_METHOD(0x141A022A0, CMsgBoxData, FUN_141a022a0, 431, 0x6722233A);
@@ -657,7 +656,7 @@ void CMsgBoxData::FUN_141a03130(UIMessageBox* pBox, int nSec)
         m_timer.m_nArmed = nSec;
         CStringW strTail(L"\n");
         strTail += StringFormat<int>(m_timer.m_strFormat, nSec);
-        pBox->FUN_1422dba00()->Invoke("onProcessFunction", "updateMsg", FUN_1401d0080(m_strMsg, strTail));
+        pBox->FUN_1422dba00()->Invoke("onProcessFunction", "updateMsg", m_strMsg + strTail);
     }
 }
 MS2_REPLACE_METHOD(0x141A03130, CMsgBoxData, FUN_141a03130, 588, 0x51A7E58A);

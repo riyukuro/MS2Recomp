@@ -42,6 +42,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/nifeffectparam.h"   // C3: CNifLoadingService::GetTexture
+#include "ms2/placeholder/xmlattr.h"         // C3: XmlTokenList
 #include <NiTexturingProperty.h>
 #include <NiAVObject.h>
 
@@ -57,12 +59,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was FUN_1408732a0
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
-int FUN_1401788f0(Unk_140165cf0* pNode, const char* pszName, ATL::CAtlArray<CString>& arr);   // split to list
 Vector3* FUN_140a0af70(ATL::CAtlArray<Vector3>* pArr, __int64 nIndex);
 
 bool FUN_14028d470(float a, float b);                               // nearly equal
 class CMainSystem;
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 // The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
 struct Unk_LightningNiPoint3 : public Vector3 {};
 // NiPoint3(const efd::Point3&) (0x14027dcf0) into a temporary, then NiPoint3::operator=(NiPoint3&&) (0x14097faa0).
@@ -79,12 +79,7 @@ float FUN_14109ace0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
 // Resource manager (singleton 0x140a0afd0): texture load by path. 0x140cc2ba0 joins directory + file name.
-class Unk_ResourceMgr
-{
-public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);
-};
-Unk_ResourceMgr* FUN_140a0afd0();
+class Unk_ResourceMgr* FUN_140a0afd0();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // Elements of the target's point list (CAtlArray operator[] / GetCount instances of another obj).
@@ -92,20 +87,12 @@ CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
 void FUN_1415672e0(NiAVObject*, bool);
 
-// The effect node (400 bytes) carries the effect-space point.
-class Unk_EffectNode : public NiNode
-{
-public:
-    Unk_EffectNode(int nA, int nB);                                 // 0x1411a34b0
-    char m_pad_node[400 - sizeof(NiNode)];
-};
-MS2_CHECK_SIZE(Unk_EffectNode, 400);
 
 // The effect target (CEffect::vfunc_3's second argument), the part this unit reads.
 struct Unk_LightningTarget
 {
     char m_pad_00[0x10];
-    void* m_hNode;                                  // +0x10 handle of the owner's scene node
+    NiAVObjectPtr m_hNode;                          // +0x10 the owner's scene node
     char m_pad_18[0x10];
     ATL::CAtlArray<Vector3>* m_pPoints;     // +0x28 the two (or more) end points
 };
@@ -134,9 +121,9 @@ LightningEffectParam::LightningEffectParam()
 void LightningEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
-    FUN_1401788f0(pNode, "texturePathA", m_arrTexture[0]);
-    FUN_1401788f0(pNode, "texturePathB", m_arrTexture[1]);
-    FUN_1401788f0(pNode, "texturePathC", m_arrTexture[2]);
+    XmlTokenList(pNode, "texturePathA", m_arrTexture[0]);
+    XmlTokenList(pNode, "texturePathB", m_arrTexture[1]);
+    XmlTokenList(pNode, "texturePathC", m_arrTexture[2]);
     XmlGetAttr((class TiXmlElement*)(pNode), "spread", m_fSpread);
     XmlGetAttr((class TiXmlElement*)(pNode), "jointLen", m_fJointLen);
     XmlGetAttr((class TiXmlElement*)(pNode), "width", m_fWidth);
@@ -193,7 +180,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
     const LightningEffectParam* pLightning = static_cast<const LightningEffectParam*>(pParam);
-    m_spTarget = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_hNode))))));
+    m_spTarget = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)((NiAVObject*)reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_hNode))));
     m_pPoints = reinterpret_cast<const Unk_LightningTarget*>(pTarget)->m_pPoints;
     m_fSpread = pLightning->m_fSpread;
     m_fJointLen = pLightning->m_fJointLen;
@@ -205,7 +192,7 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
 
     m_spParam.AssignRaw(const_cast<LightningEffectParam*>(pLightning));
 
-    NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
+    NiPointer<EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) EffectNode(false, false);
     spRoot->SetName("Effect Root");
     m_spRoot = spRoot;
 
@@ -366,7 +353,7 @@ void LightningEffect::Rebuild()
         }
     }
     CString strName = m_spParam->m_arrTexture[nClass][(size_t)nIndex];
-    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get()));
+    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp))->SetBaseTexture((class NiTexture*)(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(FUN_140cc2ba0("Effect/Textures", strName), 5).operator NiTexture*()));
     m_spMesh->GetMesh()->UpdateProperties();
     BuildPath(kFirst, kLast);
 

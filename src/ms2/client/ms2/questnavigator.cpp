@@ -34,6 +34,8 @@
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/placeholder/wcformat.h"
+#include <efd/Point3.h>
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 
 class NotifyObject;
@@ -73,10 +75,9 @@ public:
     int GetSubSceneId();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_14062b4f0(CStringW strKey, const int& n);              // localized text with one number
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 CQuestNavigationMap* FUN_140c9b8e0();
-int FUN_140408410(const ATL::CAtlArray<unsigned>& aValues, const unsigned& nValue);    // index of nValue or -1
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // index of a value (-1: absent)
 UIMinimapDialog* FUN_140c9b540(int nId);
 
 // the minimap dialog (UI type 0x4e29) and the UI manager
@@ -87,8 +88,8 @@ Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
 void FUN_140b86230(const Vector3* pTarget, NiTransform* pXf);
 float FUN_140966f00(Vector3 a, Vector3 b);
 float FUN_140966f00(NiPoint3 a, Vector3 b);
-extern Vector3 DAT_143b01a60;                               // the zero point
-extern Vector3 DAT_143a08cf8;                               // the up axis
+#define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)      // the zero point
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)    // the up axis
 
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
@@ -385,7 +386,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
                 if (!spPortal->FUN_14169d160())
                     continue;
                 unsigned nPortalMap = spPortal->FUN_14169d280();
-                if (FUN_140408410(aPath, nPortalMap) != -1)
+                if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(aPath), reinterpret_cast<const int&>(nPortalMap)) != -1)
                 {
                     pResult->m_1c = 4;
                     reinterpret_cast<Vector3&>(pResult->m_20) = spPortal->FUN_14169d2f0();
@@ -520,12 +521,12 @@ CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
     if (nDist > 100000)
     {
         int nKm = nDist / 100000;
-        strText = FUN_14062b4f0(L"s_quest_navigation_distance_km", nKm);
+        strText = FUN_14028dfa0(L"s_quest_navigation_distance_km", nKm);
     }
     else if (nDist < 100000 && nDist >= 100)
     {
         int nMeters = nDist / 100;
-        strText = FUN_14062b4f0(L"s_quest_navigation_distance_m", nMeters);
+        strText = FUN_14028dfa0(L"s_quest_navigation_distance_m", nMeters);
     }
     else
     {

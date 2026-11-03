@@ -33,6 +33,7 @@
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/commonfiles/gameeventuservalue.h"
+#include "ms2/client/ms2/uidailymissiondialog.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -47,12 +48,6 @@ public:
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bRefresh);
-};
-
-// The day tab strip of the movie.
-class Unk_TrTab : public AScript
-{
-public:
 };
 
 // The root script object of the dialog, as the Invoke back end sees it. Only the overloads this unit calls.
@@ -70,7 +65,7 @@ class Unk_AttendTable { public: int FUN_1409617d0(int nKind, unsigned nId, const
 extern GameEventUserValue DAT_143ab3010;
 
 class Unk_TrDlg { public: void FUN_140ea5f80(); };
-Unk_TrDlg* FUN_140938b90(int nType);
+class UIGameMenuDialog* FUN_140938b90(int nType);
 
 void* FUN_1401c0d90();
 void* FUN_140764020();
@@ -82,13 +77,7 @@ __int64 FUN_140761ba0(int nA, int nB);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1416e5350(int nQuest, int n);
 void FUN_140710590(COutPacket& packet);
-#ifdef __clang__
-// clang otherwise emits an unavailable CopyChars DLL import for CString + const char*; bind the exe's operator+.
-CString FUN_14038f6d0(const CString& strLeft, const char* szRight);
-#define TR_CAT(a, b) FUN_14038f6d0(a, b)
-#else
 #define TR_CAT(a, b) ((a) + (b))
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -397,7 +386,7 @@ CStringW UITimeRunEventDialog::FUN_140ee4380(MS2Ptr<TimeRunEventContext> spConte
 void UITimeRunEventDialog::FUN_140ee4570(int)
 {
     FUN_140ee3580();
-    Unk_TrDlg* pDlg = FUN_140938b90(0x4e28);
+    Unk_TrDlg* pDlg = reinterpret_cast<Unk_TrDlg*>(FUN_140938b90(0x4e28));
     if (pDlg != 0)
         pDlg->FUN_140ea5f80();
 }
@@ -458,8 +447,8 @@ __int64 UITimeRunEventDialog::FUN_140ee4990(MS2Ptr<TimeRunEventContext> spContex
 // @0x140ee4b00
 int UITimeRunEventDialog::FUN_140ee4b00()
 {
-    if (MS2Ptr<Unk_TrTab> spTab = FUN_140c02870("m_tab"))
-        return reinterpret_cast<ASButtonBar*>(spTab.operator->())->GetSelectedIndex() + 1;
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+        return spTab.operator->()->GetSelectedIndex() + 1;
     return -1;
 }
 

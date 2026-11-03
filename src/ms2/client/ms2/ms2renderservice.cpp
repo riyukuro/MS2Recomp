@@ -163,7 +163,6 @@ public:
     // @0x1414f0470
     int GetMode() const { return m_nMode; }
 };
-const char* FUN_1427cf790(const NiDX9Renderer* pRenderer);                   // NiDX9Renderer::GetDriverName: the adapter's driver dll ("%s" of D3DADAPTER_IDENTIFIER9::Driver)
 void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int bFollow);
 bool FUN_14125e820(Unk_GraphicState* p, int nWidth, int nHeight);
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
@@ -637,7 +636,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
                 return false;
             }
             {
-                CStringA driver(FUN_1427cf790(pDX9Renderer));
+                CStringA driver(pDX9Renderer->GetDriverName());
                 FUN_1401d3700(driver);
                 if (driver == "mctu.dll") {
                     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("!!! mctu.dll !!!");

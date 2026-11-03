@@ -86,7 +86,7 @@ static CString s_sort7c[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Cr
 
 // ---- .text$mn ----
 
-int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spItem, MS2Ptr<Customize> spCustomize, unsigned nFlags, int n);
+int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spItem, MS2Ptr<Customize> spCustomize, unsigned nFlags, int n, bool bColor);
 void FUN_140f327a0(MS2Ptr<CItemData> spData, int nPalette, ASObj& obj, int n);
 void FUN_140f328a0(MS2Ptr<Customize> spCustomize, ASObj& obj, int n);
 void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASObj& obj, unsigned* pnFlags);
@@ -98,7 +98,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
 
 // The item list row's colour / option payload.
 // @0x140f32290
-int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spItem, MS2Ptr<Customize> spCustomize, unsigned nFlags, int n)
+int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spItem, MS2Ptr<Customize> spCustomize, unsigned nFlags, int n, bool bColor)
 {
     if ((nFlags & 1) != 0)
     {

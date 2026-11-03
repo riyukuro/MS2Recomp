@@ -34,6 +34,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/ms2format.h"   // C3: StringFormat<int> (was FUN_1401ceea0)
 #include "ms2/commonfiles/os.h"
+#include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
 class Unk_XmlNode   // C3: member view for the former Unk_140165cf0 stand-ins
 {
 public:
@@ -74,9 +75,6 @@ void XmlSetAttr(TiXmlElement* pElem, const char* pszName, int nValue);      // S
 CString FUN_1412755f0();                                                    // the character save directory
 CString FUN_141275640();                                                    // the account save directory
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);       // path join
-CString FUN_1402bb1c0(const char* pszFormat, const int& n);                 // StringFormat(format, int)
-CString FUN_1401d9af0(const char* pszFormat, const __int64* pn);            // StringFormat(format, size_t)
-CStringW FUN_1402a5170(const wchar_t* pszFormat, const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140719630(int n);                                              // number with thousands separators
 CStringW FUN_14083cb20(const CStringW& str);
@@ -88,7 +86,6 @@ class Unk_LqActor : public MyPC { };
 class Unk_LqWorld { public: Unk_LqActor* FUN_141bd0cc0(); };
 class Unk_LqUIMgr { public: void FUN_141adc530(int nClass); };
 class Unk_LqSceneMgr;
-Unk_LqSceneMgr* FUN_1408e57f0();
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
@@ -100,9 +97,6 @@ class UIStatusEventDispatcher;
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 unsigned short FUN_14074bd10(int);  // C3: the definition's signature
 class Unk_140acd6e0 : public ASMovieClip { public:
-};
-class Unk_LqRoot : public AScript { public:
-    Scaleform::GFx::Value FUN_140ba4cc0(const char*, const ASObj&);         // Invoke(method, object)
 };
 int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const int* pn);           // index of the value (-1 when absent)
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
@@ -239,7 +233,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         {
             const CQuestData::QuestRewardItem& item = spQuest->m_rewards[i];
             CString strBound = m_1a8.BindNewItem(item.m_itemId, item.m_count, item.m_job);
-            rewardAccept.FUN_1407cba60((const char*)FUN_1401d9af0("reward{0}", &i), strBound);
+            rewardAccept.FUN_1407cba60((const char*)StringFormat<unsigned __int64>("reward{0}", reinterpret_cast<const unsigned __int64&>(i)), strBound);
         }
         FUN_140ea3570(spQuest->m_complete, rewardComplete);
         data.FUN_1409eb270("rewardAccept", rewardAccept);
@@ -249,10 +243,10 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         FUN_140ea2e50(data);
     if (m_1a0 != m_198)
     {
-        data.FUN_1407cbb20("video", FUN_1402a5170(L"Common/{0}.usm", m_198));
+        data.FUN_1407cbb20("video", StringFormat<CString>(L"Common/{0}.usm", m_198));
         m_1a0 = m_198;
     }
-    static_cast<Unk_LqRoot*>(m_30.operator->())->FUN_140ba4cc0("setData", data);
+    static_cast<AScript*>(m_30.operator->())->Invoke("setData", static_cast<const AScript&>(data));
     CStringW strCategory = GetStringCommonByKey(StringFormat<int>(L"s_learning_quest_category_{0}", m_190));
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
     {
@@ -317,7 +311,7 @@ void UILearningQuestDialog::vfunc_12()
 // @0x140ea1e20
 int UILearningQuestDialog::FUN_140ea1e20(int bNew)
 {
-    if (((class GFxSceneService*)(class Unk_LqSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
         return 0;
     if (FUN_141924630() != 0)
         return 0;
@@ -385,7 +379,7 @@ void UILearningQuestDialog::LoadLearningQuest()
                     if (spItem->m_nQuestKind == 0)
                     {
                         unsigned nSeen = 0;
-                        XmlGetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spItem->m_nId), *(int*)(&nSeen));
+                        XmlGetAttr(pList, (const char*)StringFormat<int>("learning{0}", spItem->m_nId), *(int*)(&nSeen));
                         m_2c8.SetAt(spItem->m_nId, nSeen);
                     }
                 }
@@ -407,7 +401,7 @@ void UILearningQuestDialog::LoadLearningQuest()
                     if (spItem->m_nQuestKind != 0)
                     {
                         unsigned nSeen = 0;
-                        XmlGetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spItem->m_nId), *(int*)(&nSeen));
+                        XmlGetAttr(pList, (const char*)StringFormat<int>("learning{0}", spItem->m_nId), *(int*)(&nSeen));
                         m_2c8.SetAt(spItem->m_nId, nSeen);
                     }
                 }
@@ -439,7 +433,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         unsigned nSeen = m_2c8.GetValueAt(pos);
         MS2Ptr<CLearningQuestData> spData = CLearningQuestTable::GetInstance()->Get(nId);
         if ((spData.get() ? true : false) && spData->m_nQuestKind == 0)
-            XmlSetAttr(pList, (const char*)FUN_1402bb1c0("learning{0}", spData->m_nId), nSeen);
+            XmlSetAttr(pList, (const char*)StringFormat<int>("learning{0}", spData->m_nId), nSeen);
     }
     reinterpret_cast<TiXmlDocument*>(&m_1e8)->SaveFile((const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"));
     TiXmlElement* pRoot2 = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
@@ -462,7 +456,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         unsigned nSeen = m_2c8.GetValueAt(pos2);
         MS2Ptr<CLearningQuestData> spData = CLearningQuestTable::GetInstance()->Get(nId);
         if ((spData.get() ? true : false) && spData->m_nQuestKind != 0)
-            XmlSetAttr(pList2, (const char*)FUN_1402bb1c0("learning{0}", spData->m_nId), nSeen);
+            XmlSetAttr(pList2, (const char*)StringFormat<int>("learning{0}", spData->m_nId), nSeen);
     }
     reinterpret_cast<TiXmlDocument*>(&m_258)->SaveFile((const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"));
 }
@@ -557,7 +551,7 @@ void UILearningQuestDialog::FUN_140ea3570(const CQuestData::CompleteReward& rRew
     {
         const CQuestData::QuestRewardItem& item = rReward.m_choiceRewards[i];
         CString strBound = m_1a8.BindNewItem(item.m_itemId, item.m_count, item.m_job);
-        rOut.FUN_1407cba60((const char*)FUN_1401d9af0("reward{0}", &i), strBound);
+        rOut.FUN_1407cba60((const char*)StringFormat<unsigned __int64>("reward{0}", reinterpret_cast<const unsigned __int64&>(i)), strBound);
     }
 }
 
@@ -566,7 +560,7 @@ void UILearningQuestDialog::FUN_140ea3910()
 {
     if (((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == 0)
         return;
-    if (((class GFxSceneService*)(class Unk_LqSceneMgr*)(FUN_1408e57f0()))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
         return;
     if (m_2c8.GetCount() == 0)
         return;

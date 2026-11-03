@@ -33,31 +33,18 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_PnContent;
 struct Unk_PnContentPtr
 {
-    Unk_PnContent* FUN_14078f3d0() const;                       // operator->
     void* FUN_140e78000() const { return m_p; }                 // 0x140e78000 the raw pointer (this unit)
     void* m_00;
     void* m_p;
 };
-class Unk_PnContentArray
-{
-public:
-    size_t FUN_14078fae0() const;                               // GetCount
-    const Unk_PnContentPtr& FUN_14078f350(__int64 i) const;     // GetAt
-};
+typedef ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent>> Unk_PnContentArray;
 class Unk_PnTalkScript
 {
 public:
     char m_pad[0x68];
     Unk_PnContentArray m_contents;                              // +0x68
-};
-class Unk_PnContent
-{
-public:
-    char m_pad[0x18];
-    CStringW m_strText;                                         // +0x18
 };
 class Unk_PnWorld { public: void* FUN_141bd0cc0(); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -68,7 +55,6 @@ Unk_PnScriptPtr FUN_1408564b0(int nQuestId, int n);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 UIQuestEventDispatcher* FUN_140bfc4b0();
 CStringW FUN_1401aa6a0(int nId);                                // npc name
-CKeyTable* FUN_1409331f0();
 class Unk_PnButton : public ASButton { public: };
 class Unk_PnRoot : public AScript {};
 class Unk_PnActor { public: void vfunc_4(int, int, int); };
@@ -76,7 +62,7 @@ UIFameContentsNotify* FUN_140e77d80(int nType);
 void FUN_140710590(COutPacket& rPacket);
 int FUN_1418dd0d0();
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-int FUN_140408410(ATL::CAtlArray<unsigned>* pArr, const unsigned* pn);   // index of the value (-1 when absent)
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // index of the value (-1 when absent, 0x140408410)
 
 // @0x140e76460
 UIPopupNpcTalkDialog::UIPopupNpcTalkDialog()
@@ -289,10 +275,10 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         return 0;
     if (m_188.IsNull())
         return 0;
-    if (m_180 >= (int)m_188.FUN_14085a610()->m_contents.FUN_14078fae0())
+    if (m_180 >= (int)m_188.FUN_14085a610()->m_contents.GetCount())
         return 2;
     int nDone = ((class CQuestManager*)FUN_140764020())->IsQuestComplete(m_184);
-    CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_140e78000());
+    CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)reinterpret_cast<const Unk_PnContentPtr&>(m_188.FUN_14085a610()->m_contents[m_180]).FUN_140e78000());
     if (pCin != 0)
         static_cast<Unk_PnRoot*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->Invoke("setPortrait", pCin->m_speakerIllust);
     CStringW strNpc;
@@ -303,16 +289,16 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
     static_cast<Unk_PnRoot*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->Invoke("setNpc", strNpc);
     if (MS2Ptr<ASTextField> spScript = GetChild<ASTextField>("m_script"))
     {
-        CStringW strText = m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_14078f3d0()->m_strText;
+        CStringW strText = m_188.FUN_14085a610()->m_contents[m_180]->m_name;
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
         spScript->SetTextHTMLW(strText);
     }
-    BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.FUN_14078fae0() - 1);
+    BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.GetCount() - 1);
     if (MS2Ptr<Unk_PnButton> spEnd = FUN_140bb4b10("m_end"))
     {
         if (!bLast)
         {
-            CStringW strEnd = FUN_14028dfa0<CStringW>(L"s_field_quest_talk_end", FUN_1409331f0()->GetKeyName(1));
+            CStringW strEnd = FUN_14028dfa0<CStringW>(L"s_field_quest_talk_end", TSingleton<CKeyTable>::GetInstance()->GetKeyName(1));
             spEnd->FUN_1422cdfb0(strEnd);
             spEnd->vfunc_3(1);
         }
@@ -329,7 +315,7 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
             else
                 strKey = L"s_field_quest_talk_ok";
         }
-        CStringW strNext = FUN_14028dfa0<CStringW>(strKey, FUN_1409331f0()->GetActionKeyName(0x493e2, 0));
+        CStringW strNext = FUN_14028dfa0<CStringW>(strKey, TSingleton<CKeyTable>::GetInstance()->GetActionKeyName(0x493e2, 0));
         spNext->FUN_1422cdfb0(strNext);
     }
     return 1;
@@ -342,7 +328,7 @@ int UIPopupNpcTalkDialog::FUN_140e77b80(int nQuest)
     if (spQuest.IsNull())
         return 0;
     unsigned nMap = ((class WorldService*)(class Unk_PnWorld*)(reinterpret_cast<Unk_PnWorld*>(WorldService::GetInstance())))->FUN_141bd3060();
-    if (FUN_140408410(&spQuest->m_fields, &nMap) == -1)
+    if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(spQuest->m_fields), reinterpret_cast<const int&>(nMap)) == -1)
         return 0;
     return 1;
 }

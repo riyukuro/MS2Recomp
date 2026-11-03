@@ -26,14 +26,13 @@ static CString s_tabIndex = "tabIndex";
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/itempreview.h"
+#include "ms2/client/ms2/uiavatarbase.h"   // C3: UIAvatarBase (ItemPreview::GetAvatar)
 
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 class Unk_IpActor { public: virtual void vfunc_0(); };
-class Unk_IpOutfit;
-class Unk_IpOutfitView;
 class Unk_IpAvatar
 {
 public:
@@ -50,13 +49,9 @@ template <> AvatarPC* efd::DynamicCast<AvatarPC, GameObject>(GameObject* Source)
 // The preview service (singleton 0x1409bb9e0): the item shown on the preview avatar.
 class Unk_IpPreview : public ItemPreviewMgr
 {
-public:
-    MS2Ptr<Unk_IpOutfit> FUN_140d40620();
 };
 class Unk_ItemPreview* FUN_1409bb9e0();   // C3: was FUN_1409bb9e0
 
-class Unk_IpOutfitView : public CPtred { public: Unk_IpOutfitView(); };
-class Unk_IpOutfit : public CPtred { public: MS2Ptr<Unk_IpOutfitView> FUN_140d3cf00(); };
 class Unk_EquipOutfit : public CPtred { public: Unk_EquipOutfit(); };
 CStringW GetStringCommon(int nStringId);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
@@ -227,9 +222,9 @@ ASSlot* FUN_1412d6c80(const MS2Ptr<ASSlot>& p);   // folded MS2Ptr<ASSlot>::oper
 void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || m_equip == 0) return;
-    MS2Ptr<Unk_IpOutfit> spOutfit = ((class Unk_IpPreview*)FUN_1409bb9e0())->FUN_140d40620();
-    MS2Ptr<Unk_IpOutfitView> spView(0);
-    if (spOutfit.get() != 0) spView = spOutfit->FUN_140d3cf00();
+    MS2Ptr<ItemPreview> spOutfit = ((class Unk_IpPreview*)FUN_1409bb9e0())->GetPreview();
+    MS2Ptr<UIAvatarBase> spView(0);
+    if (spOutfit.get() != 0) spView = spOutfit->GetAvatar();
     MS2Ptr<ASSlot> spSlot(new ASSlot(2));
     if (spSlot.get() != 0) {
         void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();

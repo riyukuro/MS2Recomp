@@ -106,6 +106,9 @@
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/astextinput.h"   // C3: ASTextInput::FUN_1422e0b00
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
+#include "ms2/placeholder/cgameeventvaluemanager.h"
+#include "ms2/commonfiles/gameeventvalue.h"
+#include "ms2/commonfiles/gameeventcontext.h"
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
@@ -180,7 +183,6 @@ CString& FUN_140164930(ATL::CAtlArray<CString>&, size_t nIndex);        // opera
 
 // Texts.
 CStringW FUN_140298ea0(CStringW);                                       // localized string by key
-CStringW FUN_1401d0160(const wchar_t*, const CStringW&);
 CStringW FUN_1409404f0(__int64);
 CStringW FUN_1401aa6a0(int);
 CString FUN_140719530(unsigned __int64);
@@ -204,10 +206,6 @@ void FUN_1418fde20(__int64 nId0, __int64 nId1, int nValue, const CStringW& strAr
 // The chart tables and the season table behind the boards.
 enum Unk_LevelEntry;
 void FUN_140222be0(ATL::CAtlArray<Unk_LevelEntry>& arr);    // the job ids
-class Unk_RankMapInfo : public CPtred {};
-class Unk_RankMapTable { public: MS2Ptr<Unk_RankMapInfo> FUN_140429930(int nId); };
-class CGameEventValueManager;
-Unk_RankMapTable* FUN_1403ecfe0(void*);
 
 int FUN_140b3f460(int nType);
 
@@ -722,7 +720,7 @@ void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
                 continue;
             if (spRec->m_bIsEventArcade == 1)
             {
-                if (FUN_1403ecfe0(reinterpret_cast<void*>(TSingleton<CGameEventValueManager>::GetInstance()))->FUN_140429930(spRec->m_nId) == 0)
+                if (((CGameEventValueArcadeOpen*)(TSingleton<CGameEventValueManager>::GetInstance()->GetArcadeOpen()))->Get(spRec->m_nId) == 0)
                     continue;
             }
             int nOffset = nSubIdx * 10;
@@ -731,7 +729,7 @@ void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
             spSub->m_nId = nId + nOffset;
             spSub->m_nSub = spRec->m_nId;
             spSub->m_strLabel = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x20, spSub->m_nSub);
-            spSub->m_strImage = FUN_1401d0160(L"./Data/Resource/Image/Map/Arcade/", spRec->m_strArcadeBanner);
+            spSub->m_strImage = L"./Data/Resource/Image/Map/Arcade/" + spRec->m_strArcadeBanner;
             spSub->m_nParent = nId;
             spSub->m_nType = 10;
             m_categories.AddTail(spSub);

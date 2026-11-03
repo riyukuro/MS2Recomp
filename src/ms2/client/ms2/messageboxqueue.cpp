@@ -20,13 +20,6 @@
 // Scoped lock (ctor 0x1401b4ec0, dtor 0x1401b5120).
 class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_1401b4ec0(); private: void* m_p; };
 
-// The UI manager (singleton behind FUN_1403ed2b0): a dialog by its UI id.
-class Unk_MsgQueueUIMgr
-{
-public:
-};
-Unk_MsgQueueUIMgr* FUN_1403ed2b0();
-
 UIMessageBox* FUN_14151f890();
 int FUN_14151fad0(MS2Ptr<CMsgBoxData> spData);
 MS2Ptr<CMsgBoxData> FUN_14151f820();
@@ -233,9 +226,9 @@ void FUN_14151fb60(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
 // @0x14151fcb0
 UIMessageBox* FUN_14151fcb0(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> p = reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nId);
+        MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
         if (p.get() != 0)
             return dynamic_cast<UIMessageBox*>((UIObject*)p);
     }

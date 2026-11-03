@@ -129,8 +129,6 @@ struct Unk_UgcPartInfo
 };
 
 CString FUN_141421740(const CString& strName, int* pnFlag);
-CString FUN_1401d2b10(const CString& strLeft, const CString& strRight);    // a + b (the exe ATL::operator+; clang lacks the MFC CopyChars import)
-CString FUN_14038f6d0(const CString& strLeft, const char* szRight); // a + literal
 
 // Model-root virtual 18 (look a scene node up by name).
 struct Unk_UgcRoot
@@ -262,8 +260,8 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
         strMapped = it->second;
     CString strOut;
     strOut = strFirst.Left(nIndex);
-    strOut = FUN_1401d2b10(strOut, strMapped);
-    strOut = FUN_1401d2b10(strOut, strFirst.Right(strFirst.GetLength() - nIndex - 1));
+    strOut = strOut + strMapped;
+    strOut = strOut + strFirst.Right(strFirst.GetLength() - nIndex - 1);
     return strOut;
 }
 
@@ -929,7 +927,7 @@ CString FUN_141425220(const CString& strPath, int bDiffuse)
     CString strSuffix(bDiffuse != 0 ? "_D" : "");
     int nDot = strName.ReverseFind('.');
     strName = strName.Left(nDot);
-    strName = FUN_14038f6d0(FUN_1401d2b10(strName, strSuffix), DAT_142f10fe4);
+    strName = strName + strSuffix + DAT_142f10fe4;
     return strName;
 }
 
@@ -940,7 +938,7 @@ CString FUN_1414253b0(const CString& strPath, int bDiffuse)
     CString strSuffix(bDiffuse != 0 ? "_D" : "");
     int nDot = strName.ReverseFind('.');
     strName = strName.Left(nDot);
-    strName = FUN_14038f6d0(FUN_1401d2b10(strName, strSuffix), DAT_142f10ff0);
+    strName = strName + strSuffix + DAT_142f10ff0;
     return strName;
 }
 
@@ -1512,14 +1510,8 @@ CString FUN_1414218c0(const CString& strPath, const CString& strSuffix)
     CString strLetter(strSuffix);
     CString strResult;
     strResult = strPath.Left(nIndex);
-#ifdef __clang__
-    // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+.
-    strResult = FUN_1401d2b10(strResult, strLetter);
-    strResult = FUN_1401d2b10(strResult, strPath.Right(strPath.GetLength() - nIndex - 1));
-#else
     strResult = strResult + strLetter;
     strResult = strResult + strPath.Right(strPath.GetLength() - nIndex - 1);
-#endif
     return strResult;
 }
 MS2_REPLACE(0x1414218C0, FUN_1414218c0, 477, 0x1EC93043);

@@ -11,7 +11,6 @@
 #include <afx.h>
 
 // Callees shared with StateFallDamage (unit-local views of unrecovered code).
-CString FUN_14038f6d0(const CString& str, const char* psz);                // 0x14038f6d0 concatenation
 
 // The animation service: resolves an animation name to a sequence id (-2 when the model has none).
 class Unk_FallAnimSvc { public: int FUN_140999490(const egf::EntityID& kId, const efd::utf8string& strName);

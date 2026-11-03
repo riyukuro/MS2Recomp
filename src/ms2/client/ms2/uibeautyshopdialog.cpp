@@ -190,7 +190,7 @@ private:
 };
 MS2_CHECK_SIZE(ASTooltip, 0x60);
 
-// The colour palette rows (FUN_140281980: the ingredient/palette tables).
+// The colour palette rows (TSingleton<CItemDataTable>: the ingredient/palette tables).
 class Unk_BSColorRow : public CPtred
 {
 public:
@@ -214,7 +214,8 @@ public:
     Unk_BSColorPtr FUN_140558960(int nPalette, int nIndex);     // row
     MS2Ptr<Unk_BSColorList> FUN_140558ad0(int nPalette);        // palette
 };
-Unk_BSColorTable* FUN_140281980();
+class CItemDataTable;
+template <> class TSingleton<CItemDataTable> { public: static CItemDataTable* GetInstance(); };   // C3: was FUN_140281980
 
 // The price row of a beauty shop entry.
 class Unk_BSPriceRow : public CPtred
@@ -2193,7 +2194,7 @@ int UIBeautyShopDialog::FUN_1418cbdc0(int nItemId)
 {
     if (m_2dc > 0)
     {
-        MS2Ptr<Unk_BSColorList> spPalette = FUN_140281980()->FUN_140558ad0(m_2dc);
+        MS2Ptr<Unk_BSColorList> spPalette = reinterpret_cast<Unk_BSColorTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_140558ad0(m_2dc);
         if (spPalette.get() != 0)
             return m_2dc;
     }

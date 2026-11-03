@@ -101,9 +101,10 @@ void* FUN_1409f7170(void* sp, void* p); void FUN_1409f74b0(void* sp);
 
 // the owner wrapper (character / mannequin entity)
 void* FUN_1411de2e0(void* guard, void* model); void FUN_140b02860(void* guard);
-void* FUN_1403ed2d0();class WorldService // C3: member view for the former free stand-ins
+class WorldService // C3: member view for the former free stand-ins
 {
 public:
+static WorldService* GetInstance();
 class Unk_WsC_GameObj* FindObjectById(int);
 void* FUN_141bd0cc0();
 };
@@ -182,7 +183,7 @@ void* FUN_1409989e0(void* out, const char* psz);
 
 char FUN_140184310(CString* a, void* psz);
 
-CString FUN_14016a5c0(const char* psz, int n);   CString FUN_140298360(const char* psz, const CString& s);
+CString FUN_14016a5c0(const char* psz, int n);
 // scene objects
 // Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
 class Unk_NodeQueue
@@ -197,8 +198,14 @@ private:
 typedef Unk_NodeQueue Unk_MeshWalker;   // C3: was a local stand-in for Unk_NodeQueue
 
 void* FUN_1411a3f30(void* p); void FUN_1411a3e30(void* p); void FUN_1411a4080(void* p);
-bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);
-struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
+// The animation service's protected actor table (ContainsEntity, ActorEntry, AssetData), opened up for the model loader.
+struct Unk_EmAnimAccess : egmAnimation::AnimationService
+{
+    using AnimationService::ActorEntry;
+    using AnimationService::AssetData;
+    using AnimationService::AssetDataPtr;
+    using AnimationService::ContainsEntity;
+};
 
 class Vector3 // C3: member view for the former free stand-ins
 {
@@ -364,12 +371,7 @@ static CString s_strStun2("stun");
 static Unk_1402a9d70 s_map2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- forward declarations of this unit's helpers ----
-void FUN_141205a40(Unk_AttachDummy* p, int n);
-void FUN_141205a60(Unk_AttachDummy* p, int n);
-void FUN_141207f40(Unk_AttachDummy* p, void* pFollow);
-void FUN_141207f70(Unk_AttachDummy* p, const void* pRotate);
 void FUN_141207fb0(Unk_HoldTarget* p, float f);
-void FUN_141207fd0(Unk_AttachDummy* p, const NiPoint3& pt);
 void FUN_1411ffee0(CEquipModel* self, double fTime);
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot);
 void* FUN_141200820(CEquipModel* self);
@@ -577,8 +579,8 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
     NiTransform kXf;
     kXf.MakeIdentity();
     ((class NiAVObject*)(void*)(pDummy))->SetLocalTransform(*reinterpret_cast<const NiTransform*>(&kXf));
-    FUN_141205a40((Unk_AttachDummy*)pDummy, 0);
-    FUN_141205a60((Unk_AttachDummy*)pDummy, 0);
+    reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetUseMovement(0);
+    reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetMode(0);
     Unk_PartInfo* pInfo = (Unk_PartInfo*)FUN_141200ab0(self);
     std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[(unsigned)((class PC*)(void*)(pEnt))->FUN_141658e60()];
     std::vector<Unk_PartAttach>::iterator itCur;
@@ -593,14 +595,14 @@ void FUN_141200390(CEquipModel* self, const CString& kName)
         efd::Matrix3 kMat;
         efd::Point3 kRot = *(const efd::Point3*)e->m_afRot * 3.1415927f / 180.0f;
         kMat.FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
-        FUN_141207f70((Unk_AttachDummy*)pDummy, &kMat);
+        reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetBaseRotate(*(const NiMatrix3*)&kMat);
         Unk_NiPt3 kPos(e->m_afPos);
-        FUN_141207fd0((Unk_AttachDummy*)pDummy, *(NiPoint3*)&kPos);
+        reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetBasePosition(*(NiPoint3*)&kPos);
         if (e->m_bFollow) {
             void* pRoot = ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(((void*)((class NiActorManager*)(void*)(FUN_1412008e0(self)))->GetNIFRoot()))));
-            FUN_141207f40((Unk_AttachDummy*)pDummy, pRoot);
-            FUN_141205a60((Unk_AttachDummy*)pDummy, e->m_bFollow);
-            FUN_141205a40((Unk_AttachDummy*)pDummy, e->m_bFlag);
+            reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetFollowNode((NiAVObject*)pRoot);
+            reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetMode(e->m_bFollow);
+            reinterpret_cast<WeaponAttachTransformNode*>(pDummy)->SetUseMovement(e->m_bFlag);
             FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().FUN_1411a3f30(), e->m_fScale);
         }
         pDummy->Update((float)((class CMainSystem*)(void*)TSingleton<CMainSystem>::GetInstance())->FUN_141473280(), true);
@@ -616,7 +618,7 @@ void* FUN_141200820(CEquipModel* self)
 // @0x141200850
 void* FUN_141200850(CEquipModel* self)
 {
-    return ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FindObjectById(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
+    return ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
 }
 
 // @0x1412008e0
@@ -1028,7 +1030,7 @@ void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLoca
 // @0x1412024f0
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot)
 {
-    void* pEnt = ((void*)((class WorldService*)(void*)(FUN_1403ed2d0()))->FindObjectById(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
+    void* pEnt = ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
     if (pEnt == 0)
         return;
     void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->FUN_14123c460());
@@ -1192,7 +1194,7 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         return;
     int nType = ((class CItem*)(void*)(kId.operator->()))->FUN_140526c30();
     if (nType != 4 && nType != 5) {
-        CString kTag = FUN_140298360("Equip_Attach_Transform", FUN_14016a5c0(*pName, 0));
+        CString kTag = "Equip_Attach_Transform" + FUN_14016a5c0(*pName, 0);
         void* pNew = new (efd::MemHint((efd::MemHint::Bits)0)) NiNode(0);
         {
             NiFixedString fs2(kTag);
@@ -1225,7 +1227,7 @@ int FUN_1412033e0(CEquipModel* self)
         return 1;
     if (((class CStateService*)FUN_140aa6d30())->FUN_1417e2610() == 0x6200018)
         return 1;
-    void* pLocal = ((class WorldService*)(void*)(FUN_1403ed2d0()))->FUN_141bd0cc0();
+    void* pLocal = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pLocal == 0)
         return 0;
     return EQUIP(self->m_spOwner)->GetItem()->FUN_140526ad0() == (unsigned)((GameObject*)pLocal)->FUN_14123c580();
@@ -1401,15 +1403,15 @@ Unk_HoldHandle::Unk_HoldHandle(const Unk_HoldHandle& o)
 }
 
 // @0x141205a40
-void FUN_141205a40(Unk_AttachDummy* p, int n)
+void WeaponAttachTransformNode::SetUseMovement(int bUse)
 {
-    p->m_nFlag = n;
+    m_bUseMovement = bUse;
 }
 
 // @0x141205a60
-void FUN_141205a60(Unk_AttachDummy* p, int n)
+void WeaponAttachTransformNode::SetMode(int nMode)
 {
-    p->m_nMode = n;
+    m_nMode = nMode;
 }
 
 // @0x141205e30
@@ -1423,9 +1425,9 @@ Unk_HoldHandle Unk_AttachDummy::FUN_141205e30()
 efd::utf8string Unk_EmModelLoader::FUN_141206030(const egf::EntityID& kId)
 {
     void* pEntry;
-    if (!FUN_1409991a0(this, kId, &pEntry))
+    if (!((Unk_EmAnimAccess*)(void*)this)->ContainsEntity(kId, reinterpret_cast<Unk_EmAnimAccess::ActorEntry*&>(pEntry)))
         return efd::utf8string::NullString();
-    void* pAssetData = FUN_140998e80((char*)pEntry + 0x10);
+    void* pAssetData = reinterpret_cast<Unk_EmAnimAccess::AssetDataPtr*>((char*)pEntry + 0x10)->operator Unk_EmAnimAccess::AssetData*();
     if (!pAssetData)
         return efd::utf8string::NullString();
     if (!((void*)reinterpret_cast<efd::SmartPointer<NiActorManager>*>((char*)pEntry + 8)->operator NiActorManager*()))
@@ -1434,21 +1436,21 @@ efd::utf8string Unk_EmModelLoader::FUN_141206030(const egf::EntityID& kId)
     if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
         return efd::utf8string::NullString();
     else
-        return ((Unk_EmAssetData*)pAssetData)->FUN_1409a1940(nSeq);
+        return ((Unk_EmAnimAccess::AssetData*)pAssetData)->GetSequenceName(nSeq);
 }
 
 // @0x141207f40
-void FUN_141207f40(Unk_AttachDummy* p, void* pFollow)
+void WeaponAttachTransformNode::SetFollowNode(NiAVObject* pNode)
 {
-    if (pFollow != p)
-        p->m_pFollow = pFollow;
+    if (pNode != this)
+        m_pFollow = pNode;
 }
 
 // @0x141207f70
-void FUN_141207f70(Unk_AttachDummy* p, const void* pRotate)
+void WeaponAttachTransformNode::SetBaseRotate(const NiMatrix3& kRotate)
 {
-    memcpy(p->m_aRotate, pRotate, 0x24);
-    memcpy(p->m_aBaseRotate, p->m_aRotate, 0x24);
+    memcpy(((Unk_AttachDummy*)this)->m_aRotate, &kRotate, 0x24);
+    memcpy(((Unk_AttachDummy*)this)->m_aBaseRotate, ((Unk_AttachDummy*)this)->m_aRotate, 0x24);
 }
 
 // @0x141207fb0
@@ -1458,15 +1460,14 @@ void FUN_141207fb0(Unk_HoldTarget* p, float f)
 }
 
 // @0x141207fd0
-void FUN_141207fd0(Unk_AttachDummy* p, const NiPoint3& pt)
+void WeaponAttachTransformNode::SetBasePosition(const NiPoint3& kPos)
 {
-    p->m_kTranslate = p->m_kBasePos = pt;
+    ((Unk_AttachDummy*)this)->m_kTranslate = m_kBasePos = kPos;
 }
 
 // Out-of-range template glue, kept as plain functions.
 void FUN_141205170(void* a, void* b);
 void FUN_141205570(void* p);
-bool FUN_141205640(void* a, void* b);
 
 // Pointer holder whose dynamic initializer is the exe's .text$di 0x1400e8c90 (ctor 0x1401cd100), so it runs from
 // this unit's .CRT$XCU slot.
@@ -1499,7 +1500,7 @@ void FUN_141205550(void* p)
 // @0x141205690
 bool FUN_141205690(void* a, void* b)
 {
-    return !FUN_141205640(a, b);
+    return !(*(std::vector<Unk_PartAttach>::const_iterator*)a == *(std::vector<Unk_PartAttach>::const_iterator*)b);
 }
 
 MS2_REPLACE_METHOD(0x1411FFFC0, CEquipModel, vfunc_21, 16, 0x23B2047A);
@@ -1521,12 +1522,12 @@ MS2_REPLACE(0x141201C90, FUN_141201c90, 17, 0x55511E8B);
 MS2_REPLACE(0x1412021A0, FUN_1412021a0, 65, 0xCE106764);
 MS2_REPLACE(0x1412021F0, FUN_1412021f0, 65, 0x6C2D7A03);
 MS2_REPLACE(0x141202240, FUN_141202240, 57, 0x5F7954AD);
-MS2_REPLACE(0x141205A40, FUN_141205a40, 25, 0xED11FA2A);
-MS2_REPLACE(0x141205A60, FUN_141205a60, 25, 0x87AE4FB6);
-MS2_REPLACE(0x141207F40, FUN_141207f40, 40, 0xF6CFED15);
-MS2_REPLACE(0x141207F70, FUN_141207f70, 64, 0x6C076CC3);
+MS2_REPLACE_METHOD(0x141205A40, WeaponAttachTransformNode, SetUseMovement, 25, 0xED11FA2A);
+MS2_REPLACE_METHOD(0x141205A60, WeaponAttachTransformNode, SetMode, 25, 0x87AE4FB6);
+MS2_REPLACE_METHOD(0x141207F40, WeaponAttachTransformNode, SetFollowNode, 40, 0xF6CFED15);
+MS2_REPLACE_METHOD(0x141207F70, WeaponAttachTransformNode, SetBaseRotate, 64, 0x6C076CC3);
 MS2_REPLACE(0x141207FB0, FUN_141207fb0, 28, 0x2F87969E);
-MS2_REPLACE(0x141207FD0, FUN_141207fd0, 60, 0x5B49E748);
+MS2_REPLACE_METHOD(0x141207FD0, WeaponAttachTransformNode, SetBasePosition, 60, 0x5B49E748);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cad5b0-0x142cad6f0 .text$yd
 // sfr34: set<SmartPointer<NiAVObject>>::insert(value_type&&) and the non-const _Tree_comp_alloc::_Getal replace

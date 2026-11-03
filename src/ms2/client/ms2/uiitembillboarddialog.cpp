@@ -69,6 +69,7 @@
 #include "ms2/placeholder/asbutton.h"   // C3: ASButton::FUN_1422ce0e0
 #include "ms2/commonfiles/commonstringtable.h"   // C3: CommonString::GetChecker, CBanTextChecker
 #include "ms2/commonfiles/npcdata.h"   // C3: CNpcData::GetFriendly
+#include "ms2/placeholder/cgameeventvaluemanager.h"   // C3: CGameEventValueManager::ShutdownBillboard
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;                // @0x1400cce40
 
@@ -96,9 +97,8 @@ extern int DAT_143ab2970;
 // Localized formatters.
 CStringW FormatStringId(int id, const fmt::ArgList& args);      // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
-CStringW FUN_140938ae0(CStringW strKey, const int& n);
-CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
-CStringW FUN_1408116a0(int nId, const int& n);
+template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a1);
+template <class A> CStringW BlockFormat(int nId, const A& a);
 
 // The localized-string formatter back end (FUN_14028dfa0), as in partyvotecli.cpp.
 CStringW FUN_14028dfa0(const CStringW&, const fmt::ArgList&);
@@ -135,8 +135,6 @@ class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
 // Message boxes and the inventory (0x143ab2a90).
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_1405340b0(void* pBox, __int64 n);
-__int64 FUN_141a02ed0(const CMsgBoxData* pData, int a, int b);
 extern Unk_Inventory g_143ab2a90;
 
 // The local player and the placement checks (see reactor.cpp).
@@ -148,8 +146,6 @@ public:
 bool FUN_140930b10();
 bool FUN_140930b70();
 unsigned int FUN_1409313b0();   // C3: was FUN_1409313b0
-class CGameEventValueManager;
-void* FUN_1403f31f0(void* p);
 bool FUN_1407d1d00(class CShutdownEventBillboard*);   // C3: was FUN_1407d1d00
 struct Unk_EntityAppFramework { char m_pad[8]; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -163,12 +159,7 @@ public:
     int m_nCount;                                               // +0x50
 };
 class Cube;
-class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); };   // C3: member view
-class Unk_RxGrid
-{
-public:
-    Unk_RxCellInfo* FUN_1410b8a60(Unk_Int3 cell);               // cell info of a cell
-};
+class CubeMapInformationService { public: Cube* GetCubeAtPoint(Vector3 pt); Cube* GetCubeAtCell(Unk_Int3 pt); };   // C3: member view
 // efd::SmartPointer<>: the ctor AddRefs (vfunc 1), the dtor Releases (vfunc 2).
 class Unk_GmGridRef
 {
@@ -185,10 +176,9 @@ public:
     int m_nKind;                                                // +0xc4
 };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);                    // cell of a point
-int FUN_1408a03c0(Unk_Int3 pt);          // by value: the callers copy the cell into a temporary
+int FUN_1408a03c0(const Unk_Int3& pt);   // the callers pass the returned cell temporary
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
-struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy
 class NpcDataCli : public CPtred { };   // C3: view of the real class (the npc table row)
 class CNpc { public: MS2Ptr<NpcDataCli> GetNpcData(); };   // C3: view of the real class
 class Unk_RxNpc : public CPtred { public:  };
@@ -393,9 +383,9 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     int nError = FUN_1409313b0();
     if (nError != 0) {
         if (nError == 1) {
-            FUN_1412751f0(FUN_1409e8820(CStringW(L"s_common_block_for_spamer_not_enough_max_level"), DAT_143ab2964), 1, 1);
+            FUN_1412751f0(FUN_14028dfa0<unsigned short>(CStringW(L"s_common_block_for_spamer_not_enough_max_level"), DAT_143ab2964), 1, 1);
         } else if (nError == 2) {
-            FUN_1412751f0(FUN_140938ae0(CStringW(L"s_common_block_for_spamer_not_enough_adventure_level"), DAT_143ab2970), 1, 1);
+            FUN_1412751f0(FUN_14028dfa0<unsigned>(CStringW(L"s_common_block_for_spamer_not_enough_adventure_level"), reinterpret_cast<const unsigned&>(DAT_143ab2970)), 1, 1);
         } else {
             FUN_1412751f0(GetStringCommonByKey(L"s_common_block_for_spamer_level_and_adventure_level"), 1, 1);
         }
@@ -414,7 +404,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
-    if (FUN_1407d1d00((class CShutdownEventBillboard*)(FUN_1403f31f0((void*)TSingleton<CGameEventValueManager>::GetInstance()))) != 0) {
+    if (FUN_1407d1d00((class CShutdownEventBillboard*)(TSingleton<CGameEventValueManager>::GetInstance()->ShutdownBillboard())) != 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_banner_billboard_shutdown"), 1, 1);
         return false;
     }
@@ -433,7 +423,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         if (spObj == (CInteractObject*)0)
             continue;
         {
-            float fDist = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0().FUN_140965c40(ptCenter).FUN_140967ac0();
+            float fDist = spObj.get()->GetPos().FUN_140965c40(ptCenter).FUN_140967ac0();
             if (fDist < 230.0f) {
                 FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
                 return false;
@@ -495,7 +485,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         cells.push_back(Unk_Int3(cell.x + 1, cell.y - 1, cell.z - 1));
         cells.push_back(Unk_Int3(cell.x + 1, cell.y + 1, cell.z - 1));
         for (size_t i = 0; i < cells.size(); ++i) {
-            Unk_RxCellInfo* pCell = reinterpret_cast<Unk_RxGrid*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->FUN_1410b8a60(cells[i]);
+            Unk_RxCellInfo* pCell = (Unk_RxCellInfo*)(reinterpret_cast<CubeMapInformationService*>(reinterpret_cast<const efd::SmartPointer<Unk_Service6100017>&>(grid).operator->())->GetCubeAtCell(cells[i]));
             if (pCell == 0)
                 continue;
             if (pCell->m_nCount != 0) {
@@ -555,7 +545,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
     CStringW strInfo = StringFormat(L"{0}'{1}'{2}", strTitle, strDesc, bHome);
     if (strTitle.GetLength() < 1 || strDesc.GetLength() < 1) {
         int n = 1;
-        FUN_1412751f0(FUN_1408116a0(0x8b3, n), 1, 1);
+        FUN_1412751f0(BlockFormat<int>(0x8b3, n), 1, 1);
         return;
     }
     if (strTitle.GetLength() > 0xf)
@@ -572,7 +562,7 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
     CStringW strMsg = GetStringCommonByKey(L"s_special_item_billboard_install_info");
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strMsg, 1);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
-    FUN_1405340b0(spBox.operator->(), m_nItemUid);
+    spBox.operator->()->Append<__int64>(m_nItemUid);
     spBox->FUN_140b76940(CStringW(strInfo));
     FUN_140d73c60(spBox);
 }
@@ -601,7 +591,7 @@ MS2_REPLACE_METHOD(0x140C33FD0, UIItemBillBoardDialog, SendItemBillboard, 113, 0
 bool UIItemBillBoardDialog::FUN_140c34050(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
-        __int64 nUid = FUN_141a02ed0(&data, 0, 0);
+        __int64 nUid = data.FUN_141a02ed0(0, 0);
         CStringW str = data.FUN_141a02fd0(1, CStringW());
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)

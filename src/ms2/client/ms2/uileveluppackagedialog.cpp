@@ -21,6 +21,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <stdlib.h>
@@ -75,8 +76,6 @@ int FUN_14074b030(CQuestData* pData);                           // the quest id
 #define LgQuestLevel(pData) ((unsigned short)(pData)->m_conditions[0]->m_target.GetFirstValue())
 
 // strings and packets
-CStringW FUN_1409e8820(CStringW strKey, const short& a1);
-CString FUN_1401d9af0(const char* pszFormat, const unsigned __int64& nArg);     // StringFormat, one numeric argument
 void FUN_140710590(COutPacket& packet);
 
 // the item and its drop box
@@ -254,10 +253,10 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
         reinterpret_cast<Unk_PetBoxDropTable*>(TSingleton<ItemDropTable>::GetInstance())->FUN_1402ea4c0(nBoxId, drops);
         ASObj obj(2);
         obj.FUN_140e846b0("count", drops.FUN_140314170());
-        obj.FUN_1407cbb20("text", FUN_1409e8820(CStringW(L"s_quest_scroll_package_title"), (short&)nLevel));
+        obj.FUN_1407cbb20("text", FUN_14028dfa0<unsigned short>(CStringW(L"s_quest_scroll_package_title"), reinterpret_cast<const unsigned short&>(nLevel)));
         for (unsigned __int64 i = 0; i < drops.FUN_140314170(); i++) {
             CString strSlot = m_1a8.FUN_140d43510(drops.FUN_140c461b0(i));
-            obj.FUN_1407cba60(FUN_1401d9af0("slot{0}", i), strSlot);
+            obj.FUN_1407cba60(StringFormat<unsigned __int64>("slot{0}", i), strSlot);
         }
         m_30->Invoke("setRewardSlot", obj);
     }
@@ -308,7 +307,7 @@ void UILevelUpPackageDialog::FUN_140ea5460(ASObj& rObj, int nQuest)
     if (spData->m_conditions.GetCount() == 0)
         return;
     short nLevel = (short)LgQuestLevel(spData.get());
-    CStringW strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_level"), nLevel);
+    CStringW strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_level"), reinterpret_cast<const unsigned short&>(nLevel));
     rObj.FUN_1409c0d20("id", FUN_14074b030(spData.get()));
     rObj.FUN_1407cba60("state", strState);
     rObj.FUN_1409c48f0("level", nLevel);

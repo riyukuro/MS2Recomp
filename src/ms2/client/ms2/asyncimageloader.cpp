@@ -60,7 +60,6 @@ public:
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 
 void* FUN_1422cf0f0();                                      // the UI renderer context
-void* FUN_14257a340(int n3, int n1, Unk_ImgSize* pSize, int nFormat, void* pHeap, void* pTexMan, void* pSync);   // Image::Create(format, mips, size, use, heap, texman, sync)
 void FillPixelRect(const unsigned char* pucPixel, NiPixelData* pkDest, const NiRect<unsigned int>& kRect);   // fill a rectangle
 void* FUN_14208a860(unsigned __int64 nSize, int nHint);     // MemObject operator new
 void* FUN_140876480(void* pOut, int n);                     // efd::MemHint(NONE)
@@ -387,7 +386,8 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
     const int nUse = 0x11;
     Unk_ImgSize size(uiWidth, uiHeight);
     const int nFormat = 3;
-    Unk_GfxImage* pImage = (Unk_GfxImage*)FUN_14257a340(nFormat, 1, &size, nUse, 0, pCtx, 0);
+    Unk_GfxImage* pImage = (Unk_GfxImage*)Scaleform::Render::Image::Create((Scaleform::Render::ImageFormat)nFormat, 1,
+        reinterpret_cast<const Scaleform::Render::ImageSize&>(size), nUse, 0, (Scaleform::Render::TextureManager*)pCtx, 0);
     if (pImage == 0)
         return 0;
     void* pTarget = pImage->vfunc_24(pCtx);

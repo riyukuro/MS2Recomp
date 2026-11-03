@@ -11,21 +11,16 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
+#include <algorithm>
 class Unk_Inventory { public: class MS2Ptr<class CItem> FUN_140a5e2e0(int); };
 // ---- out-of-unit callees (names describe uses) ----
-class Unk_McAttendTable                                          // the player inventory (global 0x143ab2a90)
-{
-public:
-    MS2Ptr<CItem> FUN_140a5e2e0(unsigned nItemId);
-};
-extern Unk_McAttendTable g_attendItems;
+extern Unk_Inventory g_143ab2a90;                                // the player inventory
 void FUN_141415600(const CString& strName);                      // drop the item shown under a dialog name
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
-const int* FUN_1402fbd20(const int* a, const int* b);            // std::min<int>
 struct Unk_McConstVal;
 struct Unk_McConstVal { void* m_0; void* m_8; };
 struct Unk_McConfig
@@ -103,7 +98,7 @@ void UIItemMultiOpenBoxDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
     FUN_140c3fca0();
-    MS2Ptr<CItem> item = ((class Unk_Inventory&)(g_attendItems)).FUN_140a5e2e0((int)(m_180));
+    MS2Ptr<CItem> item = g_143ab2a90.FUN_140a5e2e0((int)(m_180));
     if (item.get() != 0)
     {
         FUN_141415600(GetTypeName());
@@ -138,7 +133,7 @@ void UIItemMultiOpenBoxDialog::vfunc_15()
     if (m_198 != 0 && nNow > (unsigned)m_198)
     {
         m_198 = 0;
-        int nCount = *FUN_1402fbd20(&m_194, reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_McConfig*)FUN_1401d3200())->m_multiOpenMax)->Get());
+        int nCount = std::min<int>(m_194, *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_McConfig*)FUN_1401d3200())->m_multiOpenMax)->Get());
         COutPacket packet(static_cast<int>(SendOp::RequestItemBox), 0);
         packet.WriteInt32(m_180);
         packet.WriteInt16(m_184);

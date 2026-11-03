@@ -13,6 +13,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <algorithm>   // C3: std::min<float> / std::max<float>
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -28,8 +29,6 @@ void FUN_1410a77e0(class CGuideObject*, float);   // C3: was FUN_1410a77e0
 bool FUN_14028d470(float a, float b);                                     // 0x14028d470 approx equal
 float FUN_14029d430(float fX, float fY);                                  // 0x14029d430 fmodf
 float FUN_14029d220(float fValue);                                        // 0x14029d220 fabsf
-const float& FUN_1409ffe80(const float& a, const float& b);               // 0x1409ffe80 min
-const float& FUN_140805fc0(const float& a, const float& b);               // 0x140805fc0 max
 
 // PCBase seen with Vector3 points: slots 22 and 68 take the point by value (the exe copies it to a 16-aligned temp),
 // and the local -> world dir transform takes / returns it by value too.
@@ -139,13 +138,13 @@ Vector3 StateFloat::FUN_1417c85d0(Vector3 kMove, double fTime)
     {
         float fMax = 0.5f;
         float fDelta = (float)((double)fVel * fTime);
-        kMove.z = kMove.z + FUN_1409ffe80(fDelta, fMax);
+        kMove.z = kMove.z + std::min<float>(fDelta, fMax);
     }
     else if (fVel < 0.0f)
     {
         float fMin = -0.5f;
         float fDelta = (float)((double)fVel * fTime);
-        kMove.z = kMove.z + FUN_140805fc0(fDelta, fMin);
+        kMove.z = kMove.z + std::max<float>(fDelta, fMin);
     }
     FUN_1410a77e0((class CGuideObject*)(m_pOwner), fVel);
     return kMove;

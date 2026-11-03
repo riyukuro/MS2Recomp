@@ -68,7 +68,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 int FUN_140765520(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // reads an int attribute through a temp (tinyxmlhelper.h)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_140177de0(const CStringA& str, ATL::CAtlArray<int>* pOut, const char* pszSep);          // split into numbers
 // A quest range as a local: Unk_Z16i with its out-of-line zeroing constructor (0x14027dcb0).
 struct Unk_QmRange { int a, b, c, d; Unk_QmRange(); };
 class CNpc   // C3: member view for the former free stand-ins
@@ -137,13 +136,14 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 
 // @0x140764760
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x140177de0 for CAtlArray<int> (xmlattr.h)
 // Two lists "a,b" (start quest / state) and "c,d" (end quest / state) -> one range.
 int FUN_140764760(const CStringA& strStart, const CStringA& strEnd, Unk_Z16i* pRange)
 {
     ATL::CAtlArray<int> aStart;
     ATL::CAtlArray<int> aEnd;
-    FUN_140177de0(strStart, &aStart, ",");
-    FUN_140177de0(strEnd, &aEnd, ",");
+    XmlSplit(strStart, aStart, ",");
+    XmlSplit(strEnd, aEnd, ",");
     if (aStart.GetCount() != aEnd.GetCount())
         return 0;
     if (aStart.GetCount() > 0)

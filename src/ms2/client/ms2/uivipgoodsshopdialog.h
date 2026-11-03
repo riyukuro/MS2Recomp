@@ -10,7 +10,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/client/ms2/tmarketbilldataparam.h"
-#include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/ascript.h"
 
 // The bill parameter of one VIP goods row: the goods id rides in m_nGoodsId (+0xe0); the buy callback sends packet 0x8e.
@@ -58,7 +58,7 @@ private:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlArray<CString> m_bindIds;                              // +0x178 the bind ids of the listed bonus items
     ATL::CAtlMap<unsigned, unsigned> m_mapBought;                   // +0x198 goods id -> bought count in the limit period
-    Unk_McTimer m_timer;                                            // +0x1e0 poll of the bought goods
+    Unk_IntervalTimer m_timer;                                      // +0x1e0 poll of the bought goods
     unsigned m_nGoodsCount;                                         // +0x1e8 the listed goods
     int m_bReady;                                                   // +0x1ec the bought goods arrived
 };

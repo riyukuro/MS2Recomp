@@ -86,6 +86,7 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asevent.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/asbutton.h"
@@ -149,23 +150,6 @@ public:
     void FUN_1419caeb0(class UIItemEventListener*);
 };
 
-// The index event of a list / bar callback (Params wrapper).
-class Unk_ListEventBase
-{
-public:
-    ~Unk_ListEventBase();                                                   // 0x1422e22a0
-    bool FUN_1422ba9a0();                                                   // the value is undefined
-private:
-    void* m_pad[8];                                                         // an AScript (0x40)
-};
-class ASIndexEvent : public Unk_ListEventBase
-{
-public:
-    ASIndexEvent(const Scaleform::GFx::FunctionHandler::Params& params);    // 0x1422e2a60
-    ~ASIndexEvent() {}                                                      // 0x140be35b0
-    int FUN_1422e2aa0();                                                    // the index
-};
-
 // ASUIComponent slot 24 (validateNow) seen on the key button.
 class Unk_ClButton : public ASButton
 {
@@ -206,7 +190,6 @@ void FUN_140d01340(const Scaleform::GFx::Value& v, unsigned nFont, int n);   // 
 int FUN_1407181a0(const CStringW& str);                                      // _wtoi
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nRarity);                       // a display item
 CString Name_14021c050(int nSlot);                                           // the slot type name
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);           // string table format, one arg
 CStringW FUN_14132ba90(const int& nLayer);                                   // the equip layer name
 int FUN_140222f60(int nLayer);                                               // the equip kind of a layer
 class CGameOptionInputDefault   // C3: member view for the former free stand-ins
@@ -1014,10 +997,10 @@ void UIClosetDialog::OnSave(const Scaleform::GFx::FunctionHandler::Params& param
     if (pPlayer != 0)
     {
         int nKind = FUN_140222f60(nLayer);
-        int nWorn = reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->FUN_1411e2440(nKind);
+        int nWorn = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e2440(nKind);
         if (nWorn == 0)
         {
-            FUN_140d73aa0(FUN_1405c2690(L"s_closet_msg_empty_items_when_click_save", FUN_14132ba90(nKind)), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FUN_14028dfa0<CStringW>(L"s_closet_msg_empty_items_when_click_save", FUN_14132ba90(nKind)), 0, 0, CStringW(L""));
             return;
         }
     }
@@ -1147,7 +1130,7 @@ void UIClosetDialog::OnEquipLayer(const Scaleform::GFx::FunctionHandler::Params&
     if (m_30 == 0)
         return;
     ASIndexEvent ev(params);
-    if (ev.FUN_1422ba9a0())
+    if (ev.IsUndefinedOrNull())
         return;
     int nIndex = ev.FUN_1422e2aa0();
     if (nIndex < 0 || nIndex >= 3)
@@ -1582,7 +1565,7 @@ MS2Ptr<CItem> UIClosetDialog::FindItem(const __int64& nUid)
         MyPC* pPlayer = Unk_ClPlayer();
         if (pPlayer == 0)
             return MS2Ptr<CItem>(0);
-        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(pPlayer->FUN_1416561a0())->FUN_1411e1580(nUid);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->FUN_1416561a0())->FUN_1411e1580(nUid);
         if (spEquip.get() != 0)
             return spEquip->GetItem();
     }

@@ -10,16 +10,6 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// The guard of a CLockCriticalSection (the same instance as in logstring.cpp; "operator int" is non-zero when locking failed).
-class Unk_140163940 {
-public:
-    Unk_140163940(CLockCriticalSection&);
-    ~Unk_140163940();
-    operator int() const;
-private: void* m_lock;
-};
-MS2_CHECK_SIZE(Unk_140163940, 8);
-
 // One limit entry (a purchase with its expiry).
 class Unk_PplEntry
 {
@@ -91,7 +81,7 @@ CPremiumProductLimitInfo::~CPremiumProductLimitInfo()
 void CPremiumProductLimitInfo::FUN_1402699d0()
 {
     __int64 tNow = GetServerTime();
-    Unk_140163940 guard(m_lock);
+    Unk_LockGuard guard(m_lock);   // clockcriticalsection.h
     if (guard != 0)
     {
     }
@@ -129,7 +119,7 @@ void CPremiumProductLimitInfo::FUN_140269b50(Unk_PplRef ref)
     int nProductId = FUN_14027f310(&ref)->m_nProductId;
     if (nProductId != m_nProductId)
         return;
-    Unk_140163940 guard(m_lock);
+    Unk_LockGuard guard(m_lock);   // clockcriticalsection.h
     if (guard != 0)
     {
     }

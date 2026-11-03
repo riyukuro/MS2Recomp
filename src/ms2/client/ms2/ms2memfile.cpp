@@ -37,8 +37,6 @@ void* FUN_141371b20();   // C3: was FUN_141371b20
 CString FUN_14071ae20(const CString& strFile);              // the GFx UI's XML path of a file
 CString FUN_14071a6f0(const CString& strFile);              // the GFx debug XML path of a file
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-CString FUN_1401d2b10(const CString& strLeft, const CString& strRight);   // the exe's ATL::operator+ copies (clang
-CString FUN_14038f6d0(const CString& str, const char* psz);               // would import MFC CopyChars)
 struct Unk_PreloadEntry;
 class NiString;
 int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries);   // ms2animationservice.cpp
@@ -536,9 +534,9 @@ Scaleform::File* FUN_1416282e0(CString strPath)
 CString FUN_141628470(CString strName, bool bDebug)
 {
     if (!bDebug)
-        return FUN_14038f6d0(FUN_1401d2b10(FUN_14016a5c0("..\\GfxDebug\\UI", 0), strName), ".gfx");
+        return FUN_14016a5c0("..\\GfxDebug\\UI", 0) + strName + ".gfx";
     else
-        return FUN_14038f6d0(FUN_1401d2b10(FUN_14016a5c0("..\\GfxDebug\\Debug_UI", 0), strName), ".gfx");
+        return FUN_14016a5c0("..\\GfxDebug\\Debug_UI", 0) + strName + ".gfx";
 }
 
 // @0x141628610

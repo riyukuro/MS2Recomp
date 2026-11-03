@@ -14,14 +14,13 @@
 
 void FUN_140930150(int);
 void* FUN_1403ed2d0();
-void* FUN_1403ed2b0();
 class WorldService   // C3: unit-local view of the callback set
 {
 public:
     void FUN_141bbae40(void* p);
     void FUN_141bbae80(void* p);
+    int FUN_141bbbe40(int mapId, int arg2, int arg3);
 };
-void FUN_141bbbe40(void*, int, int, int);
 void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern void* DAT_143ab8f48;
 void* FUN_140aae430();
@@ -61,7 +60,7 @@ void CSceneStateModeSelect::OnEnter(int nPrevState)
     FUN_140930150(1);
     ((WorldService*)FUN_1403ed2d0())->FUN_141bbae40((IWorldServiceCallback*)this);
     FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
-    FUN_141bbbe40(FUN_1403ed2d0(), 0x3e9, 1, 0);
+    ((WorldService*)FUN_1403ed2d0())->FUN_141bbbe40(0x3e9, 1, 0);
 }
 
 // @0x140aae160
@@ -69,7 +68,7 @@ void CSceneStateModeSelect::OnLeave(int nNextState)
 {
     CSceneStateBase::OnLeave(nNextState);
     ((WorldService*)FUN_1403ed2d0())->FUN_141bbae80((IWorldServiceCallback*)this);
-    reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f6e);
+    TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f6e);
 }
 
 // @0x140aae1d0

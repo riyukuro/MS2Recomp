@@ -252,7 +252,7 @@ extern Unk_Inventory g_143ab2a90;
 CString FUN_140719530(unsigned __int64 n);                              // decimal text
 unsigned __int64 FUN_140718350(const CString& str);                              // parse an __int64
 CStringW FUN_140719630(int n);                                          // decimal text
-CStringW FUN_1408116a0(int nStringId, const int& n);                    // FormatStringId<int>
+template <class A> CStringW BlockFormat(int nId, const A& a);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);   // FormatStringId<CStringW, CStringW>
 CStringW GetStringCommon(int nStringId);                                  // the string of an id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string of a key
@@ -266,7 +266,6 @@ void FUN_14151f200();                                                   // close
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep);   // split
 int FUN_141637c40(CPartyMember* pMember);                               // the member state
 double FUN_1407184e0(const CStringW& str);                              // parse a number
-CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute, const int& nSecond, const CStringW& strArg);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);                     // elapsed time text
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat& kChat);                            // post a chat record
@@ -672,7 +671,7 @@ int UIPartyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (spItem == 0)
         {
             int nMerat = *FUN_1401d3200()->PartyRecallMerat.Get();
-            CStringW strText = FUN_1408116a0(0xc64, nMerat);
+            CStringW strText = BlockFormat<int>(0xc64, nMerat);
             if (!((class IClientPlatform*)FUN_140d86260())->vfunc_40(nMerat))
             {
                 ((class CUIService*)(class Unk_PdApp*)(((class Unk_PdApp*)TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
@@ -727,7 +726,7 @@ void UIPartyDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strM
             }
             else
             {
-                strInfo = FUN_1408116a0(0x76b, pUser->m_38);
+                strInfo = BlockFormat<int>(0x76b, pUser->m_38);
                 strInfo += L" ";
             }
             strInfo += TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pUser->m_2c);
@@ -872,7 +871,7 @@ void UIPartyDialog::FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params&
     if (((class Unk_PdClubManager*)FUN_140e0d900())->IsClubLimitReached() == 1)
     {
         int nKind = 3;
-        FUN_1412751f0(FUN_1408116a0(0x381, nKind), 1, 1);
+        FUN_1412751f0(BlockFormat<int>(0x381, nKind), 1, 1);
     }
     else
     {
@@ -1348,7 +1347,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nSecond = kNow.GetSecond();
         int nMinute = kNow.GetMinute();
         int nHour = kNow.GetHour();
-        CStringW strHistory = FUN_140c2fcc0(CStringW(L"s_partydps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
+        CStringW strHistory = FUN_14028dfa0<int, int, int, CStringW>(CStringW(L"s_partydps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
         CStringW strRow = GetStringCommonByKey(L"s_partydps_notice_history_row");
         for (unsigned i = 0; i < m_members.size(); i++)
         {

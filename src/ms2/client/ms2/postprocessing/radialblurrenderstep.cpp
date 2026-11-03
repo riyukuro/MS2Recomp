@@ -14,7 +14,7 @@ const NiRTTI RadialBlurRenderStep::ms_RTTI("RadialBlurRenderStep", &NiDefaultCli
 RadialBlurRenderStep::RadialBlurRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("RadialBlurRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416b9ed0

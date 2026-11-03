@@ -146,6 +146,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/postprocesseffect.h"      // Unk_PPSmartC
 #include "ms2/client/ms2/cameramode.h"              // Unk_CameraManager
+#include "ms2/client/ms2/camera.h"                  // CameraMgr
+#include "ms2/client/ms2/nifeffectparam.h"          // CNifLoadingService
 #include <efd/MemoryDefines.h>
 #include <NiNode.h>
 #include <NiAVObject.h>
@@ -175,17 +177,10 @@
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 bool FUN_14028d470(float a, float b);                               // nearly equal
 bool FUN_14028d530(const Vector3& a, const Vector3& b);   // the two end points coincide
-void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
-const NiTransform& FUN_1409478e0(void* pNode);                      // NiAVObject::GetWorldTransform
 void FUN_140a01250(Vector3 kEuler, Vector3* pkOut1, Vector3* pkOut2);   // axes of an euler rotation
 
 // Resource manager (singleton, instance pointer at 0x143ab5bc8): texture load by path. 0x140cc2ba0 joins directory + file name.
-class Unk_ResourceMgr
-{
-public:
-    Unk_PPSmartC FUN_141552f90(CString strPath, int nFlags);
-};
-extern Unk_ResourceMgr* DAT_143ab5bc8;
+class Unk_ResourceMgr;   // the loading service as FUN_140a0afd0 returns it
 CString FUN_140cc2ba0(const CString& strDir, const CString& strName);
 
 // NiProperty setters (NiMain inline members the exe instantiated in other objs).
@@ -201,7 +196,7 @@ public:
 MS2_CHECK_SIZE(Unk_EffectNode, 400);
 
 extern const Vector3 DAT_143a08cf8;
-Unk_ResourceMgr* FUN_140a0afd0() { return DAT_143ab5bc8; }                                                                // @0x140a0afd0
+Unk_ResourceMgr* FUN_140a0afd0() { return reinterpret_cast<Unk_ResourceMgr*>(TSingleton<CNifLoadingService>::s_instance); }                                                                // @0x140a0afd0
 
 // @0x140a0adf0
 Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT)
@@ -286,7 +281,7 @@ bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         return false;
     m_spParam.AssignRaw(const_cast<CBeamEffectParam*>(static_cast<const CBeamEffectParam*>(pParam)));
     m_pPoints = reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_pPoints;
-    m_spTarget = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))))));
+    m_spTarget = reinterpret_cast<NiNode*>(((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(static_cast<NiAVObject*>(*reinterpret_cast<const efd::SmartPointer<NiAVObject>*>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))))));
     if (m_spTarget == (NiNode*)0 || m_pPoints == 0)
         return false;
 
@@ -421,22 +416,14 @@ int CBeamEffect::vfunc_8(void* p)
 }
 MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
 
-// The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its efd::Point3 local.
+// CameraMgr::FUN_140af0250 returns the NiPoint3 that UpdateMesh slices into its efd::Point3 local.
 struct Unk_BmNiPoint3 : Vector3 {};
-class Unk_BmCameraMgr { public: Unk_BmNiPoint3 FUN_140af0250(); };
 // A locked vertex position as UpdateMesh writes it: NiPoint3 built from an efd::Point3, then assigned.
 struct Unk_BmPoint3
 {
     float x, y, z;
     Unk_BmPoint3(const void* efdPoint);                             // 0x14027dcf0 (converting)
     Unk_BmPoint3& operator=(const Unk_BmPoint3& pt);                // 0x14097faa0
-};
-
-// The param's texture path list as UpdateMesh indexes it: the exe's CAtlArray<CString>::operator[] copy.
-class Unk_BmStrArray : public ATL::CAtlArray<CString>
-{
-public:
-    CString& FUN_1401c0cc0(size_t nIndex);
 };
 
 // @0x140a081d0
@@ -450,11 +437,11 @@ void CBeamEffect::UpdateMesh()
 
     int nTextures = (int)m_spParam->m_arrTexturePath.GetCount();
     int nPick = rand() % nTextures;
-    CString strName = static_cast<Unk_BmStrArray&>(m_spParam->m_arrTexturePath).FUN_1401c0cc0((size_t)nPick);
-    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp.operator->()))->SetBaseTexture((class NiTexture*)(FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get()));
+    CString strName = m_spParam->m_arrTexturePath[(size_t)nPick];
+    ((class NiTexturingProperty*)(class NiTexturingProperty*)(m_spTexProp.operator->()))->SetBaseTexture((class NiTexture*)(reinterpret_cast<CNifLoadingService*>(FUN_140a0afd0())->GetTexture(FUN_140cc2ba0("Effect/Textures", strName), 5)));
     m_spMesh->GetMesh()->UpdateProperties();
 
-    Vector3 kCamera = ((Unk_BmCameraMgr*)Unk_CameraManager::FUN_1409478c0())->FUN_140af0250();
+    Vector3 kCamera = reinterpret_cast<const Unk_BmNiPoint3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250()));
     efd::vector<Vector3> kLeft;
     efd::vector<Vector3> kRight;
     for (unsigned int i = 0; i < kCurve.size(); ++i)
@@ -570,7 +557,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         float fLength = kDelta.FUN_140968990();
         Vector3 kEuler;
-        const NiTransform& kWorld = FUN_1409478e0(m_spTarget.operator->());
+        const NiTransform& kWorld = static_cast<const NiAVObject*>(m_spTarget.operator->())->GetWorldTransform();
         FUN_140a0b1f0(reinterpret_cast<const Unk_NiMatrix3&>(kWorld.m_Rotate), &kEuler);
         Vector3 kAxisA, kAxisB;
         FUN_140a01250(kEuler, &kAxisA, &kAxisB);

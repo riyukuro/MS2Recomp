@@ -138,9 +138,6 @@ class CommonResource;
 extern Unk_SingletonObj1* DAT_143aac5c8;
 CLogString* GetLogString();
 unsigned long GetTickCountMs();   // C3: was FUN_1408693e0
-#ifdef __clang__
-CString FUN_1401d2b10(const CString&, const CString&);
-#endif
 Unk_SingletonObj* FUN_1401d31f0();
 Unk_SingletonObj1* FUN_1401d3200();
 namespace Common { class Constants { public: void Reload(); }; }
@@ -360,12 +357,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
                        (size_t)pInfo->FileNameLength > 0x208 ? (size_t)0x208 : (size_t)pInfo->FileNameLength);
                 CString strName = FUN_1401d4330(awcName, 0);
                 strName.Replace("\\", "/");
-#ifdef __clang__
-                // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+ copy.
-                strName = FUN_1401d2b10(strRoot, strName);
-#else
                 strName = strRoot + strName;
-#endif
                 FUN_1401d1400(strName);
                 if (pInfo->NextEntryOffset != 0)
                     pInfo = (FILE_NOTIFY_INFORMATION*)((char*)pInfo + pInfo->NextEntryOffset);

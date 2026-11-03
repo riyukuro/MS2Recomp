@@ -36,10 +36,9 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Tabl
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
-void FUN_140177e10(const CString& str, ATL::CAtlArray<unsigned int>* pOut, const char* pszDelim);   // split into uints
 unsigned char FUN_1401d1320(CCacheData*);                                // the file changed since it was loaded
-int FUN_14081d9e0(unsigned nTier);                                       // the tier id is used
-unsigned FUN_14081da20(CSkillTierOptionManager::TierId nTier);                                       // the tier's skill group id
+int FUN_14081d9e0(int nTier);                                       // the tier id is used
+int FUN_14081da20(int nTier);                                       // the tier's skill group id
 struct Unk_RegMarker {};
 
 typedef MS2Ptr<CSkillTierOption> CSkillTierOptionPtr;
@@ -188,7 +187,7 @@ int LoadItemOptionSkillTier()
         XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
         XmlQuery((class TiXmlElement *)(pNode), "skillIDs", strSkills);
         ATL::CAtlArray<unsigned int> aSkills;
-        FUN_140177e10(strSkills, &aSkills, ",");
+        XmlSplit<ATL::CAtlArray<unsigned> >(strSkills, aSkills, ",");
         if (aSkills.IsEmpty())
             continue;
         TPtrValue<Unk_SkillJobMap> spMap = Unk_GrNewTag(0);

@@ -10,6 +10,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiitemautouseoptiondialog.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/asdropdownmenu.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
@@ -157,15 +158,12 @@ public:
 // The status listener registry.
 
 
-CString FUN_140513200(const char* szFormat, const int& n);          // format one number
-CString FUN_1402bad60(const char* szFormat, const int* pn);        // the same format, a second copy
 CStringW GetStringCommon(int nStringId);                              // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
-CStringW FUN_1409e97f0(int nId, const int& nArg);                   // string table entry, one argument
+template <class A> CStringW BlockFormat(int nId, const A& a);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140710590(COutPacket& packet);                             // send
-bool FUN_140534e50(MS2Ptr<CItem>* pItem);                           // the item is expired / unusable
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (displayslot.cpp), TypeCast(0x6200023)
@@ -175,10 +173,9 @@ public:
     int FUN_141405980();
 };
 void FUN_1414048f0(int nItemId);
-void FUN_141404ce0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
-void FUN_1414050c0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
+bool FUN_141404ce0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
+bool FUN_1414050c0(int nType, unsigned __int64 pArr, Scaleform::GFx::Value* pValue);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                           // item link / popup for the item
-unsigned FUN_1422ccd20(DragSlotBag* pBag);                          // slot count of the bag
 PetSlot* FUN_140dbc0d0(DragSlot* p);
 UIItemAutoUseOptionDialog* FUN_140cbe1c0(int nId);                  // the open dialog with this UI id
 
@@ -309,7 +306,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     else if (PetSlot* pPet = FUN_140dbc0d0(static_cast<DragSlot*>(p)))
     {
         MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(pPet->GetPetItemId());
-        if (FUN_140534e50(&spItem) != 0)
+        if (!spItem)
             return static_cast<DragSlot*>(p)->vfunc_10();
         if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
         {
@@ -333,7 +330,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     else if (void* pItemSlot = FUN_140a50b50(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))))
     {
         MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(((class InvenSlot*)(void*)(pItemSlot))->FUN_141405980());
-        if (FUN_140534e50(&spItem) != 0)
+        if (!spItem)
             return static_cast<DragSlot*>(p)->vfunc_10();
         if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
         {
@@ -360,13 +357,13 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
 // @0x140f4eb30
 void UIItemAutoUseOptionDialog::Slot::vfunc_23(void* p)
 {
-    FUN_141404ce0(FUN_140f4e0e0(), p, &m_value18);
+    FUN_141404ce0(FUN_140f4e0e0(), (unsigned __int64)p, &m_value18);
 }
 
 // @0x140f4eb80
 void UIItemAutoUseOptionDialog::Slot::vfunc_24(void* p)
 {
-    FUN_1414050c0(FUN_140f4e0e0(), p, &m_value18);
+    FUN_1414050c0(FUN_140f4e0e0(), (unsigned __int64)p, &m_value18);
 }
 
 // @0x140f4ebd0 (ITooltip::vfunc_0)
@@ -376,7 +373,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
-    if (FUN_140534e50(&spItem) != 0)
+    if (!spItem)
         return 0;
     MS2Ptr<CItem> spWorn = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
     if (spWorn.get() != 0 ? true : false)
@@ -542,7 +539,7 @@ void UIItemAutoUseOptionDialog::OnLoadComplete()
     for (unsigned i = 0; i < DAT_1439ed000; i++)
     {
         int nNumber = i + 1;
-        CString strName = FUN_140513200("m_dropdownItem{0}", nNumber);
+        CString strName = Unk_SocketFormat("m_dropdownItem{0}", reinterpret_cast<const unsigned&>(nNumber));
         FUN_140f50230(((Unk_AuEntity*)this)->FUN_140c28560(strName).get(), i);
     }
     FUN_140f50190();
@@ -593,7 +590,7 @@ int UIItemAutoUseOptionDialog::FUN_140f4faf0(int nItemId)
     SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(m_strBag));
     if (pBag != 0)
     {
-        for (unsigned i = 0; i < FUN_1422ccd20(pBag); i++)
+        for (unsigned i = 0; i < (unsigned)((class DragSlotBag*)(pBag))->FUN_1422ccd20(); i++)
         {
             Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
             if (pSlot == 0)
@@ -635,7 +632,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
     SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(m_strBag));
     if (pBag != 0)
     {
-        unsigned nCount = FUN_1422ccd20(pBag);
+        unsigned nCount = (unsigned)((class DragSlotBag*)(pBag))->FUN_1422ccd20();
         for (unsigned i = 0; i < nCount; i++)
         {
             Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
@@ -674,7 +671,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
 void UIItemAutoUseOptionDialog::FUN_140f50090(int nState, int nIndex)
 {
     int nNumber = nIndex + 1;
-    CString strName = FUN_1402bad60("m_dropdownItem{0}", &nNumber);
+    CString strName = Unk_SocketFormat("m_dropdownItem{0}", nNumber);
     MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(strName);
     if (spCombo)
     {
@@ -720,7 +717,7 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
         {
             ASObj entry(2);
             entry.FUN_1409c0d20("condition", nCond);
-            entry.FUN_1407cbb20("label", FUN_1409e97f0(0xc09, nCond));
+            entry.FUN_1407cbb20("label", BlockFormat<unsigned>(0xc09, reinterpret_cast<const unsigned&>(nCond)));
             ((Unk_AuCombo*)pCombo)->AddItemRow(entry);
         }
     }
@@ -749,7 +746,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
     for (unsigned i = 0; i < DAT_1439ed000; i++)
     {
         int nNumber = i + 1;
-        CString strName = FUN_140513200("m_dropdownItem{0}", nNumber);
+        CString strName = Unk_SocketFormat("m_dropdownItem{0}", reinterpret_cast<const unsigned&>(nNumber));
         MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(strName);
         if (spCombo)
         {

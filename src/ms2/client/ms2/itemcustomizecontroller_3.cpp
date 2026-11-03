@@ -31,17 +31,12 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/itemdata.h"   // C3: ItemModelData::GetGroup, ModelGroup
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<float>::Read
 
 // ---- out-of-unit callees ----
 
 // The item the controller edits (CPtred, held in MS2Ptr; ?\equipitem.cpp). Only the members this unit calls.
-struct Unk_MorphRangeList
-{
-    const Unk_CustomizeRange* FUN_140544f20(size_t nIndex);        // range nIndex (static default when absent)
-    int FUN_140545090();                                        // number of ranges
-};
-struct Unk_MorphItemSection { Unk_MorphRangeList* FUN_14054b2f0(int nKind); };
 struct Unk_MorphItem { CItemData* FUN_14053ec70(); };
 
 class CEquipItem : public CPtred
@@ -145,13 +140,13 @@ float CItemMorphController::vfunc_20()
 // @0x141416f70
 const Unk_CustomizeRange* CItemMorphController::vfunc_23()
 {
-    return reinterpret_cast<Unk_MorphItemSection*>(reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty())->FUN_14054b2f0(0)->FUN_140544f20(m_nCurIndex);
+    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(m_nCurIndex);
 }
 
 // @0x141416fd0
 const Unk_CustomizeRange* CItemMorphController::vfunc_24(int nIndex)
 {
-    return reinterpret_cast<Unk_MorphItemSection*>(reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty())->FUN_14054b2f0(0)->FUN_140544f20(nIndex);
+    return (const Unk_CustomizeRange*)reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty()->GetGroup(0)->FUN_140544f20(nIndex);
 }
 
 // @0x141417030
@@ -193,7 +188,7 @@ void CItemMorphController::vfunc_15(int nIndex, float fValue)
 // @0x1414171e0
 int CItemMorphController::vfunc_27()
 {
-    return reinterpret_cast<Unk_MorphItemSection*>(reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty())->FUN_14054b2f0(0)->FUN_140545090();
+    return (int)reinterpret_cast<CItemData*>(m_spEquipItem->FUN_1411dc7f0())->GetModelOrEmpty()->GetGroup(0)->FUN_140545090();
 }
 
 // @0x141417230

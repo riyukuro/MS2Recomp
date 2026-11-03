@@ -53,6 +53,7 @@
 #include "ms2/commonfiles/logstring.h"
 
 #include "hook/ms2hook.h"
+CLogString* GetLogString();   // 0x140166440
 
 using Scaleform::File;
 using Scaleform::Ptr;
@@ -235,9 +236,9 @@ void GFxManager::Render()
     if (m_mapMovies.IsEmpty())
         return;
     if (FUN_1422cf120()) {
-        if (CLogString::GetInstance()) {
+        if (GetLogString()) {
             DWORD dwTick = GetTickCount();
-            Unk_OptLog(CLogString::GetInstance(), 0xc, 0x1a, L"GFxManager::Render D3DERR_DEVICELOST[{0}]", dwTick);
+            Unk_OptLog(GetLogString(), 0xc, 0x1a, L"GFxManager::Render D3DERR_DEVICELOST[{0}]", dwTick);
         }
         return;
     }

@@ -143,7 +143,6 @@ public:
 
 extern int g_bAppActive;                                                // 0x143af7d40
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
-CStringTable* GetStringTable();
 CStringW GetStringCommon(int nStringId);                                  // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // common string by key
 CStringW FUN_1422b9490(const Scaleform::GFx::Value& v);                 // the value as a string
@@ -284,7 +283,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
-        FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", GetStringTable()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
+        FUN_140cfee80(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
     static_cast<Unk_TeScript*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerEnterActionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionMax.Get(),
@@ -512,10 +511,6 @@ int UITriggerEditorDialog::OpenTriggerFile()
 }
 MS2_REPLACE_METHOD(0x141B2BBF0, UITriggerEditorDialog, OpenTriggerFile, 648, 0x1FFA4F1E);
 
-// ATL operator+(const CString&, const char*) as linked in the exe (0x14038f6d0); the inline one
-// pulls in the dllimport CSimpleStringT<char,1>::CopyChars, which the hook DLL cannot resolve.
-CString FUN_14038f6d0(const CString& str, const char* sz);
-
 // @0x141b2be80
 void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
 {
@@ -582,20 +577,20 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         CString strPrefix;
         strPrefix.Format("Cond%d_", i);
         Scaleform::GFx::Value vCond;
-        state.GetMember(FUN_14038f6d0(strPrefix, "Condition"), &vCond);
+        state.GetMember(strPrefix + "Condition", &vCond);
         CStringW strCond = XmlWide(vCond.GetString());
         Scaleform::GFx::Value vCondArg1;
-        state.GetMember(FUN_14038f6d0(strPrefix, "ConditionArg1"), &vCondArg1);
+        state.GetMember(strPrefix + "ConditionArg1", &vCondArg1);
         CStringW strCondArg1 = XmlWide(vCondArg1.GetString());
         Scaleform::GFx::Value vCondArg2;
-        state.GetMember(FUN_14038f6d0(strPrefix, "ConditionArg2"), &vCondArg2);
+        state.GetMember(strPrefix + "ConditionArg2", &vCondArg2);
         CStringW strCondArg2 = XmlWide(vCondArg2.GetString());
         ATL::CAtlArray<CStringW> condArgs;
         condArgs.Add(strCondArg1);
         condArgs.Add(strCondArg2);
         ATL::CAtlArray<CStringW> names;
         Scaleform::GFx::Value vNames;
-        state.GetMember(FUN_14038f6d0(strPrefix, "CondAction"), &vNames);
+        state.GetMember(strPrefix + "CondAction", &vNames);
         for (unsigned int j = 0; j < vNames.GetArraySize(); j++)
         {
             Scaleform::GFx::Value v;
@@ -605,7 +600,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         }
         ATL::CAtlArray<CStringW> args1;
         Scaleform::GFx::Value vArgs1;
-        state.GetMember(FUN_14038f6d0(strPrefix, "CondActionArg1"), &vArgs1);
+        state.GetMember(strPrefix + "CondActionArg1", &vArgs1);
         for (unsigned int j = 0; j < vArgs1.GetArraySize(); j++)
         {
             Scaleform::GFx::Value v;
@@ -615,7 +610,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         }
         ATL::CAtlArray<CStringW> args2;
         Scaleform::GFx::Value vArgs2;
-        state.GetMember(FUN_14038f6d0(strPrefix, "CondActionArg2"), &vArgs2);
+        state.GetMember(strPrefix + "CondActionArg2", &vArgs2);
         for (unsigned int j = 0; j < vArgs2.GetArraySize(); j++)
         {
             Scaleform::GFx::Value v;
@@ -640,7 +635,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         spCond->SetName(strCond);
         spCond->SetArgs(condArgs);
         Scaleform::GFx::Value vNext;
-        state.GetMember(FUN_14038f6d0(strPrefix, "Next"), &vNext);
+        state.GetMember(strPrefix + "Next", &vNext);
         CStringW strNext = XmlWide(vNext.GetString());
         TriggerCli::StatePtr spNext = m_spTrigger->GetState(strNext);
         if (spNext.get() != 0)
@@ -756,7 +751,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
             continue;
         ASObj obj(2);
         obj.FUN_1407cb9c0("id", nIndex);
-        CStringW strText = GetStringTable()->FUN_141811980(1, pCube->FUN_1408b4f20());
+        CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20());
         obj.FUN_1407cbb20("text", strText);
         int nHash = FUN_1408a03c0(pCube->position);
         obj.FUN_1407cb9c0("hash", nHash);
@@ -983,8 +978,8 @@ bool FUN_141b2fa20(Cube* pLeft, Cube* pRight)
         return false;
     if (pRight->item.IsNull())
         return false;
-    CStringW strLeft = GetStringTable()->FUN_141811980(1, pLeft->FUN_1408b4f20());
-    CStringW strRight = GetStringTable()->FUN_141811980(1, pRight->FUN_1408b4f20());
+    CStringW strLeft = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pLeft->FUN_1408b4f20());
+    CStringW strRight = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pRight->FUN_1408b4f20());
     if (strLeft.GetAt(0) < strRight.GetAt(0))
         return true;
     return false;

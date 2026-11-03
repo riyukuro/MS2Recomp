@@ -78,6 +78,17 @@ typedef Delegate<bool(int, const CMsgBoxData&)> RmMsgBoxFn;
 void FUN_140d42bc0(ItemScrollSlot* pSlot, RmRemoveFn fn);      // ItemScrollSlot::SetRemoveFn
 void FUN_140d42b70(ItemScrollSlot* pSlot, RmDropFn fn);        // ItemScrollSlot::SetDropFn
 
+// A locked option of the remake request (itemremakeoption.h's record; that header's Unk_RemakeStat clashes with this
+// unit's view). The option list of the request is this vector (citemremakeoptionpacket.h: Unk_RemakeOptionList50).
+struct Unk_RemakeLockOpt
+{
+    Unk_RemakeLockOpt() : m_nIndex(0), m_nValue(0) {}   // 0x140b98d30
+    int m_nIndex;                                       // +0x0 the option index
+    int m_nValue;                                       // +0x4 its value
+};
+MS2_CHECK_SIZE(Unk_RemakeLockOpt, 8);
+typedef std::vector<Unk_RemakeLockOpt> Unk_RemakeLockOptList;
+
 extern Unk_Inventory g_143ab2a90;
 
 class Unk_RmPackets
@@ -188,110 +199,40 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5ff80(const char* szMethod, C
 // The scroll item's data record as a CItemData (the repacking dialog does the same cast).
 #define RM_DATA(spItem) MS2Ptr<CItemData>(reinterpret_cast<CItemData*>((spItem)->FUN_140527840()))
 
-// ---- fmt call glue: the string-key formatter with an unsigned and a custom-typed int argument (hand written, as in
-// uiitemrepackingscrolldialog.cpp: the int goes through the closure {value, thunk}) ----
-typedef __int64 i64;
-struct Unk_RmFmtVal { i64 m_w0, m_w1; int m_type; };
-enum Unk_RmFmtEnum {};
-struct Unk_RmFmtArg { const void* m_value; void* m_fn; };
-struct Unk_RmFmtPack { i64 m_n; const Unk_RmFmtArg* m_args; };
-Unk_RmFmtArg* FUN_140163770(Unk_RmFmtArg* pOut, unsigned nValue);     // box an unsigned (type 2)
-i64* FUN_140163e80(i64* pSlot);                                       // empty argument slot
-i64* FUN_14015e5a0(i64* pOut, unsigned* pValue);                      // type id of an unsigned argument
-i64 FUN_14016d660(i64 a0, i64 a1, i64 a2, i64 a3, i64 a4, i64 a5, i64 a6, i64 a7, i64 a8, i64 a9, i64 a10, i64 a11,
-                  i64 a12, i64 a13, i64 a14);
-Unk_RmFmtPack* FUN_140163e50(Unk_RmFmtPack* pOut, i64 nTypes, Unk_RmFmtArg* pArgs);
-i64 FUN_1402da110(i64 ctx, i64* pOut, Unk_RmFmtVal* pVal);
+// ---- fmt call glue: the string-key formatter with an int and a custom-typed int argument (as in
+// uiitemrepackingscrolldialog.cpp: the int enum goes through its own format_arg) ----
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);
 
-i64 FUN_140f60360(int*);
-i64 FUN_140f60340(int*);
-void FUN_140f60060(fmt::BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_RmFmtEnum& value);
-void FUN_140f60180(i64 ctx, i64 value, i64 pOut);
-Unk_RmFmtArg* FUN_140f5f940(Unk_RmFmtArg* pOut, int* pValue);
-i64* FUN_140f5f970(i64* pOut, int* pValue);
+enum Unk_RmFmtEnum : int {};
 
 // @0x140f60060
 // fmt::format_arg for an enum argument (the ostream fallback is dead but compiled at /Od)
-void FUN_140f60060(fmt::BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_RmFmtEnum& value)
+template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_RmFmtEnum& value)
 {
-    fmt::internal::Arg arg;
-    fmt::internal::Value& arg_value = arg;
+    internal::Arg arg;
+    internal::Value& arg_value = arg;
     if (std::is_enum<Unk_RmFmtEnum>::value)
     {
         arg.int_value = value;
-        arg.type = fmt::internal::Arg::INT;
+        arg.type = internal::Arg::INT;
     }
     else
     {
         std::basic_ostringstream<wchar_t> os;
         os << value;
         std::basic_string<wchar_t> str = os.str();
-        arg_value = fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(str);
-        arg.type = fmt::internal::Arg::STRING;
+        arg_value = internal::MakeValue<BasicFormatter<wchar_t> >(str);
+        arg.type = internal::Arg::STRING;
     }
     format_str = f.format(format_str, arg);
 }
 
-// @0x140f60180
-void FUN_140f60180(i64 ctx, i64 value, i64 pOut)
-{
-    FUN_140f60060(*(fmt::BasicFormatter<wchar_t>*)ctx, *(const wchar_t**)pOut, *(const Unk_RmFmtEnum*)value);
-}
-
-// @0x140f5f940
-Unk_RmFmtArg* FUN_140f5f940(Unk_RmFmtArg* pOut, int* pValue)
-{
-    pOut->m_value = pValue;
-    pOut->m_fn = (void*)&FUN_140f60180;
-    return pOut;
-}
-
-// @0x140f5f970
-i64* FUN_140f5f970(i64* pOut, int* pValue)
-{
-    *pOut = FUN_140f60340(pValue);
-    return pOut;
-}
-
-// @0x140f60340
-i64 FUN_140f60340(int* pValue)
-{
-    return FUN_140f60360(pValue);
-}
-
-// @0x140f60360
-i64 FUN_140f60360(int*)
-{
-    return 0xd;
-}
-
 // @0x140f5fb60
-CStringW FUN_140f5fb60(CStringW strKey, unsigned* pA, int* pB)
+CStringW FUN_140f5fb60(CStringW strKey, const int& nA, const Unk_RmFmtEnum& nB)
 {
-    Unk_RmFmtArg t0, t1;
-    Unk_RmFmtArg aArgs[2] = {*FUN_140163770(&t0, *pA), *FUN_140f5f940(&t1, pB)};
-    i64 tb, ta;
-    i64 s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12;
-    i64* p0 = &tb;
-    i64* p1 = &ta;
-    i64* p2 = FUN_140163e80(&s0);
-    i64* p3 = FUN_140163e80(&s1);
-    i64* p4 = FUN_140163e80(&s2);
-    i64* p5 = FUN_140163e80(&s3);
-    i64* p6 = FUN_140163e80(&s4);
-    i64* p7 = FUN_140163e80(&s5);
-    i64* p8 = FUN_140163e80(&s6);
-    i64* p9 = FUN_140163e80(&s7);
-    i64* p10 = FUN_140163e80(&s8);
-    i64* p11 = FUN_140163e80(&s9);
-    i64* p12 = FUN_140163e80(&s10);
-    i64* p13 = FUN_140163e80(&s11);
-    i64* p14 = FUN_140163e80(&s12);
-    i64* pTypeB = FUN_140f5f970(p0, pB);
-    Unk_RmFmtPack pack;
-    return FUN_14028dfa0(strKey, reinterpret_cast<const fmt::ArgList&>(*FUN_140163e50(&pack, FUN_14016d660(*FUN_14015e5a0(p1, pA), *pTypeB, *p14, *p13, *p12, *p11,
-                                                                    *p10, *p9, *p8, *p7, *p6, *p5, *p4, *p3, *p2),
-                                                aArgs)));
+    const fmt::internal::ArgArray<2>::Type values = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(nA),
+                                                     fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(nB)};
+    return FUN_14028dfa0(strKey, fmt::ArgList(fmt::internal::make_type(nA, nB), values));
 }
 
 // ---- the dialog ----
@@ -544,7 +485,7 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
     option.m_scrollUid = m_nScrollUid;
     option.m_itemUid = m_spTarget->GetItemUid();
     option.m_ingredientUid = m_nIngredientUid;
-    Unk_LockOpt lockOpt;
+    Unk_RemakeLockOpt lockOpt;
     ATL::CAtlArray<int> aLocked;
     FUN_140f5f310(aLocked);
     bool bLock = aLocked.GetCount() > 0;
@@ -579,8 +520,8 @@ void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nU
             if (aLocked[i] >= 0)
             {
                 Unk_RemakeStat stat(2, MS2Ptr<CItem>(spItem), false);
-                if (stat.FUN_140619290(aLocked[i], lockOpt.m_v, lockOpt.m_4))
-                    option.m_options.FUN_140b9b410(lockOpt);
+                if (stat.FUN_140619290(aLocked[i], lockOpt.m_nIndex, lockOpt.m_nValue))
+                    reinterpret_cast<Unk_RemakeLockOptList&>(option.m_options).push_back(lockOpt);
             }
             else
                 option.m_bLocked = true;
@@ -629,7 +570,7 @@ void UIItemRemakeScrollDialog::FUN_140f5a9c0(CInPacket& packet)
 // @0x140f5ab10
 void UIItemRemakeScrollDialog::FUN_140f5ab10(CInPacket& packet)
 {
-    unsigned nFlag = packet.ReadUInt8();
+    int nFlag = packet.ReadUInt8();
     int nCode = packet.ReadInt32();
     if (nCode == 0)
         return;
@@ -648,7 +589,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ab10(CInPacket& packet)
         FUN_1412752d0(L"s_itemremake_scroll_error_server_fail_consume_scroll", 1);
         return;
     }
-    FUN_1412751f0(FUN_140f5fb60(CStringW(L"s_itemremake_scroll_error_server_default"), &nFlag, &nCode), 1, 1);
+    FUN_1412751f0(FUN_140f5fb60(CStringW(L"s_itemremake_scroll_error_server_default"), nFlag, (const Unk_RmFmtEnum&)nCode), 1, 1);
 }
 
 // @0x140f5acf0

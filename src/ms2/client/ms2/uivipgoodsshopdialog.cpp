@@ -34,6 +34,7 @@
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/vipgoods.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/placeholder/asbilldata.h"
 #include "ms2/placeholder/asslot.h"
@@ -64,7 +65,6 @@ static CString s_strSortTypeNamesBuy[] = {"None", "Buy", "PriceLow", "PriceHigh"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
-#include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Init, Check
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
@@ -76,20 +76,6 @@ static CString s_sndCashBuy = "cash_Buy";
 template <> MS2Ptr<ASTileList> UISwfEntity::GetChild<ASTileList>(const CString&);    // 0x140ba4b70
 
 
-// The VIP effect of the first benefit: a 16-byte skill reference (an MS2Ptr; same layout as Unk_VipEffectRef) that
-// CVIPTable::GetFirstEffect 0x1408f70b0 returns straight into the caller's slot.
-class Unk_VgEffectRef
-{
-public:
-    ~Unk_VgEffectRef();                                         // 0x1401836a0
-    bool FUN_14096e7e0(int n) const;                            // == 0
-    void* FUN_140184830() const;                                // get
-private:
-    void* m_base;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_VgEffectRef, 0x10);
-class Unk_VgTable { public: Unk_VgEffectRef FUN_1408f70b0(); };   // CVIPTable::GetFirstEffect
 
 // The server config constants (the buy limit window in days).
 struct Unk_VgConstUInt;
@@ -106,12 +92,11 @@ __int64 GetServerTime();                                        // the server ti
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
-CStringW FUN_140938ae0(CStringW strKey, const unsigned& nValue);
+template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a1);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_1409e8ca0(CStringW strKey, const int& a1, const int& a2, const int& a3, const int& a4, const int& a5);
-CStringW FUN_140ed0b00(CStringW strKey, const unsigned& nValue, const CStringW& strTime);
-CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);
-CString FUN_140513200(const char* szFormat, const unsigned& n);
+template <class A, class B, class C, class D, class E> CStringW FUN_14028dfa0(CStringW strKey, const A& a1, const B& a2, const C& a3, const D& a4, const E& a5);
+template <class A, class B> CStringW FUN_14028dfa0(CStringW strKey, const A& a1, const B& a2);
+CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool bIcon);
 void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);                          // message box
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
@@ -140,7 +125,7 @@ UIVIPGoodsShopDialog::UIVIPGoodsShopDialog()
     m_nGoodsCount = 0;
     m_bReady = 0;
     FUN_141924170(1);
-    reinterpret_cast<Unk_IntervalTimer&>(m_timer).Init();
+    m_timer.Init();
 }
 
 // @0x140fb9bc0
@@ -179,7 +164,7 @@ void UIVIPGoodsShopDialog::vfunc_72()
         return;
     if (m_bReady == 0)
         return;
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(1000) != 0) {
+    if (m_timer.Check(1000) != 0) {
         std::vector<MS2Ptr<CVIPGoods> > goods;
         FUN_140fbb940(goods);
         if (m_nGoodsCount != goods.size())
@@ -244,11 +229,11 @@ void UIVIPGoodsShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         }
     }
     else if (operator==(strType, "effectIcon")) {
-        Unk_VgEffectRef effect = ((Unk_VgTable*)FUN_140fb9980())->FUN_1408f70b0();
-        if (effect.FUN_14096e7e0(0))
+        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        if (effect == 0)
             return;
         ASTooltip tip(*pRetVal, 2);
-        tip.FUN_1409e2750(effect.FUN_140184830(), 3, 0);
+        tip.FUN_1409e2750(effect.get(), 3, 0);
     }
     else if (operator==(strType, "buyLimit")) {
         unsigned nGoodsId = pArgs->PopUInt();
@@ -366,16 +351,16 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
             switch (spGoods->m_nBuyLimitResetType)
             {
             case 0:
-                strLimit = FUN_140938ae0(CStringW(L"s_vip_dialog_goods_sales_limit"), nLimit);
+                strLimit = FUN_14028dfa0<unsigned>(CStringW(L"s_vip_dialog_goods_sales_limit"), nLimit);
                 break;
             case 1:
-                strLimit = FUN_140938ae0(CStringW(L"s_vip_dialog_goods_sales_day_limit"), nLimit);
+                strLimit = FUN_14028dfa0<unsigned>(CStringW(L"s_vip_dialog_goods_sales_day_limit"), nLimit);
                 break;
             case 2:
-                strLimit = FUN_140938ae0(CStringW(L"s_vip_dialog_goods_sales_week_limit"), nLimit);
+                strLimit = FUN_14028dfa0<unsigned>(CStringW(L"s_vip_dialog_goods_sales_week_limit"), nLimit);
                 break;
             case 3:
-                strLimit = FUN_140938ae0(CStringW(L"s_vip_dialog_goods_sales_month_limit"), nLimit);
+                strLimit = FUN_14028dfa0<unsigned>(CStringW(L"s_vip_dialog_goods_sales_month_limit"), nLimit);
                 break;
             }
             row.FUN_1407cbb20("buyLimit", strLimit);
@@ -388,9 +373,9 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
                 strBindId.Format("%s_%d", (LPCSTR)GetTypeName(), m_bindIds.GetCount() + 1);
                 FUN_141415450(strBindId, spItem, 0, 0x415, 0);
                 m_bindIds.Add(strBindId);
-                CString strKey = FUN_140513200("bonusItemBindID{0}", j + 1);
+                CString strKey = Unk_SocketFormat("bonusItemBindID{0}", j + 1);
                 row.FUN_1407cba60(strKey, strBindId);
-                strKey = FUN_140513200("bonusItemName{0}", j + 1);
+                strKey = Unk_SocketFormat("bonusItemName{0}", j + 1);
                 row.FUN_1407cbb20(strKey, spItem->FUN_140527b10());   // CItem member: this=rcx, hidden return=rdx
             }
         }
@@ -443,8 +428,8 @@ void UIVIPGoodsShopDialog::FUN_140fbbae0(int nGoodsId)
             int nDay = until.GetDay();
             int nMonth = until.GetMonth();
             int nYear = until.GetYear();
-            CStringW strTime = FUN_1409e8ca0(CStringW(L"s_vip_dialog_goods_buy_limit_time_string"), nYear, nMonth, nDay, nHour, nMinute);
-            FUN_140d73aa0(FUN_140ed0b00(CStringW(L"s_vip_dialog_goods_buy_limit"), nDays, strTime), 0, 0, CStringW(L""));
+            CStringW strTime = FUN_14028dfa0<int, int, int, int, int>(CStringW(L"s_vip_dialog_goods_buy_limit_time_string"), nYear, nMonth, nDay, nHour, nMinute);
+            FUN_140d73aa0(FUN_14028dfa0<unsigned, CStringW>(CStringW(L"s_vip_dialog_goods_buy_limit"), nDays, strTime), 0, 0, CStringW(L""));
             return;
         }
     }
@@ -486,16 +471,16 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
     spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UIVIPGoodsShopDialog::FUN_140fbce80);
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     {
-        Unk_VgEffectRef effect = ((Unk_VgTable*)FUN_140fb9980())->FUN_1408f70b0();
-        if (effect.FUN_14096e7e0(0))
+        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        if (effect == 0)
             return;
         MS2Ptr<ASSlot> spSlot(new ASSlot(2));
-        if (spSlot.get()->FUN_1409c4860((Unk_SlotIconSource*)effect.FUN_140184830()) == 0)
+        if (spSlot.get()->FUN_1409c4860((Unk_SlotIconSource*)effect.get()) == 0)
             return;
         MS2Ptr<ASBillData> spBill(new ASBillData(2));
         spBill->SetIconData(spSlot->FUN_1422bb870());
         spBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2e, spGoods->m_nId));
-        spBill->SetSalePrice(FUN_1418fec00(nPayType, spGoods->m_nSalePrice, 0), spGoods->m_nSalePrice);
+        spBill->SetSalePrice(FUN_1418fec00(nPayType, spGoods->m_nSalePrice, false), spGoods->m_nSalePrice);
         spBill->SetEnableGift(0);
         spBill->FUN_1409abcd0(nPayType);
         bills.Add(spBill);
@@ -522,7 +507,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
             strExtra = FormatTimeSpan(span, true, true, false, false);
         }
         else
-            strExtra = FUN_140938ae0(CStringW(L"s_common_count"), spGoods->m_bonusItemCounts[i]);
+            strExtra = FUN_14028dfa0<unsigned>(CStringW(L"s_common_count"), spGoods->m_bonusItemCounts[i]);
         spItemBill->SetSelectedOption(strExtra);
         bills.Add(spItemBill);
     }
@@ -578,11 +563,11 @@ bool UIVIPGoodsShopDialog::FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData&
         return false;
     unsigned nIndex = rData.PopUInt();
     if (nIndex == 0) {
-        Unk_VgEffectRef effect = ((Unk_VgTable*)FUN_140fb9980())->FUN_1408f70b0();
-        if (effect.FUN_14096e7e0(0))
+        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        if (effect == 0)
             return false;
         ASTooltip tip(*pRetVal, 2);
-        tip.FUN_1409e2750(effect.FUN_140184830(), 3, 0);
+        tip.FUN_1409e2750(effect.get(), 3, 0);
     }
     else if (nIndex > 0) {
         unsigned nItem = nIndex - 1;

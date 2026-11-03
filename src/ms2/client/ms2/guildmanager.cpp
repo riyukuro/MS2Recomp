@@ -62,6 +62,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/additionalclilist.h"  // C3: AdditionalCliList::FUN_14096fe60
 
 // Initializers retained in the .text$di range, in original order (names invented). The range after
 // 0x1400f4b40 belongs to the next object (HardwareInstancingService message handlers).
@@ -110,18 +111,6 @@ public:
 // Party/field recall gate.
 extern __int64 DAT_143ab2898;   // the local character's meso
 extern int DAT_143ab2870;       // the local character's current map id
-// A buff lookup result of the local character's buff list (PCBase::FUN_1416749a0).
-class Unk_GuildBuffRef {
-public:
-    ~Unk_GuildBuffRef();                                       // 0x14096e5a0
-    void* FUN_140975b90();                                     // the active buff, or 0
-    void* m_00;
-    void* m_08;
-};
-class Unk_PCBaseBuffs {
-public:
-    Unk_GuildBuffRef FUN_14096fe60(int buffId, unsigned short level, int a, bool b, int c);
-};
 // The housing service, looked up from its registry cell.
 // Local view of CubeMapInformationService (cubemapinformationservice_3.h clashes on Unk_1401cd100).
 class CubeMapInformationService { public: int FUN_1410d2f10(); };
@@ -160,8 +149,6 @@ CStringW BlockFormat(int id, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 #include "ms2/placeholder/formatstringid.h"
 CStringW FUN_140763e10(int value);                   // the number with digit grouping
-CStringW FUN_141081c60(CStringW key, const CStringW& arg0, const CStringW& arg1, const int* arg2);
-CStringW FUN_140d26d90(CStringW key, const CStringW& arg0, const int* arg1, const CStringW& arg2);
 bool FUN_14028d780(unsigned char c);
 void FUN_1404ec5b0(Unk_GuildRef* out, const MS2Ptr<CGuildMember>& member);   // MS2Ptr<CGuildMember> copy into raw storage
 class Unk_IntTriple   // C3: member view for the former free stand-ins
@@ -822,8 +809,8 @@ void CGuildManager::FUN_1413b96e0(int skillId)
     }
     PCBase* pc = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pc == 0) return;
-    Unk_GuildBuffRef buff = pc->FUN_1416749a0()->FUN_14096fe60(skillData->f34, skillData->f38, 0, true, 1);
-    if (buff.FUN_140975b90() != 0) {
+    MS2Ptr<AdditionalCli> buff = ((AdditionalCliList*)pc->FUN_1416749a0())->FUN_14096fe60(skillData->f34, skillData->f38, 0, true, 1);
+    if (buff.get() != 0) {
         FUN_1412751f0(GetStringCommonByKey(L"s_guild_err_cannot_use_skill"), 1, 1);
         return;
     }
@@ -2540,7 +2527,7 @@ void CGuildManager::FUN_1413c3460(CInPacket& packet)
             dialog->FUN_14196f830();
     }
     CStringW skillName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(skillData->f34, skillData->f38, CString("name"));
-    FUN_1412751b0(FUN_141081c60(CStringW(L"s_guild_notify_upgrade_skill"), user, skillName, &skill.f1c), 0xd);
+    FUN_1412751b0(FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_guild_notify_upgrade_skill"), user, skillName, reinterpret_cast<const int&>(skill.f1c)), 0xd);
 }
 MS2_REPLACE_METHOD(0x1413C3460, CGuildManager, FUN_1413c3460, 788, 0x690B1B5B);
 
@@ -2582,7 +2569,7 @@ void CGuildManager::FUN_1413c39e0(CInPacket& packet)
         upgrade->FUN_140e39da0();
     Unk_PayloadPtr<CGuildXmlData::GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(level, theme);
     if (house.get() != 0)
-        FUN_1412751b0(FUN_140d26d90(CStringW(L"s_guild_notify_house_upgrade"), user, &level,
+        FUN_1412751b0(FUN_14028dfa0<CStringW, int, CStringW>(CStringW(L"s_guild_notify_house_upgrade"), user, level,
                                     TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20)), 0xd);
 }
 MS2_REPLACE_METHOD(0x1413C39E0, CGuildManager, FUN_1413c39e0, 602, 0x7D39ABAA);
@@ -2626,8 +2613,8 @@ void CGuildManager::FUN_1413c3ef0(CInPacket& packet)
         dialog->FUN_141971ac0();
     Unk_PayloadPtr<CGuildXmlData::GuildNpc> npcData = TSingleton<CGuildXmlData>::GetInstance()->GetNpc((Unk_GuildNpcKind)npc->f18, npc->f1c);
     if (npcData.get() != 0)
-        FUN_1412751b0(FUN_141081c60(CStringW(L"s_guild_notify_upgrade_npc"), user,
-                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3f, npcData->f30), &npc->f1c), 0xd);
+        FUN_1412751b0(FUN_14028dfa0<CStringW, CStringW, int>(CStringW(L"s_guild_notify_upgrade_npc"), user,
+                                    TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3f, npcData->f30), reinterpret_cast<const int&>(npc->f1c)), 0xd);
 }
 MS2_REPLACE_METHOD(0x1413C3EF0, CGuildManager, FUN_1413c3ef0, 686, 0xEDFE702B);
 

@@ -173,7 +173,6 @@ void FUN_14067c080(Unk_LoginMachineId* pDst, const Unk_LoginMachineId& src);
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
 CString FUN_1406521f0(int nRegion);
-CString FUN_1401d2b10(const CString& a, const CString& b);      // a + b (clang: operator+ needs the MFC CopyChars import)
 CString FUN_140652030(int n);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
@@ -594,7 +593,7 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
         if (reinterpret_cast<Unk_SlOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bLocaledName == 1)
-            request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
+            request.m_strId = DAT_143ab29d8 + FUN_1406521f0(FUN_1406516b0());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);

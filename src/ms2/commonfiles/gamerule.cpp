@@ -2412,10 +2412,6 @@ void CGameRule::FUN_14047d900(int eventId)
 }
 MS2_REPLACE_METHOD(0x14047D900, CGameRule, FUN_14047d900, 98, 0x93F5944B);
 
-#ifdef __clang__
-CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
-#endif
-
 // @0x14047d970
 bool CGameRule::FUN_14047d970(CStringW& strNotice)
 {
@@ -2427,12 +2423,7 @@ bool CGameRule::FUN_14047d970(CStringW& strNotice)
         return true;
     CStringW strSeparator(L"       ");
     for (POSITION pos = m_c18.GetStartPosition(); pos != NULL; m_c18.GetNext(pos))
-#ifdef __clang__
-        // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+.
-        strNotice += FUN_1401d0080(m_c18.GetValueAt(pos), strSeparator);
-#else
         strNotice += m_c18.GetValueAt(pos) + strSeparator;
-#endif
     return true;
 }
 MS2_REPLACE_METHOD(0x14047D970, CGameRule, FUN_14047d970, 357, 0x11222385);

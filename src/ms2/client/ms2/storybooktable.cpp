@@ -51,7 +51,6 @@ void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszA
 CString FUN_14028d1f0(const char* pszText);                 // "" when null
 CString FUN_140536a50(const char* pszFormat, const CString& strArg0);       // fmt::format("..{0}", arg)
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);      // <resource root><dir>/<file>
-class Unk_ScriptTextFilter { public: void FUN_1416fb380(CStringW* pText); };
 
 // The unit's init flag is an exe global (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -135,7 +134,7 @@ void CStoryBookTable::Load()
                 CString strDir = FUN_140536a50("StoryBook/{0}", arrPath[0]);
                 spPage->m_strImage = FUN_140cc2ad0(strDir, arrPath[1]);
             }
-            reinterpret_cast<Unk_ScriptTextFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb380(&spPage->m_strText);
+            TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(spPage->m_strText);
             spData->m_pages.SetAt(nNumber, spPage);
             if (nNumber > spData->m_nMaxPage)
                 spData->m_nMaxPage = nNumber;

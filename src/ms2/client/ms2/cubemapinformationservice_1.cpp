@@ -37,16 +37,11 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"  // C3: was a local member view
 #include "ms2/client/ms2/entityvibrator.h"  // C3: was a local member view
+#include "ms2/client/ms2/effectservice.h"
 
 class CubeMapInformationService;
 class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
 CubeMapInformationService* FUN_1401cd070(const void*);
-void* FUN_1403ed280();
-class CEffectService   // C3: member view for the former free stand-ins
-{
-public:
-    void DestroyRain();
-};
 Unk_Int3* FUN_1408a85a0(Unk_Int3*,int,int,int);
 
 // The shared WorldService declaration uses this handle spelling. Its per-type
@@ -78,7 +73,7 @@ void Unk_CubeHeightIndex::FUN_1410b2510(int x,int y,int z) {
     int oldHeight=INT_MIN;
     m_heights.find(key,oldHeight);
     if(oldHeight<z) m_heights[key]=z;
-    ((class CEffectService*)(void*)(FUN_1403ed280()))->DestroyRain();
+    TSingleton<CEffectService>::GetInstance()->DestroyRain();
 }
 MS2_REPLACE_METHOD(0x1410b2510, Unk_CubeHeightIndex, FUN_1410b2510, 123, 0xd1ba07bc);
 // MS2-FUNCTIONAL: ID argument register transfer differs; calls and control flow verified.
@@ -104,7 +99,7 @@ void Unk_CubeHeightIndex::FUN_1410b25a0(int x,int y,int z) {
         }
     }
     m_heights[key]=height;
-    ((class CEffectService*)(void*)(FUN_1403ed280()))->DestroyRain();
+    TSingleton<CEffectService>::GetInstance()->DestroyRain();
 }
 MS2_REPLACE_METHOD(0x1410b25a0, Unk_CubeHeightIndex, FUN_1410b25a0, 440, 0xff7f5236);
 // @0x1410b2760

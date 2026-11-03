@@ -182,7 +182,6 @@ class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 extern __int64 DAT_143ab2958;
 
 // The localized-string helpers.
-CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
 CString FUN_1402bad60(const char* szFormat, const int* pn);
 CStringW FUN_14183e9c0(CStringW str, int n);
 class Unk_1401a9d70 { public: CStringW FUN_141811980(int a1, int a2); };
@@ -476,7 +475,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
     param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;
-    param.m_strTip = FUN_14062b4f0(CStringW(L"s_adventure_level_stat_reward"), &pReward->m_c);
+    param.m_strTip = FUN_14028dfa0<int>(CStringW(L"s_adventure_level_stat_reward"), reinterpret_cast<const int&>(pReward->m_c));
     param.m_nFlags = 1;
     param.m_nTipArg = 4;
     param.m_strCount = FUN_1402bad60("{0}", &pReward->m_c);

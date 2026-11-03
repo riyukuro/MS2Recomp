@@ -86,6 +86,7 @@ static CString s_tabIndex2 = "tabIndex";
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/commonfiles/itemdata.h"
 #include "ms2/commonfiles/itemgem.h"
+#include "ms2/commonfiles/item.h"   // C3: CItemUgc::CopyLookFrom
 #include "ms2/placeholder/cpetdatatable.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/asdata.h"
@@ -136,16 +137,13 @@ private:
 
 class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
-void FUN_1418ffef0(int& nFlags, int nBit);                      // nFlags &= ~nBit
-Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a value
-void FUN_1409b4bc0(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value& src);
+void FUN_1418ffef0(unsigned int* pFlags, unsigned int nBit);     // *pFlags &= ~nBit
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);                // skinColors of the skin colour table
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                   // the item data row of an id
-CStringTable* GetStringTable();
 void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
 __int64 FUN_14088df20(unsigned int nA, unsigned int nB, __int64 nC);
 CStringW FUN_1409404f0(__int64 n);
-CStringW FUN_1418fec00(int nPriceType, __int64 nPrice, int nFlags);    // the price text of a currency
+CStringW FUN_1418fec00(int nPriceType, __int64 nPrice, bool bFlag);    // the price text of a currency
 bool FUN_1418ff110(int nPriceType, __int64 nPrice, bool bFlag);        // the player can pay the price
 void FUN_14134a320(ASObj& obj, const int& nPriceType, const __int64& nPrice, const __int64& nSalePrice);
 int FUN_140222b30(int nA, int nB);
@@ -160,7 +158,6 @@ void FUN_1412751f0(const CStringW& strText, int nA, int nB);
 Unk_UgcFileResult SaveRenderTargetImage(NiRect<unsigned int> kRect, NiRenderTargetGroup* pTarget);
 CStringW GetScreenshotDirectory(int nKind, unsigned int* pError);
 CStringW GetTimestampFileName(int nKind);
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);   // operator+ (the clang build)
 
 // The UGC path configuration (singleton 0x1401d31f0).
 class Unk_UgcPathConfig
@@ -171,13 +168,11 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_UgcPathConfig, m_strUploadDir, 0xd8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class CommonString* FUN_14025e7d0();       // C3: the CommonString singleton
 
 // The inventory (DAT_143ab2a90), seen through the two calls of this unit.
 class Unk_Inventory { public: int FUN_140a5f780(int nTag, int nRarity); MS2Ptr<CItem> FUN_140a5e040(int nKind); };   // C3: member view (inventory.h)
-class Unk_UeInventory : public Unk_Inventory
-{
-};
-extern Unk_UeInventory DAT_143ab2a90;
+extern Unk_Inventory g_143ab2a90;
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 UGCItemSlot* FUN_141b46a20(const CString& strName);
 
@@ -189,7 +184,6 @@ bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds);            // the items may
 template <class A> CStringW FormatStringId(int nId, const A& a);
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB, const CStringW& strText, Delegate<bool(int, const CMsgBoxData&)> cb);
-bool FUN_140841300(const CStringW& str, const char* psz);       // str == psz
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pOwner, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
 void FUN_140d74e50(int nBit);                                   // close the message boxes of a kind
@@ -234,7 +228,6 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem);          // the data row 
 MS2Ptr<CItemData> FUN_141b49860(const Unk_PackageItems& packages, bool bSkipAccessory);
 bool FUN_141b49b50(MS2Ptr<CItemData> spData);                   // the item is a package
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, Unk_PackageItems* pItems, Unk_PackageItems* pPackages);   // the items of a package
-CGemPetSkin* FUN_140ddcc50(MS2Ptr<CGemBase>& spGem);            // the gem as a pet skin
 void FUN_1418bf270(float* pfAngle);                             // normalize an angle to [0, 360)
 float FUN_14029d220(float f);                                   // fabs
 
@@ -311,7 +304,7 @@ void UIUGCItemEditDialog::OnLoadComplete()
     int nMax = *FUN_1401d3200()->UgcNameLengthMax.Get();
     obj.FUN_1407cbb20("ugcNameDefaultText", FUN_14028dfa0<int, int>(CStringW(L"s_ugc_itemedit_input_name"), nMin, nMax));
     obj.FUN_1407cb9c0("ugcNameLengthMax", nMax);
-    Scaleform::GFx::Value ret = m_30->Invoke("initData", FUN_1406146a0(obj.FUN_1422bb870()));
+    Scaleform::GFx::Value ret = m_30->Invoke("initData", Scaleform::GFx::Value(obj.FUN_1422bb870()));
     if (!((Scaleform::GFx::Value*)(void*)(&ret))->IsNull())
     {
         AScript root((const Scaleform::GFx::Value&)ret, 2);
@@ -557,7 +550,7 @@ void UIUGCItemEditDialog::vfunc_72()
     if (FUN_1418ffe80(m_nDirty, 2))
     {
         m_30->Invoke("updateDesignData");
-        FUN_1418ffef0(m_nDirty, 2);
+        FUN_1418ffef0((unsigned int*)&m_nDirty, 2);
     }
     if (FUN_1418ffe80(m_nDirty, 4))
     {
@@ -571,7 +564,7 @@ void UIUGCItemEditDialog::vfunc_72()
                 pPC->FUN_1418bc790(pActor->GetCurStateId(), pActor->FUN_14166cc80());
             }
         }
-        FUN_1418ffef0(m_nDirty, 4);
+        FUN_1418ffef0((unsigned int*)&m_nDirty, 4);
     }
 }
 MS2_REPLACE_METHOD(0x141B3D1B0, UIUGCItemEditDialog, vfunc_72, 431, 0x51EA1663);
@@ -597,7 +590,7 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         {
             ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
             if (tip.FUN_1409e1770(nItemId, spDesign->m_nItemGrade) != 0)
-                FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+                *pRetVal = tip.FUN_1422bb870();
         }
     }
     else if ((strType == "image"))
@@ -617,7 +610,7 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
                 tip.SetTooltipAlign(2);
                 tip.SetOffsetX(-4);
                 tip.SetOffsetY(1);
-                FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+                *pRetVal = tip.FUN_1422bb870();
             }
         }
     }
@@ -663,7 +656,7 @@ int UIUGCItemEditDialog::vfunc_o178_1(void* pAvatar)
                 SetItem(m_spItem);
         }
     }
-    FUN_1418ffef0(m_nDirty, 1);
+    FUN_1418ffef0((unsigned int*)&m_nDirty, 1);
     return 1;
 }
 
@@ -966,9 +959,9 @@ bool UIUGCItemEditDialog::FUN_141b3f3a0(ASObj& obj, MS2Ptr<CUGCDesignData> spDes
     if (slot.FUN_1409c4510(nItemId, spDesign->m_nItemGrade, 1) == 0)
         return false;
     int nSlotMax = 1;
-    obj.FUN_1409adbe0("iconData", FUN_1406146a0(slot.FUN_1422bb870()));
+    obj.FUN_1409adbe0("iconData", Scaleform::GFx::Value(slot.FUN_1422bb870()));
     obj.FUN_1409c0d20("itemID", nItemId);
-    obj.FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, nItemId));
+    obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     obj.FUN_1407cb9c0("slotMax", nSlotMax);
     int nGender = spData->limit.genderLimit;
     obj.FUN_141b46af0("gender", FUN_140222b30(nGender, 0));
@@ -992,9 +985,9 @@ bool UIUGCItemEditDialog::FUN_141b3f690(ASObj& obj, MS2Ptr<CItem> spItem)
     if (slot.FUN_1409c4510(nItemId, spItem->GetRarity(), 1) == 0)
         return false;
     int nSlotMax = spItem->GetCount();
-    obj.FUN_1409adbe0("iconData", FUN_1406146a0(slot.FUN_1422bb870()));
+    obj.FUN_1409adbe0("iconData", Scaleform::GFx::Value(slot.FUN_1422bb870()));
     obj.FUN_1409c0d20("itemID", nItemId);
-    obj.FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, nItemId));
+    obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     obj.FUN_1407cb9c0("slotMax", nSlotMax);
     int nGender = spData->limit.genderLimit;
     obj.FUN_141b46af0("gender", FUN_140222b30(nGender, 0));
@@ -1019,7 +1012,7 @@ void UIUGCItemEditDialog::FUN_141b3f960(ASObj& obj, MS2Ptr<CUGCDesignData> spDes
         obj.FUN_1407cbb20("price", FUN_1409404f0(nPrice));
     else
         obj.FUN_1407cba60("price", CString(""));
-    obj.FUN_1407cbb20("salePrice", FUN_1418fec00(spDesign->FUN_14089e200(), nSalePrice, 0));
+    obj.FUN_1407cbb20("salePrice", FUN_1418fec00(spDesign->FUN_14089e200(), nSalePrice, false));
     obj.FUN_1407cbbe0("eventSale", m_bEventSale);
     FUN_14134a320(obj, spDesign->m_nSaleTag, nSalePrice, nPrice);
 }
@@ -1139,7 +1132,7 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
     }
     if (nMeret != 0)
     {
-        unsigned int nVouchers = DAT_143ab2a90.FUN_140a5f780(5, 0);
+        unsigned int nVouchers = g_143ab2a90.FUN_140a5f780(5, 0);
         if (nVouchers == 0)
             return false;
         if (nVouchers < (unsigned int)nCount)
@@ -1177,9 +1170,9 @@ void UIUGCItemEditDialog::FUN_141b40880(ASObj& obj)
         radio.FUN_1407cbbe0("showRadioSelect", bMine);
         radio.FUN_1407cbbe0("showSkinColorList", bSkin);
         radio.FUN_1407cbbe0("showActionList", bAction);
-        arr.PushValue(FUN_1406146a0(radio.FUN_1422bb870()));
+        arr.PushValue(Scaleform::GFx::Value(radio.FUN_1422bb870()));
     }
-    obj.FUN_1409adbe0("arrRadio", FUN_1406146a0(arr.FUN_1422bb870()));
+    obj.FUN_1409adbe0("arrRadio", Scaleform::GFx::Value(arr.FUN_1422bb870()));
     obj.FUN_141b46b90("radioSelectedIndex", 1);
     obj.FUN_141b46b90("myModelRadioIndex", 1);
 }
@@ -1202,7 +1195,7 @@ void UIUGCItemEditDialog::FUN_141b40b00(int nPage)
     ASDataProvider files(2);
     int nTotal = ((class CUgcManager*)FUN_14052d220())->FUN_14188a480();
     ((class CUgcManager*)FUN_14052d220())->FUN_14188a140(m_nImagesPerPage, nPage, &files);
-    m_30->Invoke("buildImageFiles", nTotal, nPage, FUN_1406146a0(files.FUN_1422bb870()));
+    m_30->Invoke("buildImageFiles", nTotal, nPage, Scaleform::GFx::Value(files.FUN_1422bb870()));
 }
 MS2_REPLACE_METHOD(0x141B40B00, UIUGCItemEditDialog, FUN_141b40b00, 291, 0x2667B9E7);
 
@@ -1220,10 +1213,10 @@ void UIUGCItemEditDialog::FUN_141b40c30()
             if (FUN_141b3f690(obj, m_spEditItem))
             {
                 nSelected = 0;
-                items.PushValue(FUN_1406146a0(obj.FUN_1422bb870()));
+                items.PushValue(Scaleform::GFx::Value(obj.FUN_1422bb870()));
             }
         }
-        m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()), -1, false);
+        m_30->Invoke("buildDesignItems", Scaleform::GFx::Value(items.FUN_1422bb870()), -1, false);
     }
     else
     {
@@ -1244,9 +1237,9 @@ void UIUGCItemEditDialog::FUN_141b40c30()
                 continue;
             ASObj obj(2);
             if (FUN_141b3f3a0(obj, spDesign))
-                items.PushValue(FUN_1406146a0(obj.FUN_1422bb870()));
+                items.PushValue(Scaleform::GFx::Value(obj.FUN_1422bb870()));
         }
-        m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()));
+        m_30->Invoke("buildDesignItems", Scaleform::GFx::Value(items.FUN_1422bb870()));
     }
 }
 MS2_REPLACE_METHOD(0x141B40C30, UIUGCItemEditDialog, FUN_141b40c30, 1100, 0x115F73D0);
@@ -1269,9 +1262,9 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
         tab.FUN_1407cbb20("label", spSort->GetName());
         tab.FUN_1407cb9c0("id", spSort->m_nId);
         tab.FUN_1407cbbe0("sortGender", spSort->m_bSortGender);
-        categories.PushValue(FUN_1406146a0(tab.FUN_1422bb870()));
+        categories.PushValue(Scaleform::GFx::Value(tab.FUN_1422bb870()));
     }
-    obj.FUN_1409adbe0("dpCategory", FUN_1406146a0(categories.FUN_1422bb870()));
+    obj.FUN_1409adbe0("dpCategory", Scaleform::GFx::Value(categories.FUN_1422bb870()));
     obj.FUN_1407cb9c0("dpCategorySelectedIndex", 0);
     PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     int nGender = 2;
@@ -1295,11 +1288,11 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
         ASObj item(2);
         item.FUN_1407cbb20("label", entry.second);
         item.FUN_141b46af0("gender", nEntry);
-        list.PushValue(FUN_1406146a0(item.FUN_1422bb870()));
+        list.PushValue(Scaleform::GFx::Value(item.FUN_1422bb870()));
         if (nEntry == nMyGender)
             nSelected = (int)i;
     }
-    obj.FUN_1409adbe0("dpGender", FUN_1406146a0(list.FUN_1422bb870()));
+    obj.FUN_1409adbe0("dpGender", Scaleform::GFx::Value(list.FUN_1422bb870()));
     obj.FUN_1407cb9c0("dpGenderSelectedIndex", nSelected);
 }
 MS2_REPLACE_METHOD(0x141B41090, UIUGCItemEditDialog, FUN_141b41090, 1640, 0xC686AEB4);
@@ -1540,12 +1533,7 @@ void UIUGCItemEditDialog::FUN_141b428d0(int nKind)
     CStringW strDir = GetScreenshotDirectory(0, &nError);
     if (nError == 0)
     {
-#ifdef __clang__
-        // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's concatenation helper.
-        CStringW strPath = FUN_1401d0080(strDir, GetTimestampFileName(1));
-#else
         CStringW strPath = strDir + GetTimestampFileName(1);
-#endif
         if (m_spView->FUN_141ab7870(strPath, 1) == true)
         {
             ((class CUgcManager*)FUN_14052d220())->m_str1b0 = GetItemName();
@@ -1771,7 +1759,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     }
     CStringW strName = GetItemName();
     // the checker only lives for the block
-    if (CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker().get())
+    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
     {
         CStringW strMessage;
         if (pChecker->FUN_140225630(strName, strMessage) != 0)
@@ -1812,7 +1800,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     int bVoucher = 0;
     if (nPrice > 0)
     {
-        MS2Ptr<CItem> spVoucher = DAT_143ab2a90.FUN_140a5e040(5);
+        MS2Ptr<CItem> spVoucher = g_143ab2a90.FUN_140a5e040(5);
         if (spVoucher.get() != 0)
         {
             bVoucher = 1;
@@ -1820,7 +1808,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
         }
     }
     CStringW strPrice = m_spEditItem == 0
-        ? FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_item_edit_terms_price"), FUN_1418fec00(nPriceType, nPrice, 0))
+        ? FUN_14028dfa0<CStringW>(CStringW(L"s_ugc_item_edit_terms_price"), FUN_1418fec00(nPriceType, nPrice, false))
         : CStringW(L"");
     MS2Ptr<CMsgBoxData> spBox(0);
     if (bVoucher != 0)
@@ -1935,7 +1923,7 @@ void UIUGCItemEditDialog::FUN_141b44d50(NotifyObject* pNotify)
     if (m_spEditItem.get() != 0)
         return;
     NotifyGameEventChanged* pEvent = dynamic_cast<NotifyGameEventChanged*>(pNotify);
-    if (pEvent != 0 && FUN_140841300(pEvent->m_eventName, "SaleUgcDesign") && UISwfEntity::FUN_1422dc430() != 0)
+    if (pEvent != 0 && pEvent->m_eventName == "SaleUgcDesign" && UISwfEntity::FUN_1422dc430() != 0)
     {
         bool bSale = (unsigned)((class CGameRule*)FUN_1401c0d90())->GetSaleUgcDesignRate() > 0;
         bool bChanged = m_bEventSale != bSale;
@@ -2038,7 +2026,7 @@ void UIUGCItemEditDialog::FUN_141b45770(const CUgcItemProxy* pProxy, CItemUgc* p
     MS2Ptr<CItem> spItem(new CItem);
     spItem->FUN_140523c40(nItemId, spDesign->m_nItemGrade, 0);
     spItem->SetCountClamped(pProxy->m_nCount);
-    spItem->GetUgcInfo()->FUN_140632200(pUgc);
+    reinterpret_cast<CItemUgc*>(spItem->GetUgcInfo())->CopyLookFrom(pUgc);
     CString strDir = ((class Unk_UgcPathConfig*)FUN_1401d31f0())->m_strUploadDir;
     spItem->SetName(strDir);
     FUN_141b45180(spItem);
@@ -2102,7 +2090,7 @@ bool UIUGCItemEditDialog::FUN_141b45cc0(int nResult, const CMsgBoxData& box)
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b462a0));
                 spBox->FUN_140e01830(box.FUN_141a02ed0(0, 0));
                 int nTerms = FUN_140d74f70(box.FUN_141a02d50());
-                spBox->FUN_140533ff0(nTerms);
+                spBox->Append<int>(nTerms);
                 FUN_140d73c60(spBox);
             }
         }
@@ -2510,7 +2498,7 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
     MS2Ptr<CGemBase> spGem = pGem->GetGem();
     if (spGem.IsNull())
         return MS2Ptr<CItemData>(0);
-    CGemPetSkin* pSkin = FUN_140ddcc50(spGem);
+    CGemPetSkin* pSkin = (CGemPetSkin*)(spGem.operator->());
     if (pSkin == 0)
         return MS2Ptr<CItemData>(0);
     CPetDataTable::PetPtr spPet = CPetDataTable::GetInstance()->Find(pSkin->m_nPetId);

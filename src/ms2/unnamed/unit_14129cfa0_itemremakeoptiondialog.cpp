@@ -142,7 +142,6 @@ void FUN_141414d60(const CString& name, const CAtlArray<unsigned __int64>& uids)
 // Strings / messages.
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140298ea0(CStringW key);
-CStringW FUN_14062b4f0(CStringW key, const int* v);
 unsigned __int64 FUN_140718350(const CString& s);
 void FUN_1412751f0(const CStringW& text, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
@@ -201,7 +200,7 @@ public:
 void FUN_1412752d0(const CStringW& key, int a);
 void FUN_1412751b0(const CStringW& text, int a);
 void FUN_140d73aa0(CStringW text, int a, void* pListener, CStringW c);
-CStringW FUN_140b99120(CStringW key, const unsigned& a, const int& b);
+enum Unk_RemakeError : int {};
 CStringW FUN_1419021b0(int a, int b);
 CStringW FUN_1409404f0(__int64 v);
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
@@ -668,7 +667,7 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
         ASObj obj(2);
         obj.FUN_1407cbb20("itemName", item->FUN_140528160());
         int remakeCount = item->FUN_140527300();
-        CStringW strCount = FUN_14062b4f0(L"s_itemremake_remake_count", &remakeCount);
+        CStringW strCount = FUN_14028dfa0<int>(L"s_itemremake_remake_count", remakeCount);
         obj.FUN_1407cbb20("remakeCount", strCount);
         FUN_1412a0cd0(obj, MS2Ptr<CItem>(m_cur));
         FUN_1412a0e30(obj, MS2Ptr<CItem>(m_cur), &ingredients);
@@ -920,7 +919,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1790(MS2Ptr<CItem> cur, MS2Ptr<CItem> ne
     ASObj obj(2);
     obj.FUN_1407cbb20("itemName", cur->FUN_140528160());
     int remakeCount = cur->FUN_140527300();
-    CStringW strCount = FUN_14062b4f0(L"s_itemremake_remake_count", &remakeCount);
+    CStringW strCount = FUN_14028dfa0<int>(L"s_itemremake_remake_count", remakeCount);
     obj.FUN_1407cbb20("remakeCount", strCount);
     obj.FUN_1407cba60("binding", FUN_1412a0720(cur.get(), Unk_SocketFormat("{0}.resultItem", GetTypeName()), m_names198));
     CStringW keyCur(L"s_itemremake_cur_random_option");
@@ -1206,7 +1205,7 @@ void UIItemRemakeOptionDialog::FUN_1412a34f0(CInPacket* pPacket)
         text = L"s_itemremake_error_server_default";
     }
     if (!bMsgBox) {
-        CStringW str = FUN_140b99120(CStringW(text), bFlag, nCode);
+        CStringW str = FUN_14028dfa0<int, Unk_RemakeError>(CStringW(text), reinterpret_cast<const int&>(bFlag), reinterpret_cast<const Unk_RemakeError&>(nCode));
         FUN_1412751f0(str, 1, 1);
     } else {
         FUN_140d74390(CStringW(text), 0, FUN_140b240b0());

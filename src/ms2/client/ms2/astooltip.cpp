@@ -55,10 +55,6 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"  // C3: WorldService::FUN_141bd1290
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-#ifdef __clang__
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);   // the exe's operator+(const CStringW&, const wchar_t*)
-CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);   // the exe's operator+(const CStringW&, const CStringW&)
-#endif
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;
 static CStringW s_wsNewline;
@@ -3315,7 +3311,7 @@ namespace p3hook { MS2_REPLACE_METHOD(0x1409D8300, ASTooltip, FUN_1409d8300, 606
 // @0x1409d8570
 void ASTooltip::FUN_1409d8570(CItem* pItem)
 {
-    if (reinterpret_cast<Unk_TooltipBreakManager*>(FUN_1409c4b20())->FUN_140531270(MS2Ptr<CItem>(pItem)) == 0)
+    if (reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->CanBreakItem(MS2Ptr<CItem>(pItem)) == 0)
         return;
     int nItemId = pItem->FUN_1405276c0();
     if (pItem->FUN_140529640() != 0)
@@ -3560,7 +3556,7 @@ void ASTooltip::FUN_1409d98a0(CItem* pItem, CStringW& strText)
         return;
     if (pItem->HasSkin() == 0)
         return;
-    if (reinterpret_cast<Unk_TooltipBreakManager*>(FUN_1409c4b20())->FUN_140531270(MS2Ptr<CItem>(pItem)) == 0)
+    if (reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->CanBreakItem(MS2Ptr<CItem>(pItem)) == 0)
     {
         if (!strText.IsEmpty())
             strText.Append(L"\n");
@@ -3788,12 +3784,7 @@ CStringW ASTooltip::FUN_1409daff0(MS2Ptr<CItemData> spData)
         CChatEmoticonTable::GetInstance()->FUN_1401e73c0(nGroupId, &group);
         nCount += static_cast<int>(group.size());
     }
-#ifdef __clang__
-    // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-    CStringW str = FUN_14061ad70(FUN_14028dfa0(CStringW(L"s_tooltip_chat_emoticon_description"), nCount), L"\n");
-#else
     CStringW str = FUN_14028dfa0(CStringW(L"s_tooltip_chat_emoticon_description"), nCount) + L"\n";
-#endif
     if (xml.FUN_14092c5f0(L"endDate"))
     {
         CString strEndDate = xml.GetString(L"endDate", "");
@@ -3890,12 +3881,7 @@ namespace p4hook { MS2_REPLACE_METHOD(0x1409DBBC0, ASTooltip, FUN_1409dbbc0, 102
 // @0x1409dbc60
 void ASTooltip::FUN_1409dbc60(int nSkillId, const CStringW& strSuffix)
 {
-#ifdef __clang__
-    // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-    CStringW str = FUN_1401d0080(((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(4, nSkillId), strSuffix);
-#else
     CStringW str = ((CStringTable*)(Unk_CommandStrings*)(CStringTable::GetInstance()))->FUN_141811980(4, nSkillId) + strSuffix;
-#endif
     FUN_1407cbb20(s_strSkillName, str);
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DBC60, ASTooltip, FUN_1409dbc60, 185, 0xA2BE6DF6); }
@@ -5561,22 +5547,12 @@ void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapo
             nAllowed = 1;
         if (weapon.m_nRightHand != 0)
         {
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-            strOut += FUN_1401d0080(strSep, TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, weapon.m_nRightHand));
-#else
             strOut += strSep + TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, weapon.m_nRightHand);
-#endif
             strSep = L", ";
         }
         if (weapon.m_nLeftHand != 0)
         {
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
-            strOut += FUN_1401d0080(strSep, TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, weapon.m_nLeftHand));
-#else
             strOut += strSep + TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, weapon.m_nLeftHand);
-#endif
             strSep = L", ";
         }
     }
@@ -5702,7 +5678,7 @@ namespace p5hook { MS2_REPLACE_METHOD(0x1409E7460, ASTooltip, FUN_1409e7460, 104
 // @0x1409e7880
 CStringW FUN_1409e7880()
 {
-    CStringW strKey = FUN_1409331f0()->GetActionKeyName(0x49406, 0);
+    CStringW strKey = CKeyTable::GetInstance()->GetActionKeyName(0x49406, 0);
     CStringW str = FUN_14028dfa0(CStringW(L"s_msg_tooltip_enable_preview"), strKey);
     return str;
 }

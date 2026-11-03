@@ -11,7 +11,6 @@
 #include <efd/Helpers.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-CString FUN_14038f6d0(const CString&,const char*);
 // @0x14070e080
 void COSInfo::StartUp() {
     if(m_data == 0) {
@@ -125,8 +124,8 @@ MS2_REPLACE_METHOD(0x14070EE20, COSInfo, Is64Bit, 38, 0x90424FC2);
 // @0x14070ee50
 CString COSInfo::GetFullName() {
     if(m_data) {
-        if(Is64Bit()) return FUN_14038f6d0(GetName()," x64");
-        else return FUN_14038f6d0(GetName()," x86");
+        if(Is64Bit()) return GetName() + " x64";
+        else return GetName() + " x86";
     }
     return (const char*)0;
 }

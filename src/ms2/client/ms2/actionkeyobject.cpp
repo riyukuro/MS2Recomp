@@ -247,10 +247,6 @@ public:
     int FUN_140967160() { return unknown12e8; }             // the doll's item id
 };
 extern __int64 DAT_143af25f0;                              // the actor id of the house owner
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);   // str + psz
-CStringW FUN_1401d0160(const wchar_t* psz, const CStringW& str);   // psz + str (the exe's out-of-line operator+; clang-cl
-                                                            // would need the unresolvable MFC CopyChars import)
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 
 // The house service: CubeMapInformationService, viewed through the calls made here. Its singleton slot (0x143ab3908)
 // is TSingleton<CubeMapInformationService>::s_instance, defined by cubemapinformationservice_3.cpp; a
@@ -1051,7 +1047,7 @@ CStringW PortalAction::vfunc_6()
         {
             if (!FUN_140a55d20(spField.operator->(), &strError))
             {
-                strError = FUN_14061ad70(FUN_1401d0160(L" <", strError), L">");
+                strError = L" <" + strError + L">";
                 strName += strError;
             }
         }
@@ -2215,7 +2211,7 @@ CStringW FittingDollAction::vfunc_6()
     Unk_AkoFittingDoll* pDoll = efd::DynamicCast<Unk_AkoFittingDoll>(reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FindObjectByEntityId(m_id));
     if (pDoll)
         strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pDoll->FUN_140967160());
-    return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x646), L" - "), strName);
+    return GetStringCommon(0x646) + L" - " + strName;
 }
 MS2_REPLACE_METHOD(0x14095BA60, FittingDollAction, vfunc_6, 386, 0x7FA9427E);
 // @0x14095bc10

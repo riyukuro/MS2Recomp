@@ -60,13 +60,6 @@ public:
 MS2_CHECK_OFFSET(Unk_TradeDialog, m_strPartner, 0x1a0);
 template <class T> T* Unk_InvGetDialogById(int nId);   // C3: was FUN_14140e820 (the open UI with this id, 0 if none; invenslot.cpp)
 
-// UI manager (FUN_1403ed2b0).
-class Unk_TradeUIManager
-{
-public:
-    void FUN_141adc530(int nUiId);                      // open
-};
-Unk_TradeUIManager* FUN_1403ed2b0();
 
 // Inventory event notifier (FUN_140a6a840): +0x88 an item was added to the trade table.
 class Unk_TradeInventory
@@ -109,7 +102,7 @@ class Unk_SingletonObj1* FUN_1401d3200();   // C3: was void* FUN_1401d3200()
 CStringW GetStringCommon(int id);
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int id);
-CStringW FUN_140a22c00(int id, const CStringW& a, const unsigned short& n);
+template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
 void FUN_1412751b0(const CStringW& text, int channel);
 void FUN_1412751f0(const CStringW& text, int a, int b);
 void FUN_141275260(int stringId, int a, int b);
@@ -504,10 +497,10 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         strMsg = FUN_14028dfa0<unsigned short>(CStringW(L"s_trade_error_restricted_target_userlevel_max"), nLevel);
         break;
     case 0x14:
-        strMsg = FUN_140a22c00(0x93f, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
+        strMsg = FUN_14028dee0<CStringW, unsigned short>(0x93f, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
         break;
     case 0x15:
-        strMsg = FUN_140a22c00(0x940, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
+        strMsg = FUN_14028dee0<CStringW, unsigned short>(0x940, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nArg), nLevel);
         break;
     default:
         strMsg = Unk_TradeFormat(0x837, code);
@@ -539,11 +532,11 @@ void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
     if (pPlayer != 0)
     {
         FUN_14185d820(uid, pPlayer->vfunc_77(), reinterpret_cast<PC*>(pPlayer)->FUN_1416612e0());
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e3b);
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4ec1);
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e47);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e3b);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ec1);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e47);
         m_uidLastSent = 0;
-        ((CUIService*)FUN_1403ed2b0())->OpenDialog((eUIClassID)(0x4e83));
+        TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e83));
         FUN_1412751b0(FormatStringId<CStringW>(0x846, pPlayer->vfunc_77()), 0x12);
     }
 }
@@ -556,7 +549,7 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
     if (pDlg != 0)
     {
         CStringW strPartner = pDlg->GetPartner();
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e83);
+        TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e83);
         if (bAccepted)
             FUN_1412751b0(FormatStringId<CStringW>(0x826, strPartner), 0x12);
         else
@@ -692,7 +685,7 @@ void CTradeManagerEx::FUN_14185d820(__int64 uid, CStringW strName, CString strCh
 // @0x14185d8b0
 int CTradeManagerEx::FUN_14185d8b0()
 {
-    if (reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141adc940((eUIClassID)0x4e83) == 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e83) == 0)
     {
         FUN_140f8ff40(0x841, 1, 1);
         return 0;

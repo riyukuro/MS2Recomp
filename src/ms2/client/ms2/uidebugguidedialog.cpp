@@ -92,11 +92,6 @@ public:
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool bShow);
 };
-class Unk_DebugGuideList : public Unk_DebugGuideCtl
-{
-public:
-};
-class Unk_DebugGuideInput : public Unk_DebugGuideCtl { public: };    // the text
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
 void* FUN_14025e7c0();
 class Unk_DebugGuideDTPackets
@@ -376,7 +371,7 @@ void UIDebugGuideDialog::FillGroups()
         reinterpret_cast<ASCoreList*>(m_leftList.operator->())->AddLabelItemW(m_groups[i].m_strName);
     if (!m_groups.empty())
         reinterpret_cast<ASCoreList*>(m_leftList.operator->())->SetSelectedIndex(0);
-    m_leftList->vfunc_24(true);
+    reinterpret_cast<Unk_DebugGuideCtl*>(m_leftList.operator->())->vfunc_24(true);
     FillCommands();
 }
 
@@ -402,7 +397,7 @@ void UIDebugGuideDialog::FillCommands()
     }
     if (!rGroup.m_commands.empty())
         reinterpret_cast<ASCoreList*>(m_rightList.operator->())->SetSelectedIndex(0);
-    m_rightList->vfunc_24(true);
+    reinterpret_cast<Unk_DebugGuideCtl*>(m_rightList.operator->())->vfunc_24(true);
 }
 
 // @0x141288570

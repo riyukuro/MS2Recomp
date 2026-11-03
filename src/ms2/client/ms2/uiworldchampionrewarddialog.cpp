@@ -50,17 +50,9 @@ template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=(int);
 template <> template <> MS2Ptr<Unk_WcTitle>& MS2Ptr<Unk_WcTitle>::operator=<Unk_WcTitle>(const MS2Ptr<Unk_WcTitle>&);
 template <> MS2Ptr<Unk_WcTitle> AScript::FUN_140bbe640<Unk_WcTitle>(const CString&, MS2Ptr<Unk_WcTitle>&);
 class Unk_WcTitleFinder { public: MS2Ptr<Unk_WcTitle> FUN_140c436d0(const CString&); };
-class Unk_WcStream {
-public:
-    virtual void vfunc_0();
-    virtual unsigned char vfunc_1();
-    void FUN_14070f340(unsigned char&);
-    void FUN_14070f480(int&);
-    void FUN_14070f500(__int64&);
-    void FUN_14070f6b0(CMsTime&);
-    void FUN_140408160(std::vector<unsigned int>&);
-};
-class CInPacket { public: void* p0; Unk_WcStream stream; };
+class CInputStream;
+template <class T> CInputStream& operator>>(CInputStream& in, std::vector<T>& vec);   // C3: def in gameeventcontext
+class CInPacket { public: void* p0; Unk_OSInput stream; };   // C3: the stream is os.h's Unk_OSInput
 MS2_CHECK_OFFSET(CInPacket, stream, 8);
 class Unk_140bccd50* FUN_140bccd50();
 class Unk_WcAvatar;
@@ -103,7 +95,6 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
     }
 WC_WRAP(1)
 WC_WRAP(3)
-CString FUN_140c38a90(const char*, const char*, const char*, const int&, const char*);
 void FUN_140cff1b0(const Scaleform::GFx::Value&, CString, CStringW);
 int FUN_140bd09c0(void*);
 class CMsgBoxData : public CPtred {};
@@ -198,7 +189,7 @@ public:
 void* FUN_140764030();   // TSingleton<RewardContentsTable>::GetInstance
 #define WC_BIND(name, member, line) do { \
     m_30->FUN_140bbe640(name, member); \
-    if (member == NULL) throw new GfxExceptionSwfLoad(FUN_140c38a90("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(line), __FUNCTION__)); \
+    if (member == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(line), __FUNCTION__)); \
 } while (0)
 
 // @0x140fe9d00
@@ -226,7 +217,7 @@ void UIWorldChampionRewardDialog::OnLoadComplete() {
     for (std::vector<MS2Ptr<ASMovieClip>>::const_iterator end = slots.end(), it = slots.begin(); it != end; ++it) {
         MS2Ptr<ASMovieClip> slot = *it;
         MS2Ptr<ASButton> button = slot->FUN_140acce30<ASButton>("m_levelButton");
-        if (button == NULL) throw new GfxExceptionSwfLoad(FUN_140c38a90("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(49), __FUNCTION__));
+        if (button == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(49), __FUNCTION__));
         m_stepSlotButtonVecotr.push_back(button);
         button->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnStepClick), (void*)m_stepSlotButtonVecotr.size());
     }
@@ -236,7 +227,7 @@ void UIWorldChampionRewardDialog::OnLoadComplete() {
     WC_BIND("m_rewardTitle", m_title, 58);
     do {
         m_30->FUN_140bc71c0("m_rewardItemArea", m_area);
-        if (m_area == NULL) throw new GfxExceptionSwfLoad(FUN_140c38a90("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(59), __FUNCTION__));
+        if (m_area == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(59), __FUNCTION__));
     } while (0);
     m_prev->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnPrevPageClick), 0);
     m_next->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWorldChampionRewardDialog::OnNextPageClick), 0);
@@ -266,13 +257,13 @@ MS2_REPLACE_METHOD(0x140feb1b0, UIWorldChampionRewardDialog, OnPacket, 251, 0x7C
 // @0x140feb2c0
 void UIWorldChampionRewardDialog::OnSeasonRewardPacket(CInPacket& packet) {
     m_rewardVector.clear();
-    packet.stream.FUN_14070f480(reinterpret_cast<int&>(m_season));
-    packet.stream.FUN_14070f6b0(m_start);
-    packet.stream.FUN_14070f6b0(m_end);
-    packet.stream.FUN_14070f340(m_maxStep);
-    packet.stream.FUN_14070f340(m_step);
-    packet.stream.FUN_14070f480(m_field);
-    packet.stream.FUN_140408160(m_rewardVector);
+    packet.stream.Read6(reinterpret_cast<unsigned int&>(m_season));
+    packet.stream.Read13(reinterpret_cast<Unk_OSNumber&>(m_start));
+    packet.stream.Read13(reinterpret_cast<Unk_OSNumber&>(m_end));
+    packet.stream.Read1(m_maxStep);
+    packet.stream.Read1(m_step);
+    packet.stream.Read6(reinterpret_cast<unsigned int&>(m_field));
+    operator>><unsigned int>(reinterpret_cast<CInputStream&>(packet.stream), m_rewardVector);
     MS2_ASSERT_AT(112, (size_t)m_maxStep == m_rewardVector.size());
     m_selected = m_step;
     UpdatePageFromStep();
@@ -283,7 +274,7 @@ MS2_REPLACE_METHOD(0x140feb2c0, UIWorldChampionRewardDialog, OnSeasonRewardPacke
 // @0x140feb440
 void UIWorldChampionRewardDialog::OnNextSeasonPacket(CInPacket& packet) {
     __int64 nextSeason = 0;
-    packet.stream.FUN_14070f500(nextSeason);
+    packet.stream.Read8(reinterpret_cast<unsigned __int64&>(nextSeason));
     FUN_140d74390(FUN_14028dfa0<CStringW>(L"s_world_champion_msg_next_season", FUN_14083bab0(CMsTime(nextSeason), L"/")), 0, FUN_140b240b0());
 }
 MS2_REPLACE_METHOD(0x140feb440, UIWorldChampionRewardDialog, OnNextSeasonPacket, 360, 0x78A910B1);

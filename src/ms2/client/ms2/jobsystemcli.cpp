@@ -30,7 +30,7 @@ public:
     int HasSkill(int nSkillId, unsigned short nLevel);
     unsigned short GetSkillLevel(int);
 };
-class Unk_JscSkillSet : public CPtred
+class Unk_MyPCSkillSet : public CPtred   // C3: CSkillSystem::GetSkillSet's pointee (skillsystem.h)
 {
 public:
 };
@@ -39,15 +39,11 @@ class CSkillTierOptionManager   // C3: member view (real class not in this TU)
 public:
     unsigned short GetSkillLevel(unsigned int);
 };
-class Unk_JscTree : public CPtred { public:  };   // the tier option level
+class Unk_PCSkillTree : public CPtred { public:  };   // the tier option level (PC::FUN_1409eee00, fittingdollpc.h)
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/client/ms2/mypc.h"
-class Unk_JscSkillSys { public: MS2Ptr<Unk_JscSkillSet> FUN_141768380(); };
-class Unk_JscPlayer
-{
-public:
-    MS2Ptr<Unk_JscTree> FUN_1409eee00();
-};
+#include "ms2/placeholder/fittingdollpc.h"   // C3: PC::FUN_1409eee00
+class Unk_JscPlayer;
 Unk_JscPlayer* FUN_1409613d0(PCBase* pPC);                      // the MyPC of a PC, or 0
 
 
@@ -72,7 +68,7 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_JscSkillSet> spSet = reinterpret_cast<Unk_JscSkillSys*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141768380();
+        MS2Ptr<Unk_MyPCSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
             unsigned short nLevel = ((CSkillSet*)(spSet).operator->())->GetSkillLevel(nSkillId);
@@ -100,13 +96,13 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_JscSkillSet> spSet = reinterpret_cast<Unk_JscSkillSys*>(reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0())->FUN_141768380();
+        MS2Ptr<Unk_MyPCSkillSet> spSet = reinterpret_cast<MyPC*>(pPlayer)->FUN_141523bc0()->GetSkillSet();
         if (spSet.get() != 0)
         {
             if (reinterpret_cast<CSkillSet*>(spSet.operator->())->HasSkill(nSkillId, 0) != 0)
                 return true;
         }
-        if (((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)
+        if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId) > 0)
             return true;
         if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3) && reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId) > 0)
             return true;
@@ -116,7 +112,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
             int nMain = GetJobData()->GetSubSkillParent(nSkillId);
             if (nMain != 0)
             {
-                if (((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nMain) > 0)
+                if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nMain) > 0)
                     return true;
             }
         }
@@ -145,7 +141,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
     if (pPlayer == 0)
         return 0;
-    unsigned short nLevel = ((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nSkillId);
+    unsigned short nLevel = ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nSkillId);
     if (nLevel != 0)
         return nLevel;
     if (GetJobData().IsNull())
@@ -153,7 +149,7 @@ unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
     int nMain = GetJobData()->GetSubSkillParent(nSkillId);
     if (nMain == 0)
         return 0;
-    return ((CSkillTierOptionManager*)(Unk_JscTree*)(pPlayer->FUN_1409eee00()))->GetSkillLevel(nMain);
+    return ((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->FUN_1409eee00()))->GetSkillLevel(nMain);
 }
 
 // @0x140a6e0a0

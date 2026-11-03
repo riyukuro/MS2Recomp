@@ -15,7 +15,6 @@
 
 using Scaleform::GFx::Value;
 
-DragSlot* FUN_1422cd480(NotifyContext::BindData* pData);         // efd::DynamicCast<DragSlot> (TypeCast 0x06202735)
 DragSlotBag* FUN_140c544d0(NotifyContext::BindData* pData);      // efd::DynamicCast<DragSlotBag>
 
 // @0x142301ff0
@@ -41,7 +40,7 @@ void NotifyDragSlot::SlotUse(const Params& params)
     int bShift = GetKeyState(VK_SHIFT) & 0x8000;
     CString strName(vName.GetString());
     int nButton = params.ArgCount == 1 ? 0 : params.pArgs[1].GetInt();
-    efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
+    efd::SmartPointer<DragSlot> spSlot = efd::DynamicCast<DragSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (spSlot)
     {
         if (nButton == 0)
@@ -69,7 +68,7 @@ void NotifyDragSlot::SlotShiftClick(const Params& params)
     if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
-    efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
+    efd::SmartPointer<DragSlot> spSlot = efd::DynamicCast<DragSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (spSlot)
         spSlot->vfunc_15();
 }
@@ -84,7 +83,7 @@ void NotifyDragSlot::SlotDragStart(const Params& params)
     if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
-    efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
+    efd::SmartPointer<DragSlot> spSlot = efd::DynamicCast<DragSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (spSlot)
         spSlot->vfunc_20();
 }
@@ -100,10 +99,10 @@ void NotifyDragSlot::SlotDragEnd(const Params& params)
         return;
     CString strSrc(vSrc.GetString());
     CString strDst(params.pArgs[1].IsString() ? params.pArgs[1].GetString() : NULL);
-    efd::SmartPointer<DragSlot> spSrc = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strSrc));
+    efd::SmartPointer<DragSlot> spSrc = efd::DynamicCast<DragSlot>(Unk_NotifyContext::FUN_1422c8e90(strSrc));
     if (spSrc)
     {
-        efd::SmartPointer<DragSlot> spDst = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strDst));
+        efd::SmartPointer<DragSlot> spDst = efd::DynamicCast<DragSlot>(Unk_NotifyContext::FUN_1422c8e90(strDst));
         if (spDst)
         {
             if (spSrc == spDst)
@@ -133,7 +132,7 @@ void NotifyDragSlot::GetSlotTooltip(const Params& params)
     if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
-    efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
+    efd::SmartPointer<DragSlot> spSlot = efd::DynamicCast<DragSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
     if (spSlot)
     {
         Scaleform::GFx::Movie* pMovie = params.pMovie;

@@ -37,6 +37,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/commonfiles/os.h"
 
 // ---- statics (.text$di) ----
 // The first initializer is the sort-type name table of header_statics_a.h without the skill/stun strings that follow it
@@ -46,28 +48,6 @@ static CString s_strReadyPopup("System_PartyReady_Popup_01");
 
 // ---- unit-local placeholders ----
 
-// The message box record; only the callback registration and the result accessor are used here (see clubcli.cpp).
-struct Unk_PartyMsgResult
-{
-    char m_pad_00[0x18];
-    int m_nButton;                                                 // +0x18
-};
-class CMsgBoxData : public CPtred
-{
-public:
-    const Unk_PartyMsgResult& FUN_141a04a80() const;               // the pressed-button record (+0xa0)
-
-    char m_pad_18[0x2a0 - 0x18];
-public:
-    void FUN_141a01ca0(int, int, CStringW const&);   // C3: was free FUN_141a01ca0
-public:
-    void FUN_141a02460(int);   // C3: was free FUN_141a02460
-public:
-    void FUN_141a02480(int);   // C3: was free FUN_141a02480
-public:
-    void FUN_141a024a0(int);   // C3: was free FUN_141a024a0
-};
-MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
 extern template class MS2Ptr<CMsgBoxData>;
 typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
@@ -96,12 +76,6 @@ void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
 void FUN_140710590(COutPacket& packet);
-void FUN_141a759b0(void* pDialog);
-CInputStream& FUN_14070f340(CInputStream& in, unsigned char& v);
-CInputStream& FUN_14070f480(CInputStream& in, int& v);
-CInputStream& FUN_14070f4c0(CInputStream& in, __int64& v);
-CInputStream& FUN_14070f500(CInputStream& in, __int64& v);
-CInputStream& FUN_14070f5f0(CInputStream& in, CStringW& v);
 
 // The localized-string formatter: FUN_14028dfa0(key, args) is the non-variadic back end (invented name; see
 // uiworldchampionrewarddialog.cpp). This formatter does not share fmt's BasicFormatter<wchar_t> instantiations, so the
@@ -168,8 +142,8 @@ MS2Ptr<PartyVoteCli> FUN_140a89240(int kind)
 // @0x140a89380
 void PartyVoteCli::vfunc_1(CInPacket& packet)
 {
-    FUN_14070f480(packet, id);
-    FUN_14070f500(packet, expires);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read6(reinterpret_cast<unsigned&>(id));
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read8(reinterpret_cast<unsigned __int64&>(expires));
     FUN_140a8a230(packet, participants);
     FUN_140a8a230(packet, yes);
     FUN_140a8a230(packet, no);
@@ -253,10 +227,10 @@ PartyVoteKickUserCli::PartyVoteKickUserCli() : target(0), reason(0) {}
 void PartyVoteKickUserCli::vfunc_1(CInPacket& packet)
 {
     PartyVoteCli::vfunc_1(packet);
-    FUN_14070f4c0(packet, owner);
-    FUN_14070f4c0(packet, target);
-    FUN_14070f5f0(packet, name);
-    FUN_14070f340(packet, reason);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read7(owner);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read7(target);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read11(name);
+    reinterpret_cast<Unk_OSInput&>(static_cast<CInputStream&>(packet)).Read1(reason);
 }
 
 // @0x140a898b0
@@ -270,7 +244,7 @@ void PartyVoteKickUserCli::vfunc_2()
     void* pDialog = FUN_140a8a680(0x4e45);
     if (pDialog != 0)
     {
-        FUN_141a759b0(pDialog);
+        reinterpret_cast<UIPartyDialog*>(pDialog)->FUN_141a759b0();
         reinterpret_cast<UIPartyDialog*>(pDialog)->ArrangeBottomButton();
     }
 }
@@ -316,7 +290,7 @@ void PartyVoteReadyCli::vfunc_2()
     {
         Unk_MsgBoxPtr box = FUN_140d74500(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
                                           Unk_MsgBoxCallback(this, &PartyVoteReadyCli::OnMessageBoxResult));
-        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a01ca0(0x14, 1, GetStringCommon(0x2b8));
+        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02460(1);
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02480(1);
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a024a0(0);
@@ -348,7 +322,7 @@ bool PartyVoteReadyCli::OnMessageBoxResult(int result, const CMsgBoxData& box)
 {
     if (result == 0)
         SendParty(true);
-    else if (box.FUN_141a04a80().m_nButton == 0)
+    else if (box.GetTimer().m_nButton == 0)
         SendParty(false);
     return true;
 }
@@ -372,7 +346,7 @@ CInputStream& FUN_140a8a230(CInputStream& in, std::set<unsigned __int64>& ids)
     for (unsigned i = 0; i < count; ++i)
     {
         unsigned __int64 member;
-        FUN_14070f4c0(in, reinterpret_cast<__int64&>(member));
+        reinterpret_cast<Unk_OSInput&>(in).Read7(reinterpret_cast<__int64&>(member));
         ids.insert(member);
     }
     return in;

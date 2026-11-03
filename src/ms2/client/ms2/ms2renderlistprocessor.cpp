@@ -22,6 +22,8 @@
 #include "ms2/client/ms2/skillcollisionmanager.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/decoeditservice.h"
+#include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/material/ms2materials.h"
 #include "hook/ms2hook.h"
 #include <NiRenderer.h>
 #include <NiRenderObject.h>
@@ -62,21 +64,17 @@ public:
 };
 // A material-table entry (see ms2materialswapprocessor.cpp); only its state word (+0x540) is read here. Its exe
 // accessor (0x1427542f0) lies in the statically linked runtime range that the hook DLL does not map, so it is inline.
-struct Unk_MaterialTable;                                   // DAT_143d69198 (MS2StandardMaterial RTTI)
 struct Unk_MaterialEntry
 {
     char m_pad[0x540];
     unsigned m_nState;
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
-extern Unk_MaterialTable DAT_143d69198;
 class Unk_CubeKind   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_140ef4dd0();
 };
-extern const NiRTTI DAT_143d691a8;                          // OutlineMaterial::ms_RTTI
-extern const NiRTTI DAT_143ad1588;                          // EffectNode::ms_RTTI
 extern int DAT_143ae2b34;
 extern NiFixedString DAT_143ae5120;                         // outline width (float extra data)
 extern NiFixedString DAT_143ae5128;                         // outline colour (colour extra data)
@@ -400,14 +398,14 @@ void MS2RenderListProcessor::RenderOutlines(NiVisibleArray& kList, NiRenderer* p
         NiMaterial* pkOutline = 0;
         for (unsigned int uj = 0; uj < pkObject->GetMaterialCount(); uj++)
         {
-            pkOutline = NiMaterial::DynamicCast(&DAT_143d691a8, pkObject->GetMaterialInstance(uj)->GetMaterial());
+            pkOutline = NiMaterial::DynamicCast(&OutlineMaterial::ms_RTTI, pkObject->GetMaterialInstance(uj)->GetMaterial());
             if (pkOutline)
                 break;
         }
         if (!pkOutline)
         {
             NiMaterial* pkCreated = NiMaterialLibrary::CreateMaterial(DAT_143ae52a8);
-            pkOutline = NiMaterial::DynamicCast(&DAT_143d691a8, pkCreated);
+            pkOutline = NiMaterial::DynamicCast(&OutlineMaterial::ms_RTTI, pkCreated);
         }
 
         NiStencilProperty* pkStencil = pkObject->GetPropertyState()->GetStencil();
@@ -502,7 +500,7 @@ MS2_REPLACE_METHOD(0x1414DD110, MS2RenderListProcessor, RenderGroups, 1101, 0x3C
 // @0x1414dd570
 void MS2RenderListProcessor::ApplyEffectMaterial(NiRenderObject* pkObject, MS2SavedMaterialMap& kSaved)
 {
-    Unk_MaterialEntry* pkEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), pkObject->GetActiveMaterial()));
+    Unk_MaterialEntry* pkEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, pkObject->GetActiveMaterial()));
     if (!pkEntry)
         return;
     if (!pkEntry->IsActive())
@@ -927,7 +925,7 @@ static bool IsUnderEffectNode(NiAVObject* pkObject)
 {
     while (pkObject)
     {
-        if (NiObject::IsKindOf(&DAT_143ad1588, pkObject))
+        if (NiObject::IsKindOf(&EffectNode::ms_RTTI, pkObject))
             return true;
         pkObject = ((class NiAVObject*)(class NiAVObject*)(pkObject))->GetParent();
     }

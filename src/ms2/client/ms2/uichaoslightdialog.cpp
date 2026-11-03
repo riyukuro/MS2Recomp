@@ -72,19 +72,17 @@
 #include <NiNode.h>
 #include <NiMesh.h>
 #include <NiTexturingProperty.h>
+#include <NiTextureTransformController.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/effectservice.h"
+#include "ms2/client/ms2/material/ms2materials.h"
 class NoticeMessage { public: class GameObject * GetOwner(void); };
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names / symbols) ----
 class CMainSystem;
 
-extern char DAT_143ad1588;                                              // RTTI of the effect node (Unk_EffectNode)
-extern char DAT_143af8a10;                                              // RTTI of the texture map controller
-struct Unk_MaterialTable;
 struct Unk_MaterialEntry;
-extern Unk_MaterialTable DAT_143d69198;
 class Unk_CubeKind   // C3: member view for the former free stand-ins
 {
 public:
@@ -326,7 +324,7 @@ NiAVObject* Unk_NodeWalker::FUN_1410446c0(bool bChildren)
     if (m_list.IsEmpty())
         return NULL;
     NiAVObject* pObject = m_list.RemoveHead();
-    if (((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143ad1588), (class NiObject const*)(pObject))) && ((Unk_EffectNodeView*)pObject)->FUN_1410444a0() == 1)
+    if (((void*)NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(pObject))) && ((Unk_EffectNodeView*)pObject)->FUN_1410444a0() == 1)
         return FUN_1410446c0(bChildren);
     if (bChildren)
     {
@@ -536,7 +534,7 @@ void ChaosLightEffect::FUN_1410423d0(NiAVObjectPtr spObject)
         NiMesh* pMesh = (NiMesh*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiMesh::ms_RTTI), (class NiObject const*)(pObject)));
         if (pMesh)
         {
-        Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial()));
+        Unk_MaterialEntry* pEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((class NiRenderObject*)(class NiMesh*)(pMesh))->GetActiveMaterial()));
         if (!pEntry || ((class Unk_CubeKind*)(struct Unk_MaterialEntry*)(pEntry))->FUN_140ef4dd0() == 0)
             continue;
         NiProperty* pTexturing = pMesh->GetProperty(NiProperty::TEXTURING);
@@ -549,7 +547,7 @@ void ChaosLightEffect::FUN_1410423d0(NiAVObjectPtr spObject)
                 NiTimeController* pCtrl = pTexturing->GetControllers();
                 while (pCtrl)
                 {
-                    Unk_MapController* pMapCtrl = (Unk_MapController*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143af8a10), (class NiObject const*)(pCtrl)));
+                    Unk_MapController* pMapCtrl = (Unk_MapController*)((void*)NiObject::DynamicCast(&NiTextureTransformController::ms_RTTI, (class NiObject const*)(pCtrl)));
                     pCtrl = pCtrl->GetNext();
                     if (pMapCtrl && pGlowMap == pMapCtrl->FUN_141044480())
                     {

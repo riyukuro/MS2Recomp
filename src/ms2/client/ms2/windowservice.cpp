@@ -154,7 +154,6 @@ float FUN_14028aed0(float f);                                       // floor(flo
 void FUN_14209cc20(void*, void*);
 template <typename A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommon(int);
-CStringW FUN_1401d0080(const CStringW&, const CStringW&);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
 
@@ -540,7 +539,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                     nFormatId = 0xc69;
                 else
                     nFormatId = 0x20f;
-                CStringW strMessage = FormatStringId<CStringW>((int)nFormatId, FUN_1401d0080(strReason, strCode));
+                CStringW strMessage = FormatStringId<CStringW>((int)nFormatId, strReason + strCode);
                 if (DAT_143ab2858 != 0)
                 {
                     UILoginDialog* pLogin = Unk_MessageBoxDialog<UILoginDialog>(0x4e22);

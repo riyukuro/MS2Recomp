@@ -142,7 +142,6 @@ void* FUN_140d86260();   // C3: was FUN_140d86260
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
 CString FUN_1406521f0(int nRegion);
-CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b
 CString FUN_140652030(int n);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 class Unk_LoginMovie : public AScript
@@ -236,7 +235,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
         if (reinterpret_cast<Unk_LoginOptions*>(reinterpret_cast<Unk_LgSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140cfd260())->m_bLocaledName == 1)
-            request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
+            request.m_strId = DAT_143ab29d8 + FUN_1406521f0(FUN_1406516b0());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);

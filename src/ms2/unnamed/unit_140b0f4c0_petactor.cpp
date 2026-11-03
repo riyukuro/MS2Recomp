@@ -58,6 +58,7 @@ class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0
 public:
     NoticeMessage();
     ~NoticeMessage();
+    void SetActor(int nActor);                              // 0x140a53190
     void* m_storage[14];
 };
 class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
@@ -87,7 +88,7 @@ struct Unk_PetConfig { char m_pad_00[8]; Unk_PetBanFlags m_8; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The buffs of an actor.
-class AdditionalCliList { public: int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare); };   // C3: member view (additionalclilist.h)
+class AdditionalCliList { public: int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare); float GetScaleMultiplier(); };   // C3: member view (additionalclilist.h)
 class Unk_PCBaseBuffs : public AdditionalCliList { };
 
 // The pet owner as a player: the equipped pet skin gem.
@@ -152,7 +153,7 @@ public:
     int FUN_1422b9ea0();
 };
 unsigned FUN_140a35ca0(MS2Tick* p);
-CString* FUN_140298f80(const void* pValue);                                 // Value<CString>::Get
+struct Unk_StringOptionEntry { CString& FUN_140298f80(); };                   // C3: member view (Value<CString>::Get)
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
@@ -356,7 +357,7 @@ void CPet::vfunc_125(int n)
 // @0x140b0ff40
 void CPet::vfunc_52(double fTime)
 {
-    float fScale = m_unk_748.FUN_1409705d0();
+    float fScale = reinterpret_cast<AdditionalCliList*>(&m_unk_748)->GetScaleMultiplier();
     if (GetKind() != 0)
         fScale = fScale * 2.0f;
     FUN_14123c330(fScale);
@@ -499,9 +500,9 @@ void CPet::FUN_140b10510()
                 if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
                 {
                     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-                    ((Unk_EffectTarget&)(kTarget)).m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTamingMaxPointEffect);
+                    ((Unk_EffectTarget&)(kTarget)).m_strName = reinterpret_cast<Unk_StringOptionEntry*>(&Client::Constants::GetInstance()->PetTamingMaxPointEffect)->FUN_140298f80();
                     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
-                    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+                    kTarget.SetActor(FUN_14123c580());
                     m_nFxMax = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
                 }
             }
@@ -529,9 +530,9 @@ void CPet::FUN_140b10510()
             if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
                 ((Unk_EffectTarget&)(kTarget)).m_strName = FUN_140291c10(m_nGradeFx);
             else
-                ((Unk_EffectTarget&)(kTarget)).m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser);
+                ((Unk_EffectTarget&)(kTarget)).m_strName = reinterpret_cast<Unk_StringOptionEntry*>(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser)->FUN_140298f80();
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
-            ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+            kTarget.SetActor(FUN_14123c580());
             m_nFxOther = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         }
     }
@@ -758,7 +759,7 @@ void CPet::FUN_140b11760(CString strEffect)
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
     ((Unk_EffectTarget&)(kTarget)).m_nKind = vfunc_58();
-    ((Unk_EffectTarget&)(kTarget)).FUN_140a53190(FUN_14123c580());
+    kTarget.SetActor(FUN_14123c580());
     TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
 }
 

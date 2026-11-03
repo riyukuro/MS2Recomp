@@ -20,6 +20,7 @@
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include <new>
 #include <efd/Point3.h>
+#include <d3dx9math.h>
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
 {
@@ -51,11 +52,7 @@ void FUN_14028d1a0(const CString&, int*);                                // pars
 struct Unk_CommonVec3;
 void FUN_14028c2d0(CStringA, Unk_CommonVec3*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
-void FUN_140203800(float*);
 extern char DAT_143b01a60;
-bool FUN_1401647e0(const CString&, const CString&);                      // CString != CString
-bool FUN_140164830(const CStringW&, const CStringW&);
-bool FUN_1401932b0(const std::vector<unsigned>&, const std::vector<unsigned>&);
 bool FUN_1406cf9e0(const std::vector<short>&, const std::vector<short>&);
 bool FUN_140552700(const Unk_GVec3&, const Unk_GVec3&);
 class Unk_140166420 : public CFileSystem { };
@@ -93,9 +90,9 @@ CFieldDataCli::~CFieldDataCli()
 bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
 {
     if (a->m_nFieldID != b->m_nFieldID) return true;
-    if (FUN_140164830(a->m_strFeature, b->m_strFeature)) return true;
-    if (FUN_1401647e0(a->m_strLocale, b->m_strLocale)) return true;
-    if (FUN_1401647e0(a->m_strXBlock, b->m_strXBlock)) return true;
+    if (a->m_strFeature != b->m_strFeature) return true;
+    if (a->m_strLocale != b->m_strLocale) return true;
+    if (a->m_strXBlock != b->m_strXBlock) return true;
     if (a->m_nRevivalReturnId != b->m_nRevivalReturnId) return true;
     if (a->m_nEnterReturnId != b->m_nEnterReturnId) return true;
     if (a->m_nMapCategoryCode != b->m_nMapCategoryCode) return true;
@@ -113,7 +110,7 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
     if (a->m_nOnlyDarkTomb != b->m_nOnlyDarkTomb) return true;
     if (a->m_nMapLevel != b->m_nMapLevel) return true;
     if (a->m_nDropRank != b->m_nDropRank) return true;
-    if (FUN_1401932b0(a->m_globalDropBoxIds, b->m_globalDropBoxIds)) return true;
+    if (a->m_globalDropBoxIds != b->m_globalDropBoxIds) return true;
     if (a->m_nLimitContent != b->m_nLimitContent) return true;
     if (a->m_bMapSearch != b->m_bMapSearch) return true;
     if (a->m_nFallDamage != b->m_nFallDamage) return true;
@@ -127,7 +124,7 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
     if ((unsigned short)a->m_nEnterMaxLevel != (unsigned short)b->m_nEnterMaxLevel) return true;
     if (a->m_nMassiveEventField != b->m_nMassiveEventField) return true;
     if (a->m_nRecoveryFullHP != b->m_nRecoveryFullHP) return true;
-    if (FUN_1401932b0(a->m_enteranceBuffIds, b->m_enteranceBuffIds)) return true;
+    if (a->m_enteranceBuffIds != b->m_enteranceBuffIds) return true;
     if (FUN_1406cf9e0(a->m_enteranceBuffLevels, b->m_enteranceBuffLevels)) return true;
     if (a->m_nEnterAdminLevel != b->m_nEnterAdminLevel) return true;
     if (a->m_nChannelGroupId != b->m_nChannelGroupId) return true;
@@ -162,16 +159,16 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
     if (a->m_nBossBgmId != b->m_nBossBgmId) return true;
     if (a->m_nBossBgmParam != b->m_nBossBgmParam) return true;
     if (a->m_fBossBgmValue != b->m_fBossBgmValue) return true;
-    if (FUN_1401647e0(a->m_strEnterSystemSound, b->m_strEnterSystemSound)) return true;
-    if (FUN_1401647e0(a->m_strBgMask, b->m_strBgMask)) return true;
-    if (FUN_1401647e0(a->m_strBgDay, b->m_strBgDay)) return true;
+    if (a->m_strEnterSystemSound != b->m_strEnterSystemSound) return true;
+    if (a->m_strBgMask != b->m_strBgMask) return true;
+    if (a->m_strBgDay != b->m_strBgDay) return true;
     if (a->m_nVScroll != b->m_nVScroll) return true;
     if (a->m_nHScroll != b->m_nHScroll) return true;
     if (a->m_nUseEffLight != b->m_nUseEffLight) return true;
     if (a->m_nFieldName != b->m_nFieldName) return true;
     if (a->m_nEffectLOD != b->m_nEffectLOD) return true;
     if (a->m_nInstancingGrid != b->m_nInstancingGrid) return true;
-    if (FUN_1401647e0(a->m_strMapEffectId, b->m_strMapEffectId)) return true;
+    if (a->m_strMapEffectId != b->m_strMapEffectId) return true;
     if (a->m_bFastGlow != b->m_bFastGlow) return true;
     if (a->m_nFastShimmer != b->m_nFastShimmer) return true;
     if (a->m_nGlobalNameTag != b->m_nGlobalNameTag) return true;
@@ -323,15 +320,13 @@ int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
         if (cam) {
             Unk_140165cf0* pos = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(cam))->Attribute("position");
             if (pos) {
-                struct { float x, y, z; char pad[4]; } v;
-                FUN_140203800(&v.x);
+                D3DXVECTOR3 v;
                 FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(pos), 0), reinterpret_cast<Unk_CommonVec3 *>(&v.x));
                 spMM->m_vecCamPos = Unk_GVec3(v.x, v.y, v.z);
             }
             Unk_140165cf0* rot = (Unk_140165cf0*)((class TiXmlElement*)(class Unk_140165cf0*)(cam))->Attribute("rotation");
             if (rot) {
-                struct { float x, y, z; char pad[4]; } v;
-                FUN_140203800(&v.x);
+                D3DXVECTOR3 v;
                 FUN_14028c2d0(FUN_140188f50(reinterpret_cast<char const *>(rot), 0), reinterpret_cast<Unk_CommonVec3 *>(&v.x));
                 spMM->m_vecCamRot = Unk_GVec3(v.x, v.y, v.z);
             }

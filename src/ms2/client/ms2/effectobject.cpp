@@ -20,6 +20,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/client/ms2/stateskill.h"
+#include "ms2/client/ms2/skillrecord.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include <egmAnimation/AnimationService.h>   // C3: AnimationService::GetActorManager
 
@@ -34,7 +35,7 @@ public:
     static class WorldService* GetInstance();
 };
 
-// Target of a state (MS2Ptr, the pointer is a CPtred); its +0x30 member holds a descriptor with a kind at +0x88.
+// The skill record's +0x30 member (m_spSkill) holds a descriptor with a kind at +0x88.
 struct Unk_EffDesc
 {
     int m_pad_00[34];
@@ -44,35 +45,21 @@ struct Unk_EffDescHolder
 {
     void* m_p;
 };
-class Unk_EffTarget : public CPtred
-{
-public:
-    MS2_LAYOUT_FRIEND;
-    void* m_pad_18[3];
-    Unk_EffDescHolder m_f30;                                        // +0x30
-};
-// The state machine's current state.
-class Unk_EffState : public StateSkill
-{
-public:
-    MS2Ptr<Unk_EffTarget> FUN_1417ed6f0();                          // the state's target
-};
 class CStateManager   // C3: member view for the former free stand-ins
 {
 public:
     class State* GetState();
 };
 Unk_EffDesc* FUN_14063ed50(Unk_EffDescHolder* pHolder);                          // descriptor of a holder
-// MS2Ptr<Unk_EffTarget> members instantiated by earlier objs.
-template <> Unk_EffTarget* MS2Ptr<Unk_EffTarget>::get() const;       // 0x140975ba0
-template <> MS2Ptr<Unk_EffTarget>::~MS2Ptr();                        // 0x140975740
+// MS2Ptr<CSkillRecord> members instantiated by earlier objs.
+template <> CSkillRecord* MS2Ptr<CSkillRecord>::get() const;         // 0x140975ba0
+template <> MS2Ptr<CSkillRecord>::~MS2Ptr();                         // 0x140975740
 
 // MS2Ptr<CStateManager> members instantiated by cubespawnobject.cpp.
 template <> MS2Ptr<CStateManager>::operator CStateManager*() const;  // 0x140a4ff20
 template <> MS2Ptr<CStateManager>::~MS2Ptr();                        // 0x140a4fcd0
 
 CString FUN_141b6ed00(const CString& str);                          // normalised copy of a model name
-CString FUN_140298360(const char* pszPrefix, const CString& str);   // prefix + str
 
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();                                              // the model cache singleton
@@ -145,7 +132,7 @@ int CEffectObject::FUN_140a53880(int nOwnerId, CString strModel, float fScale)
     m_nOwnerId = nOwnerId;
     m_str88 = "GameObject";
     SetScaleAC(fScale);
-    FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strModel)));
+    FUN_14123bb80("urn:gamebryo-animation:" + FUN_141b6ed00(strModel));
     FUN_14123c5a0(FUN_140a53830());
     PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
     if (pOwner)
@@ -194,11 +181,11 @@ void CEffectObject::vfunc_21(efd::Point3 kDir)
         PCBase* pOwner = ((class PCBase*)((class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
         if (pOwner && ((class PCBase*)(pOwner))->GetCurStateId() == 0x10)
         {
-            Unk_EffState* pState = ((class Unk_EffState*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
+            StateSkill* pState = ((class StateSkill*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
             if (pState)
             {
-                Unk_EffTarget* pTarget = pState->FUN_1417ed6f0().get();
-                if (pTarget && FUN_14063ed50(&pTarget->m_f30)->m_nKind == 2)
+                CSkillRecord* pTarget = pState->GetRecord().get();
+                if (pTarget && FUN_14063ed50(reinterpret_cast<Unk_EffDescHolder*>(&pTarget->m_spSkill))->m_nKind == 2)
                     return;
             }
         }
@@ -227,7 +214,7 @@ void CEffectObject::vfunc_53(float f)
             float fScale = 1.0f;
             if (((class PCBase*)(pOwner))->GetCurStateId() == 0x10)
             {
-                Unk_EffState* pState = ((class Unk_EffState*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
+                StateSkill* pState = ((class StateSkill*)((class CStateManager*)(pOwner->GetStateMgr()))->GetState());
                 if (pState)
                     fScale = pState->GetSpeed();
             }

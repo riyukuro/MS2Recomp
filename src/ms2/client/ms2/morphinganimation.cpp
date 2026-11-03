@@ -47,7 +47,6 @@ template<> CMainSystem* TSingleton<CMainSystem>::GetInstance();
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();                        // the model cache singleton
 // RTTI of the render object class (0x143afa7d0; name assumed from its uses).
-extern const NiRTTI Unk_RenderObjectRTTI;
 
 // @0x141487a20
 CMorphingAnimation::CMorphingAnimation(Unk_MorphOwner* pOwner, CMorphingAnimationData* pData)
@@ -159,7 +158,7 @@ NiAVObject* CMorphingAnimation::FindNode(const CString& strNodeName)
             NiFixedString kName((const char*)strNodeName);
             pObject = pRoot->GetObjectByName(kName);
         }
-        return (NiAVObject*)NiObject::DynamicCast(&Unk_RenderObjectRTTI, (class NiObject const*)(pObject));
+        return (NiAVObject*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pObject));
     }
     return NULL;
 }

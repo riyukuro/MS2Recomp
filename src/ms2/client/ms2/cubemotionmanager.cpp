@@ -33,6 +33,7 @@
 #include <egf/Entity.h>
 #include <NiAVObject.h>
 #include <NiNode.h>
+#include <NiRenderObject.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -40,34 +41,32 @@
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
-void FUN_1413d78e0(HardwareInstancingService* pSvc, egf::Entity* pEntity);   // refresh the entity's instancing
 bool FUN_14028d470(float a, float b);                           // nearly equal
 NiNode* FUN_1413fa070(egf::EntityID id);                     // entity id -> scene root
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // entity -> scene node
 void FUN_141567330(NiAVObject* pNode, bool b);                  // set the node's visibility flag
 
 // Ease curves (empty functors called on temporaries).
-struct Unk_CmEaseOut { float FUN_140cd8c20(float t); };
-struct Unk_CmEaseIn { float FUN_1410af700(float t); };
+struct Unk_EaseOut { float Evaluate(float t); };
+struct Unk_C2Ease { float FUN_1410af700(float t); };
 
 // Property access on the entity (hash id, value).
 void FUN_14098c6e0(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 
 class Unk_CmEntity
 {
+};
+class Unk_CachedEntity : public egf::Entity   // as bosstargetcamera.cpp declares it
+{
 public:
-    void FUN_140a38a50(unsigned nProp, const Vector3* pValue);  // set a point property
-    void FUN_1409457c0(unsigned nProp, const float* pValue);            // set a float property
+    template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);
 };
 
 // Transparency material attached to a mesh (0x38 bytes); slots 2 and 4 are used here.
-class TransparencyStandardMaterial
+class TransparencyStandardMaterial : public efd::MemObject
 {
 public:
-    static void* operator new(size_t nSize, unsigned nCat);     // 0x14208a860
-    static void operator delete(void* p, unsigned nCat);        // 0x14097f700
-    static void operator delete(void* p);                       // the deleting dtor frees through the heap
-    TransparencyStandardMaterial(void* pGeometry);              // 0x140a16050
+    TransparencyStandardMaterial(NiRenderObject* pGeometry);              // 0x140a16050
     virtual ~TransparencyStandardMaterial();
     virtual void vfunc_1();
     virtual void vfunc_2(int n);                                // MS2: slot 2 (0x10)
@@ -85,9 +84,7 @@ struct Unk_NodeQueue
     NiAVObject* Next(bool bDescend);
 };
 typedef Unk_NodeQueue Unk_CmWalker;   // C3: was a local stand-in for Unk_NodeQueue
-extern char DAT_143afa7d0;                                         // NiRTTI of the mesh type
-extern char DAT_143d69198;                                         // material table
-int* FUN_140876480(int* pOut, int nCat);                          // memory category helper
+class MS2StandardMaterial { public: static const NiRTTI ms_RTTI; };   // as util.cpp declares it
 
 // ---- motion value classes (header-inline in the exe, COMDATs of this obj) ----------------------------------------------
 
@@ -174,13 +171,11 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
             Unk_CmWalker walker((NiAVObject*)(spRoot));
             while (NiAVObject* pObject = walker.Next(true))
             {
-                NiObject* pMesh = NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa7d0), (class NiObject const*)(pObject));
+                NiObject* pMesh = NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pObject));
                 void* pMat;
-                if (pMesh != 0 && (pMat = ((void*)((class NiRenderObject*)(void*)(pMesh))->GetActiveMaterial())) != 0 && ((void*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), (class NiMaterial const*)(pMat))) != 0)
+                if (pMesh != 0 && (pMat = ((void*)((class NiRenderObject*)(void*)(pMesh))->GetActiveMaterial())) != 0 && ((void*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, (class NiMaterial const*)(pMat))) != 0)
                 {
-                    int nCat;
-                    int* pCat = FUN_140876480(&nCat, 0);
-                    TransparencyStandardMaterial* pMaterial = new (*pCat) TransparencyStandardMaterial(pMesh);
+                    TransparencyStandardMaterial* pMaterial = new (efd::MemHint(efd::MemHint::PLATFORM_NONE)) TransparencyStandardMaterial((NiRenderObject*)pMesh);
                     pMaterial->vfunc_2(0);
                     pMaterial->vfunc_4(m_fFrom);
                     m_materials.push_back(pMaterial);
@@ -311,19 +306,19 @@ void CCubeMotionManager::Update()
         Unk_CmRotate& rotate = m_rotate.GetValueAt(pos1);
         if (rotate.m_timer.FUN_140868ba0() != 0 || rotate.m_timer.FUN_140868c00() != 0)
         {
-            float fRatio = Unk_CmEaseOut().FUN_140cd8c20(rotate.m_timer.FUN_140868940());
+            float fRatio = Unk_EaseOut().Evaluate(rotate.m_timer.FUN_140868940());
             float fValue = rotate.m_fFrom + (rotate.m_fTo - rotate.m_fFrom) * fRatio;
-            Vector3 pt;
+            efd::Point3 pt;
             reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(pt));
             pt.z = fValue;
-            ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0x68c7c29d, &pt);
+            reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<efd::Point3>(0x68c7c29d, pt);
             if (rotate.m_timer.FUN_140868c00() != 0)
             {
                 rotate.m_timer.FUN_1408687f0();
                 finished.AddTail(id);
             }
             if (spInstancing)
-                FUN_1413d78e0(spInstancing.operator->(), spEntity);
+                spInstancing.operator->()->FUN_1413d78e0(spEntity);
         }
     }
     for (POSITION pos2 = finished.GetHeadPosition(); pos2 != 0; finished.GetNext(pos2))
@@ -353,21 +348,21 @@ void CCubeMotionManager::Update()
         {
             if (bounce.m_timer.FUN_140868940() <= 0.5f)
             {
-                float fRatio = Unk_CmEaseOut().FUN_140cd8c20(bounce.m_timer.FUN_140868940() * 2.0f);
+                float fRatio = Unk_EaseOut().Evaluate(bounce.m_timer.FUN_140868940() * 2.0f);
                 float fValue = bounce.m_fFrom + (bounce.m_fTo - bounce.m_fFrom) * fRatio;
-                Vector3 pt;
+                efd::Point3 pt;
                 reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
                 pt.z = fValue;
-                ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
+                reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<efd::Point3>(0xfd95ca52, pt);
             }
             else
             {
-                float fRatio = Unk_CmEaseIn().FUN_1410af700((bounce.m_timer.FUN_140868940() - 0.5f) * 2.0f);
+                float fRatio = Unk_C2Ease().FUN_1410af700((bounce.m_timer.FUN_140868940() - 0.5f) * 2.0f);
                 float fValue = bounce.m_fTo + (bounce.m_fFrom - bounce.m_fTo) * fRatio;
-                Vector3 pt;
+                efd::Point3 pt;
                 reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
                 pt.z = fValue;
-                ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
+                reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<efd::Point3>(0xfd95ca52, pt);
                 if (bounce.m_timer.FUN_140868c00() != 0)
                 {
                     bounce.m_timer.FUN_1408687f0();
@@ -375,7 +370,7 @@ void CCubeMotionManager::Update()
                 }
             }
             if (spInstancing)
-                FUN_1413d78e0(spInstancing.operator->(), spEntity);
+                spInstancing.operator->()->FUN_1413d78e0(spEntity);
         }
     }
     for (POSITION pos4 = finished.GetHeadPosition(); pos4 != 0; finished.GetNext(pos4))
@@ -398,16 +393,16 @@ void CCubeMotionManager::Update()
         Unk_CmScale& scale = m_scale.GetValueAt(pos5);
         if (scale.m_timer.FUN_140868ba0() != 0 || scale.m_timer.FUN_140868c00() != 0)
         {
-            float fRatio = Unk_CmEaseOut().FUN_140cd8c20(scale.m_timer.FUN_140868940());
+            float fRatio = Unk_EaseOut().Evaluate(scale.m_timer.FUN_140868940());
             float fValue = scale.m_fFrom + (scale.m_fTo - scale.m_fFrom) * fRatio;
-            ((Unk_CmEntity*)spEntity.operator->())->FUN_1409457c0(0x2d7cad2d, &fValue);
+            reinterpret_cast<Unk_CachedEntity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<float>(0x2d7cad2d, fValue);
             if (scale.m_timer.FUN_140868c00() != 0)
             {
                 scale.m_timer.FUN_1408687f0();
                 finished.AddTail(id);
             }
             if (spInstancing)
-                FUN_1413d78e0(spInstancing.operator->(), spEntity);
+                spInstancing.operator->()->FUN_1413d78e0(spEntity);
         }
     }
     for (POSITION pos6 = finished.GetHeadPosition(); pos6 != 0; finished.GetNext(pos6))
@@ -430,7 +425,7 @@ void CCubeMotionManager::Update()
         Unk_CmFade& fade = m_fade.GetValueAt(pos7);
         if (fade.m_timer.FUN_140868ba0() != 0 || fade.m_timer.FUN_140868c00() != 0)
         {
-            float fRatio = Unk_CmEaseOut().FUN_140cd8c20(fade.m_timer.FUN_140868940());
+            float fRatio = Unk_EaseOut().Evaluate(fade.m_timer.FUN_140868940());
             float fAlpha = fade.m_fFrom + (fade.m_fTo - fade.m_fFrom) * fRatio;
             Unk_CmMaterialList& rMaterials = fade.m_materials;
             Unk_CmMaterialList::const_iterator itEnd = rMaterials.end();

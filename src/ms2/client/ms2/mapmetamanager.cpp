@@ -19,7 +19,6 @@ extern "C" float (__cdecl* __imp_cosf)(float);
 extern "C" float (__cdecl* __imp_sinf)(float);
 
 // ---- out-of-unit callees ----
-egf::EntityManager* FUN_1409670f0();                                         // the world's entity manager
 
 // @0x1400f7d10
 const NiRTTI CMapMetaManager::ms_RTTI("CMapMetaManager", 0);
@@ -45,7 +44,7 @@ CMapMetaManager::~CMapMetaManager()
 egf::EntityID CMapMetaManager::FUN_141478180(efd::utf8string key)
 {
     if (m_values.GetCount() <= 0) {
-        egf::Entity* entity = reinterpret_cast<EntityWorldManager*>(FUN_1409670f0())->FUN_1411cf440(m_entityID);
+        egf::Entity* entity = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf440(m_entityID);
         if (entity != NULL) {
             efd::UInt32 count = 0;
             entity->GetPropertyCount(0x25000038, count);

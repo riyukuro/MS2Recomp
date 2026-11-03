@@ -52,6 +52,9 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/ascorelist.h"
 
 // return types of the getters this unit calls
 class Unk_InventoryListener;
@@ -91,12 +94,6 @@ void FUN_141415600(const CString& name);
 void FUN_14141f970(const CString& name);
 void FUN_141415450(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
 void FUN_14141ff80(ItemSlotBag* bag, int count);
-class ASCoreList   // C3: member view for the former free stand-ins
-{
-public:
-    void SetSelectedIndex(int);
-    int GetSelectedIndex();
-};
 NotifyContext::BindData* FUN_1422c8e90(const CString& name);
 class Unk_TrDebug;
 void* FUN_14025e7c0();
@@ -105,16 +102,11 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool IsDebugMode();
 };
-void FUN_1422dce60(Unk_SocketPageBag*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
-void FUN_1422de0e0(Unk_SocketPageBag*, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 struct Unk_TrFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
 struct Unk_TrFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
 CStringW GetStringCommonByKey(const CStringW& key);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
 CStringW FUN_1409404f0(__int64 v);
-CStringW FUN_14042cb90(CStringW key, const float& v);
 CStringW FUN_1419021b0(unsigned a, unsigned b);
-CStringW FUN_1406564a0(const wchar_t* pszFormat, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_140627390(unsigned id);
 CStringW FUN_14062ae60(int itemId);
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> info);
@@ -160,12 +152,6 @@ public:
     ~ASListEvent();                                                         // 0x140f83bb0
     Scaleform::GFx::Value FUN_1422e27d0();                                  // the clicked row
     int FUN_1422e2820();                                                    // its index
-};
-class ASListItemRenderer : public AScript {
-public:
-    ASListItemRenderer(const Scaleform::GFx::Value& row, int nMovie);       // 0x1422e1c50
-    virtual ~ASListItemRenderer();                                          // 0x1422e1ca0
-    __int64 m_f0, m_f1, m_f2, m_f3, m_f4, m_f5, m_f6, m_f7, m_f8;           // up to 0x88 bytes (as ascorelist.h)
 };
 MS2_CHECK_SIZE(ASListItemRenderer, 0x88);
 
@@ -220,7 +206,6 @@ void FUN_140628c80(Unk_SockUidList&, COutputStream&);
 void FUN_140628e20(Unk_SockUidList&, const __int64&, const std::vector<MS2Ptr<CItem> >&);
 // The exe indexes the ingredient vector through the identical-code operator[] COMDAT copy at 0x140f0ba50;
 // symbols.tsv binds std::vector<MS2Ptr<CItem>>::operator[] to the 0x140a69f20 copy.
-struct Unk_SockItemVecView { MS2Ptr<CItem>& FUN_140f0ba50(size_t i); };
 void FUN_140628f60(Unk_SockUidList&, const __int64&, const std::vector<__int64>&);
 void FUN_140629140(Unk_SockItemMsg&, CInPacket&);
 void FUN_140629c50(struct Unk_SockMsgI64&, class COutputStream&);   // C3: was FUN_140629c50
@@ -273,7 +258,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
         if (slots0.get() != 0) {
             m_sourceControl = reinterpret_cast<Unk_TrFindBag*>(slots0.operator->())->FUN_140c4bc60("m_itemBag");
             if (m_sourceControl.get() != 0)
-                FUN_1422dce60(m_sourceControl.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d50), 0);
+                reinterpret_cast<ASCoreList*>(m_sourceControl.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d50), 0);
         }
     }
     MS2Ptr<ASMovieClip> slots1 = m_root->FUN_1409b4560("m_slots1");
@@ -282,9 +267,9 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
             m_ingredientControl = reinterpret_cast<Unk_TrFindMulti*>(slots1.operator->())->FUN_140e8cee0("m_itemBag");
             if (m_ingredientControl.get() != 0) {
                 if (multi)
-                    FUN_1422de0e0(m_ingredientControl.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82ba0), 0);
+                    reinterpret_cast<ASCoreList*>(m_ingredientControl.operator->())->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82ba0), 0);
                 else
-                    FUN_1422dce60(m_ingredientControl.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82e10), 0);
+                    reinterpret_cast<ASCoreList*>(m_ingredientControl.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82e10), 0);
             }
         }
     }
@@ -618,15 +603,15 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ff50(const CStringW& text, __int
         Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f83440), CStringW(text));
     if (box == 0)
         return;
-    box->FUN_1405340b0(*uid);
+    box->Append<__int64>(*uid);
     unsigned __int64 count = items.size();
-    box->FUN_1405340b0(count);
+    box->Append<__int64>(count);
     for (unsigned __int64 i = 0; i < count; ++i) {
         MS2Ptr<CItem> item(items.at(i));
         if (item.get() != 0)
-            box->FUN_1405340b0(item->GetItemUid());
+            box->Append<__int64>(item->GetItemUid());
         else
-            box->FUN_140533ff0(0);
+            box->Append<int>(0);
     }
 }
 
@@ -687,10 +672,11 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
     int sale = FUN_140627ac0(flag, &rate, bonus);
     CIngredientContainer cost;
     FUN_140628390(m_selected->GetRarity(), m_selected->GetRequiredLevel(), flag, &cost);
-    Unk_IngVec* entries = cost.FUN_14026c230();
-    size_t entryCount = entries->FUN_14028b500();
+    const std::vector<MS2Ptr<CIngredientInfo> >* entries =
+        reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >*>(cost.FUN_14026c230());
+    size_t entryCount = entries->size();
     for (size_t i = 0; i < entryCount; ++i) {
-        Unk_IngRef ingredient(*entries->FUN_14028a0f0(i));
+        MS2Ptr<CIngredientInfo> ingredient(entries->at(i));
         if (ingredient == 0)
             continue;
         int have = g_143ab2a90.FUN_140a5f180(ingredient->m_a, 0);
@@ -711,7 +697,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
     }
     if (multi) {
         for (size_t i = 0; i < ingredients.size(); ++i) {
-            MS2Ptr<CItem> item(reinterpret_cast<Unk_SockItemVecView*>(&ingredients)->FUN_140f0ba50(i));
+            MS2Ptr<CItem> item(ingredients.at(i));
             if (item == 0)
                 continue;
             CItemSocket* itemSocket = item->GetSocket();
@@ -811,7 +797,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
     __int64 fee = 0;
     FUN_140f6dc70(m_ingredientName, cost, data, m_ingredients, MS2Ptr<CItem>(m_selected), &fee, MS2Ptr<SaleParam>(sale));
     if (fee != 0)
-        data.FUN_1407cbb20("unlockFee", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
+        data.FUN_1407cbb20("unlockFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
     int icon = 0x405;
     int flags = 0x20;
     MS2Ptr<CItem> equipItem(0);
@@ -839,10 +825,10 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
     if (sale.get() != 0) {
         if (sale->enabled == 1) {
             float percent = (float)(unsigned)sale->rate * 0.01f;
-            saleDesc = FUN_14042cb90(CStringW(L"s_itemsocketsystem_gemstoneupgrade_sale_desc"), percent);
+            saleDesc = FUN_14028dfa0<float>(CStringW(L"s_itemsocketsystem_gemstoneupgrade_sale_desc"), percent);
         } else if (sale->enabled == 2) {
             float percent = (float)(unsigned)sale->rate * 0.01f;
-            saleDesc = FUN_14042cb90(CStringW(L"s_itemsocketsystem_gemstoneupgrade_sa_sale_desc"), percent);
+            saleDesc = FUN_14028dfa0<float>(CStringW(L"s_itemsocketsystem_gemstoneupgrade_sa_sale_desc"), percent);
         }
     }
     data.FUN_1407cbb20("saleDesc", saleDesc);
@@ -873,7 +859,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
             int gemId = info->GetGemId();
             CStringW name = FUN_14062ae60(gemId);
             CStringW stat = FUN_14062b310(info);
-            text = FUN_1406564a0(rowStat, FUN_140627390(gemId), name, stat);
+            text = StringFormat<CStringW, CStringW, CStringW>(rowStat, FUN_140627390(gemId), name, stat);
         }
         rows.PushWString(text);
     }
@@ -904,7 +890,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81f00(CInPacket* packet)
     ASObj data(2);
     data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
     {
-        CStringW prob = FUN_14042cb90(CStringW(L"s_itemsocketsystem_success_prob"), result.m_fProb);
+        CStringW prob = FUN_14028dfa0<float>(CStringW(L"s_itemsocketsystem_success_prob"), result.m_fProb);
         data.FUN_1407cbb20("successProb", prob);
         bool enable = FUN_140627c10(MS2Ptr<CItem>(m_selected));
         data.FUN_1407cbbe0("noSelect", !enable);

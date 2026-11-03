@@ -30,6 +30,8 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
+int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -80,8 +82,8 @@ RewardContentsItemGroup::RewardContentsItemGroup()
 // @0x1407704a0
 bool RewardContentsItemGroup::Load(void* pNode)
 {
-    FUN_1408731a0(static_cast<Unk_140165cf0*>(pNode), "minLevel", m_levelRange.m_nLow);
-    FUN_1408731a0(static_cast<Unk_140165cf0*>(pNode), "maxLevel", m_levelRange.m_nHigh);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "minLevel", m_levelRange.m_nLow);
+    XmlGetAttr((class TiXmlElement*)(static_cast<Unk_140165cf0*>(pNode)), "maxLevel", m_levelRange.m_nHigh);
     (void)((!!(m_levelRange.m_nLow <= m_levelRange.m_nHigh)) || (_wassert(L"m_levelRange.m_minValue <= m_levelRange.m_maxValue", _CRT_WIDE(MS2_THIS_FILE), 35), 0));
     for (Unk_140165cf0* pChild = static_cast<Unk_140165cf0*>((class Unk_140165cf0 *)((class Unk_XmlNode*)((pNode)))->FirstChild("item")); pChild != 0; pChild = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pChild))->NextSibling("item")))
     {
@@ -255,8 +257,8 @@ bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
                 continue;
             unsigned short nLevel = 0;
             __int64 nMeso = 0;
-            FUN_1408731a0(pChild, "level", nLevel);
-            FUN_1408732e0(pChild, "meso", nMeso);
+            XmlGetAttr((class TiXmlElement*)(pChild), "level", nLevel);
+            XmlGetAttr((class TiXmlElement*)(pChild), "meso", nMeso);
             if (values.empty())
             {
                 if (nLevel > 0)

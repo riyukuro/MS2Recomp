@@ -50,10 +50,10 @@ static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 UIGameMenuDialog* FUN_140938b90(int nUiId);                     // the dialog lookups of other units (same template)
-UIMentoringDialog* FUN_140b72e80(int nUiId);
+template <class T> T* Unk_MMDialog(int nId);          // mentoringmanager.cpp
 UIPaybackDialog* FUN_140a8c5f0(int nUiId);
-UIAttendGiftDialog* FUN_140c053e0(int nUiId);
-UICashAttendDialog* FUN_140ce8130(int nUiId);
+template <class T> T* FindDTDialog(int nId);          // the dialog of a ui id
+template <class T> T* FindCliDialog(int nId);         // gameeventcli.cpp
 int Parse_14021b830(const CStringA& value);                     // a game menu entry id by name (commonenum.cpp)
 int FUN_140718200(const CStringW& str);                         // _wtoi
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -342,14 +342,14 @@ bool CGameMenuItem::IsVisible()
         break;
     case GAMEMENU_FILTER_ATTEND_GIFT:
     {
-        UIAttendGiftDialog* pDialog = FUN_140c053e0(0x4eb8);
+        UIAttendGiftDialog* pDialog = FindDTDialog<UIAttendGiftDialog>(0x4eb8);
         if (pDialog && pDialog->HasActiveEvents())
             return true;
         break;
     }
     case GAMEMENU_FILTER_CASH_ATTEND:
     {
-        UICashAttendDialog* pDialog = FUN_140ce8130(0x4eb9);
+        UICashAttendDialog* pDialog = FindCliDialog<UICashAttendDialog>(0x4eb9);
         if (pDialog && pDialog->HasActiveEvents())
             return true;
         break;
@@ -840,7 +840,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_isEnabled.Bind(pTimeRun, &UITimeRunEventDialog::FUN_140ee3290);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    UIMentoringDialog* pMentoring = FUN_140b72e80(0x4f4b);
+    UIMentoringDialog* pMentoring = Unk_MMDialog<UIMentoringDialog>(0x4f4b);
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 42;

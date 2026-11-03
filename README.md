@@ -32,22 +32,22 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 177,765 | 177,433 (99.8%) | 321 (0.2%) | 100.0% |
-| Runtime & middleware | 22,011 | 20,491 (93.1%) | 1,390 (6.3%) | 99.4% |
-| Gamebryo engine | 16,769 | 16,685 (99.5%) | 64 (0.4%) | 99.9% |
-| Game framework · egf | 12,740 | 12,684 (99.6%) | 37 (0.3%) | 99.9% |
-| Libraries | 6,705 | 6,333 (94.5%) | 32 (0.5%) | 94.9% |
-| Foundation | 12,019 | 11,917 (99.2%) | 82 (0.7%) | 99.8% |
-| Imports | 782 | 749 (95.8%) | 1 (0.1%) | 95.9% |
-| **Total** | **248,791** | 246,292 (99.0%) | 1,927 (0.8%) | 99.8% |
+| Game · ms2 | 177,766 | 177,441 (99.8%) | 314 (0.2%) | 100.0% |
+| Runtime & middleware | 22,011 | 20,676 (93.9%) | 1,205 (5.5%) | 99.4% |
+| Gamebryo engine | 16,771 | 16,699 (99.6%) | 60 (0.4%) | 99.9% |
+| Game framework · egf | 12,738 | 12,682 (99.6%) | 37 (0.3%) | 99.9% |
+| Libraries | 6,704 | 6,336 (94.5%) | 31 (0.5%) | 95.0% |
+| Foundation | 12,019 | 11,920 (99.2%) | 79 (0.7%) | 99.8% |
+| Imports | 782 | 778 (99.5%) | 1 (0.1%) | 99.6% |
+| **Total** | **248,791** | 246,532 (99.1%) | 1,727 (0.7%) | 99.8% |
 | *Not done, but not missing:* | | | | |
 | Nexon Messenger SDK code, left out of the rebuild by design | 329 | | | |
-| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 93 | | | |
+| Microsoft library code (CRT, ATL, MFC, import thunks), linked unchanged into the rebuild | 70 | | | |
 | Exception-handling helpers of done functions, identical in the rebuild | 5 | | | |
 | Rebuilt identically, but no unit's address range covers it | 1 | | | |
-| *Not done, still to write* | 144 | | | |
+| *Not done, still to write* | 127 | | | |
 
-Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 572 functions that are neither matched nor equivalent. Counting the 428 that are not missing, 99.9% is done.
+Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild. The rows under the total split the 532 functions that are neither matched nor equivalent. Counting the 405 that are not missing, 99.9% is done.
 <!-- progress:end -->
 
 ## Layout

@@ -14,7 +14,8 @@
 #include "ms2/placeholder/ascript.h"       // MS2Ptr<T>
 
 class PCBase;
-class Unk_ReactRef;     // counted reference to an actor looked up by name (8 bytes)
+class CReactor;
+namespace efd { template <class T> class SmartPointer; }
 
 // 0x30. The target actor's name and the animation to play.
 #ifndef MS2_STATEREACTDATA_DEFINED   // also defined by another header (w539: both may be included)
@@ -56,7 +57,7 @@ public:
     virtual void OnCastingFinished();                       // listener 0  0x140b8dfb0: m_n48 = 1
 
     void FUN_140b8ded0();                                   // leave when the target actor is gone
-    void FUN_140b8dfd0(Unk_ReactRef kRef);                  // by-value reference: the callee destroys it
+    void FUN_140b8dfd0(efd::SmartPointer<CReactor> kRef);                  // by-value reference: the callee destroys it
     bool FUN_140b8e030();                                   // start the reaction animation
 
     int m_n48;                                              // +0x48 casting finished

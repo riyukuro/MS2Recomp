@@ -46,6 +46,7 @@ void FUN_14092ea10(void* p, int n);
 class CFeatureManager { public: bool FUN_14036d650(); };
 class UIReportDialog;
 Unk_NexonAnalytics* FUN_140c77900();
+bool FUN_14092ca70(HMODULE* ppModule, LPCSTR pszDll);   // xmldata.cpp: load the dll into *ppModule (the analytics module handle is at +0)
 UIReportDialog* FUN_140c76fd0(int nId);
 class UIReportDialog : public UIDialog
 {
@@ -454,7 +455,7 @@ void CClientPlatformBase::vfunc_65(int) {}
 void CClientPlatformBase::vfunc_67()
 {
     Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
-    if (pAnalytics->FUN_14092ca70(pAnalytics->GetModuleName()) == 1) {
+    if (FUN_14092ca70(reinterpret_cast<HMODULE*>(pAnalytics), pAnalytics->GetModuleName()) == 1) {
         const char* pszModule = pAnalytics->GetModuleName();
         FUN_1403a1280(((void*)GetLogString()), 0xb, 400, L"{0} 파일을 정상적으로 로드했습니다.", pszModule);
         m_bAnalyticsLoaded = true;

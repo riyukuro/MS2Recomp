@@ -10321,7 +10321,7 @@ XML_StopParser	1423b3570	func
 ?SetX@TextField@GFx@Scaleform@@UEAAXN@Z	1425be380	func
 ?SetRotation@TextField@GFx@Scaleform@@UEAAXN@Z	1425bced0	func
 ?AddPackage@GlobalContext@AS2@GFx@Scaleform@@SAPEAVObject@234@PEAVASStringContext@234@PEAV5234@1PEBD@Z	1429301d0	func
-?SetConstMemberRaw@ObjectInterface@AS2@GFx@Scaleform@@QEAA_NPEAVASStringContext@234@PEBDAEBVValue@234@AEBVPropFlags@234@@Z	1400054b0	func
+?SetConstMemberRaw@ObjectInterface@AS2@GFx@Scaleform@@QEAA_NPEAVASStringContext@234@PEBDAEBVValue@234@@Z	1400054b0	func
 ?FUN_1428f8530@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428f8530	func
 ?FUN_1428fbb70@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbb70	func
 ?FUN_1428fbc40@AS2@GFx@Scaleform@@YAXAEBVFnCall@123@@Z	1428fbc40	func
@@ -10420,8 +10420,8 @@ criHeap_Destroy	140028074	func
 ?crimvply_updateMvPlyYuvBuffersFromAlphadecInfo@@YAXPEAXPEBUCriMvAlphaDecoderFrameInfo@@@Z	1400359e0	func
 ?criMvPly_GetDataSizeMainAudio@@YAKPEAXK@Z	1400360c0	func
 ?criMvPly_GetDataSizeSubAudio@@YAKPEAXK@Z	140036100	func
-?criMvPly_IsEndMainAudioPlayback@@YAXPEAX@Z	140036140	func
-?criMvPly_IsEndSubAudioPlayback@@YAXPEAX@Z	140036170	func
+?criMvPly_IsEndMainAudioPlayback@@YAJPEAX@Z	140036140	func
+?criMvPly_IsEndSubAudioPlayback@@YAJPEAX@Z	140036170	func
 ?criMvPly_SetSubtitleChannel@@YAXPEAXK@Z	140036450	func
 ?criMvPly_GetSubtitle@@YAXPEAX0K0@Z	140036470	func
 ?criMvPly_GetNextSubtitleInfo@@YAXPEAX0@Z	140036590	func
@@ -17431,7 +17431,7 @@ CRICRS_Create	1400682e0	func
 ?Check@Unk_1402c43a0@@QEBA_NI@Z	1402c43a0	func
 ?Check@Unk_1402c43f0@@QEBA_NE@Z	1402c43f0	func
 ??8Unk_MeratProductKey@@QEBA_NAEBU0@@Z	140899ce0	func
-??1?$SmartPointer@VNiCodeBlock@@@efd@@QEAA@XZ	141d99fa0	func
+??1?$SmartPointer@VNiCodeBlock@@@efd@@QEAA@XZ	141803ce0	func
 ??0?$set@U?$pair@HH@std@@U?$less@U?$pair@HH@std@@@2@@efd@@QEAA@XZ	141122a70	func
 ??0?$set@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@U?$less@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@@efd@@QEAA@XZ	141122af0	func
 ??0?$MS2Ptr@VAutomaticCreateCubeInfo@@@@QEAA@PEAVAutomaticCreateCubeInfo@@@Z	14111e800	func
@@ -17446,3 +17446,6 @@ _get_startup_file_mode	14274aed4	func
 _get_startup_new_mode	14274aedc	func
 _get_startup_thread_locale_mode	14274aee0	func
 _should_initialize_environment	14274aee4	func
+?DestructArray@?$ConstructorMov@V?$SPtr@VNamespaceSet@AS3@GFx@Scaleform@@@AS3@GFx@Scaleform@@@Scaleform@@SAXPEAV?$SPtr@VNamespaceSet@AS3@GFx@Scaleform@@@AS3@GFx@2@_K@Z	1424f6c90	func
+?SetValue@STPtr@AS3@GFx@Scaleform@@QEAAAEAV1234@AEBVValue@234@@Z	14252a640	func
+?CheckExpand@?$HashSetBase@U?$HashNode@PEAVObject@AS2@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS2@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorGH@PEAVObject@AS2@GFx@Scaleform@@$01@2@V?$HashsetNodeEntry@U?$HashNode@PEAVObject@AS2@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS2@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@QEAAXPEAX@Z	1429339a0	func

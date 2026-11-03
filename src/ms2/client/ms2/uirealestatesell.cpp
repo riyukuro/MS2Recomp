@@ -16,6 +16,10 @@
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/mypc.h"
 #include "ms2/placeholder/userugcmapinfo.h"
+#include "ms2/commonfiles/blackmarketitemoption.h"   // C3: Unk_BmPtr<UserUGCMapInfo>
+#include <efd/SmartPointer.h>   // C3: efd::SmartPointer<Unk_Service6100017>
+#include "ms2/commonfiles/ugcmapdata.h"   // C3: Unk_UGCGroup
+#include "ms2/client/ms2/addresstable.h"   // C3: CAddressTable::GetText
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -31,43 +35,15 @@ public:
     static class WorldService* GetInstance();
 };
 
-// The sellable-house record of a house (0xc0 bytes; ctor 0x1408ad110, dtor 0x14050de70).
-struct Unk_RsSalable
-{
-    Unk_RsSalable();
-    ~Unk_RsSalable();
-    void* m_pad[24];
-};
-void FUN_1408ad110(Unk_RsSalable* p);
-void FUN_14050de70(Unk_RsSalable* p);
-Unk_RsSalable::Unk_RsSalable() { FUN_1408ad110(this); }
-Unk_RsSalable::~Unk_RsSalable() { FUN_14050de70(this); }
 int FUN_1408a0d30(int, struct Unk_UGCGroup&, int);   // C3: was FUN_1408a0d30
 
-// The map / group record the house stands on.
-class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; };
-class Unk_GmTargetRef
-{
-public:
-    Unk_GmTargetRef(void* p);                                       // 0x14050dd40
-    ~Unk_GmTargetRef();                                             // 0x14050de40
-    Unk_GmTarget* FUN_14050dee0();
-    void* m_0;
-    void* m_8;
-};
-
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
-class Unk_HoService;
 struct Unk_EntityAppFramework;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_EntityAppFramework*)&egf::g_bapiContext)          // C3: was extern Unk_EntityAppFramework DAT_143b059e8
-class Unk_HoServicePtr
-{
-public:
-    Unk_HoServicePtr(Unk_HoService* p);                             // 0x1401cd0b0
-    ~Unk_HoServicePtr();                                            // 0x1401cd150
-    Unk_HoService* m_p;
-};
+class Unk_Service6100017;
+template <> efd::SmartPointer<Unk_Service6100017>::SmartPointer(Unk_Service6100017* pObject);     // 0x1401cd0b0
+template <> efd::SmartPointer<Unk_Service6100017>::~SmartPointer();                               // 0x1401cd150
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 class Unk_RsGrid;                                                   // the cube map information service
@@ -86,13 +62,12 @@ extern __int64 DAT_143ab2820;                                       // my accoun
    // string table by (table, id)
 
 __int64 GetServerTime();                                            // the server time
-CStringW FUN_140979570(int nMapId);                                 // the address of a map
 template <class A> CStringW FormatStringId(int nId, const A& a);                  // string table text with one number
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);   // the sale price (item, amount)
 int FUN_1408a0b80(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);   // the extension price
 bool FUN_14053f8c0(unsigned nItemId);
-unsigned char FUN_14053f940(unsigned nItemId);
+bool FUN_14053f940(unsigned nItemId);   // C3: the definition's signature
 
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
@@ -209,14 +184,14 @@ void UIRealEstateSell::FUN_141ab6230()
     if (m_30.IsNull())
         return;
     ASObj obj(2);
-    Unk_HoServicePtr spService(((class Unk_HoService*)FUN_1401cd040(&DAT_143b059e8)));
-    Unk_GmTargetRef target(pPC->FUN_141523c50());
-    Unk_RsSalable salable;
-    if (FUN_1408a0d30(target.FUN_14050dee0()->m_24, *(struct Unk_UGCGroup*)(&salable), target.FUN_14050dee0()->m_20) == 0)
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
+    Unk_UGCGroup salable;
+    if (FUN_1408a0d30(target->m_n24, salable, target->m_n20) == 0)
         return;
     CStringW strName = pPC->vfunc_77();
     ((class AScript&)(obj)).FUN_1407cbb20("houseName", strName);
-    CStringW strAddress = FUN_140979570(target.FUN_14050dee0()->m_20);
+    CStringW strAddress = CAddressTable::GetText(target->m_n20);
     ((class AScript&)(obj)).FUN_1407cbb20("address", strAddress);
     ATL::CTimeSpan span = CMsTime(pPC->FUN_141523c50()->m_n30) - CMsTime(GetServerTime());
     if (span.GetDays() >= 0)
@@ -228,10 +203,10 @@ void UIRealEstateSell::FUN_141ab6230()
     ((class AScript&)(obj)).FUN_1407cb9c0("priceType", 0);
     unsigned nItem = 0;
     __int64 nPrice = 0;
-    FUN_1408a09d0(&nItem, &nPrice, target.FUN_14050dee0()->m_20, target.FUN_14050dee0()->m_24);
+    FUN_1408a09d0(&nItem, &nPrice, target->m_n20, target->m_n24);
     unsigned nItem2 = 0;
     __int64 nPrice2 = 0;
-    FUN_1408a0b80(&nItem2, &nPrice2, target.FUN_14050dee0()->m_20, target.FUN_14050dee0()->m_24);
+    FUN_1408a0b80(&nItem2, &nPrice2, target->m_n20, target->m_n24);
     if (FUN_14053f8c0(nItem))
     {
         ((class AScript&)(obj)).FUN_1407cbb20("price", FormatStringId<CStringW>(0x7e2, FUN_1409404f0(nPrice)));

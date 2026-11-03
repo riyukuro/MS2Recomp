@@ -80,7 +80,6 @@ class Unk_MeratBlindManager;
 class Unk_MusicBookTable;
 class Unk_NametagTrophy;
 class Unk_QmGroupTable;
-class Unk_RankArcadeTable;
 class Unk_Restrictions;
 class Unk_RpTable;
 class Unk_SlotBreakManager;
@@ -254,7 +253,6 @@ class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
 struct Unk_PmFixedItem* FUN_140c8dac0();   // C3: was FUN_140c8dac0
 class Unk_QmGroupTable* FUN_140d738f0();   // C3: was FUN_140d738f0
 class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
-class Unk_RankArcadeTable* FUN_140e37aa0();   // C3: was FUN_140e37aa0
 class Unk_RpTable* FUN_140f64150();   // C3: was FUN_140f64150
 class Unk_GoUpdateList   // C3: member view for the former free stand-ins
 {
@@ -412,7 +410,7 @@ void FUN_1414a0240()
 {
     if (TSingleton<CArcadeDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140e37aa0());
+        delete (Unk_VirtualDtor*)TSingleton<CArcadeDataTable>::GetInstance();
         TSingleton<CArcadeDataTable>::s_instance = 0;
     }
 }

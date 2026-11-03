@@ -25,27 +25,15 @@
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/scriptptr.h"           // C3: Unk_ScriptPtr<CTalkScript>
+#include "ms2/placeholder/uitalkmanager.h"       // C3: UITalkManager::FUN_141b213f0
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
 // A CQuest as handed to the listener: the CQuestCommon base sits at +0x18 (after CPtred).
 struct Unk_PbQuestView { void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_vftable_common; };
 
-// A 16-byte script handle: ctor (id, 100) 0x1408564b0, null test 0x14085a420, copy 0x140859bc0, dtor 0x14078f140.
-class Unk_PbScript
-{
-public:
-    Unk_PbScript(int nId, int n);
-    Unk_PbScript(const Unk_PbScript& o);
-    ~Unk_PbScript();
-    bool FUN_14085a420() const;
-private:
-    void* m_0; void* m_8;
-};
-MS2_CHECK_SIZE(Unk_PbScript, 0x10);
-
-// The npc talk manager (singleton accessor 0x140967100).
-class Unk_PbTalkMgr { public: void FUN_141b213f0(Unk_PbScript script, int nNpc, int n4, int n0); };
+Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nQuestId, int n);   // the quest's talk script (id, 100)
 class Unk_AkoCutscene   // C3: member view for the former free stand-ins
 {
 public:
@@ -58,7 +46,7 @@ int FUN_14074b030(CQuestData* pData);
 int FUN_14074bc90(int);   // C3: was FUN_14074bc90
 unsigned short FUN_14074bd10(int nQuestId);             // quest level
 CStringW FUN_1416e5900(int, bool);       // quest title
-CStringW FUN_1409e88d0(int nStringId, const unsigned short& n);    // formatted string table entry
+template <class A> CStringW BlockFormat(int nId, const A& a);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 int FUN_140e7fc90(const void* pa, const void* pb);
 
@@ -130,7 +118,7 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
             unsigned nQuest = quests[i];
             ASObj row(2);
             row.FUN_1407cbb20("label", FUN_1416e5900(nQuest, (bool)0));
-            row.FUN_1407cbb20("level", FUN_1409e88d0(0x459, FUN_14074bd10(nQuest)));
+            row.FUN_1407cbb20("level", BlockFormat<unsigned short>(0x459, FUN_14074bd10(nQuest)));
             row.FUN_1409c0d20("id", nQuest);
             row.FUN_1407cba60("icon", FUN_140e7fb90(nQuest));
             list->AddItem(row);
@@ -144,9 +132,9 @@ void UIQuestPostBoxDialog::FUN_140e7f920(int nQuest)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(nQuest);
     if (data.IsNull()) return;
-    Unk_PbScript script(FUN_14074b030(data.operator->()), 100);
-    if (script.FUN_14085a420()) return;
-    ((class Unk_PbTalkMgr*)Unk_AkoCutscene::GetInstance())->FUN_141b213f0(script, data->m_2e8, 4, 0);
+    Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_14074b030(data.operator->()), 100);
+    if (script.IsNull()) return;
+    reinterpret_cast<UITalkManager*>(Unk_AkoCutscene::GetInstance())->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
 }
 MS2_REPLACE_METHOD(0x140E7F920, UIQuestPostBoxDialog, FUN_140e7f920, 282, 0x7DFA22B7);
 

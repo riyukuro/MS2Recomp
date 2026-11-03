@@ -10,8 +10,9 @@
 #include "usermail.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/gfxservice.h"
 
-class WorldService { public: bool HasTutorial(); };   // C3: member view (0x141bcb0a0)
 class CLua { public: long long CalcSendMailFee(long long, long long, long long, long long, long long, long long, long long); };   // C3: member view (0x140676020)
 
 extern __int64 DAT_143ab2828;
@@ -77,7 +78,7 @@ CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CS
 void CUserMail::SetUnreadCount(unsigned v) {
     m_00 = v;
     if (v > 0) {
-        if (!reinterpret_cast<WorldService*>(FUN_1403ed2d0())->HasTutorial()) {
+        if (!WorldService::GetInstance()->HasTutorial()) {
             m_d8 = 1;
         }
     }
@@ -227,7 +228,7 @@ int CUserMail::FUN_1408e3b70(__int64 id, int force, int reason) {
             }
         }
     }
-    if (!reinterpret_cast<WorldService*>(FUN_1403ed2d0())->HasTutorial()) {
+    if (!WorldService::GetInstance()->HasTutorial()) {
         m_dc = 1;
     }
     return 1;
@@ -426,11 +427,11 @@ int CUserMail::FUN_1408e48b0() {
 // @0x1408e48f0
 void CUserMail::FUN_1408e48f0() {
     if (m_d8 != 0) {
-        if (FUN_141bcfbd0(FUN_1403ed2d0()) == 0) {
+        if (WorldService::GetInstance()->FUN_141bcfbd0() == 0) {
             return;
         }
         m_d8 = 0;
-        if (FUN_1422b9ea0(FUN_1408e57f0()) == 0) {
+        if (((GFxSceneService*)FUN_1408e57f0())->FUN_1422b9ea0() == 0) {
             FUN_141276180(s_143ab25d8, "");
         }
     }

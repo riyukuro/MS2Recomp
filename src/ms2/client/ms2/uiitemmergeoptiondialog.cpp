@@ -237,7 +237,6 @@ public:
 void FUN_14123a080(const CString& strName, const ATL::CAtlArray<unsigned __int64>& items);
 void FUN_14123a190(const CString& strName);
 template <class T> int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value);   // the index of an uid in a bag
-CString FUN_14038f6d0(const CString& str, const char* sz);  // str + sz
 
 // Texts, notices, message boxes and number formats.
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -417,8 +416,8 @@ void UIItemMergeOptionDialog::OnLoadComplete()
 // @0x1419ce750
 void UIItemMergeOptionDialog::vfunc_67()
 {
-    FUN_14123a190(FUN_14038f6d0(GetTypeName(), "_MergeSlotBag"));
-    FUN_14123a190(FUN_14038f6d0(GetTypeName(), "_MaterialSlotBag"));
+    FUN_14123a190(GetTypeName() + "_MergeSlotBag");
+    FUN_14123a190(GetTypeName() + "_MaterialSlotBag");
     UIDialog::vfunc_67();
     m_nItemUid = 0;
     m_nMaterialUid = 0;
@@ -626,7 +625,7 @@ void UIItemMergeOptionDialog::ResetMergeItems()
         }
     }
     qsort(guids.GetData(), guids.GetCount(), 8, FUN_1419d2fa0);
-    CString strBag = FUN_14038f6d0(GetTypeName(), "_MergeSlotBag");
+    CString strBag = GetTypeName() + "_MergeSlotBag";
     FUN_14123a190(strBag);
     FUN_14123a080(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(guids));
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_itemBag"))
@@ -779,7 +778,7 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
 // @0x1419d0ba0
 void UIItemMergeOptionDialog::RefreshMaterialBag()
 {
-    CString strBag = FUN_14038f6d0(GetTypeName(), "_MaterialSlotBag");
+    CString strBag = GetTypeName() + "_MaterialSlotBag";
     FUN_14123a190(strBag);
     FUN_14123a080(strBag, reinterpret_cast<const ATL::CAtlArray<unsigned __int64>&>(m_items190));
     if (MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_ingredientBag"))

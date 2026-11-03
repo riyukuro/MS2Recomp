@@ -52,10 +52,10 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // the string table directory
-int FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_1408732e0(Unk_140165cf0*, const char*, __int64&);
-void FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
-void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
+int XmlGetAttr(class TiXmlElement*, char const*, int&);         // C3: was FUN_1408731e0
+int XmlGetAttr(class TiXmlElement*, char const*, __int64&);     // C3: was FUN_1408732e0
+int XmlGetAttr(class TiXmlElement*, char const*, CString&);     // C3: was FUN_1408733e0
+int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);    // C3: was FUN_140873420
 CString FUN_14016a5c0(const char* pszName, int);                        // its readable form
 extern const char CStat_RTTI_Type_Descriptor[];                         // 0x143a65c80
 extern CStringA DAT_143aacc88;                                          // the empty name
@@ -150,8 +150,8 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
         CStringW strName;
         CStringW strUnused;
         int nId;
-        FUN_1408731e0(pNode, "id", nId);
-        FUN_140873420(pNode, "name", strName);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "name", strName);
         rNames[nId] = strName;
     }
     return 1;
@@ -178,11 +178,11 @@ int LoadStatDefinitions()
         int nValueType;
         int nCommonId;
         int nValueId;
-        FUN_1408731e0(pNode, "id", nId);
-        FUN_1408733e0(pNode, "option", strOption);
-        FUN_1408731e0(pNode, "valueType", nValueType);
-        FUN_1408731e0(pNode, "commonStringID", nCommonId);
-        FUN_1408731e0(pNode, "valueStringID", nValueId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "option", strOption);
+        XmlGetAttr((class TiXmlElement*)(pNode), "valueType", nValueType);
+        XmlGetAttr((class TiXmlElement*)(pNode), "commonStringID", nCommonId);
+        XmlGetAttr((class TiXmlElement*)(pNode), "valueStringID", nValueId);
         s_definitions[nId] = StatDefinition(nId, strOption, nValueType, names[nValueId], names[nCommonId]);
     }
     names.clear();
@@ -218,14 +218,14 @@ int LoadUserStats(int nJob)
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("stat"); pNode != 0; pNode = pNode->FUN_140168650("stat"))
     {
         int nLevel = 1;
-        if (FUN_1408731e0(pNode, "lev", nLevel) != 1)
+        if (XmlGetAttr((class TiXmlElement*)(pNode), "lev", nLevel) != 1)
         {
             for (int i = 0; i < 0x23; ++i)
             {
                 StatDefinition& definition = s_definitions[i];
                 int nId = definition.GetId();
                 CStringA strName = definition.GetName();
-                FUN_1408732e0(pNode, strName, values.m_values[nLevel - 1][nId]);
+                XmlGetAttr((class TiXmlElement*)(pNode), strName, values.m_values[nLevel - 1][nId]);
             }
         }
     }

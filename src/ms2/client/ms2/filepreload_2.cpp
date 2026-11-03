@@ -130,16 +130,7 @@
 #pragma clang diagnostic pop
 #endif
 #include <ctype.h>
-#ifdef __clang__
-// The MFC import library lacks CopyChars used by clang's CString operator+ body.
-CString FUN_14038f6d0(const CString&,const char*);
-CString FUN_1401d2b10(const CString&,const CString&);
-inline CString Unk_FileSearchConcat(const CString& a,const char* b) { return FUN_14038f6d0(a,b); }
-inline CString Unk_FileSearchConcat(const CString& a,const CString& b) { return FUN_1401d2b10(a,b); }
-#define MS2_SEARCH_CONCAT(a,b) Unk_FileSearchConcat(a,b)
-#else
 #define MS2_SEARCH_CONCAT(a,b) ((a)+(b))
-#endif
 void FUN_1401d3700(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
 // Local synchronization only, no registry writes. Methods using this lock are not hooked.
 static CLockCriticalSection g_searchLock;

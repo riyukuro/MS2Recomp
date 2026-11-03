@@ -112,7 +112,6 @@ extern "C" wchar_t* (__cdecl* __imp_wcscat)(wchar_t*, const wchar_t*);   // the 
 IMPLEMENT_DYNAMIC(CDPSDialog, CDialog)
 
 // ---- callees outside the unit ----
-CStringTable* GetStringTable();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);   // wide -> multibyte
 CString FUN_140390ea0(const wchar_t* psz, int n);           // wide -> multibyte (the text files)
@@ -140,15 +139,13 @@ class Unk_ItemEquipData : public CItemData {};
 class Unk_DpsSummon : public CNpc
 {
 };
+class SkillDataTableCli;   // the skill table (SkillDataTable is its first base)
 class Unk_DpsWorld : public WorldService
 {
 public:
     PCBase* FUN_141bd0cc0();                                // the own player
-    Unk_DpsSummon* FUN_141bd13a0(int nId);                  // a pet / summon by object id
 };
 
-// The skill table (FUN_1401958b0) as this unit uses it.
-SkillDataTable* FUN_1401958b0();
 
 // The buffs of an actor (PCBase::FUN_1416749a0).
 class Unk_PCBaseBuffs : public AdditionalCliList
@@ -419,7 +416,7 @@ const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
         if (pCount != NULL)
             nCount = mapCount.GetValueAt(pCount);
         s_strReport.AppendFormat(L"%d, %d, %s, %d, %d, %d, %d, %d, %d, %d, %d, %s\r\n", spSkill->m_nSkillId,
-            (unsigned short)spSkill->m_nLevel, (const wchar_t*)GetStringTable()->FUN_141811980(4, spSkill->m_nSkillId), nCount,
+            (unsigned short)spSkill->m_nLevel, (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, spSkill->m_nSkillId), nCount,
             spSkill->m_nTotal, spSkill->m_nNormal, spSkill->m_nCritical, spSkill->m_nNormalMax, spSkill->m_nCriticalMax,
             spSkill->m_nHit, spSkill->m_nMiss, (const wchar_t*)GetAttributeName(spSkill->m_nAttribute));
     }
@@ -442,7 +439,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
         strTime.Format(L"%02d:%02d:%02d", spData->m_time.wHour, spData->m_time.wMinute, spData->m_time.wSecond);
         s_strLog.AppendFormat(L"%s, %s, %s, %d, %d, %s, %d, %s, %s, %d\r\n", (const wchar_t*)strTime,
             (const wchar_t*)spData->m_strCaster, (const wchar_t*)spData->m_strTarget, spData->m_nSkillId,
-            (unsigned short)spData->m_nLevel, (const wchar_t*)GetStringTable()->FUN_141811980(4, spData->m_nSkillId),
+            (unsigned short)spData->m_nLevel, (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, spData->m_nSkillId),
             spData->m_nDamage, (const wchar_t*)GetAttributeName(spData->m_nAttribute),
             (const wchar_t*)GetGradeName(spData->m_nGrade), spData->m_bKilled);
     }
@@ -514,7 +511,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDotReport()
             nCount = mapCount.GetValueAt(pCount);
         s_strReport.AppendFormat(L"%d, %d, %s, %d, %d, %d, %d, %d, %d, %d, %d, %s\r\n", spSkill->m_nSkillId,
             (unsigned short)spSkill->m_nLevel,
-            (const wchar_t*)GetStringTable()->FUN_141812290(spSkill->m_nSkillId, spSkill->m_nLevel, CString("name")), nCount,
+            (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141812290(spSkill->m_nSkillId, spSkill->m_nLevel, CString("name")), nCount,
             spSkill->m_nTotal, spSkill->m_nNormal, spSkill->m_nCritical, spSkill->m_nNormalMax, spSkill->m_nCriticalMax,
             spSkill->m_nHit, spSkill->m_nMiss, (const wchar_t*)GetAttributeName(spSkill->m_nAttribute));
     }
@@ -538,7 +535,7 @@ const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
         s_strLog.AppendFormat(L"%s, %s, %s, %s, %d, %d, %s\r\n", (const wchar_t*)strTime, (const wchar_t*)spData->m_strEvent,
             (const wchar_t*)spData->m_strCaster, (const wchar_t*)spData->m_strTarget, spData->m_nEffectId,
             (unsigned short)spData->m_nLevel,
-            (const wchar_t*)GetStringTable()->FUN_141812290(spData->m_nEffectId, spData->m_nLevel, CString("name")));
+            (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141812290(spData->m_nEffectId, spData->m_nLevel, CString("name")));
     }
     return s_strLog;
 }
@@ -651,7 +648,7 @@ unsigned CDPSMeterSystem::ThreadProc()
             PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
             if (pMe != 0)
             {
-                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
+                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
             }
             if (!PathIsDirectoryW(m_szDir))
                 CreateDirectoryW(m_szDir, NULL);
@@ -1087,7 +1084,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
-    Unk_DpsSummon* pSummon = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd13a0(nAttackerId);
+    Unk_DpsSummon* pSummon = (Unk_DpsSummon*)WorldService::GetInstance()->FUN_141bd13a0(nAttackerId);   // a pet / summon by object id
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
@@ -1098,7 +1095,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
     float fRate = 0.0f;
     if (!bTarget)
     {
-        MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->GetSkillLevelData(spRecord->m_nSkillId, spRecord->m_nLevel);
+        MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(spRecord->m_nSkillId, spRecord->m_nLevel);
         if (spLevel.get() != 0)
         {
             fRate = spLevel->FUN_140804150(spRecord->m_nMotion, spRecord->m_nAttack);
@@ -1127,7 +1124,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
-    Unk_DpsSummon* pSummon = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd13a0(nAttackerId);
+    Unk_DpsSummon* pSummon = (Unk_DpsSummon*)WorldService::GetInstance()->FUN_141bd13a0(nAttackerId);   // a pet / summon by object id
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
@@ -1169,7 +1166,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
     if (pMe == 0)
         break;
     int nAttackerId = spRecord->m_nOwnerId;
-    Unk_DpsSummon* pSummon = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd13a0(nAttackerId);
+    Unk_DpsSummon* pSummon = (Unk_DpsSummon*)WorldService::GetInstance()->FUN_141bd13a0(nAttackerId);   // a pet / summon by object id
     if (pSummon != 0)
         nAttackerId = pSummon->GetOwnerId();
     int bTarget = 0;
@@ -1180,7 +1177,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
     float fRate = 0.0f;
     if (!bTarget)
     {
-        MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->GetSkillLevelData(spRecord->m_nSkillId, spRecord->m_nLevel);
+        MS2Ptr<SkillLevelData> spLevel = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(spRecord->m_nSkillId, spRecord->m_nLevel);
         if (spLevel.get() != 0)
         {
             fRate = spLevel->FUN_140804150(spRecord->m_nMotion, spRecord->m_nAttack);
@@ -1371,7 +1368,7 @@ static const CStringW& GetItemText(CItem* pItem)
         unsigned nCount = (unsigned)pItem->FUN_140527840()->additionalEffect.ids.GetCount();
         for (unsigned i = 0; i < nCount; i++)
         {
-            CStringW strName = GetStringTable()->FUN_141812290(pItem->FUN_140527840()->additionalEffect.ids[i],
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(pItem->FUN_140527840()->additionalEffect.ids[i],
                 pItem->FUN_140527840()->additionalEffect.levels[i], CString("name"));
             s_str.AppendFormat(L", %s", (const wchar_t*)strName);
         }
@@ -1438,7 +1435,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L"\n");
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)*((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd3080());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
-            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
             strCsv.AppendFormat(L"%d, ", (unsigned short)pMe->vfunc_78());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(4, 0));
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(7, 0));
@@ -1583,7 +1580,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         strText.AppendFormat(L"=== 대미지 스킬 정보 ===\r\n");
         for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_skillRates)
         {
-            CStringW strName = GetStringTable()->FUN_141811980(4, kv.first);
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, kv.first);
             strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
             if (bCsv != 0)
                 strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
@@ -1591,7 +1588,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         strText.AppendFormat(L"=== 대미지 애디셔널 정보 ===\r\n");
         for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_dotRates)
         {
-            CStringW strName = GetStringTable()->FUN_141812290(kv.first, 1, "name");
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(kv.first, 1, "name");
             strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
             if (bCsv != 0)
                 strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
@@ -1612,7 +1609,7 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         if (pMe == 0)
             break;
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
-        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)GetStringTable()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
+        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->FUN_141654730()));
         s_str.AppendFormat(L"레벨 : %d\r\n", (unsigned short)pMe->vfunc_78());
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");

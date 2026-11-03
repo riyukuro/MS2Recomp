@@ -19,9 +19,9 @@
 
 class CInPacket;
 class Unk_140165cf0;
-class Unk_DebugGuideList;
+class ASScrollingList;
 class ASButton;
-class Unk_DebugGuideInput;
+class ASTextInput;
 class ASMovieClip;
 
 // <v cmd="" useArg=""/> (or the "cmd" attribute of a <CommandSet>): one argument-taking invocation.
@@ -94,13 +94,13 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    MS2Ptr<Unk_DebugGuideList> m_leftList;                      // +0x178 "m_leftList"
-    MS2Ptr<Unk_DebugGuideList> m_rightList;                     // +0x188 "m_rightList"
+    MS2Ptr<ASScrollingList> m_leftList;                      // +0x178 "m_leftList"
+    MS2Ptr<ASScrollingList> m_rightList;                     // +0x188 "m_rightList"
     MS2Ptr<ASMovieClip> m_movie;                                // +0x198 (double click)
     MS2Ptr<ASButton> m_unused;                      // +0x1a8
     MS2Ptr<ASButton> m_executeButton;               // +0x1b8 "m_executeButton"
     MS2Ptr<ASButton> m_multiExecuteButton;          // +0x1c8 "m_multiExecuteButton"
-    MS2Ptr<Unk_DebugGuideInput> m_input;                        // +0x1d8 "m_input"
+    MS2Ptr<ASTextInput> m_input;                                // +0x1d8 "m_input"
     std::vector<Unk_DebugGuideGroup> m_groups;                  // +0x1e8
 };
 MS2_CHECK_SIZE(UIDebugGuideDialog, 0x200);

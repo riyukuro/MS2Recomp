@@ -14,8 +14,6 @@ class CClientPlatformNexonKorea : public IClientPlatform { public: CClientPlatfo
 class CClientPlatformTencent : public IClientPlatform { public: CClientPlatformTencent(); virtual ~CClientPlatformTencent(); char m_pad_08[0x30]; };           // ctor 0x140c7cd70
 extern int DAT_143ab0248;                       // client country (0 Nexon Korea, 3 Tencent)
 extern IClientPlatform* DAT_143ac2fd8;          // the live platform (read by FUN_140d86260)
-extern void* DAT_143abf518;                     // the Nexon platform singleton
-extern void* DAT_143abf628;                     // the Tencent platform singleton
 int FUN_1406c34c0();                            // the Nexon platform enabled predicate
 class CClientPlatformNexonKorea;
 IClientPlatform* FUN_140d86370();
@@ -62,7 +60,7 @@ MS2_REPLACE(0x140D86330, FUN_140d86330, 50, 0x6C8FF6F9);
 IClientPlatform* FUN_140d86370()
 {
     IClientPlatform* pPlatform;
-    if (DAT_143abf518 != 0)
+    if (TSingleton<CClientPlatformNexonKorea>::s_instance != 0)
         pPlatform = TSingleton<CClientPlatformNexonKorea>::GetInstance();
     else
         pPlatform = new CClientPlatformNexonKorea;
@@ -74,7 +72,7 @@ MS2_REPLACE(0x140D86370, FUN_140d86370, 114, 0xD42FA7CE);
 IClientPlatform* FUN_140d863f0()
 {
     IClientPlatform* pPlatform;
-    if (DAT_143abf628 != 0)
+    if (TSingleton<CClientPlatformTencent>::s_instance != 0)
         pPlatform = FUN_140d86550();
     else
         pPlatform = new CClientPlatformTencent;
@@ -85,9 +83,9 @@ MS2_REPLACE(0x140D863F0, FUN_140d863f0, 114, 0xB9B68421);
 // @0x140d86470
 void FUN_140d86470()
 {
-    if (DAT_143abf518 != 0) {
+    if (TSingleton<CClientPlatformNexonKorea>::s_instance != 0) {
         delete TSingleton<CClientPlatformNexonKorea>::GetInstance();
-        DAT_143abf518 = 0;
+        TSingleton<CClientPlatformNexonKorea>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x140D86470, FUN_140d86470, 98, 0x0EF39B86);
@@ -95,9 +93,9 @@ MS2_REPLACE(0x140D86470, FUN_140d86470, 98, 0x0EF39B86);
 // @0x140d864e0
 void FUN_140d864e0()
 {
-    if (DAT_143abf628 != 0) {
+    if (TSingleton<CClientPlatformTencent>::s_instance != 0) {
         delete FUN_140d86550();
-        DAT_143abf628 = 0;
+        TSingleton<CClientPlatformTencent>::s_instance = 0;
     }
 }
 MS2_REPLACE(0x140D864E0, FUN_140d864e0, 98, 0x1B90A320);
@@ -105,6 +103,6 @@ MS2_REPLACE(0x140D864E0, FUN_140d864e0, 98, 0x1B90A320);
 // @0x140d86550
 CClientPlatformTencent* FUN_140d86550()
 {
-    return (CClientPlatformTencent*)DAT_143abf628;
+    return TSingleton<CClientPlatformTencent>::s_instance;
 }
 MS2_REPLACE(0x140D86550, FUN_140d86550, 8, 0xA6EA81C0);

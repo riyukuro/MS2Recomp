@@ -12,7 +12,7 @@
 #include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
-#include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/intervaltimer.h"
 #include "ms2/placeholder/asbilldata.h"
 #include "ms2/client/ms2/tmarketbilldataparam.h"
 #include "ms2/placeholder/uistatuseventlistener.h"
@@ -112,7 +112,7 @@ private:
     int m_pad_17c;
     ATL::CAtlMap<unsigned __int64, int> m_mapChecked;               // +0x180 mail id -> checked
     bool m_bRefresh;                                                // +0x1c8 a delayed refresh is pending
-    Unk_McTimer m_timer;                                            // +0x1cc
+    Unk_IntervalTimer m_timer;                                          // +0x1cc
     int m_pad_1d4;
 };
 MS2_CHECK_SIZE(UIMailListDialog, 0x1d8);

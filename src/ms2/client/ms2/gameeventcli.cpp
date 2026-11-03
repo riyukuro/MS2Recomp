@@ -92,6 +92,8 @@
 #include "ms2/placeholder/cserverstring.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/classobject.h"     // ClassObjectRegistrar
+#include "ms2/commonfiles/gameeventuservalue.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/commonfiles/gameeventuservalue.h"
 #include "ms2/placeholder/gameeventuservaluemanager.h"
@@ -107,13 +109,7 @@ public:
 };
 
 // Out-of-unit helpers.
-// Constructor at 0x140316aa0: registers the factory under the name (the by-value CString is destroyed by the callee).
-struct Unk_GEFactoryRegistry {
-    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
-    char m_pad;
-};
 class Unk_SingletonObj;
-CStringTable* GetStringTable();                                  // the string table singleton
 __int64 GetServerTime();                                        // the server time
 class UIGameMenuDialog* FUN_140938b90(int);   // C3: was FUN_140938b90
 // The event-key table at 0x143ab2fc0: (kind, id) -> value, read through the typed lookups below.
@@ -124,10 +120,9 @@ public:
     int Get(int nKey, unsigned* pOut);                          // 0x140ce8590 (COMDAT wrapper below)
 };
 extern unsigned __int64 DAT_143ab2828;
-extern Unk_CliEvtKeys DAT_143ab2fc0;
+extern GameEventUserValue DAT_143ab2fc0;
 // @0x140ce8590
 int Unk_CliEvtKeys::Get(int nKey, unsigned* pOut) { return reinterpret_cast<Unk_AttendTable*>(this)->FUN_1409617d0(nKey, 0, *(const int*)pOut); }
-class Unk_CliClock { public: int FUN_141473560(); };            // seconds until the day ended (CMainSystem's returns __int64)
 class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
@@ -207,7 +202,7 @@ void GameEventOntimeCli::OnStart()
 {
     unsigned nValue = 0;
     UISystemMailNotifyDialog* pDlg;
-    __int64 nHas = DAT_143ab2fc0.Get(400, &nValue);
+    __int64 nHas = reinterpret_cast<Unk_CliEvtKeys&>(DAT_143ab2fc0).Get(400, &nValue);
     if (nHas != 0)
         return;
     pDlg = FindCliDialog<UISystemMailNotifyDialog>(0x4edc);
@@ -450,7 +445,7 @@ bool GameEventAttendGiftCli::FUN_140ce3510()
         return reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140482280(m_i118, bDefault);
     }
     case 3:
-        return reinterpret_cast<GameEventUserValue&>(DAT_143ab2fc0).Has(m_i118) == 0;
+        return DAT_143ab2fc0.Has(m_i118) == 0;
     default:
         return true;
     }
@@ -461,7 +456,7 @@ bool GameEventAttendGiftCli::IsCheckedInToday()
 {
     CMsTime now(GetServerTime());
     __int64 nDefault = 0;
-    __int64 nEnd = reinterpret_cast<GameEventUserValue&>(DAT_143ab2fc0).GetValue(0x65, FUN_1402e1d00(), nDefault);
+    __int64 nEnd = DAT_143ab2fc0.GetValue(0x65, FUN_1402e1d00(), nDefault);
     if (nEnd == 0)
         return false;
     CMsTime end(nEnd);
@@ -537,7 +532,7 @@ int GameEventAttendGiftCli::FUN_140ce39a0()
 {
     int nDefault = 0;
     int nTotal = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0x6a, FUN_1402e1d00(), nDefault);
-    nTotal += reinterpret_cast<Unk_CliClock*>(TSingleton<CMainSystem>::GetInstance())->FUN_141473560();
+    nTotal += (int)TSingleton<CMainSystem>::GetInstance()->FUN_141473560();
     return nTotal;
 }
 
@@ -614,7 +609,7 @@ bool GameEventCashAttendCli::FUN_140ce3da0()
 {
     CMsTime now(GetServerTime());
     __int64 nDefault = 0;
-    __int64 nEnd = reinterpret_cast<GameEventUserValue&>(DAT_143ab2fc0).GetValue(0x65, FUN_1402e1d00(), nDefault);
+    __int64 nEnd = DAT_143ab2fc0.GetValue(0x65, FUN_1402e1d00(), nDefault);
     if (nEnd == 0)
         return false;
     CMsTime end(nEnd);
@@ -648,7 +643,7 @@ int GameEventCashAttendCli::GetUsablePoints()
 // @0x140ce3f10
 CStringW GameEventCashAttendCli::GetEventName()
 {
-    return GetStringTable()->FUN_141811980(1, m_i4);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_i4);
 }
 
 // @0x140ce3f70
@@ -842,13 +837,13 @@ void GameEventUpdateStringCli::vfunc_6() {}
 void GameEventUpdateStringCli::FUN_140ce4c60(Unk_140165cf0* pElem) { FUN_14025e7d0()->LoadStrings(pElem); }
 
 // @0x140ce4c90
-void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((CStringTable*)GetStringTable())->FUN_141813970(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4c90(Unk_140165cf0* pElem) { ((CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141813970(pElem); }
 
 // @0x140ce4cc0
-void GameEventUpdateStringCli::FUN_140ce4cc0(Unk_140165cf0* pElem) { ((CStringTable*)GetStringTable())->FUN_1418139b0(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4cc0(Unk_140165cf0* pElem) { ((CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_1418139b0(pElem); }
 
 // @0x140ce4cf0
-void GameEventUpdateStringCli::FUN_140ce4cf0(Unk_140165cf0* pElem) { ((CStringTable*)GetStringTable())->FUN_1418139f0(pElem); }
+void GameEventUpdateStringCli::FUN_140ce4cf0(Unk_140165cf0* pElem) { ((CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_1418139f0(pElem); }
 
 // @0x140ce4d20
 void GameEventUpdateStringCli::FUN_140ce4d20(Unk_140165cf0* pElem) { FUN_140851c40(pElem); }
@@ -916,7 +911,7 @@ void GameEventStringBoardCli::OnStart()
 {
     CStringW strText;
     if (m_nId != 0)
-        strText = GetStringTable()->FUN_141811980(0x40, m_nId);
+        strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x40, m_nId);
     else
         strText = m_80;
     if (!strText.IsEmpty())
@@ -1179,7 +1174,7 @@ bool GameEventBurningLevelupCli::FUN_140ce64e0(short nLevel)
     if (r != DAT_143ab2828)
         return false;
     __int64 q = 0;
-    __int64 s = reinterpret_cast<GameEventUserValue&>(DAT_143ab2fc0).GetValue(0x7d1, m_d0->m_eventId, q);
+    __int64 s = DAT_143ab2fc0.GetValue(0x7d1, m_d0->m_eventId, q);
     if (s != 0)
         return false;
     return (unsigned short)nLevel == (unsigned short)m_d0->m_equipNametagSymbolId;
@@ -1227,7 +1222,7 @@ void GameEventBurningLevelupCli::vfunc_10(NotifyObject* pNotify)
         return;
     if (pChg->m_nLevel < m_d0->m_8c) {
         __int64 q = 0;
-        __int64 v = reinterpret_cast<GameEventUserValue&>(DAT_143ab2fc0).GetValue(0x7d3, m_d0->m_eventId, q);
+        __int64 v = DAT_143ab2fc0.GetValue(0x7d3, m_d0->m_eventId, q);
         if (v == 0)
             return;
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, StringFormat(GetStringCommonByKey(m_d0->m_jumpingItemNotifyStringKey)), 0, L"");
@@ -1379,27 +1374,27 @@ GameEventWorldmapIconCli::GameEventWorldmapIconCli() {}
 // ---- dynamic initializers (.text$di) --------------------------------------------------------------------------------
 
 #ifndef MS2_HOOK_DLL
-static Unk_GEFactoryRegistry s_regAttendGift(L"GameEventAttendGiftCli", FUN_140ce3250);
-static Unk_GEFactoryRegistry s_regBurningLevelup(L"GameEventBurningLevelupCli", FUN_140ce6120);
-static Unk_GEFactoryRegistry s_regCashAttend(L"GameEventCashAttendCli", FUN_140ce3b70);
-static Unk_GEFactoryRegistry s_regCoupleDance(L"GameEventCoupleDanceCli", FUN_140ce5aa0);
-static Unk_GEFactoryRegistry s_regCustomTriggerString(L"GameEventCustomTriggerStringCli", FUN_140ce5ed0);
-static Unk_GEFactoryRegistry s_regDTReward(L"GameEventDTRewardCli", FUN_140ce2d30);
-static Unk_GEFactoryRegistry s_regDungeonExtraReward(L"GameEventDungeonExtraRewardCli", FUN_140ce4640);
-static Unk_GEFactoryRegistry s_regEventFieldPopup(L"GameEventEventFieldPopupCli", FUN_140ce2ba0);
-static Unk_GEFactoryRegistry s_regGameMenuPopup(L"GameEventGameMenuPopupCli", FUN_140ce29f0);
-static Unk_GEFactoryRegistry s_regItemBuff(L"GameEventItemBuffCli", FUN_140ce4330);
-static Unk_GEFactoryRegistry s_regLongTermAttendGift(L"GameEventLongTermAttendGiftCli", FUN_140ce7870);
-static Unk_GEFactoryRegistry s_regMeratMarketNotice(L"GameEventMeratMarketNoticeCli", FUN_140ce4770);
-static Unk_GEFactoryRegistry s_regOntime(L"GameEventOntimeCli", FUN_140ce27f0);
-static Unk_GEFactoryRegistry s_regRps(L"GameEventRpsCli", FUN_140ce56e0);
-static Unk_GEFactoryRegistry s_regSaleAutoFishing(L"GameEventSaleAutoFishingCli", FUN_140ce3030);
-static Unk_GEFactoryRegistry s_regSaleAutoPlayInstrument(L"GameEventSaleAutoPlayInstrumentCli", FUN_140ce3140);
-static Unk_GEFactoryRegistry s_regSnowman(L"GameEventSnowmanCli", FUN_140ce53c0);
-static Unk_GEFactoryRegistry s_regStringBoard(L"GameEventStringBoardCli", FUN_140ce51e0);
-static Unk_GEFactoryRegistry s_regTrafficOptimizer(L"GameEventTrafficOptimizerCli", FUN_140ce40d0);
-static Unk_GEFactoryRegistry s_regUpdateString(L"GameEventUpdateStringCli", FUN_140ce4970);
-static Unk_GEFactoryRegistry s_regWorldmapIcon(L"GameEventWorldmapIconCli", FUN_140ce4d50);
+static ClassObjectRegistrar s_regAttendGift(L"GameEventAttendGiftCli", (ClassObjectCreateFn)FUN_140ce3250);
+static ClassObjectRegistrar s_regBurningLevelup(L"GameEventBurningLevelupCli", (ClassObjectCreateFn)FUN_140ce6120);
+static ClassObjectRegistrar s_regCashAttend(L"GameEventCashAttendCli", (ClassObjectCreateFn)FUN_140ce3b70);
+static ClassObjectRegistrar s_regCoupleDance(L"GameEventCoupleDanceCli", (ClassObjectCreateFn)FUN_140ce5aa0);
+static ClassObjectRegistrar s_regCustomTriggerString(L"GameEventCustomTriggerStringCli", (ClassObjectCreateFn)FUN_140ce5ed0);
+static ClassObjectRegistrar s_regDTReward(L"GameEventDTRewardCli", (ClassObjectCreateFn)FUN_140ce2d30);
+static ClassObjectRegistrar s_regDungeonExtraReward(L"GameEventDungeonExtraRewardCli", (ClassObjectCreateFn)FUN_140ce4640);
+static ClassObjectRegistrar s_regEventFieldPopup(L"GameEventEventFieldPopupCli", (ClassObjectCreateFn)FUN_140ce2ba0);
+static ClassObjectRegistrar s_regGameMenuPopup(L"GameEventGameMenuPopupCli", (ClassObjectCreateFn)FUN_140ce29f0);
+static ClassObjectRegistrar s_regItemBuff(L"GameEventItemBuffCli", (ClassObjectCreateFn)FUN_140ce4330);
+static ClassObjectRegistrar s_regLongTermAttendGift(L"GameEventLongTermAttendGiftCli", (ClassObjectCreateFn)FUN_140ce7870);
+static ClassObjectRegistrar s_regMeratMarketNotice(L"GameEventMeratMarketNoticeCli", (ClassObjectCreateFn)FUN_140ce4770);
+static ClassObjectRegistrar s_regOntime(L"GameEventOntimeCli", (ClassObjectCreateFn)FUN_140ce27f0);
+static ClassObjectRegistrar s_regRps(L"GameEventRpsCli", (ClassObjectCreateFn)FUN_140ce56e0);
+static ClassObjectRegistrar s_regSaleAutoFishing(L"GameEventSaleAutoFishingCli", (ClassObjectCreateFn)FUN_140ce3030);
+static ClassObjectRegistrar s_regSaleAutoPlayInstrument(L"GameEventSaleAutoPlayInstrumentCli", (ClassObjectCreateFn)FUN_140ce3140);
+static ClassObjectRegistrar s_regSnowman(L"GameEventSnowmanCli", (ClassObjectCreateFn)FUN_140ce53c0);
+static ClassObjectRegistrar s_regStringBoard(L"GameEventStringBoardCli", (ClassObjectCreateFn)FUN_140ce51e0);
+static ClassObjectRegistrar s_regTrafficOptimizer(L"GameEventTrafficOptimizerCli", (ClassObjectCreateFn)FUN_140ce40d0);
+static ClassObjectRegistrar s_regUpdateString(L"GameEventUpdateStringCli", (ClassObjectCreateFn)FUN_140ce4970);
+static ClassObjectRegistrar s_regWorldmapIcon(L"GameEventWorldmapIconCli", (ClassObjectCreateFn)FUN_140ce4d50);
 
 // Header statics (the same sort-name tables as header_statics_a.h plus the grid column names).
 static CStringA s_sortNames8A[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};

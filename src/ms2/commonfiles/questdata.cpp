@@ -1252,7 +1252,7 @@ bool CQuestData::operator!=(const CQuestData& o) const
 // The attribute readers used by the quest loader (the enum parsers are defined further down in this unit).
 int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut);
-int FUN_14051fd20(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 };   // as in cinteractobjectdata.h (its QuestMask clashes here)
 int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 int XmlQuery(class TiXmlElement*, char const*, CString&);    // C3: was FUN_140873ad0
@@ -1337,7 +1337,7 @@ bool CQuestData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pRequire), "enterDungeon", m_require.m_enterDungeon);
         FUN_14035bc20(pRequire, "alliance", &m_require.m_alliance);
         XmlGetAttr((class TiXmlElement*)(pRequire), "fameGrade", reinterpret_cast<int&>(m_require.m_fameGrade));
-        FUN_14051fd20(pRequire, "masteryType", &m_require.m_masteryType);
+        XmlValue(pRequire, "masteryType", reinterpret_cast<Unk_InteractMasteryType&>(m_require.m_masteryType));
         XmlGetAttr((class TiXmlElement*)(pRequire), "masteryGrade", reinterpret_cast<int&>(m_require.m_masteryGrade));
         XmlTokenList(pRequire, "dungeonBeginner", m_require.m_dungeonBeginner);
         XmlGetAttr((class TiXmlElement*)(pRequire), "mentor", reinterpret_cast<int&>(m_require.m_mentor));
@@ -1805,7 +1805,7 @@ void QuestDataTable::LoadQuestData()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -2389,7 +2389,6 @@ MS2_REPLACE_METHOD(0x14074EE30, QuestDataTable, FUN_14074ee30, 806, 0x83205888);
 class CLogString* GetLogString();
 void FUN_1406e7140(void* pLog, int a, int b, int nFlags, const wchar_t* pszFormat, const int& arg0, const int& arg1);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
@@ -2439,7 +2438,7 @@ void QuestDataTable::FUN_14074f160()
             {
                 int nIdx = spCond->m_nType == 3 ? 0 : 1;
                 ATL::CAtlArray<unsigned> ids;
-                FUN_140177e10(*spCond->m_code.GetText(), ids, ",");
+                XmlSplit(*spCond->m_code.GetText(), ids, ",");
                 for (size_t j = 0; j < ids.GetCount(); j++)
                 {
                     unsigned nKey = ids[j];
@@ -2550,7 +2549,7 @@ void QuestDataTable::LoadQuestGroupTable()
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = ((class Unk_140165cf0*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

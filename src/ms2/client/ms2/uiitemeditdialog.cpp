@@ -162,7 +162,7 @@ public:
 
 // Misc singletons.
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_IEItemEvents
+class Unk_ItemEventSystem
 {
 public:
     void FUN_1419cae20(UIItemEventListener* pListener);
@@ -192,7 +192,8 @@ public:
     int GetEquipItemValue();
 };
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
-CStringW FUN_140f09f90(int nId, const int& nArg);
+enum Unk_BSResult : unsigned int {};
+template <class A> CStringW BlockFormat(int nId, const A& a);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
@@ -225,7 +226,7 @@ CString UIItemEditDialog::GetTypeName()
 void UIItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class Unk_IEItemEvents*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
     if (((class UITalkManager*)Unk_AkoCutscene::GetInstance())->GetTalking() != 0)
@@ -239,7 +240,7 @@ void UIItemEditDialog::vfunc_67()
 void UIItemEditDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class Unk_IEItemEvents*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    ((class Unk_ItemEventSystem*)FUN_140a6a840())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     FUN_1419bdb50(0);
     Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc)
@@ -323,7 +324,7 @@ void UIItemEditDialog::vfunc_79(void* p)
         int nResult = static_cast<CInPacket*>(p)->ReadInt32();
         if (nResult != 0)
         {
-            FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, static_cast<IMessageListener*>(this), L"errorEdit");
+            FUN_140d73aa0(BlockFormat<Unk_BSResult>(0x272, reinterpret_cast<const Unk_BSResult&>(nResult)), 0, static_cast<IMessageListener*>(this), L"errorEdit");
             OnReset();
         }
     }

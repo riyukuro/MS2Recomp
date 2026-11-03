@@ -23,6 +23,7 @@
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <string.h>
@@ -82,8 +83,6 @@ int FUN_141276f80(Unk_CommandChat* pChat);
 // Number parsing, localized strings and ASObj/Value setters of other units.
 double FUN_1407184e0(const CStringW& str);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
-CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute, const int& nSecond, const CStringW& strArg);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);
 void FUN_1422bcda0(Scaleform::GFx::Value* pValue, double d);
 
@@ -136,7 +135,7 @@ void UIChaosDPSDialog::OnTextToggle()
 {
     if (m_30.IsNull())
         return;
-    CStringW strTitle = FUN_1405c2690(CStringW(L"s_chaosdps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
+    CStringW strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_chaosdps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
     static_cast<Unk_ChaosAS*>(m_30.operator->())->Invoke("setTitle", strTitle);
     static_cast<AScript*>(m_30.operator->())->Invoke("setAscendingMeterValue", m_nMode == 6);
 }
@@ -244,7 +243,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nSecond = kNow.GetSecond();
         int nMinute = kNow.GetMinute();
         int nHour = kNow.GetHour();
-        CStringW strHistory = FUN_140c2fcc0(CStringW(L"s_chaosdps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
+        CStringW strHistory = FUN_14028dfa0<int, int, int, CStringW>(CStringW(L"s_chaosdps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
         CStringW strRow = GetStringCommonByKey(L"s_chaosdps_notice_history_row");
         for (unsigned i = 0; i < m_members.size(); i++)
         {
@@ -258,7 +257,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nTime = nNow - CBattleRecordManager::GetInstance()->GetGroupStartTick(m_nGroup);
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
-        strHistory.Append(FUN_1405c2690(CStringW(L"s_chaosdps_notice_history_total_time"), strTotal));
+        strHistory.Append(FUN_14028dfa0<CStringW>(CStringW(L"s_chaosdps_notice_history_total_time"), strTotal));
         Unk_CommandChat kChat;
         kChat.kind = 7;
         kChat.message = strHistory;

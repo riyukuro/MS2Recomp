@@ -101,13 +101,6 @@ public:
     MS2Ptr<Unk_WpPerk> FUN_140909910(int nId);                  // one perk (null: none)
 };
 
-class Unk_WpNames : public CStringTable
-{
-public:
-    CStringW FUN_141812290(int nSkillId, short nLevel, CString strKey);
-};
-
-class Unk_WpSkillMgr* FUN_1401958b0();   // TSingleton<SkillDataTableCli>::GetInstance
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2828;                                   // the own character id
@@ -304,17 +297,17 @@ bool UIWeddingPageSkill::vfunc_1()
             if (spPerk->m_nType == 0)
             {
                 unsigned short nSkillLevel = std::max<unsigned short>(reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetLevel(nGrade), 1);
-                MS2Ptr<AdditionalLevelData> spSkill = reinterpret_cast<SkillDataTableCli*>(FUN_1401958b0())->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+                MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
                 if (spSkill == 0)
                     continue;
-                obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
+                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
                 obj.FUN_1409c4a30("status", reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetValue(nGrade));
                 obj.FUN_1407cba60("imgPath", spSkill->GetIcon());
             }
             else if (spPerk->m_nType == 1)
             {
                 MS2Ptr<CItemData> spItem = FUN_14053f870((&spPerk->m_grant)->vfunc_0());
-                obj.FUN_1407cbb20("name", reinterpret_cast<Unk_WpNames*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
+                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
                 obj.FUN_1407cb9c0("status", 0);
                 obj.FUN_1407cba60("imgPath", spItem->GetIconPath());
             }
@@ -380,7 +373,7 @@ void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (spPerk->m_nType == 0)
     {
         unsigned short nSkillLevel = std::max<unsigned short>(reinterpret_cast<WeddingSkillData*>(spPerk.operator->())->GetLevel(nGrade), 1);
-        MS2Ptr<AdditionalLevelData> spSkill = reinterpret_cast<SkillDataTableCli*>(FUN_1401958b0())->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+        MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
         if (spSkill.get() != 0)
         {
             ASTooltip tip(*pRetVal, 2);

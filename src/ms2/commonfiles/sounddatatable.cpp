@@ -27,8 +27,6 @@ CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was F
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);                     // integer attribute
 int FUN_1406516b0();                                                      // current language id
 CString FUN_1406522f0(int nLanguage);                                     // language id -> file name suffix
-CString FUN_14038f6d0(const CString& str, const char* psz);               // str + psz
-CString FUN_1401d2b10(const CString& a, const CString& b);                // a + b
 CString FUN_14016a5c0(const char* psz, int nFlags);                       // path conversion
 void XmlSetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
@@ -230,7 +228,7 @@ void CSoundDataTable::SetLanguage(int nLanguage)
 // @0x140818460
 CSoundDataEntry* CSoundDataTable::FindEventSound(const CString& strDir, const CString& strName)
 {
-    CString strKey = FUN_1401d2b10(FUN_14038f6d0(strDir, "/"), strName);
+    CString strKey = strDir + "/" + strName;
     if (m_eventSounds.find(strKey) == m_eventSounds.end())
         return 0;
     return &m_eventSounds[strKey];

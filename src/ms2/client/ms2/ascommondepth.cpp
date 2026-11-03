@@ -36,8 +36,7 @@ public:
     GFxMovie* FindMovie(int nMovieId);
 };
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
-void* FUN_1422bb8b0(int nMovieId);
-void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, int a, int b);
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // set Value from Value (callee destroys)
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -47,10 +46,10 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     : AScript(v, nMovieId)
 {
-    void* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
     if (pMovie == 0)
         return;
-    FUN_14256e8e0(pMovie, &m_value, "scaleform.ms2.common.CommonDepth", 0, 0);
+    pMovie->CreateObject(&m_value, "scaleform.ms2.common.CommonDepth", 0, 0);
     if (((Scaleform::GFx::Value*)(void*)(&m_value))->IsUndefined()) {}
 }
 

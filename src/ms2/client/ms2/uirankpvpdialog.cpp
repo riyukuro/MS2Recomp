@@ -54,7 +54,7 @@ class AdditionalCliList { public: int FUN_140970020(unsigned int, unsigned short
 class Unk_RankWorld { public: PCBase* FUN_141bd0cc0(); };          // the local player
 class Unk_RankUIService { public: void FUN_141adc530(int nUiId); }; // close
 UIGameRankingDialog* FUN_140b2d030(int nUiId);                      // GetDialog
-UIWebBrowserBase* FUN_140c43790(int nUiId);                         // GetDialog
+class UIWebBrowser* FUN_140c43790(int nUiId);                       // GetDialog
 class Unk_RankClientState { public: };
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
 class Unk_QnState   // C3: member view for the former free stand-ins
@@ -64,16 +64,15 @@ public:
 };
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CStringTable* GetStringTable();
 class Unk_RankTable* FUN_140dc19b0();   // C3: was FUN_140dc19b0
 CStringW GetStringCommonByKey(const CStringW& str);                        // string table text by key
 CStringW GetStringCommon(int nId);                                    // string table text by id
-CStringW FUN_14062b4f0(CStringW strKey, const int& n);             // the key's text formatted with n
-CStringW FUN_140b90340(CStringW strKey, const int& a, const int& b, const int& c);
+template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a);             // the key's text formatted with a
+template <class A, class B, class C> CStringW FUN_14028dfa0(CStringW strKey, const A& a, const B& b, const C& c);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
-CString FUN_1402bb1c0(const char* szFormat, const int& n);
+template <class A, class B> CStringW StringFormat(const wchar_t* szFormat, const A& a, const B& b);
+template <class A> CString StringFormat(const char* szFormat, const A& a);
 CString FUN_140e10af0(const char* szFormat, const Unk_JobCode& job);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
@@ -281,9 +280,9 @@ void UIRankPvPDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
             for (int i = 1; i < 8; i++)
             {
                 RankingArenaData* pGrade = ((class CRankingArenaDataTable*)FUN_140dc19b0())->GetGrade(i);
-                CString strNameKey = FUN_1402bb1c0("rankName{0}", i);
-                CString strScoreKey = FUN_1402bb1c0("score{0}", i);
-                CStringW strName = GetStringTable()->FUN_141811980(0x22, pGrade->m_nGrade);
+                CString strNameKey = StringFormat<int>("rankName{0}", i);
+                CString strScoreKey = StringFormat<int>("score{0}", i);
+                CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x22, pGrade->m_nGrade);
                 CStringW strScore = BlockFormat<int>(0x3f7, pGrade->m_nGradeRating);
                 ((class AScript&)(tooltip)).FUN_1407cbb20(strNameKey, strName);
                 ((class AScript&)(tooltip)).FUN_1407cbb20(strScoreKey, strScore);
@@ -326,7 +325,7 @@ void UIRankPvPDialog::FUN_140f94490()
     if (nWidth > m_gaugeWidth)
         nWidth = m_gaugeWidth;
     m_gauge->SetWidthInt(nWidth);
-    m_rewardText->SetTextW(FUN_14083dc40(L"{0} / {1}", nValue, nMax));
+    m_rewardText->SetTextW(StringFormat<int, int>(L"{0} / {1}", nValue, nMax));
     if (nValue > nMax)
         m_rewardText->SetTextColor(0xc00000);
     else
@@ -334,15 +333,15 @@ void UIRankPvPDialog::FUN_140f94490()
     int nWin = CPVPManager::GetInstance()->GetRankDuel()->m_total2c;
     int nRating = pDuel->m_value20;
     int nBest = pDuel->m_value24;
-    CStringW strRating = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), nRating);
-    CStringW strBest = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), nBest);
-    CStringW strWin = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_count"), nWin);
+    CStringW strRating = FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_rating"), nRating);
+    CStringW strBest = FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_rating"), nBest);
+    CStringW strWin = FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_win_count"), nWin);
     m_rating->SetTextW(strRating);
     m_seasonWinCount->SetTextW(strWin);
     m_seasonBestRating->SetTextW(strBest);
     RankingArenaData* pGrade = ((class CRankingArenaDataTable*)FUN_140dc19b0())->GetGradeOfRating(nRating);
     int nGrade = pGrade->m_nGrade;
-    CString strLabel = FUN_1402bb1c0("_{0}", nGrade);
+    CString strLabel = StringFormat<int>("_{0}", nGrade);
     m_rankMark->vfunc_15(strLabel);
 }
 MS2_REPLACE_METHOD(0x140F94490, UIRankPvPDialog, FUN_140f94490, 933, 0x64540A9E);
@@ -355,7 +354,7 @@ void UIRankPvPDialog::FUN_140f94840()
     int nWin = CPVPManager::GetInstance()->GetRankDuel()->m_total2c;
     int nLose = CPVPManager::GetInstance()->GetRankDuel()->m_total30;
     int nTotal = nWin + nLose;
-    CStringW strTotal = FUN_140b90340(CStringW(L"s_rank_duel_ui_total_history"), nTotal, nWin, nLose);
+    CStringW strTotal = FUN_14028dfa0<int, int, int>(CStringW(L"s_rank_duel_ui_total_history"), nTotal, nWin, nLose);
     FUN_140cfee80((*m_statisticsPage).FUN_1422bb890(), "m_totalHistory", strTotal);
     std::map<int, MS2Ptr<ASMovieClip> >::iterator it = m_history.begin();
     std::map<int, MS2Ptr<ASMovieClip> >::iterator itEnd = m_history.end();
@@ -371,7 +370,7 @@ void UIRankPvPDialog::FUN_140f94840()
         if (spRecord == 0)
             spRecord.AssignRaw(new RankDuelStatisticalData);
         FUN_140cffca0((*spRow).FUN_1422bb890(), "jobIcon", FUN_140e10af0("_{0}", TSingleton<JobTable>::GetInstance()->GetSubJob1(nJobGroup)));
-        FUN_140cfee80((*spRow).FUN_1422bb890(), "jobName", GetStringTable()->FUN_141811980(0x4d, nJobGroup));
+        FUN_140cfee80((*spRow).FUN_1422bb890(), "jobName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4d, nJobGroup));
         MS2Ptr<ASTextField> spWinRate = spRow->FUN_1409b4620("winRate");
         CStringW strNone(L"-");
         if (spRecord->m_value1c == 0 && spRecord->m_value20 == 0)
@@ -385,11 +384,11 @@ void UIRankPvPDialog::FUN_140f94840()
         }
         else
         {
-            FUN_140cfee80((*spRow).FUN_1422bb890(), "winCount", FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_count"), spRecord->m_value1c));
+            FUN_140cfee80((*spRow).FUN_1422bb890(), "winCount", FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_win_count"), spRecord->m_value1c));
             int nRate = spRecord->m_value1c * 100 / (spRecord->m_value1c + spRecord->m_value20);
             if (spWinRate)
             {
-                spWinRate->SetTextW(FUN_14062b4f0(CStringW(L"s_rank_duel_ui_win_rate"), nRate));
+                spWinRate->SetTextW(FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_win_rate"), nRate));
                 if (nRate >= 60)
                     spWinRate->SetTextColor(0xa2ed);
                 else if (nRate <= 40)
@@ -489,7 +488,7 @@ void UIRankPvPDialog::FUN_140f95550(const Scaleform::GFx::FunctionHandler::Param
     }
     else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3b) == 1)
     {
-        UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
+        UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
         if (pBrowser == 0)
             return;
         pBrowser->FUN_14135ec00("maview:/Rank/PVP", true);

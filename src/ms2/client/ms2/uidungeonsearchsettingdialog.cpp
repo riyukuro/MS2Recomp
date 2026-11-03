@@ -46,7 +46,6 @@ public:
             // the local player
 class Unk_SsUIManager { public: };
 
-void* FUN_1409670d0();
 class CPartyManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -58,9 +57,9 @@ MS2Ptr<ASCheckBox> FUN_140a57df0(int nMovieId, const Scaleform::GFx::Value& v); 
 MS2Ptr<ASItemRendererBase> FUN_140bc6120(int nMovieId, const Scaleform::GFx::Value& v);      // new ASItemRendererBase(v, n)
 MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
-CStringW FUN_14183e930(const CStringW& str, int nColor);                            // wrap in a color tag
+CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                           // wrap in a color tag
 CStringW GetStringCommonByKey(const CStringW& strKey);                                     // the localized string
-CStringW FUN_140cbf840(int nGroup);                                                 // the dungeon group's name
+CStringW TranslateEnumDungeonGroup(unsigned nGroup);                                        // the dungeon group's name
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
@@ -117,8 +116,8 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     if (MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_groupDesc"))
         FUN_140d01340((*spDesc).FUN_1422bb890(), 2, 2);
     m_group->AddItemLabel(GetStringCommonByKey(L"s_dungeon_search_setting_group_none"));
-    m_group->AddItemLabel(FUN_140cbf840(1));
-    m_group->AddItemLabel(FUN_140cbf840(2));
+    m_group->AddItemLabel(TranslateEnumDungeonGroup(1));
+    m_group->AddItemLabel(TranslateEnumDungeonGroup(2));
     m_group->FUN_1422df5f0(3);
     m_group->SetSelectedIndex(0);
     m_roomOfRow.resize(m_rows.size(), 0);
@@ -231,7 +230,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
             row->vfunc_3(0);
             return;
         }
-        bool bOk = ((class CPartyManager*)(void*)(FUN_1409670d0()))->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
+        bool bOk = TSingleton<CPartyManager>::GetInstance()->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)

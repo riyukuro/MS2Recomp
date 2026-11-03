@@ -30,6 +30,7 @@
 #include "ms2/commonfiles/exptable.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
+#include "ms2/placeholder/cpetdatatable.h"  // C3: CPetDataTable::Find
 
 // The own static (the binding tag of the transfer message box), then the sort type names of the header statics.
 static CStringW s_strTrainingBindPet(L"trainingBindPet");
@@ -57,11 +58,8 @@ void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
 class Unk_PtValue { public: };
 class Unk_PtConfig { public: unsigned char m_pad[0x84c0]; Unk_PtValue m_petMaxLevel; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
-class Unk_PtAttr { public: unsigned FUN_14054c530(const CStringW& strKey, const int& nDefault); };
-#define PT_ATTR(p) reinterpret_cast<Unk_PtAttr*>(reinterpret_cast<char*>((p)) + 0x320)
-class Unk_PtPetRowTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };
+#define PT_ATTR(p) reinterpret_cast<CXmlData*>(reinterpret_cast<char*>((p)) + 0x320)
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
-class Unk_PetRow : public CPtred { public: int m_n18; };
 
 class CMsgBoxData : public CPtred
 {
@@ -73,11 +71,9 @@ public:
 };
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
+template <class A> CStringW FUN_14028dfa0(CStringW strKey, const A& a1);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_141b71910(__int64 nValue);
-CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
-CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
@@ -120,7 +116,7 @@ CString UIItemPetTrainingDialog::GetTypeName()
 void UIItemPetTrainingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
+    m_strSlot = StringFormat<CString>("{0}.slot", GetTypeName());
     FUN_140d42540(m_strSlot, m_nOwner, m_spPet);
     ItemScrollSlot* pSlot = FUN_140e57e50(m_strSlot);
     if (pSlot != 0)
@@ -134,11 +130,11 @@ void UIItemPetTrainingDialog::OnLoadComplete()
     if (m_spBox->FUN_140527840() == 0)
         return;
     int nDefault = 0;
-    m_nOffsetExp = PT_ATTR(m_spBox->FUN_140527840())->FUN_14054c530(L"offsetExp", nDefault);
+    m_nOffsetExp = (unsigned)PT_ATTR(m_spBox->FUN_140527840())->GetInt(L"offsetExp", nDefault);
     if (m_nOffsetExp == 0)
         return;
     FUN_1412761e0(m_30, 1);
-    CStringW strDesc = FUN_1405c2690(CStringW(L"s_pet_training_dialog_exp_desc"), FUN_1409404f0(m_nOffsetExp));
+    CStringW strDesc = FUN_14028dfa0<CStringW>(CStringW(L"s_pet_training_dialog_exp_desc"), FUN_1409404f0(m_nOffsetExp));
     ASObj obj(2);
     obj.FUN_1407cba60("bindID", CString(m_strSlot));
     ((class AScript&)(obj)).FUN_1407cbb20("trainingItemName", m_spBox->FUN_140527b10());
@@ -161,7 +157,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBinding() == 0)
             {
-                CStringW strMessage = FUN_1405c2690(CStringW(L"s_msg_transfer_bind_pet_training"), pPC->vfunc_77());
+                CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_transfer_bind_pet_training"), pPC->vfunc_77());
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMessage), 0, CStringW(s_strTrainingBindPet));
                 if (box.get() != 0)
                 {
@@ -225,7 +221,7 @@ void UIItemPetTrainingDialog::FUN_140e57d60()
     if (m_spBox == 0 || m_spPet == 0)
         return;
     __int64 nUid = m_spPet->GetItemUid();
-    g_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
+    g_143ab2a90.FUN_140a63880(m_spBox.get(), StringFormat<unsigned __int64>(L"{0}", reinterpret_cast<const unsigned __int64&>(nUid)));
 }
 
 // @0x140e57e50
@@ -254,14 +250,14 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
         return 0;
     }
-    MS2Ptr<Unk_PetRow> spRow = ((class Unk_PtPetRowTable*)FUN_14052d210())->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
+    MS2Ptr<CPetData> spRow = ((class CPetDataTable*)FUN_14052d210())->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (spRow->m_n18 != 1)
+    if (spRow->m_nType != 1)
     {
         if (bMessage != 0)
             FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);

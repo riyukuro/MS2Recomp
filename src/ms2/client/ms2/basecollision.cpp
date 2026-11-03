@@ -68,8 +68,6 @@ class Unk_PCBaseBuffs : public AdditionalCliList
 {
 };
 
-int FUN_14165ef30(PCBase* pPC);                                     // the team / pvp side
-CStringW* FUN_141656be0(PCBase* pPC);                               // the guild name
 
 efd::Point3 FUN_141b6e150(const NxVec3& v);                         // NxVec3 -> efd::Point3
 NxVec3 FUN_141b6e0e0(const efd::Point3& v);                         // efd::Point3 -> NxVec3
@@ -348,7 +346,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                 }
                 if (bSameGuild != 0)
                 {
-                    if (FUN_141656be0(pOwnerPC)->IsEmpty() || *FUN_141656be0(pOwnerPC) != *FUN_141656be0(pTargetPC))
+                    if (reinterpret_cast<PC*>(pOwnerPC)->FUN_141656be0().IsEmpty() || reinterpret_cast<PC*>(pOwnerPC)->FUN_141656be0() != reinterpret_cast<PC*>(pTargetPC)->FUN_141656be0())
                         continue;
                 }
             }
@@ -816,7 +814,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
     {
         return 0;
     }
-    if (pActorPC != NULL && pOtherPC != NULL && (FUN_14165ef30(pActorPC) ^ FUN_14165ef30(pOtherPC)) != 0)
+    if (pActorPC != NULL && pOtherPC != NULL && (reinterpret_cast<PC*>(pActorPC)->FUN_14165ef30() ^ reinterpret_cast<PC*>(pOtherPC)->FUN_14165ef30()) != 0)
         return 0;
     if (nNpcKinds != 0)
     {

@@ -42,10 +42,9 @@ private:
 class Unk_MailSession;
 Unk_MailSession* FUN_1403ed2d0();
 int FUN_141bcfbd0(Unk_MailSession*);
-class Unk_MailService;
-Unk_MailService* FUN_1401c0db0();
+class Unk_BmPriceMgr* FUN_1401c0db0();
 int FUN_1422b9ea0(__int64);
-void FUN_141276180(const CString&, const CString&);
+int FUN_141276180(const CString&, const CString&);
 
 class CUserMail {
 public:

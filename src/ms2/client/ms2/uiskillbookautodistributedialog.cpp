@@ -102,6 +102,7 @@
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/formatstringid.h"
+FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/commonstringtable.h"
@@ -363,9 +364,8 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SkillClic
 
 // job code -> (rank -> skill points), and job code -> extra skill points (data of other units).
 struct Unk_Be790B : public std::map<int, std::map<int, long> > {};
-struct Unk_Be790C : public std::map<int, long> {};
 extern Unk_Be790B DAT_143ab32e8;
-extern Unk_Be790C DAT_143ab32f8;
+extern std::map<int, long> DAT_143ab32f8;
 
 // ---- unit-local views of exe objects (the skill window) ----
 
@@ -404,7 +404,6 @@ int FUN_140ed47e0(MyPC* pPlayer)                                            // t
 }
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 CStringW BlockFormat(int nId);                                              // common string text
-CStringW FUN_140a228f0(int nId, const wchar_t* sz, const CStringW& str);   // format a text
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);                // notice
 void FUN_1412751b0(const CStringW& strText, int nType);                     // toast
 int FUN_141276180(const CString& strSound, const CString& strOption);      // play a sound
@@ -639,7 +638,7 @@ int UISkillBookTreeDialog::CheckApply(bool bNotify)
     if (((class Unk_SkillService*)FUN_140d86260())->State() == 1)
     {
         if (bNotify == true)
-            FUN_140d73aa0(FUN_140a228f0(0x688, reinterpret_cast<const wchar_t*>(reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x6aa8)->Get()), BlockFormat(0x5c0)), 0, 0, L"");
+            FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)FUN_1401d3200()) + 0x6aa8)->Get(), BlockFormat(0x5c0)), 0, 0, L"");
         return 1;
     }
     return 0;

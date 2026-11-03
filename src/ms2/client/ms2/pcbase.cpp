@@ -313,9 +313,6 @@ class Unk_PCBaseBuffs : public Unk_PCBaseBuffList
 
 // The weak reference at +0x628 (ctor 0x140ae13b0, dtor 0x140a00490).
 
-// CString + const char* (the exe's out-of-line operator+; compiling it here needs the unresolvable MFC CopyChars import).
-CString FUN_14038f6d0(const CString& str, const char* psz);
-
 // The node smart pointers at +0xbe8 / +0xc38 / +0xc40.
 // The entity manager (0x1409670f0) and its lookup / property getter.
 class Unk_PCBaseEntMgr;
@@ -3551,7 +3548,7 @@ unsigned int PCBase::FUN_141679270(const char* szName)
     CString strPrefix = vfunc_60();
     CString strName;
     if (!strPrefix.IsEmpty())
-        strName = FUN_14038f6d0(strPrefix, szName);
+        strName = strPrefix + szName;
     else
         strName = szName;
     unsigned int nId = ((egmAnimation::AnimationService*)(Unk_RxAnimSvc*)(pSvc))->GetAnimationIdFromName(FUN_14123c460(), (const char*)strName);

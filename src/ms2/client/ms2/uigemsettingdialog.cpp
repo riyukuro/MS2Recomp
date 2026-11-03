@@ -20,20 +20,10 @@
 
 // ---- unit-local views of exe types ----
 
-// The check box child (value at FUN_1422ce0e0, set at FUN_1422ce090) and the handle it is returned in (16 bytes).
+// The check box child (value at FUN_1422ce0e0, set at FUN_1422ce090), returned in an MS2Ptr<ASCheckBox>.
 class Unk_GsCheck : public ASButton { };
-class Unk_GsHandle
-{
-public:
-    Unk_GsHandle() {}
-    ~Unk_GsHandle();                                            // 0x140a583d0
-    Unk_GsCheck* FUN_140a58460();                               // get
-    Unk_GsCheck* FUN_140a58490();                               // operator->
-private:
-    Unk_GsCheck* m_p;
-    void* m_pad;                                                // the exe reserves 16 bytes for the handle
-};
-class Unk_GsEntity : public UIDialog { public: Unk_GsHandle FUN_140e52670(const CString& strName); };
+class ASCheckBox;
+class Unk_GsEntity : public UIDialog { public: MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName); };
 
 // The worn equipment: the gem in a slot.
 class Unk_GsEquip : public PCGemEquip { };
@@ -60,9 +50,8 @@ class PC   // C3: member view for the former free stand-ins
 public:
     class Unk_MyPCEquip* FUN_14165f460();
 };
-CGemBase* FUN_140ddcc50(MS2Ptr<CGemBase>& sp);                  // MS2Ptr::operator->
 void FUN_1405a8650(MS2Ptr<CGemBase>& sp);                       // MS2Ptr release
-void FUN_1401fd2e0(Unk_GsSetting& setting, COutPacket& packet); // write the setting
+void FUN_1401fd2e0(unsigned char* payload, COutputStream& stream);   // write the setting (unit_1401f9eb0.h)
 void FUN_140710590(COutPacket& packet);                         // send
 
 Unk_GsSetting::Unk_GsSetting()
@@ -103,9 +92,9 @@ CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
         return 0;
 #ifdef __clang__
     MS2Ptr<CGemBase> spGem = ((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1);   // clang-cl won't bind the temporary to MS2Ptr&
-    return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(spGem));
+    return dynamic_cast<CGemTransparency*>(spGem.operator->());
 #else
-    return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1)));
+    return dynamic_cast<CGemTransparency*>(((class Unk_GsEquip*)((class PC*)(void*)(pActor))->FUN_14165f460())->FUN_141270740(1).operator->());
 #endif
 }
 
@@ -164,7 +153,7 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         setting.m_aHidden[9] = FUN_141946a70("m_sh");
         COutPacket packet(static_cast<int>(SendOp::BadgeEquip), 0);
         packet.WriteUInt8(3);
-        FUN_1401fd2e0(setting, packet);
+        FUN_1401fd2e0((unsigned char*)&setting, packet);
         FUN_140710590(packet);
         return 1;
     }
@@ -176,9 +165,9 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 int UIGemSettingDialog::FUN_141946a70(CString strName)
 {
     {
-        Unk_GsHandle hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
-        if (hCheck.FUN_140a58460() != 0)
-            return hCheck.FUN_140a58490()->FUN_1422ce0e0();
+        MS2Ptr<ASCheckBox> hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
+        if ((ASCheckBox*)hCheck != 0)
+            return reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce0e0();
     }
     return 0;
 }
@@ -186,9 +175,9 @@ int UIGemSettingDialog::FUN_141946a70(CString strName)
 // @0x141946b10
 void UIGemSettingDialog::FUN_141946b10(CString strName, int nValue)
 {
-    Unk_GsHandle hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
-    if (hCheck.FUN_140a58460() != 0)
-        hCheck.FUN_140a58490()->FUN_1422ce090(nValue);
+    MS2Ptr<ASCheckBox> hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
+    if ((ASCheckBox*)hCheck != 0)
+        reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce090(nValue);
 }
 
 // ---- hooks ----

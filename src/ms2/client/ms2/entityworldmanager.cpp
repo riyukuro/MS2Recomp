@@ -154,9 +154,6 @@ struct Unk_EntityAppFramework;
 extern Unk_EntityAppFramework DAT_143b059e8;
 class Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework*);   // C3: was efd::ServiceManager*
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
-int FUN_1413d6890(HardwareInstancingService*, egf::Entity*);
-void FUN_1413d73a0(HardwareInstancingService*, int);
-void FUN_141473870(const egf::EntityID&);
 CLogString* GetLogString();
 bool Unk_IsFinite(const efd::Point3&);   // C3: was FUN_140a33ff0
 void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
@@ -353,7 +350,7 @@ void EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* 
     return nullptr;
 }
 // @0x1411cf540
-void EntityWorldManager::FUN_1411cf540(egf::EntityID id) { FUN_141473870(id); }
+void EntityWorldManager::FUN_1411cf540(egf::EntityID id) { CMainSystem::DestroyEntityById(id); }
 // @0x1411cf570
 void EntityWorldManager::FUN_1411cf570(egf::Entity* entity) { CMainSystem::DestroyEntity(entity); }
 // @0x1411cf5a0
@@ -391,7 +388,7 @@ void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& 
     worlds[reinterpret_cast<const unsigned&>(map)].time = ((class CMainSystem*)(class Unk_GameClock*)(reinterpret_cast<Unk_GameClock*>(TSingleton<CMainSystem>::GetInstance())))->FUN_141473280();
     worlds[reinterpret_cast<const unsigned&>(map)].unloaded = true;
     efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
-    if ((HardwareInstancingService*)instancing != nullptr) FUN_1413d73a0(instancing.operator->(), map);
+    if ((HardwareInstancingService*)instancing != nullptr) instancing.operator->()->FUN_1413d73a0(map);
     loader->FUN_1411d8980(false);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
         egf::EntityLoadRequest::elo_Unload, block, s_entityWorldChannel, 0,
@@ -429,7 +426,7 @@ void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, 
     egf::EntityPtr entity(message->GetEntity());
     egf::EntityID id(entity->GetEntityID());
     efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)FUN_14098c5b0(&DAT_143b059e8)));
-    if (((HardwareInstancingService*)instancing != nullptr ? true : false) && FUN_1413d6890(instancing.operator->(), entity) != 0) return;
+    if (((HardwareInstancingService*)instancing != nullptr ? true : false) && instancing.operator->()->FUN_1413d6890(entity) != 0) return;
     if (worlds[currentMap].createdEntities.find(id) == worlds[currentMap].createdEntities.end()) {
         worlds[currentMap].loadedEntities[id] = entity.data();
         worlds[currentMap].allEntities[id] = entity.data();

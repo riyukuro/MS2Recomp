@@ -74,9 +74,6 @@ class Unk_PrScript : public AScript { };
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-const int* FUN_1402fbd20(const int* a, const int* b);               // std::min<int>
-const int* FUN_1404eb7e0(const int* a, const int* b);               // std::max<int>
-int FUN_141654730(PCBase* pPC);                                     // the job
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
 
@@ -140,8 +137,8 @@ void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nFirst = *FUN_1402fbd20(&nFrom, &nTo);
-    int nLast = *FUN_1404eb7e0(&nFrom, &nTo);
+    int nFirst = (std::min)(nFrom, nTo);
+    int nLast = (std::max)(nFrom, nTo);
     for (int nRank = nFirst; nRank <= nLast; nRank++)
     {
         Unk_PrEntry* pEntry = (Unk_PrEntry*)reinterpret_cast<Unk_PrService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
@@ -211,7 +208,7 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
         pObj->FUN_1407cbbe0("isOffline", pEntry->m_bOnline == 0);
         pObj->FUN_1407cbbe0("isMe", ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == pEntry->m_nCharId);
         if (pOther)
-            pObj->FUN_140bd0d90("job", FUN_141654730(pOther));
+            pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pOther)->FUN_141654730());
         else
             pObj->FUN_1407cb9c0("job", 0);
         int nCount = 0;

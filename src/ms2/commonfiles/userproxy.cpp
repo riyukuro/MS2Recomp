@@ -74,6 +74,15 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/gameeventuservalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+class Unk_IntTriple   // C3: the real class behind Unk_UserProxyColor (member view)
+{
+public:
+    void Clear();
+    void ReadArray(struct Unk_IntArr* pArr);
+    void WriteTo(COutputStream& s);
+    void ReadFrom(CInputStream& s);
+    void Copy(const Unk_IntTriple& rhs);
+};
 class Unk_ProxyStaticTreeA {
 public:
   Unk_ProxyStaticTreeA();
@@ -1045,7 +1054,7 @@ void Unk_UserProxy::FUN_1408ebe30() {
   m_c0 = 0;
   m_c4 = Vector3(0, 0, 0);
   m_d0 = 0;
-  m_d4.Clear();
+  reinterpret_cast<Unk_IntTriple&>(m_d4).Clear();
   FUN_1408f0850("");
   FUN_1408f08c0(L"");
   FUN_1408f09c0(L"");
@@ -1186,7 +1195,7 @@ void Unk_UserProxy::FUN_1408ec5e0(COutputStream &s) {
   s.WriteInt32(m_c0);
   s.WriteVector3(m_c4);
   s.WriteInt32(m_d0);
-  m_d4.FUN_140267e40(s);
+  reinterpret_cast<Unk_IntTriple&>(m_d4).WriteTo(s);
   s.WriteUnicodeStringA(FUN_1408f1a60());
   s.WriteUnicodeString(FUN_1408f1ae0());
   s.WriteUnicodeString(FUN_1408f1be0());
@@ -1259,7 +1268,7 @@ void Unk_UserProxy::FUN_1408ed170(CInPacket *p) {
   m_c0 = PROXY_STREAM(p)->ReadInt32();
   m_c4 = PROXY_STREAM(p)->ReadVector3();
   m_d0 = PROXY_STREAM(p)->ReadInt32();
-  m_d4.FUN_140267e70(*PROXY_STREAM(p));
+  reinterpret_cast<Unk_IntTriple&>(m_d4).ReadFrom(*PROXY_STREAM(p));
   FUN_1408f0850(PROXY_STREAM(p)->ReadUnicodeStringA());
   FUN_1408f08c0(PROXY_STREAM(p)->ReadUnicodeString());
   FUN_1408f09c0(PROXY_STREAM(p)->ReadUnicodeString());
@@ -1319,7 +1328,7 @@ void Unk_UserProxy::FUN_1408ee190(COutputStream &s) {
   for (int i = 0; i < 2; ++i)
     s.WriteInt32(m_58[i]);
   s.WriteInt64(m_70);
-  m_d4.FUN_140267e40(s);
+  reinterpret_cast<Unk_IntTriple&>(m_d4).WriteTo(s);
   s.WriteInt64(m_80);
   s.WriteUnicodeString(FUN_1408f1b60());
   s.WriteUnicodeString(FUN_1408f1ae0());
@@ -1382,7 +1391,7 @@ void Unk_UserProxy::FUN_1408eeb60(CInPacket *p) {
   for (int i = 0; i < 2; ++i)
     m_58[i] = PROXY_STREAM(p)->ReadInt32();
   m_70 = PROXY_STREAM(p)->ReadInt64();
-  m_d4.FUN_140267e70(*PROXY_STREAM(p));
+  reinterpret_cast<Unk_IntTriple&>(m_d4).ReadFrom(*PROXY_STREAM(p));
   m_80 = PROXY_STREAM(p)->ReadInt64();
   FUN_1408f0950(PROXY_STREAM(p)->ReadUnicodeString());
   FUN_1408f08c0(PROXY_STREAM(p)->ReadUnicodeString());
@@ -1490,7 +1499,7 @@ void Unk_UserProxy::FUN_1408efa70(const Unk_UserProxy &p) {
   m_d0 = p.m_d0;
   for (size_t i = 0; i < 12; ++i)
     m_140[i] = p.m_140[i];
-  m_d4 = p.m_d4;
+  reinterpret_cast<Unk_IntTriple&>(m_d4).Copy(reinterpret_cast<const Unk_IntTriple&>(p.m_d4));
   FUN_1408f0850(const_cast<Unk_UserProxy &>(p).FUN_1408f1a60());
   FUN_1408f08c0(const_cast<Unk_UserProxy &>(p).FUN_1408f1ae0());
   FUN_1408f09c0(p.FUN_1408f1be0());
@@ -1580,7 +1589,7 @@ void Unk_UserProxy::FUN_1408f06e0(Unk_UserProxyClubPacket &p) {
 MS2_REPLACE_METHOD(0x1408F06E0, Unk_UserProxy, FUN_1408f06e0, 186, 0x549831D0);
 
 // @0x1408f07a0
-void Unk_UserProxy::FUN_1408f07a0(const Unk_UserProxyColor &p) { m_d4.FUN_140267d00(p); }
+void Unk_UserProxy::FUN_1408f07a0(const Unk_UserProxyColor &p) { reinterpret_cast<Unk_IntTriple&>(m_d4).ReadArray((struct Unk_IntArr*)&p); }
 MS2_REPLACE_METHOD(0x1408F07A0, Unk_UserProxy, FUN_1408f07a0, 43, 0xE310C0A3);
 
 // @0x1408f07e0

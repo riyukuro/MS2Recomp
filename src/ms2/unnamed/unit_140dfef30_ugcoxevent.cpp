@@ -99,9 +99,6 @@ CStringW FUN_140719630(int n);
 CStringW FUN_140719a00(__int64 n);
 CStringW FUN_1409404f0(__int64 n);
 __int64 FUN_140718320(const CStringW& str);
-CString FUN_140540050(const char* pszFormat, const CString& strArg);
-CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);
-CStringW FUN_140560c00(const wchar_t* pszFormat, const unsigned& nArg);
 void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142ca6130();                                            // the exe's atexit destructor of the marker
 extern __int64 DAT_143ab2820;                                    // the own account id
@@ -743,11 +740,11 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
         if (MS2Ptr<ASButton> hButton = static_cast<Unk_OxMovieEntity*>(static_cast<UIDialog*>(pQuiz))->FUN_140bb4b10("m_quiz_promote"))
         {
             CStringW strTip = GetStringCommonByKey(L"s_ugcox_btn_quiz_promote_tooltip");
-            strTip.Replace(L"{totalPromoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nTotal));
+            strTip.Replace(L"{totalPromoteCount}", (LPCWSTR)StringFormat<int>(L"{0}", nTotal));
             int nLeft = nTotal - nPromoted;
-            strTip.Replace(L"{promoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nLeft));
+            strTip.Replace(L"{promoteCount}", (LPCWSTR)StringFormat<int>(L"{0}", nLeft));
             unsigned nSeconds = nCooltime2 / 1000;
-            strTip.Replace(L"{promoteCooltime}", (LPCWSTR)FUN_140560c00(L"{0}", nSeconds));
+            strTip.Replace(L"{promoteCooltime}", (LPCWSTR)StringFormat<unsigned long>(L"{0}", reinterpret_cast<const unsigned long&>(nSeconds)));
             ASTooltip tip(2);
             tip.SetTooltipClass("export_common_tooltip_tooltipText");
             tip.SetText(strTip);
@@ -859,7 +856,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 CString FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item)
 {
     if (item.get() != 0)
-        return FUN_140540050("limited_{0}", CString(((class Unk_MeratProductKey&)(item->m_id)).FUN_1409b0470()));
+        return StringFormat<CString>("limited_{0}", CString(((class Unk_MeratProductKey&)(item->m_id)).FUN_1409b0470()));
     return CString("");
 }
 

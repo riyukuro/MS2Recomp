@@ -149,9 +149,10 @@ class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const 
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
 
 // ---- out-of-unit callees ----
+class Unk_CadScript : public AScript { public: template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&, MS2Ptr<T>&); };   // C3: view as uitimergaugedialog declares it
+class Unk_LockedIntMap { public: Unk_LimitValue Get(int); };   // C3: unit-local view (def in unit_140268010_sharedstatemap); Unk_PartyCounters::FUN_140268570
 CMyCharacter* FUN_140931510();                                                          // the local character state
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CStringTable* GetStringTable();                                                          // TSingleton<CStringTable>::GetInstance
                                    // WorldService (worldservice.h): the local player
 void* FUN_140bd09d0(unsigned n);                                                        // a callback user value
 CStringW FUN_14016a730(const char* sz, int nCodePage);                                  // widen
@@ -192,7 +193,7 @@ class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_140d73ff0(CStringW strText);                                                   // a notice box
 void FUN_140d00750(const Scaleform::GFx::Value& root, CString strName, int nGroup);     // unbind a child's tooltip group
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);                           // bind a tooltip group
-bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<ASItemRendererBase> >& out, unsigned nStart);
+template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<T> >& out, unsigned nStart);
 bool FUN_140e14520(int nGroupType);                                                     // the group has rooms to list
 CStringW FUN_140b8e9a0(const CMsTime& time);                                            // the remaining time text
 extern int DAT_143ab288c;                                                               // the id of the last portal used (mypc.cpp)
@@ -246,7 +247,7 @@ public:
 };
 
 // A reward slot clip as this unit invokes it.
-class ASDialog : public ASMovieClip
+class Unk_RewardClip : public ASMovieClip   // C3: unit-local view named like the uiachievedialog one
 {
 public:
     Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);    // Invoke with one string argument
@@ -628,7 +629,7 @@ void UIDungeonRoomInfo::Refresh()
 {
     FUN_140d011c0(m_spBannerLoader, FUN_14016a730(m_spRoom->m_dungeonBanner, 0), true);
     FUN_140cfee80((*m_spPanel).FUN_1422bb890(), "m_title", FUN_140e14bd0(m_spRoom, false));
-    m_dungeonDesc->SetTextHTMLW(GetStringTable()->FUN_141811980(0x15, m_spRoom->GetDungeonRoomID()));
+    m_dungeonDesc->SetTextHTMLW(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x15, m_spRoom->GetDungeonRoomID()));
     m_dungeonDesc->SetHeightInt((int)m_dungeonDesc->GetTextHeight() + 0x14);
     FUN_140cff840((*m_spPanel).FUN_1422bb890(), "m_cooldownIcon", IsCooldown());
     m_favoriteMark->FUN_1422ce090(FUN_140931510()->GetRecord()->IsSeasonRoom(m_spRoom->GetDungeonRoomID()));
@@ -711,7 +712,7 @@ void UIDungeonRoomInfo::RefreshLimits()
         {
             unsigned nRoomId = *it;
             nColor = FUN_140931510()->GetRecord()->HasProgress(nRoomId) ? 0xffffff : 0xff0000;
-            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_clearDungeon", GetStringTable()->FUN_141811980(0x14, nRoomId)), nColor));
+            strLimit += StringFormat<CStringW>(L"{0}\n", FUN_14183e930(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_clearDungeon", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nRoomId)), nColor));
         }
     }
     if (m_spRoom->m_limitRecommendWeapon)
@@ -745,8 +746,8 @@ void UIDungeonRoomInfo::RefreshLimits()
     for (size_t i = 0; i < m_spRoom->m_limitAdditionalEffects.size(); ++i)
     {
         nColor = reinterpret_cast<AdditionalCliList*>(pPlayer->FUN_1416749a0())->FUN_140970020(m_spRoom->m_limitAdditionalEffects[i], 0, 0, 1) != 0 ? 0xffffff : 0xff0000;
-        CStringW strEffect = FUN_14183e930(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_additionalEffect", GetStringTable()->FUN_141812290(m_spRoom->m_limitAdditionalEffects[i], 1, "name")), nColor);
-        CStringW strTooltip = GetStringTable()->FUN_141811980(0x4c, m_spRoom->m_limitAdditionalEffects[i]);
+        CStringW strEffect = FUN_14183e930(FUN_14028dfa0<CStringW>(L"s_dungeonRoom_limit_additionalEffect", TSingleton<CStringTable>::GetInstance()->FUN_141812290(m_spRoom->m_limitAdditionalEffects[i], 1, "name")), nColor);
+        CStringW strTooltip = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4c, m_spRoom->m_limitAdditionalEffects[i]);
         m_spLimitTextGroup->AddText(strEffect, nColor, strTooltip);
     }
     if (!m_spRoom->m_openPeriodDate.IsNull() && CMsTime(GetServerTime()) < m_spRoom->m_openPeriodDate)
@@ -890,7 +891,7 @@ void UIDungeonRoomInfo::RefreshNormalReward()
         FUN_140cff1b0((*m_spPanel).FUN_1422bb890(), "m_rewardText1", strDailyText);
         CStringW strDailyTooltip = BlockFormat(0x9b1);
         if (m_spRoom->m_unionRewardID != 0)
-            strDailyTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", GetStringTable()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
+            strDailyTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
         static_cast<ASUIComponent*>(m_rewardIcon1)->SetTooltipText(strDailyTooltip);
         CStringW strWeekly = GetStringCommonByKey(L"s_dungeonRoom_reward_weekly");
         if (spRewardRoom->m_isAccountReward)
@@ -900,7 +901,7 @@ void UIDungeonRoomInfo::RefreshNormalReward()
         static_cast<ASUIComponent*>(m_rewardIcon2)->vfunc_4(true);
         CStringW strWeeklyTooltip = FUN_140e15130(spRewardRoom->GetDungeonRoomID());
         if (m_spRoom->m_unionRewardID != 0)
-            strWeeklyTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", GetStringTable()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
+            strWeeklyTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
         static_cast<ASUIComponent*>(m_rewardIcon2)->SetTooltipText(strWeeklyTooltip);
     }
     else
@@ -913,7 +914,7 @@ void UIDungeonRoomInfo::RefreshNormalReward()
         FUN_140cff1b0((*m_spPanel).FUN_1422bb890(), "m_rewardText2", L"");
         CStringW strTooltip = FUN_140e15130(spRewardRoom->GetDungeonRoomID());
         if (m_spRoom->m_unionRewardID != 0)
-            strTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", GetStringTable()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
+            strTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
         static_cast<ASUIComponent*>(m_rewardIcon1)->SetTooltipText(strTooltip);
         static_cast<ASUIComponent*>(m_rewardIcon2)->vfunc_4(false);
     }
@@ -955,7 +956,7 @@ void UIDungeonRoomInfo::RefreshRoundReward()
     FUN_140cff1b0((*m_spPanel).FUN_1422bb890(), "m_rewardText2", L"");
     CStringW strTooltip = FUN_140e15130(spRewardRoom->GetDungeonRoomID());
     if (m_spRoom->m_unionRewardID != 0)
-        strTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", GetStringTable()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
+        strTooltip += FUN_14028dfa0<CStringW>(L"s_dungeonRoom_unionRewardInfo", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID()));
     static_cast<ASUIComponent*>(m_rewardIcon1)->SetTooltipText(strTooltip);
     static_cast<ASUIComponent*>(m_rewardIcon2)->vfunc_4(false);
     m_addExtraRewardCount->vfunc_4(false);
@@ -1030,7 +1031,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
     {
         if (i >= items.size())
         {
-            static_cast<ASDialog*>(m_rewardItems[i].operator->())->FUN_140e262c0("setData", "");
+            static_cast<Unk_RewardClip*>(m_rewardItems[i].operator->())->FUN_140e262c0("setData", "");
             continue;
         }
         ItemEntity* pEntity = &items[i]->m_item;
@@ -1358,8 +1359,8 @@ void UIDungeonRoomInfo::OnAddExtraRewardCount(const ASParams& params)
     unsigned nCost = FUN_140931510()->GetRecord()->GetExtraTicketCost(spRewardRoom);
     if (nCost == 0)
         return;
-    CStringW strItem = GetStringTable()->FUN_141811980(1, spRewardRoom->GetCouponBaseItemID());
-    CStringW strRoom = GetStringTable()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID());
+    CStringW strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRewardRoom->GetCouponBaseItemID());
+    CStringW strRoom = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRewardRoom->GetDungeonRoomID());
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_dungeonRoom_use_extra_count_item"), strItem, nCost, strRoom);
     if (spRewardRoom->GetCooldownType() == 1)
         strMsg = FUN_14028dfa0(CStringW(L"s_dungeonRoom_use_extra_count_item_week"), strItem, nCost, strRoom);
@@ -1409,7 +1410,7 @@ void UIDungeonRoomInfo::OnFindHelper(const ASParams& params)
     {
         // the party's current dungeon name comes first, then this room's
         CStringW strMsg = FUN_14028dfa0(L"s_dungeonRoom_change_help_dungeon",
-            GetStringTable()->FUN_141811980(0x14, nPartyRoom), GetStringTable()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID()));
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nPartyRoom), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID()));
         MS2Ptr<CMsgBoxData> box = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonRoomInfo::OnChangeHelpDungeon), strMsg);
         if (box)
             box->Append<unsigned>(m_spRoom->GetDungeonRoomID());
@@ -1433,7 +1434,7 @@ void UIDungeonRoomInfo::OnFindMember(const ASParams& params)
     {
         // the party's current dungeon name comes first, then this room's
         CStringW strMsg = FUN_14028dfa0(L"s_dungeonRoom_change_help_dungeon",
-            GetStringTable()->FUN_141811980(0x14, nPartyRoom), GetStringTable()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID()));
+            TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nPartyRoom), TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID()));
         MS2Ptr<CMsgBoxData> box = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonRoomInfo::OnChangeMemberDungeon), strMsg);
         if (box)
             box->Append<unsigned>(m_spRoom->GetDungeonRoomID());
@@ -1682,8 +1683,8 @@ bool UIDungeonRoomInfo::AskExtraTicketEnter(bool bParty)
     if (!IsCooldown())
         return false;
     unsigned nCost = FUN_140931510()->GetRecord()->GetExtraTicketCost(m_spRoom);
-    CStringW strItem = GetStringTable()->FUN_141811980(1, m_spRoom->GetCouponBaseItemID());
-    CStringW strRoom = GetStringTable()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID());
+    CStringW strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_spRoom->GetCouponBaseItemID());
+    CStringW strRoom = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, m_spRoom->GetDungeonRoomID());
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_dungeonRoom_use_extra_count_item_enter"), strItem, nCost, strRoom);
     {
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMsg, 1);
@@ -1731,7 +1732,7 @@ int UIDungeonRoomInfo::GetMemberClearCount(MS2Ptr<CPartyMember> spMember)
 {
     if (m_spRoom == 0)
         return 0xb;
-    return spMember->counters.FUN_140268570(m_spRoom->GetDungeonRoomID());
+    return reinterpret_cast<Unk_LockedIntMap*>(&spMember->counters)->Get(m_spRoom->GetDungeonRoomID());
 }
 
 // @0x1412b6480
@@ -1864,10 +1865,10 @@ void UIDungeonRoomDialog::OnLoadComplete()
             throw DR_SWF_ERROR(0x6d9);
     } while (0);
     FUN_1422c6380((*m_1f0).FUN_1422bb890(), 2);
-    FUN_140c123f0((*m_30).FUN_1422bb890(), "m_dungeonListItem", 0x15, m_240, 1);
+    FUN_140c123f0<ASItemRendererBase>((*m_30).FUN_1422bb890(), "m_dungeonListItem", 0x15, m_240, 1);
     do
     {
-        static_cast<ASUIComponent*>(m_1f0)->FUN_140bc6e60("m_summaryGauge", m_220);
+        static_cast<Unk_CadScript*>(static_cast<AScript*>(static_cast<ASUIComponent*>(m_1f0)))->FUN_140bc6e60("m_summaryGauge", m_220);
         if (m_220 == 0)
             throw DR_SWF_ERROR(0x6df);
     } while (0);
@@ -2257,7 +2258,7 @@ void FUN_1412b9870(int nRoomId, int nReason)
         for (std::vector<unsigned>::const_iterator it = rEffects.begin(); it != itEnd; ++it)
         {
             unsigned nEffectId = *it;
-            strEffects += StringFormat<CStringW>(L"[{0}] ", GetStringTable()->FUN_141812290(nEffectId, 1, "name"));
+            strEffects += StringFormat<CStringW>(L"[{0}] ", TSingleton<CStringTable>::GetInstance()->FUN_141812290(nEffectId, 1, "name"));
         }
         FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_field_limit_additionalEffect", strEffects), 1, 1);
         break;

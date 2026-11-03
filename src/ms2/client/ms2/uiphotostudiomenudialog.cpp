@@ -36,7 +36,7 @@ public:
     void FUN_141adc530(int nId);   // show
 };
 CameraMgr* FUN_1409478c0();
-CStringW FUN_141850100_2(int a, int b);   // the exe call site leaves the third argument (r9) unset
+CStringW TakeScreenshotJpg(int a, int b);   // the exe call site leaves the third argument (r9) unset
 
 // @0x140e75ea0
 UIPhotoStudioMenuDialog::UIPhotoStudioMenuDialog() : m_bFreeCamera(0)
@@ -96,7 +96,7 @@ int UIPhotoStudioMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 // @0x140e76130
 void UIPhotoStudioMenuDialog::OnScreenshot()
 {
-    CStringW strUrl = FUN_141850100_2(0, 1);
+    CStringW strUrl = TakeScreenshotJpg(0, 1);
 }
 
 // @0x140e76170

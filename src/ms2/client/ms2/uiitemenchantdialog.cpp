@@ -72,6 +72,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/equipitem.h"  // C3
 #include "ms2/client/ms2/iteminfoslot.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<T>::Get
 
@@ -150,10 +151,8 @@ public:
 };
 
 // AS script views.
-class Unk_EnButton : public ASDisplayObject
+class Unk_EnButton : public ASButton
 {
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, size_t n);
 };
 class ASDialog : public ASDisplayObject
 {
@@ -181,7 +180,7 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24();
     virtual MS2Ptr<CItem> vfunc_25();
 };
-Unk_EnSlot* FUN_140f6e830(const CString& name);
+ItemInfoSlot* FUN_140f6e830(const CString& name);
 void FUN_141415600(const CString& key);
 void FUN_141415450(const CString& key, MS2Ptr<CItem> item, int a, int b, int c);
 void FUN_141414e50(const CString& name);
@@ -210,13 +209,12 @@ public:
 };
 
 // Ingredient / string tables.
-CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& strArg, const int& nArg);   // StringFormat<CStringW, int>   // member: this=rcx, hidden return=rdx
 // StringFormat<CString, unsigned __int64>: the exe calls this identical COMDAT copy, not the one symbols.tsv names.
 CString FUN_140c4b950(const char* szFormat, const CString& strArg, const unsigned __int64& nArg);
 CStringW FUN_14183e930(const CStringW& text, unsigned color);
 CStringW FUN_14183e9c0(CStringW text, int rank);
-CStringW FUN_141902320(int a, int b);
-CStringW FUN_1419021b0(int a, int b);
+CStringW FUN_141902320(unsigned a, unsigned b);
+CStringW FUN_1419021b0(unsigned a, unsigned b);
 CStringW FUN_141b71910(__int64 v);
 int FUN_14053feb0(int id);
 float FUN_14028aed0(float v);
@@ -225,9 +223,7 @@ __int64 FUN_140632990(__int64 v, float f);
 CStringW GetStatValueText(unsigned key);
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1409404f0(__int64 v);
-CStringW FUN_140938ae0(CStringW key, const int& v);
 CStringW FUN_140298ea0(CStringW key);
-CStringW FUN_14062b4f0(CStringW key, const int* v);
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW GetStringCommon(int id);
 bool FUN_1403b3c40(const CStringW& s, const wchar_t* w);
@@ -1787,7 +1783,7 @@ CStringW UIItemEnchantDialog::FormatItemName(CItem* item)
 CStringW UIItemEnchantDialog::FormatLevelText(int level, int rank)
 {
     CStringW color = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)rank);
-    return FUN_140275590(L"<font color='{0}'>+{1}</font>", color, level);
+    return StringFormat(L"<font color='{0}'>+{1}</font>", color, level);
 }
 
 // @0x1419c7f50
@@ -1796,7 +1792,7 @@ CStringW UIItemEnchantDialog::FormatFailStackText(CItem* item, int count)
     if (item == 0)
         return CStringW(L"");
     if (count > 0)
-        return FUN_14062b4f0(CStringW(L"s_itemenchant_fail_get_fail_stack_count"), &count);
+        return FUN_14028dfa0(CStringW(L"s_itemenchant_fail_get_fail_stack_count"), count);
     return CStringW(L"");
 }
 
@@ -1819,7 +1815,7 @@ void UIItemEnchantDialog::UpdateEnchantIngredient(CItem* item)
 // @0x1419c8160
 Unk_EnSlot* UIItemEnchantDialog::FindSlotByName(const CString& name)
 {
-    Unk_EnSlot* slot = FUN_140f6e830(name);
+    Unk_EnSlot* slot = reinterpret_cast<Unk_EnSlot*>(FUN_140f6e830(name));
     if (slot != 0)
         return slot;
     return 0;
@@ -1840,8 +1836,8 @@ void UIItemEnchantDialog::FUN_1419c81a0()
         obj.FUN_1407cbb20("guid", FUN_141b71910(m_selectedUid));
         obj.FUN_1407cba60("frame", FUN_1419c1e40(item.get()));
         if (0.0f < m_2b4) {
-            int sale = (unsigned)((m_2b4 + 1e-06f) * 100.0f);
-            CStringW strSale = FUN_140938ae0(L"s_itemenchant_sale", sale);
+            unsigned sale = (unsigned)((m_2b4 + 1e-06f) * 100.0f);
+            CStringW strSale = FUN_14028dfa0(L"s_itemenchant_sale", sale);
             obj.FUN_1407cbb20("saleDesc", strSale);
         }
         FUN_1419c6840(MS2Ptr<CItem>(item), m_option.operator->(), obj);

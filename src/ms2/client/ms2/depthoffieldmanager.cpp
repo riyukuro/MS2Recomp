@@ -6,6 +6,7 @@
 #include "ms2/commonfiles/os.h"
 #include "depthoffieldmanager.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"   // C3: PostProcessingService
 #include <NiFixedString.h>
 #include <NiPoint2.h>
 #include <efd/Point2.h>
@@ -29,13 +30,6 @@ public:
 };
 void* FUN_1414cfbe0(void* p);
 class Unk_LsPassFlag { public: void FUN_1414cf920(bool bOn); };   // the pass flag setter (ms2lightservice)
-class PostProcessingService   // C3: member view for the former free stand-ins
-{
-public:
-    class PostProcessEffect* GetStep(int);
-};
-void FUN_1416a3920(void* p, int n, unsigned char v);
-void FUN_1416aa6a0(void* p, int n, unsigned char v);
 bool FUN_1409a5770(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_140c900e0(const NiFixedString& name, const efd::Point2* data, int n);
 void* FUN_140c8f690(class Unk_PPRes const&);   // C3: was FUN_140c8f690
@@ -81,8 +75,8 @@ void CDepthOfFieldManager::FUN_141178020(unsigned char on)
     if (m_10 == 0)
         return;
     m_50 = on;
-    FUN_1416a3920(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 4, on);
-    FUN_1416aa6a0(((void*)Unk_AeFeatureMgr::FUN_1409a8b20()), 1, on);
+    reinterpret_cast<PostProcessingService*>(Unk_AeFeatureMgr::FUN_1409a8b20())->SetStepActive(4, reinterpret_cast<bool&>(on));
+    reinterpret_cast<PostProcessingService*>(Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa6a0((Unk_PPTexture)1, reinterpret_cast<bool&>(on));
     efd::Point2 v(1.5f, 1.5f);
     FUN_140c900e0(DAT_143ae53a8, &v, 1);
 }

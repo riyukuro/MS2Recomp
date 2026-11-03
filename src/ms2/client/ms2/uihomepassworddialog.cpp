@@ -16,6 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/userugcmapinfo.h"   // C3: Unk_BmPtr<UserUGCMapInfo> (the house info, +0x38 the password expiry)
 
 static UICommon::CMyPCKeyInputController s_keyInputController;
 
@@ -24,19 +25,6 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, int, int); };
 class Unk_HpWorld;
 class Unk_HpActor;                                              // the local player
-struct Unk_HpActorData { char m_pad_00[0x38]; __int64 m_38; };  // +0x38 the expire time of the home password
-class Unk_HpActorPtr
-{
-public:
-    Unk_HpActorPtr(Unk_HpActor* pActor);                        // 0x14050dd40
-    ~Unk_HpActorPtr();                                          // 0x14050de40
-    void* FUN_140fa9d30() const;
-    Unk_HpActorData* FUN_14050dee0() const;                     // operator->
-private:
-    void* m_0;
-    void* m_8;
-};
-MS2_CHECK_SIZE(Unk_HpActorPtr, 0x10);
 class Unk_HpMovie { public: Scaleform::GFx::Value FUN_140e0a8c0(const char* szMethod, CStringW strText, int nState); };
 
 class MyPC   // C3: member view for the former free stand-ins
@@ -46,8 +34,7 @@ public:
 };
 __int64 GetServerTime();                                        // server time
 CStringW GetStringCommon(int nStringId);
-CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
-                       const int& nMinute);
+template <class A, class B, class C, class D, class E> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c, const D& d, const E& e);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73bc0(int nStringId, int a2, void* a3, CStringW strText);
@@ -100,15 +87,15 @@ void UIHomePasswordDialog::OnLoadComplete()
     Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor != 0)
     {
-        Unk_HpActorPtr ref(((class Unk_HpActor*)((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
-        if (ref.FUN_140fa9d30() != 0)
+        Unk_BmPtr<UserUGCMapInfo> ref((class UserUGCMapInfo*)(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
+        if (ref.get() != 0)
         {
-            __int64 nExpire = ref.FUN_14050dee0()->m_38;
+            __int64 nExpire = ref->m_n38;
             unsigned nState = GetServerTime() < nExpire;
             CMsTime time(nExpire);
             if (nState != 0)
             {
-                reinterpret_cast<Unk_HpMovie*>(m_30.operator->())->FUN_140e0a8c0("setState", FUN_1409e90c0(0xb08, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), nState);
+                reinterpret_cast<Unk_HpMovie*>(m_30.operator->())->FUN_140e0a8c0("setState", BlockFormat<int, int, int, int, int>(0xb08, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), nState);
             }
             else
             {
@@ -159,14 +146,14 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pActor != 0)
         {
-            Unk_HpActorPtr ref(((class Unk_HpActor*)((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
-            if (ref.FUN_140fa9d30() != 0)
+            Unk_BmPtr<UserUGCMapInfo> ref((class UserUGCMapInfo*)(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
+            if (ref.get() != 0)
             {
-                __int64 nExpire = ref.FUN_14050dee0()->m_38;
+                __int64 nExpire = ref->m_n38;
                 unsigned nState = GetServerTime() < nExpire;
                 CMsTime time(nExpire);
                 if (nState != 0)
-                    FUN_140d73aa0(FUN_1409e90c0(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, static_cast<IMessageListener*>(this), L"onStop");
+                    FUN_140d73aa0(BlockFormat<int, int, int, int, int>(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, static_cast<IMessageListener*>(this), L"onStop");
             }
         }
         return 1;
@@ -215,8 +202,8 @@ void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int 
     Unk_HpActor* pActor = ((class Unk_HpActor*)((class WorldService*)(class Unk_HpWorld*)(reinterpret_cast<Unk_HpWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pActor != 0)
     {
-        Unk_HpActorPtr ref(((class Unk_HpActor*)((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
-        if (ref.FUN_140fa9d30() != 0)
+        Unk_BmPtr<UserUGCMapInfo> ref((class UserUGCMapInfo*)(((class MyPC*)(class Unk_HpActor*)(pActor))->FUN_141523c50()));
+        if (ref.get() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.WriteUInt8(0x18);

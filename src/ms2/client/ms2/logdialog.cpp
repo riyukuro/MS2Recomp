@@ -211,7 +211,6 @@ class Unk_1401b4ec0 { public: Unk_1401b4ec0(CLockCriticalSection&, int); ~Unk_14
 #pragma intrinsic(memset, memcpy)                                       // template code below expands them inline again
 
 // ---- unit-local views of callees emitted in other units ----
-CStringA FUN_140540050(const char* pszFormat, const CStringA& arg0);    // StringFormat<CStringA>
 CStringW FUN_14016a730(const char* psz, int nCodePage);                 // narrow -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
 bool FUN_14083d990(CStringA);  // C3: the definition's signature
@@ -507,7 +506,7 @@ void CLogDialog::CopySelection()
     while (pos)
     {
         int nItem = m_list.GetNextSelectedItem(pos);
-        strText.Append(FUN_140540050("{0}\n", m_list.GetItemText(nItem, 3)));
+        strText.Append(StringFormat<CStringA>("{0}\n", m_list.GetItemText(nItem, 3)));
     }
     FUN_14083d990(strText);
 }

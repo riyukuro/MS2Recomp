@@ -39,7 +39,7 @@ class PCBase   // C3: member view for the former free stand-ins
 public:
     __int64 FUN_141656a80();
 };
-CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 
 // The AS root object of the dialog, with the invoke the exe instantiates for it.
 class Unk_IndAS : public AScript
@@ -71,7 +71,7 @@ void UIIndividualDPSDialog::OnTextToggle()
 {
     if (m_30.IsNull())
         return;
-    CStringW strTitle = FUN_1405c2690(CStringW(L"s_individualdps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
+    CStringW strTitle = FUN_14028dfa0<CStringW>(CStringW(L"s_individualdps_titlebar"), CBattleRecordManager::FUN_140a04bc0(m_nMode));
     static_cast<Unk_IndAS*>(m_30.operator->())->Invoke("setTitle", strTitle);
 }
 

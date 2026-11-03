@@ -25,6 +25,7 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
+#include "ms2/placeholder/wcformat.h"
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -59,15 +60,12 @@ class Unk_PoCameraUI : public UIDamageText                                      
 class UIDamageText;
 template <class T> T* Unk_DmgFindUI(int nId);
 
-bool FUN_140a467d0(const MS2Ptr<AScript>*);                     // has the AS object been released
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, void* pUnused);
 void FUN_14151f200();
 
-int FUN_141654730(PCBase* pPC);                                 // the job level
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 
@@ -169,7 +167,7 @@ void UIPvPObserverDialog::OnLoadComplete()
 void UIPvPObserverDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    if (vfunc_55() == 0 && FUN_140a467d0(&m_30))
+    if (vfunc_55() == 0 && m_30.IsNull())
     {
     }
 }
@@ -266,7 +264,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
     Unk_PoMe* pMe = ((Unk_PoMe*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pMe == 0)
         return;
-    if (FUN_140a467d0(&m_30))
+    if (m_30.IsNull())
         return;
     CStringW strNameA(L"");
     CStringW strNameB(L"");
@@ -281,12 +279,12 @@ void UIPvPObserverDialog::FUN_141a91b40()
     if (pA != 0) {
         strNameA.Format(L"%s", (LPCWSTR)pA->vfunc_77());
         if (m_1d4 != false) {
-            strStatusA = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_178.m_nRating);
+            strStatusA = FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_rating"), reinterpret_cast<const int&>(m_178.m_nRating));
         }
         else {
             strStatusA = (m_178.m_nWins > 0) ? BlockFormat<int>(0x89a, m_178.m_nWins) : GetStringCommon(0x89b);
         }
-        strJobA.Format(L"_%d", FUN_141654730(pA));
+        strJobA.Format(L"_%d", pA->FUN_141654730());
         strProfileA = FUN_14016a730(FUN_141028be0(pA->FUN_141656a80(), pA->FUN_1416612e0(), 1, CString("")), 0);
         bObservableA = pMe->vfunc_122(pA) ? true : false;
     }
@@ -296,12 +294,12 @@ void UIPvPObserverDialog::FUN_141a91b40()
     if (pB != 0) {
         strNameB.Format(L"%s", (LPCWSTR)pB->vfunc_77());
         if (m_1d4 != false) {
-            strStatusB = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_1a0.m_nRating);
+            strStatusB = FUN_14028dfa0<int>(CStringW(L"s_rank_duel_ui_rating"), reinterpret_cast<const int&>(m_1a0.m_nRating));
         }
         else {
             strStatusB = (m_1a0.m_nWins > 0) ? BlockFormat<int>(0x89a, m_1a0.m_nWins) : GetStringCommon(0x89b);
         }
-        strJobB.Format(L"_%d", FUN_141654730(pB));
+        strJobB.Format(L"_%d", pB->FUN_141654730());
         strProfileB = FUN_14016a730(FUN_141028be0(pB->FUN_141656a80(), pB->FUN_1416612e0(), 1, CString("")), 0);
         bObservableB = pMe->vfunc_122(pB) ? true : false;
         nCharIdB = pB->FUN_141656a80();
@@ -340,7 +338,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
 // @0x141a92b10
 void UIPvPObserverDialog::FUN_141a92b10(__int64 nCharId, __int64 nHp, __int64 nMaxHp)
 {
-    if (FUN_140a467d0(&m_30))
+    if (m_30.IsNull())
         return;
     {
         if (nCharId == m_178.m_nCharId) {
@@ -359,7 +357,7 @@ void UIPvPObserverDialog::FUN_141a92b10(__int64 nCharId, __int64 nHp, __int64 nM
 // @0x141a92c80
 void UIPvPObserverDialog::FUN_141a92c80()
 {
-    if (FUN_140a467d0(&m_30))
+    if (m_30.IsNull())
         return;
     m_30->Invoke("startClosingUI");
 }

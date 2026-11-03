@@ -29,6 +29,7 @@
 #include "ms2/client/ms2/uiservice.h"
 #include <vector>
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422cdfb0
+#include "ms2/placeholder/wcformat.h"
 
 // ---- unit-local views of unrecovered callees -----------------------------------------------------------------------
 
@@ -41,7 +42,6 @@ public:
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern Unk_Inventory g_143ab2a90;
 void FUN_140710590(COutPacket& packet);                 // send
-CStringW FUN_140938ae0(CStringW strFormat, const int& nArg);    // string table text with one argument
 CStringW FUN_1418fe5d0(int nPayType);                   // pay type name
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool);   // money text by pay type
 void FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >& vecOut);     // the pay type rows of a pool
@@ -98,10 +98,10 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         if (spTitle.get() != 0)
             spTitle->SetTextW(L"$s_ugc_cube_bill_title_calculate");
         if (s_cost.m_nKind == 3)
-            strDesc = FUN_140938ae0(CStringW(L"s_home_bill_description_blueprint_preview"), s_cost.m_nArg);
+            strDesc = FUN_14028dfa0<unsigned>(CStringW(L"s_home_bill_description_blueprint_preview"), reinterpret_cast<const unsigned&>(s_cost.m_nArg));
     }
     if (strDesc.IsEmpty())
-        strDesc = FUN_140938ae0(CStringW(L"s_home_bill_description"), s_cost.m_nArg);
+        strDesc = FUN_14028dfa0<unsigned>(CStringW(L"s_home_bill_description"), reinterpret_cast<const unsigned&>(s_cost.m_nArg));
     MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_billDescription");
     if (spDesc.get() != 0)
         spDesc->SetTextHTMLW(strDesc);

@@ -41,6 +41,7 @@
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/ms2format.h"
 
 // ---- statics of the unit's header (init order: sort names, a pointer, the key controller, skill, stun, a pointer) ----
 
@@ -85,19 +86,24 @@ MS2_CHECK_OFFSET(Unk_BlueprintSlot, m_nTime, 0x28);
 class Unk_Service6100017 : public efd::ISystemService {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    bool FUN_1410c3600(int nRule);
-    int FUN_1410d2f10();
-    int FUN_1410c3100();
-    int FUN_1410c3140();
     ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* FUN_1410d4660();         // the home slots (+0x388)
     ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* FUN_1410d4920();    // the blueprint slots (+0x3a8)
 };
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
+// The cube map service members reached through the same service pointer.
+class CubeMapInformationService {
+public:
+    bool FUN_1410c3600(int nRule);
+    int FUN_1410d2f10();
+    int FUN_1410c3100();
+    int FUN_1410c3140();
+};
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 #include "ms2/commonfiles/commonutil.h"
-CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
+CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);
+FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
@@ -183,7 +189,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (spService)
             {
                 int nSlot = data.PopInt();
-                if (spService->FUN_1410c3600(3))
+                if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
                     FUN_140fabae0(nSlot);
                 else
                     FUN_140fab520(nSlot);
@@ -199,7 +205,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (spService)
             {
                 int nSlot = data.PopInt();
-                if (spService->FUN_1410c3600(3))
+                if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
                     FUN_140fabe80(nSlot);
                 else
                     FUN_140fab8c0(nSlot);
@@ -216,7 +222,7 @@ void UIHomeSaveSlotDialog::FUN_140faa2d0()
     if (!m_30)
         return;
     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-    if (spService->FUN_1410c3600(3))
+    if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
     {
         ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
         for (size_t i = 0; i < 5; ++i)
@@ -321,12 +327,12 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
-    bool bBlocked = spService->FUN_1410c3600(1);
+    bool bBlocked = reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(1);
     if (!bBlocked && DAT_143ab2914 >= 50)
     {
-        if (spService->FUN_1410d2f10() != 0)
+        if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410d2f10() != 0)
         {
-            bBlocked = FUN_1408a06a0(spService->FUN_1410c3140(), spService->FUN_1410c3100());
+            bBlocked = FUN_1408a06a0(reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3140(), reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3100());
         }
     }
     if (bBlocked)
@@ -404,7 +410,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode65(int nResult, const CMsgBoxData&
     if (spService == 0)
         return true;
     int nSlot = data.FUN_141a02e50(0, 0);
-    if (spService->FUN_1410c3600(3))
+    if (reinterpret_cast<CubeMapInformationService*>(spService.operator->())->FUN_1410c3600(3))
     {
         COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
         pkt.WriteUInt8(0x41);
@@ -436,7 +442,7 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
 {
     if (nSlot < 0 || nSlot > 5)
         return;
-    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
+    CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_save_messagebox"), nSlot);
     CStringW strTitle = GetStringCommonByKey(L"s_home_save_title_empty");
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
@@ -454,7 +460,7 @@ void UIHomeSaveSlotDialog::FUN_140fab8c0(int nSlot)
 {
     if (nSlot < 0 || nSlot > 5)
         return;
-    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_load_messagebox"), &nSlot);
+    CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_load_messagebox"), nSlot);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
@@ -469,7 +475,7 @@ void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
 {
     if (nSlot < 0 || nSlot > 5)
         return;
-    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
+    CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_save_messagebox"), nSlot);
     CStringW strTitle = GetStringCommonByKey(L"s_home_save_title_empty");
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
@@ -487,7 +493,7 @@ void UIHomeSaveSlotDialog::FUN_140fabe80(int nSlot)
 {
     if (nSlot < 0 || nSlot > 5)
         return;
-    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_blueprint_load_messagebox"), &nSlot);
+    CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_blueprint_load_messagebox"), nSlot);
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {

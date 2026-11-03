@@ -89,13 +89,10 @@ unsigned short FUN_140626f20(unsigned gemId);
 void FUN_1406284f0(unsigned short gemInfo, int recipe, int* tag, int* amount);
 struct Unk_GsIngTable;
 int FUN_14053feb0(int itemId);
-CStringW FUN_140bfa7f0(CStringW key, const CStringW& name, const int& count);
-CStringW FUN_1405c2690(CStringW key, const CStringW& arg);
+template <class A, class B> CStringW FUN_14028dfa0(CStringW key, const A& a1, const B& a2);
+template <class A> CStringW FUN_14028dfa0(CStringW key, const A& a1);
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 meso);
-#ifdef __clang__
-CStringW FUN_1401d0160(const wchar_t*, const CStringW&);     // ATL::operator+(const wchar_t*, const CStringW&)
-#endif
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140710590(COutPacket&);
@@ -295,7 +292,7 @@ int ItemSocketSystemPageGemstoneSwap::vfunc_3(const char* event, const Scaleform
             if (FUN_140c4ab30(source, text))
                 FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageGemstoneSwap::FUN_140c48df0), CStringW(text));
             else
-                FUN_140d74390(FUN_1405c2690(CStringW(L"s_itemsocketsystem_error_swap_lack_price"), text), 0, Delegate<bool(int, const CMsgBoxData&)>());
+                FUN_140d74390(FUN_14028dfa0<CStringW>(CStringW(L"s_itemsocketsystem_error_swap_lack_price"), text), 0, Delegate<bool(int, const CMsgBoxData&)>());
         }
         return 1;
     } else if (_stricmp("onRetry", event) == 0) {
@@ -653,29 +650,25 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
         if (have < it->second) {
             if (it->first != Unk_GsCostTag_Meso) {
                 int lack = it->second - have;
-                text = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), lack);
+                text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), lack);
                 return false;
             }
             int lack = it->second - have;
             fee += (unsigned)(lack * 1000);
             if (DAT_143ab2898 < fee) {
                 int lackFee = it->second - have;
-                text = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), lackFee);
+                text = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), lackFee);
                 return false;
             }
         }
         if (!list.IsEmpty())
             list += L",";
-        list = FUN_140bfa7f0(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), it->second);
+        list = FUN_14028dfa0<CStringW, int>(CStringW(L"s_itemsocketsystem_socket_swap_price"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, itemId), it->second);
     }
     if (costs.size() > 0) {
-        text = FUN_1405c2690(CStringW(L"s_itemsocketsystem_socket_swap_confirm"), list);
+        text = FUN_14028dfa0<CStringW>(CStringW(L"s_itemsocketsystem_socket_swap_confirm"), list);
         if (fee != 0)
-#ifdef __clang__
-            text += FUN_1401d0160(L"\n", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
-#else
-            text.Append(L"\n" + FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
-#endif
+            text.Append(L"\n" + FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
     } else {
         CStringW key(L"s_itemsocketsystem_socket_swap_confirm_free");
         text = GetStringCommonByKey(key);

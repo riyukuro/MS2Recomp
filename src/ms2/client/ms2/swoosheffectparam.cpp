@@ -172,7 +172,6 @@ public:
 extern Unk_ResourceMgr* DAT_143ab5bc8;
 Unk_ResourceMgr* FUN_140a0afd0();
            // release by path
-CFilePreload* FUN_140ab7a10();
 
 // The effect manager (singleton 0x1403ed280): quality level.
 class Unk_EffectMgr
@@ -261,7 +260,7 @@ void CSwooshEffectParam::vfunc_4()
 {
     if (m_strNifPath.IsEmpty())
         return;
-    FUN_140ab7a10()->FUN_141210ac0(FUN_140cc2ba0("Effect", m_strNifPath));
+    TSingleton<CFilePreload>::GetInstance()->FUN_141210ac0(FUN_140cc2ba0("Effect", m_strNifPath));
 }
 
 // @0x14181d330

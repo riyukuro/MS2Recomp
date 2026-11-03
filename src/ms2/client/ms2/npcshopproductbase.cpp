@@ -28,7 +28,6 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // locali
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CStringW strSep2);   // date and time text
 CStringW FUN_14083bab0(CMsTime const &, CStringW);  // C3: the definition's signature
 CStringW FUN_140b8f230(int nDay);                               // the name of a week day
-CStringW FUN_14086cc00(const wchar_t* pszFormat, const int& a, const int& b, const int& c, const int& d);
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 __int64 GetServerTime();                                        // the server time
@@ -388,7 +387,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
                         int nToB = pair.m_end.GetHour();
                         int nFromA = pair.m_start.GetMinute();
                         int nFromB = pair.m_start.GetHour();
-                        CStringW strOne = FUN_14086cc00(strFormat, nFromB, nFromA, nToB, nToA);
+                        CStringW strOne = StringFormat<int, int, int, int>(strFormat, nFromB, nFromA, nToB, nToA);
                         if (!strParts.IsEmpty())
                             strParts.Append(StringFormat<CStringW>(L", {0}", strOne));
                         else

@@ -238,7 +238,7 @@ struct Unk_TooltipBreakTable
 {
 };
 class Unk_BreakRecipes* FUN_140535300();                  // 0x140535300 the break ingredient table
-class Unk_TooltipBreakManager { public: int FUN_140531270(MS2Ptr<CItem> spItem); };   // CItemBreakManager: the item can be broken
+#include "ms2/commonfiles/itembreakmanager.h"
 class Unk_SlotBreakManager* FUN_1409c4b20();                // 0x1409c4b20 the break manager
 // The callers here test CItemData::FUN_14053d740 (enableRegisterMeratMarket) as an int (no movzx): the exe's caller-side
 // prototype returns BOOL.

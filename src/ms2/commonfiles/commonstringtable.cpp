@@ -107,12 +107,12 @@ template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val
 template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, int>>>::_Rmost() const;
 template std::_Tree_node<std::pair<const unsigned, int>, void*>*& std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned, int>>>::_Root() const;
 
-CStringW GetStringCommon(EBanStringId nStringId);
+CStringW GetStringCommon(int nStringId);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140165cf0* FUN_140168650(const char*); };
+class Unk_140165cf0 { public: Unk_140165cf0* FUN_140168650(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
@@ -1059,7 +1059,7 @@ int CBanTextChecker::LoadWords(CString strPath, TextFilterUnit* pTrie)
     {
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -1098,7 +1098,7 @@ int CBanTextChecker::LoadIdSet(CString strPath, std::set<CStringW>* pSet)
     {
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -5044,7 +5044,7 @@ int CommonString::LoadCommon()
     {
         return 0;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
@@ -5073,7 +5073,7 @@ bool CommonString::LoadDebug()
     {
         return false;
     }
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);

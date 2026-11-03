@@ -69,7 +69,6 @@ void FUN_140d73bc0(int nId, int nA, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strExtra);
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
-CStringW FUN_1409e97f0(int nId, const int& rArg);
 CStringW FUN_140763e10(int nValue);
 template <class T> void Unk_AkoMessage(int nId, int nA, int nB, const T& rArg);
 void FUN_140961010(int nId, int nA, int nB, const CStringW& rArg);
@@ -892,7 +891,7 @@ void CStore::OnError(CInPacket* pPacket)
         break;
     case 0xe: {
         int nCapacity = Unk_StoreInstance()->CurrentCapacity();
-        CStringW strText = FUN_1409e97f0(0x2b0, nCapacity);
+        CStringW strText = BlockFormat<unsigned>(0x2b0, reinterpret_cast<const unsigned&>(nCapacity));
         FUN_140d73aa0(strText, 0, 0, L"");
     }   break;
     case 0xf:

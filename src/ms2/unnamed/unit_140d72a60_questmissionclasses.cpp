@@ -83,10 +83,8 @@ public:
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
 
 UIRewardNotify* FUN_140938cd0(int uiType);
-CStringW FUN_14062b4f0(CStringW, const int*);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1416e4df0(int);
-CStringW FUN_140c160b0(CStringW, const __int64*);
 void FUN_1412751b0(const CStringW&, int);
 void FUN_1412751f0(const CStringW&, int, int);
 class CMentoringManager   // C3: member view for the former free stand-ins
@@ -161,7 +159,7 @@ void CDailyMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
     if (m_data->m_338.m_value == 4 || m_data->m_338.m_value == 3)
-        FUN_1412751b0(FUN_14062b4f0(CStringW(L"s_daily_mission_reward_mission_point"), &m_data->m_complete.m_missionPoint), 7);
+        FUN_1412751b0(FUN_14028dfa0<int>(CStringW(L"s_daily_mission_reward_mission_point"), m_data->m_complete.m_missionPoint), 7);
 }
 
 // ---- CFieldMission ----
@@ -185,12 +183,12 @@ void CFieldMission::Complete(CInPacket& packet)
             notify->FUN_141ac1950(row->m_point, row->m_skillKind);
             CStringW key = L"s_reward_notify_skill_point";
             if (row->m_skillKind == 2) key = L"s_reward_notify_skill_point_sub_1";
-            FUN_1412751b0(FUN_14062b4f0(key, &row->m_point), 0x14);
+            FUN_1412751b0(FUN_14028dfa0<int>(key, row->m_point), 0x14);
         }
             break;
         case 2:
             notify->FUN_141ac1b50(row->m_point);
-            FUN_1412751b0(FUN_14062b4f0(CStringW(L"s_reward_notify_stat_point"), &row->m_point), 0x14);
+            FUN_1412751b0(FUN_14028dfa0<int>(CStringW(L"s_reward_notify_stat_point"), row->m_point), 0x14);
             break;
         }
     }
@@ -282,7 +280,7 @@ void CWeddingMission::ShowRewards(int reward)
     if (data->m_complete.m_weddingExp == 0) return;
     UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
     if (notify != 0) {
-        CStringW msg = FUN_140c160b0(CStringW(L"s_system_quest_reward_wedding_exp"), &data->m_complete.m_weddingExp);
+        CStringW msg = FUN_14028dfa0<__int64>(CStringW(L"s_system_quest_reward_wedding_exp"), data->m_complete.m_weddingExp);
         CStringW image = L"./Data/Resource/Image/ETC/wedding.png";
         notify->FUN_141ac1580(image, msg, 0);
     }

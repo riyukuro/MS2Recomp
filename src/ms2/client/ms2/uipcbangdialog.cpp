@@ -71,7 +71,6 @@ template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CStringTable* GetStringTable();
 class Unk_PcBangWorld { public: PCBase* FUN_141bd0cc0(); };     // the world service: the local player
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -84,12 +83,11 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_141275a10(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
 void FUN_140710590(COutPacket& packet);                         // send
 void ReadBits(Unk_PartyBits& bits, CInputStream& in);           // 0x14031c1f0 (bitset.inl stream helper)
-CString FUN_1402bb1c0(const char* szFormat, const int& n);      // StringFormat<int>
 CString FUN_140513200(const char* szFormat, const unsigned& n); // StringFormat<unsigned>
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_1409e97f0(int nId, const unsigned& nArg);          // string table entry, one argument
+template <class A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // system chat notice
 int FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
@@ -103,12 +101,6 @@ void FUN_140cffa50(const Scaleform::GFx::Value& root, CString strName, CString s
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId);
 
-// ASButton's click registration as this unit calls it: the user value goes as a qword (the row index, sign-extended).
-class Unk_PcBangGetButton : public ASButton
-{
-public:
-    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, __int64 nUser);
-};
 
 // The sounds of the dialog (dynamic initializers 0x1400ef700 / 0x1400ef730, atexit 0x142caffc0 / 0x142caffe0).
 static CString s_strBuySound("cash_Buy");                       // 0x143ad7ae8
@@ -160,19 +152,19 @@ void UIPcBangDialog::OnLoadInit()
     UIObject::OnLoadInit();
     for (int i = 0; i < 6; i++)
     {
-        MS2Ptr<ASMovieClip> spRow = m_30->FUN_1409b4560(FUN_1402bb1c0("m_timeBonus{0}", i));
+        MS2Ptr<ASMovieClip> spRow = m_30->FUN_1409b4560(StringFormat<int>("m_timeBonus{0}", i));
         if (spRow == 0)
             break;
         MS2Ptr<ASButton> spButton = spRow->FUN_140acce30<ASButton>("itemGetButton");
         if (spButton == 0)
             break;
-        static_cast<Unk_PcBangGetButton*>(spButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickItemGet), i);
+        spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickItemGet), (void*)(__int64)i);   // the row index, sign-extended
         m_getButtons.Add(spButton);
         m_rows.Add(spRow);
     }
     m_spGiftList = GetChild<ASTileList>("m_giftList");
     m_spBanner = GetChild<ASMovieClip>("m_banner");
-    m_spBanner->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickBanner), 0);
+    m_spBanner->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPcBangDialog::OnClickBanner), (void*)0);
     m_banner.LoadBanner();
     RebuildGiftOrder();
     RefreshAll();
@@ -475,7 +467,7 @@ void UIPcBangDialog::UpdateBuff()
     m_30->Invoke("setIcon", spBuff->GetIcon());
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("buffText"))
     {
-        spText->SetTextHTMLW(GetStringTable()->FUN_141812290(spBuff->GetID(), spBuff->GetLevel(), "tooltipDescription"));
+        spText->SetTextHTMLW(TSingleton<CStringTable>::GetInstance()->FUN_141812290(spBuff->GetID(), spBuff->GetLevel(), "tooltipDescription"));
         FUN_140d01340((*spText).FUN_1422bb890(), 2, 2);
     }
 }
@@ -513,8 +505,8 @@ void UIPcBangDialog::UpdateRows()
         MS2Ptr<PlayBonusItemGift> spBonus = m_playBonus[i];
         const Scaleform::GFx::Value& row = m_rows[i]->FUN_1422bb870();
         FUN_140d00360(row, "itemSlot", spBonus->m_itemId, spBonus->vfunc_o18_1(), spBonus->m_count);
-        FUN_140cfee80(row, "itemName", GetStringTable()->FUN_141811980(1, spBonus->m_itemId));
-        FUN_140cfee80(row, "reqPlayTime", FUN_1409e97f0(0x97c, spBonus->GetMinutes()));
+        FUN_140cfee80(row, "itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spBonus->m_itemId));
+        FUN_140cfee80(row, "reqPlayTime", BlockFormat<unsigned>(0x97c, spBonus->GetMinutes()));
     }
     UpdateProgress();
 }
@@ -562,7 +554,7 @@ void UIPcBangDialog::RefreshGiftList()
         {
             ASObj obj(2);
             obj.FUN_1409c0d20("id", spGift->m_giftId);
-            ((class AScript&)(obj)).FUN_1407cbb20("label", GetStringTable()->FUN_141811980(1, spGift->m_itemId));
+            ((class AScript&)(obj)).FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spGift->m_itemId));
             obj.FUN_1409adc90("itemGrade", spGift->vfunc_o18_1());
             obj.FUN_1407cba60("iconPath", spData->GetIconPath());
             ((class AScript&)(obj)).FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());

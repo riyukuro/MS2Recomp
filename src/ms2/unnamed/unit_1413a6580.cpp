@@ -35,8 +35,6 @@ class Unk_GcPortal : public CPtred
 // The world manager (FUN_1403ed2d0).
 class Unk_GcWorld : public WorldService
 {
-public:
-    void FUN_141bc2c90(Vector3 pt, ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arrOut);   // portals containing pt, nearest first (AddRef'd)
 };
 
 // The local player: only the position getter (slot 18) is used here.
@@ -237,7 +235,7 @@ int CGuideConditionPortalEnable::vfunc_3()
     if (pPC == 0)
         return 0;
     ATL::CAtlArray<MS2Ptr<Unk_GcPortal> > arrPortals;
-    ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(pPC->vfunc_18(), arrPortals);
+    ((class Unk_GcWorld*)WorldService::GetInstance())->FUN_141bc2c90(pPC->vfunc_18(), &arrPortals);
     return FUN_1413a5600(FUN_140966da0(arrPortals) != 0);
 }
 MS2_REPLACE_METHOD(0x1413A6D50, CGuideConditionPortalEnable, vfunc_3, 205, 0x9D153889);

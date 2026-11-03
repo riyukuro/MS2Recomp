@@ -34,7 +34,6 @@ CFileSystem* GetFileSystem();
 double FUN_1407184e0(const CStringW& str);                              // text -> number
 long long FUN_140718320(const CStringW& str);
 CStringW FUN_140719a00(long long n);                                    // integer text
-CStringW FUN_1405dbf60(const wchar_t* pszFormat, const double& d);      // one double argument
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
@@ -287,7 +286,7 @@ CStringW FUN_14083ccf0(const CStringW& str)
     else
     {
         double d = FUN_1407184e0(strDigits);
-        strOut = FUN_1405dbf60(L"{0}", d);
+        strOut = StringFormat<double>(L"{0}", d);
     }
     return strOut;
 }
@@ -308,7 +307,7 @@ CStringW FUN_14083cf50(int nValue, bool bLocalized)
     {
         CStringW strNumber = StringFormat(L"{0}.{1}", nInt, nFrac);
         double d = FUN_1407184e0(strNumber);
-        CStringW strFixed = FUN_1405dbf60(L"{0:.2f}", d);
+        CStringW strFixed = StringFormat<double>(L"{0:.2f}", d);
         return bLocalized ? FUN_14028dfa0<CStringW>(L"s_common_percent", strFixed) : CStringW(strFixed);
     }
     CStringW strFormat = bLocalized ? GetStringCommonByKey(L"s_common_percent") : CStringW(L"{0}");

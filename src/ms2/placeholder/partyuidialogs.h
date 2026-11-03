@@ -15,6 +15,7 @@ class UIPartyDialog : public UIDialog {
 public:
     void SetDeadline(unsigned int nDeadline);   // 0x141a75a00
     void ArrangeBottomButton();                 // 0x141a75a20
+    void FUN_141a759b0();                       // 0x141a759b0 refresh the vote panel
 private:
     unsigned char unrecovered[0x70];
 };

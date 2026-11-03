@@ -245,7 +245,6 @@ class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
 // CString comparisons of the exe.
 char FUN_1401c0090(const CString& a, const CString& b);     // a == b
-CString FUN_140298360(const char* a, const CString& b);      // a + b
 
 // CSkillRecord (RTTI, 0x1c0) and the skill request it is built from (same request as inventory.cpp's view).
 struct Unk_InventorySkillRequest
@@ -1490,7 +1489,7 @@ AvatarRidee::AvatarRidee(MS2Ptr<CItemData> spData)
 
 // @0x1409fa300
 AvatarRidee::AvatarRidee(Unk_RideePtr spRow)
-    : CloneCube(MS2Ptr<CItemData>(0), FUN_140298360("urn:gamebryo-animation:", spRow->FUN_140784880(1)))
+    : CloneCube(MS2Ptr<CItemData>(0), "urn:gamebryo-animation:" + spRow->FUN_140784880(1))
     , m_spAttach(0)
 {
     m_str88 = "GameObject";

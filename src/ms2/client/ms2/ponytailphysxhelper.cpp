@@ -87,7 +87,6 @@ class Unk_PonyPlayer : public PC
 };
 struct Unk_PonyWorld {  };      // the local player
 egmAnimation::AnimationService* FUN_141b6f910();
-CString FUN_14038f6d0(const CString& strBase, const char* pszSuffix);   // path concatenation
 
 // The app framework (+8 = the service manager) and the world scene.
 struct Unk_PonyApp { char m_pad[8]; char m_manager[1];  };
@@ -499,7 +498,7 @@ void CPonyTailController::vfunc_37()
         strPath = strPath.Left(nDot);
         if (pSrc != 0)
         {
-            CString strControl = FUN_14038f6d0(strPath, "_control.dds");
+            CString strControl = strPath + "_control.dds";
             Unk_PonyHandle kTemp;
             if (efd::File::Access((const char*)strControl, (efd::File::OpenMode)0))
             {

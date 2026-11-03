@@ -20,14 +20,13 @@
 #include "ms2/guess/machineidmanager.h"
 #include "ms2/commonfiles/timeutil.h"
 #include <efd/Win32/Win32PlatformService.h>
+#include "ms2/client/ms2/windowservice.h"  // C3: TSingleton<CWindowService>::s_instance
 
 // Header static string table (7 names) that this TU instantiates; no use here.
 static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 extern int DAT_143af7d44, DAT_143ab2910;
 extern __int64 DAT_143ab2820, DAT_143ab2828;
-extern void* DAT_143ab8aa8;
-extern void* DAT_143ab8a98;
 CReconnectionManagerCli* TSingleton<CReconnectionManagerCli>::s_instance = 0;
 inline TSingleton<CReconnectionManagerCli>::TSingleton() { s_instance = static_cast<CReconnectionManagerCli*>(this); }
 
@@ -40,8 +39,6 @@ public:
 class Unk_MachineId { public: CStringW FUN_14067c400() const; };
 class Unk_RCUIManager { public: };
 // The exe's caller treats 0x1415384e0 as an int-returning function (no movzx after the call).
-class Unk_RCState;
-Unk_RCState* FUN_140aa6d30();
 CNetworkService* FUN_140714f90();
 void* FUN_140aadf70();
 void* FUN_140aadf80();
@@ -59,7 +56,7 @@ CReconnectionManagerCli::~CReconnectionManagerCli() {
 
 // @0x140aacf50
 bool CReconnectionManagerCli::ShouldReconnect(int error) {
-    if (!(FUN_140aa6d30() != 0 && reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e2610() == 0x620000c)) return false;
+    if (!(TSingleton<CStateService>::GetInstance() != 0 && TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000c)) return false;
     if (FUN_140714f90() == 0) return false;
     if (FUN_140714f90()->GetSocket().GetDisconnect() != 0) return false;
     if (DAT_143af7d44 == 1) return false;
@@ -77,7 +74,7 @@ bool CReconnectionManagerCli::ShouldReconnect(int error) {
 
 // @0x140aad050
 void CReconnectionManagerCli::SetOptions(const ReconnectionOptions* src) {
-    m_options.FUN_140208460(src);
+    m_options.FUN_140208460(*src);
 }
 MS2_REPLACE_METHOD(0x140AAD050, CReconnectionManagerCli, SetOptions, 41, 0x9138FC0F);
 
@@ -309,7 +306,7 @@ void CReconnectionManagerCli::OnReconnectPacket(CInPacket* packet) {
         int result = packet->ReadInt32();
         switch (result) {
         case 1:
-            if (FUN_140aa6d30() != 0 && reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e2610() == 0x620000c) {
+            if (TSingleton<CStateService>::GetInstance() != 0 && TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000c) {
                 OnReconnectResult(1);
             } else {
                 OnReconnectFailed(0xcc);
@@ -323,10 +320,10 @@ void CReconnectionManagerCli::OnReconnectPacket(CInPacket* packet) {
         break;
     case 3:
         Reset();
-        if (FUN_140aa6d30() != 0) {
-            if (reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e2610() == 0x620000c) {
+        if (TSingleton<CStateService>::GetInstance() != 0) {
+            if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000c) {
                 FUN_140714f90()->SendRequestQuitAndDisconnect();
-                reinterpret_cast<CStateService*>(FUN_140aa6d30())->FUN_1417e25a0(0x6200009);
+                TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009);
                 FUN_140d73aa0(FormatStringId<int>(0x20f, 0), 0, 0, CStringW(L""));
             }
         }
@@ -362,12 +359,12 @@ MS2_REPLACE(0x140AADE00, FUN_140aade00, 147, 0x8BBE3F9F);
 
 // @0x140aadf70
 void* FUN_140aadf70() {
-    return DAT_143ab8aa8;
+    return TSingleton<CMachineIDManager>::s_instance;
 }
 
 // @0x140aadf80
 void* FUN_140aadf80() {
-    return DAT_143ab8a98;
+    return TSingleton<CWindowService>::s_instance;
 }
 
 // @0x140aadf90

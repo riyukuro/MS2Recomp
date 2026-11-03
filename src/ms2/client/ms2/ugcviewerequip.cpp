@@ -60,12 +60,10 @@ class Unk_SgNifLoader { public: NiTexturePtr FUN_141553eb0(CString strPath, NiTe
 class Unk_ResourceMgr* FUN_140a0afd0();   // C3: was FUN_140a0afd0
 CString FUN_1410280d0(int nKind, CString strName);          // the local file of a ugc content kind
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                   // the scene root of an entity
-void FUN_141890b60(egf::Entity* pEntity, const efd::utf8string& strProp, efd::utf8string& strOut);
 class Unk_VwWorld
 {
 public:
     GameObject* FUN_141bd0cc0();                            // the local player
-    egf::Entity* FUN_141bd04d0(int nObjectId);              // an entity by object id
     GameObject* FUN_141bd0fa0(egf::EntityID id);            // the game object of an entity
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);   // an interact object by name
 };
@@ -86,7 +84,7 @@ public:
     bool IsRegionCN();
 };
 class CGuildManager;
-__int64 FUN_1404ccbd0(void* pGuild);                        // the guild id
+class CGuildInfo { public: __int64 FUN_1404ccbd0(); };      // the guild id (guilddef_1.h)
 struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character's summary (+0x20: 2 = wedding done)
 class WeddingManager   // C3: member view for the former free stand-ins
 {
@@ -100,25 +98,25 @@ class Unk_UgcRideeMgr* FUN_14052d220();   // C3: was FUN_14052d220
 
 // UI dialogs by id.
 class UIMyInfoDialog* FUN_140938c30(int);   // C3: was FUN_140938c30
-void* FUN_1418764c0(int nId);                               // 0x4f8c the wedding profile dialog
+template <class T> T* Unk_UgcGetDialog(int nId);            // 0x4f8c the wedding profile dialog
 void* FUN_14136f480(int nId);                               // 0x4e4f the guild mark dialog
-void FUN_14132faf0(void* pDialog, const CStringW& strFile);        // show the uploaded image (profile)
 class UIPCInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
     void RefreshProfileImage();
+    void FUN_14132faf0(const CStringW& strFile);                 // show the uploaded image (profile)
 };
-void FUN_140fc7e80(void* pDialog, const CStringW& strFile);        // (wedding profile)
 class UIWeddingDialog   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_140fc7f30();
+    void FUN_140fc7e80(const CStringW& strProfile);              // (wedding profile)
 };
-void FUN_141976980(void* pDialog, const CStringW& strFile);        // (guild mark)
 class UIGuildDialog   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1419769d0();
+    void FUN_141976980(const CStringW& strMark);                 // (guild mark)
 };
 
 // Textures of the preview files and the format helper strings.
@@ -547,7 +545,7 @@ CUgcViewerBanner::~CUgcViewerBanner()
 // @0x1418a02f0
 void CUgcViewerBanner::vfunc_1()
 {
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -583,7 +581,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = ((class CUgcManager*)FUN_14052d220())->GetCurrentUpload();
     if (spCtrl == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -600,7 +598,7 @@ void CUgcViewerBanner::vfunc_4()
 {
     int nBannerId = m_post.m_nBannerId;
     NiTexturePtr spTexture;
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     MS2Ptr<CUgcRegistBanner> spRegist = ((class CUgcManager*)FUN_14052d220())->GetRegistBanner(nBannerId);
@@ -629,16 +627,16 @@ void CUgcViewerBanner::vfunc_5()
 {
     if (m_nLoaded == 1)
         return;
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     NiAVObject* pRoot = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(spEntity.data()));
     if (pRoot != 0)
     {
         efd::utf8string strMesh;
-        FUN_141890b60(spEntity, "Index00MeshName", strMesh);
+        spEntity->GetPropertyValue<efd::utf8string>("Index00MeshName", strMesh);
         efd::utf8string strTexture;
-        FUN_141890b60(spEntity, "Index00TexturePath", strTexture);
+        spEntity->GetPropertyValue<efd::utf8string>("Index00TexturePath", strTexture);
         if (!strMesh.empty())
         {
             if (NiAVObject* pMesh = pRoot->GetObjectByName(strMesh.c_str()))
@@ -700,7 +698,7 @@ void CUgcViewerBanner::FUN_1418a0f90(int nBannerId)
 // @0x1418a1000
 void CUgcViewerBanner::FUN_1418a1000()
 {
-    efd::SmartPointer<egf::Entity> spEntity = reinterpret_cast<Unk_VwWorld*>(WorldService::GetInstance())->FUN_141bd04d0(m_post.m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = WorldService::GetInstance()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     NiTexturePtr spTexture = m_spImage;
@@ -742,7 +740,7 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     void* pDialog = ((void*)FUN_140938c30(0x2711));
     if (pDialog == 0)
         return 0;
-    FUN_14132faf0(pDialog, strThumb);
+    reinterpret_cast<UIPCInfoDialog*>(pDialog)->FUN_14132faf0(strThumb);
     return 1;
 }
 
@@ -820,17 +818,17 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     if (strThumb.GetLength() == 0)
         return 0;
     spCtrl->m_spFile = spFile;
-    void* pDialog = FUN_1418764c0(0x4f8c);
+    void* pDialog = Unk_UgcGetDialog<UIWeddingDialog>(0x4f8c);
     if (pDialog == 0)
         return 0;
-    FUN_140fc7e80(pDialog, strThumb);
+    reinterpret_cast<UIWeddingDialog*>(pDialog)->FUN_140fc7e80(strThumb);
     return 1;
 }
 
 // @0x1418a1970
 void CUgcViewerWeddingProfile::vfunc_4()
 {
-    void* pDialog = FUN_1418764c0(0x4f8c);
+    void* pDialog = Unk_UgcGetDialog<UIWeddingDialog>(0x4f8c);
     if (pDialog == 0)
         return;
     ((class UIWeddingDialog*)(void*)(pDialog))->FUN_140fc7f30();
@@ -893,7 +891,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (FUN_1404ccbd0((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8) == 0)
+    if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->FUN_1404ccbd0() == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -905,7 +903,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     void* pDialog = FUN_14136f480(0x4e4f);
     if (pDialog == 0)
         return 0;
-    FUN_141976980(pDialog, strThumb);
+    reinterpret_cast<UIGuildDialog*>(pDialog)->FUN_141976980(strThumb);
     return 1;
 }
 
@@ -981,7 +979,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (FUN_1404ccbd0((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8) == 0)
+    if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->FUN_1404ccbd0() == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)

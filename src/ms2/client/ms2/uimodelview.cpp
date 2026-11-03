@@ -70,6 +70,7 @@ struct Unk_MvPoint3
 };
 NiPoint3& FUN_14097fad0(NiPoint3* pDst, const NiPoint3& kSrc);  // NiPoint3 copy assignment (out of line in the exe)
 extern efd::Point3 DAT_143a08cf8;                                // (0, 0, 1)
+class CLogString* GetLogString();
 void FUN_140e68a40(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB, const float* pC);
 void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ);
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);
@@ -283,9 +284,9 @@ void UIModelView::vfunc_17(const NiPoint3& kPivot)
     reinterpret_cast<Unk_MvPoint3&>(m_kBackupTranslate) = kTranslate;
     FUN_14097fad0(&m_kBackupCenter, kPivot);
     FUN_14097faa0(&m_kBackupUp, m_spCamera->GetWorldUpVector());
-    FUN_140e68a40(CLogString::GetInstance(), 0xc, 0x13, L"UIModelView::m_backupTranslate: {0}, {1}, {2}",
+    FUN_140e68a40(GetLogString(), 0xc, 0x13, L"UIModelView::m_backupTranslate: {0}, {1}, {2}",
                   &m_kBackupTranslate.x, &m_kBackupTranslate.y, &m_kBackupTranslate.z);
-    FUN_140e68a40(CLogString::GetInstance(), 0xc, 0x13, L"UIModelView::m_backupCenter: {0}, {1}, {2}",
+    FUN_140e68a40(GetLogString(), 0xc, 0x13, L"UIModelView::m_backupCenter: {0}, {1}, {2}",
                   &m_kBackupCenter.x, &m_kBackupCenter.y, &m_kBackupCenter.z);
 }
 

@@ -95,7 +95,6 @@ public:
 };
 class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
 CFeatureManager* FUN_140166410();
-extern CStringTable* GetStringTable();                          // FUN_1401a9d70
 
 // The unit's three packet records (the item socket system util reads / writes them with these shapes).
 struct Unk_SsdUidIntByte
@@ -137,7 +136,6 @@ int FUN_140627450(MS2Ptr<CItem> spItem, CItemSocketScrollDataPtr spRow);   // 0 
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);
-CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // notice
 void FUN_1412752d0(const CStringW& strKey, int nType);          // notice by string key
 // StringFormat instances of the neighbouring units (key by value in the exe, arguments by reference).
@@ -168,7 +166,7 @@ UIItemSocketScrollDialog::UIItemSocketScrollDialog()
 {
     FUN_141924170(1);
     m_164 = 1;
-    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
+    m_strSlot = StringFormat<CString>("{0}.slot", GetTypeName());
     ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xe3, Delegate<void(CInPacket&)>(this, &UIItemSocketScrollDialog::FUN_140f64a20));
 }
 
@@ -389,7 +387,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
         for (size_t i = 0; i < arrRank.GetCount(); i++)
         {
             unsigned nRank = arrRank[i];
-            CStringW strOne = FUN_14183e9c0(GetStringTable()->GetRankName(nRank), nRank);
+            CStringW strOne = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->GetRankName(nRank), nRank);
             if (i != 0)
                 strRanks.Append(StringFormat<CStringW>(strSep, strOne));
             else
@@ -402,7 +400,7 @@ bool UIItemSocketScrollDialog::FUN_140f65c10(CItemSocketScrollDataPtr spRow, CSt
     {
         for (size_t i = 0; i < arrSlot.GetCount(); i++)
         {
-            CStringW strOne = GetStringTable()->FUN_141811980(8, arrSlot[i]);
+            CStringW strOne = TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, arrSlot[i]);
             if (strOne.IsEmpty())
                 continue;
             if (!strSlots.IsEmpty())

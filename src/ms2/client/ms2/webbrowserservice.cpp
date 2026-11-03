@@ -23,8 +23,6 @@
 
 extern int DAT_143ab0248;                       // the service region (0 Korea, 1 Japan, 2 global, 3 China)
 extern const char* g_szCefMessageToken;         // 0x1439f7eb0 "token" (the CEF process message names table)
-CStringA FUN_1401d2b10(const CStringA& a, const CStringA& b);  // a + b (exe copy of the CStringT operator+)
-CStringA FUN_14038f6d0(const CStringA& a, const char* b);      // a + b (exe copy of the CStringT operator+)
 
 // The web page urls: the maview (news) page and the web api (both set from the server by SceneStateGame).
 CStringA g_strWebApiURL("http://ms2plan:8002");                 // 0x143af7be8
@@ -254,7 +252,7 @@ void CWebBrowserService::FUN_141b78760(int nIndex, int nPage)
         if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x5c) == true) {
             // empty in the exe (the feature test is all that is left)
         }
-        Navigate(nIndex, FUN_1401d2b10(g_strMaviewURL, strPath));
+        Navigate(nIndex, g_strMaviewURL + strPath);
     } else {
         COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
         if (pBrowser == NULL) {
@@ -484,7 +482,7 @@ void CWebBrowserService::FUN_141b794e0(CStringA& strOut, const char* pszUrl)
             strOut = g_strWebApiURL;
             nPrefix = 4;
         } else if (strncmp(pszUrl, "search:", 7) == 0) {
-            strOut = FUN_14038f6d0(g_strMaviewURL, "/search?q=");
+            strOut = g_strMaviewURL + "/search?q=";
             nPrefix = 7;
         } else if (strncmp(pszUrl, "external:", 9) == 0) {
             strOut = "";

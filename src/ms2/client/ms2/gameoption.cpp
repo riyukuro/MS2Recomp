@@ -95,6 +95,7 @@ class Unk_AeGameOption { public: class Unk_AeGraphicOption* FUN_1409a8ac0(); }; 
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/crashmanagercli.h"
+#include "ms2/client/ms2/gpumanager.h"
 
 // ---- header statics (dynamic initializers 0x1400ea4e0..0x1400ea810) ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -780,7 +781,7 @@ class Unk_GoInput : public ASTextInput { };      // its text input (a view)
 // The lookups of the dialog view by child name (more instances of the getTabChild template); the first three live in this unit.
 MS2Ptr<ASTextField> FUN_1409b41a0(int nId, const Scaleform::GFx::Value& v);
 MS2Ptr<Unk_GoInput> FUN_140bbe1d0(int nId, const Scaleform::GFx::Value& v);
-MS2Ptr<ASUIComponent> FUN_140acca70(int nId, const Scaleform::GFx::Value& v);
+template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
 int FUN_1407181a0(const CStringW& str);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);    // notice
 int FUN_14151f6e0();
@@ -797,7 +798,7 @@ MS2Ptr<ASUIComponent> Unk_GoDialog::FUN_14124ff50(int nIndex)
     Scaleform::GFx::Value comp = m_root->Invoke("getTabComponent", nIndex);
     if (comp.IsDisplayObject())
     {
-        MS2Ptr<ASUIComponent> sp = FUN_140acca70(m_nId, comp);
+        MS2Ptr<ASUIComponent> sp = Unk_ASCreate<ASUIComponent>(m_nId, comp);
         if (static_cast<ASUIComponent*>(sp) != 0)
             return sp;
     }
@@ -848,7 +849,6 @@ public:
     char m_pad2[0x38 - 0x20];
     unsigned __int64 m_nBandwidth;                              // +0x38
 };
-extern Unk_GoDeviceInfo* DAT_143ad5158;
 
 // @0x141245ab0
 CStringW Unk_GoDeviceInfo::FUN_141245ab0()
@@ -859,7 +859,7 @@ CStringW Unk_GoDeviceInfo::FUN_141245ab0()
 // @0x141245b20
 Unk_GoDeviceInfo* FUN_141245b20()
 {
-    return DAT_143ad5158;
+    return reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::s_instance);
 }
 
 // The renderer's display mode list: raw modes (width, height, format) behind a counted pointer array.
@@ -1564,9 +1564,8 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-CStringW FUN_1401bf530(void* pElem, const char* szName, CStringW strDefault);   // string attribute (strDefault by value)
-bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);    // SaveFile
-void FUN_140874050(void* pElem, const char* szName, const CString& strValue);   // SetAttribute
+CStringW FUN_1401bf530(class Unk_140165cf0* pElem, const char* szName, CStringW strDefault);   // string attribute (strDefault by value)
+void XmlSetAttr(class TiXmlElement*, const char*, const CStringA&);
 void* FUN_14086f2f0(void* pMem, const char* szName);            // TiXmlElement::TiXmlElement(const char*)
 class TiXmlElement
 {
@@ -1609,7 +1608,7 @@ struct Unk_GsEtc* FUN_141261750(struct Unk_GsEtc*);   // C3: was FUN_141261750
 struct Unk_LgState* FUN_14125f090(struct Unk_LgState*);   // C3: was FUN_14125f090
 struct Unk_GpState* FUN_14125f290(struct Unk_GpState*);   // C3: was FUN_14125f290
 struct Unk_GoChroma* FUN_141261670(struct Unk_GoChroma*);   // C3: was FUN_141261670
-void FUN_141261cf0(Unk_PiAgreeState* p);
+class CPersonalInfoAgreement { public: CPersonalInfoAgreement(); };   // 0x141261cf0 (gameoptionpersonalinfoagreement.cpp)
 int LoadGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc);
 int FUN_14125bee0(Unk_StatusState* p, TiXmlDocument* pDoc);
 int LoadGameOptionSound(Unk_SoundState* p, TiXmlDocument* pDoc);
@@ -1670,7 +1669,7 @@ CGameOption::CGameOption()
     FUN_14125f090(&m_language);
     FUN_14125f290(&m_gamepad);
     FUN_141261670(&m_chroma);
-    FUN_141261cf0(&m_agree);
+    reinterpret_cast<CPersonalInfoAgreement*>(&m_agree)->CPersonalInfoAgreement::CPersonalInfoAgreement();
     m_nBenchmark = -1;
     m_n464 = 0;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
@@ -1865,8 +1864,8 @@ void CGameOption::WriteGameAndAccountFiles()
 {
     FUN_141244320(&m_docGame);
     FUN_141244320(&m_docAccount);
-    FUN_1408710c0(&m_docGame, GetOptionFilePath(0, false));
-    FUN_1408710c0(&m_docAccount, GetOptionFilePath(1, false));
+    m_docGame.SaveFile(GetOptionFilePath(0, false));
+    m_docAccount.SaveFile(GetOptionFilePath(1, false));
 }
 
 // @0x141243540
@@ -1905,7 +1904,7 @@ void CGameOption::FUN_141243630()
 // @0x1412437e0
 void CGameOption::WriteCharacterFile()
 {
-    FUN_1408710c0(&m_docCharacter, GetOptionFilePath(2, false));
+    m_docCharacter.SaveFile(GetOptionFilePath(2, false));
 }
 
 // @0x141243850
@@ -1987,7 +1986,7 @@ int CGameOption::FUN_1412438f0()
                 {
                     for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("vga")); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("vga")))
                     {
-                        CStringW strVga = FUN_1401bf530(pNode, "name", CStringW(L""));
+                        CStringW strVga = FUN_1401bf530((class Unk_140165cf0*)(pNode), "name", CStringW(L""));
                         if (strVga == strName)
                         {
                             XmlGetAttr((class TiXmlElement*)(pNode), "value", nValue);
@@ -2105,7 +2104,7 @@ static void FUN_141244320(TiXmlDocument* pDoc)
         }
         CString strVersion;
         strVersion.Format("%d", 0x15);
-        FUN_140874050(pOption, "version", strVersion);
+        XmlSetAttr((class TiXmlElement*)(pOption), "version", strVersion);
     }
 }
 

@@ -8,6 +8,7 @@
 #include <efd/Point3.h>
 #include "ms2/placeholder/ms2renderprocessors.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include <NiRenderer.h>
 #include <NiRenderObject.h>
 #include <NiAVObject.h>
@@ -43,13 +44,11 @@ public:
     virtual NiPoint3 GetPosition();
 };
 // The post-processing service (singleton FUN_1409a8b20); FUN_1416a3a90 reads one of its flags.
-struct Unk_ShService;
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
 public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
-long long FUN_1416a3a90(Unk_ShService* pService, int nFlag);
 // The graphics-settings object (FUN_1401d3200) and its float option accessor.
 struct Unk_ShSettings;
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -134,9 +133,9 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         ((class Unk_PtrArray*)(class NiVisibleArray*)(&kList))->Add((void*)(pkObject));
         nShimmer++;
     }
-    Unk_ShService* pService = ((struct Unk_ShService*)Unk_AeFeatureMgr::FUN_1409a8b20());
-    long long nEnabled = FUN_1416a3a90(pService, 0xc);
-    if (nEnabled != 0)
+    PostProcessingService* pService = reinterpret_cast<PostProcessingService*>(Unk_AeFeatureMgr::FUN_1409a8b20());
+    PostProcessEffect* pStep = pService->GetStep(0xc);
+    if (pStep != 0)
     {
         if (nShimmer == 0)
         {

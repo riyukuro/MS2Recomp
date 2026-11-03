@@ -95,14 +95,15 @@ public:
 
 // PCBase / MyPC non-virtual helpers (free-function form: `this` is the first argument).
 
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the CPhysXHelper argument type
 // The physics service: ray casts.
 class CPhysXHelper
 {
 public:
     int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);                            // closest hit distance
-    bool FUN_14168a770(const efd::Point3* pPoint);                                                // the point is blocked
-    int FUN_14168a230(efd::Point3 ptFrom, efd::Point3& ptHit, efd::Point3 ptDir, float fLen, int nMask);   // line is blocked
-    int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, efd::Point3* pNormal, int nA);   // CPhysXHelper: Vector3* out normal
+    bool FUN_14168a770(const Vector3* pPoint);                                                    // the point is blocked
+    int FUN_14168a230(efd::Point3 ptFrom, efd::Point3& ptHit, efd::Point3 ptDir, float fLen, int nMask);   // line is blocked (RayCastFromPoint; Vector3 by value drops the Point3 copies)
+    int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, struct Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nA);
 };
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 
@@ -113,10 +114,9 @@ class Unk_CeBuffMgr { public: };
 Unk_CeBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240
 
 // Entity registry / game objects.
-class Unk_CeRegistry { public: int FUN_140b7f6a0(const egf::EntityID& kEntity); };
+int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();                           // 0x141b6f910 (util.cpp); the call casts to Unk_CeRegistry
-class Unk_CeEntity { public: egf::FlatModel* FUN_1408a9bd0(); void FUN_1408a2060(unsigned nProp, efd::utf8string& s); };
 
 // UI helpers.
 template <class A> CStringW FormatStringId(int nId, const A& a);
@@ -136,7 +136,6 @@ bool FUN_1409a7f70(const NiNodePtr& sp, int nNull);                        // 0x
 float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x140967ac0 length
 int FUN_1408a01e0(CStringA s);                                      // 0x1408a01e0 string -> id
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                      // 0x14151f820 the message box currently shown
-extern Vector3 DAT_143b01a60;                                      // the zero point
 
 // The ray cast record FUN_14168a310 fills (0x68; physxhelper.h needs NOMINMAX, so it is redeclared as in state.cpp).
 struct Unk_RayCastInfo
@@ -169,7 +168,7 @@ struct Unk_SceAdd
 };
 void FUN_140b850d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const char* const* ppszArg0,
     const CStringA& strArg1);                                              // 0x140b850d0 log with two {n} argumentsCStringA FUN_140a52ef0();                                                  // 0x140a52ef0 empty effect-param block ctor
-void FUN_140353fc0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const int* pnArg);   // 0x140353fc0 log
+template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x140353fc0 log
 class CLogString* GetLogString();   // C3: was FUN_140166440
 
 // ---- local helpers declared early ---------------------------------------------------------------------------------------
@@ -554,7 +553,7 @@ void StateCoupleEmotion::vfunc_3(double fTime)
 void StateCoupleEmotion::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nActorId = ((Unk_CeRegistry*)FUN_141b6f910())->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    int nActorId = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
     switch (FUN_1417b7e40())
     {
     case 0x93:
@@ -1033,7 +1032,7 @@ CStringA StateCoupleEmotion::GetCurAniName()
     int nAni = m_spCoupleData->m_nAni;
     if (nAni < 0 || nAni > m_spAnimInfo->GetLastAni())
     {
-        FUN_140353fc0(((void*)GetLogString()), 2, 99, L"StateCoupleEmotion::GetCurStateAniName Out of Range:{0}", &nAni);
+        Unk_ShopLog<int>(GetLogString(), 2, 99, L"StateCoupleEmotion::GetCurStateAniName Out of Range:{0}", nAni);
         return CStringA("");
     }
     return m_spAnimInfo->GetAniName(nAni);
@@ -1304,24 +1303,24 @@ bool FUN_140b84dc0(const NiPoint3& kPoint)
     float fDist = 0.0f;
     if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const efd::Point3*)&kPoint))
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770((const Vector3*)&kPoint))
         return false;
-    Unk_CoupleVec kDown(DAT_143b01a60);
+    Unk_CoupleVec kDown(reinterpret_cast<const Vector3&>(efd::Point3::ZERO));
     Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
-    if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    if (((class CPhysXHelper*)FUN_1409f7ca0())->RayCastFixedDirection((const Vector3&)kPoint, (Vector3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
     if (kHit.m_hitEntity == 0)
         return false;
     efd::utf8string strTag("None");
-    ((Unk_CeEntity*)kHit.m_hitEntity)->FUN_1408a2060(0x15014205, strTag);
+    ((egf::Entity*)kHit.m_hitEntity)->GetPropertyValue<efd::utf8string>(0x15014205, strTag);
     int nTag = FUN_1408a01e0((const char*)((efd::utf8string*)&static_cast<class efd::utf8string const&>(strTag))->c_str());
     if (nTag == 0x40)
         return false;
-    if (((Unk_CeEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0xd3b04f05))
+    if (((egf::Entity*)kHit.m_hitEntity)->GetModel()->ContainsModel(0xd3b04f05))
         return false;
-    if (((Unk_CeEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x032767dd))
+    if (((egf::Entity*)kHit.m_hitEntity)->GetModel()->ContainsModel(0x032767dd))
         return false;
-    if (((Unk_CeEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x72f49865))
+    if (((egf::Entity*)kHit.m_hitEntity)->GetModel()->ContainsModel(0x72f49865))
         return false;
     if (WorldService::GetInstance()->FUN_141bcafa0((egf::Entity*)kHit.m_hitEntity))
         return false;

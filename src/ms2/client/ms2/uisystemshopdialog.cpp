@@ -74,6 +74,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 
 // ---- statics of the unit's headers (dynamic initializers 0x1400e18a0..) ----
@@ -122,7 +123,6 @@ MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);   // C3: the real def (d
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text (the callee destroys the key)
-CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);    // "{0}" formatting of a narrow key
 bool FUN_140811640(int nKind);                                  // the first use is paid with red merat
 int FUN_1413499b0(int nTab);                                    // open the shop on a tab
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
@@ -296,9 +296,9 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             {
                                 CSmartPushTable::PackagePtr pkg =
                                     CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), i);
-                                Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
-                                Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
-                                Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
+                                Unk_SetBoxUInt(spBox.operator->(), StringFormat<int>("autoActionMinute{0}", i), pkg->m_nDuration);
+                                Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMerat{0}", i), pkg->m_nMerat);
+                                Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMeso{0}", i), pkg->m_nMeso);
                             }
                             Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
                             Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_fishing"));
@@ -348,9 +348,9 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         {
                             CSmartPushTable::PackagePtr pkg =
                                 CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoPlayInstrumentName(), i);
-                            Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
-                            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
-                            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
+                            Unk_SetBoxUInt(spBox.operator->(), StringFormat<int>("autoActionMinute{0}", i), pkg->m_nDuration);
+                            Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMerat{0}", i), pkg->m_nMerat);
+                            Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMeso{0}", i), pkg->m_nMeso);
                         }
                         Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
                         Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));

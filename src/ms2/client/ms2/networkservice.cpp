@@ -357,7 +357,7 @@ struct Unk_NetworkLoginResult {
 MS2_CHECK_SIZE(Unk_NetworkLoginResult,0x58);
 MS2_CHECK_OFFSET(Unk_NetworkLoginResult,start,0x38);
 extern int DAT_143ab2860;extern CString DAT_143ab29d8,DAT_143ab2a28;
-int FUN_140cc1fb0(int);CStringW FUN_140a311c0(int,const int&,const int&,const int&,const int&,const int&,const int&,const int&,const int&,const int&,const int&,const int&,const int&,const CStringW&);
+int FUN_140cc1fb0(int);
 void FUN_140c79890(void*);void FUN_140c79b50(void*);
 struct Unk_NetworkAuthErrors {
     Unk_NetworkAuthErrors() { reinterpret_cast<RawString*>(this)->RawString::RawString(); }
@@ -382,7 +382,7 @@ void* FUN_14280ef5e(void*,long,void*,void*,int);
 void FUN_14038bb30(const char*,const char*,std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
 int FUN_14053fd90(void*);int FUN_140a612b0(void*,int,Unk_SocketPtr<CItem>,int);extern char DAT_143ab2a90;
-void FUN_140961010(int,int,int,const CStringW&);void FUN_141276180(const CString&,const CString&);
+void FUN_140961010(int,int,int,const CStringW&);int FUN_141276180(const CString&,const CString&);
 class Unk_NetworkEquipment { public: Unk_SocketPtr<CItem> FUN_141270140(int); };
 class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
@@ -833,7 +833,7 @@ void CNetworkService::OnGvg(CInPacket& input) {
             ReconnectionOptions options;options.FUN_140208500(input);
             if(((void*)FUN_140e800e0())!=0) {
                 ((CReconnectionManagerCli*)FUN_140e800e0())->SetOptions(&options);int enabled=options.FUN_140aadf90(0)==1;
-                if(enabled) { int value=options.FUN_140aadf90(1); m_socket.m_out->FUN_140209340(value); }
+                if(enabled) { int value=options.FUN_140aadf90(1); m_socket.m_out->SetLimit(value); }
                 m_socket.m_out->SetCaptureEnabled(enabled);
             }
         }
@@ -1010,7 +1010,7 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         __time64_t st=reply.start,et=reply.end;CMsTime start(st),end(et);
         int es=end.GetSecond(),em=end.GetMinute(),eh=end.GetHour(),ed=end.GetDay(),emon=end.GetMonth(),ey=end.GetYear();
         int ss=start.GetSecond(),sm=start.GetMinute(),sh=start.GetHour(),sd=start.GetDay(),smon=start.GetMonth(),sy=start.GetYear();
-        CStringW text=FUN_140a311c0(0x21a,sy,smon,sd,sh,sm,ss,ey,emon,ed,eh,em,es,reason);
+        CStringW text=BlockFormat<int, int, int, int, int, int, int, int, int, int, int, int, CStringW>(0x21a,sy,smon,sd,sh,sm,ss,ey,emon,ed,eh,em,es,reason);
         Unk_MessageBoxPtr data=FUN_140d73d20(0x10,text,0,L"");
         if(FUN_140534fc0(data)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==11||result==12) {

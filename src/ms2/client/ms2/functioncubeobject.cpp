@@ -379,8 +379,6 @@ void FUN_1419f37f0(unsigned nFlag);
 CStringW GetStringCommon(int nId);                                    // string table lookup
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);    // str + psz
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 
 // ---- the unit's header statics ----
 // @0x1400e9c70
@@ -597,7 +595,7 @@ CStringW CFunctionCubeObject::vfunc_6()
     if (pRow == 0)
         return L"";
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
-        return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x63e), L" - "), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reinterpret_cast<Cube*>(pRow)->FUN_1408b4f20()));
+        return GetStringCommon(0x63e) + L" - " + TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reinterpret_cast<Cube*>(pRow)->FUN_1408b4f20());
     return L"";
 }
 

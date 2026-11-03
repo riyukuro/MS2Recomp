@@ -45,7 +45,7 @@ const NiRTTI ScreenMaskingRenderStep::ms_RTTI("ScreenMaskingRenderStep", &NiDefa
 ScreenMaskingRenderStep::ScreenMaskingRenderStep(unsigned __int64 a, unsigned int b) : PostProcessEffect(a, b)
 {
     NiFixedString name("ScreenMaskingRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416ba190

@@ -25,6 +25,7 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/addresstable.h"
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -64,7 +65,6 @@ Unk_AptContractDialog* FUN_140961690(int nUiId);                // GetDialog
 class UIUGCEventDispatcher;
 
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);   // the apartment group row
-CStringW FUN_140979570(int nMap);                               // the map name
 bool FUN_140e45240(const CStringW& s, const char* c);          // case-insensitive equal
 CStringW GetStringCommon(int nStringId);                          // string table text
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
@@ -299,7 +299,7 @@ CStringW UIApartmentDialog::FUN_1418b6de0()
     unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(m_nGroup, group, nMapId) != 0)
-        return FUN_140979570(nMapId);
+        return CAddressTable::GetText(nMapId);
     return TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId);
 }
 

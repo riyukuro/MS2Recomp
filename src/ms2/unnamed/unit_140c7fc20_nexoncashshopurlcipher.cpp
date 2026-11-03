@@ -30,7 +30,6 @@ extern unsigned char DAT_1439f5448[16];
 extern unsigned char DAT_1439f5458[16];
 
 CString FUN_140695240(const char* psz);                      // hash of a string (hkey)
-CString FUN_1401d2b10(const CString& a, const CString& b);   // ATL operator+(CString, CString)
 CString FUN_1409a2360(const char* psz, int nCodePage);       // CString from a narrow string (0 = default code page)
 std::string FUN_14083fa60(const char* pData, unsigned nLen); // string from a buffer
 __int64 GetServerTime();                                     // GetServerTime
@@ -416,7 +415,7 @@ CString FUN_140c851b0(const CString& strChannel, const CString& strNxId, CMsTime
     int nMonth = time.GetMonth();
     int nYear = time.GetYear();
     CString strDate = Unk_SocketFormat("{0:04d}{1:02d}{2:02d}{3:02d}", nYear, nMonth, nDay, nHour);
-    CString strKey = FUN_1401d2b10(FUN_1401d2b10(strChannel, strNxId), strDate);
+    CString strKey = strChannel + strNxId + strDate;
     return FUN_140695240(strKey.GetBuffer());
 }
 

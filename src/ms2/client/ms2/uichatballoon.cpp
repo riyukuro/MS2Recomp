@@ -82,7 +82,6 @@ Unk_CbPet* FUN_1418fc490(PCBase* pActor);                           // the actor
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                 // FormatStringId(id) without arguments
 struct Unk_CbFlags { bool m_0; bool m_1; };
-CameraMgr* FUN_1409478c0();
 class Unk_CbUIMgr : public CUIService
 {
 public:
@@ -163,7 +162,7 @@ void UIChatBalloon::Entity::vfunc_4()
 void UIChatBalloon::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    if (FUN_1409478c0()->FUN_140a18070() == 0)
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return;
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)

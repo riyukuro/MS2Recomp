@@ -47,15 +47,8 @@ int FUN_140530a10(const Items&,__int64); void FUN_140530b00(Items&,unsigned); bo
 }
 MS2_CHECK_SIZE(ItemBreakCommon::BreakItem,0x28);
 MS2_CHECK_SIZE(ItemBreakCommon::BreakPreview,0x20);
-class Unk_BreakItem;
-class Unk_BreakItemPtr {
-public:
-    Unk_BreakItemPtr(int); Unk_BreakItemPtr(const Unk_BreakItemPtr&); Unk_BreakItemPtr(Unk_BreakItemPtr&&); ~Unk_BreakItemPtr();
-    Unk_BreakItem* operator->() const; Unk_BreakItem* get() const;
-    bool operator==(Unk_BreakItem*) const;
-    bool operator!() const { return p==0; }
-private: void* pad; Unk_BreakItem* p;
-};
+class CItem;
+typedef MS2Ptr<CItem> Unk_BreakItemPtr;   // C3: was a unit-local pointer class
 MS2_CHECK_SIZE(Unk_BreakItemPtr,0x10);
 MS2_CHECK_SIZE(ItemBreakCommon::Ptr,0x10);
 MS2_CHECK_OFFSET(Unk_BreakPacket,input,8);

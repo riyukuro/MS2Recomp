@@ -25,24 +25,24 @@ PendingEffect::~PendingEffect()
 }
 
 // @0x140a8f300
-bool PendingEffect::Init(MS2Ptr<Unk_PeEffectSet> spSet, const Unk_PeTarget& kTarget)
+bool PendingEffect::Init(MS2Ptr<Unk_PeEffectSet> spSet, const NoticeMessage& kTarget)
 {
     m_spSet = spSet;
-    m_target = kTarget;
-    if (kTarget.m_pXformA)
+    m_target.CopyFrom(kTarget);
+    if (kTarget.m_p18)
     {
-        m_xformA = *kTarget.m_pXformA;
-        m_target.m_pXformA = &m_xformA;
+        m_xformA = *static_cast<Unk_PeXform*>(kTarget.m_p18);
+        m_target.m_p18 = &m_xformA;
     }
-    if (kTarget.m_pXformB)
+    if (kTarget.m_p20)
     {
-        m_xformB = *kTarget.m_pXformB;
-        m_target.m_pXformB = &m_xformB;
+        m_xformB = *static_cast<Unk_PeXform*>(kTarget.m_p20);
+        m_target.m_p20 = &m_xformB;
     }
-    if (kTarget.m_pPoints)
+    if (kTarget.m_p28)
     {
-        m_points.Copy(*kTarget.m_pPoints);
-        m_target.m_pPoints = &m_points;
+        m_points.Copy(*static_cast<Unk_PePointArray*>(kTarget.m_p28));
+        m_target.m_p28 = &m_points;
     }
     reinterpret_cast<CEffectData*>(m_spSet.operator->())->FUN_14119f710();
     return true;
@@ -79,7 +79,7 @@ int PendingEffect::GetId() const
 MS2_REPLACE_METHOD(0x140A8F5A0, PendingEffect, GetId, 14, 0x72E52537);
 
 // @0x140a8f5c0
-Unk_PeTarget& PendingEffect::GetTarget()
+NoticeMessage& PendingEffect::GetTarget()
 {
     return m_target;
 }

@@ -12,6 +12,7 @@
 #include "ms2/placeholder/nipoint3.h"     // Vector3 (NiPoint3 with out-of-line special members)
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/placeholder/intervaltimer.h"
+#include "ms2/placeholder/effectquery.h"   // C3: NoticeMessage, the real request/target
 
 typedef MS2Ptr<CEffectParam> Unk_PeParamPtr;
 
@@ -45,39 +46,21 @@ struct Unk_PeTick
 };
 MS2_CHECK_SIZE(Unk_PeTick, 8);
 
-// The effect request/target the effects are created for: the full 0x70-byte object behind Unk_EffectTarget
-// (effectparam.h declares only a partial view; a PendingEffect stores one by value). +0x18/+0x20/+0x28 point at
-// transforms / a point array owned by the caller, which Init re-points at the PendingEffect's own copies.
-struct Unk_PeTarget
-{
-    Unk_PeTarget();                                         // 0x140a52ef0
-    ~Unk_PeTarget();                                        // 0x1405a89e0
-    Unk_PeTarget& operator=(const Unk_PeTarget& o);         // 0x140a53260
-    char m_pad_00[0x18];
-    Unk_PeXform* m_pXformA;                                 // +0x18
-    Unk_PeXform* m_pXformB;                                 // +0x20
-    Unk_PePointArray* m_pPoints;                            // +0x28
-    char m_pad_30[0x40];
-};
-MS2_CHECK_SIZE(Unk_PeTarget, 0x70);
-MS2_CHECK_OFFSET(Unk_PeTarget, m_pXformA, 0x18);
-MS2_CHECK_OFFSET(Unk_PeTarget, m_pPoints, 0x28);
-
 class PendingEffect : public CPtred
 {
 public:
     explicit PendingEffect(int nId);                                    // 0x140a8f1d0
     virtual ~PendingEffect();                                           // 0x140a8f290, sdd 0x140a90270
 
-    bool Init(MS2Ptr<Unk_PeEffectSet> spSet, const Unk_PeTarget& kTarget);   // 0x140a8f300
+    bool Init(MS2Ptr<Unk_PeEffectSet> spSet, const NoticeMessage& kTarget);   // 0x140a8f300
     bool Poll();                                                        // 0x140a8f440 timer elapsed and every param ready
     void CreateEffects(std::vector<CEffectPtr>& vOut);                  // 0x140a8f4a0 instantiate each param
     int GetId() const;                                                  // 0x140a8f5a0
-    Unk_PeTarget& GetTarget();                                          // 0x140a8f5c0
+    NoticeMessage& GetTarget();                                         // 0x140a8f5c0
 
     int m_nId;                                                          // +0x18
     MS2Ptr<Unk_PeEffectSet> m_spSet;                                    // +0x20
-    Unk_PeTarget m_target;                                              // +0x30
+    NoticeMessage m_target;                                             // +0x30
     Unk_IntervalTimer m_tick;                                           // +0xa0 (C3: the real 50 ms timer)
     Unk_PeXform m_xformA;                                               // +0xa8
     Unk_PeXform m_xformB;                                               // +0xdc

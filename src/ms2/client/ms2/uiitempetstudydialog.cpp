@@ -61,6 +61,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/packethandlermanager.h"  // C3: PacketHandlerManager::RegisterHandler/UnregisterHandler
 
 // ---- unit-local views of exe objects ----
@@ -96,8 +97,6 @@ public:
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b71910(__int64 nValue);
-CStringW FUN_1406c6bd0(const wchar_t* pszFormat, const __int64& nArg);     // "{0}" formatter
-CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
@@ -138,7 +137,7 @@ CString UIItemPetStudyDialog::GetTypeName()
 void UIItemPetStudyDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    m_strSlot = FUN_140540050("{0}.slot", GetTypeName());
+    m_strSlot = StringFormat<CString>("{0}.slot", GetTypeName());
     FUN_140d42540(m_strSlot, m_nOwner, m_spPet);
     ItemScrollSlot* pSlot = FUN_140e559c0(m_strSlot);
     if (pSlot != 0)
@@ -238,7 +237,7 @@ void UIItemPetStudyDialog::FUN_140e558d0()
     if (m_spBox == 0 || m_spPet == 0)
         return;
     __int64 nUid = m_spPet->GetItemUid();
-    g_143ab2a90.FUN_140a63880(m_spBox.get(), FUN_1406c6bd0(L"{0}", nUid));
+    g_143ab2a90.FUN_140a63880(m_spBox.get(), StringFormat<unsigned __int64>(L"{0}", reinterpret_cast<const unsigned __int64&>(nUid)));
 }
 
 // @0x140e559c0

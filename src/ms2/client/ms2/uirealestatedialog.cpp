@@ -51,7 +51,6 @@ static CString s_strStun = "stun";
 // ---- unit-local views of exe types ----
 
 class CommonString* FUN_14025e7d0();   // C3: was FUN_14025e7d0
-class Unk_RdPC : public MyPC { public: CStringW FUN_141528330(); int FUN_141527ed0(); };
 class Unk_ReWorld { public: MyPC* FUN_141bd0cc0(); };                // the local player
 
 // The user report record (ctor 0x140c74fc0, 0x118 bytes; the same view as uicommon.cpp).
@@ -80,19 +79,6 @@ private:
     void* m_pad_108; void* m_pad_110;
 };
 MS2_CHECK_SIZE(CUserReportData, 0x118);
-
-// The map / group record the house stands on (the info of the owned house).
-class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; void* m_28; __int64 m_30; };
-class Unk_GmTargetRef
-{
-public:
-    Unk_GmTargetRef(void* p);                                       // 0x14050dd40
-    ~Unk_GmTargetRef();                                             // 0x14050de40
-    Unk_GmTarget* FUN_14050dee0();
-    void* FUN_140fa9d30();                                          // the record (NULL: none)
-    void* m_0;
-    void* m_8;
-};
 
 // The house service: the smart pointer to it (8 bytes; the glue COMDATs live in the unit that first used it).
 struct Unk_EntityAppFramework;
@@ -130,11 +116,12 @@ public:
     Scaleform::GFx::Value FUN_141ab5a90(const char* szMethod, int a1);
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
+namespace Scaleform { namespace GFx { class Movie; } }
+Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                // the movie of a UI layer
 class Unk_ReObj : public ASObj { public: void FUN_141ab5b30(const char* szName, int n); };
 
 bool FUN_14053f8c0(unsigned nItemId);                               // the item is meso
-unsigned char FUN_14053f940(unsigned nItemId);                      // the item is merat
+bool FUN_14053f940(unsigned nItemId);                               // the item is merat
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_1408a0d30(int nGroup, Unk_UGCGroup& rResult, int nMapId);
 int FUN_1408a09d0(unsigned* pnItem, __int64* pnPrice, int nMapId, int nGroup);
@@ -160,7 +147,7 @@ MS2Ptr<CMsgBoxData> FUN_140d73e40(int, int, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_14151f200();
 UIMessageBox* FUN_14151f890();
-int FUN_140d74e80(const CStringW& str);
+int FUN_140d74e80(CStringW& str);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 void FUN_140710590(COutPacket& packet);
 UIUGCModelHouseDialog* FUN_141ab59f0(int nClass);
@@ -249,7 +236,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (FUN_1408a0d30(m_nGroup, group, m_nMapId) == 0)
             return 1;
         unsigned int nTrophy = group.trophyID;
-        if (pPC->HasNoHome() == 0 && static_cast<Unk_RdPC*>(pPC)->FUN_141527ed0() != 0)
+        if (pPC->HasNoHome() == 0 && pPC->FUN_141527ed0() != 0)
         {
             FUN_140d73aa0(GetStringCommon(0x7f5), 0, 0, CStringW(L""));
         }
@@ -295,10 +282,10 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     else if (_stricmp("onRenew", szMethod) == 0)
     {
         __int64 nNotice = *FUN_1401d3200()->UgcHomeExtensionNoticeDate.Get() * 60 * 60 * 24;
-        Unk_GmTargetRef target(pPC->FUN_141523c50());
-        if ((target.FUN_140fa9d30() ? true : false) && target.FUN_14050dee0()->m_30 - GetServerTime() > nNotice)
+        Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
+        if ((target.get() ? true : false) && target->m_n30 - GetServerTime() > nNotice)
         {
-            __int64 nExpire = target.FUN_14050dee0()->m_30 - nNotice;
+            __int64 nExpire = target->m_n30 - nNotice;
             CStringW strExpire = FUN_141ab5520(nExpire);
             FUN_140d73aa0(FUN_14028dee0(1999, *FUN_1401d3200()->UgcHomeExtensionNoticeDate.Get(), strExpire), 0, 0, CStringW(L""));
         }
@@ -352,7 +339,7 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
         else
         {
             if (pPC->HasNoHome() == 0)
-                FUN_141ab3760(static_cast<Unk_RdPC*>(pPC)->FUN_141528330());
+                FUN_141ab3760(pPC->GetHomeName());
             UIMessageBox* pBox = FUN_14151f890();
             if (pBox != 0)
                 ((class UIMessageBox*)(class UIMessageBox*)(pBox))->FUN_1419f82b0(strError);
@@ -372,10 +359,10 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->HasNoHome() == 0)
     {
-        FUN_141ab3760(static_cast<Unk_RdPC*>(pPC)->FUN_141528330());
+        FUN_141ab3760(pPC->GetHomeName());
         if (bRefresh != 0 && pPC->FUN_141523c50() != 0)
         {
-            if (static_cast<Unk_RdPC*>(pPC)->FUN_141527ed0() != 0)
+            if (pPC->FUN_141527ed0() != 0)
             {
                 FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
                 m_30->Invoke("setContractEffect", bRefresh);
@@ -574,8 +561,8 @@ void UIRealEstateDialog::FUN_141ab42a0()
     __int64 nTime;
     if (pPC->HasNoHome() == 0)
     {
-        Unk_GmTargetRef target(pPC->FUN_141523c50());
-        if (m_nMapId == target.FUN_14050dee0()->m_20 && m_nGroup == target.FUN_14050dee0()->m_24)
+        Unk_BmPtr<UserUGCMapInfo> target(pPC->FUN_141523c50());
+        if (m_nMapId == target->m_n20 && m_nGroup == target->m_n24)
             bOwn = 1;
     }
     m_strOwnerName = "";
@@ -585,7 +572,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
         reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", 0);
         FUN_141ab4040(&pPC->FUN_141523c50()->m_n30);
         m_30->Invoke("setContractEffect", 0);
-        FUN_141ab3760(static_cast<Unk_RdPC*>(pPC)->FUN_141528330());
+        FUN_141ab3760(pPC->GetHomeName());
     }
     else
     {

@@ -26,6 +26,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
+#include "ms2/client/ms2/physxhelper.h"
 #include "ms2/client/ms2/gameobjectcontrollerhitreport.h"
 #include "ms2/client/ms2/skilldatatablecli.h"   // C3: SkillDataTable::GetGlideData, SkillGlideData
 
@@ -62,7 +63,6 @@ void FUN_1412751f0(const CStringW& str, int a, int b);     // 0x1412751f0 chat n
 
 
 // The world service (0x1403ed2d0): the upper bound of the map.
-class Unk_GlideWorld { public: efd::Point3 FUN_141bd3820(); };
 
 // The actor's buff set: the airborne check.
 
@@ -80,12 +80,6 @@ efd::Point3 FUN_1408a15b0(Unk_GlCell kCell, efd::Point3& kCentre);     // fills 
 
 // The PhysX helper (0x1409f7ca0): ground below a point.
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-class CPhysXHelper
-{
-public:
-    int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
-    bool FUN_14168a770(const efd::Point3* pPoint);
-};
 
 // @0x1417c8900
 StateGlide::StateGlide(PCBase* pOwner) : StateMoveSkill(pOwner), m_nEffect(0)
@@ -138,7 +132,7 @@ void StateGlide::vfunc_4(StateData* pData)
     if (pPC != 0)
     {
         efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(pPC)->vfunc_18();
-        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770(&kPos))
+        if (((class CPhysXHelper*)FUN_1409f7ca0())->FUN_14168a770(reinterpret_cast<const Vector3*>(&kPos)))
         {
             pPC->vfunc_59(1, 0, 0, 0);
             return;
@@ -390,7 +384,7 @@ efd::Point3 StateGlide::FUN_1417c9ee0()
 int StateGlide::FUN_1417ca000()
 {
     const efd::Point3& kPos = static_cast<const efd::Point3&>(m_pOwner->vfunc_18());
-    if (reinterpret_cast<Unk_GlideWorld*>(WorldService::GetInstance())->FUN_141bd3820().z - 300.0f < kPos.z)
+    if (WorldService::GetInstance()->GetBoundsMax().z - 300.0f < kPos.z)
         return 0;
     if (0.0f < m_spRow->m_fHeightLimit && m_spRow->m_fHeightLimit < m_pOwner->vfunc_18().z - m_fStartZ)
         return 0;

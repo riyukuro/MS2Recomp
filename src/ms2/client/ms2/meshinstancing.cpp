@@ -43,7 +43,6 @@ ecr::RenderService* FUN_1413f9890();
 class CameraMgr;
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();
 bool FUN_140af0aa0(void* cam, const NiPoint3& center, float radius);
-bool FUN_1413d3370(const Unk_MeshInstancingConfig&, const Unk_MeshInstancingConfig&);
 void FUN_14147dae0(NiNode*, bool);
 const efd::utf8string& FUN_14112e120(egf::Entity*);
 
@@ -209,7 +208,7 @@ unsigned MeshInstancing::GetVisibleInstanceCount() {
     return 0;
 }
 // @0x14147cf90
-int MeshInstancing::FUN_14147cf90(const Unk_MeshInstancingConfig& other) { return FUN_1413d3370(config, other); }
+int MeshInstancing::FUN_14147cf90(const Unk_MeshInstancingConfig& other) { return config == other; }
 // @0x14147cfd0
 int MeshInstancing::FUN_14147cfd0(const Unk_MeshInstancingConfig& other) { return ((struct Unk_MeshInstancingConfig*)&(config))->Equals(other); }
 // @0x14147d010

@@ -84,7 +84,6 @@ bool ATL::CRBMap<int, Unk_TrigHandle, ATL::CElementTraits<int>, ATL::CElementTra
 // ---- services reached through globals ----
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class A> void Unk_ShopLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const A& rArg);
-void* FUN_1403ed2b0();                                              // the UI manager
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The effect manager (effect handles) and its request block.
@@ -143,7 +142,8 @@ public:
     void FUN_140ee57b0(int nA, int nB);
 };
 class Unk_TrigTextUI { public: void FUN_141b2b7e0(MS2Ptr<CFileBuffer> spText); };
-Unk_TrigTextUI* FUN_14122d570(int nId);
+class UITriggerEditorDialog;
+template <class T> T* Unk_FcDialog(int nId);   // C3: the dialog of a UI id (functioncubeobject.cpp)
 class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
 class Unk_TrigTalkUI : public UISidePopupTalk { };
@@ -198,7 +198,7 @@ public:
     ~NoticeMessage();
     void* m_storage[14];
 };
-class Unk_TrigAnimSvc { public: efd::Category FUN_141235eb0(); };
+class Unk_FcAnimSvc { public: efd::Category GetCatAnim(); };   // C3: was Unk_TrigAnimSvc (functioncubeobject.cpp)
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 
@@ -222,8 +222,8 @@ static const efd::Category s_catEntityChannel(efd::UniversalID::ECU_Any, 0xfff, 
 // @0x14010eb40
 static const efd::Category s_catAnimationChannel(efd::UniversalID::ECU_Any, 0xfff, 0x07001008);
 // @0x14010eb70
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
-static Unk_1401cd100 s_pointer(NULL);
+class Unk_BuddyHandle { public: Unk_BuddyHandle(void*); private: void* m_p; };   // C3: was Unk_1401cd100 (ctor 0x1401cd100)
+static Unk_BuddyHandle s_pointer(NULL);
 // @0x14010eb90
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x14010ebe0
@@ -289,7 +289,7 @@ efd::AsyncResult CTriggerService::OnInit()
     pMessages->Subscribe(this, pEntities->GetEntityLoadCategory(), 0, false);
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
 
-    pMessages->Subscribe(this, reinterpret_cast<Unk_TrigAnimSvc*>(FUN_141b6f910())->FUN_141235eb0(), 0, false);
+    pMessages->Subscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0, false);
     WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
@@ -312,7 +312,7 @@ efd::AsyncResult CTriggerService::OnShutdown()
     pMessages->Unsubscribe(this, pEntities->GetEntityLoadCategory(), 0);
     pMessages->Unsubscribe(this, s_catAnimationChannel, 0);
 
-    pMessages->Unsubscribe(this, reinterpret_cast<Unk_TrigAnimSvc*>(FUN_141b6f910())->FUN_141235eb0(), 0);
+    pMessages->Unsubscribe(this, reinterpret_cast<Unk_FcAnimSvc*>(FUN_141b6f910())->GetCatAnim(), 0);
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x141861410, CTriggerService, OnShutdown, 512, 0x9DCA81B1);
@@ -515,7 +515,7 @@ void CTriggerService::OnTextPopup(CInPacket* pEvent)
     CStringW strWide = XmlWide(pEvent->ReadString());
     MS2Ptr<CFileBuffer> spBuffer(new CFileBuffer);
     spBuffer->SetText(strWide);
-    Unk_TrigTextUI* pUi = FUN_14122d570(0x4e6b);
+    Unk_TrigTextUI* pUi = reinterpret_cast<Unk_TrigTextUI*>(Unk_FcDialog<UITriggerEditorDialog>(0x4e6b));
     if (pUi != 0)
         pUi->FUN_141b2b7e0(spBuffer);
 }
@@ -534,7 +534,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e95)));
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e95)));
             Unk_TrigHintUI* pUi = ((class Unk_TrigHintUI*)FindTimerDialog(0x4e95));
             if (pUi != 0)
             {
@@ -547,7 +547,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         }
         else
         {
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e95);
+            reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->CloseDialog((eUIClassID)0x4e95);
         }
     }
     else if (nKind == 2)
@@ -568,7 +568,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             else
             {
                 pUi->FUN_141a91940(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
-                (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e96)));
+                (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
     }
@@ -590,7 +590,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             else
             {
                 pUi->FUN_141a91a30(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
-                (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e96)));
+                (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
     }
@@ -602,13 +602,13 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e99)));
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e9a)));
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e99)));
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9a)));
         }
         else
         {
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e99);
-            reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4e9a);
+            reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->CloseDialog((eUIClassID)0x4e99);
+            reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->CloseDialog((eUIClassID)0x4e9a);
         }
     }
     else if (nKind == 4)
@@ -619,8 +619,8 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bc6f60(nA, nB, nC);
         if (nB > 0)
         {
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4e95)));
-            (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4ed3)));
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e95)));
+            (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ed3)));
         }
     }
 }
@@ -711,7 +711,7 @@ void CTriggerService::FUN_141862d30(CInPacket* pEvent)
     Unk_SplitA(strNames, (ATL::CAtlArray<CStringA>*)&(aNames), ",");
     for (size_t i = 0; i < aNames.GetCount(); i++)
     {
-        MS2Ptr<UIObject> kRef = static_cast<CUIService*>(FUN_1403ed2b0())->FindObjectByName(aNames[i]);
+        MS2Ptr<UIObject> kRef = static_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FindObjectByName(aNames[i]);
         if (kRef.IsNull())
             continue;
         if (reinterpret_cast<Unk_CommandUIRef&>(kRef).FUN_141371280()->vfunc_9() != nState)
@@ -734,12 +734,12 @@ void CTriggerService::OnNpcDuelHpBar(CInPacket* pEvent)
             pUi->StartDuelBar(nA, nB, nC);
             pUi->FUN_141924680();
         }
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141add0b0((eUIClassID)0x4e3d);
+        reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add0b0((eUIClassID)0x4e3d);
     }
     else
     {
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->CloseDialog((eUIClassID)0x4f62);
-        reinterpret_cast<CUIService*>(FUN_1403ed2b0())->FUN_141add040((eUIClassID)0x4e3d);
+        reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->CloseDialog((eUIClassID)0x4f62);
+        reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add040((eUIClassID)0x4e3d);
     }
 }
 
@@ -753,9 +753,9 @@ void CTriggerService::FUN_141862ff0(int nType, CInPacket* pEvent)
 // @0x1418644d0
 static UITypingGameDialog* FUN_1418644d0(int nId)
 {
-    if (FUN_1403ed2b0() != 0)
+    if (TSingleton<CUIService>::GetInstance() != 0)
     {
-        MS2Ptr<UIObject> kRef = static_cast<CUIService*>(FUN_1403ed2b0())->FindObject((eUIClassID)nId);
+        MS2Ptr<UIObject> kRef = static_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FindObject((eUIClassID)nId);
         if (kRef.get() != 0)
             return dynamic_cast<UITypingGameDialog*>(kRef.operator UIObject*());
     }

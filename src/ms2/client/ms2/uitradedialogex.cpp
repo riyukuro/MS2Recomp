@@ -82,7 +82,6 @@ __int64 FUN_140718320(const CStringW& str);                    // parse a number
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
 int FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
-CString FUN_14038f6d0(const CString& str, const char* sz);     // str + sz
 
 // The local player.
 class WorldService   // C3: member view for the former free stand-ins
@@ -132,8 +131,8 @@ UITradeDialogEx::UITradeDialogEx()
     FUN_141924170(1);
     m_164 = 1;
     CString strName = GetTypeName();
-    m_strMyBagId = FUN_14038f6d0(strName, "_my");
-    m_strTargetBagId = FUN_14038f6d0(strName, "_target");
+    m_strMyBagId = strName + "_my";
+    m_strTargetBagId = strName + "_target";
 }
 
 // @0x141b27070

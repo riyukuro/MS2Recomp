@@ -58,6 +58,8 @@
 #include "ms2/placeholder/cinputkeyhandler.h"  // C3: CInputKeyHandler::FUN_14116d9c0
 #include "ms2/placeholder/ascorelist.h"   // C3: ASCoreList::SetSelectedIndex
 #include "ms2/placeholder/uiswfentitymanager.h"   // C3: UISwfEntityManager::FUN_1422d4e20
+#include "ms2/ms2format.h"
+#include "ms2/commonfiles/dynamicactiondata.h"   // C3: CDynamicActionData::Find
 
 // header statics
 static CString s_strSkill1 = "skill";
@@ -75,14 +77,7 @@ class Unk_DaInput : public ASTextInput { };   // C3: AddChangeHandler and the AS
 int FUN_140ad02c0(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
-// The search keywords of an action id: the strings are at +0x38.
-class Unk_EmotionKeywords : public CPtred
-{
-public:
-    void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
-    ATL::CAtlArray<CStringW> m_38;                          // +0x38 keywords
-};
-MS2Ptr<Unk_EmotionKeywords> FUN_140347050(int nAction);
+// The search keywords of an action id: CDynamicActionData::Find (dynamicactiondata.h), m_reserved at +0x38.
 
 // The skill system (action list, mode, reset) and the player.
 void FUN_1417691a0(CSkillSystem* p, ATL::CAtlArray<MS2Ptr<Unk_Emotion> >& list);
@@ -91,23 +86,20 @@ NotifySystem* FUN_140939a10();                              // the notify system
 
 // Input state, the movie manager, the key binds.
 class Unk_DaInputState : public CInputKeyHandler {};
-Unk_DaInputState* FUN_14025e7c0();
+void* FUN_14025e7c0();
 UISwfEntityManager* FUN_140b632f0();
 // the key table: FUN_1409331f0 (ckeytable.h)
 
 int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill tooltip
-CStringTable* GetStringTable();
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
-CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
 template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 __int64 GetServerTime();                                    // the server time
-CStringW FUN_1409e90c0(int nStringId, const int& nYear, const int& nMonth, const int& nDay, const int& nHour,
-                       const int& nMinute);
+template <class A, class B, class C, class D, class E> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c, const D& d, const E& e);
 
 // Sort orders of the action pages (the comparators live in the skill system unit).
 struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // runs the 0x141764570 body (skillslot.cpp)
@@ -222,7 +214,7 @@ int UIDynamicActionDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0) {
+    if (((Unk_DaInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
             if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (Unk_DaInput*)m_1a0 != 0) {
@@ -251,10 +243,10 @@ int UIDynamicActionDialog::vfunc_13()
                     unsigned __int64 nOther = FUN_1409331f0()->GetKeyAction(nKey);
                     CStringW strOther;
                     if (FUN_1409331f0()->IsQuickSlotAction(nOther) != 0) {
-                        strOther = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)FUN_1409331f0()->GetKeyAction(nKey)),
+                        strOther = StringFormat<CStringW, CStringW>(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((unsigned)FUN_1409331f0()->GetKeyAction(nKey)),
                                                  FUN_1409331f0()->GetKeyName(nKey));
                     } else {
-                        strOther = GetStringTable()->FUN_1418125b0((unsigned)nOther);
+                        strOther = TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((unsigned)nOther);
                     }
                     if (FUN_1409331f0()->FUN_141430470(nOther) == 0) {
                         FUN_140d73aa0(FormatStringId<CStringW>(0x84f, strOther), 1, static_cast<IMessageListener*>(this), CStringW(L""));
@@ -279,7 +271,7 @@ MS2_REPLACE_METHOD(0x14192B520, UIDynamicActionDialog, vfunc_13, 1539, 0);
 void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     unsigned int nAction = pArgs->PopUInt();
-    MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nAction);
+    MS2Ptr<CDynamicActionData> spData = CDynamicActionData::Find(nAction);
     if (spData.IsNull())
         return;
     std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_190.find(nAction);
@@ -304,7 +296,7 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
             int nDay = time.GetDay();
             int nMonth = time.GetMonth();
             int nYear = time.GetYear();
-            CStringW strPeriod = FUN_1409e90c0(nStringId, nYear, nMonth, nDay, nHour, nMinute);
+            CStringW strPeriod = BlockFormat<int, int, int, int, int>(nStringId, nYear, nMonth, nDay, nHour, nMinute);
             tooltip.FUN_1407cbb20("skillPeriod", strPeriod);
         }
         *pRetVal = tooltip.FUN_1422bb870();
@@ -519,7 +511,7 @@ void UIDynamicActionDialog::FUN_14192ca70()
                     continue;
                 bool bFound = false;
                 do {
-                    const CStringW& strName = GetStringTable()->FUN_141811980(4, nId);
+                    const CStringW& strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nId);
                     if (strName.Find(m_1b8, 0) != -1) {
                         bFound = true;
                         break;
@@ -588,7 +580,7 @@ void UIDynamicActionDialog::FUN_14192d100()
                     continue;
                 bool bFound = false;
                 do {
-                    const CStringW& strName = GetStringTable()->FUN_141811980(4, nId);
+                    const CStringW& strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nId);
                     if (strName.Find(m_1b8, 0) != -1) {
                         bFound = true;
                         break;
@@ -640,12 +632,12 @@ MS2_REPLACE_METHOD(0x14192D790, UIDynamicActionDialog, SetSearchText, 124, 0);
 // @0x14192d820
 CStringW UIDynamicActionDialog::GetActionKeywords(unsigned int nAction)
 {
-    MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nAction);
+    MS2Ptr<CDynamicActionData> spData = CDynamicActionData::Find(nAction);
     if (!spData)
         return CStringW(L"");
     CStringW strKeywords;
-    for (size_t i = 0; i < spData->m_38.GetCount(); i++)
-        strKeywords.AppendFormat(L"%s ", (const wchar_t*)spData->m_38[i]);
+    for (size_t i = 0; i < spData->m_reserved.GetCount(); i++)
+        strKeywords.AppendFormat(L"%s ", (const wchar_t*)spData->m_reserved[i]);
     strKeywords.TrimRight();
     return strKeywords;
 }

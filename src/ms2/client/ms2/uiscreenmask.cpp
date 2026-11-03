@@ -11,7 +11,8 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-class CFieldDataCli;   // C3: the real class (fielddatacli.h), MS2Ptr<CFieldDataCli>::get
+#include "ms2/client/ms2/worldservice.h"    // C3: WorldService::FUN_141bd30a0
+#include "ms2/client/ms2/fielddatacli.h"    // C3: CFieldDataCli::m_strBgMask
 
 // ---- unit-local placeholders (unrecovered helpers; promote to src/ms2/placeholder/ when shared) ----
 
@@ -21,30 +22,6 @@ template <> MS2Ptr<ASUIComponent> Unk_ASCreate<ASUIComponent>(int nMovieId, cons
 // This assignment COMDAT belongs to the earlier unit at 0x140c74dd0.
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASUIComponent>(const MS2Ptr<ASUIComponent>&);
-
-// The client's world/context table (FUN_1403ed2d0) and the current field's data behind a counted pointer.
-class Unk_1403ed2d0;
-class Unk_FieldData
-{
-public:
-    char m_pad_0[0x1a8];
-    CString m_strName;                                  // +0x1a8 the field's screen mask effect name
-};
-class Unk_FieldDataPtr
-{
-public:
-    ~Unk_FieldDataPtr();                                // 0x1408850f0
-    Unk_FieldData* FUN_140885340() const;               // operator->
-private:
-    void* m_pad_00;
-    Unk_FieldData* m_p;
-};
-class Unk_1403ed2d0 { public: Unk_FieldDataPtr FUN_141bd30a0(); };   // current field's data
-class WorldService   // C3: member view for the former free stand-ins
-{
-public:
-    static class WorldService* GetInstance();
-};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,9 +81,9 @@ void UIScreenMask::vfunc_43()
 // @0x141ad09e0
 CString UIScreenMask::FUN_141ad09e0()
 {
-    Unk_FieldDataPtr spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<Unk_FieldData*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spField).get()) != 0)
-        return spField.FUN_140885340()->m_strName;
+    MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
+    if (spField.get() != 0)
+        return spField->m_strBgMask;
     return "";
 }
 

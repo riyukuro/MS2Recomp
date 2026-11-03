@@ -106,8 +106,8 @@ class Unk_1403ed2d0;
 
 // ---- unrecovered neighbours ----
 extern unsigned DAT_1439f862c;          // display time of a shape (ms)
-extern unsigned char DAT_143ae95e0;
-extern unsigned char DAT_143ae95e1;
+extern bool DAT_143ae95e0;
+extern bool DAT_143ae95e1;
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 FUN_14028d0e0();                // next shape handle
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360

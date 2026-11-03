@@ -142,7 +142,7 @@ int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 int XmlQuery(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873a50
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-void FUN_140177e10(const CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x140177e10 for CAtlArray<unsigned> (xmlattr.h)
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);   // split into strings
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
 int FUN_140651920(CStringA);                                 // language code -> enum
@@ -1122,7 +1122,7 @@ void CBlackMarketTable::Load()
                 XmlGetAttr((class TiXmlElement*)(pOption), "id", nId);
                 IdArrayPtr ids((Unk_BmNewTag(0)));
                 CStringA strTables(((class TiXmlElement*)(class Unk_140165cf0*)(pOption))->Attribute("stat_tables"));
-                FUN_140177e10(strTables, *ids.operator->(), ",");
+                XmlSplit(strTables, *ids.operator->(), ",");
                 m_options.SetAt(nId, ids);
             }
         }

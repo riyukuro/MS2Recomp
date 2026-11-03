@@ -25,6 +25,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce240
+#include "ms2/placeholder/wcformat.h"
 
 // The header statics of the including TU: the sort type names and the skill / stun marks.
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -44,11 +45,10 @@ public:
 class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(int, int, int); };   // vfunc_2: place the movie
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-CString FUN_1402bad60(const char* szFormat, const int* pn);     // format one int
+template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 void* FUN_140bb9630(int n);                                     // int -> delegate user data
 int FUN_140bb9640(void* p);                                     // delegate user data -> int
 int FUN_141472bc0();   // C3: was FUN_141472bc0
-CStringW FUN_1409e8970(CStringW strFormat, const unsigned& a, const unsigned& b);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -104,7 +104,7 @@ void UIMusicConcertDialog::OnLoadComplete()
     for (int i = 0; i < 6; i++)
     {
         int nIndex = i + 1;
-        CString strName = FUN_1402bad60("m_actionButton{0}", &nIndex);
+        CString strName = Unk_SocketFormat("m_actionButton{0}", nIndex);
         m_clips[i] = GetChild<ASMovieClip>(strName);
         if (m_clips[i] == 0)
             continue;
@@ -223,7 +223,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
         nRemain = nRemain / 1000;
         unsigned nMin = nRemain / 0x3c;
         unsigned nSec = nRemain % 0x3c;
-        m_topText->SetTextW(FUN_1409e8970(CStringW(L"s_music_concert_playing_text"), nMin, nSec));
+        m_topText->SetTextW(FUN_14028dfa0<int, int>(CStringW(L"s_music_concert_playing_text"), reinterpret_cast<const int&>(nMin), reinterpret_cast<const int&>(nSec)));
         __int64 nOwner = (__int64)WorldService::GetInstance()->FUN_141bcaf80();
         if (pPC->FUN_141656a80() == nOwner)
             strAction = GetStringCommonByKey(L"s_music_concert_abort_play");

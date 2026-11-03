@@ -25,6 +25,8 @@
 #include "homecameramode.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/tfunctor.h"
+#include "ms2/placeholder/oncecallbacktimer.h"
+#include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -82,29 +84,21 @@ public:
 typedef Unk_TaxiPtr<Unk_TaxiEntList> Unk_TaxiListPtr;
 
 // World service pieces reached through FUN_1403ed2d0.
-struct Unk_TaxiHolder;
 class Unk_TaxiPlayer;
 class Unk_TaxiCtx
 {
 public:
-    Unk_TaxiHolder FUN_141bd30a0();
     Unk_TaxiListPtr FUN_141bd0420(unsigned hash);
     Unk_TaxiPlayer* FUN_141bd0cc0();
 };
 struct Unk_TaxiInfo { char m_pad[0xb8]; int m_nValue; };
-struct Unk_TaxiHolder
-{
-    ~Unk_TaxiHolder();                                  // 0x1408850f0
-    Unk_TaxiInfo* FUN_140885340();
-    void* m_pad[2];
-};
 class Unk_TaxiResTable;
 class Unk_TaxiTimer;
 struct Unk_TaxiEnt { };
 
-struct Unk_TaxiIdArray { int* m_data; unsigned __int64 m_count; unsigned __int64 m_cap; };   // ATL::CAtlArray<int>
-extern Unk_TaxiIdArray DAT_143ab3078;
-extern Unk_TaxiIdArray DAT_143ab3098;
+struct Unk_PtrB;
+extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;            // the taxi stops found (ids)
+extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3098;
 extern int DAT_143ab2870;                               // taxi station id (resource id)
 class CTaxiManager;
 class OnceCallbackTimer;
@@ -113,6 +107,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();
     static class WorldService* GetInstance();
 };
 class PCBase   // C3: member view for the former free stand-ins
@@ -121,7 +116,7 @@ public:
     void AddStateFlags(unsigned int);
     void RemoveStateFlags(unsigned int);
 };
-int FUN_140408410(Unk_TaxiIdArray* arr, int* id);       // CAtlArray<int>::Find
+template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>&, const T&);
 class CTaxiManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -134,7 +129,6 @@ public:
 };
 void* FUN_14025e7c0();
 void FUN_140710590(COutPacket& p);                      // send
-void FUN_140ca7230(Unk_TaxiTimer* t, unsigned delayMs, TFunctor<void, EmptyParam> f);
 
 class CameraMgr   // C3: member view for the former free stand-ins
 {
@@ -197,7 +191,7 @@ CAutoFindTaxiStation::~CAutoFindTaxiStation()
 // @0x1409f1240
 void CAutoFindTaxiStation::FUN_1409f1240()
 {
-    bool bNone = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd30a0().FUN_140885340()->m_nValue == 0;
+    bool bNone = reinterpret_cast<Unk_TaxiInfo*>(WorldService::GetInstance()->FUN_141bd30a0().operator->())->m_nValue == 0;
     if (bNone)
         return;
     Unk_TaxiListPtr list = ((class Unk_TaxiCtx*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
@@ -212,10 +206,10 @@ void CAutoFindTaxiStation::FUN_1409f1240()
         m_nPending = 1;
         return;
     }
-    if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0 && FUN_140408410(&DAT_143ab3098, &DAT_143ab2870) < 0)
+    if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0 && Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
     {
         m_nActive = 1;
-        FUN_140ca7230(FUN_1409f24b0(), 1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
+        reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add(1000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1450));
         Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (player != 0)
             ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
@@ -230,9 +224,9 @@ void CAutoFindTaxiStation::FUN_1409f1450()
     {
         // The loop holds each list entry in a smart pointer.
         Unk_TaxiPlayer* player = ((Unk_TaxiPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-        if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
+        if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0)
         {
-            if (FUN_140408410(&DAT_143ab3098, &DAT_143ab2870) < 0)
+            if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
             {
                 if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
                 {
@@ -262,7 +256,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 mv.m_nKind = 2;
                                 ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
                                 ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(4, 0);
-                                FUN_140ca7230(FUN_1409f24b0(), (unsigned)fTime,
+                                reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add((unsigned)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
                                     ((class PCBase*)(class Unk_TaxiPlayer*)(player))->AddStateFlags(0x100);
@@ -291,19 +285,19 @@ void CAutoFindTaxiStation::SendRequestTaxiMode5()
 {
     if (m_nActive == 0)
         return;
-    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(struct Unk_TaxiIdArray*)(&DAT_143ab3098))->Add(DAT_143ab2870);
+    ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&DAT_143ab3098))->Add(DAT_143ab2870);
     COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
     packet.WriteUInt8(5);
     FUN_140710590(packet);
     int nDelay = 5000;
-    FUN_140ca7230(FUN_1409f24b0(), nDelay, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
+    reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add(nDelay, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
 }
 
 // @0x1409f1970
 void CAutoFindTaxiStation::FUN_1409f1970()
 {
     if (m_nActive != 0 && m_nDone == 0)
-        FUN_140ca7230(FUN_1409f24b0(), 0x5dc, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1af0));
+        reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add(0x5dc, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1af0));
 }
 
 // @0x1409f1a00
@@ -313,7 +307,7 @@ void CAutoFindTaxiStation::FUN_1409f1a00()
         return;
     if (m_nDone != 0)
         return;
-    if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
+    if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0)
     {
         m_nDone = 1;
         ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140947980(2);
@@ -349,7 +343,7 @@ void CAutoFindTaxiStation::FUN_1409f1af0()
         mv.m_nKind = 2;
         ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed580((struct Unk_CameraFlyBy const*)(&mv), 1, 1.0f);
         ((class CameraMgr*)(class Unk_CameraManager*)(Unk_CameraManager::FUN_1409478c0()))->FUN_140aed750(2, 1);
-        FUN_140ca7230(FUN_1409f24b0(), (unsigned)fLen,
+        reinterpret_cast<OnceCallbackTimer*>(FUN_1409f24b0())->Add((unsigned)fLen,
                       Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a70));
     }
     else
@@ -368,11 +362,11 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
         {
             if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840())
             {
-                if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0 && FUN_140408410(&DAT_143ab3098, &DAT_143ab2870) < 0)
+                if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3078), DAT_143ab2870) < 0 && Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3098), DAT_143ab2870) < 0)
                 {
                     if (!((class CTaxiManager*)(class Unk_TaxiResTable*)(FUN_1409f24a0()))->FUN_14085f730(DAT_143ab2870))
                     {
-                        ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(struct Unk_TaxiIdArray*)(&DAT_143ab3098))->Add(DAT_143ab2870);
+                        ((ATL::CAtlArray<unsigned int, ATL::CElementTraits<unsigned int>>*)(void*)(&DAT_143ab3098))->Add(DAT_143ab2870);
                         COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
                         packet.WriteUInt8(5);
                         FUN_140710590(packet);

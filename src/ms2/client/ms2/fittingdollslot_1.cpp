@@ -30,6 +30,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/nifeffectparam.h"
+#include "ms2/client/ms2/material/ms2materials.h"  // C3: MS2StandardMaterial::ms_RTTI
 class Unk_PCBaseComp_a58 : public CPtred {};
 class Unk_PCBaseComp_a78 : public CPtred {};
 class Unk_PCBaseComp_a88 : public CPtred {};
@@ -103,9 +104,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
 
-class Unk_FdMaterialTable;
 struct Unk_FdMaterialEntry;
-extern Unk_FdMaterialTable DAT_143d69198;                   // the material table
 class Unk_CubeKind   // C3: member view for the former free stand-ins
 {
 public:
@@ -114,20 +113,16 @@ public:
 extern NiFixedString DAT_143ae50c8;                         // colour keys of the three colour slots
 extern NiFixedString DAT_143ae50d0;
 extern NiFixedString DAT_143ae50d8;
-bool FUN_141068d50(const NiFixedString& kName, const char* psz);   // operator!=
 void FUN_1410479a0(class NiObjectNET*, class NiFixedString const&, class NiColor const&);   // C3: was FUN_1410479a0
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // the entity's scene graph
 void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kEuler);   // rotation matrix to euler angles
 NiColor FUN_141b6dea0(unsigned nIndex);                     // a skin colour of the colour table
-void FUN_141662da0(PC* pPC, int n);
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_14123fbf0(unsigned short);
 };
-int FUN_141658e60(PC* pPC);
-int FUN_1405267d0(CItem* pItem, int n);                     // the item may be worn by the gender (CItem member; the result is tested here)
 
 void FUN_141275260(int nStringId, int nA, int nB);          // notice by string id
 void FUN_1412752d0(const CStringW& strKey, int nA);         // notice by string key
@@ -273,7 +268,7 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
     index = 0;
     unknown12e8 = nItemId;
     FUN_141658ed0(1);
-    ::FUN_141662da0(this, 1);   // the free extern: PC::FUN_141662da0(int) (fittingdollpc.h) hides it inside the class
+    PC::FUN_141662da0(1);
     vfunc_59(1, 0, 0, 0);
     AddStateFlags(4);
     MS2SvrPtr<Unk_FdItemRec> spItem = FUN_14053f870(nItemId);
@@ -396,7 +391,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
         NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pNode);
         if (pRender != 0)
         {
-            Unk_FdMaterialEntry* pInfo = ((struct Unk_FdMaterialEntry*)NiMaterial::DynamicCast((class NiRTTI const*)(&DAT_143d69198), ((class NiRenderObject*)(pRender))->GetActiveMaterial()));
+            Unk_FdMaterialEntry* pInfo = ((struct Unk_FdMaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((class NiRenderObject*)(pRender))->GetActiveMaterial()));
             if (pInfo != 0 && ((class Unk_CubeKind*)(struct Unk_FdMaterialEntry*)(pInfo))->FUN_140ef4dd0() == 2)
             {
                 NiTexturingProperty* pTexturing = (NiTexturingProperty*)pRender->GetProperty(NiProperty::TEXTURING);
@@ -406,7 +401,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                     if (pBase != 0)
                     {
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
-                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), ((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseFrom))
+                        if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseFrom)
                         {
                             pBase->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseTo), 1));
                         }
@@ -415,7 +410,7 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                     if (pGloss != 0)
                     {
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
-                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), ((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossFrom))
+                        if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossFrom)
                         {
                             pGloss->SetTexture(((class CNifLoadingService*)FUN_140a0afd0())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossTo), 1));
                         }
@@ -505,8 +500,8 @@ int FittingDollPC::FUN_14121c910(CItem* pItem)
         return 0xc;
     if (pItem->HasSkin() != FUN_14121c710())
         return FUN_14121c710() ? 4 : 3;
-    if (::FUN_1405267d0(pItem, ::FUN_141658e60(this)) == 0)
-        return ::FUN_141658e60(this) == 0 ? 7 : 8;
+    if (pItem->FUN_1405267d0(FUN_141658e60()) == 0)
+        return FUN_141658e60() == 0 ? 7 : 8;
     return 0;
 }
 

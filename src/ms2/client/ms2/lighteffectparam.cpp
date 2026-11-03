@@ -355,28 +355,28 @@ bool CLightEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget
     NiTransform kWorld = m_spParent->GetWorldTransform() * m_spLightNode->GetLocalTransform();
 
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
-    m_entity = reinterpret_cast<const Unk_EntRef&>(static_cast<const egf::EntityPtr&>(TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity("EffectPointLight", id, true)));
-    if (m_entity.FUN_1408b70b0(0))
+    reinterpret_cast<egf::EntityPtr&>(m_entity) = static_cast<const egf::EntityPtr&>(TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity("EffectPointLight", id, true));
+    if (reinterpret_cast<egf::EntityPtr&>(m_entity) == (egf::Entity*)0)
         return false;
 
     bool bFalse = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)(m_entity.FUN_1408a9280()), 0x2a7fd9f4, bFalse);
+    FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x2a7fd9f4, bFalse);
     float fFifty = 50.0f;
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x9109875b, &fFifty);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x9109875b, &fFifty);
     bool bTrue = true;
-    FUN_14098c6e0((class Unk_CachedEntity*)(m_entity.FUN_1408a9280()), 0xef627d53, bTrue);
+    FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0xef627d53, bTrue);
     bool bFalse2 = false;
-    FUN_14098c6e0((class Unk_CachedEntity*)(m_entity.FUN_1408a9280()), 0x78e546ab, bFalse2);
-    m_entity.FUN_1408a9280()->FUN_140b27f00(0x2d8cf386, pLightParam->m_clrDiffuse);
-    m_entity.FUN_1408a9280()->FUN_140b27f00(0xc3f0329e, pLightParam->m_clrSpecular);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x18f5d90e, &pLightParam->m_fDimmer);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x4871503b, &pLightParam->m_fRange);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x4dcec447, &pLightParam->m_fAttConstant);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x8cd1ae89, &pLightParam->m_fAttLinear);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x9f7d1fa7, &pLightParam->m_fAttQuadratic);
+    FUN_14098c6e0((class Unk_CachedEntity*)(reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())), 0x78e546ab, bFalse2);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0x2d8cf386, pLightParam->m_clrDiffuse);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0xc3f0329e, pLightParam->m_clrSpecular);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x18f5d90e, &pLightParam->m_fDimmer);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x4871503b, &pLightParam->m_fRange);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x4dcec447, &pLightParam->m_fAttConstant);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x8cd1ae89, &pLightParam->m_fAttLinear);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x9f7d1fa7, &pLightParam->m_fAttQuadratic);
     Vector3 ptWorld = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
-    m_entity.FUN_1408a9280()->FUN_140a38a50(0xfd95ca52, ptWorld);
-    TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 0);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140a38a50(0xfd95ca52, ptWorld);
+    TSingleton<EntityWorldManager>::GetInstance()->FUN_1411cf2d0((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity), 0);
     if (FUN_14028d470(pLightParam->m_fStartDelay, 0.0f))
         vfunc_4();
     return true;
@@ -411,10 +411,10 @@ MS2_REPLACE_METHOD(0x14144AD00, CLightEffect, vfunc_4, 221, 0xFE4D83F7);
 void CLightEffect::vfunc_7()
 {
     FUN_140a0b2a0((class NiAVObject*)((NiNode*)m_spOuter));
-    if (m_entity.FUN_1408a9090() != 0)
+    if ((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity) != 0)
     {
-        CMainSystem::DestroyEntity(reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()));
-        m_entity.FUN_1408b6ec0(0);
+        CMainSystem::DestroyEntity((egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity));
+        reinterpret_cast<egf::EntityPtr&>(m_entity) = (egf::Entity*)0;
     }
 }
 MS2_REPLACE_METHOD(0x14144ADF0, CLightEffect, vfunc_7, 105, 0xFE245DC8);
@@ -422,10 +422,10 @@ MS2_REPLACE_METHOD(0x14144ADF0, CLightEffect, vfunc_7, 105, 0xFE245DC8);
 // @0x14144b0d0
 void CLightEffect::FUN_14144b0d0()
 {
-    if ((bool)m_entity.FUN_1408a9090() && (bool)(NiNode*)m_spLightNode)
+    if ((bool)(egf::Entity*)reinterpret_cast<egf::EntityPtr&>(m_entity) && (bool)(NiNode*)m_spLightNode)
     {
         Vector3 pt = reinterpret_cast<const Vector3&>(m_spLightNode->GetWorldTranslate());
-        m_entity.FUN_1408a9280()->FUN_140a38a50(0xfd95ca52, pt);
+        reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140a38a50(0xfd95ca52, pt);
     }
 }
 MS2_REPLACE_METHOD(0x14144B0D0, CLightEffect, FUN_14144b0d0, 182, 0x87513DBB);
@@ -435,12 +435,12 @@ void CLightEffect::vfunc_13(TransitionData* pFromBase, TransitionData* pToBase, 
 {
     LightEffectTransitionData* pFrom = static_cast<LightEffectTransitionData*>(pFromBase);
     LightEffectTransitionData* pTo = static_cast<LightEffectTransitionData*>(pToBase);
-    m_entity.FUN_1408a9280()->FUN_140b27f00(0x2d8cf386, pFrom->m_clrDiffuse + fT * (pTo->m_clrDiffuse - pFrom->m_clrDiffuse));
-    m_entity.FUN_1408a9280()->FUN_140b27f00(0xc3f0329e, pFrom->m_clrSpecular + fT * (pTo->m_clrSpecular - pFrom->m_clrSpecular));
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0x2d8cf386, pFrom->m_clrDiffuse + fT * (pTo->m_clrDiffuse - pFrom->m_clrDiffuse));
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_140b27f00(0xc3f0329e, pFrom->m_clrSpecular + fT * (pTo->m_clrSpecular - pFrom->m_clrSpecular));
     float fDimmer = pFrom->m_fDimmer + fT * (pTo->m_fDimmer - pFrom->m_fDimmer);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x18f5d90e, &fDimmer);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x18f5d90e, &fDimmer);
     float fRange = pFrom->m_fRange + fT * (pTo->m_fRange - pFrom->m_fRange);
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x4871503b, &fRange);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x4871503b, &fRange);
 }
 MS2_REPLACE_METHOD(0x14144AE60, CLightEffect, vfunc_13, 495, 0x7A080091);
 
@@ -448,7 +448,7 @@ MS2_REPLACE_METHOD(0x14144AE60, CLightEffect, vfunc_13, 495, 0x7A080091);
 void CLightEffect::vfunc_10(bool bVisible)
 {
     float fDimmer = bVisible ? m_fDimmer : 0.0f;
-    m_entity.FUN_1408a9280()->FUN_1409457c0(0x18f5d90e, &fDimmer);
+    reinterpret_cast<Unk_Entity*>(reinterpret_cast<egf::EntityPtr&>(m_entity).operator->())->FUN_1409457c0(0x18f5d90e, &fDimmer);
 }
 MS2_REPLACE_METHOD(0x14144B060, CLightEffect, vfunc_10, 101, 0xB6B47526);
 

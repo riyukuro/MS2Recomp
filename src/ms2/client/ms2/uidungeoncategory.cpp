@@ -68,7 +68,7 @@ public:
 void FUN_1408731e0(Unk_DcXmlNode* pNode, const char* szName, int& n);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140179060(Unk_DcXmlNode* pNode, const char* szName, Unk_DcGroupType& n);   // enum attribute
-bool FUN_14028f710(Unk_DcXmlNode* pNode);                       // the element is enabled (feature/locale filter)
+bool FUN_14028f710(struct Unk_XmlElement* pNode);               // the element is enabled (feature/locale filter)
 void FUN_140177db0(const CString& str, ATL::CAtlArray<unsigned short>& out, const char* szDelimiter);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 CString FUN_14016a5c0(const char* psz, int n);
@@ -187,7 +187,7 @@ CStringW TranslateEnumDungeonGroup(unsigned int nGroupType);      // group type 
 bool FUN_140e14520(int nGroupType);                             // the group type is listed
 bool FUN_140e146a0();                                           // matching is available
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
-void FUN_140874050(void* pCfg, const char* szName, const CString& str);
+void XmlSetAttr(class TiXmlElement*, const char*, const CString&);   // C3: was FUN_140874050
 void FUN_140178770(void* pCfg, const char* szName, std::vector<unsigned int>& out);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
@@ -257,7 +257,7 @@ void UIDungeonCategoryTable::Load()
             continue;
         for (Unk_DcXmlNode* pSub = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pTab))->FirstChild("dungeonSubTab")); pSub != 0;
              pSub = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pSub))->NextSibling("dungeonSubTab"))) {
-            if (!FUN_14028f710(pSub))
+            if (!FUN_14028f710((struct Unk_XmlElement*)(pSub)))
                 continue;
             MS2Ptr<UIDungeonCategory> pCategory(new UIDungeonCategory);
             FUN_140c09130(pSub, "level", pCategory->m_range);
@@ -443,7 +443,7 @@ int UIDungeonControlCenter::vfunc_53(void* pCfg)
         unsigned int nId = *it;
         str += Unk_SocketFormat<unsigned int>("{0},", nId);
     }
-    FUN_140874050(pCfg, "dungeon", str);
+    XmlSetAttr((class TiXmlElement*)(pCfg), "dungeon", str);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C0B800, UIDungeonControlCenter, vfunc_53, 275, 0x59C2B689);

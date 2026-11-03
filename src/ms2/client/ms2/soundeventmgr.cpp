@@ -883,7 +883,6 @@ const char* FUN_141788f10(FMOD_RESULT nResult)
 }
 
 // Out-of-unit callees of the manager.
-CString FUN_14038f6d0(const CString& strA, const char* pszB);        // operator+
 void Unk_AdditionalLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
@@ -1625,8 +1624,8 @@ static void FUN_14177e3d0(FMOD::EventGroup* pGroup, CString strPrefix, std::vect
         }
         CString strPath(strPrefix);
         if (!strPath.IsEmpty())
-            strPath = FUN_14038f6d0(strPath, "/");
-        strPath = FUN_14038f6d0(strPath, pszName);
+            strPath = strPath + "/";
+        strPath = strPath + pszName;
         FUN_14177e3d0(pSub, CString(strPath), rNames);
     }
     for (int i = 0; i < nEvents; ++i)
@@ -1650,7 +1649,7 @@ static void FUN_14177e3d0(FMOD::EventGroup* pGroup, CString strPrefix, std::vect
             MS2_ASSERT_AT(0x51b, 0);
             return;
         }
-        CString strName = FUN_14038f6d0(FUN_14038f6d0(strPrefix, "/"), pszName);
+        CString strName = strPrefix + "/" + pszName;
         rNames.push_back(strName);
     }
 }

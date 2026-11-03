@@ -122,8 +122,19 @@ class TiXmlElement   // C3: member view for the former free stand-ins
 {
 public:
     char const* Attribute(char const*) const;
+    TiXmlElement(const char* pszValue);                         // 0x14086f2f0
+    virtual ~TiXmlElement();                                    // 0x14086f450
     virtual const char* Parse(const char* p, TiXmlParsingData* data, TiXmlEncoding encoding);   // 0x1408782b0
+private:
+    void* m_pad[0x88 / 8];                                      // 0x90 bytes; pointer slots: an array of scalars would be a /GS buffer
 };
+class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };   // C3: member view (0x140165cf0)
+class Unk_IntTriple { public: int Sum(); };   // C3: member view (0x140267c10)
+class CommonString* FUN_14025e7d0();   // C3: the exe's CommonString instance getter (TSingleton<CommonString>::GetInstance)
+struct Unk_QnTracking;
+class Unk_QnState { public: Unk_QnTracking* FUN_140c9b8b0(); };   // C3: member view (0x140c9b8b0)
+class Unk_GpAS { public: Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 a1); };   // C3: member view
+class Unk_BpAScript { public: Scaleform::GFx::Value FUN_140c38f00(const char* szMethod, CString a1, CStringW a2); };   // C3: member view
 
 // ---- statics (.text$di) ----
 static CString s_strTooltipAlign = "tooltipAlign";
@@ -154,9 +165,8 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnGdMemcpyS)(void*, siz
 // ---- unit-local views of exe objects ----
 
    // UIWebBrowser: open a url
-UIWebBrowserBase* FUN_140c43790(int nUiId);                     // the web browser dialog of an id
+class UIWebBrowser* FUN_140c43790(int nUiId);   // C3: the real return type; callers cast to UIWebBrowserBase                     // the web browser dialog of an id
 class Unk_GdWorld : public WorldService { public: PCBase* FUN_141bd0cc0();};         // the local player
-AdditionalCliList* FUN_1416749a0(PCBase* pActor);                 // the buff list of an actor
 int XmlGetChildAttr(TiXmlElement* pCfg, const char* szSection, const char* szKey, int& nValue);   // read an int setting
 void XmlSetChildAttr(TiXmlElement* pCfg, const char* szSection, const char* szKey, int nValue, bool bFlush);   // write an int setting
 void FUN_140d011c0(MS2Ptr<ASLoader> spLoader, CStringW strUrl, bool bFlag);             // load an image into a loader
@@ -170,9 +180,6 @@ unsigned __int64 FUN_140718370(const CStringW& str);               // _wtoi64-st
 bool FUN_14028d760(bool b);
 class ASDialog : public ASDisplayObjectContainer {};            // the movie root (UIDialog::m_90): only addChild is used
 CStringW FUN_14016a730(const char* psz, int nCodePage);         // multibyte -> wide
-bool FUN_1409b9be0(const MS2Ptr<ASMovieClip>* p, int n);
-bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS object been released
-bool FUN_140acd940(const MS2Ptr<ASUIComponent>* p, int n);
 CStringW FUN_1409404f0(__int64 n);
 CString FUN_141029590(unsigned __int64 nGuildId, const CString& strCode, const CString& strA, CString strB);   // a guild mark path
 CString FUN_14016a5c0(const char* psz, int n);
@@ -248,16 +255,7 @@ private:
     DWORD m_dwThread;
     CStringA m_kTag;
 };
-UIGuildDialog* FUN_14136f480(int nUIType);                      // Unk_GetUI<UIGuildDialog>
-// The answer's root TinyXML element (TiXmlElement, 0x90 bytes; Parse is its virtual slot 2, called directly).
-class Unk_GdXmlRoot : public Unk_140165cf0
-{
-public:
-    Unk_GdXmlRoot(const char* pszValue);                        // 0x14086f2f0
-    ~Unk_GdXmlRoot();                                           // 0x14086f450
-private:
-    void* m_pad[0x50 / 8];                                      // pointer slots: an array of scalars would be a /GS buffer
-};
+void* FUN_14136f480(int nUIType);   // C3: the real return type; callers cast to UIGuildDialog                      // Unk_GetUI<UIGuildDialog>
 unsigned __int64 FUN_140718350(const CString& str);             // string -> id
 CString FUN_1407185b0(const CString& str);                      // ConvertTo<CString>
 
@@ -680,7 +678,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     else if (_stricmp("onClickDonate", szMethod) == 0)
     {
-        if (FUN_140ba28d0(&m_30, 0))
+        if (m_30 == NULL)
             return 1;
         int nDonate = *FUN_1401d3200()->guildDonateMeso.Get();
         MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30());
@@ -953,7 +951,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     if (spOld->name == strGradeName && spOld->permissions == nAuth)
                         continue;
                     CBanTextChecker* pChecker;
-                    CBanTextChecker* pCheckerCopy = pChecker = CommonString::GetInstance()->GetChecker().get();
+                    CBanTextChecker* pCheckerCopy = pChecker = FUN_14025e7d0()->GetChecker().get();
                     if (pChecker != 0)
                     {
                         CStringW strBan;
@@ -1077,7 +1075,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             bool bInform = data.PopBool();
-            reinterpret_cast<bool&>(CGameOption::GetInstance()->FUN_140c9b8b0()->m_n00) = bInform;
+            reinterpret_cast<bool&>(reinterpret_cast<Unk_GoEtc*>(reinterpret_cast<Unk_QnState*>(CGameOption::GetInstance())->FUN_140c9b8b0())->m_n00) = bInform;
             CGameOption::GetInstance()->SaveCharacterSettings();
         }
         return 1;
@@ -1955,7 +1953,7 @@ void UIGuildDialog::FUN_14196d0c0(int nPage)
         objGuild.FUN_1407cba60("guildSn", FUN_140719530(spGuild->f18));
         objGuild.FUN_1407cb9c0("guildLevel", nLevel);
         objGuild.FUN_1407cbb20("masterName", spGuild->f58);
-        objGuild.FUN_1407cb9c0("trophy", spGuild->f38.FUN_140267c10());
+        objGuild.FUN_1407cb9c0("trophy", reinterpret_cast<Unk_IntTriple*>(&spGuild->f38)->Sum());
         CStringW strCapacity = StringFormat<int, int>(L"{0} / {1}", spGuild->f44, spGuild->f30);
         objGuild.FUN_1407cbb20("capacityText", strCapacity);
         MS2Ptr<CGuildJoinRequestForChar> spRequest = CGuildManager::GetInstance()->FUN_1413c8000(spGuild->f18);
@@ -1994,7 +1992,7 @@ void UIGuildDialog::FUN_14196d660()
         objGuild.FUN_1407cba60("requestSn", FUN_140719530(spRequest->f18));
         objGuild.FUN_1407cbb20("masterName", spRequest->f58);
         objGuild.FUN_1407cb9c0("state", 1);
-        objGuild.FUN_1407cb9c0("trophy", spRequest->f44.FUN_140267c10());
+        objGuild.FUN_1407cb9c0("trophy", reinterpret_cast<Unk_IntTriple*>(&spRequest->f44)->Sum());
         CStringW strCapacity = StringFormat<int, int>(L"{0} / {1}", spRequest->f50, spRequest->f40);
         objGuild.FUN_1407cbb20("capacityText", strCapacity);
         arrGuilds.PushValue(objGuild.FUN_1422bb870());
@@ -2011,7 +2009,7 @@ void UIGuildDialog::FUN_14196da70()
     size_t nStart = (m_nAcceptPage - 1) * 7;
     if (m_30 == 0)
         return;
-    m_30->FUN_140c1c8c0("setAcceptMemberCount", arrRequests.GetCount());
+    reinterpret_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setAcceptMemberCount", arrRequests.GetCount());
     if (!m_acceptRequestPage)
         return;
     if (arrRequests.GetCount() <= nStart)
@@ -2034,7 +2032,7 @@ void UIGuildDialog::FUN_14196da70()
         objMember.FUN_1407cbb20("charname", spRequest->f38);
         CStringW strInfo = FUN_14028dee0<int, CStringW>(0x402, spRequest->f50, CStringTable::GetInstance()->FUN_141811980(6, spRequest->f4c));
         objMember.FUN_1407cbb20("memberInfo", strInfo);
-        objMember.FUN_1407cb9c0("trophy", spRequest->f54.FUN_140267c10());
+        objMember.FUN_1407cb9c0("trophy", reinterpret_cast<Unk_IntTriple*>(&spRequest->f54)->Sum());
         objMember.FUN_1407cba60("requestSn", FUN_140719530(spRequest->f18));
         objMember.FUN_1407cba60("imgpath", FUN_141028be0(spRequest->f30, spRequest->f40, 1, CString("")));
         arrMembers.PushValue(objMember.FUN_1422bb870());
@@ -2100,7 +2098,7 @@ void UIGuildDialog::FUN_14196e2c0()
 // @0x141973220
 void UIGuildDialog::FUN_141973220()
 {
-    if (FUN_140acd940(&m_raidPage, 0))
+    if (m_raidPage == NULL)
         return;
     MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30());
     if (spMe == 0)
@@ -2133,7 +2131,7 @@ void UIGuildDialog::FUN_141973610()
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x110))
         return;
     {
-        bool bInform = reinterpret_cast<bool&>(CGameOption::GetInstance()->FUN_140c9b8b0()->m_n00);
+        bool bInform = reinterpret_cast<bool&>(reinterpret_cast<Unk_GoEtc*>(reinterpret_cast<Unk_QnState*>(CGameOption::GetInstance())->FUN_140c9b8b0())->m_n00);
         m_championshipPage->Invoke("SetInformArena", bInform);
         CStringW strTitle;
         CStringW strPeriod;
@@ -2164,7 +2162,7 @@ void UIGuildDialog::FUN_141973610()
 void UIGuildDialog::UpdateAttendBackground()
 {
     MS2Ptr<ASMovieClip> spAttend = GetChild<ASMovieClip>("m_attendBG");
-    if (FUN_1409b9be0(&spAttend, 0))
+    if (spAttend == NULL)
         return;
     bool bAttend = CGuildManager::GetInstance()->FUN_1413b8460();
     spAttend->vfunc_4(bAttend);
@@ -2282,7 +2280,7 @@ void UIGuildDialog::FUN_14196e590()
 // @0x14196f830
 void UIGuildDialog::FUN_14196f830()
 {
-    if (FUN_140acd940(&m_skillPage2, 0))
+    if (m_skillPage2 == NULL)
         return;
     m_1c0.clear();
     __int64 nMoney = DAT_143ab2898;
@@ -2332,7 +2330,7 @@ void UIGuildDialog::FUN_14196f830()
         objSkill.FUN_1407cbb20("skillInfo", strInfo);
         objSkill.FUN_1407cbb20("skillDesc", CStringTable::GetInstance()->FUN_141812290(spData->f34, (unsigned short)spData->f38, "tooltipDescription"));
         int nBuffRemain = 0;
-        MS2Ptr<AdditionalCli> spBuff = FUN_1416749a0(pPlayer)->FUN_14096fe60(spData->f34, (unsigned short)spData->f38, 0, true, 1);
+        MS2Ptr<AdditionalCli> spBuff = reinterpret_cast<AdditionalCliList*>(pPlayer->FUN_1416749a0())->FUN_14096fe60(spData->f34, (unsigned short)spData->f38, 0, true, 1);
         if (spBuff.get() != 0)
             nBuffRemain = spBuff->GetRemainTicks() / 1000;
         int nState = 0;
@@ -2383,7 +2381,7 @@ void UIGuildDialog::FUN_14196f830()
 // @0x141970900
 void UIGuildDialog::FUN_141970900()
 {
-    if (FUN_140acd940(&m_eventPage, 0))
+    if (m_eventPage == NULL)
         return;
     m_requests.clear();
     ASArray arrEvents(2);
@@ -2429,7 +2427,7 @@ void UIGuildDialog::FUN_141970900()
 // @0x141970f00
 void UIGuildDialog::FUN_141970f00()
 {
-    if (FUN_1409b9be0(&m_eventVsGame, 0))
+    if (m_eventVsGame == NULL)
         return;
     FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_eventName", FUN_140298ea0(L"s_guild_ui_vsGame_title"));
     FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_maxUserCount", FUN_140298ea0(L"s_guild_ui_vsGame_userCount"));
@@ -2455,7 +2453,7 @@ void UIGuildDialog::FUN_141971490()
 {
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x5b))
         return;
-    if (FUN_140acd940(&m_housePage, 0))
+    if (m_housePage == NULL)
         return;
     int nTheme = CGuildManager::GetInstance()->FUN_1404d1f90();
     int nLevel = CGuildManager::GetInstance()->FUN_1404d2030();
@@ -2497,7 +2495,7 @@ void UIGuildDialog::FUN_141971ac0()
 {
     if (!CFeatureManager::GetInstance()->FUN_14036d570(0x5b))
         return;
-    if (FUN_140acd940(&m_housePage, 0))
+    if (m_housePage == NULL)
         return;
     bool bMaster = FUN_14028d780(CGuildManager::GetInstance()->IsMaster(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30()));
     ASArray arrNpc(2);
@@ -2561,7 +2559,7 @@ void UIGuildDialog::FUN_1419758a0()
         return;
     if (m_1b0.empty())
         return;
-    if (FUN_140acd940(&m_skillPage, 0))
+    if (m_skillPage == NULL)
         return;
     ASArray arrSkill(2);
     for (std::set<int>::iterator it = m_1b0.begin(), itEnd = m_1b0.end(); it != itEnd; ++it)
@@ -2598,7 +2596,7 @@ void UIGuildDialog::FUN_1419758a0()
 // @0x141975c80
 void UIGuildDialog::FUN_141975c80()
 {
-    if (FUN_140acd940(&m_skillPage2, 0))
+    if (m_skillPage2 == NULL)
         return;
     if (m_1c0.empty())
         return;
@@ -2616,7 +2614,7 @@ void UIGuildDialog::FUN_141975c80()
             continue;
         int nRemainDuration = 0;
         int nRemainCool = 0;
-        MS2Ptr<AdditionalCli> spBuff = FUN_1416749a0(pPlayer)->FUN_14096fe60(spData->f34, (unsigned short)spData->f38, 0, true, 1);
+        MS2Ptr<AdditionalCli> spBuff = reinterpret_cast<AdditionalCliList*>(pPlayer->FUN_1416749a0())->FUN_14096fe60(spData->f34, (unsigned short)spData->f38, 0, true, 1);
         if (spBuff.get() != 0)
             nRemainDuration = spBuff->GetRemainTicks() / 1000;
         int nDuration = spData->f2c;
@@ -2642,7 +2640,7 @@ void UIGuildDialog::FUN_141975c80()
 // @0x141972520
 void UIGuildDialog::FUN_141972520()
 {
-    if (FUN_140acd940(&m_storagePage, 0))
+    if (m_storagePage == NULL)
         return;
     // CGuildStorage keeps the item map opaque (Unk_GuildMapA); view it as the map it is.
     Unk_GdStorageItems& items = reinterpret_cast<Unk_GdStorageItems&>(CGuildManager::GetInstance()->FUN_14197dff0()->f18);
@@ -2677,7 +2675,7 @@ void UIGuildDialog::FUN_141972520()
 // @0x1419729d0
 void UIGuildDialog::FUN_1419729d0()
 {
-    if (FUN_140acd940(&m_storagePage, 0))
+    if (m_storagePage == NULL)
         return;
     // CGuildStorage keeps the history deque opaque (Unk_GuildMapC); view it as the deque it is.
     Unk_GdStorageHistory& history = reinterpret_cast<Unk_GdStorageHistory&>(CGuildManager::GetInstance()->FUN_14197dff0()->f38);
@@ -2718,7 +2716,7 @@ void UIGuildDialog::FUN_1419729d0()
 // @0x141972fc0
 void UIGuildDialog::FUN_141972fc0()
 {
-    if (FUN_140acd940(&m_raidPage, 0))
+    if (m_raidPage == NULL)
         return;
     MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(reinterpret_cast<Unk_GdWorld*>(WorldService::GetInstance())->FUN_141bd0d30());
     if (spMe == 0)
@@ -2726,7 +2724,7 @@ void UIGuildDialog::FUN_141972fc0()
     int nScore = spMe->raid.GetTotalCount();
     int nTotal = CGuildManager::GetInstance()->FUN_1404d0ee0();
     MS2Ptr<ASMovieClip> spInfo = m_raidPage->FUN_1409b4560("m_info");
-    if (FUN_1409b9be0(&spInfo, 0))
+    if (spInfo == NULL)
         return;
     CStringW strScore = FUN_14028dfa0<int, int>(L"s_guild_raid_info_score", nScore, nTotal);
     FUN_140cfee80((*spInfo).FUN_1422bb890(), "m_scoreText", strScore);
@@ -2989,7 +2987,7 @@ MS2_REPLACE_METHOD(0x141974ea0, UIGuildDialog, FUN_141974ea0, 29, 0x50AB2629);
 // @0x1419754b0
 bool UIGuildDialog::OpenRealtimeRankPage()
 {
-    UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
     if (pBrowser == 0)
         return 0;
     pBrowser->FUN_14135ec00(m_strRealtimeRankUrl, 1);
@@ -3000,7 +2998,7 @@ MS2_REPLACE_METHOD(0x1419754b0, UIGuildDialog, OpenRealtimeRankPage, 70, 0xDE9AF
 // @0x141975500
 bool UIGuildDialog::OpenRankPage()
 {
-    UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
     if (pBrowser == 0)
         return 0;
     pBrowser->FUN_14135ec00(m_strRankUrl, 1);
@@ -3011,7 +3009,7 @@ MS2_REPLACE_METHOD(0x141975500, UIGuildDialog, OpenRankPage, 70, 0x9F60DC9F);
 // @0x141975550
 bool UIGuildDialog::OpenPvpRankPage()
 {
-    UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
     if (pBrowser == 0)
         return 0;
     pBrowser->FUN_14135ec00(m_strPvpRankUrl, 1);
@@ -3097,7 +3095,7 @@ void UIGuildDialog::FUN_141975620()
 // @0x1419760c0
 void UIGuildDialog::PurgeExpiredRequests()
 {
-    if (FUN_140acd940(&m_eventPage, 0))
+    if (m_eventPage == NULL)
         return;
     if (m_requests.empty())
         return;
@@ -3183,14 +3181,14 @@ void UIGuildDialog::FUN_1419764f0(unsigned __int64 nGuildId, const CString& strC
     if (m_pvpHistoryPage.get() != 0)
     {
         CString strPath = FUN_141029590(nGuildId, FUN_14016a5c0(strCode, 0), "", "");
-        m_pvpHistoryPage->FUN_140c38f00("setGuildMark", FUN_140719530(nGuildId), FUN_14016a730(strPath, 0));
+        reinterpret_cast<Unk_BpAScript*>(m_pvpHistoryPage.operator->())->FUN_140c38f00("setGuildMark", FUN_140719530(nGuildId), FUN_14016a730(strPath, 0));
     }
 }
 
 // @0x141976730
 void UIGuildDialog::FUN_141976730(const CStringW& strMark, int n)
 {
-    if (FUN_140acd940(&m_infoPage, 0))
+    if (m_infoPage == NULL)
         return;
     if (n != 0)
     {
@@ -3225,9 +3223,9 @@ void UIGuildDialog::FUN_1419769d0()
 // @0x141976a60
 void UIGuildDialog::vfunc_oa0_11(void* a1)
 {
-    if (FUN_140ba28d0(&m_30, 0))
+    if (m_30 == NULL)
         return;
-    if (FUN_140acd940(&m_skillPage2, 0))
+    if (m_skillPage2 == NULL)
         return;
     FUN_140cfee80((*m_skillPage2).FUN_1422bb890(), "m_guildFund", FUN_1409404f0((__int64)a1));
 }
@@ -3249,7 +3247,7 @@ UINT UIGuildDialog::RequestHistoryGuildMarkToWeb(LPVOID pParam)
         std::wstring strBody = client.GetResponseContent();
         CString strXml = FUN_1401d4330(strBody.c_str(), 0);
         UIGuildDialog* pDialog;
-        if (CUIService::GetInstance() != 0 && (pDialog = FUN_14136f480(0x4e4f)) != 0)
+        if (CUIService::GetInstance() != 0 && (pDialog = static_cast<UIGuildDialog*>(FUN_14136f480(0x4e4f))) != 0)
             pDialog->FUN_141976e00(strXml);
     }
     return 0;
@@ -3258,12 +3256,12 @@ UINT UIGuildDialog::RequestHistoryGuildMarkToWeb(LPVOID pParam)
 // @0x141976e00 (the web answer: <guilds><guild sn=".." mark=".."/>..</guilds>)
 void UIGuildDialog::FUN_141976e00(CString strXml)
 {
-    Unk_GdXmlRoot root("guilds");
+    TiXmlElement root("guilds");   // the answer's root element; Parse is its virtual slot 2, called directly
     const char* pEnd = reinterpret_cast<TiXmlElement*>(&root)->TiXmlElement::Parse(strXml, 0, TIXML_ENCODING_UNKNOWN);
     if (pEnd == 0)
         return;
     std::vector<std::pair<unsigned __int64, CString> > marks;
-    for (Unk_140165cf0* pGuild = root.FUN_140165cf0("guild"); pGuild != 0; pGuild = pGuild->NextSiblingElement())
+    for (Unk_140165cf0* pGuild = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_XmlNode*>(&root)->FirstChild("guild")); pGuild != 0; pGuild = pGuild->NextSiblingElement())
     {
         unsigned __int64 nGuildId = FUN_140718350(((class TiXmlElement*)(class Unk_140165cf0*)(pGuild))->Attribute("sn"));
         CString strMark = FUN_1407185b0(((class TiXmlElement*)(class Unk_140165cf0*)(pGuild))->Attribute("mark"));

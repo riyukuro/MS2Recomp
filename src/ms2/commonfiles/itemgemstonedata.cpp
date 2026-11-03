@@ -54,7 +54,6 @@ public:
 };
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 CString FUN_140719210(long n);                                           // number text
-CString FUN_1401d2b10(const CString& a, const CString& b);               // a + b
 void FUN_140275080(CString&, Unk_StrVec*, const char*);                  // split at a separator
 void FUN_140177f30(CStringA& str, ATL::CAtlArray<unsigned>& rOut, const char* pszSep);   // split into numbers
 
@@ -160,8 +159,8 @@ int CItemGemStoneUpgradeTable::Load()
         for (unsigned i = 0; i < 4; i++)
         {
             CString strNumber = FUN_140719210(i + 1);
-            CString strIngredientAttr = FUN_1401d2b10(strIngredient, strNumber);
-            CString strCountAttr = FUN_1401d2b10(strCount, strNumber);
+            CString strIngredientAttr = strIngredient + strNumber;
+            CString strCountAttr = strCount + strNumber;
             CStringA strValue;
             unsigned nAmount = 0;
             if (XmlGetAttr((class TiXmlElement*)(pNode), strIngredientAttr, strValue) == 0)

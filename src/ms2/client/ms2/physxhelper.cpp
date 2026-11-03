@@ -22,6 +22,9 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 #include <efd/ServiceManager.h>
 #include <egf/Entity.h>
 #include <ecrPhysX/PropService.h>
+#include <egfPhysX/SceneService.h>
+#include <egf/ScriptContext.h>
+#include <egfPhysX/EntityActorData.h>
 #include <efdPhysX/PhysXTypes.h>
 #include <NiPhysXTypes.h>
 #include <NiPhysXProp.h>
@@ -36,6 +39,7 @@ extern "C" float (__cdecl* __imp_sqrtf)(float);
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmainsystem.h"
 #include "ms2/client/ms2/ms2.h"
+#include "ms2/placeholder/ecrcameraservice.h"   // Unk_ServiceManager
 class Unk_BuddyHandle {
 public:
     Unk_BuddyHandle(void*);
@@ -73,16 +77,11 @@ class Unk_PhysWorldSvc : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100002;
-    Unk_PhysGameObj* FUN_141bd0f50(void* pObj);
 };
 // The application object; the service manager handle sits at +8.
 struct Unk_PhysAppHost { char m_pad[8]; char m_manager[1]; };
 // The user data payload of a prop actor.
-class Unk_PhysPropObj
-{
-public:
-    efd::SmartPointer<egf::Entity> FUN_14163b4e0();         // the owning entity
-};
+class Unk_PhysPropObj;   // an egfPhysX::EntityActorData
 // The lock holder of CPhysXHelper::m_pLock; the lock itself sits at +0xf8.
 class Unk_PhysXLockOwner
 {
@@ -111,21 +110,21 @@ class Unk_GameContext   // C3: member view for the former free stand-ins
 public:
     class efd::ServiceManager* FUN_140af8310();
 };
-egfPhysX::SceneService* FUN_1411d14f0(efd::ServiceManager* pServices);
 class MS2SceneService   // C3: member view for the former free stand-ins
 {
 public:
     class NxScene* GetCachedNxScene(int) const;
 };
-ecrPhysX::PropService* FUN_14120a240(efd::ServiceManager* pServices);
+template <> ecrPhysX::PropService* Unk_ServiceManager::GetSystemServiceAs<ecrPhysX::PropService>() const;
 efd::utf8string FUN_1414d7990(const efd::utf8string& kName);
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
-Unk_PhysRpgActor* FUN_1409ffd30(Unk_PhysGameObj* p);
 class PCBase   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_PCBaseBody* GetPhysicsBody();
 };
+class GameObject;
+namespace efd { template <> PCBase* DynamicCast<PCBase, GameObject>(GameObject* Source); }
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
@@ -135,7 +134,6 @@ int FUN_1409a8f90(const float* pf);
 bool FUN_14028d470(float f, float g);
 float FUN_14028d3a0(float f);
 float FUN_140a38cd0(float f);
-extern char DAT_143b059e8;
 struct Unk_EntityAppFramework;
 class Unk_Service6100017;
 Unk_Service6100017*FUN_1401cd040(Unk_EntityAppFramework*);
@@ -146,6 +144,7 @@ public:
     static class WorldService* GetInstance();
 public:
     void FUN_141bc8e00();   // C3: was free FUN_141bc8e00
+    class Unk_WsC_GameObj* FUN_141bd0f50(class Unk_WsC_GameObj* pObj);
 };
 extern int DAT_143ae2b30;
 extern const Vector3 g_143b01a60;
@@ -248,7 +247,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
         }
         else
         {
-            Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
+            Unk_PhysRpgActor* pRpg = reinterpret_cast<Unk_PhysRpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0f50(reinterpret_cast<Unk_WsC_GameObj*>(pObj)))));
             if (pRpg != 0)
                 pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->FUN_141240e70();
         }
@@ -259,7 +258,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
         NxActor* pActor = 0;
         auto pScene = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
         Unk_PhysWorldSvc* pWorld = FUN_14168ab40(pScene);
-        Unk_PhysRpgActor* pRpg = FUN_1409ffd30(pWorld->FUN_141bd0f50(pObj));
+        Unk_PhysRpgActor* pRpg = reinterpret_cast<Unk_PhysRpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0f50(reinterpret_cast<Unk_WsC_GameObj*>(pObj)))));
         if (pRpg != 0)
             pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->FUN_141240e70();
         return pActor;
@@ -276,7 +275,7 @@ egf::Entity* CPhysXHelper::GetEntityFromActor(NxActor* pActor)
     Unk_PhysPropObj* pObj = static_cast<Unk_PhysPropObj*>(pActor->userData);
     if (pObj == 0)
         return 0;
-    return pObj->FUN_14163b4e0();
+    return reinterpret_cast<egfPhysX::EntityActorData*>(pObj)->GetEntity();
 }
 // @0x141689a10
 bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
@@ -288,7 +287,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     if (bCube)
         return true;
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
-    ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
+    ecrPhysX::PropService* pProps = reinterpret_cast<Unk_ServiceManager*>(pServices)->GetSystemServiceAs<ecrPhysX::PropService>();
     if (pProps != 0)
         return pProps->GetNumProps(pEntity->GetEntityID()) > 0 ? true : false;
     return false;
@@ -297,13 +296,13 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
 void CPhysXHelper::FUN_141689ac0(Unk_PhysPropPtr pProp)
 {
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
-    ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
+    ecrPhysX::PropService* pProps = reinterpret_cast<Unk_ServiceManager*>(pServices)->GetSystemServiceAs<ecrPhysX::PropService>();
     if (pProps != 0)
     {
-        unsigned uiProps = pProps->GetNumProps(pProp.FUN_14168afe0()->FUN_14163b4e0()->GetEntityID());
+        unsigned uiProps = pProps->GetNumProps(reinterpret_cast<egfPhysX::EntityActorData*>(pProp.FUN_14168afe0())->GetEntity()->GetEntityID());
         for (unsigned i = 0; i < uiProps; i++)
         {
-            NiPhysXProp* pPhysXProp = pProps->GetPropAt(pProp.FUN_14168afe0()->FUN_14163b4e0()->GetEntityID(), i);
+            NiPhysXProp* pPhysXProp = pProps->GetPropAt(reinterpret_cast<egfPhysX::EntityActorData*>(pProp.FUN_14168afe0())->GetEntity()->GetEntityID(), i);
             if (pPhysXProp == 0)
                 continue;
             NiPhysXPropDesc* pSnapshot = pPhysXProp->GetSnapshot();
@@ -374,7 +373,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     pEntity->GetPropertyValue(0x38141815, bCube);
     if (bCube)
     {
-        efd::SmartPointer<efd::ISystemService> spService(reinterpret_cast<efd::ISystemService *>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework *>(&DAT_143b059e8))));
+        efd::SmartPointer<efd::ISystemService> spService(reinterpret_cast<efd::ISystemService *>(FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework *>(&egf::g_bapiContext))));
         NxActor* pActor = FUN_1410c5420(spService.operator->(), pEntity->GetEntityID());
         if (pActor != 0)
         {
@@ -386,7 +385,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
     else
     {
         efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
-        ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
+        ecrPhysX::PropService* pProps = reinterpret_cast<Unk_ServiceManager*>(pServices)->GetSystemServiceAs<ecrPhysX::PropService>();
         if (pProps != 0)
         {
             unsigned uiProps = pProps->GetNumProps(pEntity->GetEntityID());
@@ -422,7 +421,7 @@ void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, co
 NxScene* CPhysXHelper::FUN_14168a1c0()
 {
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
-    egfPhysX::SceneService* pScenes = FUN_1411d14f0(pServices);
+    egfPhysX::SceneService* pScenes = pServices->GetSystemServiceAs<egfPhysX::SceneService>();
     return ((class MS2SceneService*)(class egfPhysX::SceneService*)(pScenes))->GetCachedNxScene(0);
 }
 // @0x14168a210
@@ -504,7 +503,7 @@ void CPhysXHelper::FUN_14168a570()
 void CPhysXHelper::FUN_14168a5a0()
 {
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->FUN_140af8310();
-    ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
+    ecrPhysX::PropService* pProps = reinterpret_cast<Unk_ServiceManager*>(pServices)->GetSystemServiceAs<ecrPhysX::PropService>();
     if (pProps != 0)
     {
         efd::utf8string kName("PhysXDefaultSceneName");
@@ -632,7 +631,7 @@ bool ClosestHitReport::FUN_14168b120(NxActor* pA, NxActor* pB)
     {
         Unk_PhysPropObj* pObjA = static_cast<Unk_PhysPropObj*>(pA->userData);
         Unk_PhysPropObj* pObjB = static_cast<Unk_PhysPropObj*>(pB->userData);
-        if (pObjA->FUN_14163b4e0() == pObjB->FUN_14163b4e0())
+        if (reinterpret_cast<egfPhysX::EntityActorData*>(pObjA)->GetEntity() == reinterpret_cast<egfPhysX::EntityActorData*>(pObjB)->GetEntity())
             return true;
     }
     return false;

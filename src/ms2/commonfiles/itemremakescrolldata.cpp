@@ -98,7 +98,6 @@ CStringW FUN_140631600(int nStat, BaseOption* pBase);       // the text of a sta
 CStringW FUN_140631830(int nStat, int nValue, Unk_ItemEquipData* pData);    // the text of a special stat option
 CStringW GetStringCommon(int nStringId);                      // a common string by id
 CStringW GetStringCommonByKey(const CStringW& str);                // a string table text
-CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // the item name coloured by rank
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
 unsigned FUN_140482050(unsigned nAmount, unsigned nScale);  // scaled amount
@@ -107,11 +106,6 @@ int FUN_1406198a0(int nValue, float fRate);
 
 // The option list of the remake records (Unk_RemakeOptionList50) is a vector of (option index, value) pairs.
 typedef std::vector<std::pair<int, int> > Unk_RemakeOptionPairs;
-#ifdef __clang__
-// clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); call the exe's copy of
-// operator+(const CStringW&, const wchar_t*) (the COMDAT this unit emits at 0x14061ad70).
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* psz);
-#endif
 
 // The market sort-key names of an included header (names invented).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -766,7 +760,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->GetRarity(), nStat);
             bBest = range.second == spBase->GetValue();
             if (bBest)
-                strName = FUN_1401e8510(strBest, strName);
+                strName = StringFormat<CStringW>(strBest, strName);
             CStringW strValue;
             if (!strRange.IsEmpty())
             {
@@ -782,9 +776,9 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             else
                 strValue = strName;
             if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->IsHighRollValue(item, nStat, nGroup, spBase->GetValue()))
-                strText.Append(FUN_1401e8510(strRowBest, strValue));
+                strText.Append(StringFormat<CStringW>(strRowBest, strValue));
             else
-                strText.Append(FUN_1401e8510(strRow, strValue));
+                strText.Append(StringFormat<CStringW>(strRow, strValue));
             nCount++;
             continue;
         }
@@ -802,7 +796,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->GetRarity(), nSpecial);
             bBest = range.second == spBase->GetValue();
             if (bBest)
-                strName = FUN_1401e8510(strBest, strName);
+                strName = StringFormat<CStringW>(strBest, strName);
             CStringW strValue;
             if (!strRange.IsEmpty())
             {
@@ -818,9 +812,9 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             else
                 strValue = strName;
             if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->IsHighRollSpecialValue(item, nSpecial, nGroup, spBase->GetValue()))
-                strText.Append(FUN_1401e8510(strRowBest, strValue));
+                strText.Append(StringFormat<CStringW>(strRowBest, strValue));
             else
-                strText.Append(FUN_1401e8510(strRow, strValue));
+                strText.Append(StringFormat<CStringW>(strRow, strValue));
             nCount++;
             continue;
         }
@@ -842,11 +836,7 @@ CStringW FUN_140619070(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked)
     for (size_t i = 0; i < aLocked.GetCount(); i++)
     {
         int nIndex = aLocked[i];
-#ifdef __clang__
-        strText += FUN_14061ad70(rows[nIndex], L"\n");
-#else
         strText += rows[nIndex] + L"\n";
-#endif
     }
     return strText;
 }

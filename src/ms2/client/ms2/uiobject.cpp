@@ -38,6 +38,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;     // header sta
 
 
 #include "ms2/placeholder/asuicomponent.h"   // C3: the real ASUIComponent (FUN_1422c7a90)
+#include "ms2/ms2format.h"
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);
 
@@ -49,36 +50,20 @@ CStringW FUN_140718650(const CString& str);                 // CString -> CStrin
 void FUN_1412751b0(const CStringW& strText, int nType);     // system message
 void FUN_1412751f0(const CStringW& strText, int a1, int a2);
 CStringW GetStringCommonByKey(const CStringW& strKey);             // localised string
-CStringW FUN_1402a5170(const wchar_t* szFormat, const CString& a1);    // "{0}" formatter
 int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
 int FUN_1407181d0(const CString& str);
 int FUN_140718170(const CString& str);
 void FUN_1418fe1c0(const CString& strUrl);
 
-UIWebBrowserBase* FUN_140c43790(int nUIType);
-class Unk_140961730 : public UIWorldMapDialog { };
-Unk_140961730* FUN_140961730(int nUIType);
-class Unk_140b99ba0 : public UIPetSystemDialog { };
-Unk_140b99ba0* FUN_140b99ba0(int nUIType);
+class UIWebBrowser* FUN_140c43790(int nUIType);
 template <class T> T* Unk_GetUI(int nUiType);
-
-class Unk_1401aa6a0                     // 8-byte dictionary key (ctor 0x1401aa6a0)
-{
-public:
-    Unk_1401aa6a0(int nId);
-    Unk_1401aa6a0(const Unk_1401aa6a0& o);  // user copy ctor + dtor: by-value args go through a caller temp
-    ~Unk_1401aa6a0();
-
-private:
-    int m_00;
-    int m_04;
-};
-class Unk_1401a9d70 { public: Unk_1401aa6a0 FUN_141811980(int a1, int nId); };
+template <class T> T* Unk_PetGetDialog(int nId);
+CStringW FUN_1401aa6a0(int nId);                                    // the dictionary key of an id
 
 class UIGameDictionaryDialog : public UIDialog
 {
 public:
-    void FUN_140f46ea0(int nTab, Unk_1401aa6a0 key, int n);
+    void FUN_140f46ea0(int nTab, CStringW key, int n);
 };
 class UIQuestDialog : public UIDialog
 {
@@ -136,7 +121,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
 
     if (strMethod == "webPage") {
         CString strUrl = pArgs->FUN_1422b8d30();
-        UIWebBrowserBase* p = FUN_140c43790(0x4e6a);
+        UIWebBrowserBase* p = (UIWebBrowserBase*)FUN_140c43790(0x4e6a);
         if (p == NULL)
             return;
         p->FUN_14135ec00(strUrl, true);
@@ -145,7 +130,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         FUN_1418fe1c0(strUrl);
     } else if (strMethod == "worldmap") {
         int nMapId = FUN_1407181d0(pArgs->FUN_1422b8d30());
-        Unk_140961730* p = FUN_140961730(0x4e42);
+        UIWorldMapDialog* p = Unk_GetUI<UIWorldMapDialog>(0x4e42);
         if (p == NULL)
             return;
         p->FUN_141b5bc70(nMapId);
@@ -166,7 +151,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
-        p->FUN_140f46ea0(3, reinterpret_cast<Unk_1401a9d70*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, nItemId), 1);
+        p->FUN_140f46ea0(3, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), 1);
         p->FUN_141924680();
     } else if (strMethod == "npcdictionary") {
         int nNpcId = FUN_1407181d0(pArgs->FUN_1422b8d30());
@@ -177,13 +162,13 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         if (pNpc == NULL)
             return;
         if (pNpc->GetFriendly() > 0)
-            p->FUN_140f46ea0(1, Unk_1401aa6a0(nNpcId), 1);
+            p->FUN_140f46ea0(1, FUN_1401aa6a0(nNpcId), 1);
         else
-            p->FUN_140f46ea0(2, Unk_1401aa6a0(nNpcId), 1);
+            p->FUN_140f46ea0(2, FUN_1401aa6a0(nNpcId), 1);
         p->FUN_141924680();
     } else if (strMethod == "petCollectGroup") {
         int nGroupId = FUN_140718170(pArgs->FUN_1422b8d30());
-        Unk_140b99ba0* p = FUN_140b99ba0(0x4f38);
+        UIPetSystemDialog* p = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (p == NULL)
             return;
         p->FUN_140e74550(nGroupId);
@@ -291,7 +276,7 @@ void UIObject::vfunc_51(const Scaleform::GFx::FunctionHandler::Params& params)
     if (m_30 == NULL)
         return;
     if (g_nDebugUI) {
-        CStringW strText = FUN_1402a5170(L"[Debug SWF Name]\nUI{0}.swf", vfunc_7());
+        CStringW strText = StringFormat<CString>(L"[Debug SWF Name]\nUI{0}.swf", vfunc_7());
         ASTooltip tooltip(1, 2);
         tooltip.SetTooltipAlign(5);
         tooltip.SetOffsetY(0x14);

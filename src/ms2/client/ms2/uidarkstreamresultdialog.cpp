@@ -45,7 +45,6 @@ class UIGameRankingDialog   // C3: member view for the former free stand-ins
 public:
     void FUN_140e2dfc0(int, int);
 };
-void* FUN_1403ed2b0();                                          // the UI service
 class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
 class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool bFlag); };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -133,7 +132,7 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             if (pRanking != 0)
             {
                 ((class UIGameRankingDialog*)(void*)(pRanking))->FUN_140e2dfc0(3, 0);
-                (((CUIService*)(FUN_1403ed2b0()))->OpenDialog((eUIClassID)(0x4f24)));
+                (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f24)));
             }
         }
         else if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3b) == true)
@@ -153,7 +152,7 @@ MS2_REPLACE_METHOD(0x140F34930, UIDarkStreamResultDialog, vfunc_28, 359, 0xB0C82
 // @0x140f34ab0
 void UIDarkStreamResultDialog::FUN_140f34ab0(CInPacket& packet)
 {
-    m_items.FUN_14028a590();
+    m_items.clear();
     m_nValue0 = packet.ReadInt32();
     m_nValue1 = packet.ReadInt32();
     m_nValue2 = packet.ReadInt32();
@@ -164,7 +163,7 @@ void UIDarkStreamResultDialog::FUN_140f34ab0(CInPacket& packet)
     {
         ItemEntity item;
         item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
-        m_items.FUN_1403fb160(item);
+        m_items.push_back(item);
     }
     FUN_140f34d50();
 }
@@ -194,9 +193,9 @@ void UIDarkStreamResultDialog::FUN_140f34d50()
         return;
     }
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    for (size_t i = 0; i < m_items.FUN_14028b470(); ++i)
+    for (size_t i = 0; i < m_items.size(); ++i)
     {
-        ItemEntity& entity = m_items.FUN_140be9400(i);
+        ItemEntity& entity = m_items[i];
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(entity.vfunc_o18_0(), entity.vfunc_o18_1(), 0) != 0)
         {

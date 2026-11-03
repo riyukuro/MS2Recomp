@@ -13,6 +13,7 @@
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/fielddatacli.h"   // C3: MS2Ptr<CFieldDataCli> (WorldService::FUN_141bd30a0)
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC::FUN_141654700 / FUN_141658e60
 #include "ms2/commonfiles/itemgem.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants methods
@@ -20,16 +21,6 @@
 // ---- unit-local stand-ins and unrecovered callees (names invented from use) ----------------------------------------------
 
 // Map flags: the shared map data behind a counted pointer (the world service's copy of m_298).
-class Unk_CeMapData : public CFieldData { };
-class Unk_CeMapPtr
-{
-public:
-    ~Unk_CeMapPtr();                                    // 0x1408850f0
-    Unk_CeMapData* FUN_140885340() const;               // operator->
-private:
-    void* m_pad_00;
-    Unk_CeMapData* m_p;
-};
 
 // The effect manager singleton (0x1403ed280) and the request it takes (constructed/destroyed out of line).
 struct Unk_CoupleRot { float m_af[9]; };
@@ -40,13 +31,6 @@ struct Unk_CoupleXform
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_CoupleXform, 0x34);
-struct Unk_CeRequest;
-class Unk_CeEffectMgr
-{
-public:
-    int FUN_1411a49c0(Unk_CeRequest* pRequest);         // spawn, returns the handle
-    void FUN_1411a6060(int nHandle);                    // release
-};
 class NoticeMessage   // the request, with its out-of-line ctor and dtor
 {
 public:
@@ -82,14 +66,8 @@ public:
     int& FUN_140298f40();
 };
 unsigned* FUN_140b0f480(Unk_CeConstUInt* pSlot);
-extern Vector3 DAT_143b01a60;              // checked value getter
 
 // World service / players.
-class Unk_CeWorld
-{
-public:
-    Unk_CeMapPtr FUN_141bd30a0();                       // current map data
-};
 void* FUN_1409613d0(PCBase* p);
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
 class Unk_IntervalTimer   // C3: member view for the former free stand-ins
@@ -101,7 +79,7 @@ public:
 // @0x140b0e5f0
 CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName,
                                        int nGemId)
-    : m_bInRange(0), m_bActive(0), m_bRequested(0), m_nEffectId(0), m_posEffect(DAT_143b01a60), m_pOwner(pOwner),
+    : m_bInRange(0), m_bActive(0), m_bRequested(0), m_nEffectId(0), m_posEffect(reinterpret_cast<const Vector3&>(efd::Point3::ZERO)), m_pOwner(pOwner),
       m_bLinked(bLinked), m_nCoupleType(nCoupleType), m_nPartnerId(nPartnerId), m_strName(strName), m_nGemId(nGemId)
 {
     FUN_140b0ecd0();
@@ -241,7 +219,7 @@ void CoupleEffectSystem::FUN_140b0ed30()
     request.m_strName = FUN_140b0efb0();
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
-    m_nEffectId = reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(reinterpret_cast<Unk_CeRequest*>(&request));
+    m_nEffectId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(request));
     m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)FUN_1401d3200())->m_checkInterval));
 }
 
@@ -250,7 +228,7 @@ void CoupleEffectSystem::FUN_140b0eed0()
 {
     if (m_nEffectId == 0)
         return;
-    reinterpret_cast<Unk_CeEffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_1411a6060(m_nEffectId);
+    TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffectId);
     m_nEffectId = 0;
     m_bInRange = 0;
 }
@@ -258,10 +236,10 @@ void CoupleEffectSystem::FUN_140b0eed0()
 // @0x140b0ef20
 bool CoupleEffectSystem::FUN_140b0ef20()
 {
-    Unk_CeMapPtr spMap = reinterpret_cast<Unk_CeWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
-    if (reinterpret_cast<void*>(reinterpret_cast<const MS2Ptr<CFieldDataCli>&>(spMap).get()) != 0)
+    MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
+    if (reinterpret_cast<void*>(spMap.get()) != 0)
     {
-        if (spMap.FUN_140885340()->FUN_140375660(0x400) != 0)
+        if (spMap->FUN_140375660(0x400) != 0)
             return false;
     }
     return true;
@@ -284,7 +262,7 @@ Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
 {
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
-        return Unk_CoupleVec(DAT_143b01a60);
+        return Unk_CoupleVec(reinterpret_cast<const Vector3&>(efd::Point3::ZERO));
 #ifdef __clang__
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();

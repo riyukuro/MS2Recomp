@@ -17,6 +17,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/notifysystem.h"
 #include <stdlib.h>
+#include "ms2/ms2format.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -31,7 +32,6 @@ bool FUN_1406a5930();                                               // star poin
 NotifySystem* FUN_140939a10();
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);   // the amount text of a token kind
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
-CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& a1, const int& a2);
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field's text
 
@@ -149,7 +149,7 @@ MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const C
     MS2Ptr<ASUIComponent> spSlot(new ASUIComponent(CString("UITokenPocketDialog_slot"), 2));
     int nVSpace = -4;
     const CStringW& strSrc = FUN_1418fe870(nTokenKind, &nVSpace, 0);
-    FUN_140cff1b0(spSlot->FUN_1422bb890(), "icon", FUN_140275590(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
+    FUN_140cff1b0(spSlot->FUN_1422bb890(), "icon", StringFormat<CStringW, int>(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
     spSlot.get()->SetPositionInt(0xe, m_178);
     m_178 += 0x17;
     m_90->FUN_1422c6900(spSlot->FUN_1422bb890());

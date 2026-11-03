@@ -93,7 +93,7 @@ extern NiFixedString DAT_143ae5398;
 extern NiFixedString DAT_143ae53a0;
 
 // The world service accessors this unit uses.
-void FUN_1402a9d70(void*, int, float, float, float, int);
+typedef ATL::CAtlMap<unsigned int, CStringA> Unk_MarkerMap;
 void FUN_1401cd100(void* pId, __int64 nId);
 Vector3* FUN_14097f250(void* p, float x, float y, float z);
 class CameraMgr   // C3: member view for the former free stand-ins
@@ -116,7 +116,7 @@ bool FUN_1402226b0(int nJob);
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 Vector3* FUN_14097faa0(Vector3* pDst, const NiPoint3& kSrc);
 void FUN_140deec40(Vector3* p);
-bool FUN_140a33ff0(const void* pf);
+bool Unk_IsFinite(const efd::Point3& kPoint);   // bonerotateinterpolator.cpp
 __declspec(noreturn) void FUN_140159b70(long hr);
 void FUN_14107b050(const Vector3& kDir);
 void FUN_14107b2d0();
@@ -177,7 +177,7 @@ static char s_id[8];
 static Unk_RegMarker s_initId = (FUN_1401cd100(&s_id, 0), Unk_RegMarker());
 static char s_marker[0x48];
 // @0x1400e5050
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cabb00), Unk_RegMarker());
+static Unk_RegMarker s_initMarker = (reinterpret_cast<Unk_MarkerMap*>(&s_marker)->Unk_MarkerMap::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cabb00), Unk_RegMarker());
 
 void FUN_1402aa1d0(void* p);                                       // ~Unk_1402a9d70
 // The exe's atexit destructor of s_marker.
@@ -277,11 +277,11 @@ void FUN_14107b050(const Vector3& kDir)
     NiPoint3 kAxis(0, 0, 1.0f);
     FUN_14097faa0(reinterpret_cast<Vector3*>(&kAxis), reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(kAxis).FUN_140a00e10(kRight))));
     matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), reinterpret_cast<Vector3&>(kAxis));
-    FUN_14097faa0(&kRight, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kRight))));
-    FUN_14097faa0(&kFlat, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kFlat))));
-    matRot.FUN_142084c10((Unk_RimLight::s_fYaw * 3.1415927f) / 180.0f);
-    FUN_14097faa0(&kRight, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kRight))));
-    FUN_14097faa0(&kFlat, reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(matRot.FUN_140a00720(kFlat))));
+    FUN_14097faa0(&kRight, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight));
+    FUN_14097faa0(&kFlat, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat));
+    reinterpret_cast<efd::Matrix3*>(&matRot)->MakeZRotation((Unk_RimLight::s_fYaw * 3.1415927f) / 180.0f);
+    FUN_14097faa0(&kRight, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight));
+    FUN_14097faa0(&kFlat, *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat));
     FUN_14107cad0(&DAT_143ae5388, &kRight, 1);
     FUN_14107cad0(&DAT_143ae5390, &kFlat, 1);
 }
@@ -605,7 +605,7 @@ bool FUN_14107cb00(NiFixedString* pName, void* pData, int n)
 {
     for (int i = 0; i < n; i++)
     {
-        if (!FUN_140a33ff0((char*)pData + (__int64)i * 0xc))
+        if (!Unk_IsFinite(*reinterpret_cast<const efd::Point3*>((char*)pData + (__int64)i * 0xc)))
             throw 13;
     }
     if (NiShaderFactory::UpdateGlobalShaderConstant(*pName, (unsigned int)((__int64)n * 0xc), pData))

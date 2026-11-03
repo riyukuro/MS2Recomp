@@ -61,6 +61,7 @@
 #include "ms2/commonfiles/citemoptiontable.h"
 #include "ms2/commonfiles/itemsocketsystemutil.h"
 #include "ms2/commonfiles/itemextractiontable.h"
+#include "ms2/placeholder/cugcmanager.h"   // C3: CUgcManager::FUN_141885880
 
 class Unk_ItemEquipData : public CItemData
 {
@@ -71,7 +72,6 @@ class Unk_ItemOwnerRef : public CItemTransfer {};
 extern __int64 GetServerTime();
 
 // w101 additions: unit-local record types for the table lookups CItem makes (names are descriptive, not original).
-CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB); // strA + strB
 class Unk_140166410* FUN_140166410();
 class CFeatureManager { public: bool FUN_14036d570(int nFeature); int FUN_14036dc40(); };   // C3: unit-local view
 extern MS2Ptr<CItemData> FUN_14053f870(int);
@@ -85,7 +85,6 @@ class Unk_UgcRideeMgr : public Unk_SingletonObj
 {
 public:
     void FUN_141883df0(MS2Ptr<CItem> spItem, Unk_UgcNullKey kKey);
-    void FUN_141885880(MS2Ptr<CItem> spItem);
 };
 class Unk_MusicBookTable;
 class Unk_EnchantRates : public CItemEnchantUtil { };
@@ -2299,7 +2298,7 @@ CStringW CItem::FUN_140527b10()
     {
         CStringW strGem = FUN_140529de0();
         if (!strGem.IsEmpty())
-            return FUN_1401d0080(strName, strGem); // strName + strGem (exe operator+; clang would import MFC CopyChars)
+            return strName + strGem;
     }
     unsigned short nUnlimited = FUN_1405278a0()->FUN_140630d90()->GetLevel();
     if (nUnlimited > 0)
@@ -2686,7 +2685,7 @@ void CItem::FUN_140524eb0(CInputStream& in)
         if (FUN_140526010() != 0)
         {
             if (m_spUgc->GetLookLocalPath().GetLength() > 0)
-                FUN_14052d220()->FUN_141885880(MS2Ptr<CItem>(this));
+                reinterpret_cast<CUgcManager*>(FUN_14052d220())->FUN_141885880(MS2Ptr<CItem>(this));
         }
     }
     if (FUN_140525a30() != 0 && static_cast<CItemGem*>(m_spGem) != 0)

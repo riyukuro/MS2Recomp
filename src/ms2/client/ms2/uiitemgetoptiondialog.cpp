@@ -15,6 +15,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/cpetmanager.h"   // C3: CPetManager::GetInfo (was FUN_140c8b450)
 
 // ---- unit-local views of exe types ----
 
@@ -23,13 +24,10 @@ class Unk_GoCheck : public ASButton
 {
 public:
 };
-// The combo child.
-class Unk_GoCombo : public ASDisplayObject {};
 class Unk_GoEntity : public UIDialog
 {
 public:
     MS2Ptr<Unk_GoCheck> FUN_140e52670(const CString& strName);
-    MS2Ptr<Unk_GoCombo> FUN_140c28560(const CString& strName);   // exe: no callee dtor, by reference
 };
 
 // The auto-loot options as the server gets them: one dword per group and the grade.
@@ -94,7 +92,7 @@ public:
     bool IsRegionCN();
 };
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
-Unk_GoAutoCfg* FUN_140c8b450(void* pHolder);
+#define FUN_140c8b450(p) ((Unk_GoAutoCfg*)reinterpret_cast<CPetManager*>(p)->GetInfo())   // C3: CPetManager::GetInfo (cpetmanager.h)
 class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* FUN_141244300(); };   // C3: member view (gameoption.cpp)
 void FUN_140710590(COutPacket& packet);                         // send
 
@@ -152,7 +150,7 @@ void UIItemGetOptionDialog::OnLoadComplete()
         hGem.get()->FUN_1422ce090(m_opt.FUN_1419dae80());
     if (MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
         hPet.get()->FUN_1422ce090(m_opt.FUN_1419daec0());
-    if (MS2Ptr<Unk_GoCombo> hRank = ((Unk_GoEntity*)this)->FUN_140c28560("m_equipRank"))
+    if (MS2Ptr<ASDropdownMenu> hRank = ((UISwfEntity*)this)->GetChild<ASDropdownMenu>("m_equipRank"))
     {
         int nSel = 0;
         int nGrade = m_opt.FUN_1419dae30();
@@ -168,8 +166,8 @@ void UIItemGetOptionDialog::OnLoadComplete()
             nSel = 4;
         else if (nGrade == 6)
             nSel = 5;
-        if (reinterpret_cast<ASDropdownMenu*>(hRank.get())->GetSelectedIndex() != nSel)
-            reinterpret_cast<ASDropdownMenu*>(hRank.get())->SetSelectedIndex(nSel);
+        if (hRank.get()->GetSelectedIndex() != nSel)
+            hRank.get()->SetSelectedIndex(nSel);
     }
 }
 

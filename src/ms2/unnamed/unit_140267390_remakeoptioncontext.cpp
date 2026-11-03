@@ -8,19 +8,10 @@
 #include "ms2/ms2recover.h"
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ascript.h"
 
-// Refcounted-pointer wrapper (commonstruct_2.cpp Unk_Ref16 instantiation; dtor 0x14027e030 is shared with
-// MS2Ptr<CItemOption>). The members are the exe's out-of-line copies in commonstruct_2.cpp.
-struct Unk_RemakeOptionRef {
-    Unk_RemakeOptionRef();                                          // 0x14027cb50
-    Unk_RemakeOptionRef(int nNull);                                 // 0x14027cb30
-    ~Unk_RemakeOptionRef();                                         // 0x14027e030
-    Unk_RemakeOptionRef& operator=(const Unk_RemakeOptionRef& o);   // 0x14027ea40
-    Unk_RemakeOptionRef& operator=(int nNull);                      // 0x14027ea80
-    void* m_unknown;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_RemakeOptionRef, 0x10);
+// The item option pointers (MS2Ptr<CItemOption>; the members are the exe's out-of-line copies in commonstruct_2.cpp).
+class CItemOption;
 
 // std::vector of 8-byte values (v2525: _Buy multiplies the count by 8).
 struct Unk_RemakeOptionList50 {
@@ -53,8 +44,8 @@ public:
     int m_value18;                      // +0x18
     int m_value1c;                      // +0x1c
     __int64 m_value20;                  // +0x20
-    Unk_RemakeOptionRef m_option28;     // +0x28
-    Unk_RemakeOptionRef m_option38;     // +0x38
+    MS2Ptr<CItemOption> m_option28;     // +0x28
+    MS2Ptr<CItemOption> m_option38;     // +0x38
     int m_value48;                      // +0x48
     int m_value4c;                      // +0x4c
     Unk_RemakeOptionList50 m_list50;    // +0x50

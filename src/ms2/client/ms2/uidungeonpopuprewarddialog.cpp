@@ -35,9 +35,6 @@ public:
     virtual ~UIDungeonSearchUnitedReward();
     bool Init(MS2Ptr<ASMovieClip> root);
     void FUN_140e13c00();
-    void FUN_14015b020();
-    int FUN_140159bc0();
-    void FUN_140159ba0();
 private:
     void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
     void* m_40; void* m_48; void* m_50; void* m_58; void* m_60;

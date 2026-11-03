@@ -8,6 +8,7 @@
 #include <egf/EntityID.h>
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/intervaltimer.h"
 class PC;
 class PCBase;
 class COptimizer : public TSingleton<COptimizer> {
@@ -77,7 +78,7 @@ public:
     int m_nUpdateOn2;                                       // +0x6c
     int m_nStartTick;                                       // +0x70
     int m_nFirstLoadTick;                                   // +0x74
-    Unk_McTimer m_sampleTimer;                              // +0x78
+    Unk_IntervalTimer m_sampleTimer;                        // +0x78
     std::vector<float> m_samples;                           // +0x80
     unsigned __int64 m_nSampleCount;                        // +0x98
     int m_nSampleCycle;                                     // +0xa0

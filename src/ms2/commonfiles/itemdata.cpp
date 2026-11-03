@@ -105,14 +105,6 @@ public:
 class ItemGachaBoxTable;
 class Unk_CommandArgs { public: int FUN_1408d1fd0(unsigned int, int); };   // C3: member view (was ItemFunctionArgs::FUN_1408d1fd0)
 
-// Item table singleton (commonstruct_wa.h declares the free functions): the members this unit calls.
-class Unk_IngTable : public CItemDataTable
-{
-public:
-    MS2Ptr<ItemModelData> FUN_1405577f0(int nPreset);       // loads the model of an item preset
-};
-unsigned FUN_140557640(Unk_IngTable*, CString*);
-
 class Unk_PriceRow { public: };
 class Unk_PriceHolder
 {
@@ -343,7 +335,7 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         XmlGetAttr((class TiXmlElement*)(pBasic), "originID", *(unsigned int*)&static_cast<int&>(originID));
         CString strStringTag;
         XmlGetAttr((class TiXmlElement*)(pBasic), "stringTag", strStringTag);
-        stringTag = FUN_140557640(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), &strStringTag);
+        stringTag = TSingleton<CItemDataTable>::GetInstance()->GetTagByName(strStringTag);
     }
     Unk_140165cf0* pProperty = ((Unk_140165cf0*)((Unk_XmlNode*)(pElem))->FirstChild("property"));
     if (pProperty) {
@@ -1536,7 +1528,7 @@ unsigned long long CItemData::GetSellPrice(int nRank)
 // @0x14053eb20
 void CItemData::LoadModel()
 {
-    model = reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->FUN_1405577f0(GetItemPreset());
+    model = TSingleton<CItemDataTable>::GetInstance()->GetModel(GetItemPreset());
 }
 
 // @0x14053eba0
@@ -1889,7 +1881,7 @@ int CItemData::FUN_14053f7c0()
 // @0x14053f870
 MS2Ptr<CItemData> FUN_14053f870(int nItemId)
 {
-    return reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())->GetItemData(nItemId);
+    return TSingleton<CItemDataTable>::GetInstance()->GetItemData(nItemId);
 }
 
 // @0x14053f8c0
@@ -2073,9 +2065,6 @@ int CItemData::FUN_14053fdb0()
     return limit.vipLevel;
 }
 
-// StringFormat<int> as compiled in item.cpp's TU (the exe calls that copy here; the shared name binds unit_1402ab440's).
-CString FUN_14052ea30(const char* pszFormat, const int& nArg);
-
 // @0x14053fdd0
 CString CItemData::GetIconPath()
 {
@@ -2083,7 +2072,7 @@ CString CItemData::GetIconPath()
     if (pIcon->IsEmpty())
     {
         int nItemId = GetItemId();
-        return FUN_14052ea30("./Data/Resource/Image/item/icon/{0}.png", nItemId);
+        return StringFormat<unsigned>("./Data/Resource/Image/item/icon/{0}.png", reinterpret_cast<const unsigned&>(nItemId));
     }
     if ((*pIcon)[0] != '.')
         return FormatIconPath("./Data/Resource/Image/item/icon/{0}.png", *pIcon);
@@ -2113,11 +2102,11 @@ bool FUN_14053ff30(int nItemId, int nRank)
 // @0x140540000
 unsigned FUN_140540000(const CString& strName)
 {
-    if (reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()) == 0)
+    if (TSingleton<CItemDataTable>::GetInstance() == 0)
         return 0;
     if (strName.IsEmpty())
         return 0;
-    return FUN_140557640(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance()), const_cast<CString*>(&strName));
+    return TSingleton<CItemDataTable>::GetInstance()->GetTagByName(strName);
 }
 
 // @0x140540050

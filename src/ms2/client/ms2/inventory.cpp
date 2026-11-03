@@ -187,6 +187,7 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/client/ms2/blockmanager.h"
 #include "ms2/placeholder/itemutiltransfer.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -259,18 +260,13 @@ int FUN_141769320(MS2Ptr<CItemData>);
 class Unk_InventoryPlayer : public MyPC { };   // view of WorldService::FUN_141bd0cc0's local player
 // Block-notice record returned through a hidden pointer by 0x140a2f620 and released by 0x1401cb250.
 class Unk_InventoryStateManager;
-struct Unk_InventoryBlockRef;
-void FUN_1401cb250(Unk_InventoryBlockRef*);
-struct Unk_InventoryBlockRef { void* unknown0; void* record; ~Unk_InventoryBlockRef() { FUN_1401cb250(this); } };
-MS2_CHECK_SIZE(Unk_InventoryBlockRef, 0x10);
-void* FUN_1401cb3d0(Unk_InventoryBlockRef*);
-void FUN_140a2f620(Unk_InventoryStateManager*, Unk_InventoryBlockRef*, int);
 Unk_InventoryStateManager* FUN_140a6a830();
 template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
 void FUN_140a2ff20(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 extern CString DAT_143ab78e8;
 int FUN_14052a7e0(Unk_Inventory::ItemPtr, Unk_Inventory::ItemPtr);
-bool FUN_1406a5a50(Unk_Inventory::ItemPtr, const __int64*);
+struct Unk_MeratItemOwner;
+bool FUN_1406a5a50(Unk_Inventory::ItemPtr, const Unk_MeratItemOwner*);
 struct Unk_1401b4ec0 {
     Unk_1401b4ec0(CLockCriticalSection&, int);
     ~Unk_1401b4ec0();
@@ -335,31 +331,31 @@ CStringW GetStringCommonByKey(const CStringW&);
 void FUN_140710590(COutPacket&);
    // CItemData member (this=rcx, hidden return=rdx)
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-bool FUN_1403b3c40(const CStringW&, const wchar_t*);
 extern Unk_Inventory g_143ab2a90;
 
 struct Unk_InventoryUsePacket {
     Unk_InventoryUsePacket();
     ~Unk_InventoryUsePacket();
-    void FUN_1401fbc40(COutPacket&);
     __int64 id;
     CStringW argument;
 };
 MS2_CHECK_SIZE(Unk_InventoryUsePacket, 0x10);
 struct Unk_InventoryUnequipPacket {
     Unk_InventoryUnequipPacket();
-    void FUN_1401fb910(COutPacket&);
     __int64 id;
 };
 MS2_CHECK_SIZE(Unk_InventoryUnequipPacket, 8);
 struct Unk_InventoryEquipPacket {
     Unk_InventoryEquipPacket();
-    void FUN_1401fb870(int mode);
-    void FUN_1401fb760(COutPacket&);
     __int64 id;
     int slot, mode;
 };
 MS2_CHECK_SIZE(Unk_InventoryEquipPacket, 0x10);
+// The payload serializers (unit_1401f9eb0): write the payload at p, or set its mode.
+void FUN_1401fbc40(unsigned char* p, COutputStream& stream);
+void FUN_1401fb910(unsigned char* p, COutputStream& stream);
+void FUN_1401fb760(unsigned char* p, COutputStream& stream);
+bool FUN_1401fb870(unsigned char* p, int mode);
 class CMsgBoxData;
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
@@ -1081,7 +1077,7 @@ void Unk_Inventory::FUN_140a61010(int category, const __int64* filter, ItemArray
         for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
             ItemPtr item = slots[category][i];
             if (item == nullptr) continue;
-            if (FUN_1406a5a50(item, filter)) result.Add(item);
+            if (FUN_1406a5a50(item, reinterpret_cast<const Unk_MeratItemOwner*>(filter))) result.Add(item);
         }
     }
 }
@@ -1218,8 +1214,8 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     if (!item) return 0;
     int checkState = 1;
     CStringW function = item->FUN_140527840()->function.name;
-    if (FUN_1403b3c40(function, L"OpenItemBox") || FUN_1403b3c40(function, L"OpenItemBoxLullu") ||
-        FUN_1403b3c40(function, L"OpenItemBoxLulluSimple")) checkState = 0;
+    if ((function == L"OpenItemBox") || (function == L"OpenItemBoxLullu") ||
+        (function == L"OpenItemBoxLulluSimple")) checkState = 0;
     if (checkState != 0) {
         Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (player == nullptr) return 0;
@@ -1230,7 +1226,7 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     payload.id = item->GetItemUid();
     payload.argument = argument;
     COutPacket packet(static_cast<int>(SendOp::RequestItemUse), 0);
-    payload.FUN_1401fbc40(packet);
+    FUN_1401fbc40(reinterpret_cast<unsigned char*>(&payload), packet);
     FUN_140710590(packet);
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
@@ -1276,10 +1272,10 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     Unk_InventoryEquipPacket payload;
     payload.id = item->GetItemUid();
     payload.slot = selected;
-    payload.FUN_1401fb870(mode);
+    FUN_1401fb870(reinterpret_cast<unsigned char*>(&payload), mode);
     COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
     packet.Encode1(0);
-    payload.FUN_1401fb760(packet);
+    FUN_1401fb760(reinterpret_cast<unsigned char*>(&payload), packet);
     FUN_140710590(packet);
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
@@ -1303,7 +1299,7 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     payload.id = id;
     COutPacket packet(static_cast<int>(SendOp::ItemEquip), 0);
     packet.Encode1(1);
-    payload.FUN_1401fb910(packet);
+    FUN_1401fb910(reinterpret_cast<unsigned char*>(&payload), packet);
     FUN_140710590(packet);
     {
         MS2Ptr<CItemData> data(item->FUN_140527840());
@@ -1522,9 +1518,8 @@ int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
         if (data.get()->FUN_14053d2b0() && Unk_InventoryPairMismatch(player, 8, 9, pairMode)) return 0;
     }
     if (item->HasCubeTextureMesh() != 0) {
-        Unk_InventoryBlockRef block;
-        FUN_140a2f620(FUN_140a6a830(), &block, 4);
-        if (FUN_1401cb3d0(&block) != nullptr) { FUN_140a2ff20(*(const Unk_BlockPtr<Unk_BlockRecord>*)&block, 4, 0); return 0; }
+        BlockPtr block = reinterpret_cast<CBlockManager*>(FUN_140a6a830())->FindBlockedAction(4);
+        if (block.get() != nullptr) { FUN_140a2ff20(block, 4, 0); return 0; }
     }
     return 1;
 }

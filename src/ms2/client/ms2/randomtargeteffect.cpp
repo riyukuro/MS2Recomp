@@ -38,7 +38,6 @@
 #include "ms2/client/ms2/effectservice.h"
 
 // ---- exe callees (recovered elsewhere / not yet) ----
-extern char DAT_143afa4d8;                                  // NiNode::ms_RTTI
 unsigned long GetTickCountMs2(void);
 bool FUN_14028d470(float a, float b);                       // nearly equal
 // The owner game object: its entity id (by value) and the scene object of an entity id.
@@ -196,7 +195,7 @@ void CRandomTargetEffect::UpdatePosition()
     if (m_spNode.FUN_1409f77a0(0))
         return;
 
-    Unk_NodePtr spTarget(((void*)NiObject::DynamicCast((class NiRTTI const*)(&DAT_143afa4d8), (class NiObject const*)(FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->FUN_14123c460())))));
+    Unk_NodePtr spTarget(((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(static_cast<GameObject*>(m_pOwner)->FUN_14123c460())))));
     if (spTarget.FUN_1409f77a0(0))
         return;
 

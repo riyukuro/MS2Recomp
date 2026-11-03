@@ -407,9 +407,6 @@ CStringW BlockFormat(int nStringId);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<int> (0x1408116a0) over FUN_14028dee0
-#ifdef __clang__
-CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b (ATL operator+)
-#endif
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
@@ -1754,14 +1751,8 @@ void UIInventoryDialog::FUN_14199ca90()
         int nTab = tab.second;
         ASObj item(2);
         {
-#ifdef __clang__
-            // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's copy.
-            CString strTooltipId = FUN_1401d2b10(strTooltipPrefix, strName);
-            CString strText = FUN_1401d2b10(strTabPrefix, strName);
-#else
             CString strTooltipId = strTooltipPrefix + strName;
             CString strText = strTabPrefix + strName;
-#endif
             ASObj tooltip(2);
             tooltip.FUN_1407cba60(strClassName, CString(strTooltipClass));
             tooltip.FUN_1407cba60(strId, CString(strTooltipId));
@@ -2287,8 +2278,6 @@ void FUN_141415600(const CString& strName);                         // release a
 int FUN_141276180(const CString& strSound, const CString& strArg);  // play a UI sound
 int FUN_14053feb0(int nItemId);                                     // the default rarity of an item
 CStringW FUN_141425950(unsigned nItemId);                           // the item name
-CStringW FUN_140b99450(CStringW strKey, const CStringW& strName, const int& nCount);   // the localized "{name} x{n}"
-CStringW FUN_140e9fe10(CStringW strKey, const CStringW& strName, const int& nLow, const int& nHigh);
 CStringW FUN_140298ea0(CStringW strKey);                            // a localized string
 void FUN_1412751b0(const CStringW& strText, int nType);             // a notice
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
@@ -2770,7 +2759,7 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
             continue;
         ASObj row(2);
         {
-            CStringW strText = FUN_140b99450(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), nAmount);
+            CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), reinterpret_cast<const unsigned&>(nAmount));
             CString strBinding = FUN_1419a1dc0(nItemId, FUN_14053feb0(nItemId), nAmount);
             row.FUN_1407cba60("slotBinding", CString(strBinding));
             row.FUN_1407cbbe0("toggle", false);
@@ -2912,9 +2901,9 @@ void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
             continue;
         CStringW strText;
         if (it->second.FUN_140530990() == 0)
-            strText = FUN_140b99450(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), it->second.low);
+            strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), reinterpret_cast<const unsigned&>(it->second.low));
         else
-            strText = FUN_140e9fe10(CStringW(L"s_itembreak_preview_random"), FUN_141425950(nItemId), it->second.low, it->second.high);
+            strText = FUN_14028dfa0<CStringW, unsigned, unsigned>(CStringW(L"s_itembreak_preview_random"), FUN_141425950(nItemId), reinterpret_cast<const unsigned&>(it->second.low), reinterpret_cast<const unsigned&>(it->second.high));
         ASObj row(2);
         {
             CString strBinding = FUN_1419a4aa0(nItemId);

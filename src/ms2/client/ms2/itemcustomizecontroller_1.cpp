@@ -122,9 +122,9 @@ struct Unk_ICCConfig
 };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 
-// The app framework (FUN_14086d260); its service manager handle sits at +8.
+// The app framework (TSingleton<CMainSystem>); its service manager handle sits at +8.
 struct Unk_ICCApp { char m_pad[8]; char m_manager[1]; };
-Unk_ICCApp* FUN_14086d260();
+class CMainSystem;
 namespace efd { class ServiceManager; }
 class Unk_GameContext { public: efd::ServiceManager* FUN_140af8310(); };   // C3: unit-local view (def in camera); the service manager
 
@@ -297,8 +297,8 @@ void CItemCustomizeController::vfunc_13(MS2Ptr<CEquipItem> spOld)
 // @0x1414115f0
 const Unk_CustomizeRange* CItemCustomizeController::vfunc_23()
 {
-    static Unk_CustomizeRange s_kRange;
-    return &s_kRange;
+    static ModelFloatList s_kRange;
+    return reinterpret_cast<const Unk_CustomizeRange*>(&s_kRange);
 }
 #endif
 
@@ -561,7 +561,7 @@ void CItemCustomizeController::vfunc_39(int bActive)
 // @0x1414126d0
 int CItemCustomizeController::vfunc_41()
 {
-    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(FUN_14086d260()->m_manager)->FUN_140af8310();
+    efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
     ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
     NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
     int nWheel = 0;
@@ -574,7 +574,7 @@ void CItemCustomizeController::OnMouseButton1(const efd::Point3& kPos)
 {
     if (m_bUseButton1)
     {
-        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(FUN_14086d260()->m_manager)->FUN_140af8310();
+        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
         ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
         NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
         int nMode = m_spPicker->GetMode();
@@ -595,7 +595,7 @@ void CItemCustomizeController::OnMouseButton2(int bActive, const efd::Point3& kP
 {
     if (m_bUseButton2)
     {
-        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(FUN_14086d260()->m_manager)->FUN_140af8310();
+        efd::ServiceManager* pServiceManager = reinterpret_cast<Unk_GameContext*>(reinterpret_cast<Unk_ICCApp*>(TSingleton<CMainSystem>::GetInstance())->m_manager)->FUN_140af8310();
         ecrInput::InputService* pInputService = pServiceManager->GetSystemServiceAs<ecrInput::InputService>();
         NiInputMouse* pMouse = pInputService->GetInputSystem()->OpenMouse();
         int nMode = m_spPicker->GetMode();

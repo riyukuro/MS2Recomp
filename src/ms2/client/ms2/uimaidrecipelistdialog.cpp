@@ -812,8 +812,6 @@ int FUN_141b71a10(const char* sz);                     // string -> number
 CStringW FUN_141b71990(unsigned nItemId);                   // the number as text
 CStringW FUN_141b71910(__int64 n);
 // a string of the string table with an argument
-CStringW FUN_14061ad70(const CStringW& a, const wchar_t* sz);  // a + sz
-CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);  // a + b
 CStringW GetStringCommon(unsigned nStringId);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
@@ -1644,21 +1642,19 @@ CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix)
         CStringW strSeconds = L"";
         if (nSeconds > 0)
             strSeconds = FormatStringId<long>(0x7b5, reinterpret_cast<const long&>(nSeconds));
-        strRet = FUN_1401d0080(FUN_1401d0080(strHours, strMinutes), strSeconds);
+        strRet = strHours + strMinutes + strSeconds;
     }
     else
     {
         if (nHours == 0 && nMinutes == 0)
             strRet = FormatStringId<long>(0x7b5, reinterpret_cast<const long&>(nSeconds));
         else if (nHours == 0)
-            strRet = FUN_1401d0080(FUN_14061ad70(FormatStringId<long>(0x7b4, reinterpret_cast<const long&>(nMinutes)), L" "), FormatStringId<long>(0x7b5, reinterpret_cast<const long&>(nSeconds)));
+            strRet = FormatStringId<long>(0x7b4, reinterpret_cast<const long&>(nMinutes)) + L" " + FormatStringId<long>(0x7b5, reinterpret_cast<const long&>(nSeconds));
         else
-            strRet = FUN_1401d0080(FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(FormatStringId<long>(0x7b3, reinterpret_cast<const long&>(nHours)), L" "),
-                                                               FormatStringId<long>(0x7b4, reinterpret_cast<const long&>(nMinutes))), L" "),
-                                   FormatStringId<long>(0x7b5, reinterpret_cast<const long&>(nSeconds)));
+            strRet = FormatStringId<long>(0x7b3, reinterpret_cast<const long&>(nHours)) + L" " + FormatStringId<long>(0x7b4, reinterpret_cast<const long&>(nMinutes)) + L" " + FormatStringId<long>(0x7b5, reinterpret_cast<const long&>(nSeconds));
     }
     if (bSuffix != 0)
-        strRet = FUN_1401d0080(strRet, GetStringCommon(0x7b6));
+        strRet = strRet + GetStringCommon(0x7b6);
     return strRet;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

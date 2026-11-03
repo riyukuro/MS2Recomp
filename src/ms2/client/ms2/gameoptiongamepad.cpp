@@ -18,6 +18,7 @@
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
 #include "ms2/placeholder/asmousecursor.h"
 #include "ms2/placeholder/asslider.h"
+#include "ms2/placeholder/cgameoption.h"
 
 // ---- unit-local placeholders ----
 
@@ -30,7 +31,7 @@ public:
 class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
 class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
-// The game-option settings object returned by FUN_1409a8b10 (+0x1a0 is the saved gamepad block).
+// The game-option settings object (TSingleton<CGameOption>; +0x1a0 is the saved gamepad block).
 class Unk_GpSettings
 {
 public:
@@ -39,13 +40,7 @@ public:
     char m_pad2[0x230 - 0x1b0];
     char m_defaults;                // +0x230 the default block
 };
-Unk_GpSettings* FUN_1409a8b10();
 Unk_GpState* FUN_140a58500(Unk_GpSettings* p);
-class CGameOption   // C3: member view for the former free stand-ins
-{
-public:
-    class TiXmlDocument* FUN_1412442a0();
-};
 
 // The state block's methods (0x14125f290...).
 struct Unk_GpState* FUN_14125f290(struct Unk_GpState*);   // C3: was FUN_14125f290
@@ -89,7 +84,7 @@ CGameOptionGamePad::~CGameOptionGamePad()
 void CGameOptionGamePad::vfunc_3(int n)
 {
     if (n == 0)
-        FUN_14125f640(&m_state, FUN_140a58500(FUN_1409a8b10()));
+        FUN_14125f640(&m_state, FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())));
     CBaseOption::vfunc_3(n);
 }
 MS2_REPLACE_METHOD(0x140A57240, CGameOptionGamePad, vfunc_3, 69, 0xABC5CF6E);
@@ -202,7 +197,7 @@ MS2_REPLACE_METHOD(0x140A57730, CGameOptionGamePad, vfunc_7, 1247, 0xF0F4D26E);
 void CGameOptionGamePad::vfunc_10()
 {
     CBaseOption::vfunc_10();
-    FUN_14125f640(FUN_140a58500(FUN_1409a8b10()), &m_state);
+    FUN_14125f640(FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), &m_state);
     FUN_14125f670(&m_state, m_state.m_bUse, true);
     if (FUN_140a58520(FUN_140a58540()) != 0)
     {
@@ -221,7 +216,7 @@ void CGameOptionGamePad::vfunc_12()
 {
     CBaseOption::vfunc_12();
     FUN_14125f2c0(&m_state);
-    LoadGameOptionGamepad(&m_state, (class TiXmlDocument*)(((void*)((class CGameOption*)(class Unk_GpSettings*)(FUN_1409a8b10()))->FUN_1412442a0())));
+    LoadGameOptionGamepad(&m_state, (class TiXmlDocument*)(((void*)TSingleton<CGameOption>::GetInstance()->FUN_1412442a0())));
     vfunc_6();
 }
 MS2_REPLACE_METHOD(0x140A57D00, CGameOptionGamePad, vfunc_12, 87, 0x743F787E);
@@ -237,7 +232,7 @@ MS2_REPLACE_METHOD(0x140A57D60, CGameOptionGamePad, GetTypeName, 61, 0xECB38628)
 // @0x140a57db0
 int CGameOptionGamePad::vfunc_14()
 {
-    return memcmp(&m_state, FUN_140a58500(FUN_1409a8b10()), 0x10);
+    return memcmp(&m_state, FUN_140a58500(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), 0x10);
 }
 
 // @0x140a57df0

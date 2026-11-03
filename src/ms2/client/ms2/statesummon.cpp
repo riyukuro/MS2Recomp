@@ -47,6 +47,8 @@
 #include "ms2/placeholder/cgameoption.h"  // C3: CGameOption::FUN_140b123b0
 #include "ms2/client/ms2/uihudentity.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/placeholder/ccpetinfopacket.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
@@ -64,7 +66,6 @@ extern Unk_Inventory g_143ab2a90;
 // The item-data tables.
 MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);                         // 0x1407844b0 the ridee row
 Unk_RideeData* FUN_1407895d0(MS2Ptr<Unk_RideeData>& refRow);               // 0x1407895d0 the row
-class Unk_SmPetTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };   // 0x1407290f0 that pet row (member)
 class Unk_PetRowTable* FUN_14052d210();   // C3: was FUN_14052d210
 
 // The world service, its effect manager and the field objects it hands out.
@@ -97,12 +98,12 @@ int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);          // 0x
 // The client settings / skill services.
 class CGameOption;
 class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
-void* FUN_140c8b450(void* pSvc);                                           // 0x140c8b450
-class Unk_SmPetSkills { public: MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nSkillId); };   // 0x140c892c0 (member)
 class CPetManager   // C3: member view for the former free stand-ins
 {
 public:
     class Unk_PetManagerEmpty* FUN_140c8b430();
+    MS2Ptr<CItem> FindItemById(int nItemId);                // 0x140c892c0
+    CCPetInfoPacket::Info* GetInfo();                       // &m_info
 };
 
 // The pet actor and its manager.
@@ -220,7 +221,7 @@ void StateSummon::vfunc_4(StateData* pData)
             if (spItem->IsPetItem() != 0)
             {
                 int nPetId = spItem->FUN_140527840()->GetPetId();
-                MS2Ptr<Unk_PetRow> spRow = ((class Unk_SmPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
+                MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(nPetId);
                 if (spRow.get() != 0)
                 {
                     nLabel = 0x64f;
@@ -318,7 +319,7 @@ void StateSummon::vfunc_8(double fTime)
                 if (spItem->IsPetItem() != 0)
                 {
                     int nPetId = spItem->FUN_140527840()->GetPetId();
-                    MS2Ptr<Unk_PetRow> spRow = ((class Unk_SmPetTable*)FUN_14052d210())->FUN_1407290f0(nPetId);
+                    MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find(nPetId);
                     if (spRow.get() != 0)
                     {
                         if (m_spData.get()->m_b18 != 0)
@@ -723,11 +724,11 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
 
         if (reinterpret_cast<Unk_IntervalTimer&>(pState->m_t50).Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)FUN_1401d3200())) + 0x7e90)->Get()) != 0)
         {
-            int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(FUN_140c8b450(((void*)FUN_140535320()))) + 0x68), (class PCBase*)(pManager));
+            int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo()) + 0x68), (class PCBase*)(pManager));
             if (nIndex != 0)
             {
-                MS2Ptr<Unk_ItemEquipData> refSkill = ((class Unk_SmPetSkills*)((class CPetManager*)(void*)(((void*)FUN_140535320())))->FUN_140c8b430())->FUN_140c892c0(nIndex);
-                if (reinterpret_cast<MS2Ptr<CItem>*>(&refSkill)->operator==(0))
+                MS2Ptr<CItem> refSkill = reinterpret_cast<CPetManager*>(((class CPetManager*)(void*)(((void*)FUN_140535320())))->FUN_140c8b430())->FindItemById(nIndex);
+                if (refSkill.operator==(0))
                     FUN_1417f94a0(pState, 0x5f);
             }
         }

@@ -124,9 +124,8 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 CStringW BlockFormat(int, const fmt::ArgList&);   // C3: BlockFormat<int> (0x1408116a0)
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
 template <class A> CStringW FormatStringId(int nId, const A& a);
-CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_141b720b0(int nItemId, int nUnused);               // item name
+CStringW FUN_141b720b0(int nItemId, __int64 nUnused);               // item name
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 CStringW FUN_14083cb20(const CStringW& str);
 CStringW FUN_140719a00(__int64 nValue);
@@ -1086,13 +1085,13 @@ CStringW FUN_14093ce70(int nId, int nGrade)
         case 2:
             return FormatStringId<CStringW>(0x774, FUN_141b720b0(nCode, 0));
         case 3:
-            return FUN_14062b4f0(CStringW(L"s_achieve_reward_stat_point"), &nValue);
+            return FUN_14028dfa0<int>(CStringW(L"s_achieve_reward_stat_point"), nValue);
         case 4:
         {
             CStringW strKey(L"s_achieve_reward_skill_point");
             if (pGrade->m_reward.m_nSubJob == 2)
                 strKey = L"s_achieve_reward_skill_point_sub_1";
-            return FUN_14062b4f0(CStringW(strKey), &nValue);
+            return FUN_14028dfa0<int>(CStringW(strKey), nValue);
         }
         break;
         case 5:

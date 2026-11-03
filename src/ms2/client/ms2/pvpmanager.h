@@ -43,7 +43,9 @@ public:
     void FUN_14101a9f0(unsigned nIndex);
     void FUN_14101ac20();
     void FUN_141017e80();                                               // clear
+    int FUN_141017f40(__int64 nCharId);                                 // the rank of a character
     int FUN_141017f80();                                                // the row count
+    struct Unk_PvpTimerItem* FUN_141017fb0(int nRank);                  // the row of a rank
     void FUN_141017950(int nMessage, CInPacket& packet);                // OnMessage
 
     MS2_LAYOUT_FRIEND;

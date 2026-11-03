@@ -41,21 +41,8 @@ public:
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n64, 0x64);
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-// An actor looked up by its name (8 bytes: the counted pointer).
-class Unk_ReactRef
-{
-public:
-    Unk_ReactRef(const Unk_ReactRef& o);                 // 0x140963d50
-    ~Unk_ReactRef();                                     // 0x140964830
-    PCBase* FUN_140965770() const;                       // the actor, 0 when gone
-    PCBase* FUN_1409658b0() const;                       // the actor
-    bool operator==(int n) const;                        // 0x1409651c0
-private:
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_ReactRef, 8);
-
-class Unk_ReactWorld { public: Unk_ReactRef FUN_141bc6eb0(const CString& strName); };
+// The reactor looked up by its name (an efd::SmartPointer<CReactor>, 8 bytes).
+class Unk_ReactWorld { public: efd::SmartPointer<CReactor> FUN_141bc6eb0(const CString& strName); };
 
 
 // The casting bar request (see statenurturing.cpp): duration, flags, speed and four texts.
@@ -168,13 +155,13 @@ void StateReact::vfunc_4(StateData* pData)
                 if (((void*)(reinterpret_cast<PC*>(pRider)->FUN_14165f100())) != 0)
                     reinterpret_cast<PC*>(pRider)->SendRequestCube();
                 Unk_CastInfo kInfo;
-                Unk_ReactRef kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
+                efd::SmartPointer<CReactor> kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
                 if (kRef == 0)
                 {
                     m_pOwner->vfunc_59(1, 0, 0, 0);
                     return;
                 }
-                ((class CReactor*)(class PCBase*)(kRef.FUN_1409658b0()))->GetReactorInfo((struct Unk_ReactorInfo*)(&kInfo));
+                kRef.operator->()->GetReactorInfo((struct Unk_ReactorInfo*)(&kInfo));
                 UICastingBar* pBar = FUN_140ac2270(0x4e72);
                 if (pBar == 0)
                     return;
@@ -233,8 +220,8 @@ void StateReact::vfunc_8(double fTime)
         return;
     if ((StateReactData*)m_spData != 0)
     {
-        Unk_ReactRef kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
-        if (kRef.FUN_140965770() != 0)
+        efd::SmartPointer<CReactor> kRef = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance())->FUN_141bc6eb0(m_spData->m_strTarget);
+        if (static_cast<CReactor*>(kRef) != 0)
         {
             if (m_n48 != 0)
             {
@@ -242,8 +229,8 @@ void StateReact::vfunc_8(double fTime)
             }
             else
             {
-                float fReach = reinterpret_cast<CReactor*>(kRef.FUN_1409658b0())->GetData().get() != 0 ? reinterpret_cast<CReactor*>(kRef.FUN_1409658b0())->GetData()->m_fReactDistance : 0.0f;
-                PCBase* pTarget = kRef.FUN_1409658b0();
+                float fReach = kRef.operator->()->GetData().get() != 0 ? kRef.operator->()->GetData()->m_fReactDistance : 0.0f;
+                PCBase* pTarget = reinterpret_cast<PCBase*>(kRef.operator->());
                 if (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18()))).FUN_140967ac0() > fReach)
                 {
                     pRider->vfunc_59(1, 0, 0, 0);
@@ -303,8 +290,8 @@ void StateReact::FUN_140b8ded0()
     Unk_ReactWorld* pWorld = reinterpret_cast<Unk_ReactWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
-    Unk_ReactRef kRef = pWorld->FUN_141bc6eb0(m_spData->m_strTarget);
-    if (kRef.FUN_140965770() == 0)
+    efd::SmartPointer<CReactor> kRef = pWorld->FUN_141bc6eb0(m_spData->m_strTarget);
+    if (static_cast<CReactor*>(kRef) == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
         return;
@@ -318,13 +305,13 @@ void StateReact::OnCastingFinished()
 }
 
 // @0x140b8dfd0
-void StateReact::FUN_140b8dfd0(Unk_ReactRef kRef)
+void StateReact::FUN_140b8dfd0(efd::SmartPointer<CReactor> kRef)
 {
     switch (m_n10)
     {
         break;
     case 0x9f:
-        ((class CReactor*)(class PCBase*)(kRef.FUN_1409658b0()))->SendStateReact();
+        kRef.operator->()->SendStateReact();
         break;
     }
 }

@@ -239,7 +239,7 @@ void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar
 template <class A> CStringW FormatStringId(int nId, const A& a);
               // FormatStringId<__int64>
 CStringW TranslateEnumDungeonGroup(unsigned nId);               // the dungeon name
-unsigned FUN_141275c00(unsigned nRank);
+unsigned FUN_141275c00(int nRank);
 unsigned FUN_141275bd0(void* pId);
 unsigned FUN_141275b40();
 

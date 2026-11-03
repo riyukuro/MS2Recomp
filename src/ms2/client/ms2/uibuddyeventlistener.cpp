@@ -134,7 +134,7 @@ void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 CString FUN_140719530(unsigned __int64 n);                  // number to string
 unsigned __int64 FUN_140718350(const CString& str);         // string -> id
 unsigned __int64 FUN_140718370(const CStringW& str);        // string -> id
-void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& aOut, const wchar_t* szDelim);
+void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& aOut, const wchar_t* szDelim);
 class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener* p); void FUN_141930950(UIEntityEventListener* p); };
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 
@@ -224,7 +224,7 @@ int FUN_1418fd330(__int64 nOwner);
 int FUN_1418fd530(__int64 nCharId);
 int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);
 void FUN_141275260(int nId, int a, int b);
-void FUN_140961010(int nId, int a, int b, const CStringW& strArg);
+template <class A> void Unk_AkoMessage(int nStringId, int nA, int nB, const A& x);   // C3: the message box of a string id (actionkeyobject.cpp)
 void FUN_1412751f0(const CStringW& strMsg, int a, int b);
 int FUN_141276180(const CString& strSound, const CString& strExtra);
 int FUN_141276c80(const CStringW& str, bool bCheckSelf, CStringW& strOut);
@@ -237,7 +237,6 @@ CStringW GetStringCommon(int nStringId);
 template <class T1, class T2> CStringW FUN_14028dee0(int nId, const T1& a1, const T2& a2);   // C3: 0x140a228f0 (<int, CStringW>)
 CString FUN_141028be0(__int64 nId, const CStringA& strImage, int a, CString str);
 __int64 FUN_141b71960(const char* sz);
-CStringTable* GetStringTable();
 
 void FUN_140710590(COutPacket& packet);
 struct Unk_StringOptionEntry { CString& FUN_140298f80(); };   // C3: member view
@@ -1246,7 +1245,7 @@ void UICommunityDialog::FUN_1418d77f0(int nOnline, int nTotal)
     if (m_190 == 0)
     {
         int nMapId = reinterpret_cast<Unk_BdWorld*>(WorldService::GetInstance())->FUN_141bd3060();
-        strText = FormatStringId<CStringW, int>(0x60e, GetStringTable()->FUN_141811980(3, nMapId), nTotal);
+        strText = FormatStringId<CStringW, int>(0x60e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId), nTotal);
     }
     else if (m_190 == 2)
         strText = FormatStringId<int>(0x60f, nTotal);
@@ -1293,12 +1292,12 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
             int nChannel = spBuddy->FUN_1401cc310();
             if (nChannel == 0)
             {
-                strState = GetStringTable()->FUN_141811980(3, nMapId);
+                strState = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId);
             }
             else
             {
                 int nChannel2 = spBuddy->FUN_1401cc310();
-                strState = FUN_14028dee0<int, CStringW>(0x60c, nChannel2, GetStringTable()->FUN_141811980(3, nMapId));
+                strState = FUN_14028dee0<int, CStringW>(0x60c, nChannel2, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nMapId));
             }
         }
         else if (nWaiting != 0)
@@ -1313,7 +1312,7 @@ int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab)
         pRow->FUN_1407cb9c0("isParty", bParty);
         pRow->FUN_1407cbb20("state", CStringW(strState));
         int nLevel = spBuddy->FUN_1401cc210();
-        CStringW strCharInfo = FUN_14028dee0<int, CStringW>(0x20, nLevel, GetStringTable()->FUN_141811980(6, spBuddy->FUN_1401cc2b0()));
+        CStringW strCharInfo = FUN_14028dee0<int, CStringW>(0x20, nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spBuddy->FUN_1401cc2b0()));
         pRow->FUN_1407cbb20("charinfo", CStringW(strCharInfo));
         pRow->FUN_1407cb9c0("isNew", spBuddy->FUN_1401cc4f0());
         pRow->FUN_1407cb9c0("recv", nTab == 2);
@@ -1353,7 +1352,7 @@ int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew)
         pRow->FUN_1407cb9c0("isParty", bParty);
         pRow->FUN_1407cba60("imgpath", FUN_141028be0(nId, ref->FUN_1416c2520(), 1, CString("")));
         short nLevel = (short)ref->FUN_1416c2330();
-        CStringW strCharInfo = FormatStringId<unsigned short, CStringW>(0x20, reinterpret_cast<const unsigned short&>(nLevel), GetStringTable()->FUN_141811980(6, ref->FUN_1416c2390()));
+        CStringW strCharInfo = FormatStringId<unsigned short, CStringW>(0x20, reinterpret_cast<const unsigned short&>(nLevel), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ref->FUN_1416c2390()));
         pRow->FUN_1407cbb20("charinfo", CStringW(strCharInfo));
         pRow->FUN_1407cb9c0("offline", 0);
         pRow->FUN_1407cbb20("address", ref->FUN_1416c2600());
@@ -1891,29 +1890,29 @@ void UICommunityQueryDialog::FUN_1418dba00(Unk_BuddyResponse& response)
             FUN_141275260(0x614, 1, 1);
             break;
         case 2:
-            FUN_140961010(0x622, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x622, 1, 1, response.name);
             break;
         case 3:
-            FUN_140961010(0x621, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x621, 1, 1, response.name);
             break;
         case 4:
-            FUN_140961010(0x617, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x617, 1, 1, response.name);
             break;
         case 5:
-            FUN_140961010(0x61c, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x61c, 1, 1, response.name);
             break;
         case 7:
-            FUN_140961010(0x61d, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x61d, 1, 1, response.name);
             break;
         case 8:
-            FUN_140961010(0x61e, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x61e, 1, 1, response.name);
             break;
         case 6:
-            FUN_140961010(0x61b, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x61b, 1, 1, response.name);
             break;
         case 9:
         case 0xb:
-            FUN_140961010(0x602, 1, 1, response.name);
+            Unk_AkoMessage<CStringW>(0x602, 1, 1, response.name);
             break;
         default:
             FUN_141275260(0x613, 1, 1);
@@ -2044,22 +2043,22 @@ int UICommunityQueryDialog::FUN_1418dc540(const CStringW& str)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)
             {
-                FUN_140961010(0x619, 1, 1, spBuddy->FUN_1401cc1c0());
+                Unk_AkoMessage<CStringW>(0x619, 1, 1, spBuddy->FUN_1401cc1c0());
                 bRejected = 1;
             }
             else if (spBuddy->FUN_1401cc660() != 0)
             {
-                FUN_140961010(0x622, 1, 1, spBuddy->FUN_1401cc1c0());
+                Unk_AkoMessage<CStringW>(0x622, 1, 1, spBuddy->FUN_1401cc1c0());
                 bRejected = 1;
             }
             else if (spBuddy->FUN_1401cc5d0() != 0)
             {
-                FUN_140961010(0x61a, 1, 1, spBuddy->FUN_1401cc1c0());
+                Unk_AkoMessage<CStringW>(0x61a, 1, 1, spBuddy->FUN_1401cc1c0());
                 bRejected = 1;
             }
             else
             {
-                FUN_140961010(0x621, 1, 1, spBuddy->FUN_1401cc1c0());
+                Unk_AkoMessage<CStringW>(0x621, 1, 1, spBuddy->FUN_1401cc1c0());
                 bRejected = 1;
             }
         }
@@ -2081,7 +2080,7 @@ int UICommunityQueryDialog::FUN_1418dc7f0(const CStringW& str)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)
             {
-                FUN_140961010(0x620, 1, 1, spBuddy->FUN_1401cc1c0());
+                Unk_AkoMessage<CStringW>(0x620, 1, 1, spBuddy->FUN_1401cc1c0());
                 bRejected = 1;
             }
         }

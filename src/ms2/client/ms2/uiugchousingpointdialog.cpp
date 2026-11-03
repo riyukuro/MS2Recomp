@@ -117,13 +117,7 @@ extern __int64 DAT_143ab2930;                                   // the housing e
 // UIMasteryDialog::SetMainTab homes a second argument the shared header does not declare (an overload there would
 // make that unit's MS2_REPLACE_METHOD ambiguous): call it through a view.
 
-#ifdef __clang__
-// Bind the exe's CStringW + const wchar_t* (0x14061ad70); clang otherwise emits an unavailable MFC CopyChars import.
-CStringW FUN_14061ad70(const CStringW& left, const wchar_t* right);
-#define Unk_UhpConcat(left, right) FUN_14061ad70(left, right)
-#else
 #define Unk_UhpConcat(left, right) ((left) + (right))
-#endif
 
 // @0x140faf160
 template <class T> T* GetUIDialog(int nId)

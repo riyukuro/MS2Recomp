@@ -107,7 +107,6 @@ public:
 CStringA FUN_14016a600(const wchar_t* pszText, int nCodePage);
 void FUN_1412751b0(const CStringW& rText, int nSeconds);
 int FUN_141b6fc50(const CStringA& rText, const CStringA& rCaption, int nFlags);
-CStringA FUN_14038f6d0(const CStringA& rDir, const char* pszName);
 void FUN_140399620(CStringA strPattern, CStringA strDirectory, ATL::CAtlArray<CStringA>& rOut, CStringA strExclude, bool bFlag);
 void FUN_140165270(ATL::CAtlArray<CStringA>& rArray, const CStringA& rItem);
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
@@ -814,21 +813,21 @@ void CSoundService::FUN_1417aff20(CStringA strMediaPath)
     case 1:
         return;
     case 2:
-        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_en.fsb");
+        strFile = strDir + "MS2Sound_Voice8_en.fsb";
         aFiles.push_back(strFile);
-        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_en.fsb");
+        strFile = strDir + "MS2Sound_Voice9_en.fsb";
         aFiles.push_back(strFile);
         break;
     case 3:
-        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_cn.fsb");
+        strFile = strDir + "MS2Sound_Voice8_cn.fsb";
         aFiles.push_back(strFile);
-        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_cn.fsb");
+        strFile = strDir + "MS2Sound_Voice9_cn.fsb";
         aFiles.push_back(strFile);
         break;
     case 0:
-        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice8_Kor_def.fsb");
+        strFile = strDir + "MS2Sound_Voice8_Kor_def.fsb";
         aFiles.push_back(strFile);
-        strFile = FUN_14038f6d0(strDir, "MS2Sound_Voice9_Kor_def.fsb");
+        strFile = strDir + "MS2Sound_Voice9_Kor_def.fsb";
         aFiles.push_back(strFile);
         break;
     default:

@@ -139,14 +139,11 @@ void FUN_140888b80(void*);
 void FUN_140888af0(void*);
 void FUN_140888bb0(void*);
 void FUN_140888b20(void*);
-void FUN_140bcbb50(void*);
 void FUN_140acd6e0(void*);
 void FUN_140a583d0(void*);
-void FUN_140bbfda0(void*);
 void FUN_140acd710(void*);
 void FUN_14056c300(void*);
 void FUN_1403e5630(void*);
-void FUN_140a16120(void*);
 void FUN_1401cd150(void*);
 
 typedef Unk_Ref<FUN_140888b50> RTypeTbl;
@@ -155,10 +152,8 @@ typedef Unk_Ref<FUN_140888b80> RSortTbl;
 typedef Unk_Ref<FUN_140888af0> RSortElem;
 typedef Unk_Ref<FUN_140888bb0> RCatTbl;
 typedef Unk_Ref<FUN_140888b20> RCatElem;
-typedef Unk_Ref<FUN_140bcbb50> RTypeList;
 typedef Unk_Ref<FUN_140acd6e0> RButton;
 typedef Unk_Ref<FUN_140a583d0> RCheck;
-typedef Unk_Ref<FUN_140bbfda0> RCombo;
 typedef Unk_Ref<FUN_140acd710> RCubeList;
 typedef Unk_Ref<FUN_14056c300> RItemMeta;
 typedef Unk_Ref<FUN_1403e5630> Unk_UIRef;
@@ -307,19 +302,15 @@ public:
     int m_540;
 };
 
-struct Unk_CubePickPtr
-{
-    void* m_p;   // 8 bytes: the exe keeps it in one slot
-    Unk_CubePickPtr() : m_p(0) {}
-    ~Unk_CubePickPtr() { FUN_140a16120(this); }
-    void* FUN_140a16c00();                                  // the pick (null test)
-    void* FUN_140a16c30();                                  // operator-> (the pick record)
-};
-
-class Unk_CubePicker
+#include <ecr/PickService.h>
+// The pick result of CameraMgr::FUN_140af0850 (camera.cpp layout; dtor 0x140a16120 bound in symbols-manual.tsv).
+class Unk_GoPickListPtr
 {
 public:
-    Unk_CubePickPtr FUN_140af0850(float x, float y, bool a, bool b, bool c, void* pRoot);   // NiAVObject* (camera.cpp)
+    ~Unk_GoPickListPtr();                                               // 0x140a16120
+    ecr::PickService::PickRecord* FUN_140a16c00() const;                // the pick (null test)
+    ecr::PickService::PickRecord* FUN_140a16c30() const;                // operator-> (the pick record)
+    ecr::PickService::PickRecord* m_p;
 };
 
 class Unk_CubeHolder : public Unk_PCCubeCraft
@@ -402,6 +393,7 @@ struct Unk_CubeSpRef
     ~Unk_CubeSpRef() { if (m_p) m_p->vfunc_2(); }
     bool FUN_140ef4cb0(Unk_CubeMgr* p);
 };
+
 
 // the exe's null test of the look pointer calls the identical-code get copy at 0x140885320
 struct Unk_LookPtrGet
@@ -488,19 +480,16 @@ unsigned char FUN_140930ce0();
 // the UISwfEntity::GetChild<T> instances: members returning the handle by value, named by the literal
 struct Unk_UcpChildGet
 {
-    RTypeList FUN_140c02900(const CString& strName);
     MS2Ptr<ASCheckBox> FUN_140e52670(const CString& strName);
-    RCombo FUN_140c28560(const CString& strName);
 };
 void FUN_140ba4b70(void* pDlg, RCubeList* pRet, const CString& strName);
-void* FUN_140c02d70(RTypeList* p);
-bool FUN_140bcc0c0(RTypeList* p, int n);
-Unk_CubeCtl* FUN_140bcc3f0(RTypeList* p);
-bool FUN_140bc03e0(RCombo* p, int n);
-Unk_CubeCtl* FUN_140bc0530(RCombo* p);
+class UIDailyMissionDialog   // C3: member view (the list getter folds with this unit's)
+{
+public:
+    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);
+};
 int FUN_140ba4ee0(RCubeList* p, int n);
 Unk_CubeCtl* FUN_140acd9f0(RCubeList* p);
-AScript* FUN_140ba7c60(void* pRef);
 
 // ---- items, strings, message boxes ----
 
@@ -1373,8 +1362,8 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
     MS2Ptr<ASDisplayObject> spRoot(dynamic_cast<ASDisplayObject*>(m_30.get()));
     if (spRoot == 0)
         return 0;
-    RTypeList spList = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140c02900("m_cubeTypeList");
-    if (FUN_140bcc0c0(&spList, 0) != 0)
+    MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_cubeTypeList");
+    if (spList == 0)
         return 0;
     for (unsigned int i = 0; i < spTypes.operator->()->GetCount(); i++)
     {
@@ -1384,8 +1373,8 @@ int UIUGCCubePaletteDialog::FUN_140eec4d0(int nTypeId, Vector3* pPos)
         if ((FUN_140930c50() == 0 || spType.operator->()->m_nDelegator != 0) && spType.operator->()->m_nCategory == nTypeId)
         {
             *pPos = Vector3(spRoot->FUN_1422c10a0(), spRoot->FUN_1422c1110(), spRoot->GetZ());
-            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->GetZ()));
-            Scaleform::GFx::Value vRow = FUN_140bcc3f0(&spList)->Invoke("getRendererAt", i);
+            pPos->FUN_140a4e560(Vector3(((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->FUN_1422c10a0(), ((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->FUN_1422c1110(), ((ASDisplayObject*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->GetZ()));
+            Scaleform::GFx::Value vRow = ((Unk_CubeCtl*)spList.operator->())->Invoke("getRendererAt", i);
             if (((Scaleform::GFx::Value*)(void*)(&vRow))->IsDisplayObject() == 0)
                 return 0;
             MS2Ptr<ASDisplayObject> spRow(new Unk_CubeRenderer(vRow, m_28));
@@ -1440,8 +1429,8 @@ void UIUGCCubePaletteDialog::FUN_140eecfe0()
     UGCCubeCategoryTable::MenuArrayPtr spTypes = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetMenus();
     if (FUN_140ef0630(reinterpret_cast<RTypeTbl*>(&spTypes), 0) != 0)
         return;
-    RTypeList spList = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140c02900("m_cubeTypeList");
-    if (FUN_140bcc0c0(&spList, 0) != 0)
+    MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_cubeTypeList");
+    if (spList == 0)
         return;
     for (unsigned int i = 0; i < spTypes.operator->()->GetCount(); i++)
     {
@@ -1454,32 +1443,32 @@ void UIUGCCubePaletteDialog::FUN_140eecfe0()
             obj.FUN_1407cbb20((const char*)s_label, CStringW(spType.operator->()->m_strName));
             obj.FUN_1409c0d20("categoryID", spType.operator->()->m_nCategory);
             obj.FUN_140ef0000("filter", spType.operator->()->m_nFilter);
-            ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->AddItem(*(class ASObj const*)&static_cast<class ASObj&>(obj));
+            ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->AddItem(*(class ASObj const*)&static_cast<class ASObj&>(obj));
         }
     }
     int nIndex;
-    if (((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->GetItemCount() > 7)
+    if (((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->GetItemCount() > 7)
         nIndex = 7;
     else
-        nIndex = ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->GetItemCount();
-    ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->SetRowCount(nIndex);
-    ((class ASCoreList*)(class Unk_CubeCtl*)(FUN_140bcc3f0(&spList)))->SetSelectedIndex(0);
-    FUN_140bcc3f0(&spList)->vfunc_24(1);
+        nIndex = ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->GetItemCount();
+    ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->SetRowCount(nIndex);
+    ((class ASCoreList*)(class Unk_CubeCtl*)(((Unk_CubeCtl*)spList.operator->())))->SetSelectedIndex(0);
+    ((Unk_CubeCtl*)spList.operator->())->vfunc_24(1);
 }
 
 // @0x140eed2d0 (fill the sort list from the sort table)
 void UIUGCCubePaletteDialog::FUN_140eed2d0()
 {
-    RCombo spCtl = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140c28560("m_sortCategory");
-    if (FUN_140bc03e0(&spCtl, 0) != 0)
+    MS2Ptr<ASDropdownMenu> spCtl = GetChild<ASDropdownMenu>("m_sortCategory");
+    if (spCtl == 0)
         return;
     if (m_filter.FUN_140df00d0())
     {
         UGCCubeCategoryTable::SortArrayPtr spSorts = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetSorts();
         if (FUN_140ef0670(reinterpret_cast<RSortTbl*>(&spSorts), 0) != 0)
             return;
-        ((ASMovieClip*)(Unk_CubeCtl*)(FUN_140bc0530(&spCtl)))->FUN_1422c1fe0(1);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->ClearItems();
+        ((ASMovieClip*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422c1fe0(1);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->ClearItems();
         for (unsigned int i = 0; i < FUN_140ef0ae0(spSorts.operator->()); i++)
         {
             UGCCubeCategoryTable::SortPtr spSort(*static_cast<UGCCubeCategoryTable::SortPtr*>(FUN_140ef0a60(spSorts.operator->(), i)));
@@ -1488,22 +1477,22 @@ void UIUGCCubePaletteDialog::FUN_140eed2d0()
             ASObj obj(2);
             obj.FUN_1407cbb20((const char*)s_label, CStringW(spSort.operator->()->m_strName));
             obj.FUN_140ef00a0("sortOrder", spSort.operator->()->m_nOrder);
-            ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->AddItemRow(obj);
+            ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->AddItemRow(obj);
         }
         int nIndex;
-        if (((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->GetItemCount() > 5)
+        if (((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount() > 5)
             nIndex = 5;
         else
-            nIndex = ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->GetItemCount();
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->FUN_1422df5f0(nIndex);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->SetSelectedIndex(0);
-        FUN_140bc0530(&spCtl)->vfunc_24(1);
+            nIndex = ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount();
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422df5f0(nIndex);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetSelectedIndex(0);
+        ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
     else
     {
-        ((ASMovieClip*)(Unk_CubeCtl*)(FUN_140bc0530(&spCtl)))->FUN_1422c1fe0(0);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->ClearItems();
-        FUN_140bc0530(&spCtl)->vfunc_24(1);
+        ((ASMovieClip*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422c1fe0(0);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->ClearItems();
+        ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
 }
 
@@ -1568,16 +1557,16 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
 // @0x140eede00 (fill the main category list of a cube type)
 void UIUGCCubePaletteDialog::FUN_140eede00(int nCubeType)
 {
-    RCombo spCtl = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140c28560("m_mainCategory");
-    if (FUN_140bc03e0(&spCtl, 0) != 0)
+    MS2Ptr<ASDropdownMenu> spCtl = GetChild<ASDropdownMenu>("m_mainCategory");
+    if (spCtl == 0)
         return;
     if (m_filter.FUN_140df00d0())
     {
         UGCCubeCategoryTable::TabArrayPtr spCats = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetTabs(nCubeType);
         if (FUN_140ef06b0(reinterpret_cast<RCatTbl*>(&spCats), 0) != 0)
             return;
-        ((ASMovieClip*)(Unk_CubeCtl*)(FUN_140bc0530(&spCtl)))->FUN_1422c1fe0(1);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->ClearItems();
+        ((ASMovieClip*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422c1fe0(1);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->ClearItems();
         for (unsigned int i = 0; i < FUN_140ef0af0(FUN_140ef0750(reinterpret_cast<RCatTbl*>(&spCats))); i++)
         {
             UGCCubeCategoryTable::TabPtr spCat(*static_cast<UGCCubeCategoryTable::TabPtr*>(FUN_140ef0aa0(FUN_140ef0750(reinterpret_cast<RCatTbl*>(&spCats)), i)));
@@ -1587,31 +1576,31 @@ void UIUGCCubePaletteDialog::FUN_140eede00(int nCubeType)
             {
                 ASObj obj(2);
                 obj.FUN_1407cbb20((const char*)s_label, CStringW(spCat.operator->()->m_strName));
-                ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->AddItemRow(obj);
+                ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->AddItemRow(obj);
             }
         }
         int nIndex;
-        if (((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->GetItemCount() > 0xf)
+        if (((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount() > 0xf)
             nIndex = 0xf;
         else
-            nIndex = ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->GetItemCount();
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->FUN_1422df5f0(nIndex);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->SetSelectedIndex(0);
-        FUN_140bc0530(&spCtl)->vfunc_24(1);
+            nIndex = ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount();
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422df5f0(nIndex);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetSelectedIndex(0);
+        ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
     else
     {
-        ((ASMovieClip*)(Unk_CubeCtl*)(FUN_140bc0530(&spCtl)))->FUN_1422c1fe0(0);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->ClearItems();
-        FUN_140bc0530(&spCtl)->vfunc_24(1);
+        ((ASMovieClip*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422c1fe0(0);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->ClearItems();
+        ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
 }
 
 // @0x140eee160 (fill the sub category list of a main category)
 void UIUGCCubePaletteDialog::FUN_140eee160(int nCubeType, unsigned int nMainCategory)
 {
-    RCombo spCtl = reinterpret_cast<Unk_UcpChildGet*>(this)->FUN_140c28560("m_subCategory");
-    if (FUN_140bc03e0(&spCtl, 0) != 0)
+    MS2Ptr<ASDropdownMenu> spCtl = GetChild<ASDropdownMenu>("m_subCategory");
+    if (spCtl == 0)
         return;
     if (m_filter.FUN_140df00d0())
     {
@@ -1623,8 +1612,8 @@ void UIUGCCubePaletteDialog::FUN_140eee160(int nCubeType, unsigned int nMainCate
         UGCCubeCategoryTable::TabPtr spMain(*static_cast<UGCCubeCategoryTable::TabPtr*>(FUN_140ef0aa0(FUN_140ef0750(reinterpret_cast<RCatTbl*>(&spCats)), (__int64)(int)nMainCategory)));
         if (spMain == 0)
             return;
-        ((ASMovieClip*)(Unk_CubeCtl*)(FUN_140bc0530(&spCtl)))->FUN_1422c1fe0(1);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->ClearItems();
+        ((ASMovieClip*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422c1fe0(1);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->ClearItems();
         UGCCubeCategoryTable::TabPtr spFirst(0);
         for (unsigned int i = 0; i < FUN_140ef0af0(&spMain.operator->()->m_children); i++)
         {
@@ -1636,28 +1625,28 @@ void UIUGCCubePaletteDialog::FUN_140eee160(int nCubeType, unsigned int nMainCate
                 ASObj obj(2);
                 obj.FUN_1407cbb20((const char*)s_label, CStringW(spSub.operator->()->m_strName));
                 obj.FUN_1409c0d20("categorylist", spSub.operator->()->m_nCategory);
-                ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->AddItemRow(obj);
+                ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->AddItemRow(obj);
                 if (spFirst == 0)
                     FUN_140ef0500(reinterpret_cast<RCatElem*>(&spFirst), reinterpret_cast<RCatElem*>(&spSub));
             }
         }
         int nIndex;
-        if (((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->GetItemCount() > 0xf)
+        if (((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount() > 0xf)
             nIndex = 0xf;
         else
-            nIndex = ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->GetItemCount();
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->FUN_1422df5f0(nIndex);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->SetSelectedIndex(0);
-        FUN_140bc0530(&spCtl)->vfunc_24(1);
+            nIndex = ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->GetItemCount();
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422df5f0(nIndex);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->SetSelectedIndex(0);
+        ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
         if (reinterpret_cast<MS2Ptr<UGCKeyMode>*>(&spFirst)->operator->() != 0)   // C3: the exe folds this operator-> onto MS2Ptr<UGCKeyMode>'s
             m_filter.field10 = spFirst.operator->()->m_nCategory;
     }
     else
     {
         m_filter.field10 = 0;
-        ((ASMovieClip*)(Unk_CubeCtl*)(FUN_140bc0530(&spCtl)))->FUN_1422c1fe0(0);
-        ((class ASDropdownMenu*)(FUN_140bc0530(&spCtl)))->ClearItems();
-        FUN_140bc0530(&spCtl)->vfunc_24(1);
+        ((ASMovieClip*)(Unk_CubeCtl*)(((Unk_CubeCtl*)spCtl.operator->())))->FUN_1422c1fe0(0);
+        ((class ASDropdownMenu*)(((Unk_CubeCtl*)spCtl.operator->())))->ClearItems();
+        ((Unk_CubeCtl*)spCtl.operator->())->vfunc_24(1);
     }
 }
 
@@ -1758,7 +1747,7 @@ int UIUGCCubePaletteDialog::FUN_140eee630()
 void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
 {
     int nIndex = nRow + 1;
-    ASDialog* pDlg = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
+    ASDialog* pDlg = dynamic_cast<ASDialog*>(m_30.operator AScript*());
     if (pDlg != 0)
     {
         UGCCubePalette::CubePtr spCube = reinterpret_cast<CubeHolderManager*>(GetUGCCubePalette())->FindByIndex(nIndex);
@@ -2021,12 +2010,12 @@ void UGCKeyMode1::vfunc_1()
         float fX = 0;
         float fY = 0;
         ((CWindowService*)(Unk_FpsSvc*)(((class Unk_FpsSvc*)FUN_140aadf80())))->GetCursorClientPos(&fX, &fY);
-        Unk_CubePickPtr spPick = reinterpret_cast<Unk_CubePicker*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0850(fX, fY, true, true, false, 0);
+        Unk_GoPickListPtr spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, 0);
         if (spPick.FUN_140a16c00() == 0)
             return;
-        for (unsigned int i = 0; i < reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetSize(); i++)
+        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); i++)
         {
-            NiPick::Record* pHit = reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetAt(i);
+            NiPick::Record* pHit = spPick.FUN_140a16c30()->GetPickResult()->GetAt(i);
             if (pHit == 0)
                 continue;
             NiObject* pObj = NiObject::DynamicCast(&NiMesh::ms_RTTI, pHit->GetAVObject());
@@ -2126,12 +2115,12 @@ void UGCKeyMode2::vfunc_1()
         float fX = 0;
         float fY = 0;
         ((CWindowService*)(Unk_FpsSvc*)(((class Unk_FpsSvc*)FUN_140aadf80())))->GetCursorClientPos(&fX, &fY);
-        Unk_CubePickPtr spPick = reinterpret_cast<Unk_CubePicker*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0850(fX, fY, true, true, false, 0);
+        Unk_GoPickListPtr spPick = TSingleton<CameraMgr>::GetInstance()->FUN_140af0850(fX, fY, true, true, false, 0);
         if (spPick.FUN_140a16c00() == 0)
             return;
-        for (unsigned int i = 0; i < reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetSize(); i++)
+        for (unsigned int i = 0; i < spPick.FUN_140a16c30()->GetPickResult()->GetSize(); i++)
         {
-            NiPick::Record* pHit = reinterpret_cast<ecr::PickService::PickRecord*>(spPick.FUN_140a16c30())->GetPickResult()->GetAt(i);
+            NiPick::Record* pHit = spPick.FUN_140a16c30()->GetPickResult()->GetAt(i);
             if (pHit == 0)
                 continue;
             NiObject* pObj = NiObject::DynamicCast(&NiMesh::ms_RTTI, pHit->GetAVObject());

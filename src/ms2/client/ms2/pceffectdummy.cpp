@@ -27,7 +27,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 class Unk_140166420 : public CFileSystem { };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class CLogString* GetLogString();   // C3: was FUN_140166440
-void FUN_1403a1280(void*, int, int, const wchar_t*, const char* const*);
+template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280
 
 // The game's TinyXML element / declaration (constructed through new, which null-checks the allocation as the exe does);
 // its writers in free-function form (`this` first): InsertEndChild,
@@ -39,13 +39,13 @@ class TiXmlNode   // C3: member view for the former free stand-ins
 {
 public:
     class TiXmlNode* LinkEndChild(class TiXmlNode*);
+    const class TiXmlElement* NextSiblingElement() const;
 };
-void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
+void XmlSetAttr(class TiXmlElement*, char const*, CString const&);   // C3: was FUN_140874050
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_140873e30
 void FUN_140874ad0(void* pElem, const char* pszName, const Unk_DummyVec3& kValue);
-bool FUN_1408710c0(void* pDoc, const char* pszPath);
 
 // @0x1416841a0
 CPCEffectDummy::CPCEffectDummy()
@@ -67,18 +67,18 @@ int CPCEffectDummy::LoadFile(const char* pszPath)
     TiXmlDocument doc;
     if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
-        FUN_1403a1280(((void*)GetLogString()), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", &pszPath);
+        Unk_FileLog<const char*>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
         return 0;
     }
-    Unk_140165cf0* pGroup = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pRoot))->FirstChild("effectdummy"));
+    Unk_140165cf0* pGroup = ((class Unk_140165cf0*)(pRoot->FirstChild("effectdummy")));
     if (pGroup != 0)
     {
         m_dummies.clear();
         CEffectDummy kDummy;
-        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("dummy")); pElem != 0; pElem = pElem->NextSiblingElement())
+        for (Unk_140165cf0* pElem = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pGroup))->FirstChild("dummy")); pElem != 0; pElem = (Unk_140165cf0*)(((class TiXmlNode*)(pElem))->NextSiblingElement()))
         {
             int nGender = 0;
             XmlGetAttr((class TiXmlElement*)(pElem), "gender", reinterpret_cast<int&>(nGender));
@@ -147,13 +147,13 @@ int CPCEffectDummy::Save(const char* pszPath)
         {
             pDummy = new TiXmlElement("dummy");
             ((void*)((class TiXmlNode*)(void*)(pGroup))->LinkEndChild((class TiXmlNode*)(pDummy)));
-            FUN_140874050(pDummy, "name", itRow->GetName());
+            XmlSetAttr((class TiXmlElement*)(pDummy), "name", itRow->GetName());
             XmlSetAttr((class TiXmlElement*)(pDummy), "gender", it->first);
             void* pAttach = new TiXmlElement("attachInfo");
             ((void*)((class TiXmlNode*)(void*)(pDummy))->LinkEndChild((class TiXmlNode*)(pAttach)));
             void* pTransform = new TiXmlElement("transform");
             ((void*)((class TiXmlNode*)(void*)(pDummy))->LinkEndChild((class TiXmlNode*)(pTransform)));
-            FUN_140874050(pAttach, "parentNode", itRow->GetParentNode());
+            XmlSetAttr((class TiXmlElement*)(pAttach), "parentNode", itRow->GetParentNode());
             XmlSetAttr((class TiXmlElement*)(pAttach), "applyWorldTransform", itRow->m_bApplyWorldTransform);
             XmlSetAttr((class TiXmlElement*)(pAttach), "applyLocalScale", itRow->m_bApplyLocalScale);
             FUN_140874ad0(pTransform, "translate", itRow->GetTranslate());
@@ -161,5 +161,5 @@ int CPCEffectDummy::Save(const char* pszPath)
             XmlSetAttr((class TiXmlElement*)(pTransform), "scale", itRow->m_fScale);
         }
     }
-    return FUN_1408710c0(&doc, pszPath);
+    return doc.SaveFile(pszPath);
 }

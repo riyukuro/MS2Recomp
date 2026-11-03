@@ -28,11 +28,13 @@
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/uimessagebox.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
 #include <string>
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include <efd/StringUtilities.h>
+#include <efd/Color.h>
 #include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
 #include "ms2/commonfiles/os.h"
@@ -54,22 +56,22 @@ extern const NiPixelFormat DAT_1439fb040;                                  // MS
 // screenshot plumbing from other units
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-void* FUN_14127bf80(void* pkHolder);                        // registry singleton
+ecr::RenderService* Unk_GetRenderService(char* pCell);     // registry singleton
    // the renderer wrapper
-PostProcessingService* FUN_1409a8b20();
-CStringW FUN_1401d0080(const CStringW& kA, const CStringW& kB);   // CStringW concatenation
+class Unk_AeFeatureMgr   // C3: member view for the former free stand-in
+{
+public:
+    static class Unk_AeFeatureMgr* FUN_1409a8b20();
+};
 template <class A> CStringW FormatStringId(int nId, const A& a);      // localized string with one argument
 void FUN_1412751b0(const CStringW& kText, int nSeconds);    // on-screen notice
 Unk_MessageBoxPtr FUN_14151f820();                          // the message box currently shown
-void* FUN_140534fc0(const Unk_MessageBoxPtr& kBox);
-void* FUN_140534fe0(const Unk_MessageBoxPtr& kBox);
-const CStringW& FUN_141a02ce0(void* pkBoxData);             // message box name
 void FUN_14151f200();                                       // close the current message box
 void FUN_140d73aa0(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
 class CBigDataLogSystem;
 void FUN_140a1f970(void* pkSink, const CStringA& kName, const CStringA& kArg);
 int FUN_1414a5a40(CStringW kPath);                          // create a directory (-1 on failure)
-std::string FUN_14083fa60(const char* pcData, unsigned int uiLength);   // encode a byte string
+std::string FUN_14083fa60(const unsigned char* pcData, unsigned int uiLength);   // encode a byte string
 float FUN_141adbe70(void* pkSettings);                      // UI scale
 
 // A thread-local storage slot (the TLS index lives in the object).
@@ -109,14 +111,10 @@ MS2_CHECK_SIZE(Unk_TlsSlot, 4);
 static int s_iScreenshotCounter;          // 0x143aef498: screenshots taken this run (numbers the file names)
 static Unk_TlsSlot s_kConverterSlot;      // 0x143aef49c: the per-thread image converter
 
-// the 4-byte RGBA pixel value (base constructor lives in another unit)
-struct Unk_Pixel32 {
-    unsigned char m_c[4];
-    Unk_Pixel32(unsigned char r, unsigned char g, unsigned char b, unsigned char a);   // 0x141047040
-};
-struct Unk_TexColor : public Unk_Pixel32 {
+// the 4-byte RGBA pixel value (base constructor efd::ColorA_UInt8 0x141047040)
+struct Unk_TexColor : public efd::ColorA_UInt8 {
     // @0x141851480
-    Unk_TexColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : Unk_Pixel32(r, g, b, a) {}
+    Unk_TexColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : efd::ColorA_UInt8(r, g, b, a) {}
 };
 MS2_CHECK_SIZE(Unk_TexColor, 4);
 // One A8R8G8B8 pixel as SamplePixelData reads it (byte order r, g, b, a).
@@ -896,7 +894,7 @@ int SaveRenderTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILE
 int SaveDefaultTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, int /*nUnused*/,
     NiRect<unsigned int> kRect, float fScale)
 {
-    Ni2DBuffer* pkBuffer = FUN_1409a8b20()->FUN_1416a3fb0()->GetBuffer(0);
+    Ni2DBuffer* pkBuffer = ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3fb0()->GetBuffer(0);
     if (pkBuffer == NULL)
     {
         return 0;
@@ -953,9 +951,9 @@ CStringW GetTimestampFileName(int eFormat)
         CStringW kTag(L"notifyScreenShot");                                                                             \
         {                                                                                                               \
             Unk_MessageBoxPtr kCurrent = FUN_14151f820();                                                               \
-            if (FUN_140534fc0(kCurrent) != 0)                                                                           \
+            if ((CMsgBoxData*)kCurrent != 0)                                                                            \
             {                                                                                                           \
-                if (kTag.CompareNoCase(FUN_141a02ce0(FUN_140534fe0(kCurrent))) == 0)                                    \
+                if (kTag.CompareNoCase(kCurrent->GetExtra()) == 0)                                                      \
                 {                                                                                                       \
                     FUN_14151f200();                                                                                    \
                 }                                                                                                       \
@@ -1034,7 +1032,7 @@ CStringW TakeScreenshotJpg(int bNotify, int nTarget)
     {
         return CStringW(L"");
     }
-    CStringW kPath = FUN_1401d0080(kDirectory, GetTimestampFileName(D3DXIFF_JPG));
+    CStringW kPath = kDirectory + GetTimestampFileName(D3DXIFF_JPG);
     RECT kClient = { 0, 0, 0, 0 };
     GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     Ni2DBuffer* pkBuffer = GetScreenshotBuffer(nTarget);
@@ -1081,8 +1079,8 @@ void TakeSceneScreenshotPng(int bNotify)
     {
         return;
     }
-    CStringW kPath = FUN_1401d0080(kDirectory, GetTimestampFileName(D3DXIFF_PNG));
-    void* pkRegistry = FUN_14127bf80(&DAT_143b059e8);
+    CStringW kPath = kDirectory + GetTimestampFileName(D3DXIFF_PNG);
+    void* pkRegistry = Unk_GetRenderService(&DAT_143b059e8);
     if (pkRegistry != NULL)
     {
         NiRenderTargetGroup* pkGroup = reinterpret_cast<ecr::RenderService*>(pkRegistry)->GetActiveRenderSurface()->GetRenderTargetGroup();
@@ -1107,7 +1105,7 @@ void TakeScreenshotPng(int bNotify)
     {
         return;
     }
-    CStringW kPath = FUN_1401d0080(kDirectory, GetTimestampFileName(D3DXIFF_PNG));
+    CStringW kPath = kDirectory + GetTimestampFileName(D3DXIFF_PNG);
     RECT kClient = { 0, 0, 0, 0 };
     GetClientRect(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), &kClient);
     Ni2DBuffer* pkBuffer = GetScreenshotBuffer(0);
@@ -1163,7 +1161,7 @@ std::string CaptureClientAreaJpg()
     if (hr >= 0)
     {
         std::string kRaw((const char*)pkMemory->GetBufferPointer(), pkMemory->GetBufferSize());
-        std::string kEncoded = FUN_14083fa60(kRaw.c_str(), (unsigned int)kRaw.size());
+        std::string kEncoded = FUN_14083fa60((const unsigned char*)kRaw.c_str(), (unsigned int)kRaw.size());
         return kEncoded;
     }
     return std::string("");
@@ -1198,7 +1196,7 @@ std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight)
     if (hr >= 0)
     {
         std::string kRaw((const char*)pkMemory->GetBufferPointer(), pkMemory->GetBufferSize());
-        std::string kEncoded = FUN_14083fa60(kRaw.c_str(), (unsigned int)kRaw.size());
+        std::string kEncoded = FUN_14083fa60((const unsigned char*)kRaw.c_str(), (unsigned int)kRaw.size());
         return kEncoded;
     }
     return std::string("");
@@ -1252,37 +1250,18 @@ int IsDirectory(CStringW kPath)
 
 // Returns the calling thread's image converter, creating it (with the MS2 PNG reader added) on first use.
 #ifndef MS2_HOOK_DLL
-// efd::MemHint (4 bytes, passed by value to the tagged operator new).
-// MS2-PIN: ??0Unk_TuMemHint@@QEAA@H@Z 0x140876480
-struct Unk_TuMemHint
-{
-    Unk_TuMemHint(int category);                    // 0x140876480
-    int m_hint;
-};
-// NiDevImageConverter (0x858 bytes) and MS2PNGReader (0xe0 bytes), allocated from the efd tagged heap.
-// MS2-PIN: ??2Unk_TuConverterNew@@SAPEAX_KUUnk_TuMemHint@@@Z 0x14208a860
-// MS2-PIN: ??3Unk_TuConverterNew@@SAXPEAXUUnk_TuMemHint@@@Z 0x14097f700
-// MS2-PIN: ??0Unk_TuConverterNew@@QEAA@XZ 0x141d34210
-// MS2-PIN: ??2Unk_TuReaderNew@@SAPEAX_KUUnk_TuMemHint@@@Z 0x14208a860
-// MS2-PIN: ??3Unk_TuReaderNew@@SAXPEAXUUnk_TuMemHint@@@Z 0x14097f700
-// MS2-PIN: ??0Unk_TuReaderNew@@QEAA@XZ 0x140d9aba0
-class Unk_TuConverterNew
+// MS2PNGReader (ms2pngreader.cpp), allocated from the efd tagged heap.
+class MS2PNGReader : public NiImageReader
 {
 public:
-    static void* operator new(size_t cb, Unk_TuMemHint hint);     // 0x14208a860
-    static void operator delete(void* p, Unk_TuMemHint hint);     // 0x14097f700
-    Unk_TuConverterNew();                                         // 0x141d34210
+    MS2PNGReader();                                         // 0x140d9aba0
+    virtual ~MS2PNGReader();
+    virtual bool CanReadFile(const char* pcFileExtension) const;
+    virtual NiPixelData* ReadFile(efd::File& kIst, NiPixelData* pkOptDest);
+    virtual bool ReadHeader(efd::File& kIst, unsigned int& uiWidth, unsigned int& uiHeight, NiPixelFormat& kFormat,
+        bool& bMipmap, unsigned int& uiFaces);
 private:
-    char m_pad[0x858];
-};
-class Unk_TuReaderNew
-{
-public:
-    static void* operator new(size_t cb, Unk_TuMemHint hint);     // 0x14208a860
-    static void operator delete(void* p, Unk_TuMemHint hint);     // 0x14097f700
-    Unk_TuReaderNew();                                            // 0x140d9aba0
-private:
-    char m_pad[0xe0];
+    char m_pad[0xe0 - sizeof(NiImageReader)];
 };
 // @0x141851720
 NiImageConverter* FUN_141851720()
@@ -1290,8 +1269,8 @@ NiImageConverter* FUN_141851720()
     if (s_kConverterSlot.Get() == NULL)
     {
         NiDevImageConverter::MS2DisableNIFImageReader();
-        NiDevImageConverter* pkConverter = reinterpret_cast<NiDevImageConverter*>(new (Unk_TuMemHint(0)) Unk_TuConverterNew);
-        pkConverter->AddReader(reinterpret_cast<NiImageReader*>(new (Unk_TuMemHint(0)) Unk_TuReaderNew));
+        NiDevImageConverter* pkConverter = new (efd::MemHint((efd::MemHint::Bits)0)) NiDevImageConverter;
+        pkConverter->AddReader(new (efd::MemHint((efd::MemHint::Bits)0)) MS2PNGReader);
         FUN_141851840(pkConverter);
     }
     return (NiImageConverter*)s_kConverterSlot.Get();

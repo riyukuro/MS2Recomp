@@ -38,6 +38,7 @@
 #include <NiMesh.h>
 #include <NiMeshHWInstance.h>
 #include <NiInstancingUtilities.h>
+#include <NiActorManager.h>
 #include <NiShadowGenerator.h>
 #include <NiMaterialLibrary.h>
 #include <NiSkinningMeshModifier.h>   // C3: NiSkinningMeshModifier::ms_RTTI
@@ -76,7 +77,7 @@ class CMainSystem   // C3: member view for the former free stand-ins
 public:
     double FUN_141473280();
 };
-class Unk_DecoAnimObj { public: bool FUN_1409a20a0(int nSeq, float fSpeed, bool bLoop); };
+class Unk_DecoAnimObj;
 struct Unk_DecoAnimHandle { Unk_DecoAnimObj* FUN_140998e90(); char m_pad[0x40]; };
 struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
 // The animation service (animationmanager.cpp); play by name is its member.
@@ -97,7 +98,6 @@ const void* FUN_1408b76f0(const void* pEntity);
 void* FUN_1408b6b20(void* pDst, const void* pSrc);
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
 CString FUN_141b6ed00(const CString& strPath);
-CString FUN_140298360(const char* pszPrefix, const CString& strPath);
 
 // ---- scene helpers ----
 class Unk_NodeQueue
@@ -133,7 +133,7 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-void FUN_140874050(void* pElement, const char* pszName, const CString& strValue);
+void XmlSetAttr(class TiXmlElement*, const char*, const CString&);   // C3: was FUN_140874050
 int XmlGetAttr(class TiXmlElement*, class NiTransform&);   // C3: was FUN_140874730
 void XmlSetAttr(class TiXmlElement*, class NiTransform const&);   // C3: was FUN_140874b10
 bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
@@ -631,7 +631,7 @@ bool DecoItem::LoadNif(CString strAsset)
         return true;
     m_bKfm = false;
     m_str88 = "DecoItemNIF";
-    SetModel(FUN_140298360("urn:gamebryo-scenegraph:", FUN_141b6ed00(strAsset)));
+    SetModel("urn:gamebryo-scenegraph:" + FUN_141b6ed00(strAsset));
     if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
         return false;
     return false;
@@ -644,7 +644,7 @@ bool DecoItem::LoadKfm(CString strAsset)
         return true;
     m_bKfm = true;
     m_str88 = "DecoItemKFM";
-    FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strAsset)));
+    FUN_14123bb80("urn:gamebryo-animation:" + FUN_141b6ed00(strAsset));
     if (!WorldService::GetInstance()->FUN_141bbb1e0(this, 0, 1))
         return false;
     return false;
@@ -878,8 +878,8 @@ bool DecoLayer::SaveXml(Unk_TiXmlElement* pParent)
         return false;
     Unk_TiXmlElement* pLayer = new Unk_TiXmlElement("layer");
     FUN_14086e090(pParent, pLayer);
-    FUN_140874050(pLayer, "name", GetName());
-    FUN_140874050(pLayer, "asset", GetAsset());
+    XmlSetAttr((TiXmlElement*)pLayer, "name", GetName());
+    XmlSetAttr((TiXmlElement*)pLayer, "asset", GetAsset());
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
         DecoItem* pItem = m_aItems[i];
@@ -903,7 +903,7 @@ bool Unk_DecoAnimSvc::FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fS
     Unk_DecoAnimObj* pObj = pRec->m_hnd.FUN_140998e90();
     if (pObj == 0)
         return false;
-    return pObj->FUN_1409a20a0(nSeq, fSpeed, bLoop);
+    return reinterpret_cast<NiActorManager*>(pObj)->SetTargetAnimation(nSeq, fSpeed, bLoop);
 }
 
 // @0x141176840

@@ -34,6 +34,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/effectparam.h"   // C3: CEffect::ms_RTTI
 #include "ms2/ms2format.h"   // C3: StringFormat<CStringW, CStringW> (was FUN_140656190)
 class Unk_140165cf0;
 class TiXmlElement   // C3: member view for the former free stand-ins
@@ -72,7 +73,6 @@ Unk_SocketNew FUN_1401b7b90(Unk_SocketNew* pOut, int n);                  // new
 
 // The ctor/dtor of the CAfterImageEffect RTTI live in the same .text$di range.
 class CAfterImageEffect { public: static const NiRTTI ms_RTTI; };
-extern const NiRTTI DAT_143ad1568;   // CEffect::ms_RTTI
 
 typedef Unk_SocketPtr<Unk_AddressBlockMap> Unk_AddressBlockMapPtr;
 typedef ATL::CRBMap<unsigned, Unk_AddressBlockMapPtr> Unk_AddressMap;   // the map code compares unsigned (0x1401b5620), the block code int
@@ -84,7 +84,7 @@ bool CAddressTable::s_bInit;
 
 #ifndef MS2_HOOK_DLL
 // @0x1400bfb10
-const NiRTTI CAfterImageEffect::ms_RTTI("CAfterImageEffect", &DAT_143ad1568);
+const NiRTTI CAfterImageEffect::ms_RTTI("CAfterImageEffect", &CEffect::ms_RTTI);
 // Header statics (the shared list of header_statics_a.h with the pointer in front of the condition map).
 static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";

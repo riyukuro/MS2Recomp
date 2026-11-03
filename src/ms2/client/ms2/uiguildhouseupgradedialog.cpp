@@ -51,7 +51,6 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 class Unk_MentorTab : public AScript
 {
 public:
-    void FUN_1422e4190(const ParamsDelegate& cb, void* pUser);  // click callback
 };
 // The upgrade button.
 class Unk_140acd6e0 : public ASButton
@@ -71,7 +70,6 @@ class Unk_GalleryAS : public AScript
 };
 
 CStringW FUN_140763e10(int n);
-CStringW FUN_140d26d90(CStringW key, const CStringW& a, const int* pArg, const CStringW& b);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int type);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 bool FUN_14028d780(unsigned char c);
@@ -114,7 +112,7 @@ void UIGuildHouseUpgradeDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (FUN_140e3b650<Unk_MentorTab>("m_tab", m_tab).get())
-        m_tab->FUN_1422e4190(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3a910), 0);
+        reinterpret_cast<ASButtonBar*>(m_tab.operator->())->FUN_1422e4190(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3a910), 0);
     if (FUN_140e3b6e0<ASTileList>("m_themeList", m_themeList).get())
         reinterpret_cast<ASCoreList*>(m_themeList.operator->())->AddListIndexChangeHandler(ParamsDelegate(this, &UIGuildHouseUpgradeDialog::FUN_140e3abc0), 0);
     if (FUN_140bc6d10<Unk_140acd6e0>("m_upgradeButton", m_upgradeButton).get())
@@ -278,7 +276,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3abf0(const Scaleform::GFx::FunctionHand
             Unk_PayloadPtr<GuildHouse> house = TSingleton<CGuildXmlData>::GetInstance()->GetHouse(nLevel, nTheme);
             if (house == 0)
                 return;
-            CStringW strText = FUN_140d26d90(CStringW(L"s_guild_ui_house_use_upgrade"), FUN_140763e10(house->f28), &nLevel,
+            CStringW strText = FUN_14028dfa0<CStringW, int, CStringW>(CStringW(L"s_guild_ui_house_use_upgrade"), FUN_140763e10(house->f28), nLevel,
                                              TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x36, house->f20));
             MS2Ptr<CMsgBoxData> box = FUN_140d73f20(CStringW(strText), 1);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildHouseUpgradeDialog::FUN_140e3a6b0));

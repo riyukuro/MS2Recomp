@@ -14,7 +14,6 @@
 #include "ms2/scaleform/include/kernel/sf_file.h"   // SysFile
 #include "hook/ms2hook.h"
 
-CString FUN_1401d2b10(const CString& a, const CString& b);              // ATL operator+(CString, CString)
 
 // @0x1422f77b0
 GFxAtlasCache::GFxAtlasCache()
@@ -37,7 +36,7 @@ AtlasRecord* GFxAtlasCache::FUN_1422f7840(const Scaleform::GFx::ImageCreateInfo&
         Scaleform::Render::ImageFileHandlerRegistry* pRegistry = info.GetImageFileHandlerRegistry();
         if (pRegistry == NULL)
             return NULL;
-        Scaleform::String strPath(FUN_1401d2b10(strDir, strName));
+        Scaleform::String strPath(strDir + strName);
         Scaleform::SysFile file(strPath);
         Scaleform::Render::Image* pImage = pRegistry->ReadImage(&file);
         if (pImage != NULL)

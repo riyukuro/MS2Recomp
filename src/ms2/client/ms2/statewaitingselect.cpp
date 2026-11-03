@@ -23,7 +23,6 @@
 
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
 void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-bool FUN_1401c0090(const CString& a, const CString& b);    // 0x1401c0090 the model name equals the text
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
 struct Unk_WsString
@@ -237,7 +236,7 @@ void StateWaitingSelect::FUN_1417ff590(int* pnSub, const CString& strAnim)
         CString strModel = m_pOwner->FUN_14166dc50();
         m_n10 = *pnSub;
         pPC->FUN_14166ce70(0);
-        bool bSame = FUN_1401c0090(strModel, strAnim);
+        bool bSame = strModel == strAnim;
         pPC->PlayAnimation(strAnim.GetString(), 1.0f, bSame, false);
     }
 }

@@ -43,7 +43,7 @@ public:
     void Tick();                                                    // 0x141489f40 one service manager frame
     unsigned int GetLastTickTime();                                 // 0x141489fb0
     MS2PhysXAllocator* GetPhysXAllocator();                         // 0x141489fd0
-    void SetBackgroundColor(const NiColorA& kColor);                // 0x141489ff0 of the active surface's scene click
+    void SetBackgroundColor(NiColorA kColor);                       // 0x141489ff0 of the active surface's scene click
     NiColorA GetBackgroundColor();                                  // 0x14148a050
     const char* GetLogFileName();                                   // 0x14148a0f0
     static void SetWorkingDirectory(bool bParent);                  // 0x14148a120 the exe's folder (or its parent)

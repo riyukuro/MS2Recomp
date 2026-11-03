@@ -15,7 +15,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 template <class C> int XmlTokenList(Unk_140165cf0*, const char*, C&);
 
-const CStringA& FUN_14082efb0(UnlimitedEnchantInfo::OptionKey nStat);       // the xml name of a stat
+const CStringA& GetStatName(unsigned nStat);                                // the xml name of a stat (stat.cpp)
 CStringA const & FUN_14081d380(int);  // C3: the definition's signature
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
@@ -51,7 +51,7 @@ bool SetItemOptionPart::Load(Unk_140165cf0* pElem)
     {
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         int nValue = 0;
-        XmlGetAttr((class TiXmlElement*)(pElem), (const char*)FUN_14082efb0(nStat), reinterpret_cast<int&>(nValue));
+        XmlGetAttr((class TiXmlElement*)(pElem), (const char*)GetStatName(nStat), reinterpret_cast<int&>(nValue));
         spOption->SetValue(nValue);
         if (spOption->HasValue())
             FUN_1407bca10(nStat, spOption);

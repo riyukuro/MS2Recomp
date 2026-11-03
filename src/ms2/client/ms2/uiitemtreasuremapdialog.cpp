@@ -64,7 +64,6 @@ void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, int bEnab
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
-CString FUN_140540050(const char* szFormat, const CString& strArg);         // StringFormat with one string
 void FUN_14141f970(const CString& strBag);                                  // drop an item bag
 void FUN_14141f770(const CString& strBag, unsigned int nCount, const ATL::CAtlArray<MS2Ptr<CItem> >& items,
                    MS2Ptr<CItem>(*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int), int n1, int n2);
@@ -100,8 +99,8 @@ UIItemTreasureMapDialog::UIItemTreasureMapDialog()
     : m_nState(0), m_nCost(-1), m_spTarget(0)
 {
     m_2c = 0xc;
-    m_strBag = FUN_140540050("{0}.Target", GetTypeName());
-    m_strBind = FUN_140540050("{0}.Select", GetTypeName());
+    m_strBag = StringFormat<CString>("{0}.Target", GetTypeName());
+    m_strBind = StringFormat<CString>("{0}.Select", GetTypeName());
     m_nTargetUid = 0;
     m_bFree = false;
     FUN_140c57b50();

@@ -20,7 +20,7 @@ COutputStream & FUN_14070f860(COutputStream &, unsigned char);  // C3: the defin
 COutputStream & FUN_14070f9e0(COutputStream &, __int64);  // C3: the definition's signature
 COutputStream & FUN_14070f920(COutputStream &, int);  // C3: the definition's signature
 void FUN_1406c3700(Unk_Rgb3b*);                          // Unk_Rgb3b default init (zero)
-void FUN_14070fae0(Unk_PktOut*, CStringW*);             // write wide string
+COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
 void FUN_1406c38b0(Unk_PktOut*, Unk_Rgb3b*);            // write rgb
 class Unk_OSInput   // C3: member view for the former free stand-ins
 {
@@ -30,8 +30,8 @@ public:
     class Unk_OSInput& Read4(int&);
     class Unk_OSInput& Read7(__int64&);
     class Unk_OSInput& Read9(float&);
+    class Unk_OSInput& Read11(CStringW&);
 };
-void FUN_14070f5f0(Unk_PktStream*, CStringW*);          // read wide string
 void FUN_1406c3850(Unk_PktStream*, Unk_Rgb3b*);         // read rgb
 
 // @0x140380840
@@ -131,16 +131,16 @@ FieldPropertyUserTagSymbol::FieldPropertyUserTagSymbol(CStringW a, CStringW b) :
 void FieldPropertyUserTagSymbol::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070fae0(out, &m_strA);
-    FUN_14070fae0(out, &m_strB);
+    FUN_14070fae0(*(COutputStream *)out, m_strA);
+    FUN_14070fae0(*(COutputStream *)out, m_strB);
 }
 
 // @0x140380e70
 void FieldPropertyUserTagSymbol::vfunc_2(Unk_PktIn* in)
 {
     FieldProperty::vfunc_2(in);
-    FUN_14070f5f0(&in->m_stream, &m_strA);
-    FUN_14070f5f0(&in->m_stream, &m_strB);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read11(m_strA);
+    ((class Unk_OSInput*)(struct Unk_PktStream*)(&in->m_stream))->Read11(m_strB);
 }
 
 // @0x140380ed0

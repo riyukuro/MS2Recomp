@@ -168,7 +168,6 @@ void FUN_1412753b0(const CStringW&, int, int);
 void FUN_140d73aa0(CStringW, int, void*, CStringW);
 int FUN_1406516b0();
 CStringW GetStringCommon(int);
-CStringW FUN_1401ceea0(const wchar_t*, const int&);
 UIMessageBox* FUN_14151f890();
 Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
@@ -788,7 +787,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
             pList->vfunc_8(1);
     }
     int nWaiting = packet.ReadInt32();
-    CStringW text = FUN_1401ceea0(GetStringCommon(0xac0), nWaiting);
+    CStringW text = StringFormat<int>(GetStringCommon(0xac0), nWaiting);
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0)
     {

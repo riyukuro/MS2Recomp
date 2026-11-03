@@ -38,6 +38,7 @@
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/mypc.h"
+#include "ms2/placeholder/fittingdollpc.h"   // C3: PC::FUN_141654730/FUN_141656be0
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -69,7 +70,6 @@ class Unk_PgtWorld                                                  // the world
 {
 public:
     MyPC* FUN_141bd0cc0();                                          // the local player
-    PCBase* FUN_141bd1420(CStringW strName);                        // a player by name
     MS2Ptr<Unk_PgtActorRef> FUN_141bc9d60(const CStringW& strName);
 };
 
@@ -115,7 +115,6 @@ public:
 };
 Unk_PopupMenu* FUN_140c30140(int nUiId);
 
-CString FUN_1402bb1c0(const char* szFormat, const int& n);           // StringFormat<int> (the copy this unit calls)
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CStringW FUN_140719630(int n);                                      // the number as text
 CStringW GetStringCommon(int nStringId);
@@ -123,8 +122,6 @@ int FUN_141276180(const CString& strSound, const CString& strArg); // play a UI 
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 bool FUN_141b70f50(const CStringW& a, const CStringW& b);           // the names are equal
-CStringW* FUN_141656be0(PCBase* pPC);                               // the guild name
-int FUN_141654730(PCBase* pPC);                                     // the job level
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
@@ -202,9 +199,9 @@ void UIPvPGuildTeamDialog::OnLoadComplete()
     if (m_spComponent == 0)
         return;
     for (int i = 0; i < 3; i++) {
-        CString strLeft = FUN_1402bb1c0("m_leftPlayer{0}", i + 1);
+        CString strLeft = StringFormat<int>("m_leftPlayer{0}", i + 1);
         m_spLeftPlayers[i] = m_spComponent->FUN_140accfb0<ASUIComponent>(strLeft);
-        CString strRight = FUN_1402bb1c0("m_rightPlayer{0}", i + 1);
+        CString strRight = StringFormat<int>("m_rightPlayer{0}", i + 1);
         m_spRightPlayers[i] = m_spComponent->FUN_140accfb0<ASUIComponent>(strRight);
     }
     if (m_info.m_nGuildIdA != 0)
@@ -346,7 +343,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
             PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
             if (pPC == 0)
                 continue;
-            if (FUN_14133b830(*FUN_141656be0(pPC))) {
+            if (FUN_14133b830(reinterpret_cast<PC*>(pPC)->FUN_141656be0())) {
                 if (nLeft >= 3)
                     continue;
                 FUN_14133bab0(m_spLeftPlayers[nLeft], pPC, bPlaying);
@@ -501,7 +498,7 @@ void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* p
 {
     m_slots[((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80()] = spSlot;
     const CStringW& strName = pPC->vfunc_77();
-    int nLevel = FUN_141654730(pPC);
+    int nLevel = reinterpret_cast<PC*>(pPC)->FUN_141654730();
     __int64 nHp = pPC->FUN_141670a00(4);
     __int64 nMaxHp = pPC->FUN_141670a30(4);
     spSlot->Invoke("showCharInfo", strName, FUN_140719630(nLevel), nHp, nMaxHp);
@@ -528,7 +525,7 @@ void UIPvPGuildTeamDialog::FUN_14133bd80(CStringW strName)
     if (spPC == 0)
         return;
     m_strObserved = strName;
-    PCBase* pTarget = reinterpret_cast<Unk_PgtWorld*>(WorldService::GetInstance())->FUN_141bd1420(m_strObserved);
+    PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1420(m_strObserved));
     if (pTarget == 0) {
         FUN_14133bec0();
         return;

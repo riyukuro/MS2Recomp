@@ -47,7 +47,7 @@ Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a
 
 // The name table (global strings).
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-CStringW FUN_1409e97f0(int nId, const int& nArg);
+template <class A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
 
@@ -257,7 +257,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             {
             case 0:
             {
-                CStringW strMsg = FUN_1409e97f0(0xc3f, m_1e8);
+                CStringW strMsg = BlockFormat<unsigned>(0xc3f, reinterpret_cast<const unsigned&>(m_1e8));
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
                 FUN_140d73aa0(CStringW(strMsg), 0, 0, CStringW(L""));
                 static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("setShuffleButton", 1);

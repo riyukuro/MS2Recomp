@@ -211,13 +211,7 @@ public:
 
 // The player inventory (global at 0x143ab2a90): item lookup by uid.
 extern Unk_Inventory g_143ab2a90;
-#ifdef __clang__
-// Bind the exe's operator+(const char*, const CString&); clang otherwise emits an unavailable CopyChars DLL import.
-CString FUN_140298360(const char* szLeft, const CString& strRight);
-#define Unk_WmConcat(left, right) FUN_140298360(left, right)
-#else
 #define Unk_WmConcat(left, right) ((left) + (right))
-#endif
 
 
 // The UI service (open dialog bookkeeping).

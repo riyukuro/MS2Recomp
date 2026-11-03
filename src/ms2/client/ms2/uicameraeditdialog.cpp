@@ -215,8 +215,8 @@ GameObject* UICameraEditDialog::CameraData::GetTarget() const
 // @0x1418dd5e0
 UICameraEditDialog::UICameraEditDialog()
     : m_nTargetId(0), m_nDialogId(0), m_180(0), m_fSavedCamera(40.0f), m_nPreset(0), m_bEnable(1), m_bDragging(0),
-      m_ptDrag(0, 0), m_vDragRotation(g_143b01a60), m_nState(0), m_vMoveStart(g_143b01a60), m_1dc(0),
-      m_vMoveTarget(g_143b01a60), m_1ec(0), m_1f0(0), m_1f4(1)
+      m_ptDrag(0, 0), m_vDragRotation(reinterpret_cast<const Vector3&>(efd::Point3::ZERO)), m_nState(0), m_vMoveStart(reinterpret_cast<const Vector3&>(efd::Point3::ZERO)), m_1dc(0),
+      m_vMoveTarget(reinterpret_cast<const Vector3&>(efd::Point3::ZERO)), m_1ec(0), m_1f0(0), m_1f4(1)
 {
     m_2c = 0xc;
     m_80 = 0;
@@ -257,12 +257,12 @@ void UICameraEditDialog::vfunc_67()
     m_bEnable = 1;
     m_bDragging = 0;
     m_ptDrag = CPoint(0, 0);
-    m_vDragRotation = g_143b01a60;
+    m_vDragRotation = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
     m_nState = 0;
     m_aPresets.RemoveAll();
-    m_vMoveStart = g_143b01a60;
+    m_vMoveStart = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
     m_1dc = 0;
-    m_vMoveTarget = g_143b01a60;
+    m_vMoveTarget = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
     m_1ec = 0;
     m_1f0 = 0;
     m_1f4 = 1;
@@ -1090,11 +1090,11 @@ void UICastingBar::FUN_1418e1b20(bool bShowTime)
 {
     if (bShowTime)
     {
-        m_spTime1 = FUN_140bb4cf0("m_timetext1");
-        m_spTime2 = FUN_140bb4cf0("m_timetext2");
+        m_spTime1 = GetChild<ASTextField>("m_timetext1");
+        m_spTime2 = GetChild<ASTextField>("m_timetext2");
     }
-    m_spText1 = FUN_140bb4cf0("m_text1");
-    m_spText2 = FUN_140bb4cf0("m_text2");
+    m_spText1 = GetChild<ASTextField>("m_text1");
+    m_spText2 = GetChild<ASTextField>("m_text2");
 }
 
 // @0x1418e1f30
@@ -1176,7 +1176,7 @@ public:
     void FUN_1419cae20(class UIItemEventListener*);
     void FUN_1419caeb0(class UIItemEventListener*);
 };
-UICameraEditDialog* FUN_140cd47b0(int nClass);
+UICameraEditDialog* FUN_140cd47b0(eUIClassID nClass);
 UIDialog* FUN_140b72de0(int nClass);
 class UICharacterListDialog   // C3: member view for the former free stand-ins
 {
@@ -1217,13 +1217,14 @@ public:
 
 // The item rows.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, void* pPc);                 // the worn item of the kind
+class AvatarPC;
+MS2Ptr<CEquipItem> FUN_1414211a0(int nSlotKind, AvatarPC* pPc);                // the worn item of the kind
 int FUN_1414239e0(unsigned int*, int, struct Unk_UgcPlayer*);   // C3: was FUN_1414239e0
-void FUN_141900750(ASObj& obj);                                             // fill the initData object
+bool FUN_141900750(ASObj* pObj);                                             // fill the initData object
 unsigned int FUN_141b6df90(struct Unk_UtilFloat3 const*);   // C3: was FUN_141b6df90
 CString FUN_140719210(long n);
 void* FUN_140d86260();
-void FUN_141424580(MS2Ptr<CEquipItem> spEquip, int* pnColor, int n);        // the colour of the worn item (spEquip by value)
+int FUN_141424580(MS2Ptr<CEquipItem> spEquip, unsigned int* pnColor, int n);        // the colour of the worn item (spEquip by value)
 int FUN_1414248a0(CItemData* pData, int* pnIn, int* pnOut);
 void FUN_140710590(COutPacket& packet);                                     // send
 void FUN_140f324f0(ASObj& row, MS2Ptr<CItemData> spData, bool b);            // fill a list row (spData by value)
@@ -1276,11 +1277,11 @@ void UICharacterCreateDialog::OnLoadComplete()
         m_aLoaded.Add(0);
     if (pPc->GetCurStateId() != 0xe)
         pPc->vfunc_59(0xe, 0, 0, 0);
-    m_pCamera = FUN_140cd47b0(0x4ef2);
+    m_pCamera = FUN_140cd47b0((eUIClassID)0x4ef2);
     unsigned nGender = ((Unk_CcPlayer*)pPc)->FUN_141658e60();
     m_nChangedMask |= FUN_140222b30(nGender, 0);
     ASObj kInit(2);
-    FUN_141900750(kInit);
+    FUN_141900750(&kInit);
     m_30->Invoke("initData", nGender, Scaleform::GFx::Value(kInit.FUN_1422bb870()));
     UIDialog* pSelect = FUN_140b72de0(0x4ef1);
     if (pSelect != 0 && ((class UICharacterListDialog*)(class UIDialog*)(pSelect))->FUN_1418f1c20() == 0 && m_bGuideOpened == 0)
@@ -1874,7 +1875,7 @@ void UICharacterCreateDialog::FUN_1418e4a80(int nTab, int nCategory)
             CStringW strName;
             if (!spData->IsAvatarColorItem())
             {
-                if (MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), pPc))
+                if (MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), (AvatarPC*)pPc))
                 {
                     bool bSame = spEquip->GetItem()->FUN_1405276c0() == spRow->m_nItemId;
                     if (bSame)
@@ -1929,7 +1930,7 @@ void UICharacterCreateDialog::FUN_1418e4f50()
         int nItemId = spItem->FUN_1405276c0();
         m_items.SetAt(nItemId, spItem);
         int nColor;
-        FUN_141424580(MS2Ptr<CEquipItem>(spEquip), &nColor, 0);
+        FUN_141424580(MS2Ptr<CEquipItem>(spEquip), (unsigned int*)&nColor, 0);
         ASObj kRow(2);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
         kRow.FUN_1407cbb20("itemname", CStringW(strName));
@@ -1986,12 +1987,12 @@ void UICharacterCreateDialog::FUN_1418e5580(MS2Ptr<CItemData> spData)
             FUN_1414239e0((unsigned int*)(&nCurColor), 0, (struct Unk_UgcPlayer*)(pPc));
         else
         {
-            MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), pPc);
+            MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), (AvatarPC*)pPc);
             if (spEquip)
             {
                 int nItemId = spData->GetItemId();
                 if (spEquip->GetItem()->FUN_1405276c0() == nItemId)
-                    FUN_141424580(MS2Ptr<CEquipItem>(spEquip), &nCurColor, 0);
+                    FUN_141424580(MS2Ptr<CEquipItem>(spEquip), (unsigned int*)&nCurColor, 0);
             }
         }
         int nRealColor = 0;

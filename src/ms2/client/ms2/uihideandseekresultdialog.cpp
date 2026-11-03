@@ -40,7 +40,7 @@ class Unk_HsPC : public PC
 
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-CStringW FUN_140b99450(CStringW strFormat, const CStringW& strArg, const int& nCount);
+#include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);
 void FUN_141415600(const CString& strName);
@@ -204,7 +204,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eec0(AScript objMine, MS2Ptr<Unk_HsInfo
     const CString& rIcon = strIcon;
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     const CStringW& rName = strName;
-    CStringW strText = FUN_140b99450(CStringW(L"s_hideandseek_winner_reward"), rName, nCount);
+    CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_hideandseek_winner_reward"), rName, reinterpret_cast<const unsigned&>(nCount));
     const CStringW& rText = strText;
     static_cast<ASObj&>(objMine).FUN_1407cba60("binding", rIcon);
     static_cast<ASObj&>(objMine).FUN_1407cbb20("text", rText);

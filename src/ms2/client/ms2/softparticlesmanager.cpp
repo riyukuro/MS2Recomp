@@ -20,6 +20,7 @@
 #include <ecr/SceneGraphService.h>
 #include <ecr/CoreRuntimeMessages.h>
 #include "ms2/client/ms2/postprocessing/postprocessingservice.h"
+#include "ms2/client/ms2/material/ms2materials.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/cgameoption.h"
 
@@ -58,7 +59,6 @@ ecr::RenderSurface* FUN_1413f98d0();            // the render surface
 ecr::SceneGraphService* FUN_1413f98b0();        // the scene-graph service
 bool FUN_1417741e0(const NiRTTI* pRTTI, const void* pObject);
 
-extern const NiRTTI DAT_143d691b8;              // material kind the soft-particle nodes are filtered by
 extern NiFixedString DAT_143ae5258;             // name of the material created for the view
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
@@ -141,7 +141,7 @@ void FUN_141773a90(void* pRegistry, void* pNode)
         if (pkObject == 0)
             continue;
 
-        if (!FUN_1417741e0(&DAT_143d691b8, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>((NiMesh*)pkObject)->GetActiveMaterial()))))
+        if (!FUN_1417741e0(&SoftParticlesMaterial::ms_RTTI, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>((NiMesh*)pkObject)->GetActiveMaterial()))))
             continue;
 
         pkObject->SetAppCulled(true);
@@ -174,7 +174,7 @@ void FUN_141773cc0(void* pRegistry, void* pNode)
         if (pkObject == 0)
             continue;
 
-        if (!FUN_1417741e0(&DAT_143d691b8, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>((NiMesh*)pkObject)->GetActiveMaterial()))))
+        if (!FUN_1417741e0(&SoftParticlesMaterial::ms_RTTI, ((const NiMaterial*)(reinterpret_cast<NiRenderObject*>((NiMesh*)pkObject)->GetActiveMaterial()))))
             continue;
 
         pkObject->SetAppCulled(false);

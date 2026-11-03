@@ -9,6 +9,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit<CAtlArray<int>> (was FUN_140177de0)
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873420
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
@@ -32,10 +33,9 @@ public:
 };
 class CReservedWordTable;
 int FUN_140768010(int, int);  // C3: the definition's signature
-void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
-size_t FUN_140186260(ATL::CAtlArray<int>& arr);                                     // GetCount
-Unk_ScriptPtr<Unk_ScriptTalk> FUN_140856820(int nNpcId, int nKind);                 // talk script by npc
-Unk_ScriptPtr<Unk_ScriptTalk> FUN_1408564b0(int nQuestId, int nKind);               // talk script by quest
+class CTalkScript;
+Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nKind);                 // talk script by npc
+Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nQuestId, int nKind);               // talk script by quest
 
 // @0x14078ced0
 CScriptContent::CScriptContent()
@@ -305,11 +305,11 @@ void CCinematicContent::vfunc_3(int nId)
         for (size_t i = 0; i < m_distractors->m_choices.GetCount(); i++) {
             CStringA strCond(m_distractors->m_choices.GetAt(i).m_goto);
             ATL::CAtlArray<int> ids;
-            FUN_140177de0(strCond, ids, ",");
-            if (FUN_140186260(ids) == 0)
+            XmlSplit<ATL::CAtlArray<int> >(strCond, ids, ",");
+            if (ids.GetCount() == 0)
                 continue;
             BOOL bAll = TRUE;
-            for (size_t j = 0; j < FUN_140186260(ids); j++) {
+            for (size_t j = 0; j < ids.GetCount(); j++) {
                 if (FUN_140856820(nId, ids[j]).get() != 0) {
                     bAll = FALSE;
                     break;
@@ -338,11 +338,11 @@ void CCinematicContent::vfunc_4(int nId)
         for (size_t i = 0; i < m_distractors->m_choices.GetCount(); i++) {
             CStringA strCond(m_distractors->m_choices.GetAt(i).m_goto);
             ATL::CAtlArray<int> ids;
-            FUN_140177de0(strCond, ids, ",");
-            if (FUN_140186260(ids) == 0)
+            XmlSplit<ATL::CAtlArray<int> >(strCond, ids, ",");
+            if (ids.GetCount() == 0)
                 continue;
             BOOL bAll = TRUE;
-            for (size_t j = 0; j < FUN_140186260(ids); j++) {
+            for (size_t j = 0; j < ids.GetCount(); j++) {
                 if (FUN_1408564b0(nId, ids[j]).get() != 0) {
                     bAll = FALSE;
                     break;

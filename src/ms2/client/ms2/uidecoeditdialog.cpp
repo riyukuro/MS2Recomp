@@ -61,7 +61,6 @@ DecoEditService* BrushService();                                        // the d
 AScript* FUN_140ba7c60(void* pRef);                                     // the movie root
 CString FUN_140188f50(const char* psz, int nCodePage);                  // narrow string from a char*
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);               // narrow string from a wide one
-bool FUN_1401647e0(const CString& a, const CString& b) noexcept;               // case-insensitive equal
 CStringW FUN_141b6e360(const CStringW& strInitialDir, const wchar_t* pszFilter, const CStringW& strDefaultFile);   // open-file dialog
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_14191c320(CStringW& strPath);                                 // drop the "Model" prefix of a path
@@ -312,7 +311,7 @@ Scaleform::GFx::Value Unk_DeScript::FUN_14191c3d0(const char* szMethod, const wc
 bool FUN_14191c510(CString& strA, const wchar_t* pszB)
 {
     CString strB(pszB, strA.GetManager());
-    return FUN_1401647e0(strA, strB);
+    return strA != strB;
 }
 
 // @0x14191c6b0

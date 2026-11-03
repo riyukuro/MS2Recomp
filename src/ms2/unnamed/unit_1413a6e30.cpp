@@ -155,7 +155,7 @@ CGuideConditionPosition::CGuideConditionPosition()
 void CGuideConditionPosition::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
-    for (Unk_140165cf0* pCube = pElem->FUN_140165cf0("cube"); pCube != 0; pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCube))->NextSibling("cube")))
+    for (Unk_140165cf0* pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pElem))->FirstChild("cube")); pCube != 0; pCube = ((class Unk_140165cf0*)((class Unk_XmlNode*)(pCube))->NextSibling("cube")))
     {
         float fRange = 75.0f;
         XmlGetAttr((class TiXmlElement*)(pCube), "range", fRange);

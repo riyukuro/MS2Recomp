@@ -102,7 +102,6 @@ void FUN_140d73aa0(CStringW str, int a, void* pListener, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
 
 // The string formatters (key by value: the callee destroys it).
-CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);    // a + b (the exe's operator+; clang would import MFC CopyChars)
 #include "ms2/placeholder/wcformat.h"
 CStringW FUN_1406cd420(int nKind);                          // the function name of an npc kind
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
@@ -531,7 +530,7 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                                 if (strMaps.IsEmpty())
                                     strMaps = StringFormat<unsigned int>(L"$map:{0}$", nFieldId);
                                 else
-                                    strMaps = FUN_1401d0080(strMaps, StringFormat<unsigned int>(L", $map:{0}$", nFieldId));
+                                    strMaps = strMaps + StringFormat<unsigned int>(L", $map:{0}$", nFieldId);
                             }
                         }
                         if (pNpc->m_nClass == 4)

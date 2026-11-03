@@ -37,7 +37,6 @@ static CString s_strSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 // ---- externals ----
 extern Scaleform::GFx::Value DAT_143b0ae18;                     // the undefined value an effect clip starts from
 Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
-void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, __int64 a, int b);   // movie->CreateObject
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);   // unbind
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);   // bind
 void FUN_1422bce70(Scaleform::GFx::Value*, const char*);        // Value::SetString
@@ -97,10 +96,10 @@ void ASEffect::BindChildren()
 {
     if (IsLoaded())
         return;
-    void* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
     if (pMovie == 0)
         return;
-    FUN_14256e8e0(pMovie, &m_value, "export_additional_effect", 0, 0);
+    pMovie->CreateObject(&m_value, "export_additional_effect", 0, 0);
     if (((Scaleform::GFx::Value*)(void*)(&m_value))->IsUndefined() != 0)
         return;
     m_a0 = FUN_1409b4560("m_cooldown");
@@ -132,7 +131,7 @@ void ASEffect::Update()
             m_a0->vfunc_14(nFrame);
         return;
     }
-    if (m_buff->m_1c == m_buff->m_20 || m_buff->FUN_14096d810()->IsHideBuffIcon())
+    if (m_buff->m_1c == m_buff->m_20 || reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->IsHideBuffIcon())
     {
         if (m_a0->FUN_1422c2300() != 0x1e)
             m_a0->vfunc_14(0x1e);
@@ -188,7 +187,7 @@ MS2_REPLACE_METHOD(0x1409B37C0, ASEffect, SetStartTime, 25, 0xDF53FE3F);
 // @0x1409b37e0
 bool ASEffect::IsBuffType()
 {
-    return m_buff->FUN_14096d810()->IsBuff();
+    return reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->IsBuff();
 }
 MS2_REPLACE_METHOD(0x1409B37E0, ASEffect, IsBuffType, 49, 0xE1E26C20);
 
@@ -204,9 +203,9 @@ bool ASEffect::IsOwnerAlive()
 {
     if (m_buff == 0)
         return false;
-    if (m_buff->FUN_14096d280() == 0)
+    if (reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetOwner() == 0)
         return false;
-    if (FUN_140930110(((class GameObject*)(void*)(m_buff->FUN_14096d280()))->FUN_14123c580()) == 1)
+    if (FUN_140930110(((class GameObject*)(void*)(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetOwner()))->FUN_14123c580()) == 1)
         return false;
     if (FUN_140930110(m_buff->m_18) == 0)
         return false;
@@ -232,7 +231,7 @@ MS2_REPLACE_METHOD(0x1409B3930, ASEffect, GetE4, 17, 0x798679FF);
 void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASTooltip tip(2);
-    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->FUN_14096d810()), m_e0, reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetRemainTicks());
+    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()), m_e0, reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->GetRemainTicks());
     *params.pRetVal = tip.FUN_1422bb870();
 }
 
@@ -243,7 +242,7 @@ void ASEffect::UpdateIcon()
         return;
     if (!m_e9)
         return;
-    if (m_buff->FUN_14096d810()->IsBuff())
+    if (reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->IsBuff())
         m_b0->vfunc_15("none");
     else if (IsOwnerAlive())
         m_b0->vfunc_15("yellow");
@@ -255,7 +254,7 @@ void ASEffect::UpdateIcon()
     else if (m_buff->m_24 <= 1)
         m_d0->SetTextW(L"");
     m_c0->SetTextW(L"");
-    Invoke("setIcon", m_buff->FUN_14096d810()->GetIcon());
+    Invoke("setIcon", reinterpret_cast<MS2Ptr<AdditionalCli>&>(m_buff)->FUN_14096d810()->GetIcon());
     m_e9 = false;
 }
 
@@ -563,11 +562,11 @@ void ASEffectManager::Detach(MS2Ptr<ASEffect> spEffect)
 // @0x1409b6610
 MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, int a2)
 {
-    void* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
     if (pMovie == 0)
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value v;
-    FUN_14256e8e0(pMovie, &v, strClass, a1, a2);
+    pMovie->CreateObject(&v, strClass, reinterpret_cast<const Scaleform::GFx::Value*>(a1), a2);
     if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() != 0)
         return MS2Ptr<ASMovieClip>(0);
     MS2Ptr<ASMovieClip> sp(new ASMovieClip(v, nMovieId));

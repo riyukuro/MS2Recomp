@@ -40,7 +40,6 @@ public:
 
 class CItemDataTable;
 
-CStringTable* GetStringTable();
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);             // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -156,8 +155,8 @@ void UITextPreviewDialog::OnDescriptionCheck()
         reinterpret_cast<CItemDataTable*>(reinterpret_cast<void*>(TSingleton<CItemDataTable>::GetInstance()))->LoadItemNameIds(ids);
         for (size_t i = 0; i < ids.size(); i++) {
             unsigned int nId = ids[i];
-            CStringW strMain = GetStringTable()->GetItemDescription(nId, CString("mainDescription"));
-            CStringW strTooltip = GetStringTable()->GetItemDescription(nId, CString("tooltipDescription"));
+            CStringW strMain = TSingleton<CStringTable>::GetInstance()->GetItemDescription(nId, CString("mainDescription"));
+            CStringW strTooltip = TSingleton<CStringTable>::GetInstance()->GetItemDescription(nId, CString("tooltipDescription"));
             if (strMain.IsEmpty() && strTooltip.IsEmpty())
                 continue;
             pDlg->Invoke("descriptionCheck", 0, nId, strMain, strTooltip);

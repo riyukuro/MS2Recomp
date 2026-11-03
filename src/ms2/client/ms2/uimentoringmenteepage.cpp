@@ -18,6 +18,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/wcformat.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 // The mentee/mentor record of one user (a CPtred; +0x30 serial number, names at +0x38/+0x40, icon url at +0x48).
@@ -65,7 +66,6 @@ class UIPopUpMenu { public: void FUN_141a7f090(class Unk_PopupMenuInfo const &, 
 Unk_PopupMenu* FUN_140c30140(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
-CStringW FUN_1409e9890(CStringW strFormat, const int& a, const int& b);
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 // AS helpers on the page's script and the clips it hands out.
 class Unk_MentorClip : public ASMovieClip {};
@@ -111,7 +111,7 @@ void ASMentoringMenteePage::Refresh()
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
     int nMentee = reinterpret_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
-    ((class ASTextField*)(m_coin))->SetTextW(FUN_1409e9890(L"s_mentoring_coin_info", nMentee, nReward));
+    ((class ASTextField*)(m_coin))->SetTextW(FUN_14028dfa0<unsigned, unsigned>(L"s_mentoring_coin_info", reinterpret_cast<const unsigned&>(nMentee), reinterpret_cast<const unsigned&>(nReward)));
 }
 MS2_REPLACE_METHOD(0x140C6EA90, ASMentoringMenteePage, Refresh, 187, 0x8A4892D4);
 

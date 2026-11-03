@@ -11,6 +11,8 @@
 #include "ms2/placeholder/citemdata.h"
 #include <NiAVObject.h>
 #include <NiMesh.h>   // C3: ms_RTTI
+#include <NiControllerManager.h>
+#include "ms2/placeholder/fittingdollpc.h"
 #include <efd/Matrix3.h>
 #include <string.h>
 #include <errno.h>
@@ -46,13 +48,13 @@ void FUN_1412029d0(void* self, CString* out);   void FUN_141202ea0(class CEquipM
 int FUN_141422110(void* a, void* b, void* c);void FUN_141ab6e80(class NiAVObject*);   // C3: was FUN_141ab6e80
 float FUN_141422340(struct Unk_PickTarget*, int);   // C3: was FUN_141422340
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
-char FUN_140534e50(void* p);   void* FUN_1416561a0(void* p);
+char FUN_140534e50(void* p);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
 void FUN_1411ffee0(class CEquipModel*, double);   // C3: was FUN_1411ffee0
 void* FUN_141201c90(void* self);   void FUN_141422b30(void* self, void* a, void* b, void* c, float f);
 void FUN_1402bd040(float* p);
 void FUN_141203db0(class CEquipModel*);   // C3: was FUN_141203db0
-void* FUN_1409a1200(void* p);void FUN_141421f30(class NiMesh*, struct Unk_UgcRoot*);   // C3: was FUN_141421f30
+void FUN_141421f30(class NiMesh*, struct Unk_UgcRoot*);   // C3: was FUN_141421f30
 void* FUN_1409f31d0(void* tbl, unsigned id, void* self);
 void FUN_1409f2d20(void* tbl, void (*cb)(void*, void*));   void FUN_1409f2e10(void* a, const char* name, unsigned id, void* b, void* tbl);
 void FUN_141208010(void* a, void* b);
@@ -271,7 +273,7 @@ void CNifModel::vfunc_13()
         return;
     int nDebugFlag = ((Unk_ModelActor*)pController)->vfunc_48();
     int nAttrA = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d2b0();
-    int nResult = reinterpret_cast<CEquipment*>(FUN_1416561a0(pController))->FUN_1411e99a0(spItem->FUN_140527a20(), FUN_1412029d0(), spItem->HasSkin(), nAttrA);
+    int nResult = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pController)->FUN_1416561a0())->FUN_1411e99a0(spItem->FUN_140527a20(), FUN_1412029d0(), spItem->HasSkin(), nAttrA);
     if (nResult != 0) {
         NiNode* pTarget = *(int*)((char*)m_unk_20 + 0x34) != 0
             ? (NiNode*)NiObject::DynamicCast(&NiNode::ms_RTTI, ((class NiActorManager*)(void*)(pRootNode))->GetNIFRoot())
@@ -354,7 +356,7 @@ void CNifModel::vfunc_19(double fTime)
         reinterpret_cast<MS2Ptr<CEquipItem>&>(m_spOwner)->FUN_1411dc190(this);
         void* p = FUN_141200820((class CEquipModel*)(this));
         if (p != 0)
-            ((class CEquipment*)(void*)(FUN_1416561a0(p)))->FUN_1411e75f0();
+            ((class CEquipment*)(void*)(reinterpret_cast<PC*>(p)->FUN_1416561a0()))->FUN_1411e75f0();
         m_i118 = 0;
     }
     if (m_b111 != 0) {
@@ -425,7 +427,7 @@ void FUN_141566cb0(CNifModel* p)
 void* FUN_141566d30(void** p) { return *p; }
 
 // @0x141566d90
-void* FUN_141566d90(void* p) { return FUN_1409a1200((char*)p + 0x30); }
+void* FUN_141566d90(void* p) { return (NiControllerManager*)*reinterpret_cast<efd::SmartPointer<NiControllerManager>*>((char*)p + 0x30); }
 
 // @0x141566db0
 void* FUN_141566db0(void* p) { return FUN_141566d30((void**)((char*)p + 0xa8)); }

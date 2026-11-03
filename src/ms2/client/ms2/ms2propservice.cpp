@@ -118,7 +118,6 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 efd::ISystemService* FUN_1401cd040(char*);
 class Unk_HwService* FUN_14098c5b0(struct Unk_EntityAppFramework*);   // C3: was FUN_14098c5b0
 NxActor* FUN_1410c5420(efd::ISystemService*, egf::EntityID);
-int FUN_1413d7d90(HardwareInstancingService*, const egf::EntityID&);
 class Unk_AvPhysicsSvc* FUN_1409f7ca0();   // C3: was FUN_1409f7ca0
 class CPhysXHelper   // C3: member view for the former free stand-ins
 {
@@ -262,7 +261,7 @@ MS2_REPLACE(0x1414d7990, FUN_1414d7990, 156, 0x82895CAC);
 bool MS2PropService::AddPhysXPropToPropData(egf::Entity* entity, PropData* data) {
     efd::SmartPointer<HardwareInstancingService> service(((class HardwareInstancingService*)FUN_14098c5b0((struct Unk_EntityAppFramework*)(&DAT_143b059e8))));
     if ((HardwareInstancingService*)service != NULL) {
-        if (FUN_1413d7d90(service.operator->(), entity->GetEntityID())) return false;
+        if (service->FUN_1413d7d90(entity->GetEntityID())) return false;
     }
     return ecrPhysX::PropService::AddPhysXPropToPropData(entity, data);
 }

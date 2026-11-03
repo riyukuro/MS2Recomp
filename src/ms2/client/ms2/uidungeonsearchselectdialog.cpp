@@ -45,13 +45,6 @@ class Unk_SdToggle : public ASButton
 {
 };
 class Unk_SdRadio : public Unk_SdToggle {};
-class Unk_SdCheck : public Unk_SdToggle {};
-// A row of the list.
-class Unk_SdRow : public ASItemRendererBase
-{
-public:
-    template <class T> MS2Ptr<T> FUN_140c12010(const CString& strName, MS2Ptr<T>& outChild);   // bind a check box
-};
 
             // the local player
 class Unk_SdUIManager { public: };
@@ -66,9 +59,9 @@ public:
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
 MS2Ptr<Unk_SdRadio> FUN_140a463d0(int nMovieId, const Scaleform::GFx::Value& v);   // the radio wrapper creator
-bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_SdRow> >& out, unsigned nStart);
+template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<T> >& out, unsigned nStart);
 CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
-CStringW FUN_14183e930(const CStringW& str, int nColor);                            // wrap in a color tag
+CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                            // wrap in a color tag
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
@@ -158,12 +151,12 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
     m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e281f0), (void*)0);
     m_radio->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::OnSelectAllClick), (void*)0);
     {
-        MS2Ptr<Unk_SdCheck> spNone(0);
+        MS2Ptr<ASCheckBox> spNone(0);
         m_checks.resize(m_rows.size(), spNone);
     }
     for (unsigned i = 0; i < m_rows.size(); ++i) {
         m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28280), FUN_140bd09d0(i));
-        if (m_rows[i]->FUN_140c12010<Unk_SdCheck>("m_checkBox", m_checks[i]).get()) {
+        if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]).get()) {
             m_checks[i]->FUN_1422ce320(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e288f0), FUN_140bd09d0(i));
             m_checks[i]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28a40), 0);
         }
@@ -246,8 +239,8 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
     unsigned nRow = FUN_140bd09c0(params.pUserData);
     if (!((unsigned __int64)nRow < m_rows.size()))
         return;
-    MS2Ptr<Unk_SdRow> row = m_rows[nRow];
-    MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
+    MS2Ptr<ASItemRendererBase> row = m_rows[nRow];
+    MS2Ptr<ASCheckBox> check = m_checks[nRow];
     if (row == NULL || check == NULL)
         return;
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
@@ -283,8 +276,8 @@ void UIDungeonSearchSelectDialog::FUN_140e286a0(const Scaleform::GFx::FunctionHa
     unsigned nRow = FUN_140bd09c0(params.pUserData);
     if (!((unsigned __int64)nRow < m_rows.size()))
         return;
-    MS2Ptr<Unk_SdRow> row = m_rows[nRow];
-    MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
+    MS2Ptr<ASItemRendererBase> row = m_rows[nRow];
+    MS2Ptr<ASCheckBox> check = m_checks[nRow];
     if (row == NULL || check == NULL)
         return;
     unsigned nRoom = m_roomOfRow[nRow];
@@ -304,7 +297,7 @@ void UIDungeonSearchSelectDialog::FUN_140e288f0(const Scaleform::GFx::FunctionHa
     unsigned nRow = FUN_140bd09c0(params.pUserData);
     if (!((unsigned __int64)nRow < m_rows.size()))
         return;
-    MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
+    MS2Ptr<ASCheckBox> check = m_checks[nRow];
     if (check == NULL)
         return;
     unsigned nRoom = m_roomOfRow[nRow];

@@ -17,6 +17,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/systemmailcontent.h"   // C3: CSystemMailContent::GetMail
+#include "ms2/commonfiles/commonpricerecord.h"   // C3: Unk_CommonPriceRecord(List)
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ class Unk_ReplList { void* m_p[4]; };
 void FUN_140660c40(Unk_ReplList*) noexcept;
 void FUN_140660c80(Unk_ReplMap*) noexcept;
 // Placeholder substitution builder: feed (key, value) pairs, then read the result.
-class MailText { public: CStringW ResolveTitle(); };   // C3: member view (mailtextutil.cpp)
+class MailText { public: bool Load(const CStringW& strTitle, const CStringW& strBody); CStringW ResolveTitle(); };   // C3: member view (mailtextutil.cpp)
 class Unk_StrRepl {
 public:
     Unk_StrRepl(int mode);                                                     // 0x14065cfa0
@@ -351,10 +352,10 @@ int CMailInfo::FUN_1406909b0() const
         return 1;
     if (m_rangeD0.FUN_1406936a0())
         return 1;
-    int nBenefits = m_benefits.FUN_14026a4b0();
+    int nBenefits = ((Unk_CommonPriceRecordList&)m_benefits).GetCount();
     for (int i = 0; i < nBenefits; i++)
     {
-        if (m_benefits.m_array[i].FUN_14026a170())
+        if (((Unk_CommonPriceRecord&)m_benefits.m_array[i]).IsUsed())
             return 1;
     }
     for (unsigned i = 0; i < m_attach.GetCount(); i++)
@@ -378,7 +379,7 @@ int CMailInfo::FUN_140690b80() const
         return 1;
     if (m_rangeD0.FUN_1406936e0())
         return 1;
-    if (m_benefits.FUN_14026a510())
+    if (((Unk_CommonPriceRecordList&)m_benefits).HasAvailable())
         return 1;
     for (unsigned i = 0; i < m_attach.GetCount(); i++)
     {
@@ -428,17 +429,17 @@ __int64 CMailInfo::FUN_140690ef0() const { return m_rangeD0.m_nClaim; }
 
 void CMailInfo::FUN_140690f10(__int64)
 {
-    int nBenefits = m_benefits.FUN_14026a4b0();
+    int nBenefits = ((Unk_CommonPriceRecordList&)m_benefits).GetCount();
     for (int i = 0; i < nBenefits; i++)
     {
-        if (m_benefits.m_array[i].FUN_14026a220())
+        if (((Unk_CommonPriceRecord&)m_benefits.m_array[i]).MarkUsed())
             FUN_1406911e0(1);
     }
 }
 
 bool CMailInfo::FindBenefit(int type, int sub, Unk_MailBenefit* out) const
 {
-    int nBenefits = m_benefits.FUN_14026a4b0();
+    int nBenefits = ((Unk_CommonPriceRecordList&)m_benefits).GetCount();
     for (int i = 0; i < nBenefits; i++)
     {
         Unk_MailBenefit& benefit = m_benefits.m_array[i];
@@ -500,7 +501,7 @@ int CMailInfo::FUN_140691220()
         return 1;
     if (m_rangeD0.FUN_1406936e0())
         return 1;
-    if (m_benefits.FUN_14026a510())
+    if (((Unk_CommonPriceRecordList&)m_benefits).HasAvailable())
         return 1;
     return 0;
 }
@@ -638,7 +639,7 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
     m_rangeB0.FUN_140693300(&static_cast<CInputStream&>(packet));
     m_rangeC0.FUN_140693300(&static_cast<CInputStream&>(packet));
     m_rangeD0.FUN_140693300(&static_cast<CInputStream&>(packet));
-    m_benefits.FUN_14026a3d0(&static_cast<CInputStream&>(packet));
+    ((Unk_CommonPriceRecordList&)m_benefits).Read(&static_cast<CInputStream&>(packet));
     m_n100 = packet.ReadInt64();
     m_n108 = packet.ReadInt64();
     m_n118 = packet.ReadInt64();
@@ -672,11 +673,11 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         m_str48 = FUN_14083d340(m_str48);
         m_str50 = FUN_14083d340(m_str50);
         Unk_StrRepl repl0(0);
-        repl0.FUN_14065d590(m_str30, L"");
+        reinterpret_cast<MailText&>(repl0).Load(m_str30, L"");
         Unk_StrRepl repl1(1);
-        repl1.FUN_14065d590(m_str48, m_str58);
+        reinterpret_cast<MailText&>(repl1).Load(m_str48, m_str58);
         Unk_StrRepl repl2(2);
-        repl2.FUN_14065d590(m_str50, m_str60);
+        reinterpret_cast<MailText&>(repl2).Load(m_str50, m_str60);
         m_str30 = reinterpret_cast<MailText&>(repl0).ResolveTitle();
         m_str48 = reinterpret_cast<MailText&>(repl1).ResolveTitle();
         m_str50 = reinterpret_cast<MailText&>(repl2).ResolveTitle();

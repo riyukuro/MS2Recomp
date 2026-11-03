@@ -492,3 +492,27 @@ void LogFinalStats() {
 }
 
 }  // namespace ms2::hook
+
+#if defined(__clang__)
+// ATL CString concatenation in the clang-cl DLL. afxstr.h declares CSimpleStringT<char/wchar_t, true> as a dllimport
+// explicit instantiation, and clang at /O2 inlines its inline members, so ATL::operator+ inlines Concatenate and then
+// calls the 4-argument CopyChars(XCHAR*, size_t, const XCHAR*, int) through __imp_. mfc140.dll (built from older
+// headers) exports only the 3-argument CopyChars, so mfc140.lib has no import for it and the link fails. cl /Od calls
+// the exported Concatenate instead and never references it (nor does the exe). These are the header bodies.
+namespace {
+void __cdecl CopyCharsA(char* pchDest, size_t nDestLen, const char* pchSrc, int nChars) noexcept {
+    memcpy_s(pchDest, nDestLen * sizeof(char), pchSrc, nChars * sizeof(char));
+}
+void __cdecl CopyCharsW(wchar_t* pchDest, size_t nDestLen, const wchar_t* pchSrc, int nChars) noexcept {
+    memcpy_s(pchDest, nDestLen * sizeof(wchar_t), pchSrc, nChars * sizeof(wchar_t));
+}
+}  // namespace
+extern "C" {
+extern void (__cdecl* const ms2_imp_CopyCharsA)(char*, size_t, const char*, int)
+    __asm__("__imp_?CopyChars@?$CSimpleStringT@D$00@ATL@@SAXPEAD_KPEBDH@Z");
+extern void (__cdecl* const ms2_imp_CopyCharsW)(wchar_t*, size_t, const wchar_t*, int)
+    __asm__("__imp_?CopyChars@?$CSimpleStringT@_W$00@ATL@@SAXPEA_W_KPEB_WH@Z");
+void (__cdecl* const ms2_imp_CopyCharsA)(char*, size_t, const char*, int) = CopyCharsA;
+void (__cdecl* const ms2_imp_CopyCharsW)(wchar_t*, size_t, const wchar_t*, int) = CopyCharsW;
+}
+#endif

@@ -9,16 +9,12 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 
-struct Unk_HslColor { float r, g, b, a; Unk_HslColor& operator=(const Unk_HslColor&); };
-struct Unk_HslRgb { float r, g, b, a; Unk_HslRgb& operator=(const Unk_HslRgb&); };   // NiColorA: FUN_14148a050 copies 16 bytes
+#include "ms2/client/ms2/ms2.h"   // C3: MS2::GetBackgroundColor / SetBackgroundColor
 
 // ---- out-of-unit callees ----
 void* FUN_140aae430();                                                  // the renderer singleton
 
-void FUN_14148a050(void* pRenderer, Unk_HslRgb* pRgb);                      // reads the current colour (a NiColorA, 16 bytes)
 extern "C" float (__cdecl* __imp_ceilf)(float);                       // the exe calls the IAT slot
-Unk_HslColor FUN_14097f1d0(float r, float g, float b, float a);     // builds a colour
-void FUN_141489ff0(void* pRenderer, Unk_HslColor kColor);               // sets the colour
 
 // @0x1412c9860
 UIHSLDialog::UIHSLDialog()
@@ -44,8 +40,7 @@ CString UIHSLDialog::GetTypeName()
 void UIHSLDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_HslRgb kRgb;
-    FUN_14148a050(FUN_140aae430(), &kRgb);
+    NiColorA kRgb = reinterpret_cast<MS2*>(FUN_140aae430())->GetBackgroundColor();
     int nR = (int)__imp_ceilf(kRgb.r * 255.0f);
     int nG = (int)__imp_ceilf(kRgb.g * 255.0f);
     int nB = (int)__imp_ceilf(kRgb.b * 255.0f);
@@ -55,7 +50,7 @@ void UIHSLDialog::OnLoadComplete()
 // @0x1412c9c50
 void FUN_1412c9c50(UIHSLDialog* pDialog)
 {
-    FUN_141489ff0(FUN_140aae430(), FUN_14097f1d0((float)pDialog->m_nHue / 255.0f, (float)pDialog->m_nSaturation / 255.0f,
+    reinterpret_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(NiColorA((float)pDialog->m_nHue / 255.0f, (float)pDialog->m_nSaturation / 255.0f,
                                                  (float)pDialog->m_nLightness / 255.0f, 1.0f));
 }
 

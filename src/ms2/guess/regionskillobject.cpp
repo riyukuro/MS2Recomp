@@ -22,6 +22,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/coptimizer.h"   // C3: COptimizer::FUN_14161ce60
+#include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<float>::Read (was FUN_1402bac70)
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -43,7 +44,7 @@ class Unk_AvModeSvc* FUN_1409f7c90();   // C3: was FUN_1409f7c90
 int FUN_141472bc0();   // C3: was FUN_141472bc0
 
 // The game settings (0x1401d3200); the fade time of a region effect.
-class Unk_RsFloatVar { public: float FUN_1402bac70(); };
+class Unk_RsFloatVar { char m_pad[0x58]; };   // a Common::Constants::Value<float>
 class Unk_RsConfig
 {
 public:
@@ -98,10 +99,10 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
     reinterpret_cast<MS2Ptr<SkillData>&>(m_spRow) = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (m_spRow.IsNull())
         return 0;
-    m_spSkill = m_spRow->FUN_1407e90a0(nLevel);
+    reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill) = reinterpret_cast<MS2Ptr<SkillData>&>(m_spRow)->FUN_1407e90a0(nLevel);
     if (m_spSkill.IsNull())
         return 0;
-    m_pAttr = m_spSkill->FUN_140803f00(0);
+    m_pAttr = reinterpret_cast<Unk_RsAttr*>(reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill)->FUN_140803f00(0));
     if (m_pAttr == 0)
         return 0;
 
@@ -224,13 +225,13 @@ void CRegionSkillObject::StopEffects()
 void CRegionSkillObject::FadeOutEffects()
 {
     for (unsigned i = 0; i < m_effects.GetCount(); i++)
-        TSingleton<CEffectService>::GetInstance()->FUN_1411a67f0(m_effects[i], ((class Unk_RsConfig*)FUN_1401d3200())->m_fFade.FUN_1402bac70());
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a67f0(m_effects[i], reinterpret_cast<Common::Constants::Value<float>&>(((class Unk_RsConfig*)FUN_1401d3200())->m_fFade).Read());
 }
 
 // @0x1416f6900
 void CRegionSkillObject::FUN_1416f6900()
 {
-    Unk_RsAttr* pAttr = m_spSkill->FUN_140803f00(0);
+    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill)->FUN_140803f00(0));
     if (pAttr == 0)
         return;
     for (unsigned i = 0; i < m_loopEffects.GetCount(); i++)
@@ -266,7 +267,7 @@ void CRegionSkillObject::FUN_1416f6b90()
         __int64* pHandle = &m_collisions.GetAt(pos);
         FUN_141469a90()->Touch(*pHandle);
     }
-    Unk_RsAttr* pAttr = m_spSkill->FUN_140803f00(0);
+    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(reinterpret_cast<MS2Ptr<SkillLevelData>&>(m_spSkill)->FUN_140803f00(0));
     if (pAttr == 0)
         return;
     if (pAttr->m_strResetEffect.IsEmpty())

@@ -456,7 +456,7 @@ void COptimizer::StartFrameSampling(unsigned nCount, int nCycle)
 // @0x14161c990
 void COptimizer::UpdateFrameSampling()
 {
-    if (reinterpret_cast<Unk_IntervalTimer&>(m_sampleTimer).Check(m_nSampleCycle) == 0)
+    if (m_sampleTimer.Check(m_nSampleCycle) == 0)
     {
         return;
     }

@@ -10,9 +10,9 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
 
-CString FUN_140540050(const char* szFormat, const CString& strArg);          // StringFormat<CString> (this TU's own exe copy)
 __int64 GetServerTime();                                                    // current server time
 
 // The per-font attribute record: the time of the last use is kept at +0x20.
@@ -68,7 +68,7 @@ UIDamageFont::UIDamageFont(const CString& strName, MS2Ptr<TDamageFontAttr> spAtt
 // @0x140e0db60
 CString UIDamageFont::GetTypeName()
 {
-    return FUN_140540050("DamageFont_{0}", m_strName);
+    return StringFormat<CString>("DamageFont_{0}", m_strName);
 }
 
 // @0x140e0dbb0

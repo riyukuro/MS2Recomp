@@ -48,7 +48,6 @@ class Unk_Service6100017 : public CubeMapInformationService
 {
 public:
     bool FUN_1410d55d0(int nMapId, int x);
-    int FUN_1410d2730(Unk_CubePoint point);
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -63,7 +62,6 @@ class Unk_1403ed2d0 : public WorldService
 public:
     PCBase* FUN_141bd0cc0();                                    // the local player
 };
-bool FUN_1415302e0(PCBase*, int nItemId);
 bool FUN_140930d20(__int64 nOwner);
 bool FUN_140930c90(__int64 nOwner);
 bool FUN_14092f660();
@@ -484,7 +482,7 @@ int CUGCBuildValidatorCli::vfunc_2(unsigned* pErr)
     if (((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft() == 0)
         return 0;
     Unk_PCCubeCraft* pCore = ((class MyPC*)(class PCBase*)(pPC))->GetActiveCubeCraft();
-    if (pCore != 0 && pCore->FUN_1410a8ab0() == 0 && FUN_1415302e0(pPC, m_pItem->itemId))
+    if (pCore != 0 && pCore->FUN_1410a8ab0() == 0 && ((class MyPC*)(class PCBase*)(pPC))->FUN_1415302e0(m_pItem->itemId))
         return 0;
     return 1;
 }
@@ -608,7 +606,7 @@ MS2_REPLACE_METHOD(0x140881e40, CUGCBuildValidatorCli, vfunc_7, 160, 0xAF8A819A)
 int CUGCBuildValidatorCli::vfunc_8(unsigned* pErr)
 {
     *pErr = 0x2c;
-    if (m_pCubeService->FUN_1410d2730(m_point) == 0)
+    if (m_pCubeService->IsCellInBounds((Unk_Int3&)m_point) == 0)
         return 0;
     return 1;
 }

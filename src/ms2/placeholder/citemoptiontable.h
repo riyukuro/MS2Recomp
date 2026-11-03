@@ -18,10 +18,10 @@ public:
     CItemOptionTable();                                     // 0x1405f4140
     virtual ~CItemOptionTable();
     // commonfiles\itemoptiondata.cpp#3 (declared for the random option rolls of #2)
-    int FUN_1405f6100(int nStatId);
-    int FUN_1405f6190(int nStatId, Unk_Random* pRandom);
-    int FUN_1405f6230(int nStatId);
-    int FUN_1405f62c0(int nStatId);
+    int FUN_1405f6100(unsigned nStatId);
+    int RollVariation(unsigned nStatId, Unk_Random* pRandom);
+    int FUN_1405f6230(unsigned nStatId);
+    int FUN_1405f62c0(unsigned nStatId);
     Unk_OptionNameListPtr FindOptionNameList(const CString& strName);     // the exclusive group of a stat name (null: none)
 private:
     MS2_LAYOUT_FRIEND;

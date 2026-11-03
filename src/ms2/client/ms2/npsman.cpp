@@ -21,7 +21,7 @@ struct Unk_NpColor3 { float r, g, b; Unk_NpColor3(); };   // ctor 0x1409f72f0
 struct Unk_NpColor4 { float r, g, b, a; Unk_NpColor4(); };   // ctor 0x14097f220
 
 // ---- exe callees ----
-CStringA FUN_1401d9af0(const char* pszFmt, const __int64* pnArg);
+#include "ms2/ms2format.h"   // C3: StringFormat<unsigned __int64> (was FUN_1401d9af0)
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);
 void FUN_14028f060(void* pOut, CStringA kText);
 void FUN_14028f190(void* pOut, CStringW kText);
@@ -63,7 +63,7 @@ void CNPSMan::ShowSurvey()
         return;
     if (IsShown())
         return;
-    OpenSurveyWindowA((const char*)m_strSurveyUrl, 1, (const char*)FUN_1401d9af0(DAT_142e36cd4, &m_hPlayer), DAT_1439f5dd0);
+    OpenSurveyWindowA((const char*)m_strSurveyUrl, 1, (const char*)StringFormat(DAT_142e36cd4, *reinterpret_cast<const unsigned __int64*>(&m_hPlayer)), DAT_1439f5dd0);
     m_bShown = true;
 }
 

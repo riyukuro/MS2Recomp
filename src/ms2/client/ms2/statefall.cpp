@@ -119,7 +119,7 @@ void StateFall::vfunc_4(StateData* pData)
                 strRec = reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPC)->FUN_1416561a0())->GetSetName();
             if (!strRec.IsEmpty())
             {
-                efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
+                efd::utf8string kAnim((const char*)(strRec + m_strAnim.c_str()));
                 if (((Unk_FallAnimSvc*)FUN_141b6f910())->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) !=
                     NiActorManager::INVALID_SEQUENCE_ID)
                     m_strAnim = kAnim;

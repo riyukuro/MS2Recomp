@@ -143,8 +143,6 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 CString FUN_141082090(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
-CStringW FUN_140938ae0(CStringW strKey, const int& a1);
-CStringW FUN_1409e9890(CStringW strKey, const int& a1, const int& a2);
 void FUN_141275260(int nId, int a2, int a3);                                // system message
 __int64 GetServerTime();
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -1275,11 +1273,11 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
         nField = FUN_140c9b8e0()->NearestMap(fields);
     CStringW str;
     if (!nField)
-        str = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_invalid_field"), spData->m_2e8);
+        str = FUN_14028dfa0<unsigned>(CStringW(L"s_quest_desc_beginable_invalid_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
     else if (nField == WorldService::GetInstance()->FUN_141bd3060())
-        str = FUN_140938ae0(CStringW(L"s_quest_desc_beginable_current_field"), spData->m_2e8);
+        str = FUN_14028dfa0<unsigned>(CStringW(L"s_quest_desc_beginable_current_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
     else
-        str = FUN_1409e9890(CStringW(L"s_quest_desc_beginable"), nField, spData->m_2e8);
+        str = FUN_14028dfa0<unsigned, unsigned>(CStringW(L"s_quest_desc_beginable"), reinterpret_cast<const unsigned&>(nField), reinterpret_cast<const unsigned&>(spData->m_2e8));
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(str);
     return str;
 }

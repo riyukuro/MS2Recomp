@@ -12,7 +12,6 @@
 
 class ASTextField;
 class Unk_TrList;
-class Unk_TrTab;
 class UITimeRunEventDialog : public UIDialog, public UIQuestEventListener
 {
 public:
@@ -39,7 +38,6 @@ public:
     int FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext);               // elapsed days, at most 6
     void FUN_140ee4ca0();                                                   // setTabCount per day
     MS2Ptr<Unk_TrList> FUN_140c02900(const CString& strName);               // list child lookup
-    MS2Ptr<Unk_TrTab> FUN_140c02870(const CString& strName);                // tab strip child lookup
 
 private:
     MS2_LAYOUT_FRIEND;

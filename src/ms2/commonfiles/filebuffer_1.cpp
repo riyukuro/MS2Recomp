@@ -52,11 +52,6 @@
 CString FUN_14016a600(const wchar_t*,int);
 CString FUN_140390ea0(const wchar_t*,int);
 CString FUN_140391100(const wchar_t*);
-#ifdef __clang__
-// Bind the already verified concatenation helper; clang inlines an unavailable
-// MFC CopyChars import when compiling CString's friend operator+ here.
-CString FUN_14038f6d0(const CString&, const char*);
-#endif
 
 // @0x14038b7c0
 CFileBuffer::CFileBuffer() : m_pBuffer(0), m_nSize(0), m_field34(0), m_field38(0), m_key() {}
@@ -123,11 +118,7 @@ void FUN_14038bb30(const char* root, const char* relative, std::list<CString>& o
     CString path(root);
     path.Append(relative);
     WIN32_FIND_DATAA found;
-#ifdef __clang__
-    HANDLE search = FindFirstFileA(FUN_14038f6d0(path,"*.*"), &found);
-#else
     HANDLE search = FindFirstFileA(path + "*.*", &found);
-#endif
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
             char drive[3], directory[260], basename[256];
@@ -147,11 +138,7 @@ void FUN_14038bb30(const char* root, const char* relative, std::list<CString>& o
         FindClose(search);
     }
     more = TRUE;
-#ifdef __clang__
-    search = FindFirstFileA(FUN_14038f6d0(path,"*.*"),&found);
-#else
     search = FindFirstFileA(path + "*.*",&found);
-#endif
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
             char drive[3], directory[260], basename[256];

@@ -19,6 +19,7 @@
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asevent.h"   // C3: ASEvent (the RemoveAni event)
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -38,22 +39,9 @@ class Unk_MyPCEquip : public PCGemEquip {};                                 // P
 // MS2Ptr<CNpcData>).
 class Unk_DtNpc : public CNpc { };
           // CPartyManager: a party member (int return)
-// The "RemoveAni" event dispatched by a dying number (an AS event object; 0x40 bytes, no array: the exe has no GS cookie).
-class Unk_DtAniEvent
-{
-public:
-    Unk_DtAniEvent(const CString& strType, bool bBubbles, bool bCancelable, int nMovieId);   // 0x1422e2080
-    ~Unk_DtAniEvent();                                                      // 0x1422e22a0
-    __int64 m_f0, m_f1, m_f2, m_f3, m_f4, m_f5, m_f6, m_f7;
-};
 class Unk_DtClip : public ASMovieClip { };
 class Unk_ChaosSettings { public: struct Unk_ChaosOpt* FUN_140e09150(); };
 class Unk_HudActor { public: float FUN_140f4a450(); };
-class Unk_DtCamera
-{
-public:
-    static Unk_DtCamera* FUN_1409478c0();                                   // CameraMgr
-};
 struct Unk_IntOptionEntry { int& FUN_140298f40(); };   // C3: the real member (0x140298f40, commonutil.cpp)
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 class Unk_DtUIScale;
@@ -146,8 +134,8 @@ UIDamageText::DamageInfo::~DamageInfo()
     if (((m_spAni.get() != 0 ? true : false) && m_nState == 0) || m_nState == 3)
     {
         m_spAni->vfunc_7();
-        Unk_DtAniEvent ev(s_strRemoveAni, false, false, s_nMovieId);
-        static_cast<Unk_DtClip*>(m_spAni.operator->())->FUN_1422c3d30(reinterpret_cast<ASEvent&>(ev));
+        ASEvent ev(s_strRemoveAni, false, false, s_nMovieId);
+        static_cast<Unk_DtClip*>(m_spAni.operator->())->FUN_1422c3d30(ev);
     }
 }
 
@@ -355,7 +343,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
     if (pSummon != 0)
         bMySummon = pSummon->GetOwnerId() == pPlayer->FUN_14123c580();
     efd::Point3 kScreen;
-    if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
     {
         bool bCasterMe = nCasterId == pPlayer->FUN_14123c580();
         bool bTargetMe = pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
@@ -468,7 +456,7 @@ void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, con
     if (!bShow || FUN_141914d40(pTarget) == 1)
         return;
     efd::Point3 kScreen;
-    if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
     {
         bool bPcBang = FUN_141914490(pTarget) ? true : false;
         unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
@@ -499,7 +487,7 @@ void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString&
     NiPoint3 kPos;
     FUN_141914020(pTarget, kPos, m_strDamageNode);
     efd::Point3 kScreen;
-    if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
     {
         unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
         Scaleform::GFx::Value clip = m_30->Invoke("itemIcon", FUN_141914890(nCount, 2),
@@ -955,7 +943,7 @@ float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
     if (pPlayer->vfunc_18() == kPos)
         return 1.0f;
     NiPoint3 kPlayer = pPlayer->vfunc_18();
-    Vector3 kCamera = reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140a17e10();
+    Vector3 kCamera = TSingleton<CameraMgr>::GetInstance()->FUN_140a17e10();
     float fDistance = (kPos - kPlayer).Length();
     float fRange = FUN_1401d3200()->DamageDistance.Read();
     float fToTarget = (kPos - reinterpret_cast<const efd::Point3&>(kCamera)).Length();
@@ -1151,7 +1139,7 @@ void UIDamageText::FUN_1419153d0()
                             efd::Point3 kScreen;
                             NiPoint3 kPos;
                             FUN_141914020(pOwner, kPos, m_strDamageNode);
-                            if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+                            if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
                             {
                                 kScreen *= fUIScale;
                                 MS2Ptr<CounterInfo> spCounter(0);
@@ -1275,7 +1263,7 @@ void UIDamageText::FUN_141915990()
                             if (!bHide)
                             {
                                 efd::Point3 kScreen;
-                                if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(spInfo->m_kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+                                if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(spInfo->m_kPos, reinterpret_cast<NiPoint3&>(kScreen)))
                                 {
                                     nShown = (!bCritical && bCanJump) ? nShown + 1 : nShown;
                                     spClip->vfunc_3(1);
@@ -1387,7 +1375,7 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
                     efd::Point3 kScreen;
                     NiPoint3 kPos;
                     FUN_141914020(pOwner, kPos, m_strDamageNode);
-                    if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+                    if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(kPos, reinterpret_cast<NiPoint3&>(kScreen)))
                     {
                         kScreen *= fUIScale;
                         MS2Ptr<CounterInfo> spCounter(0);
@@ -1503,7 +1491,7 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
                     if (!bHide)
                     {
                         efd::Point3 kScreen;
-                        if (reinterpret_cast<CameraMgr*>(Unk_DtCamera::FUN_1409478c0())->FUN_140af0700(spInfo->m_kPos, reinterpret_cast<NiPoint3&>(kScreen)))
+                        if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(spInfo->m_kPos, reinterpret_cast<NiPoint3&>(kScreen)))
                         {
                             nShown = (!bCritical && bEnable) ? nShown + 1 : nShown;
                             spClip->vfunc_4(true);

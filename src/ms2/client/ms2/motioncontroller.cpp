@@ -41,14 +41,7 @@ public:
     float FUN_1411e0f50(float);
 };
 bool FUN_14028d470(float a, float b);                               // nearly equal
-int FUN_14028d260(float f);                                         // float -> fixed
-Vector3 FUN_14123cc80(Vector3 kDir);                // facing direction -> move direction
-// The actor's move-direction queries (members of the actor).
-struct Unk_MoveActor
-{
-    Vector3 FUN_14123c360();                        // input move direction
-    Vector3 FUN_141674b60(Vector3 kDir);            // move direction on the ground
-};
+__int64 FUN_14028d260(float f);                                     // float -> fixed
 int FUN_1416725c0(PCBase* p, Vector3 kDir, float fSpeed, float fMax, float fZero);  // move is blocked
 float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
 Vector3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
@@ -58,8 +51,8 @@ void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszForm
                    const float* pA, const float* pB, const float* pC, const float* pD);
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
-extern Vector3 DAT_143a08cd8;       // reference axis of the type 10 base direction
-extern Vector3 DAT_143a08cf8;       // up axis
+#define DAT_143a08cd8 (*(Vector3*)&efd::Point3::UNIT_X)        // C3: was extern Vector3 DAT_143a08cd8 (reference axis)
+#define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)        // C3: was extern Vector3 DAT_143a08cf8 (up axis)
 
 // @0x141489940
 int FUN_141489940(PCBase* p)
@@ -148,23 +141,23 @@ bool CMotionController::vfunc_5(double fTime)
             Vector3 kAxis = DAT_143a08cd8;
             Unk_EfdMatrix3 mxEuler;
             reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-            kAxis = mxEuler.FUN_140a00720(kAxis);
+            kAxis = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxEuler) * reinterpret_cast<const efd::Point3&>(kAxis)));
             kBase = kAxis;
         }
         else
         {
-            kBase = FUN_14123cc80(m_pData->m_kDir);
+            kBase = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(GameObject::RotationToDirection(reinterpret_cast<const NiPoint3&>(m_pData->m_kDir))));
         }
         Unk_EfdMatrix3 mxTilt;
         reinterpret_cast<efd::Matrix3*>(&mxTilt)->MakeZRotation((fTiltAngle * 3.1415927f) / 180.0f);
-        kDir = mxTilt.FUN_140a00720(kBase);
+        kDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kBase)));
         float fRad = (fTiltAngle * 3.1415927f) / 180.0f;
         if (0.0f < fRad)
         {
             Vector3 kAxis = kDir.FUN_140a00e10(DAT_143a08cf8);
             kAxis.FUN_140968990();
             mxTilt.FUN_14107cc40(-fRad, kAxis);
-            kDir = mxTilt.FUN_140a00720(kDir);
+            kDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kDir)));
         }
     }
     m_kDir = kDir;
@@ -203,12 +196,12 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
         Vector3 kAxis = DAT_143a08cd8.FUN_1409f7960();
         Unk_EfdMatrix3 mxEuler;
         reinterpret_cast<efd::Matrix3*>(&mxEuler)->FromEulerAnglesXYZ(kEuler.x, kEuler.y, kEuler.z);
-        kAxis = mxEuler.FUN_140a00720(kAxis);
+        kAxis = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxEuler) * reinterpret_cast<const efd::Point3&>(kAxis)));
         kBase = kAxis;
     }
     else
     {
-        kBase = FUN_14123cc80(m_pData->m_kDir);
+        kBase = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(GameObject::RotationToDirection(reinterpret_cast<const NiPoint3&>(m_pData->m_kDir))));
     }
     float fSpeed = 0;
     float fAngle = 0;
@@ -222,14 +215,14 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     }
     Unk_EfdMatrix3 mxTilt;
     reinterpret_cast<efd::Matrix3*>(&mxTilt)->MakeZRotation((fAngle * 3.1415927f) / 180.0f);
-    kRot = mxTilt.FUN_140a00720(kBase);
+    kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kBase)));
     float fRad = (fAngle * 3.1415927f) / 180.0f;
     if (0.0f < fRad)
     {
         Vector3 kAxis = kRot.FUN_140a00e10(DAT_143a08cf8);
         kAxis.FUN_140968990();
         mxTilt.FUN_14107cc40(-fRad, kAxis);
-        kRot = mxTilt.FUN_140a00720(kRot);
+        kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kRot)));
     }
     m_kDir = kRot;
     if (!FUN_14028d470(m_pData->m_fSpeedScale, 0))
@@ -305,7 +298,7 @@ bool CLinearMotionController::vfunc_5(double fTime)
     int nProbe = 100;
     if (0.0f < m_pData->m_fDistance)
     {
-        nProbe = nProbe + FUN_14028d260(m_pData->m_fDistance);
+        nProbe = nProbe + (int)FUN_14028d260(m_pData->m_fDistance);
     }
     int bBlocked = (m_pTarget->vfunc_99(nProbe) != 0 || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsJumping() != 0
         || ((class GameObjectController*)(class Unk_MotionBody*)(((class Unk_MotionBody*)((class PCBase*)(class PCBase*)(m_pTarget))->GetPhysicsBody())))->IsLift() != 0) ? 1 : 0;
@@ -395,7 +388,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
         m_kMove = DAT_143b01a60;
         return false;
     }
-    m_kDir = reinterpret_cast<Unk_MoveActor*>(m_pTarget)->FUN_141674b60(reinterpret_cast<Unk_MoveActor*>(m_pTarget)->FUN_14123c360());
+    m_kDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(m_pTarget->CalcMoveDirectionNoYaw(m_pTarget->FUN_14123c360())));
     if (m_kDir.FUN_140552690(DAT_143b01a60))
     {
         m_kMove = DAT_143b01a60;

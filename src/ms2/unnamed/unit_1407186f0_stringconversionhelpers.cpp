@@ -10,6 +10,8 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/xmlattr.h"
+#include <algorithm>
 #include "hook/ms2hook.h"
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
@@ -17,13 +19,9 @@ __int64 FUN_14028d260(float v);                             // float -> fixed
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void* FUN_140163230(void* arr);                         // CAtlArray<CString>::CAtlArray
 void FUN_1401641d0(void* arr);                          // CAtlArray<CString>::~CAtlArray
-const int* FUN_1402fbd20(const int* a, const int* b);   // std::min<int>
-CString* FUN_140164930(void* arr, __int64 i);           // operator[]
 void* FUN_1406c4730(void* out);                         // Unk_DateTime default
 void* FUN_1406c47d0(void* out, int y, int m, int d, int h, int mi, int s);   // CMsTime(y,m,d,h,mi,s) (6 ints; no DST arg, sb2)
-void FUN_140178270(const CString* in, void* tmp, const char* sep);
-void FUN_1401783d0(const CString* in, void* tmp, const char* sep);
-void FUN_1402929a0(const CStringW* in, void* tmp, const wchar_t* sep);   // wide (commonutil.cpp)
+void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);   // wide (commonutil.cpp)
 CStringA FUN_14016a600(const wchar_t* s, int nCodePage);
 CStringW FUN_14016a730(const char* s, int nCodePage);
 char FUN_1402c12b0(void* arr, unsigned __int64 n);
@@ -88,9 +86,9 @@ CMsTime FUN_140718950(const CString& s) {
     int six = 6;
     int vals[6] = {0};
     int cnt = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&parts))->GetCount();
-    int n = *FUN_1402fbd20(&six, &cnt);
+    int n = (std::min<int>)(six, cnt);
     for (int i = 0; i < n; ++i)
-        vals[i] = atoi(*FUN_140164930(&parts, i));
+        vals[i] = atoi(parts[i]);
     if (vals[0] < 1900)
         return FUN_140718920(s);
     if (vals[1] < 1 || vals[1] > 12)
@@ -116,9 +114,9 @@ ATL::CTimeSpan FUN_140718d00(const CString& s) {
     int six = 6;
     int vals[6] = {};
     int cnt = (int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&parts))->GetCount();
-    int n = *FUN_1402fbd20(&six, &cnt);
+    int n = (std::min<int>)(six, cnt);
     for (int i = 0; i < n; ++i)
-        vals[i] = atoi(*FUN_140164930(&parts, i));
+        vals[i] = atoi(parts[i]);
     if (vals[2] < 0 || vals[2] > 31)
         return FUN_140718cd0(s);
     if (vals[3] < 0 || vals[3] > 23)
@@ -133,13 +131,13 @@ ATL::CTimeSpan FUN_140718d00(const CString& s) {
 // @0x140718f90
 std::vector<int> FUN_140718f90(const CString& s) {
     std::vector<int> v;
-    FUN_140178270(&s, &v, ",");
+    XmlSplit(s, v, ",");
     return v;
 }
 // @0x140719010
 std::vector<unsigned int> FUN_140719010(const CString& s) {
     std::vector<unsigned int> v;
-    FUN_1401783d0(&s, &v, ",");
+    XmlSplitImpl<unsigned>(s, v, ",");
     return v;
 }
 // The exe parses into a std::vector<unsigned int> and returns it through the move ctor the linker folded with
@@ -147,7 +145,7 @@ std::vector<unsigned int> FUN_140719010(const CString& s) {
 // @0x140719090
 std::vector<int> FUN_140719090(const CStringW& s) {
     std::vector<unsigned int> v;
-    FUN_1402929a0(&s, &v, L",");
+    FUN_1402929a0(s, reinterpret_cast<std::vector<int>&>(v), L",");
     return reinterpret_cast<std::vector<int>&&>(v);
 }
 

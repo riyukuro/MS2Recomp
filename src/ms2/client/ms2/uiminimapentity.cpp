@@ -233,7 +233,6 @@ public:
     virtual int vfunc_1();                                          // 1 completable
 };
 class CQuest : public CPtred, public Unk_MmQuestData {};          // the interface is the second base (+0x18)
-CString FUN_1401d2b10(const CString& a, const CString& b);         // a + b (exe operator+; clang would import MFC CopyChars)
 
 // The UI dialogs reached from the markers.
 class UIBossRewardPreviewDialog : public UIDialog { public: int FUN_140f25ad0(int nNpcId); };
@@ -497,7 +496,7 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         const CString& strSuffix = FUN_141082150(spData, "_epic", "_world", "_repeat", "_event");
         if (bSuffix)
             strIcon += strSuffix;
-        strLayer += FUN_1401d2b10(s_strLayerQuest, strSuffix);
+        strLayer += s_strLayerQuest + strSuffix;
         return true;
     }
     return false;

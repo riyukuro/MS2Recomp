@@ -237,7 +237,6 @@ CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> spRoom);                         // t
 int FUN_14083fec0(CStringW str, CStringW strFind);                          // the index of a substring (-1)
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // a common string
 CStringW GetStringCommon(int nKey);                                           // a common string by id
-CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 CStringW FUN_140f02bd0(CStringW strKey, const CStringW& a1, const unsigned short& a2, const CStringW& a3);
 CStringW FUN_140f48210(int nHour, int nMinute);                             // "hh:mm"
 CStringW FUN_140b8e910(const CMsTime& time);                                // the date text of a time
@@ -1104,7 +1103,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                     CStringW strTime = FUN_140f48210(when.GetHour(), when.GetMinute());
                     CStringW strFormat = GetStringCommonByKey(L"s_spawnnpc_guarantee");
                     strName += L" ";
-                    strName += FUN_1401e8510(strFormat, strTime);
+                    strName += StringFormat<CStringW>(strFormat, strTime);
                 }
             }
             ASObj item(2);
@@ -1359,7 +1358,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                             strTime = FUN_140f48210(when.GetHour(), when.GetMinute());
                         CStringW strFormat = GetStringCommonByKey(L"s_spawnnpc_guarantee");
                         strName += L" ";
-                        strName += FUN_1401e8510(strFormat, strTime);
+                        strName += StringFormat<CStringW>(strFormat, strTime);
                     }
                 }
                 item.FUN_1407cbb20("text", strName);

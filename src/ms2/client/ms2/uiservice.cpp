@@ -233,7 +233,6 @@ public:
     virtual bool vfunc_37(float x, float y, int n, int m);              // MS2: slot 37 (0x128) hit test
     char m_unk08[0x10];
     Unk_UisMovieSlot m_slot;                                        // +0x18
-    bool FUN_142571030(const char* szMethod, Scaleform::GFx::Value* pResult, const Scaleform::GFx::Value* pArgs, int nArgs);
 };
 Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);   // C3: the definition's return type
 class Unk_UisPlayerInfo { };   // the local player's name
@@ -356,7 +355,7 @@ template<class T> T* Unk_UisFind(eUIClassID nClass)
 void FUN_141aed9e0(void* p, int nBins, float fOpt, float fLow, float fHigh, int nBlock);
 void FUN_141aed8f0(void* p, int nBins, float fOpt, float fLow, float fHigh, int nBlock);
 void FUN_141aed800(void* p, int nBins, float fOpt, float fLow, float fHigh, int nBlock);
-void FUN_141926ff0(void* p, int nBlock);
+enum Unk_UIType {};
 void FUN_141927180(void* p);
 void FUN_141aee130(void* p);
 void FUN_141aee160(void* p);
@@ -427,8 +426,8 @@ CUIService::CUIService()
     new (&m_x38) efd::SmartPointer<NiDefaultClickRenderStep>((NiDefaultClickRenderStep*)0);
     new (&m_mapOpen) ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>(0x11, 0.75f, 0.25f, 2.25f, 10);
     new (&m_mapOpen2) ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>(0x11, 0.75f, 0.25f, 2.25f, 10);
-    FUN_141926ff0(&m_listOpen, 10);
-    FUN_141926ff0(&m_listClose, 10);
+    new (&m_listOpen) ATL::CAtlList<Unk_UIType>(10);
+    new (&m_listClose) ATL::CAtlList<Unk_UIType>(10);
     new (&m_log) GFxLogger;
     FUN_140a5bb80(reinterpret_cast<Scaleform::Log*>(&m_log));
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(0x6200018, 0);
@@ -1691,7 +1690,7 @@ void CUIService::FUN_141adca70()
     {
         Scaleform::GFx::Value kName("scaleform.ms2.manager.TooltipManager");
         Scaleform::GFx::Value kClass;
-        if (pMovie->FUN_142571030("flash.utils.getDefinitionByName", &kClass, &kName, 1))
+        if (reinterpret_cast<Scaleform::GFx::Movie*>(pMovie)->Invoke("flash.utils.getDefinitionByName", &kClass, &kName, 1))
             kClass.Invoke("dispatchRefreshTooltip", 0);
     }
 }
@@ -3142,7 +3141,6 @@ int FUN_1418dd0c0();
 int FUN_1418dd110();
 int FUN_1418dd0d0();
    // feature name (member: this=rcx, hidden return=rdx)
-CStringW FUN_14061ad70(const CStringW& str, const wchar_t* sz);
 CStringW FUN_140e70010(CStringW str);
 CStringW FUN_14083ccf0(const CStringW& str);
 int FUN_1422db730();
@@ -3203,7 +3201,7 @@ void FUN_141ade430(void* p, int nMovieId)
         int nFeature = i;
         if (!static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(nFeature))
             continue;
-        strFeatures += FUN_14061ad70(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetFeatureNameById(nFeature), L",");   // MS2: ATL operator+ (the clang DLL link has no CopyChars import)
+        strFeatures += static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetFeatureNameById(nFeature) + L",";
     }
     static_cast<ASObj*>(p)->FUN_1407cbb20("m_currentFeatureByString", CStringW(strFeatures));
     static_cast<ASObj*>(p)->FUN_1409c0d20("m_bottomMarginOfStage", FUN_1418dd0c0() + FUN_1418dd110());

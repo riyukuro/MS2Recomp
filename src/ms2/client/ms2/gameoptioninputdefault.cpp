@@ -77,7 +77,6 @@ UIMainPlayerInfo* FUN_140931900(int nUiId);
 UIGameOptionDialog* FUN_140a02e60(int nDialogId);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
-CStringTable* GetStringTable();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void FUN_14151f200();                                                   // close the open message box
 void FUN_141901390(int nRelease, int nUiType);                          // block / release the player's keys for a UI
@@ -169,13 +168,13 @@ void CGameOptionInputDefault::FUN_141250cc0(int nCategory)
             ASObj row(2);
             if (spKey->m_nAction == 0x49409)
             {
-                ((class AScript&)(row)).FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0(0x49409));
+                ((class AScript&)(row)).FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0(0x49409));
                 row.FUN_141253870("keyGUID", 0x49409);
                 ((class AScript&)(row)).FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(1));
             }
             else
             {
-                ((class AScript&)(row)).FUN_1407cbb20("label", GetStringTable()->FUN_1418125b0((int)spKey->m_nAction));
+                ((class AScript&)(row)).FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)spKey->m_nAction));
                 row.FUN_1407cba60("keyGUID", FUN_141252540(spKey->m_nAction));
                 ((class AScript&)(row)).FUN_1407cbb20("secondaryKey", FUN_1409331f0()->GetKeyName(nSecondary));
             }
@@ -298,9 +297,9 @@ int CGameOptionInputDefault::vfunc_8()
             CStringW strKey = StringFormat(L"{0}", nKey);
             CStringW strName;
             if (FUN_1409331f0()->IsQuickSlotAction(nAction) != 0)
-                strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((int)FUN_1409331f0()->GetKeyAction(nKey)), FUN_1409331f0()->GetKeyName(nKey));
+                strName = StringFormat<CStringW, CStringW>(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)FUN_1409331f0()->GetKeyAction(nKey)), FUN_1409331f0()->GetKeyName(nKey));
             else
-                strName = GetStringTable()->FUN_1418125b0((int)nAction);
+                strName = TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)nAction);
             if (FUN_1409331f0()->FUN_141430470(nAction) == 0)
             {
                 m_bConfirm = 1;

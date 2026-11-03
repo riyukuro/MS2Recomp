@@ -108,13 +108,15 @@ Ni3DRenderView* FUN_1413f9a70();                            // the main view
 NiColor FUN_141b6dea0(unsigned int uiColor);                // 0xRRGGBB -> color
 bool FUN_14028d470(float fA, float fB);                     // |a - b| < epsilon
 
+struct Unk_GraphicState;
+bool FUN_14125e020(const Unk_GraphicState* pState);         // fog option
+bool FUN_14125e0b0(const Unk_GraphicState* pState);         // soft particle option
+bool FUN_14125e160(const Unk_GraphicState* pState);         // outer glow option
+
 // Header-inline engine / option accessors compiled into this TU (the COMDAT copies the other units call).
 class Unk_AeGraphicOption
 {
 public:
-    bool FUN_14125e020() const;                             // fog option
-    bool FUN_14125e0b0() const;                             // soft particle option
-    bool FUN_14125e160() const;                             // outer glow option
     // @0x1409a8fd0
     bool FUN_1409a8fd0() const { return m_bFieldFog; }
     // @0x1409a8ab0
@@ -183,11 +185,12 @@ class Unk_AeFeatureMgr
 public:
     // @0x1409a8b20
     static Unk_AeFeatureMgr* FUN_1409a8b20() { return DAT_143ab3da0; }
-    Unk_AeFeatureState* FUN_1416a3a90(int nFeature);
 };
+class PostProcessEffect;
 class PostProcessingService   // C3: member view
 {
 public:
+    PostProcessEffect* GetStep(int nStep);
     bool SetStepActive(int nFeature, bool bEnable);
     void FUN_1416aa450(int nFeature, bool bFlag);
 };
@@ -331,13 +334,13 @@ void ApplyEffect::SetOuterGlowEnabled(bool bEnabled)
 // @0x1409a4e30
 void ApplyEffect::ApplySoftParticleOption()
 {
-    SetSoftParticlesOption(Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e0b0(), 0);
+    SetSoftParticlesOption(FUN_14125e0b0((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()), 0);
 }
 
 // @0x1409a4ed0
 void ApplyEffect::ApplyOuterGlowOption()
 {
-    SetOuterGlowEnabled(Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e160());
+    SetOuterGlowEnabled(FUN_14125e160((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()));
 }
 
 // @0x1409a4f10
@@ -391,7 +394,7 @@ void ApplyEffect::ApplyOuterGlowColor()
 {
     MS2Ptr<CFieldDataCli> field = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_AeFieldInfo*>(field.get()) != 0) {
-        if (Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e160()) {
+        if (FUN_14125e160((const Unk_GraphicState*)Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0())) {
             FUN_1409a5810(DAT_143ae5348, &reinterpret_cast<Unk_AeFieldInfo*>(field.operator->())->m_vOuterGlow, 1);
         }
     }
@@ -471,7 +474,7 @@ bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
         pField = reinterpret_cast<Unk_AeFieldInfo*>(WorldService::GetInstance()->FUN_141bd30a0().get());
     }
     if (pField != 0) {
-        Unk_AeFeatureState* pState = Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3a90(3);
+        Unk_AeFeatureState* pState = (Unk_AeFeatureState*)((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetStep(3);
         if (pState != 0) {
             if (bEnabled) {
                 FUN_1409a5770(DAT_143ae5358, &pField->m_fSoftParticle0, 1);
@@ -493,7 +496,7 @@ void ApplyEffect::ApplyFieldFog()
 {
     Unk_AeGraphicOption* pOption = Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0();
     if (pOption != 0) {
-        ApplyFieldFogRange(pOption->FUN_14125e020());
+        ApplyFieldFogRange(FUN_14125e020((const Unk_GraphicState*)pOption));
     }
     MS2Ptr<CFieldDataCli> field = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_AeFieldInfo*>(field.get()) != 0) {

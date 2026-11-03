@@ -101,12 +101,11 @@ class CEquipment   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1411e3de0(int);
+    void FUN_1411e3600(MS2Ptr<CItem> spItem);               // equip (callee-destroyed arg)
     void CollectShownItems(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;   // 0x1411e1b80 the worn items
 };
-void FUN_1411e3600(Unk_PCEquipSet* pEquipSet, MS2Ptr<CEquipItem> spEquip);   // adds a worn item (callee-destroyed arg)
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);          // 0x140ccac60 a copy of the item
 Unk_PtVec3 FUN_14169a860();
-unsigned __int64 FUN_141662e90(PC* pPC);
 
 // ---- class info and header statics (the exe runs them in this order) ----
 
@@ -144,7 +143,7 @@ PortraitPC* FUN_141699a20(PC* pSource)
     pPortrait->FUN_1416591e0(0, pSource->FUN_141659220(0));
     pPortrait->FUN_1416591e0(1, pSource->FUN_141659220(1));
     pPortrait->FUN_141658ed0(((class PC*)(class PC*)(pSource))->FUN_141658f10());
-    pPortrait->FUN_141662d60(FUN_141662e90(pSource));
+    pPortrait->FUN_141662d60(((class PC*)(pSource))->FUN_141662e90());
     if (WorldService::GetInstance()->FUN_141bbb1e0((GameObject*)(PortraitPC*)(pPortrait), 0, 1) != 0)
         return pPortrait;
     return 0;
@@ -236,9 +235,9 @@ void PortraitPC::vfunc_143()
     ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->FUN_1411e3de0(1);
     for (unsigned __int64 i = 0; i < ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->GetCount(); i++)
     {
-        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_140c3c720(i);
+        MS2Ptr<CEquipItem> spEquip = reinterpret_cast<MS2Ptr<CEquipItem>&>(((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->GetAt(i));
         if (spEquip.get() != 0)
-            FUN_1411e3600(&m_kEquipDE0, MS2Ptr<CEquipItem>(spEquip));
+            ((class CEquipment*)(struct Unk_PCEquipSet*)(&m_kEquipDE0))->FUN_1411e3600(MS2Ptr<CItem>(reinterpret_cast<MS2Ptr<CItem>&>(spEquip)));
     }
     vfunc_139();
     ((ATL::CAtlArray<MS2Ptr<CItem>, ATL::CElementTraits<MS2Ptr<CItem>>>*)(Unk_PtItemList*)&(reinterpret_cast<Unk_PtItemList&>(m_kListD48)))->RemoveAll();

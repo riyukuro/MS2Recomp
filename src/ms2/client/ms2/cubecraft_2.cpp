@@ -76,7 +76,7 @@ MS2_CHECK_OFFSET(Unk_C2Config, m_strGuideInventory, 0x1f8);
 class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
 
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
-extern Unk_EntityAppFramework DAT_143b059e8;
+namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 
 // A 24-byte reason / filter record (constructed from 0) handed to the cube service checks.
 class Unk_C2Reason
@@ -93,14 +93,14 @@ class Unk_Service6100017 : public CubeMapInformationService
 public:
     int FUN_1410c6980(Cube* pCube, int nKind, MS2Ptr<CItemData> spItem, __int64 nOwner, int nMode);   // may the cube be removed / moved
     int FUN_1410cdd80(Vector3 ptFrom, Vector3 ptTo, float fDist, Unk_Int3 kDir);   // the sweep from ptFrom to ptTo is free
-    void FUN_1410d6590(int nMessage);                                                           // show the build notice
     int FUN_1410cdf60(Unk_Int3 kFrom, Unk_Int3 kDir);                                           // the column step is free
-    float FUN_1410ba440(int nCell);                                                             // the height of a cell
 };
+class Unk_MyPCHousingSvc { public: void FUN_1410d6590(int nMessage); };   // show the build notice (calls cast the cube service)
 Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 
 // The client constants table: three consecutive 0x58-byte item-id constants at +0x39f0 (the guide effect items).
-class Unk_C2ConstB { public: int FUN_140ec2b60(); char m_pad[0x58]; };
+class Unk_C2ConstB { public: char m_pad[0x58]; };
+int FUN_140ec2b60(void* pConst);
 struct Unk_C2Consts
 {
     char m_pad_00[0x39f0];
@@ -209,8 +209,9 @@ public:
     virtual Vector3 vfunc_18();
     virtual void vfunc_19();
     virtual Vector3 vfunc_20();
-    void FUN_1410a77e0(float fStep);
 };
+class CGuideObject;
+void FUN_1410a77e0(CGuideObject* pLift, float fStep);
 int FUN_1410af7a0(PC* pPC);
 
 void FUN_140710590(COutPacket&);
@@ -277,7 +278,6 @@ public:
 CCubeMotionManager* GetCubeMotionManager();                        // the cube motion manager
 
 // Housing quest-less globals.
-extern efd::Point3 DAT_143a08cf8;                               // up vector
 extern NiRTTI DAT_143afa4d8;
 
 // Timers of the cube craft (declared in timer.h): m_tPulse (+0x70), m_tSlide (+0xa8), m_tRotate (+0xe0).
@@ -347,7 +347,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
 {
     if (bEnable)
     {
-        m_svc = FUN_1401cd040(&DAT_143b059e8);
+        m_svc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
         m_tPulse.FUN_1408687f0();
         m_tSlide.FUN_1408687f0();
         m_bFirstMove = false;
@@ -802,7 +802,7 @@ MS2_REPLACE_METHOD(0x1410AF0D0, Unk_PCCubeCraft, ReleaseGuide3, 99, 0xA27E20ED);
 // @0x1410af140
 void Unk_PCCubeCraft::UpdateGuide3Rotation()
 {
-    efd::Point3 kAngles = FUN_140a0b080((const efd::Point3&)m_ptOffset, (const efd::Point3&)m_ptCell, DAT_143a08cf8);
+    efd::Point3 kAngles = FUN_140a0b080((const efd::Point3&)m_ptOffset, (const efd::Point3&)m_ptCell, efd::Point3::UNIT_Z);
     NiMatrix3 kRot;
     FUN_140b86230(kAngles, kRot);
     m_spGuide3->vfunc_4(kRot);
@@ -847,7 +847,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     if (((class PC*)(m_pOwner))->IsCubeMode1() == 0)
         return;
     m_spEffectB.AssignRaw(new CItem);
-    if (!m_spEffectB->FUN_140523c40(((struct Unk_C2Consts*)FUN_1401d3200())->m_effectB.FUN_140ec2b60(), 1, 0))
+    if (!m_spEffectB->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)FUN_1401d3200())->m_effectB), 1, 0))
     {
         m_spEffectB = 0;
         return;
@@ -858,7 +858,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
     m_spEffectB->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectB.get(), 0);
     m_spEffectC.AssignRaw(new CItem);
-    if (!m_spEffectC->FUN_140523c40(((struct Unk_C2Consts*)FUN_1401d3200())->m_effectC.FUN_140ec2b60(), 1, 0))
+    if (!m_spEffectC->FUN_140523c40(FUN_140ec2b60(&((struct Unk_C2Consts*)FUN_1401d3200())->m_effectC), 1, 0))
     {
         m_spEffectC = 0;
         return;
@@ -948,7 +948,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
         return;
     if (GetMode() == 1)
     {
-        m_svc->FUN_1410d6590(0x39);
+        reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x39);
         return;
     }
     if (m_spGuide.operator==(0))
@@ -960,7 +960,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
     {
         if (((class MyPC*)(class PC*)(pPC))->FUN_1415302e0(FUN_1410ad610()))
         {
-            m_svc->FUN_1410d6590(0x58);
+            reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x58);
             return;
         }
     }
@@ -969,7 +969,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
         CubeItemInfo* pCur = FUN_1410ad670();
         if (pCur != 0 && pCur->FUN_1408b3860() == 0)
         {
-            m_svc->FUN_1410d6590(0x62);
+            reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x62);
             return;
         }
     }
@@ -1049,7 +1049,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
                     }
                     else
                     {
-                        m_svc->FUN_1410d6590(0x35);
+                        reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x35);
                     }
                 }
             }
@@ -1094,7 +1094,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(bool bNotice)
             MS2Ptr<Cube> spCube(m_svc->GetCubeAtPoint(kCell));
             if (m_svc->FUN_1410c6980(spCube.get(), spCube->field44, 0, ((class PC*)(pPC))->FUN_141656ad0(), 3) == 0)
             {
-                m_svc->FUN_1410d6590(0x1b);
+                reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x1b);
                 return;
             }
             Unk_CmRotate kRot;
@@ -1109,7 +1109,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(bool bNotice)
         }
         else
         {
-            m_svc->FUN_1410d6590(0x1a);
+            reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x1a);
         }
     }
 }
@@ -1149,7 +1149,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
         {
             if (m_svc->FUN_1410c6980(spCube.get(), spCube->field44, 0, ((class PC*)(pPC))->FUN_141656ad0(), 4) == 0)
             {
-                m_svc->FUN_1410d6590(0x28);
+                reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x28);
                 return;
             }
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -1161,7 +1161,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
         {
             if (m_svc->FUN_1410c6980(spCube.get(), spCube->field44, 0, ((class PC*)(pPC))->FUN_141656ad0(), 4) == 0)
             {
-                m_svc->FUN_1410d6590(0x28);
+                reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x28);
                 return;
             }
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -1176,7 +1176,7 @@ void Unk_PCCubeCraft::FUN_1410abb40()
     }
     else
     {
-        m_svc->FUN_1410d6590(0x14);
+        reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x14);
     }
 }
 
@@ -1200,9 +1200,9 @@ void Unk_PCCubeCraft::FUN_1410ac1c0()
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             Unk_Int3 kDir(0, 0, 1);
-            efd::SmartPointer<Unk_Service6100017> spSvc = FUN_1401cd040(&DAT_143b059e8);
+            efd::SmartPointer<Unk_Service6100017> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
             if (spSvc->FUN_1410cdd80(pLift->vfunc_18(), pLift->vfunc_20(), 200.0f, kDir) != 0)
-                pLift->FUN_1410a77e0(6.0f);
+                FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pLift), 6.0f);
         }
     }
 }
@@ -1228,9 +1228,9 @@ void Unk_PCCubeCraft::FUN_1410ac380()
         {
             Unk_C2Lift* pLift = ((class Unk_C2Lift*)((class PC*)(pPC))->FUN_1416625b0());
             Unk_Int3 kDir(0, 0, -2);
-            efd::SmartPointer<Unk_Service6100017> spSvc = FUN_1401cd040(&DAT_143b059e8);
+            efd::SmartPointer<Unk_Service6100017> spSvc = FUN_1401cd040(reinterpret_cast<Unk_EntityAppFramework*>(&egf::g_bapiContext));
             if (spSvc->FUN_1410cdd80(pLift->vfunc_18(), pLift->vfunc_20(), 200.0f, kDir) != 0)
-                pLift->FUN_1410a77e0(-6.0f);
+                FUN_1410a77e0(reinterpret_cast<CGuideObject*>(pLift), -6.0f);
         }
     }
 }
@@ -1301,7 +1301,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
     else
         kPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPC->vfunc_20()));
     nCell = m_svc->FUN_1410ba5f0(kGrid, kPos);
-    kPos.z = m_svc->FUN_1410ba440(nCell);
+    kPos.z = m_svc->DirectionToAngle(nCell);
     CubeItemInfo kInfo(*m_spItem.operator->());
     if (!spCube)
     {
@@ -1333,7 +1333,7 @@ void Unk_PCCubeCraft::FUN_1410aded0()
         }
         else
         {
-            m_svc->FUN_1410d6590(0x35);
+            reinterpret_cast<Unk_MyPCHousingSvc*>(m_svc.operator->())->FUN_1410d6590(0x35);
         }
     }
 }

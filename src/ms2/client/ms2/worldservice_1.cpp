@@ -274,7 +274,6 @@ void* FUN_14208a860(size_t cb, int hint);               // efd::MemObject operat
 extern Vector3 DAT_143b01a60;
 
 struct Unk_WsTagPtr { unsigned char raw[0x10]; };
-CString FUN_140298360(const char* a, const CString& b);  // a + b
 void FUN_1409f20e0(Unk_WsTagPtr* self);                 // tag pointer dtor
 
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
@@ -5136,7 +5135,7 @@ void WorldService::FUN_141bc9560(CString name, CString model, unsigned char mode
         if (entity.data()->GetModel()->ContainsModel(DAT_142ffa83c))
         {
             efd::AssetID wanted;
-            CString urn = FUN_140298360("urn:gamebryo-scenegraph:", model);
+            CString urn = "urn:gamebryo-scenegraph:" + model;
             FUN_140de0cb0(&wanted, (const char*)urn);
             efd::AssetID current;
             entity.data()->GetPropertyValue<efd::AssetID>(0x770e5fc6, current);

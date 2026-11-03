@@ -6,6 +6,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/ms2layout.h"
+#include "ms2/placeholder/citem.h"
 
 struct Unk_ItemProxySummary
 {
@@ -15,9 +16,6 @@ struct Unk_ItemProxySummary
 };
 MS2_CHECK_SIZE(Unk_ItemProxySummary, 0x18);
 
-extern int FUN_1405276c0(void*);
-extern void* FUN_140526a50(void*);
-extern void* FUN_140527870(void*);
 class CItemExtraData   // C3: member view for the former free stand-ins
 {
 public:
@@ -29,9 +27,9 @@ void FUN_1418c35d0(Unk_ItemProxySummary*);
 void FUN_1418c34c0(Unk_ItemProxySummary* result, MS2Ptr<class CItem> node)
 {
     if (node.get()) {
-        result->m_itemId = FUN_1405276c0(node.operator->());
-        result->m_itemUid = FUN_140526a50(node.operator->());
-        void* proxy = FUN_140527870(node.operator->());
+        result->m_itemId = node->FUN_1405276c0();
+        result->m_itemUid = (void*)node->GetItemUid();
+        void* proxy = node->FUN_140527870();
         if (proxy) {
             for (int i = 0; i < 3; ++i)
                 result->m_values[i] = ((class CItemExtraData*)(void*)(proxy))->GetCurrentRgbComponent(i);

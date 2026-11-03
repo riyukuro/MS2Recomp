@@ -103,7 +103,6 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* psz, int n);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-CString FUN_1401d9af0(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat, one numeric argument
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 int FindStatByName(const CString& strName);         // normal option id by name (-1: none)
 enum SAType { SAType_None = 0 }; SAType FUN_14081d2f0(const CString& strName);          // special option id by name (0: none)
@@ -133,7 +132,6 @@ public:
 };
 CStringW FUN_140631600(int nStat, BaseOption* pOption);                  // the text of a normal stat option
 CStringW FUN_140631830(int, int, CItemData *);  // C3: the definition's signature
-CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);           // a + b
 template <class A> CStringW FormatStringId(int nId, const A& a);             // the highlighted text
 bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
 bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
@@ -324,7 +322,7 @@ bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
             MS2Ptr<CItemMergeOptionVariation> spStep(new CItemMergeOptionVariation);
             spStep->m_nIndex = (int)i;
             unsigned nMax = 0;
-            XmlGetAttr((class TiXmlElement*)(pElem), FUN_1401d9af0("idx{0}_max", i), reinterpret_cast<unsigned int&>(nMax));
+            XmlGetAttr((class TiXmlElement*)(pElem), StringFormat<unsigned __int64>("idx{0}_max", i), reinterpret_cast<unsigned int&>(nMax));
             if (nMax == 0)
                 break;
             if (nPrev >= nMax)
@@ -635,7 +633,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
                 continue;
             CStringW strLine;
             CStringW strExtra;
-            strLine = FUN_1401d0080(FUN_140631600(nStat, spValue.get()), strTag);
+            strLine = FUN_140631600(nStat, spValue.get()) + strTag;
             if (FUN_1405c0870(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
             {
                 if (FUN_1405c0c70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
@@ -653,7 +651,7 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             Unk_EnchantPtr<BaseOption> spValue = rSpecial.GetValueAt(pos);
             if (!spValue)
                 continue;
-            CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->FUN_140527840())), strTag);
+            CStringW strLine = FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->FUN_140527840())) + strTag;
             CStringW strExtra;
             if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
             {

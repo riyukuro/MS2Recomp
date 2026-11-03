@@ -83,7 +83,6 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_141425950(int nItemId);                                        // item name
 CStringTable* GetStringTable();                                              // the string table singleton
 CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name
-CStringA FUN_140540050(const char* pszFormat, const CStringA& strArg);       // StringFormat with one string
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_14028e280(CMsTime& out, const CStringA& strFormat, const CStringA& str); // parses a date string
 struct Unk_MeratDefaultIcon { char m_pad[0xc0]; CStringA m_strIcon; };
@@ -856,7 +855,7 @@ CStringA CDBPremiumProduct::GetIconPath()
         return CStringA("");
     if (m_strIcon.IsEmpty())
         return ((struct Unk_MeratDefaultIcon*)FUN_1401d31f0())->m_strIcon;
-    return FUN_140540050("./Data/Resource/Image/Item/icon/{0}", m_strIcon);
+    return StringFormat<CString>("./Data/Resource/Image/Item/icon/{0}", m_strIcon);
 }
 MS2_REPLACE_METHOD(0x1406A0160, CDBPremiumProduct, GetIconPath, 191, 0x7FE7101A);
 

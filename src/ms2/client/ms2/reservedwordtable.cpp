@@ -60,7 +60,6 @@ class Unk_RwWorld
 {
 public:
     PC* FUN_141bd0cc0();                                    // the local player
-    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the field data of the player
 };
 struct Unk_RwLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
 CLua* FUN_1401c0db0();
@@ -101,7 +100,7 @@ struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
-CStringW FUN_1409e90c0(int nStringId, const int& nA, const int& nB, const int& nC, const int& nD, const int& nE);
+template <class A, class B, class C, class D, class E> CStringW BlockFormat(int nId, const A& a, const B& b, const C& c, const D& d, const E& e);
 
 // ---------------------------------------------------------------------------------------------------------------
 // Statics (.text$di)
@@ -316,8 +315,8 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
             __int64 nExtend = nBase + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_RwConfig*)FUN_1401d3200())->m_nValue)->Get() * 24 * 60 * 60;
             CMsTime kEnd(spMaid->m_nExpireTime);
             CMsTime kExtendTime(nExtend);
-            strEnd = FUN_1409e90c0(0x798, kEnd.GetYear(), kEnd.GetMonth(), kEnd.GetDay(), kEnd.GetHour(), kEnd.GetMinute());
-            strExtend = FUN_1409e90c0(0x799, kExtendTime.GetYear(), kExtendTime.GetMonth(), kExtendTime.GetDay(), kExtendTime.GetHour(), kExtendTime.GetMinute());
+            strEnd = BlockFormat<int, int, int, int, int>(0x798, kEnd.GetYear(), kEnd.GetMonth(), kEnd.GetDay(), kEnd.GetHour(), kEnd.GetMinute());
+            strExtend = BlockFormat<int, int, int, int, int>(0x799, kExtendTime.GetYear(), kExtendTime.GetMonth(), kExtendTime.GetDay(), kExtendTime.GetHour(), kExtendTime.GetMinute());
         }
         else
             str.Replace(L"$OwnerName$", GetStringCommon(0x787));
@@ -651,13 +650,13 @@ static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhol
         strOut = L"";
         return;
     }
-    if (!reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd30a0())
+    if (!WorldService::GetInstance()->FUN_141bd30a0())
     {
         strOut = L"";
         return;
     }
     unsigned int nPrice = FUN_1401c0db0()->CalcResolvePaneltyPrice(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
-                                                          ((class CFieldData*)(void*)(reinterpret_cast<Unk_RwWorld*>(WorldService::GetInstance())->FUN_141bd30a0().operator->()))->FUN_1403754f0());
+                                                          ((class CFieldData*)(void*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->FUN_1403754f0());
     strOut.Format(L"%d", nPrice);
 }
 

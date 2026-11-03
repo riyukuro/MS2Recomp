@@ -18,7 +18,7 @@ OutlineRenderStep::OutlineRenderStep(unsigned __int64 a, unsigned int b)
     : ReloadablePostProcess(a, "OutlineTechnique", 0, b), m_b8(0), m_c0(0)
 {
     NiFixedString name("OutlineRenderStep");
-    FUN_140c8f950(this, name);
+    SetName(name);
 }
 
 // @0x1416264b0

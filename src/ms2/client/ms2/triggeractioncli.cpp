@@ -128,8 +128,6 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 void XmlSetAttr(class TiXmlElement*, const char*, const CStringW&);   // SetAttribute(string)
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 
-CStringW FUN_1401d0160(const wchar_t* pszLeft, const CStringW& strRight);   // operator+
-bool FUN_14034eee0(const CStringW& a, const wchar_t* pszB) throw(); // case-insensitive equal
 
 // game config table (limits of the trigger editor)
 class Unk_SingletonObj1* FUN_1401d3200();   // C3: was FUN_1401d3200
@@ -478,7 +476,6 @@ MS2Ptr<TriggerObject> TriggerObject::Create(egf::Entity* pEntity)
 }
 
 // ---- entity / world service views ----
-void FUN_1409457c0(egf::Entity* e, unsigned id, const float& v);
 void FUN_14098c6e0(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
 void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
 void* FUN_1408b6b20(void* pDst, const void* pSrc);                        // copy an entity id
@@ -497,13 +494,21 @@ void FUN_140b60e40(egf::Entity *, bool);  // C3: the definition's signature
 void FUN_140b60e10(egf::Entity *, bool);  // C3: the definition's signature
 
 // sound manager (0x140d13c40)
-void* FUN_140d13c40();
+class CSoundEventMgr;
+template <> class TSingleton<CSoundEventMgr>   // C3: as soundeventmgr.h (GetInstance is out of line)
+{
+public:
+    TSingleton();                                   // 0x141786300
+    virtual ~TSingleton() { s_instance = 0; }
+    static CSoundEventMgr* s_instance;              // 0x143ac1928
+    static CSoundEventMgr* GetInstance();           // 0x140d13c40
+};
 class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_14177c100(unsigned int, float, unsigned int, int);
+    void FUN_14177ce30(efd::SmartPointer<egf::Entity> spEntity, int bOn);
 };
-void FUN_14177ce30(void* pMgr, Unk_EntRef ent, unsigned bOn);
 
 // world / animation services
 class Unk_TrigWorldSvc { public: bool FUN_141bd8e30(egf::EntityID kId, bool bShow, float fFade); };
@@ -514,7 +519,6 @@ NiAVObject * FUN_141b6efc0(egf::Entity *);  // C3: the definition's signature
 void FUN_141851f90(void *, float);  // C3: the definition's signature
 void FUN_141545250(egf::EntityID kId, unsigned b);
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
-void FUN_1409fabf0(void* pSlot, void* pObj);
 UIMinimapDialog * FUN_140c9b540(int);  // C3: the definition's signature
 class UIMinimapDialog   // C3: member view for the former free stand-ins
 {
@@ -568,7 +572,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 int nSound = atoi(((efd::utf8string*)&static_cast<class efd::utf8string const&>(kId))->c_str());
                 if (nSound > 0)
                 {
-                    ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177c100(nSound, 0, 0x80, 0);
+                    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(nSound, 0, 0x80, 0);
                     m_nHandle = nSound;
                 }
             }
@@ -577,7 +581,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         {
             efd::utf8string kStop;
             TRIG_ENT()->GetPropertyValue<efd::utf8string>(0xcdeb811e, kStop);
-            ((class CSoundEventMgr*)(void*)(FUN_140d13c40()))->FUN_14177c100(0, 0, 0x80, 0);
+            TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(0, 0, 0x80, 0);
             m_nHandle = 0;
         }
         break;
@@ -586,7 +590,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         efd::utf8string kId;
         TRIG_ENT()->GetPropertyValue<efd::utf8string>(0xed530c5f, kId);
         if (!((efd::utf8string*)&static_cast<class efd::utf8string const&>(kId))->empty())
-            FUN_14177ce30(FUN_140d13c40(), m_spEntity, bOn);
+            TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ce30(*reinterpret_cast<efd::SmartPointer<egf::Entity>*>(&m_spEntity), bOn);
         break;
     }
     case 3:
@@ -625,12 +629,11 @@ TriggerObjectMesh::TriggerObjectMesh()
 {
 }
 
-void FUN_140965410(const void* pEntId, void* pArg);
 
 // @0x140de6d70
 void FUN_140de6d70(TriggerObject* pObj, void* pArg)
 {
-    FUN_140965410(((void const*)&((egf::Entity*)(void const*)(TRIG_SP(pObj->m_spEntity).operator->()))->GetEntityID()), pArg);
+    ((egf::Entity*)(void const*)(TRIG_SP(pObj->m_spEntity).operator->()))->GetEntityID() == *(const egf::EntityID*)pArg;
 }
 
 // @0x140de6db0
@@ -672,7 +675,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 TRIG_ENT()->GetPropertyValue<efd::AssetID>(0x770e5fc6, kCur);
                 if (FUN_140de8e70(&kCur, &kNew))
                 {
-                    FUN_1409457c0(TRIG_ENT(), 0x2d7cad2d, fSkin);
+                    reinterpret_cast<Unk_CachedEntity*>(TRIG_ENT())->SetPropertyValue<float>(0x2d7cad2d, fSkin);
                     FUN_140de8bd0(TRIG_ENT(), 0x770e5fc6, &kNew);
                 }
             }
@@ -698,7 +701,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             NoticeMessage kReq;
             kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kFx))->c_str();
             kReq.m_nObject = 0;
-            FUN_1409fabf0(&kReq.m_spNode, ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID())))));
+            kReq.m_spNode = ((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID()))));
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
         void* pUi = FUN_140c9b540(0x4e29);
@@ -758,7 +761,7 @@ void TriggerObjectRope::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             NoticeMessage kReq;
             kReq.m_strName = ((efd::utf8string*)&static_cast<class efd::utf8string const&>(kFx))->c_str();
             kReq.m_nObject = 0;
-            FUN_1409fabf0(&kReq.m_spNode, ((void*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID())))));
+            kReq.m_spNode = ((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID()))));
             TSingleton<CEffectService>::GetInstance()->FUN_1411a4a00(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
     }
@@ -1012,7 +1015,6 @@ void* FUN_140948250(void* pMap, void* pTmp, unsigned* pKey);
 bool FUN_140947540(void* pA, void* pB);
 void* FUN_140947580(void* pMap, unsigned* pKey);
 void* FUN_140947490(void* pOut, unsigned nId, void* pValue, int nType);
-int FUN_140998240();
 
 // @0x140de8a40
 // Unk_CachedEntity::CachePropertyValue<efd::AssetID> as a free function: saves the old AssetID once per caching session.
@@ -1023,8 +1025,8 @@ void FUN_140de8a40(egf::Entity* pEntity, unsigned nId, void* pValue)
         if (((Unk_CachedEntity*)pEntity)->m_mapCache.find(nId) == ((Unk_CachedEntity*)pEntity)->m_mapCache.end())
         {
             efd::AssetID kCur;
-            static_cast<Unk_EntityAccess*>(pEntity)->GetPropertyValueUnsafe(nId, &kCur, FUN_140998240());
-            ((Unk_CachedEntity*)pEntity)->m_mapCache[nId] = Unk_PropertyCacheEntry(nId, ::new efd::AssetID(kCur), FUN_140998240());
+            static_cast<Unk_EntityAccess*>(pEntity)->GetPropertyValueUnsafe(nId, &kCur, efd::GetClassIDFromType<efd::AssetID>());
+            ((Unk_CachedEntity*)pEntity)->m_mapCache[nId] = Unk_PropertyCacheEntry(nId, ::new efd::AssetID(kCur), efd::GetClassIDFromType<efd::AssetID>());
         }
     }
 }
@@ -1033,7 +1035,7 @@ void FUN_140de8a40(egf::Entity* pEntity, unsigned nId, void* pValue)
 void FUN_140de8bd0(egf::Entity* pEntity, unsigned nId, efd::AssetID* pValue)
 {
     FUN_140de8a40(pEntity, nId, pValue);
-    static_cast<Unk_EntityAccess*>(pEntity)->SetPropertyValueUnsafe(nId, pValue, FUN_140998240());
+    static_cast<Unk_EntityAccess*>(pEntity)->SetPropertyValueUnsafe(nId, pValue, efd::GetClassIDFromType<efd::AssetID>());
 }
 
 // 0x140de8c90 is efd::AssetID's copy constructor (AssetID.inl), emitted here for the ::new efd::AssetID(kCur) in
@@ -1094,7 +1096,7 @@ void TriggerStateCli::Save(void* pNode)
         {
             CStringW strName = spTrans->m_spCond->GetName();
             if (spTrans->m_spCond->GetNot() != 0)
-                strName = FUN_1401d0160(L"!", strName);
+                strName = L"!" + strName;
             XmlSetAttr((class TiXmlElement*)(&elCond), "name", strName);
             SaveArgs(&elCond, *spTrans->m_spCond->GetArgs());
             for (size_t k = 0; k < spTrans->m_actions.GetCount(); k++)
@@ -1134,7 +1136,7 @@ int TriggerStateCli::Validate(int* pnReason)
     }
     for (unsigned i = 0; i < m_onEnter.GetCount(); i++)
     {
-        if (FUN_14034eee0(m_onEnter.GetAt(i)->GetName(), L"DoChangeCubeState"))
+        if (m_onEnter.GetAt(i)->GetName() != L"DoChangeCubeState")
         {
             *pnReason = 7;
             return 0;
@@ -1160,7 +1162,7 @@ int TriggerStateCli::Validate(int* pnReason)
         TriggerTransitionCli* pTrans = m_transitions.GetAt(j).get();
         if (pTrans != 0)
         {
-            if (FUN_14034eee0(pTrans->m_spCond->GetName(), L"OnSwitchCube"))
+            if (pTrans->m_spCond->GetName() != L"OnSwitchCube")
             {
                 *pnReason = 9;
                 return 0;

@@ -537,9 +537,6 @@ MS2Ptr<Unk_PCBaseComp_aa8> FUN_1418fbdb0(int nActorId);            // UIChatBall
 MS2Ptr<Unk_PCBaseComp_ab8> FUN_141a8fb50(int nActorId);            // UIPopupProfileImage
 MS2Ptr<Unk_PCBaseComp_ac8> FUN_140ba8cf0(int nActorId);
 MS2Ptr<Unk_PCLinkFD8> FUN_141993100(int nActorId);
-#ifdef __clang__
-CString FUN_140298360(const char* psz, const CString& str);             // psz + str (ATL operator+)
-#endif
 void FUN_141a60f00(int nActorId);                                   // the level changed (name tag)
 // The game options (FUN_1409a8b10).
 class Unk_PCOption
@@ -4102,14 +4099,8 @@ void PC::FUN_14165cac0()
                 if (spData.get())
                 {
                     kRot = spData->m_ptRotation;
-#ifdef __clang__
-                    // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's copy.
-                    CString strUrn = FUN_140298360("urn:gamebryo-animation:",
-                        FUN_141b6ed00(bBusy != 0 ? spData->m_attrB.m_strKfm : spData->m_attrA.m_strKfm));
-#else
                     CString strUrn = "urn:gamebryo-animation:"
                         + FUN_141b6ed00(bBusy != 0 ? spData->m_attrB.m_strKfm : spData->m_attrA.m_strKfm);
-#endif
                     efd::AssetID kUrn;
                     kUrn.SetURN(efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
                     kAsset = kUrn.GetURN();

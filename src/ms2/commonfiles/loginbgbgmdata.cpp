@@ -44,7 +44,7 @@ CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Tabl
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 unsigned int FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned int nDefault);
-void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);   // split into numbers
+template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x1401782a0 for std::vector<unsigned> (xmlattr.h)
 __int64 GetServerTime();                                                  // server time
 int FUN_140768010(int, int);  // C3: the definition's signature
 
@@ -111,7 +111,7 @@ bool LoginBgBgmTable::Load()
         if (strMonth.IsEmpty())
             continue;
         std::vector<unsigned int> months;
-        FUN_1401782a0(strMonth, months, ",");
+        XmlSplit(strMonth, months, ",");
         CString strBgDay = Unk_ReadString((class Unk_XmlNode*)(nodes[i]), "clientPropertyBgDay", CString(""));
         if (strBgDay.IsEmpty())
             continue;
@@ -119,10 +119,10 @@ bool LoginBgBgmTable::Load()
         if (strBgmId.IsEmpty())
             continue;
         std::vector<unsigned int> bgmIds;
-        FUN_1401782a0(strBgmId, bgmIds, ",");
+        XmlSplit(strBgmId, bgmIds, ",");
         CString strBgmParam = Unk_ReadString((class Unk_XmlNode*)(nodes[i]), "bgmParam", CString(""));
         std::vector<unsigned int> bgmParams;
-        FUN_1401782a0(strBgmParam, bgmParams, ",");
+        XmlSplit(strBgmParam, bgmParams, ",");
         unsigned nIds = bgmIds.size();
         unsigned nParams = bgmParams.size();
         if (nIds > nParams)

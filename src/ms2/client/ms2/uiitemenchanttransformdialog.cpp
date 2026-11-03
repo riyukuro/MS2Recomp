@@ -72,25 +72,6 @@ public:
     virtual void vfunc_24(bool bRefresh);
 };
 
-// A row of the item enchant transform table: the fee and the output items (id, rank, count) of one input item.
-class Unk_TransformRow : public CPtred
-{
-public:
-    __int64 m_nFee;                                     // +0x18
-    ATL::CAtlArray<int> m_ids;                          // +0x20
-    ATL::CAtlArray<int> m_ranks;                        // +0x40
-    ATL::CAtlArray<int> m_counts;                       // +0x60
-};
-MS2_CHECK_OFFSET(Unk_TransformRow, m_ids, 0x20);
-MS2_CHECK_OFFSET(Unk_TransformRow, m_counts, 0x60);
-
-// The transform table singleton.
-class Unk_TransformTable
-{
-public:
-    MS2Ptr<Unk_TransformRow> FUN_1405924d0(MS2Ptr<CItem> item);     // the row of an item (NULL: not transformable)
-};
-
 // The player's item inventory (global object).
 class Unk_TfInventory : public Unk_Inventory { };
 extern Unk_Inventory g_143ab2a90;   // C3: was DAT_143ab2a90
@@ -120,7 +101,6 @@ void FUN_141415600(const CString& strSlot);                         // unbind a 
 void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // localized text
 CStringW FUN_1409404f0(__int64 n);                                  // number text
-CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& strOption, bool* pHighSa);   // the item's option text
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,9 +111,9 @@ UIItemEnchantTransformDialog::UIItemEnchantTransformDialog()
     , m_selected(0)
 {
     m_2c = 0xc;
-    m_strTargetBag = FUN_140540050("{0}.Target", GetTypeName());
-    m_strSelectBag = FUN_140540050("{0}.Select", GetTypeName());
-    m_strOutputBag = FUN_140540050("{0}.Output", GetTypeName());
+    m_strTargetBag = StringFormat<CString>("{0}.Target", GetTypeName());
+    m_strSelectBag = StringFormat<CString>("{0}.Select", GetTypeName());
+    m_strOutputBag = StringFormat<CString>("{0}.Output", GetTypeName());
 }
 
 // @0x140c3ced0
@@ -319,7 +299,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     MS2Ptr<CItem> item = m_targets[nIndex];
     if (CItemEnchantTransformTable::FUN_140592110(item) == 0)
         return;
-    MS2Ptr<Unk_TransformRow> row = reinterpret_cast<Unk_TransformTable*>(TSingleton<CItemEnchantTransformTable>::GetInstance())->FUN_1405924d0(item);
+    CEnchantTransformDataPtr row = TSingleton<CItemEnchantTransformTable>::GetInstance()->FindByItem(item);
     if (row == 0)
         return;
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
@@ -332,17 +312,17 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     ASObj obj(2);
     obj.FUN_1407cbb20(s_strItemName, m_selected->FUN_140528160());
     obj.FUN_1407cba60("binding", m_strSelectBag);
-    CStringW strFee = FUN_14028dfa0<CStringW>(L"s_item_enchant_transform_fee", FUN_1409404f0(row->m_nFee));
+    CStringW strFee = FUN_14028dfa0<CStringW>(L"s_item_enchant_transform_fee", FUN_1409404f0(row->m_nNeedMeso));
     obj.FUN_1407cbb20("transformFee", strFee);
     m_outputs.RemoveAll();
     for (unsigned i = 0; i < m_outputNames.GetCount(); ++i)
         FUN_141415600(m_outputNames[i]);
     m_outputNames.RemoveAll();
     ASArray outputs(2);
-    for (unsigned i = 0; i < row->m_ids.GetCount(); ++i) {
-        int nId = row->m_ids[i];
-        int nRank = row->m_ranks[i];
-        int nCount = row->m_counts[i];
+    for (unsigned i = 0; i < row->m_arrOutputId.GetCount(); ++i) {
+        int nId = row->m_arrOutputId[i];
+        int nRank = row->m_arrOutputRank[i];
+        int nCount = row->m_arrOutputCount[i];
         MS2Ptr<CItem> out(new CItem());
         if (out->FUN_14052b130(nId, nRank, 0) != 0) {
             out->FUN_14052b340(nCount);
@@ -372,10 +352,10 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
         return;
     if (m_selected == 0)
         return;
-    MS2Ptr<Unk_TransformRow> row = reinterpret_cast<Unk_TransformTable*>(TSingleton<CItemEnchantTransformTable>::GetInstance())->FUN_1405924d0(m_selected);
+    CEnchantTransformDataPtr row = TSingleton<CItemEnchantTransformTable>::GetInstance()->FindByItem(m_selected);
     if (row == 0)
         return;
-    if (DAT_143ab2898 < row->m_nFee) {
+    if (DAT_143ab2898 < row->m_nNeedMeso) {
         FUN_141275260(0x34, 1, 1);
         return;
     }

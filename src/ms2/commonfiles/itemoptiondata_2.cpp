@@ -203,7 +203,7 @@ static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an item id
 int FindStatByName(const CStringA& strName);            // stat name -> id (-1 when none)
 unsigned int FUN_14081d260(CStringA const&);             // special option name -> id (0 when none)
-const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
+const CString& GetStatName(unsigned nStat);             // the xml name of a stat
 const CString& FUN_14081d380(int nStat);                // the xml name of a special stat
 bool IsStatKindOne(int nStat);
 bool FUN_14081dc50(int nStat);
@@ -221,12 +221,12 @@ void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* p
 int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nSpecial);   // the special stat is blocked
 int FUN_140768010(int nRange, int nBase);               // random number in [nBase, nBase + nRange)
 // probability.cpp: the roll logs
-bool FUN_14073ede0(int nProbVer, int nStatId, int nValue, Unk_ProbabilityLog* pLogs);
-void FUN_14073e750(int nProbVer, int nCode, const Unk_ItemOptionValuePicker& picker,
-                   const std::vector<ItemOptionValueRandom*>& vPicked,
-                   const std::vector<MS2Ptr<ItemOptionValueRandom> >& vLocked,
-                   std::pair<ItemOptionValueRandom*, double>* pArmor, std::pair<ItemOptionValueRandom*, double>* pSpecial,
-                   Unk_ProbabilityLog* pLogs);
+bool AppendItemOptionRandomStatLog(unsigned nProbVer, unsigned nStatId, int nValue, Unk_ProbabilityLog* pLogs);
+bool AppendItemOptionRandomOptionLog(unsigned nProbVer, int nCode, const Unk_ItemOptionValuePicker& picker,
+                                     const std::vector<ItemOptionValueRandom*>& vPicked,
+                                     const std::vector<MS2Ptr<ItemOptionValueRandom> >& vLocked,
+                                     std::pair<ItemOptionValueRandom*, double>* pArmor, std::pair<ItemOptionValueRandom*, double>* pSpecial,
+                                     Unk_ProbabilityLog* pLogs);
 template <class E> int XmlValueByName(Unk_140165cf0* pElem, const char* pszName, E& eOut);   // additionalactionadditional.cpp   // the IAT floor (<math.h> declares it static-CRT)
 
 // @0x1405ce250
@@ -295,7 +295,7 @@ CString ItemOptionValue::FUN_1405ce4a0()
 {
     int nStat = GetStat();
     if (nStat != -1)
-        return FUN_14082efb0(nStat);
+        return GetStatName(nStat);
     return FUN_14081d380(GetSpecial());
 }
 
@@ -1403,7 +1403,7 @@ CString ItemOptionValueRandom::FUN_1405d26c0()
 {
     int nStat = GetStat();
     if (nStat != -1)
-        return FUN_14082efb0(nStat);
+        return GetStatName(nStat);
     return FUN_14081d380(GetSpecial());
 }
 
@@ -2380,7 +2380,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
     if (vOut.empty())
         return false;
     if (pLogs != NULL)
-        FUN_14073e750(m_nProbVer, m_nCode, picker, vPicked, vLockedValues, &kArmor, &kSpecial, pLogs);
+        AppendItemOptionRandomOptionLog(m_nProbVer, m_nCode, picker, vPicked, vLockedValues, &kArmor, &kSpecial, pLogs);
     return true;
 }
 
@@ -2588,7 +2588,7 @@ int ItemOptionRandomContext::FUN_1405d9b10(int nStatId)
 // @0x1405d9b40
 int ItemOptionRandomContext::FUN_1405d9b40(int nStatId, Unk_Random* pRandom)
 {
-    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6190(nStatId, pRandom);
+    return ((class CItemOptionTable*)FUN_140166430())->RollVariation(nStatId, pRandom);
 }
 
 // @0x1405d9b80
@@ -2655,7 +2655,7 @@ int ItemOptionRandomContext::FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (!pLogs)
             return true;
-        return FUN_14073ede0(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
+        return AppendItemOptionRandomStatLog(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
     };
     if (spValue->GetStat() != -1)
     {
@@ -2699,7 +2699,7 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (!pLogs)
             return true;
-        return FUN_14073ede0(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
+        return AppendItemOptionRandomStatLog(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
     };
     if (spValue->GetStat() != -1)
     {
@@ -2749,7 +2749,7 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (!pLogs)
             return true;
-        return FUN_14073ede0(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
+        return AppendItemOptionRandomStatLog(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
     };
     if (spValue->GetStat() != -1)
     {

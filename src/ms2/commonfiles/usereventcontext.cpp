@@ -4,13 +4,14 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\usereventcontext.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "usereventcontext.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 template<class S> void TokenizeEvent(const CStringW&, ATL::CAtlArray<S>&, const wchar_t*);
 void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 int FUN_140718170(const CString&);
-Unk_EventTime FUN_140718950(const CString&);
-CString FUN_140274f70(const CStringW&);
+CMsTime FUN_140718950(const CString&);
+CString FUN_140274f70(CStringW&);
 // @0x1408d5470
 void UserEventContext::FUN_1408d5470(const Unk_EventCore& other) { data = other; }
 MS2_REPLACE_METHOD(0x1408D5470, UserEventContext, FUN_1408d5470, 37, 0x8FF6C884);
@@ -44,7 +45,7 @@ bool UserEventContext::FUN_1408d5630(const CStringW& text) {
     int rarity = FUN_140718170(fields[2]);
     int kind = FUN_140718170(fields[3]);
     __int64 time = 0;
-    if (count > 4) { Unk_EventTime parsed = FUN_140718950(fields[4]); time = parsed.FUN_140282020(); }
+    if (count > 4) { CMsTime parsed = FUN_140718950(fields[4]); time = parsed.Get(); }
     return FUN_1408d54a0(id, number, rarity, kind, time);
 }
 MS2_REPLACE_METHOD(0x1408D5630, UserEventContext, FUN_1408d5630, 393, 0x3753F83F);

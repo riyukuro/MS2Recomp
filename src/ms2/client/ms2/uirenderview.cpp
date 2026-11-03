@@ -28,7 +28,6 @@ public:
     struct IDirect3DBaseTexture9* GetD3DTexture() const;
 };
 void FUN_14272b7f0(void* pImage, void* pD3DTexture);            // sets the D3D texture of a swf image
-extern char DAT_143d6eed8;                                      // NiDX92DBufferData::ms_RTTI
 extern NiFixedString DAT_143ae52f8;                             // the global shader constant name
 void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
 void FUN_141d18b90(NiNode* pRoot, const NiFixedString& kName);  // sets the node name
@@ -247,7 +246,7 @@ bool UIRenderView::FUN_141ab7870(CStringW strPath, int nFormat)
         Ni2DBuffer* pBuffer = pGroup->GetBuffer(0);
         if (pBuffer != 0)
         {
-            NiDX92DBufferData* pData = NiDX92DBufferData::DynamicCast((class NiRTTI const*)(&DAT_143d6eed8), (class NiDX92DBufferData const*)(pBuffer->GetRendererData()));
+            NiDX92DBufferData* pData = NiDX92DBufferData::DynamicCast(&NiDX92DBufferData::ms_RTTI, (class NiDX92DBufferData const*)(pBuffer->GetRendererData()));
             if (pData != 0)
             {
                 HRESULT hr = E_FAIL;

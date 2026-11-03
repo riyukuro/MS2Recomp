@@ -22,7 +22,7 @@ static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 void* FUN_1422bb8b0(int nMovieId);                                     // the movie of a UI layer
 CStringW FUN_14082f000(int nStat);                                     // stat display text
 CStringW GetStringCommon(int nId);                                       // string table text
-CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);           // formatted string-table text
+template <class A, class B> CStringW BlockFormat(int nId, const A& a, const B& b);
 
 // @0x1409f01a0
 ASStat::ASStat(int nType) : ASObj(nType)
@@ -74,7 +74,7 @@ MS2_REPLACE_METHOD(0x1409F05D0, ASStat, AddStat, 281, 0x44847E99);
 // @0x1409f06f0
 void ASStat::AddEssentialText(int a1, int a2)
 {
-    CStringW strValue = FUN_1409e9bc0(0x4f8, a1, a2);
+    CStringW strValue = BlockFormat<unsigned, unsigned>(0x4f8, reinterpret_cast<const unsigned&>(a1), reinterpret_cast<const unsigned&>(a2));
     ASObj row(2);
     row.FUN_1407cbb20("statName", GetStringCommon(0x4aa));
     row.FUN_1407cbb20("statValue", strValue);

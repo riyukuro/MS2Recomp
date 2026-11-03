@@ -136,7 +136,7 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-int FUN_1418fccc0(int nMsg, unsigned __int64 p2, unsigned __int64 p3, const CStringW& strText);   // the key changes the text input
+int FUN_1418fccc0(int nMsg, unsigned __int64 p2, unsigned __int64 p3, CStringW* strText);   // the key changes the text input
 
 // The inventory slot (invenslot.cpp, efd class id 0x6200023): only what this unit calls. The owning unit's header is not
 // in the tree yet.
@@ -546,7 +546,7 @@ void BlackMarketPageItemSearch::FUN_140f0d630(int nMsg, void* p2, void* p3)
     if (m_spInputName == 0 || m_spInputName->GetFocused() == 0)
         return;
     CStringW strText = m_spInputName->GetText();
-    if (FUN_1418fccc0(nMsg, (unsigned __int64)p2, (unsigned __int64)p3, strText) == 0)
+    if (FUN_1418fccc0(nMsg, (unsigned __int64)p2, (unsigned __int64)p3, &strText) == 0)
         return;
     ASDataProvider candidates(2);
     if (strText.GetLength() < 1)

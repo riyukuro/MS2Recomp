@@ -91,7 +91,6 @@ public:
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 void FUN_140710590(COutPacket&);                            // send
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
-CStringW FUN_140938ae0(CStringW strKey, const int& nArg);          // string table text with one number
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
 void FUN_1412751f0(const CStringW& text, int nA, int nB);   // notice
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
@@ -378,7 +377,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
         ASObj objTarget(2);
         objTarget.FUN_1407cba60("binding", m_strBag);
         ((class AScript&)(objTarget)).FUN_1407cbb20("name", FUN_14183e9c0(spItem->FUN_140527b10(), spItem->GetRarity()));
-        ((class AScript&)(objTarget)).FUN_1407cbb20("consume", FUN_140938ae0(CStringW(L"s_itemextraction_consume"), spRow->m_nConsume));
+        ((class AScript&)(objTarget)).FUN_1407cbb20("consume", FUN_14028dfa0<unsigned>(CStringW(L"s_itemextraction_consume"), reinterpret_cast<const unsigned&>(spRow->m_nConsume)));
         items.PushValue(objTarget.FUN_1422bb870());
         ASObj objScroll(2);
         objScroll.FUN_1407cba60("binding", m_strBag);
@@ -420,7 +419,7 @@ void UIItemExtractionScrollDialog::OnOk()
     if (spRow == 0)
         return;
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(
-        1, FUN_140938ae0(CStringW(L"s_itemextraction_conform"), spRow->m_nConsume), 0, CStringW(L""));
+        1, FUN_14028dfa0<unsigned>(CStringW(L"s_itemextraction_conform"), reinterpret_cast<const unsigned&>(spRow->m_nConsume)), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemExtractionScrollDialog::SendItemExtractionScroll));

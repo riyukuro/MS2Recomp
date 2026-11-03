@@ -12,68 +12,190 @@ progress.py's imports stage (after the engine stage) turns them into status.tsv 
            import library: bytematch.ORDINAL_LIBS), AND some compiled object of the merged tree (game unit objs of the
            cache + objs of the live engine units under <cache>/gb/obj) references that symbol as an undefined external without the
            __imp_ prefix (it calls X the way the original did, so the full link emits this thunk), or references a
-           weak alias msvcrt.lib resolves to it (`_setjmp` -> `__intrinsic_setjmp`: crt_aliases)
+           weak alias msvcrt.lib resolves to it (`_setjmp` -> `__intrinsic_setjmp`: crt_aliases), or a static member of
+           the CRT/MFC/ATL libs the link pulls in references it that way (static_lib_refs: __scrt_common_main_seh in
+           msvcrt.lib's exe_winmain.obj calls _initterm, mfcs140.lib's appmodul.obj calls AfxWinMain ...)
   stub     a verified thunk no object references that way yet (its callers are not recovered, or ours call through
            __imp_X: dllimport declarations, which need no thunk)
 Functions named `<DLL>::<name>` that are not such thunks (compiled tail-call wrappers: 48 FF 25 / E9 jumps, 16-aligned)
 are left to the units/engine TUs that own them; VAs already claimed by a game or engine row are never touched.
-Undefined-external lists are cached per object (path, mtime, size) in <cache>/imports.json.
+Undefined-external lists are cached per object (path, mtime, size) in <cache>/imports.json, with the object's definitions
+of the static lib members' symbols (a symbol the objects define pulls no lib member for it).
+MS2_IMP_STATIC_LIBS=0 leaves the static lib members out (only the objects' own references count).
 """
 import collections
 import json
 import os
 import struct
 import sys
+import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import ms2paths  # noqa: E402
 
 FUNCS = ms2paths.FUNCTIONS_TSV
+# import libraries that name the exe's by-ordinal imports for the thunk credit only (in bytematch.ORDINAL_LIBS they would name
+# them for every tool, and fullexe/implibs.py would then import them by name): DSOUND.DLL #11 = DirectSoundCreate8
+THUNK_ORDINAL_LIBS = [os.path.join(os.path.dirname(os.path.dirname(ms2paths.winsdk_include())), "Lib",
+                                   os.path.basename(ms2paths.winsdk_include()), "um", "x64", "dsound.lib")]
 
 
-def undefined_externals(path):
-    """names of the undefined external symbols of a COFF object (reads only the symbol and string tables)"""
-    with open(path, "rb") as f:
-        h = f.read(56)
-        s1, s2 = struct.unpack_from("<HH", h, 0)
-        if s1 == 0 and s2 == 0xFFFF:                        # ANON_OBJECT_HEADER_BIGOBJ
-            symoff, nsym = struct.unpack_from("<II", h, 48)
-            sz, secfmt = 20, "<i"
-        else:
-            symoff, nsym = struct.unpack_from("<II", h, 8)
-            sz, secfmt = 18, "<h"
-        f.seek(symoff)
-        tab = f.read(nsym * sz)
-        strsz, = struct.unpack("<I", f.read(4))
-        strs = f.read(max(0, strsz - 4))
-    out, i = set(), 0
+# the static (non-import) members of these libs are linked like objects: mfcs140.lib's appmodul.obj (WinMain ->
+# AfxWinMain), msvcrt.lib's CRT startup (exe_winmain.obj ...), vcruntime/msvcprt's static parts, atls.lib. Search order =
+# afx.h's (mfc140.lib, mfcs140.lib, then msvcrt.lib); the link's entry point seeds the search. The imports of
+# STATIC_IMPORTS_FIRST come before them: mfc140.lib exports operator new/delete, so the exe calls MFC140's (thunks
+# 0x14274863a ...) and msvcrt.lib's new_scalar.obj/delete_scalar.obj are not linked.
+STATIC_IMPORTS_FIRST = [os.path.join("atlmfc", "lib", "x64", "mfc140.lib")]
+STATIC_LIBS = [os.path.join("atlmfc", "lib", "x64", "mfcs140.lib"), os.path.join("lib", "x64", "msvcrt.lib"),
+               os.path.join("lib", "x64", "vcruntime.lib"), os.path.join("lib", "x64", "msvcprt.lib"),
+               os.path.join("atlmfc", "lib", "x64", "atls.lib")]
+STATIC_ENTRY = "WinMainCRTStartup"
+STATIC_ON = os.environ.get("MS2_IMP_STATIC_LIBS", "1") != "0"
+
+
+def coff_externals(read, size=None):
+    """(undefined, defined) external symbol names of a COFF object; read(offset, n) -> bytes. Short import members and
+    anonymous objects other than bigobj give None."""
+    h = read(0, 56)
+    s1, s2 = struct.unpack_from("<HH", h, 0)
+    if s1 == 0 and s2 == 0xFFFF:
+        if struct.unpack_from("<H", h, 4)[0] < 2:           # short import member (version 0)
+            return None
+        symoff, nsym = struct.unpack_from("<II", h, 48)     # ANON_OBJECT_HEADER_BIGOBJ
+        sz, secfmt = 20, "<i"
+    else:
+        symoff, nsym = struct.unpack_from("<II", h, 8)
+        sz, secfmt = 18, "<h"
+    tab = read(symoff, nsym * sz)
+    strsz, = struct.unpack("<I", read(symoff + nsym * sz, 4) or b"\0\0\0\0")
+    strs = read(symoff + nsym * sz + 4, max(0, strsz - 4))
+    und, dfn, i = set(), set(), 0
     while i < nsym:
         o = i * sz
         val, = struct.unpack_from("<I", tab, o + 8)
         sec, = struct.unpack_from(secfmt, tab, o + 12)
         scl, naux = tab[o + sz - 2], tab[o + sz - 1]
-        if sec == 0 and scl == 2 and val == 0:              # IMAGE_SYM_UNDEFINED, IMAGE_SYM_CLASS_EXTERNAL, not common
+        if scl == 2 and (sec != 0 or val == 0):             # IMAGE_SYM_CLASS_EXTERNAL: defined, or undefined (not common)
             if tab[o:o + 4] == b"\0\0\0\0":
                 so, = struct.unpack_from("<I", tab, o + 4)
                 so -= 4                                     # string table offsets count its 4-byte size field
                 n = strs[so:strs.index(b"\0", so)]
             else:
                 n = tab[o:o + 8].rstrip(b"\0")
-            out.add(n.decode("latin1"))
+            (und if sec == 0 else dfn).add(n.decode("latin1"))
         i += 1 + naux
+    return und, dfn
+
+
+def file_externals(path):
+    """(undefined, defined) externals of a COFF object file (reads only the header, symbol and string tables)"""
+    with open(path, "rb") as f:
+        def read(off, n):
+            f.seek(off)
+            return f.read(n)
+        return coff_externals(read)
+
+
+def undefined_externals(path):
+    """names of the undefined external symbols of a COFF object (reads only the symbol and string tables)"""
+    return file_externals(path)[0]
+
+
+def import_lib_symbols(path):
+    """the symbols an import library's short import members define (X and __imp_X)"""
+    out = set()
+    try:
+        d = open(path, "rb").read()
+    except OSError:
+        return out
+    o = 8
+    while o + 60 <= len(d):
+        size = int(d[o + 48:o + 58].split()[0])
+        m = d[o + 60:o + 60 + size]
+        o += 60 + size + (size & 1)
+        if len(m) >= 20 and m[:4] == b"\0\0\xff\xff" and struct.unpack_from("<H", m, 4)[0] == 0:
+            sym = m[20:].split(b"\0")[0].decode("latin1")
+            out |= {sym, "__imp_" + sym}
     return out
 
 
-def referenced(objs, cache_path=None):
-    """{symbol: number of objects that reference it undefined}; per-object lists cached by (mtime, size)"""
+def static_members():
+    """[(member name, undefined, defined)] of the static members of STATIC_LIBS, in search order, after one pseudo
+    member per STATIC_IMPORTS_FIRST lib that defines its imports (and references nothing); [] when the toolchain is
+    absent"""
+    out = []
+    for rel in STATIC_IMPORTS_FIRST:
+        syms = import_lib_symbols(os.path.join(ms2paths.msvc_tools_dir(), rel))
+        if syms:
+            out.append((os.path.basename(rel) + ":<imports>", set(), syms))
+    for rel in STATIC_LIBS:
+        try:
+            d = open(os.path.join(ms2paths.msvc_tools_dir(), rel), "rb").read()
+        except OSError:
+            continue
+        o, longnames = 8, b""
+        while o + 60 <= len(d):
+            hdr, size = d[o:o + 16], int(d[o + 48:o + 58].split()[0])
+            m = d[o + 60:o + 60 + size]
+            o += 60 + size + (size & 1)
+            if hdr.startswith(b"// "):
+                longnames = m
+                continue
+            if hdr.startswith(b"/ ") or len(m) < 56:
+                continue                                    # linker members
+            if hdr[:1] == b"/" and hdr[1:2].isdigit():
+                k = int(hdr[1:].split()[0])
+                name = longnames[k:].split(b"\0")[0]
+            else:
+                name = hdr.split(b"/")[0]
+            if struct.unpack_from("<H", m, 0)[0] not in (0, 0x8664):
+                continue
+            r = coff_externals(lambda off, n, m=m: m[off:off + n])
+            if r:
+                out.append((os.path.basename(rel) + ":" + name.decode("latin1").replace("\\", "/").split("/")[-1],) + r)
+    return out if len(out) > len(STATIC_IMPORTS_FIRST) else []
+
+
+def static_lib_refs(members, undefined, defined, entry=STATIC_ENTRY):
+    """{symbol: number of pulled members referencing it undefined}: the static lib members a link of objects with these
+    undefined/defined externals pulls in (a member for each still-undefined symbol, the first in search order that defines
+    it, until nothing more resolves), starting from the entry point"""
+    first = {}
+    for k, (_, und, dfn) in enumerate(members):
+        for n in dfn:
+            first.setdefault(n, k)
+    have, need, pulled = set(defined), [n for n in set(undefined) | {entry} if n not in defined], set()
+    while need:
+        n = need.pop()
+        k = first.get(n)
+        if k is None or k in pulled or n in have:
+            continue
+        pulled.add(k)
+        have |= members[k][2]
+        need += [u for u in members[k][1] if u not in have]
+    refs = collections.Counter()
+    for k in pulled:
+        refs.update(members[k][1])
+    return refs, sorted(members[k][0] for k in pulled)
+
+
+def referenced(objs, cache_path=None, static=None, pulled=None):
+    """{symbol: number of objects that reference it undefined}, plus the references of the static lib members the
+    objects pull in (static_lib_refs; static=False or MS2_IMP_STATIC_LIBS=0: without them; pulled: a list that gets the
+    pulled member names); per-object lists cached by (mtime, size)"""
+    if static is None:
+        static = STATIC_ON
+    members = static_members() if static else []
+    lib_defs = set().union(*[m[2] for m in members]) if members else set()
+    key = "%08x" % (zlib.crc32("\n".join(sorted(lib_defs)).encode("latin1")) & 0xffffffff)
     old = {}
     if cache_path and os.path.exists(cache_path):
         try:
             old = json.load(open(cache_path))
         except ValueError:
             old = {}
-    new, refs = {}, collections.Counter()
+    new, refs, defs = {}, collections.Counter(), set()
     for p in objs:
         try:
             st = os.stat(p)
@@ -81,17 +203,26 @@ def referenced(objs, cache_path=None):
             continue
         stamp = [st.st_mtime_ns, st.st_size]
         e = old.get(p)
-        if not e or e[0] != stamp:
+        if not e or e[0] != stamp or (members and (len(e) < 4 or e[3] != key)):
             try:
-                e = [stamp, sorted(undefined_externals(p))]
-            except (OSError, struct.error, ValueError):
+                und, dfn = file_externals(p)
+            except (OSError, struct.error, ValueError, TypeError):
                 continue
+            # entry: stamp, undefined externals, definitions of static lib member symbols, the lib symbol set's key
+            e = [stamp, sorted(und), sorted(dfn & lib_defs), key] if members else [stamp, sorted(und)]
         new[p] = e
         refs.update(e[1])
+        if members:
+            defs.update(e[2])
     if cache_path:
         tmp = cache_path + ".tmp"
         json.dump(new, open(tmp, "w"))
         os.replace(tmp, cache_path)
+    if members:
+        lib_refs, names = static_lib_refs(members, refs, defs)
+        refs.update(lib_refs)
+        if pulled is not None:
+            pulled += names
     return refs
 
 
@@ -188,10 +319,17 @@ def credit(exe, refs, claimed):
     """status rows [(va, name, unit, state, size)] for the verified thunks whose VA no game/engine row claims"""
     verified, _ = thunks(exe)
     alias = crt_aliases()
+    import bytematch as bm
+    ords = {}
+    for lib in THUNK_ORDINAL_LIBS:
+        if os.path.exists(lib):
+            ords.update(bm.import_lib_ordinals(lib))
     out = []
     for va, size, name, dll, sym in verified:
         if va in claimed:
             continue
+        if not sym and name.split("::", 1)[1].startswith("Ordinal_"):
+            sym = ords.get((dll.lower(), int(name.split("::", 1)[1][8:])))
         state = "matched" if sym and any(refs.get(s) for s in [sym] + alias.get(sym, [])) else "stub"
         out.append((va, name, "imp:" + dll.lower(), state, size))
     return out
@@ -224,15 +362,27 @@ def main():
     ap.add_argument("--cache", default=os.path.join(ROOT, "build", "progress"),
                     help="progress cache whose objs count as references (default build/progress)")
     ap.add_argument("-v", "--verbose", action="store_true", help="list rejected entries and unreferenced thunks")
+    ap.add_argument("--no-static", action="store_true", default=not STATIC_ON,
+                    help="count only the objects' references (default with MS2_IMP_STATIC_LIBS=0)")
+    ap.add_argument("--compare", action="store_true", help="list the thunks whose state the static lib members change")
     a = ap.parse_args()
     exe = bm.Exe(bm.EXE)
     objs = []
     for r, _, fs in os.walk(os.path.join(a.cache, "obj")):
         objs += [os.path.join(r, f) for f in fs if f.endswith(".obj")]
-    refs = referenced(cache_objs(a.cache, objs))
+    pulled = []
+    refs = referenced(cache_objs(a.cache, objs), static=not a.no_static, pulled=pulled)
     rows = credit(exe, refs, set())
     print("\n".join(summary(rows)))
+    if a.compare:
+        base = {va: st for va, _, _, st, _ in credit(exe, referenced(cache_objs(a.cache, objs), static=False), set())}
+        print(f"static lib members pulled: {len(pulled)}")
+        for va, name, unit, st, size in rows:
+            if st != base.get(va):
+                print(f"{base.get(va)} -> {st} {va:x} {name}")
     if a.verbose:
+        for n in pulled:
+            print(f"pulled {n}")
         _, rej = thunks(exe)
         for va, name, why in sorted(rej):
             print(f"rejected {va:x} {name}: {why}")

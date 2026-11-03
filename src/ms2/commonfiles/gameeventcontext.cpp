@@ -300,6 +300,11 @@ public:
 };
 
 // Out-of-unit helpers.
+class CNpcShopProductCli   // C3: member view (npcshopproductbase.h clashes with the placeholder CNpcShopProductBase)
+{
+public:
+    __int64 FUN_140db8180();        // 0x140db8180 price (+0xa0)
+};
 int FUN_140718200(CStringW* text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
@@ -1573,7 +1578,7 @@ __int64 CNpcShopGivePointContextBase::GetGivePoint(MS2Ptr<CNpcShopGivePointConte
         MS2Ptr<CNpcShopGivePointContextCNSpring> spSpring(
             dynamic_cast<CNpcShopGivePointContextCNSpring*>(spContext.get()));
         if (spSpring)
-            return spSpring->GetGivePoint(spProduct->FUN_140db8180(), spProduct->m_currencyType, spProduct->m_label);
+            return spSpring->GetGivePoint(reinterpret_cast<CNpcShopProductCli*>(spProduct.operator->())->FUN_140db8180(), spProduct->m_currencyType, spProduct->m_label);
     }
     return 0;
 }

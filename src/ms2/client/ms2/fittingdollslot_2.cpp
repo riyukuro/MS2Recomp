@@ -34,6 +34,7 @@
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
 #include <efd/MemHint.h>
+#include <egf/ScriptContext.h>   // C3: egf::g_bapiContext
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
@@ -53,14 +54,21 @@ public:
     static class WorldService* GetInstance();
 };
 
-// The sound service (FUN_1403ed280).
-class Unk_FdSound
+// The effect service (TSingleton<CEffectService>, as effectservice.h declares it): plays the item sound.
+class NiTransform;
+class CEffectService;
+template <> class TSingleton<CEffectService>
 {
 public:
-    unsigned FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, void* pXform, float fVolume,
-        int nOwner);                                        // play a sound event
+    static CEffectService* GetInstance() { return s_instance; }     // 0x1403ed280 (COMDAT of another unit)
+    static CEffectService* s_instance;              // 0x143aaee08
 };
-Unk_FdSound* FUN_1403ed280();
+class CEffectService
+{
+public:
+    unsigned FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind, NiTransform* pXform,
+        float fVolume, int nOwner);                             // play a sound event
+};
 
 // A cube of the cube service (only its grid position is used here).
 class Unk_FdCube
@@ -78,8 +86,6 @@ class Unk_FdCubeSvc : public CubeMapInformationService
 public:
     Unk_FdCube* FUN_1410b8c90(egf::EntityID kId);
 };
-struct Unk_FdFramework { void* m_pad; };
-extern Unk_FdFramework DAT_143b059e8;
 class Unk_Service6100017* FUN_1401cd040(struct Unk_EntityAppFramework*);   // C3: was FUN_1401cd040
 
 // The feature switches (FUN_140166410).
@@ -171,7 +177,7 @@ int FittingDollSlot::vfunc_20()
     DragSlot::vfunc_20();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -183,7 +189,7 @@ int FittingDollSlot::vfunc_21()
     DragSlot::vfunc_21();
     MS2Ptr<CItem> spItem = vfunc_25();
     if (spItem.get() != 0)
-        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+        TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             ((CItem*)spItem)->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
     return 1;
 }
@@ -228,7 +234,7 @@ int FittingDollSlot::vfunc_8(void* p)
     CItem* pItem = vfunc_25().get();
     if (pItem == 0)
         return 0;
-    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
@@ -307,7 +313,7 @@ int FittingDollSlot::FUN_14121ddc0()
     FittingDollPC* pDoll = FUN_14121dd50();
     if (pDoll == 0)
         return 0;
-    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&DAT_143b059e8)));
+    Unk_FdCubeSvc* pSvc = ((class Unk_FdCubeSvc*)FUN_1401cd040((struct Unk_EntityAppFramework*)(&egf::g_bapiContext)));
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;

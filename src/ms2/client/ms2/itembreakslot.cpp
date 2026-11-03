@@ -23,19 +23,12 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/commonfiles/itembreakmanager.h"   // C3: CItemBreakManager
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
 
 // ---- out-of-unit callees ----
 
-// The item break manager (TSingleton, 0x1409c4b20 is its GetInstance).
-class Unk_BrkMgr
-{
-public:
-    MS2Ptr<CItem> FUN_140531ce0(int nIndex);            // the nIndex-th item of the list
-    int FUN_140532de0(MS2Ptr<CItem> spItem, int nIndex);    // put the item at nIndex
-    int FUN_140533340(MS2Ptr<CItem> spItem);            // add the item
-};
 class Unk_SlotBreakManager* FUN_1409c4b20();   // C3: was FUN_1409c4b20
 
 // Player inventory (global at 0x143ab2a90): item lookup by uid.
@@ -93,7 +86,7 @@ int ItemBreakSlot::vfunc_18(void* p)
     {
         MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5d680(((class InvenSlot*)(void*)(pItemSlot))->GetItemUid());
         if (spItem.get() != 0)
-            ((class Unk_BrkMgr*)FUN_1409c4b20())->FUN_140532de0(spItem, GetIndex());
+            reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->TryAddItem(spItem, GetIndex());
     }
     return static_cast<DragSlot*>(p)->vfunc_10();
 }
@@ -104,7 +97,7 @@ int ItemBreakSlot::vfunc_14()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)
         return 0;
-    ((class Unk_BrkMgr*)FUN_1409c4b20())->FUN_140533340(spItem);
+    reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->RequestRemoveItem(spItem);
     return 1;
 }
 
@@ -120,7 +113,7 @@ int ItemBreakSlot::vfunc_15()
 // @0x1414101c0
 MS2Ptr<CItem> ItemBreakSlot::vfunc_25()
 {
-    return ((class Unk_BrkMgr*)FUN_1409c4b20())->FUN_140531ce0(m_nIndex);
+    return reinterpret_cast<CItemBreakManager*>(FUN_1409c4b20())->GetSlotItemClone(m_nIndex);
 }
 
 // MS2-FUNCTIONAL: the exe puts the ASTooltip below the by-value MS2Ptr copy in the frame (slots swapped)

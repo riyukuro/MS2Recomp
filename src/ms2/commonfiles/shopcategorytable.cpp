@@ -48,7 +48,6 @@ static CString s_sortNames7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
    // the content switches
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
-CStringTable* GetStringTable();                                           // the string table singleton
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
@@ -152,7 +151,7 @@ void CShopCategoryTable::TabInfo::Write(Unk_AsOut* pOut)
 // @0x1407ca4e0
 CStringW CShopCategoryTable::TabInfo::GetName()
 {
-    return GetStringTable()->FUN_141811980(13, m_nName);
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(13, m_nName);
 }
 
 // ---- SortTabInfo

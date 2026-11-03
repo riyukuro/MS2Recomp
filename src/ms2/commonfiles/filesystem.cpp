@@ -203,16 +203,8 @@ void FUN_1401d3700(CString& path);
 CString FUN_140188f50(const char*, int);
 CString FUN_14016a5c0(const char*, int);
 CLogString* GetLogString();
-#ifdef __clang__
-// Bind verified MFC concatenation helpers; clang otherwise emits an unavailable CopyChars DLL import.
-CString FUN_14038f6d0(const CString&, const char*);
-CString FUN_1401d2b10(const CString&, const CString&);
-inline CString Unk_FileConcat(const CString& left, const char* right) { return FUN_14038f6d0(left, right); }
-inline CString Unk_FileConcat(const CString& left, const CString& right) { return FUN_1401d2b10(left, right); }
-#else
 inline CString Unk_FileConcat(const CString& left, const char* right) { return left + right; }
 inline CString Unk_FileConcat(const CString& left, const CString& right) { return left + right; }
-#endif
 
 template<class T> inline void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format, const T& value) {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};

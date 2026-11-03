@@ -31,6 +31,7 @@
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/client/ms2/bigdatalogsystem.h"
 #include "ms2/placeholder/asmousecursor.h"
+#include "ms2/placeholder/gfxmanager.h"   // C3: GFxManager::GetMouseCursor
 #include "ms2/client/ms2/windowservice.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/cmainsystem.h"
@@ -64,26 +65,11 @@ class Unk_Clock;
 class Unk_RsApp : public CWindowService { public: void FUN_141b90f20(int nMsg); };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 
-class Unk_HudDlg : public ASMouseCursor { public: void FUN_1422cee50(int n);};
-class Unk_HudPtr
-{
-public:
-    ~Unk_HudPtr();                                      // 0x140a58400
-    bool FUN_140d41080(int nNull);
-    Unk_HudDlg* FUN_140a584a0();
-private:
-    void* m_pad_00;
-    void* m_pad_08;
-    void* m_pad_10;
-};
-class Unk_HudMgr { public: Unk_HudPtr FUN_1422b0370(int n); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
 
 struct Unk_PadCursorCfg { int m_0; float fSpeedX; float fSpeedY; };
 class CGameOption;
 struct Unk_GpState* FUN_140a58500(class Unk_GpSettings*);   // C3: was FUN_140a58500
 
-class Unk_1403ed2b0 { public: int FUN_141adbd10(); };
 
 class Unk_EventSink : public CBigDataLogSystem { };
 extern int DAT_143af7d40;                               // input enabled
@@ -389,7 +375,7 @@ bool MS2InputService::GetMouseDelta(int* pnX, int* pnY, int* pnZ)
         return false;
     if (!m_spMouse)
         return false;
-    if (reinterpret_cast<Unk_1403ed2b0*>(TSingleton<CUIService>::GetInstance())->FUN_141adbd10() != 0)
+    if (TSingleton<CUIService>::GetInstance()->FUN_141adbd10() != 0)
     {
         m_spMouse->GetPositionDelta(*pnX, *pnY, *pnZ);
         *pnZ = 0;
@@ -649,18 +635,18 @@ MS2_REPLACE_METHOD(0x140D8B900, MS2InputService, SetGamePadEnabled, 1016, 0x66A2
 void MS2InputService::ToggleCursorMode()
 {
     m_nCursorMode = m_nCursorMode ^ 1;
-    Unk_HudPtr hud = ((class Unk_HudMgr*)FUN_14025e7a0())->FUN_1422b0370(6);
-    if (hud.FUN_140d41080(0))
+    MS2Ptr<ASMouseCursor> hud = ((class GFxManager*)FUN_14025e7a0())->GetMouseCursor(6);
+    if (hud == 0)
         return;
     if (m_nCursorMode != 0)
     {
-        hud.FUN_140a584a0()->FUN_1422cee50(10);
-        hud.FUN_140a584a0()->FUN_1422cedb0();
+        hud->FUN_1422cee50((Unk_MouseCursorType)10);
+        hud->FUN_1422cedb0();
     }
     else
     {
-        hud.FUN_140a584a0()->FUN_1422cee00();
-        hud.FUN_140a584a0()->FUN_1422cee50(0);
+        hud->FUN_1422cee00();
+        hud->FUN_1422cee50((Unk_MouseCursorType)0);
     }
 }
 MS2_REPLACE_METHOD(0x140D8BD00, MS2InputService, ToggleCursorMode, 210, 0x770EEEE7);

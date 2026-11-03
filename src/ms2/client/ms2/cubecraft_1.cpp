@@ -174,7 +174,6 @@ struct Unk_CcSvcCell { efd::SmartPointer<efd::ServiceManager> m_spManager; };
 Unk_AnimSvc* FUN_1410a68f0(Unk_CcSvcCell* pCell);
 CStringW FUN_141277910(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
 CStringW GetStringCommon(int);
-CStringW FUN_1402758a0(const wchar_t*, const CStringW&, const int&);
 void* FUN_14025e7c0();                       // singleton pointers: 64-bit, not int
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
@@ -1123,7 +1122,7 @@ void CFishingGuideObject::FUN_1410a4d30(void* pCatch)
         FUN_1408a0400(((Unk_FishCatch*)pCatch)->m_nCount);   // result discarded
         // (the coordinate temporary is unused)
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, ((Unk_FishCatch*)pCatch)->m_nFishId);
-        CStringW strInfo = FUN_1402758a0(L"{0} {1}cm", strName, ((Unk_FishCatch*)pCatch)->m_nSize);
+        CStringW strInfo = StringFormat<CStringW, unsigned>(L"{0} {1}cm", strName, reinterpret_cast<const unsigned&>(((Unk_FishCatch*)pCatch)->m_nSize));
         CStringW strGrade;
         int nGrade = spRow->FUN_1403b1520(((Unk_FishCatch*)pCatch)->m_nSize);
         switch (nGrade)

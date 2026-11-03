@@ -44,8 +44,6 @@ public:
     Unk_GalleryAS(int);
     ~Unk_GalleryAS();
     Scaleform::GFx::Value& FUN_1422bb870();
-    void FUN_1409c0d20(const char*, unsigned int);
-    void FUN_1409adc90(const char*, int);
 private:
     void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
 };
@@ -190,7 +188,7 @@ void UIGalleryEventDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
         if (!tip.FUN_1409e1770(id, rank)) return;
         auto item = FUN_14053f870(id);
         if (item.IsNull()) return;
-        tip.FUN_1409db870(reinterpret_cast<Unk_GalleryPtr<Unk_GalleryItem>&>(item));
+        tip.FUN_1409db870(item);
         *out = tip.FUN_1422bb870();
         } while (0);
     }
@@ -329,12 +327,12 @@ void UIGalleryEventDialog::FUN_140c176f0(MS2Ptr<GalleryContext> context)
         Unk_GalleryAS cardInfo(2);
         reinterpret_cast<AScript*>(&cardInfo)->FUN_1407cb9c0("state", FUN_140c18ab0((int)i));
         Unk_GalleryAS questInfo(2);
-        questInfo.FUN_1409c0d20("id", card->m_id);
+        reinterpret_cast<ASObj*>(&questInfo)->FUN_1409c0d20("id", card->m_id);
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cb9c0("state", FUN_140c18c60((int)i));
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("binding", m_binder.BindNewItem(item.m_itemId, item.m_count, item.m_job));
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cbb20("desc", FUN_1416e4df0(card->m_id));
-        questInfo.FUN_1409c0d20("itemID", item.m_itemId);
-        questInfo.FUN_1409adc90("itemRank", item.m_count);
+        reinterpret_cast<ASObj*>(&questInfo)->FUN_1409c0d20("itemID", item.m_itemId);
+        reinterpret_cast<ASObj*>(&questInfo)->FUN_1409adc90("itemRank", item.m_count);
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cb9c0("itemCount", item.m_job);
         reinterpret_cast<AScript*>(&questInfo)->FUN_1407cba60("iconPath", FUN_140c189d0(item.m_itemId));
         reinterpret_cast<ASObj*>(&cardInfo)->FUN_1409eb270("questInfo", reinterpret_cast<const ASObj&>(questInfo));
@@ -353,19 +351,19 @@ void UIGalleryEventDialog::FUN_140c17d20(MS2Ptr<GalleryContext> context)
     auto& first = context->m_items[0];
     auto& second = context->m_items[1];
     Unk_GalleryAS firstInfo(2);
-    firstInfo.FUN_1409c0d20("id", first.m_itemId);
-    firstInfo.FUN_1409adc90("rank", static_cast<ItemAble&>(first).vfunc_o18_1());
+    reinterpret_cast<ASObj*>(&firstInfo)->FUN_1409c0d20("id", first.m_itemId);
+    reinterpret_cast<ASObj*>(&firstInfo)->FUN_1409adc90("rank", static_cast<ItemAble&>(first).vfunc_o18_1());
     reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cb9c0("active", active);
     reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, first.m_itemId));
     reinterpret_cast<AScript*>(&firstInfo)->FUN_1407cba60("icon", FUN_140c189d0(first.m_itemId));
-    firstInfo.FUN_1409c0d20("itemCount", first.m_count);
+    reinterpret_cast<ASObj*>(&firstInfo)->FUN_1409c0d20("itemCount", first.m_count);
     Unk_GalleryAS secondInfo(2);
-    secondInfo.FUN_1409c0d20("id", second.m_itemId);
-    secondInfo.FUN_1409adc90("rank", static_cast<ItemAble&>(second).vfunc_o18_1());
+    reinterpret_cast<ASObj*>(&secondInfo)->FUN_1409c0d20("id", second.m_itemId);
+    reinterpret_cast<ASObj*>(&secondInfo)->FUN_1409adc90("rank", static_cast<ItemAble&>(second).vfunc_o18_1());
     reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cb9c0("active", active);
     reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, second.m_itemId));
     reinterpret_cast<AScript*>(&secondInfo)->FUN_1407cba60("icon", FUN_140c189d0(second.m_itemId));
-    secondInfo.FUN_1409c0d20("itemCount", second.m_count);
+    reinterpret_cast<ASObj*>(&secondInfo)->FUN_1409c0d20("itemCount", second.m_count);
     reinterpret_cast<Unk_GalleryAS*>(m_30.operator->())->Invoke2<const Unk_GalleryAS&, const Unk_GalleryAS&>("setRewardItem", firstInfo, secondInfo);
     UpdateBoardRewardButton();
 }
